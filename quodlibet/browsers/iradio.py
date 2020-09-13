@@ -819,7 +819,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         parent = qltk.get_top_parent(self)
         uri = (AddNewStation(parent).run(clipboard=True) or "").strip()
         if uri != "":
-            self.__add_station(uri)
+            GLib.idle_add(self.__add_station, uri)
 
     def __add_station(self, uri):
         try:

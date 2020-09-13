@@ -308,7 +308,7 @@ class TPlaylistsBrowser(TestCase):
         pl.write()
         new_fn = os.path.splitext(text2fsn(pl.name))[0] + '.m3u'
         new_path = os.path.join(pl.dir, new_fn)
-        os.rename(pl.filename, new_path)
+        os.rename(pl.path, new_path)
         added = self.bar._import_playlists([new_path], self.lib)
         self.failUnlessEqual(added, 1, msg="Failed to add '%s'" % new_path)
         os.unlink(new_path)

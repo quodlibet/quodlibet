@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2013 Nick Boultbee
+#           2011-2019 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars, \
-    fsn2text, path2fsn, uri2fsn
+from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
+                  fsn2text, path2fsn, uri2fsn)
 
 from . import windows
 from .environment import is_windows
@@ -117,23 +117,24 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s):
+def escape_filename(s: str, safe: bytes = b''):
     """Escape a string in a manner suitable for a filename.
 
     Args:
-        s (str)
+        s (str) The string to convert
+        safe (bytes) A string of characters that needn't be quoted
     Returns:
         fsnative
     """
 
     s = str(s)
-    s = quote(s.encode("utf-8"), safe=b"")
-    if isinstance(s, str):
-        s = s.encode("ascii")
-    return bytes2fsn(s, "utf-8")
+    quoted = quote(s, safe=safe, encoding='utf-8')
+    if isinstance(quoted, bytes):
+        return bytes2fsn(quoted, "utf-8")
+    return bytes2fsn(quoted.encode("ascii"), "utf-8")
 
 
-def unescape_filename(s):
+def unescape_filename(filename: fsnative) -> str:
     """Unescape a string in a manner suitable for a filename.
 
     Args:
@@ -142,9 +143,8 @@ def unescape_filename(s):
         str
     """
 
-    assert isinstance(s, fsnative)
-
-    return fsn2text(unquote(s))
+    assert isinstance(filename, fsnative)
+    return fsn2text(unquote(filename))
 
 
 def unexpand(filename):
@@ -484,7 +484,7 @@ class RootPathFile:
     @property
     def end_escaped(self):
         escaped = [escape_filename(part)
-                    for part in self.end.split(os.path.sep)]
+                   for part in self.end.split(os.path.sep)]
         return os.path.sep.join(escaped)
 
     @property

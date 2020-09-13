@@ -1,6 +1,6 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2016 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,21 +11,30 @@ from __future__ import absolute_import
 
 import os
 import random
-from typing import List
+from typing import List, Any
+from urllib.parse import quote
 
-from senf import fsnative, fsn2bytes, bytes2fsn
+from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
 
 from quodlibet import ngettext, _
 from quodlibet import util
 from quodlibet import config
 from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
+from quodlibet.pattern import Pattern
 from collections import Iterable
-from quodlibet.util.path import escape_filename, unescape_filename
-from quodlibet.util.dprint import print_d
+
+from quodlibet.util import is_windows
+from quodlibet.util.path import escape_filename, unescape_filename, limit_path
+from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.misc import total_ordering, hashable
 from .collections import HashedList
+from datetime import datetime
+from os.path import splitext, basename, dirname, exists
+from xml.etree import ElementTree as ET
+from xml.etree.ElementTree import ElementTree, Element
 
+XSPF_NS = "http://xspf.org/ns/0/"
 
 PEOPLE = list(_PEOPLE)
 # Collections value albumartist more than song artist (Issue 1034)
@@ -48,6 +57,7 @@ def bayesian_average(nums, c=None, m=None):
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
     ret = float(m * c + sum(nums)) / (c + len(nums))
     return ret
+
 
 NUM_DEFAULT_FUNCS = {
     "length": "sum",
@@ -110,6 +120,7 @@ class Collection(object):
                 if x is None:
                     return default
                 return x
+
             v = map(default_funct, v)
             v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
             v = map(
@@ -481,8 +492,6 @@ class Playlist(Collection, Iterable):
 
     def _emit_changed(self, songs, msg=""):
         if self.library and not self.inhibit and songs:
-            print_d("Emitting changed (%s) for %d song(s) from playlist %s "
-                    % (msg, len(songs), self))
             self.library.emit('changed', songs)
 
     def has_songs(self, songs):
@@ -536,41 +545,48 @@ class Playlist(Collection, Iterable):
 
 
 class FileBackedPlaylist(Playlist):
-    """A `Playlist` that is stored as a file on disk"""
+    """A `Playlist` that is stored as a UTF-8 text file of paths"""
 
-    quote = staticmethod(escape_filename)
-    unquote = staticmethod(unescape_filename)
-
-    def __init__(self, dir, name, library=None, validate=False):
-        assert isinstance(dir, fsnative)
-        super(FileBackedPlaylist, self).__init__(name, library)
-
-        self.dir = dir
+    def __init__(self, dir_, filename, library=None, validate=False):
+        assert isinstance(dir_, fsnative)
+        name = self.name_for(filename)
+        super().__init__(name, library)
+        self.dir = dir_
         if validate:
             self.name = self._validated_name(name)
-        self._last_fn = self.filename
-        self.__populate_from_file()
-
-    def __populate_from_file(self):
-        library = self.library
+        # Store the actual filename used, not sanitised and validated name
+        # This means we can delete imported things properly, etc...
+        self._last_fn = os.path.join(dir_, filename)
         try:
-            with open(self.filename, "rb") as h:
-                for line in h:
-                    assert library is not None
-                    try:
-                        line = bytes2fsn(line.rstrip(), "utf-8")
-                    except ValueError:
-                        # decoding failed
-                        continue
-                    if line in library:
-                        self._list.append(library[line])
-                    elif library and library.masked(line):
-                        self._list.append(line)
+            self._populate_from_file()
         except IOError:
             if self.name:
-                util.print_d(
-                    "Playlist '%s' not found, creating new." % self.name)
+                print_d("Playlist '%s' not found, creating new." % self.name)
                 self.write()
+
+    @classmethod
+    def name_for(cls, filename: fsnative) -> str:
+        return unescape_filename(filename)
+
+    @classmethod
+    def filename_for(cls, filename: str):
+        return escape_filename(filename)
+
+    def _populate_from_file(self):
+        """Populates, or raises IOError if no file found"""
+        library = self.library
+        with open(self.path, "rb") as h:
+            for line in h:
+                assert library is not None
+                try:
+                    line = bytes2fsn(line.rstrip(), "utf-8")
+                except ValueError:
+                    # decoding failed
+                    continue
+                if line in library:
+                    self._list.append(library[line])
+                elif library and library.masked(line):
+                    self._list.append(line)
 
     @classmethod
     def new(cls, dir_, base=_("New Playlist"), library=None):
@@ -579,13 +595,16 @@ class FileBackedPlaylist(Playlist):
         if not (dir_ and os.path.realpath(dir_)):
             raise ValueError("Invalid playlist directory %r" % (dir_,))
 
+        last_error = None
         for i in range(1000):
+            name = "%s %d" % (base, i) if i else base
+            fn = cls.filename_for(name)
             try:
-                name = "%s %d" % (base, i) if i else base
-                return FileBackedPlaylist(dir_, name, library, validate=True)
-            except ValueError:
-                pass
-        raise ValueError("Couldn't create playlist of name '%s'" % base)
+                return cls(dir_, fn, library, validate=True)
+            except ValueError as e:
+                last_error = e
+        raise ValueError("Couldn't create playlist of name '%s' (e.g. %s)"
+                         % (base, last_error))
 
     @classmethod
     def from_songs(cls, dir_, songs, library=None):
@@ -596,32 +615,32 @@ class FileBackedPlaylist(Playlist):
         return playlist
 
     @property
-    def filename(self):
-        basename = self.quote(self.name)
-        return os.path.join(self.dir, basename)
+    def path(self):
+        return os.path.join(self.dir, self.filename_for(self.name))
 
     def _validated_name(self, new_name):
-        new_name = super(FileBackedPlaylist, self)._validated_name(new_name)
-        basename = self.quote(new_name)
-        path = os.path.join(self.dir, basename)
+        new_name = super()._validated_name(new_name)
+        path = os.path.join(self.dir, self.filename_for(new_name))
         if os.path.exists(path):
             raise ValueError(
-                    _("A playlist named %s already exists.") % new_name)
+                _("A playlist named %(name)s already exists at %(path)s")
+                % {"name": new_name, "path": path})
         return new_name
 
     def delete(self):
-        super(FileBackedPlaylist, self).delete()
-        self.__delete_file(self.filename)
+        print_d("Deleting playlist file: %s" % self._last_fn)
+        self._delete_file(self._last_fn)
+        super().delete()
 
     @classmethod
-    def __delete_file(cls, fn):
+    def _delete_file(cls, fn):
         try:
             os.unlink(fn)
-        except EnvironmentError:
-            pass
+        except OSError as e:
+            print_w("Couldn't delete %s (%s)" % (fn, e))
 
     def write(self):
-        fn = self.filename
+        fn = self.path
         with open(fn, "wb") as f:
             for song in self._list:
                 if isinstance(song, str):
@@ -629,5 +648,116 @@ class FileBackedPlaylist(Playlist):
                 else:
                     f.write(fsn2bytes(song("~filename"), "utf-8") + b"\n")
         if self._last_fn != fn:
-            self.__delete_file(self._last_fn)
+            self._delete_file(self._last_fn)
             self._last_fn = fn
+
+
+class XSPFBackedPlaylist(FileBackedPlaylist):
+    EXT = "xspf"
+    CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
+    _SAFER = {c: quote(c, safe='')
+              for c in ("\\/:*?\"<>|" if is_windows() else "\0/")}
+
+    @classmethod
+    def from_playlist(cls, old_pl: FileBackedPlaylist, library):
+        """Migrate from an existing file-based playlist"""
+
+        def backup_for(path: str) -> str:
+            base = os.path.join(dirname(path), ".backup")
+            if not exists(base):
+                print_d("Creating playlist backup directory %s" % base)
+                os.mkdir(base)
+            return os.path.join(base, basename(path))
+
+        name = old_pl.name
+        new = XSPFBackedPlaylist.new(old_pl.dir, name, library)
+        new.extend(old_pl)
+        new.write()
+        os.rename(old_pl.path, backup_for(old_pl.path))
+        return new
+
+    def _populate_from_file(self):
+        library = self.library
+        try:
+            tree = ET.parse(self.path)
+            # TODO: validate some top-level tag data
+            node = tree.find("title")
+            if self.name != node.text:
+                print_w("Found name \"%s\" instead of \"%s\" for %s"
+                        % (node.text, self.name, self.path))
+            for node in tree.iterfind('.//track'):
+                location = node.find('location')
+                path = location.text.replace('\n', '').replace('\r', '')
+                if path in library:
+                    self._list.append(library[path])
+                elif library and library.masked(path):
+                    self._list.append(path)
+                else:
+                    # TODO: handle missing playlist items (#3105, #729, #3131)
+                    print_w("Couldn't find %s in playlist at %s, "
+                            "but perhaps its metadata will help: %s"
+                            % (path, self.path, ET.tostring(node)))
+                    self._list.append(path)
+                    library.mask(path)
+        except ET.ParseError as e:
+            print_w("Couldn't load %s (%s)" % (self.path, e))
+
+    @classmethod
+    def filename_for(cls, name: str):
+        # Manually do *minimal* escaping, to allow near-readable filenames
+        for bad, good in cls._SAFER.items():
+            name = name.replace(bad, good)
+        return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
+
+    @classmethod
+    def name_for(cls, file_path: fsnative) -> str:
+        filename, ext = splitext(unescape_filename(file_path))
+        if not ext or ext.lower() != (".%s" % cls.EXT):
+            raise TypeError("XSPFs should end in '.%s', not '%s'"
+                            % (cls.EXT, ext))
+        return filename
+
+    def write(self):
+        track_list = Element("trackList")
+        for song in self._list:
+            if isinstance(song, str):
+                track = {"location": song}
+            else:
+                creator = self.CREATOR_PATTERN.format(song)
+                track = {
+                    "location": song("~filename"),
+                    "title": song("title"),
+                    "creator": creator,
+                    "album": song("album"),
+                    "trackNum": song("~#track"),
+                    "duration": int(song("~#length") * 1000.)
+                }
+            track_list.append(self._element_from("track", track))
+        playlist = Element("playlist", attrib={"version": "1"})
+        playlist.append(self._text_element("title", self.name))
+        playlist.append(self._text_element("date", datetime.now().isoformat()))
+        playlist.append(track_list)
+        tree = ElementTree(playlist)
+        ET.register_namespace('', XSPF_NS)
+        tree.write(self.path, encoding="UTF-8", xml_declaration=True)
+        if self._last_fn != self.path:
+            self._delete_file(self._last_fn)
+            self._last_fn = self.path
+
+    @classmethod
+    def _text_element(cls, name: str, value: Any) -> Element:
+        el = Element("%s" % name)
+        el.text = str(value)
+        return el
+
+    @classmethod
+    def _element_from(cls, name: str, d: dict) -> Element:
+        """Converts a dict to XML etree. Removes falsey nodes"""
+        out = Element(name)
+        for k, v in d.items():
+            if k and v:
+                element = (cls._element_from(k, v)
+                           if isinstance(v, dict)
+                           else cls._text_element(k, v))
+                out.append(element)
+        return out

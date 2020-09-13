@@ -735,6 +735,11 @@ class Tescape_filename(TestCase):
         self.assertEqual(result, "abc%C3%A4")
         self.assertTrue(isinstance(result, fsnative))
 
+    def test_safe_chars(self):
+        result = escape_filename('1, 2, and -3', safe=' -')
+        self.assertEqual(result, "1%2C 2%2C and -3")
+        self.assertTrue(isinstance(result, fsnative))
+
 
 @skipIf(is_win, "not on Windows")
 class Tload_library(TestCase):

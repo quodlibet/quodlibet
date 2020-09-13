@@ -12,15 +12,24 @@ The Playlist Browser
 
 Choose the *Playlists* browser by clicking on *View* -> *Playlists*. The 
 usage is fairly simple - a list of songs in the right pane, and a list of 
-playlists (with summary information) in the right. 
+playlists (with summary information) in the right.
 
-Playlists are stored as plain text files on disk typically under 
-``~/.quodlibet/playlists``. The names are URL-encoded. Whilst these can be 
-edited, it's recommended to leave it to Quod Libet, but it's good to back 
-them up (using ``svn`` / ``hg`` / ``git`` works well here too).
-
-Any file in your library can belong to any playlist or many playlists - 
+Any file in your library can belong to any playlist or many playlists -
 it's up to you how you want to organize them...
+
+Playlist store
+--------------
+Playlists are stored as files on disk, typically under
+``~/.quodlibet/playlists``, depending on your home / XDG directories.
+
+Format
+~~~~~~
+:new: Playlists are now stored in `XSPF format <http://xspf.org/>`_.
+The names are partially URL-encoded - that is, they can and should be URL-unencoded,
+but efforts are taken to make them human-friendly names where reasonable.
+
+As before, these playlists are editable but it's recommended to leave them to Quod Libet.
+It's good to back them up (``git`` etc works well here too).
 
 
 Creating playlists
@@ -33,7 +42,7 @@ There are several ways to create playlists in Quod Libet. Choose whichever suits
     browser, right click, and select *Add to Playlist* → *New Playlist*.
   * To add songs to an existing playlist, either use *Add to Playlist* in the
     right click menu, or drag them to the playlist name on the sidebar.
-  * To import playlists from `pls` or `m3u`/`m3u8` files, use the *Import* button.
+  * To import playlists from `pls` or `m3u` /` m3u8` files, use the *Import* button.
     In addition to creating the playlist, any files in it will be added to
     your library.
 
