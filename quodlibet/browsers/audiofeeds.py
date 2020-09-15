@@ -158,7 +158,8 @@ class Feed(list):
         defaults = AudioFile({"feed": self.uri})
         try:
             self.__fill_af(doc.channel, defaults)
-        except:
+        except Exception as e:
+            print_w("Error creating feed data: %s (%s)" % (self.uri, e))
             return False
 
         entries = []
@@ -215,6 +216,9 @@ class Feed(list):
            Constructs an equivalent(ish) HEAD request,
            without re-writing feedparser completely.
            (it never times out if reading from a stream - see #2257)"""
+        if self.uri.startswith("file://"):
+            # Assume all local files have the right content.
+            return True
         req = feedparser._build_urllib2_request(
             self.uri, feedparser.USER_AGENT, None, None, None, None, {})
         req.method = "HEAD"

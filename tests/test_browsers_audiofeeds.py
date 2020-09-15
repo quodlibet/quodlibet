@@ -52,6 +52,9 @@ class TFeed(TestCase):
         fn = get_data_path('valid_feed.xml')
         feed = Feed(fsn2uri(fn))
         result = feed.parse()
+        # Assume en_US / en_GB locale here in tests
+        self.failIfEqual(feed.name, "Unknown", msg="Didn't find feed name")
+        # Do this after the above, as many exceptions can be swallowed
         self.failUnless(result)
         self.failUnlessEqual(len(feed), 2)
         self.failUnlessEqual(feed[0]('title'),
