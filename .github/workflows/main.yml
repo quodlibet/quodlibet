@@ -128,10 +128,12 @@ jobs:
           python3-dev \
           python3-pip \
           python3-venv \
+          python3-wheel \
           xvfb
-
         sudo python3 -m pip install poetry
-        poetry install -E plugins
+
+    - name: Install project virtualenv
+      run: poetry install -E plugins
 
     - name: Run tests
       run: |
