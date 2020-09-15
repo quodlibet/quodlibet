@@ -1,12 +1,6 @@
 Frequently Asked Questions
 ==========================
 
-Any plans to use Python 3?
---------------------------
-
-Older releases of QL use Python 2. As of :ref:`release 4.0.0 <release-4.0.0>`,
-QL is Python 3 only.
-
 
 Why don't you use SQLite for the song database?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

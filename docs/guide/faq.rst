@@ -231,7 +231,7 @@ better <Contribute>`.
 Changing the volume in Quod Libet changes the master volume!
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Since 3.5 Quod Libet will control the PulseAudio stream volume directly (same
+Since version 3.5, Quod Libet will control the PulseAudio stream volume directly (same
 as the application slider in ``pavucontrol``) which might have an effect on
 the master volume and vice versa. To restore the old behavior disable
 ``flat-volumes`` mode in PulseAudio. See ``man pulse-daemon.conf`` for more

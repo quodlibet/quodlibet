@@ -23,12 +23,12 @@ https://github.com/quodlibet/ppa-scripts
 
 .. _Dependencies:
 
-Non-Optional Runtime Dependencies
----------------------------------
+Mandatory Runtime Dependencies
+------------------------------
 
 The following software is needed to start Ex Falso or Quod Libet.
 
-* **Python** (>= 3.6)
+* **Python** (>= 3.7)
 * **PyGObject** including **cairo support** (>= 3.18)
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.34)
@@ -87,9 +87,6 @@ plugin from loading.
 **notification-daemon** (or any other implementation of the dbus spec):
     * For the notification plugin
 
-**python-musicbrainzngs** (>= 0.6):
-    * For the musicbrainz plugin
-
 **GStreamer Plugins Good**:
     * For the replaygain plugin
 
@@ -108,20 +105,30 @@ plugin from loading.
 **rygel**:
     * The uPnP media server
 
-**pynotify**:
-    * For the auto library update plugin
-
 **webkit2gtk** (== 4.0) + **typelibs**:
     * For the Lyrics Window plugin
 
 **libappindicator-gtk3** + **typelibs**:
     * For the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 
+Python libraries
+^^^^^^^^^^^^^^^^
+These can be installed with pip (as well as OS-level packages in some places).
+
+**paho-mqtt**
+    * For the MQTT plugin
+
+**pyinotify**:
+    * For the auto library update plugin
+
+**musicbrainzngs** (>= 0.6):
+    * For the Musicbrainz plugin
+
 
 Build Dependencies
 ------------------
 
-* **Python** >= 3.6 (stdlib only)
+* **Python** >= 3.7 (stdlib only)
 * **gettext** >= 0.19.8 for translations.
 * (optional) **sphinx** >= 1.3
 
