@@ -6,6 +6,7 @@
 from gi.repository import Gtk
 
 import quodlibet.config
+from quodlibet import _
 from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
 from senf import fsn2uri
@@ -52,6 +53,8 @@ class TFeed(TestCase):
         fn = get_data_path('valid_feed.xml')
         feed = Feed(fsn2uri(fn))
         result = feed.parse()
+        self.failIfEqual(feed.name, _("Unknown"), msg="Didn't find feed name")
+        # Do this after the above, as many exceptions can be swallowed
         self.failUnless(result)
         self.failUnlessEqual(len(feed), 2)
         self.failUnlessEqual(feed[0]('title'),
