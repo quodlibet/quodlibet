@@ -116,7 +116,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y \
-          dbus-x11 \
+          libdbus-glib-1-dev \
           gettext \
           gir1.2-gst-plugins-base-1.0 \
           gir1.2-gtk-3.0 \
