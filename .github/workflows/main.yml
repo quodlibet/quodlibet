@@ -130,7 +130,7 @@ jobs:
           xvfb
 
         sudo python3 -m pip install poetry
-        poetry install
+        poetry install -E plugins
 
     - name: Run tests
       run: |
