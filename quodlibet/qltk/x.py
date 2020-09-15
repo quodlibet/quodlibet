@@ -321,7 +321,7 @@ def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     return _Button(Gtk.ToggleButton, label, icon_name, size)
 
 
-class _SmallImageButton(object):
+class _SmallImageButton:
     """A button for images with less padding"""
 
     def __init__(self, **kwargs):

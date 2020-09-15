@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,7 +9,7 @@
 from ._misc import AudioFileError
 
 
-class ImageContainer(object):
+class ImageContainer:
     """Mixin/Interface for AudioFile to support basic embedded image editing"""
 
     def get_primary_image(self):
@@ -75,7 +76,7 @@ class ImageContainer(object):
         raise AudioFileError("Not supported for this format")
 
 
-class APICType(object):
+class APICType:
     """Enumeration of image types defined by the ID3 standard but also reused
     in WMA/FLAC/VorbisComment
     """
@@ -155,7 +156,7 @@ class APICType(object):
                 return value
 
 
-class EmbeddedImage(object):
+class EmbeddedImage:
     """Embedded image, contains most of the properties needed
     for FLAC and ID3 images.
     """

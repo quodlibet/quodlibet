@@ -285,7 +285,7 @@ class TPlaylist(TestCase):
         Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
     ]
 
-    class FakeLib(object):
+    class FakeLib:
 
         def __init__(self):
             self.reset()

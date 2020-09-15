@@ -63,7 +63,7 @@ PLAY_COUNT_ABOVE_ZERO_TOOLTIP = _(
 WRITE_ERROR_FMT = _("Couldn't write '%s'")
 
 
-class Config(object):
+class Config:
     _config = PluginConfig("autoupdatetagsinfiles")
 
     update_strategy = IntConfProp(_config, "update_strategy",

@@ -18,7 +18,7 @@ class ValidationError(Exception):
     pass
 
 
-class Massager(object):
+class Massager:
     """Massage a tag value from various 'okay' formats to the
     'correct' format."""
 

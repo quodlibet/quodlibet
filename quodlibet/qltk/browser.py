@@ -22,7 +22,7 @@ from quodlibet.qltk.window import Window, PersistentWindowMixin
 from quodlibet.util.library import background_filter
 
 
-class FilterMenu(object):
+class FilterMenu:
     MENU = """
     <menu action='Filters'>
         <menuitem action='FilterGenre' always-show-image='true'/>

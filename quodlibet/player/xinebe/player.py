@@ -29,7 +29,7 @@ from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
     xine_event_new_queue, xine_event_create_listener_thread
 
 
-class XineHandle(object):
+class XineHandle:
     def __init__(self):
         _xine = xine_new()
         xine_config_load(_xine, xine_get_homedir() + b"/.xine/config")

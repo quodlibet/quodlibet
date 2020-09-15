@@ -20,7 +20,7 @@ from quodlibet.formats._image import APICType, EmbeddedImage
 from .helper import get_temp_copy
 
 
-class TAPEv2FileMixin(object):
+class TAPEv2FileMixin:
 
     def test_can_change(self):
         self.failUnlessEqual(self.s.can_change(), True)

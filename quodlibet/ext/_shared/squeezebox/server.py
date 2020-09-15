@@ -1,4 +1,4 @@
-# Copyright 2014, 2017 Nick Boultbee
+# Copyright 2014-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ class SqueezeboxPlayerSettings(dict):
             return _("unidentified Squeezebox player: %r" % self)
 
 
-class SqueezeboxServer(object):
+class SqueezeboxServer:
     """Encapsulates access to a Squeezebox player via a squeezecenter server"""
 
     _TIMEOUT = 10

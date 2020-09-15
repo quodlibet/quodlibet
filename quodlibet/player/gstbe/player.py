@@ -41,7 +41,7 @@ STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
 const.MinVersions.GSTREAMER.check(Gst.version())
 
 
-class BufferingWrapper(object):
+class BufferingWrapper:
     """A wrapper for a Gst.Element (usually GstPlayBin) which pauses the
     elmement in case buffering is needed, but hides the fact that it does.
 
@@ -172,7 +172,7 @@ def sink_state_is_valid(sink):
     return current_state >= Gst.State.PAUSED
 
 
-class Seeker(object):
+class Seeker:
     """Manages async seeking and position reporting for a pipeline.
 
     You have to call destroy() before it gets gc'd

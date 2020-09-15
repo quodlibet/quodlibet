@@ -24,7 +24,7 @@ class Priority(int):
     BACKGROUND = 1
 
 
-class Cancellable(object):
+class Cancellable:
     """Subset of Gio.Cancellable so it can be used as well"""
 
     def __init__(self):

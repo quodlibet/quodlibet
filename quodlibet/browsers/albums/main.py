@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2018 Nick Boultbee
+#           2012-2020 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2018-2020 Uriel Zajaczkovski
 #           2019      Ruud van Asseldonk
@@ -303,7 +303,7 @@ class PreferencesButton(Gtk.HBox):
         return compare_avgplaycount(a1, a2)
 
 
-class VisibleUpdate(object):
+class VisibleUpdate:
 
     # how many rows should be updated
     # beyond the visible area in both directions

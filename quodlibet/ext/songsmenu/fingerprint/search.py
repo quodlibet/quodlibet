@@ -22,7 +22,7 @@ from quodlibet.util import print_w
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 
-class Status(object):
+class Status:
     QUEUED = 0
     ANALYZING = 1
     LOOKUP = 2
@@ -46,7 +46,7 @@ class Status(object):
             return _("Unknown")
 
 
-class SearchEntry(object):
+class SearchEntry:
 
     def __init__(self, song):
         self.song = song

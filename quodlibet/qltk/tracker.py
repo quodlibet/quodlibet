@@ -91,7 +91,7 @@ class TimeTracker(GObject.GObject):
                     else GLib.timeout_add(self.__interval, self.__update)
 
 
-class SongTracker(object):
+class SongTracker:
 
     def __init__(self, librarian, player, pl):
         self.__player_ids = [
@@ -165,7 +165,7 @@ class SongTracker(object):
         self.elapsed += 1
 
 
-class FSInterface(object):
+class FSInterface:
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
     def __init__(self, path, player):

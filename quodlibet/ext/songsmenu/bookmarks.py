@@ -32,7 +32,7 @@ class Bookmarks(SongsMenuPlugin):
         self.__create_children(self.__menu, songs)
         self.set_submenu(self.__menu)
 
-    class FakePlayer(object):
+    class FakePlayer:
         def __init__(self, song):
             self.song = song
 

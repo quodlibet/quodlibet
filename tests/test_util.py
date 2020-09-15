@@ -997,7 +997,7 @@ class Tcached_property(TestCase):
 
     def test_main(self):
 
-        class A(object):
+        class A:
             @util.cached_property
             def foo(self):
                 return object()
@@ -1012,7 +1012,7 @@ class Tcached_property(TestCase):
 
         def define_class():
 
-            class A(object):
+            class A:
                 @util.cached_property
                 def __foo_(self):
                     return object()

@@ -53,7 +53,7 @@ class Tpickle_load(TestCase):
 
     def test_pickle_dumps_fail(self):
 
-        class A(object):
+        class A:
             def __getstate__(self):
                 raise Exception
 

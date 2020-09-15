@@ -15,7 +15,7 @@ from gi.repository import GLib
 from quodlibet.util import print_exc
 
 
-class QueryThread(object):
+class QueryThread:
     """Daemon thread which does HTTP retries and avoids flooding."""
 
     def __init__(self):

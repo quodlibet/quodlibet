@@ -12,7 +12,7 @@ from gi.repository import Gst, GObject
 from quodlibet.util import connect_obj
 
 
-class FingerPrintResult(object):
+class FingerPrintResult:
 
     def __init__(self, song, chromaprint, length):
         self.song = song
@@ -21,7 +21,7 @@ class FingerPrintResult(object):
         self.length = length
 
 
-class FingerPrintPipeline(object):
+class FingerPrintPipeline:
 
     def __init__(self):
         super(FingerPrintPipeline, self).__init__()

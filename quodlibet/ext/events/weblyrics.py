@@ -216,7 +216,7 @@ class LyricsWebView(Gtk.ScrolledWindow):
 
 
 def get_config(prefix):
-    class LyricsWindowConfig(object):
+    class LyricsWindowConfig:
 
         plugin_conf = PluginConfig(prefix)
 

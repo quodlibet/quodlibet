@@ -41,7 +41,7 @@ def get_headphone_status():
         return False
 
 
-class HeadphoneAction(object):
+class HeadphoneAction:
     DISCONNECTED = 0
     CONNECTED = 1
 

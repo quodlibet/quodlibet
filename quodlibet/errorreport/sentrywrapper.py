@@ -1,5 +1,5 @@
 # Copyright 2017 Christoph Reiter
-#
+#           2020 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -75,7 +75,7 @@ def urlopen_hack(**kwargs):
     return urlopen(url, data, timeout)
 
 
-class CapturedException(object):
+class CapturedException:
     """Contains the data to be send to sentry."""
 
     def __init__(self, dsn, data):
@@ -171,7 +171,7 @@ class CapturedException(object):
             return event_id
 
 
-class Sentry(object):
+class Sentry:
     """The main object of our sentry API wrapper"""
 
     def __init__(self, dsn):

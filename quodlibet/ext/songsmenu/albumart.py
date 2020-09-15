@@ -104,7 +104,7 @@ def get_encoding(url):
     return get_encoding_from_socket(url_sock)
 
 
-class AmazonParser(object):
+class AmazonParser:
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -214,7 +214,7 @@ class AmazonParser(object):
         return self.covers
 
 
-class DiscogsParser(object):
+class DiscogsParser:
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -889,7 +889,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             self.search_lock = False
 
 
-class CoverSearch(object):
+class CoverSearch:
     """Class for glueing the search engines together. No UI stuff."""
 
     def __init__(self, callback):

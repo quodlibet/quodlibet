@@ -1,4 +1,5 @@
 # Copyright 2014 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +23,7 @@ class RemoteError(Exception):
     pass
 
 
-class RemoteBase(object):
+class RemoteBase:
     """A thing for communicating with existing instances of ourself."""
 
     def __init__(self, app, cmd_registry):

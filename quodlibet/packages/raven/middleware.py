@@ -76,7 +76,7 @@ class ClosingIterator(Iterator):
             self.closed = True
 
 
-class Sentry(object):
+class Sentry:
     """
     A WSGI middleware which will attempt to capture any
     uncaught exceptions and send them to Sentry.

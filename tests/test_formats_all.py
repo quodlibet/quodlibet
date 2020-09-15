@@ -32,7 +32,7 @@ FILES = [
 ]
 
 
-class TAudioFileAllBase(object):
+class TAudioFileAllBase:
 
     FILE = None
 

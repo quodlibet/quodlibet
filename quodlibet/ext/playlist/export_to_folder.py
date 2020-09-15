@@ -83,7 +83,7 @@ class ExportToFolderDialog(Dialog):
         self.get_child().show_all()
 
 
-class Config(object):
+class Config:
     _config = PluginConfig(__name__)
 
     DEFAULT_PATTERN = "<artist~title>"

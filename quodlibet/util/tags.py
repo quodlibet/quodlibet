@@ -12,7 +12,7 @@ from quodlibet import _
 """Database of all known tags, their translations and how they are used"""
 
 
-class TagName(object):
+class TagName:
     """
     Text:
         desc -- translated description

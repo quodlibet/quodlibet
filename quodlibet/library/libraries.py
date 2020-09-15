@@ -233,7 +233,7 @@ def _load_items(filename):
     return items
 
 
-class PicklingMixin(object):
+class PicklingMixin:
     """A mixin to provide persistence of a library by pickling to disk"""
 
     filename = None

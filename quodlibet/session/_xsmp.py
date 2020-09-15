@@ -160,7 +160,7 @@ class XSMPError(Exception):
     pass
 
 
-class XSMPSource(object):
+class XSMPSource:
     """Dispatches SM messages in the glib mainloop"""
 
     def __init__(self):

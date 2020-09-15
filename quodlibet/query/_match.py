@@ -27,7 +27,7 @@ class ParseError(error):
     pass
 
 
-class Node(object):
+class Node:
 
     def search(self, data):
         raise NotImplementedError
@@ -254,7 +254,7 @@ class Numcmp(Node):
         return Union([self, other])
 
 
-class Numexpr(object):
+class Numexpr:
     """Expression in numeric comparison"""
 
     def evaluate(self, data, time, use_date):

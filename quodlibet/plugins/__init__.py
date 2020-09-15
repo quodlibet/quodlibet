@@ -112,7 +112,7 @@ def list_plugins(module):
     return ok
 
 
-class PluginModule(object):
+class PluginModule:
 
     def __init__(self, name, module):
         self.name = name
@@ -120,7 +120,7 @@ class PluginModule(object):
         self.plugins = [Plugin(cls) for cls in list_plugins(module)]
 
 
-class Plugin(object):
+class Plugin:
 
     def __init__(self, plugin_cls):
         self.cls = plugin_cls
@@ -174,7 +174,7 @@ class Plugin(object):
         return self.instance
 
 
-class PluginHandler(object):
+class PluginHandler:
     """A plugin handler can choose to handle plugins, as well as control
     their enabled state."""
 
@@ -191,7 +191,7 @@ class PluginHandler(object):
         raise NotImplementedError
 
 
-class PluginManager(object):
+class PluginManager:
     """
     The manager takes care of plugin loading/reloading. Interested plugin
     handlers can register them self to get called when plugins get enabled
@@ -452,7 +452,7 @@ class PluginConfig(ConfigProxy):
                                  self._option(option), **kwargs)
 
 
-class PluginConfigMixin(object):
+class PluginConfigMixin:
     """
     Mixin for storage and editing of plugin config in a standard way.
     """
@@ -517,7 +517,7 @@ class PluginConfigMixin(object):
                                  option, populate=True)
 
 
-class ConfProp(object):
+class ConfProp:
 
     def __init__(self, conf, name, default):
         self._conf = conf

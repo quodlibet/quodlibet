@@ -271,7 +271,7 @@ class Window(Gtk.Window):
         return not self._preven_inital_show
 
 
-class PersistentWindowMixin(object):
+class PersistentWindowMixin:
     """A mixin for saving/restoring window size/position/maximized state"""
 
     def enable_window_tracking(self, config_prefix, size_suffix=""):
@@ -419,7 +419,7 @@ class PersistentWindowMixin(object):
         config.set("memory", self.__conf("maximized"), maximized)
 
 
-class _Unique(object):
+class _Unique:
     """A mixin for window-like classes to ensure one instance per class. """
 
     __window = None

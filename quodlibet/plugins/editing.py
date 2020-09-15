@@ -14,7 +14,7 @@ from quodlibet.util.misc import total_ordering
 
 
 @total_ordering
-class RenameFilesPlugin(object):
+class RenameFilesPlugin:
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the RenameFiles pane (currently a ScrolledWindow hidden
     with an expander, but that might change).
@@ -54,7 +54,7 @@ class RenameFilesPlugin(object):
 
 
 @total_ordering
-class TagsFromPathPlugin(object):
+class TagsFromPathPlugin:
     """Plugins of this type must subclass a GTK widget. They will be
     packed into the TagsFromPath pane (currently a ScrolledWindow hidden
     with an expander, but that might change).

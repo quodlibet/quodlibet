@@ -16,7 +16,7 @@ from quodlibet.util import print_d, format_time
 from quodlibet import config
 
 
-class Equalizer(object):
+class Equalizer:
     _eq_values: List[int] = []
 
     @property

@@ -14,7 +14,7 @@ from raven.utils.compat import string_types, text_type, PY3
 from raven.utils import varmap
 
 
-class Processor(object):
+class Processor:
     def __init__(self, client):
         self.client = client
 

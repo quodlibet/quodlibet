@@ -19,7 +19,7 @@ class TagsCombo(TestCase):
         self.some.destroy()
 
 
-class TagsComboMixin(object):
+class TagsComboMixin:
 
     def test_none(self):
         self.failUnlessRaises(ValueError, self.Kind, [])

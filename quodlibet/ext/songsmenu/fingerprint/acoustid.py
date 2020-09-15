@@ -147,7 +147,7 @@ class AcoustidSubmissionThread(threading.Thread):
         self.__stopped = True
 
 
-class LookupResult(object):
+class LookupResult:
 
     def __init__(self, fresult, releases, error):
         self.fresult = fresult

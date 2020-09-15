@@ -39,7 +39,7 @@ from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
 
 
-class Comment(object):
+class Comment:
     """A summary of a collection of values for one tag"""
 
     def __init__(self, text, have=1, total=1, shared=True):
@@ -415,7 +415,7 @@ class EditTagsPluginHandler(EditingPluginHandler):
     Kind = EditTagsPlugin
 
 
-class ListEntry(object):
+class ListEntry:
     """Holds a Comment and some state for the editing process"""
 
     tag = None

@@ -17,7 +17,7 @@ from quodlibet.pattern import XMLFromMarkupPattern as XMLFromPattern
 from quodlibet.util.string.date import format_date
 
 
-class PaneConfig(object):
+class PaneConfig:
     """Row pattern format: 'categorize_pattern:display_pattern'
 
     * display_pattern is optional (fallback: ~#tracks)

@@ -18,7 +18,7 @@ from quodlibet.library import SongLibrary
 SOME_PATTERN = "foo\n[big]<title>[/big] - <artist>"
 
 
-class FakePatternEdit(object):
+class FakePatternEdit:
     @property
     def text(self):
         return SOME_PATTERN

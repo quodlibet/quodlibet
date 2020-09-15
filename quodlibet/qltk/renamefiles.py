@@ -111,7 +111,7 @@ class RenameFilesPluginHandler(EditingPluginHandler):
     Kind = RenameFilesPlugin
 
 
-class Entry(object):
+class Entry:
 
     def __init__(self, song):
         self.song = song

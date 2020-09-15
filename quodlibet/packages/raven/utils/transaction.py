@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from threading import local
 
 
-class TransactionContext(object):
+class TransactionContext:
     def __init__(self, stack, context):
         self.stack = stack
         self.context = context

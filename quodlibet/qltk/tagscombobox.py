@@ -12,7 +12,7 @@ from quodlibet.util import tag
 from quodlibet.util.tags import USER_TAGS
 
 
-class _TagsCombo(object):
+class _TagsCombo:
     __tags = sorted(USER_TAGS)
 
     def _fill_model(self, can_change):

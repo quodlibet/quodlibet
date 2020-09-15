@@ -368,7 +368,7 @@ class AddNewStation(GetStringDialog):
                 return line
 
 
-class GenreFilter(object):
+class GenreFilter:
     STAR = ["genre", "organization"]
 
     # This probably needs improvements

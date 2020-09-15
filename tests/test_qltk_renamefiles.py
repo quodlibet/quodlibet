@@ -25,7 +25,7 @@ class TFilter(TestCase):
         self.c.destroy()
 
 
-class TFilterMixin(object):
+class TFilterMixin:
 
     def test_mix_empty(self):
         empty = fsnative(u"")

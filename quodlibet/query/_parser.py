@@ -30,7 +30,7 @@ TEXT = re.compile(r'[^,)]+')
 DATE = re.compile(r'\d{4}(-\d{1,2}(-\d{1,2})?)?')
 
 
-class QueryParser(object):
+class QueryParser:
     """Parse the input. One lookahead token, start symbol is Query."""
 
     def __init__(self, tokens, star=[]):

@@ -13,7 +13,7 @@ from tests import mkstemp
 from quodlibet.plugins.events import EventPlugin
 
 
-class PickleMe(object):
+class PickleMe:
     pass
 
 

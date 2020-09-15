@@ -8,7 +8,7 @@
 # (at your option) any later version.
 
 
-class BaseIndicator(object):
+class BaseIndicator:
 
     def remove(self):
         """Remove the indicator"""

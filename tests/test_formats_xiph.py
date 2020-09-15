@@ -58,7 +58,7 @@ class TVCFile(TestCase):
         config.set("editing", "save_to_songs", "1")
 
 
-class TVCFileMixin(object):
+class TVCFileMixin:
 
     def test_rating(self):
         self.song["~#rating"] = 0.2
@@ -168,7 +168,7 @@ class TTotalTagsBase(TestCase):
         config.quit()
 
 
-class TTotalTagsMixin(object):
+class TTotalTagsMixin:
 
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
@@ -337,7 +337,7 @@ class TVCCover(TestCase):
         config.quit()
 
 
-class TVCCoverMixin(object):
+class TVCCoverMixin:
 
     def test_can_change_images(self):
         song = self.QLType(self.filename)

@@ -23,7 +23,7 @@ DEFAULT_TIMEOUT = 10
 logger = logging.getLogger('sentry.errors')
 
 
-class AsyncWorker(object):
+class AsyncWorker:
     _terminator = object()
 
     def __init__(self, shutdown_timeout=DEFAULT_TIMEOUT):

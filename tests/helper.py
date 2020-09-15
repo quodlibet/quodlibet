@@ -291,7 +291,7 @@ def get_temp_copy(path):
     return filename
 
 
-class ListWithUnused(object):
+class ListWithUnused:
     """ This class stores a set of elements and provides the interface to check
         if it contains an arbitrary element, and then to know if some of the
         elements stored were never accessed.

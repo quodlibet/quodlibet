@@ -1,5 +1,5 @@
 # Copyright 2011,2013,2016 Christoph Reiter
-#
+#           2020 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -22,7 +22,7 @@ from quodlibet import const
 from . import logging as ql_logging
 
 
-class Color(object):
+class Color:
 
     NO_COLOR = '\033[0m'
     MAGENTA = '\033[95m'
@@ -36,7 +36,7 @@ class Color(object):
     GRAY = '\033[2m'
 
 
-class Colorise(object):
+class Colorise:
 
     @classmethod
     def __reset(cls, text):

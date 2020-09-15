@@ -17,7 +17,7 @@ from quodlibet.util.misc import total_ordering, hashable
 
 @hashable
 @total_ordering
-class SongWrapper(object):
+class SongWrapper:
     __slots__ = ['_song', '_updated', '_needs_write']
 
     def __init__(self, song):

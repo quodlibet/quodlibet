@@ -44,7 +44,7 @@ def _get_release(release_id):
     )["release"]
 
 
-class Artist(object):
+class Artist:
 
     def __init__(self, name, sort_name, id_):
         self.name = name
@@ -70,7 +70,7 @@ class Artist(object):
         return artists
 
 
-class ReleaseTrack(object):
+class ReleaseTrack:
     """Part of a Release, combines per track and per medium data"""
 
     def __init__(self, mbtrack, discnumber, track_count, disctitle):
@@ -98,7 +98,7 @@ class ReleaseTrack(object):
         return self._mbtrack["position"]
 
 
-class Release(object):
+class Release:
 
     def __init__(self, mbrelease):
         self._mbrelease = mbrelease

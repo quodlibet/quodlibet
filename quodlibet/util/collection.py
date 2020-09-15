@@ -82,7 +82,7 @@ NUM_FUNCS = {
 }
 
 
-class Collection(object):
+class Collection:
     """A collection of songs which implements some methods similar to the
     AudioFile class.
 

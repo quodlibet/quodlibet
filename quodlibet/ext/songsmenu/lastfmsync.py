@@ -57,7 +57,7 @@ def config_get(key, default=None):
     return config.get('plugins', 'lastfmsync_%s' % key, default)
 
 
-class LastFMSyncCache(object):
+class LastFMSyncCache:
     """Stores the Last.fm charts for a particular user."""
 
     registered = 0

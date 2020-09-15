@@ -105,7 +105,7 @@ class DBusPropertyFilter(DBusProperty):
         return result
 
 
-class MediaContainer(object):
+class MediaContainer:
     IFACE = "org.gnome.UPnP.MediaContainer2"
     ISPEC_PROP = """
 <property type="u" name="ChildCount" access="read"/>
@@ -188,7 +188,7 @@ class MediaContainer(object):
         pass
 
 
-class MediaObject(object):
+class MediaObject:
     IFACE = "org.gnome.UPnP.MediaObject2"
     ISPEC = """
 <property type="o" name="Parent" access="read"/>
@@ -203,7 +203,7 @@ class MediaObject(object):
         self.parent = parent or self
 
 
-class MediaItem(object):
+class MediaItem:
     IFACE = "org.gnome.UPnP.MediaItem2"
     ISPEC = """
 <property type="as" name="URLs" access="read"/>

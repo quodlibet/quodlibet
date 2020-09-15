@@ -16,7 +16,7 @@ from quodlibet.util import print_d, print_w
 from .tcpserver import BaseTCPServer, BaseTCPConnection
 
 
-class AckError(object):
+class AckError:
     NOT_LIST = 1
     ARG = 2
     PASSWORD = 3
@@ -31,7 +31,7 @@ class AckError(object):
     EXIST = 56
 
 
-class Permissions(object):
+class Permissions:
     PERMISSION_NONE = 0
     PERMISSION_READ = 1
     PERMISSION_ADD = 2
@@ -122,7 +122,7 @@ def parse_command(line):
     return command, dec_args
 
 
-class MPDService(object):
+class MPDService:
     """This is the actual shared MPD service which the clients talk to"""
 
     version = (0, 17, 0)

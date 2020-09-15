@@ -140,7 +140,7 @@ class ConfigRVPaned(ConfigRPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 
-class MultiRPaned(object):
+class MultiRPaned:
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)

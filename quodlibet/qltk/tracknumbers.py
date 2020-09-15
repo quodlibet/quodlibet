@@ -21,7 +21,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
-class Entry(object):
+class Entry:
 
     def __init__(self, song):
         self.song = song

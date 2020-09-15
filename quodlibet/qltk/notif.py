@@ -35,7 +35,7 @@ from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
 from quodlibet.qltk import Icons
 
 
-class ParentProperty(object):
+class ParentProperty:
     """
     A property which provides a thin layer of protection against accidental
     reparenting: you must first 'unparent' an instance by setting this
@@ -51,7 +51,7 @@ class ParentProperty(object):
         inst._parent = value
 
 
-class Task(object):
+class Task:
     def __init__(self, source, desc, known_length=True, controller=None,
                  pause=None, stop=None):
         self.source = source
@@ -157,7 +157,7 @@ class Task(object):
         return False
 
 
-class TaskController(object):
+class TaskController:
     """
     Controller logic for displaying and managing a list of Tasks. Also
     implements the full Task interface to act as a pass-through or summary of

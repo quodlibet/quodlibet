@@ -243,7 +243,7 @@ class TPot(TestCase):
         self.conclude(fails, "leading or trailing spaces")
 
 
-class POMixin(object):
+class POMixin:
 
     @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
     def test_pos(self):

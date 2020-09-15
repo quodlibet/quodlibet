@@ -41,7 +41,7 @@ EXPAND = Gtk.AttachOptions.EXPAND
 FILL = Gtk.AttachOptions.FILL
 
 
-class Config(object):
+class Config:
     STATUS_SONGLESS = 'no_song_text', ""
     PAT_PLAYING = 'playing_pattern', "♫ <~artist~title> ♫"
     PAT_PAUSED = 'paused_pattern', "<~artist~title> [%s]" % _("paused")

@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#           2011-2013,2016 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@ class CommandError(Exception):
     pass
 
 
-class CommandRegistry(object):
+class CommandRegistry:
     """Knows about all commands and handles parsing/executing them"""
 
     def __init__(self):

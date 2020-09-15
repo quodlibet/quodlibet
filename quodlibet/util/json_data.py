@@ -1,4 +1,4 @@
-# Copyright 2012-2013 Nick Boultbee
+# Copyright 2012-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from quodlibet.util.misc import total_ordering
 
 
 @total_ordering
-class JSONObject(object):
+class JSONObject:
     """
     Base class for simple, named data objects
     that can be edited and persisted as JSON.

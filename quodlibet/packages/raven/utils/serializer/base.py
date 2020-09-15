@@ -26,7 +26,7 @@ def has_sentry_metadata(value):
         return False
 
 
-class Serializer(object):
+class Serializer:
     types = ()
 
     def __init__(self, manager):

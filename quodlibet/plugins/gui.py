@@ -13,7 +13,7 @@ from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
 
-class UserInterfacePlugin(object):
+class UserInterfacePlugin:
     """Plugins that provide a (Gtk+ Widget)
     to display as a side bar (currently) in the main Quod Libet Window.
 

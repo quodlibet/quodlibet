@@ -17,7 +17,7 @@ from quodlibet.qltk.pluginwin import PluginWindow, PluginErrorWindow, \
     EnabledType, PluginTypeFilterCombo
 
 
-class FakePlugin(object):
+class FakePlugin:
     PLUGIN_ID = "fo<o"
     PLUGIN_NAME = "b>ar"
     PLUGIN_DESC = "quux"

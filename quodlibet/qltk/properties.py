@@ -26,7 +26,7 @@ from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.util import connect_destroy, cmp
 
 
-class _ListEntry(object):
+class _ListEntry:
 
     def __init__(self, song):
         self.song = song

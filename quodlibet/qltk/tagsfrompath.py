@@ -79,7 +79,7 @@ class TagsFromPathPluginHandler(EditingPluginHandler):
     Kind = TagsFromPathPlugin
 
 
-class ListEntry(object):
+class ListEntry:
 
     def __init__(self, song):
         self.song = song

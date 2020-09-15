@@ -187,7 +187,7 @@ def header_tag_split(header):
         return util.tagsplit(header)
 
 
-class SongListDnDMixin(object):
+class SongListDnDMixin:
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):

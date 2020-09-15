@@ -17,7 +17,7 @@ from raven.utils.stacks import get_stack_info, iter_traceback_frames
 __all__ = ('BaseEvent', 'Exception', 'Message', 'Query')
 
 
-class BaseEvent(object):
+class BaseEvent:
     def __init__(self, client):
         self.client = client
         self.logger = logging.getLogger(__name__)

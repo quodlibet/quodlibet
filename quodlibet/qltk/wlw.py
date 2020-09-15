@@ -16,7 +16,7 @@ from quodlibet.qltk import get_top_parent, Icons, Button, ToggleButton
 from quodlibet.util import format_int_locale, format_time_display
 
 
-class WaitLoadBase(object):
+class WaitLoadBase:
     """Abstract class providing a label, a progressbar, pause/stop buttons,
     and the stepping logic."""
 

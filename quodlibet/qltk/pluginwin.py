@@ -91,7 +91,7 @@ class PluginErrorWindow(UniqueWindow):
         self.get_child().show_all()
 
 
-class EnabledType(object):
+class EnabledType:
     TAG, ALL, NO, DIS, EN, SEP = range(6)
 
 

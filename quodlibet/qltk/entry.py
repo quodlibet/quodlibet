@@ -16,7 +16,7 @@ from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 
 
-class EditableUndo(object):
+class EditableUndo:
     """A simple undo/redo implementation for gtk widgets that
     support the gtk.Editable interface"""
 
@@ -203,7 +203,7 @@ class UndoEntry(Entry, EditableUndo):
         self.reset_undo()
 
 
-class ClearEntryMixin(object):
+class ClearEntryMixin:
     """A clear icon mixin supporting newer Gtk.Entry or
     a separate clear button as a fallback.
     """
@@ -238,7 +238,7 @@ class ClearEntry(UndoEntry, ClearEntryMixin):
     __gsignals__ = ClearEntryMixin.__gsignals__
 
 
-class ValidatingEntryMixin(object):
+class ValidatingEntryMixin:
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or None (black).

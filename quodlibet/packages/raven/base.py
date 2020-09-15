@@ -82,7 +82,7 @@ class ModuleProxyCache(dict):
         return handler
 
 
-class ClientState(object):
+class ClientState:
     ONLINE = 1
     ERROR = 0
 
@@ -119,7 +119,7 @@ class ClientState(object):
         return self.status == self.ERROR
 
 
-class Client(object):
+class Client:
     """
     The base Raven client.
 

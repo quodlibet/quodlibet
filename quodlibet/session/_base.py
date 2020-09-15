@@ -10,7 +10,7 @@ class SessionError(Exception):
     pass
 
 
-class SessionClient(object):
+class SessionClient:
 
     def open(self, app):
         """Raises SessionError"""

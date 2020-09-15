@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016 Nick Boultbee
+#           2016-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 
 
-class Filter(object):
+class Filter:
 
     active_filter = None
     """A callable that returns True if the passed song should be in the
@@ -278,7 +278,7 @@ class Browser(Gtk.Box, Filter):
     """Replay Gain profiles for this browser."""
 
 
-class DisplayPatternMixin(object):
+class DisplayPatternMixin:
     """Allows Browsers customisable item (e.g. album) display patterns"""
 
     _DEFAULT_PATTERN_TEXT = ""
@@ -362,7 +362,7 @@ class FakeDisplayItem(dict):
         return value.replace("\n", ", ")
 
 
-class EditDisplayPatternMixin(object):
+class EditDisplayPatternMixin:
     """Provides a display Pattern in an editable frame"""
 
     _PREVIEW_ITEM: Optional[Dict[str, str]] = None

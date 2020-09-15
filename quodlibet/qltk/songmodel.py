@@ -15,7 +15,7 @@ from quodlibet.util import print_d
 from quodlibet import config
 
 
-class PlaylistMux(object):
+class PlaylistMux:
     """Provides the PlaylistModel interface combining the song list model and
     the queue one.
 

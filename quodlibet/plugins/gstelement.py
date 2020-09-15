@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 
-class GStreamerPlugin(object):
+class GStreamerPlugin:
     """GStreamer Plugins define an element that gets inserted into the
     GStreamer pipeline before the audio sink and after the playbin.
 

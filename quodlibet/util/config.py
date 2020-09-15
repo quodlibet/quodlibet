@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2013 Nick Boultbee
+#           2009-2020 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -46,7 +46,7 @@ class _sorted_dict(collections.OrderedDict):
 _DEFAULT = object()
 
 
-class Config(object):
+class Config:
     """A wrapper around RawConfigParser.
 
     Provides a ``defaults`` attribute of the same type which can be used
@@ -415,7 +415,7 @@ class Config(object):
             self._config.add_section(section)
 
 
-class ConfigProxy(object):
+class ConfigProxy:
     """Provides a Config object with a fixed section and a possibility to
     prefix option names in that section.
 

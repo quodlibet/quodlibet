@@ -490,7 +490,7 @@ class TreeViewHints(Gtk.Window):
         return self.__event(event)
 
 
-class DragScroll(object):
+class DragScroll:
     """A treeview mixin for smooth drag and scroll (needs BaseView).
 
     Call scroll_motion in the 'drag-motion' handler and

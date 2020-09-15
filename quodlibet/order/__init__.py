@@ -11,7 +11,7 @@ from typing import Optional
 from quodlibet import _, print_d
 
 
-class Order(object):
+class Order:
     """Base class for all play orders
 
     In all methods:

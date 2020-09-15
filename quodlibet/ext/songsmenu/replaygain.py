@@ -42,14 +42,14 @@ def get_num_threads():
     return threads
 
 
-class UpdateMode(object):
+class UpdateMode:
     """Enum-like class for update strategies"""
     ALWAYS = "always"
     ALBUM_MISSING = "album_tags_missing"
     ANY_MISSING = "any_tags_missing"
 
 
-class RGAlbum(object):
+class RGAlbum:
     def __init__(self, rg_songs, process_mode):
         self.songs = rg_songs
         self.gain = None
@@ -121,7 +121,7 @@ class RGAlbum(object):
             return True
 
 
-class RGSong(object):
+class RGSong:
     def __init__(self, song):
         self.song = song
         self.error = False

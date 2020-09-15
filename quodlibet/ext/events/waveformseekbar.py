@@ -584,7 +584,7 @@ class WaveformScale(Gtk.EventBox):
         return ratio * length
 
 
-class Config(object):
+class Config:
     _config = PluginConfig(__name__)
 
     elapsed_color = ConfProp(_config, "elapsed_color", "")
