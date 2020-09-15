@@ -3,14 +3,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import pathlib
-
-from tests import TestCase, get_data_path
-
 from gi.repository import Gtk
+
+import quodlibet.config
 from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
-import quodlibet.config
+from senf import fsn2uri
+from tests import TestCase, get_data_path
 
 TEST_URL = u"https://a@b:foo.example.com?bar=baz&quxx#anchor"
 
@@ -51,7 +50,7 @@ class TFeed(TestCase):
 
     def test_feed(self):
         fn = get_data_path('valid_feed.xml')
-        feed = Feed(pathlib.Path(fn).as_uri())
+        feed = Feed(fsn2uri(fn))
         result = feed.parse()
         self.failUnless(result)
         self.failUnlessEqual(len(feed), 2)
