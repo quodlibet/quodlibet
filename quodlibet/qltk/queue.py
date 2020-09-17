@@ -39,7 +39,7 @@ class PlaybackStatusIcon(Gtk.Box):
     """A widget showing a play/pause/stop symbolic icon"""
 
     def __init__(self):
-        super(PlaybackStatusIcon, self).__init__()
+        super().__init__()
         self._icons = {}
 
     def _set(self, name):
@@ -82,7 +82,7 @@ class ExpandBoxHack(Gtk.HBox):
 class QueueExpander(Gtk.Expander):
 
     def __init__(self, library, player):
-        super(QueueExpander, self).__init__(spacing=3)
+        super().__init__(spacing=3)
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -346,7 +346,7 @@ class PlayQueue(SongList):
     _activated = False
 
     def __init__(self, library, player):
-        super(PlayQueue, self).__init__(library, player, model_cls=QueueModel)
+        super().__init__(library, player, model_cls=QueueModel)
         keep_song = config.getboolean("memory", "queue_keep_songs", False)
         if keep_song:
             self.set_first_column_type(CurrentColumn)

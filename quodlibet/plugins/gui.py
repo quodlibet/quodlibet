@@ -78,7 +78,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
 
     def __init__(self):
         label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
-        super(Gtk.ImageMenuItem, self).__init__(label=label)
+        super().__init__(label=label)
         self.__set_icon()
         self.__initialized = True
 

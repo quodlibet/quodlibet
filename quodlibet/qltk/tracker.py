@@ -28,7 +28,7 @@ class TimeTracker(GObject.GObject):
     }
 
     def __init__(self, player):
-        super(TimeTracker, self).__init__()
+        super().__init__()
 
         self.__interval = 1000
         self.__player = player

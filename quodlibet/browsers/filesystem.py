@@ -73,7 +73,7 @@ class FileSystem(Browser, Gtk.HBox):
         klass.__library.remove(songs)
 
     def __init__(self, library):
-        super(FileSystem, self).__init__()
+        super().__init__()
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)

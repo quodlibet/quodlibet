@@ -147,7 +147,7 @@ class PlaylistMux:
 class TrackCurrentModel(ObjectStore):
 
     def __init__(self, *args, **kwargs):
-        super(TrackCurrentModel, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__iter = None
 
     last_current = None
@@ -230,11 +230,11 @@ class TrackCurrentModel(ObjectStore):
     def remove(self, iter_):
         if self.__iter and self[iter_].path == self[self.__iter].path:
             self.__iter = None
-        super(TrackCurrentModel, self).remove(iter_)
+        super().remove(iter_)
 
     def clear(self):
         self.__iter = None
-        super(TrackCurrentModel, self).clear()
+        super().clear()
 
     def __contains__(self, song):
         return bool(self.find(song))
@@ -250,7 +250,7 @@ class PlaylistModel(TrackCurrentModel):
     """True in case this model is the source of the currently playing song"""
 
     def __init__(self, order_cls=OrderInOrder):
-        super(PlaylistModel, self).__init__(object)
+        super().__init__(object)
         self.order = order_cls()
 
         # The playorder plugins use paths atm to remember songs so
@@ -316,7 +316,7 @@ class PlaylistModel(TrackCurrentModel):
         self.order.reset(self)
         for signal_id in self.__sigs:
             self.handler_block(signal_id)
-        super(PlaylistModel, self).set(songs)
+        super().set(songs)
         for signal_id in self.__sigs:
             self.handler_unblock(signal_id)
 

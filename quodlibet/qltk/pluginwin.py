@@ -39,7 +39,7 @@ class PluginErrorWindow(UniqueWindow):
     def __init__(self, parent, failures):
         if self.is_not_unique():
             return
-        super(PluginErrorWindow, self).__init__()
+        super().__init__()
 
         self.set_title(_("Plugin Errors"))
         self.set_border_width(12)
@@ -99,7 +99,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
 
     def __init__(self):
         combo_store = Gtk.ListStore(str, int)
-        super(PluginEnabledFilterCombo, self).__init__(model=combo_store)
+        super().__init__(model=combo_store)
 
         cell = Gtk.CellRendererText()
         cell.props.ellipsize = Pango.EllipsizeMode.END
@@ -142,7 +142,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
 
     def __init__(self):
         combo_store = Gtk.ListStore(str, object)
-        super(PluginTypeFilterCombo, self).__init__(model=combo_store)
+        super().__init__(model=combo_store)
 
         cell = Gtk.CellRendererText()
         cell.props.ellipsize = Pango.EllipsizeMode.END
@@ -191,7 +191,7 @@ class PluginListView(HintedTreeView):
     }
 
     def __init__(self):
-        super(PluginListView, self).__init__()
+        super().__init__()
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
@@ -290,7 +290,7 @@ class PluginListView(HintedTreeView):
 
 class PluginPreferencesContainer(Gtk.VBox):
     def __init__(self):
-        super(PluginPreferencesContainer, self).__init__(spacing=12)
+        super().__init__(spacing=12)
 
         self.desc = desc = Gtk.Label()
         desc.set_line_wrap(True)
@@ -354,7 +354,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
-        super(PluginWindow, self).__init__()
+        super().__init__()
         self.set_title(_("Plugins"))
         self.set_default_size(700, 500)
         self.set_transient_for(parent)

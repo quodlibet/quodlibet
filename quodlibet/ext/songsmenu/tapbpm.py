@@ -16,7 +16,7 @@ from quodlibet.qltk.window import Dialog
 
 class TapBpmPanel(Gtk.VBox):
     def __init__(self, parent, song):
-        super(Gtk.VBox, self).__init__()
+        super().__init__()
 
         self.dialog = parent
         self.song = song

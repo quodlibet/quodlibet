@@ -24,13 +24,13 @@ class Message(Gtk.MessageDialog, Dialog):
         parent = get_top_parent(parent)
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
                 % (title, description))
-        super(Message, self).__init__(
+        super().__init__(
             transient_for=parent, modal=True, destroy_with_parent=True,
             message_type=kind, buttons=buttons)
         self.set_markup(text)
 
     def run(self, destroy=True):
-        resp = super(Message, self).run()
+        resp = super().run()
         if destroy:
             self.destroy()
         return resp
@@ -44,7 +44,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
                 % (title, description))
         parent = get_top_parent(parent)
-        super(CancelRevertSave, self).__init__(
+        super().__init__(
             transient_for=parent, flags=0,
             message_type=Gtk.MessageType.WARNING,
             buttons=Gtk.ButtonsType.NONE)
@@ -59,7 +59,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         self.set_markup(text)
 
     def run(self):
-        resp = super(CancelRevertSave, self).run()
+        resp = super().run()
         self.destroy()
         return resp
 
@@ -67,14 +67,14 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
     def __init__(self, *args, **kwargs):
-        super(ErrorMessage, self).__init__(
+        super().__init__(
             Gtk.MessageType.ERROR, *args, **kwargs)
 
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
     def __init__(self, *args, **kwargs):
-        super(WarningMessage, self).__init__(
+        super().__init__(
             Gtk.MessageType.WARNING, *args, **kwargs)
 
 
@@ -85,7 +85,7 @@ class ConfirmationPrompt(WarningMessage):
     RESPONSE_INVOKE = 1
 
     def __init__(self, parent, title, description, ok_button_text):
-        super(ConfirmationPrompt, self).__init__(
+        super().__init__(
             get_top_parent(parent),
             title, description,
             buttons=Gtk.ButtonsType.NONE)
@@ -105,7 +105,7 @@ class ConfirmFileReplace(WarningMessage):
         fn_format = "<b>%s</b>" % util.escape(fsn2text(path2fsn(path)))
         description = _("Replace %(file-name)s?") % {"file-name": fn_format}
 
-        super(ConfirmFileReplace, self).__init__(
+        super().__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)

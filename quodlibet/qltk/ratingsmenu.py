@@ -27,7 +27,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
                 else _("The rating of all selected songs will be changed to "
                        "'%s'") % util.format_rating(value))
 
-        super(ConfirmRateMultipleDialog, self).__init__(
+        super().__init__(
             Gtk.MessageType.WARNING, parent, title, desc, Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
@@ -37,7 +37,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
 class RatingsMenuItem(Gtk.ImageMenuItem):
 
     def __init__(self, songs, library, label=_("_Rating")):
-        super(RatingsMenuItem, self).__init__(label=label, use_underline=True)
+        super().__init__(label=label, use_underline=True)
         self._songs = songs
         image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
         image.show()

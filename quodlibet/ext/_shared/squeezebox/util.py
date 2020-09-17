@@ -13,7 +13,7 @@ from quodlibet import _
 class GetPlayerDialog(Gtk.Dialog):
     def __init__(self, parent, players, current=0):
         title = _("Choose Squeezebox player")
-        super(GetPlayerDialog, self).__init__(title, parent)
+        super().__init__(title, parent)
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
@@ -41,7 +41,7 @@ class GetPlayerDialog(Gtk.Dialog):
     def run(self, text=""):
         self.show()
         self._val.grab_focus()
-        resp = super(GetPlayerDialog, self).run()
+        resp = super().run()
         if resp == Gtk.ResponseType.OK:
             value = self._val.get_active()
         else:

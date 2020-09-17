@@ -108,7 +108,7 @@ class SearchEntry:
 class ResultView(AllTreeView):
 
     def __init__(self):
-        super(ResultView, self).__init__()
+        super().__init__()
 
         self._release_ids = {}
 
@@ -241,7 +241,7 @@ def score_release(release):
 class SearchWindow(Window):
 
     def __init__(self, songs, title=None):
-        super(SearchWindow, self).__init__(
+        super().__init__(
             default_width=800, default_height=400, border_width=12,
             title=title)
 

@@ -50,11 +50,11 @@ class SongWrapper:
         # isn't one of ours, and isn't one of the song's, hand it off
         # to our parent's attribute handler for error handling.
         if attr in self.__slots__:
-            return super(SongWrapper, self).__setattr__(attr, value)
+            return super().__setattr__(attr, value)
         elif hasattr(self._song, attr):
             return setattr(self._song, attr, value)
         else:
-            return super(SongWrapper, self).__setattr__(attr, value)
+            return super().__setattr__(attr, value)
 
     def __hash__(self):
         return hash(self._song)

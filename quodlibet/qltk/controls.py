@@ -19,7 +19,7 @@ from quodlibet.util.dprint import print_e
 
 class Volume(Gtk.VolumeButton):
     def __init__(self, player):
-        super(Volume, self).__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
+        super().__init__(size=Gtk.IconSize.MENU, use_symbolic=True)
 
         # https://bugzilla.gnome.org/show_bug.cgi?id=781605
         scales = qltk.find_widgets(self.get_popup(), Gtk.Scale)
@@ -115,7 +115,7 @@ class VolumeMenu(Gtk.Menu):
     )
 
     def __init__(self, player):
-        super(VolumeMenu, self).__init__()
+        super().__init__()
 
         # ubuntu 12.04..
         if hasattr(player, "bind_property"):
@@ -166,7 +166,7 @@ class VolumeMenu(Gtk.Menu):
         gain = config.getboolean("player", "replaygain")
         for child in self.get_children():
             child.set_sensitive(gain)
-        return super(VolumeMenu, self).popup(*args)
+        return super().popup(*args)
 
 
 class PlayPauseButton(Gtk.Button):
@@ -176,7 +176,7 @@ class PlayPauseButton(Gtk.Button):
     }
 
     def __init__(self):
-        super(PlayPauseButton, self).__init__(relief=Gtk.ReliefStyle.NONE)
+        super().__init__(relief=Gtk.ReliefStyle.NONE)
         self._pause_image = SymbolicIconImage("media-playback-pause",
                                                Gtk.IconSize.LARGE_TOOLBAR)
         self._play_image = SymbolicIconImage("media-playback-start",
@@ -212,7 +212,7 @@ class PlayPauseButton(Gtk.Button):
 class PlayControls(Gtk.VBox):
 
     def __init__(self, player, library):
-        super(PlayControls, self).__init__(spacing=3)
+        super().__init__(spacing=3)
 
         upper = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
         upper.set_row_spacings(3)

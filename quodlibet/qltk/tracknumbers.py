@@ -34,7 +34,7 @@ class Entry:
 
 class TrackNumbers(Gtk.VBox):
     def __init__(self, prop, library):
-        super(TrackNumbers, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
 

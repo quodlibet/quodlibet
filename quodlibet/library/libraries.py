@@ -62,7 +62,7 @@ class Library(GObject.GObject, DictMixin):
     dirty = False
 
     def __init__(self, name=None):
-        super(Library, self).__init__()
+        super().__init__()
         self._contents = {}
         self._name = name
         if self.librarian is not None and name is not None:
@@ -299,7 +299,7 @@ class AlbumLibrary(Library):
         self.librarian = None
         print_d("Initializing Album Library to watch %r" % library._name)
 
-        super(AlbumLibrary, self).__init__(
+        super().__init__(
             "AlbumLibrary for %s" % library._name)
 
         self._library = library
@@ -421,14 +421,14 @@ class SongLibrary(PicklingLibrary):
     """
 
     def __init__(self, *args, **kwargs):
-        super(SongLibrary, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     @util.cached_property
     def albums(self):
         return AlbumLibrary(self)
 
     def destroy(self):
-        super(SongLibrary, self).destroy()
+        super().destroy()
         if "albums" in self.__dict__:
             self.albums.destroy()
 
@@ -522,7 +522,7 @@ class FileLibrary(PicklingLibrary):
     """
 
     def __init__(self, name=None):
-        super(FileLibrary, self).__init__(name)
+        super().__init__(name)
         self._masked = {}
 
     def _load_init(self, items):
@@ -829,7 +829,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
 
     def __init__(self, name=None):
         print_d("Initializing SongFileLibrary \"%s\"." % name)
-        super(SongFileLibrary, self).__init__(name)
+        super().__init__(name)
 
     def contains_filename(self, filename):
         key = normalize_path(filename, True)

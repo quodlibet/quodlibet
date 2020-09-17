@@ -26,7 +26,7 @@ class ExportToFolderDialog(Dialog):
     """A dialog to collect export settings"""
 
     def __init__(self, parent, pattern):
-        super(ExportToFolderDialog, self).__init__(
+        super().__init__(
             title=_("Export Playlist to Folder"),
             transient_for=parent, use_header_bar=True)
 

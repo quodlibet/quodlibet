@@ -16,7 +16,7 @@ class ReverseOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_DESC = _("Reverses the play order of songs.")
 
     def previous(self, playlist, iter):
-        return super(ReverseOrder, self).next(playlist, iter)
+        return super().next(playlist, iter)
 
     def next(self, playlist, iter):
-        return super(ReverseOrder, self).previous(playlist, iter)
+        return super().previous(playlist, iter)

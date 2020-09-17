@@ -30,7 +30,7 @@ class WaitLoadBase:
         self.current. count can be gotten as self.count.
         """
 
-        super(WaitLoadBase, self).__init__()
+        super().__init__()
 
         self._label = Gtk.Label()
         self._label.set_use_markup(True)
@@ -194,19 +194,19 @@ class WritingWindow(WaitLoadWindow):
     """A WaitLoadWindow that defaults to text suitable for saving files."""
 
     def __init__(self, parent, count):
-        super(WritingWindow, self).__init__(
+        super().__init__(
             parent, count,
             (_("Saving the songs you changed.") + "\n\n" +
              _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")
             ))
 
     def step(self):
-        return super(WritingWindow, self).step()
+        return super().step()
 
 
 class WaitLoadBar(WaitLoadBase, Gtk.HBox):
     def __init__(self):
-        super(WaitLoadBar, self).__init__()
+        super().__init__()
 
         self._label.set_alignment(0.0, 0.5)
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
@@ -227,7 +227,7 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
             child.show_all()
 
     def step(self, **values):
-        ret = super(WaitLoadBar, self).step(**values)
+        ret = super().step(**values)
         params = {"current": format_int_locale(self.current),
                   "all": format_int_locale(self.count)}
         self._progress.set_text(_("%(current)s of %(all)s") % params)

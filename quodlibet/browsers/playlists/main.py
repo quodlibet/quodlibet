@@ -162,7 +162,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist_iter = self.__selected_playlists()[1]
         remove.set_sensitive(bool(playlist_iter))
         items.append([remove])
-        menu = super(PlaylistsBrowser, self).Menu(songs, library, items)
+        menu = super().Menu(songs, library, items)
         return menu
 
     def __get_selected_songs(self):
@@ -176,7 +176,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __init__(self, library):
         self.library = library
-        super(PlaylistsBrowser, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__render = self.__create_cell_renderer()
         self.__view = view = self.__create_playlists_view(self.__render)
@@ -556,7 +556,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def can_filter(self, key):
         # TODO: special-case the ~playlists tag maybe?
-        return super(PlaylistsBrowser, self).can_filter(key)
+        return super().can_filter(key)
 
     def finalize(self, restore):
         config.set("browsers", "query_text", "")
@@ -667,7 +667,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser):
-        super(PreferencesButton, self).__init__()
+        super().__init__()
 
         menu = Gtk.Menu()
 

@@ -225,7 +225,7 @@ class ReplayGainPipeline(GObject.Object):
     }
 
     def __init__(self):
-        super(ReplayGainPipeline, self).__init__()
+        super().__init__()
 
         self._current = None
         self._setup_pipe()
@@ -348,7 +348,7 @@ class ReplayGainPipeline(GObject.Object):
 class RGDialog(Dialog):
 
     def __init__(self, albums, parent, process_mode):
-        super(RGDialog, self).__init__(
+        super().__init__(
             title=_('ReplayGain Analyzer'), parent=parent)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)

@@ -179,7 +179,7 @@ class SanitizePasswordsProcessor(SanitizeKeysProcessor):
         return self.KEYS
 
     def sanitize(self, item, value):
-        value = super(SanitizePasswordsProcessor, self).sanitize(item, value)
+        value = super().sanitize(item, value)
         if isinstance(value, string_types) and self.VALUES_RE.match(value):
             return self.MASK
         return value

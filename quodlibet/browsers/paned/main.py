@@ -66,7 +66,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
             browser.fill_panes()
 
     def __init__(self, library):
-        super(PanedBrowser, self).__init__()
+        super().__init__()
         self._register_instance()
 
         self._filter = lambda s: False
@@ -288,7 +288,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         filter_pane = self.__get_filter_pane(key)
 
         if filter_pane is None:
-            return super(PanedBrowser, self).list(key)
+            return super().list(key)
 
         for pane in self._panes:
             if pane is filter_pane:

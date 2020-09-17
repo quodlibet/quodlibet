@@ -25,7 +25,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
     rightsep = [" ", ")", ","]
 
     def __init__(self):
-        super(EntryWordCompletion, self).__init__()
+        super().__init__()
         self.set_match_func(self.__match_filter, None)
         self.connect('match-selected', self.__match_selected)
 
@@ -79,7 +79,7 @@ class LibraryTagCompletion(EntryWordCompletion):
     __tags: Set[str] = set()
 
     def __init__(self, library):
-        super(LibraryTagCompletion, self).__init__()
+        super().__init__()
         try:
             model = self.__model
         except AttributeError:
@@ -145,7 +145,7 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
     Will add valid values from the tag massager where available"""
 
     def __init__(self, tag, library):
-        super(LibraryValueCompletion, self).__init__()
+        super().__init__()
         self.set_model(Gtk.ListStore(str))
         self.set_text_column(0)
         self.set_tag(tag, library)

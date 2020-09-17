@@ -33,7 +33,7 @@ class Orders(GObject.Object):
     }
 
     def __init__(self, initial=None):
-        super(Orders, self).__init__()
+        super().__init__()
         self.items = initial or []
 
     def by_name(self, name):
@@ -69,7 +69,7 @@ class PluggableOrders(Orders, PluginManager):
     """Registers as a Plugin Handler for various types of `Order` plugins"""
     def __init__(self, orders, base_cls):
         assert issubclass(base_cls, Order)
-        super(PluggableOrders, self).__init__(orders)
+        super().__init__(orders)
         self.base_cls = base_cls
         if PluginManager.instance:
             PluginManager.instance.register_handler(self)
@@ -116,7 +116,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
             raise ValueError("%s is not supported by %s"
                              % (current_order.__name__, orders))
 
-        super(ToggledPlayOrderMenu, self).__init__()
+        super().__init__()
         self.__inhibit = True
 
         context = self.get_style_context()
@@ -241,7 +241,7 @@ class PlayOrderWidget(Gtk.HBox):
     }
 
     def __init__(self, model, player):
-        super(PlayOrderWidget, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.order = None
         self.__inhibit = True
         self.__playlist = model

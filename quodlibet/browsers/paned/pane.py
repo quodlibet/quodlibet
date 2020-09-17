@@ -28,7 +28,7 @@ class Pane(AllTreeView):
     TARGET_INFO_URI_LIST = 2
 
     def __init__(self, library, prefs, next_=None):
-        super(Pane, self).__init__()
+        super().__init__()
         self.set_fixed_height_mode(True)
 
         self.config = PaneConfig(prefs)

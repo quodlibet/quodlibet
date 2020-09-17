@@ -210,7 +210,7 @@ class LastFMSyncCache:
 
 class LastFMSyncWindow(qltk.Dialog):
     def __init__(self, parent):
-        super(LastFMSyncWindow, self).__init__(
+        super().__init__(
                 _("Last.fm Sync"), parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,

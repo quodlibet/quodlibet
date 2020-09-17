@@ -124,7 +124,7 @@ class DictMixin:
 class DictProxy(DictMixin):
     def __init__(self, *args, **kwargs):
         self.__dict = {}
-        super(DictProxy, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, key):
         return self.__dict[key]

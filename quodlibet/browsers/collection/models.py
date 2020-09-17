@@ -153,7 +153,7 @@ class CollectionSortModel(ObjectModelSort, CollectionModelMixin):
 
 class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
     def __init__(self):
-        super(CollectionTreeStore, self).__init__(object)
+        super().__init__(object)
         self.__tags = []
 
     def set_albums(self, tags, albums):

@@ -81,7 +81,7 @@ class FilterType(int):
 
 class EnterAuthCodeDialog(GetStringDialog):
     def __init__(self, parent):
-        super(EnterAuthCodeDialog, self).__init__(
+        super().__init__(
             parent,
             _("Soundcloud authorisation"),
             _("Enter Soundcloud auth code:"),

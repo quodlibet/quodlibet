@@ -384,7 +384,7 @@ class MPDServer(BaseTCPServer):
     def __init__(self, app, config, port):
         self._app = app
         self._config = config
-        super(MPDServer, self).__init__(port, MPDConnection, const.DEBUG)
+        super().__init__(port, MPDConnection, const.DEBUG)
 
     def handle_init(self):
         print_d("Creating the MPD service")

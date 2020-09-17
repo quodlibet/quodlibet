@@ -27,7 +27,7 @@ class _KeyValueEditor(qltk.Window):
     _HEIGHT = 300
 
     def __init__(self, title, validator=None):
-        super(_KeyValueEditor, self).__init__()
+        super().__init__()
         self.set_border_width(12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
@@ -157,7 +157,7 @@ class CBESEditor(_KeyValueEditor):
     def __init__(self, cbes, title, validator=None):
         # Do this before calling parent constructor
         self.cbes = cbes
-        super(CBESEditor, self).__init__(title, validator)
+        super().__init__(title, validator)
         self.set_transient_for(qltk.get_top_parent(cbes))
         connect_obj(self, 'destroy', self.__finish, cbes)
         self.value.set_text(cbes.get_child().get_text())
@@ -203,7 +203,7 @@ class StandaloneEditor(_KeyValueEditor):
     def __init__(self, filename, title, initial=None, validator=None):
         self.filename = filename
         self.initial = initial or []
-        super(StandaloneEditor, self).__init__(title, validator)
+        super().__init__(title, validator)
         connect_obj(self, 'destroy', self.write, True)
 
     def fill_values(self):
@@ -273,7 +273,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         except KeyError:
             model = type(self).__models[id] = Gtk.ListStore(str, str, str)
 
-        super(ComboBoxEntrySave, self).__init__(
+        super().__init__(
             model=model, entry_text_column=0, has_entry=True)
         self.clear()
 

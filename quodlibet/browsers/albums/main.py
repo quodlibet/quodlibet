@@ -53,7 +53,7 @@ def get_cover_size():
 
 class AlbumTagCompletion(EntryWordCompletion):
     def __init__(self):
-        super(AlbumTagCompletion, self).__init__()
+        super().__init__()
         try:
             model = self.__model
         except AttributeError:
@@ -216,7 +216,7 @@ def compare_avgplaycount(a1, a2):
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser, model):
-        super(PreferencesButton, self).__init__()
+        super().__init__()
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
@@ -482,7 +482,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
-        super(AlbumList, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._register_instance()
@@ -804,7 +804,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         # it's not of much use here.
         if key is not None and (key.startswith("~#") or key == "title"):
             return False
-        return super(AlbumList, self).can_filter(key)
+        return super().can_filter(key)
 
     def can_filter_albums(self):
         return True

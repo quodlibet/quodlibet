@@ -236,7 +236,7 @@ class TaskWidget(Gtk.HBox):
     Displays a task.
     """
     def __init__(self, task):
-        super(TaskWidget, self).__init__(spacing=2)
+        super().__init__(spacing=2)
         self.task = task
         self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
@@ -285,7 +285,7 @@ class TaskWidget(Gtk.HBox):
 
 class StatusBar(Gtk.HBox):
     def __init__(self, task_controller):
-        super(StatusBar, self).__init__()
+        super().__init__()
         self.__dirty = False
         self.set_spacing(12)
         self.task_controller = task_controller

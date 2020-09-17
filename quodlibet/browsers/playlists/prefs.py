@@ -42,7 +42,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
     def __init__(self, browser):
         if self.is_not_unique():
             return
-        super(Preferences, self).__init__()
+        super().__init__()
         self.set_border_width(12)
         self.set_title(_("Playlist Browser Preferences"))
         self.set_default_size(420, 240)

@@ -120,7 +120,7 @@ class Equalizer(EventPlugin):
         return hasattr(app.player, 'eq_bands') and app.player.eq_bands
 
     def __init__(self):
-        super(Equalizer, self).__init__()
+        super().__init__()
         self._enabled = False
         self._config = {}
 

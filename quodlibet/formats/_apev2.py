@@ -125,7 +125,7 @@ class APEv2File(AudioFile):
         if key is None:
             return True
         else:
-            return (super(APEv2File, self).can_change(key) and
+            return (super().can_change(key) and
                     key.lower() not in self.IGNORE and
                     key.lower() not in self.TRANS and
                     mutagen.apev2.is_valid_apev2_key(self.__titlecase(key)))

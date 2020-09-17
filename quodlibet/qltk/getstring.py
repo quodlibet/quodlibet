@@ -20,7 +20,7 @@ class GetStringDialog(Dialog):
     def __init__(self, parent, title, text,
                  button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN,
                  tooltip=None):
-        super(GetStringDialog, self).__init__(
+        super().__init__(
             title=title, transient_for=parent, use_header_bar=True)
 
         self.set_border_width(6)
@@ -71,7 +71,7 @@ class GetStringDialog(Dialog):
         self._val.grab_focus()
         resp = Gtk.ResponseType.OK
         if not test:
-            resp = super(GetStringDialog, self).run()
+            resp = super().run()
         if resp == Gtk.ResponseType.OK:
             value = self._val.get_text()
         else:

@@ -47,20 +47,20 @@ class SkipZeros(ShufflePlugin, OrderInOrder):
         return vb
 
     def next(self, playlist, current):
-        next_ = super(SkipZeros, self).next(playlist, current)
+        next_ = super().next(playlist, current)
 
         while next_ is not None and self._should_skip(playlist, next_):
-            next_ = super(SkipZeros, self).next(playlist, next_)
+            next_ = super().next(playlist, next_)
 
         return next_
 
     def previous(self, playlist, current):
-        previous = super(SkipZeros, self).previous(playlist, current)
+        previous = super().previous(playlist, current)
         is_first = False
 
         while not is_first and previous is not None and \
                 self._should_skip(playlist, previous):
-            previous = super(SkipZeros, self).previous(playlist, previous)
+            previous = super().previous(playlist, previous)
             is_first = playlist.get_path(previous).get_indices()[0] == 0
 
         return previous

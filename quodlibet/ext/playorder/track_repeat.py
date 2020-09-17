@@ -79,8 +79,8 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
 
     def set(self, playlist, iter):
         self.restart_counting()
-        return super(TrackRepeatOrder, self).set(playlist, iter)
+        return super().set(playlist, iter)
 
     def reset(self, playlist):
         self.play_count = 0
-        return super(TrackRepeatOrder, self).reset(playlist)
+        return super().reset(playlist)

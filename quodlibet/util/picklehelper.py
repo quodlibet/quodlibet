@@ -81,7 +81,7 @@ def pickle_load(file, lookup_func=None):
         class CustomUnpickler(pickle.Unpickler):
 
             def find_class(self, module, name):
-                func = super(CustomUnpickler, self).find_class
+                func = super().find_class
                 return lookup_func(func, module, name)
 
         unpickler_type = CustomUnpickler

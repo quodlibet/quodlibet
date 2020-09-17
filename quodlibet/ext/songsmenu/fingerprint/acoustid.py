@@ -31,7 +31,7 @@ class AcoustidSubmissionThread(threading.Thread):
     TIMEOUT = 10.0
 
     def __init__(self, results, progress_cb, done_cb):
-        super(AcoustidSubmissionThread, self).__init__()
+        super().__init__()
         self.__callback = done_cb
         self.__results = results
         self.__stopped = False
@@ -263,7 +263,7 @@ class AcoustidLookupThread(threading.Thread):
     TIMEOUT = 10.0
 
     def __init__(self, progress_cb):
-        super(AcoustidLookupThread, self).__init__()
+        super().__init__()
         self.__progress_cb = progress_cb
         self.__queue = queue.Queue()
         self.__stopped = False

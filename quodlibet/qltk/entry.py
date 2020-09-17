@@ -152,7 +152,7 @@ class EditableUndo:
 class Entry(Gtk.Entry):
 
     def __init__(self, *args, **kwargs):
-        super(Entry, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._max_width_chars = -1
 
         # the default is way too much
@@ -195,11 +195,11 @@ class Entry(Gtk.Entry):
 
 class UndoEntry(Entry, EditableUndo):
     def __init__(self, *args):
-        super(UndoEntry, self).__init__(*args)
+        super().__init__(*args)
         self.set_undo(True)
 
     def set_text(self, *args):
-        super(UndoEntry, self).set_text(*args)
+        super().set_text(*args)
         self.reset_undo()
 
 
@@ -271,5 +271,5 @@ class ValidatingEntryMixin:
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
     def __init__(self, validator=None, *args):
-        super(ValidatingEntry, self).__init__(*args)
+        super().__init__(*args)
         self.set_validate(validator)

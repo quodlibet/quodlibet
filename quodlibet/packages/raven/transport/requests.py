@@ -24,7 +24,7 @@ class RequestsHTTPTransport(HTTPTransport):
         if not has_requests:
             raise ImportError('RequestsHTTPTransport requires requests.')
 
-        super(RequestsHTTPTransport, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def send(self, url, data, headers):
         if self.verify_ssl:

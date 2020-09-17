@@ -64,7 +64,7 @@ class HeadphoneMonitor(GObject.Object):
     }
 
     def __init__(self):
-        super(HeadphoneMonitor, self).__init__()
+        super().__init__()
         self._subscribe_id = None
         self._process = None
         self._status = None

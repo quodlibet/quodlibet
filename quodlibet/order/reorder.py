@@ -23,7 +23,7 @@ class OrderShuffle(Reorder, OrderRemembered):
     accelerated_name = _("_Random")
 
     def next(self, playlist, iter):
-        super(OrderShuffle, self).next(playlist, iter)
+        super().next(playlist, iter)
         played = set(self._played)
         songs = set(range(len(playlist)))
         remaining = songs.difference(played)
@@ -41,7 +41,7 @@ class OrderWeighted(Reorder, OrderRemembered):
     accelerated_name = _("Prefer higher rated")
 
     def next(self, playlist, iter):
-        super(OrderWeighted, self).next(playlist, iter)
+        super().next(playlist, iter)
         remaining = self.remaining(playlist)
 
         # Don't try to search through an empty / played playlist.

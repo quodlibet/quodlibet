@@ -25,7 +25,7 @@ from quodlibet.qltk import Icons
 class PreferencesButton(Gtk.HBox):
 
     def __init__(self, search_bar_box):
-        super(PreferencesButton, self).__init__()
+        super().__init__()
         menu = Gtk.Menu()
 
         limit_item = ConfigCheckMenuItem(

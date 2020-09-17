@@ -482,7 +482,7 @@ class TOperonImageExtract(TOperonBase):
     # [--dry-run] [--primary] [-d <destination>] <file> [<files>]
 
     def setUp(self):
-        super(TOperonImageExtract, self).setUp()
+        super().setUp()
 
         self.fcover = get_temp_copy(get_data_path('test-2.wma'))
         self.cover = MusicFile(self.fcover)
@@ -490,7 +490,7 @@ class TOperonImageExtract(TOperonBase):
     def tearDown(self):
         os.unlink(self.fcover)
 
-        super(TOperonImageExtract, self).tearDown()
+        super().tearDown()
 
     def test_misc(self):
         self.check_true(["image-extract", "-h"], True, False)
@@ -540,7 +540,7 @@ class TOperonImageSet(TOperonBase):
     # <image-file> <file> [<files>]
 
     def setUp(self):
-        super(TOperonImageSet, self).setUp()
+        super().setUp()
         from gi.repository import GdkPixbuf
 
         h, self.filename = mkstemp(".png")
@@ -557,7 +557,7 @@ class TOperonImageSet(TOperonBase):
     def tearDown(self):
         os.unlink(self.fcover)
         os.unlink(self.filename)
-        super(TOperonImageSet, self).tearDown()
+        super().tearDown()
 
     def test_misc(self):
         self.check_true(["image-set", "-h"], True, False)
@@ -602,13 +602,13 @@ class TOperonImageClear(TOperonBase):
     # <image-file> <file> [<files>]
 
     def setUp(self):
-        super(TOperonImageClear, self).setUp()
+        super().setUp()
         self.fcover = get_temp_copy(get_data_path('test-2.wma'))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
         os.unlink(self.fcover)
-        super(TOperonImageClear, self).tearDown()
+        super().tearDown()
 
     def test_misc(self):
         self.check_true(["image-clear", "-h"], True, False)

@@ -46,7 +46,7 @@ def Label(label=None, markup=None, ellipsize=False):
 class TitleLabel(Gtk.Label):
 
     def __init__(self, text, is_markup=False):
-        super(TitleLabel, self).__init__()
+        super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
         markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
         markup = "<span size='xx-large'>%s</span>" % markup
@@ -57,7 +57,7 @@ class TitleLabel(Gtk.Label):
 class ReactiveCoverImage(CoverImage):
 
     def __init__(self, resize=False, size=125, song=None, tooltip=None):
-        super(ReactiveCoverImage, self).__init__(resize, size, song)
+        super().__init__(resize, size, song)
         self.set_property('no-show-all', True)
 
         def show_cover(cover, success):
@@ -103,13 +103,13 @@ def SW():
 
 class NoSongs(Gtk.Label):
     def __init__(self):
-        super(NoSongs, self).__init__(label=_("No songs are selected."))
+        super().__init__(label=_("No songs are selected."))
         self.title = _("No Songs")
 
 
 class OneSong(qltk.Notebook):
     def __init__(self, library, song, lyrics=True, bookmarks=True):
-        super(OneSong, self).__init__()
+        super().__init__()
         vbox = Gtk.VBox(spacing=12)
         vbox.set_border_width(12)
         self._title(song, vbox)
@@ -337,7 +337,7 @@ class OneSong(qltk.Notebook):
 
 class OneAlbum(qltk.Notebook):
     def __init__(self, songs):
-        super(OneAlbum, self).__init__()
+        super().__init__()
         swin = SW()
         swin.title = _("Information")
         vbox = Gtk.VBox(spacing=12)
@@ -470,7 +470,7 @@ class OneAlbum(qltk.Notebook):
 
 class OneArtist(qltk.Notebook):
     def __init__(self, songs):
-        super(OneArtist, self).__init__()
+        super().__init__()
         swin = SW()
         swin.title = _("Information")
         vbox = Gtk.VBox(spacing=12)
@@ -538,7 +538,7 @@ def _sort_albums(songs):
 
 class ManySongs(qltk.Notebook):
     def __init__(self, songs):
-        super(ManySongs, self).__init__()
+        super().__init__()
         swin = SW()
         swin.title = _("Information")
         vbox = Gtk.VBox(spacing=12)
@@ -620,7 +620,7 @@ class ManySongs(qltk.Notebook):
 
 class Information(Window, PersistentWindowMixin):
     def __init__(self, library, songs, parent=None):
-        super(Information, self).__init__(dialog=False)
+        super().__init__(dialog=False)
         self.set_default_size(400, 400)
         self.set_transient_for(qltk.get_top_parent(parent))
         self.enable_window_tracking("quodlibet_information")

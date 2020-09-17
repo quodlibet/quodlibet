@@ -14,7 +14,7 @@ from quodlibet import const
 class AboutDialog(Gtk.AboutDialog):
 
     def __init__(self, parent, app):
-        super(AboutDialog, self).__init__()
+        super().__init__()
         self.set_transient_for(parent)
         self.set_program_name(app.name)
         self.set_version(quodlibet.get_build_description())

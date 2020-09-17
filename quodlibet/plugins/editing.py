@@ -145,5 +145,5 @@ class EditTagsPlugin(Gtk.ImageMenuItem):
             for item in self.get_submenu().get_children():
                 connect_obj(item, signal, callback, self, *args, **kwargs)
         else:
-            super(EditTagsPlugin, self).connect(
+            super().connect(
                 signal, callback, *args, **kwargs)

@@ -106,7 +106,7 @@ class TagsFromPath(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super(TagsFromPath, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.set_border_width(12)
         hbox = Gtk.HBox(spacing=6)

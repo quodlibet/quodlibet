@@ -37,7 +37,7 @@ class WaveformSeekBar(Gtk.Box):
     """A widget containing labels and the seekbar."""
 
     def __init__(self, player, library):
-        super(WaveformSeekBar, self).__init__()
+        super().__init__()
 
         self._player = player
         self._rms_vals = []
@@ -317,7 +317,7 @@ class WaveformScale(Gtk.EventBox):
     _placeholder = True
 
     def __init__(self, player):
-        super(WaveformScale, self).__init__()
+        super().__init__()
         self._player = player
         self.set_size_request(40, 40)
         self.position = 0

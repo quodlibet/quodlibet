@@ -35,7 +35,7 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
         description = (_("All information about the selected playlist "
                          "will be deleted and can not be restored."))
 
-        super(ConfirmRemovePlaylistDialog, self).__init__(
+        super().__init__(
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
@@ -46,7 +46,7 @@ class ConfirmRemovePlaylistDialog(qltk.Message):
 
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
-        super(GetPlaylistName, self).__init__(
+        super().__init__(
             parent, _("New Playlist"),
             _("Enter a name for the new playlist:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)

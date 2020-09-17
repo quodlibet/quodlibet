@@ -52,7 +52,7 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
         description = (_("The duplicate songs will be removed "
                          "from the playlist '%s'.") % playlist.name)
 
-        super(ConfirmRemoveDuplicatesDialog, self).__init__(
+        super().__init__(
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 

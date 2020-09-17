@@ -40,7 +40,7 @@ from quodlibet.util.path import mkdir
 # returns them sorted. This makes it easier to look up entries in the file.
 class _sorted_dict(collections.OrderedDict):
     def items(self):
-        return sorted(super(_sorted_dict, self).items())
+        return sorted(super().items())
 
 
 _DEFAULT = object()

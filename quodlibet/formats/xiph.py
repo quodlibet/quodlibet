@@ -243,10 +243,10 @@ class MutagenVCFile(AudioFile):
 
     def can_change(self, k=None):
         if k is None:
-            return super(MutagenVCFile, self).can_change(None)
+            return super().can_change(None)
         else:
             l = k.lower()
-            return (super(MutagenVCFile, self).can_change(k) and
+            return (super().can_change(k) and
                     l not in ["rating", "playcount",
                               "metadata_block_picture",
                               "coverart", "coverartmime"] and
@@ -384,7 +384,7 @@ class OggOpusFile(MutagenVCFile):
     MutagenType = OggOpus
 
     def __init__(self, *args, **kwargs):
-        super(OggOpusFile, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self["~#samplerate"] = 48000
 
 
@@ -397,13 +397,13 @@ class FLACFile(MutagenVCFile):
         if audio is None:
             with translate_errors():
                 audio = FLAC(filename)
-        super(FLACFile, self).__init__(filename, audio)
+        super().__init__(filename, audio)
         if audio.pictures:
             self.has_images = True
         self["~#bitdepth"] = audio.info.bits_per_sample
 
     def get_images(self):
-        images = super(FLACFile, self).get_images()
+        images = super().get_images()
 
         try:
             tag = FLAC(self["~filename"])
@@ -430,7 +430,7 @@ class FLACFile(MutagenVCFile):
 
         covers = tag.pictures
         if not covers:
-            return super(FLACFile, self).get_primary_image()
+            return super().get_primary_image()
 
         covers.sort(key=lambda c: APICType.sort_key(c.type))
         cover = covers[0]
@@ -449,7 +449,7 @@ class FLACFile(MutagenVCFile):
             tag.save()
 
         # clear vcomment tags
-        super(FLACFile, self).clear_images()
+        super().clear_images()
 
         self.has_images = False
 
@@ -478,7 +478,7 @@ class FLACFile(MutagenVCFile):
             tag.save()
 
         # clear vcomment tags
-        super(FLACFile, self).clear_images()
+        super().clear_images()
 
         self.has_images = True
 
@@ -486,7 +486,7 @@ class FLACFile(MutagenVCFile):
         if ID3 is not None:
             with translate_errors():
                 ID3().delete(filename=self["~filename"])
-        super(FLACFile, self).write()
+        super().write()
 
 types = []
 for var in list(globals().values()):

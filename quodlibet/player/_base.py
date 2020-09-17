@@ -98,7 +98,7 @@ class BasePlayer(GObject.GObject, Equalizer):
     }
 
     def __init__(self, *args, **kwargs):
-        super(BasePlayer, self).__init__()
+        super().__init__()
 
     def destroy(self):
         """Free resources"""

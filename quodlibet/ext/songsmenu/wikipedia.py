@@ -81,7 +81,7 @@ class WikiSearch(SongsMenuPlugin):
         return vb
 
     def __init__(self, *args, **kwargs):
-        super(WikiSearch, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         self.selected_tag = None
         self.update_submenu()
 

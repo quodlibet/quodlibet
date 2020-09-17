@@ -37,7 +37,7 @@ class MissingTranslationsException(Exception):
     def __init__(self, missing):
         msg = ("No reference in POTFILES.in to: " +
                ", ".join(missing))
-        super(MissingTranslationsException, self).__init__(msg)
+        super().__init__(msg)
 
 
 @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")

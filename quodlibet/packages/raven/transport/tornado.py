@@ -28,7 +28,7 @@ class TornadoHTTPTransport(AsyncTransport, HTTPTransport):
         if not has_tornado:
             raise ImportError('TornadoHTTPTransport requires tornado.')
 
-        super(TornadoHTTPTransport, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def async_send(self, url, data, headers, success_cb, failure_cb):
         kwargs = dict(method='POST', headers=headers, body=data)

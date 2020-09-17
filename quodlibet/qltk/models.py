@@ -111,7 +111,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             raise ValueError
         if not args:
             args = [object]
-        super(ObjectTreeStore, self).__init__(*args)
+        super().__init__(*args)
 
     def append(self, parent, row=None):
         if row is not None:
@@ -119,7 +119,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             return self.insert_with_values(parent, -1, [0], [value])
         else:
             assert not self.ATOMIC
-            return super(ObjectTreeStore, self).append(parent)
+            return super().append(parent)
 
     def insert(self, parent, position, row=None):
         if row is not None:
@@ -127,7 +127,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             return self.insert_with_values(parent, position, [0], [value])
         else:
             assert not self.ATOMIC
-            return super(ObjectTreeStore, self).insert(parent, position)
+            return super().insert(parent, position)
 
     def prepend(self, parent, row=None):
         return self.insert(parent, 0, row)
@@ -144,7 +144,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             return self.insert_with_values(parent, position, [0], [value])
 
         assert not self.ATOMIC
-        return super(ObjectTreeStore, self).insert_before(parent, sibling)
+        return super().insert_before(parent, sibling)
 
     def insert_after(self, parent, sibling, row=None):
         if row is not None:
@@ -158,7 +158,7 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
             return self.insert_with_values(parent, position, [0], [value])
 
         assert not self.ATOMIC
-        return super(ObjectTreeStore, self).insert_after(parent, sibling)
+        return super().insert_after(parent, sibling)
 
 
 class ObjectStore(_ModelMixin, Gtk.ListStore):
@@ -182,7 +182,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             raise ValueError
         if not args:
             args = [object]
-        super(ObjectStore, self).__init__(*args)
+        super().__init__(*args)
 
     def append(self, row=None):
         if row:
@@ -190,7 +190,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             return self.insert_with_valuesv(-1, [0], [value])
         else:
             assert not self.ATOMIC
-            return super(ObjectStore, self).append(row)
+            return super().append(row)
 
     def insert(self, position, row=None):
         if row:
@@ -198,7 +198,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             return self.insert_with_valuesv(position, [0], [value])
         else:
             assert not self.ATOMIC
-            return super(ObjectStore, self).insert(position)
+            return super().insert(position)
 
     def iter_append_many(self, objects):
         """Append a list of python objects, yield iters"""
@@ -258,7 +258,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             return self.insert_with_valuesv(position, [0], [value])
 
         assert not self.ATOMIC
-        return super(ObjectStore, self).insert_before(sibling)
+        return super().insert_before(sibling)
 
     def insert_after(self, sibling, row=None):
         if row is not None:
@@ -270,7 +270,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
             return self.insert_with_valuesv(position, [0], [value])
 
         assert not self.ATOMIC
-        return super(ObjectStore, self).insert_after(sibling, row)
+        return super().insert_after(sibling, row)
 
     def prepend(self, row=None):
         return self.insert(0, row)

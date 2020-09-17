@@ -139,7 +139,7 @@ class TReplayGain(PluginTestCase):
 class FakePipeline(ReplayGainPipeline):
 
     def __init__(self):
-        super(FakePipeline, self).__init__()
+        super().__init__()
         self.started = []
 
     def quit(self):
@@ -150,7 +150,7 @@ class FakePipeline(ReplayGainPipeline):
 
     def start(self, album):
         self.started.append(album)
-        super(FakePipeline, self).start(album)
+        super().start(album)
 
     def _next_song(self, first=False):
         GLib.idle_add(self._emit)

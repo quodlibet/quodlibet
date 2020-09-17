@@ -67,7 +67,7 @@ class AlbumModelMixin:
 class AlbumModel(ObjectStore, AlbumModelMixin):
 
     def __init__(self, library):
-        super(AlbumModel, self).__init__()
+        super().__init__()
         self.__library = library
 
         albums = library.albums

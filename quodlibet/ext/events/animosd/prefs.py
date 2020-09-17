@@ -24,7 +24,7 @@ class ConfigLabel(Gtk.Label):
     """Customised Label for configuration, tied to a widget"""
 
     def __init__(self, text, widget):
-        super(Gtk.Label, self).__init__(label=text, use_underline=True)
+        super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
         self.set_alignment(0.0, 0.5)
 
@@ -32,7 +32,7 @@ class ConfigLabel(Gtk.Label):
 class AnimOsdPrefs(Gtk.VBox):
 
     def __init__(self, plugin):
-        super(AnimOsdPrefs, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.Conf = plugin.Conf
         self.plugin = plugin

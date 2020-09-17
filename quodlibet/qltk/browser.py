@@ -244,7 +244,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             browser.show_maybe()
 
     def __init__(self, Kind, library, player):
-        super(LibraryBrowser, self).__init__(dialog=False)
+        super().__init__(dialog=False)
         self._register_instance()
         self.name = Kind.__name__
 

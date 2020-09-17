@@ -750,7 +750,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         print_d("About to finish (async): done")
 
     def stop(self):
-        super(GStreamerPlayer, self).stop()
+        super().stop()
         self.__destroy_pipeline()
 
     def do_get_property(self, property):

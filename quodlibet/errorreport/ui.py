@@ -25,7 +25,7 @@ def find_active_window():
 class TextExpander(Gtk.Expander):
 
     def __init__(self, title, text):
-        super(TextExpander, self).__init__(label=title)
+        super().__init__(label=title)
         self.set_resize_toplevel(True)
 
         buf = Gtk.TextBuffer()
@@ -61,7 +61,7 @@ class ErrorDialog(Gtk.MessageDialog):
             "until it is restarted. Submitting an error report will only "
             "take a few seconds and would help us a lot.")
 
-        super(ErrorDialog, self).__init__(
+        super().__init__(
             text=main_text, secondary_text=secondary_text)
 
         self.set_transient_for(parent)
@@ -95,7 +95,7 @@ class SubmitErrorDialog(Gtk.MessageDialog):
             "(optional) Please provide a short description of what happened "
             "when the error occurred:")
 
-        super(SubmitErrorDialog, self).__init__(
+        super().__init__(
             modal=True, text=main_text, secondary_text=secondary_text,
             secondary_use_markup=True)
 

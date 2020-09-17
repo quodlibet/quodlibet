@@ -71,12 +71,12 @@ class Dialog(Gtk.Dialog):
     def __init__(self, *args, **kwargs):
         if not should_use_header_bar():
             kwargs.pop("use_header_bar", None)
-        super(Dialog, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def get_titlebar(self):
         try:
             # gtk+ >=3.16
-            return super(Dialog, self).get_titlebar()
+            return super().get_titlebar()
         except AttributeError:
             return None
 
@@ -89,7 +89,7 @@ class Dialog(Gtk.Dialog):
             # content height make the window a bit taller.
             if height != -1:
                 height += 20
-        super(Dialog, self).set_default_size(width, height)
+        super().set_default_size(width, height)
 
     def add_icon_button(self, label, icon_name, response_id):
         """Like add_button() but allows to pass an icon name"""
@@ -116,7 +116,7 @@ class Window(Gtk.Window):
     def __init__(self, *args, **kwargs):
         self._header_bar = None
         dialog = kwargs.pop("dialog", True)
-        super(Window, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         type(self).windows.append(self)
         if dialog:
             # Modal is the only way to center the window on the parent
@@ -169,7 +169,7 @@ class Window(Gtk.Window):
     def set_default_size(self, width, height):
         if self._header_bar:
             width, height = fix_default_size(width, height)
-        super(Window, self).set_default_size(width, height)
+        super().set_default_size(width, height)
 
     def use_header_bar(self):
         """Try to use a headerbar, returns the widget or None in case
@@ -230,14 +230,14 @@ class Window(Gtk.Window):
         try:
             from gi.repository import GdkX11
         except ImportError:
-            super(Window, self).present()
+            super().present()
         else:
             window = self.get_window()
             if window and isinstance(window, GdkX11.X11Window):
                 timestamp = GdkX11.x11_get_server_time(window)
                 self.present_with_time(timestamp)
             else:
-                super(Window, self).present()
+                super().present()
 
     def set_transient_for(self, parent):
         """Set a parent for the window.
@@ -253,7 +253,7 @@ class Window(Gtk.Window):
                 print_w("Not a toplevel window set for: %r" % self)
             from quodlibet import app
             parent = app.window
-        super(Window, self).set_transient_for(parent)
+        super().set_transient_for(parent)
 
     @classmethod
     def prevent_inital_show(cls, value):
@@ -451,7 +451,7 @@ class _Unique:
             return
         else:
             type(self).__window = self
-        super(_Unique, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         connect_obj(self, 'destroy', self.__destroy, self)
 
     def __destroy(self, *args):

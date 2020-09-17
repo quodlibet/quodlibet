@@ -69,7 +69,7 @@ class SongSelectionInfo(GObject.Object):
     }
 
     def __init__(self, songlist):
-        super(SongSelectionInfo, self).__init__()
+        super().__init__()
 
         self.__idle = None
         self.__songlist = songlist
@@ -396,7 +396,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
     def __init__(self, library, player=None, update=False,
                  model_cls=PlaylistModel):
-        super(SongList, self).__init__()
+        super().__init__()
         self._register_instance(SongList)
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
@@ -730,7 +730,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         SongList.star = star
 
     def set_model(self, model):
-        super(SongList, self).set_model(model)
+        super().set_model(model)
         self.set_search_column(0)
 
     def clear(self):
