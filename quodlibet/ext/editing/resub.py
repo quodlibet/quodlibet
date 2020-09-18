@@ -26,7 +26,7 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     active = True
 
     def __init__(self):
-        super(RegExpSub, self).__init__()
+        super().__init__()
         self._from = Gtk.Entry()
         self._to = Gtk.Entry()
         self.pack_start(Gtk.Label("s/"), True, True, 0)

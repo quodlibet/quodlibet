@@ -53,7 +53,7 @@ def MenuItems(marks, player, seekable):
 
 class EditBookmarksPane(Gtk.VBox):
     def __init__(self, library, song, close=False):
-        super(EditBookmarksPane, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         hb = Gtk.HBox(spacing=12)
         self.time = time = Gtk.Entry()
@@ -203,7 +203,7 @@ class EditBookmarksPane(Gtk.VBox):
 
 class EditBookmarks(qltk.Window):
     def __init__(self, parent, library, player):
-        super(EditBookmarks, self).__init__()
+        super().__init__()
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_border_width(12)
         self.set_default_size(350, 250)

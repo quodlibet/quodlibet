@@ -31,13 +31,13 @@ else:
 
     class TextBuffer(GtkSource.Buffer):  # type: ignore
         def __init__(self, *args):
-            super(TextBuffer, self).__init__(*args)
+            super().__init__(*args)
             self.set_highlight_matching_brackets(False)
             self.set_highlight_syntax(False)
 
         def set_text(self, *args):
             self.begin_not_undoable_action()
-            super(TextBuffer, self).set_text(*args)
+            super().set_text(*args)
             self.end_not_undoable_action()
 
 
@@ -50,7 +50,7 @@ class TextEditBox(Gtk.HBox):
     """
 
     def __init__(self, default=""):
-        super(TextEditBox, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         sw = Gtk.ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -126,7 +126,7 @@ class PatternEditBox(TextEditBox):
     it, to get this feature."""
 
     def __init__(self, default="", alternative_markup=True, links=False):
-        super(PatternEditBox, self).__init__(default)
+        super().__init__(default)
         self._alternative_markup = alternative_markup
         self._links = links
         self.apply.connect('clicked', self.__check_markup)
@@ -153,7 +153,7 @@ class TextEdit(qltk.UniqueWindow):
     def __init__(self, parent, default="", **kwargs):
         if self.is_not_unique():
             return
-        super(TextEdit, self).__init__()
+        super().__init__()
         self.set_title(_("Edit Display"))
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_border_width(12)

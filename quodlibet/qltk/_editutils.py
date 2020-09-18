@@ -35,7 +35,7 @@ class OverwriteWarning(WarningMessage):
             "Saving without refreshing your library may "
             "overwrite other changes to the song.") % {"file-name": fn_format}
 
-        super(OverwriteWarning, self).__init__(
+        super().__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
@@ -54,7 +54,7 @@ class WriteFailedError(ErrorMessage):
             "read-only, corrupted, or you do not have "
             "permission to edit it.") % {"file-name": fn_format}
 
-        super(WriteFailedError, self).__init__(
+        super().__init__(
             parent, title, description)
 
 
@@ -66,7 +66,7 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
     Kind: Optional[Type] = None
 
     def __init__(self):
-        super(EditingPluginHandler, self).__init__()
+        super().__init__()
         self.__plugins = []
 
     @property
@@ -94,7 +94,7 @@ class FilterCheckButton(ConfigCheckButton):
         }
 
     def __init__(self):
-        super(FilterCheckButton, self).__init__(
+        super().__init__(
             self._label, self._section, self._key)
         try:
             self.set_active(config.getboolean(self._section, self._key))
@@ -127,7 +127,7 @@ class FilterPluginBox(Gtk.VBox):
     }
 
     def __init__(self, plugin_handler, filter_types=None):
-        super(FilterPluginBox, self).__init__()
+        super().__init__()
 
         # static filters
         if filter_types is None:

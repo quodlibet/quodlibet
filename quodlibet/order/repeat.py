@@ -14,7 +14,7 @@ class Repeat(Order):
     """Repeat, in some way, over a supplied `Order`"""
 
     def __init__(self, wrapped):
-        super(Repeat, self).__init__()
+        super().__init__()
         assert isinstance(wrapped, Order)
         self.wrapped = wrapped
 

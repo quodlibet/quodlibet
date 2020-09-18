@@ -56,7 +56,7 @@ class SongsMenuPlugin(MenuItemPlugin):
     plugin_albums = None
 
     def __init__(self, songs=None, library=None):
-        super(SongsMenuPlugin, self).__init__()
+        super().__init__()
         self.__library = library
         self.__songs = songs or []
 

@@ -35,7 +35,7 @@ def can_submit(result):
 
 class FingerprintDialog(Window):
     def __init__(self, songs):
-        super(FingerprintDialog, self).__init__()
+        super().__init__()
         self.set_border_width(12)
         self.set_title(_("Submit Acoustic Fingerprints"))
         self.set_default_size(450, 0)

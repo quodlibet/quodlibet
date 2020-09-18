@@ -265,7 +265,7 @@ class SongsMenu(Gtk.Menu):
                  queue=True, remove=True, delete=False, edit=True,
                  ratings=True, show_files=True, items=None, accels=True,
                  removal_confirmer=None):
-        super(SongsMenu, self).__init__()
+        super().__init__()
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
         librarian = getattr(library, 'librarian', library)

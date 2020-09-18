@@ -36,7 +36,7 @@ def discover_default_transport():
 DEFAULT_TRANSPORT = discover_default_transport()
 
 
-class RemoteConfig(object):
+class RemoteConfig:
     def __init__(self, base_url=None, project=None, public_key=None,
                  secret_key=None, transport=None, options=None):
         if base_url:

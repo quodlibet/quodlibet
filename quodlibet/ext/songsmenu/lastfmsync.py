@@ -57,7 +57,7 @@ def config_get(key, default=None):
     return config.get('plugins', 'lastfmsync_%s' % key, default)
 
 
-class LastFMSyncCache(object):
+class LastFMSyncCache:
     """Stores the Last.fm charts for a particular user."""
 
     registered = 0
@@ -210,7 +210,7 @@ class LastFMSyncCache(object):
 
 class LastFMSyncWindow(qltk.Dialog):
     def __init__(self, parent):
-        super(LastFMSyncWindow, self).__init__(
+        super().__init__(
                 _("Last.fm Sync"), parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,

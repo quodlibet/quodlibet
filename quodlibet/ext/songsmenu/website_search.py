@@ -104,7 +104,7 @@ class WebsiteSearch(SongsMenuPlugin):
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):
-        super(WebsiteSearch, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.chosen_site = None
         self._url_pats = []
         submenu = Gtk.Menu()

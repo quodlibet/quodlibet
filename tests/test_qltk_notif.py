@@ -9,7 +9,7 @@ from quodlibet import _
 from quodlibet.qltk.notif import Task, TaskController
 
 
-class FakeStatusBar(object):
+class FakeStatusBar:
     def __init__(self):
         self.count = 0
 

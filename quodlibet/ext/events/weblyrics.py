@@ -58,7 +58,7 @@ class LyricsWikiaSearchThread(threading.Thread):
     TIMEOUT = 4.0
 
     def __init__(self):
-        super(LyricsWikiaSearchThread, self).__init__()
+        super().__init__()
         self.daemon = True
         self._queue = queue.Queue()
         self._stopped = False
@@ -139,7 +139,7 @@ class LyricsWebView(Gtk.ScrolledWindow):
 
     def __init__(self, conf):
         print_d("Creating Lyrics web view")
-        super(LyricsWebView, self).__init__()
+        super().__init__()
         self.conf = conf
 
         self._thread = LyricsWikiaSearchThread()
@@ -216,7 +216,7 @@ class LyricsWebView(Gtk.ScrolledWindow):
 
 
 def get_config(prefix):
-    class LyricsWindowConfig(object):
+    class LyricsWindowConfig:
 
         plugin_conf = PluginConfig(prefix)
 
@@ -233,7 +233,7 @@ class ConfigLabel(Gtk.Label):
     """Customised Label for configuration, tied to a widget"""
 
     def __init__(self, text, widget):
-        super(Gtk.Label, self).__init__(label=text, use_underline=True)
+        super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
         self.set_alignment(0.0, 0.5)
 
@@ -241,7 +241,7 @@ class ConfigLabel(Gtk.Label):
 class LyricsWindowPrefs(Gtk.VBox):
 
     def __init__(self, plugin):
-        super(LyricsWindowPrefs, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.Conf = plugin.Conf
         self.plugin = plugin

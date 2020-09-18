@@ -37,7 +37,7 @@ class TestMetaDataBase(TestCase):
         config.quit()
 
 
-class _TestMetaDataMixin(object):
+class _TestMetaDataMixin:
 
     def test_base_data(self):
         self.failUnlessEqual(self.song['artist'], 'piman\njzig')

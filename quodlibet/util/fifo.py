@@ -1,5 +1,5 @@
 # Copyright 2014 Christoph Reiter
-#           2017 Nick Boultbee
+#           2017-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -183,7 +183,7 @@ class FIFOError(Exception):
     pass
 
 
-class FIFO(object):
+class FIFO:
     """Creates and reads from a FIFO"""
 
     def __init__(self, path, callback):

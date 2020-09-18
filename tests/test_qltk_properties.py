@@ -14,7 +14,7 @@ from quodlibet.library import SongLibrary
 from quodlibet import config
 
 
-class DummyPlugins(object):
+class DummyPlugins:
     def rescan(self):
         pass
 

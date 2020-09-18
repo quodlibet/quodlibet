@@ -27,7 +27,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
 
     # Select the next track.
     def next(self, playlist, current):
-        super(PlaycountEqualizer, self).next(playlist, current)
+        super().next(playlist, current)
 
         remaining = self.remaining(playlist)
 

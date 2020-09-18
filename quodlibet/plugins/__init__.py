@@ -35,7 +35,7 @@ class PluginImportException(Exception):
     desc = ""
 
     def __init__(self, desc, *args, **kwargs):
-        super(PluginImportException, self).__init__(desc)
+        super().__init__(desc)
         self.desc = desc
 
     def should_show(self):
@@ -49,7 +49,7 @@ class PluginNotSupportedError(PluginImportException):
 
     def __init__(self, msg=None):
         msg = "not supported: %s" % (msg or "unknown reason")
-        super(PluginNotSupportedError, self).__init__(msg)
+        super().__init__(msg)
 
     def should_show(self):
         return False
@@ -60,7 +60,7 @@ class MissingModulePluginException(PluginImportException):
     def __init__(self, module_name):
         msg = (_("Couldn't find module '{module}'. Perhaps you need to "
                  "install the package?").format(module=module_name))
-        super(MissingModulePluginException, self).__init__(msg)
+        super().__init__(msg)
 
 
 class MissingGstreamerElementPluginException(PluginImportException):
@@ -69,7 +69,7 @@ class MissingGstreamerElementPluginException(PluginImportException):
     def __init__(self, element_name):
         msg = (_("Couldn't find GStreamer element '{element}'.")
                  .format(element=element_name))
-        super(MissingGstreamerElementPluginException, self).__init__(msg)
+        super().__init__(msg)
 
 
 def migrate_old_config():
@@ -112,7 +112,7 @@ def list_plugins(module):
     return ok
 
 
-class PluginModule(object):
+class PluginModule:
 
     def __init__(self, name, module):
         self.name = name
@@ -120,7 +120,7 @@ class PluginModule(object):
         self.plugins = [Plugin(cls) for cls in list_plugins(module)]
 
 
-class Plugin(object):
+class Plugin:
 
     def __init__(self, plugin_cls):
         self.cls = plugin_cls
@@ -174,7 +174,7 @@ class Plugin(object):
         return self.instance
 
 
-class PluginHandler(object):
+class PluginHandler:
     """A plugin handler can choose to handle plugins, as well as control
     their enabled state."""
 
@@ -191,7 +191,7 @@ class PluginHandler(object):
         raise NotImplementedError
 
 
-class PluginManager(object):
+class PluginManager:
     """
     The manager takes care of plugin loading/reloading. Interested plugin
     handlers can register them self to get called when plugins get enabled
@@ -231,7 +231,7 @@ class PluginManager(object):
         Plugins in later paths will be preferred if they share a name.
         """
 
-        super(PluginManager, self).__init__()
+        super().__init__()
 
         if folders is None:
             folders = []
@@ -438,7 +438,7 @@ class PluginConfig(ConfigProxy):
         self._prefix = prefix
         if _config is None:
             _config = config._config
-        super(PluginConfig, self).__init__(
+        super().__init__(
             _config, PM.CONFIG_SECTION, _defaults)
 
     def _new_defaults(self, real_default_config):
@@ -452,7 +452,7 @@ class PluginConfig(ConfigProxy):
                                  self._option(option), **kwargs)
 
 
-class PluginConfigMixin(object):
+class PluginConfigMixin:
     """
     Mixin for storage and editing of plugin config in a standard way.
     """
@@ -517,7 +517,7 @@ class PluginConfigMixin(object):
                                  option, populate=True)
 
 
-class ConfProp(object):
+class ConfProp:
 
     def __init__(self, conf, name, default):
         self._conf = conf

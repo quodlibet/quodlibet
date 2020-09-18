@@ -33,7 +33,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     def cover_path(self):
         mbid = self.mbid
         if mbid is None:
-            return super(MusicBrainzCover, self).cover_path
+            return super().cover_path
         return path.join(cover_dir, escape_filename(mbid))
 
     @property

@@ -49,7 +49,7 @@ class HTTPRequest(GObject.Object):
             raise ValueError('Message may not be None')
 
         inner_cancellable = Gio.Cancellable()
-        super(HTTPRequest, self).__init__(message=message,
+        super().__init__(message=message,
                                           cancellable=inner_cancellable)
         if cancellable is not None:
             cancellable.connect(lambda *x: self.cancel(), None)

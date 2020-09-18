@@ -18,7 +18,7 @@ from quodlibet.util import connect_obj
 from quodlibet.errorreport import errorhook
 
 
-class EventPlugin(object):
+class EventPlugin:
     """Plugins that run in the background and receive events.
 
     Event plugins, unlike other plugins, are instantiated on startup and

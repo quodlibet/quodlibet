@@ -33,14 +33,14 @@ def get_toplevel_xid():
     return 0
 
 
-class InhibitFlags(object):
+class InhibitFlags:
     LOGOUT = 1
     USERSWITCH = 1 << 1
     SUSPEND = 1 << 2
     IDLE = 1 << 3
 
 
-class InhibitStrings(object):
+class InhibitStrings:
     SUSPEND = "inhibit_suspend"
     IDLE = "inhibit_idle"
 

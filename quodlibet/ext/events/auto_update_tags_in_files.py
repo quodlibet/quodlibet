@@ -63,7 +63,7 @@ PLAY_COUNT_ABOVE_ZERO_TOOLTIP = _(
 WRITE_ERROR_FMT = _("Couldn't write '%s'")
 
 
-class Config(object):
+class Config:
     _config = PluginConfig("autoupdatetagsinfiles")
 
     update_strategy = IntConfProp(_config, "update_strategy",
@@ -168,7 +168,7 @@ class AutoUpdateTagsInFiles(EventPlugin):
 
 class AutoUpdateTagsPrefs(Gtk.Box):
     def __init__(self):
-        super(AutoUpdateTagsPrefs, self).__init__(
+        super().__init__(
                 orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
         strategy_boxes = []
@@ -242,6 +242,6 @@ class ConfigLabel(Gtk.Label):
     """Customised Label for configuration, tied to a widget"""
 
     def __init__(self, text, widget):
-        super(Gtk.Label, self).__init__(label=text, use_underline=True)
+        super().__init__(label=text, use_underline=True)
         self.set_mnemonic_widget(widget)
         self.set_alignment(0.0, 0.5)

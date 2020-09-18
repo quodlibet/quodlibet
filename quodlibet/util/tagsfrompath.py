@@ -13,7 +13,7 @@ from senf import fsnative, fsn2text
 from quodlibet.util import re_escape
 
 
-class TagsFromPattern(object):
+class TagsFromPattern:
 
     def __init__(self, pattern):
         self.headers = []

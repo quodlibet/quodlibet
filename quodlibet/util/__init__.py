@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2017 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
 NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
 
 
-class InstanceTracker(object):
+class InstanceTracker:
     """A mixin for GObjects to return a list of all alive objects
     of a given type. Note that it must be used with a GObject or
     something with a connect method and destroy signal."""
@@ -64,7 +64,7 @@ class InstanceTracker(object):
         return klass.__kinds.get(klass, [])
 
 
-class OptionParser(object):
+class OptionParser:
     def __init__(self, name, version, description=None, usage=None):
         self.__name = name
         self.__version = version
@@ -606,7 +606,7 @@ def make_case_insensitive(filename):
     return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
 
 
-class DeferredSignal(object):
+class DeferredSignal:
     """A wrapper for connecting functions to signals.
 
     Some signals may fire hundreds of times, but only require processing
@@ -753,7 +753,7 @@ def connect_after_destroy(sender, *args, **kwargs):
     return _connect_destroy(sender, sender.connect_after, *args, **kwargs)
 
 
-class cached_property(object):
+class cached_property:
     """A read-only @property that is only evaluated once."""
 
     def __init__(self, fget, doc=None):
@@ -980,7 +980,7 @@ class MainRunnerTimeoutError(MainRunnerError):
     pass
 
 
-class MainRunner(object):
+class MainRunner:
     """Schedule a function call in the main loop from a
     worker thread and wait for the result.
 

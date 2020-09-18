@@ -83,7 +83,7 @@ class TPlayer(TestCase):
         config.quit()
 
 
-class TPlayerMixin(object):
+class TPlayerMixin:
 
     def _can_sync(self):
         # TODO: make this work with xinebe

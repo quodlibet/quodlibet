@@ -34,7 +34,7 @@ class BurnCD(SongsMenuPlugin):
     }
 
     def __init__(self, *args, **kwargs):
-        super(BurnCD, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.prog_name = None
 
         items = self.burn_programs.items()

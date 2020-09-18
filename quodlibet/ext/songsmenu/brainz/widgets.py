@@ -77,7 +77,7 @@ class ResultComboBox(Gtk.ComboBox):
     """Formatted picker for different Result entries."""
 
     def __init__(self, model):
-        super(ResultComboBox, self).__init__(model=model)
+        super().__init__(model=model)
         render = Gtk.CellRendererText()
         render.set_fixed_height_from_font(2)
 
@@ -118,7 +118,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         self.model = ObjectStore()
         self.model.append_many(album)
 
-        super(ResultTreeView, self).__init__(self.model)
+        super().__init__(self.model)
         self.set_headers_clickable(True)
         self.set_rules_hint(True)
         self.set_reorderable(True)
@@ -349,7 +349,7 @@ class SearchWindow(Dialog):
         self._qthread = QueryThread()
         self.current_release = None
 
-        super(SearchWindow, self).__init__(_("MusicBrainz lookup"))
+        super().__init__(_("MusicBrainz lookup"))
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,

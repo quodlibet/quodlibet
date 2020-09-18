@@ -49,7 +49,7 @@ class Preferences(Gtk.VBox):
     }
 
     def __init__(self):
-        super(Preferences, self).__init__(spacing=12)
+        super().__init__(spacing=12)
 
         table = Gtk.Table(n_rows=3, n_columns=3)
         table.set_col_spacings(6)

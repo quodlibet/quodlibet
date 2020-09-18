@@ -31,7 +31,7 @@ class IndicatorMenu(Gtk.Menu):
     }
 
     def __init__(self, app, add_show_item=False):
-        super(IndicatorMenu, self).__init__()
+        super().__init__()
 
         self._app = app
         player = app.player

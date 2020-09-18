@@ -66,7 +66,7 @@ class NamedPipeServer(threading.Thread):
         callback will be called with new data until close() is called.
         """
 
-        super(NamedPipeServer, self).__init__()
+        super().__init__()
         self._event = threading.Event()
         self._filename = self._get_filename(name)
         self._callback = callback
@@ -85,7 +85,7 @@ class NamedPipeServer(threading.Thread):
         GLib.idle_add(idle_process, data)
 
     def start(self):
-        super(NamedPipeServer, self).start()
+        super().start()
         # make sure we can use write_pipe() immediately after this returns
         self._event.wait()
         if self._stopped:

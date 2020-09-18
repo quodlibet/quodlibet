@@ -16,7 +16,7 @@ from quodlibet.util.importhelper import get_importables, load_module
 from quodlibet.util import print_d
 
 
-class Module(object):
+class Module:
 
     def __init__(self, name, module, deps, path):
         self.name = name
@@ -41,7 +41,7 @@ class Module(object):
         return "<%s name=%r>" % (type(self).__name__, self.name)
 
 
-class ModuleImportError(object):
+class ModuleImportError:
 
     def __init__(self, name, exception, traceback):
         self.name = name
@@ -49,7 +49,7 @@ class ModuleImportError(object):
         self.traceback = traceback
 
 
-class ModuleScanner(object):
+class ModuleScanner:
     """
     Handles plugin modules. Takes a list of directories and searches
     for loadable python modules/packages in all of them.

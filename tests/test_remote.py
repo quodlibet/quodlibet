@@ -12,7 +12,7 @@ from quodlibet.remote import QuodLibetUnixRemote
 from quodlibet.util import is_windows
 
 
-class Mock(object):
+class Mock:
     def __init__(self, resp=None):
         self.lines = []
         self.resp = resp

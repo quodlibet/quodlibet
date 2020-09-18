@@ -1,4 +1,5 @@
 # Copyright 2017 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,7 +10,7 @@ import sys
 import importlib
 
 
-class RedirectImportHook(object):
+class RedirectImportHook:
     """Import hook which loads packages as sub packages.
 
     e.g. "import raven" will import "quodlibet.packages.raven" even

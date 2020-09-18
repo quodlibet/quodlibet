@@ -25,7 +25,7 @@ class ScanBox(Gtk.HBox):
     """A box for editing the Library's scan directories"""
 
     def __init__(self):
-        super(ScanBox, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.model = model = ObjectStore()
         view = RCMHintedTreeView(model=model)

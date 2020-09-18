@@ -11,7 +11,7 @@ from typing import Optional
 from quodlibet import _, print_d
 
 
-class Order(object):
+class Order:
     """Base class for all play orders
 
     In all methods:
@@ -104,7 +104,7 @@ class OrderRemembered(Order):
     of their previously played songs."""
 
     def __init__(self):
-        super(OrderRemembered, self).__init__()
+        super().__init__()
         self._played = []
 
     def next(self, playlist, iter):

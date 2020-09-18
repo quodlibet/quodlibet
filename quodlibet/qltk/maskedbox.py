@@ -20,7 +20,7 @@ class ConfirmMaskedRemoval(qltk.Message):
         title = _("Are you sure you want to remove all songs?")
         description = _("The selected songs will be removed from the library.")
 
-        super(ConfirmMaskedRemoval, self).__init__(
+        super().__init__(
             Gtk.MessageType.WARNING, parent, title, description,
             Gtk.ButtonsType.NONE)
 
@@ -32,7 +32,7 @@ class ConfirmMaskedRemoval(qltk.Message):
 class MaskedBox(Gtk.HBox):
 
     def __init__(self, library):
-        super(MaskedBox, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.model = model = Gtk.ListStore(object)
         view = RCMHintedTreeView(model=model)

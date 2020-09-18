@@ -32,7 +32,7 @@ class GeventedHTTPTransport(AsyncTransport, HTTPTransport):
 
         self._lock = Semaphore(maximum_outstanding_requests)
 
-        super(GeventedHTTPTransport, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def async_send(self, url, data, headers, success_cb, failure_cb):
         """
@@ -42,7 +42,7 @@ class GeventedHTTPTransport(AsyncTransport, HTTPTransport):
         # read the response since we don't use it.
         self._lock.acquire()
         return gevent.spawn(
-            super(GeventedHTTPTransport, self).send, url, data, headers
+            super().send, url, data, headers
         ).link(lambda x: self._done(x, success_cb, failure_cb))
 
     def _done(self, greenlet, success_cb, failure_cb, *args):

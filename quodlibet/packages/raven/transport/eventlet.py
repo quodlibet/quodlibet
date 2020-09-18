@@ -29,7 +29,7 @@ class EventletHTTPTransport(HTTPTransport):
     def __init__(self, pool_size=100, **kwargs):
         if not has_eventlet:
             raise ImportError('EventletHTTPTransport requires eventlet.')
-        super(EventletHTTPTransport, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def _send_payload(self, payload):
         url, data, headers = payload

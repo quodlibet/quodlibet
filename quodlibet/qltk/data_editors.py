@@ -33,7 +33,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def __init__(self, Prototype, values, filename, title):
         if self.is_not_unique():
             return
-        super(JSONBasedEditor, self).__init__()
+        super().__init__()
         self.Prototype = Prototype
         self.current = None
         self.filename = filename
@@ -265,7 +265,7 @@ class TagListEditor(qltk.Window):
     _HEIGHT = 300
 
     def __init__(self, title, values=None):
-        super(TagListEditor, self).__init__()
+        super().__init__()
         self.use_header_bar()
         self.data = values or []
         self.set_border_width(12)

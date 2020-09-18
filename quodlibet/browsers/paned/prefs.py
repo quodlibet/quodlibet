@@ -32,7 +32,7 @@ class ColumnMode(int):
 
 class ColumnModeSelection(Gtk.VBox):
     def __init__(self, browser):
-        super(ColumnModeSelection, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.browser = browser
         self.buttons = []
 
@@ -77,7 +77,7 @@ class PatternEditor(Gtk.VBox):
     _COMPLEX_PATTERN_EXAMPLE = "<~year|[b]<~year>[/b]|[i]unknown year[/i]>"
 
     def __init__(self):
-        super(PatternEditor, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         self.__headers = headers = {}
         buttons = []
@@ -196,7 +196,7 @@ class PatternEditor(Gtk.VBox):
 
 class PreferencesButton(Gtk.HBox):
     def __init__(self, browser):
-        super(PreferencesButton, self).__init__()
+        super().__init__()
 
         self._menu = menu = Gtk.Menu()
 
@@ -222,7 +222,7 @@ class Preferences(qltk.UniqueWindow):
     def __init__(self, browser):
         if self.is_not_unique():
             return
-        super(Preferences, self).__init__()
+        super().__init__()
 
         self.set_transient_for(qltk.get_top_parent(browser))
         self.set_default_size(350, 300)

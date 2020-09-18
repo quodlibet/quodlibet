@@ -146,11 +146,11 @@ def get_auth_header(protocol, timestamp, client, api_key,
     return 'Sentry %s' % ', '.join('%s=%s' % (k, v) for k, v in header)
 
 
-class memoize(object):
+class memoize:
     """
     Memoize the result of a property call.
 
-    >>> class A(object):
+    >>> class A:
     >>>     @memoize
     >>>     def func(self):
     >>>         return 'foo'

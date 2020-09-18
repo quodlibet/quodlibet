@@ -11,7 +11,7 @@ import collections
 import threading
 
 
-class Logs(object):
+class Logs:
     """Thread safe log store"""
 
     MAX_LOG_SIZE_DEFAULT = 500

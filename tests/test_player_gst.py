@@ -93,7 +93,7 @@ class TGstreamerTagList(TestCase):
 
         # date is abstract, so define our own
         # (might work with pygobject now)
-        class Foo(object):
+        class Foo:
             def to_iso8601_string(self):
                 return "3000-10-2"
         l["date"] = Foo()

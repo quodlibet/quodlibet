@@ -1,5 +1,6 @@
 # Copyright 2006 Joe Wreschnig
 #           2013 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +15,7 @@ from .misc import total_ordering
 
 
 @total_ordering
-class DictMixin(object):
+class DictMixin:
     """Implement the dict API using keys() and __*item__ methods.
 
     Similar to UserDict.DictMixin, this takes a class that defines
@@ -123,7 +124,7 @@ class DictMixin(object):
 class DictProxy(DictMixin):
     def __init__(self, *args, **kwargs):
         self.__dict = {}
-        super(DictProxy, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __getitem__(self, key):
         return self.__dict[key]

@@ -153,7 +153,7 @@ class MP4File(AudioFile):
         if key is None:
             return OK
         else:
-            return super(MP4File, self).can_change(key) and (key in OK)
+            return super().can_change(key) and (key in OK)
 
     def get_images(self):
         images = []

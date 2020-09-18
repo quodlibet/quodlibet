@@ -39,7 +39,7 @@ from quodlibet.util.string.splitters import (split_value, split_title,
     split_people, split_album)
 
 
-class Comment(object):
+class Comment:
     """A summary of a collection of values for one tag"""
 
     def __init__(self, text, have=1, total=1, shared=True):
@@ -194,7 +194,7 @@ class SplitValues(Gtk.ImageMenuItem):
     _order = 0.0
 
     def __init__(self, tag, value):
-        super(SplitValues, self).__init__(
+        super().__init__(
             label=_("Split into _Multiple Values"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
@@ -216,7 +216,7 @@ class SplitDisc(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitDisc, self).__init__(
+        super().__init__(
             label=_("Split Disc out of _Album"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
@@ -240,7 +240,7 @@ class SplitTitle(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitTitle, self).__init__(
+        super().__init__(
             label=_("Split _Version out of Title"), use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
@@ -270,7 +270,7 @@ class SplitPerson(Gtk.ImageMenuItem):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super(SplitPerson, self).__init__(label=self.title, use_underline=True)
+        super().__init__(label=self.title, use_underline=True)
         self.set_image(Gtk.Image.new_from_icon_name(
             Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
         tag_spls = config.gettext("editing", "split_on").split()
@@ -319,7 +319,7 @@ class SplitOriginalArtistFromTitle(SplitPerson):
 class AddTagDialog(Dialog):
 
     def __init__(self, parent, can_change, library):
-        super(AddTagDialog, self).__init__(
+        super().__init__(
             title=_("Add a Tag"), transient_for=qltk.get_top_parent(parent),
             use_header_bar=True)
         self.set_border_width(6)
@@ -407,7 +407,7 @@ class AddTagDialog(Dialog):
         self.show()
         self.__val.set_activates_default(True)
         self.__tag.grab_focus()
-        return super(AddTagDialog, self).run()
+        return super().run()
 
 
 class EditTagsPluginHandler(EditingPluginHandler):
@@ -415,7 +415,7 @@ class EditTagsPluginHandler(EditingPluginHandler):
     Kind = EditTagsPlugin
 
 
-class ListEntry(object):
+class ListEntry:
     """Holds a Comment and some state for the editing process"""
 
     tag = None
@@ -440,7 +440,7 @@ class EditTags(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super(EditTags, self).__init__(spacing=12)
+        super().__init__(spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
 

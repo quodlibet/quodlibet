@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +12,7 @@ from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.models import ObjectModelSort
 
 
-class AlbumItem(object):
+class AlbumItem:
 
     cover = None
     scanned = False
@@ -45,7 +46,7 @@ class AlbumItem(object):
         return repr(self.album)
 
 
-class AlbumModelMixin(object):
+class AlbumModelMixin:
 
     def get_items(self, paths):
         items = []
@@ -66,7 +67,7 @@ class AlbumModelMixin(object):
 class AlbumModel(ObjectStore, AlbumModelMixin):
 
     def __init__(self, library):
-        super(AlbumModel, self).__init__()
+        super().__init__()
         self.__library = library
 
         albums = library.albums

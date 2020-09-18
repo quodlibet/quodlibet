@@ -21,7 +21,7 @@ class PlaylistMenu(Gtk.Menu):
     }
 
     def __init__(self, songs, playlists):
-        super(PlaylistMenu, self).__init__()
+        super().__init__()
         i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
         i.connect('activate', self._on_new_playlist_activate, songs)
         self.append(i)
@@ -88,7 +88,7 @@ class ConfirmMultipleSongsAction(qltk.Message):
                         len(songs)) % len(songs)
 
         title = _("Confirm action for playlist \"%s\"") % playlist.name
-        super(ConfirmMultipleSongsAction, self).__init__(
+        super().__init__(
             Gtk.MessageType.QUESTION, parent, title, desc,
             Gtk.ButtonsType.NONE)
 

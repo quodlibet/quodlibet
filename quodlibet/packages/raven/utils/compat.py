@@ -69,7 +69,7 @@ except NameError:
 if PY3:
     Iterator = object
 else:
-    class Iterator(object):
+    class Iterator:
 
         def next(self):
             return type(self).__next__(self)

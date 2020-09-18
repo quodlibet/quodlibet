@@ -26,7 +26,7 @@ def event_payload_considered_equal(a, b):
     )
 
 
-class BreadcrumbBuffer(object):
+class BreadcrumbBuffer:
 
     def __init__(self, limit=100):
         self.buffer = []

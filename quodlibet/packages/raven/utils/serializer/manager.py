@@ -16,7 +16,7 @@ __all__ = ('register', 'transform')
 logger = logging.getLogger('sentry.errors.serializer')
 
 
-class SerializationManager(object):
+class SerializationManager:
     logger = logger
 
     def __init__(self):
@@ -35,7 +35,7 @@ class SerializationManager(object):
         return serializer
 
 
-class Serializer(object):
+class Serializer:
     logger = logger
 
     def __init__(self, manager):

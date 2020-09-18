@@ -26,7 +26,7 @@ class BigCenteredImage(qltk.Window):
     """
 
     def __init__(self, title, fileobj, parent, scale=0.5):
-        super(BigCenteredImage, self).__init__(type=Gtk.WindowType.POPUP)
+        super().__init__(type=Gtk.WindowType.POPUP)
         self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
 
         assert parent
@@ -222,7 +222,7 @@ class CoverImage(Gtk.EventBox):
     }
 
     def __init__(self, resize=False, size=70, song=None):
-        super(CoverImage, self).__init__()
+        super().__init__()
         self.set_visible_window(False)
         self.__song = None
         self.__file = None

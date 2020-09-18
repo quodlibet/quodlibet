@@ -18,7 +18,7 @@ class WavpackFile(APEv2File):
     def __init__(self, filename):
         with translate_errors():
             audio = WavPack(filename)
-        super(WavpackFile, self).__init__(filename, audio)
+        super().__init__(filename, audio)
         self["~#length"] = audio.info.length
         self["~#channels"] = audio.info.channels
         self["~#samplerate"] = audio.info.sample_rate

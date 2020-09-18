@@ -14,7 +14,7 @@ from quodlibet.qltk.models import ObjectModelSort, ObjectTreeStore
 from quodlibet.util import cmp
 
 
-class _TObjectStoreMixin(object):
+class _TObjectStoreMixin:
 
     Store = None
 
@@ -230,7 +230,7 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         self.assertEqual(result, cmp("alice", "bob"))
 
 
-class _TObjectTreeStoreMixin(object):
+class _TObjectTreeStoreMixin:
 
     Store = None
 

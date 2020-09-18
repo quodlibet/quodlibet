@@ -16,7 +16,7 @@ from quodlibet.util import print_d, format_time
 from quodlibet import config
 
 
-class Equalizer(object):
+class Equalizer:
     _eq_values: List[int] = []
 
     @property
@@ -98,7 +98,7 @@ class BasePlayer(GObject.GObject, Equalizer):
     }
 
     def __init__(self, *args, **kwargs):
-        super(BasePlayer, self).__init__()
+        super().__init__()
 
     def destroy(self):
         """Free resources"""

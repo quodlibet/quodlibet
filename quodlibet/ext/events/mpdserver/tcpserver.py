@@ -19,7 +19,7 @@ class ServerError(Exception):
     pass
 
 
-class BaseTCPServer(object):
+class BaseTCPServer:
 
     def __init__(self, port, connection_class, debug=False):
         """port -- IP port
@@ -120,7 +120,7 @@ class BaseTCPServer(object):
         tcp_conn.handle_init(self)
 
 
-class BaseTCPConnection(object):
+class BaseTCPConnection:
     """Abstract base class for TCP connections.
 
     Subclasses need to implement the handle_*() can_*() methods.

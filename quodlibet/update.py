@@ -86,7 +86,7 @@ def fetch_versions(build_type, timeout=5.0):
 class UpdateDialog(Dialog):
 
     def __init__(self, parent):
-        super(UpdateDialog, self).__init__(
+        super().__init__(
             title=_("Checking for Updates"), use_header_bar=True,
             modal=True)
 
@@ -118,7 +118,7 @@ class UpdateDialog(Dialog):
         self.connect("response", self._on_response, cancel)
         call_async(do_fetch_versions, cancel, self._on_result)
 
-        return super(UpdateDialog, self).run()
+        return super().run()
 
     def _on_result(self, args):
         if args is None or not args[0]:

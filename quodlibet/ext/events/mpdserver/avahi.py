@@ -22,7 +22,7 @@ def alternative_service_name(name):
     return "%s#%d" % (name, num + 1)
 
 
-class AvahiPublishFlags(object):
+class AvahiPublishFlags:
     NONE = 0
     UNIQUE = 1 << 0
     NO_PROBE = 1 << 1
@@ -35,7 +35,7 @@ class AvahiPublishFlags(object):
     USE_MULTICAST = 1 << 8
 
 
-class AvahiEntryGroupState(object):
+class AvahiEntryGroupState:
     UNCOMMITED = 0
     REGISTERING = 1
     ESTABLISHED = 2
@@ -43,7 +43,7 @@ class AvahiEntryGroupState(object):
     FAILURE = 4
 
 
-class AvahiServerState(object):
+class AvahiServerState:
     INVALID = 0
     REGISTERING = 1
     RUNNING = 2
@@ -51,7 +51,7 @@ class AvahiServerState(object):
     FAILURE = 4
 
 
-class AvahiProtocol(object):
+class AvahiProtocol:
     INET = 0
     INET6 = 1
     UNSPEC = -1
@@ -72,7 +72,7 @@ def ignored(*exceptions):
         pass
 
 
-class AvahiService(object):
+class AvahiService:
     """Register a single network service using zeroconf/avahi
 
     service = AvahiService()

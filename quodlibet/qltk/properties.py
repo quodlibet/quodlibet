@@ -26,7 +26,7 @@ from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.util import connect_destroy, cmp
 
 
-class _ListEntry(object):
+class _ListEntry:
 
     def __init__(self, song):
         self.song = song
@@ -42,7 +42,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
     }
 
     def __init__(self, library, songs, parent=None):
-        super(SongProperties, self).__init__(dialog=False)
+        super().__init__(dialog=False)
         self.set_transient_for(qltk.get_top_parent(parent))
 
         default_width = 600

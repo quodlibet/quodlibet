@@ -19,7 +19,7 @@ class MPCFile(APEv2File):
         with translate_errors():
             audio = Musepack(filename)
 
-        super(MPCFile, self).__init__(filename, audio)
+        super().__init__(filename, audio)
         self["~#length"] = audio.info.length
         self["~#bitrate"] = int(audio.info.bitrate / 1000)
         self["~#channels"] = audio.info.channels

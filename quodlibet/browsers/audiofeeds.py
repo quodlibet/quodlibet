@@ -247,13 +247,13 @@ class Feed(list):
 
 class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
-        super(AddFeedDialog, self).__init__(
+        super().__init__(
             qltk.get_top_parent(parent), _("New Feed"),
             _("Enter the location of an audio feed:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
     def run(self, text='', test=False):
-        uri = super(AddFeedDialog, self).run(text=text, test=test)
+        uri = super().run(text=text, test=test)
         if uri:
             if not isinstance(uri, str):
                 uri = uri.decode('utf-8')
@@ -390,7 +390,7 @@ class AudioFeeds(Browser):
         GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
 
     def __init__(self, library):
-        super(AudioFeeds, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self.__view = view = AllTreeView()

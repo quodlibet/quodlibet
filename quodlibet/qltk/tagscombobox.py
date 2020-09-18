@@ -12,7 +12,7 @@ from quodlibet.util import tag
 from quodlibet.util.tags import USER_TAGS
 
 
-class _TagsCombo(object):
+class _TagsCombo:
     __tags = sorted(USER_TAGS)
 
     def _fill_model(self, can_change):
@@ -45,7 +45,7 @@ class TagsComboBox(Gtk.ComboBox, _TagsCombo):
     The 'tag' attribute is the currently chosen tag."""
 
     def __init__(self, can_change=None):
-        super(TagsComboBox, self).__init__(model=Gtk.ListStore(str, str))
+        super().__init__(model=Gtk.ListStore(str, str))
         self._fill_model(can_change)
         self.set_active(0)
 
@@ -62,7 +62,7 @@ class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
     The 'tag' attribute is the currently chosen tag."""
 
     def __init__(self, can_change=None, tooltip_markup=None):
-        super(TagsComboBoxEntry, self).__init__(
+        super().__init__(
             model=Gtk.ListStore(str, str),
             entry_text_column=0,
             has_entry=True)
@@ -71,7 +71,7 @@ class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
             self.get_child().set_tooltip_markup(tooltip_markup)
 
     def _fill_model(self, can_change):
-        super(TagsComboBoxEntry, self)._fill_model(can_change)
+        super()._fill_model(can_change)
         comp = Gtk.EntryCompletion()
         comp.set_model(self.get_model())
         comp.set_text_column(0)

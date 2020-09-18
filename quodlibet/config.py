@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2017 Nick Boultbee
+#           2009-2020 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
 #
@@ -370,7 +370,7 @@ def state(arg):
     return _config.getboolean("settings", arg)
 
 
-class RatingsPrefs(object):
+class RatingsPrefs:
     """
     Models Ratings settings as configured by the user, with caching.
     """
@@ -460,7 +460,7 @@ class DurationFormat(str):
     STANDARD, FULL = "standard", "text-full"
 
 
-class DurationFormatPref(object):
+class DurationFormatPref:
     @property
     def format(self):
         raw = get("display", "duration_format")

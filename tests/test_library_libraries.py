@@ -46,7 +46,7 @@ class AlbumSong(AudioFile):
     """A mock AudioFile belong to one of three albums,
     based on a single number"""
     def __init__(self, num, album=None):
-        super(AlbumSong, self).__init__()
+        super().__init__()
         self["~filename"] = fsnative(u"file_%d.mp3" % (num + 1))
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"

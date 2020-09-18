@@ -94,11 +94,11 @@ class IRFile(RemoteFile):
         return base_call(key, *args, **kwargs)
 
     def __call__(self, key, *args, **kwargs):
-        base_call = super(IRFile, self).__call__
+        base_call = super().__call__
         return self.__get(base_call, key, *args, **kwargs)
 
     def get(self, key, *args, **kwargs):
-        base_call = super(IRFile, self).get
+        base_call = super().get
         return self.__get(base_call, key, *args, **kwargs)
 
     def write(self):
@@ -110,7 +110,7 @@ class IRFile(RemoteFile):
         if "title" in self:
             title = self["title"]
             del self["title"]
-        dump = super(IRFile, self).to_dump()
+        dump = super().to_dump()
         if title is not None:
             self["title"] = title
 
@@ -354,7 +354,7 @@ def parse_taglist(data):
 
 class AddNewStation(GetStringDialog):
     def __init__(self, parent):
-        super(AddNewStation, self).__init__(
+        super().__init__(
             parent, _("New Station"),
             _("Enter the location of an Internet radio station:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
@@ -368,7 +368,7 @@ class AddNewStation(GetStringDialog):
                 return line
 
 
-class GenreFilter(object):
+class GenreFilter:
     STAR = ["genre", "organization"]
 
     # This probably needs improvements
@@ -440,7 +440,7 @@ class CloseButton(Gtk.Button):
         image = Gtk.Image(visible=True, can_focus=False,
                           icon_name="window-close-symbolic")
 
-        super(CloseButton, self).__init__(
+        super().__init__(
             visible=False, can_focus=True, image=image,
             relief=Gtk.ReliefStyle.NONE, valign=Gtk.Align.CENTER)
 
@@ -460,7 +460,7 @@ class QuestionBar(Gtk.InfoBar):
     RESPONSE_LOAD = 1
 
     def __init__(self):
-        super(QuestionBar, self).__init__()
+        super().__init__()
         self.connect("response", self.__response)
         self.set_message_type(Gtk.MessageType.QUESTION)
 
@@ -545,7 +545,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             self._destroy()
 
     def __init__(self, library):
-        super(InternetRadio, self).__init__(spacing=12)
+        super().__init__(spacing=12)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         if not self.instances():

@@ -145,7 +145,7 @@ class Notebook(Gtk.Notebook):
     a widget) is used."""
 
     def __init__(self, *args, **kwargs):
-        super(Notebook, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.connect("key-press-event", self.__key_pressed)
 
     def __key_pressed(self, widget, event):
@@ -203,7 +203,7 @@ class Notebook(Gtk.Notebook):
 
         if not isinstance(label, Gtk.Widget):
             label = Gtk.Label(label=label)
-        super(Notebook, self).append_page(page, label)
+        super().append_page(page, label)
 
 
 def Frame(label, child=None):
@@ -252,7 +252,7 @@ class Align(Gtk.Alignment):
         left_padding = border + left
         right_padding = border + right
 
-        super(Align, self).__init__(xalign=xalign, xscale=xscale,
+        super().__init__(xalign=xalign, xscale=xscale,
             yalign=yalign, yscale=yscale, bottom_padding=bottom_padding,
             top_padding=top_padding, left_padding=left_padding,
             right_padding=right_padding)
@@ -321,11 +321,11 @@ def ToggleButton(label, icon_name=None, size=Gtk.IconSize.BUTTON):
     return _Button(Gtk.ToggleButton, label, icon_name, size)
 
 
-class _SmallImageButton(object):
+class _SmallImageButton:
     """A button for images with less padding"""
 
     def __init__(self, **kwargs):
-        super(_SmallImageButton, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         self.set_size_request(26, 26)
         add_css(self, """
@@ -383,7 +383,7 @@ def SymbolicIconImage(name, size, fallbacks=None):
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
 
     def __init__(self, *args, **kwargs):
-        super(CellRendererPixbuf, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if gtk_version < (3, 16):
             # was deprecated in 3.16 and defaults to True now. Since it was
             # False before force it here so we have the same behavior in all
@@ -421,7 +421,7 @@ class WebImage(Gtk.Image):
             height (int): a height to reserve for the image or -1
         """
 
-        super(WebImage, self).__init__()
+        super().__init__()
 
         self._cancel = Cancellable()
         call_async(self._fetch_image, self._cancel, self._finished, (url,))
@@ -459,7 +459,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
     """A ToggleButton which changes the foreground color when active"""
 
     def __init__(self, *args, **kwargs):
-        super(HighlightToggleButton, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._provider = None
         self._color = ""
         self._dummy = Gtk.ToggleButton()

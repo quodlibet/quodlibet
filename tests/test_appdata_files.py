@@ -34,7 +34,7 @@ def is_too_old_appstream_util_version():
     return get_appstream_util_version() < (0, 7, 0)
 
 
-class _TAppDataFileMixin(object):
+class _TAppDataFileMixin:
     PATH = None
 
     def test_filename(self):

@@ -371,7 +371,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         sys.stderr, self.stderr = self.stderr, sys.stderr
 
 
-class OutFile(object):
+class OutFile:
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
 

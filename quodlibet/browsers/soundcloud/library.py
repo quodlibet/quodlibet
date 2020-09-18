@@ -17,7 +17,7 @@ class SoundcloudLibrary(SongLibrary):
     STAR = ["artist", "title", "genre", "tags"]
 
     def __init__(self, client, player=None):
-        super(SoundcloudLibrary, self).__init__("Soundcloud")
+        super().__init__("Soundcloud")
         self.client = client
         self.client.connect('songs-received', self._on_songs_received)
         self.client.connect('comments-received', self._on_comments_received)
@@ -72,7 +72,7 @@ class SoundcloudLibrary(SongLibrary):
                        % (track_id, [s.track_id for s in self.values()]))
 
     def _changed(self, items):
-        super(SoundcloudLibrary, self)._changed(items)
+        super()._changed(items)
         # We should ask the AudioFile subclass to write what it can ASAP
         for item in items:
             item.write()
@@ -87,7 +87,7 @@ class SoundcloudFile(RemoteFile):
     format = "Remote Soundcloud File"
 
     def __init__(self, uri, track_id, favorite=False, client=None):
-        super(SoundcloudFile, self).__init__(uri)
+        super().__init__(uri)
         self.client = client
         self["soundcloud_track_id"] = track_id
         self.favorite = favorite

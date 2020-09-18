@@ -39,7 +39,7 @@ class LexerError(error):
     pass
 
 
-class PatternLexeme(object):
+class PatternLexeme:
     _reverse = {OPEN: "OPEN", CLOSE: "CLOSE", TEXT: "TEXT", COND: "COND",
                 EOF: "EOF"}
 
@@ -48,7 +48,7 @@ class PatternLexeme(object):
         self.lexeme = lexeme
 
     def __repr__(self):
-        return (super(PatternLexeme, self).__repr__().split()[0] +
+        return (super().__repr__().split()[0] +
                 " type=" + repr(self.type) + " (" +
                 str(self._reverse[self.type]) +
                 "), lexeme=" + repr(self.lexeme) + ">")
@@ -77,7 +77,7 @@ class PatternLexer(Scanner):
             return iter(s[0] + [PatternLexeme(EOF, "")])
 
 
-class PatternNode(object):
+class PatternNode:
     def __init__(self):
         self.children = []
 
@@ -85,7 +85,7 @@ class PatternNode(object):
         return "Pattern(%s)" % (", ".join(map(repr, self.children)))
 
 
-class TextNode(object):
+class TextNode:
     def __init__(self, text):
         self.text = text
 
@@ -93,7 +93,7 @@ class TextNode(object):
         return "Text(\"%s\")" % self.text
 
 
-class ConditionNode(object):
+class ConditionNode:
     def __init__(self, expr, ifcase, elsecase):
         self.expr = expr
         self.ifcase = ifcase
@@ -104,7 +104,7 @@ class ConditionNode(object):
         return "Condition(expression: \"%s\", if: %s, else: %s)" % (t, i, e)
 
 
-class TagNode(object):
+class TagNode:
     def __init__(self, tag):
         self.tag = tag
 
@@ -112,7 +112,7 @@ class TagNode(object):
         return "Tag(\"%s\")" % self.tag
 
 
-class PatternParser(object):
+class PatternParser:
     def __init__(self, tokens):
         self.tokens = iter(tokens)
         self.lookahead = next(self.tokens)
@@ -181,7 +181,7 @@ class PatternParser(object):
             self.lookahead = PatternLexeme(EOF, "")
 
 
-class PatternFormatter(object):
+class PatternFormatter:
     _format = None
     _post = None
     _text = None
@@ -207,7 +207,7 @@ class PatternFormatter(object):
         def list_separate(self, key):
             return [u""]
 
-    class SongProxy(object):
+    class SongProxy:
         def __init__(self, realsong, formatter):
             self.__song = realsong
             self.__formatter = formatter
@@ -270,7 +270,7 @@ class PatternFormatter(object):
     __mod__ = format
 
 
-class PatternCompiler(object):
+class PatternCompiler:
     def __init__(self, root):
         self.__root = root.node
 

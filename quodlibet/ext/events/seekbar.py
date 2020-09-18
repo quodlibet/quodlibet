@@ -22,7 +22,7 @@ from quodlibet.util import connect_destroy
 class SeekBar(Gtk.Box):
 
     def __init__(self, player, library):
-        super(SeekBar, self).__init__()
+        super().__init__()
 
         self._elapsed_label = TimeLabel()
         self._remaining_label = TimeLabel()

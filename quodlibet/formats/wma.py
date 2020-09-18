@@ -151,7 +151,7 @@ class WMAFile(AudioFile):
         if key is None:
             return OK
         else:
-            return super(WMAFile, self).can_change(key) and (key in OK)
+            return super().can_change(key) and (key in OK)
 
     def get_images(self):
         images = []

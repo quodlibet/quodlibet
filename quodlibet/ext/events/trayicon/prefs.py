@@ -29,7 +29,7 @@ class Preferences(Gtk.VBox):
     """A small window to configure the tray icon's tooltip."""
 
     def __init__(self):
-        super(Preferences, self).__init__(spacing=12)
+        super().__init__(spacing=12)
 
         self.set_border_width(6)
 

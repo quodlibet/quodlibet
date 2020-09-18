@@ -160,7 +160,7 @@ class XSMPError(Exception):
     pass
 
 
-class XSMPSource(object):
+class XSMPSource:
     """Dispatches SM messages in the glib mainloop"""
 
     def __init__(self):
@@ -224,7 +224,7 @@ class XSMPClient(GObject.Object):
     }
 
     def __init__(self):
-        super(XSMPClient, self).__init__()
+        super().__init__()
 
         self._source = None
         self._callbacks = SmcCallbacks()

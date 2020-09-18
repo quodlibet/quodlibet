@@ -31,7 +31,7 @@ class WAVEFile(AudioFile):
         self.sanitize(filename)
 
     def sanitize(self, filename):
-        super(WAVEFile, self).sanitize(filename)
+        super().sanitize(filename)
         self["title"] = fsn2text(os.path.splitext(
             os.path.basename(self["~filename"]))[0])
 

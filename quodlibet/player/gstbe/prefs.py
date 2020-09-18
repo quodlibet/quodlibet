@@ -19,7 +19,7 @@ from quodlibet.util import connect_obj
 
 class GstPlayerPreferences(Gtk.VBox):
     def __init__(self, player, debug=False):
-        super(GstPlayerPreferences, self).__init__(spacing=6)
+        super().__init__(spacing=6)
 
         e = UndoEntry()
         e.set_tooltip_text(_("The GStreamer output pipeline used for "

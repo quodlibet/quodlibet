@@ -315,7 +315,7 @@ if sys.platform == 'win32':
     BACKGROUND_RED = 0x0040
     BACKGROUND_RED = 0x0040
 
-    class COMMethod(object):
+    class COMMethod:
 
         def __init__(self, name, offset, restype, argtypes):
             self._name = name

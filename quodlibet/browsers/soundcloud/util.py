@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@ EPOCH = datetime(1970, 1, 1)
 SITE_URL = "https://soundcloud.com"
 
 
-class Wrapper(object):
+class Wrapper:
     """Object-like wrapper for read-only dictionaries"""
 
     def __init__(self, data):
@@ -81,7 +81,7 @@ class FilterType(int):
 
 class EnterAuthCodeDialog(GetStringDialog):
     def __init__(self, parent):
-        super(EnterAuthCodeDialog, self).__init__(
+        super().__init__(
             parent,
             _("Soundcloud authorisation"),
             _("Enter Soundcloud auth code:"),
