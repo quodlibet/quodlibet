@@ -52,7 +52,7 @@ class Version(tuple):
             self.name, self, Version("", *version_tuple), message))
 
 
-class MinVersions(object):
+class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
     PYTHON3 = Version("Python3", 3, 6)

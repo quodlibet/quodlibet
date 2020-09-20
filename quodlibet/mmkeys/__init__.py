@@ -55,7 +55,7 @@ def find_active_backend():
             return backend
 
 
-class MMKeysHandler(object):
+class MMKeysHandler:
     """Manages multiple keybinding backends and translates the generated
     events to actions on the player backend.
     """

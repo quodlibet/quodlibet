@@ -64,7 +64,7 @@ class StripWindowsIncompat(FilterCheckButton):
     _order = 1.1
 
     def __init__(self):
-        super(StripWindowsIncompat, self).__init__()
+        super().__init__()
         # If on Windows, force this to be inactive (and hidden)
         if os.name == 'nt':
             self.set_active(False)
@@ -111,7 +111,7 @@ class RenameFilesPluginHandler(EditingPluginHandler):
     Kind = RenameFilesPlugin
 
 
-class Entry(object):
+class Entry:
 
     def __init__(self, song):
         self.song = song
@@ -136,7 +136,7 @@ class RenameFiles(Gtk.VBox):
         PluginManager.instance.register_handler(cls.handler)
 
     def __init__(self, parent, library):
-        super(RenameFiles, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.__skip_interactive = False
         self.set_border_width(12)
 

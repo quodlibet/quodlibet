@@ -12,7 +12,7 @@ from ._base import SessionClient, SessionError
 class XSMPSessionClient(SessionClient):
 
     def __init__(self):
-        super(XSMPSessionClient, self).__init__()
+        super().__init__()
         self._client = None
 
     def open(self, app):

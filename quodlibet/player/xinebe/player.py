@@ -29,7 +29,7 @@ from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
     xine_event_new_queue, xine_event_create_listener_thread
 
 
-class XineHandle(object):
+class XineHandle:
     def __init__(self):
         _xine = xine_new()
         xine_config_load(_xine, xine_get_homedir() + b"/.xine/config")
@@ -70,7 +70,7 @@ class XinePlaylistPlayer(BasePlayer):
     def __init__(self, driver, librarian):
         """May raise PlayerError"""
 
-        super(XinePlaylistPlayer, self).__init__()
+        super().__init__()
         self.name = "xine"
         self.version_info = "xine-lib: " + decode(xine_get_version_string())
         self._volume = 1.0
@@ -300,7 +300,7 @@ class XinePlaylistPlayer(BasePlayer):
         self.notify("seekable")
 
     def setup(self, playlist, song, seek_pos):
-        super(XinePlaylistPlayer, self).setup(playlist, song, seek_pos)
+        super().setup(playlist, song, seek_pos)
         # xine's declining to seek so soon after startup; try again in 100ms
         if seek_pos:
             GLib.timeout_add(100, self.seek, seek_pos)

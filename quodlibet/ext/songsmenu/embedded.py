@@ -30,7 +30,7 @@ class EditEmbedded(SongsMenuPlugin):
     """if any song supports editing, we are active"""
 
     def __init__(self, songs, *args, **kwargs):
-        super(EditEmbedded, self).__init__(songs, *args, **kwargs)
+        super().__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
         self._init_submenu_items(self.__menu, songs)
         self.set_submenu(self.__menu)

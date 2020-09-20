@@ -12,7 +12,7 @@ from gi.repository import Gst, GObject
 from quodlibet.util import connect_obj
 
 
-class FingerPrintResult(object):
+class FingerPrintResult:
 
     def __init__(self, song, chromaprint, length):
         self.song = song
@@ -21,10 +21,10 @@ class FingerPrintResult(object):
         self.length = length
 
 
-class FingerPrintPipeline(object):
+class FingerPrintPipeline:
 
     def __init__(self):
-        super(FingerPrintPipeline, self).__init__()
+        super().__init__()
         self._song = None
         self._setup_pipe()
 
@@ -159,7 +159,7 @@ class FingerPrintPool(GObject.GObject):
         }
 
     def __init__(self, max_workers=None):
-        super(FingerPrintPool, self).__init__()
+        super().__init__()
 
         if max_workers is None:
             max_workers = int(multiprocessing.cpu_count() * 1.5)

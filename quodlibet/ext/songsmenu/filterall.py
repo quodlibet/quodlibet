@@ -16,7 +16,7 @@ from quodlibet.qltk import Window, Icons, Button
 
 class SelectionWindow(Window):
     def __init__(self, filters, browser, parent=None):
-        super(SelectionWindow, self).__init__()
+        super().__init__()
         self.set_border_width(10)
         self.set_title(FilterAll.PLUGIN_NAME)
         self.set_default_size(200, 250)

@@ -49,7 +49,7 @@ class PatternEditor(Gtk.HBox):
     COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year"]
 
     def __init__(self):
-        super(PatternEditor, self).__init__(spacing=12)
+        super().__init__(spacing=12)
 
         self.__headers = headers = {}
         buttons = []
@@ -176,7 +176,7 @@ class Preferences(qltk.UniqueWindow):
     def __init__(self, browser):
         if self.is_not_unique():
             return
-        super(Preferences, self).__init__()
+        super().__init__()
 
         self._browser = browser
 

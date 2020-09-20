@@ -63,9 +63,9 @@ class TSongsMenuPlugins(TestCase):
             file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
         for f in (funcs or []):
             if f in ["__init__"]:
-                file.write("%sdef %s(self, *args): super(%s, self).__init__("
+                file.write("%sdef %s(self, *args): super().__init__("
                            "*args); raise Exception(\"as expected\")\n"
-                           % (indent, f, name))
+                           % (indent, f))
             else:
                 file.write("%sdef %s(*args): return args\n" % (indent, f))
         file.flush()
@@ -185,7 +185,7 @@ class FakeSongsMenuPlugin(SongsMenuPlugin):
     MAX_INVOCATIONS = 50
 
     def __init__(self, songs, library):
-        super(FakeSongsMenuPlugin, self).__init__(songs, library)
+        super().__init__(songs, library)
         self.total = 0
 
     def plugin_song(self, song):

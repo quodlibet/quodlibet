@@ -20,7 +20,7 @@ from raven.transport.tornado import TornadoHTTPTransport
 from raven.utils import urlparse
 
 
-class TransportRegistry(object):
+class TransportRegistry:
     def __init__(self, transports=None):
         # setup a default list of senders
         self._schemes = {}

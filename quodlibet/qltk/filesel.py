@@ -191,7 +191,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         """
 
         model = ObjectTreeStore()
-        super(DirectoryTree, self).__init__(model=model)
+        super().__init__(model=model)
 
         if initial is not None:
             assert isinstance(initial, fsnative)
@@ -501,7 +501,7 @@ class FileSelector(Paned):
         folders -- list of shown folders in the directory tree
         """
 
-        super(FileSelector, self).__init__(
+        super().__init__(
             orientation=Gtk.Orientation.VERTICAL)
         self.__filter = filter
 
@@ -670,7 +670,7 @@ class MainFileSelector(FileSelector):
 
     def __init__(self, initial=None):
         folders = _get_main_folders()
-        super(MainFileSelector, self).__init__(
+        super().__init__(
             initial, filesel_filter, folders=folders)
 
 
@@ -690,5 +690,5 @@ class MainDirectoryTree(DirectoryTree):
         if main:
             folders += main
 
-        super(MainDirectoryTree, self).__init__(
+        super().__init__(
             initial=initial, folders=folders)

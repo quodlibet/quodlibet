@@ -13,7 +13,7 @@ from quodlibet.qltk import Icons
 from gi.repository import Gtk
 
 
-class UserInterfacePlugin(object):
+class UserInterfacePlugin:
     """Plugins that provide a (Gtk+ Widget)
     to display as a side bar (currently) in the main Quod Libet Window.
 
@@ -78,7 +78,7 @@ class MenuItemPlugin(Gtk.ImageMenuItem):
 
     def __init__(self):
         label = self.PLUGIN_NAME + ("…" if self.REQUIRES_ACTION else "")
-        super(Gtk.ImageMenuItem, self).__init__(label=label)
+        super().__init__(label=label)
         self.__set_icon()
         self.__initialized = True
 

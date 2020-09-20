@@ -11,7 +11,7 @@ from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.qltk import Icons
 
 
-class QueryPlugin(object):
+class QueryPlugin:
     """
     Query plugins provide extensions to the search query syntax used in '@'
     queries, like '@(name: body)'

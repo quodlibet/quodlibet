@@ -502,7 +502,7 @@ def enqueue(songs):
         app.window.playlist.enqueue(songs)
 
 
-class ThemeOverrider(object):
+class ThemeOverrider:
     """Allows registering global Gtk.StyleProviders for a specific theme.
     They get activated when the theme gets active and removed when the theme
     changes to something else.

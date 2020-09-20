@@ -25,7 +25,7 @@ def get_group_by_dir():
     return config.getboolean("plugins", "fingerprint_group_by_dir", True)
 
 
-class GateKeeper(object):
+class GateKeeper:
 
     def __init__(self, requests_per_sec):
         self._period = 1 / float(requests_per_sec)

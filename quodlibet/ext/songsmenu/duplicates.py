@@ -124,7 +124,7 @@ class DuplicateSongsView(RCMHintedTreeView):
                 model.add_to_existing_group(key, song)
 
     def __init__(self, model):
-        super(DuplicateSongsView, self).__init__(model)
+        super().__init__(model)
         connect_obj(self, 'row-activated',
                             self.__select_song, app.player)
         # Selecting multiple is a nice feature it turns out.
@@ -224,7 +224,7 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     def remove(self, itr):
         if self.__iter and self[itr].path == self[self.__iter].path:
             self.__iter = None
-        super(DuplicatesTreeModel, self).remove(itr)
+        super().remove(itr)
 
     def get(self):
         return [row[0] for row in self]
@@ -260,7 +260,7 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         return not len(self)
 
     def __init__(self):
-        super(DuplicatesTreeModel, self).__init__(
+        super().__init__(
             object, str, str, str, str, str, str, str)
 
 
@@ -285,7 +285,7 @@ class DuplicateDialog(Gtk.Window):
         songs_text = numeric_phrase("%d duplicate group",
                                     "%d duplicate groups",
                                     len(model))
-        super(DuplicateDialog, self).__init__()
+        super().__init__()
         self.set_destroy_with_parent(True)
         self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME,
                                                  songs_text))

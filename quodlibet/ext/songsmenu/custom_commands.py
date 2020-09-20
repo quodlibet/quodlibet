@@ -235,7 +235,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         return coms
 
     def __init__(self, *args, **kwargs):
-        super(CustomCommands, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         pl_mode = hasattr(self, '_playlists') and bool(len(self._playlists))
         self.com_index = None
         self.unique_only = False

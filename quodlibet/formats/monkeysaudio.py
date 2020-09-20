@@ -17,7 +17,7 @@ class MonkeysAudioFile(APEv2File):
     def __init__(self, filename):
         with translate_errors():
             audio = MonkeysAudio(filename)
-        super(MonkeysAudioFile, self).__init__(filename, audio)
+        super().__init__(filename, audio)
         self["~#length"] = int(audio.info.length)
         self["~#channels"] = audio.info.channels
         self["~#samplerate"] = audio.info.sample_rate

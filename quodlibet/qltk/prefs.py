@@ -137,7 +137,7 @@ class PreferencesWindow(UniqueWindow):
                 vbox.pack_start(b, True, True, 0)
                 return vbox
 
-            super(PreferencesWindow.SongList, self).__init__(spacing=12)
+            super().__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Song List")
             self.pack_start(create_behaviour_frame(), False, True, 0)
@@ -282,7 +282,7 @@ class PreferencesWindow(UniqueWindow):
                 # Translators: The heading of the preference group, no action
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 
-            super(PreferencesWindow.Browsers, self).__init__(spacing=12)
+            super().__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Browsers")
             self.pack_start(create_search_frame(), False, True, 0)
@@ -356,7 +356,7 @@ class PreferencesWindow(UniqueWindow):
         name = "playback"
 
         def __init__(self):
-            super(PreferencesWindow.Player, self).__init__(spacing=12)
+            super().__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Playback")
 
@@ -661,7 +661,7 @@ class PreferencesWindow(UniqueWindow):
             return vbox
 
         def __init__(self):
-            super(PreferencesWindow.Tagging, self).__init__(spacing=12)
+            super().__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Tags")
             self._songs = []
@@ -690,7 +690,7 @@ class PreferencesWindow(UniqueWindow):
         name = "library"
 
         def __init__(self):
-            super(PreferencesWindow.Library, self).__init__(spacing=12)
+            super().__init__(spacing=12)
             self.set_border_width(12)
             self.title = _("Library")
 
@@ -739,7 +739,7 @@ class PreferencesWindow(UniqueWindow):
     def __init__(self, parent, open_page=None):
         if self.is_not_unique():
             return
-        super(PreferencesWindow, self).__init__()
+        super().__init__()
         self.current_scan_dirs = get_scan_dirs()
         self.set_title(_("Preferences"))
         self.set_resizable(False)

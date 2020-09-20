@@ -120,7 +120,7 @@ value="false"/>
         self.__seek_sig = app.player.connect("seek", self.__seeked)
 
     def remove_from_connection(self, *arg, **kwargs):
-        super(MPRIS2, self).remove_from_connection(*arg, **kwargs)
+        super().remove_from_connection(*arg, **kwargs)
 
         player_options = app.player_options
         player_options.disconnect(self.__repeat_id)

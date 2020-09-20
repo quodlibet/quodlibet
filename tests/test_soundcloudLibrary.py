@@ -67,7 +67,7 @@ class TSoundcloudLibrary(TestCase):
             self._on_track_data(None, [TRACK], None)
 
         def __init__(self):
-            super(TSoundcloudLibrary.FakeClient, self).__init__()
+            super().__init__()
 
         def authenticate_user(self):
             pass

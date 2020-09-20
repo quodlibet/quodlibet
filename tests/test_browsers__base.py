@@ -88,7 +88,7 @@ class TBrowserBase(TestCase):
         destroy_fake_app()
 
 
-class TBrowserMixin(object):
+class TBrowserMixin:
 
     def test_menu(self):
         # FIXME: the playlist browser accesses the song list directly

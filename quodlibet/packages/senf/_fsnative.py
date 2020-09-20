@@ -183,7 +183,7 @@ def _create_fsnative(type_):
         def __subclasscheck__(self, subclass):
             return issubclass(subclass, type_)
 
-    class impl(object):
+    class impl:
         """fsnative(text=u"")
 
         Args:

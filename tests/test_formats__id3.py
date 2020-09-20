@@ -30,7 +30,7 @@ class TID3ImagesBase(TestCase):
         os.remove(self.filename)
 
 
-class TID3ImagesMixin(object):
+class TID3ImagesMixin:
 
     def test_can_change_images(self):
         self.failUnless(self.KIND(self.filename).can_change_images)
@@ -130,7 +130,7 @@ class TID3FileBase(TestCase):
         os.unlink(self.filename)
 
 
-class TID3FileMixin(object):
+class TID3FileMixin:
 
     def test_optional_POPM_count(self):
         # https://github.com/quodlibet/quodlibet/issues/364

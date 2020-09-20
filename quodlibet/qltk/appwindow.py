@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 
-class AppWindow(object):
+class AppWindow:
     """The shared interface provided by both QL and EF"""
 
     def open_file(self, filename):

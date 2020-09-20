@@ -37,7 +37,7 @@ class SentryHandler(logbook.Handler):
                 self.client = kwargs.pop('client')
             except KeyError:
                 raise TypeError('Expected keyword argument for SentryHandler: client')
-        super(SentryHandler, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def emit(self, record):
         try:

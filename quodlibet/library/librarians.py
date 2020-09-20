@@ -38,7 +38,7 @@ class Librarian(GObject.GObject):
     }
 
     def __init__(self):
-        super(Librarian, self).__init__()
+        super().__init__()
         self.libraries = {}
         self.__signals = {}
 

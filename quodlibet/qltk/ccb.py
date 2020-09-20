@@ -19,7 +19,7 @@ class ConfigCheckButton(Gtk.CheckButton):
 
     def __init__(self, label, section, option, populate=False, tooltip=None,
                  default=None):
-        super(ConfigCheckButton, self).__init__(label=label,
+        super().__init__(label=label,
                                                 use_underline=True)
 
         if default is None:
@@ -42,7 +42,7 @@ class ConfigCheckMenuItem(Gtk.CheckMenuItem):
     It is initialised to the current config value if `populate` is set True."""
 
     def __init__(self, label, section, option, populate=False, default=False):
-        super(ConfigCheckMenuItem, self).__init__(
+        super().__init__(
             label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option, default))

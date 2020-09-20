@@ -4,7 +4,7 @@
 # (at your option) any later version.
 
 
-class MockSelData(object):
+class MockSelData:
     # Gtk.SelectionData is missing a constructor
 
     def set(self, type, format, data):

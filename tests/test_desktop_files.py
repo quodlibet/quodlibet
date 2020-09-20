@@ -15,7 +15,7 @@ from quodlibet import util
 QLDATA_DIR = os.path.join(os.path.dirname(util.get_module_dir()), "data")
 
 
-class _TDesktopFileMixin(object):
+class _TDesktopFileMixin:
     PATH = None
 
     def test_filename(self):

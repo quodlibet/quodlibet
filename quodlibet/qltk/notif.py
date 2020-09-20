@@ -35,7 +35,7 @@ from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
 from quodlibet.qltk import Icons
 
 
-class ParentProperty(object):
+class ParentProperty:
     """
     A property which provides a thin layer of protection against accidental
     reparenting: you must first 'unparent' an instance by setting this
@@ -51,7 +51,7 @@ class ParentProperty(object):
         inst._parent = value
 
 
-class Task(object):
+class Task:
     def __init__(self, source, desc, known_length=True, controller=None,
                  pause=None, stop=None):
         self.source = source
@@ -157,7 +157,7 @@ class Task(object):
         return False
 
 
-class TaskController(object):
+class TaskController:
     """
     Controller logic for displaying and managing a list of Tasks. Also
     implements the full Task interface to act as a pass-through or summary of
@@ -236,7 +236,7 @@ class TaskWidget(Gtk.HBox):
     Displays a task.
     """
     def __init__(self, task):
-        super(TaskWidget, self).__init__(spacing=2)
+        super().__init__(spacing=2)
         self.task = task
         self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
@@ -285,7 +285,7 @@ class TaskWidget(Gtk.HBox):
 
 class StatusBar(Gtk.HBox):
     def __init__(self, task_controller):
-        super(StatusBar, self).__init__()
+        super().__init__()
         self.__dirty = False
         self.set_spacing(12)
         self.task_controller = task_controller

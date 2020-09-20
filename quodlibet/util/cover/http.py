@@ -13,7 +13,7 @@ from quodlibet.util.http import HTTPRequest, download_json
 from quodlibet.util import print_w
 
 
-class HTTPDownloadMixin(object):
+class HTTPDownloadMixin:
     def download(self, message):
         request = HTTPRequest(message, self.cancellable)
         request.connect('sent', self._download_sent)

@@ -11,7 +11,7 @@ import importlib
 
 from os.path import join, splitext, basename
 
-from quodlibet import util
+from quodlibet import util, print_d
 
 
 def load_dir_modules(path, package):
@@ -63,15 +63,15 @@ def get_importables(folder):
         return False
 
     def is_init(f):
-        if f == "__init__.py":
-            return True
-        return False
+        return f == "__init__.py"
 
     first = True
     for root, dirs, names in os.walk(folder):
         # Ignore packages like "_shared"
-        if basename(root).startswith("_"):
-            continue
+        for d in dirs:
+            if d.startswith("_") or d.startswith("."):
+                print_d("Ignoring %s" % d)
+                dirs.remove(d)
         if not first and any((is_init(n) for n in names)):
             yield (basename(root), root,
                    list(filter(is_ok, [join(root, name) for name in names])))

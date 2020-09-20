@@ -46,7 +46,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
         if mbid:
             return path.join(cover_dir, escape_filename(mbid))
         else:
-            return super(DiscogsCover, self).cover_path
+            return super().cover_path
 
     @property
     def url(self):

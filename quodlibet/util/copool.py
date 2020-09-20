@@ -12,7 +12,7 @@
 from gi.repository import GLib
 
 
-class _Routine(object):
+class _Routine:
 
     def __init__(self, pool, func, funcid, priority, timeout, args, kwargs):
         self.priority = priority
@@ -62,7 +62,7 @@ class _Routine(object):
         self._source_id = None
 
 
-class CoPool(object):
+class CoPool:
 
     def __init__(self):
         self.__routines = {}

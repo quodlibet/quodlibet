@@ -67,7 +67,7 @@ class CoverManager(GObject.Object):
     plugin_handler = None
 
     def __init__(self, use_built_in=True):
-        super(CoverManager, self).__init__()
+        super().__init__()
         self.plugin_handler = CoverPluginHandler(use_built_in)
 
     def init_plugins(self):

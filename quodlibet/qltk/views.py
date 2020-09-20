@@ -46,7 +46,7 @@ class TreeViewHints(Gtk.Window):
         except AttributeError:
             pass
 
-        super(TreeViewHints, self).__init__(type=Gtk.WindowType.POPUP)
+        super().__init__(type=Gtk.WindowType.POPUP)
         # set the type hint so the wayland backend maps it as a subsurface
         # which supports relative positioning
         self.set_type_hint(Gdk.WindowTypeHint.TOOLTIP)
@@ -490,7 +490,7 @@ class TreeViewHints(Gtk.Window):
         return self.__event(event)
 
 
-class DragScroll(object):
+class DragScroll:
     """A treeview mixin for smooth drag and scroll (needs BaseView).
 
     Call scroll_motion in the 'drag-motion' handler and
@@ -623,7 +623,7 @@ class BaseView(Gtk.TreeView):
     }
 
     def __init__(self, *args, **kwargs):
-        super(BaseView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.connect("key-press-event", self.__key_pressed)
         self._setup_selection_signal()
 
@@ -881,7 +881,7 @@ class DragIconTreeView(BaseView):
     """
 
     def __init__(self, *args, **kwargs):
-        super(DragIconTreeView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.connect('drag-begin', self.__begin)
 
     def __begin(self, view, drag_ctx):
@@ -976,7 +976,7 @@ class MultiDragTreeView(BaseView):
     """
 
     def __init__(self, *args, **kwargs):
-        super(MultiDragTreeView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.connect('button-press-event', self.__button_press)
         self.connect('button-release-event', self.__button_release)
         self.__pending_action = None
@@ -1019,7 +1019,7 @@ class RCMTreeView(BaseView):
     """Emits popup-menu when a row is right-clicked on."""
 
     def __init__(self, *args, **kwargs):
-        super(RCMTreeView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.connect('button-press-event', self.__button_press)
 
     def __button_press(self, view, event):
@@ -1126,7 +1126,7 @@ class HintedTreeView(BaseView):
     contains ellipsized text."""
 
     def __init__(self, *args, **kwargs):
-        super(HintedTreeView, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if self.supports_hints():
             try:
                 tvh = HintedTreeView.hints
@@ -1137,7 +1137,7 @@ class HintedTreeView(BaseView):
     def set_tooltip_text(self, *args, **kwargs):
         print_e("Setting a tooltip on the view breaks tv hints. Set it"
                 " on the parent scrolled window instead")
-        return super(HintedTreeView, self).set_tooltip_text(*args, **kwargs)
+        return super().set_tooltip_text(*args, **kwargs)
 
     def supports_hints(self):
         """If the treeview hints support is enabled. Can be used to
@@ -1285,7 +1285,7 @@ class TreeViewColumnButton(TreeViewColumn):
     }
 
     def __init__(self, **kwargs):
-        super(TreeViewColumnButton, self).__init__(**kwargs)
+        super().__init__(**kwargs)
         label = self.get_widget()
         label.__realize = label.connect('realize', self.__connect_menu_event)
 

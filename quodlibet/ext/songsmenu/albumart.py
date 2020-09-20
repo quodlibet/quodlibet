@@ -104,7 +104,7 @@ def get_encoding(url):
     return get_encoding_from_socket(url_sock)
 
 
-class AmazonParser(object):
+class AmazonParser:
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -214,7 +214,7 @@ class AmazonParser(object):
         return self.covers
 
 
-class DiscogsParser(object):
+class DiscogsParser:
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -312,7 +312,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
 
     def __init__(self, parent, song):
-        super(CoverArea, self).__init__()
+        super().__init__()
         self.song = song
 
         self.dirname = song("~dirname")
@@ -615,7 +615,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     THUMB_SIZE = 50
 
     def __init__(self, songs):
-        super(AlbumArtWindow, self).__init__()
+        super().__init__()
 
         self.image_cache = []
         self.image_cache_size = 10
@@ -889,7 +889,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             self.search_lock = False
 
 
-class CoverSearch(object):
+class CoverSearch:
     """Class for glueing the search engines together. No UI stuff."""
 
     def __init__(self, callback):

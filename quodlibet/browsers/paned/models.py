@@ -19,7 +19,7 @@ from quodlibet.util.collection import Collection
 class BaseEntry(Collection):
 
     def __init__(self, key=None, songs=None):
-        super(BaseEntry, self).__init__()
+        super().__init__()
 
         self.songs = set(songs or [])
         self.key = key # not used for sorting!
@@ -55,7 +55,7 @@ class BaseEntry(Collection):
 class SongsEntry(BaseEntry):
 
     def __init__(self, key, sort, songs=None):
-        super(SongsEntry, self).__init__(key, songs)
+        super().__init__(key, songs)
 
         self.sort = sort # value used for sorting
 
@@ -82,7 +82,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super(UnknownEntry, self).__init__("", tuple(), songs)
+        super().__init__("", tuple(), songs)
 
     def get_text(self, config):
         return True, "<b>%s</b>" % _("Unknown")
@@ -97,7 +97,7 @@ class UnknownEntry(SongsEntry):
 class AllEntry(BaseEntry):
 
     def __init__(self):
-        super(AllEntry, self).__init__()
+        super().__init__()
 
     def get_count_text(self, config):
         return u""
@@ -118,7 +118,7 @@ class AllEntry(BaseEntry):
 class PaneModel(ObjectStore):
 
     def __init__(self, pattern_config):
-        super(PaneModel, self).__init__()
+        super().__init__()
         self.__sort_cache = {} # text to sort text cache
         self.__key_cache = {} # song to key cache
         self.config = pattern_config

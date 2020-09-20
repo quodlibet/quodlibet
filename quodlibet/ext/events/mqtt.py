@@ -41,7 +41,7 @@ EXPAND = Gtk.AttachOptions.EXPAND
 FILL = Gtk.AttachOptions.FILL
 
 
-class Config(object):
+class Config:
     STATUS_SONGLESS = 'no_song_text', ""
     PAT_PLAYING = 'playing_pattern', "♫ <~artist~title> ♫"
     PAT_PAUSED = 'paused_pattern', "<~artist~title> [%s]" % _("paused")
@@ -226,14 +226,14 @@ def validator(pat):
 class FakeAudioFile(AudioFile):
 
     def __call__(self, *args, **kwargs):
-        real = super(FakeAudioFile, self).__call__(*args, **kwargs)
+        real = super().__call__(*args, **kwargs)
         tag = args[0]
         return real or self.fake_value(tag)
 
     def get(self, key, default=None):
         if key not in self:
             return default or self.fake_value(key)
-        return super(FakeAudioFile, self).get(key, default)
+        return super().get(key, default)
 
     def fake_value(self, key):
         if key.replace('~', '').replace('#', '') in _TAGS:

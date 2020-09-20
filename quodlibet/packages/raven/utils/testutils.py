@@ -24,7 +24,7 @@ class TestCase(Exam, BaseTestCase):
 class InMemoryClient(raven.Client):
     def __init__(self, **kwargs):
         self.events = []
-        super(InMemoryClient, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
     def is_enabled(self):
         return True

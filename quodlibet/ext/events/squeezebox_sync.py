@@ -35,8 +35,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     _debug = False
 
     def __init__(self):
-        super(EventPlugin, self).__init__()
-        super(SqueezeboxPluginMixin, self).__init__()
+        super().__init__()
 
     @classmethod
     def post_reconnect(cls):

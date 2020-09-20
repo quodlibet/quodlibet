@@ -12,7 +12,7 @@ from __future__ import absolute_import
 has_newstyle_transports = True
 
 
-class Transport(object):
+class Transport:
     """
     All transport implementations need to subclass this class
 

@@ -51,7 +51,7 @@ class CoverSourcePlugin(GObject.Object):
     def __init__(self, song, cancellable=None):
         self.song = song
         self.cancellable = cancellable
-        super(CoverSourcePlugin, self).__init__()
+        super().__init__()
 
     @classmethod
     def group_by(cls, song):

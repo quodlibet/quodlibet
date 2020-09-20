@@ -34,7 +34,7 @@ class FileListExpander(Gtk.Expander):
     """A widget for showing a static list of file paths"""
 
     def __init__(self, paths):
-        super(FileListExpander, self).__init__(label=_("Files:"))
+        super().__init__(label=_("Files:"))
         self.set_resize_toplevel(True)
 
         paths = [fsn2text(unexpand(p)) for p in paths]
@@ -77,7 +77,7 @@ class DeleteDialog(WarningMessage):
                                "Delete %(file_count)d files permanently?",
                                len(paths), "file_count")
 
-        super(DeleteDialog, self).__init__(
+        super().__init__(
             get_top_parent(parent),
             title, description,
             buttons=Gtk.ButtonsType.NONE)
@@ -120,7 +120,7 @@ class TrashDialog(WarningMessage):
         title = numeric_phrase("Move %(file_count)d file to the trash?",
                                "Move %(file_count)d files to the trash?",
                                len(paths), "file_count")
-        super(TrashDialog, self).__init__(
+        super().__init__(
             get_top_parent(parent),
             title, description,
             buttons=Gtk.ButtonsType.NONE)

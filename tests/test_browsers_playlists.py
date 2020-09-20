@@ -31,7 +31,7 @@ from quodlibet.library.libraries import FileLibrary
 from tests.test_browsers_search import SONGS
 
 
-class ConfigSetupMixin(object):
+class ConfigSetupMixin:
     def setUp(self):
         quodlibet.config.init()
 
@@ -39,7 +39,7 @@ class ConfigSetupMixin(object):
         quodlibet.config.quit()
 
 
-class TParsePlaylistMixin(object):
+class TParsePlaylistMixin:
 
     def test_parse_empty(self):
         with temp_filename() as name:

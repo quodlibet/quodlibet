@@ -73,7 +73,7 @@ class TimeLabel(Gtk.Label):
 class HSlider(Gtk.Button):
 
     def __init__(self, child=None):
-        super(HSlider, self).__init__()
+        super().__init__()
         if child:
             self.add(child)
         self.connect('clicked', self.__clicked)
@@ -218,7 +218,7 @@ class SeekButton(HSlider):
         hbox.pack_start(l, True, True, 0)
         arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
         hbox.pack_start(arrow, False, True, 0)
-        super(SeekButton, self).__init__(hbox)
+        super().__init__(hbox)
 
         self._slider_label = TimeLabel()
         self.set_slider_widget(self._slider_label)

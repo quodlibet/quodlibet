@@ -106,7 +106,7 @@ class SongListColumn(TreeViewColumnButton):
         """tag e.g. 'artist'"""
 
         title = self._format_title(tag)
-        super(SongListColumn, self).__init__(
+        super().__init__(
             title=title, cell_area=SongListCellAreaBox())
         self.set_tooltip_text(title)
         self.header_name = tag
@@ -139,7 +139,7 @@ class TextColumn(SongListColumn):
     """Base text column"""
 
     def __init__(self, tag):
-        super(TextColumn, self).__init__(tag)
+        super().__init__(tag)
 
         self._render = Gtk.CellRendererText()
         self.pack_start(self._render, True)
@@ -187,7 +187,7 @@ class TextColumn(SongListColumn):
 
     def _needs_update(self, value):
         return self._force_update or \
-            super(TextColumn, self)._needs_update(value)
+            super()._needs_update(value)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         self._deferred_width_check()
@@ -222,7 +222,7 @@ class RatingColumn(TextColumn):
     """
 
     def __init__(self, *args, **kwargs):
-        super(RatingColumn, self).__init__("~rating", *args, **kwargs)
+        super().__init__("~rating", *args, **kwargs)
         self.set_expand(False)
         self.set_resizable(False)
 
@@ -248,7 +248,7 @@ class WideTextColumn(TextColumn):
     """
 
     def __init__(self, *args, **kwargs):
-        super(WideTextColumn, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
         self.set_resizable(True)
 
@@ -295,7 +295,7 @@ class FSColumn(WideTextColumn):
     """
 
     def __init__(self, *args, **kwargs):
-        super(FSColumn, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
 
     def _fetch_value(self, model, iter_):
@@ -309,7 +309,7 @@ class FSColumn(WideTextColumn):
 class PatternColumn(WideTextColumn):
 
     def __init__(self, *args, **kwargs):
-        super(PatternColumn, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         try:
             self._pattern = Pattern(self.header_name)
@@ -333,7 +333,7 @@ class NumericColumn(TextColumn):
     """Any '~#' keys except dates."""
 
     def __init__(self, *args, **kwargs):
-        super(NumericColumn, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._render.set_property('xalign', 1.0)
         self.set_alignment(1.0)
         self.set_expand(False)
@@ -420,7 +420,7 @@ class NumericColumn(TextColumn):
 class LengthColumn(NumericColumn):
 
     def __init__(self):
-        super(LengthColumn, self).__init__("~#length")
+        super().__init__("~#length")
 
     def _get_min_width(self):
         # 1:22:22, allows entire albums as files (< 75mins)
@@ -438,7 +438,7 @@ class LengthColumn(NumericColumn):
 class FilesizeColumn(NumericColumn):
 
     def __init__(self):
-        super(FilesizeColumn, self).__init__("~#filesize")
+        super().__init__("~#filesize")
 
     def _get_min_width(self):
         # e.g "2.22 MB"
@@ -457,7 +457,7 @@ class CurrentColumn(SongListColumn):
     """Displays the current song indicator, either a play or pause icon."""
 
     def __init__(self):
-        super(CurrentColumn, self).__init__("~current")
+        super().__init__("~current")
         self._render = CellRendererPixbuf()
         self.pack_start(self._render, True)
         self._render.set_property('xalign', 0.5)

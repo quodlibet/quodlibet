@@ -20,13 +20,13 @@ class TSoundcloudFile(TestCase):
     class FakeClient(SoundcloudApiClient):
 
         def __init__(self):
-            super(TSoundcloudFile.FakeClient, self).__init__()
+            super().__init__()
             self.online = True
             self.favoritings = defaultdict(int)
             self.unfavoritings = defaultdict(int)
 
         def _on_favorited(self, json):
-            super(TSoundcloudFile.FakeClient, self)._on_favorited(json)
+            super()._on_favorited(json)
 
         def put_favorite(self, track_id):
             self.favoritings[track_id] += 1

@@ -88,7 +88,7 @@ class PlayerOptions(GObject.Object):
     def __init__(self, window):
         """`window` is a QuodLibetWindow"""
 
-        super(PlayerOptions, self).__init__()
+        super().__init__()
 
         self._stop_after = window.stop_after
         self._said = self._stop_after.connect(
@@ -176,7 +176,7 @@ class DockMenu(Gtk.Menu):
     """Menu used for the OSX dock and the tray icon"""
 
     def __init__(self, app):
-        super(DockMenu, self).__init__()
+        super().__init__()
 
         player = app.player
 
@@ -223,7 +223,7 @@ class MainSongList(SongList):
     _activated = False
 
     def __init__(self, library, player):
-        super(MainSongList, self).__init__(library, player, update=True)
+        super().__init__(library, player, update=True)
         self.set_first_column_type(CurrentColumn)
 
         self.connect('row-activated', self.__select_song, player)
@@ -251,7 +251,7 @@ class MainSongList(SongList):
 
 class TopBar(Gtk.Toolbar):
     def __init__(self, parent, player, library):
-        super(TopBar, self).__init__()
+        super().__init__()
 
         # play controls
         control_item = Gtk.ToolItem()
@@ -335,7 +335,7 @@ class QueueButton(HighlightToggleButton):
              "view-list", "format-justify"])
         image = Gtk.Image.new_from_gicon(gicon, Gtk.IconSize.SMALL_TOOLBAR)
 
-        super(QueueButton, self).__init__(image=image)
+        super().__init__(image=image)
 
         self.set_name("ql-queue-button")
         qltk.add_css(self, """
@@ -351,7 +351,7 @@ class QueueButton(HighlightToggleButton):
 class StatusBarBox(Gtk.HBox):
 
     def __init__(self, play_order, queue):
-        super(StatusBarBox, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.pack_start(play_order, False, True, 0)
         self.statusbar = StatusBar(TaskController.default_instance)
         self.pack_start(self.statusbar, True, True, 0)
@@ -372,7 +372,7 @@ class PlaybackErrorDialog(ErrorMessage):
         if details:
             description += " " + details
 
-        super(PlaybackErrorDialog, self).__init__(
+        super().__init__(
             parent, _("Playback Error"), description)
 
 
@@ -385,7 +385,7 @@ class ConfirmLibDirSetup(WarningMessage):
         description = _("You don't have any music library set up. "
                         "Would you like to do that now?")
 
-        super(ConfirmLibDirSetup, self).__init__(
+        super().__init__(
             parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Not Now"), Gtk.ResponseType.CANCEL)
@@ -474,7 +474,7 @@ DND_URI_LIST, = range(1)
 class SongListPaned(RVPaned):
 
     def __init__(self, song_scroller, qexpander):
-        super(SongListPaned, self).__init__()
+        super().__init__()
 
         self.pack1(song_scroller, resize=True, shrink=False)
         self.pack2(qexpander, resize=True, shrink=False)
@@ -531,7 +531,7 @@ class SongListPaned(RVPaned):
 class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __init__(self, library, player, headless=False, restore_cb=None):
-        super(QuodLibetWindow, self).__init__(dialog=False)
+        super().__init__(dialog=False)
 
         self.__destroyed = False
         self.__update_title(player)

@@ -30,7 +30,7 @@ class TPlaylistPlugins(TestCase):
 
     class MockBrowser(Browser):
         def __init__(self):
-            super(TPlaylistPlugins.MockBrowser, self).__init__()
+            super().__init__()
             self.activated = False
 
         def activate(self):
@@ -85,9 +85,9 @@ class TPlaylistPlugins(TestCase):
             file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
         for f in (funcs or []):
             if f in ["__init__"]:
-                file.write("%sdef %s(self, *args): super(%s, self).__init__("
+                file.write("%sdef %s(self, *args): super().__init__("
                            "*args); raise Exception(\"as expected.\")\n"
-                           % (indent, f, name))
+                           % (indent, f))
             else:
                 file.write("%sdef %s(*args): return args\n" % (indent, f))
         file.flush()
@@ -182,7 +182,7 @@ class FakePlaylistPlugin(PlaylistPlugin):
     total = 0
 
     def __init__(self, playlists, library):
-        super(FakePlaylistPlugin, self).__init__(playlists, library)
+        super().__init__(playlists, library)
         self.total = 0
 
     def plugin_playlist(self, _):

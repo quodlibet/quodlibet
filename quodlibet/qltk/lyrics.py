@@ -26,7 +26,7 @@ from quodlibet.util import connect_obj
 
 class LyricsPane(Gtk.VBox):
     def __init__(self, song):
-        super(LyricsPane, self).__init__(spacing=12)
+        super().__init__(spacing=12)
         self.set_border_width(12)
         view = Gtk.TextView()
         sw = Gtk.ScrolledWindow()

@@ -35,7 +35,7 @@ from .prefs import get_headers, Preferences
 
 class CollectionView(AllTreeView):
     def __init__(self):
-        super(CollectionView, self).__init__()
+        super().__init__()
         self.connect_after("row-expanded", self.__expand_helper)
 
     def __expand_helper(self, view, iter, path):
@@ -138,7 +138,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         model.change_albums(changed)
 
     def __init__(self, library):
-        super(CollectionBrowser, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         self._register_instance()

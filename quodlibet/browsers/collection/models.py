@@ -1,4 +1,5 @@
 # Copyright 2010, 2012-2014 Christoph Reiter
+#                      2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,7 +26,7 @@ MULTI_PATTERN = "<b><i>%s</i></b>" % _("Multiple %s Values")
 COUNT_PATTERN = " <span size='small' color='#777'>(%s)</span>"
 
 
-class AlbumNode(object):
+class AlbumNode:
 
     def __init__(self, album):
         self.album = album
@@ -74,7 +75,7 @@ def build_tree(tags, albums, cache=None):
     return tree
 
 
-class CollectionModelMixin(object):
+class CollectionModelMixin:
 
     def get_path_for_album(self, album):
         """Returns the path for an album or None"""
@@ -152,7 +153,7 @@ class CollectionSortModel(ObjectModelSort, CollectionModelMixin):
 
 class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
     def __init__(self):
-        super(CollectionTreeStore, self).__init__(object)
+        super().__init__(object)
         self.__tags = []
 
     def set_albums(self, tags, albums):

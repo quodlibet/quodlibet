@@ -74,7 +74,7 @@ class TMPDCommands(PluginTestCase):
         MPDConnection = self.mod.main.MPDConnection
         MPDService = self.mod.main.MPDService
 
-        class Server(object):
+        class Server:
             service = MPDService(app, MPDServerPlugin())
 
             def _remove_connection(self, conn):

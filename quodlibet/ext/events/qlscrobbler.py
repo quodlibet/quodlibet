@@ -80,7 +80,7 @@ def config_get_artist_pattern():
     return plugin_config.get('artistpat') or DEFAULT_ARTISTPAT
 
 
-class QLSubmitQueue(object):
+class QLSubmitQueue:
     """Manages the submit queue for scrobbles. Works independently of the
     QLScrobbler plugin being enabled; other plugins may use submit() to queue
     songs for scrobbling.

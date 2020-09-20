@@ -1,4 +1,5 @@
 # Copyright 2012 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +23,7 @@ PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
                "gstreamer", "covers", "query"]
 
 
-class Application(object):
+class Application:
     """A main application class for controlling the application as a whole
     and accessing sub-modules.
 

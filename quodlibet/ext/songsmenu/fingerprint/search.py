@@ -22,7 +22,7 @@ from quodlibet.util import print_w
 from quodlibet.qltk.ccb import ConfigCheckButton
 
 
-class Status(object):
+class Status:
     QUEUED = 0
     ANALYZING = 1
     LOOKUP = 2
@@ -46,7 +46,7 @@ class Status(object):
             return _("Unknown")
 
 
-class SearchEntry(object):
+class SearchEntry:
 
     def __init__(self, song):
         self.song = song
@@ -108,7 +108,7 @@ class SearchEntry(object):
 class ResultView(AllTreeView):
 
     def __init__(self):
-        super(ResultView, self).__init__()
+        super().__init__()
 
         self._release_ids = {}
 
@@ -241,7 +241,7 @@ def score_release(release):
 class SearchWindow(Window):
 
     def __init__(self, songs, title=None):
-        super(SearchWindow, self).__init__(
+        super().__init__(
             default_width=800, default_height=400, border_width=12,
             title=title)
 

@@ -27,7 +27,7 @@ class _TAACFile(TestCase):
         os.unlink(self.f)
 
 
-class _TAACFileMixin(object):
+class _TAACFileMixin:
 
     def test_basic(self):
         self.song["title"] = u"SomeTestValue"

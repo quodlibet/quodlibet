@@ -11,7 +11,7 @@ class MMKeysImportError(ImportError):
     pass
 
 
-class MMKeysAction(object):
+class MMKeysAction:
     PLAY = "play"
     STOP = "stop"
     PAUSE = "pause"
@@ -24,7 +24,7 @@ class MMKeysAction(object):
     SHUFFLE = "shuffle"
 
 
-class MMKeysBackend(object):
+class MMKeysBackend:
 
     def __init_(self, name, callback):
         """Callback will be called in the main thread and gets

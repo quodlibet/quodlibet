@@ -82,7 +82,7 @@ NUM_FUNCS = {
 }
 
 
-class Collection(object):
+class Collection:
     """A collection of songs which implements some methods similar to the
     AudioFile class.
 
@@ -307,7 +307,7 @@ class Album(Collection):
         return self.get("album")
 
     def __init__(self, song):
-        super(Album, self).__init__()
+        super().__init__()
         self.songs = set()
         # albumsort is part of the album_key, so every song has the same
         self.sort = util.human_sort_key(song("albumsort"))
@@ -319,7 +319,7 @@ class Album(Collection):
 
     def finalize(self):
         """Finalize this album. Call after songs get added or removed"""
-        super(Album, self).finalize()
+        super().finalize()
         self.__dict__.pop("peoplesort", None)
         self.__dict__.pop("genre", None)
 
@@ -349,7 +349,7 @@ class Playlist(Collection, Iterable):
     def get(self, key, default=u"", connector=u" - "):
         if key == "~name":
             return self.name
-        return super(Playlist, self).get(key, default, connector)
+        return super().get(key, default, connector)
 
     __call__ = get
 
@@ -391,7 +391,7 @@ class Playlist(Collection, Iterable):
         return [s for s in self._list if not isinstance(s, str)]
 
     def __init__(self, name, library=None):
-        super(Playlist, self).__init__()
+        super().__init__()
         self.__inhibit_library_signals = False
         self.__instances.append(self)
 

@@ -47,7 +47,7 @@ class SongInfo(Gtk.EventBox):
     _not_playing = "<span size='xx-large'>%s</span>" % _("Not playing")
 
     def __init__(self, library, player, pattern_filename):
-        super(SongInfo, self).__init__()
+        super().__init__()
         self._pattern_filename = pattern_filename
         self.set_visible_window(False)
         align = Align(halign=Gtk.Align.START, valign=Gtk.Align.START)

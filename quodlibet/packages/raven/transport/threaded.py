@@ -23,7 +23,7 @@ DEFAULT_TIMEOUT = 10
 logger = logging.getLogger('sentry.errors')
 
 
-class AsyncWorker(object):
+class AsyncWorker:
     _terminator = object()
 
     def __init__(self, shutdown_timeout=DEFAULT_TIMEOUT):
@@ -162,7 +162,7 @@ class ThreadedHTTPTransport(AsyncTransport, HTTPTransport):
 
     def send_sync(self, url, data, headers, success_cb, failure_cb):
         try:
-            super(ThreadedHTTPTransport, self).send(url, data, headers)
+            super().send(url, data, headers)
         except Exception as e:
             failure_cb(e)
         else:

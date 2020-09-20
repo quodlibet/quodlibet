@@ -29,7 +29,7 @@ class MidiFile(AudioFile):
 
     def reload(self, *args):
         title = self.get("title")
-        super(MidiFile, self).reload(*args)
+        super().reload(*args)
         if title is not None:
             self.setdefault("title", title)
 

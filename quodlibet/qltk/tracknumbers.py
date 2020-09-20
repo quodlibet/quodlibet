@@ -21,7 +21,7 @@ from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj
 
 
-class Entry(object):
+class Entry:
 
     def __init__(self, song):
         self.song = song
@@ -34,7 +34,7 @@ class Entry(object):
 
 class TrackNumbers(Gtk.VBox):
     def __init__(self, prop, library):
-        super(TrackNumbers, self).__init__(spacing=6)
+        super().__init__(spacing=6)
         self.title = _("Track Numbers")
         self.set_border_width(12)
 

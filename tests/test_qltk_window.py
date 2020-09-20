@@ -35,7 +35,7 @@ class TWindows(TestCase):
 
         class SomeWindow(Window, InstanceTracker):
             def __init__(self):
-                super(SomeWindow, self).__init__()
+                super().__init__()
                 self._register_instance()
 
         self.assertFalse(SomeWindow.windows)

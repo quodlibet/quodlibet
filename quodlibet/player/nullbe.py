@@ -14,7 +14,7 @@ class NullPlayer(BasePlayer):
     name = "Null"
 
     def __init__(self, sinkname="", librarian=None):
-        super(NullPlayer, self).__init__()
+        super().__init__()
         self._paused = True
         self._source = None
         self._volume = 1.0

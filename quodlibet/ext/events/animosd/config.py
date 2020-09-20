@@ -21,7 +21,7 @@ DEFAULT_PATTERN = (r"<album|[b]<album>[/b]<discnumber| - Disc "
 
 
 def get_config(prefix):
-    class AnimOsdConfig(object):
+    class AnimOsdConfig:
 
         plugin_conf = PluginConfig(prefix)
 

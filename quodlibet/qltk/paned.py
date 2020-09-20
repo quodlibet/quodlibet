@@ -17,7 +17,7 @@ from . import add_css, gtk_version
 class Paned(Gtk.Paned):
 
     def __init__(self, *args, **kwargs):
-        super(Paned, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.ensure_wide_handle()
 
     def ensure_wide_handle(self):
@@ -63,7 +63,7 @@ class RPaned(Paned):
     def __init__(self, *args, **kwargs):
         if self.ORIENTATION is not None:
             kwargs["orientation"] = self.ORIENTATION
-        super(RPaned, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         # before first alloc: save value in relative and set on the first alloc
         # after the first alloc: use the normal properties
         self.__alloced = False
@@ -123,7 +123,7 @@ class RVPaned(RPaned):
 
 class ConfigRPaned(RPaned):
     def __init__(self, section, option, default, *args, **kwargs):
-        super(ConfigRPaned, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.set_relative(config.getfloat(section, option, default))
         self.connect('notify::position', self.__changed, section, option)
 
@@ -140,7 +140,7 @@ class ConfigRVPaned(ConfigRPaned):
     ORIENTATION = Gtk.Orientation.VERTICAL
 
 
-class MultiRPaned(object):
+class MultiRPaned:
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)
@@ -241,12 +241,12 @@ class MultiRVPaned(MultiRPaned):
 class ConfigMultiRPaned(MultiRPaned):
 
     def __init__(self, section, option):
-        super(ConfigMultiRPaned, self).__init__()
+        super().__init__()
         self.section = section
         self.option = option
 
     def set_widgets(self, widgets):
-        super(ConfigMultiRPaned, self).set_widgets(widgets)
+        super().set_widgets(widgets)
         paneds = self._get_paneds()
 
         # Connect all paneds

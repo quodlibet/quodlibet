@@ -29,7 +29,7 @@ class Iconv(EditTagsPlugin):
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     def __init__(self, tag, value):
-        super(Iconv, self).__init__(
+        super().__init__(
             _(u"_Convert Encoding…"), use_underline=True)
 
         submenu = Gtk.Menu()

@@ -142,7 +142,7 @@ def apply_signature(value, sig, utf8_strings=False):
     return value
 
 
-class DBusIntrospectable(object):
+class DBusIntrospectable:
     """Simply collects all introspection data from other mixins
     and provides the Introspect DBus method returning all combined.
 
@@ -182,7 +182,7 @@ class DBusIntrospectable(object):
         return "\n".join(parts)
 
 
-class DBusProperty(object):
+class DBusProperty:
     """A mixin for dbus.Object classes to support dbus properties.
 
     Register properties by passing the XML introspection to

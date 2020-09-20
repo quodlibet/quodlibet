@@ -61,7 +61,7 @@ class ModFile(AudioFile):
 
     def reload(self, *args):
         artist = self.get("artist")
-        super(ModFile, self).reload(*args)
+        super().reload(*args)
         if artist is not None:
             self.setdefault("artist", artist)
 

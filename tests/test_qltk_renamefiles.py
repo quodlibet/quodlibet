@@ -25,7 +25,7 @@ class TFilter(TestCase):
         self.c.destroy()
 
 
-class TFilterMixin(object):
+class TFilterMixin:
 
     def test_mix_empty(self):
         empty = fsnative(u"")
@@ -121,7 +121,7 @@ class Renamer(Gtk.EventBox):
     }
 
     def __init__(self, *args, **kwargs):
-        super(Renamer, self).__init__()
+        super().__init__()
 
         from quodlibet.library.libraries import SongLibrary
 
@@ -145,7 +145,7 @@ class Song(AudioFile):
     """A mock AudioFile belong to one of three albums,
     based on a single number"""
     def __init__(self, target, num):
-        super(Song, self).__init__()
+        super().__init__()
 
         self["title"] = "title_%d" % (num + 1)
         self["artist"] = "artist"

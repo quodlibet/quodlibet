@@ -18,7 +18,7 @@ class CommandError(Exception):
     pass
 
 
-class Command(object):
+class Command:
     """Base class for commands.
 
     Subclasses can override _add_options() and _execute()

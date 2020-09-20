@@ -27,12 +27,12 @@ class Bookmarks(SongsMenuPlugin):
     plugin_handles = any_song(has_bookmark)
 
     def __init__(self, songs, *args, **kwargs):
-        super(Bookmarks, self).__init__(songs, *args, **kwargs)
+        super().__init__(songs, *args, **kwargs)
         self.__menu = Gtk.Menu()
         self.__create_children(self.__menu, songs)
         self.set_submenu(self.__menu)
 
-    class FakePlayer(object):
+    class FakePlayer:
         def __init__(self, song):
             self.song = song
 

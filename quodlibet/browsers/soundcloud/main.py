@@ -99,7 +99,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __init__(self, library):
         print_d("Creating Soundcloud Browser")
-        super(SoundcloudBrowser, self).__init__(spacing=12)
+        super().__init__(spacing=12)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         if not self.instances():

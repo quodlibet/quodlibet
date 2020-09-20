@@ -42,14 +42,14 @@ def get_num_threads():
     return threads
 
 
-class UpdateMode(object):
+class UpdateMode:
     """Enum-like class for update strategies"""
     ALWAYS = "always"
     ALBUM_MISSING = "album_tags_missing"
     ANY_MISSING = "any_tags_missing"
 
 
-class RGAlbum(object):
+class RGAlbum:
     def __init__(self, rg_songs, process_mode):
         self.songs = rg_songs
         self.gain = None
@@ -121,7 +121,7 @@ class RGAlbum(object):
             return True
 
 
-class RGSong(object):
+class RGSong:
     def __init__(self, song):
         self.song = song
         self.error = False
@@ -225,7 +225,7 @@ class ReplayGainPipeline(GObject.Object):
     }
 
     def __init__(self):
-        super(ReplayGainPipeline, self).__init__()
+        super().__init__()
 
         self._current = None
         self._setup_pipe()
@@ -348,7 +348,7 @@ class ReplayGainPipeline(GObject.Object):
 class RGDialog(Dialog):
 
     def __init__(self, albums, parent, process_mode):
-        super(RGDialog, self).__init__(
+        super().__init__(
             title=_('ReplayGain Analyzer'), parent=parent)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)

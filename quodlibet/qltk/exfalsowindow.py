@@ -54,7 +54,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         PluginManager.instance.register_handler(cls.pm)
 
     def __init__(self, library, dir=None):
-        super(ExFalsoWindow, self).__init__(dialog=False)
+        super().__init__(dialog=False)
         self.set_title("Ex Falso")
         self.set_default_size(750, 475)
         self.enable_window_tracking("exfalso")
@@ -274,7 +274,7 @@ class PreferencesWindow(QLPreferencesWindow):
     def __init__(self, parent):
         if self.is_not_unique():
             return
-        super(QLPreferencesWindow, self).__init__()
+        super().__init__()
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)

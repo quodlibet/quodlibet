@@ -578,7 +578,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         # it's not of much use here.
         if key is not None and (key.startswith("~#") or key == "title"):
             return False
-        return super(CoverGrid, self).can_filter(key)
+        return super().can_filter(key)
 
     def can_filter_albums(self):
         return True

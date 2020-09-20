@@ -16,7 +16,7 @@ from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 
 
-class EditableUndo(object):
+class EditableUndo:
     """A simple undo/redo implementation for gtk widgets that
     support the gtk.Editable interface"""
 
@@ -152,7 +152,7 @@ class EditableUndo(object):
 class Entry(Gtk.Entry):
 
     def __init__(self, *args, **kwargs):
-        super(Entry, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self._max_width_chars = -1
 
         # the default is way too much
@@ -195,15 +195,15 @@ class Entry(Gtk.Entry):
 
 class UndoEntry(Entry, EditableUndo):
     def __init__(self, *args):
-        super(UndoEntry, self).__init__(*args)
+        super().__init__(*args)
         self.set_undo(True)
 
     def set_text(self, *args):
-        super(UndoEntry, self).set_text(*args)
+        super().set_text(*args)
         self.reset_undo()
 
 
-class ClearEntryMixin(object):
+class ClearEntryMixin:
     """A clear icon mixin supporting newer Gtk.Entry or
     a separate clear button as a fallback.
     """
@@ -238,7 +238,7 @@ class ClearEntry(UndoEntry, ClearEntryMixin):
     __gsignals__ = ClearEntryMixin.__gsignals__
 
 
-class ValidatingEntryMixin(object):
+class ValidatingEntryMixin:
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or None (black).
@@ -271,5 +271,5 @@ class ValidatingEntryMixin(object):
 
 class ValidatingEntry(ClearEntry, ValidatingEntryMixin):
     def __init__(self, validator=None, *args):
-        super(ValidatingEntry, self).__init__(*args)
+        super().__init__(*args)
         self.set_validate(validator)

@@ -210,7 +210,7 @@ class LimitSearchBarBox(SearchBarBox):
         }
 
         def __init__(self):
-            super(LimitSearchBarBox.Limit, self).__init__(spacing=3,
+            super().__init__(spacing=3,
                                                           no_show_all=True)
             label = Gtk.Label(label=_("_Limit:"))
             self.pack_start(label, True, True, 0)
@@ -244,7 +244,7 @@ class LimitSearchBarBox(SearchBarBox):
             return self.__weight.get_active()
 
     def __init__(self, show_limit=False, *args, **kwargs):
-        super(LimitSearchBarBox, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.__limit = self.Limit()
         self.__limit.set_visible(show_limit)
         self.pack_start(self.__limit, False, True, 0)

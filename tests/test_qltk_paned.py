@@ -13,7 +13,7 @@ from . import TestCase
 from .helper import visible
 
 
-class TRPaned(object):
+class TRPaned:
     Kind = None
 
     def test_ctr(self):
@@ -91,7 +91,7 @@ class TConfigRPaned(TestCase):
         self.failUnlessAlmostEqual(config_value, 0.10, 2)
 
 
-class TMultiRPaned(object):
+class TMultiRPaned:
     Kind = None
 
     def test_set_widgets(self):
@@ -167,7 +167,7 @@ class TMultiRVPaned(TestCase, TMultiRPaned):
     Kind = MultiRVPaned
 
 
-class TConfigMultiRPaned(object):
+class TConfigMultiRPaned:
 
     def setUp(self):
         config.init()

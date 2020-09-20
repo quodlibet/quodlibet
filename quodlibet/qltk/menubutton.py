@@ -16,7 +16,7 @@ class MenuButton(Gtk.MenuButton):
     """
 
     def __init__(self, widget=None, arrow=False, down=True):
-        super(MenuButton, self).__init__()
+        super().__init__()
 
         bbox = Gtk.HBox(spacing=3)
         if widget:
@@ -40,7 +40,7 @@ class MenuButton(Gtk.MenuButton):
 class SmallMenuButton(MenuButton):
 
     def __init__(self, *args, **kwargs):
-        super(SmallMenuButton, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.set_size_request(26, 26)
         add_css(self, """

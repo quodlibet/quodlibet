@@ -14,7 +14,7 @@ from quodlibet.plugins.gui import UserInterfacePlugin
 
 class RatingBox(Gtk.VBox):
     def __init__(self):
-        super(RatingBox, self).__init__(self)
+        super().__init__(self)
 
         self.thumb_ups = 1
         self.thumb_downs = 1

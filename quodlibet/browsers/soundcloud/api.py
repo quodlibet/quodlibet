@@ -23,7 +23,7 @@ class RestApi(GObject.Object):
     """Semi-generic REST API client, using libsoup / `http.py`"""
 
     def __init__(self, root):
-        super(RestApi, self).__init__()
+        super().__init__()
         self._cancellable = Gio.Cancellable.new()
         self.root = root
 
@@ -98,7 +98,7 @@ class SoundcloudApiClient(RestApi):
 
     def __init__(self):
         print_d("Starting Soundcloud API...")
-        super(SoundcloudApiClient, self).__init__(self.API_ROOT)
+        super().__init__(self.API_ROOT)
         self.access_token = config.get("browsers", "soundcloud_token", None)
         self.online = bool(self.access_token)
         self.user_id = config.get("browsers", "soundcloud_user_id", None)

@@ -42,13 +42,13 @@ class FollowOrder(ShufflePlugin, OrderInOrder, OrderRemembered):
 
     def previous(self, *args):
         self.__last_path = None
-        return super(FollowOrder, self).previous(*args)
+        return super().previous(*args)
 
     def set(self, playlist, iter):
         if iter:
             self.__last_path = playlist.get_path(iter)
-        return super(FollowOrder, self).set(playlist, iter)
+        return super().set(playlist, iter)
 
     def reset(self, playlist):
-        super(FollowOrder, self).reset(playlist)
+        super().reset(playlist)
         self.__last_path = None

@@ -26,7 +26,7 @@ def has_sentry_metadata(value):
         return False
 
 
-class Serializer(object):
+class Serializer:
     types = ()
 
     def __init__(self, manager):
@@ -131,7 +131,7 @@ class TypeSerializer(Serializer):
     types = class_types
 
     def can(self, value):
-        return not super(TypeSerializer, self).can(value) \
+        return not super().can(value) \
             and has_sentry_metadata(value)
 
     def serialize(self, value, **kwargs):

@@ -16,14 +16,14 @@ from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import AudioFile
 
 
-class FakeRMSMessage(object):
+class FakeRMSMessage:
     type = Gst.MessageType.ELEMENT
 
     def __init__(self, rms_values=None):
         self.rms_values = rms_values or []
 
     def get_structure(self):
-        class FakeStructure(object):
+        class FakeStructure:
 
             def __init__(self, rms_values):
                 self.rms_values = rms_values

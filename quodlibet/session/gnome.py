@@ -19,7 +19,7 @@ class GnomeSessionClient(SessionClient):
     DBUS_CLIENT_INTERFACE = 'org.gnome.SessionManager.ClientPrivate'
 
     def __init__(self):
-        super(GnomeSessionClient, self).__init__()
+        super().__init__()
         self._client_priv = None
         self._client_path = None
         self._sig_id = None

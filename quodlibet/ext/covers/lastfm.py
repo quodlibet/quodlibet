@@ -35,7 +35,7 @@ class LastFMCover(ApiCoverSourcePlugin):
         if mbid:
             return path.join(cover_dir, escape_filename(mbid))
         else:
-            return super(LastFMCover, self).cover_path
+            return super().cover_path
 
     @property
     def url(self):
