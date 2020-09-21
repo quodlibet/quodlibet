@@ -18,7 +18,7 @@ from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 from quodlibet import config
 
 
-@skipUnless(dbus, "no python-dbus")
+@skipUnless(dbus, "no dbus module")
 class TMediaServer(PluginTestCase):
 
     def setUp(self):

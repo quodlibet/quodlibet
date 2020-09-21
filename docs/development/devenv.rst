@@ -59,3 +59,14 @@ development.
 Check out the `win_installer
 <https://github.com/quodlibet/quodlibet/tree/master/dev-utils/win_installer>`__
 directory in the Git repo for further instructions.
+
+
+Poetry
+------
+Across all environments, we now support virtualenvs with pip dependencies,
+managed by [Poetry](https://python-poetry.org/).
+
+Installation, once cloned is just::
+
+    $ poetry install
+

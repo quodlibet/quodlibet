@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -55,7 +54,7 @@ class Version(tuple):
 class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
-    PYTHON3 = Version("Python3", 3, 6)
+    PYTHON3 = Version("Python3", 3, 7)
     MUTAGEN = Version("Mutagen", 1, 34,
         message="Use the Quod Libet unstable PPAs/repos to get a newer "
                 "mutagen version.")
