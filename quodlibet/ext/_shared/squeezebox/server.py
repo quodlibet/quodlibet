@@ -98,7 +98,7 @@ class SqueezeboxServer:
             self.telnet.write((line + "\n").encode('utf-8'))
             if not want_reply:
                 return None
-            raw_response = self.telnet.read_until(b"\n").decode('utf-8')
+            raw_response = self.telnet.read_until(b"\n", 5).decode('utf-8')
         except socket.error as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
