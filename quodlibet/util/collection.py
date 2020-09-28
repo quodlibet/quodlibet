@@ -683,24 +683,25 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             # TODO: validate some top-level tag data
             node = tree.find("title")
             if self.name != node.text:
-                print_w("Found name \"%s\" instead of \"%s\" for %s"
+                print_w("Playlist was named %r in XML instead of %r at %r"
                         % (node.text, self.name, self.path))
             for node in tree.iterfind('.//track'):
-                location = node.find('location')
-                path = location.text.replace('\n', '').replace('\r', '')
+                location = node.findtext('location').strip()
+                path = location.replace('\n', '').replace('\r', '')
                 if path in library:
                     self._list.append(library[path])
                 elif library and library.masked(path):
                     self._list.append(path)
                 else:
                     # TODO: handle missing playlist items (#3105, #729, #3131)
-                    print_w("Couldn't find %s in playlist at %s, "
-                            "but perhaps its metadata will help: %s"
-                            % (path, self.path, ET.tostring(node)))
+                    node_dump = ET.tostring(node, method="xml").decode("utf-8")
+                    print_w("Couldn't find %r in playlist at %r. "
+                            "Perhaps its metadata will help: %r"
+                            % (path, self.path, node_dump))
                     self._list.append(path)
                     library.mask(path)
         except ET.ParseError as e:
-            print_w("Couldn't load %s (%s)" % (self.path, e))
+            print_w("Couldn't load %r (%s)" % (self.path, e))
 
     @classmethod
     def filename_for(cls, name: str):
