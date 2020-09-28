@@ -55,10 +55,8 @@ Cover Source Plugins
 Creating a new Plugin
 ^^^^^^^^^^^^^^^^^^^^^
 
-#. Create a file ``myplugin.py`` and place it under ``~/.config/quodlibet/plugins``
-   (create the folder if needed). Alternatively (better),
-   if you are running from source, put it in ``quodlibet/ext`` under a
-   directory according to its plugin type.
+#. Assuming you are running from source, put it in ``quodlibet/ext`` under a
+   directory according to its plugin type (``events/`` etc).
 
 #. Write the following into the file::
 
@@ -68,7 +66,7 @@ Creating a new Plugin
         PLUGIN_ID = "myplugin"
         PLUGIN_NAME = "My Plugin"
 
-#. Restart Quod Libet
+#. Restart Quod Libet, or click the ``Refresh`` button in the plugins window.
 
 #. In Quod Libet open ``Music`` ⇒ ``Plugins`` and search the list for "My 
    Plugin"
