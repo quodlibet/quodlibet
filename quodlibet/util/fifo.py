@@ -35,19 +35,11 @@ def _write_fifo(fifo_path, data):
     assert isinstance(data, bytes)
 
     # This will raise if the FIFO doesn't exist or there is no reader
+    fifo = os.open(fifo_path, os.O_WRONLY | os.O_NONBLOCK)
     try:
-        fifo = os.open(fifo_path, os.O_WRONLY | os.O_NONBLOCK)
+        os.close(fifo)
     except OSError:
-        try:
-            os.unlink(fifo_path)
-        except OSError:
-            pass
-        raise
-    else:
-        try:
-            os.close(fifo)
-        except OSError:
-            pass
+        pass
 
     try:
         # This is a total abuse of Python! Hooray!
@@ -57,11 +49,6 @@ def _write_fifo(fifo_path, data):
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(data)
     except (OSError, IOError, TypeError):
-        # Unable to write to the fifo. Removing it.
-        try:
-            os.unlink(fifo_path)
-        except OSError:
-            pass
         raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
 
 
