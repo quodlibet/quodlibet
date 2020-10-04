@@ -10,6 +10,7 @@
 from gi.repository import GLib
 from gi.repository import Gio
 
+from quodlibet import commands, app
 from quodlibet.util import dbusutils
 from quodlibet.query import Query
 from quodlibet.qltk.songlist import SongList
@@ -45,6 +46,9 @@ class DBusHandler:
         </method>
         <method name="CurrentSong">
           <arg direction="out" type="a{ss}" />
+        </method>
+        <method name="Rate">
+          <arg direction="in"  type="s" name="rating" />
         </method>
         <method name="Next"></method>
         <method name="Previous"></method>
@@ -162,6 +166,15 @@ class DBusHandler:
 
     def CurrentSong(self):
         return self.__dict(self._player.song)
+
+    def Rate(self, rating: str):
+        """
+        Rates the currently playing song
+
+        :param rating: A value between 0 and 1.
+                       Prefix with +/- to indicate a relative change
+        """
+        commands._rating(app, rating)
 
     def Next(self):
         self._player.next()
