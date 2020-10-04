@@ -1,4 +1,4 @@
-# Copyright 2018 Nick Boultbee
+# Copyright 2018-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -128,9 +128,10 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     def __init__(self, songs, manager, config=None, headless=False, **kwargs):
         super().__init__(title=_("Cover Art Download"), use_header_bar=True,
                          **kwargs)
+        self.set_default_size(1400, 720)
+        self.enable_window_tracking(f"{DownloadCoverArt.PLUGIN_ID}")
         self.config = config
         self.headless = headless
-        self.set_default_size(1400, 720)
         self.flow_box = box = Gtk.FlowBox()
         self.model = Gio.ListStore()
         self.songs = songs
