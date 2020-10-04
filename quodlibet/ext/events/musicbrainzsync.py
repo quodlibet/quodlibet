@@ -9,16 +9,8 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.util.thread import call_async_background, Cancellable
 
 try:
-    # https://github.com/alastair/python-musicbrainzngs/issues/157
-    # Work around warnings getting enabled in musicbrainzngs
-    import warnings
-
-    f = list(warnings.filters)
     import musicbrainzngs
-
-    warnings.filters[:] = f
 except ImportError:
-
     raise plugins.MissingModulePluginException("musicbrainzngs")
 
 from gi.repository import Gtk
