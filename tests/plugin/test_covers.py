@@ -28,3 +28,8 @@ class TCovers(PluginTestCase):
             cls = self.plugins["musicbrainz-cover"].cls
             self.assertTrue(isinstance(cls(song).cover_path, fsnative))
             self.assertTrue(isinstance(cls(song2).cover_path, fsnative))
+
+        if "discogs-cover" in self.plugins:
+            cls = self.plugins["discogs-cover"].cls
+            self.assertTrue(isinstance(cls(song).cover_path, fsnative))
+            self.assertTrue(isinstance(cls(song2).cover_path, fsnative))

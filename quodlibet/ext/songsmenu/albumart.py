@@ -939,8 +939,8 @@ class CoverSearch:
         result = []
         try:
             result = engine().start(search, limit)
-        except Exception:
-            print_w("[AlbumArt] %s: %r" % (engine.__name__, query))
+        except Exception as e:
+            print_w(f"[AlbumArt] {engine.__name__}: {query!r} ({e})")
             print_exc()
 
         self.finished += 1

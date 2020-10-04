@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2014-2018 Nick Boultbee
+#      2014-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -235,8 +235,7 @@ class CoverManager(GObject.Object):
             total = self._total_groupings(all_groups)
 
             frac = len(processed) / total
-            print_d("%s is finished: %d / %d"
-                    % (provider, len(processed), total))
+            print_d(f"Got result for {provider} ({len(processed)} / {total})")
             task.update(frac)
             if frac >= 1:
                 task.finish()
@@ -276,8 +275,7 @@ class CoverManager(GObject.Object):
         all_groups = song_groups(songs, sources)
         print_d("Got %d plugin groupings" % self._total_groupings(all_groups))
 
-        for plugin, groups in all_groups.items():
-            print_d("Getting covers from %s" % plugin)
+        for plugin_cls, groups in all_groups.items():
             for key, group in sorted(groups.items()):
                 song = sorted(group, key=lambda s: s.key)[0]
                 artists = {s.comma('artist') for s in group}
@@ -291,7 +289,7 @@ class CoverManager(GObject.Object):
                     except KeyError:
                         # Artist(s) from other grouped songs, never mind.
                         pass
-                provider = plugin(song)
+                provider = plugin_cls(song)
                 provider.connect('search-complete', search_complete)
                 provider.connect('fetch-failure', failure)
                 provider.search()
