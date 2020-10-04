@@ -4,9 +4,9 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
 from quodlibet import plugins, qltk
 from quodlibet.qltk.entry import UndoEntry
+from quodlibet.util.thread import call_async_background, Cancellable
 
 try:
     # https://github.com/alastair/python-musicbrainzngs/issues/157
@@ -62,8 +62,13 @@ class MusicBrainzSyncPlugin(EventPlugin):
             if ATTR_BRAINZ in song and ATTR_RATING in song
         }
         if len(ratings_dict) > 0:
-            musicbrainzngs.submit_ratings(
-                recording_ratings=ratings_dict
+            call_async_background(
+                musicbrainzngs.submit_ratings,
+                Cancellable(),
+                callback=lambda *args: (),
+                kwargs=dict(
+                    recording_ratings=ratings_dict,
+                ),
             )
 
     def PluginPreferences(self, parent):
