@@ -119,6 +119,7 @@ quodlibet/ext/songsmenu/duplicates.py
 quodlibet/ext/songsmenu/editplaycount.py
 quodlibet/ext/songsmenu/embedded.py
 quodlibet/ext/songsmenu/exact_rating.py
+quodlibet/ext/songsmenu/file_operations.py
 quodlibet/ext/songsmenu/filterall.py
 quodlibet/ext/songsmenu/filterbrowser.py
 quodlibet/ext/songsmenu/fingerprint/__init__.py
