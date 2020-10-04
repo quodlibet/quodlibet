@@ -1,4 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
+#                2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,6 +7,7 @@
 # (at your option) any later version.
 
 import os
+import re
 import unicodedata
 import glob
 import shutil
@@ -32,8 +34,7 @@ from quodlibet.qltk import Icons, Button, Frame
 from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util import connect_obj
 from quodlibet.util.path import strip_win32_incompat_from_path
-from quodlibet.util.dprint import print_d
-
+from quodlibet.util.dprint import print_d, print_e
 
 NBP = os.path.join(quodlibet.get_user_dir(), "lists", "renamepatterns")
 NBP_EXAMPLES = """\
@@ -55,6 +56,26 @@ class SpacesToUnderscores(FilterCheckButton):
 
     def filter(self, original, filename):
         return filename.replace(" ", "_")
+
+
+class ReplaceColons(FilterCheckButton):
+    _label = _("Replace [semi]colon delimiting with hyphens")
+    _tooltip = _('e.g. "iv: allegro.flac -> "iv - allegro.flac"')
+    _section = "rename"
+    _key = "colons"
+    _order = 1.05
+
+    def __init__(self):
+        super().__init__()
+        # If on Windows, force this to be inactive (and hidden)
+        if os.name == 'nt':
+            self.set_active(False)
+            self.set_sensitive(False)
+            self.set_no_show_all(True)
+
+    def filter(self, original, filename):
+        regx = re.compile(r'\s*[:;]\s+\b')
+        return regx.sub(" - ", filename)
 
 
 class StripWindowsIncompat(FilterCheckButton):
@@ -126,8 +147,8 @@ class Entry:
 
 class RenameFiles(Gtk.VBox):
     title = _("Rename Files")
-    FILTERS = [SpacesToUnderscores, StripWindowsIncompat, StripDiacriticals,
-               StripNonASCII, Lowercase]
+    FILTERS = [SpacesToUnderscores, ReplaceColons, StripWindowsIncompat,
+               StripDiacriticals, StripNonASCII, Lowercase]
     handler = RenameFilesPluginHandler()
     IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'bmp']
 
@@ -143,8 +164,8 @@ class RenameFiles(Gtk.VBox):
         hbox = Gtk.HBox(spacing=6)
         cbes_defaults = NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(NBP, cbes_defaults,
-            title=_("Path Patterns"),
-            edit_title=_(u"Edit saved patterns…"))
+                                       title=_("Path Patterns"),
+                                       edit_title=_(u"Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
@@ -184,24 +205,24 @@ class RenameFiles(Gtk.VBox):
         # move art
         moveart_box = Gtk.VBox()
         self.moveart = ConfigCheckButton(
-             _('_Move album art'),
-             "rename", "move_art", populate=True)
+            _('_Move album art'),
+            "rename", "move_art", populate=True)
         self.moveart.set_tooltip_text(
-             _("See '[albumart] filenames' config entry " +
-               "for image search strings"))
+            _("See '[albumart] filenames' config entry "
+              "for image search strings"))
         self.moveart.show()
         moveart_box.pack_start(self.moveart, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(
-             _('_Overwrite album art at target'),
-             "rename", "move_art_overwrite", populate=True)
+            _('_Overwrite album art at target'),
+            "rename", "move_art_overwrite", populate=True)
         self.moveart_overwrite.show()
         moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
         albumart_box.pack_start(moveart_box, False, True, 0)
         # remove empty
         removeemptydirs_box = Gtk.VBox()
         self.removeemptydirs = ConfigCheckButton(
-             _('_Remove empty directories'),
-             "rename", "remove_empty_dirs", populate=True)
+            _('_Remove empty directories'),
+            "rename", "remove_empty_dirs", populate=True)
         self.removeemptydirs.show()
         removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
         albumart_box.pack_start(removeemptydirs_box, False, True, 0)
@@ -241,6 +262,7 @@ class RenameFiles(Gtk.VBox):
         def cell_data_new_name(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
             cell.set_property("text", entry.new_name or u"")
+
         column.set_cell_data_func(render, cell_data_new_name)
 
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -297,7 +319,7 @@ class RenameFiles(Gtk.VBox):
             new_pathfile = ""
             # ensure target is a full path
             if os.path.abspath(new_name) != \
-                   os.path.abspath(os.path.join(os.getcwd(), new_name)):
+                    os.path.abspath(os.path.join(os.getcwd(), new_name)):
                 new_pathfile = new_name
             else:
                 # must be a relative pattern, so prefix the path
@@ -319,7 +341,7 @@ class RenameFiles(Gtk.VBox):
                       "new file or remove the old one.") % {
                         "old-name": util.escape(old_name),
                         "new-name": util.escape(new_name),
-                      },
+                    },
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_button(_("Ignore _All Errors"), RESPONSE_SKIP_ALL)
                 msg.add_icon_button(_("_Stop"), Icons.PROCESS_STOP,
@@ -393,7 +415,7 @@ class RenameFiles(Gtk.VBox):
                         moves.append(fnres)
                 elif "*" in fn:
                     moves.extend(f for f in glob.glob(fn)
-                                     if f in images and f not in moves)
+                                 if f in images and f not in moves)
                 elif fn in images and fn not in moves:
                     moves.append(fn)
             if len(moves) > 0:
@@ -417,13 +439,14 @@ class RenameFiles(Gtk.VBox):
                                 fnmoveto_orig = (fnmoveto_orig +
                                                  "." + str(suffix))
                                 os.rename(fnmoveto, fnmoveto_orig)
-                        print_d("Renaming image %r to %r" %
-                                   (fnmove, fnmoveto), self)
+                        print_d(f"Renaming image {fnmove!r} to {fnmoveto!r}",
+                                self)
                         shutil.move(fnmove, fnmoveto)
                         if overwrite and fnmoveto_orig:
                             os.remove(fnmoveto_orig)
                         images.remove(fnmove)
-                    except Exception:
+                    except Exception as e:
+                        print_e(f"Couldn't move file ({e})")
                         util.print_exc()
 
     def _preview(self, songs):
@@ -442,7 +465,7 @@ class RenameFiles(Gtk.VBox):
                   "does not start from root. To avoid misnamed "
                   "folders, root your pattern by starting "
                   "it with / or ~/.") % (
-                util.escape(pattern_text))).run()
+                    util.escape(pattern_text))).run()
             return
         else:
             if pattern:

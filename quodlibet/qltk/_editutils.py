@@ -92,10 +92,11 @@ class FilterCheckButton(ConfigCheckButton):
     __gsignals__ = {
         "preview": (GObject.SignalFlags.RUN_LAST, None, ())
         }
+    _tooltip = None
 
     def __init__(self):
         super().__init__(
-            self._label, self._section, self._key)
+            self._label, self._section, self._key, tooltip=self._tooltip)
         try:
             self.set_active(config.getboolean(self._section, self._key))
         except:
