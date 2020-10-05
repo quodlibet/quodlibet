@@ -5,6 +5,8 @@
 
 import os
 import glob
+from typing import Text
+
 from gi.repository import Gtk, GObject
 
 from tests import TestCase, mkdtemp
@@ -13,8 +15,10 @@ from senf import fsnative
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.qltk.renamefiles import StripDiacriticals, StripNonASCII, \
-    Lowercase, SpacesToUnderscores, StripWindowsIncompat, RenameFiles
+from quodlibet.qltk.renamefiles import (StripDiacriticals, StripNonASCII,
+                                        Lowercase, SpacesToUnderscores,
+                                        StripWindowsIncompat, RenameFiles,
+                                        ReplaceColons)
 
 
 class TFilter(TestCase):
@@ -75,6 +79,39 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
                 self.c.filter(empty, u'foo. /bar .'), "foo._/bar _")
 
 
+class TReplaceColons(TFilter, TFilterMixin):
+    Kind = ReplaceColons
+
+    def test_leaves_colons_without_space(self):
+        assert self.unaffected("Nu:Tone & others - mix.flac")
+        assert self.unaffected("Elastica - 2:1.mp3")
+
+    def test_replaces_colons_as_delimiters(self):
+        assert self.conv("ii: allegro") == "ii - allegro"
+
+    def test_replaces_semicolons_as_delimiters(self):
+        assert (self.conv("Mozart; Requiem in D minor")
+                == "Mozart - Requiem in D minor")
+
+    def test_replaces_colons_with_lots_of_spaces(self):
+        assert (self.conv("Cello Suite No 1  :  Prelude")
+                == self.conv("Cello Suite No 1 - Prelude"))
+
+    def test_replaces_colons_with_non_word(self):
+        assert (self.conv('No. 1 "Minute": Molto vivace')
+                == self.conv('No. 1 "Minute" - Molto vivace'))
+
+    def test_type(self):
+        empty = fsnative(u"")
+        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
+
+    def conv(self, s: Text):
+        return self.c.filter(fsnative(""), s)
+
+    def unaffected(self, s: Text) -> bool:
+        return self.conv(s) == s
+
+
 class TStripDiacriticals(TFilter, TFilterMixin):
     Kind = StripDiacriticals
 
@@ -115,7 +152,6 @@ class TLowercase(TFilter, TFilterMixin):
 
 
 class Renamer(Gtk.EventBox):
-
     __gsignals__ = {
         'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
@@ -144,6 +180,7 @@ class Renamer(Gtk.EventBox):
 class Song(AudioFile):
     """A mock AudioFile belong to one of three albums,
     based on a single number"""
+
     def __init__(self, target, num):
         super().__init__()
 
@@ -156,7 +193,6 @@ class Song(AudioFile):
 
 
 class TMoveArt(TestCase):
-
     Kind = Renamer
 
     def setUp(self):
@@ -172,8 +208,7 @@ class TMoveArt(TestCase):
             ['cover.jpg', 'info.jpg', 'title.jpg', 'title2.jpg']
 
     def generate_songs(self, path, quantity):
-        return list(map(lambda num, path=path:
-                            Song(path, num), range(quantity)))
+        return [Song(path, num) for num in range(quantity)]
 
     def generate_files(self, path, filenames):
         pathfiles = []
@@ -192,16 +227,16 @@ class TMoveArt(TestCase):
 
     def song_set(self, path):
         songs = self.generate_songs(path, 1)
-        return (self.generate_files(path,
-            list(map(lambda song: os.path.basename(song['~filename']),
-                         songs))), songs)
+        files = self.generate_files(path, [os.path.basename(song['~filename'])
+                                           for song in songs])
+        return files, songs
 
     def source_target(self, root_path, album, artist):
         return (os.path.join(root_path, album, artist),
                 os.path.join(root_path + "_2", album, artist))
 
     def moveart_set(self, artist='artist', album='album',
-                     source=None, target=None, file_pattern="<title>"):
+                    source=None, target=None, file_pattern="<title>"):
         source2, target2 = \
             self.source_target(self.root_path, artist, album)
         if not source:
@@ -215,7 +250,7 @@ class TMoveArt(TestCase):
         self.renamer.rename(pattern, songs)
         return (source, target)
 
-    def test_moveart_no_move(self):
+    def test_no_move(self):
         self.reset_environment()
 
         # move art not set, no art files should move
@@ -225,7 +260,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_move_defaults(self):
+    def test_move_defaults(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
 
@@ -237,7 +272,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_move_all_wildcard(self):
+    def test_move_all_wildcard(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
@@ -249,7 +284,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_move_escape_glob_characters(self):
+    def test_move_escape_glob_characters(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
@@ -262,7 +297,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_relative_pattern(self):
+    def test_relative_pattern(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
@@ -274,7 +309,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_selective_pattern(self):
+    def test_selective_pattern(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "<artist>.jpg")
@@ -287,7 +322,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_overwrite(self):
+    def test_overwrite(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
@@ -320,7 +355,7 @@ class TMoveArt(TestCase):
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
-    def test_moveart_multi_source(self):
+    def test_multi_source(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
