@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2015-2018 Nick Boultbee
+#      2015-2020 Nick Boultbee
 #           2019 Joschua Gandert
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,6 +11,7 @@ import glob
 import os.path
 import re
 import sre_constants
+from typing import Text
 
 from senf import fsn2text
 
@@ -26,6 +27,10 @@ def get_ext(s):
 
 def prefer_embedded():
     return config.getboolean("albumart", "prefer_embedded", False)
+
+
+def word_regex(s: Text) -> re.Pattern:
+    return re.compile(r'(\b|_)' + s + r'(\b|_)')
 
 
 class EmbeddedCover(CoverSourcePlugin):
@@ -56,18 +61,19 @@ class FilesystemCover(CoverSourcePlugin):
     PLUGIN_NAME = _("Filesystem cover")
     PLUGIN_DESC = _("Uses commonly named images found in common directories " +
                     "alongside the song.")
+    DEBUG = False
 
-    cover_subdirs = frozenset(
-        ["scan", "scans", "images", "covers", "artwork"])
-    cover_exts = frozenset(["jpg", "jpeg", "png", "gif"])
+    cover_subdirs = {"scan", "scans", "images", "covers", "artwork"}
+    cover_exts = {"jpg", "jpeg", "png", "gif"}
 
-    cover_positive_words = ["front", "cover", "frontcover", "jacket",
-                            "folder", "albumart", "edited"]
-    cover_negative_words = ["back", "inlay", "inset", "inside"]
-    cover_positive_regexes = frozenset(
-        [re.compile(r'(\b|_)' + s + r'(\b|_)') for s in cover_positive_words])
-    cover_negative_regexes = frozenset(
-        [re.compile(r'(\b|_|)' + s + r'(\b|_)') for s in cover_negative_words])
+    cover_name_regexes = {word_regex(s)
+                          for s in ("^folder$", "^cover$", "^front$")}
+    cover_positive_regexes = {word_regex(s)
+                              for s in
+                              [".+front", "frontcover", "jacket", "albumart",
+                               "edited", ".+cover"]}
+    cover_negative_regexes = {word_regex(s)
+                              for s in ["back", "inlay", "inset", "inside"]}
 
     @classmethod
     def group_by(cls, song):
@@ -141,7 +147,7 @@ class FilesystemCover(CoverSourcePlugin):
                             fns.append((entry, sub_entry))
 
             for sub, fn in fns:
-                dec_lfn = fsn2text(fn).lower()
+                dec_lfn = os.path.splitext(fsn2text(fn))[0].lower()
 
                 score = 0
                 # check for the album label number
@@ -150,21 +156,40 @@ class FilesystemCover(CoverSourcePlugin):
                     score += 20
 
                 # Track-related keywords
-                values = self.song.list("~people") + [self.song("album")]
+                values = set(self.song.list("~people")) | {self.song("album")}
                 lowers = [value.lower().strip() for value in values
                           if len(value) > 1]
-                score += 2 * sum([value in dec_lfn for value in lowers])
+                total_terms = sum(len(s.split()) for s in lowers)
+                total_words = len([word for word in dec_lfn.split()
+                                   if len(word) > 1])
+                # Penalise for many extra words in filename (wrong file?)
+                length_penalty = (- int((total_words - 1) / total_terms)
+                                  if total_terms else 0)
+
+                # Matching tag values are very good
+                score += 3 * sum([value in dec_lfn for value in lowers])
+
+                # Well known names matching exactly (folder.jpg)
+                score += 4 * sum(r.search(dec_lfn) is not None
+                                 for r in self.cover_name_regexes)
 
                 # Generic keywords
-                score += 3 * sum(r.search(dec_lfn) is not None
+                score += 2 * sum(r.search(dec_lfn) is not None
                                  for r in self.cover_positive_regexes)
 
-                score -= 2 * sum(r.search(dec_lfn) is not None
+                score -= 3 * sum(r.search(dec_lfn) is not None
                                  for r in self.cover_negative_regexes)
 
-                # print("[%s - %s]: Album art \"%s\" scores %d." %
-                #         (self.song("artist"), self.song("title"), fn, score))
-                if score > 0:
+                sub_text = f" (in {sub!r})" if sub else ""
+                if self.DEBUG:
+                    print(f"[{self.song('~~people~title')}]: "
+                          f"Album art {fn!r}{sub_text} "
+                          f"scores {score} ({length_penalty})")
+                score += length_penalty
+
+                # Let's only match if we're quite sure.
+                # This allows other sources to kick in
+                if score > 2:
                     if sub is not None:
                         fn = os.path.join(sub, fn)
                     images.append((score, os.path.join(base, fn)))
