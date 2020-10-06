@@ -7,6 +7,7 @@
 import glob
 import os
 import shutil
+from os.path import basename
 
 from gi.repository import Gio
 
@@ -51,6 +52,7 @@ class TCoverManager(TestCase):
         return AudioFile({
             "~filename": os.path.join(self.dir, fn),
             "album": u"Quuxly",
+            "artist": u"Some One",
         })
 
     def tearDown(self):
@@ -76,17 +78,19 @@ class TCoverManager(TestCase):
         del(self.song["labelid"])
 
     def test_regular(self):
-        for fn in ["cover.png", "folder.jpg", "frontcover.jpg",
-                   "front_folder_cover.gif", "jacket_cover.front.folder.jpeg"]:
+        for fn in ["cover.png", "folder.jpg", "Quuxly - front.png",
+                   "Quuxly_front_folder_cover.gif"]:
             f = self.add_file(fn)
-            assert path_equal(
-                os.path.abspath(self._find_cover(self.song).name), f)
+            cover = self._find_cover(self.song)
+            assert cover, f"No cover found after adding {fn}"
+            assert path_equal(os.path.abspath(cover.name), f)
         self.test_labelid() # labelid must work with other files present
 
     def test_file_encoding(self):
-        f = self.add_file(fsnative(u"öäü - cover.jpg"))
+        f = self.add_file(fsnative(u"öäü - Quuxly - cover.jpg"))
         self.assertTrue(isinstance(self.song("album"), str))
         h = self._find_cover(self.song)
+        assert h, "Nothing found"
         self.assertEqual(normalize_path(h.name), normalize_path(f))
 
     def test_glob(self):
@@ -185,8 +189,8 @@ class TCoverManager(TestCase):
             cover = self._find_cover(song)
             if cover:
                 actual = os.path.abspath(cover.name)
-                assert path_equal(
-                    actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
+                assert path_equal(actual, f), \
+                    f"{basename(f)!r} should trump {basename(actual)!r}"
             else:
                 self.failIf(should_find, msg="Couldn't find %s for %s" %
                                              (f, song("~filename")))
