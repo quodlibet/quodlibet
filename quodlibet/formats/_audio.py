@@ -465,7 +465,7 @@ class AudioFile(dict, ImageContainer):
                 # Avoid circular references from formats/__init__.py
                 from quodlibet.util.collection import Playlist
                 playlists = Playlist.playlists_featuring(self)
-                return "\n".join([s.name for s in playlists]) or default
+                return "\n".join(s.name for s in playlists) or default
             elif key.startswith("#replaygain_"):
                 try:
                     val = self.get(key[1:], default)

@@ -8,6 +8,7 @@
 # (at your option) any later version.
 
 from __future__ import absolute_import
+from __future__ import annotations
 
 import os
 import random
@@ -19,7 +20,8 @@ from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
 from quodlibet import ngettext, _
 from quodlibet import util
 from quodlibet import config
-from quodlibet.formats._audio import TAG_TO_SORT, NUMERIC_ZERO_DEFAULT
+from quodlibet.formats._audio import (TAG_TO_SORT, NUMERIC_ZERO_DEFAULT,
+                                      AudioFile)
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
 from collections import Iterable
@@ -33,6 +35,7 @@ from datetime import datetime
 from os.path import splitext, basename, dirname, exists
 from xml.etree import ElementTree as ET
 from xml.etree.ElementTree import ElementTree, Element
+
 
 XSPF_NS = "http://xspf.org/ns/0/"
 
@@ -337,14 +340,9 @@ class Playlist(Collection, Iterable):
     __instances: "List[Playlist]" = []
 
     @classmethod
-    def playlists_featuring(cls, song):
-        """Returns the list of playlists in which this song appears"""
-
-        playlists = []
-        for instance in cls.__instances:
-            if song in instance._list:
-                playlists.append(instance)
-        return playlists
+    def playlists_featuring(cls, song: AudioFile) -> Iterable[Playlist]:
+        """Returns a generator yielding playlists in which this song appears"""
+        return (pl for pl in cls.__instances if song in pl._list)
 
     def get(self, key, default=u"", connector=u" - "):
         if key == "~name":
