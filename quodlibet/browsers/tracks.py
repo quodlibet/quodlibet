@@ -1,4 +1,4 @@
-# Copyright 2004-2018 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee,
 #           2018-2019 Peter Strulo
 #
@@ -50,7 +50,7 @@ class PreferencesButton(Gtk.HBox):
 class TrackList(Browser):
     name = _("Track List")
     accelerated_name = _("_Track List")
-    keys = ["SearchBar"]
+    keys = ["SearchBar", "TrackList"]
     priority = 1
 
     def pack(self, songpane):
