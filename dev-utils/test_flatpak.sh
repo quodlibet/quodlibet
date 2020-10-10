@@ -10,6 +10,6 @@ if [[ $1 == "inflatpak" ]]; then
     python3 -m pip install pytest flake8
     python3 setup.py test
 else
-    flatpak run --devel --command="bash" \
+    flatpak run --env=LC_ALL=C.utf8 --devel --command="bash" \
         io.github.quodlibet.QuodLibet test_flatpak.sh inflatpak
 fi
