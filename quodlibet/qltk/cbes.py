@@ -1,4 +1,4 @@
-# Copyright 2005-2011 Joe Wreschnig, Michael Urman, Christoph Reiter,
+# Copyright 2005-2020 Joe Wreschnig, Michael Urman, Christoph Reiter,
 #                     Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -15,7 +15,7 @@ from quodlibet import _
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.util import GSignals
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, escape
 from quodlibet.qltk import entry
 from quodlibet.qltk import Icons
 
@@ -23,8 +23,8 @@ from quodlibet.qltk import Icons
 class _KeyValueEditor(qltk.Window):
     """Base class for key-value edit widgets"""
 
-    _WIDTH = 400
-    _HEIGHT = 300
+    _WIDTH = 500
+    _HEIGHT = 400
 
     def __init__(self, title, validator=None):
         super().__init__()
@@ -35,7 +35,7 @@ class _KeyValueEditor(qltk.Window):
         self.add(Gtk.VBox(spacing=6))
 
         t = Gtk.Table(n_rows=2, n_columns=3)
-        t.set_row_spacings(3)
+        t.set_row_spacings(6)
         t.set_col_spacing(0, 3)
         t.set_col_spacing(1, 12)
 
@@ -70,6 +70,7 @@ class _KeyValueEditor(qltk.Window):
         view.set_rules_hint(True)
         render = Gtk.CellRendererText()
         render.props.ellipsize = Pango.EllipsizeMode.END
+        render.set_padding(3, 3)
         column = Gtk.TreeViewColumn("", render)
         column.set_cell_data_func(render, self.__cdf, None)
         view.append_column(column)
@@ -78,7 +79,7 @@ class _KeyValueEditor(qltk.Window):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
-        self.get_child().pack_start(sw, True, True, 0)
+        self.get_child().pack_start(sw, True, True, 3)
 
         menu = Gtk.Menu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
@@ -103,8 +104,8 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(name, 'activate', Gtk.Entry.grab_focus, self.value)
         connect_obj(self.value, 'activate', Gtk.Button.clicked, add)
         self.value.connect('changed', self.__changed, [add])
-        connect_obj(add,
-            'clicked', self.__add, selection, name, self.value, self.model)
+        connect_obj(add, 'clicked', self.__add, selection, name, self.value,
+                    self.model)
         selection.connect('changed', self.__set_text, name, self.value, rem_b)
         view.connect('popup-menu', self.__popup, menu)
         connect_obj(rem_b, 'clicked', self.__remove, view)
@@ -138,8 +139,10 @@ class _KeyValueEditor(qltk.Window):
 
     def __cdf(self, column, cell, model, iter, data):
         row = model[iter]
-        content, name = row[0], row[1]
-        cell.set_property('text', '%s\n\t%s' % (name, content))
+        content, name = row
+        cell.set_property("markup",
+                          f"<b>{escape(name)}</b>\n"
+                          f"<tt>{escape(content)}</tt>")
 
     def __changed(self, entry, buttons):
         for b in buttons:
@@ -184,10 +187,6 @@ class StandaloneEditor(_KeyValueEditor):
     """A key-value pair editor that can be used without CBES.
     Saves to disk in a single file of the same format with suffix '.saved'
     """
-
-    # Make this editor a bit bigger
-    _WIDTH = 500
-    _HEIGHT = 350
 
     @classmethod
     def load_values(cls, filename):
@@ -297,8 +296,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         self.add(new_entry)
 
         connect_obj(self, 'destroy', self.set_model, None)
-        connect_obj(self, 'changed', self.__changed, model,
-            validator, title)
+        connect_obj(self, 'changed', self.__changed, model, validator, title)
 
     def enable_clear_button(self):
         self.get_child().enable_clear_button()
