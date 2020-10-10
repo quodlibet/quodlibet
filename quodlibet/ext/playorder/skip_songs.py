@@ -20,12 +20,12 @@ pconfig = PluginConfig("skip_songs")
 pconfig.defaults.set("threshold", 0.0)
 
 
-class SkipZeros(ShufflePlugin, OrderInOrder):
+class SkipDislikedSongs(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "skip_songs"
-    PLUGIN_NAME = _("Skip Songs")
+    PLUGIN_NAME = _("Skip Disliked Songs")
     PLUGIN_ICON = Icons.GO_JUMP
-    PLUGIN_DESC = _("Playback skips over songs with a rating equal or below a "
-                    "given threshold.")
+    PLUGIN_DESC = _("A shuffle plugin that skips playback of songs with "
+                    "a rating equal or below to a given threshold.")
 
     @classmethod
     def PluginPreferences(self, window):
