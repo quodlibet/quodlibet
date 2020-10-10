@@ -10,7 +10,6 @@ import os
 import sys
 import threading
 import time
-from urllib.request import build_opener
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 import feedparser
@@ -136,9 +135,6 @@ class Feed(list):
 
     def parse(self):
         try:
-            if not self._check_feed():
-                return False
-
             doc = feedparser.parse(self.uri)
         except Exception as e:
             print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
@@ -209,40 +205,6 @@ class Feed(list):
                     self.insert(0, song)
         self.__lastgot = time.time()
         return bool(uris)
-
-    def _check_feed(self):
-        """Validate stream a bit - failing fast where possible.
-
-           Constructs an equivalent(ish) HEAD request,
-           without re-writing feedparser completely.
-           (it never times out if reading from a stream - see #2257)"""
-        if self.uri.startswith("file://"):
-            # Assume all local files have the right content.
-            return True
-        req = feedparser._build_urllib2_request(
-            self.uri, feedparser.USER_AGENT, None, None, None, None, {})
-        req.method = "HEAD"
-        opener = build_opener(feedparser._FeedURLHandler())
-        try:
-            result = opener.open(req)
-            ct_hdr = result.headers.get('Content-Type', "Unknown type")
-            content_type = ct_hdr.split(';')[0]
-            try:
-                status = result.status
-            except AttributeError:
-                print_w("Missing status code for feed %s" % self.uri)
-            else:
-                print_d("Pre-check: %s returned %s with content type '%s'" %
-                        (self.uri, status, content_type))
-                if content_type not in feedparser.ACCEPT_HEADER:
-                    print_w("Unusable content: %s. Perhaps %s is not a feed?" %
-                            (content_type, self.uri))
-                    return False
-                # No real need to check HTTP Status - errors are very unlikely
-                # to be a usable content type, and we should try to parse
-        finally:
-            opener.close()
-        return True
 
 
 class AddFeedDialog(GetStringDialog):
