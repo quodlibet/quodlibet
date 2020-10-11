@@ -30,10 +30,13 @@ from quodlibet.util.cover import CoverManager
 from quodlibet.util.cover.manager import CoverData
 from quodlibet.util.http import download
 
+_FULL_PAT = "<albumartist|<albumartist>|<artist>><album| - <album>| - <title>>"
 SAVE_PATTERNS = [
-    "folder", "cover",
-    "<albumartist|<albumartist>|<artist>><album| - <album>| - <title>>",
-    "<albumartist|<albumartist>|<artist>><album| - <album>| - <title>> - front"
+    "folder",
+    "cover",
+    _FULL_PAT,
+    f"{_FULL_PAT} - front",
+    f"{_FULL_PAT} - back"
 ]
 
 IMAGE_EXTENSIONS = {
