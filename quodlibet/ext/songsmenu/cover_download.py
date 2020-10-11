@@ -52,10 +52,12 @@ class DownloadCoverArt(SongsMenuPlugin):
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
 
-    plugin_handles = any_song(is_a_file)
+    plugin_handles = any_song(lambda song: song("album") and is_a_file(song))
 
     def plugin_album(self, songs):
         manager = app.cover_manager
+        if not (songs and songs[0]("album")):
+            return
         dialog = CoverArtWindow(songs, manager, Config())
         ret = dialog.run()
         if ret == Gtk.ResponseType.APPLY:
