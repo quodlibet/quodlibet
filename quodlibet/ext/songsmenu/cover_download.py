@@ -165,7 +165,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         super().__init__(title=_("Cover Art Download"), use_header_bar=True,
                          **kwargs)
         self.set_default_size(1400, 720)
-        self.enable_window_tracking(f"{DownloadCoverArt.PLUGIN_ID}")
+        id_ = DownloadCoverArt.PLUGIN_ID.lower().replace(" ", "_")
+        self.enable_window_tracking(id_)
         self.config = config
         self.headless = headless
         self.flow_box = box = Gtk.FlowBox()
