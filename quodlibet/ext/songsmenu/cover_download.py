@@ -83,7 +83,8 @@ class ResizeWebImage(Gtk.Image):
     __gsignals__ = {
         # The content-type, size (in bytes) and properties of a cover
         # once discovered
-        'info-known': (GObject.SignalFlags.RUN_LAST, None, (str, int, object))
+        'info-known': (GObject.SignalFlags.RUN_LAST, None, (str, int, object)),
+        'failed': (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     def __init__(self, url, config: Config, cancellable=None):
@@ -94,7 +95,8 @@ class ResizeWebImage(Gtk.Image):
         self.message = msg = Soup.Message.new('GET', self.url)
         self._content_type = None
         self._original = None
-        download(msg, cancellable, self._sent, None)
+        download(msg, cancellable, self._sent, None,
+                 failure_callback=lambda *args: self.emit("failed", self.url))
         self.set_size_request(config.preview_size, config.preview_size)
         self._pixbuf = None
 
@@ -117,7 +119,6 @@ class ResizeWebImage(Gtk.Image):
         else:
             loader.write(result)
             loader.close()
-            print_d("Done")
             self._pixbuf = loader.get_pixbuf()
             self.emit("info-known", self._content_type, self.size,
                       self._pixbuf.props)
@@ -211,6 +212,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
 
+    def _image_failed(self, _view, message: str, widget: Gtk.Widget):
+        print_d(f"Failed downloading image ({message}), removing result.")
+        # FlowBox creates a hidden child on addition
+        self.flow_box.remove(widget.get_parent())
+
     def _create_item_widget(self, item):
         def update(img, content_type, size, props, item, frame):
             format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
@@ -228,7 +234,8 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         img.set_padding(12, 12)
         frame.set_shadow_type(Gtk.ShadowType.NONE)
         frame.set_border_width(12)
-        img.connect('info-known', update, item, frame)
+        img.connect("info-known", update, item, frame)
+        img.connect("failed", self._image_failed, frame)
         reveal = Gtk.Revealer()
         reveal.set_reveal_child(False)
         reveal.props.transition_duration = 800
@@ -267,6 +274,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self.show_all()
 
     def _finished(self, manager, results):
+        self.__cancellable.cancel()
         if not any(results.values()):
             print_w(f"Nothing found from {len(self._groups)} provider(s)")
 

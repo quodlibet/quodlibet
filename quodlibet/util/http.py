@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#        2016-18 Nick Boultbee
+#        2016-20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,13 +7,14 @@
 # (at your option) any later version.
 
 import json
+from collections import Callable
+from typing import Optional, Any
 
 from gi.repository import Soup, Gio, GLib, GObject
 from gi.repository.GObject import ParamFlags, SignalFlags
 
 from quodlibet.const import VERSION, WEBSITE
 from quodlibet.util import print_d, print_w
-
 
 PARAM_READWRITECONSTRUCT = \
     ParamFlags.CONSTRUCT_ONLY | ParamFlags.READABLE | ParamFlags.WRITABLE
@@ -50,7 +51,7 @@ class HTTPRequest(GObject.Object):
 
         inner_cancellable = Gio.Cancellable()
         super().__init__(message=message,
-                                          cancellable=inner_cancellable)
+                         cancellable=inner_cancellable)
         if cancellable is not None:
             cancellable.connect(lambda *x: self.cancel(), None)
 
@@ -156,7 +157,9 @@ class HTTPRequest(GObject.Object):
                                   self.cancellable, spliced, None)
 
 
-def download(message, cancellable, callback, data, try_decode=False):
+def download(message: Any, cancellable: Gio.Cancellable, callback: Callable,
+             data, try_decode: bool = False,
+             failure_callback: Optional[Callable] = None):
     def received(request, ostream):
         ostream.close(None)
         bs = ostream.steal_as_bytes().get_data()
@@ -179,6 +182,8 @@ def download(message, cancellable, callback, data, try_decode=False):
     request.provide_target(Gio.MemoryOutputStream.new_resizable())
     request.connect('received', received)
     request.connect('sent', lambda r, m: r.receive())
+    if failure_callback:
+        request.connect('send-failure', failure_callback)
     request.send()
 
 
