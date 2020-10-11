@@ -1,5 +1,5 @@
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2017 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,36 +7,35 @@
 # (at your option) any later version.
 
 import sys
-from typing import List
+from typing import Optional, Type, Sequence
 
 from gi.repository import Gtk, Pango, Gdk
 
-from quodlibet import C_, _
-from quodlibet import qltk
-from quodlibet import config
-from quodlibet import util
+from quodlibet import C_, _, print_e, print_d
 from quodlibet import app
-
-from quodlibet.util import massagers
-
+from quodlibet import config
+from quodlibet import qltk
+from quodlibet import util
 from quodlibet.formats import AudioFileError
-from quodlibet.qltk.completion import LibraryValueCompletion
-from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
-from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn
-from quodlibet.qltk.wlw import WritingWindow
-from quodlibet.qltk.window import Dialog
-from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
+from quodlibet.plugins import PluginManager
+from quodlibet.plugins.editing import EditTagsPlugin
+from quodlibet.qltk import Icons
 from quodlibet.qltk._editutils import EditingPluginHandler, OverwriteWarning
 from quodlibet.qltk._editutils import WriteFailedError
-from quodlibet.qltk import Icons
-from quodlibet.plugins import PluginManager
+from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.completion import LibraryValueCompletion
+from quodlibet.qltk.models import ObjectStore
+from quodlibet.qltk.tagscombobox import TagsComboBox, TagsComboBoxEntry
+from quodlibet.qltk.views import RCMHintedTreeView, TreeViewColumn, BaseView
+from quodlibet.qltk.window import Dialog
+from quodlibet.qltk.wlw import WritingWindow
+from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.util import connect_obj
+from quodlibet.util import massagers
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 from quodlibet.util.string.splitters import (split_value, split_title,
-    split_people, split_album)
+                                             split_people, split_album)
+from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 
 
 class Comment:
@@ -188,10 +187,12 @@ class AudioFileGroup(dict):
         return all(song.can_change(key) for song in self.songs)
 
 
-class SplitValues(Gtk.ImageMenuItem):
-    tags = False
-    needs: List[str] = []
-    _order = 0.0
+class TagSplitter(EditTagsPlugin):
+    """Splits tag values into other tags"""
+    pass
+
+
+class SplitValues(TagSplitter):
 
     def __init__(self, tag, value):
         super().__init__(
@@ -210,7 +211,7 @@ class SplitValues(Gtk.ImageMenuItem):
         return [(tag, v) for v in split_value(value, spls)]
 
 
-class SplitDisc(Gtk.ImageMenuItem):
+class SplitDisc(TagSplitter):
     tags = ["album"]
     needs = ["discnumber"]
     _order = 0.5
@@ -225,7 +226,7 @@ class SplitDisc(Gtk.ImageMenuItem):
         if disc is not None:
             album = album if len(album) <= 64 else album[:64] + "…"
             self.set_label("{}={}, {}={}".format(tag, album,
-                           self.needs[0], disc))
+                                                 self.needs[0], disc))
 
         self.set_sensitive(disc is not None)
 
@@ -234,7 +235,7 @@ class SplitDisc(Gtk.ImageMenuItem):
         return [(tag, album), ("discnumber", disc)]
 
 
-class SplitTitle(Gtk.ImageMenuItem):
+class SplitTitle(TagSplitter):
     tags = ["title"]
     needs = ["version"]
     _order = 0.5
@@ -253,7 +254,8 @@ class SplitTitle(Gtk.ImageMenuItem):
             versions = [ver if len(ver) <= 64 else ver[:64] + "…"
                         for ver in versions]
             string = (", ".join(["{}={}".format(tag, title)] +
-               ["{}={}".format(self.needs[0], ver) for ver in versions]))
+                                ["{}={}".format(self.needs[0], ver) for ver in
+                                 versions]))
             self.set_label(string)
 
         self.set_sensitive(bool(versions))
@@ -265,7 +267,7 @@ class SplitTitle(Gtk.ImageMenuItem):
         return [(tag, title)] + [("version", v) for v in versions]
 
 
-class SplitPerson(Gtk.ImageMenuItem):
+class SplitPerson(TagSplitter):
     tags = ["artist"]
     _order = 0.5
 
@@ -280,9 +282,10 @@ class SplitPerson(Gtk.ImageMenuItem):
         if others:
             artist = artist if len(artist) <= 64 else artist[:64] + "…"
             others = [other if len(other) <= 64 else other[:64] + "…"
-                        for other in others]
+                      for other in others]
             string = (", ".join(["{}={}".format(tag, artist)] +
-                ["{}={}".format(self.needs[0], o) for o in others]))
+                                ["{}={}".format(self.needs[0], o) for o in
+                                 others]))
             self.set_label(string)
 
         self.set_sensitive(bool(others))
@@ -435,6 +438,11 @@ class ListEntry:
 class EditTags(Gtk.VBox):
     handler = EditTagsPluginHandler()
 
+    _SPLITTERS: Sequence[Type[TagSplitter]] = sorted(
+        [SplitDisc, SplitTitle, SplitPerformer, SplitArranger, SplitValues,
+         SplitPerformerFromTitle, SplitOriginalArtistFromTitle],
+        key=lambda item: (item._order, item.__name__))
+
     @classmethod
     def init_plugins(cls):
         PluginManager.instance.register_handler(cls.handler)
@@ -443,6 +451,7 @@ class EditTags(Gtk.VBox):
         super().__init__(spacing=12)
         self.title = _("Edit Tags")
         self.set_border_width(12)
+        self._group_info = None
 
         model = ObjectStore()
         view = RCMHintedTreeView(model=model)
@@ -464,6 +473,7 @@ class EditTags(Gtk.VBox):
                     rend.set_property('icon-name', Icons.EDIT)
             else:
                 rend.set_property('icon-name', Icons.CHANGES_PREVENT)
+
         column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
@@ -571,7 +581,7 @@ class EditTags(Gtk.VBox):
             model.connect(sig, self.__enable_save, [save, revert])
             connect_obj(model, sig, parent.set_pending, save)
 
-        view.connect('popup-menu', self.__popup_menu, parent)
+        view.connect('popup-menu', self._popup_menu, parent)
         view.connect('button-press-event', self.__button_press)
         view.connect('key-press-event', self.__view_key_press_event)
         selection.connect('changed', self.__tag_select, remove)
@@ -633,18 +643,25 @@ class EditTags(Gtk.VBox):
             entry.edited = entry.deleted = True
             model.path_changed(path)
 
-    def __popup_menu(self, view, parent):
+    def __item_for(self, view: BaseView,
+                   Item: Type[EditTagsPlugin],
+                   tag: str,
+                   text: str) -> Optional[EditTagsPlugin]:
+        try:
+            item = Item(tag, text)
+        except Exception as e:
+            print_e(f"Couldn't create menu item from {Item} ({e})")
+            return None
+        else:
+            item.connect('activate', self.__menu_activate, view)
+            return item
+
+    def _popup_menu(self, view: BaseView, _parent):
         menu = Gtk.Menu()
 
         view.ensure_popup_selection()
         model, rows = view.get_selection().get_selected_rows()
-        can_change = min([model[path][0].canedit for path in rows])
-
-        items = [SplitDisc, SplitTitle, SplitPerformer, SplitArranger,
-                 SplitValues, SplitPerformerFromTitle,
-                 SplitOriginalArtistFromTitle]
-        items.extend(self.handler.plugins)
-        items.sort(key=lambda item: (item._order, item.__name__))
+        can_change = all(model[path][0].canedit for path in rows)
 
         if len(rows) == 1:
             row = model[rows[0]]
@@ -655,30 +672,34 @@ class EditTags(Gtk.VBox):
 
             split_menu = Gtk.Menu()
 
-            for Item in items:
+            for Item in self._SPLITTERS:
                 if Item.tags and entry.tag not in Item.tags:
                     continue
-
-                try:
-                    b = Item(entry.tag, text)
-                except:
-                    util.print_exc()
-                else:
-                    b.connect('activate', self.__menu_activate, view)
-
-                    if (not min(list(
-                                map(self.__songinfo.can_change, b.needs))
-                                + [1])
-                            or comment.is_special()):
-                        b.set_sensitive(False)
-
-                    vals = b.activated(entry.tag, text)
-                    if len(vals) > 1 and vals[1][1]:
-                        split_menu.append(b)
-
+                item = self.__item_for(view, Item, entry.tag, text)
+                if not item:
+                    continue
+                vals = item.activated(entry.tag, text)
+                changeable = any(not self._group_info.can_change(k)
+                                 for k in item.needs)
+                fixed = changeable or comment.is_special()
+                if fixed:
+                    item.set_sensitive(False)
+                if len(vals) > 1 and vals[1][1]:
+                    split_menu.append(item)
             if split_menu.get_children():
                 split_menu.append(SeparatorMenuItem())
 
+            plugins = self.handler.plugins
+            print_d(f"Adding {len(plugins)} plugin(s) to menu: "
+                    f"{', '.join(p.__name__ for p in plugins)}")
+            for p_cls in plugins:
+                item = self.__item_for(view, p_cls, entry.tag, text)
+                if not item:
+                    continue
+                results = item.activated(entry.tag, text)
+                # Only enable for the user if the plugin would do something
+                item.set_sensitive(results != [(entry.tag, text)])
+                menu.append(item)
             pref_item = MenuItem(_("_Configure"), Icons.PREFERENCES_SYSTEM)
             split_menu.append(pref_item)
 
@@ -733,7 +754,7 @@ class EditTags(Gtk.VBox):
     def __add_new_tag(self, model, tag, value):
         assert isinstance(value, str)
         iters = [i for (i, v) in model.iterrows() if v.tag == tag]
-        if iters and not self.__songinfo.can_multiple_values(tag):
+        if iters and not self._group_info.can_multiple_values(tag):
             title = _("Unable to add tag")
             msg = _("Unable to add <b>%s</b>") % util.escape(tag)
             msg += "\n\n"
@@ -752,7 +773,7 @@ class EditTags(Gtk.VBox):
             model.append(row=[entry])
 
     def __add_tag(self, activator, model, library):
-        add = AddTagDialog(self, self.__songinfo.can_change(), library)
+        add = AddTagDialog(self, self._group_info.can_change(), library)
 
         while True:
             resp = add.run()
@@ -763,7 +784,7 @@ class EditTags(Gtk.VBox):
             assert isinstance(value, str)
             value = massagers.validate(tag, value)
             assert isinstance(value, str)
-            if not self.__songinfo.can_change(tag):
+            if not self._group_info.can_change(tag):
                 title = _("Invalid tag")
                 msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                         " selected do not support editing this tag."
@@ -826,7 +847,7 @@ class EditTags(Gtk.VBox):
                 l.append((entry.origtag, entry.value, entry.origvalue))
 
         was_changed = set()
-        songs = self.__songinfo.songs
+        songs = self._group_info.songs
         win = WritingWindow(self, len(songs))
         win.show()
         all_done = False
@@ -943,7 +964,7 @@ class EditTags(Gtk.VBox):
         entry = model[path][0]
         if new_tag == entry.tag:
             return
-        elif not self.__songinfo.can_change(new_tag):
+        elif not self._group_info.can_change(new_tag):
             # Can't add the new tag.
             title = _("Invalid tag")
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
@@ -1013,12 +1034,12 @@ class EditTags(Gtk.VBox):
 
     def _update(self, songs=None):
         if songs is None:
-            songs = self.__songinfo.songs
+            songs = self._group_info.songs
         else:
-            self.__songinfo = AudioFileGroup(songs)
-        songinfo = self.__songinfo
+            self._group_info = AudioFileGroup(songs)
+        info = self._group_info
 
-        keys = list(songinfo.keys())
+        keys = list(info.keys())
         default_tags = get_default_tags()
         keys = set(keys + default_tags)
 
@@ -1039,16 +1060,16 @@ class EditTags(Gtk.VBox):
             model.clear()
 
             for tag in sorted(keys, key=custom_sort):
-                canedit = songinfo.can_change(tag)
+                canedit = info.can_change(tag)
 
                 # default tags
-                if tag not in songinfo:
+                if tag not in info:
                     entry = ListEntry(tag, Comment(u""))
                     entry.canedit = canedit
                     model.append(row=[entry])
                     continue
 
-                for value in songinfo[tag]:
+                for value in info[tag]:
                     entry = ListEntry(tag, value)
                     entry.origvalue = value
                     entry.edited = False
@@ -1058,7 +1079,7 @@ class EditTags(Gtk.VBox):
                     entry.origtag = ""
                     model.append(row=[entry])
 
-        self._buttonbox.set_sensitive(bool(songinfo.can_change()))
+        self._buttonbox.set_sensitive(bool(info.can_change()))
         self._revert.set_sensitive(False)
         self._remove.set_sensitive(False)
         self._save.set_sensitive(False)
@@ -1083,7 +1104,7 @@ class EditTags(Gtk.VBox):
 
     def __tag_editing_started(self, render, editable, path, model, library):
         if not editable.get_completion():
-            tags = self.__songinfo.can_change()
+            tags = self._group_info.can_change()
             if tags is True:
                 tags = USER_TAGS
             completion = qltk.EntryCompletion(tags)
