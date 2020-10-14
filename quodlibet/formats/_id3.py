@@ -8,7 +8,7 @@
 
 import mutagen.id3
 
-from quodlibet import config, const, print_w
+from quodlibet import config, const
 from quodlibet import util
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
