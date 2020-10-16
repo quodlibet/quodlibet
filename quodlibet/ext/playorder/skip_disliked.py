@@ -1,6 +1,6 @@
-# Copyright 2016 Nick Boultbee
-#           2017 Jason Heard
-#           2017 Christoph Reiter
+# Copyright 2016-20 Nick Boultbee
+#              2017 Jason Heard
+#              2017 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,20 +12,20 @@ from gi.repository import Gtk
 from quodlibet import _, print_d
 from quodlibet.order import OrderInOrder
 from quodlibet.plugins import PluginConfig
-from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.plugins.playorder import PlayOrderPlugin
 from quodlibet.qltk import Icons
-
 
 pconfig = PluginConfig("skip_songs")
 pconfig.defaults.set("threshold", 0.0)
 
 
-class SkipDislikedSongs(ShufflePlugin, OrderInOrder):
+class SkipDisliked(PlayOrderPlugin, OrderInOrder):
     PLUGIN_ID = "skip_songs"
-    PLUGIN_NAME = _("Skip Disliked Songs")
+    PLUGIN_NAME = _("Skip Disliked Tracks")
     PLUGIN_ICON = Icons.GO_JUMP
-    PLUGIN_DESC = _("A shuffle plugin that skips playback of songs with "
-                    "a rating equal or below to a given threshold.")
+    PLUGIN_DESC = _("Adds a play order (shuffle) mode that plays in order, "
+                    "but skips tracks with a rating "
+                    "below (or equal to) a given threshold.")
 
     @classmethod
     def PluginPreferences(self, window):
