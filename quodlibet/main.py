@@ -13,6 +13,7 @@ import os
 from senf import environ, argv as sys_argv
 
 from quodlibet import _
+from quodlibet import config
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_, print_exc
 
@@ -23,6 +24,7 @@ def main(argv=None):
 
     import quodlibet
 
+    config.migrate_legacy_data(move=False)  # TODO: When tested, `move=True`?
     config_file = os.path.join(quodlibet.get_config_dir(), "config")
     quodlibet.init_cli(config_file=config_file)
 
@@ -42,7 +44,6 @@ def main(argv=None):
 
     import quodlibet.player
     import quodlibet.library
-    from quodlibet import config
     from quodlibet import browsers
     from quodlibet import util
 
