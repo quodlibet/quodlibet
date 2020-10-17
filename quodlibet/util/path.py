@@ -21,9 +21,9 @@ from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
                   fsn2text, path2fsn, uri2fsn)
 
 from . import windows
+from . import print_w
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
-from .util import print_w
 
 if sys.platform == "darwin":
     from Foundation import NSString
