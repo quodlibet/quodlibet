@@ -844,7 +844,7 @@ class InternetRadio(Browser, util.InstanceTracker):
                     if af("~uri") not in fav_uris}
             if irfs:
                 self._task.pulse()
-                print_d(f"Adding {irfs} to favourites")
+                print_d(f"Adding {', '.join(irfs)} to favourites")
                 self.__fav_stations.add(irfs)
             else:
                 message = WarningMessage(
@@ -864,11 +864,9 @@ class InternetRadio(Browser, util.InstanceTracker):
             self._task.finish()
             return
         try:
-            for af in _get_stations_from(uri, self._task):
-                GLib.idle_add(self.__add_stations, [af], uri)
-        except EnvironmentError as e:
-            GLib.idle_add(error_for, e)
-        except IRadioError as e:
+            irfs = _get_stations_from(uri, self._task)
+            GLib.idle_add(self.__add_stations, irfs, uri)
+        except (EnvironmentError, IRadioError) as e:
             GLib.idle_add(error_for, e)
 
     def Menu(self, songs, library, items):
