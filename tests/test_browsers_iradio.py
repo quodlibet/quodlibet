@@ -10,8 +10,9 @@ from tests import TestCase, skipIf
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
-from quodlibet.browsers.iradio import InternetRadio, IRFile, QuestionBar, \
-    parse_taglist, parse_pls, parse_m3u, download_taglist, STATION_LIST_URL
+from quodlibet.browsers.iradio import (InternetRadio, IRFile, QuestionBar,
+                                       parse_taglist, parse_pls, parse_m3u,
+                                       download_taglist, STATION_LIST_URL)
 import quodlibet.config
 from gi.repository import Gtk
 
@@ -54,16 +55,6 @@ NumberOfEntries=1
     assert r[0]("title") == "Here enter name of the station"
 
 
-def test_parse_pls_task():
-    f = io.BytesIO(b"""[playlist]
-File1=http://stream2.streamq.net:8020/
-NumberOfEntries=1
-""")
-    task = FakeTask()
-    parse_pls(f, task)
-    assert task.pulsed == 1
-
-
 def test_parse_m3u():
     f = io.BytesIO(b"""\
 #EXTM3U
@@ -75,13 +66,6 @@ http://stream2.streamq.net:8020/
     r = parse_m3u(f)
     assert len(r) == 1
     assert r[0]("~uri") == "http://stream2.streamq.net:8020/"
-
-
-def test_parse_m3u_task():
-    f = io.BytesIO(b"""#EXTM3U\nhttp://stream2.streamq.net:8020/""")
-    task = FakeTask()
-    parse_m3u(f, task)
-    assert task.pulsed == 1
 
 
 class TQuestionBar(TestCase):
