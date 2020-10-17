@@ -23,6 +23,7 @@ from quodlibet.plugins.playlist import PLAYLIST_HANDLER
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
@@ -38,7 +39,7 @@ from quodlibet.util.collection import XSPFBackedPlaylist, FileBackedPlaylist
 from quodlibet.util.urllib import urlopen
 
 from .util import parse_m3u, parse_pls, PLAYLISTS,\
-    ConfirmRemovePlaylistDialog, _name_for
+    confirm_remove_playlist_dialog_invoke, _name_for
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -174,8 +175,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     __lists = ObjectModelSort(model=ObjectStore())
     __lists.set_default_sort_func(ObjectStore._sort_on_value)
 
-    def __init__(self, library):
+    def __init__(self, library, Confirmer=ConfirmationPrompt):
         self.library = library
+        # this is instanced with the necessary gtkdialog-settings, and afterwards
+        # its run-method is called to get a to-be-compared Gtk.ResponseType
+        self.Confirmer = Confirmer
         super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__render = self.__create_cell_renderer()
@@ -307,11 +311,14 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 return False
 
             playlist = model[iter][0]
-            dialog = ConfirmRemovePlaylistDialog(self, playlist)
-            if dialog.run() == Gtk.ResponseType.YES:
+            response = confirm_remove_playlist_dialog_invoke(
+                self, playlist, self.Confirmer)
+            if response:
                 playlist.delete()
                 model.get_model().remove(
                     model.convert_iter_to_child_iter(iter))
+            else:
+                print_d("Playlist removal cancelled through prompt")
             return True
         elif qltk.is_accel(event, "F2"):
             model, iter = self.__selected_playlists()
@@ -485,12 +492,14 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         def _remove(model, itr):
             playlist = model[itr][0]
-            dialog = ConfirmRemovePlaylistDialog(self, playlist)
-            if dialog.run() == Gtk.ResponseType.YES:
+            response = confirm_remove_playlist_dialog_invoke(
+                self, playlist, self.Confirmer)
+            if response:
                 playlist.delete()
                 model.get_model().remove(
                     model.convert_iter_to_child_iter(itr))
-
+            else:
+                print_d("Playlist removal cancelled through prompt")
         rem = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
         connect_obj(rem, 'activate', _remove, model, itr)
         menu.prepend(rem)

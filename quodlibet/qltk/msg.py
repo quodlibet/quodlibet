@@ -19,8 +19,7 @@ class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(
-        self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK):
+    def __init__(self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK):
         parent = get_top_parent(parent)
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
                 % (title, description))
@@ -82,17 +81,14 @@ class ConfirmationPrompt(WarningMessage):
     """Dialog to confirm actions, given a parent, title, description, and
        OK-button text"""
 
-    RESPONSE_INVOKE = 1
+    RESPONSE_INVOKE = Gtk.ResponseType.YES
 
-    def __init__(self, parent, title, description, ok_button_text):
-        super().__init__(
-            get_top_parent(parent),
-            title, description,
-            buttons=Gtk.ButtonsType.NONE)
+    def __init__(self, parent, title, description, ok_button_text,
+                 ok_button_icon=Icons.SYSTEM_RUN):
+        super().__init__(parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(ok_button_text, Icons.SYSTEM_RUN,
-                             self.RESPONSE_INVOKE)
+        self.add_icon_button(ok_button_text, ok_button_icon, self.RESPONSE_INVOKE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
