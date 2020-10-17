@@ -23,6 +23,7 @@ from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
 from . import windows
 from .environment import is_windows
 from .misc import environ, NamedTemporaryFile
+from .util import print_w
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -249,7 +250,7 @@ def xdg_get_runtime_dir():
     else:
         # > fall back to a replacement directory with similar capabilities and
         # > print a warning message
-        # TODO: print a warning message?
+        print_w('Using the cache as runtime directory')
         return xdg_get_cache_home()
 
 
