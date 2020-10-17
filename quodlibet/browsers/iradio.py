@@ -13,8 +13,7 @@ import itertools
 from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
-from typing import List, Dict
-from threading import Thread
+from typing import List, Dict, Collection
 from urllib.request import urlopen
 
 import re
@@ -300,7 +299,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         stations = None
         if data:
             stations = parse_taglist(data)
-
+        print_d(f"Got {len(stations or [])} station(s)")
         GLib.idle_add(callback, stations)
 
 
@@ -825,10 +824,11 @@ class InternetRadio(Browser, util.InstanceTracker):
             self._task = Task(_("Internet Radio"),
                               _("Adding stations from %s") % uri,
                               known_length=False, pause=False)
-            GLib.idle_add(self.__get_stations_from, uri)
+            GLib.idle_add(self.__add_stations_from, uri)
 
-    def __add_stations(self, irfs, uri):
-        print_d("Got results: %s" % irfs)
+    def __add_stations(self, irfs: Collection[AudioFile], uri: str) -> None:
+        print_d(f"Got {len(irfs)} station(s) from {uri}")
+        assert(self.__fav_stations)
         self._task.pulse()
         try:
             if not irfs:
@@ -838,9 +838,13 @@ class InternetRadio(Browser, util.InstanceTracker):
                     util.escape(uri)).run()
                 return
 
-            irfs = set(irfs) - set(self.__fav_stations)
+            fav_uris = {af("~uri")
+                        for af in self.__fav_stations}
+            irfs = {af for af in irfs
+                    if af("~uri") not in fav_uris}
             if irfs:
                 self._task.pulse()
+                print_d(f"Adding {irfs} to favourites")
                 self.__fav_stations.add(irfs)
             else:
                 message = WarningMessage(
@@ -851,7 +855,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         finally:
             self._task.finish()
 
-    def __get_stations_from(self, uri):
+    def __add_stations_from(self, uri: str) -> None:
         def error_for(e):
             print_w("Got %r from %s" % (e, uri))
             msg = ("Couldn't add URL: <b>%s</b>)\n\n<tt>%s</tt>"
@@ -859,10 +863,9 @@ class InternetRadio(Browser, util.InstanceTracker):
             ErrorMessage(None, _("Unable to add station"), msg).run()
             self._task.finish()
             return
-
         try:
-            irfs = _get_stations_from(uri, self._task)
-            GLib.idle_add(self.__add_stations, irfs, uri)
+            for af in _get_stations_from(uri, self._task):
+                GLib.idle_add(self.__add_stations, [af], uri)
         except EnvironmentError as e:
             GLib.idle_add(error_for, e)
         except IRadioError as e:
