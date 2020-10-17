@@ -22,6 +22,7 @@ from senf import (fsnative, bytes2fsn, fsn2bytes,
                   fsn2text, path2fsn, uri2fsn, _fsnative)
 
 from . import windows
+from . import print_w
 from .environment import is_windows
 from .misc import NamedTemporaryFile
 from .util import print_w
