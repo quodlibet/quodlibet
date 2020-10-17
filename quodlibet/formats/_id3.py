@@ -8,7 +8,7 @@
 
 import mutagen.id3
 
-from quodlibet import config, const, print_d
+from quodlibet import config, const, print_w
 from quodlibet import util
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
@@ -22,10 +22,10 @@ def encoding_for(s):
     return 3 if isascii(s) else 1
 
 
-RG_KEYS = [
+RG_KEYS = {
     "replaygain_track_peak", "replaygain_track_gain",
     "replaygain_album_peak", "replaygain_album_gain",
-]
+}
 
 
 # ID3 is absolutely the worst thing ever.
@@ -312,8 +312,9 @@ class ID3File(AudioFile):
             else:
                 tag.add(Kind(encoding=enc, text=text))
 
-        dontwrite = ["genre", "comment", "musicbrainz_trackid", "lyrics"] \
-            + RG_KEYS + list(self.TXXX_MAP.values())
+        dont_write = (RG_KEYS
+                      | set(self.TXXX_MAP.values())
+                      | {"genre", "comment", "musicbrainz_trackid", "lyrics"})
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(
@@ -328,18 +329,19 @@ class ID3File(AudioFile):
             if all([lang in ISO_639_2 for lang in langs]):
                 # Save value(s) to TLAN tag. Guaranteed to be ASCII here
                 tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
-                dontwrite.append("language")
+                dont_write.add("language")
             else:
-                print_d("Not using invalid language code '%s' in TLAN" %
-                        self["language"])
+                print_w(
+                    f"Not using invalid language {self['language']!r} in TLAN")
 
         # Filter out known keys, and ones set not to write [generically].
-        keys_to_write = filter(lambda k: not (k in self.SDI or k in dontwrite),
-                               self.realkeys())
+        dont_write |= self.SDI.keys()
+        keys_to_write = (k for k in self.realkeys()
+                         if k not in dont_write)
         for key in keys_to_write:
             enc = encoding_for(self[key])
             if key.startswith("performer:"):
-                mcl.people.append([key.split(":", 1)[1], self[key]])
+                mcl.people.append((key.split(":", 1)[1], self[key]))
                 continue
 
             f = mutagen.id3.TXXX(
