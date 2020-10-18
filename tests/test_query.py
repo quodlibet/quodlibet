@@ -5,12 +5,13 @@
 
 import time
 
-from senf import fsnative
-
 from quodlibet import config
 from quodlibet.formats import AudioFile
+from quodlibet.plugins import Plugin
+from quodlibet.plugins.query import QueryPlugin, QUERY_HANDLER
 from quodlibet.query import Query, QueryType
 from quodlibet.query import _match as match
+from senf import fsnative
 from tests import TestCase, skip
 
 
@@ -115,18 +116,42 @@ class TQuery_is_valid(TestCase):
     def test_nesting(self):
         self.failUnless(Query("|(s, t = &(/a/, /b/),!#(2 > q > 3))").valid)
 
-    def test_extension(self):
-        self.failUnless(Query("@(name)").valid)
-        self.failUnless(Query("@(name: extension body)").valid)
-        self.failUnless(Query("@(name: body (with (nested) parens))").valid)
-        self.failUnless(Query(r"@(name: body \\ with \) escapes)").valid)
+    class FakeQueryPlugin(QueryPlugin):
+        PLUGIN_NAME = "name"
 
-        self.failIf(Query("@()").valid)
-        self.failIf(Query(r"@(invalid %name!\\)").valid)
-        self.failIf(Query("@(name: mismatched ( parenthesis)").valid)
-        self.failIf(Query(r"@(\()").valid)
-        self.failIf(Query("@(name:unclosed body").valid)
-        self.failIf(Query("@ )").valid)
+        def search(self, song, body):
+            return body and "DIE" not in body.upper()
+
+    def test_extension(self):
+        plugin = Plugin(self.FakeQueryPlugin)
+        QUERY_HANDLER.plugin_enable(plugin)
+        try:
+            assert Query("@(name)").valid
+            assert not Query("@(name: DIE)").search("foo")
+            assert Query("@(name: extension body)").valid
+            assert Query("@(name: body (with (nested) parens))").valid
+            assert Query(r"@(name: body \\ with \) escapes)").valid
+        finally:
+            QUERY_HANDLER.plugin_disable(plugin)
+
+    def test_extension_search(self):
+        plugin = Plugin(self.FakeQueryPlugin)
+        QUERY_HANDLER.plugin_enable(plugin)
+        song = AudioFile({"~filename": "/dev/null"})
+        try:
+            assert Query("@(name: LIVE)").search(song)
+            assert not Query("@(name: DIE)").search(song)
+        finally:
+            QUERY_HANDLER.plugin_disable(plugin)
+
+    def test_invalid_extension(self):
+        assert not Query("@(name)").valid, "Unregistered plugin is valid"
+        assert not Query("@()").valid
+        assert not Query(r"@(invalid %name!\\)").valid
+        assert not Query("@(name: mismatched ( parenthesis)").valid
+        assert not Query(r"@(\()").valid
+        assert not Query("@(name:unclosed body").valid
+        assert not Query("@ )").valid
 
     def test_numexpr(self):
         self.failUnless(Query("#(t < 3*4)").valid)
@@ -218,12 +243,12 @@ class TQuery(TestCase):
         query = Query("foo = bar", [])
         self.assertEqual(
             repr(query).replace("u'", "'"),
-            "<Query string='foo = bar' type=QueryType.VALID star=[]>")
+            "<Query string='foo = bar' type=VALID star=[]>")
 
         query = Query("bar", ["foo"])
         self.assertEqual(
             repr(query).replace("u'", "'"),
-            "<Query string='&(/bar/d)' type=QueryType.TEXT star=['foo']>")
+            "<Query string='&(/bar/d)' type=TEXT star=['foo']>")
 
     def test_2007_07_27_synth_search(self):
         song = AudioFile({"~filename": fsnative(u"foo/64K/bar.ogg")})
@@ -383,13 +408,13 @@ class TQuery(TestCase):
         tag = Query("foo=bar")
 
         tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
-            union | union, inter | inter, numcmp | numcmp, numcmp | union]
+                 union | union, inter | inter, numcmp | numcmp, numcmp | union]
 
         self.failIf(
             list(filter(lambda x: not isinstance(x, match.Union), tests)))
 
         tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
-            union & union, inter & inter, numcmp & numcmp, numcmp & inter]
+                 union & union, inter & inter, numcmp & numcmp, numcmp & inter]
 
         self.failIf(
             list(filter(lambda x: not isinstance(x, match.Inter), tests)))

@@ -14,7 +14,7 @@ from __future__ import annotations
 import operator
 import time
 from numbers import Real
-from typing import TypeVar, Sequence, List
+from typing import TypeVar, List, Iterable
 
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 from quodlibet.unisearch import compile
@@ -37,7 +37,7 @@ class Node:
     def search(self, data: T) -> bool:
         raise NotImplementedError
 
-    def filter(self, sequence: Sequence[T]) -> Sequence[T]:
+    def filter(self, sequence: Iterable[T]) -> List[T]:
         return [s for s in sequence if self.search(s)]
 
     def _unpack(self) -> Node:
@@ -51,6 +51,10 @@ class Node:
 
     def __neg__(self) -> Node:
         return Neg(self._unpack())
+
+    @property
+    def valid(self) -> bool:
+        return True
 
 
 class Regex(Node):
@@ -99,7 +103,7 @@ class False_(Node):
     def search(self, data):
         return False
 
-    def filter(self, list_):
+    def filter(self, sequence):
         return []
 
     def __repr__(self):
@@ -599,6 +603,10 @@ class Extension(Node):
 
     def search(self, data):
         return self.__valid and self.__plugin.search(data, self.__body)
+
+    @property
+    def valid(self) -> bool:
+        return self.__valid
 
     def __repr__(self):
         return ('<Extension name=%r valid=%r body=%r>'

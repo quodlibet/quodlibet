@@ -10,21 +10,29 @@
 
 from __future__ import annotations
 
-from typing import Optional, Type, Iterable
+from enum import Enum, auto
+from typing import Optional, Type, Iterable, TypeVar
 
 from quodlibet import print_d, config
-from quodlibet.util import re_escape, enum, cached_property
-from quodlibet.util.dprint import frame_info
+from quodlibet.util import re_escape, cached_property
 from . import _match as match
 from ._match import Error, Node, False_
 from ._parser import QueryParser
 
+T = TypeVar("T")
 
-@enum
-class QueryType(int):
-    TEXT = 0
-    VALID = 1
-    INVALID = 2
+
+class QueryType(Enum):
+    TEXT = auto()
+    VALID = auto()
+    INVALID = auto()
+
+    def __repr__(self):
+        # Compact representation
+        return self._name_
+
+    def __str__(self):
+        return self._name_
 
 
 class Query(Node):
@@ -40,11 +48,12 @@ class Query(Node):
     string: Optional[str] = None
     """The original string which was used to create this query"""
 
-    def __init__(self, string, star=None):
+    def __init__(self, string: str, star: Optional[Iterable[str]] = None):
         """Parses the query string and returns a match object.
 
-        star -- List of tags to look in if none are specified in the query.
-                Defaults to those specified in `STAR`.
+        :param string: The text to parse
+        :param star: Tags to look in, if none are specified in the query.
+                     Defaults to those specified in `STAR`.
 
         This parses the query language as well as some tagless shortcuts:
             "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
@@ -56,8 +65,7 @@ class Query(Node):
             "!(foo, bar)" -> !star1,star2=(foo, bar)
             etc...
         """
-        print_d("Creating query \"%s\", called from %s"
-                % (string, frame_info(1)))
+        print_d(f"Creating query {string!r}")
         if star is None:
             star = self.STAR
 
@@ -69,6 +77,8 @@ class Query(Node):
         self.type = QueryType.VALID
         try:
             self._match = QueryParser(string, star=star).StartQuery()
+            if not self._match.valid:
+                self.type = QueryType.INVALID
             return
         except self.Error:
             pass
@@ -87,7 +97,6 @@ class Query(Node):
             except self.Error:
                 pass
 
-        # raise error('Query is not VALID or TEXT')
         print_d("Query '%s' is invalid" % string)
         self.type = QueryType.INVALID
         self._match = False_()
