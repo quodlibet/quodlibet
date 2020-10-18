@@ -71,7 +71,7 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict([(v, k) for k, v in IDS.items()])
+    SDI = dict((v, k) for k, v in IDS.items())
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
@@ -94,7 +94,7 @@ class ID3File(AudioFile):
         u"ALBUMARTISTSORT": "albumartistsort",
         u"BARCODE": "barcode",
         }
-    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.items()])
+    PAM_XXXT = dict((v, k) for k, v in TXXX_MAP.items())
 
     Kind = None
 

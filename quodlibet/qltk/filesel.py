@@ -285,7 +285,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         # Find the top level row which has the largest common
         # path with the path we want to go to
-        roots = dict([(p, i) for (i, p) in model.iterrows(None)])
+        roots = dict((p, i) for (i, p) in model.iterrows(None))
         head, tail = path_to_go, fsnative(u"")
         to_find = []
         while head and head not in roots:

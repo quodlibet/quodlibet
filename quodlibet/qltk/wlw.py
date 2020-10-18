@@ -75,7 +75,7 @@ class WaitLoadBase:
                 return k, format_int_locale(int(v))
             return k, v
 
-        localed = dict([localeify(k, v) for k, v in initial.items()])
+        localed = dict(localeify(k, v) for k, v in initial.items())
         self._label.set_markup(self._text % localed)
         self._progress.set_fraction(0.0)
 
