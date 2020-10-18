@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,9 +14,8 @@ from quodlibet import print_d
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
-    Numexpr, True_, error, False_
+    Numexpr, True_, False_
 
-error
 
 INVERSE_OPS = {operator.le: operator.gt,
                operator.gt: operator.le,
@@ -53,7 +52,7 @@ class SoundcloudQuery(Query):
         self._clock = clock
         try:
             self.terms = self._extract_terms(self._match)
-        except self.error as e:
+        except self.Error as e:
             print_d("Couldn't use query: %s" % e)
             self.type = QueryType.INVALID
             self.terms = {}
@@ -81,7 +80,7 @@ class SoundcloudQuery(Query):
                 api_tag, converter = _QL_TO_SC[tag] if tag else ('q', None)
             except KeyError:
                 if tag not in SUPPORTED:
-                    raise self.error("Unsupported '%s' tag. Try: %s"
+                    raise self.Error("Unsupported '%s' tag. Try: %s"
                                      % (tag, ", ". join(SUPPORTED)))
                 return None, None
             else:
@@ -117,7 +116,7 @@ class SoundcloudQuery(Query):
                     return {(tag + "[to]", value)}
                 elif op in (operator.ge, operator.gt):
                     return {(tag + "[from]", value)}
-                raise self.error("Unsupported operator: %s" % op)
+                raise self.Error("Unsupported operator: %s" % op)
 
             left = node._expr
             right = node._expr2
@@ -126,11 +125,11 @@ class SoundcloudQuery(Query):
             elif isinstance(right, NumexprTag) and isinstance(left, Numexpr):
                 # We can reduce the logic by flipping the expression
                 return from_relative(INVERSE_OPS[node._op], right, left)
-            raise self.error("Unsupported numeric: %s" % node)
+            raise self.Error("Unsupported numeric: %s" % node)
         elif hasattr(node, 'pattern'):
             return terms_from_re(node.pattern, tag)
         elif isinstance(node, True_):
             return set()
         elif isinstance(node, False_):
-            raise self.error("False can never be queried")
-        raise self.error("Unhandled node: %r" % (node,))
+            raise self.Error("False can never be queried")
+        raise self.Error("Unhandled node: %r" % (node,))

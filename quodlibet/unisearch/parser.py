@@ -136,7 +136,8 @@ def _construct_in(pattern, mapping):
 
 
 def _construct_regexp(
-    pattern: sre_parse.SubPattern, mapping: Dict[str, List[str]], parent="") -> str:
+        pattern: sre_parse.SubPattern, mapping: Dict[str, List[str]],
+        parent="") -> str:
     """Raises NotImplementedError"""
 
     parts = []
@@ -269,8 +270,8 @@ def re_add_variants(text: str) -> str:
     return re_replace_literals(text, get_replacement_mapping())
 
 
-def compile(pattern: str, ignore_case=True, dot_all=False, asym=False
-    ) -> Callable[[str], bool]:
+def compile(pattern: str, ignore_case: bool = True, dot_all: bool = False,
+            asym: bool = False) -> Callable[[str], bool]:
     """
     Args:
         pattern (str): a unicode regex
@@ -309,7 +310,7 @@ def compile(pattern: str, ignore_case=True, dot_all=False, asym=False
         raise ValueError(e)
     normalize = unicodedata.normalize
 
-    def search(text):
-        return reg.search(normalize("NFC", text))
+    def search(text: str):
+        return bool(reg.search(normalize("NFC", text)))
 
     return search
