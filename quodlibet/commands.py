@@ -443,7 +443,7 @@ def _enqueue_files(app, value):
         if song_path in library:
             songs.append(library[song_path])
         elif os.path.isfile(song_path):
-            songs.append(library.add_filename(os.path.realpath(value)))
+            songs.append(library.add_filename(os.path.realpath(song_path)))
     if songs:
         window.playlist.enqueue(songs)
 
