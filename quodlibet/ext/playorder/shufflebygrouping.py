@@ -1,4 +1,5 @@
 # Copyright 2018 Phoenix Dailey
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,11 +30,11 @@ pconfig.defaults.set("delay", 0)
 class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
     PLUGIN_ID = "Shuffle by Grouping"
     PLUGIN_NAME = _("Shuffle by Grouping")
-    PLUGIN_DESC = _("Shuffles by a grouping of songs defined by a common tag "
-                    "instead of by track, similar to album shuffle. This is "
-                    "useful for shuffling multi-movement classical works "
-                    "while making sure all movements play in order before "
-                    "shuffling to the next piece.")
+    PLUGIN_DESC = _("Adds a shuffle mode that groups songs with a common tag "
+                    "– similar to album shuffles.\n\n"
+                    "This is useful for shuffling multi-movement classical "
+                    "pieces, making sure all movements play in order "
+                    "before shuffling to the next piece.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Shuffle by grouping")
     priority = Reorder.priority
