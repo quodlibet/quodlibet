@@ -310,6 +310,42 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
+    def test_playlist_drag_data_extend_accept(self):
+        b = self.bar
+        song1 = AudioFile()
+        song2 = AudioFile()
+        song3 = AudioFile()
+        song1["~filename"] = fsnative(u"foo1")
+        song2["~filename"] = fsnative(u"foo2")
+        song3["~filename"] = fsnative(u"foo3")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song1, song2, song3])
+        filenames = qltk.selection_get_filenames(sel)
+
+        first_pl = b.playlists()[0]
+        original_length = len(first_pl)
+        # This is usually called by __drag_data_received, but that is heavily
+        # dependent on gtk-views, so is more conveniently called manually.
+        b._add_drag_data_tracks_to_playlist(first_pl, filenames)
+        self.failUnlessEqual(len(first_pl), original_length + 3)
+
+    def test_playlist_drag_data_extend_decline(self):
+        b = self.bar_decline
+        song1 = AudioFile()
+        song2 = AudioFile()
+        song3 = AudioFile()
+        song1["~filename"] = fsnative(u"foo1")
+        song2["~filename"] = fsnative(u"foo2")
+        song3["~filename"] = fsnative(u"foo3")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song1, song2, song3])
+        filenames = qltk.selection_get_filenames(sel)
+
+        first_pl = b.playlists()[0]
+        original_length = len(first_pl)
+        b._add_drag_data_tracks_to_playlist(first_pl, filenames)
+        self.failUnlessEqual(len(first_pl), original_length)
+
     def test_songs_deletion(self):
         b = self.bar
         self._fake_browser_pack(b)
