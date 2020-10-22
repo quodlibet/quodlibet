@@ -1,5 +1,6 @@
 # Copyright 2014 Christoph Reiter
 #           2016 Nick Boultbee
+#           2020 Daniel Petrescu
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -95,6 +96,7 @@ class Icons(str):
     MULTIMEDIA_VOLUME_CONTROL = "multimedia-volume-control"
     NETWORK_WORKGROUP = "network-workgroup"  # "_Network"
     NETWORK_SERVER = "network-server"
+    NETWORK_TRANSMIT = "network-transmit"
     PREFERENCES_SYSTEM = "preferences-system"  # "_Preferences"
     PREFERENCES_DESKTOP_SCREENSAVER = "preferences-desktop-screensaver"
     PREFERENCES_DESKTOP_THEME = "preferences-desktop-theme"
