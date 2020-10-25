@@ -1,5 +1,5 @@
 # Copyright 2016 Ryan Dellenbaugh
-#
+#           2020 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -13,15 +13,15 @@ from quodlibet.query._parser import QueryParser
 class ConditionalQuery(QueryPlugin):
     PLUGIN_ID = "conditional_query"
     PLUGIN_NAME = _("Conditional Query")
-    PLUGIN_DESC = _("Chooses the query to match based on a condition query. "
-                  "Syntax is '@(if: condition, then, else)'.")
+    PLUGIN_DESC = _("Chooses the query to match based on a condition query.")
     key = 'if'
+    usage = "<b><tt>@(if: condition-query, then-query, else-query)</tt></b>"
 
-    def search(self, data, body):
-        if body[0].search(data):
-            return body[1].search(data)
+    def search(self, song, body):
+        if body[0].search(song):
+            return body[1].search(song)
         else:
-            return body[2].search(data)
+            return body[2].search(song)
 
     def parse_body(self, body):
         if body is None:
