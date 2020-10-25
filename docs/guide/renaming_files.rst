@@ -99,18 +99,16 @@ doesn't.
 Conditional tagging example
 ---------------------------
 
-So you basically want to remember that it goes ``<condition|<conditional
-tag>|<else tag>>`` You can however even put conditions inside each other.
-Here's an example that I just created, and so far it seems to work:
-
-I first had::
+Remember that the format for conditionals is
+``<condition|<conditional tag>|<else tag>>``.
+You can also embed conditions inside each other::
 
     /mnt/musik/<genre|<genre>/><artist|<artist>|Unknown>/<album|<album>/><tracknumber|<tracknumber> - ><title>
 
 Let's dissect this:
 
- * ``/mnt/musik``: My basic music partition
- * ``<genre|<genre>/>``: If there is a tag "genre", put the song into that
+ * ``/mnt/musik``: A music partition
+ * ``<genre|<genre>/>``: If there is a "genre" value, put the song into that
    folder (creating the folder if necessary). If there is no tag genre,
    skip this level in the folder hierarchy (note that the trailing slash
    of ``<genre>/`` is inside the < > that delineate the conditional "block".
@@ -134,11 +132,11 @@ and those songs should only go into the genre folder (i.e. the language folder s
 QL can do this, by expanding the ``<genre>`` conditional
 block from the expression above to ``<genre|<genre>/|<language|<language>/>>``.
 
-Basically, the pipe after the second ``<genre>/`` introduces what should be
-done if the first condition isn't met (i.e. no genre tag), but here instead
-of putting straightforward text or another label we then introduce a second
-conditional block, ``<language|<language/>>``, which puts in a language tag
-folder, if the song has a tag "language".
+The pipe after the second ``<genre>/`` introduces what should be
+done if the first condition *isn't* met (i.e. no genre tag),
+but here instead of putting plain text,
+we introduce a second conditional block, ``<language|<language/>>``,
+which adds a language tag folder, if the song has a tag "language".
 
 The full expression now looks like this::
 
