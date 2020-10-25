@@ -13,7 +13,8 @@ import itertools
 from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
-from typing import List, Dict
+from threading import Thread
+from typing import Dict, Collection, Callable, Iterable
 from urllib.request import urlopen
 
 import re
@@ -37,8 +38,7 @@ from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.notif import Task
 from quodlibet.qltk import Icons, ErrorMessage, WarningMessage
-from quodlibet.util import copool, connect_destroy, sanitize_tags, \
-    connect_obj, escape
+from quodlibet.util import copool, connect_destroy, sanitize_tags, connect_obj
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.path import uri_is_valid
 from quodlibet.util.string import decode, encode
@@ -50,18 +50,20 @@ from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.qltk.menubutton import MenuButton
 
-
 STATION_LIST_URL = \
     "https://quodlibet.github.io/radio/radiolist.bz2"
 STATIONS_FAV = os.path.join(quodlibet.get_user_dir(), "stations")
 STATIONS_ALL = os.path.join(quodlibet.get_user_dir(), "stations_all")
 
-# TODO: - Do the update in a thread
-#       - Ranking: reduce duplicate stations (max 3 URLs per station)
+# TODO: - Ranking: reduce duplicate stations (max 3 URLs per station)
 #                  prefer stations that match a genre?
 
 # Migration path for pickle
 sys.modules["browsers.iradio"] = sys.modules[__name__]
+
+
+class IRadioError(Exception):
+    pass
 
 
 class IRFile(RemoteFile):
@@ -135,7 +137,7 @@ class IRFile(RemoteFile):
                 return k in self.__CAN_CHANGE
 
 
-def ParsePLS(file):
+def parse_pls(file) -> Collection[IRFile]:
     data = {}
 
     lines = file.read().decode('utf-8', 'replace').splitlines()
@@ -180,18 +182,15 @@ def ParsePLS(file):
         count += 1
 
     if warnings:
-        WarningMessage(
-            None, _("Unsupported file type"),
+        raise IRadioError(
             _("Station lists can only contain locations of stations, "
               "not other station lists or playlists. The following locations "
               "cannot be loaded:\n%s") %
-            "\n  ".join(map(util.escape, warnings))
-        ).run()
-
+            "\n  ".join(map(util.escape, warnings)))
     return files
 
 
-def ParseM3U(fileobj):
+def parse_m3u(fileobj) -> Collection[IRFile]:
     files = []
     pending_title = None
     lines = fileobj.read().decode('utf-8', 'replace').splitlines()
@@ -211,41 +210,48 @@ def ParseM3U(fileobj):
     return files
 
 
-def _get_stations_from(uri: str) -> List[IRFile]:
+def _get_stations_from(uri: str,
+                       on_done: Callable[[Iterable[IRFile], str], None])\
+        -> None:
     """Fetches the URI content and extracts IRFiles
-    :raise: `OSError`, or other socket-type errors
-    :return: or else a list of stations found (possibly empty)"""
+       Called from thread - so no direct GTK+ interaction
+       :param uri: URI of station
+       :param on_done: a callback taking files when done (or none if errored)
+       """
 
-    irfs = []
+    with Task(_("Internet Radio"), _("Add stations")) as task:
+        irfs: Collection[IRFile] = []
+        GLib.idle_add(task.pulse)
+        if (uri.lower().endswith(".pls")
+                or uri.lower().endswith(".m3u")
+                or uri.lower().endswith(".m3u8")):
+            if not re.match('^([^/:]+)://', uri):
+                # Assume HTTP if no protocol given. See #2731
+                uri = 'http://' + uri
+                print_d("Assuming http: %s" % uri)
 
-    if (uri.lower().endswith(".pls")
-            or uri.lower().endswith(".m3u")
-            or uri.lower().endswith(".m3u8")):
-        if not re.match('^([^/:]+)://', uri):
-            # Assume HTTP if no protocol given. See #2731
-            uri = 'http://' + uri
-            print_d("Assuming http: %s" % uri)
-
-        # Error handling outside
-        sock = None
-        try:
-            sock = urlopen(uri, timeout=10)
-
-            _, ext = splitext(uri.lower())
-            if ext == ".pls":
-                irfs = ParsePLS(sock)
-            elif ext in (".m3u", ".m3u8"):
-                irfs = ParseM3U(sock)
-        finally:
-            if sock:
-                sock.close()
-    else:
-        try:
-            irfs = [IRFile(uri)]
-        except ValueError as msg:
-            ErrorMessage(None, _("Unable to add station"), msg).run()
-
-    return irfs
+            # Error handling outside
+            sock = None
+            GLib.idle_add(task.pulse)
+            _fn, ext = splitext(uri.lower())
+            try:
+                sock = urlopen(uri, timeout=6)
+                if ext == ".pls":
+                    irfs = parse_pls(sock)
+                elif ext in (".m3u", ".m3u8"):
+                    irfs = parse_m3u(sock)
+                GLib.idle_add(task.pulse)
+            except IOError as e:
+                print_e(f"Couldn't download from {uri} ({e})")
+            finally:
+                if sock:
+                    sock.close()
+        else:
+            try:
+                irfs = [IRFile(uri)]
+            except ValueError as e:
+                print_e("Can't add URI %s" % uri, e)
+    on_done(irfs, uri)
 
 
 def download_taglist(callback, cofuncid, step=1024 * 10):
@@ -296,7 +302,7 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
         stations = None
         if data:
             stations = parse_taglist(data)
-
+        print_d(f"Got {len(stations or [])} station(s)")
         GLib.idle_add(callback, stations)
 
 
@@ -480,7 +486,6 @@ class QuestionBar(Gtk.InfoBar):
 
 
 class InternetRadio(Browser, util.InstanceTracker):
-
     __stations = None
     __fav_stations = None
     __librarian = None
@@ -593,7 +598,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         model.append(row=[self.TYPE_ALL, Icons.FOLDER, "__all",
                           _("All Stations")])
         model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
-        #Translators: Favorite radio stations
+        # Translators: Favorite radio stations
         model.append(row=[self.TYPE_FAV, Icons.FOLDER, "__fav",
                           _("Favorites")])
         model.append(row=[self.TYPE_SEP, Icons.FOLDER, "", ""])
@@ -819,32 +824,36 @@ class InternetRadio(Browser, util.InstanceTracker):
         parent = qltk.get_top_parent(self)
         uri = (AddNewStation(parent).run(clipboard=True) or "").strip()
         if uri != "":
-            GLib.idle_add(self.__add_station, uri)
+            self.__add_stations_from(uri)
 
-    def __add_station(self, uri):
-        try:
-            irfs = _get_stations_from(uri)
-        except EnvironmentError as e:
-            print_d("Got %s from %s" % (e, uri))
-            msg = ("Couldn't add URL: <b>%s</b>)\n\n<tt>%s</tt>"
-                   % (escape(str(e)), escape(uri)))
-            ErrorMessage(None, _("Unable to add station"), msg).run()
-            return
+    def __add_stations(self, irfs: Collection[IRFile], uri: str) -> None:
+        print_d(f"Got {len(irfs)} station(s) from {uri}")
+        assert self.__fav_stations
         if not irfs:
-            ErrorMessage(
-                None, _("No stations found"),
+            msg = ErrorMessage(
+                self, _("No stations found"),
                 _("No Internet radio stations were found at %s.") %
-                util.escape(uri)).run()
+                util.escape(uri))
+            msg.run()
             return
 
-        irfs = set(irfs) - set(self.__fav_stations)
-        if not irfs:
-            WarningMessage(
-                None, _("Unable to add station"),
-                _("All stations listed are already in your library.")).run()
-
+        fav_uris = {af("~uri") for af in self.__fav_stations}
+        irfs = {af for af in irfs if af("~uri") not in fav_uris}
         if irfs:
+            print_d(f"Adding {irfs} to favourites")
             self.__fav_stations.add(irfs)
+        else:
+            message = WarningMessage(
+                self,
+                _("Nothing to add"),
+                _("All stations listed are already in your library."))
+            message.run()
+
+    def __add_stations_from(self, uri: str) -> None:
+        def on_done(irfs: Iterable[IRFile], uri: str):
+            GLib.idle_add(self.__add_stations, irfs, uri)
+            print_d("Quitting thread")
+        Thread(target=_get_stations_from, args=(uri, on_done)).start()
 
     def Menu(self, songs, library, items):
         in_fav = False
@@ -967,6 +976,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
 
 from quodlibet import app
+
 if not app.player or app.player.can_play_uri("http://"):
     browsers = [InternetRadio]
 else:
