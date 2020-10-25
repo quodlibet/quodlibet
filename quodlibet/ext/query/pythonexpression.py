@@ -16,14 +16,18 @@ from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 class PythonQuery(QueryPlugin):
     PLUGIN_ID = "python_query"
     PLUGIN_NAME = _("Python Query")
-    PLUGIN_DESC = _("Use Python expressions in queries. "
-                    "Syntax is '@(python: expression)'. "
-                    "The variable 's' (or 'a') "
-                    "is the song / album being matched. "
-                    "'_ts' is a (real number) timestamp at start of query. "
-                    "Modules 'time' and 'random' are also available, "
-                    "and the class 'Random' (==random.Random) too.")
+    PLUGIN_DESC = _("🐍Use Python expressions in queries.")
     key = 'python'
+    usage = """
+<b><tt>@(python: expression)</tt></b>
+
+The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.
+
+<tt>_ts</tt> is a (real number) timestamp at start of query.
+
+Modules <tt>time</tt> and <tt>random</tt> are also available,
+and the class <tt>Random</tt> (==<tt>random.Random</tt>) too.
+""".strip()
 
     def __init__(self):
         print_d("Initialising")

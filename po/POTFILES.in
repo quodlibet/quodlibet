@@ -157,6 +157,7 @@ quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
 quodlibet/plugins/playlist.py
+quodlibet/plugins/query.py
 quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py
