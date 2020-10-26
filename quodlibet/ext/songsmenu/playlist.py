@@ -1,5 +1,5 @@
 # Copyright 2009 Christoph Reiter
-#      2014-2017 Nick Boultbee
+#      2014-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ lastfolder = get_home_dir()
 
 class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     PLUGIN_ID = 'Playlist Export'
-    PLUGIN_NAME = _('Export as Playlist')
+    PLUGIN_NAME = _('Export as M3U / PLS playlist file')
     PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
     PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
     REQUIRES_ACTION = True
