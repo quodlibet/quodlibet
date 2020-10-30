@@ -7,13 +7,13 @@
 
 import os
 
-from gi.repository import Gtk
 from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 import quodlibet
 from quodlibet import _, print_d
-from quodlibet import formats, qltk
+from quodlibet import formats
 from quodlibet.qltk import Icons
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
@@ -28,20 +28,28 @@ if not os.path.isdir(PLAYLISTS):
     mkdir(PLAYLISTS)
 
 
-class ConfirmRemovePlaylistDialog(qltk.Message):
-    def __init__(self, parent, playlist):
-        title = (_("Are you sure you want to delete the playlist '%s'?")
-                 % escape(playlist.name))
-        description = (_("All information about the selected playlist "
-                         "will be deleted and can not be restored."))
+def confirm_remove_playlist_dialog_invoke(
+    parent, playlist, Confirmer=ConfirmationPrompt):
+    """Creates and invokes a confirmation dialog that asks the user whether or not
+       to go forth with the deletion of the selected playlist.
 
-        super().__init__(
-            Gtk.MessageType.WARNING, parent, title, description,
-            Gtk.ButtonsType.NONE)
+       Confirmer needs to accept the arguments for constructing a dialog,
+       have a run-method returning a response, and have a RESPONSE_INVOKE
+       attribute.
 
-        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE,
-                             Gtk.ResponseType.YES)
+       returns the result of comparing the result of run to RESPONSE_INVOKE
+    """
+    title = (_("Are you sure you want to delete the playlist '%s'?")
+             % escape(playlist.name))
+    description = (_("All information about the selected playlist "
+                     "will be deleted and can not be restored."))
+    ok_text = _("_Delete")
+    ok_icon = Icons.EDIT_DELETE
+
+    dialog = Confirmer(parent, title, description, ok_text, ok_icon)
+    prompt = dialog.run()
+    response = (prompt == Confirmer.RESPONSE_INVOKE)
+    return response
 
 
 class GetPlaylistName(GetStringDialog):

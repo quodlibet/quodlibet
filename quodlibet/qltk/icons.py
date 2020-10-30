@@ -108,5 +108,6 @@ class Icons(str):
     USER_DESKTOP = "user-desktop"
     USER_TRASH = "user-trash" # "Trash"
     UTILITIES_TERMINAL = "utilities-terminal"
+    VIEW_LIST = "view-list"  #
     VIEW_REFRESH = "view-refresh"  # "_Refresh"
     WINDOW_CLOSE = "window-close"  # "_Close"

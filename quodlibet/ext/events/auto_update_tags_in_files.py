@@ -168,8 +168,7 @@ class AutoUpdateTagsInFiles(EventPlugin):
 
 class AutoUpdateTagsPrefs(Gtk.Box):
     def __init__(self):
-        super().__init__(
-                orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
 
         strategy_boxes = []
         for strategy in UpdateStrategy:
@@ -234,7 +233,6 @@ class AutoUpdateTagsPrefs(Gtk.Box):
         show_only_current_box()
 
         frame = qltk.Frame(label=_("Preferences"), child=grid)
-        frame.set_border_width(6)
         self.pack_start(frame, False, False, 0)
 
 

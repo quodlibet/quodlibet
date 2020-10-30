@@ -1,5 +1,5 @@
 # Copyright 2012-2016 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
-#           2016-2017 Nick Boultbee
+#           2016-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,8 @@ from quodlibet.qltk import Icons
 class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
     PLUGIN_ID = "playcounteq"
     PLUGIN_NAME = _("Playcount Equalizer")
-    PLUGIN_DESC = _("Shuffle, preferring songs with fewer total plays.")
+    PLUGIN_DESC = _("Adds a shuffle mode "
+                    "that prefers songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Prefer less played")
 

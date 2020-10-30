@@ -62,7 +62,7 @@ class WMAFile(AudioFile):
         "WM/AuthorURL": "website",
         "Description": "comment"
     }
-    __rtranslate = dict([(v, k) for k, v in __translate.items()])
+    __rtranslate = dict((v, k) for k, v in __translate.items())
 
     # http://msdn.microsoft.com/en-us/library/dd743065.aspx
     # note: not all names here are used by QL

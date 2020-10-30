@@ -12,14 +12,14 @@ from gi.repository import Gtk
 from quodlibet import _, print_d
 from quodlibet.order import OrderInOrder
 from quodlibet.plugins import PluginConfig
-from quodlibet.plugins.playorder import PlayOrderPlugin
+from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk import Icons
 
 pconfig = PluginConfig("skip_songs")
 pconfig.defaults.set("threshold", 0.0)
 
 
-class SkipDisliked(PlayOrderPlugin, OrderInOrder):
+class SkipDisliked(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "skip_songs"
     PLUGIN_NAME = _("Skip Disliked Tracks")
     PLUGIN_ICON = Icons.GO_JUMP

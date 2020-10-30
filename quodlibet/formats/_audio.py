@@ -62,7 +62,7 @@ NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict([(v, k) for (k, v) in TAG_TO_SORT.items()])
+SORT_TO_TAG = dict((v, k) for (k, v) in TAG_TO_SORT.items())
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]

@@ -1,7 +1,7 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2011 Christoph Reiter
 #           2016 Ryan Dellenbaugh
-#        2016-17 Nick Boultbee
+#        2016-20 Nick Boultbee
 #           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,48 +9,57 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import time
+from __future__ import annotations
+
 import operator
+import time
+from numbers import Real
+from typing import TypeVar, List, Iterable
 
-from senf import fsn2text, fsnative
-
+from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 from quodlibet.unisearch import compile
 from quodlibet.util import parse_date
-from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
+from senf import fsn2text, fsnative
+
+T = TypeVar("T")
 
 
-class error(ValueError):
+class Error(ValueError):
     pass
 
 
-class ParseError(error):
+class ParseError(Error):
     pass
 
 
 class Node:
 
-    def search(self, data):
+    def search(self, data: T) -> bool:
         raise NotImplementedError
 
-    def filter(self, sequence):
+    def filter(self, sequence: Iterable[T]) -> List[T]:
         return [s for s in sequence if self.search(s)]
 
-    def _unpack(self):
+    def _unpack(self) -> Node:
         return self
 
-    def __or__(self, other):
+    def __or__(self, other: Node) -> Node:
         return NotImplemented
 
-    def __and__(self, other):
+    def __and__(self, other: Node) -> Node:
         return NotImplemented
 
-    def __neg__(self):
+    def __neg__(self) -> Node:
         return Neg(self._unpack())
+
+    @property
+    def valid(self) -> bool:
+        return True
 
 
 class Regex(Node):
 
-    def __init__(self, pattern, mod_string):
+    def __init__(self, pattern: str, mod_string: str):
         self.pattern = str(pattern)
         self.mod_string = str(mod_string)
 
@@ -58,7 +67,8 @@ class Regex(Node):
         dot_all = "s" in self.mod_string
         asym = "d" in self.mod_string
         try:
-            self.search = compile(self.pattern, ignore_case, dot_all, asym)
+            re = compile(self.pattern, ignore_case, dot_all, asym)
+            self.search = re  # type: ignore
         except ValueError:
             raise ParseError(
                 "The regular expression /%s/ is invalid." % self.pattern)
@@ -73,8 +83,8 @@ class True_(Node):
     def search(self, data):
         return True
 
-    def filter(self, list_):
-        return list(list_)
+    def filter(self, sequence):
+        return list(sequence)
 
     def __repr__(self):
         return "<True>"
@@ -93,7 +103,7 @@ class False_(Node):
     def search(self, data):
         return False
 
-    def filter(self, list_):
+    def filter(self, sequence):
         return []
 
     def __repr__(self):
@@ -110,7 +120,7 @@ class False_(Node):
 class Union(Node):
     """True if the object matches any of its REs."""
 
-    def __init__(self, res):
+    def __init__(self, res: List[Node]):
         self.res = res
 
     def search(self, data):
@@ -126,7 +136,7 @@ class Union(Node):
         other = other._unpack()
 
         if isinstance(other, Union):
-            return Union(self.res + other.res)
+            return Union(self.res + list(other.res))
         elif isinstance(other, True_):
             return other.__or__(self)
 
@@ -223,7 +233,7 @@ class Numcmp(Node):
         "!=": operator.ne,
     }
 
-    def __init__(self, expr, op, expr2):
+    def __init__(self, expr: Numexpr, op: str, expr2: Numexpr):
         self._expr = expr
         self._op = self.operators[op]
         self._expr2 = expr2
@@ -257,14 +267,17 @@ class Numcmp(Node):
 class Numexpr:
     """Expression in numeric comparison"""
 
-    def evaluate(self, data, time, use_date):
-        """Evaluate the expression to a number. `data` is the audiofile to
-        evaluate for, time is the current time, and is_date is a boolean
-        indicating whether to evaluate as a date (used to handle expressions
-        like 2015-02-11 that look like dates and subtraction)"""
+    def evaluate(self, data: T, time: float, use_date: bool):
+        """Evaluate the expression to a number.
+        :param data: is the audiofile to evaluate for
+        :param time: is the current time
+        :param use_date: whether to evaluate as a date
+                         (used to handle expressions like 2015-02-11
+                          that look like dates and subtraction)
+        """
         raise NotImplementedError
 
-    def use_date(self):
+    def use_date(self) -> bool:
         """Returns whether to force the final comparison to compare the date
         values instead of the number values."""
         return False
@@ -273,7 +286,7 @@ class Numexpr:
 class NumexprTag(Numexpr):
     """Numeric tag"""
 
-    def __init__(self, tag):
+    def __init__(self, tag: str):
         self._tag = tag
         self._ftag = "~#" + self._tag
 
@@ -311,7 +324,7 @@ class NumexprUnary(Numexpr):
         '-': operator.neg
     }
 
-    def __init__(self, op, expr):
+    def __init__(self, op: str, expr: Numexpr):
         self.__op = self.operators[op]
         self.__expr = expr
 
@@ -345,14 +358,13 @@ class NumexprBinary(Numexpr):
         operator.floordiv: 2,
     }
 
-    def __init__(self, op, expr, expr2):
+    def __init__(self, op: str, expr: Numexpr, expr2: Numexpr):
         self.__op = self.operators[op]
         self.__expr = expr
         self.__expr2 = expr2
         # Rearrange expressions for operator precedence
-        if (isinstance(self.__expr, NumexprBinary) and
-                self.precedence[self.__expr.__op] <
-                self.precedence[self.__op]):
+        if (isinstance(expr, NumexprBinary)
+                and self.precedence[expr.__op] < self.precedence[self.__op]):
             self.__expr = expr.__expr
             self.__op = expr.__op
             expr.__expr = expr.__expr2
@@ -381,7 +393,7 @@ class NumexprBinary(Numexpr):
 class NumexprGroup(Numexpr):
     """Parenthesized group in numeric expression"""
 
-    def __init__(self, expr):
+    def __init__(self, expr: Numexpr):
         self.__expr = expr
 
     def evaluate(self, data, time, use_date):
@@ -397,7 +409,7 @@ class NumexprGroup(Numexpr):
 class NumexprNumber(Numexpr):
     """Number in numeric expression"""
 
-    def __init__(self, value):
+    def __init__(self, value: Real):
         self._value = float(value)
 
     def evaluate(self, data, time, use_date):
@@ -441,7 +453,7 @@ class NumexprNumberOrDate(Numexpr):
 
     def __repr__(self):
         return ('<NumexprNumberOrDate number=%r date=%r>' %
-            (self.number, self.date))
+                (self.number, self.date))
 
 
 def numexprUnit(value, unit):
@@ -591,6 +603,10 @@ class Extension(Node):
 
     def search(self, data):
         return self.__valid and self.__plugin.search(data, self.__body)
+
+    @property
+    def valid(self) -> bool:
+        return self.__valid
 
     def __repr__(self):
         return ('<Extension name=%r valid=%r body=%r>'

@@ -236,7 +236,7 @@ def register_translation(domain, localedir=None):
     if localedir is None:
         iterdirs = iter_locale_dirs
     else:
-        iterdirs = lambda: iter([localedir])
+        iterdirs = lambda: (yield localedir)
 
     for dir_ in iterdirs():
         try:
@@ -247,7 +247,7 @@ def register_translation(domain, localedir=None):
             print_d("Translations loaded: %r" % unexpand(t.path))
             break
     else:
-        print_d("No translation found for the domain %r" % domain)
+        print_d(f"No translation found for domain {domain!r} in {localedir!r}")
         t = GlibTranslations()
 
     t.set_debug_text(_debug_text)
