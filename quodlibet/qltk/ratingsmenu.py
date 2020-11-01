@@ -1,4 +1,4 @@
-# Copyright 2011-2020 Nick Boultbee
+# Copyright 2011-2016 Nick Boultbee
 #           2005 Joe Wreschnig
 #
 # This program is free software; you can redistribute it and/or modify
@@ -6,32 +6,26 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
-
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet import util
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.config import RATINGS
 from quodlibet.qltk import Icons
 from quodlibet.qltk import SeparatorMenuItem
-from quodlibet.util import format_rating
 
 
 class ConfirmRateMultipleDialog(qltk.Message):
-    def __init__(self, parent, count: int, value: Optional[float]):
+    def __init__(self, parent, action_title, count, value):
         assert count > 1
 
         title = (_("Are you sure you want to change the "
                    "rating of all %d songs?") % count)
-        if value is None:
-            desc = _("The saved ratings will be removed")
-            action_title = _("_Remove Rating")
-        else:
-            desc = (_("The rating of all selected songs will be changed to %s")
-                    % format_rating(value))
-            action_title = _("Change _Rating")
+        desc = (_("The saved ratings will be removed") if value is None
+                else _("The rating of all selected songs will be changed to "
+                       "'%s'") % util.format_rating(value))
 
         super().__init__(
             Gtk.MessageType.WARNING, parent, title, desc, Gtk.ButtonsType.NONE)
@@ -53,7 +47,7 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         self.set_submenu(submenu)
         self._rating_menu_items = []
         for i in RATINGS.all:
-            text = "%0.2f\t%s" % (i, format_rating(i))
+            text = "%0.2f\t%s" % (i, util.format_rating(i))
             itm = Gtk.CheckMenuItem(label=text)
             itm.rating = i
             submenu.append(itm)
@@ -100,7 +94,8 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
             parent = qltk.get_menu_item_top_parent(self)
-            dialog = ConfirmRateMultipleDialog(parent, count, value)
+            dialog = ConfirmRateMultipleDialog(
+                parent, _("Change _Rating"), count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         for song in songs:
@@ -112,7 +107,8 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         if (count > 1 and
                 config.getboolean("browsers", "rating_confirm_multiple")):
             parent = qltk.get_menu_item_top_parent(self)
-            dialog = ConfirmRateMultipleDialog(parent, count, None)
+            dialog = ConfirmRateMultipleDialog(
+                parent, _("_Remove Rating"), count, None)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
         reset = []

@@ -49,9 +49,9 @@ class ExactRating(SongsMenuPlugin):
 
         count = len(songs)
         if (count > 1 and config.getboolean("browsers",
-                                            "rating_confirm_multiple")):
-            confirm_dialog = ConfirmRateMultipleDialog(self.plugin_window,
-                                                       count, value)
+                "rating_confirm_multiple")):
+            confirm_dialog = ConfirmRateMultipleDialog(
+                self.plugin_window, _("Change _Rating"), count, value)
             if confirm_dialog.run() != Gtk.ResponseType.YES:
                 return
 

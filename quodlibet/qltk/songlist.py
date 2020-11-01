@@ -479,7 +479,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                     dont_reverse = True
                     break
 
-        # set the indicators
+        # set the inidicators
         default_order = Gtk.SortType.ASCENDING
         reversed_ = False
         for c in self.get_columns():
@@ -626,7 +626,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             precision = config.RATINGS.precision
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * precision))
-            if rating <= precision and song("~#rating") == precision:
+            if (rating <= precision and
+                    song("~#rating") == precision):
                 rating = 0.0
             self.__set_rating(rating, [song], librarian)
 
