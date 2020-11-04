@@ -1,4 +1,5 @@
 # Copyright 2009-2011 Steven Robertson, Christoph Reiter
+#                2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,8 +8,7 @@
 
 import collections
 import subprocess
-from collections import Iterable
-
+from typing import Iterable
 from gi.repository import GLib, Gst
 
 from quodlibet import _, print_d
