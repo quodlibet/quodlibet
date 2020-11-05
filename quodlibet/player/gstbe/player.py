@@ -523,7 +523,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         vsink = self._make('fakesink', None)
         self.bin.set_property('video-sink', vsink)
 
-
         # disable all video/text decoding in playbin
         GST_PLAY_FLAG_VIDEO = 1 << 0
         GST_PLAY_FLAG_TEXT = 1 << 2
