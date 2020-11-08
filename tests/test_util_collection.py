@@ -643,6 +643,17 @@ class TFileBackedPlaylist(TPlaylist):
 
             lib.destroy()
 
+    def test_delete_emits_no_signals(self):
+        lib = self.FakeLib()
+        with self.wrap("playlist", lib=lib) as pl:
+            pl.extend(self.TWO_SONGS)
+            # We don't care about changed signals on extend...
+            lib.reset()
+            pl.delete()
+            assert not lib.emitted, "Deleting caused library signals"
+        # Second time, just in case
+        assert not lib.emitted, "Deleting again caused library signals"
+
 
 class TXPSFBackedPlaylist(TFileBackedPlaylist):
     Playlist = XSPFBackedPlaylist
