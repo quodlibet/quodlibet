@@ -69,13 +69,13 @@ class MP4File(AudioFile):
         '----:com.apple.iTunes:replaygain_reference_loudness':
             'replaygain_reference_loudness',
     }
-    __rtranslate = dict([(v, k) for k, v in __translate.items()])
+    __rtranslate = dict((v, k) for k, v in __translate.items())
 
     __tupletranslate = {
         "disk": "discnumber",
         "trkn": "tracknumber",
         }
-    __rtupletranslate = dict([(v, k) for k, v in __tupletranslate.items()])
+    __rtupletranslate = dict((v, k) for k, v in __tupletranslate.items())
 
     def __init__(self, filename):
         with translate_errors():

@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2014 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,6 +14,7 @@ from gi.repository import Gtk, Gdk, Pango
 from quodlibet import _
 from quodlibet import print_w
 from quodlibet import qltk
+from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.x import SeparatorMenuItem, Align
 from quodlibet.qltk import Icons
@@ -62,6 +63,7 @@ class SongInfo(Gtk.EventBox):
         connect_destroy(player, 'song-started', self._on_song_started)
 
         label.connect('populate-popup', self._on_label_popup, player, library)
+        self.connect('key-press-event', self._on_key_press_event, player)
         self.connect('button-press-event', self._on_button_press_event,
                      player, library)
 
@@ -74,6 +76,10 @@ class SongInfo(Gtk.EventBox):
         self._compiled = XMLFromMarkupPattern(self._pattern)
         align.show_all()
         self.add(align)
+
+    def _on_key_press_event(self, widget, event, player: BasePlayer):
+        if qltk.is_accel(event, "space"):
+            player.playpause()
 
     def _on_button_press_event(self, widget, event, player, library):
         if event.button == Gdk.BUTTON_SECONDARY:

@@ -51,8 +51,8 @@ class JSONObject:
                     for k in self.FIELDS]
         else:
             print_d("No order specified for class %s" % type(self).__name__)
-            return dict([(k, v) for k, v in self.__dict__.items()
-                         if self._should_store(k)])
+            return dict((k, v) for k, v in self.__dict__.items()
+                        if self._should_store(k))
 
     def field(self, name):
         """Returns the Field metadata of field `name` if available,
@@ -132,7 +132,7 @@ class JSONObjectDict(dict):
         """
         print_d("Saving %d %s(s) to JSON.." % (len(self), self.Item.__name__))
         try:
-            obj_dict = dict([(o.name, dict(o.data)) for o in self.values()])
+            obj_dict = dict((o.name, dict(o.data)) for o in self.values())
         except AttributeError:
             raise
         json_str = json.dumps(obj_dict, indent=4)

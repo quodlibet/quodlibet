@@ -754,7 +754,8 @@ def connect_after_destroy(sender, *args, **kwargs):
 
 
 class cached_property:
-    """A read-only @property that is only evaluated once."""
+    """A read-only @property that is only evaluated once.
+    TODO: work out some typing for this, see test_query.py"""
 
     def __init__(self, fget, doc=None):
         self.fget = fget

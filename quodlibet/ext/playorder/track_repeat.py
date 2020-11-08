@@ -1,17 +1,10 @@
-# Copyright 2011,2012,2016 Nick Boultbee
+# Copyright 2011-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-"""
-Repeats a given track a configurable number of times
-Useful for musicians practising / working out songs...
-or maybe you just REALLY like your playlist.
-
-TODO: notification of play count?
-"""
 
 from gi.repository import Gtk
 
@@ -26,11 +19,16 @@ START_COUNT = 1
 
 
 class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
+    """ Repeats a given track a configurable number of times
+        Useful for musicians practising / working out songs...
+        or maybe you just REALLY like your playlist.
+    """
+
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Repeat Each Track")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
-    PLUGIN_DESC = _("Shuffle songs, "
-                    "but repeat every track a set number of times.")
+    PLUGIN_DESC = _("Adds a shuffle mode that plays tracks in order, "
+                    "but repeating every track a set number of times.")
     PLAY_EACH_DEFAULT = 2
 
     START_COUNT = 1

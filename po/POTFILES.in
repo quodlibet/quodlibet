@@ -87,6 +87,7 @@ quodlibet/ext/gstreamer/karaoke.py
 quodlibet/ext/gstreamer/mono.py
 quodlibet/ext/gstreamer/pitch.py
 quodlibet/ext/playlist/export_to_folder.py
+quodlibet/ext/playlist/export_to_sonos.py
 quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
@@ -157,6 +158,7 @@ quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
 quodlibet/plugins/playlist.py
+quodlibet/plugins/query.py
 quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py

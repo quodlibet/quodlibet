@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import os
 import random
-from typing import List, Any
+from typing import Any, Set
 from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
@@ -337,7 +337,7 @@ class Playlist(Collection, Iterable):
     Songs can appear more than once.
     """
 
-    __instances: "List[Playlist]" = []
+    __instances: Set["Playlist"] = set()
 
     @classmethod
     def playlists_featuring(cls, song: AudioFile) -> Iterable[Playlist]:
@@ -391,7 +391,7 @@ class Playlist(Collection, Iterable):
     def __init__(self, name, library=None):
         super().__init__()
         self.__inhibit_library_signals = False
-        self.__instances.append(self)
+        self.__instances.add(self)
 
         name = str(name)
         if not name:
@@ -504,9 +504,10 @@ class Playlist(Collection, Iterable):
         return some, all
 
     def delete(self):
-        self.clear()
-        if self in self.__instances:
+        try:
             self.__instances.remove(self)
+        except KeyError:
+            print_w(f"Can't delete {self}")
 
     def write(self):
         pass
@@ -626,16 +627,16 @@ class FileBackedPlaylist(Playlist):
         return new_name
 
     def delete(self):
-        print_d("Deleting playlist file: %s" % self._last_fn)
         self._delete_file(self._last_fn)
         super().delete()
 
     @classmethod
     def _delete_file(cls, fn):
+        print_d(f"Deleting playlist file: {fn!r}")
         try:
             os.unlink(fn)
         except OSError as e:
-            print_w("Couldn't delete %s (%s)" % (fn, e))
+            print_w(f"Couldn't delete {fn!r} ({e})")
 
     def write(self):
         fn = self.path
@@ -738,10 +739,12 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         playlist.append(track_list)
         tree = ElementTree(playlist)
         ET.register_namespace('', XSPF_NS)
-        tree.write(self.path, encoding="UTF-8", xml_declaration=True)
-        if self._last_fn != self.path:
+        path = self.path
+        print_d(f"Writing {path !r}")
+        tree.write(path, encoding="UTF-8", xml_declaration=True)
+        if self._last_fn != path:
             self._delete_file(self._last_fn)
-            self._last_fn = self.path
+            self._last_fn = path
 
     @classmethod
     def _text_element(cls, name: str, value: Any) -> Element:

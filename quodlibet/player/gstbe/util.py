@@ -1,4 +1,5 @@
 # Copyright 2009-2011 Steven Robertson, Christoph Reiter
+#                2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,10 +8,10 @@
 
 import collections
 import subprocess
-
+from typing import Iterable
 from gi.repository import GLib, Gst
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
@@ -38,14 +39,17 @@ def pulse_is_running():
     return True
 
 
-def link_many(elements):
+def link_many(elements: Iterable[Gst.Element]) -> None:
+    """Links all elements together
+    :raises OSError: if they can't all be linked"""
     last = None
+    print_d(f"Attempting to link Gstreamer element(s): "
+            f"{[type(e).__name__ for e in elements]}")
     for element in elements:
         if last:
             if not Gst.Element.link(last, element):
-                return False
+                raise OSError(f"Failed on element: {type(element).__name__}")
         last = element
-    return True
 
 
 def unlink_many(elements):
@@ -123,7 +127,11 @@ def GStreamerSink(pipeline_desc):
         # In case the last element is linkable with a fakesink
         # it is not an audiosink, so we append the default one
         fake = Gst.ElementFactory.make('fakesink', None)
-        if link_many([pipe[-1], fake]):
+        try:
+            link_many([pipe[-1], fake])
+        except OSError:
+            pass
+        else:
             unlink_many([pipe[-1], fake])
             default_elm, default_desc = find_audio_sink()
             pipe += [default_elm]

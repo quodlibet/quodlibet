@@ -390,6 +390,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         else:
             print_e("No active pipeline.")
 
+    def _make(self, el, name=None):
+        return Gst.ElementFactory.make(el, name)
+
     def __init_pipeline(self):
         """Creates a gstreamer pipeline. Returns True on success."""
 
@@ -400,6 +403,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.error = False
 
         pipeline = config.get("player", "gst_pipeline")
+        print_d(f"Configured pipeline: {pipeline!r}")
         try:
             pipeline, self._pipeline_desc = GStreamerSink(pipeline)
         except PlayerError as e:
@@ -414,20 +418,21 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # pipeline supports. As a bonus, this seems to automatically
             # select the highest-precision format supported by the
             # rest of the chain.
-            filt = Gst.ElementFactory.make('capsfilter', None)
+            print_d("Setting up Gstreamer equalizer")
+            filt = self._make('capsfilter', None)
             filt.set_property('caps',
                               Gst.Caps.from_string('audio/x-raw,format=F32LE'))
-            eq = Gst.ElementFactory.make('equalizer-10bands', None)
+            eq = self._make('equalizer-10bands', None)
             self._eq_element = eq
             self.update_eq_values()
-            conv = Gst.ElementFactory.make('audioconvert', None)
-            resample = Gst.ElementFactory.make('audioresample', None)
+            conv = self._make('audioconvert', None)
+            resample = self._make('audioresample', None)
             pipeline = [filt, eq, conv, resample] + pipeline
 
         # playbin2 has started to control the volume through pulseaudio,
         # which means the volume property can change without us noticing.
         # Use our own volume element for now until this works with PA.
-        self._int_vol_element = Gst.ElementFactory.make('volume', None)
+        self._int_vol_element = self._make('volume', None)
         pipeline.insert(0, self._int_vol_element)
 
         # Get all plugin elements and append audio converters.
@@ -436,9 +441,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         for plugin in self._get_plugin_elements():
             plugin_pipeline.append(plugin)
             plugin_pipeline.append(
-                Gst.ElementFactory.make('audioconvert', None))
+                self._make('audioconvert', None))
             plugin_pipeline.append(
-                Gst.ElementFactory.make('audioresample', None))
+                self._make('audioresample', None))
+        print_d(f"GStreamer plugin pipeline: {plugin_pipeline}")
         pipeline = plugin_pipeline + pipeline
 
         bufbin = Gst.Bin()
@@ -447,10 +453,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             bufbin.add(element)
 
         if len(pipeline) > 1:
-            if not link_many(pipeline):
+            try:
+                link_many(pipeline)
+            except OSError as e:
                 print_w("Linking the GStreamer pipeline failed")
                 self._error(
-                    PlayerError(_("Could not create GStreamer pipeline")))
+                    PlayerError(_("Could not create GStreamer pipeline (%s)" % e)))
                 return False
 
         # see if the sink provides a volume property, if yes, use it
@@ -463,7 +471,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._ext_vol_element = sink_element
 
             # In case we use the sink volume directly we can increase buffering
-            # without affecting the volume change delay too much and safe some
+            # without affecting the volume change delay too much and save some
             # CPU time... (2x default for now).
             if hasattr(sink_element.props, "buffer_time"):
                 sink_element.set_property("buffer-time", 400000)
@@ -491,7 +499,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
         bufbin.add_pad(gpad)
 
-        bin_ = Gst.ElementFactory.make('playbin', None)
+        bin_ = self._make('playbin', None)
         assert bin_
 
         self.bin = BufferingWrapper(bin_, self)
@@ -508,12 +516,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         duration = config.getfloat("player", "gst_buffer")
         self._set_buffer_duration(int(duration * 1000))
 
-        # connect playbin to our pluing/volume/eq pipeline
+        # connect playbin to our plugin / volume / EQ pipeline
         self.bin.set_property('audio-sink', bufbin)
 
         # by default playbin will render video -> suppress using fakesink
-        fakesink = Gst.ElementFactory.make('fakesink', None)
-        self.bin.set_property('video-sink', fakesink)
+        vsink = self._make('fakesink', None)
+        self.bin.set_property('video-sink', vsink)
 
         # disable all video/text decoding in playbin
         GST_PLAY_FLAG_VIDEO = 1 << 0

@@ -270,7 +270,9 @@ def init_plugins(no_plugins=False):
     from quodlibet import plugins
     folders = [os.path.join(get_base_dir(), "ext", kind)
                for kind in PLUGIN_DIRS]
-    folders.append(os.path.join(get_fallback_dir(), "plugins"))
+    fallback_dir, _ = get_fallback_dir()
+    if fallback_dir:
+        folders.append(os.path.join(fallback_dir, "plugins"))
     folders.append(os.path.join(get_config_dir(), "plugins"))
     print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)

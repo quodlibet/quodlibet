@@ -1,15 +1,15 @@
 # Copyright 2010 Christoph Reiter
-#           2016 Nick Boultbee
+#        2016,20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.plugins.playorder import ShufflePlugin
-from quodlibet.order import OrderInOrder, OrderRemembered
 from quodlibet import _
 from quodlibet import app
+from quodlibet.order import OrderInOrder, OrderRemembered
+from quodlibet.plugins.playorder import ShufflePlugin
 from quodlibet.qltk import Icons
 
 
@@ -17,7 +17,7 @@ class FollowOrder(ShufflePlugin, OrderInOrder, OrderRemembered):
     PLUGIN_ID = "follow"
     PLUGIN_NAME = _("Follow Cursor")
     PLUGIN_ICON = Icons.GO_JUMP
-    PLUGIN_DESC = _("Playback follows your selection, "
+    PLUGIN_DESC = _("Adds a play order mode that follows your selection, "
                     "or the next song in the list once exhausted.")
 
     __last_path = None
