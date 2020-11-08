@@ -280,7 +280,6 @@ class TopBar(Gtk.Toolbar):
         self._pattern_box = Gtk.VBox(spacing=3)
 
         # song text
-        # FIXME: this `songinfo` file is not used anywhere?
         info_pattern_path = os.path.join(quodlibet.get_data_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
         self._pattern_box.pack_start(text, True, True, 0)

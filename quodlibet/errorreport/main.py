@@ -158,8 +158,7 @@ def errorhook(exc_info=None):
         # Make sure only one of these is active at a time
         return
 
-    # write error and logs to disk
-    # TODO: maybe `get_data_dir`?
+    # write error and logs to disk (cache folder)
     dump_dir = os.path.join(quodlibet.get_cache_dir(), "dumps")
     dump_to_disk(dump_dir, exc_info)
 
