@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango, GObject, Gdk
 
 from quodlibet import _
 from quodlibet import config
@@ -367,10 +367,13 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
-        super().__init__()
+        on_top = config.getboolean("settings", "plugins_window_on_top", False)
+        super().__init__(dialog=on_top)
         self.set_title(_("Plugins"))
         self.set_default_size(750, 500)
-        self.set_transient_for(parent)
+        if parent and on_top:
+            self.set_transient_for(parent)
+        self.set_type_hint(Gdk.WindowTypeHint.NORMAL)
         self.enable_window_tracking("plugin_prefs")
 
         model = ObjectStore()

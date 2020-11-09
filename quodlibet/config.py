@@ -219,6 +219,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # Force fontconfig as PangoCairo backend
         "pangocairo_force_fontconfig": "false",
+
+        # Whether the plugin window appears on top of others
+        "plugins_window_on_top": "false",
     },
 
     "rename": {
