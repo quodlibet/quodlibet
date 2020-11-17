@@ -255,7 +255,7 @@ class TPicklingMixin(TestCase):
     class PicklingMockLibrary(PicklingMixin, Library):
         """A library-like class that implements enough to test PicklingMixin"""
         def __init__(self):
-            PicklingMixin.__init__(self)
+            super().__init__(name="Mock")
             self._contents = {}
             # set up just enough of the library interface to work
             self.values = self._contents.values

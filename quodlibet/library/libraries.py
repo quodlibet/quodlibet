@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2013 Nick Boultbee
+#           2013,2020 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -89,13 +89,13 @@ class Library(GObject.GObject, DictMixin):
         if not items:
             return
         if self.librarian and self in self.librarian.libraries.values():
-            print_d("Changing %d items via librarian." % len(items), self)
+            print_d(f"Changing {len(items)} items via librarian.", self._name)
             self.librarian.changed(items)
         else:
             items = {item for item in items if item in self}
             if not items:
                 return
-            print_d("Changing %d items directly." % len(items), self)
+            print_d(f"Changing {len(items)} items directly.", self._name)
             self._changed(items)
 
     def _changed(self, items):
@@ -104,7 +104,7 @@ class Library(GObject.GObject, DictMixin):
         # Called by the changed method and Librarians.
         if not items:
             return
-        print_d("Changing %d items." % len(items), self)
+        print_d(f"Changing {len(items)} items.", self._name)
         self.dirty = True
         self.emit('changed', items)
 
@@ -153,7 +153,7 @@ class Library(GObject.GObject, DictMixin):
         """Load (add) an item into this library"""
         # Subclasses should override this if they want to check
         # item validity; see `FileLibrary`.
-        print_d("Loading %r." % item.key, self)
+        print_d(f"Loading {item.key!r}", self._name)
         self.dirty = True
         self._contents[item.key] = item
 
@@ -176,7 +176,7 @@ class Library(GObject.GObject, DictMixin):
         if not items:
             return items
 
-        print_d("Adding %d items." % len(items), self)
+        print_d(f"Adding {len(items)} items.", self._name)
         for item in items:
             self._contents[item.key] = item
 
@@ -194,7 +194,7 @@ class Library(GObject.GObject, DictMixin):
         if not items:
             return items
 
-        print_d("Removing %d items." % len(items), self)
+        print_d(f"Removing {len(items)} items.", self._name)
         for item in items:
             del(self._contents[item.key])
 
@@ -253,7 +253,7 @@ class PicklingMixin:
         # sure that non-mounted items are masked
         self._load_init(items)
 
-        print_d("Done loading contents of %r." % filename, self)
+        print_d(f"Done loading contents of {filename!r}", self._name)
 
     def save(self, filename=None):
         """Save the library to the given filename, or the default if `None`"""
@@ -261,7 +261,7 @@ class PicklingMixin:
         if filename is None:
             filename = self.filename
 
-        print_d("Saving contents to %r." % filename, self)
+        print_d(f"Saving contents to {filename!r}", self._name)
 
         try:
             dirname = os.path.dirname(filename)
@@ -274,7 +274,7 @@ class PicklingMixin:
             # Ignore, as it should try again later or on program exit.
             util.print_exc()
         except EnvironmentError:
-            print_w("Couldn't save library to path: %r" % filename)
+            print_w(f"Couldn't save library to path {filename!r}")
         else:
             self.dirty = False
 
@@ -437,7 +437,7 @@ class SongLibrary(PicklingLibrary):
         return {value for song in self.values()
                 for value in song.list(tag)}
 
-    def rename(self, song, newname, changed=None):
+    def rename(self, song, new_name, changed=None):
         """Rename a song.
 
         This requires a special method because it can change the
@@ -449,12 +449,12 @@ class SongLibrary(PicklingLibrary):
         If the song exists in multiple libraries you cannot use this
         method. Instead, use the librarian.
         """
-        print_d("Renaming %r to %r" % (song.key, newname), self)
+        print_d(f"Renaming {song.key!r} to {new_name!r}", self)
         del(self._contents[song.key])
-        song.rename(newname)
+        song.rename(new_name)
         self._contents[song.key] = song
         if changed is not None:
-            print_d("%s: Delaying changed signal." % (type(self).__name__,))
+            print_d("Delaying changed signal.", self._name)
             changed.add(song)
         else:
             self.changed({song})
@@ -564,12 +564,12 @@ class FileLibrary(PicklingLibrary):
         No signals will be fired.
         Return a tuple of booleans: (changed, removed)
         """
-        print_d("Loading %r." % item.key, self)
+        print_d(f"Loading {item.key!r}", self._name)
         valid = item.valid()
 
         # The item is fine; add it if it's not present.
         if not force and valid:
-            print_d("%r is valid." % item.key, self)
+            print_d(f"{item.key!r} is valid.", self._name)
             self._contents[item.key] = item
             return False, False
         else:
@@ -587,25 +587,24 @@ class FileLibrary(PicklingLibrary):
                 try:
                     item.reload()
                 except AudioFileError:
-                    print_d("Error reloading %r." % item.key, self)
-                    util.print_exc()
+                    print_w(f"Error reloading {item.key!r}", self._name)
                     return False, True
                 else:
-                    print_d("Reloaded %r." % item.key, self)
+                    print_d(f"Reloaded {item.key!r}.", self._name)
                     self._contents[item.key] = item
                     return True, False
             elif not item.mounted():
                 # We don't know if the item is okay or not, since
                 # it's not not mounted. If the item was present
                 # we need to mark it as removed.
-                print_d("Masking %r." % item.key, self)
+                print_d(f"Masking {item.key!r}", self._name)
                 self._masked.setdefault(item.mountpoint, {})
                 self._masked[item.mountpoint][item.key] = item
                 return False, present
             else:
                 # The item doesn't exist at all anymore. Mark it as
                 # removed if it was present, otherwise nothing.
-                print_d("Ignoring (so removing) %r." % item.key, self)
+                print_d(f"Ignoring (so removing) {item.key!r}.", self._name)
                 return False, present
 
     def reload(self, item, changed=None, removed=None):
@@ -646,7 +645,7 @@ class FileLibrary(PicklingLibrary):
         buttons in the UI.
         """
 
-        print_d("Rebuilding, force is %s." % force, self)
+        print_d(f"Rebuilding, force is {force}", self._name)
 
         task = Task(_("Library"), _("Checking mount points"))
         if cofuncid:
@@ -676,8 +675,7 @@ class FileLibrary(PicklingLibrary):
                 removed = set()
             if len(changed) > 5 or i % 100 == 0:
                 yield True
-        print_d("Removing %d, changing %d." % (len(removed), len(changed)),
-                self)
+        print_d(f"Removing {len(removed)}, changing {len(changed)}).", self._name)
         if removed:
             self.emit('removed', removed)
         if changed:
@@ -722,7 +720,7 @@ class FileLibrary(PicklingLibrary):
         # first scan each path for new files
         paths_to_load = []
         for scan_path in paths:
-            print_d("Scanning %r." % scan_path)
+            print_d(f"Scanning {scan_path}", self._name)
             desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
             with Task(_("Library"), desc) as task:
                 if cofuncid:
@@ -791,13 +789,13 @@ class FileLibrary(PicklingLibrary):
             return item in self._masked.get(point, {}).values()
 
     def unmask(self, point):
-        print_d("Unmasking %r." % point, self)
+        print_d(f"Unmasking {point!r}", self._name)
         items = self._masked.pop(point, {})
         if items:
             self.add(items.values())
 
     def mask(self, point):
-        print_d("Masking %r." % point, self)
+        print_d(f"Masking {point!r}", self._name)
         removed = {}
         for item in self.values():
             if item.mountpoint == point:
@@ -828,7 +826,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
     Pickles contents to disk as `FileLibrary`"""
 
     def __init__(self, name=None):
-        print_d("Initializing SongFileLibrary \"%s\"." % name)
+        print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
 
     def contains_filename(self, filename):
@@ -859,7 +857,7 @@ class SongFileLibrary(SongLibrary, FileLibrary):
             if song and add:
                 self.add([song])
         else:
-            print_d("Already got file %r." % filename)
+            print_d(f"Already got file {filename!r}")
             song = self._contents[key]
 
         return song
