@@ -56,8 +56,6 @@ jobs:
           MSYSTEM= python3 -R -bb setup.py test
 
   flatpak:
-    # Disable until this is fixed - see #3469
-    if: false
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout code
