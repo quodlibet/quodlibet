@@ -157,7 +157,7 @@ class SongLibrarian(Librarian):
         # the call for future libraries because the item's key has
         # changed. So, it needs to reimplement the method.
         re_add = []
-        print_d("Renaming %r to %r" % (song.key, newname), self)
+        print_d(f"Renaming {song.key!r} to {newname!r}")
         for library in self.libraries.values():
             try:
                 del library._contents[song.key]
@@ -171,7 +171,7 @@ class SongLibrarian(Librarian):
             if changed is None:
                 library._changed({song})
             else:
-                print_d("Delaying changed signal for %r." % library, self)
+                print_d(f"Delaying changed signal for {library!r}")
                 changed.add(song)
 
     def reload(self, item, changed=None, removed=None):
@@ -184,7 +184,7 @@ class SongLibrarian(Librarian):
         """
 
         had_item = []
-        print_d("Reloading %r" % item.key, self)
+        print_d(f"Reloading {item.key!r}")
         for library in self.libraries.values():
             try:
                 del library._contents[item.key]
