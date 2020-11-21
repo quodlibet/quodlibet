@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2017 Nick Boultbee
+#      2011-2020 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,7 +9,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
+from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
@@ -33,7 +33,7 @@ from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk.songlistcolumns import create_songlist_column
+from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
 
 
@@ -1041,7 +1041,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         self.handler_unblock(self.__csig)
 
-    def __getmenu(self, column):
+    def _menu(self, column: SongListColumn) -> Gtk.Menu:
         menu = Gtk.Menu()
 
         def selection_done_cb(menu):
@@ -1049,16 +1049,16 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         menu.connect('selection-done', selection_done_cb)
 
-        current = SongList.headers[:]
-        current_set = set(current)
+        current_set = set(SongList.headers)
 
-        def tag_title(tag):
+        def tag_title(tag: str):
             if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
-        current = zip(map(tag_title, current), current)
+        current = [(tag_title(c), c) for c in SongList.headers]
 
-        def add_header_toggle(menu, pair, active, column=column):
+        def add_header_toggle(menu: Gtk.Menu, pair: Tuple[str, str], active: bool,
+                              column: SongListColumn = column):
             header, tag = pair
             item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
@@ -1075,7 +1075,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         sep.show()
         menu.append(sep)
 
-        trackinfo = """title genre ~title~version ~#track
+        trackinfo = """title genre comment ~title~version ~#track
             ~#playcount ~#skipcount ~rating ~#length ~playlists
             bpm initialkey""".split()
         peopleinfo = """artist ~people performer arranger author composer
@@ -1089,7 +1089,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             ~#samplerate""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers = sum(
+        all_headers: List[str] = sum(
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo],
             [])
 
@@ -1178,7 +1178,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if event is not None and event.button != Gdk.BUTTON_SECONDARY:
             return False
 
-        menu = self.__getmenu(column)
+        menu = self._menu(column)
         menu.attach_to_widget(self, None)
 
         if event:

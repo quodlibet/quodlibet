@@ -4,13 +4,15 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
+
+from quodlibet.qltk.songlistcolumns import SongListColumn
 from senf import fsnative
 
 from tests import TestCase
 
 from quodlibet.library import SongLibrary
-from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
-    header_tag_split, get_sort_tag
+from quodlibet.qltk.songlist import (SongList, set_columns, get_columns,
+                                     header_tag_split, get_sort_tag)
 from quodlibet.formats import AudioFile
 from quodlibet import config
 
@@ -223,6 +225,18 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
         self.assertEqual(get_sort_tag("composer"), "composersort")
         self.assertEqual(get_sort_tag("originalartist"), "originalartistsort")
+
+    def test_check_sensible_menu_items(self):
+        col = SongListColumn("title")
+
+        menu = self.songlist._menu(col)
+        submenus = [item.get_submenu()
+                    for item in menu.get_children()]
+        names = {item.get_label()
+                 for child in submenus
+                 if child and not isinstance(child, Gtk.SeparatorMenuItem)
+                 for item in child.get_children()}
+        assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):
         self.songlist.destroy()
