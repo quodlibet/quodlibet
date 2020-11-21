@@ -402,6 +402,8 @@ class SearchWindow(Dialog):
         sw.add(rtv)
         vb.pack_start(sw, True, True, 0)
 
+        # TODO: remove deprecated get_action_area
+        # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
         self.get_action_area().set_border_width(4)
         self.get_content_area().pack_start(vb, True, True, 0)
         self.connect('response', self._on_response)
