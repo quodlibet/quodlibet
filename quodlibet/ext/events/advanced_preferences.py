@@ -43,7 +43,6 @@ def _config(section, option, label, tooltip=None, getter=None):
 
 
 def text_config(section, option, label, tooltip=None):
-
     def getter(section, option):
         return decode(config.get(section, option))
 
@@ -51,15 +50,28 @@ def text_config(section, option, label, tooltip=None):
 
 
 def boolean_config(section, option, label, tooltip):
+    def on_reverted(*args):
+        config.reset(section, option)
+        button.set_active(config.getboolean(section, option))
 
-    def getter(section, option):
-        return str(config.getboolean(section, option))
+    def __toggled(self, section, option):
+        config.set(section, option, str(bool(self.get_active())).lower())
 
-    return _config(section, option, label, tooltip, getter)
+    default = config.getboolean(section, option)
+    button = Gtk.CheckButton()
+    button.set_active(config.getboolean(section, option, default))
+    button.set_tooltip_text(tooltip)
+    button.connect('toggled', __toggled, section, option)
+    revert = Gtk.Button()
+    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
+    revert.connect("clicked", on_reverted)
+
+    lbl = Gtk.Label(label=label, use_underline=True)
+    lbl.set_mnemonic_widget(button)
+    return lbl, button, revert
 
 
 def int_config(section, option, label, tooltip):
-
     def getter(section, option):
         return str(config.getint(section, option))
 
@@ -83,109 +95,86 @@ class AdvancedPreferences(EventPlugin):
         vb = Gtk.VBox(spacing=12)
 
         # Tabulate all settings for neatness
-        table = Gtk.Table(n_rows=6, n_columns=2)
-        table.set_col_spacings(6)
+        table = Gtk.Table(n_rows=14, n_columns=4)
+        table.set_col_spacings(12)
         table.set_row_spacings(6)
-        rows = []
-
-        # We don't use translations as these things are internal and I don't
-        # want to burden the translators...
-
-        rows.append(
+        # We don't use translations as these things are internal
+        # and don't want to burden the translators...
+        # TODO: rethink translation here? (#3494)
+        rows = [
             text_config(
                 "editing", "id3encoding",
                 "ID3 encodings:",
                 ("ID3 encodings separated by spaces. "
-                 "UTF-8 is always tried first, and Latin-1 "
-                 "is always tried last.")))
-
-        rows.append(
+                 "UTF-8 is always tried first, and Latin-1 is always tried last.")),
             text_config(
                 "settings", "search_tags",
                 "Search tags:",
                 ("Tags which get searched in addition to "
-                 "the ones present in the song list. Separate with \",\"")))
-
-        rows.append(
-            text_config(
-                "settings", "rating_symbol_full",
-                "Rating symbol (full):"))
-
-        rows.append(
-            text_config(
-                "settings", "rating_symbol_blank",
-                "Rating symbol (blank):"))
-
-        rows.append(
+                 "the ones present in the song list. Separate with \",\"")),
+            text_config("settings", "rating_symbol_full", "Rating symbol (full):"),
+            text_config("settings", "rating_symbol_blank", "Rating symbol (blank):"),
             text_config(
                 "player", "backend",
                 "Backend:",
-                "Identifier of the playback backend to use"))
-
-        rows.append(
+                "Identifier of the playback backend to use"),
             boolean_config(
                 "settings", "disable_hints",
                 "Disable hints:",
-                "Disable popup windows (treeview hints)"))
-
-        rows.append(
+                "Disable popup windows (treeview hints)"),
             int_config(
                 "browsers", "cover_size",
                 "Album cover size:",
                 ("Size of the album cover images in the album list browser "
-                 "(restart required)")))
-
-        rows.append(
+                 "(restart required)")),
             boolean_config(
                 "settings", "disable_mmkeys",
                 "Disable multimedia keys:",
-                "(restart required)"))
-
-        rows.append(
+                "(restart required)"),
             text_config(
                 "settings", "window_title_pattern",
                 "Main window title:",
                 ("A (tied) tag for the main window title, e.g. ~title~~people "
-                 "(restart required)")))
-
-        rows.append(
+                 "(restart required)")),
             text_config(
                 "settings", "datecolumn_timestamp_format",
                 "DateColumn timestamp format",
-                "A timestamp format, e.g. %Y%m%d %X "))
-
-        rows.append(
+                "A timestamp format, e.g. %Y%m%d %X "),
             text_config(
                 "settings", "scrollbar_always_visible",
                 "Scrollbars always visible:",
                 ("Toggles whether the scrollbars on the bottom and side of "
                  "the window always are visible or get hidden when not in use "
-                 "(restart required)")))
-
-        rows.append(
+                 "(restart required)")),
             boolean_config(
                 "settings", "pangocairo_force_fontconfig",
                 "Force Use Fontconfig Backend:",
-                "It's not the default on win/macOS (restart required)"))
-
-        rows.append(
+                "It's not the default on win/macOS (restart required)"),
             text_config(
                 "browsers", "ignored_characters",
                 "Ignored characters: ",
-                "Characters to ignore in queries"))
-
-        rows.append(
+                "Characters to ignore in queries"),
             boolean_config(
                 "settings", "plugins_window_on_top",
                 "Plugin window on top: ",
-                "Toggles whether the plugin window appears on top of others"))
+                "Toggles whether the plugin window appears on top of others")
+        ]
 
-        for (row, (label, entry, button)) in enumerate(rows):
+        for (row, (label, widget, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
-            table.attach(label, 0, 1, row, row + 1,
-                         xoptions=Gtk.AttachOptions.FILL)
-            table.attach(entry, 1, 2, row, row + 1)
-            table.attach(button, 2, 3, row, row + 1,
+            table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
+            if isinstance(widget, Gtk.CheckButton):
+                xoptions = Gtk.AttachOptions.FILL
+                widget.set_alignment(0.0, 0.5)
+                table.attach(widget, 1, 2, row, row + 1, xoptions=xoptions)
+                # This stops checkbox from expanding too big, or shrinking text entries
+                blank = Gtk.Label()
+                table.attach(blank, 2, 3, row, row + 1,
+                             xoptions=Gtk.AttachOptions.EXPAND)
+            else:
+                xoptions = Gtk.AttachOptions.FILL
+                table.attach(widget, 1, 3, row, row + 1, xoptions=xoptions)
+            table.attach(button, 3, 4, row, row + 1,
                          xoptions=Gtk.AttachOptions.SHRINK)
 
         def on_click(button):
