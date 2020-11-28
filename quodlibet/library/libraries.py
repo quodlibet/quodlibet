@@ -16,13 +16,16 @@ least useful but most content-agnostic.
 import os
 import shutil
 import time
+from os.path import realpath
+from pathlib import Path
+from typing import Set, Optional, Generator
 
 from gi.repository import GObject
-from senf import fsn2text, fsnative
+from senf import fsn2text, fsnative, expanduser
 
 from quodlibet import _
-from quodlibet.formats import MusicFile, AudioFileError, load_audio_files, \
-    dump_audio_files, SerializationError
+from quodlibet.formats import (MusicFile, AudioFileError, load_audio_files,
+                               dump_audio_files, SerializationError, AudioFile)
 from quodlibet.query import Query
 from quodlibet.qltk.notif import Task
 from quodlibet.util.atomic import atomic_save
@@ -31,8 +34,8 @@ from quodlibet.util.collections import DictMixin
 from quodlibet import util
 from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, \
-    ismount
+from quodlibet.util.path import (unexpand, mkdir, normalize_path, ishidden,
+                                 ismount)
 
 
 class Library(GObject.GObject, DictMixin):
@@ -196,7 +199,7 @@ class Library(GObject.GObject, DictMixin):
 
         print_d(f"Removing {len(items)} items.", self._name)
         for item in items:
-            del(self._contents[item.key])
+            del self._contents[item.key]
 
         self.dirty = True
         self.emit('removed', items)
@@ -281,6 +284,7 @@ class PicklingMixin:
 
 class PicklingLibrary(Library, PicklingMixin):
     """A library that pickles its contents to disk"""
+
     def __init__(self, name=None):
         print_d("Using pickling persistence for library \"%s\"" % name)
         PicklingMixin.__init__(self)
@@ -437,7 +441,7 @@ class SongLibrary(PicklingLibrary):
         return {value for song in self.values()
                 for value in song.list(tag)}
 
-    def rename(self, song, new_name, changed=None):
+    def rename(self, song, new_name, changed: Optional[Set] = None):
         """Rename a song.
 
         This requires a special method because it can change the
@@ -453,11 +457,10 @@ class SongLibrary(PicklingLibrary):
             print_d(f"Nothing changed for {new_name!r}")
             return
         print_d(f"Renaming {song.key!r} to {new_name!r}", self)
-        del(self._contents[song.key])
+        del self._contents[song.key]
         song.rename(new_name)
         self._contents[song.key] = song
         if changed is not None:
-            print_d("Delaying changed signal.", self._name)
             changed.add(song)
         else:
             self.changed({song})
@@ -580,7 +583,7 @@ class FileLibrary(PicklingLibrary):
             # We're going to reload; this could change the key.  So
             # remove the item if it's currently in.
             try:
-                del(self._contents[item.key])
+                del (self._contents[item.key])
             except KeyError:
                 present = False
             else:
@@ -656,7 +659,7 @@ class FileLibrary(PicklingLibrary):
         for i, (point, items) in task.list(enumerate(self._masked.items())):
             if ismount(point):
                 self._contents.update(items)
-                del(self._masked[point])
+                del (self._masked[point])
                 self.emit('added', list(items.values()))
                 yield True
 
