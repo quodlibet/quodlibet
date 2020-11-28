@@ -8,6 +8,7 @@
 
 import os
 import re
+from pathlib import Path
 from typing import List, Iterable, Pattern
 
 import pytest
@@ -18,19 +19,20 @@ from quodlibet.util import get_module_dir
 from tests.test_po import QL_BASE_DIR
 
 
-def iter_py_paths():
+def iter_py_paths() -> Iterable[Path]:
     """Iterates over all Python source files that are part of Quod Libet"""
 
     import quodlibet
-    root = os.path.dirname(get_module_dir(quodlibet))
+    root = Path(get_module_dir(quodlibet)).parent
 
-    skip = [
-        os.path.join(root, "build"),
-        os.path.join(root, "dist"),
-        os.path.join(root, "docs"),
-        os.path.join(root, "dev-utils"),
-        os.path.join(root, "quodlibet", "packages"),
-    ]
+    skip = [root / d for d in
+            ("build",
+             "dist",
+             "docs",
+             "dev-utils",
+             Path("quodlibet") / "packages")
+            ]
+    # Path.glob() not efficient on big trees :(
     for dirpath, dirnames, filenames in os.walk(root):
         for dirname in dirnames:
             if dirname.startswith("."):
@@ -41,15 +43,15 @@ def iter_py_paths():
 
         for filename in filenames:
             if filename.endswith('.py'):
-                yield os.path.join(dirpath, filename)
+                yield root / filename
 
 
-def prettify_path(s: str) -> str:
-    return os.path.splitext(os.path.relpath(s, QL_BASE_DIR))[0]
+def prettify_path(p: Path) -> str:
+    return os.path.splitext(p.relative_to(QL_BASE_DIR))[0]
 
 
 @pytest.fixture(params=list(iter_py_paths()), ids=prettify_path)
-def py_path(request):
+def py_path(request) -> Path:
     return request.param
 
 
@@ -81,7 +83,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 """]
     ALLOWED = ["".join(license.split()) for license in ALLOWED_RAW]
 
-    def test_license_is_compliant(self, py_path):
+    def test_license_is_compliant(self, py_path: Path):
         header = b""
         with open(py_path, "rb") as h:
             for line in h:
@@ -115,8 +117,8 @@ class TestStockIcons:
         white += ["gtk-tooltip", "gtk-", "gtk-update-icon-cache-"]
         return white
 
-    def test_icons_used(self, py_path, res, white):
-        if py_path.endswith(("icons.py", "test_source.py")):
+    def test_icons_used(self, py_path: Path, res, white):
+        if py_path.name in ("icons.py", "test_source.py"):
             return
         with open(py_path, "rb") as h:
             data = h.read().decode("utf-8")
