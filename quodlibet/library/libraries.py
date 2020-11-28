@@ -449,6 +449,9 @@ class SongLibrary(PicklingLibrary):
         If the song exists in multiple libraries you cannot use this
         method. Instead, use the librarian.
         """
+        if song.key == new_name:
+            print_d(f"Nothing changed for {new_name!r}")
+            return
         print_d(f"Renaming {song.key!r} to {new_name!r}", self)
         del(self._contents[song.key])
         song.rename(new_name)
