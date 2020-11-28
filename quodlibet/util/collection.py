@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import os
 import random
-from typing import Any, Set
+from typing import Any, Set, Union, MutableSequence
 from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
@@ -402,7 +402,7 @@ class Playlist(Collection, Iterable):
 
         self.name = name
         self.library = library
-        self._list = HashedList()
+        self._list: MutableSequence[Union[str, AudioFile]] = HashedList()
 
     @classmethod
     def suggested_name_for(cls, songs):
@@ -451,7 +451,6 @@ class Playlist(Collection, Iterable):
         """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True
         """
-        print_d("Remove %d song(s) from %s?" % (len(songs), self.name))
         changed = False
         for song in songs:
             # TODO: document the "library.masked" business
