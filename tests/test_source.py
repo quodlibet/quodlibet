@@ -34,13 +34,12 @@ def iter_py_paths() -> Iterable[Path]:
             ]
     # Path.glob() not efficient on big trees :(
     for dirpath, dirnames, filenames in os.walk(root):
-        for dirname in dirnames:
-            if dirname.startswith("."):
-                dirnames.remove(dirname)
-        if any((dirpath.startswith(s + os.sep) or s == dirpath)
-               for s in skip):
+        root = Path(dirpath)
+        parents = root.parents
+        if root.name.startswith(".") or any(s in parents for s in skip):
+            # Don't test *any* subdirs of hidden / ignored parents
+            dirnames.clear()
             continue
-
         for filename in filenames:
             if filename.endswith('.py'):
                 yield root / filename
