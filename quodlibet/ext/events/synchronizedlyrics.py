@@ -1,6 +1,6 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#            2016-17 Nick Boultbee
+#            2016-20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,32 +8,29 @@
 # (at your option) any later version.
 
 
-"""Provides `Synchronized Lyrics` plugin for showing synchronized lyrics."""
-
 import os
-from typing import List, Tuple
-from datetime import datetime
+import re
+from os.path import splitext
+from typing import List, Tuple, Optional
 
 from gi.repository import Gtk, Gdk, GLib
-
-from quodlibet.qltk import Icons
-from quodlibet.util.dprint import print_d
 
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
-
+from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginConfigMixin
-
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
+from quodlibet.util.dprint import print_d
 
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     PLUGIN_ID = 'SynchronizedLyrics'
     PLUGIN_NAME = _('Synchronized Lyrics')
-    PLUGIN_DESC = _('Shows synchronized lyrics from .lrc file with same name \
-as the track.')
+    PLUGIN_DESC = _('Shows synchronized lyrics from an .lrc file '
+                    'with same name as the track (or similar).')
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     SYNC_PERIOD = 10000
@@ -46,7 +43,11 @@ as the track.')
     CFG_TXTCOLOR_KEY = "textColor"
     CFG_FONTSIZE_KEY = "fontSize"
 
-    _lines: List[Tuple] = []
+    # Note the trimming of whitespace, seems "most correct" behaviour
+    LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)\]\s*(.+)\s*")
+
+    # TODO: instance variables
+    _lines: List[Tuple[int, str]] = []
     _timers: List[Tuple[int, int]] = []
 
     _current_lrc = ""
@@ -154,7 +155,7 @@ as the track.')
         self.scrolled_window.show()
 
         self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
-        self._build_data()
+        self._build_data(app.player.song)
         self._timer_control()
 
     def disabled(self):
@@ -182,59 +183,44 @@ as the track.')
     def _cur_position(self):
         return app.player.get_position()
 
-    def _build_data(self):
-        self.text_buffer.set_text("")
-        if app.player.song is not None:
+    def _build_data(self, song: Optional[AudioFile]) -> None:
+        if self.textview:
+            self.textview.get_buffer().set_text("")
+        if song:
             # check in same location as track
-            track_name = app.player.song.get("~filename")
-            new_lrc = os.path.splitext(track_name)[0] + ".lrc"
-            print_d("Checking for lyrics file %s" % new_lrc)
-            if self._current_lrc != new_lrc:
-                self._lines = []
+            track_name = splitext(song.get("~filename") or "")[0]
+            dir_ = song("~dirname")
+            for new_lrc in [f"{s}.lrc"
+                            for s in (
+                                track_name,
+                                track_name.lower(),
+                                track_name.upper(),
+                                os.path.join(dir_, song("~artist~title")),
+                                os.path.join(dir_, song("~artist~tracknumber~title")),
+                                os.path.join(dir_, song("~tracknumber~title"))
+                            )
+                            ]:
+                print_d(f"Looking for {new_lrc!r}")
                 if os.path.exists(new_lrc):
-                    print_d("Found lyrics file: %s" % new_lrc)
-                    self._parse_lrc_file(new_lrc)
-            self._current_lrc = new_lrc
+                    print_d(f"Found lyrics file: {new_lrc}")
+                    with open(new_lrc, 'r', encoding="utf-8") as f:
+                        contents = f.read()
+                    self._lines = self._parse_lrc(contents)
+                    self._current_lrc = new_lrc
+                    return
+            print_d(f"No lyrics found for {track_name!r}")
 
-    def _parse_lrc_file(self, filename):
-        with open(filename, 'r', encoding="utf-8") as f:
-            raw_file = f.read()
-        raw_file = raw_file.replace("\n", "")
-        begin = 0
-        keep_reading = len(raw_file) != 0
-        tmp_dict = {}
-        compressed = []
-        while keep_reading:
-            next_find = raw_file.find("[", begin + 1)
-            if next_find == -1:
-                keep_reading = False
-                line = raw_file[begin:]
-            else:
-                line = raw_file[begin:next_find]
-            begin = next_find
-
-            # parse lyricsLine
-            if len(line) < 2 or not line[1].isdigit():
+    def _parse_lrc(self, contents: str) -> List[Tuple[int, str]]:
+        data = []
+        for line in contents.splitlines():
+            match = self.LINE_REGEX.match(line)
+            if not match:
                 continue
-            close_bracket = line.find("]")
-            t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')
-            timestamp = (t.minute * 60000 + t.second * 1000 +
-                         t.microsecond / 1000)
-            words = line[close_bracket + 1:]
-            if not words:
-                compressed.append(timestamp)
-            else:
-                tmp_dict[timestamp] = words
-                for t in compressed:
-                    tmp_dict[t] = words
-                compressed = []
-
-        keys = list(tmp_dict.keys())
-        keys.sort()
-        for key in keys:
-            self._lines.append((key, tmp_dict[key]))
-        del keys
-        del tmp_dict
+            timing, text = match.groups()
+            minutes, seconds = (float(p) for p in timing.split(":", 1))
+            timestamp = int(1000 * (minutes * 60 + seconds))
+            data.append((timestamp, text))
+        return sorted(data)
 
     def _set_timers(self):
         print_d("Setting timers")
@@ -277,8 +263,8 @@ as the track.')
         print_d("♪ %s ♪" % line.strip())
         return False
 
-    def plugin_on_song_started(self, song):
-        self._build_data()
+    def plugin_on_song_started(self, song: AudioFile) -> None:
+        self._build_data(song)
         # delay so that current position is for current track, not previous one
         GLib.timeout_add(5, self._timer_control)
 
