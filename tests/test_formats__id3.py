@@ -405,7 +405,7 @@ class TID3FileMixin:
 
         f = mutagen.File(self.filename)
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            self.failUnless(f["TXXX:replaygain_" + k])
+            self.failUnless(f[f"TXXX:REPLAYGAIN_{k.upper()}"])
 
     def test_foobar2k_rg_caseinsensitive(self):
         f = mutagen.File(self.filename)
@@ -416,13 +416,13 @@ class TID3FileMixin:
         self.failUnlessEqual(song("replaygain_track_gain"), "-6 db")
         song.write()
         f = mutagen.File(self.filename)
-        frames = f.tags.getall("TXXX:replaygain_track_gain")
+        frames = f.tags.getall("TXXX:REPLAYGAIN_TRACK_GAIN")
         self.assertTrue(frames)
-        self.assertEqual(frames[0].desc, "replaygain_track_gain")
+        self.assertEqual(frames[0].desc, "REPLAYGAIN_TRACK_GAIN")
         del song["replaygain_track_gain"]
         song.write()
         f = mutagen.File(self.filename)
-        self.assertFalse(f.tags.getall("TXXX:replaygain_track_gain"))
+        self.assertFalse(f.tags.getall("TXXX:REPLAYGAIN_TRACK_GAIN"))
 
     def test_quodlibet_txxx_inval(self):
         # This shouldn't happen in our namespace, but check anyway since
