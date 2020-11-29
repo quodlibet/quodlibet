@@ -16,26 +16,23 @@ least useful but most content-agnostic.
 import os
 import shutil
 import time
-from os.path import realpath
-from pathlib import Path
-from typing import Set, Optional, Generator
+from typing import Set, Optional
 
 from gi.repository import GObject
-from senf import fsn2text, fsnative, expanduser
 
 from quodlibet import _
+from quodlibet import formats
+from quodlibet import util
 from quodlibet.formats import (MusicFile, AudioFileError, load_audio_files,
-                               dump_audio_files, SerializationError, AudioFile)
-from quodlibet.query import Query
+                               dump_audio_files, SerializationError)
 from quodlibet.qltk.notif import Task
+from quodlibet.query import Query
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
-from quodlibet import util
-from quodlibet import formats
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import (unexpand, mkdir, normalize_path, ishidden,
-                                 ismount)
+from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, ismount
+from senf import fsn2text, fsnative
 
 
 class Library(GObject.GObject, DictMixin):
