@@ -15,6 +15,7 @@ from quodlibet.library.libraries import (Library, PicklingMixin, SongLibrary,
                                          FileLibrary, AlbumLibrary,
                                          SongFileLibrary, iter_paths)
 from quodlibet.util import connect_obj, is_windows
+from quodlibet.util.path import normalize_path
 from senf import fsnative
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -420,11 +421,12 @@ class TFileLibrary(TLibrary):
         in_song.sanitize()
         out_song = AudioFile({"~filename": "/tmp/otherdir/file.mp3", "title": "Quux"})
         out_song.sanitize()
-        assert in_song("~dirname") == "/tmp/subdir"
-        assert out_song("~dirname") == "/tmp/otherdir"
+        root = normalize_path("/tmp/subdir", True)
+        assert in_song("~dirname") == root
+        assert out_song("~dirname") == normalize_path("/tmp/otherdir", True)
         self.library.add([out_song, in_song])
         new_root = Path(mkdtemp())
-        list(self.library.move_root("/tmp/subdir", str(new_root)))
+        list(self.library.move_root(root, str(new_root)))
         assert Path(in_song("~filename")) == new_root / "file.mp3"
         assert Path(in_song("~dirname")) == new_root
         assert out_song("~dirname") == "/tmp/otherdir", f"{out_song} was wrongly moved!"
