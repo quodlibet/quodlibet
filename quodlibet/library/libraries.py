@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2013,2020 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,9 @@ least useful but most content-agnostic.
 import os
 import shutil
 import time
-from typing import Set, Optional
+from os.path import realpath
+from pathlib import Path
+from typing import Set, Optional, Generator
 
 from gi.repository import GObject
 
@@ -24,7 +26,7 @@ from quodlibet import _
 from quodlibet import formats
 from quodlibet import util
 from quodlibet.formats import (MusicFile, AudioFileError, load_audio_files,
-                               dump_audio_files, SerializationError)
+                               dump_audio_files, SerializationError, AudioFile)
 from quodlibet.qltk.notif import Task
 from quodlibet.query import Query
 from quodlibet.util.atomic import atomic_save
@@ -32,7 +34,7 @@ from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, ismount
-from senf import fsn2text, fsnative
+from senf import fsn2text, fsnative, expanduser
 
 
 class Library(GObject.GObject, DictMixin):
@@ -822,6 +824,66 @@ class FileLibrary(PicklingLibrary):
         """Remove all songs for a masked point"""
 
         self._masked.pop(mount_point, {})
+
+    def move_root(self, old_root: str, new_root: fsnative) \
+            -> Generator[None, None, None]:
+        """
+        Move the root for all songs in a given (scan) directory.
+
+        We avoid dereferencing the destination, to allow users things like:
+          1. Symlink new_path -> old_root
+          2. Move QL root to new_path
+          3. Remove symlink
+          4. Move audio files: old_root -> new_path
+
+        """
+        old_root = realpath(expanduser(old_root))
+        new_root = expanduser(new_root)  # type: ignore
+        if not Path(fsn2text(new_root)).is_dir():
+            raise ValueError(f"{new_root!r} is not a directory")
+        print_d(f"{self._name}: checking {len(self.values())} item(s) for {old_root!r}")
+        missing: Set[AudioFile] = set()
+        changed = set()
+        total = len(self)
+        if not total:
+            return
+        with Task(_("Library"), _("Moving library files")) as task:
+            yield
+            for i, song in enumerate(list(self.values())):
+                task.update(i / total)
+                key = song.key
+                if key.startswith(old_root):
+                    new_path = normalize_path(key.replace(old_root, new_root, 1),
+                                              canonicalise=False)
+                    if self.move_song(song, new_path):
+                        changed.add(song)
+                    else:
+                        missing.add(song)
+                elif not (i % 1000):
+                    print_d(f"Not moved, for example: {key!r}")
+                if not i % 100:
+                    yield
+            self.changed(changed)
+            if missing:
+                print_w(f"Couldn't find {len(list(missing))} files: {missing}")
+        print_d(f"Done moving to {new_root!r}.")
+
+    def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
+        """Updates the location of a song, without touching the file.
+
+        :returns: True if it was could be found (and moved)
+        """
+        existed = True
+        key = song.key
+        print_d(f"Moving {key!r} -> {new_path!r}")
+        try:
+            del self._contents[key]
+        except KeyError:
+            existed = False
+            # Continue - maybe it's already moved
+        song.sanitize(new_path)
+        self._contents[new_path] = song
+        return existed
 
 
 class SongFileLibrary(SongLibrary, FileLibrary):

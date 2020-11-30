@@ -2,23 +2,22 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import os
+import shutil
+from pathlib import Path
 
 from gi.repository import Gtk
 
-import os
-import shutil
-from senf import fsnative
-
-from quodlibet.formats import AudioFileError
 from quodlibet import config
-from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-
+from quodlibet.formats import AudioFileError
+from quodlibet.library.libraries import (Library, PicklingMixin, SongLibrary,
+                                         FileLibrary, AlbumLibrary,
+                                         SongFileLibrary, iter_paths)
+from quodlibet.util import connect_obj, is_windows
+from senf import fsnative
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
-
-from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
-    FileLibrary, AlbumLibrary, SongFileLibrary, iter_paths
 
 
 class Fake(int):
@@ -415,6 +414,20 @@ class TFileLibrary(TLibrary):
         self.library.reload(new, changed=changed, removed=removed)
         self.assertTrue(new in changed)
         self.assertFalse(removed)
+
+    def test_move_root(self):
+        in_song = AudioFile({"~filename": "/tmp/subdir/file.mp3", "title": "Foo Bar"})
+        in_song.sanitize()
+        out_song = AudioFile({"~filename": "/tmp/otherdir/file.mp3", "title": "Quux"})
+        out_song.sanitize()
+        assert in_song("~dirname") == "/tmp/subdir"
+        assert out_song("~dirname") == "/tmp/otherdir"
+        self.library.add([out_song, in_song])
+        new_root = Path(mkdtemp())
+        list(self.library.move_root("/tmp/subdir", str(new_root)))
+        assert Path(in_song("~filename")) == new_root / "file.mp3"
+        assert Path(in_song("~dirname")) == new_root
+        assert out_song("~dirname") == "/tmp/otherdir", f"{out_song} was wrongly moved!"
 
 
 class TSongFileLibrary(TSongLibrary):

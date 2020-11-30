@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#     2012, 2016 Nick Boultbee
+#      2012-2020 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,10 +12,12 @@ Librarians for libraries.
 """
 
 import itertools
+from typing import Generator
 
 from gi.repository import GObject
 
 from quodlibet.util.dprint import print_d
+from senf import fsnative
 
 
 class Librarian(GObject.GObject):
@@ -136,6 +138,13 @@ class Librarian(GObject.GObject):
             from_.handler_unblock(self.__signals[from_][1])
             to.handler_unblock(self.__signals[to][0])
 
+    def move_root(self, old_root: fsnative, new_root: fsnative) -> Generator:
+        if old_root == new_root:
+            print_d("Not moving to same root")
+        for library in self.libraries.values():
+            if hasattr(library, "move_root"):
+                yield from library.move_root(old_root, new_root)
+
 
 class SongLibrarian(Librarian):
     """A librarian for SongLibraries."""
@@ -171,7 +180,6 @@ class SongLibrarian(Librarian):
             if changed is None:
                 library._changed({song})
             else:
-                print_d(f"Delaying changed signal for {library!r}")
                 changed.add(song)
 
     def reload(self, item, changed=None, removed=None):
