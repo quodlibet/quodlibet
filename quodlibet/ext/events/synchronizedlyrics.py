@@ -6,8 +6,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
-
+import functools
 import os
 import re
 from os.path import splitext
@@ -26,7 +25,6 @@ from quodlibet.util.dprint import print_d
 
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
-
     PLUGIN_ID = 'SynchronizedLyrics'
     PLUGIN_NAME = _('Synchronized Lyrics')
     PLUGIN_DESC = _('Shows synchronized lyrics from an .lrc file '
@@ -50,10 +48,13 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     _lines: List[Tuple[int, str]] = []
     _timers: List[Tuple[int, int]] = []
 
-    _current_lrc = ""
-    _start_clearing_from = 0
-    textview = None
-    scrolled_window = None
+    def __init__(self) -> None:
+        super().__init__()
+        self._lines: List[Tuple[int, str]] = []
+        self._timers: List[Tuple[int, int]] = []
+        self._start_clearing_from = 0
+        self.textview = None
+        self.scrolled_window = None
 
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
@@ -136,7 +137,6 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.adjustment = self.scrolled_window.get_vadjustment()
 
         self.textview = Gtk.TextView()
-        self.text_buffer = self.textview.get_buffer()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -183,31 +183,34 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     def _cur_position(self):
         return app.player.get_position()
 
-    def _build_data(self, song: Optional[AudioFile]) -> None:
+    @functools.lru_cache()
+    def _build_data(self, song: Optional[AudioFile]) -> List[Tuple[int, str]]:
         if self.textview:
             self.textview.get_buffer().set_text("")
         if song:
             # check in same location as track
-            track_name = splitext(song.get("~filename") or "")[0]
+            track_name = splitext(song("~basename") or "")[0]
             dir_ = song("~dirname")
-            for new_lrc in [f"{s}.lrc"
-                            for s in (
-                                track_name,
-                                track_name.lower(),
-                                track_name.upper(),
-                                os.path.join(dir_, song("~artist~title")),
-                                os.path.join(dir_, song("~artist~tracknumber~title")),
-                                os.path.join(dir_, song("~tracknumber~title"))
-                            )
-                            ]:
-                print_d(f"Looking for {new_lrc!r}")
-                if os.path.exists(new_lrc):
-                    print_d(f"Found lyrics file: {new_lrc}")
-                    with open(new_lrc, 'r', encoding="utf-8") as f:
+            print_d(f"Looking for .lrc files in {dir_}")
+            for filename in [f"{s}.lrc"
+                             for s in {
+                                 track_name,
+                                 track_name.lower(),
+                                 track_name.upper(),
+                                 song("~artist~title"),
+                                 song("~artist~tracknumber~title"),
+                                 song("~tracknumber~title")
+                             }
+                             ]:
+                print_d(f"Looking for {filename!r}")
+                try:
+                    with open(os.path.join(dir_, filename), 'r', encoding="utf-8") as f:
+                        print_d(f"Found lyrics file: {filename}")
                         contents = f.read()
-                    self._lines = self._parse_lrc(contents)
-                    self._current_lrc = new_lrc
-                    return
+                except FileNotFoundError:
+                    continue
+                else:
+                    return self._parse_lrc(contents)
             print_d(f"No lyrics found for {track_name!r}")
 
     def _parse_lrc(self, contents: str) -> List[Tuple[int, str]]:
@@ -223,8 +226,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return sorted(data)
 
     def _set_timers(self):
-        print_d("Setting timers")
-        if len(self._timers) == 0:
+        if not self._timers:
+            print_d("Setting timers")
             cur_time = self._cur_position()
             cur_idx = self._greater(self._lines, cur_time)
             if cur_idx != -1:
@@ -233,8 +236,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
                     timestamp = self._lines[cur_idx][0]
                     line = self._lines[cur_idx][1]
-                    tid = GLib.timeout_add(timestamp - cur_time, self._show,
-                                           line)
+                    tid = GLib.timeout_add(timestamp - cur_time, self._show, line)
                     self._timers.append((timestamp, tid))
                     cur_idx += 1
 
@@ -257,10 +259,11 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self._timers = []
         self._start_clearing_from = 0
 
-    def _show(self, line):
-        self.text_buffer.set_text(line)
+    def _show(self, line) -> bool:
+        if self.textview:
+            self.textview.get_buffer().set_text(line)
         self._start_clearing_from += 1
-        print_d("♪ %s ♪" % line.strip())
+        print_d(f"♪ {line.strip()} ♪")
         return False
 
     def plugin_on_song_started(self, song: AudioFile) -> None:
