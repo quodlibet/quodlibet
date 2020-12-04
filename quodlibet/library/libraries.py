@@ -837,8 +837,8 @@ class FileLibrary(PicklingLibrary):
           4. Move audio files: old_root -> new_path
 
         """
-        old_root = Path(realpath(expanduser(old_root)))
-        new_root = Path(expanduser(new_root))  # type: ignore
+        old_root = Path(realpath(old_root)).expanduser()
+        new_root = Path(new_root).expanduser()
         if not old_root.is_dir():
             raise ValueError(f"Source {old_root!r} is not a directory")
         if not new_root.is_dir():

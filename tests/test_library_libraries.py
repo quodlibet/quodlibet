@@ -434,8 +434,8 @@ class TFileLibrary(TLibrary):
 
         # Run it by draining the generator
         list(self.library.move_root(root, str(new_root)))
+        assert Path(in_song("~dirname")) == new_root, "directory wasn't updated"
         assert Path(in_song("~filename")) == new_root / "in file.mp3"
-        assert Path(in_song("~dirname")) == new_root, "~dirname wasn't updated"
         assert Path(out_song("~dirname")) == other_root, f"{out_song} was wrongly moved"
 
 
