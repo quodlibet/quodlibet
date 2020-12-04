@@ -15,6 +15,7 @@ from quodlibet.library.libraries import (Library, PicklingMixin, SongLibrary,
                                          FileLibrary, AlbumLibrary,
                                          SongFileLibrary, iter_paths)
 from quodlibet.util import connect_obj, is_windows
+from quodlibet.util.path import normalize_path
 from senf import fsnative
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -418,8 +419,8 @@ class TFileLibrary(TLibrary):
 
     def test_move_root(self):
         root = Path(mkdtemp())
-        other_root = Path(mkdtemp())
-        new_root = Path(mkdtemp())
+        other_root = Path(normalize_path(mkdtemp(), True))
+        new_root = Path(normalize_path(mkdtemp(), True))
         in_song = AudioFile({"~filename": str(root / "file.mp3"), "title": "In"})
         in_song.sanitize()
         out_song = AudioFile({"~filename": str(other_root / "file.mp3"),
