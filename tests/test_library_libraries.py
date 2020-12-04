@@ -418,7 +418,7 @@ class TFileLibrary(TLibrary):
         self.assertFalse(removed)
 
     def test_move_root(self):
-        root = Path(mkdtemp())
+        root = Path(normalize_path(mkdtemp(), True))
         other_root = Path(normalize_path(mkdtemp(), True))
         new_root = Path(normalize_path(mkdtemp(), True))
         in_song = AudioFile({"~filename": str(root / "file.mp3"), "title": "In"})
