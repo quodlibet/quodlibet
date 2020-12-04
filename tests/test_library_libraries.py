@@ -421,9 +421,9 @@ class TFileLibrary(TLibrary):
         root = Path(normalize_path(mkdtemp(), True))
         other_root = Path(normalize_path(mkdtemp(), True))
         new_root = Path(normalize_path(mkdtemp(), True))
-        in_song = AudioFile({"~filename": str(root / "file.mp3"), "title": "In"})
+        in_song = AudioFile({"~filename": str(root / "in file.mp3"), "title": "In"})
         in_song.sanitize()
-        out_song = AudioFile({"~filename": str(other_root / "file.mp3"),
+        out_song = AudioFile({"~filename": str(other_root / "out file.mp3"),
                               "title": "Out"})
         # Make sure they exists
         in_song.sanitize()
@@ -434,7 +434,7 @@ class TFileLibrary(TLibrary):
 
         # Run it by draining the generator
         list(self.library.move_root(root, str(new_root)))
-        assert Path(in_song("~filename")) == new_root / "file.mp3"
+        assert Path(in_song("~filename")) == new_root / "in file.mp3"
         assert Path(in_song("~dirname")) == new_root, "~dirname wasn't updated"
         assert Path(out_song("~dirname")) == other_root, f"{out_song} was wrongly moved"
 

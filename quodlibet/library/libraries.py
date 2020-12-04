@@ -837,10 +837,12 @@ class FileLibrary(PicklingLibrary):
           4. Move audio files: old_root -> new_path
 
         """
-        old_root = realpath(expanduser(old_root))
-        new_root = expanduser(new_root)  # type: ignore
-        if not Path(fsn2text(new_root)).is_dir():
-            raise ValueError(f"{new_root!r} is not a directory")
+        old_root = Path(realpath(expanduser(old_root)))
+        new_root = Path(expanduser(new_root))  # type: ignore
+        if not old_root.is_dir():
+            raise ValueError(f"Source {old_root!r} is not a directory")
+        if not new_root.is_dir():
+            raise ValueError(f"Destination {new_root!r} is not a directory")
         print_d(f"{self._name}: checking {len(self.values())} item(s) for {old_root!r}")
         missing: Set[AudioFile] = set()
         changed = set()
@@ -852,10 +854,15 @@ class FileLibrary(PicklingLibrary):
             for i, song in enumerate(list(self.values())):
                 task.update(i / total)
                 key = song.key
-                if key.startswith(old_root):
-                    new_path = normalize_path(key.replace(old_root, new_root, 1),
-                                              canonicalise=False)
-                    if self.move_song(song, new_path):
+                path = Path(key)
+                if old_root in path.parents:
+                    new_key = normalize_path(key.replace(str(old_root),
+                                                         str(new_root),
+                                                         1),
+                                             canonicalise=False)
+                    if new_key == key:
+                        print_w(f"Substitution failed for {key!r}")
+                    if self.move_song(song, new_key):
                         changed.add(song)
                     else:
                         missing.add(song)
