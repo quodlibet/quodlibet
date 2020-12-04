@@ -130,7 +130,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC,
                                         Gtk.PolicyType.AUTOMATIC)
-        self.adjustment = self.scrolled_window.get_vadjustment()
+        self.scrolled_window.get_vadjustment().set_value(0)
 
         self.textview = Gtk.TextView()
         self.textview.set_editable(False)
@@ -139,15 +139,13 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.scrolled_window.add_with_viewport(self.textview)
 
-        self.textview.show()
-
-        app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
-        app.window.get_child().reorder_child(self.scrolled_window, 2)
+        vb = Gtk.HBox()
+        vb.pack_start(self.scrolled_window, True, True, 6)
+        vb.show_all()
+        app.window.get_child().pack_start(vb, False, True, 0)
+        app.window.get_child().reorder_child(vb, 2)
 
         self._style_lyrics_window()
-
-        self.adjustment.set_value(0)
-
         self.scrolled_window.show()
 
         self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
@@ -165,16 +163,16 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     def _style_lyrics_window(self):
         if self.scrolled_window is None:
             return
-        self.scrolled_window.set_size_request(-1, 1.6 * self._get_font_size())
-        qltk.add_css(self.textview, """
+        self.scrolled_window.set_size_request(-1, 1.5 * self._get_font_size())
+        qltk.add_css(self.textview, f"""
             * {{
-                background-color: {0};
-                color: {1};
-                font-size: {2}px;
-                padding: 0.2em;
+                background-color: {self._get_background_color()};
+                color: {self._get_text_color()};
+                font-size: {self._get_font_size()}px;
+                padding: 0.25rem;
+                border-radius: 6px;
             }}
-        """.format(self._get_background_color(), self._get_text_color(),
-                   self._get_font_size()))
+        """)
 
     def _cur_position(self):
         return app.player.get_position()
