@@ -34,7 +34,7 @@ from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, ismount
-from senf import fsn2text, fsnative, expanduser
+from senf import fsn2text, fsnative
 
 
 class Library(GObject.GObject, DictMixin):
