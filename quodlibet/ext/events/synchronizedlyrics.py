@@ -44,10 +44,6 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     # Note the trimming of whitespace, seems "most correct" behaviour
     LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)\]\s*(.+)\s*")
 
-    # TODO: instance variables
-    _lines: List[Tuple[int, str]] = []
-    _timers: List[Tuple[int, int]] = []
-
     def __init__(self) -> None:
         super().__init__()
         self._lines: List[Tuple[int, str]] = []
@@ -209,9 +205,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                         contents = f.read()
                 except FileNotFoundError:
                     continue
-                else:
-                    return self._parse_lrc(contents)
+                return self._parse_lrc(contents)
             print_d(f"No lyrics found for {track_name!r}")
+        return []
 
     def _parse_lrc(self, contents: str) -> List[Tuple[int, str]]:
         data = []
@@ -267,7 +263,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return False
 
     def plugin_on_song_started(self, song: AudioFile) -> None:
-        self._build_data(song)
+        print_d(f"Preparing for {song.key}")
+        self._clear_timers()
+        self._lines = self._build_data(song)
         # delay so that current position is for current track, not previous one
         GLib.timeout_add(5, self._timer_control)
 
