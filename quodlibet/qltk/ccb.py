@@ -19,8 +19,7 @@ class ConfigCheckButton(Gtk.CheckButton):
 
     def __init__(self, label, section, option, populate=False, tooltip=None,
                  default=None):
-        super().__init__(label=label,
-                                                use_underline=True)
+        super().__init__(label=label, use_underline=True)
 
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)

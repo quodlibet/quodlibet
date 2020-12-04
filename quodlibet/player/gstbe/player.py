@@ -31,7 +31,7 @@ from quodlibet.qltk.notif import Task
 from quodlibet.formats.mod import ModFile
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
-    GStreamerSink, link_many, bin_debug)
+                   GStreamerSink, link_many, bin_debug, AudioSinks)
 from .plugins import GStreamerPluginHandler
 from .prefs import GstPlayerPreferences
 
@@ -152,14 +152,15 @@ class BufferingWrapper:
         self.bin = None
 
 
-def sink_has_external_state(sink):
-    sink_name = sink.get_factory().get_name()
-
-    if sink_name == "wasapisink":
+def sink_has_external_state(sink: Gst.Element) -> bool:
+    try:
+        sink_type = AudioSinks(sink.get_factory().get_name())
+    except TypeError:
+        return False
+    if sink_type == AudioSinks.WASAPI:
         # https://bugzilla.gnome.org/show_bug.cgi?id=796386
         return hasattr(sink.props, "volume")
-    else:
-        return sink_name == "pulsesink"
+    return sink_type == AudioSinks.PULSE
 
 
 def sink_state_is_valid(sink):
@@ -403,7 +404,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.error = False
 
         pipeline = config.get("player", "gst_pipeline")
-        print_d(f"Configured pipeline: {pipeline!r}")
+        print_d(f"User pipeline (from player.gst_pipeline): {pipeline!r}")
         try:
             pipeline, self._pipeline_desc = GStreamerSink(pipeline)
         except PlayerError as e:
@@ -520,7 +521,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.bin.set_property('audio-sink', bufbin)
 
         # by default playbin will render video -> suppress using fakesink
-        vsink = self._make('fakesink', None)
+        vsink = self._make(AudioSinks.FAKE.value, None)
         self.bin.set_property('video-sink', vsink)
 
         # disable all video/text decoding in playbin
@@ -539,11 +540,15 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self._reset_replaygain()
 
         if self.song:
-            self.bin.set_property('uri', uri2gsturi(self.song("~uri")))
+            self._set_uri(self.song("~uri"))
 
         return True
 
+    def _set_uri(self, uri: str) -> None:
+        self.bin.set_property("uri", uri2gsturi(uri))
+
     def __destroy_pipeline(self):
+        print_d("Destroying Gstreamer pipeline")
         self._remove_plugin_elements()
 
         if self.__bus_id:
@@ -743,10 +748,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # in the mainloop before our function gets scheduled.
             # In this case abort and do nothing, which results
             # in a non-gapless transition.
-            print_d("About to finish (async): %s" % e)
+            print_e("About to finish (async): %s" % e)
             return
         except MainRunnerAbortedError as e:
-            print_d("About to finish (async): %s" % e)
+            print_e("About to finish (async): %s" % e)
             return
         except MainRunnerError:
             util.print_exc()
@@ -754,11 +759,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if uri is not None:
             print_d("About to finish (async): setting uri")
-            playbin.set_property('uri', uri2gsturi(uri))
+            self._set_uri(uri)
         print_d("About to finish (async): done")
 
     def stop(self):
         super().stop()
+        print_d("Stop playing")
         self.__destroy_pipeline()
 
     def do_get_property(self, property):
@@ -918,7 +924,6 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # Then, set up the next song.
         self.song = self.info = current
 
-        print_d("Next song")
         if self.song is not None:
             if not self._in_gapless_transition:
                 # Due to extensive problems with playbin2, we destroy the
