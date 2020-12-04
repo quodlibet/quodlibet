@@ -261,7 +261,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return False
 
     def plugin_on_song_started(self, song: AudioFile) -> None:
-        print_d(f"Preparing for {song.key}")
+        if song:
+            print_d(f"Preparing for {song.key}")
         self._clear_timers()
         self._lines = self._build_data(song)
         # delay so that current position is for current track, not previous one
