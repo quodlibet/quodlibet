@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2019 Nick Boultbee
+#    2012 - 2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -125,8 +125,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     @classmethod
     def __removed(klass, library, songs):
-        print_d("Removing %d songs across %d playlist(s)" %
-                (len(songs), len(klass.playlists())))
+        print_d(f"Removing {len(songs)} song(s) "
+                f"across {len(klass.playlists())} playlist(s)")
         for playlist in klass.playlists():
             if playlist.remove_songs(songs):
                 klass.changed(playlist)
@@ -143,6 +143,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for playlist in klass.playlists():
             for song in songs:
                 if song in playlist.songs:
+                    print_d(f"Playlist song {song.key!r} changed, so updating")
                     klass.changed(playlist)
                     break
 
