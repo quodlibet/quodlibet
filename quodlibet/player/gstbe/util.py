@@ -121,7 +121,7 @@ def find_audio_sink() -> Tuple[Gst.Element, str]:
             print_d("Using JACK output via Gstreamer")
             return [AudioSinks.JACK]
         elif is_windows():
-            return [AudioSinks.Directsound]
+            return [AudioSinks.DIRECTSOUND]
         elif is_linux() and pulse_is_running():
             return [AudioSinks.PULSE]
         else:
