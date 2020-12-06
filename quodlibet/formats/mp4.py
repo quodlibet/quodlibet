@@ -1,5 +1,6 @@
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@ class MP4File(AudioFile):
         "\xa9gen": "genre",
         "tmpo": "bpm",
         "\xa9too": "encodedby",  # FIXME: \xa9enc should be encodedby
+        "desc": "description",  # (usually used in podcasts)
         "cprt": "copyright",
         "soal": "albumsort",
         "soaa": "albumartistsort",

@@ -41,6 +41,12 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "gst_device": "",
         "gst_disable_gapless": "false",
 
+        # Use Jack sink (via Gstreamer) if available
+        "gst_use_jack": "false",
+
+        # Usually true is good here, but if you have patchbay configured maybe not...
+        "gst_jack_auto_connect": "true",
+
         "is_playing": "false",
         "restore_playing": "false",
     },

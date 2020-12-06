@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#           2017 Nick Boultbee
+#      2017-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ class Feed(list):
     def __fill_af(feed, af):
         try:
             af["title"] = feed.title or _("Unknown")
-        except:
+        except (TypeError, AttributeError):
             af["title"] = _("Unknown")
         try:
             af["date"] = "%04d-%02d-%02d" % feed.modified_parsed[:3]
@@ -77,7 +77,7 @@ class Feed(list):
                 ("license", "license")]:
             try:
                 value = getattr(feed, feedkey)
-            except:
+            except AttributeError:
                 pass
             else:
                 if value and value not in af.list(songkey):
@@ -429,11 +429,7 @@ class AudioFeeds(Browser):
             self.__feeds.append(row=[feed])
             AudioFeeds.write()
         else:
-            ErrorMessage(
-                self, _("Unable to add feed"),
-                _("%s could not be added. The server may be down, "
-                  "or the location may not be an audio feed.") %
-                util.bold(util.escape(feed.uri))).run()
+            self.feed_error(feed).run()
 
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
@@ -488,11 +484,14 @@ class AudioFeeds(Browser):
                 self.__feeds.append(row=[feed])
                 AudioFeeds.write()
             else:
-                ErrorMessage(
-                    self, _("Unable to add feed"),
-                    _("%s could not be added. The server may be down, "
-                      "or the location may not be an audio feed.") %
-                    util.bold(util.escape(feed.uri))).run()
+                self.feed_error(feed).run()
+
+    def feed_error(self, feed: Feed) -> ErrorMessage:
+        return ErrorMessage(
+            self, _("Unable to add feed"),
+            _("%s could not be added. The server may be down, "
+              "or the location may not be an audio feed.") %
+            util.bold(util.escape(feed.uri)))
 
     def restore(self):
         try:
@@ -501,6 +500,7 @@ class AudioFeeds(Browser):
             pass
         else:
             self.__view.select_by_func(lambda r: r[0].name in names)
+
 
 browsers = []
 if not app.player or app.player.can_play_uri("http://"):

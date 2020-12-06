@@ -72,6 +72,7 @@ class TMP4File(TestCase):
         self._assert_tag_supported("discsubtitle")
         self._assert_tag_supported("mood")
         self._assert_tag_supported("conductor")
+        self._assert_tag_supported("description")
 
     def test_replaygain_tags(self):
         self._assert_tag_supported('replaygain_album_gain', '-5.67 dB')
