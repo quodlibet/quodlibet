@@ -853,7 +853,7 @@ class FileLibrary(PicklingLibrary):
             yield
             for i, song in enumerate(list(self.values())):
                 task.update(i / total)
-                key = song.key
+                key = normalize_path(song.key)
                 path = Path(key)
                 if old_path in path.parents:
                     # TODO: more Pathlib-friendly dir replacement...
