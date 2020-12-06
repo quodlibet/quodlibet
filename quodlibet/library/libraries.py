@@ -16,7 +16,6 @@ least useful but most content-agnostic.
 import os
 import shutil
 import time
-from os.path import realpath
 from pathlib import Path
 from typing import Set, Optional, Generator
 
