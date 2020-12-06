@@ -8,13 +8,36 @@
 
 import collections
 import subprocess
-from typing import Iterable
+from enum import Enum
+from typing import Iterable, Tuple
 from gi.repository import GLib, Gst
 
-from quodlibet import _, print_d
+from quodlibet import _, print_d, config
 from quodlibet.util.string import decode
 from quodlibet.util import is_linux, is_windows
 from quodlibet.player import PlayerError
+
+
+class AudioSinks(Enum):
+    """Relevant Gstreamer sink elements"""
+
+    FAKE = "fakesink"
+
+    DIRECTSOUND = "directsoundsink"
+
+    PULSE = "pulsesink"
+    """from plugins-good"""
+
+    ALSA = "alsasink"
+    """from plugins-base"""
+
+    AUTO = "autoaudiosink"
+    """from plugins-good"""
+
+    JACK = "jackaudiosink"
+    """from plugins-good"""
+
+    WASAPI = "wasapisink"
 
 
 def pulse_is_running():
@@ -22,7 +45,7 @@ def pulse_is_running():
 
     # If we have a pulsesink we can get the server presence through
     # setting the ready state
-    element = Gst.ElementFactory.make("pulsesink", None)
+    element = Gst.ElementFactory.make(AudioSinks.PULSE.value, None)
     if element is not None:
         element.set_state(Gst.State.READY)
         res = element.get_state(0)[0]
@@ -37,6 +60,18 @@ def pulse_is_running():
     except OSError:
         return False
     return True
+
+
+def jack_is_running() -> bool:
+    """:returns: whether Jack is running"""
+
+    element = Gst.ElementFactory.make(AudioSinks.JACK.value, "test sink")
+    if element:
+        element.set_state(Gst.State.READY)
+        res = element.get_state(0)[0]
+        element.set_state(Gst.State.NULL)
+        return res != Gst.StateChangeReturn.FAILURE
+    return False
 
 
 def link_many(elements: Iterable[Gst.Element]) -> None:
@@ -75,34 +110,39 @@ def iter_to_list(func):
     return objects
 
 
-def find_audio_sink():
+def find_audio_sink() -> Tuple[Gst.Element, str]:
     """Get the best audio sink available.
 
     Returns (element, description) or raises PlayerError.
     """
+    def sink_options():
+        # People with Jack running probably want it more than any other options
+        if config.getboolean("player", "gst_use_jack") and jack_is_running():
+            print_d("Using JACK output via Gstreamer")
+            return [AudioSinks.JACK]
+        elif is_windows():
+            return [AudioSinks.DIRECTSOUND]
+        elif is_linux() and pulse_is_running():
+            return [AudioSinks.PULSE]
+        else:
+            return [
+                AudioSinks.AUTO,
+                AudioSinks.PULSE,
+                AudioSinks.ALSA,
+            ]
 
-    if is_windows():
-        sinks = [
-            "directsoundsink",
-        ]
-    elif is_linux() and pulse_is_running():
-        sinks = [
-            "pulsesink",
-        ]
-    else:
-        sinks = [
-            "autoaudiosink",  # plugins-good
-            "pulsesink",  # plugins-good
-            "alsasink",  # plugins-base
-        ]
-
-    for name in sinks:
-        element = Gst.ElementFactory.make(name, None)
+    options = sink_options()
+    for sink in options:
+        element = Gst.ElementFactory.make(sink.value, "player")
+        if (sink == AudioSinks.JACK
+                and not config.getboolean("player", "gst_jack_auto_connect")):
+            # Disable the auto-connection to outputs (e.g. maybe there's scripting)
+            element.set_property("connect", "none")
         if element is not None:
-            return (element, name)
+            return element, sink.value
     else:
-        details = " (%s)" % ", ".join(sinks) if sinks else ""
-        raise PlayerError(_("No GStreamer audio sink found") + details)
+        details = ', '.join(s.value for s in options) if options else "[]"
+        raise PlayerError(_("No GStreamer audio sink found. Tried: %s") % details)
 
 
 def GStreamerSink(pipeline_desc):
@@ -126,7 +166,7 @@ def GStreamerSink(pipeline_desc):
     if pipe:
         # In case the last element is linkable with a fakesink
         # it is not an audiosink, so we append the default one
-        fake = Gst.ElementFactory.make('fakesink', None)
+        fake = Gst.ElementFactory.make(AudioSinks.FAKE.value, None)
         try:
             link_many([pipe[-1], fake])
         except OSError:
