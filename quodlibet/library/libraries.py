@@ -837,13 +837,13 @@ class FileLibrary(PicklingLibrary):
           4. Move audio files: old_root -> new_path
 
         """
-        old_root = Path(realpath(old_root)).expanduser()
-        new_root = Path(new_root).expanduser()
-        if not old_root.is_dir():
-            raise ValueError(f"Source {old_root!r} is not a directory")
-        if not new_root.is_dir():
-            raise ValueError(f"Destination {new_root!r} is not a directory")
-        print_d(f"{self._name}: checking {len(self.values())} item(s) for {old_root!r}")
+        old_path = Path(realpath(old_root)).expanduser()
+        new_path = Path(new_root).expanduser()
+        if not old_path.is_dir():
+            raise ValueError(f"Source {old_path!r} is not a directory")
+        if not new_path.is_dir():
+            raise ValueError(f"Destination {new_path!r} is not a directory")
+        print_d(f"{self._name}: checking {len(self.values())} item(s) for {old_path!r}")
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
@@ -855,9 +855,10 @@ class FileLibrary(PicklingLibrary):
                 task.update(i / total)
                 key = song.key
                 path = Path(key)
-                if old_root in path.parents:
-                    new_key = normalize_path(key.replace(str(old_root),
-                                                         str(new_root),
+                if old_path in path.parents:
+                    # TODO: more Pathlib-friendly dir replacement...
+                    new_key = normalize_path(key.replace(str(old_path),
+                                                         str(new_path),
                                                          1),
                                              canonicalise=False)
                     if new_key == key:
@@ -873,7 +874,7 @@ class FileLibrary(PicklingLibrary):
             self.changed(changed)
             if missing:
                 print_w(f"Couldn't find {len(list(missing))} files: {missing}")
-        print_d(f"Done moving to {new_root!r}.")
+        print_d(f"Done moving to {new_path!r}.")
 
     def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
         """Updates the location of a song, without touching the file.
