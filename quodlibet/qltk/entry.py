@@ -1,5 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2011, 2012 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,7 +11,7 @@ import math
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
-from quodlibet import _
+from quodlibet import _, config
 from quodlibet.qltk import is_accel, add_fake_accel
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
@@ -238,30 +239,46 @@ class ClearEntry(UndoEntry, ClearEntryMixin):
     __gsignals__ = ClearEntryMixin.__gsignals__
 
 
-class ValidatingEntryMixin:
+class ValidatingEntryMixin(Gtk.Widget):
     """An entry with visual feedback as to whether it is valid or not.
     The given validator function gets a string and returns True (green),
     False (red), or None (black).
     """
 
-    INVALID = Gdk.RGBA(0.8, 0, 0)
-    VALID = Gdk.RGBA(0.3, 0.6, 0.023)
+    ALPHA = 1.0
+    INVALID = Gdk.RGBA(0.85, 0.0, 0.05, ALPHA)
+    VALID = Gdk.RGBA(0.0, 0.65, 0.1, ALPHA)
 
     def set_validate(self, validator=None):
         if validator:
-            self.connect('changed', self.__color, validator)
+            self.connect('changed', self._set_color, validator)
 
-    def __color(self, widget, validator):
+    def _default_color(self) -> Gdk.RGBA:
+        # Don't use our *own* context here if possible else it changes as we mutate...
+        # Don't cache, as theme switching is async
+        parent = self.get_parent()
+        ctx = parent.get_style_context() if parent else self.get_style_context()
+        col = ctx.get_color(Gtk.StateType.NORMAL)
+        return col
+
+    def _set_color(self, _widget, validator):
+        def mix(src: Gdk.RGBA, dest: Gdk.RGBA, ratio: float):
+            ratio = min(1.0, max(0.0, ratio))
+            inv = 1.0 - ratio
+            return Gdk.RGBA(inv * src.red + ratio * dest.red,
+                            inv * src.green + ratio * dest.green,
+                            inv * src.blue + ratio * dest.blue,
+                            inv * src.alpha + ratio * dest.alpha)
+
         value = validator(self.get_text())
+        default = self._default_color()
+        amount = config.getfloat("settings", "validator_colorise")
         if value is True:
-            color = self.VALID
+            color = mix(default, self.VALID, amount)
         elif value is False:
-            color = self.INVALID
-        elif value and isinstance(value, str):
-            color = Gdk.RGBA()
-            color.parse(value)
+            color = mix(default, self.INVALID, amount)
         else:
-            color = None
+            color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
         if color and self.get_property('sensitive'):
             self.override_color(Gtk.StateType.NORMAL, color)

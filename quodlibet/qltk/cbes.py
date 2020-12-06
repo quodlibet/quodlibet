@@ -9,14 +9,14 @@
 import os
 from typing import Dict
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango, GObject, GLib
 
-from quodlibet import _
+from quodlibet import _, config
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.util import GSignals
 from quodlibet.util import connect_obj, escape
-from quodlibet.qltk import entry
+from quodlibet.qltk import entry, add_css
 from quodlibet.qltk import Icons
 
 
@@ -293,7 +293,14 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         new_entry = entry.ValidatingEntry(validator)
         clone_css_classes(old_entry, new_entry)
         old_entry.destroy()
+        use_mono = config.getboolean("settings", "monospace_query")
+        font = "font-family: monospace; " if use_mono else ""
+        size = escape(config.gettext("settings", "query_font_size"))
+        add_css(new_entry, f"entry {{ {font} font-size: {size} }}")
         self.add(new_entry)
+        if validator:
+            # Call once more to ensure correct theme colours
+            GLib.idle_add(new_entry._set_color, None, validator)
 
         connect_obj(self, 'destroy', self.set_model, None)
         connect_obj(self, 'changed', self.__changed, model, validator, title)

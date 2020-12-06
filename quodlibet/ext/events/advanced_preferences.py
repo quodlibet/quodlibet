@@ -147,6 +147,16 @@ class AdvancedPreferences(EventPlugin):
                  "the window always are visible or get hidden when not in use "
                  "(restart required)")),
             boolean_config(
+                "settings", "monospace_query",
+                "Use monospace font for search input:",
+                "Helps readability of code-like queries, but looks less consistent "
+                "(restart required)"),
+            text_config(
+                "settings", "query_font_size",
+                "Search input font size",
+                "Size to apply to the search query entry, "
+                "in any Pango CSS units, e.g. '100%', '1rem'. (restart required)"),
+            boolean_config(
                 "settings", "pangocairo_force_fontconfig",
                 "Force Use Fontconfig Backend:",
                 "It's not the default on win/macOS (restart required)"),
