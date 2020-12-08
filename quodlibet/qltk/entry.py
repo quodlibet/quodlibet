@@ -13,6 +13,7 @@ from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 
 from quodlibet import _, config
 from quodlibet.qltk import is_accel, add_fake_accel
+from quodlibet.qltk.color import mix
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
 from quodlibet.qltk import Icons
 
@@ -262,14 +263,6 @@ class ValidatingEntryMixin(Gtk.Widget):
         return col
 
     def _set_color(self, _widget, validator):
-        def mix(src: Gdk.RGBA, dest: Gdk.RGBA, ratio: float):
-            ratio = min(1.0, max(0.0, ratio))
-            inv = 1.0 - ratio
-            return Gdk.RGBA(inv * src.red + ratio * dest.red,
-                            inv * src.green + ratio * dest.green,
-                            inv * src.blue + ratio * dest.blue,
-                            inv * src.alpha + ratio * dest.alpha)
-
         value = validator(self.get_text())
         default = self._default_color()
         amount = config.getfloat("settings", "validator_colorise")
