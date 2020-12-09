@@ -228,6 +228,16 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # Whether the plugin window appears on top of others
         "plugins_window_on_top": "false",
+
+        # search bar font style (#3647)
+        "monospace_query": "false",
+
+        # size to apply to query box, in any Pango CSS units (e.g. '100%', '1rem')
+        "query_font_size": "100%",
+
+        # Amount of colour to apply to validating text entries
+        # (0.0 = no colour, 1.0 = full colour)
+        "validator_colorise": "0.4"
     },
 
     "rename": {
