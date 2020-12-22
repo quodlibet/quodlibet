@@ -856,10 +856,8 @@ class FileLibrary(PicklingLibrary):
                 path = Path(key)
                 if old_path in path.parents:
                     # TODO: more Pathlib-friendly dir replacement...
-                    new_key = normalize_path(key.replace(str(old_path),
-                                                         str(new_path),
-                                                         1),
-                                             canonicalise=False)
+                    new_key = key.replace(str(old_path), str(new_path), 1)
+                    new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
                         print_w(f"Substitution failed for {key!r}")
                     if self.move_song(song, new_key):
