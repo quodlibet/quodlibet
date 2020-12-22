@@ -581,7 +581,7 @@ class FileLibrary(PicklingLibrary):
             # We're going to reload; this could change the key.  So
             # remove the item if it's currently in.
             try:
-                del (self._contents[item.key])
+                del self._contents[item.key]
             except KeyError:
                 present = False
             else:
@@ -657,7 +657,7 @@ class FileLibrary(PicklingLibrary):
         for i, (point, items) in task.list(enumerate(self._masked.items())):
             if ismount(point):
                 self._contents.update(items)
-                del (self._masked[point])
+                del self._masked[point]
                 self.emit('added', list(items.values()))
                 yield True
 

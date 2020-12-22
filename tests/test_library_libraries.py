@@ -114,7 +114,7 @@ class TLibrary(TestCase):
     def test_add(self):
         self.library.add(self.Frange(12))
         self.failUnlessEqual(self.added, self.Frange(12))
-        del (self.added[:])
+        del self.added[:]
         self.library.add(self.Frange(12, 24))
         self.failUnlessEqual(self.added, self.Frange(12, 24))
 
@@ -343,7 +343,7 @@ class TSongLibrary(TLibrary):
 
     def test_tag_values(self):
         self.library.add(self.Frange(30))
-        del (self.added[:])
+        del self.added[:]
         self.failUnlessEqual(
             sorted(self.library.tag_values(10)), list(range(10)))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
