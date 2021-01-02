@@ -1,4 +1,4 @@
-# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2021 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,6 +8,8 @@
 
 from gi.repository import Gtk
 from gi.repository import Pango
+
+from quodlibet.qltk.msg import ConfirmationPrompt
 from senf import fsn2text
 
 from quodlibet import _, print_w, print_d, app
@@ -64,8 +66,7 @@ class ScanBox(Gtk.HBox):
         move = Button(_("_Move"), Icons.EDIT_REDO)
         move.connect("clicked", self.__move)
         move.set_tooltip_text(_("Move a library directory, "
-                                "migrating metadata for any included tracks."
-                                "Ensure the files exist at the new location!"))
+                                "migrating metadata for all included tracks."))
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -124,6 +125,18 @@ class ScanBox(Gtk.HBox):
         if not results:
             return
         new_dir = results[0]
+        desc = (_("This will move:\n\n"
+                  "%(old)r -> %(new)r\n\n"
+                  "Taking a backup is recommended "
+                  "(including the Quodlibet 'songs' file)")
+                % {"old": base_dir, "new": new_dir})
+        value = ConfirmationPrompt(self,
+                                   title=_("Move library root %r?") % base_dir,
+                                   description=desc,
+                                   ok_button_text=_("OK, move it!")).run()
+        if value != ConfirmationPrompt.RESPONSE_INVOKE:
+            print_d("User aborted")
+            return
         print_d(f"Migrate from {base_dir} -> {new_dir}")
         copool.add(app.librarian.move_root, base_dir, new_dir)
         path = paths[0]
