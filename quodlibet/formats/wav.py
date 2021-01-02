@@ -1,4 +1,5 @@
 # Copyright 2006 Joe Wreschnig
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -30,7 +31,7 @@ class WAVEFile(AudioFile):
                 self["~#bitdepth"] = f.getsampwidth() * 8
         self.sanitize(filename)
 
-    def sanitize(self, filename):
+    def sanitize(self, filename=None):
         super().sanitize(filename)
         self["title"] = fsn2text(os.path.splitext(
             os.path.basename(self["~filename"]))[0])
