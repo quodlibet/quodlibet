@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2011-2020 Nick Boultbee
+#           2011-2021 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -860,6 +860,9 @@ class FileLibrary(PicklingLibrary):
                     new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
                         print_w(f"Substitution failed for {key!r}")
+                    # We need to update ~filename and ~mountpoint
+                    song.sanitize()
+                    song.write()
                     if self.move_song(song, new_key):
                         changed.add(song)
                     else:
@@ -871,6 +874,8 @@ class FileLibrary(PicklingLibrary):
             self.changed(changed)
             if missing:
                 print_w(f"Couldn't find {len(list(missing))} files: {missing}")
+        yield
+        self.save()
         print_d(f"Done moving to {new_path!r}.")
 
     def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
