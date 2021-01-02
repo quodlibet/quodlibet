@@ -244,7 +244,11 @@ class TLibrary(TestCase):
 class FakeAudioFile(AudioFile):
 
     def __init__(self, key):
+        self._written = []
         self["~filename"] = fsnative(str(key))
+
+    def write(self):
+        self._written.append(self("~filename"))
 
 
 def FakeAudioFileRange(*args):
@@ -418,13 +422,14 @@ class TFileLibrary(TLibrary):
         self.assertFalse(removed)
 
     def test_move_root(self):
+        # TODO: mountpoint tests too
+        self.library.filename = "moving"
         root = Path(normalize_path(mkdtemp(), True))
         other_root = Path(normalize_path(mkdtemp(), True))
         new_root = Path(normalize_path(mkdtemp(), True))
-        in_song = AudioFile({"~filename": str(root / "in file.mp3"), "title": "In"})
+        in_song = FakeAudioFile(str(root / "in file.mp3"))
         in_song.sanitize()
-        out_song = AudioFile({"~filename": str(other_root / "out file.mp3"),
-                              "title": "Out"})
+        out_song = FakeAudioFile(str(other_root / "out file.mp3"))
         # Make sure they exists
         in_song.sanitize()
         out_song.sanitize()
@@ -436,8 +441,10 @@ class TFileLibrary(TLibrary):
         list(self.library.move_root(root, str(new_root)))
         msg = f"Dir wasn't updated in {root!r} -> {new_root!r} for {in_song.key}"
         assert Path(in_song("~dirname")) == new_root, msg
-        assert Path(in_song("~filename")) == new_root / "in file.mp3"
+        assert Path(in_song("~filename")) == (new_root / "in file.mp3")
         assert Path(out_song("~dirname")) == other_root, f"{out_song} was wrongly moved"
+        assert in_song._written, "Song wasn't written to disk"
+        assert not out_song._written, "Excluded songs was written!"
 
 
 class TSongFileLibrary(TSongLibrary):
