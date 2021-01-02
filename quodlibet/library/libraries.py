@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2013,2020 Nick Boultbee
+#           2011-2020 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,8 @@ least useful but most content-agnostic.
 import os
 import shutil
 import time
-from typing import Set, Optional
+from pathlib import Path
+from typing import Set, Optional, Generator
 
 from gi.repository import GObject
 
@@ -24,7 +25,7 @@ from quodlibet import _
 from quodlibet import formats
 from quodlibet import util
 from quodlibet.formats import (MusicFile, AudioFileError, load_audio_files,
-                               dump_audio_files, SerializationError)
+                               dump_audio_files, SerializationError, AudioFile)
 from quodlibet.qltk.notif import Task
 from quodlibet.query import Query
 from quodlibet.util.atomic import atomic_save
@@ -580,7 +581,7 @@ class FileLibrary(PicklingLibrary):
             # We're going to reload; this could change the key.  So
             # remove the item if it's currently in.
             try:
-                del (self._contents[item.key])
+                del self._contents[item.key]
             except KeyError:
                 present = False
             else:
@@ -656,7 +657,7 @@ class FileLibrary(PicklingLibrary):
         for i, (point, items) in task.list(enumerate(self._masked.items())):
             if ismount(point):
                 self._contents.update(items)
-                del (self._masked[point])
+                del self._masked[point]
                 self.emit('added', list(items.values()))
                 yield True
 
@@ -822,6 +823,72 @@ class FileLibrary(PicklingLibrary):
         """Remove all songs for a masked point"""
 
         self._masked.pop(mount_point, {})
+
+    def move_root(self, old_root: str, new_root: fsnative) \
+            -> Generator[None, None, None]:
+        """
+        Move the root for all songs in a given (scan) directory.
+
+        We avoid dereferencing the destination, to allow users things like:
+          1. Symlink new_path -> old_root
+          2. Move QL root to new_path
+          3. Remove symlink
+          4. Move audio files: old_root -> new_path
+
+        """
+        old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
+        new_path = Path(normalize_path(new_root)).expanduser()
+        if not old_path.is_dir():
+            raise ValueError(f"Source {old_path!r} is not a directory")
+        if not new_path.is_dir():
+            raise ValueError(f"Destination {new_path!r} is not a directory")
+        print_d(f"{self._name}: checking {len(self.values())} item(s) for {old_path!r}")
+        missing: Set[AudioFile] = set()
+        changed = set()
+        total = len(self)
+        if not total:
+            return
+        with Task(_("Library"), _("Moving library files")) as task:
+            yield
+            for i, song in enumerate(list(self.values())):
+                task.update(i / total)
+                key = normalize_path(song.key)
+                path = Path(key)
+                if old_path in path.parents:
+                    # TODO: more Pathlib-friendly dir replacement...
+                    new_key = key.replace(str(old_path), str(new_path), 1)
+                    new_key = normalize_path(new_key, canonicalise=False)
+                    if new_key == key:
+                        print_w(f"Substitution failed for {key!r}")
+                    if self.move_song(song, new_key):
+                        changed.add(song)
+                    else:
+                        missing.add(song)
+                elif not (i % 1000):
+                    print_d(f"Not moved, for example: {key!r}")
+                if not i % 100:
+                    yield
+            self.changed(changed)
+            if missing:
+                print_w(f"Couldn't find {len(list(missing))} files: {missing}")
+        print_d(f"Done moving to {new_path!r}.")
+
+    def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
+        """Updates the location of a song, without touching the file.
+
+        :returns: True if it was could be found (and moved)
+        """
+        existed = True
+        key = song.key
+        print_d(f"Moving {key!r} -> {new_path!r}")
+        try:
+            del self._contents[key]
+        except KeyError:
+            existed = False
+            # Continue - maybe it's already moved
+        song.sanitize(new_path)
+        self._contents[new_path] = song
+        return existed
 
 
 class SongFileLibrary(SongLibrary, FileLibrary):

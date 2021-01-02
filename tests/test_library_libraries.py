@@ -2,23 +2,23 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import os
+import shutil
+from pathlib import Path
 
 from gi.repository import Gtk
 
-import os
-import shutil
-from senf import fsnative
-
-from quodlibet.formats import AudioFileError
 from quodlibet import config
-from quodlibet.util import connect_obj, is_windows
 from quodlibet.formats import AudioFile
-
+from quodlibet.formats import AudioFileError
+from quodlibet.library.libraries import (Library, PicklingMixin, SongLibrary,
+                                         FileLibrary, AlbumLibrary,
+                                         SongFileLibrary, iter_paths)
+from quodlibet.util import connect_obj, is_windows
+from quodlibet.util.path import normalize_path
+from senf import fsnative
 from tests import TestCase, get_data_path, mkstemp, mkdtemp, skipIf
 from .helper import capture_output, get_temp_copy
-
-from quodlibet.library.libraries import Library, PicklingMixin, SongLibrary, \
-    FileLibrary, AlbumLibrary, SongFileLibrary, iter_paths
 
 
 class Fake(int):
@@ -45,6 +45,7 @@ class FakeSong(Fake):
 class AlbumSong(AudioFile):
     """A mock AudioFile belong to one of three albums,
     based on a single number"""
+
     def __init__(self, num, album=None):
         super().__init__()
         self["~filename"] = fsnative(u"file_%d.mp3" % (num + 1))
@@ -113,7 +114,7 @@ class TLibrary(TestCase):
     def test_add(self):
         self.library.add(self.Frange(12))
         self.failUnlessEqual(self.added, self.Frange(12))
-        del(self.added[:])
+        del self.added[:]
         self.library.add(self.Frange(12, 24))
         self.failUnlessEqual(self.added, self.Frange(12, 24))
 
@@ -251,9 +252,9 @@ def FakeAudioFileRange(*args):
 
 
 class TPicklingMixin(TestCase):
-
     class PicklingMockLibrary(PicklingMixin, Library):
         """A library-like class that implements enough to test PicklingMixin"""
+
         def __init__(self):
             super().__init__(name="Mock")
             self._contents = {}
@@ -300,7 +301,7 @@ class TPicklingMixin(TestCase):
             library = self.Library()
             library.load(filename)
             for (k, v), (k2, v2) in zip(
-                    sorted(self.library.items()), sorted(library.items())):
+                sorted(self.library.items()), sorted(library.items())):
                 assert k == k2
                 assert v.key == v2.key
         finally:
@@ -342,7 +343,7 @@ class TSongLibrary(TLibrary):
 
     def test_tag_values(self):
         self.library.add(self.Frange(30))
-        del(self.added[:])
+        del self.added[:]
         self.failUnlessEqual(
             sorted(self.library.tag_values(10)), list(range(10)))
         self.failUnlessEqual(sorted(self.library.tag_values(0)), [])
@@ -416,6 +417,28 @@ class TFileLibrary(TLibrary):
         self.assertTrue(new in changed)
         self.assertFalse(removed)
 
+    def test_move_root(self):
+        root = Path(normalize_path(mkdtemp(), True))
+        other_root = Path(normalize_path(mkdtemp(), True))
+        new_root = Path(normalize_path(mkdtemp(), True))
+        in_song = AudioFile({"~filename": str(root / "in file.mp3"), "title": "In"})
+        in_song.sanitize()
+        out_song = AudioFile({"~filename": str(other_root / "out file.mp3"),
+                              "title": "Out"})
+        # Make sure they exists
+        in_song.sanitize()
+        out_song.sanitize()
+        assert Path(in_song("~dirname")) == root, "test setup wrong"
+        assert Path(out_song("~dirname")) == other_root, "test setup wrong"
+        self.library.add([out_song, in_song])
+
+        # Run it by draining the generator
+        list(self.library.move_root(root, str(new_root)))
+        msg = f"Dir wasn't updated in {root!r} -> {new_root!r} for {in_song.key}"
+        assert Path(in_song("~dirname")) == new_root, msg
+        assert Path(in_song("~filename")) == new_root / "in file.mp3"
+        assert Path(out_song("~dirname")) == other_root, f"{out_song} was wrongly moved"
+
 
 class TSongFileLibrary(TSongLibrary):
     Fake = FakeSongFile
@@ -450,6 +473,7 @@ class TSongFileLibrary(TSongLibrary):
 
             def error():
                 raise AudioFileError
+
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)
@@ -553,9 +577,9 @@ class TAlbumLibrary(TestCase):
         self._sigs = [
             connect_obj(self.underlying, 'added', list.extend, self.added),
             connect_obj(self.underlying,
-                'changed', list.extend, self.changed),
+                        'changed', list.extend, self.changed),
             connect_obj(self.underlying,
-                'removed', list.extend, self.removed),
+                        'removed', list.extend, self.removed),
         ]
 
         self.library = AlbumLibrary(self.underlying)
@@ -660,21 +684,21 @@ class TAlbumLibrarySignals(TestCase):
         self.lib.add([AlbumSong(1, "a1")])
         self.lib.add([AlbumSong(5, "a1")])
         self.failUnlessEqual(self.received,
-            ["added", "a_added", "added", "a_changed"])
+                             ["added", "a_added", "added", "a_changed"])
 
     def test_remove(self):
         songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
         self.lib.add(songs)
         self.lib.remove(songs[:2])
         self.failUnlessEqual(self.received,
-            ["added", "a_added", "removed", "a_removed"])
+                             ["added", "a_added", "removed", "a_removed"])
 
     def test_change(self):
         songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
         self.lib.add(songs)
         self.lib.changed(songs)
         self.failUnlessEqual(self.received,
-            ["added", "a_added", "changed", "a_changed"])
+                             ["added", "a_added", "changed", "a_changed"])
 
     def tearDown(self):
         for s in self._asigs:

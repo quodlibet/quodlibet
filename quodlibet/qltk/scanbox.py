@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -10,15 +10,15 @@ from gi.repository import Gtk
 from gi.repository import Pango
 from senf import fsn2text
 
-from quodlibet import _
-from quodlibet.qltk.chooser import choose_folders
+from quodlibet import _, print_w, print_d, app
+from quodlibet.qltk.chooser import choose_folders, _get_chooser, _run_chooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.qltk.x import MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.util.path import unexpand
 from quodlibet.util.library import get_scan_dirs, set_scan_dirs
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, copool
 
 
 class ScanBox(Gtk.HBox):
@@ -28,7 +28,7 @@ class ScanBox(Gtk.HBox):
         super().__init__(spacing=6)
 
         self.model = model = ObjectStore()
-        view = RCMHintedTreeView(model=model)
+        self.view = view = RCMHintedTreeView(model=model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
 
@@ -61,6 +61,11 @@ class ScanBox(Gtk.HBox):
         add = Button(_("_Add"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
+        move = Button(_("_Move"), Icons.EDIT_REDO)
+        move.connect("clicked", self.__move)
+        move.set_tooltip_text(_("Move a library directory, "
+                                "migrating metadata for any included tracks."
+                                "Ensure the files exist at the new location!"))
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -72,6 +77,7 @@ class ScanBox(Gtk.HBox):
         vbox = Gtk.VBox(spacing=6)
         vbox.pack_start(add, False, True, 0)
         vbox.pack_start(remove, False, True, 0)
+        vbox.pack_start(move, False, True, 0)
 
         self.pack_start(sw, True, True, 0)
         self.pack_start(vbox, False, True, 0)
@@ -99,4 +105,28 @@ class ScanBox(Gtk.HBox):
         fns = choose_folders(self, _("Select Directories"), _("_Add Folders"))
         for fn in fns:
             self.model.append(row=[fn])
+        self.__save()
+
+    def __move(self, widget):
+        selection = self.view.get_selection()
+        model, paths = selection.get_selected_rows()
+        rows = [model[p] for p in paths or []]
+        if len(rows) > 1:
+            print_w("Can't do multiple moves at once")
+            return
+        base_dir = rows[0][0]
+        chooser = _get_chooser(_("Select New Directory"), _("_Cancel"))
+        chooser.set_title(_("Select New Directory for {dir}").format(dir=base_dir))
+        chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
+        chooser.set_local_only(True)
+        chooser.set_select_multiple(False)
+        results = _run_chooser(self, chooser)
+        if not results:
+            return
+        new_dir = results[0]
+        print_d(f"Migrate from {base_dir} -> {new_dir}")
+        copool.add(app.librarian.move_root, base_dir, new_dir)
+        path = paths[0]
+        self.model[path] = [new_dir]
+        self.model.row_changed(path, rows[0].iter)
         self.__save()
