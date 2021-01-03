@@ -671,13 +671,13 @@ class FileLibrary(PicklingLibrary):
                 # These numbers are pretty empirical. We should yield more
             # often than we emit signals; that way the main loop stays
             # interactive and doesn't get bogged down in updates.
-            if len(changed) > 100:
+            if len(changed) >= 200:
                 self.emit('changed', changed)
                 changed = set()
-            if len(removed) > 100:
+            if len(removed) >= 200:
                 self.emit('removed', removed)
                 removed = set()
-            if len(changed) > 5 or i % 100 == 0:
+            if len(changed) > 20 or i % 200 == 0:
                 yield True
         print_d(f"Removing {len(removed)}, changing {len(changed)}).", self._name)
         if removed:
