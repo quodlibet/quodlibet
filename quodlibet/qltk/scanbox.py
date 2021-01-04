@@ -65,12 +65,12 @@ class ScanBox(Gtk.HBox):
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         move = Button(_("_Move"), Icons.EDIT_REDO)
         move.connect("clicked", self.__move)
-        move.set_tooltip_text(_("Move a library directory, "
+        move.set_tooltip_text(_("Move a scan root (but not the files), "
                                 "migrating metadata for all included tracks."))
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        selection.connect("changed", self.__select_changed, remove)
+        selection.connect("changed", self.__select_changed, remove, move)
         selection.emit("changed")
 
         connect_obj(remove, "clicked", self.__remove, view)
@@ -92,8 +92,9 @@ class ScanBox(Gtk.HBox):
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
-    def __select_changed(self, selection, remove_button):
+    def __select_changed(self, selection, remove_button, move_button):
         remove_button.set_sensitive(selection.count_selected_rows())
+        move_button.set_sensitive(selection.count_selected_rows() == 1)
 
     def __save(self):
         set_scan_dirs(list(self.model.itervalues()))
@@ -115,9 +116,12 @@ class ScanBox(Gtk.HBox):
         if len(rows) > 1:
             print_w("Can't do multiple moves at once")
             return
+        elif not rows:
+            return
         base_dir = rows[0][0]
-        chooser = _get_chooser(_("Select New Directory"), _("_Cancel"))
-        chooser.set_title(_("Select New Directory for {dir}").format(dir=base_dir))
+        chooser = _get_chooser(_("Select This Directory"), _("_Cancel"))
+        chooser.set_title(
+            _("Select Actual / New Directory for {dir!r}").format(dir=base_dir))
         chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         chooser.set_local_only(True)
         chooser.set_select_multiple(False)
@@ -125,14 +129,14 @@ class ScanBox(Gtk.HBox):
         if not results:
             return
         new_dir = results[0]
-        desc = (_("This will move:\n\n"
-                  "%(old)r -> %(new)r\n\n"
-                  "Taking a backup is recommended "
+        desc = (_("This will move QL metadata:\n\n"
+                  "{old!r} -> {new!r}\n\n"
+                  "The audio files themselves are not moved by this.\n"
+                  "Nonetheless, a backup is recommended "
                   "(including the Quodlibet 'songs' file)")
-                % {"old": base_dir, "new": new_dir})
-        value = ConfirmationPrompt(self,
-                                   title=_("Move library root %r?") % base_dir,
-                                   description=desc,
+                .format(old=base_dir, new=new_dir))
+        title = _("Move scan root {dir!r}?").format(dir=base_dir)
+        value = ConfirmationPrompt(self, title=title, description=desc,
                                    ok_button_text=_("OK, move it!")).run()
         if value != ConfirmationPrompt.RESPONSE_INVOKE:
             print_d("User aborted")
