@@ -40,7 +40,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
         super(MusicBrainzSyncPlugin, self).__init__()
         musicbrainzngs.set_rate_limit()
         musicbrainzngs.set_useragent(
-            BRAINZ_APP, VERSION, "loveisgrief@tuta.io"
+            BRAINZ_APP, VERSION, "quodlibet@lists.sacredchao.net"
         )
         musicbrainzngs.auth(
             plugin_config.get("username"),
