@@ -37,7 +37,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
     PLUGIN_DESC = _("Syncs the rating of a song with music brainz.")
 
     def __init__(self):
-        super(MusicBrainzSyncPlugin, self).__init__()
+        super().__init__()
         musicbrainzngs.set_rate_limit()
         musicbrainzngs.set_useragent(
             BRAINZ_APP, VERSION, "quodlibet@lists.sacredchao.net"
@@ -49,11 +49,11 @@ class MusicBrainzSyncPlugin(EventPlugin):
 
     def plugin_on_changed(self, songs):
         ratings_dict = {
-            song[ATTR_BRAINZ]: int(song[ATTR_RATING] * 100)
+            song(ATTR_BRAINZ): int(song(ATTR_RATING) * 100)
             for song in songs
             if ATTR_BRAINZ in song and ATTR_RATING in song
         }
-        if len(ratings_dict) > 0:
+        if len(ratings_dict):
             call_async_background(
                 musicbrainzngs.submit_ratings,
                 Cancellable(),
