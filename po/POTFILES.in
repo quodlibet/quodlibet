@@ -143,7 +143,10 @@ quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
-quodlibet/library/libraries.py
+quodlibet/library/album.py
+quodlibet/library/base.py
+quodlibet/library/playlist.py
+quodlibet/library/song.py
 quodlibet/main.py
 quodlibet/operon/base.py
 quodlibet/operon/commands.py

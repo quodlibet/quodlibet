@@ -10,6 +10,7 @@
 from __future__ import absolute_import
 
 from collections import MutableSequence, defaultdict
+from typing import Any
 
 from .misc import total_ordering
 
@@ -30,10 +31,13 @@ class DictMixin:
     override some of these functions if speed is required.
     """
 
+    def __getitem__(self, key):
+        raise NotImplementedError()
+
     def __iter__(self):
         return iter(self.keys())
 
-    def has_key(self, key):
+    def has_key(self, key: Any) -> bool:
         try:
             self[key]
         except KeyError:

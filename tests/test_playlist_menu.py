@@ -13,7 +13,7 @@ from quodlibet.browsers.playlists.menu import PlaylistMenu
 from quodlibet.browsers.playlists.util import PLAYLISTS
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrarian
-from quodlibet.library.libraries import FileLibrary
+from quodlibet.library.file import FileLibrary
 from tests.helper import dummy_path
 from tests import TestCase, _TEMP_DIR
 

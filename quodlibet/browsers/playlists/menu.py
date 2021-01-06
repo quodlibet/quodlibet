@@ -1,4 +1,4 @@
-# Copyright 2014-2017 Nick Boultbee
+# Copyright 2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,8 +45,10 @@ class PlaylistMenu(Gtk.Menu):
         title = self._get_new_name(parent, title)
         if title is None:
             return
+        # FIXME: static dependency on wrong playlist class?
         playlist = FileBackedPlaylist.new(PLAYLISTS, title,
-                                          library=app.library)
+                                          songs_lib=app.library,
+                                          pl_lib=app.library and app.library.playlists)
         playlist.extend(songs)
         self._emit_new(playlist)
 

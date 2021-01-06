@@ -11,9 +11,10 @@ from gi.repository import Gtk
 from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.formats import AudioFileError
-from quodlibet.library.libraries import (Library, PicklingMixin, SongLibrary,
-                                         FileLibrary, AlbumLibrary,
-                                         SongFileLibrary, iter_paths)
+from quodlibet.library.base import (Library, iter_paths, PicklingMixin)
+from quodlibet.library.file import FileLibrary
+from quodlibet.library import SongLibrary, SongFileLibrary
+from quodlibet.library.album import AlbumLibrary
 from quodlibet.util import connect_obj, is_windows
 from quodlibet.util.path import normalize_path
 from senf import fsnative

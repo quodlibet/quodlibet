@@ -8,7 +8,7 @@
 
 from gi.repository import Gst
 
-from quodlibet.library.libraries import Library
+from quodlibet.library.base import Library
 from tests.plugin import PluginTestCase
 from tests.helper import visible
 

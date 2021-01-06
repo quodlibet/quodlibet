@@ -27,7 +27,7 @@ import quodlibet.config
 from quodlibet.formats import AudioFile
 from quodlibet.util.path import mkdir
 from quodlibet.library.librarians import SongLibrarian
-from quodlibet.library.libraries import FileLibrary
+from quodlibet.library.file import FileLibrary
 from tests.test_browsers_search import SONGS
 
 

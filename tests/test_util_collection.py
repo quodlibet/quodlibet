@@ -19,7 +19,7 @@ from quodlibet.formats import AudioFile as Fakesong
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
 from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
                                        FileBackedPlaylist, XSPFBackedPlaylist)
-from quodlibet.library.libraries import FileLibrary
+from quodlibet.library.file import FileLibrary
 from quodlibet.util import format_rating
 
 config.RATINGS = config.HardCodedRatingsPrefs()

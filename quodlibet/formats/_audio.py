@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2017 Nick Boultbee
+#           2012-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ import os
 import re
 import shutil
 import time
-from typing import List
+from typing import List, Tuple, Generic, TypeVar
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -38,6 +38,9 @@ from ._misc import AudioFileError, translate_errors
 
 
 translate_errors
+
+AlbumKey = Tuple[str, str, str]
+"""An album key is (currently) a tuple"""
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -89,7 +92,15 @@ def decode_value(tag, value):
     return str(value)
 
 
-class AudioFile(dict, ImageContainer):
+K = TypeVar("K")
+
+
+class HasKey(Generic[K]):
+    """Many things can be keyed"""
+    key: K
+
+
+class AudioFile(dict, ImageContainer, HasKey):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
     __getitem__, get, and so on can be used for efficiency.
@@ -147,7 +158,7 @@ class AudioFile(dict, ImageContainer):
             self.get("~filename"))
 
     @util.cached_property
-    def album_key(self):
+    def album_key(self) -> AlbumKey:
         return (human(self("albumsort", "")),
                 human(self("albumartistsort", "")),
                 self.get("album_grouping_key") or self.get("labelid") or
@@ -211,7 +222,7 @@ class AudioFile(dict, ImageContainer):
         pop("sort_key", None)
 
     @property
-    def key(self):
+    def key(self) -> K:  # type: ignore
         return self["~filename"]
 
     @property

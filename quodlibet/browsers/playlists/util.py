@@ -60,17 +60,17 @@ class GetPlaylistName(GetStringDialog):
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
 
-def parse_m3u(filelike, pl_name, library=None):
+def parse_m3u(filelike, pl_name, songs_lib=None, pl_lib=None):
     filenames = []
     for line in filelike:
         line = line.strip()
         if line.startswith(b"#"):
             continue
         __attempt_add(line, filenames)
-    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, songs_lib, pl_lib)
 
 
-def parse_pls(filelike, pl_name, library=None):
+def parse_pls(filelike, pl_name, songs_lib=None, pl_lib=None):
     filenames = []
     for line in filelike:
         line = line.strip()
@@ -78,7 +78,7 @@ def parse_pls(filelike, pl_name, library=None):
             continue
         fn = line[line.index(b"=") + 1:].strip()
         __attempt_add(fn, filenames)
-    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, songs_lib, pl_lib)
 
 
 def __attempt_add(filename, filenames):
@@ -88,8 +88,9 @@ def __attempt_add(filename, filenames):
         return
 
 
-def __create_playlist(name, source_dir, files, library):
-    playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
+def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
+    playlist = FileBackedPlaylist.new(PLAYLISTS, name, songs_lib=songs_lib,
+                                      pl_lib=pl_lib)
     print_d("Created playlist %s" % playlist)
     songs = []
     win = WaitLoadWindow(
@@ -99,7 +100,7 @@ def __create_playlist(name, source_dir, files, library):
     for i, filename in enumerate(files):
         if not uri_is_valid(filename):
             # Plain filename.
-            songs.append(_af_for(filename, library, source_dir))
+            songs.append(_af_for(filename, songs_lib, source_dir))
         else:
             try:
                 filename = uri2fsn(filename)
@@ -108,7 +109,7 @@ def __create_playlist(name, source_dir, files, library):
                 songs.append(formats.remote.RemoteFile(filename))
             else:
                 # URI-encoded local filename.
-                songs.append(_af_for(filename, library, source_dir))
+                songs.append(_af_for(filename, songs_lib, source_dir))
         if win.step():
             break
     win.destroy()
