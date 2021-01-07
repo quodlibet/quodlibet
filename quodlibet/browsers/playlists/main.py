@@ -647,7 +647,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 else:
                     print_w("Unsupported playlist type for '%s'" % filename)
                     continue
-            # self.changed(playlist)
+            self.changed(playlist)
             songs_lib.add(playlist)
             added += 1
         return added
