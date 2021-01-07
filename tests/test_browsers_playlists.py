@@ -337,11 +337,11 @@ class TPlaylistsBrowser(TestCase):
         self.failUnlessEqual(b.playlists()[1], second_pl)
 
     def test_import(self):
-        pl_name = u"_€3 œufs à Noël"
+        pl_name = text2fsn("_€3 œufs à Noël")
         pl = FileBackedPlaylist(_TEMP_DIR, pl_name, None)
         pl.extend(SONGS)
         pl.write()
-        new_fn = os.path.splitext(text2fsn(pl.name))[0] + '.m3u'
+        new_fn = os.path.splitext(pl.name)[0] + '.m3u'
         new_path = os.path.join(pl.dir, new_fn)
         os.rename(pl.path, new_path)
         added = self.bar._import_playlists([new_path], self.lib)

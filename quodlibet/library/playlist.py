@@ -6,7 +6,7 @@
 from typing import Iterable
 
 from quodlibet import print_d
-from quodlibet.library.base import Library, V
+from quodlibet.library.base import Library
 from quodlibet.util.collection import Playlist
 
 

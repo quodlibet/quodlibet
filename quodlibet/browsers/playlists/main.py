@@ -64,7 +64,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         super().__init__(spacing=6)
         self.songs_lib = songs_lib
         try:
-            self.pl_lib = songs_lib.playlists
+            self.pl_lib: PlaylistLibrary = songs_lib.playlists
         except (AttributeError, TypeError):
             print_w("No playlist library available")
 

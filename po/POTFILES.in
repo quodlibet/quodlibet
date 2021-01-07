@@ -145,6 +145,7 @@ quodlibet/__init__.py
 quodlibet/library/__init__.py
 quodlibet/library/album.py
 quodlibet/library/base.py
+quodlibet/library/file.py
 quodlibet/library/playlist.py
 quodlibet/library/song.py
 quodlibet/main.py
