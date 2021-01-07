@@ -277,6 +277,9 @@ class Browser(Gtk.Box, Filter):
     replaygain_profiles: Optional[List[str]] = None
     """Replay Gain profiles for this browser."""
 
+    def __str__(self):
+        return f"<{type(self).__name__} @ {hex(id(self))}>"
+
 
 class DisplayPatternMixin:
     """Allows Browsers customisable item (e.g. album) display patterns"""

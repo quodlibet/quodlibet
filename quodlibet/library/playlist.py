@@ -62,3 +62,7 @@ class PlaylistLibrary(Library[str, Playlist]):
             for pl in changed:
                 pl.write()
             self.changed(changed)
+
+    def add(self, items: Iterable[Playlist]) -> Iterable[Playlist]:
+        print_d(f"Adding new playlists: {items}")
+        return super().add(items)

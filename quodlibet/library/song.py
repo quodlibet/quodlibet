@@ -32,7 +32,7 @@ class SongLibrary(PicklingLibrary):
     @util.cached_property
     def playlists(self):
         pl_lib = PlaylistLibrary(self)
-        print_d(f"Created playlist library {pl_lib!r}")
+        print_d(f"Created playlist library {pl_lib}")
         return pl_lib
 
     def destroy(self):

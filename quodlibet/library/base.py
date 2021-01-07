@@ -62,6 +62,9 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         if self.librarian is not None and name is not None:
             self.librarian.register(self, name)
 
+    def __str__(self):
+        return f"<{type(self).__name__} @ {hex(id(self))}>"
+
     def destroy(self):
         if self.librarian is not None and self._name is not None:
             self.librarian._unregister(self, self._name)
@@ -89,7 +92,6 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             items = {item for item in items if item in self}
             if not items:
                 return
-            print_d(f"Changing {len(items)} items directly.", self._name)
             self._changed(items)
 
     def _changed(self, items: Collection[V]):
@@ -98,7 +100,8 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         # Called by the changed method and Librarians.
         if not items:
             return
-        print_d(f"Emitting changed for {len(items)} items from {self!r}", self._name)
+        print_d(f"Emitting changed for {len(items)} item(s) "
+                f"(e.g. {list(items)[0].key!r}...) from {self}")
         self.dirty = True
         self.emit('changed', items)
 

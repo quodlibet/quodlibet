@@ -153,10 +153,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for row in model:
             if row[0] is playlist:
                 if refresh:
-                    print_d("Refreshing playlist %s..." % row[0])
+                    print_d(f"Refreshing view in {self} for {playlist}")
                     self.__lists.row_changed(row.path, row.iter)
                     if playlist == self._selected_playlist():
-                        print_d(f"Updating songslist for selected {playlist!r}")
+                        print_d(f"Updating songslist for selected {playlist}")
                         self.songs_selected(playlist.songs)
                 break
 
@@ -172,7 +172,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             model.get_model().append(row=[playlist])
 
     def __changed(self, browser, playlists):
-        print_d(f"Got changed for {playlists} in {self}")
         for playlist in playlists:
             self.changed(playlist)
 

@@ -669,6 +669,9 @@ class FileBackedPlaylist(Playlist):
             self._delete_file(self._last_fn)
             self._last_fn = fn
 
+    def __str__(self):
+        return f"<{type(self).__name__}: {self.name}>"
+
 
 class XSPFBackedPlaylist(FileBackedPlaylist):
     EXT = "xspf"
