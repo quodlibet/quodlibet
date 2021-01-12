@@ -472,10 +472,9 @@ class AudioFile(dict, ImageContainer, HasKey):
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
             elif key == "playlists":
-                # See Issue 876
-                # Avoid circular references from formats/__init__.py
-                from quodlibet.util.collection import Playlist
-                playlists = Playlist.playlists_featuring(self)
+                # TODO: avoid static dependency here... somehow
+                from quodlibet import app
+                playlists = app.library.playlists.playlists_featuring(self)
                 return "\n".join(s.name for s in playlists) or default
             elif key.startswith("#replaygain_"):
                 try:

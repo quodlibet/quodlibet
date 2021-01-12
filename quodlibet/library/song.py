@@ -39,6 +39,8 @@ class SongLibrary(PicklingLibrary):
         super().destroy()
         if "albums" in self.__dict__:
             self.albums.destroy()
+        if "playlists" in self.__dict__:
+            self.playlists.destroy()
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""

@@ -10,9 +10,9 @@ import os
 import quodlibet
 from quodlibet import qltk
 from quodlibet.browsers.playlists.menu import PlaylistMenu
-from quodlibet.browsers.playlists.util import PLAYLISTS
+from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
-from quodlibet.library import SongLibrarian
+from quodlibet.library import SongLibrarian, SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from tests.helper import dummy_path
 from tests import TestCase, _TEMP_DIR
@@ -41,10 +41,10 @@ class TPlaylistMenu(TestCase):
 
     def setUp(self):
         # Testing locally is VERY dangerous without this...
-        self.assertTrue(_TEMP_DIR in PLAYLISTS or os.name == "nt",
-                        msg="Failing, don't want to delete %s" % PLAYLISTS)
+        self.assertTrue(_TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
+                        msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR)
         try:
-            os.mkdir(PLAYLISTS)
+            os.mkdir(_DEFAULT_PLAYLIST_DIR)
         except EnvironmentError:
             pass
         quodlibet.config.init()
@@ -53,24 +53,18 @@ class TPlaylistMenu(TestCase):
         for af in self.SONGS:
             af.sanitize()
         self.lib.add(self.SONGS)
-        self.added = []
 
     def tearDown(self):
         self.lib.destroy()
         self.lib.librarian.destroy()
         quodlibet.config.quit()
 
-    def _on_new(self, _, playlist):
-        self.added.append(playlist)
-
     def test__on_new_playlist_activate(self):
         main = qltk.MenuItem('Menu')
-        menu = StubbedPlaylistMenu(self.SONGS, [])
-        menu.connect('new', self._on_new)
+        menu = StubbedPlaylistMenu(self.SONGS, PlaylistLibrary(SongFileLibrary()))
         main.set_submenu(menu)
 
-        menu._on_new_playlist_activate(main, self.SONGS)
+        pl = menu._on_new_playlist_activate(main, self.SONGS)
 
-        self.failUnless(self.added, msg="No playlists signalled")
-        self.failUnlessEqual(self.added[0].songs, self.SONGS)
-        self.added[0].delete()
+        self.failUnless(pl, msg="No playlists added")
+        self.failUnlessEqual(pl.songs, self.SONGS)

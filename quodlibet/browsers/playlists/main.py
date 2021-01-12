@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2020 Nick Boultbee
+#    2012 - 2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,29 +20,27 @@ from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.browsers.playlists.prefs import (Preferences,
                                                 DEFAULT_PATTERN_TEXT)
 from quodlibet.formats import AudioFile
+from quodlibet.library import SongFileLibrary
+from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.plugins.playlist import PLAYLIST_HANDLER
+from quodlibet.qltk import Icons
+from quodlibet.qltk.chooser import choose_files, create_chooser_filter
 from quodlibet.qltk.completion import LibraryTagCompletion
+from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
 from quodlibet.qltk.msg import ConfirmationPrompt
+from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import ScrolledWindow, Align, MenuItem, SymbolicIconImage
-from quodlibet.qltk import Icons
-from quodlibet.qltk.chooser import choose_files, create_chooser_filter
-from quodlibet.qltk.information import Information
-from quodlibet.qltk.properties import SongProperties
 from quodlibet.util import connect_obj
+from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.collection import XSPFBackedPlaylist, FileBackedPlaylist, Playlist
 from quodlibet.util.urllib import urlopen
-
-from .util import (parse_m3u, parse_pls, PLAYLISTS,
-                   confirm_remove_playlist_dialog_invoke, _name_for)
-from quodlibet.library import SongFileLibrary
-from quodlibet.library.playlist import PlaylistLibrary
+from .util import parse_m3u, parse_pls, confirm_remove_playlist_dialog_invoke, _name_for
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -57,16 +55,21 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "playlist_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
-    __lists = ObjectModelSort(model=ObjectStore())
-    __lists.set_default_sort_func(ObjectStore._sort_on_value)
-
     def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
         super().__init__(spacing=6)
+        self._lists = ObjectModelSort(model=ObjectStore())
+        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
+
         self.songs_lib = songs_lib
         try:
             self.pl_lib: PlaylistLibrary = songs_lib.playlists
         except (AttributeError, TypeError):
             print_w("No playlist library available")
+
+        model = self._lists.get_model()
+        print_d(f"Reading playlists from library: {self.pl_lib}")
+        for playlist in self.pl_lib:
+            model.append(row=[playlist])
 
         # this is instanced with the necessary gtkdialog-settings, and afterwards
         # its run-method is called to get a to-be-compared Gtk.ResponseType
@@ -117,61 +120,36 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     @classmethod
     def init(klass, library):
-        pl_lib = library.playlists
-        model = klass.__lists.get_model()
-        print_d(f"Reading playlist directory {PLAYLISTS} (library: {library})")
-        for playlist in os.listdir(PLAYLISTS):
-            if os.path.isdir(os.path.join(PLAYLISTS, playlist)):
-                continue
-            try:
-                playlist = XSPFBackedPlaylist(PLAYLISTS, playlist,
-                                              songs_lib=library, pl_lib=pl_lib)
-                model.append(row=[playlist])
-            except TypeError:
-                legacy = FileBackedPlaylist(PLAYLISTS, playlist,
-                                            songs_lib=library, pl_lib=pl_lib)
-                print_w("Converting \"%s\" to XSPF format" % playlist)
-                playlist = XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library,
-                                                            pl_lib=pl_lib)
-                model.append(row=[playlist])
-            except EnvironmentError:
-                print_w("Invalid Playlist '%s'" % playlist)
-            pl_lib.add([playlist])
         klass.load_pattern()
 
-    @classmethod
-    def deinit(cls, library):
-        model = cls.__lists.get_model()
-        model.clear()
-
-    @classmethod
-    def playlists(klass):
-        return [row[0] for row in klass.__lists]
+    def playlists(self):
+        return [row[0] for row in self._lists]
 
     def changed(self, playlist, refresh=True):
-        model = self.__lists
-        for row in model:
+        for row in self._lists:
             if row[0] is playlist:
                 if refresh:
                     print_d(f"Refreshing view in {self} for {playlist}")
-                    self.__lists.row_changed(row.path, row.iter)
+                    self._lists.row_changed(row.path, row.iter)
                     if playlist == self._selected_playlist():
                         print_d(f"Updating songslist for selected {playlist}")
                         self.songs_selected(playlist.songs)
                 break
 
-    def __removed(self, browser, playlists):
-        for pl in playlists:
-            print_d(f"TODO: remove {pl!r} from view")
+    def __removed(self, lib, playlists):
+        for row in self.model:
+            pl = row[0]
+            if pl in playlists:
+                print_d(f"Removing {pl} from view", str(self))
+                self.__playlist_deleted(row)
         self.activate()
 
-    def __added(self, browser, playlists):
-        model = self.__lists
+    def __added(self, lib, playlists):
         for playlist in playlists:
-            print_d("Looks like a new playlist: %s", playlist)
-            model.get_model().append(row=[playlist])
+            print_d(f"Looks like a new playlist: {playlist}")
+            self.model.append(row=[playlist])
 
-    def __changed(self, browser, playlists):
+    def __changed(self, lib, playlists):
         for playlist in playlists:
             self.changed(playlist)
 
@@ -266,7 +244,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         col = Gtk.TreeViewColumn("Playlists", render)
         col.set_cell_data_func(render, self.cell_data)
         view.append_column(col)
-        view.set_model(self.__lists)
+        view.set_model(self._lists)
         view.set_rules_hint(True)
         view.set_headers_visible(False)
         return view
@@ -317,12 +295,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 return False
 
             playlist = model[iter][0]
-            response = confirm_remove_playlist_dialog_invoke(
-                self, playlist, self.Confirmer)
-            if response:
-                self.pl_lib.remove(playlist)
-                model.get_model().remove(
-                    model.convert_iter_to_child_iter(iter))
+            if confirm_remove_playlist_dialog_invoke(self, playlist, self.Confirmer):
+                playlist.delete()
             else:
                 print_d("Playlist removal cancelled through prompt")
             return True
@@ -347,6 +321,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 window.show()
             return True
         return False
+
+    def __playlist_deleted(self, row) -> None:
+        self.model.remove(row.iter)
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
@@ -421,9 +398,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
-                playlist = XSPFBackedPlaylist.from_songs(PLAYLISTS, songs,
-                                                         songs_lib=self.songs_lib,
-                                                         pl_lib=self.pl_lib)
+                playlist = self.pl_lib.create_from_songs(songs)
                 GLib.idle_add(self._select_playlist, playlist)
             else:
                 playlist = model[path][0]
@@ -508,8 +483,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self, playlist, self.Confirmer)
             if response:
                 playlist.delete()
-                model.get_model().remove(
-                    model.convert_iter_to_child_iter(itr))
             else:
                 print_d("Playlist removal cancelled through prompt")
 
@@ -554,13 +527,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     @classmethod
     def refresh_all(cls):
         print_d("Refreshing all items...")
-        model = cls.__lists.get_model()
+        model = cls._lists.get_model()
         for iter_, value in model.iterrows():
             model.row_changed(model.get_path(iter_), iter_)
 
     @property
     def model(self):
-        return self.__lists.get_model()
+        return self._lists.get_model()
 
     def _get_playlist_songs(self):
         model, iter = self.__selected_playlists()
@@ -599,8 +572,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         config.set("browsers", "query_text", text)
 
     def __new_playlist(self, activator, library):
-        playlist = XSPFBackedPlaylist.new(PLAYLISTS, songs_lib=library)
-        self.model.append(row=[playlist])
+        playlist = self.pl_lib.create()
         self._select_playlist(playlist, scroll=True)
 
         model, iter = self.__selected_playlists()
@@ -608,23 +580,23 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         GLib.idle_add(self._start_rename, path)
 
     def __start_editing(self, render, editable, path):
-        editable.set_text(self.__lists[path][0].name)
+        editable.set_text(self._lists[path][0].name)
 
     def __edited(self, render, path, newname):
         return self._rename(path, newname)
 
     def _rename(self, path, newname):
-        playlist = self.__lists[path][0]
+        playlist = self._lists[path][0]
         try:
             playlist.rename(newname)
         except ValueError as s:
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
-            row = self.__lists[path]
+            row = self._lists[path]
             child_model = self.model
             child_model.remove(
-                self.__lists.convert_iter_to_child_iter(row.iter))
+                self._lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
             self._select_playlist(playlist, scroll=True)
 
@@ -632,22 +604,27 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         formats = ["*.pls", "*.m3u", "*.m3u8"]
         cf = create_chooser_filter(_("Playlists"), formats)
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
-        self._import_playlists(fns, library)
+        self._import_playlists(fns)
 
-    def _import_playlists(self, fns, songs_lib):
+    def _import_playlists(self, fns):
+        """ Import m3u / pls playlists into QL
+        TODO: move this to Playlists library and watch here for new playlists
+        """
         added = 0
         for filename in fns:
             name = _name_for(filename)
             with open(filename, "rb") as f:
                 if filename.endswith(".m3u") or filename.endswith(".m3u8"):
-                    playlist = parse_m3u(f, name, songs_lib=songs_lib)
+                    playlist = parse_m3u(f, name,
+                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
                 elif filename.endswith(".pls"):
-                    playlist = parse_pls(f, name, songs_lib=songs_lib)
+                    playlist = parse_pls(f, name,
+                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
                 else:
                     print_w("Unsupported playlist type for '%s'" % filename)
                     continue
-            self.changed(playlist)
-            songs_lib.add(playlist)
+            # Import all the songs in the playlist to the *songs* library
+            self.songs_lib.add(playlist)
             added += 1
         return added
 
@@ -677,8 +654,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             playlist = model[iter][0]
             playlist[:] = songs
         elif songs:
-            playlist = XSPFBackedPlaylist.from_songs(PLAYLISTS, songs,
-                                                     self.songs_lib)
+            playlist = self.pl_lib.create_from_songs(songs)
             GLib.idle_add(self._select_playlist, playlist)
         if playlist:
             self.changed(playlist, refresh=False)

@@ -16,7 +16,8 @@ from typing import Generator
 
 from gi.repository import GObject
 
-from quodlibet.util.dprint import print_d
+from quodlibet.library.playlist import PlaylistLibrary
+from quodlibet.util.dprint import print_d, print_w
 from senf import fsnative
 
 
@@ -225,3 +226,15 @@ class SongLibrarian(Librarian):
                     library.emit('changed', {item})
             else:
                 changed.add(item)
+
+    @property
+    def playlists(self):
+        for lib in self.libraries.values():
+            if isinstance(lib, PlaylistLibrary):
+                return lib
+            try:
+                return lib.playlists
+            except AttributeError:
+                pass
+        print_w(f"No playlist library found: {self.libraries}")
+        raise ValueError("No playlists library found")

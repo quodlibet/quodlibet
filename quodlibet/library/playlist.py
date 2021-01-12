@@ -3,11 +3,18 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Iterable
+import os
+from typing import Iterable, Generator
 
-from quodlibet import print_d
+import quodlibet
+from quodlibet import print_d, print_w
+from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
-from quodlibet.util.collection import Playlist
+from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
+from senf import text2fsn, fsnative
+
+_DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
+"""Directory for playlist files"""
 
 
 class PlaylistLibrary(Library[str, Playlist]):
@@ -18,32 +25,64 @@ class PlaylistLibrary(Library[str, Playlist]):
     the values are Playlist objects.
     """
 
-    def __init__(self, library):
+    def __init__(self, library: Library, pl_dir: fsnative = _DEFAULT_PLAYLIST_DIR):
         self.librarian = None
-
         super().__init__(f"{type(self).__name__} for {library._name}")
         print_d(f"Initializing Playlist Library {self} to watch {library._name!r}")
-
+        self.pl_dir = pl_dir
+        if library is None:
+            raise ValueError("Need a library to listen to")
         self._library = library
+        self._read_playlists(library)
+
         self._rsig = library.connect('removed', self.__songs_removed)
         self._csig = library.connect('changed', self.__songs_changed)
 
+    def _read_playlists(self, library):
+        print_d(f"Reading playlist directory {self.dir} (library: {library})")
+        try:
+            fns = os.listdir(self.pl_dir)
+        except FileNotFoundError as e:
+            print_w(f"No playlist dir found in {self.pl_dir!r}, creating. ({e})")
+            os.mkdir(self.pl_dir)
+            fns = []
+
+        for fn in fns:
+            if os.path.isdir(os.path.join(self.pl_dir, fn)):
+                continue
+            try:
+                XSPFBackedPlaylist(self.pl_dir, text2fsn(fn),
+                                   songs_lib=library, pl_lib=self)
+            except TypeError as e:
+                legacy = FileBackedPlaylist(self.pl_dir, text2fsn(fn),
+                                            songs_lib=library, pl_lib=self)
+                print_w(f"Converting {fn!r} to XSPF format ({e})")
+                XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
+            except EnvironmentError:
+                print_w("Invalid Playlist '%s'" % fn)
+
+    def create(self, name: str) -> Playlist:
+        return XSPFBackedPlaylist.new(self.pl_dir, name,
+                                      songs_lib=self._library, pl_lib=self)
+
+    def create_from_songs(self, songs: Iterable[AudioFile]) -> Playlist:
+        """Creates a playlist visible to this library"""
+        return XSPFBackedPlaylist.from_songs(self.pl_dir, songs, self._library, self)
+
     def destroy(self):
-        for sig in [self._asig, self._rsig, self._csig]:
+        for sig in [self._rsig, self._csig]:
             self._library.disconnect(sig)
 
-    def remove(self, items: Iterable[Playlist]) -> Iterable[Playlist]:
-        items = super().remove(items)
-        for pl in items:
-            pl.delete()
-        return items
+    def playlists_featuring(self, song: AudioFile) -> Generator[Playlist, None, None]:
+        """Returns a generator yielding playlists in which this song appears"""
+        return (pl for pl in self if song in pl._list)
 
     def __songs_removed(self, library, songs):
         print_d(f"Removing {len(songs)} song(s) "
-                f"across {len(self.playlists())} playlist(s) in {self}")
+                f"across {len(self)} playlist(s) in {self}")
         changed = {
             playlist
-            for playlist in self.playlists()
+            for playlist in self
             if playlist.remove_songs(songs)
         }
         if changed:
@@ -64,5 +103,5 @@ class PlaylistLibrary(Library[str, Playlist]):
             self.changed(changed)
 
     def add(self, items: Iterable[Playlist]) -> Iterable[Playlist]:
-        print_d(f"Adding new playlists: {items}")
+        print_d(f"Adding new playlist(s): {items}")
         return super().add(items)

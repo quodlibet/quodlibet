@@ -1,4 +1,4 @@
-# Copyright 2014-2017 Nick Boultbee
+# Copyright 2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,25 +7,15 @@
 
 import os
 
-from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
-
-import quodlibet
-from quodlibet import _, print_d
+from quodlibet import _
 from quodlibet import formats
 from quodlibet.qltk import Icons
-from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
-from quodlibet.util.collection import FileBackedPlaylist
-from quodlibet.util.path import mkdir, uri_is_valid
-
-
-# Directory for playlist files
-PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
-assert isinstance(PLAYLISTS, fsnative)
-if not os.path.isdir(PLAYLISTS):
-    mkdir(PLAYLISTS)
+from quodlibet.util.path import uri_is_valid
+from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
 def confirm_remove_playlist_dialog_invoke(
@@ -89,9 +79,6 @@ def __attempt_add(filename, filenames):
 
 
 def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
-    playlist = FileBackedPlaylist.new(PLAYLISTS, name, songs_lib=songs_lib,
-                                      pl_lib=pl_lib)
-    print_d("Created playlist %s" % playlist)
     songs = []
     win = WaitLoadWindow(
         None, len(files),
@@ -113,8 +100,7 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         if win.step():
             break
     win.destroy()
-    playlist.extend(list(filter(None, songs)))
-    return playlist
+    return pl_lib.create_from_songs(songs)
 
 
 def _af_for(filename, library, pl_dir):

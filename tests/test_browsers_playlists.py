@@ -3,32 +3,32 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gdk, Gtk
-from senf import fsnative, fsn2uri, fsn2bytes, text2fsn
-
-from quodlibet import app
-from quodlibet import qltk
-from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.playlists.util import PLAYLISTS, parse_m3u, \
-    parse_pls, _name_for
-from quodlibet.qltk.songlist import DND_QL
-from quodlibet.util.collection import FileBackedPlaylist
-from tests import TestCase, get_data_path, mkdtemp, _TEMP_DIR, \
-    init_fake_app, destroy_fake_app
-from tests.gtk_helpers import MockSelData
-from .helper import dummy_path, __, temp_filename
-
 import os
 import shutil
+from pathlib import Path
 
-from quodlibet.browsers.playlists import PlaylistsBrowser
-from quodlibet.library import SongFileLibrary
+from gi.repository import Gdk, Gtk
+
 import quodlibet.config
+from quodlibet import app
+from quodlibet import qltk
+from quodlibet.browsers.playlists import PlaylistsBrowser
+from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
+from quodlibet.browsers.playlists.util import (parse_m3u,
+                                               parse_pls, _name_for)
+from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
-from quodlibet.util.path import mkdir
+from quodlibet.library import SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
-from quodlibet.library.file import FileLibrary
+from quodlibet.qltk.songlist import DND_QL
+from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
+from quodlibet.util.path import mkdir
+from senf import fsnative, fsn2uri, fsn2bytes
+from tests import (TestCase, get_data_path, mkdtemp, _TEMP_DIR,
+                   init_fake_app, destroy_fake_app)
+from tests.gtk_helpers import MockSelData
 from tests.test_browsers_search import SONGS
+from .helper import dummy_path, __, temp_filename
 
 
 class ConfigSetupMixin:
@@ -44,7 +44,7 @@ class TParsePlaylistMixin:
     def test_parse_empty(self):
         with temp_filename() as name:
             with open(name) as f:
-                pl = self.Parse(f, name)
+                pl = self.Parse(f, name, pl_lib=self.pl_lib)
         self.failIf(pl)
         pl.delete()
 
@@ -55,7 +55,7 @@ class TParsePlaylistMixin:
                 target += fsn2bytes(get_data_path("silence-44-s.ogg"), "utf-8")
                 af.write(target)
             with open(name, "rb") as f:
-                pl = self.Parse(f, name)
+                pl = self.Parse(f, name, pl_lib=self.pl_lib)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
         pl.delete()
@@ -68,7 +68,7 @@ class TParsePlaylistMixin:
             with open(name, "wb") as f:
                 f.write(target)
             with open(name, "rb") as f:
-                pl = self.Parse(f, name)
+                pl = self.Parse(f, name, pl_lib=self.pl_lib)
         self.failUnlessEqual(len(pl), 1)
         self.failUnlessEqual(pl[0]("title"), "Silence")
         pl.delete()
@@ -78,10 +78,16 @@ class TParseM3U(TestCase, ConfigSetupMixin, TParsePlaylistMixin):
     Parse = staticmethod(parse_m3u)
     prefix = b""
 
+    def setUp(self):
+        self.pl_lib = PlaylistLibrary(SongFileLibrary())
+
 
 class TParsePLS(TestCase, ConfigSetupMixin, TParsePlaylistMixin):
     Parse = staticmethod(parse_pls)
     prefix = b"File1="
+
+    def setUp(self):
+        self.pl_lib = PlaylistLibrary(SongFileLibrary())
 
 
 class TPlaylistIntegration(TestCase):
@@ -111,13 +117,14 @@ class TPlaylistIntegration(TestCase):
 
     def setUp(self):
         quodlibet.config.init()
-        self.lib = quodlibet.browsers.tracks.library = FileLibrary()
+        self.lib = quodlibet.browsers.tracks.library = SongFileLibrary()
         quodlibet.browsers.tracks.library.librarian = SongLibrarian()
         for af in self.SONGS:
             af.sanitize()
         self.lib.add(self.SONGS)
         self._dir = mkdtemp()
-        self.pl = FileBackedPlaylist.new(self._dir, "Foobar", self.lib)
+        self.pl = FileBackedPlaylist.new(self._dir, "Foobar",
+                                         self.lib, self.lib.playlists)
         self.pl.extend(self.SONGS)
 
     def tearDown(self):
@@ -171,14 +178,14 @@ class TPlaylistsBrowser(TestCase):
     def setUp(self):
         self.success = False
         # Testing locally is VERY dangerous without this...
-        self.assertTrue(_TEMP_DIR in PLAYLISTS or os.name == "nt",
-                        msg="Failing, don't want to delete %s" % PLAYLISTS)
+        self.assertTrue(_TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
+                        msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR)
         try:
-            shutil.rmtree(PLAYLISTS)
+            shutil.rmtree(_DEFAULT_PLAYLIST_DIR)
         except OSError:
             pass
 
-        mkdir(PLAYLISTS)
+        mkdir(_DEFAULT_PLAYLIST_DIR)
 
         init_fake_app()
 
@@ -189,11 +196,13 @@ class TPlaylistsBrowser(TestCase):
             af.sanitize()
         self.lib.add(all_songs)
 
-        self.big = pl = FileBackedPlaylist.new(PLAYLISTS, "Big", self.lib)
+        self.big = pl = FileBackedPlaylist.new(_DEFAULT_PLAYLIST_DIR, "Big",
+                                               self.lib, self.lib.playlists)
         pl.extend(SONGS)
         pl.write()
 
-        self.small = pl = FileBackedPlaylist.new(PLAYLISTS, "Small", self.lib)
+        self.small = pl = XSPFBackedPlaylist.new(_DEFAULT_PLAYLIST_DIR,
+                                                 "Small", self.lib, self.lib.playlists)
         pl.extend([self.ANOTHER_SONG])
         pl.write()
 
@@ -215,8 +224,7 @@ class TPlaylistsBrowser(TestCase):
     def tearDown(self):
         self.bar.destroy()
         self.lib.destroy()
-        shutil.rmtree(PLAYLISTS)
-        PlaylistsBrowser.deinit(self.lib)
+        shutil.rmtree(_DEFAULT_PLAYLIST_DIR)
         destroy_fake_app()
 
     def _expected(self, bar, songs, sort):
@@ -294,8 +302,7 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
-    # deletion of playlist tracks
-    def test_deletion(self):
+    def test_songs_deletion(self):
         b = self.bar
         self._fake_browser_pack(b)
         event = self.a_delete_event()
@@ -337,25 +344,25 @@ class TPlaylistsBrowser(TestCase):
         self.failUnlessEqual(b.playlists()[1], second_pl)
 
     def test_import(self):
-        pl_name = text2fsn("_€3 œufs à Noël")
-        pl = FileBackedPlaylist(_TEMP_DIR, pl_name, None)
-        pl.extend(SONGS)
-        pl.write()
-        new_fn = os.path.splitext(pl.name)[0] + '.m3u'
-        new_path = os.path.join(pl.dir, new_fn)
-        os.rename(pl.path, new_path)
-        added = self.bar._import_playlists([new_path], self.lib)
-        self.failUnlessEqual(added, 1, msg="Failed to add '%s'" % new_path)
-        os.unlink(new_path)
-        pls = self.bar.playlists()
-        self.failUnlessEqual(len(pls), 3)
-        # Leading underscore makes it always the last entry
-        imported = pls[-1]
-        self.failUnlessEqual(imported.name, pl_name)
-
         def fns(songs):
             return [song('~filename') for song in songs]
-        self.failUnlessEqual(fns(imported.songs), fns(pl.songs))
+        pl_lib = self.bar.pl_lib
+        assert len(self.bar.playlists()) == 2, "Should start with two playlists"
+        assert len(pl_lib) == 2, f"Started with {pl_lib.keys()}"
+
+        pl_name = "_€3 œufs à Noël"
+        pl_path = Path(_TEMP_DIR) / (pl_name + ".m3u")
+        with open(pl_path, "w") as f:
+            for fn in fns(SONGS):
+                f.write(fn + "\n")
+        added = self.bar._import_playlists([str(pl_path)])
+        self.failUnlessEqual(added, 1, msg="Failed to add '%s'" % pl_path)
+        assert len(pl_lib) == 3, f"Got PLs: \n{', '.join(str(pl) for pl in pl_lib)}"
+        pls = self.bar.playlists()
+        assert len(pls) == 3, f"Got PL rows: {', '.join(str(pl) for pl in pls)}"
+        # Leading underscore makes it always the last entry
+        imported = pls[-1]
+        self.failUnlessEqual(fns(imported.songs), fns(SONGS))
 
     @staticmethod
     def a_delete_event():

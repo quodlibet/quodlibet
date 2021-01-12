@@ -12,7 +12,7 @@ from __future__ import annotations
 
 import os
 import random
-from typing import Any, Set
+from typing import Any
 from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
@@ -336,17 +336,11 @@ class Playlist(Collection, Iterable, HasKey):
     Songs can appear more than once.
     """
 
-    __instances: Set["Playlist"] = set()
-    """TODO: migrate to playlist library"""
-
-    @classmethod
-    def playlists_featuring(cls, song: AudioFile) -> Iterable[Playlist]:
-        """Returns a generator yielding playlists in which this song appears"""
-        return (pl for pl in cls.__instances if song in pl._list)
-
     @staticmethod
     def suggested_name_for(songs):
-        if len(songs) == 1:
+        if len(songs) == 0:
+            return _("Empty Playlist")
+        elif len(songs) == 1:
             return songs[0].comma("title")
         else:
             return ngettext(
@@ -366,7 +360,6 @@ class Playlist(Collection, Iterable, HasKey):
             print_w("Playlist initialised without library")
         self.pl_lib = pl_lib
         self.__inhibit_library_signals = False
-        self.__instances.add(self)
 
         name = str(name)
         if not name:
@@ -385,7 +378,7 @@ class Playlist(Collection, Iterable, HasKey):
     __call__ = get
 
     # List-like methods, for compatibility with original Playlist class.
-    def extend(self, songs):
+    def extend(self, songs: Iterable[AudioFile]):
         self._list.extend(songs)
         self.finalize()
         self._emit_changed(songs, msg="extend")
@@ -500,7 +493,7 @@ class Playlist(Collection, Iterable, HasKey):
         self.__inhibit_library_signals = value
 
     def _emit_changed(self, songs, msg=""):
-        if self.pl_lib and not self.inhibit:
+        if self.pl_lib is not None and not self.inhibit:
             print_d(f"Changed playlist {self!r} ({msg})")
             self.pl_lib.emit('changed', [self])
         if self.songs_lib and not self.inhibit and songs:
@@ -518,12 +511,8 @@ class Playlist(Collection, Iterable, HasKey):
         return some, all
 
     def delete(self):
-        try:
-            self.__instances.remove(self)
-            if self.pl_lib:
-                self.pl_lib.remove([self])
-        except KeyError:
-            print_w(f"Can't delete {self}")
+        if self.pl_lib is not None and not self.inhibit:
+            self.pl_lib.remove([self])
 
     def write(self):
         pass
@@ -536,7 +525,7 @@ class Playlist(Collection, Iterable, HasKey):
     def shuffle(self):
         """Randomly shuffles this playlist, without weighting"""
         random.shuffle(self._list)
-        if self.pl_lib:
+        if self.pl_lib is not None:
             self.pl_lib.changed([self])
         self.write()
 
@@ -581,6 +570,8 @@ class FileBackedPlaylist(Playlist):
             if self.name:
                 print_d("Playlist '%s' not found, creating new." % self.name)
                 self.write()
+        if self.pl_lib is not None:
+            self.pl_lib.add([self])
 
     @classmethod
     def name_for(cls, filename: fsnative) -> str:
@@ -636,6 +627,10 @@ class FileBackedPlaylist(Playlist):
     def path(self):
         return os.path.join(self.dir, self.filename_for(self.name))
 
+    @property
+    def key(self) -> str:  # type: ignore  # (Note: we want no setter)
+        return self.path
+
     def _validated_name(self, new_name):
         new_name = super()._validated_name(new_name)
         path = os.path.join(self.dir, self.filename_for(new_name))
@@ -670,7 +665,7 @@ class FileBackedPlaylist(Playlist):
             self._last_fn = fn
 
     def __str__(self):
-        return f"<{type(self).__name__}: {self.name}>"
+        return f"<{type(self).__name__} at {self.path!r}>"
 
 
 class XSPFBackedPlaylist(FileBackedPlaylist):
@@ -696,6 +691,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         new.extend(old_pl)
         new.write()
         os.rename(old_pl.path, backup_for(old_pl.path))
+        old_pl.delete()
         return new
 
     def _populate_from_file(self):
