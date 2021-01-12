@@ -39,7 +39,7 @@ class PlaylistLibrary(Library[str, Playlist]):
         self._csig = library.connect('changed', self.__songs_changed)
 
     def _read_playlists(self, library):
-        print_d(f"Reading playlist directory {self.dir} (library: {library})")
+        print_d(f"Reading playlist directory {self.pl_dir} (library: {library})")
         try:
             fns = os.listdir(self.pl_dir)
         except FileNotFoundError as e:
