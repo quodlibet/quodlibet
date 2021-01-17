@@ -15,7 +15,7 @@ import random
 from typing import Any
 from urllib.parse import quote
 
-from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn
+from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative
 
 from quodlibet import ngettext, _
 from quodlibet import util
@@ -349,22 +349,25 @@ class Playlist(Collection, Iterable, HasKey):
                 len(songs) - 1) % ({'title': songs[0].comma("title"),
                                     'count': len(songs) - 1})
 
-    def __init__(self, name, songs_lib=None, pl_lib=None):
+    def __init__(self, name: str, songs_lib=None, pl_lib=None):
         super().__init__()
         self._list: HashedList = HashedList()
         # we require a file library here with masking
         assert songs_lib is None or hasattr(songs_lib, "masked")
         self.songs_lib = songs_lib
-        # Libraries are dict-like so falsey if empty
-        if pl_lib is None:
-            print_w("Playlist initialised without library")
-        self.pl_lib = pl_lib
-        self.__inhibit_library_signals = False
 
         name = str(name)
         if not name:
             raise ValueError("Playlists must have a name")
         self.name = name
+
+        self.pl_lib = pl_lib
+        # Libraries are dict-like so falsey if empty
+        if self.pl_lib is None:
+            print_w("Playlist initialised without library")
+        else:
+            self.pl_lib.add([self])
+        self.__inhibit_library_signals = False
 
     @property
     def key(self) -> str:  # type: ignore  # (Note: we want no setter)
@@ -495,8 +498,12 @@ class Playlist(Collection, Iterable, HasKey):
     def _emit_changed(self, songs, msg=""):
         if self.pl_lib is not None and not self.inhibit:
             print_d(f"Changed playlist {self!r} ({msg})")
+            self.inhibit = True
+            # Awkward, but we don't want to make Collection a GObject really
             self.pl_lib.emit('changed', [self])
+            self.inhibit = False
         if self.songs_lib and not self.inhibit and songs:
+            # See above re: emitting
             self.songs_lib.emit('changed', songs)
 
     def has_songs(self, songs):
@@ -553,12 +560,12 @@ class Playlist(Collection, Iterable, HasKey):
 class FileBackedPlaylist(Playlist):
     """A `Playlist` that is stored as a UTF-8 text file of paths"""
 
-    def __init__(self, dir_: fsnative, filename: fsnative,
+    def __init__(self, dir_: _fsnative, filename: _fsnative,
                  songs_lib=None, pl_lib=None, validate: bool = False):
         assert isinstance(dir_, fsnative)
+        self.dir = dir_
         name = self.name_for(filename)
         super().__init__(name, songs_lib=songs_lib, pl_lib=pl_lib)
-        self.dir = dir_
         if validate:
             self.name = self._validated_name(name)
         # Store the actual filename used, not sanitised and validated name
@@ -570,11 +577,9 @@ class FileBackedPlaylist(Playlist):
             if self.name:
                 print_d("Playlist '%s' not found, creating new." % self.name)
                 self.write()
-        if self.pl_lib is not None:
-            self.pl_lib.add([self])
 
     @classmethod
-    def name_for(cls, filename: fsnative) -> str:
+    def name_for(cls, filename: _fsnative) -> str:
         return unescape_filename(filename)
 
     @classmethod
@@ -631,7 +636,7 @@ class FileBackedPlaylist(Playlist):
     def key(self) -> str:  # type: ignore  # (Note: we want no setter)
         return self.path
 
-    def _validated_name(self, new_name):
+    def _validated_name(self, new_name: str) -> str:
         new_name = super()._validated_name(new_name)
         path = os.path.join(self.dir, self.filename_for(new_name))
         if os.path.exists(path):
@@ -729,7 +734,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
 
     @classmethod
-    def name_for(cls, file_path: fsnative) -> str:
+    def name_for(cls, file_path: _fsnative) -> str:
         filename, ext = splitext(unescape_filename(file_path))
         if not ext or ext.lower() != (".%s" % cls.EXT):
             raise TypeError("XSPFs should end in '.%s', not '%s'"

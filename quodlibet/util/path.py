@@ -18,7 +18,7 @@ from urllib.parse import urlparse, quote, unquote
 from gi.repository import GLib
 
 from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
-                  fsn2text, path2fsn, uri2fsn)
+                  fsn2text, path2fsn, uri2fsn, _fsnative)
 
 from . import windows
 from .environment import is_windows
@@ -134,7 +134,7 @@ def escape_filename(s: str, safe: bytes = b''):
     return bytes2fsn(quoted.encode("ascii"), "utf-8")
 
 
-def unescape_filename(filename: fsnative) -> str:
+def unescape_filename(filename: _fsnative) -> str:
     """Unescape a string in a manner suitable for a filename.
 
     Args:

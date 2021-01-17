@@ -160,11 +160,11 @@ class TLibrary(TestCase):
 
     def test___getitem__(self):
         self.library.add(self.Frange(10))
-        self.failUnlessEqual(self.library[5], 5)
+        self.failUnlessEqual(self.library[5], Fake(5))
         new = self.Fake(12)
         new.key = 100
         self.library.add([new])
-        self.failUnlessEqual(self.library[100], 12)
+        self.failUnlessEqual(self.library[100], new)
         self.failIf(12 in self.library)
 
     def test___getitem___not_present(self):
@@ -180,10 +180,10 @@ class TLibrary(TestCase):
             # 0, 1, 2, 6, 9: all added by self.Frange
             # 100: key for new
             # new: is itself present
-            self.failUnless(value in self.library, "didn't find %d" % value)
+            self.failUnless(value in self.library, "didn't find %s" % value)
 
         for value in [-1, 10, 12, 101]:
-            # -1, 10, 101: boundry values
+            # -1, 10, 101: boundary values
             # 12: equal but non-key-equal to new
             self.failIf(value in self.library, "found %d" % value)
 
@@ -211,7 +211,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.values()), list(range(20)))
+        self.failUnlessEqual(sorted(self.library.values()), list(self.Frange(20)))
 
     def test_items(self):
         items = []

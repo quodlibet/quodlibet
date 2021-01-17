@@ -10,7 +10,8 @@ import quodlibet
 from quodlibet import print_d, print_w
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
-from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
+from quodlibet.util.collection import (Playlist, XSPFBackedPlaylist,
+                                       FileBackedPlaylist)
 from senf import text2fsn, _fsnative
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
@@ -88,17 +89,22 @@ class PlaylistLibrary(Library[str, Playlist]):
         if changed:
             for pl in changed:
                 pl.write()
+            self._inhibit = True
             self.changed(changed)
+            self._inhibit = False
 
     def __songs_changed(self, library, songs):
+        # Q: what if the changes are entirely due to changes *from* this library?
+        # A: seems safest to still emit 'changed' as collections can cache metadata etc
         changed = {
             playlist
-            for playlist in self._contents.values()
+            for playlist in self
             for song in songs
             if song in playlist.songs
         }
         if changed:
             for pl in changed:
+                pl.finalize()
                 pl.write()
             self.changed(changed)
 

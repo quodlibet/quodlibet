@@ -129,6 +129,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for row in self._lists:
             if row[0] is playlist:
                 if refresh:
+                    # Changes affect aggregate caches etc
                     print_d(f"Refreshing view in {self} for {playlist}")
                     self._lists.row_changed(row.path, row.iter)
                     if playlist == self._selected_playlist():
@@ -524,11 +525,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             songs = query.filter(songs)
         GLib.idle_add(self.songs_selected, songs, resort)
 
-    @classmethod
-    def refresh_all(cls):
+    def refresh_all(self):
         print_d("Refreshing all items...")
-        model = cls._lists.get_model()
+        model = self._lists.get_model()
         for iter_, value in model.iterrows():
+            print_d(f"Refreshing row {iter_}")
             model.row_changed(model.get_path(iter_), iter_)
 
     @property
