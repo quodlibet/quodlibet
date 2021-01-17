@@ -310,19 +310,34 @@ class TPlaylistsBrowser(TestCase):
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
 
-    def test_songs_deletion(self):
+    # deletion of playlist tracks
+    def test_playlist_track_removal_accept(self):
+        # Check: playlist should have the selected song removed (one fewer)
         b = self.bar
         self._fake_browser_pack(b)
         event = self.a_delete_event()
-        # This is selected in setUp()
         first_pl = b.playlists()[0]
         app.window.songlist.set_songs(first_pl)
-        app.window.songlist.select_by_func(lambda x: True,
-                                           scroll=False, one=True)
+        app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)
         original_length = len(first_pl)
+
         ret = b.key_pressed(event)
         self.failUnless(ret, msg="Didn't simulate a delete keypress")
         self.failUnlessEqual(len(first_pl), original_length - 1)
+
+    def test_playlist_track_removal_decline(self):
+        # Check: playlist should have the same number of songs
+        b = self.bar_decline
+        self._fake_browser_pack(b)
+        event = self.a_delete_event()
+        first_pl = b.playlists()[0]
+        app.window.songlist.set_songs(first_pl)
+        app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)
+        original_length = len(first_pl)
+
+        ret = b.key_pressed(event)
+        self.failUnless(ret, msg="Didn't simulate a delete keypress")
+        self.failUnlessEqual(len(first_pl), original_length)
 
     def test_playlist_deletion_ACCEPT(self):
         b = self.bar

@@ -8,7 +8,7 @@
 
 import os
 
-from quodlibet import _, print_w
+from quodlibet import _, print_w, ngettext
 from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
@@ -39,6 +39,30 @@ def confirm_remove_playlist_dialog_invoke(
     ok_icon = Icons.EDIT_DELETE
 
     dialog = Confirmer(parent, title, description, ok_text, ok_icon)
+    prompt = dialog.run()
+    response = (prompt == Confirmer.RESPONSE_INVOKE)
+    return response
+
+
+def confirm_remove_playlist_tracks_dialog_invoke(
+    parent, songs, Confirmer=ConfirmationPrompt):
+    """Creates and invokes a confirmation dialog that asks the user whether or not
+       to go forth with the removal of the selected track(s) from the playlist.
+    """
+    songs = set(songs)
+    if not songs:
+        return True
+
+    count = len(songs)
+    song = next(iter(songs))
+    title = ngettext(
+        'Remove track "{track_name}" from playlist?',
+        "Remove {count} tracks from playlist?",
+        len(songs)
+    ).format(track_name=song("title"), count=count)
+
+    ok_text = _("Remove from Playlist")
+    dialog = Confirmer(parent, title, "", ok_text)
     prompt = dialog.run()
     response = (prompt == Confirmer.RESPONSE_INVOKE)
     return response
