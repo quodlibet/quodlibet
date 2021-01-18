@@ -59,7 +59,6 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         super().__init__()
         self._contents: MutableMapping[K, V] = {}
         self._name = name
-        self._inhibit = False
         if self.librarian is not None and name is not None:
             self.librarian.register(self, name)
 
@@ -104,8 +103,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         print_d(f"Emitting changed for {len(items)} item(s) "
                 f"(e.g. {list(items)[0].key!r}...) from {self}")
         self.dirty = True
-        if not self._inhibit:
-            self.emit('changed', items)
+        self.emit('changed', items)
 
     def __iter__(self) -> Iterator[V]:
         """Iterate over the items in the library."""
@@ -179,8 +177,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             self._contents[item.key] = item
 
         self.dirty = True
-        if not self._inhibit:
-            self.emit('added', items)
+        self.emit('added', items)
         return items
 
     def remove(self, items: Iterable[V]) -> Iterable[V]:
@@ -198,8 +195,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             del self._contents[item.key]
 
         self.dirty = True
-        if not self._inhibit:
-            self.emit('removed', items)
+        self.emit('removed', items)
         return items
 
 

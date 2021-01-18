@@ -131,7 +131,7 @@ class TPlaylistLibrarySignals(TestCase):
         # Remove some songs and watch the playlist change
         songs = list(self.lib._contents.values())
         self.lib.remove(songs[:2])
-        assert self.received == ["removed", "pl_changed", "changed"]
+        assert self.received == ["removed", "pl_changed", "changed", "pl_changed"]
         self.received.clear()
 
         pl.delete()

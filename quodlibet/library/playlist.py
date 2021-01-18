@@ -89,9 +89,7 @@ class PlaylistLibrary(Library[str, Playlist]):
         if changed:
             for pl in changed:
                 pl.write()
-            self._inhibit = True
             self.changed(changed)
-            self._inhibit = False
 
     def __songs_changed(self, library, songs):
         # Q: what if the changes are entirely due to changes *from* this library?
