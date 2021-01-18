@@ -45,7 +45,8 @@ class TPlaylistLibrary(TestCase):
             song.sanitize()
         pl = Playlist("One", self.underlying, self.library)
         # Add last three songs to playlist
-        pl.extend(list(self.underlying)[-3:])
+        pl.extend(list(sorted(self.underlying))[-3:])
+        pl.finalize()
 
     def tearDown(self):
         for s in self._sigs:
@@ -69,7 +70,8 @@ class TPlaylistLibrary(TestCase):
         assert list(self.library.keys()) == ["One"]
 
     def test_has_key(self):
-        key = self.underlying.get("/tmp/11.mp3").list("~playlists")[0]
+        last_song = self.underlying.get("/tmp/11.mp3")
+        key = last_song.list("~playlists")[0]
         assert self.library.has_key(key)
 
     def test_misc_collection(self):
@@ -80,8 +82,9 @@ class TPlaylistLibrary(TestCase):
 
     def test_remove(self):
         self.underlying.remove(list(self.underlying.values()))
-        assert self.library["One"] is not None
-        assert not self.library["One"], "Should appear empty"
+        pl = self.library["One"]
+        assert pl is not None
+        assert not pl, f"Should be empty, has: {list(pl)}"
 
     def test_misc(self):
         # It shouldn't implement FileLibrary etc
