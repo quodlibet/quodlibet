@@ -63,8 +63,9 @@ directory in the Git repo for further instructions.
 
 Poetry
 ------
+
 Across all environments, we now support virtualenvs with pip dependencies,
-managed by [Poetry](https://python-poetry.org/).
+managed by `Poetry <https://python-poetry.org/>`__.
 
 Installation, once cloned is just::
 
