@@ -28,6 +28,7 @@ import fnmatch
 import tempfile
 import shutil
 import functools
+import warnings
 
 # pattern -> (language, [keywords])
 XGETTEXT_CONFIG = {
@@ -43,6 +44,10 @@ XGETTEXT_CONFIG = {
 
 
 class GettextError(Exception):
+    pass
+
+
+class GettextWarning(Warning):
     pass
 
 
@@ -78,21 +83,26 @@ def get_pot_dependencies(po_dir):
     return _read_potfiles(src_root, potfiles_path)
 
 
-def _create_pot(potfiles_path, src_root, strict):
+def _get_pattern(path):
+    for pattern in XGETTEXT_CONFIG:
+        match_part = os.path.basename(path)
+        if match_part.endswith(".in"):
+            match_part = match_part.rsplit(".", 1)[0]
+        if fnmatch.fnmatch(match_part, pattern):
+            return pattern
+    return None
+
+
+def _create_pot(potfiles_path, src_root):
     potfiles = _read_potfiles(src_root, potfiles_path)
 
     groups = {}
     for path in potfiles:
-        for pattern in XGETTEXT_CONFIG:
-            match_part = os.path.basename(path)
-            if match_part.endswith(".in"):
-                match_part = match_part.rsplit(".", 1)[0]
-            if fnmatch.fnmatch(match_part, pattern):
-                groups.setdefault(pattern, []).append(path)
-                break
+        pattern = _get_pattern(path)
+        if pattern is not None:
+            groups.setdefault(pattern, []).append(path)
         else:
-            if strict:
-                raise ValueError("Unknown filetype: " + path)
+            raise ValueError("Unknown filetype: " + path)
 
     specs = []
     for pattern, paths in groups.items():
@@ -134,8 +144,8 @@ def _create_pot(potfiles_path, src_root, strict):
                 if p.returncode != 0:
                     raise GettextError(stderr
                                        or ("Got error: %d" % p.returncode))
-                if strict and stderr:
-                    raise GettextError(stderr)
+                if stderr:
+                    warnings.warn(stderr, GettextWarning)
             finally:
                 os.unlink(potfiles_in)
     except Exception:
@@ -146,15 +156,12 @@ def _create_pot(potfiles_path, src_root, strict):
 
 
 @contextlib.contextmanager
-def create_pot(po_dir, strict=False):
-    """Temporarily creates a .pot file in a temp directory.
-
-    If strict then error out on extraction warnings.
-    """
+def create_pot(po_dir):
+    """Temporarily creates a .pot file in a temp directory."""
 
     src_root = _src_root(po_dir)
     potfiles_path = os.path.join(po_dir, "POTFILES.in")
-    pot_path = _create_pot(potfiles_path, src_root, strict)
+    pot_path = _create_pot(potfiles_path, src_root)
     try:
         yield pot_path
     finally:
@@ -335,12 +342,15 @@ def get_missing(po_dir):
                 not_translatable.add(path)
 
     # Filter out any unknown filetypes
+    not_translatable = [p for p in not_translatable if _get_pattern(p) is not None]
+
+    # Filter out any files not containing translations
     fd, temp_path = tempfile.mkstemp("POTFILES.in")
     try:
         os.close(fd)
         _write_potfiles(src_root, temp_path, not_translatable)
 
-        pot_path = _create_pot(temp_path, src_root, strict=False)
+        pot_path = _create_pot(temp_path, src_root)
         try:
             infos = set()
             with open(pot_path, "r", encoding="utf-8") as h:
