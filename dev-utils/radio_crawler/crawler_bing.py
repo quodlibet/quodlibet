@@ -1,10 +1,12 @@
-#!/usr/bin/env python2
+    #!/usr/bin/env python2
 # Copyright 2011,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+
+from __future__ import print_function
 
 import urllib2
 import urllib
@@ -53,7 +55,7 @@ def main():
     except IOError:
         pass
 
-    print "# urls: ", len(all_urls)
+    print("# urls: ", len(all_urls))
 
     try:
         skip = get_crawl_index()
@@ -64,8 +66,8 @@ def main():
                 continue
             set_crawl_index(i - 1)
 
-            print "#" * 30
-            print i, len(gen), (search, period, index)
+            print("#" * 30)
+            print(i, len(gen), (search, period, index))
 
             header = {
                 'Referer': 'http://google.com/p/%d' % random.randint(1, 1000),
@@ -75,7 +77,7 @@ def main():
             page_start = 1
             notfound = 0
             while page_start < 200:
-                print "page offset: ", page_start
+                print("page offset: ", page_start)
                 string_quote = urllib.quote('"%s" %s' % (search, str(index)))
                 url = base_fmt % (string_quote, page_start, period)
                 request = urllib2.Request(url, None, header)
@@ -98,12 +100,12 @@ def main():
                                 continue
                             urls.append(v)
 
-                print set(urls) - all_urls
+                print(set(urls) - all_urls)
                 num_new = len(set(urls) - all_urls)
                 if num_new == 0:
                     notfound += 1
                     if notfound > 1:
-                        print "nothing new, skip"
+                        print("nothing new, skip")
                         break
                 else:
                     notfound = 0
@@ -113,7 +115,7 @@ def main():
 
                 page_start += 10
     finally:
-        print "writing..."
+        print("writing...")
         with open(URIS, "ab") as f:
             f.write("\n".join(new_urls)+"\n")
 
