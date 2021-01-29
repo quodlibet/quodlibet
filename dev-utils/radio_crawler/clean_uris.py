@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from __future__ import print_function
+
 import multiprocessing
 import re
 import urlparse
@@ -63,7 +65,7 @@ def reverse_lookup(uri, timeout=TIMEOUT):
         except KeyboardInterrupt:
             return
         except socket.timeout:
-            print "timeout"
+            print("timeout")
             time.sleep(0.5)
             c += 1
             continue
@@ -98,7 +100,7 @@ def lookup(uri, timeout=TIMEOUT):
         except KeyboardInterrupt:
             return
         except socket.timeout:
-            print "timeout"
+            print("timeout")
             time.sleep(0.5)
             c += 1
             continue
@@ -146,7 +148,7 @@ def main(in_path, out_path, num_processes):
         else:
             clean.append(uri)
 
-    print "ips: ", len(ips), " nonip: ", len(clean)
+    print("ips: ", len(ips), " nonip: ", len(clean))
 
     # Look up the IPs of hostnames that look like the IP is encoded in
     # them somehow if that is the case for any of the returne IPs, use
@@ -159,7 +161,7 @@ def main(in_path, out_path, num_processes):
     try:
         pfunc = lookup
         for i, (uri, addrs) in enumerate(pool.imap_unordered(pfunc, check_ip)):
-            print "%d/%d " % (i+1, len(check_ip))
+            print("%d/%d " % (i+1, len(check_ip)))
 
             if not addrs:
                 continue
@@ -181,7 +183,7 @@ def main(in_path, out_path, num_processes):
             l[1] = addrs[0] + ((port is not None and (":" + str(port))) or "")
             new_uri = urlparse.urlunsplit(l)
 
-            print uri, " -> ", new_uri
+            print(uri, " -> ", new_uri)
 
             clean.remove(uri)
             clean.append(new_uri)
@@ -195,7 +197,7 @@ def main(in_path, out_path, num_processes):
     try:
         pfunc = reverse_lookup
         for i, (ip_uri, uri) in enumerate(pool.imap_unordered(pfunc, ips)):
-            print "%d/%d " % (i+1, len(ips))
+            print("%d/%d " % (i+1, len(ips)))
 
             if uri == ip_uri:
                 clean.append(uri)
@@ -204,7 +206,7 @@ def main(in_path, out_path, num_processes):
             hostname = urlparse.urlsplit(ip_uri).hostname
             for num in hostname.split('.'):
                 if num not in uri:
-                    print ip_uri + " -> " + uri
+                    print(ip_uri + " -> " + uri)
                     clean.append(uri)
                     break
             else:
@@ -219,7 +221,7 @@ def main(in_path, out_path, num_processes):
     finally:
         pool.terminate()
         pool.join()
-        print "write %s" % URIS_OUT
+        print("write %s" % URIS_OUT)
         with open(out_path, "wb") as f:
             lines = sorted(filter(filter_uri, map(fix_uri, set(clean))))
             f.write("\n".join(lines))

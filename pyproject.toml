@@ -25,21 +25,21 @@ pygobject = "^3.34.0"
 musicbrainzngs = { version = "0.*", optional = true }
 pyinotify = { version = "*", optional = true }
 dbus-python = { version = "*", optional = true }
-soco = { version = "^0.19", optional = true }
+soco = { version = "^0.21.1", optional = true }
 
 [tool.poetry.extras]
 # Use with poetry install -E plugins
 plugins = ["musicbrainzngs", "pyinotify", "dbus-python", "paho-mqtt", "soco"]
 
 [tool.poetry.dev-dependencies]
-pytest = '^5.0'
+pytest = '^6.0'
 polib = '^1.1.0'
 sphinx = '^3.2.0'
 sphinx_rtd_theme = '*'
 xvfbwrapper = { version = "^0.2", platform = "linux" }
 flake8 = "^3.7.9"
 coverage = { extras = ["toml"], version = "^5.0.3" }
-mypy = "^0.782"
+mypy = "^0.790"
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]

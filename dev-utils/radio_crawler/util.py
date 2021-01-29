@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from __future__ import print_function
+
 import os
 import collections
 import urlparse
@@ -221,17 +223,17 @@ class TagListWrapper(collections.Mapping):
 
 
 def get_cache(path=CACHE):
-    print "Load cache", 
+    print("Load cache",  end="")
     try:
         res = pickle.loads(open(path, "rb").read())
     except(IOError, EOFError):
         res = {}
-    print "%d entries" % len(res)
+    print("%d entries" % len(res))
     return res
 
 
 def set_cache(result, path=CACHE):
-    print "Save cache", "%d entries" % len(result)
+    print("Save cache", "%d entries" % len(result))
 
     tmp = path + ".tmp"
     with open(tmp, "wb") as h:
@@ -254,7 +256,7 @@ def set_failed(failed_uris, path=FAILED):
 
 
 if __name__ == "__main__":
-    print parse_icecast("http://stream2.streamq.net:8000/")
-    print parse_shoutcast1("http://radioszerver.hu:8300")
-    print parse_shoutcast2("http://radio-soundparty.eu:8850/index.html")
-    print parse_icecast("http://pub1.sky.fm/")
+    print(parse_icecast("http://stream2.streamq.net:8000/"))
+    print(parse_shoutcast1("http://radioszerver.hu:8300"))
+    print(parse_shoutcast2("http://radio-soundparty.eu:8850/index.html"))
+    print(parse_icecast("http://pub1.sky.fm/"))

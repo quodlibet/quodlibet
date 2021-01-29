@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from __future__ import print_function
+
 import multiprocessing
 
 from gi.repository import GLib
@@ -98,12 +100,12 @@ def get_all_tags(uris):
         pool = multiprocessing.Pool(PROCESSES)
         for i, (uri, tags) in enumerate(pool.imap_unordered(get_tags, uris)):
 
-            print "%d/%d " % (i+1, len(uris)) + uri + " -> ",
+            print("%d/%d " % (i+1, len(uris)) + uri + " -> ", end="")
             if tags:
                 result[uri] = tags
-                print "OK: ", len(tags)
+                print("OK: ", len(tags))
             else:
-                print "FAILED"
+                print("FAILED")
                 failed.append(uri)
     except:
         pass
