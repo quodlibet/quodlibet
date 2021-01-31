@@ -4,7 +4,7 @@
 # (at your option) any later version.
 
 import os
-from typing import Iterable, Generator
+from typing import Iterable, Generator, Optional
 
 import quodlibet
 from quodlibet import print_d, print_w
@@ -62,9 +62,11 @@ class PlaylistLibrary(Library[str, Playlist]):
             except EnvironmentError:
                 print_w("Invalid Playlist '%s'" % fn)
 
-    def create(self, name: str) -> Playlist:
-        return XSPFBackedPlaylist.new(self.pl_dir, name,
-                                      songs_lib=self._library, pl_lib=self)
+    def create(self, name_base: Optional[str] = None) -> Playlist:
+        if name_base:
+            return XSPFBackedPlaylist.new(self.pl_dir, name_base,
+                                          songs_lib=self._library, pl_lib=self)
+        return XSPFBackedPlaylist.new(self.pl_dir, songs_lib=self._library, pl_lib=self)
 
     def create_from_songs(self, songs: Iterable[AudioFile]) -> Playlist:
         """Creates a playlist visible to this library"""
