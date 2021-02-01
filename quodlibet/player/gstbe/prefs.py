@@ -71,6 +71,11 @@ class GstPlayerPreferences(Gtk.VBox):
             tooltip=_("Disabling gapless playback can avoid track changing problems "
                       "with some GStreamer versions"))
 
+        pipewire_button = ConfigCheckButton(
+            _('Use PipeWire for playback if available'),
+            "player", "gst_use_pipewire", populate=True,
+            tooltip="Uses `pipewiresink` for playbin sink if it can be detected")
+
         jack_button = ConfigCheckButton(
             _('Use JACK for playback if available'),
             "player", "gst_use_jack", populate=True,
@@ -105,6 +110,7 @@ class GstPlayerPreferences(Gtk.VBox):
         table.attach(gapless_button, 0, 3, 2, 3)
         table.attach(jack_button, 0, 3, 3, 4)
         table.attach(jack_connect, 0, 3, 4, 5)
+        table.attach(pipewire_button, 0, 3, 5, 6)
 
         self.pack_start(table, True, True, 0)
 

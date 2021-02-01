@@ -44,6 +44,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # Use Jack sink (via Gstreamer) if available
         "gst_use_jack": "false",
 
+        # Use PipeWire sink (via Gstreamer) if available
+        "gst_use_pipewire": "false",
+
         # Usually true is good here, but if you have patchbay configured maybe not...
         "gst_jack_auto_connect": "true",
 

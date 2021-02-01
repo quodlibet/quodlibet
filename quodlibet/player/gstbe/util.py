@@ -37,6 +37,8 @@ class AudioSinks(Enum):
     JACK = "jackaudiosink"
     """from plugins-good"""
 
+    PIPEWIRE = "pipewiresink"
+
     WASAPI = "wasapisink"
 
 
@@ -66,6 +68,18 @@ def jack_is_running() -> bool:
     """:returns: whether Jack is running"""
 
     element = Gst.ElementFactory.make(AudioSinks.JACK.value, "test sink")
+    if element:
+        element.set_state(Gst.State.READY)
+        res = element.get_state(0)[0]
+        element.set_state(Gst.State.NULL)
+        return res != Gst.StateChangeReturn.FAILURE
+    return False
+
+
+def pipewire_is_running() -> bool:
+    """:returns: whether Pipewire is running"""
+
+    element = Gst.ElementFactory.make(AudioSinks.PIPEWIRE.value, "test sink")
     if element:
         element.set_state(Gst.State.READY)
         res = element.get_state(0)[0]
@@ -120,6 +134,9 @@ def find_audio_sink() -> Tuple[Gst.Element, str]:
         if config.getboolean("player", "gst_use_jack") and jack_is_running():
             print_d("Using JACK output via Gstreamer")
             return [AudioSinks.JACK]
+        if config.getboolean("player", "gst_use_pipewire") and pipewire_is_running():
+            print_d("Using PipeWire output via Gstreamer")
+            return [AudioSinks.PIPEWIRE]
         elif is_windows():
             return [AudioSinks.DIRECTSOUND]
         elif is_linux() and pulse_is_running():
