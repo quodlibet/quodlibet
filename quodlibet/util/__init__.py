@@ -1042,7 +1042,7 @@ class MainRunner:
 
     def call(self, func, *args, **kwargs):
         """Runs the function in the main loop and blocks until
-        it is finshed or abort() was called. In case this is called
+        it is finished or abort() was called. In case this is called
         from the main loop the function gets executed immediately.
 
         The priority kwargs defines the event source priority and will

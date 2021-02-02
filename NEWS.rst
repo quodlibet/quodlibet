@@ -1666,7 +1666,7 @@ Windows
    * Fix wrong path encoding in the exfalso file selector under Windows
    * Fix error when controlling playback during startup [810]
    * Handle invalid header patterns
-   * Don't lose the radio libary randomly [645]
+   * Don't lose the radio library randomly [645]
    * Handle non utf-8 and invalid filenames in the song list [798]
    * Fix a crash when the song list changed during a gapless transition [799]
    * Tray icon doesn't appear in KDE panel [881]
@@ -1846,7 +1846,7 @@ Windows
     * Speed up adding many songs to the queue
     * Smaller volume, seek controls
     * Ask for playlist name on creation
-    * Output playing progess when using --status
+    * Output playing progress when using --status
     * Use current icon theme icons everywhere (for DAPs etc.)
     * Floating point custom tags
     * Audio streaming fixes (buffering etc.) (Andreas Bombe)
@@ -2714,7 +2714,7 @@ Windows
  * Many bug fixes, primarily due to unit testing.
  * Tweaks to cover detection to pick 'frontcover' over 'backcover'.
  * Tweaks to song display, including proper support for the 'author' tag.
- * Remember size between invokations.
+ * Remember size between invocations.
  * A freedesktop.org-compatible system tray icon, using the Egg status
    icon code by Anders Carlsson and Sun.
  * Multimedia key support, provided they're mapped (e.g. by Acme), using

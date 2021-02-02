@@ -191,7 +191,7 @@ class DBusProperty:
     The class needs to provide 'get/set_property'.
 
     In case the base Object is a FallbackObject, 'get/set_property' also
-    need to handle an additional realtive path parameter.
+    need to handle an additional relative path parameter.
 
     Whenever a property changes, 'emit_properties_changed' needs to be
     called (except if the annotations disable it). In case of
