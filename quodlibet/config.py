@@ -101,6 +101,11 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "column_expands": "",
     },
 
+    "song_list": {
+        # Automatically re-sort song list when tags are modified
+        "auto_sort": "true",
+    },
+
     "browsers": {
 
         # search bar text
