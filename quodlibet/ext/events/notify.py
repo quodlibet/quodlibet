@@ -360,7 +360,7 @@ class Notify(EventPlugin):
                     spec = self.__spec_version
             else:
                 # not enabled, just get everything temporary,
-                # propably preview
+                # probably preview
                 iface, caps, spec = self.__get_interface()
 
         except GLib.Error:

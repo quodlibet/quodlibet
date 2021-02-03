@@ -263,7 +263,7 @@ class SongListDnDMixin:
 
             qltk.selection_set_songs(sel, songs)
 
-            # DEM 2018/05/25: The below check is a deliberate repitition of
+            # DEM 2018/05/25: The below check is a deliberate repetition of
             # code in the drag-motion signal handler.  In MacOS/Quartz, the
             # context action is not propogated between event handlers for
             # drag-motion and drag-data-get using "ctx.get_actions()".  It is

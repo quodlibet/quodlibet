@@ -190,7 +190,7 @@ class TLibrary(TestCase):
             self.failUnless(value in self.library, "didn't find %d" % value)
 
         for value in [-1, 10, 12, 101]:
-            # -1, 10, 101: boundry values
+            # -1, 10, 101: boundary values
             # 12: equal but non-key-equal to new
             self.failIf(value in self.library, "found %d" % value)
 
