@@ -38,6 +38,7 @@ jobs:
             mingw-w64-x86_64-python-gobject
             mingw-w64-x86_64-python-cairo
             mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-setuptools
             mingw-w64-x86_64-python-pytest
             mingw-w64-x86_64-python-certifi
             mingw-w64-x86_64-python-coverage
