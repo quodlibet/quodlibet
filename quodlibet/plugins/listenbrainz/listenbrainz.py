@@ -19,6 +19,7 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+from typing import Optional
 import json
 import logging
 import os
@@ -26,14 +27,15 @@ import ssl
 import time
 from http.client import HTTPConnection, HTTPSConnection
 
-HOST_NAME = "api.listenbrainz.org"
+HOST_NAME: Optional[str] = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
-SSL_CONTEXT = ssl.create_default_context()
+SSL_CONTEXT: Optional[ssl.SSLContext] = ssl.create_default_context()
 
 # to run against a local dev server
 if os.getenv("QL_LISTENBRAINZ_DEV_SERVER") is not None:
     HOST_NAME = os.getenv("QL_LISTENBRAINZ_DEV_SERVER")
     SSL_CONTEXT = None
+
 
 class Track:
     """

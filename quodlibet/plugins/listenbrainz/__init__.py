@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 # Copyright 2018 Ian Campbell <ijc@hellion.org.uk>
 #
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
 # Derived from the QLScrobbler plugin:
 #
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
@@ -13,9 +18,11 @@
 #                  Nick Boultbee <nick.boultbee@gmail.com>
 #
 # This program is free software; you can redistribute it and/or modify
-# it under the terms of version 2 of the GNU General Public License as
-# published by the Free Software Foundation.
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
 
+from typing import List, Tuple
 import os
 import threading
 import time
@@ -24,7 +31,7 @@ from gi.repository import Gtk, GLib
 
 import quodlibet
 from quodlibet import _
-from quodlibet import const, app, util, qltk
+from quodlibet import app, qltk
 from quodlibet.pattern import Pattern
 from quodlibet.query import Query
 from quodlibet.plugins.events import EventPlugin
@@ -54,22 +61,26 @@ defaults.set("exclude", "")
 defaults.set("offline", False)
 defaults.set("tags", "")
 
+
 def config_get_title_pattern():
     return plugin_config.get('titlepat') or DEFAULT_TITLEPAT
+
 
 def config_get_artist_pattern():
     return plugin_config.get('artistpat') or DEFAULT_ARTISTPAT
 
+
 def config_get_tags():
     tags = plugin_config.get('tags') or None
-    if tags is None: return []
-    #return [x.strip() for x in tags.split(",")]
-    parser = csv.reader(StringIO(tags), quoting=csv.QUOTE_ALL,skipinitialspace=True)
+    if tags is None:
+        return []
+    parser = csv.reader(StringIO(tags), quoting=csv.QUOTE_ALL, skipinitialspace=True)
     try:
         return next(parser)
-    except e:
+    except Exception as e:
         print_d("Failed to parse tags \"%s\": %s" % tags, e)
         return []
+
 
 class ListenBrainzSubmitQueue(object):
     """Manages the submit queue for listens. Works independently of the
@@ -80,7 +91,7 @@ class ListenBrainzSubmitQueue(object):
 
     # These objects are shared across instances, to allow other plugins to
     # queue listens in future versions of QL.
-    queue = []
+    queue: List[Tuple[int, listenbrainz.Track]] = []
     condition = threading.Condition()
 
     def set_nowplaying(self, song):
@@ -106,7 +117,7 @@ class ListenBrainzSubmitQueue(object):
         if timestamp == 0:
             timestamp = int(time.time())
         print_d("Queueing: %s" % track)
-        self.queue.append((timestamp,track))
+        self.queue.append((timestamp, track))
         self.changed()
         self.condition.release()
 
@@ -120,17 +131,31 @@ class ListenBrainzSubmitQueue(object):
         album = song.comma("album")
 
         # https://listenbrainz.readthedocs.io/en/latest/dev/json.html#payload-json-details
-        # artist_mbids          A list of MusicBrainz Artist IDs, one or more Artist IDs may be included here. If you have a complete MusicBrainz artist credit that contains multiple Artist IDs, include them all in this list.
-        # release_group_mbid    A MusicBrainz Release Group ID of the release group this recording was played from.
-        # release_mbid          A MusicBrainz Release ID of the release this recording was played from.
-        # recording_mbid        A MusicBrainz Recording ID of the recording that was played.
-        # track_mbid            A MusicBrainz Track ID associated with the recording that was played.
-        # work_mbids            A list of MusicBrainz Work IDs that may be associated with this recording.
-        # tracknumber           The tracknumber of the recording. This first recording on a release is tracknumber 1.
+        #
+        # artist_mbids          A list of MusicBrainz Artist IDs, one or more Artist
+        #                       IDs may be included here. If you have a complete
+        #                       MusicBrainz artist credit that contains multiple
+        #                       Artist IDs, include them all in this list.
+        # release_group_mbid    A MusicBrainz Release Group ID of the release group this
+        #                       recording was played from.
+        # release_mbid          A MusicBrainz Release ID of the release this recording
+        #                       was played from.
+        # recording_mbid        A MusicBrainz Recording ID of the recording that was
+        #                       played.
+        # track_mbid            A MusicBrainz Track ID associated with the recording
+        #                       that was played.
+        # work_mbids            A list of MusicBrainz Work IDs that may be associated
+        #                       with this recording.
+        # tracknumber           The tracknumber of the recording. This first recording
+        #                       on a release is tracknumber 1.
         # isrc                  The ISRC code associated with the recording.
-        # spotify_id            The Spotify track URL associated with this recording. e.g.: http://open.spotify.com/track/1rrgWMXGCGHru5bIRxGFV0
-        # tags                  A list of user defined tags to be associated with this recording. These tags are similar to last.fm tags. For example, you have apply tags such as punk, see-live, smelly. You may submit up to MAX_TAGS_PER_LISTEN tags and each tag may be up to MAX_TAG_SIZE characters large.
-
+        # spotify_id            The Spotify track URL associated with this recording.
+        # tags                  A list of user defined tags to be associated with this
+        #                       recording. These tags are similar to last.fm tags. For
+        #                       example, you have apply tags such as punk, see-live,
+        #                       smelly. You may submit up to MAX_TAGS_PER_LISTEN tags
+        #                       and each tag may be up to MAX_TAG_SIZE characters large.
+        #
         # https://picard.musicbrainz.org/docs/mappings/
         # Above			Tag
         # artists_mbids		MUSICBRAINZ_ARTISTID (multiple)
@@ -145,16 +170,16 @@ class ListenBrainzSubmitQueue(object):
         # tags			N/A
         additional_info = {}
 
-        for (k,v) in [
-            ('artist_mbids',       song.list("musicbrainz_artistid")),
+        for (k, v) in [
+            ('artist_mbids', song.list("musicbrainz_artistid")),
             ('release_group_mbid', song.get("musicbrainz_releasegroupid", None)),
-            ('release_mbid',       song.get("musicbrainz_albumid", None)),
-            ('recording_mbid',     song.get("musicbrainz_trackid", None)),
-            ('track_mbid',         song.get("musicbrainz_releasetrackid", None)),
-            ('work_mbids',         song.list("musicbrainz_workid")),
-            ('tracknumber',        song.get("tracknumber", None)),
-            ('isrc',               song.get("isrc", None)),
-            ('tags',               self.tags)]:
+            ('release_mbid', song.get("musicbrainz_albumid", None)),
+            ('recording_mbid', song.get("musicbrainz_trackid", None)),
+            ('track_mbid', song.get("musicbrainz_releasetrackid", None)),
+            ('work_mbids', song.list("musicbrainz_workid")),
+            ('tracknumber', song.get("tracknumber", None)),
+            ('isrc', song.get("isrc", None)),
+            ('tags', self.tags)]:
             if v is not None and v != []:
                 additional_info[k] = v
 
@@ -234,7 +259,10 @@ class ListenBrainzSubmitQueue(object):
             print_d("Top of queue loop")
             self.condition.acquire()
 
-            while self.broken or self.offline or (not self.queue and (not self.nowplaying_track or self.nowplaying_sent)):
+            while self.broken or \
+                  self.offline or \
+                  (not self.queue and
+                   (not self.nowplaying_track or self.nowplaying_sent)):
                 print_d("Nothing to do, waiting")
                 self.condition.wait()
                 print_d("Awoke")
@@ -269,10 +297,12 @@ class ListenBrainzSubmitQueue(object):
                     self.offline = True
                     plugin_config.set("offline", True)
 
-                    self.quick_dialog(_("Too many consecutive submission failures (%d). Setting to offline mode. "
-                                        " Please visit the Plugins window to reset "
-                                        "ListenBrainz. Until then, listens will not be "
-                                        "submitted." % self.retries), Gtk.MessageType.INFO)
+                    self.quick_dialog(_(
+                        "Too many consecutive submission failures (%d). "
+                        "Setting to offline mode. "
+                        "Please visit the Plugins window to reset "
+                        "ListenBrainz. Until then, listens will not be "
+                        "submitted." % self.retries), Gtk.MessageType.INFO)
                     return False
                 else:
                     delay = 10
@@ -302,12 +332,13 @@ class ListenBrainzSubmitQueue(object):
                 print_d("Now playing: %s" % nowplaying)
 
                 if not with_backoff(lambda: self.lb.playing_now(nowplaying)):
-                    continue 
+                    continue
 
                 print_d("Now playing submission successful")
 
                 self.condition.acquire()
-                if nowplaying == self.nowplaying_track: # only if it didn't change under our feet
+                if nowplaying == self.nowplaying_track:
+                    # only if it didn't change under our feet
                     self.nowplaying_sent = True
                 self.condition.release()
 
@@ -318,6 +349,7 @@ class ListenBrainzSubmitQueue(object):
 
     def quick_dialog(self, msg, dialog_type):
         GLib.idle_add(self.quick_dialog_helper, dialog_type, msg)
+
 
 class ListenbrainzSubmission(EventPlugin):
     PLUGIN_ID = "listenbrainz"
@@ -353,7 +385,7 @@ class ListenbrainzSubmission(EventPlugin):
         # should not be submitted.
         #
         # we check 'elapsed' rather than 'length' to work around wrong ~#length
-        if self.elapsed < (4*60) and self.elapsed <= .5 * song.get("~#length", 0):
+        if self.elapsed < (4 * 60) and self.elapsed <= .5 * song.get("~#length", 0):
             return
         print_d("Checking against filter %s" % self.exclude)
         if self.exclude and Query(self.exclude).search(song):
@@ -420,8 +452,7 @@ class ListenbrainzSubmission(EventPlugin):
         table.set_row_spacings(6)
 
         labels = []
-        #label_names = [_("_API Endpoint:"), _("User _Token:")]
-        label_names = [ _("User _Token:")]
+        label_names = [_("User _token:")]
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
