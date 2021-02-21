@@ -23,6 +23,7 @@ jobs:
           update: true
           install: >-
             git
+            gcc
             mingw-w64-x86_64-gettext
             mingw-w64-x86_64-gdk-pixbuf2
             mingw-w64-x86_64-librsvg
