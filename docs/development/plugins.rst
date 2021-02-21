@@ -55,9 +55,10 @@ Location of Plugins
 ^^^^^^^^^^^^^^^^^^^
 
 In older versions of Quod Libet, before they were moved into the main
-``quodlibet`` module, plugins could be placed in ``~/.config/quodlibet/plugins``.
+``quodlibet`` module, plugins could be placed in ``~/.config/quodlibet/plugins``
+on many Linux systems, and in ``~/.quodlibet/plugins`` on MacOS.
 
-Whilst this still works on many Linux systems,
+Whilst this still may work,
 we recommend installing from source (see :ref:`DevEnv`) for all plugin development,
 which will allow a fuller integration experience (debugging, etc).
 
