@@ -35,21 +35,14 @@ jobs:
             mingw-w64-x86_64-gst-libav
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-python
-            mingw-w64-x86_64-python-gobject
-            mingw-w64-x86_64-python-cairo
             mingw-w64-x86_64-python-pip
             mingw-w64-x86_64-python-setuptools
-            mingw-w64-x86_64-python-pytest
-            mingw-w64-x86_64-python-certifi
-            mingw-w64-x86_64-python-coverage
-            mingw-w64-x86_64-python-flake8
-            mingw-w64-x86_64-python-entrypoints
-            mingw-w64-x86_64-python-toml
 
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          python -m pip install feedparser musicbrainzngs mutagen
+          python -m pip install poetry
+          poetry -E plugins install
 
       - name: Run tests
         shell: msys2 {0}
