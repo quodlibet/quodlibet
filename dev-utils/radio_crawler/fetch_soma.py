@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from __future__ import print_function
+
 import re
 import requests
 
@@ -22,7 +24,7 @@ def main():
     r = requests.get("https://somafm.com/listen/")
     playlists = re.findall('[^"\']*?.pls', r.text)
     for i, pls in enumerate(playlists):
-        print "%d/%d" % (i + 1, len(playlists))
+        print("%d/%d" % (i + 1, len(playlists)))
         uris.extend(get_pls(pls))
 
     cache = get_cache()

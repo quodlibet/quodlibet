@@ -44,7 +44,7 @@ def fetch_stream_infos(uri):
     except ParseError:
         pass
     except:
-        print uri
+        print(uri)
         traceback.print_exc()
         raise
 
@@ -53,7 +53,7 @@ def fetch_stream_infos(uri):
     except ParseError:
         pass
     except:
-        print uri
+        print(uri)
         traceback.print_exc()
         raise
 
@@ -62,7 +62,7 @@ def fetch_stream_infos(uri):
     except ParseError:
         pass
     except:
-        print uri
+        print(uri)
         traceback.print_exc()
         raise
 
@@ -94,8 +94,8 @@ def main():
             if (i+1) % 1000 == 0:
                 set_cache(cache)
 
-            print "%d/%d " % (i+1, len(peak_missing)) + uri + " -> ",
-            print "%d new streams" % len(streams)
+            print("%d/%d " % (i+1, len(peak_missing)) + uri + " -> ", end="")
+            print("%d new streams" % len(streams))
 
             if not streams:
                 parse_failed_uris.add(uri)
@@ -120,7 +120,7 @@ def main():
                     cache[uri][LISTENERCURRENT] = [current]
 
     except Exception as e:
-        print e
+        print(e)
     finally:
         set_parse_failed(parse_failed_uris)
         set_cache(cache)

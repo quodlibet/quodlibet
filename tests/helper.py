@@ -33,7 +33,7 @@ def dummy_path(path):
 @contextlib.contextmanager
 def locale_numeric_conv(
         decimal_point=".", grouping=[3, 3, 0], thousands_sep=","):
-    """Temporarely change number formatting conventions.
+    """Temporarily change number formatting conventions.
 
     By default this uses en_US conventions.
     """

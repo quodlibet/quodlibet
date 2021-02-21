@@ -34,16 +34,17 @@ jobs:
             mingw-w64-x86_64-gst-plugins-bad
             mingw-w64-x86_64-gst-libav
             mingw-w64-x86_64-gst-plugins-ugly
-            mingw-w64-x86_64-python3
-            mingw-w64-x86_64-python3-gobject
-            mingw-w64-x86_64-python3-cairo
-            mingw-w64-x86_64-python3-pip
-            mingw-w64-x86_64-python3-pytest
-            mingw-w64-x86_64-python3-certifi
-            mingw-w64-x86_64-python3-coverage
-            mingw-w64-x86_64-python3-flake8
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-python-gobject
+            mingw-w64-x86_64-python-cairo
+            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-setuptools
+            mingw-w64-x86_64-python-pytest
+            mingw-w64-x86_64-python-certifi
+            mingw-w64-x86_64-python-coverage
+            mingw-w64-x86_64-python-flake8
             mingw-w64-x86_64-python-entrypoints
-            mingw-w64-x86_64-python3-toml
+            mingw-w64-x86_64-python-toml
 
       - name: Install additional dependencies
         shell: msys2 {0}

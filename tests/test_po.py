@@ -42,7 +42,7 @@ class MissingTranslationsException(Exception):
 
 @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
 def test_potfile_format():
-    with gettextutil.create_pot(PODIR, strict=True) as pot_path:
+    with gettextutil.create_pot(PODIR) as pot_path:
         gettextutil.check_pot(pot_path)
 
 
@@ -69,7 +69,7 @@ class TPot(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        with gettextutil.create_pot(PODIR, strict=True) as pot_path:
+        with gettextutil.create_pot(PODIR) as pot_path:
             cls.pot = polib.pofile(pot_path)
 
     def conclude(self, fails, reason):

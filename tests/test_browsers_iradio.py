@@ -170,7 +170,7 @@ class TIRFile(TestCase):
         assert all(ret)
         assert self.received, "No stations received from %s" % url
         assert len(self.received) > 100
-        # TODO: some more targetted tests
+        # TODO: some more targeted tests
 
 
 def run_loop():
