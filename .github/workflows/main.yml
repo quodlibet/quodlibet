@@ -49,7 +49,7 @@ jobs:
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          pip3 install feedparser musicbrainzngs mutagen
+          python -m pip install feedparser musicbrainzngs mutagen
 
       - name: Run tests
         shell: msys2 {0}
