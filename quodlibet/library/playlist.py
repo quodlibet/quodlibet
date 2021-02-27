@@ -4,7 +4,7 @@
 # (at your option) any later version.
 
 import os
-from typing import Iterable, Generator, Optional
+from typing import Iterable, Generator, Optional, Set
 
 import quodlibet
 from quodlibet import print_d, print_w
@@ -108,6 +108,6 @@ class PlaylistLibrary(Library[str, Playlist]):
                 pl.write()
             self.changed(changed)
 
-    def add(self, items: Iterable[Playlist]) -> Iterable[Playlist]:
+    def add(self, items: Iterable[Playlist]) -> Set[Playlist]:
         print_d(f"Adding new playlist(s): {items}")
         return super().add(items)
