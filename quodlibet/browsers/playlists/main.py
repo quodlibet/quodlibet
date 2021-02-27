@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 import os
-from typing import Optional
+from typing import Optional, Tuple
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -607,7 +607,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
         self._import_playlists(fns)
 
-    def _import_playlists(self, fns) -> (int, int):
+    def _import_playlists(self, fns) -> Tuple[int, int]:
         """ Import m3u / pls playlists into QL
         Returns the (total playlists, total songs) added
         TODO: move this to Playlists library and watch here for new playlists
