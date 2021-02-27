@@ -7,7 +7,7 @@
 
 import os
 
-from quodlibet import _
+from quodlibet import _, print_w
 from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
@@ -75,7 +75,7 @@ def __attempt_add(filename, filenames):
     try:
         filenames.append(bytes2fsn(filename, 'utf-8'))
     except ValueError:
-        return
+        print_w(f"Ignoring invalid filename {filename!r}")
 
 
 def __create_playlist(name, source_dir, files, songs_lib, pl_lib):

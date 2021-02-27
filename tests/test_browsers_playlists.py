@@ -175,6 +175,8 @@ class TPlaylistsBrowser(TestCase):
         "artist": "new artist",
         "~filename": dummy_path(u"/dev/urandom")})
 
+    ALL_SONGS = SONGS + [ANOTHER_SONG]
+
     def setUp(self):
         self.success = False
         # Testing locally is VERY dangerous without this...
@@ -191,10 +193,9 @@ class TPlaylistsBrowser(TestCase):
 
         self.lib = quodlibet.browsers.playlists.library = SongFileLibrary()
         self.lib.librarian = SongLibrarian()
-        all_songs = SONGS + [self.ANOTHER_SONG]
-        for af in all_songs:
+        for af in self.ALL_SONGS:
             af.sanitize()
-        self.lib.add(all_songs)
+        self.lib.add(self.ALL_SONGS)
 
         self.big = pl = FileBackedPlaylist.new(_DEFAULT_PLAYLIST_DIR, "Big",
                                                self.lib, self.lib.playlists)
@@ -352,11 +353,13 @@ class TPlaylistsBrowser(TestCase):
 
         pl_name = "_€3 œufs à Noël"
         pl_path = Path(_TEMP_DIR) / (pl_name + ".m3u")
-        with open(pl_path, "w") as f:
+        with open(pl_path, "wb") as f:
             for fn in fns(SONGS):
-                f.write(fn + "\n")
-        added = self.bar._import_playlists([str(pl_path)])
-        self.failUnlessEqual(added, 1, msg="Failed to add '%s'" % pl_path)
+                f.write(fsn2bytes(fn, "utf-8") + b"\n")
+        pls_added, songs_added = self.bar._import_playlists([str(pl_path)])
+        assert pls_added == 1, f"Failed to add {pl_path}"
+        assert len(self.bar.songs_lib) == len(self.ALL_SONGS)
+        assert songs_added == 0, "Why did we add existing songs?"
         assert len(pl_lib) == 3, f"Got PLs: \n{', '.join(str(pl) for pl in pl_lib)}"
         pls = self.bar.playlists()
         assert len(pls) == 3, f"Got PL rows: {', '.join(str(pl) for pl in pls)}"

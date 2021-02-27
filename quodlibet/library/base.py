@@ -11,7 +11,7 @@
 import os
 import shutil
 from typing import (Collection, TypeVar, Sequence, Iterable,
-                    Optional, Iterator, Generic, MutableMapping, Tuple)
+                    Optional, Iterator, Generic, MutableMapping, Tuple, Set)
 
 from gi.repository import GObject
 
@@ -161,7 +161,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         for item in items:
             content[item.key] = item
 
-    def add(self, items: Iterable[V]) -> Iterable[V]:
+    def add(self, items: Iterable[V]) -> Set[V]:
         """Add items. This causes an 'added' signal.
 
         Return the sequence of items actually added, filtering out items

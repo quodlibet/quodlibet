@@ -607,11 +607,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
         self._import_playlists(fns)
 
-    def _import_playlists(self, fns):
+    def _import_playlists(self, fns) -> (int, int):
         """ Import m3u / pls playlists into QL
+        Returns the (total playlists, total songs) added
         TODO: move this to Playlists library and watch here for new playlists
         """
-        added = 0
+        total_pls = 0
+        total_songs = 0
         for filename in fns:
             name = _name_for(filename)
             with open(filename, "rb") as f:
@@ -625,9 +627,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     print_w("Unsupported playlist type for '%s'" % filename)
                     continue
             # Import all the songs in the playlist to the *songs* library
-            self.songs_lib.add(playlist)
-            added += 1
-        return added
+            total_songs += len(self.songs_lib.add(playlist))
+            total_pls += 1
+        return total_pls, total_songs
 
     def restore(self):
         try:
