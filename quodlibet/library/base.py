@@ -190,7 +190,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         if not items:
             return items
 
-        print_d(f"Removing {len(items)} items.", self._name)
+        print_d(f"Removing {len(items)} item(s).", self._name)
         for item in items:
             del self._contents[item.key]
 

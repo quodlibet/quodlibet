@@ -49,12 +49,12 @@ class TPlaylistLibrary(TestCase):
         pl.finalize()
 
     def tearDown(self):
+        for pl in list(self.library.values()):
+            pl.delete()
         for s in self._sigs:
             self.underlying.disconnect(s)
         self.underlying.destroy()
-        self.library.destroy()
-        for pl in list(self.library.values()):
-            pl.delete()
+        # Don't destroy self.library, it's a reference which is gone
         app.library = None
 
     def test_get(self):
@@ -80,11 +80,13 @@ class TPlaylistLibrary(TestCase):
     def test_items(self):
         assert len(self.library.items()) == 1
 
-    def test_remove(self):
-        self.underlying.remove(list(self.underlying.values()))
+    def test_remove_songs(self):
         pl = self.library["One"]
-        assert pl is not None
-        assert not pl, f"Should be empty, has: {list(pl)}"
+        all_contents = list(self.underlying.values())
+        assert all(song in self.underlying for song in pl), "Not all songs are in lib"
+        removed = self.underlying.remove(all_contents)
+        assert set(removed) == set(all_contents), "Not everything removed"
+        assert not pl, f"PL should be empty, has: {list(pl)}"
 
     def test_misc(self):
         # It shouldn't implement FileLibrary etc
