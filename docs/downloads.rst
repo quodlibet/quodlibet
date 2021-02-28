@@ -43,40 +43,22 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 |ubuntu-logo| Ubuntu
 --------------------
 
-Stable Repo (14.04+):
-    ::
+::
 
-        $ sudo add-apt-repository ppa:lazka/ppa
-
-
-Unstable PPA (16.04+):
-    ::
-
-        $ sudo add-apt-repository ppa:lazka/dumpingplace
-
+    $ sudo add-apt-repository ppa:lazka/ppa
 
 .. _debian:
 
 |debian-logo| Debian
 --------------------
 
-Stable Repo:
-    * Debian Stable::
+* Debian Stable::
 
-        # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
+    # deb http://lazka.github.io/ql-debian/stable/ quodlibet-stable/
 
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
-        sudo apt-get update
-        sudo apt-get install quodlibet
-
-Unstable Repo:
-    * Debian Testing::
-
-        # deb http://lazka.github.io/ql-debian/testing/ quodlibet-unstable/
-
-        sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
-        sudo apt-get update
-        sudo apt-get install quodlibet
+    sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 5A62D0CAB6264964
+    sudo apt-get update
+    sudo apt-get install quodlibet
 
 
 .. _fedora:
@@ -85,9 +67,8 @@ Unstable Repo:
 --------------------
 
 * `Fedora Stable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
-* `Fedora Unstable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
-For stable releases check out the `official
+Check out the `official
 repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
 they usually contain the latest release.
 
@@ -98,22 +79,15 @@ they usually contain the latest release.
 ------------------------
 
 * `openSUSE Stable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
-* `openSUSE Unstable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-unstable&package=quodlibet>`__
 
 .. _arch:
 
 |arch-logo| Arch Linux
 ----------------------
 
-Stable:
-    ::
+::
 
-        $ pacman -S quodlibet
-
-
-Unstable:
-    See `quodlibet-git <https://aur.archlinux.org/packages/quodlibet-git/>`__ in
-    the `AUR <https://wiki.archlinux.org/index.php/AUR>`__.
+    $ pacman -S quodlibet
 
 
 .. _windows:
