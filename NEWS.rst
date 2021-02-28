@@ -1,7 +1,7 @@
 .. _release-4.4.0:
 
-4.4.0 (2021-02-28) - TBC
-------------------------
+4.4.0 (2021-02-28) - PERFECTION IS BACK ON THE MENU
+---------------------------------------------------
 
 Packaging Changes:
  * One ``quodlibet/`` subdirectory has been removed - e.g. ``quodlibet/tests/`` -> ``tests/`` (#3238)
