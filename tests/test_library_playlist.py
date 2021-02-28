@@ -19,6 +19,9 @@ def AFrange(*args):
         for i in range(*args)]
 
 
+PL_NAME = "The Only"
+
+
 class TPlaylistLibrary(TestCase):
     Fake = FakeSong
     Frange = staticmethod(AFrange)
@@ -43,9 +46,11 @@ class TPlaylistLibrary(TestCase):
         self.underlying.add(self.Frange(12))
         for song in self.underlying:
             song.sanitize()
-        pl = Playlist("One", self.underlying, self.library)
+        pl = Playlist(PL_NAME, self.underlying, self.library)
         # Add last three songs to playlist
         pl.extend(list(sorted(self.underlying))[-3:])
+        assert len(pl) == 3, "Should have only the three songs just added"
+        assert all(song in self.underlying for song in pl), "Not all songs are in lib"
         pl.finalize()
 
     def tearDown(self):
@@ -58,16 +63,15 @@ class TPlaylistLibrary(TestCase):
         app.library = None
 
     def test_get(self):
-        key = "One"
-        pl = self.library.get(key)
-        assert pl.name == "One"
-        assert pl.key == key
+        pl = self.library.get(PL_NAME)
+        assert pl.name == PL_NAME
+        assert pl.key == PL_NAME
         assert len(pl.songs) == 3
 
-        assert not self.underlying.get("Two")
+        assert not self.underlying.get("Another")
 
     def test_keys(self):
-        assert list(self.library.keys()) == ["One"]
+        assert list(self.library.keys()) == [PL_NAME]
 
     def test_has_key(self):
         last_song = self.underlying.get("/tmp/11.mp3")
@@ -81,7 +85,7 @@ class TPlaylistLibrary(TestCase):
         assert len(self.library.items()) == 1
 
     def test_remove_songs(self):
-        pl = self.library["One"]
+        pl = self.library[PL_NAME]
         all_contents = list(self.underlying.values())
         assert all(song in self.underlying for song in pl), "Not all songs are in lib"
         removed = self.underlying.remove(all_contents)
