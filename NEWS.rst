@@ -13,7 +13,7 @@ Packaging Changes:
 
 General:
  * Switch to XSPF for Playlists (#1122) (#3242) (:user:`Nick Boultbee <declension>`
- * Renamed "Search Library" to "Track List" browser (:user:`Joschua Gandert <CreayCookie>`)
+ * Renamed "Search Library" to "Track List" browser (:user:`Joschua Gandert <CreamyCookie>`)
  * Support moving library folders (scandirs) (#3506) (:user:`Nick Boultbee <declension>`)
  * Support JACK via Gstreamer (#3511) (:user:`Nick Boultbee <declension>`)
  * Make ID3 Replaygain ALL_CAPS (#3475) (:user:`Nick Boultbee <declension>`)
@@ -46,8 +46,8 @@ General:
  * Fix setting pane mode :pr:`3365` (:user:`Michael Kuhn <michaelkuhn>`)
  * windows: Fix playing files on network shares (#3361) :pr:`3371` (:user:`d10n`)
  * Restarting :pr:`3211` (:user:`blimmo`)
- * Closes #946: Rename cover filename option :pr:`3235` (:user:`Joschua Gandert <CreayCookie>`)
- * Closes #1769: Allow multiple entries for cover files :pr:`3236` (:user:`Joschua Gandert <CreayCookie>`)
+ * Closes #946: Rename cover filename option :pr:`3235` (:user:`Joschua Gandert <CreamyCookie>`)
+ * Closes #1769: Allow multiple entries for cover files :pr:`3236` (:user:`Joschua Gandert <CreamyCookie>`)
 
 Plugins:
  * Add listenbrainz scrobbling plugin. (#3528) (:user:`Ian Campbell`)
