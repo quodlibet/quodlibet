@@ -79,7 +79,7 @@ class TPlaylistLibrary(TestCase):
         assert list(self.library.keys()) == [PL_NAME]
 
     def test_has_key(self):
-        last_song = self.underlying.get("/tmp/11.mp3")
+        last_song = list(self.underlying)[-1]
         key = last_song.list("~playlists")[0]
         assert self.library.has_key(key)
 
