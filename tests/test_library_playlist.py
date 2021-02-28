@@ -80,9 +80,9 @@ class TPlaylistLibrary(TestCase):
 
     def test_has_key(self):
         last_song = list(self.underlying)[-1]
-        key = last_song.list("~playlists").pop()
-        assert key, f"{last_song} is in no playlists (of {list(app.library.playlists)}"
-        assert self.library.has_key(key)
+        keys = last_song.list("~playlists")
+        assert keys, f"{last_song} is in no playlists (of {list(app.library.playlists)}"
+        assert self.library.has_key(keys[0])
 
     def test_misc_collection(self):
         self.failUnless(self.library.values())
