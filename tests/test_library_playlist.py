@@ -6,8 +6,8 @@ from quodlibet import app
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.util import connect_obj
-from quodlibet.util.collection import Playlist
-from tests import TestCase
+from quodlibet.util.collection import Playlist, FileBackedPlaylist
+from tests import TestCase, _TEMP_DIR
 from tests.test_library_libraries import FakeSong
 
 
@@ -50,7 +50,8 @@ class TPlaylistLibrary(TestCase):
             song.sanitize()
         # Populate for every test
         self.underlying.add(self.Frange(12))
-        self.pl = pl = Playlist(PL_NAME, self.underlying, self.library)
+        self.pl = pl = FileBackedPlaylist(_TEMP_DIR, PL_NAME,
+                                          self.underlying, self.library)
         # Add last three songs to playlist
         pl.extend(list(sorted(self.underlying))[-3:])
         assert len(pl) == 3, "Should have only the three songs just added"

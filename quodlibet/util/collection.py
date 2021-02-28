@@ -634,7 +634,7 @@ class FileBackedPlaylist(Playlist):
 
     @property
     def key(self) -> str:  # type: ignore  # (Note: we want no setter)
-        return self.path
+        return self.name
 
     def _validated_name(self, new_name: str) -> str:
         new_name = super()._validated_name(new_name)
