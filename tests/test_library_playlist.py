@@ -12,11 +12,15 @@ from tests.test_library_libraries import FakeSong
 
 
 def AFrange(*args):
-    return [
+    songs = [
         AudioFile({"~filename": f"/tmp/{i}.mp3",
                    "artist": "Foo",
                    "title": f"track-{i}"})
         for i in range(*args)]
+    # Need a mountpoint, or everything goes wrong...
+    for song in songs:
+        song.sanitize()
+    return songs
 
 
 PL_NAME = "The Only"
@@ -42,10 +46,10 @@ class TPlaylistLibrary(TestCase):
 
         self.library = self.underlying.playlists
 
-        # Populate for every test
-        self.underlying.add(self.Frange(12))
         for song in self.underlying:
             song.sanitize()
+        # Populate for every test
+        self.underlying.add(self.Frange(12))
         pl = Playlist(PL_NAME, self.underlying, self.library)
         # Add last three songs to playlist
         pl.extend(list(sorted(self.underlying))[-3:])
@@ -90,7 +94,7 @@ class TPlaylistLibrary(TestCase):
         all_contents = list(self.underlying.values())
         assert all(song in self.underlying for song in pl), "Not all songs are in lib"
         removed = self.underlying.remove(all_contents)
-        assert set(removed) == set(all_contents), "Not everything removed"
+        assert set(removed) == set(all_contents), "Not everything removed from lib"
         assert not pl, f"PL should be empty, has: {list(pl)}"
 
     def test_misc(self):
