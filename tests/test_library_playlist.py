@@ -50,7 +50,8 @@ class TPlaylistLibrary(TestCase):
         # Add last three songs to playlist
         pl.extend(list(sorted(self.underlying))[-3:])
         assert len(pl) == 3, "Should have only the three songs just added"
-        assert all(song in self.underlying for song in pl), "Not all songs are in lib"
+        diff = set(self.underlying) - set(pl)
+        assert all(song in self.underlying for song in pl), f"Missing from lib: {diff}"
         pl.finalize()
 
     def tearDown(self):
