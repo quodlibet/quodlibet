@@ -44,6 +44,13 @@ BUILD_TYPE_SHORT_TITLES = {
 
 RELEASES = [
     {
+        "version": "4.4.0",
+        "date": "2021-02-28",
+        "builds": {
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+        }
+    },
+    {
         "version": "4.3.0",
         "date": "2020-02-22",
         "builds": {
@@ -501,7 +508,7 @@ def get_download_tables(releases):
 def main(argv):
     releases = get_releases()
 
-    path = os.path.join("..", "quodlibet", "docs", "tables")
+    path = os.path.join("..", "..", "docs", "tables")
     for build_type, table in get_download_tables(releases).items():
         with open(os.path.join(path, build_type.replace("-", "_") + ".rst"),
                   "w", encoding="utf-8") as h:
