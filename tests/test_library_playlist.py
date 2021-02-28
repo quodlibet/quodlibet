@@ -50,7 +50,7 @@ class TPlaylistLibrary(TestCase):
             song.sanitize()
         # Populate for every test
         self.underlying.add(self.Frange(12))
-        pl = Playlist(PL_NAME, self.underlying, self.library)
+        self.pl = pl = Playlist(PL_NAME, self.underlying, self.library)
         # Add last three songs to playlist
         pl.extend(list(sorted(self.underlying))[-3:])
         assert len(pl) == 3, "Should have only the three songs just added"
@@ -80,14 +80,15 @@ class TPlaylistLibrary(TestCase):
 
     def test_has_key(self):
         last_song = list(self.underlying)[-1]
-        key = last_song.list("~playlists")[0]
+        key = last_song.list("~playlists").pop()
+        assert key, f"{last_song} is in no playlists (of {list(app.library.playlists)}"
         assert self.library.has_key(key)
 
     def test_misc_collection(self):
         self.failUnless(self.library.values())
 
     def test_items(self):
-        assert len(self.library.items()) == 1
+        assert self.library.items() == [(PL_NAME, self.pl)]
 
     def test_remove_songs(self):
         pl = self.library[PL_NAME]
@@ -123,8 +124,6 @@ class TPlaylistLibrarySignals(TestCase):
             connect_obj(self.playlists, 'removed', listen, 'pl_removed'),
         ]
         songs = AFrange(3)
-        for song in songs:
-            song.sanitize()
         self.lib.add(songs)
 
     def test_add_remove(self):

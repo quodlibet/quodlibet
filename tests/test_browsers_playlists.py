@@ -223,6 +223,8 @@ class TPlaylistsBrowser(TestCase):
         self.expected_decline = None
 
     def tearDown(self):
+        self.small.delete()
+        self.big.delete()
         self.bar.destroy()
         self.lib.destroy()
         shutil.rmtree(_DEFAULT_PLAYLIST_DIR)
