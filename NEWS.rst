@@ -1,3 +1,50 @@
+.. _release-5.0.0:
+
+5.0.0 (2021-02-28) - TBC
+------------------------
+
+Packaging Changes:
+ * One ``quodlibet/`` subdirectory has been removed - e.g. ``quodlibet/tests/`` -> ``tests/`` (#3238)
+ * Move to Python 3.7 (#3433) :pr:`3438` (:user:`declension`)
+ * macos: bundle.sh: clone from ../.. rather than .., fixing #3393. :pr:`3394` (:user:`smammy`)
+ * win_installer: pass options to build script on env switch :pr:`3328` (:user:`gkarsay`)
+
+Translations:
+ * Update Polish translation :pr:`3323`
+ * Update italian translation :pr:`3405` (:user:`dprimon`)
+ * Updated Dutch translation :pr:`3441` (:user:`Vistaus`)
+
+General:
+ * Restyle the search query :pr:`3517` (:user:`declension`)
+ * Fix non-splitter EditTags plugins (#3468) :pr:`3470` (:user:`declension`)
+ * Support feedparser 6.0 :pr:`3464` (:user:`lazka`)
+ * formats: Don't return lyrics with embedded nulls :pr:`3402` (:user:`lazka`)
+ * Fix setting pane mode :pr:`3365` (:user:`michaelkuhn`)
+ * windows: Fix playing files on network shares (#3361) :pr:`3371` (:user:`d10n`)
+ * Restarting :pr:`3211` (:user:`blimmo`)
+ * Closes #946: Rename cover filename option :pr:`3235` (:user:`CreamyCookie`)
+ * Closes #1769: Allow multiple entries for cover files :pr:`3236` (:user:`CreamyCookie`)
+
+Documentation:
+ * Fixed documentation URLs :pr:`3425` (:user:`TehPsychedelic`)
+ * Fix link to contributing guide :pr:`3416` (:user:`remvee`)
+
+Developer:
+ * Various Python 2 leftovers and updates :pr:`3440` (:user:`declension`)
+ * poetry: update deps :pr:`3546` (:user:`lazka`)
+ * tests/operon: make argument names meaningful :pr:`3294` (:user:`jtojnar`)
+ * gettextutil: warn on gettext warnings instead of erroring out :pr:`3545` (:user:`lazka`)
+ * CI: re-enable flatpak tests :pr:`3501` (:user:`lazka`)
+ * CI: install MSYS2 packages via the GHA :pr:`3458` (:user:`lazka`)
+
+Plugins:
+ * Fix weighted shuffle not shuffling when total rating is zero. :pr:`3397` (:user:`blimmo`)
+ * ext/inhibit: Add option to inhibit suspend :pr:`3309` (:user:`antigone-xyz`)
+ * trayicon: only check for org.kde.StatusNotifierWatcher for the appindicator :pr:`3313` (:user:`lazka`)
+ * MQTT authentication :pr:`3391` (:user:`Jeroen7V`)
+ * Add "Rate" to D-Bus API :pr:`3455` (:user:`LoveIsGrief`)
+
+
 .. _release-4.3.0:
 
 4.3.0 (2020-02-22) - Smaug-like figures, lurking on our planet filled with hoarded data
