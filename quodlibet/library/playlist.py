@@ -103,10 +103,21 @@ class PlaylistLibrary(Library[str, Playlist]):
             if song in playlist.songs
         }
         if changed:
+            # TODO: only write if anything *persisted* changes
+            #  i.e. not internal stuff (notably: ~playlists itself)!
             for pl in changed:
                 pl.finalize()
                 pl.write()
             self.changed(changed)
+
+    def recreate(self, playlist: Playlist, songs: Iterable[AudioFile]):
+        """Keep a playlist but entirely replace its contents
+        This is useful for applying new external sorting etc"""
+        playlist._list.clear()
+        playlist._list.extend(songs)
+        playlist.finalize()
+        playlist.write()
+        self.changed([playlist])
 
     def add(self, items: Iterable[Playlist]) -> Set[Playlist]:
         print_d(f"Adding new playlist(s): {items}")

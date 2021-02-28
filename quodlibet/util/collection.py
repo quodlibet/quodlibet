@@ -765,7 +765,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         ET.register_namespace('', XSPF_NS)
         path = self.path
         print_d(f"Writing {path !r}")
-        tree.write(path, encoding="UTF-8", xml_declaration=True)
+        tree.write(path, encoding="utf-8", xml_declaration=True)
         if self._last_fn != path:
             self._delete_file(self._last_fn)
             self._last_fn = path

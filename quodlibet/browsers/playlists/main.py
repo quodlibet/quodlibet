@@ -363,19 +363,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self.__rebuild_playlist_from_songs_model(playlist, smodel)
                 # Emit manually
                 self.songs_lib.emit('changed', removals.values())
-                self.pl_lib.emit('changed', [playlist])
             else:
                 playlist.remove_songs(removals.values(), True)
                 remove_from_model(removals.keys(), smodel)
             print_d("Removed %d song(s) from %s" % (len(removals), playlist))
-            # self.changed(playlist)
-            # self.activate()
 
     def __rebuild_playlist_from_songs_model(self, playlist, smodel):
-        playlist.inhibit = True
-        playlist.clear()
-        playlist.extend([row[0] for row in smodel])
-        playlist.inhibit = False
+        self.pl_lib.recreate(playlist, [row[0] for row in smodel])
 
     def _selected_playlist(self) -> Optional[Playlist]:
         """The currently selected playlist's name, or None if non selected"""
