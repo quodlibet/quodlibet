@@ -103,16 +103,13 @@ function install_deps {
         mingw-w64-"${ARCH}"-python3-toml
 
     PIP_REQUIREMENTS="\
-feedparser==5.2.1
-musicbrainzngs==0.6
-mutagen==1.44.0
-flake8==3.7.9
-entrypoints==0.3
-pycodestyle==2.5.0
-pyflakes==2.1.1
+feedparser
+musicbrainzngs
+mutagen
+flake8
 "
 
-    build_pip install --no-deps --no-binary ":all:" --upgrade \
+    build_pip install --no-binary ":all:" \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
 
     build_pacman --noconfirm -Rdds \
