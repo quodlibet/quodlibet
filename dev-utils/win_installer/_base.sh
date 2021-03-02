@@ -125,6 +125,7 @@ pyflakes==2.1.1
         mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav \
         mingw-w64-"${ARCH}"-libdvdread \
+        mingw-w64-"${ARCH}"-frei0r-plugins \
         mingw-w64-"${ARCH}"-openexr \
         mingw-w64-"${ARCH}"-openh264 \
         mingw-w64-"${ARCH}"-zbar \
@@ -285,6 +286,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstzbar.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfdkaac.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstaom.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfrei0r.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll
