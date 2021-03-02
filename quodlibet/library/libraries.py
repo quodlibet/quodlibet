@@ -18,6 +18,8 @@ import shutil
 import time
 from pathlib import Path
 from typing import Set, Optional, Generator
+from threading import Thread
+from queue import Queue
 
 from gi.repository import GObject
 
@@ -722,7 +724,7 @@ class FileLibrary(PicklingLibrary):
             return False
 
         # first scan each path for new files
-        paths_to_load = []
+        paths_to_load = Queue()
         for scan_path in paths:
             print_d(f"Scanning {scan_path}", self._name)
             desc = _("Scanning %s") % (fsn2text(unexpand(scan_path)))
@@ -737,21 +739,39 @@ class FileLibrary(PicklingLibrary):
                     # skip unknown file extensions
                     if not formats.filter(real_path):
                         continue
+                    normalized = normalize_path(real_path, True)
                     # already loaded
-                    if self.contains_filename(real_path):
+                    if normalized in self._contents:
                         continue
-                    paths_to_load.append(real_path)
+                    paths_to_load.put(normalized)
 
         yield
 
+        npaths_to_load = paths_to_load.qsize()
+        songs = Queue()
+        def worker():
+            while not paths_to_load.empty():
+                path = paths_to_load.get()
+                song = MusicFile(path)
+                songs.put(song)
+        for i in range(16):
+            t = Thread(target=worker)
+            t.start()
+
         # then (try to) load all new files
+        print_d("Loading files.")
         with Task(_("Library"), _("Loading files")) as task:
             if cofuncid:
                 task.copool(cofuncid)
 
             added = []
-            for real_path in task.gen(paths_to_load):
-                item = self.add_filename(real_path, False)
+            for i in task.gen(range(npaths_to_load)):
+                # This is here just in case the final number of puts to songs
+                # doesn't match the length of paths_to_load. We don't want to
+                # wait forever.
+                if paths_to_load.empty():
+                    break
+                item = songs.get()
                 if item is not None:
                     added.append(item)
                     if len(added) > 100 or need_added():
@@ -764,6 +784,7 @@ class FileLibrary(PicklingLibrary):
                 self.add(added)
                 added = []
                 yield True
+        print_d("Files are loaded.")
 
     def get_content(self):
         """Return visible and masked items"""
