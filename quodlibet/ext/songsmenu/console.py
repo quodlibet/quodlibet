@@ -333,7 +333,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         buffer.delete(buffer.get_iter_at_mark(lin),
                       buffer.get_end_iter())
 
-        if isinstance(command, list) or isinstance(command, tuple):
+        if isinstance(command, (list, tuple)):
             for c in command:
                 if display_command:
                     self.write(">>> " + c + "\n", self.command)
