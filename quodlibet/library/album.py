@@ -4,11 +4,9 @@
 # (at your option) any later version.
 
 from quodlibet import print_d
+from quodlibet.formats._audio import AlbumKey
 from quodlibet.library.base import Library
 from quodlibet.util.collection import Album
-
-AlbumKey = str
-"""An """
 
 
 class AlbumLibrary(Library[AlbumKey, Album]):
