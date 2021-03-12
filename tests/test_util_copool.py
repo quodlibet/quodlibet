@@ -2,6 +2,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from time import sleep
 
 import pytest
 
@@ -29,6 +30,7 @@ class Tcopool(TestCase):
         for i in range(100):
             if self.buffer is value:
                 return
+            sleep(0.2)
             Gtk.main_iteration_do(False)
         assert self.buffer is value
 
