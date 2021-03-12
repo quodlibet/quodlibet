@@ -80,11 +80,7 @@ class TPlaylistLibrary(TestCase):
         assert list(self.library.keys()) == [PL_NAME]
 
     def test_has_key(self):
-        last_song = list(self.underlying)[-1]
-        keys = last_song.list("~playlists")
-        pls = app.library.playlists
-        assert keys, f"{last_song} not in {[str(pl.songs) for pl in pls]}"
-        assert self.library.has_key(keys[0])
+        assert self.library.has_key(PL_NAME)
 
     def test_misc_collection(self):
         self.failUnless(self.library.values())
