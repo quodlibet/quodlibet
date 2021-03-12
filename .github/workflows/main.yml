@@ -1,14 +1,16 @@
 name: test
 
-on:
-  push:
-    branches:
-    - master
-  pull_request:
-    branches:
-    - master
+on: [push, pull_request]
 
 jobs:
+  fedora:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run tests in Docker container
+        uses: ./.github/workflows/fedora33
 
   msys2:
     runs-on: windows-latest

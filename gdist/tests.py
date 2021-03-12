@@ -124,6 +124,7 @@ class distcheck_cmd(sdist):
                 ".github/*",
                 ".ci/*",
                 ".codecov.yml",
+                ".editorconfig",
                 ".git*",
             ]
             tracked_files = [

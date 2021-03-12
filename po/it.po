@@ -1,14 +1,15 @@
-# SOME DESCRIPTIVE TITLE.
+# ITALIAN TRANSLATION FOR QUODLIBET.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # felipe <filippo@email.it>, 2005.
+# Albano Battistella <albano_battistella@hotmail.com>, 2021.
 msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 0.22\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-01 21:16+0100\n"
-"PO-Revision-Date: 2020-02-28 21:48+0100\n"
-"Last-Translator: Daniele Primon <ledebass@gmail.com>\n"
+"PO-Revision-Date: 2021-03-01 06:48+0100\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -21,12 +22,12 @@ msgstr ""
 #: quodlibet/browsers/albums/main.py:185
 #: quodlibet/browsers/covergrid/main.py:55
 msgid "_Title"
-msgstr "Tit_olo"
+msgstr "_Titolo"
 
 #: quodlibet/browsers/albums/main.py:186
 #: quodlibet/browsers/covergrid/main.py:56 quodlibet/qltk/prefs.py:50
 msgid "_Artist"
-msgstr "Arti_sta"
+msgstr "_Artista"
 
 #: quodlibet/browsers/albums/main.py:187
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:55
@@ -42,7 +43,7 @@ msgstr "_Genere"
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:59
 #: quodlibet/qltk/ratingsmenu.py:40
 msgid "_Rating"
-msgstr "Giudi_zio"
+msgstr "_Giudizio"
 
 #: quodlibet/browsers/albums/main.py:190
 msgid "_Playcount"
@@ -59,7 +60,7 @@ msgstr "Ordina _per…"
 #: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:342 quodlibet/qltk/quodlibetwindow.py:907
 msgid "_Preferences"
-msgstr "P_referenze"
+msgstr "_Preferenze"
 
 #: quodlibet/browsers/albums/main.py:383
 msgid "Album List"
@@ -67,7 +68,7 @@ msgstr "Lista degli album"
 
 #: quodlibet/browsers/albums/main.py:384
 msgid "_Album List"
-msgstr "Lista degli _album"
+msgstr "_Lista degli album"
 
 #: quodlibet/browsers/albums/main.py:494
 #: quodlibet/browsers/covergrid/main.py:281
@@ -187,7 +188,7 @@ msgstr "Inserire la posizione di un feed audio:"
 #: quodlibet/qltk/edittags.py:292 quodlibet/qltk/edittags.py:492
 #: quodlibet/qltk/quodlibetwindow.py:1275 quodlibet/qltk/scanbox.py:62
 msgid "_Add"
-msgstr "A_ggiungi"
+msgstr "_Aggiungi"
 
 #: quodlibet/browsers/audiofeeds.py:304
 msgid "Audio Feeds"
@@ -217,7 +218,7 @@ msgstr ""
 #: quodlibet/browsers/audiofeeds.py:476 quodlibet/qltk/filesel.py:271
 #: quodlibet/qltk/pluginwin.py:415
 msgid "_Refresh"
-msgstr "Aggio_rna"
+msgstr "_Aggiorna"
 
 #: quodlibet/browsers/audiofeeds.py:477
 #: quodlibet/browsers/playlists/main.py:488
@@ -225,7 +226,7 @@ msgstr "Aggio_rna"
 #: quodlibet/qltk/filesel.py:268 quodlibet/qltk/lyrics.py:36
 #: quodlibet/qltk/maskedbox.py:29 quodlibet/qltk/songsmenu.py:365
 msgid "_Delete"
-msgstr "Elimina"
+msgstr "_Elimina"
 
 #: quodlibet/browsers/audiofeeds.py:544
 msgid ""
@@ -315,7 +316,7 @@ msgstr "Preferenze della collezione di album"
 #: quodlibet/player/gstbe/prefs.py:41 quodlibet/qltk/prefs.py:128
 #: quodlibet/qltk/textedit.py:65
 msgid "_Apply"
-msgstr "App_lica"
+msgstr "_Applica"
 
 #: quodlibet/browsers/collection/prefs.py:198
 #: quodlibet/browsers/paned/prefs.py:241
@@ -483,7 +484,7 @@ msgstr "Conversazione / Notizie"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Ambient"
-msgstr ""
+msgstr "Ambiente"
 
 #: quodlibet/browsers/iradio.py:392
 msgid "Jazz"
@@ -1421,11 +1422,11 @@ msgstr "Colori"
 
 #: quodlibet/ext/events/animosd/prefs.py:259
 msgid "_Shadows"
-msgstr "O_mbre"
+msgstr "_Ombre"
 
 #: quodlibet/ext/events/animosd/prefs.py:260
 msgid "_Outline"
-msgstr "C_ontorno"
+msgstr "_Contorno"
 
 #: quodlibet/ext/events/animosd/prefs.py:261
 msgid "Rou_nded Corners"
@@ -1433,7 +1434,7 @@ msgstr "A_ngoli arrotondati"
 
 #: quodlibet/ext/events/animosd/prefs.py:277
 msgid "_Delay:"
-msgstr "Ritar_do:"
+msgstr "_Ritardo:"
 
 #: quodlibet/ext/events/animosd/prefs.py:283 quodlibet/qltk/pluginwin.py:173
 msgid "Effects"
@@ -1446,7 +1447,7 @@ msgstr "Modifica modello _visualizzazione…"
 #: quodlibet/ext/events/animosd/prefs.py:293
 #: quodlibet/ext/events/trayicon/prefs.py:87
 msgid "Preview"
-msgstr "Antepr_ima"
+msgstr "Anteprima"
 
 #: quodlibet/ext/events/appinfo.py:28
 msgid "Application Information"
@@ -2449,7 +2450,7 @@ msgstr "Mo_stra %(application-name)s"
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:937
 #: quodlibet/qltk/quodlibetwindow.py:1141
 msgid "_Play"
-msgstr "Ri_produci"
+msgstr "_Riproduci"
 
 #: quodlibet/ext/events/trayicon/menu.py:64
 #: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1143
@@ -2613,7 +2614,7 @@ msgstr "Livello di _zoom:"
 
 #: quodlibet/ext/events/weblyrics.py:287
 msgid "URL:"
-msgstr "_URL:"
+msgstr "URL:"
 
 # da controllare
 #: quodlibet/ext/events/weblyrics.py:292
@@ -2797,9 +2798,8 @@ msgid "Downmixes audio channels to mono."
 msgstr "Rimissa i canali audio in mono."
 
 #: quodlibet/ext/gstreamer/pitch.py:22
-#, fuzzy
 msgid "R_ate:"
-msgstr "G_iudizio:"
+msgstr "V_oto:"
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "_Tempo:"
@@ -2807,7 +2807,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Pitch:"
-msgstr "Intona_zione:"
+msgstr "_Intonazione:"
 
 #: quodlibet/ext/gstreamer/pitch.py:96
 msgid "Audio Pitch / Speed"
@@ -3269,7 +3269,7 @@ msgstr "Gestisce i segnalibri nei file selezionati."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:64 quodlibet/qltk/seekbutton.py:245
 msgid "_Edit Bookmarks…"
-msgstr "Aggiorna S_egnalibri…"
+msgstr "Modifica Segnalibri…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:74
 msgid "No Bookmarks"
@@ -3797,7 +3797,7 @@ msgstr "Raggruppa per directory"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:306
 msgid "Album Mode"
-msgstr "Modalità _album"
+msgstr "Modalità Album"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:308
 msgid ""
@@ -4460,7 +4460,7 @@ msgstr "'%(column-id)s' non è un nome di colonna valido (%(all-column-ids)s)."
 
 #: quodlibet/order/__init__.py:31
 msgid "_Unknown"
-msgstr "Sconosci_uto"
+msgstr "_Sconosciuto"
 
 #: quodlibet/order/__init__.py:143
 msgid "In Order"
@@ -4476,7 +4476,7 @@ msgstr "Casuale"
 
 #: quodlibet/order/reorder.py:24 quodlibet/qltk/queue.py:123
 msgid "_Random"
-msgstr "Ca_suale"
+msgstr "_Casuale"
 
 #: quodlibet/order/reorder.py:41 quodlibet/order/reorder.py:42
 msgid "Prefer higher rated"
@@ -4488,11 +4488,11 @@ msgstr "_Ripeti questa traccia"
 
 #: quodlibet/order/repeat.py:58 quodlibet/order/repeat.py:59
 msgid "Repeat all"
-msgstr "Ripeti _tutti"
+msgstr "Ripeti tutti"
 
 #: quodlibet/order/repeat.py:74 quodlibet/order/repeat.py:75
 msgid "One Song"
-msgstr "_Un brano"
+msgstr "Un brano"
 
 #: quodlibet/player/gstbe/player.py:99
 msgid "Stream"
@@ -5249,7 +5249,7 @@ msgstr "Mostra"
 
 #: quodlibet/qltk/maskedbox.py:87
 msgid "_Unhide"
-msgstr "M_ostra"
+msgstr "_Non nostrare"
 
 #: quodlibet/qltk/msg.py:42
 msgid "Discard tag changes?"
@@ -5389,11 +5389,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:83
 msgid "_Others:"
-msgstr "Altr_i:"
+msgstr "_Altri:"
 
 #: quodlibet/qltk/prefs.py:89
 msgid "_Edit…"
-msgstr "M_odifica…"
+msgstr "_Modifica…"
 
 #: quodlibet/qltk/prefs.py:92
 msgid "Add or remove additional column headers"
@@ -6727,7 +6727,6 @@ msgid "album peak"
 msgstr "picco dell'album"
 
 #: quodlibet/util/tags.py:148
-#, fuzzy
 msgid "reference loudness"
 msgstr "volume di riferimento"
 
@@ -6780,9 +6779,8 @@ msgid "playlists"
 msgstr "scalette"
 
 #: quodlibet/util/tags.py:178
-#, fuzzy
 msgid "sample rate"
-msgstr "ampiezza di campionamento"
+msgstr "frequenza di campionamento"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
@@ -6856,9 +6854,8 @@ msgstr ""
 "Internet e feed audio. Ha capacità di ricerca e modifica estremamente "
 "flessibile di metadati tag."
 
-#, fuzzy
 #~ msgid "_Download…"
-#~ msgstr "S_carica"
+#~ msgstr "_Scaricamento…"
 
 #~ msgid "Download Files"
 #~ msgstr "Scarica i file"
@@ -6875,7 +6872,6 @@ msgstr ""
 #~ msgid "Not mounted"
 #~ msgstr "Non montato"
 
-#, fuzzy
 #~ msgid "Mount point:"
 #~ msgstr "Punto di mount:"
 
@@ -6888,21 +6884,17 @@ msgstr ""
 #~ msgid "_Eject"
 #~ msgstr "_Espelli"
 
-#, fuzzy
 #~ msgid "_Properties"
 #~ msgstr "Proprietà"
 
-#, fuzzy
 #~ msgid "%(used-size)s used, %(free-size)s available"
-#~ msgstr "<b>%s</b> utilizzato, <b>%s</b> disponibile"
+#~ msgstr "%(used-size)s usato, %(free-size)s disponibile"
 
-#, fuzzy
 #~ msgid "%s is not connected."
-#~ msgstr "<b>%s</b> non è connesso."
+#~ msgstr "%s non è connesso."
 
-#, fuzzy
 #~ msgid "Copying %(song)s"
-#~ msgstr "Sto copiando <b>%(song)s</b>."
+#~ msgstr "Sto copiando %(song)s"
 
 #~ msgid "Unable to copy song"
 #~ msgstr "Impossibile copiare il brano"
@@ -6910,27 +6902,23 @@ msgstr ""
 #~ msgid "There is not enough free space for this song."
 #~ msgstr "Non c'è abbastanza spazio libero per questa canzone."
 
-#, fuzzy
 #~ msgid "%s could not be copied."
-#~ msgstr "<b>%s</b> non può essere copiato."
+#~ msgstr "%s non può essere copiato."
 
 #~ msgid "Unable to delete songs"
 #~ msgstr "Impossibile eliminare i brani"
 
-#, fuzzy
 #~ msgid "Deleting %(song)s"
-#~ msgstr "Elimino <b>%(song)s</b>"
+#~ msgstr "Eliminazione %(song)s"
 
-#, fuzzy
 #~ msgid "%s could not be deleted."
-#~ msgstr "<b>%s</b> non può essere eliminato."
+#~ msgstr "%s non può essere eliminato."
 
 #~ msgid "Unable to delete song"
 #~ msgstr "Impossibile eliminare il brano"
 
-#, fuzzy
 #~ msgid "Ejecting %s failed."
-#~ msgstr "Esplusione di <b>%s</b>fallita."
+#~ msgstr "Esplusione %s fallita."
 
 #~ msgid "Unable to eject device"
 #~ msgstr "Impossibile espellere il dispositivo"
@@ -6940,25 +6928,20 @@ msgstr ""
 #~ "Nessun dispositivo di backend, il navigatore dei dispositivi multimediali "
 #~ "è disabilitato."
 
-#, fuzzy
 #~ msgid "Show or hide the main song list (deprecated)"
-#~ msgstr "Mostra o nascondi la lista di brani"
+#~ msgstr "Mostra o nascondi l'elenco dei brani principali (deprecated)"
 
 #~ msgid "Unknown Device"
 #~ msgstr "Dispositivo sconosciuto"
 
-#, fuzzy
 #~ msgid "Could not import %s, which is needed for device support."
-#~ msgstr ""
-#~ "Non riesco a imporare dbus-python, che è necessario per leggere il "
-#~ "dispositivo."
+#~ msgstr "Impossibile importare %s, necessario per il supporto del dispositivo."
 
 #~ msgid "%r is not a supported device."
 #~ msgstr "'%r' non è un dispositivo supportato."
 
-#, fuzzy
 #~ msgid "Could not find '%s'."
-#~ msgstr "%s: Non trovo libudev."
+#~ msgstr "Impossibile trovare '%s'."
 
 #~ msgid "Initializing device backend."
 #~ msgstr "Annullo l'inizializzazione del dispositivo di backend."
@@ -6976,29 +6959,23 @@ msgstr ""
 #~ msgid "_Filename pattern:"
 #~ msgstr "Schema per il nome del file"
 
-#, fuzzy
 #~ msgid "_Clear"
-#~ msgstr "_Pulisci gli Errori"
+#~ msgstr "_Pulisci"
 
-#, fuzzy
 #~ msgid "Lyrics:"
-#~ msgstr "Testi"
+#~ msgstr "Testi:"
 
-#, fuzzy
 #~ msgid "Lyrics Window"
-#~ msgstr "Testi"
+#~ msgstr "Finestra dei Testi"
 
-#, fuzzy
 #~ msgid "_Lyrics"
-#~ msgstr "Testi"
+#~ msgstr "_Testi"
 
-#, fuzzy
 #~ msgid "Browse Folders"
-#~ msgstr "Catalogo"
+#~ msgstr "Sfoglia Cartelle"
 
-#, fuzzy
 #~ msgid "Unable to open folders"
-#~ msgstr "Impossibile creare la cartella"
+#~ msgstr "Impossibile aprire le cartelle"
 
 #~ msgid "Audio device: %s"
 #~ msgstr "Dispositivo audio: %s"
@@ -7012,22 +6989,17 @@ msgstr ""
 #~ msgid "_Download"
 #~ msgstr "S_carica"
 
-#, fuzzy
 #~ msgid "_Edit"
-#~ msgstr "_Modifica Display..."
+#~ msgstr "_Modifica"
 
 #~ msgid "_Copy to Device"
 #~ msgstr "Copia sul dispositivo"
 
-#, fuzzy
 #~ msgid "browsers"
-#~ msgstr "Catalogo"
+#~ msgstr "browser"
 
-#, fuzzy
 #~ msgid "Could not import %s. Audio Feeds browser disabled."
-#~ msgstr ""
-#~ "Non posso importare il python-feedparser, il navigatore degli Audio Feed "
-#~ "è disabilitato."
+#~ msgstr "Impossibile importare% s. Browser dei feed audio disabilitato."
 
 #, fuzzy
 #~ msgid ""
@@ -7093,13 +7065,11 @@ msgstr ""
 #~ msgid "Unable to save iPod database"
 #~ msgstr "Non riesco a salvare il database iPod"
 
-#, fuzzy
 #~ msgid "Could not find libgpod, iPod support disabled."
-#~ msgstr "Non posso importare python-gpod, il supporto a iPod è disabilitato."
+#~ msgstr "Impossibile trovare libgpod, supporto per iPod disabilitato."
 
-#, fuzzy
 #~ msgid "Track Repeat"
-#~ msgstr "picco della traccia"
+#~ msgstr "Ripeti Traccia"
 
 #~ msgid "Shuffle"
 #~ msgstr "Casuale"
@@ -7122,9 +7092,8 @@ msgstr ""
 #~ msgid "_Disable Browser"
 #~ msgstr "_Disattiva il Catalogo"
 
-#, fuzzy
 #~ msgid "Force Write"
-#~ msgstr "Scrivi"
+#~ msgstr "FOrza Scrittura"
 
 #~ msgid "Filter on _Genre"
 #~ msgstr "Filtro sul _genere"
@@ -7138,28 +7107,23 @@ msgstr ""
 #~ msgid "_Music"
 #~ msgstr "_Musica"
 
-#, fuzzy
 #~ msgid "Add Bookmark"
-#~ msgstr "Segnalibri"
+#~ msgstr "Aggiungi Segnalibri"
 
 #~ msgid "Song _List"
 #~ msgstr "_Lista dei Brani"
 
-#, fuzzy
 #~ msgid "D:"
-#~ msgstr "W: "
+#~ msgstr "D:"
 
-#, fuzzy
 #~ msgid "W:"
-#~ msgstr "W: "
+#~ msgstr "W:"
 
-#, fuzzy
 #~ msgid "E:"
-#~ msgstr "E: "
+#~ msgstr "E:"
 
-#, fuzzy
 #~ msgid "Stop _after this song"
-#~ msgstr "Ferma dopo questo brano"
+#~ msgstr "Ferma _dopo questo brano"
 
 #, fuzzy
 #~ msgid "Found %d result."
@@ -7167,36 +7131,29 @@ msgstr ""
 #~ msgstr[0] "e altri %d ..."
 #~ msgstr[1] "e altri %d ..."
 
-#, fuzzy
 #~ msgid "Split _disc from album"
-#~ msgstr "Separa i dischi dell'_album"
+#~ msgstr "Dividi i dischi dell'album"
 
-#, fuzzy
 #~ msgid "Timeout"
-#~ msgstr "Tempo"
+#~ msgstr "Timeout"
 
-#, fuzzy
 #~ msgid "Select an album"
-#~ msgstr "_Seleziona Tutto"
+#~ msgstr "Seleziona un album"
 
 #, fuzzy
 #~ msgid "%(title)s and %(count)d more…"
 #~ msgid_plural "%(title)s and %(count)d more…"
 #~ msgstr[0] "%(title)s e %(count)d altro"
-#~ msgstr[1] "%(title)s e altri %(count)d"
+#~ msgstr[1] "%(title)s e %(count)d altro..."
 
-#, fuzzy
 #~ msgid "Playlist Export"
-#~ msgstr "Scalette"
+#~ msgstr "Esporta Playlist"
 
 #~ msgid "_Use rounded corners on thumbnails"
 #~ msgstr "_Usa angoli arrotondati nelle anteprime"
 
-#, fuzzy
 #~ msgid "Round the corners of album artwork thumbnail images."
-#~ msgstr ""
-#~ "Arrotonda gli angoli delle anteprime delle immagini degli album. Richiede "
-#~ "il riavvio per avere effetto."
+#~ msgstr "Arrotondare gli angoli delle immagini in miniatura delle copertine degli album."
 
 #~ msgid "Re_fresh Library"
 #~ msgstr "A_ggiorna la Libreria"
@@ -7332,17 +7289,14 @@ msgstr ""
 #~ "Stai per modificare il voto di %d tracce.\n"
 #~ "Desideri proseguire?"
 
-#, fuzzy
 #~ msgid "Track Headers"
-#~ msgstr "Headers delle _Tracce"
+#~ msgstr "Headers delle Tracce"
 
-#, fuzzy
 #~ msgid "People Headers"
-#~ msgstr "Headers della _Gente"
+#~ msgstr "Headers della Gente"
 
-#, fuzzy
 #~ msgid "Album Headers"
-#~ msgstr "Headers degli _Album"
+#~ msgstr "Headers degli Album"
 
 #, fuzzy
 #~ msgid "Date Headers"
@@ -7356,9 +7310,8 @@ msgstr ""
 #~ msgid "Production Headers"
 #~ msgstr "Headers della _Produzione "
 
-#, fuzzy
 #~ msgid "Tag:"
-#~ msgstr "_Tag:"
+#~ msgstr "Tag:"
 
 #~ msgid "Too Many Errors"
 #~ msgstr "Troppo errori"

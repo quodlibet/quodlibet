@@ -1,3 +1,105 @@
+.. _release-4.4.0:
+
+4.4.0 (2021-02-28) - PERFECTION IS BACK ON THE MENU
+---------------------------------------------------
+
+Packaging Changes:
+ * One ``quodlibet/`` subdirectory has been removed - e.g. ``quodlibet/tests/`` -> ``tests/`` (#3238)
+ * Move to Python 3.7 (closing #3433) :pr:`3438` (:user:`Nick Boultbee <declension>`)
+ * macos: bundle.sh: clone from ../.. rather than .., fixing #3393. (:pr:`3394`) (:user:`Sam Hathaway <smammy>`)
+ * win_installer: pass options to build script on env switch :pr:`3328` (:user:`Gabor Karsay <gkarsay>`)
+ * Depend on musicbrainzngs>=0.6 (:user:`Christoph Reiter <lazka>`)
+
+
+General:
+ * Switch to XSPF for Playlists (closing #1122) :pr:`3242` (:user:`Nick Boultbee <declension>`)
+ * Renamed "Search Library" to "Track List" browser (:user:`Joschua Gandert <CreamyCookie>`)
+ * Support moving library folders (scandirs) :pr:`3506` (:user:`Nick Boultbee <declension>`)
+ * Support JACK via Gstreamer :pr:`3511` (:user:`Nick Boultbee <declension>`)
+ * Make ID3 Replaygain ALL_CAPS `:pr:`3475` (:user:`Nick Boultbee <declension>`)
+ * MP4: Support description tag (:user:`Nick Boultbee <declension>`)
+ * Advanced prefs: use checkboxes (:user:`Nick Boultbee <declension>`)
+ * Add comment to track headers (:user:`Nick Boultbee <declension>`)
+ * Change None to empty string to fix TypeError in missing.py :pr:`3548` (:user:`Ironbalden`)
+ * Plugin window: don't appear on top (:user:`Nick Boultbee <declension>`)
+ * Info Area: Allow space to play / pause (:user:`Nick Boultbee <declension>`)
+ * Allow ctrl-[shift]-tab in Notebook windows (Edit Tags, Song Info, Prefs etc) (:pr:`3496`) (:user:`Nick Boultbee <declension>`)
+ * Playlists: don't clear on deletion (fixing #3491) (:user:`Nick Boultbee <declension>`)
+ * IRadio - do station updates in background :pr:`3310` (:user:`Nick Boultbee <declension>`)
+ * Improve plugin window style :pr:`3481` (:user:`Nick Boultbee <declension>`)
+ * Query: allow validation from extensions :up: (:user:`Nick Boultbee <declension>`)
+ * Plugins: improve query plugins :pr:`3485` (:user:`Nick Boultbee <declension>`)
+ * Saved list editor: improve style (:user:`Nick Boultbee <declension>`)
+ * Tag Editor: Add smart replacer for colon delimiters (:pr:`3456`) (:user:`Nick Boultbee <declension>`)
+ * Improve local cover art detection (#3454) (:pr:`3459`) (:user:`Nick Boultbee <declension>`)
+ * Add support for TKEY 'Initial Key' column (:pr:`3420`) (:user:`Cole Robinson`)
+ * add ability to sort by date added to Album List Browser (:pr:`3410`) (:user:`Uriel Zajaczkovski`)
+ * Add originalartistsort (:user:`Nick Boultbee <declension>`)
+ * add check to Missing.py, fix #3336 (:pr:`3382`) (:user:`Ironbalden`)
+ * Add support for ~elapsed and ~#elapsed (:pr:`3379`) (:user:`Nick Boultbee <declension>`)
+ * Format date panes (closing #3346) :pr:`3349` (:user:`Nick Boultbee <declension>`)
+ * Update song order in song list when modified :pr:`2509` (:user:`Thomas Leberbauer`)
+ * Restyle the search query :pr:`3517` (:user:`Nick Boultbee <declension>`)
+ * Fix non-splitter EditTags plugins (fixing #3468) :pr:`3470` (:user:`Nick Boultbee <declension>`)
+ * Support feedparser 6.0 :pr:`3464` (:user:`Christoph Reiter <lazka>`)
+ * formats: Don't return lyrics with embedded nulls :pr:`3402` (:user:`Christoph Reiter <lazka>`)
+ * Fix setting pane mode :pr:`3365` (:user:`Michael Kuhn <michaelkuhn>`)
+ * windows: Fix playing files on network shares (fixing #3361) :pr:`3371` (:user:`d10n`)
+ * Restarting :pr:`3211` (:user:`blimmo`)
+ * Closes #946: Rename cover filename option :pr:`3235` (:user:`Joschua Gandert <CreamyCookie>`)
+ * Closes #1769: Allow multiple entries for cover files :pr:`3236` (:user:`Joschua Gandert <CreamyCookie>`)
+
+Plugins:
+ * Add listenbrainz scrobbling plugin. :pr:`3528` (:user:`Ian Campbell`)
+ * First version of Musicbrainz Sync plugin that sends ratings (:pr:`3180`) (:user:`LoveIsGrief`)
+ * add plugin 'synchronize to device' :pr:`636` (:user:`Jan`)
+ * Fix weighted shuffle not shuffling when total rating is zero. :pr:`3397` (:user:`blimmo`)
+ * ext/inhibit: Add option to inhibit suspend :pr:`3309` (:user:`antigone-xyz`)
+ * trayicon: only check for org.kde.StatusNotifierWatcher for the appindicator :pr:`3313` (:user:`Christoph Reiter <lazka>`)
+ * MQTT authentication :pr:`3391` (:user:`Jeroen7V`)
+ * Add "Rate" to D-Bus API :pr:`3455` (:user:`LoveIsGrief`)
+ * Prettier sync lyrics (:user:`Nick Boultbee <declension>`)
+ * Synchronizedlyrics: Rewrite lyrics parsing, supporting >60min songs (:user:`Nick Boultbee <declension>`)
+ * Add Sonos playlist export plugin :pr:`3487` (:user:`Nick Boultbee <declension>`)
+ * Plugin: fix Cover Art window persistence (:user:`Nick Boultbee <declension>`)
+ * Skip songs: rename & naming / text updates (:user:`Nick Boultbee <declension>`)
+ * Cover Art Downloader: remove failing downloads from results (:user:`Nick Boultbee <declension>`)
+ * Cover Art: Improve Musicbrainz downloader (:user:`Nick Boultbee <declension>`)
+ * Cover Art download: only trigger plugin if `album` tag available (:user:`Nick Boultbee <declension>`)
+ * Added AutoUpdateTagsInFiles plugin :pr:`3200` (:user:`Joschua Gandert <creamycookie>`)
+
+Translations:
+ * Update Polish translation :pr:`3323`
+ * Update italian translation :pr:`3405` (:user:`dprimon`)
+ * Updated Dutch translation :pr:`3441` (:user:`Vistaus`)
+ * Update British English translation :pr:`3483` (:user:`Nick Boultbee <declension>`)
+
+Documentation:
+ * Update plugin development page (:user:`Nick Boultbee <declension>`)
+ * Update plugins.rst to include locations on MacOS. :pr:`3562` (:user:`BraveSentry`)
+ * Fixed documentation URLs :pr:`3425` (:user:`TehPsychedelic`)
+ * Fix link to contributing guide :pr:`3416` (:user:`remvee`)
+ * Various docs updates / improvements (:user:`Nick Boultbee <declension>`)
+ * Docs: Improve / tidy renaming files examples (:user:`Nick Boultbee <declension>`)
+ * docs: fix the windows dev environ instructions (:user:`Christoph Reiter <lazka>`)
+
+Developer:
+ * Various Python 2 leftovers and updates :pr:`3440` (:user:`Nick Boultbee <declension>`)
+ * tests/operon: make argument names meaningful :pr:`3294` (:user:`Jan Tojnar <jtojnar>`)
+ * gettextutil: warn on gettext warnings instead of erroring out :pr:`3545` (:user:`Christoph Reiter <lazka>`)
+ * CI: re-enable flatpak tests :pr:`3501` (:user:`Christoph Reiter <lazka>`)
+ * CI: install MSYS2 packages via the GHA :pr:`3458` (:user:`Christoph Reiter <lazka>`)
+ * Tests: improve source scanning (:user:`Nick Boultbee <declension>`)
+ * Refactor: tidy Gstreamer player code :pr:`3489` (:user:`Nick Boultbee <declension>`)
+ * Add .editorconfig that agrees with PEP-008 and our Flake8 config (:user:`Nick Boultbee <declension>`)
+ * Refactor ID3 tag writing for readability `pr:3476` (:user:`Nick Boultbee <declension>`)
+ * More type hints (:user:`Christoph Reiter <lazka>`)
+ * CI: Port more things to github actions (:user:`Christoph Reiter <lazka>`)
+ * Switch from pycodestyle/pyflakes to flake8 (:user:`Christoph Reiter <lazka>`)
+ * Move the main sources into the repo root (:user:`Christoph Reiter <lazka>`)
+ * Remove pipenv support (:user:`Christoph Reiter <lazka>`)
+
+
 .. _release-4.3.0:
 
 4.3.0 (2020-02-22) - Smaug-like figures, lurking on our planet filled with hoarded data
@@ -12,7 +114,7 @@ Packaging Changes:
 
 Translations:
   * Update brazilian portuguese translations :pr:`3123` (:user:`Hugo Gualandi <hugomg>`)
-  * Bulgarian translation fixes :pr`3147` (:user:`cybercop-montana`)
+  * Bulgarian translation fixes :pr:`3147` (:user:`cybercop-montana`)
   * Update Hebrew translation :pr:`3164` :pr:`3274` (:user:`Avi Markovitz <avma>`)
   * French translation update :pr:`3183` (:user:`Bundy01`)
   * Update German translation (:user:`Till Berger <Mellthas>`)
@@ -48,7 +150,7 @@ Plugins:
   * Custom Commands: Don't modify command when using parameters :bug:`3185` :pr:`3232` (:user:`CreamyCookie`)
   * Import/export plugin: accept full filenames when renaming :pr:`3282` (:user:`Fredrik Strupe <frestr>`)
   * acoustid: fix queries always returning "unknown" :bug:`3269`
-  * Fix embed images plugin submenu not showing sometimes :pr`3303` (:user:`Nick Boultbee <declension>`)
+  * Fix embed images plugin submenu not showing sometimes :pr:`3303` (:user:`Nick Boultbee <declension>`)
 
 
 .. _release-4.2.1:

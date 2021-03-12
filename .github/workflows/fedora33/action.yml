@@ -1,0 +1,6 @@
+# action.yml
+name: Fedora 33
+description: Run tests for Fedora 33
+runs:
+  using: docker
+  image: Dockerfile
