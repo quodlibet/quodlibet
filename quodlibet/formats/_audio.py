@@ -1056,8 +1056,7 @@ class AudioFile(dict, ImageContainer):
             except OverflowError:
                 scale = 1.0
             else:
-                if scale > 1:
-                    scale = 1.0  # don't clip
+                scale = min(scale, 1.0)
             return min(15, scale)
 
     def write(self):
