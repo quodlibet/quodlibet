@@ -267,6 +267,8 @@ value="false"/>
             if is_temp:
                 self.__cover = cover
             metadata["mpris:artUrl"] = fsn2uri(cover.name)
+        else:
+            metadata["mpris:artUrl"] = ""
 
         # All list values
         list_val = {"artist": "artist", "albumArtist": "albumartist",
