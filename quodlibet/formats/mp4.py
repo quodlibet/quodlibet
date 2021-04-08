@@ -238,4 +238,4 @@ class MP4File(AudioFile):
 
 loader = MP4File
 types = [MP4File]
-extensions = ['.mp4', '.m4a', '.m4v', '.3gp', '.3g2', '.3gp2']
+extensions = ['.mp4', '.m4a', '.m4b', '.m4v', '.3gp', '.3g2', '.3gp2']
