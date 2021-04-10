@@ -1,4 +1,5 @@
 # Copyright 2006 Joe Wreschnig
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,7 +25,7 @@ class IRadioLog(EventPlugin):
 
         player = app.player
 
-        if player.song.multisong and not song.multisong:
+        if player.song and player.song.multisong and not song.multisong:
             time = player.get_position()
             title = song("title")
             bookmarks = player.song.bookmarks
