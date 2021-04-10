@@ -920,7 +920,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
 
-        current = self._source.current if next_song is None else next_song
+        current = next_song if next_song else (self._source and self._source.current)
 
         # Then, set up the next song.
         self.song = self.info = current

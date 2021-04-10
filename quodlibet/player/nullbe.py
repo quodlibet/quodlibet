@@ -1,4 +1,5 @@
 # Copyright 2004 Joe Wreschnig, Michael Urman
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -79,7 +80,7 @@ class NullPlayer(BasePlayer):
         self.song = self.info = None
         self.emit('song-ended', song, stopped)
 
-        current = self._source.current if next_song is None else next_song
+        current = next_song if next_song else (self._source and self._source.current)
 
         # Then, set up the next song.
         self._position = 0
