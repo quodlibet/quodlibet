@@ -16,7 +16,7 @@ from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
-from quodlibet.packages.senf import path2fsn
+from senf import path2fsn
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import (PluginConfig, ConfProp, IntConfProp,
                                BoolConfProp)
