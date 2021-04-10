@@ -1,4 +1,4 @@
-# Copyright 2018-2020 Nick Boultbee
+# Copyright 2018-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -109,8 +109,6 @@ class ResizeWebImage(Gtk.Image):
         headers = self.message.get_property('response-headers')
         self.size = int(headers.get('content-length'))
         self._content_type = headers.get('content-type')
-        print_d("Loading %d KB (of %s)"
-                % (len(result) / 1024, self._content_type))
         self._original = result
         try:
             loader = GdkPixbuf.PixbufLoader()
