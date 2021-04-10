@@ -96,23 +96,28 @@ class LyricsPane(Gtk.VBox):
         try:
             song.write()
         except AudioFileError as e:
-            print_w("Couldn't write embedded lyrics (%s)" % e)
+            print_w(f"Couldn't write embedded lyrics ({e!r})")
             self._save_to_file(song, text)
         else:
-            print_d("Wrote embedded lyrics into %s" % song("~filename"))
+            print_d(f"Wrote embedded lyrics into {song('~filename')}")
             app.librarian.emit('changed', [song])
-            self._delete_file(song.lyric_filename)
+            fn = song.lyric_filename
+            if fn:
+                self._delete_file(fn)
 
     def _save_to_file(self, song, text):
-        lyricname = song.lyric_filename
+        lyric_fn = song.lyric_filename
+        if not lyric_fn:
+            print_w("No lyrics file to save to, ignoring.")
+            return
         try:
-            os.makedirs(os.path.dirname(lyricname), exist_ok=True)
+            os.makedirs(os.path.dirname(lyric_fn), exist_ok=True)
         except EnvironmentError:
             errorhook()
         try:
-            with open(lyricname, "wb") as f:
+            with open(lyric_fn, "wb") as f:
                 f.write(text.encode("utf-8"))
-            print_d("Saved lyrics to file (%s)" % lyricname)
+            print_d(f"Saved lyrics to file {lyric_fn!r}")
         except EnvironmentError:
             errorhook()
 
@@ -129,14 +134,16 @@ class LyricsPane(Gtk.VBox):
         save.set_sensitive(True)
 
     def _delete_file(self, filename):
+        if not filename:
+            return
         try:
             os.unlink(filename)
-            print_d("Removed lyrics file '%s'" % filename)
+            print_d(f"Removed lyrics file {filename!r}")
         except EnvironmentError:
             pass
         lyric_dir = os.path.dirname(filename)
         try:
             os.rmdir(lyric_dir)
-            print_d("Removed lyrics directory '%s'" % lyric_dir)
+            print_d(f"Removed lyrics directory {lyric_dir}")
         except EnvironmentError:
             pass

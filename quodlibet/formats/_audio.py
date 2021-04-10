@@ -14,7 +14,7 @@ import os
 import re
 import shutil
 import time
-from typing import List
+from typing import List, Optional, Any
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -290,7 +290,7 @@ class AudioFile(dict, ImageContainer):
     def iterrealitems(self):
         return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
-    def __call__(self, key, default=u"", connector=" - ", joiner=', '):
+    def __call__(self, key, default: Any = u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
         Multiple values for a key are delimited by newlines.
 
@@ -448,15 +448,18 @@ class AudioFile(dict, ImageContainer):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
+                lyric_filename = self.lyric_filename
+                if not lyric_filename:
+                    return default
                 try:
-                    with open(self.lyric_filename, "rb") as fileobj:
-                        print_d("Reading lyrics from %s" % self.lyric_filename)
+                    with open(lyric_filename, "rb") as fileobj:
+                        print_d(f"Reading lyrics from {lyric_filename!r}")
                         text = fileobj.read().decode("utf-8", "replace")
                         # try to skip binary files
                         if "\0" in text:
                             return default
                         return text
-                except EnvironmentError:
+                except (EnvironmentError, UnicodeDecodeError):
                     return default
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
@@ -547,7 +550,7 @@ class AudioFile(dict, ImageContainer):
         return "\n".join(descs)
 
     @property
-    def lyric_filename(self):
+    def lyric_filename(self) -> Optional[str]:
         """Returns the validated, or default, lyrics filename for this
         file. User defined '[memory] lyric_rootpaths' and
         '[memory] lyric_filenames' matches take precedence"""
@@ -583,20 +586,16 @@ class AudioFile(dict, ImageContainer):
 
         def sanitise(sep, parts):
             """Return a santisied version of a path's parts"""
-            return sep.join(part.replace(os.path.sep, u'')[:128]
-                                for part in parts)
+            return sep.join(part.replace(os.path.sep, u'')[:128] for part in parts)
 
         # setup defaults (user-defined take precedence)
         # root search paths
-        lyric_paths = \
-            config.getstringlist("memory", "lyric_rootpaths", [])
+        lyric_paths = config.getstringlist("memory", "lyric_rootpaths", [])
         # ensure default paths
         lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
-        lyric_paths.append(
-            os.path.join(os.path.dirname(self.comma('~filename'))))
+        lyric_paths.append(os.path.join(os.path.dirname(self.comma('~filename'))))
         # search pathfile names
-        lyric_filenames = \
-            config.getstringlist("memory", "lyric_filenames", [])
+        lyric_filenames = config.getstringlist("memory", "lyric_filenames", [])
         # ensure some default pathfile names
         lyric_filenames.append(
             sanitise(os.sep, [(self.comma("lyricist") or
@@ -620,7 +619,7 @@ class AudioFile(dict, ImageContainer):
         #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
 
         # expand each raw pathfile in turn and test for existence
-        match_ = ""
+        match_ = None
         pathfiles_expanded = OrderedDict()
         for pf, rpf in pathfiles.items():
             for rpf in expand_pathfile(rpf):  # resolved as late as possible
@@ -629,7 +628,7 @@ class AudioFile(dict, ImageContainer):
                 if os.path.exists(pathfile):
                     match_ = pathfile
                     break
-            if match_ != "":
+            if match_:
                 break
 
         if not match_:

@@ -14,7 +14,7 @@ from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
 from threading import Thread
-from typing import Dict, Collection, Callable, Iterable
+from typing import Dict, Collection, Callable, Iterable, Optional
 from urllib.request import urlopen
 
 import re
@@ -123,6 +123,10 @@ class IRFile(RemoteFile):
             if value is not None:
                 lines.append(encode(tag) + b"=" + encode(value))
         return b"\n".join(lines)
+
+    @property
+    def lyric_filename(self) -> Optional[str]:
+        return None
 
     def can_change(self, k=None):
         if self.streamsong:
