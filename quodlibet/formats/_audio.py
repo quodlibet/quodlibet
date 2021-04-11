@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2017 Nick Boultbee
+#           2012-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -148,10 +148,10 @@ class AudioFile(dict, ImageContainer):
 
     @util.cached_property
     def album_key(self):
-        return (human(self("albumsort", "")),
-                human(self("albumartistsort", "")),
-                self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
+        id_val = (self.get("album_grouping_key")
+                  or self.get("labelid")
+                  or self.get("musicbrainz_albumid", ""))
+        return id_val, human(self("albumsort", "")), human(self("albumartistsort", ""))
 
     @util.cached_property
     def sort_key(self):
