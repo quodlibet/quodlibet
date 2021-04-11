@@ -394,9 +394,11 @@ class AudioFile(dict, ImageContainer):
                     return self("~format")
                 return codec
             elif key == "encoding":
-                parts = filter(None,
-                               [self.get("~encoding"), self.get("encodedby")])
-                encoding = u"\n".join(parts)
+                encoding = "\n".join(
+                    part
+                    for part in [self.get("~encoding"), self.get("encodedby")]
+                    if part
+                )
                 return encoding or default
             elif key == "language":
                 codes = self.list("language")
