@@ -253,8 +253,13 @@ class AudioFile(dict, ImageContainer):
         backup = dict(self)
         fn = self["~filename"]
         saved = {}
+        persisted = config.getboolean("editing", "save_to_songs")
+        persisted_keys = ({"~#rating", "~#playcount"}
+                          if self.supports_rating_and_play_count_in_file and persisted
+                          else set())
         for key in self:
-            if key in MIGRATE:
+            # Only migrate keys that aren't (probably) persisted to file (#3569)
+            if key in MIGRATE - persisted_keys:
                 saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
