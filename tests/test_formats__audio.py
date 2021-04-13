@@ -57,6 +57,7 @@ num_call = AudioFile({"custom": "0.3"})
 ANOTHER_RATING = 0.2
 SOME_RATING = 0.8
 
+
 class TAudioFile(TestCase):
 
     def setUp(self):
