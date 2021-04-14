@@ -832,7 +832,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
     def __add_stations(self, irfs: Collection[IRFile], uri: str) -> None:
         print_d(f"Got {len(irfs)} station(s) from {uri}")
-        assert self.__fav_stations
+        assert self.__fav_stations is not None
         if not irfs:
             msg = ErrorMessage(
                 self, _("No stations found"),
