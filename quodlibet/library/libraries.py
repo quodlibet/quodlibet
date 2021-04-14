@@ -19,7 +19,7 @@ import time
 from pathlib import Path
 from typing import Set, Optional, Generator, Iterable
 
-from gi.repository import GObject
+from gi.repository import GObject, Gio, GLib
 
 from quodlibet import _
 from quodlibet import formats
@@ -28,12 +28,14 @@ from quodlibet.formats import (MusicFile, AudioFileError, load_audio_files,
                                dump_audio_files, SerializationError, AudioFile)
 from quodlibet.qltk.notif import Task
 from quodlibet.query import Query
+from quodlibet.util import copool
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collection import Album
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
+from quodlibet.util.library import get_exclude_dirs, get_scan_dirs
 from quodlibet.util.path import unexpand, mkdir, normalize_path, ishidden, ismount
-from senf import fsn2text, fsnative
+from senf import fsn2text, fsnative, expanduser
 
 
 class Library(GObject.GObject, DictMixin):
@@ -694,16 +696,10 @@ class FileLibrary(PicklingLibrary):
         Subclasses must override this to open the file correctly.
         """
 
-        raise NotImplementedError
-
-    def contains_filename(self, filename):
-        """Returns if a song for the passed filename is in the library.
-
-        Returns:
-            bool
-        """
-
-        raise NotImplementedError
+    def contains_filename(self, filename) -> bool:
+        """Returns if a song for the passed filename is in the library. """
+        key = normalize_path(filename, True)
+        return key in self._contents
 
     def scan(self, paths, exclude=[], cofuncid=None):
 
@@ -918,17 +914,149 @@ class FileLibrary(PicklingLibrary):
             print_d(f"No tracks in {old_roots} to remove from {self._name}")
 
 
-class SongFileLibrary(SongLibrary, FileLibrary):
+class WatchedFileLibraryMixin(FileLibrary):
+    """A File Library that sets up monitors on directories at refresh
+    and handles changes sensibly"""
+
+    def __init__(self, name=None):
+        super().__init__(name)
+        self._monitors = {}
+        print_d(f"Initialised {self!r}")
+
+    def monitor_dir(self, path):
+        """Monitors a single directory"""
+
+        normalised = normalize_path(path, True)
+        # Only add one monitor per absolute path...
+        if normalised not in self._monitors:
+            f = Gio.File.new_for_path(normalised)
+            try:
+                monitor = f.monitor_directory(Gio.FileMonitorFlags.WATCH_MOVES, None)
+            except GLib.GError as e:
+                print_w(f"Couldn't watch {normalised} ({e})")
+                monitor = None
+            if not monitor:
+                return
+            handler_id = monitor.connect("changed", self.__file_changed)
+            # Don't destroy references - http://stackoverflow.com/q/4535227
+            self._monitors[path] = (monitor, handler_id)
+            print_d(f"Monitoring {path}")
+
+    def __file_changed(self, monitor, main_file, other_file, event_type):
+        EventType = Gio.FileMonitorEvent
+        file_path = main_file.get_path()
+        if file_path is None:
+            return
+        file_path = Path(normalize_path(file_path, True))
+        song = self.get(file_path)
+        other_path = other_file and Path(normalize_path(other_file.get_path(), True))
+
+        if event_type == EventType.CREATED:
+            if os.path.isdir(file_path):
+                print_d("Monitoring new directory %s" % (file_path,))
+                self.monitor_dir(file_path)
+                # Consume generator
+                list(self.scan([str(file_path)]))
+                return
+            else:
+                if song:
+                    # QL created this one; still check if it changed
+                    if not song.valid():
+                        self.reload(song)
+                else:
+                    print_d(f"Auto-adding new file: {file_path}")
+                    self.add_filename(file_path)
+        elif event_type == EventType.CHANGED:
+            if song and not song.valid():
+                self.reload(song)
+                print_d("Updating externally changed song: %s" % file_path)
+        elif event_type == EventType.RENAMED:
+            print_d(f"Moving {file_path} to {other_path}...")
+            if song:
+                self.move_song(song, other_path)
+        elif event_type == EventType.ATTRIBUTE_CHANGED:
+            # Probably pointless for us? Changes are probably quick and single
+            pass
+        elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
+            if song:
+                print_d(f"Got {event_type} for {file_path}, so should delete")
+                self.reload(song)
+            else:
+                # either not a song, or a song that was renamed by QL
+                if self.is_monitored_dir(file_path):
+                    self.unmonitor_dir(file_path)
+
+                # And try to remove all songs under that dir. Slowly.
+                gone = set()
+                for key, song in self.iteritems():
+                    if file_path in Path(key).parents:
+                        gone.add(song)
+                if gone:
+                    print_d(f"Removing {len(gone)} contained songs in {file_path}")
+                    actually_gone = self.remove(gone)
+                    if gone != actually_gone:
+                        print_w(f"Couldn't remove all: {gone - actually_gone}")
+
+        else:
+            print_d(f"Unhandled event {event_type} on {file_path} ({other_path})")
+
+    def is_monitored_dir(self, path: Path) -> bool:
+        return path in self._monitors
+
+    def unmonitor_dir(self, path: Path) -> None:
+        """Disconnect and remove any monitor for a directory, if found"""
+
+        monitor, handler_id = self._monitors.get(path, (None, None))
+        if not monitor:
+            print_d(f"Couldn't find path {path} in active monitors")
+            return
+        monitor.disconnect(handler_id)
+        del self._monitors[path]
+
+    def start_watching(self, paths):
+        print_d("Setting up file watches for %s on %s..." % (type(self), paths))
+        exclude_dirs = [expanduser(e) for e in get_exclude_dirs() if e]
+
+        def watching_producer():
+            # TODO: integrate this better with scanning.
+            for fullpath in paths:
+                desc = _("Adding watches for %s") % (fsn2text(unexpand(fullpath)))
+                with Task(_("Library"), desc) as task:
+                    fullpath = expanduser(fullpath)
+                    if any(fullpath.startswith(exclude) for exclude in exclude_dirs):
+                        continue
+                    unpulsed = 0
+                    self.monitor_dir(fullpath)
+                    for path, dirs, files in os.walk(fullpath):
+                        for d in dirs:
+                            self.monitor_dir(os.path.join(path, d))
+                        unpulsed += len(dirs)
+                        if unpulsed > 50:
+                            task.pulse()
+                            unpulsed = 0
+                        yield
+
+        copool.add(watching_producer, funcid="watch_library")
+
+    def stop_watching(self):
+        for path in self._monitors.keys():
+            self.unmonitor_dir(path)
+
+    def destroy(self):
+        self.stop_watching()
+        super().destroy()
+
+
+class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, watch=False):
         print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
-
-    def contains_filename(self, filename):
-        key = normalize_path(filename, True)
-        return key in self._contents
+        if watch:
+            # TODO: don't depend on get_scan_dirs here (pass them in)
+            self.start_watching(get_scan_dirs())
 
     def get_filename(self, filename):
         key = normalize_path(filename, True)

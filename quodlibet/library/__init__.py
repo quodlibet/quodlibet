@@ -30,7 +30,8 @@ def init(cache_fn=None):
     """
 
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
-    library = SongFileLibrary("main")
+    # TODO: make watching configurable
+    library = SongFileLibrary("main", watch=True)
     if cache_fn:
         library.load(cache_fn)
     return library

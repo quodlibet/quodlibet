@@ -105,6 +105,7 @@ def scan_library(library, force):
     Args:
         library (Library)
         force (bool): if True, reload all existing valid items
+    TODO: consider storing scan_dirs in Library instead of passing around always
     """
 
     paths = get_scan_dirs()
