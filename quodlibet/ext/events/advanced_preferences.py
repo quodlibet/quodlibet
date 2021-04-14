@@ -114,6 +114,13 @@ class AdvancedPreferences(EventPlugin):
                  "the ones present in the song list. Separate with \",\"")),
             text_config("settings", "rating_symbol_full", "Rating symbol (full):"),
             text_config("settings", "rating_symbol_blank", "Rating symbol (blank):"),
+            int_config(
+                "settings", "rating_smoothing_factor",
+                "Rating smoothing factor:",
+                ("This is used to smooth the length-based weights. Without smoothing, "
+                 "very long songs would dominate the average rating of an album. "
+                 "If this is -1 or less, averages are unweighted. "
+                 "If this is 0, no smoothing is applied. (Default is 10)")),
             text_config(
                 "player", "backend",
                 "Backend:",

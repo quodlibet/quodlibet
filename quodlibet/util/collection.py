@@ -1,6 +1,7 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
 #           2011-2020 Nick Boultbee
+#           2021      Joschua Gandert
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,19 +48,70 @@ PEOPLE.insert(0, "albumartist")
 ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100 ** i for i in range(len(PEOPLE))]
 
+SMOOTHING_FACTOR_DEFAULT = 10
 
-def avg(nums):
+
+def unweighted_average(nums):
     """Returns the average (arithmetic mean) of a list of numbers"""
     return float(sum(nums)) / len(nums)
 
 
-def bayesian_average(nums, c=None, m=None):
+def unweighted_bayesian_average(nums, c=None, m=None):
     """Returns the Bayesian average of an iterable of numbers,
     with parameters defaulting to config specific to ~#rating."""
     m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
-    ret = float(m * c + sum(nums)) / (c + len(nums))
-    return ret
+    return float(m * c + sum(nums)) / (c + len(nums))
+
+
+def hyperbolic_smoother(x, n=SMOOTHING_FACTOR_DEFAULT):
+    """n determines how strongly smaller values will be magnified"""
+    return (n + 1) * x / (n * x + 1)
+
+
+def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor):
+    total_weight = 0
+    length_based_smoothed_weights = []
+    values = []
+    for s in songs:
+        value = s(key)
+        if value == "":
+            continue
+
+        length = s("~#length", 0)
+        if length <= 0:
+            # avoids ZeroDivisionError and will have no impact on the average anyway
+            continue
+
+        values.append(value)
+        weight = hyperbolic_smoother(length / total_length, smoothing_factor)
+        total_weight += weight
+        length_based_smoothed_weights.append(weight)
+
+    return total_weight, length_based_smoothed_weights, values
+
+
+def weighted_average(nums, weights, total_weight):
+    """Returns the length-weighted average (arithmetic mean) of a list of numbers"""
+
+    weighted_sum = 0
+    for num, weight in zip(nums, weights):
+        weighted_sum += weight * num
+
+    return weighted_sum / total_weight
+
+
+def weighted_bayesian_average(nums, weights, total_weight, c=None, m=None):
+    """Returns the length-weighted Bayesian average of an iterable of numbers,
+    with parameters defaulting to config specific to ~#rating."""
+    m = m or config.RATINGS.default
+    c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
+
+    weighted_sum = 0
+    for num, weight in zip(nums, weights):
+        weighted_sum += weight * num
+
+    return float(m * c + weighted_sum) / (c + total_weight)
 
 
 NUM_DEFAULT_FUNCS = {
@@ -80,8 +132,15 @@ NUM_FUNCS = {
     "max": max,
     "min": min,
     "sum": sum,
-    "avg": avg,
-    "bav": bayesian_average
+    "avg": weighted_average,
+    "bav": weighted_bayesian_average,
+    "unweighted_avg": unweighted_average,
+    "unweighted_bav": unweighted_bayesian_average
+}
+
+NUM_FUNC_WEIGHTED_TO_UNWEIGHTED = {
+    weighted_average: unweighted_average,
+    weighted_bayesian_average: unweighted_bayesian_average
 }
 
 
@@ -181,8 +240,11 @@ class Collection:
             key = key[2:]
 
             if key[-4:-3] == ":":
-                func = key[-3:]
+                func_key = key[-3:]
                 key = key[:-4]
+            elif key[-15:-14] == ":":  # unweighted
+                func_key = key[-14:]
+                key = key[:-15]
             elif key == "tracks":
                 return len(self.songs)
             elif key == "discs":
@@ -197,11 +259,34 @@ class Collection:
                 # Standard or unknown numeric key.
                 # AudioFile will try to cast the values to int,
                 # default to avg
-                func = NUM_DEFAULT_FUNCS.get(key, "avg")
+                func_key = NUM_DEFAULT_FUNCS.get(key, "avg")
 
             key = "~#" + key
-            func = NUM_FUNCS.get(func)
+            func = NUM_FUNCS.get(func_key)
             if func:
+                unweighted_func = NUM_FUNC_WEIGHTED_TO_UNWEIGHTED.get(func)
+
+                # we want no length-weighted average of length
+                if key == '~#length' and unweighted_func is not None:
+                    func = unweighted_func
+                elif unweighted_func is not None:
+                    smoothing_factor = float(
+                        config.getint("settings", "rating_smoothing_factor",
+                                      SMOOTHING_FACTOR_DEFAULT))
+                    total_length = self.__get_value("~#length")
+
+                    if total_length and smoothing_factor >= 0:
+                        total_weight, weights, nums = smoothed_length_weights_and_nums(
+                            self.songs, key, total_length, smoothing_factor)
+
+                        if not nums:
+                            return None
+
+                        return func(nums, weights, total_weight)
+
+                    # fall back on unweighted version
+                    func = unweighted_func
+
                 # If none of the songs can return a numeric key,
                 # the album returns default
                 values = (song(key) for song in self.songs)

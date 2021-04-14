@@ -189,6 +189,8 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # (0 = disabled i.e. arithmetic mean)
         "bayesian_rating_factor": "0.0",
 
+        "rating_smoothing_factor": "10",
+
         # rating symbol (black star)
         "rating_symbol_full": u'\u2605',
 
