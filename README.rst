@@ -46,8 +46,8 @@ Contact
 .. image:: https://img.shields.io/twitter/follow/QuodLibetApp?style=social
     :target: https://twitter.com/QuodLibetApp
 
-.. image:: https://img.shields.io/badge/discord-join%20chat-blue?style=social&logo=discord
+.. image:: https://img.shields.io/badge/discord-chat-blue?style=social&logo=discord
     :target: https://discord.gg/9A4RKFEm3c
 
-.. image:: https://img.shields.io/badge/gitter-join%20chat-green?style=social&logo=gitter
+.. image:: https://img.shields.io/badge/gitter-chat-green?style=social&logo=gitter
     :target: https://gitter.im/quodlibet/Lobby
