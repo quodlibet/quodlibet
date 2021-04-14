@@ -17,7 +17,7 @@ import os
 import shutil
 import time
 from pathlib import Path
-from typing import Set, Optional, Generator
+from typing import Set, Optional, Generator, Iterable
 
 from gi.repository import GObject
 
@@ -894,6 +894,28 @@ class FileLibrary(PicklingLibrary):
         song.sanitize(new_path)
         self._contents[new_path] = song
         return existed
+
+    def remove_roots(self, old_roots: Iterable[str]) -> Generator[None, None, None]:
+        """Remove library roots (scandirs) entirely, and all their songs"""
+        old_paths = [Path(normalize_path(root, canonicalise=True)).expanduser()
+                     for root in old_roots]
+        total = len(self)
+        removed = set()
+        print_d(f"Removing library roots {old_roots} from {self._name} library")
+        yield
+        with Task(_("Library"), _("Removing library files")) as task:
+            for i, song in enumerate(list(self.values())):
+                task.update(i / total)
+                key = normalize_path(song.key)
+                song_path = Path(key)
+                if any(path in song_path.parents for path in old_paths):
+                    removed.add(song)
+                if not i % 100:
+                    yield
+        if removed:
+            self.remove(removed)
+        else:
+            print_d(f"No tracks in {old_roots} to remove from {self._name}")
 
 
 class SongFileLibrary(SongLibrary, FileLibrary):
