@@ -49,5 +49,5 @@ Contact
 .. image:: https://img.shields.io/badge/discord-join%20chat-blue?style=social&logo=discord
     :target: https://discord.gg/9A4RKFEm3c
 
-.. image:: https://badges.gitter.im/Join%20Chat.svg
+.. image:: https://img.shields.io/badge/gitter-join%20chat-green?style=social&logo=gitter
     :target: https://gitter.im/quodlibet/Lobby
