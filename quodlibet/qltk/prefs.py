@@ -1,6 +1,6 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2017 Nick Boultbee
+#           2011-2021 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -799,6 +799,10 @@ class PreferencesWindow(UniqueWindow):
 
     def __destroy(self):
         config.save()
-        if self.current_scan_dirs != get_scan_dirs():
-            print_d("Library paths have changed, re-scanning...")
+        new_dirs = set(get_scan_dirs())
+        gone_dirs = set(self.current_scan_dirs) - new_dirs
+        if new_dirs - set(self.current_scan_dirs):
+            print_d("Library paths have been added, re-scanning...")
             scan_library(app.library, force=False)
+        elif gone_dirs:
+            copool.add(app.librarian.remove_roots, gone_dirs)

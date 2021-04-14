@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,6 +7,8 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
+
+from quodlibet.util import escape
 from senf import fsn2text, path2fsn
 
 from quodlibet import _
@@ -22,7 +25,7 @@ class Message(Gtk.MessageDialog, Dialog):
     def __init__(self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK):
         parent = get_top_parent(parent)
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
-                % (title, description))
+                % (escape(title), escape(description)))
         super().__init__(
             transient_for=parent, modal=True, destroy_with_parent=True,
             message_type=kind, buttons=buttons)

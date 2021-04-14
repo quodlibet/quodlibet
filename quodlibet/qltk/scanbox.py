@@ -12,7 +12,7 @@ from gi.repository import Pango
 from quodlibet.qltk.msg import ConfirmationPrompt
 from senf import fsn2text
 
-from quodlibet import _, print_w, print_d, app
+from quodlibet import _, print_w, print_d, app, ngettext
 from quodlibet.qltk.chooser import choose_folders, _get_chooser, _run_chooser
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.models import ObjectStore
@@ -61,8 +61,12 @@ class ScanBox(Gtk.HBox):
         view.append_column(column)
 
         add = Button(_("_Add"), Icons.LIST_ADD)
+        add.set_tooltip_text(_("The new directory will be scanned after adding"))
         add.connect("clicked", self.__add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
+        remove.set_tooltip_text(_("All songs in the selected directories "
+                                  "will also be removed from the library"))
+
         move = Button(_("_Move"), Icons.EDIT_REDO)
         move.connect("clicked", self.__move)
         move.set_tooltip_text(_("Move a scan root (but not the files), "
@@ -99,9 +103,22 @@ class ScanBox(Gtk.HBox):
     def __save(self):
         set_scan_dirs(list(self.model.itervalues()))
 
-    def __remove(self, view):
-        view.remove_selection()
-        self.__save()
+    def __remove(self, view) -> None:
+        selection = self.view.get_selection()
+        model, paths = selection.get_selected_rows()
+        gone_dirs = [model[p][0] for p in paths or []]
+        total = len(gone_dirs)
+        if not total:
+            return
+        msg = (_("Remove {dir!r} and all its tracks?").format(dir=gone_dirs[0])
+               if total == 1
+               else _("Remove {n} library paths and their tracks?").format(n=total))
+        title = ngettext("Remove library path?", "Remove library paths?", total)
+        prompt = ConfirmationPrompt(self, title, msg, _("Remove"),
+                                    ok_button_icon=Icons.LIST_REMOVE)
+        if prompt.run() == ConfirmationPrompt.RESPONSE_INVOKE:
+            view.remove_selection()
+            self.__save()
 
     def __add(self, *args):
         fns = choose_folders(self, _("Select Directories"), _("_Add Folders"))
