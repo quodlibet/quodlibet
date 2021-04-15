@@ -136,7 +136,7 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album.get("~#bitrate"), 200)
         s.failUnlessEqual(album.get("~#year"), 33)
         s.failUnlessEqual(album.get("~#rating:unweighted_avg"), 0.3)
-        s.failUnlessEqual(album.get("~#rating"), 0.2697044334975369)
+        s.failUnlessAlmostEqual(album.get("~#rating"), 0.2697044334975369)
         s.failUnlessEqual(album.get("~#originalyear"), 2002)
 
     def test_numeric_comma(self):

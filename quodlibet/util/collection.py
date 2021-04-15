@@ -271,7 +271,7 @@ class Collection:
                     func = unweighted_func
                 elif unweighted_func is not None:
                     smoothing_factor = float(
-                        config.getint("settings", "rating_smoothing_factor",
+                        config.getint("settings", "weight_smoothing_factor",
                                       SMOOTHING_FACTOR_DEFAULT))
                     total_length = self.__get_value("~#length")
 

@@ -115,10 +115,12 @@ class AdvancedPreferences(EventPlugin):
             text_config("settings", "rating_symbol_full", "Rating symbol (full):"),
             text_config("settings", "rating_symbol_blank", "Rating symbol (blank):"),
             int_config(
-                "settings", "rating_smoothing_factor",
-                "Rating smoothing factor:",
+                "settings", "weight_smoothing_factor",
+                "Weight smoothing factor:",
                 ("This is used to smooth the length-based weights. Without smoothing, "
-                 "very long songs would dominate the average rating of an album. "
+                 "very long songs would dominate an average value of an album. "
+                 "At the same time, short good songs would have no affect on, for "
+                 "example, the average rating of an album. "
                  "If this is -1 or less, averages are unweighted. "
                  "If this is 0, no smoothing is applied. (Default is 10)")),
             text_config(
