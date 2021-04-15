@@ -18,8 +18,6 @@
 
 Quod Libet: an audio library, manager & player
 ---------------------------------------------
-.. image:: https://github.com/quodlibet/quodlibet/raw/master/docs/images/album-list-2017-08.png
-    :align: center
 
 `Quod Libet <https://quodlibet.readthedocs.io>`_
 is a cross-platform audio / music management program.
@@ -29,6 +27,9 @@ It has extremely flexible metadata editing and searching capabilities.
 
 With over 90 plugins included, you can extend and integrate with almost anything,
 or `write your own <https://quodlibet.readthedocs.io/en/latest/development/plugins.html>`_!
+
+.. image:: https://github.com/quodlibet/quodlibet/raw/master/docs/images/album-list-2017-08.png
+    :align: center
 
 
 Ex Falso: just the tag editor
@@ -44,7 +45,7 @@ For information on how to build, install or test Quod Libet (and Ex Falso),
 check out the
 `development documentation <https://quodlibet.readthedocs.org/en/latest/development/overview.html>`_.
 
-For how to use the apps, consult the `User Guide <https://quodlibet.readthedocs.io/en/latest/guide/>`_
+For how to use the apps, consult the `user guide <https://quodlibet.readthedocs.io/en/latest/guide/>`_.
 
 Contact
 -------
