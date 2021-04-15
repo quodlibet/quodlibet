@@ -403,13 +403,17 @@ class TPlaylist(TestCase):
             s.failUnlessEqual(pl.get("~#rating:unweighted_avg"),
                               unweighted_average([0.1, 0.3, 0.5]))
 
+            total_weight, weights, nums = smoothed_length_weights_and_nums(
+                songs, "~#rating", total_length=12, smoothing_factor=10)
+            expected = weighted_average(nums, weights, total_weight)
+            s.failUnlessEqual(pl.get("~#rating"), expected)
+
             s.failUnlessEqual(pl.get("~#filesize"), 303)
 
             s.failUnlessEqual(pl.get("~#added"), 7)
             s.failUnlessEqual(pl.get("~#lastplayed"), 88)
             s.failUnlessEqual(pl.get("~#bitrate"), 200)
             s.failUnlessEqual(pl.get("~#year"), 33)
-            s.failUnlessEqual(pl.get("~#rating"), 0.3)
             s.failUnlessEqual(pl.get("~#originalyear"), 2002)
 
     def test_updating_aggregates_extend(s):
