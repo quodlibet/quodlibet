@@ -70,6 +70,7 @@ def hyperbolic_smoother(x, n=SMOOTHING_FACTOR_DEFAULT):
 
 
 def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor):
+    """Returns smoothed length-based weights and the songs' associated numeric values"""
     total_weight = 0
     length_based_smoothed_weights = []
     values = []
@@ -80,7 +81,7 @@ def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor)
 
         length = s("~#length", 0)
         if length <= 0:
-            # avoids ZeroDivisionError and will have no impact on the average anyway
+            # will have no impact on the average, so we can just skip it
             continue
 
         values.append(value)
@@ -92,7 +93,7 @@ def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor)
 
 
 def weighted_average(nums, weights, total_weight):
-    """Returns the length-weighted average (arithmetic mean) of a list of numbers"""
+    """Returns the weighted average (arithmetic mean) of a list of numbers"""
 
     weighted_sum = 0
     for num, weight in zip(nums, weights):
@@ -102,7 +103,7 @@ def weighted_average(nums, weights, total_weight):
 
 
 def weighted_bayesian_average(nums, weights, total_weight, c=None, m=None):
-    """Returns the length-weighted Bayesian average of an iterable of numbers,
+    """Returns the weighted Bayesian average of an iterable of numbers,
     with parameters defaulting to config specific to ~#rating."""
     m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
@@ -273,16 +274,18 @@ class Collection:
                     smoothing_factor = float(
                         config.getint("settings", "weight_smoothing_factor",
                                       SMOOTHING_FACTOR_DEFAULT))
-                    total_length = self.__get_value("~#length")
 
-                    if total_length and smoothing_factor >= 0:
-                        total_weight, weights, nums = smoothed_length_weights_and_nums(
-                            self.songs, key, total_length, smoothing_factor)
+                    if smoothing_factor >= 0:
+                        total_length = self.__get_value("~#length")
 
-                        if not nums:
-                            return None
+                        if total_length:
+                            t_weight, weights, nums = smoothed_length_weights_and_nums(
+                                self.songs, key, total_length, smoothing_factor)
 
-                        return func(nums, weights, total_weight)
+                            if not nums:
+                                return None
+
+                            return func(nums, weights, t_weight)
 
                     # fall back on unweighted version
                     func = unweighted_func
