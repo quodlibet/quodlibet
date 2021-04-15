@@ -71,7 +71,6 @@ def hyperbolic_smoother(x, n=SMOOTHING_FACTOR_DEFAULT):
 
 def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor):
     """Returns smoothed length-based weights and the songs' associated numeric values"""
-    total_weight = 0
     length_based_smoothed_weights = []
     values = []
     for s in songs:
@@ -86,30 +85,33 @@ def smoothed_length_weights_and_nums(songs, key, total_length, smoothing_factor)
 
         values.append(value)
         weight = hyperbolic_smoother(length / total_length, smoothing_factor)
-        total_weight += weight
+
         length_based_smoothed_weights.append(weight)
 
-    return total_weight, length_based_smoothed_weights, values
+    return length_based_smoothed_weights, values
 
 
-def weighted_average(nums, weights, total_weight):
+def weighted_average(nums, weights):
     """Returns the weighted average (arithmetic mean) of a list of numbers"""
-
+    total_weight = 0
     weighted_sum = 0
     for num, weight in zip(nums, weights):
+        total_weight += weight
         weighted_sum += weight * num
 
     return weighted_sum / total_weight
 
 
-def weighted_bayesian_average(nums, weights, total_weight, c=None, m=None):
+def weighted_bayesian_average(nums, weights, c=None, m=None):
     """Returns the weighted Bayesian average of an iterable of numbers,
     with parameters defaulting to config specific to ~#rating."""
     m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
 
+    total_weight = 0
     weighted_sum = 0
     for num, weight in zip(nums, weights):
+        total_weight += weight
         weighted_sum += weight * num
 
     return float(m * c + weighted_sum) / (c + total_weight)
@@ -279,13 +281,13 @@ class Collection:
                         total_length = self.__get_value("~#length")
 
                         if total_length:
-                            t_weight, weights, nums = smoothed_length_weights_and_nums(
+                            weights, nums = smoothed_length_weights_and_nums(
                                 self.songs, key, total_length, smoothing_factor)
 
                             if not nums:
                                 return None
 
-                            return func(nums, weights, t_weight)
+                            return func(nums, weights)
 
                     # fall back on unweighted version
                     func = unweighted_func

@@ -196,9 +196,9 @@ class TAlbum(TestCase):
         s.failUnlessEqual(album("~#rating:unweighted_bav"),
                           album("~#rating:unweighted_avg"))
 
-        total_weight, weights, nums = smoothed_length_weights_and_nums(songs,
+        weights, nums = smoothed_length_weights_and_nums(songs,
             "~#rating", total_length=5 + 10, smoothing_factor=10)
-        expected = weighted_average(nums, weights, total_weight)
+        expected = weighted_average(nums, weights)
         s.failUnlessEqual(album("~#rating:avg"), expected)
 
     def test_bayesian_multiple_ratings(s):
@@ -215,9 +215,9 @@ class TAlbum(TestCase):
         expected = unweighted_average(c * [config.RATINGS.default] + [r1, r2])
         s.failUnlessEqual(album("~#rating:unweighted_bav"), expected)
 
-        total_weight, weights, nums = smoothed_length_weights_and_nums(
+        weights, nums = smoothed_length_weights_and_nums(
             songs, "~#rating", total_length=5 + 17, smoothing_factor=10)
-        expected = weighted_bayesian_average(nums, weights, total_weight)
+        expected = weighted_bayesian_average(nums, weights)
 
         s.failUnlessEqual(album("~#rating"), expected)
 
@@ -403,9 +403,9 @@ class TPlaylist(TestCase):
             s.failUnlessEqual(pl.get("~#rating:unweighted_avg"),
                               unweighted_average([0.1, 0.3, 0.5]))
 
-            total_weight, weights, nums = smoothed_length_weights_and_nums(
+            weights, nums = smoothed_length_weights_and_nums(
                 songs, "~#rating", total_length=12, smoothing_factor=10)
-            expected = weighted_average(nums, weights, total_weight)
+            expected = weighted_average(nums, weights)
             s.failUnlessEqual(pl.get("~#rating"), expected)
 
             s.failUnlessEqual(pl.get("~#filesize"), 303)
