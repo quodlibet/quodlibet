@@ -43,7 +43,7 @@ mypy = "^0.812"
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]
-include = ["quodlibet/*", "tests/*"]
+include = ["quodlibet/*"]
 
 [build-system]
 requires = ["setuptools", "wheel"]
