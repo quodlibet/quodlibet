@@ -169,3 +169,9 @@ jobs:
     - name: Run tests
       run: |
         PYTEST_ADDOPTS=-rxXs poetry run python setup.py test
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: false
+        verbose: true # optional (default = false)
