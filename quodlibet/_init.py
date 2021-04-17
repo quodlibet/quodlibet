@@ -289,7 +289,7 @@ def _init_gtk():
         gi.require_foreign("cairo")
     except ImportError:
         print_e("PyGObject is missing cairo support")
-        exit(1)
+        sys.exit(1)
 
     css_override = ThemeOverrider()
 

@@ -431,9 +431,8 @@ class _FileFromPattern(PatternFormatter):
 class _ArbitraryExtensionFileFromPattern(_FileFromPattern):
     """Allows filename-like output with extensions different from the song."""
 
-    def _post(self, value, song):
-        super_object = super(_ArbitraryExtensionFileFromPattern, self)
-        return super_object._post(value, song, False)
+    def _post(self, value, song, keep_extension=False):
+        return super()._post(value, song, keep_extension)
 
 
 class _XMLFromPattern(PatternFormatter):

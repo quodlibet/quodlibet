@@ -14,7 +14,7 @@ import os
 import re
 import shutil
 import time
-from typing import List, Tuple, Generic, TypeVar
+from typing import Any, List, Tuple, Generic, TypeVar
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -159,10 +159,10 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     @util.cached_property
     def album_key(self) -> AlbumKey:
-        return (human(self("albumsort", "")),
-                human(self("albumartistsort", "")),
-                self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
+        id_val = (self.get("album_grouping_key")
+                  or self.get("labelid")
+                  or self.get("musicbrainz_albumid", ""))
+        return id_val, human(self("albumsort", "")), human(self("albumartistsort", ""))
 
     @util.cached_property
     def sort_key(self):
@@ -264,8 +264,13 @@ class AudioFile(dict, ImageContainer, HasKey):
         backup = dict(self)
         fn = self["~filename"]
         saved = {}
+        persisted = config.getboolean("editing", "save_to_songs")
+        persisted_keys = ({"~#rating", "~#playcount"}
+                          if self.supports_rating_and_play_count_in_file and persisted
+                          else set())
         for key in self:
-            if key in MIGRATE:
+            # Only migrate keys that aren't (probably) persisted to file (#3569)
+            if key in MIGRATE - persisted_keys:
                 saved[key] = self[key]
         self.clear()
         self["~filename"] = fn
@@ -301,7 +306,7 @@ class AudioFile(dict, ImageContainer, HasKey):
     def iterrealitems(self):
         return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
-    def __call__(self, key, default=u"", connector=" - ", joiner=', '):
+    def __call__(self, key, default: Any = u"", connector=" - ", joiner=', '):
         """Return the value(s) for a key, synthesizing if necessary.
         Multiple values for a key are delimited by newlines.
 
@@ -405,9 +410,11 @@ class AudioFile(dict, ImageContainer, HasKey):
                     return self("~format")
                 return codec
             elif key == "encoding":
-                parts = filter(None,
-                               [self.get("~encoding"), self.get("encodedby")])
-                encoding = u"\n".join(parts)
+                encoding = "\n".join(
+                    part
+                    for part in [self.get("~encoding"), self.get("encodedby")]
+                    if part
+                )
                 return encoding or default
             elif key == "language":
                 codes = self.list("language")
@@ -459,15 +466,18 @@ class AudioFile(dict, ImageContainer, HasKey):
 
                 # If there are no embedded lyrics, try to read them from
                 # the external file.
+                lyric_filename = self.lyric_filename
+                if not lyric_filename:
+                    return default
                 try:
-                    with open(self.lyric_filename, "rb") as fileobj:
-                        print_d("Reading lyrics from %s" % self.lyric_filename)
+                    with open(lyric_filename, "rb") as fileobj:
+                        print_d(f"Reading lyrics from {lyric_filename!r}")
                         text = fileobj.read().decode("utf-8", "replace")
                         # try to skip binary files
                         if "\0" in text:
                             return default
                         return text
-                except EnvironmentError:
+                except (EnvironmentError, UnicodeDecodeError):
                     return default
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
@@ -557,7 +567,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         return "\n".join(descs)
 
     @property
-    def lyric_filename(self):
+    def lyric_filename(self) -> Optional[str]:
         """Returns the validated, or default, lyrics filename for this
         file. User defined '[memory] lyric_rootpaths' and
         '[memory] lyric_filenames' matches take precedence"""
@@ -593,20 +603,16 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         def sanitise(sep, parts):
             """Return a santisied version of a path's parts"""
-            return sep.join(part.replace(os.path.sep, u'')[:128]
-                                for part in parts)
+            return sep.join(part.replace(os.path.sep, u'')[:128] for part in parts)
 
         # setup defaults (user-defined take precedence)
         # root search paths
-        lyric_paths = \
-            config.getstringlist("memory", "lyric_rootpaths", [])
+        lyric_paths = config.getstringlist("memory", "lyric_rootpaths", [])
         # ensure default paths
         lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
-        lyric_paths.append(
-            os.path.join(os.path.dirname(self.comma('~filename'))))
+        lyric_paths.append(os.path.join(os.path.dirname(self.comma('~filename'))))
         # search pathfile names
-        lyric_filenames = \
-            config.getstringlist("memory", "lyric_filenames", [])
+        lyric_filenames = config.getstringlist("memory", "lyric_filenames", [])
         # ensure some default pathfile names
         lyric_filenames.append(
             sanitise(os.sep, [(self.comma("lyricist") or
@@ -630,7 +636,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
 
         # expand each raw pathfile in turn and test for existence
-        match_ = ""
+        match_ = None
         pathfiles_expanded = OrderedDict()
         for pf, rpf in pathfiles.items():
             for rpf in expand_pathfile(rpf):  # resolved as late as possible
@@ -639,7 +645,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 if os.path.exists(pathfile):
                     match_ = pathfile
                     break
-            if match_ != "":
+            if match_:
                 break
 
         if not match_:
@@ -1066,8 +1072,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             except OverflowError:
                 scale = 1.0
             else:
-                if scale > 1:
-                    scale = 1.0  # don't clip
+                scale = min(scale, 1.0)
             return min(15, scale)
 
     def write(self):

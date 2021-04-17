@@ -953,7 +953,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         """
 
         model = self.get_model()
-        if config.getboolean("song_list", "auto_sort") and self.is_sorted():
+        if not config.getboolean("memory", "shuffle", False) and \
+                config.getboolean("song_list", "auto_sort") and self.is_sorted():
             iters, complete = self.__find_iters_in_selection(songs)
             if not complete:
                 iters = model.find_all(songs)

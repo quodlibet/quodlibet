@@ -1,5 +1,6 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
 #           2011-2014 Christoph Reiter
+#           2020-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -709,8 +710,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # transitions don't occur there.
         # https://github.com/quodlibet/quodlibet/issues/1454
         # https://bugzilla.gnome.org/show_bug.cgi?id=695474
-        if self.song.multisong:
-            print_d("multisong: ignore about to finish")
+        if self.song and self.song.multisong:
+            print_d("This is a multisong - so ignoring 'about to finish' signal")
             return
 
         # mod + gapless deadlocks
@@ -919,7 +920,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.emit('song-ended', info, stopped)
         self.emit('song-ended', song, stopped)
 
-        current = self._source.current if next_song is None else next_song
+        current = next_song if next_song else (self._source and self._source.current)
 
         # Then, set up the next song.
         self.song = self.info = current

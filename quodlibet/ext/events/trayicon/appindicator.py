@@ -1,6 +1,6 @@
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2013 Nick Boultbee
+#           2013,21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@ import gi
 try:
     gi.require_version("AppIndicator3", "0.1")
 except ValueError as e:
-    raise ImportError(e)
+    raise ImportError(f"Can't load ({e}). Perhaps install gir*-appindicator3* package?")
 
 from gi.repository import AppIndicator3, Gdk
 

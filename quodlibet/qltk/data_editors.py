@@ -198,7 +198,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
             l.set_alignment(0.0, 0.5)
-            if isinstance(val, int) or isinstance(val, bool):
+            if isinstance(val, (int, bool)):
                 align = Align(entry, halign=Gtk.Align.START)
                 t.attach(align, 1, 2, i, i + 1)
             else:

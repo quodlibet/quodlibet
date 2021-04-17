@@ -22,7 +22,7 @@ PROCESSES = 50
 XIPH_CACHE = "xiph.pickle"
 
 
-class XiphPlaylist(object):
+class XiphPlaylist:
 
     def __init__(self, uri, listeners, streams):
         self.uri = uri

@@ -52,6 +52,8 @@ bar_va = AudioFile({
     "performer": "Jay-Z"})
 
 num_call = AudioFile({"custom": "0.3"})
+ANOTHER_RATING = 0.2
+SOME_RATING = 0.8
 
 
 class TAudioFile(TestCase):
@@ -871,14 +873,14 @@ class TAudioFile(TestCase):
 
     def test_album_key(self):
         album_key_tests = [
-            ({}, ((), (), '')),
-            ({'album': 'foo'}, (('foo',), (), '')),
-            ({'labelid': 'foo'}, ((), (), 'foo')),
-            ({'musicbrainz_albumid': 'foo'}, ((), (), 'foo')),
-            ({'album': 'foo', 'labelid': 'bar'}, (('foo',), (), 'bar')),
+            ({}, ('', (), ())),
+            ({'album': 'foo'}, ('', ('foo',), ())),
+            ({'labelid': 'foo'}, ('foo', (), ())),
+            ({'musicbrainz_albumid': 'foo'}, ('foo', (), ())),
+            ({'album': 'foo', 'labelid': 'bar'}, ('bar', ('foo',), ())),
             ({'album': 'foo', 'labelid': 'bar', 'musicbrainz_albumid': 'quux'},
-                (('foo',), (), 'bar')),
-            ({'albumartist': 'a'}, ((), ('a',), '')),
+                ('bar', ('foo',), ())),
+            ({'albumartist': 'a'}, ('', (), ('a',))),
             ]
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
@@ -974,6 +976,20 @@ class TAudioFile(TestCase):
         audio["title"] = u"foo"
         audio.reload()
         self.assertNotEqual(audio.get("title"), u"foo")
+
+    def test_reload_externally_modified(self):
+        config.set("editing", "save_to_songs", True)
+        fn = self.quux("~filename") + ".mp3"
+        shutil.copy(get_data_path('silence-44-s.mp3'), fn)
+        orig = MusicFile(fn)
+        copy = MusicFile(fn)
+        orig["~#rating"] = SOME_RATING
+        copy["~#rating"] = ANOTHER_RATING
+        orig.write()
+        orig.reload()
+        copy.reload() # should pick up the change to the file
+        assert orig("~#rating") == SOME_RATING, "reloading failed"
+        assert copy("~#rating") == SOME_RATING, "should have picked up external change"
 
     def test_reload_fail(self):
         audio = MusicFile(get_data_path('silence-44-s.mp3'))

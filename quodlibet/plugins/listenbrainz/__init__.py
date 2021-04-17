@@ -82,7 +82,7 @@ def config_get_tags():
         return []
 
 
-class ListenBrainzSubmitQueue(object):
+class ListenBrainzSubmitQueue():
     """Manages the submit queue for listens. Works independently of the
     plugin being enabled; other plugins may use submit() to queue songs for
     submission.

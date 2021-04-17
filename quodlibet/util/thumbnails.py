@@ -1,4 +1,5 @@
 # Copyright 2009-2014 Christoph Reiter
+#                2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,8 +8,11 @@
 
 import os
 import hashlib
+from typing import Optional
 
 from gi.repository import GdkPixbuf, GLib
+
+from quodlibet import print_w
 from senf import fsn2uri, fsnative, gettempdir
 
 import quodlibet
@@ -69,12 +73,12 @@ def get_cache_info(path, boundary):
     return (thumb_path, thumb_size)
 
 
-def get_thumbnail_from_file(fileobj, boundary):
+def get_thumbnail_from_file(fileobj, boundary) -> Optional[GdkPixbuf.Pixbuf]:
     """Like get_thumbnail() but works with files that can't be reopened.
 
     This is needed on Windows where NamedTemporaryFile can't be reopened.
 
-    Returns Pixbuf or None. Thread-safe.
+    :returns: Pixbuf or None. Thread-safe.
     """
 
     assert fileobj
@@ -92,8 +96,9 @@ def get_thumbnail_from_file(fileobj, boundary):
             fileobj.seek(0, 0)
             # can return None in case of partial data
             return loader.get_pixbuf()
-        except (GLib.GError, EnvironmentError):
-            pass
+        except (GLib.GError, EnvironmentError) as e:
+            print_w(f"Couldn't load thumbnail with PixbufLoader either: {e}")
+    return None
 
 
 def get_thumbnail(path, boundary, ignore_temp=True):
@@ -132,14 +137,15 @@ def get_thumbnail(path, boundary, ignore_temp=True):
     cache_dir = os.path.dirname(thumb_path)
     try:
         mkdir(cache_dir, 0o700)
-    except OSError:
+    except OSError as e:
+        print_w(f"Couldn't create cache dir {cache_dir!r} ({e}")
         return new_from_file_at_size(path, width, height)
 
     try:
         pb = new_from_file_at_size(thumb_path, width, height)
-    except GLib.GError:
+    except GLib.GError as e:
         # in case it fails to load, we recreate it
-        pass
+        print_w(f"Couldn't load from {thumb_path!r} ({e}), recreating.")
     else:
         meta_mtime = pb.get_option("tEXt::Thumb::MTime")
         if meta_mtime is not None:
@@ -171,8 +177,7 @@ def get_thumbnail(path, boundary, ignore_temp=True):
         "tEXt::Software": "QuodLibet"
     }
 
-    thumb_pb.savev(
-        thumb_path, "png", list(options.keys()), list(options.values()))
+    thumb_pb.savev(thumb_path, "png", list(options.keys()), list(options.values()))
     try:
         os.chmod(thumb_path, 0o600)
     except OSError:

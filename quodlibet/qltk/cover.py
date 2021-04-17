@@ -267,7 +267,7 @@ class CoverImage(Gtk.EventBox):
         self.set_song(self.__song)
 
     def update_bci(self, albumfile):
-        #if there's a big image displaying, it should update.
+        # If there's a big image displaying, it should update.
         if self.__current_bci is not None:
             self.__current_bci.destroy()
             if albumfile:

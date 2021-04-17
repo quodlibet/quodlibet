@@ -1,4 +1,4 @@
-# Copyright 2018-2020 Nick Boultbee
+# Copyright 2018-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 from quodlibet import _, app, print_d, print_w
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
-from quodlibet.packages.senf import path2fsn
+from senf import path2fsn
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
 from quodlibet.plugins import (PluginConfig, ConfProp, IntConfProp,
                                BoolConfProp)
@@ -109,8 +109,6 @@ class ResizeWebImage(Gtk.Image):
         headers = self.message.get_property('response-headers')
         self.size = int(headers.get('content-length'))
         self._content_type = headers.get('content-type')
-        print_d("Loading %d KB (of %s)"
-                % (len(result) / 1024, self._content_type))
         self._original = result
         try:
             loader = GdkPixbuf.PixbufLoader()

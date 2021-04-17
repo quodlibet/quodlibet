@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quodlibet"
-version = "4.4.0-pre"
+version = "4.4.1-pre"
 description = "A music library, tagger, and player"
 authors = ["Joe Wreschnig", "Michael Urman", "Steven Robertson",
     "Christoph Reiter", "Nick Boultbee", "(many others)"]
@@ -17,7 +17,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.7"
-mutagen = "^1.44"
+mutagen = "^1.45"
 feedparser = "^5.2 || ^6.0"
 pycairo = "^1.19"
 pygobject = "^3.34.0"
@@ -39,11 +39,11 @@ sphinx_rtd_theme = '*'
 xvfbwrapper = { version = "^0.2", platform = "linux" }
 flake8 = "^3.7.9"
 coverage = { extras = ["toml"], version = "^5.0.3" }
-mypy = "^0.790"
+mypy = "^0.812"
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]
-include = ["quodlibet/*", "tests/*"]
+include = ["quodlibet/*"]
 
 [build-system]
 requires = ["setuptools", "wheel"]

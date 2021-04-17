@@ -12,7 +12,7 @@ Librarians for libraries.
 """
 
 import itertools
-from typing import Generator
+from typing import Generator, Iterable
 
 from gi.repository import GObject
 
@@ -142,9 +142,17 @@ class Librarian(GObject.GObject):
     def move_root(self, old_root: fsnative, new_root: fsnative) -> Generator:
         if old_root == new_root:
             print_d("Not moving to same root")
+            return
         for library in self.libraries.values():
             if hasattr(library, "move_root"):
                 yield from library.move_root(old_root, new_root)
+
+    def remove_roots(self, old_roots: Iterable[fsnative]) -> Generator:
+        if not old_roots:
+            return
+        for library in self.libraries.values():
+            if hasattr(library, "remove_roots"):
+                yield from library.remove_roots(old_roots)
 
 
 class SongLibrarian(Librarian):

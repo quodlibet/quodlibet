@@ -97,7 +97,7 @@ class SoundcloudQuery(Query):
             if len(node._names) == 1:
                 return self._extract_terms_set(node.res, tag=node._names[0])
             return self._extract_terms_set(node.res)
-        elif isinstance(node, Inter) or isinstance(node, Union):
+        elif isinstance(node, (Inter, Union)):
             # Treat identically as the text-based query will perform
             # relevance ranking itself, meaning that any term is still useful
             terms = set()

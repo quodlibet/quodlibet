@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2014-2020 Nick Boultbee
+#      2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,11 +36,11 @@ class CoverPluginHandler(PluginHandler):
 
     def plugin_enable(self, plugin):
         self.providers.add(plugin)
-        print_d("Registered {0} cover source".format(plugin.cls.__name__))
+        print_d(f"Registered {plugin.cls.__name__} cover source")
 
     def plugin_disable(self, plugin):
         self.providers.remove(plugin)
-        print_d("Unregistered {0} cover source".format(plugin.cls.__name__))
+        print_d(f"Unregistered {plugin.cls.__name__} cover source")
 
     @property
     def sources(self):
@@ -105,7 +105,7 @@ class CoverManager(GObject.Object):
 
         def success(source, result):
             name = source.__class__.__name__
-            print_d('Successfully got cover from {0}'.format(name))
+            print_d(f"Successfully got cover from {name}")
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
@@ -113,7 +113,7 @@ class CoverManager(GObject.Object):
 
         def failure(source, msg):
             name = source.__class__.__name__
-            print_d("Didn't get cover from {0}: {1}".format(name, msg))
+            print_d(f"Didn't get cover from {name}: {msg}")
             source.disconnect_by_func(success)
             source.disconnect_by_func(failure)
             if not cancellable or not cancellable.is_cancelled():
@@ -128,7 +128,7 @@ class CoverManager(GObject.Object):
             cover = provider.cover
             if cover:
                 name = provider.__class__.__name__
-                print_d('Found local cover from {0}: {1}'.format(name, cover))
+                print_d(f"Found local cover from {name}: {cover}")
                 callback(True, cover)
             else:
                 provider.connect('fetch-success', success)
@@ -244,7 +244,7 @@ class CoverManager(GObject.Object):
         def search_complete(provider, results):
             name = provider.name
             if not results:
-                print_d('No covers from {0}'.format(name))
+                print_d(f"No covers from {name}")
                 finished(provider, False)
                 return
             finished(provider, True)
@@ -258,8 +258,7 @@ class CoverManager(GObject.Object):
         def failure(provider, result):
             finished(provider, False)
             name = provider.__class__.__name__
-            print_d('Failed to get cover from {name} ({msg})'.format(
-                name=name, msg=result))
+            print_d(f"Failed to get cover from {name!r} ({result})")
             provider.disconnect_by_func(failure)
 
         def song_groups(songs, sources):
@@ -273,16 +272,16 @@ class CoverManager(GObject.Object):
             return all_groups
 
         all_groups = song_groups(songs, sources)
-        print_d("Got %d plugin groupings" % self._total_groupings(all_groups))
+        print_d(f"Got {self._total_groupings(all_groups)} plugin groupings")
 
         for plugin_cls, groups in all_groups.items():
             for key, group in sorted(groups.items()):
                 song = sorted(group, key=lambda s: s.key)[0]
                 artists = {s.comma('artist') for s in group}
                 if len(artists) > 1:
-                    print_d("%d artist groups in %s - probably a compilation. "
-                            "Using provider to search for compilation"
-                            % (len(artists), key))
+                    print_d(f"{len(artists)} artist groups in {key} "
+                            "- probably a compilation. "
+                            "Using provider to search for compilation")
                     song = AudioFile(song)
                     try:
                         del song['artist']
@@ -308,4 +307,4 @@ class CoverData(GObject.GObject):
         self.source = source
 
     def __repr__(self):
-        return "CoverData<url=%s @ %s>" % (self.url, self.dimensions)
+        return f"CoverData<url={self.url} @ {self.dimensions}>"

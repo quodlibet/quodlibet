@@ -54,7 +54,7 @@ def extract_extra(record, reserved=RESERVED, contextual=CONTEXTUAL):
     return data, extra
 
 
-class SentryHandler(logging.Handler, object):
+class SentryHandler(logging.Handler):
     def __init__(self, *args, **kwargs):
         client = kwargs.get('client_cls', Client)
         if len(args) == 1:
