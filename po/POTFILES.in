@@ -81,7 +81,6 @@ quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/visualisations.py
 quodlibet/ext/events/waveformseekbar.py
-quodlibet/ext/events/weblyrics.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py
