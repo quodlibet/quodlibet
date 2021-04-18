@@ -89,18 +89,19 @@ class PlaylistLibrary(Library[str, Playlist]):
                 pl.write()
             self.changed(changed)
 
-    def __songs_changed(self, library, songs):
+    def __songs_changed(self, library, songs) -> None:
         # Q: what if the changes are entirely due to changes *from* this library?
         # A: seems safest to still emit 'changed' as collections can cache metadata etc
-        changed = {
-            playlist
-            for playlist in self
-            for song in songs
-            if song in playlist.songs
-        }
+        changed = set()
+        for playlist in self:
+            for song in songs:
+                if song in playlist.songs:
+                    changed.add(playlist)
+                    # It's definitely changed now, nothing else is interesting
+                    break
         if changed:
-            # TODO: only write if anything *persisted* changes
-            #  i.e. not internal stuff (notably: ~playlists itself)!
+            # TODO: only write if anything *persisted* changes (#3622)
+            #  i.e. not internal stuff (notably: ~playlists itself)
             for pl in changed:
                 pl.finalize()
                 pl.write()
