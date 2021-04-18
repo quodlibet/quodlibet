@@ -13,7 +13,6 @@ from __future__ import annotations
 
 import os
 import random
-from numbers import Real
 from typing import Any, Set, Union, MutableSequence, List, Tuple
 from urllib.parse import quote
 
@@ -48,6 +47,9 @@ PEOPLE.insert(0, "albumartist")
 
 ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100 ** i for i in range(len(PEOPLE))]
+
+
+Real = Union[int, float]
 
 
 def unweighted_average(nums: List[Real]) -> float:
@@ -87,7 +89,7 @@ def smoothed_length_weights_and_nums(songs: List[AudioFile], key: str,
                                      smoothing_factor: float) -> WeightsAndNumbers:
     """:returns: smoothed length-based weights and the songs' associated numeric values
     """
-    total_length = float(total_length)
+    total_length_f = float(total_length)
     length_based_smoothed_weights = []
     values = []
     for s in songs:
@@ -103,7 +105,7 @@ def smoothed_length_weights_and_nums(songs: List[AudioFile], key: str,
             continue
 
         values.append(value)
-        weight = hyperbolic_smoother(length / total_length, smoothing_factor)
+        weight = hyperbolic_smoother(length / total_length_f, smoothing_factor)
 
         length_based_smoothed_weights.append(weight)
 
@@ -112,8 +114,8 @@ def smoothed_length_weights_and_nums(songs: List[AudioFile], key: str,
 
 def weighted_average(nums: List[Real], weights: List[float]) -> float:
     """:returns: the weighted average (arithmetic mean) of a list of numbers"""
-    total_weight = 0
-    weighted_sum = 0
+    total_weight = 0.0
+    weighted_sum = 0.0
     for num, weight in zip(nums, weights):
         total_weight += weight
         weighted_sum += weight * num
@@ -128,8 +130,8 @@ def weighted_bayesian_average(nums: List[Real], weights: List[float], c: Real = 
     m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor")
 
-    total_weight = 0
-    weighted_sum = 0
+    total_weight = 0.0
+    weighted_sum = 0.0
     for num, weight in zip(nums, weights):
         total_weight += weight
         weighted_sum += weight * num
