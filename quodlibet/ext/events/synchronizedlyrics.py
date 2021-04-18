@@ -1,39 +1,34 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#            2016-17 Nick Boultbee
+#            2016-20 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
-
-"""Provides `Synchronized Lyrics` plugin for showing synchronized lyrics."""
-
+import functools
 import os
-from typing import List, Tuple
-from datetime import datetime
+import re
+from os.path import splitext
+from typing import List, Tuple, Optional
 
 from gi.repository import Gtk, Gdk, GLib
-
-from quodlibet.qltk import Icons
-from quodlibet.util.dprint import print_d
 
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
-
+from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginConfigMixin
-
 from quodlibet.plugins.events import EventPlugin
+from quodlibet.qltk import Icons
+from quodlibet.util.dprint import print_d
 
 
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
-
     PLUGIN_ID = 'SynchronizedLyrics'
     PLUGIN_NAME = _('Synchronized Lyrics')
-    PLUGIN_DESC = _('Shows synchronized lyrics from .lrc file with same name \
-as the track.')
+    PLUGIN_DESC = _('Shows synchronized lyrics from an .lrc file '
+                    'with same name as the track (or similar).')
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     SYNC_PERIOD = 10000
@@ -46,13 +41,16 @@ as the track.')
     CFG_TXTCOLOR_KEY = "textColor"
     CFG_FONTSIZE_KEY = "fontSize"
 
-    _lines: List[Tuple] = []
-    _timers: List[Tuple[int, int]] = []
+    # Note the trimming of whitespace, seems "most correct" behaviour
+    LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)\]\s*(.+)\s*")
 
-    _current_lrc = ""
-    _start_clearing_from = 0
-    textview = None
-    scrolled_window = None
+    def __init__(self) -> None:
+        super().__init__()
+        self._lines: List[Tuple[int, str]] = []
+        self._timers: List[Tuple[int, int]] = []
+        self._start_clearing_from = 0
+        self.textview = None
+        self.scrolled_window = None
 
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
@@ -132,29 +130,26 @@ as the track.')
         self.scrolled_window = Gtk.ScrolledWindow()
         self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC,
                                         Gtk.PolicyType.AUTOMATIC)
-        self.adjustment = self.scrolled_window.get_vadjustment()
+        self.scrolled_window.get_vadjustment().set_value(0)
 
         self.textview = Gtk.TextView()
-        self.text_buffer = self.textview.get_buffer()
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
         self.scrolled_window.add_with_viewport(self.textview)
 
-        self.textview.show()
-
-        app.window.get_child().pack_start(self.scrolled_window, False, True, 0)
-        app.window.get_child().reorder_child(self.scrolled_window, 2)
+        vb = Gtk.HBox()
+        vb.pack_start(self.scrolled_window, True, True, 6)
+        vb.show_all()
+        app.window.get_child().pack_start(vb, False, True, 0)
+        app.window.get_child().reorder_child(vb, 2)
 
         self._style_lyrics_window()
-
-        self.adjustment.set_value(0)
-
         self.scrolled_window.show()
 
         self._sync_timer = GLib.timeout_add(self.SYNC_PERIOD, self._sync)
-        self._build_data()
+        self._build_data(app.player.song)
         self._timer_control()
 
     def disabled(self):
@@ -168,77 +163,65 @@ as the track.')
     def _style_lyrics_window(self):
         if self.scrolled_window is None:
             return
-        self.scrolled_window.set_size_request(-1, 1.6 * self._get_font_size())
-        qltk.add_css(self.textview, """
+        self.scrolled_window.set_size_request(-1, 1.5 * self._get_font_size())
+        qltk.add_css(self.textview, f"""
             * {{
-                background-color: {0};
-                color: {1};
-                font-size: {2}px;
-                padding: 0.2em;
+                background-color: {self._get_background_color()};
+                color: {self._get_text_color()};
+                font-size: {self._get_font_size()}px;
+                padding: 0.25rem;
+                border-radius: 6px;
             }}
-        """.format(self._get_background_color(), self._get_text_color(),
-                   self._get_font_size()))
+        """)
 
     def _cur_position(self):
         return app.player.get_position()
 
-    def _build_data(self):
-        self.text_buffer.set_text("")
-        if app.player.song is not None:
+    @functools.lru_cache()
+    def _build_data(self, song: Optional[AudioFile]) -> List[Tuple[int, str]]:
+        if self.textview:
+            self.textview.get_buffer().set_text("")
+        if song:
             # check in same location as track
-            track_name = app.player.song.get("~filename")
-            new_lrc = os.path.splitext(track_name)[0] + ".lrc"
-            print_d("Checking for lyrics file %s" % new_lrc)
-            if self._current_lrc != new_lrc:
-                self._lines = []
-                if os.path.exists(new_lrc):
-                    print_d("Found lyrics file: %s" % new_lrc)
-                    self._parse_lrc_file(new_lrc)
-            self._current_lrc = new_lrc
+            track_name = splitext(song("~basename") or "")[0]
+            dir_ = song("~dirname")
+            print_d(f"Looking for .lrc files in {dir_}")
+            for filename in [f"{s}.lrc"
+                             for s in {
+                                 track_name,
+                                 track_name.lower(),
+                                 track_name.upper(),
+                                 song("~artist~title"),
+                                 song("~artist~tracknumber~title"),
+                                 song("~tracknumber~title")
+                             }
+                             ]:
+                print_d(f"Looking for {filename!r}")
+                try:
+                    with open(os.path.join(dir_, filename), 'r', encoding="utf-8") as f:
+                        print_d(f"Found lyrics file: {filename}")
+                        contents = f.read()
+                except FileNotFoundError:
+                    continue
+                return self._parse_lrc(contents)
+            print_d(f"No lyrics found for {track_name!r}")
+        return []
 
-    def _parse_lrc_file(self, filename):
-        with open(filename, 'r', encoding="utf-8") as f:
-            raw_file = f.read()
-        raw_file = raw_file.replace("\n", "")
-        begin = 0
-        keep_reading = len(raw_file) != 0
-        tmp_dict = {}
-        compressed = []
-        while keep_reading:
-            next_find = raw_file.find("[", begin + 1)
-            if next_find == -1:
-                keep_reading = False
-                line = raw_file[begin:]
-            else:
-                line = raw_file[begin:next_find]
-            begin = next_find
-
-            # parse lyricsLine
-            if len(line) < 2 or not line[1].isdigit():
+    def _parse_lrc(self, contents: str) -> List[Tuple[int, str]]:
+        data = []
+        for line in contents.splitlines():
+            match = self.LINE_REGEX.match(line)
+            if not match:
                 continue
-            close_bracket = line.find("]")
-            t = datetime.strptime(line[1:close_bracket], '%M:%S.%f')
-            timestamp = (t.minute * 60000 + t.second * 1000 +
-                         t.microsecond / 1000)
-            words = line[close_bracket + 1:]
-            if not words:
-                compressed.append(timestamp)
-            else:
-                tmp_dict[timestamp] = words
-                for t in compressed:
-                    tmp_dict[t] = words
-                compressed = []
-
-        keys = list(tmp_dict.keys())
-        keys.sort()
-        for key in keys:
-            self._lines.append((key, tmp_dict[key]))
-        del keys
-        del tmp_dict
+            timing, text = match.groups()
+            minutes, seconds = (float(p) for p in timing.split(":", 1))
+            timestamp = int(1000 * (minutes * 60 + seconds))
+            data.append((timestamp, text))
+        return sorted(data)
 
     def _set_timers(self):
-        print_d("Setting timers")
-        if len(self._timers) == 0:
+        if not self._timers:
+            print_d("Setting timers")
             cur_time = self._cur_position()
             cur_idx = self._greater(self._lines, cur_time)
             if cur_idx != -1:
@@ -247,8 +230,7 @@ as the track.')
 
                     timestamp = self._lines[cur_idx][0]
                     line = self._lines[cur_idx][1]
-                    tid = GLib.timeout_add(timestamp - cur_time, self._show,
-                                           line)
+                    tid = GLib.timeout_add(timestamp - cur_time, self._show, line)
                     self._timers.append((timestamp, tid))
                     cur_idx += 1
 
@@ -271,14 +253,18 @@ as the track.')
         self._timers = []
         self._start_clearing_from = 0
 
-    def _show(self, line):
-        self.text_buffer.set_text(line)
+    def _show(self, line) -> bool:
+        if self.textview:
+            self.textview.get_buffer().set_text(line)
         self._start_clearing_from += 1
-        print_d("♪ %s ♪" % line.strip())
+        print_d(f"♪ {line.strip()} ♪")
         return False
 
-    def plugin_on_song_started(self, song):
-        self._build_data()
+    def plugin_on_song_started(self, song: AudioFile) -> None:
+        if song:
+            print_d(f"Preparing for {song.key}")
+        self._clear_timers()
+        self._lines = self._build_data(song)
         # delay so that current position is for current track, not previous one
         GLib.timeout_add(5, self._timer_control)
 

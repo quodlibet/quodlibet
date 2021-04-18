@@ -1,17 +1,19 @@
-# Copyright 2012 - 2014 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2020 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional, Iterable
+
 from quodlibet import _
 from quodlibet import config
 from quodlibet import util
-from quodlibet.util.modulescanner import ModuleScanner
-from quodlibet.util.dprint import print_d
-from quodlibet.util.config import ConfigProxy
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.util.config import ConfigProxy
+from quodlibet.util.dprint import print_d
+from quodlibet.util.modulescanner import ModuleScanner
 
 
 def init(folders=None, disable_plugins=False):
@@ -224,7 +226,8 @@ class PluginManager:
     CONFIG_SECTION = "plugins"
     CONFIG_OPTION = "active_plugins"
 
-    instance = None  # default instance
+    instance: Optional["PluginManager"] = None
+    """Default instance"""
 
     def __init__(self, folders=None):
         """folders is a list of paths that will be scanned for plugins.
@@ -279,14 +282,11 @@ class PluginManager:
         return self.__scanner.modules.values()
 
     @property
-    def _plugins(self):
+    def _plugins(self) -> Iterable[Plugin]:
         """All registered plugins"""
-
-        plugins = []
-        for module in self.__modules.values():
-            for plugin in module.plugins:
-                plugins.append(plugin)
-        return plugins
+        return (plugin
+                for module in self.__modules.values()
+                for plugin in module.plugins)
 
     @property
     def plugins(self):

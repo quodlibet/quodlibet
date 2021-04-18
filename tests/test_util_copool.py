@@ -27,9 +27,9 @@ class Tcopool(TestCase):
 
     def _assert_eventually(self, value):
         for i in range(100):
+            Gtk.main_iteration_do(False)
             if self.buffer is value:
                 return
-            Gtk.main_iteration_do(False)
         assert self.buffer is value
 
     def _assert_never(self, value):

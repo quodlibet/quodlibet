@@ -89,7 +89,7 @@ class APEv2File(AudioFile):
              "original artist": "originalartist",
              "mixartist": "remixer",
     }
-    SNART = dict([(v, k) for k, v in TRANS.items()])
+    SNART = dict((v, k) for k, v in TRANS.items())
 
     can_change_images = True
 

@@ -3,6 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from quodlibet.qltk import exfalsowindow
 from tests import TestCase
 
 from quodlibet.qltk.exfalsowindow import ExFalsoWindow
@@ -21,3 +22,10 @@ class TExFalsoWindow(TestCase):
     def tearDown(self):
         self.ef.destroy()
         quodlibet.config.quit()
+
+    def test_prefs(self):
+        self.prefs = exfalsowindow.PreferencesWindow(None)
+        self.prefs.present()
+        assert self.prefs.get_title() == "Ex Falso Preferences"
+        assert self.prefs.get_child(), "No window contents"
+        self.prefs.destroy()

@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2017 Nick Boultbee
+#      2011-2020 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -9,7 +9,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
+from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
@@ -33,7 +33,7 @@ from quodlibet.qltk.util import GSignals
 from quodlibet.qltk.delete import trash_songs
 from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
-from quodlibet.qltk.songlistcolumns import create_songlist_column
+from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
 
 
@@ -263,7 +263,7 @@ class SongListDnDMixin:
 
             qltk.selection_set_songs(sel, songs)
 
-            # DEM 2018/05/25: The below check is a deliberate repitition of
+            # DEM 2018/05/25: The below check is a deliberate repetition of
             # code in the drag-motion signal handler.  In MacOS/Quartz, the
             # context action is not propogated between event handlers for
             # drag-motion and drag-data-get using "ctx.get_actions()".  It is
@@ -479,7 +479,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                     dont_reverse = True
                     break
 
-        # set the inidicators
+        # set the indicators
         default_order = Gtk.SortType.ASCENDING
         reversed_ = False
         for c in self.get_columns():
@@ -626,8 +626,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             precision = config.RATINGS.precision
             count = int(float(cellx - 5) / width) + 1
             rating = max(0.0, min(1.0, count * precision))
-            if (rating <= precision and
-                    song("~#rating") == precision):
+            if rating <= precision and song("~#rating") == precision:
                 rating = 0.0
             self.__set_rating(rating, [song], librarian)
 
@@ -751,16 +750,24 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def _sort_songs(self, songs):
         """Sort passed songs in place based on the column sort orders"""
 
+        order = self.get_sort_orders()
+        if not order:
+            return
+        for key, reverse in self.__get_song_sort_key_func(order):
+            songs.sort(key=key, reverse=reverse)
+
+    def __get_song_sort_key_func(self, order):
         last_tag = None
         last_order = None
         first = True
-        for tag, reverse in self.get_sort_orders():
+        key_func = []
+        for tag, reverse in order:
             tag = get_sort_tag(tag)
 
             # always sort using the default sort key first
             if first:
                 first = False
-                songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+                key_func.append((lambda s: s.sort_key, reverse))
                 last_order = reverse
                 last_tag = ""
 
@@ -771,10 +778,11 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             last_tag = tag
 
             if tag == "":
-                songs.sort(key=lambda s: s.sort_key, reverse=reverse)
+                key_func.append((lambda s: s.sort_key, reverse))
             else:
                 sort_func = AudioFile.sort_by_func(tag)
-                songs.sort(key=sort_func, reverse=reverse)
+                key_func.append((sort_func, reverse))
+        return key_func
 
     def add_songs(self, songs):
         """Add songs to the list in the right order and position"""
@@ -791,14 +799,9 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             model.append_many(songs)
             return
 
-        # FIXME: Replace with something fast
-        old_songs = self.get_songs()
-        old_songs.extend(songs)
-
-        self._sort_songs(old_songs)
-
-        for index, song in sorted(zip(map(old_songs.index, songs), songs)):
-            model.insert(index, row=[song])
+        for song in songs:
+            insert_iter = self.__find_song_position(song)
+            model.insert_before(insert_iter, row=[song])
 
     def set_songs(self, songs, sorted=False, scroll=True, scroll_select=False):
         """Fill the song list.
@@ -899,16 +902,76 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         selection.selected_foreach(func, None)
         return songs
 
+    def __find_song_position(self, song):
+        """Finds the appropriate position of a song in a sorted song list.
+
+        Returns iter of the song after the given song according to the current
+        sort order.
+
+        Returns None if the correct position is at the end of the song list.
+        """
+
+        model = self.get_model()
+        order = self.get_sort_orders()
+        sort_key_func = list(enumerate(reversed(
+                self.__get_song_sort_key_func(order))))
+        song_sort_keys = [key(song) for i, (key, r) in sort_key_func]
+        i = 0
+        j = len(model)
+        while i < j:
+            mid = (i + j) // 2
+            other_song_iter = model.iter_nth_child(None, mid)
+            other_song = model.get_value(other_song_iter)
+            song_is_lower = False
+            for i, (key, reverse) in sort_key_func:
+                other_key = key(other_song)
+                is_lower = song_sort_keys[i] < other_key
+                is_greater = song_sort_keys[i] > other_key
+                if not reverse and is_lower or reverse and is_greater:
+                    song_is_lower = True
+                    break
+                if not reverse and is_greater or reverse and is_lower:
+                    break
+            if song_is_lower:
+                j = mid
+            else:
+                i = mid + 1
+        if i < len(model):
+            return model.iter_nth_child(None, i)
+        return None
+
+    def __find_iters_in_selection(self, songs):
+        model, rows = self.get_selection().get_selected_rows()
+        rows = rows or []
+        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        complete = len(iters) == len(songs)
+        return (iters, complete)
+
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless.
         """
 
+        model = self.get_model()
+        if not config.getboolean("memory", "shuffle", False) and \
+                config.getboolean("song_list", "auto_sort") and self.is_sorted():
+            iters, complete = self.__find_iters_in_selection(songs)
+            if not complete:
+                iters = model.find_all(songs)
+
+            rows = [Gtk.TreeRowReference.new(model, model.get_path(i))
+                    for i in iters]
+
+            for row in rows:
+                iter = model.get_iter(row.get_path())
+                song = model.get_value(iter)
+                insert_iter = self.__find_song_position(song)
+                model.move_before(iter, insert_iter)
+
         vrange = self.get_visible_range()
         if vrange is None:
             return
         (start,), (end,) = vrange
-        model = self.get_model()
         for path in range(start, end + 1):
             row = model[path]
             if row[0] in songs:
@@ -928,22 +991,22 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             for song in songs:
                 player.remove(song)
 
+        model = self.get_model()
+
         # The selected songs are removed from the library and should
         # be removed from the view.
 
-        if not len(self.get_model()):
+        if not len(model):
             return
 
         songs = set(songs)
 
         # search in the selection first
         # speeds up common case: select songs and remove them
-        model, rows = self.get_selection().get_selected_rows()
-        rows = rows or []
-        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        iters, complete = self.__find_iters_in_selection(songs)
 
         # if not all songs were in the selection, search the whole view
-        if len(iters) != len(songs):
+        if not complete:
             iters = model.find_all(songs)
 
         self.remove_iters(iters)
@@ -1042,7 +1105,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         self.handler_unblock(self.__csig)
 
-    def __getmenu(self, column):
+    def _menu(self, column: SongListColumn) -> Gtk.Menu:
         menu = Gtk.Menu()
 
         def selection_done_cb(menu):
@@ -1050,16 +1113,16 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         menu.connect('selection-done', selection_done_cb)
 
-        current = SongList.headers[:]
-        current_set = set(current)
+        current_set = set(SongList.headers)
 
-        def tag_title(tag):
+        def tag_title(tag: str):
             if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
-        current = zip(map(tag_title, current), current)
+        current = [(tag_title(c), c) for c in SongList.headers]
 
-        def add_header_toggle(menu, pair, active, column=column):
+        def add_header_toggle(menu: Gtk.Menu, pair: Tuple[str, str], active: bool,
+                              column: SongListColumn = column):
             header, tag = pair
             item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
@@ -1076,7 +1139,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         sep.show()
         menu.append(sep)
 
-        trackinfo = """title genre ~title~version ~#track
+        trackinfo = """title genre comment ~title~version ~#track
             ~#playcount ~#skipcount ~rating ~#length ~playlists
             bpm initialkey""".split()
         peopleinfo = """artist ~people performer arranger author composer
@@ -1090,7 +1153,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             ~#samplerate""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers = sum(
+        all_headers: List[str] = sum(
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo],
             [])
 
@@ -1179,7 +1242,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if event is not None and event.button != Gdk.BUTTON_SECONDARY:
             return False
 
-        menu = self.__getmenu(column)
+        menu = self._menu(column)
         menu.attach_to_widget(self, None)
 
         if event:

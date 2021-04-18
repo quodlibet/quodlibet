@@ -6,10 +6,11 @@
 # (at your option) any later version.
 
 import os
+import shutil
 from io import BytesIO
 import mutagen
 
-from tests import TestCase, get_data_path
+from tests import TestCase, get_data_path, mkstemp
 from quodlibet.formats.mp4 import MP4File
 from quodlibet.formats._image import EmbeddedImage
 
@@ -72,6 +73,7 @@ class TMP4File(TestCase):
         self._assert_tag_supported("discsubtitle")
         self._assert_tag_supported("mood")
         self._assert_tag_supported("conductor")
+        self._assert_tag_supported("description")
 
     def test_replaygain_tags(self):
         self._assert_tag_supported('replaygain_album_gain', '-5.67 dB')
@@ -167,3 +169,12 @@ class TMP4File(TestCase):
     def test_can_multiple_values(self):
         self.assertEqual(self.song.can_multiple_values(), [])
         self.assertFalse(self.song.can_multiple_values("artist"))
+
+    def test_m4b_support(self):
+        path = get_data_path('test.m4a')
+        fd, filename = mkstemp(suffix='m4b')
+        os.close(fd)
+        shutil.copy(path, filename)
+        self.song = MP4File(filename)
+        assert self.song("~format") == "MPEG-4"
+        self._assert_tag_supported("title")

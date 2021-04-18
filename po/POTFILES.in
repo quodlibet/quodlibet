@@ -56,6 +56,7 @@ quodlibet/ext/events/mediaserver.py
 quodlibet/ext/events/mpdserver/__init__.py
 quodlibet/ext/events/mpris/__init__.py
 quodlibet/ext/events/mqtt.py
+quodlibet/ext/events/musicbrainzsync.py
 quodlibet/ext/events/notify.py
 quodlibet/ext/events/qlscrobbler.py
 quodlibet/ext/events/radioadmute.py
@@ -66,6 +67,7 @@ quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/seekpoints.py
 quodlibet/ext/events/squeezebox_sync.py
+quodlibet/ext/events/synchronize_to_device.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
 quodlibet/ext/events/themeswitcher.py
@@ -87,6 +89,7 @@ quodlibet/ext/gstreamer/karaoke.py
 quodlibet/ext/gstreamer/mono.py
 quodlibet/ext/gstreamer/pitch.py
 quodlibet/ext/playlist/export_to_folder.py
+quodlibet/ext/playlist/export_to_sonos.py
 quodlibet/ext/playlist/export_to_squeezebox.py
 quodlibet/ext/playlist/remove_duplicates.py
 quodlibet/ext/playlist/shuffle.py
@@ -140,7 +143,11 @@ quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
-quodlibet/library/libraries.py
+quodlibet/library/album.py
+quodlibet/library/base.py
+quodlibet/library/file.py
+quodlibet/library/playlist.py
+quodlibet/library/song.py
 quodlibet/main.py
 quodlibet/operon/base.py
 quodlibet/operon/commands.py
@@ -156,7 +163,10 @@ quodlibet/player/gstbe/util.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
+quodlibet/plugins/listenbrainz/__init__.py
+quodlibet/plugins/listenbrainz/listenbrainz.py
 quodlibet/plugins/playlist.py
+quodlibet/plugins/query.py
 quodlibet.py
 quodlibet/qltk/about.py
 quodlibet/qltk/bookmarks.py

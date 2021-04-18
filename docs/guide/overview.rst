@@ -56,10 +56,11 @@ As the name suggests, the song list is a list of matching songs presented
 by the current browser.  Double-clicking a song in the song list will start
 playing it immediately.
 
-The browser consists of a way to filter your
-library (songs), e.g. a simple search or by a list of albums. In the image
-above, no browser is active so only the current song list is shown. You can
-change the active browser by selecting one in the *View* menu.
+The browser consists of a way to filter your library (songs),
+e.g. a simple search or by a list of albums.
+In the image above, no browser is active,
+so only the current song list is shown.
+You can change the active browser by selecting one in the *View* menu.
 
 
 4. Playback Order
@@ -152,6 +153,16 @@ library automatically. Add more folders if you wish.
 Depending on the size of your music collection, it may take a few minutes
 to perform the initial scan.
 
+Note in newer versions, you can now *move* a library folder using the button
+in the *Library* tab of *Preferences*.
+This attempts to move any given music root folder (aka *scan directory*)
+to a new path, migrating (but not copying) all the tracks that are in the
+library under that path, preserving their library timestamps,
+as well as playlists containing them.
+
+Make sure you **take backups** (of files and QL metadata) before attempting
+any of these operations (especially the first time)!
+
 
 Plugins
 -------
@@ -162,3 +173,6 @@ Plugins
 
 The image above shows the plugin manager, from where you can enable /
 disable / configure all available plugins.
+
+Note in newer versions of Quod Libet you can filter by type of plugin,
+and view problems with loading plugins (e.g. missing Python modules) here, too.

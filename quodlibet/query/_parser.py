@@ -114,10 +114,10 @@ class QueryParser:
             return self.Intersection(self.Numcmp)
         elif self.accept('@'):
             return self.Extension()
+        index = self.index
         try:
             # Equals, NotEquals and Star can begin the same,
             # so try in order, backtracking on failure (with Star last)
-            index = self.index
             return self.Equals()
         except ParseError:
             self.index = index

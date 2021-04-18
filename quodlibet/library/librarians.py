@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#     2012, 2016 Nick Boultbee
+#      2012-2020 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,10 +12,13 @@ Librarians for libraries.
 """
 
 import itertools
+from typing import Generator, Iterable
 
 from gi.repository import GObject
 
-from quodlibet.util.dprint import print_d
+from quodlibet.library.playlist import PlaylistLibrary
+from quodlibet.util.dprint import print_d, print_w
+from senf import fsnative
 
 
 class Librarian(GObject.GObject):
@@ -136,6 +139,21 @@ class Librarian(GObject.GObject):
             from_.handler_unblock(self.__signals[from_][1])
             to.handler_unblock(self.__signals[to][0])
 
+    def move_root(self, old_root: fsnative, new_root: fsnative) -> Generator:
+        if old_root == new_root:
+            print_d("Not moving to same root")
+            return
+        for library in self.libraries.values():
+            if hasattr(library, "move_root"):
+                yield from library.move_root(old_root, new_root)
+
+    def remove_roots(self, old_roots: Iterable[fsnative]) -> Generator:
+        if not old_roots:
+            return
+        for library in self.libraries.values():
+            if hasattr(library, "remove_roots"):
+                yield from library.remove_roots(old_roots)
+
 
 class SongLibrarian(Librarian):
     """A librarian for SongLibraries."""
@@ -157,7 +175,7 @@ class SongLibrarian(Librarian):
         # the call for future libraries because the item's key has
         # changed. So, it needs to reimplement the method.
         re_add = []
-        print_d("Renaming %r to %r" % (song.key, newname), self)
+        print_d(f"Renaming {song.key!r} to {newname!r}")
         for library in self.libraries.values():
             try:
                 del library._contents[song.key]
@@ -171,7 +189,6 @@ class SongLibrarian(Librarian):
             if changed is None:
                 library._changed({song})
             else:
-                print_d("Delaying changed signal for %r." % library, self)
                 changed.add(song)
 
     def reload(self, item, changed=None, removed=None):
@@ -184,7 +201,7 @@ class SongLibrarian(Librarian):
         """
 
         had_item = []
-        print_d("Reloading %r" % item.key, self)
+        print_d(f"Reloading {item.key!r}")
         for library in self.libraries.values():
             try:
                 del library._contents[item.key]
@@ -217,3 +234,15 @@ class SongLibrarian(Librarian):
                     library.emit('changed', {item})
             else:
                 changed.add(item)
+
+    @property
+    def playlists(self):
+        for lib in self.libraries.values():
+            if isinstance(lib, PlaylistLibrary):
+                return lib
+            try:
+                return lib.playlists
+            except AttributeError:
+                pass
+        print_w(f"No playlist library found: {self.libraries}")
+        raise ValueError("No playlists library found")

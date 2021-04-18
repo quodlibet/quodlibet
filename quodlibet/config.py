@@ -41,6 +41,12 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "gst_device": "",
         "gst_disable_gapless": "false",
 
+        # Use Jack sink (via Gstreamer) if available
+        "gst_use_jack": "false",
+
+        # Usually true is good here, but if you have patchbay configured maybe not...
+        "gst_jack_auto_connect": "true",
+
         "is_playing": "false",
         "restore_playing": "false",
     },
@@ -93,6 +99,11 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "column_widths": "",
 
         "column_expands": "",
+    },
+
+    "song_list": {
+        # Automatically re-sort song list when tags are modified
+        "auto_sort": "true",
     },
 
     "browsers": {
@@ -219,6 +230,19 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # Force fontconfig as PangoCairo backend
         "pangocairo_force_fontconfig": "false",
+
+        # Whether the plugin window appears on top of others
+        "plugins_window_on_top": "false",
+
+        # search bar font style (#3647)
+        "monospace_query": "false",
+
+        # size to apply to query box, in any Pango CSS units (e.g. '100%', '1rem')
+        "query_font_size": "100%",
+
+        # Amount of colour to apply to validating text entries
+        # (0.0 = no colour, 1.0 = full colour)
+        "validator_colorise": "0.4"
     },
 
     "rename": {

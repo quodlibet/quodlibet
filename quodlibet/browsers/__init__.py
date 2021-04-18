@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016-20 Nick Boultbee
+#           2016-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -99,5 +99,5 @@ def index(name: BrowserName) -> int:
             return j
 
     all_keys = (k.lower() for b in browsers for k in b.keys)
-    raise ValueError(f"{name!r} browser not found."
+    raise ValueError(f"{name!r} browser not found. "
                      f"Try: {' | '.join(all_keys)}")

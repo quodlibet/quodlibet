@@ -1,4 +1,4 @@
-# Copyright 2004-2013 Joe Wreschnig, Michael Urman, Niklas Janlert,
+# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Niklas Janlert,
 #                     Steven Robertson, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
@@ -13,7 +13,6 @@ from quodlibet import util
 from quodlibet.util.iso639 import ISO_639_2
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import isascii
-
 from ._audio import AudioFile, translate_errors, AudioFileError
 from ._image import EmbeddedImage, APICType
 
@@ -71,7 +70,7 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict([(v, k) for k, v in IDS.items()])
+    SDI = dict((v, k) for k, v in IDS.items())
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
@@ -94,7 +93,7 @@ class ID3File(AudioFile):
         u"ALBUMARTISTSORT": "albumartistsort",
         u"BARCODE": "barcode",
         }
-    PAM_XXXT = dict([(v, k) for k, v in TXXX_MAP.items()])
+    PAM_XXXT = dict((v, k) for k, v in TXXX_MAP.items())
 
     Kind = None
 
@@ -389,7 +388,7 @@ class ID3File(AudioFile):
                 value = self[k]
                 tag.add(mutagen.id3.TXXX(encoding=encoding_for(value),
                                          text=value.split("\n"),
-                                         desc=k))
+                                         desc=k.upper()))
 
         # we shouldn't delete all, but we use unknown ones as fallback, so make
         # sure they don't come back after reloading

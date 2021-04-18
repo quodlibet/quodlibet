@@ -1,4 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +13,7 @@ ease constructors.
 
 from urllib.request import urlopen
 
-from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf
+from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf, Gdk
 
 from quodlibet.util.dprint import print_d
 
@@ -139,22 +140,42 @@ class ScrolledWindow(Gtk.ScrolledWindow):
         return Gtk.ScrolledWindow.do_size_allocate(self, alloc)
 
 
+MT = Gdk.ModifierType
+
+
 class Notebook(Gtk.Notebook):
     """A regular gtk.Notebook, except when appending a page, if no
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
 
+    _KEY_MODS = (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD1_MASK | MT.MOD2_MASK)
+    """Keyboard modifiers of interest"""
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.connect("key-press-event", self.__key_pressed)
 
-    def __key_pressed(self, widget, event):
+    def __key_pressed(self, _widget: Gtk.Widget, event: Gdk.Event):
         # alt+X switches to page X
         for i in range(self.get_n_pages()):
             if is_accel(event, "<alt>%d" % (i + 1)):
                 self.set_current_page(i)
-                return True
-        return False
+                return Gdk.EVENT_STOP
+
+        state = event.state & self._KEY_MODS
+        # Use hardware, as Gtk+ seems to special-case tab for itself
+        if event.hardware_keycode == 23:
+            total = self.get_n_pages()
+            current = self.get_current_page()
+            if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD2_MASK):
+                self.set_current_page((current + total - 1) % total)
+                return Gdk.EVENT_STOP
+            elif state == (MT.CONTROL_MASK | MT.MOD2_MASK):
+                self.set_current_page((current + 1) % total)
+                return Gdk.EVENT_STOP
+            else:
+                print_d(f"Unhandled tab key combo: {event.state}")
+        return Gdk.EVENT_PROPAGATE
 
     def do_size_allocate(self, alloc):
         ctx = self.get_style_context()

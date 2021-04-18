@@ -4,15 +4,15 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
-from senf import fsnative
 
-from tests import TestCase
-
-from quodlibet.library import SongLibrary
-from quodlibet.qltk.songlist import SongList, set_columns, get_columns, \
-    header_tag_split, get_sort_tag
-from quodlibet.formats import AudioFile
 from quodlibet import config
+from quodlibet.formats import AudioFile
+from quodlibet.library import SongFileLibrary
+from quodlibet.qltk.songlist import (SongList, set_columns, get_columns,
+                                     header_tag_split, get_sort_tag)
+from quodlibet.qltk.songlistcolumns import SongListColumn
+from senf import fsnative
+from tests import TestCase
 
 
 class TSongList(TestCase):
@@ -21,7 +21,7 @@ class TSongList(TestCase):
 
     def setUp(self):
         config.init()
-        self.songlist = SongList(SongLibrary())
+        self.songlist = SongList(SongFileLibrary())
 
         self.orders_changed = 0
 
@@ -171,13 +171,13 @@ class TSongList(TestCase):
 
     def test_header_menu(self):
         from quodlibet import browsers
-        from quodlibet.library import SongLibrary, SongLibrarian
+        from quodlibet.library import SongLibrarian
 
         song = AudioFile({"~filename": fsnative(u"/dev/null")})
         song.sanitize()
         self.songlist.set_songs([song])
 
-        library = SongLibrary()
+        library = SongFileLibrary()
         library.librarian = SongLibrarian()
         browser = browsers.get("SearchBar")(library)
 
@@ -223,6 +223,18 @@ class TSongList(TestCase):
         self.assertEqual(get_sort_tag("~date~artist"), "~date~artistsort")
         self.assertEqual(get_sort_tag("composer"), "composersort")
         self.assertEqual(get_sort_tag("originalartist"), "originalartistsort")
+
+    def test_check_sensible_menu_items(self):
+        col = SongListColumn("title")
+
+        menu = self.songlist._menu(col)
+        submenus = [item.get_submenu()
+                    for item in menu.get_children()]
+        names = {item.get_label()
+                 for child in submenus
+                 if child and not isinstance(child, Gtk.SeparatorMenuItem)
+                 for item in child.get_children()}
+        assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):
         self.songlist.destroy()

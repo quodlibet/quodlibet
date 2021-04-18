@@ -1,6 +1,6 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2017 Nick Boultbee
+#           2011-2021 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -61,11 +61,16 @@ class PreferencesWindow(UniqueWindow):
         def __init__(self):
             def create_behaviour_frame():
                 vbox = Gtk.VBox(spacing=6)
-                c = CCB(_("_Jump to playing song automatically"),
+                jump_button = CCB(_("_Jump to playing song automatically"),
                         'settings', 'jump', populate=True,
                         tooltip=_("When the playing song changes, "
                                   "scroll to it in the song list"))
-                vbox.pack_start(c, False, True, 0)
+                autosort_button = CCB(_("Sort songs when tags are modified"),
+                        'song_list', 'auto_sort', populate=True,
+                        tooltip=_("Automatically re-sort songs in the song list when "
+                                  "tags are modified"))
+                vbox.pack_start(jump_button, False, True, 0)
+                vbox.pack_start(autosort_button, False, True, 0)
                 return qltk.Frame(_("Behavior"), child=vbox)
 
             def create_visible_columns_frame():
@@ -794,6 +799,10 @@ class PreferencesWindow(UniqueWindow):
 
     def __destroy(self):
         config.save()
-        if self.current_scan_dirs != get_scan_dirs():
-            print_d("Library paths have changed, re-scanning...")
+        new_dirs = set(get_scan_dirs())
+        gone_dirs = set(self.current_scan_dirs) - new_dirs
+        if new_dirs - set(self.current_scan_dirs):
+            print_d("Library paths have been added, re-scanning...")
             scan_library(app.library, force=False)
+        elif gone_dirs:
+            copool.add(app.librarian.remove_roots, gone_dirs)

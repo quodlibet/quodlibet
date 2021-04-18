@@ -1,6 +1,6 @@
 # Copyright 2004-2006 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2013 Nick Boultbee
+#           2013,16,21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.util import (is_linux, is_osx, print_exc, print_w, print_d)
+from quodlibet.util import (is_linux, is_osx, print_w, print_d)
 from quodlibet.util.environment import dbus_name_owned
 
 from .prefs import Preferences
@@ -38,9 +38,8 @@ def get_indicator_impl():
     else:
         try:
             from .appindicator import AppIndicator
-        except ImportError:
-            print_w("importing app indicator failed")
-            print_exc()
+        except ImportError as e:
+            print_w(f"Loading AppIndicator failed ({e}). Using {SystemTray}")
             # no indicator, fall back
             return SystemTray
         else:

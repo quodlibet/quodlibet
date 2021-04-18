@@ -1,5 +1,6 @@
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,6 +33,7 @@ class MP4File(AudioFile):
         "\xa9gen": "genre",
         "tmpo": "bpm",
         "\xa9too": "encodedby",  # FIXME: \xa9enc should be encodedby
+        "desc": "description",  # (usually used in podcasts)
         "cprt": "copyright",
         "soal": "albumsort",
         "soaa": "albumartistsort",
@@ -69,13 +71,13 @@ class MP4File(AudioFile):
         '----:com.apple.iTunes:replaygain_reference_loudness':
             'replaygain_reference_loudness',
     }
-    __rtranslate = dict([(v, k) for k, v in __translate.items()])
+    __rtranslate = dict((v, k) for k, v in __translate.items())
 
     __tupletranslate = {
         "disk": "discnumber",
         "trkn": "tracknumber",
         }
-    __rtupletranslate = dict([(v, k) for k, v in __tupletranslate.items()])
+    __rtupletranslate = dict((v, k) for k, v in __tupletranslate.items())
 
     def __init__(self, filename):
         with translate_errors():
@@ -236,4 +238,4 @@ class MP4File(AudioFile):
 
 loader = MP4File
 types = [MP4File]
-extensions = ['.mp4', '.m4a', '.m4v', '.3gp', '.3g2', '.3gp2']
+extensions = ['.mp4', '.m4a', '.m4b', '.m4v', '.3gp', '.3g2', '.3gp2']

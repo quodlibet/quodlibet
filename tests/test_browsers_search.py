@@ -2,19 +2,18 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
-from tests import TestCase
+import os
 
 from gi.repository import Gtk
-from senf import fsnative
 
 import quodlibet.browsers.tracks
 import quodlibet.config
-
 from quodlibet.browsers.tracks import TrackList
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.qltk.songlist import SongList
+from senf import fsnative
+from tests import TestCase
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [AudioFile({
@@ -145,6 +144,11 @@ class TSearchBar(TestCase):
         self._do()
 
     def tearDown(self):
+        for song in SONGS:
+            try:
+                os.unlink(song("~filename"))
+            except OSError:
+                pass
         self.bar.destroy()
         quodlibet.browsers.tracks.library.destroy()
         quodlibet.config.quit()

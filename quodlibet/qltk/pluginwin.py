@@ -1,34 +1,54 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2017 Nick Boultbee
+#           2016-2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango, GObject, Gdk
 
+from quodlibet import _
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet import _
-
-from quodlibet.plugins import PluginManager, plugin_enabled
+from quodlibet.plugins import PluginManager, plugin_enabled, Plugin
 from quodlibet.plugins.cover import CoverSourcePlugin
-from quodlibet.plugins.editing import EditTagsPlugin
+from quodlibet.plugins.editing import EditTagsPlugin, RenameFilesPlugin
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.plugins.playlist import PlaylistPlugin
 from quodlibet.plugins.playorder import PlayOrderPlugin
+from quodlibet.plugins.query import QueryPlugin
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons, is_accel, show_uri
+from quodlibet.qltk.entry import UndoEntry
+from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
 from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
-from quodlibet.qltk.models import ObjectStore, ObjectModelFilter
-from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk import Icons, is_accel, show_uri
 from quodlibet.util import connect_obj
+
+PLUGIN_CATEGORIES = {
+    _("Songs"): SongsMenuPlugin,
+    _("Playlists"): PlaylistPlugin,
+    _("Events"): EventPlugin,
+    _("Play Order"): PlayOrderPlugin,
+    _("Editing"): EditTagsPlugin,
+    _("Renaming"): RenameFilesPlugin,
+    _("Querying"): QueryPlugin,
+    _("Effects"): GStreamerPlugin,
+    _("Covers"): CoverSourcePlugin
+}
+
+
+def category_of(plugin: Plugin) -> str:
+    try:
+        return next(cat for cat, cls in PLUGIN_CATEGORIES.items()
+                    if issubclass(plugin.cls, cls))
+    except StopIteration:
+        return _("Unknown")
 
 
 class UndoSearchEntry(Gtk.SearchEntry, UndoEntry):
@@ -42,7 +62,7 @@ class PluginErrorWindow(UniqueWindow):
         super().__init__()
 
         self.set_title(_("Plugin Errors"))
-        self.set_border_width(12)
+        self.set_border_width(6)
         self.set_transient_for(parent)
         self.set_default_size(520, 300)
 
@@ -163,14 +183,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
         combo_store.clear()
         combo_store.append([_("All"), object])
         combo_store.append(["", None])
-        for name, cls in sorted([
-                [_("Songs"), SongsMenuPlugin],
-                [_("Playlists"), PlaylistPlugin],
-                [_("Events"), EventPlugin],
-                [_("Play Order"), PlayOrderPlugin],
-                [_("Editing"), EditTagsPlugin],
-                [_("Effects"), GStreamerPlugin],
-                [_("Covers"), CoverSourcePlugin]]):
+        for name, cls in PLUGIN_CATEGORIES.items():
             combo_store.append([name, cls])
 
         self.set_active(active)
@@ -183,7 +196,6 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
 
 
 class PluginListView(HintedTreeView):
-
     __gsignals__ = {
         # model, iter, enabled
         "plugin-toggled": (GObject.SignalFlags.RUN_LAST, None,
@@ -195,7 +207,7 @@ class PluginListView(HintedTreeView):
         self.set_headers_visible(False)
 
         render = Gtk.CellRendererToggle()
-        render.set_padding(1, 1)
+        render.set_padding(6, 3)
 
         def cell_data(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
@@ -227,7 +239,7 @@ class PluginListView(HintedTreeView):
         render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         render.set_property('xalign', 0.0)
-        render.set_padding(2, 2)
+        render.set_padding(6, 6)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
@@ -296,12 +308,10 @@ class PluginPreferencesContainer(Gtk.VBox):
         desc.set_line_wrap(True)
         desc.set_alignment(0, 0.5)
         desc.set_selectable(True)
-        desc.show()
         self.pack_start(desc, False, True, 0)
 
         self.prefs = prefs = Gtk.Frame()
         prefs.set_shadow_type(Gtk.ShadowType.NONE)
-        prefs.show()
         self.pack_start(prefs, False, True, 0)
 
     def set_no_plugins(self):
@@ -315,10 +325,13 @@ class PluginPreferencesContainer(Gtk.VBox):
             label.set_markup("")
         else:
             name = util.escape(plugin.name)
-            text = "<big><b>%s</b></big>" % name
+            category = category_of(plugin).lower()
+            text = (f"<big><b>{name}</b> "
+                    f"<span alpha='40%'> – {category}</span>"
+                    f"</big>")
             if plugin.description:
                 text += "<span font='4'>\n\n</span>"
-                text += plugin.description
+                text += util.escape(plugin.description)
             label.set_markup(text)
             label.connect("activate-link", show_uri)
 
@@ -327,7 +340,9 @@ class PluginPreferencesContainer(Gtk.VBox):
         if frame.get_child():
             frame.get_child().destroy()
 
-        if plugin is not None:
+        if plugin is None:
+            frame.hide()
+        else:
             instance_or_cls = plugin.get_instance() or plugin.cls
 
             if plugin and hasattr(instance_or_cls, 'PluginPreferences'):
@@ -346,34 +361,33 @@ class PluginPreferencesContainer(Gtk.VBox):
                     else:
                         frame.add(prefs)
                     frame.show_all()
-        else:
-            frame.hide()
 
 
 class PluginWindow(UniqueWindow, PersistentWindowMixin):
     def __init__(self, parent=None):
         if self.is_not_unique():
             return
-        super().__init__()
+        on_top = config.getboolean("settings", "plugins_window_on_top", False)
+        super().__init__(dialog=on_top)
         self.set_title(_("Plugins"))
-        self.set_default_size(700, 500)
-        self.set_transient_for(parent)
+        self.set_default_size(750, 500)
+        if parent and on_top:
+            self.set_transient_for(parent)
+        self.set_type_hint(Gdk.WindowTypeHint.NORMAL)
         self.enable_window_tracking("plugin_prefs")
-
-        paned = Paned()
-        vbox = Gtk.VBox()
-
-        sw = ScrolledWindow()
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
 
         model = ObjectStore()
         filter_model = ObjectModelFilter(child_model=model)
 
-        self._list_view = tv = PluginListView()
-        tv.set_model(filter_model)
-        tv.set_rules_hint(True)
+        self._list_view = plv = PluginListView()
+        plv.set_model(filter_model)
+        plv.set_rules_hint(True)
 
-        tv.connect("plugin-toggled", self.__plugin_toggled)
+        plv.connect("plugin-toggled", self.__plugin_toggled)
+        sw = ScrolledWindow()
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.ALWAYS)
+        sw.add(plv)
+        sw.set_shadow_type(Gtk.ShadowType.IN)
 
         fb = Gtk.HBox(spacing=6)
 
@@ -389,16 +403,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         fb.pack_start(type_combo, True, True, 0)
         self._type_combo = type_combo
 
-        filter_entry = UndoSearchEntry()
-        filter_entry.set_tooltip_text(
-            _("Filter by plugin name or description"))
-        filter_entry.connect("changed", lambda s: filter_model.refilter())
-        self._filter_entry = filter_entry
-
-        sw.add(tv)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-
-        bbox = Gtk.VBox()
+        self._filter_entry = fe = UndoSearchEntry()
+        fe.set_tooltip_text(_("Filter by plugin name or description"))
+        fe.connect("changed", lambda s: filter_model.refilter())
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
@@ -406,6 +413,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         errors.show()
         errors = Align(errors, top=6, bottom=6)
         errors.set_no_show_all(True)
+        bbox = Gtk.VBox()
         bbox.pack_start(errors, True, True, 0)
 
         pref_box = PluginPreferencesContainer()
@@ -413,16 +421,19 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         if const.DEBUG:
             refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
-            refresh.connect('clicked', self.__refresh, tv, pref_box, errors,
+            refresh.connect('clicked', self.__refresh, plv, pref_box, errors,
                             enabled_combo)
             bbox.pack_start(refresh, True, True, 0)
 
         filter_box = Gtk.VBox(spacing=6)
         filter_box.pack_start(fb, False, True, 0)
-        filter_box.pack_start(filter_entry, False, True, 0)
+        filter_box.pack_start(fe, False, True, 0)
+
+        vbox = Gtk.VBox()
         vbox.pack_start(Align(filter_box, border=6, right=-6), False, False, 0)
         vbox.pack_start(sw, True, True, 0)
-        vbox.pack_start(Align(bbox, left=6), False, True, 0)
+        vbox.pack_start(Align(bbox, left=3, right=3, top=0), False, False, 3)
+        paned = Paned()
         paned.pack1(vbox, False, False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
@@ -433,32 +444,32 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         bb.pack_start(close, True, True, 0)
         bb_align.add(bb)
 
-        selection = tv.get_selection()
+        selection = plv.get_selection()
         selection.connect('changed', self.__selection_changed, pref_box)
         selection.emit('changed')
 
-        right_box = Gtk.VBox(spacing=12)
+        right_box = Gtk.VBox()
         right_box.pack_start(pref_box, True, True, 0)
-        self.use_header_bar()
         if not self.has_close_button():
             right_box.pack_start(bb_align, True, True, 0)
 
-        paned.pack2(Align(right_box, border=12), True, False)
-        paned.set_position(275)
+        align = Align(right_box, left=6, right=15, top=12, bottom=3)
+        paned.pack2(align, True, False)
+        paned.set_position(290)
 
         self.add(paned)
 
-        self.__refill(tv, pref_box, errors, enabled_combo)
+        self.__refill(plv, pref_box, errors, enabled_combo)
 
         self.connect('destroy', self.__destroy)
         filter_model.set_visible_func(
-            self.__filter, (filter_entry, enabled_combo, type_combo))
+            self.__filter, (fe, enabled_combo, type_combo))
 
         self.get_child().show_all()
-        filter_entry.grab_focus()
+        fe.grab_focus()
 
         restore_id = config.get("memory", "plugin_selection")
-        tv.select_by_plugin_id(restore_id)
+        plv.select_by_plugin_id(restore_id)
 
     def __filter(self, model, iter_, data):
         """Filter a single row"""

@@ -33,6 +33,8 @@
     </screenshots>
 
     <releases>
+        <release version="4.4.0" date="2021-02-28"/>
+        <release version="4.3.0" date="2020-02-22"/>
         <release version="4.2.1" date="2018-12-26"/>
         <release version="4.2.0" date="2018-10-31"/>
         <release version="4.1.0" date="2018-06-03"/>

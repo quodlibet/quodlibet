@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2015-2018 Nick Boultbee,
+#           2015-2020 Nick Boultbee,
 #                2016 Ryan Dellenbaugh,
 #                2019 Peter Strulo
 #
@@ -8,40 +8,52 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from __future__ import annotations
+
+from enum import Enum, auto
+from typing import Optional, Type, Iterable, TypeVar
+
 from quodlibet import print_d, config
-from quodlibet.util.dprint import frame_info
+from quodlibet.util import re_escape, cached_property
 from . import _match as match
-from ._match import error, Node, False_
+from ._match import Error, Node, False_
 from ._parser import QueryParser
-from quodlibet.util import re_escape, enum, cached_property
+
+T = TypeVar("T")
 
 
-@enum
-class QueryType(int):
-    TEXT = 0
-    VALID = 1
-    INVALID = 2
+class QueryType(Enum):
+    TEXT = auto()
+    VALID = auto()
+    INVALID = auto()
+
+    def __repr__(self):
+        # Compact representation
+        return self._name_
+
+    def __str__(self):
+        return self._name_
 
 
 class Query(Node):
-
-    STAR = ["artist", "album", "title"]
+    STAR: Iterable[str] = ["artist", "album", "title"]
     """Default tags to search in, use/extend and pass to Query()"""
 
-    error = error
+    Error: Type[Exception] = Error
     """Base error type"""
 
-    type = None
+    type: Optional[QueryType] = None
     """The QueryType value: VALID or TEXT"""
 
-    string = None
+    string: Optional[str] = None
     """The original string which was used to create this query"""
 
-    def __init__(self, string, star=None):
+    def __init__(self, string: str, star: Optional[Iterable[str]] = None):
         """Parses the query string and returns a match object.
 
-        star -- List of tags to look in if none are specified in the query.
-                Defaults to those specified in `STAR`.
+        :param string: The text to parse
+        :param star: Tags to look in, if none are specified in the query.
+                     Defaults to those specified in `STAR`.
 
         This parses the query language as well as some tagless shortcuts:
             "foo bar" ->  &(star1,star2=foo,star1,star2=bar)
@@ -53,8 +65,7 @@ class Query(Node):
             "!(foo, bar)" -> !star1,star2=(foo, bar)
             etc...
         """
-        print_d("Creating query \"%s\", called from %s"
-                % (string, frame_info(1)))
+        print_d(f"Creating query {string!r}")
         if star is None:
             star = self.STAR
 
@@ -66,8 +77,10 @@ class Query(Node):
         self.type = QueryType.VALID
         try:
             self._match = QueryParser(string, star=star).StartQuery()
+            if not self._match.valid:
+                self.type = QueryType.INVALID
             return
-        except self.error:
+        except self.Error:
             pass
 
         if not set("#=").intersection(string):
@@ -81,10 +94,9 @@ class Query(Node):
                 self.type = QueryType.TEXT
                 self._match = QueryParser(string, star=star).StartQuery()
                 return
-            except self.error:
+            except self.Error:
                 pass
 
-        # raise error('Query is not VALID or TEXT')
         print_d("Query '%s' is invalid" % string)
         self.type = QueryType.INVALID
         self._match = False_()
@@ -96,10 +108,10 @@ class Query(Node):
         """
         try:
             return QueryParser(string).StartQuery()
-        except error:
+        except Error:
             return None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Query string=%r type=%r star=%r>" % (
             self.string, self.type, self.star)
 
@@ -112,40 +124,40 @@ class Query(Node):
         return self._match.filter
 
     @property
-    def valid(self):
+    def valid(self) -> bool:
         """Whether a query is a valid full (not free-text) query"""
         return self.type == QueryType.VALID
 
     @property
-    def matches_all(self):
+    def matches_all(self) -> bool:
         """Whether the resulting query will not filter anything"""
         return isinstance(self._match, match.True_)
 
     @property
-    def is_parsable(self):
+    def is_parsable(self) -> bool:
         """Whether the text can be parsed at all"""
         return self.type is not QueryType.INVALID
 
-    def _unpack(self):
+    def _unpack(self) -> Node:
         # so that other classes can see the wrapped one and optimize
         # the result using the type information
         return self._match
 
-    def __or__(self, other):
+    def __or__(self, other: Node) -> Node:
         return self._match.__or__(other)
 
-    def __and__(self, other):
+    def __and__(self, other: Node) -> Node:
         return self._match.__and__(other)
 
-    def __neg__(self):
+    def __neg__(self) -> Node:
         return self._match.__neg__()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return (self.string == other.string and self.star == other.star and
                 self.type == other.type)
 
     @classmethod
-    def validator(cls, string):
+    def validator(cls, string: str) -> Optional[bool]:
         """Returns True/False for a query, None for a text only query"""
 
         query = cls(string)

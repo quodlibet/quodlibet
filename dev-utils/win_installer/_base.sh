@@ -103,16 +103,13 @@ function install_deps {
         mingw-w64-"${ARCH}"-python3-toml
 
     PIP_REQUIREMENTS="\
-feedparser==5.2.1
-musicbrainzngs==0.6
-mutagen==1.44.0
-flake8==3.7.9
-entrypoints==0.3
-pycodestyle==2.5.0
-pyflakes==2.1.1
+feedparser
+musicbrainzngs
+mutagen
+flake8
 "
 
-    build_pip install --no-deps --no-binary ":all:" --upgrade \
+    build_pip install --no-binary ":all:" \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr ["\\n"] [" "])
 
     build_pacman --noconfirm -Rdds \
@@ -125,6 +122,7 @@ pyflakes==2.1.1
         mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav \
         mingw-w64-"${ARCH}"-libdvdread \
+        mingw-w64-"${ARCH}"-frei0r-plugins \
         mingw-w64-"${ARCH}"-openexr \
         mingw-w64-"${ARCH}"-openh264 \
         mingw-w64-"${ARCH}"-zbar \
@@ -285,6 +283,7 @@ function cleanup_after {
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstzbar.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfdkaac.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstaom.dll
+    rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstfrei0r.dll
 
     rm -f "${MINGW_ROOT}"/bin/libharfbuzz-icu-0.dll
     rm -f "${MINGW_ROOT}"/lib/gstreamer-1.0/libgstcacasink.dll

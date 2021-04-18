@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#      2013-2018 Nick Boultbee
+#      2013-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,12 +38,13 @@ def confirm_song_removal_invoke(parent, songs):
     count = len(songs)
     song = next(iter(songs))
     title = (ngettext("Remove track: \"%%(title)s\" from library?",
-                     "Remove %(count)d tracks from library?",
-                     count) % {'count': count}) % {
-                        'title': song('title') or song('~basename')}
+                      "Remove %(count)d tracks from library?",
+                      count) % {'count': count}) % {
+                'title': song('title') or song('~basename')}
 
-    return ConfirmationPrompt.RESPONSE_INVOKE == ConfirmationPrompt(
-               parent, title, "", _("Remove from Library")).run()
+    prompt = ConfirmationPrompt(parent, title, "", _("Remove from Library"),
+                                ok_button_icon=Icons.LIST_REMOVE)
+    return prompt.run() == ConfirmationPrompt.RESPONSE_INVOKE
 
 
 def confirm_multi_song_invoke(parent, plugin_name, count):
@@ -304,20 +305,9 @@ class SongsMenu(Gtk.Menu):
                 is_file = False
 
         if playlists:
-            # Needed here to avoid a circular import; most browsers use
-            # a SongsMenu, but SongsMenu needs access to the playlist
-            # browser for this item.
-
-            # FIXME: Two things are now importing browsers, so we need
-            # some kind of inversion of control here.
-            from quodlibet.browsers.playlists.menu import PlaylistMenu
-            from quodlibet.browsers.playlists import PlaylistsBrowser
             try:
-                submenu = PlaylistMenu(songs, PlaylistsBrowser.playlists())
-
-                def on_new(widget, playlist):
-                    PlaylistsBrowser.changed(playlist)
-                submenu.connect('new', on_new)
+                from quodlibet.browsers.playlists.menu import PlaylistMenu
+                submenu = PlaylistMenu(songs, library.playlists)
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:

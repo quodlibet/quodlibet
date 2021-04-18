@@ -754,7 +754,8 @@ def connect_after_destroy(sender, *args, **kwargs):
 
 
 class cached_property:
-    """A read-only @property that is only evaluated once."""
+    """A read-only @property that is only evaluated once.
+    TODO: work out some typing for this, see test_query.py"""
 
     def __init__(self, fget, doc=None):
         self.fget = fget
@@ -1041,7 +1042,7 @@ class MainRunner:
 
     def call(self, func, *args, **kwargs):
         """Runs the function in the main loop and blocks until
-        it is finshed or abort() was called. In case this is called
+        it is finished or abort() was called. In case this is called
         from the main loop the function gets executed immediately.
 
         The priority kwargs defines the event source priority and will

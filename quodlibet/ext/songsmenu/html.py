@@ -1,4 +1,5 @@
 # Copyright 2005 Eduardo Gonzalez
+#           2020 Roneel Valambhia
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +24,7 @@ HTML = '''<html>
  </style>
 </head>
 <body>
-  <h1>My <a href="http://www.sacredchao.net/quodlibet/">Quod Libet</a>
+  <h1>My <a href="https://quodlibet.readthedocs.io/">Quod Libet</a>
   Playlist</h1>
   <br />
   <table id="songTable">

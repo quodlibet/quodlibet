@@ -1,4 +1,5 @@
 # Copyright 2016 Ryan Dellenbaugh
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,19 +8,20 @@
 
 import os.path
 
-from quodlibet import _
+from quodlibet import _, print_w
 from quodlibet.plugins.query import QueryPlugin, QueryPluginError
 from quodlibet.query import Query
-from quodlibet.query._match import error as QueryError
+from quodlibet.query._match import Error as QueryError
 from quodlibet import get_user_dir
 
 
 class IncludeSavedSearchQuery(QueryPlugin):
     PLUGIN_ID = "include_saved"
     PLUGIN_NAME = _("Include Saved Search")
-    PLUGIN_DESC = _("Include the results of a saved search as part of another "
-                  "query. Syntax is '@(saved: search name)'.")
-    key = 'saved'
+    PLUGIN_DESC = _("💾 Include the results of a saved search "
+                    "as part of another query.")
+    key = "saved"
+    usage = "<b><tt>@(saved: search-name)</tt></b>"
 
     def search(self, data, body):
         return body.search(data)
@@ -43,6 +45,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
                         except QueryError:
                             raise QueryPluginError
             # We've searched the whole file and haven't found a match
+            print_w(f"None found for {body}")
             raise QueryPluginError
         except IOError:
             raise QueryPluginError

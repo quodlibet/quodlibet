@@ -11,6 +11,8 @@ Takes the cache file and writes a text list parse-able by QL containing
 only streams which have enough meta data
 """
 
+from __future__ import print_function
+
 import bz2
 
 from util import get_cache, LISTENERPEAK, LISTENERCURRENT
@@ -80,12 +82,12 @@ def main():
                     continue
                 out.append(key + "=" + val)
 
-    print "Writing taglist..."
-    print written, " stations"
+    print("Writing taglist...")
+    print(written, " stations")
     with open(STATIONFILE, "wb") as h:
         h.write("\n".join(out))
 
-    print "Write compressed version..."
+    print("Write compressed version...")
     with open(STATIONFILE + ".bz2", "wb") as h:
         h.write(bz2.compress(open(STATIONFILE, "rb").read(), 9))
 

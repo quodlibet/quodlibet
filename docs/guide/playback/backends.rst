@@ -10,6 +10,14 @@ no backend). Make sure Quod Libet isn't running while you edit the file.
 GStreamer Backend
 -----------------
 
+JACK support
+^^^^^^^^^^^^
+Quod Libet now supports JACK via Gstreamer's ``jackaudiosink``, if available.
+To select this, check the *Use JACK for playback if available* button
+in the *Player* tab of *Preferences*.
+There's also an option to auto-connect (wire up) the Quod Libet output
+to JACK output sinks (e.g. system devices) or not.
+
 Custom Pipelines
 ^^^^^^^^^^^^^^^^
 
@@ -18,7 +26,7 @@ under *File* → *Preferences* → *Playback* → *Output Pipeline*. The
 pipeline syntax is equivalent to what is used in the *gst-launch* utility.
 See ``man gst-launch`` for further information and examples.
 
-In case the custom pipline doesn't contain an audio sink, Quod Libet
+In case the custom pipeline doesn't contain an audio sink, Quod Libet
 will add a default one for you.
 
 

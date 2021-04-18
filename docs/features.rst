@@ -6,18 +6,17 @@ Features
 Audio Playback
 ^^^^^^^^^^^^^^
 
-  * Multiple audio back-ends (GStreamer, xine-lib)
-  * Replay Gain support
-  * Auto-selects between 'track' and 'album' mode based on
-    current view and play order
+  * Multiple audio back-ends (GStreamer, xine-lib).
+  * JACK output is also supported explicitly (via GStreamer)
+  * Rich Replay Gain support. Auto-selects between 'track' and 'album'
+    mode based on current view and play order
   * Applies clipping prevention whenever available
   * Configurable default (fallback) and pre-amp values to suit any audio setup
   * Multimedia key support
   * Real shuffle mode, that plays the whole playlist before repeating
   * Weighted (by rating) random playback
   * Proper 'Previous' support in shuffle mode
-  * A play queue
-  * Bookmarks within files (or playlists, with a plugin)
+  * A configurable play queue
 
 
 Editing Tags
@@ -27,39 +26,48 @@ Editing Tags
   * Make changes to many files at once
   * Make changes across all supported file formats
   * Tag files based on their filenames with configurable formats
-  * Rename files based on their tags
+  * Rename files based on their tags, with various filters for
+    troublesome characters (especially on Windows)
   * No ugly ``%a``, ``%t`` patterns -
     more readable ``<artist>``, ``<title>`` instead
-  * Fast track renumbering 
+  * Fast track renumbering
+  * Add / edit bookmarks within files
   * See full instructions at :ref:`EditingTags`
 
 
 Audio Library
 ^^^^^^^^^^^^^
 
-  * Watch directories and automatically add/remove new music
   * Hide songs on removable devices that may not always be there
   * Save song ratings and play counts
-  * Lyrics downloading and saving 
-  * Internet Radio ("Shoutcast") support
+  * Internet Radio support
   * Audio Feeds ("Podcast") support
+  * Deep playlist support with import / export (XSPF, M3U, PLS)
+  * Soundcloud browsing and streaming, with login and native favorites support
 
 
 User Interface
 ^^^^^^^^^^^^^^
 
   * Simple user interface to Just Play Music if you want
+  * Themeable, modern, Gnome-friendly UI (dark and light modes supported)
   * Useful as a small window or maximized, no feeling cramped or wasted space
-  * Album cover display
+  * Optional high-resolution waveform seekbar (via WaveForm Plugin)
+  * Paned View to group / funnel library data with arbitrary tags
+    (e.g. Year -> Genre -> People -> Album)
+  * Album cover display in variety of rich layouts
   * Full player control from a tray icon
   * Recognize and display many uncommon tags, as well as any others you want.
     Especially useful for classical music.
+  * Rich CLI support (with ``quodlibet`` but also ``operon``)
 
 
 Library Browsing
 ^^^^^^^^^^^^^^^^
 
-  * Simple or regular-expression based search
+  * Simple text-searches (unicode-aware)
+  * Or... regular expression searches across tag values or free text
+  * Or even... complex structured boolean logic and arbitrary Python code
   * Constructed playlists
   * iTunes/Rhythmbox-like paned browser, but with any tags you want
     (Genre, Date, etc)
@@ -69,16 +77,22 @@ Library Browsing
 
 Python-based plugins
 ^^^^^^^^^^^^^^^^^^^^
+Quod Libet has over 80 plugins contributed by devs and users, including:
 
+  * Download high-quality cover art from pluggable sources
   * Automatic tagging via `MusicBrainz <http://musicbrainz.org/>`_ and CDDB
-  * On-screen display popups
-  * Last.fm/AudioScrobbler submission
-  * Tag character encoding conversion
+  * Configurable on-screen display notifications when songs change
+  * Last.fm / AudioScrobbler submission
+  * Plugins for web lyrics and synchronised (``.lrc`) lyrics viewing
+  * A selection of audio-processing (pitch adjust, stereo downmix, EQ)
+  * Custom Commands to run shell (think ``xargs`` for Quod Libet)
+  * Find and remove duplicate / similar tracks across your entire library
   * Intelligent title-casing of tags
   * Find (and examine / remove) near-duplicate songs across your
     entire collection
   * Audio fingerprinting of music
-  * Control Logitech Squeezebox devices.
+  * Sync playlists to Sonos devices or Logitech Squeezebox devices.
+  * Interface with dBus, MQTT, and other desktop apps too.
   * Scan and save Replay Gain values across multiple albums at once
     (using gstreamer)
 
@@ -97,3 +111,4 @@ UNIX-like integration
     from the command line
   * Can used named pipes to control running instance.
   * Now-playing is available as a fixed file
+  * Rich DBus support (once enabled)

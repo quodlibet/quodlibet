@@ -1,4 +1,5 @@
 # Copyright 2006-2007 Lukas Lalinsky
+#                2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -273,7 +274,7 @@ class XinePlaylistPlayer(BasePlayer):
         # reset error state
         self.error = False
 
-        current = self._source.current if next_song is None else next_song
+        current = next_song if next_song else (self._source and self._source.current)
 
         # Then, set up the next song.
         self.song = self.info = current

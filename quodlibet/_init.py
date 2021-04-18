@@ -1,4 +1,5 @@
 # Copyright 2012 Christoph Reiter
+#           2020 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@ from senf import environ, argv, fsn2text
 from quodlibet.const import MinVersions
 from quodlibet import config
 from quodlibet.util import is_osx, is_windows, i18n
-from quodlibet.util.dprint import print_e, PrintHandler
+from quodlibet.util.dprint import print_e, PrintHandler, print_d
 from quodlibet.util.urllib import install_urllib2_ca_file
 
 from ._main import get_base_dir, is_release, get_image_dir, get_cache_dir
@@ -67,7 +68,9 @@ def _init_gettext(no_translations=False):
         language = u"C"
     else:
         language = config.gettext("settings", "language")
-        if not language:
+        if language:
+            print_d(f"Using language in QL settings: {language!r}")
+        else:
             language = None
 
     i18n.init(language)
@@ -75,7 +78,9 @@ def _init_gettext(no_translations=False):
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.join(
         os.path.dirname(get_base_dir()), "build", "share", "locale")
-    if not os.path.isdir(localedir):
+    if os.path.isdir(localedir):
+        print_d(f"Using local locale dir {localedir}")
+    else:
         localedir = None
 
     i18n.register_translation("quodlibet", localedir)
@@ -284,7 +289,7 @@ def _init_gtk():
         gi.require_foreign("cairo")
     except ImportError:
         print_e("PyGObject is missing cairo support")
-        exit(1)
+        sys.exit(1)
 
     css_override = ThemeOverrider()
 
