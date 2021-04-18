@@ -3,25 +3,23 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase, get_data_path
 
+import io
 import os
 import shutil
-import io
 from contextlib import contextmanager
-from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 
-from quodlibet import config
+from quodlibet import config, app
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
-from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
-from quodlibet.util.tags import _TAGS as TAGS
-from quodlibet.util.path import normalize_path, mkdir, get_home_dir, unquote, \
-                                escape_filename, RootPathFile
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.util.environment import is_windows
-
+from quodlibet.util.path import (normalize_path, mkdir, get_home_dir, unquote,
+                                 escape_filename, RootPathFile)
+from quodlibet.util.tags import _TAGS as TAGS
+from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
+from tests import TestCase, get_data_path, init_fake_app, destroy_fake_app
 from .helper import temp_filename
-
 
 bar_1_1 = AudioFile({
     "~filename": fsnative(u"/fakepath/1"),
@@ -37,7 +35,7 @@ bar_1_2 = AudioFile({
     "date": "2004-12-12", "originaldate": "2005-01-01",
     "~#filesize": 1024 ** 2, "~#bitrate": 128})
 bar_2_1 = AudioFile({
-    "~filename": fsnative(u"does not/exist"),
+    "~filename": fsnative(u"/does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists",
@@ -61,6 +59,8 @@ SOME_RATING = 0.8
 class TAudioFile(TestCase):
 
     def setUp(self):
+        # Need the playlists library now
+        init_fake_app()
         config.RATINGS = config.HardCodedRatingsPrefs()
         fd, filename = mkstemp()
         os.close(fd)
@@ -70,6 +70,7 @@ class TAudioFile(TestCase):
         })
 
     def tearDown(self):
+        destroy_fake_app()
         try:
             os.unlink(self.quux["~filename"])
         except EnvironmentError:
@@ -305,7 +306,7 @@ class TAudioFile(TestCase):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
         self.assertEqual(res, [(u'1', u'1'), (u'Foo', u'Foosort'),
                                (u'I have two artists', u'I have two artists'),
-                               (u'does not/exist', u'does not/exist')])
+                               (u'/does not/exist', u'/does not/exist')])
 
     def test_list_numeric(self):
         self.assertEqual(bar_1_2.list('~#bitrate'), [128])
@@ -399,6 +400,18 @@ class TAudioFile(TestCase):
             with self.assertRaises(ValueError):
                 self.quux.rename(new_file)
 
+    def test_playlists_tag(self):
+        songs_lib = app.library
+        pl_name = "playlist 123!"
+        songs_lib.add([bar_1_1, bar_1_2, self.quux])
+        pl_lib = songs_lib.playlists
+        pl = pl_lib.create(pl_name)
+        pl.extend([self.quux, bar_1_1])
+        assert pl, "Nothing added to playlist"
+        for song in pl:
+            assert song("~playlists") == pl_name
+        assert not bar_1_2("~playlists")
+
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative(u"filename")
@@ -456,7 +469,7 @@ class TAudioFile(TestCase):
         """test built-in default local path"""
         with self.lyric_filename_test_setup(no_config=True) as ts:
             fp = os.path.join(ts.root, ts["artist"] + " - " +
-                                       ts["title"] + ".lyric")
+                              ts["title"] + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
             search = ts.lyric_filename
@@ -477,7 +490,7 @@ class TAudioFile(TestCase):
         """test custom lyrics file location / naming"""
         with self.lyric_filename_test_setup() as ts:
             fp = os.path.join(ts.root, ts["artist"] + " - " +
-                                       ts["title"] + ".lyric")
+                              ts["title"] + ".lyric")
             with io.open(fp, "w", encoding='utf-8') as f:
                 f.write(u"")
             search = ts.lyric_filename

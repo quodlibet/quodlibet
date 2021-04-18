@@ -7,8 +7,8 @@ from gi.repository import Gtk
 
 from tests import TestCase
 from quodlibet.util import connect_obj
-from quodlibet.library import SongLibrarian
-from quodlibet.library.libraries import Library, SongFileLibrary
+from quodlibet.library import SongLibrarian, SongFileLibrary
+from quodlibet.library.base import Library
 from quodlibet.library.librarians import Librarian
 from tests.test_library_libraries import Fake, Frange, FakeSongFile, FSrange
 

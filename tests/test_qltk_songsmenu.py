@@ -9,7 +9,7 @@ from quodlibet.formats.remote import RemoteFile
 from tests import TestCase
 
 from quodlibet.formats import AudioFile
-from quodlibet.library import SongLibrary
+from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet import config
 import quodlibet.player
@@ -28,7 +28,7 @@ class TSongsMenu(TestCase):
 
     def setUp(self):
         config.init()
-        self.library = SongLibrary()
+        self.library = SongFileLibrary()
         backend = quodlibet.player.init_backend("nullbe")
         self.device = backend.init(self.library)
 

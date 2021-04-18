@@ -277,6 +277,9 @@ class Browser(Gtk.Box, Filter):
     replaygain_profiles: Optional[List[str]] = None
     """Replay Gain profiles for this browser."""
 
+    def __str__(self):
+        return f"<{type(self).__name__} @ {hex(id(self))}>"
+
 
 class DisplayPatternMixin:
     """Allows Browsers customisable item (e.g. album) display patterns"""
@@ -303,17 +306,15 @@ class DisplayPatternMixin:
             cls.__pattern_text = cls._DEFAULT_PATTERN_TEXT
         cls.__refresh_pattern()
 
-    @classmethod
-    def update_pattern(cls, pattern_text):
+    def update_pattern(self, pattern_text):
         """Saves `pattern_text` to disk (and caches)"""
-        if pattern_text == cls.__pattern_text:
+        if pattern_text == self.__pattern_text:
             return
-        cls.__pattern_text = pattern_text
-        cls.__refresh_pattern()
-        cls.refresh_all()
-        print_d("Saving pattern for %s to %s" %
-                (cls.__name__, cls._PATTERN_FN))
-        with open(cls._PATTERN_FN, "w", encoding="utf-8") as f:
+        self.__pattern_text = pattern_text
+        self.__refresh_pattern()
+        self.refresh_all()
+        print_d(f"Saving pattern for {self} at {self._PATTERN_FN}")
+        with open(self._PATTERN_FN, "w", encoding="utf-8") as f:
             f.write(pattern_text + "\n")
 
     @classmethod
@@ -331,8 +332,7 @@ class DisplayPatternMixin:
         used for formatting entries in this browser"""
         return self.__pattern_text or self._DEFAULT_PATTERN_TEXT
 
-    @classmethod
-    def refresh_all(cls):
+    def refresh_all(self):
         """Refresh the browser's items"""
         pass
 

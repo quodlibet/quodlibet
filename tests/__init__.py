@@ -110,7 +110,7 @@ def init_fake_app():
 
     from quodlibet import browsers
     from quodlibet.player.nullbe import NullPlayer
-    from quodlibet.library.libraries import SongFileLibrary
+    from quodlibet.library import SongFileLibrary
     from quodlibet.library.librarians import SongLibrarian
     from quodlibet.qltk.quodlibetwindow import QuodLibetWindow, PlayerOptions
     from quodlibet.util.cover import CoverManager

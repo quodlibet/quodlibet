@@ -463,9 +463,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             for column in albumlist.view.get_columns():
                 column.queue_resize()
 
-    @classmethod
-    def refresh_all(cls):
-        cls.__model.refresh_all()
+    def refresh_all(self):
+        self.__model.refresh_all()
 
     @classmethod
     def _init_model(klass, library):

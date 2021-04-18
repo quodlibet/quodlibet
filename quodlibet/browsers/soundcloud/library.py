@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,7 +9,7 @@ from quodlibet.util.dprint import print_d, print_w
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet import config
 from quodlibet.formats.remote import RemoteFile
-from quodlibet.library.libraries import SongLibrary
+from quodlibet.library import SongLibrary
 from quodlibet.util import cached_property, print_exc
 
 
