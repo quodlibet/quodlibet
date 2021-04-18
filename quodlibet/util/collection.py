@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import os
 import random
+from numbers import Real
 from typing import Any, Set, Union, MutableSequence, List, Tuple
 from urllib.parse import quote
 
@@ -49,13 +50,13 @@ ELPOEP = list(reversed(PEOPLE))
 PEOPLE_SCORE = [100 ** i for i in range(len(PEOPLE))]
 
 
-def unweighted_average(nums: List[float]) -> float:
+def unweighted_average(nums: List[Real]) -> float:
     """:returns: the average (arithmetic mean) of a list of numbers"""
     return float(sum(nums)) / len(nums)
 
 
-def unweighted_bayesian_average(nums: List[float], c: float = None,
-                                m: float = None) -> float:
+def unweighted_bayesian_average(nums: List[Real], c: Real = None,
+                                m: Real = None) -> float:
     """
     :param nums: the values to be averaged
     :param c: constant chosen based on the typical data set size required for a robust
@@ -69,7 +70,7 @@ def unweighted_bayesian_average(nums: List[float], c: float = None,
     return float(m * c + sum(nums)) / (c + len(nums))
 
 
-def hyperbolic_smoother(x: float, n: float) -> float:
+def hyperbolic_smoother(x: float, n: Real) -> float:
     """
     :param x: a float in the range [0, 1]
     :param n: how strongly smaller values will be magnified (0 = no magnification)
@@ -78,14 +79,15 @@ def hyperbolic_smoother(x: float, n: float) -> float:
     return (n + 1) * x / (n * x + 1)
 
 
-WeightsAndNumbers = Tuple[List[float], List[float]]
+WeightsAndNumbers = Tuple[List[float], List[Real]]
 
 
 def smoothed_length_weights_and_nums(songs: List[AudioFile], key: str,
-                                     total_length: float,
+                                     total_length: Real,
                                      smoothing_factor: float) -> WeightsAndNumbers:
     """:returns: smoothed length-based weights and the songs' associated numeric values
     """
+    total_length = float(total_length)
     length_based_smoothed_weights = []
     values = []
     for s in songs:
@@ -108,7 +110,7 @@ def smoothed_length_weights_and_nums(songs: List[AudioFile], key: str,
     return length_based_smoothed_weights, values
 
 
-def weighted_average(nums: List[float], weights: List[float]) -> float:
+def weighted_average(nums: List[Real], weights: List[float]) -> float:
     """:returns: the weighted average (arithmetic mean) of a list of numbers"""
     total_weight = 0
     weighted_sum = 0
@@ -119,8 +121,8 @@ def weighted_average(nums: List[float], weights: List[float]) -> float:
     return weighted_sum / total_weight
 
 
-def weighted_bayesian_average(nums: List[float], weights: List[float], c: float = None,
-                              m: float = None) -> float:
+def weighted_bayesian_average(nums: List[Real], weights: List[float], c: Real = None,
+                              m: Real = None) -> float:
     """:returns: the weighted Bayesian average of an iterable of numbers,
     with parameters defaulting to config specific to ~#rating."""
     m = m or config.RATINGS.default
