@@ -14,7 +14,7 @@ import os
 import re
 import shutil
 import time
-from typing import Any, List, Tuple, Generic, TypeVar
+from typing import Any, List, Tuple, Generic, TypeVar, Optional
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -159,9 +159,9 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     @util.cached_property
     def album_key(self) -> AlbumKey:
-        id_val = (self.get("album_grouping_key")
-                  or self.get("labelid")
-                  or self.get("musicbrainz_albumid", ""))
+        id_val: str = (self.get("album_grouping_key")
+                       or self.get("labelid")
+                       or self.get("musicbrainz_albumid", ""))  # type: ignore
         return id_val, human(self("albumsort", "")), human(self("albumartistsort", ""))
 
     @util.cached_property
@@ -484,7 +484,10 @@ class AudioFile(dict, ImageContainer, HasKey):
             elif key == "playlists":
                 # TODO: avoid static dependency here... somehow
                 from quodlibet import app
-                playlists = app.library.playlists.playlists_featuring(self)
+                lib = app.library
+                if not lib:
+                    return ""
+                playlists = lib.playlists.playlists_featuring(self)
                 return "\n".join(s.name for s in playlists) or default
             elif key.startswith("#replaygain_"):
                 try:

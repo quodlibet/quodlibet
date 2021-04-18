@@ -83,7 +83,7 @@ class PlaylistLibrary(Library[str, Playlist]):
     def __songs_removed(self, library, songs):
         print_d(f"Removing {len(songs)} song(s) "
                 f"across {len(self)} playlist(s) in {self}")
-        changed = { pl for pl in self if pl.remove_songs(songs) }
+        changed = {pl for pl in self if pl.remove_songs(songs)}
         if changed:
             for pl in changed:
                 pl.write()

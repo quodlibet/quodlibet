@@ -101,3 +101,22 @@ class TFileLibrary(TLibrary):
         assert Path(out_song("~dirname")) == other_root, f"{out_song} was wrongly moved"
         assert in_song._written, "Song wasn't written to disk"
         assert not out_song._written, "Excluded songs was written!"
+
+    def test_remove_roots(self):
+        self.library.filename = "removing"
+        root = Path(normalize_path(mkdtemp(), True))
+        other_root = Path(normalize_path(mkdtemp(), True))
+        out_song = FakeAudioFile(str(other_root / "out file.mp3"))
+        in_song = FakeAudioFile(str(root / "in file.mp3"))
+        in_song.sanitize()
+        out_song.sanitize()
+        self.library.add([in_song, out_song])
+        assert in_song in self.library, "test seems broken"
+
+        # Run it by draining the generator
+        list(self.library.remove_roots([root]))
+
+        assert in_song not in self.library
+        assert out_song in self.library, "removed too many files"
+        assert self.removed == [in_song], "didn't signal the song removal"
+        assert not self.changed, "shouldn't have changed any tracks"
