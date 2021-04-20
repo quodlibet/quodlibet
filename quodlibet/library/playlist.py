@@ -12,7 +12,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
 from quodlibet.util.collection import (Playlist, XSPFBackedPlaylist,
                                        FileBackedPlaylist)
-from senf import text2fsn, _fsnative
+from senf import text2fsn, _fsnative, fsn2text
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
@@ -49,18 +49,19 @@ class PlaylistLibrary(Library[str, Playlist]):
             fns = []
 
         for fn in fns:
-            if os.path.isdir(os.path.join(self.pl_dir, fn)):
+            full_path = os.path.join(self.pl_dir, fn)
+            if os.path.isdir(full_path) or fsn2text(fn).startswith("."):
                 continue
             try:
-                XSPFBackedPlaylist(self.pl_dir, text2fsn(fn),
+                XSPFBackedPlaylist(self.pl_dir, fn,
                                    songs_lib=library, pl_lib=self)
             except TypeError as e:
-                legacy = FileBackedPlaylist(self.pl_dir, text2fsn(fn),
+                legacy = FileBackedPlaylist(self.pl_dir, fn,
                                             songs_lib=library, pl_lib=self)
                 print_w(f"Converting {fn!r} to XSPF format ({e})")
                 XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
             except EnvironmentError:
-                print_w("Invalid Playlist '%s'" % fn)
+                print_w(f"Invalid Playlist {fn!r}")
 
     def create(self, name_base: Optional[str] = None) -> Playlist:
         if name_base:
