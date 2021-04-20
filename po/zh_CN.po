@@ -557,7 +557,7 @@ msgstr ""
 #: ../quodlibet/browsers/iradio.py:372
 #, fuzzy
 msgid "Latin"
-msgstr "评分"
+msgstr "拉丁"
 
 #: ../quodlibet/browsers/iradio.py:373
 msgid "College Radio"
@@ -573,27 +573,27 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:376
 msgid "Jazz"
-msgstr ""
+msgstr "爵士"
 
 #: ../quodlibet/browsers/iradio.py:377 ../quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr ""
+msgstr "古典"
 
 #: ../quodlibet/browsers/iradio.py:378 ../quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "流行"
 
 #: ../quodlibet/browsers/iradio.py:379
 msgid "Alternative"
-msgstr ""
+msgstr "另类"
 
 #: ../quodlibet/browsers/iradio.py:380
 msgid "Metal"
-msgstr ""
+msgstr "金属"
 
 #: ../quodlibet/browsers/iradio.py:381
 msgid "Country"
-msgstr ""
+msgstr "乡村"
 
 #: ../quodlibet/browsers/iradio.py:382
 msgid "News"
@@ -605,19 +605,19 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:384
 msgid "Funk"
-msgstr ""
+msgstr "放克"
 
 #: ../quodlibet/browsers/iradio.py:385
 msgid "Indie"
-msgstr ""
+msgstr "独立"
 
 #: ../quodlibet/browsers/iradio.py:386
 msgid "Blues"
-msgstr ""
+msgstr "蓝调"
 
 #: ../quodlibet/browsers/iradio.py:387
 msgid "Soul"
-msgstr ""
+msgstr "灵魂乐"
 
 #: ../quodlibet/browsers/iradio.py:388
 msgid "Lounge"
@@ -625,7 +625,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:389
 msgid "Punk"
-msgstr ""
+msgstr "朋克"
 
 #: ../quodlibet/browsers/iradio.py:390
 msgid "Reggaeton"
@@ -645,7 +645,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/iradio.py:396 ../quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr ""
+msgstr "摇滚"
 
 #: ../quodlibet/browsers/iradio.py:449
 msgid "Would you like to load a list of popular radio stations?"
@@ -721,11 +721,11 @@ msgstr "属性"
 
 #: ../quodlibet/browsers/media.py:52
 msgid "Device:"
-msgstr ""
+msgstr "设备"
 
 #: ../quodlibet/browsers/media.py:54
 msgid "Not mounted"
-msgstr ""
+msgstr "尚未挂载"
 
 #: ../quodlibet/browsers/media.py:55
 #, fuzzy
@@ -784,7 +784,7 @@ msgstr "无法复制曲目"
 
 #: ../quodlibet/browsers/media.py:514
 msgid "There is not enough free space for this song."
-msgstr ""
+msgstr "没有足够的空间"
 
 #: ../quodlibet/browsers/media.py:526
 #, fuzzy, python-format
@@ -856,7 +856,7 @@ msgstr ""
 
 #: ../quodlibet/browsers/paned/prefs.py:197
 msgid "Paned Browser Preferences"
-msgstr ""
+msgstr "面板浏览器设置"
 
 #: ../quodlibet/browsers/paned/prefs.py:204
 msgid "Equal pane width"
@@ -952,7 +952,7 @@ msgstr ""
 #: ../quodlibet/browsers/playlists/util.py:51
 #, fuzzy
 msgid "Enter a name for the new playlist:"
-msgstr "输入新文件夹的名字："
+msgstr "输入新播放列表的名字："
 
 #: ../quodlibet/browsers/playlists/util.py:102
 #, fuzzy, python-format
@@ -1031,7 +1031,7 @@ msgstr ""
 #: ../quodlibet/cli.py:50
 #, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libet 没有在运行。"
+msgstr "Quod Libet 没有在运行。(使用--run参数启动)"
 
 #: ../quodlibet/cli.py:85
 msgid "a music library and player"
@@ -1052,7 +1052,7 @@ msgstr "立即开始播放"
 
 #: ../quodlibet/cli.py:90
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "启动时不显示任何窗口"
 
 #: ../quodlibet/cli.py:93
 msgid "Jump to next song"
@@ -1068,7 +1068,7 @@ msgstr "跳到前一首曲目"
 
 #: ../quodlibet/cli.py:97
 msgid "Start playback"
-msgstr "开放回放"
+msgstr "开始回放"
 
 #: ../quodlibet/cli.py:98
 msgid "Pause playback"
@@ -1081,7 +1081,7 @@ msgstr "切换播放／暂停模式"
 #: ../quodlibet/cli.py:100
 #, fuzzy
 msgid "Stop playback"
-msgstr "开放回放"
+msgstr "结束回放"
 
 #: ../quodlibet/cli.py:101
 msgid "Turn up volume"
@@ -1268,7 +1268,7 @@ msgstr "错误：试试 %s --help。"
 #: ../quodlibet/devices/_base.py:65
 #, fuzzy
 msgid "Unknown Device"
-msgstr "未知"
+msgstr "未知设备"
 
 #: ../quodlibet/devices/__init__.py:32
 #, python-format
@@ -6428,7 +6428,7 @@ msgstr "录制日期"
 
 #: ../quodlibet/util/tags.py:111
 msgid "release country"
-msgstr ""
+msgstr "发行国家/地区"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
 #. Note: picard has changed musicbrainz_trackid to mean release track.
