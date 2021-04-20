@@ -118,10 +118,10 @@ class AdvancedPreferences(EventPlugin):
                 "settings", "weight_smoothing_factor",
                 "Weight smoothing factor:",
                 ("This is used to smooth the length-based weights. Without smoothing, "
-                 "very long songs would dominate an average value of an album. "
+                 "long songs dominate average values for an album. "
                  "At the same time, short good songs would have no affect on, for "
                  "example, the average rating of an album. "
-                 "If this is -1 or less, averages are unweighted. "
+                 "Set to -1 for unweighted average. "
                  "If this is 0, no smoothing is applied. (Default is 10)")),
             text_config(
                 "player", "backend",
