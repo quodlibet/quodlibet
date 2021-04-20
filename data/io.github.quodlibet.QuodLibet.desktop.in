@@ -1,0 +1,15 @@
+[Desktop Entry]
+Name=Quod Libet
+GenericName=Music Player
+Comment=Listen to, browse, or edit your audio collection
+Exec=quodlibet --run --play-file %U
+MimeType=application/x-flac;audio/aac;audio/aiff;audio/dsf;audio/midi;audio/mp3;audio/mp4;audio/mpeg;audio/mpeg4;audio/mpg;audio/ogg;audio/vorbis;audio/wav;audio/wave;audio/x-aac;audio/x-aiff;audio/x-flac;audio/x-m4a;audio/x-midi;audio/x-mp3;audio/x-mpc;audio/x-mpeg;audio/x-ms-wma;audio/x-ms-wmv;audio/x-musepack;audio/x-oggflac;audio/x-speex;audio/x-tta;audio/x-wav;audio/x-wavpack;audio/x-wma;video/ogg;video/x-ms-asf;video/x-theora;video/x-wmv;x-scheme-handler/quodlibet;
+Terminal=false
+StartupNotify=true
+StartupWMClass=io.github.quodlibet.QuodLibet
+Type=Application
+Icon=io.github.quodlibet.QuodLibet
+Categories=AudioVideo;Audio;Player;GTK;
+
+#http://live.gnome.org/GnomeGoals/NotificationSource
+X-GNOME-UsesNotifications=true

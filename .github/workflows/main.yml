@@ -1,0 +1,178 @@
+name: test
+
+on: [push, pull_request]
+
+jobs:
+  fedora:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Run tests in Docker container
+        uses: ./.github/workflows/fedora33
+
+  msys2:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: setup-msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            mingw-w64-x86_64-gettext
+            mingw-w64-x86_64-gdk-pixbuf2
+            mingw-w64-x86_64-librsvg
+            mingw-w64-x86_64-gtk3
+            mingw-w64-x86_64-libsoup
+            mingw-w64-x86_64-gstreamer
+            mingw-w64-x86_64-gst-plugins-base
+            mingw-w64-x86_64-gst-plugins-good
+            mingw-w64-x86_64-gst-plugins-bad
+            mingw-w64-x86_64-gst-libav
+            mingw-w64-x86_64-gst-plugins-ugly
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-python-gobject
+            mingw-w64-x86_64-python-cairo
+            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-setuptools
+            mingw-w64-x86_64-python-pytest
+            mingw-w64-x86_64-python-certifi
+            mingw-w64-x86_64-python-coverage
+            mingw-w64-x86_64-python-flake8
+            mingw-w64-x86_64-python-entrypoints
+            mingw-w64-x86_64-python-toml
+
+      - name: Install additional dependencies
+        shell: msys2 {0}
+        run: |
+          pip3 install feedparser musicbrainzngs mutagen
+
+      - name: Run tests
+        shell: msys2 {0}
+        run: |
+          MSYSTEM= python3 -R -bb setup.py test
+
+  flatpak:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          ./.ci/flatpak-install.sh
+
+      - name: Run tests
+        run: |
+          ./.ci/flatpak-test.sh
+
+  macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: |
+          ./.ci/macos-install.sh
+
+      - name: Run tests
+        run: |
+          ./.ci/macos-test.sh
+
+  ubuntu:
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-20.04]
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          appstream-util \
+          dbus-x11 \
+          gettext \
+          gir1.2-appindicator3-0.1 \
+          gir1.2-gst-plugins-base-1.0 \
+          gir1.2-gstreamer-1.0 \
+          gir1.2-gtk-3.0 \
+          gir1.2-gtksource-3.0 \
+          gir1.2-keybinder-3.0 \
+          gir1.2-soup-2.4 \
+          gir1.2-webkit2-4.0 \
+          gstreamer1.0-plugins-bad \
+          gstreamer1.0-plugins-base \
+          gstreamer1.0-plugins-good \
+          gstreamer1.0-plugins-ugly \
+          gstreamer1.0-pulseaudio \
+          libxine2 \
+          python3-feedparser \
+          python3-gi \
+          python3-gi-cairo \
+          python3-musicbrainzngs \
+          python3-mutagen \
+          python3-pip \
+          python3-polib \
+          python3-pyinotify \
+          python3-pytest \
+          python3-setuptools \
+          xvfb
+
+        python3 -m pip install --user --upgrade \
+          xvfbwrapper \
+          pytest-faulthandler \
+          flake8
+
+    - name: Run tests
+      run: |
+        PYTEST_ADDOPTS=-rxXs python3 setup.py test
+
+  ubuntu-poetry:
+    runs-on: ubuntu-20.04
+    name: ubuntu-poetry
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          libdbus-glib-1-dev \
+          gettext \
+          gir1.2-gst-plugins-base-1.0 \
+          gir1.2-gtk-3.0 \
+          gir1.2-soup-2.4 \
+          gstreamer1.0-plugins-good \
+          libcairo2-dev \
+          libgirepository1.0-dev \
+          pkg-config \
+          python3-dev \
+          python3-pip \
+          python3-venv \
+          python3-wheel \
+          xvfb
+        sudo python3 -m pip install poetry
+
+    - name: Install project virtualenv
+      run: poetry install -E plugins
+
+    - name: Run tests
+      run: |
+        PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
+        poetry run coverage xml -i
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: false
+        verbose: true # optional (default = false)
