@@ -4,7 +4,8 @@
 # (at your option) any later version.
 
 import os
-from typing import Iterable, Generator, Optional, Set
+import re
+from typing import Iterable, Generator, Optional
 
 import quodlibet
 from quodlibet import print_d, print_w
@@ -16,6 +17,9 @@ from senf import text2fsn, _fsnative, fsn2text
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
+
+HIDDEN_RE = re.compile(r'^\.\w[^.]*')
+"""Hidden-like files, to ignored"""
 
 
 class PlaylistLibrary(Library[str, Playlist]):
@@ -39,7 +43,7 @@ class PlaylistLibrary(Library[str, Playlist]):
         self._rsig = library.connect('removed', self.__songs_removed)
         self._csig = library.connect('changed', self.__songs_changed)
 
-    def _read_playlists(self, library):
+    def _read_playlists(self, library) -> None:
         print_d(f"Reading playlist directory {self.pl_dir} (library: {library})")
         try:
             fns = os.listdir(self.pl_dir)
@@ -48,16 +52,21 @@ class PlaylistLibrary(Library[str, Playlist]):
             os.mkdir(self.pl_dir)
             fns = []
 
+        # Populate this library by relying on existing signal passing.
+        # Weird, but allows keeping the logic in one place
         for fn in fns:
             full_path = os.path.join(self.pl_dir, fn)
-            if os.path.isdir(full_path) or fsn2text(fn).startswith("."):
+            if os.path.isdir(full_path):
+                continue
+            if HIDDEN_RE.match(fsn2text(fn)):
+                print_d(f"Ignoring hidden file {fn!r}")
                 continue
             try:
-                XSPFBackedPlaylist(self.pl_dir, fn,
-                                   songs_lib=library, pl_lib=self)
+                XSPFBackedPlaylist(self.pl_dir, fn, songs_lib=library, pl_lib=self)
             except TypeError as e:
+                # Don't add to library - it's temporary
                 legacy = FileBackedPlaylist(self.pl_dir, fn,
-                                            songs_lib=library, pl_lib=self)
+                                            songs_lib=library, pl_lib=None)
                 print_w(f"Converting {fn!r} to XSPF format ({e})")
                 XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
             except EnvironmentError:
