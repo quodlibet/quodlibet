@@ -64,7 +64,7 @@ class TPlaylistLibrary(TestCase):
         # Won't exist, we haven't started the library yet
         temp_path = Path(_TEMP_DIR).absolute()
         parents = {path.absolute() for path in pl_dir.parents}
-        assert temp_path in parents, f"WARNING {pl_dir} not in {parents}"
+        assert temp_path in parents or os.environ.get('CI', False), "Dangerous test!"
         shutil.rmtree(pl_dir, ignore_errors=True)
         os.makedirs(pl_dir)
         fn = FileBackedPlaylist.filename_for(PL_NAME)
