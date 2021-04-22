@@ -65,16 +65,20 @@ class Command(JSONObject):
         "max_args": Field(_("max args"),
                           _("The maximum number of argument to pass to the "
                             "command at one time (like xargs)")),
+
+        "reverse": Field(_("reverse"),
+                          _("If set, the argument list will be reversed.")),
     }
 
     def __init__(self, name=None, command=None, pattern="<~filename>",
-                 unique=False, parameter=None, max_args=10000,
+                 unique=False, parameter=None, max_args=10000, reverse=False,
                  warn_threshold=50):
         JSONObject.__init__(self, name)
         self.command = str(command or "")
         self.pattern = str(pattern)
         self.unique = bool(unique)
         self.max_args = max_args
+        self.reverse = bool(reverse)
         self.parameter = str(parameter or "")
         self.__pat = Pattern(self.pattern)
         self.warn_threshold = warn_threshold
@@ -114,6 +118,10 @@ class Command(JSONObject):
                 args.append(arg)
         max = int((self.max_args or 10000))
         com_words = actual_command.split(" ")
+
+        if self.reverse:
+            args.reverse()
+
         while args:
             print_d("Running %s with %d substituted arg(s) (of %d%s total)..."
                     % (actual_command, min(max, len(args)), len(args),
@@ -144,6 +152,12 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
         Command("Browse folders (Thunar)", "thunar", "<~dirname>", unique=True,
                 max_args=50, warn_threshold=20),
+
+        Command("Burn using K3b", "k3b --audiocd"),
+
+        Command("Burn using Brasero", "brasero --audio"),
+
+        Command("Burn using Xfburn", "xfburn --audio-composition", reverse=True),
 
         Command("Flash notification",
                 command="notify-send"

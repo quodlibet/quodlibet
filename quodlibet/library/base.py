@@ -171,8 +171,10 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         items = {item for item in items if item not in self}
         if not items:
             return items
-
-        print_d(f"Adding {len(items)} items.", self._name)
+        if len(items) == 1:
+            print_d(f"Adding {next(iter(items))}", self._name)
+        else:
+            print_d(f"Adding {len(items)} items.", self._name)
         for item in items:
             self._contents[item.key] = item
 
