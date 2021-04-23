@@ -1210,7 +1210,7 @@ msgstr "设定当前浏览器"
 #: ../quodlibet/cli.py:129
 #, fuzzy
 msgid "Stop after the playing song"
-msgstr "当前歌曲结束后停止"
+msgstr "当前歌曲结束后停止播放"
 
 #: ../quodlibet/cli.py:130
 msgid "Open a new browser"
@@ -5631,7 +5631,7 @@ msgstr "编辑书签(_E)..."
 #: ../quodlibet/qltk/quodlibetwindow.py:1056
 #, fuzzy
 msgid "Stop After This Song"
-msgstr "这首曲目放完后就停止"
+msgstr "当前歌曲结束后停止播放"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1062
 msgid "_Keyboard Shortcuts"
@@ -5644,7 +5644,7 @@ msgstr "在线手册"
 #: ../quodlibet/qltk/quodlibetwindow.py:1080
 #, fuzzy
 msgid "Search Help"
-msgstr "搜索"
+msgstr "搜索功能手册"
 
 #: ../quodlibet/qltk/quodlibetwindow.py:1352
 msgid "Add a Location"
