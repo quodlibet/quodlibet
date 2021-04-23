@@ -62,7 +62,9 @@ class TPlaylistLibrary(TestCase):
 
     def create_playlist_file(self, pl_dir) -> None:
         # Won't exist, we haven't started the library yet
-        assert Path(_TEMP_DIR) in pl_dir.parents, "Unsafe test!"
+        temp_path = Path(_TEMP_DIR).absolute()
+        parents = {path.absolute() for path in pl_dir.parents}
+        assert temp_path in parents or os.environ.get('CI', False), "Dangerous test!"
         shutil.rmtree(pl_dir, ignore_errors=True)
         os.makedirs(pl_dir)
         fn = FileBackedPlaylist.filename_for(PL_NAME)
