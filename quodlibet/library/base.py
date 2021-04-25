@@ -183,7 +183,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         self.emit('added', items)
         return items
 
-    def remove(self, items: Iterable[V]) -> Iterable[V]:
+    def remove(self, items: Iterable[V]) -> Set[V]:
         """Remove items. This causes a 'removed' signal.
 
         Return the sequence of items actually removed.
