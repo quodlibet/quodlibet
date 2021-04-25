@@ -13,7 +13,7 @@ from __future__ import annotations
 
 import os
 import random
-from typing import Any, Set, Union, MutableSequence, List, Tuple
+from typing import Any, Union, List, Tuple
 from urllib.parse import quote
 
 from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative
