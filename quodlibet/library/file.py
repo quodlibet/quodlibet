@@ -538,8 +538,11 @@ class WatchedFileLibraryMixin(FileLibrary):
         copool.add(watching_producer, funcid="watch_library")
 
     def stop_watching(self):
-        for path in self._monitors.keys():
-            self.unmonitor_dir(path)
+        print_d(f"Removing watches on {len(self._monitors)} dirs", self._name)
+
+        for monitor, handler_id in self._monitors.values():
+            monitor.disconnect(handler_id)
+        self._monitors.clear()
 
     def destroy(self):
         self.stop_watching()

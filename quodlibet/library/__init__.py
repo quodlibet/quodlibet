@@ -15,7 +15,7 @@ also be queried in various ways.
 
 import time
 
-from quodlibet import print_d
+from quodlibet import print_d, print_w
 
 from quodlibet.library.song import SongLibrary, SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
@@ -54,3 +54,17 @@ def save(save_period=None):
 
         if not save_period or abs(time.time() - mtime(filename)) > save_period:
             lib.save()
+
+
+def destroy() -> None:
+    """Destroy all registered libraries """
+
+    print_d("Destroying all libraries...")
+
+    librarian = SongFileLibrary.librarian
+    for lib in list(librarian.libraries.values()):
+        try:
+            lib.destroy()
+        except Exception as e:
+            print_w(f"Couldn't destroy {lib} ({e!r})")
+    librarian.destroy()
