@@ -128,9 +128,10 @@ def check_wrapper_changed(library, parent, songs):
 
 
 def background_check_wrapper_changed(library, songs):
-    need_write = [s for s in songs if s._needs_write]
-
-    for song in need_write:
+    for song in songs:
+        if not s._needs_write:
+            continue
+        
         try:
             song._song.write()
         except AudioFileError as e:
