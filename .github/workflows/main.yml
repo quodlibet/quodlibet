@@ -168,4 +168,11 @@ jobs:
 
     - name: Run tests
       run: |
-        PYTEST_ADDOPTS=-rxXs poetry run python setup.py test
+        PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
+        poetry run coverage xml -i
+
+    - name: Upload Coverage
+      uses: codecov/codecov-action@v1
+      with:
+        fail_ci_if_error: false
+        verbose: true # optional (default = false)

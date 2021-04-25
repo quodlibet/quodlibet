@@ -10,9 +10,11 @@ from os.path import exists
 from xml.etree.ElementTree import ElementTree
 
 import pytest
+
+from quodlibet.library.playlist import PlaylistLibrary
 from senf import fsnative
 
-from quodlibet import config
+from quodlibet import config, app
 
 from tests import TestCase, mkdtemp
 from quodlibet.formats import AudioFile as Fakesong
@@ -22,7 +24,7 @@ from quodlibet.util.collection import (Album, Playlist, unweighted_average,
                                        XSPFBackedPlaylist, weighted_average,
                                        weighted_bayesian_average,
                                        smoothed_length_weights_and_nums)
-from quodlibet.library.libraries import FileLibrary
+from quodlibet.library.file import FileLibrary
 from quodlibet.util import format_rating
 
 config.RATINGS = config.HardCodedRatingsPrefs()
@@ -329,10 +331,15 @@ class TPlaylist(TestCase):
         def changed(self):
             return self.emitted.get('changed', [])
 
+        @property
+        def playlists(self):
+            return PlaylistLibrary(self)
+
     FAKE_LIB = FakeLib()
 
     def setUp(self):
         self.FAKE_LIB.reset()
+        app.library = self.FAKE_LIB
 
     def pl(self, name, lib=None) -> Playlist:
         return Playlist(name, lib)
@@ -504,26 +511,6 @@ class TPlaylist(TestCase):
         with self.wrap("playlist") as pl:
             pl.rename("playlist")
             self.failUnlessEqual(pl.name, "playlist")
-
-    def test_playlists_featuring(s):
-        with s.wrap("playlist") as pl:
-            pl.extend(NUMERIC_SONGS)
-            playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-            s.failUnlessEqual(set(playlists), {pl})
-            # Now add a second one, check that instance tracking works
-            with s.wrap("playlist2") as pl2:
-                pl2.append(NUMERIC_SONGS[0])
-                playlists = Playlist.playlists_featuring(NUMERIC_SONGS[0])
-                s.failUnlessEqual(set(playlists), {pl, pl2})
-
-    def test_playlists_tag(self):
-        # Arguably belongs in _audio
-        songs = NUMERIC_SONGS
-        pl_name = "playlist 123!"
-        with self.wrap(pl_name) as pl:
-            pl.extend(songs)
-            for song in songs:
-                self.assertEquals(pl_name, song("~playlists"))
 
     def test_duplicates_single_item(self):
         with self.wrap("playlist") as pl:

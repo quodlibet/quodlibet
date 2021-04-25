@@ -5,16 +5,14 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.songlistcolumns import SongListColumn
-from senf import fsnative
-
-from tests import TestCase
-
-from quodlibet.library import SongLibrary
+from quodlibet import config
+from quodlibet.formats import AudioFile
+from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.songlist import (SongList, set_columns, get_columns,
                                      header_tag_split, get_sort_tag)
-from quodlibet.formats import AudioFile
-from quodlibet import config
+from quodlibet.qltk.songlistcolumns import SongListColumn
+from senf import fsnative
+from tests import TestCase
 
 
 class TSongList(TestCase):
@@ -23,7 +21,7 @@ class TSongList(TestCase):
 
     def setUp(self):
         config.init()
-        self.songlist = SongList(SongLibrary())
+        self.songlist = SongList(SongFileLibrary())
 
         self.orders_changed = 0
 
@@ -173,13 +171,13 @@ class TSongList(TestCase):
 
     def test_header_menu(self):
         from quodlibet import browsers
-        from quodlibet.library import SongLibrary, SongLibrarian
+        from quodlibet.library import SongLibrarian
 
         song = AudioFile({"~filename": fsnative(u"/dev/null")})
         song.sanitize()
         self.songlist.set_songs([song])
 
-        library = SongLibrary()
+        library = SongFileLibrary()
         library.librarian = SongLibrarian()
         browser = browsers.get("SearchBar")(library)
 

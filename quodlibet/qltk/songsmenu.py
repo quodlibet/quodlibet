@@ -305,20 +305,9 @@ class SongsMenu(Gtk.Menu):
                 is_file = False
 
         if playlists:
-            # Needed here to avoid a circular import; most browsers use
-            # a SongsMenu, but SongsMenu needs access to the playlist
-            # browser for this item.
-
-            # FIXME: Two things are now importing browsers, so we need
-            # some kind of inversion of control here.
-            from quodlibet.browsers.playlists.menu import PlaylistMenu
-            from quodlibet.browsers.playlists import PlaylistsBrowser
             try:
-                submenu = PlaylistMenu(songs, PlaylistsBrowser.playlists())
-
-                def on_new(widget, playlist):
-                    PlaylistsBrowser.changed(playlist)
-                submenu.connect('new', on_new)
+                from quodlibet.browsers.playlists.menu import PlaylistMenu
+                submenu = PlaylistMenu(songs, library.playlists)
             except AttributeError as e:
                 print_w("Couldn't get Playlists menu: %s" % e)
             else:

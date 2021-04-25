@@ -1,5 +1,5 @@
 # Copyright 2017 Christoph Reiter,
-#           2017 Nick Boultbee
+#        2017-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,7 +8,7 @@
 
 from gi.repository import Gst
 
-from quodlibet.library.libraries import Library
+from quodlibet.library.base import Library
 from tests.plugin import PluginTestCase
 from tests.helper import visible
 

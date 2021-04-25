@@ -9,7 +9,7 @@
 
 from gi.repository import Gtk, Pango
 
-from quodlibet import config
+from quodlibet import config, print_d
 from quodlibet import util
 from quodlibet import browsers
 from quodlibet import app
@@ -315,6 +315,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             bg = background_filter()
             if bg:
                 songs = list(filter(bg, songs))
+        print_d(f"Setting {len(songs)} songs...")
         self.songlist.set_songs(songs, sorted)
 
     def __enqueue(self, view, path, column, player):

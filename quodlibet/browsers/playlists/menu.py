@@ -1,34 +1,33 @@
-# Copyright 2014-2017 Nick Boultbee
+# Copyright 2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from typing import Optional
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, Pango
 
-from quodlibet import app
 from quodlibet import ngettext, _
 from quodlibet import qltk
-from quodlibet.browsers.playlists.util import GetPlaylistName, PLAYLISTS
+from quodlibet.browsers.playlists.util import GetPlaylistName
+from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.qltk import SeparatorMenuItem, get_menu_item_top_parent, Icons
-from quodlibet.util.collection import Playlist, FileBackedPlaylist
+from quodlibet.util.collection import Playlist
 
 
 class PlaylistMenu(Gtk.Menu):
-    __gsignals__ = {
-        'new': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-    }
 
-    def __init__(self, songs, playlists):
+    def __init__(self, songs, pl_lib: PlaylistLibrary):
         super().__init__()
+        self.pl_lib = pl_lib
         i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
         i.connect('activate', self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
 
-        for playlist in playlists:
+        for playlist in sorted(pl_lib):
             name = playlist.name
             i = Gtk.CheckMenuItem(label=name)
             some, all = playlist.has_songs(songs)
@@ -39,24 +38,17 @@ class PlaylistMenu(Gtk.Menu):
                 'activate', self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 
-    def _on_new_playlist_activate(self, item, songs):
+    def _on_new_playlist_activate(self, item, songs) -> Optional[Playlist]:
         parent = get_menu_item_top_parent(item)
         title = Playlist.suggested_name_for(songs)
         title = self._get_new_name(parent, title)
         if title is None:
-            return
-        playlist = FileBackedPlaylist.new(PLAYLISTS, title,
-                                          library=app.library)
-        playlist.extend(songs)
-        self._emit_new(playlist)
+            return None
+        return self.pl_lib.create_from_songs(songs)
 
     def _get_new_name(self, parent, title):
         """Ask the user for a name for the new playlist"""
         return GetPlaylistName(qltk.get_top_parent(parent)).run(title)
-
-    def _emit_new(self, playlist):
-        # TODO: signals directly from a new playlist library (#518)
-        self.emit('new', playlist)
 
     def _on_toggle_playlist_activate(self, item, playlist, songs):
         parent = get_menu_item_top_parent(item)
