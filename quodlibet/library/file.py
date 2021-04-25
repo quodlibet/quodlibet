@@ -6,17 +6,18 @@
 import os
 import time
 from pathlib import Path
-from typing import Generator, Set, Iterable
+from random import randint
+from typing import Generator, Set, Iterable, Optional
 
 from gi.repository import Gio, GLib
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
 from quodlibet.library.base import PicklingLibrary, iter_paths
 from quodlibet.qltk.notif import Task
-from quodlibet.util import copool
+from quodlibet.util import copool, print_exc
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import ismount, unexpand, normalize_path
-from senf import fsn2text, fsnative, expanduser
+from senf import fsn2text, fsnative, expanduser, text2fsn, _fsnative
 
 
 class FileLibrary(PicklingLibrary):
@@ -319,10 +320,11 @@ class FileLibrary(PicklingLibrary):
 
         self._masked.pop(mount_point, {})
 
-    def move_root(self, old_root: str, new_root: fsnative) \
+    def move_root(self, old_root: str, new_root: fsnative, files_exist: bool = True) \
             -> Generator[None, None, None]:
         """
         Move the root for all songs in a given (scan) directory.
+        Source files needn't exist (e.g. already moved) if `files_exist=False`.
 
         We avoid dereferencing the destination, to allow users things like:
           1. Symlink new_path -> old_root
@@ -333,14 +335,17 @@ class FileLibrary(PicklingLibrary):
         """
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
-        if not old_path.is_dir():
+        if files_exist and old_path.is_dir():
             raise ValueError(f"Source {old_path!r} is not a directory")
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
-        print_d(f"{self._name}: checking entire library for {old_path!r}")
+        print_d(f"Checking entire library for {old_path}", self._name)
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
+        # Log some randomised examples of things
+        offset = randint(0, total // 8)
+        repeat = total // 4
         if not total:
             return
         with Task(_("Library"), _("Moving library files")) as task:
@@ -355,14 +360,16 @@ class FileLibrary(PicklingLibrary):
                     new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
                         print_w(f"Substitution failed for {key!r}")
-                    # We need to update ~filename and ~mountpoint
-                    song.sanitize()
-                    song.write()
+                    if files_exist:
+                        # We need to update ~filename and ~mountpoint
+                        song.sanitize()
+                        song.write()
                     if self.move_song(song, new_key):
                         changed.add(song)
                     else:
                         missing.add(song)
-                elif not (i % 1000):
+                elif files_exist and not ((i + offset) % repeat):
+                    # Only log when we're doing a "real" root move
                     print_d(f"Not moved, for example: {key!r}")
                 if not i % 100:
                     yield
@@ -371,9 +378,9 @@ class FileLibrary(PicklingLibrary):
                 print_w(f"Couldn't find {len(list(missing))} files: {missing}")
         yield
         self.save()
-        print_d(f"Done moving to {new_path!r}.")
+        print_d(f"Done moving to {new_path!r}.", self._name)
 
-    def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
+    def move_song(self, song: AudioFile, new_path: _fsnative) -> bool:
         """Updates the location of a song, without touching the file.
 
         :returns: True if it was could be found (and moved)
@@ -422,82 +429,100 @@ class WatchedFileLibraryMixin(FileLibrary):
         self._monitors = {}
         print_d(f"Initialised {self!r}")
 
-    def monitor_dir(self, path):
+    def monitor_dir(self, path: Path) -> None:
         """Monitors a single directory"""
 
-        normalised = normalize_path(path, True)
         # Only add one monitor per absolute path...
-        if normalised not in self._monitors:
-            f = Gio.File.new_for_path(normalised)
+        if path not in self._monitors:
+            f = Gio.File.new_for_path(str(path))
             try:
                 monitor = f.monitor_directory(Gio.FileMonitorFlags.WATCH_MOVES, None)
             except GLib.GError as e:
-                print_w(f"Couldn't watch {normalised} ({e})")
+                print_w(f"Couldn't watch {path} ({e})")
                 monitor = None
             if not monitor:
                 return
             handler_id = monitor.connect("changed", self.__file_changed)
             # Don't destroy references - http://stackoverflow.com/q/4535227
             self._monitors[path] = (monitor, handler_id)
-            print_d(f"Monitoring {path}")
+            print_d(f"Monitoring {path!r}")
 
-    def __file_changed(self, monitor, main_file, other_file, event_type):
-        EventType = Gio.FileMonitorEvent
-        file_path = main_file.get_path()
-        if file_path is None:
-            return
-        file_path = Path(normalize_path(file_path, True))
-        song = self.get(file_path)
-        other_path = other_file and Path(normalize_path(other_file.get_path(), True))
-
-        if event_type == EventType.CREATED:
-            if os.path.isdir(file_path):
-                print_d("Monitoring new directory %s" % (file_path,))
-                self.monitor_dir(file_path)
-                # Consume generator
-                list(self.scan([str(file_path)]))
+    def __file_changed(self, monitor, main_file: Gio.File,
+                       other_file: Optional[Gio.File], event_type) -> None:
+        try:
+            EventType = Gio.FileMonitorEvent
+            file_path = main_file.get_path()
+            if file_path is None:
                 return
-            else:
-                if song:
-                    # QL created this one; still check if it changed
-                    if not song.valid():
-                        self.reload(song)
+            song = self.get(file_path)
+            file_path = Path(normalize_path(file_path, True))
+            other_path = (Path(normalize_path(other_file.get_path(), True))
+                          if other_file else None)
+            # print_d(f"Got event {event_type} from {file_path} -> {other_path}")
+            if event_type == EventType.CREATED:
+                if file_path.is_dir():
+                    print_d(f"Monitoring new directory {file_path!r}")
+                    self.monitor_dir(file_path)
+                    # Consume generator
+                    list(self.scan([str(file_path)]))
+                    return
                 else:
-                    print_d(f"Auto-adding new file: {file_path}")
-                    self.add_filename(file_path)
-        elif event_type == EventType.CHANGED:
-            if song and not song.valid():
-                self.reload(song)
-                print_d("Updating externally changed song: %s" % file_path)
-        elif event_type == EventType.RENAMED:
-            print_d(f"Moving {file_path} to {other_path}...")
-            if song:
-                self.move_song(song, other_path)
-        elif event_type == EventType.ATTRIBUTE_CHANGED:
-            # Probably pointless for us? Changes are probably quick and single
-            pass
-        elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
-            if song:
-                print_d(f"Got {event_type} for {file_path}, so should delete")
-                self.reload(song)
-            else:
-                # either not a song, or a song that was renamed by QL
-                if self.is_monitored_dir(file_path):
+                    if song:
+                        # QL created this one; still check if it changed
+                        if not song.valid():
+                            self.reload(song)
+                    else:
+                        print_d(f"Auto-adding new file: {file_path}")
+                        self.add_filename(file_path)
+            elif event_type == EventType.CHANGED:
+                if song and not song.valid():
+                    self.reload(song)
+                    print_d("Updating externally changed song: %s" % file_path)
+            elif event_type == EventType.RENAMED:
+                if not other_path:
+                    print_w(f"No destination found for rename of {file_path}")
+                    return
+                if song:
+                    print_d(f"Moving {file_path} to {other_path}...")
+                    self.move_song(song, text2fsn(str(other_path)))
+                elif self.is_monitored_dir(file_path):
+                    if self.librarian:
+                        print_d(f"Moving tracks from {file_path} -> {other_path}...")
+                        copool.add(self.librarian.move_root,
+                                   str(file_path), str(other_path), write_files=False)
                     self.unmonitor_dir(file_path)
+                    self.monitor_dir(other_path)
+                else:
+                    print_w(f"Weird, I'm not monitoring {file_path}")
+            elif event_type in (EventType.ATTRIBUTE_CHANGED,
+                                EventType.CHANGES_DONE_HINT):
+                # Probably pointless for us? Changes are probably quick and single
+                pass
+            elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
+                if song:
+                    print_d(f"Got {event_type} for {file_path}, so should delete")
+                    self.reload(song)
+                else:
+                    # either not a song, or a song that was renamed by QL
+                    if self.is_monitored_dir(file_path):
+                        self.unmonitor_dir(file_path)
 
-                # And try to remove all songs under that dir. Slowly.
-                gone = set()
-                for key, song in self.iteritems():
-                    if file_path in Path(key).parents:
-                        gone.add(song)
-                if gone:
-                    print_d(f"Removing {len(gone)} contained songs in {file_path}")
-                    actually_gone = self.remove(gone)
-                    if gone != actually_gone:
-                        print_w(f"Couldn't remove all: {gone - actually_gone}")
+                    # And try to remove all songs under that dir. Slowly.
+                    gone = set()
+                    for key, song in self.iteritems():
+                        if file_path in Path(key).parents:
+                            gone.add(song)
+                    if gone:
+                        print_d(f"Removing {len(gone)} contained songs in {file_path}")
+                        actually_gone = self.remove(gone)
+                        if gone != actually_gone:
+                            print_w(f"Couldn't remove all: {gone - actually_gone}")
 
-        else:
-            print_d(f"Unhandled event {event_type} on {file_path} ({other_path})")
+            else:
+                print_d(f"Unhandled event {event_type} on {file_path} ({other_path})")
+        except Exception:
+            print_w("Failed to run file monitor callback", self._name)
+            print_exc()
 
     def is_monitored_dir(self, path: Path) -> bool:
         return path in self._monitors
@@ -521,14 +546,16 @@ class WatchedFileLibraryMixin(FileLibrary):
             for fullpath in paths:
                 desc = _("Adding watches for %s") % (fsn2text(unexpand(fullpath)))
                 with Task(_("Library"), desc) as task:
-                    fullpath = expanduser(fullpath)
-                    if any(fullpath.startswith(exclude) for exclude in exclude_dirs):
+                    normalised = Path(normalize_path(fullpath, True))
+                    if any(Path(exclude) in normalised.parents
+                           for exclude in exclude_dirs):
                         continue
                     unpulsed = 0
-                    self.monitor_dir(fullpath)
-                    for path, dirs, files in os.walk(fullpath):
+                    self.monitor_dir(normalised)
+                    for path, dirs, files in os.walk(normalised):
+                        normalised = Path(normalize_path(path, True))
                         for d in dirs:
-                            self.monitor_dir(os.path.join(path, d))
+                            self.monitor_dir(normalised / d)
                         unpulsed += len(dirs)
                         if unpulsed > 50:
                             task.pulse()
