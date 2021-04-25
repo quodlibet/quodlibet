@@ -92,6 +92,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             items = {item for item in items if item in self}
             if not items:
                 return
+            print_d(f"Changing {len(items)} items directly.", self._name)
             self._changed(items)
 
     def _changed(self, items: Collection[V]):

@@ -9,9 +9,10 @@ from quodlibet import util, print_d
 from quodlibet.formats import MusicFile
 from quodlibet.library.album import AlbumLibrary
 from quodlibet.library.base import PicklingLibrary
-from quodlibet.library.file import FileLibrary
+from quodlibet.library.file import WatchedFileLibraryMixin
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
+from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.path import normalize_path
 
 
@@ -82,17 +83,16 @@ class SongLibrary(PicklingLibrary):
         return songs
 
 
-class SongFileLibrary(SongLibrary, FileLibrary):
+class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, watch=False):
         print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
-
-    def contains_filename(self, filename):
-        key = normalize_path(filename, True)
-        return key in self._contents
+        if watch:
+            # TODO: don't depend on get_scan_dirs here (pass them in)
+            self.start_watching(get_scan_dirs())
 
     def get_filename(self, filename):
         key = normalize_path(filename, True)

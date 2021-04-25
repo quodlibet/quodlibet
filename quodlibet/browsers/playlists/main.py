@@ -65,11 +65,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             self.pl_lib: PlaylistLibrary = songs_lib.playlists
         except (AttributeError, TypeError):
             print_w("No playlist library available")
-
-        model = self._lists.get_model()
-        print_d(f"Reading playlists from library: {self.pl_lib}")
-        for playlist in self.pl_lib:
-            model.append(row=[playlist])
+        else:
+            model = self._lists.get_model()
+            print_d(f"Reading playlists from library: {self.pl_lib}")
+            for playlist in self.pl_lib:
+                model.append(row=[playlist])
 
         # this is instanced with the necessary gtkdialog-settings, and afterwards
         # its run-method is called to get a to-be-compared Gtk.ResponseType
