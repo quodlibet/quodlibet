@@ -345,7 +345,7 @@ class FileLibrary(PicklingLibrary):
         total = len(self)
         # Log some randomised examples of things
         offset = randint(0, total // 8)
-        repeat = total // 4
+        repeat = max(1, total // 4)
         if not total:
             return
         with Task(_("Library"), _("Moving library files")) as task:
