@@ -11,7 +11,7 @@ from senf import fsn2uri
 from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
-from quodlibet.library.libraries import SongFileLibrary
+from quodlibet.library import SongFileLibrary
 from quodlibet.util.path import find_mount_point
 from . import PluginTestCase
 

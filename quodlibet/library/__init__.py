@@ -17,7 +17,7 @@ import time
 
 from quodlibet import print_d
 
-from quodlibet.library.libraries import SongFileLibrary, SongLibrary
+from quodlibet.library.song import SongLibrary, SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
 from quodlibet.util.path import mtime
 

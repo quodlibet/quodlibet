@@ -1,4 +1,4 @@
-# Copyright 2014-2017 Nick Boultbee
+# Copyright 2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,25 +7,15 @@
 
 import os
 
-from senf import uri2fsn, fsnative, fsn2text, path2fsn, bytes2fsn, text2fsn
-
-import quodlibet
-from quodlibet import _, print_d
+from quodlibet import _, print_w
 from quodlibet import formats
 from quodlibet.qltk import Icons
-from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.getstring import GetStringDialog
+from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
-from quodlibet.util.collection import FileBackedPlaylist
-from quodlibet.util.path import mkdir, uri_is_valid
-
-
-# Directory for playlist files
-PLAYLISTS = os.path.join(quodlibet.get_user_dir(), "playlists")
-assert isinstance(PLAYLISTS, fsnative)
-if not os.path.isdir(PLAYLISTS):
-    mkdir(PLAYLISTS)
+from quodlibet.util.path import uri_is_valid
+from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
 def confirm_remove_playlist_dialog_invoke(
@@ -60,17 +50,17 @@ class GetPlaylistName(GetStringDialog):
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
 
-def parse_m3u(filelike, pl_name, library=None):
+def parse_m3u(filelike, pl_name, songs_lib=None, pl_lib=None):
     filenames = []
     for line in filelike:
         line = line.strip()
         if line.startswith(b"#"):
             continue
         __attempt_add(line, filenames)
-    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, songs_lib, pl_lib)
 
 
-def parse_pls(filelike, pl_name, library=None):
+def parse_pls(filelike, pl_name, songs_lib=None, pl_lib=None):
     filenames = []
     for line in filelike:
         line = line.strip()
@@ -78,19 +68,17 @@ def parse_pls(filelike, pl_name, library=None):
             continue
         fn = line[line.index(b"=") + 1:].strip()
         __attempt_add(fn, filenames)
-    return __create_playlist(pl_name, _dir_for(filelike), filenames, library)
+    return __create_playlist(pl_name, _dir_for(filelike), filenames, songs_lib, pl_lib)
 
 
 def __attempt_add(filename, filenames):
     try:
         filenames.append(bytes2fsn(filename, 'utf-8'))
     except ValueError:
-        return
+        print_w(f"Ignoring invalid filename {filename!r}")
 
 
-def __create_playlist(name, source_dir, files, library):
-    playlist = FileBackedPlaylist.new(PLAYLISTS, name, library=library)
-    print_d("Created playlist %s" % playlist)
+def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
     songs = []
     win = WaitLoadWindow(
         None, len(files),
@@ -99,7 +87,7 @@ def __create_playlist(name, source_dir, files, library):
     for i, filename in enumerate(files):
         if not uri_is_valid(filename):
             # Plain filename.
-            songs.append(_af_for(filename, library, source_dir))
+            songs.append(_af_for(filename, songs_lib, source_dir))
         else:
             try:
                 filename = uri2fsn(filename)
@@ -108,12 +96,11 @@ def __create_playlist(name, source_dir, files, library):
                 songs.append(formats.remote.RemoteFile(filename))
             else:
                 # URI-encoded local filename.
-                songs.append(_af_for(filename, library, source_dir))
+                songs.append(_af_for(filename, songs_lib, source_dir))
         if win.step():
             break
     win.destroy()
-    playlist.extend(list(filter(None, songs)))
-    return playlist
+    return pl_lib.create_from_songs(songs)
 
 
 def _af_for(filename, library, pl_dir):

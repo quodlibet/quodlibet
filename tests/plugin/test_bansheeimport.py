@@ -1,4 +1,5 @@
 # Copyright 2018 Phidica Veia
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +12,7 @@ from senf import fsn2uri
 from quodlibet.formats import AudioFile
 
 from tests.helper import temp_filename
-from quodlibet.library.libraries import SongFileLibrary
+from quodlibet.library import SongFileLibrary
 from . import PluginTestCase
 
 

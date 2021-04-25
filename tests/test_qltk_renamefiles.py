@@ -159,7 +159,7 @@ class Renamer(Gtk.EventBox):
     def __init__(self, *args, **kwargs):
         super().__init__()
 
-        from quodlibet.library.libraries import SongLibrary
+        from quodlibet.library import SongLibrary
 
         self.library = SongLibrary()
         box = Gtk.EventBox()

@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2017 Nick Boultbee
+#           2012-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ import os
 import re
 import shutil
 import time
-from typing import List, Optional, Any
+from typing import Any, List, Tuple, Generic, TypeVar, Optional
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -38,6 +38,9 @@ from ._misc import AudioFileError, translate_errors
 
 
 translate_errors
+
+AlbumKey = Tuple[str, str, str]
+"""An album key is (currently) a tuple"""
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
            "~#skipcount", "~#rating", "~bookmark"}
@@ -89,7 +92,15 @@ def decode_value(tag, value):
     return str(value)
 
 
-class AudioFile(dict, ImageContainer):
+K = TypeVar("K")
+
+
+class HasKey(Generic[K]):
+    """Many things can be keyed"""
+    key: K
+
+
+class AudioFile(dict, ImageContainer, HasKey):
     """An audio file. It looks like a dict, but implements synthetic
     and tied tags via __call__ rather than __getitem__. This means
     __getitem__, get, and so on can be used for efficiency.
@@ -147,11 +158,11 @@ class AudioFile(dict, ImageContainer):
             self.get("~filename"))
 
     @util.cached_property
-    def album_key(self):
-        return (human(self("albumsort", "")),
-                human(self("albumartistsort", "")),
-                self.get("album_grouping_key") or self.get("labelid") or
-                self.get("musicbrainz_albumid") or "")
+    def album_key(self) -> AlbumKey:
+        id_val: str = (self.get("album_grouping_key")
+                       or self.get("labelid")
+                       or self.get("musicbrainz_albumid", ""))  # type: ignore
+        return id_val, human(self("albumsort", "")), human(self("albumartistsort", ""))
 
     @util.cached_property
     def sort_key(self):
@@ -211,7 +222,7 @@ class AudioFile(dict, ImageContainer):
         pop("sort_key", None)
 
     @property
-    def key(self):
+    def key(self) -> K:  # type: ignore
         return self["~filename"]
 
     @property
@@ -471,10 +482,12 @@ class AudioFile(dict, ImageContainer):
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
             elif key == "playlists":
-                # See Issue 876
-                # Avoid circular references from formats/__init__.py
-                from quodlibet.util.collection import Playlist
-                playlists = Playlist.playlists_featuring(self)
+                # TODO: avoid static dependency here... somehow
+                from quodlibet import app
+                lib = app.library
+                if not lib:
+                    return ""
+                playlists = lib.playlists.playlists_featuring(self)
                 return "\n".join(s.name for s in playlists) or default
             elif key.startswith("#replaygain_"):
                 try:

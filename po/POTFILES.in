@@ -80,7 +80,6 @@ quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/visualisations.py
 quodlibet/ext/events/waveformseekbar.py
-quodlibet/ext/events/weblyrics.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py
@@ -127,7 +126,6 @@ quodlibet/ext/songsmenu/forcewrite.py
 quodlibet/ext/songsmenu/html.py
 quodlibet/ext/songsmenu/ifp.py
 quodlibet/ext/songsmenu/importexport.py
-quodlibet/ext/songsmenu/k3b.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
 quodlibet/ext/songsmenu/migratemetadata.py
@@ -142,7 +140,11 @@ quodlibet/formats/_audio.py
 quodlibet/formats/__init__.py
 quodlibet/__init__.py
 quodlibet/library/__init__.py
-quodlibet/library/libraries.py
+quodlibet/library/album.py
+quodlibet/library/base.py
+quodlibet/library/file.py
+quodlibet/library/playlist.py
+quodlibet/library/song.py
 quodlibet/main.py
 quodlibet/operon/base.py
 quodlibet/operon/commands.py
