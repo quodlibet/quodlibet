@@ -129,7 +129,7 @@ def check_wrapper_changed(library, parent, songs):
 
 def background_check_wrapper_changed(library, songs):
     for song in songs:
-        if not s._needs_write:
+        if not song._needs_write:
             continue
 
         try:
