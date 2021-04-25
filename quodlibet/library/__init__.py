@@ -62,9 +62,10 @@ def destroy() -> None:
     print_d("Destroying all libraries...")
 
     librarian = SongFileLibrary.librarian
-    for lib in list(librarian.libraries.values()):
-        try:
-            lib.destroy()
-        except Exception as e:
-            print_w(f"Couldn't destroy {lib} ({e!r})")
-    librarian.destroy()
+    if librarian:
+        for lib in list(librarian.libraries.values()):
+            try:
+                lib.destroy()
+            except Exception as e:
+                print_w(f"Couldn't destroy {lib} ({e!r})")
+        librarian.destroy()
