@@ -335,7 +335,7 @@ class FileLibrary(PicklingLibrary):
         """
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
-        if files_exist and old_path.is_dir():
+        if files_exist and not old_path.is_dir():
             raise ValueError(f"Source {old_path!r} is not a directory")
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
