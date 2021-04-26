@@ -5,13 +5,11 @@
 import os
 import shutil
 
-from gi.repository import Gtk
-
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import (Library, iter_paths, PicklingMixin)
 from quodlibet.util import connect_obj, is_windows
 from senf import fsnative
-from tests import TestCase, mkstemp, mkdtemp, skipIf
+from tests import TestCase, mkstemp, mkdtemp, skipIf, run_gtk_loop
 
 
 class Fake(int):
@@ -128,21 +126,18 @@ class TLibrary(TestCase):
     def test_changed(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(5))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnlessEqual(self.changed, self.Frange(5))
 
     def test_changed_not_present(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(2, 20, 3))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnlessEqual(set(self.changed), {2, 5, 8})
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
     def test___iter__(self):
         self.library.add(self.Frange(10))

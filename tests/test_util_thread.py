@@ -7,7 +7,7 @@
 
 import threading
 
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
 from gi.repository import Gtk
 
@@ -30,13 +30,11 @@ class Tcall_async(TestCase):
 
         call_async(func, cancel, callback)
         Gtk.main_iteration()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
         call_async_background(func, cancel, callback)
         Gtk.main_iteration()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
         main_name = threading.current_thread().name
         self.assertEqual(len(data), 4)
@@ -56,8 +54,7 @@ class Tcall_async(TestCase):
         cancel.cancel()
         call_async(func, cancel, callback)
         Gtk.main_iteration()
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
     def test_terminate_all(self):
         terminate_all()

@@ -7,12 +7,11 @@ import io
 import os
 import shutil
 
-from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from quodlibet.util.thread import Cancellable
-from tests import TestCase, mkdtemp, mkstemp, get_data_path
+from tests import TestCase, mkdtemp, mkstemp, get_data_path, run_gtk_loop
 
 from quodlibet import config
 from quodlibet.plugins import Plugin
@@ -26,11 +25,6 @@ from .helper import get_temp_copy
 
 
 DUMMY_COVER = io.StringIO()
-
-
-def run_loop():
-    while Gtk.events_pending():
-        Gtk.main_iteration()
 
 
 class DummyCoverSource1(CoverSourcePlugin):
@@ -146,17 +140,17 @@ class TCoverManager(TestCase):
             found.append(_found)
             result.append(_result)
         manager.acquire_cover(done, None, None)
-        run_loop()
+        run_gtk_loop()
         self.assertFalse(found[0])
         handler.plugin_enable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
-        run_loop()
+        run_gtk_loop()
         self.assertTrue(found[1])
         self.assertIs(result[1], DUMMY_COVER)
         handler.plugin_disable(dummy_sources[1])
         handler.plugin_enable(dummy_sources[2])
         manager.acquire_cover(done, None, None)
-        run_loop()
+        run_gtk_loop()
         self.assertTrue(found[2])
         self.assertIs(result[2], DUMMY_COVER)
 
@@ -180,7 +174,7 @@ class TCoverManager(TestCase):
             found.append(_found)
             result.append(_result)
         manager.acquire_cover(done, None, None)
-        run_loop()
+        run_gtk_loop()
         self.assertTrue(found[0])
         self.assertIs(result[0], DUMMY_COVER)
         self.assertTrue(dummy_sources[0].cls.cover_call)
@@ -194,7 +188,7 @@ class TCoverManager(TestCase):
             source.cls.fetch_call = False
         handler.plugin_disable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
-        run_loop()
+        run_gtk_loop()
         self.assertTrue(found[1])
         self.assertIs(result[1], DUMMY_COVER)
         self.assertTrue(dummy_sources[0].cls.cover_call)
@@ -231,7 +225,7 @@ class TCoverManager(TestCase):
         manager.connect('covers-found', done)
         manager.search_cover(Cancellable(), songs)
         manager.connect('searches-complete', finished)
-        run_loop()
+        run_gtk_loop()
 
         self.failUnlessEqual(len(results), 1)
 

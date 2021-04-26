@@ -7,12 +7,10 @@ import os
 from quodlibet import config
 from quodlibet.formats import AudioFileError
 from quodlibet.library import SongLibrary, SongFileLibrary
-from tests import get_data_path
+from tests import get_data_path, run_gtk_loop
 from tests.helper import get_temp_copy, capture_output
 from tests.test_library_libraries import (TLibrary, FakeSong, FSrange, FakeSongFile,
                                           FSFrange)
-from gi.repository import Gtk
-
 from tests.test_util_collection import NUMERIC_SONGS
 
 
@@ -34,8 +32,7 @@ class TSongLibrary(TLibrary):
         song = self.Fake(10)
         self.library.add([song])
         self.library.rename(song, 20)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnless(song in self.changed)
         self.failUnless(song in self.library)
         self.failUnless(song.key in self.library)

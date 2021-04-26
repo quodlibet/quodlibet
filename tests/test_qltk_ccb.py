@@ -3,9 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
-
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
 from quodlibet import config
 from quodlibet.qltk.ccb import ConfigCheckButton, ConfigCheckMenuItem
@@ -24,22 +22,19 @@ class TConfigCheckButton(TestCase):
         c.set_active(True)
         self.failUnless(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failIf(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnless(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failIf(c.get_active())
 
 
@@ -56,20 +51,17 @@ class TConfigCheckMenuItem(TestCase):
         c.set_active(True)
         self.failUnless(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failIf(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnless(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failIf(c.get_active())
