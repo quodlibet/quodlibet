@@ -11,7 +11,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
-from tests import (mkdtemp, NamedTemporaryFile, get_data_path, run_loop, _TEMP_DIR,
+from tests import (mkdtemp, NamedTemporaryFile, get_data_path, run_gtk_loop, _TEMP_DIR,
                    init_fake_app, destroy_fake_app)
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
@@ -143,7 +143,7 @@ class TWatchedFileLibrary(TLibrary):
     def Library(self):
         lib = SongFileLibrary(watch_dirs=[_TEMP_DIR])
         # Setup needs copools
-        run_loop()
+        run_gtk_loop()
         return lib
 
     def test_watched_adding_removing(self):
@@ -153,13 +153,13 @@ class TWatchedFileLibrary(TLibrary):
             sleep(0.1)
             af = MusicFile(str(path))
             af.sanitize()
-            run_loop()
+            run_gtk_loop()
             assert path.exists()
             assert str(path) in self.library
         assert not path.exists()
         # Deletion now
         for i in range(10):
-            run_loop()
+            run_gtk_loop()
             if self.removed:
                 break
         assert self.removed, "Nothing was automatically removed"
@@ -172,7 +172,7 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
             fn = f.name
             shutil.copy(get_data_path("silence-44-s.mp3"), fn)
-            run_loop()
+            run_gtk_loop()
             assert fn in self.library, f"{fn} should have been added to library"
             assert fn in {af("~filename") for af in self.added}
 
@@ -181,14 +181,14 @@ class TWatchedFileLibrary(TLibrary):
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.flac"), path)
             sleep(0.1)
-            run_loop()
+            run_gtk_loop()
             assert str(path) in self.library, "didn't get added"
 
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
             path.rename(new_path)
             assert not path.exists(), "test broken"
-            run_loop()
+            run_gtk_loop()
             assert len(self.added) == 1
             assert not self.removed
             assert str(new_path) in self.library, "new path not in library"
