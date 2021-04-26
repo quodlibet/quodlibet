@@ -304,3 +304,9 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
         args.append(os.path.join("tests", suite))
 
     return pytest.main(args=args)
+
+
+def run_loop():
+    from gi.repository import Gtk
+    while Gtk.events_pending():
+        Gtk.main_iteration()

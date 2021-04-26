@@ -15,10 +15,11 @@ also be queried in various ways.
 
 import time
 
-from quodlibet import print_d, print_w
+from quodlibet import print_d, print_w, config
 
 from quodlibet.library.song import SongLibrary, SongFileLibrary
 from quodlibet.library.librarians import SongLibrarian
+from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.path import mtime
 
 
@@ -31,7 +32,8 @@ def init(cache_fn=None):
 
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
     # TODO: make watching configurable
-    library = SongFileLibrary("main", watch=True)
+    watch = config.getboolean("library", "watch")
+    library = SongFileLibrary("main", watch_dirs=get_scan_dirs() if watch else [])
     if cache_fn:
         library.load(cache_fn)
     return library

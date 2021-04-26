@@ -537,8 +537,8 @@ class WatchedFileLibraryMixin(FileLibrary):
         monitor.disconnect(handler_id)
         del self._monitors[path]
 
-    def start_watching(self, paths):
-        print_d("Setting up file watches for %s on %s..." % (type(self), paths))
+    def start_watching(self, paths: Iterable[fsnative]):
+        print_d(f"Setting up file watches for {type(self)} on {paths}...")
         exclude_dirs = [expanduser(e) for e in get_exclude_dirs() if e]
 
         def watching_producer():

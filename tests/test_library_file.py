@@ -2,11 +2,17 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import shutil
 from pathlib import Path
+from time import sleep
 
+from quodlibet import config
+from quodlibet.formats import MusicFile
+from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
-from tests import mkdtemp
+from tests import (mkdtemp, NamedTemporaryFile, get_data_path, run_loop, _TEMP_DIR,
+                   init_fake_app, destroy_fake_app)
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
 
@@ -120,3 +126,69 @@ class TFileLibrary(TLibrary):
         assert out_song in self.library, "removed too many files"
         assert self.removed == [in_song], "didn't signal the song removal"
         assert not self.changed, "shouldn't have changed any tracks"
+
+
+class TWatchedFileLibrary(TLibrary):
+    Fake = FakeSongFile
+
+    def setUp(self):
+        init_fake_app()
+        config.set("library", "watch", True)
+        super().setUp()
+
+    def tearDown(self):
+        destroy_fake_app()
+        super().tearDown()
+
+    def Library(self):
+        lib = SongFileLibrary(watch_dirs=[_TEMP_DIR])
+        # Setup needs copools
+        run_loop()
+        return lib
+
+    def test_watched_adding_removing(self):
+        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
+            path = Path(f.name)
+            shutil.copy(get_data_path("silence-44-s.mp3"), path)
+            sleep(0.1)
+            af = MusicFile(str(path))
+            af.sanitize()
+            run_loop()
+            assert path.exists()
+            assert str(path) in self.library
+        assert not path.exists()
+        # Deletion now
+        for i in range(10):
+            run_loop()
+            if self.removed:
+                break
+        assert self.removed, "Nothing was automatically removed"
+        assert len(self.added) == 1
+
+        assert path in {Path(af("~filename")) for af in self.removed}
+        assert str(path) not in self.library, f"{path} shouldn't be in the library now"
+
+    def test_watched_adding(self):
+        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
+            fn = f.name
+            shutil.copy(get_data_path("silence-44-s.mp3"), fn)
+            run_loop()
+            assert fn in self.library, f"{fn} should have been added to library"
+            assert fn in {af("~filename") for af in self.added}
+
+    def test_watched_moving(self):
+        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
+            path = Path(f.name)
+            shutil.copy(get_data_path("silence-44-s.flac"), path)
+            sleep(0.1)
+            run_loop()
+            assert str(path) in self.library, "didn't get added"
+
+            # Now move it...
+            new_path = path.parent / f"copied-{path.name}"
+            path.rename(new_path)
+            assert not path.exists(), "test broken"
+            run_loop()
+            assert len(self.added) == 1
+            assert not self.removed
+            assert str(new_path) in self.library, "new path not in library"

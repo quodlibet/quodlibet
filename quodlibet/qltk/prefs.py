@@ -62,13 +62,13 @@ class PreferencesWindow(UniqueWindow):
             def create_behaviour_frame():
                 vbox = Gtk.VBox(spacing=6)
                 jump_button = CCB(_("_Jump to playing song automatically"),
-                        'settings', 'jump', populate=True,
-                        tooltip=_("When the playing song changes, "
-                                  "scroll to it in the song list"))
+                                  'settings', 'jump', populate=True,
+                                  tooltip=_("When the playing song changes, "
+                                            "scroll to it in the song list"))
                 autosort_button = CCB(_("Sort songs when tags are modified"),
-                        'song_list', 'auto_sort', populate=True,
-                        tooltip=_("Automatically re-sort songs in the song list when "
-                                  "tags are modified"))
+                                      'song_list', 'auto_sort', populate=True,
+                                      tooltip=_("Automatically re-sort songs in "
+                                                "the song list when tags are modified"))
                 vbox.pack_start(jump_button, False, True, 0)
                 vbox.pack_start(autosort_button, False, True, 0)
                 return qltk.Frame(_("Behavior"), child=vbox)
@@ -699,8 +699,12 @@ class PreferencesWindow(UniqueWindow):
             self.set_border_width(12)
             self.title = _("Library")
 
-            cb = CCB(_("Scan library _on start"),
-                     "library", "refresh_on_start", populate=True)
+            scan_at_start_cb = CCB(_("Scan library _on start"),
+                                   "library", "refresh_on_start", populate=True)
+            watch_lib_cb = CCB(_("_Watch directories for changes"),
+                               "library", "watch", populate=True,
+                               tooltip=_("Watch library directories for external file "
+                                         "additions, deletions and renames"))
             scan_dirs = ScanBox()
 
             vb3 = Gtk.VBox(spacing=6)
@@ -723,8 +727,10 @@ class PreferencesWindow(UniqueWindow):
                   "This can take a long time."))
 
             grid = Gtk.Grid(column_spacing=6, row_spacing=6)
-            cb.props.hexpand = True
-            grid.attach(cb, 0, 0, 1, 1)
+            scan_at_start_cb.props.hexpand = True
+            watch_lib_cb.props.hexpand = True
+            grid.attach(watch_lib_cb, 0, 0, 1, 1)
+            grid.attach(scan_at_start_cb, 0, 1, 1, 1)
             grid.attach(refresh, 1, 0, 1, 1)
             grid.attach(reload_, 1, 1, 1, 1)
 

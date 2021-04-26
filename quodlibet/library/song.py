@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Set
+from typing import Optional, Set, Iterable
 
 from quodlibet import util, print_d
 from quodlibet.formats import MusicFile
@@ -12,8 +12,8 @@ from quodlibet.library.base import PicklingLibrary
 from quodlibet.library.file import WatchedFileLibraryMixin
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
-from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.path import normalize_path
+from senf import fsnative
 
 
 class SongLibrary(PicklingLibrary):
@@ -87,12 +87,11 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None, watch=False):
+    def __init__(self, name=None, watch_dirs: Optional[Iterable[fsnative]] = None):
         print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
-        if watch:
-            # TODO: don't depend on get_scan_dirs here (pass them in)
-            self.start_watching(get_scan_dirs())
+        if watch_dirs:
+            self.start_watching(watch_dirs)
 
     def get_filename(self, filename):
         key = normalize_path(filename, True)

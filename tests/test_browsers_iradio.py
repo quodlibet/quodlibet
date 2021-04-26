@@ -6,7 +6,7 @@
 import io
 
 from quodlibet.util import is_windows, is_osx
-from tests import TestCase, skipIf
+from tests import TestCase, skipIf, run_loop
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
@@ -14,7 +14,6 @@ from quodlibet.browsers.iradio import (InternetRadio, IRFile, QuestionBar,
                                        parse_taglist, parse_pls, parse_m3u,
                                        download_taglist, STATION_LIST_URL)
 import quodlibet.config
-from gi.repository import Gtk
 
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
 
@@ -171,8 +170,3 @@ class TIRFile(TestCase):
         assert self.received, "No stations received from %s" % url
         assert len(self.received) > 100
         # TODO: some more targeted tests
-
-
-def run_loop():
-    while Gtk.events_pending():
-        Gtk.main_iteration()

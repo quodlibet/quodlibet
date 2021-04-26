@@ -7,12 +7,11 @@ import io
 import os
 import shutil
 
-from gi.repository import Gtk
 from gi.repository import GdkPixbuf
 
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from quodlibet.util.thread import Cancellable
-from tests import TestCase, mkdtemp, mkstemp, get_data_path
+from tests import TestCase, mkdtemp, mkstemp, get_data_path, run_loop
 
 from quodlibet import config
 from quodlibet.plugins import Plugin
@@ -26,11 +25,6 @@ from .helper import get_temp_copy
 
 
 DUMMY_COVER = io.StringIO()
-
-
-def run_loop():
-    while Gtk.events_pending():
-        Gtk.main_iteration()
 
 
 class DummyCoverSource1(CoverSourcePlugin):

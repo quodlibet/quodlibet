@@ -53,6 +53,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
     "library": {
         "exclude": "",
         "refresh_on_start": "true",
+
+        # Watch all library files / directories for changes
+        "watch": "false"
     },
 
     # State about the player, to restore on startup
