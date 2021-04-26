@@ -5,7 +5,7 @@
 
 import pytest
 
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
 from gi.repository import Gtk
 
@@ -26,15 +26,14 @@ class Tcopool(TestCase):
             yield None
 
     def _assert_eventually(self, value):
-        for i in range(100):
-            Gtk.main_iteration_do(False)
+        while Gtk.events_pending():
+            Gtk.main_iteration()
             if self.buffer is value:
                 return
         assert self.buffer is value
 
     def _assert_never(self, value):
-        for i in range(100):
-            Gtk.main_iteration_do(False)
+        run_gtk_loop()
         assert self.buffer is not value
 
     def test_add_remove(self):

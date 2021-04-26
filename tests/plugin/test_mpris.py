@@ -15,7 +15,7 @@ except ImportError:
 from gi.repository import Gtk
 from senf import fsnative
 
-from tests import skipUnless
+from tests import skipUnless, run_gtk_loop
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats import AudioFile
@@ -51,8 +51,7 @@ class TMPRIS(PluginTestCase):
         config.init()
         init_fake_app()
 
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
         app.window.songlist.set_songs([A1, A2])
         app.player.go_to(None)

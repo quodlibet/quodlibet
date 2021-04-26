@@ -6,9 +6,7 @@
 import os
 import shutil
 
-from tests import TestCase, mkdtemp
-
-from gi.repository import Gtk
+from tests import TestCase, mkdtemp, run_gtk_loop
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
@@ -31,10 +29,6 @@ class TSongTracker(TestCase):
         self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 
-    def do(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
     def test_destroy(self):
         self.cm.destroy()
 
@@ -44,9 +38,9 @@ class TSongTracker(TestCase):
         self.p.song = self.s1
         self.p.paused = False
         time.sleep(2)
-        self.do()
+        run_gtk_loop()
         self.p.emit('song-ended', self.s1, False)
-        self.do()
+        run_gtk_loop()
         t = time.time()
         self.assertEquals(self.s1["~#playcount"], 1)
         self.assertEquals(self.s1["~#skipcount"], 0)
@@ -54,7 +48,7 @@ class TSongTracker(TestCase):
 
     def test_skip(self):
         self.p.emit('song-ended', self.s1, True)
-        self.do()
+        run_gtk_loop()
         self.assertEquals(self.s1["~#playcount"], 0)
         self.assertEquals(self.s1["~#skipcount"], 1)
         self.failUnless(self.s1["~#lastplayed"], 10)
@@ -62,7 +56,7 @@ class TSongTracker(TestCase):
     def test_error(self):
         self.current = self.p.song = self.s1
         self.p._error('Test error')
-        self.do()
+        run_gtk_loop()
         self.assertEquals(self.s1["~#playcount"], 0)
         self.assertEquals(self.s1["~#skipcount"], 0)
         self.failUnless(self.s1["~#lastplayed"], 10)
@@ -70,7 +64,7 @@ class TSongTracker(TestCase):
     def test_restart(self):
         self.current = self.s1
         self.p.emit('song-ended', self.s1, True)
-        self.do()
+        run_gtk_loop()
         self.assertEquals(self.s1["~#playcount"], 0)
         self.assertEquals(self.s1["~#skipcount"], 0)
 
@@ -90,31 +84,27 @@ class TFSInterface(TestCase):
         self.p.destroy()
         shutil.rmtree(self.dir)
 
-    def do(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
     def test_init(self):
-        self.do()
+        run_gtk_loop()
         self.failIf(os.path.exists(self.filename))
 
     def test_start(self):
         self.p.emit('song_started', AudioFile({"woo": "bar", "~#length": 10}))
-        self.do()
+        run_gtk_loop()
         with open(self.filename, "rb") as h:
             self.failUnless(b"woo=bar\n" in h.read())
 
     def test_song_ended(self):
         self.p.emit('song-started', AudioFile({"woo": "bar", "~#length": 10}))
-        self.do()
+        run_gtk_loop()
         self.p.emit('song-ended', {}, False)
-        self.do()
+        run_gtk_loop()
         self.failIf(os.path.exists(self.filename))
 
     def test_elapsed(self):
         self.p.seek(123456)
         self.p.emit('song-started', AudioFile({"~#length": 10}))
-        self.do()
+        run_gtk_loop()
         with open(self.filename, "rb") as h:
             contents = h.read()
         assert b"~#elapsed=123.456" in contents

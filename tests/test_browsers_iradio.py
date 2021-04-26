@@ -6,7 +6,7 @@
 import io
 
 from quodlibet.util import is_windows, is_osx
-from tests import TestCase, skipIf, run_loop
+from tests import TestCase, skipIf, run_gtk_loop
 
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
@@ -165,7 +165,7 @@ class TIRFile(TestCase):
             self.received += data
 
         ret = list(download_taglist(cb, None))
-        run_loop()
+        run_gtk_loop()
         assert all(ret)
         assert self.received, "No stations received from %s" % url
         assert len(self.received) > 100

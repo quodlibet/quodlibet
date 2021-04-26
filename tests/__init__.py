@@ -306,7 +306,10 @@ def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
     return pytest.main(args=args)
 
 
-def run_loop():
+def run_gtk_loop():
+    """Exhausts the GTK main loop of any events"""
+
+    # Import late as various version / init checks fail otherwise
     from gi.repository import Gtk
     while Gtk.events_pending():
         Gtk.main_iteration()
