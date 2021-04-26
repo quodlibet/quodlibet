@@ -465,8 +465,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                 if file_path.is_dir():
                     print_d(f"Monitoring new directory {file_path!r}")
                     self.monitor_dir(file_path)
-                    # Consume generator
-                    list(self.scan([str(file_path)]))
+                    copool.add(self.scan, [str(file_path)])
                     return
                 else:
                     if song:
