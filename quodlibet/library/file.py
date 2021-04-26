@@ -420,6 +420,9 @@ class FileLibrary(PicklingLibrary):
             print_d(f"No tracks in {old_roots} to remove from {self._name}")
 
 
+EventType = Gio.FileMonitorEvent
+
+
 class WatchedFileLibraryMixin(FileLibrary):
     """A File Library that sets up monitors on directories at refresh
     and handles changes sensibly"""
@@ -450,7 +453,6 @@ class WatchedFileLibraryMixin(FileLibrary):
     def __file_changed(self, monitor, main_file: Gio.File,
                        other_file: Optional[Gio.File], event_type) -> None:
         try:
-            EventType = Gio.FileMonitorEvent
             file_path = main_file.get_path()
             if file_path is None:
                 return
