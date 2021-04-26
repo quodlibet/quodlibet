@@ -3,9 +3,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
-from gi.repository import Gtk
 from senf import fsnative
 
 from quodlibet.formats import AudioFile
@@ -52,15 +51,13 @@ class TSongProperties(TestCase):
         self.test_twosong()
         self.window.hide()
         self.library.emit('changed', [self.af2])
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
     def test_removed(self):
         self.test_twosong()
         self.window.hide()
         self.library.emit('removed', [self.af2])
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
     def tearDown(self):
         try:

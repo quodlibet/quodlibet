@@ -13,7 +13,7 @@ from gi.repository import Gtk
 from senf import fsnative
 
 from quodlibet.browsers._base import DisplayPatternMixin
-from . import TestCase
+from . import TestCase, run_gtk_loop
 from .helper import realized
 
 from quodlibet import config
@@ -167,8 +167,7 @@ class TAlbumBrowser(TestCase):
         self.songs = songs
 
     def _wait(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
 
     def test_activated(self):
         with realized(self.bar):

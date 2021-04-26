@@ -3,9 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
-
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 from quodlibet.util import connect_obj
 from quodlibet.library import SongLibrarian, SongFileLibrary
 from quodlibet.library.base import Library
@@ -93,8 +91,7 @@ class TLibrarian(TestCase):
         self.lib1.add(self.Frange(12))
         self.lib2.add(self.Frange(12, 24))
         self.librarian.changed(self.Frange(6, 18))
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnlessEqual(sorted(self.changed), self.Frange(6, 18))
         self.failUnlessEqual(self.changed_1, self.Frange(6, 12))
         self.failUnlessEqual(self.changed_2, self.Frange(12, 18))
@@ -154,8 +151,7 @@ class TSongLibrarian(TLibrarian):
         self.lib1.add([new])
         self.lib2.add([new])
         self.librarian.rename(new, 20)
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnlessEqual(new.key, 20)
         self.failUnless(new in self.lib1)
         self.failUnless(new in self.lib2)
