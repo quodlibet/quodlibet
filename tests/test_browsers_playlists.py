@@ -25,7 +25,7 @@ from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
 from senf import fsnative, fsn2uri, fsn2bytes
 from tests import (TestCase, get_data_path, mkdtemp, _TEMP_DIR,
-                   init_fake_app, destroy_fake_app)
+                   init_fake_app, destroy_fake_app, run_gtk_loop)
 from tests.gtk_helpers import MockSelData
 from tests.test_browsers_search import SONGS
 from .helper import dummy_path, __, temp_filename
@@ -243,8 +243,7 @@ class TPlaylistsBrowser(TestCase):
         self.success = True
 
     def _do(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnless(self.success or self.expected is None)
 
     def test_saverestore(self):
