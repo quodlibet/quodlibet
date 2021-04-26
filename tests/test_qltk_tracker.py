@@ -8,8 +8,6 @@ import shutil
 
 from tests import TestCase, mkdtemp, run_gtk_loop
 
-from gi.repository import Gtk
-
 from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.player.nullbe import NullPlayer

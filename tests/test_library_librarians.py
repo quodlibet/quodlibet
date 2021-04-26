@@ -3,8 +3,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
-
 from tests import TestCase, run_gtk_loop
 from quodlibet.util import connect_obj
 from quodlibet.library import SongLibrarian, SongFileLibrary
