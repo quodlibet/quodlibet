@@ -25,9 +25,9 @@ class _MatchData:
         self.a_value = a_value
         self.b_idx_to_similarity = [0 for _ in range(b_size)]
 
-        self.best_b_idx = -1
+        self.best_b_idx = None
         self.best_b_similarity = float('-inf')
-        self.second_best_b_idx = -1
+        self.second_best_b_idx = None
         self.second_best_b_similarity = float('-inf')
 
         self.continue_attr_index = 0
@@ -67,7 +67,7 @@ class _MatchData:
         if not self._sorted_b_similarity_with_idx_pairs:
             # None left, which means all others a's have better values
             # than this one. As a result, this a will stay alone :(
-            self.best_b_idx = -1
+            self.best_b_idx = None
             self.best_b_similarity = float('-inf')
             return
 
@@ -187,18 +187,18 @@ class ObjectListMatcher(Generic[T]):
             self._weight_left.append(weight_left)
             weight_left -= weight
 
-    def get_indices(self, a_items: List[T], b_items: List[T]) -> List[int]:
+    def get_indices(self, a_items: List[T], b_items: List[T]) -> List[Optional[int]]:
         """
         :return: the indices of b ordered so that they match elements in a.
 
         Size of a_items and b_items can differ. If there are more a_items than
-        there are b_items, -1 is used if no match could be assigned to an a.
-        As a result, the returned list always has the size of a_items.
+        there are b_items, None is used if no match could be assigned to an a.
+        The returned list always has the size of a_items.
 
         In terms of performance, it's preferable to supply the smaller list as a_items.
         """
         if not b_items:
-            return [-1 for _ in a_items]
+            return [None for _ in a_items]
 
         self._b_items = b_items
         b_size = len(b_items)
@@ -213,7 +213,7 @@ class ObjectListMatcher(Generic[T]):
             self._measure_similarity_to_find_best_b_match(match_data)
 
             if self._is_below_minimum_similarity(match_data):
-                match_data.best_b_idx = -1
+                match_data.best_b_idx = None
             else:
                 self._handle_conflicts_if_any(match_data)
 
@@ -250,7 +250,7 @@ class ObjectListMatcher(Generic[T]):
     def _handle_conflicts_if_any(self, a1_match_data):
         while True:
             best_b_idx = a1_match_data.best_b_idx
-            if best_b_idx == -1:
+            if best_b_idx is None:
                 # a1 has no matches left or could not find a match
                 return
 
@@ -314,7 +314,7 @@ class ObjectListMatcher(Generic[T]):
     def _is_max_similarity_undefeatable(self, attr_idx, a_match_data):
         # Must only be called at the start of the loop.
         # We need a second best, so we can check if they have any chance.
-        if a_match_data.second_best_b_idx < 0:
+        if a_match_data.second_best_b_idx is None:
             return False
 
         # Any similarity has to be in [0, 1], so the following is the maximum
@@ -351,9 +351,9 @@ class ObjectListMatcher(Generic[T]):
         deltas = [abs(get_attr(b) - a_attr) for b in self._b_items]
         max_delta = max(deltas)
         if max_delta == 0:
-            if a_match_data.best_b_idx == -1:
+            if a_match_data.best_b_idx is None:
                 # We try to set a match here manually to avoid the situation where
-                # nothing is matched to a and -1 returned just because all are the same.
+                # nothing is matched to an a element just because all are the same.
                 # In all other cases MatchData's add_similarity takes care of this.
                 for b_idx, match_data in enumerate(self._b_idx_to_a_match_data):
                     # find the first b index that's not matched to an a element

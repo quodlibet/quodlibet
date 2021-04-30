@@ -37,10 +37,10 @@ class TMatchIdentity(TestCase):
         matcher = ObjectListMatcher.of_identity()
         a = ['hell', 'gel', 'shell']
         b = ['yell']
-        assert matcher.get_indices(a, b) == [0, -1, -1]
+        assert matcher.get_indices(a, b) == [0, None, None]
 
         a = ['gel', 'hell', 'shell']
-        assert matcher.get_indices(a, b) == [-1, 0, -1]
+        assert matcher.get_indices(a, b) == [None, 0, None]
 
     def test_minimum_similarity(self):
         matcher = ObjectListMatcher.of_identity()
@@ -51,10 +51,11 @@ class TMatchIdentity(TestCase):
         assert matcher.get_indices(a, b) == [2, 0, 1], formatted_matrix(matcher)
 
         matcher.minimum_similarity_ratio = 0.45
-        assert matcher.get_indices(a, b) == [2, -1, 1], formatted_matrix(matcher)
+        assert matcher.get_indices(a, b) == [2, None, 1], formatted_matrix(matcher)
 
         matcher.minimum_similarity_ratio = 0.6
-        assert matcher.get_indices(a, b) == [-1, -1, -1], formatted_matrix(matcher)
+        assert matcher.get_indices(a, b) == [None, None, None], formatted_matrix(
+            matcher)
 
 
 class TMatchListOfSequences(TestCase):
@@ -115,14 +116,14 @@ class TMatchListOfSequences(TestCase):
         b = []
 
         # When no b element could be matched to an a element, -1 is used.
-        assert matcher.get_indices(a, b) == [-1, -1]
+        assert matcher.get_indices(a, b) == [None, None]
 
     def test_more_in_a(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
         a = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
         b = [('Great Sea', 'Light', 2)]
 
-        assert matcher.get_indices(a, b) == [-1, 0]
+        assert matcher.get_indices(a, b) == [None, 0]
 
     def test_more_in_b(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
@@ -215,7 +216,7 @@ class TMatchClassFields(TestCase):
                           (lambda c: c.features): 5}
         matcher = ObjectListMatcher(attr_to_weight)
 
-        assert matcher.get_indices(a, b) == [2, -1, 1, 0]
+        assert matcher.get_indices(a, b) == [2, None, 1, 0]
 
     def _get_car_lists(self):
         a = [Car(1, 'Speedy', ['gps', 'heater']), Car(2, 'Cheaporghiny', []),
@@ -231,7 +232,7 @@ class TMatchClassFields(TestCase):
 
         matcher = ObjectListMatcher(attr_to_weight)
 
-        assert matcher.get_indices(a, b) == [-1, 2, 1, 0]
+        assert matcher.get_indices(a, b) == [None, 2, 1, 0]
 
     def test_minimum_similarity(self):
         a, b = self._get_car_lists()
@@ -240,13 +241,15 @@ class TMatchClassFields(TestCase):
         matcher = ObjectListMatcher(attr_to_weight)
         matcher.should_store_similarity_matrix = True
 
-        assert matcher.get_indices(a, b) == [2, 0, 1, -1], formatted_matrix(matcher)
+        assert matcher.get_indices(a, b) == [2, 0, 1, None], formatted_matrix(matcher)
 
         matcher.minimum_similarity_ratio = 0.71
-        assert matcher.get_indices(a, b) == [2, -1, 1, -1], formatted_matrix(matcher)
+        assert matcher.get_indices(a, b) == [2, None, 1, None], formatted_matrix(
+            matcher)
 
         matcher.minimum_similarity_ratio = 0.9
-        assert matcher.get_indices(a, b) == [-1, -1, 1, -1], formatted_matrix(matcher)
+        assert matcher.get_indices(a, b) == [None, None, 1, None], formatted_matrix(
+            matcher)
 
 
 class Car:
