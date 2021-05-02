@@ -19,11 +19,13 @@ AttributeGetterToWeight = Mapping[AttributeGetter, Real]
 SUPPORTED_NUMBER_TYPES = (int, float)
 
 
-class _MatchData:
-    def __init__(self, a_idx, a_value, b_size):
+class _MatchData(Generic[T]):
+    a_value: T
+
+    def __init__(self, a_idx: int, a_value: T, b_size: int):
         self.a_idx = a_idx
         self.a_value = a_value
-        self.b_idx_to_similarity = [0 for _ in range(b_size)]
+        self.b_idx_to_similarity = [0.0 for _ in range(b_size)]
 
         self.best_b_idx = None
         self.best_b_similarity = float('-inf')
@@ -36,7 +38,11 @@ class _MatchData:
         self._sorted_b_similarity_with_idx_pairs = None
         self.is_fully_measured = False
 
-    def add_similarity(self, b_idx, similarity_part):
+    def add_similarity(self, b_idx: int, similarity_part: float):
+        """
+        Add part of the similarity (i.e. the first attribute) to the similarity between
+        a_value and the b_value at the supplied index.
+        """
         self.b_idx_to_similarity[b_idx] += similarity_part
         b_idx_total_similarity = self.b_idx_to_similarity[b_idx]
 
@@ -59,7 +65,7 @@ class _MatchData:
         self._sorted_b_similarity_with_idx_pairs = sorted(
             ((s, -i) for i, s in enumerate(self.b_idx_to_similarity)))
 
-    def replace_best(self):
+    def replace_best_with_next_best(self):
         if not self._sorted_b_similarity_with_idx_pairs:
             return
 
@@ -247,22 +253,25 @@ class ObjectListMatcher(Generic[T]):
 
         return similarity < self.minimum_similarity_ratio
 
-    def _handle_conflicts_if_any(self, a1_match_data):
+    def _handle_conflicts_if_any(self, a_match_data_to_check):
         while True:
-            best_b_idx = a1_match_data.best_b_idx
+            best_b_idx = a_match_data_to_check.best_b_idx
             if best_b_idx is None:
                 # a1 has no matches left or could not find a match
                 return
 
-            a2_match_data = self._b_idx_to_a_match_data[best_b_idx]
-            if a2_match_data is None:
-                self._b_idx_to_a_match_data[best_b_idx] = a1_match_data
+            other_a_match_data = self._b_idx_to_a_match_data[best_b_idx]
+            if other_a_match_data is None:
+                self._b_idx_to_a_match_data[best_b_idx] = a_match_data_to_check
                 return
 
             # We have found a conflict and will now solve it.
-            a1_match_data = self._get_worse_match_data(a1_match_data, a2_match_data)
+            a_match_data_to_check = self._get_losing_match_data(a_match_data_to_check,
+                                                                other_a_match_data)
 
-    def _get_worse_match_data(self, a1_match_data, a2_match_data):
+    def _get_losing_match_data(self, a1_match_data, a2_match_data):
+        """Return the match data of the element that lost the conflict"""
+
         # b is matched to a previous a (a2), so we have to find a better match
         self._finish_similarity_measures(a1_match_data)
         self._finish_similarity_measures(a2_match_data)
@@ -271,7 +280,7 @@ class ObjectListMatcher(Generic[T]):
         # here, since in case they're equal in terms of similarity, we want to
         # give some weight to the current order of b (index 0 preferred to 1).
         if a1_match_data.best_b_similarity <= a2_match_data.best_b_similarity:
-            a1_match_data.replace_best()
+            a1_match_data.replace_best_with_next_best()
 
             # still need to find a better match for a1
             return a1_match_data
@@ -280,7 +289,7 @@ class ObjectListMatcher(Generic[T]):
             best_b_idx = a1_match_data.best_b_idx
             self._b_idx_to_a_match_data[best_b_idx] = a1_match_data
 
-            a2_match_data.replace_best()
+            a2_match_data.replace_best_with_next_best()
 
             # we need to find a new match for a2
             return a2_match_data
