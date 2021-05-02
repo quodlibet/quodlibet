@@ -21,6 +21,8 @@ SUPPORTED_NUMBER_TYPES = (int, float)
 
 class _MatchData(Generic[T]):
     a_value: T
+    best_b_idx: Optional[int]
+    second_best_b_idx: Optional[int]
 
     def __init__(self, a_idx: int, a_value: T, b_size: int):
         self.a_idx = a_idx
