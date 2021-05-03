@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2020 Nick Boultbee
+#      2011-2021 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@ from typing import List, Tuple
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
 
-from quodlibet import app
+from quodlibet import app, print_w
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
@@ -75,8 +75,8 @@ class SongSelectionInfo(GObject.Object):
         self.__songlist = songlist
         self.__selection = sel = songlist.get_selection()
         self.__count = sel.count_selected_rows()
-        self.__sel_id = songlist.connect(
-            'selection-changed', self.__selection_changed_cb)
+        self.__sel_id = songlist.connect('selection-changed', self.__selection_changed)
+        self.__sel_id = songlist.connect('songs-removed', self.__songs_removed)
 
     def destroy(self):
         self.__songlist.disconnect(self.__sel_id)
@@ -109,7 +109,13 @@ class SongSelectionInfo(GObject.Object):
         self.__idle = GLib.idle_add(
             self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
 
-    def __selection_changed_cb(self, songlist, selection):
+    def __songs_removed(self, songlist, removed):
+        try:
+            self.__emit_info_selection()
+        except Exception as e:
+            print_w(f"Couldn't process removed songs ({e})r")
+
+    def __selection_changed(self, songlist, selection):
         count = selection.count_selected_rows()
         if self.__count == count == 0:
             return
@@ -359,7 +365,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     # A TreeView containing a list of songs.
 
     __gsignals__: GSignals = {
-        # changed(songs:list)
+        'songs-removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'orders-changed': (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
@@ -1009,6 +1015,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         if not complete:
             iters = model.find_all(songs)
 
+        # Songs can only be removed once, and there is no order here
+        songs = {value for _, value in self.model.iterrows()}
+        if songs:
+            self.emit('songs-removed', songs)
         self.remove_iters(iters)
 
     def __song_properties(self, librarian):

@@ -3,6 +3,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import List
+
 from gi.repository import Gtk
 
 from quodlibet import config
@@ -21,14 +23,20 @@ class TSongList(TestCase):
 
     def setUp(self):
         config.init()
-        self.songlist = SongList(SongFileLibrary())
+        self.lib = SongFileLibrary()
+        self.songlist = SongList(self.lib)
 
         self.orders_changed = 0
+        self.songs_removed: List[List] = []
 
         def orders_changed_cb(*args):
             self.orders_changed += 1
 
+        def orders_removed_cb(songlist, removed):
+            self.songs_removed.append(removed)
+
         self.songlist.connect("orders-changed", orders_changed_cb)
+        self.songlist.connect("songs-removed", orders_removed_cb)
 
     def test_set_all_column_headers(self):
         SongList.set_all_column_headers(self.HEADERS)
@@ -168,6 +176,14 @@ class TSongList(TestCase):
         self.songlist.add_songs([song])
 
         self.assertEqual(self.songlist.get_songs(), [song] * 4)
+
+    def test_remove_songs(self):
+        song = AudioFile({"~filename": "/dev/null"})
+        song.sanitize()
+        self.lib.add([song])
+        self.songlist.add_songs([song])
+        self.lib.remove([song])
+        assert self.songs_removed == [{song}]
 
     def test_header_menu(self):
         from quodlibet import browsers
