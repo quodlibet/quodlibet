@@ -58,16 +58,14 @@ class _MatchData(Generic[T]):
             self.second_best_b_idx = b_idx
             self.second_best_b_similarity = b_idx_total_similarity
 
-    def set_to_fully_measured(self):
-        self.is_fully_measured = True
-
-        # We sort so last = best as calling pop() on a list is O(1)
-        # We negate the index here, so that the sorting is correct if the
-        # similarities of two b's are the same (lowest index last)
-        self._sorted_b_similarity_with_idx_pairs = sorted(
-            ((s, -i) for i, s in enumerate(self.b_idx_to_similarity)))
-
     def replace_best_with_next_best(self):
+        if self._sorted_b_similarity_with_idx_pairs is None:
+            # We sort so last = best as calling pop() on a list is O(1)
+            # We negate the index here, so that the sorting is correct if the
+            # similarities of two b's are the same (lowest index last)
+            self._sorted_b_similarity_with_idx_pairs = sorted(
+                ((s, -i) for i, s in enumerate(self.b_idx_to_similarity)))
+
         if not self._sorted_b_similarity_with_idx_pairs:
             return
 
@@ -120,7 +118,7 @@ class ObjectListMatcher(Generic[T]):
     _b_idx_to_a_match_data: List[Optional[_MatchData]]
 
     def __init__(self, attr_to_weight: AttributeGetterToWeight):
-        self.update_attr_to_weights(attr_to_weight)
+        self.update_attr_to_weight(attr_to_weight)
         self._matcher = SequenceMatcher()
 
         self.should_store_similarity_matrix = False
@@ -158,7 +156,7 @@ class ObjectListMatcher(Generic[T]):
 
     @classmethod
     def for_sequence(cls, weights: Sequence[Real]):
-        """Creates a matcher where itemgetter(n) is mapped to weight_list[n]"""
+        """Creates a matcher where itemgetter(n) is mapped to weights[n]"""
         attr_to_weight = {itemgetter(n): w for n, w in enumerate(weights)}
         return ObjectListMatcher(attr_to_weight)
 
@@ -170,9 +168,9 @@ class ObjectListMatcher(Generic[T]):
     @classmethod
     def of_identity(cls):
         """Creates a matcher where only the objects themselves are compared."""
-        return cls.for_one_attr((lambda i: i))
+        return cls.for_one_attr(lambda i: i)
 
-    def update_attr_to_weights(self, attr_to_weight: AttributeGetterToWeight):
+    def update_attr_to_weight(self, attr_to_weight: AttributeGetterToWeight):
         if not attr_to_weight:
             raise ValueError("there must be at least one weight")
 
@@ -250,6 +248,9 @@ class ObjectListMatcher(Generic[T]):
         # wouldn't normalize it, it would not pass a minimum of 0.6, even if it could
         # easily achieve that with the remaining weights.
         if cont_attr_idx < len(self._attr_with_weight):
+            # The index cannot be zero here, as we'll always go through at least one
+            # attribute before reaching this. As a result the weight_left[index] will
+            # never be one, and so a ZeroDivisionError is impossible in this function.
             cur_total_weight = 1 - self._weight_left[cont_attr_idx]
             similarity /= cur_total_weight
 
@@ -274,7 +275,8 @@ class ObjectListMatcher(Generic[T]):
     def _get_losing_match_data(self, a1_match_data, a2_match_data):
         """Return the match data of the element that lost the conflict"""
 
-        # b is matched to a previous a (a2), so we have to find a better match
+        # b is matched to a previous a (a2), so we have to find a better match but first
+        # we need to fully measure the similarity of both, so the comparison is fair
         self._finish_similarity_measures(a1_match_data)
         self._finish_similarity_measures(a2_match_data)
 
@@ -304,7 +306,7 @@ class ObjectListMatcher(Generic[T]):
 
         # figure out total similarity (without stopping) if we didn't
         self._measure_similarity_to_find_best_b_match(a_match_data)
-        a_match_data.set_to_fully_measured()
+        a_match_data.is_fully_measured = True
 
     def _measure_similarity_to_find_best_b_match(self, a_match_data):
         continue_attr_idx = a_match_data.continue_attr_index

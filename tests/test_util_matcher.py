@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+from dataclasses import dataclass
 from typing import List
 
 from quodlibet.util.matcher import ObjectListMatcher
@@ -87,7 +87,7 @@ class TMatchListOfSequences(TestCase):
         a = [('cacc', 'cacc', 2), ('bacc', 'baca', 1)]
         b = [('caba', 'bacc', 1), ('abaa', 'bcca', 2)]
 
-        matcher.update_attr_to_weights({lambda i: i[1]: 1})
+        matcher.update_attr_to_weight({lambda i: i[1]: 1})
         assert matcher.get_indices(a, b) == [0, 1]
 
     def test_double_weight(self):
@@ -252,8 +252,8 @@ class TMatchClassFields(TestCase):
             matcher)
 
 
+@dataclass
 class Car:
-    def __init__(self, seats: int, name: str, features: List[str]):
-        self.seats = seats
-        self.name = name
-        self.features = features
+    seats: int
+    name: str
+    features: List[str]
