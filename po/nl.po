@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-03-04 13:53+0100\n"
+"POT-Creation-Date: 2021-04-25 11:38+0100\n"
 "PO-Revision-Date: 2021-03-04 14:31+0100\n"
 "Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
 "Language-Team: Nederlands <en@li.org>\n"
@@ -66,7 +66,7 @@ msgstr "Sorteren o_p…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:85
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:684 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:356 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Voorkeuren"
@@ -79,13 +79,13 @@ msgstr "Albumlijst"
 msgid "_Album List"
 msgstr "_Albumlijst"
 
-#: quodlibet/browsers/albums/main.py:545
+#: quodlibet/browsers/albums/main.py:544
 #: quodlibet/browsers/covergrid/main.py:285
 #: quodlibet/browsers/covergrid/main.py:501
 msgid "All Albums"
 msgstr "Alle albums"
 
-#: quodlibet/browsers/albums/main.py:546
+#: quodlibet/browsers/albums/main.py:545
 #: quodlibet/browsers/covergrid/main.py:286
 #: quodlibet/browsers/covergrid/main.py:502
 #, python-format
@@ -94,7 +94,7 @@ msgid_plural "%d albums"
 msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
-#: quodlibet/browsers/albums/main.py:727
+#: quodlibet/browsers/albums/main.py:726
 #: quodlibet/browsers/covergrid/main.py:480
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -111,7 +111,7 @@ msgstr "Albumloze nummers"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:262
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:261
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -121,7 +121,7 @@ msgstr[1] "%d nummers"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:266
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:265
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -147,7 +147,7 @@ msgstr "Ook artiesten tonen in _snelzoekresultaten"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
-#: quodlibet/ext/songsmenu/cover_download.py:308
+#: quodlibet/ext/songsmenu/cover_download.py:306
 msgid "Options"
 msgstr "Opties"
 
@@ -174,7 +174,7 @@ msgstr "_Sluiten"
 #: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/formats/_audio.py:501 quodlibet/order/__init__.py:29
+#: quodlibet/formats/_audio.py:524 quodlibet/order/__init__.py:29
 #: quodlibet/qltk/information.py:244 quodlibet/qltk/information.py:251
 #: quodlibet/qltk/information.py:277 quodlibet/qltk/pluginwin.py:51
 #: quodlibet/qltk/wlw.py:69
@@ -190,10 +190,10 @@ msgid "Enter the location of an audio feed:"
 msgstr "Voer de locatie van een audiofeed in:"
 
 #: quodlibet/browsers/audiofeeds.py:215
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:366
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:96
-#: quodlibet/browsers/playlists/util.py:60 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/browsers/playlists/menu.py:88
+#: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
@@ -218,10 +218,10 @@ msgid "_Refresh"
 msgstr "Ve_rversen"
 
 #: quodlibet/browsers/audiofeeds.py:438
-#: quodlibet/browsers/playlists/main.py:504
-#: quodlibet/browsers/playlists/util.py:46 quodlibet/qltk/delete.py:143
+#: quodlibet/browsers/playlists/main.py:484
+#: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:364
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
 msgid "_Delete"
 msgstr "Verwij_deren"
 
@@ -253,7 +253,7 @@ msgstr "Verzameling verkennen"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:45
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:540
+#: quodlibet/util/collection.py:555
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -292,7 +292,7 @@ msgstr "_Aangepast"
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
 #: quodlibet/browsers/paned/prefs.py:124
-#: quodlibet/browsers/playlists/menu.py:97
+#: quodlibet/browsers/playlists/menu.py:89
 #: quodlibet/ext/playlist/remove_duplicates.py:60
 #: quodlibet/qltk/bookmarks.py:97 quodlibet/qltk/bookmarks.py:127
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
@@ -301,7 +301,7 @@ msgstr "_Aangepast"
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
-#: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:65
+#: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "Ve_rwijderen"
 
@@ -330,7 +330,7 @@ msgstr "Toep_assen"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
-#: quodlibet/browsers/playlists/menu.py:95 quodlibet/errorreport/ui.py:103
+#: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:392
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
@@ -349,9 +349,9 @@ msgstr "Toep_assen"
 #: quodlibet/qltk/chooser.py:257 quodlibet/qltk/delete.py:90
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
-#: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/msg.py:53
-#: quodlibet/qltk/msg.py:90 quodlibet/qltk/msg.py:107
-#: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:122
+#: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/msg.py:56
+#: quodlibet/qltk/msg.py:93 quodlibet/qltk/msg.py:110
+#: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "Ann_uleren"
@@ -407,7 +407,7 @@ msgstr ""
 msgid "_Add to Library"
 msgstr "Toevoegen _aan verzameling"
 
-#: quodlibet/browsers/iradio.py:186
+#: quodlibet/browsers/iradio.py:190
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -419,218 +419,218 @@ msgstr ""
 "geladen:\n"
 "%s"
 
-#: quodlibet/browsers/iradio.py:222 quodlibet/browsers/iradio.py:263
-#: quodlibet/browsers/iradio.py:495
+#: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
+#: quodlibet/browsers/iradio.py:499
 msgid "Internet Radio"
 msgstr "Online-radiostation"
 
-#: quodlibet/browsers/iradio.py:222
+#: quodlibet/browsers/iradio.py:226
 msgid "Add stations"
 msgstr "Zenders toevoegen"
 
-#: quodlibet/browsers/iradio.py:263
+#: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
 msgstr "Bezig met ophalen van zenderlijst"
 
-#: quodlibet/browsers/iradio.py:364
+#: quodlibet/browsers/iradio.py:368
 msgid "New Station"
 msgstr "Nieuwe zender"
 
-#: quodlibet/browsers/iradio.py:365
+#: quodlibet/browsers/iradio.py:369
 msgid "Enter the location of an Internet radio station:"
 msgstr "Voer de locatie van een online-radiozender in:"
 
-#: quodlibet/browsers/iradio.py:383
+#: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
 msgstr "Elektronisch"
 
-#: quodlibet/browsers/iradio.py:386
+#: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
 msgstr "Hiphop/Rap"
 
-#: quodlibet/browsers/iradio.py:387
+#: quodlibet/browsers/iradio.py:391
 msgid "Oldies"
 msgstr "Gouwe ouwen"
 
-#: quodlibet/browsers/iradio.py:388
+#: quodlibet/browsers/iradio.py:392
 msgid "R&B"
 msgstr "R&B"
 
-#: quodlibet/browsers/iradio.py:389
+#: quodlibet/browsers/iradio.py:393
 msgid "Japanese"
 msgstr "Japans"
 
-#: quodlibet/browsers/iradio.py:390
+#: quodlibet/browsers/iradio.py:394
 msgid "Indian"
 msgstr "Indisch"
 
-#: quodlibet/browsers/iradio.py:392
+#: quodlibet/browsers/iradio.py:396
 msgid "Religious"
 msgstr "Religieus"
 
-#: quodlibet/browsers/iradio.py:394
+#: quodlibet/browsers/iradio.py:398
 msgid "Charts"
 msgstr "Hitlijsten"
 
-#: quodlibet/browsers/iradio.py:395
+#: quodlibet/browsers/iradio.py:399
 msgid "Turkish"
 msgstr "Turks"
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:400
 msgid "Reggae / Dancehall"
 msgstr "Reggae/Dancehall"
 
-#: quodlibet/browsers/iradio.py:397
+#: quodlibet/browsers/iradio.py:401
 msgid "Latin"
 msgstr "Latin"
 
-#: quodlibet/browsers/iradio.py:398
+#: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
 msgstr "Studentenradio"
 
-#: quodlibet/browsers/iradio.py:399
+#: quodlibet/browsers/iradio.py:403
 msgid "Talk / News"
 msgstr "Praatprogramma's/Nieuws"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:404
 msgid "Ambient"
 msgstr "Sfeervol"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:405
 msgid "Jazz"
 msgstr "Jazz"
 
-#: quodlibet/browsers/iradio.py:402 quodlibet/ext/events/equalizer.py:45
+#: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
 msgstr "Klassiek"
 
-#: quodlibet/browsers/iradio.py:403 quodlibet/ext/events/equalizer.py:60
+#: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
 msgstr "Pop"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:408
 msgid "Alternative"
 msgstr "Alternatief"
 
-#: quodlibet/browsers/iradio.py:405
+#: quodlibet/browsers/iradio.py:409
 msgid "Metal"
 msgstr "Metal"
 
-#: quodlibet/browsers/iradio.py:406
+#: quodlibet/browsers/iradio.py:410
 msgid "Country"
 msgstr "Country"
 
-#: quodlibet/browsers/iradio.py:407
+#: quodlibet/browsers/iradio.py:411
 msgid "News"
 msgstr "Nieuws"
 
-#: quodlibet/browsers/iradio.py:408
+#: quodlibet/browsers/iradio.py:412
 msgid "Schlager"
 msgstr "Schlager"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:413
 msgid "Funk"
 msgstr "Funk"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:414
 msgid "Indie"
 msgstr "Indie"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:415
 msgid "Blues"
 msgstr "Blues"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:416
 msgid "Soul"
 msgstr "Soul"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:417
 msgid "Lounge"
 msgstr "Lounge"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:418
 msgid "Punk"
 msgstr "Punk"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:419
 msgid "Reggaeton"
 msgstr "Reggaeton"
 
-#: quodlibet/browsers/iradio.py:417
+#: quodlibet/browsers/iradio.py:421
 msgid "Slavic"
 msgstr "Slavisch"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:423
 msgid "Greek"
 msgstr "Grieks"
 
-#: quodlibet/browsers/iradio.py:420
+#: quodlibet/browsers/iradio.py:424
 msgid "Gothic"
 msgstr "Gothic"
 
-#: quodlibet/browsers/iradio.py:421 quodlibet/ext/events/equalizer.py:38
+#: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
 msgstr "Rock"
 
-#: quodlibet/browsers/iradio.py:474
+#: quodlibet/browsers/iradio.py:478
 msgid "Would you like to load a list of popular radio stations?"
 msgstr "Wil je de lijst met populaire radiozenders bekijken?"
 
-#: quodlibet/browsers/iradio.py:480
+#: quodlibet/browsers/iradio.py:484
 msgid "_Load Stations"
 msgstr "Zenders _bekijken"
 
-#: quodlibet/browsers/iradio.py:496
+#: quodlibet/browsers/iradio.py:500
 msgid "_Internet Radio"
 msgstr "Onl_ine-radiostation"
 
-#: quodlibet/browsers/iradio.py:569
+#: quodlibet/browsers/iradio.py:573
 msgid "_New Station…"
 msgstr "_Nieuwe zender…"
 
-#: quodlibet/browsers/iradio.py:572
+#: quodlibet/browsers/iradio.py:576
 msgid "_Update Stations"
 msgstr "_Zenders bijwerken"
 
-#: quodlibet/browsers/iradio.py:599
+#: quodlibet/browsers/iradio.py:603
 msgid "All Stations"
 msgstr "Alle zenders"
 
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:603 quodlibet/browsers/soundcloud/main.py:65
+#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
 msgid "Favorites"
 msgstr "Favorieten"
 
-#: quodlibet/browsers/iradio.py:611
+#: quodlibet/browsers/iradio.py:615
 msgid "No Category"
 msgstr "Geen categorie"
 
-#: quodlibet/browsers/iradio.py:834
+#: quodlibet/browsers/iradio.py:838
 msgid "No stations found"
 msgstr "Geen zenders gevonden"
 
-#: quodlibet/browsers/iradio.py:835
+#: quodlibet/browsers/iradio.py:839
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Er zijn geen online-radiozenders gevonden op %s."
 
-#: quodlibet/browsers/iradio.py:848
+#: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
 msgstr "Er valt niks toe te voegen"
 
-#: quodlibet/browsers/iradio.py:849
+#: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
 msgstr "Alle vermelde zenders staan al in je verzameling."
 
-#: quodlibet/browsers/iradio.py:870
+#: quodlibet/browsers/iradio.py:874
 msgid "Add to Favorites"
 msgstr "Toevoegen aan favorieten"
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:878
 msgid "Remove from Favorites"
 msgstr "Verwijderen uit favorieten"
 
-#: quodlibet/browsers/iradio.py:974
+#: quodlibet/browsers/iradio.py:978
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -655,7 +655,7 @@ msgid "All"
 msgstr "Alles"
 
 #: quodlibet/browsers/paned/prefs.py:41
-#: quodlibet/ext/songsmenu/cover_download.py:159
+#: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
 msgstr "Klein"
 
@@ -693,7 +693,7 @@ msgid "Equal pane width"
 msgstr "Vaste paneelbreedte"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:620 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -701,54 +701,54 @@ msgstr "Afspeellijsten"
 msgid "_Playlists"
 msgstr "Afs_peellijsten"
 
-#: quodlibet/browsers/playlists/main.py:161
+#: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
 msgstr "Ve_rwijderen van afspeellijst"
 
-#: quodlibet/browsers/playlists/main.py:229
+#: quodlibet/browsers/playlists/main.py:213
 msgid "New"
 msgstr "Nieuw"
 
-#: quodlibet/browsers/playlists/main.py:233
+#: quodlibet/browsers/playlists/main.py:217
 msgid "Import"
 msgstr "Importeren"
 
-#: quodlibet/browsers/playlists/main.py:458
+#: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
 msgstr "Kan afspeellijst niet importeren"
 
-#: quodlibet/browsers/playlists/main.py:459
+#: quodlibet/browsers/playlists/main.py:440
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet kan alleen m3u(8)- en pls-afspeellijsten importeren."
 
-#: quodlibet/browsers/playlists/main.py:511
+#: quodlibet/browsers/playlists/main.py:491
 msgid "_Rename"
 msgstr "_Naam wijzigen"
 
-#: quodlibet/browsers/playlists/main.py:609
+#: quodlibet/browsers/playlists/main.py:589
 msgid "Unable to rename playlist"
 msgstr "Kan afspeellijstnaam niet wijzigen"
 
-#: quodlibet/browsers/playlists/main.py:621
+#: quodlibet/browsers/playlists/main.py:601
 msgid "Import Playlist"
 msgstr "Afspeellijst importeren"
 
-#: quodlibet/browsers/playlists/main.py:621
+#: quodlibet/browsers/playlists/main.py:601
 msgid "_Import"
 msgstr "_Importeren"
 
-#: quodlibet/browsers/playlists/menu.py:25
+#: quodlibet/browsers/playlists/menu.py:24
 msgid "_New Playlist…"
 msgstr "_Nieuwe afspeellijst…"
 
-#: quodlibet/browsers/playlists/menu.py:86
+#: quodlibet/browsers/playlists/menu.py:78
 #, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
 msgstr[0] "Wat wil je doen met %d nummer?"
 msgstr[1] "Wat wil je doen met %d nummers?"
 
-#: quodlibet/browsers/playlists/menu.py:90
+#: quodlibet/browsers/playlists/menu.py:82
 #, python-format
 msgid "Confirm action for playlist \"%s\""
 msgstr "Bevestig de actie op afspeellijst \"%s\""
@@ -769,12 +769,12 @@ msgstr "Paneelverkennervoorkeuren"
 msgid "Playlist display"
 msgstr "Afspeellijstweergave"
 
-#: quodlibet/browsers/playlists/util.py:42
+#: quodlibet/browsers/playlists/util.py:32
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
 msgstr "Weet je zeker dat je de afspeellijst '%s' wilt verwijderen?"
 
-#: quodlibet/browsers/playlists/util.py:44
+#: quodlibet/browsers/playlists/util.py:34
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
@@ -782,16 +782,16 @@ msgstr ""
 "Alle informatie over de geselecteerde afspeellijst wordt verwijderd en kan "
 "niet worden hersteld."
 
-#: quodlibet/browsers/playlists/util.py:58
-#: quodlibet/browsers/playlists/util.py:133 quodlibet/util/collection.py:590
+#: quodlibet/browsers/playlists/util.py:48
+#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:606
 msgid "New Playlist"
 msgstr "Nieuwe afspeellijst"
 
-#: quodlibet/browsers/playlists/util.py:59
+#: quodlibet/browsers/playlists/util.py:49
 msgid "Enter a name for the new playlist:"
 msgstr "Geef de nieuwe afspeellijst een naam:"
 
-#: quodlibet/browsers/playlists/util.py:97
+#: quodlibet/browsers/playlists/util.py:85
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -1314,8 +1314,7 @@ msgstr "_Positie:"
 msgid "_Cover size:"
 msgstr "_Hoesgrootte:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195
-#: quodlibet/ext/events/weblyrics.py:318 quodlibet/qltk/prefs.py:271
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:271
 msgid "Display"
 msgstr "Weergave"
 
@@ -1752,13 +1751,13 @@ msgstr "Naam van voorinstellingen:"
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:384
+#: quodlibet/ext/songsmenu/cover_download.py:382
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:216
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:355
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:51
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:54
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -1875,11 +1874,11 @@ msgstr "Schermbeveiliging verhinderen"
 msgid "Inhibit Suspend"
 msgstr "Pauzestand verhinderen"
 
-#: quodlibet/ext/events/iradiolog.py:16
+#: quodlibet/ext/events/iradiolog.py:17
 msgid "Internet Radio Log"
 msgstr "Online-radiologboek"
 
-#: quodlibet/ext/events/iradiolog.py:17
+#: quodlibet/ext/events/iradiolog.py:18
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
@@ -2969,73 +2968,73 @@ msgstr "Toon of verberg de menubalk door op Alt te drukken."
 msgid "Not playing"
 msgstr "Speelt niet"
 
-#: quodlibet/ext/events/trayicon/__init__.py:53
+#: quodlibet/ext/events/trayicon/__init__.py:52
 msgid "Tray Icon"
 msgstr "Systeemvakpictogram"
 
-#: quodlibet/ext/events/trayicon/__init__.py:54
+#: quodlibet/ext/events/trayicon/__init__.py:53
 msgid "Controls Quod Libet from the system tray."
 msgstr "Bedien Quod Libet vanuit het systeemvak."
 
-#: quodlibet/ext/events/trayicon/menu.py:42
+#: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
 msgid "_Show %(application-name)s"
 msgstr "%(application-name)s _tonen"
 
-#: quodlibet/ext/events/trayicon/menu.py:61
+#: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
 #: quodlibet/qltk/quodlibetwindow.py:1142
 msgid "_Play"
 msgstr "Afs_pelen"
 
-#: quodlibet/ext/events/trayicon/menu.py:64
+#: quodlibet/ext/events/trayicon/menu.py:63
 #: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "P_auzeren"
 
-#: quodlibet/ext/events/trayicon/menu.py:69
+#: quodlibet/ext/events/trayicon/menu.py:68
 #: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:931
 msgid "Pre_vious"
 msgstr "_Vorige"
 
-#: quodlibet/ext/events/trayicon/menu.py:72
+#: quodlibet/ext/events/trayicon/menu.py:71
 #: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:941
 msgid "_Next"
 msgstr "Volge_nde"
 
-#: quodlibet/ext/events/trayicon/menu.py:77
+#: quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
 msgstr "_Willekeurig"
 
-#: quodlibet/ext/events/trayicon/menu.py:82
+#: quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
 msgstr "He_rhalen"
 
-#: quodlibet/ext/events/trayicon/menu.py:87
+#: quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
 msgstr "Stoppen n_a dit nummer"
 
-#: quodlibet/ext/events/trayicon/menu.py:93
+#: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:902
 msgid "Open _Browser"
 msgstr "_Verkenner openen"
 
-#: quodlibet/ext/events/trayicon/menu.py:104
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:383
+#: quodlibet/ext/events/trayicon/menu.py:103
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
 msgid "Edit _Tags"
 msgstr "_Tags bewerken"
 
-#: quodlibet/ext/events/trayicon/menu.py:113
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:396
+#: quodlibet/ext/events/trayicon/menu.py:112
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:386
 msgid "_Information"
 msgstr "_Informatie"
 
-#: quodlibet/ext/events/trayicon/menu.py:115 quodlibet/qltk/songsmenu.py:324
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:314
 msgid "Play_lists"
 msgstr "Afspeel_lijsten"
 
-#: quodlibet/ext/events/trayicon/menu.py:133
+#: quodlibet/ext/events/trayicon/menu.py:132
 #: quodlibet/qltk/quodlibetwindow.py:916
 msgid "_Quit"
 msgstr "_Afsluiten"
@@ -3077,7 +3076,7 @@ msgstr ""
 "Geen songtekst gevonden bij\n"
 " %s"
 
-#: quodlibet/ext/events/viewlyrics.py:117 quodlibet/ext/events/weblyrics.py:193
+#: quodlibet/ext/events/viewlyrics.py:117
 msgid "No active song"
 msgstr "Je luistert nergens naar"
 
@@ -3139,40 +3138,6 @@ msgstr "Tijdstempels tonen"
 #: quodlibet/ext/events/waveformseekbar.py:704
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Spoellengte bij scrollen (in milliseconden):"
-
-#: quodlibet/ext/events/weblyrics.py:208
-msgid "No lyrics found"
-msgstr "Geen songteksten gevonden"
-
-#: quodlibet/ext/events/weblyrics.py:268
-msgid "_Zoom level:"
-msgstr "_Zoomniveau:"
-
-#: quodlibet/ext/events/weblyrics.py:286
-msgid "URL:"
-msgstr "URL:"
-
-#: quodlibet/ext/events/weblyrics.py:291
-msgid "Revert to default"
-msgstr "Standaardwaarden"
-
-#: quodlibet/ext/events/weblyrics.py:306
-msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
-msgstr ""
-"Gebruik bovenstaande url om te zoeken naar songteksten als ze niet kunnen "
-"worden gevonden op LyricsWikia."
-
-#: quodlibet/ext/events/weblyrics.py:323
-msgid "Alternate search"
-msgstr "Alternatieve zoekopdracht"
-
-#: quodlibet/ext/events/weblyrics.py:332
-msgid "Web Lyrics"
-msgstr "Online-songteksten"
-
-#: quodlibet/ext/events/weblyrics.py:333
-msgid "Shows a sidebar containing online lyrics of the playing song."
-msgstr "Toont een zijbalk met de songtekst van het huidige nummer."
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
@@ -3969,40 +3934,40 @@ msgstr "Albumhoezen ophalen"
 msgid "Downloads high-quality album covers using cover plugins."
 msgstr "Haalt hoogwaardige albumhoezen op middels hoesplug-ins."
 
-#: quodlibet/ext/songsmenu/cover_download.py:160
+#: quodlibet/ext/songsmenu/cover_download.py:158
 msgid "Classic"
 msgstr "Traditioneel"
 
-#: quodlibet/ext/songsmenu/cover_download.py:161
+#: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Large"
 msgstr "Groot"
 
-#: quodlibet/ext/songsmenu/cover_download.py:162
+#: quodlibet/ext/songsmenu/cover_download.py:160
 msgid "HD"
 msgstr "HD"
 
-#: quodlibet/ext/songsmenu/cover_download.py:163
+#: quodlibet/ext/songsmenu/cover_download.py:161
 msgid "Full HD"
 msgstr "Full HD"
 
-#: quodlibet/ext/songsmenu/cover_download.py:164
+#: quodlibet/ext/songsmenu/cover_download.py:162
 msgid "WQXGA"
 msgstr "WQXGA"
 
-#: quodlibet/ext/songsmenu/cover_download.py:165
+#: quodlibet/ext/songsmenu/cover_download.py:163
 msgid "4K UHD"
 msgstr "4K UHD"
 
-#: quodlibet/ext/songsmenu/cover_download.py:171
+#: quodlibet/ext/songsmenu/cover_download.py:169
 msgid "Cover Art Download"
 msgstr "Albumhoezen ophalen"
 
-#: quodlibet/ext/songsmenu/cover_download.py:231
+#: quodlibet/ext/songsmenu/cover_download.py:229
 #, python-format
 msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "Bezig met laden van %(source)s - %(dimensions)s…"
 
-#: quodlibet/ext/songsmenu/cover_download.py:295
+#: quodlibet/ext/songsmenu/cover_download.py:293
 #, python-format
 msgid ""
 "Nothing found for albums:\n"
@@ -4017,24 +3982,24 @@ msgstr ""
 "Gebruikte diensten:\n"
 "<tt>%(providers)s</tt>"
 
-#: quodlibet/ext/songsmenu/cover_download.py:298
+#: quodlibet/ext/songsmenu/cover_download.py:296
 msgid "No covers found"
 msgstr "Geen hoezen gevonden"
 
-#: quodlibet/ext/songsmenu/cover_download.py:320
+#: quodlibet/ext/songsmenu/cover_download.py:318
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr "{size} ✕ {size} px"
 
-#: quodlibet/ext/songsmenu/cover_download.py:333
+#: quodlibet/ext/songsmenu/cover_download.py:331
 msgid "Preview size"
 msgstr "Voorvertoningsgrootte"
 
-#: quodlibet/ext/songsmenu/cover_download.py:342
+#: quodlibet/ext/songsmenu/cover_download.py:340
 msgid "Save destination"
 msgstr "Opslagmap"
 
-#: quodlibet/ext/songsmenu/cover_download.py:373
+#: quodlibet/ext/songsmenu/cover_download.py:371
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
@@ -4042,7 +4007,7 @@ msgstr ""
 "Als dit geen jpeg-bestand is, dan wordt de afbeelding geconverteerd naar een "
 "jpeg van hoge kwaliteit"
 
-#: quodlibet/ext/songsmenu/cover_download.py:375
+#: quodlibet/ext/songsmenu/cover_download.py:373
 msgid "Save as JPEG"
 msgstr "Opslaan als jpeg"
 
@@ -4118,20 +4083,29 @@ msgstr ""
 "Het maximumaantal opdrachtregelopties dat tegelijk aan de opdracht kan "
 "worden doorgegeven (zoals xargs)"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:91
+#: quodlibet/ext/songsmenu/custom_commands.py:69
+#, fuzzy
+msgid "reverse"
+msgstr "Omkeren"
+
+#: quodlibet/ext/songsmenu/custom_commands.py:70
+msgid "If set, the argument list will be reversed."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/custom_commands.py:95
 msgid "Input value"
 msgstr "Invoerwaarde"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:92
+#: quodlibet/ext/songsmenu/custom_commands.py:96
 #, python-format
 msgid "Value for %s?"
 msgstr "Waarde van %s?"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:137
+#: quodlibet/ext/songsmenu/custom_commands.py:145
 msgid "Custom Commands"
 msgstr "Aangepaste opdrachten"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:138
+#: quodlibet/ext/songsmenu/custom_commands.py:146
 msgid ""
 "Runs custom commands (in batches if required) on songs using any of their "
 "tags."
@@ -4139,13 +4113,13 @@ msgstr ""
 "Voert aangepaste opdrachten uit op nummers (evt. meerdere tegelijk) op basis "
 "van eender welke van hun tags."
 
-#: quodlibet/ext/songsmenu/custom_commands.py:197
-#: quodlibet/ext/songsmenu/custom_commands.py:207
-#: quodlibet/ext/songsmenu/custom_commands.py:259
+#: quodlibet/ext/songsmenu/custom_commands.py:211
+#: quodlibet/ext/songsmenu/custom_commands.py:221
+#: quodlibet/ext/songsmenu/custom_commands.py:273
 msgid "Edit Custom Commands"
 msgstr "Aangepaste opdrachten bewerken"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:290
+#: quodlibet/ext/songsmenu/custom_commands.py:304
 #, python-format
 msgid "Unable to run custom command %s"
 msgstr "Kan aangepast opdracht \"%s\" niet uitvoeren"
@@ -4502,14 +4476,6 @@ msgid "Imports metadata for selected songs from a .tags file."
 msgstr ""
 "Importeer metagegevens van geselecteerde nummers uit een .tags-bestand."
 
-#: quodlibet/ext/songsmenu/k3b.py:23
-msgid "Burn CD"
-msgstr "CD branden"
-
-#: quodlibet/ext/songsmenu/k3b.py:24
-msgid "Burns CDs with K3b, Brasero or xfburn."
-msgstr "Brand cd's met K3b, Brasero of xfburn."
-
 #: quodlibet/ext/songsmenu/lastfmsync.py:94
 msgid "Updating chart list."
 msgstr "De hitlijsten worden bijgewerkt."
@@ -4800,32 +4766,38 @@ msgid "Tag \"%s\" not found."
 msgstr "De tag \"%s\" kan niet worden gevonden."
 
 #. then (try to) load all new files
-#: quodlibet/library/libraries.py:654 quodlibet/library/libraries.py:664
-#: quodlibet/library/libraries.py:729 quodlibet/library/libraries.py:748
-#: quodlibet/library/libraries.py:851 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:123
+#: quodlibet/library/file.py:151 quodlibet/library/file.py:161
+#: quodlibet/library/file.py:226 quodlibet/library/file.py:245
+#: quodlibet/library/file.py:348 quodlibet/library/file.py:403
+#: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
+#: quodlibet/util/library.py:123
 msgid "Library"
 msgstr "Verzameling"
 
-#: quodlibet/library/libraries.py:654
+#: quodlibet/library/file.py:151
 msgid "Checking mount points"
 msgstr "Bezig met controleren van aankoppelpunten"
 
-#: quodlibet/library/libraries.py:664
+#: quodlibet/library/file.py:161
 msgid "Scanning library"
 msgstr "Bezig met doorzoeken van verzameling"
 
-#: quodlibet/library/libraries.py:728
+#: quodlibet/library/file.py:225
 #, python-format
 msgid "Scanning %s"
 msgstr "Bezig met scannen van %s"
 
-#: quodlibet/library/libraries.py:748
+#: quodlibet/library/file.py:245
 msgid "Loading files"
 msgstr "Bezig met laden van bestanden"
 
-#: quodlibet/library/libraries.py:851
+#: quodlibet/library/file.py:348
 msgid "Moving library files"
+msgstr "Bezig met verplaatsen van verzameling"
+
+#: quodlibet/library/file.py:403
+#, fuzzy
+msgid "Removing library files"
 msgstr "Bezig met verplaatsen van verzameling"
 
 #: quodlibet/main.py:50
@@ -4842,12 +4814,12 @@ msgid "List tags"
 msgstr "Lijst met tags"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:462
+#: quodlibet/operon/commands.py:463
 msgid "Print terse output"
 msgstr "Toon beknopte uitvoer"
 
 #: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:464
+#: quodlibet/operon/commands.py:465
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr ""
@@ -4859,26 +4831,26 @@ msgstr "Ook programmatische tags tonen"
 
 #: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
-#: quodlibet/operon/commands.py:336 quodlibet/operon/commands.py:340
-#: quodlibet/operon/commands.py:392 quodlibet/operon/commands.py:395
-#: quodlibet/operon/commands.py:434 quodlibet/operon/commands.py:469
-#: quodlibet/operon/commands.py:509 quodlibet/operon/commands.py:544
-#: quodlibet/operon/commands.py:586
+#: quodlibet/operon/commands.py:337 quodlibet/operon/commands.py:341
+#: quodlibet/operon/commands.py:393 quodlibet/operon/commands.py:396
+#: quodlibet/operon/commands.py:435 quodlibet/operon/commands.py:470
+#: quodlibet/operon/commands.py:510 quodlibet/operon/commands.py:545
+#: quodlibet/operon/commands.py:587
 msgid "Not enough arguments"
 msgstr "Onvoldoende opdrachtregelopties"
 
 #: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
 #: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:471
+#: quodlibet/operon/commands.py:472
 msgid "Too many arguments"
 msgstr "Te veel opdrachtregelopties"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:476 quodlibet/qltk/data_editors.py:352
+#: quodlibet/operon/commands.py:477 quodlibet/qltk/data_editors.py:352
 msgid "Description"
 msgstr "Omschrijving"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:476
+#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:477
 #: quodlibet/qltk/edittags.py:504
 msgid "Value"
 msgstr "Waarde"
@@ -4892,8 +4864,8 @@ msgid "Copy tags from one file to another"
 msgstr "Tags van het ene naar het andere bestand kopiëren"
 
 #: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
-#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:324
-#: quodlibet/operon/commands.py:385
+#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:325
+#: quodlibet/operon/commands.py:386
 msgid "Show changes, don't apply them"
 msgstr "Aanpassingen tonen, maar niet toepassen"
 
@@ -4927,46 +4899,50 @@ msgstr "Geen aanpassingen gevonden"
 msgid "Set a tag and remove existing values"
 msgstr "Stel een tag in en verwijder bestaande waarden"
 
-#: quodlibet/operon/commands.py:304 quodlibet/operon/commands.py:445
-#: quodlibet/operon/commands.py:677
-#, python-format
-msgid "Can not set %r"
+#: quodlibet/operon/commands.py:304
+#, fuzzy, python-format
+msgid "Can not set %r for %s file %r"
 msgstr "Kan %r niet instellen"
 
-#: quodlibet/operon/commands.py:319
+#: quodlibet/operon/commands.py:320
 msgid "Remove tags"
 msgstr "Tags verwijderen"
 
-#: quodlibet/operon/commands.py:326 quodlibet/operon/commands.py:387
+#: quodlibet/operon/commands.py:327 quodlibet/operon/commands.py:388
 msgid "Value is a regular expression"
 msgstr "De waarde is een reguliere uitdrukking"
 
-#: quodlibet/operon/commands.py:328
+#: quodlibet/operon/commands.py:329
 msgid "Remove all tags"
 msgstr "Alle tags verwijderen"
 
-#: quodlibet/operon/commands.py:332
+#: quodlibet/operon/commands.py:333
 msgid "Can't combine '--all' with '--regexp'"
 msgstr "Kan '--all' niet combineren met '--regexp'"
 
-#: quodlibet/operon/commands.py:366
+#: quodlibet/operon/commands.py:367
 #, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
 msgstr "Kan \"{tagname}\" niet wissen uit {filename}"
 
-#: quodlibet/operon/commands.py:380
+#: quodlibet/operon/commands.py:381
 msgid "Remove a tag value"
 msgstr "Tagwaarde verwijderen"
 
-#: quodlibet/operon/commands.py:429
+#: quodlibet/operon/commands.py:430
 msgid "Add a tag value"
 msgstr "Tagwaarde toevoegen"
 
-#: quodlibet/operon/commands.py:457
+#: quodlibet/operon/commands.py:446 quodlibet/operon/commands.py:678
+#, python-format
+msgid "Can not set %r"
+msgstr "Kan %r niet instellen"
+
+#: quodlibet/operon/commands.py:458
 msgid "List file information"
 msgstr "Bestandsinformatie tonen"
 
-#: quodlibet/operon/commands.py:503
+#: quodlibet/operon/commands.py:504
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -4974,56 +4950,56 @@ msgstr ""
 "Stel de opgegeven afbeelding in als primaire bijgevoegde afbeelding en "
 "verwijder alle andere ingesloten afbeeldingen"
 
-#: quodlibet/operon/commands.py:516
+#: quodlibet/operon/commands.py:517
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Laden van afbeeldingsbestand mislukt: %r"
 
-#: quodlibet/operon/commands.py:523 quodlibet/operon/commands.py:552
+#: quodlibet/operon/commands.py:524 quodlibet/operon/commands.py:553
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Bewerken van afbeelding niet ondersteund voor %(file_name)s (%(file_format)s)"
 
-#: quodlibet/operon/commands.py:539
+#: quodlibet/operon/commands.py:540
 msgid "Remove all embedded images"
 msgstr "Alle bijgevoegde afbeeldingen verwijderen"
 
-#: quodlibet/operon/commands.py:569
+#: quodlibet/operon/commands.py:570
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Extraheer bijgevoegde afbeeldingen naar %(filepath)s"
 
-#: quodlibet/operon/commands.py:581
+#: quodlibet/operon/commands.py:582
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 "Pad waar de afbeeldingen zullen worden opgeslagen (standaard is dit de "
 "werkmap)"
 
-#: quodlibet/operon/commands.py:640
+#: quodlibet/operon/commands.py:641
 msgid "Rename files based on tags"
 msgstr "Bestandsnamen wijzigen op basis van tags"
 
-#: quodlibet/operon/commands.py:655
+#: quodlibet/operon/commands.py:656
 msgid "Fill tags based on the file path"
 msgstr "Tags invullen op basis van bestandspad"
 
-#: quodlibet/operon/commands.py:705 quodlibet/qltk/information.py:309
+#: quodlibet/operon/commands.py:706 quodlibet/qltk/information.py:309
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:228 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Bestand"
 
-#: quodlibet/operon/commands.py:713
+#: quodlibet/operon/commands.py:714
 msgid "Fill tracknumbers for all files"
 msgstr "Volgnummers toekennen aan alle bestanden"
 
-#: quodlibet/operon/commands.py:732
+#: quodlibet/operon/commands.py:733
 msgid "Print tags based on the given pattern"
 msgstr "Tags tonen op basis van opgegeven patroon"
 
-#: quodlibet/operon/commands.py:769
+#: quodlibet/operon/commands.py:770
 msgid "Display help information"
 msgstr "Hulpinformatie tonen"
 
@@ -5068,24 +5044,24 @@ msgstr "Alles herhalen"
 msgid "One Song"
 msgstr "Één nummer"
 
-#: quodlibet/player/gstbe/player.py:99
+#: quodlibet/player/gstbe/player.py:100
 msgid "Stream"
 msgstr "Stream"
 
-#: quodlibet/player/gstbe/player.py:99
+#: quodlibet/player/gstbe/player.py:100
 msgid "Buffering"
 msgstr "Bufferen"
 
-#: quodlibet/player/gstbe/player.py:462
+#: quodlibet/player/gstbe/player.py:463
 #, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Kan geen GStreamer-pijplijn aanmaken (%s)"
 
-#: quodlibet/player/gstbe/player.py:665
+#: quodlibet/player/gstbe/player.py:666
 msgid "No GStreamer element found to handle media format"
 msgstr "Geen GStreamer-element gevonden om mediaformaat te verwerken"
 
-#: quodlibet/player/gstbe/player.py:666
+#: quodlibet/player/gstbe/player.py:667
 #, python-format
 msgid "Media format: %(format-description)s"
 msgstr "Mediaformaat: %(format-description)s"
@@ -5147,11 +5123,11 @@ msgstr "Geen GStreamer-audiosink aangetroffen. Getracht: %s"
 msgid "Invalid GStreamer output pipeline"
 msgstr "Ongeldige GStreamer-uitvoerpijplijn"
 
-#: quodlibet/player/xinebe/player.py:90
+#: quodlibet/player/xinebe/player.py:91
 msgid "Unable to create audio output"
 msgstr "Kan audio-uitvoer niet aanmaken"
 
-#: quodlibet/player/xinebe/player.py:91
+#: quodlibet/player/xinebe/player.py:92
 #, python-format
 msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
@@ -5227,8 +5203,8 @@ msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
 msgstr[0] "Wil je de plug-in '%(name)s' uitvoeren op %(count)s afspeellijst?"
 msgstr[1] "Wil je de plug-in '%(name)s' uitvoeren op %(count)s afspeellijsten?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:55
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:56
+#: quodlibet/qltk/songsmenu.py:67
 msgid "_Run Plugin"
 msgstr "Plugin uitvoe_ren"
 
@@ -5633,7 +5609,7 @@ msgid "_Check for Updates…"
 msgstr "_Controleren op updates…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:289
+#: quodlibet/qltk/songsmenu.py:290
 msgid "_Plugins"
 msgstr "_Plug-ins"
 
@@ -5887,11 +5863,11 @@ msgstr "Tonen"
 msgid "_Unhide"
 msgstr "_Tonen"
 
-#: quodlibet/qltk/msg.py:40
+#: quodlibet/qltk/msg.py:43
 msgid "Discard tag changes?"
 msgstr "Tagwijzigingen verwerpen?"
 
-#: quodlibet/qltk/msg.py:41
+#: quodlibet/qltk/msg.py:44
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -5899,22 +5875,22 @@ msgstr ""
 "De tags zijn gewijzigd, maar niet opgeslagen. Wil je deze bestanden opslaan "
 "de wijzigingen verwerpen?"
 
-#: quodlibet/qltk/msg.py:54 quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/msg.py:57 quodlibet/qltk/prefs.py:636
 #: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "Onge_daan maken"
 
-#: quodlibet/qltk/msg.py:100
+#: quodlibet/qltk/msg.py:103
 msgid "File exists"
 msgstr "Bestand bestaat"
 
-#: quodlibet/qltk/msg.py:102
+#: quodlibet/qltk/msg.py:105
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "%(file-name)s vervangen?"
 
-#: quodlibet/qltk/msg.py:108
+#: quodlibet/qltk/msg.py:111
 msgid "_Replace File"
 msgstr "Bestand ve_rvangen"
 
@@ -6321,7 +6297,7 @@ msgstr "Mappen doorzoeken"
 msgid "Hidden Songs"
 msgstr "Verborgen nummers"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:413
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:347
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -6495,7 +6471,7 @@ msgstr "%s is geen geldige locatie."
 msgid "Add Music"
 msgstr "Muziek toevoegen"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:107
+#: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "M_appen toevoegen"
 
@@ -6652,11 +6628,21 @@ msgstr ""
 "Nummers in de getoonde mappen worden toegevoegd aan je verzameling tijdens "
 "het verversen ervan"
 
-#: quodlibet/qltk/scanbox.py:66
+#: quodlibet/qltk/scanbox.py:64
+msgid "The new directory will be scanned after adding"
+msgstr ""
+
+#: quodlibet/qltk/scanbox.py:67
+#, fuzzy
+msgid ""
+"All songs in the selected directories will also be removed from the library"
+msgstr "De geselecteerde nummers worden verwijderd uit je verzameling."
+
+#: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
 msgstr "_Verplaatsen"
 
-#: quodlibet/qltk/scanbox.py:68
+#: quodlibet/qltk/scanbox.py:72
 msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
@@ -6664,19 +6650,40 @@ msgstr ""
 "Verplaatst een hoofdmap (zonder bestanden) en migreert de metagegevens van "
 "alle opgegeven nummers."
 
-#: quodlibet/qltk/scanbox.py:107
+#: quodlibet/qltk/scanbox.py:113
+msgid "Remove {dir!r} and all its tracks?"
+msgstr ""
+
+#: quodlibet/qltk/scanbox.py:115
+#, fuzzy, python-brace-format
+msgid "Remove {n} library paths and their tracks?"
+msgstr "Verweesd iPodnummer wordt verwijderd"
+
+#: quodlibet/qltk/scanbox.py:116
+#, fuzzy
+msgid "Remove library path?"
+msgid_plural "Remove library paths?"
+msgstr[0] "Verzamelingspad:"
+msgstr[1] "Verzamelingspad:"
+
+#: quodlibet/qltk/scanbox.py:117
+#, fuzzy
+msgid "Remove"
+msgstr "Ve_rwijderen"
+
+#: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
 msgstr "Mappen kiezen"
 
-#: quodlibet/qltk/scanbox.py:122
+#: quodlibet/qltk/scanbox.py:139
 msgid "Select This Directory"
 msgstr "Map kiezen"
 
-#: quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
 msgstr "Huidige/Nieuwe map kiezen voor {dir!r}"
 
-#: quodlibet/qltk/scanbox.py:132
+#: quodlibet/qltk/scanbox.py:149
 msgid ""
 "This will move QL metadata:\n"
 "\n"
@@ -6692,11 +6699,11 @@ msgstr ""
 "De audiobestanden worden niet verplaatst.\n"
 "Een back-up is echter aanbevolen (inclusief het Quodlibet 'nummers'-bestand)"
 
-#: quodlibet/qltk/scanbox.py:138
+#: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
 msgstr "Hoofdmap verplaatsen?"
 
-#: quodlibet/qltk/scanbox.py:140
+#: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
 msgstr "Verplaatsen die handel!"
 
@@ -6821,39 +6828,39 @@ msgstr "Alle nummers in alle panelen selecteren"
 msgid "_Filter on %s"
 msgstr "_Filteren op %s"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1161
 msgid "All _Headers"
 msgstr "Alle _koppen"
 
-#: quodlibet/qltk/songlist.py:1161
+#: quodlibet/qltk/songlist.py:1162
 msgid "_Track Headers"
 msgstr "_Nummerkoppen"
 
-#: quodlibet/qltk/songlist.py:1162
+#: quodlibet/qltk/songlist.py:1163
 msgid "_Album Headers"
 msgstr "_Albumkoppen"
 
-#: quodlibet/qltk/songlist.py:1163
+#: quodlibet/qltk/songlist.py:1164
 msgid "_People Headers"
 msgstr "_Persoonkoppen"
 
-#: quodlibet/qltk/songlist.py:1164
+#: quodlibet/qltk/songlist.py:1165
 msgid "_Date Headers"
 msgstr "_Datumkoppen"
 
-#: quodlibet/qltk/songlist.py:1165
+#: quodlibet/qltk/songlist.py:1166
 msgid "_File Headers"
 msgstr "_Bestandskoppen"
 
-#: quodlibet/qltk/songlist.py:1166
+#: quodlibet/qltk/songlist.py:1167
 msgid "_Production Headers"
 msgstr "_Productiekoppen"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Customize Headers…"
 msgstr "Kop_pen aanpassen…"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1187
 msgid "_Expand Column"
 msgstr "Kolom uitvouw_en"
 
@@ -6864,47 +6871,47 @@ msgid_plural "Remove %(count)d tracks from library?"
 msgstr[0] "Wil je \"%%(title)s\" ve_rwijderen uit je verzameling?"
 msgstr[1] "Wil je %(count)d nummers verwijderen uit je verzameling?"
 
-#: quodlibet/qltk/songsmenu.py:46
+#: quodlibet/qltk/songsmenu.py:45
 msgid "Remove from Library"
 msgstr "Ve_rwijderen uit verzameling"
 
-#: quodlibet/qltk/songsmenu.py:51
+#: quodlibet/qltk/songsmenu.py:52
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d nummer?"
 msgstr[1] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d nummers?"
 
-#: quodlibet/qltk/songsmenu.py:62
+#: quodlibet/qltk/songsmenu.py:63
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d album?"
 msgstr[1] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d albums?"
 
-#: quodlibet/qltk/songsmenu.py:134
+#: quodlibet/qltk/songsmenu.py:135
 msgid "Configure Plugins…"
 msgstr "Plug-ins instellen…"
 
-#: quodlibet/qltk/songsmenu.py:329
+#: quodlibet/qltk/songsmenu.py:319
 msgid "Add to _Queue"
 msgstr "Toevoegen aan _wachtrij"
 
-#: quodlibet/qltk/songsmenu.py:349
+#: quodlibet/qltk/songsmenu.py:339
 msgid "_Remove from Library…"
 msgstr "Ve_rwijderen uit verzameling…"
 
-#: quodlibet/qltk/songsmenu.py:414
+#: quodlibet/qltk/songsmenu.py:404
 msgid "Unable to show files"
 msgstr "Kan bestanden niet tonen"
 
-#: quodlibet/qltk/songsmenu.py:415
+#: quodlibet/qltk/songsmenu.py:405
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 "De bestanden kunnen niet worden getoond of er is geen programma dat ze kan "
 "tonen."
 
-#: quodlibet/qltk/songsmenu.py:422
+#: quodlibet/qltk/songsmenu.py:412
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
@@ -7051,11 +7058,16 @@ msgstr ""
 "\n"
 "Ga naar de <a href='%(url)s'>website</a>"
 
-#: quodlibet/util/collection.py:435
+#: quodlibet/util/collection.py:342
+#, fuzzy
+msgid "Empty Playlist"
+msgstr "Afspeellijst importeren"
+
+#: quodlibet/util/collection.py:440
 msgid "Playlists must have a name"
 msgstr "Afspeellijsten moeten een naam hebben"
 
-#: quodlibet/util/collection.py:624
+#: quodlibet/util/collection.py:644
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Er is al een afspeellijst met deze naam (\"%(name)s\") in %(path)s"
@@ -7601,6 +7613,38 @@ msgstr ""
 "radiostations en audiofeeds. Het biedt zeer flexibele mogelijkheden om "
 "metagegevenstags te bewerken en je verzameling te doorzoeken."
 
+#~ msgid "No lyrics found"
+#~ msgstr "Geen songteksten gevonden"
+
+#~ msgid "_Zoom level:"
+#~ msgstr "_Zoomniveau:"
+
+#~ msgid "URL:"
+#~ msgstr "URL:"
+
+#~ msgid "Revert to default"
+#~ msgstr "Standaardwaarden"
+
+#~ msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
+#~ msgstr ""
+#~ "Gebruik bovenstaande url om te zoeken naar songteksten als ze niet kunnen "
+#~ "worden gevonden op LyricsWikia."
+
+#~ msgid "Alternate search"
+#~ msgstr "Alternatieve zoekopdracht"
+
+#~ msgid "Web Lyrics"
+#~ msgstr "Online-songteksten"
+
+#~ msgid "Shows a sidebar containing online lyrics of the playing song."
+#~ msgstr "Toont een zijbalk met de songtekst van het huidige nummer."
+
+#~ msgid "Burn CD"
+#~ msgstr "CD branden"
+
+#~ msgid "Burns CDs with K3b, Brasero or xfburn."
+#~ msgstr "Brand cd's met K3b, Brasero of xfburn."
+
 #~ msgid "Unsupported file type"
 #~ msgstr "Niet-ondersteund bestandstype"
 
@@ -7916,9 +7960,6 @@ msgstr ""
 
 #~ msgid "Firmware:"
 #~ msgstr "Firmware:"
-
-#~ msgid "Removing orphaned iPod track"
-#~ msgstr "Verweesd iPodnummer wordt verwijderd"
 
 #~ msgid "Saving iPod database…"
 #~ msgstr "iPod-database wordt opgeslagen…"
