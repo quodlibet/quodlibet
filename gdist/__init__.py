@@ -37,7 +37,8 @@ from distutils.core import setup
 
 from .shortcuts import build_shortcuts, install_shortcuts
 from .man import install_man
-from .po import build_mo, install_mo, po_stats, update_po, create_po, build_po
+from .po import build_mo, install_mo, po_stats, update_po, \
+    create_po, create_pot, build_po
 from .icons import install_icons
 from .search_provider import install_search_provider
 from .dbus_services import build_dbus_services, install_dbus_services
@@ -168,6 +169,7 @@ class GDistribution(Distribution):
         self.cmdclass.setdefault("po_stats", po_stats)
         self.cmdclass.setdefault("update_po", update_po)
         self.cmdclass.setdefault("create_po", create_po)
+        self.cmdclass.setdefault("create_pot", create_pot)
         self.cmdclass.setdefault("coverage", coverage_cmd)
         self.cmdclass.setdefault("build_sphinx", build_sphinx)
         self.cmdclass.setdefault("quality", quality_cmd)
