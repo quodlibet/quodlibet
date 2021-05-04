@@ -6,7 +6,6 @@
 *.orig
 *.cache
 *.cover
-*.pot
 *.mo
 *.tar.gz
 *.tar.xz
