@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-03-04 14:31+0100\n"
-"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"POT-Creation-Date: 2021-05-04 18:16+0200\n"
+"PO-Revision-Date: 2021-05-04 18:20+0200\n"
+"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Nederlands <en@li.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -1598,7 +1598,7 @@ msgstr "Importeer waarderingen en nummerstatistieken uit Banshee."
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr "_Databankpad:"
+msgstr "_Databanklocatie:"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
@@ -2048,7 +2048,7 @@ msgstr "Geen nummer"
 
 #: quodlibet/ext/events/mqtt.py:158
 msgid "Plain text for when there is no current song"
-msgstr "Platte statustekst als er geen nummer wordt afgespeeld."
+msgstr "Platte tekst als er geen nummer wordt afgespeeld."
 
 #: quodlibet/ext/events/mqtt.py:169
 msgid "MQTT Configuration"
@@ -2541,7 +2541,7 @@ msgstr "Synchroniseer de volgende zoekopdrachten:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:149
 msgid "The absolute path to your export location"
-msgstr "Het volledige pad naar de exportlocatie"
+msgstr "Het volledige lo naar de exportlocatie"
 
 #: quodlibet/ext/events/synchronize_to_device.py:166
 msgid ""
@@ -2568,7 +2568,7 @@ msgstr "Bestemming:"
 #: quodlibet/ext/events/synchronize_to_device.py:187
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
-msgstr "Padpatronen"
+msgstr "Locatiepatronen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:187
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
@@ -2756,7 +2756,7 @@ msgid ""
 "Error:\n"
 "{}"
 msgstr ""
-"Het exportpatroon begint met een pad dat verschilt van dat van de "
+"Het exportpatroon begint met een locatie die verschilt van dat van de "
 "bestemming. Corrigeer het patroon.\n"
 "\n"
 "Foutmelding:\n"
@@ -3649,7 +3649,7 @@ msgstr "De verzamelingsmap waarmee de server dient te verbinden"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:140
 msgid "Library path:"
-msgstr "Verzamelingspad:"
+msgstr "Verzamelingslocatie:"
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:151
@@ -4084,13 +4084,12 @@ msgstr ""
 "worden doorgegeven (zoals xargs)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
-#, fuzzy
 msgid "reverse"
 msgstr "Omkeren"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "If set, the argument list will be reversed."
-msgstr ""
+msgstr "Indien ingesteld zal de opdrachtregellijst worden omgekeerd."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:95
 msgid "Input value"
@@ -4578,11 +4577,11 @@ msgstr "Exporteer nummers naar een m3u- of pls-afspeellijst."
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use relative paths"
-msgstr "Relatieve paden gebruiken"
+msgstr "Relatieve locaties gebruiken"
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use absolute paths"
-msgstr "Absolute paden gebruiken"
+msgstr "Absolute locaties gebruiken"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
 #, python-format
@@ -4796,9 +4795,8 @@ msgid "Moving library files"
 msgstr "Bezig met verplaatsen van verzameling"
 
 #: quodlibet/library/file.py:403
-#, fuzzy
 msgid "Removing library files"
-msgstr "Bezig met verplaatsen van verzameling"
+msgstr "Bezig met verwijderen van verzamelingsbestanden"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -4900,9 +4898,9 @@ msgid "Set a tag and remove existing values"
 msgstr "Stel een tag in en verwijder bestaande waarden"
 
 #: quodlibet/operon/commands.py:304
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %r for %s file %r"
-msgstr "Kan %r niet instellen"
+msgstr "Kan %r niet instellen op %s bestand %r"
 
 #: quodlibet/operon/commands.py:320
 msgid "Remove tags"
@@ -4974,8 +4972,8 @@ msgstr "Extraheer bijgevoegde afbeeldingen naar %(filepath)s"
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
-"Pad waar de afbeeldingen zullen worden opgeslagen (standaard is dit de "
-"werkmap)"
+"De locatie waar de afbeeldingen zullen worden opgeslagen (standaard is dit "
+"de werkmap)"
 
 #: quodlibet/operon/commands.py:641
 msgid "Rename files based on tags"
@@ -4983,7 +4981,7 @@ msgstr "Bestandsnamen wijzigen op basis van tags"
 
 #: quodlibet/operon/commands.py:656
 msgid "Fill tags based on the file path"
-msgstr "Tags invullen op basis van bestandspad"
+msgstr "Tags invullen op basis van bestandslocatie"
 
 #: quodlibet/operon/commands.py:706 quodlibet/qltk/information.py:309
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
@@ -5756,7 +5754,7 @@ msgstr "waardering"
 
 #: quodlibet/qltk/information.py:291
 msgid "path"
-msgstr "pad"
+msgstr "locatie"
 
 #: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:165
 msgid "length"
@@ -6604,7 +6602,7 @@ msgstr "_Doorgaan"
 
 #: quodlibet/qltk/renamefiles.py:463
 msgid "Path is not absolute"
-msgstr "Het pad is niet absoluut"
+msgstr "De locatie is niet absoluut"
 
 #: quodlibet/qltk/renamefiles.py:464
 #, python-format
@@ -6630,13 +6628,12 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
-msgstr ""
+msgstr "De nieuwe map wordt na het toevoegen doorzocht"
 
 #: quodlibet/qltk/scanbox.py:67
-#, fuzzy
 msgid ""
 "All songs in the selected directories will also be removed from the library"
-msgstr "De geselecteerde nummers worden verwijderd uit je verzameling."
+msgstr "De geselecteerde nummers worden verwijderd uit je verzameling"
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
@@ -6652,24 +6649,23 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
-msgstr ""
+msgstr "Wil je {dir!r) en alle bijbehorende nummers verwijderen?"
 
 #: quodlibet/qltk/scanbox.py:115
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "Verweesd iPodnummer wordt verwijderd"
+msgstr ""
+"Wil je {n} verzamelingslocaties en alle bijbehorende nummers verwijderen?"
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "Verzamelingspad:"
-msgstr[1] "Verzamelingspad:"
+msgstr[0] "Verzamelingslocatie verwijderen?"
+msgstr[1] "Verzamelingslocaties verwijderen?"
 
 #: quodlibet/qltk/scanbox.py:117
-#, fuzzy
 msgid "Remove"
-msgstr "Ve_rwijderen"
+msgstr "Verwijderen"
 
 #: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
@@ -6932,7 +6928,7 @@ msgstr "Splitsen in meerdere _waarden"
 
 #: quodlibet/qltk/tagsfrompath.py:100
 msgid "Tags From Path"
-msgstr "Tags vanuit pad"
+msgstr "Tags vanuit locatie"
 
 #: quodlibet/qltk/tagsfrompath.py:137
 msgid "Tags replace existing ones"
@@ -7059,9 +7055,8 @@ msgstr ""
 "Ga naar de <a href='%(url)s'>website</a>"
 
 #: quodlibet/util/collection.py:342
-#, fuzzy
 msgid "Empty Playlist"
-msgstr "Afspeellijst importeren"
+msgstr "Lege afspeellijst"
 
 #: quodlibet/util/collection.py:440
 msgid "Playlists must have a name"
