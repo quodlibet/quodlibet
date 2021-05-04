@@ -2,19 +2,19 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
-from typing import List
+from typing import List, Set
 
 from gi.repository import Gtk
 
 from quodlibet import config
+from quodlibet.browsers.tracks import TrackList
 from quodlibet.formats import AudioFile
-from quodlibet.library import SongFileLibrary
+from quodlibet.library import SongFileLibrary, SongLibrarian
 from quodlibet.qltk.songlist import (SongList, set_columns, get_columns,
                                      header_tag_split, get_sort_tag)
 from quodlibet.qltk.songlistcolumns import SongListColumn
 from senf import fsnative
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
 
 class TSongList(TestCase):
@@ -27,7 +27,7 @@ class TSongList(TestCase):
         self.songlist = SongList(self.lib)
 
         self.orders_changed = 0
-        self.songs_removed: List[List] = []
+        self.songs_removed: List[Set] = []
 
         def orders_changed_cb(*args):
             self.orders_changed += 1
@@ -35,8 +35,10 @@ class TSongList(TestCase):
         def orders_removed_cb(songlist, removed):
             self.songs_removed.append(removed)
 
-        self.songlist.connect("orders-changed", orders_changed_cb)
-        self.songlist.connect("songs-removed", orders_removed_cb)
+        self.__sigs = [
+            self.songlist.connect("orders-changed", orders_changed_cb),
+            self.songlist.connect("songs-removed", orders_removed_cb)
+        ]
 
     def test_set_all_column_headers(self):
         SongList.set_all_column_headers(self.HEADERS)
@@ -181,21 +183,22 @@ class TSongList(TestCase):
         song = AudioFile({"~filename": "/dev/null"})
         song.sanitize()
         self.lib.add([song])
+        assert song in self.lib, "Broken library?"
         self.songlist.add_songs([song])
+        assert set(self.songlist.get_songs()) == {song}
         self.lib.remove([song])
-        assert self.songs_removed == [{song}]
+        assert not list(self.lib), "Didn't get removed"
+        run_gtk_loop()
+        assert self.songs_removed == [{song}], "Signal wasn't emitted"
 
     def test_header_menu(self):
-        from quodlibet import browsers
-        from quodlibet.library import SongLibrarian
-
         song = AudioFile({"~filename": fsnative(u"/dev/null")})
         song.sanitize()
         self.songlist.set_songs([song])
 
-        library = SongFileLibrary()
-        library.librarian = SongLibrarian()
-        browser = browsers.get("SearchBar")(library)
+        library = self.lib
+        self.lib.librarian = SongLibrarian()
+        browser = TrackList(library)
 
         self.songlist.set_column_headers(["foo"])
 
@@ -253,5 +256,8 @@ class TSongList(TestCase):
         assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):
+        for sig in self.__sigs:
+            self.songlist.disconnect(sig)
         self.songlist.destroy()
+        self.lib.destroy()
         config.quit()

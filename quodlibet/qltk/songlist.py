@@ -946,12 +946,17 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return model.iter_nth_child(None, i)
         return None
 
-    def __find_iters_in_selection(self, songs):
+    def __find_iters_in_selection(self, songs) -> Tuple[List, List, bool]:
         model, rows = self.get_selection().get_selected_rows()
         rows = rows or []
-        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        iters = []
+        removed_songs = []
+        for r in rows:
+            if model[r][0] in songs:
+                iters.append(model[r].iter)
+                removed_songs.append(model[r][0])
         complete = len(iters) == len(songs)
-        return (iters, complete)
+        return iters, removed_songs, complete
 
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
@@ -961,7 +966,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         model = self.get_model()
         if not config.getboolean("memory", "shuffle", False) and \
                 config.getboolean("song_list", "auto_sort") and self.is_sorted():
-            iters, complete = self.__find_iters_in_selection(songs)
+            iters, _, complete = self.__find_iters_in_selection(songs)
+
             if not complete:
                 iters = model.find_all(songs)
 
@@ -990,36 +996,40 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             self.add_songs(list(filter(filter_, songs)))
 
     def __song_removed(self, librarian, songs, player):
-        # The player needs to be called first so it can ge the next song
-        # in case the current one gets deleted and the order gets reset.
+        try:
+            # The player needs to be called first so it can ge the next song
+            # in case the current one gets deleted and the order gets reset.
+            if player:
+                for song in songs:
+                    player.remove(song)
 
-        if player:
-            for song in songs:
-                player.remove(song)
+            model = self.get_model()
 
-        model = self.get_model()
+            # The selected songs are removed from the library and should
+            # be removed from the view.
 
-        # The selected songs are removed from the library and should
-        # be removed from the view.
+            if not len(model):
+                return
 
-        if not len(model):
-            return
+            songs = set(songs)
 
-        songs = set(songs)
+            # search in the selection first
+            # speeds up common case: select songs and remove them
+            iters, removed_songs, complete = self.__find_iters_in_selection(songs)
 
-        # search in the selection first
-        # speeds up common case: select songs and remove them
-        iters, complete = self.__find_iters_in_selection(songs)
+            # if not all songs were in the selection, search the whole view
+            if not complete:
+                removed_songs = []
+                for iter_, value in self.model.iterrows():
+                    if value in songs:
+                        iters.append(iter_)
+                        removed_songs.append(value)
 
-        # if not all songs were in the selection, search the whole view
-        if not complete:
-            iters = model.find_all(songs)
-
-        # Songs can only be removed once, and there is no order here
-        songs = {value for _, value in self.model.iterrows()}
-        if songs:
-            self.emit('songs-removed', songs)
-        self.remove_iters(iters)
+            if removed_songs:
+                self.emit('songs-removed', set(removed_songs))
+            self.remove_iters(iters)
+        except Exception as e:
+            print_w(f"Couldn't process removed songs: {e}", self)
 
     def __song_properties(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
