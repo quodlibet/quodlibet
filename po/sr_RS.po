@@ -1,24 +1,24 @@
-# Serbian translations for PACKAGE package
-# Преводи на српски језик за пакет „PACKAGE“.
-# Copyright (C) 2019 THE PACKAGE'S COPYRIGHT HOLDER
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# Automatically generated, 2019.
-#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# Christoph Reiter <reiter.christoph@gmail.com>, 2021
+# 
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
+"Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2019-08-17 06:05+0200\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
-"Language: sr\n"
+"PO-Revision-Date: 2021-05-08 13:45+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>, 2021\n"
+"Language-Team: Serbian (Serbia) (https://www.transifex.com/lazka/teams/120196/sr_RS/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Poedit 2.2.1\n"
+"Language: sr_RS\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -36,9 +36,8 @@ msgid "_Date"
 msgstr "_Датум"
 
 #: quodlibet/browsers/albums/main.py:225
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Датум заглавље"
+msgstr ""
 
 #: quodlibet/browsers/albums/main.py:226
 msgid "_Original Date"
@@ -67,8 +66,9 @@ msgstr "Разврстај _по…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:85
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:356 quodlibet/qltk/quodlibetwindow.py:906
+#: quodlibet/browsers/playlists/main.py:670
+#: quodlibet/qltk/exfalsowindow.py:108 quodlibet/qltk/pluginwin.py:356
+#: quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Поставке"
 
@@ -237,10 +237,11 @@ msgstr "Не могу додати извор"
 #: quodlibet/browsers/audiofeeds.py:492
 #, python-format
 msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
+"%s could not be added. The server may be down, or the location may not be an"
+" audio feed."
 msgstr ""
-"%s не може бити додат. Можда је сервер недоступан или извор није аудио запис."
+"%s не може бити додат. Можда је сервер недоступан или извор није аудио "
+"запис."
 
 #: quodlibet/browsers/audiofeeds.py:509
 msgid ""
@@ -413,12 +414,10 @@ msgstr "_Додај у библиотеку"
 #: quodlibet/browsers/iradio.py:190
 #, python-format
 msgid ""
-"Station lists can only contain locations of stations, not other station "
-"lists or playlists. The following locations cannot be loaded:\n"
+"Station lists can only contain locations of stations, not other station lists or playlists. The following locations cannot be loaded:\n"
 "%s"
 msgstr ""
-"Листа станица подржава само локације станица, не друге листе станица или "
-"листе репродукције. Следеће локације не могу бити учитане:\n"
+"Листа станица подржава само локације станица, не друге листе станица или листе репродукције. Следеће локације не могу бити учитане:\n"
 "%s"
 
 #: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
@@ -427,9 +426,8 @@ msgid "Internet Radio"
 msgstr "Интернет радио"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "Све станице"
+msgstr ""
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
@@ -819,9 +817,8 @@ msgid "Track List"
 msgstr "Листа записа"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "Листа записа"
+msgstr ""
 
 #: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
@@ -1126,9 +1123,9 @@ msgstr "Дошло је до грешке"
 
 #: quodlibet/errorreport/ui.py:60
 msgid ""
-"You can ignore this error, but the application might be unstable until it is "
-"restarted. Submitting an error report will only take a few seconds and would "
-"help us a lot."
+"You can ignore this error, but the application might be unstable until it is"
+" restarted. Submitting an error report will only take a few seconds and "
+"would help us a lot."
 msgstr ""
 "Можете занемарити ову грешку, али апликација може бити нестабилна док се не "
 "покрене поново. Пријављивање грешке траје неколико секунди а нама помаже "
@@ -1233,7 +1230,8 @@ msgstr "Преобрати енкодирања"
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
 msgstr ""
-"Поправља погрешно протумачене вредности ознаке енкодирања у уређивачу ознака."
+"Поправља погрешно протумачене вредности ознаке енкодирања у уређивачу "
+"ознака."
 
 #: quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
@@ -1290,8 +1288,8 @@ msgstr "_Људска велика слова"
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
-"Користи уобичајена енглеска правила за велика слова, као што је \"Dark Night "
-"of the Soul\""
+"Користи уобичајена енглеска правила за велика слова, као што је \"Dark Night"
+" of the Soul\""
 
 #: quodlibet/ext/events/advanced_preferences.py:83
 msgid "Advanced Preferences"
@@ -1427,11 +1425,9 @@ msgid "Keeps your library up to date with inotify. Requires %s."
 msgstr "Држи вашу библиотеку ажурном користећи inotify. Захтева %s."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
-#, fuzzy
 msgid "After every play (default)"
-msgstr "Врати на подразумевано"
+msgstr ""
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1443,11 +1439,10 @@ msgstr ""
 msgid "After every play or skip"
 msgstr ""
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid ""
-"Whenever a song was played or skipped, the plugin will write the tags to the "
-"file. Can be useful if you want to make sure that ratings of songs you "
+"Whenever a song was played or skipped, the plugin will write the tags to the"
+" file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
 
@@ -1455,47 +1450,34 @@ msgstr ""
 msgid "Once, when album fully rated"
 msgstr ""
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid ""
-"When a song was played or skipped, the album of that song will be checked. "
-"If every song in the album has been rated and at least one has no ratings or "
-"play counts stored in its file, the plugin will write the tags to the songs' "
-"files.\n"
+"When a song was played or skipped, the album of that song will be checked. If every song in the album has been rated and at least one has no ratings or play counts stored in its file, the plugin will write the tags to the songs' files.\n"
 "\n"
-"Use this to avoid constant file updates, but be aware that once an album was "
-"updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
-"want modified ratings and play counts to be written to the files."
+"Use this to avoid constant file updates, but be aware that once an album was updated, you'll have to use the 'Update Tags in Files' plugin whenever you want modified ratings and play counts to be written to the files."
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:57
 #, python-format
 msgid ""
-"When the plugin writes the tags of an album, it will first set the play "
-"count of the songs which are zero to one.\n"
-"Sometimes you already know that you don't like a song, so setting it to one "
-"when saving can be useful later on, when searching for albums you have fully "
-"listened to (%s)."
+"When the plugin writes the tags of an album, it will first set the play count of the songs which are zero to one.\n"
+"Sometimes you already know that you don't like a song, so setting it to one when saving can be useful later on, when searching for albums you have fully listened to (%s)."
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't write '%s'"
-msgstr "Не могу контактирати сервис '%s'."
+msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
-#, fuzzy
 msgid "Auto Update Tags in Files"
-msgstr "Ажурирај ознаке у датотекама"
+msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:81
-#, fuzzy
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
-"Ажурира измењене ознаке у датотекама. Ово ће осигурати да су број пуштања и "
-"оцене ажуриране."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1511,23 +1493,21 @@ msgid "Save ratings and play _counts in tags"
 msgstr "Сачувај оцене и _број пуштања у ознакама"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
-#, fuzzy
 msgid "Settings updated"
-msgstr "датум снимања"
+msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#, fuzzy, python-format
+#, python-format
 msgid "Error in %s"
-msgstr "Грешка при синхронизацији"
+msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
-#, fuzzy
 msgid "_Update strategy:"
-msgstr "_Ажурирај станице"
+msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
 #: quodlibet/ext/events/mpris/__init__.py:47
@@ -1685,8 +1665,7 @@ msgid ""
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
 "Управља тоном музике уз помоћ изједначивача.\n"
-"Кликните или користите дирке да прилагодите нивое (десни-клик опозива све "
-"клизаче)."
+"Кликните или користите дирке да прилагодите нивое (десни-клик опозива све клизаче)."
 
 #: quodlibet/ext/events/equalizer.py:150
 msgid "The current backend does not support equalization."
@@ -1742,7 +1721,8 @@ msgstr "Име одабира за чување:"
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/cover_download.py:382
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
-#: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:216
+#: quodlibet/ext/songsmenu/html.py:76
+#: quodlibet/ext/songsmenu/lastfmsync.py:216
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:355
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
@@ -1798,8 +1778,8 @@ msgstr "Шаблон:"
 
 #: quodlibet/ext/events/gajim_status.py:154
 msgid ""
-"List accounts, separated by spaces, for changing status message. If none are "
-"specified, status message of all accounts will be changed."
+"List accounts, separated by spaces, for changing status message. If none are"
+" specified, status message of all accounts will be changed."
 msgstr ""
 "Листа налоге, раздвојене размаком, за промену статусне поруке. Ако није "
 "прецизан налог, статус порука ће бити промењена."
@@ -1815,8 +1795,8 @@ msgstr "Додаје '[паузиран]'"
 #: quodlibet/ext/events/gajim_status.py:164
 msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
-"Ако је означено, '[паузиран]' ће бити додато у статусну поруку када је песма "
-"паузирана"
+"Ако је означено, '[паузиран]' ће бити додато у статусну поруку када је песма"
+" паузирана"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
@@ -1830,12 +1810,12 @@ msgstr "Паузирај када су слушалице откачене"
 msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
-msgstr "Паузира када су слушалице откачене и наставља ако су прикачене поново."
+msgstr ""
+"Паузира када су слушалице откачене и наставља ако су прикачене поново."
 
 #: quodlibet/ext/events/inhibit.py:50
-#, fuzzy
 msgid "Inhibit Screensaver/Suspend"
-msgstr "Онемогући чувара екрана"
+msgstr ""
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
@@ -1849,18 +1829,16 @@ msgstr "Музика свира"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
-#, fuzzy
 msgid "Mode:"
-msgstr "Режим"
+msgstr ""
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
 msgstr "Онемогући чувара екрана"
 
 #: quodlibet/ext/events/inhibit.py:126
-#, fuzzy
 msgid "Inhibit Suspend"
-msgstr "Онемогући чувара екрана"
+msgstr ""
 
 #: quodlibet/ext/events/iradiolog.py:17
 msgid "Internet Radio Log"
@@ -1904,8 +1882,8 @@ msgstr "UPnP AV Media Server"
 
 #: quodlibet/ext/events/mediaserver.py:37
 msgid ""
-"Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
-"Bus interface."
+"Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 "
+"D-Bus interface."
 msgstr ""
 "Излаже све албуме на Rygel UPnP Media Server кроз MediaServer2 D-Bus сучеље."
 
@@ -1913,8 +1891,8 @@ msgstr ""
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
-"Осигурава да је следеће у вашој rygel конфигурационој датотеци (~/.config/"
-"rygel.conf):"
+"Осигурава да је следеће у вашој rygel конфигурационој датотеци "
+"(~/.config/rygel.conf):"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
@@ -1922,8 +1900,8 @@ msgstr "MPD Server"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid ""
-"Allows remote control of Quod Libet using an MPD Client. Streaming, playlist "
-"and library management are not supported."
+"Allows remote control of Quod Libet using an MPD Client. Streaming, playlist"
+" and library management are not supported."
 msgstr ""
 "Дозвољава даљинско управљање Quod Libet-om користећи MPD клијент. Стрим, "
 "листе извођења и библиотека нису подржани."
@@ -1954,9 +1932,11 @@ msgstr "MPRIS D-Bus подршка"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid ""
-"Allows control of Quod Libet using the MPRIS 2 D-Bus Interface Specification."
+"Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "
+"Specification."
 msgstr ""
-"Омогућава контролу Quod Libet-а користећи MPRIS 2 D-Bus спецификацију сучеља."
+"Омогућава контролу Quod Libet-а користећи MPRIS 2 D-Bus спецификацију "
+"сучеља."
 
 #: quodlibet/ext/events/mpris/__init__.py:44
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -1993,24 +1973,20 @@ msgid "broker port (defaults to 1883)"
 msgstr "порт посредника (подразумевано на 1883)"
 
 #: quodlibet/ext/events/mqtt.py:142
-#, fuzzy
 msgid "Broker username"
-msgstr "Име домаћина посредника"
+msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:142
-#, fuzzy
 msgid "broker username"
-msgstr "Име домаћина посредника"
+msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:144
-#, fuzzy
 msgid "Broker password"
-msgstr "Порт посредника"
+msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:144
-#, fuzzy
 msgid "broker password"
-msgstr "Порт посредника"
+msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Topic"
@@ -2063,14 +2039,12 @@ msgid "Connection error"
 msgstr "Грешка при повезивању"
 
 #: quodlibet/ext/events/musicbrainzsync.py:36
-#, fuzzy
 msgid "MusicBrainz Sync"
-msgstr "MusicBrainz претрага"
+msgstr ""
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
-#, fuzzy
 msgid "Syncs the rating of a song with music brainz."
-msgstr "Дозвољава оцењивање бројем."
+msgstr ""
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
@@ -2164,8 +2138,8 @@ msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
 msgstr ""
-"Молимо посетите прозор додатака да подесите QLScrobbler. До тада, песме неће "
-"бити приложене."
+"Молимо посетите прозор додатака да подесите QLScrobbler. До тада, песме неће"
+" бити приложене."
 
 #: quodlibet/ext/events/qlscrobbler.py:253
 #, python-format
@@ -2251,7 +2225,8 @@ msgstr ""
 #: quodlibet/ext/events/qlscrobbler.py:565
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
-"The pattern used to format the title for submission. Leave blank for default."
+"The pattern used to format the title for submission. Leave blank for "
+"default."
 msgstr ""
 "Шаблон за форматирање имена наслова за доставу. Оставите празно за "
 "подразумевано."
@@ -2393,7 +2368,8 @@ msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
 msgstr ""
-"Алтернативна трака мотања која је увек видљива и прелази преко целог прозора."
+"Алтернативна трака мотања која је увек видљива и прелази преко целог "
+"прозора."
 
 #: quodlibet/ext/events/seekpoints.py:20
 msgid "Seekpoint Bookmarks"
@@ -2401,16 +2377,11 @@ msgstr "Обележивачи тачке мотања"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
-"Store Seekpoints A and/or B for tracks. Skip to time A and stop after time B "
-"when track is played.\n"
-"Note that changing the names of the points below does not update the actual "
-"bookmark names, it only changes which bookmark names the plugin looks for "
-"when deciding whether to seek."
+"Store Seekpoints A and/or B for tracks. Skip to time A and stop after time B when track is played.\n"
+"Note that changing the names of the points below does not update the actual bookmark names, it only changes which bookmark names the plugin looks for when deciding whether to seek."
 msgstr ""
-"Чува тачке мотања A и/или B за записе. Прескочи до тачке A и заустави након "
-"тачке B приликом репродукције.\n"
-"Обратите пажњу да промена имена тачака испод не ажурира имена обележивача, "
-"само мења која имена обележивача ће додатак тражити за одлуку када да мота."
+"Чува тачке мотања A и/или B за записе. Прескочи до тачке A и заустави након тачке B приликом репродукције.\n"
+"Обратите пажњу да промена имена тачака испод не ажурира имена обележивача, само мења која имена обележивача ће додатак тражити за одлуку када да мота."
 
 #: quodlibet/ext/events/seekpoints.py:108
 msgid "Bookmark name for point A"
@@ -2460,19 +2431,16 @@ msgid "Error finding %s. Please check settings"
 msgstr "Грешка проналажења %s. Молимо проверите подешавања"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
-#, fuzzy
 msgid "Pending copy"
-msgstr "енкодирање"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:54
-#, fuzzy
 msgid "Pending delete"
-msgstr "датум снимања"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
-#, fuzzy
 msgid "delete"
-msgstr "_Обриши"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "Skip"
@@ -2483,14 +2451,12 @@ msgid "DUPLICATE"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
-#, fuzzy
 msgid "Synchronizing"
-msgstr "Синхронизовани текст"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
-#, fuzzy
 msgid "Deleting"
-msgstr "_Обриши"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "Success"
@@ -2501,9 +2467,8 @@ msgid "FAILURE"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:62
-#, fuzzy
 msgid "Skipped existing file"
-msgstr "Чешће прескакано"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:82
 msgid "Cannot set the filename of a song."
@@ -2516,19 +2481,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<artist>"
-msgstr "уметник"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<album>"
-msgstr "албум"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<title>"
-msgstr "наслов"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:143
 msgid "Synchronize the following saved searches:"
@@ -2552,9 +2514,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:181
-#, fuzzy
 msgid "Destination path:"
-msgstr "Одредишна фасцикла:"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:187
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
@@ -2571,15 +2532,13 @@ msgid "The structure of the exported filenames, based on their tags"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#, fuzzy
 msgid "Export pattern:"
-msgstr "_Уметник шаблон:"
+msgstr ""
 
 #. Stop preview button
 #: quodlibet/ext/events/synchronize_to_device.py:210
-#, fuzzy
 msgid "Stop preview"
-msgstr "Преглед"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:229
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
@@ -2587,19 +2546,17 @@ msgid "Status"
 msgstr "Статус"
 
 #: quodlibet/ext/events/synchronize_to_device.py:236
-#, fuzzy
 msgid "Source File"
-msgstr "Извори"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:245
-#, fuzzy
 msgid "Export Path"
-msgstr "Извези метаподатке"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:255
 msgid ""
-"Duplicate export paths detected! The export paths above can be edited before "
-"starting the synchronization."
+"Duplicate export paths detected! The export paths above can be edited before"
+" starting the synchronization."
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:259
@@ -2613,18 +2570,16 @@ msgstr ""
 
 #. Stop sync button
 #: quodlibet/ext/events/synchronize_to_device.py:282
-#, fuzzy
 msgid "Stop synchronization"
-msgstr "организација"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:305
 msgid "No saved searches yet, create some and come back!"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:387
-#, fuzzy
 msgid "Choose destination path"
-msgstr "Одредиште чувања"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:539
 #, python-brace-format
@@ -2665,9 +2620,8 @@ msgid "A different plugin was selected - stop preview"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:759
-#, fuzzy
 msgid "Synchronization will:"
-msgstr "Синхронизовани текст"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:765
 #, python-brace-format
@@ -2701,38 +2655,29 @@ msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:848
-#, fuzzy
 msgid "Export path is not absolute"
-msgstr "Путања није апсолутна"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:849
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
 "<b>{}</b>\n"
 "\n"
-"contains \"/\" but does not start from root. Please provide an absolute "
-"destination path by making sure it starts with / or ~/."
+"contains \"/\" but does not start from root. Please provide an absolute destination path by making sure it starts with / or ~/."
 msgstr ""
-"Шаблон\n"
-"\t<b>%s</b>\n"
-"садржи / али не почиње од корена. Да би избегли погрешно именоване фасцикле, "
-"коренујте свој шаблон почетком са / или ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:871
-#, fuzzy
 msgid "No saved searches selected"
-msgstr "Ни једна песма није одабрана."
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "Please select at least one saved search."
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:881
-#, fuzzy
 msgid "No songs in the selected saved searches"
-msgstr "Ни једна песма није одабрана."
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "All selected saved searches are empty."
@@ -2748,17 +2693,15 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:906
 msgid ""
-"The export pattern starts with a path that differs from the destination "
-"path. Please correct the pattern.\n"
+"The export pattern starts with a path that differs from the destination path. Please correct the pattern.\n"
 "\n"
 "Error:\n"
 "{}"
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:944
-#, fuzzy
 msgid "Unable to sync"
-msgstr "Не могу да сачувам песму"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
@@ -2807,9 +2750,8 @@ msgid "Removing \"{}\""
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1105
-#, fuzzy
 msgid "Synchronization has:"
-msgstr "Синхронизовани текст"
+msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1113
 #, python-brace-format
@@ -2846,13 +2788,10 @@ msgid "Synchronized Lyrics"
 msgstr "Синхронизовани текст"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:30
-#, fuzzy
 msgid ""
 "Shows synchronized lyrics from an .lrc file with same name as the track (or "
 "similar)."
 msgstr ""
-"Показује синхронизовани текст песме из .lrc датотеке са истим именом као "
-"запис."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:67
 msgid "Text:"
@@ -2979,8 +2918,8 @@ msgid "_Play"
 msgstr "_Пусти"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
-#: quodlibet/qltk/wlw.py:50
+#: quodlibet/qltk/quodlibetwindow.py:185
+#: quodlibet/qltk/quodlibetwindow.py:1144 quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "П_аузирај"
 
@@ -3337,9 +3276,8 @@ msgid "Default filename pattern:"
 msgstr "Подразумеван шаблон имена датотека:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
-#, fuzzy
 msgid "OK"
-msgstr "_У реду"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
 msgid ""
@@ -3348,9 +3286,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:131
-#, fuzzy
 msgid "Export to Sonos Playlist"
-msgstr "Извези као листу извођења"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid ""
@@ -3359,19 +3296,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:223
-#, fuzzy
 msgid "Error finding Sonos device(s)"
-msgstr "Грешка у проналажењу Squeezebox сервера"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:224
-#, fuzzy
 msgid "Error finding Sonos. Please check settings"
-msgstr "Грешка проналажења %s. Молимо проверите подешавања"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
 msgid "Export to Sonos playlist"
-msgstr "Извези у Squeezebox листу извођења"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3380,12 +3314,14 @@ msgstr "Извези у Squeezebox"
 #: quodlibet/ext/playlist/export_to_squeezebox.py:24
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-"both share a directory structure. Shares configuration with <a href="
-"\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
+"both share a directory structure. Shares configuration with <a "
+"href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 "Динамички извози листу извођења у Logitech Squeezebox листу, уколико деле "
-"структуру директоријума. Дели конфигурацију са <a href=\"quodlibet:///prefs/"
-"plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
+"структуру директоријума. Дели конфигурацију са <a "
+"href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync "
+"plugin</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3433,21 +3369,18 @@ msgid "Follow Cursor"
 msgstr "Прати показивач"
 
 #: quodlibet/ext/playorder/follow.py:20
-#, fuzzy
 msgid ""
 "Adds a play order mode that follows your selection, or the next song in the "
 "list once exhausted."
 msgstr ""
-"Репродукција прати ваш одабир, или следећу песму уколико је листа исцрпљена."
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
 msgstr "Уједначивач броја пуштања"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
-#, fuzzy
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
-msgstr "Меша и даје предност песмама које су ређе пуштане."
+msgstr ""
 
 #: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Prefer less played"
@@ -3458,24 +3391,19 @@ msgid "Queue Only"
 msgstr "Само низ"
 
 #: quodlibet/ext/playorder/queue.py:20
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
-"Select this play order in the main window, then double-clicking any song "
-"will enqueue it instead of playing."
+"Select this play order in the main window, then double-clicking any song will enqueue it instead of playing."
 msgstr ""
-"Ограничава пуштање песама на низ. Ако је овај поредак одабран, дупли-клик ће "
-"додати песму у низ уместо да је пусти."
 
 #: quodlibet/ext/playorder/reverse.py:14
 msgid "Reverse"
 msgstr "Окренут"
 
 #: quodlibet/ext/playorder/reverse.py:16
-#, fuzzy
 msgid "Adds a shuffle mode that reverses the play order of songs."
-msgstr "Окреће редослед пуштања песама."
+msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:94
@@ -3483,16 +3411,11 @@ msgid "Shuffle by Grouping"
 msgstr "Мешај по групама"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:33
-#, fuzzy
 msgid ""
-"Adds a shuffle mode that groups songs with a common tag – similar to album "
-"shuffles.\n"
+"Adds a shuffle mode that groups songs with a common tag – similar to album shuffles.\n"
 "\n"
-"This is useful for shuffling multi-movement classical pieces, making sure "
-"all movements play in order before shuffling to the next piece."
+"This is useful for shuffling multi-movement classical pieces, making sure all movements play in order before shuffling to the next piece."
 msgstr ""
-"Меша тако што групише песме дефинисане ознакама уместо записа, слично мешању "
-"албума."
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:39
 msgid "Shuffle by grouping"
@@ -3553,11 +3476,10 @@ msgid "Repeat Each Track"
 msgstr "Понављај сваки запис"
 
 #: quodlibet/ext/playorder/track_repeat.py:30
-#, fuzzy
 msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
-msgstr "Меша песме, али понавља сваки запис постављеним бројем пута."
+msgstr ""
 
 #: quodlibet/ext/playorder/track_repeat.py:49
 msgid "Number of times to play each song:"
@@ -3568,11 +3490,8 @@ msgid "Conditional Query"
 msgstr "Околносни упит"
 
 #: quodlibet/ext/query/conditional.py:16
-#, fuzzy
 msgid "Chooses the query to match based on a condition query."
 msgstr ""
-"Бира упит који се подудара са ситуационим упитом. синтакса је '@(if: "
-"condition, then, else)'."
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3599,11 +3518,8 @@ msgid "Include Saved Search"
 msgstr "Укључи сачувану претрагу"
 
 #: quodlibet/ext/query/savedsearch.py:21
-#, fuzzy
 msgid "💾 Include the results of a saved search as part of another query."
 msgstr ""
-"Укључује резултате сачуваних претрага као део другог упита. Синтакса је "
-"'@(saved: search name)'."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -3689,7 +3605,8 @@ msgid "Fit image to _window"
 msgstr "Уклопи слику у _прозор"
 
 #: quodlibet/ext/songsmenu/albumart.py:339
-msgid "See '[plugins] cover_filenames' config entry for image filename strings"
+msgid ""
+"See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr "Види '[plugins] cover_filenames' конфигурацију за име слике"
 
 #. Both labels
@@ -3973,9 +3890,9 @@ msgid "No covers found"
 msgstr "Нема пронађених омота"
 
 #: quodlibet/ext/songsmenu/cover_download.py:318
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "{size} ✕ {size} px"
-msgstr "%(size)d ✕ %(size)d px"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:331
 msgid "Preview size"
@@ -4036,8 +3953,8 @@ msgstr "шаблон"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
-"The QL pattern, e.g. <~filename>, to use to compute a value for the command. "
-"For playlists, this also supports virtual tags <~playlistname> and "
+"The QL pattern, e.g. <~filename>, to use to compute a value for the command."
+" For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
 "QL шаблон, нпр. <~filename>, за израчунавање вредности команде. За листе "
@@ -4064,9 +3981,8 @@ msgid ""
 msgstr "Највећи број аргумената послатих команди у датом тренутку (kao xargs)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
-#, fuzzy
 msgid "reverse"
-msgstr "Окренут"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "If set, the argument list will be reversed."
@@ -4175,20 +4091,15 @@ msgstr "Уреди број пуштања"
 msgid ""
 "Edit a song's ~#playcount and ~#skipcount.\n"
 "\n"
-"When multiple songs are selected, counts will be incremented, rather than "
-"set.\n"
+"When multiple songs are selected, counts will be incremented, rather than set.\n"
 "\n"
-"When setting a song's ~#playcount to 0, the ~#lastplayed and ~#laststarted "
-"entries will be cleared. However, when setting a 0-play song to a positive "
-"play count, no play times will be created."
+"When setting a song's ~#playcount to 0, the ~#lastplayed and ~#laststarted entries will be cleared. However, when setting a 0-play song to a positive play count, no play times will be created."
 msgstr ""
 "Уреди песмин ~#playcount и ~#skipcount.\n"
 "\n"
 "Када је одабрано више песама, број ће се повећавати.\n"
 "\n"
-"Када је ~#playcount песме подешен на 0, ~#lastplayed i ~#laststarted уноси "
-"ће бити очишћени. Али, када се подеси 0-пуштања песме на позитивну вредност, "
-"број пуштања неће бити креиран."
+"Када је ~#playcount песме подешен на 0, ~#lastplayed i ~#laststarted уноси ће бити очишћени. Али, када се подеси 0-пуштања песме на позитивну вредност, број пуштања неће бити креиран."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:68
 msgid "Play Count"
@@ -4268,8 +4179,8 @@ msgstr "Недостаје API кључ"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:61
 msgid ""
-"You have to specify an acoustid.org API key in the plugin preferences before "
-"you can submit fingerprints."
+"You have to specify an acoustid.org API key in the plugin preferences before"
+" you can submit fingerprints."
 msgstr ""
 "Морате да назначите acoustid.org API кључ у опцијама додатка пре него што "
 "приложите."
@@ -4324,8 +4235,8 @@ msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
 msgstr ""
-"Упиши ознаке повезане са албумима и покушај да умањиш број различитих издања "
-"албума"
+"Упиши ознаке повезане са албумима и покушај да умањиш број различитих издања"
+" албума"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:48
 msgid "Generating fingerprints:"
@@ -4341,11 +4252,12 @@ msgstr "_Пошаљи"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:117
 msgid ""
-"Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
-"i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
+"Songs either need a <i><b>musicbrainz_trackid</b></i>, or "
+"<i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get"
+" submitted."
 msgstr ""
-"Песме захтевају <i><b>musicbrainz_trackid</b></i>, или <i><b>artist</b></"
-"i> / <i><b>title</b></i> / <i><b>album</b></i> ознаке да би биле приложене."
+"Песме захтевају <i><b>musicbrainz_trackid</b></i>, или <i><b>artist</b></i> "
+"/ <i><b>title</b></i> / <i><b>album</b></i> ознаке да би биле приложене."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Fingerprints:"
@@ -4413,8 +4325,8 @@ msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
-"Не могу да повежем ваш iFP уређај. Проверите да ли је урешај прикључен, и да "
-"поседујете ifp-линију (http://ifp-driver.sf.net) инсталирану."
+"Не могу да повежем ваш iFP уређај. Проверите да ли је урешај прикључен, и да"
+" поседујете ifp-линију (http://ifp-driver.sf.net) инсталирану."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -4522,17 +4434,13 @@ msgstr "Мапира записе по диску и броју записа"
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:88
 msgid ""
-"Enable this when you want to migrate metadata from one album to another "
-"while matching the disc and track numbers.\n"
+"Enable this when you want to migrate metadata from one album to another while matching the disc and track numbers.\n"
 "\n"
-"<b>Note:</b> this must be enabled when metadata is copied for track "
-"information to be stored."
+"<b>Note:</b> this must be enabled when metadata is copied for track information to be stored."
 msgstr ""
-"Омогућите ово када желите да пребаците метаподатке са једног албума на други "
-"подударно са бројем диска и записа.\n"
+"Омогућите ово када желите да пребаците метаподатке са једног албума на други подударно са бројем диска и записа.\n"
 "\n"
-"<b>Упозорење:</b> ово мора бити омогућено када су метаподаци умножени да би "
-"информација записа била сачувана."
+"<b>Упозорење:</b> ово мора бити омогућено када су метаподаци умножени да би информација записа била сачувана."
 
 #: quodlibet/ext/songsmenu/migratemetadata.py:104
 #, python-format
@@ -4543,9 +4451,8 @@ msgstr[1] "Има %d сачувана записа."
 msgstr[2] "Има %d сачуваних записа."
 
 #: quodlibet/ext/songsmenu/playlist.py:31
-#, fuzzy
 msgid "Export as M3U / PLS Playlist File"
-msgstr "Извези као листу извођења"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
@@ -4715,8 +4622,8 @@ msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
 msgstr ""
-"Отвара прозор у прегледачу са страницом чланка Википедија за одабрану ознаку "
-"песме."
+"Отвара прозор у прегледачу са страницом чланка Википедија за одабрану ознаку"
+" песме."
 
 #: quodlibet/ext/songsmenu/wikipedia.py:56
 #, python-format
@@ -4764,14 +4671,12 @@ msgid "Loading files"
 msgstr "Учитавам датотеке"
 
 #: quodlibet/library/file.py:348
-#, fuzzy
 msgid "Moving library files"
-msgstr "Претрага библиотеке"
+msgstr ""
 
 #: quodlibet/library/file.py:403
-#, fuzzy
 msgid "Removing library files"
-msgstr "Уклони филтере активног претраживача"
+msgstr ""
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -4872,9 +4777,9 @@ msgid "Set a tag and remove existing values"
 msgstr "Постави ознаку и уклони постојеће вредности"
 
 #: quodlibet/operon/commands.py:304
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %r for %s file %r"
-msgstr "Не могу пставити %r"
+msgstr ""
 
 #: quodlibet/operon/commands.py:320
 msgid "Remove tags"
@@ -4943,7 +4848,8 @@ msgstr "Извези уграђене слике на %(filepath)s"
 
 #: quodlibet/operon/commands.py:582
 msgid ""
-"Path to where the images will be saved to (defaults to the working directory)"
+"Path to where the images will be saved to (defaults to the working "
+"directory)"
 msgstr ""
 "Путања где ће слике бити сачуване (подразумевано је радни директоријум)"
 
@@ -5023,9 +4929,9 @@ msgid "Buffering"
 msgstr "Пуњење меморије"
 
 #: quodlibet/player/gstbe/player.py:463
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "Не могу створити GStreamer pipeline"
+msgstr ""
 
 #: quodlibet/player/gstbe/player.py:666
 msgid "No GStreamer element found to handle media format"
@@ -5043,8 +4949,8 @@ msgstr "GStreamer додатак '%(name)s' не може бити покрен�
 
 #: quodlibet/player/gstbe/prefs.py:26
 msgid ""
-"The GStreamer output pipeline used for playback. Leave blank for the default "
-"pipeline. In case the pipeline contains a sink, it will be used instead of "
+"The GStreamer output pipeline used for playback. Leave blank for the default"
+" pipeline. In case the pipeline contains a sink, it will be used instead of "
 "the default one."
 msgstr ""
 "GStreamer output pipeline коришћен за репродукцију. Оставите празно за "
@@ -5072,8 +4978,8 @@ msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
 "GStreamer versions"
 msgstr ""
-"Онемогућавање gapless репродукције може избећи проблеме при мењању песама са "
-"неким верзијама GStreamer-а"
+"Онемогућавање gapless репродукције може избећи проблеме при мењању песама са"
+" неким верзијама GStreamer-а"
 
 #: quodlibet/player/gstbe/prefs.py:75
 msgid "Use JACK for playback if available"
@@ -5084,9 +4990,9 @@ msgid "Auto-connect to JACK output devices"
 msgstr ""
 
 #: quodlibet/player/gstbe/util.py:145
-#, fuzzy, python-format
+#, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
-msgstr "Нема нађеног GStreamer audio sink"
+msgstr ""
 
 #: quodlibet/player/gstbe/util.py:164
 msgid "Invalid GStreamer output pipeline"
@@ -5099,18 +5005,19 @@ msgstr "Не могу да креирам аудио излаз"
 #: quodlibet/player/xinebe/player.py:92
 #, python-format
 msgid ""
-"The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
-"config."
+"The audio device %r was not found. Check your Xine settings in "
+"~/.quodlibet/config."
 msgstr ""
-"Аудио уређај %r није пронађен. Проверите Xine подешавања у ~/.quodlibet/"
-"config."
+"Аудио уређај %r није пронађен. Проверите Xine подешавања у "
+"~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:63
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 msgstr ""
-"Не могу да пронађем модул '{module}'. Можда је потребно да инсталирате пакет?"
+"Не могу да пронађем модул '{module}'. Можда је потребно да инсталирате "
+"пакет?"
 
 #: quodlibet/plugins/__init__.py:72
 #, python-brace-format
@@ -5118,37 +5025,30 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Не могу пронаћи GStreamer елемент '{element}'."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:229
-#, fuzzy
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Молимо посетите прозор додатака да подесите QLScrobbler. До тада, песме неће "
-"бити приложене."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Молимо посетите прозор додатака да подесите QLScrobbler. До тада, песме неће "
-"бити приложене."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
-#, fuzzy
 msgid "Listenbrainz Submission"
-msgstr "Достава"
+msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to listenbrainz."
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
-#, fuzzy
 msgid "User _token:"
-msgstr "Корисничко_име:"
+msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
@@ -5161,9 +5061,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
-#, fuzzy
 msgid "Songs matching this filter will not be submitted."
-msgstr "Песме које се подударају овим филтером неће бити достављене"
+msgstr ""
 
 #: quodlibet/plugins/playlist.py:23
 #, python-format
@@ -5346,11 +5245,11 @@ msgstr "_Обриши датотеке"
 
 #: quodlibet/qltk/delete.py:106
 msgid ""
-"The selected songs will be removed from the library and their files moved to "
-"the trash."
+"The selected songs will be removed from the library and their files moved to"
+" the trash."
 msgstr ""
-"Одабране песме ће бити избачене из библиотеке и њихове датотеке премештене у "
-"корпу за отпатке."
+"Одабране песме ће бити избачене из библиотеке и њихове датотеке премештене у"
+" корпу за отпатке."
 
 #: quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
@@ -5452,11 +5351,11 @@ msgstr "Прикажи _прагматичне ознаке"
 
 #: quodlibet/qltk/edittags.py:528
 msgid ""
-"Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
-"Gain tags"
+"Access all tags, including machine-generated ones e.g. MusicBrainz or Replay"
+" Gain tags"
 msgstr ""
-"Приступи свим ознакама, укључујући машински произведене нпр. MusicBrainz или "
-"Replay Gain ознаке"
+"Приступи свим ознакама, укључујући машински произведене нпр. MusicBrainz или"
+" Replay Gain ознаке"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:558
@@ -5542,8 +5441,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"%(file-name)s је измењено док је програм био покренут. Чување без освежавања "
-"библиотеке може преписати друге измене на песми."
+"%(file-name)s је измењено док је програм био покренут. Чување без освежавања"
+" библиотеке може преписати друге измене на песми."
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -5552,8 +5451,8 @@ msgstr "Не могу да сачувам песму"
 #: quodlibet/qltk/_editutils.py:53
 #, python-format
 msgid ""
-"Saving %(file-name)s failed. The file may be read-only, corrupted, or you do "
-"not have permission to edit it."
+"Saving %(file-name)s failed. The file may be read-only, corrupted, or you do"
+" not have permission to edit it."
 msgstr ""
 "Чување %(file-name)s није успело. Датотека је можда само за читање, "
 "оштећена, или немате дозволу да је измените."
@@ -5649,9 +5548,8 @@ msgid "Track %s"
 msgstr "Запис %s"
 
 #: quodlibet/qltk/info.py:104
-#, fuzzy
 msgid "Current _Song"
-msgstr "По тренутном _жанру"
+msgstr ""
 
 #: quodlibet/qltk/info.py:114
 msgid "_Edit Display…"
@@ -5900,14 +5798,12 @@ msgid "Editing"
 msgstr "Уређивање"
 
 #: quodlibet/qltk/pluginwin.py:39
-#, fuzzy
 msgid "Renaming"
-msgstr "_Преименуј"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:40
-#, fuzzy
 msgid "Querying"
-msgstr "_Упит:"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:42
 msgid "Covers"
@@ -6030,7 +5926,8 @@ msgid "Column Preferences"
 msgstr "Поставке колоне"
 
 #: quodlibet/qltk/prefs.py:134
-msgid "Apply current configuration to song list, adding new columns to the end"
+msgid ""
+"Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Примени тренутну конфигурацију на листу песама, додај нову колону на крају"
 
@@ -6105,9 +6002,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/qltk/prefs.py:330
-#, fuzzy
 msgid "_Preferred image filename(s):"
-msgstr "_Фиксирано име слике:"
+msgstr ""
 
 #: quodlibet/qltk/prefs.py:345
 msgid "Album Art"
@@ -6134,7 +6030,8 @@ msgstr "_Fall-back gain (dB):"
 
 #: quodlibet/qltk/prefs.py:396
 msgid ""
-"Scale volume for all songs by this value, as long as the result will not clip"
+"Scale volume for all songs by this value, as long as the result will not "
+"clip"
 msgstr "Постави јачину за све песме по задатој вредности"
 
 #: quodlibet/qltk/prefs.py:399
@@ -6175,14 +6072,10 @@ msgstr "Скала _оцена:"
 #: quodlibet/qltk/prefs.py:561
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
-"0 means a conventional average, higher values mean that albums with few "
-"tracks will have less extreme ratings. Changing this value triggers a re-"
-"calculation for all albums."
+"0 means a conventional average, higher values mean that albums with few tracks will have less extreme ratings. Changing this value triggers a re-calculation for all albums."
 msgstr ""
 "Bayesian Average factor (C) за нагомилане оцене.\n"
-"0 значи конвенционални просек, више вредности значе да ће албум са мало "
-"записа имати мање екстремне оцене. Промена ове вредности узрокује поновно "
-"рачунање за све албуме."
+"0 значи конвенционални просек, више вредности значе да ће албум са мало записа имати мање екстремне оцене. Промена ове вредности узрокује поновно рачунање за све албуме."
 
 #: quodlibet/qltk/prefs.py:566
 msgid "_Bayesian averaging amount:"
@@ -6340,7 +6233,8 @@ msgid "Set up library directories?"
 msgstr "Додај директоријум библиотеке?"
 
 #: quodlibet/qltk/quodlibetwindow.py:385
-msgid "You don't have any music library set up. Would you like to do that now?"
+msgid ""
+"You don't have any music library set up. Would you like to do that now?"
 msgstr "Немате музику додату у библиотеку. Да ли желите сада да додате?"
 
 #: quodlibet/qltk/quodlibetwindow.py:391
@@ -6355,7 +6249,8 @@ msgstr "_Додај"
 msgid "Unable to add songs"
 msgstr "Не могу да додам песме"
 
-#: quodlibet/qltk/quodlibetwindow.py:846 quodlibet/qltk/quodlibetwindow.py:1286
+#: quodlibet/qltk/quodlibetwindow.py:846
+#: quodlibet/qltk/quodlibetwindow.py:1286
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s користи неподржан протокол."
@@ -6469,9 +6364,9 @@ msgid "_Remove Rating"
 msgstr "_Уклони оцене"
 
 #: quodlibet/qltk/ratingsmenu.py:32
-#, fuzzy, python-format
+#, python-format
 msgid "The rating of all selected songs will be changed to %s"
-msgstr "Оцене свих одабраних песама ће бити промењене на '%s'"
+msgstr ""
 
 #: quodlibet/qltk/ratingsmenu.py:34
 msgid "Change _Rating"
@@ -6580,13 +6475,11 @@ msgstr "Путања није апсолутна"
 msgid ""
 "The pattern\n"
 "\t<b>%s</b>\n"
-"contains / but does not start from root. To avoid misnamed folders, root "
-"your pattern by starting it with / or ~/."
+"contains / but does not start from root. To avoid misnamed folders, root your pattern by starting it with / or ~/."
 msgstr ""
 "Шаблон\n"
 "\t<b>%s</b>\n"
-"садржи / али не почиње од корена. Да би избегли погрешно именоване фасцикле, "
-"коренујте свој шаблон почетком са / или ~/."
+"садржи / али не почиње од корена. Да би избегли погрешно именоване фасцикле, коренујте свој шаблон почетком са / или ~/."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -6601,10 +6494,9 @@ msgid "The new directory will be scanned after adding"
 msgstr ""
 
 #: quodlibet/qltk/scanbox.py:67
-#, fuzzy
 msgid ""
 "All songs in the selected directories will also be removed from the library"
-msgstr "Одабране песме ће бити уклоњене из библиотеке."
+msgstr ""
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
@@ -6626,26 +6518,23 @@ msgid "Remove {n} library paths and their tracks?"
 msgstr ""
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "Путања библиотеке:"
-msgstr[1] "Путања библиотеке:"
-msgstr[2] "Путања библиотеке:"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: quodlibet/qltk/scanbox.py:117
-#, fuzzy
 msgid "Remove"
-msgstr "_Уклони"
+msgstr ""
 
 #: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
 msgstr "Одабери директоријуме"
 
 #: quodlibet/qltk/scanbox.py:139
-#, fuzzy
 msgid "Select This Directory"
-msgstr "Одабери директоријуме"
+msgstr ""
 
 #: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
@@ -6912,13 +6801,11 @@ msgstr "Ознаке су додате на постојеће"
 msgid ""
 "The pattern\n"
 "\t<b>%s</b>\n"
-"is invalid. Possibly it contains the same tag twice or it has unbalanced "
-"brackets (&lt; / &gt;)."
+"is invalid. Possibly it contains the same tag twice or it has unbalanced brackets (&lt; / &gt;)."
 msgstr ""
 "Шаблон\n"
 "\t<b>%s</b>\n"
-"је неисраван. Могуће да садржи исту ознаку два пута или има небалансиране "
-"заграде (&lt; / &gt;)."
+"је неисраван. Могуће да садржи исту ознаку два пута или има небалансиране заграде (&lt; / &gt;)."
 
 #: quodlibet/qltk/tagsfrompath.py:215
 msgid "Invalid tags"
@@ -6938,13 +6825,11 @@ msgstr ""
 #: quodlibet/qltk/textedit.py:141
 #, python-format
 msgid ""
-"The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
-"\\&lt; and \\&gt; and that your tags are balanced.\n"
+"The pattern you entered was invalid. Make sure you enter &lt; and &gt; as \\&lt; and \\&gt; and that your tags are balanced.\n"
 "\n"
 "%s"
 msgstr ""
-"Шаблон који сте унели није исправан. Будите сигурни да сте унели &lt; i &gt; "
-"као \\&lt; i \\&gt; и да су ваше ознаке избалансиране.\n"
+"Шаблон који сте унели није исправан. Будите сигурни да сте унели &lt; i &gt; као \\&lt; i \\&gt; и да су ваше ознаке избалансиране.\n"
 "\n"
 "%s"
 
@@ -7024,18 +6909,17 @@ msgstr ""
 "Посетите <a href='%(url)s'>website</a>"
 
 #: quodlibet/util/collection.py:342
-#, fuzzy
 msgid "Empty Playlist"
-msgstr "Увези листу извођења"
+msgstr ""
 
 #: quodlibet/util/collection.py:440
 msgid "Playlists must have a name"
 msgstr "Листа извођења мора имати име"
 
 #: quodlibet/util/collection.py:644
-#, fuzzy, python-format
+#, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
-msgstr "Листа извођења %s већ постоји."
+msgstr ""
 
 #: quodlibet/util/cover/built_in.py:38
 msgid "Embedded album covers"
@@ -7192,7 +7076,8 @@ msgstr "MusicBrainz IDs морају бити у UUID формату."
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
-"MusicBrainz статус издања мора бити 'official', 'promotional', или 'bootleg'."
+"MusicBrainz статус издања мора бити 'official', 'promotional', или "
+"'bootleg'."
 
 #: quodlibet/util/massagers.py:208
 msgid "Language must be an ISO 639-2 three-letter code"
@@ -7205,8 +7090,8 @@ msgstr "Не могу уредити песму"
 #: quodlibet/util/songwrapper.py:117
 #, python-format
 msgid ""
-"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
-"have permission to edit it."
+"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not"
+" have permission to edit it."
 msgstr ""
 "Чување <b>%s</b> неуспешно. Датотека је можда само за читање, оштећена, или "
 "немате потребне дозволе."
@@ -7553,8 +7438,8 @@ msgstr "Слушајте, претражите или уредите своју 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
-"It lets you display and edit any tags you want in the file, for all the file "
-"formats it supports."
+"It lets you display and edit any tags you want in the file, for all the file"
+" formats it supports."
 msgstr ""
 "Ex Falso је уређивач ознака са истим уређивачким интерфејсом као и Quod "
 "Libet. Дозвољава вам да прикажете и уредите било коју жељену ознаку у "
@@ -7563,94 +7448,20 @@ msgstr ""
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
 msgid ""
-"Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
-"IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
+"Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
+"MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
-"Подржани формати укључују и Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
-"IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
+"Подржани формати укључују и Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
+"MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
 msgid ""
-"Quod Libet is a music management program. It provides several different ways "
-"to view your audio library, as well as support for Internet radio and audio "
-"feeds. It has extremely flexible metadata tag editing and searching "
+"Quod Libet is a music management program. It provides several different ways"
+" to view your audio library, as well as support for Internet radio and audio"
+" feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
 "Quod Libet је програм за организацију музике. Пружа више различитих начина "
 "да прегледате вашу аудио збирку/библиотеку, а такође поседује и подршку за "
 "интернет радио и аудио изворе. Има јако флексибилне способности уређивања "
 "метаподатака ознака и претраге."
-
-#~ msgid "Unsupported file type"
-#~ msgstr "Неподржан тип датотеке"
-
-#~ msgid "Unable to add station"
-#~ msgstr "Не могу да додам страницу"
-
-#~ msgid "Search Library"
-#~ msgstr "Претражи библиотеку"
-
-#~ msgid "_Search Library"
-#~ msgstr "_Претражи библиотеку"
-
-#~ msgid "Quit Program"
-#~ msgstr "Изађи из програма"
-
-#~ msgid ""
-#~ "Prevents the GNOME screensaver from activating while a song is playing."
-#~ msgstr ""
-#~ "Спречава GNOM чувара екрана да се активира када је у току репродукција "
-#~ "песме."
-
-#~ msgid "No lyrics found"
-#~ msgstr "Нема нађеног текста"
-
-#~ msgid "_Zoom level:"
-#~ msgstr "_Увеличавање ниво:"
-
-#~ msgid "URL:"
-#~ msgstr "URL:"
-
-#~ msgid "Search via above URL if the lyrics couldn't be found in LyricsWikia."
-#~ msgstr ""
-#~ "Тражи преко горњег URL-а ако текст не може бити пронађен на LyricsWikia."
-
-#~ msgid "Alternate search"
-#~ msgstr "Алтернативна претрага"
-
-#~ msgid "Web Lyrics"
-#~ msgstr "Веб текст"
-
-#~ msgid "Shows a sidebar containing online lyrics of the playing song."
-#~ msgstr ""
-#~ "Прикажи бочну траку која садржи текст са интернета за тренутну песму."
-
-#~ msgid "Skip Songs"
-#~ msgstr "Прескочи песме"
-
-#~ msgid ""
-#~ "Playback skips over songs with a rating equal or below a given threshold."
-#~ msgstr "Прескаче песме са оценом једнаком или испод задатог прага."
-
-#~ msgid ""
-#~ "Use Python expressions in queries. Syntax is '@(python: expression)'. The "
-#~ "variable 's' (or 'a') is the song / album being matched. '_ts' is a (real "
-#~ "number) timestamp at start of query. Modules 'time' and 'random' are also "
-#~ "available, and the class 'Random' (==random.Random) too."
-#~ msgstr ""
-#~ "Користи Python израз у упитима. Синтакса је \"@(python: expression)\". "
-#~ "Променљива \"s\" (или \"a\") је подударна песма / албум. \"_ts\" је "
-#~ "временска ознака на почетку упита. Модули \"време\" и \"насумично\" су "
-#~ "доступни, и класа \"Насумично\" (==random.Random) такође."
-
-#~ msgid "Burn CD"
-#~ msgstr "Нарежи ЦД"
-
-#~ msgid "Burns CDs with K3b, Brasero or xfburn."
-#~ msgstr "Уписује на ЦД користећи k3b, Brasero ili xfburn."
-
-#~ msgid "The single image filename to use if selected"
-#~ msgstr "Једиснтвено име слике за коришћење ако је одабрано"
-
-#~ msgid "The album art image file to use when forced (supports wildcards)"
-#~ msgstr "Слика омота за коришћење када је присиљено"
