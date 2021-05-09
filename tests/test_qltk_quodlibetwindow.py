@@ -25,6 +25,7 @@ class TQuodLibetWindow(TestCase):
         if SongFileLibrary.librarian:
             SongFileLibrary.librarian.destroy()
             SongFileLibrary.librarian = None
+        QuodLibetWindow.windows.clear()
         config.quit()
 
     def test_window(self):
@@ -32,7 +33,7 @@ class TQuodLibetWindow(TestCase):
         lib.librarian = SongLibrarian()
         pl = player.init_player("nullbe", lib.librarian)
         window = QuodLibetWindow(lib, pl, headless=True)
-        assert window.windows
+        assert window in window.windows
         window.destroy()
 
     def test_playback_error_dialog(self):
