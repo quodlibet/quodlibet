@@ -12,6 +12,7 @@ from gi.repository import Gtk
 from quodlibet.util import copool
 
 
+@pytest.mark.flaky(max_runs=3, min_passes=2)
 class Tcopool(TestCase):
     def setUp(self):
         self.buffer = None
