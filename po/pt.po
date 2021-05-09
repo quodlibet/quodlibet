@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-09 12:11+0000\n"
-"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"PO-Revision-Date: 2021-05-09 21:32+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
 "Language: pt\n"
@@ -948,7 +948,7 @@ msgstr "Diminui a avaliação da música em reprodução em uma estrela"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
-msgstr "Escreve o status (tocando/pausado)"
+msgstr "Escreve o estado do jogador (tocando/pausado)"
 
 #: quodlibet/cli.py:107
 msgid "Hide main window"
@@ -1403,11 +1403,11 @@ msgstr "Visualizar"
 
 #: quodlibet/ext/events/appinfo.py:28
 msgid "Application Information"
-msgstr "Informações sobre este aplicativo"
+msgstr "Informações sobre esta aplicação"
 
 #: quodlibet/ext/events/appinfo.py:29
 msgid "Various information about the application and its environment."
-msgstr "Informações diversas sobre este aplicativo e seu ambiente de execução."
+msgstr "Informações diversas sobre esta aplicação e ambiente de execução dela."
 
 #: quodlibet/ext/events/appinfo.py:62
 msgid "Supported Formats"
@@ -1808,8 +1808,7 @@ msgstr "Status do Gajim"
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
-"Altera a mensagem de status do Gajim de acordo com o que você está escutando."
+msgstr "Altera a mensagem de estado do Gajim conforme o que escuta."
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
@@ -1825,8 +1824,8 @@ msgid ""
 "List accounts, separated by spaces, for changing status message. If none are "
 "specified, status message of all accounts will be changed."
 msgstr ""
-"Liste as contas para qual alterar a mensagem de status, separadas por "
-"espaço. Se nenhuma for especificada, a mensagem de status de todas as contas "
+"Liste as contas para qual alterar a mensagem de estado, separadas por "
+"espaço. Se nenhuma for especificada, a mensagem de estado de todas as contas "
 "será alterada."
 
 #: quodlibet/ext/events/gajim_status.py:157
@@ -1871,7 +1870,7 @@ msgstr ""
 
 #: quodlibet/ext/events/inhibit.py:63
 msgid "Music is playing"
-msgstr "Música está sendo reproduzida"
+msgstr "Música está a ser reproduzida"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
@@ -1953,7 +1952,7 @@ msgid ""
 "and library management are not supported."
 msgstr ""
 "Permite controlar remotamente o Quod Libet por um cliente MPD. Não há "
-"suporte para streaming, listas de reprodução e gerenciamento da biblioteca."
+"suporte para streaming, listas de reprodução e gestão da biblioteca."
 
 #: quodlibet/ext/events/mpdserver/__init__.py:76
 msgid "_Port:"
@@ -2001,7 +2000,7 @@ msgstr "Publicador MQTT"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "Publishes status messages to an MQTT topic."
-msgstr "Publica mensagens de status para um tópico MQTT."
+msgstr "Publica mensagens de estado para um tópico MQTT."
 
 #: quodlibet/ext/events/mqtt.py:137
 msgid "Broker hostname"
@@ -2907,9 +2906,9 @@ msgid ""
 "Updates all Telepathy-based IM accounts (as configured in Empathy etc) with "
 "a status message based on current song."
 msgstr ""
-"Atualiza todas as contas de bate papo baseadas no Telepathy (como "
-"configurado no Empathy, etc) com com uma mensagem de status baseada na "
-"música atual."
+"Atualiza todas as contas de bate-papo baseadas no Telepathy (como "
+"configurado no Empathy, etc) com uma mensagem de estado baseada na música "
+"atual."
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
@@ -2919,7 +2918,7 @@ msgstr "Reproduzindo:"
 #, python-format
 msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
 msgstr ""
-"Mensagem de status quando uma música começa a ser reproduzida. Aceita "
+"Mensagem de estado quando uma música começa a ser reproduzida. Aceita "
 "padrões QL. Por exemplo, %s"
 
 #: quodlibet/ext/events/telepathy_status.py:145
@@ -2930,14 +2929,12 @@ msgstr "Pausado:"
 #, python-format
 msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
 msgstr ""
-"Mensagem de status quando uma música está pausada. Aceita padrões QL. Por "
+"Mensagem de estado quando uma música está pausada. Aceita padrões QL. Por "
 "exemplo, %s"
 
 #: quodlibet/ext/events/telepathy_status.py:162
 msgid "Plain text for status when there is no current song"
-msgstr ""
-"Mensagem de status quando não há uma música sendo reproduzida. (Texto "
-"simples, sem padroẽs QL)"
+msgstr "Mensagem de estado quando não há uma música a ser reproduzida"
 
 #: quodlibet/ext/events/telepathy_status.py:163
 msgid "No song:"
@@ -2946,7 +2943,7 @@ msgstr "Nenhuma música:"
 #. Frame
 #: quodlibet/ext/events/telepathy_status.py:170
 msgid "Status Patterns"
-msgstr "Padrões da mensagem de status"
+msgstr "Padrões da mensagem de estado"
 
 #: quodlibet/ext/events/themeswitcher.py:25
 msgid "Theme Switcher"
@@ -3108,7 +3105,7 @@ msgstr ""
 
 #: quodlibet/ext/events/viewlyrics.py:117
 msgid "No active song"
-msgstr "Nenhuma música está sendo reproduzida"
+msgstr "Nenhuma música está a ser reproduzida"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3846,7 +3843,7 @@ msgstr "Ir para marcador"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr "Gerencia marcadores nos ficheiros selecionados."
+msgstr "Gira marcadores nos ficheiros selecionados."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
 msgid "_Edit Bookmarks…"
@@ -4849,7 +4846,7 @@ msgstr "Remove filtros de navegação ativos"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
-msgstr "Reprodutor de música e gerenciador de biblioteca de música"
+msgstr "Reprodutor de música e gestor de biblioteca de música"
 
 #: quodlibet/operon/base.py:71
 #, python-format
@@ -6534,7 +6531,7 @@ msgstr "_Adicionar pastas"
 
 #: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Music Files"
-msgstr "Arquivos de música"
+msgstr "Ficheiros de música"
 
 #: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "_Add Files"
@@ -6642,8 +6639,8 @@ msgid ""
 "file or remove the old one."
 msgstr ""
 "Renomear <b>%(old-name)s</b> para <b>%(new-name)s</b> falhou. Possivelmente "
-"o novo nome é já está sendo usado, ou você não tem permissão para criar o "
-"novo ficheiro ou apagar o antigo."
+"o novo nome é já está em uso, ou não tem permissão para criar o novo "
+"ficheiro ou apagar o antigo."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7662,10 +7659,10 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
-"O Quod Libet é um aplicativo de gerenciamento de músicas. Ele disponibiliza "
-"diversas maneiras de visualizar sua coleção de músicas, e também tem suporte "
-"a rádio via internet e feeds de áudio. Ele também é um poderoso e flexível "
-"editor de etiquetas de metadados para áudio."
+"O Quod Libet é um aplicativo de gestão de músicas. Ele disponibiliza "
+"diversas maneiras de visualizar a sua coleção de músicas, e também tem "
+"suporte a rádio via internet e feeds de áudio. Ele também é um poderoso e "
+"flexível editor de etiquetas de metadados para áudio."
 
 #~ msgid "Unsupported file type"
 #~ msgstr "Não há suporte para este formato de arquivo"
