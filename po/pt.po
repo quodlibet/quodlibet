@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-09 12:02+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2021-05-09 12:11+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
 "Language: pt\n"
@@ -5414,7 +5414,7 @@ msgid "The selected files will be deleted from disk."
 msgstr "Os ficheiros selecionados serão excluídos do disco."
 
 #: quodlibet/qltk/delete.py:76
-#, python-format
+#, fuzzy, python-format
 msgid "Delete %(file_count)d file permanently?"
 msgid_plural "Delete %(file_count)d files permanently?"
 msgstr[0] ""
@@ -6961,7 +6961,7 @@ msgstr ""
 "Falha ao exibir ficheiros, ou não há um programa disponível para exibi-los."
 
 #: quodlibet/qltk/songsmenu.py:412
-#, python-format
+#, fuzzy, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] ""
