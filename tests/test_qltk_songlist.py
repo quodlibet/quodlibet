@@ -182,6 +182,7 @@ class TSongList(TestCase):
     def test_remove_songs(self):
         song = AudioFile({"~filename": "/dev/null"})
         song.sanitize()
+        assert not self.lib.librarian, "not expecting a librarian - leaky test?"
         self.lib.add([song])
         assert song in self.lib, "Broken library?"
         self.songlist.add_songs([song])
@@ -189,7 +190,7 @@ class TSongList(TestCase):
         self.lib.remove([song])
         assert not list(self.lib), "Didn't get removed"
         run_gtk_loop()
-        assert self.songs_removed == [{song}], "Signal wasn't emitted"
+        assert self.songs_removed == [{song}], f"Signal not emitted: {self.__sigs}"
 
     def test_header_menu(self):
         song = AudioFile({"~filename": fsnative(u"/dev/null")})
@@ -197,7 +198,9 @@ class TSongList(TestCase):
         self.songlist.set_songs([song])
 
         library = self.lib
-        self.lib.librarian = SongLibrarian()
+        librarian = SongLibrarian()
+        librarian.register(self.lib, "test")
+        self.lib.librarian = librarian
         browser = TrackList(library)
 
         self.songlist.set_column_headers(["foo"])
@@ -206,6 +209,8 @@ class TSongList(TestCase):
         sel = self.songlist.get_selection()
         sel.select_all()
         self.assertTrue(self.songlist.Menu("foo", browser, library))
+        librarian.destroy()
+        self.lib.librarian = None
 
     def test_get_columns_migrated(self):
         self.failIf(config.get("settings", "headers", None))
