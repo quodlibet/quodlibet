@@ -1,0 +1,54 @@
+name: translations
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * 0"
+
+jobs:
+  update-pot:
+    if: github.repository == 'quodlibet/quodlibet'
+    permissions:
+      contents: write
+    runs-on: ubuntu-20.04
+    name: update-pot
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y \
+          gettext \
+          libcairo2-dev \
+          libgirepository1.0-dev \
+          libdbus-glib-1-dev \
+          pkg-config \
+          python3-dev \
+          python3-pip \
+          python3-venv \
+          python3-wheel
+        sudo python3 -m pip install poetry
+
+    - name: Install project virtualenv
+      run: poetry install
+
+    - name: Update .pot
+      run: |
+        poetry run python setup.py create_pot
+
+    - name: Show diff
+      run: |
+        git diff
+
+    - name: Push Updates
+      run: |
+        if ! git diff --exit-code --quiet; then
+          git config --global user.email "lazka@users.noreply.github.com"
+          git config --global user.name "lazka"
+          git add po/quodlibet.pot
+          git commit -m "Update quodlibet.pot"
+          git push
+        else
+          echo "No changes"
+        fi
