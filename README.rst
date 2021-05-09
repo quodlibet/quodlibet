@@ -1,3 +1,7 @@
+.. image:: https://hosted.weblate.org/widgets/quodlibet/-/quodlibet/svg-badge.svg
+    :alt: Translation status
+    :target: https://hosted.weblate.org/engage/quodlibet/
+
 .. image:: https://img.shields.io/github/workflow/status/quodlibet/quodlibet/test
     :target: https://github.com/quodlibet/quodlibet/actions
 
