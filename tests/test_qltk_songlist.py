@@ -25,6 +25,7 @@ class TSongList(TestCase):
         config.init()
         self.lib = SongFileLibrary()
         self.songlist = SongList(self.lib)
+        assert not self.lib.librarian, "not expecting a librarian - leaky test?"
 
         self.orders_changed = 0
         self.songs_removed: List[Set] = []
@@ -182,7 +183,6 @@ class TSongList(TestCase):
     def test_remove_songs(self):
         song = AudioFile({"~filename": "/dev/null"})
         song.sanitize()
-        assert not self.lib.librarian, "not expecting a librarian - leaky test?"
         self.lib.add([song])
         assert song in self.lib, "Broken library?"
         self.songlist.add_songs([song])
