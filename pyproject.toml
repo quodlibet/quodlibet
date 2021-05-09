@@ -40,6 +40,7 @@ xvfbwrapper = { version = "^0.2", platform = "linux" }
 flake8 = "^3.7.9"
 coverage = { extras = ["toml"], version = "^5.0.3" }
 mypy = "^0.812"
+flaky = "^3.7.0"
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]
