@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2019-02-12 00:32-0200\n"
-"Last-Translator: Hugo Musso Gualandi <hugo_musso_gualandi@hotmail.com>\n"
-"Language-Team: Portuguese/Brazil <gnome-l10n-br@listas.cipspa.org.br>\n"
-"Language: pt_BR\n"
+"PO-Revision-Date: 2021-05-09 12:11+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/pt/>\n"
+"Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -387,11 +388,11 @@ msgstr "Ampliação das capas"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
-msgstr "Sistema de arquivos"
+msgstr "Sistema de ficheiros"
 
 #: quodlibet/browsers/filesystem.py:40
 msgid "_File System"
-msgstr "_Sistema de arquivos"
+msgstr "_Sistema de ficheiros"
 
 #: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:258
 msgid "Unable to copy songs"
@@ -400,7 +401,7 @@ msgstr "Não copiar músicas"
 #: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:259
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
-"Os arquivos selecionados não puderam ser copiados para outras listas de "
+"Os ficheiros selecionados não puderam ser copiados para outras listas de "
 "músicas ou para a fila de reprodução."
 
 #: quodlibet/browsers/filesystem.py:197
@@ -1040,12 +1041,12 @@ msgstr "busca"
 
 #: quodlibet/cli.py:131
 msgid "Play a file"
-msgstr "Reproduz um arquivo"
+msgstr "Reproduz um ficheiro"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
 msgctxt "command"
 msgid "filename"
-msgstr "arquivo"
+msgstr "ficheiro"
 
 #: quodlibet/cli.py:132
 msgid "Set rating of playing song"
@@ -1086,27 +1087,27 @@ msgstr "etiqueta=valor"
 
 #: quodlibet/cli.py:139
 msgid "Enqueue a file or query"
-msgstr "Enfileira um arquivo ou busca"
+msgstr "Enfileira um ficheiro ou busca"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
-msgstr "Enfileira arquivos separados por vírgula"
+msgstr "Enfileira ficheiros separados por vírgula"
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
-msgstr "arquivo"
+msgstr "ficheiro"
 
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
-msgstr "Exibe nomes de arquivo do resultado da busca em stdout"
+msgstr "Exibe nomes de ficheiro do resultado da busca em stdout"
 
 #: quodlibet/cli.py:145
 msgid "Unqueue a file or query"
-msgstr "Desenfileira um arquivo ou busca"
+msgstr "Desenfileira um ficheiro ou busca"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr "Adiciona um arquivo ou pasta à biblioteca"
+msgstr "Adiciona um ficheiro ou pasta à biblioteca"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
@@ -1220,7 +1221,7 @@ msgstr "Fonte de capas Last.fm"
 
 #: quodlibet/ext/covers/lastfm.py:21
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr "Baixa imagens de capa de álbum pelo Last.fm."
+msgstr "Descarrega imagens de capa de álbum pelo arquivo Last.fm."
 
 #: quodlibet/ext/covers/musicbrainz.py:21
 msgid "MusicBrainz Cover Source"
@@ -1228,7 +1229,7 @@ msgstr "Fonte de capas MusicBrainz"
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr "Baixa imagens de capa de álbum pelo MusicBrainz."
+msgstr "Decarrega imagens de capa de álbum pelo MusicBrainz."
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1269,7 +1270,7 @@ msgid ""
 "Allows arbitrary regex substitutions (s///) when tagging or renaming files."
 msgstr ""
 "Permite substituições por expressões regulares (s///) ao etiquetar ou "
-"renomear arquivos."
+"renomear ficheiros."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1493,7 +1494,7 @@ msgstr "Não foi possível encontrar \"%s\"."
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 #, fuzzy
 msgid "Auto Update Tags in Files"
-msgstr "Atualiza etiquetas nos arquivos"
+msgstr "Atualiza etiquetas nos ficheiros"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:81
 #, fuzzy
@@ -1501,7 +1502,7 @@ msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
-"Salva as atualizações de etiquetas nos arquivos correspondentes "
+"Salva as atualizações de etiquetas nos ficheiros correspondentes "
 "automaticamente. Isso garante que contagens de reprodução e avaliações estão "
 "sempre em dia."
 
@@ -1905,7 +1906,7 @@ msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
 msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
-msgstr "Produz um arquivo \"Jabber User Tunes\" em ~/.quodlibet/jabber."
+msgstr "Produz um ficheiro \"Jabber User Tunes\" em ~/.quodlibet/jabber."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -1939,8 +1940,8 @@ msgstr ""
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
-"Certifique-se de que os seguintes campos estejam presentes no seu arquivo de "
-"configuração do rygel (~/.config/rygel.conf):"
+"Certifique-se de que os seguintes campos estejam presentes no seu ficheiro "
+"de configuração do rygel (~/.config/rygel.conf):"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
@@ -2472,7 +2473,7 @@ msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
 msgstr ""
-"Espelha a saída do Quod Libet em um Squeezebox da Logitech, desde que ambos "
+"Espelha a saída do Quod Libet num Squeezebox da Logitech, desde que ambos "
 "possam ler de uma biblioteca idêntica."
 
 #: quodlibet/ext/events/squeezebox_sync.py:56
@@ -2827,7 +2828,7 @@ msgstr ""
 #: quodlibet/ext/events/synchronize_to_device.py:1017
 #, fuzzy, python-brace-format
 msgid "{tag} - \"{filename}\""
-msgstr "Tag por arquivo"
+msgstr "Tag por ficheiro"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1086
 msgid "Removing \"{}\""
@@ -2878,7 +2879,7 @@ msgid ""
 "Shows synchronized lyrics from an .lrc file with same name as the track (or "
 "similar)."
 msgstr ""
-"Exibe letras sincronizadas a partir de um arquivo \".lrc\" com o mesmo nome "
+"Exibe letras sincronizadas a partir de um ficheiro \".lrc\" com o mesmo nome "
 "do usado na faixa."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:67
@@ -3094,7 +3095,7 @@ msgstr "Exibir letra"
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 "Exibe a letra da música em uma barra lateral. Obtém a letra de etiquetas ou "
-"de arquivos."
+"de ficheiros."
 
 #: quodlibet/ext/events/viewlyrics.py:87
 #, python-format
@@ -3177,7 +3178,7 @@ msgstr "Salvar imagens"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
-msgstr "Salva a imagem de capa do álbum da música em reprodução em um arquivo."
+msgstr "Salva a imagem de capa do álbum da música em reprodução num ficheiro."
 
 #: quodlibet/ext/events/write_cover.py:67
 msgid "File:"
@@ -3363,11 +3364,11 @@ msgstr "Pasta de destino:"
 
 #: quodlibet/ext/playlist/export_to_folder.py:59
 msgid "Filename pattern:"
-msgstr "Padrão de nome de arquivo:"
+msgstr "Padrão de nome de ficheiro:"
 
 #: quodlibet/ext/playlist/export_to_folder.py:100
 msgid "Exports a playlist by copying files to a folder."
-msgstr "Exporta uma lista de reprodução, copiando arquivos para uma pasta."
+msgstr "Exporta uma lista de reprodução, copiando ficheiros para uma pasta."
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
 #: quodlibet/ext/songsmenu/playlist.py:132
@@ -3381,7 +3382,7 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_folder.py:165
 msgid "Default filename pattern:"
-msgstr "Formato padrão de _nome de arquivo:"
+msgstr "Formato padrão de _nome de ficheiro:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
 #, fuzzy
@@ -3748,7 +3749,8 @@ msgstr "Ajustar à _janela"
 #: quodlibet/ext/songsmenu/albumart.py:339
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr ""
-"Refira-se à entrada \"[plugins] cover_filenames\", no arquivo de configuração"
+"Refira-se à entrada \"[plugins] cover_filenames\", no ficheiro de "
+"configuração"
 
 #. Both labels
 #: quodlibet/ext/songsmenu/albumart.py:345
@@ -3761,7 +3763,7 @@ msgstr "_Editar imagem após salvar"
 
 #: quodlibet/ext/songsmenu/albumart.py:352
 msgid "File_name:"
-msgstr "_Nome do arquivo:"
+msgstr "_Nome do ficheiro:"
 
 #: quodlibet/ext/songsmenu/albumart.py:468
 msgid "Saving failed"
@@ -3844,7 +3846,7 @@ msgstr "Ir para marcador"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr "Gerencia marcadores nos arquivos selecionados."
+msgstr "Gerencia marcadores nos ficheiros selecionados."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
 msgid "_Edit Bookmarks…"
@@ -3885,7 +3887,7 @@ msgstr "Escrever etiqueta \"labelid\""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:129
 msgid "Filename"
-msgstr "Nome de arquivo"
+msgstr "Nome de ficheiro"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
 msgid "Disc"
@@ -4444,14 +4446,14 @@ msgstr "Enviando…"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:17
 msgid "Update Tags in Files"
-msgstr "Atualiza etiquetas nos arquivos"
+msgstr "Atualiza etiquetas nos ficheiros"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:18
 msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
 msgstr ""
-"Salva as atualizações de etiquetas nos arquivos correspondentes "
+"Salva as atualizações de etiquetas nos ficheiros correspondentes "
 "automaticamente. Isso garante que contagens de reprodução e avaliações estão "
 "sempre em dia."
 
@@ -4507,7 +4509,7 @@ msgstr "Exportar metadados"
 
 #: quodlibet/ext/songsmenu/importexport.py:60
 msgid "Exports metadata of selected songs as a .tags file."
-msgstr "Exporta os metadados das músicas selecionadas em um arquivo \".tags\"."
+msgstr "Exporta os metadados das músicas selecionadas num ficheiro \".tags\"."
 
 #: quodlibet/ext/songsmenu/importexport.py:104
 msgid "Import Metadata"
@@ -4516,7 +4518,7 @@ msgstr "Importar metadados"
 #: quodlibet/ext/songsmenu/importexport.py:105
 msgid "Imports metadata for selected songs from a .tags file."
 msgstr ""
-"Importa metadados para as músicas selecionadas de um arquivo \".tags\"."
+"Importa metadados para as músicas selecionadas de um ficheiro \".tags\"."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:94
 msgid "Updating chart list."
@@ -4642,7 +4644,7 @@ msgstr "Reescanear músicas"
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr ""
-"Verifica por alterações nos arquivos e recarrega ou remove músicas se "
+"Verifica por alterações nos ficheiros e recarrega ou remove músicas se "
 "necessário."
 
 #: quodlibet/ext/songsmenu/refresh.py:31
@@ -4833,7 +4835,7 @@ msgstr "Escaneando %s"
 
 #: quodlibet/library/file.py:245
 msgid "Loading files"
-msgstr "Carregando arquivos"
+msgstr "Carregando ficheiros"
 
 #: quodlibet/library/file.py:348
 #, fuzzy
@@ -4852,7 +4854,7 @@ msgstr "Reprodutor de música e gerenciador de biblioteca de música"
 #: quodlibet/operon/base.py:71
 #, python-format
 msgid "Failed to load file: %r"
-msgstr "Falha ao carregar o arquivo: %r"
+msgstr "Falha ao carregar o ficheiro: %r"
 
 #: quodlibet/operon/commands.py:36
 msgid "List tags"
@@ -4905,7 +4907,7 @@ msgstr "Lista todas as etiquetas comumente usadas"
 
 #: quodlibet/operon/commands.py:117
 msgid "Copy tags from one file to another"
-msgstr "Copia etiquetas de um arquivo para o outro"
+msgstr "Copia etiquetas de um ficheiro para o outro"
 
 #: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
 #: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:325
@@ -4921,7 +4923,7 @@ msgstr "Ignora etiquetas que não podem ser gravadas"
 #, python-brace-format
 msgid "Can't copy tag {tagname} to file: {filename}"
 msgstr ""
-"Não foi possível copiar a etiqueta {tagname} para o arquivo: {filename}"
+"Não foi possível copiar a etiqueta {tagname} para o ficheiro: {filename}"
 
 #: quodlibet/operon/commands.py:157
 msgid "Edit tags in a text editor"
@@ -4985,7 +4987,7 @@ msgstr "Não foi possível redefinir o valor de %r"
 
 #: quodlibet/operon/commands.py:458
 msgid "List file information"
-msgstr "Lista informações do arquivo"
+msgstr "Lista informações do ficheiro"
 
 #: quodlibet/operon/commands.py:504
 msgid ""
@@ -4998,7 +5000,7 @@ msgstr ""
 #: quodlibet/operon/commands.py:517
 #, python-format
 msgid "Failed to load image file: %r"
-msgstr "Falha ao carregar arquivo de imagem: %r"
+msgstr "Falha ao carregar ficheiro de imagem: %r"
 
 #: quodlibet/operon/commands.py:524 quodlibet/operon/commands.py:553
 #, python-format
@@ -5023,11 +5025,11 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:641
 msgid "Rename files based on tags"
-msgstr "Renomeia arquivos baseado nas etiquetas"
+msgstr "Renomeia ficheiros baseado nas etiquetas"
 
 #: quodlibet/operon/commands.py:656
 msgid "Fill tags based on the file path"
-msgstr "Preenche etiquetas baseado no nome do arquivo"
+msgstr "Preenche etiquetas baseado no nome do ficheiro"
 
 #: quodlibet/operon/commands.py:706 quodlibet/qltk/information.py:309
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
@@ -5037,7 +5039,7 @@ msgstr "Arquivo"
 
 #: quodlibet/operon/commands.py:714
 msgid "Fill tracknumbers for all files"
-msgstr "Preenche números de faixa para todos os arquivos"
+msgstr "Preenche números de faixa para todos os ficheiros"
 
 #: quodlibet/operon/commands.py:733
 msgid "Print tags based on the given pattern"
@@ -5404,46 +5406,48 @@ msgid ""
 "The selected songs will be removed from the library and their files deleted "
 "from disk."
 msgstr ""
-"As músicas selecionadas serão removidas da biblioteca e seus arquivos serão "
+"As músicas selecionadas serão removidas da biblioteca e seus ficheiros serão "
 "removidos do disco."
 
 #: quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
-msgstr "Os arquivos selecionados serão excluídos do disco."
+msgstr "Os ficheiros selecionados serão excluídos do disco."
 
 #: quodlibet/qltk/delete.py:76
-#, python-format
+#, fuzzy, python-format
 msgid "Delete %(file_count)d file permanently?"
 msgid_plural "Delete %(file_count)d files permanently?"
-msgstr[0] "Excluir %(file_count)d arquivo permanentemente?"
-msgstr[1] "Excluir %(file_count)d arquivos permanentemente?"
+msgstr[0] ""
+"Excluir %(file_count)d ficheiro permanentemente?Excluir %(file_count)d "
+"ficheiros permanentemente?"
+msgstr[1] ""
 
 #: quodlibet/qltk/delete.py:91
 msgid "_Delete Files"
-msgstr "Exclui_r arquivos"
+msgstr "Exclui_r ficheiros"
 
 #: quodlibet/qltk/delete.py:106
 msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
 msgstr ""
-"As músicas selecionadas serão removidas da biblioteca e seus arquivos serão "
-"movidos para a lixeira."
+"As músicas selecionadas serão removidas da biblioteca e ficheiros dela serão "
+"movidos para o lixo."
 
 #: quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
-msgstr "Os arquivos selecionados serão movidos para a lixeira."
+msgstr "Os ficheiros selecionados serão movidos para o lixo."
 
 #: quodlibet/qltk/delete.py:120
 #, python-format
 msgid "Move %(file_count)d file to the trash?"
 msgid_plural "Move %(file_count)d files to the trash?"
-msgstr[0] "Mover %(file_count)d arquivo para a lixeira?"
-msgstr[1] "Mover %(file_count)d arquivos para a lixeira?"
+msgstr[0] "Mover %(file_count)d ficheiro para o lixo?"
+msgstr[1] "Mover %(file_count)d ficheiros para o lixo?"
 
 #: quodlibet/qltk/delete.py:134 quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
-msgstr "_Mover para a lixeira"
+msgstr "_Mover para o lixo"
 
 #: quodlibet/qltk/delete.py:152 quodlibet/qltk/delete.py:187
 #, python-format
@@ -5452,11 +5456,11 @@ msgstr "Movendo %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
 msgid "Unable to move to trash"
-msgstr "Não foi possível mover para a lixeira"
+msgstr "Não foi possível mover para o lixo"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 msgid "Moving one or more files to the trash failed."
-msgstr "Falha ao mover um ou mais arquivos para a lixeira."
+msgstr "Falha ao mover um ou mais ficheiros para o lixo."
 
 #: quodlibet/qltk/delete.py:216 quodlibet/qltk/delete.py:250
 #, python-format
@@ -5465,11 +5469,11 @@ msgstr "Excluindo %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:236 quodlibet/qltk/delete.py:269
 msgid "Unable to delete files"
-msgstr "Não foi possível de excluir os arquivos"
+msgstr "Não foi possível de excluir os ficheiros"
 
 #: quodlibet/qltk/delete.py:237 quodlibet/qltk/delete.py:270
 msgid "Deleting one or more files failed."
-msgstr "Falha ao excluir um ou mais arquivos."
+msgstr "Falha ao excluir um ou mais ficheiros."
 
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
@@ -5571,7 +5575,7 @@ msgstr "Não foi possível adicionar <b>%s</b>"
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
 msgstr ""
-"Os arquivos selecionados não dão suporte a múltiplos valores de <b>%s</b>."
+"Os ficheiros selecionados não dão suporte a múltiplos valores de <b>%s</b>."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
@@ -5590,7 +5594,7 @@ msgid ""
 msgstr ""
 "Etiqueta <b>%s</b> inválida\n"
 "\n"
-"Os arquivos selecionados não suportam a edição desta etiqueta."
+"Os ficheiros selecionados não suportam a edição desta etiqueta."
 
 #: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
 msgid "Invalid value"
@@ -5631,7 +5635,7 @@ msgid ""
 "Saving %(file-name)s failed. The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
-"Falha ao salvar %(file-name)s. O arquivo pode ser somente leitura, estar "
+"Falha ao salvar %(file-name)s. O ficheiro pode ser somente leitura, estar "
 "corrompido , ou você pode não ter permissão para editá-lo."
 
 #: quodlibet/qltk/_editutils.py:146
@@ -5919,7 +5923,7 @@ msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr ""
-"Etiquetas foram alteradas, mas não gravadas. Salvar estes arquivos, ou "
+"Etiquetas foram alteradas, mas não gravadas. Salvar estes ficheiros, ou "
 "reverter e descartar as alterações?"
 
 #: quodlibet/qltk/msg.py:57 quodlibet/qltk/prefs.py:636
@@ -5939,7 +5943,7 @@ msgstr "Sobrescrever %(file-name)s?"
 
 #: quodlibet/qltk/msg.py:111
 msgid "_Replace File"
-msgstr "_Sobrescrever arquivo"
+msgstr "_Sobrescrever ficheiro"
 
 #: quodlibet/qltk/notif.py:182
 msgid "Active tasks"
@@ -6042,7 +6046,7 @@ msgstr "Ál_bum"
 
 #: quodlibet/qltk/prefs.py:55
 msgid "_Filename"
-msgstr "_Nome de arquivo"
+msgstr "_Nome de ficheiro"
 
 #: quodlibet/qltk/prefs.py:57
 msgid "_Length"
@@ -6094,7 +6098,7 @@ msgstr "Álbum inclui subtítulo do _disco"
 
 #: quodlibet/qltk/prefs.py:115
 msgid "Filename includes _folder"
-msgstr "Nome do arquivo inclui a _pasta"
+msgstr "Nome do ficheiro inclui a _pasta"
 
 #: quodlibet/qltk/prefs.py:128
 msgid "Column Preferences"
@@ -6183,7 +6187,7 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:330
 #, fuzzy
 msgid "_Preferred image filename(s):"
-msgstr "Nome _fixo para arquivo de imagem:"
+msgstr "Nome _fixo para ficheiro de imagem:"
 
 #: quodlibet/qltk/prefs.py:345
 msgid "Album Art"
@@ -6259,11 +6263,9 @@ msgid ""
 "calculation for all albums."
 msgstr ""
 "Fator da média bayesiana para avaliações agregadas.\n"
-"Para um dado fator C, efetivamente adiciona C elementos com avaliação padrão "
-"antes de tirar a média.\n"
 "0 corresponde à média aritmética usual. Valores mais altos significam que "
-"álbuns com poucas faixas tem avaliações menos extremas.\n"
-"Alterar este valor resulta em um recálculo da avaliação de todos os álbuns."
+"álbuns com poucas faixas tem avaliações menos extremas. Alterar este valor "
+"resulta num recalculo da avaliação de todos os álbuns."
 
 #: quodlibet/qltk/prefs.py:566
 msgid "_Bayesian averaging amount:"
@@ -6287,7 +6289,7 @@ msgstr "Salvar alterações automaticamente"
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 "Salva alterações em etiquetas sem pedir confirmação, ao editar múltiplos "
-"arquivos"
+"ficheiros"
 
 #: quodlibet/qltk/prefs.py:616
 msgid ""
@@ -6477,7 +6479,7 @@ msgstr "Adicionar uma _pasta…"
 
 #: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_Add a File…"
-msgstr "Adicionar um _arquivo…"
+msgstr "Adicionar um _ficheiro…"
 
 #: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Add a Location…"
@@ -6509,7 +6511,7 @@ msgstr "Adicionar um endereço"
 
 #: quodlibet/qltk/quodlibetwindow.py:1275
 msgid "Enter the location of an audio file:"
-msgstr "Insira o endereço de um arquivo de áudio:"
+msgstr "Insira o endereço de um ficheiro de áudio:"
 
 #: quodlibet/qltk/quodlibetwindow.py:1280
 #: quodlibet/qltk/quodlibetwindow.py:1285
@@ -6536,7 +6538,7 @@ msgstr "Arquivos de música"
 
 #: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "_Add Files"
-msgstr "_Adicionar arquivos"
+msgstr "_Adicionar ficheiros"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -6591,7 +6593,7 @@ msgstr "Usar apenas letras minúsculas"
 
 #: quodlibet/qltk/renamefiles.py:149
 msgid "Rename Files"
-msgstr "Renomear arquivos"
+msgstr "Renomear ficheiros"
 
 #: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:119
 #: quodlibet/qltk/tracknumbers.py:57
@@ -6600,7 +6602,7 @@ msgstr "_Visualizar"
 
 #: quodlibet/qltk/renamefiles.py:198
 msgid "File names"
-msgstr "Nomes de arquivo"
+msgstr "Nomes de ficheiro"
 
 #: quodlibet/qltk/renamefiles.py:208
 msgid "_Move album art"
@@ -6609,8 +6611,8 @@ msgstr "_Mover capas de álbum"
 #: quodlibet/qltk/renamefiles.py:211
 msgid "See '[albumart] filenames' config entry for image search strings"
 msgstr ""
-"Os nomes de arquivos usados na busca são descritos na entrada \"[albumart] "
-"filenames\" do arquivo de configuração"
+"Os nomes de ficheiros usados na busca são descritos na entrada \"[albumart] "
+"filenames\" do ficheiro de configuração"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
@@ -6630,7 +6632,7 @@ msgstr "Novo nome"
 
 #: quodlibet/qltk/renamefiles.py:337
 msgid "Unable to rename file"
-msgstr "Não foi possível renomear o arquivo"
+msgstr "Não foi possível renomear o ficheiro"
 
 #: quodlibet/qltk/renamefiles.py:338
 #, python-format
@@ -6641,7 +6643,7 @@ msgid ""
 msgstr ""
 "Renomear <b>%(old-name)s</b> para <b>%(new-name)s</b> falhou. Possivelmente "
 "o novo nome é já está sendo usado, ou você não tem permissão para criar o "
-"novo arquivo ou apagar o antigo."
+"novo ficheiro ou apagar o antigo."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -6837,7 +6839,7 @@ msgstr "Mostrar a entrada de pesquisa inline"
 
 #: quodlibet/qltk/shortcuts.py:31
 msgid "Left click on a column header"
-msgstr "Botão esquerdo em um cabeçalho de coluna"
+msgstr "Botão esquerdo num cabeçalho de coluna"
 
 #: quodlibet/qltk/shortcuts.py:32
 msgid "Add the column to the list of columns to sort by"
@@ -6898,7 +6900,7 @@ msgstr "Cabeçalhos de _data"
 
 #: quodlibet/qltk/songlist.py:1166
 msgid "_File Headers"
-msgstr "Cabeçalhos de _arquivos"
+msgstr "Cabeçalhos de _ficheiros"
 
 #: quodlibet/qltk/songlist.py:1167
 msgid "_Production Headers"
@@ -6951,19 +6953,21 @@ msgstr "_Remover da biblioteca…"
 
 #: quodlibet/qltk/songsmenu.py:404
 msgid "Unable to show files"
-msgstr "Não foi possível exibir os arquivos"
+msgstr "Não foi possível exibir os ficheiros"
 
 #: quodlibet/qltk/songsmenu.py:405
 msgid "Error showing files, or no program available to show them."
 msgstr ""
-"Falha ao exibir arquivos, ou não há um programa disponível para exibi-los."
+"Falha ao exibir ficheiros, ou não há um programa disponível para exibi-los."
 
 #: quodlibet/qltk/songsmenu.py:412
-#, python-format
+#, fuzzy, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] "_Exibir no gerenciador de arquivos"
-msgstr[1] "_Exibir %(total)d arquivos no gerenciador de arquivos"
+msgstr[0] ""
+"_Exibir no gerenciador de ficheiros_Exibir %(total)d ficheiros no "
+"gerenciador de ficheiros"
+msgstr[1] ""
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
@@ -7015,7 +7019,7 @@ msgid ""
 msgstr ""
 "<b>%s</b> não são etiquetas válidas\n"
 "\n"
-"Os arquivos selecionados não tem suporte a estas etiquetas."
+"Os ficheiros selecionados não tem suporte a estas etiquetas."
 
 #: quodlibet/qltk/textedit.py:141
 #, python-format
@@ -7126,11 +7130,11 @@ msgstr "Capas de álbum embutidas"
 
 #: quodlibet/util/cover/built_in.py:39
 msgid "Uses covers embedded into audio files."
-msgstr "Usa capas de álbum embutidas nos arquivos de áudio."
+msgstr "Usa capas de álbum embutidas nos ficheiros de áudio."
 
 #: quodlibet/util/cover/built_in.py:61
 msgid "Filesystem cover"
-msgstr "Capa de álbum pelo sistema de arquivos"
+msgstr "Capa de álbum pelo sistema de ficheiros"
 
 #: quodlibet/util/cover/built_in.py:62
 msgid ""
@@ -7288,7 +7292,7 @@ msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
 "have permission to edit it."
 msgstr ""
-"Falha ao salvar <b>%s</b>. O arquivo pode ser somente leitura, estar "
+"Falha ao salvar <b>%s</b>. O ficheiro pode ser somente leitura, estar "
 "corrompido , ou você pode não ter permissão para editá-lo."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
@@ -7579,7 +7583,7 @@ msgstr "profundidade de bits"
 
 #: quodlibet/util/tags.py:174
 msgid "file format"
-msgstr "formato de arquivo"
+msgstr "formato de ficheiro"
 
 #: quodlibet/util/tags.py:177
 msgid "playlists"
@@ -7610,12 +7614,12 @@ msgstr "Ex Falso"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:4
 msgid "Audio tag editor"
-msgstr "Editor de etiquetas de metadados para arquivos de áudio"
+msgstr "Editor de etiquetas de metadados para ficheiros de áudio"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:5
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:6
 msgid "Edit tags in your audio files"
-msgstr "Edite etiquetas de metadados em seus arquivos de áudio"
+msgstr "Edite etiquetas de metadados em seus ficheiros de áudio"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:3
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:5
@@ -7637,9 +7641,9 @@ msgid ""
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
-"Ex Falso é um editor de etiquetas de metadados para arquivos de áudio, com a "
-"mesma interface do Quod Libet. Ele permite visualizar e alterar qualquer "
-"etiqueta, para qualquer arquivo em um dos formatos para qual haja suporte."
+"Ex Falso é um editor de etiquetas de metadados para ficheiros de áudio, com "
+"a mesma interface do Quod Libet. Permite visualizar e alterar qualquer "
+"etiqueta, para qualquer ficheiro num dos formatos para qual haja suporte."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
@@ -7647,7 +7651,7 @@ msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
-"Há suporte para arquivos Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/IT, "
+"Há suporte para ficheiros Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/IT, "
 "Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, e MIDI, dentre "
 "outros."
 
