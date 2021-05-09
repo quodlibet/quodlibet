@@ -10,16 +10,17 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2019-07-17 22:02+0200\n"
-"Last-Translator: Till Berger <till@mellthas.de>\n"
-"Language-Team: GERMAN <LL@li.org>\n"
-"Language: de_DE\n"
+"PO-Revision-Date: 2021-05-09 09:32+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/de/>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 2.0.6\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:222
@@ -64,7 +65,7 @@ msgstr "_Wiedergabeanzahl"
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:64
 msgid "Sort _by…"
-msgstr "Sortieren _nach …"
+msgstr "Sortieren _nach…"
 
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:85
