@@ -386,11 +386,11 @@ msgstr ""
 msgid "_File System"
 msgstr ""
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:258
+#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:264
 msgid "Unable to copy songs"
 msgstr ""
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:259
+#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:265
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 
@@ -6475,44 +6475,44 @@ msgstr ""
 msgid "Select all songs in all panes"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:379
+#: quodlibet/qltk/songlist.py:385
 #, python-format
 msgid "_Filter on %s"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1161
+#: quodlibet/qltk/songlist.py:1181
 msgid "All _Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1162
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Track Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1163
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Album Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1164
+#: quodlibet/qltk/songlist.py:1184
 msgid "_People Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1165
+#: quodlibet/qltk/songlist.py:1185
 msgid "_Date Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1166
+#: quodlibet/qltk/songlist.py:1186
 msgid "_File Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1167
+#: quodlibet/qltk/songlist.py:1187
 msgid "_Production Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1202
 msgid "_Customize Headers…"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1207
 msgid "_Expand Column"
 msgstr ""
 
