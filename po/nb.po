@@ -10,15 +10,16 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2018-04-19 18:37+0200\n"
-"Last-Translator: Åka Sikrom <a4 ætt hush dått com>\n"
-"Language-Team: Norwegian Bokmål\n"
+"PO-Revision-Date: 2021-05-11 07:04+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
+"quodlibet/quodlibet/nb_NO/>\n"
 "Language: nb\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -617,7 +618,7 @@ msgstr "Fant ingen nettradio-stasjoner på %s."
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "Ingenting å legge til"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
@@ -685,11 +686,11 @@ msgstr "Innstillinger for rutevisning"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "Kolonneoppsett"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "Kolonneinnhold"
 
 #: quodlibet/browsers/paned/prefs.py:242
 msgid "Equal pane width"
@@ -939,11 +940,11 @@ msgstr "Demp volum"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "Øk vurdering av spillende spor med én stjerne"
 
 #: quodlibet/cli.py:105
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "Mink vurdering av spillende spor med én stjerne"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
@@ -1107,7 +1108,7 @@ msgstr "Fjern fil eller spørring fra kø"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "Legg til en fil eller mappe i biblioteket"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
@@ -1142,8 +1143,9 @@ msgid "Submit Error Report"
 msgstr "Send feilrapport"
 
 #: quodlibet/errorreport/ui.py:70
+#, fuzzy
 msgid "Restart"
-msgstr ""
+msgstr "Start på ny"
 
 #: quodlibet/errorreport/ui.py:71
 msgid "Ignore Error"
@@ -1436,27 +1438,35 @@ msgstr "Tilbakestill til standardverdi"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
+#, fuzzy
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
+"Når et spor spilles og ikke hoppes over, vil programtillegget skrive "
+"etikettene til filen. Antall spor som hoppes over lagres ikke, slik at "
+"unødvendig skriving unngås."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
-msgstr ""
+msgstr "Etter hver avspilling eller hopp"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#, fuzzy
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
+"Når et spor spilles og ikke hoppes over, vil programtillegget skrive "
+"etikettene til filen. Nyttig hvis du ønsker å forsikre deg om at vurderinger "
+"av spor du misliker (og altså hopper over) skrives til filene."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "Én gang, når albumet er vurdert i sin helhet"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
@@ -1507,6 +1517,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Følgende innstilling ble slått på for at programtillegget skal virke:\n"
+"\n"
+"%s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:575
@@ -1567,7 +1580,7 @@ msgstr ""
 
 #: quodlibet/ext/events/bansheeimport.py:106
 msgid "Specified Banshee database is malformed or missing"
-msgstr ""
+msgstr "Angitt Banshee-database er skadet eller mangler helt og holdent"
 
 #: quodlibet/ext/events/bansheeimport.py:111
 #: quodlibet/ext/events/rbimport.py:114
@@ -1593,7 +1606,7 @@ msgstr "Importerer vurderinger og låtstatistikk fra Rhythmbox."
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr ""
+msgstr "_Databasesti:"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
@@ -2492,7 +2505,7 @@ msgstr "Sle_tt"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "Skip"
-msgstr ""
+msgstr "Hopp over"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "DUPLICATE"
@@ -2510,7 +2523,7 @@ msgstr "Sle_tt"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "Success"
-msgstr ""
+msgstr "Vellykket"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "FAILURE"
@@ -2523,13 +2536,14 @@ msgstr "Oftere hoppet over"
 
 #: quodlibet/ext/events/synchronize_to_device.py:82
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "Kan ikke sette filnavn for spor."
 
 #: quodlibet/ext/events/synchronize_to_device.py:89
+#, fuzzy
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
-msgstr ""
+msgstr "Synkroniserer alle spor fra valgte lagrede søk med angitt mappe."
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
 #, fuzzy
@@ -2548,7 +2562,7 @@ msgstr "tittel"
 
 #: quodlibet/ext/events/synchronize_to_device.py:143
 msgid "Synchronize the following saved searches:"
-msgstr ""
+msgstr "Synkroniser følgende lagrede søk:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:149
 msgid "The absolute path to your export location"
@@ -2625,7 +2639,7 @@ msgstr ""
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:274
 msgid "Start synchronization"
-msgstr ""
+msgstr "Start synkronisering"
 
 #. Stop sync button
 #: quodlibet/ext/events/synchronize_to_device.py:282
@@ -2634,8 +2648,9 @@ msgid "Stop synchronization"
 msgstr "organisasjon"
 
 #: quodlibet/ext/events/synchronize_to_device.py:305
+#, fuzzy
 msgid "No saved searches yet, create some and come back!"
-msgstr ""
+msgstr "Opprett noen lagrede søk for å se dem her."
 
 #: quodlibet/ext/events/synchronize_to_device.py:387
 #, fuzzy
@@ -2647,34 +2662,36 @@ msgstr "Lagre mål"
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
+"Eksportsti endret fra [{old_path}] til [{new_path}] for filen [{filename}]"
 
 #: quodlibet/ext/events/synchronize_to_device.py:653
+#, fuzzy
 msgid "Starting synchronization preview"
-msgstr ""
+msgstr "Starter synkroniseringsforhåndsvisning …"
 
 #: quodlibet/ext/events/synchronize_to_device.py:658
 msgid "Synchronization preview in progress."
-msgstr ""
+msgstr "Synkroniseringsforhåndsvisning underveis."
 
 #: quodlibet/ext/events/synchronize_to_device.py:674
 msgid "Finished synchronization preview"
-msgstr ""
+msgstr "Fullførte synkroniseringsforhåndsvisning"
 
 #: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Stopping synchronization preview"
-msgstr ""
+msgstr "Stopper synkroniseringsforhåndsvisning …"
 
 #: quodlibet/ext/events/synchronize_to_device.py:685
 msgid "Synchronization preview was stopped."
-msgstr ""
+msgstr "Synkroniseringsforhåndsvisning ble stoppet."
 
 #: quodlibet/ext/events/synchronize_to_device.py:688
 msgid "Synchronization preview has finished."
-msgstr ""
+msgstr "Synkroniseringsforhåndsvisning er ferdig."
 
 #: quodlibet/ext/events/synchronize_to_device.py:718
 msgid "Stopped synchronization preview"
-msgstr ""
+msgstr "Stoppet Synkroniseringsforhåndsvisning"
 
 #: quodlibet/ext/events/synchronize_to_device.py:722
 msgid "A different plugin was selected - stop preview"
@@ -2698,11 +2715,11 @@ msgstr ""
 #: quodlibet/ext/events/synchronize_to_device.py:780
 #, python-brace-format
 msgid "delete {count} {file_str}"
-msgstr ""
+msgstr "slett {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:829
 msgid "No destination path provided"
-msgstr ""
+msgstr "Målsti ikke angitt"
 
 #: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "Please specify the directory where songs should be exported."
@@ -2710,7 +2727,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:837
 msgid "No export pattern provided"
-msgstr ""
+msgstr "Eksportmønster ikke angitt"
 
 #: quodlibet/ext/events/synchronize_to_device.py:838
 msgid "Please specify an export pattern for the names of the exported songs."
@@ -2743,7 +2760,7 @@ msgstr "Ingen låter er valgt."
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "Please select at least one saved search."
-msgstr ""
+msgstr "Velg minst ett lagret søk."
 
 #: quodlibet/ext/events/synchronize_to_device.py:881
 #, fuzzy
@@ -2752,11 +2769,11 @@ msgstr "Ingen låter er valgt."
 
 #: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "All selected saved searches are empty."
-msgstr ""
+msgstr "Alle valgte lagrede søk er tomme."
 
 #: quodlibet/ext/events/synchronize_to_device.py:885
 msgid "Found {} songs to synchronize"
-msgstr ""
+msgstr "Fant {} spor å synkronisere"
 
 #: quodlibet/ext/events/synchronize_to_device.py:904
 msgid "Mismatch between destination path and export pattern"
@@ -2786,16 +2803,18 @@ msgstr ""
 
 #. Summary labels
 #: quodlibet/ext/events/synchronize_to_device.py:953
+#, fuzzy
 msgid "Synchronization in progress."
-msgstr ""
+msgstr "Synkroniserer …"
 
 #: quodlibet/ext/events/synchronize_to_device.py:965
 msgid "Finished song synchronization"
-msgstr ""
+msgstr "Fullførte spor-synkronisering"
 
 #: quodlibet/ext/events/synchronize_to_device.py:974
+#, fuzzy
 msgid "Stopping song synchronization"
-msgstr ""
+msgstr "Stopper spor-synkronisering …"
 
 #: quodlibet/ext/events/synchronize_to_device.py:975
 msgid "Synchronization was stopped."
@@ -2807,7 +2826,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1010
 msgid "Stopped song synchronization"
-msgstr ""
+msgstr "Stoppet spor-synkronisering"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1014
 msgid "A different plugin was selected - stop synchronization"
@@ -2816,11 +2835,11 @@ msgstr ""
 #: quodlibet/ext/events/synchronize_to_device.py:1017
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
-msgstr ""
+msgstr "{tag} - «{filename}»"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1086
 msgid "Removing \"{}\""
-msgstr ""
+msgstr "Fjerner «{}»"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1105
 #, fuzzy
@@ -2828,34 +2847,34 @@ msgid "Synchronization has:"
 msgstr "Synkronisert sangtekst"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1113
-#, python-brace-format
+#, fuzzy, python-brace-format
 msgid "written {count}/{total} {file_str}"
-msgstr ""
+msgstr "skrevet {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1120
-#, python-brace-format
+#, fuzzy, python-brace-format
 msgid "(skipped {count} existing {file_str})"
-msgstr ""
+msgstr "(hoppet over {count} eksisterende {file_str})"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1128
-#, python-brace-format
+#, fuzzy, python-brace-format
 msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr ""
+msgstr "hoppet over {count}/{total} duplisert {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1135
 #, python-brace-format
 msgid "deleted {count}/{total} {file_str}"
-msgstr ""
+msgstr "slettet {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1142
 #, python-brace-format
 msgid "failed to sync {count} {file_str}"
-msgstr ""
+msgstr "klarte ikke å synkronisere {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1148
 #, python-brace-format
 msgid "skipped {count} {file_str} synchronized previously"
-msgstr ""
+msgstr "hoppet over {count} {file_str} tidligere synkronisert"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3138,7 +3157,7 @@ msgstr "Vis gjeldende posisjon"
 
 #: quodlibet/ext/events/waveformseekbar.py:696
 msgid "Show time labels"
-msgstr ""
+msgstr "Vis tidsetiketter"
 
 #: quodlibet/ext/events/waveformseekbar.py:704
 msgid "Seek amount when scrolling (milliseconds):"
@@ -3562,7 +3581,7 @@ msgstr "Tilbakestill til forvalg"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr ""
+msgstr "Hopp over mislikte spor"
 
 #: quodlibet/ext/playorder/skip_disliked.py:26
 msgid ""
@@ -3616,7 +3635,7 @@ msgstr "Python-spørring"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
-msgstr ""
+msgstr "🐍Bruk Python-uttrykk i spørringer"
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -4016,7 +4035,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:373
 msgid "Save as JPEG"
-msgstr ""
+msgstr "Lagre som JPEG"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:41
 msgid "Command"
@@ -4759,7 +4778,7 @@ msgstr "Lagring mislyktes"
 #: quodlibet/ext/songsmenu/wikipedia.py:112
 #, python-format
 msgid "Tag \"%s\" not found."
-msgstr ""
+msgstr "Fant ikke etiketten «%s»."
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
@@ -5101,11 +5120,11 @@ msgstr ""
 
 #: quodlibet/player/gstbe/prefs.py:75
 msgid "Use JACK for playback if available"
-msgstr ""
+msgstr "Bruk JACK for avspilling hvis det forefinnes"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
-msgstr ""
+msgstr "Koble til automatisk til JACK-utgangsenheter"
 
 #: quodlibet/player/gstbe/util.py:145
 #, fuzzy, python-format
@@ -5164,7 +5183,7 @@ msgstr "Innsending"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to listenbrainz."
-msgstr ""
+msgstr "Send inn lyttinger til ListenBrainz."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
 #, fuzzy
@@ -5173,7 +5192,7 @@ msgstr "Bruker_navn:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
-msgstr ""
+msgstr "E_tiketter:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
@@ -5200,7 +5219,7 @@ msgstr "_Kjør programtillegg"
 
 #: quodlibet/plugins/query.py:65
 msgid "Usage"
-msgstr ""
+msgstr "Bruk"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -6167,8 +6186,9 @@ msgid "Replay Gain Volume Adjustment"
 msgstr "Replay Gain-volumjustering"
 
 #: quodlibet/qltk/prefs.py:436
+#, fuzzy
 msgid "_Continue playback on startup"
-msgstr ""
+msgstr "_Fortsett avspilling ved oppstart"
 
 #: quodlibet/qltk/prefs.py:438
 msgid ""
@@ -6313,11 +6333,12 @@ msgstr "Fjern alle låter fra kø"
 
 #: quodlibet/qltk/queue.py:133
 msgid "Persistent"
-msgstr ""
+msgstr "Vedvarende"
 
 #: quodlibet/qltk/queue.py:134
+#, fuzzy
 msgid "Keep songs in the queue after playing them"
-msgstr ""
+msgstr "Behold spor i kø etter avspilling"
 
 #: quodlibet/qltk/queue.py:142
 #, fuzzy
@@ -6627,7 +6648,7 @@ msgstr "Valgte låter blir fjernet fra biblioteket."
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
-msgstr ""
+msgstr "_Flytt"
 
 #: quodlibet/qltk/scanbox.py:72
 msgid ""
@@ -6892,11 +6913,11 @@ msgid "Error showing files, or no program available to show them."
 msgstr ""
 
 #: quodlibet/qltk/songsmenu.py:412
-#, python-format
+#, fuzzy, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "_Vis i filbehandler"
+msgstr[1] "_Vis %(total)d filer i filbehandler"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
@@ -7504,7 +7525,7 @@ msgstr "bokmerke"
 
 #: quodlibet/util/tags.py:171
 msgid "bitdepth"
-msgstr ""
+msgstr "bit-dybde"
 
 #: quodlibet/util/tags.py:174
 msgid "file format"
@@ -7516,7 +7537,7 @@ msgstr "spillelister"
 
 #: quodlibet/util/tags.py:178
 msgid "sample rate"
-msgstr ""
+msgstr "samplingsrate"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
