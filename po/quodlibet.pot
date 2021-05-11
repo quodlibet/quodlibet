@@ -4895,11 +4895,11 @@ msgid ""
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
-msgid "Listenbrainz Submission"
+msgid "ListenBrainz Submission"
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:357
-msgid "Submit listens to listenbrainz."
+msgid "Submit listens to ListenBrainz."
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
@@ -4912,7 +4912,7 @@ msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
-"List of tags to include in the submission. Comma separated, use double-"
+"List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
 
