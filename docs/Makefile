@@ -1,11 +1,11 @@
 all:
-	python3 -m sphinx -b html -n . _build_all
+	python3 -m sphinx -j auto -b html -n . _build_all
 
 watch:
-	sphinx-autobuild -b html -n . _build_all
+	sphinx-autobuild -j auto -b html -n . _build_all
 
 guide:
-	python3 -m sphinx -b html -c . -n guide _build_guide
+	python3 -m sphinx -j auto -b html -c . -n guide _build_guide
 
 clean:
 	rm -rf _build_all _build_guide
@@ -16,4 +16,4 @@ show: all
 	xdg-open _build_all/index.html
 
 linkcheck:
-	python3 -m sphinx -b linkcheck -n . _build_all
+	python3 -m sphinx -j auto -b linkcheck -n . _build_all
