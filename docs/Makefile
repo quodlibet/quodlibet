@@ -1,6 +1,9 @@
 all:
 	python3 -m sphinx -b html -n . _build_all
 
+watch:
+	sphinx-autobuild -b html -n . _build_all
+
 guide:
 	python3 -m sphinx -b html -c . -n guide _build_guide
 
