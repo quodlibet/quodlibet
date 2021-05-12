@@ -59,6 +59,3 @@ Contact
 
 .. image:: https://img.shields.io/badge/discord-chat-blue?style=social&logo=discord
     :target: https://discord.gg/9A4RKFEm3c
-
-.. image:: https://img.shields.io/badge/gitter-chat-green?style=social&logo=gitter
-    :target: https://gitter.im/quodlibet/Lobby
