@@ -10,15 +10,16 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-04 18:16+0200\n"
-"PO-Revision-Date: 2021-05-04 18:20+0200\n"
+"PO-Revision-Date: 2021-05-13 18:32+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
-"Language-Team: Nederlands <en@li.org>\n"
+"Language-Team: Dutch <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/nl/>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -872,7 +873,7 @@ msgstr "Voer de Soundcloud-autorisatiecode in:"
 
 #: quodlibet/cli.py:50
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libet is niet actief (voeg '--run' toe om te starten)."
+msgstr "Quod Libet is niet actief (voeg '--run' toe om te starten)"
 
 #: quodlibet/cli.py:86
 msgid "a music library and player"
@@ -1446,7 +1447,7 @@ msgid ""
 "dislike and thus skipped are written to the files."
 msgstr ""
 "Als een nummer is afgespeeld of overgeslagen, schrijft de plug-in de tags "
-"naar het bestand. Dit kan handig zijn als je je er van wilt verzekeren dan "
+"naar het bestand. Dit kan handig zijn als je je er van wilt verzekeren dat "
 "waarderingen worden weggeschreven."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
@@ -2172,7 +2173,7 @@ msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
 msgstr ""
-"Stel QLScrobbler in in het plug-insvenster. Tot dan worden nummers niet "
+"Stel QLScrobbler in in het plug-invenster. Tot dan worden nummers niet "
 "ingediend."
 
 #: quodlibet/ext/events/qlscrobbler.py:253
@@ -2720,8 +2721,10 @@ msgid ""
 "destination path by making sure it starts with / or ~/."
 msgstr ""
 "Het patroon\n"
+"\n"
 "\t<b>{}</b>\n"
-"bevat '/' maar begint niet op bovenliggend niveau. Geef een absolute "
+"\n"
+"bevat ‘/’ maar begint niet op bovenliggend niveau. Geef een absolute "
 "bestemming op door te beginnen met de map / of ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:871
@@ -4650,7 +4653,7 @@ msgstr "indien er RG-tags ontbreken"
 
 #: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>album</b> RG tags are missing"
-msgstr "indien album-RG-tags ontbreken"
+msgstr "indien <b>album</b>-RG-tags ontbreken"
 
 #: quodlibet/ext/songsmenu/replaygain.py:628
 msgid "_Process albums:"
