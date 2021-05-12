@@ -36,6 +36,7 @@ pytest = '^6.0'
 polib = '^1.1.0'
 sphinx = '^3.2.0'
 sphinx_rtd_theme = '*'
+sphinx-autobuild = "^2021.3.14"
 xvfbwrapper = { version = "^0.2", platform = "linux" }
 flake8 = "^3.7.9"
 coverage = { extras = ["toml"], version = "^5.0.3" }
