@@ -126,10 +126,9 @@ quodlibet/ext/songsmenu/fingerprint/submit.py
 quodlibet/ext/songsmenu/forcewrite.py
 quodlibet/ext/songsmenu/html.py
 quodlibet/ext/songsmenu/ifp.py
-quodlibet/ext/songsmenu/importexport.py
+quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
-quodlibet/ext/songsmenu/migratemetadata.py
 quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
@@ -184,6 +183,7 @@ quodlibet/qltk/info.py
 quodlibet/qltk/information.py
 quodlibet/qltk/lyrics.py
 quodlibet/qltk/maskedbox.py
+quodlibet/qltk/matchdialog.py
 quodlibet/qltk/msg.py
 quodlibet/qltk/notif.py
 quodlibet/qltk/playorder.py

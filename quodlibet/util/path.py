@@ -147,6 +147,23 @@ def unescape_filename(filename: _fsnative) -> str:
     return fsn2text(unquote(filename))
 
 
+def join_path_with_escaped_name_of_legal_length(path: str, stem: str, ext: str) -> str:
+    """Returns a path joined with the escaped stem and the unescaped extension.
+    Stem is trimmed until the filename fits into the filesystems maximum file length"""
+
+    # returns the maximum possible filename length at path (subtract one for dot)
+    max_stem_length = os.pathconf(path, 'PC_NAME_MAX') - 1 - len(ext)
+
+    escaped_stem = escape_filename(stem)
+    while len(escaped_stem) > max_stem_length:
+        # We don't want to break the escaping, so we only trim the actual name
+        stem = stem[:max_stem_length]
+        max_stem_length -= 1
+        escaped_stem = escape_filename(stem)
+
+    return os.path.join(path, f'{escaped_stem}.{ext}')
+
+
 def unexpand(filename):
     """Replace the user's home directory with ~ or %USERPROFILE%, if it
     appears at the start of the path name.
