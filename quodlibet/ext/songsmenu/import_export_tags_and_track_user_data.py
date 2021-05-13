@@ -204,7 +204,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
                                           step_increment=1))
             spinner.set_numeric(True)
             spinner.connect("value-changed", spinner_change_handler)
-            hbox.pack_start(spinner, True, True, 0)
+            hbox.pack_start(spinner, False, True, 0)
             return hbox
 
         manual_box = Gtk.VBox(spacing=6)
@@ -436,7 +436,10 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             # Remove used up export
             del self._album_id_to_export_path[export_album_id]
             if CONFIG.delete_exports_after_importing:
-                export_path.unlink(missing_ok=True)
+                try:
+                    export_path.unlink()
+                except FileNotFoundError:
+                    pass
             else:
                 move_export_to_used(export_path)
 

@@ -42,7 +42,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
     def __init__(self, a_items: List[T], b_items: List[T], b_order: List[Optional[int]],
                  columns: List[ColumnSpec[T]], title: str, ok_button_text: str,
-                 ok_button_icon: Icons = Icons.DOCUMENT_SAVE,
+                 ok_button_icon: str = Icons.DOCUMENT_SAVE,
                  description: str = MATCH_DESC, parent=app.window,
                  id_for_window_tracking: Optional[str] = None):
         super().__init__(title=title, transient_for=parent, modal=True,
@@ -155,6 +155,8 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
 
 
 class MatchListsTreeView(HintedTreeView, Generic[T]):
+    _b_order: List[Optional[int]]
+
     def __init__(self, a_items: List[T], b_items: List[T],
                  columns: List[ColumnSpec[T]]):
         self.model = ObjectStore()
