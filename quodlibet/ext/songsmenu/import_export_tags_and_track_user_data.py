@@ -304,7 +304,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             submenu.append(item)
 
         submenu.append(SeparatorMenuItem())
-        open_dir_item = Gtk.MenuItem(label=_("Open export directory"))
+        open_dir_item = Gtk.MenuItem(label=_("Open Export Directory"))
 
         def open_export_dir(_):
             show_files(path2fsn(EXPORT_DIR_PATH),
