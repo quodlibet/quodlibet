@@ -112,6 +112,10 @@ class TrackId(NamedTuple):
                        s('~#track', 1), s('~#tracks', 1), s('~basename'))
 
     @property
+    def file_stem(self):
+        return os.path.splitext(self.file_name)[0]
+
+    @property
     def track_text(self):
         if self.tracks <= 1:
             return str(self.track)
@@ -272,7 +276,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             lambda t: t.title: 8,  #
             lambda t: t.artist: 3.5,  #
             lambda t: t.track: 1.2,  #
-            lambda a: a.file_name: 1,  # needed in case the track has no tags
+            lambda t: t.file_stem: 1,  # needed in case the track has no tags
             lambda t: t.disc: 0.8,  #
         })
         self._track_id_matcher.should_store_similarity_matrix = True
