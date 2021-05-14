@@ -7,14 +7,16 @@ msgstr ""
 "Project-Id-Version: quodlibet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2018-06-06 11:38+0200\n"
-"Last-Translator: scootergrisen\n"
-"Language-Team: Danish\n"
+"PO-Revision-Date: 2021-05-15 16:32+0000\n"
+"Last-Translator: scootergrisen <scootergrisen@gmail.com>\n"
+"Language-Team: Danish <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/da/>\n"
 "Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -420,9 +422,8 @@ msgid "Internet Radio"
 msgstr "Internet-radio"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "Alle stationer"
+msgstr "Tilføj stationer"
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
@@ -612,7 +613,7 @@ msgstr "Ingen internet-radiostationer blev fundet hos %s."
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "Intet at tilføje"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
@@ -656,9 +657,8 @@ msgid "Small"
 msgstr "Lille"
 
 #: quodlibet/browsers/paned/prefs.py:42
-#, fuzzy
 msgid "Wide"
-msgstr "Bred-tilstand"
+msgstr "Bred"
 
 #: quodlibet/browsers/paned/prefs.py:43
 #, fuzzy
@@ -815,9 +815,8 @@ msgid "Track List"
 msgstr "Sporliste"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "Sporliste"
+msgstr "_Sporliste"
 
 #: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
@@ -1137,7 +1136,7 @@ msgstr "Indsend fejlrapport"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "Genstart"
 
 #: quodlibet/errorreport/ui.py:71
 msgid "Ignore Error"
@@ -1477,9 +1476,9 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't write '%s'"
-msgstr "Kunne ikke kontakte tjenesten '%s'."
+msgstr "Kunne ikke skrive '%s'"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 #, fuzzy
@@ -1514,9 +1513,9 @@ msgid "Settings updated"
 msgstr "optagelsesdato"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#, fuzzy, python-format
+#, python-format
 msgid "Error in %s"
-msgstr "Fejl under synkronisering"
+msgstr "Fejl i %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
@@ -1715,14 +1714,12 @@ msgid "Default presets"
 msgstr "Standardtema"
 
 #: quodlibet/ext/events/equalizer.py:278 quodlibet/ext/events/equalizer.py:305
-#, fuzzy
 msgid "Select…"
-msgstr "Vælg _alle"
+msgstr "Vælg …"
 
 #: quodlibet/ext/events/equalizer.py:293
-#, fuzzy
 msgid "_Reset EQ"
-msgstr "Nulstil"
+msgstr "_Nulstil EQ"
 
 #: quodlibet/ext/events/equalizer.py:299
 #, fuzzy
@@ -1856,7 +1853,7 @@ msgstr "Musik afspiller"
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
 msgid "Mode:"
-msgstr ""
+msgstr "Tilstand:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
@@ -2479,13 +2476,12 @@ msgid "Pending delete"
 msgstr "optagelsesdato"
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
-#, fuzzy
 msgid "delete"
-msgstr "_Slet"
+msgstr "slet"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "Skip"
-msgstr ""
+msgstr "Spring over"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "DUPLICATE"
@@ -2497,13 +2493,12 @@ msgid "Synchronizing"
 msgstr "Synkroniserede sangtekster"
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
-#, fuzzy
 msgid "Deleting"
-msgstr "_Slet"
+msgstr "Sletter"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "Success"
-msgstr ""
+msgstr "Lykkedes"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "FAILURE"
@@ -2525,19 +2520,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<artist>"
-msgstr "kunstner"
+msgstr "<kunstner>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<album>"
-msgstr "album"
+msgstr "<album>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<title>"
-msgstr "titel"
+msgstr "<titel>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:143
 msgid "Synchronize the following saved searches:"
@@ -2596,9 +2588,8 @@ msgid "Status"
 msgstr "Status"
 
 #: quodlibet/ext/events/synchronize_to_device.py:236
-#, fuzzy
 msgid "Source File"
-msgstr "Kilder"
+msgstr "Kildefil"
 
 #: quodlibet/ext/events/synchronize_to_device.py:245
 #, fuzzy
@@ -2813,7 +2804,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1086
 msgid "Removing \"{}\""
-msgstr ""
+msgstr "Fjerner \"{}\""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1105
 #, fuzzy
@@ -3348,9 +3339,8 @@ msgid "Default filename pattern:"
 msgstr "Standardfilnavn-mønster:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
-#, fuzzy
 msgid "OK"
-msgstr "_OK"
+msgstr "OK"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
 msgid ""
@@ -4010,7 +4000,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:373
 msgid "Save as JPEG"
-msgstr ""
+msgstr "Gem som JPEG"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:41
 msgid "Command"
