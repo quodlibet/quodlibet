@@ -52,13 +52,13 @@ USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 # Could be made configurable in the future, but these likely suffice
 # * means all tags (so real tags like 'title' and "tags" from MIGRATE like ~#added)
 # * tag1 tag2 means all except tag1 and tag2
-EXPORT_OPTIONS = [(_("Export user data like ratings and play counts"), USER_DATA_KEYS),
-                  (_("Export tags only"), f"* {USER_DATA_KEYS} {FILE_NAME_KEY}"),
-                  (_("Export tags and user data"), f"* {FILE_NAME_KEY}"),
-                  (_("Export file names and user data"), f"{USER_DATA_KEYS} "
+EXPORT_OPTIONS = [(_("Export User Data"), USER_DATA_KEYS),
+                  (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_NAME_KEY}"),
+                  (_("Export Tags and User Data"), f"* {FILE_NAME_KEY}"),
+                  (_("Export File Names and User Data"), f"{USER_DATA_KEYS} "
                                                          f"{FILE_NAME_KEY}"),
-                  (_("Export file names and tags"), f"* {USER_DATA_KEYS}"),
-                  (_("Export file names, tags and user data"), "*")]
+                  (_("Export File Names and Tags"), f"* {USER_DATA_KEYS}"),
+                  (_("Export File Names, Tags and User Data"), "*")]
 
 EXPORT_DIR_PATH = Path(quodlibet.get_cache_dir(), 'tags_and_track_user_data')
 
