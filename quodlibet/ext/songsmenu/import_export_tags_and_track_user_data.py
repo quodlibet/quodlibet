@@ -11,7 +11,7 @@ import json
 import uuid
 from pathlib import Path
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 
 from senf import path2fsn
 
@@ -666,6 +666,9 @@ def basic_track_data(track: AudioFile, include_playlist: bool,
                      include_file_name: bool) -> TrackData:
     md = {IDENTIFIER_KEY: TrackId.of_song(track)}
     if include_playlist:
+        if app.library is None:
+            raise ValueError("app.library was None - plugin needs it")
+
         pl_lib = app.library.playlists
         playlist_names = [pl.name for pl in pl_lib.playlists_featuring(track)]
         if playlist_names:

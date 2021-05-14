@@ -199,7 +199,7 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
         for c in columns:
             self._add_col(c.title, df_for_b_items(c.cell_text_getter), c.is_resizable)
 
-        self._b_order = None  # Initialize the backing field of b_order
+        self._b_order = []  # Initialize the backing field of b_order
         self.b_order = list(range(len(b_items)))  # Update it and rows
 
         self.update_b_items(b_items)
