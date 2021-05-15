@@ -158,15 +158,7 @@ CONFIG = Config()
 class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Import / Export")
-    PLUGIN_DESC = _("Imports and exports tags and track user data.\n\nTrack user data "
-                    "includes the playlists in which the selected albums are, and "
-                    "the following metadata: %s\n\nNote that you can export an album, "
-                    "and then import this data into a different version of the album. "
-                    "Even the order and number of tracks can be different. The plugin "
-                    "matches the exported metadata to the new tracks, even if the name "
-                    "of the album or tracks are slightly different. The automatic "
-                    "matching is not perfect though, so it is better to not reduce the "
-                    "following similarity values too much.") % ", ".join(MIGRATE)
+    PLUGIN_DESC = _("Imports and exports tags and track user data.")
     PLUGIN_ICON = Icons.EDIT_COPY
 
     plugin_handles = each_song(is_finite)
@@ -188,58 +180,83 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         def pp_toggled(button, *args):
             CONFIG.pretty_print_json = button.get_active()
 
-        def mt_spinner_changed(spinner):
-            CONFIG.max_track_similarity_to_need_user_check = (
-                spinner.get_value_as_int() / 100)
+        def mt_scale_changed(scale):
+            CONFIG.max_track_similarity_to_need_user_check = scale.get_value()
 
-        def ma_spinner_changed(spinner):
-            CONFIG.max_album_similarity_to_need_user_check = (
-                spinner.get_value_as_int() / 100)
+        def ma_scale_changed(scale):
+            CONFIG.max_album_similarity_to_need_user_check = scale.get_value()
 
-        def _percentage_spinner_h_box(default_ratio, lbl_txt, spinner_change_handler):
-            hbox = Gtk.HBox(spacing=6)
-            hbox.set_border_width(6)
-            label = Gtk.Label(label=lbl_txt)
-            hbox.pack_start(label, False, True, 0)
+        info_box = Gtk.VBox(spacing=6)
+        info_frame = qltk.Frame(_("Further information"), child=info_box)
+        vbox.pack_start(info_frame, False, True, 0)
 
-            percentage = int(default_ratio * 100)
-            spinner = Gtk.SpinButton(
-                adjustment=Gtk.Adjustment(value=percentage, lower=0, upper=100,
-                                          step_increment=1))
-            spinner.set_numeric(True)
-            spinner.connect("value-changed", spinner_change_handler)
-            hbox.pack_start(spinner, False, True, 0)
-            return hbox
+        info_text = _("The term 'track user data' includes the playlists in which the "
+                      "selected albums are and the following metadata: <tt>%s</tt>\n\n"
+                      "Note that you can export an album and then import this data "
+                      "into a different version of the album. Both the order and "
+                      "number of tracks can be different. The plugin matches the "
+                      "exported metadata to the new tracks, even if the name of the "
+                      "album or tracks are slightly different.\n\nThe automatic "
+                      "matching is not perfect though, so it is better to not reduce "
+                      "the following similarity values too much.") % ", ".join(MIGRATE)
+
+        info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
+        info_box.pack_start(info_lbl, True, True, 0)
 
         manual_box = Gtk.VBox(spacing=6)
-        manual_frame = qltk.Frame(_("Manual checks"), child=manual_box)
+        manual_frame = qltk.Frame(_("User interaction on import"), child=manual_box)
+        vbox.pack_start(manual_frame, False, True, 0)
 
-        mt_hbox = _percentage_spinner_h_box(
-            CONFIG.max_track_similarity_to_need_user_check,
-            _("Track similarity percentage below which a manual check is needed"),
-            mt_spinner_changed)
-        manual_box.pack_start(mt_hbox, True, True, 0)
-
-        ma_hbox = _percentage_spinner_h_box(
-            CONFIG.max_album_similarity_to_need_user_check,
-            _("Album similarity percentage below which a manual check is needed"),
-            ma_spinner_changed)
-        manual_box.pack_start(ma_hbox, True, True, 0)
-
-        tsd = Gtk.CheckButton(label=_("Do manual check if number of tracks differs"))
+        tsd = Gtk.CheckButton(
+            label=_("Require confirmation if number of tracks differs"))
         tsd.set_active(CONFIG.need_user_check_if_number_of_tracks_differs)
         tsd.connect("toggled", tsd_toggled)
         manual_box.pack_start(tsd, True, True, 0)
 
-        asd = Gtk.CheckButton(label=_("Do manual check if number of albums differs"))
+        asd = Gtk.CheckButton(
+            label=_("Require confirmation if number of albums differs"))
         asd.set_active(CONFIG.need_user_check_if_number_of_albums_differs)
         asd.connect("toggled", asd_toggled)
         manual_box.pack_start(asd, True, True, 0)
 
-        vbox.pack_start(manual_frame, False, True, 0)
+        desc = _("Percentage below which the user will have to manually check and "
+                 "optionally change which track is matched with which.")
+
+        perc_table = Gtk.Table(n_rows=2, n_columns=2)
+        perc_table.set_col_spacings(6)
+        perc_table.set_row_spacings(6)
+        manual_box.pack_start(perc_table, True, True, 0)
+
+        def format_perc(scale, value):
+            return _("%d %%") % (value * 100)
+
+        def add_perc_scale_with_label(ratio, col, lbl_text, tooltip_text, on_change):
+            scale = Gtk.HScale(adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.01, 0))
+            scale.set_digits(2)
+            scale.set_tooltip_text(tooltip_text)
+            scale.set_value_pos(Gtk.PositionType.RIGHT)
+            scale.set_value(ratio)
+            scale.connect('format-value', format_perc)
+            scale.connect('value-changed', on_change)
+
+            label = Gtk.Label(label=lbl_text)
+            label.set_alignment(0.0, 0.5)
+            label.set_padding(0, 6)
+            label.set_mnemonic_widget(scale)
+
+            xoptions = Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK
+            perc_table.attach(label, 0, 1, col, col + 1, xoptions=xoptions)
+            perc_table.attach(scale, 1, 2, col, col + 1)
+
+        add_perc_scale_with_label(CONFIG.max_track_similarity_to_need_user_check, 0,
+                                  _("Track similarity:"), desc, mt_scale_changed)
+
+        add_perc_scale_with_label(CONFIG.max_album_similarity_to_need_user_check, 1,
+                                  _("Album similarity:"), desc, ma_scale_changed)
 
         export_box = Gtk.VBox(spacing=6)
         export_frame = qltk.Frame(_("Export files"), child=export_box)
+        vbox.pack_start(export_frame, False, True, 0)
 
         pp = Gtk.CheckButton(label=_("Write pretty and clear JSON (slower)"))
         pp.set_active(CONFIG.pretty_print_json)
@@ -250,8 +267,6 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         de.set_active(CONFIG.delete_exports_after_importing)
         de.connect("toggled", de_toggled)
         export_box.pack_start(de, True, True, 0)
-
-        vbox.pack_start(export_frame, False, True, 0)
 
         return vbox
 
