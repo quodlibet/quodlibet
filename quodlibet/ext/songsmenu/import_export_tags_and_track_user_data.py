@@ -191,8 +191,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         vbox.pack_start(info_frame, False, True, 0)
 
         info_text = _("The term 'track user data' includes the playlists in which the "
-                      "selected albums are and the following metadata: <tt>%s</tt>\n\n"
-                      "Note that you can export an album and then import this data "
+                      "selected albums are and the following metadata:\n\n<tt>%s</tt>\n"
+                      "\nNote that you can export an album and then import this data "
                       "into a different version of the album. Both the order and "
                       "number of tracks can be different. The plugin matches the "
                       "exported metadata to the new tracks, even if the name of the "
