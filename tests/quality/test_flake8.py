@@ -46,5 +46,6 @@ class TestFlake8:
 
         with capture_output() as (o, e):
             style_guide.check_files([str(dir_to_check)])
-        errors = o.getvalue().splitlines()
-        assert not errors, f"{len(errors)} error(s):\n".join(errors)
+        raw = o.getvalue()
+        errors = raw.splitlines()
+        assert not errors, f"{len(errors)} error(s):\n{raw}"
