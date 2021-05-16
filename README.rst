@@ -1,3 +1,7 @@
+.. image:: https://hosted.weblate.org/widgets/quodlibet/-/quodlibet/svg-badge.svg
+    :alt: Translation status
+    :target: https://hosted.weblate.org/engage/quodlibet/
+
 .. image:: https://img.shields.io/github/workflow/status/quodlibet/quodlibet/test
     :target: https://github.com/quodlibet/quodlibet/actions
 
@@ -55,6 +59,3 @@ Contact
 
 .. image:: https://img.shields.io/badge/discord-chat-blue?style=social&logo=discord
     :target: https://discord.gg/9A4RKFEm3c
-
-.. image:: https://img.shields.io/badge/gitter-chat-green?style=social&logo=gitter
-    :target: https://gitter.im/quodlibet/Lobby

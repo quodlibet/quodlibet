@@ -10,16 +10,12 @@ help you, and we can be really bad about replying to email.
 
 If you have a question or want to report a bug please `open a new issue
 <https://github.com/quodlibet/quodlibet/issues/new/choose>`_ on the GitHub issue
-tracker.
+tracker. If you are not sure if your issue is a bug you can also `start a
+discussion on our GitHub forum
+<https://github.com/quodlibet/quodlibet/discussions>`__.
 
-If you want to address the wider Quod Libet community consider sending a mail
-to our `quod-libet-devel Google group
-<http://groups.google.com/group/quod-libet-development>`_.
+You can ask questions or just chat with us on our `Discord server
+<https://discord.gg/9A4RKFEm3c>`__.
 
-Quod Libet has an IRC channel on `OFTC <https://www.oftc.net/>`_ ,
-*#quodlibet*. It is a good place to ask for help with installation and
-configuration, or discuss development (assuming people there are paying
-attention).
-
-There is also now a `Quod Libet Gitter chatroom <https://gitter.im/quodlibet/Lobby>`_ too,
-for people that prefer that.
+Quod Libet also has an IRC channel on `OFTC <https://www.oftc.net/>`__ ,
+*#quodlibet*.

@@ -47,5 +47,5 @@ class build_sphinx(Command):
 
         srcdir = GUIDE_ROOT if not self.all else DOCS_ROOT
         self.spawn([sys.executable, "-m", "sphinx",
-                    "-b", "html", "-c", DOCS_ROOT,
+                    "-j", "auto", "-b", "html", "-c", DOCS_ROOT,
                     "-n", "-E", srcdir, TARGET])

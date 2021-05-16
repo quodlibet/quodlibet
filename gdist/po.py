@@ -27,6 +27,7 @@ gettext message catalogs.
 """
 
 import os
+import shutil
 from tempfile import mkstemp
 from distutils.errors import DistutilsOptionError
 from distutils.dep_util import newer_group, newer
@@ -137,6 +138,32 @@ class create_po(Command):
         with gettextutil.create_pot(po_directory) as pot_path:
             gettextutil.create_po(pot_path, po_path)
             print("Created %r" % os.path.abspath(po_path))
+
+
+class create_pot(Command):
+
+    description = "create a new pot file"
+    user_options = []
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            gettextutil.check_version()
+        except gettextutil.GettextError as e:
+            raise SystemExit(e)
+
+        po_package = self.distribution.po_package
+        po_directory = self.distribution.po_directory
+        with gettextutil.create_pot(po_directory) as pot_path:
+            dest = os.path.join(po_directory, po_package + ".pot")
+            shutil.copy(pot_path, dest)
+            strip_pot_date(dest)
+            print("Created %r" % os.path.abspath(dest))
 
 
 def strip_pot_date(path):

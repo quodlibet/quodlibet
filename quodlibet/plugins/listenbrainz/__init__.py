@@ -353,8 +353,8 @@ class ListenBrainzSubmitQueue():
 
 class ListenbrainzSubmission(EventPlugin):
     PLUGIN_ID = "listenbrainz"
-    PLUGIN_NAME = _("Listenbrainz Submission")
-    PLUGIN_DESC = _("Submit listens to listenbrainz.")
+    PLUGIN_NAME = _("ListenBrainz Submission")
+    PLUGIN_DESC = _("Submit listens to ListenBrainz.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def __init__(self):
@@ -534,7 +534,7 @@ class ListenbrainzSubmission(EventPlugin):
         entry.connect('changed', changed, 'tags')
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("List of tags to include in the submission. "
-                                 "Comma separated, use double-quotes if necessary."))
+                                 "Comma-separated, use double-quotes if necessary."))
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
