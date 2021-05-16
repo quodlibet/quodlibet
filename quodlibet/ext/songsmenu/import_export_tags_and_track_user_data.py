@@ -28,7 +28,8 @@ from quodlibet.formats._audio import MIGRATE, AudioFile
 from quodlibet.util import connect_obj, print_exc
 
 import quodlibet
-from quodlibet.util.path import join_path_with_escaped_name_of_legal_length
+from quodlibet.util.path import join_path_with_escaped_name_of_legal_length, \
+    stem_of_file_name, extension_of_file_name
 
 from quodlibet.util.songwrapper import SongWrapper, background_check_wrapper_changed
 
@@ -42,10 +43,12 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ['ImportExportTagsAndTrackUserDataPlugin']
 
+_PLUGIN_ID = "ImportExportTagsAndTrackUserData"
+
 # We use this instead of ~playlists, since we want to store playlists in a list
 PLAYLISTS_KEY = '//playlists'
 IDENTIFIER_KEY = '//identifier'
-FILE_NAME_KEY = '~basename'
+FILE_STEM_KEY = '//file_stem'
 
 USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 
@@ -53,15 +56,14 @@ USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 # * means all tags (so real tags like 'title' and "tags" from MIGRATE like ~#added)
 # * tag1 tag2 means all except tag1 and tag2
 EXPORT_OPTIONS = [(_("Export User Data"), USER_DATA_KEYS),
-                  (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_NAME_KEY}"),
-                  (_("Export Tags and User Data"), f"* {FILE_NAME_KEY}"),
-                  (_("Export File Names and User Data"), f"{USER_DATA_KEYS} "
-                                                         f"{FILE_NAME_KEY}"),
-                  (_("Export File Names and Tags"), f"* {USER_DATA_KEYS}"),
-                  (_("Export File Names, Tags and User Data"), "*")]
+                  (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_STEM_KEY}"),
+                  (_("Export Tags and User Data"), f"* {FILE_STEM_KEY}"),
+                  (_("Export File Stems and User Data"), f"{USER_DATA_KEYS} "
+                                                         f"{FILE_STEM_KEY}"),
+                  (_("Export File Stems and Tags"), f"* {USER_DATA_KEYS}"),
+                  (_("Export File Stems, Tags and User Data"), "*")]
 
 EXPORT_DIR_PATH = Path(quodlibet.get_cache_dir(), 'tags_and_track_user_data')
-
 os.makedirs(EXPORT_DIR_PATH, exist_ok=True)
 
 EXPORT_EXTENSION = 'json'
@@ -128,9 +130,6 @@ class TrackId(NamedTuple):
         return f'{self.disc}/{self.discs}'
 
 
-_PLUGIN_ID = "ImportExportTagsAndTrackUserData"
-
-
 class Config:
     _config = PluginConfig(_PLUGIN_ID)
 
@@ -191,13 +190,15 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         vbox.pack_start(info_frame, False, True, 0)
 
         info_text = _("The term 'track user data' includes the playlists in which the "
-                      "selected albums are and the following metadata:\n\n<tt>%s</tt>\n"
-                      "\nNote that you can export an album and then import this data "
-                      "into a different version of the album. Both the order and "
-                      "number of tracks can be different. The plugin matches the "
-                      "exported metadata to the new tracks, even if the name of the "
-                      "album or tracks are slightly different.\n\nThe automatic "
-                      "matching is not perfect though, so it is better to not reduce "
+                      "selected tracks are and the following metadata:\n\n<tt>%s</tt>\n"
+                      "\nBe aware that whatever you chose to export will be imported. "
+                      "If you exported the file stems (file names without extension), "
+                      "then, on import, the selected files will be renamed.\n\nAfter "
+                      "exporting an album you can import the data into another version "
+                      "of the album. Order and number of tracks can be different. "
+                      "The plugin matches the exported data to the new tracks, even if "
+                      "the names of the tracks are slightly different. The automatic "
+                      "matching is not always correct, so it is better to not reduce "
                       "the following similarity values too much.") % ", ".join(MIGRATE)
 
         info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
@@ -263,7 +264,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         pp.connect("toggled", pp_toggled)
         export_box.pack_start(pp, True, True, 0)
 
-        de = Gtk.CheckButton(label=_("Delete exports that have been imported"))
+        de = Gtk.CheckButton(label=_("Delete export files after they've been imported"))
         de.set_active(CONFIG.delete_exports_after_importing)
         de.connect("toggled", de_toggled)
         export_box.pack_start(de, True, True, 0)
@@ -501,9 +502,13 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             return None
 
     def _update_song(self, exported_data, song):
-        file_name = exported_data.pop(FILE_NAME_KEY, None)
-        if file_name is not None:
-            new_song_path = os.path.join(song('~dirname'), file_name)
+        file_stem = exported_data.pop(FILE_STEM_KEY, None)
+
+        if file_stem is not None:
+            file_ext = extension_of_file_name(song('~basename'))
+
+            new_name = f'{file_stem}{file_ext}'
+            new_song_path = os.path.join(song('~dirname'), new_name)
             try:
                 app.library.rename(song._song, new_song_path)
             except ValueError:
@@ -645,10 +650,10 @@ def track_data_collector_for(query: str) -> TrackDataCollector:
 
 def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollector:
     include_playlist = PLAYLISTS_KEY not in excluded_keys
-    include_file_name = FILE_NAME_KEY not in excluded_keys
+    include_file_stem = FILE_STEM_KEY not in excluded_keys
 
     def func(track: AudioFile) -> TrackData:
-        md = basic_track_data(track, include_playlist, include_file_name)
+        md = basic_track_data(track, include_playlist, include_file_stem)
         for key in track:
             if key not in excluded_keys and (key[:1] != "~" or key in MIGRATE):
                 md[key] = track[key]
@@ -660,10 +665,10 @@ def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollecto
 
 def including_track_data_collector(keys: List[str]) -> TrackDataCollector:
     include_playlist = was_removed(keys, PLAYLISTS_KEY)
-    include_file_name = was_removed(keys, FILE_NAME_KEY)
+    include_file_stem = was_removed(keys, FILE_STEM_KEY)
 
     def func(track: AudioFile) -> TrackData:
-        md = basic_track_data(track, include_playlist, include_file_name)
+        md = basic_track_data(track, include_playlist, include_file_stem)
         for key in keys:
             if key in track:
                 md[key] = track[key]
@@ -682,7 +687,7 @@ def was_removed(elements: list, o: Any) -> bool:
 
 
 def basic_track_data(track: AudioFile, include_playlist: bool,
-                     include_file_name: bool) -> TrackData:
+                     include_file_stem: bool) -> TrackData:
     md = {IDENTIFIER_KEY: TrackId.of_song(track)}
     if include_playlist:
         if app.library is None:
@@ -692,8 +697,9 @@ def basic_track_data(track: AudioFile, include_playlist: bool,
         playlist_names = [pl.name for pl in pl_lib.playlists_featuring(track)]
         if playlist_names:
             md[PLAYLISTS_KEY] = playlist_names
-    if include_file_name:
-        md[FILE_NAME_KEY] = track('~basename')
+
+    if include_file_stem:
+        md[FILE_STEM_KEY] = stem_of_file_name(track('~basename'))
     return md
 
 
