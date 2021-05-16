@@ -21,7 +21,7 @@ from quodlibet.qltk.window import PersistentWindowMixin, Dialog
 
 
 MATCH_DESC = _("Check if the columns on the left side approximately match the ones on "
-               "the right side. If they don't you can change the order here (use _ "
+               "the right side. If they don't, you can change the order here (use _ "
                "for rows that shouldn't be matched):")
 
 T = TypeVar("T")
@@ -61,7 +61,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         vb.set_spacing(24)
         self.set_border_width(5)
 
-        desc_lbl = Gtk.Label(f'\n{description}\n')
+        desc_lbl = Gtk.Label(f'\n{description}\n', wrap=True)
         vb.pack_start(desc_lbl, False, False, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
