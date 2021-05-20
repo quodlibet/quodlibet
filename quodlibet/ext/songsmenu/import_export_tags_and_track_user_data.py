@@ -53,7 +53,8 @@ FILE_STEM_KEY = '//file_stem'
 USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 
 # Could be made configurable in the future, but these likely suffice
-# * means all tags (so real tags like 'title' and "tags" from MIGRATE like ~#added)
+# "tag1 tag2" will result in only tag1 and tag2 being exported
+# * means all tags (so tags like 'title' and internal (user data) "tags" like ~#added)
 # * tag1 tag2 means all except tag1 and tag2
 EXPORT_OPTIONS = [(_("Export User Data"), USER_DATA_KEYS),
                   (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_STEM_KEY}"),
@@ -97,9 +98,11 @@ class AlbumId(NamedTuple):
 
 
 class TrackId(NamedTuple):
-    """A TrackId is class that's used to identify and match tracks. In theory, almost
+    """
+    A TrackId is class that's used to identify and match tracks. In theory, almost
     all metadata could be useful for that, but some things are far more relevant than
-    others (title vs bpm), and for performance reasons we have to limit it anyway."""
+    others (title vs bpm), and for performance reasons we have to limit it anyway.
+    """
     artist: str
     title: str
     disc: int

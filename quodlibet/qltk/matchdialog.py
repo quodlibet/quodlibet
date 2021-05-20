@@ -37,8 +37,10 @@ class ColumnSpec(Generic[T]):
 
 # We're using a Dialog, since a ConfirmationPrompt looks really ugly at such a width
 class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
-    """A prompt whose run method returns the chosen order, or an empty list if the user
-    pressed cancel."""
+    """
+    A prompt whose run method returns the chosen order, or an empty list if the user
+    pressed cancel.
+    """
 
     def __init__(self, a_items: List[T], b_items: List[T], b_order: List[Optional[int]],
                  columns: List[ColumnSpec[T]], title: str, ok_button_text: str,
@@ -128,6 +130,7 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
     By default '_' can be used to specify that a position has no match, which
     will be represented in the returned list with None.
     """
+
     # remove trailing commas, then split
     nums = text.strip(', ').split(',')
     if require_target_length_elements and len(nums) != target_length:
