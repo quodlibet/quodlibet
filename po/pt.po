@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-09 21:32+0000\n"
+"PO-Revision-Date: 2021-05-27 22:11+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
@@ -948,7 +948,7 @@ msgstr "Diminui a avaliação da música em reprodução em uma estrela"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
-msgstr "Escreve o estado do jogador (tocando/pausado)"
+msgstr "Escreve o estado do reprodutor (a reproduzir/pausado)"
 
 #: quodlibet/cli.py:107
 msgid "Hide main window"
