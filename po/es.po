@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-27 22:11+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"PO-Revision-Date: 2021-05-30 06:45+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
 "Language: es\n"
@@ -753,7 +753,7 @@ msgid "_New Playlist…"
 msgstr "Lista _nueva…"
 
 #: quodlibet/browsers/playlists/menu.py:78
-#, python-format
+#, fuzzy, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
 msgstr[0] "¿Qué quiere hacer con esta canción?"
