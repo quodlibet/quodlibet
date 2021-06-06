@@ -2,6 +2,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import os
 import shutil
 from pathlib import Path
 from time import sleep
@@ -137,6 +138,7 @@ class TWatchedFileLibrary(TLibrary):
         init_fake_app()
         config.set("library", "watch", True)
         super().setUp()
+        assert _TEMP_DIR
 
     def tearDown(self):
         destroy_fake_app()
@@ -174,7 +176,8 @@ class TWatchedFileLibrary(TLibrary):
             fn = f.name
             shutil.copy(get_data_path("silence-44-s.mp3"), fn)
             run_gtk_loop()
-            assert fn in self.library, f"{fn} should have been added to library"
+            assert fn in self.library, (f"{fn} should have been added to "
+                                        f"library [{self.fns}]")
             assert fn in {af("~filename") for af in self.added}
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
@@ -182,16 +185,23 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.flac"), path)
-            sleep(0.2)
+            sleep(1)
             assert path.exists()
             run_gtk_loop()
-            assert str(path) in self.library, "didn't get added"
+            assert str(path) in self.library, f"New path {path!r} didn't get added"
 
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
             path.rename(new_path)
+            sleep(1)
             assert not path.exists(), "test broken"
             run_gtk_loop()
             assert len(self.added) == 1
             assert not self.removed
-            assert str(new_path) in self.library, "new path not in library"
+            assert str(new_path) in self.library, f"New path {new_path!r} not in " \
+                                                  f"library [{self.fns}]"
+        os.unlink(new_path)
+
+    @property
+    def fns(self) -> str:
+        return ", ".join(s("~filename") for s in self.library)
