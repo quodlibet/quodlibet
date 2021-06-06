@@ -155,13 +155,14 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
-            sleep(0.2)
+            sleep(0.5)
             assert path.exists()
             af = MusicFile(str(path))
             af.sanitize()
             run_gtk_loop()
             assert path.exists()
-            assert str(path) in self.library
+            assert str(path) in self.library, f"{path} should be in [{self.fns}] now"
+        sleep(0.5)
         assert not path.exists()
         # Deletion now
         run_gtk_loop()
@@ -185,7 +186,7 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.flac"), path)
-            sleep(1)
+            sleep(0.5)
             assert path.exists()
             run_gtk_loop()
             assert str(path) in self.library, f"New path {path!r} didn't get added"
@@ -193,7 +194,7 @@ class TWatchedFileLibrary(TLibrary):
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
             path.rename(new_path)
-            sleep(1)
+            sleep(0.5)
             assert not path.exists(), "test broken"
             run_gtk_loop()
             assert len(self.added) == 1
