@@ -842,11 +842,11 @@ msgstr ""
 msgid "Log in to %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/util.py:86
+#: quodlibet/browsers/soundcloud/util.py:95
 msgid "Soundcloud authorisation"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/util.py:87
+#: quodlibet/browsers/soundcloud/util.py:96
 msgid "Enter Soundcloud auth code:"
 msgstr ""
 

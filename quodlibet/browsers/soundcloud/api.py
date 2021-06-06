@@ -1,10 +1,11 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import json
 from datetime import datetime
 from urllib.parse import urlencode
 
@@ -251,7 +252,7 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
-                        soundcloud_user_id=str(r.user_id),
+                        soundcloud_user_id=str(r.user.id),
                         website=r.permalink_url,
                         genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:
@@ -272,10 +273,9 @@ class SoundcloudApiClient(RestApi):
             plays = d.get("user_playback_count", 0)
             if plays:
                 song["~#playcount"] = plays
-            # print_d("Got song: %s" % song)
         except Exception as e:
             print_w("Couldn't parse a song from %s (%r). "
-                    "Had these tags:\n  %s" % (r, e, song.keys()))
+                    "Had these tags:\n  %s" % (json.dumps(r._raw), e, song.keys()))
         return song
 
     @classmethod

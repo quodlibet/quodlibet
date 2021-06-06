@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2015-09-14 22:31+0300\n"
-"Last-Translator: Dimitris Papageorgiou <dipap@gmx.com>\n"
-"Language-Team: Greek\n"
+"PO-Revision-Date: 2021-05-17 09:33+0000\n"
+"Last-Translator: Dimitris Papageorgiou <dimitris.papageorgiou@gmail.com>\n"
+"Language-Team: Greek <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/el/>\n"
 "Language: el\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 4.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -33,14 +35,12 @@ msgid "_Date"
 msgstr "_Ημερομηνία"
 
 #: quodlibet/browsers/albums/main.py:225
-#, fuzzy
 msgid "_Date Added"
-msgstr "Κεφαλίδες _Ημερομηνιών"
+msgstr "_Ημερομηνία Προσθήκης"
 
 #: quodlibet/browsers/albums/main.py:226
-#, fuzzy
 msgid "_Original Date"
-msgstr "αρχικός καλλιτέχνης"
+msgstr "_Αρχική Ημερομηνία"
 
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:53
@@ -54,9 +54,8 @@ msgid "_Rating"
 msgstr "_Βαθμολογία"
 
 #: quodlibet/browsers/albums/main.py:229
-#, fuzzy
 msgid "_Playcount"
-msgstr "Μετρητής Αναπαραγωγών"
+msgstr "_Μετρητής Αναπαραγωγών"
 
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:64
@@ -357,40 +356,33 @@ msgid "_Cancel"
 msgstr "_Ακύρωση"
 
 #: quodlibet/browsers/covergrid/main.py:126
-#, fuzzy
 msgid "Cover Grid"
-msgstr "Μέγεθος _Εξώφυλλου:"
+msgstr "Πλέγμα Εξώφυλλων"
 
 #: quodlibet/browsers/covergrid/main.py:127
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "Μέγεθος _Εξώφυλλου:"
+msgstr "_Πλέγμα Εξώφυλλων"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
-msgstr "Προχωρημένες Προτιμήσεις"
+msgstr "Προτιμήσεις Πλέγματος Εξώφυλλων"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "Δείξε _εξώφυλλα των άλμπουμ"
+msgstr "Δείξε _κείμενο άλμπουμ"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "Όλα τα Άλμπουμ"
+msgstr "Εμφάνιση αντικειμένου \"Όλα τα Άλμπουμ\""
 
 #: quodlibet/browsers/covergrid/prefs.py:82
-#, fuzzy
 msgid "Wide Mode"
-msgstr "Λειτουργία _Πλατιάς προβολής"
+msgstr "Λειτουργία Πλατιάς προβολής"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "_Εμφάνιση ειδοποίησης"
+msgstr "Μεγέθυνση Εξώφυλλου"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
@@ -432,9 +424,8 @@ msgid "Internet Radio"
 msgstr "Διαδικτυακό Ραδιόφωνο"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "Όλοι οι Σταθμοί"
+msgstr "Προσθήκη σταθμών"
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
@@ -446,7 +437,7 @@ msgstr "Νέος Σταθμός"
 
 #: quodlibet/browsers/iradio.py:369
 msgid "Enter the location of an Internet radio station:"
-msgstr "Εισήγαγε την τοποθεσία ενός διαδικτυακού ραδιοφωνικού σταθμού"
+msgstr "Εισήγαγε ραδιοφωνικό σταθμό:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
@@ -624,7 +615,7 @@ msgstr "Δεν βρέθηκε σταθμός ραδιοφώνου στο %s."
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "Τίποτα για προσθήκη"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
@@ -665,16 +656,15 @@ msgstr "Όλα"
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "Μικρή"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "Πλατιά"
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "Επεξεργασία Στηλών"
+msgstr "Με στήλες"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -682,6 +672,8 @@ msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "<tt>%s</tt>"
 msgstr ""
+"Πρότυπο ετικετών με προαιρετική επισήμανση π.χ. <tt>composer</tt> ή\n"
+"<tt>%s</tt>"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -689,15 +681,15 @@ msgstr "Προτιμήσεις Περιηγητή με Στήλες"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "Διάταξη στηλών"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "Περιεχόμενο στηλών"
 
 #: quodlibet/browsers/paned/prefs.py:242
 msgid "Equal pane width"
-msgstr ""
+msgstr "Ισομεγέθη παράθυρα"
 
 #: quodlibet/browsers/playlists/main.py:49
 #: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
@@ -713,23 +705,20 @@ msgid "_Remove from Playlist"
 msgstr "Αφαίρεση από την Λίστα"
 
 #: quodlibet/browsers/playlists/main.py:213
-#, fuzzy
 msgid "New"
-msgstr "_Νέο"
+msgstr "Νέο"
 
 #: quodlibet/browsers/playlists/main.py:217
-#, fuzzy
 msgid "Import"
-msgstr "_Εισαγωγή"
+msgstr "Εισαγωγή"
 
 #: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
 msgstr "Αδυναμία εισαγωγής λίστας αναπαραγωγής"
 
 #: quodlibet/browsers/playlists/main.py:440
-#, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
-msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M3U και PLS μόνο."
+msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M3U/M3U8 και PLS."
 
 #: quodlibet/browsers/playlists/main.py:491
 msgid "_Rename"
@@ -765,22 +754,19 @@ msgstr "Επιβεβαίωση ενέργειας στην λίστα \"%s\""
 
 #: quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
-msgstr ""
+msgstr "κενό"
 
 #: quodlibet/browsers/playlists/prefs.py:39
-#, fuzzy
 msgid "Example Playlist"
-msgstr "Νέα Λίστα Αναπαραγωγής"
+msgstr "Παράδειγμα Λίστας Αναπαραγωγής"
 
 #: quodlibet/browsers/playlists/prefs.py:47
-#, fuzzy
 msgid "Playlist Browser Preferences"
-msgstr "Προτιμήσεις Περιηγητή με Στήλες"
+msgstr "Προτιμήσεις Περιηγητή Λιστών Αναπαραγωγής"
 
 #: quodlibet/browsers/playlists/prefs.py:52
-#, fuzzy
 msgid "Playlist display"
-msgstr "Λίστες Αναπαραγωγής"
+msgstr "Εμφάνιση Λιστών Αναπαραγωγής"
 
 #: quodlibet/browsers/playlists/util.py:32
 #, python-format
@@ -820,23 +806,20 @@ msgid "_Limit Results"
 msgstr "_Περιορισμός Αποτελεσμάτων"
 
 #: quodlibet/browsers/tracks.py:37
-#, fuzzy
 msgid "_Allow multiple queries"
-msgstr "Διαχωρισμός σε πο_λλαπλές τιμές"
+msgstr "_Επέτρεψε πολλαπλά ερωτήματα"
 
 #: quodlibet/browsers/tracks.py:51 quodlibet/qltk/information.py:468
 msgid "Track List"
 msgstr "Λίστα Κομματιών"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "Λίστα Κομματιών"
+msgstr "Λίστα _Κομματιών"
 
 #: quodlibet/browsers/soundcloud/main.py:39
-#, fuzzy
 msgid "Soundcloud Browser"
-msgstr "Περιηγητής με Στήλες"
+msgstr "Περιηγητής Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Sound_cloud"
@@ -847,46 +830,44 @@ msgid "Search"
 msgstr "Αναζήτηση"
 
 #: quodlibet/browsers/soundcloud/main.py:69
-#, fuzzy
 msgid "My tracks"
-msgstr "κομμάτια"
+msgstr "Τα κομμάτια μου"
 
 #: quodlibet/browsers/soundcloud/main.py:141
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "Μετάβαση στο %s"
 
 #: quodlibet/browsers/soundcloud/main.py:443
-#, fuzzy
 msgid "Connected"
-msgstr "Σύνδεση"
+msgstr "Συνδεδεμένο"
 
 #: quodlibet/browsers/soundcloud/main.py:444
 #, python-format
 msgid "Quod Libet is now connected, <b>%s</b>!"
-msgstr ""
+msgstr "Ο Quod Libet είναι πλέον συνδεδεμένος, <b>%s</b>!"
 
 #: quodlibet/browsers/soundcloud/main.py:456
 #, python-format
 msgid "Log out of %s"
-msgstr ""
+msgstr "Αποσύνδεση %s"
 
 #: quodlibet/browsers/soundcloud/main.py:458
 msgid "Enter code…"
-msgstr ""
+msgstr "Εισαγωγή κωδικού…"
 
 #: quodlibet/browsers/soundcloud/main.py:459
 #, python-format
 msgid "Log in to %s"
-msgstr ""
+msgstr "Σύνδεση στο %s"
 
 #: quodlibet/browsers/soundcloud/util.py:86
 msgid "Soundcloud authorisation"
-msgstr ""
+msgstr "Εξουσιοδότηση Soundcloud"
 
 #: quodlibet/browsers/soundcloud/util.py:87
 msgid "Enter Soundcloud auth code:"
-msgstr ""
+msgstr "Εισαγωγή κωδικού εξουσιοδότησης Soundcloud:"
 
 #: quodlibet/cli.py:50
 msgid "Quod Libet is not running (add '--run' to start it)"
@@ -910,7 +891,7 @@ msgstr "Έναρξη αναπαραγωγής άμεσα"
 
 #: quodlibet/cli.py:91
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "Μην προβάλεις παράθυρα στην εκκίνηση"
 
 #: quodlibet/cli.py:94
 msgid "Jump to next song"
@@ -952,11 +933,11 @@ msgstr "Μείωση της έντασης αναπαραγωγής"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "Αύξησε τη βαθμολογία του αναπαραγόμενου τραγουδιού κατά ένα αστέρι"
 
 #: quodlibet/cli.py:105
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "Μείωση βαθμολογίας αναπαραγόμενου τραγουδιού κατά ένα αστέρι"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
@@ -1023,23 +1004,20 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ΩΩ:]ΛΛ:ΔΔ"
 
 #: quodlibet/cli.py:125
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "Εναλλαγή αναπαραγωγής/παύσης"
+msgstr "Ενεργοποίηση ή εναλλαγή τυχαίας σειράς"
 
 #: quodlibet/cli.py:126
-#, fuzzy
 msgid "Set shuffle mode type"
-msgstr "Εναλλαγή αναπαραγωγής/παύσης"
+msgstr "Ρύθμιση λειτουργίας τυχαίας σειράς"
 
 #: quodlibet/cli.py:127
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Ενεργοποίηση, απενεργοποίηση ή εναλλαγή της επανάληψης"
 
 #: quodlibet/cli.py:128
-#, fuzzy
 msgid "Set repeat mode type"
-msgstr "Εναλλαγή αναπαραγωγής/παύσης"
+msgstr "Ρύθμιση λειτουργίας επανάληψης"
 
 #: quodlibet/cli.py:129
 msgid "Set the volume"
@@ -1064,18 +1042,16 @@ msgid "filename"
 msgstr "όνομα αρχείου"
 
 #: quodlibet/cli.py:132
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "Αναζήτηση στο αναπαραγόμενο τραγούδι"
+msgstr "Ορισμός βαθμολογίας τρέχοντος τραγουδιού"
 
 #: quodlibet/cli.py:133
 msgid "Set the current browser"
 msgstr "Καθορισμός τρέχοντος περιηγητή"
 
 #: quodlibet/cli.py:134
-#, fuzzy
 msgid "Stop after the playing song"
-msgstr "Βαθμολόγηση αναπαραγόμενου τραγουδιού"
+msgstr "Βαθμολόγηση τρέχοντος τραγουδιού"
 
 #: quodlibet/cli.py:135
 msgid "Open a new browser"
@@ -1125,7 +1101,7 @@ msgstr "Αφαίρεση αρχείου ή ερωτήματος από την ο
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "Προσθήκη αρχείου ή φακέλου στη μουσικοθήκη"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
@@ -1142,9 +1118,8 @@ msgid "Try %s --help."
 msgstr "Δοκιμάστε το %s --help."
 
 #: quodlibet/errorreport/ui.py:58
-#, fuzzy
 msgid "An Error Occurred"
-msgstr "Προκλήθηκε Σφάλμα"
+msgstr "Παρουσιάστηκε Σφάλμα"
 
 #: quodlibet/errorreport/ui.py:60
 msgid ""
@@ -1152,24 +1127,25 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"Μπορείτε να αγνοήσετε το σφάλμα αλλά η εφαρμογή ίσως παρουσιάσει αστάθεια "
+"μέχρι να γίνει επανεκκίνηση. Η υποβολή αναφοράς σφάλματος θα σας πάρει λίγα "
+"δευτερόλεπτα και θα μας βοηθούσε πολύ."
 
 #: quodlibet/errorreport/ui.py:69 quodlibet/errorreport/ui.py:85
 msgid "Submit Error Report"
-msgstr ""
+msgstr "Υποβολή Αναφοράς Σφάλματος"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "Επανεκκίνηση"
 
 #: quodlibet/errorreport/ui.py:71
-#, fuzzy
 msgid "Ignore Error"
-msgstr "Αγνόηση Όλων των Σ_φαλμάτων"
+msgstr "Αγνόηση Σφάλματος"
 
 #: quodlibet/errorreport/ui.py:75
-#, fuzzy
 msgid "Error details:"
-msgstr "Λεπτομέρειες Σφάλματος"
+msgstr "Λεπτομέρειες σφάλματος:"
 
 #: quodlibet/errorreport/ui.py:87
 msgid ""
@@ -1177,25 +1153,29 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"Διάφορες λεπτομέρειες σχετικά με το σφάλμα και το σύστημά σας θα σταλούν σε "
+"μια τρίτη σελίδα (<a href='https://www.sentry.io'>www.sentry.io</a>). "
+"Μπορείτε να επιθεωρήσετε τα δεδομένα πριν αποσταλούν."
 
 #: quodlibet/errorreport/ui.py:95
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
 msgstr ""
+"(προαιρετικό) Μια σύντομη περιγραφή των συμβάντων πριν την εμφάνιση του "
+"σφάλματος:"
 
 #: quodlibet/errorreport/ui.py:104
 msgid "_Send"
-msgstr ""
+msgstr "_Αποστολή"
 
 #: quodlibet/errorreport/ui.py:110
-#, fuzzy
 msgid "Short description…"
-msgstr "περιγραφή"
+msgstr "Σύντομη περιγραφή…"
 
 #: quodlibet/errorreport/ui.py:113
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Δεδομένα προς αποστολή:"
 
 #: quodlibet/exfalso.py:34
 msgid "an audio tag editor"
@@ -1206,30 +1186,28 @@ msgid "directory"
 msgstr "κατάλογος"
 
 #: quodlibet/exfalso.py:41
-#, fuzzy
 msgid "Audio metadata editor"
-msgstr "Επεξεργαστής ετικετών μουσικής"
+msgstr "Επεξεργαστής ηχητικών μεταδεδομένων"
 
 #: quodlibet/ext/covers/artwork_url.py:19
-#, fuzzy
 msgid "Artwork URL Cover Source"
-msgstr "Πηγή Εξωφύλλου Last.fm"
+msgstr "Πηγή URL Εξωφύλλου"
 
 #: quodlibet/ext/covers/artwork_url.py:20
 msgid ""
 "Downloads covers linked to by the artwork_url tag. This works with the "
 "Soundcloud browser."
 msgstr ""
+"Κατεβάζει εξώφυλλα συνδεδεμένα με την ετικέτα artwork_url. Χρησιμοποιείται "
+"με τον περιηγητή Soundcloud."
 
 #: quodlibet/ext/covers/discogs.py:28
-#, fuzzy
 msgid "Discogs Cover Source"
-msgstr "Πηγή Εξωφύλλου Last.fm"
+msgstr "Πηγή Εξωφύλλου Discogs"
 
 #: quodlibet/ext/covers/discogs.py:29
-#, fuzzy
 msgid "Downloads covers from Discogs."
-msgstr "Λήψη εξώφυλλων άλμπουμ από διάφορες ιστοσελίδες."
+msgstr "Λήψη εξώφυλλων άλμπουμ από το Discogs."
 
 #: quodlibet/ext/covers/lastfm.py:20
 msgid "Last.fm Cover Source"
@@ -1320,13 +1298,12 @@ msgid "Advanced Preferences"
 msgstr "Προχωρημένες Προτιμήσεις"
 
 #: quodlibet/ext/events/advanced_preferences.py:84
-#, fuzzy
 msgid "Allow editing of advanced config settings."
-msgstr "Επιτρέψτε την αλλαγή ρυθμίσεων για προχωρημένους."
+msgstr "Επιτρέψτε την επεξεργασία ρυθμίσεων για προχωρημένους."
 
 #: quodlibet/ext/events/advanced_preferences.py:195
 msgid "I know what I'm doing"
-msgstr ""
+msgstr "Ξέρω τι κάνω"
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1417,33 +1394,28 @@ msgid "Preview"
 msgstr "Προεπισκόπηση"
 
 #: quodlibet/ext/events/appinfo.py:28
-#, fuzzy
 msgid "Application Information"
-msgstr "Πληροφορίες"
+msgstr "Πληροφορίες Εφαρμογής"
 
 #: quodlibet/ext/events/appinfo.py:29
 msgid "Various information about the application and its environment."
-msgstr ""
+msgstr "Διάφορες πληροφορίες για την εφαρμογή και το περιβάλλον της."
 
 #: quodlibet/ext/events/appinfo.py:62
-#, fuzzy
 msgid "Supported Formats"
-msgstr "Υποστηριζόμενοι τύποι αρχείων: %s"
+msgstr "Υποστηριζόμενοι Τύποι Αρχείων"
 
 #: quodlibet/ext/events/appinfo.py:70
-#, fuzzy
 msgid "Configuration Directory"
-msgstr "Φίλτρο βάσει Καταλόγου"
+msgstr "Κατάλογος Ρυθμίσεων"
 
 #: quodlibet/ext/events/appinfo.py:77
-#, fuzzy
 msgid "Cache Directory"
-msgstr "κατάλογος"
+msgstr "Κατάλογος Κρυφής Μνήμης"
 
 #: quodlibet/ext/events/appinfo.py:84
-#, fuzzy
 msgid "Audio Backend"
-msgstr "Ροές Ήχου"
+msgstr "Υποσύστημα Ήχου"
 
 #: quodlibet/ext/events/auto_library_update.py:139
 msgid "Automatic Library Update"
@@ -1456,9 +1428,8 @@ msgstr ""
 "Διατηρεί τη μουσικοθήκη σας ενημερωμένη με χρήση inotify. Χρειάζεται το %s."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
-#, fuzzy
 msgid "After every play (default)"
-msgstr "Επαναφορά στο προκαθορισμένο πρότυπο"
+msgstr "Μετά από κάθε αναπαραγωγή (προεπιλογή)"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
@@ -1467,10 +1438,13 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
+"Κάθε φορά που ένα τραγούδι αναπαράγεται πλήρως, το πρόσθετο θα αποθηκεύει "
+"τις ετικέτες στο αρχείο. Οι υπερπηδήσεις τραγουδιών δεν αποθηκεύονται, "
+"αποφεύγοντας έτσι αχρείαστες εγγραφές."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
-msgstr ""
+msgstr "Μετά από κάθε αναπαραγωγή ή υπερπήδηση"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:41
@@ -1479,10 +1453,14 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
+"Όποτε ένα τραγούδι αναπαράγεται ή υπερπηδάτε, το πρόσθετο θα γράφει τις "
+"ετικέτες στο αρχείο. Ίσως είναι χρήσιμο αν θέλετε να είστε σίγουροι πως η "
+"βαθμολογία των τραγουδιών που δεν σας αρέσουν, οπότε και δεν τα ακούτε, "
+"γράφονται στα αρχεία."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "Μία φορά, όταν το άλμπουμ έχει βαθμολογηθεί πλήρως"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
