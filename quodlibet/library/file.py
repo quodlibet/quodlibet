@@ -11,6 +11,7 @@ from typing import Generator, Set, Iterable, Optional
 
 from gi.repository import Gio, GLib
 
+import senf
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
 from quodlibet.library.base import iter_paths, Library, PicklingMixin
@@ -18,10 +19,10 @@ from quodlibet.qltk.notif import Task
 from quodlibet.util import copool, print_exc
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import ismount, unexpand, normalize_path
-from senf import fsn2text, fsnative, expanduser, text2fsn, _fsnative
+from senf import fsn2text, fsnative, expanduser, text2fsn
 
 
-class FileLibrary(Library[_fsnative, AudioFile], PicklingMixin):
+class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
     """A library containing items on a local(-ish) filesystem.
 
     These must support the valid, exists, mounted, and reload methods,
@@ -381,7 +382,7 @@ class FileLibrary(Library[_fsnative, AudioFile], PicklingMixin):
         self.save()
         print_d(f"Done moving to {new_path!r}.", self._name)
 
-    def move_song(self, song: AudioFile, new_path: _fsnative) -> bool:
+    def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
         """Updates the location of a song, without touching the file.
 
         :returns: True if it was could be found (and moved)
@@ -486,7 +487,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                     return
                 if song:
                     print_d(f"Moving {file_path} to {other_path}...")
-                    self.move_song(song, text2fsn(str(other_path)))
+                    self.move_song(song, text2fsn(str(other_path)))  # type:ignore
                 elif self.is_monitored_dir(file_path):
                     if self.librarian:
                         print_d(f"Moving tracks from {file_path} -> {other_path}...")
