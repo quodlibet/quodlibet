@@ -153,7 +153,8 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
-            sleep(0.1)
+            sleep(0.2)
+            assert path.exists()
             af = MusicFile(str(path))
             af.sanitize()
             run_gtk_loop()
@@ -161,10 +162,7 @@ class TWatchedFileLibrary(TLibrary):
             assert str(path) in self.library
         assert not path.exists()
         # Deletion now
-        for i in range(10):
-            run_gtk_loop()
-            if self.removed:
-                break
+        run_gtk_loop()
         assert self.removed, "Nothing was automatically removed"
         assert len(self.added) == 1
 
@@ -184,7 +182,8 @@ class TWatchedFileLibrary(TLibrary):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
             path = Path(f.name)
             shutil.copy(get_data_path("silence-44-s.flac"), path)
-            sleep(0.1)
+            sleep(0.2)
+            assert path.exists()
             run_gtk_loop()
             assert str(path) in self.library, "didn't get added"
 
