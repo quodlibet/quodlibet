@@ -6,6 +6,8 @@ import shutil
 from pathlib import Path
 from time import sleep
 
+import pytest as pytest
+
 from quodlibet import config
 from quodlibet.formats import MusicFile
 from quodlibet.library import SongFileLibrary
@@ -146,6 +148,7 @@ class TWatchedFileLibrary(TLibrary):
         run_gtk_loop()
         return lib
 
+    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_adding_removing(self):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
             path = Path(f.name)
@@ -176,6 +179,7 @@ class TWatchedFileLibrary(TLibrary):
             assert fn in self.library, f"{fn} should have been added to library"
             assert fn in {af("~filename") for af in self.added}
 
+    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving(self):
         with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
             path = Path(f.name)
