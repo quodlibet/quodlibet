@@ -21,7 +21,7 @@ from quodlibet.util.path import ismount, unexpand, normalize_path
 from senf import fsn2text, fsnative, expanduser, text2fsn, _fsnative
 
 
-class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
+class FileLibrary(Library[_fsnative, AudioFile], PicklingMixin):
     """A library containing items on a local(-ish) filesystem.
 
     These must support the valid, exists, mounted, and reload methods,
@@ -390,7 +390,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         key = song.key
         print_d(f"Moving {key!r} -> {new_path!r}")
         try:
-            del self._contents[key]
+            del self._contents[key]  # type: ignore
         except KeyError:
             existed = False
             # Continue - maybe it's already moved
