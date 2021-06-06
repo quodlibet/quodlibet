@@ -11,7 +11,6 @@ from typing import Generator, Set, Iterable, Optional
 
 from gi.repository import Gio, GLib
 
-import senf
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
 from quodlibet.library.base import iter_paths, Library, PicklingMixin
