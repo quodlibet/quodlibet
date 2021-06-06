@@ -277,15 +277,6 @@ class PicklingMixin:
             self.dirty = False
 
 
-class PicklingLibrary(Library[K, V], PicklingMixin):
-    """A library that pickles its contents to disk"""
-
-    def __init__(self, name=None):
-        print_d("Using pickling persistence for library \"%s\"" % name)
-        PicklingMixin.__init__(self)
-        Library.__init__(self, name)
-
-
 def iter_paths(root, exclude=[], skip_hidden=True):
     """yields paths contained in root (symlinks dereferenced)
 
