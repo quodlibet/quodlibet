@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-27 22:11+0000\n"
-"Last-Translator: ssantos <ssantos@web.de>\n"
+"PO-Revision-Date: 2021-06-08 19:47+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
 "Language: pt\n"
@@ -1274,31 +1274,31 @@ msgstr ""
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
-msgstr "Capitalização de títulos"
+msgstr "Maiusculização de títulos"
 
 #: quodlibet/ext/editing/titlecase.py:21
 msgid "Title-cases tag values in the tag editor."
 msgstr ""
-"Capitaliza etiquetas no editor de etiquetas, pelas regras de capitalização "
+"Maiusculiza etiquetas no editor de etiquetas, pelas regras de maiusculização "
 "de títulos."
 
 #: quodlibet/ext/editing/titlecase.py:40
 msgid "Title-_case Value"
-msgstr "_Capitalizar valor como título"
+msgstr "Maius_culizar valor como título"
 
 #: quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
-msgstr "Permitir _ALL-CAPS em etiquetas"
+msgstr "Permitir TUDO EM M_AIÚSCULAS em etiquetas"
 
 #: quodlibet/ext/editing/titlecase.py:52
 msgid "_Human title case"
-msgstr "Capitalização de títulos _humana"
+msgstr "Maiusculização de títulos _humana"
 
 #: quodlibet/ext/editing/titlecase.py:53
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
-"Usa regras comuns para capitalização de títulos em inglês, como em \"Dark "
+"Usa regras comuns para maiusculização de títulos em inglês, como em \"Dark "
 "Night of the Soul\""
 
 #: quodlibet/ext/events/advanced_preferences.py:83
