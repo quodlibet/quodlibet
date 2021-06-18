@@ -67,6 +67,7 @@ quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/seekpoints.py
 quodlibet/ext/events/squeezebox_sync.py
+quodlibet/ext/events/stop_on_pause.py
 quodlibet/ext/events/synchronize_to_device.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
