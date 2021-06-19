@@ -2365,6 +2365,30 @@ msgstr ""
 msgid "Error finding %s. Please check settings"
 msgstr ""
 
+#: quodlibet/ext/events/stop_on_pause.py:22
+msgid "Stop on Pause"
+msgstr ""
+
+#: quodlibet/ext/events/stop_on_pause.py:24
+msgid ""
+"This plugin changes Pause to Stop/Play/Seek.\n"
+"\n"
+"This behavior is useful if Quod Libet fails to switch audio devices when a "
+"new audio device is added to the system (Bluetooth speaker, USB DAC, etc).\n"
+"\n"
+"If the option for 'Only Seekable Sources' is not checked, this plugin will "
+"ensure the position in the current source is maintained. Otherwise, playback "
+"will be left stopped and must restart from the begining."
+msgstr ""
+
+#: quodlibet/ext/events/stop_on_pause.py:75
+msgid "Only Seekable Sources"
+msgstr ""
+
+#: quodlibet/ext/events/stop_on_pause.py:86
+msgid "Plugin Options"
+msgstr ""
+
 #: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending copy"
 msgstr ""
