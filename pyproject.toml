@@ -28,7 +28,7 @@ soco = { version = "^0.22.2", optional = true }
 
 [tool.poetry.extras]
 # Use with poetry install -E plugins
-plugins = ["musicbrainzngs", "dbus-python", "paho-mqtt", "soco"]
+plugins = ["musicbrainzngs", "pyinotify", "dbus-python", "paho-mqtt", "soco"]
 
 [tool.poetry.dev-dependencies]
 pytest = '^6.0'
