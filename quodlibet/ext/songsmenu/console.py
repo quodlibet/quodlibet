@@ -1,5 +1,6 @@
 # Copyright (C) 2006 - Steve Frécinaux
 #            2016-17 - Nick Boultbee
+#               2021 - halfbrained@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
 import sys
 import re
 import traceback
+from itertools import takewhile
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
@@ -273,6 +275,47 @@ class PythonConsole(Gtk.ScrolledWindow):
                 buffer.place_cursor(inp)
             return True
 
+        # completion - Ctrl+Space , Ctrl+Shift+Space
+        elif event.keyval == Gdk.KEY_space \
+                and (event_state == (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+                        or event_state == (Gdk.ModifierType.CONTROL_MASK)):
+            buffer = view.get_buffer()
+
+            # get string to left of caret  inside command text-line
+            _inp_mark = buffer.get_mark("input")
+            _ins_mark = buffer.get_mark("insert")
+            _inp = buffer.get_iter_at_mark(_inp_mark)
+            ins = buffer.get_iter_at_mark(_ins_mark)
+            cmd_start = buffer.get_text(_inp, ins, True)
+
+            # get identifiers chain string, e.g. `a.b.c`, or a single identifier
+            _identifiers_chars = takewhile(lambda x: x.isalnum() or x in {'_', '.'},  reversed(cmd_start))
+            _idcs_len = len(list(_identifiers_chars)) # lengt of identifiers chain string
+            ids_str = cmd_start[-_idcs_len:]
+
+            # Ctrl+Shift+Space: has Shift: include identifiers starting with '__'
+            is_shift = bool(event_state & Gdk.ModifierType.SHIFT_MASK)
+
+            comp_items = self.get_completion_items(ids_str, include_private=is_shift)
+
+            if comp_items:
+                # sort completions: case-insensitive, items starting with '_' - at the end
+                comp_items.sort(key=lambda x: (x[0].startswith('_'),  x[0].lower()) )
+
+                dialog = ListChoiceDialog(self.get_parent(), comp_items)
+                choice = dialog.run()
+                dialog.destroy()
+
+                if isinstance(choice, int)  and  choice >= 0:
+                    last = ids_str.split('.')[-1]
+                    insert_text = comp_items[choice][0]
+                    if last: # cut off prefix, already present
+                        insert_text = insert_text[len(last):]
+
+                    buffer.insert(ins, insert_text)
+
+            return True
+
     def __mark_set_cb(self, buffer, iter, name):
         input = buffer.get_iter_at_mark(buffer.get_mark("input"))
         pos = buffer.get_iter_at_mark(buffer.get_insert())
@@ -370,6 +413,92 @@ class PythonConsole(Gtk.ScrolledWindow):
         sys.stdout, self.stdout = self.stdout, sys.stdout
         sys.stderr, self.stderr = self.stderr, sys.stderr
 
+    def get_completion_items(self, ids_str, include_private=False):
+        """ get completion suggestions
+            ids_str - identifiers chain string, e.g. `a.b.c`, or a single identifier
+        """
+        import inspect
+
+        def get_comp(obj, pre):
+            """ get completion item names from `obj`-object or `self.namespace` with prefix `pre`
+            """
+            dir_result = dir(obj)  if obj != None else  self.namespace
+
+            comp = [] # result: (completion-name, details)
+            for name in dir_result:
+                if (pre  and  not name.startswith(pre)) \
+                        or  (not include_private  and  name.startswith('__')):
+                    continue
+
+                if obj != None:
+                    try:
+                        f = getattr(obj, name)
+                    except:
+                        continue
+                else:
+                    f = self.namespace.get(name)
+
+                if not callable(f):
+                    comp.append((name, ''))
+                else:
+                    try:
+                        # ArgSpec( args=['id_menu', 'id_action', 'command', 'caption', 'index', 'hotkey', 'tag'],
+                        #           varargs=None, keywords=None,
+                        #           defaults=('', '', -1, '', ''))
+                        spec = inspect.getfullargspec(f)
+                    except TypeError:
+                        spec = None
+
+                    if spec:
+                        sargs = []
+                        arglen = len(spec.args) if spec.args else 0
+                        deflen = len(spec.defaults) if spec.defaults else 0
+                        noargs = arglen-deflen
+                        for i in range(arglen):
+                            if i == 0 and spec.args[i] == 'self':
+                                continue
+
+                            if i < noargs:
+                                sargs.append(spec.args[i])
+                            else:
+                                sargs.append(spec.args[i] +'='+ spec.defaults[i-noargs].__repr__())
+
+                        details = " ({})".format(", ".join(sargs))
+                        comp.append((name, details))
+                    else:
+                        comp.append((name, " ()"))
+            #end for
+
+            return comp
+        #end get_comp()
+
+        comp = None
+        # method, field
+        if '.' in ids_str:
+            spl = ids_str.split('.')
+
+            # search for target object
+            var = None
+            for fname in spl[:-1]:
+                if var is None:
+                    var = self.namespace.get(fname)
+                else:
+                    try:
+                        var = getattr(var, fname, None)
+                    except:
+                        pass
+
+                if var is None:
+                    break
+
+            if var != None:
+                comp = get_comp(obj=var, pre=spl[-1])
+
+        # single var or empty
+        else:
+            comp = get_comp(obj=None, pre=ids_str)
+
+        return comp
 
 class OutFile:
     """A fake output file object. It sends output to a TK test widget,
@@ -413,3 +542,50 @@ class OutFile:
         raise IOError(29, 'Illegal seek')
 
     truncate = tell
+
+
+class ListChoiceDialog(Gtk.Dialog):
+    """ display listbox to choose an item from `rows` list, returns index if the chosen item, if positive
+    """
+
+    def __init__(self, parent, rows):
+        Gtk.Dialog.__init__(self, title=_("Completion"), transient_for=parent, flags=0)
+        self.set_default_size(400, 250)
+
+        listbox = Gtk.ListBox()
+        listbox.set_selection_mode(Gtk.SelectionMode.SINGLE)
+
+        for i,(name,details) in enumerate(rows):
+            row = Gtk.ListBoxRow()
+            hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
+            row.add(hbox)
+
+            lbl   = Gtk.Label(label=name, xalign=0)
+            lbl2  = Gtk.Label(label=details, xalign=0)
+            hbox.pack_start(lbl,  expand=False, fill=False, padding=0)
+            hbox.pack_start(lbl2, expand=True, fill=True, padding=0)
+
+            # dim the details-label
+            style = lbl2.get_style_context()
+            style.add_class('dim-label')
+            add_css(lbl2, ".dim-label { opacity: 0.5; } ")
+
+            listbox.add(row)
+
+            if i == 0:
+                listbox.set_focus_child(row)
+
+        listbox.connect('row-activated', self.on_row_click)
+
+        scroll = Gtk.ScrolledWindow()
+        scroll.add(listbox)
+
+        content = self.get_content_area()
+        content.pack_start(scroll, True, True, 0)
+
+
+        content.show_all()
+        self.get_action_area().hide()
+
+    def on_row_click(self, listbox, row):
+        self.response(row.get_index())
