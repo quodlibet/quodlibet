@@ -14,20 +14,22 @@ from tests.plugin import PluginTestCase
 
 AUDIO_FILE = SongWrapper(AudioFile({'~filename': "/tmp/foobar"}))
 
+
 class Dummy:
     dummy_val = "str!"
 
     def dummy_meth(self, arg, varg=101):
         pass
 
+
 DUMMY_COMPLETIONS = [
     ('dummy_meth', ' (arg, varg=101)'),
-    ('dummy_val',  ''),
+    ('dummy_val', ''),
 ]
-NAMESPACE_COMPLETIONS = ('dummy',   '')
+NAMESPACE_COMPLETIONS = ('dummy', '')
+
 
 class TConsole(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["Python Console Sidebar"]
 
@@ -56,5 +58,3 @@ class TConsole(PluginTestCase):
         assert NAMESPACE_COMPLETIONS in comp
 
         plugin.disabled()
-
-
