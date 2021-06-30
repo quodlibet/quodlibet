@@ -974,9 +974,8 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.set_cursor(path)
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def status_text(self, count, time=None):
-        return numeric_phrase("%(count)d station", "%(count)d stations",
-                              count, 'count')
+    def status_text(self, count: int, time: Optional[str] = None) -> str:
+        return numeric_phrase("%(count)d station", "%(count)d stations", count, 'count')
 
 
 from quodlibet import app

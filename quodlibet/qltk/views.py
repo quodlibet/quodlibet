@@ -618,8 +618,7 @@ class BaseView(Gtk.TreeView):
     __gsignals__: GSignals = {
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated
-        'selection-changed': (
-            GObject.SignalFlags.RUN_LAST, None, (object, )),
+        'selection-changed': (GObject.SignalFlags.RUN_LAST, None, (object, )),
     }
 
     def __init__(self, *args, **kwargs):
