@@ -362,14 +362,16 @@ class SongListDnDMixin:
 
 class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                util.InstanceTracker):
-    # A TreeView containing a list of songs.
+    """A TreeView containing a list of songs."""
 
     __gsignals__: GSignals = {
         'songs-removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'orders-changed': (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
-    headers: List[str] = [] # The list of current headers.
+    headers: List[str] = []
+    """The list of current headers."""
+
     star = list(Query.STAR)
     sortable = True
 
@@ -389,7 +391,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         header = header_tag_split(header)[0]
         can_filter = browser.can_filter
         menu_items = []
-        if (header not in ["artist", "album"] and can_filter(header)):
+        if header not in ["artist", "album"] and can_filter(header):
             menu_items.append(Filter(header))
         if can_filter("artist"):
             menu_items.append(Filter("artist"))
@@ -400,8 +402,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.show_all()
         return menu
 
-    def __init__(self, library, player=None, update=False,
-                 model_cls=PlaylistModel):
+    def __init__(self, library, player=None, update=False, model_cls=PlaylistModel):
         super().__init__()
         self._register_instance(SongList)
         self.set_model(model_cls())
@@ -416,24 +417,21 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         # might contain column header names not present...
         self._sort_sequence = []
         self.set_column_headers(self.headers)
-        librarian = library.librarian or library
+        library = library.librarian or library
 
-        connect_destroy(librarian, 'changed', self.__song_updated)
-        connect_destroy(librarian, 'removed', self.__song_removed, player)
+        connect_destroy(library, 'changed', self.__song_updated)
+        connect_destroy(library, 'removed', self.__song_removed, player)
 
         if update:
-            connect_destroy(librarian, 'added', self.__song_added)
+            connect_destroy(library, 'added', self.__song_added)
 
         if player:
-            connect_destroy(
-                player, 'paused', lambda *x: self.__redraw_current())
-            connect_destroy(
-                player, 'unpaused', lambda *x: self.__redraw_current())
-            connect_destroy(
-                player, 'error', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'paused', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'unpaused', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'error', lambda *x: self.__redraw_current())
 
-        self.connect('button-press-event', self.__button_press, librarian)
-        self.connect('key-press-event', self.__key_press, librarian, player)
+        self.connect('button-press-event', self.__button_press, library)
+        self.connect('key-press-event', self.__key_press, library, player)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -962,7 +960,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless.
         """
-
         model = self.get_model()
         if not config.getboolean("memory", "shuffle", False) and \
                 config.getboolean("song_list", "auto_sort") and self.is_sorted():
