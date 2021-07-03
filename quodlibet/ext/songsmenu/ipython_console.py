@@ -20,7 +20,7 @@ from gi.repository import Gtk, Pango, Gdk, GLib
 from quodlibet.qltk import Icons, add_css
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from traitlets.config.loader import Config
-from quodlibet import _, ngettext, app
+from quodlibet import _, ngettext, app, print_d
 from quodlibet.util.collection import Collection
 from quodlibet.util.songwrapper import SongWrapper
 
@@ -31,6 +31,7 @@ try:
     from IPython.utils.coloransi import color_templates
 except ImportError:
     from quodlibet import plugins
+
     raise plugins.MissingModulePluginException("IPython")
 
 
@@ -42,18 +43,24 @@ class IPythonConsole(SongsMenuPlugin):
 
     def plugin_songs(self, songs):
         desc = ngettext("%d song", "%d songs", len(songs)) % len(songs)
-        win = Gtk.Window()
+        self.win = win = Gtk.Window()
         win.set_default_size(700, 500)
         win.connect('delete-event', lambda x, y: Gtk.main_quit())
         swin = Gtk.ScrolledWindow()
         swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         swin.set_shadow_type(Gtk.ShadowType.NONE)
-        swin.add(IPythonView(songs))
+        view = IPythonView(songs)
+        view.connect("destroy", lambda _: self.destroy())
+        swin.add(view)
         win.add(swin)
         win.set_icon_name(self.PLUGIN_ICON)
         win.set_title(_("{plugin_name} for {songs} ({app})").format(
             plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name))
         win.show_all()
+
+    def destroy(self, *args):
+        print_d("Exiting")
+        self.win.destroy()
 
 
 class IterableIPShell:
