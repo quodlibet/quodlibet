@@ -13,7 +13,7 @@ import re
 import sys
 from functools import reduce
 from io import StringIO
-from typing import Tuple, Dict, Any, Optional, IO, Callable, Iterable
+from typing import Tuple, Dict, Any, Optional, IO, Callable, Iterable, List
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
@@ -25,14 +25,12 @@ from quodlibet.util.collection import Collection
 from quodlibet.util.songwrapper import SongWrapper
 
 try:
-    import IPython
+    from IPython.core import interactiveshell
+    from IPython.terminal.embed import InteractiveShellEmbed
+    from IPython.utils import io as ipio
 except ImportError:
     from quodlibet import plugins
-
     raise plugins.MissingModulePluginException("IPython")
-from IPython.core import interactiveshell
-from IPython.terminal.embed import InteractiveShellEmbed
-from IPython.utils import io as ipio
 
 
 class IPythonConsole(SongsMenuPlugin):
@@ -114,12 +112,12 @@ class IterableIPShell:
         sys.excepthook = excepthook
         self.iter_more = 0
         self.history_level = 0
-        self.complete_sep = re.compile('[\s\{\}\[\]\(\)]')
+        self.complete_sep = re.compile(r'[\s\{\}\[\]\(\)]')
         self.update_namespace({'exit': lambda: None})
         self.update_namespace({'quit': lambda: None})
 
         self.no_input_splitter = True
-        self.lines = []
+        self.lines: List[str] = []
         self.indent_spaces = ''
 
     def execute(self) -> None:
@@ -398,8 +396,9 @@ class ConsoleView(Gtk.TextView):
         self.text_buffer.move_mark(self.line_start,
                                    self.text_buffer.get_end_iter())
 
-    def change_line(self, text: str) -> None:
-        GLib.idle_add(self._change_line, text)
+    def change_line(self, text: Optional[str]) -> None:
+        if text:
+            GLib.idle_add(self._change_line, text)
 
     def _change_line(self, text: str):
         """
@@ -499,7 +498,7 @@ class ConsoleView(Gtk.TextView):
 
         return bool(self.on_key_press_extend(event))
 
-    def on_key_press_extend(self, event: Gdk.Event) -> None:
+    def on_key_press_extend(self, event: Gdk.Event) -> bool:
         """
         For some reason we can't extend onKeyPress directly (bug #500900).
         """
@@ -589,6 +588,7 @@ class IPythonView(ConsoleView, IterableIPShell):
                 self.show_prompt(self.prompt)
             self.change_line(completed or line)
             return True
+        return False
 
     def _process_line(self) -> None:
         """
@@ -597,7 +597,8 @@ class IPythonView(ConsoleView, IterableIPShell):
         self.history_pos = 0
         self.execute()
         rv = self.cout.getvalue()
-        if rv: rv = rv.strip('\n')
+        if rv:
+            rv = rv.strip('\n')
         self.show_returned(rv)
         self.cout.truncate(0)
         self.cout.seek(0)
