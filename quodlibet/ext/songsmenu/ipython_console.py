@@ -327,7 +327,7 @@ class ConsoleView(Gtk.TextView):
         self.line_start = self.text_buffer.create_mark("line_start",
                                                        self.text_buffer.get_end_iter(),
                                                        True)
-        self.connect('key-press-event', self.on_key_press)
+        self.connect("key-press-event", self.on_key_press)
 
     def write(self, text, editable=False):
         GLib.idle_add(self._write, text, editable)
@@ -536,10 +536,15 @@ class IPythonView(ConsoleView, IterableIPShell):
 
         :returns: True if event should not trickle.
         """
-        if event.state & Gdk.ModifierType.CONTROL_MASK and event.keyval == 99:
+        modifier_mask = Gtk.accelerator_get_default_mod_mask()
+        event_state = event.state & modifier_mask
+        if event_state and event.keyval == 99:
             self.interrupt = True
             self._process_line()
             return True
+        elif (event.keyval == Gdk.KEY_d
+              and event_state == Gdk.ModifierType.CONTROL_MASK):
+            self.destroy()
         elif event.keyval == Gdk.KEY_Return:
             self._process_line()
             return True
