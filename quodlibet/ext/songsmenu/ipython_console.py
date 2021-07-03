@@ -17,12 +17,12 @@ from typing import Tuple, Dict, Any, Optional, IO, Callable, Iterable
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
-from qltk import Icons
+from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from traitlets.config.loader import Config
 from quodlibet import _, ngettext, app
-from util.collection import Collection
-from util.songwrapper import SongWrapper
+from quodlibet.util.collection import Collection
+from quodlibet.util.songwrapper import SongWrapper
 
 try:
     import IPython
