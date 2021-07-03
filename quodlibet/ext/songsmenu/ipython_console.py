@@ -17,7 +17,7 @@ from typing import Tuple, Dict, Any, Optional, IO, Callable, Iterable, List
 
 from gi.repository import Gtk, Pango, Gdk, GLib
 
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from traitlets.config.loader import Config
 from quodlibet import _, ngettext, app
@@ -28,6 +28,7 @@ try:
     from IPython.core import interactiveshell
     from IPython.terminal.embed import InteractiveShellEmbed
     from IPython.utils import io as ipio
+    from IPython.utils.coloransi import color_templates
 except ImportError:
     from quodlibet import plugins
     raise plugins.MissingModulePluginException("IPython")
@@ -45,7 +46,8 @@ class IPythonConsole(SongsMenuPlugin):
         win.set_default_size(700, 500)
         win.connect('delete-event', lambda x, y: Gtk.main_quit())
         swin = Gtk.ScrolledWindow()
-        swin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+        swin.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        swin.set_shadow_type(Gtk.ShadowType.NONE)
         swin.add(IPythonView(songs))
         win.add(swin)
         win.set_icon_name(self.PLUGIN_ICON)
@@ -298,57 +300,24 @@ class IterableIPShell:
 class ConsoleView(Gtk.TextView):
     """
     Specialized text view for console-like workflow.
-
-    @cvar ANSI_COLORS: Mapping of terminal colors to X11 names.
-    @type ANSI_COLORS: dictionary
-
-    @ivar text_buffer: Widget's text buffer.
-    @type text_buffer: gtk.TextBuffer
-    @ivar color_pat: Regex of terminal color pattern
-    @type color_pat: _sre.SRE_Pattern
-    @ivar mark: Scroll mark for automatic scrolling on input.
-    @type mark: gtk.TextMark
-    @ivar line_start: Start of command line mark.
-    @type line_start: gtk.TextMark
     """
-    ANSI_COLORS = {'0;30': 'Black', '0;31': 'Red',
-                   '0;32': 'Green', '0;33': 'Brown',
-                   '0;34': 'Blue', '0;35': 'Purple',
-                   '0;36': 'Cyan', '0;37': 'LightGray',
-                   '1;30': 'DarkGray', '1;31': 'DarkRed',
-                   '1;32': 'SeaGreen', '1;33': 'Yellow',
-                   '1;34': 'LightBlue', '1;35': 'MediumPurple',
-                   '1;36': 'LightCyan', '1;37': 'White'}
 
     def __init__(self):
-        Gtk.TextView.__init__(self)
-        pango_ctx = self.get_pango_context()
-        chosen = None
-        for f in pango_ctx.list_families():
-            name = f.get_name()
-            # These are known to show e.g U+FFFC
-            if name in ["Courier New", "Courier Mono"]:
-                chosen = name
-                break
-            if name in ["Liberation Sans"]:
-                chosen = name
-                # But prefer a monospace one if possible
-        if chosen is None:
-            chosen = "Mono"
-        self.modify_font(Pango.FontDescription(chosen))
+        super().__init__()
+        add_css(self, "* { padding: 6px; } ")
+        self.set_wrap_mode(Gtk.WrapMode.CHAR)
+        self.modify_font(Pango.font_description_from_string('Monospace'))
         self.set_cursor_visible(True)
         self.text_buffer = self.get_buffer()
         self.mark = self.text_buffer.create_mark('scroll_mark',
                                                  self.text_buffer.get_end_iter(),
                                                  False)
-        for code in self.ANSI_COLORS:
-            self.text_buffer.create_tag(code,
-                                        foreground=self.ANSI_COLORS[code],
-                                        weight=700)
-        self.text_buffer.create_tag('0')
+        for name, code in color_templates:
+            self.text_buffer.create_tag(code, foreground=name, weight=500)
+        self.text_buffer.create_tag("0")
         self.text_buffer.create_tag("notouch", editable=False)
         self.color_pat = re.compile(r"\x01?\x1b\[(.*?)m\x02?")
-        self.line_start = self.text_buffer.create_mark('line_start',
+        self.line_start = self.text_buffer.create_mark("line_start",
                                                        self.text_buffer.get_end_iter(),
                                                        True)
         self.connect('key-press-event', self.on_key_press)
@@ -438,9 +407,7 @@ class ConsoleView(Gtk.TextView):
             'notouch',
             self.text_buffer.get_iter_at_mark(self.line_start),
             iter)
-        self._write('\n' + text)
-        if text:
-            self._write('\n')
+        self._write(f"\n{text}\n" if text is not None else "\n")
         self._show_prompt(self.prompt)
         self.text_buffer.move_mark(self.line_start, self.text_buffer.get_end_iter())
         self.text_buffer.place_cursor(self.text_buffer.get_end_iter())
