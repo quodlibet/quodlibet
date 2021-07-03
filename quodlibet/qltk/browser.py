@@ -350,6 +350,5 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
     def __set_totals(self, info, songs):
         i = len(songs)
         length = sum(song.get("~#length", 0) for song in songs)
-        t = self.browser.status_text(count=i,
-                                     time=util.format_time_preferred(length))
+        t = self.browser.status_text(count=i, time=util.format_time_preferred(length))
         self.__statusbar.set_text(t)
