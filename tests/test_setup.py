@@ -21,11 +21,13 @@ import shutil
 from pathlib import Path
 from tempfile import mkdtemp
 
+import pytest
 from _pytest.fixtures import fixture
 
 import quodlibet
 from gdist import create_po, GDistribution, create_pot, update_po, po_stats, build_po
 from quodlibet.util import get_module_dir
+from tests.test_po import has_gettext_util
 
 SRC_FILE = Path(get_module_dir(quodlibet)).parent / "quodlibet.py"
 
@@ -48,30 +50,28 @@ def temp_po_dir() -> Path:
     return po_path
 
 
-def test_create_po_command(dist):
-    cmd = create_po(dist)
-    cmd.lang = "fr_FR"
-    cmd.run()
+@pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
+class TestPoCommands:
+    def test_create_po_command(self, dist):
+        cmd = create_po(dist)
+        cmd.lang = "fr_FR"
+        cmd.run()
 
+    def test_create_pot_command(self, dist):
+        cmd = create_pot(dist)
+        cmd.run()
 
-def test_create_pot_command(dist):
-    cmd = create_pot(dist)
-    cmd.run()
+    def test_update_po_command(self, dist, temp_po_dir):
+        (temp_po_dir / "en_GB.po").touch()
+        cmd = update_po(dist)
+        cmd.lang = "en_GB"
+        cmd.run()
 
+    def test_po_stats_command(self, dist, temp_po_dir):
+        cmd = po_stats(dist)
+        cmd.lang = "en_GB"
+        cmd.run()
 
-def test_update_po_command(dist, temp_po_dir):
-    (temp_po_dir / "en_GB.po").touch()
-    cmd = update_po(dist)
-    cmd.lang = "en_GB"
-    cmd.run()
-
-
-def test_po_stats_command(dist, temp_po_dir):
-    cmd = po_stats(dist)
-    cmd.lang = "en_GB"
-    cmd.run()
-
-
-def test_build_po(dist):
-    cmd = build_po(dist)
-    cmd.run()
+    def test_build_po(self, dist):
+        cmd = build_po(dist)
+        cmd.run()
