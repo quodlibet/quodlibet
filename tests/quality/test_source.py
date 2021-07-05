@@ -1,5 +1,5 @@
 # Copyright 2014, 2015 Christoph Reiter
-#                 2020 Nick Boultbee
+#              2020-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from gi.repository import Gtk
 from pytest import fixture
 
 from quodlibet.util import get_module_dir
-from tests.test_po import QL_BASE_DIR
+from tests.test_po import QL_BASE_PATH
 
 
 def iter_py_paths() -> Iterable[Path]:
@@ -46,7 +46,7 @@ def iter_py_paths() -> Iterable[Path]:
 
 
 def prettify_path(p: Path) -> str:
-    return os.path.splitext(p.relative_to(QL_BASE_DIR))[0]
+    return os.path.splitext(p.relative_to(QL_BASE_PATH))[0]
 
 
 @pytest.fixture(params=list(iter_py_paths()), ids=prettify_path)
