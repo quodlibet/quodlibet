@@ -1,5 +1,6 @@
 # Copyright 2007 Joe Wreschnig
 #           2009-2010,2012-2016 Christoph Reiter
+#           2021 Nick Boultbee
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -50,21 +51,21 @@ class po_stats(Command):
         pass
 
     def run(self):
-        po_path = Path(self.distribution.po_directory)
+        po_directory = Path(self.distribution.po_directory)
 
-        with gettextutil.create_pot(po_path) as pot_path:
+        with gettextutil.create_pot(po_directory) as pot_path:
             res = []
-            for language in gettextutil.list_languages(po_path):
+            for language in gettextutil.list_languages(po_directory):
                 fd, temp_path = mkstemp(".po")
                 temp_path = Path(temp_path)
                 try:
                     os.close(fd)
-                    po_path = gettextutil.get_po_path(po_path, language)
+                    po_path = gettextutil.get_po_path(po_directory, language)
                     gettextutil.update_po(pot_path, po_path, temp_path)
                     output = gettextutil.po_stats(temp_path)
                     res.append((language, output))
                 finally:
-                    os.remove(temp_path)
+                    temp_path.unlink()
 
         stats = []
         for po, r in res:
