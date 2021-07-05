@@ -39,4 +39,5 @@ ENV LANG C.UTF-8
 
 # run tests
 COPY entrypoint.sh /entrypoint.sh
+USER user
 ENTRYPOINT ["/entrypoint.sh"]
