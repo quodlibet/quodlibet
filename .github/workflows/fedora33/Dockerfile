@@ -40,8 +40,6 @@ ENV LANG C.UTF-8
 # Fix for hanging flake8 test
 # https://github.com/quodlibet/quodlibet/issues/3539#issuecomment-767389459
 RUN poetry config virtualenvs.in-project true
-# Set up Python deps
-RUN poetry install -E plugins
 
 # run tests
 COPY entrypoint.sh /entrypoint.sh
