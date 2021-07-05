@@ -143,7 +143,7 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
 
                 args = ["xgettext", "--from-code=utf-8", "--add-comments",
                         "--files-from=" + str(potfiles_in),
-                        "--directory=" + str(src_root),
+                        "--directory=" + str(src_root / "quodlibet"),
                         "--output=" + str(out_path),
                         "--force-po",
                         "--join-existing"] + args
