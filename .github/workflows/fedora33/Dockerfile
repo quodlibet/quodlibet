@@ -25,19 +25,9 @@ RUN dnf -y install \
 
 RUN dnf clean all
 
-# Create user (required for write access tests in 'tests/test_formats__audio.py' to pass)
-ARG HOST_USER_ID=5555
-ENV HOST_USER_ID ${HOST_USER_ID}
-RUN useradd -u $HOST_USER_ID -ms /bin/bash user
-
-# Required to prevent pytest from running into permissions errors when creating
-# cache files in GITHUB_WORKSPACE as 'user'
-ENV PYTHONDONTWRITEBYTECODE 1
-
 # required for translation tests that use 'gettext'
 ENV LANG C.UTF-8
 
 # run tests
 COPY entrypoint.sh /entrypoint.sh
-USER user
 ENTRYPOINT ["/entrypoint.sh"]
