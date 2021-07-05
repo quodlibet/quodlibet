@@ -15,13 +15,11 @@ try:
 except ImportError:
     polib = None
 
-import quodlibet
-from quodlibet.util import get_module_dir
 from quodlibet.util.string.titlecase import human_title
 from gdist import gettextutil
 
-
-QL_BASE_PATH = Path(get_module_dir(quodlibet)).parent
+# Don't use get_module_dir(), as venvs can arrange things differently
+QL_BASE_PATH = Path(__file__).parent.parent
 PO_PATH = QL_BASE_PATH / "po"
 
 
