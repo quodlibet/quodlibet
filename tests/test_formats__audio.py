@@ -354,11 +354,11 @@ class TAudioFile(TestCase):
         self.failUnless(af.can_change("foo bar"))
 
     def test_is_writable(self):
-        self.assertTrue(self.quux.is_writable())
-        os.chmod(self.quux["~filename"], 0o444)
-        self.assertFalse(self.quux.is_writable())
-        os.chmod(self.quux["~filename"], 0o644)
-        self.assertTrue(self.quux.is_writable())
+        fn = self.quux["~filename"]
+        os.chmod(fn, 0o444)
+        assert not self.quux.is_writable(), f"{fn!r} is writeable ({os.stat(fn)})"
+        os.chmod(fn, 0o644)
+        assert self.quux.is_writable(), f"{fn!r} is unwriteable ({os.stat(fn)})"
 
     def test_can_multiple_values(self):
         af = AudioFile()
