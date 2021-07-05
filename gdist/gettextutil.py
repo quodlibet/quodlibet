@@ -354,7 +354,8 @@ def get_missing(po_dir: Path) -> Iterable[str]:
         root = Path(root)
         for dirname in dirs:
             dirpath = (root / dirname).relative_to(src_root)
-            if dirpath in skip_files or dirname.startswith("."):
+            if (dirpath in skip_files or str(dirpath).startswith(".")
+                    or dirname.startswith(".")):
                 dirs.remove(dirname)
 
         for name in files:
