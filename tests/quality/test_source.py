@@ -54,6 +54,7 @@ def py_path(request) -> Path:
     return request.param
 
 
+@pytest.mark.quality
 class TestLicense:
     ALLOWED_RAW = ["""
 This program is free software; you can redistribute it and/or modify
@@ -96,6 +97,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         assert any([l in norm for l in self.ALLOWED])
 
 
+# Don't mark this as quality - useful to execute _everywhere_
 class TestStockIcons:
     @fixture
     def res(self) -> Iterable[Pattern]:
