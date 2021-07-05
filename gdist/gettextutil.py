@@ -205,12 +205,12 @@ def compile_po(po_path: Path, target_file: Path):
         raise GettextError(e.output)
 
 
-def po_stats(po_path):
+def po_stats(po_path: Path):
     """Returns a string containing translation statistics"""
 
     try:
         return subprocess.check_output(
-            ["msgfmt", "--statistics", po_path, "-o", os.devnull],
+            ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)

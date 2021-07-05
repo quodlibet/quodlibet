@@ -24,7 +24,7 @@ from tempfile import mkdtemp
 from _pytest.fixtures import fixture
 
 import quodlibet
-from gdist import create_po, GDistribution, create_pot, update_po, po_stats
+from gdist import create_po, GDistribution, create_pot, update_po, po_stats, build_po
 from quodlibet.util import get_module_dir
 
 SRC_FILE = Path(get_module_dir(quodlibet)).parent / "quodlibet.py"
@@ -69,4 +69,9 @@ def test_update_po_command(dist, temp_po_dir):
 def test_po_stats_command(dist, temp_po_dir):
     cmd = po_stats(dist)
     cmd.lang = "en_GB"
+    cmd.run()
+
+
+def test_build_po(dist):
+    cmd = build_po(dist)
     cmd.run()
