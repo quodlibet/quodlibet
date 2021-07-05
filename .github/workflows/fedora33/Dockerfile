@@ -25,8 +25,23 @@ RUN dnf -y install \
 
 RUN dnf clean all
 
+# Create user (required for write access tests in 'tests/test_formats__audio.py' to pass)
+ARG HOST_USER_ID=5555
+ENV HOST_USER_ID ${HOST_USER_ID}
+RUN useradd -u $HOST_USER_ID -ms /bin/bash user
+
+# Required to prevent pytest from running into permissions errors when creating
+# cache files in GITHUB_WORKSPACE as 'user'
+ENV PYTHONDONTWRITEBYTECODE 1
+
 # required for translation tests that use 'gettext'
 ENV LANG C.UTF-8
+
+# Fix for hanging flake8 test
+# https://github.com/quodlibet/quodlibet/issues/3539#issuecomment-767389459
+RUN poetry config virtualenvs.in-project true
+# Set up Python deps
+RUN poetry install -E plugins
 
 # run tests
 COPY entrypoint.sh /entrypoint.sh
