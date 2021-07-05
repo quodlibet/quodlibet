@@ -6,5 +6,6 @@ poetry config virtualenvs.in-project true
 
 poetry install -E plugins
 export PYTEST_ADDOPTS='-rxXs -m "not quality"'
+xgettext --version; xgettext --help
 sudo -u user echo "Running tests with $PYTEST_ADDOPTS"
 sudo -u user poetry run python3 setup.py test
