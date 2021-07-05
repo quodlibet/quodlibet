@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 set -e
-echo "PWD=$(pwd)"
+echo "dir=$(pwd)"
 ls -l
 
 # Fix for hanging flake8 test

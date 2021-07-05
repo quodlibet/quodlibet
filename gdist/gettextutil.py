@@ -32,6 +32,8 @@ import warnings
 from pathlib import Path
 from typing import List, Optional, Tuple, Iterable, Dict
 
+from quodlibet import print_w
+
 QL_SRC_DIR = "quodlibet"
 
 XGETTEXT_CONFIG: Dict[str, Tuple[str, List[str]]] = {
@@ -64,7 +66,12 @@ def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            paths.append((src_root / line).resolve())
+            full_path = (src_root / line).resolve()
+            # Directories not wanted
+            if full_path.is_file():
+                paths.append(full_path)
+            else:
+                print_w(f"Ignoring {full_path} in {potfiles}")
     return paths
 
 
