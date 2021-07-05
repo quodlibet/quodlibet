@@ -27,7 +27,3 @@ RUN dnf clean all
 
 # required for translation tests that use 'gettext'
 ENV LANG C.UTF-8
-
-# run tests
-COPY entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/entrypoint.sh"]

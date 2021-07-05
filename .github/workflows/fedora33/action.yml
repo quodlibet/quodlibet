@@ -4,3 +4,12 @@ description: Run tests for Fedora 33
 runs:
   using: docker
   image: Dockerfile
+  steps:
+  - name: Install project virtualenv
+    run: |
+      poetry config virtualenvs.in-project true
+      poetry install -E plugins
+  - name: run tests
+    run: |
+      PYTEST_ADDOPTS=-rxXs python3 setup.py test
+
