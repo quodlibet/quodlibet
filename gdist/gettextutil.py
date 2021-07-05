@@ -154,7 +154,9 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
                     universal_newlines=True)
                 stdout, stderr = p.communicate()
                 if p.returncode != 0:
-                    raise GettextError(stderr or ("Got error: %d" % p.returncode))
+                    debug = f"Error running {' '.join(args)}.\n"
+                    msg = stderr or ("Got error: %d" % p.returncode)
+                    raise GettextError(debug + msg)
                 if stderr:
                     warnings.warn(stderr, GettextWarning)
             finally:
