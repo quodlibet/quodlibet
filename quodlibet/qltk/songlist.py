@@ -12,6 +12,8 @@
 from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
+
+from quodlibet.library.base import Library
 from senf import uri2fsn
 
 from quodlibet import app, print_w
@@ -165,7 +167,7 @@ def get_sort_tag(tag):
             tag = tag.replace("<%s>" % key, "<%s>" % value)
         for key, value in TAG_TO_SORT.items():
             tag = tag.replace("<%s>" % key,
-                               "<{1}|<{1}>|<{0}>>".format(key, value))
+                              "<{1}|<{1}>|<{0}>>".format(key, value))
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)
@@ -193,10 +195,10 @@ def header_tag_split(header):
         return util.tagsplit(header)
 
 
-class SongListDnDMixin:
+class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
-    def setup_drop(self, library):
+    def setup_drop(self, library: Library):
         self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
@@ -287,7 +289,7 @@ class SongListDnDMixin:
             sel.set_uris(uris)
             self.__drag_iters = []
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library: Library):
         model = view.get_model()
         if info == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
@@ -305,15 +307,16 @@ class SongListDnDMixin:
         else:
             Gtk.drag_finish(ctx, False, False, etime)
             return
-
+        # Should always have one here, but you never know (also: types)
+        librarian = library.librarian or library
         to_add = []
         for filename in filenames:
-            if filename not in library.librarian:
+            if filename not in librarian:
                 library.add_filename(filename)
             elif filename not in library:
-                to_add.append(library.librarian[filename])
+                to_add.append(librarian[filename])
         library.add(to_add)
-        songs = list(filter(None, map(library.get, filenames)))
+        songs: List = list(filter(None, map(library.get, filenames)))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
@@ -330,7 +333,7 @@ class SongListDnDMixin:
             position = Gtk.TreeViewDropPosition.AFTER
 
         if move and Gtk.drag_get_source_widget(ctx) == view:
-            iter = model.get_iter(path) # model can't be empty, we're moving
+            iter = model.get_iter(path)  # model can't be empty, we're moving
             if position in (Gtk.TreeViewDropPosition.BEFORE,
                             Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
                 while self.__drag_iters:
@@ -344,7 +347,7 @@ class SongListDnDMixin:
             try:
                 iter = model.get_iter(path)
             except ValueError:
-                iter = model.append(row=[song]) # empty model
+                iter = model.append(row=[song])  # empty model
             else:
                 if position in (Gtk.TreeViewDropPosition.BEFORE,
                                 Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
@@ -417,13 +420,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         # might contain column header names not present...
         self._sort_sequence = []
         self.set_column_headers(self.headers)
-        library = library.librarian or library
+        librarian = library.librarian or library
 
-        connect_destroy(library, 'changed', self.__song_updated)
-        connect_destroy(library, 'removed', self.__song_removed, player)
+        connect_destroy(librarian, 'changed', self.__song_updated)
+        connect_destroy(librarian, 'removed', self.__song_removed, player)
 
         if update:
-            connect_destroy(library, 'added', self.__song_added)
+            connect_destroy(librarian, 'added', self.__song_added)
 
         if player:
             connect_destroy(player, 'paused', lambda *x: self.__redraw_current())
@@ -637,7 +640,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def __set_rating(self, value, songs, librarian):
         count = len(songs)
         if (count > 1 and
-                config.getboolean("browsers", "rating_confirm_multiple")):
+            config.getboolean("browsers", "rating_confirm_multiple")):
             dialog = ConfirmRateMultipleDialog(self, count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
@@ -902,6 +905,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         def func(model, path, iter_, user_data):
             songs.append(model.get_value(iter_))
+
         selection = self.get_selection()
         selection.selected_foreach(func, None)
         return songs
@@ -918,7 +922,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         model = self.get_model()
         order = self.get_sort_orders()
         sort_key_func = list(enumerate(reversed(
-                self.__get_song_sort_key_func(order))))
+            self.__get_song_sort_key_func(order))))
         song_sort_keys = [key(song) for i, (key, r) in sort_key_func]
         i = 0
         j = len(model)
@@ -962,7 +966,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         """
         model = self.get_model()
         if not config.getboolean("memory", "shuffle", False) and \
-                config.getboolean("song_list", "auto_sort") and self.is_sorted():
+            config.getboolean("song_list", "auto_sort") and self.is_sorted():
             iters, _, complete = self.__find_iters_in_selection(songs)
 
             if not complete:
@@ -1136,6 +1140,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
+
         current = [(tag_title(c), c) for c in SongList.headers]
 
         def add_header_toggle(menu: Gtk.Menu, pair: Tuple[str, str], active: bool,

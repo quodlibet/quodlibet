@@ -15,6 +15,7 @@ from typing import (Collection, TypeVar, Sequence, Iterable,
 
 from gi.repository import GObject
 
+import quodlibet
 from quodlibet import util
 from quodlibet.formats import (load_audio_files,
                                dump_audio_files, SerializationError)
@@ -52,7 +53,9 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    librarian = None
+    librarian: Optional["quodlibet.library.librarians.Librarian"] = None
+    """A librarian, if defined will be used for collaborating with other libraries"""
+
     dirty = False
 
     def __init__(self, name: Optional[str] = None):
