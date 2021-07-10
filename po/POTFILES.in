@@ -10,6 +10,7 @@ quodlibet/browsers/collection/main.py
 quodlibet/browsers/collection/models.py
 quodlibet/browsers/collection/prefs.py
 quodlibet/browsers/covergrid/main.py
+quodlibet/browsers/covergrid/models.py
 quodlibet/browsers/covergrid/prefs.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py

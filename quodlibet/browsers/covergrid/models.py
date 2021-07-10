@@ -1,0 +1,254 @@
+# Copyright 2022 Thomas Leberbauer
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+
+from gi.repository import GObject, Gio
+
+from quodlibet import _, ngettext, app
+from quodlibet.qltk.models import ObjectModelSort, ObjectStore, ObjectModelFilter
+from quodlibet.util.library import background_filter
+
+
+class AlbumListItem(GObject.Object):
+
+    def __init__(self, album=None):
+        super().__init__()
+        self._album = album
+        self._cover = None
+        self._label = None
+
+        self.connect('notify::album', self._album_changed)
+
+    def load_cover(self, size, cancelable=None):
+        def callback(cover):
+            self._cover = cover
+            self.notify('cover')
+
+        manager = app.cover_manager
+        # Skips this during testing
+        if manager:
+            manager.get_pixbuf_many_async(
+                self._album.songs, size, size, cancelable, callback)
+
+    def format_label(self, pattern):
+        self._label = pattern % self._album
+        self.notify('label')
+
+    def _album_changed(self, model, prop):
+        self._label = None
+
+    @GObject.Property
+    def album(self):
+        return self._album
+
+    @GObject.Property
+    def cover(self):
+        return self._cover
+
+    @GObject.Property
+    def label(self):
+        return self._label
+
+
+class AlbumListCountItem(AlbumListItem):
+
+    def load_cover(self, *args, **kwargs):
+        self.notify('cover')
+
+    def format_label(self, pattern=None):
+        n = self.__n_albums
+        self._label = ('<b>%s</b>\n' +
+            ngettext('%d album', '%d albums', n)) % (_('All Albums'), n)
+        self.notify('label')
+
+    @GObject.Property
+    def n_albums(self):
+        return self.__n_albums
+
+    @n_albums.setter
+    def n_albums(self, value):
+        self.__n_albums = value
+        self.format_label()
+
+
+class AlbumListModel(ObjectStore):
+
+    def __init__(self, library):
+        super().__init__()
+        self.__library = library
+
+        albums = library.albums
+        self.__sigs = [
+            albums.connect('added', self._add_albums),
+            albums.connect('removed', self._remove_albums),
+            albums.connect('changed', self._change_albums)
+        ]
+
+        self.append(row=[AlbumListCountItem()])
+        self.append_many(AlbumListItem(a) for a in albums.values())
+
+    def destroy(self):
+        albums = self.__library.albums
+        for sig in self.__sigs:
+            albums.disconnect(sig)
+        self.__library = None
+        self.clear()
+
+    def _add_albums(self, library, added):
+        self.append_many(AlbumListItem(a) for a in added)
+
+    def _remove_albums(self, library, removed):
+        removed_albums = removed.copy()
+        iters_remove = []
+        for iter_, item in self.iterrows():
+            album = item.album
+            if album is not None and album in removed_albums:
+                removed_albums.remove(album)
+                iters_remove.append(iter_)
+                if not removed_albums:
+                    break
+        for iter_ in iters_remove:
+            self.remove(iter_)
+
+    def _change_albums(self, library, changed):
+        changed_albums = changed.copy()
+        for iter_, item in self.iterrows():
+            album = item.album
+            if album is not None and album in changed_albums:
+                changed_albums.remove(album)
+                self.iter_changed(iter_)
+                if not changed_albums:
+                    break
+
+
+class AlbumListFilterModel(GObject.Object, Gio.ListModel):
+
+    __filter = None
+
+    def __init__(self, child_model=None, include_item_all=True, **kwargs):
+        super().__init__(**kwargs)
+
+        self.__include_item_all = include_item_all
+
+        self._model = model = ObjectModelFilter(child_model=child_model)
+        self.__item_all = self._get_item(0)
+        self._update_n_albums()
+
+        # Tell the tree model that all nodes are visible, otherwise it does not
+        # emit the "row-changed" signal.
+        for row in model:
+            model.ref_node(row.iter)
+
+        model.set_visible_func(self._apply_filter)
+        self.__sigs = [
+            model.connect('row-changed', self._row_changed),
+            model.connect('row-inserted', self._row_inserted),
+            model.connect('row-deleted', self._row_deleted),
+            model.connect('rows-reordered', self._rows_reordered)
+        ]
+
+    def destroy(self):
+        model = self._model
+        for sig in self.__sigs:
+            model.disconnect(sig)
+        self._model = None
+
+    @GObject.Property
+    def include_item_all(self):
+        return self.__include_item_all
+
+    @include_item_all.setter
+    def include_item_all(self, value):
+        if self.__include_item_all == value:
+            return
+        self.__include_item_all = value
+        removed, added = (0, 1) if value else (1, 0)
+        self.items_changed(0, removed, added)
+
+    @GObject.Property
+    def filter(self):
+        return self.__filter
+
+    @filter.setter
+    def filter(self, value):
+        b = background_filter()
+        if b is None and value is None:
+            f = None
+        elif b is None:
+            f = lambda item: value(item.album)
+        else:
+            f = lambda item: b(item.album) and value(item.album)
+        if f or self.__filter:
+            self.__filter = f
+            self._model.refilter()
+
+    def do_get_n_items(self):
+        return len(self)
+
+    def do_get_item(self, index):
+        return self[index]
+
+    def do_get_item_type(self):
+        return AlbumListItem
+
+    def __len__(self):
+        n = len(self._model)
+        if self.__include_item_all or n < 1:
+            return n
+        return n - 1
+
+    def __getitem__(self, index):
+        if not self.__include_item_all:
+            index += 1
+        return self._get_item(index)
+
+    def _get_item(self, index):
+        model = self._model
+        iter = model.iter_nth_child(None, index)
+        return model.get_value(iter) if iter else None
+
+    def _update_n_albums(self):
+        self.__item_all.props.n_albums = len(self._model) - 1
+
+    def _apply_filter(self, model, iter, _):
+        filter = self.__filter
+        if filter is None:
+            return True
+        item = model.get_value(iter)
+        if item is self.__item_all:
+            return True
+        return filter(item)
+
+    def _row_changed(self, model, path, iter):
+        item = model.get_value(iter)
+        item.notify('album')
+
+    def _row_inserted(self, model, path, iter):
+        # Ensure that the tree model will emit the "row-changed" signal
+        model.ref_node(iter)
+
+        index = path.get_indices()[0]
+        if not self.__include_item_all:
+            index -= 1
+        if index >= 0:
+            self.items_changed(index, 0, 1)
+            self._update_n_albums()
+
+    def _row_deleted(self, model, path):
+        index = path.get_indices()[0]
+        if not self.__include_item_all:
+            index -= 1
+        if index >= 0:
+            self.items_changed(index, 1, 0)
+            self._update_n_albums()
+
+    def _rows_reordered(self, model, path, iter, new_order):
+        n = len(self)
+        self.items_changed(0, n, n)
+
+
+class AlbumListSortModel(ObjectModelSort):
+    pass
