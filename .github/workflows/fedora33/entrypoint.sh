@@ -1,11 +1,6 @@
 #!/usr/bin/env bash
 set -e
-echo "dir=$(pwd)"
-ls -l
-
-# Fix for hanging flake8 test
-# https://github.com/quodlibet/quodlibet/issues/3539#issuecomment-767389459
-poetry config virtualenvs.in-project true
+xgettext --version
 
 # Leave source locally, otherwise some tests go mad (via get_module_dir)...
 poetry install --no-root -E plugins
