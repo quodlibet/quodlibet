@@ -2,7 +2,7 @@ name: python3-mutagen
 buildsystem: simple
 build-commands:
   - pip3 install --no-index --find-links="file://${PWD}" --prefix=${FLATPAK_DEST}
-    mutagen sgmllib3k feedparser pyinotify musicbrainzngs dbus-python paho-mqtt
+    mutagen sgmllib3k feedparser musicbrainzngs dbus-python paho-mqtt
 sources:
   - type: file
     url: https://files.pythonhosted.org/packages/9e/bd/3704a8c3e0942d711c1299ebf7b9091930adae6675d7c8f476a7ce48653c/sgmllib3k-1.0.0.tar.gz

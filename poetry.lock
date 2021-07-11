@@ -341,14 +341,6 @@ python-versions = ">=3.6, <4"
 pycairo = ">=1.16.0"
 
 [[package]]
-name = "pyinotify"
-version = "0.9.6"
-description = "Linux filesystem events monitoring"
-category = "main"
-optional = true
-python-versions = "*"
-
-[[package]]
 name = "pyparsing"
 version = "2.4.7"
 description = "Python parsing module"
@@ -652,12 +644,12 @@ docs = ["sphinx", "jaraco.packaging (>=8.2)", "rst.linker (>=1.9)"]
 testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pytest-cov", "pytest-enabler", "jaraco.itertools", "func-timeout", "pytest-black (>=0.3.7)", "pytest-mypy"]
 
 [extras]
-plugins = ["musicbrainzngs", "pyinotify", "dbus-python", "soco"]
+plugins = ["musicbrainzngs", "dbus-python", "soco"]
 
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "cc93aa5437470bc2fab98be24c58cf8228001940925adc86f86e2ccd96d2e084"
+content-hash = "6ea0037b0a13771609ea8e38f7bd9b9cc13a1759404c2bde3850a1c15aec7c26"
 
 [metadata.files]
 alabaster = [
@@ -904,9 +896,6 @@ pygments = [
 ]
 pygobject = [
     {file = "PyGObject-3.40.1.tar.gz", hash = "sha256:6fb599aa59ceb9dd05fafb0d72b3862943e7d5e85c8ef6c74856bc6d4321cbab"},
-]
-pyinotify = [
-    {file = "pyinotify-0.9.6.tar.gz", hash = "sha256:9c998a5d7606ca835065cdabc013ae6c66eb9ea76a00a1e3bc6e0cfe2b4f71f4"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},

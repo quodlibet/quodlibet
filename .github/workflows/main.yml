@@ -123,7 +123,6 @@ jobs:
           python3-mutagen \
           python3-pip \
           python3-polib \
-          python3-pyinotify \
           python3-pytest \
           python3-setuptools \
           xvfb
