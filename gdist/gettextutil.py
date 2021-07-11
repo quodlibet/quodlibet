@@ -32,8 +32,6 @@ import warnings
 from pathlib import Path
 from typing import List, Optional, Tuple, Iterable, Dict
 
-from quodlibet import print_w
-
 QL_SRC_DIR = "quodlibet"
 
 XGETTEXT_CONFIG: Dict[str, Tuple[str, List[str]]] = {
