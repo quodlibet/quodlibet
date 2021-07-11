@@ -1,5 +1,6 @@
 # Copyright 2007 Joe Wreschnig
 #           2009-2010,2012-2016 Christoph Reiter
+#           2021 Nick Boultbee
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -28,9 +29,11 @@ gettext message catalogs.
 
 import os
 import shutil
+from pathlib import Path
 from tempfile import mkstemp
 from distutils.errors import DistutilsOptionError
 from distutils.dep_util import newer_group, newer
+from typing import Optional
 
 from .util import Command
 from . import gettextutil
@@ -48,12 +51,13 @@ class po_stats(Command):
         pass
 
     def run(self):
-        po_directory = self.distribution.po_directory
+        po_directory = Path(self.distribution.po_directory)
 
         with gettextutil.create_pot(po_directory) as pot_path:
             res = []
             for language in gettextutil.list_languages(po_directory):
                 fd, temp_path = mkstemp(".po")
+                temp_path = Path(temp_path)
                 try:
                     os.close(fd)
                     po_path = gettextutil.get_po_path(po_directory, language)
@@ -61,7 +65,7 @@ class po_stats(Command):
                     output = gettextutil.po_stats(temp_path)
                     res.append((language, output))
                 finally:
-                    os.remove(temp_path)
+                    temp_path.unlink()
 
         stats = []
         for po, r in res:
@@ -98,12 +102,12 @@ class update_po(Command):
         except gettextutil.GettextError as e:
             raise SystemExit(e)
 
-        po_directory = self.distribution.po_directory
+        po_directory = Path(self.distribution.po_directory)
 
         langs = gettextutil.list_languages(po_directory)
         if self.lang is not None:
             if self.lang not in langs:
-                raise SystemExit("Error: %r not found" % self.lang)
+                raise SystemExit(f"Error: {self.lang} not found")
             else:
                 langs = [self.lang]
 
@@ -133,11 +137,11 @@ class create_po(Command):
         except gettextutil.GettextError as e:
             raise SystemExit(e)
 
-        po_directory = self.distribution.po_directory
+        po_directory = Path(self.distribution.po_directory)
         po_path = gettextutil.get_po_path(po_directory, self.lang)
         with gettextutil.create_pot(po_directory) as pot_path:
             gettextutil.create_po(pot_path, po_path)
-            print("Created %r" % os.path.abspath(po_path))
+            print(f"Created {po_path.absolute()}")
 
 
 class create_pot(Command):
@@ -158,12 +162,12 @@ class create_pot(Command):
             raise SystemExit(e)
 
         po_package = self.distribution.po_package
-        po_directory = self.distribution.po_directory
+        po_directory = Path(self.distribution.po_directory)
         with gettextutil.create_pot(po_directory) as pot_path:
-            dest = os.path.join(po_directory, po_package + ".pot")
+            dest = po_directory / f"{po_package}.pot"
             shutil.copy(pot_path, dest)
             strip_pot_date(dest)
-            print("Created %r" % os.path.abspath(dest))
+            print(f"Created {dest.absolute()}")
 
 
 def strip_pot_date(path):
@@ -188,14 +192,14 @@ class build_po(Command):
 
     def initialize_options(self):
         self.build_base = None
-        self.po_build_dir = None
+        self.po_build_dir: Optional[Path] = None
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
-        self.po_build_dir = os.path.join(self.build_base, '_po_build')
+        self.po_build_dir = Path(self.build_base) / '_po_build'
 
     def run(self):
-        po_directory = self.distribution.po_directory
+        po_directory = Path(self.distribution.po_directory)
         langs = gettextutil.list_languages(po_directory)
 
         pot_deps = gettextutil.get_pot_dependencies(po_directory)
@@ -203,13 +207,13 @@ class build_po(Command):
         for language in langs:
             po_path = gettextutil.get_po_path(po_directory, language)
             out_path = gettextutil.get_po_path(self.po_build_dir, language)
-            if newer_group(pot_deps + [po_path], out_path):
+            if newer_group([str(p) for p in pot_deps + [po_path]], str(out_path)):
                 to_build.append((po_path, out_path))
 
         if not to_build:
             return
 
-        self.mkpath(self.po_build_dir)
+        self.mkpath(str(self.po_build_dir))
         with gettextutil.create_pot(po_directory) as pot_path:
             for po_path, out_path in to_build:
                 gettextutil.update_po(pot_path, po_path, out_path)
@@ -232,9 +236,9 @@ class build_mo(Command):
     ]
 
     def initialize_options(self):
-        self.build_base = None
+        self.build_base: Optional[Path] = None
         self.lang = None
-        self.po_build_dir = None
+        self.po_build_dir: Optional[Path] = None
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -253,15 +257,15 @@ class build_mo(Command):
             else:
                 langs = [self.lang]
 
-        basepath = os.path.join(self.build_base, 'share', 'locale')
+        basepath = self.build_base / "share" / "locale"
         for language in langs:
-            fullpath = os.path.join(basepath, language, "LC_MESSAGES")
-            destpath = os.path.join(fullpath, po_package + ".mo")
+            fullpath = basepath / language / "LC_MESSAGES"
+            destpath = fullpath / f"{po_package}.mo"
 
-            self.mkpath(fullpath)
+            self.mkpath(str(fullpath))
 
             po_path = gettextutil.get_po_path(self.po_build_dir, language)
-            if newer(po_path, destpath):
+            if newer(str(po_path), str(destpath)):
                 gettextutil.compile_po(po_path, destpath)
 
 

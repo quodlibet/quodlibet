@@ -298,10 +298,6 @@ class StatusBar(Gtk.HBox):
             True, True, 0)
         self.task_widget = TaskWidget(task_controller)
         self.pack_start(self.task_widget, True, True, 0)
-        # The history button will eventually hold the full list of running
-        # tasks, as well as the list of previous notifications.
-        #self.history_btn = Gtk.Button()
-        #self.pack_start(self.history_btn, False, True, 0)
 
         self.show_all()
         self.set_no_show_all(True)

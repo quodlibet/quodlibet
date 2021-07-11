@@ -13,6 +13,7 @@ import dbus.service
 from senf import fsn2uri
 
 from quodlibet import app
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 
@@ -326,13 +327,13 @@ value="false"/>
             if name == "LoopStatus":
                 if value == "Playlist":
                     player_options.repeat = True
-                    player_options.single = False
+                    app.window.order.repeater = RepeatListForever
                 elif value == "Track":
                     player_options.repeat = True
-                    player_options.single = True
+                    app.window.order.repeater = RepeatSongForever
                 elif value == "None":
                     player_options.repeat = False
-                    player_options.single = False
+                    app.window.order.repeater = RepeatListForever
             elif name == "Rate":
                 pass
             elif name == "Shuffle":

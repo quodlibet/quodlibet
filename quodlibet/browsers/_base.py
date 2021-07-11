@@ -270,9 +270,9 @@ class Browser(Gtk.Box, Filter):
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def status_text(self, count, time=None):
+    def status_text(self, count: int, time: Optional[str] = None) -> str:
         tmpl = numeric_phrase("%d song", "%d songs", count)
-        return tmpl + " (%s)" % time
+        return f"{tmpl} ({time})" if time else tmpl
 
     replaygain_profiles: Optional[List[str]] = None
     """Replay Gain profiles for this browser."""

@@ -12,10 +12,11 @@ Librarians for libraries.
 """
 
 import itertools
-from typing import Generator, Iterable
+from typing import Dict, Iterable, Iterator, Generator
 
 from gi.repository import GObject
 
+from quodlibet.library.base import Library
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.util.dprint import print_d, print_w
 from senf import fsnative
@@ -42,13 +43,13 @@ class Librarian(GObject.GObject):
 
     def __init__(self):
         super().__init__()
-        self.libraries = {}
+        self.libraries: Dict[str, Library] = {}
         self.__signals = {}
 
-    def destroy(self):
+    def destroy(self) -> None:
         pass
 
-    def register(self, library, name):
+    def register(self, library: Library, name: str) -> None:
         """Register a library with this librarian."""
         if name in self.libraries or name in self.__signals:
             raise ValueError("library %r is already active" % name)
@@ -59,7 +60,7 @@ class Librarian(GObject.GObject):
         self.libraries[name] = library
         self.__signals[library] = [added_sig, removed_sig, changed_sig]
 
-    def _unregister(self, library, name):
+    def _unregister(self, library: Library, name: str) -> None:
         # This function, unlike register, should be private.
         # Libraries get unregistered at the discretion of the
         # librarian, not the libraries.
@@ -73,16 +74,16 @@ class Librarian(GObject.GObject):
     # a case where many libraries fire a signal at the same time (or
     # one fires a signal often).
 
-    def __changed(self, library, items):
+    def __changed(self, _library: Library, items: Iterable) -> None:
         self.emit('changed', items)
 
-    def __added(self, library, items):
+    def __added(self, _library: Library, items: Iterable) -> None:
         self.emit('added', items)
 
-    def __removed(self, library, items):
+    def __removed(self, _library: Library, items: Iterable) -> None:
         self.emit('removed', items)
 
-    def changed(self, items):
+    def changed(self, items: Iterable) -> None:
         """Triage the items and inform their real libraries."""
 
         for library in self.libraries.values():
@@ -106,12 +107,12 @@ class Librarian(GObject.GObject):
         except KeyError:
             return default
 
-    def remove(self, items):
+    def remove(self, items: Iterable):
         """Remove items from all libraries."""
         for library in self.libraries.values():
             library.remove(items)
 
-    def __contains__(self, item):
+    def __contains__(self, item) -> bool:
         """Check if a key or item is in the library."""
         for library in self.libraries.values():
             if item in library:
@@ -119,11 +120,11 @@ class Librarian(GObject.GObject):
         else:
             return False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         """Iterate over all items in all libraries."""
         return itertools.chain(*self.libraries.values())
 
-    def move(self, items, from_, to):
+    def move(self, items: Iterable, from_: Library, to: Library) -> None:
         """Move items from one library to another.
 
         This causes 'removed' signals on the from library, and 'added'
