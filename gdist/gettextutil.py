@@ -66,12 +66,7 @@ def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            full_path = (src_root / line).resolve()
-            # Directories not wanted
-            if full_path.is_file():
-                paths.append(full_path)
-            else:
-                print_w(f"Ignoring {full_path} in {potfiles}")
+            paths.append((src_root / line).resolve())
     return paths
 
 
@@ -354,8 +349,8 @@ def get_missing(po_dir: Path) -> Iterable[str]:
         root = Path(root)
         for dirname in dirs:
             dirpath = (root / dirname).relative_to(src_root)
-            if (dirpath in skip_files or str(dirpath).startswith(".")
-                    or dirname.startswith(".")):
+            if (dirpath in skip_files
+                    or dirname.startswith(".") or dirpath in skip_files):
                 dirs.remove(dirname)
 
         for name in files:
