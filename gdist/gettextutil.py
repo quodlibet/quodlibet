@@ -143,7 +143,7 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
 
                 args = ["xgettext", "--from-code=utf-8", "--add-comments",
                         "--files-from=" + str(potfiles_in),
-                        "--directory=" + str(src_root / "quodlibet"),
+                        "--directory=" + str(src_root),
                         "--output=" + str(out_path),
                         "--force-po",
                         "--join-existing"] + args
@@ -347,8 +347,7 @@ def get_missing(po_dir: Path) -> Iterable[str]:
         root = Path(root)
         for dirname in dirs:
             dirpath = (root / dirname).relative_to(src_root)
-            if (dirpath in skip_files
-                    or dirname.startswith(".") or dirpath in skip_files):
+            if dirpath in skip_files or dirname.startswith("."):
                 dirs.remove(dirname)
 
         for name in files:
