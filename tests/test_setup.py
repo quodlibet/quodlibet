@@ -25,7 +25,8 @@ import pytest
 from _pytest.fixtures import fixture
 
 import quodlibet
-from gdist import create_po, GDistribution, create_pot, update_po, po_stats, build_po
+from gdist import (create_po, GDistribution, create_pot, update_po, po_stats, build_po,
+                   build_mo, install_mo)
 from quodlibet.util import get_module_dir
 from tests.test_po import has_gettext_util
 
@@ -47,7 +48,8 @@ def temp_po_dir() -> Path:
     with open(po_path / "POTFILES.in", "w") as f:
         f.write(f"{SRC_FILE.name}\n")
     shutil.copy(SRC_FILE, out_path / SRC_FILE.name)
-    return po_path
+    yield po_path
+    shutil.rmtree(po_path)
 
 
 @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
@@ -75,3 +77,22 @@ class TestPoCommands:
     def test_build_po(self, dist):
         cmd = build_po(dist)
         cmd.run()
+
+    def test_build_mo(self, dist, temp_po_dir):
+        cmd = build_mo(dist)
+        # Probably should create another dir, but this will do for now
+        cmd.build_base = str(temp_po_dir)
+        cmd.po_build_dir = str(temp_po_dir)
+        cmd.run()
+
+    def test_install_mo(self, dist, temp_po_dir):
+        cmd = install_mo(dist)
+        cmd.build_base = str(temp_po_dir)
+        out = mkdtemp()
+        # These need to exist for the command to succeed
+        (Path(out) / "share" / "locale").mkdir(parents=True)
+        (temp_po_dir / "share" / "locale").mkdir(parents=True)
+
+        cmd.install_dir = out
+        cmd.run()
+        shutil.rmtree(out)
