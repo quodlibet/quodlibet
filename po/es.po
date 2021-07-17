@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-06-15 01:33+0000\n"
+"PO-Revision-Date: 2021-06-18 07:27+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.7\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -137,15 +137,15 @@ msgstr "Un álbum de ejemplo"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
-msgstr "Preferencias de la lista de álbumes"
+msgstr "Preferencias de lista de álbumes"
 
 #: quodlibet/browsers/albums/prefs.py:61
 msgid "Show album _covers"
-msgstr "Mostrar _carátulas"
+msgstr "Mostrar _cubiertas de álbumes"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
-msgstr "La _búsqueda incluye los \"componentes\""
+msgstr "La _búsqueda insertada incluye personas"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
@@ -315,7 +315,7 @@ msgstr "Etiqueta"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr "Unir"
+msgstr "Fusionar"
 
 #: quodlibet/browsers/collection/prefs.py:187
 msgid "Album Collection Preferences"
@@ -371,9 +371,8 @@ msgid "Cover Grid Preferences"
 msgstr "Preferencias de la cuadrícula de cubiertas"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "Mostrar _carátulas"
+msgstr "Mostrar _texto de álbum"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
 msgid "Show \"All Albums\" Item"
@@ -381,7 +380,7 @@ msgstr "Mostrar elemento «Todos los álbumes»"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
 msgid "Wide Mode"
-msgstr ""
+msgstr "Modo ancho"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
@@ -2500,6 +2499,8 @@ msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
 msgstr ""
+"Sincroniza todas las canciones de las búsquedas guardadas seleccionadas con "
+"la carpeta que se especifique."
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
 msgid "<artist>"
@@ -2526,6 +2527,8 @@ msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
 msgstr ""
+"Se eliminará todo aquel archivo preexistente en la carpeta de destino que no "
+"figure en las búsquedas guardadas."
 
 #: quodlibet/ext/events/synchronize_to_device.py:170
 msgid ""
@@ -2744,10 +2747,11 @@ msgstr "No se pudo sincronizar"
 #: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
+"No se puede comenzar la sincronización cuando se ordena por <b>Estado</b>."
 
 #: quodlibet/ext/events/synchronize_to_device.py:949
 msgid "Starting song synchronization"
-msgstr ""
+msgstr "Comenzando sincronización de canciones"
 
 #. Summary labels
 #: quodlibet/ext/events/synchronize_to_device.py:953
@@ -2756,11 +2760,11 @@ msgstr "Sincronización en curso."
 
 #: quodlibet/ext/events/synchronize_to_device.py:965
 msgid "Finished song synchronization"
-msgstr ""
+msgstr "Finalizó la sincronización de canciones"
 
 #: quodlibet/ext/events/synchronize_to_device.py:974
 msgid "Stopping song synchronization"
-msgstr ""
+msgstr "Deteniendo sincronización de canciones"
 
 #: quodlibet/ext/events/synchronize_to_device.py:975
 msgid "Synchronization was stopped."
@@ -2772,7 +2776,7 @@ msgstr "Finalizó la sincronización."
 
 #: quodlibet/ext/events/synchronize_to_device.py:1010
 msgid "Stopped song synchronization"
-msgstr ""
+msgstr "Se detuvo la sincronización de canciones"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1014
 msgid "A different plugin was selected - stop synchronization"
@@ -2789,37 +2793,37 @@ msgstr "Quitando «{}»"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1105
 msgid "Synchronization has:"
-msgstr "La sincronización tiene:"
+msgstr "La sincronización ha:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1113
 #, python-brace-format
 msgid "written {count}/{total} {file_str}"
-msgstr ""
+msgstr "escrito {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1120
 #, python-brace-format
 msgid "(skipped {count} existing {file_str})"
-msgstr ""
+msgstr "(se pasaron por alto {count} {file_str} existentes)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1128
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr ""
+msgstr "pasado por alto {count}/{total} duplicados de {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1135
 #, python-brace-format
 msgid "deleted {count}/{total} {file_str}"
-msgstr ""
+msgstr "eliminado {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1142
 #, python-brace-format
 msgid "failed to sync {count} {file_str}"
-msgstr ""
+msgstr "fallado en sincronizar {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1148
 #, python-brace-format
 msgid "skipped {count} {file_str} synchronized previously"
-msgstr ""
+msgstr "pasado por alto {count} {file_str} que ya se habían sincronizado"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3919,7 +3923,7 @@ msgstr "Descarga de cubiertas"
 #: quodlibet/ext/songsmenu/cover_download.py:229
 #, python-format
 msgid "Loading %(source)s - %(dimensions)s…"
-msgstr ""
+msgstr "Cargando %(source)s; %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:293
 #, python-format
@@ -3930,6 +3934,11 @@ msgid ""
 "Providers used:\n"
 "<tt>%(providers)s</tt>"
 msgstr ""
+"No se encontró nada para los álbumes:\n"
+"<i>%(albums)s</i>.\n"
+"\n"
+"Proveedores utilizados:\n"
+"<tt>%(providers)s</tt>"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
 msgid "No covers found"
@@ -4572,9 +4581,8 @@ msgid "Existing Tags"
 msgstr "Etiquetas existentes"
 
 #: quodlibet/ext/songsmenu/splitting.py:31
-#, fuzzy
 msgid "Split Tags"
-msgstr "Editar etiquetas"
+msgstr "Dividir etiquetas"
 
 #: quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
@@ -4620,9 +4628,8 @@ msgid "Tap BPM for the selected song."
 msgstr "No se han podido eliminar las canciones"
 
 #: quodlibet/ext/songsmenu/website_search.py:36
-#, fuzzy
 msgid "Website Search"
-msgstr "Buscar"
+msgstr "Búsqueda en sitios web"
 
 #: quodlibet/ext/songsmenu/website_search.py:37
 #, python-format
@@ -4647,7 +4654,7 @@ msgstr "Configurar búsquedas…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:35
 msgid "Search Tag in Wikipedia"
-msgstr ""
+msgstr "Buscar etiqueta en Wikipedia"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid ""
@@ -5422,9 +5429,8 @@ msgid "_Split Tag"
 msgstr "Editar etiquetas"
 
 #: quodlibet/qltk/edittags.py:727
-#, fuzzy
 msgid "_Copy Value(s)"
-msgstr "Copiar las _carátulas del álbum"
+msgstr "_Copiar valor(es)"
 
 #: quodlibet/qltk/edittags.py:758
 msgid "Unable to add tag"
@@ -5993,7 +5999,7 @@ msgstr "Editar columnas"
 
 #: quodlibet/qltk/prefs.py:264
 msgid "Duration totals"
-msgstr ""
+msgstr "Totales de duración"
 
 #: quodlibet/qltk/prefs.py:276
 msgid "_Global filter:"
@@ -6058,6 +6064,9 @@ msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
+"El o los archivos de imagen de cubierta que utilizar en caso de estar "
+"disponibles (permite comodines). Para definir más de uno, sepárelos con "
+"comas."
 
 #: quodlibet/qltk/prefs.py:330
 msgid "_Preferred image filename(s):"
@@ -6451,33 +6460,32 @@ msgid "The rating of all selected songs will be changed to %s"
 msgstr "Se cambiará la puntuación de todas las canciones seleccionadas a %s"
 
 #: quodlibet/qltk/ratingsmenu.py:34
-#, fuzzy
 msgid "Change _Rating"
-msgstr "_Puntuación"
+msgstr "Cambiar _puntuación"
 
 #: quodlibet/qltk/renamefiles.py:52
 msgid "Replace spaces with _underscores"
-msgstr "Reemplazar los espacios con _guiones bajos"
+msgstr "Reemplazar espacios por guiones _bajos"
 
 #: quodlibet/qltk/renamefiles.py:62
 msgid "Replace [semi]colon delimiting with hyphens"
-msgstr ""
+msgstr "Reempl. delim. por dos puntos o punto y coma por guiones"
 
 #: quodlibet/qltk/renamefiles.py:63
 msgid "e.g. \"iv: allegro.flac -> \"iv - allegro.flac\""
-msgstr ""
+msgstr "p. ej., «iv: allegro.flac» → «iv - allegro.flac»"
 
 #: quodlibet/qltk/renamefiles.py:82
 msgid "Strip _Windows-incompatible characters"
-msgstr "Eliminar los caracteres incompatibles con _Windows"
+msgstr "Eliminar caracteres incompatibles con _Windows"
 
 #: quodlibet/qltk/renamefiles.py:100
 msgid "Strip _diacritical marks"
-msgstr "Eliminar las marcas _diacríticas"
+msgstr "Eliminar _diacríticos"
 
 #: quodlibet/qltk/renamefiles.py:111
 msgid "Strip non-_ASCII characters"
-msgstr "Eliminar los caracteres no-_ASCII"
+msgstr "Eliminar caracteres no _ASCII"
 
 #: quodlibet/qltk/renamefiles.py:121
 msgid "Use only _lowercase characters"
@@ -6490,12 +6498,11 @@ msgstr "Cambiar el nombre del archivo"
 #: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:119
 #: quodlibet/qltk/tracknumbers.py:57
 msgid "_Preview"
-msgstr "_Prever"
+msgstr "_Previsualizar"
 
 #: quodlibet/qltk/renamefiles.py:198
-#, fuzzy
 msgid "File names"
-msgstr "Nombre del archivo"
+msgstr "Nombres de archivo"
 
 #: quodlibet/qltk/renamefiles.py:208
 #, fuzzy
@@ -6511,9 +6518,8 @@ msgid "_Overwrite album art at target"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:224
-#, fuzzy
 msgid "_Remove empty directories"
-msgstr "_Eliminar las portadas de discos y las carpetas sin utilizar"
+msgstr "_Quitar directorios vacíos"
 
 #: quodlibet/qltk/renamefiles.py:230
 msgid "Album art"
@@ -6661,7 +6667,7 @@ msgstr "Buscar en la fonoteca mediante texto o consultas de QL"
 
 #: quodlibet/qltk/searchbar.py:144
 msgid "Search after _typing"
-msgstr "Buscar despues de _escribir"
+msgstr "Buscar _tras escribir"
 
 #: quodlibet/qltk/searchbar.py:147
 msgid "Show search results after the user stops typing"
@@ -7042,21 +7048,20 @@ msgstr ""
 
 #: quodlibet/util/__init__.py:78
 msgid "Display brief usage information"
-msgstr "Muestra información sumaria sobre los distintos comandos"
+msgstr "Mostrar información breve sobre el uso"
 
 #: quodlibet/util/__init__.py:80
 msgid "Display version and copyright"
-msgstr "Muestra la versión y el copyright"
+msgstr "Mostrar versión y derechos de autor"
 
 #: quodlibet/util/__init__.py:81
-#, fuzzy
 msgid "Print debugging information"
-msgstr "No existe información sobre la duración"
+msgstr "Mostrar información de depuración"
 
 #: quodlibet/util/__init__.py:120
 #, python-format
 msgid "Usage: %(program)s %(usage)s"
-msgstr ""
+msgstr "Uso: %(program)s %(usage)s"
 
 #: quodlibet/util/__init__.py:122
 msgid "[options]"
@@ -7363,7 +7368,7 @@ msgstr "país de publicación"
 
 #: quodlibet/util/tags.py:122
 msgid "initial key"
-msgstr ""
+msgstr "clave inicial"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
 #. Note: picard has changed musicbrainz_trackid to mean release track.
@@ -7457,7 +7462,7 @@ msgstr "punto de montaje"
 
 #: quodlibet/util/tags.py:166
 msgid "people"
-msgstr "componentes"
+msgstr "personas"
 
 #: quodlibet/util/tags.py:168
 msgid "year"
@@ -7513,7 +7518,7 @@ msgstr "Editor de etiquetas de audio"
 #: data/io.github.quodlibet.ExFalso.desktop.in:5
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:6
 msgid "Edit tags in your audio files"
-msgstr "Edita las etiquetas de tus archivos de música"
+msgstr "Edite las etiquetas de sus archivos de audio"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:3
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:5
