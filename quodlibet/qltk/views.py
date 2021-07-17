@@ -854,7 +854,7 @@ class BaseView(Gtk.TreeView):
 
     @contextlib.contextmanager
     def without_model(self):
-        """Conext manager which removes the model from the view
+        """Context manager which removes the model from the view
         and adds it back afterwards.
 
         Tries to preserve all state that gets reset on a model change.
