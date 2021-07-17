@@ -291,7 +291,6 @@ class PreferencesWindow(QLPreferencesWindow):
 
         main_vbox = Gtk.VBox(spacing=12)
         main_vbox.pack_start(f, True, True, 0)
-        self.use_header_bar()
         if not self.has_close_button():
             main_vbox.pack_start(button_box, False, True, 0)
         self.add(main_vbox)

@@ -191,7 +191,7 @@ class build_po(Command):
     user_options = []
 
     def initialize_options(self):
-        self.build_base = None
+        self.build_base: Optional[str] = None
         self.po_build_dir: Optional[Path] = None
 
     def finalize_options(self):
@@ -236,9 +236,9 @@ class build_mo(Command):
     ]
 
     def initialize_options(self):
-        self.build_base: Optional[Path] = None
+        self.build_base: Optional[str] = None
         self.lang = None
-        self.po_build_dir: Optional[Path] = None
+        self.po_build_dir: Optional[str] = None
 
     def finalize_options(self):
         self.set_undefined_options('build', ('build_base', 'build_base'))
@@ -249,22 +249,23 @@ class build_mo(Command):
         self.run_command("build_po")
 
         po_package = self.distribution.po_package
+        po_build_path = self.po_build_dir and Path(self.po_build_dir)
 
-        langs = gettextutil.list_languages(self.po_build_dir)
+        langs = gettextutil.list_languages(po_build_path)
         if self.lang is not None:
             if self.lang not in langs:
                 raise SystemExit("Error: %r not found" % self.lang)
             else:
                 langs = [self.lang]
 
-        basepath = self.build_base / "share" / "locale"
+        basepath = Path(self.build_base) / "share" / "locale"
         for language in langs:
             fullpath = basepath / language / "LC_MESSAGES"
             destpath = fullpath / f"{po_package}.mo"
 
             self.mkpath(str(fullpath))
 
-            po_path = gettextutil.get_po_path(self.po_build_dir, language)
+            po_path = gettextutil.get_po_path(po_build_path, language)
             if newer(str(po_path), str(destpath)):
                 gettextutil.compile_po(po_path, destpath)
 
