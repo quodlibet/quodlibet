@@ -153,8 +153,8 @@ class TWatchedFileLibrary(TLibrary):
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_adding_removing(self):
-        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
-            path = Path(f.name)
+        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
+            path = Path(fn)
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
             sleep(0.5)
             assert path.exists()
