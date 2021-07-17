@@ -132,7 +132,7 @@ def main():
 
     moduleset_versions = get_moduleset_versions()
 
-    pool = ThreadPool(20)
+    pool = ThreadPool(4)
     pool_iter = pool.imap_unordered(_fetch_version, moduleset_versions.keys())
 
     arch_versions = {}
