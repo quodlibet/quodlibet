@@ -12,8 +12,6 @@
 from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
-
-from quodlibet.library.base import Library
 from senf import uri2fsn
 
 from quodlibet import app, print_w
@@ -198,7 +196,7 @@ def header_tag_split(header):
 class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
-    def setup_drop(self, library: Library):
+    def setup_drop(self, library):
         self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
@@ -289,7 +287,7 @@ class SongListDnDMixin(GObject.GObject):
             sel.set_uris(uris)
             self.__drag_iters = []
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library: Library):
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
         model = view.get_model()
         if info == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
@@ -433,7 +431,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             connect_destroy(player, 'unpaused', lambda *x: self.__redraw_current())
             connect_destroy(player, 'error', lambda *x: self.__redraw_current())
 
-        self.connect('button-press-event', self.__button_press, library)
+        # Note we have other listeners on this already in the inheritance graph.
+        self.connect('button-press-event', self.__primary_button_press, library)
         self.connect('key-press-event', self.__key_press, library, player)
 
         self.setup_drop(library)
