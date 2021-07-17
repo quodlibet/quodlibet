@@ -16,6 +16,7 @@ from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
 from tests import (mkdtemp, NamedTemporaryFile, get_data_path, run_gtk_loop, _TEMP_DIR,
                    init_fake_app, destroy_fake_app)
+from tests.helper import temp_filename
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
 
@@ -173,8 +174,7 @@ class TWatchedFileLibrary(TLibrary):
         assert str(path) not in self.library, f"{path} shouldn't be in the library now"
 
     def test_watched_adding(self):
-        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".mp3") as f:
-            fn = f.name
+        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
             shutil.copy(get_data_path("silence-44-s.mp3"), fn)
             run_gtk_loop()
             assert fn in self.library, (f"{fn} should have been added to "
@@ -183,8 +183,8 @@ class TWatchedFileLibrary(TLibrary):
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving(self):
-        with NamedTemporaryFile(dir=_TEMP_DIR, suffix=".flac", delete=False) as f:
-            path = Path(f.name)
+        with temp_filename(dir=_TEMP_DIR, suffix=".flac") as fn:
+            path = Path(fn)
             shutil.copy(get_data_path("silence-44-s.flac"), path)
             sleep(0.5)
             assert path.exists()
@@ -201,7 +201,6 @@ class TWatchedFileLibrary(TLibrary):
             assert not self.removed
             assert str(new_path) in self.library, f"New path {new_path!r} not in " \
                                                   f"library [{self.fns}]"
-        os.unlink(new_path)
 
     @property
     def fns(self) -> str:
