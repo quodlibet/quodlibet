@@ -18,7 +18,6 @@
   <repository type="tarball" name="cairographics-snapshots"
               href="https://cairographics.org/snapshots/"/>
   <repository type='tarball' name='ftp.gnu.org' href="ftp://ftp.gnu.org/gnu/"/>
-  <repository type='tarball' name='ftp.gnupg.org' href="https://gnupg.org/ftp/" />
   <repository type="tarball" name="chromaprint"
               href="https://github.com/acoustid/chromaprint/releases/download/"/>
   <repository type="tarball" name="libgme"
@@ -29,8 +28,6 @@
           href="http://downloads.xiph.org/releases/"/>
   <repository type="tarball" name="mozilla"
           href="https://archive.mozilla.org/pub/"/>
-  <repository type="tarball" name="ftp.gnutls.org"
-          href="https://gnutls.org/ftp/"/>
   <repository type="tarball" name="gstreamer"
           href="http://gstreamer.freedesktop.org/src/"/>
   <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
@@ -128,13 +125,13 @@
 
   <autotools id="m4" autogen-sh="configure" bootstrap="true">
     <branch repo="ftp.gnu.org"
-            module="m4/m4-${version}.tar.xz" version="1.4.18"
-            hash="sha256:f2c1e86ca0a404ff281631bdc8377638992744b175afb806e25871a24a934e07"/>
+            module="m4/m4-${version}.tar.xz" version="1.4.19"
+            hash="sha256:63aede5c6d33b6d9b13511cd0be2cac046f2e70fd0a07aa9573a04a82783af96"/>
   </autotools>
 
   <autotools id="xz" autogen-sh="configure" bootstrap="true">
-    <branch repo="tukaani.org" module="xz/xz-${version}.tar.bz2" version="5.2.4"
-            hash="sha256:3313fd2a95f43d88e44264e6b015e7d03053e681860b0d5d3f9baca79c57b7bf"/>
+    <branch repo="tukaani.org" module="xz/xz-${version}.tar.bz2" version="5.2.5"
+            hash="sha256:5117f930900b341493827d63aa910ff5e011e0b994197c3b71c08a20228a42df"/>
   </autotools>
 
   <autotools id="autoconf" autogen-sh="configure" bootstrap="true">
@@ -147,9 +144,9 @@
   </autotools>
 
   <autotools id="automake" autogen-sh="configure" bootstrap="true">
-    <branch repo="ftp.gnu.org" version="1.16.1"
+    <branch repo="ftp.gnu.org" version="1.16.3"
             module="automake/automake-${version}.tar.gz"
-            hash="sha256:608a97523f97db32f1f5d5615c98ca69326ced2054c9f82e65bade7fc4c9dea8"/>
+            hash="sha256:ce010788b51f64511a1e9bb2a1ec626037c6d0e7ede32c1c103611b9d3cba65f"/>
     <dependencies>
       <dep package="autoconf"/>
     </dependencies>
@@ -178,8 +175,8 @@
 
   <autotools id="readline" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="readline/readline-${version}.tar.gz"
-      version="7.0"
-      hash="sha256:750d437185286f40a369e1e4f4764eda932b9459b5ec9a731628393dd3d32334">
+      version="8.1"
+      hash="sha256:f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02">
     </branch>
   </autotools>
 
@@ -204,8 +201,8 @@
   <autotools id="libffi" autogenargs="--disable-builddir"
              autogen-sh="configure">
     <branch module="libffi/libffi-${version}.tar.gz" repo="sourceware.org"
-            version="3.2.1"
-            hash="sha256:d06ebb8e1d9a22d19e38d63fdb83954253f39bedc5d46232a05645685722ca37"/>
+            version="3.3"
+            hash="sha256:72fba7922703ddfa7a028d513ac15a85c8d54c8d67f55fa5a4802885dc652056"/>
   </autotools>
 
   <autotools id="pixman" autogenargs="--disable-gtk --disable-mmx"
@@ -303,10 +300,10 @@
   <autotools id="freetype-no-harfbuzz" autogen-sh="configure"
              skip-autogen="never"
              autogenargs="--without-bzip2 --without-harfbuzz">
-    <branch module="freetype/freetype-${version}.tar.gz" version="2.9.1"
+    <branch module="freetype/freetype-${version}.tar.gz" version="2.10.4"
             repo="sourceforge"
             checkoutdir="freetype-no-harfbuzz-${version}"
-            hash="sha256:ec391504e55498adceb30baceebd147a6e963f636eb617424bcfc47a169898ce">
+            hash="sha256:5eab795ebb23ac77001cfb68b7d4d50b5d6c7469247b0b01b2c953269f658dac">
     </branch>
     <dependencies>
       <dep package="zlib"/>
@@ -315,22 +312,23 @@
 
   <meson id="harfbuzz" mesonargs="-Ddocs=disabled -Dcoretext=enabled -Dgobject=enabled -Dintrospection=enabled">
     <branch repo="github-tar"
-            version="2.8.1"
+            version="2.8.2"
             module="harfbuzz/harfbuzz/releases/download/${version}/harfbuzz-${version}.tar.xz"
-            hash="sha256:4124f663ec4bf4e294d9cf230668370b4249a48ff34deaf0f06e8fc82d891300">
+            hash="sha256:d58461395ce28b9dc03903254374dd70c38c8c28c5046db123c08f7ab9417be7">
     </branch>
     <dependencies>
       <dep package="freetype-no-harfbuzz"/>
       <dep package="ragel"/>
       <dep package="glib2"/>
       <dep package="cairo"/>
+      <dep package="gobject-introspection"/>
     </dependencies>
   </meson>
 
   <autotools id="xorg-util-macros">
-    <branch repo="freedesktop" version="1.19.2"
+    <branch repo="freedesktop" version="1.19.3"
             module="xorg/individual/util/util-macros-${version}.tar.bz2"
-            hash="sha256:d7e43376ad220411499a79735020f9d145fdc159284867e99467e0d771f3e712"/>
+            hash="sha256:0f812e6e9d2786ba8f54b960ee563c0663ddbe2434bf24ff193f5feab1f31971"/>
   </autotools>
 
   <meson id="libepoxy">
@@ -360,9 +358,9 @@
 
   <autotools id="freetype" autogen-sh="configure" skip-autogen="never"
          autogenargs="--without-bzip2 --with-harfbuzz">
-    <branch module="freetype/freetype-${version}.tar.gz" version="2.9.1"
+    <branch module="freetype/freetype-${version}.tar.gz" version="2.10.4"
             repo="sourceforge"
-            hash="sha256:ec391504e55498adceb30baceebd147a6e963f636eb617424bcfc47a169898ce">
+            hash="sha256:5eab795ebb23ac77001cfb68b7d4d50b5d6c7469247b0b01b2c953269f658dac">
     </branch>
     <dependencies>
       <dep package="harfbuzz"/>
@@ -382,9 +380,9 @@
   </autotools>
 
   <autotools id="adwaita-icon-theme" autogen-sh="configure">
-    <branch module="adwaita-icon-theme/3.30/adwaita-icon-theme-${version}.tar.xz"
-            version="3.30.0"
-            hash="sha256:9106729174a3e6cc183d14f74454987f5378b46f213e698a6ab2702f70e4e64b"/>
+    <branch module="adwaita-icon-theme/40/adwaita-icon-theme-${version}.tar.xz"
+            version="40.1.1"
+            hash="sha256:0b6c436ed6ad9887a88ada1f72a0197b1eb73b020d8d344abab4c7fa7250f8f6"/>
     <dependencies>
       <dep package="librsvg"/>
       <dep package="hicolor-icon-theme"/>
@@ -393,14 +391,14 @@
     </dependencies>
   </autotools>
 
-  <!-- INSTALL_PREFIX because it doesn't ue DESTDIR and LIBS="" to skip installing static libs -->
+  <!-- INSTALL_PREFIX because it doesn't use DESTDIR and LIBS="" to skip installing static libs -->
   <autotools id="openssl" autogen-sh="Configure" autogenargs="shared zlib-dynamic"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --openssldir=%(prefix)s/etc/ssl %(autogenargs)s"
              makeinstallargs="INSTALL_PREFIX=$JHBUILD_PREFIX/_jhbuild/root-openssl LIBS= install_sw"
              supports-parallel-builds="no"
              supports-non-srcdir-builds="no">
-    <branch module="openssl-1.0.2p.tar.gz" version="1.0.2.p" repo="openssl"
-            hash="sha256:50a98e07b1a89eb8f6a99477f262df71c6fa7bef77df4dc83025a2845c827d00"/>
+    <branch module="openssl-1.1.1k.tar.gz" version="1.1.1.k" repo="openssl"
+            hash="sha256:892a0875b9872acd04a9fde79b1f943075d5ea162415de3047c327df33fbaee5"/>
   </autotools>
 
   <autotools id="python" autogenargs="--enable-shared --without-ensurepip"
@@ -420,8 +418,8 @@
   <autotools id="gettext" autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-libxml --with-included-libcroco --with-included-glib">
     <branch repo="ftp.gnu.org"
-            module="gettext/gettext-${version}.tar.xz" version="0.19.8.1"
-            hash="sha256:105556dbc5c3fbbc2aa0edb46d22d055748b6f5c7cd7a8d99f8e7eb84e938be4"/>
+            module="gettext/gettext-${version}.tar.xz" version="0.21"
+            hash="sha256:d20fcbb537e02dcf1383197ba05bd0734ef7bf5db06bdb241eb69b7d16b73192"/>
   </autotools>
 
   <autotools id="gst-libav" supports-non-srcdir-builds="no"
@@ -504,27 +502,28 @@
 
   <autotools id="sqlite" autogenargs="--disable-tcl --enable-threadsafe"
          autogen-sh="configure">
-    <branch module="2018/sqlite-autoconf-3250300.tar.gz" version="3.25.3"
+    <branch module="2021/sqlite-autoconf-3360000.tar.gz" version="3.36.0"
         repo="sqlite"
-        hash="sha256:00ebf97be13928941940cc71de3d67e9f852698233cd98ce2d178fd08092f3dd"/>
+        hash="sha256:bd90c3eb96bee996206b83be7065c9ce19aef38c3f4fb53073ada0d0b69bbce3"/>
   </autotools>
 
   <autotools id="libtiff" autogen-sh="configure" autogenargs="--without-x">
-    <branch version="4.0.9" module="libtiff/tiff-${version}.tar.gz"
+    <branch version="4.3.0" module="libtiff/tiff-${version}.tar.gz"
         repo="libtiff"
-        hash="sha256:6e7bdeec2c310734e734d19aae3a71ebe37a4d842e0e23dbb1b8921c0026cfcd"/>
+        hash="sha256:0e46e5acb087ce7d1ac53cf4f56a09b221537fc86dfc5daaad1c2e89e1b37ac8"/>
     <dependencies>
       <dep package="libjpeg-turbo"/>
     </dependencies>
   </autotools>
 
- <autotools id="fribidi" autogen-sh="autoreconf" autogenargs="--disable-docs">
+  <meson id="fribidi" mesonargs="-Ddocs=false">
     <branch repo="github-tar"
-            version="1.0.5"
-            module="fribidi/fribidi/releases/download/v${version}/fribidi-${version}.tar.bz2"
-            hash="sha256:6a64f2a687f5c4f203a46fa659f43dd43d1f8b845df8d723107e8a7e6158e4ce">
+            version="1.0.10"
+            module="fribidi/fribidi/archive/v${version}.tar.gz"
+            checkoutdir="fribidi-${version}"
+            hash="sha256:3ebb19c4184ed6dc324d2e291d7465bc6108a20be019f053f33228e07e879c4f">
     </branch>
-  </autotools>
+  </meson>
 
  <meson id="pango">
     <branch version="1.48.7"
@@ -584,6 +583,7 @@
     <dependencies>
       <dep package="python-cairo"/>
       <dep package="gobject-introspection"/>
+      <dep package="libffi"/>
       <dep package="glib2"/>
       <dep package="python"/>
     </dependencies>
@@ -615,8 +615,8 @@
   <distutils id="python-mac_alias" python3="1">
     <branch repo="pypi.org"
             checkoutdir="python-mac_alias-${version}" module="m/mac_alias/mac_alias-${version}.tar.gz"
-            version="2.0.7"
-            hash="sha256:c485e3eb9d600208cc0aa906282f0d575a535395306289bcdb4096599189e223"/>
+            version="2.2.0"
+            hash="sha256:0eb84a63f98bf54c2f9fbdc4de956a63e64eb8a4a124143a1c1f5a78326442f0"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -796,8 +796,8 @@
   <cmake id="chromaprint" use-ninja="no" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
     <branch repo="chromaprint" checkoutdir="chromaprint-${version}"
             module="v${version}/chromaprint-${version}.tar.gz"
-            version="1.4.3"
-            hash="sha256:ea18608b76fb88e0203b7d3e1833fb125ce9bb61efe22c6e169a50c52c457f82">
+            version="1.5.0"
+            hash="sha256:573a5400e635b3823fc2394cfa7a217fbb46e8e50ecebd4a61991451a8af766a">
     </branch>
   </cmake>
 
@@ -861,8 +861,8 @@
 
   <autotools id="mpg123" autogen-sh="configure">
       <branch module="mpg123-${version}.tar.bz2"
-          repo="mpg123" version="1.27.2"
-          hash="sha256:213e82bd716c9de6db2f98bcadbc4c24c7e2efe8c75939a1a84e28539c4e1748">
+          repo="mpg123" version="1.28.2"
+          hash="sha256:7eefd4b68fdac7e138d04c37efe12155a8ebf25a5bccf0fb7e775af22d21db00">
       </branch>
   </autotools>
 
@@ -928,34 +928,17 @@
     </dependencies>
   </meson>
 
-  <autotools id="glib-networking" autogen-sh="configure"
-             autogenargs="--without-ca-certificates set_more_warnings=no">
-    <branch module="glib-networking/2.54/glib-networking-${version}.tar.xz"
-            hash="sha256:eaa787b653015a0de31c928e9a17eb57b4ce23c8cf6f277afaec0d685335012f"
-            version="2.54.1">
-        <!-- This allows us to set GTLS_SYSTEM_CA_FILE at runtime to a CA file -->
-        <patch file="patches/glib-networking-gtls-ca-env-var.patch" strip="1"/>
+  <meson id="glib-networking" mesonargs="-Dopenssl=enabled -Dgnutls=disabled">
+    <branch module="glib-networking/2.68/glib-networking-${version}.tar.xz"
+            hash="sha256:d05d8bd124a9f53fc2b93b18f2386d512e4f48bc5a80470a7967224f3bf53b30"
+            version="2.68.1">
     </branch>
     <dependencies>
-      <dep package="gnutls"/>
+      <dep package="openssl"/>
       <dep package="gettext"/>
       <dep package="glib2"/>
     </dependencies>
-  </autotools>
-
-  <autotools id="gnutls" autogen-sh="configure"
-         autogenargs="--with-libgcrypt --without-p11-kit">
-    <branch repo="ftp.gnutls.org" version="3.5.19"
-            module="v3.5/gnutls-${version}.tar.xz"
-            hash="sha256:1936eb64f03aaefd6eb16cef0567457777618573826b94d03376bb6a4afadc44"/>
-    <dependencies>
-      <dep package="nettle" />
-      <dep package="libgcrypt" />
-      <dep package="libtasn1" />
-      <dep package="zlib"/>
-      <dep package="libunistring"/>
-    </dependencies>
-  </autotools>
+  </meson>
 
   <autotools id="libxml2" autogen-sh="configure"
              autogenargs='--libdir="$JHBUILD_LIBDIR" --without-python'>
@@ -977,9 +960,9 @@
   </autotools>
 
   <autotools id="libxslt" autogen-sh="configure">
-    <branch version="1.1.32" module="libxslt-${version}.tar.gz"
+    <branch version="1.1.34" module="libxslt-${version}.tar.gz"
         repo="xmlsoft.org"
-        hash="sha256:526ecd0abaf4a7789041622c3950c0e7f2c4c8835471515fd77eec684a355460"/>
+        hash="sha256:98b1bd46d6792925ad2dfe9a87452ea2adebf69dcb9919ffd55bf926a7f93f7f"/>
     <dependencies>
       <dep package="libxml2"/>
     </dependencies>
@@ -997,49 +980,11 @@
     </dependencies>
   </autotools>
 
-  <autotools id="libtasn1" supports-non-srcdir-builds="no"
-         autogen-sh="configure">
-    <branch repo="ftp.gnu.org" version="4.13"
-        module="libtasn1/libtasn1-${version}.tar.gz"
-        hash="sha256:7e528e8c317ddd156230c4e31d082cd13e7ddeb7a54824be82632209550c8cca"/>
-  </autotools>
-
-  <autotools id="libgcrypt" autogen-sh="configure">
-    <branch repo='ftp.gnupg.org' version="1.8.4"
-        module="gcrypt/libgcrypt/libgcrypt-${version}.tar.bz2"
-        hash="sha256:f638143a0672628fde0cad745e9b14deb85dffb175709cacc1f4fe24b93f2227">
-    </branch>
-    <dependencies>
-      <dep package="libgpg-error" />
-    </dependencies>
-  </autotools>
-
   <autotools id="libunistring" autogen-sh="configure" supports-non-srdir-builds="no">
     <branch repo="ftp.gnu.org" version="0.9.10"
         module="libunistring/libunistring-${version}.tar.xz"
         hash="sha256:eb8fb2c3e4b6e2d336608377050892b54c3c983b646c561836550863003c05d7"/>
   </autotools>
 
-  <autotools id="libgpg-error" autogen-sh="configure" supports-non-srdir-builds="no">
-    <branch repo="ftp.gnupg.org" version="1.32"
-        module="gcrypt/libgpg-error/libgpg-error-${version}.tar.bz2"
-        hash="sha256:c345c5e73cc2332f8d50db84a2280abfb1d8f6d4f1858b9daa30404db44540ca"/>
-  </autotools>
-
-  <autotools id="gmp">
-    <branch repo="ftp.gnu.org" module="gmp/gmp-${version}.tar.bz2" version="6.1.2"
-            hash="sha256:5275bb04f4863a13516b2f39392ac5e272f5e1bb8057b18aec1c9b79d73d8fb2">
-    </branch>
-  </autotools>
-
-   <autotools id="nettle" autogen-sh="autoreconf" autogen-args="-- --enable-shared --disable-openssl"
-          supports-non-srdir-builds="no">
-    <branch repo="ftp.gnu.org" version="3.4"
-        module="nettle/nettle-${version}.tar.gz"
-        hash="sha256:ae7a42df026550b85daca8389b6a60ba6313b0567f374392e54918588a411e94"/>
-    <dependencies>
-      <dep package="gmp" />
-    </dependencies>
-  </autotools>
 
 </moduleset>
