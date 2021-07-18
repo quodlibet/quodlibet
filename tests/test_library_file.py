@@ -154,7 +154,7 @@ class TWatchedFileLibrary(TLibrary):
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_adding_removing(self):
         with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
-            path = Path(fn).resolve()
+            path = Path(normalize_path(fn)).resolve()
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
             sleep(0.5)
             assert path.exists()
@@ -176,7 +176,7 @@ class TWatchedFileLibrary(TLibrary):
     def test_watched_adding(self):
         with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
             # else funky stuff on Windows...
-            fn = str(Path(fn).resolve())
+            fn = normalize_path(fn)
             shutil.copy(get_data_path("silence-44-s.mp3"), fn)
             run_gtk_loop()
             assert fn in self.library, (f"{fn} should have been added to "
@@ -186,7 +186,7 @@ class TWatchedFileLibrary(TLibrary):
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving(self):
         with temp_filename(dir=_TEMP_DIR, suffix=".flac") as fn:
-            path = Path(fn).resolve()
+            path = Path(normalize_path(fn)).resolve()
             shutil.copy(get_data_path("silence-44-s.flac"), path)
             sleep(0.5)
             assert path.exists()
