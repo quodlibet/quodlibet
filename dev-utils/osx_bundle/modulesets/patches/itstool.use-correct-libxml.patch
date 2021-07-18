@@ -1,0 +1,28 @@
+From d6ef86e2fb7bf9ddf888521e2c7dc5b5b7e4b6d8 Mon Sep 17 00:00:00 2001
+From: Michael Catanzaro <mcatanzaro@gnome.org>
+Date: Fri, 10 Jan 2014 23:50:52 -0600
+Subject: [PATCH] build: use $PYTHON when testing for libxml2
+
+/usr/bin/python is a symlink to /usr/bin/python3 on some systems.
+In this case, configure unconditionally checks for the Python 3 version
+of libxml2. Instead, use the version of Python found by AM_PATH_PYTHON.
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index c29efad..dbd0c7f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,7 +14,7 @@ AM_PATH_PYTHON([2.6])
+ 
+ py_module=libxml2
+ AC_MSG_CHECKING(for python module $py_module)
+-echo "import $py_module" | python - &>/dev/null
++echo "import $py_module" | $PYTHON - &>/dev/null
+ if test $? -ne 0; then
+ 	AC_MSG_RESULT(not found)
+ 	AC_MSG_ERROR(Python module $py_module is needed to run this package)
+-- 
+1.8.5.2
+
