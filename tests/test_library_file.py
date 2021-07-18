@@ -174,14 +174,14 @@ class TWatchedFileLibrary(TLibrary):
         assert str(path) not in self.library, f"{path} shouldn't be in the library now"
 
     def test_watched_adding(self):
-        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
+        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as path:
             # else funky stuff on Windows...
-            fn = normalize_path(fn)
-            shutil.copy(get_data_path("silence-44-s.mp3"), fn)
+            path = Path(normalize_path(path)).resolve()
+            shutil.copy(get_data_path("silence-44-s.mp3"), path)
             run_gtk_loop()
-            assert fn in self.library, (f"{fn} should have been added to "
-                                        f"library [{self.fns}]")
-            assert fn in {af("~filename") for af in self.added}
+            assert str(path) in self.library, (f"{path!s} should have been added to "
+                                               f"library [{self.fns}]")
+            assert str(path) in {af("~filename") for af in self.added}
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving(self):
