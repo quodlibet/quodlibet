@@ -50,6 +50,8 @@ RELEASES = [
             TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
             WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
             WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
+            OSX_QL: [GITHUB + "QuodLibet-%(version)s.dmg"],
+            OSX_EF: [GITHUB + "ExFalso-%(version)s.dmg"],
         }
     },
     {
@@ -363,7 +365,7 @@ def get_releases():
         releases.append(Release(version, date, builds))
         all_builds.extend(builds)
 
-    with ThreadPoolExecutor(max_workers=20) as executor:
+    with ThreadPoolExecutor(max_workers=5) as executor:
         for i, _ in enumerate(executor.map(_fill_build, all_builds)):
             print(i + 1, len(all_builds))
 
