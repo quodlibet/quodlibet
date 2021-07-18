@@ -39,6 +39,8 @@ class TreeViewHints(Gtk.Window):
          'enter-notify-event', 'leave-notify-event'],
         'override')
 
+    __empty_region = cairo.Region(cairo.RectangleInt())
+
     def __init__(self):
         try:
             # gtk+ 3.20
@@ -350,6 +352,11 @@ class TreeViewHints(Gtk.Window):
         self.set_transient_for(get_top_parent(view))
         set_text(label)
         self.set_size_request(w, h)
+
+        # Set region on this window for which to receive mouse events to the
+        # empty region. Mouse events will be passed to the window below the
+        # tooltip.
+        self.input_shape_combine_region(self.__empty_region)
 
         window = self.get_window()
         if self.get_visible() and window:
