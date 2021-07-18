@@ -2,7 +2,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-import os
+
 import shutil
 from pathlib import Path
 from time import sleep
@@ -14,7 +14,7 @@ from quodlibet.formats import MusicFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
-from tests import (mkdtemp, NamedTemporaryFile, get_data_path, run_gtk_loop, _TEMP_DIR,
+from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
                    init_fake_app, destroy_fake_app)
 from tests.helper import temp_filename
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
