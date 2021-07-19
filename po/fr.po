@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-07-19 02:45+0000\n"
+"PO-Revision-Date: 2021-07-19 04:27+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -1687,7 +1687,7 @@ msgstr "Écouteurs"
 
 #: quodlibet/ext/events/equalizer.py:53
 msgid "Soft Rock"
-msgstr "Soft Rock"
+msgstr "Rock doux"
 
 #: quodlibet/ext/events/equalizer.py:55
 msgid "Full Treble"
@@ -2614,7 +2614,6 @@ msgid "The structure of the exported filenames, based on their tags"
 msgstr "La structure des noms de fichiers exportés, basée sur leurs étiquettes"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#, fuzzy
 msgid "Export pattern:"
 msgstr "Modèle d'exportation :"
 
@@ -3145,7 +3144,7 @@ msgstr "Erreur"
 #: quodlibet/ext/events/visualisations.py:76
 #, fuzzy
 msgid "Visualiser executable:"
-msgstr "Exécutable du Visualiseur :"
+msgstr "Exécutable du visualiseur :"
 
 #: quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
@@ -5242,7 +5241,6 @@ msgid "Submit listens to listenbrainz."
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
-#, fuzzy
 msgid "User _token:"
 msgstr "Je_ton d'utilisateur :"
 
@@ -5745,7 +5743,6 @@ msgid "Track %s"
 msgstr "Piste %s"
 
 #: quodlibet/qltk/info.py:104
-#, fuzzy
 msgid "Current _Song"
 msgstr "_Morceau Actuel"
 
