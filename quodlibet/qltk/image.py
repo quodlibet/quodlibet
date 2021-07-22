@@ -14,8 +14,8 @@ from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_surface_for_pixbuf(widget: Gtk.Widget,
-                           pixbuf: Optional[GdkPixbuf]) -> Optional[cairo.Surface]:
+def get_surface_for_pixbuf(widget: Gtk.Widget, pixbuf: Optional[GdkPixbuf.Pixbuf])\
+        -> Optional[cairo.Surface]:
     """:returns: a cairo surface, if possible"""
     if not pixbuf:
         return None
