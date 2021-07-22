@@ -11,6 +11,7 @@
 from __future__ import absolute_import
 
 import os
+from typing import Optional
 
 import cairo
 from gi.repository import Gtk, Pango, Gdk, Gio
@@ -200,7 +201,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             klass.__library.albums.refresh(albums)
 
     @util.cached_property
-    def _no_cover(self) -> cairo.Surface:
+    def _no_cover(self) -> Optional[cairo.Surface]:
         """Returns a cairo surface representing a missing cover"""
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
