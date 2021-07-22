@@ -8,14 +8,17 @@
 """Some helper function for loading and converting image data."""
 
 import math
+from typing import Optional
 
 from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_surface_for_pixbuf(widget, pixbuf):
-    """Returns a cairo surface"""
-
+def get_surface_for_pixbuf(widget: Gtk.Widget, pixbuf: Optional[GdkPixbuf.Pixbuf])\
+        -> Optional[cairo.Surface]:
+    """:returns: a cairo surface, if possible"""
+    if not pixbuf:
+        return None
     scale_factor = widget.get_scale_factor()
     return Gdk.cairo_surface_create_from_pixbuf(
             pixbuf, scale_factor, widget.get_window())

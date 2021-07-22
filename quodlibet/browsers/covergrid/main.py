@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2018 Nick Boultbee
+#           2012-2021 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,9 @@
 from __future__ import absolute_import
 
 import os
+from typing import Optional
 
+import cairo
 from gi.repository import Gtk, Pango, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
@@ -199,7 +201,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             klass.__library.albums.refresh(albums)
 
     @util.cached_property
-    def _no_cover(self):
+    def _no_cover(self) -> Optional[cairo.Surface]:
         """Returns a cairo surface representing a missing cover"""
 
         mag = config.getfloat("browsers", "covergrid_magnification", 3.)
