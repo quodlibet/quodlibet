@@ -509,6 +509,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             boundary = (width * scale_factor, height * scale_factor)
             pixbuf = scale(pixbuf, boundary, scale_up=False)
 
+        if not pixbuf:
+            return
         surface = get_surface_for_pixbuf(self, pixbuf)
         self.image.set_from_surface(surface)
 
@@ -867,6 +869,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
             pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
                 GdkPixbuf.InterpType.BILINEAR)
             pixbuf = add_border_widget(pixbuf, self)
+            if not pixbuf:
+                return
             surface = get_surface_for_pixbuf(self, pixbuf)
         except (GLib.GError, IOError):
             pass
