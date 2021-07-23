@@ -17,55 +17,55 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:222
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:54
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:223
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:56
 msgid "_Title"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:223
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:55
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:224
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:57
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:49
 msgid "_Artist"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:224
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:56
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:225
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:58
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:54
 msgid "_Date"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:225
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:226
 msgid "_Date Added"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:226
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:227
 msgid "_Original Date"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:227
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:57
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:228
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:59
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:228
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:58
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:229
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:60
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:58
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:229
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:230
 msgid "_Playcount"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:235
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:64
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:236
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:66
 msgid "Sort _by…"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:256
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:85
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:257
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:87
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/paned/prefs.py:203
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/playlists/main.py:670
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/exfalsowindow.py:108
@@ -74,31 +74,31 @@ msgstr ""
 msgid "_Preferences"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:430
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:431
 msgid "Album List"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:431
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:432
 msgid "_Album List"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:544
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:285
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:501
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:547
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:287
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:503
 msgid "All Albums"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:545
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:286
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:502
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:548
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:288
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:504
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:726
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:480
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/albums/main.py:729
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:482
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] ""
@@ -403,11 +403,11 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:126
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:128
 msgid "Cover Grid"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:127
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/covergrid/main.py:129
 msgid "_Cover Grid"
 msgstr ""
 
@@ -3676,57 +3676,57 @@ msgstr ""
 msgid "Unable to save \"%s\"."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:567
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:569
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:624
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:626
 msgid "Album Art Downloader"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:677
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:679
 #, python-format
 msgid "from %(source)s"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:680
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:682
 #, python-format
 msgid "Resolution: %s"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:683
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:685
 #, python-format
 msgid "Size: %s"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:729
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:731
 msgid "Per engine 'at best' results limit"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:739
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:741
 msgid "_Search"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:821
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:823
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:886
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:890
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1008
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1012
 msgid "Download Album Art"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1009
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1013
 msgid "Downloads album covers from various websites."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1022
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:1026
 msgid "Sources"
 msgstr ""
 
