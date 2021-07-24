@@ -46,7 +46,7 @@ the right environment set up.
 
 If you want to build a bundle yourself or change/add dependencies,
 see the `osx_bundle directory
-<https://github.com/quodlibet/quodlibet/tree/master/osx_bundle>`__
+<https://github.com/quodlibet/quodlibet/tree/master/dev-utils/osx_bundle>`__
 in the Git repo for further instructions.
 
 
