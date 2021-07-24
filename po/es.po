@@ -11,8 +11,8 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-07-18 13:33+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"PO-Revision-Date: 2021-07-21 12:02+0000\n"
+"Last-Translator: germe-fur <gianluc4118987.23022413_2@outlook.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
 "Language: es\n"
@@ -282,9 +282,9 @@ msgid "Unknown %s"
 msgstr "Desconocido"
 
 #: quodlibet/browsers/collection/models.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Extraer en valores _múltiples"
+msgstr "%s Valores Múltiples"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
@@ -604,7 +604,6 @@ msgid "Favorites"
 msgstr "Favoritas"
 
 #: quodlibet/browsers/iradio.py:615
-#, fuzzy
 msgid "No Category"
 msgstr "Sin categoría"
 
@@ -626,14 +625,12 @@ msgid "All stations listed are already in your library."
 msgstr "Todas las emisoras referidas ya se encuentran en su fonoteca."
 
 #: quodlibet/browsers/iradio.py:874
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "_Añadir a la lista"
+msgstr "Añadir a la lista"
 
 #: quodlibet/browsers/iradio.py:878
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "_Eliminar de la lista"
+msgstr "Eliminar de los favoritos"
 
 #: quodlibet/browsers/iradio.py:978
 #, python-format
@@ -662,16 +659,15 @@ msgstr "Todo"
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "Pequeño"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "Ancho"
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "Columnas adicionales"
+msgstr "En columnas"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -820,9 +816,8 @@ msgid "Track List"
 msgstr "Lista de pistas"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "Lista de pistas"
+msgstr "_Lista de pistas"
 
 #: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
@@ -852,7 +847,7 @@ msgstr "Conectado"
 #: quodlibet/browsers/soundcloud/main.py:444
 #, python-format
 msgid "Quod Libet is now connected, <b>%s</b>!"
-msgstr ""
+msgstr "Quod Libet está ahora conectado, <b>%s</b>!"
 
 #: quodlibet/browsers/soundcloud/main.py:456
 #, python-format
@@ -861,7 +856,7 @@ msgstr "Salir de %s"
 
 #: quodlibet/browsers/soundcloud/main.py:458
 msgid "Enter code…"
-msgstr ""
+msgstr "Introduzca el código…"
 
 #: quodlibet/browsers/soundcloud/main.py:459
 #, python-format
@@ -1058,9 +1053,8 @@ msgid "Set the current browser"
 msgstr "Configurar el navegador actual"
 
 #: quodlibet/cli.py:134
-#, fuzzy
 msgid "Stop after the playing song"
-msgstr "Puntuar la canción activa"
+msgstr "Parar luego de la canción actual"
 
 #: quodlibet/cli.py:135
 msgid "Open a new browser"
@@ -1075,7 +1069,6 @@ msgid "Filter on a random value"
 msgstr "Filtro en un valor aleatorio"
 
 #: quodlibet/cli.py:137
-#, fuzzy
 msgctxt "command"
 msgid "tag"
 msgstr "etiqueta"
@@ -1255,7 +1248,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "Convertir a Romaji el texto _Japonés"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
@@ -1338,20 +1331,19 @@ msgstr "Tipo de _letra:"
 
 #: quodlibet/ext/events/animosd/prefs.py:213
 msgid "Left"
-msgstr ""
+msgstr "Izquierda"
 
 #: quodlibet/ext/events/animosd/prefs.py:214
 msgid "Center"
-msgstr ""
+msgstr "Centro"
 
 #: quodlibet/ext/events/animosd/prefs.py:215
-#, fuzzy
 msgid "Right"
-msgstr "_Importancia"
+msgstr "Derecha"
 
 #: quodlibet/ext/events/animosd/prefs.py:218
 msgid "_Align text:"
-msgstr ""
+msgstr "_Alinear texto:"
 
 #: quodlibet/ext/events/animosd/prefs.py:224
 msgid "Text"
@@ -1391,9 +1383,8 @@ msgid "Effects"
 msgstr "Efectos"
 
 #: quodlibet/ext/events/animosd/prefs.py:288
-#, fuzzy
 msgid "Ed_it Display Pattern…"
-msgstr "Editar la vista"
+msgstr "Ed_itar Patrón de la visualización…"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
@@ -1525,9 +1516,8 @@ msgid "Save ratings and play _counts in tags"
 msgstr "Guardar puntuaciones y co_ntadores"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
-#, fuzzy
 msgid "Settings updated"
-msgstr "fecha de grabación"
+msgstr "Ajustes actualizados"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #, python-format
@@ -1675,11 +1665,11 @@ msgstr "Agudos al máximo"
 
 #: quodlibet/ext/events/equalizer.py:58
 msgid "Dance"
-msgstr ""
+msgstr "Baile"
 
 #: quodlibet/ext/events/equalizer.py:62
 msgid "Techno"
-msgstr ""
+msgstr "Tecno"
 
 #: quodlibet/ext/events/equalizer.py:64
 msgid "Ska"
@@ -1694,10 +1684,14 @@ msgid "Equalizer"
 msgstr "Ecualizador"
 
 #: quodlibet/ext/events/equalizer.py:113
+#, fuzzy
 msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"Controla el tono de tu musica con un ecualizador.\n"
+"Cliquea o usa las teclas para cambiar los niveles (click derecho resetea el "
+"ajuste)"
 
 #: quodlibet/ext/events/equalizer.py:150
 msgid "The current backend does not support equalization."
@@ -1849,7 +1843,7 @@ msgstr ""
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
-msgstr ""
+msgstr "Inhibir Salvapantallas y Suspensión"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
@@ -1868,11 +1862,11 @@ msgstr "Modo:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
-msgstr ""
+msgstr "Inhibir Salvapantallas"
 
 #: quodlibet/ext/events/inhibit.py:126
 msgid "Inhibit Suspend"
-msgstr ""
+msgstr "Inhibir Suspensión"
 
 #: quodlibet/ext/events/iradiolog.py:17
 msgid "Internet Radio Log"
@@ -1932,6 +1926,9 @@ msgid ""
 "Allows remote control of Quod Libet using an MPD Client. Streaming, playlist "
 "and library management are not supported."
 msgstr ""
+"Permitir que Quod Libet sea controlado a través de un cliente de MPD. "
+"Streaming, listas de reproducción, y administración de la librería no son "
+"soportados."
 
 #: quodlibet/ext/events/mpdserver/__init__.py:76
 msgid "_Port:"
@@ -1943,7 +1940,7 @@ msgstr "_IP local:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:125
 msgid "P_assword:"
-msgstr ""
+msgstr "C_ontraseña:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:161
 msgid "Connection"
@@ -1975,7 +1972,7 @@ msgstr "Acepta pautas de QL, como %s"
 
 #: quodlibet/ext/events/mqtt.py:62
 msgid "MQTT Publisher"
-msgstr ""
+msgstr "Publicador MQTT"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "Publishes status messages to an MQTT topic."
@@ -1983,7 +1980,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:137
 msgid "Broker hostname"
-msgstr ""
+msgstr "Rompedor del nombre del Host"
 
 #: quodlibet/ext/events/mqtt.py:138
 msgid "broker hostname / IP (defaults to localhost)"
@@ -2031,12 +2028,11 @@ msgstr "Pauta en pausa"
 
 #: quodlibet/ext/events/mqtt.py:154
 msgid "Text when a song is paused."
-msgstr ""
+msgstr "Texto cuando la canción esta pausada."
 
 #: quodlibet/ext/events/mqtt.py:156
-#, fuzzy
 msgid "No-song Text"
-msgstr "%d canción"
+msgstr "Sin texto de la canción"
 
 #: quodlibet/ext/events/mqtt.py:158
 msgid "Plain text for when there is no current song"
@@ -2070,7 +2066,7 @@ msgstr "Sincronización con MusicBrainz"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
 msgid "Syncs the rating of a song with music brainz."
-msgstr ""
+msgstr "Sincroniza la puntuación de la canción con Music Brainz."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
@@ -2104,7 +2100,7 @@ msgstr "_Título:"
 
 #: quodlibet/ext/events/notify.py:76 quodlibet/ext/events/notify.py:112
 msgid "Revert to default pattern"
-msgstr ""
+msgstr "Revertir al patrón por defecto"
 
 #: quodlibet/ext/events/notify.py:102
 msgid "_Body:"
@@ -2112,12 +2108,11 @@ msgstr "C_uerpo:"
 
 #: quodlibet/ext/events/notify.py:122
 msgid "_Show notification"
-msgstr ""
+msgstr "_Mostrar notificación"
 
 #: quodlibet/ext/events/notify.py:140
-#, fuzzy
 msgid "Show notifications"
-msgstr "No existen emisoras nuevas"
+msgstr "Mostrar notificaciones"
 
 #: quodlibet/ext/events/notify.py:146
 msgid "Only on <i>_manual</i> song changes"
@@ -2133,7 +2128,7 @@ msgstr ""
 
 #: quodlibet/ext/events/notify.py:177
 msgid "Only when the main window is not _focused"
-msgstr ""
+msgstr "Solo cuando la ventana principal no esta _enfocada"
 
 #: quodlibet/ext/events/notify.py:185
 msgid "Show \"_Next\" button"
@@ -2186,7 +2181,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:281
 msgid "Client is banned. Contact the author."
-msgstr ""
+msgstr "El cliente ha sido baneado. Contacta al autor."
 
 #: quodlibet/ext/events/qlscrobbler.py:285
 msgid "Wrong system time. Submissions may fail until it is corrected."
@@ -2205,7 +2200,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:456
 msgid "Authentication successful."
-msgstr ""
+msgstr "Autenticación correcta."
 
 #: quodlibet/ext/events/qlscrobbler.py:468
 msgid "_Service:"
@@ -2260,7 +2255,7 @@ msgstr "No se enviarán aquellas canciones que encuentre este filtro"
 #: quodlibet/ext/events/qlscrobbler.py:582
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
-msgstr ""
+msgstr "Modo _offline (no enviar nada)"
 
 #: quodlibet/ext/events/qlscrobbler.py:586
 #: quodlibet/plugins/listenbrainz/__init__.py:557
@@ -2291,19 +2286,19 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:37
 msgid "Rated higher"
-msgstr ""
+msgstr "Mejor puntuado"
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Played more often"
-msgstr ""
+msgstr "Reproducido mas veces"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr ""
+msgstr "Saltado mas veces"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
-msgstr ""
+msgstr "Reproducido mas recientemente"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Started more recently"
@@ -2311,7 +2306,7 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Added more recently"
-msgstr ""
+msgstr "Añadido más recientemente"
 
 #: quodlibet/ext/events/randomalbum.py:43
 msgid "Longer albums"
@@ -2322,9 +2317,8 @@ msgid "seconds before starting next album"
 msgstr "segundos antes de iniciar el próximo álbum"
 
 #: quodlibet/ext/events/randomalbum.py:86
-#, fuzzy
 msgid "Weights"
-msgstr "_Importancia"
+msgstr "Tamaños"
 
 #: quodlibet/ext/events/randomalbum.py:88
 msgid "Play some albums more than others"
@@ -2345,7 +2339,7 @@ msgstr "Álbum al azar"
 #: quodlibet/ext/events/randomalbum.py:216
 #, python-format
 msgid "Waiting to start %s"
-msgstr ""
+msgstr "Esperando a empezar %s"
 
 #: quodlibet/ext/events/rbimport.py:119
 #, python-format
@@ -2358,11 +2352,11 @@ msgstr "Importación desde Rhythmbox"
 
 #: quodlibet/ext/events/rbimport.py:128
 msgid "Imports ratings and song statistics from Rhythmbox."
-msgstr ""
+msgstr "Importar puntuaciones y estadísticas de la musica desde Rhythmbox."
 
 #: quodlibet/ext/events/screensaver.py:26
 msgid "Screensaver Pause"
-msgstr ""
+msgstr "Pausar salvapantallas"
 
 #: quodlibet/ext/events/screensaver.py:27
 msgid "Pauses playback while the GNOME screensaver is active."
@@ -2396,7 +2390,7 @@ msgstr ""
 #: quodlibet/ext/events/seekpoints.py:20
 #, fuzzy
 msgid "Seekpoint Bookmarks"
-msgstr "Marcadores"
+msgstr "Puntos de mira de marcadores"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
@@ -2408,9 +2402,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/seekpoints.py:108
-#, fuzzy
 msgid "Bookmark name for point A"
-msgstr "Nombre del marcador"
+msgstr "Nombre del marcador para el punto A"
 
 #: quodlibet/ext/events/seekpoints.py:109
 msgid ""
@@ -2419,9 +2412,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/seekpoints.py:124
-#, fuzzy
 msgid "Bookmark name for point B"
-msgstr "Nombre del marcador"
+msgstr "Nombre del marcador para el punto B"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid ""
@@ -2448,7 +2440,7 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 #, python-format
 msgid "Error finding %s. Please check settings"
-msgstr ""
+msgstr "Error encontrando %s. Por favor revisa los ajustes"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending copy"
@@ -2617,7 +2609,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:653
 msgid "Starting synchronization preview"
-msgstr ""
+msgstr "Empezando previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:658
 msgid "Synchronization preview in progress."
@@ -2625,23 +2617,23 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:674
 msgid "Finished synchronization preview"
-msgstr ""
+msgstr "Finalizó la previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Stopping synchronization preview"
-msgstr ""
+msgstr "Parando previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:685
 msgid "Synchronization preview was stopped."
-msgstr ""
+msgstr "La previsualización de la sincronización ha parado."
 
 #: quodlibet/ext/events/synchronize_to_device.py:688
 msgid "Synchronization preview has finished."
-msgstr ""
+msgstr "La previsualización de la sincronización ha terminado."
 
 #: quodlibet/ext/events/synchronize_to_device.py:718
 msgid "Stopped synchronization preview"
-msgstr ""
+msgstr "Ha parado la previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:722
 msgid "A different plugin was selected - stop preview"
@@ -2900,7 +2892,7 @@ msgstr "Pautas de estado"
 
 #: quodlibet/ext/events/themeswitcher.py:25
 msgid "Theme Switcher"
-msgstr ""
+msgstr "Cambiador de temas"
 
 #: quodlibet/ext/events/themeswitcher.py:26
 msgid "Changes the active GTK+ theme."
@@ -2992,9 +2984,8 @@ msgstr "Parar después de esta canción"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:902
-#, fuzzy
 msgid "Open _Browser"
-msgstr "Abrir un nuevo navegador"
+msgstr "Abrir _Navegador"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
 #: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
@@ -3138,11 +3129,11 @@ msgstr "Umbral de activación del filtro"
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
-msgstr ""
+msgstr "Radio:"
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
-msgstr ""
+msgstr "Radio de compresión"
 
 #: quodlibet/ext/gstreamer/compressor.py:75
 #: quodlibet/ext/gstreamer/karaoke.py:92
@@ -3182,8 +3173,9 @@ msgid "Feed _level:"
 msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:22
+#, fuzzy
 msgid "Feed level"
-msgstr ""
+msgstr "Nivel de feed"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Default"
@@ -3194,8 +3186,9 @@ msgid "Closest to virtual speaker placement (30°, 3 meter)"
 msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:28
+#, fuzzy
 msgid "Chu Moy"
-msgstr ""
+msgstr "Chu Moy"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:29
 msgid "Close to Chu Moy's crossfeeder (popular)"
@@ -3228,18 +3221,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/gstreamer/karaoke.py:21
-#, fuzzy
 msgid "Filter _band:"
-msgstr "Filtrar por _género"
+msgstr "Filtrar _banda:"
 
 #: quodlibet/ext/gstreamer/karaoke.py:22
 msgid "The Frequency band of the filter"
 msgstr ""
 
 #: quodlibet/ext/gstreamer/karaoke.py:23
-#, fuzzy
 msgid "Filter _width:"
-msgstr "Filtrar por _artista"
+msgstr "Tamaño del filtro:"
 
 #: quodlibet/ext/gstreamer/karaoke.py:24
 msgid "The Frequency width of the filter"
@@ -3247,7 +3238,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/karaoke.py:25
 msgid "_Level:"
-msgstr ""
+msgstr "_Nivel:"
 
 #: quodlibet/ext/gstreamer/karaoke.py:25
 msgid "Level of the effect"
@@ -3275,16 +3266,15 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "_Tempo:"
-msgstr ""
+msgstr "Tempo:"
 
 #: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Pitch:"
-msgstr ""
+msgstr "Pitch:"
 
 #: quodlibet/ext/gstreamer/pitch.py:96
-#, fuzzy
 msgid "Audio Pitch / Speed"
-msgstr "Fuentes de audio"
+msgstr "Pitch / Velocidad del Audio"
 
 #: quodlibet/ext/gstreamer/pitch.py:97
 msgid "Controls the pitch of an audio stream."
@@ -3412,7 +3402,7 @@ msgstr "Mezcla al azar una lista."
 
 #: quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
-msgstr ""
+msgstr "Seguir cursor"
 
 #: quodlibet/ext/playorder/follow.py:20
 msgid ""
@@ -3431,14 +3421,12 @@ msgstr ""
 "totales."
 
 #: quodlibet/ext/playorder/playcounteq.py:25
-#, fuzzy
 msgid "Prefer less played"
-msgstr "última reproducción"
+msgstr "Preferir menos reproducido"
 
 #: quodlibet/ext/playorder/queue.py:18
-#, fuzzy
 msgid "Queue Only"
-msgstr "En cola"
+msgstr "Solo en cola"
 
 #: quodlibet/ext/playorder/queue.py:20
 msgid ""
@@ -6089,8 +6077,8 @@ msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
-"Si no existe información sobre el ajuste Replay Gain para una canción,\n"
-"multiplicar el volumen por este valor"
+"Si no existe información de Replay Gain para una canción, multiplicar el "
+"volumen por este valor"
 
 #: quodlibet/qltk/prefs.py:385
 #, fuzzy
@@ -6146,12 +6134,10 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
-"Factor de media _Bayesiana (C) para las puntuaciones agregadas.\n"
+"Factor de media Bayesiana (C) para las puntuaciones agregadas.\n"
 "0 significa una media convencional, valores mayores implican que los álbumes "
-"con \n"
-"pocas pistas tendrán menores puntuaciones extremas. Al cambiar este valor se "
-"inicia un \n"
-"recálculo para todos los álbumes."
+"con pocas pistas tendrán menores puntuaciones extremas. Cambiar este valor "
+"inicia un recálculo para todos los álbumes."
 
 #: quodlibet/qltk/prefs.py:566
 msgid "_Bayesian averaging amount:"
@@ -6573,7 +6559,7 @@ msgstr ""
 "El patrón\n"
 "\t<b>%s</b>\n"
 "contiene / pero no comienza por root (/). Para evitar errores, comienza el "
-"patrón con / o ~/"
+"patrón con / o ~/."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -6806,9 +6792,8 @@ msgid "_Production Headers"
 msgstr "Cabeceras de la _producción"
 
 #: quodlibet/qltk/songlist.py:1182
-#, fuzzy
 msgid "_Customize Headers…"
-msgstr "_Personalizar cabeceras..."
+msgstr "_Personalizar cabeceras…"
 
 #: quodlibet/qltk/songlist.py:1187
 #, fuzzy
@@ -6927,10 +6912,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"El patrón introducido es inválido. Asegúrate de introducir &lt; y &gt; "
-"como \n"
-"\\&lt; y \\&gt; y que las etiquetas estén bien ajustadas.\n"
-" \n"
+"El patrón introducido es inválido. Asegúrate de introducir &lt; y &gt; como "
+"\\&lt; y \\&gt; y que las etiquetas estén bien balanceadas.\n"
+"\n"
 "%s"
 
 #: quodlibet/qltk/textedit.py:157
@@ -7155,15 +7139,15 @@ msgstr ""
 #: quodlibet/util/massagers.py:130
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
 msgstr ""
-"Las ganancias Replay Gain han de ser introducidas en el formato 'x.yy dB'"
+"Las ganancias Replay Gain han de ser introducidas en el formato 'x.yy dB'."
 
 #: quodlibet/util/massagers.py:151
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
-msgstr "Los picos Replay Gain han de ser introducidos en el formato 'x.yy'"
+msgstr "Los picos Replay Gain han de ser introducidos en el formato 'x.yy'."
 
 #: quodlibet/util/massagers.py:173
 msgid "MusicBrainz IDs must be in UUID format."
-msgstr "Los ID de MusicBrainz han de ser en el formato UUID"
+msgstr "Los ID de MusicBrainz han de ser en el formato UUID."
 
 #. Translators: Leave "official", "promotional", and "bootleg"
 #. untranslated. They are the three possible literal values.
@@ -7433,7 +7417,7 @@ msgstr "ganancia de volumen del álbum"
 
 #: quodlibet/util/tags.py:147
 msgid "album peak"
-msgstr "pico  de ganancia del álbum"
+msgstr "pico de ganancia del álbum"
 
 #: quodlibet/util/tags.py:148
 msgid "reference loudness"
