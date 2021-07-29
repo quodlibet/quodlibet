@@ -196,15 +196,6 @@ class FIFO:
         self._callback = callback
         self._path = path
 
-    def open(self):
-        """Create the FIFO and listen to it.
-
-        Raises:
-            FIFOError in case another process is already using it.
-        """
-
-        self._open(False, None)
-
     def destroy(self):
         """After destroy() the callback will no longer be called
         and the FIFO can no longer be used. Can be called multiple
@@ -220,7 +211,12 @@ class FIFO:
         except EnvironmentError:
             pass
 
-    def _open(self, ignore_lock, *args):
+    def open(self, ignore_lock=False):
+        """Create the FIFO and listen to it.
+
+        Raises:
+            FIFOError in case another process is already using it.
+        """
         from quodlibet import qltk
 
         self._id = None
@@ -258,13 +254,15 @@ class FIFO:
             print_e("Couldn't open FIFO (%s)" % e)
         else:
             self._id = qltk.io_add_watch(
-                f, GLib.PRIORITY_DEFAULT,
+                f,
+                GLib.PRIORITY_DEFAULT,
                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                self._process, *args)
+                self._process,
+            )
 
-    def _process(self, source, condition, *args):
-        if condition in (GLib.IO_ERR, GLib.IO_HUP):
-            self._open(True, *args)
+    def _process(self, source, condition):
+        if condition in {GLib.IO_ERR, GLib.IO_HUP}:
+            self.open(ignore_lock=True)
             return False
 
         while True:
@@ -276,12 +274,12 @@ class FIFO:
                 elif e.errno == errno.EINTR:
                     continue
                 else:
-                    self._open(True, *args)
+                    self.open(ignore_lock=True)
                     return False
             break
 
         if not data:
-            self._open(True, *args)
+            self.open(ignore_lock=True)
             return False
 
         self._callback(data)

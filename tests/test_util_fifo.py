@@ -71,39 +71,39 @@ class TFIFO(TestCase):
     def test_empty_read(self):
         result = []
 
-        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+        with temp_filename() as f, mock.patch.object(FIFO, "open") as m_open:
             fifo = FIFO(f, result.append)
             source = mock.Mock()
             source.read.return_value = b""
             assert fifo._process(source, GLib.IO_IN) is False
-            assert m_open.mock_calls == [mock.call(True)]
+            assert m_open.mock_calls == [mock.call(ignore_lock=True)]
             assert result == []
 
     def test_glib_err_read(self):
         result = []
 
-        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+        with temp_filename() as f, mock.patch.object(FIFO, "open") as m_open:
             fifo = FIFO(f, result.append)
             source = mock.Mock()
             assert fifo._process(source, GLib.IO_ERR) is False
-            assert m_open.mock_calls == [mock.call(True)]
+            assert m_open.mock_calls == [mock.call(ignore_lock=True)]
             assert result == []
 
     def test_oserror_read(self):
         result = []
 
-        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+        with temp_filename() as f, mock.patch.object(FIFO, "open") as m_open:
             fifo = FIFO(f, result.append)
             source = mock.Mock()
             source.read.side_effect = OSError
             assert fifo._process(source, GLib.IO_IN) is False
-            assert m_open.mock_calls == [mock.call(True)]
+            assert m_open.mock_calls == [mock.call(ignore_lock=True)]
             assert result == []
 
     def test_successful_read(self):
         result = []
 
-        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+        with temp_filename() as f, mock.patch.object(FIFO, "open") as m_open:
             fifo = FIFO(f, result.append)
             source = mock.Mock()
             source.read.return_value = b"foo"
