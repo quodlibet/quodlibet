@@ -10,8 +10,6 @@ import os
 import signal
 import stat
 
-from quodlibet import print_e
-
 try:
     import fcntl
 except ImportError:
@@ -20,8 +18,8 @@ except ImportError:
 from gi.repository import GLib
 from senf import mkstemp, fsn2bytes
 
+from quodlibet import print_d, print_e
 from quodlibet.util.path import mkdir
-from quodlibet.util import print_d
 
 FIFO_TIMEOUT = 10
 """time in seconds until we give up writing/reading"""
@@ -87,32 +85,14 @@ def split_message(data):
 
     assert isinstance(data, bytes)
 
-    arg = 0
-    args = []
     while data:
-        if arg == 0:
-            index = data.find(b"\x00")
-            if index == 0:
-                arg = 1
-                data = data[1:]
-                continue
-            if index == -1:
-                elm = data
-                data = b""
-            else:
-                elm, data = data[:index], data[index:]
-            for l in elm.splitlines():
-                yield (l, None)
-        elif arg == 1:
-            elm, data = data.split(b"\x00", 1)
-            args.append(elm)
-            arg = 2
-        elif arg == 2:
-            elm, data = data.split(b"\x00", 1)
-            args.append(elm)
-            yield tuple(args)
-            del args[:]
-            arg = 0
+        elem, null, data = data.partition(b"\x00")
+        if elem:  # newline-separated commands
+            yield from ((line, None) for line in elem.splitlines())
+            data = null + data
+        else:  # NULL<command>NULL<fifo-path>NULL
+            cmd, fifo_path, data = data.split(b"\x00", 2)
+            yield (cmd, fifo_path)
 
 
 def write_fifo(fifo_path, data):
@@ -137,8 +117,8 @@ def write_fifo(fifo_path, data):
         os.mkfifo(filename, 0o600)
 
         _write_fifo(
-            fifo_path,
-            b"\x00" + data + b"\x00" + fsn2bytes(filename, None) + b"\x00")
+            fifo_path, b"\x00".join([b"", data, fsn2bytes(filename, None), b""])
+        )
 
         try:
             signal.signal(signal.SIGALRM, _sigalrm_timeout)
@@ -189,6 +169,8 @@ def fifo_exists(fifo_path):
 class FIFO:
     """Creates and reads from a FIFO"""
 
+    _source_id = None
+
     def __init__(self, path, callback):
         """
         Args:
@@ -205,9 +187,9 @@ class FIFO:
         times.
         """
 
-        if self._id is not None:
-            GLib.source_remove(self._id)
-            self._id = None
+        if self._source_id is not None:
+            GLib.source_remove(self._source_id)
+            self._source_id = None
 
         try:
             os.unlink(self._path)
@@ -222,7 +204,6 @@ class FIFO:
         """
         from quodlibet import qltk
 
-        self._id = None
         mkdir(os.path.dirname(self._path))
         try:
             os.mkfifo(self._path, 0o600)
@@ -252,7 +233,7 @@ class FIFO:
         except OSError as e:
             print_e(f"Couldn't open FIFO ({e!r})")
         else:
-            self._id = qltk.io_add_watch(
+            self._source_id = qltk.io_add_watch(
                 f,
                 GLib.PRIORITY_DEFAULT,
                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
