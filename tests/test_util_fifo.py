@@ -5,6 +5,9 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from unittest import mock
+
+from gi.repository import GLib
 from quodlibet import print_d
 from quodlibet.util import is_windows
 from tests import TestCase, skipIf
@@ -64,3 +67,46 @@ class TFIFO(TestCase):
         with self.assertRaises(OSError):
             write_fifo(fifo._path, "foobar".encode())
         fifo.destroy()
+
+    def test_empty_read(self):
+        result = []
+
+        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+            fifo = FIFO(f, result.append)
+            source = mock.Mock()
+            source.read.return_value = b""
+            assert fifo._process(source, GLib.IO_IN) is False
+            assert m_open.mock_calls == [mock.call(True)]
+            assert result == []
+
+    def test_glib_err_read(self):
+        result = []
+
+        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+            fifo = FIFO(f, result.append)
+            source = mock.Mock()
+            assert fifo._process(source, GLib.IO_ERR) is False
+            assert m_open.mock_calls == [mock.call(True)]
+            assert result == []
+
+    def test_oserror_read(self):
+        result = []
+
+        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+            fifo = FIFO(f, result.append)
+            source = mock.Mock()
+            source.read.side_effect = OSError
+            assert fifo._process(source, GLib.IO_IN) is False
+            assert m_open.mock_calls == [mock.call(True)]
+            assert result == []
+
+    def test_successful_read(self):
+        result = []
+
+        with temp_filename() as f, mock.patch.object(FIFO, "_open") as m_open:
+            fifo = FIFO(f, result.append)
+            source = mock.Mock()
+            source.read.return_value = b"foo"
+            assert fifo._process(source, GLib.IO_IN) is True
+            assert m_open.mock_calls == []
+            assert result == [b"foo"]
