@@ -12,7 +12,7 @@ from quodlibet import print_d
 from quodlibet.util import is_windows
 from tests import TestCase, skipIf
 
-from quodlibet.util.fifo import split_message, FIFO, fifo_exists, write_fifo
+from quodlibet.util.fifo import FIFOError, split_message, FIFO, fifo_exists, write_fifo
 from tests.helper import temp_filename
 
 
@@ -64,7 +64,7 @@ class TFIFO(TestCase):
     def test_unwriteable_location(self):
         fifo = FIFO("/dev/not-here", None)
         fifo.open()
-        with self.assertRaises(OSError):
+        with self.assertRaises(FIFOError):
             write_fifo(fifo._path, "foobar".encode())
         fifo.destroy()
 

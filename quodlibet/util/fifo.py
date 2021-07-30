@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-import errno
 import signal
 import stat
 
@@ -15,9 +14,8 @@ from quodlibet import print_e
 
 try:
     import fcntl
-    fcntl
 except ImportError:
-    fcntl = None  # type: ignore
+    pass
 
 from gi.repository import GLib
 from senf import mkstemp, fsn2bytes
@@ -29,8 +27,16 @@ FIFO_TIMEOUT = 10
 """time in seconds until we give up writing/reading"""
 
 
+class FIFOError(Exception):
+    pass
+
+
+def _sigalrm_timeout(*args):
+    raise TimeoutError
+
+
 def _write_fifo(fifo_path, data):
-    """Writes the data to the FIFO or raises `EnvironmentError`"""
+    """Writes the data to the FIFO or raises `FIFOError`"""
 
     assert isinstance(data, bytes)
 
@@ -50,19 +56,18 @@ def _write_fifo(fifo_path, data):
             pass
 
     try:
-        # This is a total abuse of Python! Hooray!
-        signal.signal(signal.SIGALRM, lambda: "" + 2)
+        signal.signal(signal.SIGALRM, _sigalrm_timeout)
         signal.alarm(FIFO_TIMEOUT)
         with open(fifo_path, "wb") as f:
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(data)
-    except (OSError, IOError, TypeError):
+    except (OSError, TimeoutError):
         # Unable to write to the fifo. Removing it.
         try:
             os.unlink(fifo_path)
         except OSError:
             pass
-        raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
+        raise FIFOError(f"Couldn't write to fifo {fifo_path!r}")
 
 
 def split_message(data):
@@ -119,7 +124,7 @@ def write_fifo(fifo_path, data):
     Returns:
         bytes
     Raises:
-        EnvironmentError: In case of timeout and other errors
+        FIFOError
     """
 
     assert isinstance(data, bytes)
@@ -136,12 +141,12 @@ def write_fifo(fifo_path, data):
             b"\x00" + data + b"\x00" + fsn2bytes(filename, None) + b"\x00")
 
         try:
-            signal.signal(signal.SIGALRM, lambda: "" + 2)
+            signal.signal(signal.SIGALRM, _sigalrm_timeout)
             signal.alarm(FIFO_TIMEOUT)
             with open(filename, "rb") as h:
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return h.read()
-        except TypeError:
+        except TimeoutError:
             # In case the main instance deadlocks we can write to it, but
             # reading will time out. Assume it is broken and delete the
             # fifo.
@@ -149,11 +154,13 @@ def write_fifo(fifo_path, data):
                 os.unlink(fifo_path)
             except OSError:
                 pass
-            raise EnvironmentError("timeout")
+            raise FIFOError("Timeout reached")
+    except OSError as e:
+        raise FIFOError(*e.args)
     finally:
         try:
             os.unlink(filename)
-        except EnvironmentError:
+        except OSError:
             pass
 
 
@@ -177,10 +184,6 @@ def fifo_exists(fifo_path):
     except OSError:
         pass
     return os.path.exists(fifo_path)
-
-
-class FIFOError(Exception):
-    pass
 
 
 class FIFO:
@@ -208,7 +211,7 @@ class FIFO:
 
         try:
             os.unlink(self._path)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def open(self, ignore_lock=False):
@@ -235,23 +238,19 @@ class FIFO:
         while True:
             try:
                 fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except IOError as e:
-                # EINTR on linux
-                if e.errno == errno.EINTR:
-                    continue
-                if ignore_lock:
-                    break
-                # OSX doesn't support FIFO locking, so check errno
-                if e.errno == errno.EWOULDBLOCK:
+            except InterruptedError:  # EINTR
+                continue
+            except BlockingIOError:  # EWOULDBLOCK
+                if not ignore_lock:
                     raise FIFOError("fifo already locked")
-                else:
-                    print_d("fifo locking failed: %r" % e)
+            except OSError as e:
+                print_d(f"fifo locking failed: {e!r}")
             break
 
         try:
             f = os.fdopen(fifo, "rb", 4096)
         except OSError as e:
-            print_e("Couldn't open FIFO (%s)" % e)
+            print_e(f"Couldn't open FIFO ({e!r})")
         else:
             self._id = qltk.io_add_watch(
                 f,
@@ -268,14 +267,13 @@ class FIFO:
         while True:
             try:
                 data = source.read()
-            except (IOError, OSError) as e:
-                if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
-                    return True
-                elif e.errno == errno.EINTR:
-                    continue
-                else:
-                    self.open(ignore_lock=True)
-                    return False
+            except InterruptedError:  # EINTR
+                continue
+            except (BlockingIOError, PermissionError):  # EWOULDBLOCK, EACCES
+                return True
+            except OSError:
+                self.open(ignore_lock=True)
+                return False
             break
 
         if not data:
