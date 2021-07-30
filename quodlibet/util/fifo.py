@@ -276,12 +276,12 @@ class FIFO:
                 elif e.errno == errno.EINTR:
                     continue
                 else:
-                    self.__open(*args)
+                    self._open(True, *args)
                     return False
             break
 
         if not data:
-            self._open(*args)
+            self._open(True, *args)
             return False
 
         self._callback(data)
