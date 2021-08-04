@@ -10,15 +10,16 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2019-08-17 13:46+0300\n"
-"Last-Translator: Kristian Laakkonen\n"
-"Language-Team: Finnish <translation-team-fi@lists.sourceforge.net>\n"
+"PO-Revision-Date: 2021-08-01 00:39+0000\n"
+"Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
+"Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/fi/>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 2.0.6\n"
+"X-Generator: Weblate 4.8-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -36,9 +37,8 @@ msgid "_Date"
 msgstr "_Päivämäärä"
 
 #: quodlibet/browsers/albums/main.py:225
-#, fuzzy
 msgid "_Date Added"
-msgstr "Ai_kaotsakkeet"
+msgstr "L_isäyspäivämäärä"
 
 #: quodlibet/browsers/albums/main.py:226
 msgid "_Original Date"
@@ -425,9 +425,8 @@ msgid "Internet Radio"
 msgstr "Internet-radio"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "Kaikki asemat"
+msgstr "Lisää asemia"
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
@@ -617,7 +616,7 @@ msgstr "Internet-radioasemia ei löytynyt sijainnista %s."
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "Ei lisättävää"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
@@ -814,9 +813,8 @@ msgid "Track List"
 msgstr "Kappaleet"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "Kappaleet"
+msgstr "Kappale_lista"
 
 #: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
@@ -1135,7 +1133,7 @@ msgstr "Lähetä virheraportti"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "Käynnistä uudelleen"
 
 #: quodlibet/errorreport/ui.py:71
 msgid "Ignore Error"
@@ -1428,9 +1426,8 @@ msgstr ""
 "%s."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
-#, fuzzy
 msgid "After every play (default)"
-msgstr "Palauta oletus"
+msgstr "Jokaisen toiston jälkeen (oletus)"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
@@ -1439,10 +1436,13 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
+"Liitännäinen kirjoittaa tunnisteet tiedostoon kappaleen toiston jälkeen, "
+"mutta ei ohituksen jälkeen. Ohituskertoja ei kirjoiteta tiedostoihin "
+"ollenkaan, näin vältetään turhat kirjoituskerrat."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
-msgstr ""
+msgstr "Jokaisen toiston tai ohituksen jälkeen"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:41
@@ -1451,10 +1451,14 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
+"Liitännäinen kirjoittaa tunnisteet tiedostoon kappaleen toiston tai "
+"ohituksen jälkeen. Hyödyllinen tilanteissa, joissa halutaan varmistaa, että "
+"myös vähemmän suosittujen ja näin ollen ohitettujen kappaleiden arvosanat "
+"kirjoitetaan tiedostoihin."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "Kun koko albumi on arvosteltu"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
@@ -1468,6 +1472,15 @@ msgid ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 msgstr ""
+"Kappaleen toiston tai ohituksen jälkeen kaikki samassa albumissa olevat "
+"kappaleet tarkistetaan. Jos kaikki albumin kappaleet on arvosteltu ja "
+"ainakin yhden kappaleen arvosanoja tai toistokertoja ei ole tallennettu "
+"kappaleen tiedostoon, liitännäinen kirjoittaa tunnisteet tiedostoihin.\n"
+"\n"
+"Tätä voi käyttää jatkuvien tiedostojen päivittämisen välttämiseen, mutta "
+"samalla on huomioitava, että albumin päivityksen jälkeen on käytettävä "
+"Päivitä tiedostojen tunnisteet -liitännäistä kun halutaan kirjoittaa "
+"muokatut arvosanat ja toistokerrat tiedostoihin."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:57
 #, python-format
@@ -1478,25 +1491,28 @@ msgid ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 msgstr ""
+"Kirjoitettaessa albumin tunnisteita, 0 kertaa toistettujen kappaleiden "
+"toistokerroiksi asetetaan arvo 1.\n"
+"Tästä on hyötyä tilanteissa, joissa tiedät jo ennen yhtään toistokertaa, "
+"ettet pidä kappaleesta. Myöhemmin tästä on hyötyä esim. etsittäessä "
+"albumeita, jotka on kuunneltu kokonaan (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't write '%s'"
-msgstr "Palveluun %s ei saatu yhteyttä."
+msgstr "Kappaletta ”%s” ei voitu kirjoittaa"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
-#, fuzzy
 msgid "Auto Update Tags in Files"
-msgstr "Päivitä tiedostojen tunnisteet"
+msgstr "Päivitä tiedostojen tunnisteet automaattisesti"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:81
-#, fuzzy
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
-"Päivitä muokatut tunnisteet tiedostoissa. Varmistaa, että toistokerrat ja "
-"arvosanat ovat ajan tasalla."
+"Päivitä kappaletiedostojen tunnisteet kappaleiden toiston jälkeen. "
+"Varmistaa, että toistokerrat ja arvosanat ovat ajan tasalla."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1505,6 +1521,10 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"Seuraava asetus laitettiin päälle, koska se vaaditaan liitännäisen "
+"toimimiseen:\n"
+"\n"
+"%s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:575
@@ -1512,23 +1532,21 @@ msgid "Save ratings and play _counts in tags"
 msgstr "Tallenna arvosanat ja toisto_kerrat tunnisteisiin"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
-#, fuzzy
 msgid "Settings updated"
-msgstr "nauhoituspäivämäärä"
+msgstr "Asetukset päivitetty"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#, fuzzy, python-format
+#, python-format
 msgid "Error in %s"
-msgstr "Virhe synkronoinnissa"
+msgstr "Virhe liitännäisessä %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
-msgstr ""
+msgstr "Varmista toistokertojen määrän olevan nollaa suurempi tallennettaessa"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
-#, fuzzy
 msgid "_Update strategy:"
-msgstr "_Päivitä asemat"
+msgstr "_Päivitystapa:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
 #: quodlibet/ext/events/mpris/__init__.py:47
@@ -1770,7 +1788,7 @@ msgstr "chat"
 
 #: quodlibet/ext/events/gajim_status.py:31
 msgid "away"
-msgstr "away"
+msgstr "poissa"
 
 #: quodlibet/ext/events/gajim_status.py:32
 msgid "xa"
@@ -1778,7 +1796,7 @@ msgstr "xa"
 
 #: quodlibet/ext/events/gajim_status.py:33
 msgid "invisible"
-msgstr "invisible"
+msgstr "näkymätön"
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
@@ -1838,15 +1856,16 @@ msgstr ""
 "kytketään."
 
 #: quodlibet/ext/events/inhibit.py:50
-#, fuzzy
 msgid "Inhibit Screensaver/Suspend"
-msgstr "Estä näytönsäästäjä"
+msgstr "Estä näytönsäästäjä / keskeytystila"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
 msgstr ""
+"Estää näytönsäästäjää käynnistymästä tai tietokoneen menemistä "
+"keskeytystilaan kappaleen soidessa ja käytettäessä GNOME-työpöytää."
 
 #: quodlibet/ext/events/inhibit.py:63
 msgid "Music is playing"
@@ -1854,18 +1873,16 @@ msgstr "Musiikin toisto käynnissä"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
-#, fuzzy
 msgid "Mode:"
-msgstr "Tila"
+msgstr "Tila:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
 msgstr "Estä näytönsäästäjä"
 
 #: quodlibet/ext/events/inhibit.py:126
-#, fuzzy
 msgid "Inhibit Suspend"
-msgstr "Estä näytönsäästäjä"
+msgstr "Estä keskeytystila"
 
 #: quodlibet/ext/events/iradiolog.py:17
 msgid "Internet Radio Log"
@@ -2000,24 +2017,20 @@ msgid "broker port (defaults to 1883)"
 msgstr "välittäjän portti (oletus: 1883)"
 
 #: quodlibet/ext/events/mqtt.py:142
-#, fuzzy
 msgid "Broker username"
-msgstr "Välittäjän verkko-osoite"
+msgstr "Välittäjän käyttäjätunnus"
 
 #: quodlibet/ext/events/mqtt.py:142
-#, fuzzy
 msgid "broker username"
-msgstr "Välittäjän verkko-osoite"
+msgstr "välittäjän käyttäjätunnus"
 
 #: quodlibet/ext/events/mqtt.py:144
-#, fuzzy
 msgid "Broker password"
-msgstr "Välittäjän portti"
+msgstr "Välittäjän salasana"
 
 #: quodlibet/ext/events/mqtt.py:144
-#, fuzzy
 msgid "broker password"
-msgstr "välittäjän portti"
+msgstr "välittäjän salasana"
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Topic"
@@ -2071,14 +2084,12 @@ msgid "Connection error"
 msgstr "Yhteysvirhe"
 
 #: quodlibet/ext/events/musicbrainzsync.py:36
-#, fuzzy
 msgid "MusicBrainz Sync"
-msgstr "MusicBrainz-haku"
+msgstr "MusicBrainz-synkronointi"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
-#, fuzzy
 msgid "Syncs the rating of a song with music brainz."
-msgstr "Mahdollistaa kappaleen arvostelun numeroarvolla."
+msgstr "Synkronoi kappaleen arvostelun MusicBrainzin kanssa."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
@@ -2136,7 +2147,7 @@ msgstr "Vain kun kappale vaihtuu <i>_automaattisesti</i>"
 
 #: quodlibet/ext/events/notify.py:162
 msgid "On <i>a_ll</i> song changes"
-msgstr "Aina kun kappale _vaihtuu"
+msgstr "<i>Aina</i> kun kappale _vaihtuu"
 
 #: quodlibet/ext/events/notify.py:177
 msgid "Only when the main window is not _focused"
@@ -2470,89 +2481,84 @@ msgid "Error finding %s. Please check settings"
 msgstr "Virhe kohteen %s löytämisessä. Tarkista asetukset."
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
-#, fuzzy
 msgid "Pending copy"
-msgstr "enkoodaus"
+msgstr "Odottaa kopiointia"
 
 #: quodlibet/ext/events/synchronize_to_device.py:54
-#, fuzzy
 msgid "Pending delete"
-msgstr "nauhoituspäivämäärä"
+msgstr "Odottaa poistamista"
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
-#, fuzzy
 msgid "delete"
-msgstr "_Poista"
+msgstr "poista"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "Skip"
-msgstr ""
+msgstr "Ohita"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "DUPLICATE"
-msgstr ""
+msgstr "KAKSOISKAPPALE"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
-#, fuzzy
 msgid "Synchronizing"
-msgstr "Tahdistetut sanoitukset"
+msgstr "Synkronoidaan"
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
-#, fuzzy
 msgid "Deleting"
-msgstr "_Poista"
+msgstr "Poistetaan"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "Success"
-msgstr ""
+msgstr "Suoritus onnistui"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "FAILURE"
-msgstr ""
+msgstr "SUORITUS EPÄONNISTUI"
 
 #: quodlibet/ext/events/synchronize_to_device.py:62
-#, fuzzy
 msgid "Skipped existing file"
-msgstr "Ohitettu useammin"
+msgstr "Olemassa oleva tiedosto ohitettu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:82
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "Kappaleen tiedostonimen asettaminen epäonnistui."
 
 #: quodlibet/ext/events/synchronize_to_device.py:89
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
 msgstr ""
+"Synkronoi valittujen tallennettujen hakujen määrittämät kappaleet määritetyn "
+"kansion kanssa."
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<artist>"
-msgstr "artisti"
+msgstr "<artisti>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<album>"
-msgstr "albumi"
+msgstr "<albumi>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:107
-#, fuzzy
 msgid "<title>"
-msgstr "nimi"
+msgstr "<nimi>"
 
 #: quodlibet/ext/events/synchronize_to_device.py:143
 msgid "Synchronize the following saved searches:"
-msgstr ""
+msgstr "Synkronoi seuraavat tallennetut haut:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:149
 msgid "The absolute path to your export location"
-msgstr ""
+msgstr "Vientisijainnin absoluuttinen polku"
 
 #: quodlibet/ext/events/synchronize_to_device.py:166
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
 msgstr ""
+"Kaikki kohdekansiossa jo olemassa olevat tiedostot, jotka eivät sisälly "
+"hakutuloksiin, poistetaan."
 
 #: quodlibet/ext/events/synchronize_to_device.py:170
 msgid ""
@@ -2560,11 +2566,14 @@ msgid ""
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
+"MTP:llä yhdistettyyn laitteeseen viemistä varten vie tulokset ensin "
+"paikalliseen kansioon ja siirrä ne sieltä laitteeseen rsync-ohjelmalla. "
+"Synkronoidessa suurta määrää tiedostoja Android-laitteeseen voi käyttää "
+"huomattavasti nopeampaa adc-sync-ohjelmaa."
 
 #: quodlibet/ext/events/synchronize_to_device.py:181
-#, fuzzy
 msgid "Destination path:"
-msgstr "Kohdekansio:"
+msgstr "Polku kohdekansioon:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:187
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
@@ -2578,18 +2587,16 @@ msgstr "Muokkaa tallennettuja kaavoja…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:192
 msgid "The structure of the exported filenames, based on their tags"
-msgstr ""
+msgstr "Vietyjen tiedostonimien rakenne (perustuen kappaleiden tunnisteisiin)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:198
-#, fuzzy
 msgid "Export pattern:"
-msgstr "Kaava _artistille:"
+msgstr "Vientikaava:"
 
 #. Stop preview button
 #: quodlibet/ext/events/synchronize_to_device.py:210
-#, fuzzy
 msgid "Stop preview"
-msgstr "Esikatsele"
+msgstr "Pysäytä esikatselu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:229
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
@@ -2597,126 +2604,123 @@ msgid "Status"
 msgstr "Tila"
 
 #: quodlibet/ext/events/synchronize_to_device.py:236
-#, fuzzy
 msgid "Source File"
-msgstr "Lähteet"
+msgstr "Lähdetiedosto"
 
 #: quodlibet/ext/events/synchronize_to_device.py:245
-#, fuzzy
 msgid "Export Path"
-msgstr "Vie metatietoja"
+msgstr "Vientipolku"
 
 #: quodlibet/ext/events/synchronize_to_device.py:255
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
 msgstr ""
+"Kahdentuneita vientipolkuja havaittu. Yllä olevia vientipolkuja voi muokata "
+"ennen synkronoinnin aloittamista."
 
 #: quodlibet/ext/events/synchronize_to_device.py:259
 msgid "Existing files in the destination path will be deleted!"
-msgstr ""
+msgstr "Olemassa olevat tiedostot kohdepolussa poistetaan!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:274
 msgid "Start synchronization"
-msgstr ""
+msgstr "Aloita synkronointi"
 
 #. Stop sync button
 #: quodlibet/ext/events/synchronize_to_device.py:282
-#, fuzzy
 msgid "Stop synchronization"
-msgstr "organisaatio"
+msgstr "Pysäytä synkronointi"
 
 #: quodlibet/ext/events/synchronize_to_device.py:305
 msgid "No saved searches yet, create some and come back!"
-msgstr ""
+msgstr "Ei tallennettuja hakuja"
 
 #: quodlibet/ext/events/synchronize_to_device.py:387
-#, fuzzy
 msgid "Choose destination path"
-msgstr "Tallennuskohde"
+msgstr "Valitse kohdepolku"
 
 #: quodlibet/ext/events/synchronize_to_device.py:539
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
+"Vientipolku muutettu arvosta ”{old_path}” arvoon ”{new_path}” tiedostolle "
+"”{filename}”"
 
 #: quodlibet/ext/events/synchronize_to_device.py:653
 msgid "Starting synchronization preview"
-msgstr ""
+msgstr "Aloitetaan synkronoinnin esikatselu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:658
 msgid "Synchronization preview in progress."
-msgstr ""
+msgstr "Synkronoinnin esikatselu käynnissä."
 
 #: quodlibet/ext/events/synchronize_to_device.py:674
 msgid "Finished synchronization preview"
-msgstr ""
+msgstr "Synkronoinnin esikatselu valmis"
 
 #: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Stopping synchronization preview"
-msgstr ""
+msgstr "Pysäytetään synkronoinnin esikatselua"
 
 #: quodlibet/ext/events/synchronize_to_device.py:685
 msgid "Synchronization preview was stopped."
-msgstr ""
+msgstr "Synkronoinnin esikatselu pysäytettiin."
 
 #: quodlibet/ext/events/synchronize_to_device.py:688
 msgid "Synchronization preview has finished."
-msgstr ""
+msgstr "Synkronoinnin esikatselu on valmis."
 
 #: quodlibet/ext/events/synchronize_to_device.py:718
 msgid "Stopped synchronization preview"
-msgstr ""
+msgstr "Synkronoinnin esikatselu pysäytettiin"
 
 #: quodlibet/ext/events/synchronize_to_device.py:722
 msgid "A different plugin was selected - stop preview"
-msgstr ""
+msgstr "Toinen liitännäinen valittu - pysäytä esikatselu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:759
-#, fuzzy
 msgid "Synchronization will:"
-msgstr "Tahdistetut sanoitukset"
+msgstr "Synkronointi tekee seuraavat asiat:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:765
 #, python-brace-format
 msgid "attempt to write {count} {file_str}"
-msgstr ""
+msgstr "yrittää kirjoittaa {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:771
 #, python-brace-format
 msgid "skip {count} duplicate {file_str}"
-msgstr ""
+msgstr "ohittaa kaksoiskappaleita: {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:780
 #, python-brace-format
 msgid "delete {count} {file_str}"
-msgstr ""
+msgstr "poistaa {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:829
 msgid "No destination path provided"
-msgstr ""
+msgstr "Kohdepolkua ei ole määritetty"
 
 #: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "Please specify the directory where songs should be exported."
-msgstr ""
+msgstr "Määritä kohdekansio, johon kappaleet viedään."
 
 #: quodlibet/ext/events/synchronize_to_device.py:837
 msgid "No export pattern provided"
-msgstr ""
+msgstr "Vientikaavaa ei ole määritetty"
 
 #: quodlibet/ext/events/synchronize_to_device.py:838
 msgid "Please specify an export pattern for the names of the exported songs."
-msgstr ""
+msgstr "Määritä vientikaava vietävien kappaleiden tiedostonimille."
 
 #: quodlibet/ext/events/synchronize_to_device.py:848
-#, fuzzy
 msgid "Export path is not absolute"
-msgstr "Polku ei ole absoluuttinen"
+msgstr "Vientipolku ei ole absoluuttinen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:849
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2726,35 +2730,35 @@ msgid ""
 "destination path by making sure it starts with / or ~/."
 msgstr ""
 "Kaava\n"
-"\t<b>%s</b>\n"
-"sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi kansioiden "
-"nimeämisen väärin, aloita kaavasi merkeillä / tai ~/."
+"\n"
+"<b>{}</b>\n"
+"\n"
+"sisältää merkin /, mutta ei ala juurihakemistosta. Määritä absoluuttinen "
+"kohdepolku aloittamalla kaava merkeillä / tai ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:871
-#, fuzzy
 msgid "No saved searches selected"
-msgstr "Ei kappaleita valittuna."
+msgstr "Ei tallennettuja hakuja valittuna"
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "Please select at least one saved search."
-msgstr ""
+msgstr "Valitse vähintään yksi tallennettu haku."
 
 #: quodlibet/ext/events/synchronize_to_device.py:881
-#, fuzzy
 msgid "No songs in the selected saved searches"
-msgstr "Ei kappaleita valittuna."
+msgstr "Ei kappaleita valituissa tallennetuissa hauissa"
 
 #: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "All selected saved searches are empty."
-msgstr ""
+msgstr "Kaikki valitut tallennetut haut ovat tyhjiä."
 
 #: quodlibet/ext/events/synchronize_to_device.py:885
 msgid "Found {} songs to synchronize"
-msgstr ""
+msgstr "Löydetty {} synkronoitavaa kappaletta"
 
 #: quodlibet/ext/events/synchronize_to_device.py:904
 msgid "Mismatch between destination path and export pattern"
-msgstr ""
+msgstr "Kohdepolku ja vientikaava eivät vastaa toisiaan"
 
 #: quodlibet/ext/events/synchronize_to_device.py:906
 msgid ""
@@ -2764,99 +2768,102 @@ msgid ""
 "Error:\n"
 "{}"
 msgstr ""
+"Vientikaava alkaa polulla, joka on eri kuin määritetty kohdepolku. Korjaa "
+"vientikaava.\n"
+"\n"
+"Virhe:\n"
+"{}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:944
-#, fuzzy
 msgid "Unable to sync"
-msgstr "Kappaletta ei voi tallentaa"
+msgstr "Ei voi synkronoida"
 
 #: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
+"Synkronointia ei voi aloittaa järjestettäessä sarakkeen <b>Tila</b> mukaan."
 
 #: quodlibet/ext/events/synchronize_to_device.py:949
 msgid "Starting song synchronization"
-msgstr ""
+msgstr "Aloitetaan kappaleiden synkronointi"
 
 #. Summary labels
 #: quodlibet/ext/events/synchronize_to_device.py:953
 msgid "Synchronization in progress."
-msgstr ""
+msgstr "Synkronointi käynnissä."
 
 #: quodlibet/ext/events/synchronize_to_device.py:965
 msgid "Finished song synchronization"
-msgstr ""
+msgstr "Kappaleiden synkronointi valmis"
 
 #: quodlibet/ext/events/synchronize_to_device.py:974
 msgid "Stopping song synchronization"
-msgstr ""
+msgstr "Kappaleiden synkronointia pysäytetään"
 
 #: quodlibet/ext/events/synchronize_to_device.py:975
 msgid "Synchronization was stopped."
-msgstr ""
+msgstr "Kappaleiden synkronointi pysäytettiin."
 
 #: quodlibet/ext/events/synchronize_to_device.py:977
 msgid "Synchronization has finished."
-msgstr ""
+msgstr "Kappaleiden synkronointi on valmis."
 
 #: quodlibet/ext/events/synchronize_to_device.py:1010
 msgid "Stopped song synchronization"
-msgstr ""
+msgstr "Kappaleiden synkronointi pysäytetty"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1014
 msgid "A different plugin was selected - stop synchronization"
-msgstr ""
+msgstr "Toinen liitännäinen valittu - pysäytä synkronointi"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1017
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
-msgstr ""
+msgstr "{tag} - ”{filename}”"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1086
 msgid "Removing \"{}\""
-msgstr ""
+msgstr "Poistetaan ”{}”"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1105
-#, fuzzy
 msgid "Synchronization has:"
-msgstr "Tahdistetut sanoitukset"
+msgstr "Synkronointi on tehnyt seuraavat asiat:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1113
 #, python-brace-format
 msgid "written {count}/{total} {file_str}"
-msgstr ""
+msgstr "kirjoitettu {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1120
 #, python-brace-format
 msgid "(skipped {count} existing {file_str})"
-msgstr ""
+msgstr "(ohitettu olemassa olevia: {count} {file_str})"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1128
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr ""
+msgstr "ohitettu kaksoiskappaleita: {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1135
 #, python-brace-format
 msgid "deleted {count}/{total} {file_str}"
-msgstr ""
+msgstr "poistettu {count}/{total} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1142
 #, python-brace-format
 msgid "failed to sync {count} {file_str}"
-msgstr ""
+msgstr "ei voitu synkronoida: {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1148
 #, python-brace-format
 msgid "skipped {count} {file_str} synchronized previously"
-msgstr ""
+msgstr "ohitettu aikaisemmin synkronoituja: {count} {file_str}"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
 msgstr "Tahdistetut sanoitukset"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:30
-#, fuzzy
 msgid ""
 "Shows synchronized lyrics from an .lrc file with same name as the track (or "
 "similar)."
@@ -3078,7 +3085,9 @@ msgstr ""
 msgid ""
 "No lyrics found for\n"
 " %s"
-msgstr "Kappaleelle %s ei löydy sanoja"
+msgstr ""
+"Seuraavalle kappaleelle ei löydy sanoja:\n"
+"%s"
 
 #: quodlibet/ext/events/viewlyrics.py:117
 msgid "No active song"
@@ -3248,7 +3257,7 @@ msgstr "Mukautettu"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:153
 msgid "Crossfeed"
-msgstr "Crossfeed"
+msgstr "Ristiinsyöttö"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:154
 msgid ""
@@ -3355,41 +3364,40 @@ msgid "Default filename pattern:"
 msgstr "Tiedostonimen oletuskaava:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
-#, fuzzy
 msgid "OK"
-msgstr "_OK"
+msgstr "OK"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
 msgstr ""
+"Anna uuden soittolistan nimi,\n"
+"tai valitse olemassa oleva Sonos-soittolista ylikirjoitettavaksi"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:131
-#, fuzzy
 msgid "Export to Sonos Playlist"
-msgstr "Vie soittolistaksi"
+msgstr "Vie Sonos-soittolistaksi"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid ""
 "Exports a playlist to Sonos playlist, provided both share a directory "
 "structure."
 msgstr ""
+"Vie soittolistan Sonos-soittolistaksi edellyttäen, että molemmilla on sama "
+"hakemistorakenne."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:223
-#, fuzzy
 msgid "Error finding Sonos device(s)"
-msgstr "Virhe Squeezebox-palvelimen löytämisessä"
+msgstr "Virhe Sonos-laitteiden löytämisessä"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:224
-#, fuzzy
 msgid "Error finding Sonos. Please check settings"
-msgstr "Virhe kohteen %s löytämisessä. Tarkista asetukset."
+msgstr "Virhe Sonos-laitteiden löytämisessä. Tarkista asetukset."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
 msgid "Export to Sonos playlist"
-msgstr "Vie Squeezebox-soittolistaksi"
+msgstr "Vie Sonos-soittolistaksi"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3453,23 +3461,20 @@ msgid "Follow Cursor"
 msgstr "Seuraa kursoria"
 
 #: quodlibet/ext/playorder/follow.py:20
-#, fuzzy
 msgid ""
 "Adds a play order mode that follows your selection, or the next song in the "
 "list once exhausted."
 msgstr ""
-"Toisto seuraa valittuja kappaleita, tai listassa seuraavana olevaa "
-"kappaletta kun kaikki valitut on toistettu."
+"Lisää toistojärjestyksen, joka toistaa valittuja kappaleita, tai listassa "
+"seuraavana olevaa kappaletta kun kaikki valitut on toistettu."
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
 msgstr "Toistokertojen tasaaja"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
-#, fuzzy
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
-msgstr ""
-"Toista satunnaisessa järjestyksessä suosien vähemmän toistettuja kappaleita."
+msgstr "Lisää sekoitustilan, joka suosii vähemmän toistettuja kappaleita."
 
 #: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Prefer less played"
@@ -3480,25 +3485,25 @@ msgid "Queue Only"
 msgstr "Vain jono"
 
 #: quodlibet/ext/playorder/queue.py:20
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
 "Select this play order in the main window, then double-clicking any song "
 "will enqueue it instead of playing."
 msgstr ""
-"Rajoittaa toistettavat kappaleet jonossa oleviin. Kun tämä on valittuna "
-"pääikkunassa, niin kappaleen kaksoisklikkaus lisää sen jonoon toistamisen "
-"sijaan."
+"Rajoittaa toistettavat kappaleet jonossa oleviin.\n"
+"\n"
+"Kun tämä on valittuna pääikkunassa, niin kappaleen kaksoisklikkaus lisää sen "
+"jonoon toistamisen sijaan."
 
 #: quodlibet/ext/playorder/reverse.py:14
 msgid "Reverse"
 msgstr "Käänteinen järjestys"
 
 #: quodlibet/ext/playorder/reverse.py:16
-#, fuzzy
 msgid "Adds a shuffle mode that reverses the play order of songs."
-msgstr "Kääntää kappaleiden toistojärjestyksen."
+msgstr ""
+"Lisää sekoitustilan, joka toistaa kappaleet käänteisessä järjestyksessä."
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:94
@@ -3506,7 +3511,6 @@ msgid "Shuffle by Grouping"
 msgstr "Sekoita ryhmittäen"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:33
-#, fuzzy
 msgid ""
 "Adds a shuffle mode that groups songs with a common tag – similar to album "
 "shuffles.\n"
@@ -3514,8 +3518,9 @@ msgid ""
 "This is useful for shuffling multi-movement classical pieces, making sure "
 "all movements play in order before shuffling to the next piece."
 msgstr ""
-"Sekoittaa toistettavat kappaleet ryhmittämällä yhteisen tunnisteen omaavat "
-"kappaleet soimaan peräkkäin (samalla periaatteella kuin albumisekoitus). "
+"Lisää sekoitustilan, joka ryhmittää yhteisen tunnisteen omaavat kappaleet "
+"soimaan peräkkäin (samalla periaatteella kuin albumisekoitus).\n"
+"\n"
 "Hyödyllinen esimerkiksi moniosaisten klassisten teosten toistamiseen "
 "satunnaisessa järjestyksessä kuitenkin niin, että yhden teoksen kaikki osat "
 "soitetaan järjestyksessä ennen seuraavaan teokseen siirtymistä."
@@ -3566,26 +3571,28 @@ msgstr "Palauta oletukset"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr ""
+msgstr "Ohita huonot kappaleet"
 
 #: quodlibet/ext/playorder/skip_disliked.py:26
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
 msgstr ""
+"Lisää toistojärjestyksen, joka toistaa kappaleet valitussa järjestyksessä, "
+"mutta ohittaa kappaleet, joiden arvosana on pienempi (tai yhtä suuri kuin) "
+"määritelty raja."
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
 msgstr "Kertaa jokainen kappale"
 
 #: quodlibet/ext/playorder/track_repeat.py:30
-#, fuzzy
 msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
 msgstr ""
-"Toista kappaleet satunnaisessa järjestyksessä, mutta kertaa jokainen kappale "
-"tietty määrä kertoja."
+"Lisää sekoitustilan, joka toistaa kappaleet valitussa järjestyksessä, mutta "
+"kertaa jokaisen kappaleen tietyn määrän kertoja."
 
 #: quodlibet/ext/playorder/track_repeat.py:49
 msgid "Number of times to play each song:"
@@ -3596,11 +3603,8 @@ msgid "Conditional Query"
 msgstr "Ehdollinen kysely"
 
 #: quodlibet/ext/query/conditional.py:16
-#, fuzzy
 msgid "Chooses the query to match based on a condition query."
-msgstr ""
-"Valitsee käytettävän kyselyn ehdollisen kyselyn pohjalta. Syntaksi: @(if: "
-"ehtolauseke, sitten-lauseke, muutoin-lauseke)."
+msgstr "Valitsee käytettävän kyselyn ehdollisen kyselyn pohjalta."
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3620,18 +3624,15 @@ msgstr "Python-kysely"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
-msgstr ""
+msgstr "🐍 Käytä Python-lausekkeita kyselyissä."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
 msgstr "Sisällytä tallennettu haku"
 
 #: quodlibet/ext/query/savedsearch.py:21
-#, fuzzy
 msgid "💾 Include the results of a saved search as part of another query."
-msgstr ""
-"Sisällytä tallennetun haun tulokset toiseen hakuun. Syntaksi: @(saved: haun "
-"nimi)."
+msgstr "💾 Sisällytä tallennetun haun tulokset toiseen hakuun."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -4003,9 +4004,9 @@ msgid "No covers found"
 msgstr "Ei löydettyjä kansikuvia"
 
 #: quodlibet/ext/songsmenu/cover_download.py:318
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "{size} ✕ {size} px"
-msgstr "%(size)d ✕ %(size)d px"
+msgstr "{size} ✕ {size} px"
 
 #: quodlibet/ext/songsmenu/cover_download.py:331
 msgid "Preview size"
@@ -4020,10 +4021,12 @@ msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
 msgstr ""
+"Jos kuva ei jo ole JPEG-muodossa, muunna se korkealaatuiseksi, "
+"samankokoiseksi JPEG-kuvaksi"
 
 #: quodlibet/ext/songsmenu/cover_download.py:373
 msgid "Save as JPEG"
-msgstr ""
+msgstr "Tallenna JPEG-muodossa"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:41
 msgid "Command"
@@ -4094,13 +4097,12 @@ msgstr ""
 "Komennolle annettavien argumenttien maksimimäärä (kuten xargs-komennolla)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
-#, fuzzy
 msgid "reverse"
-msgstr "Käänteinen järjestys"
+msgstr "käänteinen järjestys"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "If set, the argument list will be reversed."
-msgstr ""
+msgstr "Kääntää argumenttilistan järjestyksen."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:95
 msgid "Input value"
@@ -4256,7 +4258,7 @@ msgstr "Mahdollistaa kappaleen arvostelun numeroarvolla."
 
 #: quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr "Anna haluamasi arvosana asteikolla 0.0-1.0."
+msgstr "Anna haluamasi arvosana asteikolla 0.0-1.0"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"
@@ -4579,9 +4581,8 @@ msgstr[0] "%d tallennettu kappale."
 msgstr[1] "%d tallennettua kappaletta."
 
 #: quodlibet/ext/songsmenu/playlist.py:31
-#, fuzzy
 msgid "Export as M3U / PLS Playlist File"
-msgstr "Vie soittolistaksi"
+msgstr "Vie M3U-/PLS-soittolistaksi"
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
@@ -4640,7 +4641,7 @@ msgstr[1] "<b>%(to-process)s</b> albumia päivitettäväksi (yhteensä %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
-msgstr "Replay Gain"
+msgstr "ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:570
 msgid ""
@@ -4802,14 +4803,12 @@ msgid "Loading files"
 msgstr "Ladataan tiedostoja"
 
 #: quodlibet/library/file.py:348
-#, fuzzy
 msgid "Moving library files"
-msgstr "Luetaan musiikkikirjastoa"
+msgstr "Siirretään kirjaston tiedostoja"
 
 #: quodlibet/library/file.py:403
-#, fuzzy
 msgid "Removing library files"
-msgstr "Poista aktiiviset selainsuodattimet"
+msgstr "Poistetaan kirjaston tiedostoja"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -5062,9 +5061,9 @@ msgid "Buffering"
 msgstr "Puskuroidaan"
 
 #: quodlibet/player/gstbe/player.py:463
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "GStreamer-liukuhihnan luominen epäonnistui"
+msgstr "GStreamer-liukuhihnan luominen epäonnistui (%s)"
 
 #: quodlibet/player/gstbe/player.py:666
 msgid "No GStreamer element found to handle media format"
@@ -5117,16 +5116,16 @@ msgstr ""
 
 #: quodlibet/player/gstbe/prefs.py:75
 msgid "Use JACK for playback if available"
-msgstr ""
+msgstr "Käytä JACK-järjestelmää toistoon, jos käytettävissä"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
-msgstr ""
+msgstr "Muodosta yhteys JACK-ulostulolaitteisiin automaattisesti"
 
 #: quodlibet/player/gstbe/util.py:145
-#, fuzzy, python-format
+#, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
-msgstr "Ei löydettyä GStreamer-ääninielua"
+msgstr "Ei löydettyä GStreamer-ääninielua. Kokeillut: %s"
 
 #: quodlibet/player/gstbe/util.py:164
 msgid "Invalid GStreamer output pipeline"
@@ -5157,23 +5156,23 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "GStreamer-elementtiä {element} ei löytynyt."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:229
-#, fuzzy
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Määritä asetukset QLScrobblerille Liitännäiset-ikkunassa. Ennen tätä "
-"kappaleita ei lähetetä."
+"Määritä asetukset ListenBrainzille Liitännäiset-ikkunassa. Ennen tätä "
+"kuuntelutietoja ei lähetetä."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Määritä asetukset QLScrobblerille Liitännäiset-ikkunassa. Ennen tätä "
-"kappaleita ei lähetetä."
+"Liikaa peräkkäisiä epäonnistuneita lähetyksiä (%d). Siirrytään "
+"yhteydettömään tilaan. Määritä asetukset ListenBrainzille Liitännäiset-"
+"ikkunassa. Ennen tätä kuuntelutietoja ei lähetetä."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
 #, fuzzy
@@ -5185,13 +5184,12 @@ msgid "Submit listens to listenbrainz."
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
-#, fuzzy
 msgid "User _token:"
-msgstr "_Käyttäjänimi:"
+msgstr "_Käyttäjän tunniste (token):"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
-msgstr ""
+msgstr "_Tunnisteet:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
@@ -5200,9 +5198,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
-#, fuzzy
 msgid "Songs matching this filter will not be submitted."
-msgstr "Tähän suodattimeen täsmääviä kappaleita ei lähetetä"
+msgstr "Tähän suodattimeen täsmääviä kappaleita ei lähetetä."
 
 #: quodlibet/plugins/playlist.py:23
 #, python-format
@@ -5218,7 +5215,7 @@ msgstr "_Suorita liitännäinen"
 
 #: quodlibet/plugins/query.py:65
 msgid "Usage"
-msgstr ""
+msgstr "Käyttö"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -5683,9 +5680,8 @@ msgid "Track %s"
 msgstr "Raita %s"
 
 #: quodlibet/qltk/info.py:104
-#, fuzzy
 msgid "Current _Song"
-msgstr "Nykyisen tyylilajin mukaan"
+msgstr "Nykyinen kappale"
 
 #: quodlibet/qltk/info.py:114
 msgid "_Edit Display…"
@@ -5930,14 +5926,12 @@ msgid "Editing"
 msgstr "Muokkaus"
 
 #: quodlibet/qltk/pluginwin.py:39
-#, fuzzy
 msgid "Renaming"
-msgstr "_Nimeä uudelleen"
+msgstr "Uudelleennimeäminen"
 
 #: quodlibet/qltk/pluginwin.py:40
-#, fuzzy
 msgid "Querying"
-msgstr "_Kysely:"
+msgstr "Kyselyiden teko"
 
 #: quodlibet/qltk/pluginwin.py:42
 msgid "Covers"
@@ -6017,11 +6011,13 @@ msgstr "Kun toistettava kappale vaihtuu, vieritä kappalelista sen kohdalle"
 
 #: quodlibet/qltk/prefs.py:68
 msgid "Sort songs when tags are modified"
-msgstr ""
+msgstr "Järjestä kappaleet kun tunnisteita muokataan"
 
 #: quodlibet/qltk/prefs.py:70
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
+"Järjestä kappalelistalla olevat kappaleet automaattisesti uudelleen kun "
+"tunnisteita muokataan"
 
 #: quodlibet/qltk/prefs.py:87
 msgid "_Others:"
@@ -6132,11 +6128,12 @@ msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
+"Käytettävät albumien kansikuvatiedostot, jos ovat olemassa (tukee "
+"jokerimerkkejä). Erota useampi tiedostonimi toisistaan pilkulla."
 
 #: quodlibet/qltk/prefs.py:330
-#, fuzzy
 msgid "_Preferred image filename(s):"
-msgstr "_Kiinteästi valittu kuvatiedostonimi:"
+msgstr "_Kuvatiedostonimet:"
 
 #: quodlibet/qltk/prefs.py:345
 msgid "Album Art"
@@ -6305,7 +6302,7 @@ msgstr "Piilotetut kappaleet"
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
-msgstr[0] "%(title)s ja %(count)d muuta"
+msgstr[0] "%(title)s ja %(count)d muu"
 msgstr[1] "%(title)s ja %(count)d muuta"
 
 #: quodlibet/qltk/properties.py:161 quodlibet/qltk/properties.py:163
@@ -6501,7 +6498,7 @@ msgid "_Remove Rating"
 msgstr "_Poista arvosana"
 
 #: quodlibet/qltk/ratingsmenu.py:32
-#, fuzzy, python-format
+#, python-format
 msgid "The rating of all selected songs will be changed to %s"
 msgstr "Valittujen kappaleiden arvosanaksi asetetaan %s"
 
@@ -6515,11 +6512,11 @@ msgstr "Korvaa _välilyönnit alaviivoilla"
 
 #: quodlibet/qltk/renamefiles.py:62
 msgid "Replace [semi]colon delimiting with hyphens"
-msgstr ""
+msgstr "Korvaa kaksois- tai puolipiste erottimena viivalla"
 
 #: quodlibet/qltk/renamefiles.py:63
 msgid "e.g. \"iv: allegro.flac -> \"iv - allegro.flac\""
-msgstr ""
+msgstr "esim. ”iv: allegro.flac” → ”iv - allegro.flac”"
 
 #: quodlibet/qltk/renamefiles.py:82
 msgid "Strip _Windows-incompatible characters"
@@ -6631,57 +6628,55 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
-msgstr ""
+msgstr "Uusi kansio luetaan lisäämisen jälkeen"
 
 #: quodlibet/qltk/scanbox.py:67
-#, fuzzy
 msgid ""
 "All songs in the selected directories will also be removed from the library"
-msgstr "Valitut kappaleet poistetaan kirjastosta."
+msgstr "Kaikki valituissa kansioissa olevat kappaleet poistetaan kirjastosta"
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
-msgstr ""
+msgstr "_Siirrä"
 
 #: quodlibet/qltk/scanbox.py:72
 msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
 msgstr ""
+"Siirrä luettava kansiopolku (mutta ei tiedostoja), migroiden samalla myös "
+"kappaleiden metatiedot."
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
-msgstr ""
+msgstr "Poista {dir!r} ja kaikki sen kappaleet?"
 
 #: quodlibet/qltk/scanbox.py:115
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "VAROITUS: poistetaan orvoksi jäänyt iPod-kappale"
+msgstr "Poistetaanko {n} kirjaston kansiota ja niiden kappaleet?"
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "Kirjaston polku:"
-msgstr[1] "Kirjaston polku:"
+msgstr[0] "Poistetaanko kirjaston kansio?"
+msgstr[1] "Poistetaanko kirjaston kansiot?"
 
 #: quodlibet/qltk/scanbox.py:117
-#, fuzzy
 msgid "Remove"
-msgstr "_Poista"
+msgstr "Poista"
 
 #: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
 msgstr "Valitse kansiot"
 
 #: quodlibet/qltk/scanbox.py:139
-#, fuzzy
 msgid "Select This Directory"
-msgstr "Valitse kansiot"
+msgstr "Valitse tämä kansio"
 
 #: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
-msgstr ""
+msgstr "Valitse todellinen / uusi kansio kohteelle {dir!r}"
 
 #: quodlibet/qltk/scanbox.py:149
 msgid ""
@@ -6692,14 +6687,21 @@ msgid ""
 "The audio files themselves are not moved by this.\n"
 "Nonetheless, a backup is recommended (including the Quodlibet 'songs' file)"
 msgstr ""
+"Quod Libetin metatiedot siirretään seuraavasti:\n"
+"\n"
+"{old!r} -> {new!r}\n"
+"\n"
+"Tiedostoja itsessään ei siirretä.\n"
+"Varmuuskopion ottaminen on joka tapauksessa suositeltavaa (myös Quod Libetin "
+"”songs”-tiedostosta)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
-msgstr ""
+msgstr "Siirretäänkö luettava kansiopolku {dir!r}?"
 
 #: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
-msgstr ""
+msgstr "OK, siirrä"
 
 #: quodlibet/qltk/searchbar.py:57
 msgid "Saved Searches"
@@ -7053,18 +7055,17 @@ msgstr ""
 "Käy <a href='%(url)s'>kotisivulla</a>"
 
 #: quodlibet/util/collection.py:342
-#, fuzzy
 msgid "Empty Playlist"
-msgstr "Tuo soittolista"
+msgstr "Tyhjä soittolista"
 
 #: quodlibet/util/collection.py:440
 msgid "Playlists must have a name"
 msgstr "Soittolistoilla täytyy olla nimi"
 
 #: quodlibet/util/collection.py:644
-#, fuzzy, python-format
+#, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
-msgstr "Soittolista on jo olemassa nimellä %s."
+msgstr "Soittolista nimeltä %(name)s on jo olemassa polussa %(path)s"
 
 #: quodlibet/util/cover/built_in.py:38
 msgid "Embedded album covers"
@@ -7411,7 +7412,7 @@ msgstr "julkaisumaa"
 
 #: quodlibet/util/tags.py:122
 msgid "initial key"
-msgstr ""
+msgstr "alkusävellaji"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
 #. Note: picard has changed musicbrainz_trackid to mean release track.
