@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -196,7 +196,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 if value:
                     self.login_state = State.LOGGED_IN
                     print_d("Got a user token value of '%s'" % value)
-                    self.api_client.get_token(value)
+                    self.api_client.get_tokens(value)
             elif state == State.LOGGED_OUT:
                 self.api_client.authenticate_user()
                 self.login_state = State.LOGGING_IN
@@ -431,7 +431,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 print_w("Malformed response in callback URI: %s" % uri)
                 return
             print_d("Processing Soundcloud callback (%s)" % (uri,))
-            self.api_client.get_token(code)
+            self.api_client.get_tokens(code)
         else:
             print_w("Unknown URL format (%s)" % (uri,))
 
@@ -441,7 +441,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.update_connect_button()
         self._refresh_online_filters()
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
-                      _("Quod Libet is now connected, <b>%s</b>!") % name)
+                      _("Quod Libet is now connected, %s!") % name)
         msg.run()
 
     @cached_property
