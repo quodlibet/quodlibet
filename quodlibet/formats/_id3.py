@@ -377,6 +377,7 @@ class ID3File(AudioFile):
             if not "~lyricslanguage" in self:
                 self["~lyricslanguage"] = "und" # undefined
             lang = self["~lyricslanguage"]
+            # language has to be a 3 byte ISO 639-2 code
             if not lang in ISO_639_2:
                 lang = "und"
             if not "~lyricsdescription" in self:
