@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import contextlib
+import sys
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
@@ -355,8 +356,10 @@ class TreeViewHints(Gtk.Window):
 
         # Set region on this window for which to receive mouse events to the
         # empty region. Mouse events will be passed to the window below the
-        # tooltip.
-        self.input_shape_combine_region(self.__empty_region)
+        # tooltip. The Gdk implementation for win32 does not support this, which
+        # leads to events not being received in either window.
+        if sys.platform != "win32":
+            self.input_shape_combine_region(self.__empty_region)
 
         window = self.get_window()
         if self.get_visible() and window:
