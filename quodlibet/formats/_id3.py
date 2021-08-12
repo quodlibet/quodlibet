@@ -1,5 +1,5 @@
 # Copyright 2004-2020 Joe Wreschnig, Michael Urman, Niklas Janlert,
-#                     Steven Robertson, Nick Boultbee
+#                     Steven Robertson, Nick Boultbee, h88e22dgpeps56sg
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
