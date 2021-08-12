@@ -172,6 +172,8 @@ class ID3File(AudioFile):
             elif id3id == "USLT":
                 # lyrics are single string, not list
                 text = frame.text
+                self["~lyricsdescription"] = frame.desc
+                self["~lyricslanguage"] = frame.lang
             elif id3id.startswith("W"):
                 text = frame.url
                 frame.encoding = 0
@@ -372,9 +374,16 @@ class ID3File(AudioFile):
         tag.delall("USLT")
         if "lyrics" in self:
             enc = encoding_for(self["lyrics"])
+            if not "~lyricslanguage" in self:
+                self["~lyricslanguage"] = "und" # undefined
+            lang = self["~lyricslanguage"]
+            if not lang in ISO_639_2:
+                lang = "und"
+            if not "~lyricsdescription" in self:
+                self["~lyricsdescription"] = u""
             # lyrics are single string, not array
             tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
-                                     desc=u"", lang="\x00\x00\x00"))
+                                     desc=self["~lyricsdescription"], lang=lang))
 
         # Delete old foobar replaygain ..
         for frame in tag.getall("TXXX"):
