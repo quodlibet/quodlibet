@@ -7,8 +7,7 @@
 # (at your option) any later version.
 
 import json
-from collections import Callable
-from typing import Optional, Any
+from typing import Optional, Any, Callable
 
 from gi.repository import Soup, Gio, GLib, GObject
 from gi.repository.GObject import ParamFlags, SignalFlags
