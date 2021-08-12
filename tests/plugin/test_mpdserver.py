@@ -8,6 +8,8 @@
 import os
 import socket
 
+import pytest
+
 from senf import fsnative
 from gi.repository import Gtk
 
@@ -115,6 +117,7 @@ class TMPDCommands(PluginTestCase):
         response = self._cmd(b"tagtypes\n")
         assert b"Time\n" not in response
 
+    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_commands(self):
         skip = ["close", "idle", "noidle"]
         cmds = [c for c in self.conn.list_commands() if c not in skip]
