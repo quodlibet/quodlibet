@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-08-14 10:34+0000\n"
+"PO-Revision-Date: 2021-08-14 18:58+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -2200,6 +2200,8 @@ msgstr "El cliente se ha vetado. Contacte al autor."
 #: quodlibet/ext/events/qlscrobbler.py:285
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
+"La hora del sistema es incorrecta. Hasta que no se corrija, podrían fallar "
+"los envíos."
 
 #: quodlibet/ext/events/qlscrobbler.py:350
 msgid "AudioScrobbler Submission"
@@ -3684,7 +3686,7 @@ msgstr "_Programa:"
 
 #: quodlibet/ext/songsmenu/albumart.py:350
 msgid "_Edit image after saving"
-msgstr ""
+msgstr "_Editar imagen tras guardarla"
 
 #: quodlibet/ext/songsmenu/albumart.py:352
 msgid "File_name:"
