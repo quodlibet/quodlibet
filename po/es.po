@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-08-01 00:39+0000\n"
+"PO-Revision-Date: 2021-08-14 10:34+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -1041,9 +1041,8 @@ msgid "filename"
 msgstr "nombre de archivo"
 
 #: quodlibet/cli.py:132
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "Avanzar en la canción activa"
+msgstr "Establecer puntuación de canción actual"
 
 #: quodlibet/cli.py:133
 msgid "Set the current browser"
@@ -1276,9 +1275,8 @@ msgid "Title-cases tag values in the tag editor."
 msgstr "Pone mayúsculas iniciales en las palabras en el editor de etiquetas."
 
 #: quodlibet/ext/editing/titlecase.py:40
-#, fuzzy
 msgid "Title-_case Value"
-msgstr "C_on mayúscula inicial los valores resultantes"
+msgstr "_Mayuscular valor"
 
 #: quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
@@ -1549,14 +1547,15 @@ msgid "Preferences"
 msgstr "Preferencias"
 
 #: quodlibet/ext/events/automask.py:22
-#, fuzzy
 msgid "Automatic Masking"
-msgstr "Auto_mática"
+msgstr "Enmascaramiento automático"
 
 #: quodlibet/ext/events/automask.py:23
 msgid ""
 "Automatically masks and unmasks drives when they are unmounted or mounted."
 msgstr ""
+"Enmascara o desenmascara automáticamente las unidades cuando se desmontan o "
+"montan."
 
 #: quodlibet/ext/events/autorating.py:15
 msgid "Automatic Rating"
@@ -1567,6 +1566,8 @@ msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
+"Puntúa las canciones automáticamente al reproducirlas o al saltarlas. "
+"Utiliza el algoritmo «acelerado» de Vux, de Brian Nelson."
 
 #: quodlibet/ext/events/bansheeimport.py:106
 msgid "Specified Banshee database is malformed or missing"
@@ -4758,9 +4759,8 @@ msgid "Columns to display and order in terse mode (%s)"
 msgstr "Columnas y orden de disposición en el modo depuración (%s)"
 
 #: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:85
-#, fuzzy
 msgid "Also list programmatic tags"
-msgstr "Mostrar _mensajes adicionales para depuración"
+msgstr "Mostrar también etiquetas programáticas"
 
 #: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
@@ -4812,9 +4812,8 @@ msgid "Can't copy tag {tagname} to file: {filename}"
 msgstr "No se puede copiar la etiqueta {tagname} en el archivo: {filename}"
 
 #: quodlibet/operon/commands.py:157
-#, fuzzy
 msgid "Edit tags in a text editor"
-msgstr "Editor de etiquetas de audio"
+msgstr "Editar etiquetas en editor de texto"
 
 #: quodlibet/operon/commands.py:251
 msgid "Editing aborted"
@@ -5847,9 +5846,8 @@ msgid "Events"
 msgstr "Sucesos"
 
 #: quodlibet/qltk/pluginwin.py:37
-#, fuzzy
 msgid "Play Order"
-msgstr "_Orden de reproducción"
+msgstr "Orden de reproducción"
 
 #: quodlibet/qltk/pluginwin.py:38
 #, fuzzy
@@ -6199,14 +6197,12 @@ msgstr ""
 "debe contener dos caracteres solamente."
 
 #: quodlibet/qltk/prefs.py:639
-#, fuzzy
 msgid "Split _tag on:"
-msgstr "Extraer _de:"
+msgstr "Dividir e_tiqueta en:"
 
 #: quodlibet/qltk/prefs.py:646
-#, fuzzy
 msgid "Split _subtag on:"
-msgstr "Extraer _de:"
+msgstr "Dividir _subetiqueta en:"
 
 #: quodlibet/qltk/prefs.py:671
 msgid "Tags"
@@ -6306,9 +6302,8 @@ msgid "_Browse Library"
 msgstr "_Examinar la colección"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
-#, fuzzy
 msgid "Toggle queue visibility"
-msgstr "Alternar la visibilidad de la ventana principal"
+msgstr "Alternar visibilidad de cola"
 
 #: quodlibet/qltk/quodlibetwindow.py:376
 msgid "Playback Error"
@@ -6498,9 +6493,8 @@ msgid "File names"
 msgstr "Nombres de archivo"
 
 #: quodlibet/qltk/renamefiles.py:208
-#, fuzzy
 msgid "_Move album art"
-msgstr "artista del álbum"
+msgstr "_Mover cubierta"
 
 #: quodlibet/qltk/renamefiles.py:211
 msgid "See '[albumart] filenames' config entry for image search strings"
