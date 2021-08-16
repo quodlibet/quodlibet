@@ -7,7 +7,6 @@ import os
 import shutil
 from pathlib import Path
 
-import pytest
 from gi.repository import Gdk, Gtk
 
 import quodlibet.config
@@ -247,8 +246,6 @@ class TPlaylistsBrowser(TestCase):
         run_gtk_loop()
         self.failUnless(self.success or self.expected is None)
 
-    # TODO: work out how to make these Gtk signal tests less flaky in CI
-    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
         self.expected = None
