@@ -131,7 +131,7 @@ class QuodLibetUnixRemote(RemoteBase):
 
         try:
             return fifo.write_fifo(cls._PATH, fsn2bytes(message, None))
-        except EnvironmentError as e:
+        except fifo.FIFOError as e:
             raise RemoteError(e)
 
     def start(self):
