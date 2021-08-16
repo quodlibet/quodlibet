@@ -16,6 +16,7 @@ from quodlibet import util, config
 from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
+from quodlibet.util.http import (download_json, download)
 from quodlibet.util.http import (download_json, download, HTTPRequest,
                                  FailureCallback)
 from .library import SoundcloudFile
