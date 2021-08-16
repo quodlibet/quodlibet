@@ -52,7 +52,7 @@ class TSearchBar(TestCase):
             af.sanitize()
         quodlibet.browsers.tracks.library.add(SONGS)
         self.bar = self.Bar(quodlibet.browsers.tracks.library)
-        self.bar.connect('songs-selected', self._expected)
+        self._sid = self.bar.connect('songs-selected', self._expected)
         self.success = False
 
     def _expected(self, bar, songs, sort):
@@ -146,6 +146,7 @@ class TSearchBar(TestCase):
                 os.unlink(song("~filename"))
             except OSError:
                 pass
+        self.bar.disconnect(self._sid)
         self.bar.destroy()
         quodlibet.browsers.tracks.library.destroy()
         quodlibet.config.quit()
