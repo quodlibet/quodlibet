@@ -13,13 +13,13 @@ from urllib.parse import urlencode
 from gi.repository import GObject, Gio, Soup
 
 from quodlibet import util, config
+from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.http import download_json, download, HTTPRequest, FailureCallback
-
+from quodlibet.util.http import (download_json, download, HTTPRequest,
+                                 FailureCallback)
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
-from ...formats import AudioFile
 
 
 class RestApi(GObject.Object):
