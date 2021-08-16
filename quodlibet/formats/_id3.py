@@ -381,7 +381,7 @@ class ID3File(AudioFile):
             if not lang in ISO_639_2:
                 lang = "und"
             if not "~lyricsdescription" in self:
-                self["~lyricsdescription"] = u""
+                self["~lyricsdescription"] = ""
             # lyrics are single string, not array
             tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
                                      desc=self["~lyricsdescription"], lang=lang))
