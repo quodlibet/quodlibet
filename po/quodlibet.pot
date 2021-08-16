@@ -6989,7 +6989,7 @@ msgstr ""
 msgid "Previous"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/views.py:931
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/views.py:934
 #, python-format
 msgid "and %d more…"
 msgstr ""
