@@ -12,7 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet.browsers._base import FakeDisplayItem as FDI, \
     DisplayPatternMixin, FakeDisplayItem
-from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp
+from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp, run_gtk_loop
 from .helper import realized, dummy_path
 
 from quodlibet import browsers
@@ -79,6 +79,8 @@ class TBrowserBase(TestCase):
         library.add(SONGS)
         self.Kind.init(library)
         self.b = self.Kind(library)
+        # Ensure we have no signals pending (e.g. leaky tests)
+        run_gtk_loop()
 
     def tearDown(self):
         self.b.destroy()
@@ -86,6 +88,7 @@ class TBrowserBase(TestCase):
         self.library.destroy()
         config.quit()
         destroy_fake_app()
+        run_gtk_loop()
 
 
 class TBrowserMixin:
