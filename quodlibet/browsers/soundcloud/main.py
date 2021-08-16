@@ -441,7 +441,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.update_connect_button()
         self._refresh_online_filters()
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
-                      _("Quod Libet is now connected, <b>%s</b>!") % name)
+                      _("Quod Libet is now connected, %s!") % name)
         msg.run()
 
     @cached_property
