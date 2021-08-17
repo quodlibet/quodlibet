@@ -188,11 +188,27 @@ class TID3FileMixin:
                              sorted([u'lyrics',
                                      u'lyrics with non-empty lang',
                                      u'lyrics with non-empty desc']))
+        # multiple USLT tags are not supported so the behavior seems random
+        self.assertIn(f['~lyricsdescription'], [u'desc', u''])
+        self.assertIn(f['~lyricslanguage'], [u'xyz', u''])
         f['lyrics'] = u'modified lyrics'
+        f['~lyricsdescription'] = u''
         f.write()
 
         f = self.KIND(self.filename)
-        self.failUnlessEqual(f['lyrics'], u'modified lyrics')
+        self.assertEqual(f['lyrics'], u'modified lyrics')
+        self.assertEqual(f['~lyricsdescription'], u'')
+        # languages were invalid regarding ISO_639_2 → *und*efined is written
+        self.assertEqual(f['~lyricslanguage'], u'und')
+        f['lyrics'] = u'modified lyrics\nwith two lines'
+        f['~lyricsdescription'] = u'desc'
+        f['~lyricslanguage'] = u'eng'
+        f.write()
+
+        f = self.KIND(self.filename)
+        self.assertEqual(f['lyrics'], u'modified lyrics\nwith two lines')
+        self.assertEqual(f['~lyricsdescription'], u'desc')
+        self.assertEqual(f['~lyricslanguage'], u'eng')
         del f['lyrics']
         f.write()
 
