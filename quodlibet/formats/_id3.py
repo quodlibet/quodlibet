@@ -380,7 +380,7 @@ class ID3File(AudioFile):
                 self["~lyricslanguage"] = "und" # undefined
             # lyrics are single string, not array
             tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
-                                     desc=self.get("~lyricsdescription", "")
+                                     desc=self.get("~lyricsdescription", ""),
                                      lang=self["~lyricslanguage"]))
 
         # Delete old foobar replaygain ..
