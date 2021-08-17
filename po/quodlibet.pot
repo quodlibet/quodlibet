@@ -894,7 +894,7 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/soundcloud/main.py:444
 #, python-format
-msgid "Quod Libet is now connected, <b>%s</b>!"
+msgid "Quod Libet is now connected, %s!"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/soundcloud/main.py:456
