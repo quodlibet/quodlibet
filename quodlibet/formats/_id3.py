@@ -378,11 +378,9 @@ class ID3File(AudioFile):
                     # language has to be a 3 byte ISO 639-2 code
                     self["~lyricslanguage"] in ISO_639_2):
                 self["~lyricslanguage"] = "und" # undefined
-            if not "~lyricsdescription" in self:
-                self["~lyricsdescription"] = ""
             # lyrics are single string, not array
             tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
-                                     desc=self["~lyricsdescription"],
+                                     desc=self.get("~lyricsdescription", "")
                                      lang=self["~lyricslanguage"]))
 
         # Delete old foobar replaygain ..
