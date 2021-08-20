@@ -19,7 +19,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet import get_user_dir
-from quodlibet import ngettext as ngt
+from quodlibet import ngettext
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet.pattern import FileFromPattern
@@ -760,14 +760,16 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if self.c_songs_copy > 0:
             counter = self.c_songs_copy
             preview_progress.append(
-                _('attempt to write {count} {file_str}')
-                .format(count=counter, file_str=ngt('file', 'files', counter)))
+                ngettext('attempt to write {count} file',
+                         'attempt to write {count} files',
+                         counter).format(count=counter))
 
         if self.c_song_dupes > 0:
             counter = self.c_song_dupes
             preview_progress.append(
-                _('skip {count} duplicate {file_str}')
-                .format(count=counter, file_str=ngt('file', 'files', counter)))
+                ngettext('skip {count} duplicate file',
+                         'skip {count} duplicate files',
+                         counter).format(count=counter))
             for child in self.status_duplicates.get_children():
                 child.set_visible(True)
             self.status_duplicates.set_visible(True)
@@ -775,8 +777,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if self.c_songs_delete > 0:
             counter = self.c_songs_delete
             preview_progress.append(
-                _('delete {count} {file_str}')
-                .format(count=counter, file_str=ngt('file', 'files', counter)))
+                ngettext('delete {count} file',
+                         'delete {count} files',
+                         counter).format(count=counter))
             for child in self.status_deletions.get_children():
                 child.set_visible(True)
             self.status_deletions.set_visible(True)
@@ -1108,43 +1111,46 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
 
             counter = self.c_files_copy
             text.append(
-                _('written {count}/{total} {file_str}')
-                .format(count=counter, total=self.c_songs_copy,
-                        file_str=ngt('file', 'files', counter)))
+                ngettext('written {count}/{total} file',
+                         'written {count}/{total} files',
+                         counter).format(count=counter, total=self.c_songs_copy))
 
             if self.c_files_skip > 0:
                 counter = self.c_files_skip
                 text.append(
-                    _('(skipped {count} existing {file_str})').format(
-                        count=counter, file_str=ngt('file', 'files', counter)))
+                    ngettext('(skipped {count} existing file)',
+                             '(skipped {count} existing files)',
+                             counter).format(count=counter))
 
             sync_summary.append(self.summary_sep.join(text))
 
         if self.c_files_dupes > 0:
             counter = self.c_files_dupes
             sync_summary.append(
-                _('skipped {count}/{total} duplicate {file_str}')
-                .format(count=counter, total=self.c_song_dupes,
-                        file_str=ngt('file', 'files', counter)))
+                ngettext('skipped {count}/{total} duplicate file',
+                         'skipped {count}/{total} duplicate files',
+                         counter).format(count=counter, total=self.c_song_dupes))
 
         if self.c_files_delete > 0:
             counter = self.c_files_delete
             sync_summary.append(
-                _('deleted {count}/{total} {file_str}')
-                .format(count=counter, total=self.c_songs_delete,
-                        file_str=ngt('file', 'files', counter)))
+                ngettext('deleted {count}/{total} file',
+                         'deleted {count}/{total} files',
+                         counter).format(count=counter, total=self.c_songs_delete))
 
         if self.c_files_failed > 0:
             counter = self.c_files_failed
             sync_summary.append(
-                _('failed to sync {count} {file_str}')
-                .format(count=counter, file_str=ngt('file', 'files', counter)))
+                ngettext('failed to sync {count} file',
+                         'failed to sync {count} files',
+                         counter).format(count=counter))
 
         if self.c_files_skip_previous > 0:
             counter = self.c_files_skip_previous
             sync_summary.append(
-                _('skipped {count} {file_str} synchronized previously')
-                .format(count=counter, file_str=ngt('file', 'files', counter)))
+                ngettext('skipped {count} file synchronized previously',
+                         'skipped {count} files synchronized previously',
+                         counter).format(count=counter))
 
         sync_summary_text = self.summary_sep_list.join(sync_summary)
         sync_summary_text = sync_summary_prefix + sync_summary_text
