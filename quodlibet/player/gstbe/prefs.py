@@ -74,11 +74,11 @@ class GstPlayerPreferences(Gtk.VBox):
         jack_button = ConfigCheckButton(
             _('Use JACK for playback if available'),
             "player", "gst_use_jack", populate=True,
-            tooltip="Uses `jackaudiosink` for playbin sink if it can be detected")
+            tooltip=_("Uses `jackaudiosink` for playbin sink if it can be detected"))
         jack_connect = ConfigCheckButton(
             _('Auto-connect to JACK output devices'),
             "player", "gst_jack_auto_connect",
-            populate=True, tooltip="Tells `jackaudiosink` to auto-connect")
+            populate=True, tooltip=_("Tells `jackaudiosink` to auto-connect"))
 
         def _jack_toggled(widget: ConfigCheckButton) -> None:
             jack_connect.set_sensitive(widget.get_active())

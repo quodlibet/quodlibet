@@ -34,7 +34,6 @@ from quodlibet.query import Query
 from quodlibet.util import print_d, print_e, print_exc
 from quodlibet.util.enum import enum
 from quodlibet.util.path import strip_win32_incompat_from_path
-from quodlibet.util.string.titlecase import human_title
 
 PLUGIN_CONFIG_SECTION = 'synchronize_to_device'
 
@@ -85,7 +84,7 @@ class Entry:
 class SyncToDevice(EventPlugin, PluginConfigMixin):
     PLUGIN_ICON = Icons.NETWORK_TRANSMIT
     PLUGIN_ID = PLUGIN_CONFIG_SECTION
-    PLUGIN_NAME = human_title(PLUGIN_CONFIG_SECTION.replace('_', ' '))
+    PLUGIN_NAME = _('Synchronize to Device')
     PLUGIN_DESC = _('Synchronizes all songs from the selected saved searches '
                     'with the specified folder.')
 
