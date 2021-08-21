@@ -38,7 +38,7 @@ class OrderShuffle(Reorder, OrderRemembered):
 class OrderWeighted(Reorder, OrderRemembered):
     name = "weighted"
     display_name = _("Prefer higher rated")
-    accelerated_name = _("Prefer higher rated")
+    accelerated_name = _("Prefer _higher rated")
 
     def next(self, playlist, iter):
         super().next(playlist, iter)
