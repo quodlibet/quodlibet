@@ -11,9 +11,14 @@ from typing import Optional, Any
 from gi.repository import Gtk
 
 from quodlibet import _
+from quodlibet import util
 from quodlibet.formats import AudioFile
 from quodlibet.plugins import PluginHandler, PluginManager
 from quodlibet.qltk import Icons, Align, Frame
+
+
+def markup_for_syntax(text: str) -> str:
+    return f"<b><tt>{util.escape(text)}</tt></b>"
 
 
 class QueryPlugin:
@@ -61,7 +66,7 @@ class QueryPlugin:
     def PluginPreferences(cls, window):
         if not cls.usage:
             return Gtk.VBox()
-        label = Gtk.Label(label=_(cls.usage), use_markup=True)
+        label = Gtk.Label(label=cls.usage, use_markup=True)
         return Frame(_("Usage"), child=Align(label, border=9,
                                              halign=Gtk.Align.START))
 
