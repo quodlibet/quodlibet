@@ -147,10 +147,10 @@ class ScanBox(Gtk.HBox):
             return
         new_dir = results[0]
         desc = (_("This will move QL metadata:\n\n"
-                  "{old!r} -> {new!r}\n\n"
+                  "{old!r} → {new!r}\n\n"
                   "The audio files themselves are not moved by this.\n"
                   "Nonetheless, a backup is recommended "
-                  "(including the Quodlibet 'songs' file)")
+                  "(including the Quod Libet 'songs' file).")
                 .format(old=base_dir, new=new_dir))
         title = _("Move scan root {dir!r}?").format(dir=base_dir)
         value = ConfirmationPrompt(self, title=title, description=desc,
