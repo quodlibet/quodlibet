@@ -306,6 +306,8 @@ class PluginPreferencesContainer(Gtk.VBox):
 
         self.desc = desc = Gtk.Label()
         desc.set_line_wrap(True)
+        # Ensure a reasonable minimum height request for long descriptions
+        desc.set_width_chars(30)
         desc.set_alignment(0, 0.5)
         desc.set_selectable(True)
         self.pack_start(desc, False, True, 0)
