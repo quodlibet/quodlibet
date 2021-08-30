@@ -66,9 +66,13 @@ class QueryPlugin:
     def PluginPreferences(cls, window):
         if not cls.usage:
             return Gtk.VBox()
-        label = Gtk.Label(label=cls.usage, use_markup=True, selectable=True)
+        label = Gtk.Label(label=cls.usage, use_markup=True,
+                          xalign=0.0, yalign=0.5,
+                          wrap=True, width_chars=30,
+                          selectable=True)
         return Frame(_("Usage"), child=Align(label, border=9,
-                                             halign=Gtk.Align.START))
+                                             halign=Gtk.Align.START,
+                                             valign=Gtk.Align.START))
 
 
 class QueryPluginError(Exception):
