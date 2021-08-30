@@ -21,6 +21,8 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
                     "Select this play order in the main window, "
                     "then double-clicking any song will enqueue it "
                     "instead of playing.")
+    display_name = _("Queue only")
+    accelerated_name = _("_Queue only")
 
     def next(self, playlist, iter):
         return None

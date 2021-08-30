@@ -19,6 +19,8 @@ class FollowOrder(ShufflePlugin, OrderInOrder, OrderRemembered):
     PLUGIN_ICON = Icons.GO_JUMP
     PLUGIN_DESC = _("Adds a play order mode that follows your selection, "
                     "or the next song in the list once exhausted.")
+    display_name = _("Follow cursor")
+    accelerated_name = _("_Follow cursor")
 
     __last_path = None
 

@@ -29,6 +29,9 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
     PLUGIN_DESC = _("Adds a shuffle mode that plays tracks in order, "
                     "but repeating every track a set number of times.")
+    display_name = _("Repeat each track")
+    accelerated_name = _("Repeat _each track")
+
     PLAY_EACH_DEFAULT = 2
 
     START_COUNT = 1
