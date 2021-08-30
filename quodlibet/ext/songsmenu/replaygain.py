@@ -14,7 +14,7 @@ from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
 
-from quodlibet import print_d, ngettext, _
+from quodlibet import print_d, ngettext, C_, _
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
@@ -391,7 +391,8 @@ class RGDialog(Dialog):
             cell.set_property('text', item.title)
             cell.set_sensitive(model[iter_][1])
 
-        column = Gtk.TreeViewColumn(_("Track"))
+        # Translators: Combined track number/title column heading
+        column = Gtk.TreeViewColumn(C_("track/title", "Track"))
         column.set_expand(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         track_render = Gtk.CellRendererText()
