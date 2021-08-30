@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-08-17 18:36+0000\n"
-"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"PO-Revision-Date: 2021-08-30 21:36+0000\n"
+"Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.8.1-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -444,11 +444,11 @@ msgstr "Bitte geben Sie die URL eines Internet-Radiosenders ein:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
-msgstr "Electronic"
+msgstr "Elektronisch"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
-msgstr "HipHop / Rap"
+msgstr "HipHop/Rap"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Oldies"
@@ -480,7 +480,7 @@ msgstr "Türkisch"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "Reggae / Dancehall"
-msgstr "Reggae / Dancehall"
+msgstr "Reggae/Dancehall"
 
 #: quodlibet/browsers/iradio.py:401
 msgid "Latin"
@@ -492,7 +492,7 @@ msgstr "Campusradio"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Talk / News"
-msgstr "Talk / News"
+msgstr "Talk/Nachrichten"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Ambient"
@@ -524,7 +524,7 @@ msgstr "Country"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "News"
-msgstr "News"
+msgstr "Nachrichten"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Schlager"
@@ -2019,7 +2019,7 @@ msgstr "Broker-Hostname"
 
 #: quodlibet/ext/events/mqtt.py:138
 msgid "broker hostname / IP (defaults to localhost)"
-msgstr "Broker-Hostname / IP (Vorgabe ist localhost)"
+msgstr "Broker-Hostname/IP (Vorgabe ist localhost)"
 
 #: quodlibet/ext/events/mqtt.py:140
 msgid "Broker port"
@@ -3682,7 +3682,7 @@ msgstr "Gespeicherten Suchlauf einschließen"
 msgid "💾 Include the results of a saved search as part of another query."
 msgstr ""
 "💾 Die Ergebnisse eines gespeicherten Suchlaufs als Teil einer anderen "
-"Abfrage einschließen.Die Syntax ist »@(saved: Name des Suchlaufs)«."
+"Abfrage einschließen."
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -4113,7 +4113,7 @@ msgstr ""
 "Ein Parameter, dessen Vorkommen im Befehl mit einem benutzerspezifizierten "
 "Wert ersetzt werden. Beispiel: Ist der Feldwert »PARAM«, werden alle "
 "Vorkommen von »{PARAM}« im Befehl mit dem Wert ersetzt, den der Benutzer in "
-"einer Eingabeaufforderung eingibt."
+"einer Eingabeaufforderung eingibt"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -4877,7 +4877,7 @@ msgstr "Datei konnte nicht geladen werden: %r"
 
 #: quodlibet/operon/commands.py:36
 msgid "List tags"
-msgstr "Tags auflisten"
+msgstr "Metadaten auflisten"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
 #: quodlibet/operon/commands.py:463
@@ -4894,7 +4894,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:85
 msgid "Also list programmatic tags"
-msgstr "Auch programmatische Tags anzeigen"
+msgstr "Auch programmatische Felder anzeigen"
 
 #: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
@@ -4924,11 +4924,11 @@ msgstr "Wert"
 
 #: quodlibet/operon/commands.py:75
 msgid "List all common tags"
-msgstr "Alle allgemeinen Tags auflisten"
+msgstr "Alle allgemeinen Metadatenfelder auflisten"
 
 #: quodlibet/operon/commands.py:117
 msgid "Copy tags from one file to another"
-msgstr "Tags von einer Datei in eine andere Datei kopieren"
+msgstr "Metadaten von einer Datei in eine andere Datei kopieren"
 
 #: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
 #: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:325
@@ -4938,7 +4938,7 @@ msgstr "Änderungen anzeigen, aber nicht anwenden"
 
 #: quodlibet/operon/commands.py:124
 msgid "Skip tags that can't be written"
-msgstr "Nicht schreibbare Tags überspringen"
+msgstr "Nicht schreibbare Felder überspringen"
 
 #: quodlibet/operon/commands.py:145
 #, python-brace-format
@@ -4948,7 +4948,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:157
 msgid "Edit tags in a text editor"
-msgstr "Tags in einem Texteditor bearbeiten"
+msgstr "Metadaten in einem Texteditor bearbeiten"
 
 #: quodlibet/operon/commands.py:251
 msgid "Editing aborted"
@@ -4965,7 +4965,7 @@ msgstr "Keine Änderungen erkannt"
 
 #: quodlibet/operon/commands.py:284
 msgid "Set a tag and remove existing values"
-msgstr "Einen Tag setzen und existierende Werte entfernen"
+msgstr "Einen Metadatenfeld setzen und existierende Werte entfernen"
 
 #: quodlibet/operon/commands.py:304
 #, fuzzy, python-format
@@ -4974,7 +4974,7 @@ msgstr "%r kann nicht gesetzt werden"
 
 #: quodlibet/operon/commands.py:320
 msgid "Remove tags"
-msgstr "Tags entfernen"
+msgstr "Metadatenfelder entfernen"
 
 #: quodlibet/operon/commands.py:327 quodlibet/operon/commands.py:388
 msgid "Value is a regular expression"
@@ -4982,7 +4982,7 @@ msgstr "Wert ist ein regulärer Ausdruck"
 
 #: quodlibet/operon/commands.py:329
 msgid "Remove all tags"
-msgstr "Alle Tags entfernen"
+msgstr "Alle Metadatenfelder entfernen"
 
 #: quodlibet/operon/commands.py:333
 msgid "Can't combine '--all' with '--regexp'"
@@ -4995,11 +4995,11 @@ msgstr "»{tagname}« kann nicht aus »{filename}« entfernt werden"
 
 #: quodlibet/operon/commands.py:381
 msgid "Remove a tag value"
-msgstr "Einen Tagwert entfernen"
+msgstr "Einen Feldwert entfernen"
 
 #: quodlibet/operon/commands.py:430
 msgid "Add a tag value"
-msgstr "Einen Tagwert hinzufügen"
+msgstr "Einen Feldwert hinzufügen"
 
 #: quodlibet/operon/commands.py:446 quodlibet/operon/commands.py:678
 #, python-format
@@ -5016,7 +5016,7 @@ msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr ""
-"Bereitgestelltes Bild als Hauptbild einbetten und alle anderen eingebetteten "
+"Das angegebene Bild als Hauptbild einbetten und alle anderen eingebetteten "
 "Bilder entfernen"
 
 #: quodlibet/operon/commands.py:517
@@ -5028,8 +5028,7 @@ msgstr "Die Bilddatei konnte nicht geladen werden: %r"
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
-"Das Editieren von Bildern wird nicht unterstützt in %(file_name)s "
-"(%(file_format)s)"
+"Bearbeiten von Bildern nicht unterstützt in %(file_name)s (%(file_format)s)"
 
 #: quodlibet/operon/commands.py:540
 msgid "Remove all embedded images"
@@ -5044,16 +5043,16 @@ msgstr "Eingebettete Bilder nach %(filepath)s extrahieren"
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
-"Pfad, in den die Bilder gespeichert werden (Vorgabe ist das "
+"Pfad, in den die Bilder gespeichert werden sollen (Vorgabe ist das "
 "Arbeitsverzeichnis)"
 
 #: quodlibet/operon/commands.py:641
 msgid "Rename files based on tags"
-msgstr "Dateien anhand von Tags umbenennen"
+msgstr "Dateien anhand von Metadaten umbenennen"
 
 #: quodlibet/operon/commands.py:656
 msgid "Fill tags based on the file path"
-msgstr "Tags anhand des Dateipfads ausfüllen"
+msgstr "Metadatenfelder anhand des Dateipfads ausfüllen"
 
 #: quodlibet/operon/commands.py:706 quodlibet/qltk/information.py:309
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
@@ -5067,7 +5066,7 @@ msgstr "Titelnummern in allen Dateien einfügen"
 
 #: quodlibet/operon/commands.py:733
 msgid "Print tags based on the given pattern"
-msgstr "Tags basierend auf dem angegebenen Muster ausgeben"
+msgstr "Metadaten basierend auf dem angegebenen Muster ausgeben"
 
 #: quodlibet/operon/commands.py:770
 msgid "Display help information"
@@ -5228,7 +5227,7 @@ msgstr ""
 "Solange werden keine Statistiken gesendet."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
@@ -5236,7 +5235,7 @@ msgid ""
 msgstr ""
 "Zu viele aufeinanderfolgende Einsendungen fehlgeschlagen (%d). Wechsle in "
 "Offline-Modus. Bitte rufen Sie das Plugin-Fenster auf, um ListenBrainz "
-"zurückzusetzen. Solange werden keine Titel gesendet."
+"zurückzusetzen. Solange werden keine Statistiken gesendet."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
 #, fuzzy
@@ -6716,14 +6715,14 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
-msgstr ""
+msgstr "Das neue Verzeichnis wird nach dem Hinzufügen eingelesen"
 
 #: quodlibet/qltk/scanbox.py:67
 msgid ""
 "All songs in the selected directories will also be removed from the library"
 msgstr ""
-"Alle Titel in den ausgewählten Verzeichnissen werden auch aus der Bibliothek "
-"entfernt"
+"Es werden auch alle Titel in den ausgewählten Verzeichnissen aus der "
+"Bibliothek entfernt"
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
@@ -6739,12 +6738,12 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
-msgstr ""
+msgstr "»{dir}« und alle zugehörigen Titel entfernen?"
 
 #: quodlibet/qltk/scanbox.py:115
 #, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "{n} Bibliothekspfade und zugehörige Titel entfernen?"
+msgstr "{n} Bibliothekspfade und alle zugehörigen Titel entfernen?"
 
 #: quodlibet/qltk/scanbox.py:116
 msgid "Remove library path?"
@@ -6766,7 +6765,7 @@ msgstr "Dieses Verzeichnis wählen"
 
 #: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
-msgstr "Tatsächliches/neues Verzeichnis für {dir!r} wählen"
+msgstr "Tatsächliches/neues Verzeichnis für »{dir}« wählen"
 
 #: quodlibet/qltk/scanbox.py:149
 msgid ""
@@ -6779,14 +6778,14 @@ msgid ""
 msgstr ""
 "Dieser Vorgang verschiebt die Quod-Libet-Metadaten:\n"
 "\n"
-"{old!r} → {new!r}\n"
+"»{old}« → »{new}«\n"
 "\n"
 "Die Audiodateien selbst werden dadurch nicht verschoben. Eine Sicherung wird "
 "trotz allem empfohlen (inklusive der Quod-Libet-Datei »songs«)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
-msgstr "Die Einlesewurzel {dir!r} verschieben?"
+msgstr "Die Einlesewurzel »{dir}« verschieben?"
 
 #: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
