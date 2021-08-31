@@ -3405,6 +3405,14 @@ msgid ""
 "list once exhausted."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/follow.py:22
+msgid "Follow cursor"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/follow.py:23
+msgid "_Follow cursor"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
 msgstr ""
@@ -3415,6 +3423,10 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:25
 msgid "Prefer less played"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:26
+msgid "Prefer _less played"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:18
@@ -3429,7 +3441,16 @@ msgid ""
 "will enqueue it instead of playing."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:24
+msgid "Queue only"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:25
+msgid "_Queue only"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:14
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
 msgstr ""
 
@@ -3437,8 +3458,12 @@ msgstr ""
 msgid "Adds a shuffle mode that reverses the play order of songs."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:19
+msgid "Re_verse"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:32
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:94
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:95
 msgid "Shuffle by Grouping"
 msgstr ""
 
@@ -3455,23 +3480,27 @@ msgstr ""
 msgid "Shuffle by grouping"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:95
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:40
+msgid "Shuffle by _grouping"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:145
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:146
 msgid "Grouping tag:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:149
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:150
 msgid "Tag to group songs by"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:151
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:152
 msgid "Filter tag:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:156
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:157
 msgid ""
 "Grouping is applied only if the filter tag is defined.\n"
 "A song with an undefined filter tag will be treated as\n"
@@ -3479,15 +3508,15 @@ msgid ""
 "tag should match or partially match the grouping tag."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:161
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:162
 msgid "Delay:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:167
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:168
 msgid "Time delay in seconds before starting next group"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:183
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:184
 msgid "Reset to defaults"
 msgstr ""
 
@@ -3501,6 +3530,14 @@ msgid ""
 "a rating below (or equal to) a given threshold."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/skip_disliked.py:29
+msgid "Skip disliked tracks"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/skip_disliked.py:30
+msgid "Skip _disliked tracks"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
 msgstr ""
@@ -3511,7 +3548,15 @@ msgid ""
 "set number of times."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:49
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:32
+msgid "Repeat each track"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:33
+msgid "Repeat _each track"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
 msgstr ""
 
@@ -3774,7 +3819,6 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/brainz/widgets.py:131
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:394
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr ""
@@ -4580,53 +4624,59 @@ msgstr ""
 msgid "ReplayGain Analyzer"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:408
+#. Translators: Combined track number/title column heading
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:395
+msgctxt "track/title"
+msgid "Track"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:409
 msgid "Progress"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:423
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:424
 msgid "Gain"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:438
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:439
 msgid "Peak"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:453
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:454
 #, python-format
 msgid "There is <b>%(to-process)s</b> album to update (of %(all)s)"
 msgid_plural "There are <b>%(to-process)s</b> albums to update (of %(all)s)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:569
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:570
 msgid "Replay Gain"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:570
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:571
 msgid ""
 "Analyzes and updates ReplayGain information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:608
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:609
 msgid "always"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:609
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:610
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:611
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:612
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:628
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:629
 msgid "_Process albums:"
 msgstr ""
 
 #. Server settings Frame
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:640
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:641
 msgid "Existing Tags"
 msgstr ""
 
@@ -5014,23 +5064,35 @@ msgid "_Random"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:40
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:41
 msgid "Prefer higher rated"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:41
+msgid "Prefer _higher rated"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:43
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:44
 msgid "Repeat this track"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:44
+msgid "Repeat _this track"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:57
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:58
 msgid "Repeat all"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:58
+msgid "Repeat _all"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:73
+msgid "One song"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:74
-msgid "One Song"
+msgid "One _song"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/player/gstbe/player.py:100
