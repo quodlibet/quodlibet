@@ -1,6 +1,6 @@
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                  2012,2014,2016  Nick Boultbee
+#                       2012-2021  Nick Boultbee
 #                            2013  Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -215,7 +215,6 @@ class RGSong:
 
 
 class ReplayGainPipeline(GObject.Object):
-
     __gsignals__ = {
         # done(self, album)
         'done': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -568,8 +567,11 @@ class RGDialog(Dialog):
 class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = _('Replay Gain')
-    PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
-                    'using GStreamer. Results are grouped by album.')
+    PLUGIN_DESC_MARKUP = (
+        _('Analyzes and updates %(rg_link)s information, '
+          'using GStreamer. Results are grouped by album.')
+        % {"rg_link":
+           "<a href=\"https://en.wikipedia.org/wiki/\">ReplayGain</a>"})
     PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
 
@@ -599,7 +601,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         rows = []
 
         def process_option_changed(combo):
-            #xcode = combo.get_child().get_text()
+            # xcode = combo.get_child().get_text()
             model = combo.get_model()
             lbl, value = model[combo.get_active()]
             cls.config_set("process_if", value)

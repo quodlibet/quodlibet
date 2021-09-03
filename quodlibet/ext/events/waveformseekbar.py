@@ -607,7 +607,7 @@ class WaveformSeekBarPlugin(EventPlugin):
     PLUGIN_ICON = Icons.GO_JUMP
     PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
-        "A seekbar in the shape of the waveform of the current song.")
+        "∿ A seekbar in the shape of the waveform of the current song.")
 
     def __init__(self):
         self._bar = None
