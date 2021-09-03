@@ -331,9 +331,9 @@ class PluginPreferencesContainer(Gtk.VBox):
             text = (f"<big><b>{name}</b> "
                     f"<span alpha='40%'> – {category}</span>"
                     f"</big>")
-            if plugin.description:
-                text += "<span font='4'>\n\n</span>"
-                text += util.escape(plugin.description)
+            markup = plugin.description_markup
+            if markup:
+                text += f"<span font='4'>\n\n</span>{markup}"
             label.set_markup(text)
             label.connect("activate-link", show_uri)
 

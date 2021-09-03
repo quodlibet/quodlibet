@@ -1,4 +1,4 @@
-# Copyright 2014-2017 Nick Boultbee
+# Copyright 2014-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,13 +20,13 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
     PLUGIN_NAME = _(u"Export to Squeezebox")
-    PLUGIN_DESC = \
+    PLUGIN_DESC_MARKUP = (
         _("Dynamically exports a playlist to Logitech Squeezebox "
-          "playlist, provided both share a directory structure. "
-          "Shares configuration with "
-          "<a href=\"quodlibet:///prefs/plugins/Squeezebox Output\">"
-          "Squeezebox Sync plugin"
-          "</a>.")
+          "playlist, provided both share a directory structure.") + "\n" +
+        _("Shares configuration with %(plugin)s")
+        % {"plugin": ("<a href=\"quodlibet:///prefs/plugins/Squeezebox Output\">"
+                      "Squeezebox Sync plugin</a>.")}
+    )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     ELLIPSIZE_NAME = True
     _PERSIST_FUDGE = 100
@@ -75,9 +75,10 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     @staticmethod
     def __get_playlist_name(name="Quod Libet playlist"):
         dialog = GetStringDialog(None,
-            _("Export playlist to Squeezebox"),
-            _("Playlist name (will overwrite existing)"),
-            button_label=_("_Save"), button_icon=Icons.DOCUMENT_SAVE)
+                                 _("Export playlist to Squeezebox"),
+                                 _("Playlist name (will overwrite existing)"),
+                                 button_label=_("_Save"),
+                                 button_icon=Icons.DOCUMENT_SAVE)
         name = dialog.run(text=name)
         return name
 

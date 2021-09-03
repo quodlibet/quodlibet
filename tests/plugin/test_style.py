@@ -1,4 +1,5 @@
 # Copyright 2015 Anton Shestakov
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,21 +52,31 @@ class TPluginStyle(PluginTestCase):
         self.conclude(fails)
 
     def test_plugin_desc(self):
-        REASON_ABSENT = "plugin should have PLUGIN_DESC"
-        REASON_DOT = "PLUGIN_DESC should be a full sentence and end with a '.'"
+        REASON_ABSENT = "plugin should have PLUGIN_DESC or PLUGIN_DESC_MARKUP"
+        REASON_DOT = ("PLUGIN_DESC / PLUGIN_DESC_MARKUP "
+                      "should be a full sentence and end with a '.'")
 
         skip_plugins = L('pickle_plugin')
         fails = []
 
         for pid, plugin in self.plugins.items():
+            cls = plugin.cls
             if pid in skip_plugins:
                 continue
-            if not hasattr(plugin.cls, 'PLUGIN_DESC'):
+            got = 0
+            if hasattr(cls, 'PLUGIN_DESC'):
+                got += 1
+                desc = cls.PLUGIN_DESC
+                if not desc.endswith('.'):
+                    fails.append((plugin, desc, REASON_DOT))
+                    continue
+            if hasattr(cls, "PLUGIN_DESC_MARKUP"):
+                got += 1
+                desc = cls.PLUGIN_DESC_MARKUP
+                if not desc.endswith('.'):
+                    fails.append((plugin, desc, REASON_DOT))
+                    continue
+            if not got:
                 fails.append((plugin, None, REASON_ABSENT))
-                continue
-            desc = plugin.cls.PLUGIN_DESC
-            if not desc.endswith('.'):
-                fails.append((plugin, desc, REASON_DOT))
-
         skip_plugins.check_unused()
         self.conclude(fails)
