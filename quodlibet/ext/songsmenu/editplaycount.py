@@ -17,15 +17,17 @@ from quodlibet.qltk import Icons
 class EditPlaycount(SongsMenuPlugin):
     PLUGIN_ID = "editplaycount"
     PLUGIN_NAME = _("Edit Playcount")
-    PLUGIN_DESC = _("Edit a song's ~#playcount and ~#skipcount."
-                    "\n\n"
-                    "When multiple songs are selected, counts will be "
-                    "incremented, rather than set."
-                    "\n\n"
-                    "When setting a song's ~#playcount to 0, the "
-                    "~#lastplayed and ~#laststarted entries will be cleared. "
-                    "However, when setting a 0-play song to a positive play "
-                    "count, no play times will be created.")
+    PLUGIN_DESC_MARKUP = _(
+        "Edit a song's <tt>~#playcount</tt> and <tt>~#skipcount.</tt>"
+        "\n\n"
+        "When multiple songs are selected, counts will be "
+        "incremented, rather than set."
+        "\n\n"
+        "When setting a song's <tt>~#playcount</tt> to 0, "
+        "the <tt>~#lastplayed</tt> and <tt>~#laststarted</tt> "
+        "entries will be cleared. "
+        "However, when setting a 0-play song to a positive play "
+        "count, no play times will be created.")
     PLUGIN_ICON = Icons.EDIT
     REQUIRES_ACTION = True
 

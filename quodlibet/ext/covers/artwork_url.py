@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,8 +17,9 @@ from quodlibet.util.path import escape_filename
 class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_ID = "artwork-url-cover"
     PLUGIN_NAME = _("Artwork URL Cover Source")
-    PLUGIN_DESC = _("Downloads covers linked to by the artwork_url tag. "
-                    "This works with the Soundcloud browser.")
+    PLUGIN_DESC_MARKUP = _(
+        "Downloads covers linked to by the <tt>artwork_url</tt> tag. "
+        "This works with the Soundcloud browser.")
 
     @classmethod
     def group_by(cls, song):

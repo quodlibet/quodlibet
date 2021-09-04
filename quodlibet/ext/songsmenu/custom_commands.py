@@ -67,7 +67,7 @@ class Command(JSONObject):
                             "command at one time (like xargs)")),
 
         "reverse": Field(_("reverse"),
-                          _("If set, the argument list will be reversed.")),
+                          _("If set, the argument list will be reversed")),
     }
 
     def __init__(self, name=None, command=None, pattern="<~filename>",

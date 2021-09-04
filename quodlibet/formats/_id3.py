@@ -1,5 +1,5 @@
 # Copyright 2004-2020 Joe Wreschnig, Michael Urman, Niklas Janlert,
-#                     Steven Robertson, Nick Boultbee
+#                     Steven Robertson, Nick Boultbee, h88e22dgpeps56sg
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -172,6 +172,8 @@ class ID3File(AudioFile):
             elif id3id == "USLT":
                 # lyrics are single string, not list
                 text = frame.text
+                self["~lyricsdescription"] = frame.desc
+                self["~lyricslanguage"] = frame.lang
             elif id3id.startswith("W"):
                 text = frame.url
                 frame.encoding = 0
@@ -372,9 +374,14 @@ class ID3File(AudioFile):
         tag.delall("USLT")
         if "lyrics" in self:
             enc = encoding_for(self["lyrics"])
+            if not ("~lyricslanguage" in self and
+                    # language has to be a 3 byte ISO 639-2 code
+                    self["~lyricslanguage"] in ISO_639_2):
+                self["~lyricslanguage"] = "und" # undefined
             # lyrics are single string, not array
             tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
-                                     desc=u"", lang="\x00\x00\x00"))
+                                     desc=self.get("~lyricsdescription", ""),
+                                     lang=self["~lyricslanguage"]))
 
         # Delete old foobar replaygain ..
         for frame in tag.getall("TXXX"):

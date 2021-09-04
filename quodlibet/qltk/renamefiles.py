@@ -60,7 +60,7 @@ class SpacesToUnderscores(FilterCheckButton):
 
 class ReplaceColons(FilterCheckButton):
     _label = _("Replace [semi]colon delimiting with hyphens")
-    _tooltip = _('e.g. "iv: allegro.flac -> "iv - allegro.flac"')
+    _tooltip = _('e.g. "iv: allegro.flac" → "iv - allegro.flac"')
     _section = "rename"
     _key = "colons"
     _order = 1.05

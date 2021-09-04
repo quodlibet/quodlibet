@@ -37,6 +37,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
                     "before shuffling to the next piece.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Shuffle by grouping")
+    accelerated_name = _("Shuffle by _grouping")
     priority = Reorder.priority
 
     def next(self, playlist, current_song):

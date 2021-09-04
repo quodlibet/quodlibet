@@ -69,7 +69,7 @@ msgstr ""
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/paned/prefs.py:203
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/playlists/main.py:670
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/exfalsowindow.py:108
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:356
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:358
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr ""
@@ -173,7 +173,7 @@ msgstr ""
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/data_editors.py:321
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/exfalsowindow.py:286
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:99
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:439
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:441
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:772
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/textedit.py:163
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/update.py:149
@@ -235,7 +235,7 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/audiofeeds.py:437
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/filesel.py:260
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:422
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:424
 msgid "_Refresh"
 msgstr ""
 
@@ -358,7 +358,7 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/collection/prefs.py:194
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/paned/prefs.py:247
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:45
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:47
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/exact_rating.py:38
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/player/gstbe/prefs.py:42
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/prefs.py:132
@@ -370,18 +370,18 @@ msgstr ""
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/paned/prefs.py:251
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/playlists/menu.py:87
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/errorreport/ui.py:103
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:392
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:391
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_folder.py:38
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_sonos.py:95
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/remove_duplicates.py:59
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/_shared/squeezebox/util.py:19
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/brainz/widgets.py:354
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:44
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:46
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/lastfmsync.py:215
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/playlist.py:50
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:354
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:353
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/tapbpm.py:186
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/chooser.py:188
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/chooser.py:209
@@ -894,7 +894,7 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/soundcloud/main.py:444
 #, python-format
-msgid "Quod Libet is now connected, <b>%s</b>!"
+msgid "Quod Libet is now connected, %s!"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/browsers/soundcloud/main.py:456
@@ -1241,10 +1241,10 @@ msgstr ""
 msgid "Artwork URL Cover Source"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/covers/artwork_url.py:20
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/covers/artwork_url.py:21
 msgid ""
-"Downloads covers linked to by the artwork_url tag. This works with the "
-"Soundcloud browser."
+"Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
+"the Soundcloud browser."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/covers/discogs.py:28
@@ -1303,9 +1303,10 @@ msgstr ""
 msgid "Regex Substitution"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/editing/resub.py:19
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/editing/resub.py:20
 msgid ""
-"Allows arbitrary regex substitutions (s///) when tagging or renaming files."
+"Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
+"renaming files."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/editing/titlecase.py:20
@@ -1430,7 +1431,7 @@ msgstr ""
 
 #. Start preview button
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/animosd/prefs.py:292
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:203
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:202
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/trayicon/prefs.py:86
 msgid "Preview"
 msgstr ""
@@ -1769,7 +1770,7 @@ msgstr ""
 
 #. Save button
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/equalizer.py:336
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:393
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:392
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/albumart.py:326
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -1778,7 +1779,7 @@ msgstr ""
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/html.py:76
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/lastfmsync.py:216
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/playlist.py:51
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:355
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:354
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/tapbpm.py:187
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/_editutils.py:42
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/lyrics.py:34
@@ -1908,7 +1909,7 @@ msgid "JEP-118"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/jep118.py:31
-msgid "Outputs a Jabber User Tunes file to ~/.quodlibet/jabber."
+msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/language.py:21
@@ -2000,11 +2001,11 @@ msgid "Publishes status messages to an MQTT topic."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:137
-msgid "Broker hostname"
+msgid "Broker hostname / IP"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:138
-msgid "broker hostname / IP (defaults to localhost)"
+msgid "Defaults to localhost"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:140
@@ -2012,23 +2013,15 @@ msgid "Broker port"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:140
-msgid "broker port (defaults to 1883)"
+msgid "Defaults to 1883"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:142
 msgid "Broker username"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:142
-msgid "broker username"
-msgstr ""
-
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:144
 msgid "Broker password"
-msgstr ""
-
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:144
-msgid "broker password"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:146
@@ -2067,17 +2060,17 @@ msgstr ""
 msgid "Status Text"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:205
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:206
 #, python-format
 msgid "Connected to broker at %(host)s:%(port)d"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:209
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:210
 #, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:212
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/mqtt.py:213
 msgid "Connection error"
 msgstr ""
 
@@ -2086,7 +2079,7 @@ msgid "MusicBrainz Sync"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/musicbrainzsync.py:37
-msgid "Syncs the rating of a song with music brainz."
+msgid "Syncs the rating of a song with MusicBrainz."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/musicbrainzsync.py:84
@@ -2409,9 +2402,10 @@ msgstr ""
 msgid ""
 "Store Seekpoints A and/or B for tracks. Skip to time A and stop after time B "
 "when track is played.\n"
-"Note that changing the names of the points below does not update the actual "
-"bookmark names, it only changes which bookmark names the plugin looks for "
-"when deciding whether to seek."
+"\n"
+"ℹ Note that changing the names of the points below does not update the "
+"actual bookmark names, it only changes which bookmark names the plugin looks "
+"for when deciding whether to seek."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/seekpoints.py:108
@@ -2438,19 +2432,24 @@ msgstr ""
 msgid "Squeezebox Sync"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:29
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:30
 msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:56
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:89
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:32
+#, python-format
+msgid "Shares configuration with %(plugin)s."
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:62
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:57
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:90
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/squeezebox_sync.py:63
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
 msgstr ""
@@ -2529,187 +2528,175 @@ msgid ""
 "folder."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:107
-msgid "<artist>"
-msgstr ""
-
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:107
-msgid "<album>"
-msgstr ""
-
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:107
-msgid "<title>"
-msgstr ""
-
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:143
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:142
 msgid "Synchronize the following saved searches:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:149
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:148
 msgid "The absolute path to your export location"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:166
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:165
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:170
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:169
 msgid ""
 "For devices mounted with MTP, export to a local destination folder, then "
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:181
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:180
 msgid "Destination path:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:187
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:186
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/renamefiles.py:167
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:187
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:186
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/renamefiles.py:168
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:192
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:191
 msgid "The structure of the exported filenames, based on their tags"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:198
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:197
 msgid "Export pattern:"
 msgstr ""
 
 #. Stop preview button
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:210
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:209
 msgid "Stop preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:229
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:228
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:236
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:235
 msgid "Source File"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:245
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:244
 msgid "Export Path"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:255
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:254
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:259
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:258
 msgid "Existing files in the destination path will be deleted!"
 msgstr ""
 
 #. Start sync button
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:274
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:273
 msgid "Start synchronization"
 msgstr ""
 
 #. Stop sync button
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:282
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:281
 msgid "Stop synchronization"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:305
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:304
 msgid "No saved searches yet, create some and come back!"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:387
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:386
 msgid "Choose destination path"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:539
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:538
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:653
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:652
 msgid "Starting synchronization preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:658
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:657
 msgid "Synchronization preview in progress."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:674
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:673
 msgid "Finished synchronization preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:683
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:682
 msgid "Stopping synchronization preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:685
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:684
 msgid "Synchronization preview was stopped."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:688
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:687
 msgid "Synchronization preview has finished."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:718
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:717
 msgid "Stopped synchronization preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:722
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:721
 msgid "A different plugin was selected - stop preview"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:759
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:758
 msgid "Synchronization will:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:765
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:764
 #, python-brace-format
 msgid "attempt to write {count} {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:771
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:770
 #, python-brace-format
 msgid "skip {count} duplicate {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:780
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:779
 #, python-brace-format
 msgid "delete {count} {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:829
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:828
 msgid "No destination path provided"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:830
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:829
 msgid "Please specify the directory where songs should be exported."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:837
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:836
 msgid "No export pattern provided"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:838
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:837
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:848
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:847
 msgid "Export path is not absolute"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:849
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:848
 msgid ""
 "The pattern\n"
 "\n"
@@ -2719,31 +2706,31 @@ msgid ""
 "destination path by making sure it starts with / or ~/."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:871
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:870
 msgid "No saved searches selected"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:872
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:871
 msgid "Please select at least one saved search."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:881
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:880
 msgid "No songs in the selected saved searches"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:882
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:881
 msgid "All selected saved searches are empty."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:885
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:884
 msgid "Found {} songs to synchronize"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:904
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:903
 msgid "Mismatch between destination path and export pattern"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:906
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:905
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2752,86 +2739,86 @@ msgid ""
 "{}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:944
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:943
 msgid "Unable to sync"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:945
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:944
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:949
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:948
 msgid "Starting song synchronization"
 msgstr ""
 
 #. Summary labels
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:953
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:952
 msgid "Synchronization in progress."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:965
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:964
 msgid "Finished song synchronization"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:974
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:973
 msgid "Stopping song synchronization"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:975
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:974
 msgid "Synchronization was stopped."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:977
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:976
 msgid "Synchronization has finished."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1010
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1009
 msgid "Stopped song synchronization"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1014
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1013
 msgid "A different plugin was selected - stop synchronization"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1017
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1016
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1086
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1085
 msgid "Removing \"{}\""
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1105
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1104
 msgid "Synchronization has:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1113
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1112
 #, python-brace-format
 msgid "written {count}/{total} {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1120
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1119
 #, python-brace-format
 msgid "(skipped {count} existing {file_str})"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1128
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1127
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1135
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1134
 #, python-brace-format
 msgid "deleted {count}/{total} {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1142
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1141
 #, python-brace-format
 msgid "failed to sync {count} {file_str}"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1148
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/synchronize_to_device.py:1147
 #, python-brace-format
 msgid "skipped {count} {file_str} synchronized previously"
 msgstr ""
@@ -2929,8 +2916,9 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/thumbrating.py:92
 msgid ""
-"Adds a thumb-up/thumb-down scoring system which is converted to a rating "
-"value. Useful for keeping running vote totals and sorting by '~#score'."
+"Adds a thumb-up / thumb-down scoring system which is converted to a rating "
+"value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
+"tt></b>."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/toggle_menu.py:18
@@ -3097,7 +3085,7 @@ msgid "Waveform Seek Bar"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/waveformseekbar.py:610
-msgid "A seekbar in the shape of the waveform of the current song."
+msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/events/waveformseekbar.py:679
@@ -3331,7 +3319,9 @@ msgid "Default filename pattern:"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_sonos.py:96
-msgid "OK"
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/_shared/squeezebox/util.py:20
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/getstring.py:21
+msgid "_OK"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_sonos.py:102
@@ -3369,8 +3359,12 @@ msgstr ""
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:24
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-"both share a directory structure. Shares configuration with <a href="
-"\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</a>."
+"both share a directory structure."
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:26
+#, python-format
+msgid "Shares configuration with %(plugin)s"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:78
@@ -3381,7 +3375,7 @@ msgstr ""
 msgid "Playlist name (will overwrite existing)"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:96
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playlist/export_to_squeezebox.py:97
 msgid "Export to Squeezebox playlist"
 msgstr ""
 
@@ -3423,6 +3417,14 @@ msgid ""
 "list once exhausted."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/follow.py:22
+msgid "Follow cursor"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/follow.py:23
+msgid "_Follow cursor"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
 msgstr ""
@@ -3433,6 +3435,10 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:25
 msgid "Prefer less played"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/playcounteq.py:26
+msgid "Prefer _less played"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:18
@@ -3447,7 +3453,16 @@ msgid ""
 "will enqueue it instead of playing."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:24
+msgid "Queue only"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/queue.py:25
+msgid "_Queue only"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:14
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
 msgstr ""
 
@@ -3455,8 +3470,12 @@ msgstr ""
 msgid "Adds a shuffle mode that reverses the play order of songs."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/reverse.py:19
+msgid "Re_verse"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:32
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:94
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:95
 msgid "Shuffle by Grouping"
 msgstr ""
 
@@ -3473,23 +3492,27 @@ msgstr ""
 msgid "Shuffle by grouping"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:95
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:40
+msgid "Shuffle by _grouping"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:145
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:146
 msgid "Grouping tag:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:149
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:150
 msgid "Tag to group songs by"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:151
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:152
 msgid "Filter tag:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:156
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:157
 msgid ""
 "Grouping is applied only if the filter tag is defined.\n"
 "A song with an undefined filter tag will be treated as\n"
@@ -3497,15 +3520,15 @@ msgid ""
 "tag should match or partially match the grouping tag."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:161
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:162
 msgid "Delay:"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:167
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:168
 msgid "Time delay in seconds before starting next group"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:183
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/shufflebygrouping.py:184
 msgid "Reset to defaults"
 msgstr ""
 
@@ -3519,6 +3542,14 @@ msgid ""
 "a rating below (or equal to) a given threshold."
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/skip_disliked.py:29
+msgid "Skip disliked tracks"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/skip_disliked.py:30
+msgid "Skip _disliked tracks"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
 msgstr ""
@@ -3529,7 +3560,15 @@ msgid ""
 "set number of times."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:49
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:32
+msgid "Repeat each track"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:33
+msgid "Repeat _each track"
+msgstr ""
+
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
 msgstr ""
 
@@ -3633,11 +3672,6 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
-msgstr ""
-
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/_shared/squeezebox/util.py:20
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/getstring.py:21
-msgid "_OK"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/_shared/squeezebox/util.py:26
@@ -3797,7 +3831,6 @@ msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/brainz/widgets.py:131
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:394
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr ""
@@ -4025,7 +4058,7 @@ msgid "reverse"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/custom_commands.py:70
-msgid "If set, the argument list will be reversed."
+msgid "If set, the argument list will be reversed"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/custom_commands.py:95
@@ -4118,27 +4151,27 @@ msgstr ""
 
 #. Create a dialog.
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:19
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:41
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:43
 msgid "Edit Playcount"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:20
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:21
 msgid ""
-"Edit a song's ~#playcount and ~#skipcount.\n"
+"Edit a song's <tt>~#playcount</tt> and <tt>~#skipcount.</tt>\n"
 "\n"
 "When multiple songs are selected, counts will be incremented, rather than "
 "set.\n"
 "\n"
-"When setting a song's ~#playcount to 0, the ~#lastplayed and ~#laststarted "
-"entries will be cleared. However, when setting a 0-play song to a positive "
-"play count, no play times will be created."
+"When setting a song's <tt>~#playcount</tt> to 0, the <tt>~#lastplayed</tt> "
+"and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
+"0-play song to a positive play count, no play times will be created."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:68
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:69
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/editplaycount.py:71
 msgid "Skip Count"
 msgstr ""
 
@@ -4599,8 +4632,14 @@ msgstr ""
 msgid "Rescan songs"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:352
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
+msgstr ""
+
+#. Translators: Combined track number/title column heading
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:394
+msgctxt "track/title"
+msgid "Track"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:408
@@ -4626,30 +4665,31 @@ msgstr[1] ""
 msgid "Replay Gain"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:570
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:571
+#, python-format
 msgid ""
-"Analyzes and updates ReplayGain information, using GStreamer. Results are "
+"Analyzes and updates %(rg_link)s information, using GStreamer. Results are "
 "grouped by album."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:608
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:611
 msgid "always"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:609
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:612
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:611
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:614
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:628
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:631
 msgid "_Process albums:"
 msgstr ""
 
 #. Server settings Frame
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:640
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/replaygain.py:643
 msgid "Existing Tags"
 msgstr ""
 
@@ -4696,30 +4736,30 @@ msgid "Tap BPM"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/tapbpm.py:178
-msgid "Tap BPM for the selected song."
+msgid "🥁 Tap BPM for the selected song."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:36
 msgid "Website Search"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:37
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:38
 #, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
-"Supports patterns e.g. %(pattern-example)s."
+"Supports patterns e.g. <tt>%(pattern-example)s</tt>."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:81
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:91
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:92
 msgid "Edit search URLs"
 msgstr ""
 
 #. Add link to editor
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:117
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/ext/songsmenu/website_search.py:118
 msgid "Configure Searches…"
 msgstr ""
 
@@ -5037,23 +5077,35 @@ msgid "_Random"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:40
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:41
 msgid "Prefer higher rated"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/reorder.py:41
+msgid "Prefer _higher rated"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:43
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:44
 msgid "Repeat this track"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:44
+msgid "Repeat _this track"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:57
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:58
 msgid "Repeat all"
 msgstr ""
 
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:58
+msgid "Repeat _all"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:73
+msgid "One song"
+msgstr ""
+
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/order/repeat.py:74
-msgid "One Song"
+msgid "One _song"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/player/gstbe/player.py:100
@@ -5141,13 +5193,13 @@ msgid ""
 "config."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/plugins/__init__.py:63
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/plugins/__init__.py:64
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/plugins/__init__.py:72
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/plugins/__init__.py:73
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr ""
@@ -5983,27 +6035,27 @@ msgstr ""
 msgid "No category"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:319
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:321
 msgid "No plugins found."
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:372
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:374
 msgid "Plugins"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:396
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:398
 msgid "Filter by plugin state / tag"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:402
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:404
 msgid "Filter by plugin type"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:407
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:409
 msgid "Filter by plugin name or description"
 msgstr ""
 
-#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:410
+#: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/pluginwin.py:412
 msgid "Show _Errors"
 msgstr ""
 
@@ -6531,7 +6583,7 @@ msgid "Replace [semi]colon delimiting with hyphens"
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/renamefiles.py:63
-msgid "e.g. \"iv: allegro.flac -> \"iv - allegro.flac\""
+msgid "e.g. \"iv: allegro.flac\" → \"iv - allegro.flac\""
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/renamefiles.py:82
@@ -6688,10 +6740,10 @@ msgstr ""
 msgid ""
 "This will move QL metadata:\n"
 "\n"
-"{old!r} -> {new!r}\n"
+"{old!r} → {new!r}\n"
 "\n"
 "The audio files themselves are not moved by this.\n"
-"Nonetheless, a backup is recommended (including the Quodlibet 'songs' file)"
+"Nonetheless, a backup is recommended (including the Quod Libet 'songs' file)."
 msgstr ""
 
 #: /home/runner/work/quodlibet/quodlibet/quodlibet/qltk/scanbox.py:155

@@ -23,6 +23,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
                     "that prefers songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Prefer less played")
+    accelerated_name = _("Prefer _less played")
 
     priority = Reorder.priority
 

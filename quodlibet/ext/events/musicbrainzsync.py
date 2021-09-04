@@ -34,7 +34,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
     PLUGIN_ID = "musicbrainzsync"
     VERSION = VERSION
     PLUGIN_NAME = _("MusicBrainz Sync")
-    PLUGIN_DESC = _("Syncs the rating of a song with music brainz.")
+    PLUGIN_DESC = _("Syncs the rating of a song with MusicBrainz.")
 
     def __init__(self):
         super().__init__()

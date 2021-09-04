@@ -89,10 +89,10 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
 
     PLUGIN_ID = 'Thumb Rating'
     PLUGIN_NAME = _('Thumb Rating')
-    PLUGIN_DESC = _('Adds a thumb-up/thumb-down scoring system '
-                    'which is converted to a rating value. Useful '
-                    'for keeping running vote totals and sorting by '
-                    '\'~#score\'.')
+    PLUGIN_DESC_MARKUP = _('Adds a thumb-up / thumb-down scoring system '
+                           'which is converted to a rating value. Useful '
+                           'for keeping running vote totals and sorting by '
+                           '<b><tt>~#score</tt></b>.')
     PLUGIN_ICON = Icons.USER_BOOKMARKS
 
     # Threshold value where points should be recalculated

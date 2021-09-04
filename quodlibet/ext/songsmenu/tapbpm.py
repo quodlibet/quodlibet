@@ -175,7 +175,7 @@ class TapBpmPanel(Gtk.VBox):
 class TapBpm(SongsMenuPlugin):
     PLUGIN_ID = "Tap BPM"
     PLUGIN_NAME = _("Tap BPM")
-    PLUGIN_DESC = _("Tap BPM for the selected song.")
+    PLUGIN_DESC = _("🥁 Tap BPM for the selected song.")
     PLUGIN_ICON = Icons.EDIT
     PLUGIN_VERSION = "0.1"
 
