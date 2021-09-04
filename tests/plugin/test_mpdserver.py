@@ -16,7 +16,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import app
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
-from tests import skipIf, run_gtk_loop
+from tests import skipIf
 
 
 @skipIf(os.name == "nt", "mpd server not supported under Windows")
