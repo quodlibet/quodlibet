@@ -171,7 +171,7 @@ class ResultView(AllTreeView):
         column.set_expand(False)
         self.append_column(column)
 
-        for tag in ["tracknumber", "artist", "title"]:
+        for tag in ["tracknumber", "artist", "title", "album"]:
             render = Gtk.CellRendererText()
             render.set_property('ellipsize', Pango.EllipsizeMode.END)
             column = Gtk.TreeViewColumn(util.tag(tag), render)

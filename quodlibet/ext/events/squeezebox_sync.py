@@ -1,4 +1,4 @@
-# Copyright 2011-2014 Nick Boultbee
+# Copyright 2011-2021 Nick Boultbee
 #
 # Inspired in parts by PySqueezeCenter (c) 2010 JingleManSweep
 # SqueezeCenter and SqueezeBox are copyright Logitech
@@ -17,17 +17,23 @@ from quodlibet.util.dprint import print_d
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
-
 if os.name == "nt":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 
 class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = 'Squeezebox Output'
     PLUGIN_NAME = _('Squeezebox Sync')
-    PLUGIN_DESC = _("Makes Logitech Squeezebox mirror Quod Libet output, "
-                    "provided both read from an identical library.")
+    PLUGIN_DESC_MARKUP = (
+        _("Makes Logitech Squeezebox mirror Quod Libet output, "
+          "provided both read from an identical library.") + "\n" +
+        _("Shares configuration with %(plugin)s.")
+        % {"plugin":
+            ("<a href=\"quodlibet:///prefs/plugins/Export to Squeezebox Playlist\">"
+             "Export to Squeezebox plugin</a>")}
+    )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     server = None

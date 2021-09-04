@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2020 Nick Boultbee
+#      2011-2021 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,9 +12,11 @@
 from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
+
+from quodlibet.library.base import Library
 from senf import uri2fsn
 
-from quodlibet import app
+from quodlibet import app, print_w
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
@@ -75,8 +77,8 @@ class SongSelectionInfo(GObject.Object):
         self.__songlist = songlist
         self.__selection = sel = songlist.get_selection()
         self.__count = sel.count_selected_rows()
-        self.__sel_id = songlist.connect(
-            'selection-changed', self.__selection_changed_cb)
+        self.__sel_id = songlist.connect('selection-changed', self.__selection_changed)
+        self.__sel_id = songlist.connect('songs-removed', self.__songs_removed)
 
     def destroy(self):
         self.__songlist.disconnect(self.__sel_id)
@@ -109,7 +111,13 @@ class SongSelectionInfo(GObject.Object):
         self.__idle = GLib.idle_add(
             self.__idle_emit, songs, priority=GLib.PRIORITY_LOW)
 
-    def __selection_changed_cb(self, songlist, selection):
+    def __songs_removed(self, songlist, removed):
+        try:
+            self.__emit_info_selection()
+        except Exception as e:
+            print_w(f"Couldn't process removed songs ({e})r")
+
+    def __selection_changed(self, songlist, selection):
         count = selection.count_selected_rows()
         if self.__count == count == 0:
             return
@@ -159,7 +167,7 @@ def get_sort_tag(tag):
             tag = tag.replace("<%s>" % key, "<%s>" % value)
         for key, value in TAG_TO_SORT.items():
             tag = tag.replace("<%s>" % key,
-                               "<{1}|<{1}>|<{0}>>".format(key, value))
+                              "<{1}|<{1}>|<{0}>>".format(key, value))
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)
@@ -187,10 +195,10 @@ def header_tag_split(header):
         return util.tagsplit(header)
 
 
-class SongListDnDMixin:
+class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
-    def setup_drop(self, library):
+    def setup_drop(self, library: Library):
         self.connect('drag-begin', self.__drag_begin)
         self.connect('drag-motion', self.__drag_motion)
         self.connect('drag-leave', self.__drag_leave)
@@ -281,7 +289,7 @@ class SongListDnDMixin:
             sel.set_uris(uris)
             self.__drag_iters = []
 
-    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library):
+    def __drag_data_received(self, view, ctx, x, y, sel, info, etime, library: Library):
         model = view.get_model()
         if info == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
@@ -299,15 +307,16 @@ class SongListDnDMixin:
         else:
             Gtk.drag_finish(ctx, False, False, etime)
             return
-
+        # Should always have one here, but you never know (also: types)
+        librarian = library.librarian or library
         to_add = []
         for filename in filenames:
-            if filename not in library.librarian:
+            if filename not in librarian:
                 library.add_filename(filename)
             elif filename not in library:
-                to_add.append(library.librarian[filename])
+                to_add.append(librarian[filename])
         library.add(to_add)
-        songs = list(filter(None, map(library.get, filenames)))
+        songs: List = list(filter(None, map(library.get, filenames)))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
@@ -324,7 +333,7 @@ class SongListDnDMixin:
             position = Gtk.TreeViewDropPosition.AFTER
 
         if move and Gtk.drag_get_source_widget(ctx) == view:
-            iter = model.get_iter(path) # model can't be empty, we're moving
+            iter = model.get_iter(path)  # model can't be empty, we're moving
             if position in (Gtk.TreeViewDropPosition.BEFORE,
                             Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
                 while self.__drag_iters:
@@ -338,7 +347,7 @@ class SongListDnDMixin:
             try:
                 iter = model.get_iter(path)
             except ValueError:
-                iter = model.append(row=[song]) # empty model
+                iter = model.append(row=[song])  # empty model
             else:
                 if position in (Gtk.TreeViewDropPosition.BEFORE,
                                 Gtk.TreeViewDropPosition.INTO_OR_BEFORE):
@@ -356,14 +365,16 @@ class SongListDnDMixin:
 
 class SongList(AllTreeView, SongListDnDMixin, DragScroll,
                util.InstanceTracker):
-    # A TreeView containing a list of songs.
+    """A TreeView containing a list of songs."""
 
     __gsignals__: GSignals = {
-        # changed(songs:list)
+        'songs-removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'orders-changed': (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
-    headers: List[str] = [] # The list of current headers.
+    headers: List[str] = []
+    """The list of current headers."""
+
     star = list(Query.STAR)
     sortable = True
 
@@ -383,7 +394,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         header = header_tag_split(header)[0]
         can_filter = browser.can_filter
         menu_items = []
-        if (header not in ["artist", "album"] and can_filter(header)):
+        if header not in ["artist", "album"] and can_filter(header):
             menu_items.append(Filter(header))
         if can_filter("artist"):
             menu_items.append(Filter("artist"))
@@ -394,8 +405,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         menu.show_all()
         return menu
 
-    def __init__(self, library, player=None, update=False,
-                 model_cls=PlaylistModel):
+    def __init__(self, library, player=None, update=False, model_cls=PlaylistModel):
         super().__init__()
         self._register_instance(SongList)
         self.set_model(model_cls())
@@ -419,15 +429,12 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             connect_destroy(librarian, 'added', self.__song_added)
 
         if player:
-            connect_destroy(
-                player, 'paused', lambda *x: self.__redraw_current())
-            connect_destroy(
-                player, 'unpaused', lambda *x: self.__redraw_current())
-            connect_destroy(
-                player, 'error', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'paused', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'unpaused', lambda *x: self.__redraw_current())
+            connect_destroy(player, 'error', lambda *x: self.__redraw_current())
 
-        self.connect('button-press-event', self.__button_press, librarian)
-        self.connect('key-press-event', self.__key_press, librarian, player)
+        self.connect('button-press-event', self.__button_press, library)
+        self.connect('key-press-event', self.__key_press, library, player)
 
         self.setup_drop(library)
         self.disable_drop()
@@ -633,7 +640,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
     def __set_rating(self, value, songs, librarian):
         count = len(songs)
         if (count > 1 and
-                config.getboolean("browsers", "rating_confirm_multiple")):
+            config.getboolean("browsers", "rating_confirm_multiple")):
             dialog = ConfirmRateMultipleDialog(self, count, value)
             if dialog.run() != Gtk.ResponseType.YES:
                 return
@@ -898,6 +905,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
 
         def func(model, path, iter_, user_data):
             songs.append(model.get_value(iter_))
+
         selection = self.get_selection()
         selection.selected_foreach(func, None)
         return songs
@@ -914,7 +922,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
         model = self.get_model()
         order = self.get_sort_orders()
         sort_key_func = list(enumerate(reversed(
-                self.__get_song_sort_key_func(order))))
+            self.__get_song_sort_key_func(order))))
         song_sort_keys = [key(song) for i, (key, r) in sort_key_func]
         i = 0
         j = len(model)
@@ -940,22 +948,27 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return model.iter_nth_child(None, i)
         return None
 
-    def __find_iters_in_selection(self, songs):
+    def __find_iters_in_selection(self, songs) -> Tuple[List, List, bool]:
         model, rows = self.get_selection().get_selected_rows()
         rows = rows or []
-        iters = [model[r].iter for r in rows if model[r][0] in songs]
+        iters = []
+        removed_songs = []
+        for r in rows:
+            if model[r][0] in songs:
+                iters.append(model[r].iter)
+                removed_songs.append(model[r][0])
         complete = len(iters) == len(songs)
-        return (iters, complete)
+        return iters, removed_songs, complete
 
     def __song_updated(self, librarian, songs):
         """Only update rows that are currently displayed.
         Warning: This makes the row-changed signal useless.
         """
-
         model = self.get_model()
         if not config.getboolean("memory", "shuffle", False) and \
-                config.getboolean("song_list", "auto_sort") and self.is_sorted():
-            iters, complete = self.__find_iters_in_selection(songs)
+            config.getboolean("song_list", "auto_sort") and self.is_sorted():
+            iters, _, complete = self.__find_iters_in_selection(songs)
+
             if not complete:
                 iters = model.find_all(songs)
 
@@ -984,32 +997,40 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             self.add_songs(list(filter(filter_, songs)))
 
     def __song_removed(self, librarian, songs, player):
-        # The player needs to be called first so it can ge the next song
-        # in case the current one gets deleted and the order gets reset.
+        try:
+            # The player needs to be called first so it can ge the next song
+            # in case the current one gets deleted and the order gets reset.
+            if player:
+                for song in songs:
+                    player.remove(song)
 
-        if player:
-            for song in songs:
-                player.remove(song)
+            model = self.get_model()
 
-        model = self.get_model()
+            # The selected songs are removed from the library and should
+            # be removed from the view.
 
-        # The selected songs are removed from the library and should
-        # be removed from the view.
+            if not len(model):
+                return
 
-        if not len(model):
-            return
+            songs = set(songs)
 
-        songs = set(songs)
+            # search in the selection first
+            # speeds up common case: select songs and remove them
+            iters, removed_songs, complete = self.__find_iters_in_selection(songs)
 
-        # search in the selection first
-        # speeds up common case: select songs and remove them
-        iters, complete = self.__find_iters_in_selection(songs)
+            # if not all songs were in the selection, search the whole view
+            if not complete:
+                removed_songs = []
+                for iter_, value in self.model.iterrows():
+                    if value in songs:
+                        iters.append(iter_)
+                        removed_songs.append(value)
 
-        # if not all songs were in the selection, search the whole view
-        if not complete:
-            iters = model.find_all(songs)
-
-        self.remove_iters(iters)
+            if removed_songs:
+                self.emit('songs-removed', set(removed_songs))
+            self.remove_iters(iters)
+        except Exception as e:
+            print_w(f"Couldn't process removed songs: {e}", self)
 
     def __song_properties(self, librarian):
         model, rows = self.get_selection().get_selected_rows()
@@ -1119,6 +1140,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             if "<" in tag:
                 return util.pattern(tag)
             return util.tag(tag)
+
         current = [(tag_title(c), c) for c in SongList.headers]
 
         def add_header_toggle(menu: Gtk.Menu, pair: Tuple[str, str], active: bool,

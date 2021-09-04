@@ -22,8 +22,8 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_CONFIG_SECTION = __name__
     PLUGIN_DESC = _(
        "Store Seekpoints A and/or B for tracks. "
-       "Skip to time A and stop after time B when track is played.\n"
-       "Note that changing the names of the points below does not "
+       "Skip to time A and stop after time B when track is played.\n\n"
+       "ℹ Note that changing the names of the points below does not "
        "update the actual bookmark names, it only changes which "
        "bookmark names the plugin looks for when deciding whether to seek.")
 

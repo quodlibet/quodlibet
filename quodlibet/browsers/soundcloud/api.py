@@ -1,20 +1,22 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import json
 from datetime import datetime
+from typing import Optional, cast
 from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup
 
 from quodlibet import util, config
+from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.http import download_json, download
-
+from quodlibet.util.http import (download_json, download)
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 
@@ -100,11 +102,14 @@ class SoundcloudApiClient(RestApi):
         print_d("Starting Soundcloud API...")
         super().__init__(self.API_ROOT)
         self.access_token = config.get("browsers", "soundcloud_token", None)
-        self.online = bool(self.access_token)
         self.user_id = config.get("browsers", "soundcloud_user_id", None)
         if not self.user_id:
             self._get_me()
         self.username = None
+
+    @property
+    def online(self):
+        return bool(self.access_token)
 
     def _default_params(self):
         params = {'client_id': self.__CLIENT_ID}
@@ -123,7 +128,6 @@ class SoundcloudApiClient(RestApi):
         print_d("Destroying access token...")
         self.access_token = None
         self.save_auth()
-        self.online = False
 
     def get_token(self, code):
         print_d("Getting access token...")
@@ -141,7 +145,6 @@ class SoundcloudApiClient(RestApi):
         self.access_token = json['access_token']
         print_d("Got an access token: %s" % self.access_token)
         self.save_auth()
-        self.online = True
         self._get_me()
 
     def _get_me(self):
@@ -206,12 +209,12 @@ class SoundcloudApiClient(RestApi):
     def _on_favorited(self, json):
         print_d("Successfully updated favorite: %s" % json)
 
-    def _audiofile_for(self, response):
+    def _audiofile_for(self, response) -> Optional[AudioFile]:
         r = Wrapper(response)
         d = r.data
-        dl = d.get("downloadable", False) and d.get("download_url", None)
+        dl = d.get("download_url", None) if d.get("downloadable", False) else None
         try:
-            url = dl or r.stream_url
+            url = cast(str, dl or r.stream_url)
         except AttributeError as e:
             print_w("Unusable result (%s) from SC: %s" % (e, d))
             return None
@@ -251,7 +254,7 @@ class SoundcloudApiClient(RestApi):
         try:
             song.update(title=r.title,
                         artist=r.user["username"],
-                        soundcloud_user_id=str(r.user_id),
+                        soundcloud_user_id=str(r.user.id),
                         website=r.permalink_url,
                         genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:
@@ -272,15 +275,14 @@ class SoundcloudApiClient(RestApi):
             plays = d.get("user_playback_count", 0)
             if plays:
                 song["~#playcount"] = plays
-            # print_d("Got song: %s" % song)
         except Exception as e:
             print_w("Couldn't parse a song from %s (%r). "
-                    "Had these tags:\n  %s" % (r, e, song.keys()))
+                    "Had these tags:\n  %s" % (json.dumps(r._raw), e, song.keys()))
         return song
 
     @classmethod
-    def _add_secret(cls, stream_url):
-        return "%s?client_id=%s" % (stream_url, cls.__CLIENT_ID)
+    def _add_secret(cls, stream_url: str) -> Optional[str]:
+        return f"{stream_url}?client_id={cls.__CLIENT_ID}" if stream_url else None
 
     @util.cached_property
     def _authorize_url(self):

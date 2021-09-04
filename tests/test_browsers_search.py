@@ -4,8 +4,6 @@
 # (at your option) any later version.
 import os
 
-from gi.repository import Gtk
-
 import quodlibet.browsers.tracks
 import quodlibet.config
 from quodlibet.browsers.tracks import TrackList
@@ -13,7 +11,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.qltk.songlist import SongList
 from senf import fsnative
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 
 # Don't sort yet, album_key makes it complicated...
 SONGS = [AudioFile({
@@ -54,7 +52,7 @@ class TSearchBar(TestCase):
             af.sanitize()
         quodlibet.browsers.tracks.library.add(SONGS)
         self.bar = self.Bar(quodlibet.browsers.tracks.library)
-        self.bar.connect('songs-selected', self._expected)
+        self._sid = self.bar.connect('songs-selected', self._expected)
         self.success = False
 
     def _expected(self, bar, songs, sort):
@@ -63,8 +61,7 @@ class TSearchBar(TestCase):
         self.success = True
 
     def _do(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
+        run_gtk_loop()
         self.failUnless(self.success or self.expected is None)
 
     def test_can_filter(self):
@@ -149,6 +146,7 @@ class TSearchBar(TestCase):
                 os.unlink(song("~filename"))
             except OSError:
                 pass
+        self.bar.disconnect(self._sid)
         self.bar.destroy()
         quodlibet.browsers.tracks.library.destroy()
         quodlibet.config.quit()

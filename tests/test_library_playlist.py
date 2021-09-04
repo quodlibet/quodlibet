@@ -2,6 +2,10 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import os
+import shutil
+from pathlib import Path
+
 from quodlibet import app
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
@@ -9,6 +13,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist, FileBackedPlaylist
 from tests import TestCase, _TEMP_DIR
 from tests.test_library_libraries import FakeSong
+from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR
 
 
 def AFrange(*args):
@@ -44,20 +49,39 @@ class TPlaylistLibrary(TestCase):
             connect_obj(self.underlying, 'removed', list.extend, self.removed),
         ]
 
-        self.library = self.underlying.playlists
-
         for song in self.underlying:
             song.sanitize()
         # Populate for every test
         self.underlying.add(self.Frange(12))
-        self.pl = pl = FileBackedPlaylist(_TEMP_DIR, PL_NAME,
-                                          self.underlying, self.library)
-        # Add last three songs to playlist
+        pl_dir = Path(_TEMP_DIR) / _DEFAULT_PLAYLIST_DIR
+        self.create_playlist_file(pl_dir)
+        self.add_ignored_file(pl_dir)
+
+        # Creates the library
+        self.library = self.underlying.playlists
+
+    def create_playlist_file(self, pl_dir) -> None:
+        # Won't exist, we haven't started the library yet
+        temp_path = Path(_TEMP_DIR).absolute()
+        parents = {path.absolute() for path in pl_dir.parents}
+        assert temp_path in parents or os.environ.get('CI', False), "Dangerous test!"
+        shutil.rmtree(pl_dir, ignore_errors=True)
+        os.makedirs(pl_dir)
+        fn = FileBackedPlaylist.filename_for(PL_NAME)
+        # No PL library given - rely on import
+        self.pl = pl = FileBackedPlaylist(str(pl_dir), fn, self.underlying, None)
         pl.extend(list(sorted(self.underlying))[-3:])
         assert len(pl) == 3, "Should have only the three songs just added"
         diff = set(self.underlying) - set(pl)
         assert all(song in self.underlying for song in pl), f"Missing from lib: {diff}"
         pl.finalize()
+        pl.write()
+
+    @staticmethod
+    def add_ignored_file(pl_dir):
+        # See #3639
+        with open(pl_dir / ".gitignore", "w") as f:
+            f.write(".backup\n")
 
     def tearDown(self):
         for pl in list(self.library.values()):
@@ -68,8 +92,36 @@ class TPlaylistLibrary(TestCase):
         # Don't destroy self.library, it's a reference which is gone
         app.library = None
 
+    def test_migrate(self):
+        pl_path = Path(self.library.pl_dir)
+        path = pl_path / f"{PL_NAME}.xspf"
+        assert path.exists(), f"New playlist not found - got {os.listdir(pl_path)}"
+
+    def test_old_playlist_removed(self):
+        pl_path = Path(self.library.pl_dir)
+        fn = FileBackedPlaylist.filename_for(PL_NAME)
+        old_path = pl_path / fn
+        assert not old_path.exists(), "Didn't remove old playlist"
+        assert len(self.library) == 1
+
+    def test_backup(self):
+        pl_path = Path(self.library.pl_dir)
+        fn = FileBackedPlaylist.filename_for(PL_NAME)
+        backup = (pl_path / ".backup" / fn)
+        assert backup.exists(), "Didn't backup"
+        with open(backup) as f:
+            lines = f.readlines()
+        assert len(lines) == 3
+
+    def test_dotfiles_ignored(self):
+        pl_path = Path(self.library.pl_dir)
+        ignore_path = pl_path / ".gitignore"
+        assert ignore_path.exists(), "Shouldn't have removed hidden file"
+        assert not any("gitignore" in pl.name for pl in self.library)
+
     def test_get(self):
         pl = self.library.get(PL_NAME)
+        assert pl, f"Not found - got {self.library.items()}"
         assert pl.name == PL_NAME
         assert pl.key == PL_NAME
         assert len(pl.songs) == 3

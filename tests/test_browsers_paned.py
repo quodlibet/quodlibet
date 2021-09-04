@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+from tests import TestCase, run_gtk_loop
 from .helper import realized
 
 from gi.repository import Gtk
@@ -70,10 +70,6 @@ class TPanedBrowser(TestCase):
             self.emit_count += 1
         self.bar.connect("songs-selected", selected_cb)
 
-    def _wait(self):
-        while Gtk.events_pending():
-            Gtk.main_iteration()
-
     def test_get_set_headers(self):
         config.set("browsers", "panes", "~people album")
         self.assertEqual(get_headers(), ["~people", "album"])
@@ -93,25 +89,25 @@ class TPanedBrowser(TestCase):
         self.bar.activate()
 
         self.bar.filter_text("artist=nope")
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(set(self.last), set())
 
         self.bar.filter_text("artist=!boris")
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(set(self.last), set(SONGS[1:]))
 
     def test_filter_value(self):
         self.bar.activate()
         expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(self.last, expected)
 
     def test_filter_notvalue(self):
         self.bar.activate()
         expected = SONGS[1:4]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(set(self.last), set(expected))
 
     def test_restore(self):
@@ -119,7 +115,7 @@ class TPanedBrowser(TestCase):
         self.bar.restore()
         self.failUnlessEqual(self.bar._get_text(), "foo")
         self.bar.finalize(True)
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(self.emit_count, 0)
 
     def test_numeric_config_search(self):
@@ -133,7 +129,7 @@ class TPanedBrowser(TestCase):
         self.bar._set_text("nope")
         self.bar.restore()
         self.failUnlessEqual(self.bar._get_text(), "foobar")
-        self._wait()
+        run_gtk_loop()
         self.failUnlessEqual(self.emit_count, 1)
 
     def test_restore_selection(self):
@@ -143,7 +139,7 @@ class TPanedBrowser(TestCase):
         self.bar.unfilter()
         self.bar.restore()
         self.bar.activate()
-        self._wait()
+        run_gtk_loop()
         for song in self.last:
             self.assertTrue(u"piman" in song.list("artist"))
 

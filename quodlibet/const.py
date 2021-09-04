@@ -8,12 +8,12 @@
 import sys
 import os
 
-
 # MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
 # Python build. Unset here and restart.. (does not work for py.test etc.)
 # XXX: do this here since it gets executed by all scripts
 if os.name == "nt" and "MSYSTEM" in os.environ:
     import subprocess
+
     del os.environ["MSYSTEM"]
     argv = []
     for arg in [sys.executable] + sys.argv:
@@ -47,8 +47,8 @@ class Version(tuple):
         if self[0] == version_tuple[0] and version_tuple >= self:
             return
         message = " " + self.message if self.message else ""
-        raise ImportError("%s %s required. %s found.%s" % (
-            self.name, self, Version("", *version_tuple), message))
+        version = Version("", *version_tuple)
+        raise ImportError(f"{self.name} {self} required. {version} found.{message}")
 
 
 class MinVersions:
@@ -56,8 +56,8 @@ class MinVersions:
 
     PYTHON3 = Version("Python3", 3, 7)
     MUTAGEN = Version("Mutagen", 1, 34,
-        message="Use the Quod Libet unstable PPAs/repos to get a newer "
-                "mutagen version.")
+                      message="Use the Quod Libet unstable PPAs/repos to get a newer "
+                              "mutagen version.")
     GTK = Version("GTK+", 3, 18)
     PYGOBJECT = Version("PyGObject", 3, 18)
     GSTREAMER = Version("GStreamer", 1, 8)
@@ -80,7 +80,7 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"Copyright 2004-2019"
+COPYRIGHT = u"Copyright 2004-2021"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos

@@ -51,7 +51,7 @@ jobs:
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          pip3 install feedparser musicbrainzngs mutagen
+          pip3 install feedparser musicbrainzngs mutagen flaky
 
       - name: Run tests
         shell: msys2 {0}
@@ -131,7 +131,8 @@ jobs:
         python3 -m pip install --user --upgrade \
           xvfbwrapper \
           pytest-faulthandler \
-          flake8
+          flake8 \
+          flaky
 
     - name: Run tests
       run: |

@@ -9,13 +9,13 @@ from typing import Generator, Set, Iterable
 
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
-from quodlibet.library.base import PicklingLibrary, iter_paths
+from quodlibet.library.base import iter_paths, Library, PicklingMixin
 from quodlibet.qltk.notif import Task
 from quodlibet.util.path import ismount, unexpand, normalize_path
 from senf import fsn2text, fsnative
 
 
-class FileLibrary(PicklingLibrary[fsnative, AudioFile]):
+class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
     """A library containing items on a local(-ish) filesystem.
 
     These must support the valid, exists, mounted, and reload methods,

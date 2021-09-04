@@ -5,6 +5,11 @@ Dependencies:
 
 * sphinx (http://sphinx-doc.org/)
 
+Development:
+
+make watch
+    Start a server and auto rebuild on changes
+
 Build:
 
 make

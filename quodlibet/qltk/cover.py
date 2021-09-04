@@ -207,7 +207,9 @@ class ResizeImage(Gtk.Bin):
             pixbuf = scale(pixbuf, (width, height))
 
         style_context = self.get_style_context()
-
+        if not pixbuf:
+            print_w(f"Failed to scale pixbuf for {self._path}")
+            return
         surface = get_surface_for_pixbuf(self, pixbuf)
         Gtk.render_icon_surface(style_context, cairo_context, surface, 0, 0)
 

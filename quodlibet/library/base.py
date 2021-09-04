@@ -15,6 +15,7 @@ from typing import (Collection, TypeVar, Sequence, Iterable,
 
 from gi.repository import GObject
 
+import quodlibet
 from quodlibet import util
 from quodlibet.formats import (load_audio_files,
                                dump_audio_files, SerializationError)
@@ -52,7 +53,9 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    librarian = None
+    librarian: Optional["quodlibet.library.librarians.Librarian"] = None
+    """A librarian, if defined will be used for collaborating with other libraries"""
+
     dirty = False
 
     def __init__(self, name: Optional[str] = None):
@@ -171,8 +174,10 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         items = {item for item in items if item not in self}
         if not items:
             return items
-
-        print_d(f"Adding {len(items)} items.", self._name)
+        if len(items) == 1:
+            print_d(f"Adding {next(iter(items))}", self._name)
+        else:
+            print_d(f"Adding {len(items)} items.", self._name)
         for item in items:
             self._contents[item.key] = item
 
@@ -273,15 +278,6 @@ class PicklingMixin:
             print_w(f"Couldn't save library to path {filename!r}")
         else:
             self.dirty = False
-
-
-class PicklingLibrary(Library[K, V], PicklingMixin):
-    """A library that pickles its contents to disk"""
-
-    def __init__(self, name=None):
-        print_d("Using pickling persistence for library \"%s\"" % name)
-        PicklingMixin.__init__(self)
-        Library.__init__(self, name)
 
 
 def iter_paths(root, exclude=[], skip_hidden=True):

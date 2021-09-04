@@ -67,6 +67,7 @@ quodlibet/ext/events/searchprovider.py
 quodlibet/ext/events/seekbar.py
 quodlibet/ext/events/seekpoints.py
 quodlibet/ext/events/squeezebox_sync.py
+quodlibet/ext/events/stop_on_pause.py
 quodlibet/ext/events/synchronize_to_device.py
 quodlibet/ext/events/synchronizedlyrics.py
 quodlibet/ext/events/telepathy_status.py
@@ -81,7 +82,6 @@ quodlibet/ext/events/trayicon/systemtray.py
 quodlibet/ext/events/viewlyrics.py
 quodlibet/ext/events/visualisations.py
 quodlibet/ext/events/waveformseekbar.py
-quodlibet/ext/events/weblyrics.py
 quodlibet/ext/events/write_cover.py
 quodlibet/ext/gstreamer/compressor.py
 quodlibet/ext/gstreamer/crossfeed.py
@@ -127,11 +127,9 @@ quodlibet/ext/songsmenu/fingerprint/submit.py
 quodlibet/ext/songsmenu/forcewrite.py
 quodlibet/ext/songsmenu/html.py
 quodlibet/ext/songsmenu/ifp.py
-quodlibet/ext/songsmenu/importexport.py
-quodlibet/ext/songsmenu/k3b.py
+quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py
 quodlibet/ext/songsmenu/lastfmsync.py
 quodlibet/ext/songsmenu/makesorttags.py
-quodlibet/ext/songsmenu/migratemetadata.py
 quodlibet/ext/songsmenu/playlist.py
 quodlibet/ext/songsmenu/refresh.py
 quodlibet/ext/songsmenu/replaygain.py
@@ -186,6 +184,7 @@ quodlibet/qltk/info.py
 quodlibet/qltk/information.py
 quodlibet/qltk/lyrics.py
 quodlibet/qltk/maskedbox.py
+quodlibet/qltk/matchdialog.py
 quodlibet/qltk/msg.py
 quodlibet/qltk/notif.py
 quodlibet/qltk/playorder.py

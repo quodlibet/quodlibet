@@ -1,5 +1,5 @@
 # Copyright 2015-2017 Christoph Reiter
-#                2019 Nick Boultbee
+#             2019-21 Nick Boultbee
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -21,7 +21,6 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 import os
-import glob
 import subprocess
 import contextlib
 import fnmatch
@@ -30,8 +29,12 @@ import shutil
 import functools
 import warnings
 
-# pattern -> (language, [keywords])
-XGETTEXT_CONFIG = {
+from pathlib import Path
+from typing import List, Optional, Tuple, Iterable, Dict
+
+QL_SRC_DIR = "quodlibet"
+
+XGETTEXT_CONFIG: Dict[str, Tuple[str, List[str]]] = {
     "*.py": ("Python", [
         "", "_", "N_", "C_:1c,2", "NC_:1c,2", "Q_", "pgettext:1c,2",
         "npgettext:1c,2,3", "numeric_phrase:1,2", "dgettext:2",
@@ -41,6 +44,7 @@ XGETTEXT_CONFIG = {
     "*.desktop": ("Desktop", [
         "", "Name", "GenericName", "Comment", "Keywords"]),
 }
+"""Dict of pattern -> (language, [keywords])"""
 
 
 class GettextError(Exception):
@@ -51,7 +55,7 @@ class GettextWarning(Warning):
     pass
 
 
-def _read_potfiles(src_root, potfiles):
+def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
     """Returns a list of paths for a POTFILES.in file"""
 
     paths = []
@@ -60,32 +64,33 @@ def _read_potfiles(src_root, potfiles):
             line = line.strip()
             if not line or line.startswith("#"):
                 continue
-            paths.append(os.path.normpath(os.path.join(src_root, line)))
+            paths.append((src_root / line).resolve())
     return paths
 
 
-def _write_potfiles(src_root, potfiles, paths):
+def _write_potfiles(src_root: Path, potfiles: Path, paths: Iterable[Path]):
     with open(potfiles, "w", encoding="utf-8") as h:
         for path in paths:
-            path = os.path.relpath(path, src_root)
-            h.write(path + "\n")
+            path = src_root / path
+            h.write(str(path) + "\n")
 
 
-def _src_root(po_dir):
-    return os.path.normpath(os.path.join(po_dir, ".."))
+def _src_root(po_dir: Path) -> Path:
+    assert isinstance(po_dir, Path)
+    return po_dir.parent.resolve()
 
 
-def get_pot_dependencies(po_dir):
+def get_pot_dependencies(po_dir: Path) -> List[Path]:
     """Returns a list of paths that are used as input for the .pot file"""
 
     src_root = _src_root(po_dir)
-    potfiles_path = os.path.join(po_dir, "POTFILES.in")
+    potfiles_path = po_dir / "POTFILES.in"
     return _read_potfiles(src_root, potfiles_path)
 
 
-def _get_pattern(path):
+def _get_pattern(path: Path) -> Optional[str]:
     for pattern in XGETTEXT_CONFIG:
-        match_part = os.path.basename(path)
+        match_part = path.name
         if match_part.endswith(".in"):
             match_part = match_part.rsplit(".", 1)[0]
         if fnmatch.fnmatch(match_part, pattern):
@@ -93,7 +98,11 @@ def _get_pattern(path):
     return None
 
 
-def _create_pot(potfiles_path, src_root):
+def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
+    """Create a POT file for the specified POs and source code
+
+        :returns: the output path
+    """
     potfiles = _read_potfiles(src_root, potfiles_path)
 
     groups = {}
@@ -102,7 +111,7 @@ def _create_pot(potfiles_path, src_root):
         if pattern is not None:
             groups.setdefault(pattern, []).append(path)
         else:
-            raise ValueError("Unknown filetype: " + path)
+            raise ValueError(f"Unknown filetype: {path!s}")
 
     specs = []
     for pattern, paths in groups.items():
@@ -112,6 +121,7 @@ def _create_pot(potfiles_path, src_root):
     specs.sort(reverse=True)
 
     fd, out_path = tempfile.mkstemp(".pot")
+    out_path = Path(out_path)
     try:
         os.close(fd)
         for language, keywords, paths in specs:
@@ -126,14 +136,16 @@ def _create_pot(potfiles_path, src_root):
                     args.append("-k")
 
             fd, potfiles_in = tempfile.mkstemp()
+            potfiles_in = Path(potfiles_in)
             try:
                 os.close(fd)
                 _write_potfiles(src_root, potfiles_in, paths)
 
                 args = ["xgettext", "--from-code=utf-8", "--add-comments",
-                        "--files-from=" + potfiles_in,
-                        "--directory=" + src_root,
-                        "--output=" + out_path, "--force-po",
+                        "--files-from=" + str(potfiles_in),
+                        "--directory=" + str(src_root),
+                        "--output=" + str(out_path),
+                        "--force-po",
                         "--join-existing"] + args
 
                 p = subprocess.Popen(
@@ -142,25 +154,26 @@ def _create_pot(potfiles_path, src_root):
                     universal_newlines=True)
                 stdout, stderr = p.communicate()
                 if p.returncode != 0:
-                    raise GettextError(stderr
-                                       or ("Got error: %d" % p.returncode))
+                    path_strs = ", ".join(str(p) for p in paths)
+                    msg = f"Error running `{' '.join(args)}`:\nPaths: {path_strs}...\n"
+                    msg += stderr or ("Got error: %d" % p.returncode)
+                    raise GettextError(msg)
                 if stderr:
                     warnings.warn(stderr, GettextWarning)
             finally:
-                os.unlink(potfiles_in)
+                potfiles_in.unlink()
     except Exception:
-        os.unlink(out_path)
+        out_path.unlink()
         raise
 
     return out_path
 
 
 @contextlib.contextmanager
-def create_pot(po_dir):
+def create_pot(po_path: Path):
     """Temporarily creates a .pot file in a temp directory."""
-
-    src_root = _src_root(po_dir)
-    potfiles_path = os.path.join(po_dir, "POTFILES.in")
+    src_root = _src_root(po_path)
+    potfiles_path = po_path / "POTFILES.in"
     pot_path = _create_pot(potfiles_path, src_root)
     try:
         yield pot_path
@@ -168,39 +181,39 @@ def create_pot(po_dir):
         os.unlink(pot_path)
 
 
-def update_linguas(po_dir):
+def update_linguas(po_path: Path) -> None:
     """Create a LINGUAS file in po_dir"""
 
-    linguas = os.path.join(po_dir, "LINGUAS")
+    linguas = po_path / "LINGUAS"
     with open(linguas, "w", encoding="utf-8") as h:
-        for l in list_languages(po_dir):
+        for l in list_languages(po_path):
             h.write(l + "\n")
 
 
-def list_languages(po_dir):
+def list_languages(po_path: Path) -> List[str]:
     """Returns a list of available language codes"""
 
-    po_files = glob.glob(os.path.join(po_dir, "*.po"))
-    return sorted([os.path.basename(po[:-3]) for po in po_files])
+    po_files = po_path.glob("*.po")
+    return sorted([os.path.basename(str(po)[:-3]) for po in po_files])
 
 
-def compile_po(po_path, target_file):
+def compile_po(po_path: Path, target_file: Path):
     """Creates an .mo from a .po"""
 
     try:
         subprocess.check_output(
-            ["msgfmt", "-o", target_file, po_path],
+            ["msgfmt", "-o", str(target_file), str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
 
-def po_stats(po_path):
+def po_stats(po_path: Path):
     """Returns a string containing translation statistics"""
 
     try:
         return subprocess.check_output(
-            ["msgfmt", "--statistics", po_path, "-o", os.devnull],
+            ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
@@ -226,18 +239,17 @@ def merge_file(po_dir, file_type, source_file, target_file):
         raise GettextError(e.output)
 
 
-def get_po_path(po_dir, lang_code):
+def get_po_path(po_path: Path, lang_code: str) -> Path:
     """The default path to the .po file for a given language code"""
 
-    return os.path.join(po_dir, lang_code + ".po")
+    return po_path / (lang_code + ".po")
 
 
-def update_po(pot_path, po_path, out_path=None):
+def update_po(pot_path: Path, po_path: Path, out_path: Optional[Path] = None) -> None:
     """Update .po at po_path based on .pot at po_path.
 
     If out_path is given will not touch po_path and write to out_path instead.
 
-    Returns the path written to.
     Raises GettextError on error.
     """
 
@@ -246,13 +258,13 @@ def update_po(pot_path, po_path, out_path=None):
 
     try:
         subprocess.check_output(
-            ["msgmerge", "-o", out_path, po_path, pot_path],
+            ["msgmerge", "-o", str(out_path), str(po_path), str(pot_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
 
-def check_po(po_path, ignore_header=False):
+def check_po(po_path: Path, ignore_header=False):
     """Makes sure the .po is well formed
 
     Raises GettextError if not
@@ -261,13 +273,13 @@ def check_po(po_path, ignore_header=False):
     check_arg = "--check" if not ignore_header else "--check-format"
     try:
         subprocess.check_output(
-            ["msgfmt", check_arg, "--check-domain", po_path, "-o", os.devnull],
+            ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
 
-def check_pot(pot_path):
+def check_pot(pot_path: Path) -> None:
     """Makes sure that the .pot is well formed
 
     Raises GettextError if not
@@ -276,8 +288,9 @@ def check_pot(pot_path):
     # msgfmt doesn't like .pot files, but we can create a dummy .po
     # and test that instead.
     fd, po_path = tempfile.mkstemp(".po")
+    po_path = Path(po_path)
     os.close(fd)
-    os.unlink(po_path)
+    po_path.unlink()
     create_po(pot_path, po_path)
 
     try:
@@ -286,58 +299,59 @@ def check_pot(pot_path):
         os.remove(po_path)
 
 
-def create_po(pot_path, po_path):
+def create_po(pot_path: Path, po_path: Path) -> None:
     """Create a new <po_path> file based on <pot_path>
 
-    Returns the path to the new po file or raise GettextError
-    in case something went wrong or the file already exists.
+    :raises GettextError: in case something went wrong or the file already exists.
     """
 
-    if os.path.exists(po_path):
-        raise GettextError("%r already exists" % po_path)
+    if po_path.exists():
+        raise GettextError(f"{po_path!s} already exists")
 
-    if not os.path.exists(pot_path):
-        raise GettextError("%r missing" % pot_path)
+    if not pot_path.exists():
+        raise GettextError(f"{pot_path!s} missing")
 
     try:
         subprocess.check_output(
-            ["msginit", "--no-translator", "-i", pot_path, "-o", po_path],
+            ["msginit", "--no-translator", "-i", str(pot_path), "-o", str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
-    if not os.path.exists(po_path):
-        raise GettextError(
-            "something went wrong; %r didn't get created" % po_path)
+    if not po_path.exists():
+        raise GettextError(f"something went wrong; {po_path!s} didn't get created")
 
     update_po(pot_path, po_path)
 
 
-def get_missing(po_dir):
-    """Returns a list of file information for translatable strings
-    found in files not listed in POTFILES.in and not skipped in
-    POTFILES.skip.
+def get_missing(po_dir: Path) -> Iterable[str]:
+    """Gets missing strings
+
+       :returns: a list of file information for translatable strings
+                 found in files not listed in POTFILES.in
+                 and not skipped in POTFILES.skip.
     """
 
     src_root = _src_root(po_dir)
-    potfiles_path = os.path.join(po_dir, "POTFILES.in")
-    skip_path = os.path.join(po_dir, "POTFILES.skip")
+    potfiles_path = po_dir / "POTFILES.in"
+    skip_path = po_dir / "POTFILES.skip"
 
     # Generate a set of paths of files which are not marked translatable
     # and not skipped
-    pot_files = {os.path.relpath(p, src_root)
+    pot_files = {p.relative_to(src_root)
                  for p in _read_potfiles(src_root, potfiles_path)}
-    skip_files = {os.path.relpath(p, src_root)
+    skip_files = {p.relative_to(src_root)
                   for p in _read_potfiles(src_root, skip_path)}
     not_translatable = set()
     for root, dirs, files in os.walk(src_root):
+        root = Path(root)
         for dirname in dirs:
-            dirpath = os.path.relpath(os.path.join(root, dirname), src_root)
-            if dirpath in skip_files or dirpath.startswith("."):
+            dirpath = (root / dirname).relative_to(src_root)
+            if dirpath in skip_files or dirname.startswith("."):
                 dirs.remove(dirname)
 
         for name in files:
-            path = os.path.relpath(os.path.join(root, name), src_root)
+            path = (root / name).relative_to(src_root)
             if path not in pot_files and path not in skip_files:
                 not_translatable.add(path)
 
@@ -346,6 +360,7 @@ def get_missing(po_dir):
 
     # Filter out any files not containing translations
     fd, temp_path = tempfile.mkstemp("POTFILES.in")
+    temp_path = Path(temp_path)
     try:
         os.close(fd)
         _write_potfiles(src_root, temp_path, not_translatable)
@@ -360,13 +375,13 @@ def get_missing(po_dir):
                     infos.update(line.split()[1:])
             return sorted(infos)
         finally:
-            os.unlink(pot_path)
+            pot_path.unlink()
     finally:
-        os.unlink(temp_path)
+        temp_path.unlink()
 
 
-def _get_xgettext_version():
-    """Returns a version tuple e.g. (0, 19, 3) or GettextError"""
+def _get_xgettext_version() -> Tuple:
+    """:returns: a version tuple e.g. (0, 19, 3) or GettextError"""
 
     try:
         result = subprocess.check_output(["xgettext", "--version"])
@@ -380,10 +395,10 @@ def _get_xgettext_version():
 
 
 @functools.lru_cache(None)
-def check_version():
-    """Raises GettextError in case the required gettext programs are missing
+def check_version() -> None:
+    """Check Gettext version.
+    :raises GettextError: (with message) if required gettext programs are missing
 
-    Tries to include a helpful error message..
     """
 
     required_programs = ["xgettext", "msgmerge", "msgfmt"]

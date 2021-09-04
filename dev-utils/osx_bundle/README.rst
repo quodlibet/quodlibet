@@ -32,10 +32,11 @@ have to build everything on `10.11`.
 3) Verify that Xcode and git is installed and in your ``$PATH`` by invoking
    ``git --version`` and ``gcc --version``. Also make sure that other package
    managers like homebrew or macports aren't in your ``$PATH``.
-4) Call ``bootstrap.sh`` to install jhbuild and set up dummy ``$HOME`` as base.
-5) Call ``build.sh`` to download and build all the dependencies.
+4) Install rust: https://www.rust-lang.org/tools/install
+5) Call ``bootstrap.sh`` to install jhbuild and set up dummy ``$HOME`` as base.
+6) Call ``build.sh`` to download and build all the dependencies.
    This should not lead to errors; if it does please file a bug.
-6) Call ``bundle.sh`` to create the finished bundles for QL and EF in
+7) Call ``bundle.sh`` to create the finished bundles for QL and EF in
    ``_build``.
 
 Call ``clean.sh`` to remove everything created above again and get back to

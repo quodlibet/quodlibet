@@ -93,7 +93,7 @@ class GetSonosPlaylistDialog(Dialog):
         self.set_border_width(6)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_button(_("OK"), Gtk.ResponseType.OK)
+        self.add_button(_("_OK"), Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 

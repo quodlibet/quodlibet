@@ -301,8 +301,9 @@ class SetCommand(Command):
             song = self.load_song(path)
 
             if not song.can_change(tag):
-                raise CommandError(_("Can not set %r for %s file %r")
-                                   % (tag, type(song).format, song("~filename")))
+                vars = dict(tag=tag, format=type(song).format, file=song("~filename"))
+                raise CommandError(
+                    _("Can not set %(tag)r for %(format)s file %(file)r") % vars)
 
             self.log("Set %r to %r" % (value, tag))
             if tag in song:

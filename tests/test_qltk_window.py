@@ -11,7 +11,7 @@ from quodlibet.util import InstanceTracker, is_osx
 from .helper import realized
 
 
-class TWindows(TestCase):
+class TWindow(TestCase):
 
     def test_on_first_map(self):
         w = Window()

@@ -6,16 +6,16 @@
 from typing import Optional, Set
 
 from quodlibet import util, print_d
-from quodlibet.formats import MusicFile
+from quodlibet.formats import MusicFile, AudioFile
 from quodlibet.library.album import AlbumLibrary
-from quodlibet.library.base import PicklingLibrary
+from quodlibet.library.base import Library, K, PicklingMixin
 from quodlibet.library.file import FileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
 from quodlibet.util.path import normalize_path
 
 
-class SongLibrary(PicklingLibrary):
+class SongLibrary(Library[K, AudioFile], PicklingMixin):
     """A library for songs.
 
     Items in this kind of library must support (roughly) the AudioFile

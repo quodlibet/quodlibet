@@ -16,13 +16,14 @@ from quodlibet.qltk import Icons
 class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_ID = "Regex Substitution"
     PLUGIN_NAME = _("Regex Substitution")
-    PLUGIN_DESC = _("Allows arbitrary regex substitutions (s///) when "
-                    "tagging or renaming files.")
+    PLUGIN_DESC_MARKUP = _(
+        "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) "
+        "when tagging or renaming files.")
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     __gsignals__ = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())
-        }
+    }
     active = True
 
     def __init__(self):

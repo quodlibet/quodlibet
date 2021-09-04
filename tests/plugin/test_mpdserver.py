@@ -1,4 +1,5 @@
 # Copyright 2014 Christoph Reiter <reiter.christoph@gmail.com>
+#           2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +16,7 @@ from quodlibet.formats import AudioFile
 from quodlibet import app
 from quodlibet import config
 from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
-from tests import skipIf
+from tests import skipIf, run_gtk_loop
 
 
 @skipIf(os.name == "nt", "mpd server not supported under Windows")
@@ -75,7 +76,9 @@ class TMPDCommands(PluginTestCase):
         MPDService = self.mod.main.MPDService
 
         class Server:
-            service = MPDService(app, MPDServerPlugin())
+            def __init__(self) -> None:
+                super().__init__()
+                self.service = MPDService(app, MPDServerPlugin())
 
             def _remove_connection(self, conn):
                 pass
@@ -87,8 +90,7 @@ class TMPDCommands(PluginTestCase):
         s.settimeout(1)
         self.conn = MPDConnection(server, c)
         self.conn.handle_init(server)
-        while Gtk.events_pending():
-            Gtk.main_iteration_do(True)
+        run_gtk_loop()
         self.s.recv(9999)
 
     def _cmd(self, data):

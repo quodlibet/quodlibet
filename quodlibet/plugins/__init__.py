@@ -11,6 +11,7 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet import util
 from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.util import escape
 from quodlibet.util.config import ConfigProxy
 from quodlibet.util.dprint import print_d
 from quodlibet.util.modulescanner import ModuleScanner
@@ -147,6 +148,13 @@ class Plugin:
     @property
     def description(self):
         return getattr(self.cls, "PLUGIN_DESC", None)
+
+    @property
+    def description_markup(self):
+        try:
+            return getattr(self.cls, "PLUGIN_DESC_MARKUP")
+        except AttributeError:
+            return escape(self.description)
 
     @property
     def tags(self):
