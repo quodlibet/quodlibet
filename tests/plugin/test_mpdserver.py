@@ -90,7 +90,8 @@ class TMPDCommands(PluginTestCase):
         s.settimeout(1)
         self.conn = MPDConnection(server, c)
         self.conn.handle_init(server)
-        run_gtk_loop()
+        while Gtk.events_pending():
+            Gtk.main_iteration_do(True)
         self.s.recv(9999)
 
     def _cmd(self, data):
