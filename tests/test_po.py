@@ -10,6 +10,10 @@ import pytest
 from tests import TestCase, skipUnless
 from tests.helper import ListWithUnused as L
 
+ACCEPTABLE_STOCK = [
+    b'media-next', b'media-previous', b'media-play',
+    b'media-pause']
+
 try:
     import polib
 except ImportError:
@@ -33,9 +37,7 @@ def has_gettext_util():
 
 class MissingTranslationsException(Exception):
     def __init__(self, missing):
-        msg = ("No reference in POTFILES.in to: " +
-               ", ".join(missing))
-        super().__init__(msg)
+        super().__init__("No reference in POTFILES.in to: " + ", ".join(missing))
 
 
 @pytest.mark.skipif(not has_gettext_util(), reason="no gettext")
@@ -73,12 +75,8 @@ class TPot(TestCase):
         if fails:
             def format_occurrences(e):
                 return ', '.join('%s:%s' % o for o in e.occurrences)
-            messages = [
-                "'%s' (%s)" % (e.msgid, format_occurrences(e)) for e in fails
-            ]
-            self.fail(
-                "One or more messages did not pass (%s):\n" % reason
-                + '\n'.join(messages))
+            msg = "\n".join(f"{e.msgid!r} ({format_occurrences(e)})" for e in fails)
+            self.fail(f"One or more messages did not pass ({reason}):\n{msg}")
 
     def test_multiple_format_placeholders(self):
         fails = []
@@ -86,8 +84,7 @@ class TPot(TestCase):
         for entry in self.pot:
             if len(reg.findall(entry.msgid)) > 1:
                 fails.append(entry)
-        self.conclude(fails,
-            "uses multiple non-named format placeholders")
+        self.conclude(fails, "uses multiple non-named format placeholders")
 
     def test_label_capitals(self):
         """ Check that various input labels (strings ending with a ':') are
@@ -262,11 +259,8 @@ class POMixin:
                 if line.strip().startswith(b'msgstr "gtk-'):
                     parts = line.strip().split()
                     value = parts[1].strip('"')[4:]
-                    self.failIf(value and value not in [
-                        b'media-next', b'media-previous', b'media-play',
-                        b'media-pause'],
-                                "Invalid stock translation in %s\n%s" % (
-                        self.lang, line))
+                    self.failIf(value and value not in ACCEPTABLE_STOCK,
+                                f"Invalid stock translation in {self.lang}\n{line}")
 
     def conclude(self, fails, reason):
         if fails:
@@ -274,14 +268,9 @@ class POMixin:
                 occurences = [(self.lang + ".po", e.linenum)]
                 occurences += e.occurrences
                 return ', '.join('%s:%s' % o for o in occurences)
-            messages = [
-                '"%s" - "%s" (%s)' % (e.msgid, e.msgstr, format_occurrences(e))
-                for e in fails
-            ]
-
-            self.fail(
-                "One or more messages did not pass (%s).\n%s" % (
-                    reason, "\n".join(messages)))
+            message = "\n".join(f"{e.msgid!r} - {e.msgstr!r} ({format_occurrences(e)})"
+                                for e in fails)
+            self.fail(f"One or more messages did not pass ({reason}).\n{message}")
 
     def test_original_punctuation_present(self):
         if polib is None:
