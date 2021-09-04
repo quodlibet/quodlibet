@@ -571,7 +571,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         _('Analyzes and updates %(rg_link)s information, '
           'using GStreamer. Results are grouped by album.')
         % {"rg_link":
-           "<a href=\"https://en.wikipedia.org/wiki/\">ReplayGain</a>"})
+           "<a href=\"https://en.wikipedia.org/wiki/ReplayGain\">ReplayGain</a>"})
     PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
 
