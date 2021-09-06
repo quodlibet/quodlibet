@@ -387,6 +387,34 @@ class TOperonEdit(TOperonBase):
         self.s.reload()
         self.assertFalse(self.s.realkeys())
 
+    def test_multi_remove_all(self):
+        if os.name == "nt" or sys.platform == "darwin":
+            return
+
+        os.environ["VISUAL"] = "sed -i -n /^File:/p"
+        os.utime(self.f, (42, 42))
+        self.check_true(["edit", self.f, self.f2], False, False)
+
+        # all should be gone on both files
+        self.s.reload()
+        self.assertFalse(self.s.realkeys())
+        self.s2.reload()
+        self.assertFalse(self.s2.realkeys())
+
+    def test_multi_edit(self):
+        if os.name == "nt" or sys.platform == "darwin":
+            return
+
+        os.environ["VISUAL"] = "sed -i '/^File:/a comment=multi edited'"
+        os.utime(self.f, (42, 42))
+        self.check_true(["edit", self.f, self.f2], False, False)
+
+        # all should be gone on both files
+        self.s.reload()
+        self.failUnlessEqual(self.s["comment"], "multi edited")
+        self.s2.reload()
+        self.failUnlessEqual(self.s2["comment"], "multi edited")
+
 
 class TOperonInfo(TOperonBase):
     # [-t] [-c <c1>,<c2>...] <file>
