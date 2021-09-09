@@ -71,7 +71,7 @@ def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
 def _write_potfiles(src_root: Path, potfiles: Path, paths: Iterable[Path]):
     with open(potfiles, "w", encoding="utf-8") as h:
         for path in paths:
-            path = src_root / path
+            path = path.relative_to(src_root)
             h.write(str(path) + "\n")
 
 
