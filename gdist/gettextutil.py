@@ -69,9 +69,11 @@ def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
 
 
 def _write_potfiles(src_root: Path, potfiles: Path, paths: Iterable[Path]):
+    assert src_root.is_absolute()
     with open(potfiles, "w", encoding="utf-8") as h:
         for path in paths:
-            path = src_root / path
+            assert path.is_absolute()
+            path = path.relative_to(src_root)
             h.write(str(path) + "\n")
 
 
@@ -357,6 +359,7 @@ def get_missing(po_dir: Path) -> Iterable[str]:
 
     # Filter out any unknown filetypes
     not_translatable = [p for p in not_translatable if _get_pattern(p) is not None]
+    not_translatable = [src_root / p for p in not_translatable]
 
     # Filter out any files not containing translations
     fd, temp_path = tempfile.mkstemp("POTFILES.in")
