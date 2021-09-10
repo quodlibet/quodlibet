@@ -129,8 +129,13 @@ class SoundcloudApiClient(RestApi):
         print_w(f"Failed with HTTP {code}.")
         if code in (401, 403):
             print_w("User session no longer valid, logging out.")
-            self.access_token = None
-            self._refresh_tokens()
+            if self.access_token:
+                # Could call log_out to persist, but we're probably about to refresh...
+                self.access_token = None
+                self._refresh_tokens()
+            else:
+                print_w("Refreshing didn't work either, oh dear.")
+                self.log_out()
 
     def _default_params(self):
         params = {'client_id': self.__CLIENT_ID}
