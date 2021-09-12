@@ -218,6 +218,10 @@ class SoundcloudApiClient(RestApi):
         except AttributeError as e:
             print_w("Unusable result (%s) from SC: %s" % (e, d))
             return None
+        if not url:
+            print_w(f"Unplayable Soundcloud item (no stream URL) "
+                    f"for track #{d['id']}, {d['title']}")
+            return None
         uri = SoundcloudApiClient._add_secret(url)
         song = SoundcloudFile(uri=uri,
                               track_id=r.id,
