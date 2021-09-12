@@ -11,7 +11,6 @@ import shutil
 import atexit
 import subprocess
 import locale
-from time import sleep
 
 try:
     import pytest
@@ -312,6 +311,5 @@ def run_gtk_loop():
 
     # Import late as various version / init checks fail otherwise
     from gi.repository import Gtk
-    sleep(0.1)
     while Gtk.events_pending():
         Gtk.main_iteration()

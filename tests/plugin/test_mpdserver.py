@@ -10,6 +10,7 @@ import os
 import socket
 
 from senf import fsnative
+from gi.repository import Gtk
 
 from quodlibet.formats import AudioFile
 from quodlibet import app
@@ -94,7 +95,8 @@ class TMPDCommands(PluginTestCase):
 
     def _cmd(self, data):
         self.s.send(data)
-        run_gtk_loop()
+        while Gtk.events_pending():
+            Gtk.main_iteration_do(True)
         if data.strip() != b"idle":
             return self.s.recv(99999)
 

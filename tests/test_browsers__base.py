@@ -86,7 +86,6 @@ class TBrowserBase(TestCase):
         self.library.destroy()
         config.quit()
         destroy_fake_app()
-        # run_gtk_loop()
 
 
 class TBrowserMixin:
