@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-08-01 00:39+0000\n"
+"PO-Revision-Date: 2021-09-12 17:33+0000\n"
 "Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.8-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:54
@@ -962,7 +962,7 @@ msgstr "Poista aktiiviset selainsuodattimet"
 
 #: quodlibet/cli.py:112
 msgid "Refresh and rescan library"
-msgstr "_Päivitä kirjasto"
+msgstr "Päivitä kirjasto"
 
 #: quodlibet/cli.py:113
 msgid "List available browsers"
