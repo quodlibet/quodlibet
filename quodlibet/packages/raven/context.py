@@ -7,7 +7,10 @@ raven.context
 """
 from __future__ import absolute_import
 
-from collections import Mapping, Iterable
+try:
+    from collections import abc
+except ImportError:
+    import collections as abc  # type: ignore
 from threading import local
 from weakref import ref as weakref
 
@@ -30,7 +33,7 @@ def get_active_contexts():
         return []
 
 
-class Context(local, Mapping, Iterable):
+class Context(local, abc.Mapping, abc.Iterable):
     """
     Stores context until cleared.
 
