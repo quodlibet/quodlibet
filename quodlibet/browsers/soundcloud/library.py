@@ -19,10 +19,21 @@ class SoundcloudLibrary(SongLibrary):
     def __init__(self, client, player=None):
         super().__init__("Soundcloud")
         self.client = client
-        self.client.connect('songs-received', self._on_songs_received)
-        self.client.connect('comments-received', self._on_comments_received)
+        self._sids = [
+            self.client.connect('songs-received', self._on_songs_received),
+            self.client.connect('comments-received', self._on_comments_received)
+        ]
+        self._psid = None
         if player:
-            player.connect('song-started', self.__song_started)
+            self.player = player
+            self._psid = self.player.connect('song-started', self.__song_started)
+
+    def destroy(self):
+        super().destroy()
+        for sid in self._sids:
+            self.client.disconnect(sid)
+        if self._psid:
+            self.player.disconnect(self._psid)
 
     def query(self, text, sort=None, star=STAR):
         values = self._contents.values()
