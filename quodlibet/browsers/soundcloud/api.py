@@ -252,7 +252,8 @@ class SoundcloudApiClient(RestApi):
             for tag in tags:
                 try:
                     song["~#%s" % tag] = int(r[tag])
-                except KeyError:
+                except (KeyError, TypeError):
+                    # Nothing we can do really.
                     pass
 
         try:
@@ -262,8 +263,15 @@ class SoundcloudApiClient(RestApi):
                         website=r.permalink_url,
                         genre=u"\n".join(r.genre and r.genre.split(",") or []))
             if dl:
-                song.update(format=r.original_format)
-                song["~#bitrate"] = r.original_content_size * 8 / r.duration
+                try:
+                    song.update(format=r.original_format)
+                except AttributeError:
+                    pass
+                try:
+                    song["~#bitrate"] = r.original_content_size * 8 / r.duration
+                except AttributeError:
+                    # 2021-07: original_content_size seems to have gone now...
+                    song["~#bitrate"] = DEFAULT_BITRATE
             else:
                 song["~#bitrate"] = DEFAULT_BITRATE
             if r.description:
