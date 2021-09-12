@@ -195,7 +195,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 if value:
                     self.login_state = State.LOGGED_IN
                     print_d("Got a user token value of '%s'" % value)
-                    self.api_client.get_token(value)
+                    self.api_client.get_tokens(value)
             elif state == State.LOGGED_OUT:
                 self.api_client.authenticate_user()
                 self.login_state = State.LOGGING_IN
@@ -430,7 +430,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 print_w("Malformed response in callback URI: %s" % uri)
                 return
             print_d("Processing Soundcloud callback (%s)" % (uri,))
-            self.api_client.get_token(code)
+            self.api_client.get_tokens(code)
         else:
             print_w("Unknown URL format (%s)" % (uri,))
 

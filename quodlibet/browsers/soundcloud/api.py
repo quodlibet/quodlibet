@@ -16,7 +16,8 @@ from quodlibet import util, config
 from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.http import (download_json, download)
+from quodlibet.util.http import (download_json, download, HTTPRequest,
+                                 FailureCallback)
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 
@@ -24,10 +25,11 @@ from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 class RestApi(GObject.Object):
     """Semi-generic REST API client, using libsoup / `http.py`"""
 
-    def __init__(self, root):
+    def __init__(self, root, on_failure: FailureCallback):
         super().__init__()
         self._cancellable = Gio.Cancellable.new()
         self.root = root
+        self._on_failure = on_failure
 
     def _default_params(self):
         return {}
@@ -35,19 +37,28 @@ class RestApi(GObject.Object):
     def _get(self, path, callback, **kwargs):
         args = self._default_params()
         args.update(kwargs)
-        msg = Soup.Message.new('GET', self._url(path, args))
-        download_json(msg, self._cancellable, callback, None)
+        msg = self._add_auth_to(Soup.Message.new('GET', self._url(path, args)))
+        download_json(msg, self._cancellable, callback, None, self._on_failure)
+
+    def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
+        if self.access_token:
+            try:
+                msg.request_headers.append("Authorization",
+                                           f"OAuth {self.access_token}")
+            except AttributeError as e:
+                print_d(f"No headers ({e}) - try {dir(msg)}")
+        return msg
 
     def _post(self, path, callback, **kwargs):
         args = self._default_params()
         args.update(kwargs)
-        msg = Soup.Message.new('POST', self._url(path))
+        msg = self._add_auth_to(Soup.Message.new('POST', self._url(path)))
         post_body = urlencode(args)
         if not isinstance(post_body, bytes):
             post_body = post_body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, post_body)
-        download_json(msg, self._cancellable, callback, None)
+        download_json(msg, self._cancellable, callback, None, self._on_failure)
 
     def _put(self, path, callback, **kwargs):
         args = self._default_params()
@@ -58,7 +69,7 @@ class RestApi(GObject.Object):
             body = body.encode("ascii")
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
-        download_json(msg, self._cancellable, callback, None)
+        download_json(msg, self._cancellable, callback, None, self._on_failure)
 
     def _delete(self, path, callback, **kwargs):
         args = self._default_params()
@@ -100,8 +111,9 @@ class SoundcloudApiClient(RestApi):
 
     def __init__(self):
         print_d("Starting Soundcloud API...")
-        super().__init__(self.API_ROOT)
+        super().__init__(self.API_ROOT, self._on_failure)
         self.access_token = config.get("browsers", "soundcloud_token", None)
+        self.refresh_token = config.get("browsers", "soundcloud_refresh_token", None)
         self.user_id = config.get("browsers", "soundcloud_user_id", None)
         if not self.user_id:
             self._get_me()
@@ -111,10 +123,22 @@ class SoundcloudApiClient(RestApi):
     def online(self):
         return bool(self.access_token)
 
+    def _on_failure(self, req: HTTPRequest, _exc: Exception) -> None:
+        """Callback for HTTP failures."""
+        code = req.message.get_property('status-code')
+        print_w(f"Failed with HTTP {code}.")
+        if code in (401, 403):
+            print_w("User session no longer valid, logging out.")
+            if self.access_token:
+                # Could call log_out to persist, but we're probably about to refresh...
+                self.access_token = None
+                self._refresh_tokens()
+            else:
+                print_w("Refreshing didn't work either, oh dear.")
+                self.log_out()
+
     def _default_params(self):
         params = {'client_id': self.__CLIENT_ID}
-        if self.access_token:
-            params["oauth_token"] = self.access_token
         return params
 
     def authenticate_user(self):
@@ -129,21 +153,37 @@ class SoundcloudApiClient(RestApi):
         self.access_token = None
         self.save_auth()
 
-    def get_token(self, code):
+    def get_tokens(self, code):
         print_d("Getting access token...")
         options = {
             'grant_type': 'authorization_code',
+            'code': code,
             'redirect_uri': self.REDIRECT_URI,
             'client_id': self.__CLIENT_ID,
             'client_secret': self.__CLIENT_SECRET,
-            'code': code,
         }
-        self._post('/oauth2/token', self._receive_token, **options)
+        self._post('/oauth2/token', self._receive_tokens, **options)
+
+    def _refresh_tokens(self):
+        print_d("Refreshing access token...")
+        options = {
+            'grant_type': 'refresh_token',
+            'refresh_token': self.refresh_token,
+            'client_id': self.__CLIENT_ID,
+            'client_secret': self.__CLIENT_SECRET,
+        }
+        self._post('/oauth2/token', self._receive_tokens, **options)
 
     @json_callback
-    def _receive_token(self, json):
+    def _receive_tokens(self, json):
         self.access_token = json['access_token']
-        print_d("Got an access token: %s" % self.access_token)
+        refresh_token = json.get('refresh_token', None)
+        if refresh_token:
+            # Just in case we don't get it...
+            self.refresh_token = refresh_token
+            print_d("Got refresh token.")
+
+        print_d(f"Got an access token: {self.access_token}")
         self.save_auth()
         self._get_me()
 
@@ -193,6 +233,7 @@ class SoundcloudApiClient(RestApi):
 
     def save_auth(self):
         config.set("browsers", "soundcloud_token", self.access_token or "")
+        config.set("browsers", "soundcloud_refresh_token", self.refresh_token or "")
         config.set("browsers", "soundcloud_user_id", self.user_id or "")
 
     def put_favorite(self, track_id):
@@ -299,7 +340,7 @@ class SoundcloudApiClient(RestApi):
     def _authorize_url(self):
         url = '%s/connect' % (self.API_ROOT,)
         options = {
-            'scope': 'non-expiring',
+            'scope': '',
             'client_id': self.__CLIENT_ID,
             'response_type': 'code',
             'redirect_uri': self.REDIRECT_URI
