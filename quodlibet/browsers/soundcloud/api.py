@@ -280,8 +280,7 @@ class SoundcloudApiClient(RestApi):
             if plays:
                 song["~#playcount"] = plays
         except Exception as e:
-            print_w("Couldn't parse a song from %s (%r). "
-                    "Had these tags:\n  %s" % (json.dumps(r._raw), e, song.keys()))
+            print_w(f"Couldn't parse song ({e!r}): {json.dumps(r._raw)}")
         return song
 
     @classmethod
