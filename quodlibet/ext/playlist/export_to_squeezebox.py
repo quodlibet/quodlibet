@@ -23,9 +23,9 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_DESC_MARKUP = (
         _("Dynamically exports a playlist to Logitech Squeezebox "
           "playlist, provided both share a directory structure.") + "\n" +
-        _("Shares configuration with %(plugin)s")
-        % {"plugin": ("<a href=\"quodlibet:///prefs/plugins/Squeezebox Output\">"
-                      "Squeezebox Sync plugin</a>.")}
+        _("Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox "
+          "Sync plugin</a>.")
+        % {"plugin_link": "quodlibet:///prefs/plugins/Squeezebox Output"}
     )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     ELLIPSIZE_NAME = True

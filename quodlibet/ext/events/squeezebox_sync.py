@@ -29,10 +29,9 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_DESC_MARKUP = (
         _("Makes Logitech Squeezebox mirror Quod Libet output, "
           "provided both read from an identical library.") + "\n" +
-        _("Shares configuration with %(plugin)s.")
-        % {"plugin":
-            ("<a href=\"quodlibet:///prefs/plugins/Export to Squeezebox Playlist\">"
-             "Export to Squeezebox plugin</a>")}
+        _("Shares configuration with <a href=\"%(plugin_link)s\">Export to "
+          "Squeezebox plugin</a>.")
+        % {"plugin_link": "quodlibet:///prefs/plugins/Export to Squeezebox Playlist"}
     )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
