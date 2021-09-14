@@ -2350,15 +2350,17 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
-msgid "Shares configuration with %(plugin)s."
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
+"plugin</a>."
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:62
+#: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:63
+#: quodlibet/ext/events/squeezebox_sync.py:62
 #: quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
@@ -3262,7 +3264,9 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
-msgid "Shares configuration with %(plugin)s"
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
@@ -4563,28 +4567,32 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, python-format
 msgid ""
-"Analyzes and updates %(rg_link)s information, using GStreamer. Results are "
-"grouped by album."
+"Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
+"using GStreamer. Results are grouped by album."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:611
+#: quodlibet/ext/songsmenu/replaygain.py:573
+msgid "https://en.wikipedia.org/wiki/ReplayGain"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:612
+#: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:614
+#: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:631
+#: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
 msgstr ""
 
 #. Server settings Frame
-#: quodlibet/ext/songsmenu/replaygain.py:643
+#: quodlibet/ext/songsmenu/replaygain.py:642
 msgid "Existing Tags"
 msgstr ""
 
