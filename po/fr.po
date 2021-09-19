@@ -112,7 +112,7 @@ msgstr "Titres absents d'un album"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:261
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:264
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -122,7 +122,7 @@ msgstr[1] "%d pistes"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:265
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -253,7 +253,7 @@ msgstr "Navigateur de bibliothèque"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:555
+#: quodlibet/util/collection.py:558
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -785,7 +785,7 @@ msgstr ""
 "pourront être récupérées."
 
 #: quodlibet/browsers/playlists/util.py:48
-#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:606
+#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
 msgid "New Playlist"
 msgstr "Créer une liste de lecture"
 
@@ -836,30 +836,30 @@ msgstr "Rechercher"
 msgid "My tracks"
 msgstr "Mes pistes"
 
-#: quodlibet/browsers/soundcloud/main.py:141
+#: quodlibet/browsers/soundcloud/main.py:140
 #, python-format
 msgid "Go to %s"
 msgstr "Aller à %s"
 
-#: quodlibet/browsers/soundcloud/main.py:443
+#: quodlibet/browsers/soundcloud/main.py:442
 msgid "Connected"
 msgstr "Connecté"
 
-#: quodlibet/browsers/soundcloud/main.py:444
+#: quodlibet/browsers/soundcloud/main.py:443
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet est maintenant connecté, <b>%s</b> !"
 
-#: quodlibet/browsers/soundcloud/main.py:456
+#: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
 msgid "Log out of %s"
 msgstr "Se déconnecter de %s"
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:457
 msgid "Enter code…"
 msgstr "Saisir le code …"
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log in to %s"
 msgstr "Se connecter à %s"
@@ -2498,15 +2498,17 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
-msgid "Shares configuration with %(plugin)s."
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
+"plugin</a>."
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:62
+#: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
 msgstr "Recherche d'erreurs serveur Squeezebox"
 
-#: quodlibet/ext/events/squeezebox_sync.py:63
+#: quodlibet/ext/events/squeezebox_sync.py:62
 #: quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
@@ -3472,7 +3474,9 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
-msgid "Shares configuration with %(plugin)s"
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
@@ -4901,30 +4905,34 @@ msgstr "Gain de relecture"
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, fuzzy, python-format
 msgid ""
-"Analyzes and updates %(rg_link)s information, using GStreamer. Results are "
-"grouped by album."
+"Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
+"using GStreamer. Results are grouped by album."
 msgstr ""
 "Analyse et met à jour les informations de ReplayGain, en utilisant "
 "GStreamer. Les résultats sont regroupés par album."
 
-#: quodlibet/ext/songsmenu/replaygain.py:611
+#: quodlibet/ext/songsmenu/replaygain.py:573
+msgid "https://en.wikipedia.org/wiki/ReplayGain"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
 msgstr "toujours"
 
-#: quodlibet/ext/songsmenu/replaygain.py:612
+#: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
 msgstr "si <b>une ou plusieurs étiquettes</b> RG sont absentes"
 
-#: quodlibet/ext/songsmenu/replaygain.py:614
+#: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
 msgstr "si les étiquettes RG de <b>album</b> sont manquantes"
 
-#: quodlibet/ext/songsmenu/replaygain.py:631
+#: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
 msgstr "Appliquer aux albums :"
 
 #. Server settings Frame
-#: quodlibet/ext/songsmenu/replaygain.py:643
+#: quodlibet/ext/songsmenu/replaygain.py:642
 msgid "Existing Tags"
 msgstr "Etiquettes existantes"
 
@@ -5403,12 +5411,12 @@ msgstr "Utiliser JACK pour la lecture si disponible"
 msgid "Auto-connect to JACK output devices"
 msgstr "Connexion automatique aux périphériques de sortie JACK"
 
-#: quodlibet/player/gstbe/util.py:145
+#: quodlibet/player/gstbe/util.py:148
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Aucun récepteur audio GStreamer n'a été trouvé. Essayé : %s"
 
-#: quodlibet/player/gstbe/util.py:164
+#: quodlibet/player/gstbe/util.py:167
 msgid "Invalid GStreamer output pipeline"
 msgstr "Pipeline de sortie GStreamer invalide"
 
@@ -6606,7 +6614,7 @@ msgstr "Analyser les répertoires"
 msgid "Hidden Songs"
 msgstr "Titre cachés"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:347
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:350
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7377,15 +7385,15 @@ msgstr ""
 "\n"
 "Visiter notre <a href='%(url)s'>site Internet</a>"
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:345
 msgid "Empty Playlist"
 msgstr "Liste de lecture Vide"
 
-#: quodlibet/util/collection.py:440
+#: quodlibet/util/collection.py:443
 msgid "Playlists must have a name"
 msgstr "Les listes de lectures doivent être nommées"
 
-#: quodlibet/util/collection.py:644
+#: quodlibet/util/collection.py:647
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Une liste de lecture nommée %(name)s existe déjà à %(path)s"

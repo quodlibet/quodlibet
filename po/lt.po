@@ -117,7 +117,7 @@ msgstr "Dainos nėra albume"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:261
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:264
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -128,7 +128,7 @@ msgstr[2] "%d takelių"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:265
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -265,7 +265,7 @@ msgstr "Bibliotekos naršyklė"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:555
+#: quodlibet/util/collection.py:558
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -813,7 +813,7 @@ msgstr ""
 "Visa pažymėto grojaraščio informacija bus ištrinta be atkūrimo galimybės."
 
 #: quodlibet/browsers/playlists/util.py:48
-#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:606
+#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
 msgid "New Playlist"
 msgstr "Naujas grojaraštis"
 
@@ -868,31 +868,31 @@ msgstr "Ieškoti"
 msgid "My tracks"
 msgstr "takeliai"
 
-#: quodlibet/browsers/soundcloud/main.py:141
+#: quodlibet/browsers/soundcloud/main.py:140
 #, python-format
 msgid "Go to %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:443
+#: quodlibet/browsers/soundcloud/main.py:442
 #, fuzzy
 msgid "Connected"
 msgstr "vieta"
 
-#: quodlibet/browsers/soundcloud/main.py:444
+#: quodlibet/browsers/soundcloud/main.py:443
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "<b>%s</b> nėra prijungtas."
 
-#: quodlibet/browsers/soundcloud/main.py:456
+#: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
 msgid "Log out of %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:457
 msgid "Enter code…"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log in to %s"
 msgstr ""
@@ -2493,15 +2493,17 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
-msgid "Shares configuration with %(plugin)s."
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
+"plugin</a>."
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:62
+#: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:63
+#: quodlibet/ext/events/squeezebox_sync.py:62
 #: quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
@@ -3466,7 +3468,9 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
-msgid "Shares configuration with %(plugin)s"
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
@@ -4852,28 +4856,32 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, python-format
 msgid ""
-"Analyzes and updates %(rg_link)s information, using GStreamer. Results are "
-"grouped by album."
+"Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
+"using GStreamer. Results are grouped by album."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:611
+#: quodlibet/ext/songsmenu/replaygain.py:573
+msgid "https://en.wikipedia.org/wiki/ReplayGain"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:612
+#: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:614
+#: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:631
+#: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
 msgstr ""
 
 #. Server settings Frame
-#: quodlibet/ext/songsmenu/replaygain.py:643
+#: quodlibet/ext/songsmenu/replaygain.py:642
 #, fuzzy
 msgid "Existing Tags"
 msgstr "Redaguoti žymes"
@@ -5362,12 +5370,12 @@ msgstr ""
 msgid "Auto-connect to JACK output devices"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:145
+#: quodlibet/player/gstbe/util.py:148
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "Nerasta stočių"
 
-#: quodlibet/player/gstbe/util.py:164
+#: quodlibet/player/gstbe/util.py:167
 #, fuzzy
 msgid "Invalid GStreamer output pipeline"
 msgstr "Netaisyklinga GStreamer išvestis, bandoma naudoti numatytąją."
@@ -6600,7 +6608,7 @@ msgstr "Peržvelgiami aplankai"
 msgid "Hidden Songs"
 msgstr "Nėra dainų"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:347
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:350
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7388,16 +7396,16 @@ msgid ""
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:345
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "Importuoti grojaraštį"
 
-#: quodlibet/util/collection.py:440
+#: quodlibet/util/collection.py:443
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:644
+#: quodlibet/util/collection.py:647
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Grojaraštis vardu %s jau egzistuoja."
