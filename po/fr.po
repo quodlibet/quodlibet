@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-07-19 04:27+0000\n"
+"PO-Revision-Date: 2021-09-19 00:41+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.7.2-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -846,9 +846,9 @@ msgid "Connected"
 msgstr "Connecté"
 
 #: quodlibet/browsers/soundcloud/main.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "Quod Libet est maintenant connecté, <b>%s</b> !"
+msgstr "Quod Libet est maintenant connecté, %s !"
 
 #: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
@@ -1197,13 +1197,12 @@ msgid "Artwork URL Cover Source"
 msgstr "URL des sources de pochettes"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
 msgstr ""
-"Téléchargements des pochettes liées par le tag artwork_url. Cela fonctionne "
-"avec le navigateur Soundcloud."
+"Téléchargements de pochettes liées par la balise <tt>artwork_url</tt>. Cela "
+"fonctionne avec le navigateur Soundcloud."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1265,13 +1264,12 @@ msgid "Regex Substitution"
 msgstr "Substitution Regex"
 
 #: quodlibet/ext/editing/resub.py:20
-#, fuzzy
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"Autorise les substitutions regex (//s) durant l'étiquetage ou le renommage "
-"des fichiers."
+"Permet des substitutions regex arbitraires (<tt>s/from/to/</tt>) lors du "
+"balisage ou du renommage de fichiers."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1921,9 +1919,8 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
-msgstr "Sortie d'un fichier Jabber User Tunes vers ~/.quodlibet/jabber."
+msgstr "Produit un fichier Jabber User Tunes vers <tt>~/.quodlibet/jabber</tt>."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2022,33 +2019,28 @@ msgid "Publishes status messages to an MQTT topic."
 msgstr "Publie des messages de statut à un thème MQTT."
 
 #: quodlibet/ext/events/mqtt.py:137
-#, fuzzy
 msgid "Broker hostname / IP"
-msgstr "Nom d'hôte de l'intermédiaire"
+msgstr "Nom d'hôte de l'intermédiaire / IP"
 
 #: quodlibet/ext/events/mqtt.py:138
-#, fuzzy
 msgid "Defaults to localhost"
-msgstr "nom d'hôte du mandataire / IP (par défaut : localhost)"
+msgstr "La valeur par défaut est localhost"
 
 #: quodlibet/ext/events/mqtt.py:140
 msgid "Broker port"
 msgstr "Port de l'intermédiaire"
 
 #: quodlibet/ext/events/mqtt.py:140
-#, fuzzy
 msgid "Defaults to 1883"
-msgstr "Port externe (par défaut, 1883)"
+msgstr "La valeur par défaut est 1883"
 
 #: quodlibet/ext/events/mqtt.py:142
-#, fuzzy
 msgid "Broker username"
-msgstr "Nom d'utilisateur du courtier"
+msgstr "Nom d'utilisateur de l'intermédiaire"
 
 #: quodlibet/ext/events/mqtt.py:144
-#, fuzzy
 msgid "Broker password"
-msgstr "Mot de passe du courtier"
+msgstr "Mot de passe de l'intermédiaire"
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Topic"
@@ -2105,9 +2097,8 @@ msgid "MusicBrainz Sync"
 msgstr "Synchronisation de MusicBrainz"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
-#, fuzzy
 msgid "Syncs the rating of a song with MusicBrainz."
-msgstr "Synchronise le classement du morceau avec MusicBrainz."
+msgstr "Synchronise le classement d'un morceau avec MusicBrainz."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
@@ -2444,7 +2435,6 @@ msgid "Seekpoint Bookmarks"
 msgstr "Signets Seekpoint"
 
 #: quodlibet/ext/events/seekpoints.py:24
-#, fuzzy
 msgid ""
 "Store Seekpoints A and/or B for tracks. Skip to time A and stop after time B "
 "when track is played.\n"
@@ -2455,9 +2445,10 @@ msgid ""
 msgstr ""
 "Stockez les points de recherche A et/ou B pour les pistes. Passez à l'heure "
 "A et arrêtez-vous après l'heure B lorsque la piste est jouée.\n"
-"Notez que changer le nom des points ci-dessous ne met pas à jour les noms de "
-"signets réels, mais seulement les noms de signets que le plugin recherche "
-"lorsqu'il décide de les chercher."
+"\n"
+"ℹ Notez que changer le nom des points ci-dessous ne met pas à jour les noms "
+"de signets actuels, mais seulement les noms de signets que le plugin "
+"recherche lorsqu'il décide de les chercher."
 
 #: quodlibet/ext/events/seekpoints.py:108
 msgid "Bookmark name for point A"
@@ -2502,6 +2493,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
+"Partage la configuration avec <a href=\"%(plugin_link)s\">Exporter vers le "
+"plugin Squeezebox</a>."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2516,7 +2509,7 @@ msgstr "Recherche d'erreurs %s. Veuillez vérifier les paramètres"
 
 #: quodlibet/ext/events/stop_on_pause.py:22
 msgid "Stop on Pause"
-msgstr ""
+msgstr "Arrêt sur Pause"
 
 #: quodlibet/ext/events/stop_on_pause.py:24
 msgid ""
@@ -2529,15 +2522,23 @@ msgid ""
 "ensure the position in the current source is maintained. Otherwise, playback "
 "will be left stopped and must restart from the begining."
 msgstr ""
+"Ce plugin change Pause en Stop/Lecture/Recherche.\n"
+"\n"
+"Ce comportement est utile si Quod Libet ne parvient pas à changer de "
+"périphérique audio lorsqu'un nouveau périphérique audio est ajouté au "
+"système (enceinte Bluetooth, DAC USB, etc).\n"
+"\n"
+"Si l'option 'Seulement les sources recherchées' n'est pas cochée, ce plugin "
+"s'assurera que la position dans la source actuelle est maintenue. Sinon, la "
+"lecture sera interrompue et devra recommencer depuis le début."
 
 #: quodlibet/ext/events/stop_on_pause.py:75
 msgid "Only Seekable Sources"
-msgstr ""
+msgstr "Seulement les sources recherchées"
 
 #: quodlibet/ext/events/stop_on_pause.py:86
-#, fuzzy
 msgid "Plugin Options"
-msgstr "Options"
+msgstr "Options du Plugin"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending copy"
@@ -2809,9 +2810,8 @@ msgid "Found {} songs to synchronize"
 msgstr "Trouvé {} morceaux à synchroniser"
 
 #: quodlibet/ext/events/synchronize_to_device.py:903
-#, fuzzy
 msgid "Mismatch between destination path and export pattern"
-msgstr "Incohérence entre le chemin de destination et le modèle d'exportation"
+msgstr "Inadéquation entre le chemin de destination et le modèle d'exportation"
 
 #: quodlibet/ext/events/synchronize_to_device.py:905
 msgid ""
@@ -3012,15 +3012,14 @@ msgid "Thumb Rating"
 msgstr "Évaluation du pouce"
 
 #: quodlibet/ext/events/thumbrating.py:92
-#, fuzzy
 msgid ""
 "Adds a thumb-up / thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
-"Ajoute un système de notation pouce en haut/ pouce en bas qui est converti "
-"en une valeur de notation. Utile pour conserver les totaux des votes en "
-"cours d'exécution et trier par '~#score'."
+"Ajoute un système de notation pouce en haut / pouce en bas qui est converti "
+"en une valeur de notation. Utile pour garder les totaux de vote en cours et "
+"trier par <b><tt>~#score</tt></b>."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3169,9 +3168,8 @@ msgid "Error"
 msgstr "Erreur"
 
 #: quodlibet/ext/events/visualisations.py:76
-#, fuzzy
 msgid "Visualiser executable:"
-msgstr "Exécutable du visualiseur :"
+msgstr "Exécutable Visualiser :"
 
 #: quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
@@ -3182,9 +3180,8 @@ msgid "Waveform Seek Bar"
 msgstr "Barre de recherche Waveform"
 
 #: quodlibet/ext/events/waveformseekbar.py:610
-#, fuzzy
 msgid "∿ A seekbar in the shape of the waveform of the current song."
-msgstr "Une barre de recherche en forme d'onde de la chanson actuelle."
+msgstr "∿ Une barre de recherche sous la forme d'onde du morceau en cours."
 
 #: quodlibet/ext/events/waveformseekbar.py:679
 msgid "Override foreground color:"
@@ -3290,7 +3287,6 @@ msgid "Closest to virtual speaker placement (30°, 3 meter)"
 msgstr "Positionnement le plus proche de l'enceinte virtuelle (30°, 3 mètres)"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:28
-#, fuzzy
 msgid "Chu Moy"
 msgstr "Chu Moy"
 
@@ -3315,7 +3311,6 @@ msgid "Custom settings"
 msgstr "Configuration personnalisée"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:153
-#, fuzzy
 msgid "Crossfeed"
 msgstr "Flux croisés"
 
@@ -3464,13 +3459,13 @@ msgid "Export to Squeezebox"
 msgstr "Exporter vers Squeezebox"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:24
-#, fuzzy
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure."
 msgstr ""
-"Exporte une liste de lecture vers une liste de lecture Sonos, à condition "
-"que les deux partagent une structure de répertoire."
+"Exporte dynamiquement une liste de lecture vers une liste de lecture "
+"Logitech Squeezebox, à condition que les deux partagent une structure de "
+"répertoire."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
@@ -3478,6 +3473,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
+"Partage la configuration avec <a href=\"%(plugin_link)s\">Plugin Squeezebox "
+"Sync</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3532,14 +3529,12 @@ msgstr ""
 "suivant dans la liste une fois épuisé."
 
 #: quodlibet/ext/playorder/follow.py:22
-#, fuzzy
 msgid "Follow cursor"
 msgstr "Suivre le curseur"
 
 #: quodlibet/ext/playorder/follow.py:23
-#, fuzzy
 msgid "_Follow cursor"
-msgstr "Suivre le curseur"
+msgstr "_Suivre le curseur"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
@@ -3556,9 +3551,8 @@ msgid "Prefer less played"
 msgstr "Préférer les moins lus"
 
 #: quodlibet/ext/playorder/playcounteq.py:26
-#, fuzzy
 msgid "Prefer _less played"
-msgstr "Préférer les moins lus"
+msgstr "Préférer _moins joué"
 
 #: quodlibet/ext/playorder/queue.py:18
 msgid "Queue Only"
@@ -3577,14 +3571,12 @@ msgstr ""
 "cliquez sur un morceau pour le mettre en file d'attente au lieu de le lire."
 
 #: quodlibet/ext/playorder/queue.py:24
-#, fuzzy
 msgid "Queue only"
-msgstr "Uniquement en file d'attente"
+msgstr "File d'attente uniquement"
 
 #: quodlibet/ext/playorder/queue.py:25
-#, fuzzy
 msgid "_Queue only"
-msgstr "Uniquement en file d'attente"
+msgstr "_File d'attente uniquement"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
@@ -3597,9 +3589,8 @@ msgstr ""
 "morceaux."
 
 #: quodlibet/ext/playorder/reverse.py:19
-#, fuzzy
 msgid "Re_verse"
-msgstr "Inverser"
+msgstr "In_verser"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
@@ -3626,9 +3617,8 @@ msgid "Shuffle by grouping"
 msgstr "Lecture aléatoire par regroupement"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:40
-#, fuzzy
 msgid "Shuffle by _grouping"
-msgstr "Lecture aléatoire par regroupement"
+msgstr "Lecture aléatoire par re_groupement"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
@@ -3684,14 +3674,12 @@ msgstr ""
 "pistes dont l'évaluation est inférieure (ou égale) à un seuil donné."
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
-#, fuzzy
 msgid "Skip disliked tracks"
 msgstr "Sauter les morceaux que vous n'aimez pas"
 
 #: quodlibet/ext/playorder/skip_disliked.py:30
-#, fuzzy
 msgid "Skip _disliked tracks"
-msgstr "Sauter les morceaux que vous n'aimez pas"
+msgstr "Sauter les _morceaux que vous n'aimez pas"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
@@ -3706,14 +3694,12 @@ msgstr ""
 "répétant chaque piste un nombre donné de fois."
 
 #: quodlibet/ext/playorder/track_repeat.py:32
-#, fuzzy
 msgid "Repeat each track"
 msgstr "Répéter chaque piste"
 
 #: quodlibet/ext/playorder/track_repeat.py:33
-#, fuzzy
 msgid "Repeat _each track"
-msgstr "Répéter chaque piste"
+msgstr "Répéter chaqu_e piste"
 
 #: quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
@@ -4070,9 +4056,8 @@ msgid "Your current working directory is:"
 msgstr "Votre répertoire par défaut est :"
 
 #: quodlibet/ext/songsmenu/console.py:559
-#, fuzzy
 msgid "Completion"
-msgstr "Connection"
+msgstr "Compléter"
 
 #: quodlibet/ext/songsmenu/cover_download.py:53
 msgid "Download Cover Art"
@@ -4238,9 +4223,8 @@ msgid "reverse"
 msgstr "inverser"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
-#, fuzzy
 msgid "If set, the argument list will be reversed"
-msgstr "Si ce paramètre est défini, la liste des arguments sera inversée."
+msgstr "Si cette option est activée, la liste des arguments sera inversée"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:95
 msgid "Input value"
@@ -4341,7 +4325,6 @@ msgid "Edit Playcount"
 msgstr "Modifier le compteur de lectures"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
-#, fuzzy
 msgid ""
 "Edit a song's <tt>~#playcount</tt> and <tt>~#skipcount.</tt>\n"
 "\n"
@@ -4352,15 +4335,15 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
-"Editez le ~#nombre de lecture et le ~#nombre de saut d'une chanson.\n"
+"Modifier le <tt>~#playcount</tt> et le <tt>~#skipcount.</tt> d'une chanson.\n"
 "\n"
-"Lorsque plusieurs chansons sont sélectionnées, les comptes seront "
+"Lorsque plusieurs chansons sont sélectionnées, les calculs seront "
 "incrémentés, plutôt que définis.\n"
 "\n"
-"Lorsque vous réglez le ~#compte de lecture d'un morceau à 0, les entrées "
-"~#dernier joué et ~#dernier lancé seront effacées. Cependant, lorsque vous "
-"réglez un morceau 0-play sur un compte de lecture positif, aucun temps de "
-"lecture ne sera créé."
+"Lorsque vous réglez le <tt>~#playcount</tt> d'un morceau sur 0, les entrées "
+"<tt>~#lastplayed</tt> et <tt>~#laststarted</tt> sont effacées. Cependant, "
+"lors du réglage d'une chanson 0-play à un calcul de lecture positif, aucun "
+"temps de lecture ne sera créé."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
@@ -4617,45 +4600,42 @@ msgstr ""
 #. * means all tags (so tags like 'title' and internal (user data) "tags" like ~#added)
 #. * tag1 tag2 means all except tag1 and tag2
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:59
-#, fuzzy
 msgid "Export User Data"
-msgstr "Exporter les méta-données"
+msgstr "Exportation des Données Utilisateur"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:60
-#, fuzzy
 msgid "Export Tags"
-msgstr "Chemin d'exportation"
+msgstr "Exportation des étiquettes"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:61
-#, fuzzy
 msgid "Export Tags and User Data"
-msgstr "Exporter les méta-données"
+msgstr "Exportation des étiquettes et des Données Utilisateur"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:62
-#, fuzzy
 msgid "Export File Stems and User Data"
-msgstr "Exporter les méta-données"
+msgstr "Exportation des Sources de Fichiers et des Données Utilisateur"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:64
 msgid "Export File Stems and Tags"
-msgstr ""
+msgstr "Exportation des Sources de Fichiers et des Étiquettes"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:65
 msgid "Export File Stems, Tags and User Data"
 msgstr ""
+"Exportation des Sources de Fichiers, des Étiquettes et des Données "
+"Utilisateur"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr ""
+msgstr "Importation / Exportation"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
-msgstr ""
+msgstr "Importe et exporte des étiquettes et des données utilisateur de suivi."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:192
-#, fuzzy
 msgid "Further information"
-msgstr "Aucun renseignement de durée"
+msgstr "Plus d'information"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:195
 #, python-format
@@ -4675,115 +4655,122 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
+"Le terme \"données utilisateur des pistes\" comprend les listes de lecture "
+"dans lesquelles se trouvent les pistes sélectionnées et les métadonnées "
+"suivantes :\n"
+"\n"
+"<tt>%s</tt>\n"
+"\n"
+"Sachez que tout ce que vous avez choisi d'exporter sera importé. Si vous "
+"avez exporté les sources des fichiers (noms de fichiers sans extension), "
+"alors, à l'importation, les fichiers sélectionnés seront renommés.\n"
+"\n"
+"Après avoir exporté un album, vous pouvez importer les données dans une "
+"autre version de l'album. L'ordre et le nombre de pistes peuvent être "
+"différents. Le plugin fait correspondre les données exportées aux nouveaux "
+"morceaux, même si les noms des morceaux sont légèrement différents. La "
+"correspondance automatique n'est pas toujours correcte, il est donc "
+"préférable de ne pas trop réduire les valeurs de similarité suivantes."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
 msgid "User interaction on import"
-msgstr ""
+msgstr "Interaction de l'utilisateur lors de l'importation"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:215
 msgid "Require confirmation if number of tracks differs"
-msgstr ""
+msgstr "Demander une confirmation si le nombre de pistes diffère"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:221
 msgid "Require confirmation if number of albums differs"
-msgstr ""
+msgstr "Demande de confirmation si le nombre d'albums diffère"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:226
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
 msgstr ""
+"Pourcentage en dessous duquel l'utilisateur devra vérifier manuellement et "
+"éventuellement modifier quelle piste est associée à quelle autre."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
 msgid "Track similarity:"
-msgstr ""
+msgstr "Similitude des pistes :"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
-#, fuzzy
 msgid "Album similarity:"
-msgstr "Pochette d'Album"
+msgstr "Similitude de l'album :"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:262
-#, fuzzy
 msgid "Export files"
-msgstr "L'importation a échoué"
+msgstr "Exportation de fichiers"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
 msgid "Write pretty and clear JSON (slower)"
-msgstr ""
+msgstr "Écriture d'un JSON joli et clair (plus lent)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
 msgid "Delete export files after they've been imported"
-msgstr ""
+msgstr "Suppression des fichiers d'exportation après qu'ils aient été importés"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
-#, fuzzy
 msgid "Open Export Directory"
-msgstr "Filtrer sur le répertoire"
+msgstr "Ouvrir le Répertoire d'Exportation"
 
 #.
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:383
-#, fuzzy
 msgid "Discs"
-msgstr "Disque"
+msgstr "Disques"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:384
-#, fuzzy
 msgid "Tracks"
-msgstr "Piste"
+msgstr "Pistes"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
-#, fuzzy
 msgid "Artist(s)"
-msgstr "Artiste"
+msgstr "Artiste(s)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
 msgid "End of path"
-msgstr ""
+msgstr "Fin du dossier"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
-#, fuzzy
 msgid "Match Albums"
-msgstr "albums"
+msgstr "Correspondance des Albums"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
-#, fuzzy
 msgid "Continue"
-msgstr "_Continuer"
+msgstr "Continuer"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:422
-#, fuzzy
 msgid "Nothing to import"
-msgstr "Rien à ajouter"
+msgstr "Rien à importer"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
 msgid "You have to export something before you can import."
-msgstr ""
+msgstr "Vous devez exporter quelque chose avant de pouvoir l'importer."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:446
 msgid "The index was corrupt."
-msgstr ""
+msgstr "L'index a été corrompu."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:500
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't parse JSON in %s"
-msgstr "Impossible d'écrire '%s'"
+msgstr "Impossible d'analyser le JSON dans %s"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:504
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't read %s"
-msgstr "Impossible d'écrire '%s'"
+msgstr "Impossible de lire %s"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
-#, fuzzy
 msgid "File name"
-msgstr "Noms du fichier"
+msgstr "Nom du fichier"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-#, fuzzy
 msgid "Match Tracks"
-msgstr "Répéter chaque piste"
+msgstr "Correspondances des pistes"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:94
 msgid "Updating chart list."
@@ -4874,7 +4861,6 @@ msgstr "Analyseur ReplayGain"
 
 #. Translators: Combined track number/title column heading
 #: quodlibet/ext/songsmenu/replaygain.py:394
-#, fuzzy
 msgctxt "track/title"
 msgid "Track"
 msgstr "Piste"
@@ -4903,17 +4889,17 @@ msgid "Replay Gain"
 msgstr "Gain de relecture"
 
 #: quodlibet/ext/songsmenu/replaygain.py:571
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"Analyse et met à jour les informations de ReplayGain, en utilisant "
-"GStreamer. Les résultats sont regroupés par album."
+"Analyse et met à jour l' information <a href=\"%(rg_link)s\">ReplayGain</a>, "
+"en utilisant GStreamer. Les résultats sont regroupés par album."
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
@@ -4979,22 +4965,22 @@ msgid "Tap BPM"
 msgstr "Appuyez sur BPM"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:178
-#, fuzzy
 msgid "🥁 Tap BPM for the selected song."
-msgstr "Appuyez sur BPM pour le morceau sélectionné."
+msgstr "🥁 Taper le BPM pour la chanson sélectionnée."
 
 #: quodlibet/ext/songsmenu/website_search.py:36
 msgid "Website Search"
 msgstr "Recherche site Internet"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. <tt>%(pattern-example)s</tt>."
 msgstr ""
-"Rechercher sur les sites de votre choix, selon n'importe quelle étiquette.\n"
-"Supporte les motifs, par exemple %(pattern-example)s."
+"Recherche le site web de votre choix en utilisant n'importe quelle étiquette "
+"du morceau.\n"
+"Supporte les modèles, par exemple <tt>%(pattern-example)s</tt>."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5174,9 +5160,9 @@ msgid "Set a tag and remove existing values"
 msgstr "Définir une étiquette et supprimer les valeurs existantes"
 
 #: quodlibet/operon/commands.py:306
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
-msgstr "Impossible de définir %r"
+msgstr "Ne peut pas définir %(tag)r pour le fichier %(format)s %(file)r"
 
 #: quodlibet/operon/commands.py:321
 msgid "Remove tags"
@@ -5309,37 +5295,32 @@ msgid "Prefer higher rated"
 msgstr "Préférer les meilleures évaluations"
 
 #: quodlibet/order/reorder.py:41
-#, fuzzy
 msgid "Prefer _higher rated"
-msgstr "Préférer les meilleures évaluations"
+msgstr "Préférer les _meilleures évaluations"
 
 #: quodlibet/order/repeat.py:43
 msgid "Repeat this track"
 msgstr "Répéter cette piste"
 
 #: quodlibet/order/repeat.py:44
-#, fuzzy
 msgid "Repeat _this track"
-msgstr "Répéter cette piste"
+msgstr "Répé_ter ce morceau"
 
 #: quodlibet/order/repeat.py:57
 msgid "Repeat all"
 msgstr "Tout répéter"
 
 #: quodlibet/order/repeat.py:58
-#, fuzzy
 msgid "Repeat _all"
-msgstr "Tout répéter"
+msgstr "Tout _répéter"
 
 #: quodlibet/order/repeat.py:73
-#, fuzzy
 msgid "One song"
-msgstr "Un titre"
+msgstr "Une seule chanson"
 
 #: quodlibet/order/repeat.py:74
-#, fuzzy
 msgid "One _song"
-msgstr "Un titre"
+msgstr "Une seule _chanson"
 
 #: quodlibet/player/gstbe/player.py:100
 msgid "Stream"
@@ -5466,28 +5447,28 @@ msgstr ""
 "attendant, les écoutes ne seront pas soumises."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
-#, fuzzy
 msgid "ListenBrainz Submission"
-msgstr "Soumission"
+msgstr "Soumission ListenBrainz"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
-msgstr ""
+msgstr "Soumettre des écoutes à ListenBrainz."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Je_ton d'utilisateur :"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
-#, fuzzy
 msgid "T_ags:"
-msgstr "Éti_quettes :"
+msgstr "É_tiquettes :"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
+"Liste de étiquettes à inclure dans la soumission. Séparées par des virgules, "
+"utilisez des guillemets si nécessaire."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
@@ -5913,7 +5894,7 @@ msgid "_Plugins"
 msgstr "_Greffons"
 
 #: quodlibet/qltk/exfalsowindow.py:266
-#, fuzzy, python-format
+#, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s et %(count)s de plus"
@@ -6168,10 +6149,13 @@ msgid ""
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
 msgstr ""
+"Vérifiez si les colonnes de la partie gauche correspondent approximativement "
+"à celles de la partie droite. Si ce n'est pas le cas, vous pouvez changer "
+"l'ordre ici (utiliser _ pour les lignes qui ne doivent pas correspondre) :"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
-msgstr ""
+msgstr "Ordre du côté droit :"
 
 #: quodlibet/qltk/msg.py:43
 msgid "Discard tag changes?"
@@ -6830,14 +6814,12 @@ msgid "Replace spaces with _underscores"
 msgstr "Remplacer les espaces par des _soulignés"
 
 #: quodlibet/qltk/renamefiles.py:62
-#, fuzzy
 msgid "Replace [semi]colon delimiting with hyphens"
 msgstr "Remplacer les [double]points par des traits d'union"
 
 #: quodlibet/qltk/renamefiles.py:63
-#, fuzzy
 msgid "e.g. \"iv: allegro.flac\" → \"iv - allegro.flac\""
-msgstr "Par exemple. \"iv : allegro.flac -> \"iv - allegro.flac\""
+msgstr "Par exemple. \"iv : allegro.flac \" → \"iv - allegro.flac\""
 
 #: quodlibet/qltk/renamefiles.py:82
 msgid "Strip _Windows-incompatible characters"
@@ -7004,7 +6986,6 @@ msgid "Select Actual / New Directory for {dir!r}"
 msgstr "Sélectionner le Répertoire Actuel / Nouveau Répertoire pour {dir!r}"
 
 #: quodlibet/qltk/scanbox.py:149
-#, fuzzy
 msgid ""
 "This will move QL metadata:\n"
 "\n"
@@ -7015,11 +6996,11 @@ msgid ""
 msgstr ""
 "Ceci déplacera les métadonnées QL :\n"
 "\n"
-"{old!r} -> {new!r}\n"
+"{old!r} → {new!r}\n"
 "\n"
 "Les fichiers audio eux-mêmes ne sont pas déplacés par cette opération.\n"
 "Néanmoins, il est recommandé de faire une sauvegarde (y compris du fichier "
-"'songs' de Quodlibet)"
+"'songs' de Quodlibet)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
@@ -7515,10 +7496,9 @@ msgstr[1] "%d années"
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
 #: quodlibet/util/__init__.py:516
-#, fuzzy
 msgctxt "check"
 msgid "titlecase?"
-msgstr "cas du titre ?"
+msgstr "intitulé ?"
 
 #: quodlibet/util/massagers.py:115
 msgid ""
