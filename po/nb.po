@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-13 18:32+0000\n"
+"PO-Revision-Date: 2021-09-16 05:35+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -2489,6 +2489,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
+"Deler oppsett med <a href=\"%(plugin_link)s\">Eksport til Squeezebox-"
+"programtillegg</a>"
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2503,9 +2505,10 @@ msgstr "Fant ikke %s. Kontroller oppsett."
 
 #: quodlibet/ext/events/stop_on_pause.py:22
 msgid "Stop on Pause"
-msgstr ""
+msgstr "Stopp ved pause"
 
 #: quodlibet/ext/events/stop_on_pause.py:24
+#, fuzzy
 msgid ""
 "This plugin changes Pause to Stop/Play/Seek.\n"
 "\n"
@@ -2516,10 +2519,19 @@ msgid ""
 "ensure the position in the current source is maintained. Otherwise, playback "
 "will be left stopped and must restart from the begining."
 msgstr ""
+"Dette programtillegget endrer «Pause» til «Stopp/spill av/blafre».\n"
+"\n"
+"Nyttig hvis Quod Libet ikke kan bytte lydenheter når en ny knyttes til "
+"systemet (Blåtannshøyttaler, USB-DAC, osv).\n"
+"\n"
+"Hvis valget for «Kun kilder som kan blafres» ikke er valgt, vil dette "
+"programtillegget huske posisjon i nåværede kilde. Ellers vil avspilling "
+"stoppes og må startes på ny fra begynnelsen."
 
 #: quodlibet/ext/events/stop_on_pause.py:75
+#, fuzzy
 msgid "Only Seekable Sources"
-msgstr ""
+msgstr "Kun kilder som kan blafres"
 
 #: quodlibet/ext/events/stop_on_pause.py:86
 #, fuzzy
@@ -3471,6 +3483,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
+"Del oppsett med <a href=\"%(plugin_link)s\">Sqeezebox Sync-"
+"programtillegg</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -4612,20 +4626,23 @@ msgid "Export File Stems and User Data"
 msgstr "Eksporter metadata"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:64
+#, fuzzy
 msgid "Export File Stems and Tags"
-msgstr ""
+msgstr "Eksporter filstamme og etiketter"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:65
+#, fuzzy
 msgid "Export File Stems, Tags and User Data"
-msgstr ""
+msgstr "Eksporter filstammer, etiketter, og brukerdata"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr ""
+msgstr "Import/eksport"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
+#, fuzzy
 msgid "Imports and exports tags and track user data."
-msgstr ""
+msgstr "Importerer og eksporterer etikketter og spor-brukerdata."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:192
 #, fuzzy
@@ -4650,28 +4667,45 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
+"Begrepet «spor-brukerdata» inkluderer spillelister de valgte sporene er i og "
+"følgende metadata:\n"
+"\n"
+"<tt>%s</tt>\n"
+"\n"
+"Ha i minnet at alt du velger å eksportere vil bli importert. Hvis du "
+"eksporterte filstammer (filnavn uten utvidelse, vil de valgte filene få "
+"navne sine endret.\n"
+"\n"
+"Etter eksport av album kan du importere data inn i en annen versjon av "
+"albumet. Rekkefølge og antall spor kan være forskjellige. Programtillegget "
+"jamfører eksportert data med de nye sporene, som om navnene på sporene er "
+"litt forskjellige. Automatisk jamføring er ikke alltid riktig, slik at det "
+"er bedre å ikke redusere følgende sammenligningsverdier for mye."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
 msgid "User interaction on import"
-msgstr ""
+msgstr "Brukerinteraksjon ved import"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:215
 msgid "Require confirmation if number of tracks differs"
-msgstr ""
+msgstr "Krev bekreftelse hvis antall spor ikke samsvarer"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:221
 msgid "Require confirmation if number of albums differs"
-msgstr ""
+msgstr "Krev bekreftelse hvis antall album ikke samsvarer"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:226
+#, fuzzy
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
 msgstr ""
+"Minste prosentsats der bruker manuelt må sjekke og alternativt endre hvilke "
+"spor som jamføres med hvilke."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
 msgid "Track similarity:"
-msgstr ""
+msgstr "Spor-sammenlignbarhet:"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
 #, fuzzy
@@ -4685,11 +4719,11 @@ msgstr "Importering mislyktes"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
 msgid "Write pretty and clear JSON (slower)"
-msgstr ""
+msgstr "Skriv skjønn og ren JSON (tregere)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
 msgid "Delete export files after they've been imported"
-msgstr ""
+msgstr "Slett eksportfiler etter at de har blitt importert"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 #, fuzzy
@@ -4715,7 +4749,7 @@ msgstr "Artist"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
 msgid "End of path"
-msgstr ""
+msgstr "Stiens ende"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
 #, fuzzy
@@ -4734,11 +4768,11 @@ msgstr "Ingenting å legge til"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
 msgid "You have to export something before you can import."
-msgstr ""
+msgstr "Du må eksportere noe før du kan importere."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:446
 msgid "The index was corrupt."
-msgstr ""
+msgstr "Indeksen var korrupt."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:500
 #, fuzzy, python-format
@@ -4884,8 +4918,9 @@ msgstr ""
 "Resultater blir gruppert per album."
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
+#, fuzzy
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
@@ -5449,10 +5484,13 @@ msgid "T_ags:"
 msgstr "E_tiketter:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
+#, fuzzy
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
+"Liste over etiketter å bruke i innsendelsen. Komainndelt. Bruk doble "
+"sitattegn hvis nødvendig."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
 #, fuzzy
@@ -6126,15 +6164,19 @@ msgid "_Unhide"
 msgstr "_Vis"
 
 #: quodlibet/qltk/matchdialog.py:23
+#, fuzzy
 msgid ""
 "Check if the columns on the left side approximately match the ones on the "
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
 msgstr ""
+"Sjekk om kolonner på venstre side omtrentlig samsvarer med dem på høyre. "
+"Hvis dette ikke er tilfelle kan du endre rekkefølgen her. (Bruk _ for rader "
+"som ikke skal samsvares):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
-msgstr ""
+msgstr "Rekkefølge på høyre side:"
 
 #: quodlibet/qltk/msg.py:43
 msgid "Discard tag changes?"
