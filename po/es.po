@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-19 00:41+0000\n"
+"PO-Revision-Date: 2021-09-23 11:34+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -2004,18 +2004,16 @@ msgid "Broker hostname / IP"
 msgstr "Nombre de anfitrión/IP de agente"
 
 #: quodlibet/ext/events/mqtt.py:138
-#, fuzzy
 msgid "Defaults to localhost"
-msgstr "nombre de anfitrión/IP de agente (valor pred.: «localhost»)"
+msgstr "«localhost» de manera predeterminada"
 
 #: quodlibet/ext/events/mqtt.py:140
 msgid "Broker port"
 msgstr "Puerto de agente"
 
 #: quodlibet/ext/events/mqtt.py:140
-#, fuzzy
 msgid "Defaults to 1883"
-msgstr "puerto de agente (1883 de manera predeterminada)"
+msgstr "1883 de manera predeterminada"
 
 #: quodlibet/ext/events/mqtt.py:142
 msgid "Broker username"
@@ -5619,7 +5617,7 @@ msgstr "_Etiqueta:"
 
 #: quodlibet/qltk/edittags.py:527
 msgid "Show _programmatic tags"
-msgstr "Mostrar _mensajes adicionales para depuración"
+msgstr "Mostrar etiquetas _programáticas"
 
 #: quodlibet/qltk/edittags.py:528
 msgid ""
