@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet VC\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-19 00:41+0000\n"
+"PO-Revision-Date: 2021-09-23 11:34+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Galician <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/gl/>\n"
@@ -5761,7 +5761,7 @@ msgstr "_Etiqueta"
 
 #: quodlibet/qltk/edittags.py:527
 msgid "Show _programmatic tags"
-msgstr "Mostrar mensaxes de depuración"
+msgstr "Mostrar etiquetas _programáticas"
 
 #: quodlibet/qltk/edittags.py:528
 msgid ""
@@ -5782,7 +5782,7 @@ msgstr "Nunca"
 #: quodlibet/qltk/edittags.py:563
 msgctxt "edittags"
 msgid "_Save"
-msgstr ""
+msgstr "_Gardar"
 
 #: quodlibet/qltk/edittags.py:703
 #, fuzzy
