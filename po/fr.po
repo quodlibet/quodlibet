@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-19 00:41+0000\n"
-"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
+"PO-Revision-Date: 2021-09-23 11:34+0000\n"
+"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -4784,7 +4784,7 @@ msgstr "Bien à jour."
 #: quodlibet/ext/songsmenu/lastfmsync.py:121
 #, python-format
 msgid "Fetching chart for week of %s."
-msgstr "Diagramme de récupération pour la semaine de %s."
+msgstr "Récupération du classement pour la semaine de %s."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:143
 msgid "Sync complete."
