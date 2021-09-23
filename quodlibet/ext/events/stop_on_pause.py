@@ -23,7 +23,7 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
     PLUGIN_DESC = _("This plugin changes Pause to Stop/Play/Seek."
                     "\n\n"
-                    "Useful if Quod Libet can't switch audio devices "
+                    "Useful if Quod Libet can\'t switch audio devices "
                     "when a new one (Bluetooth speaker, USB DAC, etc.) "
                     "is added to the system."
                     "\n\n"
