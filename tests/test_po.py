@@ -188,22 +188,26 @@ class TPot(TestCase):
             musicbrainz - lower case letters
             musicbrainz_track_id - ok
             musicbrainz.org - ok
+            @(musicbrainz - ok
         """
         terms = (
             'AcoustID', 'D-Bus', 'Ex Falso', 'GNOME', 'GStreamer', 'Internet',
             'iPod', 'Last.fm', 'MusicBrainz', 'Python', 'Quod Libet',
             'Replay Gain', 'ReplayGain', 'Squeezebox', 'Wikipedia')
+        ok_prefixes = ('@(')
         ok_suffixes = ('_', '.org')
         fails = []
 
         for entry in self.pot:
+            msg = entry.msgid
             for term in terms:
-                if term.lower() not in entry.msgid.lower():
+                if term.lower() not in msg.lower():
                     continue
-                i = entry.msgid.lower().find(term.lower())
-                if entry.msgid[i + len(term):].startswith(ok_suffixes):
+                i = msg.lower().find(term.lower())
+                if (msg[:i].endswith(ok_prefixes)
+                        or msg[i + len(term):].startswith(ok_suffixes)):
                     continue
-                if term not in entry.msgid:
+                if term not in msg:
                     fails.append(entry)
 
         self.conclude(fails, "incorrect letter case for a term")
