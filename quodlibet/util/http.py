@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#        2016-20 Nick Boultbee
+#        2016-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,8 +7,7 @@
 # (at your option) any later version.
 
 import json
-from collections import Callable
-from typing import Optional, Any
+from typing import Optional, Any, Callable
 
 from gi.repository import Soup, Gio, GLib, GObject
 from gi.repository.GObject import ParamFlags, SignalFlags
@@ -157,9 +156,12 @@ class HTTPRequest(GObject.Object):
                                   self.cancellable, spliced, None)
 
 
-def download(message: Any, cancellable: Gio.Cancellable, callback: Callable,
-             data, try_decode: bool = False,
-             failure_callback: Optional[Callable] = None):
+FailureCallback = Callable[[HTTPRequest, Exception], None]
+
+
+def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Callable,
+             data: Any, try_decode: bool = False,
+             failure_callback: Optional[FailureCallback] = None):
     def received(request, ostream):
         ostream.close(None)
         bs = ostream.steal_as_bytes().get_data()
@@ -187,13 +189,16 @@ def download(message: Any, cancellable: Gio.Cancellable, callback: Callable,
     request.send()
 
 
-def download_json(message, cancellable, callback, data):
+def download_json(message: Soup.Message, cancellable: Gio.Cancellable,
+                  callback: Callable, data: Any,
+                  failure_callback: Optional[FailureCallback] = None):
     def cb(message, result, d):
         try:
             callback(message, json.loads(result), data)
         except ValueError:
             callback(message, None, data)
-    download(message, cancellable, cb, None, True)
+
+    download(message, cancellable, cb, None, True, failure_callback=failure_callback)
 
 
 session = Soup.Session()

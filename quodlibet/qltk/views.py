@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import contextlib
+import sys
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
@@ -38,6 +39,8 @@ class TreeViewHints(Gtk.Window):
          'motion-notify-event', 'scroll-event',
          'enter-notify-event', 'leave-notify-event'],
         'override')
+
+    __empty_region = cairo.Region(cairo.RectangleInt())
 
     def __init__(self):
         try:
@@ -350,6 +353,13 @@ class TreeViewHints(Gtk.Window):
         self.set_transient_for(get_top_parent(view))
         set_text(label)
         self.set_size_request(w, h)
+
+        # Set region on this window for which to receive mouse events to the
+        # empty region. Mouse events will be passed to the window below the
+        # tooltip. The Gdk implementation for win32 does not support this, which
+        # leads to events not being received in either window.
+        if sys.platform != "win32":
+            self.input_shape_combine_region(self.__empty_region)
 
         window = self.get_window()
         if self.get_visible() and window:

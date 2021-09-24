@@ -1,6 +1,6 @@
 #    ReplayGain Album Analysis using gstreamer rganalysis element
 #    Copyright (C) 2005,2007,2009  Michael Urman
-#                  2012,2014,2016  Nick Boultbee
+#                       2012-2021  Nick Boultbee
 #                            2013  Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -14,7 +14,7 @@ from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
 
-from quodlibet import print_d, ngettext, _
+from quodlibet import print_d, ngettext, C_, _
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
@@ -215,7 +215,6 @@ class RGSong:
 
 
 class ReplayGainPipeline(GObject.Object):
-
     __gsignals__ = {
         # done(self, album)
         'done': (GObject.SignalFlags.RUN_LAST, None, (object,)),
@@ -391,7 +390,8 @@ class RGDialog(Dialog):
             cell.set_property('text', item.title)
             cell.set_sensitive(model[iter_][1])
 
-        column = Gtk.TreeViewColumn(_("Track"))
+        # Translators: Combined track number/title column heading
+        column = Gtk.TreeViewColumn(C_("track/title", "Track"))
         column.set_expand(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         track_render = Gtk.CellRendererText()
@@ -567,8 +567,10 @@ class RGDialog(Dialog):
 class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = 'ReplayGain'
     PLUGIN_NAME = _('Replay Gain')
-    PLUGIN_DESC = _('Analyzes and updates ReplayGain information, '
-                    'using GStreamer. Results are grouped by album.')
+    PLUGIN_DESC_MARKUP = (
+        _('Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, '
+          'using GStreamer. Results are grouped by album.')
+        % {"rg_link": _("https://en.wikipedia.org/wiki/ReplayGain")})
     PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = 'replaygain'
 
@@ -598,7 +600,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         rows = []
 
         def process_option_changed(combo):
-            #xcode = combo.get_child().get_text()
+            # xcode = combo.get_child().get_text()
             model = combo.get_model()
             lbl, value = model[combo.get_active()]
             cls.config_set("process_if", value)

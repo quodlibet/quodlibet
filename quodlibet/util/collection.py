@@ -24,7 +24,10 @@ from quodlibet.formats._audio import (TAG_TO_SORT, NUMERIC_ZERO_DEFAULT,
                                       AudioFile, HasKey)
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
-from collections import Iterable
+try:
+    from collections import abc
+except ImportError:
+    import collections as abc  # type: ignore
 
 from quodlibet.util import is_windows
 from quodlibet.util.path import escape_filename, unescape_filename, limit_path
@@ -331,7 +334,7 @@ class Album(Collection, HasKey):
 
 @hashable
 @total_ordering
-class Playlist(Collection, Iterable, HasKey):
+class Playlist(Collection, abc.Iterable, HasKey):
     """A Playlist is a `Collection` that has list-like features
     Songs can appear more than once.
     """
@@ -381,7 +384,7 @@ class Playlist(Collection, Iterable, HasKey):
     __call__ = get
 
     # List-like methods, for compatibility with original Playlist class.
-    def extend(self, songs: Iterable[AudioFile]):
+    def extend(self, songs: abc.Iterable[AudioFile]):
         self._list.extend(songs)
         self.finalize()
         self._emit_changed(songs, msg="extend")
@@ -453,7 +456,7 @@ class Playlist(Collection, Iterable, HasKey):
         return bool(changed)
 
     def remove_songs(self,
-                     songs: Iterable[AudioFile],
+                     songs: abc.Iterable[AudioFile],
                      leave_dupes: bool = False) -> bool:
         """Removes `songs` from this playlist if they are there,
          removing only the first reference if `leave_dupes` is True

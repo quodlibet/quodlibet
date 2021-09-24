@@ -15,6 +15,8 @@ class ReverseOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ICON = Icons.MEDIA_SKIP_BACKWARD
     PLUGIN_DESC = _("Adds a shuffle mode "
                     "that reverses the play order of songs.")
+    display_name = _("Reverse")
+    accelerated_name = _("Re_verse")
 
     def previous(self, playlist, iter):
         return super().next(playlist, iter)

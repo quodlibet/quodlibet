@@ -6,7 +6,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import collections
+try:
+    from collections import abc
+except ImportError:
+    import collections as abc  # type: ignore
 import subprocess
 from enum import Enum
 from typing import Iterable, Tuple
@@ -183,7 +186,7 @@ def GStreamerSink(pipeline_desc):
     return pipe, pipeline_desc
 
 
-class TagListWrapper(collections.Mapping):
+class TagListWrapper(abc.Mapping):
     def __init__(self, taglist, merge=False):
         self._list = taglist
         self._merge = merge

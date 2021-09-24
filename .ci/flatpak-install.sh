@@ -7,6 +7,5 @@ sudo apt-get update
 sudo apt-get install -y ca-certificates flatpak xvfb
 
 flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak remote-add --user gnome-nightly https://nightly.gnome.org/gnome-nightly.flatpakrepo
 flatpak install --user -y flathub io.github.quodlibet.QuodLibet
-flatpak install --user -y flathub org.gnome.Sdk//3.38
+flatpak install --user -y "$(flatpak info io.github.quodlibet.QuodLibet --show-sdk)"

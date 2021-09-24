@@ -7,30 +7,34 @@
 # (at your option) any later version.
 
 import os
-import errno
 import signal
 import stat
 
-from quodlibet import print_e
-
 try:
     import fcntl
-    fcntl
 except ImportError:
-    fcntl = None  # type: ignore
+    pass
 
 from gi.repository import GLib
 from senf import mkstemp, fsn2bytes
 
+from quodlibet import print_d, print_e
 from quodlibet.util.path import mkdir
-from quodlibet.util import print_d
 
 FIFO_TIMEOUT = 10
 """time in seconds until we give up writing/reading"""
 
 
+class FIFOError(Exception):
+    pass
+
+
+def _sigalrm_timeout(*args):
+    raise TimeoutError
+
+
 def _write_fifo(fifo_path, data):
-    """Writes the data to the FIFO or raises `EnvironmentError`"""
+    """Writes the data to the FIFO or raises `FIFOError`"""
 
     assert isinstance(data, bytes)
 
@@ -50,19 +54,18 @@ def _write_fifo(fifo_path, data):
             pass
 
     try:
-        # This is a total abuse of Python! Hooray!
-        signal.signal(signal.SIGALRM, lambda: "" + 2)
+        signal.signal(signal.SIGALRM, _sigalrm_timeout)
         signal.alarm(FIFO_TIMEOUT)
         with open(fifo_path, "wb") as f:
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(data)
-    except (OSError, IOError, TypeError):
+    except (OSError, TimeoutError):
         # Unable to write to the fifo. Removing it.
         try:
             os.unlink(fifo_path)
         except OSError:
             pass
-        raise EnvironmentError("Couldn't write to fifo %r" % fifo_path)
+        raise FIFOError(f"Couldn't write to fifo {fifo_path!r}")
 
 
 def split_message(data):
@@ -82,32 +85,14 @@ def split_message(data):
 
     assert isinstance(data, bytes)
 
-    arg = 0
-    args = []
     while data:
-        if arg == 0:
-            index = data.find(b"\x00")
-            if index == 0:
-                arg = 1
-                data = data[1:]
-                continue
-            if index == -1:
-                elm = data
-                data = b""
-            else:
-                elm, data = data[:index], data[index:]
-            for l in elm.splitlines():
-                yield (l, None)
-        elif arg == 1:
-            elm, data = data.split(b"\x00", 1)
-            args.append(elm)
-            arg = 2
-        elif arg == 2:
-            elm, data = data.split(b"\x00", 1)
-            args.append(elm)
-            yield tuple(args)
-            del args[:]
-            arg = 0
+        elem, null, data = data.partition(b"\x00")
+        if elem:  # newline-separated commands
+            yield from ((line, None) for line in elem.splitlines())
+            data = null + data
+        else:  # NULL<command>NULL<fifo-path>NULL
+            cmd, fifo_path, data = data.split(b"\x00", 2)
+            yield (cmd, fifo_path)
 
 
 def write_fifo(fifo_path, data):
@@ -119,7 +104,7 @@ def write_fifo(fifo_path, data):
     Returns:
         bytes
     Raises:
-        EnvironmentError: In case of timeout and other errors
+        FIFOError
     """
 
     assert isinstance(data, bytes)
@@ -132,16 +117,16 @@ def write_fifo(fifo_path, data):
         os.mkfifo(filename, 0o600)
 
         _write_fifo(
-            fifo_path,
-            b"\x00" + data + b"\x00" + fsn2bytes(filename, None) + b"\x00")
+            fifo_path, b"\x00".join([b"", data, fsn2bytes(filename, None), b""])
+        )
 
         try:
-            signal.signal(signal.SIGALRM, lambda: "" + 2)
+            signal.signal(signal.SIGALRM, _sigalrm_timeout)
             signal.alarm(FIFO_TIMEOUT)
             with open(filename, "rb") as h:
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return h.read()
-        except TypeError:
+        except TimeoutError:
             # In case the main instance deadlocks we can write to it, but
             # reading will time out. Assume it is broken and delete the
             # fifo.
@@ -149,11 +134,13 @@ def write_fifo(fifo_path, data):
                 os.unlink(fifo_path)
             except OSError:
                 pass
-            raise EnvironmentError("timeout")
+            raise FIFOError("Timeout reached")
+    except OSError as e:
+        raise FIFOError(*e.args)
     finally:
         try:
             os.unlink(filename)
-        except EnvironmentError:
+        except OSError:
             pass
 
 
@@ -179,12 +166,10 @@ def fifo_exists(fifo_path):
     return os.path.exists(fifo_path)
 
 
-class FIFOError(Exception):
-    pass
-
-
 class FIFO:
     """Creates and reads from a FIFO"""
+
+    _source_id = None
 
     def __init__(self, path, callback):
         """
@@ -196,34 +181,29 @@ class FIFO:
         self._callback = callback
         self._path = path
 
-    def open(self):
-        """Create the FIFO and listen to it.
-
-        Raises:
-            FIFOError in case another process is already using it.
-        """
-
-        self._open(False, None)
-
     def destroy(self):
         """After destroy() the callback will no longer be called
         and the FIFO can no longer be used. Can be called multiple
         times.
         """
 
-        if self._id is not None:
-            GLib.source_remove(self._id)
-            self._id = None
+        if self._source_id is not None:
+            GLib.source_remove(self._source_id)
+            self._source_id = None
 
         try:
             os.unlink(self._path)
-        except EnvironmentError:
+        except OSError:
             pass
 
-    def _open(self, ignore_lock, *args):
+    def open(self, ignore_lock=False):
+        """Create the FIFO and listen to it.
+
+        Raises:
+            FIFOError in case another process is already using it.
+        """
         from quodlibet import qltk
 
-        self._id = None
         mkdir(os.path.dirname(self._path))
         try:
             os.mkfifo(self._path, 0o600)
@@ -239,49 +219,46 @@ class FIFO:
         while True:
             try:
                 fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
-            except IOError as e:
-                # EINTR on linux
-                if e.errno == errno.EINTR:
-                    continue
-                if ignore_lock:
-                    break
-                # OSX doesn't support FIFO locking, so check errno
-                if e.errno == errno.EWOULDBLOCK:
+            except InterruptedError:  # EINTR
+                continue
+            except BlockingIOError:  # EWOULDBLOCK
+                if not ignore_lock:
                     raise FIFOError("fifo already locked")
-                else:
-                    print_d("fifo locking failed: %r" % e)
+            except OSError as e:
+                print_d(f"fifo locking failed: {e!r}")
             break
 
         try:
             f = os.fdopen(fifo, "rb", 4096)
         except OSError as e:
-            print_e("Couldn't open FIFO (%s)" % e)
+            print_e(f"Couldn't open FIFO ({e!r})")
         else:
-            self._id = qltk.io_add_watch(
-                f, GLib.PRIORITY_DEFAULT,
+            self._source_id = qltk.io_add_watch(
+                f,
+                GLib.PRIORITY_DEFAULT,
                 GLib.IO_IN | GLib.IO_ERR | GLib.IO_HUP,
-                self._process, *args)
+                self._process,
+            )
 
-    def _process(self, source, condition, *args):
-        if condition in (GLib.IO_ERR, GLib.IO_HUP):
-            self._open(True, *args)
+    def _process(self, source, condition):
+        if condition in {GLib.IO_ERR, GLib.IO_HUP}:
+            self.open(ignore_lock=True)
             return False
 
         while True:
             try:
                 data = source.read()
-            except (IOError, OSError) as e:
-                if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
-                    return True
-                elif e.errno == errno.EINTR:
-                    continue
-                else:
-                    self.__open(*args)
-                    return False
+            except InterruptedError:  # EINTR
+                continue
+            except (BlockingIOError, PermissionError):  # EWOULDBLOCK, EACCES
+                return True
+            except OSError:
+                self.open(ignore_lock=True)
+                return False
             break
 
         if not data:
-            self._open(*args)
+            self.open(ignore_lock=True)
             return False
 
         self._callback(data)

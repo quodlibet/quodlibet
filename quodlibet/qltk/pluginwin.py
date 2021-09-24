@@ -306,6 +306,8 @@ class PluginPreferencesContainer(Gtk.VBox):
 
         self.desc = desc = Gtk.Label()
         desc.set_line_wrap(True)
+        # Ensure a reasonable minimum height request for long descriptions
+        desc.set_width_chars(30)
         desc.set_alignment(0, 0.5)
         desc.set_selectable(True)
         self.pack_start(desc, False, True, 0)
@@ -329,9 +331,9 @@ class PluginPreferencesContainer(Gtk.VBox):
             text = (f"<big><b>{name}</b> "
                     f"<span alpha='40%'> – {category}</span>"
                     f"</big>")
-            if plugin.description:
-                text += "<span font='4'>\n\n</span>"
-                text += util.escape(plugin.description)
+            markup = plugin.description_markup
+            if markup:
+                text += f"<span font='4'>\n\n</span>{markup}"
             label.set_markup(text)
             label.connect("activate-link", show_uri)
 

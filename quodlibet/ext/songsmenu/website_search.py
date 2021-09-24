@@ -34,10 +34,11 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_ICON = Icons.APPLICATION_INTERNET
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
-    PLUGIN_DESC = _("Searches your choice of website using any song tags.\n"
-                    "Supports patterns e.g. %(pattern-example)s.") % {
-                        "pattern-example":
-                            "https://google.com?q=&lt;~artist~title&gt;"}
+    PLUGIN_DESC_MARKUP = (_(
+        "Searches your choice of website using any song tags.\n"
+        "Supports patterns e.g. <tt>%(pattern-example)s</tt>.")
+         % {"pattern-example": "https://duckduckgo.com?q=&lt;~artist~title&gt;"}
+    )
 
     # Here are some starters...
     DEFAULT_URL_PATS = [

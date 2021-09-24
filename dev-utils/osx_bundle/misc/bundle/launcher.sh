@@ -45,6 +45,8 @@ export GIO_MODULE_DIR="$bundle_lib/gio/modules"
 # (the env var gets respected because we patch it.. not available upstream)
 export GTLS_SYSTEM_CA_FILE=$(\
     echo "$bundle_lib/python"*"/site-packages/certifi/cacert.pem")
+# Same for OpenSSL
+export SSL_CERT_FILE="$GTLS_SYSTEM_CA_FILE"
 
 # temporary disable tooltips
 export QUODLIBET_NO_HINTS=yes

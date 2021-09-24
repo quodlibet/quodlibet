@@ -25,5 +25,4 @@ class AboutDialog(Gtk.AboutDialog):
         self.set_license_type(Gtk.License.GPL_2_0)
         self.set_translator_credits("\n".join(const.TRANSLATORS))
         self.set_website(const.WEBSITE)
-        self.set_copyright(const.COPYRIGHT + "\n" +
-                           "<%s>" % const.SUPPORT_EMAIL)
+        self.set_copyright(f"{const.COPYRIGHT}\n{const.SUPPORT_EMAIL}")

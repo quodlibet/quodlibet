@@ -9,7 +9,11 @@
 
 from __future__ import absolute_import
 
-from collections import MutableSequence, defaultdict
+try:
+    from collections import abc
+except ImportError:
+    import collections as abc  # type: ignore
+from collections import defaultdict
 from typing import Any
 
 from .misc import total_ordering
@@ -143,7 +147,7 @@ class DictProxy(DictMixin):
         return self.__dict.keys()
 
 
-class HashedList(MutableSequence):
+class HashedList(abc.MutableSequence):
     """A list-like collection that can only take hashable items
     and provides fast membership tests.
 

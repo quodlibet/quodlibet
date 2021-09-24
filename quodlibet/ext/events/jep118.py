@@ -28,7 +28,8 @@ format = """\
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
-    PLUGIN_DESC = _("Outputs a Jabber User Tunes file to ~/.quodlibet/jabber.")
+    PLUGIN_DESC_MARKUP = _("Outputs a Jabber User Tunes file to "
+                           "<tt>~/.quodlibet/jabber</tt>.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):

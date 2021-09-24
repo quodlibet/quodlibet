@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2020 Nick Boultbee
+#           2012-2021 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2018-2020 Uriel Zajaczkovski
 #           2019      Ruud van Asseldonk
@@ -13,38 +13,39 @@
 from __future__ import absolute_import
 
 import os
+from typing import Optional
 
+import cairo
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
 
-from quodlibet.util.i18n import numeric_phrase
-from .prefs import Preferences, DEFAULT_PATTERN_TEXT
-from .models import AlbumModel, AlbumFilterModel, AlbumSortModel, AlbumItem
-
 import quodlibet
+from quodlibet import _
 from quodlibet import app
-from quodlibet import ngettext
 from quodlibet import config
+from quodlibet import ngettext
 from quodlibet import qltk
 from quodlibet import util
-from quodlibet import _
 from quodlibet.browsers import Browser
-from quodlibet.query import Query
 from quodlibet.browsers._base import DisplayPatternMixin
+from quodlibet.qltk import Icons
 from quodlibet.qltk.completion import EntryWordCompletion
+from quodlibet.qltk.cover import get_no_cover_pixbuf
+from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.information import Information
+from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.properties import SongProperties
+from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
-from quodlibet.qltk.searchbar import SearchBarBox
-from quodlibet.qltk.menubutton import MenuButton
-from quodlibet.qltk import Icons
-from quodlibet.util import copool, connect_destroy, cmp
-from quodlibet.util.library import background_filter
+from quodlibet.query import Query
 from quodlibet.util import connect_obj, DeferredSignal
-from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
+from quodlibet.util import copool, connect_destroy, cmp
+from quodlibet.util.i18n import numeric_phrase
+from quodlibet.util.library import background_filter
+from .models import AlbumModel, AlbumFilterModel, AlbumSortModel, AlbumItem
+from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 
 
 def get_cover_size():
@@ -472,12 +473,14 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         klass.__library = library
 
     @util.cached_property
-    def _no_cover(self):
+    def _no_cover(self) -> Optional[cairo.Surface]:
         """Returns a cairo surface representing a missing cover"""
 
         cover_size = get_cover_size()
         scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
+        if not pb:
+            raise IOError("Can't find / scale missing art image")
         return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
@@ -517,7 +520,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             elif item.cover:
                 pixbuf = item.cover
                 pixbuf = add_border_widget(pixbuf, self.view)
-                surface = get_surface_for_pixbuf(self, pixbuf)
+                surface = get_surface_for_pixbuf(self, pixbuf) or no_cover
                 # don't cache, too much state has an effect on the result
                 self.__last_render_surface = None
             else:

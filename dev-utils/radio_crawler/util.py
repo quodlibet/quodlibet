@@ -9,7 +9,10 @@
 from __future__ import print_function
 
 import os
-import collections
+try:
+    from collections import abc
+except ImportError:
+    import collections as abc  # type: ignore
 import urlparse
 from collections import namedtuple
 import xml.etree.ElementTree as ET
@@ -185,7 +188,7 @@ def parse_icecast(url, timeout=5):
     return streams
 
 
-class TagListWrapper(collections.Mapping):
+class TagListWrapper(abc.Mapping):
     def __init__(self, taglist, merge=False):
         self._list = taglist
         self._merge = merge

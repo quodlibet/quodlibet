@@ -103,8 +103,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
     summary_sep = ' ' * 2
     summary_sep_list = ',' + summary_sep
 
-    default_export_pattern = os.path.join(
-        _('<artist>'), _('<album>'), _('<title>'))
+    default_export_pattern = os.path.join('<artist>', '<album>', '<title>')
 
     model_cols = {'entry': (0, object),
                   'tag': (1, str),

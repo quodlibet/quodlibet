@@ -258,8 +258,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        view.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets[:2],
-                             Gdk.DragAction.COPY)
+        view.enable_model_drag_source(
+            Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY)
         view.connect('drag-data-received', self.__drag_data_received)
         view.connect('drag-data-get', self._drag_data_get)
         view.connect('drag-motion', self.__drag_motion)

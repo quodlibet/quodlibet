@@ -14,7 +14,10 @@ skip.append("libiconv")
 setup_sdk(target="10.9", sdk_version="native")
 
 os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
-    prefix, "lib/python3.7/site-packages/certifi/cacert.pem")
+    prefix, "lib/python3.8/site-packages/certifi/cacert.pem")
+
+os.environ["SSL_CERT_FILE"] = os.path.join(
+    prefix, "lib/python3.8/site-packages/certifi/cacert.pem")
 
 addpath("DYLD_FALLBACK_LIBRARY_PATH", "/usr/lib")
 
