@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-23 11:34+0000\n"
-"Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
+"PO-Revision-Date: 2021-09-26 05:25+0000\n"
+"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -3552,7 +3552,7 @@ msgstr "Préférer les moins lus"
 
 #: quodlibet/ext/playorder/playcounteq.py:26
 msgid "Prefer _less played"
-msgstr "Préférer _moins joué"
+msgstr "Préférer _les moins lus"
 
 #: quodlibet/ext/playorder/queue.py:18
 msgid "Queue Only"
