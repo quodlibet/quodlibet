@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 from quodlibet import _
-from quodlibet.plugins.query import QueryPlugin, QueryPluginError
+from quodlibet.plugins.query import QueryPlugin, QueryPluginError, markup_for_syntax
 from quodlibet.query._parser import QueryParser
 
 
@@ -15,7 +15,8 @@ class ConditionalQuery(QueryPlugin):
     PLUGIN_NAME = _("Conditional Query")
     PLUGIN_DESC = _("Chooses the query to match based on a condition query.")
     key = 'if'
-    usage = "<b><tt>@(if: condition-query, then-query, else-query)</tt></b>"
+    query_syntax = _("@(if: condition-query, then-query, else-query)")
+    usage = markup_for_syntax(query_syntax)
 
     def search(self, song, body):
         if body[0].search(song):

@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 from quodlibet import _
-from quodlibet.plugins.query import QueryPlugin
+from quodlibet.plugins.query import QueryPlugin, markup_for_syntax
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.qltk import Frame
 
@@ -17,7 +17,8 @@ class MissingQuery(QueryPlugin, PluginConfigMixin):
     PLUGIN_NAME = _("Missing Query")
     PLUGIN_DESC = _("Matches songs without the given tag.")
     key = 'missing'
-    usage = "<b><tt>@(missing: artist)</tt></b>"
+    query_syntax = "@(missing: artist)"
+    usage = markup_for_syntax(query_syntax)
 
     def search(self, data, body):
         val = data.get(body.strip() if body else '', None)

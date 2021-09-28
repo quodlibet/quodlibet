@@ -9,7 +9,7 @@
 import os.path
 
 from quodlibet import _, print_w
-from quodlibet.plugins.query import QueryPlugin, QueryPluginError
+from quodlibet.plugins.query import QueryPlugin, QueryPluginError, markup_for_syntax
 from quodlibet.query import Query
 from quodlibet.query._match import Error as QueryError
 from quodlibet import get_user_dir
@@ -21,7 +21,8 @@ class IncludeSavedSearchQuery(QueryPlugin):
     PLUGIN_DESC = _("💾 Include the results of a saved search "
                     "as part of another query.")
     key = "saved"
-    usage = "<b><tt>@(saved: search-name)</tt></b>"
+    query_syntax = _("@(saved: search-name)")
+    usage = markup_for_syntax(query_syntax)
 
     def search(self, data, body):
         return body.search(data)
