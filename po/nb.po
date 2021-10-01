@@ -332,7 +332,7 @@ msgstr "_Bruk"
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:390
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -1392,7 +1392,7 @@ msgstr "Rediger visningsmønster …"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
-#: quodlibet/ext/events/synchronize_to_device.py:202
+#: quodlibet/ext/events/synchronize_to_device.py:201
 #: quodlibet/ext/events/trayicon/prefs.py:86
 msgid "Preview"
 msgstr "Forhåndsvis"
@@ -1568,7 +1568,7 @@ msgstr "_Oppdater stasjoner"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:38 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
 msgid "Preferences"
 msgstr "Innstillinger"
 
@@ -1771,7 +1771,7 @@ msgstr "Forhåndsvalgt navn for lagring:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:392
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -2538,72 +2538,77 @@ msgstr "Kun kilder som kan blafres"
 msgid "Plugin Options"
 msgstr "Valg"
 
-#: quodlibet/ext/events/synchronize_to_device.py:53
+#: quodlibet/ext/events/synchronize_to_device.py:52
 #, fuzzy
 msgid "Pending copy"
 msgstr "Avventer kopiering"
 
-#: quodlibet/ext/events/synchronize_to_device.py:54
+#: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending delete"
 msgstr "Avventer sletting"
 
-#: quodlibet/ext/events/synchronize_to_device.py:55
+#: quodlibet/ext/events/synchronize_to_device.py:54
 msgid "delete"
 msgstr "slett"
 
-#: quodlibet/ext/events/synchronize_to_device.py:56
+#: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
 msgstr "Hopp over"
 
-#: quodlibet/ext/events/synchronize_to_device.py:57
+#: quodlibet/ext/events/synchronize_to_device.py:56
 #, fuzzy
 msgid "DUPLICATE"
 msgstr "DUPLIKAT"
 
-#: quodlibet/ext/events/synchronize_to_device.py:58
+#: quodlibet/ext/events/synchronize_to_device.py:57
 #, fuzzy
 msgid "Synchronizing"
 msgstr "Synkroniserer …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:59
+#: quodlibet/ext/events/synchronize_to_device.py:58
 #, fuzzy
 msgid "Deleting"
 msgstr "Sletter …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:60
+#: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
 msgstr "Vellykket"
 
-#: quodlibet/ext/events/synchronize_to_device.py:61
+#: quodlibet/ext/events/synchronize_to_device.py:60
 #, fuzzy
 msgid "FAILURE"
 msgstr "MISLYKKET"
 
-#: quodlibet/ext/events/synchronize_to_device.py:62
+#: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "Skipped existing file"
 msgstr "Hoppet over eksisterende fil"
 
-#: quodlibet/ext/events/synchronize_to_device.py:82
+#: quodlibet/ext/events/synchronize_to_device.py:81
 msgid "Cannot set the filename of a song."
 msgstr "Kan ikke sette filnavn for spor."
 
-#: quodlibet/ext/events/synchronize_to_device.py:89
+#: quodlibet/ext/events/synchronize_to_device.py:87
+#, fuzzy
+msgid "Synchronize to Device"
+msgstr "Synkronisert sangtekst"
+
+#: quodlibet/ext/events/synchronize_to_device.py:88
 #, fuzzy
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
 msgstr "Synkroniserer alle spor fra valgte lagrede søk med angitt mappe."
 
-#: quodlibet/ext/events/synchronize_to_device.py:142
+#: quodlibet/ext/events/synchronize_to_device.py:141
 msgid "Synchronize the following saved searches:"
 msgstr "Synkroniser følgende lagrede søk:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:148
+#: quodlibet/ext/events/synchronize_to_device.py:147
 #, fuzzy
 msgid "The absolute path to your export location"
 msgstr "Absolutt sti til ditt eksportsted"
 
-#: quodlibet/ext/events/synchronize_to_device.py:165
+#: quodlibet/ext/events/synchronize_to_device.py:164
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
@@ -2611,7 +2616,7 @@ msgstr ""
 "Alle filer som allerede finnes i målmappen men ikke i de lagrede søkene vil "
 "bli slettet."
 
-#: quodlibet/ext/events/synchronize_to_device.py:169
+#: quodlibet/ext/events/synchronize_to_device.py:168
 #, fuzzy
 msgid ""
 "For devices mounted with MTP, export to a local destination folder, then "
@@ -2622,49 +2627,49 @@ msgstr ""
 "overfører den til din enhet med rsync. Eller du kan bruke det raskere adb-"
 "sync hvis du har mange filer å synkronisere til din Android enhet."
 
-#: quodlibet/ext/events/synchronize_to_device.py:180
+#: quodlibet/ext/events/synchronize_to_device.py:179
 #, fuzzy
 msgid "Destination path:"
 msgstr "Målmappe:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr "Sti-mønstre"
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
 msgstr "Rediger lagrede mønstre …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:191
+#: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
 msgstr "Struktur for eksporterte filnavn, basert på etikettene deres"
 
-#: quodlibet/ext/events/synchronize_to_device.py:197
+#: quodlibet/ext/events/synchronize_to_device.py:196
 #, fuzzy
 msgid "Export pattern:"
 msgstr "_Artistmønster:"
 
 #. Stop preview button
-#: quodlibet/ext/events/synchronize_to_device.py:209
+#: quodlibet/ext/events/synchronize_to_device.py:208
 msgid "Stop preview"
 msgstr "Stopp forhåndsvisning"
 
-#: quodlibet/ext/events/synchronize_to_device.py:228
+#: quodlibet/ext/events/synchronize_to_device.py:227
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
 msgstr "Status"
 
-#: quodlibet/ext/events/synchronize_to_device.py:235
+#: quodlibet/ext/events/synchronize_to_device.py:234
 msgid "Source File"
 msgstr "Kildefil"
 
-#: quodlibet/ext/events/synchronize_to_device.py:244
+#: quodlibet/ext/events/synchronize_to_device.py:243
 msgid "Export Path"
 msgstr "Eksportsti"
 
-#: quodlibet/ext/events/synchronize_to_device.py:254
+#: quodlibet/ext/events/synchronize_to_device.py:253
 #, fuzzy
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
@@ -2673,113 +2678,119 @@ msgstr ""
 "Oppdaget dupliserte eksporteringsstier. Eksportstiene ovenfor kan redigeres "
 "før du begynner synkroniseringen."
 
-#: quodlibet/ext/events/synchronize_to_device.py:258
+#: quodlibet/ext/events/synchronize_to_device.py:257
 msgid "Existing files in the destination path will be deleted!"
 msgstr "Eksisterende filer i målmappen vil bli slettet."
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:273
+#: quodlibet/ext/events/synchronize_to_device.py:272
 msgid "Start synchronization"
 msgstr "Start synkronisering"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:281
+#: quodlibet/ext/events/synchronize_to_device.py:280
 msgid "Stop synchronization"
 msgstr "Stopp synkronisering"
 
-#: quodlibet/ext/events/synchronize_to_device.py:304
+#: quodlibet/ext/events/synchronize_to_device.py:303
 #, fuzzy
 msgid "No saved searches yet, create some and come back!"
 msgstr "Opprett noen lagrede søk for å se dem her."
 
-#: quodlibet/ext/events/synchronize_to_device.py:386
+#: quodlibet/ext/events/synchronize_to_device.py:385
 #, fuzzy
 msgid "Choose destination path"
 msgstr "Velg målsti"
 
-#: quodlibet/ext/events/synchronize_to_device.py:538
+#: quodlibet/ext/events/synchronize_to_device.py:537
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
 "Eksportsti endret fra [{old_path}] til [{new_path}] for filen [{filename}]"
 
-#: quodlibet/ext/events/synchronize_to_device.py:652
+#: quodlibet/ext/events/synchronize_to_device.py:651
 #, fuzzy
 msgid "Starting synchronization preview"
 msgstr "Starter synkroniseringsforhåndsvisning …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:657
+#: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
 msgstr "Synkroniseringsforhåndsvisning underveis."
 
-#: quodlibet/ext/events/synchronize_to_device.py:673
+#: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
 msgstr "Fullførte synkroniseringsforhåndsvisning"
 
-#: quodlibet/ext/events/synchronize_to_device.py:682
+#: quodlibet/ext/events/synchronize_to_device.py:681
 msgid "Stopping synchronization preview"
 msgstr "Stopper synkroniseringsforhåndsvisning …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:684
+#: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Synchronization preview was stopped."
 msgstr "Synkroniseringsforhåndsvisning ble stoppet."
 
-#: quodlibet/ext/events/synchronize_to_device.py:687
+#: quodlibet/ext/events/synchronize_to_device.py:686
 msgid "Synchronization preview has finished."
 msgstr "Synkroniseringsforhåndsvisning er ferdig."
 
-#: quodlibet/ext/events/synchronize_to_device.py:717
+#: quodlibet/ext/events/synchronize_to_device.py:716
 msgid "Stopped synchronization preview"
 msgstr "Stoppet Synkroniseringsforhåndsvisning"
 
-#: quodlibet/ext/events/synchronize_to_device.py:721
+#: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
 msgstr "Et annet programtilleg ble oppdaget - stopp forhåndsvisning"
 
-#: quodlibet/ext/events/synchronize_to_device.py:758
+#: quodlibet/ext/events/synchronize_to_device.py:757
 #, fuzzy
 msgid "Synchronization will:"
 msgstr "Synkronisering vil:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:764
+#: quodlibet/ext/events/synchronize_to_device.py:763
 #, fuzzy, python-brace-format
-msgid "attempt to write {count} {file_str}"
-msgstr "forsøke å skrive {count} {file_str}"
+msgid "attempt to write {count} file"
+msgid_plural "attempt to write {count} files"
+msgstr[0] "forsøke å skrive {count} {file_str}"
+msgstr[1] "forsøke å skrive {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
 #, fuzzy, python-brace-format
-msgid "skip {count} duplicate {file_str}"
-msgstr "hoppe over {count} duplisert {file_str}"
+msgid "skip {count} duplicate file"
+msgid_plural "skip {count} duplicate files"
+msgstr[0] "hoppe over {count} duplisert {file_str}"
+msgstr[1] "hoppe over {count} duplisert {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:779
-#, python-brace-format
-msgid "delete {count} {file_str}"
-msgstr "slett {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:780
+#, fuzzy, python-brace-format
+msgid "delete {count} file"
+msgid_plural "delete {count} files"
+msgstr[0] "slett {count} {file_str}"
+msgstr[1] "slett {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:828
+#: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
 msgstr "Målsti ikke angitt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:829
+#: quodlibet/ext/events/synchronize_to_device.py:831
 #, fuzzy
 msgid "Please specify the directory where songs should be exported."
 msgstr "Angi mappe å eksportere spor til."
 
-#: quodlibet/ext/events/synchronize_to_device.py:836
+#: quodlibet/ext/events/synchronize_to_device.py:838
 msgid "No export pattern provided"
 msgstr "Eksportmønster ikke angitt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:837
+#: quodlibet/ext/events/synchronize_to_device.py:839
 #, fuzzy
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr "Angi et eksportmønster for navn på eksporterte spor."
 
-#: quodlibet/ext/events/synchronize_to_device.py:847
+#: quodlibet/ext/events/synchronize_to_device.py:849
 msgid "Export path is not absolute"
 msgstr "Eksportstien er ikke absolutt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:848
+#: quodlibet/ext/events/synchronize_to_device.py:850
 msgid ""
 "The pattern\n"
 "\n"
@@ -2795,31 +2806,31 @@ msgstr ""
 "inneholder «/», men starter ikke fra rotmappe. For å unngå feilutformede "
 "mappenavn må du begynne mønsteret med «/» eller «~/»."
 
-#: quodlibet/ext/events/synchronize_to_device.py:870
+#: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "No saved searches selected"
 msgstr "Ingen lagrede søk valgt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:871
+#: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "Please select at least one saved search."
 msgstr "Velg minst ett lagret søk."
 
-#: quodlibet/ext/events/synchronize_to_device.py:880
+#: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "No songs in the selected saved searches"
 msgstr "Ingen spor i valgte lagrede søk"
 
-#: quodlibet/ext/events/synchronize_to_device.py:881
+#: quodlibet/ext/events/synchronize_to_device.py:883
 msgid "All selected saved searches are empty."
 msgstr "Alle valgte lagrede søk er tomme."
 
-#: quodlibet/ext/events/synchronize_to_device.py:884
+#: quodlibet/ext/events/synchronize_to_device.py:886
 msgid "Found {} songs to synchronize"
 msgstr "Fant {} spor å synkronisere"
 
-#: quodlibet/ext/events/synchronize_to_device.py:903
+#: quodlibet/ext/events/synchronize_to_device.py:905
 msgid "Mismatch between destination path and export pattern"
 msgstr "Målsti og eksportmønster er ikke i overensstemmelse"
 
-#: quodlibet/ext/events/synchronize_to_device.py:905
+#: quodlibet/ext/events/synchronize_to_device.py:907
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2833,92 +2844,104 @@ msgstr ""
 "Feil:\n"
 "{}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:943
+#: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Unable to sync"
 msgstr "Kunne ikke synkronisere"
 
-#: quodlibet/ext/events/synchronize_to_device.py:944
+#: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr "Kan ikke starte synkronisering i <b>Status</b>-sortering."
 
-#: quodlibet/ext/events/synchronize_to_device.py:948
+#: quodlibet/ext/events/synchronize_to_device.py:950
 #, fuzzy
 msgid "Starting song synchronization"
 msgstr "Starter spor-synkronisering …"
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:952
+#: quodlibet/ext/events/synchronize_to_device.py:954
 #, fuzzy
 msgid "Synchronization in progress."
 msgstr "Synkroniserer …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:964
+#: quodlibet/ext/events/synchronize_to_device.py:966
 msgid "Finished song synchronization"
 msgstr "Fullførte spor-synkronisering"
 
-#: quodlibet/ext/events/synchronize_to_device.py:973
+#: quodlibet/ext/events/synchronize_to_device.py:975
 #, fuzzy
 msgid "Stopping song synchronization"
 msgstr "Stopper spor-synkronisering …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:974
+#: quodlibet/ext/events/synchronize_to_device.py:976
 msgid "Synchronization was stopped."
 msgstr "Synkroniseringen ble stoppet."
 
-#: quodlibet/ext/events/synchronize_to_device.py:976
+#: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization has finished."
 msgstr "Synkronisering fullført."
 
-#: quodlibet/ext/events/synchronize_to_device.py:1009
+#: quodlibet/ext/events/synchronize_to_device.py:1011
 msgid "Stopped song synchronization"
 msgstr "Stoppet spor-synkronisering"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1013
+#: quodlibet/ext/events/synchronize_to_device.py:1015
 msgid "A different plugin was selected - stop synchronization"
 msgstr "Et annet programtillegg ble valgt - stopp synkronisering"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1016
+#: quodlibet/ext/events/synchronize_to_device.py:1018
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr "{tag} - «{filename}»"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1085
+#: quodlibet/ext/events/synchronize_to_device.py:1087
 msgid "Removing \"{}\""
 msgstr "Fjerner «{}»"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1104
+#: quodlibet/ext/events/synchronize_to_device.py:1106
 msgid "Synchronization has:"
 msgstr "Synkronisering har:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1112
+#: quodlibet/ext/events/synchronize_to_device.py:1114
 #, fuzzy, python-brace-format
-msgid "written {count}/{total} {file_str}"
-msgstr "skrevet {count}/{total} {file_str}"
+msgid "written {count}/{total} file"
+msgid_plural "written {count}/{total} files"
+msgstr[0] "skrevet {count}/{total} {file_str}"
+msgstr[1] "skrevet {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1119
+#: quodlibet/ext/events/synchronize_to_device.py:1121
 #, fuzzy, python-brace-format
-msgid "(skipped {count} existing {file_str})"
-msgstr "(hoppet over {count} eksisterende {file_str})"
+msgid "(skipped {count} existing file)"
+msgid_plural "(skipped {count} existing files)"
+msgstr[0] "(hoppet over {count} eksisterende {file_str})"
+msgstr[1] "(hoppet over {count} eksisterende {file_str})"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1127
+#: quodlibet/ext/events/synchronize_to_device.py:1130
 #, fuzzy, python-brace-format
-msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr "hoppet over {count}/{total} duplisert {file_str}"
+msgid "skipped {count}/{total} duplicate file"
+msgid_plural "skipped {count}/{total} duplicate files"
+msgstr[0] "hoppet over {count}/{total} duplisert {file_str}"
+msgstr[1] "hoppet over {count}/{total} duplisert {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1134
-#, python-brace-format
-msgid "deleted {count}/{total} {file_str}"
-msgstr "slettet {count}/{total} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1137
+#, fuzzy, python-brace-format
+msgid "deleted {count}/{total} file"
+msgid_plural "deleted {count}/{total} files"
+msgstr[0] "slettet {count}/{total} {file_str}"
+msgstr[1] "slettet {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1141
-#, python-brace-format
-msgid "failed to sync {count} {file_str}"
-msgstr "klarte ikke å synkronisere {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1144
+#, fuzzy, python-brace-format
+msgid "failed to sync {count} file"
+msgid_plural "failed to sync {count} files"
+msgstr[0] "klarte ikke å synkronisere {count} {file_str}"
+msgstr[1] "klarte ikke å synkronisere {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1147
-#, python-brace-format
-msgid "skipped {count} {file_str} synchronized previously"
-msgstr "hoppet over {count} {file_str} tidligere synkronisert"
+#: quodlibet/ext/events/synchronize_to_device.py:1151
+#, fuzzy, python-brace-format
+msgid "skipped {count} file synchronized previously"
+msgid_plural "skipped {count} files synchronized previously"
+msgstr[0] "hoppet over {count} {file_str} tidligere synkronisert"
+msgstr[1] "hoppet over {count} {file_str} tidligere synkronisert"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3483,8 +3506,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
-"Del oppsett med <a href=\"%(plugin_link)s\">Sqeezebox Sync-"
-"programtillegg</a>."
+"Del oppsett med <a href=\"%(plugin_link)s\">Sqeezebox Sync-programtillegg</"
+"a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3733,6 +3756,10 @@ msgstr "Betinget spørring"
 msgid "Chooses the query to match based on a condition query."
 msgstr "Velger spørring å samsvare med basert på en betingelsesspørring."
 
+#: quodlibet/ext/query/conditional.py:18
+msgid "@(if: condition-query, then-query, else-query)"
+msgstr ""
+
 #: quodlibet/ext/query/missing.py:17
 #, fuzzy
 msgid "Missing Query"
@@ -3743,7 +3770,7 @@ msgstr "Manglelsspørring"
 msgid "Matches songs without the given tag."
 msgstr "Finner spor uten angitt etikett."
 
-#: quodlibet/ext/query/missing.py:35
+#: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
 msgstr "Inkluder tomme etiketter"
 
@@ -3755,6 +3782,27 @@ msgstr "Python-spørring"
 msgid "🐍Use Python expressions in queries."
 msgstr "🐍Bruk Python-uttrykk i spørringer"
 
+#: quodlibet/ext/query/pythonexpression.py:21
+#, fuzzy
+msgid "@(python: expression)"
+msgstr "Tagguttrykk"
+
+#: quodlibet/ext/query/pythonexpression.py:23
+#, fuzzy
+msgid ""
+"The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.\n"
+"\n"
+"<tt>_ts</tt> is a (real number) timestamp at start of query.\n"
+"\n"
+"Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
+"<tt>Random</tt> (==<tt>random.Random</tt>) too."
+msgstr ""
+"Bruk Python-uttrykk i spørringer. Syntaks er «@(python: uttrykk)». "
+"Variabelen «s» eller «a» er låt / album som skal samsvare. «_ts» er et (ekte "
+"numerisk) tidsstempel i begynnelsen av en spørring. Modulene «time» (tid) og "
+"«random» (vilkårlig) er også tilgjengelig, i tillegg til klassen "
+"«Random» (==random.Random)."
+
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
 msgstr "Ta med lagret søk"
@@ -3762,6 +3810,11 @@ msgstr "Ta med lagret søk"
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
 msgstr "💾 Ta med søketreff fra lagret søk som del av en annen spørring."
+
+#: quodlibet/ext/query/savedsearch.py:24
+#, fuzzy
+msgid "@(saved: search-name)"
+msgstr "Lagrede søk"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -5411,9 +5464,17 @@ msgstr ""
 msgid "Use JACK for playback if available"
 msgstr "Bruk JACK for avspilling hvis det forefinnes"
 
+#: quodlibet/player/gstbe/prefs.py:77
+msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
+msgstr ""
+
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
 msgstr "Koble til automatisk til JACK-utgangsenheter"
+
+#: quodlibet/player/gstbe/prefs.py:81
+msgid "Tells `jackaudiosink` to auto-connect"
+msgstr ""
 
 #: quodlibet/player/gstbe/util.py:148
 #, fuzzy, python-format
@@ -5509,7 +5570,7 @@ msgstr[1] "Vil du kjøre tillegget «%(name)s» på %(count)s spillelister?"
 msgid "_Run Plugin"
 msgstr "_Kjør programtillegg"
 
-#: quodlibet/plugins/query.py:65
+#: quodlibet/plugins/query.py:73
 msgid "Usage"
 msgstr "Bruk"
 
@@ -8079,18 +8140,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Avspilling hopper over låter med vurderingskarakter som er lik eller "
 #~ "under valgt terskelverdi."
-
-#~ msgid ""
-#~ "Use Python expressions in queries. Syntax is '@(python: expression)'. The "
-#~ "variable 's' (or 'a') is the song / album being matched. '_ts' is a (real "
-#~ "number) timestamp at start of query. Modules 'time' and 'random' are also "
-#~ "available, and the class 'Random' (==random.Random) too."
-#~ msgstr ""
-#~ "Bruk Python-uttrykk i spørringer. Syntaks er «@(python: uttrykk)». "
-#~ "Variabelen «s» eller «a» er låt / album som skal samsvare. «_ts» er et "
-#~ "(ekte numerisk) tidsstempel i begynnelsen av en spørring. Modulene "
-#~ "«time» (tid) og «random» (vilkårlig) er også tilgjengelig, i tillegg til "
-#~ "klassen «Random» (==random.Random)."
 
 #~ msgid "Browse Folders"
 #~ msgstr "Utforsk mapper"
