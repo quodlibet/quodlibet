@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-04 18:16+0200\n"
-"PO-Revision-Date: 2021-09-13 10:34+0000\n"
+"PO-Revision-Date: 2021-10-01 16:34+0000\n"
 "Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/nl/>\n"
@@ -2550,9 +2550,8 @@ msgid "Cannot set the filename of a song."
 msgstr "De bestandsnaam van een nummer kan niet worden ingesteld."
 
 #: quodlibet/ext/events/synchronize_to_device.py:87
-#, fuzzy
 msgid "Synchronize to Device"
-msgstr "Gesynchroniseerde songteksten"
+msgstr "Synchroniseren naar apparaat"
 
 #: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
@@ -2703,25 +2702,25 @@ msgid "Synchronization will:"
 msgstr "De synchronisatie zal"
 
 #: quodlibet/ext/events/synchronize_to_device.py:763
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
-msgstr[0] "proberen {count} {file_str} weg te schrijven"
-msgstr[1] "proberen {count} {file_str} weg te schrijven"
+msgstr[0] "proberen {count} bestand weg te schrijven"
+msgstr[1] "proberen {count} bestanden weg te schrijven"
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
-msgstr[0] "{count} duplicaten {file_str} overslaan"
-msgstr[1] "{count} duplicaten {file_str} overslaan"
+msgstr[0] "{count} duplicaat overslaan"
+msgstr[1] "{count} duplicaten overslaan"
 
 #: quodlibet/ext/events/synchronize_to_device.py:780
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
-msgstr[0] "{count} {file_str} verwijderen"
-msgstr[1] "{count} {file_str} verwijderen"
+msgstr[0] "{count} bestand verwijderen"
+msgstr[1] "{count} bestanden verwijderen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
@@ -2852,46 +2851,46 @@ msgid "Synchronization has:"
 msgstr "De synchronisatie heeft"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1114
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
-msgstr[0] "{count}/{total} {file_str} weggeschreven"
-msgstr[1] "{count}/{total} {file_str} weggeschreven"
+msgstr[0] "{count}/{total} bestand weggeschreven"
+msgstr[1] "{count}/{total} bestanden weggeschreven"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1121
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
-msgstr[0] "({count} bestaande {file_str} overgeslagen)"
-msgstr[1] "({count} bestaande {file_str} overgeslagen)"
+msgstr[0] "({count} bestaand bestand overgeslagen)"
+msgstr[1] "({count} bestaande bestanden overgeslagen)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1130
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
-msgstr[0] "{count}/{total} duplicaten {file_str} overgeslagen"
-msgstr[1] "{count}/{total} duplicaten {file_str} overgeslagen"
+msgstr[0] "{count}/{total} duplicaat overgeslagen"
+msgstr[1] "{count}/{total} duplicaten overgeslagen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1137
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
-msgstr[0] "{count}/{total} {file_str} verwijderd"
-msgstr[1] "{count}/{total} {file_str} verwijderd"
+msgstr[0] "{count}/{total} bestand verwijderd"
+msgstr[1] "{count}/{total} bestand verwijderd"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1144
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
-msgstr[0] "{count} {file_str} niet kunnen wegschrijven"
-msgstr[1] "{count} {file_str} niet kunnen wegschrijven"
+msgstr[0] "{count} bestand niet kunnen wegschrijven"
+msgstr[1] "{count} bestanden niet kunnen wegschrijven"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1151
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
-msgstr[0] "{count} {file_str} uit een eerdere synchronisatie overgeslagen"
-msgstr[1] "{count} {file_str} uit een eerdere synchronisatie overgeslagen"
+msgstr[0] "{count} bestand uit een eerdere synchronisatie overgeslagen"
+msgstr[1] "{count} bestanden uit een eerdere synchronisatie overgeslagen"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3555,9 +3554,8 @@ msgid "Queue only"
 msgstr "Alleen wachtrij"
 
 #: quodlibet/ext/playorder/queue.py:25
-#, fuzzy
 msgid "_Queue only"
-msgstr "Alleen wachtrij"
+msgstr "Alleen _wachtrij"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
@@ -3568,9 +3566,8 @@ msgid "Adds a shuffle mode that reverses the play order of songs."
 msgstr "Keert de afspeelvolgorde van de nummers om."
 
 #: quodlibet/ext/playorder/reverse.py:19
-#, fuzzy
 msgid "Re_verse"
-msgstr "Omkeren"
+msgstr "Om_keren"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
@@ -3596,9 +3593,8 @@ msgid "Shuffle by grouping"
 msgstr "Willekeurige groepen afspelen"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:40
-#, fuzzy
 msgid "Shuffle by _grouping"
-msgstr "Willekeurige groepen afspelen"
+msgstr "Willekeurige _groepen afspelen"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
@@ -3653,14 +3649,12 @@ msgstr ""
 "lager dan of gelijk aan een opgegeven waarde overslaat."
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
-#, fuzzy
 msgid "Skip disliked tracks"
 msgstr "Nummers met lage waardering overslaan"
 
 #: quodlibet/ext/playorder/skip_disliked.py:30
-#, fuzzy
 msgid "Skip _disliked tracks"
-msgstr "Nummers met lage waardering overslaan"
+msgstr "Nummers met lage waar_dering overslaan"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
@@ -3675,14 +3669,12 @@ msgstr ""
 "keer."
 
 #: quodlibet/ext/playorder/track_repeat.py:32
-#, fuzzy
 msgid "Repeat each track"
 msgstr "Elk nummer herhalen"
 
 #: quodlibet/ext/playorder/track_repeat.py:33
-#, fuzzy
 msgid "Repeat _each track"
-msgstr "Elk nummer herhalen"
+msgstr "_Elk nummer herhalen"
 
 #: quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
@@ -3698,7 +3690,7 @@ msgstr "Bepaal de voorwaarden waarop een overeenkomst dient plaats te vinden."
 
 #: quodlibet/ext/query/conditional.py:18
 msgid "@(if: condition-query, then-query, else-query)"
-msgstr ""
+msgstr "@(if: condition-query, then-query, else-query)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3721,9 +3713,8 @@ msgid "🐍Use Python expressions in queries."
 msgstr "🐍Gebruik Python-uitdrukkingen in zoekopdrachten."
 
 #: quodlibet/ext/query/pythonexpression.py:21
-#, fuzzy
 msgid "@(python: expression)"
-msgstr "Tag-uitdrukking"
+msgstr "@(python: uitdrukking)"
 
 #: quodlibet/ext/query/pythonexpression.py:23
 #, fuzzy
@@ -3750,9 +3741,8 @@ msgid "💾 Include the results of a saved search as part of another query."
 msgstr "💾 Toon ook resultaten van opgeslagen zoekopdrachten."
 
 #: quodlibet/ext/query/savedsearch.py:24
-#, fuzzy
 msgid "@(saved: search-name)"
-msgstr "Opgeslagen zoekopdrachten"
+msgstr "@(saved: zoekopdracht)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -4064,9 +4054,8 @@ msgid "Your current working directory is:"
 msgstr "Je huidige werkmap is:"
 
 #: quodlibet/ext/songsmenu/console.py:559
-#, fuzzy
 msgid "Completion"
-msgstr "Verbinding"
+msgstr "Aanvulling"
 
 #: quodlibet/ext/songsmenu/cover_download.py:53
 msgid "Download Cover Art"
@@ -4230,9 +4219,8 @@ msgid "reverse"
 msgstr "Omkeren"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
-#, fuzzy
 msgid "If set, the argument list will be reversed"
-msgstr "Indien ingesteld zal de opdrachtregellijst worden omgekeerd."
+msgstr "Stel in om de opdrachtregellijst om te keren"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:95
 msgid "Input value"
@@ -4333,7 +4321,6 @@ msgid "Edit Playcount"
 msgstr "Afspeeltelling bewerken"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
-#, fuzzy
 msgid ""
 "Edit a song's <tt>~#playcount</tt> and <tt>~#skipcount.</tt>\n"
 "\n"
@@ -4344,15 +4331,15 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
-"Bewerk de ~#playcount en ~#skipcount van een nummer.\n"
+"Bewerk de <tt>~#playcount</tt> en ~<tt>#skipcount</tt> van een nummer.\n"
 "\n"
 "Indien meerdere nummers geselecteerd zijn, zullen de tellers verhoogd worden "
 "i.p.v. ingesteld.\n"
 "\n"
-"Indien de ~#playcount van een nummer op 0 wordt gezet, zullen de "
-"~#lastplayed- ~#laststarted-items worden gewist. Als echter aan een nummer "
-"dat nog nooit is afgespeeld een 'playcount' boven nul wordt toegekend, "
-"zullen geen speeltijden worden aangemaakt."
+"Indien de <tt>~#playcount</tt> van een nummer op 0 wordt gezet, zullen de "
+"<tt>~#lastplayed</tt>- en ~#<tt>laststarted</tt>-items worden gewist. Als "
+"echter aan een nummer dat nog nooit is afgespeeld een 'playcount' boven nul "
+"wordt toegekend, zullen geen speeltijden worden aangemaakt."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
@@ -4606,19 +4593,16 @@ msgstr ""
 #. * means all tags (so tags like 'title' and internal (user data) "tags" like ~#added)
 #. * tag1 tag2 means all except tag1 and tag2
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:59
-#, fuzzy
 msgid "Export User Data"
-msgstr "Metagegevens exporteren"
+msgstr "Cegevens exporteren"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:60
-#, fuzzy
 msgid "Export Tags"
-msgstr "Exportlocatie"
+msgstr "Labels exporteren"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:61
-#, fuzzy
 msgid "Export Tags and User Data"
-msgstr "Metagegevens exporteren"
+msgstr "Labels en gegevens exporteren"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:62
 #, fuzzy
