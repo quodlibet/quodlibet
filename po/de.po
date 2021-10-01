@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.3\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-13 10:34+0000\n"
+"PO-Revision-Date: 2021-10-01 16:34+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -2591,9 +2591,8 @@ msgid "Cannot set the filename of a song."
 msgstr "Kann den Dateinamen eines Titels nicht setzen."
 
 #: quodlibet/ext/events/synchronize_to_device.py:87
-#, fuzzy
 msgid "Synchronize to Device"
-msgstr "Synchronisierte Liedtexte"
+msgstr "Zu Gerät synchronisieren"
 
 #: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
@@ -2753,25 +2752,25 @@ msgid "Synchronization will:"
 msgstr "Die Synchronisierung wird:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:763
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
-msgstr[0] "{count} {file_str} schreiben"
-msgstr[1] "{count} {file_str} schreiben"
+msgstr[0] "{count} Datei schreiben"
+msgstr[1] "{count} Dateien schreiben"
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
-msgstr[0] "{count} doppelte {file_str} auslassen"
-msgstr[1] "{count} doppelte {file_str} auslassen"
+msgstr[0] "{count} doppelte Datei auslassen"
+msgstr[1] "{count} doppelte Dateien auslassen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:780
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
-msgstr[0] "{count} {file_str} löschen"
-msgstr[1] "{count} {file_str} löschen"
+msgstr[0] "{count} Datei löschen"
+msgstr[1] "{count} Dateien löschen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
@@ -2908,46 +2907,46 @@ msgid "Synchronization has:"
 msgstr "Die Synchronisierung hat:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1114
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
-msgstr[0] "{count}/{total} {file_str} geschrieben"
-msgstr[1] "{count}/{total} {file_str} geschrieben"
+msgstr[0] "{count}/{total} Datei geschrieben"
+msgstr[1] "{count}/{total} Dateien geschrieben"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1121
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
-msgstr[0] "({count} existierende {file_str} ausgelassen)"
-msgstr[1] "({count} existierende {file_str} ausgelassen)"
+msgstr[0] "({count} existierende Datei ausgelassen)"
+msgstr[1] "({count} existierende Dateien ausgelassen)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1130
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
-msgstr[0] "{count}/{total} duplizierte {file_str} ausgelassen"
-msgstr[1] "{count}/{total} duplizierte {file_str} ausgelassen"
+msgstr[0] "{count}/{total} doppelte Datei ausgelassen"
+msgstr[1] "{count}/{total} doppelte Dateien ausgelassen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1137
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
-msgstr[0] "{count}/{total} {file_str} gelöscht"
-msgstr[1] "{count}/{total} {file_str} gelöscht"
+msgstr[0] "{count}/{total} Datei gelöscht"
+msgstr[1] "{count}/{total} Dateien gelöscht"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1144
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
-msgstr[0] "{count} {file_str} nicht erfolgreich synchronisiert"
-msgstr[1] "{count} {file_str} nicht erfolgreich synchronisiert"
+msgstr[0] "{count} Datei nicht erfolgreich synchronisiert"
+msgstr[1] "{count} Dateien nicht erfolgreich synchronisiert"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1151
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
-msgstr[0] "{count} schon synchronisierte {file_str} ausgelassen"
-msgstr[1] "{count} schon synchronisierte {file_str} ausgelassen"
+msgstr[0] "{count} schon synchronisierte Datei ausgelassen"
+msgstr[1] "{count} schon synchronisierte Dateien ausgelassen"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3766,7 +3765,7 @@ msgstr ""
 
 #: quodlibet/ext/query/conditional.py:18
 msgid "@(if: condition-query, then-query, else-query)"
-msgstr ""
+msgstr "@(if: Bedingungsabfrage, Dann-Abfrage, Sonst-Abfrage)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3789,12 +3788,10 @@ msgid "🐍Use Python expressions in queries."
 msgstr "🐍 Python-Ausdrücke in Abfragen verwenden."
 
 #: quodlibet/ext/query/pythonexpression.py:21
-#, fuzzy
 msgid "@(python: expression)"
-msgstr "Feldausdruck"
+msgstr "@(python: Ausdruck)"
 
 #: quodlibet/ext/query/pythonexpression.py:23
-#, fuzzy
 msgid ""
 "The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.\n"
 "\n"
@@ -3803,11 +3800,13 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
-"Erlaubt es, Python-Ausdrücke in Abfragen zu benutzen. Die Syntax ist "
-"»@(python: Ausdruck)«. Die Variable »s« (oder »a«) ist der Titel (bzw. das "
-"Album), auf dem die Abfrage aktuell arbeitet. »_ts« ist ein Zeitstempel "
-"(reelle Zahl) zu Beginn der Abfrage. Die Module »time« und »random« sind "
-"verfügbar, ebenso wie die Klasse »Random« (random.Random)."
+"Die Variable <tt>s</tt> (oder <tt>a</tt>) ist der Titel (bzw. das Album), "
+"auf dem die Abfrage aktuell arbeitet.\n"
+"\n"
+"<tt>_ts</tt> ist ein Zeitstempel (reelle Zahl) zu Beginn der Abfrage.\n"
+"\n"
+"Die Module <tt>time</tt> und <tt>random</tt> sind verfügbar, ebenso wie die "
+"Klasse <tt>Random</tt> (<tt>random.Random</tt>)."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -3820,9 +3819,8 @@ msgstr ""
 "Abfrage einschließen."
 
 #: quodlibet/ext/query/savedsearch.py:24
-#, fuzzy
 msgid "@(saved: search-name)"
-msgstr "Gespeicherte Suchläufe"
+msgstr "@(saved: Suchlaufname)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -5463,7 +5461,7 @@ msgstr "JACK für die Wiedergabe verwenden, falls verfügbar"
 
 #: quodlibet/player/gstbe/prefs.py:77
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
-msgstr ""
+msgstr "Benutzt »jackaudiosink« als Audiosenke, falls verfügbar"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
@@ -5471,7 +5469,7 @@ msgstr "Automatisch mit JACK-Ausgabegeräten verbinden"
 
 #: quodlibet/player/gstbe/prefs.py:81
 msgid "Tells `jackaudiosink` to auto-connect"
-msgstr ""
+msgstr "»jackaudiosink« anweisen, sich automatisch zu verbinden"
 
 #: quodlibet/player/gstbe/util.py:148
 #, python-format
