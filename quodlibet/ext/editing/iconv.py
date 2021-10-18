@@ -70,4 +70,5 @@ class Iconv(EditTagsPlugin):
         try:
             return [(tag, self.__value)]
         except AttributeError:
-            return []  # make it different from [(tag, value)] so the menu entry is enabled
+            # make it different from [(tag, value)] so the menu entry is enabled
+            return []
