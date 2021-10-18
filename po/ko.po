@@ -8,74 +8,67 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2013-07-20 22:35+0100\n"
-"Last-Translator: ChangBom Yoon <changbom.yoon@gmail.com>\n"
-"Language-Team: The FreeBSD Korean Documentation Project <doc@kr.FreeBSD."
-"org>\n"
+"PO-Revision-Date: 2021-10-18 09:48+0000\n"
+"Last-Translator: Johndoe0153 <johndoe0153@protonmail.com>\n"
+"Language-Team: Korean <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/ko/>\n"
 "Language: ko\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
-#, fuzzy
 msgid "_Title"
-msgstr "제목"
+msgstr "_제목"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
 msgid "_Artist"
-msgstr "아티스트"
+msgstr "_아티스트"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
 msgid "_Date"
-msgstr "날짜"
+msgstr "_날짜"
 
 #: quodlibet/browsers/albums/main.py:226
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Date Headers"
+msgstr "_추가된 날짜"
 
 #: quodlibet/browsers/albums/main.py:227
-#, fuzzy
 msgid "_Original Date"
-msgstr "오리지널 아티스트"
+msgstr "_오리지널 날짜"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
-#, fuzzy
 msgid "_Genre"
-msgstr "장르"
+msgstr "_장르"
 
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
-msgstr "재생율"
+msgstr "_재생율"
 
 #: quodlibet/browsers/albums/main.py:230
-#, fuzzy
 msgid "_Playcount"
-msgstr "Edit Display"
+msgstr "_재생 횟수"
 
 #: quodlibet/browsers/albums/main.py:236
 #: quodlibet/browsers/covergrid/main.py:66
-#, fuzzy
 msgid "Sort _by…"
-msgstr "날짜 순 정렬"
+msgstr "날짜 순 정렬…"
 
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:87
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
-#, fuzzy
 msgid "_Preferences"
-msgstr "설정"
+msgstr "_설정"
 
 #: quodlibet/browsers/albums/main.py:431
 msgid "Album List"
@@ -83,7 +76,7 @@ msgstr "앨범 목록"
 
 #: quodlibet/browsers/albums/main.py:432
 msgid "_Album List"
-msgstr "앨범 목록"
+msgstr "_앨범 목록"
 
 #: quodlibet/browsers/albums/main.py:547
 #: quodlibet/browsers/covergrid/main.py:287
@@ -101,10 +94,9 @@ msgstr[0] "%d 앨범"
 
 #: quodlibet/browsers/albums/main.py:729
 #: quodlibet/browsers/covergrid/main.py:482
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "앨범 표지 보이기"
+msgstr[0] "앨범 커버 새로고침"
 
 #: quodlibet/browsers/albums/prefs.py:28
 #: quodlibet/browsers/collection/models.py:17
@@ -133,9 +125,8 @@ msgstr[0] "%d 디스크"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "모든 앨범"
+msgstr "예시 앨범"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -147,14 +138,13 @@ msgstr "앨범 표지 보이기"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
-msgstr ""
+msgstr "사람을 포함하여 검색"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
 #: quodlibet/ext/songsmenu/cover_download.py:306
-#, fuzzy
 msgid "Options"
-msgstr "[옵션]"
+msgstr "옵션"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:127
@@ -173,7 +163,7 @@ msgstr "앨범 표시"
 #: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
 #: quodlibet/update.py:149
 msgid "_Close"
-msgstr ""
+msgstr "닫기"
 
 #: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
 #: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
@@ -184,7 +174,7 @@ msgstr ""
 #: quodlibet/qltk/information.py:277 quodlibet/qltk/pluginwin.py:51
 #: quodlibet/qltk/wlw.py:69
 msgid "Unknown"
-msgstr "Unknown"
+msgstr "알 수 없음"
 
 #: quodlibet/browsers/audiofeeds.py:213
 msgid "New Feed"
@@ -203,7 +193,7 @@ msgstr "오디오 피드의 주소를 입력하십시오:"
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
-msgstr ""
+msgstr "추가"
 
 #: quodlibet/browsers/audiofeeds.py:269
 msgid "Audio Feeds"
@@ -211,49 +201,45 @@ msgstr "오디오 피드"
 
 #: quodlibet/browsers/audiofeeds.py:270
 msgid "_Audio Feeds"
-msgstr "오디오 피드"
+msgstr "_오디오 피드"
 
 #: quodlibet/browsers/audiofeeds.py:373 quodlibet/qltk/data_editors.py:93
 msgid "_New"
-msgstr ""
+msgstr "_추가"
 
 #: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:424
-#, fuzzy
 msgid "_Refresh"
-msgstr "라이브러리 새로고침"
+msgstr "_ 새로 고침"
 
 #: quodlibet/browsers/audiofeeds.py:438
 #: quodlibet/browsers/playlists/main.py:484
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
-#, fuzzy
 msgid "_Delete"
-msgstr "파일 지우기"
+msgstr "_제거"
 
 #: quodlibet/browsers/audiofeeds.py:491
 msgid "Unable to add feed"
 msgstr "피드를 추가할 수 없습니다"
 
 #: quodlibet/browsers/audiofeeds.py:492
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
-msgstr ""
-"<b>%s</b> 는 추가할 수 없습니다. 서버가 죽었거나 입력한 주소는오디오 피드가 "
-"아닙니다."
+msgstr "%s (을)를 추가할 수 없습니다. 서버가 다운되었거나, 입력한 주소가 오디오 피드가 아닐 수 있습니다."
 
 #: quodlibet/browsers/audiofeeds.py:509
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
-msgstr ""
+msgstr "현재 오디오 백엔드가 URL을 지원하지 않으며, 오디오 피드 탐색기가 비활성화되어 있습니다."
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
 msgid "Library Browser"
-msgstr "라이브러리 브라우저"
+msgstr "라이브러리 탐색기"
 
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
@@ -272,26 +258,26 @@ msgstr "유효하지 않은 양식"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
-msgstr ""
+msgstr "앨범 컬렉션"
 
 #: quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
-msgstr ""
+msgstr "앨범_컬렉션"
 
 #: quodlibet/browsers/collection/models.py:24
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "Unknown"
+msgstr "알 수 없음 %s"
 
 #: quodlibet/browsers/collection/models.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Split into _Multiple Values"
+msgstr "다중 %s 값"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
-msgstr "_Custom"
+msgstr "_사용자 지정"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -306,9 +292,8 @@ msgstr "_Custom"
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#, fuzzy
 msgid "_Remove"
-msgstr "재생율"
+msgstr "_제거"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
@@ -318,10 +303,9 @@ msgstr "태그"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "합치기"
 
 #: quodlibet/browsers/collection/prefs.py:187
-#, fuzzy
 msgid "Album Collection Preferences"
 msgstr "앨범 목록 설정"
 
@@ -332,7 +316,7 @@ msgstr "앨범 목록 설정"
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_적용"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
@@ -359,42 +343,36 @@ msgstr ""
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_취소"
 
 #: quodlibet/browsers/covergrid/main.py:128
-#, fuzzy
 msgid "Cover Grid"
-msgstr "총 크기:"
+msgstr "커버 그리드"
 
 #: quodlibet/browsers/covergrid/main.py:129
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "총 크기:"
+msgstr "_ 커버 그리드"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
-msgstr "Paned Browser 설정"
+msgstr "커버 그리드 설정"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "앨범 표지 보이기"
+msgstr "앨범_텍스트 표시"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "모든 앨범"
+msgstr "\"모든 앨범\" 항목 표시"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
 msgid "Wide Mode"
-msgstr ""
+msgstr "와이드 모드"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "조직"
+msgstr "커버 확대"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
@@ -402,7 +380,7 @@ msgstr "파일 시스템"
 
 #: quodlibet/browsers/filesystem.py:40
 msgid "_File System"
-msgstr "파일 시스템"
+msgstr "_파일 시스템"
 
 #: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:266
 msgid "Unable to copy songs"
@@ -414,7 +392,7 @@ msgstr "선택한 파일은 다른 노래 목록이나 대기열로 복사 할 �
 
 #: quodlibet/browsers/filesystem.py:197
 msgid "_Add to Library"
-msgstr "라이브러리 추가"
+msgstr "_라이브러리에 추가"
 
 #: quodlibet/browsers/iradio.py:190
 #, python-format
@@ -433,192 +411,185 @@ msgid "Internet Radio"
 msgstr "인터넷 라디오"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "새방송국"
+msgstr "방송국 추가"
 
 #: quodlibet/browsers/iradio.py:267
-#, fuzzy
 msgid "Downloading station list"
-msgstr "파일 내려받기"
+msgstr "방송국 목록 다운로드"
 
 #: quodlibet/browsers/iradio.py:368
 msgid "New Station"
-msgstr "새방송국"
+msgstr "새 방송국"
 
 #: quodlibet/browsers/iradio.py:369
 msgid "Enter the location of an Internet radio station:"
-msgstr "인터넷 라디오 방송국의 주소를 입력하십시오:"
+msgstr "인터넷 라디오 방송국의 주소를 입력하세요:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
-msgstr ""
+msgstr "일렉트로닉"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "힙합/랩"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Oldies"
-msgstr ""
+msgstr "고전 명곡"
 
 #: quodlibet/browsers/iradio.py:392
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:393
 msgid "Japanese"
-msgstr ""
+msgstr "일본어"
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Indian"
-msgstr ""
+msgstr "인도어"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Religious"
-msgstr ""
+msgstr "종교"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Charts"
-msgstr ""
+msgstr "차트"
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Turkish"
-msgstr ""
+msgstr "터키어"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "Reggae / Dancehall"
-msgstr ""
+msgstr "레게 / 댄스 홀"
 
 #: quodlibet/browsers/iradio.py:401
-#, fuzzy
 msgid "Latin"
-msgstr "재생율"
+msgstr "라틴"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
-msgstr ""
+msgstr "대학 라디오"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Talk / News"
-msgstr ""
+msgstr "토크 / 뉴스"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Ambient"
-msgstr ""
+msgstr "주변 음악"
 
 #: quodlibet/browsers/iradio.py:405
 msgid "Jazz"
-msgstr ""
+msgstr "재즈"
 
 #: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr ""
+msgstr "클래식"
 
 #: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "팝"
 
 #: quodlibet/browsers/iradio.py:408
 msgid "Alternative"
-msgstr ""
+msgstr "얼터너티브"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "Metal"
-msgstr ""
+msgstr "메탈"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Country"
-msgstr ""
+msgstr "컨트리"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "News"
-msgstr ""
+msgstr "뉴스"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Schlager"
-msgstr ""
+msgstr "슐라거"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Funk"
-msgstr ""
+msgstr "펑크"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Indie"
-msgstr ""
+msgstr "인디"
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Blues"
-msgstr ""
+msgstr "블루스"
 
 #: quodlibet/browsers/iradio.py:416
 msgid "Soul"
-msgstr ""
+msgstr "소울"
 
 #: quodlibet/browsers/iradio.py:417
 msgid "Lounge"
-msgstr ""
+msgstr "라운지"
 
 #: quodlibet/browsers/iradio.py:418
 msgid "Punk"
-msgstr ""
+msgstr "펑크"
 
 #: quodlibet/browsers/iradio.py:419
 msgid "Reggaeton"
-msgstr ""
+msgstr "레게톤"
 
 #: quodlibet/browsers/iradio.py:421
 msgid "Slavic"
-msgstr ""
+msgstr "슬라브"
 
 #: quodlibet/browsers/iradio.py:423
 msgid "Greek"
-msgstr ""
+msgstr "그리스"
 
 #: quodlibet/browsers/iradio.py:424
 msgid "Gothic"
-msgstr ""
+msgstr "고딕"
 
 #: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr ""
+msgstr "락"
 
 #: quodlibet/browsers/iradio.py:478
 msgid "Would you like to load a list of popular radio stations?"
-msgstr ""
+msgstr "인기있는 라디오 방송국 목록을 불러올까요?"
 
 #: quodlibet/browsers/iradio.py:484
-#, fuzzy
 msgid "_Load Stations"
-msgstr "새 방송국"
+msgstr "_방송국 불러오기"
 
 #: quodlibet/browsers/iradio.py:500
 msgid "_Internet Radio"
-msgstr "인터넷 라디오"
+msgstr "_인터넷 라디오"
 
 #: quodlibet/browsers/iradio.py:573
-#, fuzzy
 msgid "_New Station…"
-msgstr "새방송국"
+msgstr "_새 방송국…"
 
 #: quodlibet/browsers/iradio.py:576
-#, fuzzy
 msgid "_Update Stations"
-msgstr "새 방송국"
+msgstr "_방송국 새로 고침"
 
 #: quodlibet/browsers/iradio.py:603
-#, fuzzy
 msgid "All Stations"
-msgstr "새방송국"
+msgstr "모든 방송국"
 
 #. TODO: support for ~#rating=!None etc (#1940)
 #: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
 msgid "Favorites"
-msgstr ""
+msgstr "즐겨찾기"
 
 #: quodlibet/browsers/iradio.py:615
 msgid "No Category"
-msgstr ""
+msgstr "카테고리 없음"
 
 #: quodlibet/browsers/iradio.py:838
 msgid "No stations found"
@@ -631,35 +602,33 @@ msgstr "%s 에서 발견된 인터넷 라디오 방송국이 없습니다."
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "추가할 항목이 없습니다"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
 msgstr "목록에 있는 모든 방송국은 이미 라이브러리에 존재합니다."
 
 #: quodlibet/browsers/iradio.py:874
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "재생목록 추가"
+msgstr "즐겨찾기에 추가"
 
 #: quodlibet/browsers/iradio.py:878
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "재생목록으로부터 제거"
+msgstr "즐겨찾기에서 제거"
 
 #: quodlibet/browsers/iradio.py:978
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
-msgstr[0] "%(count)d station"
+msgstr[0] "%(count)d 방송국"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:44
 msgid "Paned Browser"
-msgstr "Paned Browser"
+msgstr "창 탐색기"
 
 #: quodlibet/browsers/paned/main.py:42
 msgid "_Paned Browser"
-msgstr "_Paned Browser"
+msgstr "_창 탐색기"
 
 #: quodlibet/browsers/paned/main.py:92
 msgid "Select _All"
@@ -668,21 +637,20 @@ msgstr "모두 선택"
 #: quodlibet/browsers/paned/models.py:106 quodlibet/qltk/pluginwin.py:142
 #: quodlibet/qltk/pluginwin.py:184
 msgid "All"
-msgstr "All"
+msgstr "모두"
 
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "작게"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "넓게"
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "칼럼 표시"
+msgstr "일렬로"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -690,117 +658,113 @@ msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "<tt>%s</tt>"
 msgstr ""
+"양식을 선택적 마크업과 함께 태그하세요. 예를 들어 <tt>작곡가</tt> 또는\n"
+"<tt>%s</tt>"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
-msgstr "Paned Browser 설정"
+msgstr "창 탐색기 설정"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "열 형식"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "열 내용"
 
 #: quodlibet/browsers/paned/prefs.py:242
 msgid "Equal pane width"
-msgstr ""
+msgstr "창 너비를 같게"
 
 #: quodlibet/browsers/playlists/main.py:49
 #: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
-msgstr "재생목록"
+msgstr "재생 목록"
 
 #: quodlibet/browsers/playlists/main.py:50
 msgid "_Playlists"
-msgstr "재생목록"
+msgstr "_재생 목록"
 
 #: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
-msgstr "재생목록으로부터 제거"
+msgstr "_재생 목록에서 제거"
 
 #: quodlibet/browsers/playlists/main.py:213
 msgid "New"
-msgstr ""
+msgstr "추가"
 
 #: quodlibet/browsers/playlists/main.py:217
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-#, fuzzy
 msgid "Import"
 msgstr "가져오기"
 
 #: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
-msgstr "재생목록을 가져올 수 없습니다"
+msgstr "재생 목록을 가져올 수 없습니다"
 
 #: quodlibet/browsers/playlists/main.py:440
-#, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
-msgstr "Quod Libet 은 M3U 와 PLS 포맷에서만 재생목록을 가져올 수 있습니다."
+msgstr "Quod Libet 은 M3U 와 PLS 포맷에서만 재생 목록을 가져올 수 있습니다."
 
 #: quodlibet/browsers/playlists/main.py:491
 msgid "_Rename"
-msgstr "이름 바꾸기"
+msgstr "_이름 바꾸기"
 
 #: quodlibet/browsers/playlists/main.py:589
 msgid "Unable to rename playlist"
-msgstr "재생목록 이름을 바꿀 수 없습니다"
+msgstr "재생 목록 이름을 바꿀 수 없습니다"
 
 #: quodlibet/browsers/playlists/main.py:601
 msgid "Import Playlist"
-msgstr "재생목록 가져오기"
+msgstr "재생 목록 가져오기"
 
 #: quodlibet/browsers/playlists/main.py:601
 msgid "_Import"
-msgstr "가져오기"
+msgstr "_가져오기"
 
 #: quodlibet/browsers/playlists/menu.py:24
-#, fuzzy
 msgid "_New Playlist…"
-msgstr "새 재생목록"
+msgstr "_새 재생목록…"
 
 #: quodlibet/browsers/playlists/menu.py:78
 #, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
-msgstr[0] ""
+msgstr[0] "%d 들로 무엇을 하시겠나요?"
 
 #: quodlibet/browsers/playlists/menu.py:82
 #, python-format
 msgid "Confirm action for playlist \"%s\""
-msgstr ""
+msgstr "재생 목록 \"%s\"에 대한 작업 확인"
 
 #: quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
-msgstr ""
+msgstr "공백"
 
 #: quodlibet/browsers/playlists/prefs.py:39
-#, fuzzy
 msgid "Example Playlist"
-msgstr "새 재생목록"
+msgstr "예시 재생목록"
 
 #: quodlibet/browsers/playlists/prefs.py:47
-#, fuzzy
 msgid "Playlist Browser Preferences"
-msgstr "Paned Browser 설정"
+msgstr "재생 목록 탐색기 설정"
 
 #: quodlibet/browsers/playlists/prefs.py:52
-#, fuzzy
 msgid "Playlist display"
-msgstr "재생목록"
+msgstr "재생 목록 화면"
 
 #: quodlibet/browsers/playlists/util.py:32
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
-msgstr ""
+msgstr "재생 목록 '%s'을 삭제하시겠습니까?"
 
 #: quodlibet/browsers/playlists/util.py:34
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
-msgstr ""
+msgstr "선택된 재생 목록에 대한 모든 정보가 제거되며 복구할 수 없습니다."
 
 #: quodlibet/browsers/playlists/util.py:48
 #: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
@@ -808,12 +772,11 @@ msgid "New Playlist"
 msgstr "새 재생목록"
 
 #: quodlibet/browsers/playlists/util.py:49
-#, fuzzy
 msgid "Enter a name for the new playlist:"
-msgstr "새 폴더 이름을 입력하십시오:"
+msgstr "새 재생 목록 명을 입력하십시오:"
 
 #: quodlibet/browsers/playlists/util.py:85
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Importing playlist.\n"
 "\n"
@@ -821,92 +784,85 @@ msgid ""
 msgstr ""
 "재생목록을 가져옵니다.\n"
 "\n"
-"%d/%d 곡을 추가했습니다."
+"%(current)d/%(total)d 곡을 추가했습니다."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
 msgstr "결과 제한"
 
 #: quodlibet/browsers/tracks.py:37
-#, fuzzy
 msgid "_Allow multiple queries"
-msgstr "Split into multiple _values"
+msgstr "_다중 쿼리 허용"
 
 #: quodlibet/browsers/tracks.py:51 quodlibet/qltk/information.py:468
 msgid "Track List"
 msgstr "트랙 목록"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "트랙 목록"
+msgstr "_트랙 목록"
 
 #: quodlibet/browsers/soundcloud/main.py:39
-#, fuzzy
 msgid "Soundcloud Browser"
-msgstr "Paned Browser"
+msgstr "사운드클라우드(Souncloud) 탐색기"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Sound_cloud"
-msgstr ""
+msgstr "사운드클라우드"
 
 #: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:81
 msgid "Search"
 msgstr "검색"
 
 #: quodlibet/browsers/soundcloud/main.py:69
-#, fuzzy
 msgid "My tracks"
-msgstr "트랙"
+msgstr "내 트랙"
 
 #: quodlibet/browsers/soundcloud/main.py:140
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "%s로 이동"
 
 #: quodlibet/browsers/soundcloud/main.py:442
-#, fuzzy
 msgid "Connected"
-msgstr "주소"
+msgstr "연결 완료"
 
 #: quodlibet/browsers/soundcloud/main.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "<b>%s</b> 는 유효하지 않은 주소입니다."
+msgstr "Quod Libet이 %s에 연결되었습니다!"
 
 #: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
 msgid "Log out of %s"
-msgstr ""
+msgstr "%s에서 로그아웃"
 
 #: quodlibet/browsers/soundcloud/main.py:457
 msgid "Enter code…"
-msgstr ""
+msgstr "코드를 입력하세요…"
 
 #: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log in to %s"
-msgstr ""
+msgstr "%s (으)로 로그인"
 
 #: quodlibet/browsers/soundcloud/util.py:95
 msgid "Soundcloud authorisation"
-msgstr ""
+msgstr "사운드클라우드 인증"
 
 #: quodlibet/browsers/soundcloud/util.py:96
 msgid "Enter Soundcloud auth code:"
-msgstr ""
+msgstr "사운드클라우드 인증 코드를 입력하세요:"
 
 #: quodlibet/cli.py:50
-#, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libet 이 실행중이 아닙니다."
+msgstr "Quod Libet 이 실행 중이 아닙니다( '--run'을 시작하기 위해 추가하세요)"
 
 #: quodlibet/cli.py:86
 msgid "a music library and player"
 msgstr "음악 라이브러리 및 재생기"
 
 #: quodlibet/cli.py:87
-#, fuzzy
 msgid "[option]"
 msgstr "[옵션]"
 
@@ -920,7 +876,7 @@ msgstr "곧 노래 시작"
 
 #: quodlibet/cli.py:91
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "시작 시 창을 보이지 않기"
 
 #: quodlibet/cli.py:94
 msgid "Jump to next song"
@@ -928,7 +884,7 @@ msgstr "다음 노래로 가기"
 
 #: quodlibet/cli.py:96
 msgid "Jump to previous song or restart if near the beginning"
-msgstr ""
+msgstr "이전 곡으로 이동하거나 시작에 가까우면 다시 시작"
 
 #: quodlibet/cli.py:97
 msgid "Jump to previous song"
@@ -947,9 +903,8 @@ msgid "Toggle play/pause mode"
 msgstr "재생/일시정지 토글(Toggle) 모드"
 
 #: quodlibet/cli.py:101
-#, fuzzy
 msgid "Stop playback"
-msgstr "연주 시작"
+msgstr "재생 멈춤"
 
 #: quodlibet/cli.py:102
 msgid "Turn up volume"
@@ -961,11 +916,11 @@ msgstr "음량 감소"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "재생되는 노래의 평가를 별 1개 올리기"
 
 #: quodlibet/cli.py:105
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "재생되는 노래의 평가를 별 1개 내리기"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
@@ -989,17 +944,15 @@ msgstr "실행중인 재생기 강조"
 
 #: quodlibet/cli.py:111
 msgid "Remove active browser filters"
-msgstr ""
+msgstr "활성화된 탐색 필터 제거"
 
 #: quodlibet/cli.py:112
-#, fuzzy
 msgid "Refresh and rescan library"
-msgstr "라이브러리 새로고침"
+msgstr "라이브러리 새로 고침 및 재검색"
 
 #: quodlibet/cli.py:113
-#, fuzzy
 msgid "List available browsers"
-msgstr "브라우저 비활성"
+msgstr "가능한 탐색 목록"
 
 #: quodlibet/cli.py:114
 msgid "Print the current playlist"
@@ -1010,18 +963,16 @@ msgid "Print the contents of the queue"
 msgstr "대기열 내용 표시"
 
 #: quodlibet/cli.py:116
-#, fuzzy
 msgid "Print the active text query"
 msgstr "대기열 내용 표시"
 
 #: quodlibet/cli.py:117
 msgid "Start without plugins"
-msgstr ""
+msgstr "플러그인 없이 시작"
 
 #: quodlibet/cli.py:118
-#, fuzzy
 msgid "Start Quod Libet if it isn't running"
-msgstr "Quod Libet 이 실행중이 아닙니다."
+msgstr "Quod Libet 이 실행 중이 아니면 실행하기"
 
 #: quodlibet/cli.py:119
 msgid "Exit Quod Libet"
@@ -1036,23 +987,20 @@ msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
 #: quodlibet/cli.py:125
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "재생/일시정지 토글(Toggle) 모드"
+msgstr "셔플 모드 설정 또는 전환"
 
 #: quodlibet/cli.py:126
-#, fuzzy
 msgid "Set shuffle mode type"
-msgstr "재생/일시정지 토글(Toggle) 모드"
+msgstr "셔플 모드 종류 설정"
 
 #: quodlibet/cli.py:127
 msgid "Turn repeat off, on, or toggle it"
 msgstr "반복 끄기, 켜기, 토글(Toggle)"
 
 #: quodlibet/cli.py:128
-#, fuzzy
 msgid "Set repeat mode type"
-msgstr "재생/일시정지 토글(Toggle) 모드"
+msgstr "반복 모드 종류 설정"
 
 #: quodlibet/cli.py:129
 msgid "Set the volume"
@@ -1072,24 +1020,21 @@ msgid "Play a file"
 msgstr "파일 재생"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
-#, fuzzy
 msgctxt "command"
 msgid "filename"
-msgstr "파일이름"
+msgstr "파일명"
 
 #: quodlibet/cli.py:132
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "재생중인 노래에서 탐색"
+msgstr "재생 중인 노래 평가 설정"
 
 #: quodlibet/cli.py:133
 msgid "Set the current browser"
 msgstr "현재 브라우저 지정"
 
 #: quodlibet/cli.py:134
-#, fuzzy
 msgid "Stop after the playing song"
-msgstr "재생율"
+msgstr "노래 재생 후 멈춤"
 
 #: quodlibet/cli.py:135
 msgid "Open a new browser"
@@ -1104,7 +1049,6 @@ msgid "Filter on a random value"
 msgstr "임의의 값으로 필터"
 
 #: quodlibet/cli.py:137
-#, fuzzy
 msgctxt "command"
 msgid "tag"
 msgstr "태그"
@@ -1123,7 +1067,7 @@ msgstr "Enqueue a file or query"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
-msgstr ""
+msgstr "쉼표로 구분된 파일을 대기열에 추가"
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
@@ -1131,34 +1075,33 @@ msgstr "파일이름"
 
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "쿼리 결과의 파일 이름을 stdout에 출력"
 
 #: quodlibet/cli.py:145
-#, fuzzy
 msgid "Unqueue a file or query"
-msgstr "Enqueue a file or query"
+msgstr "파일 또는 쿼리의 대기열 해제"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "라이브러리에 파일 또는 경로 추가"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
 msgstr "주소"
 
 #: quodlibet/cli.py:213
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument for '%s'."
-msgstr "에러: '%s' 에 유효하지 않은 인자."
+msgstr "'%s' 에 잘못된 인자입니다."
 
 #: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
-#, fuzzy, python-format
+#, python-format
 msgid "Try %s --help."
-msgstr "에러: %s --help 를 시도해 보십시오."
+msgstr "%s --help 를 시도해 보세요."
 
 #: quodlibet/errorreport/ui.py:58
 msgid "An Error Occurred"
-msgstr ""
+msgstr "오류 발생"
 
 #: quodlibet/errorreport/ui.py:60
 msgid ""
@@ -1166,23 +1109,24 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"이 오류를 무시할 수 있지만 응용 프로그램이 재시작하기 전까지 불안정할 수 있습니다. 오류를 보고하는 데는 얼마 걸리지 않으며, 이는 "
+"많은 도움이 됩니다."
 
 #: quodlibet/errorreport/ui.py:69 quodlibet/errorreport/ui.py:85
 msgid "Submit Error Report"
-msgstr ""
+msgstr "오류를 보고하였습니다"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "재시작"
 
 #: quodlibet/errorreport/ui.py:71
-#, fuzzy
 msgid "Ignore Error"
-msgstr "에러 보이기"
+msgstr "오류 무시하기"
 
 #: quodlibet/errorreport/ui.py:75
 msgid "Error details:"
-msgstr ""
+msgstr "오류 사항:"
 
 #: quodlibet/errorreport/ui.py:87
 msgid ""
@@ -1190,25 +1134,26 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"오류 및 시스템에 대한 여러 세부 데이터가 제 3자인 온라인 서비스(<a href='https://www.sentry.io'>www."
+"sentry.io</a>)로 전송됩니다. 아래에서 전송되기 전 데이터를 검토할 수 있습니다."
 
 #: quodlibet/errorreport/ui.py:95
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
-msgstr ""
+msgstr "(선택 사항) 오류가 났을 때 어떤 일이 일어났는지 짧은 설명을 써주세요:"
 
 #: quodlibet/errorreport/ui.py:104
 msgid "_Send"
-msgstr ""
+msgstr "_전송"
 
 #: quodlibet/errorreport/ui.py:110
-#, fuzzy
 msgid "Short description…"
-msgstr "설명"
+msgstr "설명…"
 
 #: quodlibet/errorreport/ui.py:113
 msgid "Data to be sent:"
-msgstr ""
+msgstr "전송될 데이터:"
 
 #: quodlibet/exfalso.py:34
 msgid "an audio tag editor"
@@ -1219,78 +1164,75 @@ msgid "directory"
 msgstr "디렉토리"
 
 #: quodlibet/exfalso.py:41
-#, fuzzy
 msgid "Audio metadata editor"
 msgstr "오디오 태그 편집기"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "작품 URL 표지 출처"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
 msgstr ""
+"<tt>artwork_url</tt>에 태그된 링크에서 커버를 다운로드 하세요. 이 작업은 사운드클라우드 탐색기에서 이루어집니다."
 
 #: quodlibet/ext/covers/discogs.py:28
-#, fuzzy
 msgid "Discogs Cover Source"
-msgstr "MusicBrainz track ID"
+msgstr "Discogs 커버 표지"
 
 #: quodlibet/ext/covers/discogs.py:29
 msgid "Downloads covers from Discogs."
-msgstr ""
+msgstr "Discogs에서 커버 다운로드하기."
 
 #: quodlibet/ext/covers/lastfm.py:20
 msgid "Last.fm Cover Source"
-msgstr ""
+msgstr "Last.fm 커버 출처"
 
 #: quodlibet/ext/covers/lastfm.py:21
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr ""
+msgstr "Last.fm의 커버 아트 저장소에서 커버를 다운로드 하세요."
 
 #: quodlibet/ext/covers/musicbrainz.py:21
-#, fuzzy
 msgid "MusicBrainz Cover Source"
-msgstr "MusicBrainz track ID"
+msgstr "MusicBrainz 커버 출처"
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr ""
+msgstr "MusicBrainz의 커버 아트 저장소에서 커버를 다운로드 하세요."
 
 #: quodlibet/ext/editing/iconv.py:26
-#, fuzzy
 msgid "Convert Encodings"
-msgstr "[유효하지 않은 인코딩]"
+msgstr "인코딩 변환"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
-msgstr ""
+msgstr "태그 편집기에서 잘못 해석된 태그 값 인코딩을 수정하세요."
 
 #: quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
-msgstr ""
+msgstr "_인코딩 변환 중…"
 
 #: quodlibet/ext/editing/kakasi.py:26
 msgid "Kana/Kanji Simple Inverter"
-msgstr ""
+msgstr "가나/한자 간편 변환기"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr ""
+msgstr "이름을 바꾸기 전에 가나/한자를 로마자로 변환합니다."
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "로마자 _일본어 텍스트"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "'가나/한자 간편 변환기'(kakasi)를 찾을 수 없습니다."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr ""
+msgstr "정규식 대체"
 
 #: quodlibet/ext/editing/resub.py:20
 msgid ""
@@ -1457,9 +1399,8 @@ msgid "Cache Directory"
 msgstr "디렉토리"
 
 #: quodlibet/ext/events/appinfo.py:84
-#, fuzzy
 msgid "Audio Backend"
-msgstr "오디오 피드"
+msgstr "오디오 백엔드"
 
 #: quodlibet/ext/events/auto_library_update.py:139
 msgid "Automatic Library Update"
@@ -1608,175 +1549,169 @@ msgstr ""
 
 #: quodlibet/ext/events/bansheeimport.py:111
 #: quodlibet/ext/events/rbimport.py:114
-#, fuzzy
 msgid "Import Failed"
-msgstr "재생목록 가져오기"
+msgstr "불러오는데 실패하였습니다"
 
 #: quodlibet/ext/events/bansheeimport.py:117
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
-msgstr[0] ""
+msgstr[0] "%d에 대한 평가와 통계를 성공적으로 불러왔습니다"
 
 #: quodlibet/ext/events/bansheeimport.py:126
-#, fuzzy
 msgid "Banshee Import"
-msgstr "가져오기"
+msgstr "Banshee 불러오기"
 
 #: quodlibet/ext/events/bansheeimport.py:127
 msgid "Imports ratings and song statistics from Banshee."
-msgstr ""
+msgstr "Banshee에서 평가와 노래의 통계를 불러옵니다."
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr ""
+msgstr "_데이터베이스 경로:"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
-#, fuzzy
 msgid "Start Import"
-msgstr "가져오기"
+msgstr "불러오기 시작"
 
 #: quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
-msgstr ""
+msgstr "알람 시계"
 
 #: quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
-msgstr ""
+msgstr "큰 소리로 음악과 함께 당신을 깨워줍니다."
 
 #: quodlibet/ext/events/clock.py:119
 msgid "Lullaby"
-msgstr ""
+msgstr "자장가 모드"
 
 #: quodlibet/ext/events/clock.py:120
 msgid "Fades out and pauses your music."
-msgstr ""
+msgstr "페이드 아웃하고 음악 재생을 중지합니다."
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
-msgstr ""
+msgstr "플랫(Flat)"
 
 #: quodlibet/ext/events/equalizer.py:27
 msgid "Live"
-msgstr ""
+msgstr "라이브(Live)"
 
 #: quodlibet/ext/events/equalizer.py:29
 msgid "Full Bass & Treble"
-msgstr ""
+msgstr "풀 베이스 & 트레블(Full Bass & Treble)"
 
 #: quodlibet/ext/events/equalizer.py:32
 msgid "Club"
-msgstr ""
+msgstr "클럽(Club)"
 
 #: quodlibet/ext/events/equalizer.py:34
 msgid "Large Hall"
-msgstr ""
+msgstr "라지 홀(Large Hall)"
 
 #: quodlibet/ext/events/equalizer.py:36
 msgid "Party"
-msgstr ""
+msgstr "파티(Party)"
 
 #: quodlibet/ext/events/equalizer.py:40
 msgid "Soft"
-msgstr ""
+msgstr "소프트(Soft)"
 
 #: quodlibet/ext/events/equalizer.py:42
 msgid "Full Bass"
-msgstr ""
+msgstr "풀 베이스(Full Bass)"
 
 #: quodlibet/ext/events/equalizer.py:48
 msgid "Reggae"
-msgstr ""
+msgstr "레게"
 
 #: quodlibet/ext/events/equalizer.py:50
 msgid "Headphones"
-msgstr ""
+msgstr "헤드폰(Headphones)"
 
 #: quodlibet/ext/events/equalizer.py:53
 msgid "Soft Rock"
-msgstr ""
+msgstr "소프트 락"
 
 #: quodlibet/ext/events/equalizer.py:55
 msgid "Full Treble"
-msgstr ""
+msgstr "풀 트레블(Full Treble)"
 
 #: quodlibet/ext/events/equalizer.py:58
 msgid "Dance"
-msgstr ""
+msgstr "댄스"
 
 #: quodlibet/ext/events/equalizer.py:62
 msgid "Techno"
-msgstr ""
+msgstr "테크노"
 
 #: quodlibet/ext/events/equalizer.py:64
 msgid "Ska"
-msgstr ""
+msgstr "스카(Ska)"
 
 #: quodlibet/ext/events/equalizer.py:66
 msgid "Laptop"
-msgstr ""
+msgstr "노트북"
 
 #: quodlibet/ext/events/equalizer.py:112
 msgid "Equalizer"
-msgstr ""
+msgstr "이퀄라이저"
 
 #: quodlibet/ext/events/equalizer.py:113
 msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"이퀄라이저로 노래의 톤을 조절하세요.\n"
+"클릭 혹은 키보드로 단계를 조절하면 됩니다(우클릭으로 음역대를 초기화할 수 있습니다)."
 
 #: quodlibet/ext/events/equalizer.py:150
 msgid "The current backend does not support equalization."
-msgstr ""
+msgstr "현재 백엔드가 이퀄라이저를 지원하지 않습니다."
 
 #: quodlibet/ext/events/equalizer.py:156
 #, python-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: quodlibet/ext/events/equalizer.py:157
 #: quodlibet/ext/gstreamer/crossfeed.py:94
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #, python-format
 msgid "%d Hz"
-msgstr ""
+msgstr "%d Hz"
 
 #: quodlibet/ext/events/equalizer.py:198
 #: quodlibet/ext/gstreamer/crossfeed.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f dB"
-msgstr "%d 초"
+msgstr "%.1f dB"
 
 #: quodlibet/ext/events/equalizer.py:272
-#, fuzzy
 msgid "Default presets"
-msgstr "아티스트 필터"
+msgstr "기본 사전 설정"
 
 #: quodlibet/ext/events/equalizer.py:278 quodlibet/ext/events/equalizer.py:305
-#, fuzzy
 msgid "Select…"
-msgstr "선택"
+msgstr "선택…"
 
 #: quodlibet/ext/events/equalizer.py:293
-#, fuzzy
 msgid "_Reset EQ"
-msgstr "미리보기"
+msgstr "_EQ(이퀄라이저) 재설정"
 
 #: quodlibet/ext/events/equalizer.py:299
-#, fuzzy
 msgid "Custom presets"
-msgstr "_Custom"
+msgstr "_사용자 지정 사전 설정"
 
 #: quodlibet/ext/events/equalizer.py:315
-#, fuzzy
 msgid "_Delete selected"
-msgstr "노래를 추가할 수 없습니다"
+msgstr "_선택된 항목을 제거합니다"
 
 #: quodlibet/ext/events/equalizer.py:326
 msgid "Preset name for saving:"
-msgstr ""
+msgstr "저장할 사전 설정명:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
@@ -1794,104 +1729,102 @@ msgstr ""
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
-msgstr ""
+msgstr "_저장"
 
 #. Translators: statuses relating to Instant Messenger apps
 #: quodlibet/ext/events/gajim_status.py:28
 msgid "online"
-msgstr ""
+msgstr "온라인"
 
 #: quodlibet/ext/events/gajim_status.py:29
 msgid "offline"
-msgstr ""
+msgstr "오프라인"
 
 #: quodlibet/ext/events/gajim_status.py:30
 msgid "chat"
-msgstr ""
+msgstr "채팅"
 
 #: quodlibet/ext/events/gajim_status.py:31
 msgid "away"
-msgstr ""
+msgstr "away"
 
 #: quodlibet/ext/events/gajim_status.py:32
 msgid "xa"
-msgstr ""
+msgstr "xa"
 
 #: quodlibet/ext/events/gajim_status.py:33
 msgid "invisible"
-msgstr ""
+msgstr "invisible"
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
-msgstr ""
+msgstr "Gajim 상태 메세지"
 
 #: quodlibet/ext/events/gajim_status.py:39
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
+msgstr "Gajim 상태 메시지를 최근 들은 곡에 따라 변경합니다."
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
 msgid "paused"
-msgstr ""
+msgstr "멈춤"
 
 #: quodlibet/ext/events/gajim_status.py:145
-#, fuzzy
 msgid "Pattern:"
-msgstr "유효하지 않은 양식"
+msgstr "양식:"
 
 #: quodlibet/ext/events/gajim_status.py:154
 msgid ""
 "List accounts, separated by spaces, for changing status message. If none are "
 "specified, status message of all accounts will be changed."
-msgstr ""
+msgstr "상태 메시지 변경을 위해 공백으로 구분된 계정을 나열합니다. 아무 것도 지정하지 않으면 모든 계정의 상태 메시지가 변경됩니다."
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
-msgstr ""
+msgstr "계정:"
 
 #: quodlibet/ext/events/gajim_status.py:161
 msgid "Add '[paused]'"
-msgstr ""
+msgstr "'[일시 정지]' 추가"
 
 #: quodlibet/ext/events/gajim_status.py:164
 msgid "If checked, '[paused]' will be added to status message on pause"
-msgstr ""
+msgstr "체크하면, '[paused]'가 일시 정지 상태 메세지에 추가됩니다"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
-msgstr ""
+msgstr "변경될 메세지의 상태입니다"
 
 #: quodlibet/ext/events/headphonemon.py:157
 msgid "Pause on Headphone Unplug"
-msgstr ""
+msgstr "헤드폰 제거 시 재생 정지"
 
 #: quodlibet/ext/events/headphonemon.py:158
 msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
-msgstr ""
+msgstr "헤드폰을 뽑으면 재생을 멈추고, 다시 꼽으면 음악이 재생됩니다."
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
-msgstr ""
+msgstr "화면 보호기 금지/중지"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
-msgstr ""
+msgstr "그놈(GNOME) 데스크탑에서 음악이 재생되는 중일 때, 화면 보호기가 활성화되지 않거나 컴퓨터가 일시 정지되지 않습니다."
 
 #: quodlibet/ext/events/inhibit.py:63
-#, fuzzy
 msgid "Music is playing"
-msgstr "음악 재생기"
+msgstr "음악이 재생 중입니다"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
 msgid "Mode:"
-msgstr ""
+msgstr "금지 모드:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
@@ -1902,9 +1835,8 @@ msgid "Inhibit Suspend"
 msgstr ""
 
 #: quodlibet/ext/events/iradiolog.py:17
-#, fuzzy
 msgid "Internet Radio Log"
-msgstr "인터넷 라디오"
+msgstr "인터넷 라디오 기록"
 
 #: quodlibet/ext/events/iradiolog.py:18
 msgid ""
@@ -2175,253 +2107,248 @@ msgstr ""
 #: quodlibet/ext/events/notify.py:208 quodlibet/ext/events/notify.py:368
 #: quodlibet/ext/events/notify.py:410
 msgid "Couldn't connect to notification daemon."
-msgstr ""
+msgstr "Notification daemon에 연결할 수 없습니다."
 
 #: quodlibet/ext/events/notify.py:222
 msgid "Song Notifications"
-msgstr ""
+msgstr "노래 알림"
 
 #: quodlibet/ext/events/notify.py:223
 msgid "Displays a notification when the song changes."
-msgstr ""
+msgstr "노래가 바뀌면 알림을 띄웁니다."
 
 #: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
 msgid "Next"
-msgstr ""
+msgstr "다음"
 
 #: quodlibet/ext/events/qlscrobbler.py:176
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
-msgstr ""
+msgstr "플러그인 창에서 QLScrobbler를 설정하세요. 그때까지는 노래가 제출되지 않습니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:253
 #, python-format
 msgid "Could not contact service '%s'."
-msgstr ""
+msgstr "'%s'에 연결할 수가 없습니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:259
 msgid "Authentication failed: invalid URL."
-msgstr ""
+msgstr "인증 실패: 유효하지 않은 URL입니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:276
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
-msgstr ""
+msgstr "인증 실패: 유효하지 않은 사용자명:'%s'이거나 잘못된 비밀번호입니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:281
 msgid "Client is banned. Contact the author."
-msgstr ""
+msgstr "클라이언트가 금지되었습니다. 관리자에게 문의하세요."
 
 #: quodlibet/ext/events/qlscrobbler.py:285
 msgid "Wrong system time. Submissions may fail until it is corrected."
-msgstr ""
+msgstr "시스템 시간이 잘못되었습니다. 수정 전까지 제출이 안 될 수 있습니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:350
 msgid "AudioScrobbler Submission"
-msgstr ""
+msgstr "AudioScrobbler 제출"
 
 #: quodlibet/ext/events/qlscrobbler.py:351
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr ""
+"Last.fm, Libre.fm 그리고 그 외 다른 Audioscrobbler 서비스를 위한 Audioscrobbler 클라이언트."
 
 #: quodlibet/ext/events/qlscrobbler.py:456
 msgid "Authentication successful."
-msgstr ""
+msgstr "인증에 성공했습니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:468
 msgid "_Service:"
-msgstr ""
+msgstr "_서비스:"
 
 #: quodlibet/ext/events/qlscrobbler.py:468
 msgid "_URL:"
-msgstr ""
+msgstr "_URL:"
 
 #. Translators: Other service
 #: quodlibet/ext/events/qlscrobbler.py:485
-#, fuzzy
 msgid "Other…"
-msgstr "_Others:"
+msgstr "그 외…"
 
 #. verify data
 #: quodlibet/ext/events/qlscrobbler.py:523
 msgid "_Verify account data"
-msgstr ""
+msgstr "_계정 데이터 확인"
 
 #: quodlibet/ext/events/qlscrobbler.py:536
 #: quodlibet/plugins/listenbrainz/__init__.py:497
-#, fuzzy
 msgid "_Artist pattern:"
-msgstr "아티스트"
+msgstr "_아티스트 양식:"
 
 #: quodlibet/ext/events/qlscrobbler.py:536
 #: quodlibet/plugins/listenbrainz/__init__.py:497
-#, fuzzy
 msgid "_Title pattern:"
-msgstr "파일이름"
+msgstr "_제목 형식:"
 
 #: quodlibet/ext/events/qlscrobbler.py:537
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
-msgstr ""
+msgstr "제외_필터:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
-msgstr ""
+msgstr "제출할 아티스트 명을 지정하는 형식입니다. 기본값은 공백입니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:565
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
-msgstr ""
+msgstr "제출할 제목을 지정하는 형식입니다. 기본값은 공백입니다."
 
 #: quodlibet/ext/events/qlscrobbler.py:574
 msgid "Songs matching this filter will not be submitted"
-msgstr ""
+msgstr "필터와 일치하는 노래가 없습니다"
 
 #: quodlibet/ext/events/qlscrobbler.py:582
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
-msgstr ""
+msgstr "_오프라인 모드(아무것도 제출하지 않음)"
 
 #: quodlibet/ext/events/qlscrobbler.py:586
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
-msgstr ""
+msgstr "제출"
 
 #: quodlibet/ext/events/radioadmute.py:20
 msgid "Mute Radio Ads"
-msgstr ""
+msgstr "라디오 광고 음소거"
 
 #: quodlibet/ext/events/radioadmute.py:21
 msgid ""
 "Mutes output while radio advertisements are playing.\n"
 "Stations: di.fm."
 msgstr ""
+"라디오 광고가 재생되는 동안 출력을 음소거합니다.\n"
+"방송국: di.fm."
 
 #: quodlibet/ext/events/randomalbum.py:26
-#, fuzzy
 msgid "Random Album Playback"
-msgstr "임의의 앨범"
+msgstr "임의의 앨범 재생"
 
 #: quodlibet/ext/events/randomalbum.py:27
 msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
-msgstr ""
+msgstr "재생 목록 끝에 도달하면 임의의 앨범을 재생합니다. 이를 위해서 활성 탐색기가 앨범별 필터를 지원해야 합니다."
 
 #: quodlibet/ext/events/randomalbum.py:37
 msgid "Rated higher"
-msgstr ""
+msgstr "높은 평가를 받은 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Played more often"
-msgstr ""
+msgstr "자주 재생된 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr ""
+msgstr "자주 건너뛴 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
-msgstr ""
+msgstr "최근 재생된 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Started more recently"
-msgstr ""
+msgstr "최근 재생된 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Added more recently"
-msgstr ""
+msgstr "최근에 추가된 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:43
-#, fuzzy
 msgid "Longer albums"
-msgstr "앨범"
+msgstr "긴 앨범 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:82
 msgid "seconds before starting next album"
-msgstr ""
+msgstr "다음 앨범을 시작하기 몇 초 전에"
 
 #: quodlibet/ext/events/randomalbum.py:86
-#, fuzzy
 msgid "Weights"
 msgstr "무게"
 
 #: quodlibet/ext/events/randomalbum.py:88
 msgid "Play some albums more than others"
-msgstr ""
+msgstr "다른 앨범보다 더 많이 재생한 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:102
 msgid "avoid"
-msgstr ""
+msgstr "피함"
 
 #: quodlibet/ext/events/randomalbum.py:113
 msgid "prefer"
-msgstr ""
+msgstr "선호하는 순으로"
 
 #: quodlibet/ext/events/randomalbum.py:215
-#, fuzzy
 msgid "Random Album"
 msgstr "임의의 앨범"
 
 #: quodlibet/ext/events/randomalbum.py:216
 #, python-format
 msgid "Waiting to start %s"
-msgstr ""
+msgstr "%s 시작을 기다리는 중"
 
 #: quodlibet/ext/events/rbimport.py:119
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
-msgstr ""
+msgstr "%d의 평가와 통계를 성공적으로 불러왔습니다"
 
 #: quodlibet/ext/events/rbimport.py:127
 msgid "Rhythmbox Import"
-msgstr ""
+msgstr "리듬박스 불러오기"
 
 #: quodlibet/ext/events/rbimport.py:128
 msgid "Imports ratings and song statistics from Rhythmbox."
-msgstr ""
+msgstr "리듬박스에서 노래의 평가와 통계를 불러옵니다."
 
 #: quodlibet/ext/events/screensaver.py:26
 msgid "Screensaver Pause"
-msgstr ""
+msgstr "화면보호기 멈춤"
 
 #: quodlibet/ext/events/screensaver.py:27
 msgid "Pauses playback while the GNOME screensaver is active."
-msgstr ""
+msgstr "그놈 화면보호기가 활성화될 때 재생을 멈춥니다."
 
 #: quodlibet/ext/events/searchprovider.py:73
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr ""
+msgstr "Quod Libet를 위한 GNOME Shell의 검색 제공자가 설치되어 있지 않습니다."
 
 #: quodlibet/ext/events/searchprovider.py:79
 msgid "GNOME Search Provider"
-msgstr ""
+msgstr "그놈 검색 제공"
 
 #: quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
-msgstr ""
+msgstr "그놈 쉘에서 라이브러리를 검색하는 것을 허용합니다."
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr ""
+msgstr "대체 탐색 바"
 
 #: quodlibet/ext/events/seekbar.py:123
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
-msgstr ""
+msgstr "대체 탐색 바가 항상 보이며, 모든 창의 폭에 걸쳐집니다."
 
 #: quodlibet/ext/events/seekpoints.py:20
-#, fuzzy
 msgid "Seekpoint Bookmarks"
-msgstr "북마크"
+msgstr "탐색 포인트 북마크"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
@@ -2432,38 +2359,40 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
+"트랙에 대한 탐색 포인트 A 및/또는 B를 저장합니다. 트랙이 재생되면 지정한 A 시간으로 건너뛰고 B 시간 이후에 멈춥니다.\n"
+"\n"
+"ℹ 아래 포인트의 이름을 변경해도 실제 책갈피 이름은 업데이트되지 않으며 검색 여부를 결정할 때 플러그인이 찾는 책갈피 이름만 변경됩니다."
 
 #: quodlibet/ext/events/seekpoints.py:108
-#, fuzzy
 msgid "Bookmark name for point A"
-msgstr "북마크 이름"
+msgstr "A 포인트를 위한 북마크 명"
 
 #: quodlibet/ext/events/seekpoints.py:109
 msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
-msgstr ""
+msgstr "트랙이 시작될 때 확인할 북마크 명과 발견된 경우 플레이어가 해당 타임스탬프를 검색합니다"
 
 #: quodlibet/ext/events/seekpoints.py:124
-#, fuzzy
 msgid "Bookmark name for point B"
-msgstr "북마크 이름"
+msgstr "B 포인트를 위한 북마크 명"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
+"트랙이 있는 경우 트랙 재생 중에 각 체크 포인트를 사용할 북마크 명입니다. 현재 위치가 타임스탬프를 초과하면 트랙의 끝을 검색합니다."
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
-msgstr ""
+msgstr "Squeexebox 동기화"
 
 #: quodlibet/ext/events/squeezebox_sync.py:30
 msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
-msgstr ""
+msgstr "로지텍 Squeezebox가 Quod :Libet의 출력을 미러링하도록 합니다. 둘 다 동일한 라이브러리에서 읽을 수 있습니다."
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
@@ -2749,7 +2678,6 @@ msgid "Export path is not absolute"
 msgstr "절대경로가 아닙니다"
 
 #: quodlibet/ext/events/synchronize_to_device.py:850
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2759,9 +2687,10 @@ msgid ""
 "destination path by making sure it starts with / or ~/."
 msgstr ""
 "아래 양식\n"
-"\t<b>%s</b>\n"
-"는 root 에서 시작하지않은 / 를포함하고 있습니다.폴더의 잘못된 이름을 피하려"
-"면, / 또는 ~/ 으로 시작하는 양식을취하십시오."
+"\n"
+"<b>{}</b>\n"
+"\n"
+"는 \"/\"를 포함하지만, root 에서 시작하지 않고 있습니다. 올바르게 지정하려면, \"/\" 또는 \"~/\" 으로 시작하십시오."
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 #, fuzzy
@@ -2879,10 +2808,10 @@ msgid_plural "deleted {count}/{total} files"
 msgstr[0] ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:1144
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
-msgstr[0] "파일을 열 수 없습니다"
+msgstr[0] "{count} 파일을 열 수 없습니다"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1151
 #, python-brace-format
@@ -3115,11 +3044,13 @@ msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
 #: quodlibet/ext/events/viewlyrics.py:87
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
-msgstr "이 노래를 위한 가사가 없습니다"
+msgstr ""
+"이 노래에 해당하는 가사가 없습니다\n"
+"%s"
 
 #: quodlibet/ext/events/viewlyrics.py:117
 #, fuzzy
@@ -3356,9 +3287,8 @@ msgid "_Pitch:"
 msgstr ""
 
 #: quodlibet/ext/gstreamer/pitch.py:96
-#, fuzzy
 msgid "Audio Pitch / Speed"
-msgstr "오디오 피드"
+msgstr "오디오 피치/속도"
 
 #: quodlibet/ext/gstreamer/pitch.py:97
 #, fuzzy
@@ -5518,7 +5448,7 @@ msgstr ""
 
 #: quodlibet/qltk/browser.py:81
 msgid "Random _Genre"
-msgstr "임의의 장르"
+msgstr "랜덤 장르"
 
 #: quodlibet/qltk/browser.py:82
 msgid "Random _Artist"
@@ -5768,18 +5698,15 @@ msgid "Unable to add tag"
 msgstr "태그를 추가할 수 없습니다"
 
 #: quodlibet/qltk/edittags.py:759
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add <b>%s</b>"
-msgstr "노래를 추가할 수 없습니다"
+msgstr "<b>%s</b> (을)를 추가할 수 없습니다"
 
 #: quodlibet/qltk/edittags.py:761
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
-msgstr ""
-"<b>%s</b> 태그를 추가할 수 없습니다\n"
-"\n"
-"지금 선택한 파일은 복수값을 지원하지 않습니다."
+msgstr "선택한 파일은 <b>%s</b>에 대해 여러 값을 추가할 수 없습니다."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
@@ -5820,14 +5747,13 @@ msgid "Tag may not be accurate"
 msgstr "태그에 결함이 있습니다"
 
 #: quodlibet/qltk/_editutils.py:34
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"<b>%s</b> 는 프로그램이 실행되는 동안 변경되었습니다. 새로고침없이라이브러리"
-"를 저장하면 그 노래에 변경사항을 덮어씁니다.\n"
-"어쨌든 이 노래를저장할까요?"
+"%(file-name)s (이)가 프로그램이 실행되는 동안 변경 되었습니다. 새로 고침이 없이라이브러리를 저장하면 그 노래에 다른 변경 "
+"사항이 덮혀 쓰이게 됩니다."
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -6503,9 +6429,8 @@ msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Ratings and play counts will be set for this email address"
 
 #: quodlibet/qltk/prefs.py:605
-#, fuzzy
 msgid "Auto-save tag changes"
-msgstr "변경된 태그를 버릴까요?"
+msgstr "자동 저장 태그가 변경되었습니다"
 
 #: quodlibet/qltk/prefs.py:607
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -6647,9 +6572,8 @@ msgid "Playback Error"
 msgstr "연주 일시정지"
 
 #: quodlibet/qltk/quodlibetwindow.py:384
-#, fuzzy
 msgid "Set up library directories?"
-msgstr "디렉토리 선택"
+msgstr "라이브러리 경로를 설정할까요?"
 
 #: quodlibet/qltk/quodlibetwindow.py:385
 msgid "You don't have any music library set up. Would you like to do that now?"
@@ -6956,10 +6880,9 @@ msgid "Remove {n} library paths and their tracks?"
 msgstr ""
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "라이브러리"
+msgstr[0] "라이브러리 경로를 제거할까요?"
 
 #: quodlibet/qltk/scanbox.py:117
 #, fuzzy
@@ -7166,10 +7089,10 @@ msgid "_Expand Column"
 msgstr ""
 
 #: quodlibet/qltk/songsmenu.py:40
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%%(title)s\" from library?"
 msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "재생목록으로부터 제거"
+msgstr[0] "%(count)d (을)를 라이브러리에서 제거할까요?"
 
 #: quodlibet/qltk/songsmenu.py:45
 #, fuzzy
