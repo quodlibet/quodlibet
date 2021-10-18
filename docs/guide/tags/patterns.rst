@@ -43,7 +43,7 @@ So using the full (second) form, a Pattern of:
 
     ``<album|Has An Album|No Album>``
 
-produces *Has An album* for any song with at least one ``album`` tag value,
+produces *Has An Album* for any song with at least one ``album`` tag value,
 else *No Album*.
 
 Note that these can be recursive, i.e. both `non-empty-value` and
