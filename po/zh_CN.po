@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2013-07-20 22:33+0100\n"
-"Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
-"Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
+"PO-Revision-Date: 2021-10-25 14:57+0000\n"
+"Last-Translator: Jerry <jer.jerry@outlook.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
-#, fuzzy
 msgid "_Title"
-msgstr "标题"
+msgstr "标题(_T)"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
@@ -35,20 +35,17 @@ msgid "_Date"
 msgstr "日期(_D)"
 
 #: quodlibet/browsers/albums/main.py:226
-#, fuzzy
 msgid "_Date Added"
-msgstr "日期信息"
+msgstr "添加日期"
 
 #: quodlibet/browsers/albums/main.py:227
-#, fuzzy
 msgid "_Original Date"
-msgstr "原始歌手"
+msgstr "原始日期(_O)"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
-#, fuzzy
 msgid "_Genre"
-msgstr "流派"
+msgstr "流派(_G)"
 
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
@@ -57,9 +54,8 @@ msgid "_Rating"
 msgstr "评分(_R)"
 
 #: quodlibet/browsers/albums/main.py:230
-#, fuzzy
 msgid "_Playcount"
-msgstr "编辑显示"
+msgstr "播放计数(_P)"
 
 #: quodlibet/browsers/albums/main.py:236
 #: quodlibet/browsers/covergrid/main.py:66
@@ -72,9 +68,8 @@ msgstr "按日期排序"
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
-#, fuzzy
 msgid "_Preferences"
-msgstr "首选项"
+msgstr "首选项(_P)"
 
 #: quodlibet/browsers/albums/main.py:431
 msgid "Album List"
@@ -96,14 +91,13 @@ msgstr "所有专辑"
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
-msgstr[0] ""
+msgstr[0] "%d 专辑"
 
 #: quodlibet/browsers/albums/main.py:729
 #: quodlibet/browsers/covergrid/main.py:482
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "显示专辑封面(_C)"
+msgstr[0] "重新加载专辑封面(_C)"
 
 #: quodlibet/browsers/albums/prefs.py:28
 #: quodlibet/browsers/collection/models.py:17
@@ -151,9 +145,8 @@ msgstr "搜索时包含 people 字段"
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
 #: quodlibet/ext/songsmenu/cover_download.py:306
-#, fuzzy
 msgid "Options"
-msgstr "[选项]"
+msgstr "选项"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:127
@@ -172,7 +165,7 @@ msgstr "专辑显示"
 #: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
 #: quodlibet/update.py:149
 msgid "_Close"
-msgstr "关闭"
+msgstr "关闭(_C)"
 
 #: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
 #: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
@@ -228,9 +221,8 @@ msgstr "刷新库(_F)"
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
-#, fuzzy
 msgid "_Delete"
-msgstr "删除"
+msgstr "删除(_D)"
 
 #: quodlibet/browsers/audiofeeds.py:491
 msgid "Unable to add feed"
@@ -248,7 +240,7 @@ msgstr ""
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
-msgstr ""
+msgstr "目前的音频后端不支持URL，音频源浏览器已禁用。"
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
 msgid "Library Browser"
@@ -5616,9 +5608,8 @@ msgid "Tag expression"
 msgstr "标签表达式"
 
 #: quodlibet/qltk/data_editors.py:371
-#, fuzzy
 msgid "Tag expression e.g. people:real or ~album~year"
-msgstr "标签表达式 比如  people:real or ~album~year"
+msgstr "标签表达式，比如  people:real or ~album~year"
 
 #: quodlibet/qltk/data_editors.py:372
 #, fuzzy
@@ -5638,24 +5629,23 @@ msgstr "选中的曲目将从曲库中移除，对应的音频文件将被删除
 
 #: quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
-msgstr "选中的文件将被删除"
+msgstr "选中的文件将被删除。"
 
 #: quodlibet/qltk/delete.py:76
 #, python-format
 msgid "Delete %(file_count)d file permanently?"
 msgid_plural "Delete %(file_count)d files permanently?"
-msgstr[0] ""
+msgstr[0] "永久删除这 %(file_count)d 个文件？"
 
 #: quodlibet/qltk/delete.py:91
-#, fuzzy
 msgid "_Delete Files"
-msgstr "删除文件"
+msgstr "删除文件(_D)"
 
 #: quodlibet/qltk/delete.py:106
 msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
-msgstr "选中的曲目将从曲库中移除，对应的音频文件将被移到回收站"
+msgstr "选中的曲目将从曲库中移除，对应的音频文件将被移到回收站。"
 
 #: quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
@@ -5677,9 +5667,8 @@ msgid "Moving %(current)d/%(total)d."
 msgstr "正在移动 %d/%d"
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
-#, fuzzy
 msgid "Unable to move to trash"
-msgstr "无法保存库"
+msgstr "无法移动到回收站"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 #, fuzzy
@@ -5723,7 +5712,7 @@ msgstr ""
 
 #: quodlibet/qltk/edittags.py:245
 msgid "Split _Version out of Title"
-msgstr ""
+msgstr "从标题分离版本(_V)"
 
 #: quodlibet/qltk/edittags.py:302
 msgid "Split Arranger out of Ar_tist"
@@ -5773,9 +5762,8 @@ msgid "_Save"
 msgstr ""
 
 #: quodlibet/qltk/edittags.py:703
-#, fuzzy
 msgid "_Configure"
-msgstr "继续(_C)"
+msgstr "配置(_C)"
 
 #: quodlibet/qltk/edittags.py:718
 #, fuzzy
@@ -5843,9 +5831,7 @@ msgstr "标签可能不准确"
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
-msgstr ""
-"%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的"
-"修改操作无法生效。 "
+msgstr "%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的修改操作无法生效。"
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -5860,9 +5846,8 @@ msgstr ""
 "保存<b>%s</b>失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
 
 #: quodlibet/qltk/_editutils.py:146
-#, fuzzy
 msgid "_More options…"
-msgstr "更多选项(_M)..."
+msgstr "更多选项(_M)…"
 
 #: quodlibet/qltk/entry.py:80
 msgid "_Undo"
