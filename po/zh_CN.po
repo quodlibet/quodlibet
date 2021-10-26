@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2021-10-25 14:57+0000\n"
-"Last-Translator: Jerry <jer.jerry@outlook.com>\n"
+"PO-Revision-Date: 2021-10-26 05:23+0000\n"
+"Last-Translator: Eric <spice2wolf@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -59,9 +59,8 @@ msgstr "播放计数(_P)"
 
 #: quodlibet/browsers/albums/main.py:236
 #: quodlibet/browsers/covergrid/main.py:66
-#, fuzzy
 msgid "Sort _by…"
-msgstr "按日期排序"
+msgstr "排序依据 …"
 
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:87
@@ -126,9 +125,8 @@ msgstr[0] "%d 唱片"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "样本专辑"
+msgstr "样例专辑"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
