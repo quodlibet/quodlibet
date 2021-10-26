@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-10-18 09:48+0000\n"
+"PO-Revision-Date: 2021-10-25 06:43+0000\n"
 "Last-Translator: Johndoe0153 <johndoe0153@protonmail.com>\n"
 "Language-Team: Korean <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ko/>\n"
@@ -2399,22 +2399,22 @@ msgstr "로지텍 Squeezebox가 Quod :Libet의 출력을 미러링하도록 합�
 msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
-msgstr ""
+msgstr "<a href=\"%(plugin_link)s\">Squeezebox 플러그인으로 내보내기</a>와 함께 구성을 공유합니다."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
-msgstr ""
+msgstr "Squeezebox 서버를 찾는 중 오류가 발생했습니다"
 
 #: quodlibet/ext/events/squeezebox_sync.py:62
 #: quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
-msgstr ""
+msgstr "%s를 찾는 데 오류가 생겼습니다. 설정을 확인해 주세요"
 
 #: quodlibet/ext/events/stop_on_pause.py:22
 msgid "Stop on Pause"
-msgstr ""
+msgstr "일시 정지"
 
 #: quodlibet/ext/events/stop_on_pause.py:24
 msgid ""
@@ -2427,89 +2427,89 @@ msgid ""
 "ensure the position in the current source is maintained. Otherwise, playback "
 "will be left stopped and must restart from the begining."
 msgstr ""
+"이 플러그인은 일시 정지/재생/탐색을 변경합니다.\n"
+"\n"
+"이 동작은 시스템에 새 오디오 장치(Bluetooth 스피커, USB DAC 등)가 추가될 때 Quod Libet이 오디오 장치를 "
+"전환하지 못하는 경우에 유용합니다.\n"
+"\n"
+"'검색 가능한 소스만' 옵션이 선택되지 않은 경우 이 플러그인은 현재 소스의 위치가 유지되도록 합니다. 그렇지 않으면 재생이 중지된 "
+"상태로 남아 처음부터 다시 시작해야 합니다."
 
 #: quodlibet/ext/events/stop_on_pause.py:75
 msgid "Only Seekable Sources"
-msgstr ""
+msgstr "검색 가능한 소스들만"
 
 #: quodlibet/ext/events/stop_on_pause.py:86
-#, fuzzy
 msgid "Plugin Options"
-msgstr "[옵션]"
+msgstr "플러그인 옵션"
 
 #: quodlibet/ext/events/synchronize_to_device.py:52
-#, fuzzy
 msgid "Pending copy"
-msgstr "[유효하지 않은 인코딩]"
+msgstr "보류 중인 사본"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
-#, fuzzy
 msgid "Pending delete"
-msgstr "녹음 날짜"
+msgstr "대기 중인 목록 삭제"
 
 #: quodlibet/ext/events/synchronize_to_device.py:54
-#, fuzzy
 msgid "delete"
-msgstr "파일 지우기"
+msgstr "삭제"
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
-msgstr ""
+msgstr "건너뛰기"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "DUPLICATE"
-msgstr ""
+msgstr "복제하기"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
-#, fuzzy
 msgid "Synchronizing"
-msgstr "가사"
+msgstr "동기화 중"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
-#, fuzzy
 msgid "Deleting"
-msgstr "파일 지우기"
+msgstr "삭제하기"
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
-msgstr ""
+msgstr "성공"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "FAILURE"
-msgstr ""
+msgstr "실패"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "Skipped existing file"
-msgstr ""
+msgstr "기존 파일 건너뛰기"
 
 #: quodlibet/ext/events/synchronize_to_device.py:81
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "노래의 파일명을 설정할 수 없습니다."
 
 #: quodlibet/ext/events/synchronize_to_device.py:87
-#, fuzzy
 msgid "Synchronize to Device"
-msgstr "가사"
+msgstr "기기 동기화"
 
 #: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
-msgstr ""
+msgstr "선택한 저장된 검색의 모든 노래를 지정된 폴더와 동기화합니다."
 
 #: quodlibet/ext/events/synchronize_to_device.py:141
 msgid "Synchronize the following saved searches:"
-msgstr ""
+msgstr "다음 저장된 검색을 동기화합니다:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:147
 msgid "The absolute path to your export location"
-msgstr ""
+msgstr "내보내기 위치의 절대 경로"
 
 #: quodlibet/ext/events/synchronize_to_device.py:164
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
-msgstr ""
+msgstr "저장된 검색에 없는 대상 폴더의 모든 기존 파일이 삭제됩니다."
 
 #: quodlibet/ext/events/synchronize_to_device.py:168
 msgid ""
@@ -2517,53 +2517,48 @@ msgid ""
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
+"MTP로 마운트된 장치의 경우 로컬 대상 폴더로 내보낸 다음 rsync를 사용하여 장치로 전송합니다. 또는 많은 파일을 안드로이드 기기에 "
+"동기화할 때 훨씬 더 빠른 adb-sync를 사용합니다."
 
 #: quodlibet/ext/events/synchronize_to_device.py:179
-#, fuzzy
 msgid "Destination path:"
-msgstr "발견된 방송국이 없습니다"
+msgstr "대상 경로:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
-#, fuzzy
 msgid "Path Patterns"
-msgstr "양식"
+msgstr "경로 양식"
 
 #: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
-#, fuzzy
 msgid "Edit saved patterns…"
-msgstr "저장된 값 편집..."
+msgstr "저장된 형식 편집…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
-msgstr ""
+msgstr "태그를 기반으로 내보낸 파일 이름의 구조"
 
 #: quodlibet/ext/events/synchronize_to_device.py:196
-#, fuzzy
 msgid "Export pattern:"
-msgstr "아티스트"
+msgstr "내보낼 형식:"
 
 #. Stop preview button
 #: quodlibet/ext/events/synchronize_to_device.py:208
-#, fuzzy
 msgid "Stop preview"
-msgstr "미리보기"
+msgstr "미리 듣기 멈춤"
 
 #: quodlibet/ext/events/synchronize_to_device.py:227
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
-msgstr ""
+msgstr "상태"
 
 #: quodlibet/ext/events/synchronize_to_device.py:234
-#, fuzzy
 msgid "Source File"
-msgstr "음악 재생기"
+msgstr "소스 파일"
 
 #: quodlibet/ext/events/synchronize_to_device.py:243
-#, fuzzy
 msgid "Export Path"
-msgstr "재생목록 가져오기"
+msgstr "내보내기 경로"
 
 #: quodlibet/ext/events/synchronize_to_device.py:253
 msgid ""
@@ -5216,14 +5211,12 @@ msgid "Repeat _all"
 msgstr "반복"
 
 #: quodlibet/order/repeat.py:73
-#, fuzzy
 msgid "One song"
-msgstr "선택한 노래"
+msgstr "선택한 노래를 1회 재생"
 
 #: quodlibet/order/repeat.py:74
-#, fuzzy
 msgid "One _song"
-msgstr "선택한 노래"
+msgstr "선택한 노래를 한 번만 재생"
 
 #: quodlibet/player/gstbe/player.py:100
 msgid "Stream"
