@@ -332,7 +332,7 @@ msgstr "_Käytä"
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:390
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -1389,7 +1389,7 @@ msgstr "_Muokkaa näkymää…"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
-#: quodlibet/ext/events/synchronize_to_device.py:202
+#: quodlibet/ext/events/synchronize_to_device.py:201
 #: quodlibet/ext/events/trayicon/prefs.py:86
 msgid "Preview"
 msgstr "Esikatsele"
@@ -1560,7 +1560,7 @@ msgstr "_Päivitystapa:"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:38 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
 msgid "Preferences"
 msgstr "Asetukset"
 
@@ -1763,7 +1763,7 @@ msgstr "Esiasetuksen nimi tallennusta varten:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:392
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -2517,51 +2517,56 @@ msgstr ""
 msgid "Plugin Options"
 msgstr "Valinnat"
 
-#: quodlibet/ext/events/synchronize_to_device.py:53
+#: quodlibet/ext/events/synchronize_to_device.py:52
 msgid "Pending copy"
 msgstr "Odottaa kopiointia"
 
-#: quodlibet/ext/events/synchronize_to_device.py:54
+#: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "Pending delete"
 msgstr "Odottaa poistamista"
 
-#: quodlibet/ext/events/synchronize_to_device.py:55
+#: quodlibet/ext/events/synchronize_to_device.py:54
 msgid "delete"
 msgstr "poista"
 
-#: quodlibet/ext/events/synchronize_to_device.py:56
+#: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
 msgstr "Ohita"
 
-#: quodlibet/ext/events/synchronize_to_device.py:57
+#: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "DUPLICATE"
 msgstr "KAKSOISKAPPALE"
 
-#: quodlibet/ext/events/synchronize_to_device.py:58
+#: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "Synchronizing"
 msgstr "Synkronoidaan"
 
-#: quodlibet/ext/events/synchronize_to_device.py:59
+#: quodlibet/ext/events/synchronize_to_device.py:58
 msgid "Deleting"
 msgstr "Poistetaan"
 
-#: quodlibet/ext/events/synchronize_to_device.py:60
+#: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
 msgstr "Suoritus onnistui"
 
-#: quodlibet/ext/events/synchronize_to_device.py:61
+#: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "FAILURE"
 msgstr "SUORITUS EPÄONNISTUI"
 
-#: quodlibet/ext/events/synchronize_to_device.py:62
+#: quodlibet/ext/events/synchronize_to_device.py:61
 msgid "Skipped existing file"
 msgstr "Olemassa oleva tiedosto ohitettu"
 
-#: quodlibet/ext/events/synchronize_to_device.py:82
+#: quodlibet/ext/events/synchronize_to_device.py:81
 msgid "Cannot set the filename of a song."
 msgstr "Kappaleen tiedostonimen asettaminen epäonnistui."
 
-#: quodlibet/ext/events/synchronize_to_device.py:89
+#: quodlibet/ext/events/synchronize_to_device.py:87
+#, fuzzy
+msgid "Synchronize to Device"
+msgstr "Tahdistetut sanoitukset"
+
+#: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
@@ -2569,15 +2574,15 @@ msgstr ""
 "Synkronoi valittujen tallennettujen hakujen määrittämät kappaleet määritetyn "
 "kansion kanssa."
 
-#: quodlibet/ext/events/synchronize_to_device.py:142
+#: quodlibet/ext/events/synchronize_to_device.py:141
 msgid "Synchronize the following saved searches:"
 msgstr "Synkronoi seuraavat tallennetut haut:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:148
+#: quodlibet/ext/events/synchronize_to_device.py:147
 msgid "The absolute path to your export location"
 msgstr "Vientisijainnin absoluuttinen polku"
 
-#: quodlibet/ext/events/synchronize_to_device.py:165
+#: quodlibet/ext/events/synchronize_to_device.py:164
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
@@ -2585,7 +2590,7 @@ msgstr ""
 "Kaikki kohdekansiossa jo olemassa olevat tiedostot, jotka eivät sisälly "
 "hakutuloksiin, poistetaan."
 
-#: quodlibet/ext/events/synchronize_to_device.py:169
+#: quodlibet/ext/events/synchronize_to_device.py:168
 msgid ""
 "For devices mounted with MTP, export to a local destination folder, then "
 "transfer it to your device with rsync. Or, when syncing many files to an "
@@ -2596,47 +2601,47 @@ msgstr ""
 "Synkronoidessa suurta määrää tiedostoja Android-laitteeseen voi käyttää "
 "huomattavasti nopeampaa adc-sync-ohjelmaa."
 
-#: quodlibet/ext/events/synchronize_to_device.py:180
+#: quodlibet/ext/events/synchronize_to_device.py:179
 msgid "Destination path:"
 msgstr "Polku kohdekansioon:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr "Kaavat tiedostopoluille"
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
 msgstr "Muokkaa tallennettuja kaavoja…"
 
-#: quodlibet/ext/events/synchronize_to_device.py:191
+#: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
 msgstr "Vietyjen tiedostonimien rakenne (perustuen kappaleiden tunnisteisiin)"
 
-#: quodlibet/ext/events/synchronize_to_device.py:197
+#: quodlibet/ext/events/synchronize_to_device.py:196
 msgid "Export pattern:"
 msgstr "Vientikaava:"
 
 #. Stop preview button
-#: quodlibet/ext/events/synchronize_to_device.py:209
+#: quodlibet/ext/events/synchronize_to_device.py:208
 msgid "Stop preview"
 msgstr "Pysäytä esikatselu"
 
-#: quodlibet/ext/events/synchronize_to_device.py:228
+#: quodlibet/ext/events/synchronize_to_device.py:227
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
 msgstr "Tila"
 
-#: quodlibet/ext/events/synchronize_to_device.py:235
+#: quodlibet/ext/events/synchronize_to_device.py:234
 msgid "Source File"
 msgstr "Lähdetiedosto"
 
-#: quodlibet/ext/events/synchronize_to_device.py:244
+#: quodlibet/ext/events/synchronize_to_device.py:243
 msgid "Export Path"
 msgstr "Vientipolku"
 
-#: quodlibet/ext/events/synchronize_to_device.py:254
+#: quodlibet/ext/events/synchronize_to_device.py:253
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
@@ -2644,29 +2649,29 @@ msgstr ""
 "Kahdentuneita vientipolkuja havaittu. Yllä olevia vientipolkuja voi muokata "
 "ennen synkronoinnin aloittamista."
 
-#: quodlibet/ext/events/synchronize_to_device.py:258
+#: quodlibet/ext/events/synchronize_to_device.py:257
 msgid "Existing files in the destination path will be deleted!"
 msgstr "Olemassa olevat tiedostot kohdepolussa poistetaan!"
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:273
+#: quodlibet/ext/events/synchronize_to_device.py:272
 msgid "Start synchronization"
 msgstr "Aloita synkronointi"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:281
+#: quodlibet/ext/events/synchronize_to_device.py:280
 msgid "Stop synchronization"
 msgstr "Pysäytä synkronointi"
 
-#: quodlibet/ext/events/synchronize_to_device.py:304
+#: quodlibet/ext/events/synchronize_to_device.py:303
 msgid "No saved searches yet, create some and come back!"
 msgstr "Ei tallennettuja hakuja"
 
-#: quodlibet/ext/events/synchronize_to_device.py:386
+#: quodlibet/ext/events/synchronize_to_device.py:385
 msgid "Choose destination path"
 msgstr "Valitse kohdepolku"
 
-#: quodlibet/ext/events/synchronize_to_device.py:538
+#: quodlibet/ext/events/synchronize_to_device.py:537
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
@@ -2674,78 +2679,84 @@ msgstr ""
 "Vientipolku muutettu arvosta ”{old_path}” arvoon ”{new_path}” tiedostolle "
 "”{filename}”"
 
-#: quodlibet/ext/events/synchronize_to_device.py:652
+#: quodlibet/ext/events/synchronize_to_device.py:651
 msgid "Starting synchronization preview"
 msgstr "Aloitetaan synkronoinnin esikatselu"
 
-#: quodlibet/ext/events/synchronize_to_device.py:657
+#: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
 msgstr "Synkronoinnin esikatselu käynnissä."
 
-#: quodlibet/ext/events/synchronize_to_device.py:673
+#: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
 msgstr "Synkronoinnin esikatselu valmis"
 
-#: quodlibet/ext/events/synchronize_to_device.py:682
+#: quodlibet/ext/events/synchronize_to_device.py:681
 msgid "Stopping synchronization preview"
 msgstr "Pysäytetään synkronoinnin esikatselua"
 
-#: quodlibet/ext/events/synchronize_to_device.py:684
+#: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Synchronization preview was stopped."
 msgstr "Synkronoinnin esikatselu pysäytettiin."
 
-#: quodlibet/ext/events/synchronize_to_device.py:687
+#: quodlibet/ext/events/synchronize_to_device.py:686
 msgid "Synchronization preview has finished."
 msgstr "Synkronoinnin esikatselu on valmis."
 
-#: quodlibet/ext/events/synchronize_to_device.py:717
+#: quodlibet/ext/events/synchronize_to_device.py:716
 msgid "Stopped synchronization preview"
 msgstr "Synkronoinnin esikatselu pysäytettiin"
 
-#: quodlibet/ext/events/synchronize_to_device.py:721
+#: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
 msgstr "Toinen liitännäinen valittu - pysäytä esikatselu"
 
-#: quodlibet/ext/events/synchronize_to_device.py:758
+#: quodlibet/ext/events/synchronize_to_device.py:757
 msgid "Synchronization will:"
 msgstr "Synkronointi tekee seuraavat asiat:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:764
-#, python-brace-format
-msgid "attempt to write {count} {file_str}"
-msgstr "yrittää kirjoittaa {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:763
+#, fuzzy, python-brace-format
+msgid "attempt to write {count} file"
+msgid_plural "attempt to write {count} files"
+msgstr[0] "yrittää kirjoittaa {count} {file_str}"
+msgstr[1] "yrittää kirjoittaa {count} {file_str}"
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
-#, python-brace-format
-msgid "skip {count} duplicate {file_str}"
-msgstr "ohittaa kaksoiskappaleita: {count} {file_str}"
+#, fuzzy, python-brace-format
+msgid "skip {count} duplicate file"
+msgid_plural "skip {count} duplicate files"
+msgstr[0] "ohittaa kaksoiskappaleita: {count} {file_str}"
+msgstr[1] "ohittaa kaksoiskappaleita: {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:779
-#, python-brace-format
-msgid "delete {count} {file_str}"
-msgstr "poistaa {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:780
+#, fuzzy, python-brace-format
+msgid "delete {count} file"
+msgid_plural "delete {count} files"
+msgstr[0] "poistaa {count} {file_str}"
+msgstr[1] "poistaa {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:828
+#: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
 msgstr "Kohdepolkua ei ole määritetty"
 
-#: quodlibet/ext/events/synchronize_to_device.py:829
+#: quodlibet/ext/events/synchronize_to_device.py:831
 msgid "Please specify the directory where songs should be exported."
 msgstr "Määritä kohdekansio, johon kappaleet viedään."
 
-#: quodlibet/ext/events/synchronize_to_device.py:836
+#: quodlibet/ext/events/synchronize_to_device.py:838
 msgid "No export pattern provided"
 msgstr "Vientikaavaa ei ole määritetty"
 
-#: quodlibet/ext/events/synchronize_to_device.py:837
+#: quodlibet/ext/events/synchronize_to_device.py:839
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr "Määritä vientikaava vietävien kappaleiden tiedostonimille."
 
-#: quodlibet/ext/events/synchronize_to_device.py:847
+#: quodlibet/ext/events/synchronize_to_device.py:849
 msgid "Export path is not absolute"
 msgstr "Vientipolku ei ole absoluuttinen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:848
+#: quodlibet/ext/events/synchronize_to_device.py:850
 msgid ""
 "The pattern\n"
 "\n"
@@ -2761,31 +2772,31 @@ msgstr ""
 "sisältää merkin /, mutta ei ala juurihakemistosta. Määritä absoluuttinen "
 "kohdepolku aloittamalla kaava merkeillä / tai ~/."
 
-#: quodlibet/ext/events/synchronize_to_device.py:870
+#: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "No saved searches selected"
 msgstr "Ei tallennettuja hakuja valittuna"
 
-#: quodlibet/ext/events/synchronize_to_device.py:871
+#: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "Please select at least one saved search."
 msgstr "Valitse vähintään yksi tallennettu haku."
 
-#: quodlibet/ext/events/synchronize_to_device.py:880
+#: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "No songs in the selected saved searches"
 msgstr "Ei kappaleita valituissa tallennetuissa hauissa"
 
-#: quodlibet/ext/events/synchronize_to_device.py:881
+#: quodlibet/ext/events/synchronize_to_device.py:883
 msgid "All selected saved searches are empty."
 msgstr "Kaikki valitut tallennetut haut ovat tyhjiä."
 
-#: quodlibet/ext/events/synchronize_to_device.py:884
+#: quodlibet/ext/events/synchronize_to_device.py:886
 msgid "Found {} songs to synchronize"
 msgstr "Löydetty {} synkronoitavaa kappaletta"
 
-#: quodlibet/ext/events/synchronize_to_device.py:903
+#: quodlibet/ext/events/synchronize_to_device.py:905
 msgid "Mismatch between destination path and export pattern"
 msgstr "Kohdepolku ja vientikaava eivät vastaa toisiaan"
 
-#: quodlibet/ext/events/synchronize_to_device.py:905
+#: quodlibet/ext/events/synchronize_to_device.py:907
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2799,90 +2810,102 @@ msgstr ""
 "Virhe:\n"
 "{}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:943
+#: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Unable to sync"
 msgstr "Ei voi synkronoida"
 
-#: quodlibet/ext/events/synchronize_to_device.py:944
+#: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
 "Synkronointia ei voi aloittaa järjestettäessä sarakkeen <b>Tila</b> mukaan."
 
-#: quodlibet/ext/events/synchronize_to_device.py:948
+#: quodlibet/ext/events/synchronize_to_device.py:950
 msgid "Starting song synchronization"
 msgstr "Aloitetaan kappaleiden synkronointi"
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:952
+#: quodlibet/ext/events/synchronize_to_device.py:954
 msgid "Synchronization in progress."
 msgstr "Synkronointi käynnissä."
 
-#: quodlibet/ext/events/synchronize_to_device.py:964
+#: quodlibet/ext/events/synchronize_to_device.py:966
 msgid "Finished song synchronization"
 msgstr "Kappaleiden synkronointi valmis"
 
-#: quodlibet/ext/events/synchronize_to_device.py:973
+#: quodlibet/ext/events/synchronize_to_device.py:975
 msgid "Stopping song synchronization"
 msgstr "Kappaleiden synkronointia pysäytetään"
 
-#: quodlibet/ext/events/synchronize_to_device.py:974
+#: quodlibet/ext/events/synchronize_to_device.py:976
 msgid "Synchronization was stopped."
 msgstr "Kappaleiden synkronointi pysäytettiin."
 
-#: quodlibet/ext/events/synchronize_to_device.py:976
+#: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization has finished."
 msgstr "Kappaleiden synkronointi on valmis."
 
-#: quodlibet/ext/events/synchronize_to_device.py:1009
+#: quodlibet/ext/events/synchronize_to_device.py:1011
 msgid "Stopped song synchronization"
 msgstr "Kappaleiden synkronointi pysäytetty"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1013
+#: quodlibet/ext/events/synchronize_to_device.py:1015
 msgid "A different plugin was selected - stop synchronization"
 msgstr "Toinen liitännäinen valittu - pysäytä synkronointi"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1016
+#: quodlibet/ext/events/synchronize_to_device.py:1018
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr "{tag} - ”{filename}”"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1085
+#: quodlibet/ext/events/synchronize_to_device.py:1087
 msgid "Removing \"{}\""
 msgstr "Poistetaan ”{}”"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1104
+#: quodlibet/ext/events/synchronize_to_device.py:1106
 msgid "Synchronization has:"
 msgstr "Synkronointi on tehnyt seuraavat asiat:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1112
-#, python-brace-format
-msgid "written {count}/{total} {file_str}"
-msgstr "kirjoitettu {count}/{total} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1114
+#, fuzzy, python-brace-format
+msgid "written {count}/{total} file"
+msgid_plural "written {count}/{total} files"
+msgstr[0] "kirjoitettu {count}/{total} {file_str}"
+msgstr[1] "kirjoitettu {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1119
-#, python-brace-format
-msgid "(skipped {count} existing {file_str})"
-msgstr "(ohitettu olemassa olevia: {count} {file_str})"
+#: quodlibet/ext/events/synchronize_to_device.py:1121
+#, fuzzy, python-brace-format
+msgid "(skipped {count} existing file)"
+msgid_plural "(skipped {count} existing files)"
+msgstr[0] "(ohitettu olemassa olevia: {count} {file_str})"
+msgstr[1] "(ohitettu olemassa olevia: {count} {file_str})"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1127
-#, python-brace-format
-msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr "ohitettu kaksoiskappaleita: {count}/{total} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1130
+#, fuzzy, python-brace-format
+msgid "skipped {count}/{total} duplicate file"
+msgid_plural "skipped {count}/{total} duplicate files"
+msgstr[0] "ohitettu kaksoiskappaleita: {count}/{total} {file_str}"
+msgstr[1] "ohitettu kaksoiskappaleita: {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1134
-#, python-brace-format
-msgid "deleted {count}/{total} {file_str}"
-msgstr "poistettu {count}/{total} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1137
+#, fuzzy, python-brace-format
+msgid "deleted {count}/{total} file"
+msgid_plural "deleted {count}/{total} files"
+msgstr[0] "poistettu {count}/{total} {file_str}"
+msgstr[1] "poistettu {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1141
-#, python-brace-format
-msgid "failed to sync {count} {file_str}"
-msgstr "ei voitu synkronoida: {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1144
+#, fuzzy, python-brace-format
+msgid "failed to sync {count} file"
+msgid_plural "failed to sync {count} files"
+msgstr[0] "ei voitu synkronoida: {count} {file_str}"
+msgstr[1] "ei voitu synkronoida: {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1147
-#, python-brace-format
-msgid "skipped {count} {file_str} synchronized previously"
-msgstr "ohitettu aikaisemmin synkronoituja: {count} {file_str}"
+#: quodlibet/ext/events/synchronize_to_device.py:1151
+#, fuzzy, python-brace-format
+msgid "skipped {count} file synchronized previously"
+msgid_plural "skipped {count} files synchronized previously"
+msgstr[0] "ohitettu aikaisemmin synkronoituja: {count} {file_str}"
+msgstr[1] "ohitettu aikaisemmin synkronoituja: {count} {file_str}"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3696,6 +3719,10 @@ msgstr "Ehdollinen kysely"
 msgid "Chooses the query to match based on a condition query."
 msgstr "Valitsee käytettävän kyselyn ehdollisen kyselyn pohjalta."
 
+#: quodlibet/ext/query/conditional.py:18
+msgid "@(if: condition-query, then-query, else-query)"
+msgstr ""
+
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
 msgstr "Puuttuvan tunnisteen kysely"
@@ -3704,7 +3731,7 @@ msgstr "Puuttuvan tunnisteen kysely"
 msgid "Matches songs without the given tag."
 msgstr "Täsmää kappaleisiin, joilla ei ole annettua tunnistetta."
 
-#: quodlibet/ext/query/missing.py:35
+#: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
 msgstr "Sisällytä tyhjät tunnisteet"
 
@@ -3716,6 +3743,26 @@ msgstr "Python-kysely"
 msgid "🐍Use Python expressions in queries."
 msgstr "🐍 Käytä Python-lausekkeita kyselyissä."
 
+#: quodlibet/ext/query/pythonexpression.py:21
+#, fuzzy
+msgid "@(python: expression)"
+msgstr "Tunnistelauseke"
+
+#: quodlibet/ext/query/pythonexpression.py:23
+#, fuzzy
+msgid ""
+"The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.\n"
+"\n"
+"<tt>_ts</tt> is a (real number) timestamp at start of query.\n"
+"\n"
+"Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
+"<tt>Random</tt> (==<tt>random.Random</tt>) too."
+msgstr ""
+"Käytä Python-lausekkeita kyselyissä. Syntaksi: @(python: lauseke). Muuttujat "
+"”s” ja ”a” ovat täsmäytettävä kappale ja albumi. ”_ts” on aikaleima kyselyn "
+"suorituksen alkaessa (reaalilukuna). Moduulit ”time” ja ”random” sekä luokka "
+"”Random” (eli random.Random) ovat myös käytettävissä."
+
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
 msgstr "Sisällytä tallennettu haku"
@@ -3723,6 +3770,11 @@ msgstr "Sisällytä tallennettu haku"
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
 msgstr "💾 Sisällytä tallennetun haun tulokset toiseen hakuun."
+
+#: quodlibet/ext/query/savedsearch.py:24
+#, fuzzy
+msgid "@(saved: search-name)"
+msgstr "Tallennetut haut"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -5357,9 +5409,17 @@ msgstr ""
 msgid "Use JACK for playback if available"
 msgstr "Käytä JACK-järjestelmää toistoon, jos käytettävissä"
 
+#: quodlibet/player/gstbe/prefs.py:77
+msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
+msgstr ""
+
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
 msgstr "Muodosta yhteys JACK-ulostulolaitteisiin automaattisesti"
+
+#: quodlibet/player/gstbe/prefs.py:81
+msgid "Tells `jackaudiosink` to auto-connect"
+msgstr ""
 
 #: quodlibet/player/gstbe/util.py:148
 #, python-format
@@ -5452,7 +5512,7 @@ msgstr[1] "Suorita liitännäinen ”%(name)s” %(count)s soittolistalle?"
 msgid "_Run Plugin"
 msgstr "_Suorita liitännäinen"
 
-#: quodlibet/plugins/query.py:65
+#: quodlibet/plugins/query.py:73
 msgid "Usage"
 msgstr "Käyttö"
 
@@ -7982,17 +8042,6 @@ msgstr ""
 #~ msgstr ""
 #~ "Ohita kappaleet, joiden arvosana on pienempi tai yhtä suuri kuin annettu "
 #~ "arvo."
-
-#~ msgid ""
-#~ "Use Python expressions in queries. Syntax is '@(python: expression)'. The "
-#~ "variable 's' (or 'a') is the song / album being matched. '_ts' is a (real "
-#~ "number) timestamp at start of query. Modules 'time' and 'random' are also "
-#~ "available, and the class 'Random' (==random.Random) too."
-#~ msgstr ""
-#~ "Käytä Python-lausekkeita kyselyissä. Syntaksi: @(python: lauseke). "
-#~ "Muuttujat ”s” ja ”a” ovat täsmäytettävä kappale ja albumi. ”_ts” on "
-#~ "aikaleima kyselyn suorituksen alkaessa (reaalilukuna). Moduulit ”time” ja "
-#~ "”random” sekä luokka ”Random” (eli random.Random) ovat myös käytettävissä."
 
 #~ msgid "Burn CD"
 #~ msgstr "Polta CD"

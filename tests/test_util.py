@@ -30,6 +30,7 @@ from quodlibet.util.path import fsn2glib, glib2fsn, \
     xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
     xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
+from quodlibet.util.environment import is_osx
 
 from . import TestCase, skipIf
 from .helper import capture_output, locale_numeric_conv
@@ -744,6 +745,10 @@ class Tescape_filename(TestCase):
 @skipIf(is_win, "not on Windows")
 class Tload_library(TestCase):
 
+    # This started breaking on newer osx in CI
+    # I suspect it is https://bugs.python.org/issue44689
+    # so could be re-tried with newer Python
+    @skipIf(is_osx(), "broken on osx")
     def test_libc(self):
         lib, name = util.load_library(["c"])
         self.assertEqual(name, "c")
