@@ -7,9 +7,9 @@ import os
 import time
 from pathlib import Path
 from random import randint
-from typing import Generator, Set, Iterable, Optional
+from typing import Generator, Set, Iterable, Optional, Dict, Tuple
 
-from gi.repository import Gio, GLib
+from gi.repository import Gio, GLib, GObject
 
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
@@ -428,9 +428,11 @@ class WatchedFileLibraryMixin(FileLibrary):
     """A File Library that sets up monitors on directories at refresh
     and handles changes sensibly"""
 
+    _DEBUG = False
+
     def __init__(self, name=None):
         super().__init__(name)
-        self._monitors = {}
+        self._monitors: Dict[Path, Tuple[GObject.GObject, int]] = {}
         print_d(f"Initialised {self!r}")
 
     def monitor_dir(self, path: Path) -> None:
@@ -449,10 +451,11 @@ class WatchedFileLibraryMixin(FileLibrary):
             handler_id = monitor.connect("changed", self.__file_changed)
             # Don't destroy references - http://stackoverflow.com/q/4535227
             self._monitors[path] = (monitor, handler_id)
-            print_d(f"Monitoring {path!r}")
+            print_d(f"Monitoring {path!s}")
 
-    def __file_changed(self, monitor, main_file: Gio.File,
-                       other_file: Optional[Gio.File], event_type) -> None:
+    def __file_changed(self, _monitor, main_file: Gio.File,
+                       other_file: Optional[Gio.File],
+                       event_type: Gio.FileMonitorEvent) -> None:
         try:
             file_path = main_file.get_path()
             if file_path is None:
@@ -461,29 +464,18 @@ class WatchedFileLibraryMixin(FileLibrary):
             file_path = Path(normalize_path(file_path, True))
             other_path = (Path(normalize_path(other_file.get_path(), True))
                           if other_file else None)
-            # print_d(f"Got event {event_type} from {file_path} -> {other_path}")
+            if self._DEBUG:
+                print_d(f"Got event {event_type} on {file_path}"
+                        + (f"-> {other_path}" if other_path else ""))
             if event_type == EventType.CREATED:
                 if file_path.is_dir():
-                    print_d(f"Monitoring new directory {file_path!r}")
+                    print_d(f"Monitoring new directory {file_path}")
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
-                    return
-                else:
-                    if song:
-                        # QL created this one; still check if it changed
-                        if not song.valid():
-                            self.reload(song)
-                    else:
-                        print_d(f"Auto-adding new file: {file_path}")
-                        self.add_filename(file_path)
-            elif event_type == EventType.CHANGED:
-                if song and not song.valid():
-                    self.reload(song)
-                    print_d("Updating externally changed song: %s" % file_path)
+                # For files, we wait for changes to finish.
             elif event_type == EventType.RENAMED:
                 if not other_path:
                     print_w(f"No destination found for rename of {file_path}")
-                    return
                 if song:
                     print_d(f"Moving {file_path} to {other_path}...")
                     self.move_song(song, text2fsn(str(other_path)))  # type:ignore
@@ -493,16 +485,24 @@ class WatchedFileLibraryMixin(FileLibrary):
                         copool.add(self.librarian.move_root,
                                    str(file_path), str(other_path), write_files=False)
                     self.unmonitor_dir(file_path)
-                    self.monitor_dir(other_path)
+                    if other_path:
+                        self.monitor_dir(other_path)
                 else:
                     print_w(f"Weird, I'm not monitoring {file_path}")
-            elif event_type in (EventType.ATTRIBUTE_CHANGED,
-                                EventType.CHANGES_DONE_HINT):
-                # Probably pointless for us? Changes are probably quick and single
+            elif event_type in (EventType.CHANGED, EventType.ATTRIBUTE_CHANGED):
+                # Wait for hint
                 pass
+            elif event_type == EventType.CHANGES_DONE_HINT:
+                if song:
+                    # QL created (or knew about) this one; still check if it changed
+                    if not song.valid():
+                        self.reload(song)
+                else:
+                    print_d(f"Auto-adding new file: {file_path}")
+                    self.add_filename(file_path)
             elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
                 if song:
-                    print_d(f"Got {event_type} for {file_path}, so should delete")
+                    print_d(f"...so deleting {file_path}")
                     self.reload(song)
                 else:
                     # either not a song, or a song that was renamed by QL
