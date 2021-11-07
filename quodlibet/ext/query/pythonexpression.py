@@ -10,7 +10,7 @@ import random
 import time
 
 from quodlibet import _, print_d, print_w
-from quodlibet.plugins.query import QueryPlugin, QueryPluginError
+from quodlibet.plugins.query import QueryPlugin, QueryPluginError, markup_for_syntax
 
 
 class PythonQuery(QueryPlugin):
@@ -18,16 +18,16 @@ class PythonQuery(QueryPlugin):
     PLUGIN_NAME = _("Python Query")
     PLUGIN_DESC = _("🐍Use Python expressions in queries.")
     key = 'python'
-    usage = """
-<b><tt>@(python: expression)</tt></b>
-
-The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.
-
-<tt>_ts</tt> is a (real number) timestamp at start of query.
-
-Modules <tt>time</tt> and <tt>random</tt> are also available,
-and the class <tt>Random</tt> (==<tt>random.Random</tt>) too.
-""".strip()
+    query_syntax = _("@(python: expression)")
+    query_description = _(
+        "The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being "
+        "matched."
+        "\n\n"
+        "<tt>_ts</tt> is a (real number) timestamp at start of query."
+        "\n\n"
+        "Modules <tt>time</tt> and <tt>random</tt> are also available, and the "
+        "class <tt>Random</tt> (==<tt>random.Random</tt>) too.")
+    usage = markup_for_syntax(query_syntax) + "\n\n" + query_description
 
     def __init__(self):
         print_d("Initialising")

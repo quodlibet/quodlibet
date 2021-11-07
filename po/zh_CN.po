@@ -8,21 +8,21 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2013-07-20 22:33+0100\n"
-"Last-Translator: Emfox Zhou <EmfoxZhou@gmail.com>\n"
-"Language-Team: Emfox Zhou <EmfoxZhou@gmail.com>\n"
+"PO-Revision-Date: 2021-10-31 02:35+0000\n"
+"Last-Translator: Eric <spice2wolf@gmail.com>\n"
+"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
+"quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
-#, fuzzy
 msgid "_Title"
-msgstr "标题"
+msgstr "标题(_T)"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
@@ -35,20 +35,17 @@ msgid "_Date"
 msgstr "日期(_D)"
 
 #: quodlibet/browsers/albums/main.py:226
-#, fuzzy
 msgid "_Date Added"
-msgstr "日期信息"
+msgstr "添加日期"
 
 #: quodlibet/browsers/albums/main.py:227
-#, fuzzy
 msgid "_Original Date"
-msgstr "原始歌手"
+msgstr "原始日期(_O)"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
-#, fuzzy
 msgid "_Genre"
-msgstr "流派"
+msgstr "流派(_G)"
 
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
@@ -57,24 +54,21 @@ msgid "_Rating"
 msgstr "评分(_R)"
 
 #: quodlibet/browsers/albums/main.py:230
-#, fuzzy
 msgid "_Playcount"
-msgstr "编辑显示"
+msgstr "播放计数(_P)"
 
 #: quodlibet/browsers/albums/main.py:236
 #: quodlibet/browsers/covergrid/main.py:66
-#, fuzzy
 msgid "Sort _by…"
-msgstr "按日期排序"
+msgstr "排序依据(_B) …"
 
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:87
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
-#, fuzzy
 msgid "_Preferences"
-msgstr "首选项"
+msgstr "首选项(_P)"
 
 #: quodlibet/browsers/albums/main.py:431
 msgid "Album List"
@@ -96,14 +90,13 @@ msgstr "所有专辑"
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
-msgstr[0] ""
+msgstr[0] "%d 专辑"
 
 #: quodlibet/browsers/albums/main.py:729
 #: quodlibet/browsers/covergrid/main.py:482
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "显示专辑封面(_C)"
+msgstr[0] "重新加载专辑封面(_C)"
 
 #: quodlibet/browsers/albums/prefs.py:28
 #: quodlibet/browsers/collection/models.py:17
@@ -115,7 +108,7 @@ msgstr "不在专辑里的曲目"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:261
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:264
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -124,7 +117,7 @@ msgstr[0] "%d 音轨"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:265
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -132,9 +125,8 @@ msgstr[0] "%d 唱片"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "样本专辑"
+msgstr "样例专辑"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -151,9 +143,8 @@ msgstr "搜索时包含 people 字段"
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
 #: quodlibet/ext/songsmenu/cover_download.py:306
-#, fuzzy
 msgid "Options"
-msgstr "[选项]"
+msgstr "选项"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:127
@@ -172,7 +163,7 @@ msgstr "专辑显示"
 #: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
 #: quodlibet/update.py:149
 msgid "_Close"
-msgstr "关闭"
+msgstr "关闭(_C)"
 
 #: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
 #: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
@@ -205,9 +196,8 @@ msgid "_Add"
 msgstr "添加"
 
 #: quodlibet/browsers/audiofeeds.py:269
-#, fuzzy
 msgid "Audio Feeds"
-msgstr "音频源：%s"
+msgstr "音频流"
 
 #: quodlibet/browsers/audiofeeds.py:270
 msgid "_Audio Feeds"
@@ -219,18 +209,16 @@ msgstr "新建"
 
 #: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:424
-#, fuzzy
 msgid "_Refresh"
-msgstr "刷新库(_F)"
+msgstr "刷新(_F)"
 
 #: quodlibet/browsers/audiofeeds.py:438
 #: quodlibet/browsers/playlists/main.py:484
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
-#, fuzzy
 msgid "_Delete"
-msgstr "删除"
+msgstr "删除(_D)"
 
 #: quodlibet/browsers/audiofeeds.py:491
 msgid "Unable to add feed"
@@ -248,7 +236,7 @@ msgstr ""
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
-msgstr ""
+msgstr "目前的音频后端不支持URL，音频源浏览器已禁用。"
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
 msgid "Library Browser"
@@ -257,11 +245,11 @@ msgstr "曲库浏览器"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:555
+#: quodlibet/util/collection.py:558
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] ""
+msgstr[0] "%d 首歌曲"
 
 #: quodlibet/browsers/_base.py:402 quodlibet/browsers/_base.py:407
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
@@ -278,9 +266,9 @@ msgid "Album _Collection"
 msgstr "专辑列表"
 
 #: quodlibet/browsers/collection/models.py:24
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "未知"
+msgstr "未知 %s"
 
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
@@ -305,9 +293,8 @@ msgstr "自定义(_C)"
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#, fuzzy
 msgid "_Remove"
-msgstr "删除站点(_R)"
+msgstr "删除 (_R)"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
@@ -320,9 +307,8 @@ msgid "Merge"
 msgstr "合并"
 
 #: quodlibet/browsers/collection/prefs.py:187
-#, fuzzy
 msgid "Album Collection Preferences"
-msgstr "专辑列表首选项"
+msgstr "专辑集合首选项"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:247
@@ -336,7 +322,7 @@ msgstr "应用"
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:390
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -361,40 +347,33 @@ msgid "_Cancel"
 msgstr "取消"
 
 #: quodlibet/browsers/covergrid/main.py:128
-#, fuzzy
 msgid "Cover Grid"
 msgstr "封面网格"
 
 #: quodlibet/browsers/covergrid/main.py:129
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "封面网格"
+msgstr "封面网格(_C)"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
 msgstr "封面网格首选项"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "显示专辑封面(_C)"
+msgstr "显示专辑文本(_T)"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "所有专辑"
+msgstr "显示“所有专辑”项目"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
-#, fuzzy
 msgid "Wide Mode"
-msgstr "宽模式"
+msgstr "宽屏模式"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "封面尺寸"
+msgstr "封面放大"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
@@ -433,14 +412,12 @@ msgid "Internet Radio"
 msgstr "网上广播"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "新站点"
+msgstr "添加电台"
 
 #: quodlibet/browsers/iradio.py:267
-#, fuzzy
 msgid "Downloading station list"
-msgstr "下载文件"
+msgstr "正在下载电台列表"
 
 #: quodlibet/browsers/iradio.py:368
 msgid "New Station"
@@ -491,9 +468,8 @@ msgid "Reggae / Dancehall"
 msgstr "Reggae/Dancehall 雷鬼/舞厅"
 
 #: quodlibet/browsers/iradio.py:401
-#, fuzzy
 msgid "Latin"
-msgstr "Latin 拉丁"
+msgstr "拉丁"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
@@ -588,28 +564,24 @@ msgid "Would you like to load a list of popular radio stations?"
 msgstr "你想现在就获取一份流行的电台列表吗？"
 
 #: quodlibet/browsers/iradio.py:484
-#, fuzzy
 msgid "_Load Stations"
-msgstr "新站点(_N)"
+msgstr "加载电台 (_L)"
 
 #: quodlibet/browsers/iradio.py:500
 msgid "_Internet Radio"
 msgstr "网上广播(_I)"
 
 #: quodlibet/browsers/iradio.py:573
-#, fuzzy
 msgid "_New Station…"
-msgstr "新站点"
+msgstr "新电台(_N)…"
 
 #: quodlibet/browsers/iradio.py:576
-#, fuzzy
 msgid "_Update Stations"
-msgstr "新站点(_N)"
+msgstr "更新电台 (_U)"
 
 #: quodlibet/browsers/iradio.py:603
-#, fuzzy
 msgid "All Stations"
-msgstr "新站点"
+msgstr "所有电台"
 
 #. TODO: support for ~#rating=!None etc (#1940)
 #: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
@@ -631,21 +603,19 @@ msgstr "没有发现网上广播站点 %s"
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
-msgstr ""
+msgstr "没有新源可添加"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
 msgstr "所有列出的站点都已经在您的库里。"
 
 #: quodlibet/browsers/iradio.py:874
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "加入到播放列表(_A)"
+msgstr "加入收藏"
 
 #: quodlibet/browsers/iradio.py:878
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "从播放列表里删除(_R)"
+msgstr "从收藏中删除"
 
 #: quodlibet/browsers/iradio.py:978
 #, python-format
@@ -654,9 +624,8 @@ msgid_plural "%(count)d stations"
 msgstr[0] ""
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:44
-#, fuzzy
 msgid "Paned Browser"
-msgstr "分栏面板窗口"
+msgstr "拼版式浏览器"
 
 #: quodlibet/browsers/paned/main.py:42
 msgid "_Paned Browser"
@@ -681,9 +650,8 @@ msgid "Wide"
 msgstr ""
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "可见的栏"
+msgstr "柱状"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -722,25 +690,22 @@ msgid "_Remove from Playlist"
 msgstr "从播放列表里删除(_R)"
 
 #: quodlibet/browsers/playlists/main.py:213
-#, fuzzy
 msgid "New"
 msgstr "新建"
 
 #: quodlibet/browsers/playlists/main.py:217
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-#, fuzzy
 msgid "Import"
-msgstr "导入(_I)"
+msgstr "导入"
 
 #: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
 msgstr "无法导入播放列表"
 
 #: quodlibet/browsers/playlists/main.py:440
-#, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
-msgstr "Quod Libet 只能导入 M3U 或者 PLS 格式的播放列表"
+msgstr "Quod Libet 只能导入 M3U/M3U8 和 PLS 格式的播放列表。"
 
 #: quodlibet/browsers/playlists/main.py:491
 msgid "_Rename"
@@ -759,7 +724,6 @@ msgid "_Import"
 msgstr "导入(_I)"
 
 #: quodlibet/browsers/playlists/menu.py:24
-#, fuzzy
 msgid "_New Playlist…"
 msgstr "新播放列表(_N)"
 
@@ -779,19 +743,16 @@ msgid "empty"
 msgstr "空"
 
 #: quodlibet/browsers/playlists/prefs.py:39
-#, fuzzy
 msgid "Example Playlist"
-msgstr "新播放列表"
+msgstr "播放列表示例"
 
 #: quodlibet/browsers/playlists/prefs.py:47
-#, fuzzy
 msgid "Playlist Browser Preferences"
-msgstr "播放列表首选项"
+msgstr "播放列表浏览器首选项"
 
 #: quodlibet/browsers/playlists/prefs.py:52
-#, fuzzy
 msgid "Playlist display"
-msgstr "播放列表"
+msgstr "播放列表展示"
 
 #: quodlibet/browsers/playlists/util.py:32
 #, python-format
@@ -805,17 +766,16 @@ msgid ""
 msgstr "选中的播放列表即将被删除，并且无法复原。"
 
 #: quodlibet/browsers/playlists/util.py:48
-#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:606
+#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
 msgid "New Playlist"
 msgstr "新播放列表"
 
 #: quodlibet/browsers/playlists/util.py:49
-#, fuzzy
 msgid "Enter a name for the new playlist:"
 msgstr "输入新播放列表的名字："
 
 #: quodlibet/browsers/playlists/util.py:85
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Importing playlist.\n"
 "\n"
@@ -823,30 +783,27 @@ msgid ""
 msgstr ""
 "正在导入播放列表。\n"
 "\n"
-"已经添加 %d/%d 首曲目。"
+"已添加 %(current)d/%(total)d 首曲目。"
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
 msgstr "限制结果(_L)"
 
 #: quodlibet/browsers/tracks.py:37
-#, fuzzy
 msgid "_Allow multiple queries"
-msgstr "分解成多个标签"
+msgstr "允许多个查询(_A)"
 
 #: quodlibet/browsers/tracks.py:51 quodlibet/qltk/information.py:468
 msgid "Track List"
 msgstr "音轨列表"
 
 #: quodlibet/browsers/tracks.py:52
-#, fuzzy
 msgid "_Track List"
-msgstr "音轨列表"
+msgstr "音轨列表(_T)"
 
 #: quodlibet/browsers/soundcloud/main.py:39
-#, fuzzy
 msgid "Soundcloud Browser"
-msgstr "Souncloud浏览器"
+msgstr "Souncloud 浏览器"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Sound_cloud"
@@ -857,35 +814,33 @@ msgid "Search"
 msgstr "搜索"
 
 #: quodlibet/browsers/soundcloud/main.py:69
-#, fuzzy
 msgid "My tracks"
-msgstr "音轨"
+msgstr "我的音轨"
 
-#: quodlibet/browsers/soundcloud/main.py:141
+#: quodlibet/browsers/soundcloud/main.py:140
 #, python-format
 msgid "Go to %s"
 msgstr "前往 %s"
 
-#: quodlibet/browsers/soundcloud/main.py:443
-#, fuzzy
+#: quodlibet/browsers/soundcloud/main.py:442
 msgid "Connected"
-msgstr "位置"
+msgstr "已连接"
 
-#: quodlibet/browsers/soundcloud/main.py:444
-#, fuzzy, python-format
+#: quodlibet/browsers/soundcloud/main.py:443
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "Quod Libet 现在已经连接上 <b>%s</b>!"
+msgstr "Quod Libet 已连接，%s！"
 
-#: quodlibet/browsers/soundcloud/main.py:456
+#: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
 msgid "Log out of %s"
 msgstr "退出 %s"
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:457
 msgid "Enter code…"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log in to %s"
 msgstr "登录 %s"
@@ -899,16 +854,14 @@ msgid "Enter Soundcloud auth code:"
 msgstr ""
 
 #: quodlibet/cli.py:50
-#, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libet 没有在运行。(使用--run参数启动)"
+msgstr "Quod Libet 没有在运行（使用 --run 参数来启动）"
 
 #: quodlibet/cli.py:86
 msgid "a music library and player"
 msgstr "音乐库和播放器"
 
 #: quodlibet/cli.py:87
-#, fuzzy
 msgid "[option]"
 msgstr "[选项]"
 
@@ -949,7 +902,6 @@ msgid "Toggle play/pause mode"
 msgstr "切换播放／暂停模式"
 
 #: quodlibet/cli.py:101
-#, fuzzy
 msgid "Stop playback"
 msgstr "结束回放"
 
@@ -963,11 +915,11 @@ msgstr "减小音量"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "将正在播放歌曲的评分提高一星"
 
 #: quodlibet/cli.py:105
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "将正在播放歌曲的评分降低一星"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
@@ -994,14 +946,12 @@ msgid "Remove active browser filters"
 msgstr "移除浏览器过滤选项"
 
 #: quodlibet/cli.py:112
-#, fuzzy
 msgid "Refresh and rescan library"
-msgstr "刷新库(_F)"
+msgstr "刷新并重新扫描库(_F)"
 
 #: quodlibet/cli.py:113
-#, fuzzy
 msgid "List available browsers"
-msgstr "显示可用的浏览器"
+msgstr "列出可用的浏览器"
 
 #: quodlibet/cli.py:114
 msgid "Print the current playlist"
@@ -1012,18 +962,16 @@ msgid "Print the contents of the queue"
 msgstr "显示队列内容"
 
 #: quodlibet/cli.py:116
-#, fuzzy
 msgid "Print the active text query"
-msgstr "显示队列内容"
+msgstr "打印活动文本查询"
 
 #: quodlibet/cli.py:117
 msgid "Start without plugins"
 msgstr "不加载插件启动"
 
 #: quodlibet/cli.py:118
-#, fuzzy
 msgid "Start Quod Libet if it isn't running"
-msgstr "Quod Libet 没有在运行。"
+msgstr "如 Quod Libet 未在运行就启动它"
 
 #: quodlibet/cli.py:119
 msgid "Exit Quod Libet"
@@ -1038,23 +986,20 @@ msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
 #: quodlibet/cli.py:125
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "切换播放／暂停模式"
+msgstr "设置或切换随机播放模式"
 
 #: quodlibet/cli.py:126
-#, fuzzy
 msgid "Set shuffle mode type"
-msgstr "切换随机播放模式"
+msgstr "设置随机播放模式类型"
 
 #: quodlibet/cli.py:127
 msgid "Turn repeat off, on, or toggle it"
 msgstr "开、关或切换重复播放"
 
 #: quodlibet/cli.py:128
-#, fuzzy
 msgid "Set repeat mode type"
-msgstr "切换播重复播放模式"
+msgstr "设置重复播放模式类型"
 
 #: quodlibet/cli.py:129
 msgid "Set the volume"
@@ -1074,22 +1019,19 @@ msgid "Play a file"
 msgstr "播放文件"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
-#, fuzzy
 msgctxt "command"
 msgid "filename"
 msgstr "文件名"
 
 #: quodlibet/cli.py:132
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "在正在播放的曲目中定位"
+msgstr "设置播放中歌曲的评分"
 
 #: quodlibet/cli.py:133
 msgid "Set the current browser"
 msgstr "设定当前浏览器"
 
 #: quodlibet/cli.py:134
-#, fuzzy
 msgid "Stop after the playing song"
 msgstr "当前歌曲结束后停止播放"
 
@@ -1106,7 +1048,6 @@ msgid "Filter on a random value"
 msgstr "以随机值过滤"
 
 #: quodlibet/cli.py:137
-#, fuzzy
 msgctxt "command"
 msgid "tag"
 msgstr "标签"
@@ -1141,21 +1082,21 @@ msgstr "将文件或查询结果移出队列"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "添加文件或目录到库"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
 msgstr "位置"
 
 #: quodlibet/cli.py:213
-#, fuzzy, python-format
+#, python-format
 msgid "Invalid argument for '%s'."
-msgstr "错误：%s 的非法参数。"
+msgstr "%s 的无效参数。"
 
 #: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
-#, fuzzy, python-format
+#, python-format
 msgid "Try %s --help."
-msgstr "错误：试试 %s --help。"
+msgstr "尝试 %s --help。"
 
 #: quodlibet/errorreport/ui.py:58
 msgid "An Error Occurred"
@@ -1430,7 +1371,7 @@ msgstr "编辑显示"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
-#: quodlibet/ext/events/synchronize_to_device.py:202
+#: quodlibet/ext/events/synchronize_to_device.py:201
 #: quodlibet/ext/events/trayicon/prefs.py:86
 #, fuzzy
 msgid "Preview"
@@ -1446,28 +1387,24 @@ msgid "Various information about the application and its environment."
 msgstr ""
 
 #: quodlibet/ext/events/appinfo.py:62
-#, fuzzy
 msgid "Supported Formats"
-msgstr "支持的格式： %s"
+msgstr "支持的格式"
 
 #: quodlibet/ext/events/appinfo.py:70
-#, fuzzy
 msgid "Configuration Directory"
-msgstr "以流派过滤(_G)"
+msgstr "配置目录"
 
 #: quodlibet/ext/events/appinfo.py:77
-#, fuzzy
 msgid "Cache Directory"
-msgstr "目录"
+msgstr "缓存目录"
 
 #: quodlibet/ext/events/appinfo.py:84
-#, fuzzy
 msgid "Audio Backend"
-msgstr "音频源：%s"
+msgstr "音频后端"
 
 #: quodlibet/ext/events/auto_library_update.py:139
 msgid "Automatic Library Update"
-msgstr ""
+msgstr "自动更新库"
 
 #: quodlibet/ext/events/auto_library_update.py:140
 #, python-format
@@ -1475,9 +1412,8 @@ msgid "Keeps your library up to date with inotify. Requires %s."
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
-#, fuzzy
 msgid "After every play (default)"
-msgstr "还原为默认"
+msgstr "每次播放完之后（默认）"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
@@ -1485,11 +1421,11 @@ msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
-msgstr ""
+msgstr "每当一首歌完整地播放完后，插件将会写入标签到文件。快进到下一曲的次数不会被储存在文件中，避免了不必要的写入。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
-msgstr ""
+msgstr "每次播放完或快进到下一曲之后"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:41
@@ -1533,9 +1469,8 @@ msgid "Couldn't write '%s'"
 msgstr "找不到 '%s'"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
-#, fuzzy
 msgid "Auto Update Tags in Files"
-msgstr "新站点(_N)"
+msgstr "自动更新文件中的标签"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:81
 msgid ""
@@ -1557,24 +1492,22 @@ msgid "Save ratings and play _counts in tags"
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
-#, fuzzy
 msgid "Settings updated"
-msgstr "录制日期"
+msgstr "设置更改日期"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
-#, fuzzy, python-format
+#, python-format
 msgid "Error in %s"
-msgstr "同步时发生异常"
+msgstr "同步时%s发生异常"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
-msgstr ""
+msgstr "确保保存时播放计数大于零"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
-#, fuzzy
 msgid "_Update strategy:"
-msgstr "新站点(_N)"
+msgstr "更新策略(_U)："
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
 #: quodlibet/ext/events/mpris/__init__.py:47
@@ -1582,7 +1515,7 @@ msgstr "新站点(_N)"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:38 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
 #, fuzzy
 msgid "Preferences"
 msgstr "首选项"
@@ -1631,17 +1564,16 @@ msgstr "导入(_I)"
 
 #: quodlibet/ext/events/bansheeimport.py:127
 msgid "Imports ratings and song statistics from Banshee."
-msgstr ""
+msgstr "从 Banshee 导入评分和播放统计"
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr ""
+msgstr "数据库路径(_D)"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
-#, fuzzy
 msgid "Start Import"
-msgstr "导入(_I)"
+msgstr "开始导入"
 
 #: quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
@@ -1742,45 +1674,40 @@ msgstr "现在不支持均衡器设置"
 #: quodlibet/ext/events/equalizer.py:156
 #, python-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: quodlibet/ext/events/equalizer.py:157
 #: quodlibet/ext/gstreamer/crossfeed.py:94
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #, python-format
 msgid "%d Hz"
-msgstr ""
+msgstr "%d Hz"
 
 #: quodlibet/ext/events/equalizer.py:198
 #: quodlibet/ext/gstreamer/crossfeed.py:113
 #, fuzzy, python-format
 msgid "%.1f dB"
-msgstr "%d 秒"
+msgstr "%d dB"
 
 #: quodlibet/ext/events/equalizer.py:272
-#, fuzzy
 msgid "Default presets"
-msgstr "默认评分"
+msgstr "默认预设"
 
 #: quodlibet/ext/events/equalizer.py:278 quodlibet/ext/events/equalizer.py:305
-#, fuzzy
 msgid "Select…"
-msgstr "选择(_S)"
+msgstr "选择…"
 
 #: quodlibet/ext/events/equalizer.py:293
-#, fuzzy
 msgid "_Reset EQ"
-msgstr "重置"
+msgstr "重置 EQ(_R)"
 
 #: quodlibet/ext/events/equalizer.py:299
-#, fuzzy
 msgid "Custom presets"
-msgstr "自定义(_C)"
+msgstr "自定义预设"
 
 #: quodlibet/ext/events/equalizer.py:315
-#, fuzzy
 msgid "_Delete selected"
-msgstr "删除选中的曲目"
+msgstr "删除选中的曲目(_D)"
 
 #: quodlibet/ext/events/equalizer.py:326
 msgid "Preset name for saving:"
@@ -1788,7 +1715,7 @@ msgstr ""
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:392
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -1831,7 +1758,7 @@ msgstr "不可见"
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
-msgstr ""
+msgstr "Gajim 状态消息"
 
 #: quodlibet/ext/events/gajim_status.py:39
 msgid ""
@@ -1845,9 +1772,8 @@ msgid "paused"
 msgstr "暂停"
 
 #: quodlibet/ext/events/gajim_status.py:145
-#, fuzzy
 msgid "Pattern:"
-msgstr "非法参数"
+msgstr "非法参数："
 
 #: quodlibet/ext/events/gajim_status.py:154
 msgid ""
@@ -1857,15 +1783,15 @@ msgstr ""
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
-msgstr ""
+msgstr "帐号："
 
 #: quodlibet/ext/events/gajim_status.py:161
 msgid "Add '[paused]'"
-msgstr ""
+msgstr "暂停时显示 [paused]"
 
 #: quodlibet/ext/events/gajim_status.py:164
 msgid "If checked, '[paused]' will be added to status message on pause"
-msgstr ""
+msgstr "选中后，暂停时 [paused] 将会显示在状态消息中"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
@@ -1972,15 +1898,15 @@ msgstr ""
 
 #: quodlibet/ext/events/mpdserver/__init__.py:76
 msgid "_Port:"
-msgstr ""
+msgstr "端口(_P)："
 
 #: quodlibet/ext/events/mpdserver/__init__.py:119
 msgid "Local _IP:"
-msgstr ""
+msgstr "本地 IP(_I)："
 
 #: quodlibet/ext/events/mpdserver/__init__.py:125
 msgid "P_assword:"
-msgstr ""
+msgstr "密码(_P)："
 
 #: quodlibet/ext/events/mpdserver/__init__.py:161
 #, fuzzy
@@ -2099,9 +2025,8 @@ msgid "Connection error"
 msgstr "位置"
 
 #: quodlibet/ext/events/musicbrainzsync.py:36
-#, fuzzy
 msgid "MusicBrainz Sync"
-msgstr "MusicBrainz 专辑 ID"
+msgstr "MusicBrainz 同步"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
 msgid "Syncs the rating of a song with MusicBrainz."
@@ -2109,9 +2034,8 @@ msgstr ""
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
-#, fuzzy
 msgid "User_name:"
-msgstr "名字(_N)："
+msgstr "用户名(_N)："
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:469
@@ -2149,7 +2073,7 @@ msgstr ""
 
 #: quodlibet/ext/events/notify.py:122
 msgid "_Show notification"
-msgstr ""
+msgstr "显示通知(_S)"
 
 #: quodlibet/ext/events/notify.py:140
 #, fuzzy
@@ -2174,11 +2098,11 @@ msgstr ""
 
 #: quodlibet/ext/events/notify.py:185
 msgid "Show \"_Next\" button"
-msgstr ""
+msgstr "显示 \"_Next\" 按钮"
 
 #: quodlibet/ext/events/notify.py:207
 msgid "Connection Error"
-msgstr ""
+msgstr "连接错误"
 
 #: quodlibet/ext/events/notify.py:208 quodlibet/ext/events/notify.py:368
 #: quodlibet/ext/events/notify.py:410
@@ -2250,31 +2174,28 @@ msgstr ""
 
 #. Translators: Other service
 #: quodlibet/ext/events/qlscrobbler.py:485
-#, fuzzy
 msgid "Other…"
-msgstr "其它(_O)："
+msgstr "其它服务(_O)…"
 
 #. verify data
 #: quodlibet/ext/events/qlscrobbler.py:523
 msgid "_Verify account data"
-msgstr ""
+msgstr "验证帐号数据(_V)"
 
 #: quodlibet/ext/events/qlscrobbler.py:536
 #: quodlibet/plugins/listenbrainz/__init__.py:497
-#, fuzzy
 msgid "_Artist pattern:"
-msgstr "歌手(_A)"
+msgstr "歌手(_A)："
 
 #: quodlibet/ext/events/qlscrobbler.py:536
 #: quodlibet/plugins/listenbrainz/__init__.py:497
-#, fuzzy
 msgid "_Title pattern:"
-msgstr "文件名(_F)"
+msgstr "文件名(_F)："
 
 #: quodlibet/ext/events/qlscrobbler.py:537
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
-msgstr ""
+msgstr "过滤(_F)"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:516
@@ -2326,36 +2247,35 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:37
 msgid "Rated higher"
-msgstr ""
+msgstr "评价高"
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Played more often"
-msgstr ""
+msgstr "播放次数多"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr ""
+msgstr "跳过次数多"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
-msgstr ""
+msgstr "最近播放过"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Started more recently"
-msgstr ""
+msgstr "最近开始播放"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Added more recently"
-msgstr ""
+msgstr "最近添加"
 
 #: quodlibet/ext/events/randomalbum.py:43
-#, fuzzy
 msgid "Longer albums"
-msgstr "专辑"
+msgstr "更长的专辑"
 
 #: quodlibet/ext/events/randomalbum.py:82
 msgid "seconds before starting next album"
-msgstr ""
+msgstr "开始下一张专辑前等待的秒数"
 
 #: quodlibet/ext/events/randomalbum.py:86
 #, fuzzy
@@ -2419,7 +2339,7 @@ msgstr ""
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr ""
+msgstr "切换进度条"
 
 #: quodlibet/ext/events/seekbar.py:123
 msgid ""
@@ -2443,9 +2363,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/seekpoints.py:108
-#, fuzzy
 msgid "Bookmark name for point A"
-msgstr "书签名"
+msgstr "A 的书签名"
 
 #: quodlibet/ext/events/seekpoints.py:109
 msgid ""
@@ -2454,9 +2373,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/seekpoints.py:124
-#, fuzzy
 msgid "Bookmark name for point B"
-msgstr "书签名"
+msgstr "B 的书签名"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid ""
@@ -2466,7 +2384,7 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
-msgstr ""
+msgstr "Squeezebox同步"
 
 #: quodlibet/ext/events/squeezebox_sync.py:30
 msgid ""
@@ -2476,15 +2394,17 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
-msgid "Shares configuration with %(plugin)s."
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
+"plugin</a>."
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:62
+#: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
 msgid "Error finding Squeezebox server"
 msgstr ""
 
-#: quodlibet/ext/events/squeezebox_sync.py:63
+#: quodlibet/ext/events/squeezebox_sync.py:62
 #: quodlibet/ext/playlist/export_to_squeezebox.py:91
 #, python-format
 msgid "Error finding %s. Please check settings"
@@ -2511,243 +2431,238 @@ msgid "Only Seekable Sources"
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:86
-#, fuzzy
 msgid "Plugin Options"
-msgstr "[选项]"
+msgstr "插件选项"
+
+#: quodlibet/ext/events/synchronize_to_device.py:52
+msgid "Pending copy"
+msgstr "复制操作暂停"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
-#, fuzzy
-msgid "Pending copy"
-msgstr "编码"
+msgid "Pending delete"
+msgstr "删除操作暂停"
 
 #: quodlibet/ext/events/synchronize_to_device.py:54
-#, fuzzy
-msgid "Pending delete"
-msgstr "录制日期"
-
-#: quodlibet/ext/events/synchronize_to_device.py:55
 #, fuzzy
 msgid "delete"
 msgstr "删除"
 
-#: quodlibet/ext/events/synchronize_to_device.py:56
+#: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
-msgstr ""
+msgstr "跳过"
+
+#: quodlibet/ext/events/synchronize_to_device.py:56
+msgid "DUPLICATE"
+msgstr "复制一份"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
-msgid "DUPLICATE"
-msgstr ""
+msgid "Synchronizing"
+msgstr "歌词同步"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
-#, fuzzy
-msgid "Synchronizing"
-msgstr "歌词"
-
-#: quodlibet/ext/events/synchronize_to_device.py:59
 #, fuzzy
 msgid "Deleting"
 msgstr "删除"
 
-#: quodlibet/ext/events/synchronize_to_device.py:60
+#: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
-msgstr ""
+msgstr "成功"
+
+#: quodlibet/ext/events/synchronize_to_device.py:60
+msgid "FAILURE"
+msgstr "失败"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
-msgid "FAILURE"
-msgstr ""
-
-#: quodlibet/ext/events/synchronize_to_device.py:62
 msgid "Skipped existing file"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:82
+#: quodlibet/ext/events/synchronize_to_device.py:81
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "未能设置这首歌的文件名。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:89
+#: quodlibet/ext/events/synchronize_to_device.py:87
+msgid "Synchronize to Device"
+msgstr "与设备同步"
+
+#: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:142
+#: quodlibet/ext/events/synchronize_to_device.py:141
 msgid "Synchronize the following saved searches:"
-msgstr ""
+msgstr "同步下列已保存的搜索："
 
-#: quodlibet/ext/events/synchronize_to_device.py:148
+#: quodlibet/ext/events/synchronize_to_device.py:147
 msgid "The absolute path to your export location"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:165
+#: quodlibet/ext/events/synchronize_to_device.py:164
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:169
+#: quodlibet/ext/events/synchronize_to_device.py:168
 msgid ""
 "For devices mounted with MTP, export to a local destination folder, then "
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:180
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:179
 msgid "Destination path:"
-msgstr "没有发现站点"
+msgstr "目标路径："
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
-#, fuzzy
 msgid "Path Patterns"
-msgstr "参数"
+msgstr "路径参数"
 
-#: quodlibet/ext/events/synchronize_to_device.py:186
+#: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
-#, fuzzy
 msgid "Edit saved patterns…"
-msgstr "编辑已保存的值..."
+msgstr "编辑已保存的值…"
 
-#: quodlibet/ext/events/synchronize_to_device.py:191
+#: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:197
+#: quodlibet/ext/events/synchronize_to_device.py:196
 #, fuzzy
 msgid "Export pattern:"
 msgstr "歌手(_A)"
 
 #. Stop preview button
-#: quodlibet/ext/events/synchronize_to_device.py:209
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:208
 msgid "Stop preview"
-msgstr "预览(_P)"
+msgstr "停止预览"
 
-#: quodlibet/ext/events/synchronize_to_device.py:228
+#: quodlibet/ext/events/synchronize_to_device.py:227
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:235
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:234
 msgid "Source File"
-msgstr "音乐文件"
+msgstr "源文件"
 
-#: quodlibet/ext/events/synchronize_to_device.py:244
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:243
 msgid "Export Path"
-msgstr "导出元数据"
+msgstr "导出路径"
 
-#: quodlibet/ext/events/synchronize_to_device.py:254
+#: quodlibet/ext/events/synchronize_to_device.py:253
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:258
+#: quodlibet/ext/events/synchronize_to_device.py:257
 msgid "Existing files in the destination path will be deleted!"
-msgstr ""
+msgstr "目标路径的原有文件将被删除！"
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:273
+#: quodlibet/ext/events/synchronize_to_device.py:272
 msgid "Start synchronization"
-msgstr ""
+msgstr "开始同步"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:281
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:280
 msgid "Stop synchronization"
-msgstr "组织"
+msgstr "停止同步"
 
-#: quodlibet/ext/events/synchronize_to_device.py:304
+#: quodlibet/ext/events/synchronize_to_device.py:303
 msgid "No saved searches yet, create some and come back!"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:386
+#: quodlibet/ext/events/synchronize_to_device.py:385
 #, fuzzy
 msgid "Choose destination path"
 msgstr "选择新的站点"
 
-#: quodlibet/ext/events/synchronize_to_device.py:538
+#: quodlibet/ext/events/synchronize_to_device.py:537
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:652
+#: quodlibet/ext/events/synchronize_to_device.py:651
 msgid "Starting synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:657
+#: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:673
+#: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:682
+#: quodlibet/ext/events/synchronize_to_device.py:681
 msgid "Stopping synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:684
+#: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Synchronization preview was stopped."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:687
+#: quodlibet/ext/events/synchronize_to_device.py:686
 msgid "Synchronization preview has finished."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:717
+#: quodlibet/ext/events/synchronize_to_device.py:716
 msgid "Stopped synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:721
+#: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:758
+#: quodlibet/ext/events/synchronize_to_device.py:757
 #, fuzzy
 msgid "Synchronization will:"
 msgstr "歌词"
 
-#: quodlibet/ext/events/synchronize_to_device.py:764
+#: quodlibet/ext/events/synchronize_to_device.py:763
 #, python-brace-format
-msgid "attempt to write {count} {file_str}"
-msgstr ""
+msgid "attempt to write {count} file"
+msgid_plural "attempt to write {count} files"
+msgstr[0] ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
 #, python-brace-format
-msgid "skip {count} duplicate {file_str}"
-msgstr ""
+msgid "skip {count} duplicate file"
+msgid_plural "skip {count} duplicate files"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:779
+#: quodlibet/ext/events/synchronize_to_device.py:780
 #, python-brace-format
-msgid "delete {count} {file_str}"
-msgstr ""
+msgid "delete {count} file"
+msgid_plural "delete {count} files"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:828
+#: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:829
+#: quodlibet/ext/events/synchronize_to_device.py:831
 msgid "Please specify the directory where songs should be exported."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:836
+#: quodlibet/ext/events/synchronize_to_device.py:838
 msgid "No export pattern provided"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:837
+#: quodlibet/ext/events/synchronize_to_device.py:839
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:847
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:849
 msgid "Export path is not absolute"
-msgstr "路径不是绝对的"
+msgstr "导出路径不是绝对路径"
 
-#: quodlibet/ext/events/synchronize_to_device.py:848
+#: quodlibet/ext/events/synchronize_to_device.py:850
 msgid ""
 "The pattern\n"
 "\n"
@@ -2757,33 +2672,31 @@ msgid ""
 "destination path by making sure it starts with / or ~/."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:870
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "No saved searches selected"
-msgstr "没有选中曲目。"
+msgstr "没有保存的搜索"
 
-#: quodlibet/ext/events/synchronize_to_device.py:871
+#: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "Please select at least one saved search."
-msgstr ""
+msgstr "请至少选中一个保存的搜索。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:880
-#, fuzzy
+#: quodlibet/ext/events/synchronize_to_device.py:882
 msgid "No songs in the selected saved searches"
-msgstr "没有选中曲目。"
+msgstr "保存的搜索中没有曲目"
 
-#: quodlibet/ext/events/synchronize_to_device.py:881
+#: quodlibet/ext/events/synchronize_to_device.py:883
 msgid "All selected saved searches are empty."
-msgstr ""
+msgstr "所有选中的已保存的搜索均为空。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:884
+#: quodlibet/ext/events/synchronize_to_device.py:886
 msgid "Found {} songs to synchronize"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:903
+#: quodlibet/ext/events/synchronize_to_device.py:905
 msgid "Mismatch between destination path and export pattern"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:905
+#: quodlibet/ext/events/synchronize_to_device.py:907
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2792,91 +2705,97 @@ msgid ""
 "{}"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:943
+#: quodlibet/ext/events/synchronize_to_device.py:945
 #, fuzzy
 msgid "Unable to sync"
 msgstr "无法保存曲目"
 
-#: quodlibet/ext/events/synchronize_to_device.py:944
+#: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:948
+#: quodlibet/ext/events/synchronize_to_device.py:950
 msgid "Starting song synchronization"
 msgstr ""
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:952
+#: quodlibet/ext/events/synchronize_to_device.py:954
 msgid "Synchronization in progress."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:964
+#: quodlibet/ext/events/synchronize_to_device.py:966
 msgid "Finished song synchronization"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:973
+#: quodlibet/ext/events/synchronize_to_device.py:975
 msgid "Stopping song synchronization"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:974
+#: quodlibet/ext/events/synchronize_to_device.py:976
 msgid "Synchronization was stopped."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:976
+#: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization has finished."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1009
+#: quodlibet/ext/events/synchronize_to_device.py:1011
 msgid "Stopped song synchronization"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1013
+#: quodlibet/ext/events/synchronize_to_device.py:1015
 msgid "A different plugin was selected - stop synchronization"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1016
+#: quodlibet/ext/events/synchronize_to_device.py:1018
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1085
+#: quodlibet/ext/events/synchronize_to_device.py:1087
 msgid "Removing \"{}\""
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1104
+#: quodlibet/ext/events/synchronize_to_device.py:1106
 #, fuzzy
 msgid "Synchronization has:"
 msgstr "歌词"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1112
+#: quodlibet/ext/events/synchronize_to_device.py:1114
 #, python-brace-format
-msgid "written {count}/{total} {file_str}"
-msgstr ""
+msgid "written {count}/{total} file"
+msgid_plural "written {count}/{total} files"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1119
+#: quodlibet/ext/events/synchronize_to_device.py:1121
 #, python-brace-format
-msgid "(skipped {count} existing {file_str})"
-msgstr ""
+msgid "(skipped {count} existing file)"
+msgid_plural "(skipped {count} existing files)"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1127
+#: quodlibet/ext/events/synchronize_to_device.py:1130
 #, python-brace-format
-msgid "skipped {count}/{total} duplicate {file_str}"
-msgstr ""
+msgid "skipped {count}/{total} duplicate file"
+msgid_plural "skipped {count}/{total} duplicate files"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1134
+#: quodlibet/ext/events/synchronize_to_device.py:1137
 #, python-brace-format
-msgid "deleted {count}/{total} {file_str}"
-msgstr ""
+msgid "deleted {count}/{total} file"
+msgid_plural "deleted {count}/{total} files"
+msgstr[0] ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1141
-#, python-brace-format
-msgid "failed to sync {count} {file_str}"
-msgstr ""
+#: quodlibet/ext/events/synchronize_to_device.py:1144
+#, fuzzy, python-brace-format
+msgid "failed to sync {count} file"
+msgid_plural "failed to sync {count} files"
+msgstr[0] "无法打开文件"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1147
+#: quodlibet/ext/events/synchronize_to_device.py:1151
 #, python-brace-format
-msgid "skipped {count} {file_str} synchronized previously"
-msgstr ""
+msgid "skipped {count} file synchronized previously"
+msgid_plural "skipped {count} files synchronized previously"
+msgstr[0] ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 #, fuzzy
@@ -2891,19 +2810,19 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:67
 msgid "Text:"
-msgstr ""
+msgstr "文字："
 
 #: quodlibet/ext/events/synchronizedlyrics.py:77
 msgid "Background:"
-msgstr ""
+msgstr "背景："
 
 #: quodlibet/ext/events/synchronizedlyrics.py:88
 msgid "Font"
-msgstr ""
+msgstr "字体"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:91
 msgid "Size (px):"
-msgstr ""
+msgstr "字号（px）："
 
 #: quodlibet/ext/events/telepathy_status.py:68
 msgid "Telepathy Status Messages"
@@ -2943,34 +2862,32 @@ msgstr ""
 
 #. Frame
 #: quodlibet/ext/events/telepathy_status.py:170
-#, fuzzy
 msgid "Status Patterns"
-msgstr "参数"
+msgstr "状态参数"
 
 #: quodlibet/ext/events/themeswitcher.py:25
 msgid "Theme Switcher"
-msgstr ""
+msgstr "主题切换"
 
 #: quodlibet/ext/events/themeswitcher.py:26
 msgid "Changes the active GTK+ theme."
-msgstr ""
+msgstr "切换所使用的 GTK+ 主题。"
 
 #: quodlibet/ext/events/themeswitcher.py:49
 msgid "_Theme:"
-msgstr ""
+msgstr "主题(_T)："
 
 #: quodlibet/ext/events/themeswitcher.py:54
 msgid "Default Theme"
-msgstr ""
+msgstr "默认主题"
 
 #: quodlibet/ext/events/themeswitcher.py:66
 msgid "Prefer dark theme version"
-msgstr ""
+msgstr "优先使用暗色版本"
 
 #: quodlibet/ext/events/thumbrating.py:91
-#, fuzzy
 msgid "Thumb Rating"
-msgstr "自动评分"
+msgstr "赞/踩式评分"
 
 #: quodlibet/ext/events/thumbrating.py:92
 msgid ""
@@ -2981,11 +2898,11 @@ msgstr ""
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
-msgstr ""
+msgstr "切换是否显示菜单栏"
 
 #: quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr ""
+msgstr "按 Alt 切换是否显示菜单栏。"
 
 #: quodlibet/ext/events/trayicon/appindicator.py:76
 #: quodlibet/ext/events/trayicon/prefs.py:106
@@ -3010,46 +2927,41 @@ msgstr ""
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
 #: quodlibet/qltk/quodlibetwindow.py:1142
-#, fuzzy
 msgid "_Play"
-msgstr "播放列表(_P)"
+msgstr "播放 (_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
 #: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
 #: quodlibet/qltk/wlw.py:50
-#, fuzzy
 msgid "P_ause"
-msgstr "播放器"
+msgstr "暂停(_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
 #: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:931
-#, fuzzy
 msgid "Pre_vious"
-msgstr "预览(_P)"
+msgstr "上一首(_V)"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
 #: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:941
 msgid "_Next"
-msgstr ""
+msgstr "下一首(_N)"
 
 #: quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
-msgstr ""
+msgstr "随机播放(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
 msgstr "重复(_R)"
 
 #: quodlibet/ext/events/trayicon/menu.py:86
-#, fuzzy
 msgid "Stop _After This Song"
-msgstr "这首曲目放完后就停止"
+msgstr "这首曲目放完后就停止(_A)"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:902
-#, fuzzy
 msgid "Open _Browser"
-msgstr "打开新的浏览器"
+msgstr "打开新的浏览器(_B)"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
 #: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
@@ -3062,14 +2974,13 @@ msgid "_Information"
 msgstr "信息(_I)"
 
 #: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:314
-#, fuzzy
 msgid "Play_lists"
-msgstr "播放列表"
+msgstr "播放列表(_L)"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
 #: quodlibet/qltk/quodlibetwindow.py:916
 msgid "_Quit"
-msgstr ""
+msgstr "退出(_Q)"
 
 #: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:74
 msgid "Behavior"
@@ -3085,41 +2996,40 @@ msgstr ""
 
 #: quodlibet/ext/events/trayicon/prefs.py:62
 msgid "Scroll _Wheel"
-msgstr ""
+msgstr "滚轮(_W)"
 
 #: quodlibet/ext/events/trayicon/prefs.py:92
-#, fuzzy
 msgid "Tooltip Display"
-msgstr "编辑显示"
+msgstr "工具条显示"
 
 #: quodlibet/ext/events/viewlyrics.py:25
-#, fuzzy
 msgid "View Lyrics"
-msgstr "歌词"
+msgstr "查看歌词"
 
 #: quodlibet/ext/events/viewlyrics.py:26
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
 #: quodlibet/ext/events/viewlyrics.py:87
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
-msgstr "没有找到该曲目的歌词"
+msgstr ""
+"没有找到以下曲目的歌词\n"
+"%s"
 
 #: quodlibet/ext/events/viewlyrics.py:117
-#, fuzzy
 msgid "No active song"
-msgstr "现在没有播放曲目"
+msgstr "没有正在播放的曲目"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
-msgstr ""
+msgstr "启动可视化"
 
 #: quodlibet/ext/events/visualisations.py:38
 msgid "Launch external visualisations."
-msgstr ""
+msgstr "启动外部可视化"
 
 #: quodlibet/ext/events/visualisations.py:55
 #, python-format
@@ -3128,9 +3038,8 @@ msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:57
 #: quodlibet/ext/songsmenu/fingerprint/search.py:44
-#, fuzzy
 msgid "Error"
-msgstr "显示错误(_E)"
+msgstr "错误"
 
 #: quodlibet/ext/events/visualisations.py:76
 msgid "Visualiser executable:"
@@ -3138,11 +3047,11 @@ msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
-msgstr ""
+msgstr "重新载入"
 
 #: quodlibet/ext/events/waveformseekbar.py:606
 msgid "Waveform Seek Bar"
-msgstr ""
+msgstr "波形进度条"
 
 #: quodlibet/ext/events/waveformseekbar.py:610
 msgid "∿ A seekbar in the shape of the waveform of the current song."
@@ -3150,45 +3059,43 @@ msgstr ""
 
 #: quodlibet/ext/events/waveformseekbar.py:679
 msgid "Override foreground color:"
-msgstr ""
+msgstr "覆盖前景颜色："
 
 #: quodlibet/ext/events/waveformseekbar.py:683
 msgid "Override hover color:"
-msgstr ""
+msgstr "覆盖悬停时的颜色："
 
 #: quodlibet/ext/events/waveformseekbar.py:687
 msgid "Override remaining color:"
-msgstr ""
+msgstr "覆盖其余颜色："
 
 #: quodlibet/ext/events/waveformseekbar.py:691
-#, fuzzy
 msgid "Show current position"
-msgstr "没有新的站点"
+msgstr "显示当前位置"
 
 #: quodlibet/ext/events/waveformseekbar.py:696
 msgid "Show time labels"
-msgstr ""
+msgstr "显示时间标签"
 
 #: quodlibet/ext/events/waveformseekbar.py:704
 msgid "Seek amount when scrolling (milliseconds):"
-msgstr ""
+msgstr "在进度条处滚动滚轮时前进/后退的毫秒数："
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
-msgstr ""
+msgstr "图片保存器"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
 msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:67
-#, fuzzy
 msgid "File:"
-msgstr "文件"
+msgstr "文件："
 
 #: quodlibet/ext/gstreamer/compressor.py:21
 msgid "_Threshold:"
-msgstr ""
+msgstr "阈值(_T)："
 
 #: quodlibet/ext/gstreamer/compressor.py:22
 msgid "Threshold until the filter is activated"
@@ -3196,11 +3103,11 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
-msgstr ""
+msgstr "比例(_R)："
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
-msgstr ""
+msgstr "压缩比"
 
 #: quodlibet/ext/gstreamer/compressor.py:75
 #: quodlibet/ext/gstreamer/karaoke.py:92
@@ -3211,7 +3118,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/compressor.py:106
 msgid "Audio Compressor"
-msgstr ""
+msgstr "音频压缩器"
 
 #: quodlibet/ext/gstreamer/compressor.py:107
 msgid ""
@@ -3220,14 +3127,12 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
-#, fuzzy
 msgid "_Preset:"
-msgstr "预览(_P)"
+msgstr "预设(_P)："
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
-#, fuzzy
 msgid "Filter preset"
-msgstr "以歌手过滤(_A)"
+msgstr "预设过滤"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "_Frequency cut:"
@@ -3247,7 +3152,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Default"
-msgstr ""
+msgstr "默认"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:27
 msgid "Closest to virtual speaker placement (30°, 3 meter)"
@@ -3270,14 +3175,12 @@ msgid "Close to Jan Meier's CORDA amplifiers (little change)"
 msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:32
-#, fuzzy
 msgid "Custom"
-msgstr "自定义(_C)"
+msgstr "自定义"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:32
-#, fuzzy
 msgid "Custom settings"
-msgstr "自定义(_C)"
+msgstr "自定义设置"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:153
 msgid "Crossfeed"
@@ -3290,38 +3193,36 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/gstreamer/karaoke.py:21
-#, fuzzy
 msgid "Filter _band:"
-msgstr "以流派过滤(_G)"
+msgstr "过滤频段(_B)："
 
 #: quodlibet/ext/gstreamer/karaoke.py:22
 msgid "The Frequency band of the filter"
-msgstr ""
+msgstr "所要过滤的频段"
 
 #: quodlibet/ext/gstreamer/karaoke.py:23
-#, fuzzy
 msgid "Filter _width:"
-msgstr "以歌手过滤(_A)"
+msgstr "过滤频段宽度(_W)："
 
 #: quodlibet/ext/gstreamer/karaoke.py:24
 msgid "The Frequency width of the filter"
-msgstr ""
+msgstr "所要过滤的频段宽度"
 
 #: quodlibet/ext/gstreamer/karaoke.py:25
 msgid "_Level:"
-msgstr ""
+msgstr "过滤强度(_L)："
 
 #: quodlibet/ext/gstreamer/karaoke.py:25
 msgid "Level of the effect"
-msgstr ""
+msgstr "去人声效果的强度"
 
 #: quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Karaoke"
-msgstr ""
+msgstr "去人声"
 
 #: quodlibet/ext/gstreamer/karaoke.py:107
 msgid "Removes main vocals from audio."
-msgstr ""
+msgstr "从音频中去除主要的人声。"
 
 #: quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
@@ -3337,43 +3238,37 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/pitch.py:23
 msgid "_Tempo:"
-msgstr ""
+msgstr "节奏(_T)："
 
 #: quodlibet/ext/gstreamer/pitch.py:24
 msgid "_Pitch:"
-msgstr ""
+msgstr "音高(_P)："
 
 #: quodlibet/ext/gstreamer/pitch.py:96
-#, fuzzy
 msgid "Audio Pitch / Speed"
-msgstr "音频设备：%s"
+msgstr "音频音调/速度"
 
 #: quodlibet/ext/gstreamer/pitch.py:97
-#, fuzzy
 msgid "Controls the pitch of an audio stream."
-msgstr "输入音频源的位置："
+msgstr "控制音频流的音调。"
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
 #: quodlibet/ext/playlist/export_to_folder.py:147
-#, fuzzy
 msgid "Export Playlist to Folder"
-msgstr "导入播放列表"
+msgstr "导出播放列表到文件夹"
 
 #: quodlibet/ext/playlist/export_to_folder.py:39
-#, fuzzy
 msgid "_Export"
-msgstr "导入(_I)"
+msgstr "导出(_E)"
 
 #: quodlibet/ext/playlist/export_to_folder.py:44
-#, fuzzy
 msgid "Destination folder:"
-msgstr "没有发现站点"
+msgstr "目标文件夹："
 
 #: quodlibet/ext/playlist/export_to_folder.py:59
-#, fuzzy
 msgid "Filename pattern:"
-msgstr "文件名(_F)"
+msgstr "文件名格式："
 
 #: quodlibet/ext/playlist/export_to_folder.py:100
 msgid "Exports a playlist by copying files to a folder."
@@ -3381,7 +3276,6 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
 #: quodlibet/ext/songsmenu/playlist.py:132
-#, fuzzy
 msgid "Unable to export playlist"
 msgstr "无法导出播放列表"
 
@@ -3390,14 +3284,13 @@ msgid "Ensure you have write access to the destination."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_folder.py:165
-#, fuzzy
 msgid "Default filename pattern:"
-msgstr "文件名(_F)"
+msgstr "默认文件名模式："
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
-msgstr ""
+msgstr "确定(_O)"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
 msgid ""
@@ -3406,9 +3299,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:131
-#, fuzzy
 msgid "Export to Sonos Playlist"
-msgstr "导出为播放列表"
+msgstr "导出到 Sonos 播放列表"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid ""
@@ -3425,9 +3317,8 @@ msgid "Error finding Sonos. Please check settings"
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
 msgid "Export to Sonos playlist"
-msgstr "导出为播放列表"
+msgstr "导出为 Sonos 播放列表"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3441,7 +3332,9 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
-msgid "Shares configuration with %(plugin)s"
+msgid ""
+"Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
+"plugin</a>."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
@@ -3457,9 +3350,8 @@ msgid "Export to Squeezebox playlist"
 msgstr ""
 
 #: quodlibet/ext/playlist/remove_duplicates.py:20
-#, fuzzy
 msgid "Remove Playlist Duplicates"
-msgstr "从播放列表里删除(_R)"
+msgstr "从播放列表里删除重复项"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:21
 msgid "Removes duplicate entries in a playlist."
@@ -3477,17 +3369,16 @@ msgid "The duplicate songs will be removed from the playlist '%s'."
 msgstr ""
 
 #: quodlibet/ext/playlist/shuffle.py:15
-#, fuzzy
 msgid "Shuffle Playlist"
-msgstr "新播放列表"
+msgstr "随机打乱播放列表顺序"
 
 #: quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
-msgstr ""
+msgstr "将播放列表的顺序随机打乱。"
 
 #: quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
-msgstr ""
+msgstr "跟随光标"
 
 #: quodlibet/ext/playorder/follow.py:20
 msgid ""
@@ -3497,34 +3388,31 @@ msgstr ""
 
 #: quodlibet/ext/playorder/follow.py:22
 msgid "Follow cursor"
-msgstr ""
+msgstr "跟随光标"
 
 #: quodlibet/ext/playorder/follow.py:23
 msgid "_Follow cursor"
-msgstr ""
+msgstr "跟随光标(_F)"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
-msgstr ""
+msgstr "使播放次数均匀"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
-msgstr ""
+msgstr "在随机播放中增加一个使播放更少的歌曲优先播放的模式。"
 
 #: quodlibet/ext/playorder/playcounteq.py:25
-#, fuzzy
 msgid "Prefer less played"
-msgstr "最近一次播放"
+msgstr "播放更少优先"
 
 #: quodlibet/ext/playorder/playcounteq.py:26
-#, fuzzy
 msgid "Prefer _less played"
-msgstr "最近一次播放"
+msgstr "播放更少优先(_L)"
 
 #: quodlibet/ext/playorder/queue.py:18
-#, fuzzy
 msgid "Queue Only"
-msgstr "队列(_Q)"
+msgstr "仅队列"
 
 #: quodlibet/ext/playorder/queue.py:20
 msgid ""
@@ -3535,28 +3423,24 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/playorder/queue.py:24
-#, fuzzy
 msgid "Queue only"
-msgstr "队列(_Q)"
+msgstr "仅队列"
 
 #: quodlibet/ext/playorder/queue.py:25
-#, fuzzy
 msgid "_Queue only"
-msgstr "队列(_Q)"
+msgstr "仅队列"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
-#, fuzzy
 msgid "Reverse"
-msgstr "从来没有"
+msgstr "倒序播放"
 
 #: quodlibet/ext/playorder/reverse.py:16
 msgid "Adds a shuffle mode that reverses the play order of songs."
-msgstr ""
+msgstr "在随机播放中增加一个颠倒播放顺序的模式。"
 
 #: quodlibet/ext/playorder/reverse.py:19
-#, fuzzy
 msgid "Re_verse"
-msgstr "从来没有"
+msgstr "倒序播放(_V)"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
@@ -3585,19 +3469,16 @@ msgid "Waiting to start new group…"
 msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:146
-#, fuzzy
 msgid "Grouping tag:"
-msgstr "组合"
+msgstr "将标签分组："
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:150
-#, fuzzy
 msgid "Tag to group songs by"
-msgstr "无法复制曲目"
+msgstr "用来分组的标签"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:152
-#, fuzzy
 msgid "Filter tag:"
-msgstr "以流派过滤(_G)"
+msgstr "过滤标签："
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:157
 msgid ""
@@ -3608,22 +3489,20 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:162
-#, fuzzy
 msgid "Delay:"
-msgstr "延时"
+msgstr "延时："
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:168
 msgid "Time delay in seconds before starting next group"
 msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:184
-#, fuzzy
 msgid "Reset to defaults"
-msgstr "还原为默认"
+msgstr "重置为默认"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr ""
+msgstr "跳过标记不喜欢的歌曲"
 
 #: quodlibet/ext/playorder/skip_disliked.py:26
 msgid ""
@@ -3637,27 +3516,25 @@ msgstr ""
 
 #: quodlibet/ext/playorder/skip_disliked.py:30
 msgid "Skip _disliked tracks"
-msgstr ""
+msgstr "跳过标记不喜欢的歌曲"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
-msgstr ""
+msgstr "重复播放每首歌曲"
 
 #: quodlibet/ext/playorder/track_repeat.py:30
 msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
-msgstr ""
+msgstr "在随机播放中增加一个按原来顺序播放，但每首歌曲重复固定次数的模式。"
 
 #: quodlibet/ext/playorder/track_repeat.py:32
-#, fuzzy
 msgid "Repeat each track"
-msgstr "重复当前曲目"
+msgstr "重复播放每首歌曲"
 
 #: quodlibet/ext/playorder/track_repeat.py:33
-#, fuzzy
 msgid "Repeat _each track"
-msgstr "重复当前曲目"
+msgstr "重复播放每首歌曲(_E)"
 
 #: quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
@@ -3671,6 +3548,10 @@ msgstr ""
 msgid "Chooses the query to match based on a condition query."
 msgstr ""
 
+#: quodlibet/ext/query/conditional.py:18
+msgid "@(if: condition-query, then-query, else-query)"
+msgstr ""
+
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
 msgstr ""
@@ -3679,10 +3560,9 @@ msgstr ""
 msgid "Matches songs without the given tag."
 msgstr ""
 
-#: quodlibet/ext/query/missing.py:35
-#, fuzzy
+#: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
-msgstr "非法标签"
+msgstr "包括空白标签"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
@@ -3692,14 +3572,31 @@ msgstr ""
 msgid "🐍Use Python expressions in queries."
 msgstr ""
 
+#: quodlibet/ext/query/pythonexpression.py:21
+msgid "@(python: expression)"
+msgstr "@(python: expression)"
+
+#: quodlibet/ext/query/pythonexpression.py:23
+msgid ""
+"The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.\n"
+"\n"
+"<tt>_ts</tt> is a (real number) timestamp at start of query.\n"
+"\n"
+"Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
+"<tt>Random</tt> (==<tt>random.Random</tt>) too."
+msgstr ""
+
 #: quodlibet/ext/query/savedsearch.py:20
-#, fuzzy
 msgid "Include Saved Search"
-msgstr "已保存值"
+msgstr "包括已保存的搜索"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
 msgstr ""
+
+#: quodlibet/ext/query/savedsearch.py:24
+msgid "@(saved: search-name)"
+msgstr "@(saved: search-name)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -3720,22 +3617,20 @@ msgid "Port:"
 msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:125
-#, fuzzy
 msgid "Username:"
-msgstr "重命名(_R)"
+msgstr "用户名："
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Password:"
-msgstr ""
+msgstr "密码："
 
 #: quodlibet/ext/_shared/squeezebox/base.py:138
 msgid "Library directory the server connects to"
 msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:140
-#, fuzzy
 msgid "Library path:"
-msgstr "库"
+msgstr "库的目录："
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:151
@@ -3776,9 +3671,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:333
-#, fuzzy
 msgid "Fit image to _window"
-msgstr "隐藏主窗口"
+msgstr "图片大小适应窗口(_W)"
 
 #: quodlibet/ext/songsmenu/albumart.py:339
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
@@ -3794,18 +3688,17 @@ msgid "_Edit image after saving"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:352
-#, fuzzy
 msgid "File_name:"
-msgstr "文件名"
+msgstr "文件名(_N)："
 
 #: quodlibet/ext/songsmenu/albumart.py:468
 msgid "Saving failed"
-msgstr ""
+msgstr "保存失败"
 
 #: quodlibet/ext/songsmenu/albumart.py:469
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to save \"%s\"."
-msgstr "无法保存曲目"
+msgstr "无法保存\"%s\"。"
 
 #: quodlibet/ext/songsmenu/albumart.py:569
 #, python-format
@@ -3813,49 +3706,45 @@ msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:626
-#, fuzzy
 msgid "Album Art Downloader"
-msgstr "专辑列表"
+msgstr "专辑封面下载器"
 
 #: quodlibet/ext/songsmenu/albumart.py:679
 #, python-format
 msgid "from %(source)s"
-msgstr ""
+msgstr "从 %(source)s"
 
 #: quodlibet/ext/songsmenu/albumart.py:682
 #, python-format
 msgid "Resolution: %s"
-msgstr ""
+msgstr "分辨率：%s"
 
 #: quodlibet/ext/songsmenu/albumart.py:685
-#, fuzzy, python-format
+#, python-format
 msgid "Size: %s"
-msgstr "大小"
+msgstr "大小：%s"
 
 #: quodlibet/ext/songsmenu/albumart.py:731
 msgid "Per engine 'at best' results limit"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:741
-#, fuzzy
 msgid "_Search"
-msgstr "搜索(_S)："
+msgstr "搜索(_S)"
 
 #: quodlibet/ext/songsmenu/albumart.py:823
 #: quodlibet/ext/songsmenu/brainz/widgets.py:453
-#, fuzzy
 msgid "Searching…"
-msgstr "搜索"
+msgstr "搜索中…"
 
 #: quodlibet/ext/songsmenu/albumart.py:890
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
-msgstr ""
+msgstr "完成"
 
 #: quodlibet/ext/songsmenu/albumart.py:1012
-#, fuzzy
 msgid "Download Album Art"
-msgstr "专辑列表"
+msgstr "下载专辑封面"
 
 #: quodlibet/ext/songsmenu/albumart.py:1013
 msgid "Downloads album covers from various websites."
@@ -3876,28 +3765,24 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
-#, fuzzy
 msgid "Go to Bookmark"
-msgstr "编辑书签(_E)..."
+msgstr "转到书签"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
-#, fuzzy
 msgid "_Edit Bookmarks…"
-msgstr "编辑书签(_E)..."
+msgstr "编辑书签(_E)…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:73
-#, fuzzy
 msgid "No Bookmarks"
-msgstr "书签"
+msgstr "无书签"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
-#, fuzzy
 msgid "MusicBrainz Lookup"
-msgstr "MusicBrainz 专辑 ID"
+msgstr "MusicBrainz 查询"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
@@ -3930,9 +3815,8 @@ msgstr "文件名"
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:559
-#, fuzzy
 msgid "Disc"
-msgstr "唱片(_D)"
+msgstr "唱片"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
@@ -3943,29 +3827,24 @@ msgstr "音轨"
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:385
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
-#, fuzzy
 msgid "Title"
 msgstr "标题"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:133
-#, fuzzy
 msgid "Artist"
-msgstr "歌手(_A)"
+msgstr "歌手"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:352
-#, fuzzy
 msgid "MusicBrainz lookup"
-msgstr "MusicBrainz 专辑 ID"
+msgstr "MusicBrainz 查询"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:375
-#, fuzzy
 msgid "_Query:"
-msgstr "查询"
+msgstr "查询(_Q)："
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:378
-#, fuzzy
 msgid "S_earch"
-msgstr "搜索"
+msgstr "搜索(_E)"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:391
 msgid "Results <i>(drag to reorder)</i>"
@@ -3986,9 +3865,8 @@ msgid "Loading result…"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:477
-#, fuzzy
 msgid "No results found."
-msgstr "没有找到插件。"
+msgstr "没有找到结果。"
 
 #: quodlibet/ext/songsmenu/console.py:41
 msgid "Python Console"
@@ -4022,37 +3900,32 @@ msgid "Your current working directory is:"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:559
-#, fuzzy
 msgid "Completion"
-msgstr "连接"
+msgstr "完成"
 
 #: quodlibet/ext/songsmenu/cover_download.py:53
-#, fuzzy
 msgid "Download Cover Art"
-msgstr "专辑列表"
+msgstr "下载专辑封面"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
 msgid "Downloads high-quality album covers using cover plugins."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:158
-#, fuzzy
 msgid "Classic"
-msgstr "Classical 古典"
+msgstr "古典"
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
-#, fuzzy
 msgid "Large"
-msgstr "大厅"
+msgstr "大"
 
 #: quodlibet/ext/songsmenu/cover_download.py:160
 msgid "HD"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:161
-#, fuzzy
 msgid "Full HD"
-msgstr "突出低音"
+msgstr "全高清"
 
 #: quodlibet/ext/songsmenu/cover_download.py:162
 msgid "WQXGA"
@@ -4063,9 +3936,8 @@ msgid "4K UHD"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:169
-#, fuzzy
 msgid "Cover Art Download"
-msgstr "专辑列表"
+msgstr "封面图下载"
 
 #: quodlibet/ext/songsmenu/cover_download.py:229
 #, python-format
@@ -4083,9 +3955,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy
 msgid "No covers found"
-msgstr "没有匹配的歌词"
+msgstr "没有找到封面"
 
 #: quodlibet/ext/songsmenu/cover_download.py:318
 #, python-brace-format
@@ -4093,9 +3964,8 @@ msgid "{size} ✕ {size} px"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:331
-#, fuzzy
 msgid "Preview size"
-msgstr "预览(_P)"
+msgstr "预览尺寸"
 
 #: quodlibet/ext/songsmenu/cover_download.py:340
 msgid "Save destination"
@@ -4116,18 +3986,16 @@ msgid "Command"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:44
-#, fuzzy
 msgid "name"
-msgstr "重命名(_R)"
+msgstr "名称"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:44
 msgid "The name of this command"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:46
-#, fuzzy
 msgid "command"
-msgstr "文件名"
+msgstr "命令"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:46
 msgid "The shell command syntax to run"
@@ -4146,9 +4014,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:55
-#, fuzzy
 msgid "pattern"
-msgstr "非法参数"
+msgstr "模式"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
@@ -4176,18 +4043,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
-#, fuzzy
 msgid "reverse"
-msgstr "从来没有"
+msgstr "颠倒"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "If set, the argument list will be reversed"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:95
-#, fuzzy
 msgid "Input value"
-msgstr "非法的值"
+msgstr "输入值"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:96
 #, python-format
@@ -4195,9 +4060,8 @@ msgid "Value for %s?"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:145
-#, fuzzy
 msgid "Custom Commands"
-msgstr "自定义(_C)"
+msgstr "自定义命令"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:146
 msgid ""
@@ -4212,9 +4076,9 @@ msgid "Edit Custom Commands"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:304
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to run custom command %s"
-msgstr "无法复制曲目"
+msgstr "无法运行自定义命令 %s"
 
 #: quodlibet/ext/songsmenu/duplicates.py:285
 #, python-format
@@ -4232,9 +4096,8 @@ msgid "Duplicate key expression is '%s'"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:358
-#, fuzzy
 msgid "Duplicates Browser"
-msgstr "关掉浏览器"
+msgstr "重复浏览器"
 
 #: quodlibet/ext/songsmenu/duplicates.py:359
 msgid "Finds and displays similarly tagged versions of songs."
@@ -4255,19 +4118,16 @@ msgid "Duplicate Key"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:408
-#, fuzzy
 msgid "Remove _Whitespace"
-msgstr "删除站点(_R)"
+msgstr "删除空白(_W)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:409
-#, fuzzy
 msgid "Remove _Diacritics"
-msgstr "删除站点(_R)"
+msgstr "删除变音符号(_D)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:410
-#, fuzzy
 msgid "Remove _Punctuation"
-msgstr "删除站点(_R)"
+msgstr "删除标点(_P)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:411
 msgid "Case _Insensitive"
@@ -4280,9 +4140,8 @@ msgstr ""
 #. Create a dialog.
 #: quodlibet/ext/songsmenu/editplaycount.py:19
 #: quodlibet/ext/songsmenu/editplaycount.py:43
-#, fuzzy
 msgid "Edit Playcount"
-msgstr "编辑显示"
+msgstr "编辑播放次数"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
 msgid ""
@@ -4305,24 +4164,20 @@ msgid "Skip Count"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/embedded.py:25
-#, fuzzy
 msgid "Edit Embedded Images"
-msgstr "删除站点(_R)"
+msgstr "删除内嵌图片"
 
 #: quodlibet/ext/songsmenu/embedded.py:26
-#, fuzzy
 msgid "Removes or replaces embedded images."
-msgstr "删除站点(_R)"
+msgstr "删除或替换内嵌图片"
 
 #: quodlibet/ext/songsmenu/embedded.py:80
-#, fuzzy
 msgid "_Remove all Images"
-msgstr "删除站点(_R)"
+msgstr "删除所有图片(_R)"
 
 #: quodlibet/ext/songsmenu/embedded.py:85
-#, fuzzy
 msgid "_Embed Current Image"
-msgstr "删除站点(_R)"
+msgstr "嵌入当前图片(_E)"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -4337,19 +4192,16 @@ msgid "Please give your desired rating on a scale from 0.0 to 1.0"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/filterall.py:80
-#, fuzzy
 msgid "Filter on Any Tag"
-msgstr "以标签值过滤"
+msgstr "根据任意标签过滤"
 
 #: quodlibet/ext/songsmenu/filterall.py:81
-#, fuzzy
 msgid "Creates a search query based on tags of the selected songs."
-msgstr "GStreamer 无法导入选定的曲目。"
+msgstr "根据所选歌曲的标签创建搜索查询。"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:19
-#, fuzzy
 msgid "Filter on Directory"
-msgstr "以流派过滤(_G)"
+msgstr "根据目录过滤"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
@@ -4829,28 +4681,32 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, python-format
 msgid ""
-"Analyzes and updates %(rg_link)s information, using GStreamer. Results are "
-"grouped by album."
+"Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
+"using GStreamer. Results are grouped by album."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:611
+#: quodlibet/ext/songsmenu/replaygain.py:573
+msgid "https://en.wikipedia.org/wiki/ReplayGain"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:612
+#: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:614
+#: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/replaygain.py:631
+#: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
 msgstr ""
 
 #. Server settings Frame
-#: quodlibet/ext/songsmenu/replaygain.py:643
+#: quodlibet/ext/songsmenu/replaygain.py:642
 #, fuzzy
 msgid "Existing Tags"
 msgstr "已存在标签"
@@ -5335,16 +5191,24 @@ msgstr ""
 msgid "Use JACK for playback if available"
 msgstr ""
 
+#: quodlibet/player/gstbe/prefs.py:77
+msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
+msgstr ""
+
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
 msgstr ""
 
-#: quodlibet/player/gstbe/util.py:145
+#: quodlibet/player/gstbe/prefs.py:81
+msgid "Tells `jackaudiosink` to auto-connect"
+msgstr ""
+
+#: quodlibet/player/gstbe/util.py:148
 #, fuzzy, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
 msgstr "没有发现站点"
 
-#: quodlibet/player/gstbe/util.py:164
+#: quodlibet/player/gstbe/util.py:167
 msgid "Invalid GStreamer output pipeline"
 msgstr ""
 
@@ -5424,7 +5288,7 @@ msgstr[0] ""
 msgid "_Run Plugin"
 msgstr "插件(_P)"
 
-#: quodlibet/plugins/query.py:65
+#: quodlibet/plugins/query.py:73
 msgid "Usage"
 msgstr ""
 
@@ -5562,9 +5426,8 @@ msgid "Tag expression"
 msgstr "标签表达式"
 
 #: quodlibet/qltk/data_editors.py:371
-#, fuzzy
 msgid "Tag expression e.g. people:real or ~album~year"
-msgstr "标签表达式 比如  people:real or ~album~year"
+msgstr "标签表达式，比如  people:real or ~album~year"
 
 #: quodlibet/qltk/data_editors.py:372
 #, fuzzy
@@ -5584,34 +5447,33 @@ msgstr "选中的曲目将从曲库中移除，对应的音频文件将被删除
 
 #: quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
-msgstr "选中的文件将被删除"
+msgstr "选中的文件将被删除。"
 
 #: quodlibet/qltk/delete.py:76
 #, python-format
 msgid "Delete %(file_count)d file permanently?"
 msgid_plural "Delete %(file_count)d files permanently?"
-msgstr[0] ""
+msgstr[0] "永久删除这 %(file_count)d 个文件？"
 
 #: quodlibet/qltk/delete.py:91
-#, fuzzy
 msgid "_Delete Files"
-msgstr "删除文件"
+msgstr "删除文件(_D)"
 
 #: quodlibet/qltk/delete.py:106
 msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
-msgstr "选中的曲目将从曲库中移除，对应的音频文件将被移到回收站"
+msgstr "选中的曲目将从曲库中移除，对应的音频文件将被移到回收站。"
 
 #: quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
-msgstr "选中的文件将被移到回收站"
+msgstr "选中的文件将被移到回收站。"
 
 #: quodlibet/qltk/delete.py:120
 #, python-format
 msgid "Move %(file_count)d file to the trash?"
 msgid_plural "Move %(file_count)d files to the trash?"
-msgstr[0] ""
+msgstr[0] "移动 %(file_count)d 个文件到回收站？"
 
 #: quodlibet/qltk/delete.py:134 quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
@@ -5623,9 +5485,8 @@ msgid "Moving %(current)d/%(total)d."
 msgstr "正在移动 %d/%d"
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
-#, fuzzy
 msgid "Unable to move to trash"
-msgstr "无法保存库"
+msgstr "无法移动到回收站"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 #, fuzzy
@@ -5669,7 +5530,7 @@ msgstr ""
 
 #: quodlibet/qltk/edittags.py:245
 msgid "Split _Version out of Title"
-msgstr ""
+msgstr "从标题分离版本(_V)"
 
 #: quodlibet/qltk/edittags.py:302
 msgid "Split Arranger out of Ar_tist"
@@ -5719,9 +5580,8 @@ msgid "_Save"
 msgstr ""
 
 #: quodlibet/qltk/edittags.py:703
-#, fuzzy
 msgid "_Configure"
-msgstr "继续(_C)"
+msgstr "配置(_C)"
 
 #: quodlibet/qltk/edittags.py:718
 #, fuzzy
@@ -5789,9 +5649,7 @@ msgstr "标签可能不准确"
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
-msgstr ""
-"%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的"
-"修改操作无法生效。 "
+msgstr "%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的修改操作无法生效。"
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -5806,9 +5664,8 @@ msgstr ""
 "保存<b>%s</b>失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
 
 #: quodlibet/qltk/_editutils.py:146
-#, fuzzy
 msgid "_More options…"
-msgstr "更多选项(_M)..."
+msgstr "更多选项(_M)…"
 
 #: quodlibet/qltk/entry.py:80
 msgid "_Undo"
@@ -6539,7 +6396,7 @@ msgstr "扫描目录(_D)"
 msgid "Hidden Songs"
 msgstr "隐藏曲目"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:347
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:350
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7308,16 +7165,16 @@ msgstr ""
 "\n"
 "请访问官网下载 <a href='%(url)s'>website</a>"
 
-#: quodlibet/util/collection.py:342
+#: quodlibet/util/collection.py:345
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "导入播放列表"
 
-#: quodlibet/util/collection.py:440
+#: quodlibet/util/collection.py:443
 msgid "Playlists must have a name"
 msgstr "播放列表必须有名称"
 
-#: quodlibet/util/collection.py:644
+#: quodlibet/util/collection.py:647
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "名为 %s 的播放列表已经存在"
@@ -8210,10 +8067,6 @@ msgstr ""
 #, fuzzy
 #~ msgid "_Remove rating"
 #~ msgstr "删除站点(_R)"
-
-#, fuzzy
-#~ msgid "Unable to open input files"
-#~ msgstr "无法打开文件"
 
 #, fuzzy
 #~ msgid "Invalid audio backend"
