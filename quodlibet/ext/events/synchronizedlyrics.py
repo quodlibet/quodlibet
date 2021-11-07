@@ -35,7 +35,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     SYNC_PERIOD = 10000
 
     DEFAULT_BGCOLOR = '#343428282C2C'
-    DEFAULT_HLCOLOR = '#343428282C2C'
+    DEFAULT_HLCOLOR = '#FFFFF000000'
     DEFAULT_TXTCOLOR = '#FFFFFFFFFFF'
     DEFAULT_FONTSIZE = 25
 
@@ -123,7 +123,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return v[:3] + v[5:7] + v[9:11]
 
     def _get_highlight_color(self):
-        v = self.config_get(self.CFG_BGCOLOR_KEY, self.DEFAULT_BGCOLOR)
+        v = self.config_get(self.CFG_HLCOLOR_KEY, self.DEFAULT_HLCOLOR)
         return v[:3] + v[5:7] + v[9:11]
 
     def _get_font_size(self):
@@ -311,7 +311,6 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
                     # if the length of the line is equal to the part that
                     # should be first highlighted, then it won't be highlighted
-                    print(cur_line[3], cur_line[1])
                     if cur_line[3] != len(cur_line[1]):
                         iterator = zip(cur_line[2::2], cur_line[3::2])
                         for timestamp, hl_idx in iterator:
