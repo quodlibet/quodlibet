@@ -10,7 +10,6 @@ from time import sleep
 import pytest as pytest
 
 from quodlibet import config
-from quodlibet.formats import MusicFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
@@ -160,6 +159,7 @@ class TWatchedFileLibrary(TLibrary):
             assert path.exists()
             assert str(path) in self.library, f"{path} should be in [{self.fns}] now"
         assert not path.exists(), "Failed to delete test file"
+        sleep(1)
         # Deletion now
         run_gtk_loop()
         assert self.removed, "Nothing was automatically removed"
