@@ -156,21 +156,16 @@ class TWatchedFileLibrary(TLibrary):
         with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
             path = Path(normalize_path(fn)).resolve()
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
-            sleep(0.5)
-            assert path.exists()
-            af = MusicFile(str(path))
-            af.sanitize()
             run_gtk_loop()
             assert path.exists()
             assert str(path) in self.library, f"{path} should be in [{self.fns}] now"
-        sleep(0.5)
-        assert not path.exists()
+        assert not path.exists(), "Failed to delete test file"
         # Deletion now
         run_gtk_loop()
         assert self.removed, "Nothing was automatically removed"
-        assert len(self.added) == 1
-
-        assert path in {Path(af("~filename")) for af in self.removed}
+        assert self.added, "Nothing was automatically added"
+        assert {Path(af("~filename")) for af in self.added} == {path}
+        assert {Path(af("~filename")) for af in self.removed} == {path}
         assert str(path) not in self.library, f"{path} shouldn't be in the library now"
 
     def test_watched_adding(self):
