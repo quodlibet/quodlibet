@@ -6,7 +6,7 @@ Playlists
 The Playlist Browser
 --------------------
 
-.. image:: ../images/PlaylistBrowser.png
+.. image:: ../images/playlist-browser.png
     :scale: 50%
     :align: right
 
