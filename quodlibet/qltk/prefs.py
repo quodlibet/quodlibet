@@ -741,7 +741,7 @@ class PreferencesWindow(UniqueWindow):
             for child in self.get_children():
                 child.show_all()
 
-    def __init__(self, parent, open_page=None, all_pages=True):
+    def __init__(self, parent, open_page=None):
         if self.is_not_unique():
             return
         super().__init__()
@@ -751,9 +751,8 @@ class PreferencesWindow(UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.__notebook = notebook = qltk.Notebook()
-        pages = [self.Tagging]
-        if all_pages:
-            pages = [self.SongList, self.Browsers, self.Player, self.Library] + pages
+        pages = [self.SongList, self.Browsers, self.Player, self.Library,
+                 self.Tagging]
         for Page in pages:
             page = Page()
             page.show()
