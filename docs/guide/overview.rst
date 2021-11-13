@@ -11,10 +11,10 @@ When you start up Quod Libet for the first time, and have configured your
 library, it should look something a little like the screenshot here, which
 is show with annotations. These are all explained below.
 
-.. figure:: images/main_overview.png
+.. figure:: images/main-overview.png
     :align: right
-    :width: 400px
-    :figwidth: 400px
+    :width: 350px
+    :figwidth: 350px
 
     A basic view of Quod Libet, and its GUI elements
 
@@ -117,7 +117,7 @@ For more information, see the :ref:`Queue Guide <Queue>`.
 More Browsers
 -------------
 
-.. image:: images/browser_window.png
+.. image:: images/browser-window.png
     :width: 350px
     :align: right
 
@@ -168,7 +168,7 @@ Plugins
 -------
 
 .. image:: images/plugins.png
-    :width: 450px
+    :width: 600px
 
 
 The image above shows the plugin manager, from where you can enable /

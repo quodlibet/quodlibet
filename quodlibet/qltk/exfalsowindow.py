@@ -30,7 +30,7 @@ from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
 from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
-    Button, SymbolicIconImage, MenuItem
+    SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
@@ -274,28 +274,10 @@ class PreferencesWindow(QLPreferencesWindow):
     def __init__(self, parent):
         if self.is_not_unique():
             return
-        super().__init__(parent)
+        super().__init__(parent, all_pages=False)
+        # Seems nicer when there's only one page
+        self.set_resizable(True)
         self.set_title(_("Ex Falso Preferences"))
-        self.set_border_width(12)
-        self.set_resizable(False)
-        self.set_transient_for(qltk.get_top_parent(parent))
-
-        tagging = self.Tagging()
-        f = qltk.Frame(_("Tag Editing"), child=(tagging.tag_editing_vbox()))
-
-        close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        connect_obj(close, 'clicked', lambda x: x.destroy(), self)
-        button_box = Gtk.HButtonBox()
-        button_box.set_layout(Gtk.ButtonBoxStyle.END)
-        button_box.pack_start(close, True, True, 0)
-
-        main_vbox = Gtk.VBox(spacing=12)
-        main_vbox.pack_start(f, True, True, 0)
-        if not self.has_close_button():
-            main_vbox.pack_start(button_box, False, True, 0)
-        self.add(main_vbox)
-
-        connect_obj(self, 'destroy', PreferencesWindow.__destroy, self)
         self.get_child().show_all()
 
     def __destroy(self):
