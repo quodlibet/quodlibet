@@ -16,6 +16,7 @@ from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import (parse_m3u,
                                                parse_pls, _name_for)
+from quodlibet.library.file import FileLibrary
 from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
