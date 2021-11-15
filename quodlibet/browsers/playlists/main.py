@@ -89,12 +89,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for child in self.get_children():
             child.show_all()
 
-        self._ids = [
-            self.pl_lib.connect('removed', self.__removed),
-            self.pl_lib.connect('added', self.__added),
-            self.pl_lib.connect('changed', self.__changed),
-        ]
-        print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
+        if hasattr(self, "pl_lib"):
+            self._ids = [
+                self.pl_lib.connect('removed', self.__removed),
+                self.pl_lib.connect('added', self.__added),
+                self.pl_lib.connect('changed', self.__changed),
+            ]
+            print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
+        else:
+            self._ids = []
         self.connect("destroy", self._destroy)
 
     def _destroy(self, _browser):
