@@ -368,6 +368,10 @@ class TPlaylistsBrowser(TestCase):
         imported = pls[-1]
         self.failUnlessEqual(fns(imported.songs), fns(SONGS))
 
+    def test_no_pl_lib(self):
+        """Probably not possible in real runtime situations"""
+        assert PlaylistsBrowser(FileLibrary("no-playlists"))
+
     @staticmethod
     def a_delete_event():
         ev = Gdk.Event()
