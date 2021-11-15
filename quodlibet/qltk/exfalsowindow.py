@@ -274,7 +274,7 @@ class PreferencesWindow(QLPreferencesWindow):
     def __init__(self, parent):
         if self.is_not_unique():
             return
-        super().__init__(parent)
+        super(QLPreferencesWindow, self).__init__()
         self.set_title(_("Ex Falso Preferences"))
         self.set_border_width(12)
         self.set_resizable(False)
