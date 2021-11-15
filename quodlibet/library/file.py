@@ -6,7 +6,6 @@
 import os
 import time
 from pathlib import Path
-from random import randint
 from typing import Generator, Set, Iterable, Optional, Dict, Tuple
 
 from gi.repository import Gio, GLib, GObject
@@ -321,11 +320,10 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         self._masked.pop(mount_point, {})
 
-    def move_root(self, old_root: str, new_root: fsnative, files_exist: bool = True) \
-            -> Generator[None, None, None]:
+    def move_root(self, old_root: str, new_root: fsnative) \
+        -> Generator[None, None, None]:
         """
         Move the root for all songs in a given (scan) directory.
-        Source files needn't exist (e.g. already moved) if `files_exist=False`.
 
         We avoid dereferencing the destination, to allow users things like:
           1. Symlink new_path -> old_root
@@ -336,17 +334,14 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         """
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
-        if files_exist and not old_path.is_dir():
+        if not old_path.is_dir():
             raise ValueError(f"Source {old_path!r} is not a directory")
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
-        print_d(f"Checking entire library for {old_path}", self._name)
+        print_d(f"{self._name}: checking entire library for {old_path!r}")
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
-        # Log some randomised examples of things
-        offset = randint(0, total // 8)
-        repeat = max(1, total // 4)
         if not total:
             return
         with Task(_("Library"), _("Moving library files")) as task:
@@ -361,16 +356,14 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
                         print_w(f"Substitution failed for {key!r}")
-                    if files_exist:
-                        # We need to update ~filename and ~mountpoint
-                        song.sanitize()
-                        song.write()
+                    # We need to update ~filename and ~mountpoint
+                    song.sanitize()
+                    song.write()
                     if self.move_song(song, new_key):
                         changed.add(song)
                     else:
                         missing.add(song)
-                elif files_exist and not ((i + offset) % repeat):
-                    # Only log when we're doing a "real" root move
+                elif not (i % 1000):
                     print_d(f"Not moved, for example: {key!r}")
                 if not i % 100:
                     yield
