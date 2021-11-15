@@ -95,6 +95,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             items = {item for item in items if item in self}
             if not items:
                 return
+            print_d(f"Changing {len(items)} items directly.", self._name)
             self._changed(items)
 
     def _changed(self, items: Collection[V]):
@@ -185,7 +186,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         self.emit('added', items)
         return items
 
-    def remove(self, items: Iterable[V]) -> Iterable[V]:
+    def remove(self, items: Iterable[V]) -> Set[V]:
         """Remove items. This causes a 'removed' signal.
 
         Return the sequence of items actually removed.

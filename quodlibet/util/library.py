@@ -1,5 +1,5 @@
-# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna,
-#     Christoph Reiter, Nick Boultbee
+# Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna, Christoph Reiter
+#           2013-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -105,6 +105,7 @@ def scan_library(library, force):
     Args:
         library (Library)
         force (bool): if True, reload all existing valid items
+    TODO: consider storing scan_dirs in Library instead of passing around always
     """
 
     paths = get_scan_dirs()
