@@ -135,24 +135,26 @@ class TFileLibrary(TLibrary):
 
 class TWatchedFileLibrary(TLibrary):
     Fake = FakeSongFile
+    temp_dir = expanduser(normalize_path(_TEMP_DIR, True))
+
+    @classmethod
+    def setUpClass(cls):
+        init_fake_app()
+        assert Path(cls.temp_dir).is_dir()
+        config.set("library", "watch", True)
+        assert not get_exclude_dirs()
 
     def setUp(self):
-        init_fake_app()
-        self.temp_dir = expanduser(normalize_path(_TEMP_DIR, True))
-        assert Path(self.temp_dir).is_dir()
-        config.set("library", "watch", True)
         super().setUp()
-        assert not get_exclude_dirs()
         # Replace global one with this one
         librarian = app.library.librarian
         app.library.destroy()
         self.library.librarian = librarian
         app.library = self.library
 
-    def tearDown(self):
+    @classmethod
+    def tearDownClass(self):
         destroy_fake_app()
-        assert not self.library._monitors, "Didn't remove all monitors between tests"
-        super().tearDown()
 
     def Library(self):
         lib = SongFileLibrary(watch_dirs=[self.temp_dir])
