@@ -159,7 +159,8 @@ class TWatchedFileLibrary(TLibrary):
     def test_monitors(self):
         monitors = self.library._monitors
         assert monitors
-        assert monitors[Path(_TEMP_DIR)], f"Not monitoring the test dir {_TEMP_DIR}"
+        temp_dir_path = Path(normalize_path(_TEMP_DIR))
+        assert temp_dir_path in monitors, f"Not monitoring {_TEMP_DIR} (but {monitors})"
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_adding_removing(self):
