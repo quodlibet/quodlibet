@@ -185,11 +185,12 @@ class TWatchedFileLibrary(TLibrary):
         assert str(path) not in self.library, f"{path} shouldn't be in the library now"
 
     def test_watched_adding(self):
-        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as path:
+        with temp_filename(dir=self.temp_dir, suffix=".mp3") as path:
             # else funky stuff on Windows...
-            path = Path(normalize_path(path)).resolve()
+            path = Path(path).resolve()
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
             run_gtk_loop()
+            assert self.library, f"Nothing in library despite {self.library._monitors}"
             assert str(path) in self.library, (f"{path!s} should have been added to "
                                                f"library [{self.fns}]")
             assert str(path) in {af("~filename") for af in self.added}
