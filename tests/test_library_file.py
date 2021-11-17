@@ -12,6 +12,7 @@ import pytest as pytest
 from quodlibet import config, app
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
+from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
 from senf import expanduser
 from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
@@ -141,12 +142,12 @@ class TWatchedFileLibrary(TLibrary):
         assert Path(self.temp_dir).is_dir()
         config.set("library", "watch", True)
         super().setUp()
+        assert not get_exclude_dirs()
         # Replace global one with this one
         librarian = app.library.librarian
         app.library.destroy()
         self.library.librarian = librarian
         app.library = self.library
-
 
     def tearDown(self):
         destroy_fake_app()
