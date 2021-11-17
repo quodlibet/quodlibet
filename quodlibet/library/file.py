@@ -534,14 +534,14 @@ class WatchedFileLibraryMixin(FileLibrary):
 
     def start_watching(self, paths: Iterable[fsnative]):
         print_d(f"Setting up file watches for {type(self)} on {paths}...")
-        exclude_dirs = [expanduser(e) for e in get_exclude_dirs() if e]
+        exclude_dirs = [e for e in get_exclude_dirs() if e]
 
         def watching_producer():
             # TODO: integrate this better with scanning.
             for fullpath in paths:
                 desc = _("Adding watches for %s") % (fsn2text(unexpand(fullpath)))
                 with Task(_("Library"), desc) as task:
-                    normalised = Path(normalize_path(fullpath, True))
+                    normalised = Path(normalize_path(fullpath, True)).expanduser()
                     if any(Path(exclude) in normalised.parents
                            for exclude in exclude_dirs):
                         continue
