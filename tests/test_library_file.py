@@ -9,7 +9,7 @@ from time import sleep
 
 import pytest as pytest
 
-from quodlibet import config
+from quodlibet import config, app
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
@@ -138,10 +138,16 @@ class TWatchedFileLibrary(TLibrary):
         init_fake_app()
         config.set("library", "watch", True)
         super().setUp()
+        # Replace global one with this one
+        librarian = app.library.librarian
+        app.library.destroy()
+        self.library.librarian = librarian
+        app.library = self.library
         assert _TEMP_DIR
 
     def tearDown(self):
         destroy_fake_app()
+        assert not self.library._monitors, "Didn't remove all monitors between tests"
         super().tearDown()
 
     def Library(self):
@@ -150,7 +156,7 @@ class TWatchedFileLibrary(TLibrary):
         run_gtk_loop()
         return lib
 
-    def test_watches(self):
+    def test_monitors(self):
         monitors = self.library._monitors
         assert monitors
         assert monitors[Path(_TEMP_DIR)], f"Not monitoring the test dir {_TEMP_DIR}"
