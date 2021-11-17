@@ -13,6 +13,7 @@ from quodlibet import config, app
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.path import normalize_path
+from senf import expanduser
 from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
                    init_fake_app, destroy_fake_app)
 from tests.helper import temp_filename
@@ -136,6 +137,8 @@ class TWatchedFileLibrary(TLibrary):
 
     def setUp(self):
         init_fake_app()
+        self.temp_dir = expanduser(normalize_path(_TEMP_DIR, True))
+        assert Path(self.temp_dir).is_dir()
         config.set("library", "watch", True)
         super().setUp()
         # Replace global one with this one
@@ -143,7 +146,7 @@ class TWatchedFileLibrary(TLibrary):
         app.library.destroy()
         self.library.librarian = librarian
         app.library = self.library
-        assert _TEMP_DIR
+
 
     def tearDown(self):
         destroy_fake_app()
@@ -151,21 +154,21 @@ class TWatchedFileLibrary(TLibrary):
         super().tearDown()
 
     def Library(self):
-        lib = SongFileLibrary(watch_dirs=[_TEMP_DIR])
+        lib = SongFileLibrary(watch_dirs=[self.temp_dir])
         # Setup needs copools
         run_gtk_loop()
         return lib
 
     def test_monitors(self):
         monitors = self.library._monitors
-        assert monitors
-        temp_dir_path = Path(normalize_path(_TEMP_DIR))
-        assert temp_dir_path in monitors, f"Not monitoring {_TEMP_DIR} (but {monitors})"
+        assert monitors, "Not monitoring any dirs"
+        temp_path = Path(self.temp_dir)
+        assert temp_path in monitors, f"Not monitoring {temp_path} (but {monitors})"
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_adding_removing(self):
-        with temp_filename(dir=_TEMP_DIR, suffix=".mp3") as fn:
-            path = Path(normalize_path(fn)).resolve()
+        with temp_filename(dir=self.temp_dir, suffix=".mp3") as fn:
+            path = Path(fn).resolve()
             shutil.copy(get_data_path("silence-44-s.mp3"), path)
             run_gtk_loop()
             assert path.exists()
@@ -192,8 +195,8 @@ class TWatchedFileLibrary(TLibrary):
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving(self):
-        with temp_filename(dir=_TEMP_DIR, suffix=".flac") as fn:
-            path = Path(normalize_path(fn)).resolve()
+        with temp_filename(dir=self.temp_dir, suffix=".flac") as fn:
+            path = Path(fn).resolve()
             shutil.copy(get_data_path("silence-44-s.flac"), path)
             sleep(0.5)
             assert path.exists()
