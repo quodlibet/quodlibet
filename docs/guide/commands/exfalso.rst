@@ -47,7 +47,7 @@ or missing, in addition to their values. A common pattern might be
 
 ``<tracknumber>. <title~version>``
 
-You can use a '|' to only text when a tag is present:
+You can use a '|' to only insert text when a tag is present:
 
 ``<tracknumber|<tracknumber>. ><title~version>``
 
