@@ -172,12 +172,13 @@ class TWatchedFileLibrary(TLibrary):
     def test_watched_adding_removing(self):
         with temp_filename(dir=self.temp_dir, suffix=".mp3") as fn:
             path = Path(fn).resolve()
-            shutil.copy(get_data_path("silence-44-s.mp3"), path)
+            shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
+            sleep(0.5)
             run_gtk_loop()
             assert path.exists()
             assert str(path) in self.library, f"{path} should be in [{self.fns}] now"
         assert not path.exists(), "Failed to delete test file"
-        sleep(1)
+        sleep(0.5)
         # Deletion now
         run_gtk_loop()
         assert self.removed, "Nothing was automatically removed"
@@ -190,7 +191,7 @@ class TWatchedFileLibrary(TLibrary):
         with temp_filename(dir=self.temp_dir, suffix=".mp3") as path:
             # else funky stuff on Windows...
             path = Path(path).resolve()
-            shutil.copy(get_data_path("silence-44-s.mp3"), path)
+            shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
             run_gtk_loop()
             assert self.library, f"Nothing in library despite {self.library._monitors}"
             assert str(path) in self.library, (f"{path!s} should have been added to "
@@ -201,7 +202,7 @@ class TWatchedFileLibrary(TLibrary):
     def test_watched_moving(self):
         with temp_filename(dir=self.temp_dir, suffix=".flac") as fn:
             path = Path(fn).resolve()
-            shutil.copy(get_data_path("silence-44-s.flac"), path)
+            shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
             sleep(0.5)
             assert path.exists()
             run_gtk_loop()
