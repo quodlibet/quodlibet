@@ -56,8 +56,11 @@ class PreferencesButton(AlbumPreferencesButton):
             (_("_Title"), self.__compare_title),
             (_("_Artist"), self.__compare_artist),
             (_("_Date"), self.__compare_date),
+            (_("_Date Added"), self.__compare_date_added),
+            (_("_Original Date"), self.__compare_original_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
+            (_("_Playcount"), self.__compare_avgplaycount),
         ]
 
         menu = Gtk.Menu()
