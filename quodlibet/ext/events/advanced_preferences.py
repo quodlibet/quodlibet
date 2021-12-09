@@ -1,5 +1,5 @@
 # Copyright 2015    Christoph Reiter
-#           2016-20 Nick Boultbee
+#           2016-21 Nick Boultbee
 #           2019    Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -167,7 +167,12 @@ class AdvancedPreferences(EventPlugin):
             boolean_config(
                 "settings", "plugins_window_on_top",
                 "Plugin window on top: ",
-                "Toggles whether the plugin window appears on top of others")
+                "Toggles whether the plugin window appears on top of others"),
+            int_config(
+                "autosave", "queue_interval",
+                "Queue autosave interval: ",
+                ("Longest time between play queue auto-saves, or 0 for disabled. "
+                 "(restart required"))
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):

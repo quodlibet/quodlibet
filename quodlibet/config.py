@@ -245,6 +245,12 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "validator_colorise": "0.4"
     },
 
+    "autosave": {
+        # Maximum time, in seconds, before saving the play queue to disk.
+        # Zero to disable periodic saving (batched instead)
+        "queue_interval": "60"
+    },
+
     "rename": {
         "spaces": "false",
         "windows": "true",
