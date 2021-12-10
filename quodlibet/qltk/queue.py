@@ -434,10 +434,9 @@ class PlayQueue(SongList):
     def _write(self, _widget: Gtk.Widget, model: QueueModel, force=False):
         diff = time.time() - self._updated_time
         if not self._should_write(force, diff):
-            print_d(f"Not writing now: {diff:.1f}s ({self._pending} queued)")
             self._pending += 1
             return
-        print_d(f"Saving play queue of {self._pending}...")
+        print_d(f"Saving play queue after {diff:.1f}s ({self._pending} update(s))")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:
