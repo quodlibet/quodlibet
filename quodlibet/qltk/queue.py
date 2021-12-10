@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2017 Nick Boultbee
+#           2016-2021 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,12 +8,17 @@
 # (at your option) any later version.
 
 import os
+import time
+from typing import Optional
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, Gdk, Pango, GLib
+
+from quodlibet.library.base import Library
+from quodlibet.player._base import BasePlayer
 from senf import bytes2fsn, fsn2bytes
 
 import quodlibet
-from quodlibet import ngettext, _
+from quodlibet import ngettext, _, print_e, print_w, print_d
 from quodlibet import config
 from quodlibet import util
 from quodlibet import qltk
@@ -86,7 +91,8 @@ class QueueExpander(Gtk.Expander):
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.queue = PlayQueue(library, player)
+        save_interval_secs = config.getint("autosave", "queue_interval")
+        self.queue = PlayQueue(library, player, save_interval_secs)
         self.queue.props.expand = True
         sw.add(self.queue)
 
@@ -344,9 +350,15 @@ class PlayQueue(SongList):
 
     sortable = False
     _activated = False
+    _MAX_PENDING = 5
+    """Maximum number of queue items to leave unpersisted (batching)"""
 
-    def __init__(self, library, player):
+    def __init__(self, library: Library, player: BasePlayer,
+                 autosave_interval_secs: Optional[int] = None):
         super().__init__(library, player, model_cls=QueueModel)
+        self._updated_time = time.time()
+        self.autosave_interval = autosave_interval_secs
+        self._pending = 0
         keep_song = config.getboolean("memory", "queue_keep_songs", False)
         if keep_song:
             self.set_first_column_type(CurrentColumn)
@@ -359,10 +371,28 @@ class PlayQueue(SongList):
 
         self.connect('popup-menu', self.__popup, library)
         self.enable_drop()
-        self.connect('destroy', self.__write, self.model)
+
+        def write(*args, **kwargs):
+            self._write(self, self.model)
+            return True
+
+        self.connect('destroy', self.__destroy)
+        if self.autosave_interval:
+            self._tid = GLib.timeout_add(self.autosave_interval * 1000, write)
+        else:
+            self._tid = None
+        connect_after_destroy(self.model, "row-inserted", write)
+        connect_after_destroy(self.model, "row-deleted", write)
         self.__fill(library)
 
         self.connect('key-press-event', self.__delete_key_pressed)
+
+    def __destroy(self, widget):
+        self._write(widget, self.model, force=True)
+        if self._tid:
+            GLib.source_remove(self._tid)
+            self._tid = None
+            print_d("Stopped autosave")
 
     def __delete_key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
@@ -401,19 +431,37 @@ class PlayQueue(SongList):
         for song in songs:
             self.model.append([song])
 
-    def __write(self, widget, model):
+    def _write(self, _widget: Gtk.Widget, model: QueueModel, force=False):
+        diff = time.time() - self._updated_time
+        if not self._should_write(force, diff):
+            self._pending += 1
+            return
+        print_d(f"Saving play queue after {diff:.1f}s ({self._pending} update(s))")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:
                 for filename in filenames:
                     try:
                         line = fsn2bytes(filename, "utf-8")
-                    except ValueError:
-                        print_exc()
+                    except ValueError as e:
+                        print_w(f"Ignoring queue save error ({e})")
                         continue
                     f.write(line + b"\n")
-        except EnvironmentError:
-            print_exc()
+        except EnvironmentError as e:
+            print_e(f"Error saving queue ({e})")
+        self._updated_time = time.time()
+        self._pending = 0
+
+    def _should_write(self, force: bool, diff: float):
+        """Whether it's appropriate to write (flush)
+        Either it's disabled by config, in which case we use batching,
+        or we respect the last write time and the delta
+        """
+        if force:
+            return True
+        if self.autosave_interval:
+            return diff > self.autosave_interval
+        return self._pending >= self._MAX_PENDING
 
     def __popup(self, widget, library):
         songs = self.get_selected_songs()

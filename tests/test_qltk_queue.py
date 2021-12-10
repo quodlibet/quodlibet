@@ -4,9 +4,12 @@
 # (at your option) any later version.
 
 import os
+from time import sleep
+from typing import List
 
 from quodlibet.order.reorder import OrderShuffle
-from tests import TestCase
+from senf import bytes2fsn
+from tests import TestCase, run_gtk_loop
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import DUMMY_SONG
@@ -17,25 +20,53 @@ import quodlibet.config
 
 
 class TPlayQueue(TestCase):
-
-    def test_save_restore(self):
-        player = NullPlayer()
-        lib = SongLibrary()
-        lib.librarian = None
-        lib.add([DUMMY_SONG])
-
+    def setUp(self):
+        self.player = NullPlayer()
+        self.lib = SongLibrary()
+        self.lib.librarian = None
+        self.lib.add([DUMMY_SONG])
         try:
             os.unlink(QUEUE)
         except OSError:
             pass
 
-        q = PlayQueue(lib, player)
+    def test_save_restore(self):
+        q = PlayQueue(self.lib, self.player)
         q.get_model().append(row=[DUMMY_SONG])
         q.destroy()
 
-        q = PlayQueue(lib, player)
+        q = PlayQueue(self.lib, self.player)
         model = q.get_model()
         assert model.values()[0] is DUMMY_SONG
+
+    def test_autosave(self):
+        q = PlayQueue(self.lib, self.player, autosave_interval_secs=1)
+        assert q._tid
+        q.get_model().append(row=[DUMMY_SONG])
+        sleep(1.1)
+        run_gtk_loop()
+        assert self.get_queue() == [DUMMY_SONG("~filename")]
+        q.destroy()
+        # Doesn't prove much but still
+        assert not q._tid
+
+    def get_queue(self) -> List[str]:
+        try:
+            with open(QUEUE, "rb") as f:
+                return [bytes2fsn(line.strip(), "utf-8") for line in f.readlines()]
+        except FileNotFoundError:
+            return []
+
+    def test_autosave_batched(self):
+        q = PlayQueue(self.lib, self.player, autosave_interval_secs=None)
+        model = q.get_model()
+        model.append(row=[DUMMY_SONG])
+        run_gtk_loop()
+        assert not self.get_queue()
+        for i in range(PlayQueue._MAX_PENDING + 1):
+            model.append(row=[DUMMY_SONG])
+        run_gtk_loop()
+        assert len(self.get_queue()) == PlayQueue._MAX_PENDING + 1
 
 
 class TQueueExpander(TestCase):
