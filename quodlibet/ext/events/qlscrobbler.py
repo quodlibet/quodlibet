@@ -31,7 +31,7 @@ from quodlibet.plugins import PluginConfig
 from quodlibet.qltk.entry import ValidatingEntry, UndoEntry
 from quodlibet.qltk.msg import Message
 from quodlibet.qltk import Icons
-from quodlibet.util.dprint import print_d
+from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 from quodlibet.util.urllib import urlopen, UrllibError
 from quodlibet.errorreport import errorhook
