@@ -65,7 +65,7 @@ msgstr "排序依据(_B) …"
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:87
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "首选项(_P)"
@@ -158,10 +158,9 @@ msgstr "专辑显示"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/exfalsowindow.py:286
-#: quodlibet/qltk/pluginwin.py:99 quodlibet/qltk/pluginwin.py:441
-#: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
-#: quodlibet/update.py:149
+#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:99
+#: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "关闭(_C)"
 
@@ -213,7 +212,7 @@ msgid "_Refresh"
 msgstr "刷新(_F)"
 
 #: quodlibet/browsers/audiofeeds.py:438
-#: quodlibet/browsers/playlists/main.py:484
+#: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
@@ -291,7 +290,7 @@ msgstr "自定义(_C)"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "删除 (_R)"
@@ -677,7 +676,7 @@ msgid "Equal pane width"
 msgstr "面板分栏等宽"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
 msgstr "播放列表"
 
@@ -685,41 +684,41 @@ msgstr "播放列表"
 msgid "_Playlists"
 msgstr "播放列表(_P)"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "从播放列表里删除(_R)"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "新建"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "导入"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "无法导入播放列表"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet 只能导入 M3U/M3U8 和 PLS 格式的播放列表。"
 
-#: quodlibet/browsers/playlists/main.py:491
+#: quodlibet/browsers/playlists/main.py:494
 msgid "_Rename"
 msgstr "重命名(_R)"
 
-#: quodlibet/browsers/playlists/main.py:589
+#: quodlibet/browsers/playlists/main.py:592
 msgid "Unable to rename playlist"
 msgstr "无法重命名播放列表"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "Import Playlist"
 msgstr "导入播放列表"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "_Import"
 msgstr "导入(_I)"
 
@@ -1107,7 +1106,9 @@ msgid ""
 "You can ignore this error, but the application might be unstable until it is "
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
-msgstr "您可以忽略此错误，但应用程序在重新启动之前可能会不稳定。提交错误报告只需要几秒钟，但对我们帮助很大。"
+msgstr ""
+"您可以忽略此错误，但应用程序在重新启动之前可能会不稳定。提交错误报告只需要几"
+"秒钟，但对我们帮助很大。"
 
 #: quodlibet/errorreport/ui.py:69 quodlibet/errorreport/ui.py:85
 msgid "Submit Error Report"
@@ -1131,8 +1132,8 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
-"有关错误和您的系统的各种细节将发送给第三方在线服务(<a href='https://www.sentry.io'>www.sentry.io</a>) "
-"发送前，您可以在下方查看这些数据。"
+"有关错误和您的系统的各种细节将发送给第三方在线服务(<a href='https://www."
+"sentry.io'>www.sentry.io</a>) 发送前，您可以在下方查看这些数据。"
 
 #: quodlibet/errorreport/ui.py:95
 msgid ""
@@ -1270,7 +1271,7 @@ msgstr "高级选项"
 msgid "Allow editing of advanced config settings."
 msgstr "允许编辑高级配置设置。"
 
-#: quodlibet/ext/events/advanced_preferences.py:195
+#: quodlibet/ext/events/advanced_preferences.py:200
 msgid "I know what I'm doing"
 msgstr "我知道我接下来要做什么"
 
@@ -1405,7 +1406,9 @@ msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
-msgstr "每当一首歌完整地播放完后，插件将会写入标签到文件。快进到下一曲的次数不会被储存在文件中，避免了不必要的写入。"
+msgstr ""
+"每当一首歌完整地播放完后，插件将会写入标签到文件。快进到下一曲的次数不会被储"
+"存在文件中，避免了不必要的写入。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
@@ -1417,7 +1420,9 @@ msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
-msgstr "该插件会在播放或跳过一首歌曲时写入标签到文件中。如果你想确保因不喜欢而跳过的歌曲的评分被写到文件中，这会很有用。"
+msgstr ""
+"该插件会在播放或跳过一首歌曲时写入标签到文件中。如果你想确保因不喜欢而跳过的"
+"歌曲的评分被写到文件中，这会很有用。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
@@ -1520,7 +1525,9 @@ msgstr "自动评分"
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
-msgstr "当歌曲被播放或跳过时，自动给歌曲评分。此功能使用了 Brain Nelson 的 'accelerated' 算法。"
+msgstr ""
+"当歌曲被播放或跳过时，自动给歌曲评分。此功能使用了 Brain Nelson 的 "
+"'accelerated' 算法。"
 
 #: quodlibet/ext/events/bansheeimport.py:106
 msgid "Specified Banshee database is malformed or missing"
@@ -4738,7 +4745,7 @@ msgstr ""
 #: quodlibet/library/file.py:226 quodlibet/library/file.py:245
 #: quodlibet/library/file.py:348 quodlibet/library/file.py:403
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:123
+#: quodlibet/util/library.py:124
 msgid "Library"
 msgstr "库"
 
@@ -4985,7 +4992,7 @@ msgstr "顺序(_I)"
 msgid "Random"
 msgstr "随机"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:147
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
 msgid "_Random"
 msgstr "随机(_R)"
 
@@ -5521,7 +5528,9 @@ msgstr "标签可能不准确"
 msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
-msgstr "%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的修改操作无法生效。"
+msgstr ""
+"%(file-name)s 在程序运行时发生了改变。不更新曲库就直接保存，可能会导致其他的"
+"修改操作无法生效。"
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -5532,7 +5541,8 @@ msgstr "无法保存曲目"
 msgid ""
 "Saving %(file-name)s failed. The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
-msgstr "保存 %(file-name)s 失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
+msgstr ""
+"保存 %(file-name)s 失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
 
 #: quodlibet/qltk/_editutils.py:146
 msgid "_More options…"
@@ -5565,13 +5575,9 @@ msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] ""
 
-#: quodlibet/qltk/exfalsowindow.py:278
+#: quodlibet/qltk/exfalsowindow.py:280
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso 首选项"
-
-#: quodlibet/qltk/exfalsowindow.py:284 quodlibet/qltk/prefs.py:674
-msgid "Tag Editing"
-msgstr "标签编辑"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
@@ -6176,7 +6182,9 @@ msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
 "characters."
-msgstr "在标记编辑器中从标记中提取子标记时使用的一组分隔符。此列表由空格分隔，每个条目只能包含两个字符。"
+msgstr ""
+"在标记编辑器中从标记中提取子标记时使用的一组分隔符。此列表由空格分隔，每个条"
+"目只能包含两个字符。"
 
 #: quodlibet/qltk/prefs.py:639
 msgid "Split _tag on:"
@@ -6189,6 +6197,10 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:671
 msgid "Tags"
 msgstr "标签"
+
+#: quodlibet/qltk/prefs.py:674
+msgid "Tag Editing"
+msgstr "标签编辑"
 
 #: quodlibet/qltk/prefs.py:692
 msgid "Updating for new ratings"
@@ -6232,43 +6244,43 @@ msgstr[0] ""
 msgid "Properties"
 msgstr "属性"
 
-#: quodlibet/qltk/queue.py:104
+#: quodlibet/qltk/queue.py:110
 msgid "_Queue"
 msgstr "队列(_Q)"
 
-#: quodlibet/qltk/queue.py:124
+#: quodlibet/qltk/queue.py:130
 msgid "Ephemeral"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:125
+#: quodlibet/qltk/queue.py:131
 msgid "Remove songs from the queue after playing them"
 msgstr "播放后删除队列里的所有歌曲"
 
-#: quodlibet/qltk/queue.py:133
+#: quodlibet/qltk/queue.py:139
 msgid "Persistent"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:134
+#: quodlibet/qltk/queue.py:140
 msgid "Keep songs in the queue after playing them"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:142
+#: quodlibet/qltk/queue.py:148
 msgid "Mode"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:153
+#: quodlibet/qltk/queue.py:159
 msgid "Stop at End"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:157
+#: quodlibet/qltk/queue.py:163
 msgid "_Clear Queue"
 msgstr "清除队列(_C)"
 
-#: quodlibet/qltk/queue.py:178
+#: quodlibet/qltk/queue.py:184
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:290
+#: quodlibet/qltk/queue.py:296
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -7453,7 +7465,8 @@ msgid ""
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
-"Ex Falso 是一款和 Quod Libet 使用了相同标签编辑界面的标签编辑器。它允许你在显示和编辑任何您想要的受支持的音频格式文件的标签。"
+"Ex Falso 是一款和 Quod Libet 使用了相同标签编辑界面的标签编辑器。它允许你在显"
+"示和编辑任何您想要的受支持的音频格式文件的标签。"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
@@ -7461,8 +7474,8 @@ msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
-"支持的文件格式包括 Ogg Vorbis/Opus/Speex/FLAC、MP3、FLAC、MOD/XM/"
-"IT、Musepack、Wavpack、MPEG-4 AAC、Monkeys Audio、WMA、SPC、MIDI。"
+"支持的文件格式包括 Ogg Vorbis/Opus/Speex/FLAC、MP3、FLAC、MOD/XM/IT、"
+"Musepack、Wavpack、MPEG-4 AAC、Monkeys Audio、WMA、SPC、MIDI。"
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
 msgid ""
