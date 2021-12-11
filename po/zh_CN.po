@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
 "PO-Revision-Date: 2021-11-02 09:39+0000\n"
-"Last-Translator: Eric <spice2wolf@gmail.com>\n"
+"Last-Translator: JER-ry <jer-public@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -273,7 +273,7 @@ msgstr "未知 %s"
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
 msgid "Multiple %s Values"
-msgstr ""
+msgstr "多个 %s 值"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
@@ -643,11 +643,11 @@ msgstr "所有"
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "小"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "宽"
 
 #: quodlibet/browsers/paned/prefs.py:43
 msgid "Columnar"
@@ -666,11 +666,11 @@ msgstr "分栏面板窗口设置"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "列布局"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "列内容"
 
 #: quodlibet/browsers/paned/prefs.py:242
 msgid "Equal pane width"
@@ -731,7 +731,7 @@ msgstr "新播放列表(_N)…"
 #, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
-msgstr[0] ""
+msgstr[0] "你想对这 %d 首歌做什么？"
 
 #: quodlibet/browsers/playlists/menu.py:82
 #, python-format
@@ -838,7 +838,7 @@ msgstr "退出 %s"
 
 #: quodlibet/browsers/soundcloud/main.py:457
 msgid "Enter code…"
-msgstr ""
+msgstr "输入代码…"
 
 #: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
@@ -983,7 +983,7 @@ msgstr "在正在播放的曲目中定位"
 
 #: quodlibet/cli.py:124
 msgid "[+|-][HH:]MM:SS"
-msgstr ""
+msgstr "[+|-][HH:]MM:SS"
 
 #: quodlibet/cli.py:125
 msgid "Set or toggle shuffle mode"
@@ -1107,7 +1107,7 @@ msgid ""
 "You can ignore this error, but the application might be unstable until it is "
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
-msgstr ""
+msgstr "您可以忽略此错误，但应用程序在重新启动之前可能会不稳定。提交错误报告只需要几秒钟，但对我们帮助很大。"
 
 #: quodlibet/errorreport/ui.py:69 quodlibet/errorreport/ui.py:85
 msgid "Submit Error Report"
@@ -1368,7 +1368,7 @@ msgstr "程序信息"
 
 #: quodlibet/ext/events/appinfo.py:29
 msgid "Various information about the application and its environment."
-msgstr ""
+msgstr "关于应用程序及其运行环境的各种信息。"
 
 #: quodlibet/ext/events/appinfo.py:62
 msgid "Supported Formats"
@@ -1393,7 +1393,7 @@ msgstr "自动更新库"
 #: quodlibet/ext/events/auto_library_update.py:140
 #, python-format
 msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr ""
+msgstr "使用 inotify 使您的库保持最新。需要 %s。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 msgid "After every play (default)"
@@ -1417,11 +1417,11 @@ msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
-msgstr ""
+msgstr "该插件会在播放或跳过一首歌曲时写入标签到文件中。如果你想确保因不喜欢而跳过的歌曲的评分被写到文件中，这会很有用。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "当专辑中的歌曲都已被评分后，立即"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
@@ -1460,7 +1460,7 @@ msgstr "自动更新文件中的标签"
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
-msgstr ""
+msgstr "当歌曲被播放时，更新其文件中的标签。这将确保播放次数和评级是最新的。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1473,7 +1473,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:575
 msgid "Save ratings and play _counts in tags"
-msgstr ""
+msgstr "在标签中保存评级和播放计数 (_C)"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
 msgid "Settings updated"
@@ -1535,7 +1535,7 @@ msgstr "导入失败"
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
-msgstr[0] ""
+msgstr[0] "成功导入 %d 首歌曲的评分和统计数据"
 
 #: quodlibet/ext/events/bansheeimport.py:126
 msgid "Banshee Import"
@@ -1690,7 +1690,7 @@ msgstr "删除选中的曲目(_D)"
 
 #: quodlibet/ext/events/equalizer.py:326
 msgid "Preset name for saving:"
-msgstr ""
+msgstr "用于保存的预设名称："
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
@@ -1743,7 +1743,7 @@ msgstr "Gajim 状态消息"
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
+msgstr "根据您当前正在收听的内容更改 Gajim 状态。"
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
@@ -1803,11 +1803,11 @@ msgstr "音乐播放中"
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
 msgid "Mode:"
-msgstr ""
+msgstr "模式："
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
-msgstr ""
+msgstr "禁止屏保"
 
 #: quodlibet/ext/events/inhibit.py:126
 msgid "Inhibit Suspend"
@@ -1825,7 +1825,7 @@ msgstr ""
 
 #: quodlibet/ext/events/jep118.py:30
 msgid "JEP-118"
-msgstr ""
+msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
@@ -1864,7 +1864,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
-msgstr ""
+msgstr "MPD 服务器"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid ""
@@ -1890,7 +1890,7 @@ msgstr "连接"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:163
 msgid "Tested Clients"
-msgstr ""
+msgstr "经测试的客户端"
 
 #: quodlibet/ext/events/mpris/__init__.py:37
 msgid "MPRIS D-Bus Support"
@@ -1913,7 +1913,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:62
 msgid "MQTT Publisher"
-msgstr ""
+msgstr "MQTT 发布者"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "Publishes status messages to an MQTT topic."
@@ -1945,7 +1945,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:146
 msgid "Topic"
-msgstr ""
+msgstr "主题"
 
 #: quodlibet/ext/events/mqtt.py:148
 msgid "Playing Pattern"
@@ -1953,7 +1953,7 @@ msgstr "播放模式"
 
 #: quodlibet/ext/events/mqtt.py:150
 msgid "Status text when a song is started."
-msgstr ""
+msgstr "歌曲开始时的状态文本。"
 
 #: quodlibet/ext/events/mqtt.py:152
 msgid "Paused Pattern"
@@ -1999,7 +1999,7 @@ msgstr "MusicBrainz 同步"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
 msgid "Syncs the rating of a song with MusicBrainz."
-msgstr ""
+msgstr "将歌曲的评级与 MusicBrainz 同步。"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:468
@@ -2009,7 +2009,7 @@ msgstr "用户名(_N)："
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:469
 msgid "_Password:"
-msgstr ""
+msgstr "密码 (_P)："
 
 #. verify data
 #. button = qltk.Button(_("_Verify account data"),
@@ -2021,11 +2021,11 @@ msgstr ""
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
-msgstr ""
+msgstr "帐户"
 
 #: quodlibet/ext/events/notify.py:54
 msgid "Notification text"
-msgstr ""
+msgstr "通知文本"
 
 #: quodlibet/ext/events/notify.py:65
 msgid "_Title:"
