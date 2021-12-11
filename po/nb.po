@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-09-16 05:35+0000\n"
+"PO-Revision-Date: 2021-11-05 03:34+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -1197,13 +1197,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Nettadresse til omslagsbilde"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
 msgstr ""
-"Laster ned omslagsbilder fra adressen i taggen «artwork_url». Dette fungerer "
-"med Soundcloud-utforskeren."
+"Laster ned omslagsbilder fra adressen i taggen <tt>artwork_url</tt>. Dette "
+"fungerer med Soundcloud-utforskeren."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1262,13 +1261,12 @@ msgid "Regex Substitution"
 msgstr "Bruk reg.uttrykk"
 
 #: quodlibet/ext/editing/resub.py:20
-#, fuzzy
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"Tillater arbitrær bruk av regulære uttrykk («s///») ved tagging eller "
-"endring av filnavn."
+"Tillater arbitrær bruk av regulære uttrykk (<tt>s/fra/til/</tt>) ved tagging "
+"eller endring av filnavn."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1917,7 +1915,7 @@ msgstr "JEP-118"
 #: quodlibet/ext/events/jep118.py:31
 #, fuzzy
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
-msgstr "Skriver ut Jabber User Tunes-fil til ~/.quodlibet/jabber."
+msgstr "Skriver ut Jabber User Tunes-fil til <tt>~/.quodlibet/jabber</tt>."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2748,25 +2746,25 @@ msgid "Synchronization will:"
 msgstr "Synkronisering vil:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:763
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
-msgstr[0] "forsøke å skrive {count} {file_str}"
-msgstr[1] "forsøke å skrive {count} {file_str}"
+msgstr[0] "forsøk å skrive {count} fil"
+msgstr[1] "forsøk å skrive {count} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:770
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
-msgstr[0] "hoppe over {count} duplisert {file_str}"
-msgstr[1] "hoppe over {count} duplisert {file_str}"
+msgstr[0] "hopp over {count} duplisert fil"
+msgstr[1] "hopp over {count} dupliserte filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:780
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
-msgstr[0] "slett {count} {file_str}"
-msgstr[1] "slett {count} {file_str}"
+msgstr[0] "slett {count} fil"
+msgstr[1] "slett {count} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:830
 msgid "No destination path provided"
@@ -2902,46 +2900,46 @@ msgid "Synchronization has:"
 msgstr "Synkronisering har:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1114
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
-msgstr[0] "skrevet {count}/{total} {file_str}"
-msgstr[1] "skrevet {count}/{total} {file_str}"
+msgstr[0] "skrev {count}/{total} fil"
+msgstr[1] "skrev {count}/{total} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1121
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
-msgstr[0] "(hoppet over {count} eksisterende {file_str})"
-msgstr[1] "(hoppet over {count} eksisterende {file_str})"
+msgstr[0] "(hoppet over {count} eksisterende fil)"
+msgstr[1] "(hoppet over {count} eksisterende filer)"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1130
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
-msgstr[0] "hoppet over {count}/{total} duplisert {file_str}"
-msgstr[1] "hoppet over {count}/{total} duplisert {file_str}"
+msgstr[0] "hoppet over {count}/{total} duplisert fil"
+msgstr[1] "hoppet over {count}/{total} dupliserte filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1137
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
-msgstr[0] "slettet {count}/{total} {file_str}"
-msgstr[1] "slettet {count}/{total} {file_str}"
+msgstr[0] "slettet {count}/{total} fil"
+msgstr[1] "slettet {count}/{total} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1144
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
-msgstr[0] "klarte ikke å synkronisere {count} {file_str}"
-msgstr[1] "klarte ikke å synkronisere {count} {file_str}"
+msgstr[0] "klarte ikke å synkronisere {count} fil"
+msgstr[1] "klarte ikke å synkronisere {count} filer"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1151
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
-msgstr[0] "hoppet over {count} {file_str} tidligere synkronisert"
-msgstr[1] "hoppet over {count} {file_str} tidligere synkronisert"
+msgstr[0] "hoppet over {count} tidligere synkronisert fil"
+msgstr[1] "hoppet over {count} tidligere synkroniserte filer"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
@@ -3041,7 +3039,6 @@ msgid "Thumb Rating"
 msgstr "Tommelvurdering"
 
 #: quodlibet/ext/events/thumbrating.py:92
-#, fuzzy
 msgid ""
 "Adds a thumb-up / thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
@@ -3049,7 +3046,7 @@ msgid ""
 msgstr ""
 "Legger til poengsystem med tommel opp eller ned, som så konverteres til en "
 "vurdering. Nyttig for å holde rede på stemmeantall og sortering med "
-"'~#score'."
+"<b><tt>~#score</tt></b>."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3788,7 +3785,6 @@ msgid "@(python: expression)"
 msgstr "Tagguttrykk"
 
 #: quodlibet/ext/query/pythonexpression.py:23
-#, fuzzy
 msgid ""
 "The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being matched.\n"
 "\n"
@@ -3797,11 +3793,14 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
-"Bruk Python-uttrykk i spørringer. Syntaks er «@(python: uttrykk)». "
-"Variabelen «s» eller «a» er låt / album som skal samsvare. «_ts» er et (ekte "
-"numerisk) tidsstempel i begynnelsen av en spørring. Modulene «time» (tid) og "
-"«random» (vilkårlig) er også tilgjengelig, i tillegg til klassen "
-"«Random» (==random.Random)."
+"Variabelen <tt>s</tt> eller <tt>a</tt> er låt / album som skal samsvare.\n"
+"\n"
+"<tt>_ts</tt> er et (ekte numerisk) tidsstempel i begynnelsen av en spørring."
+"\n"
+"\n"
+"Modulene <tt>time</tt> (tid) og <tt>random</tt> (vilkårlig) er også "
+"tilgjengelige, i tillegg til klassen <tt>Random</tt> (==<tt>random."
+"Random</tt>)."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -4402,13 +4401,13 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
-"Rediger ~#playcount og ~#skipcount for en låt.\n"
+"Rediger <tt>~#playcount</tt> og <tt>~#skipcount</tt> for en låt.\n"
 "\n"
 "Antall blir økt - ikke endret - hvis flere låter er valgt.\n"
 "\n"
-"Hvis du endrer ~#playcount til 0, blir ~#lastplayed og ~#laststarted tømt. "
-"Hvis du endrer en låt uten avspillinger til positivt antall avspillinger, "
-"får ingen av disse noen verdi."
+"Hvis du endrer <tt>~#playcount</tt> til 0, blir <tt>~#lastplayed</tt> og "
+"<tt>~#laststarted</tt> tømt. Hvis du endrer en låt uten avspillinger til "
+"positivt antall avspillinger, får ingen av disse noen verdi."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
@@ -4962,13 +4961,13 @@ msgid "Replay Gain"
 msgstr "ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:571
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"Analyserer og oppdaterer ReplayGain-informasjon ved hjelp av GStreamer. "
-"Resultater blir gruppert per album."
+"Analyserer og oppdaterer <a href=\"%(rg_link)s\">ReplayGain</a>-informasjon "
+"ved hjelp av GStreamer. Resultater blir gruppert per album."
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 #, fuzzy
@@ -5052,7 +5051,7 @@ msgid ""
 "Supports patterns e.g. <tt>%(pattern-example)s</tt>."
 msgstr ""
 "Søker på valgt nettside med tagger.\n"
-"Støtter mønstre som f.eks. %(pattern-example)s."
+"Støtter mønstre som f.eks. <tt>%(pattern-example)s</tt>."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5236,9 +5235,9 @@ msgid "Set a tag and remove existing values"
 msgstr "Endre tagg og fjern gjeldende verdier"
 
 #: quodlibet/operon/commands.py:306
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
-msgstr "Kan ikke sette %r for %s fil %r"
+msgstr "Kan ikke sette %(tag)r for %(format)s-fil %(file)r"
 
 #: quodlibet/operon/commands.py:321
 msgid "Remove tags"
