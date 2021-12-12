@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-05-21 15:34+0000\n"
+"PO-Revision-Date: 2021-12-12 04:27+0000\n"
 "Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.7-dev\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -849,9 +849,9 @@ msgid "Connected"
 msgstr "Pripojené"
 
 #: quodlibet/browsers/soundcloud/main.py:443
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "Quod Libet je teraz pripojený, <b>%s</b>!"
+msgstr "Quod Libet je teraz pripojený, %s!"
 
 #: quodlibet/browsers/soundcloud/main.py:455
 #, python-format
@@ -1199,13 +1199,12 @@ msgid "Artwork URL Cover Source"
 msgstr "URL zdroj obalu albumu"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
 msgstr ""
-"Stiahne obaly albumov prostredníctvom prepojenia v značke artwork_url. Toto "
-"funguje v prehliadači Soundcloud."
+"Stiahne obaly albumov prostredníctvom prepojenia v značke <tt>artwork_url</"
+"tt>. Toto funguje v prehliadači Soundcloud."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1266,13 +1265,12 @@ msgid "Regex Substitution"
 msgstr "Nahradenie pomocou regulárneho výrazu"
 
 #: quodlibet/ext/editing/resub.py:20
-#, fuzzy
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"Umožňuje ľubovoľné nahradzovanie pomocou regulárnych výrazov (s///) počas "
-"premenovávania."
+"Umožňuje ľubovoľné nahradzovanie pomocou regulárnych výrazov (<tt>s/z/na/"
+"</tt>) počas značkovania alebo premenovávania súborov."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1649,120 +1647,118 @@ msgstr "Naživo"
 
 #: quodlibet/ext/events/equalizer.py:29
 msgid "Full Bass & Treble"
-msgstr ""
+msgstr "Plné hĺbky aj výšky"
 
 #: quodlibet/ext/events/equalizer.py:32
 msgid "Club"
-msgstr ""
+msgstr "Klub"
 
 #: quodlibet/ext/events/equalizer.py:34
 msgid "Large Hall"
-msgstr ""
+msgstr "Veľká hala"
 
 #: quodlibet/ext/events/equalizer.py:36
 msgid "Party"
-msgstr ""
+msgstr "Oslava"
 
 #: quodlibet/ext/events/equalizer.py:40
 msgid "Soft"
-msgstr ""
+msgstr "Jemne"
 
 #: quodlibet/ext/events/equalizer.py:42
 msgid "Full Bass"
-msgstr ""
+msgstr "Plné hĺbky"
 
 #: quodlibet/ext/events/equalizer.py:48
 msgid "Reggae"
-msgstr ""
+msgstr "Reggae"
 
 #: quodlibet/ext/events/equalizer.py:50
 msgid "Headphones"
-msgstr ""
+msgstr "Slúchadlá"
 
 #: quodlibet/ext/events/equalizer.py:53
 msgid "Soft Rock"
-msgstr ""
+msgstr "Jemný rock"
 
 #: quodlibet/ext/events/equalizer.py:55
 msgid "Full Treble"
-msgstr ""
+msgstr "Plné výšky"
 
 #: quodlibet/ext/events/equalizer.py:58
 msgid "Dance"
-msgstr ""
+msgstr "Tanečná"
 
 #: quodlibet/ext/events/equalizer.py:62
 msgid "Techno"
-msgstr ""
+msgstr "Techno"
 
 #: quodlibet/ext/events/equalizer.py:64
 msgid "Ska"
-msgstr ""
+msgstr "Ska"
 
 #: quodlibet/ext/events/equalizer.py:66
 msgid "Laptop"
-msgstr ""
+msgstr "Prenosný počítač"
 
 #: quodlibet/ext/events/equalizer.py:112
 msgid "Equalizer"
-msgstr ""
+msgstr "Ekvalizér"
 
 #: quodlibet/ext/events/equalizer.py:113
 msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"Ovládanie zvuku pomocou ekvalizéra.\n"
+"Kliknite alebo použite klávesy pre prispôsobenie úrovní (pravé kliknutie "
+"obnoví pôvodnú hodnotu daného pásma)."
 
 #: quodlibet/ext/events/equalizer.py:150
 msgid "The current backend does not support equalization."
-msgstr ""
+msgstr "Súčasná obslužná aplikácia na pozadí nepodporuje ekvalizér."
 
 #: quodlibet/ext/events/equalizer.py:156
 #, python-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: quodlibet/ext/events/equalizer.py:157
 #: quodlibet/ext/gstreamer/crossfeed.py:94
 #: quodlibet/ext/gstreamer/karaoke.py:96
 #, python-format
 msgid "%d Hz"
-msgstr ""
+msgstr "%d Hz"
 
 #: quodlibet/ext/events/equalizer.py:198
 #: quodlibet/ext/gstreamer/crossfeed.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f dB"
-msgstr "%d sekunda"
+msgstr "%.1f dB"
 
 #: quodlibet/ext/events/equalizer.py:272
-#, fuzzy
 msgid "Default presets"
-msgstr "Filter na _interpreta"
+msgstr "Predvolené zoznamy nastavení"
 
 #: quodlibet/ext/events/equalizer.py:278 quodlibet/ext/events/equalizer.py:305
-#, fuzzy
 msgid "Select…"
-msgstr "_Výber"
+msgstr "Vybrať…"
 
 #: quodlibet/ext/events/equalizer.py:293
-#, fuzzy
 msgid "_Reset EQ"
-msgstr "_Náhľad"
+msgstr "Ob_noviť EQ"
 
 #: quodlibet/ext/events/equalizer.py:299
-#, fuzzy
 msgid "Custom presets"
-msgstr "_Vlastné"
+msgstr "_Vlastný zoznam nastavení"
 
 #: quodlibet/ext/events/equalizer.py:315
-#, fuzzy
 msgid "_Delete selected"
-msgstr "Nepodarilo sa vymazať skladby"
+msgstr "_Odstrániť vybraté"
 
 #: quodlibet/ext/events/equalizer.py:326
 msgid "Preset name for saving:"
-msgstr ""
+msgstr "Názov zoznam nastavení pre uloženie:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
@@ -1780,199 +1776,208 @@ msgstr ""
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
-msgstr ""
+msgstr "_Uložiť"
 
 #. Translators: statuses relating to Instant Messenger apps
 #: quodlibet/ext/events/gajim_status.py:28
 msgid "online"
-msgstr ""
+msgstr "pripojený"
 
 #: quodlibet/ext/events/gajim_status.py:29
 msgid "offline"
-msgstr ""
+msgstr "nepripojený"
 
 #: quodlibet/ext/events/gajim_status.py:30
 msgid "chat"
-msgstr ""
+msgstr "výmena správ"
 
 #: quodlibet/ext/events/gajim_status.py:31
 msgid "away"
-msgstr ""
+msgstr "preč"
 
 #: quodlibet/ext/events/gajim_status.py:32
 msgid "xa"
-msgstr ""
+msgstr "xa"
 
 #: quodlibet/ext/events/gajim_status.py:33
 msgid "invisible"
-msgstr ""
+msgstr "neviditeľný"
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
-msgstr ""
+msgstr "Stav Gajim"
 
 #: quodlibet/ext/events/gajim_status.py:39
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
+msgstr "Zmení stav Gajim podľa toho čo práve počúvate."
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
 msgid "paused"
-msgstr ""
+msgstr "pozastavené"
 
 #: quodlibet/ext/events/gajim_status.py:145
-#, fuzzy
 msgid "Pattern:"
-msgstr "Neplatná vzorka"
+msgstr "Vzor:"
 
 #: quodlibet/ext/events/gajim_status.py:154
 msgid ""
 "List accounts, separated by spaces, for changing status message. If none are "
 "specified, status message of all accounts will be changed."
 msgstr ""
+"Zobraziť zoznam účtov, oddelených čiarkou, pre zmenu stavu. Ak nie je "
+"vybratý žiaden účet, zmení sa stav všetkých účtov."
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
-msgstr ""
+msgstr "Účty:"
 
 #: quodlibet/ext/events/gajim_status.py:161
 msgid "Add '[paused]'"
-msgstr ""
+msgstr "Pridať „[pozastavené]“"
 
 #: quodlibet/ext/events/gajim_status.py:164
 msgid "If checked, '[paused]' will be added to status message on pause"
 msgstr ""
+"Ak je označené, pri pozastavení skladby sa pridá „[pozastavené]“ do stavu"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
-msgstr ""
+msgstr "Stavy, pre ktoré sa zmení správa"
 
 #: quodlibet/ext/events/headphonemon.py:157
 msgid "Pause on Headphone Unplug"
-msgstr ""
+msgstr "Pozastaviť pri odpojení slúchadiel"
 
 #: quodlibet/ext/events/headphonemon.py:158
 msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
 msgstr ""
+"Pozastaví prehrávanie pri odpojení slúchadiel a obnoví prehrávanie pri ich "
+"opätovnom pripojení."
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
-msgstr ""
+msgstr "Zakázať šetrič obrazovky/režim spánku"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
 msgstr ""
+"V pracovnom prostredí GNOME zabraňuje spusteniu šetriča obrazovky alebo "
+"prechodu počítača do režimu spánku ak sa práve prehráva skladba."
 
 #: quodlibet/ext/events/inhibit.py:63
-#, fuzzy
 msgid "Music is playing"
-msgstr "Hudobný prehrávač"
+msgstr "Prehráva sa hudba"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
-#, fuzzy
 msgid "Mode:"
-msgstr "Model:"
+msgstr "Režim:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
-msgstr ""
+msgstr "Zakázať šetrič obrazovky"
 
 #: quodlibet/ext/events/inhibit.py:126
 msgid "Inhibit Suspend"
-msgstr ""
+msgstr "Zakázať režim spánku"
 
 #: quodlibet/ext/events/iradiolog.py:17
-#, fuzzy
 msgid "Internet Radio Log"
-msgstr "Internetové rádio"
+msgstr "Záznam internetového rádia"
 
 #: quodlibet/ext/events/iradiolog.py:18
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
 msgstr ""
+"Zaznamená posledných desať skladieb hraných v rádiách a zobrazí ich zoznam v "
+"kontextovej ponuke vyhľadávania."
 
 #: quodlibet/ext/events/jep118.py:30
 msgid "JEP-118"
-msgstr ""
+msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
-msgstr ""
+msgstr "Uloží súbor Jabber User Tunes do <tt>~/.quodlibet/jabber</tt>."
 
 #: quodlibet/ext/events/language.py:21
-#, fuzzy
 msgid "Change Language"
-msgstr "_Hodnotenie"
+msgstr "Zmeniť jazyk"
 
 #: quodlibet/ext/events/language.py:22
 msgid "Change the user interface language."
-msgstr ""
+msgstr "Zmeniť jazyk používateľského rozhrania."
 
 #: quodlibet/ext/events/language.py:43
 msgid "System Default"
-msgstr ""
+msgstr "Predvolený jazyk systému"
 
 #: quodlibet/ext/events/language.py:70
 msgid "A restart is required for any changes to take effect"
-msgstr ""
+msgstr "Pre uplatnenie zmien sa vyžaduje reštart aplikácie"
 
 #: quodlibet/ext/events/mediaserver.py:36
 msgid "UPnP AV Media Server"
-msgstr ""
+msgstr "Server médií UPnP AV"
 
 #: quodlibet/ext/events/mediaserver.py:37
 msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
 msgstr ""
+"Sprístupní všetky albumy serveru médií Rygel UPnP prostredníctvom rozhrania "
+"MediaServer2 D-Bus."
 
 #: quodlibet/ext/events/mediaserver.py:44
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
 msgstr ""
+"Uistite sa, že váš súbor nastavení rygel (~/.config/rygel.conf) obsahuje "
+"nasledovné:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
-msgstr ""
+msgstr "Server MPD"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid ""
 "Allows remote control of Quod Libet using an MPD Client. Streaming, playlist "
 "and library management are not supported."
 msgstr ""
+"Umožňuje diaľkové ovládanie Quod Libet pomocou MPD klienta. Streamovanie, "
+"zoznam prehrávania a správa knižnice nie sú podporované."
 
 #: quodlibet/ext/events/mpdserver/__init__.py:76
 msgid "_Port:"
-msgstr ""
+msgstr "_Koncový bod:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:119
 msgid "Local _IP:"
-msgstr ""
+msgstr "Miestna _IP:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:125
 msgid "P_assword:"
-msgstr ""
+msgstr "_Heslo:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:161
-#, fuzzy
 msgid "Connection"
-msgstr "miesto"
+msgstr "Pripojenie"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:163
 msgid "Tested Clients"
-msgstr ""
+msgstr "Otestovaní klienti"
 
 #: quodlibet/ext/events/mpris/__init__.py:37
 msgid "MPRIS D-Bus Support"
-msgstr ""
+msgstr "Podpora MPRIS D-Bus"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid ""
