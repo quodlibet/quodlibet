@@ -87,7 +87,7 @@ class QLSubmitQueue:
     CLIENT = "qlb"
     CLIENT_VERSION = const.VERSION
     PROTOCOL_VERSION = "1.2"
-    DUMP = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache_v2")
+    SCROBBLER_CACHE_FILE = os.path.join(quodlibet.get_user_dir(), "scrobbler_cache_v2")
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
@@ -153,10 +153,13 @@ class QLSubmitQueue:
         self.titlepat = Pattern(config_get_title_pattern())
         self.artpat = Pattern(config_get_artist_pattern())
 
+        self._load_queue()
+
+    def _load_queue(self):
         try:
-            with open(self.DUMP, 'rb') as disk_queue_file:
+            with open(self.SCROBBLER_CACHE_FILE, 'rb') as disk_queue_file:
                 disk_queue = pickle_load(disk_queue_file)
-            os.unlink(self.DUMP)
+            os.unlink(self.SCROBBLER_CACHE_FILE)
             self.queue += disk_queue
         except (EnvironmentError, PickleError):
             pass
@@ -164,11 +167,12 @@ class QLSubmitQueue:
     @classmethod
     def dump_queue(klass):
         if klass.queue:
+            print_d(f"Saving scrobble queue to {klass.SCROBBLER_CACHE_FILE}")
             try:
-                with open(klass.DUMP, 'wb') as disk_queue_file:
+                with open(klass.SCROBBLER_CACHE_FILE, 'wb') as disk_queue_file:
                     pickle_dump(klass.queue, disk_queue_file)
-            except (EnvironmentError, PickleError):
-                pass
+            except (EnvironmentError, PickleError) as e:
+                print_w(f"Couldn't persist scrobble queue ({e})")
 
     def _check_config(self):
         user = plugin_config.get('username')
@@ -354,9 +358,13 @@ class QLScrobbler(EventPlugin):
                     "Audioscrobbler services.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
+    AUTOSAVE_INTERVAL = 30
+    """How often, in seconds, to save the queue (if any) to disk"""
+
     def __init__(self):
         self.__enabled = False
         self.queue = QLSubmitQueue()
+        self._tid = None
 
         def queue_run():
             try:
@@ -367,6 +375,7 @@ class QLScrobbler(EventPlugin):
         queue_thread = threading.Thread(None, queue_run)
         queue_thread.setDaemon(True)
         queue_thread.start()
+        print_d(f"Started Scrobbler thread {queue_thread}")
 
         self.start_time = 0
         self.unpaused_time = 0
@@ -433,10 +442,18 @@ class QLScrobbler(EventPlugin):
     def enabled(self):
         self.__enabled = True
         print_d("Plugin enabled - accepting new songs.")
+        if not self._tid:
+            print_d("Starting scrobble autosaver")
+            self._tid = GLib.timeout_add_seconds(
+                self.AUTOSAVE_INTERVAL, lambda: QLSubmitQueue.dump_queue() or True)
 
     def disabled(self):
         self.__enabled = False
         print_d("Plugin disabled - not accepting any new songs.")
+        if self._tid:
+            print_d("Stopping scrobble autosaver")
+            GLib.source_remove(self._tid)
+            self._tid = None
         QLSubmitQueue.dump_queue()
 
     def PluginPreferences(self, parent):
