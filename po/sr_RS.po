@@ -2073,12 +2073,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Дозвољава оцењивање бројем."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:470
 msgid "User_name:"
 msgstr "Корисничко_име:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:469
+#: quodlibet/ext/events/qlscrobbler.py:471
 msgid "_Password:"
 msgstr "_Лозинка:"
 
@@ -2088,7 +2088,7 @@ msgstr "_Лозинка:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:528
+#: quodlibet/ext/events/qlscrobbler.py:530
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2159,7 +2159,7 @@ msgstr "Приказује обавештења при промени песме
 msgid "Next"
 msgstr "Следеће"
 
-#: quodlibet/ext/events/qlscrobbler.py:176
+#: quodlibet/ext/events/qlscrobbler.py:179
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2167,79 +2167,79 @@ msgstr ""
 "Молимо посетите прозор додатака да подесите QLScrobbler. До тада, песме неће "
 "бити приложене."
 
-#: quodlibet/ext/events/qlscrobbler.py:253
+#: quodlibet/ext/events/qlscrobbler.py:256
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Не могу контактирати сервис '%s'."
 
-#: quodlibet/ext/events/qlscrobbler.py:259
+#: quodlibet/ext/events/qlscrobbler.py:262
 msgid "Authentication failed: invalid URL."
 msgstr "Аутентификација неуспела: неважећи URL."
 
-#: quodlibet/ext/events/qlscrobbler.py:276
+#: quodlibet/ext/events/qlscrobbler.py:279
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr ""
 "Аутентификација неуспела: Неважеће корисничко име '%s' или погрешна лозинка."
 
-#: quodlibet/ext/events/qlscrobbler.py:281
+#: quodlibet/ext/events/qlscrobbler.py:284
 msgid "Client is banned. Contact the author."
 msgstr "Забрањен приступ. Контактирајте аутора."
 
-#: quodlibet/ext/events/qlscrobbler.py:285
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "Погрешно системско време. Достава можда неће успети док се то не исправи."
 
-#: quodlibet/ext/events/qlscrobbler.py:350
+#: quodlibet/ext/events/qlscrobbler.py:352
 msgid "AudioScrobbler Submission"
 msgstr "AudioScrobbler достава"
 
-#: quodlibet/ext/events/qlscrobbler.py:351
+#: quodlibet/ext/events/qlscrobbler.py:353
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr ""
 "Audioscrobbler клијент за Last.fm, Libre.fm и друге Audioscrobbler сервисе."
 
-#: quodlibet/ext/events/qlscrobbler.py:456
+#: quodlibet/ext/events/qlscrobbler.py:458
 msgid "Authentication successful."
 msgstr "Аутентификација успешна."
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:470
 msgid "_Service:"
 msgstr "_Сервис:"
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:470
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:485
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "Other…"
 msgstr "Друго…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:523
+#: quodlibet/ext/events/qlscrobbler.py:525
 msgid "_Verify account data"
 msgstr "_Провери податке налога"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:538
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Уметник шаблон:"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:538
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Наслов шаблон:"
 
-#: quodlibet/ext/events/qlscrobbler.py:537
+#: quodlibet/ext/events/qlscrobbler.py:539
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Изузми _филтер:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:557
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2248,7 +2248,7 @@ msgstr ""
 "Шаблон за форматирање имена уметника за доставу. Оставите празно за "
 "подразумевано."
 
-#: quodlibet/ext/events/qlscrobbler.py:565
+#: quodlibet/ext/events/qlscrobbler.py:568
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2256,16 +2256,16 @@ msgstr ""
 "Шаблон за форматирање имена наслова за доставу. Оставите празно за "
 "подразумевано."
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:577
 msgid "Songs matching this filter will not be submitted"
 msgstr "Песме које се подударају овим филтером неће бити достављене"
 
-#: quodlibet/ext/events/qlscrobbler.py:582
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Режим ван мреже (не достављај ништа)"
 
-#: quodlibet/ext/events/qlscrobbler.py:586
+#: quodlibet/ext/events/qlscrobbler.py:589
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Достава"
