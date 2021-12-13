@@ -2094,12 +2094,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Permite definir a avaliação de uma música com um número."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "_Nome de usuário:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:471
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "_Senha:"
 
@@ -2109,7 +2109,7 @@ msgstr "_Senha:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:530
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2180,7 +2180,7 @@ msgstr "Exibe uma notificação durante a transição entre músicas."
 msgid "Next"
 msgstr "Próxima"
 
-#: quodlibet/ext/events/qlscrobbler.py:179
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2188,35 +2188,35 @@ msgstr ""
 "Por favor visite a jánela de plug-ins para configurar o QLScrobbler. Antes "
 "disso ser feito as suas músicas não poderão ser enviadas."
 
-#: quodlibet/ext/events/qlscrobbler.py:256
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Não foi possível se conectar ao serviço \"%s\"."
 
-#: quodlibet/ext/events/qlscrobbler.py:262
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "Autenticação falhou: URL inválido."
 
-#: quodlibet/ext/events/qlscrobbler.py:279
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "Autenticação falhou: Nome de usuário \"%s\" inválido, ou senha errada."
 
-#: quodlibet/ext/events/qlscrobbler.py:284
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "O cliente foi banido. Entre em contato com o autor."
 
-#: quodlibet/ext/events/qlscrobbler.py:288
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "O relógio do sistema está errado. Submissões podem falhar até isto ser "
 "corrigido."
 
-#: quodlibet/ext/events/qlscrobbler.py:352
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "Submeter ao AudioScrobbler"
 
-#: quodlibet/ext/events/qlscrobbler.py:353
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
@@ -2224,44 +2224,44 @@ msgstr ""
 "Um cliente Audioscrobbler para Last.fm, Libre.fm and outros serviços "
 "Audioscrobbler."
 
-#: quodlibet/ext/events/qlscrobbler.py:458
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "Autenticação realizada com sucesso."
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_Serviço:"
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:487
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "Outros…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:525
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_Verificar conta"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Padrão para _artista:"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Padrão para _título:"
 
-#: quodlibet/ext/events/qlscrobbler.py:539
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Filtro de _exclusão:"
 
-#: quodlibet/ext/events/qlscrobbler.py:557
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2270,7 +2270,7 @@ msgstr ""
 "Este padrão é usado para formatar o nome de artista antes de enviá-lo. Deixe "
 "em branco para usar o padrão."
 
-#: quodlibet/ext/events/qlscrobbler.py:568
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2278,16 +2278,16 @@ msgstr ""
 "Este padrão é usado para formatar o título antes de enviá-lo. Deixe em "
 "branco para usar o padrão."
 
-#: quodlibet/ext/events/qlscrobbler.py:577
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "Músicas que corresponderem a este filtro não serão enviadas"
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "Modo _offline (não enviar nada)"
 
-#: quodlibet/ext/events/qlscrobbler.py:589
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Submissão"

@@ -2045,12 +2045,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "אפשרות להגדרת דרוג שיר בשימוש במספרים."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "שם _משתש:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:471
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "_ססמה:"
 
@@ -2060,7 +2060,7 @@ msgstr "_ססמה:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:530
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2131,104 +2131,104 @@ msgstr "הצגת התראה כאשר השיר מתחלף."
 msgid "Next"
 msgstr "הבא"
 
-#: quodlibet/ext/events/qlscrobbler.py:179
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
 msgstr "נא להגדיר את QLScrobbler בחלון המתקעים. עד אז השירים לא ישוגרו."
 
-#: quodlibet/ext/events/qlscrobbler.py:256
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "לא ניתן להתחבר לשרות '%s'."
 
-#: quodlibet/ext/events/qlscrobbler.py:262
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "ההזדהות כשלה: URL שגוי."
 
-#: quodlibet/ext/events/qlscrobbler.py:279
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "ההזדהות כשלה: שם משתמש '%s' או הססמה שגויים."
 
-#: quodlibet/ext/events/qlscrobbler.py:284
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "חשבון לקוח מוחרם. נא ליצור קשר אם המחבר."
 
-#: quodlibet/ext/events/qlscrobbler.py:288
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr "שעון מערכת שגוי. השגור עשוי להכשל עד שיתוקן."
 
-#: quodlibet/ext/events/qlscrobbler.py:352
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "הגשת אודיוסקרובלר"
 
-#: quodlibet/ext/events/qlscrobbler.py:353
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr "לקוח אודיוסקרובלר עבור Last.fm ושרותי אודיוסקרובלר אחרים."
 
-#: quodlibet/ext/events/qlscrobbler.py:458
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "ההזדהות צלחה."
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_שרות:"
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:487
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "אחר…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:525
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_אימות נתוני חשבון"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_דפוס אמן:"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_דפוס שם קובץ:"
 
-#: quodlibet/ext/events/qlscrobbler.py:539
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_מסנן החרגה:"
 
-#: quodlibet/ext/events/qlscrobbler.py:557
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
 msgstr "הדפוס משמש תִּיבְנוּת שם האמן לשגור. להשאיר ריק לברירת המחדל."
 
-#: quodlibet/ext/events/qlscrobbler.py:568
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr "הדפוס משמש לתִּיבְנוּת כותרת לשגור. להשאיר ריק לברירת המחדל."
 
-#: quodlibet/ext/events/qlscrobbler.py:577
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "שירים התואמים למסנן זה לא ישוגרו"
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_מצב לא מקוון (לא לשגר דבר)"
 
-#: quodlibet/ext/events/qlscrobbler.py:589
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "שגור"

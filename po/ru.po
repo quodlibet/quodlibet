@@ -2084,12 +2084,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Позволяет дать точную оценку треку в числах."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "_Имя:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:471
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "_Пароль:"
 
@@ -2099,7 +2099,7 @@ msgstr "_Пароль:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:530
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2170,7 +2170,7 @@ msgstr "Показывать уведомление при смене трека
 msgid "Next"
 msgstr "Следующий"
 
-#: quodlibet/ext/events/qlscrobbler.py:179
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2178,78 +2178,78 @@ msgstr ""
 "Необходимо настроить расширение QLScrobbler в окне расширений. Иначе "
 "скробблинг треков не будет работать."
 
-#: quodlibet/ext/events/qlscrobbler.py:256
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Не удалось соединиться с сервисом '%s'."
 
-#: quodlibet/ext/events/qlscrobbler.py:262
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "Авторизация не удалась: неверно указан URL."
 
-#: quodlibet/ext/events/qlscrobbler.py:279
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "Авторизация не удалась: неверное имя пользователя '%s' или пароль."
 
-#: quodlibet/ext/events/qlscrobbler.py:284
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "Клиент заблокирован. Свяжитесь с автором."
 
-#: quodlibet/ext/events/qlscrobbler.py:288
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "Неправильное системное время.Передачи могут завершаться ошибкой, пока не "
 "будет исправлено."
 
-#: quodlibet/ext/events/qlscrobbler.py:352
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "Скробблинг"
 
-#: quodlibet/ext/events/qlscrobbler.py:353
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr "Клиент скробблинга на Last.fm, Libre.fm и другие сервисы."
 
-#: quodlibet/ext/events/qlscrobbler.py:458
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "Авторизация прошла успешно."
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_Сервис:"
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:487
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "Другой…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:525
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_Проверка учетной записи"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Шаблон _Исполнителя:"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Шаблон _Имени файла:"
 
-#: quodlibet/ext/events/qlscrobbler.py:539
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "И_сключать:"
 
-#: quodlibet/ext/events/qlscrobbler.py:557
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2258,7 +2258,7 @@ msgstr ""
 "Шаблон форматирования имени исполнителя для отправки. Оставьте пустым "
 "длязначения по умолчанию."
 
-#: quodlibet/ext/events/qlscrobbler.py:568
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2266,16 +2266,16 @@ msgstr ""
 "Шаблон форматирования заголовка для отправки. Оставьте пустым длязначения по "
 "умолчанию."
 
-#: quodlibet/ext/events/qlscrobbler.py:577
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "Треки, соответствующие этому фильтру, не будут отправлены"
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Автономный режим (ничего не отправлять)"
 
-#: quodlibet/ext/events/qlscrobbler.py:589
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Отправка"

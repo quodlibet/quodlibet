@@ -2043,13 +2043,13 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr ""
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 #, fuzzy
 msgid "User_name:"
 msgstr "이름:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:471
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr ""
 
@@ -2059,7 +2059,7 @@ msgstr ""
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:530
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2131,7 +2131,7 @@ msgstr "노래가 바뀌면 알림을 띄웁니다."
 msgid "Next"
 msgstr "다음"
 
-#: quodlibet/ext/events/qlscrobbler.py:179
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2139,33 +2139,33 @@ msgstr ""
 "플러그인 창에서 QLScrobbler를 설정하세요. 그때까지는 노래가 제출되지 않습니"
 "다."
 
-#: quodlibet/ext/events/qlscrobbler.py:256
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "'%s'에 연결할 수가 없습니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:262
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "인증 실패: 유효하지 않은 URL입니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:279
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "인증 실패: 유효하지 않은 사용자명:'%s'이거나 잘못된 비밀번호입니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:284
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "클라이언트가 금지되었습니다. 관리자에게 문의하세요."
 
-#: quodlibet/ext/events/qlscrobbler.py:288
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr "시스템 시간이 잘못되었습니다. 수정 전까지 제출이 안 될 수 있습니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:352
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "AudioScrobbler 제출"
 
-#: quodlibet/ext/events/qlscrobbler.py:353
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
@@ -2173,66 +2173,66 @@ msgstr ""
 "Last.fm, Libre.fm 그리고 그 외 다른 Audioscrobbler 서비스를 위한 "
 "Audioscrobbler 클라이언트."
 
-#: quodlibet/ext/events/qlscrobbler.py:458
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "인증에 성공했습니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_서비스:"
 
-#: quodlibet/ext/events/qlscrobbler.py:470
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:487
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "그 외…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:525
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_계정 데이터 확인"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_아티스트 양식:"
 
-#: quodlibet/ext/events/qlscrobbler.py:538
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_제목 형식:"
 
-#: quodlibet/ext/events/qlscrobbler.py:539
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "제외_필터:"
 
-#: quodlibet/ext/events/qlscrobbler.py:557
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
 msgstr "제출할 아티스트 명을 지정하는 형식입니다. 기본값은 공백입니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:568
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr "제출할 제목을 지정하는 형식입니다. 기본값은 공백입니다."
 
-#: quodlibet/ext/events/qlscrobbler.py:577
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "필터와 일치하는 노래가 없습니다"
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_오프라인 모드(아무것도 제출하지 않음)"
 
-#: quodlibet/ext/events/qlscrobbler.py:589
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "제출"
