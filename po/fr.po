@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-10-01 16:34+0000\n"
-"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
+"PO-Revision-Date: 2021-12-16 17:42+0000\n"
+"Last-Translator: Jachohdoh <weblate@gogomail.tk>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.10-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -5657,7 +5657,7 @@ msgstr "Mode _Album"
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:123
 msgid "_Mute"
-msgstr "_Met"
+msgstr "_Muet"
 
 #: quodlibet/qltk/controls.py:129
 msgid "_Replay Gain Mode"
