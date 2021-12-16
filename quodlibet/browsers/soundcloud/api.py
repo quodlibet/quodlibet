@@ -138,8 +138,7 @@ class SoundcloudApiClient(RestApi):
                 self.log_out()
 
     def _default_params(self):
-        params = {'client_id': self.__CLIENT_ID}
-        return params
+        return {}
 
     def authenticate_user(self):
         # create client object with app credentials
