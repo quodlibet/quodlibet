@@ -44,7 +44,7 @@ class PlaylistMenu(Gtk.Menu):
         title = self._get_new_name(parent, title)
         if title is None:
             return None
-        return self.pl_lib.create_from_songs(songs)
+        return self.pl_lib.create_from_songs(songs, title=title)
 
     def _get_new_name(self, parent, title):
         """Ask the user for a name for the new playlist"""
