@@ -1,4 +1,4 @@
-# Copyright 2017 Nick Boultbee
+# Copyright 2017-21 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -64,7 +64,9 @@ class TPlaylistMenu(TestCase):
         menu = StubbedPlaylistMenu(self.SONGS, PlaylistLibrary(SongFileLibrary()))
         main.set_submenu(menu)
 
+        # Run it (with stubbed dialog)
         pl = menu._on_new_playlist_activate(main, self.SONGS)
 
-        self.failUnless(pl, msg="No playlists added")
-        self.failUnlessEqual(pl.songs, self.SONGS)
+        assert pl, "No playlists added"
+        assert pl.name == FIXED_NAME, "Wrong name used"
+        assert pl.songs == self.SONGS
