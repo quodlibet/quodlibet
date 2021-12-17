@@ -35,40 +35,43 @@ msgid "_Date"
 msgstr "日期 (_D)"
 
 #: quodlibet/browsers/albums/main.py:226
+#: quodlibet/browsers/covergrid/main.py:59
 #, fuzzy
 msgid "_Date Added"
 msgstr "日期檔頭 (_D)"
 
 #: quodlibet/browsers/albums/main.py:227
+#: quodlibet/browsers/covergrid/main.py:60
 #, fuzzy
 msgid "_Original Date"
 msgstr "原作"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
 #, fuzzy
 msgid "_Genre"
 msgstr "風格"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "評等 (_R)"
 
 #: quodlibet/browsers/albums/main.py:230
+#: quodlibet/browsers/covergrid/main.py:63
 #, fuzzy
 msgid "_Playcount"
 msgstr "編輯顯示"
 
 #: quodlibet/browsers/albums/main.py:236
-#: quodlibet/browsers/covergrid/main.py:66
+#: quodlibet/browsers/covergrid/main.py:69
 #, fuzzy
 msgid "Sort _by…"
 msgstr "依日期排序"
 
 #: quodlibet/browsers/albums/main.py:257
-#: quodlibet/browsers/covergrid/main.py:87
+#: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
@@ -85,21 +88,21 @@ msgid "_Album List"
 msgstr "專輯清單 (_A)"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:287
-#: quodlibet/browsers/covergrid/main.py:503
+#: quodlibet/browsers/covergrid/main.py:290
+#: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr "所有專輯"
 
 #: quodlibet/browsers/albums/main.py:548
-#: quodlibet/browsers/covergrid/main.py:288
-#: quodlibet/browsers/covergrid/main.py:504
+#: quodlibet/browsers/covergrid/main.py:291
+#: quodlibet/browsers/covergrid/main.py:507
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%d 專輯"
 
 #: quodlibet/browsers/albums/main.py:729
-#: quodlibet/browsers/covergrid/main.py:482
+#: quodlibet/browsers/covergrid/main.py:485
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -357,12 +360,12 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: quodlibet/browsers/covergrid/main.py:128
+#: quodlibet/browsers/covergrid/main.py:131
 #, fuzzy
 msgid "Cover Grid"
 msgstr "合計大小："
 
-#: quodlibet/browsers/covergrid/main.py:129
+#: quodlibet/browsers/covergrid/main.py:132
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "合計大小："
