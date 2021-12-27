@@ -1,5 +1,6 @@
 # Copyright 2013 Christoph Reiter
 #           2020 Nick Boultbee
+#           2021 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,7 +40,8 @@ class PaneConfig:
         def is_date(s):
             return s in TIME_TAGS
 
-        disp = parts[1] if len(parts) >= 2 else r"[i][span alpha='40%']<~#tracks>[/span][/i]"
+        disp = parts[1] if len(
+            parts) >= 2 else r"[i][span alpha='40%']<~#tracks>[/span][/i]"
         cat = parts[0]
 
         if is_pattern(cat):
