@@ -176,15 +176,15 @@ class FSInterface:
             player.connect('song-started', self.__started),
             player.connect('song-ended', self.__ended),
         ]
+        self._lids = [library.connect('changed', self.__changed)]
         self._library = library
-        self._lid = library.connect('changed', self.__changed)
 
     def destroy(self):
         for id_ in self._pids:
             self._player.disconnect(id_)
-        if self._lid:
-            print_d(f"Disconnecting signal {self._lid} from {self._library}")
-            self._library.disconnect(self._lid)
+        for id_ in self._lids:
+            print_d(f"Disconnecting signal {id_} from {self._library}")
+            self._library.disconnect(id_)
         try:
             os.unlink(self.path)
         except EnvironmentError:
