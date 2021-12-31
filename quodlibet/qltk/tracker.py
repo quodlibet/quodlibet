@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2013 Christoph Reiter
-#           2020 Nick Boultbee
+#                2013 Christoph Reiter
+#           2020-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,8 @@ import time
 
 from gi.repository import GObject, GLib
 
-from quodlibet import config
+from quodlibet import config, print_d
+from quodlibet.library.base import Library
 
 
 class TimeTracker(GObject.GObject):
@@ -168,18 +169,22 @@ class SongTracker:
 class FSInterface:
     """Provides a file in ~/.quodlibet to indicate what song is playing."""
 
-    def __init__(self, path, player):
+    def __init__(self, path, player, library: Library):
         self.path = path
         self._player = player
-        self._ids = [
+        self._pids = [
             player.connect('song-started', self.__started),
             player.connect('song-ended', self.__ended),
         ]
+        self._library = library
+        self._lid = library.connect('changed', self.__changed)
 
     def destroy(self):
-        for id_ in self._ids:
+        for id_ in self._pids:
             self._player.disconnect(id_)
-
+        if self._lid:
+            print_d(f"Disconnecting signal {self._lid} from {self._library}")
+            self._library.disconnect(self._lid)
         try:
             os.unlink(self.path)
         except EnvironmentError:
@@ -199,3 +204,9 @@ class FSInterface:
             os.unlink(self.path)
         except EnvironmentError:
             pass
+
+    def __changed(self, lib, songs):
+        current = self._player.song
+        if current and current in songs:
+            print_d("Current song changed, updating current file")
+            self.__started(self._player, current)
