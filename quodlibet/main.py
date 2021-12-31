@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012,2013 Christoph Reiter
-#           2010-2017 Nick Boultbee
+#           2010-2021 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -161,7 +161,7 @@ def main(argv=None):
     mmkeys_handler.start()
 
     current_path = os.path.join(quodlibet.get_user_dir(), "current")
-    fsiface = FSInterface(current_path, player)
+    fsiface = FSInterface(current_path, player, library)
     remote = Remote(app, cmd_registry)
     try:
         remote.start()
