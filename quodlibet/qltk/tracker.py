@@ -9,10 +9,12 @@
 
 import os
 import time
+from typing import Collection
 
 from gi.repository import GObject, GLib
 
 from quodlibet import config, print_d
+from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
 
 
@@ -205,7 +207,7 @@ class FSInterface:
         except EnvironmentError:
             pass
 
-    def __changed(self, lib, songs):
+    def __changed(self, _lib: Library, songs: Collection[AudioFile]):
         current = self._player.song
         if current and current in songs:
             print_d("Current song changed, updating current file")
