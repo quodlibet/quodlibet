@@ -448,7 +448,7 @@ class PreferencesWindow(UniqueWindow):
             scale.set_value_pos(Gtk.PositionType.LEFT)
             scale.set_show_fill_level(True)
             scale.set_tooltip_text(_("If a track is played beyond this percentage, "
-                                     "its number of plays and last play date are updated."))
+                             "its number of plays and last play date are updated."))
             scale.connect('format-value',
                             lambda _, value: "%d%%" % value)
             scale.connect('value-changed', scale_changed)
