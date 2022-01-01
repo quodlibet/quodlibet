@@ -3,6 +3,7 @@
 #           2011-2021 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
+#           2021      Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -433,13 +434,45 @@ class PreferencesWindow(UniqueWindow):
             self.pack_start(f, False, True, 0)
 
             vbox = Gtk.VBox()
+
+            # consider played after x percent
+            def scale_changed(scale):
+                value = int(scale.get_value() / 5) * 5
+                scale.set_value(value)
+                config.set("player", "consider_played_percent", value)
+
+            consider_played_percent = config.getint(
+                "player", "consider_played_percent")
+            scale = Gtk.HScale.new(
+                Gtk.Adjustment(value=consider_played_percent, lower=0, upper=100))
+            scale.set_value_pos(Gtk.PositionType.LEFT)
+            scale.set_show_fill_level(True)
+            scale.set_tooltip_text(_("If a track is played beyond this percentage, "
+                                     "its number of plays and last play date are updated."))
+            scale.connect('format-value',
+                            lambda _, value: "%d%%" % value)
+            scale.connect('value-changed', scale_changed)
+
+            consider_played_label = Gtk.Label(
+                label=_('Consider a track as played after listening'))
+            consider_played_label.set_use_underline(False)
+            consider_played_label.set_mnemonic_widget(scale)
+
+            consider_played_hbox = Gtk.HBox()
+            consider_played_hbox.pack_start(consider_played_label, False, False, 0)
+            consider_played_hbox.pack_start(scale, True, True, 3)
+
+            vbox.pack_start(consider_played_hbox, False, False, 0)
+
+            # continue on statup
             c = CCB(_("_Continue playback on startup"),
                     "player", "restore_playing", populate=True,
                     tooltip=_("If music is playing on shutdown, automatically "
                               "start playing on next startup"))
             vbox.pack_start(c, False, False, 0)
 
-            f = qltk.Frame(_("Startup"), child=vbox)
+            # listening options
+            f = qltk.Frame(_("Listening options"), child=vbox)
             self.pack_start(f, False, True, 0)
 
             for child in self.get_children():
