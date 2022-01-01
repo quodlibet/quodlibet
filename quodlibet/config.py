@@ -49,7 +49,7 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         "is_playing": "false",
         "restore_playing": "false",
-        "consider_played_percent": 50,
+        "consider_played_percent": "50",
     },
     "library": {
         "exclude": "",
