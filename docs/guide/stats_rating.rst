@@ -6,9 +6,10 @@ Library Statistics
 Play Count
 ----------
 
-The internal ``~#playcount`` tag gets incremented after a song ends or is
-forced to end by the user and the time it was played was more than half of
-the song's duration.
+The internal ``~#playcount`` tag is incremented when a song ends
+or is forced to end by the user and the playback time has exceeded
+a certain song duration (in %). This duration can be configured
+in the preferences.
 
 In case of radio streams, which don't have a defined duration, the play
 count gets incremented whenever the stream is played.
