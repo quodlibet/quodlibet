@@ -138,8 +138,8 @@ class AdvancedPreferences(EventPlugin):
                  "(restart required)")),
             text_config(
                 "settings", "datecolumn_timestamp_format",
-                "DateColumn timestamp format",
-                "A timestamp format, e.g. %Y%m%d %X "),
+                "DateColumn timestamp format:",
+                "A timestamp format, e.g. %Y%m%d %X"),
             text_config(
                 "settings", "scrollbar_always_visible",
                 "Scrollbars always visible:",
@@ -153,7 +153,7 @@ class AdvancedPreferences(EventPlugin):
                 "(restart required)"),
             text_config(
                 "settings", "query_font_size",
-                "Search input font size",
+                "Search input font size:",
                 "Size to apply to the search query entry, "
                 "in any Pango CSS units, e.g. '100%', '1rem'. (restart required)"),
             boolean_config(
@@ -162,17 +162,17 @@ class AdvancedPreferences(EventPlugin):
                 "It's not the default on win/macOS (restart required)"),
             text_config(
                 "browsers", "ignored_characters",
-                "Ignored characters: ",
+                "Ignored characters:",
                 "Characters to ignore in queries"),
             boolean_config(
                 "settings", "plugins_window_on_top",
-                "Plugin window on top: ",
+                "Plugin window on top:",
                 "Toggles whether the plugin window appears on top of others"),
             int_config(
                 "autosave", "queue_interval",
-                "Queue autosave interval: ",
+                "Queue autosave interval:",
                 ("Longest time between play queue auto-saves, or 0 for disabled. "
-                 "(restart required")),
+                 "(restart required)")),
             int_config(
                 "browsers", "searchbar_historic_entries",
                 "Number of history entries in the search bar:",
