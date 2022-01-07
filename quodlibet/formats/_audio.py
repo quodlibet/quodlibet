@@ -519,9 +519,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-                basename = self("~basename")
-                return "%s [%s]" % (
-                    decode_value("~basename", basename), _("Unknown"))
+                return decode_value("~basename", self("~basename"))
             else:
                 return title
         elif key in SORT_TO_TAG:
