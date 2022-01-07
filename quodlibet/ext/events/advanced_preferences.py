@@ -172,7 +172,11 @@ class AdvancedPreferences(EventPlugin):
                 "autosave", "queue_interval",
                 "Queue autosave interval: ",
                 ("Longest time between play queue auto-saves, or 0 for disabled. "
-                 "(restart required"))
+                 "(restart required")),
+            int_config(
+                "browsers", "searchbar_historic_entries",
+                "Number of history entries in the search bar:",
+                "8 by default (restart advised)")
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
