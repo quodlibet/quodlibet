@@ -176,7 +176,7 @@ class AdvancedPreferences(EventPlugin):
             int_config(
                 "browsers", "searchbar_historic_entries",
                 "Number of history entries in the search bar:",
-                "8 by default (restart advised)")
+                "A positive integer, or 0 to disable historic. 8 by default (restart advised)")
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
