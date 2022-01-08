@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-11-05 03:34+0000\n"
+"PO-Revision-Date: 2022-01-03 14:54+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -425,9 +425,8 @@ msgid "Internet Radio"
 msgstr "Nettradio"
 
 #: quodlibet/browsers/iradio.py:226
-#, fuzzy
 msgid "Add stations"
-msgstr "Alle stasjoner"
+msgstr "Legg til stasjoner"
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
@@ -1507,9 +1506,9 @@ msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:540
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't write '%s'"
-msgstr "Fant ikke «%s»."
+msgstr "Kunne ikke skrive «%s»."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 #, fuzzy
@@ -1558,9 +1557,8 @@ msgid "Ensure play counts are above zero when saving"
 msgstr "Ingen lagring av null som avspillingsantall"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
-#, fuzzy
 msgid "_Update strategy:"
-msgstr "_Oppdater stasjoner"
+msgstr "_Oppdater strategi:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
 #: quodlibet/ext/events/mpris/__init__.py:47
@@ -3757,7 +3755,7 @@ msgstr "Velger spørring å samsvare med basert på en betingelsesspørring."
 
 #: quodlibet/ext/query/conditional.py:18
 msgid "@(if: condition-query, then-query, else-query)"
-msgstr ""
+msgstr "@(if: betingelses-spørring, deretter-spørring, ellers-spørring)"
 
 #: quodlibet/ext/query/missing.py:17
 #, fuzzy
@@ -4797,9 +4795,8 @@ msgstr "Spor"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
-#, fuzzy
 msgid "Artist(s)"
-msgstr "Artist"
+msgstr "Artist(er)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
 msgid "End of path"
@@ -4811,9 +4808,8 @@ msgid "Match Albums"
 msgstr "album"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
-#, fuzzy
 msgid "Continue"
-msgstr "_Fortsett"
+msgstr "Fortsett"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:422
 #, fuzzy
@@ -5385,9 +5381,8 @@ msgid "Repeat all"
 msgstr "Gjenta alle"
 
 #: quodlibet/order/repeat.py:58
-#, fuzzy
 msgid "Repeat _all"
-msgstr "Gjenta alle"
+msgstr "Gjenta _alle"
 
 #: quodlibet/order/repeat.py:73
 #, fuzzy
@@ -5467,7 +5462,7 @@ msgstr "Bruk JACK for avspilling hvis det forefinnes"
 
 #: quodlibet/player/gstbe/prefs.py:77
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
-msgstr ""
+msgstr "Bruker «jackaudiosink» for avspillingsvask hvis det kan oppdages"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
@@ -5475,7 +5470,7 @@ msgstr "Koble til automatisk til JACK-utgangsenheter"
 
 #: quodlibet/player/gstbe/prefs.py:81
 msgid "Tells `jackaudiosink` to auto-connect"
-msgstr ""
+msgstr "Ber «jackaudiosink» om å koble til automatisk"
 
 #: quodlibet/player/gstbe/util.py:148
 #, fuzzy, python-format
