@@ -1,6 +1,7 @@
 # Copyright 2015    Christoph Reiter
 #           2016-21 Nick Boultbee
 #           2019    Peter Strulo
+#           2022    Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -172,7 +173,11 @@ class AdvancedPreferences(EventPlugin):
                 "autosave", "queue_interval",
                 "Queue autosave interval: ",
                 ("Longest time between play queue auto-saves, or 0 for disabled. "
-                 "(restart required"))
+                 "(restart required")),
+            int_config(
+                "browsers", "searchbar_historic_entries",
+                "Number of history entries in the search bar:",
+                "8 by default (restart advised)")
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
