@@ -3,8 +3,6 @@
 #           2011-2021 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
-#           2021      Jej@github
-
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
