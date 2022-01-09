@@ -49,7 +49,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         "is_playing": "false",
         "restore_playing": "false",
-        "consider_played_percent": "50",
+
+        #Consider a track as played after listening to this proportion of its overall length
+        "playcount_minimum_length_proportion": "0.5",
     },
     "library": {
         "exclude": "",
