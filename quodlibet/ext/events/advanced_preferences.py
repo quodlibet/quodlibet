@@ -208,7 +208,12 @@ class AdvancedPreferences(EventPlugin):
                 "autosave", "queue_interval",
                 "Queue autosave interval: ",
                 ("Longest time between play queue auto-saves, or 0 for disabled. "
-                 "(restart required"))
+                 "(restart required")),
+            slider_config(
+                "player", "playcount_minimum_length_proportion",
+                "Minimum length proportion to consider a track as played:",
+                "Consider a track played after listening to this proportion of its total duration (from 0 to 1)"
+            )
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
