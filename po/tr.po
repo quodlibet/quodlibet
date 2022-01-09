@@ -8,15 +8,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2013-07-20 22:32+0100\n"
-"Last-Translator: Turerkan <turerkan@gmail.com>\n"
-"Language-Team: Turerkan <turerkan@gmail.com>\n"
+"PO-Revision-Date: 2022-01-08 21:43+0000\n"
+"Last-Translator: E-Akcaer <gurbetcii_@hotmail.com>\n"
+"Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/tr/>\n"
 "Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -208,7 +209,7 @@ msgstr "Ses bildiriminin yerini girin:"
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
-msgstr ""
+msgstr "_Ekle"
 
 #: quodlibet/browsers/audiofeeds.py:269
 msgid "Audio Feeds"
@@ -220,7 +221,7 @@ msgstr "_Ses Bildirimleri"
 
 #: quodlibet/browsers/audiofeeds.py:373 quodlibet/qltk/data_editors.py:93
 msgid "_New"
-msgstr ""
+msgstr "_Yeni"
 
 #: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:424
@@ -278,11 +279,11 @@ msgstr "Geçersiz süzgeç"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
-msgstr ""
+msgstr "Albüm Koleksiyonu"
 
 #: quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
-msgstr ""
+msgstr "Albüm _Koleksiyonu"
 
 #: quodlibet/browsers/collection/models.py:24
 #, fuzzy, python-format
@@ -324,7 +325,7 @@ msgstr "Etiket"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "Birleştir"
 
 #: quodlibet/browsers/collection/prefs.py:187
 #, fuzzy
@@ -338,7 +339,7 @@ msgstr "Albüm listesi ayarları"
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_Uygula"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
@@ -365,7 +366,7 @@ msgstr ""
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_İptal"
 
 #: quodlibet/browsers/covergrid/main.py:131
 #, fuzzy
@@ -394,7 +395,7 @@ msgstr "Tüm albümler"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
 msgid "Wide Mode"
-msgstr ""
+msgstr "Geniş Kip"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
@@ -459,11 +460,11 @@ msgstr "İnternet radyo kanalı adresi girin:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
-msgstr ""
+msgstr "Elektronik"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hip Hop / Rep"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Oldies"
@@ -475,11 +476,11 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:393
 msgid "Japanese"
-msgstr ""
+msgstr "Japonca"
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Indian"
-msgstr ""
+msgstr "Hintli"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Religious"
@@ -491,7 +492,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Turkish"
-msgstr ""
+msgstr "Türkçe"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "Reggae / Dancehall"
@@ -7904,16 +7905,16 @@ msgstr "Çalma Listeleri"
 
 #: quodlibet/util/tags.py:178
 msgid "sample rate"
-msgstr ""
+msgstr "örnekleme oranı"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
-msgstr ""
+msgstr "kanal sayısı"
 
 #. Translators: e.g. "artist (sort)"
 #: quodlibet/util/tags.py:269
 msgid "sort"
-msgstr ""
+msgstr "sırala"
 
 #. Translators: e.g. "performer (roles)"
 #: quodlibet/util/tags.py:277
