@@ -214,9 +214,8 @@ def po_stats(po_path: Path):
     """Returns a string containing translation statistics"""
 
     try:
-        return subprocess.check_output(
-            ["msgfmt", "--statistics", str(po_path), "-o", "-"],
-            universal_newlines=True, stderr=subprocess.STDOUT).strip()
+        return subprocess.run(["msgfmt", "--statistics", str(po_path)],
+                              universal_newlines=True).stderr.strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
@@ -274,9 +273,8 @@ def check_po(po_path: Path, ignore_header=False):
 
     check_arg = "--check" if not ignore_header else "--check-format"
     try:
-        subprocess.check_output(
-            ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", "-"],
-            stderr=subprocess.STDOUT, universal_newlines=True)
+        subprocess.run(["msgfmt", check_arg, "--check-domain", str(po_path)],
+                       universal_newlines=True).stderr
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
 
