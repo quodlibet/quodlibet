@@ -124,6 +124,27 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_fill(True)
 
+        clear_item = SmallImageButton(
+            image=SymbolicIconImage(Icons.USER_TRASH,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_("Clear Queue"))
+        clear_item.connect("clicked", self.__clear_queue)
+        outer.pack_start(clear_item, False, False, 3)
+
+        toggle = SmallImageToggleButton(
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_(
+                "Disable queue - the queue will be ignored when playing"))
+        disabled = config.getboolean("memory", "queue_disable", False)
+        toggle.props.active = disabled
+        self.__queue_disable(disabled)
+        toggle.connect('toggled',
+                       lambda b: self.__queue_disable(b.props.active))
+        outer.pack_start(toggle, False, False, 3)
+
         mode_menu = Gtk.Menu()
 
         norm_mode_item = RadioMenuItem(
@@ -160,34 +181,17 @@ class QueueExpander(Gtk.Expander):
             populate=True)
         menu.append(stop_checkbox)
 
-        clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
-        menu.append(clear_item)
-        clear_item.connect("activate", self.__clear_queue)
-
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
-        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.set_relief(Gtk.ReliefStyle.NORMAL)
         button.show_all()
         button.hide()
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
 
-        outer.pack_start(button, False, False, 0)
-
-        toggle = SmallImageToggleButton(
-            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
-                                    Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_(
-                "Disable queue - the queue will be ignored when playing"))
-        disabled = config.getboolean("memory", "queue_disable", False)
-        toggle.props.active = disabled
-        self.__queue_disable(disabled)
-        toggle.connect('toggled',
-                       lambda b: self.__queue_disable(b.props.active))
-        outer.pack_start(toggle, False, False, 6)
+        outer.pack_start(button, False, False, 3)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
