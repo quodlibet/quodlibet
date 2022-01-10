@@ -1,5 +1,5 @@
 # Copyright 2015-2017 Christoph Reiter
-#             2019-21 Nick Boultbee
+#             2019-22 Nick Boultbee
 #
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
@@ -215,7 +215,7 @@ def po_stats(po_path: Path):
 
     try:
         return subprocess.check_output(
-            ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
+            ["msgfmt", "--statistics", str(po_path), "-o", "-"],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
@@ -275,7 +275,7 @@ def check_po(po_path: Path, ignore_header=False):
     check_arg = "--check" if not ignore_header else "--check-format"
     try:
         subprocess.check_output(
-            ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
+            ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", "-"],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output)
