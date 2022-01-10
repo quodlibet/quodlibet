@@ -83,7 +83,7 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
                  on_change_callback=None, label_value_callback=None):
     def on_reverted(*args):
         config.reset(section, option)
-        scale.set_active(config.getfloat(section, option))
+        scale.set_value(config.getfloat(section, option))
 
     def on_change(scale):
         value = scale.get_value()
