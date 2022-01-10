@@ -212,8 +212,8 @@ class AdvancedPreferences(EventPlugin):
             slider_config(
                 "player", "playcount_minimum_length_proportion",
                 "Minimum length proportion to consider a track as played:",
-                "Consider a track played after listening to this proportion of its total duration (from 0 to 1)"
-            )
+                ("Consider a track played after listening to this proportion of "
+                 "its total duration (from 0 to 1)"))
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
