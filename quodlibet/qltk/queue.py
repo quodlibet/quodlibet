@@ -436,7 +436,7 @@ class PlayQueue(SongList):
         if not self._should_write(force, diff):
             self._pending += 1
             return
-        print_d(f"Saving play queue after {diff:.1f}s ({self._pending} update(s))")
+        print_d(f"Saving play queue after {diff:.1f}s")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:
@@ -460,7 +460,10 @@ class PlayQueue(SongList):
         if force:
             return True
         if self.autosave_interval:
-            return diff > self.autosave_interval
+            # Generally only save if there are *known* pending updates,
+            # but these don´t catch everything, so save regardless every now and again.
+            return ((diff > self.autosave_interval and self._pending)
+                    or diff > self.autosave_interval * 5)
         return self._pending >= self._MAX_PENDING
 
     def __popup(self, widget, library):
