@@ -295,7 +295,7 @@ msgstr ""
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:482
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr ""
@@ -4991,7 +4991,7 @@ msgstr ""
 msgid "Random"
 msgstr ""
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:174
 msgid "_Random"
 msgstr ""
 
@@ -6250,39 +6250,39 @@ msgstr ""
 msgid "_Queue"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:130
-msgid "Ephemeral"
-msgstr ""
-
 #: quodlibet/qltk/queue.py:131
-msgid "Remove songs from the queue after playing them"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:139
-msgid "Persistent"
+msgid "Clear Queue"
 msgstr ""
 
 #: quodlibet/qltk/queue.py:140
-msgid "Keep songs in the queue after playing them"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:148
-msgid "Mode"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:159
-msgid "Stop at End"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:163
-msgid "_Clear Queue"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:184
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:296
+#: quodlibet/qltk/queue.py:151
+msgid "Ephemeral"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:152
+msgid "Remove songs from the queue after playing them"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:160
+msgid "Persistent"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:161
+msgid "Keep songs in the queue after playing them"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:169
+msgid "Mode"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:180
+msgid "Stop at End"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:300
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
