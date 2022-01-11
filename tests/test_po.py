@@ -20,11 +20,17 @@ except ImportError:
     polib = None
 
 from quodlibet.util.string.titlecase import human_title
+from quodlibet.util import is_windows
 from gdist import gettextutil
 
 # Don't use get_module_dir(), as venvs can arrange things differently
 QL_BASE_PATH = Path(__file__).parent.parent
 PO_PATH = QL_BASE_PATH / "po"
+
+
+pytestmark = pytest.mark.skipif(
+    is_windows(),
+    reason="FIXME: https://github.com/quodlibet/quodlibet/issues/3886")
 
 
 def has_gettext_util():
