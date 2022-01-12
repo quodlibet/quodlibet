@@ -219,8 +219,7 @@ class SoundcloudApiClient(RestApi):
         self._get('/me/tracks', self._on_track_data, limit=self.PAGE_SIZE)
 
     def get_comments(self, track_id):
-        self._get('/tracks/%s/comments' % track_id, self._receive_comments,
-                  limit=200)
+        self._get(f"/tracks/{track_id}/comments", self._receive_comments, limit=100)
 
     @json_callback
     def _receive_comments(self, json):

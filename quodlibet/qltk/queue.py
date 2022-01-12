@@ -20,12 +20,11 @@ from senf import bytes2fsn, fsn2bytes
 import quodlibet
 from quodlibet import ngettext, _, print_e, print_w, print_d
 from quodlibet import config
-from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, connect_after_destroy, \
-        format_time_preferred, print_exc
+from quodlibet.util import (connect_destroy, connect_after_destroy,
+                            format_time_preferred, print_exc, DeferredSignal)
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -153,8 +152,7 @@ class QueueExpander(Gtk.Expander):
             group=None)
         mode_menu.append(norm_mode_item)
         norm_mode_item.set_active(True)
-        norm_mode_item.connect("toggled",
-                                lambda b: self.__keep_songs_enable(False))
+        norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
 
         keep_mode_item = RadioMenuItem(
             label=_("Persistent"),
@@ -217,9 +215,9 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-data-received', self.__drag_data_received)
 
         self.queue.model.connect_after('row-inserted',
-            util.DeferredSignal(self.__check_expand), count_label)
+                                       DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
-            util.DeferredSignal(self.__update_count), count_label)
+                                       DeferredSignal(self.__update_count), count_label)
 
         self.__update_count(self.model, None, count_label)
 
@@ -476,8 +474,7 @@ class PlayQueue(SongList):
             return
 
         menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False,
-            ratings=False)
+            library, songs, queue=False, remove=False, delete=False, ratings=False)
         menu.preseparate()
         remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")

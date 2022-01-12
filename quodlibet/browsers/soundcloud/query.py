@@ -1,4 +1,4 @@
-# Copyright 2016-20 Nick Boultbee
+# Copyright 2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,10 +27,9 @@ _CLOCK = time.time
 
 
 def convert_time(t):
-    return datetime.strftime(datetime.fromtimestamp(int(t)),
-                             '%Y-%m-%d %H:%S')
+    return datetime.strftime(datetime.fromtimestamp(int(t)), '%Y-%m-%d %H:%S')
 
-# Convert QL to Soundcloud tags with optional value mapper
+
 _QL_TO_SC = {
     'genre': ('genres', None),
     'length': ('duration', lambda x: int((x or 0) * 1000)),
@@ -42,6 +41,8 @@ _QL_TO_SC = {
     'comments': ('q', None),
     'soundcloud_user_id': ('user_id', None)
 }
+""" Convert QL to Soundcloud tags with optional value mapper"""
+
 SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 
 

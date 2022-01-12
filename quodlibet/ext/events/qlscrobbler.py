@@ -5,7 +5,7 @@
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
 #                  Steven Robertson <steven@strobe.cc>
-#     2012-2021    Nick Boultbee
+#     2012-2022    Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -484,8 +484,7 @@ class QLScrobbler(EventPlugin):
         table.set_row_spacings(6)
 
         labels = []
-        label_names = [_("_Service:"), _("_URL:"), _("User_name:"),
-                       _("_Password:")]
+        label_names = [_("_Service:"), _("_URL:"), _("User_name:"), _("_Password:")]
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
