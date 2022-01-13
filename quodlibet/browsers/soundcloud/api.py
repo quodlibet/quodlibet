@@ -1,4 +1,4 @@
-# Copyright 2016-21 Nick Boultbee
+# Copyright 2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,7 +7,7 @@
 
 import json
 from datetime import datetime
-from typing import Optional, cast
+from typing import Optional, Any
 from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup
@@ -30,15 +30,16 @@ class RestApi(GObject.Object):
         self._cancellable = Gio.Cancellable.new()
         self.root = root
         self._on_failure = on_failure
+        self.access_token = None
 
     def _default_params(self):
         return {}
 
-    def _get(self, path, callback, **kwargs):
+    def _get(self, path, callback, data=None, **kwargs):
         args = self._default_params()
         args.update(kwargs)
         msg = self._add_auth_to(Soup.Message.new('GET', self._url(path, args)))
-        download_json(msg, self._cancellable, callback, None, self._on_failure)
+        download_json(msg, self._cancellable, callback, data, self._on_failure)
 
     def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
         if self.access_token:
@@ -60,17 +61,6 @@ class RestApi(GObject.Object):
                         Soup.MemoryUse.COPY, post_body)
         download_json(msg, self._cancellable, callback, None, self._on_failure)
 
-    def _put(self, path, callback, **kwargs):
-        args = self._default_params()
-        args.update(kwargs)
-        msg = Soup.Message.new('PUT', self._url(path))
-        body = urlencode(args)
-        if not isinstance(body, bytes):
-            body = body.encode("ascii")
-        msg.set_request('application/x-www-form-urlencoded',
-                        Soup.MemoryUse.COPY, body)
-        download_json(msg, self._cancellable, callback, None, self._on_failure)
-
     def _delete(self, path, callback, **kwargs):
         args = self._default_params()
         args.update(kwargs)
@@ -79,7 +69,7 @@ class RestApi(GObject.Object):
         body = urlencode(args)
         if not isinstance(body, bytes):
             body = body.encode("ascii")
-        msg = Soup.Message.new('DELETE', self._url(path))
+        msg = self._add_auth_to(Soup.Message.new('DELETE', self._url(path)))
         msg.set_request('application/x-www-form-urlencoded',
                         Soup.MemoryUse.COPY, body)
         download(msg, self._cancellable, callback, None, try_decode=True)
@@ -94,7 +84,7 @@ class SoundcloudApiClient(RestApi):
     __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
     API_ROOT = "https://api.soundcloud.com"
     REDIRECT_URI = 'https://quodlibet.github.io/callbacks/soundcloud.html'
-    PAGE_SIZE = 150
+    PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
     COUNT_TAGS = {'%s_count' % t
                   for t in ('playback', 'download', 'likes', 'favoritings',
@@ -123,11 +113,11 @@ class SoundcloudApiClient(RestApi):
     def online(self):
         return bool(self.access_token)
 
-    def _on_failure(self, req: HTTPRequest, _exc: Exception) -> None:
+    def _on_failure(self, req: HTTPRequest, _exc: Exception, data: Any) -> None:
         """Callback for HTTP failures."""
         code = req.message.get_property('status-code')
-        print_w(f"Failed with HTTP {code}.")
-        if code in (401, 403):
+        print_w(f"Failed with HTTP {code} ({_exc}) for {data}.")
+        if code in (401,):
             print_w("User session no longer valid, logging out.")
             if self.access_token:
                 # Could call log_out to persist, but we're probably about to refresh...
@@ -174,7 +164,7 @@ class SoundcloudApiClient(RestApi):
         self._post('/oauth2/token', self._receive_tokens, **options)
 
     @json_callback
-    def _receive_tokens(self, json):
+    def _receive_tokens(self, json, _data):
         self.access_token = json['access_token']
         refresh_token = json.get('refresh_token', None)
         if refresh_token:
@@ -190,7 +180,7 @@ class SoundcloudApiClient(RestApi):
         self._get('/me', self._receive_me)
 
     @json_callback
-    def _receive_me(self, json):
+    def _receive_me(self, json, _data):
         self.username = json['username']
         self.user_id = json['id']
         self.emit('authenticated', Wrapper(json))
@@ -200,6 +190,7 @@ class SoundcloudApiClient(RestApi):
             "q": "",
             "limit": self.PAGE_SIZE,
             "duration[from]": self.MIN_DURATION_SECS * 1000,
+            "access": "playable",
         }
         for k, v in params.items():
             delim = " " if k == 'q' else ","
@@ -207,13 +198,27 @@ class SoundcloudApiClient(RestApi):
         print_d("Getting tracks: params=%s" % merged)
         self._get('/tracks', self._on_track_data, **merged)
 
+    def get_stream_url(self, song):
+        try:
+            self._get(f"/tracks/{song['soundcloud_track_id']}/streams",
+                      self._on_track_stream_urls_data, song)
+        except Exception:
+            print_w(f"Problem getting stream URL for {song}")
+
     @json_callback
-    def _on_track_data(self, json):
+    def _on_track_stream_urls_data(self, json, song):
+        uri = json['http_mp3_128_url']
+        # URI isn't the key in this SoundcloudFile, so this is OK
+        song["~uri"] = uri
+        # print_d(f"Set song URI for {song['title']} to {uri}")
+
+    @json_callback
+    def _on_track_data(self, json, _data):
         songs = list(filter(None, [self._audiofile_for(r) for r in json]))
         self.emit('songs-received', songs)
 
     def get_favorites(self):
-        self._get('/me/favorites', self._on_track_data, limit=self.PAGE_SIZE)
+        self._get("/me/likes/tracks", self._on_track_data, limit=self.PAGE_SIZE)
 
     def get_my_tracks(self):
         self._get('/me/tracks', self._on_track_data, limit=self.PAGE_SIZE)
@@ -222,8 +227,8 @@ class SoundcloudApiClient(RestApi):
         self._get(f"/tracks/{track_id}/comments", self._receive_comments, limit=100)
 
     @json_callback
-    def _receive_comments(self, json):
-        print_d("Got comments: %s" % json)
+    def _receive_comments(self, json, _data):
+        print_d("Got comments: %s..." % str(json)[:255])
         if json and len(json):
             # Should all be the same track...
             track_id = json[0]["track_id"]
@@ -234,38 +239,35 @@ class SoundcloudApiClient(RestApi):
         config.set("browsers", "soundcloud_refresh_token", self.refresh_token or "")
         config.set("browsers", "soundcloud_user_id", self.user_id or "")
 
-    def put_favorite(self, track_id):
+    def save_favorite(self, track_id):
         print_d("Saving track %s as favorite" % track_id)
-        url = '/me/favorites/%s' % track_id
-        self._put(url, self._on_favorited)
+        url = f"/likes/tracks/{track_id}"
+        self._post(url, self._on_favorited)
 
     def remove_favorite(self, track_id):
         print_d("Deleting favorite for %s" % track_id)
-        url = '/me/favorites/%s' % track_id
+        url = f"/likes/tracks/{track_id}"
         self._delete(url, self._on_favorited)
 
     @json_callback
-    def _on_favorited(self, json):
-        print_d("Successfully updated favorite: %s" % json)
+    def _on_favorited(self, json, _data):
+        print_d("Successfully updated favorite")
 
     def _audiofile_for(self, response) -> Optional[AudioFile]:
         r = Wrapper(response)
         d = r.data
-        dl = d.get("download_url", None) if d.get("downloadable", False) else None
         try:
-            url = cast(str, dl or r.stream_url)
-        except AttributeError as e:
-            print_w("Unusable result (%s) from SC: %s" % (e, d))
+            # It's not a _play_ URI, because that needs a separate request,
+            # but it's unique and permanent, so that's good enough here
+            url = r.uri
+            if not url:
+                print_d(f"Unusable response (no URI): {d}")
+                return None
+            song = SoundcloudFile(uri=url, track_id=r.id, client=self,
+                                  favorite=d.get("user_favorite", False))
+        except Exception as e:
+            print_w(f"Track {r.id} no good ({e})")
             return None
-        if not url:
-            print_w(f"Unplayable Soundcloud item (no stream URL) "
-                    f"for track #{d['id']}, {d['title']}")
-            return None
-        uri = SoundcloudApiClient._add_secret(url)
-        song = SoundcloudFile(uri=uri,
-                              track_id=r.id,
-                              favorite=d.get("user_favorite", False),
-                              client=self)
 
         def get_utc_date(s):
             parts = s.split()
@@ -300,19 +302,8 @@ class SoundcloudApiClient(RestApi):
                         artist=r.user["username"],
                         soundcloud_user_id=str(r.user.id),
                         website=r.permalink_url,
-                        genre=u"\n".join(r.genre and r.genre.split(",") or []))
-            if dl:
-                try:
-                    song.update(format=r.original_format)
-                except AttributeError:
-                    pass
-                try:
-                    song["~#bitrate"] = r.original_content_size * 8 / r.duration
-                except AttributeError:
-                    # 2021-07: original_content_size seems to have gone now...
-                    song["~#bitrate"] = DEFAULT_BITRATE
-            else:
-                song["~#bitrate"] = DEFAULT_BITRATE
+                        genre="\n".join(r.genre and r.genre.split(",") or []))
+            song["~#bitrate"] = DEFAULT_BITRATE
             if r.description:
                 song["comment"] = sanitise_tag(r.description)
             song["~#length"] = int(r.duration) / 1000
@@ -329,10 +320,6 @@ class SoundcloudApiClient(RestApi):
         except Exception as e:
             print_w(f"Couldn't parse song ({e!r}): {json.dumps(r._raw)}")
         return song
-
-    @classmethod
-    def _add_secret(cls, stream_url: str) -> Optional[str]:
-        return f"{stream_url}?client_id={cls.__CLIENT_ID}" if stream_url else None
 
     @util.cached_property
     def _authorize_url(self):
