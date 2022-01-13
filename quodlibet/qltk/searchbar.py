@@ -52,10 +52,11 @@ class SearchBarBox(Gtk.Box):
             filename = os.path.join(
                 quodlibet.get_user_dir(), "lists", "queries")
 
-        combo = ComboBoxEntrySave(filename, count=8,
-                                  validator=validator,
-                                  title=_("Saved Searches"),
-                                  edit_title=_(u"Edit saved searches…"))
+        historic_entries_count = config.getint("browsers", "searchbar_historic_entries")
+
+        combo = ComboBoxEntrySave(
+            filename, count=historic_entries_count, validator=validator,
+            title=_("Saved Searches"), edit_title=_(u"Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
             self._filter_changed, timeout=timeout, owner=self)
