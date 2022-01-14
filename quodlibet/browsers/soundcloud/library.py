@@ -1,19 +1,21 @@
-# Copyright 2016-2021 Nick Boultbee
+# Copyright 2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.util.dprint import print_d, print_w
-from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet import config
+from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library import SongLibrary
+from quodlibet.library.base import K
 from quodlibet.util import cached_property, print_exc
+from quodlibet.util.dprint import print_d, print_w
+from senf import fsnative
 
 
-class SoundcloudLibrary(SongLibrary):
+class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
     STAR = ["artist", "title", "genre", "tags"]
 
     def __init__(self, client, player=None):
@@ -39,14 +41,13 @@ class SoundcloudLibrary(SongLibrary):
         values = self._contents.values()
         try:
             return SoundcloudQuery(text).filter(values)
-        except SoundcloudQuery.error:
+        except SoundcloudQuery.Error:
             return values
 
-    def query_with_refresh(self, text, sort=None, star=STAR):
+    def query_with_refresh(self, query: SoundcloudQuery):
         """Queries Soundcloud for some (more) relevant results, then filters"""
         current = self._contents.values()
 
-        query = SoundcloudQuery(text, star=star)
         if not query.is_parsable:
             return current
         self.client.get_tracks(query.terms)
@@ -58,9 +59,14 @@ class SoundcloudLibrary(SongLibrary):
         raise TypeError("Can't rename Soundcloud files")
 
     def _on_songs_received(self, client, songs):
-        new = len(self.add(songs))
-        print_d("Got %d songs (%d new)." % (len(songs), new))
-        self.emit('changed', songs)
+        new = self.add(songs)
+        print_d("Got %d songs (%d new)." % (len(songs), len(new)))
+        for song in new:
+            # Pre-cache. It's horrible, but at least you can play things immediately
+            self.client.get_stream_url(song)
+        # We've already emitted "added" above
+        updated = set(songs) - set(new)
+        self.emit('changed', updated)
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
@@ -97,15 +103,17 @@ class SoundcloudLibrary(SongLibrary):
 class SoundcloudFile(RemoteFile):
     format = "Remote Soundcloud File"
 
-    def __init__(self, uri, track_id, favorite=False, client=None):
-        super().__init__(uri)
+    def __init__(self, uri: str, track_id: int, client, favorite: bool = False):
+        # Don't call super, it invokes __getitem__
+        self["~uri"] = uri
+        self.sanitize(fsnative(uri))
         self.client = client
+        if not self.client:
+            raise EnvironmentError("Must have a Soundcloud client")
         self["soundcloud_track_id"] = track_id
         self.favorite = favorite
         if self.favorite:
             self['~#rating'] = 1.0
-        if not self.client:
-            raise EnvironmentError("Must have a Soundcloud client")
 
     def set_image(self, image):
         raise TypeError("Can't change images on Soundcloud")
@@ -132,11 +140,10 @@ class SoundcloudFile(RemoteFile):
         self._write_rating()
 
     def _write_rating(self):
-        should_fave = (self.has_rating and
-                       self("~#rating") >= config.RATINGS.default)
+        should_fave = self.has_rating and self("~#rating") >= config.RATINGS.default
         track_id = self.track_id
         if not self.favorite and should_fave:
-            self.client.put_favorite(track_id)
+            self.client.save_favorite(track_id)
             self.favorite = True
         elif self.favorite and not should_fave:
             self.client.remove_favorite(track_id)

@@ -20,12 +20,11 @@ from senf import bytes2fsn, fsn2bytes
 import quodlibet
 from quodlibet import ngettext, _, print_e, print_w, print_d
 from quodlibet import config
-from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, connect_after_destroy, \
-        format_time_preferred, print_exc
+from quodlibet.util import (connect_destroy, connect_after_destroy,
+                            format_time_preferred, print_exc, DeferredSignal)
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -124,6 +123,27 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_fill(True)
 
+        clear_item = SmallImageButton(
+            image=SymbolicIconImage(Icons.USER_TRASH,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_("Clear Queue"))
+        clear_item.connect("clicked", self.__clear_queue)
+        outer.pack_start(clear_item, False, False, 3)
+
+        toggle = SmallImageToggleButton(
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_(
+                "Disable queue - the queue will be ignored when playing"))
+        disabled = config.getboolean("memory", "queue_disable", False)
+        toggle.props.active = disabled
+        self.__queue_disable(disabled)
+        toggle.connect('toggled',
+                       lambda b: self.__queue_disable(b.props.active))
+        outer.pack_start(toggle, False, False, 3)
+
         mode_menu = Gtk.Menu()
 
         norm_mode_item = RadioMenuItem(
@@ -132,8 +152,7 @@ class QueueExpander(Gtk.Expander):
             group=None)
         mode_menu.append(norm_mode_item)
         norm_mode_item.set_active(True)
-        norm_mode_item.connect("toggled",
-                                lambda b: self.__keep_songs_enable(False))
+        norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
 
         keep_mode_item = RadioMenuItem(
             label=_("Persistent"),
@@ -160,34 +179,17 @@ class QueueExpander(Gtk.Expander):
             populate=True)
         menu.append(stop_checkbox)
 
-        clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
-        menu.append(clear_item)
-        clear_item.connect("activate", self.__clear_queue)
-
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
-        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.set_relief(Gtk.ReliefStyle.NORMAL)
         button.show_all()
         button.hide()
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
 
-        outer.pack_start(button, False, False, 0)
-
-        toggle = SmallImageToggleButton(
-            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
-                                    Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_(
-                "Disable queue - the queue will be ignored when playing"))
-        disabled = config.getboolean("memory", "queue_disable", False)
-        toggle.props.active = disabled
-        self.__queue_disable(disabled)
-        toggle.connect('toggled',
-                       lambda b: self.__queue_disable(b.props.active))
-        outer.pack_start(toggle, False, False, 6)
+        outer.pack_start(button, False, False, 3)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
@@ -213,9 +215,9 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-data-received', self.__drag_data_received)
 
         self.queue.model.connect_after('row-inserted',
-            util.DeferredSignal(self.__check_expand), count_label)
+                                       DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
-            util.DeferredSignal(self.__update_count), count_label)
+                                       DeferredSignal(self.__update_count), count_label)
 
         self.__update_count(self.model, None, count_label)
 
@@ -436,7 +438,7 @@ class PlayQueue(SongList):
         if not self._should_write(force, diff):
             self._pending += 1
             return
-        print_d(f"Saving play queue after {diff:.1f}s ({self._pending} update(s))")
+        print_d(f"Saving play queue after {diff:.1f}s")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:
@@ -460,7 +462,10 @@ class PlayQueue(SongList):
         if force:
             return True
         if self.autosave_interval:
-            return diff > self.autosave_interval
+            # Generally only save if there are *known* pending updates,
+            # but these don´t catch everything, so save regardless every now and again.
+            return ((diff > self.autosave_interval and self._pending)
+                    or diff > self.autosave_interval * 5)
         return self._pending >= self._MAX_PENDING
 
     def __popup(self, widget, library):
@@ -469,8 +474,7 @@ class PlayQueue(SongList):
             return
 
         menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False,
-            ratings=False)
+            library, songs, queue=False, remove=False, delete=False, ratings=False)
         menu.preseparate()
         remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")

@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Nick Boultbee
+# Copyright 2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -308,8 +308,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def __query_changed(self, bar, text, restore=False):
         try:
             self.__filter = SoundcloudQuery(text, self.STAR)
-            self.library.query_with_refresh(text)
-        except SoundcloudQuery.error as e:
+            self.library.query_with_refresh(self.__filter)
+        except SoundcloudQuery.Error as e:
             print_d("Couldn't parse query: %s" % e)
         else:
             print_d("Got terms from query: %s" % (self.__filter.terms,))
@@ -438,7 +438,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         name = data.username
         self.login_state = State.LOGGED_IN
         self.update_connect_button()
-        self._refresh_online_filters()
+        self.activate()
         msg = Message(Gtk.MessageType.INFO, app.window, _("Connected"),
                       _("Quod Libet is now connected, %s!") % name)
         msg.run()

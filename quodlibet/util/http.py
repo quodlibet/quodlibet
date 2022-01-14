@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#        2016-21 Nick Boultbee
+#        2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -156,7 +156,7 @@ class HTTPRequest(GObject.Object):
                                   self.cancellable, spliced, None)
 
 
-FailureCallback = Callable[[HTTPRequest, Exception], None]
+FailureCallback = Callable[[HTTPRequest, Exception, Any], None]
 
 
 def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Callable,
@@ -185,7 +185,7 @@ def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Call
     request.connect('received', received)
     request.connect('sent', lambda r, m: r.receive())
     if failure_callback:
-        request.connect('send-failure', failure_callback)
+        request.connect('send-failure', failure_callback, data)
     request.send()
 
 

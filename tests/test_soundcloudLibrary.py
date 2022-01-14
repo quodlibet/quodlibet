@@ -11,6 +11,7 @@ from pathlib import Path
 from quodlibet import config
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.library import SoundcloudLibrary
+from quodlibet.browsers.soundcloud.query import SoundcloudQuery
 from tests import TestCase
 
 PERMALINK = "https://soundcloud.com/"
@@ -48,7 +49,7 @@ class TSoundcloudLibrary(TestCase):
 
     def test_parse(self):
         lib = self.lib
-        lib.query_with_refresh("dummy search")
+        lib.query_with_refresh(SoundcloudQuery("dummy search"))
         songs = list(lib._contents.values())
         assert len(songs) == 1
         s = songs[0]
@@ -64,7 +65,7 @@ class TSoundcloudLibrary(TestCase):
 
     def test_artwork_url(self):
         lib = SoundcloudLibrary(self.FakeClient())
-        lib.query_with_refresh("")
+        lib.query_with_refresh(SoundcloudQuery(""))
         s = list(lib._contents.values())[0]
         url = s("artwork_url")
         assert url == "https://i1.sndcdn.com/artworks-000121689963-0b0pdr-t500x500.jpg"

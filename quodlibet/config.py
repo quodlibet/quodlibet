@@ -115,6 +115,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # search bar text
         "query_text": "",
 
+        # number of history entries in the search bar
+        "searchbar_historic_entries": "8",
+
         # panes in paned browser
         "panes":
             "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",

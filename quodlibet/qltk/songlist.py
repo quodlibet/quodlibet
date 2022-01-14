@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2021 Nick Boultbee
+#      2011-2022 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,7 +37,6 @@ from quodlibet.formats._audio import TAG_TO_SORT, AudioFile
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.qltk.songlistcolumns import create_songlist_column, SongListColumn
 from quodlibet.util import connect_destroy
-
 
 DND_QL, DND_URI_LIST = range(2)
 
@@ -241,7 +240,7 @@ class SongListDnDMixin(GObject.GObject):
             self.set_drag_dest(x, y)
             self.scroll_motion(x, y)
             if Gtk.drag_get_source_widget(ctx) == self and \
-                    not self.__force_copy:
+                not self.__force_copy:
                 kind = Gdk.DragAction.MOVE
             else:
                 kind = Gdk.DragAction.COPY
@@ -280,7 +279,7 @@ class SongListDnDMixin(GObject.GObject):
             # be achieved by simply using the same widget check as in the move
             # action.
             if Gtk.drag_get_source_widget(ctx) == self and \
-                    not self.__force_copy:
+                not self.__force_copy:
                 self.__drag_iters = list(map(model.get_iter, paths))
             else:
                 self.__drag_iters = []
@@ -363,8 +362,7 @@ class SongListDnDMixin(GObject.GObject):
         return window.browser.dropped(songs)
 
 
-class SongList(AllTreeView, SongListDnDMixin, DragScroll,
-               util.InstanceTracker):
+class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     """A TreeView containing a list of songs."""
 
     __gsignals__: GSignals = {
@@ -754,7 +752,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             return []
         return model.get()
 
-    def _sort_songs(self, songs):
+    def _sort_songs(self, songs: List[AudioFile]):
         """Sort passed songs in place based on the column sort orders"""
 
         order = self.get_sort_orders()
@@ -810,7 +808,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll,
             insert_iter = self.__find_song_position(song)
             model.insert_before(insert_iter, row=[song])
 
-    def set_songs(self, songs, sorted=False, scroll=True, scroll_select=False):
+    def set_songs(self, songs: List[AudioFile], sorted: bool = False,
+                  scroll: bool = True, scroll_select: bool = False):
         """Fill the song list.
 
         If sorted is True, the passed songs will not be sorted and
