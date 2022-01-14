@@ -520,15 +520,11 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-<<<<<<< HEAD
                 basename = decode_value("~basename", self("~basename"))
                 unknown = _(config.gettext("browsers", "missing_title_string"))
                 if unknown is not "":
                     unknown = '[' + unknown + ']'
                 return f"{basename} {unknown}"
-=======
-                return decode_value("~basename", self("~basename"))
->>>>>>> 3b58894c78d748d33f167572d158520cf1ce003c
             else:
                 return title
         elif key in SORT_TO_TAG:
