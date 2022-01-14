@@ -624,9 +624,9 @@ class FileBackedPlaylist(Playlist):
                          % (base, last_error))
 
     @classmethod
-    def from_songs(cls, dir_, songs, songs_lib=None, pl_lib=None):
+    def from_songs(cls, dir_, songs, title=None, songs_lib=None, pl_lib=None):
         assert isinstance(dir_, fsnative)
-        title = cls.suggested_name_for(songs)
+        title = title or cls.suggested_name_for(songs)
         playlist = cls.new(dir_, title, songs_lib=songs_lib, pl_lib=pl_lib)
         playlist.extend(songs)
         return playlist

@@ -3,7 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Set, Iterable
+from typing import Optional, Set, Iterable, TypeVar
 
 from quodlibet import util, print_d
 from quodlibet.formats import MusicFile, AudioFile
@@ -16,7 +16,10 @@ from quodlibet.util.path import normalize_path
 from senf import fsnative
 
 
-class SongLibrary(Library[K, AudioFile], PicklingMixin):
+V = TypeVar("V", bound=AudioFile)
+
+
+class SongLibrary(Library[K, V], PicklingMixin):
     """A library for songs.
 
     Items in this kind of library must support (roughly) the AudioFile

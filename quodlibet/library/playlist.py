@@ -78,9 +78,10 @@ class PlaylistLibrary(Library[str, Playlist]):
                                           songs_lib=self._library, pl_lib=self)
         return XSPFBackedPlaylist.new(self.pl_dir, songs_lib=self._library, pl_lib=self)
 
-    def create_from_songs(self, songs: Iterable[AudioFile]) -> Playlist:
+    def create_from_songs(self, songs: Iterable[AudioFile], title=None) -> Playlist:
         """Creates a playlist visible to this library"""
-        return XSPFBackedPlaylist.from_songs(self.pl_dir, songs, self._library, self)
+        return XSPFBackedPlaylist.from_songs(
+            self.pl_dir, songs, title=title, songs_lib=self._library, pl_lib=self)
 
     def destroy(self):
         for sig in [self._rsig, self._csig]:

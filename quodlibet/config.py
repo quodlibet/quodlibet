@@ -114,6 +114,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # search bar text
         "query_text": "",
 
+        # number of history entries in the search bar
+        "searchbar_historic_entries": "8",
+
         # panes in paned browser
         "panes":
             "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",
@@ -246,6 +249,12 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # Amount of colour to apply to validating text entries
         # (0.0 = no colour, 1.0 = full colour)
         "validator_colorise": "0.4"
+    },
+
+    "autosave": {
+        # Maximum time, in seconds, before saving the play queue to disk.
+        # Zero to disable periodic saving (batched instead)
+        "queue_interval": "60"
     },
 
     "rename": {

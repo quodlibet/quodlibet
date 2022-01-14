@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-10-01 16:34+0000\n"
+"PO-Revision-Date: 2022-01-03 14:54+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.10.1\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -37,37 +37,40 @@ msgid "_Date"
 msgstr "_Date"
 
 #: quodlibet/browsers/albums/main.py:226
+#: quodlibet/browsers/covergrid/main.py:59
 msgid "_Date Added"
 msgstr "_Date ajoutée"
 
 #: quodlibet/browsers/albums/main.py:227
+#: quodlibet/browsers/covergrid/main.py:60
 msgid "_Original Date"
 msgstr "_Date d'origine"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr "_Genre"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "Évaluation"
 
 #: quodlibet/browsers/albums/main.py:230
+#: quodlibet/browsers/covergrid/main.py:63
 msgid "_Playcount"
 msgstr "_Nombre d'essais"
 
 #: quodlibet/browsers/albums/main.py:236
-#: quodlibet/browsers/covergrid/main.py:66
+#: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr "_Trier par…"
 
 #: quodlibet/browsers/albums/main.py:257
-#: quodlibet/browsers/covergrid/main.py:87
+#: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Préférences"
@@ -81,14 +84,14 @@ msgid "_Album List"
 msgstr "Liste des _albums"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:287
-#: quodlibet/browsers/covergrid/main.py:503
+#: quodlibet/browsers/covergrid/main.py:290
+#: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr "Tous les albums"
 
 #: quodlibet/browsers/albums/main.py:548
-#: quodlibet/browsers/covergrid/main.py:288
-#: quodlibet/browsers/covergrid/main.py:504
+#: quodlibet/browsers/covergrid/main.py:291
+#: quodlibet/browsers/covergrid/main.py:507
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -96,7 +99,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d albums"
 
 #: quodlibet/browsers/albums/main.py:729
-#: quodlibet/browsers/covergrid/main.py:482
+#: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Recharger la _pochette de l'album"
@@ -164,10 +167,9 @@ msgstr "Affichage des albums"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/exfalsowindow.py:286
-#: quodlibet/qltk/pluginwin.py:99 quodlibet/qltk/pluginwin.py:441
-#: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
-#: quodlibet/update.py:149
+#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:99
+#: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Fermer"
 
@@ -219,7 +221,7 @@ msgid "_Refresh"
 msgstr "_Rafraîchir"
 
 #: quodlibet/browsers/audiofeeds.py:438
-#: quodlibet/browsers/playlists/main.py:484
+#: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
@@ -300,7 +302,7 @@ msgstr "_Autre"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "Supp_rimer"
@@ -355,11 +357,11 @@ msgstr "_Appliquer"
 msgid "_Cancel"
 msgstr "_Annuler"
 
-#: quodlibet/browsers/covergrid/main.py:128
+#: quodlibet/browsers/covergrid/main.py:131
 msgid "Cover Grid"
 msgstr "Mur de pochettes"
 
-#: quodlibet/browsers/covergrid/main.py:129
+#: quodlibet/browsers/covergrid/main.py:132
 msgid "_Cover Grid"
 msgstr "_Mur de pochettes"
 
@@ -692,7 +694,7 @@ msgid "Equal pane width"
 msgstr "Largeur de volet égal"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
 msgstr "Listes de lecture"
 
@@ -700,42 +702,42 @@ msgstr "Listes de lecture"
 msgid "_Playlists"
 msgstr "_Listes de lecture"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "Supp_rimer de la liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "Nouveau"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Importer"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Impossible d'importer la liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet ne peut importer que les playlists aux formats M3U/M3U8 et PLS."
 
-#: quodlibet/browsers/playlists/main.py:491
+#: quodlibet/browsers/playlists/main.py:494
 msgid "_Rename"
 msgstr "Re_nommer"
 
-#: quodlibet/browsers/playlists/main.py:589
+#: quodlibet/browsers/playlists/main.py:592
 msgid "Unable to rename playlist"
 msgstr "Impossible de renommer la liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "Import Playlist"
 msgstr "Importer une liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "_Import"
 msgstr "_Importer"
 
@@ -1306,7 +1308,7 @@ msgstr "Préférences avancées"
 msgid "Allow editing of advanced config settings."
 msgstr "Permet d'éditer les paramètres de configurations avancées."
 
-#: quodlibet/ext/events/advanced_preferences.py:195
+#: quodlibet/ext/events/advanced_preferences.py:200
 msgid "I know what I'm doing"
 msgstr "Je confirme comprendre ce que je fais"
 
@@ -2102,12 +2104,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Synchronise le classement d'un morceau avec MusicBrainz."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "_Nom d'utilisateur :"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:469
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "Mot de _passe :"
 
@@ -2117,7 +2119,7 @@ msgstr "Mot de _passe :"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:528
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2188,7 +2190,7 @@ msgstr "Affiche une notification lorsque le morceau change."
 msgid "Next"
 msgstr "Suivant"
 
-#: quodlibet/ext/events/qlscrobbler.py:176
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2196,37 +2198,37 @@ msgstr ""
 "Veuillez visiter la fenêtre Plugins pour configurer QLScrobbler. D'ici là, "
 "les chansons ne seront pas soumises."
 
-#: quodlibet/ext/events/qlscrobbler.py:253
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Impossible de se connecter au service '%s'."
 
-#: quodlibet/ext/events/qlscrobbler.py:259
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "Authentification impossible : URL invalide."
 
-#: quodlibet/ext/events/qlscrobbler.py:276
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr ""
 "Authentication failed : nom d'utilisateur invalide '%s' ou mauvais mot de "
 "passe."
 
-#: quodlibet/ext/events/qlscrobbler.py:281
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "Le client a été banni. Veuillez contacter l'auteur."
 
-#: quodlibet/ext/events/qlscrobbler.py:285
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "Mauvaise heure système. Les soumissions peuvent échouer jusqu'à ce qu'elles "
 "soient corrigées."
 
-#: quodlibet/ext/events/qlscrobbler.py:350
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "Soumission à AudioScrobbler"
 
-#: quodlibet/ext/events/qlscrobbler.py:351
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
@@ -2234,44 +2236,44 @@ msgstr ""
 "Client Audioscrobbler pour Last.fm, Libre.fm et autres services "
 "Audioscrobbler."
 
-#: quodlibet/ext/events/qlscrobbler.py:456
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "Authentification validée."
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_Service :"
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL :"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:485
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "Autre…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:523
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_Vérification des données du compte"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Motif de l'_artiste :"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Motif du _titre :"
 
-#: quodlibet/ext/events/qlscrobbler.py:537
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_Filtre d'exclusion :"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2280,7 +2282,7 @@ msgstr ""
 "Le motif utilisé pour formater un artiste avant soumission. Laisser vide "
 "pour la valeur par défaut."
 
-#: quodlibet/ext/events/qlscrobbler.py:565
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2288,16 +2290,16 @@ msgstr ""
 "Le motif utilisé pour formater un titre avant soumission. Laisser vide pour "
 "la valeur par défaut."
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "Les titres correspondant à cette recherche ne seront pas soumis"
 
-#: quodlibet/ext/events/qlscrobbler.py:582
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "M_ode non-connecté (ne rien soumettre)"
 
-#: quodlibet/ext/events/qlscrobbler.py:586
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Soumission"
@@ -2516,18 +2518,18 @@ msgstr "Arrêt sur Pause"
 msgid ""
 "This plugin changes Pause to Stop/Play/Seek.\n"
 "\n"
-"This behavior is useful if Quod Libet fails to switch audio devices when a "
-"new audio device is added to the system (Bluetooth speaker, USB DAC, etc).\n"
+"Useful if Quod Libet can't switch audio devices when a new one (Bluetooth "
+"speaker, USB DAC, etc.) is added to the system.\n"
 "\n"
-"If the option for 'Only Seekable Sources' is not checked, this plugin will "
-"ensure the position in the current source is maintained. Otherwise, playback "
-"will be left stopped and must restart from the begining."
+"Ensures position in the current source is maintained so long as 'Only "
+"Seekable Sources' is off. Otherwise, playback is left stopped and must be "
+"restarted from the begining."
 msgstr ""
 "Ce plugin change Pause en Stop/Lecture/Recherche.\n"
 "\n"
-"Ce comportement est utile si Quod Libet ne parvient pas à changer de "
-"périphérique audio lorsqu'un nouveau périphérique audio est ajouté au "
-"système (enceinte Bluetooth, DAC USB, etc).\n"
+"Ce comportement est utile si Quod Libet ne peut pas changer de périphérique "
+"audio lorsqu'un nouveau matériel (enceinte Bluetooth, DAC USB, etc.) est "
+"ajouté au système.\n"
 "\n"
 "Si l'option 'Seulement les sources recherchées' n'est pas cochée, ce plugin "
 "s'assurera que la position dans la source actuelle est maintenue. Sinon, la "
@@ -3775,8 +3777,8 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
-"La variable <tt>s</tt> (ou <tt>a</tt>) est le morceau/l'album correspondant."
-"\n"
+"La variable <tt>s</tt> (ou <tt>a</tt>) est le morceau/l'album "
+"correspondant.\n"
 "\n"
 "<tt>_ts</tt> est un horodatage (nombre réel) au début de la requête.\n"
 "\n"
@@ -5083,7 +5085,7 @@ msgstr "Étiquette \"%s\" introuvable."
 #: quodlibet/library/file.py:226 quodlibet/library/file.py:245
 #: quodlibet/library/file.py:348 quodlibet/library/file.py:403
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:123
+#: quodlibet/util/library.py:124
 msgid "Library"
 msgstr "Bibliothèque"
 
@@ -5338,7 +5340,7 @@ msgstr "Dans l'_ordre"
 msgid "Random"
 msgstr "Aléatoire"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:147
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
 msgid "_Random"
 msgstr "_Aléatoire"
 
@@ -5658,7 +5660,7 @@ msgstr "Mode _Album"
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:123
 msgid "_Mute"
-msgstr "_Met"
+msgstr "_Muet"
 
 #: quodlibet/qltk/controls.py:129
 msgid "_Replay Gain Mode"
@@ -5960,13 +5962,9 @@ msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s et %(count)s de plus"
 msgstr[1] "%(title)s et %(count)s de plus"
 
-#: quodlibet/qltk/exfalsowindow.py:278
+#: quodlibet/qltk/exfalsowindow.py:280
 msgid "Ex Falso Preferences"
 msgstr "Préférences d'Ex Falso"
-
-#: quodlibet/qltk/exfalsowindow.py:284 quodlibet/qltk/prefs.py:674
-msgid "Tag Editing"
-msgstr "Édition d'étiquettes"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
@@ -6624,6 +6622,10 @@ msgstr "Partager la _sous-étiquette sur :"
 msgid "Tags"
 msgstr "Étiquettes"
 
+#: quodlibet/qltk/prefs.py:674
+msgid "Tag Editing"
+msgstr "Édition d'étiquettes"
+
 #: quodlibet/qltk/prefs.py:692
 msgid "Updating for new ratings"
 msgstr "Mise à jour pour de nouvelles notations"
@@ -6669,45 +6671,45 @@ msgstr[1] "%(title)s et %(count)d de plus"
 msgid "Properties"
 msgstr "Propriétés"
 
-#: quodlibet/qltk/queue.py:104
+#: quodlibet/qltk/queue.py:110
 msgid "_Queue"
-msgstr "_file d'attente"
+msgstr "_File d'attente"
 
-#: quodlibet/qltk/queue.py:124
+#: quodlibet/qltk/queue.py:130
 msgid "Ephemeral"
 msgstr "Éphémère"
 
-#: quodlibet/qltk/queue.py:125
+#: quodlibet/qltk/queue.py:131
 msgid "Remove songs from the queue after playing them"
 msgstr "Supprimer des chansons de la file d'attente après les avoir lues"
 
-#: quodlibet/qltk/queue.py:133
+#: quodlibet/qltk/queue.py:139
 msgid "Persistent"
 msgstr "Persistant"
 
-#: quodlibet/qltk/queue.py:134
+#: quodlibet/qltk/queue.py:140
 msgid "Keep songs in the queue after playing them"
 msgstr "Garder les chansons dans la file d'attente après les avoir jouées"
 
-#: quodlibet/qltk/queue.py:142
+#: quodlibet/qltk/queue.py:148
 msgid "Mode"
 msgstr "Modèle"
 
-#: quodlibet/qltk/queue.py:153
+#: quodlibet/qltk/queue.py:159
 msgid "Stop at End"
 msgstr "Arrêter à la Fin"
 
-#: quodlibet/qltk/queue.py:157
+#: quodlibet/qltk/queue.py:163
 msgid "_Clear Queue"
 msgstr "_Effacer la file d'attente"
 
-#: quodlibet/qltk/queue.py:178
+#: quodlibet/qltk/queue.py:184
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
 "Désactiver la file d'attente - la file d'attente sera ignorée lors de la "
 "lecture"
 
-#: quodlibet/qltk/queue.py:290
+#: quodlibet/qltk/queue.py:296
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"

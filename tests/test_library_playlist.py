@@ -104,6 +104,11 @@ class TPlaylistLibrary(TestCase):
         assert not old_path.exists(), "Didn't remove old playlist"
         assert len(self.library) == 1
 
+    def test_save_with_name(self):
+        song = AudioFile({"~filename": "/dev/null", "title": "Hello, World"})
+        pl = self.library.create_from_songs([song], title="moondance!")
+        assert pl.name == "moondance!"
+
     def test_backup(self):
         pl_path = Path(self.library.pl_dir)
         fn = FileBackedPlaylist.filename_for(PL_NAME)

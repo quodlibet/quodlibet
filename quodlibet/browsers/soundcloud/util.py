@@ -28,7 +28,7 @@ class Wrapper:
         self._raw = data
         assert isinstance(data, dict)
 
-        self.data = {}
+        self.data: Dict = {}
         for k, v in data.items():
             if isinstance(v, Dict):
                 self.data[k] = Wrapper(v)
@@ -58,9 +58,8 @@ def json_callback(wrapped):
 
     def _callback(self, message, json, data):
         if json is None:
-            print_d('Invalid JSON ({message.status_code}): '
-                    '{message.response_body.data} (request: {data})'
-                    .format(**locals()))
+            print_d(f"[HTTP {message.status_code}] Invalid / empty JSON. "
+                    f"Body: {message.response_body.data!r} (request: {data})")
             return
         if 'errors' in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
@@ -68,7 +67,7 @@ def json_callback(wrapped):
         if 'error' in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
                                                    json['error']))
-        return wrapped(self, json)
+        return wrapped(self, json, data)
 
     return _callback
 

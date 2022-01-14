@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2018-01-04 13:47+0100\n"
-"Last-Translator: Honza Hejzl <honza.hejzl@gmail.com>\n"
-"Language-Team: Czech (Czech Republic)\n"
-"Language: cs_CZ\n"
+"PO-Revision-Date: 2021-11-05 03:34+0000\n"
+"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/cs/>\n"
+"Language: cs\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Poedit 1.8.8\n"
+"X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -35,40 +36,43 @@ msgid "_Date"
 msgstr "_Datum"
 
 #: quodlibet/browsers/albums/main.py:226
+#: quodlibet/browsers/covergrid/main.py:59
 #, fuzzy
 msgid "_Date Added"
 msgstr "Hlavičky _Dat"
 
 #: quodlibet/browsers/albums/main.py:227
+#: quodlibet/browsers/covergrid/main.py:60
 #, fuzzy
 msgid "_Original Date"
 msgstr "původní umělec"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr "_Žánr"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Hodnocení"
 
 #: quodlibet/browsers/albums/main.py:230
+#: quodlibet/browsers/covergrid/main.py:63
 #, fuzzy
 msgid "_Playcount"
 msgstr "Počet přehrání"
 
 #: quodlibet/browsers/albums/main.py:236
-#: quodlibet/browsers/covergrid/main.py:66
+#: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr "Řadit _podle…"
 
 #: quodlibet/browsers/albums/main.py:257
-#: quodlibet/browsers/covergrid/main.py:87
+#: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Nastavení"
@@ -82,14 +86,14 @@ msgid "_Album List"
 msgstr "_Seznam alb"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:287
-#: quodlibet/browsers/covergrid/main.py:503
+#: quodlibet/browsers/covergrid/main.py:290
+#: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr "Všechna alba"
 
 #: quodlibet/browsers/albums/main.py:548
-#: quodlibet/browsers/covergrid/main.py:288
-#: quodlibet/browsers/covergrid/main.py:504
+#: quodlibet/browsers/covergrid/main.py:291
+#: quodlibet/browsers/covergrid/main.py:507
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -98,7 +102,7 @@ msgstr[1] "%d alba"
 msgstr[2] "%d alb"
 
 #: quodlibet/browsers/albums/main.py:729
-#: quodlibet/browsers/covergrid/main.py:482
+#: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Znovu _načíst přebal"
@@ -169,10 +173,9 @@ msgstr "Zobrazení alba"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/exfalsowindow.py:286
-#: quodlibet/qltk/pluginwin.py:99 quodlibet/qltk/pluginwin.py:441
-#: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
-#: quodlibet/update.py:149
+#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:99
+#: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Zavřít"
 
@@ -224,7 +227,7 @@ msgid "_Refresh"
 msgstr "_Obnovit"
 
 #: quodlibet/browsers/audiofeeds.py:438
-#: quodlibet/browsers/playlists/main.py:484
+#: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
@@ -307,7 +310,7 @@ msgstr "_Vlastní"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "Odstranit"
@@ -362,11 +365,11 @@ msgstr "_Použít"
 msgid "_Cancel"
 msgstr "_Zrušit"
 
-#: quodlibet/browsers/covergrid/main.py:128
+#: quodlibet/browsers/covergrid/main.py:131
 msgid "Cover Grid"
 msgstr "Mřížka přebalů alb"
 
-#: quodlibet/browsers/covergrid/main.py:129
+#: quodlibet/browsers/covergrid/main.py:132
 msgid "_Cover Grid"
 msgstr "_Mřížka přebalů alb"
 
@@ -702,7 +705,7 @@ msgid "Equal pane width"
 msgstr "Stejná šířka panelů"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
 msgstr "Seznamy skladeb"
 
@@ -710,44 +713,44 @@ msgstr "Seznamy skladeb"
 msgid "_Playlists"
 msgstr "_Seznamy skladeb"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "_Odstranit ze seznamu"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 #, fuzzy
 msgid "New"
 msgstr "_Nový"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 #, fuzzy
 msgid "Import"
 msgstr "_Importovat"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Seznam skladeb nelze importovat"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 #, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet umí importovat jen seznamy ve formátu M3U a PLS."
 
-#: quodlibet/browsers/playlists/main.py:491
+#: quodlibet/browsers/playlists/main.py:494
 msgid "_Rename"
 msgstr "_Přejmenovat"
 
-#: quodlibet/browsers/playlists/main.py:589
+#: quodlibet/browsers/playlists/main.py:592
 msgid "Unable to rename playlist"
 msgstr "Seznam skladeb nelze přejmenovat"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "Import Playlist"
 msgstr "Importovat seznam skladeb"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "_Import"
 msgstr "_Importovat"
 
@@ -1323,7 +1326,7 @@ msgstr "Pokročilá nastavení"
 msgid "Allow editing of advanced config settings."
 msgstr "Povolit konfiguraci pokročilých nastavení."
 
-#: quodlibet/ext/events/advanced_preferences.py:195
+#: quodlibet/ext/events/advanced_preferences.py:200
 msgid "I know what I'm doing"
 msgstr "Vím, co dělám"
 
@@ -2110,12 +2113,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Povolit nastavení hodnocení skladeb číslem."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "_Jméno:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:469
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "_Heslo:"
 
@@ -2125,7 +2128,7 @@ msgstr "_Heslo:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:528
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2196,7 +2199,7 @@ msgstr "Zobrazení informace při změně skladby."
 msgid "Next"
 msgstr "Další"
 
-#: quodlibet/ext/events/qlscrobbler.py:176
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2204,78 +2207,78 @@ msgstr ""
 "Pro nastavení QLSCrobbleru otevřete okno Zásuvních modulů. Do té doby "
 "nebudou informace o skladbách odesílány."
 
-#: quodlibet/ext/events/qlscrobbler.py:253
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Nelze se připojit ke službě ‚%s‘."
 
-#: quodlibet/ext/events/qlscrobbler.py:259
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "Autentizace selhala: neplatné URL."
 
-#: quodlibet/ext/events/qlscrobbler.py:276
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr "Autentizace selhala: neplatné jméno uživatele ‚%s‘ nebo heslo."
 
-#: quodlibet/ext/events/qlscrobbler.py:281
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "Klient je zakázán, kontaktujte autora."
 
-#: quodlibet/ext/events/qlscrobbler.py:285
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr ""
 "Vypadá to, že je nastaven špatný systémový čas. Informace o přehrávaných "
 "skladbách se možná nebudou odesílat, dokud nebude čas nastaven správně."
 
-#: quodlibet/ext/events/qlscrobbler.py:350
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "Zasílání dat přes AudioScrobbler"
 
-#: quodlibet/ext/events/qlscrobbler.py:351
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
 msgstr "AudioScrobbler, klient pro Last.fm, Libre.fm a ostatní služby."
 
-#: quodlibet/ext/events/qlscrobbler.py:456
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "Autentizace proběhla úspěšně."
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_Služba:"
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:485
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "Ostatní…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:523
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_Ověřit účet"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Vzor pro umělce:"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Vzor názvu skladeb:"
 
-#: quodlibet/ext/events/qlscrobbler.py:537
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Vyloučit _filtr:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2284,7 +2287,7 @@ msgstr ""
 "Vzor používaný pro formátování jména umělce při odesílání informací. "
 "Ponechte prázdné pro výchozí hodnotu."
 
-#: quodlibet/ext/events/qlscrobbler.py:565
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2292,18 +2295,18 @@ msgstr ""
 "Vzor používaný k zformátování názvu pro odesílání. Ponechte prázdné pro "
 "výchozí hodnotu."
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:594
 #, fuzzy
 msgid "Songs matching this filter will not be submitted"
 msgstr ""
 "Informace o skladbách odpovídajících zadanému filtru nebudou odesílány."
 
-#: quodlibet/ext/events/qlscrobbler.py:582
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Offline mód (neodesílat žádné informace)"
 
-#: quodlibet/ext/events/qlscrobbler.py:586
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Odeslání"
@@ -2508,12 +2511,12 @@ msgstr ""
 msgid ""
 "This plugin changes Pause to Stop/Play/Seek.\n"
 "\n"
-"This behavior is useful if Quod Libet fails to switch audio devices when a "
-"new audio device is added to the system (Bluetooth speaker, USB DAC, etc).\n"
+"Useful if Quod Libet can't switch audio devices when a new one (Bluetooth "
+"speaker, USB DAC, etc.) is added to the system.\n"
 "\n"
-"If the option for 'Only Seekable Sources' is not checked, this plugin will "
-"ensure the position in the current source is maintained. Otherwise, playback "
-"will be left stopped and must restart from the begining."
+"Ensures position in the current source is maintained so long as 'Only "
+"Seekable Sources' is off. Otherwise, playback is left stopped and must be "
+"restarted from the begining."
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:75
@@ -4906,13 +4909,13 @@ msgid "Replay Gain"
 msgstr "Replay gain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:571
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"Analýza a aktualizace informací metodou ReplayGain (s pomocí GStreameru). "
-"Výsledky jsou slučovány podle alba."
+"Analýza a aktualizace informací metodou <a href=\"%(rg_link)s\">ReplayGain</"
+"a> (s pomocí GStreameru). Výsledky jsou slučovány podle alba."
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -5047,7 +5050,7 @@ msgstr ""
 #: quodlibet/library/file.py:226 quodlibet/library/file.py:245
 #: quodlibet/library/file.py:348 quodlibet/library/file.py:403
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:123
+#: quodlibet/util/library.py:124
 msgid "Library"
 msgstr "Sbírka"
 
@@ -5302,7 +5305,7 @@ msgstr "_V pořadí"
 msgid "Random"
 msgstr "Náhodně"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:147
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
 msgid "_Random"
 msgstr "_Náhodně"
 
@@ -5930,13 +5933,9 @@ msgstr[0] "%(title)s a %(count)s více"
 msgstr[1] "%(title)s a %(count)s více"
 msgstr[2] "%(title)s a %(count)s více"
 
-#: quodlibet/qltk/exfalsowindow.py:278
+#: quodlibet/qltk/exfalsowindow.py:280
 msgid "Ex Falso Preferences"
 msgstr "Nastavení Ex Falsa"
-
-#: quodlibet/qltk/exfalsowindow.py:284 quodlibet/qltk/prefs.py:674
-msgid "Tag Editing"
-msgstr "Úprava tagů"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
@@ -6586,6 +6585,10 @@ msgstr "Rozdělit _v:"
 msgid "Tags"
 msgstr "Tagy"
 
+#: quodlibet/qltk/prefs.py:674
+msgid "Tag Editing"
+msgstr "Úprava tagů"
+
 #: quodlibet/qltk/prefs.py:692
 msgid "Updating for new ratings"
 msgstr "Aktualizace nových hodnocení"
@@ -6630,46 +6633,46 @@ msgstr[2] "%(title)s a %(count)d více"
 msgid "Properties"
 msgstr "Vlastnosti"
 
-#: quodlibet/qltk/queue.py:104
+#: quodlibet/qltk/queue.py:110
 msgid "_Queue"
 msgstr "_Fronta"
 
-#: quodlibet/qltk/queue.py:124
+#: quodlibet/qltk/queue.py:130
 #, fuzzy
 msgid "Ephemeral"
 msgstr "Obecné"
 
-#: quodlibet/qltk/queue.py:125
+#: quodlibet/qltk/queue.py:131
 #, fuzzy
 msgid "Remove songs from the queue after playing them"
 msgstr "Odstranit všechny skladby z fronty"
 
-#: quodlibet/qltk/queue.py:133
+#: quodlibet/qltk/queue.py:139
 msgid "Persistent"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:134
+#: quodlibet/qltk/queue.py:140
 msgid "Keep songs in the queue after playing them"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:142
+#: quodlibet/qltk/queue.py:148
 #, fuzzy
 msgid "Mode"
 msgstr "Model:"
 
-#: quodlibet/qltk/queue.py:153
+#: quodlibet/qltk/queue.py:159
 msgid "Stop at End"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:157
+#: quodlibet/qltk/queue.py:163
 msgid "_Clear Queue"
 msgstr "_Vyčistit frontu"
 
-#: quodlibet/qltk/queue.py:178
+#: quodlibet/qltk/queue.py:184
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:290
+#: quodlibet/qltk/queue.py:296
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"

@@ -13,17 +13,19 @@ Do you have a global filter in use? Check the *Browsers* tab in *Preferences*.
 Where does Quod Libet store all its metadata?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The short answer was originally: in ``~/.quodlibet``.
+The short answer was originally: in ``~/.quodlibet/``
 For newer versions of QL it's more complex:
 
+ * On all platforms, if the ``QUODLIBET_USERDIR`` environment variable is set, this will be used
  * On Windows, it will be in your user's ``AppData`` folder under ``Quod Libet``
    (except portable builds)
- * On OS X, it will be in ``~/.quodlibet``.
- * On Linux / Unix systems,
+ * On OS X, it will be in ``~/.quodlibet/``
+ * On Linux / Unix systems:
 
-    * if the ``QUODLIBET_USERDIR`` environment variable is set, this will be used
-    * else, ``$XDG_CONFIG_HOME/config`` will be used, if it exists
-    * else ``~/.quodlibet`` will be used still.
+    * if the ``XDG_CONFIG_HOME`` environment variable is set,
+      ``XDG_CONFIG_HOME/quodlibet/`` will be used
+    * else if folder ``~/.config/`` exists, ``~/.config/quodlibet/`` will be used
+    * else ``~/.quodlibet/`` will be used still
 
 
 Under there you'll find all sorts of things,

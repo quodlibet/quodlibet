@@ -991,7 +991,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if info_changed:
             # in case the title changed, make self.info a new instance
-            # and emit ended/started for the the old/new one
+            # and emit ended/started for the old/new one
             if self.info.get("title") != new_info.get("title"):
                 if self.info is not self.song:
                     self.emit('song-ended', self.info, False)
@@ -999,13 +999,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 self.__info_buffer = None
                 self.emit('song-started', self.info)
             else:
-                # in case title didn't changed, update the values of the
+                # in case title didn't change, update the values of the
                 # old instance if there is one and tell the library.
                 if self.info is not self.song:
                     self.info.update(new_info)
                     librarian.changed([self.info])
                 else:
-                    # So we don't loose all tags before the first title
+                    # So we don't lose all tags before the first title
                     # save it for later
                     self.__info_buffer = new_info
 

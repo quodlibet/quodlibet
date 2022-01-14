@@ -115,8 +115,7 @@ class ID3File(AudioFile):
                 continue
             elif (frame.FrameID == "UFID" and
                   frame.owner == "http://musicbrainz.org"):
-                self["musicbrainz_trackid"] = frame.data.decode("utf-8",
-                                                                "replace")
+                self["musicbrainz_trackid"] = frame.data.decode("utf-8", "replace")
                 continue
             elif frame.FrameID == "POPM":
                 rating = frame.rating / 255.0

@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2017 Nick Boultbee
+#           2016-2021 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,19 +8,23 @@
 # (at your option) any later version.
 
 import os
+import time
+from typing import Optional
 
-from gi.repository import Gtk, Gdk, Pango
+from gi.repository import Gtk, Gdk, Pango, GLib
+
+from quodlibet.library.base import Library
+from quodlibet.player._base import BasePlayer
 from senf import bytes2fsn, fsn2bytes
 
 import quodlibet
-from quodlibet import ngettext, _
+from quodlibet import ngettext, _, print_e, print_w, print_d
 from quodlibet import config
-from quodlibet import util
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import connect_destroy, connect_after_destroy, \
-        format_time_preferred, print_exc
+from quodlibet.util import (connect_destroy, connect_after_destroy,
+                            format_time_preferred, print_exc, DeferredSignal)
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -86,7 +90,8 @@ class QueueExpander(Gtk.Expander):
         sw = ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        self.queue = PlayQueue(library, player)
+        save_interval_secs = config.getint("autosave", "queue_interval")
+        self.queue = PlayQueue(library, player, save_interval_secs)
         self.queue.props.expand = True
         sw.add(self.queue)
 
@@ -118,6 +123,27 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_fill(True)
 
+        clear_item = SmallImageButton(
+            image=SymbolicIconImage(Icons.USER_TRASH,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_("Clear Queue"))
+        clear_item.connect("clicked", self.__clear_queue)
+        outer.pack_start(clear_item, False, False, 3)
+
+        toggle = SmallImageToggleButton(
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
+                                    Gtk.IconSize.MENU),
+            relief=Gtk.ReliefStyle.NONE,
+            tooltip_text=_(
+                "Disable queue - the queue will be ignored when playing"))
+        disabled = config.getboolean("memory", "queue_disable", False)
+        toggle.props.active = disabled
+        self.__queue_disable(disabled)
+        toggle.connect('toggled',
+                       lambda b: self.__queue_disable(b.props.active))
+        outer.pack_start(toggle, False, False, 3)
+
         mode_menu = Gtk.Menu()
 
         norm_mode_item = RadioMenuItem(
@@ -126,8 +152,7 @@ class QueueExpander(Gtk.Expander):
             group=None)
         mode_menu.append(norm_mode_item)
         norm_mode_item.set_active(True)
-        norm_mode_item.connect("toggled",
-                                lambda b: self.__keep_songs_enable(False))
+        norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
 
         keep_mode_item = RadioMenuItem(
             label=_("Persistent"),
@@ -154,34 +179,17 @@ class QueueExpander(Gtk.Expander):
             populate=True)
         menu.append(stop_checkbox)
 
-        clear_item = MenuItem(_("_Clear Queue"), Icons.EDIT_CLEAR)
-        menu.append(clear_item)
-        clear_item.connect("activate", self.__clear_queue)
-
         button = SmallMenuButton(
             SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
             arrow=True)
-        button.set_relief(Gtk.ReliefStyle.NONE)
+        button.set_relief(Gtk.ReliefStyle.NORMAL)
         button.show_all()
         button.hide()
         button.set_no_show_all(True)
         menu.show_all()
         button.set_menu(menu)
 
-        outer.pack_start(button, False, False, 0)
-
-        toggle = SmallImageToggleButton(
-            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
-                                    Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_(
-                "Disable queue - the queue will be ignored when playing"))
-        disabled = config.getboolean("memory", "queue_disable", False)
-        toggle.props.active = disabled
-        self.__queue_disable(disabled)
-        toggle.connect('toggled',
-                       lambda b: self.__queue_disable(b.props.active))
-        outer.pack_start(toggle, False, False, 6)
+        outer.pack_start(button, False, False, 3)
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
@@ -207,9 +215,9 @@ class QueueExpander(Gtk.Expander):
         self.connect('drag-data-received', self.__drag_data_received)
 
         self.queue.model.connect_after('row-inserted',
-            util.DeferredSignal(self.__check_expand), count_label)
+                                       DeferredSignal(self.__check_expand), count_label)
         self.queue.model.connect_after('row-deleted',
-            util.DeferredSignal(self.__update_count), count_label)
+                                       DeferredSignal(self.__update_count), count_label)
 
         self.__update_count(self.model, None, count_label)
 
@@ -344,9 +352,15 @@ class PlayQueue(SongList):
 
     sortable = False
     _activated = False
+    _MAX_PENDING = 5
+    """Maximum number of queue items to leave unpersisted (batching)"""
 
-    def __init__(self, library, player):
+    def __init__(self, library: Library, player: BasePlayer,
+                 autosave_interval_secs: Optional[int] = None):
         super().__init__(library, player, model_cls=QueueModel)
+        self._updated_time = time.time()
+        self.autosave_interval = autosave_interval_secs
+        self._pending = 0
         keep_song = config.getboolean("memory", "queue_keep_songs", False)
         if keep_song:
             self.set_first_column_type(CurrentColumn)
@@ -359,10 +373,28 @@ class PlayQueue(SongList):
 
         self.connect('popup-menu', self.__popup, library)
         self.enable_drop()
-        self.connect('destroy', self.__write, self.model)
+
+        def write(*args, **kwargs):
+            self._write(self, self.model)
+            return True
+
+        self.connect('destroy', self.__destroy)
+        if self.autosave_interval:
+            self._tid = GLib.timeout_add(self.autosave_interval * 1000, write)
+        else:
+            self._tid = None
+        connect_after_destroy(self.model, "row-inserted", write)
+        connect_after_destroy(self.model, "row-deleted", write)
         self.__fill(library)
 
         self.connect('key-press-event', self.__delete_key_pressed)
+
+    def __destroy(self, widget):
+        self._write(widget, self.model, force=True)
+        if self._tid:
+            GLib.source_remove(self._tid)
+            self._tid = None
+            print_d("Stopped autosave")
 
     def __delete_key_pressed(self, widget, event):
         if qltk.is_accel(event, "Delete"):
@@ -401,19 +433,40 @@ class PlayQueue(SongList):
         for song in songs:
             self.model.append([song])
 
-    def __write(self, widget, model):
+    def _write(self, _widget: Gtk.Widget, model: QueueModel, force=False):
+        diff = time.time() - self._updated_time
+        if not self._should_write(force, diff):
+            self._pending += 1
+            return
+        print_d(f"Saving play queue after {diff:.1f}s")
         filenames = [row[0]["~filename"] for row in model]
         try:
             with open(QUEUE, "wb") as f:
                 for filename in filenames:
                     try:
                         line = fsn2bytes(filename, "utf-8")
-                    except ValueError:
-                        print_exc()
+                    except ValueError as e:
+                        print_w(f"Ignoring queue save error ({e})")
                         continue
                     f.write(line + b"\n")
-        except EnvironmentError:
-            print_exc()
+        except EnvironmentError as e:
+            print_e(f"Error saving queue ({e})")
+        self._updated_time = time.time()
+        self._pending = 0
+
+    def _should_write(self, force: bool, diff: float):
+        """Whether it's appropriate to write (flush)
+        Either it's disabled by config, in which case we use batching,
+        or we respect the last write time and the delta
+        """
+        if force:
+            return True
+        if self.autosave_interval:
+            # Generally only save if there are *known* pending updates,
+            # but these don´t catch everything, so save regardless every now and again.
+            return ((diff > self.autosave_interval and self._pending)
+                    or diff > self.autosave_interval * 5)
+        return self._pending >= self._MAX_PENDING
 
     def __popup(self, widget, library):
         songs = self.get_selected_songs()
@@ -421,8 +474,7 @@ class PlayQueue(SongList):
             return
 
         menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False,
-            ratings=False)
+            library, songs, queue=False, remove=False, delete=False, ratings=False)
         menu.preseparate()
         remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")

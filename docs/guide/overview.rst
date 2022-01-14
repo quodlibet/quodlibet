@@ -102,11 +102,11 @@ The Queue
 
 The play queue and the song list determine what's played next. Unlike the 
 song list the queue consumes songs (from the queue not your library) as 
-they are played. That is, once a song starts playing it disappears from the 
-queue.
+they are played (unless configured not to with the toggle).
+That is, once a song starts playing it disappears from the queue.
 
-The queue however, takes precedence whenever it has songs. After it's empty, 
-playback will continue in the main song list where it left off.
+The queue however, takes precedence whenever it has songs.
+After it's empty, playback will continue in the main song list where it was.
 
 To add songs to the queue, right-click and *Add to Queue*, use the shortcut
 ``CTRL+Return`` or select songs in a different browser window.

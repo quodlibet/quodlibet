@@ -34,39 +34,42 @@ msgid "_Date"
 msgstr "_Dato"
 
 #: quodlibet/browsers/albums/main.py:226
+#: quodlibet/browsers/covergrid/main.py:59
 #, fuzzy
 msgid "_Date Added"
 msgstr "_Dato-headere"
 
 #: quodlibet/browsers/albums/main.py:227
+#: quodlibet/browsers/covergrid/main.py:60
 #, fuzzy
 msgid "_Original Date"
 msgstr "original kunstner"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr "_Genre"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Bedømmelse"
 
 #: quodlibet/browsers/albums/main.py:230
+#: quodlibet/browsers/covergrid/main.py:63
 msgid "_Playcount"
 msgstr "_Antal afspilninger"
 
 #: quodlibet/browsers/albums/main.py:236
-#: quodlibet/browsers/covergrid/main.py:66
+#: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr "Sortér _efter…"
 
 #: quodlibet/browsers/albums/main.py:257
-#: quodlibet/browsers/covergrid/main.py:87
+#: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Præferencer"
@@ -80,14 +83,14 @@ msgid "_Album List"
 msgstr "_Albumliste"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:287
-#: quodlibet/browsers/covergrid/main.py:503
+#: quodlibet/browsers/covergrid/main.py:290
+#: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr "Alle album"
 
 #: quodlibet/browsers/albums/main.py:548
-#: quodlibet/browsers/covergrid/main.py:288
-#: quodlibet/browsers/covergrid/main.py:504
+#: quodlibet/browsers/covergrid/main.py:291
+#: quodlibet/browsers/covergrid/main.py:507
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -95,7 +98,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d album"
 
 #: quodlibet/browsers/albums/main.py:729
-#: quodlibet/browsers/covergrid/main.py:482
+#: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Genindlæs album_cover"
@@ -163,10 +166,9 @@ msgstr "Album-visning"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/exfalsowindow.py:286
-#: quodlibet/qltk/pluginwin.py:99 quodlibet/qltk/pluginwin.py:441
-#: quodlibet/qltk/prefs.py:772 quodlibet/qltk/textedit.py:163
-#: quodlibet/update.py:149
+#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:99
+#: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Luk"
 
@@ -218,7 +220,7 @@ msgid "_Refresh"
 msgstr "_Opdater"
 
 #: quodlibet/browsers/audiofeeds.py:438
-#: quodlibet/browsers/playlists/main.py:484
+#: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
@@ -300,7 +302,7 @@ msgstr "_Brugerdefineret"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:427
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Fjern"
@@ -355,11 +357,11 @@ msgstr "_Anvend"
 msgid "_Cancel"
 msgstr "_Annuller"
 
-#: quodlibet/browsers/covergrid/main.py:128
+#: quodlibet/browsers/covergrid/main.py:131
 msgid "Cover Grid"
 msgstr "Covergitter"
 
-#: quodlibet/browsers/covergrid/main.py:129
+#: quodlibet/browsers/covergrid/main.py:132
 msgid "_Cover Grid"
 msgstr "_Covergitter"
 
@@ -690,7 +692,7 @@ msgid "Equal pane width"
 msgstr "Ens rudebredde"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:35
 msgid "Playlists"
 msgstr "Spilleliste"
 
@@ -698,42 +700,42 @@ msgstr "Spilleliste"
 msgid "_Playlists"
 msgstr "_Spillelister"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "_Fjern fra spilleliste"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "Ny"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Importér"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Kan ikke importere spilleliste"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 #, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet kan kun importere spillelister i formaterne M3U og PLS."
 
-#: quodlibet/browsers/playlists/main.py:491
+#: quodlibet/browsers/playlists/main.py:494
 msgid "_Rename"
 msgstr "_Omdøb"
 
-#: quodlibet/browsers/playlists/main.py:589
+#: quodlibet/browsers/playlists/main.py:592
 msgid "Unable to rename playlist"
 msgstr "Kan ikke omdøbe spilleliste"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "Import Playlist"
 msgstr "Importér spilleliste"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:604
 msgid "_Import"
 msgstr "_Importér"
 
@@ -1302,7 +1304,7 @@ msgstr "Avancerede præferencer"
 msgid "Allow editing of advanced config settings."
 msgstr "Tillad redigering af avancerede konfigurationsindstillinger."
 
-#: quodlibet/ext/events/advanced_preferences.py:195
+#: quodlibet/ext/events/advanced_preferences.py:200
 msgid "I know what I'm doing"
 msgstr "Jeg ved hvad jeg har gang i"
 
@@ -2076,12 +2078,12 @@ msgid "Syncs the rating of a song with MusicBrainz."
 msgstr "Tillader at bedømmelsen af sange sættes med et tal."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "User_name:"
 msgstr "_Brugernavn:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:469
+#: quodlibet/ext/events/qlscrobbler.py:488
 msgid "_Password:"
 msgstr "_Adgangskode:"
 
@@ -2091,7 +2093,7 @@ msgstr "_Adgangskode:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:528
+#: quodlibet/ext/events/qlscrobbler.py:547
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2162,7 +2164,7 @@ msgstr "Viser en notifikation når sangen skiftes."
 msgid "Next"
 msgstr "Næste"
 
-#: quodlibet/ext/events/qlscrobbler.py:176
+#: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
@@ -2170,34 +2172,34 @@ msgstr ""
 "Besøg venligst Plugins-vinduet for at opsætte QLScrobbler. Indtil da vil "
 "sange ikke blive indsendt."
 
-#: quodlibet/ext/events/qlscrobbler.py:253
+#: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
 msgid "Could not contact service '%s'."
 msgstr "Kunne ikke kontakte tjenesten '%s'."
 
-#: quodlibet/ext/events/qlscrobbler.py:259
+#: quodlibet/ext/events/qlscrobbler.py:266
 msgid "Authentication failed: invalid URL."
 msgstr "Godkendelse fejlede: ugyldig URL."
 
-#: quodlibet/ext/events/qlscrobbler.py:276
+#: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
 msgstr ""
 "Godkendelse fejlede: ugyldigt brugernavn '%s' eller forkert adgangskode."
 
-#: quodlibet/ext/events/qlscrobbler.py:281
+#: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
 msgstr "Klienten er udelukket. Kontakt forfatteren."
 
-#: quodlibet/ext/events/qlscrobbler.py:285
+#: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
 msgstr "Forkert systemtid. Indsendelser kan fejle indtil det er rettet."
 
-#: quodlibet/ext/events/qlscrobbler.py:350
+#: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
 msgstr "AudioScrobbler-indsendelse"
 
-#: quodlibet/ext/events/qlscrobbler.py:351
+#: quodlibet/ext/events/qlscrobbler.py:357
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
@@ -2205,44 +2207,44 @@ msgstr ""
 "Audioscrobbler-klient til Last.fm, Libre.fm og andre Audioscrobbler-"
 "tjenester."
 
-#: quodlibet/ext/events/qlscrobbler.py:456
+#: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
 msgstr "Godkendelse lykkedes."
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Service:"
 msgstr "_Tjeneste:"
 
-#: quodlibet/ext/events/qlscrobbler.py:468
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:485
+#: quodlibet/ext/events/qlscrobbler.py:504
 msgid "Other…"
 msgstr "Anden…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:523
+#: quodlibet/ext/events/qlscrobbler.py:542
 msgid "_Verify account data"
 msgstr "_Bekræft kontodata"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Kunstner-mønster:"
 
-#: quodlibet/ext/events/qlscrobbler.py:536
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Titel-mønster:"
 
-#: quodlibet/ext/events/qlscrobbler.py:537
+#: quodlibet/ext/events/qlscrobbler.py:556
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Ekskluderings_filter:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:574
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2251,7 +2253,7 @@ msgstr ""
 "Mønsteret brugt til at formatere kunstnernavnet til indsendelse. Lad være "
 "tom for standard."
 
-#: quodlibet/ext/events/qlscrobbler.py:565
+#: quodlibet/ext/events/qlscrobbler.py:585
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2259,16 +2261,16 @@ msgstr ""
 "Mønsteret brugt til at formatere titlen til indsendelse. Lad være tom for "
 "standard."
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:594
 msgid "Songs matching this filter will not be submitted"
 msgstr "Sange som matcher dette filter vil ikke blive indsendt"
 
-#: quodlibet/ext/events/qlscrobbler.py:582
+#: quodlibet/ext/events/qlscrobbler.py:602
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Offline-tilstand (indsend ikke noget)"
 
-#: quodlibet/ext/events/qlscrobbler.py:586
+#: quodlibet/ext/events/qlscrobbler.py:606
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Indsendelse"
@@ -2481,12 +2483,12 @@ msgstr ""
 msgid ""
 "This plugin changes Pause to Stop/Play/Seek.\n"
 "\n"
-"This behavior is useful if Quod Libet fails to switch audio devices when a "
-"new audio device is added to the system (Bluetooth speaker, USB DAC, etc).\n"
+"Useful if Quod Libet can't switch audio devices when a new one (Bluetooth "
+"speaker, USB DAC, etc.) is added to the system.\n"
 "\n"
-"If the option for 'Only Seekable Sources' is not checked, this plugin will "
-"ensure the position in the current source is maintained. Otherwise, playback "
-"will be left stopped and must restart from the begining."
+"Ensures position in the current source is maintained so long as 'Only "
+"Seekable Sources' is off. Otherwise, playback is left stopped and must be "
+"restarted from the begining."
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:75
@@ -5017,7 +5019,7 @@ msgstr ""
 #: quodlibet/library/file.py:226 quodlibet/library/file.py:245
 #: quodlibet/library/file.py:348 quodlibet/library/file.py:403
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:123
+#: quodlibet/util/library.py:124
 msgid "Library"
 msgstr "Bibliotek"
 
@@ -5268,7 +5270,7 @@ msgstr "_I rækkefølge"
 msgid "Random"
 msgstr "Tilfældig"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:147
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
 msgid "_Random"
 msgstr "_Tilfældig"
 
@@ -5891,13 +5893,9 @@ msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s og %(count)s mere"
 msgstr[1] "%(title)s og %(count)s mere"
 
-#: quodlibet/qltk/exfalsowindow.py:278
+#: quodlibet/qltk/exfalsowindow.py:280
 msgid "Ex Falso Preferences"
 msgstr "Præferencer for Ex Falso"
-
-#: quodlibet/qltk/exfalsowindow.py:284 quodlibet/qltk/prefs.py:674
-msgid "Tag Editing"
-msgstr "Tag-redigering"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
@@ -6548,6 +6546,10 @@ msgstr "_Opdel ved:"
 msgid "Tags"
 msgstr "Tags"
 
+#: quodlibet/qltk/prefs.py:674
+msgid "Tag Editing"
+msgstr "Tag-redigering"
+
 #: quodlibet/qltk/prefs.py:692
 msgid "Updating for new ratings"
 msgstr "Opdaterer for nye bedømmelser"
@@ -6591,45 +6593,45 @@ msgstr[1] "%(title)s og %(count)d mere"
 msgid "Properties"
 msgstr "Egenskaber"
 
-#: quodlibet/qltk/queue.py:104
+#: quodlibet/qltk/queue.py:110
 msgid "_Queue"
 msgstr "_Kø"
 
-#: quodlibet/qltk/queue.py:124
+#: quodlibet/qltk/queue.py:130
 msgid "Ephemeral"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:125
+#: quodlibet/qltk/queue.py:131
 #, fuzzy
 msgid "Remove songs from the queue after playing them"
 msgstr "Bevar sange i køen efter de er blevet afspillet"
 
-#: quodlibet/qltk/queue.py:133
+#: quodlibet/qltk/queue.py:139
 msgid "Persistent"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:134
+#: quodlibet/qltk/queue.py:140
 msgid "Keep songs in the queue after playing them"
 msgstr "Bevar sange i køen efter de er blevet afspillet"
 
-#: quodlibet/qltk/queue.py:142
+#: quodlibet/qltk/queue.py:148
 #, fuzzy
 msgid "Mode"
 msgstr "Bred-tilstand"
 
-#: quodlibet/qltk/queue.py:153
+#: quodlibet/qltk/queue.py:159
 msgid "Stop at End"
 msgstr "Stop ved slutningen"
 
-#: quodlibet/qltk/queue.py:157
+#: quodlibet/qltk/queue.py:163
 msgid "_Clear Queue"
 msgstr "_Ryd kø"
 
-#: quodlibet/qltk/queue.py:178
+#: quodlibet/qltk/queue.py:184
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:290
+#: quodlibet/qltk/queue.py:296
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
