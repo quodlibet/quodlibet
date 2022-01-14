@@ -20,7 +20,7 @@ from itertools import zip_longest
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
-from quodlibet import _, print_d
+from quodlibet import print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
