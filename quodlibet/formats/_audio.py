@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2012-2021 Nick Boultbee
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +21,7 @@ from itertools import zip_longest
 
 from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
 
-from quodlibet import print_d
+from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
@@ -519,7 +520,11 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-                return decode_value("~basename", self("~basename"))
+                basename = decode_value("~basename", self("~basename"))
+                unknown = _(config.gettext("browsers", "missing_title_string"))
+                if unknown is not "":
+                    unknown = '[' + unknown + ']'
+                return f"{basename} {unknown}"
             else:
                 return title
         elif key in SORT_TO_TAG:

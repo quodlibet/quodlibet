@@ -171,6 +171,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # show "all albums" in covergrid view
         "covergrid_all": "1",
+
+        # String added to filename when missing title. Translated then included in [ ]
+        "missing_title_string": "untitled",
     },
 
     # Kind of a dumping ground right now, should probably be

@@ -177,7 +177,11 @@ class AdvancedPreferences(EventPlugin):
             int_config(
                 "browsers", "searchbar_historic_entries",
                 "Number of history entries in the search bar:",
-                "8 by default (restart advised)")
+                "8 by default (restart advised)"),
+            text_config(
+                "browsers", "missing_title_string",
+                "Missing title string:",
+                "String added to tracks with missing title. Can be empty."),
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
