@@ -6273,7 +6273,7 @@ msgstr "属性"
 msgid "_Queue"
 msgstr "队列(_Q)"
 
-#: quodlibet/qltk/queue.py:130
+#: quodlibet/qltk/queue.py:130 quodlibet/qltk/queue.py:131
 msgid "Clear Queue"
 msgstr "清除队列"
 
