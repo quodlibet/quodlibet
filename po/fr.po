@@ -405,7 +405,7 @@ msgstr "Impossible de copier les titres"
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Impossible de copier les fichiers sélectionnés vers des listes de titres ou "
-"dans la file d'attente."
+"dans la liste de lecture."
 
 #: quodlibet/browsers/filesystem.py:197
 msgid "_Add to Library"
@@ -987,7 +987,7 @@ msgstr "Afficher la liste de lecture"
 
 #: quodlibet/cli.py:115
 msgid "Print the contents of the queue"
-msgstr "Afficher le contenu de la file d'attente"
+msgstr "Afficher le contenu de la liste de lecture"
 
 #: quodlibet/cli.py:116
 msgid "Print the active text query"
@@ -1069,7 +1069,7 @@ msgstr "Démarrer un nouveau navigateur"
 
 #: quodlibet/cli.py:136
 msgid "Show or hide the queue"
-msgstr "Afficher ou cacher la file d'attente"
+msgstr "Afficher ou cacher la liste de lecture"
 
 #: quodlibet/cli.py:137
 msgid "Filter on a random value"
@@ -1091,12 +1091,12 @@ msgstr "étiquette=valeur"
 #: quodlibet/cli.py:139
 msgid "Enqueue a file or query"
 msgstr ""
-"Mettre un fichier ou le résultat d'une recherche dans la file d'attente"
+"Mettre un fichier ou le résultat d'une recherche dans la liste de lecture"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
 msgstr ""
-"Mettre des fichiers séparés par un point-virgule dans la file d'attente"
+"Mettre des fichiers séparés par un point-virgule dans la liste de lecture"
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
@@ -1108,7 +1108,8 @@ msgstr "Afficher les résultats de la requête dans la sortie standard stdout"
 
 #: quodlibet/cli.py:145
 msgid "Unqueue a file or query"
-msgstr "Enlever un fichier ou le résultat d'une recherche de la file d'attente"
+msgstr ""
+"Enlever un fichier ou le résultat d'une recherche de la liste de lecture"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
@@ -3602,7 +3603,7 @@ msgstr "Préférer _les moins lus"
 
 #: quodlibet/ext/playorder/queue.py:18
 msgid "Queue Only"
-msgstr "Uniquement en file d'attente"
+msgstr "Uniquement en liste de lecture"
 
 #: quodlibet/ext/playorder/queue.py:20
 msgid ""
@@ -3611,18 +3612,18 @@ msgid ""
 "Select this play order in the main window, then double-clicking any song "
 "will enqueue it instead of playing."
 msgstr ""
-"Limite la lecture des morceaux à la file d'attente.\n"
+"Limite la lecture des morceaux à la liste de lecture.\n"
 "\n"
 "Sélectionnez cet ordre de lecture dans la fenêtre principale, puis double-"
-"cliquez sur un morceau pour le mettre en file d'attente au lieu de le lire."
+"cliquez sur un morceau pour le mettre en liste de lecture au lieu de le lire."
 
 #: quodlibet/ext/playorder/queue.py:24
 msgid "Queue only"
-msgstr "File d'attente uniquement"
+msgstr "Liste de lecture uniquement"
 
 #: quodlibet/ext/playorder/queue.py:25
 msgid "_Queue only"
-msgstr "_File d'attente uniquement"
+msgstr "_Liste de lecture uniquement"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
@@ -4522,7 +4523,7 @@ msgstr "Service Web AcoustID"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:36
 msgid "Queued"
-msgstr "Dans la file d'attente"
+msgstr "Dans la liste de lecture"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:38
 msgid "Analyzing"
@@ -6695,16 +6696,16 @@ msgstr "Propriétés"
 
 #: quodlibet/qltk/queue.py:110 quodlibet/qltk/queue.py:109
 msgid "_Queue"
-msgstr "_File d'attente"
+msgstr "_Liste de lecture"
 
-#: quodlibet/qltk/queue.py:130
+#: quodlibet/qltk/queue.py:130 quodlibet/qltk/queue.py:131
 msgid "Clear Queue"
 msgstr "Effacer la liste de lecture"
 
 #: quodlibet/qltk/queue.py:140 quodlibet/qltk/queue.py:139
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
-"Désactiver la file d'attente - la file d'attente sera ignorée lors de la "
+"Désactiver la liste de lecture - la liste de lecture sera ignorée lors de la "
 "lecture"
 
 #: quodlibet/qltk/queue.py:151 quodlibet/qltk/queue.py:150
@@ -6713,7 +6714,7 @@ msgstr "Éphémère"
 
 #: quodlibet/qltk/queue.py:152 quodlibet/qltk/queue.py:151
 msgid "Remove songs from the queue after playing them"
-msgstr "Supprimer des chansons de la file d'attente après les avoir lues"
+msgstr "Supprimer des chansons de la liste de lecture après les avoir lues"
 
 #: quodlibet/qltk/queue.py:160 quodlibet/qltk/queue.py:158
 msgid "Persistent"
@@ -6721,7 +6722,7 @@ msgstr "Persistant"
 
 #: quodlibet/qltk/queue.py:161 quodlibet/qltk/queue.py:159
 msgid "Keep songs in the queue after playing them"
-msgstr "Garder les chansons dans la file d'attente après les avoir jouées"
+msgstr "Garder les chansons dans la liste de lecture après les avoir jouées"
 
 #: quodlibet/qltk/queue.py:169 quodlibet/qltk/queue.py:167
 msgid "Mode"
@@ -6744,7 +6745,7 @@ msgstr "_Parcourir la bibliothèque"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
 msgid "Toggle queue visibility"
-msgstr "Basculer la visibilité de la file d'attente"
+msgstr "Basculer la visibilité de la liste de lecture"
 
 #: quodlibet/qltk/quodlibetwindow.py:376
 msgid "Playback Error"
@@ -7286,7 +7287,7 @@ msgstr "Configurer les greffons …"
 
 #: quodlibet/qltk/songsmenu.py:319
 msgid "Add to _Queue"
-msgstr "A_jouter à la file d'attente"
+msgstr "A_jouter à la liste de lecture"
 
 #: quodlibet/qltk/songsmenu.py:339
 msgid "_Remove from Library…"
