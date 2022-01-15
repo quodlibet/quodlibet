@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-01-13 04:28+0000\n"
-"Last-Translator: E-Akcaer <gurbetcii_@hotmail.com>\n"
+"PO-Revision-Date: 2022-01-15 17:43+0000\n"
+"Last-Translator: Ömer Faruk Çakmak <omerfarukckmk@protonmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
 "Language: tr\n"
@@ -301,9 +301,8 @@ msgstr "_Özel"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#: quodlibet/qltk/queue.py:482 quodlibet/qltk/queue.py:479
 msgid "_Remove"
 msgstr "_Kaldır"
 
@@ -358,17 +357,14 @@ msgid "_Cancel"
 msgstr "_İptal"
 
 #: quodlibet/browsers/covergrid/main.py:131
-#, fuzzy
 msgid "Cover Grid"
 msgstr "Kapak Izgarası"
 
 #: quodlibet/browsers/covergrid/main.py:132
-#, fuzzy
 msgid "_Cover Grid"
 msgstr "_Kapak Izgarası"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
 msgstr "Kapak Izgarası Tercihleri"
 
@@ -397,13 +393,11 @@ msgstr "Dosya Sistemi"
 msgid "_File System"
 msgstr "_Dosya Sistemi"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:266
-#: quodlibet/qltk/songlist.py:265
+#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
 msgid "Unable to copy songs"
 msgstr "Şarkılar kopyalanamıyor"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:267
-#: quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Seçilen şarkılar başka çalma listelerine veya çalma kuyruğuna kopyalanamıyor."
@@ -835,8 +829,7 @@ msgstr "Soundcloud Gözatıcı"
 msgid "Sound_cloud"
 msgstr "Sound_cloud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:81
-#: quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Ara"
 
@@ -872,12 +865,10 @@ msgstr "Kodu girin…"
 msgid "Log in to %s"
 msgstr "%s' te oturum aç"
 
-#: quodlibet/browsers/soundcloud/util.py:95
 #: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
 msgstr "Soundcloud kimlik doğrulama"
 
-#: quodlibet/browsers/soundcloud/util.py:96
 #: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
 msgstr "Soundcloud doğr. kodunu girin:"
@@ -1304,17 +1295,14 @@ msgstr ""
 "Başlık gövdesi için genel İngilizce kurallarını kullanır; \"Dark Night of "
 "the Soul\" gibi"
 
-#: quodlibet/ext/events/advanced_preferences.py:83
 #: quodlibet/ext/events/advanced_preferences.py:84
 msgid "Advanced Preferences"
 msgstr "Gelişmiş Tercihler"
 
-#: quodlibet/ext/events/advanced_preferences.py:84
 #: quodlibet/ext/events/advanced_preferences.py:85
 msgid "Allow editing of advanced config settings."
 msgstr "Gelişmiş yapılandırma ayarlarını düzenlemeye izin ver."
 
-#: quodlibet/ext/events/advanced_preferences.py:200
 #: quodlibet/ext/events/advanced_preferences.py:205
 msgid "I know what I'm doing"
 msgstr "Ne yaptığımı biliyorum"
@@ -2110,7 +2098,6 @@ msgid "User_name:"
 msgstr "Kulla_nıcı adı:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:488
 #: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Password:"
 msgstr "_Parola:"
@@ -2121,10 +2108,9 @@ msgstr "_Parola:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:547
+#: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
-#: quodlibet/ext/events/qlscrobbler.py:546
 msgid "Account"
 msgstr "Hesap"
 
@@ -2250,38 +2236,32 @@ msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:504
 #: quodlibet/ext/events/qlscrobbler.py:503
 msgid "Other…"
 msgstr "Diğeri…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:542
 #: quodlibet/ext/events/qlscrobbler.py:541
 msgid "_Verify account data"
 msgstr "Hesap _verisini doğrula"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 #: quodlibet/ext/events/qlscrobbler.py:554
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Sanatçı şablonu:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 #: quodlibet/ext/events/qlscrobbler.py:554
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Başlık şablonu:"
 
-#: quodlibet/ext/events/qlscrobbler.py:556
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 #: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Süzgeci _hariç tut:"
 
-#: quodlibet/ext/events/qlscrobbler.py:574
-#: quodlibet/plugins/listenbrainz/__init__.py:516
 #: quodlibet/ext/events/qlscrobbler.py:573
+#: quodlibet/plugins/listenbrainz/__init__.py:516
 #, fuzzy
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2290,9 +2270,8 @@ msgstr ""
 "Alt görev için sanatçı adını biçimlendirmede kullanılan şablon. Varsayılan "
 "için boş bırakın."
 
-#: quodlibet/ext/events/qlscrobbler.py:585
-#: quodlibet/plugins/listenbrainz/__init__.py:526
 #: quodlibet/ext/events/qlscrobbler.py:584
+#: quodlibet/plugins/listenbrainz/__init__.py:526
 #, fuzzy
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2300,22 +2279,19 @@ msgstr ""
 "Alt görev için başlığı biçimlendirmede kullanılan şablon. Varsayılan için "
 "boş bırakın."
 
-#: quodlibet/ext/events/qlscrobbler.py:594
 #: quodlibet/ext/events/qlscrobbler.py:593
 #, fuzzy
 msgid "Songs matching this filter will not be submitted"
 msgstr "Bu süzgeçle eşleşen şarkılar sunulmayacaktır"
 
-#: quodlibet/ext/events/qlscrobbler.py:602
-#: quodlibet/plugins/listenbrainz/__init__.py:553
 #: quodlibet/ext/events/qlscrobbler.py:601
+#: quodlibet/plugins/listenbrainz/__init__.py:553
 #, fuzzy
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Çevrimdışı kip (hiçbir şey sunma)"
 
-#: quodlibet/ext/events/qlscrobbler.py:606
-#: quodlibet/plugins/listenbrainz/__init__.py:557
 #: quodlibet/ext/events/qlscrobbler.py:605
+#: quodlibet/plugins/listenbrainz/__init__.py:557
 #, fuzzy
 msgid "Submission"
 msgstr "Alt Görev"
@@ -5273,8 +5249,7 @@ msgstr "_Sırayla"
 msgid "Random"
 msgstr "_Rastgele"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
-#: quodlibet/qltk/queue.py:174 quodlibet/qltk/queue.py:172
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:172
 msgid "_Random"
 msgstr "_Rastgele"
 
@@ -6622,9 +6597,18 @@ msgstr[1] "%(title)s ve %(count)d tane daha"
 msgid "Properties"
 msgstr "Özellikler"
 
-#: quodlibet/qltk/queue.py:110 quodlibet/qltk/queue.py:109
+#: quodlibet/qltk/queue.py:109
 msgid "_Queue"
 msgstr "Çalma _Kuyruğu"
+
+#: quodlibet/qltk/queue.py:130
+#, fuzzy
+msgid "Clear Queue"
+msgstr "Hataları _Sil"
+
+#: quodlibet/qltk/queue.py:139
+msgid "Disable queue - the queue will be ignored when playing"
+msgstr "Kuyruğu devre dışı bırak - oynatma sırasında kuyruk yoksayılacak"
 
 #: quodlibet/qltk/queue.py:150
 msgid "Ephemeral"
@@ -6650,16 +6634,6 @@ msgstr "Kip"
 msgid "Stop at End"
 msgstr "Bitişte Durdur"
 
-#: quodlibet/qltk/queue.py:163
-#, fuzzy
-msgid "_Clear Queue"
-msgstr "Hataları _Sil"
-
-#: quodlibet/qltk/queue.py:139
-msgid "Disable queue - the queue will be ignored when playing"
-msgstr "Kuyruğu devre dışı bırak - oynatma sırasında kuyruk yoksayılacak"
-
-#: quodlibet/qltk/queue.py:296 quodlibet/qltk/queue.py:300
 #: quodlibet/qltk/queue.py:298
 #, python-format
 msgid "%(count)d song (%(time)s)"
@@ -7053,11 +7027,11 @@ msgstr "Yazdık_tan sonra ara"
 msgid "Show search results after the user stops typing"
 msgstr "Arama sonuçlarını, kullanıcı yazmayı bitirdikten sonra göster"
 
-#: quodlibet/qltk/searchbar.py:215 quodlibet/qltk/searchbar.py:216
+#: quodlibet/qltk/searchbar.py:216
 msgid "_Limit:"
 msgstr "_Sınır:"
 
-#: quodlibet/qltk/searchbar.py:228 quodlibet/qltk/searchbar.py:229
+#: quodlibet/qltk/searchbar.py:229
 msgid "_Weight"
 msgstr "_Ağırlık"
 
@@ -7065,7 +7039,7 @@ msgstr "_Ağırlık"
 msgid "Add query"
 msgstr "Sorgu ekle"
 
-#: quodlibet/qltk/searchbar.py:356 quodlibet/qltk/searchbar.py:357
+#: quodlibet/qltk/searchbar.py:357
 msgid "Add a QL query or free text to be &ed together"
 msgstr ""
 
@@ -7149,41 +7123,41 @@ msgstr "Geri alınan son değişikliği yinele"
 msgid "Select all songs in all panes"
 msgstr "Tüm panolardaki tüm şarkıları seç"
 
-#: quodlibet/qltk/songlist.py:390 quodlibet/qltk/songlist.py:388
+#: quodlibet/qltk/songlist.py:388
 #, python-format
 msgid "_Filter on %s"
 msgstr "%s etiketine göre süz"
 
-#: quodlibet/qltk/songlist.py:1183 quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1182
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albüm Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1184 quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr "Şarkı _Numarası Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1185 quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr "_Albüm Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1186 quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr "_Kişi Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1187 quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr "_Tarih Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1188 quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr "_Dosya Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1189 quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr "_Yapımcı Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1204 quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1203
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Etiketleri Özelleştir..."
@@ -7943,10 +7917,9 @@ msgid ""
 "capabilities."
 msgstr ""
 
-#: quodlibet/qltk/queue.py:131 quodlibet/qltk/queue.py:130
 #, fuzzy
-msgid "Clear Queue"
-msgstr "Hataları _Sil"
+#~ msgid "_Clear Queue"
+#~ msgstr "Hataları _Sil"
 
 #, fuzzy
 #~ msgid "<artist>"
