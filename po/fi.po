@@ -303,7 +303,7 @@ msgstr "_Mukautettu"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Poista"
@@ -395,11 +395,11 @@ msgstr "Tiedostojärjestelmä"
 msgid "_File System"
 msgstr "Tie_dostojärjestelmä"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
 msgid "Unable to copy songs"
 msgstr "Kappaleiden kopiointi epäonnistui"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:267
+#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Valittuja tiedostoja ei voi kopioida toisiin kappalelistoihin tai jonoon."
@@ -827,7 +827,7 @@ msgstr "Soundcloud-selain"
 msgid "Sound_cloud"
 msgstr "Sound_cloud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:81
+#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Hae"
 
@@ -863,11 +863,11 @@ msgstr "Anna koodi…"
 msgid "Log in to %s"
 msgstr "Kirjaudu palveluun %s"
 
-#: quodlibet/browsers/soundcloud/util.py:95
+#: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
 msgstr "Soundcloud-valtuutus"
 
-#: quodlibet/browsers/soundcloud/util.py:96
+#: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
 msgstr "Anna Soundcloud-valtuutuskoodi:"
 
@@ -1296,15 +1296,15 @@ msgstr ""
 "Käytä normaaleja englannin kielen sääntöjä isojen kirjainten käytössä, esim. "
 "”Dark Night of the Soul”"
 
-#: quodlibet/ext/events/advanced_preferences.py:83
+#: quodlibet/ext/events/advanced_preferences.py:84
 msgid "Advanced Preferences"
 msgstr "Lisäasetukset"
 
-#: quodlibet/ext/events/advanced_preferences.py:84
+#: quodlibet/ext/events/advanced_preferences.py:85
 msgid "Allow editing of advanced config settings."
 msgstr "Muokkaa lisäasetuksia."
 
-#: quodlibet/ext/events/advanced_preferences.py:200
+#: quodlibet/ext/events/advanced_preferences.py:205
 msgid "I know what I'm doing"
 msgstr "Tiedän, mitä olen tekemässä"
 
@@ -2102,7 +2102,7 @@ msgid "User_name:"
 msgstr "_Käyttäjänimi:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:488
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Password:"
 msgstr "_Salasana:"
 
@@ -2112,7 +2112,7 @@ msgstr "_Salasana:"
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:547
+#: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2239,31 +2239,31 @@ msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:504
+#: quodlibet/ext/events/qlscrobbler.py:503
 msgid "Other…"
 msgstr "Muu…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:542
+#: quodlibet/ext/events/qlscrobbler.py:541
 msgid "_Verify account data"
 msgstr "_Testaa tilitiedot"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Kaava _artistille:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Kaava kappale_nimelle:"
 
-#: quodlibet/ext/events/qlscrobbler.py:556
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Poissulkeva _suodatin:"
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
@@ -2272,7 +2272,7 @@ msgstr ""
 "Kaava, jonka mukaan artistin nimi muotoillaan lähetystä varten. Jätä "
 "tyhjäksi käyttääksesi oletusasetusta."
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2280,16 +2280,16 @@ msgstr ""
 "Kaava, jonka mukaan kappaleen nimi muotoillaan lähetystä varten. Jätä "
 "tyhjäksi käyttääksesi oletusasetusta."
 
-#: quodlibet/ext/events/qlscrobbler.py:594
+#: quodlibet/ext/events/qlscrobbler.py:593
 msgid "Songs matching this filter will not be submitted"
 msgstr "Tähän suodattimeen täsmääviä kappaleita ei lähetetä"
 
-#: quodlibet/ext/events/qlscrobbler.py:602
+#: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Yhteydetön tila (älä lähetä mitään)"
 
-#: quodlibet/ext/events/qlscrobbler.py:606
+#: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Lähetys"
@@ -5304,7 +5304,7 @@ msgstr "_Järjestyksessä"
 msgid "Random"
 msgstr "Satunnainen"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:172
 msgid "_Random"
 msgstr "_Satunnainen"
 
@@ -6621,43 +6621,44 @@ msgstr[1] "%(title)s ja %(count)d muuta"
 msgid "Properties"
 msgstr "Ominaisuudet"
 
-#: quodlibet/qltk/queue.py:110
+#: quodlibet/qltk/queue.py:109
 msgid "_Queue"
 msgstr "J_ono"
 
 #: quodlibet/qltk/queue.py:130
-msgid "Ephemeral"
-msgstr "Väliaikainen"
-
-#: quodlibet/qltk/queue.py:131
-msgid "Remove songs from the queue after playing them"
-msgstr "Poista kappaleet jonosta kun ne on soitettu"
-
-#: quodlibet/qltk/queue.py:139
-msgid "Persistent"
-msgstr "Pysyvä"
-
-#: quodlibet/qltk/queue.py:140
-msgid "Keep songs in the queue after playing them"
-msgstr "Pidä kappaleet jonossa kun ne on soitettu"
-
-#: quodlibet/qltk/queue.py:148
-msgid "Mode"
-msgstr "Tila"
-
-#: quodlibet/qltk/queue.py:159
-msgid "Stop at End"
-msgstr "Pysäytä lopuksi"
-
-#: quodlibet/qltk/queue.py:163
-msgid "_Clear Queue"
+#, fuzzy
+msgid "Clear Queue"
 msgstr "_Tyhjennä jono"
 
-#: quodlibet/qltk/queue.py:184
+#: quodlibet/qltk/queue.py:139
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr "Poista jono käytöstä – jono jätetään huomiotta toistettaessa"
 
-#: quodlibet/qltk/queue.py:296
+#: quodlibet/qltk/queue.py:150
+msgid "Ephemeral"
+msgstr "Väliaikainen"
+
+#: quodlibet/qltk/queue.py:151
+msgid "Remove songs from the queue after playing them"
+msgstr "Poista kappaleet jonosta kun ne on soitettu"
+
+#: quodlibet/qltk/queue.py:158
+msgid "Persistent"
+msgstr "Pysyvä"
+
+#: quodlibet/qltk/queue.py:159
+msgid "Keep songs in the queue after playing them"
+msgstr "Pidä kappaleet jonossa kun ne on soitettu"
+
+#: quodlibet/qltk/queue.py:167
+msgid "Mode"
+msgstr "Tila"
+
+#: quodlibet/qltk/queue.py:178
+msgid "Stop at End"
+msgstr "Pysäytä lopuksi"
+
+#: quodlibet/qltk/queue.py:298
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -7017,39 +7018,39 @@ msgstr "Siirretäänkö luettava kansiopolku {dir!r}?"
 msgid "OK, move it!"
 msgstr "OK, siirrä"
 
-#: quodlibet/qltk/searchbar.py:57
+#: quodlibet/qltk/searchbar.py:59
 msgid "Saved Searches"
 msgstr "Tallennetut haut"
 
-#: quodlibet/qltk/searchbar.py:58
+#: quodlibet/qltk/searchbar.py:59
 msgid "Edit saved searches…"
 msgstr "Muokkaa tallennettuja hakuja…"
 
-#: quodlibet/qltk/searchbar.py:82
+#: quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
 msgstr "Hae kirjastosta vapaalla tekstihaulla tai käyttäen QL-kyselyitä"
 
-#: quodlibet/qltk/searchbar.py:144
+#: quodlibet/qltk/searchbar.py:145
 msgid "Search after _typing"
 msgstr "Päivitä hakutuloksia jatkuvasti"
 
-#: quodlibet/qltk/searchbar.py:147
+#: quodlibet/qltk/searchbar.py:148
 msgid "Show search results after the user stops typing"
 msgstr "Päivitä haun tuloksia jatkuvasti kirjoituksen aikana"
 
-#: quodlibet/qltk/searchbar.py:215
+#: quodlibet/qltk/searchbar.py:216
 msgid "_Limit:"
 msgstr "_Määrä:"
 
-#: quodlibet/qltk/searchbar.py:228
+#: quodlibet/qltk/searchbar.py:229
 msgid "_Weight"
 msgstr "_Painota arvosanalla"
 
-#: quodlibet/qltk/searchbar.py:355
+#: quodlibet/qltk/searchbar.py:356
 msgid "Add query"
 msgstr "Lisää kysely"
 
-#: quodlibet/qltk/searchbar.py:356
+#: quodlibet/qltk/searchbar.py:357
 msgid "Add a QL query or free text to be &ed together"
 msgstr "Lisää QL-kysely tai vapaa teksti hakuehtoon"
 
@@ -7133,44 +7134,44 @@ msgstr "Tee uudelleen viimeisin kumottu muutos"
 msgid "Select all songs in all panes"
 msgstr "Valitse kaikki kappaleet kaikissa paneeleissa"
 
-#: quodlibet/qltk/songlist.py:390
+#: quodlibet/qltk/songlist.py:388
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen %s perusteella"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1182
 msgid "All _Headers"
 msgstr "Kaikki _otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr "_Raitaotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr "_Albumiotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr "_Tekijäotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr "Ai_kaotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr "Tie_dosto-otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1189
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr "T_uotanto-otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1204
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Customize Headers…"
 msgstr "_Mukauta otsakkeita…"
 
-#: quodlibet/qltk/songlist.py:1209
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
 msgstr "_Laajenna sarake"
 
