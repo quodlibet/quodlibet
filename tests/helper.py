@@ -13,6 +13,7 @@ import shutil
 import locale
 import errno
 from io import StringIO
+from pathlib import Path
 
 from gi.repository import Gtk, Gdk
 
@@ -256,7 +257,7 @@ def capture_output():
 
 
 @contextlib.contextmanager
-def temp_filename(*args, **kwargs):
+def temp_filename(*args, as_path=False, **kwargs):
     """Creates an empty file and removes it when done.
 
         with temp_filename() as filename:
@@ -266,11 +267,14 @@ def temp_filename(*args, **kwargs):
     """
 
     from tests import mkstemp
-
+    try:
+        del kwargs["as_path"]
+    except KeyError:
+        pass
     fd, filename = mkstemp(*args, **kwargs)
     os.close(fd)
 
-    yield filename
+    yield Path(filename) if as_path else filename
 
     try:
         os.remove(filename)
