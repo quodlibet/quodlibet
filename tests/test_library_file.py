@@ -150,7 +150,7 @@ class TWatchedFileLibrary(TLibrary):
     def test_test_setup(self):
         assert self.temp_path.is_dir()
         assert self.temp_path.is_absolute()
-        assert not self.temp_path.is_symlink(), "Symlinks can cause trouble in these tests"
+        assert not self.temp_path.is_symlink(), "Symlinks cause trouble in these tests"
         assert not get_exclude_dirs()
 
     def tearDown(self):
