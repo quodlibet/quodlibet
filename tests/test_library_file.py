@@ -137,14 +137,9 @@ class TWatchedFileLibrary(TLibrary):
     Fake = FakeSongFile
     temp_dir = expanduser(normalize_path(_TEMP_DIR, True))
 
-    @classmethod
-    def setUpClass(cls):
-        init_fake_app()
-        assert Path(cls.temp_dir).is_dir()
-        config.set("library", "watch", True)
-        assert not get_exclude_dirs()
-
     def setUp(self):
+        init_fake_app()
+        config.set("library", "watch", True)
         super().setUp()
         # Replace global one with this one
         librarian = app.library.librarian
@@ -152,8 +147,11 @@ class TWatchedFileLibrary(TLibrary):
         self.library.librarian = librarian
         app.library = self.library
 
-    @classmethod
-    def tearDownClass(self):
+    def test_test_setup(self):
+        assert Path(self.temp_dir).is_dir()
+        assert not get_exclude_dirs()
+
+    def tearDown(self):
         destroy_fake_app()
 
     def Library(self):
