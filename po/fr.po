@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-01-17 18:52+0000\n"
-"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
+"PO-Revision-Date: 2022-01-17 18:55+0000\n"
+"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -987,7 +987,7 @@ msgstr "Afficher la liste de lecture"
 
 #: quodlibet/cli.py:115
 msgid "Print the contents of the queue"
-msgstr "Afficher le contenu de la liste de lecture"
+msgstr "Afficher le contenu de la file d'attente"
 
 #: quodlibet/cli.py:116
 msgid "Print the active text query"
@@ -1069,7 +1069,7 @@ msgstr "Démarrer un nouveau navigateur"
 
 #: quodlibet/cli.py:136
 msgid "Show or hide the queue"
-msgstr "Afficher ou cacher la liste de lecture"
+msgstr "Afficher ou cacher la file d'attente"
 
 #: quodlibet/cli.py:137
 msgid "Filter on a random value"
