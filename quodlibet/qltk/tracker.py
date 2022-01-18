@@ -154,7 +154,7 @@ class SongTracker:
                 config.set("memory", "seek", 0)
 
             playcount_minimum_length = config.getfloat(
-                "player", "playcount_minimum_length_proportion", 0.5) * int(song.get(
+                "player", "playcount_minimum_length_proportion") * int(song.get(
                 "~#length", 1))
 
             if self.elapsed >= playcount_minimum_length:
