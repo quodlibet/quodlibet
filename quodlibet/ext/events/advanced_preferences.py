@@ -218,7 +218,7 @@ class AdvancedPreferences(EventPlugin):
                 "Minimum length proportion to consider a track as played:",
                 ("Consider a track played after listening to this proportion of "
                  "its total duration"),
-                label_value_callback=lambda value: f"{int(value * 100)}%")          
+                label_value_callback=lambda value: f"{int(value * 100)}%")
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
