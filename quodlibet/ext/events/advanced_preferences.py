@@ -79,6 +79,41 @@ def int_config(section, option, label, tooltip):
     return _config(section, option, label, tooltip, getter)
 
 
+def slider_config(section, option, label, tooltip, lower=0, upper=1,
+                 on_change_callback=None, label_value_callback=None):
+    def on_reverted(*args):
+        config.reset(section, option)
+        scale.set_value(config.getfloat(section, option))
+
+    def on_change(scale):
+        value = scale.get_value()
+        if on_change_callback:
+            value = on_change_callback(value)
+        scale.set_value(value)
+        config.set(section, option, value)
+
+    default = config.getfloat(section, option)
+
+    scale = Gtk.HScale.new(Gtk.Adjustment(
+                                       value=default,
+                                       lower=lower, upper=upper))
+    scale.set_value_pos(Gtk.PositionType.LEFT)
+    scale.set_show_fill_level(True)
+    scale.set_tooltip_text(_(tooltip))
+
+    if label_value_callback:
+        scale.connect('format-value', lambda _, value: label_value_callback(value))
+    scale.connect('value-changed', on_change)
+
+    revert = Gtk.Button()
+    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
+    revert.connect("clicked", on_reverted)
+
+    lbl = Gtk.Label(label=label, use_underline=True)
+    lbl.set_mnemonic_widget(scale)
+    return lbl, scale, revert
+
+
 class AdvancedPreferences(EventPlugin):
     PLUGIN_ID = "Advanced Preferences"
     PLUGIN_NAME = _("Advanced Preferences")
@@ -177,7 +212,13 @@ class AdvancedPreferences(EventPlugin):
             int_config(
                 "browsers", "searchbar_historic_entries",
                 "Number of history entries in the search bar:",
-                "8 by default (restart advised)")
+                "8 by default (restart advised)"),
+            slider_config(
+                "player", "playcount_minimum_length_proportion",
+                "Minimum length proportion to consider a track as played:",
+                ("Consider a track played after listening to this proportion of "
+                 "its total duration"),
+                label_value_callback=lambda value: f"{int(value * 100)}%")
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
