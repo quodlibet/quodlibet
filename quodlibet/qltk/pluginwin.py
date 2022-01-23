@@ -501,6 +501,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         filter_ = entry.get_text()
         return (matches(plugin.name, filter_) or
+                matches(plugin.id, filter_) or
                 matches((plugin.description or ""), filter_))
 
     def __destroy(self, *args):
