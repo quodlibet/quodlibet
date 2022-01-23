@@ -139,7 +139,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
         active = max(self.get_active(), 0)
         combo_store = self.get_model()
         combo_store.clear()
-        combo_store.append([_("All"), EnabledType.ALL])
+        combo_store.append([_("Any state"), EnabledType.ALL])
         combo_store.append(["", EnabledType.SEP])
         combo_store.append([_("Enabled"), EnabledType.EN])
         combo_store.append([_("Disabled"), EnabledType.DIS])
@@ -181,7 +181,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
         active = max(self.get_active(), 0)
         combo_store = self.get_model()
         combo_store.clear()
-        combo_store.append([_("All"), object])
+        combo_store.append([_("Any category"), object])
         combo_store.append(["", None])
         for name, cls in PLUGIN_CATEGORIES.items():
             combo_store.append([name, cls])
