@@ -304,7 +304,7 @@ msgstr "_Personalizzato"
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
 #: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:475
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Rimuovi"
@@ -396,11 +396,11 @@ msgstr "File system"
 msgid "_File System"
 msgstr "File s_ystem"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
 msgid "Unable to copy songs"
 msgstr "Impossibile copiare i brani"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:267
+#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "I file selezionati non possono essere copiati ad altre liste o alla coda"
@@ -834,7 +834,7 @@ msgstr "Navigatore Soundcloud"
 msgid "Sound_cloud"
 msgstr "Soundc_loud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:81
+#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Cerca"
 
@@ -870,11 +870,11 @@ msgstr "Inserisci il codice…"
 msgid "Log in to %s"
 msgstr "Ingresso in %s"
 
-#: quodlibet/browsers/soundcloud/util.py:95
+#: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
 msgstr "Autorizzazione di Soundcloud"
 
-#: quodlibet/browsers/soundcloud/util.py:96
+#: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
 msgstr "Inserisci il codice di autenticazione di Soundcloud"
 
@@ -1302,15 +1302,15 @@ msgstr ""
 "Usa le comuni regole Inglesi per le maiuscole nel titolo, come in \"Dark "
 "Night of the Soul\""
 
-#: quodlibet/ext/events/advanced_preferences.py:83
+#: quodlibet/ext/events/advanced_preferences.py:84
 msgid "Advanced Preferences"
 msgstr "Preferenze avanzate"
 
-#: quodlibet/ext/events/advanced_preferences.py:84
+#: quodlibet/ext/events/advanced_preferences.py:85
 msgid "Allow editing of advanced config settings."
 msgstr "Consenti la modifica delle impostazioni di configurazione avanzate."
 
-#: quodlibet/ext/events/advanced_preferences.py:200
+#: quodlibet/ext/events/advanced_preferences.py:205
 msgid "I know what I'm doing"
 msgstr "_So quello che sto facendo"
 
@@ -2094,7 +2094,7 @@ msgid "User_name:"
 msgstr "_Nome utente:"
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
-#: quodlibet/ext/events/qlscrobbler.py:488
+#: quodlibet/ext/events/qlscrobbler.py:487
 msgid "_Password:"
 msgstr ""
 
@@ -2104,7 +2104,7 @@ msgstr ""
 #. button.connect('clicked', check_login)
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
-#: quodlibet/ext/events/qlscrobbler.py:547
+#: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:309
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
@@ -2231,38 +2231,38 @@ msgid "_URL:"
 msgstr "_URL:"
 
 #. Translators: Other service
-#: quodlibet/ext/events/qlscrobbler.py:504
+#: quodlibet/ext/events/qlscrobbler.py:503
 msgid "Other…"
 msgstr "Altro…"
 
 #. verify data
-#: quodlibet/ext/events/qlscrobbler.py:542
+#: quodlibet/ext/events/qlscrobbler.py:541
 msgid "_Verify account data"
 msgstr "_Verifica dati account"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Modello _artista:"
 
-#: quodlibet/ext/events/qlscrobbler.py:555
+#: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Modello per il _titolo:"
 
-#: quodlibet/ext/events/qlscrobbler.py:556
+#: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_Filtro di esclusione:"
 
-#: quodlibet/ext/events/qlscrobbler.py:574
+#: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
 msgstr "Autenticazione riuscita."
 
-#: quodlibet/ext/events/qlscrobbler.py:585
+#: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
@@ -2270,17 +2270,17 @@ msgstr ""
 "Il modello usato per formattare il titolo per l'invio. Lascia vuoto per il "
 "predefinito."
 
-#: quodlibet/ext/events/qlscrobbler.py:594
+#: quodlibet/ext/events/qlscrobbler.py:593
 #, fuzzy
 msgid "Songs matching this filter will not be submitted"
 msgstr "I brani corrispondenti a questo filtro non saranno inviati."
 
-#: quodlibet/ext/events/qlscrobbler.py:602
+#: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "Modalità disc_onnessa (non invia niente)."
 
-#: quodlibet/ext/events/qlscrobbler.py:606
+#: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Invio"
@@ -5294,7 +5294,7 @@ msgstr "_In ordine"
 msgid "Random"
 msgstr "Casuale"
 
-#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:153
+#: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:172
 msgid "_Random"
 msgstr "_Casuale"
 
@@ -6628,46 +6628,47 @@ msgstr[1] "%(title)s e altri %(count)d"
 msgid "Properties"
 msgstr "Proprietà"
 
-#: quodlibet/qltk/queue.py:110
+#: quodlibet/qltk/queue.py:109
 msgid "_Queue"
 msgstr "Co_da"
 
 #: quodlibet/qltk/queue.py:130
 #, fuzzy
+msgid "Clear Queue"
+msgstr "_Pulisci coda"
+
+#: quodlibet/qltk/queue.py:139
+msgid "Disable queue - the queue will be ignored when playing"
+msgstr ""
+
+#: quodlibet/qltk/queue.py:150
+#, fuzzy
 msgid "Ephemeral"
 msgstr "Generale"
 
-#: quodlibet/qltk/queue.py:131
+#: quodlibet/qltk/queue.py:151
 #, fuzzy
 msgid "Remove songs from the queue after playing them"
 msgstr "Tieni i brani in coda dopo averli riprodotti."
 
-#: quodlibet/qltk/queue.py:139
+#: quodlibet/qltk/queue.py:158
 msgid "Persistent"
 msgstr ""
 
-#: quodlibet/qltk/queue.py:140
+#: quodlibet/qltk/queue.py:159
 msgid "Keep songs in the queue after playing them"
 msgstr "Tieni i brani in coda dopo averli riprodotti."
 
-#: quodlibet/qltk/queue.py:148
+#: quodlibet/qltk/queue.py:167
 #, fuzzy
 msgid "Mode"
 msgstr "Modello:"
 
-#: quodlibet/qltk/queue.py:159
+#: quodlibet/qltk/queue.py:178
 msgid "Stop at End"
 msgstr "_Ferma alla fine"
 
-#: quodlibet/qltk/queue.py:163
-msgid "_Clear Queue"
-msgstr "_Pulisci coda"
-
-#: quodlibet/qltk/queue.py:184
-msgid "Disable queue - the queue will be ignored when playing"
-msgstr ""
-
-#: quodlibet/qltk/queue.py:296
+#: quodlibet/qltk/queue.py:298
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
@@ -7023,41 +7024,41 @@ msgstr ""
 msgid "OK, move it!"
 msgstr ""
 
-#: quodlibet/qltk/searchbar.py:57
+#: quodlibet/qltk/searchbar.py:59
 msgid "Saved Searches"
 msgstr "Ricerche salvate"
 
-#: quodlibet/qltk/searchbar.py:58
+#: quodlibet/qltk/searchbar.py:59
 msgid "Edit saved searches…"
 msgstr "Modifica ricerche salvate…"
 
-#: quodlibet/qltk/searchbar.py:82
+#: quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
 msgstr "Cerca nella tua libreria, usando testo libero o interrogazioni QL"
 
-#: quodlibet/qltk/searchbar.py:144
+#: quodlibet/qltk/searchbar.py:145
 msgid "Search after _typing"
 msgstr "Cerca _dopo aver digitato"
 
-#: quodlibet/qltk/searchbar.py:147
+#: quodlibet/qltk/searchbar.py:148
 #, fuzzy
 msgid "Show search results after the user stops typing"
 msgstr "Mostra i risultati della ricerca dopo che l'utente smette di digitare."
 
-#: quodlibet/qltk/searchbar.py:215
+#: quodlibet/qltk/searchbar.py:216
 msgid "_Limit:"
 msgstr "_Limite:"
 
-#: quodlibet/qltk/searchbar.py:228
+#: quodlibet/qltk/searchbar.py:229
 msgid "_Weight"
 msgstr "_Peso"
 
-#: quodlibet/qltk/searchbar.py:355
+#: quodlibet/qltk/searchbar.py:356
 #, fuzzy
 msgid "Add query"
 msgstr "interrogazione"
 
-#: quodlibet/qltk/searchbar.py:356
+#: quodlibet/qltk/searchbar.py:357
 msgid "Add a QL query or free text to be &ed together"
 msgstr ""
 
@@ -7141,44 +7142,44 @@ msgstr "Ripeti l'ultimo cambiamento annullato"
 msgid "Select all songs in all panes"
 msgstr "Seleziona tutti i brani in tutti i pannelli"
 
-#: quodlibet/qltk/songlist.py:390
+#: quodlibet/qltk/songlist.py:388
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtro su %s"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1182
 msgid "All _Headers"
 msgstr "Tutte le _intestazioni"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr "Intestazioni delle _tracce"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr "Intestazioni degli _album"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr "Intestazioni delle pe_rsone"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr "Intestazione della _data"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr "Intestazioni dei _file"
 
-#: quodlibet/qltk/songlist.py:1189
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr "Intestazioni della _produzione "
 
-#: quodlibet/qltk/songlist.py:1204
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Customize Headers…"
 msgstr "Personali_zza intestazioni…"
 
-#: quodlibet/qltk/songlist.py:1209
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
 msgstr "_Espandi colonna"
 
