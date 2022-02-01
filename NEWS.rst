@@ -1,3 +1,21 @@
+.. _News:
+
+
+.. _release-4.4.1:
+
+4.4.1 (2022-02-01) - Meanwhile in Tudor England
+-----------------------------------------------
+Packaging Changes:
+ * Fedora 33 is now tested in CI (#3542) :pr:`3558` (:user:`Phillip Julien <Phil305>`)
+ * Windows no longer uses ``frei0r``
+
+General:
+ * Translations are now managed through Weblate. Thank you to all the translators new and old!
+ * Ignore auto_sort when shuffle is enabled :pr:`3581` (:user:`<luk1337>`)
+ * Fix crash on Ex Falso preferences (closing #3591) (:user:`Nick Boultbee <declension>`)
+ * Support .m4b (AudioBook)files (#3602)|Closes #3595
+Plugins:
+
 .. _release-4.4.0:
 
 4.4.0 (2021-02-28) - PERFECTION IS BACK ON THE MENU
