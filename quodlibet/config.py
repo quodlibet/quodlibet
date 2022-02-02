@@ -2,6 +2,7 @@
 #           2009-2020 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -175,6 +176,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # show "all albums" in covergrid view
         "covergrid_all": "1",
+
+        # Pattern to build the track title when title tag is missing
+        "missing_title_pattern": "{basename} [untitled]",
     },
 
     # Kind of a dumping ground right now, should probably be

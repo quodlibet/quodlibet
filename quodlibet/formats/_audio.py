@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
 #           2012-2021 Nick Boultbee
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -519,9 +520,10 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-                basename = self("~basename")
-                return "%s [%s]" % (
-                    decode_value("~basename", basename), _("Unknown"))
+                basename = decode_value("~basename", self("~basename"))
+                unknown_track_pattern = _(config.gettext(
+                    "browsers", "missing_title_pattern"))
+                return unknown_track_pattern.format(basename=basename)
             else:
                 return title
         elif key in SORT_TO_TAG:
