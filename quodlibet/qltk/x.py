@@ -313,7 +313,7 @@ def _Button(type_, label, icon_name, size):
         return type_.new_with_mnemonic(label)
 
     align = Align(halign=Gtk.Align.CENTER, valign=Gtk.Align.CENTER)
-    hbox = Gtk.HBox(spacing=2)
+    hbox = Gtk.HBox(spacing=6)
     image = Gtk.Image.new_from_icon_name(icon_name, size)
     hbox.pack_start(image, True, True, 0)
     label = Gtk.Label(label=label)
