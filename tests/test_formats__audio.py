@@ -15,7 +15,8 @@ from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
 from quodlibet.util.environment import is_windows
 from quodlibet.util.path import (normalize_path, mkdir, get_home_dir, unquote,
-                                 escape_filename, RootPathFile)
+                                 escape_filename, RootPathFile,
+                                 stem_of_file_name, extension_of_file_name)
 from quodlibet.util.tags import _TAGS as TAGS
 from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
 from tests import TestCase, get_data_path, init_fake_app, destroy_fake_app
@@ -162,9 +163,13 @@ class TAudioFile(TestCase):
 
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
-        assert self.quux("title") == \
-            config.gettext('browsers', 'missing_title_template').format(
-                basename=fsn2text(self.quux("~basename")))
+
+        basename = fsn2text(self.quux("~basename"))
+        stem = stem_of_file_name(basename)
+        extension = extension_of_file_name(basename)[1:]
+        assert self.quux("title") == config.gettext(
+            'browsers', 'missing_title_template').format(
+            basename=basename, stem=stem, ext=extension)
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
         self.failUnlessEqual(bar_1_2("~#disc"), 1)
