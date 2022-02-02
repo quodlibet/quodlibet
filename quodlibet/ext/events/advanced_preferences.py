@@ -223,7 +223,9 @@ class AdvancedPreferences(EventPlugin):
                 "browsers", "missing_title_pattern",
                 "Missing title pattern string:",
                 ("Pattern for building title of tracks when title tag is missing. "
-                 "{basename} is replaced by the file name of the track."))
+                 "{basename} is expanded to the filename of the track, "
+                 "{stem} is the filename without extension, ."
+                 "{ext} is the extension (so that {basename}=={stem}.{ext})"))
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):

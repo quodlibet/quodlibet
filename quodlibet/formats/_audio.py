@@ -25,7 +25,8 @@ from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
-                                ismount, get_home_dir, RootPathFile
+                                ismount, get_home_dir, RootPathFile, \
+                                stem_of_file_name, extension_of_file_name
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
 
@@ -520,12 +521,19 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
+                # build a title with missing_title_pattern option
                 basename = decode_value("~basename", self("~basename"))
+                stem = stem_of_file_name(basename)
+                extension = extension_of_file_name(basename)[1:]
                 unknown_track_pattern = _(config.gettext(
                     "browsers", "missing_title_pattern"))
-                return unknown_track_pattern.format(basename=basename)
-            else:
-                return title
+                try:
+                    title = unknown_track_pattern.format(
+                    basename=basename, stem=stem, ext=extension)
+                except KeyError:
+                    # fallback to filename if user provided a bad pattern
+                    title = basename
+            return title
         elif key in SORT_TO_TAG:
             try:
                 return self[key]
