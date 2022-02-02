@@ -218,7 +218,12 @@ class AdvancedPreferences(EventPlugin):
                 "Minimum length proportion to consider a track as played:",
                 ("Consider a track played after listening to this proportion of "
                  "its total duration"),
-                label_value_callback=lambda value: f"{int(value * 100)}%")
+                label_value_callback=lambda value: f"{int(value * 100)}%"),
+            text_config(
+                "browsers", "missing_title_pattern",
+                "Missing title pattern string:",
+                ("Pattern for building title of tracks when title tag is missing. "
+                 "{basename} is replaced by the file name of the track."))
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
