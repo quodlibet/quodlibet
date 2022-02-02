@@ -25,13 +25,13 @@ class PlaylistMux:
     def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        self._id = player.connect('song-started', self.__song_started)
+        self._id = player.connect('song-ended', self.__song_ended)
         self._player = player
 
     def destroy(self):
         self._player.disconnect(self._id)
 
-    def __song_started(self, player, song):
+    def __song_ended(self, player, song, stopped):
         if song is not None and self.q.sourced:
             iter = self.q.find(song)
             keep_song = config.getboolean("memory", "queue_keep_songs", False)
