@@ -163,7 +163,7 @@ class TAudioFile(TestCase):
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
         assert self.quux("title") == \
-            config.gettext('browsers', 'missing_title_pattern').format(
+            config.gettext('browsers', 'missing_title_template').format(
                 basename=fsn2text(self.quux("~basename")))
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)

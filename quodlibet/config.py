@@ -177,8 +177,8 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # show "all albums" in covergrid view
         "covergrid_all": "1",
 
-        # Pattern to build the track title when title tag is missing
-        "missing_title_pattern": "{stem} [untitled {ext}]",
+        # Template to build the track title when title tag is missing
+        "missing_title_template": "{stem} [untitled {ext}]",
     },
 
     # Kind of a dumping ground right now, should probably be

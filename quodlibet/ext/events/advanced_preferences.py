@@ -220,11 +220,11 @@ class AdvancedPreferences(EventPlugin):
                  "its total duration"),
                 label_value_callback=lambda value: f"{int(value * 100)}%"),
             text_config(
-                "browsers", "missing_title_pattern",
-                "Missing title pattern string:",
-                ("Pattern for building title of tracks when title tag is missing. "
+                "browsers", "missing_title_template",
+                "Missing title template string:",
+                ("Template for building title of tracks when title tag is missing. "
                  "{basename} is expanded to the filename of the track, "
-                 "{stem} is the filename without extension, ."
+                 "{stem} is the filename without extension, "
                  "{ext} is the extension (so that {basename}=={stem}.{ext})"))
         ]
 

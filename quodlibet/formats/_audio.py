@@ -521,17 +521,17 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-                # build a title with missing_title_pattern option
+                # build a title with missing_title_template option
                 basename = decode_value("~basename", self("~basename"))
                 stem = stem_of_file_name(basename)
                 extension = extension_of_file_name(basename)[1:]
-                unknown_track_pattern = _(config.gettext(
-                    "browsers", "missing_title_pattern"))
+                unknown_track_template = _(config.gettext(
+                    "browsers", "missing_title_template"))
                 try:
-                    title = unknown_track_pattern.format(
+                    title = unknown_track_template.format(
                     basename=basename, stem=stem, ext=extension)
                 except KeyError:
-                    # fallback to filename if user provided a bad pattern
+                    # fallback to filename if user provided a bad template
                     title = basename
             return title
         elif key in SORT_TO_TAG:
