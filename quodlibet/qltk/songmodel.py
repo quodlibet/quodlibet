@@ -33,12 +33,13 @@ class PlaylistMux:
 
     def __song_ended(self, player, song, stopped):
         if song is not None and self.q.sourced:
-            iter = self.q.find(song)
             keep_song = config.getboolean("memory", "queue_keep_songs", False)
-            if iter and not keep_song:
-                self.q.remove(iter)
-                # we don't call _check_sourced here since we want the queue
-                # to stay sourced even if no current song is left
+            if not keep_song:
+                iter = self.q.find(song)
+                if iter:
+                    self.q.remove(iter)
+                    # we don't call _check_sourced here since we want the queue
+                    # to stay sourced even if no current song is left
 
     @property
     def current(self):
