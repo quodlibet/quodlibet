@@ -32,7 +32,7 @@ class PlaylistMux:
         self._player.disconnect(self._id)
 
     def __song_ended(self, player, song, stopped):
-        if song is not None and self.q.sourced:
+        if song is not None:
             keep_song = config.getboolean("memory", "queue_keep_songs", False)
             if not keep_song:
                 iter = self.q.find(song)
