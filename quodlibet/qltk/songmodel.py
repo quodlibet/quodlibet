@@ -119,8 +119,9 @@ class PlaylistMux:
             assert source in (self.pl, self.q)
             if source is self.q:
                 main, other = other, main
-        other.go_to(None)
         res = main.go_to(song, explicit)
+        if res is not None or not explicit:
+            other.go_to(None)
         self._check_sourced()
         return res
 
