@@ -8,9 +8,14 @@
 
 from quodlibet import _
 from quodlibet import app
+from quodlibet import config
+from quodlibet import qltk
 from quodlibet.plugins.playorder import ShufflePlugin
+from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.qltk import Icons
 from quodlibet.qltk.playorder import OrderInOrder
+
+from gi.repository import Gtk
 
 
 class QueueOrder(ShufflePlugin, OrderInOrder):
@@ -24,6 +29,16 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     display_name = _("Queue only")
     accelerated_name = _("_Queue only")
 
+    def PluginPreferences(self):
+        box = Gtk.HBox()
+        ccb = ConfigCheckButton(_("Automatically start playing "
+                                  "double-clicked songs"),
+                                'plugins', 'queue_only_autoplay')
+        autoplay = config.getboolean('plugins', 'queue_only_autoplay', False)
+        ccb.set_active(autoplay)
+        box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
+        return box
+
     def next(self, playlist, iter):
         return None
 
@@ -33,4 +48,17 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
         song = playlist[iter][0]
         if song is None:
             return
+
+        # store queue size for jumping to newly added items
+        queue = app.window.playlist.q
+        queue_size = len(queue)
+
         app.window.playlist.enqueue([playlist[iter][0]])
+
+        # if setting enabled, start playing the first added song
+        autoplay = config.getboolean("plugins", "queue_only_autoplay", False)
+        if autoplay and len(queue) > queue_size:
+            # queue_size is 1 greater than previous last index
+            new_song_iter = queue.iter_nth_child(None, queue_size)
+            app.window.playlist._player.go_to(new_song_iter, True, queue)
+            app.window.playlist._player.play()
