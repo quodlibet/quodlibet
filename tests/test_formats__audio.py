@@ -737,6 +737,27 @@ class TAudioFile(TestCase):
         self.failUnlessEqual(q.list("~peoplesort:roles"),
             ["B, The (Guitar)", "C, The (Performance)", "A, The (Vocals)"])
 
+    def test_blank_tag_handling_comma(self):
+        q = AudioFile([("title", "A\n"),
+                       ("artists", "A\n\nB\n")])
+        self.failUnlessEqual(q.comma("artists"), "A, B")
+        self.failUnlessEqual(q.comma("~title~version"), "A")
+
+    def test_blank_tag_handling_list(self):
+        q = AudioFile([("artist", "A\n\nB\n"),
+                       ("performer", ""),
+                       ("albumartist", "C")])
+        self.failUnlessEqual(q.list("performer"), [])
+        self.failUnlessEqual(q.list("~people"), ["A", "B", "C"])
+
+    def test_blank_tag_handling_list_sort(self):
+        q = AudioFile([("artist", "A\n\nB"),
+                       ("artistsort", "\n\nY")])
+        self.failUnlessEqual(q.list_sort("artist"), [("A", "A"), ("B", "Y")])
+        q = AudioFile([("artist", "A\n\nB"),
+                       ("artistsort", "X\nY")])
+        self.failUnlessEqual(q.list_sort("artist"), [("A", "X"), ("B", "B")])
+
     def test_to_dump(self):
         dump = bar_1_1.to_dump()
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
