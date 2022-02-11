@@ -50,7 +50,7 @@ $(THEME)/%/status/$(QL_MC_DEST): $(QL_MC_SOURCE)
 
 $(SYMBOLIC_TARGET): $(SYMBOLIC_SRC)
 	cp $(@:.svg=.svg.in) "_temp.svg"
-	inkscape -f "_temp.svg" --verb=EditSelectAll \
+	inkscape "_temp.svg" --verb=EditSelectAll \
 		--verb=SelectionUnGroup --verb=StrokeToPath --verb=SelectionUnion \
 		--verb=FileVacuum \
 		--verb=FileSave --verb=FileClose --verb=FileQuit
