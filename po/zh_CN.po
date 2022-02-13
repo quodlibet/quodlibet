@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-02-04 04:53+0000\n"
-"Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
+"PO-Revision-Date: 2022-02-07 12:55+0000\n"
+"Last-Translator: 梁普行 <tuskedevening0@gmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -601,7 +601,7 @@ msgstr "没有发现站点"
 #: quodlibet/browsers/iradio.py:839
 #, python-format
 msgid "No Internet radio stations were found at %s."
-msgstr "没有在 %s 发现网上广播站点。"
+msgstr "没有在 %s 发现网络电台。"
 
 #: quodlibet/browsers/iradio.py:852
 msgid "Nothing to add"
@@ -623,7 +623,7 @@ msgstr "从收藏中删除"
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
-msgstr[0] ""
+msgstr[0] "%(count)d 个电台"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:44
 msgid "Paned Browser"
@@ -848,11 +848,11 @@ msgstr "登录 %s"
 
 #: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
-msgstr ""
+msgstr "SoundCloud 登录验证"
 
 #: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
-msgstr ""
+msgstr "SoundCloud 验证码："
 
 #: quodlibet/cli.py:50
 msgid "Quod Libet is not running (add '--run' to start it)"
@@ -1118,7 +1118,7 @@ msgstr "提交错误报告"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "重启"
 
 #: quodlibet/errorreport/ui.py:71
 msgid "Ignore Error"
