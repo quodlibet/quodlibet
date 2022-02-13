@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2021-11-02 09:39+0000\n"
-"Last-Translator: JER-ry <jer-public@outlook.com>\n"
+"PO-Revision-Date: 2022-02-04 04:53+0000\n"
+"Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -5914,9 +5914,8 @@ msgid "No category"
 msgstr "没有分类"
 
 #: quodlibet/qltk/pluginwin.py:186
-#, fuzzy
 msgid "Any category"
-msgstr "没有分类"
+msgstr "任何分类"
 
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
