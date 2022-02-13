@@ -397,6 +397,10 @@ class AudioFile(dict, ImageContainer, HasKey):
                                 connector))
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
+            elif key == "basename:stem":
+                return stem_of_file_name(self("~basename"))
+            elif key == "basename:humanized":
+                return self("~basename:stem").replace('_', ' ').replace('-', ' ')
             elif key == "dirname":
                 return os.path.dirname(self["~filename"]) or self["~filename"]
             elif key == "uri":
