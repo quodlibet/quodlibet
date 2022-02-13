@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-01-03 14:54+0000\n"
+"PO-Revision-Date: 2022-02-11 20:47+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.10.1\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -6293,12 +6293,12 @@ msgstr "Redigering"
 #: quodlibet/qltk/pluginwin.py:41
 #, fuzzy
 msgid "Renaming"
-msgstr "_Gi nytt navn"
+msgstr "Endring av navn"
 
 #: quodlibet/qltk/pluginwin.py:42
 #, fuzzy
 msgid "Querying"
-msgstr "Spørringsinnsendelse"
+msgstr "Utføring av spørring"
 
 #: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
@@ -6310,7 +6310,7 @@ msgstr "Programtillegg-feil"
 
 #: quodlibet/qltk/pluginwin.py:144
 msgid "Any state"
-msgstr ""
+msgstr "Enhver tilstand"
 
 #: quodlibet/qltk/pluginwin.py:146
 msgid "Enabled"
@@ -6325,9 +6325,8 @@ msgid "No category"
 msgstr "Ingen kategori"
 
 #: quodlibet/qltk/pluginwin.py:186
-#, fuzzy
 msgid "Any category"
-msgstr "Ingen kategori"
+msgstr "Enhver kategori"
 
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
