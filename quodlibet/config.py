@@ -178,7 +178,7 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "covergrid_all": "1",
 
         # Template to build the track title when title tag is missing
-        "missing_title_template": "{stem} [untitled {ext}]",
+        "missing_title_template": "<~basename:humanized> [untitled <~format>]",
     },
 
     # Kind of a dumping ground right now, should probably be
