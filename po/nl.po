@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: nl\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-05-04 18:16+0200\n"
-"PO-Revision-Date: 2021-10-01 16:34+0000\n"
-"Last-Translator: Heimen Stoffels <vistausss@fastmail.com>\n"
+"PO-Revision-Date: 2022-01-20 21:19+0000\n"
+"Last-Translator: ikmaak <info@ikmaak.nl>\n"
 "Language-Team: Dutch <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/nl/>\n"
 "Language: nl\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.11-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -2878,7 +2878,7 @@ msgstr[1] "{count}/{total} duplicaten overgeslagen"
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
 msgstr[0] "{count}/{total} bestand verwijderd"
-msgstr[1] "{count}/{total} bestand verwijderd"
+msgstr[1] "{count}/{total} bestanden verwijderd"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1144
 #, python-brace-format
@@ -4621,16 +4621,15 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr ""
+msgstr "Import / Export"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:192
-#, fuzzy
 msgid "Further information"
-msgstr "Geen tijdsinformatie"
+msgstr "Meer informatie"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:195
 #, python-format
@@ -6584,9 +6583,8 @@ msgid "_Queue"
 msgstr "_Wachtrij"
 
 #: quodlibet/qltk/queue.py:130
-#, fuzzy
 msgid "Clear Queue"
-msgstr "Wa_chrij wissen"
+msgstr "Wachtrij wissen"
 
 #: quodlibet/qltk/queue.py:139
 msgid "Disable queue - the queue will be ignored when playing"
@@ -6967,7 +6965,7 @@ msgstr ""
 "{old!r} -> {new!r}\n"
 "\n"
 "De audiobestanden worden niet verplaatst.\n"
-"Een back-up is echter aanbevolen (inclusief het Quodlibet ‘nummers’-bestand)"
+"Een back-up is echter aanbevolen (inclusief het Quodlibet ‘nummers’-bestand)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
