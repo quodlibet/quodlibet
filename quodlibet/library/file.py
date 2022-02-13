@@ -5,7 +5,7 @@
 
 import time
 from pathlib import Path
-from typing import Generator, Set, Iterable
+from typing import Generator, Set, Iterable, Optional
 
 from quodlibet import print_d, print_w, _, formats
 from quodlibet.formats import AudioFileError, AudioFile
@@ -131,7 +131,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
             else:
                 removed.add(item)
 
-    def rebuild(self, paths, force=False, exclude=[], cofuncid=None):
+    def rebuild(self, paths, force=False, exclude=None, cofuncid=None):
         """Reload or remove songs if they have changed or been deleted.
 
         This generator rebuilds the library over the course of iteration.
@@ -202,7 +202,9 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         raise NotImplementedError
 
-    def scan(self, paths, exclude=[], cofuncid=None):
+    def scan(self, paths: Iterable[fsnative],
+             exclude: Optional[Iterable[fsnative]] = None,
+             cofuncid=None):
 
         def need_yield(last_yield=[0]):
             current = time.time()
