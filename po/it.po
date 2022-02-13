@@ -72,7 +72,7 @@ msgstr "Ordina _per…"
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:358 quodlibet/qltk/quodlibetwindow.py:906
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferenze"
 
@@ -168,8 +168,8 @@ msgstr "Visualizzazione album"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:99
-#: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Chiudi"
@@ -180,7 +180,7 @@ msgstr "_Chiudi"
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/formats/_audio.py:524 quodlibet/order/__init__.py:29
 #: quodlibet/qltk/information.py:244 quodlibet/qltk/information.py:251
-#: quodlibet/qltk/information.py:277 quodlibet/qltk/pluginwin.py:51
+#: quodlibet/qltk/information.py:277 quodlibet/qltk/pluginwin.py:53
 #: quodlibet/qltk/wlw.py:69
 msgid "Unknown"
 msgstr "Sconosciuto"
@@ -217,7 +217,7 @@ msgid "_New"
 msgstr "_Nuovo"
 
 #: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:424
+#: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "_Aggiorna"
 
@@ -651,8 +651,7 @@ msgstr "Navigatore a _pannelli"
 msgid "Select _All"
 msgstr "Selezion_a tutto"
 
-#: quodlibet/browsers/paned/models.py:106 quodlibet/qltk/pluginwin.py:142
-#: quodlibet/qltk/pluginwin.py:184
+#: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "Tutti"
 
@@ -697,7 +696,7 @@ msgid "Equal pane width"
 msgstr "Larghezza uguale del pannello"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:35
+#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Scalette"
 
@@ -1302,15 +1301,15 @@ msgstr ""
 "Usa le comuni regole Inglesi per le maiuscole nel titolo, come in \"Dark "
 "Night of the Soul\""
 
-#: quodlibet/ext/events/advanced_preferences.py:84
+#: quodlibet/ext/events/advanced_preferences.py:119
 msgid "Advanced Preferences"
 msgstr "Preferenze avanzate"
 
-#: quodlibet/ext/events/advanced_preferences.py:85
+#: quodlibet/ext/events/advanced_preferences.py:120
 msgid "Allow editing of advanced config settings."
 msgstr "Consenti la modifica delle impostazioni di configurazione avanzate."
 
-#: quodlibet/ext/events/advanced_preferences.py:205
+#: quodlibet/ext/events/advanced_preferences.py:246
 msgid "I know what I'm doing"
 msgstr "_So quello che sto facendo"
 
@@ -1387,7 +1386,7 @@ msgstr "A_ngoli arrotondati"
 msgid "_Delay:"
 msgstr "_Ritardo:"
 
-#: quodlibet/ext/events/animosd/prefs.py:282 quodlibet/qltk/pluginwin.py:41
+#: quodlibet/ext/events/animosd/prefs.py:282 quodlibet/qltk/pluginwin.py:43
 msgid "Effects"
 msgstr "Effetti"
 
@@ -5954,7 +5953,7 @@ msgstr "Impossibile creare la cartella"
 msgid "Unable to delete folder"
 msgstr "Impossibile eliminare la cartella"
 
-#: quodlibet/qltk/filesel.py:519 quodlibet/qltk/pluginwin.py:34
+#: quodlibet/qltk/filesel.py:519 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
 msgstr "Brani"
 
@@ -6220,70 +6219,79 @@ msgstr "Commuta modalità casuale"
 msgid "Toggle repeat mode"
 msgstr "Commuta modalità ripetizione"
 
-#: quodlibet/qltk/pluginwin.py:36
+#: quodlibet/qltk/pluginwin.py:38
 msgid "Events"
 msgstr "Eventi"
 
-#: quodlibet/qltk/pluginwin.py:37
+#: quodlibet/qltk/pluginwin.py:39
 msgid "Play Order"
 msgstr "Ordine di riproduzione"
 
-#: quodlibet/qltk/pluginwin.py:38
+#: quodlibet/qltk/pluginwin.py:40
 msgid "Editing"
 msgstr "Modifica"
 
-#: quodlibet/qltk/pluginwin.py:39
+#: quodlibet/qltk/pluginwin.py:41
 #, fuzzy
 msgid "Renaming"
 msgstr "_Rinomina"
 
 # controllare
-#: quodlibet/qltk/pluginwin.py:40
+#: quodlibet/qltk/pluginwin.py:42
 #, fuzzy
 msgid "Querying"
 msgstr "_Interrogazione:"
 
-#: quodlibet/qltk/pluginwin.py:42
+#: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
 msgstr "Copertine"
 
-#: quodlibet/qltk/pluginwin.py:64
+#: quodlibet/qltk/pluginwin.py:66
 msgid "Plugin Errors"
 msgstr "Errori dei plugin"
 
 #: quodlibet/qltk/pluginwin.py:144
+msgid "Any state"
+msgstr ""
+
+#: quodlibet/qltk/pluginwin.py:146
 msgid "Enabled"
 msgstr "Attivo"
 
-#: quodlibet/qltk/pluginwin.py:145
+#: quodlibet/qltk/pluginwin.py:147
 msgid "Disabled"
 msgstr "Disattivato"
 
-#: quodlibet/qltk/pluginwin.py:151
+#: quodlibet/qltk/pluginwin.py:153
 msgid "No category"
 msgstr "Nessuna categoria"
 
-#: quodlibet/qltk/pluginwin.py:321
+#: quodlibet/qltk/pluginwin.py:186
+#, fuzzy
+msgid "Any category"
+msgstr "Nessuna categoria"
+
+#: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "Nessun plugin trovato."
 
-#: quodlibet/qltk/pluginwin.py:374
+#: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
 msgstr "Plugin"
 
-#: quodlibet/qltk/pluginwin.py:398
+#: quodlibet/qltk/pluginwin.py:400
 msgid "Filter by plugin state / tag"
 msgstr "Filtra per stato plugin / tag"
 
-#: quodlibet/qltk/pluginwin.py:404
+#: quodlibet/qltk/pluginwin.py:406
 msgid "Filter by plugin type"
 msgstr "Filtra per tipo plugin"
 
-#: quodlibet/qltk/pluginwin.py:409
+#: quodlibet/qltk/pluginwin.py:411
 msgid "Filter by plugin name or description"
 msgstr "Filtra per nome plugin o descrizione"
 
-#: quodlibet/qltk/pluginwin.py:412
+#: quodlibet/qltk/pluginwin.py:414
 msgid "Show _Errors"
 msgstr "Mostra _errori"
 
