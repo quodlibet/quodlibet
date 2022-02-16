@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2019 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,6 +9,7 @@
 import os
 import io
 import re
+import stat
 import sys
 import errno
 import codecs
@@ -454,24 +455,25 @@ def get_home_dir():
         return expanduser("~")
 
 
-def ishidden(path):
-    """Returns if a directory/ file is considered hidden by the platform.
+def is_hidden(path: _fsnative) -> bool:
+    """Returns if a directory / file is considered hidden by the platform.
 
     Hidden meaning the user should normally not be exposed to those files when
     opening the parent directory in the default file manager using the default
     settings.
 
     Does not check if any of the parents are hidden.
-    In case the file/dir does not exist the result is implementation defined.
+    If the file / dir does not exist, the result is implementation defined.
 
-    Args:
-        path (fsnative)
-    Returns:
-        bool
+    :param path: the path to check
+    :return: True if and only if the path is considered hidden on the system
     """
 
-    # TODO: win/osx
-    return os.path.basename(path).startswith(".")
+    if sys.platform == "windows":
+        return bool(os.stat(path).st_file_attributes & stat.FILE_ATTRIBUTE_HIDDEN)
+    basename = os.path.basename(path)
+    # Let's allow "...and Justice For All" etc (#3916)
+    return basename.startswith(".") and basename[1:2] != "."
 
 
 def uri_is_valid(uri):

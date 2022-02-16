@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2011-2021 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -11,7 +11,7 @@
 import os
 import shutil
 from typing import (Collection, TypeVar, Sequence, Iterable,
-                    Optional, Iterator, Generic, MutableMapping, Tuple, Set)
+                    Optional, Iterator, Generic, MutableMapping, Tuple, Set, Generator)
 
 from gi.repository import GObject
 
@@ -23,8 +23,8 @@ from quodlibet.formats._audio import HasKey
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import (mkdir, ishidden)
-from senf import fsnative
+from quodlibet.util.path import (mkdir, is_hidden)
+from senf import fsnative, path2fsn
 
 K = TypeVar("K", covariant=True)
 V = TypeVar("V", bound=HasKey)
@@ -281,8 +281,10 @@ class PicklingMixin:
             self.dirty = False
 
 
-def iter_paths(root, exclude=[], skip_hidden=True):
-    """yields paths contained in root (symlinks dereferenced)
+def iter_paths(root: fsnative,
+               exclude: Optional[Iterable[fsnative]] = None,
+               skip_hidden: bool = True) -> Generator[fsnative, None, None]:
+    """Yields paths contained in root (symlinks dereferenced)
 
     Any path starting with any of the path parts included in exclude
     are ignored (before and after dereferencing symlinks)
@@ -290,36 +292,37 @@ def iter_paths(root, exclude=[], skip_hidden=True):
     Directory symlinks are not followed (except root itself)
 
     Args:
-        root (fsnative)
-        exclude (List[fsnative])
-        skip_hidden (bool): Ignore files which are hidden or where any
+        root: start here
+        exclude: ignore any of these
+        skip_hidden: Ignore files which are hidden or where any
             of the parent directories are hidden.
     Yields:
         fsnative: absolute dereferenced paths
     """
 
     assert isinstance(root, fsnative)
+    exclude = exclude or []
     assert all((isinstance(p, fsnative) for p in exclude))
     assert os.path.abspath(root)
 
     def skip(path):
-        if skip_hidden and ishidden(path):
+        if skip_hidden and is_hidden(path):
             return True
         # FIXME: normalize paths..
         return any((path.startswith(p) for p in exclude))
 
-    if skip_hidden and ishidden(root):
+    if skip_hidden and is_hidden(root):
         return
 
     for path, dnames, fnames in os.walk(root):
         if skip_hidden:
-            dnames[:] = list(filter(
-                lambda d: not ishidden(os.path.join(path, d)), dnames))
+            dnames[:] = [d for d in dnames
+                         if not is_hidden(path2fsn(os.path.join(path, d)))]
         for filename in fnames:
-            fullfilename = os.path.join(path, filename)
-            if skip(fullfilename):
+            full_filename = path2fsn(os.path.join(path, filename))
+            if skip(full_filename):
                 continue
-            fullfilename = os.path.realpath(fullfilename)
-            if skip(fullfilename):
+            full_filename = path2fsn(os.path.realpath(full_filename))
+            if skip(full_filename):
                 continue
-            yield fullfilename
+            yield full_filename  # type: ignore

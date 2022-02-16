@@ -10,11 +10,10 @@ import unittest
 from senf import uri2fsn, fsn2uri, fsnative, environ
 
 from quodlibet.util.path import iscommand, limit_path, \
-    get_home_dir, uri_is_valid, ishidden, uri2gsturi
+    get_home_dir, uri_is_valid, is_hidden, uri2gsturi
 from quodlibet.util import print_d
 
-from . import TestCase
-
+from . import TestCase, skipIf
 
 is_win = os.name == "nt"
 path_set = bool(environ.get('PATH', False))
@@ -29,11 +28,17 @@ def test_uri2gsturi():
 
 class Tishidden(TestCase):
 
-    def test_main(self):
-        assert ishidden(fsnative(u"."))
-        assert ishidden(fsnative(u"foo/.bar"))
-        assert not ishidden(fsnative(u".foo/bar"))
-        assert not ishidden(fsnative(u"foo"))
+    @skipIf(is_win, "unix-like hidden")
+    def test_leading_dot(self):
+        assert is_hidden(fsnative("."))
+        assert is_hidden(fsnative("foo/.bar"))
+
+    def test_normal_names_not_hidden(self):
+        assert not is_hidden(fsnative("foo"))
+        assert not is_hidden(fsnative(".foo/bar"))
+
+    def test_multiple_dots(self):
+        assert not is_hidden(fsnative("...and Justice For All.flac"))
 
 
 class Turi(TestCase):
