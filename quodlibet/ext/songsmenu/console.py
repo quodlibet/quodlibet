@@ -277,7 +277,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             return True
 
         # completion - Ctrl+Space , Ctrl+Shift+Space
-        elif event.keyval == Gdk.KEY_space \
+        elif event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_space \
                 and (event_state ==
                         (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
                     or event_state == (Gdk.ModifierType.CONTROL_MASK)):
