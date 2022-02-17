@@ -173,8 +173,9 @@ class PythonConsole(Gtk.ScrolledWindow):
                         event_state == Gdk.ModifierType.CONTROL_MASK:
             self.destroy()
 
-        elif event.keyval == Gdk.KEY_Return and \
-                        event_state == Gdk.ModifierType.CONTROL_MASK:
+        elif event.keyval == Gdk.KEY_Return and (
+            event_state & (Gdk.ModifierType.CONTROL_MASK |
+                           Gdk.ModifierType.SHIFT_MASK)):
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -194,7 +195,9 @@ class PythonConsole(Gtk.ScrolledWindow):
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
                 buffer.insert(cur, line[spaces.start():spaces.end()])
-                cur = buffer.get_end_iter()
+            else:
+                buffer.insert(cur, "    ")
+            cur = buffer.get_end_iter()
 
             buffer.place_cursor(cur)
             GLib.idle_add(self.scroll_to_end)
@@ -276,11 +279,15 @@ class PythonConsole(Gtk.ScrolledWindow):
                 buffer.place_cursor(inp)
             return True
 
-        # completion - Ctrl+Space , Ctrl+Shift+Space
-        elif event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_space \
-                and (event_state ==
-                        (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
-                    or event_state == (Gdk.ModifierType.CONTROL_MASK)):
+        # completion - Tab, Shift+Tab, Ctrl+Space , Ctrl+Shift+Space
+        elif (event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_ISO_Left_Tab) or (
+            event.keyval == Gdk.KEY_space
+            and (
+                event_state == (Gdk.ModifierType.CONTROL_MASK |
+                                Gdk.ModifierType.SHIFT_MASK)
+                or event_state == (Gdk.ModifierType.CONTROL_MASK)
+            )
+        ):
             buffer = view.get_buffer()
 
             # get string to left of caret  inside command text-line
@@ -303,7 +310,8 @@ class PythonConsole(Gtk.ScrolledWindow):
             comp_items = self.get_completion_items(ids_str,
                                                    include_private=is_shift)
 
-            if comp_items:
+            choice = None
+            if len(comp_items) > 1:
                 # sort completions: case-insensitive,
                 # items starting with '_' - at the end
                 comp_items.sort(
@@ -312,14 +320,30 @@ class PythonConsole(Gtk.ScrolledWindow):
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
                 dialog.destroy()
+            elif len(comp_items) == 1:
+                # if current text is only suggestion, add a '.' if object
+                # has properties visible to autosuggestion
+                last = ids_str.split('.')[-1]
+                if last == comp_items[0][0]:
+                    next_comp_items = self.get_completion_items(
+                        ids_str + '.',
+                        include_private=is_shift
+                    )
+                    if next_comp_items:
+                        buffer.insert(ins, '.')
+                else:
+                    choice = 0
+            elif '\n' in self.current_command:
+                # if we're doing multi-line editing, tab should add 4 spaces
+                buffer.insert(ins, "    ")
 
-                if isinstance(choice, int) and choice >= 0:
-                    last = ids_str.split('.')[-1]
-                    insert_text = comp_items[choice][0]
-                    if last:  # cut off prefix, already present
-                        insert_text = insert_text[len(last):]
+            if isinstance(choice, int) and choice >= 0:
+                last = ids_str.split('.')[-1]
+                insert_text = comp_items[choice][0]
+                if last:  # cut off prefix, already present
+                    insert_text = insert_text[len(last):]
 
-                    buffer.insert(ins, insert_text)
+                buffer.insert(ins, insert_text)
 
             return True
 
