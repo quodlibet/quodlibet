@@ -5036,10 +5036,10 @@ msgstr ""
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:226 quodlibet/library/file.py:245
-#: quodlibet/library/file.py:348 quodlibet/library/file.py:403
+#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
+#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:124
+#: quodlibet/util/library.py:121
 msgid "Library"
 msgstr "Library"
 
@@ -5051,21 +5051,21 @@ msgstr "Checking mount points"
 msgid "Scanning library"
 msgstr "Scanning library"
 
-#: quodlibet/library/file.py:225
+#: quodlibet/library/file.py:227
 #, python-format
 msgid "Scanning %s"
 msgstr "Scanning %s"
 
-#: quodlibet/library/file.py:245
+#: quodlibet/library/file.py:247
 msgid "Loading files"
 msgstr ""
 
-#: quodlibet/library/file.py:348
+#: quodlibet/library/file.py:350
 #, fuzzy
 msgid "Moving library files"
 msgstr "Scanning library"
 
-#: quodlibet/library/file.py:403
+#: quodlibet/library/file.py:405
 #, fuzzy
 msgid "Removing library files"
 msgstr "Remove active browser filters"

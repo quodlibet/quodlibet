@@ -4744,10 +4744,10 @@ msgstr ""
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:226 quodlibet/library/file.py:245
-#: quodlibet/library/file.py:348 quodlibet/library/file.py:403
+#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
+#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:124
+#: quodlibet/util/library.py:121
 msgid "Library"
 msgstr "库"
 
@@ -4759,20 +4759,20 @@ msgstr "检查挂载点"
 msgid "Scanning library"
 msgstr "正在扫描曲库"
 
-#: quodlibet/library/file.py:225
+#: quodlibet/library/file.py:227
 #, python-format
 msgid "Scanning %s"
 msgstr "正在扫描 %s"
 
-#: quodlibet/library/file.py:245
+#: quodlibet/library/file.py:247
 msgid "Loading files"
 msgstr "加载文件"
 
-#: quodlibet/library/file.py:348
+#: quodlibet/library/file.py:350
 msgid "Moving library files"
 msgstr "正在移动曲库文件"
 
-#: quodlibet/library/file.py:403
+#: quodlibet/library/file.py:405
 msgid "Removing library files"
 msgstr "正在删除曲库文件"
 
