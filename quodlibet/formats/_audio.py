@@ -25,8 +25,7 @@ from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
-                                ismount, get_home_dir, RootPathFile, \
-                                stem_of_file_name, extension_of_file_name
+                                ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
 
