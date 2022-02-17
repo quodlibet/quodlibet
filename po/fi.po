@@ -5049,10 +5049,10 @@ msgstr "Tunnistetta ”%s” ei löytynyt."
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:226 quodlibet/library/file.py:245
-#: quodlibet/library/file.py:348 quodlibet/library/file.py:403
+#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
+#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:124
+#: quodlibet/util/library.py:121
 msgid "Library"
 msgstr "Kirjasto"
 
@@ -5064,20 +5064,20 @@ msgstr "Tarkistetaan liitoskohdat"
 msgid "Scanning library"
 msgstr "Luetaan musiikkikirjastoa"
 
-#: quodlibet/library/file.py:225
+#: quodlibet/library/file.py:227
 #, python-format
 msgid "Scanning %s"
 msgstr "Luetaan kohdetta %s"
 
-#: quodlibet/library/file.py:245
+#: quodlibet/library/file.py:247
 msgid "Loading files"
 msgstr "Ladataan tiedostoja"
 
-#: quodlibet/library/file.py:348
+#: quodlibet/library/file.py:350
 msgid "Moving library files"
 msgstr "Siirretään kirjaston tiedostoja"
 
-#: quodlibet/library/file.py:403
+#: quodlibet/library/file.py:405
 msgid "Removing library files"
 msgstr "Poistetaan kirjaston tiedostoja"
 
