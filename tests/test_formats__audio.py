@@ -163,7 +163,7 @@ class TAudioFile(TestCase):
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
         assert self.quux("title") == \
-            "%s [Unknown]" % fsn2text(self.quux("~basename"))
+            "%s [untitled Unknown Audio File]" % fsn2text(self.quux("~basename"))
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
         self.failUnlessEqual(bar_1_2("~#disc"), 1)
