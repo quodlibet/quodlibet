@@ -223,9 +223,9 @@ class AdvancedPreferences(EventPlugin):
                 "browsers", "missing_title_template",
                 "Missing title template string:",
                 ("Template for building title of tracks when title tag is missing. "
-                 "{basename} is expanded to the filename of the track, "
-                 "{stem} is the filename without extension, "
-                 "{ext} is the extension (so that {basename}=={stem}.{ext})"))
+                 "Tags are allowed, like <~basename> <~dirname> <~format> <~length> "
+                 "<~#bitrate>, etc. See tags documentation for details.")
+            )
         ]
 
         for (row, (label, widget, button)) in enumerate(rows):
