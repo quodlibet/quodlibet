@@ -215,7 +215,6 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             line = buffer.get_text(inp, cur, True)
             self.current_command = self.current_command + line + "\n"
-            self.history_add(line)
 
             # Make the line blue
             lin = buffer.get_iter_at_mark(lin_mark)
@@ -225,7 +224,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur_strip = self.current_command.rstrip()
 
             if (cur_strip.endswith(":") or
-                (self.current_command[-2:] != "\n\n" and self.block_command)):
+                (self.current_command[-2:].strip() != "" and self.block_command)):
                 # Unfinished block command
                 self.block_command = True
                 com_mark = "... "
@@ -233,6 +232,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 com_mark = "... "
             else:
                 # Eval the command
+                self.history_add(cur_strip)
                 self.__run(self.current_command)
                 self.current_command = ''
                 self.block_command = False
@@ -242,6 +242,39 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             buffer.move_mark(lin_mark, cur)
             buffer.insert(cur, com_mark)
+            cur = buffer.get_end_iter()
+            buffer.move_mark(inp_mark, cur)
+
+            # Keep indentation of preceding line
+            if com_mark == "... ":
+                spaces = re.match(self.__spaces_pattern, line)
+                if spaces is not None:
+                    #cur = buffer.get_end_iter()
+                    buffer.insert(cur, line[spaces.start():spaces.end()])
+                if cur_strip.endswith(":"):
+                    #cur = buffer.get_end_iter()
+                    buffer.insert(cur, "    ")
+
+            buffer.place_cursor(cur)
+            GLib.idle_add(self.scroll_to_end)
+            return True
+
+        elif (event.keyval == Gdk.KEY_c and
+              event_state == Gdk.ModifierType.CONTROL_MASK):
+            # Get the marks
+            buffer = view.get_buffer()
+            lin_mark = buffer.get_mark("input-line")
+            inp_mark = buffer.get_mark("input")
+            cur = buffer.get_end_iter()
+
+            # New line
+            buffer.insert(cur, "\n")
+            com_mark = ">>> "
+            cur = buffer.get_end_iter()
+            buffer.move_mark(lin_mark, cur)
+            buffer.insert(cur, com_mark)
+
+            # Move marks
             cur = buffer.get_end_iter()
             buffer.move_mark(inp_mark, cur)
             buffer.place_cursor(cur)
