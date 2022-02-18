@@ -529,7 +529,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         else:
             comp = get_comp(obj=None, pre=ids_str)
 
-        return comp
+        return comp or []
 
 
 class OutFile:
