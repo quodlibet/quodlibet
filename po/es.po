@@ -178,10 +178,9 @@ msgstr "_Cerrar"
 #: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/formats/_audio.py:524 quodlibet/order/__init__.py:29
-#: quodlibet/qltk/information.py:244 quodlibet/qltk/information.py:251
-#: quodlibet/qltk/information.py:277 quodlibet/qltk/pluginwin.py:53
-#: quodlibet/qltk/wlw.py:69
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -1308,7 +1307,7 @@ msgstr "Preferencias avanzadas"
 msgid "Allow editing of advanced config settings."
 msgstr "Permite la edición de las opciones de configuración avanzadas."
 
-#: quodlibet/ext/events/advanced_preferences.py:246
+#: quodlibet/ext/events/advanced_preferences.py:253
 msgid "I know what I'm doing"
 msgstr "Sé lo que hago"
 
