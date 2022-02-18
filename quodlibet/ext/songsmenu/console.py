@@ -127,7 +127,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
-        add_css(self, "* { background-color: white; padding: 6px; } ")
+        add_css(self, "scrolledwindow { padding: 6px; "
+                "background-color: white; background-color: @content_view_bg;}")
         self.view.modify_font(Pango.font_description_from_string('Monospace'))
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
