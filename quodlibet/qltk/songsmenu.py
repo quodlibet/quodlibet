@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#      2013-2021 Nick Boultbee
+#      2013-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,17 +8,20 @@
 
 from gi.repository import Gtk
 
+from quodlibet.formats import AudioFile
 from quodlibet.plugins.gui import MenuItemPlugin
 from quodlibet.plugins.songshelpers import is_a_file
+from quodlibet.qltk.chooser import choose_folders
+from quodlibet.qltk.download import DownloadProgress
 from quodlibet.qltk.pluginwin import PluginWindow
 
-from quodlibet import ngettext, _, print_d
+from quodlibet import ngettext, _, print_d, app
 from quodlibet import qltk
 from quodlibet.errorreport import errorhook
 from quodlibet.qltk.showfiles import show_songs
 
-from quodlibet.util import print_e, print_w
-from quodlibet.qltk.msg import ConfirmationPrompt, ErrorMessage
+from quodlibet.util import print_e, print_w, copool
+from quodlibet.qltk.msg import ConfirmationPrompt, ErrorMessage, Message
 from quodlibet.qltk.delete import TrashMenuItem, trash_songs
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.properties import SongProperties
@@ -262,10 +265,10 @@ class SongsMenu(Gtk.Menu):
     def init_plugins(cls):
         PluginManager.instance.register_handler(cls.plugins)
 
-    def __init__(self, library, songs, plugins=True, playlists=True,
-                 queue=True, remove=True, delete=False, edit=True,
-                 ratings=True, show_files=True, items=None, accels=True,
-                 removal_confirmer=None):
+    def __init__(self, library, songs, plugins=True, playlists=True, queue=True,
+                 remove=True, delete=False, edit=True, ratings=True, show_files=True,
+                 download=False, items=None, accels=True,
+                 removal_confirmer=None, folder_chooser=None):
         super().__init__()
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
@@ -392,6 +395,7 @@ class SongsMenu(Gtk.Menu):
                 parent = get_menu_item_top_parent(menu_item)
                 window = Information(librarian, songs, parent)
                 window.show()
+
             b.connect('activate', information_cb)
             self.append(b)
 
@@ -410,12 +414,56 @@ class SongsMenu(Gtk.Menu):
             total = len([s for s in songs if is_a_file(s)])
             text = ngettext(
                 "_Show in File Manager",
-                "_Show %(total)d Files in File Manager", total) % {
-                    "total": total}
+                "_Show %(total)d Files in File Manager", total) % {"total": total}
             b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
             b.set_sensitive(bool(songs)
                             and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
             b.connect('activate', show_files_cb)
+            self.append(b)
+
+        if download:
+
+            def is_downloadable(song: AudioFile):
+                return bool(not song.is_file and song.get("~uri", False))
+
+            self.separate()
+            relevant = [s for s in songs if is_downloadable(s)]
+            total = len(relevant)
+            text = ngettext(
+                "_Download file…",
+                "_Download %(total)d files…", total) % {"total": total}
+            b = qltk.MenuItem(text, Icons.EMBLEM_DOWNLOADS)
+            b.set_sensitive(relevant
+                            and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
+
+            def _finished(p, successes, failures):
+                msg = (f"<b>{successes}</b> " + _("successful") +
+                       f"\n<b>{failures}</b> " + _("failed"))
+                print_d(msg.replace("\n", "; "))
+                warning = Message(Gtk.MessageType.INFO, app.window,
+                                  _("Downloads complete"), msg, escape_desc=False)
+                warning.run()
+
+            def download_cb(menu_item):
+                songs = relevant
+                total = len(songs)
+                msg = ngettext("Download {name!r} to",
+                               "Download {total} files to",
+                               total)
+                msg = msg.format(name=next(iter(songs))("title")[:99] if total else "?",
+                                 total=total)
+                chooser = folder_chooser or choose_folders
+                paths = chooser(None, msg, _("Start Download"), allow_multiple=False)
+                if not paths:
+                    print_d("Cancelling download")
+                    return
+                path = paths[0]
+                progress = DownloadProgress(songs)
+
+                progress.connect('finished', _finished)
+                copool.add(progress.download_songs, path)
+
+            b.connect('activate', download_cb)
             self.append(b)
 
         def selection_done_cb(menu):

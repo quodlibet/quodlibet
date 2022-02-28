@@ -22,10 +22,11 @@ class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK):
+    def __init__(self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK,
+                 escape_desc=True):
         parent = get_top_parent(parent)
         text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
-                % (escape(title), escape(description)))
+                % (escape(title), escape(description) if escape_desc else description))
         super().__init__(
             transient_for=parent, modal=True, destroy_with_parent=True,
             message_type=kind, buttons=buttons)

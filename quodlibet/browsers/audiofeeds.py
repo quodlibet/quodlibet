@@ -28,6 +28,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.msg import ErrorMessage
+from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
@@ -393,6 +394,9 @@ class AudioFeeds(Browser):
 
         for child in self.get_children():
             child.show_all()
+
+    def Menu(self, songs, library, items):
+        return SongsMenu(library, songs, download=True, items=items)
 
     def __drag_motion(self, view, ctx, x, y, time):
         targets = [t.name() for t in ctx.list_targets()]
