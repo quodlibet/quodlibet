@@ -10,9 +10,9 @@ from os.path import splitext
 from pathlib import Path
 from time import sleep
 from typing import Tuple, Collection, Any, Set
+from urllib.parse import urlparse
 
 from gi.repository import Soup, GObject
-from urllib3.util import parse_url
 
 from quodlibet import print_d, print_w, _, print_e
 from quodlibet.formats import AudioFile
@@ -61,7 +61,7 @@ class DownloadProgress(GObject.Object):
             content_type = headers.get('content-type')
             print_d(
                 f"Downloaded {format_size(size)} of {content_type}: {song('title')}")
-            _, ext = splitext(parse_url(song("~uri")).path)
+            _, ext = splitext(urlparse(song("~uri")).path)
             fn = (escape_filename(song("~artist~title")[:100], safe=b" ,';")
                   or song("~basename")
                   or f"download-{hash(song('~filename'))}")
