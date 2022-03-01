@@ -18,6 +18,7 @@ from quodlibet import print_d, print_w, _, print_e
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.notif import Task
 from quodlibet.util import http, format_size
+from quodlibet.util.path import escape_filename
 
 
 class DownloadProgress(GObject.Object):
@@ -61,7 +62,7 @@ class DownloadProgress(GObject.Object):
             print_d(
                 f"Downloaded {format_size(size)} of {content_type}: {song('title')}")
             _, ext = splitext(parse_url(song("~uri")).path)
-            fn = (song("~artist~title")[:200]
+            fn = (escape_filename(song("~artist~title")[:100], safe=b" ,';")
                   or song("~basename")
                   or f"download-{hash(song('~filename'))}")
             path = path / Path(fn + ext)
