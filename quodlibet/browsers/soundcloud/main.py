@@ -17,6 +17,7 @@ from quodlibet.browsers import Browser
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow, WebImage
 from quodlibet.util import connect_destroy, DeferredSignal, website, enum, \
@@ -127,6 +128,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         pane.pack2(songs_box, resize=True, shrink=False)
         self.pack_start(pane, True, True, 0)
         self.show()
+
+    def Menu(self, songs, library, items):
+        return SongsMenu(library, songs, download=True, items=items)
 
     @property
     def online(self):
