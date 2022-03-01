@@ -453,7 +453,7 @@ class SongsMenu(Gtk.Menu):
                 msg = msg.format(name=next(iter(songs))("title")[:99] if total else "?",
                                  total=total)
                 chooser = folder_chooser or choose_folders
-                paths = chooser(None, msg, _("Start Download"), allow_multiple=False)
+                paths = chooser(None, msg, _("Download here"), allow_multiple=False)
                 if not paths:
                     print_d("Cancelling download")
                     return
