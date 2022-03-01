@@ -4071,7 +4071,7 @@ msgstr "По умолчанию доступны следующие объект
 msgid "Your current working directory is:"
 msgstr "Текущий рабочий каталог:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Соединение"

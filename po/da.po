@@ -4057,7 +4057,7 @@ msgstr "Du kan tilgå følgende objekter som standard:"
 msgid "Your current working directory is:"
 msgstr "Din aktuelle arbejdsmappe er:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Forbindelse"

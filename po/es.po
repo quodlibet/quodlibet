@@ -4040,7 +4040,7 @@ msgstr "Puede acceder a los objetos siguientes de manera predeterminada:"
 msgid "Your current working directory is:"
 msgstr "Su directorio de trabajo actual es:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
 msgstr "Compleción"
 

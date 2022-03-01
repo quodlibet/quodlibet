@@ -4002,7 +4002,7 @@ msgstr ""
 msgid "Your current working directory is:"
 msgstr "Ваш поточний робочий каталог:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Зʼєднання"

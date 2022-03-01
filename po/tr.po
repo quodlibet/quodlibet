@@ -4060,7 +4060,7 @@ msgstr "Aşağıdaki nesnelere varsayılan olarak erişebilirsiniz:"
 msgid "Your current working directory is:"
 msgstr "Şu anki çalışma dizininiz şudur:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
 msgstr "Tamamlama"
 

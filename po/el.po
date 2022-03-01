@@ -4074,7 +4074,7 @@ msgstr "Έχετε πρόσβαση στα ακόλουθα αντικείμεν
 msgid "Your current working directory is:"
 msgstr "Ο τρέχων κατάλογος εργασίας σας είναι:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Σύνδεση"

@@ -4108,7 +4108,7 @@ msgstr "Par défaut, vous avez accès aux objets suivants :"
 msgid "Your current working directory is:"
 msgstr "Votre répertoire par défaut est :"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
 msgstr "Compléter"
 
