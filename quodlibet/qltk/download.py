@@ -74,7 +74,7 @@ class DownloadProgress(GObject.Object):
             self.success(song)
             print_d(f"Downloaded to {path} successfully!")
         except Exception as e:
-            print_e(f"Failed download ({e}")
+            print_e(f"Failed download ({e})")
             self.failure(song)
 
     def _failed(self, _req: Any, _exc: Exception, data: Tuple) -> None:
