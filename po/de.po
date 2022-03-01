@@ -4133,7 +4133,7 @@ msgstr "Sie können standardmäßig auf die folgenden Objekte zugreifen:"
 msgid "Your current working directory is:"
 msgstr "Ihr aktuelles Arbeitsverzeichnis ist:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
 msgstr "Vervollständigung"
 

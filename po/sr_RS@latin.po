@@ -4059,7 +4059,7 @@ msgstr "Možete pristupiti sledećim podrazumevanim objektima:"
 msgid "Your current working directory is:"
 msgstr "Vaš trenutni radni direktorijum je:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Veza"

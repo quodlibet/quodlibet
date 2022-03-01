@@ -4080,7 +4080,7 @@ msgstr "Predvolene môžete pristupovať k nasledovným objektom:"
 msgid "Your current working directory is:"
 msgstr "Váš súčasný pracovný priečinok je:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
 msgstr "Dokončovanie"
 

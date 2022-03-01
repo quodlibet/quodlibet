@@ -4085,7 +4085,7 @@ msgstr "Seuraavat objektit ovat käytössä oletuksena:"
 msgid "Your current working directory is:"
 msgstr "Nykyinen työhakemisto:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Yhteys"

@@ -4093,7 +4093,7 @@ msgstr "Jako základ můžete použít následující objekty:"
 msgid "Your current working directory is:"
 msgstr "Aktuální pracovní složka:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Spojení"

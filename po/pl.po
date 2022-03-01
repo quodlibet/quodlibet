@@ -4090,7 +4090,7 @@ msgstr "Domyślnie można uzyskać dostęp do następujących obiektów:"
 msgid "Your current working directory is:"
 msgstr "Bieżący katalog roboczy:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Połączenie"

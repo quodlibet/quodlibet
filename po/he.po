@@ -4002,7 +4002,7 @@ msgstr "ניתן לגשת לאובייקטים הבאים כברירת מחדל:
 msgid "Your current working directory is:"
 msgstr "המחיצה הפעילה היא:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "חיבור"

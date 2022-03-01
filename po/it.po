@@ -4077,7 +4077,7 @@ msgstr "Puoi accedere ai seguenti oggetti in modo predefinito:"
 msgid "Your current working directory is:"
 msgstr "La tua directory di lavoro corrente è:"
 
-#: quodlibet/ext/songsmenu/console.py:559
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Connessione"
