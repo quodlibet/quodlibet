@@ -183,8 +183,8 @@ msgstr "Список альбомов"
 msgid "_Close"
 msgstr "_Закрыть"
 
-#: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
-#: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
+#: quodlibet/browsers/audiofeeds.py:52 quodlibet/browsers/audiofeeds.py:64
+#: quodlibet/browsers/audiofeeds.py:66 quodlibet/browsers/audiofeeds.py:153
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -193,15 +193,15 @@ msgstr "_Закрыть"
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: quodlibet/browsers/audiofeeds.py:213
+#: quodlibet/browsers/audiofeeds.py:214
 msgid "New Feed"
 msgstr "Новая лента"
 
-#: quodlibet/browsers/audiofeeds.py:214
+#: quodlibet/browsers/audiofeeds.py:215
 msgid "Enter the location of an audio feed:"
 msgstr "Введите адрес аудио ленты:"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:216
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
@@ -212,36 +212,36 @@ msgstr "Введите адрес аудио ленты:"
 msgid "_Add"
 msgstr "_Добавить"
 
-#: quodlibet/browsers/audiofeeds.py:269
+#: quodlibet/browsers/audiofeeds.py:270
 msgid "Audio Feeds"
 msgstr "Аудио ленты"
 
-#: quodlibet/browsers/audiofeeds.py:270
+#: quodlibet/browsers/audiofeeds.py:271
 msgid "_Audio Feeds"
 msgstr "Аудио _ленты"
 
-#: quodlibet/browsers/audiofeeds.py:373 quodlibet/qltk/data_editors.py:93
+#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
 msgid "_New"
 msgstr "С_оздать"
 
-#: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "Об_новить"
 
-#: quodlibet/browsers/audiofeeds.py:438
+#: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "_Удалить файлы"
 
-#: quodlibet/browsers/audiofeeds.py:491
+#: quodlibet/browsers/audiofeeds.py:495
 msgid "Unable to add feed"
 msgstr "Не удалось добавить ленту"
 
-#: quodlibet/browsers/audiofeeds.py:492
+#: quodlibet/browsers/audiofeeds.py:496
 #, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -250,7 +250,7 @@ msgstr ""
 "Не удалось добавить %s. Возможно, указанный сервер не работает или адрес не "
 "является лентой аудиофайлов."
 
-#: quodlibet/browsers/audiofeeds.py:509
+#: quodlibet/browsers/audiofeeds.py:513
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -362,7 +362,7 @@ msgstr "_Применить"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:56 quodlibet/qltk/msg.py:93 quodlibet/qltk/msg.py:110
+#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -607,7 +607,7 @@ msgid "All Stations"
 msgstr "Все станции"
 
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
+#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Избранное"
 
@@ -830,46 +830,46 @@ msgstr "Список треков"
 msgid "_Track List"
 msgstr "_Список треков"
 
-#: quodlibet/browsers/soundcloud/main.py:39
+#: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Обзор SoundCloud"
 
-#: quodlibet/browsers/soundcloud/main.py:40
+#: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
 msgstr "Обзор Sound_cloud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Найти"
 
-#: quodlibet/browsers/soundcloud/main.py:69
+#: quodlibet/browsers/soundcloud/main.py:70
 msgid "My tracks"
 msgstr "Мои треки"
 
-#: quodlibet/browsers/soundcloud/main.py:140
+#: quodlibet/browsers/soundcloud/main.py:144
 #, python-format
 msgid "Go to %s"
 msgstr "Перейти к %s"
 
-#: quodlibet/browsers/soundcloud/main.py:442
+#: quodlibet/browsers/soundcloud/main.py:446
 msgid "Connected"
 msgstr "Соединение"
 
-#: quodlibet/browsers/soundcloud/main.py:443
+#: quodlibet/browsers/soundcloud/main.py:447
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet подключен, <b>%s</b>!"
 
-#: quodlibet/browsers/soundcloud/main.py:455
+#: quodlibet/browsers/soundcloud/main.py:459
 #, python-format
 msgid "Log out of %s"
 msgstr "Выйти из %s"
 
-#: quodlibet/browsers/soundcloud/main.py:457
+#: quodlibet/browsers/soundcloud/main.py:461
 msgid "Enter code…"
 msgstr "Введите код…"
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:462
 #, python-format
 msgid "Log in to %s"
 msgstr "Вход в %s"
@@ -1775,7 +1775,7 @@ msgstr "Имя пресета для сохранения:"
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:54
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -3077,16 +3077,16 @@ msgid "Open _Browser"
 msgstr "В новом о_кне"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
 msgid "Edit _Tags"
 msgstr "Изменить _теги"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:386
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
 msgid "_Information"
 msgstr "_Информация"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:314
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
 msgid "Play_lists"
 msgstr "Плейли_сты"
 
@@ -5490,8 +5490,8 @@ msgstr[0] "Запустить плагин \"%(name)s\" для %(count)s пле�
 msgstr[1] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
 msgstr[2] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:56
-#: quodlibet/qltk/songsmenu.py:67
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
+#: quodlibet/qltk/songsmenu.py:70
 msgid "_Run Plugin"
 msgstr "_Запустить плагин"
 
@@ -5713,6 +5713,16 @@ msgstr "Не удалось удалить файлы"
 msgid "Deleting one or more files failed."
 msgstr "Не удалось удалить некоторые файлы."
 
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Browser"
+msgstr "Режимы отображения"
+
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Downloading files"
+msgstr "Не удалось сохранить"
+
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
 msgid "missing from %d song"
@@ -5895,7 +5905,7 @@ msgid "_Check for Updates…"
 msgstr "_Проверить обновления…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:290
+#: quodlibet/qltk/songsmenu.py:293
 msgid "_Plugins"
 msgstr "_Расширения"
 
@@ -6161,11 +6171,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:43
+#: quodlibet/qltk/msg.py:44
 msgid "Discard tag changes?"
 msgstr "Отменить изменения тегов?"
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:45
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6173,22 +6183,22 @@ msgstr ""
 "Теги были изменены, но изменения не были сохранены. Сохранить файлы или "
 "отменить изменения?"
 
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:636
 #: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "Сбр_ос"
 
-#: quodlibet/qltk/msg.py:103
+#: quodlibet/qltk/msg.py:104
 msgid "File exists"
 msgstr "Файл существует"
 
-#: quodlibet/qltk/msg.py:105
+#: quodlibet/qltk/msg.py:106
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "Заменить %(file-name)s?"
 
-#: quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:112
 msgid "_Replace File"
 msgstr "_Заменить файл"
 
@@ -7166,7 +7176,7 @@ msgstr "_Настроить…"
 msgid "_Expand Column"
 msgstr "Автоши_рина"
 
-#: quodlibet/qltk/songsmenu.py:40
+#: quodlibet/qltk/songsmenu.py:43
 #, python-format
 msgid "Remove track: \"%%(title)s\" from library?"
 msgid_plural "Remove %(count)d tracks from library?"
@@ -7174,11 +7184,11 @@ msgstr[0] "Удалить %(count)d трек из фонотеки?"
 msgstr[1] "Удалить %(count)d трека из фонотеки?"
 msgstr[2] "Удалить %(count)d треков из фонотеки?"
 
-#: quodlibet/qltk/songsmenu.py:45
+#: quodlibet/qltk/songsmenu.py:48
 msgid "Remove from Library"
 msgstr "Удалить из фонотеки"
 
-#: quodlibet/qltk/songsmenu.py:52
+#: quodlibet/qltk/songsmenu.py:55
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
@@ -7186,7 +7196,7 @@ msgstr[0] "Запустить плагин '%(name)s' для %(count)d трек�
 msgstr[1] "Запустить плагин '%(name)s' для %(count)d треков?"
 msgstr[2] "Запустить плагин '%(name)s' для %(count)d треков?"
 
-#: quodlibet/qltk/songsmenu.py:63
+#: quodlibet/qltk/songsmenu.py:66
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
@@ -7194,33 +7204,68 @@ msgstr[0] "Запустить плагин '%(name)s' для %(count)d альб�
 msgstr[1] "Запустить плагин '%(name)s' для %(count)d альбомов?"
 msgstr[2] "Запустить плагин '%(name)s' для %(count)d альбомов?"
 
-#: quodlibet/qltk/songsmenu.py:135
+#: quodlibet/qltk/songsmenu.py:138
 msgid "Configure Plugins…"
 msgstr "Настройки расширений…"
 
-#: quodlibet/qltk/songsmenu.py:319
+#: quodlibet/qltk/songsmenu.py:322
 msgid "Add to _Queue"
 msgstr "Добавить в _очередь"
 
-#: quodlibet/qltk/songsmenu.py:339
+#: quodlibet/qltk/songsmenu.py:342
 msgid "_Remove from Library…"
 msgstr "Удалить из _фонотеки…"
 
-#: quodlibet/qltk/songsmenu.py:404
+#: quodlibet/qltk/songsmenu.py:408
 msgid "Unable to show files"
 msgstr "Не удается отобразить файлы"
 
-#: quodlibet/qltk/songsmenu.py:405
+#: quodlibet/qltk/songsmenu.py:409
 msgid "Error showing files, or no program available to show them."
 msgstr "Ошибка отображения файлов, или нет программы для их отображения."
 
-#: quodlibet/qltk/songsmenu.py:412
+#: quodlibet/qltk/songsmenu.py:416
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "_Показать %(total)d файл"
 msgstr[1] "_Показать %(total)d файла"
 msgstr[2] "_Показать %(total)d файлов"
+
+#: quodlibet/qltk/songsmenu.py:433
+#, python-format
+msgid "_Download file…"
+msgid_plural "_Download %(total)d files…"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: quodlibet/qltk/songsmenu.py:440
+msgid "successful"
+msgstr ""
+
+#: quodlibet/qltk/songsmenu.py:441
+#, fuzzy
+msgid "failed"
+msgstr "Не удалось сохранить"
+
+#: quodlibet/qltk/songsmenu.py:444
+#, fuzzy
+msgid "Downloads complete"
+msgstr "Обложки - Загрузка"
+
+#: quodlibet/qltk/songsmenu.py:450
+#, fuzzy
+msgid "Download {name!r} to"
+msgid_plural "Download {total} files to"
+msgstr[0] "Обложки - Загрузка"
+msgstr[1] "Обложки - Загрузка"
+msgstr[2] "Обложки - Загрузка"
+
+#: quodlibet/qltk/songsmenu.py:456
+#, fuzzy
+msgid "Download here"
+msgstr "Обложки - Загрузка"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"

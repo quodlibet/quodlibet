@@ -173,8 +173,8 @@ msgstr "Albuminäkymä"
 msgid "_Close"
 msgstr "_Sulje"
 
-#: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
-#: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
+#: quodlibet/browsers/audiofeeds.py:52 quodlibet/browsers/audiofeeds.py:64
+#: quodlibet/browsers/audiofeeds.py:66 quodlibet/browsers/audiofeeds.py:153
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -183,15 +183,15 @@ msgstr "_Sulje"
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: quodlibet/browsers/audiofeeds.py:213
+#: quodlibet/browsers/audiofeeds.py:214
 msgid "New Feed"
 msgstr "Uusi syöte"
 
-#: quodlibet/browsers/audiofeeds.py:214
+#: quodlibet/browsers/audiofeeds.py:215
 msgid "Enter the location of an audio feed:"
 msgstr "Anna äänisyötteen sijainti:"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:216
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
@@ -202,36 +202,36 @@ msgstr "Anna äänisyötteen sijainti:"
 msgid "_Add"
 msgstr "_Lisää"
 
-#: quodlibet/browsers/audiofeeds.py:269
+#: quodlibet/browsers/audiofeeds.py:270
 msgid "Audio Feeds"
 msgstr "Äänisyötteet"
 
-#: quodlibet/browsers/audiofeeds.py:270
+#: quodlibet/browsers/audiofeeds.py:271
 msgid "_Audio Feeds"
 msgstr "Äänis_yötteet"
 
-#: quodlibet/browsers/audiofeeds.py:373 quodlibet/qltk/data_editors.py:93
+#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
 msgid "_New"
 msgstr "_Uusi"
 
-#: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "_Päivitä"
 
-#: quodlibet/browsers/audiofeeds.py:438
+#: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "_Poista"
 
-#: quodlibet/browsers/audiofeeds.py:491
+#: quodlibet/browsers/audiofeeds.py:495
 msgid "Unable to add feed"
 msgstr "Syötettä ei voitu lisätä"
 
-#: quodlibet/browsers/audiofeeds.py:492
+#: quodlibet/browsers/audiofeeds.py:496
 #, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -240,7 +240,7 @@ msgstr ""
 "Sijainnin %s lisääminen ei onnistunut. Ehkä palvelin ei ole linjoilla tai "
 "sijainti ei ole äänisyöte."
 
-#: quodlibet/browsers/audiofeeds.py:509
+#: quodlibet/browsers/audiofeeds.py:513
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -351,7 +351,7 @@ msgstr "_Käytä"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:56 quodlibet/qltk/msg.py:93 quodlibet/qltk/msg.py:110
+#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -597,7 +597,7 @@ msgid "All Stations"
 msgstr "Kaikki asemat"
 
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
+#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Suosikit"
 
@@ -817,46 +817,46 @@ msgstr "Kappaleet"
 msgid "_Track List"
 msgstr "Kappale_lista"
 
-#: quodlibet/browsers/soundcloud/main.py:39
+#: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Soundcloud-selain"
 
-#: quodlibet/browsers/soundcloud/main.py:40
+#: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
 msgstr "Sound_cloud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Hae"
 
-#: quodlibet/browsers/soundcloud/main.py:69
+#: quodlibet/browsers/soundcloud/main.py:70
 msgid "My tracks"
 msgstr "Omat raidat"
 
-#: quodlibet/browsers/soundcloud/main.py:140
+#: quodlibet/browsers/soundcloud/main.py:144
 #, python-format
 msgid "Go to %s"
 msgstr "Siirry osoitteeseen %s"
 
-#: quodlibet/browsers/soundcloud/main.py:442
+#: quodlibet/browsers/soundcloud/main.py:446
 msgid "Connected"
 msgstr "Yhdistetty"
 
-#: quodlibet/browsers/soundcloud/main.py:443
+#: quodlibet/browsers/soundcloud/main.py:447
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet on nyt muodostanut yhteyden, <b>%s</b>!"
 
-#: quodlibet/browsers/soundcloud/main.py:455
+#: quodlibet/browsers/soundcloud/main.py:459
 #, python-format
 msgid "Log out of %s"
 msgstr "Kirjaudu ulos palvelusta %s"
 
-#: quodlibet/browsers/soundcloud/main.py:457
+#: quodlibet/browsers/soundcloud/main.py:461
 msgid "Enter code…"
 msgstr "Anna koodi…"
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:462
 #, python-format
 msgid "Log in to %s"
 msgstr "Kirjaudu palveluun %s"
@@ -1773,7 +1773,7 @@ msgstr "Esiasetuksen nimi tallennusta varten:"
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:54
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -3083,16 +3083,16 @@ msgid "Open _Browser"
 msgstr "Avaa _selain"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
 msgid "Edit _Tags"
 msgstr "Muokkaa t_unnisteita"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:386
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
 msgid "_Information"
 msgstr "T_iedot"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:314
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
 msgid "Play_lists"
 msgstr "Soitto_listat"
 
@@ -5507,8 +5507,8 @@ msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
 msgstr[0] "Suorita liitännäinen %(name)s” %(count)s soittolistalle?"
 msgstr[1] "Suorita liitännäinen ”%(name)s” %(count)s soittolistalle?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:56
-#: quodlibet/qltk/songsmenu.py:67
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
+#: quodlibet/qltk/songsmenu.py:70
 msgid "_Run Plugin"
 msgstr "_Suorita liitännäinen"
 
@@ -5728,6 +5728,16 @@ msgstr "Tiedostojen poistaminen epäonnistui"
 msgid "Deleting one or more files failed."
 msgstr "Yhden tai useamman tiedoston poistaminen epäonnistui."
 
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Browser"
+msgstr "Selaimet"
+
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Downloading files"
+msgstr "Lataa tiedostoja"
+
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
 msgid "missing from %d song"
@@ -5910,7 +5920,7 @@ msgid "_Check for Updates…"
 msgstr "Tarkista _päivitykset…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:290
+#: quodlibet/qltk/songsmenu.py:293
 msgid "_Plugins"
 msgstr "Liitä_nnäiset"
 
@@ -6171,11 +6181,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:43
+#: quodlibet/qltk/msg.py:44
 msgid "Discard tag changes?"
 msgstr "Hylkää muutokset tunnisteisiin?"
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:45
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6183,22 +6193,22 @@ msgstr ""
 "Tunnisteita on muutettu, mutta ei tallennettu. Tallennetaanko tiedostot, vai "
 "hylätäänkö muutokset ja palautetaan vanhat arvot?"
 
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:636
 #: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_Palauta"
 
-#: quodlibet/qltk/msg.py:103
+#: quodlibet/qltk/msg.py:104
 msgid "File exists"
 msgstr "Tiedosto on olemassa"
 
-#: quodlibet/qltk/msg.py:105
+#: quodlibet/qltk/msg.py:106
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "Korvaa %(file-name)s?"
 
-#: quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:112
 msgid "_Replace File"
 msgstr "_Korvaa tiedosto"
 
@@ -7182,59 +7192,93 @@ msgstr "_Mukauta otsakkeita…"
 msgid "_Expand Column"
 msgstr "_Laajenna sarake"
 
-#: quodlibet/qltk/songsmenu.py:40
+#: quodlibet/qltk/songsmenu.py:43
 #, python-format
 msgid "Remove track: \"%%(title)s\" from library?"
 msgid_plural "Remove %(count)d tracks from library?"
 msgstr[0] "Poistetaanko kappale ”%%(title)s” kirjastosta?"
 msgstr[1] "Poistetaanko %(count)d kappaletta kirjastosta?"
 
-#: quodlibet/qltk/songsmenu.py:45
+#: quodlibet/qltk/songsmenu.py:48
 msgid "Remove from Library"
 msgstr "Poista kirjastosta"
 
-#: quodlibet/qltk/songsmenu.py:52
+#: quodlibet/qltk/songsmenu.py:55
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] "Suoritetaanko liitännäinen ”%(name)s” %(count)d kappaleelle?"
 msgstr[1] "Suoritetaanko liitännäinen ”%(name)s” %(count)d kappaleelle?"
 
-#: quodlibet/qltk/songsmenu.py:63
+#: quodlibet/qltk/songsmenu.py:66
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] "Suoritetaanko liitännäinen ”%(name)s” %(count)d albumille?"
 msgstr[1] "Suoritetaanko liitännäinen ”%(name)s” %(count)d albumille?"
 
-#: quodlibet/qltk/songsmenu.py:135
+#: quodlibet/qltk/songsmenu.py:138
 msgid "Configure Plugins…"
 msgstr "Liitännäisten asetukset…"
 
-#: quodlibet/qltk/songsmenu.py:319
+#: quodlibet/qltk/songsmenu.py:322
 msgid "Add to _Queue"
 msgstr "Lisää _jonoon"
 
-#: quodlibet/qltk/songsmenu.py:339
+#: quodlibet/qltk/songsmenu.py:342
 msgid "_Remove from Library…"
 msgstr "_Poista kirjastosta…"
 
-#: quodlibet/qltk/songsmenu.py:404
+#: quodlibet/qltk/songsmenu.py:408
 msgid "Unable to show files"
 msgstr "Tiedostojen näyttäminen epäonnistui"
 
-#: quodlibet/qltk/songsmenu.py:405
+#: quodlibet/qltk/songsmenu.py:409
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 "Tiedostojen näyttämisessä tapahtui virhe tai niiden näyttämiseen ei ole "
 "sopivaa ohjelmaa."
 
-#: quodlibet/qltk/songsmenu.py:412
+#: quodlibet/qltk/songsmenu.py:416
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "_Näytä tiedostonhallinnassa"
 msgstr[1] "_Näytä %(total)d tiedostoa tiedostonhallinnassa"
+
+#: quodlibet/qltk/songsmenu.py:433
+#, fuzzy, python-format
+msgid "_Download file…"
+msgid_plural "_Download %(total)d files…"
+msgstr[0] "_Lataa…"
+msgstr[1] "_Lataa…"
+
+#: quodlibet/qltk/songsmenu.py:440
+#, fuzzy
+msgid "successful"
+msgstr "Suoritus onnistui"
+
+#: quodlibet/qltk/songsmenu.py:441
+#, fuzzy
+msgid "failed"
+msgstr "Tallennus epäonnistui"
+
+#: quodlibet/qltk/songsmenu.py:444
+#, fuzzy
+msgid "Downloads complete"
+msgstr "Lataa tiedosto"
+
+#: quodlibet/qltk/songsmenu.py:450
+#, fuzzy
+msgid "Download {name!r} to"
+msgid_plural "Download {total} files to"
+msgstr[0] "Lataa kansikuvia"
+msgstr[1] "Lataa kansikuvia"
+
+#: quodlibet/qltk/songsmenu.py:456
+#, fuzzy
+msgid "Download here"
+msgstr "Lataa tiedosto"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
@@ -8118,15 +8162,6 @@ msgstr ""
 
 #~ msgid "Keep Songs"
 #~ msgstr "Pidä kappaleet jonossa"
-
-#~ msgid "_Download…"
-#~ msgstr "_Lataa…"
-
-#~ msgid "Download Files"
-#~ msgstr "Lataa tiedostoja"
-
-#~ msgid "Download File"
-#~ msgstr "Lataa tiedosto"
 
 #~ msgid "File Bug Report"
 #~ msgstr "Lähetä bugiraportti"

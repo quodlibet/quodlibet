@@ -172,8 +172,8 @@ msgstr "Album-visning"
 msgid "_Close"
 msgstr "_Luk"
 
-#: quodlibet/browsers/audiofeeds.py:51 quodlibet/browsers/audiofeeds.py:63
-#: quodlibet/browsers/audiofeeds.py:65 quodlibet/browsers/audiofeeds.py:152
+#: quodlibet/browsers/audiofeeds.py:52 quodlibet/browsers/audiofeeds.py:64
+#: quodlibet/browsers/audiofeeds.py:66 quodlibet/browsers/audiofeeds.py:153
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -182,15 +182,15 @@ msgstr "_Luk"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: quodlibet/browsers/audiofeeds.py:213
+#: quodlibet/browsers/audiofeeds.py:214
 msgid "New Feed"
 msgstr "Nyt feed"
 
-#: quodlibet/browsers/audiofeeds.py:214
+#: quodlibet/browsers/audiofeeds.py:215
 msgid "Enter the location of an audio feed:"
 msgstr "Indtast placeringen af et lyd-feed:"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:216
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
@@ -201,36 +201,36 @@ msgstr "Indtast placeringen af et lyd-feed:"
 msgid "_Add"
 msgstr "_Tilføj"
 
-#: quodlibet/browsers/audiofeeds.py:269
+#: quodlibet/browsers/audiofeeds.py:270
 msgid "Audio Feeds"
 msgstr "Lyd-feeds"
 
-#: quodlibet/browsers/audiofeeds.py:270
+#: quodlibet/browsers/audiofeeds.py:271
 msgid "_Audio Feeds"
 msgstr "_Lyd-feeds"
 
-#: quodlibet/browsers/audiofeeds.py:373 quodlibet/qltk/data_editors.py:93
+#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
 msgid "_New"
 msgstr "_Ny"
 
-#: quodlibet/browsers/audiofeeds.py:437 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "_Opdater"
 
-#: quodlibet/browsers/audiofeeds.py:438
+#: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:354
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "_Slet"
 
-#: quodlibet/browsers/audiofeeds.py:491
+#: quodlibet/browsers/audiofeeds.py:495
 msgid "Unable to add feed"
 msgstr "Kan ikke tilføje feed"
 
-#: quodlibet/browsers/audiofeeds.py:492
+#: quodlibet/browsers/audiofeeds.py:496
 #, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -239,7 +239,7 @@ msgstr ""
 "%s kunne ikke tilføjes. Serveren kan være nede eller placeringen er måske "
 "ikke et lyd-feed."
 
-#: quodlibet/browsers/audiofeeds.py:509
+#: quodlibet/browsers/audiofeeds.py:513
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -350,7 +350,7 @@ msgstr "_Anvend"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:56 quodlibet/qltk/msg.py:93 quodlibet/qltk/msg.py:110
+#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -594,7 +594,7 @@ msgid "All Stations"
 msgstr "Alle stationer"
 
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:65
+#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Favoritter"
 
@@ -819,46 +819,46 @@ msgstr "Sporliste"
 msgid "_Track List"
 msgstr "_Sporliste"
 
-#: quodlibet/browsers/soundcloud/main.py:39
+#: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Soundcloud-browser"
 
-#: quodlibet/browsers/soundcloud/main.py:40
+#: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
 msgstr "Sound_cloud"
 
-#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Søgning"
 
-#: quodlibet/browsers/soundcloud/main.py:69
+#: quodlibet/browsers/soundcloud/main.py:70
 msgid "My tracks"
 msgstr "Mine spor"
 
-#: quodlibet/browsers/soundcloud/main.py:140
+#: quodlibet/browsers/soundcloud/main.py:144
 #, python-format
 msgid "Go to %s"
 msgstr "Gå til %s"
 
-#: quodlibet/browsers/soundcloud/main.py:442
+#: quodlibet/browsers/soundcloud/main.py:446
 msgid "Connected"
 msgstr "Tilsluttet"
 
-#: quodlibet/browsers/soundcloud/main.py:443
+#: quodlibet/browsers/soundcloud/main.py:447
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet er nu tilsluttet, <b>%s</b>!"
 
-#: quodlibet/browsers/soundcloud/main.py:455
+#: quodlibet/browsers/soundcloud/main.py:459
 #, python-format
 msgid "Log out of %s"
 msgstr "Log ud af %s"
 
-#: quodlibet/browsers/soundcloud/main.py:457
+#: quodlibet/browsers/soundcloud/main.py:461
 msgid "Enter code…"
 msgstr "Indtast kode…"
 
-#: quodlibet/browsers/soundcloud/main.py:458
+#: quodlibet/browsers/soundcloud/main.py:462
 #, python-format
 msgid "Log in to %s"
 msgstr "Log ind i %s"
@@ -1753,7 +1753,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:54
+#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -3056,16 +3056,16 @@ msgid "Open _Browser"
 msgstr "Åbn _browser"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:373
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
 msgid "Edit _Tags"
 msgstr "Rediger _tags"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:386
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
 msgid "_Information"
 msgstr "_Information"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:314
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
 msgid "Play_lists"
 msgstr "_Spillelister"
 
@@ -5475,8 +5475,8 @@ msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
 msgstr[0] "Kør plugin'et \"%(name)s\" på %(count)s spilleliste?"
 msgstr[1] "Kør plugin'et \"%(name)s\" på %(count)s spillelister?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:56
-#: quodlibet/qltk/songsmenu.py:67
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
+#: quodlibet/qltk/songsmenu.py:70
 msgid "_Run Plugin"
 msgstr "_Kør plugin"
 
@@ -5696,6 +5696,16 @@ msgstr "Kan ikke slette filer"
 msgid "Deleting one or more files failed."
 msgstr "Sletning af en eller flere filer fejlede."
 
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Browser"
+msgstr "Browsere"
+
+#: quodlibet/qltk/download.py:36
+#, fuzzy
+msgid "Downloading files"
+msgstr "Indlæser filer"
+
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
 msgid "missing from %d song"
@@ -5880,7 +5890,7 @@ msgid "_Check for Updates…"
 msgstr "_Søg efter opdateringer…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:290
+#: quodlibet/qltk/songsmenu.py:293
 msgid "_Plugins"
 msgstr "_Plugins"
 
@@ -6142,11 +6152,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:43
+#: quodlibet/qltk/msg.py:44
 msgid "Discard tag changes?"
 msgstr "Forkast ændringer af tag?"
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:45
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6154,22 +6164,22 @@ msgstr ""
 "Tags er blevet ændret men ikke gemt. Gem disse filer eller tilbagefør og "
 "forkast ændringer?"
 
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:636
 #: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_Tilbagefør"
 
-#: quodlibet/qltk/msg.py:103
+#: quodlibet/qltk/msg.py:104
 msgid "File exists"
 msgstr "Filen findes"
 
-#: quodlibet/qltk/msg.py:105
+#: quodlibet/qltk/msg.py:106
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "Erstat %(file-name)s?"
 
-#: quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:112
 msgid "_Replace File"
 msgstr "_Erstat fil"
 
@@ -7151,58 +7161,92 @@ msgstr "_Brugerdefinerede headere…"
 msgid "_Expand Column"
 msgstr "_Udfold kolonne"
 
-#: quodlibet/qltk/songsmenu.py:40
+#: quodlibet/qltk/songsmenu.py:43
 #, python-format
 msgid "Remove track: \"%%(title)s\" from library?"
 msgid_plural "Remove %(count)d tracks from library?"
 msgstr[0] "Fjern spor: \"%%(title)s\" fra bibliotek?"
 msgstr[1] "Fjern %(count)d spor fra bibliotek?"
 
-#: quodlibet/qltk/songsmenu.py:45
+#: quodlibet/qltk/songsmenu.py:48
 msgid "Remove from Library"
 msgstr "Fjern fra bibliotek"
 
-#: quodlibet/qltk/songsmenu.py:52
+#: quodlibet/qltk/songsmenu.py:55
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] "Kør plugin'et \"%(name)s\" på %(count)d sang?"
 msgstr[1] "Kør plugin'et \"%(name)s\" på %(count)d sange?"
 
-#: quodlibet/qltk/songsmenu.py:63
+#: quodlibet/qltk/songsmenu.py:66
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] "Kør plugin'et \"%(name)s\" på %(count)d album?"
 msgstr[1] "Kør plugin'et \"%(name)s\" på %(count)d album?"
 
-#: quodlibet/qltk/songsmenu.py:135
+#: quodlibet/qltk/songsmenu.py:138
 msgid "Configure Plugins…"
 msgstr "Konfigurér plugins…"
 
-#: quodlibet/qltk/songsmenu.py:319
+#: quodlibet/qltk/songsmenu.py:322
 msgid "Add to _Queue"
 msgstr "Tilføj til _kø"
 
-#: quodlibet/qltk/songsmenu.py:339
+#: quodlibet/qltk/songsmenu.py:342
 msgid "_Remove from Library…"
 msgstr "Fjern fra bibliotek…"
 
-#: quodlibet/qltk/songsmenu.py:404
+#: quodlibet/qltk/songsmenu.py:408
 msgid "Unable to show files"
 msgstr "Kan ikke vise filer"
 
-#: quodlibet/qltk/songsmenu.py:405
+#: quodlibet/qltk/songsmenu.py:409
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 "Fejl ved visning af filer, eller der er ikke noget program til at vise dem."
 
-#: quodlibet/qltk/songsmenu.py:412
+#: quodlibet/qltk/songsmenu.py:416
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "_Vis i filhåndtering"
 msgstr[1] "_Vis %(total)d filer i filhåndtering"
+
+#: quodlibet/qltk/songsmenu.py:433
+#, python-format
+msgid "_Download file…"
+msgid_plural "_Download %(total)d files…"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/qltk/songsmenu.py:440
+#, fuzzy
+msgid "successful"
+msgstr "Lykkedes"
+
+#: quodlibet/qltk/songsmenu.py:441
+#, fuzzy
+msgid "failed"
+msgstr "Gemning fejlede"
+
+#: quodlibet/qltk/songsmenu.py:444
+#, fuzzy
+msgid "Downloads complete"
+msgstr "Download covergrafik"
+
+#: quodlibet/qltk/songsmenu.py:450
+#, fuzzy
+msgid "Download {name!r} to"
+msgid_plural "Download {total} files to"
+msgstr[0] "Download covergrafik"
+msgstr[1] "Download covergrafik"
+
+#: quodlibet/qltk/songsmenu.py:456
+#, fuzzy
+msgid "Download here"
+msgstr "Download covergrafik"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
