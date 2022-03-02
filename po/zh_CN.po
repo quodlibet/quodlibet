@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-02-07 12:55+0000\n"
-"Last-Translator: 梁普行 <tuskedevening0@gmail.com>\n"
+"PO-Revision-Date: 2022-03-03 04:57+0000\n"
+"Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.11-dev\n"
+"X-Generator: Weblate 4.11.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -1247,9 +1247,8 @@ msgid "Title-cases tag values in the tag editor."
 msgstr "对标签编辑器内的标签值进行大小写处理。"
 
 #: quodlibet/ext/editing/titlecase.py:40
-#, fuzzy
 msgid "Title-_case Value"
-msgstr "标题大小写标签(_T)"
+msgstr "标题大小写值(_C)"
 
 #: quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
@@ -5393,14 +5392,12 @@ msgid "Deleting one or more files failed."
 msgstr "未能删除一个或多个文件。"
 
 #: quodlibet/qltk/download.py:36
-#, fuzzy
 msgid "Browser"
 msgstr "浏览器"
 
 #: quodlibet/qltk/download.py:36
-#, fuzzy
 msgid "Downloading files"
-msgstr "下载文件"
+msgstr "下载文件中"
 
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
@@ -6842,36 +6839,31 @@ msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] ""
 
 #: quodlibet/qltk/songsmenu.py:433
-#, fuzzy, python-format
+#, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "下载(_D)"
+msgstr[0] "下载 %(total)d 个文件(_D)"
 
 #: quodlibet/qltk/songsmenu.py:440
-#, fuzzy
 msgid "successful"
 msgstr "成功"
 
 #: quodlibet/qltk/songsmenu.py:441
-#, fuzzy
 msgid "failed"
-msgstr "保存失败"
+msgstr "失败"
 
 #: quodlibet/qltk/songsmenu.py:444
-#, fuzzy
 msgid "Downloads complete"
-msgstr "下载文件"
+msgstr "下载完成"
 
 #: quodlibet/qltk/songsmenu.py:450
-#, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
-msgstr[0] "下载专辑封面"
+msgstr[0] "下载 {total} 个文件到"
 
 #: quodlibet/qltk/songsmenu.py:456
-#, fuzzy
 msgid "Download here"
-msgstr "下载文件"
+msgstr "下载到此处"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
