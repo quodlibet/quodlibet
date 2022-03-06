@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2021 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -53,6 +53,9 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
 """Time in seconds since epoch, defaults to 0"""
+
+DURATION_TAGS = {"~#length"}
+"""Duration in seconds"""
 
 SIZE_TAGS = {"~#filesize"}
 """Size in bytes, defaults to 0"""
