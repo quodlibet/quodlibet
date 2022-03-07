@@ -15,9 +15,8 @@ import operator
 import time
 from enum import auto, Enum
 from numbers import Real
-from typing import TypeVar, List, Iterable, Optional, Set
+from typing import TypeVar, List, Iterable, Optional
 
-from quodlibet import print_w
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 from quodlibet.formats._audio import SIZE_TAGS, DURATION_TAGS
 from quodlibet.unisearch import compile
