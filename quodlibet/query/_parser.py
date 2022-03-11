@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2016 Ryan Dellenbaugh
-#           2017 Nick Boultbee
+#                2016 Ryan Dellenbaugh
+#           2017-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@ import codecs
 import re
 
 from . import _match as match
-from ._match import ParseError
+from ._match import ParseError, Units
 from quodlibet.util import re_escape
 
 
@@ -183,7 +183,7 @@ class QueryParser:
             if self.accept(':'):
                 # time like 4:15
                 number2 = float(self.expect_re(DIGITS))
-                expr = match.NumexprNumber(60 * number + number2)
+                expr = match.NumexprNumber(60 * number + number2, units=Units.SECONDS)
             elif self.accept_re(WORD):
                 # Number with units like 7 minutes
                 expr = match.numexprUnit(number, self.last_match)
