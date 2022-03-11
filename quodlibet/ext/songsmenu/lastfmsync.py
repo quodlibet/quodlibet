@@ -107,7 +107,7 @@ class LastFMSyncCache:
                 prog(_("Already up-to-date."), 1.)
                 return False
 
-            new_charts = [self.charts[k] for k in self.charts.keys()]
+            new_charts = [k for k, v in self.charts.items() if v]
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
