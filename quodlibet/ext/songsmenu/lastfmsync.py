@@ -17,7 +17,7 @@ import json
 from gi.repository import Gtk, GLib
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_w
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
@@ -34,27 +34,22 @@ def log(msg):
 
 def apicall(method, **kwargs):
     """Performs Last.fm API call."""
-    real_args = {
-            'api_key': API_KEY,
-            'format': 'json',
-            'method': method,
-            }
+    real_args = {'api_key': API_KEY, 'format': 'json', 'method': method}
     real_args.update(kwargs)
-    url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
-                   urlencode(real_args)])
+    url = ''.join(["https://ws.audioscrobbler.com/2.0/?", urlencode(real_args)])
     log(url)
     uobj = urlopen(url)
     json_text = uobj.read().decode("utf-8")
     resp = json.loads(json_text)
     if 'error' in resp:
-        errmsg = 'Last.fm API error: %s' % resp.get('message', '')
+        errmsg = f"Last.fm API error: {resp.get('message', '')}"
         log(errmsg)
         raise EnvironmentError(resp['error'], errmsg)
     return resp
 
 
 def config_get(key, default=None):
-    return config.get('plugins', 'lastfmsync_%s' % key, default)
+    return config.get('plugins', f"lastfmsync_{key}", default)
 
 
 class LastFMSyncCache:
@@ -97,8 +92,7 @@ class LastFMSyncCache:
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = list(
-                        map(lambda s: int(chart[s]), ('from', 'to')))
+                    fro, to = [int(chart[s]) for s in ('from', 'to')]
 
                     # If the chart is older than the register date of the
                     # user, don't download it. (So the download doesn't start
@@ -108,13 +102,12 @@ class LastFMSyncCache:
 
                     self.charts.setdefault((fro, to), True)
                 self.lastupdated = now
-            elif not list(filter(None, self.charts.values())):
+            elif not [v for v in self.charts.values() if v]:
                 # No charts to fetch, no update scheduled.
                 prog(_("Already up-to-date."), 1.)
                 return False
 
-            new_charts = list(
-                filter(lambda k: self.charts[k], self.charts.keys()))
+            new_charts = [self.charts[k] for k in self.charts.keys()]
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
@@ -171,8 +164,7 @@ class LastFMSyncCache:
             last = max(map(lambda d: d.get('lastplayed', 0), stats))
             added = max(map(lambda d: d.get('added', chart_to), stats))
             stats = stats[0]
-            stats.update(
-                    {'playcount': plays, 'lastplayed': last, 'added': added})
+            stats.update({'playcount': plays, 'lastplayed': last, 'added': added})
         else:
             stats = {'playcount': 0, 'lastplayed': 0, 'added': chart_to}
 
@@ -210,11 +202,9 @@ class LastFMSyncCache:
 
 class LastFMSyncWindow(qltk.Dialog):
     def __init__(self, parent):
-        super().__init__(
-                _("Last.fm Sync"), parent)
+        super().__init__(_("Last.fm Sync"), parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
-        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             Gtk.ResponseType.ACCEPT)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.ACCEPT)
         self.set_border_width(5)
         self.set_default_size(300, 100)
 
