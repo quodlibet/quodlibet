@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-03-03 04:57+0000\n"
+"PO-Revision-Date: 2022-03-15 21:45+0000\n"
 "Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.11.1-dev\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -4521,9 +4521,9 @@ msgid "Sync complete."
 msgstr "同步完成。"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "Error during sync (%s)"
-msgstr "同步时发生异常"
+msgstr "同步时发生异常（%s）"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:202
 #: quodlibet/ext/songsmenu/lastfmsync.py:231
