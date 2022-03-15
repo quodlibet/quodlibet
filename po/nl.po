@@ -342,7 +342,7 @@ msgstr "Toep_assen"
 #: quodlibet/ext/songsmenu/editplaycount.py:46
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
-#: quodlibet/ext/songsmenu/lastfmsync.py:215
+#: quodlibet/ext/songsmenu/lastfmsync.py:203
 #: quodlibet/ext/songsmenu/playlist.py:50
 #: quodlibet/ext/songsmenu/replaygain.py:353
 #: quodlibet/ext/songsmenu/tapbpm.py:186 quodlibet/qltk/chooser.py:188
@@ -1759,7 +1759,7 @@ msgstr "Naam van voorinstellingen:"
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/cover_download.py:382
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
-#: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:216
+#: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
@@ -2096,7 +2096,7 @@ msgstr "_Wachtwoord:"
 #. table.attach(button, 0, 2, 4, 5)
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
-#: quodlibet/ext/songsmenu/lastfmsync.py:309
+#: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Account"
@@ -4748,38 +4748,39 @@ msgstr "Bestandsnaam"
 msgid "Match Tracks"
 msgstr "Nummers overeen laten komen"
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:94
+#: quodlibet/ext/songsmenu/lastfmsync.py:86
 msgid "Updating chart list."
 msgstr "De hitlijsten worden bijgewerkt."
 
 #. No charts to fetch, no update scheduled.
-#: quodlibet/ext/songsmenu/lastfmsync.py:113
+#: quodlibet/ext/songsmenu/lastfmsync.py:104
 msgid "Already up-to-date."
 msgstr "Reeds actueel."
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:121
+#: quodlibet/ext/songsmenu/lastfmsync.py:111
 #, python-format
 msgid "Fetching chart for week of %s."
 msgstr "De hitlijst van week van %s wordt opgehaald."
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:143
+#: quodlibet/ext/songsmenu/lastfmsync.py:133
 msgid "Sync complete."
 msgstr "Synchronisatie voltooid."
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:149
-msgid "Error during sync"
+#: quodlibet/ext/songsmenu/lastfmsync.py:139
+#, fuzzy, python-format
+msgid "Error during sync (%s)"
 msgstr "Fout tijdens synchronisatie"
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:214
-#: quodlibet/ext/songsmenu/lastfmsync.py:244
+#: quodlibet/ext/songsmenu/lastfmsync.py:202
+#: quodlibet/ext/songsmenu/lastfmsync.py:231
 msgid "Last.fm Sync"
 msgstr "Last.fm-synchronisatie"
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:245
+#: quodlibet/ext/songsmenu/lastfmsync.py:232
 msgid "Updates your library's statistics from your Last.fm profile."
 msgstr "Werkt je verzamelingsstatistieken bij van je Last.fm-profiel."
 
-#: quodlibet/ext/songsmenu/lastfmsync.py:298
+#: quodlibet/ext/songsmenu/lastfmsync.py:285
 msgid "_Username:"
 msgstr "Gebr_uikersnaam:"
 
