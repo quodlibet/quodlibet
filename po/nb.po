@@ -222,7 +222,7 @@ msgstr "Oppdate_r"
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
+#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "Sle_tt"
@@ -1777,7 +1777,7 @@ msgstr "Forhåndsvalgt navn for lagring:"
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -6197,17 +6197,13 @@ msgstr "Total størrelse:"
 msgid "Files"
 msgstr "Filer"
 
-#: quodlibet/qltk/lyrics.py:36
+#: quodlibet/qltk/lyrics.py:34
 msgid "_View online"
 msgstr "_Vis på nett"
 
-#: quodlibet/qltk/lyrics.py:64
+#: quodlibet/qltk/lyrics.py:61
 msgid "No lyrics found for this song."
 msgstr "Fant ingen sangtekst for denne låta."
-
-#: quodlibet/qltk/lyrics.py:75
-msgid "Searching for lyrics…"
-msgstr "Søker etter sangtekst …"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -8040,6 +8036,9 @@ msgstr ""
 "vise et lydbibliotek på, og støtter avspilling av internettradio og andre "
 "lydstrømmer. Det er også et godt verktøy for redigering av metadata-tagger "
 "og søking."
+
+#~ msgid "Searching for lyrics…"
+#~ msgstr "Søker etter sangtekst …"
 
 #~ msgid "broker username"
 #~ msgstr "meglerbrukernavn"

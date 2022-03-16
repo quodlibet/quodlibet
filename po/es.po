@@ -223,7 +223,7 @@ msgstr "Act_ualizar"
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
+#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "_Eliminar"
@@ -1765,7 +1765,7 @@ msgstr "Nombre de la preselección que se guardará:"
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -6058,17 +6058,13 @@ msgstr "Tamaño total:"
 msgid "Files"
 msgstr "Archivos"
 
-#: quodlibet/qltk/lyrics.py:36
+#: quodlibet/qltk/lyrics.py:34
 msgid "_View online"
 msgstr "_Ver en la web"
 
-#: quodlibet/qltk/lyrics.py:64
+#: quodlibet/qltk/lyrics.py:61
 msgid "No lyrics found for this song."
 msgstr "No se encontró la letra de esta canción."
-
-#: quodlibet/qltk/lyrics.py:75
-msgid "Searching for lyrics…"
-msgstr "Buscando letra…"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -7911,6 +7907,9 @@ msgstr ""
 "visualizar la fonoteca y admite la reproducción de radios por Internet y "
 "suministros de audio. Brinda una edición muy flexible de etiquetas de "
 "metadatos y posee funciones de búsqueda avanzadas."
+
+#~ msgid "Searching for lyrics…"
+#~ msgstr "Buscando letra…"
 
 #~ msgid "broker username"
 #~ msgstr "nombre de usuario de agente"
