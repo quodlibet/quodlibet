@@ -190,6 +190,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                    will result in a separator.
         """
 
+        # todo: All improvements to sorting should ideally be done by the model
+        # (GTK has built-in functionality for doing this type of thing)
         model = ObjectTreeStore()
         super().__init__(model=model)
 
@@ -221,6 +223,9 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         if folders is None:
             folders = []
+
+        # todo: Natural sorting of top level folders could go here
+        folders.reverse()
 
         for path in folders:
             niter = model.append(None, [path])
@@ -462,7 +467,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 while model.iter_has_child(iter):
                     model.remove(model.iter_children(iter))
                 folder = model[iter][0]
-                for path in listdir(folder):
+                # todo: Natural sorting of sub-folders could be done here
+                for path in reversed(listdir(folder)):
                     try:
                         if not os.path.isdir(path):
                             continue
