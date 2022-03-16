@@ -221,7 +221,7 @@ msgstr "_Opdater"
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
 #: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:35
+#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
 msgstr "_Slet"
@@ -1753,7 +1753,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:34 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -6114,17 +6114,13 @@ msgstr "Samlet størrelse:"
 msgid "Files"
 msgstr "Filer"
 
-#: quodlibet/qltk/lyrics.py:36
+#: quodlibet/qltk/lyrics.py:34
 msgid "_View online"
 msgstr "_Vis online"
 
-#: quodlibet/qltk/lyrics.py:64
+#: quodlibet/qltk/lyrics.py:61
 msgid "No lyrics found for this song."
 msgstr "Ingen sangtekster fundet til denne sang."
-
-#: quodlibet/qltk/lyrics.py:75
-msgid "Searching for lyrics…"
-msgstr "Søger efter sangtekster…"
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
@@ -7941,6 +7937,9 @@ msgstr ""
 "Quod Libet er et lydhåndteringsprogram. Det giver adskillige måder at vise "
 "dit lydbibliotek og understøttelse af internet-radio og lyd-feeds. Det har "
 "ekstrem fleksibel metadata-tag-redigering og -søgningsformåenheder."
+
+#~ msgid "Searching for lyrics…"
+#~ msgstr "Søger efter sangtekster…"
 
 #, fuzzy
 #~ msgid "broker username"
