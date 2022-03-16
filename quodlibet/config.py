@@ -303,6 +303,11 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # show all tags, or just "human-readable" ones
         "alltags": "true",
 
+        # Show multi-line tags
+        "show_multi_line_tags": "true",
+        # Which tags can be multi-line (comma-separated)
+        "multi_line_tags": "lyrics,comment",
+
         # Skip dialog to save or revert changes
         "auto_save_changes": "false",
 

@@ -148,6 +148,10 @@ class AdvancedPreferences(EventPlugin):
                 "Search tags:",
                 ("Tags which get searched in addition to "
                  "the ones present in the song list. Separate with \",\"")),
+            text_config("editing", "multi_line_tags",
+                        "Multi-line tags:",
+                        ("Tags to consider as multi-line (delimited by \\n) "
+                         "rather than multi-valued (comma-separated)")),
             text_config("settings", "rating_symbol_full", "Rating symbol (full):"),
             text_config("settings", "rating_symbol_blank", "Rating symbol (blank):"),
             text_config(
