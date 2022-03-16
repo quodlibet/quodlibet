@@ -1,5 +1,5 @@
 # Copyright 2015    Christoph Reiter
-#           2016-21 Nick Boultbee
+#           2016-22 Nick Boultbee
 #           2019    Peter Strulo
 #           2022    Jej@github
 #

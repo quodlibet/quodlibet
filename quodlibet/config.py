@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2020 Nick Boultbee
+#           2009-2022 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
 #                2022 Jej@github
