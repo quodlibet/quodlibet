@@ -28,6 +28,7 @@ from quodlibet.util.path import listdir, \
     glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
+from natsort import os_sort_key
 
 def search_func(model, column, key, iter_, handledirs):
     check = model.get_value(iter_, 0)
@@ -200,9 +201,9 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 return 0
 
             # Otherwise, files are sorted by their paths
-            a_val = m.get_value(a, 0)
-            b_val = m.get_value(b, 0)
-            return 1 if a_val > b_val else -1
+            a_key = os_sort_key(m.get_value(a, 0))
+            b_key = os_sort_key(m.get_value(b, 0))
+            return 1 if a_key > b_key else -1
 
         model.set_sort_func(0, compare)
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
