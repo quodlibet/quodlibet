@@ -190,9 +190,22 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                    will result in a separator.
         """
 
-        # todo: All improvements to sorting should ideally be done by the model
-        # (GTK has built-in functionality for doing this type of thing)
         model = ObjectTreeStore()
+
+        def compare(m: Gtk.TreeModel, a: Gtk.TreeIter, b: Gtk.TreeIter, _):
+
+            # Do not sort the top level directories
+            a_path = m.get_path(a)
+            if a_path is not None and a_path.get_depth() == 1:
+                return 0
+
+            # Otherwise, files are sorted by their paths
+            a_val = m.get_value(a, 0)
+            b_val = m.get_value(b, 0)
+            return 1 if a_val > b_val else -1
+
+        model.set_sort_func(0, compare)
+        model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
         super().__init__(model=model)
 
         if initial is not None:
@@ -223,9 +236,6 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         if folders is None:
             folders = []
-
-        # todo: Natural sorting of top level folders could go here
-        folders.reverse()
 
         for path in folders:
             niter = model.append(None, [path])
@@ -467,8 +477,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 while model.iter_has_child(iter):
                     model.remove(model.iter_children(iter))
                 folder = model[iter][0]
-                # todo: Natural sorting of sub-folders could be done here
-                for path in reversed(listdir(folder)):
+                for path in listdir(folder):
                     try:
                         if not os.path.isdir(path):
                             continue
@@ -564,8 +573,9 @@ class FileSelector(Paned):
         def select_all_files(view, path, col, fileselection):
             view.expand_row(path, False)
             fileselection.select_all()
+
         dirlist.connect('row-activated', select_all_files,
-            filelist.get_selection())
+                        filelist.get_selection())
 
         sw = ScrolledWindow()
         sw.add(dirlist)
@@ -622,7 +632,7 @@ class FileSelector(Paned):
                 for file_ in sorted(files):
                     filename = os.path.join(dir_, file_)
                     if (os.access(filename, os.R_OK) and
-                            not os.path.isdir(filename)):
+                        not os.path.isdir(filename)):
                         fmodel.append([filename])
             except OSError:
                 pass
@@ -643,7 +653,6 @@ class FileSelector(Paned):
 
 
 def _get_main_folders():
-
     def filter_exists(paths):
         return [p for p in paths if os.path.isdir(p)]
 
