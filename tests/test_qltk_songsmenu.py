@@ -3,21 +3,23 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from senf import fsnative
-
-from quodlibet.formats.remote import RemoteFile
-from tests import TestCase
-
+import quodlibet.player
+from quodlibet import config
 from quodlibet.formats import AudioFile
+from quodlibet.formats.remote import RemoteFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.qltk.songsmenu import SongsMenu
-from quodlibet import config
-import quodlibet.player
+from senf import fsnative
+from tests import TestCase, mkdtemp
 
 
-def an_af(i):
+def an_af(i: int) -> AudioFile:
     return AudioFile({"~filename": "/dev/null",
                       "title": "http://example.com/%0d" % i})
+
+
+def an_rf(i: int) -> AudioFile:
+    return RemoteFile(f"https://example.com/{i}.mp3")
 
 
 class TSongsMenu(TestCase):
@@ -97,7 +99,7 @@ class TSongsMenu(TestCase):
         self.failUnless(item.props.sensitive)
 
     def test_show_files_remote_songs(self):
-        self.songs = self.library.songs = [RemoteFile("http://example.com/")]
+        self.songs = self.library.songs = [an_rf(1)]
         self.menu = self.empty_menu_with(show_files=True)
         self.failIf(len(self.menu))
 
@@ -108,14 +110,24 @@ class TSongsMenu(TestCase):
         self.failIf(item.props.sensitive,
                     msg="Should have disabled show files for 50 files")
 
+    def test_download(self):
+        def choose(*args, **kwargs):
+            return [mkdtemp()]
+        self.songs = self.library.songs = [an_rf(i) for i in range(3)]
+        self.menu = self.empty_menu_with(download=True, folder_chooser=choose)
+        last = self.menu.get_children()[-1]
+        assert last.props.sensitive, "should have enabled download for remotes"
+        # TODO: some useful assertions, without needing a UI
+
     def empty_menu_with(self, plugins=False, playlists=False, queue=False,
                         remove=False, delete=False, edit=False, ratings=False,
-                        show_files=False, removal_confirmer=None):
-        return SongsMenu(self.library, self.songs, plugins=plugins,
-                         playlists=playlists, queue=queue, remove=remove,
-                         delete=delete, edit=edit, ratings=ratings,
-                         show_files=show_files,
-                         removal_confirmer=removal_confirmer)
+                        show_files=False, download=False,
+                        removal_confirmer=None, folder_chooser=None):
+        return SongsMenu(self.library, self.songs, plugins=plugins, playlists=playlists,
+                         queue=queue, remove=remove, delete=delete, edit=edit,
+                         ratings=ratings, show_files=show_files,
+                         removal_confirmer=removal_confirmer,
+                         download=download, folder_chooser=folder_chooser)
 
     def tearDown(self):
         self.device.destroy()

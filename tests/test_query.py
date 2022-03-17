@@ -164,12 +164,12 @@ class TQuery_is_valid(TestCase):
         self.failUnless(Query("#(date < 2010 - 4)").valid)
         self.failUnless(Query("#(date > 0000)").valid)
         self.failUnless(Query("#(date > 00004)").valid)
-        self.failUnless(Query("#(t > 3 minutes)").valid)
         self.failUnless(Query("#(added > today)").valid)
         self.failUnless(Query("#(length < 5:00)").valid)
         self.failUnless(Query("#(filesize > 5M)").valid)
         self.failUnless(Query("#(added < 7 days ago)").valid)
 
+    def test_numexpr_failures(self):
         self.failIf(Query("#(3*4)").valid)
         self.failIf(Query("#(t = 3 + )").valid)
         self.failIf(Query("#(t = -)").valid)
@@ -177,6 +177,11 @@ class TQuery_is_valid(TestCase):
         self.failIf(Query("#(t < ()").valid)
         self.failIf(Query("#((t +) - 1 > 8)").valid)
         self.failIf(Query("#(t += 8)").valid)
+
+    def test_numexpr_fails_for_wrong_units(self):
+        self.failIf(Query("#(t > 3 minutes)").valid)
+        self.failIf(Query("#(size < 3 minutes)").valid)
+        self.failIf(Query("#(date = 3 GB)").valid)
 
 
 class TQuery(TestCase):

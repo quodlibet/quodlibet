@@ -1,5 +1,6 @@
 # Copyright 2010 Steven Robertson
 #           2016 Mice Pápai
+#           2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,44 +18,35 @@ import json
 from gi.repository import Gtk, GLib
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, print_w, print_e
 from quodlibet import config, util, qltk
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.urllib import urlopen
 
+max_wait = 15
 
 API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 
 
-def log(msg):
-    util.print_d('[lastfmsync] %s' % msg)
-
-
 def apicall(method, **kwargs):
     """Performs Last.fm API call."""
-    real_args = {
-            'api_key': API_KEY,
-            'format': 'json',
-            'method': method,
-            }
+    real_args = {'api_key': API_KEY, 'format': 'json', 'method': method}
     real_args.update(kwargs)
-    url = ''.join(["https://ws.audioscrobbler.com/2.0/?",
-                   urlencode(real_args)])
-    log(url)
+    url = ''.join(["https://ws.audioscrobbler.com/2.0/?", urlencode(real_args)])
     uobj = urlopen(url)
     json_text = uobj.read().decode("utf-8")
     resp = json.loads(json_text)
     if 'error' in resp:
-        errmsg = 'Last.fm API error: %s' % resp.get('message', '')
-        log(errmsg)
+        errmsg = f"Last.fm API error: {resp.get('message', '')}"
+        print_e(errmsg)
         raise EnvironmentError(resp['error'], errmsg)
     return resp
 
 
 def config_get(key, default=None):
-    return config.get('plugins', 'lastfmsync_%s' % key, default)
+    return config.get('plugins', f"lastfmsync_{key}", default)
 
 
 class LastFMSyncCache:
@@ -97,8 +89,7 @@ class LastFMSyncCache:
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = list(
-                        map(lambda s: int(chart[s]), ('from', 'to')))
+                    fro, to = [int(chart[s]) for s in ('from', 'to')]
 
                     # If the chart is older than the register date of the
                     # user, don't download it. (So the download doesn't start
@@ -108,13 +99,12 @@ class LastFMSyncCache:
 
                     self.charts.setdefault((fro, to), True)
                 self.lastupdated = now
-            elif not list(filter(None, self.charts.values())):
+            elif not [v for v in self.charts.values() if v]:
                 # No charts to fetch, no update scheduled.
                 prog(_("Already up-to-date."), 1.)
                 return False
 
-            new_charts = list(
-                filter(lambda k: self.charts[k], self.charts.keys()))
+            new_charts = [k for k, v in self.charts.items() if v]
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
@@ -125,8 +115,8 @@ class LastFMSyncCache:
                     resp = apicall('user.getweeklytrackchart', **args)
                 except EnvironmentError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
-                    log(msg % (err.code, 15))
-                    for i in range(15, 0, -1):
+                    print_w(msg % (err.code, max_wait))
+                    for i in range(max_wait, 0, -1):
                         time.sleep(1)
                         prog(msg % (err.code, i), None)
                     resp = apicall('user.getweeklytrackchart', **args)
@@ -144,9 +134,9 @@ class LastFMSyncCache:
         except ValueError:
             # this is probably from prog()
             pass
-        except Exception:
+        except Exception as e:
             util.print_exc()
-            prog(_("Error during sync"), None)
+            prog(_("Error during sync (%s)") % e, None)
             return False
 
         return True
@@ -171,8 +161,7 @@ class LastFMSyncCache:
             last = max(map(lambda d: d.get('lastplayed', 0), stats))
             added = max(map(lambda d: d.get('added', chart_to), stats))
             stats = stats[0]
-            stats.update(
-                    {'playcount': plays, 'lastplayed': last, 'added': added})
+            stats.update({'playcount': plays, 'lastplayed': last, 'added': added})
         else:
             stats = {'playcount': 0, 'lastplayed': 0, 'added': chart_to}
 
@@ -210,11 +199,9 @@ class LastFMSyncCache:
 
 class LastFMSyncWindow(qltk.Dialog):
     def __init__(self, parent):
-        super().__init__(
-                _("Last.fm Sync"), parent)
+        super().__init__(_("Last.fm Sync"), parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
-        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             Gtk.ResponseType.ACCEPT)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.ACCEPT)
         self.set_border_width(5)
         self.set_default_size(300, 100)
 
@@ -252,8 +239,8 @@ class LastFMSync(SongsMenuPlugin):
         changed = True
         try:
             changed = cache.update_charts(self.progress)
-        except:
-            pass
+        except Exception as e:
+            print_w(f"Couldn't update cache ({e})")
         if changed:
             self.cache_shelf[cache.username] = cache
         self.cache_shelf.close()

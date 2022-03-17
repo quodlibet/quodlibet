@@ -1,16 +1,14 @@
 # Copyright 2005 Eduardo Gonzalez, Joe Wreschnig
-#           2017 Nick Boultbee
+#           2017-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-# FIXME:
-# - Too many buttons -- saving should be automatic?
+# FIXME: Too many buttons -- saving should be automatic?
 
 import os
-import threading
 from urllib.parse import quote
 
 from gi.repository import Gtk
@@ -33,8 +31,7 @@ class LyricsPane(Gtk.VBox):
         sw.add(view)
         save = qltk.Button(_("_Save"), Icons.DOCUMENT_SAVE)
         delete = qltk.Button(_("_Delete"), Icons.EDIT_DELETE)
-        view_online = qltk.Button(_("_View online"),
-                                  Icons.APPLICATION_INTERNET)
+        view_online = qltk.Button(_("_View online"), Icons.APPLICATION_INTERNET)
         view.set_wrap_mode(Gtk.WrapMode.WORD)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
@@ -65,19 +62,19 @@ class LyricsPane(Gtk.VBox):
         connect_obj(buffer, 'changed', save.set_sensitive, True)
 
     def __view_online(self, add, song):
-        artist = song.comma('artist').encode('utf-8')
-        title = song.comma('title').encode('utf-8')
+        # TODO: make this modular and plugin-friendly (#54, #3642 etc)
+        def sanitise(s: str) -> str:
+            return quote(s.replace(" ", "-")
+                         .replace(".", "")
+                         .replace("'", "")
+                         .replace('"', "")
+                         .replace(",", "-")
+                         .lower()
+                         .encode('utf-8'))
 
-        util.website("http://lyrics.wikia.com/%s:%s"
-                     % (quote(artist), quote(title)))
-
-    def __refresh(self, refresh, add, buffer, song):
-        buffer.set_text(_(u"Searching for lyrics…"))
-        refresh.set_sensitive(False)
-        thread = threading.Thread(
-            target=self.__search, args=(song, buffer, refresh, add))
-        thread.setDaemon(True)
-        thread.start()
+        artist = sanitise(song.list('artist')[0])
+        title = sanitise(song.comma('title'))
+        util.website(f"https://genius.com/{artist}-{title}-lyrics")
 
     def __save(self, save, song, buffer, delete):
         start, end = buffer.get_bounds()

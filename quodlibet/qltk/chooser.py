@@ -174,7 +174,7 @@ def create_chooser_filter(name, patterns):
     return filter_
 
 
-def choose_folders(parent, title, action_title):
+def choose_folders(parent, title, action_title, allow_multiple=True):
     """Opens a folder chooser widget and returns a list of folders selected.
 
     Args:
@@ -189,7 +189,7 @@ def choose_folders(parent, title, action_title):
     chooser.set_title(title)
     chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
     chooser.set_local_only(True)
-    chooser.set_select_multiple(True)
+    chooser.set_select_multiple(allow_multiple)
 
     return _run_chooser(parent, chooser)
 
@@ -243,7 +243,7 @@ def choose_target_file(parent, title, action_title, name_suggestion=None):
 
 
 def choose_target_folder(parent, title, action_title, name_suggestion=None):
-    """Opens a file chooser for saving a file.
+    """Opens a file chooser for choosing a directory.
 
     Args:
         parent (Gtk.Widget)

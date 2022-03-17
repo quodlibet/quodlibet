@@ -32,7 +32,7 @@ The ``~people`` Internal Tag
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The internal ``~people`` tag combines the following tags to one: 
-``albumartist``, ``artist``, ``author``, ``composer``, ``~performers``, 
+``artist``, ``albumartist``, ``author``, ``composer``, ``~performers``, 
 ``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
 order.
 
