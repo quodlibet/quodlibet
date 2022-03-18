@@ -8,6 +8,7 @@
 import os
 import errno
 from urllib.parse import urlsplit
+from re import split
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
@@ -28,7 +29,6 @@ from quodlibet.util.path import listdir, \
     glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
-from natsort import os_sort_key
 
 def search_func(model, column, key, iter_, handledirs):
     check = model.get_value(iter_, 0)
@@ -200,9 +200,19 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             if a_path is not None and a_path.get_depth() == 1:
                 return 0
 
+            def string_to_key(s):
+                # Break up the string into components
+                # parsing numbers and removing case from strings
+                k = [int(v) if v.isnumeric() else v.lower() for v in split(r"(\d+)", s)]
+
+                # Add the original string to the end, to preserve case information
+                # (When using lexicographical comparison, this acts as a fallback)
+                k.append(s)
+                return k
+
             # Otherwise, files are sorted by their paths
-            a_key = os_sort_key(m.get_value(a, 0))
-            b_key = os_sort_key(m.get_value(b, 0))
+            a_key = string_to_key(m.get_value(a, 0))
+            b_key = string_to_key(m.get_value(b, 0))
             return 1 if a_key > b_key else -1
 
         model.set_sort_func(0, compare)
