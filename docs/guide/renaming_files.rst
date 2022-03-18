@@ -6,9 +6,9 @@ Renaming files
 Basic Syntax
 ------------
 
-Quod Libet allows you to rename files based on their tags. In some cases
-you may wish to alter the filename depending on whether some tags are
-present or missing, in addition to their values.
+Quod Libet allows you to rename files based on their :ref:`tags<AudioTags>`. In
+some cases you may wish to alter the filename depending on whether some tags
+are present or missing, in addition to their values.
 
 Quod Libet allows _pattern_ syntax for this interaction, as well as plain text.
 A pattern is some text surrounded by angle brackets, typically containing tags.

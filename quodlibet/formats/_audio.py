@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2021 Nick Boultbee
+#           2012-2022 Nick Boultbee
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -52,6 +53,9 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
 """Time in seconds since epoch, defaults to 0"""
+
+DURATION_TAGS = {"~#length"}
+"""Duration in seconds"""
 
 SIZE_TAGS = {"~#filesize"}
 """Size in bytes, defaults to 0"""
@@ -519,11 +523,19 @@ class AudioFile(dict, ImageContainer, HasKey):
         elif key == "title":
             title = dict.get(self, "title")
             if title is None:
-                basename = self("~basename")
-                return "%s [%s]" % (
-                    decode_value("~basename", basename), _("Unknown"))
-            else:
-                return title
+                # build a title with missing_title_template option
+                unknown_track_template = _(config.gettext(
+                    "browsers", "missing_title_template"))
+
+                from quodlibet.pattern import Pattern
+                try:
+                    pattern = Pattern(unknown_track_template)
+                except ValueError:
+                    title = decode_value("~basename", self("~basename"))
+                else:
+                    title = pattern % self
+
+            return title
         elif key in SORT_TO_TAG:
             try:
                 return self[key]
