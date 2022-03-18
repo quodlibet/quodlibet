@@ -1,5 +1,5 @@
 # Copyright 2004-2012 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2011-2020 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -527,8 +527,19 @@ class EditTags(Gtk.VBox):
             _("Show _programmatic tags"), 'editing', 'alltags', populate=True,
             tooltip=_("Access all tags, including machine-generated "
                       "ones e.g. MusicBrainz or Replay Gain tags"))
-        cb.connect('toggled', self.__all_tags_toggled)
-        self.pack_start(cb, False, True, 0)
+        cb.connect('toggled', self.__checkbox_toggled)
+        hb = Gtk.HBox()
+        hb.pack_start(cb, False, True, 0)
+
+        cb = ConfigCheckButton(
+            _("Show _multi-line tags"),
+            "editing",
+            "show_multi_line_tags",
+            populate=True,
+            tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"))
+        cb.connect('toggled', self.__checkbox_toggled)
+        hb.pack_start(cb, False, True, 12)
+        self.pack_start(hb, False, True, 0)
 
         # Add and Remove [tags] buttons
         buttonbox = Gtk.HBox(spacing=18)
@@ -592,7 +603,7 @@ class EditTags(Gtk.VBox):
         for child in self.get_children():
             child.show_all()
 
-    def __all_tags_toggled(self, *args):
+    def __checkbox_toggled(self, *args):
         self._update()
 
     def __view_key_press_event(self, view, event):
@@ -759,8 +770,8 @@ class EditTags(Gtk.VBox):
             msg = _("Unable to add <b>%s</b>") % util.escape(tag)
             msg += "\n\n"
             msg += _("The files currently"
-                    " selected do not support multiple values for <b>%s</b>."
-                    ) % util.escape(tag)
+                     " selected do not support multiple values for <b>%s</b>."
+                     ) % util.escape(tag)
             qltk.ErrorMessage(self, title, msg).run()
             return
 
@@ -1052,6 +1063,10 @@ class EditTags(Gtk.VBox):
 
         if not config.getboolean("editing", "alltags"):
             keys = filter(lambda k: k not in MACHINE_TAGS, keys)
+
+        if not config.getboolean("editing", "show_multi_line_tags"):
+            tags = config.getstringlist("editing", "multi_line_tags")
+            keys = filter(lambda k: k not in tags, keys)
 
         if not songs:
             keys = []
