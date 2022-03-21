@@ -204,7 +204,7 @@ msgstr "Insire o enderezo dunha fonte de audio (feed)"
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
@@ -309,8 +309,8 @@ msgstr "_Personalizada"
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
-#: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
+#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 #, fuzzy
@@ -1354,7 +1354,7 @@ msgstr "Preferências do Navegador em paneis"
 msgid "Allow editing of advanced config settings."
 msgstr ""
 
-#: quodlibet/ext/events/advanced_preferences.py:253
+#: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
 msgstr ""
 
@@ -5836,44 +5836,53 @@ msgstr ""
 "Acceder a todas as etiquetas, mesmo a aquelas xeradas automaticamente, p.ex. "
 "as etiquetas MusicBrainz ou ReplayGain"
 
+#: quodlibet/qltk/edittags.py:535
+#, fuzzy
+msgid "Show _multi-line tags"
+msgstr "Mostrar etiquetas _programáticas"
+
+#: quodlibet/qltk/edittags.py:539
+msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
+msgstr ""
+
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:558
+#: quodlibet/qltk/edittags.py:569
 #, fuzzy
 msgctxt "edittags"
 msgid "_Revert"
 msgstr "Nunca"
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:563
+#: quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
 msgstr "_Gardar"
 
-#: quodlibet/qltk/edittags.py:703
+#: quodlibet/qltk/edittags.py:714
 #, fuzzy
 msgid "_Configure"
 msgstr "_Continuar"
 
-#: quodlibet/qltk/edittags.py:718
+#: quodlibet/qltk/edittags.py:729
 #, fuzzy
 msgid "_Split Tag"
 msgstr "Editar as etiquetas"
 
-#: quodlibet/qltk/edittags.py:727
+#: quodlibet/qltk/edittags.py:738
 #, fuzzy
 msgid "_Copy Value(s)"
 msgstr "Copiar as _cobertas dos discos"
 
-#: quodlibet/qltk/edittags.py:758
+#: quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
 msgstr "Non se puido engadir a etiqueta"
 
-#: quodlibet/qltk/edittags.py:759
+#: quodlibet/qltk/edittags.py:770
 #, fuzzy, python-format
 msgid "Unable to add <b>%s</b>"
 msgstr "Nom foi possível engadir a cançom"
 
-#: quodlibet/qltk/edittags.py:761
+#: quodlibet/qltk/edittags.py:772
 #, fuzzy, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
@@ -5883,13 +5892,13 @@ msgstr ""
 "Os arquivos seleccionados nom permitem valores múltiplos."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
 msgstr "Etiqueta inválida"
 
-#: quodlibet/qltk/edittags.py:789 quodlibet/qltk/edittags.py:970
+#: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:212
 #, python-format
 msgid ""
@@ -5901,11 +5910,11 @@ msgstr ""
 "\n"
 "Os ficheiros seleccionados non permiten a edición desa etiqueta."
 
-#: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
 msgid "Invalid value"
 msgstr "Valor inválido"
 
-#: quodlibet/qltk/edittags.py:941 quodlibet/qltk/edittags.py:982
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
