@@ -7,19 +7,21 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: Automatically generated\n"
-"Language-Team: none\n"
+"PO-Revision-Date: 2022-03-18 03:59+0000\n"
+"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
+"Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/id/>\n"
 "Language: id\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Weblate 4.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
 msgid "_Title"
-msgstr ""
+msgstr "_Judul"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
@@ -29,12 +31,12 @@ msgstr ""
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
 msgid "_Date"
-msgstr ""
+msgstr "_Tanggal"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:59
 msgid "_Date Added"
-msgstr ""
+msgstr "_Tanggal Ditambahkan"
 
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:60
@@ -44,23 +46,23 @@ msgstr ""
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
-msgstr ""
+msgstr "_Genre"
 
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
-msgstr ""
+msgstr "_Peringkat"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
 msgid "_Playcount"
-msgstr ""
+msgstr "_Jumlah Pemutaran"
 
 #: quodlibet/browsers/albums/main.py:236
 #: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
-msgstr ""
+msgstr "Urut _berdasarkan…"
 
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:90
@@ -72,17 +74,17 @@ msgstr ""
 
 #: quodlibet/browsers/albums/main.py:431
 msgid "Album List"
-msgstr ""
+msgstr "Daftar Album"
 
 #: quodlibet/browsers/albums/main.py:432
 msgid "_Album List"
-msgstr ""
+msgstr "_Daftar Album"
 
 #: quodlibet/browsers/albums/main.py:547
 #: quodlibet/browsers/covergrid/main.py:290
 #: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
-msgstr ""
+msgstr "Semua Album"
 
 #: quodlibet/browsers/albums/main.py:548
 #: quodlibet/browsers/covergrid/main.py:291
@@ -90,21 +92,19 @@ msgstr ""
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d album"
 
 #: quodlibet/browsers/albums/main.py:729
 #: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Muat ulang _sampul album"
 
 #: quodlibet/browsers/albums/prefs.py:28
 #: quodlibet/browsers/collection/models.py:17
 #: quodlibet/browsers/covergrid/prefs.py:30
 msgid "Songs not in an album"
-msgstr ""
+msgstr "Lagu tidak di album"
 
 #: quodlibet/browsers/albums/prefs.py:41
 #: quodlibet/browsers/covergrid/prefs.py:43
@@ -130,7 +130,7 @@ msgstr[1] ""
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
 msgid "An Example Album"
-msgstr ""
+msgstr "Sebuah Album Contoh"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -138,7 +138,7 @@ msgstr ""
 
 #: quodlibet/browsers/albums/prefs.py:61
 msgid "Show album _covers"
-msgstr ""
+msgstr "Tampilkan _sampul album"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
@@ -194,6 +194,7 @@ msgstr ""
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
+#: quodlibet/qltk/edittags.py:549
 msgid "_Add"
 msgstr ""
 
@@ -295,6 +296,7 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
+#: quodlibet/qltk/edittags.py:555 quodlibet/qltk/edittags.py:743
 msgid "_Remove"
 msgstr ""
 
@@ -1191,7 +1193,7 @@ msgstr ""
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr ""
+msgstr "Unduh sampul dari arsip sampul MusicBrainz."
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
@@ -1265,6 +1267,7 @@ msgid "Allow editing of advanced config settings."
 msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:253
+#: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
 msgstr ""
 
@@ -1887,7 +1890,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:37
 msgid "MPRIS D-Bus Support"
-msgstr ""
+msgstr "Dukungan D-Bus MPRIS"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid ""
@@ -5460,39 +5463,39 @@ msgid ""
 msgstr ""
 
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:558
+#: quodlibet/qltk/edittags.py:558 quodlibet/qltk/edittags.py:569
 msgctxt "edittags"
 msgid "_Revert"
 msgstr ""
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:563
+#: quodlibet/qltk/edittags.py:563 quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:703
+#: quodlibet/qltk/edittags.py:703 quodlibet/qltk/edittags.py:714
 msgid "_Configure"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:718
+#: quodlibet/qltk/edittags.py:718 quodlibet/qltk/edittags.py:729
 msgid "_Split Tag"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:727
+#: quodlibet/qltk/edittags.py:727 quodlibet/qltk/edittags.py:738
 msgid "_Copy Value(s)"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:758
+#: quodlibet/qltk/edittags.py:758 quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:759
+#: quodlibet/qltk/edittags.py:759 quodlibet/qltk/edittags.py:770
 #, python-format
 msgid "Unable to add <b>%s</b>"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:761
+#: quodlibet/qltk/edittags.py:761 quodlibet/qltk/edittags.py:772
 #, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
@@ -5501,12 +5504,14 @@ msgstr ""
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
-#: quodlibet/util/tags.py:244
+#: quodlibet/util/tags.py:244 quodlibet/qltk/edittags.py:799
+#: quodlibet/qltk/edittags.py:980
 msgid "Invalid tag"
 msgstr ""
 
 #: quodlibet/qltk/edittags.py:789 quodlibet/qltk/edittags.py:970
-#: quodlibet/qltk/tagsfrompath.py:212
+#: quodlibet/qltk/tagsfrompath.py:212 quodlibet/qltk/edittags.py:800
+#: quodlibet/qltk/edittags.py:981
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -5515,10 +5520,12 @@ msgid ""
 msgstr ""
 
 #: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
 msgid "Invalid value"
 msgstr ""
 
 #: quodlibet/qltk/edittags.py:941 quodlibet/qltk/edittags.py:982
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
@@ -5700,11 +5707,11 @@ msgstr ""
 
 #: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:161
 msgid "plays"
-msgstr ""
+msgstr "putar"
 
 #: quodlibet/qltk/information.py:261 quodlibet/util/tags.py:162
 msgid "skips"
-msgstr ""
+msgstr "lanjut"
 
 #: quodlibet/qltk/information.py:262 quodlibet/util/tags.py:167
 msgid "rating"
@@ -7326,23 +7333,24 @@ msgstr ""
 
 #: quodlibet/util/tags.py:118
 msgid "original album"
-msgstr ""
+msgstr "album asli"
 
 #: quodlibet/util/tags.py:119
 msgid "original artist"
-msgstr ""
+msgstr "artis asli"
 
 #: quodlibet/util/tags.py:120
 msgid "recording date"
-msgstr ""
+msgstr "tanggal perekaman"
 
 #: quodlibet/util/tags.py:121
 msgid "release country"
-msgstr ""
+msgstr "negara perilisan"
 
 #: quodlibet/util/tags.py:122
+#, fuzzy
 msgid "initial key"
-msgstr ""
+msgstr "kunci awal"
 
 #. http://musicbrainz.org/doc/MusicBrainzTag
 #. Note: picard has changed musicbrainz_trackid to mean release track.
@@ -7524,4 +7532,12 @@ msgid ""
 "to view your audio library, as well as support for Internet radio and audio "
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
+msgstr ""
+
+#: quodlibet/qltk/edittags.py:535
+msgid "Show _multi-line tags"
+msgstr ""
+
+#: quodlibet/qltk/edittags.py:539
+msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
 msgstr ""
