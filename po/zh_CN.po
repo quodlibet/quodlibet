@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
 "PO-Revision-Date: 2022-03-18 03:59+0000\n"
-"Last-Translator: Pig Fang <g-plane@hotmail.com>\n"
+"Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -6839,7 +6839,7 @@ msgstr[0] ""
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "下载 %(total)d 个文件(_D)"
+msgstr[0] "下载 %(total)d 个文件(_D)…"
 
 #: quodlibet/qltk/songsmenu.py:440
 msgid "successful"
