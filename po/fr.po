@@ -197,9 +197,8 @@ msgstr "Saisir l'adresse d'un flux audio :"
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-#: quodlibet/qltk/edittags.py:549
 msgid "_Add"
 msgstr "_Ajouter"
 
@@ -300,11 +299,10 @@ msgstr "_Personnalisé"
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
-#: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
+#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#: quodlibet/qltk/edittags.py:555 quodlibet/qltk/edittags.py:743
 msgid "_Remove"
 msgstr "Supp_rimer"
 
@@ -1309,7 +1307,6 @@ msgstr "Préférences avancées"
 msgid "Allow editing of advanced config settings."
 msgstr "Permet d'éditer les paramètres de configurations avancées."
 
-#: quodlibet/ext/events/advanced_preferences.py:253
 #: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
 msgstr "Je confirme que je comprends ce que je fais"
@@ -3202,35 +3199,35 @@ msgstr "Exécutable de visualisation :"
 msgid "Reload"
 msgstr "Recharger"
 
-#: quodlibet/ext/events/waveformseekbar.py:606
+#: quodlibet/ext/events/waveformseekbar.py:602
 msgid "Waveform Seek Bar"
 msgstr "Barre de recherche Waveform"
 
-#: quodlibet/ext/events/waveformseekbar.py:610
+#: quodlibet/ext/events/waveformseekbar.py:605
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Une barre de recherche sous la forme d'onde du morceau en cours."
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:674
 msgid "Override foreground color:"
 msgstr "Remplacer la couleur d'avant-plan :"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override hover color:"
 msgstr "Remplacer la couleur du survol :"
 
-#: quodlibet/ext/events/waveformseekbar.py:687
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override remaining color:"
 msgstr "Remplacer la couleur restante :"
 
-#: quodlibet/ext/events/waveformseekbar.py:691
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Show current position"
 msgstr "Afficher la position actuelle"
 
-#: quodlibet/ext/events/waveformseekbar.py:696
+#: quodlibet/ext/events/waveformseekbar.py:691
 msgid "Show time labels"
 msgstr "Afficher les vignettes de temps"
 
-#: quodlibet/ext/events/waveformseekbar.py:704
+#: quodlibet/ext/events/waveformseekbar.py:698
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Cherchez la quantité lors du défilement (millisecondes) :"
 
@@ -5838,40 +5835,50 @@ msgstr ""
 "Accéder à toutes les étiquettes, y compris celles générées par une machine, "
 "par exemple les étiquettes MusicBrainz ou Replay Gain"
 
+#: quodlibet/qltk/edittags.py:535
+msgid "Show _multi-line tags"
+msgstr "Afficher les étiquettes _multi-lignes"
+
+#: quodlibet/qltk/edittags.py:539
+msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
+msgstr ""
+"Affichez les étiquettes potentiellement multi-lignes (par exemple 'paroles') "
+"ici aussi"
+
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:558 quodlibet/qltk/edittags.py:569
+#: quodlibet/qltk/edittags.py:569
 msgctxt "edittags"
 msgid "_Revert"
 msgstr "_Rétablir"
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:563 quodlibet/qltk/edittags.py:574
+#: quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
 msgstr "Enregi_strer"
 
-#: quodlibet/qltk/edittags.py:703 quodlibet/qltk/edittags.py:714
+#: quodlibet/qltk/edittags.py:714
 msgid "_Configure"
 msgstr "_Configurer"
 
-#: quodlibet/qltk/edittags.py:718 quodlibet/qltk/edittags.py:729
+#: quodlibet/qltk/edittags.py:729
 msgid "_Split Tag"
 msgstr "_Séparer l'étiquette"
 
-#: quodlibet/qltk/edittags.py:727 quodlibet/qltk/edittags.py:738
+#: quodlibet/qltk/edittags.py:738
 msgid "_Copy Value(s)"
 msgstr "_Valeur(s) de la ou des copie(s)"
 
-#: quodlibet/qltk/edittags.py:758 quodlibet/qltk/edittags.py:769
+#: quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
 msgstr "Impossible d'ajouter l'étiquette"
 
-#: quodlibet/qltk/edittags.py:759 quodlibet/qltk/edittags.py:770
+#: quodlibet/qltk/edittags.py:770
 #, python-format
 msgid "Unable to add <b>%s</b>"
 msgstr "Impossible d'ajouter <b>%s</b>"
 
-#: quodlibet/qltk/edittags.py:761 quodlibet/qltk/edittags.py:772
+#: quodlibet/qltk/edittags.py:772
 #, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
@@ -5880,16 +5887,14 @@ msgstr ""
 "multiples pour <b>%s</b>."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
-#: quodlibet/util/tags.py:244 quodlibet/qltk/edittags.py:799
-#: quodlibet/qltk/edittags.py:980
+#: quodlibet/util/tags.py:244
 msgid "Invalid tag"
 msgstr "Étiquette non valide"
 
-#: quodlibet/qltk/edittags.py:789 quodlibet/qltk/edittags.py:970
-#: quodlibet/qltk/tagsfrompath.py:212 quodlibet/qltk/edittags.py:800
-#: quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/tagsfrompath.py:212
 #, python-format
 msgid ""
 "Invalid tag <b>%s</b>\n"
@@ -5901,12 +5906,10 @@ msgstr ""
 "Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
 "étiquette."
 
-#: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
 msgid "Invalid value"
 msgstr "Valeur non valide"
 
-#: quodlibet/qltk/edittags.py:941 quodlibet/qltk/edittags.py:982
 #: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
 #, python-format
 msgid ""
@@ -8027,16 +8030,6 @@ msgstr ""
 "différentes de visualiser votre bibliothèque audio, ainsi que la prise en "
 "charge de la radio Internet et des flux audio. Il dispose de capacités "
 "extrêmement souples d'édition et de recherche des étiquettes de métadonnées."
-
-#: quodlibet/qltk/edittags.py:535
-msgid "Show _multi-line tags"
-msgstr "Afficher les étiquettes _multi-lignes"
-
-#: quodlibet/qltk/edittags.py:539
-msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
-msgstr ""
-"Affichez les étiquettes potentiellement multi-lignes (par exemple 'paroles') "
-"ici aussi"
 
 #~ msgid "Searching for lyrics…"
 #~ msgstr "Recherche de paroles…"
