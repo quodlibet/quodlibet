@@ -196,6 +196,11 @@ def init_test_environ():
     # despite this setting.
     environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
 
+    # In flatpak we might get a registry from a different/old flatpak build
+    # when testing new versions etc. Better always update in that case.
+    if util.is_flatpak():
+        del environ["GST_REGISTRY_UPDATE"]
+
     # set HOME and remove all XDG vars that default to it if not set
     home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
     environ["HOME"] = home_dir
