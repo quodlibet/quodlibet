@@ -94,8 +94,8 @@ class SoundcloudApiClient(RestApi):
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'songs-received': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'comments-received': (GObject.SignalFlags.RUN_LAST, None,
-                              (int, object,)),
+        'stream-uri-received': (GObject.SignalFlags.RUN_LAST, None, (object,str)),
+        'comments-received': (GObject.SignalFlags.RUN_LAST, None, (int, object,)),
         'authenticated': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
@@ -116,7 +116,6 @@ class SoundcloudApiClient(RestApi):
     def _on_failure(self, req: HTTPRequest, _exc: Exception, data: Any) -> None:
         """Callback for HTTP failures."""
         code = req.message.get_property('status-code')
-        print_w(f"Failed with HTTP {code} ({_exc}) for {data}.")
         if code in (401,):
             print_w("User session no longer valid, logging out.")
             if self.access_token:
@@ -140,6 +139,7 @@ class SoundcloudApiClient(RestApi):
     def log_out(self):
         print_d("Destroying access token...")
         self.access_token = None
+        self.user_id = None
         self.save_auth()
 
     def get_tokens(self, code):
@@ -172,9 +172,10 @@ class SoundcloudApiClient(RestApi):
             self.refresh_token = refresh_token
             print_d("Got refresh token.")
 
-        print_d(f"Got an access token: {self.access_token}")
+        print_d(f"Got an access token: ...{self.access_token[-6:]}")
         self.save_auth()
-        self._get_me()
+        if not self.user_id:
+            self._get_me()
 
     def _get_me(self):
         self._get('/me', self._receive_me)
@@ -202,15 +203,13 @@ class SoundcloudApiClient(RestApi):
         try:
             self._get(f"/tracks/{song['soundcloud_track_id']}/streams",
                       self._on_track_stream_urls_data, song)
-        except Exception:
-            print_w(f"Problem getting stream URL for {song}")
+        except Exception as e:
+            print_w(f"Problem getting stream URL for {song} ({e})")
 
     @json_callback
     def _on_track_stream_urls_data(self, json, song):
         uri = json['http_mp3_128_url']
-        # URI isn't the key in this SoundcloudFile, so this is OK
-        song["~uri"] = uri
-        # print_d(f"Set song URI for {song['title']} to {uri}")
+        self.emit("stream-uri-received", song, uri)
 
     @json_callback
     def _on_track_data(self, json, _data):
