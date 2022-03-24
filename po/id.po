@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-03-24 14:58+0000\n"
+"PO-Revision-Date: 2022-03-24 22:33+0000\n"
 "Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
@@ -1730,22 +1730,22 @@ msgstr ""
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
-msgstr ""
+msgstr "Pesan Status Gajim"
 
 #: quodlibet/ext/events/gajim_status.py:39
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr ""
+msgstr "Ubah pesan status Gajim tergantung apa yang Anda sedang dengar."
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
 msgid "paused"
-msgstr ""
+msgstr "dijeda"
 
 #: quodlibet/ext/events/gajim_status.py:145
 msgid "Pattern:"
-msgstr ""
+msgstr "Pola:"
 
 #: quodlibet/ext/events/gajim_status.py:154
 msgid ""
@@ -1755,7 +1755,7 @@ msgstr ""
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
-msgstr ""
+msgstr "Akun:"
 
 #: quodlibet/ext/events/gajim_status.py:161
 msgid "Add '[paused]'"
