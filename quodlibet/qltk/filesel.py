@@ -215,14 +215,14 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
                 def __le__(self, other):
                     # If both keys are the same type (int or string), compare normally
-                    if type(self.v) == type(other.v):
+                    if isinstance(other.v, type(self.v)):
                         return self.v <= other.v
 
                     # Otherwise, ints come first
                     return isinstance(self.v, int)
 
             def string_to_key(s):
-                # Break up the string into components
+                # Break up the string into parsed components
                 k = [KeyElem.parse(v) for v in split(r"(\d+)", s)]
 
                 # Add the original string to the end, to preserve case information
