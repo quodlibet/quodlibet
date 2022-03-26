@@ -9,6 +9,7 @@ import os
 import errno
 from urllib.parse import urlsplit
 from re import split
+from functools import total_ordering
 
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
@@ -200,14 +201,33 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             if a_path is not None and a_path.get_depth() == 1:
                 return 0
 
+            @total_ordering
+            class KeyElem:
+                def __init__(self, v):
+                    self.v = v
+
+                @classmethod
+                def parse(cls, v: str):
+                    return cls(int(v) if v.isnumeric() else v.lower())
+
+                def __eq__(self, other):
+                    return self.v == other.v
+
+                def __le__(self, other):
+                    # If both keys are the same type (int or string), compare normally
+                    if type(self.v) == type(other.v):
+                        return self.v <= other.v
+
+                    # Otherwise, ints come first
+                    return isinstance(self.v, int)
+
             def string_to_key(s):
                 # Break up the string into components
-                # parsing numbers and removing case from strings
-                k = [int(v) if v.isnumeric() else v.lower() for v in split(r"(\d+)", s)]
+                k = [KeyElem.parse(v) for v in split(r"(\d+)", s)]
 
                 # Add the original string to the end, to preserve case information
                 # (When using lexicographical comparison, this acts as a fallback)
-                k.append(s)
+                k.append(KeyElem(s))
                 return k
 
             # Otherwise, files are sorted by their paths
