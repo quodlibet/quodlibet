@@ -94,7 +94,7 @@ class SoundcloudApiClient(RestApi):
         'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
         'songs-received': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'stream-uri-received': (GObject.SignalFlags.RUN_LAST, None, (object,str)),
+        'stream-uri-received': (GObject.SignalFlags.RUN_LAST, None, (object, str)),
         'comments-received': (GObject.SignalFlags.RUN_LAST, None, (int, object,)),
         'authenticated': (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
