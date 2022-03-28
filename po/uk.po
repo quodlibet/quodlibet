@@ -200,7 +200,7 @@ msgstr "Введіть адресу авдіо-стрічки:"
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Додати"
@@ -302,8 +302,8 @@ msgstr "_Власний"
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
-#: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
+#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
@@ -1312,7 +1312,7 @@ msgstr "Розширені налаштування"
 msgid "Allow editing of advanced config settings."
 msgstr "Дозволити редагування розширених налаштувань."
 
-#: quodlibet/ext/events/advanced_preferences.py:253
+#: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
 msgstr "Я знаю що роблю"
 
@@ -3097,35 +3097,35 @@ msgstr ""
 msgid "Reload"
 msgstr "Перезавантажити"
 
-#: quodlibet/ext/events/waveformseekbar.py:606
+#: quodlibet/ext/events/waveformseekbar.py:602
 msgid "Waveform Seek Bar"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:610
+#: quodlibet/ext/events/waveformseekbar.py:605
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:674
 msgid "Override foreground color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override hover color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:687
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override remaining color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:691
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Show current position"
 msgstr "Показувати поточну позицію"
 
-#: quodlibet/ext/events/waveformseekbar.py:696
+#: quodlibet/ext/events/waveformseekbar.py:691
 msgid "Show time labels"
 msgstr "Показувати позначки часу"
 
-#: quodlibet/ext/events/waveformseekbar.py:704
+#: quodlibet/ext/events/waveformseekbar.py:698
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr ""
 
@@ -5712,44 +5712,53 @@ msgid ""
 "Gain tags"
 msgstr ""
 
+#: quodlibet/qltk/edittags.py:535
+#, fuzzy
+msgid "Show _multi-line tags"
+msgstr "Показувати _програмні теги"
+
+#: quodlibet/qltk/edittags.py:539
+msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
+msgstr ""
+
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:558
+#: quodlibet/qltk/edittags.py:569
 #, fuzzy
 msgctxt "edittags"
 msgid "_Revert"
 msgstr "Ніколи"
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:563
+#: quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
 msgstr "_Зберегти"
 
-#: quodlibet/qltk/edittags.py:703
+#: quodlibet/qltk/edittags.py:714
 #, fuzzy
 msgid "_Configure"
 msgstr "_Продовжити"
 
-#: quodlibet/qltk/edittags.py:718
+#: quodlibet/qltk/edittags.py:729
 #, fuzzy
 msgid "_Split Tag"
 msgstr "Редагувати теги"
 
-#: quodlibet/qltk/edittags.py:727
+#: quodlibet/qltk/edittags.py:738
 #, fuzzy
 msgid "_Copy Value(s)"
 msgstr "Копіювати обкладинки _альбомів"
 
-#: quodlibet/qltk/edittags.py:758
+#: quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
 msgstr "Не вдалося додати тег"
 
-#: quodlibet/qltk/edittags.py:759
+#: quodlibet/qltk/edittags.py:770
 #, fuzzy, python-format
 msgid "Unable to add <b>%s</b>"
 msgstr "Не вдалося додати пісню"
 
-#: quodlibet/qltk/edittags.py:761
+#: quodlibet/qltk/edittags.py:772
 #, fuzzy, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
@@ -5759,13 +5768,13 @@ msgstr ""
 "Вибрані файли не підтримують множинні значення."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
 msgstr "Неправильний тег"
 
-#: quodlibet/qltk/edittags.py:789 quodlibet/qltk/edittags.py:970
+#: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:212
 #, python-format
 msgid ""
@@ -5777,11 +5786,11 @@ msgstr ""
 "\n"
 "Вибрані файли не підтримують редагування цього тега."
 
-#: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
 msgid "Invalid value"
 msgstr "Неправильне значення"
 
-#: quodlibet/qltk/edittags.py:941 quodlibet/qltk/edittags.py:982
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"

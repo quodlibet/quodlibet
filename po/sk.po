@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-03-10 18:58+0000\n"
+"PO-Revision-Date: 2022-03-21 21:50+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -196,7 +196,7 @@ msgstr "Zadajte umiestnenie zdroja zvukových záznamov:"
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:538
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Pridať"
@@ -300,8 +300,8 @@ msgstr "_Vlastné"
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
 #: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:544
-#: quodlibet/qltk/edittags.py:732 quodlibet/qltk/maskedbox.py:48
+#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
@@ -1307,7 +1307,7 @@ msgstr "Pokročilé nastavenia"
 msgid "Allow editing of advanced config settings."
 msgstr "Povoliť úpravu pokročilých nastavení."
 
-#: quodlibet/ext/events/advanced_preferences.py:253
+#: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
 msgstr "Viem, čo robím"
 
@@ -3179,35 +3179,35 @@ msgstr "Spustiteľný súbor vizualizéra:"
 msgid "Reload"
 msgstr "Opätovne načítať"
 
-#: quodlibet/ext/events/waveformseekbar.py:606
+#: quodlibet/ext/events/waveformseekbar.py:602
 msgid "Waveform Seek Bar"
 msgstr "Panel posunu vo vlnovej krivke skladby"
 
-#: quodlibet/ext/events/waveformseekbar.py:610
+#: quodlibet/ext/events/waveformseekbar.py:605
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Panel posunu v tvare vlnovej krivky prehrávanej skladby."
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:674
 msgid "Override foreground color:"
 msgstr "Nahradiť farbu popredia:"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override hover color:"
 msgstr "Nahradiť farbu pri prechode myšou:"
 
-#: quodlibet/ext/events/waveformseekbar.py:687
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override remaining color:"
 msgstr "Nahradiť zvyšnú farbu:"
 
-#: quodlibet/ext/events/waveformseekbar.py:691
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Show current position"
 msgstr "Zobraziť súčasnú polohu"
 
-#: quodlibet/ext/events/waveformseekbar.py:696
+#: quodlibet/ext/events/waveformseekbar.py:691
 msgid "Show time labels"
 msgstr "Zobraziť časové značky"
 
-#: quodlibet/ext/events/waveformseekbar.py:704
+#: quodlibet/ext/events/waveformseekbar.py:698
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Dĺžka posunu kolieskom myši (v milisekundách):"
 
@@ -3580,7 +3580,7 @@ msgstr "Len fronta"
 
 #: quodlibet/ext/playorder/queue.py:25
 msgid "_Queue only"
-msgstr "Len _fronta"
+msgstr "_Len fronta"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
@@ -3724,7 +3724,7 @@ msgstr "Vyhľadávanie podľa chýbajúcich značiek"
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
-msgstr "Vyhľadáva skladby postrádajúce zadanú značku."
+msgstr "Vyhľadáva skladby bez danej značky."
 
 #: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
@@ -3788,7 +3788,7 @@ msgstr "Názov hostiteľa:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:118
 msgid "Port:"
-msgstr "Prípojný bod:"
+msgstr "Port:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:125
 msgid "Username:"
@@ -3809,7 +3809,7 @@ msgstr "Cesta ku knižnici:"
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:151
 msgid "_Verify settings"
-msgstr "O_veriť nastavenie"
+msgstr "_Overiť nastavenie"
 
 #. Server settings Frame
 #: quodlibet/ext/_shared/squeezebox/base.py:157
@@ -4074,11 +4074,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:77
 msgid "You can access the following objects by default:"
-msgstr "Predvolene môžete pristupovať k nasledovným objektom:"
+msgstr "V základe môžete pristupovať k nasledovným objektom:"
 
 #: quodlibet/ext/songsmenu/console.py:86
 msgid "Your current working directory is:"
-msgstr "Váš súčasný pracovný priečinok je:"
+msgstr "Váš súčasný pracovný adresár je:"
 
 #: quodlibet/ext/songsmenu/console.py:617
 msgid "Completion"
@@ -4317,7 +4317,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
-msgstr "Zo_skupiť duplikáty podľa:"
+msgstr "_Zoskupiť duplikáty podľa:"
 
 #: quodlibet/ext/songsmenu/duplicates.py:403
 msgid "Duplicate Key"
@@ -4414,7 +4414,7 @@ msgstr "Vytvára výrazy vyhľadávania na základe značiek vybraných skladieb
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:19
 msgid "Filter on Directory"
-msgstr "Filtrovať priečinok"
+msgstr "Filtrovať adresár"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
@@ -4492,7 +4492,7 @@ msgstr "Zapísať značky MusicBrainz"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:296
 msgid "Group by directory"
-msgstr "Zoskupiť podľa priečinka"
+msgstr "Zoskupiť podľa adresára"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:305
 msgid "Album Mode"
@@ -4644,7 +4644,7 @@ msgstr "Exportovať zdroje súborov, značky a údaje používateľa"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr "Nahrať / Exportovať"
+msgstr "Import / Export"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
@@ -4764,8 +4764,7 @@ msgstr "Niet čo načítať"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
 msgid "You have to export something before you can import."
-msgstr ""
-"Predtým než budete môcť niečo načítať, musíte najprv niečo vyexportovať."
+msgstr "Predtým než budete môcť niečo načítať, musíte najprv niečo exportovať."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:446
 msgid "The index was corrupt."
@@ -4808,9 +4807,9 @@ msgid "Sync complete."
 msgstr "Synchronizácia dokončená."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "Error during sync (%s)"
-msgstr "Chyba počas synchronizácie"
+msgstr "Chyba počas synchronizácie (%s)"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:202
 #: quodlibet/ext/songsmenu/lastfmsync.py:231
@@ -4922,11 +4921,11 @@ msgstr "vždy"
 
 #: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
-msgstr "keď chýbajú <b>akékoľvek</b> RG značky"
+msgstr "ak <b>akékoľvek</b> RG značky chýbajú"
 
 #: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
-msgstr "keď chýbajú RG značky pre <b>album</b>"
+msgstr "ak <b>album</b> RG značky chýbajú"
 
 #: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
@@ -5412,7 +5411,7 @@ msgstr "Zaisťuje, že sa „jackaudiosink“ automaticky pripojí"
 #: quodlibet/player/gstbe/util.py:148
 #, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
-msgstr "Nenašiel sa žiaden zvukový prietok GStreamera. Vyskúšali sa: %s"
+msgstr "Nenašiel sa žiaden zvukový vývod GStreamera. Vyskúšali sa: %s"
 
 #: quodlibet/player/gstbe/util.py:167
 msgid "Invalid GStreamer output pipeline"
@@ -5472,11 +5471,11 @@ msgstr "Odovzdávať údaje o počúvaní do ListenBrainz."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
-msgstr "_Žetón používateľa:"
+msgstr "Používateľov _token:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
-msgstr "Zn_ačky:"
+msgstr "Značky:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
@@ -5566,15 +5565,15 @@ msgstr "Z práve prehrávaného albumu"
 
 #: quodlibet/qltk/browser.py:81
 msgid "Random _Genre"
-msgstr "Náhodný žá_ner"
+msgstr "Náhodný _žáner"
 
 #: quodlibet/qltk/browser.py:82
 msgid "Random _Artist"
-msgstr "Náhodný int_erpret"
+msgstr "Náhodný _umelec"
 
 #: quodlibet/qltk/browser.py:83
 msgid "Random Al_bum"
-msgstr "Náhodný al_bum"
+msgstr "Náhodný _album"
 
 #: quodlibet/qltk/browser.py:96
 msgid ""
@@ -5604,11 +5603,11 @@ msgstr "Auto_maticky"
 
 #: quodlibet/qltk/controls.py:113
 msgid "_Track Mode"
-msgstr "Režim _stopy"
+msgstr "_Režim stopy"
 
 #: quodlibet/qltk/controls.py:114
 msgid "_Album Mode"
-msgstr "Režim _albumu"
+msgstr "_Režim albumu"
 
 #. Translators: player state, no action
 #: quodlibet/qltk/controls.py:123
@@ -5617,7 +5616,7 @@ msgstr "_Stlmené"
 
 #: quodlibet/qltk/controls.py:129
 msgid "_Replay Gain Mode"
-msgstr "Režim _Replay Gain"
+msgstr "_Replay Gain režim"
 
 #. Translators: New Command/Entry/Item/...
 #: quodlibet/qltk/data_editors.py:116
@@ -5635,7 +5634,7 @@ msgstr "Výraz značky"
 
 #: quodlibet/qltk/data_editors.py:371
 msgid "Tag expression e.g. people:real or ~album~year"
-msgstr "Výraz značky, napr. people:real alebo ~album~year"
+msgstr "Výraz značky, napr. osoba:fakt alebo ~album~rok"
 
 #: quodlibet/qltk/data_editors.py:372
 msgid "Enter new tag"
@@ -5747,19 +5746,19 @@ msgstr "Rozdeliť na _viacero hodnôt"
 
 #: quodlibet/qltk/edittags.py:221
 msgid "Split Disc out of _Album"
-msgstr "Oddeliť disk z _albumu"
+msgstr "Oddeliť disk od _albumu"
 
 #: quodlibet/qltk/edittags.py:245
 msgid "Split _Version out of Title"
-msgstr "Oddeliť _verziu z názvu"
+msgstr "Oddeliť _verziu od názvu"
 
 #: quodlibet/qltk/edittags.py:302
 msgid "Split Arranger out of Ar_tist"
-msgstr "Oddeliť aranžéra z in_terpreta"
+msgstr "Oddeliť aranžéra od interpreta"
 
 #: quodlibet/qltk/edittags.py:307
 msgid "Split _Performer out of Artist"
-msgstr "Oddeliť _hudobníka z interpreta"
+msgstr "Oddeliť _interpreta od umelca"
 
 #: quodlibet/qltk/edittags.py:313
 msgid "Split _Performer out of Title"
@@ -5789,40 +5788,48 @@ msgstr ""
 "Používať všetky značky vrátane strojovo vytvorených, napr. značky "
 "MusicBrainz alebo Replay Gain"
 
+#: quodlibet/qltk/edittags.py:535
+msgid "Show _multi-line tags"
+msgstr "Ukázať _viacriadkové tagy"
+
+#: quodlibet/qltk/edittags.py:539
+msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
+msgstr "Ukázať potenciálne viacriadkové tagy (e.g 'lyrics') aj tu"
+
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:558
+#: quodlibet/qltk/edittags.py:569
 msgctxt "edittags"
 msgid "_Revert"
-msgstr "Ob_rátiť"
+msgstr "_Obrátiť"
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:563
+#: quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
 msgstr "_Uložiť"
 
-#: quodlibet/qltk/edittags.py:703
+#: quodlibet/qltk/edittags.py:714
 msgid "_Configure"
 msgstr "_Nastaviť"
 
-#: quodlibet/qltk/edittags.py:718
+#: quodlibet/qltk/edittags.py:729
 msgid "_Split Tag"
 msgstr "_Rozdeliť značku"
 
-#: quodlibet/qltk/edittags.py:727
+#: quodlibet/qltk/edittags.py:738
 msgid "_Copy Value(s)"
 msgstr "_Kopírovať hodnoty"
 
-#: quodlibet/qltk/edittags.py:758
+#: quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
 msgstr "Nepodarilo sa pridať tag"
 
-#: quodlibet/qltk/edittags.py:759
+#: quodlibet/qltk/edittags.py:770
 #, python-format
 msgid "Unable to add <b>%s</b>"
 msgstr "Neporadilo sa pridať <b>%s</b>"
 
-#: quodlibet/qltk/edittags.py:761
+#: quodlibet/qltk/edittags.py:772
 #, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
@@ -5830,13 +5837,13 @@ msgstr ""
 "Práve vybrané súbory nepodporujú pridanie viacerých hodnôt pre <b>%s</b>."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:788 quodlibet/qltk/edittags.py:969
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
 msgstr "Neplatný tag"
 
-#: quodlibet/qltk/edittags.py:789 quodlibet/qltk/edittags.py:970
+#: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:212
 #, python-format
 msgid ""
@@ -5846,20 +5853,20 @@ msgid ""
 msgstr ""
 "Neplatný tag <b>%s</b>\n"
 "\n"
-"The files currently selected do not support editing this tag."
+"Vybrané súbory nepodporujú editovanie tagu."
 
-#: quodlibet/qltk/edittags.py:940 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
 msgid "Invalid value"
 msgstr "Neplatná hodnota"
 
-#: quodlibet/qltk/edittags.py:941 quodlibet/qltk/edittags.py:982
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
 #, python-format
 msgid ""
 "Invalid value: <b>%(value)s</b>\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Neplarná hodnota: <b>%(value)s</b>\n"
+"Neplatná hodnota: <b>%(value)s</b>\n"
 "\n"
 "%(error)s"
 
@@ -5924,11 +5931,11 @@ msgstr[2] "%(title)s a %(count)s ďalších"
 
 #: quodlibet/qltk/exfalsowindow.py:280
 msgid "Ex Falso Preferences"
-msgstr "Možnosti Ex Falso"
+msgstr "Predvoľby Ex Falso"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
-msgstr "Zložky"
+msgstr "Priečinky"
 
 #: quodlibet/qltk/filesel.py:254
 msgid "_New Folder…"
@@ -5948,11 +5955,11 @@ msgstr "Vložte názov novej zložky:"
 
 #: quodlibet/qltk/filesel.py:386
 msgid "Unable to create folder"
-msgstr "Nepodarilo sa vytvoriť zložku"
+msgstr "Nepodarilo sa vytvoriť priečinok"
 
 #: quodlibet/qltk/filesel.py:403
 msgid "Unable to delete folder"
-msgstr "Nepodarilo sa odstrániť zložku"
+msgstr "Nepodarilo sa odstrániť priečinok"
 
 #: quodlibet/qltk/filesel.py:519 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
@@ -6043,11 +6050,11 @@ msgstr "naposledy prehrané"
 
 #: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:161
 msgid "plays"
-msgstr "prehraní"
+msgstr "prehranie"
 
 #: quodlibet/qltk/information.py:261 quodlibet/util/tags.py:162
 msgid "skips"
-msgstr "preskočení"
+msgstr "preskočenie"
 
 #: quodlibet/qltk/information.py:262 quodlibet/util/tags.py:167
 msgid "rating"
@@ -6127,7 +6134,7 @@ msgstr "albumy"
 
 #: quodlibet/qltk/information.py:611
 msgid "Total length:"
-msgstr "Celková dľžka:"
+msgstr "Celková dĺžka:"
 
 #: quodlibet/qltk/information.py:615
 msgid "Total size:"
@@ -6304,7 +6311,7 @@ msgstr "_Skladba"
 
 #: quodlibet/qltk/prefs.py:47
 msgid "Grou_ping"
-msgstr "Zo_skupenie"
+msgstr "Zoskupenie"
 
 #: quodlibet/qltk/prefs.py:50
 msgid "Al_bum"
@@ -6312,7 +6319,7 @@ msgstr "_Album"
 
 #: quodlibet/qltk/prefs.py:55
 msgid "_Filename"
-msgstr "Názob _súboru"
+msgstr "_Názov súboru"
 
 #: quodlibet/qltk/prefs.py:57
 msgid "_Length"
@@ -6364,7 +6371,7 @@ msgstr "Album obsahuje podnázov _disku"
 
 #: quodlibet/qltk/prefs.py:115
 msgid "Filename includes _folder"
-msgstr "Názov súboru obsahuje _zložku"
+msgstr "Názov súboru obsahuje _priečinok"
 
 #: quodlibet/qltk/prefs.py:128
 msgid "Column Preferences"
@@ -6416,7 +6423,7 @@ msgstr "Požiadať o potvrdenie pred zmenou hodnotenia viacerých skladieb naraz
 
 #: quodlibet/qltk/prefs.py:303
 msgid "Enable _one-click ratings"
-msgstr "Povoliť hodnotenie _jedným kliknutím"
+msgstr "Povoliť _hodnotenie jedným kliknutím"
 
 #: quodlibet/qltk/prefs.py:305
 msgid "Enable rating by clicking on the rating column in the song list"
@@ -6496,7 +6503,7 @@ msgstr "Prispôsobenie hlasitosti Replay Gain"
 
 #: quodlibet/qltk/prefs.py:436
 msgid "_Continue playback on startup"
-msgstr "Pri spustení _pokračovať v prehrávaní"
+msgstr "_Pokračovať v prehrávaní pri spustení"
 
 #: quodlibet/qltk/prefs.py:438
 msgid ""
@@ -6592,7 +6599,7 @@ msgstr "Aktualizácia na nové hodnotenia"
 
 #: quodlibet/qltk/prefs.py:702
 msgid "Scan library _on start"
-msgstr "Pre_hľadať knižnicu pri spustení"
+msgstr "Prehľadať knižnicu _pri spustení"
 
 #: quodlibet/qltk/prefs.py:712 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
@@ -6604,7 +6611,7 @@ msgstr "Skontrolovať zmeny v knižnici"
 
 #: quodlibet/qltk/prefs.py:719
 msgid "Re_build Library"
-msgstr "Opätovne p_rehľadať knižnicu"
+msgstr "Opätovne _zostaviť knižnicu"
 
 #: quodlibet/qltk/prefs.py:722
 msgid "Reload all songs in your library. This can take a long time."
@@ -6701,7 +6708,7 @@ msgstr "_Nie teraz"
 
 #: quodlibet/qltk/quodlibetwindow.py:392
 msgid "_Set Up"
-msgstr "Na_staviť"
+msgstr "_Nastaviť"
 
 #: quodlibet/qltk/quodlibetwindow.py:845
 msgid "Unable to add songs"
@@ -6742,15 +6749,15 @@ msgstr "_Pomocník"
 
 #: quodlibet/qltk/quodlibetwindow.py:887
 msgid "_Add a Folder…"
-msgstr "Prid_ať priečinok…"
+msgstr "_Pridať priečinok…"
 
 #: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_Add a File…"
-msgstr "Prid_ať súbor…"
+msgstr "_Pridať súbor…"
 
 #: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Add a Location…"
-msgstr "Prid_ať umiestnenie…"
+msgstr "_Pridať umiestnenie…"
 
 #: quodlibet/qltk/quodlibetwindow.py:926
 msgid "Edit Bookmarks…"
@@ -6797,15 +6804,15 @@ msgstr "Pridať hudbu"
 
 #: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
-msgstr "Prid_ať priečinky"
+msgstr "_Pridať priečinky"
 
 #: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Music Files"
-msgstr "Hudobný súbory"
+msgstr "Hudobné súbory"
 
 #: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "_Add Files"
-msgstr "Prid_ať súbory"
+msgstr "_Pridať súbory"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -6911,7 +6918,7 @@ msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
-msgstr "Nevšímať si ži_adne chyby"
+msgstr "Ignorovať _všetky chyby"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
@@ -7114,7 +7121,7 @@ msgstr "Pridať stĺpec do zoznam stĺpcov, podľa ktorých sa má triediť"
 
 #: quodlibet/qltk/shortcuts.py:34
 msgid "Tree View"
-msgstr "Usporiadanie priečinkov"
+msgstr "Stromové usporiadanie priečinkov"
 
 #: quodlibet/qltk/shortcuts.py:36
 msgid "Collapses the element or select the parent element"
@@ -7151,27 +7158,27 @@ msgstr "Všetky _hlavičky"
 
 #: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
-msgstr "Hlavičky _skladby"
+msgstr "_Hlavičky skladby"
 
 #: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
-msgstr "Hlavičky _albumu"
+msgstr "_Hlavičky albumu"
 
 #: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
-msgstr "Hlavičky ľ_udí"
+msgstr "_Hlavičky ľudí"
 
 #: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
-msgstr "Hlavičky _dátumu"
+msgstr "_Hlavičky dátumu"
 
 #: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
-msgstr "Hlavičky _súboru"
+msgstr "_Hlavičky súboru"
 
 #: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
-msgstr "Hlavičky _produkcie"
+msgstr "_Hlavičky produkcie"
 
 #: quodlibet/qltk/songlist.py:1203
 msgid "_Customize Headers…"

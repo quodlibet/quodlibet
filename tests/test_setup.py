@@ -36,6 +36,7 @@ SRC_FILE = Path(get_module_dir(quodlibet)).parent / "quodlibet.py"
 @fixture
 def dist(temp_po_dir) -> GDistribution:
     dist = GDistribution()
+    dist.packages = []
     dist.po_directory = str(temp_po_dir)
     return dist
 

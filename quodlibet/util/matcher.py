@@ -13,7 +13,7 @@ from typing import Generic, TypeVar, Mapping, Callable, Any, Union, List, Sequen
 
 T = TypeVar('T')
 Real = Union[int, float]
-AttributeGetter = Callable[[T], Any]
+AttributeGetter = itemgetter
 AttributeGetterToWeight = Mapping[AttributeGetter, Real]
 
 SUPPORTED_NUMBER_TYPES = (int, float)
