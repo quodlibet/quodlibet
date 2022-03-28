@@ -1348,7 +1348,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             seek_pos = config.getfloat("memory", "seek", 0)
             config.set("memory", "seek", 0)
             if song is not None:
-                player.setup(self.playlist, song, seek_pos)
+                player.setup(self.playlist, song, seek_pos, False)
 
             if self.__restore_cb:
                 self.__restore_cb()
