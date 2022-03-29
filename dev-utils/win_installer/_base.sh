@@ -69,6 +69,7 @@ function create_root {
     mkdir -p "${BUILD_ROOT}"/tmp
 
     build_pacman -Syu
+    build_pacman --noconfirm -S filesystem msys2-runtime
     build_pacman --noconfirm -S base
 }
 
