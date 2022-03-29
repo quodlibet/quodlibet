@@ -180,8 +180,7 @@ Translations:
     * Adolfo Jayme Barrientos (1205)
  * French
     * Adolfo Jayme Barrientos (1)
-    * Jej@github (3)
-    * Jej (133)
+    * Jej@github (136)
     * Bundy01 (481)
  * Finnish
     * Kristian Laakkonen (166)
