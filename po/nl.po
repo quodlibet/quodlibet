@@ -820,6 +820,12 @@ msgstr "Nummerlijst"
 msgid "_Track List"
 msgstr "Nummerlijs_t"
 
+#. Pre-cache. It's horrible, but at least you can play things immediately
+#: quodlibet/browsers/soundcloud/library.py:71
+#, fuzzy
+msgid "Soundcloud"
+msgstr "Sound_cloud"
+
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Soundcloud-verkenner"
@@ -836,30 +842,30 @@ msgstr "Zoeken"
 msgid "My tracks"
 msgstr "Mijn nummers"
 
-#: quodlibet/browsers/soundcloud/main.py:144
+#: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
 msgstr "Ga naar %s"
 
-#: quodlibet/browsers/soundcloud/main.py:446
+#: quodlibet/browsers/soundcloud/main.py:444
 msgid "Connected"
 msgstr "Verbonden"
 
-#: quodlibet/browsers/soundcloud/main.py:447
+#: quodlibet/browsers/soundcloud/main.py:445
 #, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet is nu verbonden met ‘%s’!"
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
 msgid "Log out of %s"
 msgstr "%s ontkoppelen"
 
-#: quodlibet/browsers/soundcloud/main.py:461
+#: quodlibet/browsers/soundcloud/main.py:459
 msgid "Enter code…"
 msgstr "Voer de code in…"
 
-#: quodlibet/browsers/soundcloud/main.py:462
+#: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
 msgstr "%s koppelen"
@@ -1550,7 +1556,8 @@ msgstr "_Bijwerkmethode:"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
+#: quodlibet/qltk/prefs.py:749
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -3533,11 +3540,11 @@ msgstr "Voorkeur voor minder vaak"
 msgid "Prefer _less played"
 msgstr "Voor_keur voor minder vaak"
 
-#: quodlibet/ext/playorder/queue.py:18
+#: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
 msgstr "Alleen wachtrij"
 
-#: quodlibet/ext/playorder/queue.py:20
+#: quodlibet/ext/playorder/queue.py:25
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3549,13 +3556,17 @@ msgstr ""
 "Selecteer de afspeelvolgorde in het hoofdvenster en dubbelklik op een nummer "
 "om het in de wachtrij te plaatsen."
 
-#: quodlibet/ext/playorder/queue.py:24
+#: quodlibet/ext/playorder/queue.py:29
 msgid "Queue only"
 msgstr "Alleen wachtrij"
 
-#: quodlibet/ext/playorder/queue.py:25
+#: quodlibet/ext/playorder/queue.py:30
 msgid "_Queue only"
 msgstr "Alleen _wachtrij"
+
+#: quodlibet/ext/playorder/queue.py:34
+msgid "Automatically start playing double-clicked songs"
+msgstr ""
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
