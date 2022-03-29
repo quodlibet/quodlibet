@@ -129,8 +129,6 @@ flake8
         mingw-w64-"${ARCH}"-zbar \
         mingw-w64-"${ARCH}"-gsl
 
-    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
-
     build_pacman -S --noconfirm mingw-w64-"${ARCH}"-python3-setuptools
 }
 
