@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2020 Nick Boultbee
+#           2009-2022 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
 #                2022 Jej@github
@@ -302,6 +302,11 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # show all tags, or just "human-readable" ones
         "alltags": "true",
+
+        # Show multi-line tags
+        "show_multi_line_tags": "true",
+        # Which tags can be multi-line (comma-separated)
+        "multi_line_tags": "lyrics,comment",
 
         # Skip dialog to save or revert changes
         "auto_save_changes": "false",
