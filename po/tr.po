@@ -818,6 +818,12 @@ msgstr "Şarkı Listesi"
 msgid "_Track List"
 msgstr "_Şarkı Listesi"
 
+#. Pre-cache. It's horrible, but at least you can play things immediately
+#: quodlibet/browsers/soundcloud/library.py:71
+#, fuzzy
+msgid "Soundcloud"
+msgstr "Sound_cloud"
+
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Soundcloud Gözatıcı"
@@ -834,30 +840,30 @@ msgstr "Ara"
 msgid "My tracks"
 msgstr "Şarkılarım"
 
-#: quodlibet/browsers/soundcloud/main.py:144
+#: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
 msgstr "%s' e git"
 
-#: quodlibet/browsers/soundcloud/main.py:446
+#: quodlibet/browsers/soundcloud/main.py:444
 msgid "Connected"
 msgstr "Bağlandı"
 
-#: quodlibet/browsers/soundcloud/main.py:447
+#: quodlibet/browsers/soundcloud/main.py:445
 #, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet şuan bağlandı, %s!"
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
 msgid "Log out of %s"
 msgstr "%s'ten çıkış yap"
 
-#: quodlibet/browsers/soundcloud/main.py:461
+#: quodlibet/browsers/soundcloud/main.py:459
 msgid "Enter code…"
 msgstr "Kodu girin…"
 
-#: quodlibet/browsers/soundcloud/main.py:462
+#: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
 msgstr "%s' te oturum aç"
@@ -1554,7 +1560,8 @@ msgstr "_Stratejiyi güncelle:"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
+#: quodlibet/qltk/prefs.py:749
 msgid "Preferences"
 msgstr "Tercihler"
 
@@ -3541,12 +3548,12 @@ msgstr "Daha az çalınanı tercih et"
 msgid "Prefer _less played"
 msgstr "Daha az ça_lınanı tercih et"
 
-#: quodlibet/ext/playorder/queue.py:18
+#: quodlibet/ext/playorder/queue.py:23
 #, fuzzy
 msgid "Queue Only"
 msgstr "Çalma _Kuyruğu"
 
-#: quodlibet/ext/playorder/queue.py:20
+#: quodlibet/ext/playorder/queue.py:25
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3558,15 +3565,19 @@ msgstr ""
 "Bu çalma düzenini ana pencerede seçin; bu durumda bir şarkıya çift tıklamak "
 "onu çalmak yerine kuyruğa ekleyecektir."
 
-#: quodlibet/ext/playorder/queue.py:24
+#: quodlibet/ext/playorder/queue.py:29
 #, fuzzy
 msgid "Queue only"
 msgstr "Çalma _Kuyruğu"
 
-#: quodlibet/ext/playorder/queue.py:25
+#: quodlibet/ext/playorder/queue.py:30
 #, fuzzy
 msgid "_Queue only"
 msgstr "Çalma _Kuyruğu"
+
+#: quodlibet/ext/playorder/queue.py:34
+msgid "Automatically start playing double-clicked songs"
+msgstr ""
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"

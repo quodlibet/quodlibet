@@ -836,6 +836,12 @@ msgstr "Seznam skladeb"
 msgid "_Track List"
 msgstr "Seznam skladeb"
 
+#. Pre-cache. It's horrible, but at least you can play things immediately
+#: quodlibet/browsers/soundcloud/library.py:71
+#, fuzzy
+msgid "Soundcloud"
+msgstr "Sound_cloud"
+
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
 msgstr "Prohlížeč Soundcloudu"
@@ -853,30 +859,30 @@ msgstr "Hledání"
 msgid "My tracks"
 msgstr "skladby"
 
-#: quodlibet/browsers/soundcloud/main.py:144
+#: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
 msgstr "Přejít na %s"
 
-#: quodlibet/browsers/soundcloud/main.py:446
+#: quodlibet/browsers/soundcloud/main.py:444
 msgid "Connected"
 msgstr "Připojeno"
 
-#: quodlibet/browsers/soundcloud/main.py:447
+#: quodlibet/browsers/soundcloud/main.py:445
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Quod Libet je nyní připojen, <b>%s</b>!"
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
 msgid "Log out of %s"
 msgstr "Odhlásit se z %s"
 
-#: quodlibet/browsers/soundcloud/main.py:461
+#: quodlibet/browsers/soundcloud/main.py:459
 msgid "Enter code…"
 msgstr "Vložit kód…"
 
-#: quodlibet/browsers/soundcloud/main.py:462
+#: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
 msgstr "Přihlásit do %s"
@@ -1566,7 +1572,8 @@ msgstr "_Aktualizace stanic"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
+#: quodlibet/qltk/prefs.py:749
 msgid "Preferences"
 msgstr "Nastavení"
 
@@ -3569,11 +3576,11 @@ msgstr "Upřednostnit málo hrané"
 msgid "Prefer _less played"
 msgstr "Upřednostnit málo hrané"
 
-#: quodlibet/ext/playorder/queue.py:18
+#: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
 msgstr "Pouze fronta"
 
-#: quodlibet/ext/playorder/queue.py:20
+#: quodlibet/ext/playorder/queue.py:25
 #, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
@@ -3585,15 +3592,19 @@ msgstr ""
 "podle hlavního okna. Dvojklikem se skladba nebude přehrávat, ale zařadí se "
 "do fronty."
 
-#: quodlibet/ext/playorder/queue.py:24
+#: quodlibet/ext/playorder/queue.py:29
 #, fuzzy
 msgid "Queue only"
 msgstr "Pouze fronta"
 
-#: quodlibet/ext/playorder/queue.py:25
+#: quodlibet/ext/playorder/queue.py:30
 #, fuzzy
 msgid "_Queue only"
 msgstr "Pouze fronta"
+
+#: quodlibet/ext/playorder/queue.py:34
+msgid "Automatically start playing double-clicked songs"
+msgstr ""
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"

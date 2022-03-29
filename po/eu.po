@@ -857,6 +857,12 @@ msgstr "Pista zerrenda"
 msgid "_Track List"
 msgstr "Pista zerrenda"
 
+#. Pre-cache. It's horrible, but at least you can play things immediately
+#: quodlibet/browsers/soundcloud/library.py:71
+#, fuzzy
+msgid "Soundcloud"
+msgstr "Paneldun nabigatzailea"
+
 #: quodlibet/browsers/soundcloud/main.py:40
 #, fuzzy
 msgid "Soundcloud Browser"
@@ -875,31 +881,31 @@ msgstr "Bilatu"
 msgid "My tracks"
 msgstr "pistak"
 
-#: quodlibet/browsers/soundcloud/main.py:144
+#: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:446
+#: quodlibet/browsers/soundcloud/main.py:444
 #, fuzzy
 msgid "Connected"
 msgstr "kokapena"
 
-#: quodlibet/browsers/soundcloud/main.py:447
+#: quodlibet/browsers/soundcloud/main.py:445
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "<b>%s</b> ez dago konektaturik."
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
 msgid "Log out of %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:461
+#: quodlibet/browsers/soundcloud/main.py:459
 msgid "Enter code…"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:462
+#: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
 msgstr ""
@@ -1597,7 +1603,8 @@ msgstr "_Kate berria"
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
-#: quodlibet/ext/query/missing.py:39 quodlibet/qltk/prefs.py:749
+#: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
+#: quodlibet/qltk/prefs.py:749
 #, fuzzy
 msgid "Preferences"
 msgstr "Hobespenak"
@@ -3584,12 +3591,12 @@ msgstr "azken erreproduzitua"
 msgid "Prefer _less played"
 msgstr "azken erreproduzitua"
 
-#: quodlibet/ext/playorder/queue.py:18
+#: quodlibet/ext/playorder/queue.py:23
 #, fuzzy
 msgid "Queue Only"
 msgstr "Ilaran"
 
-#: quodlibet/ext/playorder/queue.py:20
+#: quodlibet/ext/playorder/queue.py:25
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
@@ -3597,15 +3604,19 @@ msgid ""
 "will enqueue it instead of playing."
 msgstr ""
 
-#: quodlibet/ext/playorder/queue.py:24
+#: quodlibet/ext/playorder/queue.py:29
 #, fuzzy
 msgid "Queue only"
 msgstr "Ilaran"
 
-#: quodlibet/ext/playorder/queue.py:25
+#: quodlibet/ext/playorder/queue.py:30
 #, fuzzy
 msgid "_Queue only"
 msgstr "Ilaran"
+
+#: quodlibet/ext/playorder/queue.py:34
+msgid "Automatically start playing double-clicked songs"
+msgstr ""
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 #, fuzzy
