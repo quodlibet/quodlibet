@@ -63,7 +63,7 @@ class MinVersions:
     GSTREAMER = Version("GStreamer", 1, 8)
 
 
-VERSION_TUPLE = Version("", 4, 5, -1)
+VERSION_TUPLE = Version("", 4, 5, 0)
 VERSION = str(VERSION_TUPLE)
 
 # entry point for the user guide / wiki
