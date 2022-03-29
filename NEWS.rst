@@ -2,11 +2,12 @@
 
 .. _release-4.5.0:
 
-4.5.0 (2022-??-??) - ???
-------------------------
+4.5.0 (2022-03-29) - What sort of things would you like to know?
+----------------------------------------------------------------
 
 Packaging Changes:
  * Quodlibet should now support Python 3.10
+ * This will be the last release supporting Windows 7
 
 
 General:
