@@ -140,7 +140,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         hbox = Gtk.HBox()
         button = Gtk.Button(always_show_image=True, relief=Gtk.ReliefStyle.NONE)
         button.connect('clicked', lambda _: website(SITE_URL))
-        button.set_tooltip_text(_("Go to %s" % SITE_URL))
+        button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
         hbox.pack_start(button, True, True, 6)
         hbox.show_all()
