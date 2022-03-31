@@ -7,7 +7,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Quod Libet 4.3\n"
+"Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
 "PO-Revision-Date: 2021-10-01 16:34+0000\n"
@@ -1106,7 +1106,6 @@ msgstr ""
 msgid "filename"
 msgstr "Dateiname"
 
-# Klingt genauso wackelig wie das Englische. Was meinst?
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
 msgstr "Dateinamen von Abfrageergebnissen auf Standardausgabe ausgeben"
@@ -2641,17 +2640,11 @@ msgstr ""
 msgid "Destination path:"
 msgstr "Zielpfad:"
 
-# Unter Tagging, 'Tags aus Pfad erzeugen'.
-# 'Pfad' gefällt mir nicht, 'Muster' ('Profil'?) auch nicht ;)
-# –> Mir gefiel 'Pfad' auch nicht. ;-)
-# Kann es sein, dass 'path' etwas unglücklich formuliert ist? Es handelt sich doch um den Dateinamen. Allerdings gibt es auch noch '_Filename Pattern:'.
 #: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr "Muster für Dateipfade"
 
-# Für mich sieht das eher nach 'Profile' aus.
-# –> Jo, wesentlich besser. Global geändert.
 #: quodlibet/ext/events/synchronize_to_device.py:185
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
@@ -3323,8 +3316,7 @@ msgstr "Tiefpassfilter-Grenzfrequenz"
 msgid "Feed _level:"
 msgstr "Einspeis_pegel:"
 
-# Ich weiß nicht, ob das eine treffende Übersetzung ist. Wenn jemand
-# mehr Ahnung von der Materie hat, bitte verbessern
+# Ich weiß nicht, ob das eine treffende Übersetzung ist. Wenn jemand mehr Ahnung von der Materie hat, bitte verbessern
 #: quodlibet/ext/gstreamer/crossfeed.py:22
 msgid "Feed level"
 msgstr "Einspeispegel"
@@ -5286,7 +5278,6 @@ msgstr "%r kann nicht gesetzt werden"
 msgid "List file information"
 msgstr "Dateiinformationen anzeigen"
 
-# Was genau bedeutet hier 'provided'?
 #: quodlibet/operon/commands.py:505
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
@@ -5512,7 +5503,6 @@ msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 msgstr "Das Modul »{module}« wurde nicht gefunden. Ist das Paket installiert?"
 
-# verknüpft?
 #: quodlibet/plugins/__init__.py:73
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
@@ -6065,7 +6055,6 @@ msgstr "CD %s"
 msgid "Track %s"
 msgstr "Titel %s"
 
-# Mit Plural wird der Menüeintrag sehr lang (etwa: Nach aktuellem Genre/aktuellen Genres). Ich denke, dass er auch ohne den Plural verständlich ist und außerdem schneller zu erkennen.
 #: quodlibet/qltk/info.py:104
 msgid "Current _Song"
 msgstr "Aktueller _Titel"
@@ -7217,7 +7206,7 @@ msgstr "Das Suchfeld für die Schnellsuche anzeigen"
 msgid "Left click on a column header"
 msgstr "Linksklick auf einen Listenspaltenkopf"
 
-# The line breaks ensures that the keyboard shortcut window fits on a 1280 px width screen
+# The line break ensures that the keyboard shortcut window fits on a 1280 px width screen
 #: quodlibet/qltk/shortcuts.py:32
 msgid "Add the column to the list of columns to sort by"
 msgstr ""
@@ -8079,51 +8068,6 @@ msgstr ""
 "Audiobibliothek auf verschiedene Arten darstellen und unterstützt "
 "Internetradio sowie Audio-Feeds. Quod Libet enthält äußerst flexible "
 "Funktionen zur Metadaten-Bearbeitung und Suche."
-
-#~ msgid "Searching for lyrics…"
-#~ msgstr "Liedtext wird gesucht …"
-
-#~ msgid "Shares configuration with %(plugin)s."
-#~ msgstr "Teilt die Konfiguration mit dem Plugin %(plugin)s."
-
-#~ msgid "Shares configuration with %(plugin)s"
-#~ msgstr "Teilt die Konfiguration mit dem Plugin %(plugin)s"
-
-#~ msgid ""
-#~ "Analyzes and updates %(rg_link)s information, using GStreamer. Results "
-#~ "are grouped by album."
-#~ msgstr ""
-#~ "Analysiert und aktualisiert %(rg_link)s-Informationen unter der "
-#~ "Verwendung von GStreamer. Die Ergebnisse werden nach Album gruppiert."
-
-#~ msgid "broker username"
-#~ msgstr "Broker-Benutzername"
-
-#~ msgid "broker password"
-#~ msgstr "Broker-Passwort"
-
-#~ msgid "<artist>"
-#~ msgstr "<artist>"
-
-#~ msgid "<album>"
-#~ msgstr "<album>"
-
-#~ msgid "<title>"
-#~ msgstr "<title>"
-
-#~ msgid "OK"
-#~ msgstr "OK"
-
-#~ msgid ""
-#~ "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-#~ "both share a directory structure. Shares configuration with <a href="
-#~ "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</"
-#~ "a>."
-#~ msgstr ""
-#~ "Exportiert dynamisch eine Wiedergabeliste zu einer Logitech-Squeezebox-"
-#~ "Wiedergabeliste. Dafür müssen beide dieselbe Verzeichnisstruktur teilen. "
-#~ "Teilt die Konfiguration mit dem <a href=\"quodlibet:///prefs/plugins/"
-#~ "Squeezebox Output\">Squeezebox-Synchronisierungs-Plugin</a>."
 
 #~ msgid "Exports metadata of selected songs as a .tags file."
 #~ msgstr ""
