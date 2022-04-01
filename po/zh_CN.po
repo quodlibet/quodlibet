@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-03-18 03:59+0000\n"
+"PO-Revision-Date: 2022-03-29 16:38+0000\n"
 "Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -803,9 +803,8 @@ msgstr "音轨列表(_T)"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
-#, fuzzy
 msgid "Soundcloud"
-msgstr "Souncloud浏览器"
+msgstr "Souncloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"

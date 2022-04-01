@@ -30,7 +30,7 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
                     "Ensures position in the current source is maintained "
                     "so long as 'Only Seekable Sources' is off. "
                     "Otherwise, playback is left stopped and must be restarted "
-                    "from the begining.")
+                    "from the beginning.")
 
     _CFG_SEEKABLE_ONLY = 'seekable_only'
 
