@@ -1,4 +1,5 @@
 # Copyright 2014-2021 Nick Boultbee
+#                2022 TheMelmacian
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@ from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.path import uri_is_valid
+from urllib.response import addinfourl
 from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
@@ -124,7 +126,11 @@ def _name_for(filename):
 
 def _dir_for(filelike):
     try:
-        return os.path.dirname(path2fsn(filelike.name))
+        if isinstance(filelike, addinfourl):
+            # if the "filelike" was created via urlopen it is wrapped in an addinfourl object
+            return os.path.dirname(path2fsn(filelike.fp.name))
+        else:
+            return os.path.dirname(path2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
         return text2fsn(u'')

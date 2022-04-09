@@ -1,0 +1,7 @@
+#EXTM3U
+#EXTINF:0,lame.mp3
+lame.mp3
+#EXTINF:0,test.wav
+test.wav
+#EXTINF:2,Quod Libet - 110Hz test track
+sine-110hz.flac
