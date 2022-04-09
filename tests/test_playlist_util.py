@@ -56,3 +56,22 @@ class TPlaylistUtil(TestCase):
         finally:
             url_based_file.close()
             reader_based_file.close()
+
+    def test_parse_m3u8(self):
+        fileName = os.path.basename(self.PLAYLIST_FILE_PATH)
+        playlist: Playlist = None
+
+        with open(self.PLAYLIST_FILE_PATH, "rb") as file:
+            try:
+                playlist = parse_m3u(file, fileName, self.sfLib, self.plLib)
+            except:
+                assert False, "parsing m3u8 playlists in correct format should not cause errors"
+
+        self.assertIsNotNone(playlist, "parsing an m3u8 playlist in the correct format should result in a playlist")
+        # the test.m3u8 contains:
+        #   - 3 existing and supported audio files from the tests/data folder: lame.mp3, test.wav, sine-110hz.flac
+        #   - 1 non existing file: non_existing_audio_file.mp3
+        #   - 1 not supported file: test.jpg
+        # parsing the file correctly should result in a playlist with 3 entries
+        self.assertEqual(3, len(playlist), "only existing files should be added to the playlist")
+

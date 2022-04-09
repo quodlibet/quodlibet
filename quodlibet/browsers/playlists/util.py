@@ -87,18 +87,29 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     win.show()
     for i, filename in enumerate(files):
+        song = None
         if not uri_is_valid(filename):
             # Plain filename.
-            songs.append(_af_for(filename, songs_lib, source_dir))
+            song = _af_for(filename, songs_lib, source_dir)
         else:
             try:
                 filename = uri2fsn(filename)
             except ValueError:
                 # Who knows! Hand it off to GStreamer.
-                songs.append(formats.remote.RemoteFile(filename))
+                song = formats.remote.RemoteFile(filename)
             else:
                 # URI-encoded local filename.
-                songs.append(_af_for(filename, songs_lib, source_dir))
+                song = _af_for(filename, songs_lib, source_dir)
+
+        # Only add existing (not None) files to the playlist.
+        # Otherwise multiple errors are thrown when the files are accessed to update the displayed track infos.
+        if song is not None:
+            songs.append(song)
+        elif os.path.exists(filename) or os.path.exists(os.path.join(source_dir, filename)):
+            print_w(f"Can't add file to playlist: Unsupported file format. '{filename}'")
+        else:
+            print_w(f"Can't add file to playlist: File not found. '{filename}'")
+
         if win.step():
             break
     win.destroy()

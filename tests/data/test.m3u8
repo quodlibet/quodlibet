@@ -5,3 +5,7 @@ lame.mp3
 test.wav
 #EXTINF:2,Quod Libet - 110Hz test track
 sine-110hz.flac
+#EXTINF:0,non existing file
+non_existing_audio_file.mp3
+#EXTINF:0,no audio file
+image.jpg
