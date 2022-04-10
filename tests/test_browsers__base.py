@@ -222,6 +222,14 @@ class TDisplayPatternMixin(TestCase):
         dpm.load_pattern()
         self.failUnlessEqual(dpm.display_pattern_text, self.TEST_PATTERN)
 
+    def test_updating_pattern(self):
+        dpm = DummyDPM()
+        dpm.load_pattern()
+        dpm.update_pattern("static")
+        self.failUnlessEqual(
+            dpm.display_pattern % FakeDisplayItem(),
+            "static")
+
     def test_markup(self):
         dpm = DummyDPM()
         dpm.load_pattern()
