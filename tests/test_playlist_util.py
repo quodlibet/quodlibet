@@ -41,15 +41,15 @@ class TPlaylistUtil(TestCase):
         try:
             dir_of_url_based_file: str = _dir_for(url_based_file)
             self.assertEqual(
-                _normalize_path(self.PLAYLIST_FILE_PATH),
-                os.path.join(_normalize_path(dir_of_url_based_file), "test.m3u8"),
+                os.path.realpath(os.path.dirname(self.PLAYLIST_FILE_PATH)),
+                os.path.realpath(dir_of_url_based_file),
                 "determining the directory of url based files should result in a correct path"
             )
 
             dir_of_reader_based_file: str = _dir_for(reader_based_file)
             self.assertEqual(
-                _normalize_path(self.PLAYLIST_FILE_PATH),
-                os.path.join(_normalize_path(dir_of_reader_based_file), "test.m3u8"),
+                os.path.realpath(os.path.dirname(self.PLAYLIST_FILE_PATH)),
+                os.path.realpath(dir_of_reader_based_file,),
                 "determining the directory of reader based files should result in a correct path"
             )
 
