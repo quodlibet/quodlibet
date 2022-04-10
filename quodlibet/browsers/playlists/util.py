@@ -102,11 +102,14 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
                 song = _af_for(filename, songs_lib, source_dir)
 
         # Only add existing (not None) files to the playlist.
-        # Otherwise multiple errors are thrown when the files are accessed to update the displayed track infos.
+        # Otherwise multiple errors are thrown when the files are accessed
+        # to update the displayed track infos.
         if song is not None:
             songs.append(song)
-        elif os.path.exists(filename) or os.path.exists(os.path.join(source_dir, filename)):
-            print_w(f"Can't add file to playlist: Unsupported file format. '{filename}'")
+        elif (os.path.exists(filename)
+                or os.path.exists(os.path.join(source_dir, filename))):
+            print_w("Can't add file to playlist:"
+                    f" Unsupported file format. '{filename}'")
         else:
             print_w(f"Can't add file to playlist: File not found. '{filename}'")
 
@@ -138,7 +141,8 @@ def _name_for(filename):
 def _dir_for(filelike):
     try:
         if isinstance(filelike, addinfourl):
-            # if the "filelike" was created via urlopen it is wrapped in an addinfourl object
+            # if the "filelike" was created via urlopen
+            # it is wrapped in an addinfourl object
             return os.path.dirname(path2fsn(filelike.fp.name))
         else:
             return os.path.dirname(path2fsn(filelike.name))
