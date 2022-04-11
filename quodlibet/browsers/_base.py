@@ -299,27 +299,27 @@ class DisplayPatternMixin:
         print_d("Loading pattern from %s" % cls._PATTERN_FN)
         try:
             with open(cls._PATTERN_FN, "r", encoding="utf-8") as f:
-                cls.__pattern_text = f.read().rstrip()
+                pattern_text = f.read().rstrip()
         except EnvironmentError as e:
             print_d("Couldn't load pattern for %s (%s), using default." %
                     (cls.__name__, e))
-            cls.__pattern_text = cls._DEFAULT_PATTERN_TEXT
-        cls.__refresh_pattern()
+            pattern_text = cls._DEFAULT_PATTERN_TEXT
+        cls.__refresh_pattern(pattern_text)
 
     def update_pattern(self, pattern_text):
         """Saves `pattern_text` to disk (and caches)"""
         if pattern_text == self.__pattern_text:
             return
-        self.__pattern_text = pattern_text
-        self.__refresh_pattern()
+        self.__refresh_pattern(pattern_text)
         self.refresh_all()
         print_d(f"Saving pattern for {self} at {self._PATTERN_FN}")
         with open(self._PATTERN_FN, "w", encoding="utf-8") as f:
             f.write(pattern_text + "\n")
 
     @classmethod
-    def __refresh_pattern(cls):
-        cls.__pattern = XMLFromMarkupPattern(cls.__pattern_text)
+    def __refresh_pattern(cls, pattern_text):
+        cls.__pattern_text = pattern_text
+        cls.__pattern = XMLFromMarkupPattern(pattern_text)
 
     @property
     def display_pattern(self):
