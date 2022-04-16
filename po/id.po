@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-03-24 22:33+0000\n"
-"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
+"PO-Revision-Date: 2022-04-04 00:09+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -26,7 +26,7 @@ msgstr "_Judul"
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
 msgid "_Artist"
-msgstr ""
+msgstr "_Artis"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -41,7 +41,7 @@ msgstr "_Tanggal Ditambahkan"
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:60
 msgid "_Original Date"
-msgstr ""
+msgstr "_Tanggal Asli"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
@@ -70,7 +70,7 @@ msgstr "Urut _berdasarkan…"
 #: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
-msgstr ""
+msgstr "_Preferensi"
 
 #: quodlibet/browsers/albums/main.py:431
 msgid "Album List"
@@ -114,8 +114,7 @@ msgstr "Lagu tidak di album"
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d trek"
 
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
@@ -124,8 +123,7 @@ msgstr[1] ""
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d cakram"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
@@ -134,7 +132,7 @@ msgstr "Sebuah Album Contoh"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
-msgstr ""
+msgstr "Preferensi Daftar Album"
 
 #: quodlibet/browsers/albums/prefs.py:61
 msgid "Show album _covers"
@@ -142,18 +140,18 @@ msgstr "Tampilkan _sampul album"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
-msgstr ""
+msgstr "Inline _search termasuk orang"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
 #: quodlibet/ext/songsmenu/cover_download.py:306
 msgid "Options"
-msgstr ""
+msgstr "Opsi"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:127
 msgid "Album Display"
-msgstr ""
+msgstr "Display Album"
 
 #: quodlibet/browsers/albums/prefs.py:78
 #: quodlibet/browsers/covergrid/prefs.py:131
@@ -166,7 +164,7 @@ msgstr ""
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
-msgstr ""
+msgstr "_Tutup"
 
 #: quodlibet/browsers/audiofeeds.py:52 quodlibet/browsers/audiofeeds.py:64
 #: quodlibet/browsers/audiofeeds.py:66 quodlibet/browsers/audiofeeds.py:153
@@ -176,15 +174,15 @@ msgstr ""
 #: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
-msgstr ""
+msgstr "Tidak diketahui"
 
 #: quodlibet/browsers/audiofeeds.py:214
 msgid "New Feed"
-msgstr ""
+msgstr "Feed Baru"
 
 #: quodlibet/browsers/audiofeeds.py:215
 msgid "Enter the location of an audio feed:"
-msgstr ""
+msgstr "Masukkan lokasi umpan audio:"
 
 #: quodlibet/browsers/audiofeeds.py:216
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
@@ -195,24 +193,24 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
-msgstr ""
+msgstr "_Tambah"
 
 #: quodlibet/browsers/audiofeeds.py:270
 msgid "Audio Feeds"
-msgstr ""
+msgstr "Umpan Audio"
 
 #: quodlibet/browsers/audiofeeds.py:271
 msgid "_Audio Feeds"
-msgstr ""
+msgstr "_Umpan Audio"
 
 #: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
 msgid "_New"
-msgstr ""
+msgstr "_Baru"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
-msgstr ""
+msgstr "_Segarkan"
 
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
@@ -220,11 +218,11 @@ msgstr ""
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
-msgstr ""
+msgstr "_Hapus"
 
 #: quodlibet/browsers/audiofeeds.py:495
 msgid "Unable to add feed"
-msgstr ""
+msgstr "Tidak dapat menambahkan umpan"
 
 #: quodlibet/browsers/audiofeeds.py:496
 #, python-format
