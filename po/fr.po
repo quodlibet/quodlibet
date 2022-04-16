@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-03-18 03:59+0000\n"
+"PO-Revision-Date: 2022-04-05 13:07+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -823,9 +823,8 @@ msgstr "_Liste des pistes"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
-#, fuzzy
 msgid "Soundcloud"
-msgstr "Sound_cloud"
+msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
@@ -2521,7 +2520,6 @@ msgid "Stop on Pause"
 msgstr "Arrêt sur Pause"
 
 #: quodlibet/ext/events/stop_on_pause.py:24
-#, fuzzy
 msgid ""
 "This plugin changes Pause to Stop/Play/Seek.\n"
 "\n"
@@ -2534,13 +2532,12 @@ msgid ""
 msgstr ""
 "Ce plugin change Pause en Stop/Lecture/Recherche.\n"
 "\n"
-"Ce comportement est utile si Quod Libet ne peut pas changer de périphérique "
-"audio lorsqu'un nouveau matériel (enceinte Bluetooth, DAC USB, etc.) est "
-"ajouté au système.\n"
+"Utile si Quod Libet ne peut pas changer de périphérique audio lorsqu'un "
+"nouveau matériel (enceinte Bluetooth, DAC USB, etc.) est ajouté au système.\n"
 "\n"
-"Si l'option 'Seulement les sources recherchées' n'est pas cochée, ce plugin "
-"s'assurera que la position dans la source actuelle est maintenue. Sinon, la "
-"lecture sera interrompue et devra recommencer depuis le début."
+"Assure le maintien de la position dans la source actuelle tant que l'option "
+"'Seulement les sources recherchées' est désactivée. Sinon, la lecture est "
+"arrêtée et doit être reprise depuis le début."
 
 #: quodlibet/ext/events/stop_on_pause.py:75
 msgid "Only Seekable Sources"
@@ -3612,7 +3609,7 @@ msgstr "_File d'attente uniquement"
 
 #: quodlibet/ext/playorder/queue.py:34
 msgid "Automatically start playing double-clicked songs"
-msgstr ""
+msgstr "Lancement automatique de la lecture des titres obtenus par double-clic"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
