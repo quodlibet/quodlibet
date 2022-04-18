@@ -2,6 +2,8 @@ comment: false
 
 coverage:
   status:
-    project: false
-    patch: false
+    project:
+      informational: true
+    patch:
+      informational: true
     changes: false
