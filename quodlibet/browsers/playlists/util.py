@@ -1,4 +1,5 @@
 # Copyright 2014-2021 Nick Boultbee
+#                2022 TheMelmacian
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +16,7 @@ from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.wlw import WaitLoadWindow
 from quodlibet.util import escape
 from quodlibet.util.path import uri_is_valid
+from urllib.response import addinfourl
 from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
@@ -85,18 +87,32 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     win.show()
     for i, filename in enumerate(files):
+        song = None
         if not uri_is_valid(filename):
             # Plain filename.
-            songs.append(_af_for(filename, songs_lib, source_dir))
+            song = _af_for(filename, songs_lib, source_dir)
         else:
             try:
                 filename = uri2fsn(filename)
             except ValueError:
                 # Who knows! Hand it off to GStreamer.
-                songs.append(formats.remote.RemoteFile(filename))
+                song = formats.remote.RemoteFile(filename)
             else:
                 # URI-encoded local filename.
-                songs.append(_af_for(filename, songs_lib, source_dir))
+                song = _af_for(filename, songs_lib, source_dir)
+
+        # Only add existing (not None) files to the playlist.
+        # Otherwise multiple errors are thrown when the files are accessed
+        # to update the displayed track infos.
+        if song is not None:
+            songs.append(song)
+        elif (os.path.exists(filename)
+                or os.path.exists(os.path.join(source_dir, filename))):
+            print_w("Can't add file to playlist:"
+                    f" Unsupported file format. '{filename}'")
+        else:
+            print_w(f"Can't add file to playlist: File not found. '{filename}'")
+
         if win.step():
             break
     win.destroy()
@@ -124,7 +140,12 @@ def _name_for(filename):
 
 def _dir_for(filelike):
     try:
-        return os.path.dirname(path2fsn(filelike.name))
+        if isinstance(filelike, addinfourl):
+            # if the "filelike" was created via urlopen
+            # it is wrapped in an addinfourl object
+            return os.path.dirname(path2fsn(filelike.fp.name))
+        else:
+            return os.path.dirname(path2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
         return text2fsn(u'')
