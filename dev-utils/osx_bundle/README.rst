@@ -18,25 +18,31 @@ not be touched.
 Creating a Bundle
 -----------------
 
-Prerequisites: `macOS` 10.11+
+Prerequisites:
 
-Note: In case you want to target `macOS 10.11` with the resulting bundle you
-have to build everything on `10.11`.
+* `macOS` 10.13+
+* Xcode
+* Xcode Command Line Tools
+* Rust
+
+Note: In case you want to target `macOS 10.13` with the resulting bundle you
+have to build everything on `10.13`.
 (see https://github.com/quodlibet/quodlibet/issues/2069)
 
-1) Go to https://developer.apple.com/download/more/ and download the "Command
-   Line Tools" matching your macOS version and install it.
-2) (optional) On the same page download "Graphics Tools" and enable HiDPI
+1) Install the command line tools using ``xcode-select --install``.
+2) Go to https://developer.apple.com/download/more/ and download the "XCode" matching your macOS version and install it.
+3) (optional) On the same page download "Graphics Tools" and enable HiDPI
    debug mode in the "Quartz Debug" tool, so you can test HiDPI on a LowDPI
    screen.
-3) Verify that Xcode and git is installed and in your ``$PATH`` by invoking
-   ``git --version`` and ``gcc --version``. Also make sure that other package
-   managers like homebrew or macports aren't in your ``$PATH``.
 4) Install rust: https://www.rust-lang.org/tools/install
-5) Call ``bootstrap.sh`` to install jhbuild and set up dummy ``$HOME`` as base.
-6) Call ``build.sh`` to download and build all the dependencies.
+5) Verify that Xcode and git is installed and in your ``$PATH`` by invoking
+   ``git --version``, ``gcc --version``, ``xcodebuild -sdk -version`` and
+   ``cargo``. Also make sure that other package managers like homebrew or
+   macports aren't in your ``$PATH``.
+6) Call ``bootstrap.sh`` to install jhbuild and and copy files into place.
+7) Call ``build.sh`` to download and build all the dependencies.
    This should not lead to errors; if it does please file a bug.
-7) Call ``bundle.sh`` to create the finished bundles for QL and EF in
+8) Call ``bundle.sh`` to create the finished bundles for QL and EF in
    ``_build``.
 
 Call ``clean.sh`` to remove everything created above again and get back to
