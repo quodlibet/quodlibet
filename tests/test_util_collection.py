@@ -3,39 +3,39 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import shutil
 import os
+import shutil
 from collections import defaultdict
 from os.path import exists
+from pathlib import Path
 from xml.etree.ElementTree import ElementTree
 
 import pytest
 
-from quodlibet.library.playlist import PlaylistLibrary
-from senf import fsnative
-
 from quodlibet import config, app
-
-from tests import TestCase, mkdtemp
 from quodlibet.formats import AudioFile as Fakesong
-from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE
-from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
-                                       FileBackedPlaylist, XSPFBackedPlaylist)
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE, AudioFile
 from quodlibet.library.file import FileLibrary
+from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.util import format_rating
+from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
+                                       FileBackedPlaylist, XSPFBackedPlaylist,
+                                       XSPF_NS)
+from senf import fsnative
+from tests import TestCase, mkdtemp
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
 NUMERIC_SONGS = [
-    Fakesong({"~filename": fsnative(u"fake1-\xf0.mp3"),
+    Fakesong({"~filename": fsnative("/fake1-\xf0.mp3"),
               "~#length": 4, "~#added": 5, "~#lastplayed": 1,
               "~#bitrate": 200, "date": "100", "~#rating": 0.1,
               "originaldate": "2004-01-01", "~#filesize": 101}),
-    Fakesong({"~filename": fsnative(u"fake2.mp3"),
+    Fakesong({"~filename": fsnative("/fake2.mp3"),
               "~#length": 7, "~#added": 7, "~#lastplayed": 88,
               "~#bitrate": 220, "date": "99", "~#rating": 0.3,
               "originaldate": "2002-01-01", "~#filesize": 202}),
-    Fakesong({"~filename": fsnative(u"fake3.mp3"),
+    Fakesong({"~filename": fsnative("/fake3.mp3"),
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
               "~#bitrate": 60, "date": "33", "~#rating": 0.5,
               "tracknumber": "4/6", "discnumber": "1/2"})
@@ -660,12 +660,35 @@ class TXPSFBackedPlaylist(TFileBackedPlaylist):
     def test_write(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            pl.extend([fsnative(u"xf0xf0")])
+            pl.extend([fsnative("xf0xf0")])
             pl.write()
 
             assert exists(pl.path), "File doesn't exist"
             root = ElementTree().parse(pl.path)
-            assert root.tag == 'playlist'
-            tracks = root.findall(".//track")
-            assert len(tracks) == 4, "Hmm found %s" % tracks
-            assert tracks[-1].find('location').text == "xf0xf0"
+            assert root.tag == '{http://xspf.org/ns/0/}playlist'
+            tracks = root.findall(".//track", namespaces={'': XSPF_NS})
+            assert len(tracks) == len(NUMERIC_SONGS) + 1, "Hmm found %s" % tracks
+            # Should now write compliant local URLs
+            assert tracks[-1].find('location',
+                                   namespaces={'': XSPF_NS}).text == "file://xf0xf0"
+
+    def test_load_legacy_format(self):
+        playlist_fn = "old"
+        songs_lib = FileLibrary()
+        songs_lib.add(NUMERIC_SONGS)
+        old_pl = FileBackedPlaylist(self.temp, playlist_fn)
+        old_pl.extend(NUMERIC_SONGS)
+        pl = XSPFBackedPlaylist.from_playlist(old_pl, songs_lib=songs_lib, pl_lib=None)
+        assert {s("~filename") for s in pl.songs} == {s("~filename") for s in
+                                                      NUMERIC_SONGS}
+
+    def test_load_non_compliant_xspf(self):
+        songs_lib = FileLibrary()
+        test_filename = ("/music/Funk & Disco/"
+                         "Average White Band - Pickin' Up The Pieces/"
+                         "Average White Band - Your Love Is a Miracle.flac")
+        songs_lib.add([AudioFile({"~filename": test_filename})])
+        playlist_fn = "non-compliant.xspf"
+        path = str(Path(__file__).parent / "data")
+        pl = XSPFBackedPlaylist(path, playlist_fn, songs_lib=songs_lib, pl_lib=None)
+        assert {s("~filename") for s in pl.songs}, set(test_filename)
