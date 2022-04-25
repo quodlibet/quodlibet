@@ -104,7 +104,7 @@ class TFileLibrary(TLibrary):
     def test_move_root_gone_source_dir(self):
         # See #3967
         self.library.filename = "moving"
-        gone_root = Path("/gone")
+        gone_root = Path(normalize_path("/gone", True))
         new_root = Path(normalize_path(mkdtemp(), True))
         song = FakeAudioFile(str(gone_root / "in file.mp3"))
         assert Path(song("~dirname")) == gone_root, "test setup wrong"
