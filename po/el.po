@@ -193,7 +193,7 @@ msgstr "Εισήγαγε την τοποθεσία μιας ροής ήχου"
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
-#: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
@@ -219,7 +219,7 @@ msgstr "Α_νανέωση"
 
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
-#: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
@@ -769,12 +769,12 @@ msgstr "Προτιμήσεις Περιηγητή Λιστών Αναπαραγ�
 msgid "Playlist display"
 msgstr "Εμφάνιση Λιστών Αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/util.py:32
+#: quodlibet/browsers/playlists/util.py:34
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
 msgstr "Θέλετε σίγουρα να διαγραφεί η λίστα αναπαραγωγής '%s';"
 
-#: quodlibet/browsers/playlists/util.py:34
+#: quodlibet/browsers/playlists/util.py:36
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
@@ -782,16 +782,16 @@ msgstr ""
 "Οι πληροφορίες που αφορούν την επιλεγμένη λίστα αναπαραγωγής θα διαγραφούν "
 "χωρίς δυνατότητα ανάκτησης"
 
-#: quodlibet/browsers/playlists/util.py:48
-#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
+#: quodlibet/browsers/playlists/util.py:50
+#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:609
 msgid "New Playlist"
 msgstr "Νέα Λίστα Αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/util.py:49
+#: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
 msgstr "Εισάγετε όνομα για την νέα λίστα"
 
-#: quodlibet/browsers/playlists/util.py:85
+#: quodlibet/browsers/playlists/util.py:87
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -2509,7 +2509,7 @@ msgid ""
 "\n"
 "Ensures position in the current source is maintained so long as 'Only "
 "Seekable Sources' is off. Otherwise, playback is left stopped and must be "
-"restarted from the begining."
+"restarted from the beginning."
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:75

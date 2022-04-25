@@ -9,15 +9,11 @@ modulesets_dir = os.environ["QL_OSXBUNDLE_MODULESETS_DIR"]
 moduleset = ["quodlibet"]
 modules = []
 
-skip.append("libiconv")
+setup_sdk(target="10.13", sdk_version="native")
 
-setup_sdk(target="10.9", sdk_version="native")
+os.environ["GTLS_SYSTEM_CA_FILE"] = "/etc/ssl/cert.pem"
 
-os.environ["GTLS_SYSTEM_CA_FILE"] = os.path.join(
-    prefix, "lib/python3.8/site-packages/certifi/cacert.pem")
-
-os.environ["SSL_CERT_FILE"] = os.path.join(
-    prefix, "lib/python3.8/site-packages/certifi/cacert.pem")
+os.environ["SSL_CERT_FILE"] = "/etc/ssl/cert.pem"
 
 addpath("DYLD_FALLBACK_LIBRARY_PATH", "/usr/lib")
 

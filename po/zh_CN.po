@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-03-29 16:38+0000\n"
-"Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
+"PO-Revision-Date: 2022-04-08 02:08+0000\n"
+"Last-Translator: Pig Fang <g-plane@hotmail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -189,7 +189,7 @@ msgstr "输入音频源的位置："
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
-#: quodlibet/browsers/playlists/util.py:50 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
 #: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
@@ -215,7 +215,7 @@ msgstr "刷新(_F)"
 
 #: quodlibet/browsers/audiofeeds.py:442
 #: quodlibet/browsers/playlists/main.py:487
-#: quodlibet/browsers/playlists/util.py:36 quodlibet/qltk/delete.py:143
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
 msgid "_Delete"
@@ -754,27 +754,27 @@ msgstr "播放列表浏览器首选项"
 msgid "Playlist display"
 msgstr "播放列表展示"
 
-#: quodlibet/browsers/playlists/util.py:32
+#: quodlibet/browsers/playlists/util.py:34
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
 msgstr "确认删除播放列表 '%s' 吗？"
 
-#: quodlibet/browsers/playlists/util.py:34
+#: quodlibet/browsers/playlists/util.py:36
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
 msgstr "选中的播放列表即将被删除，并且无法复原。"
 
-#: quodlibet/browsers/playlists/util.py:48
-#: quodlibet/browsers/playlists/util.py:120 quodlibet/util/collection.py:609
+#: quodlibet/browsers/playlists/util.py:50
+#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:609
 msgid "New Playlist"
 msgstr "新播放列表"
 
-#: quodlibet/browsers/playlists/util.py:49
+#: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
 msgstr "输入新播放列表的名字："
 
-#: quodlibet/browsers/playlists/util.py:85
+#: quodlibet/browsers/playlists/util.py:87
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -804,15 +804,15 @@ msgstr "音轨列表(_T)"
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
 msgid "Soundcloud"
-msgstr "Souncloud"
+msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
-msgstr "Souncloud 浏览器"
+msgstr "Soundcloud 浏览器"
 
 #: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
-msgstr "Souncloud浏览器"
+msgstr "Soundcloud 浏览器"
 
 #: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
@@ -2398,7 +2398,7 @@ msgid ""
 "\n"
 "Ensures position in the current source is maintained so long as 'Only "
 "Seekable Sources' is off. Otherwise, playback is left stopped and must be "
-"restarted from the begining."
+"restarted from the beginning."
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:75
@@ -5892,7 +5892,7 @@ msgstr "开/关重复播放模式"
 
 #: quodlibet/qltk/pluginwin.py:38
 msgid "Events"
-msgstr ""
+msgstr "事件"
 
 #: quodlibet/qltk/pluginwin.py:39
 msgid "Play Order"
@@ -5920,11 +5920,11 @@ msgstr "插件错误"
 
 #: quodlibet/qltk/pluginwin.py:144
 msgid "Any state"
-msgstr ""
+msgstr "任意状态"
 
 #: quodlibet/qltk/pluginwin.py:146
 msgid "Enabled"
-msgstr "启用"
+msgstr "已启用"
 
 #: quodlibet/qltk/pluginwin.py:147
 msgid "Disabled"
@@ -7461,7 +7461,7 @@ msgstr "书签"
 
 #: quodlibet/util/tags.py:171
 msgid "bitdepth"
-msgstr ""
+msgstr "位深"
 
 #: quodlibet/util/tags.py:174
 msgid "file format"
@@ -7473,7 +7473,7 @@ msgstr "播放列表"
 
 #: quodlibet/util/tags.py:178
 msgid "sample rate"
-msgstr ""
+msgstr "采样率"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
@@ -7506,7 +7506,7 @@ msgstr "编辑您的音频文件里的标签"
 #: data/io.github.quodlibet.QuodLibet.desktop.in:3
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:5
 msgid "Quod Libet"
-msgstr "退出 Libet"
+msgstr "Quod Libet"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:4
 msgid "Music Player"
