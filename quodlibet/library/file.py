@@ -338,7 +338,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
         if not old_path.is_dir():
-            raise ValueError(f"Source {old_path!r} is not a directory")
+            print_w(f"Source {old_path!r} dir doens't exist, assuming that's OK")
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
         print_d(f"{self._name}: checking entire library for {old_path!r}")
