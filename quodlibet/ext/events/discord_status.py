@@ -26,6 +26,7 @@ QL_LARGE_IMAGE = "io-github-quodlibet-quodlibet"
 
 VERSION = "1.0"
 
+
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
     PLUGIN_NAME = _("Discord Status Message")
