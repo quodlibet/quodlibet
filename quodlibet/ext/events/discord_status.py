@@ -14,18 +14,24 @@ from quodlibet import config
 
 from gi.repository import Gtk
 
-from pypresence import Presence, InvalidID as PyPresenceInvalidID
+try:
+    from pypresence import Presence, InvalidID
+except ImportError:
+    from quodlibet.plugins import MissingModulePluginException
+    raise MissingModulePluginException("pypresence")
 
 # The below resources are from/uploaded-to the Discord Application portal.
 QL_DISCORD_RP_ID = '974521025356242984'
 QL_LARGE_IMAGE = "io-github-quodlibet-quodlibet"
 
+VERSION = "1.0"
 
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
     PLUGIN_NAME = _("Discord Status Message")
     PLUGIN_DESC = _("Change your Discord status message according to what "
                     "you're currently listening to.")
+    VERSION = VERSION
 
     c_rp_line1 = __name__ + "_rp_line1"
     c_rp_line2 = __name__ + "_rp_line2"
@@ -55,7 +61,7 @@ class DiscordStatusMessage(EventPlugin):
             try:
                 self.discordrp.update(details=details, state=state,
                                 large_image=QL_LARGE_IMAGE)
-            except PyPresenceInvalidID:
+            except InvalidID:
                 # XXX Discord was closed?
                 self.discordrp = None
 
