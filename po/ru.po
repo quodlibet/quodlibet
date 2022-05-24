@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-11-05 03:34+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2022-04-24 13:09+0000\n"
+"Last-Translator: Alexander <dexat@live.ru>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.12.1-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -452,11 +452,11 @@ msgstr "Введите адрес интернет-радиостанции:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
-msgstr ""
+msgstr "Электронная"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Хип-хоп / Рэп"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Oldies"
@@ -464,15 +464,15 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:392
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:393
 msgid "Japanese"
-msgstr ""
+msgstr "Японская"
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Indian"
-msgstr ""
+msgstr "Индийская"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Religious"
@@ -492,7 +492,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:401
 msgid "Latin"
-msgstr ""
+msgstr "Латинская"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
@@ -500,7 +500,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Talk / News"
-msgstr ""
+msgstr "Разговоры / Новости"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Ambient"
@@ -508,23 +508,23 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:405
 msgid "Jazz"
-msgstr ""
+msgstr "Джаз"
 
 #: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr "Classic"
+msgstr "Классическая"
 
 #: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "Поп"
 
 #: quodlibet/browsers/iradio.py:408
 msgid "Alternative"
-msgstr ""
+msgstr "Альтернативая"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "Metal"
-msgstr ""
+msgstr "Металл"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Country"
@@ -536,11 +536,11 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Schlager"
-msgstr ""
+msgstr "Шлягер"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Funk"
-msgstr ""
+msgstr "Фанк"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Indie"
@@ -548,7 +548,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Blues"
-msgstr ""
+msgstr "Блюз"
 
 #: quodlibet/browsers/iradio.py:416
 msgid "Soul"
@@ -560,7 +560,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:418
 msgid "Punk"
-msgstr ""
+msgstr "Панк"
 
 #: quodlibet/browsers/iradio.py:419
 msgid "Reggaeton"
@@ -568,19 +568,19 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:421
 msgid "Slavic"
-msgstr ""
+msgstr "Славянская"
 
 #: quodlibet/browsers/iradio.py:423
 msgid "Greek"
-msgstr ""
+msgstr "Греческая"
 
 #: quodlibet/browsers/iradio.py:424
 msgid "Gothic"
-msgstr ""
+msgstr "Готика"
 
 #: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr ""
+msgstr "Рок"
 
 #: quodlibet/browsers/iradio.py:478
 msgid "Would you like to load a list of popular radio stations?"
@@ -617,7 +617,7 @@ msgstr "Без категории"
 
 #: quodlibet/browsers/iradio.py:838
 msgid "No stations found"
-msgstr "Станций не найдено"
+msgstr "Станции не найдены"
 
 #: quodlibet/browsers/iradio.py:839
 #, python-format
@@ -630,7 +630,7 @@ msgstr "Добавить нечего"
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
-msgstr "Все указанные станции уже в фонотеке."
+msgstr "Все перечисленные станции уже в вашей библиотеке."
 
 #: quodlibet/browsers/iradio.py:874
 msgid "Add to Favorites"
