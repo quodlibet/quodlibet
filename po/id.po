@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-04-04 00:09+0000\n"
-"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
+"PO-Revision-Date: 2022-05-02 17:11+0000\n"
+"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.12.1\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -1178,19 +1178,19 @@ msgstr ""
 
 #: quodlibet/ext/covers/discogs.py:29
 msgid "Downloads covers from Discogs."
-msgstr ""
+msgstr "Unduh sampul dari Discogs."
 
 #: quodlibet/ext/covers/lastfm.py:20
 msgid "Last.fm Cover Source"
-msgstr ""
+msgstr "Sumber Sampul Last.fm"
 
 #: quodlibet/ext/covers/lastfm.py:21
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr ""
+msgstr "Unduh sampul dari arsip sampul Last.fm."
 
 #: quodlibet/ext/covers/musicbrainz.py:21
 msgid "MusicBrainz Cover Source"
-msgstr ""
+msgstr "Sumber Sampul MusicBrainz"
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
@@ -1222,7 +1222,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "Tidak bisa menemukan 'Kanji Kana Simple Inverter' (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1542,24 +1542,24 @@ msgstr ""
 
 #: quodlibet/ext/events/bansheeimport.py:127
 msgid "Imports ratings and song statistics from Banshee."
-msgstr ""
+msgstr "Impor rating dan statistik lagu dari Banshee."
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr ""
+msgstr "_Jalur basis data:"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
 msgid "Start Import"
-msgstr ""
+msgstr "Mulai Impor"
 
 #: quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
-msgstr ""
+msgstr "Jam Alarm"
 
 #: quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
-msgstr ""
+msgstr "Bangunkan Anda dengan musik keras."
 
 #: quodlibet/ext/events/clock.py:119
 msgid "Lullaby"
@@ -1575,7 +1575,7 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:27
 msgid "Live"
-msgstr ""
+msgstr "Langsung"
 
 #: quodlibet/ext/events/equalizer.py:29
 msgid "Full Bass & Treble"
@@ -5371,41 +5371,41 @@ msgstr[1] ""
 
 #: quodlibet/qltk/delete.py:134 quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
-msgstr ""
+msgstr "_Pindahkan ke Tong Sampah"
 
 #: quodlibet/qltk/delete.py:152 quodlibet/qltk/delete.py:187
 #, python-format
 msgid "Moving %(current)d/%(total)d."
-msgstr ""
+msgstr "Memindahkan %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
 msgid "Unable to move to trash"
-msgstr ""
+msgstr "Tidak bisa memindahkan ke tong sampah"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 msgid "Moving one or more files to the trash failed."
-msgstr ""
+msgstr "Gagal memindahkan satu atau lebih berkas ke tong sampah."
 
 #: quodlibet/qltk/delete.py:216 quodlibet/qltk/delete.py:250
 #, python-format
 msgid "Deleting %(current)d/%(total)d."
-msgstr ""
+msgstr "Menghapus %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:236 quodlibet/qltk/delete.py:269
 msgid "Unable to delete files"
-msgstr ""
+msgstr "Tidak bisa menghapus berkas"
 
 #: quodlibet/qltk/delete.py:237 quodlibet/qltk/delete.py:270
 msgid "Deleting one or more files failed."
-msgstr ""
+msgstr "Gagal menghapus satu atau lebih berkas."
 
 #: quodlibet/qltk/download.py:36
 msgid "Browser"
-msgstr ""
+msgstr "Peramban"
 
 #: quodlibet/qltk/download.py:36
 msgid "Downloading files"
-msgstr ""
+msgstr "Mengunduh berkas"
 
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
@@ -6865,15 +6865,15 @@ msgstr[1] ""
 
 #: quodlibet/qltk/songsmenu.py:440
 msgid "successful"
-msgstr ""
+msgstr "berhasil"
 
 #: quodlibet/qltk/songsmenu.py:441
 msgid "failed"
-msgstr ""
+msgstr "gagal"
 
 #: quodlibet/qltk/songsmenu.py:444
 msgid "Downloads complete"
-msgstr ""
+msgstr "Selesai mengunduh"
 
 #: quodlibet/qltk/songsmenu.py:450
 msgid "Download {name!r} to"
@@ -6883,7 +6883,7 @@ msgstr[1] ""
 
 #: quodlibet/qltk/songsmenu.py:456
 msgid "Download here"
-msgstr ""
+msgstr "Unduh di sini"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
