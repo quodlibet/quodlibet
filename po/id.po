@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-05-02 17:11+0000\n"
-"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
+"PO-Revision-Date: 2022-05-19 00:18+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12.1\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -230,16 +230,20 @@ msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
 msgstr ""
+"%s tidak dapat ditambahkan. Server mungkin sedang down, atau lokasi mungkin "
+"bukan merupakan audio feed."
 
 #: quodlibet/browsers/audiofeeds.py:513
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
 msgstr ""
+"Backend audio saat ini tidak mendukung URL, browser Audio Feeds "
+"dinonaktifkan."
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
 msgid "Library Browser"
-msgstr ""
+msgstr "Peramban Perpustakaan"
 
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
@@ -248,37 +252,36 @@ msgstr ""
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d lagu"
 
 #: quodlibet/browsers/_base.py:402 quodlibet/browsers/_base.py:407
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
 #: quodlibet/util/__init__.py:575
 msgid "Invalid pattern"
-msgstr ""
+msgstr "Pola tidak valid"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
-msgstr ""
+msgstr "Koleksi Album"
 
 #: quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
-msgstr ""
+msgstr "Koleksi _Album"
 
 #: quodlibet/browsers/collection/models.py:24
 #, python-format
 msgid "Unknown %s"
-msgstr ""
+msgstr "Tidak diketahui %s"
 
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
 msgid "Multiple %s Values"
-msgstr ""
+msgstr "Beberapa Nilai %s"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
-msgstr ""
+msgstr "_Kustom"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -294,21 +297,21 @@ msgstr ""
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
-msgstr ""
+msgstr "_Hapus"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
 #: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:481
 msgid "Tag"
-msgstr ""
+msgstr "Tag"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "Gabung"
 
 #: quodlibet/browsers/collection/prefs.py:187
 msgid "Album Collection Preferences"
-msgstr ""
+msgstr "Preferensi Koleksi Album"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:247
@@ -317,7 +320,7 @@ msgstr ""
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_Terapkan"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
@@ -344,56 +347,56 @@ msgstr ""
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_Batal"
 
 #: quodlibet/browsers/covergrid/main.py:131
 msgid "Cover Grid"
-msgstr ""
+msgstr "Grid Cover"
 
 #: quodlibet/browsers/covergrid/main.py:132
 msgid "_Cover Grid"
-msgstr ""
+msgstr "_Grid Cover"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
 msgid "Cover Grid Preferences"
-msgstr ""
+msgstr "Preferensi Grid Cover"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
 msgid "Show album _text"
-msgstr ""
+msgstr "Tampilkan teks _album"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
 msgid "Show \"All Albums\" Item"
-msgstr ""
+msgstr "Tampilkan \"Semua Album\" Item"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
 msgid "Wide Mode"
-msgstr ""
+msgstr "Mode Lebar"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
 msgid "Cover Magnification"
-msgstr ""
+msgstr "Pembesaran Cover"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
-msgstr ""
+msgstr "File Sistem"
 
 #: quodlibet/browsers/filesystem.py:40
 msgid "_File System"
-msgstr ""
+msgstr "_File Sistem"
 
 #: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
 msgid "Unable to copy songs"
-msgstr ""
+msgstr "Tidak dapat menyalin lagu"
 
 #: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
 msgid "The files selected cannot be copied to other song lists or the queue."
-msgstr ""
+msgstr "File yang dipilih tidak dapat disalin ke daftar lagu lain atau antrean."
 
 #: quodlibet/browsers/filesystem.py:197
 msgid "_Add to Library"
-msgstr ""
+msgstr "_Tambahkan ke Perpustakaan"
 
 #: quodlibet/browsers/iradio.py:190
 #, python-format
