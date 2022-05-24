@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import _
+from quodlibet import _, app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
 from quodlibet import config
@@ -68,28 +68,61 @@ class DiscordStatusMessage(EventPlugin):
 
     def handle_play(self):
         if self.song:
-            print(self.song)
             details = Pattern(self.rp_line1) % self.song
             state = Pattern(self.rp_line2) % self.song
+
+            # The details and state fields must be atleast 2 characters.
+            if len(details) < 2:
+                details = None
+
+            if len(state) < 2:
+                state = None
+
             self.update_discordrp(details, state)
+
+    def handle_paused(self):
+        self.update_discordrp(details=_("Paused"))
+
+    def handle_unpaused(self):
+        if not self.song:
+            self.song = app.player.song
+        self.handle_play()
 
     def plugin_on_song_started(self, song):
         self.song = song
-        self.handle_play()
+        if not app.player.paused:
+            self.handle_play()
 
     def plugin_on_paused(self):
-        self.update_discordrp(details=_("Paused"))
+        self.handle_paused()
 
     def plugin_on_unpaused(self):
-        self.handle_play()
+        self.handle_unpaused()
+
+    def enabled(self):
+        if app.player.paused:
+            self.handle_paused()
+        else:
+            self.handle_unpaused()
+
+    def disabled(self):
+        if self.discordrp:
+            self.discordrp.clear()
+            self.discordrp.close()
+            self.discordrp = None
+            self.song = None
 
     def rp_line1_changed(self, entry):
         self.rp_line1 = entry.get_text()
         config.set('plugins', self.c_rp_line1, self.rp_line1)
+        if not app.player.paused:
+            self.handle_play()
 
     def rp_line2_changed(self, entry):
         self.rp_line2 = entry.get_text()
         config.set('plugins', self.c_rp_line2, self.rp_line2)
+        if not app.player.paused:
+            self.handle_play()
 
     def PluginPreferences(self, parent):
         vb = Gtk.VBox(spacing=6)
