@@ -76,7 +76,7 @@ msgstr "Сортировать _по…"
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Настройки"
@@ -230,7 +230,7 @@ msgid "_Refresh"
 msgstr "Об_новить"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
@@ -703,7 +703,7 @@ msgid "Equal pane width"
 msgstr "Равная ширина панелей"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Плейлисты"
 
@@ -711,42 +711,42 @@ msgstr "Плейлисты"
 msgid "_Playlists"
 msgstr "Пле_йлисты"
 
-#: quodlibet/browsers/playlists/main.py:171
+#: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
 msgstr "Удалить из плейли_ста"
 
-#: quodlibet/browsers/playlists/main.py:216
+#: quodlibet/browsers/playlists/main.py:213
 msgid "New"
 msgstr "Создать"
 
-#: quodlibet/browsers/playlists/main.py:220
+#: quodlibet/browsers/playlists/main.py:217
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Импортировать"
 
-#: quodlibet/browsers/playlists/main.py:442
+#: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
 msgstr "Не удалось импортировать плейлист"
 
-#: quodlibet/browsers/playlists/main.py:443
+#: quodlibet/browsers/playlists/main.py:440
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet может импортировать плейлисты только в форматах M3U/M3U8 и PLS."
 
-#: quodlibet/browsers/playlists/main.py:494
+#: quodlibet/browsers/playlists/main.py:489
 msgid "_Rename"
 msgstr "_Переименовать"
 
-#: quodlibet/browsers/playlists/main.py:592
+#: quodlibet/browsers/playlists/main.py:587
 msgid "Unable to rename playlist"
 msgstr "Не удалось переименовать плейлист"
 
-#: quodlibet/browsers/playlists/main.py:604
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr "Импортировать плейлист"
 
-#: quodlibet/browsers/playlists/main.py:604
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr "_Импортировать"
 
