@@ -351,8 +351,8 @@ class Playlist(Collection, abc.Iterable, HasKey):
             return ngettext(
                 "%(title)s and %(count)d more",
                 "%(title)s and %(count)d more",
-                len(songs) - 1) % ({'title': songs[0].comma("title"),
-                                    'count': len(songs) - 1})
+                len(songs) - 1) % ({"title": songs[0].comma("title"),
+                                    "count": len(songs) - 1})
 
     def __init__(self, name: str, songs_lib=None, pl_lib=None):
         super().__init__()
@@ -684,7 +684,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
 
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
-    _SAFER = {c: quote(c, safe='')
+    _SAFER = {c: quote(c, safe="")
               for c in ("\\/:*?\"<>|" if is_windows() else "\0/")}
 
     @classmethod
@@ -763,9 +763,8 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     @classmethod
     def name_for(cls, file_path: _fsnative) -> str:
         filename, ext = splitext(unescape_filename(file_path))
-        if not ext or ext.lower() != (".%s" % cls.EXT):
-            raise TypeError("XSPFs should end in '.%s', not '%s'"
-                            % (cls.EXT, ext))
+        if not ext or ext.lower() != f".{cls.EXT}":
+            raise TypeError(f"XSPFs should end in '{cls.EXT}', not {ext}")
         return filename
 
     def write(self):
@@ -793,7 +792,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         playlist.append(self._text_element("date", datetime.now().isoformat()))
         playlist.append(track_list)
         tree = ElementTree(playlist)
-        ET.register_namespace('', XSPF_NS)
+        ET.register_namespace("", XSPF_NS)
         path = self.path
         print_d(f"Writing {path !r}")
         tree.write(path, encoding="utf-8", xml_declaration=True)

@@ -662,7 +662,7 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
         shutil.rmtree(self.temp2)
 
     def path_for(self, name: str):
-        return os.path.join(self.temp, "%s.xspf" % (name,))
+        return os.path.join(self.temp, f"{name}.xspf")
 
     def test_write(self):
         with self.wrap("playlist") as pl:
