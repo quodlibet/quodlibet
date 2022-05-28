@@ -24,6 +24,8 @@ from quodlibet.formats._audio import (TAG_TO_SORT, NUMERIC_ZERO_DEFAULT,
                                       AudioFile, HasKey)
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
+from quodlibet.const import QL_NAMESPACE
+
 try:
     from collections import abc
 except ImportError:
@@ -677,6 +679,9 @@ class FileBackedPlaylist(Playlist):
 
 
 class XSPFBackedPlaylist(FileBackedPlaylist):
+    _VERSION: int = 2
+    """Persistence version"""
+
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
     _SAFER = {c: quote(c, safe='')
@@ -732,7 +737,6 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                     # TODO: process relative URIs too?
                     path = uri2fsn(path)
                 except ValueError:
-                    # print_d(f"Legacy location {path!r}")
                     pass
                 if path in library:
                     self._list.append(library[path])
@@ -784,6 +788,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 }
             track_list.append(self._element_from("track", track))
         playlist = Element("playlist", attrib={"version": "1", "xmlns": XSPF_NS})
+        playlist.append(self._version_tag())
         playlist.append(self._text_element("title", self.name))
         playlist.append(self._text_element("date", datetime.now().isoformat()))
         playlist.append(track_list)
@@ -795,6 +800,14 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         if self._last_fn != path:
             self._delete_file(self._last_fn)
             self._last_fn = path
+
+    @classmethod
+    def _version_tag(cls):
+        """Currently this isn't needed (version 2 is detected),
+        but it probably will be and easier to know than to guess"""
+        meta = Element("meta", attrib={"rel": f"{QL_NAMESPACE}/playlists/version"})
+        meta.text = str(cls._VERSION)
+        return meta
 
     @classmethod
     def _text_element(cls, name: str, value: Any) -> Element:
