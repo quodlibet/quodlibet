@@ -1,4 +1,5 @@
 # Copyright 2010,2012 Christoph Reiter <reiter.christoph@gmail.com>
+#           2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,8 +36,11 @@ from .mpris2 import MPRIS2
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
     PLUGIN_NAME = _("MPRIS D-Bus Support")
-    PLUGIN_DESC = _("Allows control of Quod Libet using the "
-                    "MPRIS 2 D-Bus Interface Specification.")
+    PLUGIN_DESC_MARKUP = _(
+        "Allows control of Quod Libet using the "
+        "<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> "
+        "D-Bus Interface Specification. "
+        "This allows various Linux desktop integrations (e.g. multimedia keys).")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
