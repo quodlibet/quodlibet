@@ -642,7 +642,7 @@ class TFileBackedPlaylist(TPlaylist):
         assert not lib.emitted, "Deleting again caused library signals"
 
 
-class TXPSFBackedPlaylist(TFileBackedPlaylist):
+class TXSPFBackedPlaylist(TFileBackedPlaylist):
     Playlist = XSPFBackedPlaylist
 
     def setUp(self):
