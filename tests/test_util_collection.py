@@ -27,15 +27,15 @@ from tests import TestCase, mkdtemp
 config.RATINGS = config.HardCodedRatingsPrefs()
 
 NUMERIC_SONGS = [
-    Fakesong({"~filename": fsnative("/fake1-\xf0.mp3"),
+    Fakesong({"~filename": fsnative("fake1-\xf0.mp3"),
               "~#length": 4, "~#added": 5, "~#lastplayed": 1,
               "~#bitrate": 200, "date": "100", "~#rating": 0.1,
               "originaldate": "2004-01-01", "~#filesize": 101}),
-    Fakesong({"~filename": fsnative("/fake2.mp3"),
+    Fakesong({"~filename": fsnative("fake2.mp3"),
               "~#length": 7, "~#added": 7, "~#lastplayed": 88,
               "~#bitrate": 220, "date": "99", "~#rating": 0.3,
               "originaldate": "2002-01-01", "~#filesize": 202}),
-    Fakesong({"~filename": fsnative("/fake3.mp3"),
+    Fakesong({"~filename": fsnative("fake3.mp3"),
               "~#length": 1, "~#added": 3, "~#lastplayed": 43,
               "~#bitrate": 60, "date": "33", "~#rating": 0.5,
               "tracknumber": "4/6", "discnumber": "1/2"})
@@ -562,7 +562,8 @@ class TFileBackedPlaylist(TPlaylist):
 
     def test_difficult_names(self):
         lib = FileLibrary("foobar")
-        lib.add(NUMERIC_SONGS)
+        tempdir = mkdtemp()
+        self.add_songs_in_temp_dir(lib, tempdir, NUMERIC_SONGS)
         name = "c:?\"problem?\" / foo* / 100% ə! COM"
         with self.wrap(name, lib) as pl:
             pl.extend(NUMERIC_SONGS)
@@ -570,6 +571,12 @@ class TFileBackedPlaylist(TPlaylist):
             assert pl.songs == NUMERIC_SONGS
             with self.wrap(name, lib) as pl2:
                 assert pl2.songs == NUMERIC_SONGS
+
+    def add_songs_in_temp_dir(self, lib, tempdir, songs):
+        for l in songs:
+            l["~filename"] = os.path.join(tempdir, l["~filename"])
+            l.sanitize()
+            lib.add([l])
 
     def test_symmetric(self):
         P = self.Playlist
