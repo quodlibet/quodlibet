@@ -719,7 +719,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 print_w(f"Using legacy namespace for import of {self.path}")
             elif root.tag == "{" + XSPF_NS + "}playlist":
                 # Try correct format first
-                ns_mapping = {'': XSPF_NS}
+                ns_mapping = {"": XSPF_NS}
             else:
                 raise ValueError(f"Unknown playlist root of {root.tag}")
             node = root.find("title", namespaces=ns_mapping)
@@ -730,9 +730,9 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 print_w(f"Playlist was named {node.text!r} in XML "
                         f"instead of {self.name!r} at {self.path!r}")
 
-            for node in tree.iterfind('.//track', namespaces=ns_mapping):
-                location = node.findtext('location', namespaces=ns_mapping).strip()
-                path = location.replace('\n', '').replace('\r', '')
+            for node in tree.iterfind(".//track", namespaces=ns_mapping):
+                location = node.findtext("location", namespaces=ns_mapping).strip()
+                path = location.replace("\n", "").replace("\r", "")
                 try:
                     # TODO: process relative URIs too?
                     path = uri2fsn(path)

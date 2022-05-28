@@ -673,9 +673,9 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
 
             assert exists(pl.path), "File doesn't exist"
             root = ElementTree().parse(pl.path)
-            assert root.tag == '{http://xspf.org/ns/0/}playlist'
-            tracks = root.findall(".//track", namespaces={'': XSPF_NS})
-            assert len(tracks) == len(NUMERIC_SONGS) + 1, "Hmm found %s" % tracks
+            assert root.tag == "{http://xspf.org/ns/0/}playlist"
+            tracks = root.findall(".//track", namespaces={"": XSPF_NS})
+            assert len(tracks) == len(NUMERIC_SONGS) + 1, f"Hmm found {tracks}"
             # Should now write compliant local URLs
             last_location = tracks[-1].find("location", namespaces={"": XSPF_NS}).text
             assert uri2fsn(last_location) == some_path
