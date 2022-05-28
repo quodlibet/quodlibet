@@ -66,6 +66,9 @@ class MinVersions:
 VERSION_TUPLE = Version("", 4, 6, -1)
 VERSION = str(VERSION_TUPLE)
 
+QL_NAMESPACE = "https://quodlibet.github.io"
+"""A namespace for registering things against e.g. XMLNS"""
+
 # entry point for the user guide / wiki
 _DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/latest"
 ONLINE_HELP = _DOCS_BASE_URL + "/guide/index.html"

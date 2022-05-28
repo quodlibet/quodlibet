@@ -1,6 +1,6 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2021 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@ import random
 from typing import Any
 from urllib.parse import quote
 
-from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative
+from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative, uri2fsn, fsn2uri
 
 from quodlibet import ngettext, _
 from quodlibet import util
@@ -24,6 +24,8 @@ from quodlibet.formats._audio import (TAG_TO_SORT, NUMERIC_ZERO_DEFAULT,
                                       AudioFile, HasKey)
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
+from quodlibet.const import QL_NAMESPACE
+
 try:
     from collections import abc
 except ImportError:
@@ -677,6 +679,9 @@ class FileBackedPlaylist(Playlist):
 
 
 class XSPFBackedPlaylist(FileBackedPlaylist):
+    _VERSION: int = 2
+    """Persistence version"""
+
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
     _SAFER = {c: quote(c, safe='')
@@ -707,13 +712,32 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         try:
             tree = ET.parse(self.path)
             # TODO: validate some top-level tag data
-            node = tree.find("title")
-            if self.name != node.text:
-                print_w("Playlist was named %r in XML instead of %r at %r"
-                        % (node.text, self.name, self.path))
-            for node in tree.iterfind('.//track'):
-                location = node.findtext('location').strip()
-                path = location.replace('\n', '').replace('\r', '')
+
+            root = tree.getroot()
+            if root.tag == "playlist":
+                ns_mapping = None
+                print_w(f"Using legacy namespace for import of {self.path}")
+            elif root.tag == "{" + XSPF_NS + "}playlist":
+                # Try correct format first
+                ns_mapping = {"": XSPF_NS}
+            else:
+                raise ValueError(f"Unknown playlist root of {root.tag}")
+            node = root.find("title", namespaces=ns_mapping)
+            if node is None:
+                print_w(f"No <title> found in {self.path} "
+                        f"(Got nodes: {[el.tag for el in root.iter()]})")
+            elif self.name != node.text:
+                print_w(f"Playlist was named {node.text!r} in XML "
+                        f"instead of {self.name!r} at {self.path!r}")
+
+            for node in tree.iterfind(".//track", namespaces=ns_mapping):
+                location = node.findtext("location", namespaces=ns_mapping).strip()
+                path = location.replace("\n", "").replace("\r", "")
+                try:
+                    # TODO: process relative URIs too?
+                    path = uri2fsn(path)
+                except ValueError:
+                    pass
                 if path in library:
                     self._list.append(library[path])
                 elif library and library.masked(path):
@@ -726,7 +750,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                             % (path, self.path, node_dump))
                     self._list.append(path)
                     library.mask(path)
-        except ET.ParseError as e:
+        except (ET.ParseError, ValueError) as e:
             print_w("Couldn't load %r (%s)" % (self.path, e))
 
     @classmethod
@@ -748,11 +772,14 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         track_list = Element("trackList")
         for song in self._list:
             if isinstance(song, str):
-                track = {"location": song}
+                track = {"location": fsn2uri(song)}
             else:
                 creator = self.CREATOR_PATTERN.format(song)
+                mbid = song("musicbrainz_trackid")
                 track = {
-                    "location": song("~filename"),
+                    "location": song("~uri"),
+                    "identifier": (f"https://musicbrainz.org/recording/{mbid}"
+                                   if mbid else None),
                     "title": song("title"),
                     "creator": creator,
                     "album": song("album"),
@@ -760,7 +787,8 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                     "duration": int(song("~#length") * 1000.)
                 }
             track_list.append(self._element_from("track", track))
-        playlist = Element("playlist", attrib={"version": "1"})
+        playlist = Element("playlist", attrib={"version": "1", "xmlns": XSPF_NS})
+        playlist.append(self._version_tag())
         playlist.append(self._text_element("title", self.name))
         playlist.append(self._text_element("date", datetime.now().isoformat()))
         playlist.append(track_list)
@@ -774,8 +802,16 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             self._last_fn = path
 
     @classmethod
+    def _version_tag(cls):
+        """Currently this isn't needed (version 2 is detected),
+        but it probably will be and easier to know than to guess"""
+        meta = Element("meta", attrib={"rel": f"{QL_NAMESPACE}/playlists/version"})
+        meta.text = str(cls._VERSION)
+        return meta
+
+    @classmethod
     def _text_element(cls, name: str, value: Any) -> Element:
-        el = Element("%s" % name)
+        el = Element(name)
         el.text = str(value)
         return el
 
