@@ -21,7 +21,7 @@ from quodlibet.util import format_rating
 from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
                                        FileBackedPlaylist, XSPFBackedPlaylist,
                                        XSPF_NS)
-from senf import fsnative
+from senf import fsnative, uri2fsn
 from tests import TestCase, mkdtemp
 
 config.RATINGS = config.HardCodedRatingsPrefs()
@@ -667,7 +667,8 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
     def test_write(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            pl.extend([fsnative("xf0xf0")])
+            some_path = fsnative(os.path.join(self.temp, "xf0xf0"))
+            pl.extend([some_path])
             pl.write()
 
             assert exists(pl.path), "File doesn't exist"
@@ -676,8 +677,8 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
             tracks = root.findall(".//track", namespaces={'': XSPF_NS})
             assert len(tracks) == len(NUMERIC_SONGS) + 1, "Hmm found %s" % tracks
             # Should now write compliant local URLs
-            assert tracks[-1].find('location',
-                                   namespaces={'': XSPF_NS}).text == "file://xf0xf0"
+            last_location = tracks[-1].find("location", namespaces={"": XSPF_NS}).text
+            assert uri2fsn(last_location) == some_path
 
     def test_load_legacy_format(self):
         playlist_fn = "old"
