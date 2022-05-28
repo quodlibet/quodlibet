@@ -680,17 +680,18 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
             last_location = tracks[-1].find("location", namespaces={"": XSPF_NS}).text
             assert uri2fsn(last_location) == some_path
 
-    def test_load_legacy_format(self):
+    def test_load_legacy_format_to_xspf(self):
         playlist_fn = "old"
         songs_lib = FileLibrary()
         songs_lib.add(NUMERIC_SONGS)
         old_pl = FileBackedPlaylist(self.temp, playlist_fn)
         old_pl.extend(NUMERIC_SONGS)
         pl = XSPFBackedPlaylist.from_playlist(old_pl, songs_lib=songs_lib, pl_lib=None)
-        assert {s("~filename") for s in pl.songs} == {s("~filename") for s in
-                                                      NUMERIC_SONGS}
+        expected_filenames = {s("~filename") for s in NUMERIC_SONGS}
+        assert {s("~filename") for s in pl.songs} == expected_filenames
 
-    def test_load_non_compliant_xspf(self):
+    def test_v1_load_non_compliant_xspf(self):
+        """See #3983"""
         songs_lib = FileLibrary()
         test_filename = ("/music/Funk & Disco/"
                          "Average White Band - Pickin' Up The Pieces/"
