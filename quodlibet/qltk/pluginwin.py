@@ -1,5 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2016-2020 Nick Boultbee
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,6 +30,7 @@ from quodlibet.qltk.views import HintedTreeView
 from quodlibet.qltk.window import UniqueWindow, PersistentWindowMixin
 from quodlibet.qltk.x import Align, Paned, Button, ScrolledWindow
 from quodlibet.util import connect_obj
+from quodlibet.util.string.filter import remove_diacritics
 
 PLUGIN_CATEGORIES = {
     _("Songs"): SongsMenuPlugin,
@@ -139,7 +141,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
         active = max(self.get_active(), 0)
         combo_store = self.get_model()
         combo_store.clear()
-        combo_store.append([_("All"), EnabledType.ALL])
+        combo_store.append([_("Any state"), EnabledType.ALL])
         combo_store.append(["", EnabledType.SEP])
         combo_store.append([_("Enabled"), EnabledType.EN])
         combo_store.append([_("Disabled"), EnabledType.DIS])
@@ -181,7 +183,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
         active = max(self.get_active(), 0)
         combo_store = self.get_model()
         combo_store.clear()
-        combo_store.append([_("All"), object])
+        combo_store.append([_("Any category"), object])
         combo_store.append(["", None])
         for name, cls in PLUGIN_CATEGORIES.items():
             combo_store.append([name, cls])
@@ -497,10 +499,12 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
                 return False
 
         def matches(text, filter_):
-            return all(p in text.lower() for p in filter_.lower().split())
+            return all(p in remove_diacritics(text.lower())
+                       for p in filter_.lower().split())
 
-        filter_ = entry.get_text()
+        filter_ = remove_diacritics(entry.get_text())
         return (matches(plugin.name, filter_) or
+                matches(plugin.id, filter_) or
                 matches((plugin.description or ""), filter_))
 
     def __destroy(self, *args):

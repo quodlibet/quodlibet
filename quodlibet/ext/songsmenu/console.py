@@ -127,7 +127,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
-        add_css(self, "* { background-color: white; padding: 6px; } ")
+        add_css(self, "scrolledwindow { padding: 6px; "
+                "background-color: white; background-color: @content_view_bg;}")
         self.view.modify_font(Pango.font_description_from_string('Monospace'))
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
@@ -173,8 +174,9 @@ class PythonConsole(Gtk.ScrolledWindow):
                         event_state == Gdk.ModifierType.CONTROL_MASK:
             self.destroy()
 
-        elif event.keyval == Gdk.KEY_Return and \
-                        event_state == Gdk.ModifierType.CONTROL_MASK:
+        elif event.keyval == Gdk.KEY_Return and (
+            event_state & (Gdk.ModifierType.CONTROL_MASK |
+                           Gdk.ModifierType.SHIFT_MASK)):
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -194,7 +196,9 @@ class PythonConsole(Gtk.ScrolledWindow):
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
                 buffer.insert(cur, line[spaces.start():spaces.end()])
-                cur = buffer.get_end_iter()
+            else:
+                buffer.insert(cur, "    ")
+            cur = buffer.get_end_iter()
 
             buffer.place_cursor(cur)
             GLib.idle_add(self.scroll_to_end)
@@ -211,7 +215,6 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             line = buffer.get_text(inp, cur, True)
             self.current_command = self.current_command + line + "\n"
-            self.history_add(line)
 
             # Make the line blue
             lin = buffer.get_iter_at_mark(lin_mark)
@@ -221,7 +224,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur_strip = self.current_command.rstrip()
 
             if (cur_strip.endswith(":") or
-                (self.current_command[-2:] != "\n\n" and self.block_command)):
+                (self.current_command[-2:].strip() != "" and self.block_command)):
                 # Unfinished block command
                 self.block_command = True
                 com_mark = "... "
@@ -229,6 +232,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 com_mark = "... "
             else:
                 # Eval the command
+                self.history_add(cur_strip)
                 self.__run(self.current_command)
                 self.current_command = ''
                 self.block_command = False
@@ -238,6 +242,39 @@ class PythonConsole(Gtk.ScrolledWindow):
             cur = buffer.get_end_iter()
             buffer.move_mark(lin_mark, cur)
             buffer.insert(cur, com_mark)
+            cur = buffer.get_end_iter()
+            buffer.move_mark(inp_mark, cur)
+
+            # Keep indentation of preceding line
+            if com_mark == "... ":
+                spaces = re.match(self.__spaces_pattern, line)
+                if spaces is not None:
+                    #cur = buffer.get_end_iter()
+                    buffer.insert(cur, line[spaces.start():spaces.end()])
+                if cur_strip.endswith(":"):
+                    #cur = buffer.get_end_iter()
+                    buffer.insert(cur, "    ")
+
+            buffer.place_cursor(cur)
+            GLib.idle_add(self.scroll_to_end)
+            return True
+
+        elif (event.keyval == Gdk.KEY_c and
+              event_state == Gdk.ModifierType.CONTROL_MASK):
+            # Get the marks
+            buffer = view.get_buffer()
+            lin_mark = buffer.get_mark("input-line")
+            inp_mark = buffer.get_mark("input")
+            cur = buffer.get_end_iter()
+
+            # New line
+            buffer.insert(cur, "\n")
+            com_mark = ">>> "
+            cur = buffer.get_end_iter()
+            buffer.move_mark(lin_mark, cur)
+            buffer.insert(cur, com_mark)
+
+            # Move marks
             cur = buffer.get_end_iter()
             buffer.move_mark(inp_mark, cur)
             buffer.place_cursor(cur)
@@ -276,11 +313,15 @@ class PythonConsole(Gtk.ScrolledWindow):
                 buffer.place_cursor(inp)
             return True
 
-        # completion - Ctrl+Space , Ctrl+Shift+Space
-        elif event.keyval == Gdk.KEY_space \
-                and (event_state ==
-                        (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
-                    or event_state == (Gdk.ModifierType.CONTROL_MASK)):
+        # completion - Tab, Shift+Tab, Ctrl+Space , Ctrl+Shift+Space
+        elif (event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_ISO_Left_Tab) or (
+            event.keyval == Gdk.KEY_space
+            and (
+                event_state == (Gdk.ModifierType.CONTROL_MASK |
+                                Gdk.ModifierType.SHIFT_MASK)
+                or event_state == (Gdk.ModifierType.CONTROL_MASK)
+            )
+        ):
             buffer = view.get_buffer()
 
             # get string to left of caret  inside command text-line
@@ -303,7 +344,8 @@ class PythonConsole(Gtk.ScrolledWindow):
             comp_items = self.get_completion_items(ids_str,
                                                    include_private=is_shift)
 
-            if comp_items:
+            choice = None
+            if len(comp_items) > 1:
                 # sort completions: case-insensitive,
                 # items starting with '_' - at the end
                 comp_items.sort(
@@ -312,14 +354,30 @@ class PythonConsole(Gtk.ScrolledWindow):
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
                 dialog.destroy()
+            elif len(comp_items) == 1:
+                # if current text is only suggestion, add a '.' if object
+                # has properties visible to autosuggestion
+                last = ids_str.split('.')[-1]
+                if last == comp_items[0][0]:
+                    next_comp_items = self.get_completion_items(
+                        ids_str + '.',
+                        include_private=is_shift
+                    )
+                    if next_comp_items:
+                        buffer.insert(ins, '.')
+                else:
+                    choice = 0
+            elif '\n' in self.current_command:
+                # if we're doing multi-line editing, tab should add 4 spaces
+                buffer.insert(ins, "    ")
 
-                if isinstance(choice, int) and choice >= 0:
-                    last = ids_str.split('.')[-1]
-                    insert_text = comp_items[choice][0]
-                    if last:  # cut off prefix, already present
-                        insert_text = insert_text[len(last):]
+            if isinstance(choice, int) and choice >= 0:
+                last = ids_str.split('.')[-1]
+                insert_text = comp_items[choice][0]
+                if last:  # cut off prefix, already present
+                    insert_text = insert_text[len(last):]
 
-                    buffer.insert(ins, insert_text)
+                buffer.insert(ins, insert_text)
 
             return True
 
@@ -504,7 +562,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         else:
             comp = get_comp(obj=None, pre=ids_str)
 
-        return comp
+        return comp or []
 
 
 class OutFile:

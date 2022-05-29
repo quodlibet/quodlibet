@@ -136,7 +136,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
             else:
                 removed.add(item)
 
-    def rebuild(self, paths, force=False, exclude=[], cofuncid=None):
+    def rebuild(self, paths, force=False, exclude=None, cofuncid=None):
         """Reload or remove songs if they have changed or been deleted.
 
         This generator rebuilds the library over the course of iteration.
@@ -201,7 +201,9 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         key = normalize_path(filename, True)
         return key in self._contents
 
-    def scan(self, paths, exclude=[], cofuncid=None):
+    def scan(self, paths: Iterable[fsnative],
+             exclude: Optional[Iterable[fsnative]] = None,
+             cofuncid=None):
 
         def need_yield(last_yield=[0]):
             current = time.time()
@@ -335,7 +337,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
         if not old_path.is_dir():
-            raise ValueError(f"Source {old_path!r} is not a directory")
+            print_w(f"Source {old_path!r} dir doens't exist, assuming that's OK")
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
         print_d(f"{self._name}: checking entire library for {old_path!r}")

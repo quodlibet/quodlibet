@@ -3,6 +3,7 @@ include HACKING
 include NEWS.rst
 include README.rst
 include po/*.po
+include po/*.pot
 include po/POTFILES.in
 include po/POTFILES.skip
 include quodlibet/images/Makefile
@@ -23,10 +24,12 @@ include data/README.rst
 include MANIFEST.in
 include quodlibet/packages/README.rst
 include *.py
+include *.yaml
+include *.toml
 include setup.cfg
 include pyproject.toml
 include poetry.lock
-recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css
+recursive-include docs *.py Makefile *.rst *.png *.ico *.svg *.css requirements.txt
 prune docs/_build_guide
 prune docs/_build_all
 prune docs/_rtd_theme*

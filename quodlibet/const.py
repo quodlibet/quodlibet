@@ -54,7 +54,7 @@ class Version(tuple):
 class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
-    PYTHON3 = Version("Python3", 3, 7)
+    PYTHON3 = Version("Python3", 3, 8)
     MUTAGEN = Version("Mutagen", 1, 34,
                       message="Use the Quod Libet unstable PPAs/repos to get a newer "
                               "mutagen version.")
@@ -63,8 +63,11 @@ class MinVersions:
     GSTREAMER = Version("GStreamer", 1, 8)
 
 
-VERSION_TUPLE = Version("", 4, 5, -1)
+VERSION_TUPLE = Version("", 4, 6, -1)
 VERSION = str(VERSION_TUPLE)
+
+QL_NAMESPACE = "https://quodlibet.github.io"
+"""A namespace for registering things against e.g. XMLNS"""
 
 # entry point for the user guide / wiki
 _DOCS_BASE_URL = "https://quodlibet.readthedocs.org/en/latest"
@@ -80,7 +83,7 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"Copyright 2004-2021"
+COPYRIGHT = u"Copyright 2004-2022"
 
 AUTHORS = sorted(u"""\
 Alexandre Passos

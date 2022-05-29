@@ -22,6 +22,7 @@ quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
 quodlibet/browsers/tracks.py
+quodlibet/browsers/soundcloud/library.py
 quodlibet/browsers/soundcloud/main.py
 quodlibet/browsers/soundcloud/util.py
 quodlibet/cli.py
@@ -173,6 +174,7 @@ quodlibet/qltk/chooser.py
 quodlibet/qltk/controls.py
 quodlibet/qltk/data_editors.py
 quodlibet/qltk/delete.py
+quodlibet/qltk/download.py
 quodlibet/qltk/edittags.py
 quodlibet/qltk/_editutils.py
 quodlibet/qltk/entry.py

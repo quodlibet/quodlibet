@@ -17,6 +17,7 @@ from quodlibet.browsers import Browser
 from quodlibet.qltk import Icons, Message
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.searchbar import SearchBarBox
+from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.x import Align, ScrolledWindow, WebImage
 from quodlibet.util import connect_destroy, DeferredSignal, website, enum, \
@@ -128,16 +129,18 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.pack_start(pane, True, True, 0)
         self.show()
 
+    def Menu(self, songs, library, items):
+        return SongsMenu(library, songs, download=True, items=items)
+
     @property
     def online(self):
         return self.api_client.online
 
     def _create_footer(self):
         hbox = Gtk.HBox()
-        button = Gtk.Button(always_show_image=True,
-                            relief=Gtk.ReliefStyle.NONE)
+        button = Gtk.Button(always_show_image=True, relief=Gtk.ReliefStyle.NONE)
         button.connect('clicked', lambda _: website(SITE_URL))
-        button.set_tooltip_text(_("Go to %s" % SITE_URL))
+        button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
         hbox.pack_start(button, True, True, 6)
         hbox.show_all()
@@ -302,7 +305,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         container.remove(self)
 
     def __changed(self, library, songs):
-        print_d("Updating view")
+        print_d(f"Updating view for {len(songs)} song(s)")
         self.activate()
 
     def __query_changed(self, bar, text, restore=False):
@@ -360,8 +363,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 search_it = it
             elif ((typ == FilterType.FAVORITES and text == "#(rating = 1.0)")
                     or (typ == FilterType.MINE and
-                         text == "soundcloud_user_id=%s"
-                         % self.api_client.user_id)):
+                        text == f"soundcloud_user_id={self.api_client.user_id}")):
                 self.view.get_selection().select_iter(it)
                 selected = True
                 break

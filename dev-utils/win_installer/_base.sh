@@ -69,6 +69,7 @@ function create_root {
     mkdir -p "${BUILD_ROOT}"/tmp
 
     build_pacman -Syu
+    build_pacman --noconfirm -S filesystem msys2-runtime
     build_pacman --noconfirm -S base
 }
 
@@ -127,8 +128,6 @@ flake8==3.9.2
         mingw-w64-"${ARCH}"-openh264 \
         mingw-w64-"${ARCH}"-zbar \
         mingw-w64-"${ARCH}"-gsl
-
-    build_pacman --noconfirm -Rdds mingw-w64-"${ARCH}"-python2 || true
 
     build_pacman -S --noconfirm mingw-w64-"${ARCH}"-python3-setuptools
 }

@@ -5,12 +5,16 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import config
+from gi.repository import GLib
+
+from quodlibet import config, _
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery
+from quodlibet.formats import AudioFile
 from quodlibet.formats.remote import RemoteFile
 from quodlibet.library import SongLibrary
 from quodlibet.library.base import K
-from quodlibet.util import cached_property, print_exc
+from quodlibet.qltk.notif import Task
+from quodlibet.util import cached_property, print_exc, copool
 from quodlibet.util.dprint import print_d, print_w
 from senf import fsnative
 
@@ -23,9 +27,13 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         self.client = client
         self._sids = [
             self.client.connect('songs-received', self._on_songs_received),
+            self.client.connect('stream-uri-received', self._on_stream_uri_received),
             self.client.connect('comments-received', self._on_comments_received)
         ]
         self._psid = None
+        # Keep track of async-changed songs for bulk signalling
+        self._dirty = set()
+        GLib.timeout_add(2000, self._on_tick)
         if player:
             self.player = player
             self._psid = self.player.connect('song-started', self.__song_started)
@@ -58,15 +66,36 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
     def rename(self, song, newname, changed=None):
         raise TypeError("Can't rename Soundcloud files")
 
+    def _get_stream_urls(self, songs):
+        # Pre-cache. It's horrible, but at least you can play things immediately
+        with Task(_("Soundcloud"), "Pre-fetching stream URLs") as task:
+            total = len(songs)
+            for i, song in enumerate(songs):
+                # Only update ones without streaming URLs
+                # TODO: But yes these will time out...
+                if "~uri" not in song or "api.soundcloud.com" in song["~uri"]:
+                    self.client.get_stream_url(song)
+                task.update(i / total)
+                yield
+
     def _on_songs_received(self, client, songs):
-        new = self.add(songs)
-        print_d("Got %d songs (%d new)." % (len(songs), len(new)))
-        for song in new:
-            # Pre-cache. It's horrible, but at least you can play things immediately
-            self.client.get_stream_url(song)
-        # We've already emitted "added" above
-        updated = set(songs) - set(new)
-        self.emit('changed', updated)
+        print_d(f"Got {len(songs)} songs")
+        self.add(songs)
+        # Can't have multiple requests cancel each other's copools
+        funcid = hash("".join(s["~uri"] for s in songs))
+        # Rate limit a little to avoid 429s
+        copool.add(self._get_stream_urls, songs, timeout=100, funcid=funcid)
+
+    def _on_stream_uri_received(self, client, song: AudioFile, uri: str):
+        # URI isn't the key in this SoundcloudFile, so this is OK
+        song["~uri"] = uri
+        self._dirty.add(song)
+
+    def _on_tick(self) -> bool:
+        if self._dirty:
+            self.changed(self._dirty)
+            self._dirty.clear()
+        return True
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):

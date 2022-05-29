@@ -488,5 +488,19 @@ class TPlaylistMux(TestCase):
         self.next()
         self.assertTrue(self.pl.sourced)
 
+    def test_queue_preserved_when_setexplicit_rejected(self):
+        class TestOrder(Order):
+            def set_explicit(self, playlist, iter):
+                return None
+
+        self.pl.set(range(10, 20))
+        self.pl.order = TestOrder()
+        self.q.set(range(10))
+        self.mux.go_to(self.q[0].iter, source=self.q)
+        self.assertTrue(self.q.sourced)
+        self.mux.go_to(self.pl[0].iter, explicit=True, source=self.pl)
+        self.assertTrue(self.q.sourced)
+        self.assertEqual(self.mux.current, self.q[0][0])
+
     def tearDown(self):
         self.p.destroy()

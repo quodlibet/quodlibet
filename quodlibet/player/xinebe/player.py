@@ -300,8 +300,8 @@ class XinePlaylistPlayer(BasePlayer):
         # seekable might change if we change to None, so notify just in case
         self.notify("seekable")
 
-    def setup(self, playlist, song, seek_pos):
-        super().setup(playlist, song, seek_pos)
+    def setup(self, playlist, song, seek_pos, explicit=True):
+        super().setup(playlist, song, seek_pos, explicit=explicit)
         # xine's declining to seek so soon after startup; try again in 100ms
         if seek_pos:
             GLib.timeout_add(100, self.seek, seek_pos)

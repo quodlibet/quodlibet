@@ -1,5 +1,5 @@
 # Copyright 2004-2017 Joe Wreschnig, Michael Urman, Iñigo Serna, Christoph Reiter
-#           2013-2021 Nick Boultbee
+#           2013-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 import re
+from typing import Iterable
 
 from senf import fsn2bytes, bytes2fsn, fsnative, expanduser
 
@@ -87,16 +88,12 @@ def set_scan_dirs(dirs):
     config.setbytes("settings", "scan", fsn2bytes(joined, "utf-8"))
 
 
-def get_exclude_dirs():
-    """Returns a list of paths which should be ignored during scanning
-
-    Returns:
-        list
-    """
+def get_exclude_dirs() -> Iterable[fsnative]:
+    """:return: a list of paths which should be ignored during scanning"""
 
     paths = split_scan_dirs(
         bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
-    return [expanduser(p) for p in paths]
+    return [expanduser(p) for p in paths]  # type: ignore
 
 
 def scan_library(library, force):

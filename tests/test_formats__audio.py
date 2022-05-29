@@ -163,7 +163,7 @@ class TAudioFile(TestCase):
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
         assert self.quux("title") == \
-            "%s [Unknown]" % fsn2text(self.quux("~basename"))
+            "%s [untitled Unknown Audio File]" % fsn2text(self.quux("~basename"))
 
         self.failUnlessEqual(bar_1_1("~#disc"), 1)
         self.failUnlessEqual(bar_1_2("~#disc"), 1)
@@ -736,6 +736,27 @@ class TAudioFile(TestCase):
                              ["B, The", "C, The", "A, The"])
         self.failUnlessEqual(q.list("~peoplesort:roles"),
             ["B, The (Guitar)", "C, The (Performance)", "A, The (Vocals)"])
+
+    def test_blank_tag_handling_comma(self):
+        q = AudioFile([("title", "A\n"),
+                       ("artists", "A\n\nB\n")])
+        self.failUnlessEqual(q.comma("artists"), "A, B")
+        self.failUnlessEqual(q.comma("~title~version"), "A")
+
+    def test_blank_tag_handling_list(self):
+        q = AudioFile([("artist", "A\n\nB\n"),
+                       ("performer", ""),
+                       ("albumartist", "C")])
+        self.failUnlessEqual(q.list("performer"), [])
+        self.failUnlessEqual(q.list("~people"), ["A", "B", "C"])
+
+    def test_blank_tag_handling_list_sort(self):
+        q = AudioFile([("artist", "A\n\nB"),
+                       ("artistsort", "\n\nY")])
+        self.failUnlessEqual(q.list_sort("artist"), [("A", "A"), ("B", "Y")])
+        q = AudioFile([("artist", "A\n\nB"),
+                       ("artistsort", "X\nY")])
+        self.failUnlessEqual(q.list_sort("artist"), [("A", "X"), ("B", "B")])
 
     def test_to_dump(self):
         dump = bar_1_1.to_dump()

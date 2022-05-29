@@ -1,7 +1,8 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2020 Nick Boultbee
+#           2009-2022 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #           2018-2019 Peter Strulo
+#                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -178,6 +179,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # show "all albums" in covergrid view
         "covergrid_all": "1",
+
+        # Template to build the track title when title tag is missing
+        "missing_title_template": "<~basename> [untitled <~format>]",
     },
 
     # Kind of a dumping ground right now, should probably be
@@ -301,6 +305,11 @@ INITIAL: Dict[str, Dict[str, str]] = {
 
         # show all tags, or just "human-readable" ones
         "alltags": "true",
+
+        # Show multi-line tags
+        "show_multi_line_tags": "true",
+        # Which tags can be multi-line (comma-separated)
+        "multi_line_tags": "lyrics,comment",
 
         # Skip dialog to save or revert changes
         "auto_save_changes": "false",

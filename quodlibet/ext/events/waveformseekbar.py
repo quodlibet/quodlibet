@@ -1,5 +1,5 @@
 # Copyright 2016 0x1777
-#        2016-17 Nick Boultbee
+#        2016-22 Nick Boultbee
 #           2017 Didier Villevalois
 #           2017 Muges
 #           2017 Eyenseo
@@ -55,12 +55,9 @@ class WaveformSeekBar(Gtk.Box):
             child.show_all()
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
-        self._waveform_scale.connect('size-allocate',
-                                     self._update_redraw_interval)
-        self._waveform_scale.connect('motion-notify-event',
-                                     self._on_mouse_hover)
-        self._waveform_scale.connect('leave-notify-event',
-                                     self._on_mouse_leave)
+        self._waveform_scale.connect('size-allocate', self._update_redraw_interval)
+        self._waveform_scale.connect('motion-notify-event', self._on_mouse_hover)
+        self._waveform_scale.connect('leave-notify-event', self._on_mouse_leave)
 
         self._label_tracker = TimeTracker(player)
         self._label_tracker.connect('tick', self._on_tick_label, player)
@@ -151,7 +148,6 @@ class WaveformSeekBar(Gtk.Box):
             # Update the waveform with the new data
             self._rms_vals = self._new_rms_vals
             self._waveform_scale.reset(self._rms_vals)
-            self._waveform_scale.set_placeholder(False)
             self._update_redraw_interval()
 
             # Clear temporary reference to the waveform data
@@ -208,7 +204,7 @@ class WaveformSeekBar(Gtk.Box):
             self._create_waveform(player.info, CONFIG.max_data_points)
             self._resize_labels(player.info)
 
-        self._waveform_scale.set_placeholder(True)
+        self._rms_vals.clear()
         self._update(player, True)
 
     def _on_song_ended(self, player, song, ended):
@@ -262,12 +258,12 @@ class WaveformSeekBar(Gtk.Box):
                 (x, y, w, h) = self._waveform_scale.compute_redraw_area()
                 self._waveform_scale.queue_draw_area(x, y, w, h)
         else:
-            self._waveform_scale.set_placeholder(True)
+            self._rms_vals.clear()
             self._waveform_scale.queue_draw()
 
     def _on_mouse_hover(self, _, event):
         def clamp(a, x, b):
-            '''Return x if a <= x <= b, else the a or b nearest to x.'''
+            """Return x if a <= x <= b, else the a or b nearest to x."""
             return min(max(x, a), b)
 
         width = self._waveform_scale.get_allocation().width
@@ -314,7 +310,6 @@ class WaveformScale(Gtk.EventBox):
 
     _rms_vals: List[int] = []
     _player = None
-    _placeholder = True
 
     def __init__(self, player):
         super().__init__()
@@ -322,22 +317,16 @@ class WaveformScale(Gtk.EventBox):
         self.set_size_request(40, 40)
         self.position = 0
         self._last_drawn_position = 0
-        self.override_background_color(
-            Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
+        self.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
 
         self.mouse_position = -1
         self._last_mouse_position = -1
-        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
-                        Gdk.EventMask.SCROLL_MASK)
-
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.SCROLL_MASK)
         self._seeking = False
 
     @property
     def width(self):
         return self.get_allocation().width
-
-    def set_placeholder(self, placeholder):
-        self._placeholder = placeholder
 
     def reset(self, rms_vals):
         self._rms_vals = rms_vals
@@ -353,13 +342,13 @@ class WaveformScale(Gtk.EventBox):
 
         # Compute the coarsest time interval for redraws
         length = self._player.info("~#length")
-        if (length == 0):
+        if length == 0:
             # The length is 0 for example when playing a stream from
             # Internet radio. If 0 is passed forward as the update interval,
             # UI will freeze as it will try to update continuously.
             # The update interval is usually 1 second so use that instead.
-            print_d("Length is zero for %s, using redraw interval of 1000 ms"
-                % self._player.info)
+            print_d(f"Length is zero for {self._player.info}, "
+                    "using redraw interval of 1000 ms")
             return 1000
         return length * 1000 / max(width * pixel_ratio, 1)
 
@@ -440,8 +429,7 @@ class WaveformScale(Gtk.EventBox):
                         fg_color = (hover_color if x < mouse_position
                                     else remaining_color)
                 else:
-                    fg_color = (elapsed_color if x < position_width
-                                else remaining_color)
+                    fg_color = elapsed_color if x < position_width else remaining_color
 
                 cr.set_source_rgba(*list(fg_color))
 
@@ -465,6 +453,7 @@ class WaveformScale(Gtk.EventBox):
         scale_factor = self.get_scale_factor()
         pixel_ratio = float(scale_factor)
         line_width = 1.0 / pixel_ratio
+        position_width = self.position * width * pixel_ratio
 
         half_height = self.compute_half_height(height, pixel_ratio)
         hw = line_width / 2.0
@@ -472,17 +461,21 @@ class WaveformScale(Gtk.EventBox):
         cr.set_line_width(line_width)
         cr.set_line_cap(cairo.LINE_CAP_ROUND)
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
-        cr.set_source_rgba(*list(color))
+        cr.set_source_rgba(*self.elapsed_color)
         cr.move_to(hw, half_height)
-        cr.line_to(width - hw, half_height)
+        cr.rectangle(hw, half_height - line_width, position_width - hw, line_width * 2)
+        cr.fill()
+
+        cr.set_source_rgba(*color)
+        cr.move_to(position_width, half_height)
+        cr.line_to(width, half_height)
         cr.stroke()
 
     @staticmethod
     def compute_half_height(height, pixel_ratio):
         # Ensure half_height is in the middle of a pixel (c.f. Cairo's FAQ)
         height_px = int(height * pixel_ratio)
-        half_height = \
-            (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
+        half_height = (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
         return half_height
 
     def do_draw(self, cr):
@@ -493,15 +486,9 @@ class WaveformScale(Gtk.EventBox):
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
         remaining_color = context.get_color(context.get_state())
+        remaining_color.alpha = 0.35
         context.restore()
-
-        elapsed_color = get_fg_highlight_color(self)
-
-        # Check if the user set a different elapsed color in the config
-        elapsed_color_config = CONFIG.elapsed_color
-        if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
-            elapsed_color = Gdk.RGBA()
-            elapsed_color.parse(elapsed_color_config)
+        elapsed_color = self.elapsed_color
 
         # Check if the user set a different remaining color in the config
         remaining_color_config = CONFIG.remaining_color
@@ -539,12 +526,21 @@ class WaveformScale(Gtk.EventBox):
         width = allocation.width
         height = allocation.height
 
-        if not self._placeholder and self._rms_vals:
+        if self._rms_vals:
             self.draw_waveform(cr, width, height, elapsed_color,
-                               hover_color, remaining_color,
-                               show_current_pos_config)
+                               hover_color, remaining_color, show_current_pos_config)
         else:
             self.draw_placeholder(cr, width, height, remaining_color)
+
+    @property
+    def elapsed_color(self):
+        # Check if the user set a different elapsed color in the config
+        elapsed_color_config = CONFIG.elapsed_color
+        if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
+            col = Gdk.RGBA()
+            col.parse(elapsed_color_config)
+            return col
+        return get_fg_highlight_color(self)
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -606,8 +602,7 @@ class WaveformSeekBarPlugin(EventPlugin):
     PLUGIN_NAME = _("Waveform Seek Bar")
     PLUGIN_ICON = Icons.GO_JUMP
     PLUGIN_CONFIG_SECTION = __name__
-    PLUGIN_DESC = _(
-        "∿ A seekbar in the shape of the waveform of the current song.")
+    PLUGIN_DESC = _("∿ A seekbar in the shape of the waveform of the current song.")
 
     def __init__(self):
         self._bar = None
@@ -700,13 +695,10 @@ class WaveformSeekBarPlugin(EventPlugin):
 
         hbox = Gtk.HBox(spacing=6)
         hbox.set_border_width(6)
-        label = Gtk.Label(label=_(
-            "Seek amount when scrolling (milliseconds):"
-        ))
+        label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
         hbox.pack_start(label, False, True, 0)
         seek_amount = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment(CONFIG.seek_amount,
-                                      0, 60000, 1000, 1000, 0)
+            adjustment=Gtk.Adjustment(CONFIG.seek_amount, 0, 60000, 1000, 1000, 0)
         )
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)

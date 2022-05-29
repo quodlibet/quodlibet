@@ -135,9 +135,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     # Changes affect aggregate caches etc
                     print_d(f"Refreshing view in {self} for {playlist}")
                     self._lists.row_changed(row.path, row.iter)
-                    if playlist == self._selected_playlist():
-                        print_d(f"Updating songslist for selected {playlist}")
-                        self.songs_selected(playlist.songs)
                 break
 
     def __removed(self, lib, playlists):
@@ -375,7 +372,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.pl_lib.recreate(playlist, [row[0] for row in smodel])
 
     def _selected_playlist(self) -> Optional[Playlist]:
-        """The currently selected playlist's name, or None if non selected"""
+        """The currently selected playlist's, or None if none selected"""
         model, iter = self.__selected_playlists()
         if not iter:
             return None
@@ -470,9 +467,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             return
         songs = list(model[itr][0])
         songs = [s for s in songs if isinstance(s, AudioFile)]
-        menu = SongsMenu(library, songs,
-                         playlists=False, remove=False,
-                         ratings=False)
+        menu = SongsMenu(library, songs, playlists=False, remove=False, ratings=False)
         menu.preseparate()
 
         def _remove(model, itr):
