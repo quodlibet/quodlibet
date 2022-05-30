@@ -4,7 +4,7 @@
 # (at your option) any later version.
 import shutil
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Set
 
 from _pytest.fixtures import fixture
 from gi.repository import Gio
@@ -41,6 +41,10 @@ class BasicMonitor:
         print_d(f"Got event {event_type} on {file_path}->{other_path}")
         self.changed.append((event_type, file_path))
 
+    @property
+    def event_types(self) -> Set[EventType]:
+        return {changed[0] for changed in self.changed}
+
 
 class TestMonitor:
     def test_gio_filemonitor(self, temp_dir):
@@ -50,9 +54,10 @@ class TestMonitor:
         some_file.write_text("test")
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
-        recent = monitor.changed.pop()
-        assert recent[0] == EventType.CHANGES_DONE_HINT
+        assert monitor.event_types == {EventType.CHANGES_DONE_HINT,
+                                       EventType.CHANGED, EventType.CREATED}
+        monitor.changed.clear()
         some_file.unlink()
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
-        assert monitor.changed.pop()[0] == EventType.DELETED
+        assert monitor.event_types == {EventType.DELETED}
