@@ -38,8 +38,7 @@ class BasicMonitor:
         file_path = main_file.get_path()
         other_path = (Path(normalize_path(other_file.get_path(), True))
                       if other_file else None)
-        print_d(f"Got event {event_type} on {file_path}-> {other_path}"
-                if other_path else "")
+        print_d(f"Got event {event_type} on {file_path}->{other_path}")
         self.changed.append((event_type, file_path))
 
 
