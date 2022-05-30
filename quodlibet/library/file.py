@@ -484,10 +484,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                         self.monitor_dir(other_path)
                 else:
                     print_w(f"Weird, I'm not monitoring {file_path}")
-            elif event_type in (EventType.CHANGED, EventType.ATTRIBUTE_CHANGED):
-                # Wait for hint
-                pass
-            elif event_type == EventType.CHANGES_DONE_HINT:
+            elif event_type == EventType.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
                     if not song.valid():
@@ -514,7 +511,10 @@ class WatchedFileLibraryMixin(FileLibrary):
                         actually_gone = self.remove(gone)
                         if gone != actually_gone:
                             print_w(f"Couldn't remove all: {gone - actually_gone}")
-
+            elif event_type == EventType.CHANGES_DONE_HINT:
+                # This seems to work fine on most Linux, but not on Windows / macOS
+                # Or at least, not in CI anyway.
+                pass
             else:
                 print_d(f"Unhandled event {event_type} on {file_path} ({other_path})")
         except Exception:
