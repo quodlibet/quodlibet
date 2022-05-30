@@ -4,6 +4,7 @@
 # (at your option) any later version.
 import shutil
 from pathlib import Path
+from time import sleep
 from typing import Optional, Set
 
 from _pytest.fixtures import fixture
@@ -58,6 +59,7 @@ class TestMonitor:
                                        EventType.CHANGED, EventType.CREATED}
         monitor.changed.clear()
         some_file.unlink()
+        sleep(0.5)
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
         assert monitor.event_types == {EventType.DELETED}
