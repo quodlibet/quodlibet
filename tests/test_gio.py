@@ -47,7 +47,7 @@ class BasicMonitor:
         return {changed[0] for changed in self.changed}
 
 
-class TestMonitor:
+class TestFileMonitor:
     def test_gio_filemonitor(self, temp_dir):
         path = temp_dir
         monitor = BasicMonitor(path)
@@ -55,8 +55,7 @@ class TestMonitor:
         some_file.write_text("test")
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
-        assert monitor.event_types == {EventType.CHANGES_DONE_HINT,
-                                       EventType.CHANGED, EventType.CREATED}
+        assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
         monitor.changed.clear()
         some_file.unlink()
         sleep(0.5)
