@@ -203,9 +203,10 @@ class TWatchedFileLibrary(TLibrary):
         with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
             assert self.temp_path in path.parents, "Copied test file incorrectly"
-            assert path.parent in self.library._monitors.keys(), "Not monitoring dir"
+            watch_dirs = self.library._monitors.keys()
+            assert path.parent in watch_dirs, "Not monitoring directory of new file"
             run_gtk_loop()
-            assert self.library, f"Nothing in library despite {self.library._monitors}"
+            assert self.library, f"Nothing in library despite watches on {watch_dirs}"
             assert str(path) in self.library, (f"{path!s} should have been added to "
                                                f"library [{self.fns}]")
             assert str(path) in {af("~filename") for af in self.added}
@@ -217,7 +218,7 @@ class TWatchedFileLibrary(TLibrary):
             sleep(0.5)
             assert path.exists()
             run_gtk_loop()
-            assert str(path) in self.library, f"New path {path!r} didn't get added"
+            assert str(path) in self.library, f"New path {path!s} didn't get added"
 
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
@@ -227,7 +228,7 @@ class TWatchedFileLibrary(TLibrary):
             run_gtk_loop()
             assert len(self.added) == 1
             assert not self.removed
-            assert str(new_path) in self.library, f"New path {new_path!r} not in " \
+            assert str(new_path) in self.library, f"New path {new_path} not in " \
                                                   f"library [{self.fns}]"
 
     @property
