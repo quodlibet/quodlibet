@@ -467,7 +467,9 @@ class WatchedFileLibraryMixin(FileLibrary):
                     print_d(f"Monitoring new directory {file_path}")
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
-                # For files, we wait for changes to finish.
+                elif not song:
+                    print_d(f"Auto-adding created file: {file_path}")
+                    self.add_filename(file_path)
             elif event_type == EventType.RENAMED:
                 if not other_path:
                     print_w(f"No destination found for rename of {file_path}")
