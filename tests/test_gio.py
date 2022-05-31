@@ -55,7 +55,8 @@ class TestFileMonitor:
         some_file.write_text("test")
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
-        assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
+        # assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
+        assert monitor.event_types >= {EventType.CREATED}
         monitor.changed.clear()
         some_file.unlink()
         sleep(0.5)
