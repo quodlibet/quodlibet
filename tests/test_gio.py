@@ -53,6 +53,7 @@ class TestFileMonitor:
         monitor = BasicMonitor(path)
         some_file = (path / "foo.txt")
         some_file.write_text("test")
+        sleep(0.5)
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
         # assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
@@ -62,4 +63,4 @@ class TestFileMonitor:
         sleep(0.5)
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
-        assert monitor.event_types == {EventType.DELETED}
+        assert monitor.event_types >= {EventType.DELETED}
