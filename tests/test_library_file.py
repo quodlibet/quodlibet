@@ -227,9 +227,9 @@ class TWatchedFileLibrary(TLibrary):
             assert not path.exists(), "test broken"
             run_gtk_loop()
             assert len(self.added) == 1
-            assert not self.removed
             assert str(new_path) in self.library, f"New path {new_path} not in " \
                                                   f"library [{self.fns}]"
+            assert not self.removed, "A file was removed"
 
     @property
     def fns(self) -> str:
