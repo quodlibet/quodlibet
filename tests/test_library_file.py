@@ -212,7 +212,7 @@ class TWatchedFileLibrary(TLibrary):
             assert str(path) in {af("~filename") for af in self.added}
 
     @pytest.mark.flaky(max_runs=3, min_passes=2)
-    def test_watched_moving(self):
+    def test_watched_moving_song(self):
         with temp_filename(dir=self.temp_path, suffix=".flac", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
             sleep(0.5)
@@ -224,9 +224,11 @@ class TWatchedFileLibrary(TLibrary):
             new_path = path.parent / f"copied-{path.name}"
             path.rename(new_path)
             sleep(0.5)
-            assert not path.exists(), "test broken"
+            assert not path.exists(), "test should have removed old file"
+            assert new_path.exists(), "test should have moved file"
             run_gtk_loop()
             assert len(self.added) == 1
+            assert self.added[0]("~filename") == str(new_path)
             assert str(new_path) in self.library, f"New path {new_path} not in " \
                                                   f"library [{self.fns}]"
             assert not self.removed, "A file was removed"
