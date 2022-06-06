@@ -455,8 +455,9 @@ class WatchedFileLibraryMixin(FileLibrary):
             file_path = main_file.get_path()
             if file_path is None:
                 return
+            file_path = normalize_path(file_path, True)
             song = self.get(file_path)
-            file_path = Path(normalize_path(file_path, True))
+            file_path = Path(file_path)
             other_path = (Path(normalize_path(other_file.get_path(), True))
                           if other_file else None)
             if self._DEBUG:
