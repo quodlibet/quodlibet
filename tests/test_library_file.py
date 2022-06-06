@@ -219,6 +219,9 @@ class TWatchedFileLibrary(TLibrary):
             assert path.exists()
             run_gtk_loop()
             assert str(path) in self.library, f"New path {path!s} didn't get added"
+            assert len(self.added) == 1
+            assert self.added[0]("~basename") == path.name
+            self.added.clear()
 
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
@@ -227,10 +230,33 @@ class TWatchedFileLibrary(TLibrary):
             assert not path.exists(), "test should have removed old file"
             assert new_path.exists(), "test should have moved file"
             run_gtk_loop()
-            assert len(self.added) == 1
-            assert self.added[0]("~filename") == str(new_path)
             assert str(new_path) in self.library, f"New path {new_path} not in " \
                                                   f"library [{self.fns}]"
+            assert not self.added, "A file was added not moved"
+            assert not self.removed, "A file was removed not moved"
+
+    def test_watched_moving_dir(self):
+        temp_dir = self.temp_path / "old"
+        temp_dir.mkdir(exist_ok=False)
+        sleep(0.2)
+        run_gtk_loop()
+        assert temp_dir in self.library._monitors
+        with temp_filename(dir=temp_dir, suffix=".flac", as_path=True) as path:
+            shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
+            sleep(0.2)
+            assert path.exists()
+            run_gtk_loop()
+
+            # Now move the directory...
+            new_dir = temp_dir.parent / "new"
+            temp_dir.rename(new_dir)
+            sleep(0.2)
+            assert new_dir.exists(), "test should have moved dir"
+            run_gtk_loop()
+            assert len(self.added) == 1
+            new_path = new_dir / path.name
+            msg = f"New path {new_path} not in library [{self.fns}]. Did move_root run?"
+            assert str(new_path) in self.library, msg
             assert not self.removed, "A file was removed"
 
     @property
