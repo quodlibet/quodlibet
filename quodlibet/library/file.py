@@ -336,13 +336,15 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
           4. Move audio files: old_root -> new_path
 
         """
+        # TODO: only move primary library
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
         if not old_path.is_dir():
-            print_w(f"Source {old_path!r} dir doens't exist, assuming that's OK")
+            print_w(f"Source dir {str(old_path)!r} doesn't exist, assuming that's OK",
+                    self._name)
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
-        print_d(f"{self._name}: checking entire library for {old_path!r}")
+        print_d(f"Checking entire library for {str(old_path)!s}", self._name)
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
@@ -359,7 +361,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     new_key = key.replace(str(old_path), str(new_path), 1)
                     new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
-                        print_w(f"Substitution failed for {key!r}")
+                        print_w(f"Substitution failed for {key!r}", self._name)
                     # We need to update ~filename and ~mountpoint
                     song.sanitize()
                     if write_files:
@@ -369,15 +371,17 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     else:
                         missing.add(song)
                 elif not (i % 1000):
-                    print_d(f"Not moved, for example: {key!r}")
+                    print_d(f"Not moved, for example: {key!r}", self._name)
                 if not i % 100:
                     yield
             self.changed(changed)
             if missing:
-                print_w(f"Couldn't find {len(list(missing))} files: {missing}")
+                print_w(f"Couldn't find {len(list(missing))} files: {missing}",
+                        self._name)
         yield
         self.save()
-        print_d(f"Done moving to {new_path!r}.", self._name)
+        print_d(f"Done moving {len(changed)} track(s) (of {total}) "
+                f"to {str(new_path)!r}.", self._name)
 
     def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
         """Updates the location of a song, without touching the file.
@@ -386,7 +390,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         """
         existed = True
         key = song.key
-        print_d(f"Moving {key!r} -> {new_path!r}")
+        print_d(f"Moving {key!r} -> {new_path!r}", self._name)
         try:
             del self._contents[key]  # type: ignore
         except KeyError:
@@ -402,7 +406,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                      for root in old_roots]
         total = len(self)
         removed = set()
-        print_d(f"Removing library roots {old_roots} from {self._name} library")
+        print_d(f"Removing library roots {old_roots}", self._name)
         yield
         with Task(_("Library"), _("Removing library files")) as task:
             for i, song in enumerate(list(self.values())):
@@ -416,7 +420,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         if removed:
             self.remove(removed)
         else:
-            print_d(f"No tracks in {old_roots} to remove from {self._name}")
+            print_d(f"No tracks in {old_roots} to remove", self._name)
 
 
 EventType = Gio.FileMonitorEvent
@@ -442,14 +446,14 @@ class WatchedFileLibraryMixin(FileLibrary):
             try:
                 monitor = f.monitor_directory(Gio.FileMonitorFlags.WATCH_MOVES, None)
             except GLib.GError as e:
-                print_w(f"Couldn't watch {path} ({e})")
+                print_w(f"Couldn't watch {path} ({e})", self._name)
                 monitor = None
             if not monitor:
                 return
             handler_id = monitor.connect("changed", self.__file_changed)
             # Don't destroy references - http://stackoverflow.com/q/4535227
             self._monitors[path] = (monitor, handler_id)
-            print_d(f"Monitoring {path!s}")
+            print_d(f"Monitoring {path!s}", self._name)
 
     def __file_changed(self, _monitor, main_file: Gio.File,
                        other_file: Optional[Gio.File],
@@ -470,24 +474,26 @@ class WatchedFileLibraryMixin(FileLibrary):
                           if other_file else None)
             if self._DEBUG:
                 print_d(f"Got event {event_type} on {file_path}"
-                        + (f"-> {other_path}" if other_path else ""))
+                        + (f"-> {other_path}" if other_path else ""), self._name)
             if event_type == EventType.CREATED:
                 if file_path.is_dir():
-                    print_d(f"Monitoring new directory {file_path}")
+                    print_d(f"Monitoring new directory {file_path}", self._name)
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
                 elif not song:
-                    print_d(f"Auto-adding created file: {file_path}")
+                    print_d(f"Auto-adding created file: {file_path}", self._name)
                     self.add_filename(file_path)
             elif event_type == EventType.RENAMED:
                 if not other_path:
-                    print_w(f"No destination found for rename of {file_path}")
+                    print_w(f"No destination found for rename of {file_path}",
+                            self._name)
                 if song:
-                    print_d(f"Moving {file_path} to {other_path}...")
+                    print_d(f"Moving {file_path} to {other_path}...", self._name)
                     self.move_song(song, text2fsn(str(other_path)))  # type:ignore
                 elif self.is_monitored_dir(file_path):
                     if self.librarian:
-                        print_d(f"Moving tracks from {file_path} -> {other_path}...")
+                        print_d(f"Moving tracks from {file_path} -> {other_path}...",
+                                self._name)
                         copool.add(self.librarian.move_root,
                                    str(file_path), str(other_path),
                                    write_files=False,
@@ -496,18 +502,18 @@ class WatchedFileLibraryMixin(FileLibrary):
                     if other_path:
                         self.monitor_dir(other_path)
                 else:
-                    print_w(f"Weird, I'm not monitoring {file_path}")
+                    print_w(f"Weird, I'm not monitoring {file_path}", self._name)
             elif event_type == EventType.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
                     if not song.valid():
                         self.reload(song)
                 else:
-                    print_d(f"Auto-adding new file: {file_path}")
+                    print_d(f"Auto-adding new file: {file_path}", self._name)
                     self.add_filename(file_path)
             elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
                 if song:
-                    print_d(f"...so deleting {file_path}")
+                    print_d(f"...so deleting {file_path}", self._name)
                     self.reload(song)
                 else:
                     # either not a song, or a song that was renamed by QL
@@ -520,16 +526,15 @@ class WatchedFileLibraryMixin(FileLibrary):
                         if file_path in Path(key).parents:
                             gone.add(song)
                     if gone:
-                        print_d(f"Removing {len(gone)} contained songs in {file_path}")
+                        print_d(f"Removing {len(gone)} contained songs in {file_path}",
+                                self._name)
                         actually_gone = self.remove(gone)
                         if gone != actually_gone:
-                            print_w(f"Couldn't remove all: {gone - actually_gone}")
-            elif event_type == EventType.CHANGES_DONE_HINT:
-                # This seems to work fine on most Linux, but not on Windows / macOS
-                # Or at least, not in CI anyway.
-                pass
+                            print_w(f"Couldn't remove all: {gone - actually_gone}",
+                                    self._name)
             else:
-                print_d(f"Unhandled event {event_type} on {file_path} ({other_path})")
+                print_d(f"Unhandled event {event_type} on {file_path} ({other_path})",
+                        self._name)
         except Exception:
             print_w("Failed to run file monitor callback", self._name)
             print_exc()
@@ -542,13 +547,13 @@ class WatchedFileLibraryMixin(FileLibrary):
 
         monitor, handler_id = self._monitors.get(path, (None, None))
         if not monitor:
-            print_d(f"Couldn't find path {path} in active monitors")
+            print_d(f"Couldn't find path {path} in active monitors", self._name)
             return
         monitor.disconnect(handler_id)
         del self._monitors[path]
 
     def start_watching(self, paths: Iterable[fsnative]):
-        print_d(f"Setting up file watches for {type(self)} on {paths}...")
+        print_d(f"Setting up file watches on {paths}...", self._name)
         exclude_dirs = [e for e in get_exclude_dirs() if e]
 
         def watching_producer():
