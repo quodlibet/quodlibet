@@ -16,6 +16,12 @@ class Fake(int):
     def __init__(self, _):
         self.key = int(self)
 
+    def keys(self):
+        return []
+
+    def get(self, tag, default=None):
+        return default
+
 
 def Frange(*args):
     return list(map(Fake, range(*args)))

@@ -159,6 +159,9 @@ class TWatchedFileLibrary(TLibrary):
         app.library.destroy()
         self.library.librarian = librarian
         app.library = self.library
+        self.library.filename = "watching"
+        librarian.register(self.library, "main")
+        assert self.library.librarian.libraries
 
     def test_test_setup(self):
         assert self.temp_path.is_dir()
@@ -246,15 +249,19 @@ class TWatchedFileLibrary(TLibrary):
             sleep(0.2)
             assert path.exists()
             run_gtk_loop()
+            assert len(self.added) == 1
+            self.added.clear()
+            assert self.library
 
             # Now move the directory...
             new_dir = temp_dir.parent / "new"
             temp_dir.rename(new_dir)
+            assert new_dir.is_dir(), "test should have moved to new dir"
             sleep(0.2)
-            assert new_dir.exists(), "test should have moved dir"
             run_gtk_loop()
-            assert len(self.added) == 1
+
             new_path = new_dir / path.name
+            assert new_path.is_file()
             msg = f"New path {new_path} not in library [{self.fns}]. Did move_root run?"
             assert str(new_path) in self.library, msg
             assert not self.removed, "A file was removed"
