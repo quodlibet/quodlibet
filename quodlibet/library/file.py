@@ -322,8 +322,10 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         self._masked.pop(mount_point, {})
 
-    def move_root(self, old_root: str, new_root: fsnative) \
-        -> Generator[None, None, None]:
+    def move_root(self,
+                  old_root: str,
+                  new_root: fsnative,
+                  write_files: bool = True) -> Generator[None, None, None]:
         """
         Move the root for all songs in a given (scan) directory.
 
@@ -360,7 +362,8 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                         print_w(f"Substitution failed for {key!r}")
                     # We need to update ~filename and ~mountpoint
                     song.sanitize()
-                    song.write()
+                    if write_files:
+                        song.write()
                     if self.move_song(song, new_key):
                         changed.add(song)
                     else:
@@ -451,6 +454,11 @@ class WatchedFileLibraryMixin(FileLibrary):
     def __file_changed(self, _monitor, main_file: Gio.File,
                        other_file: Optional[Gio.File],
                        event_type: Gio.FileMonitorEvent) -> None:
+        if event_type == EventType.CHANGES_DONE_HINT:
+            # This seems to work fine on most Linux, but not on Windows / macOS
+            # Or at least, not in CI anyway.
+            # So shortcut the whole thing
+            return
         try:
             file_path = main_file.get_path()
             if file_path is None:
@@ -481,7 +489,9 @@ class WatchedFileLibraryMixin(FileLibrary):
                     if self.librarian:
                         print_d(f"Moving tracks from {file_path} -> {other_path}...")
                         copool.add(self.librarian.move_root,
-                                   str(file_path), str(other_path), write_files=False)
+                                   str(file_path), str(other_path),
+                                   write_files=False,
+                                   priority=GLib.PRIORITY_DEFAULT)
                     self.unmonitor_dir(file_path)
                     if other_path:
                         self.monitor_dir(other_path)

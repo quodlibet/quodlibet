@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#      2012-2021 Nick Boultbee
+#      2012-2022 Nick Boultbee
 #           2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -140,13 +140,13 @@ class Librarian(GObject.GObject):
             from_.handler_unblock(self.__signals[from_][1])
             to.handler_unblock(self.__signals[to][0])
 
-    def move_root(self, old_root: fsnative, new_root: fsnative) -> Generator:
+    def move_root(self, old_root: fsnative, new_root: fsnative, **kwargs) -> Generator:
         if old_root == new_root:
             print_d("Not moving to same root")
             return
         for library in self.libraries.values():
             if hasattr(library, "move_root"):
-                yield from library.move_root(old_root, new_root)
+                yield from library.move_root(old_root, new_root, **kwargs)
 
     def remove_roots(self, old_roots: Iterable[fsnative]) -> Generator:
         if not old_roots:
