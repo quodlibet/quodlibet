@@ -214,7 +214,6 @@ class TWatchedFileLibrary(TLibrary):
                                                f"library [{self.fns}]")
             assert str(path) in {af("~filename") for af in self.added}
 
-    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_watched_moving_song(self):
         with temp_filename(dir=self.temp_path, suffix=".flac", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
@@ -249,6 +248,7 @@ class TWatchedFileLibrary(TLibrary):
             sleep(0.2)
             assert path.exists()
             run_gtk_loop()
+            assert str(path) in self.library, f"New path {path!s} didn't get added"
             assert len(self.added) == 1
             self.added.clear()
             assert self.library
