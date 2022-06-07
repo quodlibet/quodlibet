@@ -218,7 +218,7 @@ class TWatchedFileLibrary(TLibrary):
     def test_watched_moving_song(self):
         with temp_filename(dir=self.temp_path, suffix=".flac", as_path=True) as path:
             shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
-            sleep(0.5)
+            sleep(0.2)
             assert path.exists()
             run_gtk_loop()
             assert str(path) in self.library, f"New path {path!s} didn't get added"
@@ -229,7 +229,7 @@ class TWatchedFileLibrary(TLibrary):
             # Now move it...
             new_path = path.parent / f"copied-{path.name}"
             path.rename(new_path)
-            sleep(0.5)
+            sleep(0.2)
             assert not path.exists(), "test should have removed old file"
             assert new_path.exists(), "test should have moved file"
             run_gtk_loop()
