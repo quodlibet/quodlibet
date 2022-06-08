@@ -4,7 +4,7 @@
 # (at your option) any later version.
 import shutil
 from pathlib import Path
-from time import sleep
+from time import sleep, time
 from typing import Optional, Set
 
 from _pytest.fixtures import fixture
@@ -14,6 +14,7 @@ from quodlibet import print_d
 from quodlibet.library.file import EventType
 from quodlibet.util.path import normalize_path
 from tests import mkdtemp, run_gtk_loop
+from tests.helper import temp_filename
 
 
 @fixture
@@ -48,7 +49,7 @@ class BasicMonitor:
 
 
 class TestFileMonitor:
-    def test_gio_filemonitor(self, temp_dir):
+    def test_create_delete(self, temp_dir: Path):
         path = temp_dir
         monitor = BasicMonitor(path)
         some_file = (path / "foo.txt")
@@ -64,3 +65,19 @@ class TestFileMonitor:
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
         assert monitor.event_types >= {EventType.DELETED}
+
+    def test_move(self, temp_dir: Path):
+        monitor = BasicMonitor(temp_dir)
+        with temp_filename(dir=temp_dir, suffix=".txt", as_path=True) as path:
+            path.write_text("test\n")
+            sleep(0.2)
+            run_gtk_loop()
+            assert monitor.changed, "No events after creation"
+            monitor.changed.clear()
+
+            new_name = f"new-{time()}.txt"
+            path.rename(path.parent / new_name)
+            sleep(0.2)
+            run_gtk_loop()
+            assert monitor.changed
+            assert monitor.event_types == {EventType.RENAMED}
