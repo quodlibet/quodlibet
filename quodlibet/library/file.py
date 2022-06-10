@@ -17,7 +17,7 @@ from quodlibet.qltk.notif import Task
 from quodlibet.util import copool, print_exc
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import ismount, unexpand, normalize_path
-from senf import fsn2text, fsnative, text2fsn
+from senf import fsn2text, fsnative
 
 
 class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
