@@ -489,7 +489,8 @@ class WatchedFileLibraryMixin(FileLibrary):
                             self._name)
                 if song:
                     print_d(f"Moving {file_path} to {other_path}...", self._name)
-                    self.move_song(song, text2fsn(str(other_path)))  # type:ignore
+                    if self.move_song(song, str(other_path)):  # type:ignore
+                        print_w(f"Song {file_path} has gone")
                 elif self.is_monitored_dir(file_path):
                     if self.librarian:
                         print_d(f"Moving tracks from {file_path} -> {other_path}...",

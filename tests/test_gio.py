@@ -80,4 +80,4 @@ class TestFileMonitor:
             sleep(0.2)
             run_gtk_loop()
             assert monitor.changed
-            assert monitor.event_types == {EventType.RENAMED}
+            assert monitor.event_types == {EventType.RENAMED}, f"Got {monitor.changed}"
