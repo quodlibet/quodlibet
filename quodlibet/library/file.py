@@ -477,7 +477,6 @@ class WatchedFileLibraryMixin(FileLibrary):
                         + (f"-> {other_path}" if other_path else ""), self._name)
             if event_type == EventType.CREATED:
                 if file_path.is_dir():
-                    print_d(f"Monitoring new directory {file_path}", self._name)
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
                 elif not song:
@@ -503,7 +502,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                     if other_path:
                         self.monitor_dir(other_path)
                 else:
-                    print_w(f"Weird, I'm not monitoring {file_path}", self._name)
+                    print_w(f"I don't know what to do with {file_path}", self._name)
             elif event_type == EventType.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
@@ -536,9 +535,11 @@ class WatchedFileLibraryMixin(FileLibrary):
             else:
                 print_d(f"Unhandled event {event_type} on {file_path} ({other_path})",
                         self._name)
+                return
         except Exception:
             print_w("Failed to run file monitor callback", self._name)
             print_exc()
+        print_d(f"Finished handling {event_type}", self._name)
 
     def is_monitored_dir(self, path: Path) -> bool:
         return path in self._monitors

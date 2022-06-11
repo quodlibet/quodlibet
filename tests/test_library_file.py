@@ -9,7 +9,7 @@ from time import sleep
 
 import pytest as pytest
 
-from quodlibet import config, app
+from quodlibet import config, app, print_d
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.library import get_exclude_dirs
@@ -226,14 +226,15 @@ class TWatchedFileLibrary(TLibrary):
             self.added.clear()
 
             # Now move it...
-            new_path = path.parent / f"copied-{path.name}"
+            new_path = path.parent / f"moved-{path.name}"
             path.rename(new_path)
             sleep(0.2)
             assert not path.exists(), "test should have removed old file"
-            assert new_path.exists(), "test should have moved file"
+            assert new_path.exists(), "test should have renamed file"
+            print_d(f"New test file at {new_path}")
             run_gtk_loop()
-            assert str(new_path) in self.library, f"New path {new_path} not in " \
-                                                  f"library [{self.fns}]"
+            p = normalize_path(str(new_path), True)
+            assert p in self.library, f"New path {new_path} not in library [{self.fns}]"
             assert not self.added, "A file was added not moved"
             assert not self.removed, "A file was removed not moved"
 
