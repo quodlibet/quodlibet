@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-04-04 00:09+0000\n"
+"PO-Revision-Date: 2022-05-19 00:18+0000\n"
 "Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -67,7 +67,7 @@ msgstr "Urut _berdasarkan…"
 #: quodlibet/browsers/albums/main.py:257
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:673 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferensi"
@@ -213,7 +213,7 @@ msgid "_Refresh"
 msgstr "_Segarkan"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
@@ -230,16 +230,20 @@ msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
 msgstr ""
+"%s tidak dapat ditambahkan. Server mungkin sedang down, atau lokasi mungkin "
+"bukan merupakan audio feed."
 
 #: quodlibet/browsers/audiofeeds.py:513
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
 msgstr ""
+"Backend audio saat ini tidak mendukung URL, browser Audio Feeds "
+"dinonaktifkan."
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
 msgid "Library Browser"
-msgstr ""
+msgstr "Peramban Perpustakaan"
 
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
@@ -248,37 +252,36 @@ msgstr ""
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d lagu"
 
 #: quodlibet/browsers/_base.py:402 quodlibet/browsers/_base.py:407
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
 #: quodlibet/util/__init__.py:575
 msgid "Invalid pattern"
-msgstr ""
+msgstr "Pola tidak valid"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
-msgstr ""
+msgstr "Koleksi Album"
 
 #: quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
-msgstr ""
+msgstr "Koleksi _Album"
 
 #: quodlibet/browsers/collection/models.py:24
 #, python-format
 msgid "Unknown %s"
-msgstr ""
+msgstr "Tidak diketahui %s"
 
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
 msgid "Multiple %s Values"
-msgstr ""
+msgstr "Beberapa Nilai %s"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
-msgstr ""
+msgstr "_Kustom"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -294,21 +297,21 @@ msgstr ""
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
-msgstr ""
+msgstr "_Hapus"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
 #: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:481
 msgid "Tag"
-msgstr ""
+msgstr "Tag"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "Gabung"
 
 #: quodlibet/browsers/collection/prefs.py:187
 msgid "Album Collection Preferences"
-msgstr ""
+msgstr "Preferensi Koleksi Album"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:247
@@ -317,7 +320,7 @@ msgstr ""
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_Terapkan"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
@@ -344,56 +347,56 @@ msgstr ""
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_Batal"
 
 #: quodlibet/browsers/covergrid/main.py:131
 msgid "Cover Grid"
-msgstr ""
+msgstr "Grid Cover"
 
 #: quodlibet/browsers/covergrid/main.py:132
 msgid "_Cover Grid"
-msgstr ""
+msgstr "_Grid Cover"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
 msgid "Cover Grid Preferences"
-msgstr ""
+msgstr "Preferensi Grid Cover"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
 msgid "Show album _text"
-msgstr ""
+msgstr "Tampilkan teks _album"
 
 #: quodlibet/browsers/covergrid/prefs.py:71
 msgid "Show \"All Albums\" Item"
-msgstr ""
+msgstr "Tampilkan \"Semua Album\" Item"
 
 #: quodlibet/browsers/covergrid/prefs.py:82
 msgid "Wide Mode"
-msgstr ""
+msgstr "Mode Lebar"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
 msgid "Cover Magnification"
-msgstr ""
+msgstr "Pembesaran Cover"
 
 #: quodlibet/browsers/filesystem.py:39
 msgid "File System"
-msgstr ""
+msgstr "File Sistem"
 
 #: quodlibet/browsers/filesystem.py:40
 msgid "_File System"
-msgstr ""
+msgstr "_File Sistem"
 
 #: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
 msgid "Unable to copy songs"
-msgstr ""
+msgstr "Tidak dapat menyalin lagu"
 
 #: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
 msgid "The files selected cannot be copied to other song lists or the queue."
-msgstr ""
+msgstr "File yang dipilih tidak dapat disalin ke daftar lagu lain atau antrean."
 
 #: quodlibet/browsers/filesystem.py:197
 msgid "_Add to Library"
-msgstr ""
+msgstr "_Tambahkan ke Perpustakaan"
 
 #: quodlibet/browsers/iradio.py:190
 #, python-format
@@ -674,7 +677,7 @@ msgid "Equal pane width"
 msgstr ""
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:603 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr ""
 
@@ -682,41 +685,41 @@ msgstr ""
 msgid "_Playlists"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:171
+#: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:216
+#: quodlibet/browsers/playlists/main.py:213
 msgid "New"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:220
+#: quodlibet/browsers/playlists/main.py:217
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:442
+#: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:443
+#: quodlibet/browsers/playlists/main.py:440
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:494
+#: quodlibet/browsers/playlists/main.py:489
 msgid "_Rename"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:592
+#: quodlibet/browsers/playlists/main.py:587
 msgid "Unable to rename playlist"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:604
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:604
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr ""
 
@@ -1178,19 +1181,19 @@ msgstr ""
 
 #: quodlibet/ext/covers/discogs.py:29
 msgid "Downloads covers from Discogs."
-msgstr ""
+msgstr "Unduh sampul dari Discogs."
 
 #: quodlibet/ext/covers/lastfm.py:20
 msgid "Last.fm Cover Source"
-msgstr ""
+msgstr "Sumber Sampul Last.fm"
 
 #: quodlibet/ext/covers/lastfm.py:21
 msgid "Downloads covers from Last.fm's cover art archive."
-msgstr ""
+msgstr "Unduh sampul dari arsip sampul Last.fm."
 
 #: quodlibet/ext/covers/musicbrainz.py:21
 msgid "MusicBrainz Cover Source"
-msgstr ""
+msgstr "Sumber Sampul MusicBrainz"
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
@@ -1222,7 +1225,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "Tidak bisa menemukan 'Kanji Kana Simple Inverter' (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1542,24 +1545,24 @@ msgstr ""
 
 #: quodlibet/ext/events/bansheeimport.py:127
 msgid "Imports ratings and song statistics from Banshee."
-msgstr ""
+msgstr "Impor rating dan statistik lagu dari Banshee."
 
 #: quodlibet/ext/events/bansheeimport.py:136
 msgid "_Database path:"
-msgstr ""
+msgstr "_Jalur basis data:"
 
 #: quodlibet/ext/events/bansheeimport.py:164
 #: quodlibet/ext/events/rbimport.py:132
 msgid "Start Import"
-msgstr ""
+msgstr "Mulai Impor"
 
 #: quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
-msgstr ""
+msgstr "Jam Alarm"
 
 #: quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
-msgstr ""
+msgstr "Bangunkan Anda dengan musik keras."
 
 #: quodlibet/ext/events/clock.py:119
 msgid "Lullaby"
@@ -1575,7 +1578,7 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:27
 msgid "Live"
-msgstr ""
+msgstr "Langsung"
 
 #: quodlibet/ext/events/equalizer.py:29
 msgid "Full Bass & Treble"
@@ -5371,41 +5374,41 @@ msgstr[1] ""
 
 #: quodlibet/qltk/delete.py:134 quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
-msgstr ""
+msgstr "_Pindahkan ke Tong Sampah"
 
 #: quodlibet/qltk/delete.py:152 quodlibet/qltk/delete.py:187
 #, python-format
 msgid "Moving %(current)d/%(total)d."
-msgstr ""
+msgstr "Memindahkan %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
 msgid "Unable to move to trash"
-msgstr ""
+msgstr "Tidak bisa memindahkan ke tong sampah"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 msgid "Moving one or more files to the trash failed."
-msgstr ""
+msgstr "Gagal memindahkan satu atau lebih berkas ke tong sampah."
 
 #: quodlibet/qltk/delete.py:216 quodlibet/qltk/delete.py:250
 #, python-format
 msgid "Deleting %(current)d/%(total)d."
-msgstr ""
+msgstr "Menghapus %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:236 quodlibet/qltk/delete.py:269
 msgid "Unable to delete files"
-msgstr ""
+msgstr "Tidak bisa menghapus berkas"
 
 #: quodlibet/qltk/delete.py:237 quodlibet/qltk/delete.py:270
 msgid "Deleting one or more files failed."
-msgstr ""
+msgstr "Gagal menghapus satu atau lebih berkas."
 
 #: quodlibet/qltk/download.py:36
 msgid "Browser"
-msgstr ""
+msgstr "Peramban"
 
 #: quodlibet/qltk/download.py:36
 msgid "Downloading files"
-msgstr ""
+msgstr "Mengunduh berkas"
 
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
@@ -6865,15 +6868,15 @@ msgstr[1] ""
 
 #: quodlibet/qltk/songsmenu.py:440
 msgid "successful"
-msgstr ""
+msgstr "berhasil"
 
 #: quodlibet/qltk/songsmenu.py:441
 msgid "failed"
-msgstr ""
+msgstr "gagal"
 
 #: quodlibet/qltk/songsmenu.py:444
 msgid "Downloads complete"
-msgstr ""
+msgstr "Selesai mengunduh"
 
 #: quodlibet/qltk/songsmenu.py:450
 msgid "Download {name!r} to"
@@ -6883,7 +6886,7 @@ msgstr[1] ""
 
 #: quodlibet/qltk/songsmenu.py:456
 msgid "Download here"
-msgstr ""
+msgstr "Unduh di sini"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
