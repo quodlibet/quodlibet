@@ -16,6 +16,9 @@ from quodlibet.util.path import normalize_path
 from tests import mkdtemp, run_gtk_loop
 from tests.helper import temp_filename
 
+SLEEP_SECS = 0.2
+"""Enough for OS events / caches to filter through to GIO etc"""
+
 
 @fixture
 def temp_dir() -> Path:
@@ -54,14 +57,14 @@ class TestFileMonitor:
         monitor = BasicMonitor(path)
         some_file = (path / "foo.txt")
         some_file.write_text("test")
-        sleep(0.5)
+        sleep(SLEEP_SECS)
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
         # assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
         assert monitor.event_types >= {EventType.CREATED}
         monitor.changed.clear()
         some_file.unlink()
-        sleep(0.5)
+        sleep(SLEEP_SECS)
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
         assert monitor.event_types >= {EventType.DELETED}
@@ -70,14 +73,14 @@ class TestFileMonitor:
         monitor = BasicMonitor(temp_dir)
         with temp_filename(dir=temp_dir, suffix=".txt", as_path=True) as path:
             path.write_text("test\n")
-            sleep(0.2)
+            sleep(SLEEP_SECS)
             run_gtk_loop()
             assert monitor.changed, "No events after creation"
             monitor.changed.clear()
 
             new_name = f"new-{time()}.txt"
             path.rename(path.parent / new_name)
-            sleep(0.2)
+            sleep(SLEEP_SECS)
             run_gtk_loop()
             assert monitor.changed
-            assert monitor.event_types == {EventType.RENAMED}, f"Got {monitor.changed}"
+            assert monitor.event_types >= {EventType.RENAMED}, f"Got {monitor.changed}"
