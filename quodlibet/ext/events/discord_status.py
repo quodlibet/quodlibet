@@ -8,9 +8,9 @@
 # (at your option) any later version.
 
 from quodlibet import _, app
+from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
-from quodlibet import config
 
 from gi.repository import Gtk
 
@@ -26,6 +26,19 @@ QL_LARGE_IMAGE = "io-github-quodlibet-quodlibet"
 
 VERSION = "1.0"
 
+# Default Rich Presence status lines.
+CONFIG_DEFAULT_RP_LINE1 = "<artist> / <title>"
+CONFIG_DEFAULT_RP_LINE2 = "<album>"
+
+
+class DiscordStatusConfig:
+    _config = PluginConfig(__name__)
+
+    rp_line1 = ConfProp(_config, "rp_line1", CONFIG_DEFAULT_RP_LINE1)
+    rp_line2 = ConfProp(_config, "rp_line2", CONFIG_DEFAULT_RP_LINE2)
+
+discord_status_config = DiscordStatusConfig()
+
 
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
@@ -34,21 +47,9 @@ class DiscordStatusMessage(EventPlugin):
                     "you're currently listening to.")
     VERSION = VERSION
 
-    c_rp_line1 = __name__ + "_rp_line1"
-    c_rp_line2 = __name__ + "_rp_line2"
-
     def __init__(self):
         self.song = None
         self.discordrp = None
-
-        try:
-            self.rp_line1 = config.get('plugins', self.c_rp_line1)
-            self.rp_line2 = config.get('plugins', self.c_rp_line2)
-        except:
-            self.rp_line1 = "<artist> / <title>"
-            self.rp_line2 = "<album>"
-            config.set('plugins', self.c_rp_line1, self.rp_line1)
-            config.set('plugins', self.c_rp_line2, self.rp_line2)
 
     def update_discordrp(self, details, state=None):
         if not self.discordrp:
@@ -68,8 +69,8 @@ class DiscordStatusMessage(EventPlugin):
 
     def handle_play(self):
         if self.song:
-            details = Pattern(self.rp_line1) % self.song
-            state = Pattern(self.rp_line2) % self.song
+            details = Pattern(discord_status_config.rp_line1) % self.song
+            state = Pattern(discord_status_config.rp_line2) % self.song
 
             # The details and state fields must be atleast 2 characters.
             if len(details) < 2:
@@ -112,27 +113,25 @@ class DiscordStatusMessage(EventPlugin):
             self.discordrp = None
             self.song = None
 
-    def rp_line1_changed(self, entry):
-        self.rp_line1 = entry.get_text()
-        config.set('plugins', self.c_rp_line1, self.rp_line1)
-        if not app.player.paused:
-            self.handle_play()
-
-    def rp_line2_changed(self, entry):
-        self.rp_line2 = entry.get_text()
-        config.set('plugins', self.c_rp_line2, self.rp_line2)
-        if not app.player.paused:
-            self.handle_play()
-
     def PluginPreferences(self, parent):
         vb = Gtk.VBox(spacing=6)
+
+        def rp_line1_changed(entry):
+            discord_status_config.rp_line1 = entry.get_text()
+            if not app.player.paused:
+                self.handle_play()
+
+        def rp_line2_changed(entry):
+            discord_status_config.rp_line2 = entry.get_text()
+            if not app.player.paused:
+                self.handle_play()
 
         status_line1_box = Gtk.HBox(spacing=6)
         status_line1_box.set_border_width(3)
 
         status_line1 = Gtk.Entry()
-        status_line1.set_text(self.rp_line1)
-        status_line1.connect('changed', self.rp_line1_changed)
+        status_line1.set_text(discord_status_config.rp_line1)
+        status_line1.connect('changed', rp_line1_changed)
 
         status_line1_box.pack_start(Gtk.Label(label=_("Status Line #1")),
                                         False, True, 0)
@@ -142,8 +141,8 @@ class DiscordStatusMessage(EventPlugin):
         status_line2_box.set_border_width(3)
 
         status_line2 = Gtk.Entry()
-        status_line2.set_text(self.rp_line2)
-        status_line2.connect('changed', self.rp_line2_changed)
+        status_line2.set_text(discord_status_config.rp_line2)
+        status_line2.connect('changed', rp_line2_changed)
 
         status_line2_box.pack_start(Gtk.Label(label=_('Status Line #2')),
                                         False, True, 0)
