@@ -37,7 +37,7 @@ sphinx = '^4.4.0'
 sphinx_rtd_theme = '*'
 sphinx-autobuild = "^2021.3.14"
 xvfbwrapper = { version = "^0.2", platform = "linux" }
-flake8 = "^3.7.9"
+flake8 = "^3.9.2"
 coverage = { extras = ["toml"], version = "^6.3.2" }
 mypy = "^0.942"
 flaky = "^3.7.0"
