@@ -338,10 +338,11 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
         if not old_path.is_dir():
-            print_w(f"Source {old_path!r} dir doens't exist, assuming that's OK")
+            print_w(f"Source dir {str(old_path)!r} doesn't exist, assuming that's OK",
+                    self._name)
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
-        print_d(f"{self._name}: checking entire library for {old_path!r}")
+        print_d(f"Checking entire library for {str(old_path)!r}", self._name)
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
@@ -358,7 +359,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     new_key = key.replace(str(old_path), str(new_path), 1)
                     new_key = normalize_path(new_key, canonicalise=False)
                     if new_key == key:
-                        print_w(f"Substitution failed for {key!r}")
+                        print_w(f"Substitution failed for {key!r}", self._name)
                     # We need to update ~filename and ~mountpoint
                     song.sanitize()
                     song.write()
@@ -367,15 +368,17 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     else:
                         missing.add(song)
                 elif not (i % 1000):
-                    print_d(f"Not moved, for example: {key!r}")
+                    print_d(f"Not moved, for example: {key!r}", self._name)
                 if not i % 100:
                     yield
             self.changed(changed)
             if missing:
-                print_w(f"Couldn't find {len(list(missing))} files: {missing}")
+                print_w(f"Couldn't find {len(list(missing))} files: {missing}",
+                        self._name)
         yield
         self.save()
-        print_d(f"Done moving to {new_path!r}.")
+        print_d(f"Done moving {len(changed)} track(s) (of {total}) "
+                f"to {str(new_path)!r}.", self._name)
 
     def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
         """Updates the location of a song, without touching the file.
