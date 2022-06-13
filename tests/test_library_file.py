@@ -255,7 +255,7 @@ class TWatchedFileLibrary(TLibrary):
             assert self.library
 
             # Now move the directory...
-            new_dir = temp_dir.parent / "new"
+            new_dir = path.parent.parent / "new"
             temp_dir.rename(new_dir)
             assert new_dir.is_dir(), "test should have moved to new dir"
             sleep(0.2)
