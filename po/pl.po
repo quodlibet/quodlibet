@@ -116,7 +116,7 @@ msgstr "Utwory nieprzypisane do albumów"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:264
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -127,7 +127,7 @@ msgstr[2] "%d ścieżek"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:270
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -258,7 +258,7 @@ msgstr "Przeglądarka kolekcji"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:558
+#: quodlibet/util/collection.py:560
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -790,7 +790,7 @@ msgstr ""
 "mogą zostać przywrócone."
 
 #: quodlibet/browsers/playlists/util.py:50
-#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:609
+#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:611
 msgid "New Playlist"
 msgstr "Nowa lista odtwarzania"
 
@@ -1546,7 +1546,7 @@ msgid "_Update strategy:"
 msgstr "Zakt_ualizuj stacje"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
-#: quodlibet/ext/events/mpris/__init__.py:47
+#: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
@@ -1971,18 +1971,18 @@ msgstr "Połączenie"
 msgid "Tested Clients"
 msgstr "Przetestowani klienci"
 
-#: quodlibet/ext/events/mpris/__init__.py:37
+#: quodlibet/ext/events/mpris/__init__.py:38
 msgid "MPRIS D-Bus Support"
 msgstr "Obsługa MPRIS przez D-Bus"
 
-#: quodlibet/ext/events/mpris/__init__.py:38
+#: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the MPRIS 2 D-Bus Interface Specification."
+"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
+"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
+"various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Steruje programem Quod Libet za pomocą specyfikacji interfejsu MPRIS 2 "
-"usługi D-Bus."
 
-#: quodlibet/ext/events/mpris/__init__.py:44
+#: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
 msgid "Hide main window on close"
 msgstr "Ukrywanie głównego okna podczas zamykania"
@@ -6659,7 +6659,7 @@ msgstr "Skanowane katalogów"
 msgid "Hidden Songs"
 msgstr "Ukryte utwory"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:350
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7454,16 +7454,16 @@ msgstr ""
 "\n"
 "Proszę odwiedzić <a href='%(url)s'>stronę programu</a>"
 
-#: quodlibet/util/collection.py:345
+#: quodlibet/util/collection.py:347
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "Zaimportuj listę odtwarzania"
 
-#: quodlibet/util/collection.py:443
+#: quodlibet/util/collection.py:445
 msgid "Playlists must have a name"
 msgstr "Listy odtwarzania muszą mieć nazwy"
 
-#: quodlibet/util/collection.py:647
+#: quodlibet/util/collection.py:649
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Lista odtwarzania o nazwie %s już istnieje."
@@ -8012,6 +8012,13 @@ msgstr ""
 "na przeglądanie kolekcji muzyki, a także obsługę radia internetowego "
 "i kanałów dźwiękowych. Posiada on także niezwykle elastyczne funkcje "
 "modyfikowania etykiet metadanych i wyszukiwania."
+
+#~ msgid ""
+#~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "
+#~ "Specification."
+#~ msgstr ""
+#~ "Steruje programem Quod Libet za pomocą specyfikacji interfejsu MPRIS 2 "
+#~ "usługi D-Bus."
 
 #~ msgid "Searching for lyrics…"
 #~ msgstr "Wyszukiwanie tekstu utworu…"

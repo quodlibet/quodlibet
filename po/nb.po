@@ -115,7 +115,7 @@ msgstr "Låter uten album"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:264
+#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -125,7 +125,7 @@ msgstr[1] "%d spor"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:270
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -255,7 +255,7 @@ msgstr "Bibliotekutforsker"
 #: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:558
+#: quodlibet/util/collection.py:560
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -787,7 +787,7 @@ msgstr ""
 "All informasjon om valgt spilleliste blir slettet, og kan ikke gjenopprettes."
 
 #: quodlibet/browsers/playlists/util.py:50
-#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:609
+#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:611
 msgid "New Playlist"
 msgstr "Ny spilleliste"
 
@@ -1565,7 +1565,7 @@ msgid "_Update strategy:"
 msgstr "_Oppdater strategi:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:235
-#: quodlibet/ext/events/mpris/__init__.py:47
+#: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
@@ -1989,19 +1989,18 @@ msgstr "Tilkobling"
 msgid "Tested Clients"
 msgstr "Testede klienter"
 
-#: quodlibet/ext/events/mpris/__init__.py:37
+#: quodlibet/ext/events/mpris/__init__.py:38
 msgid "MPRIS D-Bus Support"
 msgstr "MPRIS D-Bus-støtte"
 
-#: quodlibet/ext/events/mpris/__init__.py:38
-#, fuzzy
+#: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the MPRIS 2 D-Bus Interface Specification."
+"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
+"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
+"various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Tillater styring av Quod Libet ved bruk av-D-Bus-grensesnitt-spesifikasjonen "
-"MPRIS 2.0."
 
-#: quodlibet/ext/events/mpris/__init__.py:44
+#: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
 msgid "Hide main window on close"
 msgstr "Skjul hovedvindu ved lukking"
@@ -6708,7 +6707,7 @@ msgstr "Søk gjennom mapper"
 msgid "Hidden Songs"
 msgstr "Skjulte låter"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:350
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -7508,15 +7507,15 @@ msgstr ""
 "\n"
 "Besøk <a href='%(url)s'>programnettstedet</a>"
 
-#: quodlibet/util/collection.py:345
+#: quodlibet/util/collection.py:347
 msgid "Empty Playlist"
 msgstr "Tom spilleliste"
 
-#: quodlibet/util/collection.py:443
+#: quodlibet/util/collection.py:445
 msgid "Playlists must have a name"
 msgstr "Spillelister må ha navn"
 
-#: quodlibet/util/collection.py:647
+#: quodlibet/util/collection.py:649
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Det finnes allerede en spilleliste ved navn %(name)s i %(path)s"
@@ -8058,6 +8057,14 @@ msgstr ""
 "vise et lydbibliotek på, og støtter avspilling av internettradio og andre "
 "lydstrømmer. Det er også et godt verktøy for redigering av metadata-tagger "
 "og søking."
+
+#, fuzzy
+#~ msgid ""
+#~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "
+#~ "Specification."
+#~ msgstr ""
+#~ "Tillater styring av Quod Libet ved bruk av-D-Bus-grensesnitt-"
+#~ "spesifikasjonen MPRIS 2.0."
 
 #~ msgid "Searching for lyrics…"
 #~ msgstr "Søker etter sangtekst …"
