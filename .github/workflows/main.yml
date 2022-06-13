@@ -139,7 +139,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           xvfbwrapper \
           pytest-faulthandler \
-          flake8 \
+          flake8==3.9.2 \
           flaky
 
     - name: Run tests
