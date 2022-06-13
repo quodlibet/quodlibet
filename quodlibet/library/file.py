@@ -423,7 +423,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
             print_d(f"No tracks in {old_roots} to remove", self._name)
 
 
-EventType = Gio.FileMonitorEvent
+Event = Gio.FileMonitorEvent
 
 
 class WatchedFileLibraryMixin(FileLibrary):
@@ -457,8 +457,8 @@ class WatchedFileLibraryMixin(FileLibrary):
 
     def __file_changed(self, _monitor, main_file: Gio.File,
                        other_file: Optional[Gio.File],
-                       event_type: Gio.FileMonitorEvent) -> None:
-        if event_type == EventType.CHANGES_DONE_HINT:
+                       event: Gio.FileMonitorEvent) -> None:
+        if event == Event.CHANGES_DONE_HINT:
             # This seems to work fine on most Linux, but not on Windows / macOS
             # Or at least, not in CI anyway.
             # So shortcut the whole thing
@@ -473,16 +473,16 @@ class WatchedFileLibraryMixin(FileLibrary):
             other_path = (Path(normalize_path(other_file.get_path(), True))
                           if other_file else None)
             if self._DEBUG:
-                print_d(f"Got event {event_type} on {file_path}"
+                print_d(f"Got event {event} on {file_path}"
                         + (f"-> {other_path}" if other_path else ""), self._name)
-            if event_type == EventType.CREATED:
+            if event == Event.CREATED:
                 if file_path.is_dir():
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
                 elif not song:
                     print_d(f"Auto-adding created file: {file_path}", self._name)
                     self.add_filename(file_path)
-            elif event_type == EventType.RENAMED:
+            elif event == Event.RENAMED:
                 if not other_path:
                     print_w(f"No destination found for rename of {file_path}",
                             self._name)
@@ -503,7 +503,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                         self.monitor_dir(other_path)
                 else:
                     print_w(f"I don't know what to do with {file_path}", self._name)
-            elif event_type == EventType.CHANGED:
+            elif event == Event.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
                     if not song.valid():
@@ -511,7 +511,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                 else:
                     print_d(f"Auto-adding new file: {file_path}", self._name)
                     self.add_filename(file_path)
-            elif event_type in (EventType.MOVED_OUT, EventType.DELETED):
+            elif event in (Event.MOVED_OUT, Event.DELETED):
                 if song:
                     print_d(f"...so deleting {file_path}", self._name)
                     self.reload(song)
@@ -533,13 +533,13 @@ class WatchedFileLibraryMixin(FileLibrary):
                             print_w(f"Couldn't remove all: {gone - actually_gone}",
                                     self._name)
             else:
-                print_d(f"Unhandled event {event_type} on {file_path} ({other_path})",
+                print_d(f"Unhandled event {event} on {file_path} ({other_path})",
                         self._name)
                 return
         except Exception:
             print_w("Failed to run file monitor callback", self._name)
             print_exc()
-        print_d(f"Finished handling {event_type}", self._name)
+        print_d(f"Finished handling {event}", self._name)
 
     def is_monitored_dir(self, path: Path) -> bool:
         return path in self._monitors

@@ -11,7 +11,7 @@ from _pytest.fixtures import fixture
 from gi.repository import Gio
 
 from quodlibet import print_d
-from quodlibet.library.file import EventType
+from quodlibet.library.file import Event
 from quodlibet.util.path import normalize_path
 from tests import mkdtemp, run_gtk_loop
 from tests.helper import temp_filename
@@ -47,7 +47,7 @@ class BasicMonitor:
         self.changed.append((event_type, file_path))
 
     @property
-    def event_types(self) -> Set[EventType]:
+    def event_types(self) -> Set[Event]:
         return {changed[0] for changed in self.changed}
 
 
@@ -61,13 +61,13 @@ class TestFileMonitor:
         run_gtk_loop()
         assert monitor.changed, "No events after creation"
         # assert monitor.event_types >= {EventType.CHANGED, EventType.CREATED}
-        assert monitor.event_types >= {EventType.CREATED}
+        assert monitor.event_types >= {Event.CREATED}
         monitor.changed.clear()
         some_file.unlink()
         sleep(SLEEP_SECS)
         run_gtk_loop()
         assert monitor.changed, "No events after deletion"
-        assert monitor.event_types >= {EventType.DELETED}
+        assert monitor.event_types >= {Event.DELETED}
 
     def test_move(self, temp_dir: Path):
         monitor = BasicMonitor(temp_dir)
@@ -83,4 +83,4 @@ class TestFileMonitor:
             sleep(SLEEP_SECS)
             run_gtk_loop()
             assert monitor.changed
-            assert monitor.event_types >= {EventType.RENAMED}, f"Got {monitor.changed}"
+            assert monitor.event_types >= {Event.RENAMED}, f"Got {monitor.changed}"
