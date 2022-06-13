@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-04-24 13:09+0000\n"
-"Last-Translator: Alexander <dexat@live.ru>\n"
+"PO-Revision-Date: 2022-06-10 17:15+0000\n"
+"Last-Translator: МАН69К <weblate@mah69k.net>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.12.1-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -4595,8 +4595,8 @@ msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
-"Не удается связаться с устройством iFP. Убедитесь, что устройство включено, "
-"и подключено, и у вас установлена ​​ifp-line (http://ifp-driver.sf.net)."
+"Не удается связаться с устройством iFP. Убедитесь, что устройство включено и "
+"подключено, и у вас установлена ifp-line (http://ifp-driver.sf.net)."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -4806,9 +4806,9 @@ msgid "Sync complete."
 msgstr "Синхронизация завершена."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "Error during sync (%s)"
-msgstr "Ошибка синхронизации"
+msgstr "Ошибка синхронизации (%s)"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:202
 #: quodlibet/ext/songsmenu/lastfmsync.py:231
@@ -5174,9 +5174,9 @@ msgid "Set a tag and remove existing values"
 msgstr "Установка тега и удаление существующих значений"
 
 #: quodlibet/operon/commands.py:306
-#, fuzzy, python-format
+#, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
-msgstr "Не удалось установить %r"
+msgstr "Не удалось установить %(tag)r для %(format)s файла %(file)r"
 
 #: quodlibet/operon/commands.py:321
 msgid "Remove tags"
@@ -5346,9 +5346,9 @@ msgid "Buffering"
 msgstr "Буферизация"
 
 #: quodlibet/player/gstbe/player.py:463
-#, fuzzy, python-format
+#, python-format
 msgid "Could not create GStreamer pipeline (%s)"
-msgstr "Не удалось создать конвейер GStreamer"
+msgstr "Не удалось создать конвейер GStreamer (%s)"
 
 #: quodlibet/player/gstbe/player.py:666
 msgid "No GStreamer element found to handle media format"
@@ -5416,9 +5416,9 @@ msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
 #: quodlibet/player/gstbe/util.py:148
-#, fuzzy, python-format
+#, python-format
 msgid "No GStreamer audio sink found. Tried: %s"
-msgstr "Не найдено ни одного устройства аудиовывода GStreamer"
+msgstr "Не найдено устройство аудиовывода GStreamer. Попробовано: %s"
 
 #: quodlibet/player/gstbe/util.py:167
 msgid "Invalid GStreamer output pipeline"
@@ -5458,14 +5458,15 @@ msgstr ""
 "скробблинг треков не будет работать."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Необходимо настроить расширение QLScrobbler в окне расширений. Иначе "
-"скробблинг треков не будет работать."
+"Слишком много последовательных передач не удались (%d). Переведено в offline-"
+"режим. Пожалуйста, посетите окно плагинов, чтобы сбросить ListenBrainz. До "
+"этого прослушивания отправляться не будут."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
 #, fuzzy
@@ -7199,7 +7200,7 @@ msgstr "Автоши_рина"
 #, python-format
 msgid "Remove track: \"%%(title)s\" from library?"
 msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "Удалить %(count)d трек из фонотеки?"
+msgstr[0] "Удалить трек \"%%(title)s\" из фонотеки?"
 msgstr[1] "Удалить %(count)d трека из фонотеки?"
 msgstr[2] "Удалить %(count)d треков из фонотеки?"
 
