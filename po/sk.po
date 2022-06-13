@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-04-16 01:08+0000\n"
+"PO-Revision-Date: 2022-06-10 17:15+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -1992,6 +1992,9 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"Povoľuje ovládanie Quod Libet použitím <a href=\"https://mpris2.readthedocs."
+"io/en/latest/\">MPRIS 2</a> špecifikácie D-Bus rozhrania. Toto povoľuje "
+"rôzne integrácie Linuxového desktopu (napr. multimediálnych kláves)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
