@@ -502,7 +502,10 @@ class WatchedFileLibraryMixin(FileLibrary):
                     if other_path:
                         self.monitor_dir(other_path)
                 else:
-                    print_w(f"I don't know what to do with {file_path}", self._name)
+                    print_w(f"Seems {file_path} is not a track (deleted?)", self._name)
+                    # On some (Windows?) systems CHANGED is called which can remove
+                    # before we get here, so let's try adding the new path back
+                    self.add_filename(other_path)
             elif event == Event.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
