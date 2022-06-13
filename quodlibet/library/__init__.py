@@ -31,7 +31,6 @@ def init(cache_fn=None):
     """
 
     SongFileLibrary.librarian = SongLibrary.librarian = SongLibrarian()
-    # TODO: make watching configurable
     watch = config.getboolean("library", "watch")
     library = SongFileLibrary("main", watch_dirs=get_scan_dirs() if watch else [])
     if cache_fn:

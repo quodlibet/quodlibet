@@ -701,10 +701,12 @@ class PreferencesWindow(UniqueWindow):
 
             scan_at_start_cb = CCB(_("Scan library _on start"),
                                    "library", "refresh_on_start", populate=True)
+            req_restart = _("A restart is required for any changes to take effect")
             watch_lib_cb = CCB(_("_Watch directories for changes"),
                                "library", "watch", populate=True,
                                tooltip=_("Watch library directories for external file "
-                                         "additions, deletions and renames"))
+                                         "additions, deletions and renames.")
+                                       + "\n" + req_restart)
             scan_dirs = ScanBox()
 
             vb3 = Gtk.VBox(spacing=6)
