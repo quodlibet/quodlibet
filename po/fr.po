@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-04-05 13:07+0000\n"
+"PO-Revision-Date: 2022-06-10 17:14+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -2007,6 +2007,10 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"Permet le contrôle de Quod Libet en utilisant la spécification d'interface D-"
+"Bus <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Cela "
+"permet diverses intégrations au bureau Linux (par exemple, des touches "
+"multimédia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
