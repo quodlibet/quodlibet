@@ -235,8 +235,8 @@ class TWatchedFileLibrary(TLibrary):
             run_gtk_loop()
             p = normalize_path(str(new_path), True)
             assert p in self.library, f"New path {new_path} not in library [{self.fns}]"
-            assert not self.added, "A file was added not moved"
-            assert not self.removed, "A file was removed not moved"
+            msg = "Inconsistent events: should be (added and removed) or nothing at all"
+            assert not (bool(self.added) ^ bool(self.removed)), msg
 
     def test_watched_moving_dir(self):
         temp_dir = self.temp_path / "old"
