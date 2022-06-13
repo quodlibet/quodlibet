@@ -430,8 +430,6 @@ class WatchedFileLibraryMixin(FileLibrary):
     """A File Library that sets up monitors on directories at refresh
     and handles changes sensibly"""
 
-    _DEBUG = False
-
     def __init__(self, name=None):
         super().__init__(name)
         self._monitors: Dict[Path, Tuple[GObject.GObject, int]] = {}
@@ -472,9 +470,6 @@ class WatchedFileLibraryMixin(FileLibrary):
             file_path = Path(file_path)
             other_path = (Path(normalize_path(other_file.get_path(), True))
                           if other_file else None)
-            if self._DEBUG:
-                print_d(f"Got event {event} on {file_path}"
-                        + (f"-> {other_path}" if other_path else ""), self._name)
             if event == Event.CREATED:
                 if file_path.is_dir():
                     self.monitor_dir(file_path)
