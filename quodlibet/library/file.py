@@ -344,7 +344,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     self._name)
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
-        print_d(f"Checking entire library for {str(old_path)!s}", self._name)
+        print_d(f"Checking entire library for {str(old_path)!r}", self._name)
         missing: Set[AudioFile] = set()
         changed = set()
         total = len(self)
