@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-05-19 00:18+0000\n"
-"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
+"PO-Revision-Date: 2022-06-10 17:15+0000\n"
+"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -410,51 +410,54 @@ msgstr ""
 #: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
 #: quodlibet/browsers/iradio.py:499
 msgid "Internet Radio"
-msgstr ""
+msgstr "Radio Internet"
 
 #: quodlibet/browsers/iradio.py:226
+#, fuzzy
 msgid "Add stations"
-msgstr ""
+msgstr "Tambahkan stasiun"
 
 #: quodlibet/browsers/iradio.py:267
 msgid "Downloading station list"
-msgstr ""
+msgstr "Mengunduh daftar stasiun"
 
 #: quodlibet/browsers/iradio.py:368
 msgid "New Station"
-msgstr ""
+msgstr "Stasiun Baru"
 
 #: quodlibet/browsers/iradio.py:369
 msgid "Enter the location of an Internet radio station:"
-msgstr ""
+msgstr "Masukkan lokasi stasiun radio internet:"
 
 #: quodlibet/browsers/iradio.py:387
 msgid "Electronic"
-msgstr ""
+msgstr "Elektronik"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "Hip Hop / Rap"
 msgstr ""
 
 #: quodlibet/browsers/iradio.py:391
+#, fuzzy
 msgid "Oldies"
-msgstr ""
+msgstr "Jadul"
 
 #: quodlibet/browsers/iradio.py:392
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:393
 msgid "Japanese"
-msgstr ""
+msgstr "Jepang"
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Indian"
-msgstr ""
+msgstr "India"
 
 #: quodlibet/browsers/iradio.py:396
+#, fuzzy
 msgid "Religious"
-msgstr ""
+msgstr "Agamis"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Charts"
@@ -462,7 +465,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Turkish"
-msgstr ""
+msgstr "Turki"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "Reggae / Dancehall"
@@ -470,15 +473,15 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:401
 msgid "Latin"
-msgstr ""
+msgstr "Latin"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
-msgstr ""
+msgstr "Radio Kampus"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Talk / News"
-msgstr ""
+msgstr "Percakapan/Berita"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Ambient"
@@ -486,23 +489,24 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:405
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr ""
+msgstr "Klasik"
 
 #: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: quodlibet/browsers/iradio.py:408
+#, fuzzy
 msgid "Alternative"
-msgstr ""
+msgstr "Alternatif"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "Metal"
-msgstr ""
+msgstr "Metal"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Country"
@@ -510,7 +514,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:411
 msgid "News"
-msgstr ""
+msgstr "Berita"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Schlager"
@@ -522,7 +526,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Indie"
-msgstr ""
+msgstr "Indie"
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Blues"
@@ -608,22 +612,21 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:853
 msgid "All stations listed are already in your library."
-msgstr ""
+msgstr "Semua stasiun yang didaftar sudah ada di pustaka Anda."
 
 #: quodlibet/browsers/iradio.py:874
 msgid "Add to Favorites"
-msgstr ""
+msgstr "Tambahkan ke Favorit"
 
 #: quodlibet/browsers/iradio.py:878
 msgid "Remove from Favorites"
-msgstr ""
+msgstr "Hapus dari Favorit"
 
 #: quodlibet/browsers/iradio.py:978
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)d stasiun"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:44
 msgid "Paned Browser"
@@ -635,20 +638,20 @@ msgstr ""
 
 #: quodlibet/browsers/paned/main.py:92
 msgid "Select _All"
-msgstr ""
+msgstr "Pilih _Semua"
 
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
-msgstr ""
+msgstr "Semua"
 
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "Kecil"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "Lebar"
 
 #: quodlibet/browsers/paned/prefs.py:43
 msgid "Columnar"
@@ -667,11 +670,11 @@ msgstr ""
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "Tata letak kolom"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "Konten kolom"
 
 #: quodlibet/browsers/paned/prefs.py:242
 msgid "Equal pane width"
@@ -680,53 +683,54 @@ msgstr ""
 #: quodlibet/browsers/playlists/main.py:49
 #: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
-msgstr ""
+msgstr "Daftar putar"
 
 #: quodlibet/browsers/playlists/main.py:50
 msgid "_Playlists"
-msgstr ""
+msgstr "_Daftar putar"
 
 #: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
-msgstr ""
+msgstr "_Hapus dari Daftar Putar"
 
 #: quodlibet/browsers/playlists/main.py:213
 msgid "New"
-msgstr ""
+msgstr "Baru"
 
 #: quodlibet/browsers/playlists/main.py:217
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
-msgstr ""
+msgstr "Impor"
 
 #: quodlibet/browsers/playlists/main.py:439
 msgid "Unable to import playlist"
-msgstr ""
+msgstr "Tidak bisa mengimpor daftar putar"
 
 #: quodlibet/browsers/playlists/main.py:440
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
+"Quod Libet hanya bisa mengimpor daftar putar dalam format M3U/M3U8 dan PLS."
 
 #: quodlibet/browsers/playlists/main.py:489
 msgid "_Rename"
-msgstr ""
+msgstr "_Ubah Nama"
 
 #: quodlibet/browsers/playlists/main.py:587
 msgid "Unable to rename playlist"
-msgstr ""
+msgstr "Tidak bisa mengubah nama daftar putar"
 
 #: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
-msgstr ""
+msgstr "Impor Daftar Putar"
 
 #: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
-msgstr ""
+msgstr "_Impor"
 
 #: quodlibet/browsers/playlists/menu.py:24
 msgid "_New Playlist…"
-msgstr ""
+msgstr "Daftar Putar _Baru…"
 
 #: quodlibet/browsers/playlists/menu.py:78
 #, python-format
@@ -738,15 +742,15 @@ msgstr[1] ""
 #: quodlibet/browsers/playlists/menu.py:82
 #, python-format
 msgid "Confirm action for playlist \"%s\""
-msgstr ""
+msgstr "Konfirmasi tindakan untuk daftar putar \"%s\""
 
 #: quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
-msgstr ""
+msgstr "kosong"
 
 #: quodlibet/browsers/playlists/prefs.py:39
 msgid "Example Playlist"
-msgstr ""
+msgstr "Daftar Putar Contoh"
 
 #: quodlibet/browsers/playlists/prefs.py:47
 msgid "Playlist Browser Preferences"
@@ -754,27 +758,29 @@ msgstr ""
 
 #: quodlibet/browsers/playlists/prefs.py:52
 msgid "Playlist display"
-msgstr ""
+msgstr "Tampilan daftar putar"
 
 #: quodlibet/browsers/playlists/util.py:34
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
-msgstr ""
+msgstr "Apakah Anda yakin ingin menghapus daftar putar '%s'?"
 
 #: quodlibet/browsers/playlists/util.py:36
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
 msgstr ""
+"Semua informasi tentang daftar putar yang dipilih akan dihapus dan tidak "
+"bisa dipulihkan."
 
 #: quodlibet/browsers/playlists/util.py:50
 #: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:611
 msgid "New Playlist"
-msgstr ""
+msgstr "Daftar Putar Baru"
 
 #: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
-msgstr ""
+msgstr "Masukkan nama untuk daftar putar baru:"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -783,6 +789,9 @@ msgid ""
 "\n"
 "%(current)d/%(total)d songs added."
 msgstr ""
+"Mengimpor daftar putar.\n"
+"\n"
+"%(current)d/%(total)d lagu ditambahkan."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -2219,23 +2228,23 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Played more often"
-msgstr ""
+msgstr "Diputar lebih sering"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr ""
+msgstr "Diloncat lebih sering"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
-msgstr ""
+msgstr "Diputar baru-baru ini"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Started more recently"
-msgstr ""
+msgstr "Dimulai baru-baru ini"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Added more recently"
-msgstr ""
+msgstr "Ditambahkan baru-baru ini"
 
 #: quodlibet/ext/events/randomalbum.py:43
 msgid "Longer albums"
@@ -2243,7 +2252,7 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:82
 msgid "seconds before starting next album"
-msgstr ""
+msgstr "detik sebelum memulai album selanjutnya"
 
 #: quodlibet/ext/events/randomalbum.py:86
 msgid "Weights"
@@ -2670,7 +2679,7 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:945
 msgid "Unable to sync"
-msgstr ""
+msgstr "Tidak bisa menyinkronisasi"
 
 #: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
@@ -5001,11 +5010,11 @@ msgstr ""
 
 #: quodlibet/order/reorder.py:22
 msgid "Random"
-msgstr ""
+msgstr "Acak"
 
 #: quodlibet/order/reorder.py:23 quodlibet/qltk/queue.py:172
 msgid "_Random"
-msgstr ""
+msgstr "_Acak"
 
 #: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
@@ -5037,11 +5046,11 @@ msgstr ""
 
 #: quodlibet/order/repeat.py:74
 msgid "One _song"
-msgstr ""
+msgstr "Satu _lagu"
 
 #: quodlibet/player/gstbe/player.py:100
 msgid "Stream"
-msgstr ""
+msgstr "Siarkan"
 
 #: quodlibet/player/gstbe/player.py:100
 msgid "Buffering"
@@ -5054,17 +5063,17 @@ msgstr ""
 
 #: quodlibet/player/gstbe/player.py:666
 msgid "No GStreamer element found to handle media format"
-msgstr ""
+msgstr "Tidak ditemukan elemen GStreamer untuk menangani format media"
 
 #: quodlibet/player/gstbe/player.py:667
 #, python-format
 msgid "Media format: %(format-description)s"
-msgstr ""
+msgstr "Format media: %(format-description)s"
 
 #: quodlibet/player/gstbe/plugins.py:35
 #, python-format
 msgid "GStreamer plugin '%(name)s' could not be initialized"
-msgstr ""
+msgstr "Plugin GStreamer '%(name)s' tidak dapat diinisialisasi"
 
 #: quodlibet/player/gstbe/prefs.py:26
 msgid ""
@@ -6360,120 +6369,121 @@ msgstr ""
 
 #: quodlibet/qltk/quodlibetwindow.py:869
 msgid "_Jump to Playing Song"
-msgstr ""
+msgstr "_Loncat ke Lagu yang sedang Diputar"
 
 #: quodlibet/qltk/quodlibetwindow.py:876
 msgid "_File"
-msgstr ""
+msgstr "_Berkas"
 
 #: quodlibet/qltk/quodlibetwindow.py:877
 msgid "_Song"
-msgstr ""
+msgstr "_Lagu"
 
 #: quodlibet/qltk/quodlibetwindow.py:878
+#, fuzzy
 msgid "_View"
-msgstr ""
+msgstr "_Tampilan"
 
 #: quodlibet/qltk/quodlibetwindow.py:879
 msgid "_Browse"
-msgstr ""
+msgstr "_Jelajah"
 
 #: quodlibet/qltk/quodlibetwindow.py:880
 msgid "_Control"
-msgstr ""
+msgstr "_Kontrol"
 
 #: quodlibet/qltk/quodlibetwindow.py:881
 msgid "_Help"
-msgstr ""
+msgstr "_Bantuan"
 
 #: quodlibet/qltk/quodlibetwindow.py:887
 msgid "_Add a Folder…"
-msgstr ""
+msgstr "_Tambah Folder…"
 
 #: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_Add a File…"
-msgstr ""
+msgstr "_Tambah Berkas…"
 
 #: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Add a Location…"
-msgstr ""
+msgstr "_Tambah Lokasi…"
 
 #: quodlibet/qltk/quodlibetwindow.py:926
 msgid "Edit Bookmarks…"
-msgstr ""
+msgstr "Sunting Markah…"
 
 #: quodlibet/qltk/quodlibetwindow.py:946
 msgid "Stop After This Song"
-msgstr ""
+msgstr "Berhenti Setelah Lagu Ini"
 
 #: quodlibet/qltk/quodlibetwindow.py:952
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "Pintasan _Papan Tik"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
 msgid "Online Help"
-msgstr ""
+msgstr "Bantuan Daring"
 
 #: quodlibet/qltk/quodlibetwindow.py:970
 msgid "Search Help"
-msgstr ""
+msgstr "Bantuan Pencarian"
 
 #: quodlibet/qltk/quodlibetwindow.py:1274
 msgid "Add a Location"
-msgstr ""
+msgstr "Tambah Lokasi"
 
 #: quodlibet/qltk/quodlibetwindow.py:1275
 msgid "Enter the location of an audio file:"
-msgstr ""
+msgstr "Masukkan lokasi dari berkas audio:"
 
 #: quodlibet/qltk/quodlibetwindow.py:1280
 #: quodlibet/qltk/quodlibetwindow.py:1285
 msgid "Unable to add location"
-msgstr ""
+msgstr "Tidak bisa menambahkan lokasi"
 
 #: quodlibet/qltk/quodlibetwindow.py:1281
 #, python-format
 msgid "%s is not a valid location."
-msgstr ""
+msgstr "%s bukan lokasi yang valid."
 
 #: quodlibet/qltk/quodlibetwindow.py:1294
 #: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "Add Music"
-msgstr ""
+msgstr "Tambah Musik"
 
 #: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
-msgstr ""
+msgstr "_Tambah Folder"
 
 #: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Music Files"
-msgstr ""
+msgstr "Berkas Musik"
 
 #: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "_Add Files"
-msgstr ""
+msgstr "_Tambah Berkas"
 
 #: quodlibet/qltk/ratingsmenu.py:26
-#, python-format
+#, fuzzy, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr ""
+msgstr "Apakah Anda yakin ingin mengganti peringkat untuk semua lagu %d?"
 
 #: quodlibet/qltk/ratingsmenu.py:29
 msgid "The saved ratings will be removed"
-msgstr ""
+msgstr "Peringkat yang disimpan akan dihapus"
 
 #: quodlibet/qltk/ratingsmenu.py:30 quodlibet/qltk/ratingsmenu.py:63
 msgid "_Remove Rating"
-msgstr ""
+msgstr "_Hapus Peringkat"
 
 #: quodlibet/qltk/ratingsmenu.py:32
 #, python-format
 msgid "The rating of all selected songs will be changed to %s"
-msgstr ""
+msgstr "Peringkat semua lagu yang dipilih akan diganti menjadi %s"
 
 #: quodlibet/qltk/ratingsmenu.py:34
 msgid "Change _Rating"
-msgstr ""
+msgstr "Ubah _Peringkat"
 
 #: quodlibet/qltk/renamefiles.py:52
 msgid "Replace spaces with _underscores"
@@ -6567,8 +6577,9 @@ msgid "_Continue"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:463
+#, fuzzy
 msgid "Path is not absolute"
-msgstr ""
+msgstr "Jalur tidak pasti"
 
 #: quodlibet/qltk/renamefiles.py:464
 #, python-format
@@ -6578,25 +6589,31 @@ msgid ""
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
+"Pola\n"
+" <b>%s</b>\n"
+"mengandung / tapi tidak dimulai dari root. Untuk menghindarai salah "
+"menamakan folder, root-kan pola Anda dengan memulainya dengan / atau ~/."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
 msgstr ""
+"Lagu di folder yang didaftar akan ditambahkan ke pustaka ketika penyegaran "
+"pustaka"
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
-msgstr ""
+msgstr "Direktori baru akan dipindai setelah ditambahkan"
 
 #: quodlibet/qltk/scanbox.py:67
 msgid ""
 "All songs in the selected directories will also be removed from the library"
-msgstr ""
+msgstr "Semua lagu di direktori yang dipilih akan dihapus juga dari pustaka"
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
-msgstr ""
+msgstr "_Pindah"
 
 #: quodlibet/qltk/scanbox.py:72
 msgid ""
@@ -6606,30 +6623,29 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
-msgstr ""
+msgstr "Hapus {dir!r} dan seluruh jejaknya?"
 
 #: quodlibet/qltk/scanbox.py:115
-#, python-brace-format
+#, fuzzy, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr ""
+msgstr "Hapus jalur pustaka {n} dan jejaknya?"
 
 #: quodlibet/qltk/scanbox.py:116
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Hapus jalur pustaka?"
 
 #: quodlibet/qltk/scanbox.py:117
 msgid "Remove"
-msgstr ""
+msgstr "Hapus"
 
 #: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
-msgstr ""
+msgstr "Pilih Direktori"
 
 #: quodlibet/qltk/scanbox.py:139
 msgid "Select This Directory"
-msgstr ""
+msgstr "Pilih Direktori Ini"
 
 #: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
@@ -6644,6 +6660,12 @@ msgid ""
 "The audio files themselves are not moved by this.\n"
 "Nonetheless, a backup is recommended (including the Quod Libet 'songs' file)."
 msgstr ""
+"Ini akan memindahkan metadata QL:\n"
+"\n"
+"{old!r} → {new!r}\n"
+"\n"
+"Berkas audio tidak akan dipindah dengan ini.\n"
+"Meskipun begitu, cadangan disarankan (termasuk berkas 'songs' Quod Libet)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
@@ -6651,51 +6673,52 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
-msgstr ""
+msgstr "OK, pindahkan!"
 
 #: quodlibet/qltk/searchbar.py:59
 msgid "Saved Searches"
-msgstr ""
+msgstr "Pencarian Tersimpan"
 
 #: quodlibet/qltk/searchbar.py:59
 msgid "Edit saved searches…"
-msgstr ""
+msgstr "Sunting pencarian tersimpan…"
 
 #: quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
-msgstr ""
+msgstr "Cari pustaka Anda, menggunakan teks bebas atau kueri QL"
 
 #: quodlibet/qltk/searchbar.py:145
 msgid "Search after _typing"
-msgstr ""
+msgstr "Cari setelah _mengetik"
 
 #: quodlibet/qltk/searchbar.py:148
 msgid "Show search results after the user stops typing"
-msgstr ""
+msgstr "Tampilkan hasil pencarian setelah pengguna berhenti mengetik"
 
 #: quodlibet/qltk/searchbar.py:216
 msgid "_Limit:"
-msgstr ""
+msgstr "_Batas:"
 
 #: quodlibet/qltk/searchbar.py:229
 msgid "_Weight"
-msgstr ""
+msgstr "_Beban"
 
 #: quodlibet/qltk/searchbar.py:356
 msgid "Add query"
-msgstr ""
+msgstr "Tambahkan kueri"
 
 #: quodlibet/qltk/searchbar.py:357
+#, fuzzy
 msgid "Add a QL query or free text to be &ed together"
-msgstr ""
+msgstr "Tambahkan kueri QL atau teks bebas untuk menjadi &ed bersama-sama"
 
 #: quodlibet/qltk/seekbutton.py:238
 msgid "Display remaining time"
-msgstr ""
+msgstr "Tampilkan waktu yang tersisa"
 
 #: quodlibet/qltk/shortcuts.py:16
 msgid "Main Window"
-msgstr ""
+msgstr "Jendela Utama"
 
 #: quodlibet/qltk/shortcuts.py:17
 msgid "Seek backwards by 10 seconds"
@@ -6707,27 +6730,27 @@ msgstr ""
 
 #: quodlibet/qltk/shortcuts.py:19
 msgid "Focus the search entry"
-msgstr ""
+msgstr "Fokuskan entri pencarian"
 
 #: quodlibet/qltk/shortcuts.py:22
 msgid "Reset filters and jump to the playing song"
-msgstr ""
+msgstr "Atur ulang filter dan loncat ke lagu yang sedang diputar"
 
 #: quodlibet/qltk/shortcuts.py:26
 msgid "Open the information window for the selected songs"
-msgstr ""
+msgstr "Buka jendela informasi untuk lagu yang dipilih"
 
 #: quodlibet/qltk/shortcuts.py:27
 msgid "Open the tag editor for the selected songs"
-msgstr ""
+msgstr "Buka penyunting tanda untuk lagu yang dipilih"
 
 #: quodlibet/qltk/shortcuts.py:28
 msgid "Queue the selected songs"
-msgstr ""
+msgstr "Antrikan lagu yang dipilih"
 
 #: quodlibet/qltk/shortcuts.py:29
 msgid "Delete the selected songs"
-msgstr ""
+msgstr "Hapus lagu yang dipilih"
 
 #: quodlibet/qltk/shortcuts.py:30
 msgid "Show the inline search entry"
@@ -6743,7 +6766,7 @@ msgstr ""
 
 #: quodlibet/qltk/shortcuts.py:34
 msgid "Tree View"
-msgstr ""
+msgstr "Tampilan Pohon"
 
 #: quodlibet/qltk/shortcuts.py:36
 msgid "Collapses the element or select the parent element"
