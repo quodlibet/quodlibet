@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-14 10:52+0000\n"
+"PO-Revision-Date: 2022-06-14 19:59+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -36,15 +36,13 @@ msgstr "日付(_D)"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:59
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Dateヘッダ"
+msgstr "登録日時(_D)"
 
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:60
-#, fuzzy
 msgid "_Original Date"
-msgstr "オリジナルアーティスト"
+msgstr "オリジナルリリース日時(_O)"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
@@ -7124,13 +7122,12 @@ msgid "_Production Headers"
 msgstr "プロダクションヘッダ(_P)"
 
 #: quodlibet/qltk/songlist.py:1203
-#, fuzzy
 msgid "_Customize Headers…"
-msgstr "_Customizeヘッダ"
+msgstr "ヘッダのカスタマイズ(_C)…"
 
 #: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
-msgstr ""
+msgstr "カラム名で幅揃え(_E)"
 
 #: quodlibet/qltk/songsmenu.py:43
 #, python-format
@@ -7666,7 +7663,7 @@ msgstr "アルバムアーティスト"
 
 #: quodlibet/util/tags.py:109
 msgid "BPM"
-msgstr ""
+msgstr "BPM"
 
 #. Translators: This used to be called "part".
 #: quodlibet/util/tags.py:112 quodlibet/util/tags.py:113
@@ -7793,7 +7790,6 @@ msgid "tracks"
 msgstr "トラック"
 
 #: quodlibet/util/tags.py:156
-#, fuzzy
 msgid "last started"
 msgstr "最終再生開始日時"
 
@@ -7814,9 +7810,8 @@ msgid "year"
 msgstr "年"
 
 #: quodlibet/util/tags.py:169
-#, fuzzy
 msgid "original release year"
-msgstr "オリジナルリリース日時"
+msgstr "オリジナルリリース年"
 
 #: quodlibet/util/tags.py:170
 #, fuzzy
@@ -7825,25 +7820,23 @@ msgstr "ブックマーク"
 
 #: quodlibet/util/tags.py:171
 msgid "bitdepth"
-msgstr ""
+msgstr "ビット深度"
 
 #: quodlibet/util/tags.py:174
-#, fuzzy
 msgid "file format"
-msgstr "フォーマット"
+msgstr "ファイルフォーマット"
 
 #: quodlibet/util/tags.py:177
-#, fuzzy
 msgid "playlists"
 msgstr "プレイリスト"
 
 #: quodlibet/util/tags.py:178
 msgid "sample rate"
-msgstr ""
+msgstr "サンプリングレート"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
-msgstr ""
+msgstr "チャンネル数"
 
 #. Translators: e.g. "artist (sort)"
 #: quodlibet/util/tags.py:269
