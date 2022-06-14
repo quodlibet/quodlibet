@@ -208,7 +208,7 @@ class TreeViewHints(Gtk.Window):
         # get the renderer at the mouse position and get the xpos/width
         renderers = col.get_cells()
         pos = sorted(zip(map(col.cell_get_position, renderers), renderers))
-        pos = list(filter(lambda p: p[0][0] < cellx, pos))
+        pos = [p for p in pos if p[0][0] < cellx]
         if not pos:
             self.__undisplay()
             return False
