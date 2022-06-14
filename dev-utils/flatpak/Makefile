@@ -3,7 +3,6 @@ CORE_DEPENDS := \
 	sgmllib3k \
 	feedparser
 PLUGINS_DEPENDS := \
-	pyinotify \
 	musicbrainzngs \
 	dbus-python \
 	paho-mqtt

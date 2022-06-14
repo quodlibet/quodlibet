@@ -3,16 +3,17 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Set, TypeVar
+from typing import Optional, Set, Iterable, TypeVar
 
 from quodlibet import util, print_d
 from quodlibet.formats import MusicFile, AudioFile
 from quodlibet.library.album import AlbumLibrary
-from quodlibet.library.base import Library, K, PicklingMixin
-from quodlibet.library.file import FileLibrary
+from quodlibet.library.base import Library, PicklingMixin, K
+from quodlibet.library.file import WatchedFileLibraryMixin
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
 from quodlibet.util.path import normalize_path
+from senf import fsnative
 
 
 V = TypeVar("V", bound=AudioFile)
@@ -85,17 +86,15 @@ class SongLibrary(Library[K, V], PicklingMixin):
         return songs
 
 
-class SongFileLibrary(SongLibrary, FileLibrary):
+class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None):
+    def __init__(self, name=None, watch_dirs: Optional[Iterable[fsnative]] = None):
         print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
-
-    def contains_filename(self, filename):
-        key = normalize_path(filename, True)
-        return key in self._contents
+        if watch_dirs:
+            self.start_watching(watch_dirs)
 
     def get_filename(self, filename):
         key = normalize_path(filename, True)

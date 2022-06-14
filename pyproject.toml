@@ -23,7 +23,6 @@ pycairo = "^1.19"
 pygobject = "^3.34.0"
 # Optional (mainly plugins)
 musicbrainzngs = { version = "0.*", optional = true }
-pyinotify = { version = "*", optional = true }
 dbus-python = { version = "*", optional = true }
 soco = { version = "^0.22.2", optional = true }
 

@@ -2,11 +2,22 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from pathlib import Path
 
+import shutil
+from pathlib import Path
+from time import sleep
+
+import pytest as pytest
+
+from quodlibet import config, app, print_d
+from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
+from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
-from tests import mkdtemp
+from senf import expanduser, text2fsn
+from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
+                   init_fake_app, destroy_fake_app)
+from tests.helper import temp_filename
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
 
@@ -133,3 +144,129 @@ class TFileLibrary(TLibrary):
         assert out_song in self.library, "removed too many files"
         assert self.removed == [in_song], "didn't signal the song removal"
         assert not self.changed, "shouldn't have changed any tracks"
+
+
+class TWatchedFileLibrary(TLibrary):
+    Fake = FakeSongFile
+    temp_path = Path(normalize_path(expanduser(_TEMP_DIR), True)).resolve()
+
+    def setUp(self):
+        init_fake_app()
+        config.set("library", "watch", True)
+        super().setUp()
+        # Replace global one with this one
+        librarian = app.library.librarian
+        app.library.destroy()
+        self.library.librarian = librarian
+        app.library = self.library
+        self.library.filename = "watching"
+        librarian.register(self.library, "main")
+        assert self.library.librarian.libraries
+
+    def test_test_setup(self):
+        assert self.temp_path.is_dir()
+        assert self.temp_path.is_absolute()
+        assert not self.temp_path.is_symlink(), "Symlinks cause trouble in these tests"
+        assert not get_exclude_dirs()
+
+    def tearDown(self):
+        destroy_fake_app()
+
+    def Library(self):
+        lib = SongFileLibrary(watch_dirs=[text2fsn(str(self.temp_path))])
+        # Setup needs copools
+        run_gtk_loop()
+        return lib
+
+    def test_monitors(self):
+        monitors = self.library._monitors
+        assert monitors, "Not monitoring any dirs"
+        temp_path = Path(self.temp_path)
+        assert temp_path in monitors, f"Not monitoring {temp_path} (but {monitors})"
+
+    @pytest.mark.flaky(max_runs=3, min_passes=2)
+    def test_watched_adding_removing(self):
+        with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
+            shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
+            sleep(0.5)
+            run_gtk_loop()
+            assert path.exists()
+            assert str(path) in self.library, f"{path} should be in [{self.fns}] now"
+        assert not path.exists(), "Failed to delete test file"
+        sleep(0.5)
+        # Deletion now
+        run_gtk_loop()
+        assert self.removed, "Nothing was automatically removed"
+        assert self.added, "Nothing was automatically added"
+        assert {Path(af("~filename")) for af in self.added} == {path}
+        assert {Path(af("~filename")) for af in self.removed} == {path}
+        assert str(path) not in self.library, f"{path} shouldn't be in the library now"
+
+    def test_watched_adding(self):
+        with temp_filename(dir=self.temp_path, suffix=".mp3", as_path=True) as path:
+            shutil.copy(Path(get_data_path("silence-44-s.mp3")), path)
+            assert self.temp_path in path.parents, "Copied test file incorrectly"
+            watch_dirs = self.library._monitors.keys()
+            assert path.parent in watch_dirs, "Not monitoring directory of new file"
+            run_gtk_loop()
+            assert self.library, f"Nothing in library despite watches on {watch_dirs}"
+            assert str(path) in self.library, (f"{path!s} should have been added to "
+                                               f"library [{self.fns}]")
+            assert str(path) in {af("~filename") for af in self.added}
+
+    def test_watched_moving_song(self):
+        with temp_filename(dir=self.temp_path, suffix=".flac", as_path=True) as path:
+            shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
+            sleep(0.2)
+            assert path.exists()
+            run_gtk_loop()
+            assert str(path) in self.library, f"New path {path!s} didn't get added"
+            assert len(self.added) == 1
+            assert self.added[0]("~basename") == path.name
+            self.added.clear()
+
+            # Now move it...
+            new_path = path.parent / f"moved-{path.name}"
+            path.rename(new_path)
+            sleep(0.2)
+            assert not path.exists(), "test should have removed old file"
+            assert new_path.exists(), "test should have renamed file"
+            print_d(f"New test file at {new_path}")
+            run_gtk_loop()
+            p = normalize_path(str(new_path), True)
+            assert p in self.library, f"New path {new_path} not in library [{self.fns}]"
+            msg = "Inconsistent events: should be (added and removed) or nothing at all"
+            assert not (bool(self.added) ^ bool(self.removed)), msg
+
+    def test_watched_moving_dir(self):
+        temp_dir = self.temp_path / "old"
+        temp_dir.mkdir(exist_ok=False)
+        sleep(0.2)
+        run_gtk_loop()
+        assert temp_dir in self.library._monitors
+        with temp_filename(dir=temp_dir, suffix=".flac", as_path=True) as path:
+            shutil.copy(Path(get_data_path("silence-44-s.flac")), path)
+            sleep(0.2)
+            assert path.exists()
+            run_gtk_loop()
+            assert str(path) in self.library, f"New path {path!s} didn't get added"
+            assert len(self.added) == 1
+            self.added.clear()
+            assert self.library
+
+            # Now move the directory...
+            new_dir = path.parent.parent / "new"
+            temp_dir.rename(new_dir)
+            assert new_dir.is_dir(), "test should have moved to new dir"
+            sleep(0.2)
+            run_gtk_loop()
+
+            new_path = new_dir / path.name
+            assert new_path.is_file()
+            msg = f"New path {new_path} not in library [{self.fns}]. Did move_root run?"
+            assert str(new_path) in self.library, msg
+            assert not self.removed, "A file was removed"
+
+    @property
+    def fns(self) -> str:
+        return ", ".join(s("~filename") for s in self.library)
