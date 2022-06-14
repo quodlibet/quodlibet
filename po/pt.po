@@ -5086,7 +5086,7 @@ msgstr "A etiqueta\"%s\" não foi encontrada."
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
 #: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
+#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
 #: quodlibet/util/library.py:121
 msgid "Library"
@@ -5109,12 +5109,12 @@ msgstr "Escaneando %s"
 msgid "Loading files"
 msgstr "Carregando ficheiros"
 
-#: quodlibet/library/file.py:350
+#: quodlibet/library/file.py:351
 #, fuzzy
 msgid "Moving library files"
 msgstr "Escaneando biblioteca"
 
-#: quodlibet/library/file.py:405
+#: quodlibet/library/file.py:408
 #, fuzzy
 msgid "Removing library files"
 msgstr "Remove filtros de navegação ativos"
