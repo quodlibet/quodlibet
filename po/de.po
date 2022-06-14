@@ -5104,7 +5104,7 @@ msgstr "Feld »%s« wurde nicht gefunden."
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
 #: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
+#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
 #: quodlibet/util/library.py:121
 msgid "Library"
@@ -5127,11 +5127,11 @@ msgstr "%s wird eingelesen"
 msgid "Loading files"
 msgstr "Lade Dateien"
 
-#: quodlibet/library/file.py:350
+#: quodlibet/library/file.py:351
 msgid "Moving library files"
 msgstr "Bibliotheksdateien werden verschoben"
 
-#: quodlibet/library/file.py:405
+#: quodlibet/library/file.py:408
 msgid "Removing library files"
 msgstr "Bibliotheksdateien werden entfernt"
 

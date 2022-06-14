@@ -780,7 +780,8 @@ msgstr "プレイリスト '%s' を削除してもよろしいですか？"
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
-msgstr "選択したプレイリストに関する全ての情報が削除され、復元できなくなります。"
+msgstr ""
+"選択したプレイリストに関する全ての情報が削除され、復元できなくなります。"
 
 #: quodlibet/browsers/playlists/util.py:50
 #: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:611
@@ -2746,8 +2747,8 @@ msgstr ""
 "\n"
 "<b>{}</b>\n"
 "\n"
-"に \"/\" が含まれていますが、ルートとなる位置を示していません。/ または ~/ "
-"で始まることを確認して、絶対的な宛先パスを指定してください。"
+"に \"/\" が含まれていますが、ルートとなる位置を示していません。/ または ~/ で"
+"始まることを確認して、絶対的な宛先パスを指定してください。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 #, fuzzy
@@ -4981,7 +4982,7 @@ msgstr ""
 #. then (try to) load all new files
 #: quodlibet/library/file.py:151 quodlibet/library/file.py:161
 #: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:350 quodlibet/library/file.py:405
+#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
 #: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
 #: quodlibet/util/library.py:121
 msgid "Library"
@@ -5006,12 +5007,12 @@ msgstr "%s をスキャン中"
 msgid "Loading files"
 msgstr ""
 
-#: quodlibet/library/file.py:350
+#: quodlibet/library/file.py:351
 #, fuzzy
 msgid "Moving library files"
 msgstr "ソングライブラリ読み込み中"
 
-#: quodlibet/library/file.py:405
+#: quodlibet/library/file.py:408
 #, fuzzy
 msgid "Removing library files"
 msgstr "アクティブなフィルタを削除"
@@ -5340,8 +5341,9 @@ msgstr "ギャップレス再生を無効にする(_G)"
 msgid ""
 "Disabling gapless playback can avoid track changing problems with some "
 "GStreamer versions"
-msgstr "ギャップレス再生を無効にすると、一部の GStreamer "
-"バージョンでトラック変更の問題を回避できます"
+msgstr ""
+"ギャップレス再生を無効にすると、一部の GStreamer バージョンでトラック変更の問"
+"題を回避できます"
 
 #: quodlibet/player/gstbe/prefs.py:75
 msgid "Use JACK for playback if available"
@@ -5730,8 +5732,9 @@ msgstr "プログラマチックタグの表示(_P)"
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
-msgstr "MusicBrainz タグや Replay Gain "
-"タグなどの機械生成されたものを含む全てのタグにアクセスします"
+msgstr ""
+"MusicBrainz タグや Replay Gain タグなどの機械生成されたものを含む全てのタグに"
+"アクセスします"
 
 #: quodlibet/qltk/edittags.py:535
 msgid "Show _multi-line tags"
@@ -5778,7 +5781,8 @@ msgstr "<b>%s</b> タグを追加できません"
 #, python-format
 msgid ""
 "The files currently selected do not support multiple values for <b>%s</b>."
-msgstr "選択されているファイルは <b>%s</b> タグで複数の値をサポートしていません。"
+msgstr ""
+"選択されているファイルは <b>%s</b> タグで複数の値をサポートしていません。"
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
@@ -6386,15 +6390,17 @@ msgstr "埋め込み画像を優先する(_E)"
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
-msgstr "他のソースより、オーディオファイルに埋め込まれたアートワーク(利用可能な場合)"
+msgstr ""
+"他のソースより、オーディオファイルに埋め込まれたアートワーク(利用可能な場合)"
 "を選択します"
 
 #: quodlibet/qltk/prefs.py:326
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
-msgstr "利用可能な場合に使用するアルバムアート画像ファイル(ワイルドカードをサポート)"
-"。複数指定する場合は、カンマで区切ってください。"
+msgstr ""
+"利用可能な場合に使用するアルバムアート画像ファイル(ワイルドカードをサポー"
+"ト)。複数指定する場合は、カンマで区切ってください。"
 
 #: quodlibet/qltk/prefs.py:330
 msgid "_Preferred image filename(s):"
@@ -6446,7 +6452,8 @@ msgstr "起動時に再生を再開する"
 #: quodlibet/qltk/prefs.py:438
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
-msgstr "シャットダウン時に音楽が再生されていた場合は、次回の起動時に自動的に再生を開"
+msgstr ""
+"シャットダウン時に音楽が再生されていた場合は、次回の起動時に自動的に再生を開"
 "始します"
 
 #: quodlibet/qltk/prefs.py:442
@@ -6496,7 +6503,8 @@ msgstr "複数ファイルの編集時に確認なしでタグの変更を保存
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
-msgstr "タグエディタでタグの値を分割するときに使用する区切り文字のセット。このリスト"
+msgstr ""
+"タグエディタでタグの値を分割するときに使用する区切り文字のセット。このリスト"
 "はスペースで区切られます。"
 
 #: quodlibet/qltk/prefs.py:626
@@ -6547,7 +6555,8 @@ msgstr "ライブラリの再構築(_B)"
 
 #: quodlibet/qltk/prefs.py:722
 msgid "Reload all songs in your library. This can take a long time."
-msgstr "ライブラリの全曲を再読込します。この処理はやや時間がかかるかもしれません。"
+msgstr ""
+"ライブラリの全曲を再読込します。この処理はやや時間がかかるかもしれません。"
 
 #: quodlibet/qltk/prefs.py:732
 msgid "Scan Directories"
@@ -6882,7 +6891,8 @@ msgstr ""
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
-msgstr "リストされたフォルダ内の曲は、ライブラリの更新時にライブラリに追加されます"
+msgstr ""
+"リストされたフォルダ内の曲は、ライブラリの更新時にライブラリに追加されます"
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
@@ -6901,7 +6911,8 @@ msgstr "移動(_M)"
 msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
-msgstr "スキャンルートを移動し(ファイルは移動しません)、含まれている全てのトラックの"
+msgstr ""
+"スキャンルートを移動し(ファイルは移動しません)、含まれている全てのトラックの"
 "メタデータを移行します。"
 
 #: quodlibet/qltk/scanbox.py:113
