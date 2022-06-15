@@ -162,7 +162,7 @@ msgstr "专辑显示"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
 #: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "关闭(_C)"
@@ -376,23 +376,23 @@ msgstr "宽屏模式"
 msgid "Cover Magnification"
 msgstr "封面放大"
 
-#: quodlibet/browsers/filesystem.py:39
+#: quodlibet/browsers/filesystem.py:42
 msgid "File System"
 msgstr "文件系统"
 
-#: quodlibet/browsers/filesystem.py:40
+#: quodlibet/browsers/filesystem.py:43
 msgid "_File System"
 msgstr "文件系统(_F)"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
 msgid "Unable to copy songs"
 msgstr "无法复制曲目"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "被选定的文件无法被复制到其它曲目列表或队列。"
 
-#: quodlibet/browsers/filesystem.py:197
+#: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
 msgstr "加入到曲库(_A)"
 
@@ -1392,15 +1392,6 @@ msgstr "缓存目录"
 msgid "Audio Backend"
 msgstr "音频后端"
 
-#: quodlibet/ext/events/auto_library_update.py:139
-msgid "Automatic Library Update"
-msgstr "自动更新库"
-
-#: quodlibet/ext/events/auto_library_update.py:140
-#, python-format
-msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr "使用 inotify 使您的库保持最新。需要 %s。"
-
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 msgid "After every play (default)"
 msgstr "每次播放完之后（默认）"
@@ -1510,7 +1501,7 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:756
 msgid "Preferences"
 msgstr "首选项"
 
@@ -1856,7 +1847,7 @@ msgstr "更改用户界面语言。"
 msgid "System Default"
 msgstr "系统默认"
 
-#: quodlibet/ext/events/language.py:70
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
 msgid "A restart is required for any changes to take effect"
 msgstr "需要重启程序才能使更改生效"
 
@@ -4754,38 +4745,43 @@ msgid "Tag \"%s\" not found."
 msgstr ""
 
 #. then (try to) load all new files
-#: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
-#: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:121
+#: quodlibet/library/file.py:156 quodlibet/library/file.py:166
+#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
+#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
+#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
 msgid "Library"
 msgstr "库"
 
-#: quodlibet/library/file.py:151
+#: quodlibet/library/file.py:156
 msgid "Checking mount points"
 msgstr "检查挂载点"
 
-#: quodlibet/library/file.py:161
+#: quodlibet/library/file.py:166
 msgid "Scanning library"
 msgstr "正在扫描曲库"
 
-#: quodlibet/library/file.py:227
+#: quodlibet/library/file.py:226
 #, python-format
 msgid "Scanning %s"
 msgstr "正在扫描 %s"
 
-#: quodlibet/library/file.py:247
+#: quodlibet/library/file.py:246
 msgid "Loading files"
 msgstr "加载文件"
 
-#: quodlibet/library/file.py:351
+#: quodlibet/library/file.py:353
 msgid "Moving library files"
 msgstr "正在移动曲库文件"
 
-#: quodlibet/library/file.py:408
+#: quodlibet/library/file.py:411
 msgid "Removing library files"
 msgstr "正在删除曲库文件"
+
+#: quodlibet/library/file.py:562
+#, python-format
+msgid "Adding watches for %s"
+msgstr ""
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6243,27 +6239,36 @@ msgstr "更新新评分"
 msgid "Scan library _on start"
 msgstr "启动时扫描曲库(_o)"
 
-#: quodlibet/qltk/prefs.py:712 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:706
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:707
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "扫描库(_S)"
 
-#: quodlibet/qltk/prefs.py:714 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "检查您的库的更改"
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:724
 msgid "Re_build Library"
 msgstr "重建库(_b)"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:727
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "重新加载你的曲库中的所有歌曲。这可能需要很长时间。"
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:739
 msgid "Scan Directories"
 msgstr "扫描目录"
 
-#: quodlibet/qltk/prefs.py:738
+#: quodlibet/qltk/prefs.py:745
 msgid "Hidden Songs"
 msgstr "隐藏的曲目"
 
@@ -6766,44 +6771,44 @@ msgstr ""
 msgid "Select all songs in all panes"
 msgstr "选中所有面板中的曲目"
 
-#: quodlibet/qltk/songlist.py:388
+#: quodlibet/qltk/songlist.py:386
 #, python-format
 msgid "_Filter on %s"
 msgstr "以 %s 过滤(_F)"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1180
 msgid "All _Headers"
 msgstr "所有标题(_H)"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1181
 msgid "_Track Headers"
 msgstr "音轨信息(_T)"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Album Headers"
 msgstr "专辑信息(_A)"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1183
 msgid "_People Headers"
 msgstr "表演者信息"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Date Headers"
 msgstr "日期信息"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1185
 msgid "_File Headers"
 msgstr "文件信息(_F)"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Production Headers"
 msgstr "制作信息"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Customize Headers…"
 msgstr "定制表头(_C)…"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Expand Column"
 msgstr "扩展列宽"
 
@@ -7546,6 +7551,13 @@ msgid ""
 msgstr ""
 "Quod Libet 是一个音乐曲库管理程序。它有多重不同的方式可以管理您的曲库，并且支"
 "持网络电台和音频源。此外它还有非常灵活的标签编辑以及搜索功能。"
+
+#~ msgid "Automatic Library Update"
+#~ msgstr "自动更新库"
+
+#, python-format
+#~ msgid "Keeps your library up to date with inotify. Requires %s."
+#~ msgstr "使用 inotify 使您的库保持最新。需要 %s。"
 
 #~ msgid ""
 #~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "

@@ -170,7 +170,7 @@ msgstr "Alben-Anzeige"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
 #: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "S_chließen"
@@ -388,25 +388,25 @@ msgstr "Breitbildmodus"
 msgid "Cover Magnification"
 msgstr "Cover-Skalierung"
 
-#: quodlibet/browsers/filesystem.py:39
+#: quodlibet/browsers/filesystem.py:42
 msgid "File System"
 msgstr "Dateisystem"
 
-#: quodlibet/browsers/filesystem.py:40
+#: quodlibet/browsers/filesystem.py:43
 msgid "_File System"
 msgstr "Dateis_ystem"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
 msgid "Unable to copy songs"
 msgstr "Titel konnten nicht kopiert werden"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Die ausgewählten Dateien konnten nicht in die Wiedergabeliste oder "
 "Warteschlange kopiert werden."
 
-#: quodlibet/browsers/filesystem.py:197
+#: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
 msgstr "_Zur Bibliothek hinzufügen"
 
@@ -1432,15 +1432,6 @@ msgstr "Cacheverzeichnis"
 msgid "Audio Backend"
 msgstr "Audio-Backend"
 
-#: quodlibet/ext/events/auto_library_update.py:139
-msgid "Automatic Library Update"
-msgstr "Automatische Bibliotheks-Aktualisierung"
-
-#: quodlibet/ext/events/auto_library_update.py:140
-#, python-format
-msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr "Hält die Bibliothek mit inotify aktuell. Benötigt %s."
-
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 msgid "After every play (default)"
 msgstr "Nach jeder Wiedergabe (Standard)"
@@ -1575,7 +1566,7 @@ msgstr "_Aktualisierungsstrategie:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:756
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -1940,7 +1931,7 @@ msgstr "Die Sprache der Benutzeroberfläche ändern."
 msgid "System Default"
 msgstr "Systemvorgabe"
 
-#: quodlibet/ext/events/language.py:70
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
 msgid "A restart is required for any changes to take effect"
 msgstr "Ein Neustart ist notwendig, damit Änderungen wirksam werden"
 
@@ -5102,38 +5093,43 @@ msgid "Tag \"%s\" not found."
 msgstr "Feld »%s« wurde nicht gefunden."
 
 #. then (try to) load all new files
-#: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
-#: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:121
+#: quodlibet/library/file.py:156 quodlibet/library/file.py:166
+#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
+#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
+#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
 msgid "Library"
 msgstr "Bibliothek"
 
-#: quodlibet/library/file.py:151
+#: quodlibet/library/file.py:156
 msgid "Checking mount points"
 msgstr "Prüfe Einhängepunkte"
 
-#: quodlibet/library/file.py:161
+#: quodlibet/library/file.py:166
 msgid "Scanning library"
 msgstr "Audio-Bibliothek wird eingelesen"
 
-#: quodlibet/library/file.py:227
+#: quodlibet/library/file.py:226
 #, python-format
 msgid "Scanning %s"
 msgstr "%s wird eingelesen"
 
-#: quodlibet/library/file.py:247
+#: quodlibet/library/file.py:246
 msgid "Loading files"
 msgstr "Lade Dateien"
 
-#: quodlibet/library/file.py:351
+#: quodlibet/library/file.py:353
 msgid "Moving library files"
 msgstr "Bibliotheksdateien werden verschoben"
 
-#: quodlibet/library/file.py:408
+#: quodlibet/library/file.py:411
 msgid "Removing library files"
 msgstr "Bibliotheksdateien werden entfernt"
+
+#: quodlibet/library/file.py:562
+#, python-format
+msgid "Adding watches for %s"
+msgstr ""
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6677,30 +6673,39 @@ msgstr "Aktualisiere Bewertungen"
 msgid "Scan library _on start"
 msgstr "Bibliothek beim _Programmstart aktualisieren"
 
+#: quodlibet/qltk/prefs.py:706
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:707
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
 # »Einlesen« würde nach einem aufwendigeren Vorgang klingen
-#: quodlibet/qltk/prefs.py:712 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "Bibliothek aktuali_sieren"
 
-#: quodlibet/qltk/prefs.py:714 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "Bibliothek auf Änderungen überprüfen"
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:724
 msgid "Re_build Library"
 msgstr "Bibliothek neu auf_bauen"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:727
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
 "Alle Titel in der Bibliothek neu laden. Dieser Vorgang dauert möglicherweise "
 "lange."
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:739
 msgid "Scan Directories"
 msgstr "Ordner einlesen"
 
-#: quodlibet/qltk/prefs.py:738
+#: quodlibet/qltk/prefs.py:745
 msgid "Hidden Songs"
 msgstr "Ausgeblendete Titel"
 
@@ -7237,44 +7242,44 @@ msgstr "Die letzte rückgängig gemachte Änderung wiederholen"
 msgid "Select all songs in all panes"
 msgstr "Alle Titel in allen Leisten auswählen"
 
-#: quodlibet/qltk/songlist.py:388
+#: quodlibet/qltk/songlist.py:386
 #, python-format
 msgid "_Filter on %s"
 msgstr "Nach %s _filtern"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1180
 msgid "All _Headers"
 msgstr "_Alle Listenspalten"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1181
 msgid "_Track Headers"
 msgstr "Listenspalten zu _Titeln"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Album Headers"
 msgstr "Listenspalten zu _Alben"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1183
 msgid "_People Headers"
 msgstr "Listenspalten zu _Mitwirkenden"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Date Headers"
 msgstr "Listenspalten zum _Datum"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1185
 msgid "_File Headers"
 msgstr "Listenspalten zu _Dateien"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Production Headers"
 msgstr "Listenspalten zur _Produktion"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Customize Headers…"
 msgstr "Listenspalten _anpassen …"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Expand Column"
 msgstr "Listenspalte ausd_ehnen"
 
@@ -8059,6 +8064,13 @@ msgstr ""
 "Audiobibliothek auf verschiedene Arten darstellen und unterstützt "
 "Internetradio sowie Audio-Feeds. Quod Libet enthält äußerst flexible "
 "Funktionen zur Metadaten-Bearbeitung und Suche."
+
+#~ msgid "Automatic Library Update"
+#~ msgstr "Automatische Bibliotheks-Aktualisierung"
+
+#, python-format
+#~ msgid "Keeps your library up to date with inotify. Requires %s."
+#~ msgstr "Hält die Bibliothek mit inotify aktuell. Benötigt %s."
 
 #~ msgid ""
 #~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "

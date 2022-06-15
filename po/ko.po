@@ -162,7 +162,7 @@ msgstr "앨범 표시"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
 #: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "닫기"
@@ -379,23 +379,23 @@ msgstr "와이드 모드"
 msgid "Cover Magnification"
 msgstr "커버 확대"
 
-#: quodlibet/browsers/filesystem.py:39
+#: quodlibet/browsers/filesystem.py:42
 msgid "File System"
 msgstr "파일 시스템"
 
-#: quodlibet/browsers/filesystem.py:40
+#: quodlibet/browsers/filesystem.py:43
 msgid "_File System"
 msgstr "_파일 시스템"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
 msgid "Unable to copy songs"
 msgstr "노래를 복사할 수 없습니다"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "선택한 파일은 다른 노래 목록이나 대기열로 복사 할 수 없습니다."
 
-#: quodlibet/browsers/filesystem.py:197
+#: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
 msgstr "_라이브러리에 추가"
 
@@ -1414,15 +1414,6 @@ msgstr "디렉토리"
 msgid "Audio Backend"
 msgstr "오디오 백엔드"
 
-#: quodlibet/ext/events/auto_library_update.py:139
-msgid "Automatic Library Update"
-msgstr ""
-
-#: quodlibet/ext/events/auto_library_update.py:140
-#, python-format
-msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr ""
-
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 msgid "After every play (default)"
 msgstr ""
@@ -1532,7 +1523,7 @@ msgstr "새 방송국"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:756
 #, fuzzy
 msgid "Preferences"
 msgstr "설정"
@@ -1883,7 +1874,7 @@ msgstr ""
 msgid "System Default"
 msgstr ""
 
-#: quodlibet/ext/events/language.py:70
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
 msgid "A restart is required for any changes to take effect"
 msgstr ""
 
@@ -4959,38 +4950,43 @@ msgid "Tag \"%s\" not found."
 msgstr ""
 
 #. then (try to) load all new files
-#: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
-#: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:121
+#: quodlibet/library/file.py:156 quodlibet/library/file.py:166
+#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
+#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
+#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
 msgid "Library"
 msgstr "라이브러리"
 
-#: quodlibet/library/file.py:151
+#: quodlibet/library/file.py:156
 msgid "Checking mount points"
 msgstr "마운트 지점 확인"
 
-#: quodlibet/library/file.py:161
+#: quodlibet/library/file.py:166
 msgid "Scanning library"
 msgstr "라이브러리 스캐닝"
 
-#: quodlibet/library/file.py:227
+#: quodlibet/library/file.py:226
 #, python-format
 msgid "Scanning %s"
 msgstr "스캐닝 %s"
 
-#: quodlibet/library/file.py:247
+#: quodlibet/library/file.py:246
 msgid "Loading files"
 msgstr ""
 
-#: quodlibet/library/file.py:351
+#: quodlibet/library/file.py:353
 #, fuzzy
 msgid "Moving library files"
 msgstr "라이브러리 스캐닝"
 
-#: quodlibet/library/file.py:408
+#: quodlibet/library/file.py:411
 msgid "Removing library files"
+msgstr ""
+
+#: quodlibet/library/file.py:562
+#, python-format
+msgid "Adding watches for %s"
 msgstr ""
 
 #: quodlibet/main.py:50
@@ -6533,31 +6529,40 @@ msgstr "새 방송국"
 msgid "Scan library _on start"
 msgstr "라이브러리 새로고침"
 
-#: quodlibet/qltk/prefs.py:712 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:706
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:707
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 #, fuzzy
 msgid "_Scan Library"
 msgstr "라이브러리 검색"
 
-#: quodlibet/qltk/prefs.py:714 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "라이브러리 변경 체크"
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:724
 #, fuzzy
 msgid "Re_build Library"
 msgstr "라이브러리 새로불러오기"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:727
 #, fuzzy
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "라이브러리의 모든 노래를 새로불러오기"
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:739
 #, fuzzy
 msgid "Scan Directories"
 msgstr "디렉토리 스캔"
 
-#: quodlibet/qltk/prefs.py:738
+#: quodlibet/qltk/prefs.py:745
 #, fuzzy
 msgid "Hidden Songs"
 msgstr "No Songs"
@@ -7104,46 +7109,46 @@ msgstr ""
 msgid "Select all songs in all panes"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:388
+#: quodlibet/qltk/songlist.py:386
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filter on %s"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1180
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Album Headers"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1181
 msgid "_Track Headers"
 msgstr "_Track Headers"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Album Headers"
 msgstr "_Album Headers"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1183
 msgid "_People Headers"
 msgstr "_People Headers"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Date Headers"
 msgstr "_Date Headers"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1185
 msgid "_File Headers"
 msgstr "_File Headers"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Production Headers"
 msgstr "_Production Headers"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1201
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Customize Headers..."
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Expand Column"
 msgstr ""
 

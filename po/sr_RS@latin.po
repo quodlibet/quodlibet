@@ -173,7 +173,7 @@ msgstr "Prikaz Albuma"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
 #: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:773
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Zatvori"
@@ -391,23 +391,23 @@ msgstr "Širok režim"
 msgid "Cover Magnification"
 msgstr "Uveličavanje omota"
 
-#: quodlibet/browsers/filesystem.py:39
+#: quodlibet/browsers/filesystem.py:42
 msgid "File System"
 msgstr "Sistem datoteka"
 
-#: quodlibet/browsers/filesystem.py:40
+#: quodlibet/browsers/filesystem.py:43
 msgid "_File System"
 msgstr "_Sistem datoteka"
 
-#: quodlibet/browsers/filesystem.py:124 quodlibet/qltk/songlist.py:265
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
 msgid "Unable to copy songs"
 msgstr "Ne mogu da umnožim pesme"
 
-#: quodlibet/browsers/filesystem.py:125 quodlibet/qltk/songlist.py:266
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "Odabrane stavke ne mogu biti umnožene u drugi niz ili listu pesama."
 
-#: quodlibet/browsers/filesystem.py:197
+#: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
 msgstr "_Dodaj u biblioteku"
 
@@ -1429,15 +1429,6 @@ msgstr "Keš direktorijum"
 msgid "Audio Backend"
 msgstr "Audio pozadina"
 
-#: quodlibet/ext/events/auto_library_update.py:139
-msgid "Automatic Library Update"
-msgstr "Automatsko ažuriranje bibilioteke"
-
-#: quodlibet/ext/events/auto_library_update.py:140
-#, python-format
-msgid "Keeps your library up to date with inotify. Requires %s."
-msgstr "Drži vašu biblioteku ažurnom koristeći inotify. Zahteva %s."
-
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 #, fuzzy
 msgid "After every play (default)"
@@ -1550,7 +1541,7 @@ msgstr "_Ažuriraj stanice"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:756
 msgid "Preferences"
 msgstr "Postavke"
 
@@ -1910,7 +1901,7 @@ msgstr "Menja jezik korisničkog sučelja."
 msgid "System Default"
 msgstr "Podrazumevana podešavanja"
 
-#: quodlibet/ext/events/language.py:70
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
 msgid "A restart is required for any changes to take effect"
 msgstr "Ponovno pokretanje je potrebno da bi izmene imale efekat"
 
@@ -5022,40 +5013,45 @@ msgid "Tag \"%s\" not found."
 msgstr "Oznaka \"%s\" nije nađena."
 
 #. then (try to) load all new files
-#: quodlibet/library/file.py:151 quodlibet/library/file.py:161
-#: quodlibet/library/file.py:228 quodlibet/library/file.py:247
-#: quodlibet/library/file.py:351 quodlibet/library/file.py:408
-#: quodlibet/qltk/information.py:272 quodlibet/qltk/prefs.py:700
-#: quodlibet/util/library.py:121
+#: quodlibet/library/file.py:156 quodlibet/library/file.py:166
+#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
+#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
+#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
 msgid "Library"
 msgstr "Biblioteka"
 
-#: quodlibet/library/file.py:151
+#: quodlibet/library/file.py:156
 msgid "Checking mount points"
 msgstr "Proveravam priključne tačke"
 
-#: quodlibet/library/file.py:161
+#: quodlibet/library/file.py:166
 msgid "Scanning library"
 msgstr "Pretraga biblioteke"
 
-#: quodlibet/library/file.py:227
+#: quodlibet/library/file.py:226
 #, python-format
 msgid "Scanning %s"
 msgstr "Pretraga %s"
 
-#: quodlibet/library/file.py:247
+#: quodlibet/library/file.py:246
 msgid "Loading files"
 msgstr "Učitavam datoteke"
 
-#: quodlibet/library/file.py:351
+#: quodlibet/library/file.py:353
 #, fuzzy
 msgid "Moving library files"
 msgstr "Pretraga biblioteke"
 
-#: quodlibet/library/file.py:408
+#: quodlibet/library/file.py:411
 #, fuzzy
 msgid "Removing library files"
 msgstr "Ukloni filtere aktivnog pretraživača"
+
+#: quodlibet/library/file.py:562
+#, python-format
+msgid "Adding watches for %s"
+msgstr ""
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6591,27 +6587,36 @@ msgstr "Ažuriram za nove ocene"
 msgid "Scan library _on start"
 msgstr "Skeniraj biblioteku _pri pokretanju"
 
-#: quodlibet/qltk/prefs.py:712 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:706
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:707
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "_Skeniraj biblioteku"
 
-#: quodlibet/qltk/prefs.py:714 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "Proveri promene u biblioteci"
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:724
 msgid "Re_build Library"
 msgstr "Ponovo _izgradi biblioteku"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:727
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Ponovo učitaj sve pesme u biblioteku. Ovo može potrajati veoma dugo."
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:739
 msgid "Scan Directories"
 msgstr "Skeniraj direktorijume"
 
-#: quodlibet/qltk/prefs.py:738
+#: quodlibet/qltk/prefs.py:745
 msgid "Hidden Songs"
 msgstr "Skrivene pesme"
 
@@ -7134,44 +7139,44 @@ msgstr "Ponovi zadnju izmenu"
 msgid "Select all songs in all panes"
 msgstr "Odaberi sve pesme u svim panoima"
 
-#: quodlibet/qltk/songlist.py:388
+#: quodlibet/qltk/songlist.py:386
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtriraj po %s"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1180
 msgid "All _Headers"
 msgstr "Sva _zaglavlja"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1181
 msgid "_Track Headers"
 msgstr "_Zapis zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1182
 msgid "_Album Headers"
 msgstr "_Album zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1183
 msgid "_People Headers"
 msgstr "_Ljudi zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Date Headers"
 msgstr "_Datum zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1185
 msgid "_File Headers"
 msgstr "_Datoteka zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Production Headers"
 msgstr "_Produkcija zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Customize Headers…"
 msgstr "_Prolagodi zaglavlje…"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Expand Column"
 msgstr "_Proširi kolonu"
 
@@ -7965,6 +7970,13 @@ msgstr ""
 "da pregledate vašu audio zbirku/biblioteku, a takođe poseduje i podršku za "
 "internet radio i audio izvore. Ima jako fleksibilne sposobnosti uređivanja "
 "metapodataka oznaka i pretrage."
+
+#~ msgid "Automatic Library Update"
+#~ msgstr "Automatsko ažuriranje bibilioteke"
+
+#, python-format
+#~ msgid "Keeps your library up to date with inotify. Requires %s."
+#~ msgstr "Drži vašu biblioteku ažurnom koristeći inotify. Zahteva %s."
 
 #~ msgid ""
 #~ "Allows control of Quod Libet using the MPRIS 2 D-Bus Interface "
