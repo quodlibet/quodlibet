@@ -45,6 +45,7 @@ quodlibet/ext/events/automask.py
 quodlibet/ext/events/autorating.py
 quodlibet/ext/events/bansheeimport.py
 quodlibet/ext/events/clock.py
+quodlibet/ext/events/discord_status.py
 quodlibet/ext/events/equalizer.py
 quodlibet/ext/events/gajim_status.py
 quodlibet/ext/events/headphonemon.py
