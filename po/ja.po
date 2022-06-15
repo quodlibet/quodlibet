@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-14 19:59+0000\n"
+"PO-Revision-Date: 2022-06-16 04:38+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -375,9 +375,8 @@ msgstr "ワイドモード"
 
 #: quodlibet/browsers/covergrid/prefs.py:114
 #: quodlibet/browsers/covergrid/prefs.py:115
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "新しいラジオ局はありません"
+msgstr "カバーの表示倍率"
 
 #: quodlibet/browsers/filesystem.py:42
 msgid "File System"
@@ -656,16 +655,15 @@ msgstr "全て"
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:157
 msgid "Small"
-msgstr ""
+msgstr "スモール"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "ワイド"
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "表示するカラム"
+msgstr "コラムナー"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -5882,18 +5880,16 @@ msgid "Folders"
 msgstr "フォルダ"
 
 #: quodlibet/qltk/filesel.py:254
-#, fuzzy
 msgid "_New Folder…"
-msgstr "新規フォルダ"
+msgstr "新しいフォルダ(_N)…"
 
 #: quodlibet/qltk/filesel.py:263
-#, fuzzy
 msgid "_Select all Sub-Folders"
-msgstr "全て選択(_S)"
+msgstr "サブフォルダを全て選択(_S)"
 
 #: quodlibet/qltk/filesel.py:373
 msgid "New Folder"
-msgstr "新規フォルダ"
+msgstr "新しいフォルダ"
 
 #: quodlibet/qltk/filesel.py:373
 msgid "Enter a name for the new folder:"
