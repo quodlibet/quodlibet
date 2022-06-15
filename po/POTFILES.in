@@ -40,7 +40,6 @@ quodlibet/ext/events/advanced_preferences.py
 quodlibet/ext/events/animosd/main.py
 quodlibet/ext/events/animosd/prefs.py
 quodlibet/ext/events/appinfo.py
-quodlibet/ext/events/auto_library_update.py
 quodlibet/ext/events/auto_update_tags_in_files.py
 quodlibet/ext/events/automask.py
 quodlibet/ext/events/autorating.py

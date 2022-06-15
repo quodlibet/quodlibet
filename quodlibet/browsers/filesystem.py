@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2012,2016 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@
 # needs them to be there.
 
 import os
+from typing import TypeVar, Iterable, List
 
 from gi.repository import Gtk, Gdk
 from senf import fsn2uri, fsn2bytes, bytes2fsn
@@ -30,6 +31,8 @@ from quodlibet.util.library import get_scan_dirs
 from quodlibet.util.dprint import print_d
 from quodlibet.util.path import normalize_path
 from quodlibet.util import connect_obj
+
+T = TypeVar("T")
 
 
 class FileSystem(Browser, Gtk.HBox):
@@ -69,8 +72,12 @@ class FileSystem(Browser, Gtk.HBox):
 
     @classmethod
     def __remove_because_added(klass, library, songs):
-        songs = list(filter(klass.__library.__contains__, songs))
+        songs = klass._only_known(songs)
         klass.__library.remove(songs)
+
+    @classmethod
+    def _only_known(cls, songs: Iterable[T]) -> List[T]:
+        return [s for s in songs if cls.__library.__contains__(s)]  # type:ignore
 
     def __init__(self, library):
         super().__init__()
@@ -84,8 +91,7 @@ class FileSystem(Browser, Gtk.HBox):
                    ("text/uri-list", 0, self.TARGET_EXT)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK,
-                           targets, Gdk.DragAction.COPY)
+        dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         dt.connect('drag-data-get', self.__drag_data_get)
 
         sel = dt.get_selection()
@@ -118,7 +124,7 @@ class FileSystem(Browser, Gtk.HBox):
         for songs in self.__find_songs(view.get_selection()):
             pass
         if tid == self.TARGET_QL:
-            cant_add = list(filter(lambda s: not s.can_add, songs))
+            cant_add = [s for s in songs if not s.can_add]
             if cant_add:
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self), _("Unable to copy songs"),
@@ -126,7 +132,7 @@ class FileSystem(Browser, Gtk.HBox):
                       "song lists or the queue.")).run()
                 ctx.drag_abort(etime)
                 return
-            to_add = list(filter(self.__library.__contains__, songs))
+            to_add = self._only_known(songs)
             self.__add_songs(view, to_add)
 
             qltk.selection_set_songs(sel, songs)
@@ -208,11 +214,11 @@ class FileSystem(Browser, Gtk.HBox):
         return menu
 
     def __add_songs(self, item, songs):
-        songs = list(filter(self.__library.__contains__, songs))
+        songs = self._only_known(songs)
         self.__library.librarian.move(songs, self.__library, self.__glibrary)
 
     def __remove_songs(self, songs):
-        songs = list(filter(self.__glibrary.__contains__, songs))
+        songs = [s for s in songs if self.__glibrary.__contains__(s)]
         self.__library.librarian.move(songs, self.__glibrary, self.__library)
 
     def __find_songs(self, selection):
@@ -222,8 +228,9 @@ class FileSystem(Browser, Gtk.HBox):
         to_add = []
         for dir in dirs:
             try:
-                for file in list(filter(formats.filter,
-                                        sorted(os.listdir(dir)))):
+                for file in sorted(os.listdir(dir)):
+                    if not formats.filter(file):
+                        continue
                     raw_path = os.path.join(dir, file)
                     fn = normalize_path(raw_path, canonicalise=True)
                     if fn in self.__glibrary:

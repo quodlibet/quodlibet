@@ -131,7 +131,6 @@ jobs:
           python3-mutagen \
           python3-pip \
           python3-polib \
-          python3-pyinotify \
           python3-pytest \
           python3-setuptools \
           xvfb
@@ -139,7 +138,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           xvfbwrapper \
           pytest-faulthandler \
-          flake8 \
+          flake8==3.9.2 \
           flaky
 
     - name: Run tests

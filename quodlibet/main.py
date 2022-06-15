@@ -210,7 +210,7 @@ def main(argv=None):
 
     tracker.destroy()
     quodlibet.library.save()
-
+    quodlibet.library.destroy()
     config.save()
 
     session_client.close()

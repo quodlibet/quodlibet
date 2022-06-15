@@ -74,7 +74,7 @@ def get_importables(folder):
                 dirs.remove(d)
         if not first and any((is_init(n) for n in names)):
             yield (basename(root), root,
-                   list(filter(is_ok, [join(root, name) for name in names])))
+                   [d for d in (join(root, name) for name in names) if is_ok(d)])
         else:
             for name in filter(is_ok, names):
                 yield (splitext(name)[0], join(root, name), [join(root, name)])
