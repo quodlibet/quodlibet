@@ -1623,6 +1623,38 @@ msgstr "Νανούρισμα"
 msgid "Fades out and pauses your music."
 msgstr "Σταδιακή σίγαση και μετά παύση της μουσικής σας."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Μήνυμα Κατάστασης Gajim"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Μήνυμα Κατάστασης Gajim"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Αλλαγή του μηνύματος κατάστασης του Gajim σύμφωνα με το τι ακούτε."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Παυμένο:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Κατάσταση"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Κατάσταση"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Επίπεδο"

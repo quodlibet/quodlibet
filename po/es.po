@@ -1627,6 +1627,40 @@ msgstr "Arrullo"
 msgid "Fades out and pauses your music."
 msgstr "Disminuye gradualmente el volumen de la música y la pone en pausa."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Mensaje de estado de Gajim"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Mensaje de estado de Gajim"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr ""
+"Cambia el mensaje de estado de Gajim según lo que esté escuchando en este "
+"momento."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "En pausa:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Texto de estado"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Texto de estado"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Plano"

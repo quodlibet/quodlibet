@@ -1638,6 +1638,38 @@ msgstr "Nattasang"
 msgid "Fades out and pauses your music."
 msgstr "Toner ut og setter musikk på pause."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Gajim-statusmelding"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Gajim-statusmelding"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Endrer Gajim-statusmelding basert på hva du spiller av."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Pauset:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Statustekst"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Statustekst"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Flat"

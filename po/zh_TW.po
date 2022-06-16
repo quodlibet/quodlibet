@@ -1648,6 +1648,37 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "要放棄標籤的變更？"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "要放棄標籤的變更？"
+
+#: quodlibet/ext/events/discord_status.py:46
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "播放器"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "模式"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "模式"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr ""
