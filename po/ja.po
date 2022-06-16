@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-16 04:38+0000\n"
+"PO-Revision-Date: 2022-06-17 10:18+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -421,9 +421,8 @@ msgid "Add stations"
 msgstr "新規ラジオ局"
 
 #: quodlibet/browsers/iradio.py:267
-#, fuzzy
 msgid "Downloading station list"
-msgstr "ファイルのダウンロード"
+msgstr "ラジオ局リストのダウンロード中"
 
 #: quodlibet/browsers/iradio.py:368
 msgid "New Station"
@@ -580,24 +579,21 @@ msgid "_Internet Radio"
 msgstr "インターネットラジオ(_I)"
 
 #: quodlibet/browsers/iradio.py:573
-#, fuzzy
 msgid "_New Station…"
-msgstr "新規ラジオ局"
+msgstr "新規ラジオ局(_N)…"
 
 #: quodlibet/browsers/iradio.py:576
-#, fuzzy
 msgid "_Update Stations"
-msgstr "新規ラジオ局(_N)"
+msgstr "ラジオ局の更新(_U)"
 
 #: quodlibet/browsers/iradio.py:603
-#, fuzzy
 msgid "All Stations"
-msgstr "新規ラジオ局"
+msgstr "全てのラジオ局"
 
 #. TODO: support for ~#rating=!None etc (#1940)
 #: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
-msgstr ""
+msgstr "お気に入り"
 
 #: quodlibet/browsers/iradio.py:615
 msgid "No Category"
@@ -621,14 +617,12 @@ msgid "All stations listed are already in your library."
 msgstr "一覧にあるラジオ局は全てライブラリに登録されています。"
 
 #: quodlibet/browsers/iradio.py:874
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "プレイリストへ追加(_A)"
+msgstr "お気に入りに追加"
 
 #: quodlibet/browsers/iradio.py:878
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "プレイリストから削除(_R)"
+msgstr "お気に入りから削除"
 
 #: quodlibet/browsers/iradio.py:978
 #, python-format
@@ -830,21 +824,20 @@ msgstr "ペインブラウザ"
 
 #: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
-msgstr ""
+msgstr "SoundCloud(_C)"
 
 #: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "検索"
 
 #: quodlibet/browsers/soundcloud/main.py:70
-#, fuzzy
 msgid "My tracks"
-msgstr "トラック"
+msgstr "マイトラック"
 
 #: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "%s を開く"
 
 #: quodlibet/browsers/soundcloud/main.py:444
 #, fuzzy
@@ -868,7 +861,7 @@ msgstr ""
 #: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
-msgstr ""
+msgstr "%s にログイン"
 
 #: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
@@ -5885,7 +5878,7 @@ msgstr ""
 
 #: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:956
 msgid "_About"
-msgstr ""
+msgstr "バージョン情報(_A)"
 
 #: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:978
 msgid "_Check for Updates…"
@@ -7184,9 +7177,8 @@ msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] ""
 
 #: quodlibet/qltk/songsmenu.py:138
-#, fuzzy
 msgid "Configure Plugins…"
-msgstr "検索文字列のカラー表示"
+msgstr "プラグインの設定…"
 
 #: quodlibet/qltk/songsmenu.py:322
 msgid "Add to _Queue"
