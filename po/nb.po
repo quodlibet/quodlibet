@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-03-31 17:00+0000\n"
+"PO-Revision-Date: 2022-06-17 10:18+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.12-dev\n"
+"X-Generator: Weblate 4.13-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -2022,6 +2022,10 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"Tillater kontroll av Quod Libet ved bruk av <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a>-D-Bus-grensesnittsspesifikasjonen. "
+"Dette tillater forskjellig integrasjon i Linux-skrivebord (f.eks. "
+"multimediataster)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -5167,9 +5171,9 @@ msgid "Removing library files"
 msgstr "Fjerner bibliotekfiler …"
 
 #: quodlibet/library/file.py:562
-#, python-format
+#, fuzzy, python-format
 msgid "Adding watches for %s"
-msgstr ""
+msgstr "Legger til oppsyn av %s"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6712,13 +6716,15 @@ msgid "Scan library _on start"
 msgstr "Søk gjennom bibliotek ved _oppstart"
 
 #: quodlibet/qltk/prefs.py:706
+#, fuzzy
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "_Hold øye endringer i mapper"
 
 #: quodlibet/qltk/prefs.py:707
+#, fuzzy
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
-msgstr ""
+msgstr "Oppsyn med mapper for tillegg, sletting og endring av navn av filer."
 
 #: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
