@@ -1613,6 +1613,39 @@ msgstr "Godnatsang"
 msgid "Fades out and pauses your music."
 msgstr "Udtoner og sætter din musik på pause."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Gajim-statusmeddelelse"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Gajim-statusmeddelelse"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr ""
+"Skifter Gajim-statusmeddelelse i henhold til hvad du lytter til i øjeblikket."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Sat på pause:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Statustekst"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Statustekst"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Flad"

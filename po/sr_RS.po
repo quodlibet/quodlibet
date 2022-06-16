@@ -1616,6 +1616,38 @@ msgstr "Успаванка"
 msgid "Fades out and pauses your music."
 msgstr "Смањује и паузира музику."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Gajim статус поруке"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Gajim статус поруке"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Мења Gajim статусну поруку у оно шта тренутно слушате."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Паузирано:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Статус текст"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Статус текст"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Равно"

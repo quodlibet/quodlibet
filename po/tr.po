@@ -1626,6 +1626,38 @@ msgstr "Ninni"
 msgid "Fades out and pauses your music."
 msgstr "Müziğinizi kısarak duraklatır."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Gajim Durum İletisi"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Gajim Durum İletisi"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Gajim durum iletisini şuan dinlediğiniz şeye göre değiştirir."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Duraklatıldı:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Durum Metni"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Durum Metni"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Düz"

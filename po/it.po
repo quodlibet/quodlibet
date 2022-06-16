@@ -1620,6 +1620,40 @@ msgstr "Ninna nanna"
 msgid "Fades out and pauses your music."
 msgstr "Sfuma e mette in pausa la tua musica."
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Messaggio di stato di Gajim"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Messaggio di stato di Gajim"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr ""
+"Cambia il messaggio di stato di Gajim in accordo con quello che stai "
+"ascoltando."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "In pausa:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Testo di stato"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Testo di stato"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr ""

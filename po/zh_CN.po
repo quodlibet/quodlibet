@@ -1574,6 +1574,38 @@ msgstr "摇篮曲"
 msgid "Fades out and pauses your music."
 msgstr "淡出并暂停播放音乐。"
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Gajim 状态消息"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Gajim 状态消息"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "根据您当前正在收听的内容更改 Gajim 状态。"
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "暂停"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "状态文本"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "状态文本"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "平坦"

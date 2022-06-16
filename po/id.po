@@ -1573,6 +1573,36 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Pesan Status Gajim"
+
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Pesan Status Gajim"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Ubah pesan status Gajim tergantung apa yang Anda sedang dengar."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "dijeda"
+
+#: quodlibet/ext/events/discord_status.py:136
+msgid "Status Line #1"
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:147
+msgid "Status Line #2"
+msgstr ""
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr ""

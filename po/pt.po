@@ -1630,6 +1630,42 @@ msgid "Fades out and pauses your music."
 msgstr ""
 "Diminui o volume e pausa a sua música automaticamente no horário escolhido."
 
+# Tentei seguir as traduções do próprio Gajim.
+# Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
+#: quodlibet/ext/events/discord_status.py:44
+#, fuzzy
+msgid "Discord status message"
+msgstr "Status do Gajim"
+
+# Tentei seguir as traduções do próprio Gajim.
+# Ver https://dev.gajim.org/gajim/gajim/blob/master/po/pt_BR.po
+#: quodlibet/ext/events/discord_status.py:45
+#, fuzzy
+msgid "Discord Status Message"
+msgstr "Status do Gajim"
+
+#: quodlibet/ext/events/discord_status.py:46
+#, fuzzy
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr "Altera a mensagem de estado do Gajim conforme o que escuta."
+
+#: quodlibet/ext/events/discord_status.py:85
+#, fuzzy
+msgid "Paused"
+msgstr "Pausado:"
+
+#: quodlibet/ext/events/discord_status.py:136
+#, fuzzy
+msgid "Status Line #1"
+msgstr "Status"
+
+#: quodlibet/ext/events/discord_status.py:147
+#, fuzzy
+msgid "Status Line #2"
+msgstr "Status"
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr "Achatado"

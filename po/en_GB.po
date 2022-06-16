@@ -1566,6 +1566,32 @@ msgstr ""
 msgid "Fades out and pauses your music."
 msgstr ""
 
+#: quodlibet/ext/events/discord_status.py:44
+msgid "Discord status message"
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:45
+msgid "Discord Status Message"
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:46
+msgid ""
+"Change your Discord status message according to what you're currently "
+"listening to."
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:85
+msgid "Paused"
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:136
+msgid "Status Line #1"
+msgstr ""
+
+#: quodlibet/ext/events/discord_status.py:147
+msgid "Status Line #2"
+msgstr ""
+
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
 msgstr ""
