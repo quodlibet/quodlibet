@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-10 17:14+0000\n"
+"PO-Revision-Date: 2022-06-17 10:18+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -1648,38 +1648,32 @@ msgid "Fades out and pauses your music."
 msgstr "Abaisse le son et met votre musique en pause."
 
 #: quodlibet/ext/events/discord_status.py:44
-#, fuzzy
 msgid "Discord status message"
-msgstr "Message de Statut Gajim"
+msgstr "Message de statut Discord"
 
 #: quodlibet/ext/events/discord_status.py:45
-#, fuzzy
 msgid "Discord Status Message"
-msgstr "Message de Statut Gajim"
+msgstr "Message de Statut Discord"
 
 #: quodlibet/ext/events/discord_status.py:46
-#, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
-"Modifie le message de statut de Gajim en fonction de ce que vous écoutez "
+"Modifiez votre message de statut Discord en fonction de ce que vous écoutez "
 "actuellement."
 
 #: quodlibet/ext/events/discord_status.py:85
-#, fuzzy
 msgid "Paused"
-msgstr "En pause :"
+msgstr "En pause"
 
 #: quodlibet/ext/events/discord_status.py:136
-#, fuzzy
 msgid "Status Line #1"
-msgstr "Texte indiquant le statut"
+msgstr "Ligne d'état #1"
 
 #: quodlibet/ext/events/discord_status.py:147
-#, fuzzy
 msgid "Status Line #2"
-msgstr "Texte indiquant le statut"
+msgstr "Ligne d'état #2"
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
@@ -5155,7 +5149,7 @@ msgstr "Suppression de fichiers de la bibliothèque"
 #: quodlibet/library/file.py:562
 #, python-format
 msgid "Adding watches for %s"
-msgstr ""
+msgstr "Ajout de surveillances pour %s"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6701,12 +6695,14 @@ msgstr "Rafraîchir la bibliothèque au démarrage"
 
 #: quodlibet/qltk/prefs.py:706
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "_Surveillance des répertoires en cas de changement"
 
 #: quodlibet/qltk/prefs.py:707
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Surveillance des répertoires de la bibliothèque pour les ajouts, "
+"suppressions et renommages de fichiers externes."
 
 #: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
