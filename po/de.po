@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-10 17:14+0000\n"
+"PO-Revision-Date: 2022-06-20 20:18+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -1643,38 +1643,32 @@ msgid "Fades out and pauses your music."
 msgstr "Blendet die Musik aus und pausiert sie."
 
 #: quodlibet/ext/events/discord_status.py:44
-#, fuzzy
 msgid "Discord status message"
-msgstr "Gajim-Statusnachricht"
+msgstr "Discord-Statusnachricht"
 
 #: quodlibet/ext/events/discord_status.py:45
-#, fuzzy
 msgid "Discord Status Message"
-msgstr "Gajim-Statusnachricht"
+msgstr "Discord-Statusnachricht"
 
 #: quodlibet/ext/events/discord_status.py:46
-#, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
-"Aktualisiert Ihre Gajim-Statusnachricht entsprechend dem gerade abgespielten "
-"Titel."
+"Aktualisiert Ihre Discord-Statusnachricht entsprechend dem gerade "
+"abgespielten Titel."
 
 #: quodlibet/ext/events/discord_status.py:85
-#, fuzzy
 msgid "Paused"
-msgstr "Pausiert:"
+msgstr "Pausiert"
 
 #: quodlibet/ext/events/discord_status.py:136
-#, fuzzy
 msgid "Status Line #1"
-msgstr "Statustext"
+msgstr "Statuszeile 1"
 
 #: quodlibet/ext/events/discord_status.py:147
-#, fuzzy
 msgid "Status Line #2"
-msgstr "Statustext"
+msgstr "Statuszeile 2"
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
@@ -5163,7 +5157,7 @@ msgstr "Bibliotheksdateien werden entfernt"
 #: quodlibet/library/file.py:562
 #, python-format
 msgid "Adding watches for %s"
-msgstr ""
+msgstr "Füge Überwachungen für %s hinzu"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6709,12 +6703,14 @@ msgstr "Bibliothek beim _Programmstart aktualisieren"
 
 #: quodlibet/qltk/prefs.py:706
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "Verzeichnisse auf Änderungen über_wachen"
 
 #: quodlibet/qltk/prefs.py:707
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Bibliotheksverzeichnisse automatisch auf externe Dateiänderungen hin "
+"überwachen."
 
 # »Einlesen« würde nach einem aufwendigeren Vorgang klingen
 #: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
