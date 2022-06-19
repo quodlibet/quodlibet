@@ -470,7 +470,7 @@ class WatchedFileLibraryMixin(FileLibrary):
             file_path = Path(file_path)
             other_path = (Path(normalize_path(other_file.get_path(), True))
                           if other_file else None)
-            if event == Event.CREATED:
+            if event in (Event.CREATED, Event.MOVED_IN):
                 if file_path.is_dir():
                     self.monitor_dir(file_path)
                     copool.add(self.scan, [str(file_path)])
