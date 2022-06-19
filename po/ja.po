@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-17 10:18+0000\n"
+"PO-Revision-Date: 2022-06-20 20:18+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -872,9 +872,8 @@ msgid "Enter Soundcloud auth code:"
 msgstr ""
 
 #: quodlibet/cli.py:50
-#, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libetが起動していません。"
+msgstr "Quod Libet は実行中ではありません ('--run' を追加すると起動)"
 
 #: quodlibet/cli.py:86
 msgid "a music library and player"
@@ -895,7 +894,7 @@ msgstr "直ちに再生開始"
 
 #: quodlibet/cli.py:91
 msgid "Don't show any windows on start"
-msgstr ""
+msgstr "ウィンドウを表示せずに起動"
 
 #: quodlibet/cli.py:94
 msgid "Jump to next song"
@@ -903,7 +902,7 @@ msgstr "次の曲へジャンプ"
 
 #: quodlibet/cli.py:96
 msgid "Jump to previous song or restart if near the beginning"
-msgstr ""
+msgstr "前の曲にジャンプするか、冒頭に近い場合は再スタート"
 
 #: quodlibet/cli.py:97
 msgid "Jump to previous song"
@@ -922,9 +921,8 @@ msgid "Toggle play/pause mode"
 msgstr "再生/一時停止の切替"
 
 #: quodlibet/cli.py:101
-#, fuzzy
 msgid "Stop playback"
-msgstr "再生開始"
+msgstr "再生停止"
 
 #: quodlibet/cli.py:102
 msgid "Turn up volume"
@@ -936,11 +934,11 @@ msgstr "音量を下げる"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
-msgstr ""
+msgstr "再生中の曲の評価を1つ上げる"
 
 #: quodlibet/cli.py:105
 msgid "Decrease rating of playing song by one star"
-msgstr ""
+msgstr "再生中の曲の評価を1つ下げる"
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
@@ -960,21 +958,19 @@ msgstr "メインウィンドウの表示/非表示切り替え"
 
 #: quodlibet/cli.py:110
 msgid "Focus the running player"
-msgstr "起動中のプレイヤーにフォーカス"
+msgstr "実行中のプレイヤーにフォーカス"
 
 #: quodlibet/cli.py:111
 msgid "Remove active browser filters"
 msgstr "アクティブなフィルタを削除"
 
 #: quodlibet/cli.py:112
-#, fuzzy
 msgid "Refresh and rescan library"
-msgstr "ライブラリの再表示(_f)"
+msgstr "ライブラリのリフレッシュと再スキャン"
 
 #: quodlibet/cli.py:113
-#, fuzzy
 msgid "List available browsers"
-msgstr "ブラウザの無効化"
+msgstr "利用可能なブラウザを一覧表示"
 
 #: quodlibet/cli.py:114
 msgid "Print the current playlist"
@@ -985,18 +981,16 @@ msgid "Print the contents of the queue"
 msgstr "キューの内容を表示"
 
 #: quodlibet/cli.py:116
-#, fuzzy
 msgid "Print the active text query"
-msgstr "キューの内容を表示"
+msgstr "アクティブなテキストクエリを表示"
 
 #: quodlibet/cli.py:117
 msgid "Start without plugins"
-msgstr ""
+msgstr "プラグインなしで起動"
 
 #: quodlibet/cli.py:118
-#, fuzzy
 msgid "Start Quod Libet if it isn't running"
-msgstr "Quod Libetが起動していません。"
+msgstr "Quod Libet が実行中でなければ起動する"
 
 #: quodlibet/cli.py:119
 msgid "Exit Quod Libet"
@@ -1011,23 +1005,20 @@ msgid "[+|-][HH:]MM:SS"
 msgstr ""
 
 #: quodlibet/cli.py:125
-#, fuzzy
 msgid "Set or toggle shuffle mode"
-msgstr "再生/一時停止の切替"
+msgstr "シャッフルモードを設定または切替"
 
 #: quodlibet/cli.py:126
-#, fuzzy
 msgid "Set shuffle mode type"
-msgstr "再生/一時停止の切替"
+msgstr "シャッフルモードのタイプを設定"
 
 #: quodlibet/cli.py:127
 msgid "Turn repeat off, on, or toggle it"
 msgstr "リピートのオン/オフまたは切替"
 
 #: quodlibet/cli.py:128
-#, fuzzy
 msgid "Set repeat mode type"
-msgstr "再生/一時停止の切替"
+msgstr "リピートモードのタイプを設定"
 
 #: quodlibet/cli.py:129
 msgid "Set the volume"
@@ -1053,18 +1044,16 @@ msgid "filename"
 msgstr "ファイル名"
 
 #: quodlibet/cli.py:132
-#, fuzzy
 msgid "Set rating of playing song"
-msgstr "再生中の曲をシーク"
+msgstr "再生中の曲の評価を設定"
 
 #: quodlibet/cli.py:133
 msgid "Set the current browser"
 msgstr "現在のブラウザをセット"
 
 #: quodlibet/cli.py:134
-#, fuzzy
 msgid "Stop after the playing song"
-msgstr "再生中の曲をレイティング"
+msgstr "再生中の曲の後で停止"
 
 #: quodlibet/cli.py:135
 msgid "Open a new browser"
@@ -1098,7 +1087,7 @@ msgstr "ファイルまたはクエリの内容をキューに入れる"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
-msgstr ""
+msgstr "カンマ区切りで指定したファイルをキューに入れる"
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
@@ -1106,16 +1095,15 @@ msgstr "ファイル名"
 
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "クエリ結果のファイル名を標準出力に出力"
 
 #: quodlibet/cli.py:145
-#, fuzzy
 msgid "Unqueue a file or query"
 msgstr "ファイルまたはクエリの内容をキューから削除"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "ファイルまたはディレクトリをライブラリに追加"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
@@ -1320,16 +1308,15 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr ""
+msgstr "曲が変わったときに画面に曲情報を表示します。"
 
 #: quodlibet/ext/events/animosd/prefs.py:177
 msgid "_Position:"
-msgstr ""
+msgstr "位置(_P):"
 
 #: quodlibet/ext/events/animosd/prefs.py:189
-#, fuzzy
 msgid "_Cover size:"
-msgstr "合計サイズ"
+msgstr "カバーのサイズ(_C):"
 
 #: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:271
 msgid "Display"
@@ -1337,74 +1324,71 @@ msgstr "表示"
 
 #: quodlibet/ext/events/animosd/prefs.py:208
 msgid "_Font:"
-msgstr ""
+msgstr "フォント(_F):"
 
 #: quodlibet/ext/events/animosd/prefs.py:213
 msgid "Left"
-msgstr ""
+msgstr "左"
 
 #: quodlibet/ext/events/animosd/prefs.py:214
 msgid "Center"
-msgstr ""
+msgstr "中央"
 
 #: quodlibet/ext/events/animosd/prefs.py:215
-#, fuzzy
 msgid "Right"
-msgstr "ウェイト(_W)"
+msgstr "右"
 
 #: quodlibet/ext/events/animosd/prefs.py:218
 msgid "_Align text:"
-msgstr ""
+msgstr "位置揃え(_A):"
 
 #: quodlibet/ext/events/animosd/prefs.py:224
 msgid "Text"
-msgstr ""
+msgstr "テキスト"
 
 #: quodlibet/ext/events/animosd/prefs.py:235
 msgid "_Text:"
-msgstr ""
+msgstr "テキスト(_T):"
 
 #: quodlibet/ext/events/animosd/prefs.py:245
 msgid "_Fill:"
-msgstr ""
+msgstr "背景(_F):"
 
 #: quodlibet/ext/events/animosd/prefs.py:250
 #: quodlibet/ext/events/synchronizedlyrics.py:64
 msgid "Colors"
-msgstr ""
+msgstr "色"
 
 #: quodlibet/ext/events/animosd/prefs.py:258
 msgid "_Shadows"
-msgstr ""
+msgstr "影付き(_S)"
 
 #: quodlibet/ext/events/animosd/prefs.py:259
 msgid "_Outline"
-msgstr ""
+msgstr "輪郭線(_O)"
 
 #: quodlibet/ext/events/animosd/prefs.py:260
 msgid "Rou_nded Corners"
-msgstr ""
+msgstr "丸い角(_N)"
 
 #: quodlibet/ext/events/animosd/prefs.py:276
 msgid "_Delay:"
-msgstr ""
+msgstr "遅延表示(_D):"
 
 #: quodlibet/ext/events/animosd/prefs.py:282 quodlibet/qltk/pluginwin.py:43
 msgid "Effects"
-msgstr ""
+msgstr "エフェクト"
 
 #: quodlibet/ext/events/animosd/prefs.py:288
-#, fuzzy
 msgid "Ed_it Display Pattern…"
-msgstr "ディスプレイの編集"
+msgstr "ディスプレイの編集(_I)…"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
 #: quodlibet/ext/events/synchronize_to_device.py:201
 #: quodlibet/ext/events/trayicon/prefs.py:86
-#, fuzzy
 msgid "Preview"
-msgstr "プレビュー(_P)"
+msgstr "プレビュー"
 
 #: quodlibet/ext/events/appinfo.py:28
 #, fuzzy
@@ -3018,7 +3002,7 @@ msgstr ""
 #: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr ""
+msgstr "%(application-name)s の表示(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
@@ -4858,6 +4842,8 @@ msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
+"GStreamerを使用して <a href=\"%(rg_link)s\">ReplayGain</a> "
+"情報を解析し更新します。結果はアルバム単位でグルーピングされます。"
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -4865,25 +4851,24 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
-msgstr ""
+msgstr "常に"
 
 #: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
-msgstr ""
+msgstr "<b>いくつかの</b>RGタグが欠落している場合"
 
 #: quodlibet/ext/songsmenu/replaygain.py:613
 msgid "if <b>album</b> RG tags are missing"
-msgstr ""
+msgstr "<b>アルバム</b>RGタグが欠落している場合"
 
 #: quodlibet/ext/songsmenu/replaygain.py:630
 msgid "_Process albums:"
-msgstr ""
+msgstr "アルバムの更新処理(_P):"
 
 #. Server settings Frame
 #: quodlibet/ext/songsmenu/replaygain.py:642
-#, fuzzy
 msgid "Existing Tags"
-msgstr "タグの編集"
+msgstr "既存のタグ"
 
 #: quodlibet/ext/songsmenu/splitting.py:31
 #, fuzzy
@@ -6189,32 +6174,27 @@ msgstr "リピートモードの切替"
 
 #: quodlibet/qltk/pluginwin.py:38
 msgid "Events"
-msgstr ""
+msgstr "イベント"
 
 #: quodlibet/qltk/pluginwin.py:39
-#, fuzzy
 msgid "Play Order"
-msgstr "再生順(_O)"
+msgstr "再生順序"
 
 #: quodlibet/qltk/pluginwin.py:40
-#, fuzzy
 msgid "Editing"
-msgstr "タグの編集"
+msgstr "編集"
 
 #: quodlibet/qltk/pluginwin.py:41
-#, fuzzy
 msgid "Renaming"
-msgstr "名前の変更(_R)"
+msgstr "リネーム"
 
 #: quodlibet/qltk/pluginwin.py:42
-#, fuzzy
 msgid "Querying"
-msgstr "キュー(_Q)"
+msgstr "クエリ"
 
 #: quodlibet/qltk/pluginwin.py:44
-#, fuzzy
 msgid "Covers"
-msgstr "合計サイズ"
+msgstr "カバー"
 
 #: quodlibet/qltk/pluginwin.py:66
 msgid "Plugin Errors"
@@ -6222,16 +6202,15 @@ msgstr "プラグインのエラー"
 
 #: quodlibet/qltk/pluginwin.py:144
 msgid "Any state"
-msgstr ""
+msgstr "全ての状態"
 
 #: quodlibet/qltk/pluginwin.py:146
 msgid "Enabled"
-msgstr ""
+msgstr "有効"
 
 #: quodlibet/qltk/pluginwin.py:147
-#, fuzzy
 msgid "Disabled"
-msgstr "ブラウザの無効化"
+msgstr "無効"
 
 #: quodlibet/qltk/pluginwin.py:153
 msgid "No category"
@@ -6239,28 +6218,27 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:186
 msgid "Any category"
-msgstr ""
+msgstr "全てのカテゴリ"
 
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "プラグインが見つかりません。"
 
 #: quodlibet/qltk/pluginwin.py:376
-#, fuzzy
 msgid "Plugins"
-msgstr "プラグイン(_P)"
+msgstr "プラグイン"
 
 #: quodlibet/qltk/pluginwin.py:400
 msgid "Filter by plugin state / tag"
-msgstr ""
+msgstr "プラグイン状態/タグでフィルタリングします"
 
 #: quodlibet/qltk/pluginwin.py:406
 msgid "Filter by plugin type"
-msgstr ""
+msgstr "プラグインタイプでフィルタリングします"
 
 #: quodlibet/qltk/pluginwin.py:411
 msgid "Filter by plugin name or description"
-msgstr ""
+msgstr "プラグイン名や説明でフィルタリングします"
 
 #: quodlibet/qltk/pluginwin.py:414
 msgid "Show _Errors"
@@ -7421,9 +7399,8 @@ msgid "Display version and copyright"
 msgstr "バージョンと著作権情報を表示"
 
 #: quodlibet/util/__init__.py:81
-#, fuzzy
 msgid "Print debugging information"
-msgstr "時間情報なし"
+msgstr "デバッグ情報を表示"
 
 #: quodlibet/util/__init__.py:120
 #, python-format
