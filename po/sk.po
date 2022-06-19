@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-10 17:15+0000\n"
+"PO-Revision-Date: 2022-06-20 20:18+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.13.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -1635,36 +1635,30 @@ msgid "Fades out and pauses your music."
 msgstr "Stlmí a pozastaví prehrávanie."
 
 #: quodlibet/ext/events/discord_status.py:44
-#, fuzzy
 msgid "Discord status message"
-msgstr "Stav správy Gajim"
+msgstr "Discord stavová správa"
 
 #: quodlibet/ext/events/discord_status.py:45
-#, fuzzy
 msgid "Discord Status Message"
-msgstr "Stav správy Gajim"
+msgstr "Discord Stavová Správa"
 
 #: quodlibet/ext/events/discord_status.py:46
-#, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
-msgstr "Zmení stav správy Gajim podľa toho čo práve počúvate."
+msgstr "Zmení stavovú správu Discord podľa toho, čo práve počúvate."
 
 #: quodlibet/ext/events/discord_status.py:85
-#, fuzzy
 msgid "Paused"
-msgstr "Pozastavené:"
+msgstr "Pozastavené"
 
 #: quodlibet/ext/events/discord_status.py:136
-#, fuzzy
 msgid "Status Line #1"
-msgstr "Text správy o stave"
+msgstr "Stavová Línia #1"
 
 #: quodlibet/ext/events/discord_status.py:147
-#, fuzzy
 msgid "Status Line #2"
-msgstr "Text správy o stave"
+msgstr "Stavová Línia #2"
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
@@ -5113,7 +5107,7 @@ msgstr "Odstraňujú sa súbory knižnice"
 #: quodlibet/library/file.py:562
 #, python-format
 msgid "Adding watches for %s"
-msgstr ""
+msgstr "Pridanie sledovania pre %s"
 
 #: quodlibet/main.py:50
 msgid "Music player and music library manager"
@@ -6646,12 +6640,14 @@ msgstr "Prehľadať knižnicu _pri spustení"
 
 #: quodlibet/qltk/prefs.py:706
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "_Sledovať zmeny adresárov"
 
 #: quodlibet/qltk/prefs.py:707
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Sledovať adresáre knižnice pre pridanie, zmazanie a premenovanie externého "
+"súboru."
 
 #: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
