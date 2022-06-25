@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-20 20:18+0000\n"
+"PO-Revision-Date: 2022-06-26 08:15+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -1259,7 +1259,8 @@ msgstr ""
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
-msgstr ""
+msgstr "ファイルのタグ付けまたは名前変更時に、任意の正規表現置換 (<tt>s/"
+"置換前/置換後/</tt>) を許可します。"
 
 #: quodlibet/ext/editing/titlecase.py:20
 #, fuzzy
@@ -1860,7 +1861,8 @@ msgstr ""
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
-msgstr ""
+msgstr "GNOMEデスクトップでの曲の再生中に、スクリーンセーバーのアクティブ化やコンピュ"
+"ーターのサスペンドを防止します。"
 
 #: quodlibet/ext/events/inhibit.py:63
 #, fuzzy
@@ -1869,17 +1871,16 @@ msgstr "ミュージックプレイヤー"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
-#, fuzzy
 msgid "Mode:"
-msgstr "モデル"
+msgstr "モード:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
-msgstr ""
+msgstr "スクリーンセーバーを禁止する"
 
 #: quodlibet/ext/events/inhibit.py:126
 msgid "Inhibit Suspend"
-msgstr ""
+msgstr "サスペンドを禁止する"
 
 #: quodlibet/ext/events/iradiolog.py:17
 #, fuzzy
@@ -1901,21 +1902,20 @@ msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
 msgstr ""
 
 #: quodlibet/ext/events/language.py:21
-#, fuzzy
 msgid "Change Language"
-msgstr "レイティング(_R)"
+msgstr ""
 
 #: quodlibet/ext/events/language.py:22
 msgid "Change the user interface language."
-msgstr ""
+msgstr "ユーザーインターフェースの言語を変更します。"
 
 #: quodlibet/ext/events/language.py:43
 msgid "System Default"
-msgstr ""
+msgstr "システムのデフォルト"
 
 #: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
 msgid "A restart is required for any changes to take effect"
-msgstr ""
+msgstr "変更を有効にするには再起動が必要です"
 
 #: quodlibet/ext/events/mediaserver.py:36
 msgid "UPnP AV Media Server"
@@ -1976,9 +1976,8 @@ msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
-#, fuzzy
 msgid "Hide main window on close"
-msgstr "メインウィンドウを隠す"
+msgstr "メインウィンドウが閉じられるときに隠す"
 
 #: quodlibet/ext/events/mqtt.py:56
 #, python-format
@@ -2951,11 +2950,11 @@ msgstr ""
 
 #: quodlibet/ext/events/themeswitcher.py:26
 msgid "Changes the active GTK+ theme."
-msgstr ""
+msgstr "有効な GTK+ テーマを変更します。"
 
 #: quodlibet/ext/events/themeswitcher.py:49
 msgid "_Theme:"
-msgstr ""
+msgstr "テーマ(_T):"
 
 #: quodlibet/ext/events/themeswitcher.py:54
 msgid "Default Theme"
@@ -2963,7 +2962,7 @@ msgstr ""
 
 #: quodlibet/ext/events/themeswitcher.py:66
 msgid "Prefer dark theme version"
-msgstr ""
+msgstr "ダークテーマを優先する"
 
 #: quodlibet/ext/events/thumbrating.py:91
 #, fuzzy
@@ -2997,7 +2996,7 @@ msgstr ""
 
 #: quodlibet/ext/events/trayicon/__init__.py:53
 msgid "Controls Quod Libet from the system tray."
-msgstr ""
+msgstr "システムトレイから Quod Libet を制御します。"
 
 #: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
@@ -3068,20 +3067,19 @@ msgstr "挙動"
 
 #: quodlibet/ext/events/trayicon/prefs.py:48
 msgid "Scroll wheel adjusts volume"
-msgstr ""
+msgstr "スクロールホイールで音量を調節する"
 
 #: quodlibet/ext/events/trayicon/prefs.py:54
 msgid "Scroll wheel changes song"
-msgstr ""
+msgstr "スクロールホイールで曲を変える"
 
 #: quodlibet/ext/events/trayicon/prefs.py:62
 msgid "Scroll _Wheel"
-msgstr ""
+msgstr "スクロールホイール(_W)"
 
 #: quodlibet/ext/events/trayicon/prefs.py:92
-#, fuzzy
 msgid "Tooltip Display"
-msgstr "ディスプレイの編集"
+msgstr "ツールチップ表示"
 
 #: quodlibet/ext/events/viewlyrics.py:25
 #, fuzzy
@@ -3662,11 +3660,11 @@ msgstr ""
 
 #: quodlibet/ext/query/conditional.py:16
 msgid "Chooses the query to match based on a condition query."
-msgstr ""
+msgstr "条件クエリに基づいて、マッチするクエリを選択します。"
 
 #: quodlibet/ext/query/conditional.py:18
 msgid "@(if: condition-query, then-query, else-query)"
-msgstr ""
+msgstr "@(if: 条件クエリ, thenクエリ, elseクエリ)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
@@ -3687,11 +3685,11 @@ msgstr ""
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
-msgstr ""
+msgstr "🐍クエリでPython式を使用します。"
 
 #: quodlibet/ext/query/pythonexpression.py:21
 msgid "@(python: expression)"
-msgstr ""
+msgstr "@(python: 式)"
 
 #: quodlibet/ext/query/pythonexpression.py:23
 msgid ""
@@ -3702,6 +3700,12 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
+"変数 <tt>s</tt> (または <tt>a</tt>) は、一致する曲/アルバムです。\n"
+"\n"
+"<tt>_ts</tt> は、クエリ開始時の (実数の) タイムスタンプです。\n"
+"\n"
+"モジュール <tt>time</tt> および <tt>random</tt> も使用でき、クラス "
+"<tt>Random</tt> (== <tt>random.Random</tt>) も使用できます。"
 
 #: quodlibet/ext/query/savedsearch.py:20
 #, fuzzy
@@ -4012,7 +4016,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:42
 msgid "Interactive Python console. Opens a new window."
-msgstr ""
+msgstr "対話型Pythonコンソール。新しいウィンドウを開きます。"
 
 #: quodlibet/ext/songsmenu/console.py:50
 #, python-brace-format
@@ -4796,7 +4800,7 @@ msgstr "ライブラリの再表示(_f)"
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
-msgstr ""
+msgstr "ファイルの変更をチェックし、必要に応じて曲を再読込/削除します。"
 
 #: quodlibet/ext/songsmenu/refresh.py:31
 #, fuzzy
@@ -5451,7 +5455,7 @@ msgstr "プラグイン(_P)"
 
 #: quodlibet/plugins/query.py:73
 msgid "Usage"
-msgstr ""
+msgstr "使用法"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
