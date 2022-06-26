@@ -107,7 +107,7 @@ function install_deps {
 feedparser
 musicbrainzngs
 mutagen
-flake8==3.9.2
+flake8==4.0.1
 "
 
     build_pip install --no-binary ":all:" \
