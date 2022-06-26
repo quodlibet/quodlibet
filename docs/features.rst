@@ -39,6 +39,7 @@ Audio Library
 ^^^^^^^^^^^^^
 
   * Hide songs on removable devices that may not always be there
+  * Watch library for external changes, additions and deletions
   * Save song ratings and play counts
   * Internet Radio support
   * Audio Feeds ("Podcast") support

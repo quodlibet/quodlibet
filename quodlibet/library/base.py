@@ -105,7 +105,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         if not items:
             return
         print_d(f"Emitting changed for {len(items)} item(s) "
-                f"(e.g. {list(items)[0].key!r}...) from {self}")
+                f"(e.g. {list(items)[0].key!r}...)", self._name)
         self.dirty = True
         self.emit('changed', items)
 

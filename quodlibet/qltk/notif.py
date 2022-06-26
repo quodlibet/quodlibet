@@ -223,8 +223,7 @@ class TaskController:
             self._parent.update()
 
     def finish(self, finished_task):
-        self.active_tasks = list(filter(lambda t: t is not finished_task,
-                                        self.active_tasks))
+        self.active_tasks = [t for t in self.active_tasks if t is not finished_task]
         self.update()
 
 # Oh so deliciously hacky.

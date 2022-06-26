@@ -290,7 +290,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         """Returns a list of keys that are not internal, i.e. they don't
         have '~' in them."""
 
-        return list(filter(lambda s: s[:1] != "~", self.keys()))
+        return [s for s in self.keys() if s[:1] != "~"]
 
     def prefixkeys(self, prefix):
         """Returns a list of dict keys that either match prefix or start

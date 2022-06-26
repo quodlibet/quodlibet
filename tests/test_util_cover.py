@@ -105,15 +105,9 @@ class TCoverManager(TestCase):
         config.set("albumart", "force_filename", str(True))
         config.set("albumart", "filename", "[a-2].jpg")
 
-        # Should match
-        f = self.add_file("[a-2].jpg")
-        assert path_equal(
-            os.path.abspath(self._find_cover(self.song).name), f)
-
-        # Should not crash
-        f = self.add_file("test.jpg")
-        assert not path_equal(
-            os.path.abspath(self._find_cover(self.song).name), f)
+        # Invalid glob range, should not match anything
+        self.add_file("a.jpg")
+        assert self._find_cover(self.song) is None
 
     def test_invalid_glob_path(self):
         config.set("albumart", "force_filename", str(True))

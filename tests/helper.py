@@ -1,5 +1,6 @@
 # Copyright 2013 Christoph Reiter
 #           2015 Anton Shestakov
+#        2017-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,6 +14,7 @@ import shutil
 import locale
 import errno
 from io import StringIO
+from pathlib import Path
 
 from gi.repository import Gtk, Gdk
 
@@ -256,8 +258,10 @@ def capture_output():
 
 
 @contextlib.contextmanager
-def temp_filename(*args, **kwargs):
-    """Creates an empty file and removes it when done.
+def temp_filename(*args, as_path=False, **kwargs):
+    """
+    Creates an empty file, returning the normalized path to it,
+    and removes it when done.
 
         with temp_filename() as filename:
             with open(filename, 'w') as h:
@@ -266,11 +270,14 @@ def temp_filename(*args, **kwargs):
     """
 
     from tests import mkstemp
-
+    try:
+        del kwargs["as_path"]
+    except KeyError:
+        pass
     fd, filename = mkstemp(*args, **kwargs)
     os.close(fd)
-
-    yield filename
+    normalized = normalize_path(filename)
+    yield Path(normalized) if as_path else normalized
 
     try:
         os.remove(filename)
