@@ -100,6 +100,15 @@ class FilesystemCover(CoverSourcePlugin):
         base = self.song('~dirname')
         images = []
 
+        def safe_glob(*args, **kwargs):
+            try:
+                return glob.glob(*args, **kwargs)
+            except sre_constants.error:
+                # https://github.com/python/cpython/issues/89973
+                # old glob would fail with invalid ranges, newer one
+                # handles it correctly.
+                return []
+
         if config.getboolean("albumart", "force_filename"):
             score = 100
             for filename in config.get("albumart", "filename").split(","):
@@ -107,17 +116,8 @@ class FilesystemCover(CoverSourcePlugin):
                 filename = filename.strip()
 
                 escaped_path = os.path.join(glob.escape(base), filename)
-                try:
-                    for path in glob.glob(escaped_path):
-                        images.append((score, path))
-                except sre_constants.error:
-                    # Use literal filename if globbing causes errors
-                    path = os.path.join(base, filename)
-
-                    # We check this here, so we can search for alternative
-                    # files in case no preferred file was found.
-                    if os.path.isfile(path):
-                        images.append((score, path))
+                for path in safe_glob(escaped_path):
+                    images.append((score, path))
 
                 # So names and patterns at the start are preferred
                 score -= 1
