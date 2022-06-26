@@ -680,6 +680,14 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
             last_location = tracks[-1].find("location", namespaces={"": XSPF_NS}).text
             assert uri2fsn(last_location) == some_path
 
+    def test_writes_multiple_line_files(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(NUMERIC_SONGS)
+            pl.write()
+            with open(pl.path) as f:
+                lines = f.readlines()
+                assert len(lines) >= 1 + 2 + len(pl), "Was expecting a semi-pretty-file"
+
     def test_load_legacy_format_to_xspf(self):
         playlist_fn = "old"
         songs_lib = FileLibrary()
