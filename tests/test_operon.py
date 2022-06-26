@@ -8,9 +8,10 @@
 import os
 import sys
 
+from quodlibet.util import is_osx, is_windows
 from senf import fsnative, path2fsn, environ
 
-from tests import TestCase, get_data_path, mkstemp
+from tests import TestCase, get_data_path, mkstemp, skipIf
 from .helper import capture_output, get_temp_copy
 
 from quodlibet import config
@@ -60,9 +61,9 @@ class TOperonBase(TestCase):
 
     def _check(self, args, command_succeeds, stdout_not_empty, stderr_not_empty):
         s, o, e = call(args)
-        self.failUnlessEqual(s == 0, command_succeeds, msg=repr((s, o, e)))
-        self.failUnlessEqual(bool(o), stdout_not_empty, msg=repr(o))
-        self.failUnlessEqual(bool(e), stderr_not_empty, msg=repr(e))
+        assert (s == 0) == command_succeeds, repr((s, o, e))
+        assert bool(o) == stdout_not_empty, repr(o)
+        assert bool(e) == stderr_not_empty, repr(e)
         return o, e
 
 
@@ -151,10 +152,8 @@ class TOperonPrint(TOperonBase):
         o, e = self.check_false(["print", self.f3, self.f2], True, True)
         self.assertTrue("Quod Libet Test Data" in o)
 
+    @skipIf(is_windows(), "doesn't prevent reading under wine...")
     def test_permissions(self):
-        # doesn't prevent reading under wine..
-        if os.name == "nt":
-            return
         os.chmod(self.f, 0o000)
         self.check_false(["print", "-p", "<title>", self.f],
                          False, True)
@@ -375,9 +374,8 @@ class TOperonEdit(TOperonBase):
         self.s.reload()
         self.assertEqual(sorted(old_items), sorted(realitems(self.s)))
 
+    @skipIf(is_windows() or is_osx(), "Linux only, uses truncate")
     def test_remove_all(self):
-        if os.name == "nt" or sys.platform == "darwin":
-            return
 
         os.environ["VISUAL"] = "truncate -s 0"
         os.utime(self.f, (42, 42))
@@ -385,7 +383,7 @@ class TOperonEdit(TOperonBase):
 
         # all should be gone
         self.s.reload()
-        self.assertFalse(self.s.realkeys())
+        assert not self.s.realkeys()
 
 
 class TOperonInfo(TOperonBase):
