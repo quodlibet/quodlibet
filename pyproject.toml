@@ -34,13 +34,13 @@ plugins = ["musicbrainzngs", "pyinotify", "dbus-python", "paho-mqtt", "soco", "p
 [tool.poetry.dev-dependencies]
 pytest = '^7.1.1'
 polib = '^1.1.0'
-sphinx = '^4.4.0'
-sphinx_rtd_theme = '*'
+sphinx = '^5.0.2'
+sphinx_rtd_theme = '^1.0.0'
 sphinx-autobuild = "^2021.3.14"
 xvfbwrapper = { version = "^0.2", platform = "linux" }
-flake8 = "^3.9.2"
+flake8 = "^4.0.1"
 coverage = { extras = ["toml"], version = "^6.3.2" }
-mypy = "^0.942"
+mypy = "^0.961"
 flaky = "^3.7.0"
 types-docutils = "^0.18.0"
 types-certifi = "^2021.10.8"

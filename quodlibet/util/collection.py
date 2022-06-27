@@ -769,6 +769,8 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
 
     def write(self):
         track_list = Element("trackList")
+        # TODO: ditch for proper indent, once we have Python 3.9
+        track_list.text = "\n"
         for song in self._list:
             if isinstance(song, str):
                 track = {"location": fsn2uri(song)}
@@ -785,8 +787,10 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                     "trackNum": song("~#track"),
                     "duration": int(song("~#length") * 1000.)
                 }
-            track_list.append(self._element_from("track", track))
+            track_list.append(self._element_from("track", track, True))
         playlist = Element("playlist", attrib={"version": "1", "xmlns": XSPF_NS})
+        # Be kind to cat, git, editors etc. by leaving a final newline
+        playlist.tail = "\n"
         playlist.append(self._version_tag())
         playlist.append(self._text_element("title", self.name))
         playlist.append(self._text_element("date", datetime.now().isoformat()))
@@ -815,7 +819,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         return el
 
     @classmethod
-    def _element_from(cls, name: str, d: dict) -> Element:
+    def _element_from(cls, name: str, d: dict, with_newline: bool = False) -> Element:
         """Converts a dict to XML etree. Removes falsey nodes"""
         out = Element(name)
         for k, v in d.items():
@@ -824,4 +828,6 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                            if isinstance(v, dict)
                            else cls._text_element(k, v))
                 out.append(element)
+        if with_newline:
+            out.tail = "\n"
         return out

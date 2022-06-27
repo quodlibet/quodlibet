@@ -3,23 +3,27 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
+from typing import Generator
 
+import pytest
+
+import quodlibet.config
 from quodlibet.browsers.filesystem import FileSystem
 from quodlibet.library import SongLibrary
-import quodlibet.config
 
 
-class TFileSystem(TestCase):
-    def setUp(self):
-        quodlibet.config.init()
-        self.bar = FileSystem(SongLibrary())
+@pytest.fixture
+def bar() -> Generator[FileSystem, None, None]:
+    quodlibet.config.init()
+    bar = FileSystem(SongLibrary())
+    yield bar
+    bar.destroy()
+    quodlibet.config.quit()
 
-    def test_can_filter(self):
+
+class TestFileSystem:
+
+    def test_can_filter(self, bar):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.bar.can_filter(key))
-        self.failUnless(self.bar.can_filter("~dirname"))
-
-    def tearDown(self):
-        self.bar.destroy()
-        quodlibet.config.quit()
+            assert not bar.can_filter(key)
+        assert bar.can_filter("~dirname")
