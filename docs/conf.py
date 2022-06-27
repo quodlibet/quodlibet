@@ -40,9 +40,9 @@ html_theme = "sphinx_rtd_theme"
 html_title = project
 
 extlinks = {
-    'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#'),
-    'pr': ('https://github.com/quodlibet/quodlibet/pull/%s', '#'),
-    'user': ('https://github.com/%s', ''),
+    'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#%s'),
+    'pr': ('https://github.com/quodlibet/quodlibet/pull/%s', '#%s'),
+    'user': ('https://github.com/%s', '%s'),
 }
 
 linkcheck_anchors = True
