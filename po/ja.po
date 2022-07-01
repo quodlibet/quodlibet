@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-26 08:15+0000\n"
+"PO-Revision-Date: 2022-07-02 06:15+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -1241,11 +1241,11 @@ msgstr ""
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr ""
+msgstr "名前を変更する前に、かな/漢字をローマ字に変換します。"
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
-msgstr ""
+msgstr "日本語のテキストをローマ字化する"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
@@ -1259,9 +1259,8 @@ msgstr ""
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
-msgstr ""
-"ファイルのタグ付けまたは名前変更時に、任意の正規表現置換 (<tt>s/置換前/置換"
-"後/</tt>) を許可します。"
+msgstr "ファイルのタグ付けまたは名前変更時に、任意の正規表現置換 (<tt>s/from/to/"
+"</tt>) を許可します。"
 
 #: quodlibet/ext/editing/titlecase.py:20
 #, fuzzy
@@ -3674,12 +3673,11 @@ msgstr ""
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
-msgstr ""
+msgstr "指定されたタグのない曲とマッチします。"
 
 #: quodlibet/ext/query/missing.py:36
-#, fuzzy
 msgid "Include empty tags"
-msgstr "不正なタグ"
+msgstr "空のタグを含める"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
@@ -3716,12 +3714,11 @@ msgstr "保存された値"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
-msgstr ""
+msgstr "💾 保存した検索の結果を別のクエリの一部として含めます。"
 
 #: quodlibet/ext/query/savedsearch.py:24
-#, fuzzy
 msgid "@(saved: search-name)"
-msgstr "保存された値"
+msgstr "@(saved: 検索の名前)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -3755,9 +3752,8 @@ msgid "Library directory the server connects to"
 msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:140
-#, fuzzy
 msgid "Library path:"
-msgstr "ライブラリ"
+msgstr ""
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:151
@@ -4998,9 +4994,8 @@ msgid "Checking mount points"
 msgstr "マウントポイントを確認中"
 
 #: quodlibet/library/file.py:166
-#, fuzzy
 msgid "Scanning library"
-msgstr "ソングライブラリ読み込み中"
+msgstr "ライブラリスキャン中"
 
 #: quodlibet/library/file.py:226
 #, python-format
@@ -5012,14 +5007,12 @@ msgid "Loading files"
 msgstr ""
 
 #: quodlibet/library/file.py:353
-#, fuzzy
 msgid "Moving library files"
-msgstr "ソングライブラリ読み込み中"
+msgstr "ライブラリ移動中"
 
 #: quodlibet/library/file.py:411
-#, fuzzy
 msgid "Removing library files"
-msgstr "アクティブなフィルタを削除"
+msgstr "ライブラリ削除中"
 
 #: quodlibet/library/file.py:562
 #, python-format
@@ -5027,9 +5020,8 @@ msgid "Adding watches for %s"
 msgstr ""
 
 #: quodlibet/main.py:50
-#, fuzzy
 msgid "Music player and music library manager"
-msgstr "ミュージックライブラリ/プレイヤー"
+msgstr ""
 
 #: quodlibet/operon/base.py:71
 #, python-format
@@ -6111,11 +6103,11 @@ msgstr ""
 
 #: quodlibet/qltk/maskedbox.py:44
 msgid "Unhide"
-msgstr ""
+msgstr "再表示"
 
 #: quodlibet/qltk/maskedbox.py:86
 msgid "_Unhide"
-msgstr ""
+msgstr "再表示(_U)"
 
 #: quodlibet/qltk/matchdialog.py:23
 msgid ""
@@ -6192,7 +6184,7 @@ msgstr "編集"
 
 #: quodlibet/qltk/pluginwin.py:41
 msgid "Renaming"
-msgstr "リネーム"
+msgstr "名前変更"
 
 #: quodlibet/qltk/pluginwin.py:42
 msgid "Querying"
@@ -6926,36 +6918,33 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
-msgstr ""
+msgstr "{dir!r} とその全てのトラックを削除しますか？"
 
 #: quodlibet/qltk/scanbox.py:115
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Remove {n} library paths and their tracks?"
-msgstr "警告: 関連付けされていない iPod トラックを削除します"
+msgstr "{n}個のライブラリパスとそのトラックを削除しますか？"
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "ライブラリ"
+msgstr[0] "ライブラリパスを削除しますか？"
 
 #: quodlibet/qltk/scanbox.py:117
-#, fuzzy
 msgid "Remove"
-msgstr "ラジオ局の削除(_R)"
+msgstr "削除"
 
 #: quodlibet/qltk/scanbox.py:124
 msgid "Select Directories"
 msgstr "ディレクトリの選択"
 
 #: quodlibet/qltk/scanbox.py:139
-#, fuzzy
 msgid "Select This Directory"
-msgstr "ディレクトリの選択"
+msgstr "このディレクトリを選択"
 
 #: quodlibet/qltk/scanbox.py:141
 msgid "Select Actual / New Directory for {dir!r}"
-msgstr ""
+msgstr "{dir!r} の実際のディレクトリまたは新しいディレクトリを選択"
 
 #: quodlibet/qltk/scanbox.py:149
 msgid ""
@@ -6966,14 +6955,21 @@ msgid ""
 "The audio files themselves are not moved by this.\n"
 "Nonetheless, a backup is recommended (including the Quod Libet 'songs' file)."
 msgstr ""
+"これにより、QLメタデータが移動します:\n"
+"\n"
+"{old!r} → {new!r}\n"
+"\n"
+"オーディオファイル自体はこれによって移動することはありません。\n"
+"それでも、バックアップを取ることをお勧めします (Quod Libet の 'songs' "
+"ファイルを含む)。"
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
-msgstr ""
+msgstr "{dir!r} のスキャンルートを移動しますか？"
 
 #: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
-msgstr ""
+msgstr "OK、移動して！"
 
 #: quodlibet/qltk/searchbar.py:59
 msgid "Saved Searches"
