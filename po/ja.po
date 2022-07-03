@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-02 06:15+0000\n"
+"PO-Revision-Date: 2022-07-04 10:17+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -3948,9 +3948,8 @@ msgstr "ファイル名"
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:559
-#, fuzzy
 msgid "Disc"
-msgstr "ディスク(_D)"
+msgstr "ディスク"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
@@ -3961,7 +3960,6 @@ msgstr "トラック"
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:385
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
-#, fuzzy
 msgid "Title"
 msgstr "タイトル"
 
@@ -4558,30 +4556,28 @@ msgstr ""
 #. * means all tags (so tags like 'title' and internal (user data) "tags" like ~#added)
 #. * tag1 tag2 means all except tag1 and tag2
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:59
-#, fuzzy
 msgid "Export User Data"
-msgstr "プレイリストのインポート"
+msgstr "ユーザーデータのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:60
-#, fuzzy
 msgid "Export Tags"
-msgstr "プレイリストのインポート"
+msgstr "タグのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:61
 msgid "Export Tags and User Data"
-msgstr ""
+msgstr "タグとユーザーデータのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:62
 msgid "Export File Stems and User Data"
-msgstr ""
+msgstr "ファイルステムとユーザーデータのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:64
 msgid "Export File Stems and Tags"
-msgstr ""
+msgstr "ファイルステムとタグのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:65
 msgid "Export File Stems, Tags and User Data"
-msgstr ""
+msgstr "ファイルステム、タグとユーザーデータのエクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
@@ -4589,12 +4585,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
-msgstr ""
+msgstr "タグやトラックのユーザーデータをインポートまたはエクスポートします。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:192
-#, fuzzy
 msgid "Further information"
-msgstr "時間情報なし"
+msgstr "詳細情報"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:195
 #, python-format
@@ -4614,82 +4609,89 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
+"「トラックのユーザーデータ」という用語には、選択したトラックが含まれるプレイ"
+"リストと次のメタデータが含まれます:\n"
+"\n"
+"<tt>%s</tt>\n"
+"\n"
+"エクスポートを選択したものは、すべてインポートされることに注意してください。"
+"ファイルのステム (拡張子なしのファイル名) をエクスポートした場合、インポート"
+"時に、選択したファイルの名前が変更されます。\n"
+"\n"
+"アルバムをエクスポートした後、そのデータを別のバージョンのアルバムにインポー"
+"トすることができます。トラックの順番や数は異なってもかまいません。プラグイン"
+"は、トラックの名前が多少異なっていても、エクスポートされたデータを新しいトラ"
+"ックに合わせます。自動マッチングが常に正しいとは限らないので、以下の類似度の"
+"値をあまり下げない方がよいでしょう。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
 msgid "User interaction on import"
-msgstr ""
+msgstr "インポート時のユーザー操作"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:215
 msgid "Require confirmation if number of tracks differs"
-msgstr ""
+msgstr "トラック数が異なる場合は確認を求める"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:221
 msgid "Require confirmation if number of albums differs"
-msgstr ""
+msgstr "アルバム数が異なる場合は確認を求める"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:226
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
-msgstr ""
+msgstr "この割合以下の場合、ユーザーはどのトラックがどのトラックとマッチングしている"
+"かを手動で確認し、変更する必要があります。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
 msgid "Track similarity:"
-msgstr ""
+msgstr "トラックの類似度:"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
-#, fuzzy
 msgid "Album similarity:"
-msgstr "アルバムリスト"
+msgstr "アルバムの類似度:"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:262
-#, fuzzy
 msgid "Export files"
-msgstr "プレイリストのインポート"
+msgstr "エクスポートファイル"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
 msgid "Write pretty and clear JSON (slower)"
-msgstr ""
+msgstr "きれいに整形された JSON を出力する (遅い)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
 msgid "Delete export files after they've been imported"
-msgstr ""
+msgstr "インポート後にエクスポートファイルを削除する"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
-#, fuzzy
 msgid "Open Export Directory"
-msgstr "ジャンルでフィルタリング(_G)"
+msgstr "エクスポートディレクトリを開く"
 
 #.
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:383
-#, fuzzy
 msgid "Discs"
-msgstr "ディスク(_D)"
+msgstr "ディスク数"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:384
-#, fuzzy
 msgid "Tracks"
-msgstr "トラック"
+msgstr "トラック数"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
-#, fuzzy
 msgid "Artist(s)"
-msgstr "アーティスト(_A)"
+msgstr "アーティスト"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
 msgid "End of path"
-msgstr ""
+msgstr "パスの末端"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
-#, fuzzy
 msgid "Match Albums"
-msgstr "アルバム"
+msgstr "アルバムのマッチング"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
-#, fuzzy
 msgid "Continue"
-msgstr "続行する(_C)"
+msgstr "続行する"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:422
 msgid "Nothing to import"
@@ -4714,14 +4716,12 @@ msgid "Couldn't read %s"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
-#, fuzzy
 msgid "File name"
 msgstr "ファイル名"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-#, fuzzy
 msgid "Match Tracks"
-msgstr "トラック"
+msgstr "トラックのマッチング"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:86
 msgid "Updating chart list."
@@ -4811,7 +4811,6 @@ msgstr ""
 
 #. Translators: Combined track number/title column heading
 #: quodlibet/ext/songsmenu/replaygain.py:394
-#, fuzzy
 msgctxt "track/title"
 msgid "Track"
 msgstr "トラック"
@@ -6115,10 +6114,13 @@ msgid ""
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
 msgstr ""
+"左側の列が右側の列とほぼ一致しているかどうかを確認してください。一致しない場"
+"合は、ここで順序を変更することができます (一致させるべきではない行には _ "
+"を使用します):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
-msgstr ""
+msgstr "右側の順序:"
 
 #: quodlibet/qltk/msg.py:44
 msgid "Discard tag changes?"
