@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-04 10:17+0000\n"
+"PO-Revision-Date: 2022-07-04 20:36+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -473,9 +473,8 @@ msgid "Reggae / Dancehall"
 msgstr ""
 
 #: quodlibet/browsers/iradio.py:401
-#, fuzzy
 msgid "Latin"
-msgstr "レイティング"
+msgstr ""
 
 #: quodlibet/browsers/iradio.py:402
 msgid "College Radio"
@@ -2107,49 +2106,47 @@ msgstr ""
 
 #: quodlibet/ext/events/notify.py:54
 msgid "Notification text"
-msgstr ""
+msgstr "通知テキスト"
 
 #: quodlibet/ext/events/notify.py:65
-#, fuzzy
 msgid "_Title:"
-msgstr "タイトル"
+msgstr "タイトル(_T):"
 
 #: quodlibet/ext/events/notify.py:76 quodlibet/ext/events/notify.py:112
 msgid "Revert to default pattern"
-msgstr ""
+msgstr "デフォルトのパターンに戻す"
 
 #: quodlibet/ext/events/notify.py:102
 msgid "_Body:"
-msgstr ""
+msgstr "本文(_B):"
 
 #: quodlibet/ext/events/notify.py:122
 msgid "_Show notification"
-msgstr ""
+msgstr "通知を表示する(_S)"
 
 #: quodlibet/ext/events/notify.py:140
-#, fuzzy
 msgid "Show notifications"
-msgstr "新しいラジオ局はありません"
+msgstr "通知の表示"
 
 #: quodlibet/ext/events/notify.py:146
 msgid "Only on <i>_manual</i> song changes"
-msgstr ""
+msgstr "<i>手動</i>での曲変更時のみ(_M)"
 
 #: quodlibet/ext/events/notify.py:154
 msgid "Only on <i>_automatic</i> song changes"
-msgstr ""
+msgstr "<i>自動</i>での曲変更時のみ(_A)"
 
 #: quodlibet/ext/events/notify.py:162
 msgid "On <i>a_ll</i> song changes"
-msgstr ""
+msgstr "曲変更時は<i>常に</i>(_L)"
 
 #: quodlibet/ext/events/notify.py:177
 msgid "Only when the main window is not _focused"
-msgstr ""
+msgstr "メインウィンドウがフォーカスされていない時のみ(_F)"
 
 #: quodlibet/ext/events/notify.py:185
 msgid "Show \"_Next\" button"
-msgstr ""
+msgstr "「次へ」ボタンを表示する(_N)"
 
 #: quodlibet/ext/events/notify.py:207
 msgid "Connection Error"
@@ -2161,17 +2158,16 @@ msgid "Couldn't connect to notification daemon."
 msgstr ""
 
 #: quodlibet/ext/events/notify.py:222
-#, fuzzy
 msgid "Song Notifications"
-msgstr "新しいラジオ局はありません"
+msgstr ""
 
 #: quodlibet/ext/events/notify.py:223
 msgid "Displays a notification when the song changes."
-msgstr ""
+msgstr "曲が変わったときに通知を表示します。"
 
 #: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
 msgid "Next"
-msgstr ""
+msgstr "次へ"
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -3794,9 +3790,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:333
-#, fuzzy
 msgid "Fit image to _window"
-msgstr "メインウィンドウを隠す"
+msgstr "画像表示をウィンドウサイズに合わせる(_W)"
 
 #: quodlibet/ext/songsmenu/albumart.py:339
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
@@ -3805,16 +3800,15 @@ msgstr ""
 #. Both labels
 #: quodlibet/ext/songsmenu/albumart.py:345
 msgid "_Program:"
-msgstr ""
+msgstr "プログラム(_P):"
 
 #: quodlibet/ext/songsmenu/albumart.py:350
 msgid "_Edit image after saving"
-msgstr ""
+msgstr "保存後に画像を編集する(_E)"
 
 #: quodlibet/ext/songsmenu/albumart.py:352
-#, fuzzy
 msgid "File_name:"
-msgstr "ファイル名"
+msgstr "ファイル名(_N):"
 
 #: quodlibet/ext/songsmenu/albumart.py:468
 msgid "Saving failed"
@@ -3843,21 +3837,20 @@ msgstr ""
 #: quodlibet/ext/songsmenu/albumart.py:682
 #, python-format
 msgid "Resolution: %s"
-msgstr ""
+msgstr "解像度: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:685
-#, fuzzy, python-format
+#, python-format
 msgid "Size: %s"
-msgstr "サイズ"
+msgstr "サイズ: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:731
 msgid "Per engine 'at best' results limit"
-msgstr ""
+msgstr "1エンジンあたりのベストな結果の上限"
 
 #: quodlibet/ext/songsmenu/albumart.py:741
-#, fuzzy
 msgid "_Search"
-msgstr "検索"
+msgstr "検索(_S)"
 
 #: quodlibet/ext/songsmenu/albumart.py:823
 #: quodlibet/ext/songsmenu/brainz/widgets.py:453
@@ -3877,11 +3870,11 @@ msgstr "アルバムリスト"
 
 #: quodlibet/ext/songsmenu/albumart.py:1013
 msgid "Downloads album covers from various websites."
-msgstr ""
+msgstr "さまざまなウェブサイトからアルバムカバーをダウンロードします。"
 
 #: quodlibet/ext/songsmenu/albumart.py:1026
 msgid "Sources"
-msgstr ""
+msgstr "ソース"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
@@ -7298,14 +7291,12 @@ msgid "_Total tracks:"
 msgstr "合計トラック数(_T)"
 
 #: quodlibet/qltk/unity.py:52
-#, fuzzy
 msgid "Play/Pause"
-msgstr "プレイヤー"
+msgstr "再生/一時停止"
 
 #: quodlibet/qltk/unity.py:72
-#, fuzzy
 msgid "Previous"
-msgstr "プレビュー(_P)"
+msgstr "前へ"
 
 #: quodlibet/qltk/views.py:934
 #, python-format
