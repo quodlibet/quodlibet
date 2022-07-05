@@ -223,7 +223,7 @@ msgstr "Ve_rversen"
 #: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
 msgstr "Verwij_deren"
 
@@ -3106,16 +3106,16 @@ msgid "Open _Browser"
 msgstr "_Verkenner openen"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "_Tags bewerken"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
 msgid "_Information"
 msgstr "_Informatie"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
 msgstr "Afspeel_lijsten"
 
@@ -5525,8 +5525,8 @@ msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
 msgstr[0] "Wil je de plug-in '%(name)s' uitvoeren op %(count)s afspeellijst?"
 msgstr[1] "Wil je de plug-in '%(name)s' uitvoeren op %(count)s afspeellijsten?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
-#: quodlibet/qltk/songsmenu.py:70
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
+#: quodlibet/qltk/songsmenu.py:72
 msgid "_Run Plugin"
 msgstr "Plugin uitvoe_ren"
 
@@ -5947,7 +5947,7 @@ msgid "_Check for Updates…"
 msgstr "_Controleren op updates…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:293
+#: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Plug-ins"
 
@@ -7227,86 +7227,89 @@ msgstr "Kop_pen aanpassen…"
 msgid "_Expand Column"
 msgstr "Kolom uitvouw_en"
 
-#: quodlibet/qltk/songsmenu.py:43
-#, python-format
-msgid "Remove track: \"%%(title)s\" from library?"
-msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "Wil je \"%%(title)s\" ve_rwijderen uit je verzameling?"
-msgstr[1] "Wil je %(count)d nummers verwijderen uit je verzameling?"
+#: quodlibet/qltk/songsmenu.py:44
+#, fuzzy, python-format
+msgid "Remove track: \"%(title)s\" from the library?"
+msgstr "Wil je \"%%(title)s\" ve_rwijderen uit je verzameling?"
 
-#: quodlibet/qltk/songsmenu.py:48
+#: quodlibet/qltk/songsmenu.py:47
+#, fuzzy, python-format
+msgid "Remove %(count)d tracks from the library?"
+msgstr "Wil je \"%%(title)s\" ve_rwijderen uit je verzameling?"
+
+#: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
 msgstr "Ve_rwijderen uit verzameling"
 
-#: quodlibet/qltk/songsmenu.py:55
+#: quodlibet/qltk/songsmenu.py:57
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d nummer?"
 msgstr[1] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d nummers?"
 
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/qltk/songsmenu.py:68
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d album?"
 msgstr[1] "Wil je de plug-in \"%(name)s\" uitvoeren op %(count)d albums?"
 
-#: quodlibet/qltk/songsmenu.py:138
+#: quodlibet/qltk/songsmenu.py:140
 msgid "Configure Plugins…"
 msgstr "Plug-ins instellen…"
 
-#: quodlibet/qltk/songsmenu.py:322
+#: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
 msgstr "Toevoegen aan _wachtrij"
 
-#: quodlibet/qltk/songsmenu.py:342
+#: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
 msgstr "Ve_rwijderen uit verzameling…"
 
-#: quodlibet/qltk/songsmenu.py:408
+#: quodlibet/qltk/songsmenu.py:410
 msgid "Unable to show files"
 msgstr "Kan bestanden niet tonen"
 
-#: quodlibet/qltk/songsmenu.py:409
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 "De bestanden kunnen niet worden getoond of er is geen programma dat ze kan "
 "tonen."
 
-#: quodlibet/qltk/songsmenu.py:416
+#: quodlibet/qltk/songsmenu.py:418
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "Tonen in bestand_sbeheerder"
 msgstr[1] "%(total)d bestanden tonen in bestand_sbeheerder"
 
-#: quodlibet/qltk/songsmenu.py:433
+#: quodlibet/qltk/songsmenu.py:435
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "Bestand _downloaden…"
 msgstr[1] "%(total)d bestanden downloaden…"
 
-#: quodlibet/qltk/songsmenu.py:440
+#: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
 msgstr "Voltooid"
 
-#: quodlibet/qltk/songsmenu.py:441
+#: quodlibet/qltk/songsmenu.py:443
 msgid "failed"
 msgstr "mislukt"
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:446
 msgid "Downloads complete"
 msgstr "Het downloaden is voltooid"
 
-#: quodlibet/qltk/songsmenu.py:450
+#: quodlibet/qltk/songsmenu.py:452
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "{name!r} opslaan in"
 msgstr[1] "{total} bestanden opslaan in"
 
-#: quodlibet/qltk/songsmenu.py:456
+#: quodlibet/qltk/songsmenu.py:458
 msgid "Download here"
 msgstr "Hier opslaan"
 

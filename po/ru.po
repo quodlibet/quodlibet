@@ -233,7 +233,7 @@ msgstr "Об_новить"
 #: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
 msgstr "_Удалить файлы"
 
@@ -3109,16 +3109,16 @@ msgid "Open _Browser"
 msgstr "В новом о_кне"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Изменить _теги"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
 msgid "_Information"
 msgstr "_Информация"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
 msgstr "Плейли_сты"
 
@@ -5533,8 +5533,8 @@ msgstr[0] "Запустить плагин \"%(name)s\" для %(count)s пле�
 msgstr[1] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
 msgstr[2] "Запустить плагин \"%(name)s\" для %(count)s плейлистов?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
-#: quodlibet/qltk/songsmenu.py:70
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
+#: quodlibet/qltk/songsmenu.py:72
 msgid "_Run Plugin"
 msgstr "_Запустить плагин"
 
@@ -5957,7 +5957,7 @@ msgid "_Check for Updates…"
 msgstr "_Проверить обновления…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:293
+#: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Расширения"
 
@@ -7233,19 +7233,21 @@ msgstr "_Настроить…"
 msgid "_Expand Column"
 msgstr "Автоши_рина"
 
-#: quodlibet/qltk/songsmenu.py:43
-#, python-format
-msgid "Remove track: \"%%(title)s\" from library?"
-msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "Удалить трек \"%%(title)s\" из фонотеки?"
-msgstr[1] "Удалить %(count)d трека из фонотеки?"
-msgstr[2] "Удалить %(count)d треков из фонотеки?"
+#: quodlibet/qltk/songsmenu.py:44
+#, fuzzy, python-format
+msgid "Remove track: \"%(title)s\" from the library?"
+msgstr "Удалить трек \"%%(title)s\" из фонотеки?"
 
-#: quodlibet/qltk/songsmenu.py:48
+#: quodlibet/qltk/songsmenu.py:47
+#, fuzzy, python-format
+msgid "Remove %(count)d tracks from the library?"
+msgstr "Удалить трек \"%%(title)s\" из фонотеки?"
+
+#: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
 msgstr "Удалить из фонотеки"
 
-#: quodlibet/qltk/songsmenu.py:55
+#: quodlibet/qltk/songsmenu.py:57
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
@@ -7253,7 +7255,7 @@ msgstr[0] "Запустить плагин '%(name)s' для %(count)d трек�
 msgstr[1] "Запустить плагин '%(name)s' для %(count)d треков?"
 msgstr[2] "Запустить плагин '%(name)s' для %(count)d треков?"
 
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/qltk/songsmenu.py:68
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
@@ -7261,27 +7263,27 @@ msgstr[0] "Запустить плагин '%(name)s' для %(count)d альб�
 msgstr[1] "Запустить плагин '%(name)s' для %(count)d альбомов?"
 msgstr[2] "Запустить плагин '%(name)s' для %(count)d альбомов?"
 
-#: quodlibet/qltk/songsmenu.py:138
+#: quodlibet/qltk/songsmenu.py:140
 msgid "Configure Plugins…"
 msgstr "Настройки расширений…"
 
-#: quodlibet/qltk/songsmenu.py:322
+#: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
 msgstr "Добавить в _очередь"
 
-#: quodlibet/qltk/songsmenu.py:342
+#: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
 msgstr "Удалить из _фонотеки…"
 
-#: quodlibet/qltk/songsmenu.py:408
+#: quodlibet/qltk/songsmenu.py:410
 msgid "Unable to show files"
 msgstr "Не удается отобразить файлы"
 
-#: quodlibet/qltk/songsmenu.py:409
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Error showing files, or no program available to show them."
 msgstr "Ошибка отображения файлов, или нет программы для их отображения."
 
-#: quodlibet/qltk/songsmenu.py:416
+#: quodlibet/qltk/songsmenu.py:418
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
@@ -7289,7 +7291,7 @@ msgstr[0] "_Показать %(total)d файл"
 msgstr[1] "_Показать %(total)d файла"
 msgstr[2] "_Показать %(total)d файлов"
 
-#: quodlibet/qltk/songsmenu.py:433
+#: quodlibet/qltk/songsmenu.py:435
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
@@ -7297,21 +7299,21 @@ msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
 
-#: quodlibet/qltk/songsmenu.py:440
+#: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:441
+#: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
 msgid "failed"
 msgstr "Не удалось сохранить"
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:446
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Обложки - Загрузка"
 
-#: quodlibet/qltk/songsmenu.py:450
+#: quodlibet/qltk/songsmenu.py:452
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
@@ -7319,7 +7321,7 @@ msgstr[0] "Обложки - Загрузка"
 msgstr[1] "Обложки - Загрузка"
 msgstr[2] "Обложки - Загрузка"
 
-#: quodlibet/qltk/songsmenu.py:456
+#: quodlibet/qltk/songsmenu.py:458
 #, fuzzy
 msgid "Download here"
 msgstr "Обложки - Загрузка"
