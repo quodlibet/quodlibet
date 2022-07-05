@@ -40,10 +40,12 @@ def confirm_song_removal_invoke(parent, songs):
 
     count = len(songs)
     song = next(iter(songs))
-    title = (ngettext("Remove track: \"%%(title)s\" from library?",
-                      "Remove %(count)d tracks from library?",
-                      count) % {'count': count}) % {
-                'title': song('title') or song('~basename')}
+    if count == 1:
+        title = _("Remove track: \"%(title)s\" from the library?") % {
+                    'title': song('title') or song('~basename')}
+    else:
+        title = _("Remove %(count)d tracks from the library?") % {
+                    'count': count}
 
     prompt = ConfirmationPrompt(parent, title, "", _("Remove from Library"),
                                 ok_button_icon=Icons.LIST_REMOVE)
