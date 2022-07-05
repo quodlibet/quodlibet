@@ -221,7 +221,7 @@ msgstr "Α_νανέωση"
 #: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
 msgstr "_Διαγραφή Αρχείων"
 
@@ -3109,16 +3109,16 @@ msgid "Open _Browser"
 msgstr "Άνοιγμα _Περιηγητή"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Επε_ξεργασία Ετικετών"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
 msgid "_Information"
 msgstr "Π_ληροφορίες"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
 msgstr "_Λίστες Αναπαραγωγής"
 
@@ -5565,8 +5565,8 @@ msgstr[0] ""
 msgstr[1] ""
 "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d λίστες αναπαραγωγής;"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
-#: quodlibet/qltk/songsmenu.py:70
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
+#: quodlibet/qltk/songsmenu.py:72
 msgid "_Run Plugin"
 msgstr "_Εκτέλεση Πρόσθετου"
 
@@ -5991,7 +5991,7 @@ msgid "_Check for Updates…"
 msgstr ""
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:293
+#: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Πρόσθετα"
 
@@ -7308,91 +7308,94 @@ msgstr "Προσαρμογή _Κεφαλίδων…"
 msgid "_Expand Column"
 msgstr "_Επέκταση Στήλης"
 
-#: quodlibet/qltk/songsmenu.py:43
+#: quodlibet/qltk/songsmenu.py:44
 #, fuzzy, python-format
-msgid "Remove track: \"%%(title)s\" from library?"
-msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "Α_φαίρεση από την μουσικοθήκη"
-msgstr[1] "Α_φαίρεση από την μουσικοθήκη"
+msgid "Remove track: \"%(title)s\" from the library?"
+msgstr "Α_φαίρεση από την μουσικοθήκη"
 
-#: quodlibet/qltk/songsmenu.py:48
+#: quodlibet/qltk/songsmenu.py:47
+#, fuzzy, python-format
+msgid "Remove %(count)d tracks from the library?"
+msgstr "Α_φαίρεση από την μουσικοθήκη"
+
+#: quodlibet/qltk/songsmenu.py:50
 #, fuzzy
 msgid "Remove from Library"
 msgstr "Α_φαίρεση από την μουσικοθήκη"
 
-#: quodlibet/qltk/songsmenu.py:55
+#: quodlibet/qltk/songsmenu.py:57
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d τραγούδι;"
 msgstr[1] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d τραγούδια;"
 
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/qltk/songsmenu.py:68
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d άλμπουμ;"
 msgstr[1] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)d άλμπουμ;"
 
-#: quodlibet/qltk/songsmenu.py:138
+#: quodlibet/qltk/songsmenu.py:140
 #, fuzzy
 msgid "Configure Plugins…"
 msgstr "Επεξεργασία αναζητήσεων…"
 
-#: quodlibet/qltk/songsmenu.py:322
+#: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
 msgstr "Προσθήκη στην _Ουρά"
 
-#: quodlibet/qltk/songsmenu.py:342
+#: quodlibet/qltk/songsmenu.py:344
 #, fuzzy
 msgid "_Remove from Library…"
 msgstr "Α_φαίρεση από την μουσικοθήκη"
 
-#: quodlibet/qltk/songsmenu.py:408
+#: quodlibet/qltk/songsmenu.py:410
 #, fuzzy
 msgid "Unable to show files"
 msgstr "Αδυναμία διαγραφής αρχείου"
 
-#: quodlibet/qltk/songsmenu.py:409
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:416
+#: quodlibet/qltk/songsmenu.py:418
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/qltk/songsmenu.py:433
+#: quodlibet/qltk/songsmenu.py:435
 #, fuzzy, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "_Λήψη"
 msgstr[1] "_Λήψη"
 
-#: quodlibet/qltk/songsmenu.py:440
+#: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:441
+#: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
 msgid "failed"
 msgstr "Η αποθήκευση απέτυχε"
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:446
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Κατέβασμα Αρχείου"
 
-#: quodlibet/qltk/songsmenu.py:450
+#: quodlibet/qltk/songsmenu.py:452
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "Λήψη Εξώφυλλων Άλμπουμ"
 msgstr[1] "Λήψη Εξώφυλλων Άλμπουμ"
 
-#: quodlibet/qltk/songsmenu.py:456
+#: quodlibet/qltk/songsmenu.py:458
 #, fuzzy
 msgid "Download here"
 msgstr "Κατέβασμα Αρχείου"

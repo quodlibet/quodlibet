@@ -218,7 +218,7 @@ msgstr "再表示(_R)"
 #: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
 msgstr "削除(_D)"
 
@@ -1258,8 +1258,9 @@ msgstr ""
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
-msgstr "ファイルのタグ付けまたは名前変更時に、任意の正規表現置換 (<tt>s/from/to/"
-"</tt>) を許可します。"
+msgstr ""
+"ファイルのタグ付けまたは名前変更時に、任意の正規表現置換 (<tt>s/from/to/</"
+"tt>) を許可します。"
 
 #: quodlibet/ext/editing/titlecase.py:20
 #, fuzzy
@@ -3040,16 +3041,16 @@ msgid "Open _Browser"
 msgstr "ブラウザを開く(_B)"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "タグの編集(_T)"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
 msgid "_Information"
 msgstr "情報(_I)"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
 msgstr "プレイリスト(_L)"
 
@@ -3619,8 +3620,9 @@ msgstr ""
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
-msgstr "順番に再生する再生順序 (シャッフル) モードを追加しますが、"
-"指定されたしきい値より低い (または等しい) 評価のトラックをスキップします。"
+msgstr ""
+"順番に再生する再生順序 (シャッフル) モードを追加しますが、指定されたしきい値"
+"より低い (または等しい) 評価のトラックをスキップします。"
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
 msgid "Skip disliked tracks"
@@ -4614,9 +4616,9 @@ msgstr ""
 "\n"
 "アルバムをエクスポートした後、そのデータを別のバージョンのアルバムにインポー"
 "トすることができます。トラックの順番や数は異なってもかまいません。プラグイン"
-"は、トラックの名前が多少異なっていても、エクスポートされたデータを新しいトラ"
-"ックに合わせます。自動マッチングが常に正しいとは限らないので、以下の類似度の"
-"値をあまり下げない方がよいでしょう。"
+"は、トラックの名前が多少異なっていても、エクスポートされたデータを新しいト"
+"ラックに合わせます。自動マッチングが常に正しいとは限らないので、以下の類似度"
+"の値をあまり下げない方がよいでしょう。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
 msgid "User interaction on import"
@@ -4634,7 +4636,8 @@ msgstr "アルバム数が異なる場合は確認を求める"
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
-msgstr "この割合以下の場合、ユーザーはどのトラックがどのトラックとマッチングしている"
+msgstr ""
+"この割合以下の場合、ユーザーはどのトラックがどのトラックとマッチングしている"
 "かを手動で確認し、変更する必要があります。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
@@ -5434,8 +5437,8 @@ msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
 msgstr[0] ""
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
-#: quodlibet/qltk/songsmenu.py:70
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
+#: quodlibet/qltk/songsmenu.py:72
 #, fuzzy
 msgid "_Run Plugin"
 msgstr "プラグイン(_P)"
@@ -5861,7 +5864,7 @@ msgid "_Check for Updates…"
 msgstr "アップデートの確認(_C)…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:293
+#: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "プラグイン(_P)"
 
@@ -6109,8 +6112,8 @@ msgid ""
 "that shouldn't be matched):"
 msgstr ""
 "左側の列が右側の列とほぼ一致しているかどうかを確認してください。一致しない場"
-"合は、ここで順序を変更することができます (一致させるべきではない行には _ "
-"を使用します):"
+"合は、ここで順序を変更することができます (一致させるべきではない行には _ を使"
+"用します):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
@@ -6956,8 +6959,8 @@ msgstr ""
 "{old!r} → {new!r}\n"
 "\n"
 "オーディオファイル自体はこれによって移動することはありません。\n"
-"それでも、バックアップを取ることをお勧めします (Quod Libet の 'songs' "
-"ファイルを含む)。"
+"それでも、バックアップを取ることをお勧めします (Quod Libet の 'songs' ファイ"
+"ルを含む)。"
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
@@ -7130,82 +7133,86 @@ msgstr "ヘッダのカスタマイズ(_C)…"
 msgid "_Expand Column"
 msgstr "カラム名で幅揃え(_E)"
 
-#: quodlibet/qltk/songsmenu.py:43
-#, python-format
-msgid "Remove track: \"%%(title)s\" from library?"
-msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "ライブラリから%(count)dトラックを削除しますか？"
+#: quodlibet/qltk/songsmenu.py:44
+#, fuzzy, python-format
+msgid "Remove track: \"%(title)s\" from the library?"
+msgstr "ライブラリから%(count)dトラックを削除しますか？"
 
-#: quodlibet/qltk/songsmenu.py:48
+#: quodlibet/qltk/songsmenu.py:47
+#, fuzzy, python-format
+msgid "Remove %(count)d tracks from the library?"
+msgstr "ライブラリから%(count)dトラックを削除しますか？"
+
+#: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
 msgstr "ライブラリから削除"
 
-#: quodlibet/qltk/songsmenu.py:55
+#: quodlibet/qltk/songsmenu.py:57
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
 msgstr[0] ""
 
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/qltk/songsmenu.py:68
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
 msgstr[0] ""
 
-#: quodlibet/qltk/songsmenu.py:138
+#: quodlibet/qltk/songsmenu.py:140
 msgid "Configure Plugins…"
 msgstr "プラグインの設定…"
 
-#: quodlibet/qltk/songsmenu.py:322
+#: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
 msgstr "キューへ追加(_Q)"
 
-#: quodlibet/qltk/songsmenu.py:342
+#: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
 msgstr "ライブラリから削除(_R)…"
 
-#: quodlibet/qltk/songsmenu.py:408
+#: quodlibet/qltk/songsmenu.py:410
 #, fuzzy
 msgid "Unable to show files"
 msgstr "ファイルを削除できませんでした。"
 
-#: quodlibet/qltk/songsmenu.py:409
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:416
+#: quodlibet/qltk/songsmenu.py:418
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "ファイルマネージャで%(total)dファイルを表示"
 
-#: quodlibet/qltk/songsmenu.py:433
+#: quodlibet/qltk/songsmenu.py:435
 #, fuzzy, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "ダウンロード(_D)"
 
-#: quodlibet/qltk/songsmenu.py:440
+#: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:441
+#: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
 msgid "failed"
 msgstr "検索"
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:446
 #, fuzzy
 msgid "Downloads complete"
 msgstr "ファイルのダウンロード"
 
-#: quodlibet/qltk/songsmenu.py:450
+#: quodlibet/qltk/songsmenu.py:452
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "アルバムリスト"
 
-#: quodlibet/qltk/songsmenu.py:456
+#: quodlibet/qltk/songsmenu.py:458
 #, fuzzy
 msgid "Download here"
 msgstr "ファイルのダウンロード"

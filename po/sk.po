@@ -222,7 +222,7 @@ msgstr "_Obnoviť"
 #: quodlibet/browsers/playlists/main.py:482
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:357
+#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
 msgstr "_Zmazať"
 
@@ -3122,16 +3122,16 @@ msgid "Open _Browser"
 msgstr "Otvoriť _prehliadač"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:376
+#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Upraviť _tagy"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:389
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
 msgid "_Information"
 msgstr "_Informácie"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:317
+#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
 msgstr "_Zoznamy prehrávania"
 
@@ -5534,8 +5534,8 @@ msgstr[0] "Použiť zásuvný modul „%(name)s“ na %(count)s zoznam prehráva
 msgstr[1] "Použiť zásuvný modul „%(name)s“ na %(count)s zoznamy prehrávania?"
 msgstr[2] "Použiť zásuvný modul „%(name)s“ na %(count)s zoznamov prehrávania?"
 
-#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:59
-#: quodlibet/qltk/songsmenu.py:70
+#: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
+#: quodlibet/qltk/songsmenu.py:72
 msgid "_Run Plugin"
 msgstr "_Použiť zásuvný modul"
 
@@ -5954,7 +5954,7 @@ msgid "_Check for Updates…"
 msgstr "_Vyhľadať aktualizácie…"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
-#: quodlibet/qltk/songsmenu.py:293
+#: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Zásuvné moduly"
 
@@ -7236,19 +7236,21 @@ msgstr "_Prispôsobiť hlavičky…"
 msgid "_Expand Column"
 msgstr "_Rozšíriť stĺpec"
 
-#: quodlibet/qltk/songsmenu.py:43
-#, python-format
-msgid "Remove track: \"%%(title)s\" from library?"
-msgid_plural "Remove %(count)d tracks from library?"
-msgstr[0] "Odstrániť skladbu: „%%(title)s“ z knižnice?"
-msgstr[1] "Odstrániť %(count)d skladby z knižnice?"
-msgstr[2] "Odstrániť %(count)d skladieb z knižnice?"
+#: quodlibet/qltk/songsmenu.py:44
+#, fuzzy, python-format
+msgid "Remove track: \"%(title)s\" from the library?"
+msgstr "Odstrániť skladbu: „%%(title)s“ z knižnice?"
 
-#: quodlibet/qltk/songsmenu.py:48
+#: quodlibet/qltk/songsmenu.py:47
+#, fuzzy, python-format
+msgid "Remove %(count)d tracks from the library?"
+msgstr "Odstrániť skladbu: „%%(title)s“ z knižnice?"
+
+#: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
 msgstr "Odstrániť z knižnice"
 
-#: quodlibet/qltk/songsmenu.py:55
+#: quodlibet/qltk/songsmenu.py:57
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d song?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d songs?"
@@ -7256,7 +7258,7 @@ msgstr[0] "Použiť zásuvný modul „%(name)s“ na %(count)d skladbu?"
 msgstr[1] "Použiť zásuvný modul „%(name)s“ na %(count)d skladby?"
 msgstr[2] "Použiť zásuvný modul „%(name)s“ na %(count)d skladieb?"
 
-#: quodlibet/qltk/songsmenu.py:66
+#: quodlibet/qltk/songsmenu.py:68
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)d album?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)d albums?"
@@ -7264,27 +7266,27 @@ msgstr[0] "Použiť zásuvný modul „%(name)s“ na %(count)d album?"
 msgstr[1] "Použiť zásuvný modul „%(name)s“ na %(count)d albumy?"
 msgstr[2] "Použiť zásuvný modul „%(name)s“ na %(count)d albumov?"
 
-#: quodlibet/qltk/songsmenu.py:138
+#: quodlibet/qltk/songsmenu.py:140
 msgid "Configure Plugins…"
 msgstr "Nastaviť zásuvné moduly…"
 
-#: quodlibet/qltk/songsmenu.py:322
+#: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
 msgstr "Pridať do _fronty"
 
-#: quodlibet/qltk/songsmenu.py:342
+#: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
 msgstr "_Odstrániť z knižnice…"
 
-#: quodlibet/qltk/songsmenu.py:408
+#: quodlibet/qltk/songsmenu.py:410
 msgid "Unable to show files"
 msgstr "Nepodarilo sa zobraziť súbory"
 
-#: quodlibet/qltk/songsmenu.py:409
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Error showing files, or no program available to show them."
 msgstr "Chyba pri zobrazovaní súborov, alebo žiaden program na ich zobrazenie."
 
-#: quodlibet/qltk/songsmenu.py:416
+#: quodlibet/qltk/songsmenu.py:418
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
@@ -7292,7 +7294,7 @@ msgstr[0] "_Zobraziť v správcovi súborov"
 msgstr[1] "_Zobraziť %(total)d súbory v správcovi súborov"
 msgstr[2] "_Zobraziť %(total)d súborov v správcovi súborov"
 
-#: quodlibet/qltk/songsmenu.py:433
+#: quodlibet/qltk/songsmenu.py:435
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
@@ -7300,26 +7302,26 @@ msgstr[0] "_Stiahnuť súbor…"
 msgstr[1] "_Stiahnuť %(total)d súbory…"
 msgstr[2] "_Stiahnuť %(total)d súborov…"
 
-#: quodlibet/qltk/songsmenu.py:440
+#: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
 msgstr "úspešný"
 
-#: quodlibet/qltk/songsmenu.py:441
+#: quodlibet/qltk/songsmenu.py:443
 msgid "failed"
 msgstr "neúspešný"
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:446
 msgid "Downloads complete"
 msgstr "Sťahovanie dokončené"
 
-#: quodlibet/qltk/songsmenu.py:450
+#: quodlibet/qltk/songsmenu.py:452
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "Stiahnuť {name!r} do"
 msgstr[1] "Stiahnuť {total} súbory do"
 msgstr[2] "Stiahnuť {total} súborov do"
 
-#: quodlibet/qltk/songsmenu.py:456
+#: quodlibet/qltk/songsmenu.py:458
 msgid "Download here"
 msgstr "Stiahnuť sem"
 
