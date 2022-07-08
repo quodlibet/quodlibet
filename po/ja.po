@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-05 16:01+0000\n"
+"PO-Revision-Date: 2022-07-08 15:19+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -596,7 +596,7 @@ msgstr "お気に入り"
 
 #: quodlibet/browsers/iradio.py:615
 msgid "No Category"
-msgstr ""
+msgstr "カテゴリなし"
 
 #: quodlibet/browsers/iradio.py:838
 msgid "No stations found"
@@ -5664,14 +5664,12 @@ msgid "Deleting one or more files failed."
 msgstr "<b>%s</b>の削除失敗。"
 
 #: quodlibet/qltk/download.py:36
-#, fuzzy
 msgid "Browser"
 msgstr "ブラウザ"
 
 #: quodlibet/qltk/download.py:36
-#, fuzzy
 msgid "Downloading files"
-msgstr "ファイルのダウンロード"
+msgstr "ファイルのダウンロード中"
 
 #: quodlibet/qltk/edittags.py:62 quodlibet/qltk/edittags.py:73
 #, python-format
@@ -6211,7 +6209,7 @@ msgstr "無効"
 
 #: quodlibet/qltk/pluginwin.py:153
 msgid "No category"
-msgstr ""
+msgstr "カテゴリなし"
 
 #: quodlibet/qltk/pluginwin.py:186
 msgid "Any category"
@@ -7012,85 +7010,80 @@ msgid "Display remaining time"
 msgstr "残り時間を表示"
 
 #: quodlibet/qltk/shortcuts.py:16
-#, fuzzy
 msgid "Main Window"
-msgstr "歌詞"
+msgstr "メインウィンドウ"
 
 #: quodlibet/qltk/shortcuts.py:17
 msgid "Seek backwards by 10 seconds"
-msgstr ""
+msgstr "10秒前に戻す"
 
 #: quodlibet/qltk/shortcuts.py:18
 msgid "Seek forward by 10 seconds"
-msgstr ""
+msgstr "10秒先に進める"
 
 #: quodlibet/qltk/shortcuts.py:19
-#, fuzzy
 msgid "Focus the search entry"
-msgstr "起動中のプレイヤーにフォーカス"
+msgstr "検索ボックスにフォーカス"
 
 #: quodlibet/qltk/shortcuts.py:22
-#, fuzzy
 msgid "Reset filters and jump to the playing song"
-msgstr "再生中の曲をシーク"
+msgstr "フィルタをリセットして、再生中の曲にジャンプ"
 
 #: quodlibet/qltk/shortcuts.py:26
 msgid "Open the information window for the selected songs"
-msgstr ""
+msgstr "選択した曲の情報ウィンドウを開く"
 
 #: quodlibet/qltk/shortcuts.py:27
 msgid "Open the tag editor for the selected songs"
-msgstr ""
+msgstr "選択した曲のタグエディタを開く"
 
 #: quodlibet/qltk/shortcuts.py:28
-#, fuzzy
 msgid "Queue the selected songs"
-msgstr "曲を追加できません"
+msgstr "選択した曲をキューに入れる"
 
 #: quodlibet/qltk/shortcuts.py:29
-#, fuzzy
 msgid "Delete the selected songs"
-msgstr "曲を追加できません"
+msgstr "選択した曲を削除する"
 
 #: quodlibet/qltk/shortcuts.py:30
 msgid "Show the inline search entry"
-msgstr ""
+msgstr "インライン検索ボックスを表示する"
 
 #: quodlibet/qltk/shortcuts.py:31
 msgid "Left click on a column header"
-msgstr ""
+msgstr "カラムヘッダを左クリック"
 
 #: quodlibet/qltk/shortcuts.py:32
 msgid "Add the column to the list of columns to sort by"
-msgstr ""
+msgstr "並べ替えの対象となるカラムのリストに追加する"
 
 #: quodlibet/qltk/shortcuts.py:34
 msgid "Tree View"
-msgstr ""
+msgstr "ツリービュー"
 
 #: quodlibet/qltk/shortcuts.py:36
 msgid "Collapses the element or select the parent element"
-msgstr ""
+msgstr "要素を折りたたむ、または親要素を選択する"
 
 #: quodlibet/qltk/shortcuts.py:37
 msgid "Expands the element"
-msgstr ""
+msgstr "要素を展開する"
 
 #: quodlibet/qltk/shortcuts.py:39
 msgid "Text Entries"
-msgstr ""
+msgstr "テキストボックス"
 
 #: quodlibet/qltk/shortcuts.py:41
 msgid "Undo the last change"
-msgstr ""
+msgstr "直前の変更を取り消す"
 
 #: quodlibet/qltk/shortcuts.py:42
 msgid "Redo the last undone change"
-msgstr ""
+msgstr "直前に取り消した変更をやり直す"
 
 #: quodlibet/qltk/shortcuts.py:45
 msgid "Select all songs in all panes"
-msgstr ""
+msgstr "全てのペインで全ての曲を選択する"
 
 #: quodlibet/qltk/songlist.py:386
 #, python-format
@@ -7134,14 +7127,14 @@ msgid "_Expand Column"
 msgstr "カラム名で幅揃え(_E)"
 
 #: quodlibet/qltk/songsmenu.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "ライブラリから%(count)dトラックを削除しますか？"
+msgstr "ライブラリからトラック「%(title)s」を削除しますか？"
 
 #: quodlibet/qltk/songsmenu.py:47
-#, fuzzy, python-format
+#, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "ライブラリから%(count)dトラックを削除しますか？"
+msgstr "ライブラリから %(count)d トラックを削除しますか？"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
@@ -7187,35 +7180,31 @@ msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "ファイルマネージャで%(total)dファイルを表示"
 
 #: quodlibet/qltk/songsmenu.py:435
-#, fuzzy, python-format
+#, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "ダウンロード(_D)"
+msgstr[0] "%(total)d ファイルをダウンロード(_D)…"
 
 #: quodlibet/qltk/songsmenu.py:442
 msgid "successful"
-msgstr ""
+msgstr "成功"
 
 #: quodlibet/qltk/songsmenu.py:443
-#, fuzzy
 msgid "failed"
-msgstr "検索"
+msgstr "失敗"
 
 #: quodlibet/qltk/songsmenu.py:446
-#, fuzzy
 msgid "Downloads complete"
-msgstr "ファイルのダウンロード"
+msgstr "ダウンロード完了"
 
 #: quodlibet/qltk/songsmenu.py:452
-#, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
-msgstr[0] "アルバムリスト"
+msgstr[0] "{total} ファイルのダウンロード先"
 
 #: quodlibet/qltk/songsmenu.py:458
-#, fuzzy
 msgid "Download here"
-msgstr "ファイルのダウンロード"
+msgstr "ここにダウンロード"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
