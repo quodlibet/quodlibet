@@ -8,6 +8,7 @@ import io
 import os
 import shutil
 from contextlib import contextmanager
+from tempfile import mkstemp, mkdtemp
 
 from quodlibet import config, app
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
@@ -17,7 +18,7 @@ from quodlibet.util.environment import is_windows
 from quodlibet.util.path import (normalize_path, mkdir, get_home_dir, unquote,
                                  escape_filename, RootPathFile)
 from quodlibet.util.tags import _TAGS as TAGS
-from senf import fsnative, fsn2text, bytes2fsn, mkstemp, mkdtemp
+from senf import fsnative, fsn2text, bytes2fsn
 from tests import TestCase, get_data_path, init_fake_app, destroy_fake_app
 from .helper import temp_filename
 

@@ -4,11 +4,10 @@
 # (at your option) any later version.
 
 import os
+import tempfile
 
 from quodlibet import app
 from tests import TestCase, destroy_fake_app, init_fake_app
-
-from senf import mkstemp
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.info import SongInfo
@@ -28,7 +27,7 @@ class TSongInfo(TestCase):
 
     def setUp(self):
         init_fake_app()
-        fd, self.filename = mkstemp()
+        fd, self.filename = tempfile.mkstemp()
         os.close(fd)
         self.info = SongInfo(SongLibrary(), NullPlayer(), self.filename)
 

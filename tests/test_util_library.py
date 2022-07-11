@@ -7,7 +7,7 @@
 
 import os
 
-from senf import fsnative, expanduser
+from senf import fsnative
 
 from quodlibet import config
 from quodlibet.util.library import split_scan_dirs, set_scan_dirs, \
@@ -47,7 +47,7 @@ class Tlibrary_utils(TestCase):
         if os.name != "nt":
             some_path = unexpand(some_path)
         config.set('library', 'exclude', some_path)
-        assert expanduser(some_path) in get_exclude_dirs()
+        assert os.path.expanduser(some_path) in get_exclude_dirs()
 
         assert all([isinstance(p, fsnative) for p in get_exclude_dirs()])
 
@@ -56,7 +56,7 @@ class Tlibrary_utils(TestCase):
         if os.name != "nt":
             some_path = unexpand(some_path)
         config.set('settings', 'scan', some_path)
-        assert expanduser(some_path) in get_scan_dirs()
+        assert os.path.expanduser(some_path) in get_scan_dirs()
 
         assert all([isinstance(p, fsnative) for p in get_scan_dirs()])
 

@@ -9,8 +9,6 @@ import sys
 import os
 from optparse import OptionParser
 
-from senf import argv as sys_argv
-
 import quodlibet
 from quodlibet import const
 from quodlibet.util.dprint import print_
@@ -41,7 +39,7 @@ def _print_help(main_cmd, parser, file=None):
 
 def main(argv=None):
     if argv is None:
-        argv = sys_argv
+        argv = sys.argv
 
     quodlibet.init_cli()
 

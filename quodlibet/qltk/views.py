@@ -8,10 +8,10 @@
 
 import contextlib
 import sys
+import os
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
-from senf import environ
 
 from quodlibet import _, print_e
 from quodlibet import config
@@ -1153,7 +1153,7 @@ class HintedTreeView(BaseView):
         display scroll bars instead for example.
         """
 
-        if "QUODLIBET_NO_HINTS" in environ:
+        if "QUODLIBET_NO_HINTS" in os.environ:
             return False
 
         return not config.state('disable_hints')

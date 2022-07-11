@@ -19,7 +19,7 @@ from pathlib import Path
 from gi.repository import Gtk, Gdk
 
 from quodlibet.util.i18n import GlibTranslations
-from senf import fsnative, environ
+from senf import fsnative
 
 from quodlibet.qltk import find_widgets, get_primary_accel_mod
 from quodlibet.util.path import normalize_path
@@ -223,16 +223,16 @@ def visible(widget, width=None, height=None):
 
 @contextlib.contextmanager
 def preserve_environ():
-    old = environ.copy()
+    old = os.environ.copy()
     yield
     # don't touch existing values as os.environ is broken for empty
     # keys on Windows: http://bugs.python.org/issue20658
-    for key, value in list(environ.items()):
+    for key, value in list(os.environ.items()):
         if key not in old:
-            del environ[key]
+            del os.environ[key]
     for key, value in old.items():
-        if key not in environ or environ[key] != value:
-            environ[key] = value
+        if key not in os.environ or os.environ[key] != value:
+            os.environ[key] = value
 
 
 @contextlib.contextmanager

@@ -12,7 +12,7 @@ import traceback
 import time
 import logging
 
-from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp, environ
+from senf import fsnative, fsn2bytes, bytes2fsn
 
 from quodlibet import _
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
@@ -27,7 +27,7 @@ from quodlibet.util.library import set_scan_dirs, get_scan_dirs
 from quodlibet.util.path import fsn2glib, glib2fsn, \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, \
-    xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
+    xdg_get_data_home, unexpand, xdg_get_user_dirs, \
     xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.environment import is_osx
@@ -48,7 +48,7 @@ class Tmkdir(TestCase):
 
     def test_manydeep(self):
         self.failUnless(not os.path.isdir("nonext"))
-        t = mkdtemp()
+        t = tempfile.mkdtemp()
         path = os.path.join(t, "nonext", "test", "test2", "test3")
         mkdir(path)
         try:
@@ -67,7 +67,7 @@ class Tmkdir(TestCase):
 class Tgetcwd(TestCase):
 
     def test_Tgetcwd(self):
-        self.assertTrue(isinstance(getcwd(), fsnative))
+        self.assertTrue(isinstance(os.getcwd(), fsnative))
 
 
 class Tmtime(TestCase):
@@ -96,7 +96,7 @@ class Tformat_locale(TestCase):
 
 
 class Tunexpand(TestCase):
-    d = expanduser("~")
+    d = os.path.expanduser("~")
     u = unexpand(d)
 
     def test_base(self):
@@ -107,7 +107,7 @@ class Tunexpand(TestCase):
             self.failUnlessEqual(path, "~")
 
     def test_only_profile_case(self):
-        assert isinstance(unexpand(expanduser(fsnative(u"~"))), fsnative)
+        assert isinstance(unexpand(os.path.expanduser(fsnative(u"~"))), fsnative)
 
     def test_base_trailing(self):
         path = unexpand(self.d + os.path.sep)
@@ -636,12 +636,12 @@ class Txdg_dirs(TestCase):
         data = b'# foo\nBLA="$HOME/blah"\n'
         vars_ = parse_xdg_user_dirs(data)
         self.assertTrue(b"BLA" in vars_)
-        expected = os.path.join(environ.get("HOME", ""), "blah")
+        expected = os.path.join(os.environ.get("HOME", ""), "blah")
         self.assertEqual(vars_[b"BLA"], expected)
 
         vars_ = parse_xdg_user_dirs(b'BLA="$HOME/"')
         self.assertTrue(b"BLA" in vars_)
-        self.assertEqual(vars_[b"BLA"], environ.get("HOME", ""))
+        self.assertEqual(vars_[b"BLA"], os.environ.get("HOME", ""))
 
         # some invalid
         self.assertFalse(parse_xdg_user_dirs(b"foo"))
@@ -700,7 +700,7 @@ class TNormalizePath(TestCase):
         os.close(f)
         path = norm(path)
 
-        link_dir = mkdtemp()
+        link_dir = tempfile.mkdtemp()
         link = None
         if not is_win:
             link = os.path.join(link_dir, str(uuid.uuid4()))
@@ -1095,7 +1095,7 @@ class Treraise(TestCase):
 class Tenviron(TestCase):
 
     def test_main(self):
-        for v in environ.values():
+        for v in os.environ.values():
             if os.name == "nt":
                 self.assertTrue(isinstance(v, str))
             else:

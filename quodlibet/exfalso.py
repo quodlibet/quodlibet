@@ -7,8 +7,9 @@
 # (at your option) any later version.
 
 import os
+import sys
 
-from senf import fsnative, argv as sys_argv
+from senf import fsnative
 
 from quodlibet import _
 from quodlibet import app
@@ -19,7 +20,7 @@ from quodlibet import config
 
 def main(argv=None):
     if argv is None:
-        argv = sys_argv
+        argv = sys.argv
 
     import quodlibet
 

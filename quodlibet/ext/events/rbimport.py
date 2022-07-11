@@ -5,6 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
 import xml.sax
 from xml.sax.handler import ContentHandler
 
@@ -16,7 +17,7 @@ from quodlibet import app
 from quodlibet import util
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import WarningMessage, ErrorMessage
-from quodlibet.util.path import expanduser, normalize_path
+from quodlibet.util.path import normalize_path
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -104,7 +105,7 @@ class RBDBContentHandler(ContentHandler):
 
 
 def do_import(parent, library):
-    db_path = expanduser("~/.local/share/rhythmbox/rhythmdb.xml")
+    db_path = os.path.expanduser("~/.local/share/rhythmbox/rhythmdb.xml")
     handler = RBDBContentHandler(library)
     try:
         xml.sax.parse(db_path, handler)
