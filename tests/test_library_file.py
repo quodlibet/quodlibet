@@ -3,6 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
 import shutil
 from pathlib import Path
 from time import sleep
@@ -14,7 +15,7 @@ from quodlibet.library import SongFileLibrary
 from quodlibet.library.file import FileLibrary
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
-from senf import expanduser, text2fsn
+from senf import text2fsn
 from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
                    init_fake_app, destroy_fake_app)
 from tests.helper import temp_filename
@@ -148,7 +149,7 @@ class TFileLibrary(TLibrary):
 
 class TWatchedFileLibrary(TLibrary):
     Fake = FakeSongFile
-    temp_path = Path(normalize_path(expanduser(_TEMP_DIR), True)).resolve()
+    temp_path = Path(normalize_path(os.path.expanduser(_TEMP_DIR), True)).resolve()
 
     def setUp(self):
         init_fake_app()

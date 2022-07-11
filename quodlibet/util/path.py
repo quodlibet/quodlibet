@@ -18,12 +18,12 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import (fsnative, bytes2fsn, fsn2bytes, expanduser, sep, expandvars,
+from senf import (fsnative, bytes2fsn, fsn2bytes,
                   fsn2text, path2fsn, uri2fsn, _fsnative)
 
 from . import windows
 from .environment import is_windows
-from .misc import environ, NamedTemporaryFile
+from .misc import NamedTemporaryFile
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -72,7 +72,7 @@ def iscommand(s):
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        path = environ.get('PATH', '') or os.defpath
+        path = os.environ.get('PATH', '') or os.defpath
         for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
@@ -310,7 +310,7 @@ def parse_xdg_user_dirs(data):
             continue
         if len(values) != 1:
             continue
-        paths[key] = os.path.normpath(expandvars(values[0]))
+        paths[key] = os.path.normpath(os.path.expandvars(values[0]))
 
     return paths
 
@@ -428,7 +428,7 @@ def limit_path(path, ellipsis=True):
     assert isinstance(path, fsnative)
 
     main, ext = os.path.splitext(path)
-    parts = main.split(sep)
+    parts = main.split(os.sep)
     for i, p in enumerate(parts):
         # Limit each path section to 255 (bytes on linux, chars on win).
         # http://en.wikipedia.org/wiki/Comparison_of_file_systems#Limits
@@ -443,7 +443,7 @@ def limit_path(path, ellipsis=True):
                 p = p[:limit]
         parts[i] = p
 
-    return sep.join(parts) + ext
+    return os.sep.join(parts) + ext
 
 
 def get_home_dir():
@@ -452,7 +452,7 @@ def get_home_dir():
     if os.name == "nt":
         return windows.get_profile_dir()
     else:
-        return expanduser("~")
+        return os.path.expanduser("~")
 
 
 def is_hidden(path: _fsnative) -> bool:

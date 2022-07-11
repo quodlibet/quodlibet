@@ -11,7 +11,7 @@ import sys
 import warnings
 import logging
 
-from senf import environ, argv, fsn2text
+from senf import fsn2text
 
 from quodlibet.const import MinVersions
 from quodlibet import config
@@ -84,7 +84,7 @@ def _init_gettext(no_translations=False):
         localedir = None
 
     i18n.register_translation("quodlibet", localedir)
-    debug_text = environ.get("QUODLIBET_TEST_TRANS")
+    debug_text = os.environ.get("QUODLIBET_TEST_TRANS")
     if debug_text is not None:
         i18n.set_debug_text(fsn2text(debug_text))
 
@@ -107,7 +107,7 @@ def _init_python():
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
         # If you hit this do a "setup.py clean -all" to get rid of the
         # bytecode cache then start things with "MSYSTEM= ..."
-        raise AssertionError("MSYSTEM is set (%r)" % environ.get("MSYSTEM"))
+        raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
 
     logging.getLogger().addHandler(PrintHandler())
 
@@ -225,12 +225,12 @@ def _init_gtk():
     import gi
 
     if config.getboolean("settings", "pangocairo_force_fontconfig") and \
-            "PANGOCAIRO_BACKEND" not in environ:
-        environ["PANGOCAIRO_BACKEND"] = "fontconfig"
+            "PANGOCAIRO_BACKEND" not in os.environ:
+        os.environ["PANGOCAIRO_BACKEND"] = "fontconfig"
 
     # disable for consistency and trigger events seem a bit flaky here
     if config.getboolean("settings", "scrollbar_always_visible"):
-        environ["GTK_OVERLAY_SCROLLING"] = "0"
+        os.environ["GTK_OVERLAY_SCROLLING"] = "0"
 
     try:
         # not sure if this is available under Windows
@@ -250,7 +250,7 @@ def _init_gtk():
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
     # PyGObject doesn't fail anymore when init fails, so do it ourself
-    initialized, argv[:] = Gtk.init_check(argv)
+    initialized, sys.argv[:] = Gtk.init_check(sys.argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")
 
@@ -383,7 +383,7 @@ def _init_gst():
 
     arch_key = "64" if sys.maxsize > 2**32 else "32"
     registry_name = "gst-registry-%s-%s.bin" % (sys.platform, arch_key)
-    environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
+    os.environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
 
     assert "gi.repository.Gst" not in sys.modules
 
@@ -409,7 +409,7 @@ def _init_gst():
     from gi.repository import GLib
 
     try:
-        ok, argv[:] = Gst.init_check(argv)
+        ok, sys.argv[:] = Gst.init_check(sys.argv)
     except GLib.GError:
         print_e("Failed to initialize GStreamer")
         # Uninited Gst segfaults: make sure no one can use it

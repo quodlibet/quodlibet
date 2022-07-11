@@ -4,8 +4,7 @@
 # (at your option) any later version.
 
 import contextlib
-
-from senf import environ
+import os
 
 from tests import TestCase
 from .helper import preserve_environ, locale_numeric_conv
@@ -108,9 +107,9 @@ class Tgettext(TestCase):
 
     def test_fixup_i18n_envvars(self):
         with preserve_environ():
-            environ["LANGUAGE"] = "en:de:en_FOO:nl"
+            os.environ["LANGUAGE"] = "en:de:en_FOO:nl"
             fixup_i18n_envvars()
-            self.assertEqual(environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
+            self.assertEqual(os.environ["LANGUAGE"], "en:C:de:en_FOO:C:nl")
 
     def test_numeric_phrase(self):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1)

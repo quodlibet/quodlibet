@@ -9,7 +9,7 @@
 import os
 import sys
 
-from senf import environ, path2fsn
+from senf import path2fsn
 
 from quodlibet import util
 from quodlibet import const
@@ -160,8 +160,8 @@ def get_user_dir():
             if os.path.exists(tmp):
                 USERDIR = tmp
 
-    if 'QUODLIBET_USERDIR' in environ:
-        USERDIR = environ['QUODLIBET_USERDIR']
+    if 'QUODLIBET_USERDIR' in os.environ:
+        USERDIR = os.environ['QUODLIBET_USERDIR']
 
     if build.BUILD_TYPE == u"windows-portable":
         USERDIR = os.path.normpath(os.path.join(
@@ -377,7 +377,7 @@ def run(window, before_quit=None):
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
-    if "QUODLIBET_START_PERF" in environ:
+    if "QUODLIBET_START_PERF" in os.environ:
         window.connect("draw", Gtk.main_quit)
         Gtk.main()
         sys.exit()

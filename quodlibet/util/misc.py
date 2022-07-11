@@ -10,13 +10,10 @@ import sys
 import tempfile
 from functools import wraps
 
-from senf import environ, argv, path2fsn
+from senf import path2fsn
 
 
 from .environment import is_linux
-
-
-environ, argv
 
 
 def cmp(a, b):

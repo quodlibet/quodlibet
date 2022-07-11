@@ -10,8 +10,6 @@
 import sys
 import os
 
-from senf import environ, argv as sys_argv
-
 from quodlibet import _
 from quodlibet.cli import process_arguments, exit_
 from quodlibet.util.dprint import print_d, print_, print_exc
@@ -19,7 +17,7 @@ from quodlibet.util.dprint import print_d, print_, print_exc
 
 def main(argv=None):
     if argv is None:
-        argv = sys_argv
+        argv = sys.argv
 
     import quodlibet
 
@@ -62,7 +60,7 @@ def main(argv=None):
 
     # this assumes that nullbe will always succeed
     from quodlibet.player import PlayerError
-    wanted_backend = environ.get(
+    wanted_backend = os.environ.get(
         "QUODLIBET_BACKEND", config.get("player", "backend"))
 
     try:
@@ -73,8 +71,8 @@ def main(argv=None):
 
     app.player = player
 
-    environ["PULSE_PROP_media.role"] = "music"
-    environ["PULSE_PROP_application.icon_name"] = app.icon_name
+    os.environ["PULSE_PROP_media.role"] = "music"
+    os.environ["PULSE_PROP_application.icon_name"] = app.icon_name
 
     browsers.init()
 

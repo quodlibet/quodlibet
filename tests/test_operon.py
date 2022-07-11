@@ -9,7 +9,7 @@ import os
 import sys
 
 from quodlibet.util import is_osx, is_windows
-from senf import fsnative, path2fsn, environ
+from senf import fsnative, path2fsn
 
 from tests import TestCase, get_data_path, mkstemp, skipIf
 from .helper import capture_output, get_temp_copy
@@ -331,7 +331,7 @@ class TOperonEdit(TOperonBase):
 
     def test_nonexist_editor(self):
         editor = fsnative(u"/this/path/does/not/exist/hopefully")
-        environ["VISUAL"] = editor
+        os.environ["VISUAL"] = editor
         e = self.check_false(["edit", self.f], False, True)[1]
         self.assertTrue(editor in e)
 
