@@ -1,6 +1,6 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2021 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #
@@ -143,6 +143,8 @@ class PreferencesWindow(UniqueWindow):
                 return vbox
 
             super().__init__(spacing=12)
+            # Store ordered columns
+            self._columns = []
             self.set_border_width(12)
             self.title = _("Song List")
             self.pack_start(create_behaviour_frame(), False, True, 0)
@@ -157,7 +159,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __update(self, buttons, toggle_data, columns):
             """Updates all widgets based on the passed column list"""
-
+            self._columns = columns
             columns = list(columns)
 
             for key, widget in buttons.items():
@@ -178,7 +180,6 @@ class PreferencesWindow(UniqueWindow):
             """Given the current column list and the widgets states compute
             a new column list.
             """
-
             new_headers = set()
             # Get the checked headers
             for key, name in self.PREDEFINED_TAGS:
@@ -201,8 +202,13 @@ class PreferencesWindow(UniqueWindow):
                     except KeyError:
                         pass
 
-            # Add new ones on the end
-            result.extend(new_headers - set(result))
+            # Add new ones, trying to preserve order
+            for new in new_headers - set(result):
+                try:
+                    idx = self._columns.index(new)
+                except ValueError:
+                    idx = len(self._columns)
+                result.insert(idx, new)
 
             # After this, do the substitutions
             for (check, off, on) in self._toggle_data:
@@ -220,8 +226,7 @@ class PreferencesWindow(UniqueWindow):
 
         def __config_cols(self, button, buttons):
             def __closed(widget):
-                cols = widget.get_strings()
-                self.__update(buttons, self._toggle_data, cols)
+                self.__update(buttons, self._toggle_data, widget.tags)
 
             columns = self.__get_current_columns(buttons)
             m = TagListEditor(_("Edit Columns"), columns)
