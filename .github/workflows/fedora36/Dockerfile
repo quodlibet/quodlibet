@@ -1,4 +1,4 @@
-FROM fedora:33
+FROM fedora:36
 
 # DNF dependencies required before poetry can install virtualenv dependencies
 RUN dnf -y install \
