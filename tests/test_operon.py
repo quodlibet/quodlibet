@@ -8,6 +8,8 @@
 import os
 import sys
 
+import pytest
+
 from quodlibet.util import is_osx, is_windows
 from senf import fsnative, path2fsn, environ
 
@@ -355,6 +357,7 @@ class TOperonEdit(TOperonBase):
         os.environ["VISUAL"] = "false"
         self.check_false(["edit", self.f], False, True)
 
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_dry_run(self):
         if os.name == "nt" or sys.platform == "darwin":
             return
@@ -375,6 +378,7 @@ class TOperonEdit(TOperonBase):
         self.assertEqual(sorted(old_items), sorted(realitems(self.s)))
 
     @skipIf(is_windows() or is_osx(), "Linux only, uses truncate")
+    @pytest.mark.flaky(max_runs=4, min_passes=2)
     def test_remove_all(self):
 
         os.environ["VISUAL"] = "truncate -s 0"
