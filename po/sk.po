@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-20 20:18+0000\n"
+"PO-Revision-Date: 2022-07-12 01:24+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -7237,14 +7237,14 @@ msgid "_Expand Column"
 msgstr "_Rozšíriť stĺpec"
 
 #: quodlibet/qltk/songsmenu.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "Odstrániť skladbu: „%%(title)s“ z knižnice?"
+msgstr "Odstrániť skladbu: \"%(title)s\" z knižnice?"
 
 #: quodlibet/qltk/songsmenu.py:47
-#, fuzzy, python-format
+#, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "Odstrániť skladbu: „%%(title)s“ z knižnice?"
+msgstr "Odstrániť %(count)d skladby z knižnice?"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
