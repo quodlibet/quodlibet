@@ -15,7 +15,7 @@ from quodlibet.pattern import Pattern
 from gi.repository import Gtk
 
 try:
-    from pypresence import Presence, InvalidID
+    from pypresence import Presence, InvalidID, DiscordNotFound
 except ImportError:
     from quodlibet.plugins import MissingModulePluginException
     raise MissingModulePluginException("pypresence")
@@ -56,7 +56,7 @@ class DiscordStatusMessage(EventPlugin):
             try:
                 self.discordrp = Presence(QL_DISCORD_RP_ID, pipe=0)
                 self.discordrp.connect()
-            except ConnectionRefusedError:
+            except (DiscordNotFound, ConnectionRefusedError):
                 self.discordrp = None
 
         if self.discordrp:
