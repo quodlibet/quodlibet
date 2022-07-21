@@ -1171,15 +1171,15 @@ msgstr "תיאור מקוצר…"
 msgid "Data to be sent:"
 msgstr "מועד שליחה:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "עורך תגי שמע"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "מחיצה"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "עורך ערכי מטה-דטה שמע"
 
@@ -1546,36 +1546,36 @@ msgstr ""
 "דרוג שירים אוטומטית במהלך השמעתם או דלוגום. המתקע משתמש באלוגריטם 'האצה' מאת "
 "vox שנכתב על ידי בריאן נלסון."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr "מסד הנתונים של בנשי שצוין פגום או חסר"
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "יבוא כשל"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
 msgstr[0] "דרוג וסטטיסטיקה יובא בהצלחה עבור %d שיר"
 msgstr[1] "דרוג וסטטיסטיקה יובאו בהצלחה עבור %d שירים"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "יבוא בנשי"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "יבוא דרוג וסטטיסטיקת השמעות מבנשי."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_נתיב מסד נתונים:"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "יבוא"
 
@@ -2347,16 +2347,16 @@ msgstr "אלבום אקראי"
 msgid "Waiting to start %s"
 msgstr "בהמתנה ל %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "דרוג וסטטיסטיקה יובאו בהצלחה עבור  %d שירים"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "יבוא ריטמבוקס"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "יבוא דרוג וסטטיסטיקת השמעות מ ריטמבוקס."
 
@@ -4980,7 +4980,7 @@ msgstr "תג \"%s\" לא נמצא."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "ספריה"
 
@@ -5016,7 +5016,7 @@ msgstr "הסרת מסנן דפדפן פעיל"
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "מנהל ספרית מוזיקה ונגן"
 
@@ -5213,7 +5213,7 @@ msgstr "הדפסת תגים על פי דפוס נתון"
 msgid "Display help information"
 msgstr "מַצָּג עזרה"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' אינו שם עמודה תקין (%(all-column-ids)s)."

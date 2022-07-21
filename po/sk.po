@@ -1187,15 +1187,15 @@ msgstr "Krátky popis…"
 msgid "Data to be sent:"
 msgstr "Odosielané údaje:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "editor značiek"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "priečinok"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "Editor údajov o skladbe"
 
@@ -1584,16 +1584,16 @@ msgstr ""
 "Automaticky ohodnotiť skladby pri prehratí alebo preskočení. Táto funkcia "
 "používa „zrýchlený“ algoritmus z vuxu od Briana Nelsona."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr "Určená databáza Banshee má nesprávny tvar alebo chýba"
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "Načítanie zlyhalo"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1601,20 +1601,20 @@ msgstr[0] "Hodnotenia a štatistika %d skladby boli úspešne načítané"
 msgstr[1] "Hodnotenia a štatistika %d skladieb boli úspešne načítané"
 msgstr[2] "Hodnotenia a štatistika %d skladieb boli úspešne načítané"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "Načítať z Banshee"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "Načíta hodnotenia a štatistiku skladieb z Banshee."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_Cesta k databáze:"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "Začať načítavanie"
 
@@ -2393,16 +2393,16 @@ msgstr "Náhodný album"
 msgid "Waiting to start %s"
 msgstr "Čaká sa na začiatok %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Nahrávanie hodnotení a štatistík pre %d skladieb bolo úspešné"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Import z Rhythmboxu"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "Importuje hodnotenia a štatistiky skladieb z Rhythmboxu."
 
@@ -5075,7 +5075,7 @@ msgstr "Značka „%s“ sa nenašla."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Knižnica"
 
@@ -5109,7 +5109,7 @@ msgstr "Odstraňujú sa súbory knižnice"
 msgid "Adding watches for %s"
 msgstr "Pridanie sledovania pre %s"
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "Hudobný prehrávač a správca hudobnej knižnice"
 
@@ -5310,7 +5310,7 @@ msgstr "Zobraziť značky na základe zadaného vzoru"
 msgid "Display help information"
 msgstr "Zobraziť podrobnosti o použití"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "„%(column-id)s“ nie je platný názov stĺpca (%(all-column-ids)s)."

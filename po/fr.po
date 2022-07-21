@@ -1186,15 +1186,15 @@ msgstr "Description courte…"
 msgid "Data to be sent:"
 msgstr "Données à envoyer :"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "un éditeur d'étiquettes audio (tags)"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "répertoire"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "Éditeur de métadonnées audio"
 
@@ -1592,17 +1592,17 @@ msgstr ""
 "Évaluer automatiquement les titres, selon qu'il sont joués ou passés. Cette "
 "méthode utilise l'algorithme 'accéléré' de vux par Brian Nelson."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr "La base de données spécifiée de Banshee est malformée ou manquante"
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "L'importation a échoué"
 
 #  python-format
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1613,21 +1613,21 @@ msgstr[1] ""
 "Succès de l'importation des classifications et des statistiques pour les "
 "titres %d"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "Importation Banshee"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr ""
 "Importe les classifications et les statistiques des chansons depuis Banshee."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_Chemin de la base de données :"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "Démarrer l'importation"
 
@@ -2414,16 +2414,16 @@ msgstr "Album aléatoire"
 msgid "Waiting to start %s"
 msgstr "En attente de lecture de %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Évaluations et statistiques de %d titres importés avec succès"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Importation Rhythmbox"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr ""
 "Importe les évaluations et les statistiques des titres à partir de Rhythmbox."
@@ -5117,7 +5117,7 @@ msgstr "Étiquette \"%s\" introuvable."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Bibliothèque"
 
@@ -5151,7 +5151,7 @@ msgstr "Suppression de fichiers de la bibliothèque"
 msgid "Adding watches for %s"
 msgstr "Ajout de surveillances pour %s"
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "Un lecteur de musique et un gestionnaire de bibliothèque musicale"
 
@@ -5355,7 +5355,7 @@ msgstr "Afficher les étiquettes selon un motif donné"
 msgid "Display help information"
 msgstr "Afficher des informations d'aide"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
