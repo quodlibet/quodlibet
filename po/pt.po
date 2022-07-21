@@ -1190,15 +1190,15 @@ msgstr "Descrição curta…"
 msgid "Data to be sent:"
 msgstr "Dados a serem enviados:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "um editor de metadados de áudio"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "pasta"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "Editor de metadados de áudio"
 
@@ -1576,16 +1576,16 @@ msgstr ""
 "ignoradas. Este plug-in usa um algoritmo \"acelerado\" originário do vux, "
 "desenvolvido por Brian Nelson."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "Falha ao importar"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, fuzzy, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1594,22 +1594,22 @@ msgstr[0] ""
 msgstr[1] ""
 "Avaliações e estatísticas para %d músicas foram importadas com sucesso"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 #, fuzzy
 msgid "Banshee Import"
 msgstr "_Importar"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 #, fuzzy
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "Importa avaliações e estatísticas de música do Rhythmbox."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "_Importar"
 
@@ -2410,16 +2410,16 @@ msgstr "Álbum aleatório"
 msgid "Waiting to start %s"
 msgstr "Esperando para começar a reproduzir %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Avaliações e estatísticas para %d músicas foram importadas com sucesso"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Importar do Rhythmbox"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "Importa avaliações e estatísticas de música do Rhythmbox."
 
@@ -5115,7 +5115,7 @@ msgstr "A etiqueta\"%s\" não foi encontrada."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Biblioteca"
 
@@ -5151,7 +5151,7 @@ msgstr "Remove filtros de navegação ativos"
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "Reprodutor de música e gestor de biblioteca de música"
 
@@ -5353,7 +5353,7 @@ msgstr "Imprime etiquetas baseado no padrão escolhido"
 msgid "Display help information"
 msgstr "Mostra a ajuda"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "\"%(column-id)s\" não é um nome de coluna válido (%(all-column-ids)s)."

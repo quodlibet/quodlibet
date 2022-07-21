@@ -1194,15 +1194,15 @@ msgstr "Короткий опис…"
 msgid "Data to be sent:"
 msgstr "Дані, що надсилаються:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "редактор авдіо-міток"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "каталог"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "Редактор авдіо-метаданих"
 
@@ -1563,16 +1563,16 @@ msgid ""
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "Не вдалося імпортувати"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1580,20 +1580,20 @@ msgstr[0] "Успішно імпортовано оцінки і статист�
 msgstr[1] "Успішно імпортовано оцінки і статистику для %d пісень"
 msgstr[2] "Успішно імпортовано оцінки і статистику для %d пісень"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "Імпортування з Banshee"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "Імпортувати оцінки та статистику пісень із Banshee."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_Шлях до бази даних:"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "Почати імпортування"
 
@@ -2354,16 +2354,16 @@ msgstr "Випадковий альбом"
 msgid "Waiting to start %s"
 msgstr "Очікування початку %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Успішно імпортовано оцінки і статистику для %d пісень"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Імпортувати з Rhythmbox"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "Імпортує оцінки і статистику пісень із Rhythmbox."
 
@@ -4982,7 +4982,7 @@ msgstr "Мітку „%s“ не знайдено."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Бібліотека"
 
@@ -5018,7 +5018,7 @@ msgstr "Видалити фільтри активного переглядач�
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 #, fuzzy
 msgid "Music player and music library manager"
 msgstr "музична бібліотека та програвач"
@@ -5224,7 +5224,7 @@ msgstr ""
 msgid "Display help information"
 msgstr "Вивести коротку інформацію з користування"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, fuzzy, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "<b>%s</b> не є правильною адресою."

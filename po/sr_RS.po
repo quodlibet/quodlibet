@@ -1186,15 +1186,15 @@ msgstr "Кратак опис…"
 msgid "Data to be sent:"
 msgstr "Подаци за слање:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "уређивач аудио ознака"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "директоријум"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "Уређивач аудио метаподатака"
 
@@ -1565,17 +1565,17 @@ msgstr ""
 "Аутоматски оцењује песме када су пуштене или рпескочене. Ово користи "
 "\"убрзани\" алгоритам са вукс од Брајана Нелсона."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr ""
 "Оређује да ли је Banshee база података недоступна или је лоше формирана"
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "Увоз неуспешан"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1583,20 +1583,20 @@ msgstr[0] "Успешно увезене оцене и статистика за
 msgstr[1] "Успешно увезене оцене и статистика за %d песме"
 msgstr[2] "Успешно увезене оцене и статистика за %d песама"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "Banshee увоз"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "Увози оцене и статистику песме из Banshee."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_База података:"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "Почни увожење"
 
@@ -2383,16 +2383,16 @@ msgstr "Насумичан албум"
 msgid "Waiting to start %s"
 msgstr "Чекам да почне %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Успешно увезене оцене и статистика за %d песама"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Rhythmbox увоз"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "Увози оцене и статистике песме из Rhythmbox-а."
 
@@ -5048,7 +5048,7 @@ msgstr "Ознака \"%s\" није нађена."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Библиотека"
 
@@ -5084,7 +5084,7 @@ msgstr "Уклони филтере активног претраживача"
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "Музички плејер и организатор билбиотеке"
 
@@ -5284,7 +5284,7 @@ msgstr "Штампај ознаке по одређеном шаблону"
 msgid "Display help information"
 msgstr "Прикажи помоћне информације"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' није важеће име колоне (%(all-column-ids)s)."
