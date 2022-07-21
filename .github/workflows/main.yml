@@ -18,7 +18,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Run tests in Docker container
-        uses: ./.github/workflows/fedora33
+        uses: ./.github/workflows/fedora36
 
   msys2:
     runs-on: windows-latest
