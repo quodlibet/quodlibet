@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-22 04:50+0000\n"
+"PO-Revision-Date: 2022-07-23 08:52+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -953,7 +953,7 @@ msgstr "メインウィンドウを表示する"
 
 #: quodlibet/cli.py:109
 msgid "Toggle main window visibility"
-msgstr "メインウィンドウの表示/非表示切り替え"
+msgstr "メインウィンドウの表示/非表示の切替"
 
 #: quodlibet/cli.py:110
 msgid "Focus the running player"
@@ -1222,7 +1222,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
-msgstr ""
+msgstr "エンコーディングの変換"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
@@ -1234,7 +1234,7 @@ msgstr "エンコーディングの変換(_C)…"
 
 #: quodlibet/ext/editing/kakasi.py:26
 msgid "Kana/Kanji Simple Inverter"
-msgstr ""
+msgstr "漢字→かな(ローマ字)変換"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
@@ -1246,11 +1246,11 @@ msgstr "日本語のテキストをローマ字化する"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr ""
+msgstr "'Kanji Kana Simple Inverter' (KAKASI) が見つかりません。"
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr ""
+msgstr "正規表現置換"
 
 #: quodlibet/ext/editing/resub.py:20
 msgid ""
@@ -1262,7 +1262,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
-msgstr ""
+msgstr "タイトルケース"
 
 #: quodlibet/ext/editing/titlecase.py:21
 msgid "Title-cases tag values in the tag editor."
@@ -1302,7 +1302,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr "オンスクリーン表示"
+msgstr "アニメート・オンスクリーン表示"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -1371,7 +1371,7 @@ msgstr "丸い角(_N)"
 
 #: quodlibet/ext/events/animosd/prefs.py:276
 msgid "_Delay:"
-msgstr "遅延表示(_D):"
+msgstr "遅延時間(_D):"
 
 #: quodlibet/ext/events/animosd/prefs.py:282 quodlibet/qltk/pluginwin.py:43
 msgid "Effects"
@@ -1531,7 +1531,7 @@ msgstr "設定"
 
 #: quodlibet/ext/events/automask.py:22
 msgid "Automatic Masking"
-msgstr ""
+msgstr "自動マスキング"
 
 #: quodlibet/ext/events/automask.py:23
 msgid ""
@@ -1542,7 +1542,7 @@ msgstr ""
 
 #: quodlibet/ext/events/autorating.py:15
 msgid "Automatic Rating"
-msgstr ""
+msgstr "自動評価"
 
 #: quodlibet/ext/events/autorating.py:16
 msgid ""
@@ -1569,7 +1569,7 @@ msgstr[0] "%d曲の評価と統計情報を正常にインポートしました"
 
 #: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
-msgstr ""
+msgstr "Banshee インポート"
 
 #: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
@@ -1594,7 +1594,7 @@ msgstr "大音量の音楽で目を覚まさせます。"
 
 #: quodlibet/ext/events/clock.py:119
 msgid "Lullaby"
-msgstr ""
+msgstr "ララバイ"
 
 #: quodlibet/ext/events/clock.py:120
 msgid "Fades out and pauses your music."
@@ -1697,7 +1697,7 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:112
 msgid "Equalizer"
-msgstr ""
+msgstr "イコライザー"
 
 #: quodlibet/ext/events/equalizer.py:113
 msgid ""
@@ -1851,15 +1851,14 @@ msgstr ""
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
-msgstr ""
+msgstr "スクリーンセーバー/サスペンドの禁止"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
-msgstr ""
-"GNOMEデスクトップでの曲の再生中に、スクリーンセーバーのアクティブ化やコン"
-"ピューターのサスペンドを防止します。"
+msgstr "GNOME デスクトップでの曲の再生中に、スクリーンセーバーのアクティブ化やコンピ"
+"ューターのサスペンドを防止します。"
 
 #: quodlibet/ext/events/inhibit.py:63
 #, fuzzy
@@ -1900,7 +1899,7 @@ msgstr ""
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
-msgstr ""
+msgstr "言語の変更"
 
 #: quodlibet/ext/events/language.py:22
 msgid "Change the user interface language."
@@ -2119,7 +2118,7 @@ msgstr "本文(_B):"
 
 #: quodlibet/ext/events/notify.py:122
 msgid "_Show notification"
-msgstr "通知を表示する(_S)"
+msgstr "通知の表示(_S)"
 
 #: quodlibet/ext/events/notify.py:140
 msgid "Show notifications"
@@ -2156,7 +2155,7 @@ msgstr ""
 
 #: quodlibet/ext/events/notify.py:222
 msgid "Song Notifications"
-msgstr ""
+msgstr "曲の通知"
 
 #: quodlibet/ext/events/notify.py:223
 msgid "Displays a notification when the song changes."
@@ -2360,7 +2359,7 @@ msgstr "%d曲の評価と統計情報を正常にインポートしました"
 
 #: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
-msgstr ""
+msgstr "Rhythmbox インポート"
 
 #: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
@@ -2368,7 +2367,7 @@ msgstr "Rhythmbox から評価と曲の統計情報をインポートします�
 
 #: quodlibet/ext/events/screensaver.py:26
 msgid "Screensaver Pause"
-msgstr ""
+msgstr "スクリーンセーバー中に一時停止"
 
 #: quodlibet/ext/events/screensaver.py:27
 msgid "Pauses playback while the GNOME screensaver is active."
@@ -2376,16 +2375,15 @@ msgstr "GNOME スクリーンセーバーがアクティブな間、再生を一
 
 #: quodlibet/ext/events/searchprovider.py:73
 msgid "No GNOME Shell search provider for Quod Libet installed."
-msgstr ""
-"Quod Libet 用の GNOME Shell 検索プロバイダがインストールされていません。"
+msgstr "Quod Libet 用の GNOME シェル検索プロバイダがインストールされていません。"
 
 #: quodlibet/ext/events/searchprovider.py:79
 msgid "GNOME Search Provider"
-msgstr ""
+msgstr "GNOME 検索プロバイダ"
 
 #: quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
-msgstr "GNOME Shell によるライブラリの検索を許可します。"
+msgstr "GNOME シェルによるライブラリの検索を許可します。"
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
@@ -2464,7 +2462,7 @@ msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:22
 msgid "Stop on Pause"
-msgstr ""
+msgstr "一時停止時に停止"
 
 #: quodlibet/ext/events/stop_on_pause.py:24
 msgid ""
@@ -2878,7 +2876,7 @@ msgstr[0] ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
-msgstr ""
+msgstr "同期歌詞"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:30
 msgid ""
@@ -2949,11 +2947,11 @@ msgstr "パターン"
 
 #: quodlibet/ext/events/themeswitcher.py:25
 msgid "Theme Switcher"
-msgstr ""
+msgstr "テーマスイッチャー"
 
 #: quodlibet/ext/events/themeswitcher.py:26
 msgid "Changes the active GTK+ theme."
-msgstr "有効な GTK+ テーマを変更します。"
+msgstr "有効な GTK+ テーマに変更します。"
 
 #: quodlibet/ext/events/themeswitcher.py:49
 msgid "_Theme:"
@@ -2961,7 +2959,7 @@ msgstr "テーマ(_T):"
 
 #: quodlibet/ext/events/themeswitcher.py:54
 msgid "Default Theme"
-msgstr ""
+msgstr "デフォルトテーマ"
 
 #: quodlibet/ext/events/themeswitcher.py:66
 msgid "Prefer dark theme version"
@@ -2981,11 +2979,11 @@ msgstr ""
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
-msgstr ""
+msgstr "トグルメニューバー"
 
 #: quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr ""
+msgstr "Alt キーを押してメニューバーを切り替えます。"
 
 #: quodlibet/ext/events/trayicon/appindicator.py:76
 #: quodlibet/ext/events/trayicon/prefs.py:106
@@ -2995,7 +2993,7 @@ msgstr "再生中の曲はありません"
 
 #: quodlibet/ext/events/trayicon/__init__.py:52
 msgid "Tray Icon"
-msgstr ""
+msgstr "トレイアイコン"
 
 #: quodlibet/ext/events/trayicon/__init__.py:53
 msgid "Controls Quod Libet from the system tray."
@@ -3034,7 +3032,7 @@ msgstr "シャッフル(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
-msgstr "繰り返し(_R)"
+msgstr "リピート(_R)"
 
 #: quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
@@ -3086,7 +3084,7 @@ msgstr "ツールチップ表示"
 
 #: quodlibet/ext/events/viewlyrics.py:25
 msgid "View Lyrics"
-msgstr ""
+msgstr "歌詞表示"
 
 #: quodlibet/ext/events/viewlyrics.py:26
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
@@ -3107,7 +3105,7 @@ msgstr "アクティブな曲はありません"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
-msgstr ""
+msgstr "ビジュアライザーの起動"
 
 #: quodlibet/ext/events/visualisations.py:38
 msgid "Launch external visualisations."
@@ -3166,7 +3164,7 @@ msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
-msgstr ""
+msgstr "画像保存"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
@@ -3305,7 +3303,7 @@ msgstr "効果のレベル"
 
 #: quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Karaoke"
-msgstr ""
+msgstr "カラオケ"
 
 #: quodlibet/ext/gstreamer/karaoke.py:107
 msgid "Removes main vocals from audio."
@@ -3345,7 +3343,7 @@ msgstr "オーディオフィードの場所を入力してください:"
 #: quodlibet/ext/playlist/export_to_folder.py:98
 #: quodlibet/ext/playlist/export_to_folder.py:147
 msgid "Export Playlist to Folder"
-msgstr ""
+msgstr "フォルダにプレイリストをエクスポート"
 
 #: quodlibet/ext/playlist/export_to_folder.py:39
 msgid "_Export"
@@ -3442,7 +3440,7 @@ msgstr ""
 
 #: quodlibet/ext/playlist/remove_duplicates.py:20
 msgid "Remove Playlist Duplicates"
-msgstr ""
+msgstr "プレイリストの重複を削除"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:21
 msgid "Removes duplicate entries in a playlist."
@@ -3461,7 +3459,7 @@ msgstr "重複している曲はプレイリスト '%s' から削除されます
 
 #: quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
-msgstr ""
+msgstr "シャッフルプレイリスト"
 
 #: quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
@@ -3469,7 +3467,7 @@ msgstr "プレイリストをランダムにシャッフルします。"
 
 #: quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
-msgstr ""
+msgstr "カーソルに追従"
 
 #: quodlibet/ext/playorder/follow.py:20
 msgid ""
@@ -3481,7 +3479,7 @@ msgstr ""
 
 #: quodlibet/ext/playorder/follow.py:22
 msgid "Follow cursor"
-msgstr ""
+msgstr "カーソルに追従"
 
 #: quodlibet/ext/playorder/follow.py:23
 msgid "_Follow cursor"
@@ -3489,7 +3487,7 @@ msgstr "カーソルに追従(_F)"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
-msgstr ""
+msgstr "再生回数イコライザー"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
@@ -3505,7 +3503,7 @@ msgstr "再生回数が少ない曲を優先(_L)"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
-msgstr ""
+msgstr "キューのみ再生"
 
 #: quodlibet/ext/playorder/queue.py:25
 msgid ""
@@ -3521,11 +3519,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/queue.py:29
 msgid "Queue only"
-msgstr ""
+msgstr "キューのみ再生"
 
 #: quodlibet/ext/playorder/queue.py:30
 msgid "_Queue only"
-msgstr "キューのみ(_Q)"
+msgstr "キューのみ再生(_Q)"
 
 #: quodlibet/ext/playorder/queue.py:34
 msgid "Automatically start playing double-clicked songs"
@@ -3533,7 +3531,7 @@ msgstr "ダブルクリックした曲を自動的に再生開始"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
-msgstr ""
+msgstr "逆順再生"
 
 #: quodlibet/ext/playorder/reverse.py:16
 msgid "Adds a shuffle mode that reverses the play order of songs."
@@ -3546,7 +3544,7 @@ msgstr "逆順(_V)"
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
 msgid "Shuffle by Grouping"
-msgstr ""
+msgstr "グループシャッフル"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:33
 msgid ""
@@ -3564,11 +3562,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:39
 msgid "Shuffle by grouping"
-msgstr "グループ化によるシャッフル"
+msgstr "グループシャッフル"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:40
 msgid "Shuffle by _grouping"
-msgstr "グループ化によるシャッフル(_G)"
+msgstr "グループシャッフル(_G)"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
@@ -3612,7 +3610,7 @@ msgstr "デフォルト値にリセット"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr ""
+msgstr "嫌いなトラックをスキップ"
 
 #: quodlibet/ext/playorder/skip_disliked.py:26
 msgid ""
@@ -3624,31 +3622,30 @@ msgstr ""
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
 msgid "Skip disliked tracks"
-msgstr ""
+msgstr "嫌いなトラックをスキップ"
 
 #: quodlibet/ext/playorder/skip_disliked.py:30
 msgid "Skip _disliked tracks"
-msgstr "嫌いなトラックをスキップする(_D)"
+msgstr "嫌いなトラックをスキップ(_D)"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
-msgstr ""
+msgstr "トラック毎のリピート"
 
 #: quodlibet/ext/playorder/track_repeat.py:30
 msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
-msgstr ""
-"全てのトラックを設定された回数繰り返して順番に再生するシャッフルモードを追加"
-"します。"
+msgstr "トラックを順番に再生するが、各トラックは設定された回数だけリピートしていくシ"
+"ャッフルモードを追加します。"
 
 #: quodlibet/ext/playorder/track_repeat.py:32
 msgid "Repeat each track"
-msgstr ""
+msgstr "トラック毎のリピート"
 
 #: quodlibet/ext/playorder/track_repeat.py:33
 msgid "Repeat _each track"
-msgstr "各トラックを繰り返す(_E)"
+msgstr "トラック毎のリピート(_E)"
 
 #: quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
@@ -3656,7 +3653,7 @@ msgstr "各曲を再生する回数:"
 
 #: quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
-msgstr ""
+msgstr "条件付きクエリ"
 
 #: quodlibet/ext/query/conditional.py:16
 msgid "Chooses the query to match based on a condition query."
@@ -3668,7 +3665,7 @@ msgstr "@(if: 条件クエリ, thenクエリ, elseクエリ)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
-msgstr ""
+msgstr "欠落クエリ"
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
@@ -3680,7 +3677,7 @@ msgstr "空のタグを含める"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
-msgstr ""
+msgstr "Python クエリ"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
@@ -3707,13 +3704,12 @@ msgstr ""
 "<tt>Random</tt> (== <tt>random.Random</tt>) も使用できます。"
 
 #: quodlibet/ext/query/savedsearch.py:20
-#, fuzzy
 msgid "Include Saved Search"
-msgstr "保存された値"
+msgstr "保存済み検索を含める"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
-msgstr "💾 保存した検索の結果を別のクエリの一部として含めます。"
+msgstr "💾 保存済み検索の結果を別のクエリの一部として含めます。"
 
 #: quodlibet/ext/query/savedsearch.py:24
 msgid "@(saved: search-name)"
@@ -3867,9 +3863,8 @@ msgid "Done"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:1012
-#, fuzzy
 msgid "Download Album Art"
-msgstr "アルバムリスト"
+msgstr "アルバムアートのダウンロード"
 
 #: quodlibet/ext/songsmenu/albumart.py:1013
 msgid "Downloads album covers from various websites."
@@ -4004,7 +3999,7 @@ msgstr "プラグインが見つかりません"
 
 #: quodlibet/ext/songsmenu/console.py:41
 msgid "Python Console"
-msgstr ""
+msgstr "Python コンソール"
 
 #: quodlibet/ext/songsmenu/console.py:42
 msgid "Interactive Python console. Opens a new window."
@@ -4017,7 +4012,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:57
 msgid "Python Console Sidebar"
-msgstr ""
+msgstr "Python コンソールサイドバー"
 
 #: quodlibet/ext/songsmenu/console.py:58
 msgid ""
@@ -4244,7 +4239,7 @@ msgstr "重複キー表現は '%s'"
 
 #: quodlibet/ext/songsmenu/duplicates.py:358
 msgid "Duplicates Browser"
-msgstr ""
+msgstr "重複ブラウザ"
 
 #: quodlibet/ext/songsmenu/duplicates.py:359
 msgid "Finds and displays similarly tagged versions of songs."
@@ -4260,7 +4255,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
-msgstr "重複をグループ化するタグ(_G):"
+msgstr "重複グループ(_G):"
 
 #: quodlibet/ext/songsmenu/duplicates.py:403
 msgid "Duplicate Key"
@@ -4290,7 +4285,7 @@ msgstr "マッチングオプション"
 #: quodlibet/ext/songsmenu/editplaycount.py:19
 #: quodlibet/ext/songsmenu/editplaycount.py:43
 msgid "Edit Playcount"
-msgstr ""
+msgstr "再生回数の編集"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
 msgid ""
@@ -4322,7 +4317,7 @@ msgstr "スキップ回数"
 
 #: quodlibet/ext/songsmenu/embedded.py:25
 msgid "Edit Embedded Images"
-msgstr ""
+msgstr "埋め込み画像の編集"
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Removes or replaces embedded images."
@@ -4338,15 +4333,15 @@ msgstr "現在の画像を埋め込む(_E)"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
-msgstr ""
+msgstr "正確な評価の設定"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:24
 msgid "Allows setting the rating of songs with a number."
-msgstr ""
+msgstr "曲の評価を数字で設定できるようにします。"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr ""
+msgstr "0.0から1.0の範囲でご希望の評価を付けてください"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
 #, fuzzy
@@ -4511,7 +4506,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/html.py:66 quodlibet/ext/songsmenu/html.py:76
 msgid "Export to HTML"
-msgstr ""
+msgstr "HTML にエクスポート"
 
 #: quodlibet/ext/songsmenu/html.py:67
 msgid "Exports the selected song list to HTML."
@@ -4581,7 +4576,7 @@ msgstr "ファイルステム、タグとユーザーデータのエクスポー
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr ""
+msgstr "インポート/エクスポート"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
@@ -4763,16 +4758,15 @@ msgstr "名前の変更(_R)"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:36
 msgid "Create Sort Tags"
-msgstr ""
+msgstr "ソートタグの生成"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
 msgstr "アルバム名やアーティスト名をソート名に変換します(不十分)。"
 
 #: quodlibet/ext/songsmenu/playlist.py:31
-#, fuzzy
 msgid "Export as M3U / PLS Playlist File"
-msgstr "プレイリストのインポート"
+msgstr "M3U/PLS プレイリストとしてエクスポート"
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
@@ -4793,18 +4787,16 @@ msgstr "<b>%s</b>のイジェクト失敗。"
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
-#, fuzzy
 msgid "Rescan Songs"
-msgstr "ライブラリの再表示(_f)"
+msgstr "曲の再スキャン"
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
 msgstr "ファイルの変更をチェックし、必要に応じて曲を再読込/削除します。"
 
 #: quodlibet/ext/songsmenu/refresh.py:31
-#, fuzzy
 msgid "Rescan songs"
-msgstr "ライブラリの再表示(_f)"
+msgstr "曲の再スキャン"
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
@@ -4836,7 +4828,7 @@ msgstr[0] "更新するアルバムは<b>%(to-process)s</b>枚あります(%(all
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
-msgstr ""
+msgstr "ReplayGain 解析"
 
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, python-format
@@ -4874,26 +4866,26 @@ msgstr "既存のタグ"
 
 #: quodlibet/ext/songsmenu/splitting.py:31
 msgid "Split Tags"
-msgstr ""
+msgstr "タグの分離"
 
 #: quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
 "Splits the disc number from the album and the version from the title at the "
 "same time."
-msgstr "アルバムからディスク番号、タイトルからバージョンを同時に分割します。"
+msgstr "アルバムからディスク番号、タイトルからバージョンを同時に分離します。"
 
 #: quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
-msgstr ""
+msgstr "アルバムタグの分離"
 
 #: quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
-msgstr "ディスク番号を分割します。"
+msgstr "ディスク番号を分離します。"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "なし"
 
 #. TRANSLATORS: BPM mean "beats per minute"
 #: quodlibet/ext/songsmenu/tapbpm.py:31
@@ -4901,23 +4893,20 @@ msgid "BPM:"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/tapbpm.py:36
-#, fuzzy
 msgid "Reset"
-msgstr "プレビュー(_P)"
+msgstr "リセット"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:42
-#, fuzzy
 msgid "Tap"
-msgstr "タグ"
+msgstr "タップ"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:177 quodlibet/ext/songsmenu/tapbpm.py:184
 msgid "Tap BPM"
-msgstr ""
+msgstr "BPM のタップ"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:178
-#, fuzzy
 msgid "🥁 Tap BPM for the selected song."
-msgstr "曲を追加できません"
+msgstr "🥁 選択した曲の BPM をタップします。"
 
 #: quodlibet/ext/songsmenu/website_search.py:36
 #, fuzzy
@@ -5260,19 +5249,19 @@ msgstr "高評価の曲を優先(_H)"
 
 #: quodlibet/order/repeat.py:43
 msgid "Repeat this track"
-msgstr "このトラックを繰り返す"
+msgstr "このトラックをリピート"
 
 #: quodlibet/order/repeat.py:44
 msgid "Repeat _this track"
-msgstr "このトラックを繰り返す(_T)"
+msgstr "このトラックをリピート(_T)"
 
 #: quodlibet/order/repeat.py:57
 msgid "Repeat all"
-msgstr "全トラックを繰り返す"
+msgstr "全体をリピート"
 
 #: quodlibet/order/repeat.py:58
 msgid "Repeat _all"
-msgstr "全トラックを繰り返す(_A)"
+msgstr "全体をリピート(_A)"
 
 #: quodlibet/order/repeat.py:73
 msgid "One song"
@@ -5729,9 +5718,8 @@ msgstr "プログラマチックタグの表示(_P)"
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
-msgstr ""
-"MusicBrainz タグや Replay Gain タグなどの機械生成されたものを含む全てのタグに"
-"アクセスします"
+msgstr "MusicBrainz タグや ReplayGain "
+"タグなどの機械生成されたものを含む全てのタグにアクセスします"
 
 #: quodlibet/qltk/edittags.py:535
 msgid "Show _multi-line tags"
@@ -6413,7 +6401,7 @@ msgstr "出力設定"
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
-msgstr "曲に Replay Gain 情報が無い場合、この値で音量を調整します"
+msgstr "曲に ReplayGain 情報が無い場合、この値で音量を調整します"
 
 #: quodlibet/qltk/prefs.py:390
 msgid "_Fall-back gain (dB):"
@@ -6430,11 +6418,11 @@ msgstr "プリアンプゲイン(dB)(_P):"
 
 #: quodlibet/qltk/prefs.py:409
 msgid "_Enable Replay Gain volume adjustment"
-msgstr "Replay Gain 音量調整を有効にする(_E)"
+msgstr "ReplayGain 音量調整を有効にする(_E)"
 
 #: quodlibet/qltk/prefs.py:434
 msgid "Replay Gain Volume Adjustment"
-msgstr "Replay Gain 音量調整"
+msgstr "ReplayGain 音量調整"
 
 #: quodlibet/qltk/prefs.py:441
 msgid "_Continue playback on startup"
@@ -6624,7 +6612,7 @@ msgstr "ライブラリの参照(_B)"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
 msgid "Toggle queue visibility"
-msgstr "キューの表示/非表示切り替え"
+msgstr "キューの表示/非表示の切替"
 
 #: quodlibet/qltk/quodlibetwindow.py:376
 #, fuzzy
@@ -7485,11 +7473,11 @@ msgstr ""
 
 #: quodlibet/util/massagers.py:130
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
-msgstr "リプレイゲインは'x.yy dB'の形式で入力してください。"
+msgstr "ReplayGain のゲイン値は「x.yy dB」の形式で入力してください。"
 
 #: quodlibet/util/massagers.py:151
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
-msgstr "リプレイゲインのピークは 'x.yy' の形式で入力してください。"
+msgstr "ReplayGain のピーク値は「x.yy」の形式で入力してください。"
 
 #: quodlibet/util/massagers.py:173
 msgid "MusicBrainz IDs must be in UUID format."
@@ -7756,20 +7744,20 @@ msgstr "MusicBrainzトラックID"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:143
 msgid "track gain"
-msgstr "トラックのゲイン"
+msgstr "トラックゲイン"
 
 #: quodlibet/util/tags.py:144
 msgid "track peak"
-msgstr "トラックのピーク"
+msgstr "トラックピーク"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:146
 msgid "album gain"
-msgstr "アルバムのゲイン"
+msgstr "アルバムゲイン"
 
 #: quodlibet/util/tags.py:147
 msgid "album peak"
-msgstr "アルバムのピーク"
+msgstr "アルバムピーク"
 
 #: quodlibet/util/tags.py:148
 #, fuzzy
