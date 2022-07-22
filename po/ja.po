@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-21 16:15+0000\n"
+"PO-Revision-Date: 2022-07-22 04:50+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -1302,7 +1302,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "オンスクリーン表示"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -1595,7 +1595,7 @@ msgstr "インポート開始"
 
 #: quodlibet/ext/events/clock.py:24
 msgid "Alarm Clock"
-msgstr ""
+msgstr "アラームクロック"
 
 #: quodlibet/ext/events/clock.py:25
 msgid "Wakes you up with loud music."
@@ -2398,7 +2398,7 @@ msgstr "GNOME Shell によるライブラリの検索を許可します。"
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr ""
+msgstr "代替シークバー"
 
 #: quodlibet/ext/events/seekbar.py:123
 msgid ""
@@ -4216,7 +4216,7 @@ msgstr "%s の値は？"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:145
 msgid "Custom Commands"
-msgstr ""
+msgstr "カスタムコマンド"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:146
 msgid ""
