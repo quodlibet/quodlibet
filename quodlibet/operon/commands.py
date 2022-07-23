@@ -234,7 +234,6 @@ class EditCommand(Command):
         try:
             try:
                 os.write(fd, dump)
-                os.fsync(fd)
             finally:
                 os.close(fd)
 
