@@ -227,15 +227,15 @@ class EditCommand(Command):
         # write to tmp file
         fd, path = tempfile.mkstemp(suffix=".txt")
 
-        # XXX: copy mtime here so we can test for changes in tests by
-        # setting a out of date mtime on the source song file
-        copy_mtime(args[0], path)
-
         try:
             try:
                 os.write(fd, dump)
             finally:
                 os.close(fd)
+
+            # XXX: copy mtime here so we can test for changes in tests by
+            # setting a out of date mtime on the source song file
+            copy_mtime(args[0], path)
 
             # only parse the result if the editor returns 0 and the mtime has
             # changed
