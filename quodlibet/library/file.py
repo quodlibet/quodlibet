@@ -6,7 +6,7 @@
 import os
 import time
 from pathlib import Path
-from typing import Generator, Set, Iterable, Optional, Dict, Tuple
+from typing import Generator, Set, Iterable, Optional, Dict, Tuple, Union
 
 from gi.repository import Gio, GLib, GObject
 
@@ -190,11 +190,15 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         for value in self.scan(paths, exclude, cofuncid):
             yield value
 
-    def add_filename(self, filename, add=True):
+    def add_filename(self,
+                     filename: Union[str, Path],
+                     add: bool = True) -> Optional[AudioFile]:
         """Add a file based on its filename.
-
         Subclasses must override this to open the file correctly.
+
+        :return: the audio file if added (or None)
         """
+        pass
 
     def contains_filename(self, filename) -> bool:
         """Returns if a song for the passed filename is in the library. """
@@ -476,7 +480,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                     copool.add(self.scan, [str(file_path)])
                 elif not song:
                     print_d(f"Auto-adding created file: {file_path}", self._name)
-                    self.add_filename(file_path)
+                    self.add_filename(str(file_path))
             elif event == Event.RENAMED:
                 if not other_path:
                     print_w(f"No destination found for rename of {file_path}",
@@ -497,10 +501,13 @@ class WatchedFileLibraryMixin(FileLibrary):
                     if other_path:
                         self.monitor_dir(other_path)
                 else:
-                    print_w(f"Seems {file_path} is not a track (deleted?)", self._name)
-                    # On some (Windows?) systems CHANGED is called which can remove
-                    # before we get here, so let's try adding the new path back
-                    self.add_filename(other_path)
+                    if other_path:
+                        print_w(f"Seems {file_path} is not a track (deleted?)",
+                                self._name)
+                        # On some (Windows?) systems CHANGED is called which can remove
+                        # before we get here, so let's try adding the new path back
+                        self.add_filename(other_path)
+
             elif event == Event.CHANGED:
                 if song:
                     # QL created (or knew about) this one; still check if it changed
