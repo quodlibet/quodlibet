@@ -172,9 +172,9 @@ msgstr "Zobrazení alba"
 #: quodlibet/ext/songsmenu/albumart.py:330
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
-#: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
+#: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
+#: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:785
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Zavřít"
@@ -202,7 +202,7 @@ msgstr "Zadejte umístění audio zdroje:"
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
+#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:313
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
@@ -216,7 +216,7 @@ msgstr "Audio zdroje"
 msgid "_Audio Feeds"
 msgstr "_Audio zdroje"
 
-#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
+#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Nový"
 
@@ -305,9 +305,9 @@ msgstr "_Vlastní"
 #: quodlibet/ext/playlist/remove_duplicates.py:60
 #: quodlibet/qltk/bookmarks.py:97 quodlibet/qltk/bookmarks.py:127
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
-#: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
-#: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/data_editors.py:79 quodlibet/qltk/data_editors.py:92
+#: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
+#: quodlibet/qltk/data_editors.py:324 quodlibet/qltk/edittags.py:555
 #: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
@@ -1204,15 +1204,15 @@ msgstr "Krátký popis…"
 msgid "Data to be sent:"
 msgstr "Data k odeslání:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "editor tagů "
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "složka"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 #, fuzzy
 msgid "Audio metadata editor"
 msgstr "Editor tagů"
@@ -1350,7 +1350,7 @@ msgstr "_Poloha:"
 msgid "_Cover size:"
 msgstr "_Velikost přebalu:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:271
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
 msgid "Display"
 msgstr "Zobrazení"
 
@@ -1532,7 +1532,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:575
+#: quodlibet/qltk/prefs.py:580
 #, fuzzy
 msgid "Save ratings and play _counts in tags"
 msgstr "Uložit hodnocení a _počet přehrání"
@@ -1564,7 +1564,7 @@ msgstr "_Aktualizace stanic"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:756
+#: quodlibet/qltk/prefs.py:761
 msgid "Preferences"
 msgstr "Nastavení"
 
@@ -1590,16 +1590,16 @@ msgstr ""
 "Automatické hodnocení skladeb, které jsou přeskočeny nebo přehrány. Používá "
 "se ‚urychlený‘ algorytmus z vux od Briana Nelsona."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "Import selhal"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, fuzzy, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
@@ -1607,22 +1607,22 @@ msgstr[0] "Import hodnocení a statistik %d skladeb byl úspěšný."
 msgstr[1] "Import hodnocení a statistik %d skladeb byl úspěšný."
 msgstr[2] "Import hodnocení a statistik %d skladeb byl úspěšný."
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 #, fuzzy
 msgid "Banshee Import"
 msgstr "Spustit import"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 #, fuzzy
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "Import hodnocení a statistik skladeb z Rhythmboxu."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr ""
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "Spustit import"
 
@@ -1968,7 +1968,7 @@ msgstr "Změnit jazyk uživatelského rozhraní"
 msgid "System Default"
 msgstr "Výchozí"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:709
 msgid "A restart is required for any changes to take effect"
 msgstr "Pro uplatnění změn je třeba aplikaci restartovat"
 
@@ -2419,16 +2419,16 @@ msgstr "Náhodné album"
 msgid "Waiting to start %s"
 msgstr "Čekání na začátek %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "Import hodnocení a statistik %d skladeb byl úspěšný."
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "Import z Rhythmboxu"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "Import hodnocení a statistik skladeb z Rhythmboxu."
 
@@ -5045,34 +5045,34 @@ msgstr "Upravit URL"
 msgid "Configure Searches…"
 msgstr "Konfigurovat vyhledávání…"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:35
+#: quodlibet/ext/songsmenu/wikipedia.py:36
 #, fuzzy
 msgid "Search Tag in Wikipedia"
 msgstr "Vyhledat album na Wikipedii"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:36
+#: quodlibet/ext/songsmenu/wikipedia.py:37
 #, fuzzy
 msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
 msgstr "Otevřít okno prohlížeče a zobrazit stránku o albu na Wikipedii."
 
-#: quodlibet/ext/songsmenu/wikipedia.py:56
+#: quodlibet/ext/songsmenu/wikipedia.py:57
 #, python-format
 msgid "Search at %(website)s"
 msgstr "Hledat na %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:70
-#: quodlibet/ext/songsmenu/wikipedia.py:76 quodlibet/qltk/edittags.py:452
+#: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:452
 msgid "Edit Tags"
 msgstr "Upravit tagy"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:111
+#: quodlibet/ext/songsmenu/wikipedia.py:110
 #, fuzzy
 msgid "Search failed"
 msgstr "Ukládání selhalo"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:112
+#: quodlibet/ext/songsmenu/wikipedia.py:111
 #, python-format
 msgid "Tag \"%s\" not found."
 msgstr ""
@@ -5082,7 +5082,7 @@ msgstr ""
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Sbírka"
 
@@ -5118,7 +5118,7 @@ msgstr "Odstranit aktivní fiiltry procházení"
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 #, fuzzy
 msgid "Music player and music library manager"
 msgstr "hudební sbírka a přehrávač"
@@ -5164,7 +5164,7 @@ msgid "Too many arguments"
 msgstr "Příliš mnoho parametrů"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:352
+#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:372
 msgid "Description"
 msgstr "Popis"
 
@@ -5321,7 +5321,7 @@ msgstr "Vytisknout tagy podle zadaného vzoru"
 msgid "Display help information"
 msgstr "Zobrazit informace o pomoci"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' není platné jméno sloupce (%(all-column-ids)s)."
@@ -5674,24 +5674,24 @@ msgid "_Replay Gain Mode"
 msgstr "_Replay Gain mód"
 
 #. Translators: New Command/Entry/Item/...
-#: quodlibet/qltk/data_editors.py:116
+#: quodlibet/qltk/data_editors.py:117
 #, python-format
 msgid "New %s"
 msgstr "Nový %s"
 
-#: quodlibet/qltk/data_editors.py:215
+#: quodlibet/qltk/data_editors.py:216
 msgid "(unknown)"
 msgstr "(neznámé)"
 
-#: quodlibet/qltk/data_editors.py:344
+#: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
 msgstr "Výraz tagu"
 
-#: quodlibet/qltk/data_editors.py:371
+#: quodlibet/qltk/data_editors.py:393
 msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "Výraz tagu, např. people:real nebo ~album~year"
 
-#: quodlibet/qltk/data_editors.py:372
+#: quodlibet/qltk/data_editors.py:394
 msgid "Enter new tag"
 msgstr "Vložit nový tag"
 
@@ -6252,8 +6252,8 @@ msgid ""
 msgstr ""
 "Tagy byly změněny, ale nebyly uloženy. Přejete si změny uložit, nebo zahodit?"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:636
-#: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_Obrátit"
@@ -6443,63 +6443,63 @@ msgstr "Nastavení sloupce"
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr "Použít coučasné nastavení pro seznam skladeb, nové sloupce na konec"
 
-#: quodlibet/qltk/prefs.py:147 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:149 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Seznam skladeb"
 
-#: quodlibet/qltk/prefs.py:227
+#: quodlibet/qltk/prefs.py:232
 msgid "Edit Columns"
 msgstr "Upravit sloupce"
 
-#: quodlibet/qltk/prefs.py:264
+#: quodlibet/qltk/prefs.py:269
 msgid "Duration totals"
 msgstr "Celková délka"
 
-#: quodlibet/qltk/prefs.py:276
+#: quodlibet/qltk/prefs.py:281
 msgid "_Global filter:"
 msgstr "_Globální filtr:"
 
-#: quodlibet/qltk/prefs.py:282
+#: quodlibet/qltk/prefs.py:287
 msgid "Apply this query in addition to all others"
 msgstr "Použít tento dotaz spolu s ostatními"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:288
+#: quodlibet/qltk/prefs.py:293
 msgctxt "heading"
 msgid "Search"
 msgstr "Vyhledávání"
 
-#: quodlibet/qltk/prefs.py:292 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:297 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Prohlížeče"
 
-#: quodlibet/qltk/prefs.py:298
+#: quodlibet/qltk/prefs.py:303
 msgid "Confirm _multiple ratings"
 msgstr "Potvrdit _hromadné hodnocení"
 
-#: quodlibet/qltk/prefs.py:300
+#: quodlibet/qltk/prefs.py:305
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "Zeptat se na souhlas před změnou hodnocení u více skladeb najednou"
 
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:308
 msgid "Enable _one-click ratings"
 msgstr "Povolit hodnocení _jedním klikem"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:310
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Povolit hodnocení kliknutím na kolonku hodnocení v seznamu skladeb"
 
-#: quodlibet/qltk/prefs.py:311 quodlibet/qltk/prefs.py:677
+#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:682
 msgid "Ratings"
 msgstr "Hodnocení"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:317
+#: quodlibet/qltk/prefs.py:322
 msgid "Prefer _embedded art"
 msgstr "Upřednostnit _vložené grafiky alb"
 
-#: quodlibet/qltk/prefs.py:319
+#: quodlibet/qltk/prefs.py:324
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6507,30 +6507,30 @@ msgstr ""
 "Upřednostit náhledy přebalů vložené přímo do souborů (pokud lze) před "
 "ostatními zdroji"
 
-#: quodlibet/qltk/prefs.py:326
+#: quodlibet/qltk/prefs.py:331
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:330
+#: quodlibet/qltk/prefs.py:335
 #, fuzzy
 msgid "_Preferred image filename(s):"
 msgstr "_Fixní název souboru obrázku:"
 
-#: quodlibet/qltk/prefs.py:345
+#: quodlibet/qltk/prefs.py:350
 msgid "Album Art"
 msgstr "Přebaly alb"
 
-#: quodlibet/qltk/prefs.py:366
+#: quodlibet/qltk/prefs.py:371
 msgid "Playback"
 msgstr "Přehrávání"
 
-#: quodlibet/qltk/prefs.py:371
+#: quodlibet/qltk/prefs.py:376
 msgid "Output Configuration"
 msgstr "Nastavení výstupu"
 
-#: quodlibet/qltk/prefs.py:382
+#: quodlibet/qltk/prefs.py:387
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -6538,52 +6538,52 @@ msgstr ""
 "Jestliže není informace o úpravě hlasitosti pro tuto skladbu dostupná, "
 "upravit hlasitost na tuto hodnotu"
 
-#: quodlibet/qltk/prefs.py:385
+#: quodlibet/qltk/prefs.py:390
 msgid "_Fall-back gain (dB):"
 msgstr "_Vyrovnání hlasitosti (dB):"
 
-#: quodlibet/qltk/prefs.py:396
+#: quodlibet/qltk/prefs.py:401
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Upravit hlasitost podle této hodnoty pro všechny skladby, pokud nedojde ke "
 "snížení kvality."
 
-#: quodlibet/qltk/prefs.py:399
+#: quodlibet/qltk/prefs.py:404
 msgid "_Pre-amp gain (dB):"
 msgstr "_Předzesílení (dB):"
 
-#: quodlibet/qltk/prefs.py:404
+#: quodlibet/qltk/prefs.py:409
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Povolit úpravu hlasitosti"
 
-#: quodlibet/qltk/prefs.py:429
+#: quodlibet/qltk/prefs.py:434
 msgid "Replay Gain Volume Adjustment"
 msgstr "Úprava hlasitosti"
 
-#: quodlibet/qltk/prefs.py:436
+#: quodlibet/qltk/prefs.py:441
 msgid "_Continue playback on startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:438
+#: quodlibet/qltk/prefs.py:443
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:442
+#: quodlibet/qltk/prefs.py:447
 #, fuzzy
 msgid "Startup"
 msgstr "Spustit import"
 
-#: quodlibet/qltk/prefs.py:469
+#: quodlibet/qltk/prefs.py:474
 msgid "_Default rating:"
 msgstr "_Výchozí hodnocení:"
 
-#: quodlibet/qltk/prefs.py:512
+#: quodlibet/qltk/prefs.py:517
 msgid "Rating _scale:"
 msgstr "Stupnice h_odnocení:"
 
-#: quodlibet/qltk/prefs.py:561
+#: quodlibet/qltk/prefs.py:566
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6595,35 +6595,35 @@ msgstr ""
 "skladbami bude mít menší, hladší odchylky v hodnocení.\n"
 "Změna této hodnoty spustí přepočítávání pro všechna alba!"
 
-#: quodlibet/qltk/prefs.py:566
+#: quodlibet/qltk/prefs.py:571
 msgid "_Bayesian averaging amount:"
 msgstr "Hodnota _Bayesovského průměru:"
 
-#: quodlibet/qltk/prefs.py:583
+#: quodlibet/qltk/prefs.py:588
 msgid "_Email:"
 msgstr "_Email:"
 
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:590
 #, fuzzy
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Hodnocení a počet přehrání budou nastaveny pro tuto emailovou adresu"
 
-#: quodlibet/qltk/prefs.py:605
+#: quodlibet/qltk/prefs.py:610
 msgid "Auto-save tag changes"
 msgstr "Automaticky ukládat změny tagů"
 
-#: quodlibet/qltk/prefs.py:607
+#: quodlibet/qltk/prefs.py:612
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "Uložit změny tagů bez potvrzení v případě úpravy více tagů najednou"
 
-#: quodlibet/qltk/prefs.py:616
+#: quodlibet/qltk/prefs.py:621
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
 msgstr ""
 "Seznam oddělovačů pro rozdělování hodnot tagů. Položky jsou odděleny mezerou."
 
-#: quodlibet/qltk/prefs.py:626
+#: quodlibet/qltk/prefs.py:631
 #, fuzzy
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
@@ -6632,62 +6632,62 @@ msgid ""
 msgstr ""
 "Seznam oddělovačů pro rozdělování hodnot tagů. Položky jsou odděleny mezerou."
 
-#: quodlibet/qltk/prefs.py:639
+#: quodlibet/qltk/prefs.py:644
 #, fuzzy
 msgid "Split _tag on:"
 msgstr "Rozdělit _v:"
 
-#: quodlibet/qltk/prefs.py:646
+#: quodlibet/qltk/prefs.py:651
 #, fuzzy
 msgid "Split _subtag on:"
 msgstr "Rozdělit _v:"
 
-#: quodlibet/qltk/prefs.py:671
+#: quodlibet/qltk/prefs.py:676
 msgid "Tags"
 msgstr "Tagy"
 
-#: quodlibet/qltk/prefs.py:674
+#: quodlibet/qltk/prefs.py:679
 msgid "Tag Editing"
 msgstr "Úprava tagů"
 
-#: quodlibet/qltk/prefs.py:692
+#: quodlibet/qltk/prefs.py:697
 msgid "Updating for new ratings"
 msgstr "Aktualizace nových hodnocení"
 
-#: quodlibet/qltk/prefs.py:702
+#: quodlibet/qltk/prefs.py:707
 msgid "Scan library _on start"
 msgstr "Načíst sbírku vždy při _startu"
 
-#: quodlibet/qltk/prefs.py:706
+#: quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:707
+#: quodlibet/qltk/prefs.py:712
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "_Načíst sbírku"
 
-#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "Zkontrolovat změny ve sbírce"
 
-#: quodlibet/qltk/prefs.py:724
+#: quodlibet/qltk/prefs.py:729
 msgid "Re_build Library"
 msgstr "_Znovu načíst sbírku"
 
-#: quodlibet/qltk/prefs.py:727
+#: quodlibet/qltk/prefs.py:732
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Znovu načíst všechny skladby ve sbírce (může to trvat pár minut)."
 
-#: quodlibet/qltk/prefs.py:739
+#: quodlibet/qltk/prefs.py:744
 msgid "Scan Directories"
 msgstr "Pohledávat složky"
 
-#: quodlibet/qltk/prefs.py:745
+#: quodlibet/qltk/prefs.py:750
 msgid "Hidden Songs"
 msgstr "Skryté skladby"
 

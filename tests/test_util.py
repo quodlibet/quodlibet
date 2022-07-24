@@ -25,7 +25,7 @@ from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
     format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
-from quodlibet.util.path import fsn2glib, glib2fsn, \
+from quodlibet.util.path import \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, \
     xdg_get_data_home, unexpand, xdg_get_user_dirs, \
@@ -805,10 +805,6 @@ class TPathHandling(TestCase):
     def test_main(self):
         v = fsnative(u"foo")
         self.assertTrue(isinstance(v, fsnative))
-
-        v2 = glib2fsn(fsn2glib(v))
-        self.assertTrue(isinstance(v2, fsnative))
-        self.assertEqual(v, v2)
 
         v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")
         self.assertTrue(isinstance(v3, fsnative))

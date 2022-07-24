@@ -166,9 +166,9 @@ msgstr "מַצָּג אלבום"
 #: quodlibet/ext/songsmenu/albumart.py:330
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
-#: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:96
-#: quodlibet/qltk/data_editors.py:321 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:780
+#: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
+#: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:785
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_סגירה"
@@ -196,7 +196,7 @@ msgstr "הזנת מיקום ערוץ שמע:"
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88
 #: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:308
+#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:313
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
@@ -210,7 +210,7 @@ msgstr "ערוצי שמע"
 msgid "_Audio Feeds"
 msgstr "_הזנות שמע"
 
-#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:93
+#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_חדש"
 
@@ -294,9 +294,9 @@ msgstr "_מותאם אישית"
 #: quodlibet/ext/playlist/remove_duplicates.py:60
 #: quodlibet/qltk/bookmarks.py:97 quodlibet/qltk/bookmarks.py:127
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
-#: quodlibet/qltk/data_editors.py:78 quodlibet/qltk/data_editors.py:91
-#: quodlibet/qltk/data_editors.py:298 quodlibet/qltk/data_editors.py:311
-#: quodlibet/qltk/data_editors.py:319 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/data_editors.py:79 quodlibet/qltk/data_editors.py:92
+#: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
+#: quodlibet/qltk/data_editors.py:324 quodlibet/qltk/edittags.py:555
 #: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
@@ -1171,15 +1171,15 @@ msgstr "תיאור מקוצר…"
 msgid "Data to be sent:"
 msgstr "מועד שליחה:"
 
-#: quodlibet/exfalso.py:34
+#: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
 msgstr "עורך תגי שמע"
 
-#: quodlibet/exfalso.py:34 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
 msgstr "מחיצה"
 
-#: quodlibet/exfalso.py:41
+#: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
 msgstr "עורך ערכי מטה-דטה שמע"
 
@@ -1315,7 +1315,7 @@ msgstr "_מיקום:"
 msgid "_Cover size:"
 msgstr "_גודל תמונת עטיפה:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:271
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
 msgid "Display"
 msgstr "מַצָּג"
 
@@ -1490,7 +1490,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:575
+#: quodlibet/qltk/prefs.py:580
 msgid "Save ratings and play _counts in tags"
 msgstr "שמירת דֵּרוּג ומספר _השמעות בתגים"
 
@@ -1521,7 +1521,7 @@ msgstr "_עדכון תחנות"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:756
+#: quodlibet/qltk/prefs.py:761
 msgid "Preferences"
 msgstr "העדפות"
 
@@ -1546,36 +1546,36 @@ msgstr ""
 "דרוג שירים אוטומטית במהלך השמעתם או דלוגום. המתקע משתמש באלוגריטם 'האצה' מאת "
 "vox שנכתב על ידי בריאן נלסון."
 
-#: quodlibet/ext/events/bansheeimport.py:106
+#: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
 msgstr "מסד הנתונים של בנשי שצוין פגום או חסר"
 
-#: quodlibet/ext/events/bansheeimport.py:111
-#: quodlibet/ext/events/rbimport.py:114
+#: quodlibet/ext/events/bansheeimport.py:112
+#: quodlibet/ext/events/rbimport.py:115
 msgid "Import Failed"
 msgstr "יבוא כשל"
 
-#: quodlibet/ext/events/bansheeimport.py:117
+#: quodlibet/ext/events/bansheeimport.py:118
 #, python-format
 msgid "Successfully imported ratings and statistics for %d song"
 msgid_plural "Successfully imported ratings and statistics for %d songs"
 msgstr[0] "דרוג וסטטיסטיקה יובא בהצלחה עבור %d שיר"
 msgstr[1] "דרוג וסטטיסטיקה יובאו בהצלחה עבור %d שירים"
 
-#: quodlibet/ext/events/bansheeimport.py:126
+#: quodlibet/ext/events/bansheeimport.py:127
 msgid "Banshee Import"
 msgstr "יבוא בנשי"
 
-#: quodlibet/ext/events/bansheeimport.py:127
+#: quodlibet/ext/events/bansheeimport.py:128
 msgid "Imports ratings and song statistics from Banshee."
 msgstr "יבוא דרוג וסטטיסטיקת השמעות מבנשי."
 
-#: quodlibet/ext/events/bansheeimport.py:136
+#: quodlibet/ext/events/bansheeimport.py:137
 msgid "_Database path:"
 msgstr "_נתיב מסד נתונים:"
 
-#: quodlibet/ext/events/bansheeimport.py:164
-#: quodlibet/ext/events/rbimport.py:132
+#: quodlibet/ext/events/bansheeimport.py:165
+#: quodlibet/ext/events/rbimport.py:133
 msgid "Start Import"
 msgstr "יבוא"
 
@@ -1908,7 +1908,7 @@ msgstr "החלפת שפה בממשק משתמש."
 msgid "System Default"
 msgstr "ברירת מחדל מערכת"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:704
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:709
 msgid "A restart is required for any changes to take effect"
 msgstr "נדרש אתחול על מנת שהשינויים ייכנסו לתוקף"
 
@@ -2347,16 +2347,16 @@ msgstr "אלבום אקראי"
 msgid "Waiting to start %s"
 msgstr "בהמתנה ל %s"
 
-#: quodlibet/ext/events/rbimport.py:119
+#: quodlibet/ext/events/rbimport.py:120
 #, python-format
 msgid "Successfully imported ratings and statistics for %d songs"
 msgstr "דרוג וסטטיסטיקה יובאו בהצלחה עבור  %d שירים"
 
-#: quodlibet/ext/events/rbimport.py:127
+#: quodlibet/ext/events/rbimport.py:128
 msgid "Rhythmbox Import"
 msgstr "יבוא ריטמבוקס"
 
-#: quodlibet/ext/events/rbimport.py:128
+#: quodlibet/ext/events/rbimport.py:129
 msgid "Imports ratings and song statistics from Rhythmbox."
 msgstr "יבוא דרוג וסטטיסטיקת השמעות מ ריטמבוקס."
 
@@ -4946,31 +4946,31 @@ msgstr "עריכת חיפוש URLים"
 msgid "Configure Searches…"
 msgstr "תיצור חיפוש…"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:35
+#: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid "Search Tag in Wikipedia"
 msgstr "חיפוש תג בויקיפדיה"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:36
+#: quodlibet/ext/songsmenu/wikipedia.py:37
 msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
 msgstr "פתיחת חלון דפדפן, עם מאמרים מויקיפדיה, על פי תגי השיר שנבחר."
 
-#: quodlibet/ext/songsmenu/wikipedia.py:56
+#: quodlibet/ext/songsmenu/wikipedia.py:57
 #, python-format
 msgid "Search at %(website)s"
 msgstr "חיפוש ב %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:70
-#: quodlibet/ext/songsmenu/wikipedia.py:76 quodlibet/qltk/edittags.py:452
+#: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:452
 msgid "Edit Tags"
 msgstr "עריכת תגים"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:111
+#: quodlibet/ext/songsmenu/wikipedia.py:110
 msgid "Search failed"
 msgstr "פעולת חיפוש כשלה"
 
-#: quodlibet/ext/songsmenu/wikipedia.py:112
+#: quodlibet/ext/songsmenu/wikipedia.py:111
 #, python-format
 msgid "Tag \"%s\" not found."
 msgstr "תג \"%s\" לא נמצא."
@@ -4980,7 +4980,7 @@ msgstr "תג \"%s\" לא נמצא."
 #: quodlibet/library/file.py:227 quodlibet/library/file.py:246
 #: quodlibet/library/file.py:353 quodlibet/library/file.py:411
 #: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:700 quodlibet/util/library.py:121
+#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "ספריה"
 
@@ -5016,7 +5016,7 @@ msgstr "הסרת מסנן דפדפן פעיל"
 msgid "Adding watches for %s"
 msgstr ""
 
-#: quodlibet/main.py:50
+#: quodlibet/main.py:48
 msgid "Music player and music library manager"
 msgstr "מנהל ספרית מוזיקה ונגן"
 
@@ -5061,7 +5061,7 @@ msgid "Too many arguments"
 msgstr "יותר מדי ארגומנטים"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:352
+#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:372
 msgid "Description"
 msgstr "תיאור"
 
@@ -5213,7 +5213,7 @@ msgstr "הדפסת תגים על פי דפוס נתון"
 msgid "Display help information"
 msgstr "מַצָּג עזרה"
 
-#: quodlibet/operon/util.py:43
+#: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' אינו שם עמודה תקין (%(all-column-ids)s)."
@@ -5558,24 +5558,24 @@ msgid "_Replay Gain Mode"
 msgstr "_מצב ריפליי גאיין"
 
 #. Translators: New Command/Entry/Item/...
-#: quodlibet/qltk/data_editors.py:116
+#: quodlibet/qltk/data_editors.py:117
 #, python-format
 msgid "New %s"
 msgstr "חדש %s"
 
-#: quodlibet/qltk/data_editors.py:215
+#: quodlibet/qltk/data_editors.py:216
 msgid "(unknown)"
 msgstr "(לא ידוע)"
 
-#: quodlibet/qltk/data_editors.py:344
+#: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
 msgstr "ביטוי תג"
 
-#: quodlibet/qltk/data_editors.py:371
+#: quodlibet/qltk/data_editors.py:393
 msgid "Tag expression e.g. people:real or ~album~year"
 msgstr "ביטוי תג לדוגמה, אנשים: אמיתי או ~album~year"
 
-#: quodlibet/qltk/data_editors.py:372
+#: quodlibet/qltk/data_editors.py:394
 msgid "Enter new tag"
 msgstr "הזנת תג חדש"
 
@@ -6119,8 +6119,8 @@ msgid ""
 msgstr ""
 "תגים שונו אך לא נשמרו. נא לשמור שינויים, או לחזור למקור ולשמוט שינויים?"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:636
-#: quodlibet/qltk/prefs.py:643 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_הסגה"
@@ -6310,141 +6310,141 @@ msgstr "העדפות עמודות"
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr "החלת התצורה הנוכחית על רשימת שירים, הוספת עמודות חדשות לסוף"
 
-#: quodlibet/qltk/prefs.py:147 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:149 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "רשימת שירים"
 
-#: quodlibet/qltk/prefs.py:227
+#: quodlibet/qltk/prefs.py:232
 msgid "Edit Columns"
 msgstr "עריכת עמודות"
 
-#: quodlibet/qltk/prefs.py:264
+#: quodlibet/qltk/prefs.py:269
 msgid "Duration totals"
 msgstr "סך כל משך"
 
-#: quodlibet/qltk/prefs.py:276
+#: quodlibet/qltk/prefs.py:281
 msgid "_Global filter:"
 msgstr "_מסנן כללי:"
 
-#: quodlibet/qltk/prefs.py:282
+#: quodlibet/qltk/prefs.py:287
 msgid "Apply this query in addition to all others"
 msgstr "החלת שאילתה זו בנוסף לכל האחרות"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:288
+#: quodlibet/qltk/prefs.py:293
 msgctxt "heading"
 msgid "Search"
 msgstr "חיפוש"
 
-#: quodlibet/qltk/prefs.py:292 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:297 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "דפדפנים"
 
-#: quodlibet/qltk/prefs.py:298
+#: quodlibet/qltk/prefs.py:303
 msgid "Confirm _multiple ratings"
 msgstr "אישור דֵּרוּג _מרובה"
 
-#: quodlibet/qltk/prefs.py:300
+#: quodlibet/qltk/prefs.py:305
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "בקשת אישור לפני שינוי הדֵּרוּג של שירים מרובים בו-זמנית"
 
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:308
 msgid "Enable _one-click ratings"
 msgstr "אפשור דרוג בהקשה _אחת"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:310
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "אפשור דרוג על ידי לחיצה על עמודת הדרוג ברשימת השירים"
 
-#: quodlibet/qltk/prefs.py:311 quodlibet/qltk/prefs.py:677
+#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:682
 msgid "Ratings"
 msgstr "דרוג"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:317
+#: quodlibet/qltk/prefs.py:322
 msgid "Prefer _embedded art"
 msgstr "העדפת _תמונה משובצת"
 
-#: quodlibet/qltk/prefs.py:319
+#: quodlibet/qltk/prefs.py:324
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
 "בחירה בשימוש בתמונות עטיפה משובצות (ככל שהן זמינות) על פני תמונות אחרות"
 
-#: quodlibet/qltk/prefs.py:326
+#: quodlibet/qltk/prefs.py:331
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:330
+#: quodlibet/qltk/prefs.py:335
 #, fuzzy
 msgid "_Preferred image filename(s):"
 msgstr "_שם קובץ תמונה קבוע:"
 
-#: quodlibet/qltk/prefs.py:345
+#: quodlibet/qltk/prefs.py:350
 msgid "Album Art"
 msgstr "עטיפת אלבום"
 
-#: quodlibet/qltk/prefs.py:366
+#: quodlibet/qltk/prefs.py:371
 msgid "Playback"
 msgstr "השמעה"
 
-#: quodlibet/qltk/prefs.py:371
+#: quodlibet/qltk/prefs.py:376
 msgid "Output Configuration"
 msgstr "תְּצוּרָת פלט"
 
-#: quodlibet/qltk/prefs.py:382
+#: quodlibet/qltk/prefs.py:387
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr "אם אין מידע ריפליי גאיין זמין להשמעה, עוצמת הקול תושווה לערך זה"
 
-#: quodlibet/qltk/prefs.py:385
+#: quodlibet/qltk/prefs.py:390
 msgid "_Fall-back gain (dB):"
 msgstr "_מרווח עצמה מוצא (dB):"
 
-#: quodlibet/qltk/prefs.py:396
+#: quodlibet/qltk/prefs.py:401
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "סולם עצמה עבור כל השירים לפי ערך זה, כל עוד התוצאה לא מקוצצת"
 
-#: quodlibet/qltk/prefs.py:399
+#: quodlibet/qltk/prefs.py:404
 msgid "_Pre-amp gain (dB):"
 msgstr "_מרווח קדם-מגבר (dB):"
 
-#: quodlibet/qltk/prefs.py:404
+#: quodlibet/qltk/prefs.py:409
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_אפשור כיוונון עוצמת ריפליי גאיין"
 
-#: quodlibet/qltk/prefs.py:429
+#: quodlibet/qltk/prefs.py:434
 msgid "Replay Gain Volume Adjustment"
 msgstr "כיוונון עוצמת ריפליי גאיין"
 
-#: quodlibet/qltk/prefs.py:436
+#: quodlibet/qltk/prefs.py:441
 msgid "_Continue playback on startup"
 msgstr "_המשך השמעה לאחר אתחול"
 
-#: quodlibet/qltk/prefs.py:438
+#: quodlibet/qltk/prefs.py:443
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr "אם מושמעת מוזיקה בעת כיבוי, היא תמשיך להתנגן מיד לאחר האתחול"
 
-#: quodlibet/qltk/prefs.py:442
+#: quodlibet/qltk/prefs.py:447
 msgid "Startup"
 msgstr "אתחול"
 
-#: quodlibet/qltk/prefs.py:469
+#: quodlibet/qltk/prefs.py:474
 msgid "_Default rating:"
 msgstr "_דֵּרוּג ברירת מחדל:"
 
-#: quodlibet/qltk/prefs.py:512
+#: quodlibet/qltk/prefs.py:517
 msgid "Rating _scale:"
 msgstr "סרגל _דרוג:"
 
-#: quodlibet/qltk/prefs.py:561
+#: quodlibet/qltk/prefs.py:566
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6456,27 +6456,27 @@ msgstr ""
 "מעטות יהיו דֵּרוּגים פחות קיצוניים. שינוי ערך זה מפעיל חישוב מחדש עבור כל "
 "האלבומים."
 
-#: quodlibet/qltk/prefs.py:566
+#: quodlibet/qltk/prefs.py:571
 msgid "_Bayesian averaging amount:"
 msgstr "_סכום ממוצע בייסיאני:"
 
-#: quodlibet/qltk/prefs.py:583
+#: quodlibet/qltk/prefs.py:588
 msgid "_Email:"
 msgstr "_דואר אלקטרוני:"
 
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:590
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "הדֵּרוּג ומספר ההשמעות ישמרו בתגים עבור כותבת דוא\"ל זו"
 
-#: quodlibet/qltk/prefs.py:605
+#: quodlibet/qltk/prefs.py:610
 msgid "Auto-save tag changes"
 msgstr "שמירת שינויים אוטומטית בתגים"
 
-#: quodlibet/qltk/prefs.py:607
+#: quodlibet/qltk/prefs.py:612
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "שמירת שינויים בתגים ללא בקשת אישור בעת עריכת מספר קבצים"
 
-#: quodlibet/qltk/prefs.py:616
+#: quodlibet/qltk/prefs.py:621
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
@@ -6484,7 +6484,7 @@ msgstr ""
 "סדרת תווי הפרדה לשימוש בעת פיצול ערכים בעורך התגים. ערכי הרשימה מופרדים "
 "בפסיקים."
 
-#: quodlibet/qltk/prefs.py:626
+#: quodlibet/qltk/prefs.py:631
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
@@ -6493,60 +6493,60 @@ msgstr ""
 "סדרת תווי הפרדה לשימוש בעת פיצול תגי משנה מתגים בעורך התגים. הרשימה מופרדת "
 "ברווח, וכל רשומה אמורה להכיל שני תווים בלבד."
 
-#: quodlibet/qltk/prefs.py:639
+#: quodlibet/qltk/prefs.py:644
 msgid "Split _tag on:"
 msgstr "פיצול _תג עם:"
 
-#: quodlibet/qltk/prefs.py:646
+#: quodlibet/qltk/prefs.py:651
 msgid "Split _subtag on:"
 msgstr "פיצול תג _משנה עם:"
 
-#: quodlibet/qltk/prefs.py:671
+#: quodlibet/qltk/prefs.py:676
 msgid "Tags"
 msgstr "תגים"
 
-#: quodlibet/qltk/prefs.py:674
+#: quodlibet/qltk/prefs.py:679
 msgid "Tag Editing"
 msgstr "עריכת תגים"
 
-#: quodlibet/qltk/prefs.py:692
+#: quodlibet/qltk/prefs.py:697
 msgid "Updating for new ratings"
 msgstr "עדכונים לדרוג חדש"
 
-#: quodlibet/qltk/prefs.py:702
+#: quodlibet/qltk/prefs.py:707
 msgid "Scan library _on start"
 msgstr "סריקת ספריה _באתחול"
 
-#: quodlibet/qltk/prefs.py:706
+#: quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:707
+#: quodlibet/qltk/prefs.py:712
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:717 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "_סריקת ספריה"
 
-#: quodlibet/qltk/prefs.py:719 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "בדיקת שינויים בספרית השירים"
 
-#: quodlibet/qltk/prefs.py:724
+#: quodlibet/qltk/prefs.py:729
 msgid "Re_build Library"
 msgstr "בנ_ית הספריה מחדש"
 
-#: quodlibet/qltk/prefs.py:727
+#: quodlibet/qltk/prefs.py:732
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "טעינה חוזרת של כל השירים בספריה. הפעולה עשויה לארוך זמן ממושך."
 
-#: quodlibet/qltk/prefs.py:739
+#: quodlibet/qltk/prefs.py:744
 msgid "Scan Directories"
 msgstr "סריקת מחיצות"
 
-#: quodlibet/qltk/prefs.py:745
+#: quodlibet/qltk/prefs.py:750
 msgid "Hidden Songs"
 msgstr "שירים מוסתרים"
 

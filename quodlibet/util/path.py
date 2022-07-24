@@ -41,18 +41,6 @@ def mkdir(dir_, *args):
             raise
 
 
-def glib2fsn(path):
-    """Takes a glib filename and returns a fsnative path"""
-
-    return path
-
-
-def fsn2glib(path):
-    """Takes a fsnative path and returns a glib filename"""
-
-    return path
-
-
 def uri2gsturi(uri):
     """Takes a correct uri and returns a gstreamer-compatible uri"""
     if not is_windows():
@@ -235,7 +223,7 @@ def xdg_get_system_data_dirs():
         from gi.repository import GLib
         dirs = []
         for dir_ in GLib.get_system_data_dirs():
-            dirs.append(glib2fsn(dir_))
+            dirs.append(dir_)
         return dirs
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
@@ -249,7 +237,7 @@ def xdg_get_system_data_dirs():
 def xdg_get_cache_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsn(GLib.get_user_cache_dir())
+        return GLib.get_user_cache_dir()
 
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
@@ -261,7 +249,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsn(GLib.get_user_data_dir())
+        return GLib.get_user_data_dir()
 
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
@@ -273,7 +261,7 @@ def xdg_get_data_home():
 def xdg_get_config_home():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsn(GLib.get_user_config_dir())
+        return GLib.get_user_config_dir()
 
     data_home = os.getenv("XDG_CONFIG_HOME")
     if data_home:
