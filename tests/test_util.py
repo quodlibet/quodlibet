@@ -11,6 +11,7 @@ import threading
 import traceback
 import time
 import logging
+from pathlib import Path
 
 from senf import fsnative, fsn2bytes, bytes2fsn
 
@@ -33,8 +34,7 @@ from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.environment import is_osx
 
 from . import TestCase, skipIf
-from .helper import capture_output, locale_numeric_conv
-
+from .helper import capture_output, locale_numeric_conv, temp_filename
 
 is_win = os.name == "nt"
 
@@ -722,6 +722,15 @@ class TNormalizePath(TestCase):
                 os.remove(link)
             os.remove(path)
             os.rmdir(link_dir)
+
+    def test_pathlib_is_equivalent(self):
+        from quodlibet.util.path import normalize_path
+        with temp_filename() as fn:
+            assert normalize_path(Path(fn)) == normalize_path(fn)
+        with temp_filename() as fn:
+            path = Path(fn)
+            assert normalize_path(path / "./..") == normalize_path(fn + "./..")
+            assert normalize_path(path / ".." / path.name) == normalize_path(path)
 
 
 class Tescape_filename(TestCase):

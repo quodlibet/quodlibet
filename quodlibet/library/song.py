@@ -2,8 +2,8 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
-from typing import Optional, Set, Iterable, TypeVar
+from pathlib import Path
+from typing import Optional, Set, Iterable, TypeVar, Union
 
 from quodlibet import util, print_d
 from quodlibet.formats import MusicFile, AudioFile
@@ -14,7 +14,6 @@ from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.query import Query
 from quodlibet.util.path import normalize_path
 from senf import fsnative
-
 
 V = TypeVar("V", bound=AudioFile)
 
@@ -100,7 +99,9 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
         key = normalize_path(filename, True)
         return self._contents.get(key)
 
-    def add_filename(self, filename, add=True):
+    def add_filename(self,
+                     filename: Union[str, Path],
+                     add: bool = True) -> Optional[AudioFile]:
         """Add a song to the library based on filename.
 
         If 'add' is true, the song will be added and the 'added' signal
