@@ -4769,9 +4769,9 @@ msgstr ""
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
-#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
-#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
-#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/library/file.py:231 quodlibet/library/file.py:250
+#: quodlibet/library/file.py:357 quodlibet/library/file.py:415
+#: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
 #: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
 msgstr ""
@@ -4784,24 +4784,24 @@ msgstr ""
 msgid "Scanning library"
 msgstr ""
 
-#: quodlibet/library/file.py:226
+#: quodlibet/library/file.py:230
 #, python-format
 msgid "Scanning %s"
 msgstr ""
 
-#: quodlibet/library/file.py:246
+#: quodlibet/library/file.py:250
 msgid "Loading files"
 msgstr ""
 
-#: quodlibet/library/file.py:353
+#: quodlibet/library/file.py:357
 msgid "Moving library files"
 msgstr ""
 
-#: quodlibet/library/file.py:411
+#: quodlibet/library/file.py:415
 msgid "Removing library files"
 msgstr ""
 
-#: quodlibet/library/file.py:562
+#: quodlibet/library/file.py:569
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
