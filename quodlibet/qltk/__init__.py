@@ -14,12 +14,13 @@ from urllib.parse import urlparse
 
 import gi
 gi.require_version("Gtk", "3.0")
-gi.require_version("Gdk", "3.0")
-gi.require_version('PangoCairo', '1.0')
 
-from gi.repository import Gtk, Gdk, GLib, GObject, PangoCairo
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GLib, GObject, PangoCairo
 from senf import fsn2bytes, bytes2fsn, uri2fsn
 
+from quodlibet.util import print_d, print_w, is_windows, is_osx
 
 
 def show_uri(label, uri):
