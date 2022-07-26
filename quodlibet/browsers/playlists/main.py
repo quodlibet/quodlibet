@@ -335,10 +335,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             self.pl_lib.add([pl])
             self.reinsert_pl(pl)
             self._select_playlist(playlist, scroll=True)
-        undo_id = quodlibet.app.undo_store.checkpoint(undelete, args=[playlist])
+        quodlibet.app.undo_store.checkpoint(undelete, args=[playlist])
         self.__removed(self.pl_lib, [playlist])
         playlist.delete()
-        # self.refresh_all()
 
     def __playlist_deleted(self, row) -> None:
         self.model.remove(row.iter)
@@ -594,8 +593,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
-           self.reinsert_pl(playlist)
-           self._select_playlist(playlist, scroll=True)
+            self.reinsert_pl(playlist)
+            self._select_playlist(playlist, scroll=True)
 
     def __import(self, activator, library):
         formats = ["*.pls", "*.m3u", "*.m3u8"]
