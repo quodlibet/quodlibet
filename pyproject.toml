@@ -38,7 +38,9 @@ sphinx = '^5.0.2'
 sphinx_rtd_theme = '^1.0.0'
 sphinx-autobuild = "^2021.3.14"
 xvfbwrapper = { version = "^0.2", platform = "linux" }
-flake8 = "^4.0.1"
+
+# 4.0.x has issues with pytest-flake8: https://github.com/pytest-dev/pytest/issues/9217
+flake8 = "3.9.2"
 coverage = { extras = ["toml"], version = "^6.3.2" }
 mypy = "^0.971"
 flaky = "^3.7.0"
