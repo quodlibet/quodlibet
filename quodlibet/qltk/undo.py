@@ -57,6 +57,3 @@ class UndoStore:
             undo.run()
         del self.undos[undo_id]
         return True
-
-
-_GLOBAL_UNDO = UndoStore()

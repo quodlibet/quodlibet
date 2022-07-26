@@ -29,7 +29,6 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.information import Information
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.models import ObjectStore, ObjectModelSort
-from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songlist import SongList
@@ -41,7 +40,6 @@ from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.urllib import urlopen
 from .util import parse_m3u, parse_pls, _name_for
-from quodlibet.qltk.undo import _GLOBAL_UNDO
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -56,7 +54,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "playlist_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
-    def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
+    def __init__(self, songs_lib: SongFileLibrary):
         super().__init__(spacing=6)
         self._lists = ObjectModelSort(model=ObjectStore())
         self._lists.set_default_sort_func(ObjectStore._sort_on_value)
@@ -72,9 +70,6 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             for playlist in self.pl_lib:
                 model.append(row=[playlist])
 
-        # this is instanced with the necessary gtkdialog-settings, and afterwards
-        # its run-method is called to get a to-be-compared Gtk.ResponseType
-        self.Confirmer = Confirmer
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__render = self.__create_cell_renderer()
         self.__view = view = self.__create_playlists_view(self.__render)
@@ -318,7 +313,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 window.show()
             return True
         elif qltk.is_accel(event, "<Primary>Z"):
-            _GLOBAL_UNDO.undo()
+            quodlibet.app.undo_store.undo()
+            pass
 
         return False
 
@@ -339,7 +335,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             self.pl_lib.add([pl])
             self.reinsert_pl(pl)
             self._select_playlist(playlist, scroll=True)
-        undo_id = _GLOBAL_UNDO.checkpoint(undelete, args=[playlist])
+        undo_id = quodlibet.app.undo_store.checkpoint(undelete, args=[playlist])
         self.__removed(self.pl_lib, [playlist])
         playlist.delete()
         # self.refresh_all()

@@ -1,4 +1,4 @@
-# Copyright 2014-2021 Nick Boultbee
+# Copyright 2014-2022 Nick Boultbee
 #                2022 TheMelmacian
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,9 +12,7 @@ from quodlibet import _, print_w
 from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.qltk.msg import ConfirmationPrompt
 from quodlibet.qltk.wlw import WaitLoadWindow
-from quodlibet.util import escape
 from quodlibet.util.path import uri_is_valid
 from urllib.response import addinfourl
 from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
