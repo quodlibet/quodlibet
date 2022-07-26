@@ -40,7 +40,8 @@ from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.urllib import urlopen
-from .util import parse_m3u, parse_pls, confirm_remove_playlist_dialog_invoke, _name_for
+from .util import parse_m3u, parse_pls, _name_for
+from quodlibet.qltk.undo import _GLOBAL_UNDO
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -294,12 +295,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             model, iter = self.__selected_playlists()
             if not iter:
                 return False
-
-            playlist = model[iter][0]
-            if confirm_remove_playlist_dialog_invoke(self, playlist, self.Confirmer):
-                playlist.delete()
-            else:
-                print_d("Playlist removal cancelled through prompt")
+            self.delete_playlist(model, iter)
             return True
         elif qltk.is_accel(event, "F2"):
             model, iter = self.__selected_playlists()
@@ -321,7 +317,32 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 window = SongProperties(self.songs_lib.librarian, songs, self)
                 window.show()
             return True
+        elif qltk.is_accel(event, "<Primary>Z"):
+            _GLOBAL_UNDO.undo()
+
         return False
+
+    def reinsert_pl(self, pl: Playlist) -> bool:
+        for row in self.__view.get_model():
+            if row[0] is pl:
+                child_model = self.model
+                child_model.remove(
+                    self._lists.convert_iter_to_child_iter(row.iter))
+                child_model.append(row=[pl])
+                return True
+        return False
+
+    def delete_playlist(self, model, itr):
+        playlist = model[itr][0]
+
+        def undelete(pl: Playlist):
+            self.pl_lib.add([pl])
+            self.reinsert_pl(pl)
+            self._select_playlist(playlist, scroll=True)
+        undo_id = _GLOBAL_UNDO.checkpoint(undelete, args=[playlist])
+        self.__removed(self.pl_lib, [playlist])
+        playlist.delete()
+        # self.refresh_all()
 
     def __playlist_deleted(self, row) -> None:
         self.model.remove(row.iter)
@@ -470,17 +491,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         menu = SongsMenu(library, songs, playlists=False, remove=False, ratings=False)
         menu.preseparate()
 
-        def _remove(model, itr):
-            playlist = model[itr][0]
-            response = confirm_remove_playlist_dialog_invoke(
-                self, playlist, self.Confirmer)
-            if response:
-                playlist.delete()
-            else:
-                print_d("Playlist removal cancelled through prompt")
-
         rem = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
-        connect_obj(rem, 'activate', _remove, model, itr)
+        connect_obj(rem, 'activate', self.delete_playlist, model, itr)
         menu.prepend(rem)
 
         def _rename(path):
@@ -586,12 +598,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             qltk.ErrorMessage(
                 None, _("Unable to rename playlist"), s).run()
         else:
-            row = self._lists[path]
-            child_model = self.model
-            child_model.remove(
-                self._lists.convert_iter_to_child_iter(row.iter))
-            child_model.append(row=[playlist])
-            self._select_playlist(playlist, scroll=True)
+           self.reinsert_pl(playlist)
+           self._select_playlist(playlist, scroll=True)
 
     def __import(self, activator, library):
         formats = ["*.pls", "*.m3u", "*.m3u8"]
