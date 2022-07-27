@@ -1181,3 +1181,26 @@ class Textract_tb(TestCase):
                 self.assertTrue(isinstance(l, int))
                 self.assertTrue(isinstance(fu, str))
                 self.assertTrue(isinstance(text, str))
+
+
+def test_capture_output():
+    with capture_output() as (o, e):
+        sys.stdout.write("foo")
+        sys.stderr.write("bar")
+    assert o.getvalue() == "foo"
+    assert e.getvalue() == "bar"
+
+    # also make sure sys.stdout.buffer exists and works,
+    # for completeness
+    with capture_output() as (o, e):
+        sys.stdout.write("foo")
+        sys.stdout.buffer.write(b"bar")
+        sys.stderr.write("baz")
+        sys.stderr.buffer.write(b"quux")
+    assert o.getvalue() == "foobar"
+    assert e.getvalue() == "bazquux"
+
+    # newlines are preserved as is
+    with capture_output() as (o, e):
+        sys.stdout.write("a\nb\r\nc\rd")
+    assert o.getvalue() == "a\nb\r\nc\rd"

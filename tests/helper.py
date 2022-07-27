@@ -13,7 +13,7 @@ import sys
 import shutil
 import locale
 import errno
-from io import StringIO
+import io
 from pathlib import Path
 
 from gi.repository import Gtk, Gdk
@@ -243,8 +243,12 @@ def capture_output():
     print stdout.getvalue(), stderr.getvalue()
     """
 
-    err = StringIO()
-    out = StringIO()
+    err = io.TextIOWrapper(
+        io.BytesIO(), encoding="utf-8", write_through=True, newline='\n')
+    err.getvalue = lambda: err.buffer.getvalue().decode()
+    out = io.TextIOWrapper(
+        io.BytesIO(), encoding="utf-8", write_through=True, newline='\n')
+    out.getvalue = lambda: out.buffer.getvalue().decode()
     old_err = sys.stderr
     old_out = sys.stdout
     sys.stderr = err
