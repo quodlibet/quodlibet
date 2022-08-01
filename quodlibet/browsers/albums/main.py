@@ -37,7 +37,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import MenuItem, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj, DeferredSignal
