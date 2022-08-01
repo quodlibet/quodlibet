@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2012-2017 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
@@ -277,12 +277,12 @@ class TopBar(Gtk.Toolbar):
         info_item.add(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
-        self._pattern_box = Gtk.VBox()
+        self._pattern_box = Gtk.VBox(spacing=3)
 
         # song text
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        self._pattern_box.pack_start(Align(text, border=3), True, True, 0)
+        self._pattern_box.pack_start(text, True, True, 0)
         box.pack_start(self._pattern_box, True, True, 0)
 
         # cover image
@@ -295,7 +295,7 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        box.pack_start(Align(self.image, border=2), False, True, 0)
+        box.pack_start(Align(self.image, top=3, right=3), False, True, 0)
 
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
@@ -600,7 +600,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
-        self.__browserbox = Align(bottom=3)
+        self.__browserbox = Align(top=3, bottom=3)
         self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
         paned.pack1(self.__browserbox, resize=True)
         # We'll pack2 when necessary (when the first sidebar plugin is set up)
