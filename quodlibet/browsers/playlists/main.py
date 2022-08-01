@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2021 Nick Boultbee
+#      2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -108,7 +108,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
         self._rh_box = rhbox = Gtk.VBox(spacing=6)
-        align = Align(self._sb_box, left=0, right=6, top=6)
+        align = Align(self._sb_box, left=0, right=6, top=0)
         rhbox.pack_start(align, False, True, 0)
         rhbox.pack_start(songpane, True, True, 0)
         self._main_box.pack2(rhbox, True, False)

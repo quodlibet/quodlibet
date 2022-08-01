@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2021 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -332,7 +332,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
-        self.pack_start(Align(search, left=6, top=6), False, True, 0)
+        self.pack_start(Align(search, left=6, top=0), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)

@@ -1,4 +1,4 @@
-# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2022 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee,
 #           2018-2019 Peter Strulo
 #
@@ -18,7 +18,7 @@ from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import MultiSearchBarBox
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage, Align
 from quodlibet.qltk import Icons
 
 
@@ -64,8 +64,7 @@ class TrackList(Browser):
         container.remove(self)
 
     def __init__(self, library):
-        super().__init__(margin=6, spacing=6,
-                         orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(spacing=6, orientation=Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library
@@ -87,7 +86,7 @@ class TrackList(Browser):
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        self.pack_start(sbb, False, True, 0)
+        self.pack_start(Align(sbb, left=6, right=6), False, True, 0)
         self.pack_start(sbb.flow_box, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()

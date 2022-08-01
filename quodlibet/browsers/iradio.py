@@ -648,7 +648,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         box = Gtk.HBox(spacing=6)
         box.pack_start(search, True, True, 0)
         box.pack_start(button, False, True, 0)
-        self._searchbox = Align(box, left=0, right=6, top=6)
+        self._searchbox = Align(box, left=0, right=6, top=0)
         self._searchbox.show_all()
 
         def qbar_response(infobar, response_id):

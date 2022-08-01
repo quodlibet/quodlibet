@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2021 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2018-2020 Uriel Zajaczkovski
 #           2019      Ruud van Asseldonk
@@ -37,7 +37,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import MenuItem, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj, DeferredSignal
@@ -232,8 +232,7 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(
-            label=_(u"Sort _by…"), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_(u"Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)
@@ -264,7 +263,7 @@ class PreferencesButton(Gtk.HBox):
                 SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.pack_start(button, False, False, 0)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -589,7 +588,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
-        self.pack_start(Align(search, left=6, top=6), False, True, 0)
+        hb = Gtk.Box(spacing=3)
+        hb.pack_start(search, True, True, 6)
+        self.pack_start(hb, False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)
