@@ -58,12 +58,12 @@ msgstr ""
 msgid "_Playcount"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:236
+#: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:257
+#: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
@@ -71,21 +71,21 @@ msgstr ""
 msgid "_Preferences"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:430
 msgid "Album List"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:432
+#: quodlibet/browsers/albums/main.py:431
 msgid "_Album List"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:546
 #: quodlibet/browsers/covergrid/main.py:290
 #: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr ""
 
-#: quodlibet/browsers/albums/main.py:548
+#: quodlibet/browsers/albums/main.py:547
 #: quodlibet/browsers/covergrid/main.py:291
 #: quodlibet/browsers/covergrid/main.py:507
 #, python-format
@@ -94,7 +94,7 @@ msgid_plural "%d albums"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/browsers/albums/main.py:729
+#: quodlibet/browsers/albums/main.py:730
 #: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
