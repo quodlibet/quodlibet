@@ -1307,7 +1307,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr "アニメート・オンスクリーン表示"
+msgstr "アニメート・オンスクリーンディスプレイ"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -2396,7 +2396,7 @@ msgstr "GNOME シェルによるライブラリの検索を許可します。"
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr "代替シークバー"
+msgstr "オルタナティブ・シークバー"
 
 #: quodlibet/ext/events/seekbar.py:123
 msgid ""
