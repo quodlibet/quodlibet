@@ -310,7 +310,7 @@ class TagListEditor(qltk.Window):
         vbbox = Gtk.VButtonBox()
         vbbox.set_layout(Gtk.ButtonBoxStyle.START)
         vbbox.set_spacing(6)
-        add = Button(_("_Add"), Icons.LIST_ADD)
+        add = Button(_("_Add…"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
         vbbox.pack_start(add, False, True, 0)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
