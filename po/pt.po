@@ -62,12 +62,12 @@ msgstr "_Avaliação"
 msgid "_Playcount"
 msgstr "_Número de reproduções"
 
-#: quodlibet/browsers/albums/main.py:236
+#: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr "_Ordenar por…"
 
-#: quodlibet/browsers/albums/main.py:257
+#: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
@@ -75,21 +75,21 @@ msgstr "_Ordenar por…"
 msgid "_Preferences"
 msgstr "_Preferências"
 
-#: quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:430
 msgid "Album List"
 msgstr "Lista de álbuns"
 
-#: quodlibet/browsers/albums/main.py:432
+#: quodlibet/browsers/albums/main.py:431
 msgid "_Album List"
 msgstr "_Lista de álbuns"
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:546
 #: quodlibet/browsers/covergrid/main.py:290
 #: quodlibet/browsers/covergrid/main.py:506
 msgid "All Albums"
 msgstr "Todos os álbuns"
 
-#: quodlibet/browsers/albums/main.py:548
+#: quodlibet/browsers/albums/main.py:547
 #: quodlibet/browsers/covergrid/main.py:291
 #: quodlibet/browsers/covergrid/main.py:507
 #, python-format
@@ -98,7 +98,7 @@ msgid_plural "%d albums"
 msgstr[0] "%d álbum"
 msgstr[1] "%d álbuns"
 
-#: quodlibet/browsers/albums/main.py:729
+#: quodlibet/browsers/albums/main.py:730
 #: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -5112,9 +5112,9 @@ msgstr "A etiqueta\"%s\" não foi encontrada."
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
-#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
-#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
-#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
+#: quodlibet/library/file.py:231 quodlibet/library/file.py:250
+#: quodlibet/library/file.py:357 quodlibet/library/file.py:415
+#: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
 #: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Biblioteca"
@@ -5127,26 +5127,26 @@ msgstr "Verificando pontos de montagem"
 msgid "Scanning library"
 msgstr "Escaneando biblioteca"
 
-#: quodlibet/library/file.py:226
+#: quodlibet/library/file.py:230
 #, python-format
 msgid "Scanning %s"
 msgstr "Escaneando %s"
 
-#: quodlibet/library/file.py:246
+#: quodlibet/library/file.py:250
 msgid "Loading files"
 msgstr "Carregando ficheiros"
 
-#: quodlibet/library/file.py:353
+#: quodlibet/library/file.py:357
 #, fuzzy
 msgid "Moving library files"
 msgstr "Escaneando biblioteca"
 
-#: quodlibet/library/file.py:411
+#: quodlibet/library/file.py:415
 #, fuzzy
 msgid "Removing library files"
 msgstr "Remove filtros de navegação ativos"
 
-#: quodlibet/library/file.py:562
+#: quodlibet/library/file.py:569
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
@@ -5165,12 +5165,12 @@ msgid "List tags"
 msgstr "Lista etiquetas"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:465
+#: quodlibet/operon/commands.py:464
 msgid "Print terse output"
 msgstr "Imprime saída concisa"
 
 #: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:467
+#: quodlibet/operon/commands.py:466
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Colunas a mostrar e ordem no modo conciso (%s)"
@@ -5180,27 +5180,27 @@ msgid "Also list programmatic tags"
 msgstr "Também mostra etiquetas geradas _automaticamente"
 
 #: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
-#: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:294
-#: quodlibet/operon/commands.py:339 quodlibet/operon/commands.py:343
-#: quodlibet/operon/commands.py:395 quodlibet/operon/commands.py:398
-#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
-#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
-#: quodlibet/operon/commands.py:589
+#: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
+#: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
+#: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
+#: quodlibet/operon/commands.py:436 quodlibet/operon/commands.py:471
+#: quodlibet/operon/commands.py:511 quodlibet/operon/commands.py:546
+#: quodlibet/operon/commands.py:588
 msgid "Not enough arguments"
 msgstr "Argumentos de menos"
 
 #: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
 #: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:474
+#: quodlibet/operon/commands.py:473
 msgid "Too many arguments"
 msgstr "Argumentos de mais"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:372
+#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:372
 msgid "Description"
 msgstr "Descrição"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
+#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
 #: quodlibet/qltk/edittags.py:504
 msgid "Value"
 msgstr "Valor"
@@ -5214,8 +5214,8 @@ msgid "Copy tags from one file to another"
 msgstr "Copia etiquetas de um ficheiro para o outro"
 
 #: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
-#: quodlibet/operon/commands.py:290 quodlibet/operon/commands.py:327
-#: quodlibet/operon/commands.py:388
+#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:326
+#: quodlibet/operon/commands.py:387
 msgid "Show changes, don't apply them"
 msgstr "Mostra alterações, mas não as aplica"
 
@@ -5233,67 +5233,67 @@ msgstr ""
 msgid "Edit tags in a text editor"
 msgstr "Edita etiquetas com um editor de texto"
 
-#: quodlibet/operon/commands.py:252
+#: quodlibet/operon/commands.py:251
 msgid "Editing aborted"
 msgstr "Edição abortada"
 
-#: quodlibet/operon/commands.py:256
+#: quodlibet/operon/commands.py:255
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
 msgstr "Falha ao iniciar o editor \"%(editor-name)s\"."
 
-#: quodlibet/operon/commands.py:261
+#: quodlibet/operon/commands.py:260
 msgid "No changes detected"
 msgstr "Nenhuma alteração detectada"
 
-#: quodlibet/operon/commands.py:285
+#: quodlibet/operon/commands.py:284
 msgid "Set a tag and remove existing values"
 msgstr "Redefine o valor de uma etiqueta, removendo os valores existentes"
 
-#: quodlibet/operon/commands.py:307
+#: quodlibet/operon/commands.py:306
 #, fuzzy, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
 msgstr "Não foi possível redefinir o valor de %r"
 
-#: quodlibet/operon/commands.py:322
+#: quodlibet/operon/commands.py:321
 msgid "Remove tags"
 msgstr "Remove etiquetas"
 
-#: quodlibet/operon/commands.py:329 quodlibet/operon/commands.py:390
+#: quodlibet/operon/commands.py:328 quodlibet/operon/commands.py:389
 msgid "Value is a regular expression"
 msgstr "O valor é uma expressão regular"
 
-#: quodlibet/operon/commands.py:331
+#: quodlibet/operon/commands.py:330
 msgid "Remove all tags"
 msgstr "Remove todas as etiquetas"
 
-#: quodlibet/operon/commands.py:335
+#: quodlibet/operon/commands.py:334
 msgid "Can't combine '--all' with '--regexp'"
 msgstr "Não é permitido combinar as opções \"--all\" com \"--regexp\""
 
-#: quodlibet/operon/commands.py:369
+#: quodlibet/operon/commands.py:368
 #, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
 msgstr "Não foi possível remover a etiqueta  {tagname} de {filename}"
 
-#: quodlibet/operon/commands.py:383
+#: quodlibet/operon/commands.py:382
 msgid "Remove a tag value"
 msgstr "Remove valores de certas etiquetas"
 
-#: quodlibet/operon/commands.py:432
+#: quodlibet/operon/commands.py:431
 msgid "Add a tag value"
 msgstr "Adiciona etiquetas"
 
-#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
+#: quodlibet/operon/commands.py:447 quodlibet/operon/commands.py:679
 #, python-format
 msgid "Can not set %r"
 msgstr "Não foi possível redefinir o valor de %r"
 
-#: quodlibet/operon/commands.py:460
+#: quodlibet/operon/commands.py:459
 msgid "List file information"
 msgstr "Lista informações do ficheiro"
 
-#: quodlibet/operon/commands.py:506
+#: quodlibet/operon/commands.py:505
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -5301,55 +5301,55 @@ msgstr ""
 "Define a imagem escolhida como a imagem embutida primária e remove todas as "
 "outas imagens embutidas"
 
-#: quodlibet/operon/commands.py:519
+#: quodlibet/operon/commands.py:518
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Falha ao carregar ficheiro de imagem: %r"
 
-#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
+#: quodlibet/operon/commands.py:525 quodlibet/operon/commands.py:554
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Não há suporte de edição de imagem para %(file_name)s (%(file_format)s)"
 
-#: quodlibet/operon/commands.py:542
+#: quodlibet/operon/commands.py:541
 msgid "Remove all embedded images"
 msgstr "Remove todas as imagens embutidas"
 
-#: quodlibet/operon/commands.py:572
+#: quodlibet/operon/commands.py:571
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Extrai as imagens embutidas para %(filepath)s"
 
-#: quodlibet/operon/commands.py:584
+#: quodlibet/operon/commands.py:583
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 "Caminho para onde as imagens devem ser salvas (o padrão é a pasta atual)"
 
-#: quodlibet/operon/commands.py:643
+#: quodlibet/operon/commands.py:642
 msgid "Rename files based on tags"
 msgstr "Renomeia ficheiros baseado nas etiquetas"
 
-#: quodlibet/operon/commands.py:658
+#: quodlibet/operon/commands.py:657
 msgid "Fill tags based on the file path"
 msgstr "Preenche etiquetas baseado no nome do ficheiro"
 
-#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:309
+#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:309
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:228 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Arquivo"
 
-#: quodlibet/operon/commands.py:716
+#: quodlibet/operon/commands.py:715
 msgid "Fill tracknumbers for all files"
 msgstr "Preenche números de faixa para todos os ficheiros"
 
-#: quodlibet/operon/commands.py:735
+#: quodlibet/operon/commands.py:734
 msgid "Print tags based on the given pattern"
 msgstr "Imprime etiquetas baseado no padrão escolhido"
 
-#: quodlibet/operon/commands.py:772
+#: quodlibet/operon/commands.py:771
 msgid "Display help information"
 msgstr "Mostra a ajuda"
 
@@ -6046,15 +6046,15 @@ msgstr "Nova pasta"
 msgid "Enter a name for the new folder:"
 msgstr "Entre com o nome da nova pasta:"
 
-#: quodlibet/qltk/filesel.py:386
+#: quodlibet/qltk/filesel.py:385
 msgid "Unable to create folder"
 msgstr "Não foi possível criar a pasta"
 
-#: quodlibet/qltk/filesel.py:403
+#: quodlibet/qltk/filesel.py:402
 msgid "Unable to delete folder"
 msgstr "Não foi possível excluir a pasta"
 
-#: quodlibet/qltk/filesel.py:519 quodlibet/qltk/pluginwin.py:36
+#: quodlibet/qltk/filesel.py:518 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
 msgstr "Músicas"
 
