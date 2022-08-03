@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-12 01:24+0000\n"
+"PO-Revision-Date: 2022-08-03 21:00+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -4414,21 +4414,20 @@ msgid "Edit Embedded Images"
 msgstr "Upraviť vložené obrázky"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Odstraňuje alebo nahrádza vložené obrázky."
+msgstr "Pridáva, odstraňuje alebo nahrádza vložené obrázky."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Vložiť"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Vybrať obrázok na vloženie do %d stopy"
+msgstr[1] "Vybrať obrázok na vloženie do %d stôp"
+msgstr[2] "Vybrať obrázok na vloženie do %d stôp"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
@@ -4440,7 +4439,7 @@ msgstr "_Vložiť súčasný obrázok"
 
 #: quodlibet/ext/songsmenu/embedded.py:114
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Vybrať Obrázok…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
