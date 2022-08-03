@@ -133,9 +133,8 @@ msgstr[0] "%dディスク"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "全てのアルバム"
+msgstr "サンプルアルバム"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -350,7 +349,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
-#: quodlibet/update.py:95
+#: quodlibet/update.py:95 quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
@@ -2290,75 +2289,74 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:26
-#, fuzzy
 msgid "Random Album Playback"
-msgstr "アルバムでランダム選択(_b)"
+msgstr "ランダムアルバム再生"
 
 #: quodlibet/ext/events/randomalbum.py:27
 msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
 msgstr ""
+"プレイリストが最後まで達すると、ランダムなアルバムの再生を開始します。アク"
+"ティブなブラウザがアルバムによるフィルタリングをサポートしている必要がありま"
+"す。"
 
 #: quodlibet/ext/events/randomalbum.py:37
 msgid "Rated higher"
-msgstr ""
+msgstr "評価が高い"
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Played more often"
-msgstr ""
+msgstr "再生回数が多い"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr ""
+msgstr "スキップ回数が多い"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
-msgstr ""
+msgstr "最近再生された"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Started more recently"
-msgstr ""
+msgstr "最近再生開始された"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Added more recently"
-msgstr ""
+msgstr "最近追加された"
 
 #: quodlibet/ext/events/randomalbum.py:43
-#, fuzzy
 msgid "Longer albums"
-msgstr "アルバム"
+msgstr "長いアルバム"
 
 #: quodlibet/ext/events/randomalbum.py:82
 msgid "seconds before starting next album"
-msgstr ""
+msgstr "秒後に次のアルバムを開始する"
 
 #: quodlibet/ext/events/randomalbum.py:86
-#, fuzzy
 msgid "Weights"
-msgstr "ウェイト(_W)"
+msgstr "ウェイト"
 
 #: quodlibet/ext/events/randomalbum.py:88
 msgid "Play some albums more than others"
-msgstr ""
+msgstr "一部のアルバムを他のアルバムより多く再生する"
 
 #: quodlibet/ext/events/randomalbum.py:102
 msgid "avoid"
-msgstr ""
+msgstr "避ける"
 
 #: quodlibet/ext/events/randomalbum.py:113
 msgid "prefer"
-msgstr ""
+msgstr "好む"
 
 #: quodlibet/ext/events/randomalbum.py:215
-#, fuzzy
 msgid "Random Album"
-msgstr "アルバムでランダム選択(_b)"
+msgstr "ランダムアルバム"
 
 #: quodlibet/ext/events/randomalbum.py:216
 #, python-format
 msgid "Waiting to start %s"
-msgstr ""
+msgstr "%s の開始を待機中"
 
 #: quodlibet/ext/events/rbimport.py:120
 #, python-format
@@ -2405,9 +2403,8 @@ msgid ""
 msgstr "常に表示され、ウィンドウの幅全体に広がる代替シークバーです。"
 
 #: quodlibet/ext/events/seekpoints.py:20
-#, fuzzy
 msgid "Seekpoint Bookmarks"
-msgstr "ブックマーク"
+msgstr "シークポイント・ブックマーク"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
@@ -2418,28 +2415,36 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
+"トラックのシークポイント A や B を保存しておくと、トラックが再生されたとき、"
+"時間 A にスキップし、時間 B の後に停止します。\n"
+"\n"
+"ℹ 以下のポイントの名前を変更しても、実際のブックマーク名は更新されず、シーク"
+"するかどうかを決める際にどのブックマーク名を見るかが変更されるということに注"
+"意してください。"
 
 #: quodlibet/ext/events/seekpoints.py:108
-#, fuzzy
 msgid "Bookmark name for point A"
-msgstr "ブックマーク名"
+msgstr "ポイント A のブックマーク名"
 
 #: quodlibet/ext/events/seekpoints.py:109
 msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
 msgstr ""
+"トラックが開始されたときにチェックするブックマーク名。見つかった場合はそのタ"
+"イムスタンプにシークします"
 
 #: quodlibet/ext/events/seekpoints.py:124
-#, fuzzy
 msgid "Bookmark name for point B"
-msgstr "ブックマーク名"
+msgstr "ポイント B のブックマーク名"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
+"トラックの再生中に使用するブックマーク名。現在位置がタイムスタンプを越えた場"
+"合、トラックの終端までシークします。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -3893,23 +3898,20 @@ msgstr ""
 "れます。"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
-#, fuzzy
 msgid "Go to Bookmark"
-msgstr "ブックマークの編集(_E)"
+msgstr "ブックマークに移動"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr ""
+msgstr "選択したファイルのブックマークを管理します。"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
-#, fuzzy
 msgid "_Edit Bookmarks…"
-msgstr "ブックマークの編集(_E)"
+msgstr "ブックマークの編集(_E)…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:73
-#, fuzzy
 msgid "No Bookmarks"
-msgstr "ブックマーク"
+msgstr "ブックマークがありません"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
 msgid "MusicBrainz Lookup"
@@ -4319,6 +4321,7 @@ msgid "Skip Count"
 msgstr "スキップ回数"
 
 #: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "埋め込み画像の編集"
 
@@ -4327,10 +4330,12 @@ msgid "Removes or replaces embedded images."
 msgstr "埋め込まれた画像を削除または置換します。"
 
 #: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
 msgstr "全ての画像を削除する(_R)"
 
 #: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
 msgstr "現在の画像を埋め込む(_E)"
 
@@ -4910,9 +4915,8 @@ msgid "🥁 Tap BPM for the selected song."
 msgstr "🥁 選択した曲の BPM をタップします。"
 
 #: quodlibet/ext/songsmenu/website_search.py:36
-#, fuzzy
 msgid "Website Search"
-msgstr "検索"
+msgstr "ウェブサイト検索"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
 #, python-format
@@ -4920,16 +4924,16 @@ msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. <tt>%(pattern-example)s</tt>."
 msgstr ""
+"曲のタグを使用して、選択したWebサイトを検索します。\n"
+"<tt>%(pattern-example)s</tt> のようなパターンをサポートします。"
 
 #: quodlibet/ext/songsmenu/website_search.py:82
-#, fuzzy
 msgid "Search URL patterns"
-msgstr "パターン"
+msgstr "検索 URL パターン"
 
 #: quodlibet/ext/songsmenu/website_search.py:92
-#, fuzzy
 msgid "Edit search URLs"
-msgstr "保存されている値を編集..."
+msgstr "検索 URL を編集"
 
 #. Add link to editor
 #: quodlibet/ext/songsmenu/website_search.py:118
@@ -4952,7 +4956,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/wikipedia.py:57
 #, python-format
 msgid "Search at %(website)s"
-msgstr ""
+msgstr "検索先 %(website)s"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:70
 #: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:452
@@ -7121,7 +7125,7 @@ msgstr "ヘッダのカスタマイズ(_C)…"
 
 #: quodlibet/qltk/songlist.py:1206
 msgid "_Expand Column"
-msgstr "カラム名で幅揃え(_E)"
+msgstr "展開カラム(_E)"
 
 #: quodlibet/qltk/songsmenu.py:44
 #, python-format
@@ -7887,6 +7891,25 @@ msgid ""
 "to view your audio library, as well as support for Internet radio and audio "
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:27
+#, fuzzy
+msgid "Adds, removes or replaces embedded images."
+msgstr "埋め込まれた画像を削除または置換します。"
+
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
 msgstr ""
 
 #, fuzzy
