@@ -340,6 +340,7 @@ msgstr "_Použiť"
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -4408,21 +4409,38 @@ msgstr "Počet prehratí"
 msgid "Skip Count"
 msgstr "Počet preskočení"
 
-#: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "Upraviť vložené obrázky"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
-msgid "Removes or replaces embedded images."
+#: quodlibet/ext/songsmenu/embedded.py:27
+#, fuzzy
+msgid "Adds, removes or replaces embedded images."
 msgstr "Odstraňuje alebo nahrádza vložené obrázky."
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
 msgstr "_Odstrániť všetky obrázky"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
 msgstr "_Vložiť súčasný obrázok"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"

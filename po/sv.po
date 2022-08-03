@@ -346,6 +346,7 @@ msgstr ""
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -4402,25 +4403,40 @@ msgstr ""
 msgid "Skip Count"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 #, fuzzy
 msgid "Edit Embedded Images"
 msgstr "Extrahera inbäddade bilder"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
+#: quodlibet/ext/songsmenu/embedded.py:27
 #, fuzzy
-msgid "Removes or replaces embedded images."
+msgid "Adds, removes or replaces embedded images."
 msgstr "Extrahera inbäddade bilder"
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:105
 #, fuzzy
 msgid "_Remove all Images"
 msgstr "Ta bort alla taggar"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 #, fuzzy
 msgid "_Embed Current Image"
 msgstr "Extrahera inbäddade bilder"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"

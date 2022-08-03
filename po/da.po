@@ -339,6 +339,7 @@ msgstr "_Anvend"
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -4383,21 +4384,37 @@ msgstr "Antal afspilninger"
 msgid "Skip Count"
 msgstr "Antal overspring"
 
-#: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "Rediger indlejrede billeder"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
-msgid "Removes or replaces embedded images."
+#: quodlibet/ext/songsmenu/embedded.py:27
+#, fuzzy
+msgid "Adds, removes or replaces embedded images."
 msgstr "Fjerner eller erstatter indlejret billeder."
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
 msgstr "_Fjern alle billeder"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
 msgstr "_Indlejr aktuelle billede"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
