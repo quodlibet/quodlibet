@@ -98,7 +98,7 @@ def compare_title(a1, a2):
             cmp(a1.key, a2.key))
 
 
-def compare_artist(a1, a2):
+def compare_people(a1, a2):
     a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
@@ -221,13 +221,13 @@ class PreferencesButton(Gtk.HBox):
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
-            (_("_Artist"), self.__compare_artist),
+            (_("_People"), self.__compare_people),
             (_("_Date"), self.__compare_date),
             (_("_Date Added"), self.__compare_date_added),
             (_("_Original Date"), self.__compare_original_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
-            (_("_Playcount"), self.__compare_avgplaycount),
+            (_("Play_count"), self.__compare_avgplaycount),
         ]
 
         menu = Gtk.Menu()
@@ -274,9 +274,9 @@ class PreferencesButton(Gtk.HBox):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_title(a1, a2)
 
-    def __compare_artist(self, model, i1, i2, data):
+    def __compare_people(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_artist(a1, a2)
+        return compare_people(a1, a2)
 
     def __compare_date(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)

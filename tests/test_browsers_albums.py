@@ -1,5 +1,5 @@
 # Copyright 2012,2014 Christoph Reiter
-#                2016 Nick Boultbee
+#             2016-22 Nick Boultbee
 #                2019 Ruud van Asseldonk
 #
 # This program is free software; you can redistribute it and/or modify
@@ -21,8 +21,9 @@ from quodlibet import config
 from quodlibet.browsers.albums import AlbumList
 from quodlibet.browsers.albums.models import AlbumItem
 from quodlibet.browsers.albums.prefs import Preferences, DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.albums.main import (compare_title, compare_artist,
-    compare_genre, compare_rating, compare_date, compare_original_date)
+from quodlibet.browsers.albums.main import (compare_title, compare_people,
+                                            compare_genre, compare_rating, compare_date,
+                                            compare_original_date)
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary, SongLibrarian
 from quodlibet.util.collection import Album
@@ -99,7 +100,7 @@ class TAlbumSort(TestCase):
         c = self._get_album({"album": "a", "artist": ""})
         n = self._get_album({"album": ""})
 
-        self.assertOrder(compare_artist, [AlbumItem(None), a, b, c, n])
+        self.assertOrder(compare_people, [AlbumItem(None), a, b, c, n])
 
     def test_sort_genre(self):
         a = self._get_album({"album": "b", "genre": "x"})
