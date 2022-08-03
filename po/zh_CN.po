@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-07-12 01:24+0000\n"
+"PO-Revision-Date: 2022-08-03 21:00+0000\n"
 "Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -4158,9 +4158,8 @@ msgid "Edit Embedded Images"
 msgstr "删除内嵌图片"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "删除或替换内嵌图片。"
+msgstr "添加、删除或替换内嵌图片。"
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
@@ -6860,9 +6859,9 @@ msgid "Remove track: \"%(title)s\" from the library?"
 msgstr "从库当中删除曲目 “%(title)s”？"
 
 #: quodlibet/qltk/songsmenu.py:47
-#, fuzzy, python-format
+#, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "从播放列表里删除 %(count)d 首乐曲？"
+msgstr "从库中删除 %(count)d 首乐曲吗？"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
