@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-08-03 21:00+0000\n"
+"PO-Revision-Date: 2022-08-04 20:45+0000\n"
 "Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -26,9 +26,8 @@ msgstr "标题(_T)"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_People"
-msgstr "表演者"
+msgstr "表演者(_P)"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -58,9 +57,8 @@ msgstr "评分(_R)"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-#, fuzzy
 msgid "Play_count"
-msgstr "播放计数(_P)"
+msgstr "播放次数(_C)"
 
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:69
