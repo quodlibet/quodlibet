@@ -26,9 +26,10 @@ msgid "_Title"
 msgstr "_Título"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
-msgid "_Artist"
-msgstr "_Artista"
+#: quodlibet/browsers/covergrid/main.py:57
+#, fuzzy
+msgid "_People"
+msgstr "pessoas"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -59,7 +60,8 @@ msgstr "_Avaliação"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-msgid "_Playcount"
+#, fuzzy
+msgid "Play_count"
 msgstr "_Número de reproduções"
 
 #: quodlibet/browsers/albums/main.py:235
@@ -70,7 +72,7 @@ msgstr "_Ordenar por…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferências"
@@ -220,7 +222,7 @@ msgid "_Refresh"
 msgstr "Atuali_zar"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:482
+#: quodlibet/browsers/playlists/main.py:485
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -695,7 +697,7 @@ msgid "Equal pane width"
 msgstr "Igualar largura dos painéis"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listas de reprodução"
 
@@ -703,43 +705,43 @@ msgstr "Listas de reprodução"
 msgid "_Playlists"
 msgstr "Listas de re_produção"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "_Remover da lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "Nova"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Importar"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Não foi possível importar a lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet só é capaz de importar listas de reprodução nos formatos M3U/M3U8 "
 "e PLS."
 
-#: quodlibet/browsers/playlists/main.py:489
+#: quodlibet/browsers/playlists/main.py:492
 msgid "_Rename"
 msgstr "_Renomear"
 
-#: quodlibet/browsers/playlists/main.py:587
+#: quodlibet/browsers/playlists/main.py:590
 msgid "Unable to rename playlist"
 msgstr "Não foi possível renomear a lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "Import Playlist"
 msgstr "Importar lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "_Import"
 msgstr "_Importar"
 
@@ -6420,6 +6422,10 @@ msgstr "_Faixa"
 #: quodlibet/qltk/prefs.py:47
 msgid "Grou_ping"
 msgstr "A_grupamento"
+
+#: quodlibet/qltk/prefs.py:49
+msgid "_Artist"
+msgstr "_Artista"
 
 #: quodlibet/qltk/prefs.py:50
 msgid "Al_bum"

@@ -25,9 +25,10 @@ msgid "_Title"
 msgstr "タイトル(_T)"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
-msgid "_Artist"
-msgstr "アーティスト(_A)"
+#: quodlibet/browsers/covergrid/main.py:57
+#, fuzzy
+msgid "_People"
+msgstr "ピープル"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -57,51 +58,47 @@ msgstr "評価(_R)"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-msgid "_Playcount"
+#, fuzzy
+msgid "Play_count"
 msgstr "再生回数(_P)"
 
-#: quodlibet/browsers/albums/main.py:236
-#: quodlibet/browsers/covergrid/main.py:69
 #: quodlibet/browsers/albums/main.py:235
+#: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
 msgstr "並べ替え(_B)…"
 
-#: quodlibet/browsers/albums/main.py:257
+#: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
-#: quodlibet/browsers/albums/main.py:256
 msgid "_Preferences"
 msgstr "設定(_P)"
 
-#: quodlibet/browsers/albums/main.py:431 quodlibet/browsers/albums/main.py:430
+#: quodlibet/browsers/albums/main.py:430
 msgid "Album List"
 msgstr "アルバムリスト"
 
-#: quodlibet/browsers/albums/main.py:432 quodlibet/browsers/albums/main.py:431
+#: quodlibet/browsers/albums/main.py:431
 msgid "_Album List"
 msgstr "アルバムリスト(_A)"
 
-#: quodlibet/browsers/albums/main.py:547
+#: quodlibet/browsers/albums/main.py:546
 #: quodlibet/browsers/covergrid/main.py:290
 #: quodlibet/browsers/covergrid/main.py:506
-#: quodlibet/browsers/albums/main.py:546
 msgid "All Albums"
 msgstr "全てのアルバム"
 
-#: quodlibet/browsers/albums/main.py:548
+#: quodlibet/browsers/albums/main.py:547
 #: quodlibet/browsers/covergrid/main.py:291
 #: quodlibet/browsers/covergrid/main.py:507
-#: quodlibet/browsers/albums/main.py:547
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
 msgstr[0] "%dアルバム"
 
-#: quodlibet/browsers/albums/main.py:729
-#: quodlibet/browsers/covergrid/main.py:485
 #: quodlibet/browsers/albums/main.py:730
+#: quodlibet/browsers/covergrid/main.py:485
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "アルバムカバーを再読込(_C)"
@@ -219,7 +216,7 @@ msgid "_Refresh"
 msgstr "再表示(_R)"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:482
+#: quodlibet/browsers/playlists/main.py:485
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -336,6 +333,7 @@ msgstr "適用(_A)"
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -349,7 +347,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
-#: quodlibet/update.py:95 quodlibet/ext/songsmenu/embedded.py:77
+#: quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
@@ -688,7 +686,7 @@ msgid "Equal pane width"
 msgstr "ペインの幅を揃える"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "プレイリスト"
 
@@ -696,42 +694,42 @@ msgstr "プレイリスト"
 msgid "_Playlists"
 msgstr "プレイリスト(_P)"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "プレイリストから削除(_R)"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "新規"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:220
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "インポート"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "プレイリストをインポートできません"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet では M3U/M3U8 と PLS 形式のプレイリストしかインポートできません。"
 
-#: quodlibet/browsers/playlists/main.py:489
+#: quodlibet/browsers/playlists/main.py:492
 msgid "_Rename"
 msgstr "名前の変更(_R)"
 
-#: quodlibet/browsers/playlists/main.py:587
+#: quodlibet/browsers/playlists/main.py:590
 msgid "Unable to rename playlist"
 msgstr "プレイリストの名前を変更できません"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "Import Playlist"
 msgstr "プレイリストのインポート"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "_Import"
 msgstr "インポート(_I)"
 
@@ -4320,24 +4318,36 @@ msgstr "再生回数"
 msgid "Skip Count"
 msgstr "スキップ回数"
 
-#: quodlibet/ext/songsmenu/embedded.py:25
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "埋め込み画像の編集"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
-msgid "Removes or replaces embedded images."
+#: quodlibet/ext/songsmenu/embedded.py:27
+#, fuzzy
+msgid "Adds, removes or replaces embedded images."
 msgstr "埋め込まれた画像を削除または置換します。"
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
 msgstr "全ての画像を削除する(_R)"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
 #: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
 msgstr "現在の画像を埋め込む(_E)"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -4975,13 +4985,10 @@ msgstr ""
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
-#: quodlibet/library/file.py:227 quodlibet/library/file.py:246
-#: quodlibet/library/file.py:353 quodlibet/library/file.py:411
-#: quodlibet/library/file.py:563 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
-#: quodlibet/library/file.py:570
+#: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
+#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "ライブラリ"
 
@@ -4994,24 +5001,24 @@ msgstr "マウントポイントを確認中"
 msgid "Scanning library"
 msgstr "ライブラリスキャン中"
 
-#: quodlibet/library/file.py:226 quodlibet/library/file.py:230
+#: quodlibet/library/file.py:230
 #, python-format
 msgid "Scanning %s"
 msgstr "%s をスキャン中"
 
-#: quodlibet/library/file.py:246 quodlibet/library/file.py:250
+#: quodlibet/library/file.py:250
 msgid "Loading files"
 msgstr ""
 
-#: quodlibet/library/file.py:353 quodlibet/library/file.py:357
+#: quodlibet/library/file.py:357
 msgid "Moving library files"
 msgstr "ライブラリ移動中"
 
-#: quodlibet/library/file.py:411 quodlibet/library/file.py:415
+#: quodlibet/library/file.py:415
 msgid "Removing library files"
 msgstr "ライブラリ削除中"
 
-#: quodlibet/library/file.py:562 quodlibet/library/file.py:569
+#: quodlibet/library/file.py:569
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
@@ -6252,6 +6259,10 @@ msgstr "トラック(_T)"
 msgid "Grou_ping"
 msgstr "グループ(_P)"
 
+#: quodlibet/qltk/prefs.py:49
+msgid "_Artist"
+msgstr "アーティスト(_A)"
+
 #: quodlibet/qltk/prefs.py:50
 msgid "Al_bum"
 msgstr "アルバム(_B)"
@@ -6538,7 +6549,8 @@ msgstr "ディレクトリの変更を監視する(_W)"
 #: quodlibet/qltk/prefs.py:712
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
-msgstr "外部ファイルの追加、削除、名前の変更についてライブラリディレクトリを監視しま"
+msgstr ""
+"外部ファイルの追加、削除、名前の変更についてライブラリディレクトリを監視しま"
 "す。"
 
 #: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
@@ -7894,24 +7906,8 @@ msgid ""
 "capabilities."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
-msgid "Adds, removes or replaces embedded images."
-msgstr "埋め込まれた画像を削除または置換します。"
-
-#: quodlibet/ext/songsmenu/embedded.py:77
-msgid "_Embed"
-msgstr ""
-
-#: quodlibet/ext/songsmenu/embedded.py:79
-#, python-format
-msgid "Choose image to embed in the %d track"
-msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-
-#: quodlibet/ext/songsmenu/embedded.py:114
-msgid "_Choose Image…"
-msgstr ""
+#~ msgid "Removes or replaces embedded images."
+#~ msgstr "埋め込まれた画像を削除または置換します。"
 
 #, fuzzy
 #~ msgid "Searching for lyrics…"
