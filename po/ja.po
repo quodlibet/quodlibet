@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-23 08:52+0000\n"
+"PO-Revision-Date: 2022-08-04 04:51+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -1476,7 +1476,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:540
 #, python-format
 msgid "Couldn't write '%s'"
-msgstr ""
+msgstr "「%s」を書き込めませんでした"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 #, fuzzy
@@ -1509,9 +1509,9 @@ msgstr "録音日時"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
-#, fuzzy, python-format
+#, python-format
 msgid "Error in %s"
-msgstr "エラー"
+msgstr "%s でエラーが発生しました"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
@@ -1730,9 +1730,9 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:198
 #: quodlibet/ext/gstreamer/crossfeed.py:113
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f dB"
-msgstr "%d秒"
+msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:272
 msgid "Default presets"
@@ -3843,7 +3843,7 @@ msgstr "アルバムアートダウンローダー"
 #: quodlibet/ext/songsmenu/albumart.py:679
 #, python-format
 msgid "from %(source)s"
-msgstr ""
+msgstr "%(source)s から"
 
 #: quodlibet/ext/songsmenu/albumart.py:682
 #, python-format
@@ -6533,12 +6533,13 @@ msgstr "起動時にライブラリをスキャンする(_O)"
 
 #: quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "ディレクトリの変更を監視する(_W)"
 
 #: quodlibet/qltk/prefs.py:712
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
-msgstr ""
+msgstr "外部ファイルの追加、削除、名前の変更についてライブラリディレクトリを監視しま"
+"す。"
 
 #: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
@@ -6844,15 +6845,15 @@ msgid "Unable to rename file"
 msgstr "ファイル名を変更できません"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> failed. Possibly the "
 "target file already exists, or you do not have permission to make the new "
 "file or remove the old one."
 msgstr ""
-"<b>%s</b>から<b>%s</b>への名前変更に失敗しました。変更先のファイルが既に存在"
-"する、新規ファイルを作成する権限がない、旧ファイルを削除する権限がないなどの"
-"可能性があります。"
+"<b>%(old-name)s</b> から <b>%(new-name)s</b> への名前変更に失敗しました。変更"
+"先のファイルが既に存在する、新規ファイルを作成する権限がない、旧ファイルを削"
+"除する権限がないなどの可能性があります。"
 
 #: quodlibet/qltk/renamefiles.py:346
 #, fuzzy
