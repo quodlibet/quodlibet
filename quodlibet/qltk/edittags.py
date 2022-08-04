@@ -546,7 +546,7 @@ class EditTags(Gtk.VBox):
         bbox1 = Gtk.HButtonBox()
         bbox1.set_spacing(6)
         bbox1.set_layout(Gtk.ButtonBoxStyle.START)
-        add = qltk.Button(_("_Add"), Icons.LIST_ADD)
+        add = qltk.Button(_("_Add…"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
         self._add = add
         add.connect('clicked', self.__add_tag, model, library)

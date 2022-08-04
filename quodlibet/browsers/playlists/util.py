@@ -1,4 +1,4 @@
-# Copyright 2014-2021 Nick Boultbee
+# Copyright 2014-2022 Nick Boultbee
 #                2022 TheMelmacian
 #
 # This program is free software; you can redistribute it and/or modify
@@ -49,7 +49,7 @@ class GetPlaylistName(GetStringDialog):
         super().__init__(
             parent, _("New Playlist"),
             _("Enter a name for the new playlist:"),
-            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
+            button_label=_("_Create"), button_icon=Icons.DOCUMENT_NEW)
 
 
 def parse_m3u(filelike, pl_name, songs_lib=None, pl_lib=None):

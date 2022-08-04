@@ -371,7 +371,7 @@ class AudioFeeds(Browser):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        new = Button(_("_New"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)

@@ -56,7 +56,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
-        super().__init__(spacing=6)
+        super().__init__(spacing=3)
         self._lists = ObjectModelSort(model=ObjectStore())
         self._lists.set_default_sort_func(ObjectStore._sort_on_value)
 
@@ -212,11 +212,10 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(None, Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
+        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
         new_pl.set_tooltip_text(_("New"))
         new_pl.connect('clicked', self.__new_playlist, library)
-        import_pl = qltk.Button(None, Icons.LIST_ADD,
-                                Gtk.IconSize.MENU)
+        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
         import_pl.set_tooltip_text(_("Import"))
         import_pl.connect('clicked', self.__import, library)
 
@@ -226,6 +225,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb.insert(new_pl, 0)
         fb.insert(import_pl, 1)
         fb.set_max_children_per_line(2)
+        fb.set_column_spacing(3)
 
         # The pref button is in its own flowbox instead of directly under the
         # HBox to make it the same height as the other buttons
@@ -234,8 +234,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2.insert(pref, 0)
 
         hb = Gtk.HBox()
-        hb.pack_start(fb, True, True, 0)
-        hb.pack_start(fb2, False, False, 0)
+        hb.pack_start(fb, True, True, 3)
+        hb.pack_end(fb2, False, False, 0)
         self.pack_start(hb, False, False, 0)
 
     def __create_playlists_view(self, render):
