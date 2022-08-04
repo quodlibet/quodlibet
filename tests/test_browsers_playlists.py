@@ -288,9 +288,12 @@ class TPlaylistsBrowser(TestCase):
 
     def test_rename(self):
         self.assertEquals(self.bar.playlists()[1], self.small)
-        self.bar._rename(0, "zBig")
+        assert self.bar._rename(0, "zBig")
         self.assertEquals(self.bar.playlists()[0], self.small)
         self.assertEquals(self.bar.playlists()[1].name, "zBig")
+
+    def test_rename_empty(self):
+        assert not self.bar._rename(0, "", show_error=False)
 
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text

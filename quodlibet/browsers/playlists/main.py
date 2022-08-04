@@ -581,13 +581,16 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __edited(self, render, path, newname):
         return self._rename(path, newname)
 
-    def _rename(self, path, newname):
+    def _rename(self, path: Gtk.TreePath,
+                new_name: str, show_error: bool = True) -> bool:
         playlist = self._lists[path][0]
         try:
-            playlist.rename(newname)
-        except ValueError as s:
-            qltk.ErrorMessage(
-                None, _("Unable to rename playlist"), s).run()
+            playlist.rename(new_name)
+        except ValueError as e:
+            if show_error:
+                qltk.ErrorMessage(None, _("Unable to rename playlist"), str(e)).run()
+            print_w(f"Unable to rename playlist {playlist} ({e})")
+            return False
         else:
             row = self._lists[path]
             child_model = self.model
@@ -595,6 +598,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self._lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
             self._select_playlist(playlist, scroll=True)
+            return True
 
     def __import(self, activator, library):
         formats = ["*.pls", "*.m3u", "*.m3u8"]
