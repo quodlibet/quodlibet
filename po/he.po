@@ -194,12 +194,10 @@ msgid "Enter the location of an audio feed:"
 msgstr "הזנת מיקום ערוץ שמע:"
 
 #: quodlibet/browsers/audiofeeds.py:216
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88
-#: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:313
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_הוספה"
@@ -212,9 +210,10 @@ msgstr "ערוצי שמע"
 msgid "_Audio Feeds"
 msgstr "_הזנות שמע"
 
-#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:94
-msgid "_New"
-msgstr "_חדש"
+#: quodlibet/browsers/audiofeeds.py:374
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "_הוספת קובץ…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -405,7 +404,7 @@ msgstr "לא ניתן להעתיק את הקבצים שנבחרו לרשימת �
 msgid "_Add to Library"
 msgstr "_הוספה לספריה"
 
-#: quodlibet/browsers/iradio.py:190
+#: quodlibet/browsers/iradio.py:188
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -415,219 +414,221 @@ msgstr ""
 "רשימות תחנות יכולות להכיל רק תחנות ולא רשימת תחנות אחרת או רשימת השמעה. "
 "הנתיבים הבאים אינם יכולים להיטען: /n%s"
 
-#: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
-#: quodlibet/browsers/iradio.py:499
+#: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
+#: quodlibet/browsers/iradio.py:497
 msgid "Internet Radio"
 msgstr "רדיו מרשתת"
 
-#: quodlibet/browsers/iradio.py:226
+#: quodlibet/browsers/iradio.py:224
 #, fuzzy
 msgid "Add stations"
 msgstr "כל התחנות"
 
-#: quodlibet/browsers/iradio.py:267
+#: quodlibet/browsers/iradio.py:265
 msgid "Downloading station list"
 msgstr "מוריד רשימת תחנות"
 
-#: quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/iradio.py:366
 msgid "New Station"
 msgstr "תחנה חדשה"
 
-#: quodlibet/browsers/iradio.py:369
+#: quodlibet/browsers/iradio.py:367
 msgid "Enter the location of an Internet radio station:"
 msgstr "הזנת הכתובת של תחנת רדיו מרשתת:"
 
-#: quodlibet/browsers/iradio.py:387
+#: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
 msgstr "אלקטרוני"
 
-#: quodlibet/browsers/iradio.py:390
+#: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
 msgstr "היפ הופ /ראפ"
 
-#: quodlibet/browsers/iradio.py:391
+#: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
 msgstr "אולדיז"
 
-#: quodlibet/browsers/iradio.py:392
+#: quodlibet/browsers/iradio.py:390
 msgid "R&B"
 msgstr "R&B"
 
-#: quodlibet/browsers/iradio.py:393
+#: quodlibet/browsers/iradio.py:391
 msgid "Japanese"
 msgstr "יפנית"
 
-#: quodlibet/browsers/iradio.py:394
+#: quodlibet/browsers/iradio.py:392
 msgid "Indian"
 msgstr "הודית"
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:394
 msgid "Religious"
 msgstr "דתי"
 
-#: quodlibet/browsers/iradio.py:398
+#: quodlibet/browsers/iradio.py:396
 msgid "Charts"
 msgstr "רשימות"
 
-#: quodlibet/browsers/iradio.py:399
+#: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
 msgstr "תורכית"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
 msgstr "רגאיי / אולם ריקודים"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:399
 msgid "Latin"
 msgstr "לטינית"
 
-#: quodlibet/browsers/iradio.py:402
+#: quodlibet/browsers/iradio.py:400
 msgid "College Radio"
 msgstr "רדיו מכללות"
 
-#: quodlibet/browsers/iradio.py:403
+#: quodlibet/browsers/iradio.py:401
 msgid "Talk / News"
 msgstr "שיח / חדשות"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
 msgstr "אמביינט"
 
-#: quodlibet/browsers/iradio.py:405
+#: quodlibet/browsers/iradio.py:403
 msgid "Jazz"
 msgstr "ג'ז"
 
-#: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
+#: quodlibet/browsers/iradio.py:404 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
 msgstr "קלסי"
 
-#: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
+#: quodlibet/browsers/iradio.py:405 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
 msgstr "פופ"
 
-#: quodlibet/browsers/iradio.py:408
+#: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
 msgstr "אלטרנטיב"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:407
 msgid "Metal"
 msgstr "מטאל"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:408
 msgid "Country"
 msgstr "קאונטרי"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:409
 msgid "News"
 msgstr "חדשות"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
 msgstr "שלאגר"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:411
 msgid "Funk"
 msgstr "פונק"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:412
 msgid "Indie"
 msgstr "אינדי"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:413
 msgid "Blues"
 msgstr "בלוז"
 
-#: quodlibet/browsers/iradio.py:416
+#: quodlibet/browsers/iradio.py:414
 msgid "Soul"
 msgstr "נשמה"
 
-#: quodlibet/browsers/iradio.py:417
+#: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
 msgstr "לאונג'"
 
-#: quodlibet/browsers/iradio.py:418
+#: quodlibet/browsers/iradio.py:416
 msgid "Punk"
 msgstr "פאנק"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:417
 msgid "Reggaeton"
 msgstr "רגאטון"
 
-#: quodlibet/browsers/iradio.py:421
+#: quodlibet/browsers/iradio.py:419
 msgid "Slavic"
 msgstr "סלבי"
 
-#: quodlibet/browsers/iradio.py:423
+#: quodlibet/browsers/iradio.py:421
 msgid "Greek"
 msgstr "יווני"
 
-#: quodlibet/browsers/iradio.py:424
+#: quodlibet/browsers/iradio.py:422
 msgid "Gothic"
 msgstr "גותי"
 
-#: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
+#: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
 msgstr "רוק"
 
-#: quodlibet/browsers/iradio.py:478
+#: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
 msgstr "האם לטעון רשימת תחנות רדיו פופולריות?"
 
-#: quodlibet/browsers/iradio.py:484
+#: quodlibet/browsers/iradio.py:482
 msgid "_Load Stations"
 msgstr "_טעינת תחנות"
 
-#: quodlibet/browsers/iradio.py:500
+#: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
 msgstr "רדיו _מרשתת"
 
-#: quodlibet/browsers/iradio.py:573
-msgid "_New Station…"
-msgstr "_תחנה חדשה…"
-
-#: quodlibet/browsers/iradio.py:576
-msgid "_Update Stations"
-msgstr "_עדכון תחנות"
-
-#: quodlibet/browsers/iradio.py:603
+#: quodlibet/browsers/iradio.py:586
 msgid "All Stations"
 msgstr "כל התחנות"
 
+#. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "מועדפים"
 
-#: quodlibet/browsers/iradio.py:615
+#: quodlibet/browsers/iradio.py:597
 msgid "No Category"
 msgstr "ללא קטגוריה"
 
-#: quodlibet/browsers/iradio.py:838
+#: quodlibet/browsers/iradio.py:650
+#, fuzzy
+msgid "_Add Station…"
+msgstr "_תחנה חדשה…"
+
+#: quodlibet/browsers/iradio.py:652
+msgid "_Update Stations"
+msgstr "_עדכון תחנות"
+
+#: quodlibet/browsers/iradio.py:831
 msgid "No stations found"
 msgstr "לא נמצאו תחנות"
 
-#: quodlibet/browsers/iradio.py:839
+#: quodlibet/browsers/iradio.py:832
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "לא נמצאו תחנות רדיו מרשתת ב %s."
 
-#: quodlibet/browsers/iradio.py:852
+#: quodlibet/browsers/iradio.py:845
 msgid "Nothing to add"
 msgstr ""
 
-#: quodlibet/browsers/iradio.py:853
+#: quodlibet/browsers/iradio.py:846
 msgid "All stations listed are already in your library."
 msgstr "כל התחנות שברשימה נמצאות כבר בספריה."
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:867
 msgid "Add to Favorites"
 msgstr "הוספה למועדפים"
 
-#: quodlibet/browsers/iradio.py:878
+#: quodlibet/browsers/iradio.py:871
 msgid "Remove from Favorites"
 msgstr "הסרה ממועדפים"
 
-#: quodlibet/browsers/iradio.py:978
+#: quodlibet/browsers/iradio.py:971
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -701,11 +702,20 @@ msgstr "_רשימות השמעה"
 msgid "_Remove from Playlist"
 msgstr "_הסרה מרשימת השמעה"
 
+#: quodlibet/browsers/playlists/main.py:215 quodlibet/qltk/data_editors.py:94
+msgid "_New"
+msgstr "_חדש"
+
 #: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "חדש"
 
-#: quodlibet/browsers/playlists/main.py:220
+#: quodlibet/browsers/playlists/main.py:218
+#, fuzzy
+msgid "_Import…"
+msgstr "_יבוא"
+
+#: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
@@ -786,6 +796,10 @@ msgstr "רשימת השמעה חדשה"
 #: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
 msgstr "הזנת שם חדש לרשימת ההשמעה:"
+
+#: quodlibet/browsers/playlists/util.py:52
+msgid "_Create"
+msgstr ""
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -5585,6 +5599,11 @@ msgstr "חדש %s"
 #: quodlibet/qltk/data_editors.py:216
 msgid "(unknown)"
 msgstr "(לא ידוע)"
+
+#: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
+#, fuzzy
+msgid "_Add…"
+msgstr "_הוספה"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
