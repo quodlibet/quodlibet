@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-08-04 20:45+0000\n"
+"PO-Revision-Date: 2022-08-09 14:15+0000\n"
 "Last-Translator: Eric <alchemillatruth@purelymail.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -203,9 +203,8 @@ msgid "_Audio Feeds"
 msgstr "音频源"
 
 #: quodlibet/browsers/audiofeeds.py:374
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "加入文件(_A)…"
+msgstr "添加源(_A)…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -587,9 +586,8 @@ msgid "No Category"
 msgstr "没有分类"
 
 #: quodlibet/browsers/iradio.py:650
-#, fuzzy
 msgid "_Add Station…"
-msgstr "新电台(_N)…"
+msgstr "添加电台(_A)…"
 
 #: quodlibet/browsers/iradio.py:652
 msgid "_Update Stations"
@@ -700,9 +698,8 @@ msgid "New"
 msgstr "新建"
 
 #: quodlibet/browsers/playlists/main.py:218
-#, fuzzy
 msgid "_Import…"
-msgstr "导入(_I)"
+msgstr "导入(_I)…"
 
 #: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
@@ -5374,9 +5371,8 @@ msgid "(unknown)"
 msgstr "(未知)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "添加"
+msgstr "添加(_A)…"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
