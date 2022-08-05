@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-05-24 00:18+0000\n"
+"PO-Revision-Date: 2022-08-09 14:15+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:56
@@ -29,9 +29,8 @@ msgstr "_Título"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_People"
-msgstr "personas"
+msgstr "_Personas"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -602,9 +601,8 @@ msgid "No Category"
 msgstr "Sin categoría"
 
 #: quodlibet/browsers/iradio.py:650
-#, fuzzy
 msgid "_Add Station…"
-msgstr "Emisora _nueva…"
+msgstr "_Añadir emisora…"
 
 #: quodlibet/browsers/iradio.py:652
 msgid "_Update Stations"
@@ -718,9 +716,8 @@ msgid "New"
 msgstr "Nuevo"
 
 #: quodlibet/browsers/playlists/main.py:218
-#, fuzzy
 msgid "_Import…"
-msgstr "_Importar"
+msgstr "_Importar…"
 
 #: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
@@ -808,7 +805,7 @@ msgstr "Proporcione un nombre para la lista nueva:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "_Crear"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -1645,38 +1642,32 @@ msgid "Fades out and pauses your music."
 msgstr "Disminuye gradualmente el volumen de la música y la pone en pausa."
 
 #: quodlibet/ext/events/discord_status.py:44
-#, fuzzy
 msgid "Discord status message"
-msgstr "Mensaje de estado de Gajim"
+msgstr "Mensaje de estado de Discord"
 
 #: quodlibet/ext/events/discord_status.py:45
-#, fuzzy
 msgid "Discord Status Message"
-msgstr "Mensaje de estado de Gajim"
+msgstr "Mensaje de estado de Discord"
 
 #: quodlibet/ext/events/discord_status.py:46
-#, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
 msgstr ""
-"Cambia el mensaje de estado de Gajim según lo que esté escuchando en este "
+"Cambia el mensaje de estado de Discord según lo que esté escuchando en este "
 "momento."
 
 #: quodlibet/ext/events/discord_status.py:85
-#, fuzzy
 msgid "Paused"
-msgstr "En pausa:"
+msgstr "En pausa"
 
 #: quodlibet/ext/events/discord_status.py:136
-#, fuzzy
 msgid "Status Line #1"
-msgstr "Texto de estado"
+msgstr "1.ᵉʳ renglón de estado"
 
 #: quodlibet/ext/events/discord_status.py:147
-#, fuzzy
 msgid "Status Line #2"
-msgstr "Texto de estado"
+msgstr "2.º renglón de estado"
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
@@ -4241,7 +4232,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
-msgstr ""
+msgstr "args. máxs."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid ""
@@ -4293,8 +4284,8 @@ msgstr "No se pudo ejecutar la orden personalizada %s"
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d grupo duplicado"
+msgstr[1] "%d grupos duplicados"
 
 #: quodlibet/ext/songsmenu/duplicates.py:338
 msgid "Collapse / Expand all"
@@ -4322,7 +4313,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
-msgstr ""
+msgstr "A_grupar duplicados por:"
 
 #: quodlibet/ext/songsmenu/duplicates.py:403
 #, fuzzy
@@ -4387,7 +4378,7 @@ msgstr "Quita o sustituye las imágenes incrustadas."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Incrustar"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
@@ -4474,7 +4465,7 @@ msgstr "Solicitar clave de API"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:82
 msgid "API _key:"
-msgstr ""
+msgstr "_Clave de API:"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:89
 msgid "AcoustID Web Service"
