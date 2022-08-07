@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-21 16:15+0000\n"
+"PO-Revision-Date: 2022-08-09 14:15+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -28,9 +28,8 @@ msgstr "_Titre"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_People"
-msgstr "personnes"
+msgstr "_Personnes"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -60,7 +59,6 @@ msgstr "Évaluation"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-#, fuzzy
 msgid "Play_count"
 msgstr "_Nombre de lectures"
 
@@ -211,9 +209,8 @@ msgid "_Audio Feeds"
 msgstr "_Flux audio"
 
 #: quodlibet/browsers/audiofeeds.py:374
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "_Ajouter un fichier…"
+msgstr "_Ajouter un flux…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -601,9 +598,8 @@ msgid "No Category"
 msgstr "Aucune catégorie"
 
 #: quodlibet/browsers/iradio.py:650
-#, fuzzy
 msgid "_Add Station…"
-msgstr "_Nouvelle station…"
+msgstr "_Ajouter une station…"
 
 #: quodlibet/browsers/iradio.py:652
 msgid "_Update Stations"
@@ -717,9 +713,8 @@ msgid "New"
 msgstr "Nouveau"
 
 #: quodlibet/browsers/playlists/main.py:218
-#, fuzzy
 msgid "_Import…"
-msgstr "_Importer"
+msgstr "_Importer…"
 
 #: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
@@ -809,7 +804,7 @@ msgstr "Saisissez un nom pour la nouvelle liste de lecture :"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "_Créer"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4460,20 +4455,19 @@ msgid "Edit Embedded Images"
 msgstr "Editer les images incorporées"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Supprime ou remplace les images embarquées."
+msgstr "Ajouter, supprimer ou remplacer les images intégrées."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Intégrer"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Choisir l'image à intégrer dans la piste %d"
+msgstr[1] "Choisir l'image à intégrer dans les pistes %d"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
@@ -4485,7 +4479,7 @@ msgstr "Incorporer l'image actuelle"
 
 #: quodlibet/ext/songsmenu/embedded.py:114
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Choisir l'image…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -5747,9 +5741,8 @@ msgid "(unknown)"
 msgstr "(Inconnu)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "_Ajouter"
+msgstr "_Ajouter…"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
