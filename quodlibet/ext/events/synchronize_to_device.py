@@ -1082,7 +1082,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             for dirname in dirs:
                 dir_path = os.path.realpath(os.path.join(root, dirname))
                 files = os.listdir(dir_path)
-                last_file_is_cover = files[0] == 'cover.jpg'
+                last_file_is_cover = files and files[0] == 'cover.jpg'
                 if not files or last_file_is_cover:
                     entry = Entry(None)
                     entry.filename = dir_path
