@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-20 20:18+0000\n"
+"PO-Revision-Date: 2022-08-09 14:15+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 4.14-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -30,9 +30,8 @@ msgstr "_Titel"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_People"
-msgstr "Mitwirkende"
+msgstr "_Mitwirkende"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -62,7 +61,6 @@ msgstr "_Bewertung"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-#, fuzzy
 msgid "Play_count"
 msgstr "_Wiedergabeanzahl"
 
@@ -213,9 +211,8 @@ msgid "_Audio Feeds"
 msgstr "_Audio-Feeds"
 
 #: quodlibet/browsers/audiofeeds.py:374
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "_Datei hinzufügen …"
+msgstr "_Neuer Feed …"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -603,7 +600,6 @@ msgid "No Category"
 msgstr "Keine Kategorie"
 
 #: quodlibet/browsers/iradio.py:650
-#, fuzzy
 msgid "_Add Station…"
 msgstr "_Neuer Sender …"
 
@@ -719,9 +715,8 @@ msgid "New"
 msgstr "Neu"
 
 #: quodlibet/browsers/playlists/main.py:218
-#, fuzzy
 msgid "_Import…"
-msgstr "_Importieren"
+msgstr "_Importieren …"
 
 #: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
@@ -811,7 +806,7 @@ msgstr "Geben Sie einen Namen für die neue Wiedergabeliste ein:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "_Erstellen"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4476,20 +4471,21 @@ msgid "Edit Embedded Images"
 msgstr "Eingebettete Bilder bearbeiten"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Entfernt oder ersetzt eingebettete Bilder."
+msgstr ""
+"Ermöglicht es, eingebettete Bilder hinzuzufügen, zu entfernen oder zu "
+"ersetzen."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Einbetten"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Bild zum Einbetten in %d Titel auswählen"
+msgstr[1] "Bild zum Einbetten in %d Titel auswählen"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
@@ -4501,7 +4497,7 @@ msgstr "Aktuelles Bild _einbetten"
 
 #: quodlibet/ext/songsmenu/embedded.py:114
 msgid "_Choose Image…"
-msgstr ""
+msgstr "Bild _auswählen …"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -5755,9 +5751,8 @@ msgid "(unknown)"
 msgstr "(unbekannt)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "_Hinzufügen"
+msgstr "_Hinzufügen …"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
@@ -7356,14 +7351,14 @@ msgid "_Expand Column"
 msgstr "Listenspalte ausd_ehnen"
 
 #: quodlibet/qltk/songsmenu.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "Möchten Sie den Titel »%%(title)s« aus der Bibliothek entfernen?"
+msgstr "Möchten Sie den Titel »%(title)s« aus der Bibliothek entfernen?"
 
 #: quodlibet/qltk/songsmenu.py:47
-#, fuzzy, python-format
+#, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "Möchten Sie den Titel »%%(title)s« aus der Bibliothek entfernen?"
+msgstr "Möchten Sie die %(count)d Titel aus der Bibliothek entfernen?"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
