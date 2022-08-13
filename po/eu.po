@@ -24,9 +24,10 @@ msgid "_Title"
 msgstr "Titulua"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
-msgid "_Artist"
-msgstr "_Artista"
+#: quodlibet/browsers/covergrid/main.py:57
+#, fuzzy
+msgid "_People"
+msgstr "jendea"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -60,7 +61,7 @@ msgstr "_Balorazioa"
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
 #, fuzzy
-msgid "_Playcount"
+msgid "Play_count"
 msgstr "Editatu bistaratzea"
 
 #: quodlibet/browsers/albums/main.py:235
@@ -72,7 +73,7 @@ msgstr "Ordena_tu:"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 #, fuzzy
 msgid "_Preferences"
@@ -198,12 +199,10 @@ msgid "Enter the location of an audio feed:"
 msgstr "Idatzi audio jarioaren kokapena:"
 
 #: quodlibet/browsers/audiofeeds.py:216
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88
-#: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:313
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
@@ -216,9 +215,10 @@ msgstr "Audio jarioak"
 msgid "_Audio Feeds"
 msgstr "_Audio jarioak"
 
-#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:94
-msgid "_New"
-msgstr ""
+#: quodlibet/browsers/audiofeeds.py:374
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "_Gehitu fitxategi bat..."
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -227,7 +227,7 @@ msgid "_Refresh"
 msgstr "_Freskatu liburutegia"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:482
+#: quodlibet/browsers/playlists/main.py:485
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -350,6 +350,7 @@ msgstr ""
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -422,7 +423,7 @@ msgstr "Hautatutako kantak ezin dira kopiatu beste zerrenda edo ilara batera."
 msgid "_Add to Library"
 msgstr "_Gehitu liburutegira"
 
-#: quodlibet/browsers/iradio.py:190
+#: quodlibet/browsers/iradio.py:188
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -433,228 +434,229 @@ msgstr ""
 "edo erreprodukzio-zerrendarik. Hurrengo kateak ezin dira kargatu:\n"
 "%s"
 
-#: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
-#: quodlibet/browsers/iradio.py:499
+#: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
+#: quodlibet/browsers/iradio.py:497
 msgid "Internet Radio"
 msgstr "Internet irratia"
 
-#: quodlibet/browsers/iradio.py:226
+#: quodlibet/browsers/iradio.py:224
 #, fuzzy
 msgid "Add stations"
 msgstr "Kate berria"
 
-#: quodlibet/browsers/iradio.py:267
+#: quodlibet/browsers/iradio.py:265
 #, fuzzy
 msgid "Downloading station list"
 msgstr "Deskargatu fitxategiak"
 
-#: quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/iradio.py:366
 msgid "New Station"
 msgstr "Kate berria"
 
-#: quodlibet/browsers/iradio.py:369
+#: quodlibet/browsers/iradio.py:367
 msgid "Enter the location of an Internet radio station:"
 msgstr "Sar Internet bidezko irrati kate kokapena:"
 
-#: quodlibet/browsers/iradio.py:387
+#: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
 msgstr "Elektronikoa"
 
-#: quodlibet/browsers/iradio.py:390
+#: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
 msgstr "Hip Hop / Rap"
 
-#: quodlibet/browsers/iradio.py:391
+#: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
 msgstr "Oldies"
 
-#: quodlibet/browsers/iradio.py:392
+#: quodlibet/browsers/iradio.py:390
 msgid "R&B"
 msgstr "R&B"
 
-#: quodlibet/browsers/iradio.py:393
+#: quodlibet/browsers/iradio.py:391
 msgid "Japanese"
 msgstr "Japaniarra"
 
-#: quodlibet/browsers/iradio.py:394
+#: quodlibet/browsers/iradio.py:392
 msgid "Indian"
 msgstr "Indiarra"
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:394
 msgid "Religious"
 msgstr "Erlijio-musika"
 
-#: quodlibet/browsers/iradio.py:398
+#: quodlibet/browsers/iradio.py:396
 msgid "Charts"
 msgstr "Salduenak"
 
-#: quodlibet/browsers/iradio.py:399
+#: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
 msgstr "Turkiarra"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
 msgstr "Reggae / Dantzatzeko"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:399
 #, fuzzy
 msgid "Latin"
 msgstr "balorazioa"
 
-#: quodlibet/browsers/iradio.py:402
+#: quodlibet/browsers/iradio.py:400
 msgid "College Radio"
 msgstr "Unibertsitate irratia"
 
-#: quodlibet/browsers/iradio.py:403
+#: quodlibet/browsers/iradio.py:401
 msgid "Talk / News"
 msgstr "Eztabaidak / Berriak"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
 msgstr "Ambient"
 
-#: quodlibet/browsers/iradio.py:405
+#: quodlibet/browsers/iradio.py:403
 msgid "Jazz"
 msgstr "Jazz"
 
-#: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
+#: quodlibet/browsers/iradio.py:404 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
 msgstr "Klasikoa"
 
-#: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
+#: quodlibet/browsers/iradio.py:405 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
 msgstr "Pop"
 
-#: quodlibet/browsers/iradio.py:408
+#: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
 msgstr "Alternatiboa"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:407
 msgid "Metal"
 msgstr "Metal"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:408
 msgid "Country"
 msgstr "Country"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:409
 msgid "News"
 msgstr "Berriak"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
 msgstr "Schlager"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:411
 msgid "Funk"
 msgstr "Funk"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:412
 msgid "Indie"
 msgstr "Indie"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:413
 msgid "Blues"
 msgstr "Blues"
 
-#: quodlibet/browsers/iradio.py:416
+#: quodlibet/browsers/iradio.py:414
 msgid "Soul"
 msgstr "Soul"
 
-#: quodlibet/browsers/iradio.py:417
+#: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
 msgstr "Lounge"
 
-#: quodlibet/browsers/iradio.py:418
+#: quodlibet/browsers/iradio.py:416
 msgid "Punk"
 msgstr "Punk"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:417
 msgid "Reggaeton"
 msgstr "Reggaeton"
 
-#: quodlibet/browsers/iradio.py:421
+#: quodlibet/browsers/iradio.py:419
 msgid "Slavic"
 msgstr "Eslaboa"
 
-#: quodlibet/browsers/iradio.py:423
+#: quodlibet/browsers/iradio.py:421
 msgid "Greek"
 msgstr "Greziarra"
 
-#: quodlibet/browsers/iradio.py:424
+#: quodlibet/browsers/iradio.py:422
 msgid "Gothic"
 msgstr "Gotikoa"
 
-#: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
+#: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
 msgstr "Rock"
 
-#: quodlibet/browsers/iradio.py:478
+#: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
 msgstr ""
 
-#: quodlibet/browsers/iradio.py:484
+#: quodlibet/browsers/iradio.py:482
 #, fuzzy
 msgid "_Load Stations"
 msgstr "_Kate berria"
 
-#: quodlibet/browsers/iradio.py:500
+#: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
 msgstr "_Internet irratia"
 
-#: quodlibet/browsers/iradio.py:573
-#, fuzzy
-msgid "_New Station…"
-msgstr "Kate berria"
-
-#: quodlibet/browsers/iradio.py:576
-#, fuzzy
-msgid "_Update Stations"
-msgstr "_Kate berria"
-
-#: quodlibet/browsers/iradio.py:603
+#: quodlibet/browsers/iradio.py:586
 #, fuzzy
 msgid "All Stations"
 msgstr "Kate berria"
 
+#. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Kuttunak"
 
-#: quodlibet/browsers/iradio.py:615
+#: quodlibet/browsers/iradio.py:597
 #, fuzzy
 msgid "No Category"
 msgstr "Kategoria gabe"
 
-#: quodlibet/browsers/iradio.py:838
+#: quodlibet/browsers/iradio.py:650
+#, fuzzy
+msgid "_Add Station…"
+msgstr "Kate berria"
+
+#: quodlibet/browsers/iradio.py:652
+#, fuzzy
+msgid "_Update Stations"
+msgstr "_Kate berria"
+
+#: quodlibet/browsers/iradio.py:831
 msgid "No stations found"
 msgstr "Ez da katerik aurkitu"
 
-#: quodlibet/browsers/iradio.py:839
+#: quodlibet/browsers/iradio.py:832
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Ez da Intenet irrati katerik topatu %s-en."
 
-#: quodlibet/browsers/iradio.py:852
+#: quodlibet/browsers/iradio.py:845
 msgid "Nothing to add"
 msgstr ""
 
-#: quodlibet/browsers/iradio.py:853
+#: quodlibet/browsers/iradio.py:846
 msgid "All stations listed are already in your library."
 msgstr "Zerrendatutako kate guztiak dagoeneko badaude liburutegian."
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:867
 #, fuzzy
 msgid "Add to Favorites"
 msgstr "_Gehitu erreprodukzio-zerrendara"
 
-#: quodlibet/browsers/iradio.py:878
+#: quodlibet/browsers/iradio.py:871
 #, fuzzy
 msgid "Remove from Favorites"
 msgstr "_Kendu erreprodukzio-zerrendatik"
 
-#: quodlibet/browsers/iradio.py:978
+#: quodlibet/browsers/iradio.py:971
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -715,7 +717,7 @@ msgid "Equal pane width"
 msgstr ""
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Erreprodukzio-zerrendak"
 
@@ -723,46 +725,55 @@ msgstr "Erreprodukzio-zerrendak"
 msgid "_Playlists"
 msgstr "_Erreprodukzio-zerrendak"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "_Kendu erreprodukzio-zerrendatik"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:215 quodlibet/qltk/data_editors.py:94
+msgid "_New"
+msgstr ""
+
+#: quodlibet/browsers/playlists/main.py:216
 #, fuzzy
 msgid "New"
 msgstr "Berriak"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:218
+#, fuzzy
+msgid "_Import…"
+msgstr "_Inporatu"
+
+#: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 #, fuzzy
 msgid "Import"
 msgstr "_Inporatu"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Ezin da erreprodukzio-zerrenda inportatu"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 #, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet M3U eta PLS formatuko erreprodukzio-zerrendak bakarrik "
 "inportatzeko gai da."
 
-#: quodlibet/browsers/playlists/main.py:489
+#: quodlibet/browsers/playlists/main.py:492
 msgid "_Rename"
 msgstr "Be_rrizendatu"
 
-#: quodlibet/browsers/playlists/main.py:587
+#: quodlibet/browsers/playlists/main.py:590
 msgid "Unable to rename playlist"
 msgstr "Ezin da erreprodukzio-zerrenda berrizendatu"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "Import Playlist"
 msgstr "Inportatu erreprodukzio-zerrenda"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "_Import"
 msgstr "_Inporatu"
 
@@ -827,6 +838,10 @@ msgstr "Sortu erreprodukzio-zerrenda"
 #: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
 msgstr "Idatzi erreprodukzio-zerrenda berriaren izena:"
+
+#: quodlibet/browsers/playlists/util.py:52
+msgid "_Create"
+msgstr ""
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4422,25 +4437,40 @@ msgstr ""
 msgid "Skip Count"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 #, fuzzy
 msgid "Edit Embedded Images"
 msgstr "Atera irudi txertatuak"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
+#: quodlibet/ext/songsmenu/embedded.py:27
 #, fuzzy
-msgid "Removes or replaces embedded images."
+msgid "Adds, removes or replaces embedded images."
 msgstr "Atera irudi txertatuak"
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:105
 #, fuzzy
 msgid "_Remove all Images"
 msgstr "Bikoiztuak ezabatu"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 #, fuzzy
 msgid "_Embed Current Image"
 msgstr "Atera irudi txertatuak"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -5695,6 +5725,11 @@ msgstr ""
 msgid "(unknown)"
 msgstr "Ezezaguna"
 
+#: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
+#, fuzzy
+msgid "_Add…"
+msgstr "_Gehitu fitxategi bat..."
+
 #: quodlibet/qltk/data_editors.py:363
 #, fuzzy
 msgid "Tag expression"
@@ -6413,6 +6448,10 @@ msgstr "_Pista"
 #, fuzzy
 msgid "Grou_ping"
 msgstr "taldekatzea"
+
+#: quodlibet/qltk/prefs.py:49
+msgid "_Artist"
+msgstr "_Artista"
 
 #: quodlibet/qltk/prefs.py:50
 msgid "Al_bum"

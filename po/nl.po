@@ -27,9 +27,10 @@ msgid "_Title"
 msgstr "_Titel"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57 quodlibet/qltk/prefs.py:49
-msgid "_Artist"
-msgstr "_Artiest"
+#: quodlibet/browsers/covergrid/main.py:57
+#, fuzzy
+msgid "_People"
+msgstr "personen"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
@@ -59,7 +60,8 @@ msgstr "Waa_rdering"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:63
-msgid "_Playcount"
+#, fuzzy
+msgid "Play_count"
 msgstr "Aantal keer afges_peeld"
 
 #: quodlibet/browsers/albums/main.py:235
@@ -70,7 +72,7 @@ msgstr "Sorteren o_p…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Voorkeuren"
@@ -192,12 +194,10 @@ msgid "Enter the location of an audio feed:"
 msgstr "Voer de locatie van een audiofeed in:"
 
 #: quodlibet/browsers/audiofeeds.py:216
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:370
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88
-#: quodlibet/browsers/playlists/util.py:52 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/data_editors.py:313
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/edittags.py:549
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
+#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
 #: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Toevoegen"
@@ -210,9 +210,10 @@ msgstr "Audiofeeds"
 msgid "_Audio Feeds"
 msgstr "_Audiofeeds"
 
-#: quodlibet/browsers/audiofeeds.py:374 quodlibet/qltk/data_editors.py:94
-msgid "_New"
-msgstr "_Nieuw"
+#: quodlibet/browsers/audiofeeds.py:374
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "Best_and toevoegen…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -220,7 +221,7 @@ msgid "_Refresh"
 msgstr "Ve_rversen"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:482
+#: quodlibet/browsers/playlists/main.py:485
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -340,6 +341,7 @@ msgstr "Toep_assen"
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
 #: quodlibet/ext/songsmenu/editplaycount.py:46
+#: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
@@ -408,7 +410,7 @@ msgstr ""
 msgid "_Add to Library"
 msgstr "Toevoegen _aan verzameling"
 
-#: quodlibet/browsers/iradio.py:190
+#: quodlibet/browsers/iradio.py:188
 #, python-format
 msgid ""
 "Station lists can only contain locations of stations, not other station "
@@ -420,218 +422,220 @@ msgstr ""
 "geladen:\n"
 "%s"
 
-#: quodlibet/browsers/iradio.py:226 quodlibet/browsers/iradio.py:267
-#: quodlibet/browsers/iradio.py:499
+#: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
+#: quodlibet/browsers/iradio.py:497
 msgid "Internet Radio"
 msgstr "Online-radiostation"
 
-#: quodlibet/browsers/iradio.py:226
+#: quodlibet/browsers/iradio.py:224
 msgid "Add stations"
 msgstr "Zenders toevoegen"
 
-#: quodlibet/browsers/iradio.py:267
+#: quodlibet/browsers/iradio.py:265
 msgid "Downloading station list"
 msgstr "Bezig met ophalen van zenderlijst"
 
-#: quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/iradio.py:366
 msgid "New Station"
 msgstr "Nieuwe zender"
 
-#: quodlibet/browsers/iradio.py:369
+#: quodlibet/browsers/iradio.py:367
 msgid "Enter the location of an Internet radio station:"
 msgstr "Voer de locatie van een online-radiozender in:"
 
-#: quodlibet/browsers/iradio.py:387
+#: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
 msgstr "Elektronisch"
 
-#: quodlibet/browsers/iradio.py:390
+#: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
 msgstr "Hiphop/Rap"
 
-#: quodlibet/browsers/iradio.py:391
+#: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
 msgstr "Gouwe ouwen"
 
-#: quodlibet/browsers/iradio.py:392
+#: quodlibet/browsers/iradio.py:390
 msgid "R&B"
 msgstr "R&B"
 
-#: quodlibet/browsers/iradio.py:393
+#: quodlibet/browsers/iradio.py:391
 msgid "Japanese"
 msgstr "Japans"
 
-#: quodlibet/browsers/iradio.py:394
+#: quodlibet/browsers/iradio.py:392
 msgid "Indian"
 msgstr "Indisch"
 
-#: quodlibet/browsers/iradio.py:396
+#: quodlibet/browsers/iradio.py:394
 msgid "Religious"
 msgstr "Religieus"
 
-#: quodlibet/browsers/iradio.py:398
+#: quodlibet/browsers/iradio.py:396
 msgid "Charts"
 msgstr "Hitlijsten"
 
-#: quodlibet/browsers/iradio.py:399
+#: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
 msgstr "Turks"
 
-#: quodlibet/browsers/iradio.py:400
+#: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
 msgstr "Reggae/Dancehall"
 
-#: quodlibet/browsers/iradio.py:401
+#: quodlibet/browsers/iradio.py:399
 msgid "Latin"
 msgstr "Latin"
 
-#: quodlibet/browsers/iradio.py:402
+#: quodlibet/browsers/iradio.py:400
 msgid "College Radio"
 msgstr "Studentenradio"
 
-#: quodlibet/browsers/iradio.py:403
+#: quodlibet/browsers/iradio.py:401
 msgid "Talk / News"
 msgstr "Praatprogramma's/Nieuws"
 
-#: quodlibet/browsers/iradio.py:404
+#: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
 msgstr "Sfeervol"
 
-#: quodlibet/browsers/iradio.py:405
+#: quodlibet/browsers/iradio.py:403
 msgid "Jazz"
 msgstr "Jazz"
 
-#: quodlibet/browsers/iradio.py:406 quodlibet/ext/events/equalizer.py:45
+#: quodlibet/browsers/iradio.py:404 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
 msgstr "Klassiek"
 
-#: quodlibet/browsers/iradio.py:407 quodlibet/ext/events/equalizer.py:60
+#: quodlibet/browsers/iradio.py:405 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
 msgstr "Pop"
 
-#: quodlibet/browsers/iradio.py:408
+#: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
 msgstr "Alternatief"
 
-#: quodlibet/browsers/iradio.py:409
+#: quodlibet/browsers/iradio.py:407
 msgid "Metal"
 msgstr "Metal"
 
-#: quodlibet/browsers/iradio.py:410
+#: quodlibet/browsers/iradio.py:408
 msgid "Country"
 msgstr "Country"
 
-#: quodlibet/browsers/iradio.py:411
+#: quodlibet/browsers/iradio.py:409
 msgid "News"
 msgstr "Nieuws"
 
-#: quodlibet/browsers/iradio.py:412
+#: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
 msgstr "Schlager"
 
-#: quodlibet/browsers/iradio.py:413
+#: quodlibet/browsers/iradio.py:411
 msgid "Funk"
 msgstr "Funk"
 
-#: quodlibet/browsers/iradio.py:414
+#: quodlibet/browsers/iradio.py:412
 msgid "Indie"
 msgstr "Indie"
 
-#: quodlibet/browsers/iradio.py:415
+#: quodlibet/browsers/iradio.py:413
 msgid "Blues"
 msgstr "Blues"
 
-#: quodlibet/browsers/iradio.py:416
+#: quodlibet/browsers/iradio.py:414
 msgid "Soul"
 msgstr "Soul"
 
-#: quodlibet/browsers/iradio.py:417
+#: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
 msgstr "Lounge"
 
-#: quodlibet/browsers/iradio.py:418
+#: quodlibet/browsers/iradio.py:416
 msgid "Punk"
 msgstr "Punk"
 
-#: quodlibet/browsers/iradio.py:419
+#: quodlibet/browsers/iradio.py:417
 msgid "Reggaeton"
 msgstr "Reggaeton"
 
-#: quodlibet/browsers/iradio.py:421
+#: quodlibet/browsers/iradio.py:419
 msgid "Slavic"
 msgstr "Slavisch"
 
-#: quodlibet/browsers/iradio.py:423
+#: quodlibet/browsers/iradio.py:421
 msgid "Greek"
 msgstr "Grieks"
 
-#: quodlibet/browsers/iradio.py:424
+#: quodlibet/browsers/iradio.py:422
 msgid "Gothic"
 msgstr "Gothic"
 
-#: quodlibet/browsers/iradio.py:425 quodlibet/ext/events/equalizer.py:38
+#: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
 msgstr "Rock"
 
-#: quodlibet/browsers/iradio.py:478
+#: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
 msgstr "Wil je de lijst met populaire radiozenders bekijken?"
 
-#: quodlibet/browsers/iradio.py:484
+#: quodlibet/browsers/iradio.py:482
 msgid "_Load Stations"
 msgstr "Zenders _bekijken"
 
-#: quodlibet/browsers/iradio.py:500
+#: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
 msgstr "Onl_ine-radiostation"
 
-#: quodlibet/browsers/iradio.py:573
-msgid "_New Station…"
-msgstr "_Nieuwe zender…"
-
-#: quodlibet/browsers/iradio.py:576
-msgid "_Update Stations"
-msgstr "_Zenders bijwerken"
-
-#: quodlibet/browsers/iradio.py:603
+#: quodlibet/browsers/iradio.py:586
 msgid "All Stations"
 msgstr "Alle zenders"
 
+#. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:607 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Favorieten"
 
-#: quodlibet/browsers/iradio.py:615
+#: quodlibet/browsers/iradio.py:597
 msgid "No Category"
 msgstr "Geen categorie"
 
-#: quodlibet/browsers/iradio.py:838
+#: quodlibet/browsers/iradio.py:650
+#, fuzzy
+msgid "_Add Station…"
+msgstr "_Nieuwe zender…"
+
+#: quodlibet/browsers/iradio.py:652
+msgid "_Update Stations"
+msgstr "_Zenders bijwerken"
+
+#: quodlibet/browsers/iradio.py:831
 msgid "No stations found"
 msgstr "Geen zenders gevonden"
 
-#: quodlibet/browsers/iradio.py:839
+#: quodlibet/browsers/iradio.py:832
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Er zijn geen online-radiozenders gevonden op %s."
 
-#: quodlibet/browsers/iradio.py:852
+#: quodlibet/browsers/iradio.py:845
 msgid "Nothing to add"
 msgstr "Er valt niks toe te voegen"
 
-#: quodlibet/browsers/iradio.py:853
+#: quodlibet/browsers/iradio.py:846
 msgid "All stations listed are already in your library."
 msgstr "Alle vermelde zenders staan al in je verzameling."
 
-#: quodlibet/browsers/iradio.py:874
+#: quodlibet/browsers/iradio.py:867
 msgid "Add to Favorites"
 msgstr "Toevoegen aan favorieten"
 
-#: quodlibet/browsers/iradio.py:878
+#: quodlibet/browsers/iradio.py:871
 msgid "Remove from Favorites"
 msgstr "Verwijderen uit favorieten"
 
-#: quodlibet/browsers/iradio.py:978
+#: quodlibet/browsers/iradio.py:971
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -693,7 +697,7 @@ msgid "Equal pane width"
 msgstr "Vaste paneelbreedte"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -701,41 +705,50 @@ msgstr "Afspeellijsten"
 msgid "_Playlists"
 msgstr "Afs_peellijsten"
 
-#: quodlibet/browsers/playlists/main.py:168
+#: quodlibet/browsers/playlists/main.py:171
 msgid "_Remove from Playlist"
 msgstr "Ve_rwijderen van afspeellijst"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:215 quodlibet/qltk/data_editors.py:94
+msgid "_New"
+msgstr "_Nieuw"
+
+#: quodlibet/browsers/playlists/main.py:216
 msgid "New"
 msgstr "Nieuw"
 
-#: quodlibet/browsers/playlists/main.py:217
+#: quodlibet/browsers/playlists/main.py:218
+#, fuzzy
+msgid "_Import…"
+msgstr "_Importeren"
+
+#: quodlibet/browsers/playlists/main.py:219
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Importeren"
 
-#: quodlibet/browsers/playlists/main.py:439
+#: quodlibet/browsers/playlists/main.py:442
 msgid "Unable to import playlist"
 msgstr "Kan afspeellijst niet importeren"
 
-#: quodlibet/browsers/playlists/main.py:440
+#: quodlibet/browsers/playlists/main.py:443
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet kan alleen m3u(8)- en pls-afspeellijsten importeren."
 
-#: quodlibet/browsers/playlists/main.py:489
+#: quodlibet/browsers/playlists/main.py:492
 msgid "_Rename"
 msgstr "_Naam wijzigen"
 
-#: quodlibet/browsers/playlists/main.py:587
+#: quodlibet/browsers/playlists/main.py:590
 msgid "Unable to rename playlist"
 msgstr "Kan afspeellijstnaam niet wijzigen"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "Import Playlist"
 msgstr "Afspeellijst importeren"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:602
 msgid "_Import"
 msgstr "_Importeren"
 
@@ -792,6 +805,11 @@ msgstr "Nieuwe afspeellijst"
 #: quodlibet/browsers/playlists/util.py:51
 msgid "Enter a name for the new playlist:"
 msgstr "Geef de nieuwe afspeellijst een naam:"
+
+#: quodlibet/browsers/playlists/util.py:52
+#, fuzzy
+msgid "_Create"
+msgstr "Database aanma_ken"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4393,21 +4411,37 @@ msgstr "Aantal keer afgespeeld"
 msgid "Skip Count"
 msgstr "Aantal keer overgeslagen"
 
-#: quodlibet/ext/songsmenu/embedded.py:25
+#: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "Bijgevoegde afbeeldingen bewerken"
 
-#: quodlibet/ext/songsmenu/embedded.py:26
-msgid "Removes or replaces embedded images."
+#: quodlibet/ext/songsmenu/embedded.py:27
+#, fuzzy
+msgid "Adds, removes or replaces embedded images."
 msgstr "Verwijdert of vervangt bijgevoegde afbeeldingen."
 
-#: quodlibet/ext/songsmenu/embedded.py:80
+#: quodlibet/ext/songsmenu/embedded.py:77
+msgid "_Embed"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/embedded.py:79
+#, python-format
+msgid "Choose image to embed in the %d track"
+msgid_plural "Choose image to embed in %d tracks"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
 msgstr "Alle afbeeldingen ve_rwijderen"
 
-#: quodlibet/ext/songsmenu/embedded.py:85
+#: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
 msgstr "Huidige afbeeldingen bijvo_egen"
+
+#: quodlibet/ext/songsmenu/embedded.py:114
+msgid "_Choose Image…"
+msgstr ""
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -5658,6 +5692,11 @@ msgstr "Nieuw(e) %s"
 msgid "(unknown)"
 msgstr "(onbekend)"
 
+#: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
+#, fuzzy
+msgid "_Add…"
+msgstr "_Toevoegen"
+
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
 msgstr "Tag-uitdrukking"
@@ -6338,6 +6377,10 @@ msgstr "_Nummer"
 #: quodlibet/qltk/prefs.py:47
 msgid "Grou_ping"
 msgstr "Groe_peren"
+
+#: quodlibet/qltk/prefs.py:49
+msgid "_Artist"
+msgstr "_Artiest"
 
 #: quodlibet/qltk/prefs.py:50
 msgid "Al_bum"
@@ -8425,9 +8468,6 @@ msgstr ""
 
 #~ msgid "Do you want to create an empty database on this iPod?"
 #~ msgstr "Wil je een lege database aanmaken op deze iPod?"
-
-#~ msgid "_Create Database"
-#~ msgstr "Database aanma_ken"
 
 #~ msgid "_Volume Gain (dB):"
 #~ msgstr "_Volume gain (dB):"
