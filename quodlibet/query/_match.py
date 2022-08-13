@@ -240,7 +240,8 @@ class Numcmp(Node):
         self._op = self.operators[op]
         self._expr2 = expr2
         units = expr2.units()
-        if units and isinstance(expr, NumexprTag) and not expr.valid_for_units(units):
+
+        if units and not expr.valid_for_units(units):
             raise ParseError(f"Wrong units for {expr}")
 
     def search(self, data):
@@ -291,6 +292,10 @@ class Numexpr:
         """Returns optional (converted) units for this number"""
         return None
 
+    def valid_for_units(self, units: Units) -> bool:
+        """Returns true if the given unit is valid for this expression"""
+        return True
+
 
 class NumexprTag(Numexpr):
     """Numeric tag"""
@@ -298,10 +303,11 @@ class NumexprTag(Numexpr):
     def __init__(self, tag: str):
         self._tag = tag
         self._ftag = "~#" + self._tag
+        # Strip aggregate function from tag
+        self._base_ftag = (self._ftag or "").split(":")[0]
 
     def valid_for_units(self, units: Units) -> bool:
-        """Returns true if the given unit is valid for this expression's tag"""
-        return self._ftag in UNITS_TO_TAGS[units]
+        return self._base_ftag in UNITS_TO_TAGS[units]
 
     def evaluate(self, data, time, use_date):
         if self._tag == 'date':
@@ -315,10 +321,7 @@ class NumexprTag(Numexpr):
         else:
             num = data(self._ftag, None)
         if num is not None:
-            # Strip aggregate function from tag
-            func_start = self._ftag.find(":")
-            tag = self._ftag[:func_start] if func_start >= 0 else self._ftag
-            if tag in TIME_TAGS:
+            if self._base_ftag in TIME_TAGS:
                 num = time - num
             return round(num, 2)
         return None
@@ -377,7 +380,7 @@ class NumexprBinary(Numexpr):
         self.__expr2 = expr2
         # Rearrange expressions for operator precedence
         if (isinstance(expr, NumexprBinary)
-                and self.precedence[expr.__op] < self.precedence[self.__op]):
+            and self.precedence[expr.__op] < self.precedence[self.__op]):
             self.__expr = expr.__expr
             self.__op = expr.__op
             expr.__expr = expr.__expr2

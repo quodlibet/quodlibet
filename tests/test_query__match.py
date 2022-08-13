@@ -3,14 +3,12 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from tests import TestCase
-
-from quodlibet.query._match import numexprUnit, ParseError, NumexprTag
-from quodlibet.query._match import NumexprNow, numexprTagOrSpecial, Inter,\
-    True_, Neg
-from quodlibet.util import parse_date
 from quodlibet.formats import AudioFile
+from quodlibet.query._match import NumexprNow, numexprTagOrSpecial, Inter, True_, Neg
+from quodlibet.query._match import numexprUnit, ParseError, NumexprTag, Numcmp
+from quodlibet.util import parse_date
 from quodlibet.util.collection import Collection
+from tests import TestCase
 
 
 class TQueryInter(TestCase):
@@ -76,6 +74,18 @@ class TQueryMatch(TestCase):
                         == 270)
         self.failUnless(NumexprTag('added:max').evaluate(col, time, True)
                         == 19242)
+
+    def test_numcmp_with_aggregate_and_units(self):
+        col = Collection()
+        col.songs = (AudioFile({'~#length': 30}), AudioFile({'~#length': 210}))
+        min_length = NumexprTag('length:min')
+        max_length = NumexprTag('length:max')
+        avg_length = NumexprTag('length:avg')
+        assert Numcmp(min_length, ">", numexprUnit(10, "seconds"))
+        assert Numcmp(min_length, "<", numexprUnit(2, "minutes"))
+        assert Numcmp(max_length, "<", numexprUnit(1, "hour"))
+        assert Numcmp(max_length, ">=", numexprUnit(30, "seconds"))
+        assert Numcmp(avg_length, "=", numexprUnit(2, "minutes"))
 
     def test_numexpr_now(self):
         time = 424242
