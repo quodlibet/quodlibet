@@ -290,10 +290,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
         data = {'albums': escape(albums), 'providers': escape(providers)}
-        text = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
-                 "Providers used:\n<tt>%(providers)s</tt>") % data
+        markup = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
+                   "Providers used:\n<tt>%(providers)s</tt>") % data
         dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,
-                              title=_("No covers found"), description=text)
+                              title=_("No covers found"), description=markup,
+                              escape_desc=False)
         dialog.run()
         self.destroy()
 
