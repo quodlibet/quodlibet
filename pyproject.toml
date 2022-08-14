@@ -15,6 +15,11 @@ packages = [
     { include = "quodlibet", from = "." }
 ]
 
+[tool.poetry.scripts]
+# Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
+quodlibet = "quodlibet.main:main"
+
+
 [tool.poetry.dependencies]
 python = "^3.8"
 mutagen = "^1.45"
