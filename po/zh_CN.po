@@ -68,7 +68,7 @@ msgstr "排序依据(_B) …"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "首选项(_P)"
@@ -145,7 +145,7 @@ msgstr "搜索时包含 people 字段"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
-#: quodlibet/ext/songsmenu/cover_download.py:306
+#: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "选项"
 
@@ -340,7 +340,7 @@ msgstr "应用"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -677,7 +677,7 @@ msgid "Equal pane width"
 msgstr "面板分栏等宽"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "播放列表"
 
@@ -719,15 +719,15 @@ msgstr "Quod Libet 只能导入 M3U/M3U8 和 PLS 格式的播放列表。"
 msgid "_Rename"
 msgstr "重命名(_R)"
 
-#: quodlibet/browsers/playlists/main.py:590
+#: quodlibet/browsers/playlists/main.py:591
 msgid "Unable to rename playlist"
 msgstr "无法重命名播放列表"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "Import Playlist"
 msgstr "导入播放列表"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "_Import"
 msgstr "导入(_I)"
 
@@ -1740,13 +1740,13 @@ msgstr "用于保存的预设名称："
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:382
+#: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -3959,26 +3959,26 @@ msgstr ""
 msgid "No covers found"
 msgstr "没有找到封面"
 
-#: quodlibet/ext/songsmenu/cover_download.py:318
+#: quodlibet/ext/songsmenu/cover_download.py:319
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:331
+#: quodlibet/ext/songsmenu/cover_download.py:332
 msgid "Preview size"
 msgstr "预览尺寸"
 
-#: quodlibet/ext/songsmenu/cover_download.py:340
+#: quodlibet/ext/songsmenu/cover_download.py:341
 msgid "Save destination"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:371
+#: quodlibet/ext/songsmenu/cover_download.py:372
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:373
+#: quodlibet/ext/songsmenu/cover_download.py:374
 msgid "Save as JPEG"
 msgstr ""
 
@@ -5898,32 +5898,32 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
 msgstr "放弃修改标签吗？"
 
-#: quodlibet/qltk/msg.py:45
+#: quodlibet/qltk/msg.py:47
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
 msgstr "标签已经修改但是尚未保存。现在保存，还是重置回原状态，还是放弃修改？"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
 #: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "恢复(_R)"
 
-#: quodlibet/qltk/msg.py:104
+#: quodlibet/qltk/msg.py:108
 msgid "File exists"
 msgstr "文件存在"
 
-#: quodlibet/qltk/msg.py:106
+#: quodlibet/qltk/msg.py:110
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "替换 %(file-name)s ？"
 
-#: quodlibet/qltk/msg.py:112
+#: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
 msgstr "替换文件(_R)"
 

@@ -70,7 +70,7 @@ msgstr "Τα_ξινόμηση κατά…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Προτιμήσεις"
@@ -151,7 +151,7 @@ msgstr "Η _αναζήτηση συμπεριλαμβάνει ονόματα σ�
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
-#: quodlibet/ext/songsmenu/cover_download.py:306
+#: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "Επιλογές"
 
@@ -351,7 +351,7 @@ msgstr "_Εφαρμογή"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -695,7 +695,7 @@ msgid "Equal pane width"
 msgstr "Ισομεγέθη παράθυρα"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Λίστες Αναπαραγωγής"
 
@@ -738,15 +738,15 @@ msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M
 msgid "_Rename"
 msgstr "_Μετονομασία"
 
-#: quodlibet/browsers/playlists/main.py:590
+#: quodlibet/browsers/playlists/main.py:591
 msgid "Unable to rename playlist"
 msgstr "Αδυναμία μετονομασίας λίστας αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "Import Playlist"
 msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "_Import"
 msgstr "_Εισαγωγή"
 
@@ -1804,13 +1804,13 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:382
+#: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -4192,27 +4192,27 @@ msgstr ""
 msgid "No covers found"
 msgstr "Δεν βρέθηκαν στίχοι"
 
-#: quodlibet/ext/songsmenu/cover_download.py:318
+#: quodlibet/ext/songsmenu/cover_download.py:319
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:331
+#: quodlibet/ext/songsmenu/cover_download.py:332
 #, fuzzy
 msgid "Preview size"
 msgstr "Προεπισκόπηση"
 
-#: quodlibet/ext/songsmenu/cover_download.py:340
+#: quodlibet/ext/songsmenu/cover_download.py:341
 msgid "Save destination"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:371
+#: quodlibet/ext/songsmenu/cover_download.py:372
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:373
+#: quodlibet/ext/songsmenu/cover_download.py:374
 msgid "Save as JPEG"
 msgstr ""
 
@@ -6289,11 +6289,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
 msgstr "Απόρριψη αλλαγών στις ετικέτες;"
 
-#: quodlibet/qltk/msg.py:45
+#: quodlibet/qltk/msg.py:47
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6301,22 +6301,22 @@ msgstr ""
 "Ετικέτες έχουν αλλαχθεί αλλά δεν έχουν αποθηκευθεί. Αποθήκευση αυτών των "
 "αρχείων ή επαναφορά και απόρριψη των αλλαγών;"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
 #: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "Επανέφε_ρε"
 
-#: quodlibet/qltk/msg.py:104
+#: quodlibet/qltk/msg.py:108
 msgid "File exists"
 msgstr "Το αρχείο υπάρχει"
 
-#: quodlibet/qltk/msg.py:106
+#: quodlibet/qltk/msg.py:110
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "Αντικατάσταση του %(file-name)s;"
 
-#: quodlibet/qltk/msg.py:112
+#: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
 msgstr "Αντικατάσταση Α_ρχείου"
 
