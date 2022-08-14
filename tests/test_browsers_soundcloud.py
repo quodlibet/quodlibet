@@ -8,7 +8,7 @@ from unittest import TestCase
 
 from gi.repository import Gtk
 
-from quodlibet import config, _
+from quodlibet import config
 from quodlibet import const
 from quodlibet.browsers.soundcloud import SoundcloudBrowser
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
