@@ -68,7 +68,7 @@ msgstr "並べ替え(_B)…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "設定(_P)"
@@ -145,7 +145,7 @@ msgstr "インライン検索対象にピープルタグを含める(_S)"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
-#: quodlibet/ext/songsmenu/cover_download.py:306
+#: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "オプション"
 
@@ -236,7 +236,8 @@ msgstr ""
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
-msgstr "現在のオーディオバックエンドはURLに対応していないため、オーディオフィードブラ"
+msgstr ""
+"現在のオーディオバックエンドはURLに対応していないため、オーディオフィードブラ"
 "ウザは無効になっています。"
 
 #: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
@@ -342,7 +343,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -682,7 +683,7 @@ msgid "Equal pane width"
 msgstr "ペインの幅を揃える"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "プレイリスト"
 
@@ -725,15 +726,15 @@ msgstr ""
 msgid "_Rename"
 msgstr "名前の変更(_R)"
 
-#: quodlibet/browsers/playlists/main.py:590
+#: quodlibet/browsers/playlists/main.py:591
 msgid "Unable to rename playlist"
 msgstr "プレイリストの名前を変更できません"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "Import Playlist"
 msgstr "プレイリストのインポート"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "_Import"
 msgstr "インポート(_I)"
 
@@ -1159,8 +1160,8 @@ msgid ""
 "You can review the data before sending it below."
 msgstr ""
 "エラーやシステムに関するさまざまな詳細が、サードパーティのオンラインサービス "
-"(<a href='https://www.sentry.io'>www.sentry.io</a>) "
-"に送信されます。送信前にデータを確認することができます。"
+"(<a href='https://www.sentry.io'>www.sentry.io</a>) に送信されます。送信前に"
+"データを確認することができます。"
 
 #: quodlibet/errorreport/ui.py:95
 msgid ""
@@ -1200,7 +1201,8 @@ msgstr "アートワークURLカバーソース"
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
-msgstr "<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。これ"
+msgstr ""
+"<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。これ"
 "はSoundCloudブラウザで動作します。"
 
 #: quodlibet/ext/covers/discogs.py:28
@@ -1291,7 +1293,8 @@ msgstr "人間的なタイトルケース(_H)"
 #: quodlibet/ext/editing/titlecase.py:53
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
-msgstr "タイトルケースとして一般的な英語のルールを使用します (「Dark Night of the "
+msgstr ""
+"タイトルケースとして一般的な英語のルールを使用します (「Dark Night of the "
 "Soul」のように)"
 
 #: quodlibet/ext/events/advanced_preferences.py:119
@@ -1482,8 +1485,8 @@ msgid ""
 "listened to (%s)."
 msgstr ""
 "アルバムのタグを書き込むとき、まず再生回数が0の曲を1に変更します。\n"
-"嫌いな曲がすでに分かっている場合もあるので、保存時に1にしておくと、"
-"聴き終わったアルバム (%s) を検索するときに便利です。"
+"嫌いな曲がすでに分かっている場合もあるので、保存時に1にしておくと、聴き終わっ"
+"たアルバム (%s) を検索するときに便利です。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:540
@@ -1499,7 +1502,8 @@ msgstr "ファイルタグの自動更新"
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
-msgstr "曲が再生されたら、そのファイルのタグを更新します。これにより再生回数と評価が"
+msgstr ""
+"曲が再生されたら、そのファイルのタグを更新します。これにより再生回数と評価が"
 "最新になります。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
@@ -1773,13 +1777,13 @@ msgstr "保存するプリセット名:"
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:382
+#: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -1835,8 +1839,8 @@ msgid ""
 "specified, status message of all accounts will be changed."
 msgstr ""
 "ステータスメッセージを変更するアカウントを、スペースで区切って指定してくださ"
-"い。何も指定しない場合は、全てのアカウントのステータスメッセージを変更します"
-"。"
+"い。何も指定しない場合は、全てのアカウントのステータスメッセージを変更しま"
+"す。"
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
@@ -1848,7 +1852,8 @@ msgstr "「[一時停止]」を追加する"
 
 #: quodlibet/ext/events/gajim_status.py:164
 msgid "If checked, '[paused]' will be added to status message on pause"
-msgstr "チェックした場合、一時停止時にステータスメッセージに「[一時停止]」が追加され"
+msgstr ""
+"チェックした場合、一時停止時にステータスメッセージに「[一時停止]」が追加され"
 "ます"
 
 #: quodlibet/ext/events/gajim_status.py:188
@@ -1904,7 +1909,8 @@ msgstr "インターネットラジオログ"
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
-msgstr "インターネットラジオ局で再生された直近の10曲を記録し、シークのコンテキストメ"
+msgstr ""
+"インターネットラジオ局で再生された直近の10曲を記録し、シークのコンテキストメ"
 "ニューに一覧表示します。"
 
 #: quodlibet/ext/events/jep118.py:30
@@ -1913,7 +1919,8 @@ msgstr ""
 
 #: quodlibet/ext/events/jep118.py:31
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
-msgstr "Jabber User Tunes ファイルを <tt>~/.quodlibet/jabber</tt> に出力します。"
+msgstr ""
+"Jabber User Tunes ファイルを <tt>~/.quodlibet/jabber</tt> に出力します。"
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -1939,14 +1946,16 @@ msgstr "UPnP AVメディアサーバー"
 msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
-msgstr "MediaServer2 D-Bus インターフェースを介して、Rygel UPnP "
-"メディアサーバーで全アルバムを公開します。"
+msgstr ""
+"MediaServer2 D-Bus インターフェースを介して、Rygel UPnP メディアサーバーで全"
+"アルバムを公開します。"
 
 #: quodlibet/ext/events/mediaserver.py:44
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
-msgstr "Rygel の設定ファイル (~/.config/rygel.conf) "
-"に以下が記述されていることを確認してください:"
+msgstr ""
+"Rygel の設定ファイル (~/.config/rygel.conf) に以下が記述されていることを確認"
+"してください:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
@@ -1990,10 +1999,9 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus "
-"インターフェース仕様を使用した Quod Libet の制御を可能にします。"
-"これにより様々な Linux デスクトップ統合 (マルチメディアキーなど) "
-"が可能になります。"
+"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
+"ターフェース仕様を使用した Quod Libet の制御を可能にします。これにより様々な "
+"Linux デスクトップ統合 (マルチメディアキーなど) が可能になります。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -2186,8 +2194,9 @@ msgstr "次へ"
 msgid ""
 "Please visit the Plugins window to set QLScrobbler up. Until then, songs "
 "will not be submitted."
-msgstr "プラグインウインドウで QLScrobbler "
-"の設定を行ってください。それまでは、曲情報の送信はできません。"
+msgstr ""
+"プラグインウインドウで QLScrobbler の設定を行ってください。それまでは、曲情報"
+"の送信はできません。"
 
 #: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
@@ -2209,8 +2218,9 @@ msgstr "クライアントは禁止されています。作者に連絡してく
 
 #: quodlibet/ext/events/qlscrobbler.py:292
 msgid "Wrong system time. Submissions may fail until it is corrected."
-msgstr "システム時刻が間違っています。 "
-"修正されるまで、送信は失敗する可能性があります。"
+msgstr ""
+"システム時刻が間違っています。 修正されるまで、送信は失敗する可能性がありま"
+"す。"
 
 #: quodlibet/ext/events/qlscrobbler.py:356
 msgid "AudioScrobbler Submission"
@@ -2220,7 +2230,8 @@ msgstr "Audioscrobblerの送信"
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
-msgstr "Last.fm、Libre.fm およびその他の Audioscrobbler サービス用の Audioscrobbler "
+msgstr ""
+"Last.fm、Libre.fm およびその他の Audioscrobbler サービス用の Audioscrobbler "
 "クライアントです。"
 
 #: quodlibet/ext/events/qlscrobbler.py:475
@@ -2265,14 +2276,16 @@ msgstr "除外フィルター(_F):"
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
-msgstr "送信用にアーティスト名をフォーマットするためのパターン。通常は空白のままにし"
+msgstr ""
+"送信用にアーティスト名をフォーマットするためのパターン。通常は空白のままにし"
 "ます。"
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
-msgstr "送信用にタイトルをフォーマットするためのパターン。通常は空白のままにします。"
+msgstr ""
+"送信用にタイトルをフォーマットするためのパターン。通常は空白のままにします。"
 
 #: quodlibet/ext/events/qlscrobbler.py:593
 msgid "Songs matching this filter will not be submitted"
@@ -2309,8 +2322,8 @@ msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
 msgstr ""
-"プレイリストが最後まで達すると、ランダムなアルバムの再生を開始します。アクテ"
-"ィブなブラウザがアルバムによるフィルタリングに対応している必要があります。"
+"プレイリストが最後まで達すると、ランダムなアルバムの再生を開始します。アク"
+"ティブなブラウザがアルバムによるフィルタリングに対応している必要があります。"
 
 #: quodlibet/ext/events/randomalbum.py:37
 msgid "Rated higher"
@@ -2466,16 +2479,17 @@ msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
 msgstr ""
-"Logitech Squeezebox が Quod Libet の出力をミラーリングするようにします "
-"(両方が同一のライブラリから読み込まれる場合)。"
+"Logitech Squeezebox が Quod Libet の出力をミラーリングするようにします (両方"
+"が同一のライブラリから読み込まれる場合)。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
 msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
-msgstr "「<a href=\"%(plugin_link)s\""
-">Squeezeboxにエクスポート</a>」プラグインと設定を共有します。"
+msgstr ""
+"「<a href=\"%(plugin_link)s\">Squeezeboxにエクスポート</a>」プラグインと設定"
+"を共有します。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2645,8 +2659,9 @@ msgstr "エクスポートパス"
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
-msgstr "重複したエクスポートパスが検出されました! "
-"上記のエクスポートパスは、同期を開始する前に編集することができます。"
+msgstr ""
+"重複したエクスポートパスが検出されました! 上記のエクスポートパスは、同期を開"
+"始する前に編集することができます。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
 msgid "Existing files in the destination path will be deleted!"
@@ -2766,8 +2781,8 @@ msgstr ""
 "\n"
 "<b>{}</b>\n"
 "\n"
-"に「/」が含まれていますが、ルートとなる位置を示していません。「/」または「~/"
-"」で始まることを確認して、保存先の絶対パスを指定してください。"
+"に「/」が含まれていますが、ルートとなる位置を示していません。「/」または"
+"「~/」で始まることを確認して、保存先の絶対パスを指定してください。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:872
 msgid "No saved searches selected"
@@ -2933,8 +2948,8 @@ msgid ""
 "Updates all Telepathy-based IM accounts (as configured in Empathy etc) with "
 "a status message based on current song."
 msgstr ""
-"全ての Telepathy ベースのインスタントメッセンジャーアカウント (Empathy "
-"などで設定されたもの) を、現在の曲に基づくステータスメッセージで更新します。"
+"全ての Telepathy ベースのインスタントメッセンジャーアカウント (Empathy などで"
+"設定されたもの) を、現在の曲に基づくステータスメッセージで更新します。"
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
@@ -3413,8 +3428,9 @@ msgstr "Sonosプレイリストにエクスポート"
 msgid ""
 "Exports a playlist to Sonos playlist, provided both share a directory "
 "structure."
-msgstr "Quod Libet プレイリストを Sonos プレイリストにエクスポートします "
-"(両方がディレクトリ構造を共有している場合)。"
+msgstr ""
+"Quod Libet プレイリストを Sonos プレイリストにエクスポートします (両方がディ"
+"レクトリ構造を共有している場合)。"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:223
 msgid "Error finding Sonos device(s)"
@@ -3437,17 +3453,17 @@ msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure."
 msgstr ""
-"Quod Libet プレイリストを Logicool Squeezebox "
-"プレイリストに動的にエクスポートします "
-"(両方がディレクトリ構造を共有している場合)。"
+"Quod Libet プレイリストを Logicool Squeezebox プレイリストに動的にエクスポー"
+"トします (両方がディレクトリ構造を共有している場合)。"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
 msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
-msgstr "「<a href=\"%(plugin_link)s\""
-">Squeezeboxと同期</a>」プラグインと設定を共有します。"
+msgstr ""
+"「<a href=\"%(plugin_link)s\">Squeezeboxと同期</a>」プラグインと設定を共有し"
+"ます。"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3819,8 +3835,9 @@ msgstr "画像表示をウィンドウサイズに合わせる(_W)"
 
 #: quodlibet/ext/songsmenu/albumart.py:339
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
-msgstr "画像ファイル名の文字列については「[plugins] "
-"cover_filenames」設定項目を参照してください"
+msgstr ""
+"画像ファイル名の文字列については「[plugins] cover_filenames」設定項目を参照し"
+"てください"
 
 #. Both labels
 #: quodlibet/ext/songsmenu/albumart.py:345
@@ -4111,26 +4128,26 @@ msgstr ""
 msgid "No covers found"
 msgstr "カバーが見つかりません"
 
-#: quodlibet/ext/songsmenu/cover_download.py:318
+#: quodlibet/ext/songsmenu/cover_download.py:319
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:331
+#: quodlibet/ext/songsmenu/cover_download.py:332
 msgid "Preview size"
 msgstr "プレビューサイズ"
 
-#: quodlibet/ext/songsmenu/cover_download.py:340
+#: quodlibet/ext/songsmenu/cover_download.py:341
 msgid "Save destination"
 msgstr "保存先"
 
-#: quodlibet/ext/songsmenu/cover_download.py:371
+#: quodlibet/ext/songsmenu/cover_download.py:372
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
 msgstr "JPEG でない場合は、同じサイズの高品質 JPEG に変換します"
 
-#: quodlibet/ext/songsmenu/cover_download.py:373
+#: quodlibet/ext/songsmenu/cover_download.py:374
 msgid "Save as JPEG"
 msgstr "JPEGとして保存"
 
@@ -4179,9 +4196,9 @@ msgid ""
 "For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
-"コマンドの値を計算するために使用するQLパターン (例: "
-"<~filename>)。プレイリストの場合、仮想タグ <~playlistname> および <~#"
-"playlistindex> も対応しています。"
+"コマンドの値を計算するために使用するQLパターン (例: <~filename>)。プレイリス"
+"トの場合、仮想タグ <~playlistname> および <~#playlistindex> も対応していま"
+"す。"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:61
 msgid "unique"
@@ -4417,8 +4434,9 @@ msgstr "APIキーが見つかりません"
 msgid ""
 "You have to specify an acoustid.org API key in the plugin preferences before "
 "you can submit fingerprints."
-msgstr "音響指紋を送信する前に、プラグインの設定で acoustid.org "
-"のAPIキーを指定する必要があります。"
+msgstr ""
+"音響指紋を送信する前に、プラグインの設定で acoustid.org のAPIキーを指定する必"
+"要があります。"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:75
 msgid "Request API key"
@@ -4469,7 +4487,8 @@ msgstr "アルバムモード"
 msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
-msgstr "アルバム関連のタグを書くことで、異なるアルバムリリースを減らすようにします"
+msgstr ""
+"アルバム関連のタグを書くことで、異なるアルバムリリースを減らすようにします"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:48
 msgid "Generating fingerprints:"
@@ -4488,9 +4507,9 @@ msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
-"曲の送信には、<i><b>musicbrainz_trackid</b></i> タグ、または "
-"<i><b>artist</b></i> / <i><b>title</b></i> / <i><b>album</b></i> "
-"タグのどちらか一方が必要です。"
+"曲の送信には、<i><b>musicbrainz_trackid</b></i> タグ、または <i><b>artist</"
+"b></i> / <i><b>title</b></i> / <i><b>album</b></i> タグのどちらか一方が必要で"
+"す。"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Fingerprints:"
@@ -4559,8 +4578,8 @@ msgid ""
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
 "iFP デバイスに接続できません。デバイスの電源がオンになっていて接続されている"
-"こと、および ifp-line (http://ifp-driver.sf.net) "
-"がインストールされていることを確認してください。"
+"こと、および ifp-line (http://ifp-driver.sf.net) がインストールされていること"
+"を確認してください。"
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -4575,7 +4594,8 @@ msgstr "アップロードエラー"
 #, python-format
 msgid ""
 "Unable to upload <b>%s</b>. The device may be out of space, or turned off."
-msgstr "<b>%s</b> をアップロードできません。デバイスの容量が不足しているか、電源がオ"
+msgstr ""
+"<b>%s</b> をアップロードできません。デバイスの容量が不足しているか、電源がオ"
 "フになっている可能性があります。"
 
 #. Could be made configurable in the future, but these likely suffice
@@ -4867,8 +4887,8 @@ msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"GStreamer を使用して <a href=\"%(rg_link)s\">ReplayGain</a> "
-"情報を解析し更新します。結果はアルバム単位でグルーピングされます。"
+"GStreamer を使用して <a href=\"%(rg_link)s\">ReplayGain</a> 情報を解析し更新"
+"します。結果はアルバム単位でグルーピングされます。"
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -5180,7 +5200,8 @@ msgstr "ファイル情報の一覧表示"
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
-msgstr "提供された画像を主埋め込み画像として設定し、他の全ての埋め込み画像を削除する"
+msgstr ""
+"提供された画像を主埋め込み画像として設定し、他の全ての埋め込み画像を削除する"
 
 #: quodlibet/operon/commands.py:518
 #, python-format
@@ -5385,14 +5406,16 @@ msgstr "オーディオ出力を作成できません"
 msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
-msgstr "オーディオ デバイス %r が見つかりませんでした。~/.quodlibet/config で Xine "
-"の設定を確認してください。"
+msgstr ""
+"オーディオ デバイス %r が見つかりませんでした。~/.quodlibet/config で Xine の"
+"設定を確認してください。"
 
 #: quodlibet/plugins/__init__.py:64
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
-msgstr "モジュール「{module}」が見つかりませんでした。おそらくパッケージのインストー"
+msgstr ""
+"モジュール「{module}」が見つかりませんでした。おそらくパッケージのインストー"
 "ルが必要ではないでしょうか?"
 
 #: quodlibet/plugins/__init__.py:73
@@ -5404,8 +5427,9 @@ msgstr "GStreamer エレメント「{element}」が見つかりませんでし�
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
-msgstr "プラグインウィンドウで ListenBrainz "
-"の設定を行ってください。それまでは、聴取情報は送信されません。"
+msgstr ""
+"プラグインウィンドウで ListenBrainz の設定を行ってください。それまでは、聴取"
+"情報は送信されません。"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
@@ -5414,9 +5438,9 @@ msgid ""
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
 msgstr ""
-"連続して送信失敗しすぎています (%d回)。オフラインモードに設定しています。"
-"プラグインウィンドウで ListenBrainz "
-"の再設定を行ってください。それまでは、聴取情報は送信されません。"
+"連続して送信失敗しすぎています (%d回)。オフラインモードに設定しています。プラ"
+"グインウィンドウで ListenBrainz の再設定を行ってください。それまでは、聴取情"
+"報は送信されません。"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
@@ -5438,7 +5462,8 @@ msgstr "タグ(_A):"
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
-msgstr "送信に含めるタグのリスト。カンマで区切り、必要に応じてダブルクォートを使用し"
+msgstr ""
+"送信に含めるタグのリスト。カンマで区切り、必要に応じてダブルクォートを使用し"
 "てください。"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
@@ -5608,8 +5633,9 @@ msgstr "ファイル:"
 msgid ""
 "The selected songs will be removed from the library and their files deleted "
 "from disk."
-msgstr "選択された曲はライブラリから削除され、そのファイルはディスクから削除されます"
-"。"
+msgstr ""
+"選択された曲はライブラリから削除され、そのファイルはディスクから削除されま"
+"す。"
 
 #: quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
@@ -6124,33 +6150,34 @@ msgstr ""
 msgid "Right side order:"
 msgstr "右側の順序:"
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
 msgstr "タグの変更を破棄しますか?"
 
-#: quodlibet/qltk/msg.py:45
+#: quodlibet/qltk/msg.py:47
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
-msgstr "タグが変更されましたが、まだ保存されていません。保存しますか? "
-"それとも元に戻して変更を破棄しますか?"
+msgstr ""
+"タグが変更されましたが、まだ保存されていません。保存しますか? それとも元に戻"
+"して変更を破棄しますか?"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
 #: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "元に戻す(_R)"
 
-#: quodlibet/qltk/msg.py:104
+#: quodlibet/qltk/msg.py:108
 msgid "File exists"
 msgstr "同名のファイルが存在します"
 
-#: quodlibet/qltk/msg.py:106
+#: quodlibet/qltk/msg.py:110
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "「%(file-name)s」を置換しますか?"
 
-#: quodlibet/qltk/msg.py:112
+#: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
 msgstr "ファイルを置換"
 
@@ -6395,7 +6422,8 @@ msgstr ""
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
-msgstr "利用可能な場合に使用するアルバムアート画像ファイル(ワイルドカードに対応)。複"
+msgstr ""
+"利用可能な場合に使用するアルバムアート画像ファイル(ワイルドカードに対応)。複"
 "数指定する場合は、カンマで区切ってください。"
 
 #: quodlibet/qltk/prefs.py:335
@@ -6825,7 +6853,8 @@ msgstr "アルバムアートを移動する(_M)"
 
 #: quodlibet/qltk/renamefiles.py:211
 msgid "See '[albumart] filenames' config entry for image search strings"
-msgstr "画像検索文字列については「[albumart] filenames」設定項目を参照してください"
+msgstr ""
+"画像検索文字列については「[albumart] filenames」設定項目を参照してください"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
@@ -6962,8 +6991,8 @@ msgstr ""
 "{old!r} → {new!r}\n"
 "\n"
 "オーディオファイル自体はこれによって移動することはありません。\n"
-"それでも、バックアップを取ることをお勧めします (Quod Libet "
-"の「songs」ファイルを含む)。"
+"それでも、バックアップを取ることをお勧めします (Quod Libet の「songs」ファイ"
+"ルを含む)。"
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
@@ -7243,8 +7272,8 @@ msgid ""
 msgstr ""
 "パターン\n"
 "\t<b>%s</b>\n"
-"は不正です。同じタグが2度使われているか、ブラケットの開始、終了の対応 (&lt; /"
-" &gt;) が取れていない可能性があります。"
+"は不正です。同じタグが2度使われているか、ブラケットの開始、終了の対応 "
+"(&lt; / &gt;) が取れていない可能性があります。"
 
 #: quodlibet/qltk/tagsfrompath.py:215
 msgid "Invalid tags"
@@ -7269,8 +7298,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"入力されたパターンが不正です。「&lt;」と「&gt;」はそれぞれ「\\&lt;」や「\\"
-"&gt;」のように入力し、タグの開始と終了関係を保つように入力してください。\n"
+"入力されたパターンが不正です。「&lt;」と「&gt;」はそれぞれ「\\&lt;」や"
+"「\\&gt;」のように入力し、タグの開始と終了関係を保つように入力してくださ"
+"い。\n"
 "\n"
 "%s"
 
@@ -7481,8 +7511,9 @@ msgstr "titlecase?"
 msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
-msgstr "日付は「YYYY」、「YYYY-MM-DD」、「YYYY-MM-DD "
-"HH:MM:SS」の形式で入力してください。"
+msgstr ""
+"日付は「YYYY」、「YYYY-MM-DD」、「YYYY-MM-DD HH:MM:SS」の形式で入力してくださ"
+"い。"
 
 #: quodlibet/util/massagers.py:130
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."

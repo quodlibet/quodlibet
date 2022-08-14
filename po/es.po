@@ -72,7 +72,7 @@ msgstr "Or_denar por…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:90
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:671 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferencias"
@@ -153,7 +153,7 @@ msgstr "La _búsqueda insertada incluye personas"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:124
-#: quodlibet/ext/songsmenu/cover_download.py:306
+#: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "Opciones"
 
@@ -353,7 +353,7 @@ msgstr "Ap_licar"
 #: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
-#: quodlibet/qltk/msg.py:57 quodlibet/qltk/msg.py:94 quodlibet/qltk/msg.py:111
+#: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
 #: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
 #: quodlibet/update.py:95
 msgid "_Cancel"
@@ -695,7 +695,7 @@ msgid "Equal pane width"
 msgstr "Misma anchura de paneles"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:601 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listas"
 
@@ -737,15 +737,15 @@ msgstr "Quod Libet solo puede importar listas en los formatos M3U/M3U8 y PLS."
 msgid "_Rename"
 msgstr "Cambia_r nombre"
 
-#: quodlibet/browsers/playlists/main.py:590
+#: quodlibet/browsers/playlists/main.py:591
 msgid "Unable to rename playlist"
 msgstr "No se pudo cambiar el nombre de la lista"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "Import Playlist"
 msgstr "Importar lista"
 
-#: quodlibet/browsers/playlists/main.py:602
+#: quodlibet/browsers/playlists/main.py:606
 msgid "_Import"
 msgstr "_Importar"
 
@@ -1798,13 +1798,13 @@ msgstr "Nombre de la preselección que se guardará:"
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:326
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:382
+#: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
-#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:55
+#: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
 #: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
@@ -4154,20 +4154,20 @@ msgstr ""
 msgid "No covers found"
 msgstr "No se encontró ninguna cubierta"
 
-#: quodlibet/ext/songsmenu/cover_download.py:318
+#: quodlibet/ext/songsmenu/cover_download.py:319
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr "{size} × {size} px"
 
-#: quodlibet/ext/songsmenu/cover_download.py:331
+#: quodlibet/ext/songsmenu/cover_download.py:332
 msgid "Preview size"
 msgstr "Tamaño de previsualización"
 
-#: quodlibet/ext/songsmenu/cover_download.py:340
+#: quodlibet/ext/songsmenu/cover_download.py:341
 msgid "Save destination"
 msgstr "Destino de guardado"
 
-#: quodlibet/ext/songsmenu/cover_download.py:371
+#: quodlibet/ext/songsmenu/cover_download.py:372
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
@@ -4175,7 +4175,7 @@ msgstr ""
 "Si no es ya JPEG, se convierte la imagen en un JPEG de alta calidad con las "
 "mismas dimensiones"
 
-#: quodlibet/ext/songsmenu/cover_download.py:373
+#: quodlibet/ext/songsmenu/cover_download.py:374
 msgid "Save as JPEG"
 msgstr "Guardar como JPEG"
 
@@ -6171,11 +6171,11 @@ msgstr ""
 msgid "Right side order:"
 msgstr ""
 
-#: quodlibet/qltk/msg.py:44
+#: quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
 msgstr "¿Quiere descartar los cambios en las etiquetas?"
 
-#: quodlibet/qltk/msg.py:45
+#: quodlibet/qltk/msg.py:47
 msgid ""
 "Tags have been changed but not saved. Save these files, or revert and "
 "discard changes?"
@@ -6183,22 +6183,22 @@ msgstr ""
 "Las etiquetas se han modificado pero no se han guardado. ¿Quiere guardar los "
 "archivos o revertir y descartar dichos cambios?"
 
-#: quodlibet/qltk/msg.py:58 quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
 #: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_Revertir"
 
-#: quodlibet/qltk/msg.py:104
+#: quodlibet/qltk/msg.py:108
 msgid "File exists"
 msgstr "El archivo existe"
 
-#: quodlibet/qltk/msg.py:106
+#: quodlibet/qltk/msg.py:110
 #, python-format
 msgid "Replace %(file-name)s?"
 msgstr "¿Quiere reemplazar %(file-name)s?"
 
-#: quodlibet/qltk/msg.py:112
+#: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
 msgstr "_Reemplazar archivo"
 
