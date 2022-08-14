@@ -16,9 +16,8 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.browsers import Browser
-from quodlibet.browsers._base import DisplayPatternMixin
-from quodlibet.browsers.playlists.prefs import (Preferences,
-                                                DEFAULT_PATTERN_TEXT)
+from quodlibet.browsers._base import DisplayPatternMixin, BrowserError
+from quodlibet.browsers.playlists.prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
@@ -57,19 +56,18 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
         super().__init__(spacing=3)
-        self._lists = ObjectModelSort(model=ObjectStore())
-        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
-
         self.songs_lib = songs_lib
         try:
             self.pl_lib: PlaylistLibrary = songs_lib.playlists
         except (AttributeError, TypeError):
-            print_w("No playlist library available")
-        else:
-            model = self._lists.get_model()
-            print_d(f"Reading playlists from library: {self.pl_lib}")
-            for playlist in self.pl_lib:
-                model.append(row=[playlist])
+            raise BrowserError(f"No playlist library available in {songs_lib!r}")
+
+        self._lists = ObjectModelSort(model=ObjectStore())
+        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
+        model = self._lists.get_model()
+        print_d(f"Reading playlists from library: {self.pl_lib}")
+        for playlist in self.pl_lib:
+            model.append(row=[playlist])
 
         # this is instanced with the necessary gtkdialog-settings, and afterwards
         # its run-method is called to get a to-be-compared Gtk.ResponseType
@@ -89,15 +87,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for child in self.get_children():
             child.show_all()
 
-        if hasattr(self, "pl_lib"):
-            self._ids = [
-                self.pl_lib.connect('removed', self.__removed),
-                self.pl_lib.connect('added', self.__added),
-                self.pl_lib.connect('changed', self.__changed),
-            ]
-            print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
-        else:
-            self._ids = []
+        self._ids = [
+            self.pl_lib.connect('removed', self.__removed),
+            self.pl_lib.connect('added', self.__added),
+            self.pl_lib.connect('changed', self.__changed),
+        ]
+        print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
         self.connect("destroy", self._destroy)
 
     def _destroy(self, _browser):
