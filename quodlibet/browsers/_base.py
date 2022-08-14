@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016-2020 Nick Boultbee
+#           2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -129,6 +129,10 @@ class Filter:
                 value = random.choice(values)
                 query = util.build_filter_query(key, [value])
                 self.filter_text(query)
+
+
+class BrowserError(Exception):
+    pass
 
 
 class Browser(Gtk.Box, Filter):

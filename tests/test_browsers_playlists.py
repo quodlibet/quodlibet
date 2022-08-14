@@ -7,11 +7,13 @@ import os
 import shutil
 from pathlib import Path
 
+import pytest
 from gi.repository import Gdk, Gtk
 
 import quodlibet.config
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.browsers._base import BrowserError
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import (parse_m3u,
@@ -374,7 +376,8 @@ class TPlaylistsBrowser(TestCase):
 
     def test_no_pl_lib(self):
         """Probably not possible in real runtime situations"""
-        assert PlaylistsBrowser(FileLibrary("no-playlists"))
+        with pytest.raises(BrowserError):
+            assert PlaylistsBrowser(FileLibrary("no-playlists"))
 
     @staticmethod
     def a_delete_event():
