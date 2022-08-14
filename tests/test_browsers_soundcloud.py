@@ -82,9 +82,10 @@ class TestMenu(TBrowserBase):
         assert menu
         items = [item.get_label() for item in menu.get_children()
                  if type(item) is not Gtk.SeparatorMenuItem]
-        assert _("_Rating") in items
-        assert _("_Information") in items, "Should have included Information"
-        assert _("Edit _Tags") not in items, "Shouldn't have included edit"
+        # We're always in en_US
+        assert "_Rating" in items
+        assert "_Information" in items, "Should have included Information"
+        assert "Edit _Tags" not in items, "Shouldn't have included edit"
 
 
 class TestHttpsDefault(TestCase):
