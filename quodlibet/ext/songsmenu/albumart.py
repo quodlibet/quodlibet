@@ -4,7 +4,7 @@
 #                Anthony Bretaudeau <wxcover@users.sourceforge.net>,
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2017 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,39 +12,38 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import gzip
 import json
 import os
 import re
-import time
 import threading
-import gzip
+import time
 from io import BytesIO
+from typing import List, Dict, Any
 from urllib.parse import urlencode
 
-from xml.dom import minidom
-
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
+
+from quodlibet import _
+from quodlibet import util, qltk, app
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons
+from quodlibet.qltk.image import (scale, add_border_widget,
+                                  get_surface_for_pixbuf)
+from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.x import Paned, Align, Button
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d, print_w
-
-from quodlibet import _
-from quodlibet import util, qltk, app
-from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned, Align, Button
-from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import Icons
-from quodlibet.qltk.image import scale, add_border_widget, \
-    get_surface_for_pixbuf
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
-    "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
+             "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
 PLUGIN_CONFIG_SECTION = 'cover'
 CONFIG_ENG_PREFIX = 'engine_'
@@ -104,117 +103,13 @@ def get_encoding(url):
     return get_encoding_from_socket(url_sock)
 
 
-class AmazonParser:
-    """A class for searching covers from Amazon"""
-
-    def __init__(self):
-        self.page_count = 1
-        self.covers = []
-        self.limit = 0
-
-    def __parse_page(self, page, query):
-        """Gets all item tags and calls the item parsing function for each"""
-
-        # Amazon now requires that all requests be signed.
-        # I have built a webapp on AppEngine for this purpose. -- wm_eddie
-        # url = 'https://webservices.amazon.com/onca/xml'
-        url = 'https://qlwebservices.appspot.com/onca/xml'
-
-        parameters = {
-            'Service': 'AWSECommerceService',
-            'AWSAccessKeyId': '0RKH4ZH1JCFZHMND91G2', # Now Ignored.
-            'Operation': 'ItemSearch',
-            'ResponseGroup': 'Images,Small',
-            'SearchIndex': 'Music',
-            'Keywords': query,
-            'ItemPage': page,
-            # This specifies where the money goes and needed since 1.11.2011
-            # (What a good reason to break API..)
-            # ...so use the eff.org one: https://www.eff.org/helpout
-            'AssociateTag': 'electronicfro-20',
-        }
-        data = get_url(url, get=parameters)
-        dom = minidom.parseString(data)
-
-        pages = dom.getElementsByTagName('TotalPages')
-        if pages:
-            self.page_count = int(pages[0].firstChild.data)
-
-        items = dom.getElementsByTagName('Item')
-        print_d("Amazon: got %d search result(s)" % len(items))
-        for item in items:
-            self.__parse_item(item)
-            if len(self.covers) >= self.limit:
-                break
-
-    def __parse_item(self, item):
-        """Extract all information and add the covers to the list."""
-
-        large = item.getElementsByTagName('LargeImage')
-        small = item.getElementsByTagName('SmallImage')
-        title = item.getElementsByTagName('Title')
-
-        if large and small and title:
-            cover = {}
-
-            artist = item.getElementsByTagName('Artist')
-            creator = item.getElementsByTagName('Creator')
-
-            text = ''
-            if artist:
-                text = artist[0].firstChild.data
-            elif creator:
-                if len(creator) > 1:
-                    text = ', '.join([i.firstChild.data for i in creator])
-                else:
-                    text = creator[0].firstChild.data
-
-            title_text = title[0].firstChild.data
-
-            if len(text) and len(title_text):
-                text += ' - '
-
-            cover['name'] = text + title_text
-
-            url_tag = small[0].getElementsByTagName('URL')[0]
-            cover['thumbnail'] = url_tag.firstChild.data
-
-            url_tag = large[0].getElementsByTagName('URL')[0]
-            cover['cover'] = url_tag.firstChild.data
-
-            #Since we don't know the size, use the one from the HTML header.
-            cover['size'] = get_size_of_url(cover['cover'])
-
-            h_tag = large[0].getElementsByTagName('Height')[0]
-            height = h_tag.firstChild.data
-
-            w_tag = large[0].getElementsByTagName('Width')[0]
-            width = w_tag.firstChild.data
-
-            cover['resolution'] = '%s x %s px' % (width, height)
-
-            cover['source'] = 'https://www.amazon.com'
-
-            self.covers.append(cover)
-
-    def start(self, query, limit=5):
-        """Start the search and returns the covers"""
-
-        self.page_count = 0
-        self.covers = []
-        self.limit = limit
-        page = 1
-
-        while len(self.covers) < limit:
-            self.__parse_page(page, query)
-            if page >= self.page_count:
-                break
-            page += 1
-
-        return self.covers
+class CoverSearcher:
+    def start(self, query, limit=5) -> List[Dict[str, Any]]:
+        """Start the search and return the covers"""
+        raise NotImplementedError()
 
 
-class DiscogsParser:
+class DiscogsSearcher(CoverSearcher):
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -291,8 +186,6 @@ class DiscogsParser:
                 break
 
     def start(self, query, limit=3):
-        """Start the search and returns the covers"""
-
         self.page_count = 0
         self.covers = []
         self.limit = limit
@@ -522,7 +415,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
     def set_cover(self, url):
         thr = threading.Thread(target=self.__set_async, args=(url,))
-        thr.setDaemon(True)
+        thr.daemon = True
         thr.start()
 
     def __set_async(self, url):
@@ -925,10 +818,10 @@ class CoverSearch:
         for engine, replace in self.engine_list:
             thr = threading.Thread(target=self.__search_thread,
                                    args=(engine, query, replace, raw, limit))
-            thr.setDaemon(True)
+            thr.daemon = True
             thr.start()
 
-        #tell the other side that we are finished if there is nothing to do.
+        # tell the other side that we are finished if there is nothing to do.
         if not len(self.engine_list):
             GLib.idle_add(self.callback, [], 1)
 
@@ -948,7 +841,7 @@ class CoverSearch:
             print_exc()
 
         self.finished += 1
-        #progress is between 0..1
+        # progress is between 0..1
         progress = float(self.finished) / len(self.engine_list)
         GLib.idle_add(self.callback, result, progress)
 
@@ -991,13 +884,7 @@ def get_size_of_url(url):
 
 ENGINES = [
     {
-        'class': AmazonParser,
-        'url': 'https://www.amazon.com/',
-        'replace': ' ',
-        'config_id': 'amazon',
-    },
-    {
-        'class': DiscogsParser,
+        'class': DiscogsSearcher,
         'url': 'https://www.discogs.com/',
         'replace': ' ',
         'config_id': 'discogs',
