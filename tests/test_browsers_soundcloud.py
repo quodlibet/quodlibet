@@ -3,17 +3,19 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import time
 from unittest import TestCase
 
-import time
+from gi.repository import Gtk
 
 from quodlibet import config
+from quodlibet import const
+from quodlibet.browsers.soundcloud import SoundcloudBrowser
 from quodlibet.browsers.soundcloud.api import SoundcloudApiClient
 from quodlibet.browsers.soundcloud.query import SoundcloudQuery, convert_time
-
-from quodlibet import const
 from quodlibet.query import QueryType
 from quodlibet.util.dprint import print_d
+from tests.test_browsers__base import TBrowserBase
 
 NONE = set([])
 
@@ -70,6 +72,20 @@ class TestExtract(TestCase):
         self.failUnlessEqual(terms[term], expected,
                              msg="terms[%s] wasn't %r. Full terms: %r"
                                  % (term, expected, terms))
+
+
+class TestMenu(TBrowserBase):
+    Kind = SoundcloudBrowser
+
+    def test_songsmenu_has_information_but_no_edit(self):
+        menu = self.b.Menu([], self.library, [])
+        assert menu
+        items = [item.get_label() for item in menu.get_children()
+                 if type(item) is not Gtk.SeparatorMenuItem]
+        # We're always in en_US
+        assert "_Rating" in items
+        assert "_Information" in items, "Should have included Information"
+        assert "Edit _Tags" not in items, "Shouldn't have included edit"
 
 
 class TestHttpsDefault(TestCase):

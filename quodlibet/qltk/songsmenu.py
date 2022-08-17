@@ -268,8 +268,8 @@ class SongsMenu(Gtk.Menu):
         PluginManager.instance.register_handler(cls.plugins)
 
     def __init__(self, library, songs, plugins=True, playlists=True, queue=True,
-                 remove=True, delete=False, edit=True, ratings=True, show_files=True,
-                 download=False, items=None, accels=True,
+                 remove=True, delete=False, edit=True, info=True, ratings=True,
+                 show_files=True, download=False, items=None, accels=True,
                  removal_confirmer=None, folder_chooser=None):
         super().__init__()
         # The library may actually be a librarian; if it is, use it,
@@ -388,6 +388,7 @@ class SongsMenu(Gtk.Menu):
             b.connect('activate', song_properties_cb)
             self.append(b)
 
+        if info:
             b = qltk.MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
             b.set_sensitive(bool(songs))
             if accels:

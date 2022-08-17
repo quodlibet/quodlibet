@@ -120,12 +120,12 @@ class TSongsMenu(TestCase):
         # TODO: some useful assertions, without needing a UI
 
     def empty_menu_with(self, plugins=False, playlists=False, queue=False,
-                        remove=False, delete=False, edit=False, ratings=False,
-                        show_files=False, download=False,
+                        remove=False, delete=False, edit=False, info=False,
+                        ratings=False, show_files=False, download=False,
                         removal_confirmer=None, folder_chooser=None):
         return SongsMenu(self.library, self.songs, plugins=plugins, playlists=playlists,
                          queue=queue, remove=remove, delete=delete, edit=edit,
-                         ratings=ratings, show_files=show_files,
+                         info=info, ratings=ratings, show_files=show_files,
                          removal_confirmer=removal_confirmer,
                          download=download, folder_chooser=folder_chooser)
 

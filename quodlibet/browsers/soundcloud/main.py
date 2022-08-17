@@ -130,7 +130,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.show()
 
     def Menu(self, songs, library, items):
-        return SongsMenu(library, songs, download=True, items=items)
+        return SongsMenu(library, songs, edit=False, download=True, items=items)
 
     @property
     def online(self):
