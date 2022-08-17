@@ -13,6 +13,10 @@ from quodlibet.util.library import background_filter
 
 
 class AlbumListItem(GObject.Object):
+    """This model represents an entry for a specific album.
+
+    It will load the album cover and generate the album label on demand.
+    """
 
     def __init__(self, album=None):
         super().__init__()
@@ -28,7 +32,7 @@ class AlbumListItem(GObject.Object):
             self.notify('cover')
 
         manager = app.cover_manager
-        # Skips this during testing
+        # Skip this during testing
         if manager:
             manager.get_pixbuf_many_async(
                 self._album.songs, size, size, cancelable, callback)
@@ -54,6 +58,10 @@ class AlbumListItem(GObject.Object):
 
 
 class AlbumListCountItem(AlbumListItem):
+    """This model represents an entry for a set of albums.
+
+    It will generate a label containing the number of albums on demand.
+    """
 
     def load_cover(self, *args, **kwargs):
         self.notify('cover')
@@ -75,6 +83,10 @@ class AlbumListCountItem(AlbumListItem):
 
 
 class AlbumListModel(ObjectStore):
+    """This model creates entries for albums from a library.
+
+    The first entry represents the whole set of albums in the library.
+    """
 
     def __init__(self, library):
         super().__init__()
@@ -125,6 +137,15 @@ class AlbumListModel(ObjectStore):
 
 
 class AlbumListFilterModel(GObject.Object, Gio.ListModel):
+    """This model filters entries in a child model.
+
+    The property "include_item_all" toggles visibility of the first entry of the
+    child model.
+
+    The property "filter" is a function which defines visibility for all
+    remaining entries of the child model. If "filter" is set to None, all
+    entries are visibile.
+    """
 
     __filter = None
 
@@ -251,4 +272,5 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
 
 class AlbumListSortModel(ObjectModelSort):
+    """This model sorts entries of a child model"""
     pass

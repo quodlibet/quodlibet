@@ -24,6 +24,12 @@ def _no_cover(size, widget):
 
 
 class AlbumWidget(Gtk.FlowBoxChild):
+    """An AlbumWidget displays an album with a cover and a label.
+
+    The cover initially holds a placeholder. When the widget is drawn the real
+    cover loads and the label is shown.
+    """
+
     __gsignals__ = {
         'songs-menu': (GObject.SignalFlags.RUN_LAST, None, ())
     }
@@ -32,7 +38,6 @@ class AlbumWidget(Gtk.FlowBoxChild):
     cover_size = GObject.Property(type=int, default=48)
     text_visible = GObject.Property(type=bool, default=True)
     display_pattern = GObject.Property()
-    cover_placeholder = GObject.Property()
 
     def __init__(self, model, cancelable=None, **kwargs):
         super().__init__(has_tooltip=True, **kwargs)
