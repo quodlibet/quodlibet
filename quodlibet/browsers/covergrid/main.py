@@ -13,7 +13,7 @@ from __future__ import absolute_import
 
 import os
 
-from gi.repository import Gtk, Gdk, Gio
+from gi.repository import GLib, Gtk, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 
@@ -454,16 +454,23 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         return not first
 
     def __scroll_to_child(self, child):
-        va = self.scrollwin.get_vadjustment().props
-        try:
-            x, y = child.translate_coordinates(self.scrollwin, 0, va.value)
+        def scroll():
+            va = self.scrollwin.props.vadjustment
+            if va is None:
+                return
+            v = va.props.value
+            coords = child.translate_coordinates(self.scrollwin, 0, v)
+            if coords is None:
+                return
+            x, y = coords
             h = child.get_allocation().height
-            if y < va.value:
-                va.value = y
-            elif y + h > va.value + va.page_size:
-                va.value = y - va.page_size + h
-        except TypeError:
-            pass
+            p = va.props.page_size
+            if y < v:
+                va.props.value = y
+            elif y + h > v + p:
+                va.props.value = y - p + h
+
+        GLib.idle_add(scroll, priority=GLib.PRIORITY_LOW)
 
     def save(self):
         conf = self.__get_config_string()
