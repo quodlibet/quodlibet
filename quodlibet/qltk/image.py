@@ -108,6 +108,7 @@ def add_border_widget(pixbuf, widget):
 
     context = widget.get_style_context()
     color = context.get_color(context.get_state())
+    color.alpha *= 0.1
     scale_factor = widget.get_scale_factor()
     border_radius = get_border_radius() * scale_factor
 
