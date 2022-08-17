@@ -7,8 +7,9 @@
 
 from gi.repository import GObject, Gio
 
-from quodlibet import _, ngettext, app
+from quodlibet import _, app, util
 from quodlibet.qltk.models import ObjectModelSort, ObjectStore, ObjectModelFilter
+from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 
 
@@ -68,8 +69,8 @@ class AlbumListCountItem(AlbumListItem):
 
     def format_label(self, pattern=None):
         n = self.__n_albums
-        self._label = ('<b>%s</b>\n' +
-            ngettext('%d album', '%d albums', n)) % (_('All Albums'), n)
+        title = '<b>%s</b>\n' % util.escape(_('All Albums'))
+        self._label = title + numeric_phrase('%d album', '%d albums', n)
         self.notify('label')
 
     @GObject.Property
