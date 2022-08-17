@@ -68,7 +68,7 @@ class AlbumListCountItem(AlbumListItem):
     def n_albums(self):
         return self.__n_albums
 
-    @n_albums.setter
+    @n_albums.setter # type: ignore
     def n_albums(self, value):
         self.__n_albums = value
         self.format_label()
@@ -160,7 +160,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
     def include_item_all(self):
         return self.__include_item_all
 
-    @include_item_all.setter
+    @include_item_all.setter # type: ignore
     def include_item_all(self, value):
         if self.__include_item_all == value:
             return
@@ -172,7 +172,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
     def filter(self):
         return self.__filter
 
-    @filter.setter
+    @filter.setter # type: ignore
     def filter(self, value):
         b = background_filter()
         if b is None and value is None:
