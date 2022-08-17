@@ -5,10 +5,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Callable, Optional
 from gi.repository import GObject, Gio
 
 from quodlibet import _, app, util
+from quodlibet.library.song import SongLibrary
 from quodlibet.qltk.models import ObjectModelSort, ObjectStore, ObjectModelFilter
+from quodlibet.util.collection import Album
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.library import background_filter
 
@@ -19,7 +22,7 @@ class AlbumListItem(GObject.Object):
     It will load the album cover and generate the album label on demand.
     """
 
-    def __init__(self, album=None):
+    def __init__(self, album: Optional[Album] = None):
         super().__init__()
         self._album = album
         self._cover = None
@@ -27,7 +30,9 @@ class AlbumListItem(GObject.Object):
 
         self.connect('notify::album', self._album_changed)
 
-    def load_cover(self, size, cancelable=None):
+    def load_cover(self,
+            size: int,
+            cancelable: Optional[Gio.Cancellable] = None):
         def callback(cover):
             self._cover = cover
             self.notify('cover')
@@ -89,7 +94,7 @@ class AlbumListModel(ObjectStore):
     The first entry represents the whole set of albums in the library.
     """
 
-    def __init__(self, library):
+    def __init__(self, library: SongLibrary):
         super().__init__()
         self.__library = library
 
@@ -148,7 +153,9 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
     entries are visibile.
     """
 
-    __filter = None
+    __item_all: AlbumListItem
+    __include_item_all: bool
+    __filter: Optional[Callable[[AlbumListItem], bool]] = None
 
     def __init__(self, child_model=None, include_item_all=True, **kwargs):
         super().__init__(**kwargs)
@@ -227,7 +234,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
             index += 1
         return self._get_item(index)
 
-    def _get_item(self, index):
+    def _get_item(self, index: int) -> Optional[AlbumListItem]:
         model = self._model
         iter = model.iter_nth_child(None, index)
         return model.get_value(iter) if iter else None

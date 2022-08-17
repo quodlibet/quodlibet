@@ -6,20 +6,23 @@
 # (at your option) any later version.
 
 from __future__ import absolute_import
+from typing import Optional
 
-from gi.repository import GObject, Gtk, Pango, Gdk
+from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango, Gdk
+from cairo import Surface
+from .models import AlbumListItem
 
 from quodlibet.qltk.cover import get_no_cover_pixbuf
 from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.util import DeferredSignal
 
 
-def _no_cover(size, widget):
+def _no_cover(size, widget) -> Optional[Surface]:
     old_size, surface = getattr(_no_cover, 'cache', (None, None))
     if old_size != size or surface is None:
         surface = get_surface_for_pixbuf(
             widget, get_no_cover_pixbuf(size, size))
-        _no_cover.cache = (size, surface)
+        setattr(_no_cover, 'cache', (size, surface))
     return surface
 
 
@@ -39,7 +42,10 @@ class AlbumWidget(Gtk.FlowBoxChild):
     text_visible = GObject.Property(type=bool, default=True)
     display_pattern = GObject.Property()
 
-    def __init__(self, model, cancelable=None, **kwargs):
+    def __init__(self,
+            model: AlbumListItem,
+            cancelable: Optional[Gio.Cancellable] = None,
+            **kwargs):
         super().__init__(has_tooltip=True, **kwargs)
 
         self.model = model
@@ -93,7 +99,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         width = image_size + 4 * self.props.padding
         return (width, width)
 
-    def __get_image_size(self):
+    def __get_image_size(self) -> int:
         return self.props.cover_size * self.props.scale_factor + 2
 
     def populate(self):
@@ -115,7 +121,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         self.model.load_cover(size, self._cancelable)
         self.model.format_label(self.props.display_pattern)
 
-    def _set_cover(self, cover=None):
+    def _set_cover(self, cover: Optional[GdkPixbuf.Pixbuf] = None):
         if cover:
             pb = add_border_widget(cover, self)
             surface = get_surface_for_pixbuf(self, pb)
@@ -124,7 +130,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
             surface = _no_cover(size, self)
         self._image.props.surface = surface
 
-    def _set_text(self, label=None):
+    def _set_text(self, label: Optional[str] = None):
         if label:
             self._label.set_markup(label)
 
