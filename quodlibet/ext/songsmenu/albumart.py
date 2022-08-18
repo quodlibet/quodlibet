@@ -30,19 +30,16 @@ from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons, ConfigRHPaned
+from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.image import scale, add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.x import Align, Button
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d, print_w
-
-from quodlibet import _
-from quodlibet import util, qltk, app
-from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Align, Button
-from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import Icons, ConfigRHPaned
-from quodlibet.qltk.image import scale, add_border_widget, \
-    get_surface_for_pixbuf
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
 
@@ -236,7 +233,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             _("See '[plugins] cover_filenames' config entry " +
               "for image filename strings"))
 
-        self.cmd = qltk.entry.ValidatingEntry(iscommand)
+        self.cmd = ValidatingEntry(iscommand)
 
         # Both labels
         label_open = Gtk.Label(label=_('_Program:'))
@@ -543,7 +540,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         treeselection.connect('changed', self.__select_callback, image)
 
         self.treeview.connect("drag-data-get",
-            self.__drag_data_get, treeselection)
+                              self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn('Thumb')
