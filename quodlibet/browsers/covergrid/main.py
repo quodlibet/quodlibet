@@ -2,6 +2,7 @@
 #           2009-2010 Steven Robertson
 #           2012-2022 Nick Boultbee
 #           2009-2014 Christoph Reiter
+#           2022 Thomas Leberbauer
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,16 +12,10 @@
 from __future__ import absolute_import
 
 import os
-from typing import Optional
 
-import cairo
-from gi.repository import Gtk, Pango, Gdk, Gio
+from gi.repository import GLib, Gtk, Gdk, Gio
 
 from .prefs import Preferences, DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.albums.models import (AlbumModel,
-    AlbumFilterModel, AlbumSortModel)
-from quodlibet.browsers.albums.main import (get_cover_size,
-    AlbumTagCompletion, PreferencesButton as AlbumPreferencesButton, VisibleUpdate)
 
 import quodlibet
 from quodlibet import app
@@ -30,6 +25,16 @@ from quodlibet import qltk
 from quodlibet import util
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.browsers.albums.main import (
+    AlbumTagCompletion,
+    PreferencesButton as AlbumPreferencesButton,
+)
+from quodlibet.browsers.covergrid.models import (
+    AlbumListFilterModel,
+    AlbumListModel,
+    AlbumListSortModel,
+)
+from quodlibet.browsers.covergrid.widgets import AlbumWidget
 from quodlibet.browsers._base import DisplayPatternMixin
 from quodlibet.query import Query
 from quodlibet.qltk.information import Information
@@ -41,10 +46,7 @@ from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_destroy
-from quodlibet.util.library import background_filter
 from quodlibet.util import connect_obj
-from quodlibet.qltk.cover import get_no_cover_pixbuf
-from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk import popup_menu_at_widget
 
 
@@ -69,7 +71,7 @@ class PreferencesButton(AlbumPreferencesButton):
             label=_(u"Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
-        active = config.getint('browsers', 'album_sort', 1)
+        active = config.getint("browsers", "album_sort", 1)
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
@@ -100,33 +102,16 @@ class PreferencesButton(AlbumPreferencesButton):
         self.pack_start(button, True, True, 0)
 
 
-class IconView(Gtk.IconView):
-    # XXX: disable height for width etc. Speeds things up and doesn't seem
-    # to break anyhting in a scrolled window
-
-    def do_get_preferred_width_for_height(self, height):
-        return (1, 1)
-
-    def do_get_preferred_width(self):
-        return (1, 1)
-
-    def do_get_preferred_height(self):
-        return (1, 1)
-
-    def do_get_preferred_height_for_width(self, width):
-        return (1, 1)
+def _get_cover_size():
+    mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+    return mag * config.getint("browsers", "cover_size", 48)
 
 
-class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
-                DisplayPatternMixin):
-    __gsignals__ = Browser.__gsignals__
+class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     __model = None
-    __last_render = None
-    __last_render_surface = None
 
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "album_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
-    STAR = ["~people", "album"]
 
     name = _("Cover Grid")
     accelerated_name = _("_Cover Grid")
@@ -147,10 +132,11 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def init(klass, library):
         super(CoverGrid, klass).load_pattern()
 
-    def finalize(self, restored):
-        if not restored:
-            # Select the "All Albums" album, which is None
-            self.select_by_func(lambda r: r[0].album is None, one=True)
+    @classmethod
+    def _init_model(klass, library):
+        if klass.__model is None:
+            klass.__model = AlbumListModel(library)
+            klass.__library = library
 
     @classmethod
     def _destroy_model(klass):
@@ -159,10 +145,16 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     @classmethod
     def toggle_text(klass):
-        on = config.getboolean("browsers", "album_text", True)
+        text_visible = config.getboolean("browsers", "album_text", True)
         for covergrid in klass.instances():
-            covergrid.__text_cells.set_visible(on)
-            covergrid.view.queue_resize()
+            for child in covergrid.view:
+                child.props.text_visible = text_visible
+
+    @classmethod
+    def toggle_item_all(klass):
+        show = config.getboolean("browsers", "covergrid_all", True)
+        for covergrid in klass.instances():
+            covergrid.__model_filter.props.include_item_all = show
 
     @classmethod
     def toggle_wide(klass):
@@ -174,160 +166,83 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
 
     @classmethod
     def update_mag(klass):
-        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+        cover_size = _get_cover_size()
         for covergrid in klass.instances():
-            covergrid.__cover.set_property('width', get_cover_size() * mag + 8)
-            covergrid.__cover.set_property('height',
-                get_cover_size() * mag + 8)
-            covergrid.view.set_item_width(get_cover_size() * mag + 8)
+            for child in covergrid.view:
+                child.cover_size = cover_size
             covergrid.view.queue_resize()
-            covergrid.redraw()
-
-    def redraw(self):
-        model = self.__model
-        for iter_, item in model.iterrows():
-            album = item.album
-            if album is not None:
-                item.scanned = False
-                model.row_changed(model.get_path(iter_), iter_)
-
-    @classmethod
-    def _init_model(klass, library):
-        klass.__model = AlbumModel(library)
-        klass.__library = library
-
-    @classmethod
-    def _refresh_albums(klass, albums):
-        """We signal all other open album views that we changed something
-        (Only needed for the cover atm) so they redraw as well."""
-        if klass.__library:
-            klass.__library.albums.refresh(albums)
-
-    @util.cached_property
-    def _no_cover(self) -> Optional[cairo.Surface]:
-        """Returns a cairo surface representing a missing cover"""
-
-        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-
-        cover_size = get_cover_size()
-        scale_factor = self.get_scale_factor() * mag
-        pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
-        return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
-        Browser.__init__(self, spacing=6)
-        self.set_orientation(Gtk.Orientation.VERTICAL)
+        super().__init__(
+            orientation=Gtk.Orientation.VERTICAL,
+            spacing=6)
+
         self.songcontainer = qltk.paned.ConfigRVPaned(
             "browsers", "covergrid_pos", 0.4)
         if config.getboolean("browsers", "covergrid_wide", False):
             self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
 
         self._register_instance()
-        if self.__model is None:
-            self._init_model(library)
+        self._init_model(library)
 
-        self._cover_cancel = Gio.Cancellable()
+        self.__cover_cancel = Gio.Cancellable()
 
-        self.scrollwin = sw = ScrolledWindow()
+        model_sort = AlbumListSortModel(model=self.__model)
+        self.__model_filter = model_filter = AlbumListFilterModel(
+            include_item_all=config.getboolean("browsers", "covergrid_all", True),
+            child_model=model_sort)
+
+        def create_album_widget(model):
+            item_padding = config.getint("browsers", "item_padding", 6)
+            text_visible = config.getboolean("browsers", "album_text", True)
+            cover_size = _get_cover_size()
+            widget = AlbumWidget(
+                model,
+                display_pattern=self.display_pattern,
+                cover_size=cover_size,
+                padding=item_padding,
+                text_visible=text_visible,
+                cancelable=self.__cover_cancel)
+            widget.connect("songs-menu", self.__popup)
+            return widget
+
+        self.view = view = Gtk.FlowBox(
+            valign=Gtk.Align.START,
+            activate_on_single_click=False,
+            selection_mode=Gtk.SelectionMode.MULTIPLE,
+            homogeneous=True,
+            min_children_per_line=1,
+            max_children_per_line=10,
+            row_spacing=config.getint("browsers", "row_spacing", 6),
+            column_spacing=config.getint("browsers", "column_spacing", 6))
+
+        self.scrollwin = sw = ScrolledWindow(
+            hscrollbar_policy=Gtk.PolicyType.NEVER,
+            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC)
         sw.set_shadow_type(Gtk.ShadowType.IN)
-        model_sort = AlbumSortModel(model=self.__model)
-        model_filter = AlbumFilterModel(child_model=model_sort)
-        self.view = view = IconView(model_filter)
-        #view.set_item_width(get_cover_size() + 12)
-        self.view.set_row_spacing(config.getint("browsers", "row_spacing", 6))
-        self.view.set_column_spacing(config.getint("browsers",
-            "column_spacing", 6))
-        self.view.set_item_padding(config.getint("browsers",
-            "item_padding", 6))
-        self.view.set_has_tooltip(True)
-        self.view.connect("query-tooltip", self._show_tooltip)
-
-        self.__bg_filter = background_filter()
-        self.__filter = None
-        model_filter.set_visible_func(self.__parse_query)
-
-        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-
-        self.view.set_item_width(get_cover_size() * mag + 8)
-
-        self.__cover = render = Gtk.CellRendererPixbuf()
-        render.set_property('width', get_cover_size() * mag + 8)
-        render.set_property('height', get_cover_size() * mag + 8)
-        view.pack_start(render, False)
-
-        def cell_data_pb(view, cell, model, iter_, no_cover):
-            item = model.get_value(iter_)
-
-            if item.album is None:
-                surface = None
-            elif item.cover:
-                pixbuf = item.cover
-                pixbuf = add_border_widget(pixbuf, self.view)
-                surface = get_surface_for_pixbuf(self, pixbuf)
-                # don't cache, too much state has an effect on the result
-                self.__last_render_surface = None
-            else:
-                surface = no_cover
-
-            if self.__last_render_surface == surface:
-                return
-            self.__last_render_surface = surface
-            cell.set_property("surface", surface)
-
-        view.set_cell_data_func(render, cell_data_pb, self._no_cover)
-
-        self.__text_cells = render = Gtk.CellRendererText()
-        render.set_visible(config.getboolean("browsers", "album_text", True))
-        render.set_property('alignment', Pango.Alignment.CENTER)
-        render.set_property('xalign', 0.5)
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        view.pack_start(render, False)
-
-        def cell_data(view, cell, model, iter_, data):
-            album = model.get_album(iter_)
-
-            if album is None:
-                text = "<b>%s</b>" % _("All Albums")
-                text += "\n" + ngettext("%d album", "%d albums",
-                        len(model) - 1) % (len(model) - 1)
-                markup = text
-            else:
-                markup = self.display_pattern % album
-
-            if self.__last_render == markup:
-                return
-            self.__last_render = markup
-            cell.markup = markup
-            cell.set_property('markup', markup)
-
-        view.set_cell_data_func(render, cell_data, None)
-
-        view.set_selection_mode(Gtk.SelectionMode.MULTIPLE)
-        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
+        view.set_hadjustment(self.scrollwin.get_hadjustment())
+        view.set_vadjustment(self.scrollwin.get_vadjustment())
         sw.add(view)
 
-        view.connect('item-activated', self.__play_selection, None)
-
-        self.__sig = connect_destroy(
-            view, 'selection-changed',
-            util.DeferredSignal(self.__update_songs, owner=self))
+        view.connect("selected-children-changed",
+            util.DeferredSignal(
+                lambda _: self.__update_songs(select_default=False),
+                owner=self))
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
-
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        view.connect("drag-data-get", self.__drag_data_get) # NOT WORKING
-        connect_obj(view, 'button-press-event',
-            self.__rightclick, view, library)
-        connect_obj(view, 'popup-menu', self.__popup, view, library)
+
+        view.connect("drag-data-get", self.__drag_data_get)
+        view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-        search.connect('query-changed', self.__update_filter)
-        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
+        search.connect("query-changed", lambda *a: self.__update_filter())
+        connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
@@ -335,28 +250,32 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         self.pack_start(Align(search, left=6, top=0), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
-        self.connect("destroy", self.__destroy)
-
-        self.enable_row_update(view, sw, self.view)
-
         self.__update_filter()
+        model_filter.connect("notify::filter",
+            util.DeferredSignal(lambda *a: self.__update_songs(), owner=self))
 
-        self.connect('key-press-event', self.__key_pressed, library.librarian)
+        self.connect("key-press-event", self.__key_pressed, library.librarian)
+        self.connect("destroy", self.__destroy)
 
         if app.cover_manager:
             connect_destroy(
-                app.cover_manager, "cover-changed", self._cover_changed)
+                app.cover_manager, "cover-changed", self.__cover_changed)
 
+        # show all before binding the model, so a label in a flowbox child will
+        # stay hidden if so configured by the "browsers.album_text" property.
         self.show_all()
+        view.bind_model(model_filter, create_album_widget)
 
-    def _cover_changed(self, manager, songs):
-        model = self.__model
-        songs = set(songs)
-        for iter_, item in model.iterrows():
-            album = item.album
-            if album is not None and songs & album.songs:
-                item.scanned = False
-                model.row_changed(model.get_path(iter_), iter_)
+    def __update_songs(self, select_default=True):
+        songs = self.__get_selected_songs(sort=False)
+        if not select_default or songs:
+            self.songs_selected(songs)
+        else:
+            child = self.view.get_child_at_index(0)
+            if child:
+                self.view.select_child(child)
+            else:
+                self.songs_selected(songs)
 
     def __key_pressed(self, widget, event, librarian):
         if qltk.is_accel(event, "<Primary>I"):
@@ -366,7 +285,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
                 window.show()
             return True
         elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
-            qltk.enqueue(self.__get_selected_songs(sort=True))
+            qltk.enqueue(self.__get_selected_songs())
             return True
         elif qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
@@ -376,160 +295,76 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             return True
         return False
 
-    def _row_needs_update(self, model, iter_):
-        item = model.get_value(iter_)
-        return item.album is not None and not item.scanned
-
-    def _update_row(self, filter_model, iter_):
-        sort_model = filter_model.get_model()
-        model = sort_model.get_model()
-        iter_ = filter_model.convert_iter_to_child_iter(iter_)
-        iter_ = sort_model.convert_iter_to_child_iter(iter_)
-        tref = Gtk.TreeRowReference.new(model, model.get_path(iter_))
-        mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-
-        def callback():
-            path = tref.get_path()
-            if path is not None:
-                model.row_changed(path, model.get_iter(path))
-            # XXX: icon view seems to ignore row_changed signals for pixbufs..
-            self.queue_draw()
-
-        item = model.get_value(iter_)
-        scale_factor = self.get_scale_factor() * mag
-        item.scan_cover(scale_factor=scale_factor,
-                        callback=callback,
-                        cancel=self._cover_cancel)
-
     def __destroy(self, browser):
-        self._cover_cancel.cancel()
-        self.disable_row_update()
+        self.__cover_cancel.cancel()
 
-        self.view.set_model(None)
+        self.view.bind_model(None, lambda _: None)
+        self.__model_filter.destroy()
+        self.__model_filter = None
 
-        klass = type(browser)
-        if not klass.instances():
-            klass._destroy_model()
+        if not CoverGrid.instances():
+            CoverGrid._destroy_model()
 
-    def __update_filter(self, entry=None, text=None, scroll_up=True,
-                        restore=False):
-        model = self.view.get_model()
+    def __cover_changed(self, manager, songs):
+        songs = set(songs)
+        cover_size = _get_cover_size()
 
-        self.__filter = None
-        query = self.__search.get_query(self.STAR)
-        if not query.matches_all:
-            self.__filter = query.search
-        self.__bg_filter = background_filter()
-
-        self.__inhibit()
-
-        # If we're hiding "All Albums", then there will always
-        # be something to filter ­— probably there's a better
-        # way to implement this
-
-        if (not restore or self.__filter or self.__bg_filter) or (not
-            config.getboolean("browsers", "covergrid_all", True)):
-            model.refilter()
-
-        self.__uninhibit()
-
-    def __parse_query(self, model, iter_, data):
-        f, b = self.__filter, self.__bg_filter
-        album = model.get_album(iter_)
-
-        if f is None and b is None and album is not None:
-            return True
-        else:
+        for item in self.__model:
+            if not songs:
+                break
+            album = item.album
             if album is None:
-                return config.getboolean("browsers", "covergrid_all", True)
-            elif b is None:
-                return f(album)
-            elif f is None:
-                return b(album)
-            else:
-                return b(album) and f(album)
+                continue
+            match = songs & album.songs
+            if match:
+                item.load_cover(cover_size, cancelable=self.__cover_cancel)
+                songs -= match
 
-    def __search_func(self, model, column, key, iter_, data):
-        album = model.get_album(iter_)
-        if album is None:
-            return config.getboolean("browsers", "covergrid_all", True)
-        key = key.lower()
-        title = album.title.lower()
-        if key in title:
-            return False
-        if config.getboolean("browsers", "album_substrings"):
-            people = (p.lower() for p in album.list("~people"))
-            for person in people:
-                if key in person:
-                    return False
-        return True
+    def __update_filter(self, scroll_up=True):
+        if scroll_up:
+            adjustment = self.scrollwin.props.vadjustment
+            adjustment.props.value = adjustment.props.lower
 
-    def __rightclick(self, view, event, library):
-        x = int(event.x)
-        y = int(event.y)
-        current_path = view.get_path_at_pos(x, y)
-        if event.button == Gdk.BUTTON_SECONDARY and current_path:
-            if not view.path_is_selected(current_path):
-                view.unselect_all()
-            view.select_path(current_path)
-            self.__popup(view, library)
+        q = self.__search.get_query(star=["~people", "album"])
+        self.__model_filter.props.filter = None if q.matches_all else q.search
 
-    def __popup(self, view, library):
+    def __popup(self, widget):
+        if not widget.is_selected():
+            self.view.unselect_all()
+        self.view.select_child(widget)
 
         albums = self.__get_selected_albums()
         songs = self.__get_songs_from_albums(albums)
 
-        items = []
-        num = len(albums)
-        button = MenuItem(
-            ngettext("Reload album _cover", "Reload album _covers", num),
-            Icons.VIEW_REFRESH)
-        button.connect('activate', self.__refresh_album, view)
-        items.append(button)
+        button_label = ngettext(
+            "Reload album _cover", "Reload album _covers", len(albums))
+        button = MenuItem(button_label, Icons.VIEW_REFRESH)
+        button.connect("activate", self.__refresh_cover, widget)
 
-        menu = SongsMenu(library, songs, items=[items])
+        menu = SongsMenu(self.__library, songs, items=[[button]])
         menu.show_all()
-        popup_menu_at_widget(menu, view,
-            Gdk.BUTTON_SECONDARY,
-            Gtk.get_current_event_time())
+        popup_menu_at_widget(
+            menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
 
-    def _show_tooltip(self, widget, x, y, keyboard_tip, tooltip):
-        w = self.scrollwin.get_hadjustment().get_value()
-        z = self.scrollwin.get_vadjustment().get_value()
-        path = widget.get_path_at_pos(int(x + w), int(y + z))
-        if path is None:
-            return False
-        model = widget.get_model()
-        iter = model.get_iter(path)
-        album = model.get_album(iter)
-        if album is None:
-            text = "<b>%s</b>" % _("All Albums")
-            text += "\n" + ngettext("%d album",
-                "%d albums", len(model) - 1) % (len(model) - 1)
-            markup = text
-        else:
-            markup = self.display_pattern % album
-        tooltip.set_markup(markup)
-        return True
+    def __refresh_cover(self, menuitem, view):
+        cover_size = _get_cover_size()
+        for child in self.view.get_selected_children():
+            child.model.load_cover(cover_size, cancelable=self.__cover_cancel)
 
-    def __refresh_album(self, menuitem, view):
-        items = self.__get_selected_items()
-        for item in items:
-            item.scanned = False
-        model = self.view.get_model()
-        for iter_, item in model.iterrows():
-            if item in items:
-                model.row_changed(model.get_path(iter_), iter_)
-
-    def __get_selected_items(self):
-        model = self.view.get_model()
-        paths = self.view.get_selected_items()
-        return model.get_items(paths)
+    def refresh_all(self):
+        display_pattern = self.display_pattern
+        for child in self.view:
+            child.display_pattern = display_pattern
 
     def __get_selected_albums(self):
-        model = self.view.get_model()
-        paths = self.view.get_selected_items()
-        return model.get_albums(paths)
+        items = []
+        for child in self.view.get_selected_children():
+            album = child.model.album
+            if album is None:
+                model = self.__model_filter
+                return [item.album for item in model if item.album is not None]
+            items.append(album)
+        return items
 
     def __get_songs_from_albums(self, albums, sort=True):
         # Sort first by how the albums appear in the model itself,
@@ -554,7 +389,7 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         else:
             sel.set_uris([song("~uri") for song in songs])
 
-    def __play_selection(self, view, indices, col):
+    def __child_activated(self, view, child):
         self.songs_activated()
 
     def active_filter(self, song):
@@ -569,14 +404,14 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
     def filter_text(self, text):
         self.__search.set_text(text)
         if Query(text).is_parsable:
-            self.__update_filter(self.__search, text)
-            # self.__inhibit()
-            #self.view.set_cursor((0,), None, False)
-            # self.__uninhibit()
-            self.activate()
+            self.__update_filter()
+            self.__update_songs()
 
     def get_filter_text(self):
         return self.__search.get_text()
+
+    def can_filter_albums(self):
+        return True
 
     def can_filter(self, key):
         # Numerics are different for collections, and although title works,
@@ -585,100 +420,57 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
             return False
         return super().can_filter(key)
 
-    def can_filter_albums(self):
-        return True
+    def filter_albums(self, values):
+        changed = self.__select_by_func(
+            lambda album: album is not None and album.key in values)
+        self.view.grab_focus()
+        if changed:
+            self.__update_songs()
 
     def list_albums(self):
-        model = self.view.get_model()
-        return [row[0].album.key for row in model if row[0].album]
-
-    def select_by_func(self, func, scroll=True, one=False):
-        model = self.view.get_model()
-        if not model:
-            return False
-
-        selection = self.view.get_selected_items()
-        first = True
-        for row in model:
-            if func(row):
-                if not first:
-                    selection.select_path(row.path)
-                    continue
-                self.view.unselect_all()
-                self.view.select_path(row.path)
-                self.view.set_cursor(row.path, None, False)
-                if scroll:
-                    self.view.scroll_to_path(row.path, True, 0.5, 0.5)
-                first = False
-                if one:
-                    break
-        return not first
-
-    def filter_albums(self, values):
-        self.__inhibit()
-        changed = self.select_by_func(
-            lambda r: r[0].album and r[0].album.key in values)
-        self.view.grab_focus()
-        self.__uninhibit()
-        if changed:
-            self.activate()
+        model = self.__model_filter
+        return [item.album.key for item in model if item.album is not None]
 
     def unfilter(self):
         self.filter_text("")
 
-    def activate(self):
-        self.view.emit('selection-changed')
+    def __select_by_func(self, func, scroll=True, one=False):
+        first = True
+        view = self.view
+        for i, item in enumerate(self.__model_filter):
+            if not func(item.album):
+                continue
+            child = view.get_child_at_index(i)
+            if first:
+                view.unselect_all()
+                view.select_child(child)
+                if scroll:
+                    self.__scroll_to_child(child)
+                first = False
+                if one:
+                    break
+            else:
+                view.select_child(child)
+        return not first
 
-    def __inhibit(self):
-        self.view.handler_block(self.__sig)
+    def __scroll_to_child(self, child):
+        def scroll():
+            va = self.scrollwin.props.vadjustment
+            if va is None:
+                return
+            v = va.props.value
+            coords = child.translate_coordinates(self.scrollwin, 0, v)
+            if coords is None:
+                return
+            x, y = coords
+            h = child.get_allocation().height
+            p = va.props.page_size
+            if y < v:
+                va.props.value = y
+            elif y + h > v + p:
+                va.props.value = y - p + h
 
-    def __uninhibit(self):
-        self.view.handler_unblock(self.__sig)
-
-    def restore(self):
-        text = config.gettext("browsers", "query_text")
-        entry = self.__search
-        entry.set_text(text)
-
-        # update_filter expects a parsable query
-        if Query(text).is_parsable:
-            self.__update_filter(entry, text, scroll_up=False, restore=True)
-
-        keys = config.gettext("browsers", "covergrid", "").split("\n")
-
-        self.__inhibit()
-        if keys != [""]:
-            def select_fun(row):
-                album = row[0].album
-                if not album:  # all
-                    return False
-                return album.str_key in keys
-            self.select_by_func(select_fun)
-        else:
-            self.select_by_func(lambda r: r[0].album is None)
-        self.__uninhibit()
-
-    def scroll(self, song):
-        album_key = song.album_key
-        select = lambda r: r[0].album and r[0].album.key == album_key
-        self.select_by_func(select, one=True)
-
-    def __get_config_string(self):
-        model = self.view.get_model()
-        paths = self.view.get_selected_items()
-
-        # All is selected
-        if model.contains_all(paths):
-            return ""
-
-        # All selected albums
-        albums = model.get_albums(paths)
-
-        confval = "\n".join((a.str_key for a in albums))
-        # ConfigParser strips a trailing \n so we move it to the front
-        if confval and confval[-1] == "\n":
-            confval = "\n" + confval[:-1]
-        return confval
+        GLib.idle_add(scroll, priority=GLib.PRIORITY_LOW)
 
     def save(self):
         conf = self.__get_config_string()
@@ -686,6 +478,49 @@ class CoverGrid(Browser, util.InstanceTracker, VisibleUpdate,
         text = self.__search.get_text()
         config.settext("browsers", "query_text", text)
 
-    def __update_songs(self, selection):
-        songs = self.__get_selected_songs(sort=False)
-        self.songs_selected(songs)
+    def restore(self):
+        text = config.gettext("browsers", "query_text")
+        entry = self.__search
+        entry.set_text(text)
+
+        if Query(text).is_parsable:
+            self.__update_filter(scroll_up=False)
+
+        keys = config.gettext("browsers", "covergrid", "").split("\n")
+
+        if keys != [""]:
+            self.__select_by_func(
+                lambda album: album is not None and album.str_key in keys)
+        else:
+            self.__select_by_func(lambda album: album is None, one=True)
+
+    def finalize(self, restored):
+        if not restored:
+            self.__select_by_func(lambda album: album is None, one=True)
+
+    def scroll(self, song):
+        album_key = song.album_key
+        self.__select_by_func(
+            lambda album: album is not None and album.key == album_key,
+            one=True)
+
+    def activate(self):
+        self.__update_songs()
+
+    def __get_config_string(self):
+        albums = []
+        for child in self.view.get_selected_children():
+            album = child.model.album
+            if album is None:
+                albums.clear()
+                break
+            albums.append(album)
+
+        if not albums:
+            return ""
+
+        confval = "\n".join((a.str_key for a in albums))
+        # ConfigParser strips a trailing \n so we move it to the front
+        if confval and confval[-1] == "\n":
+            confval = "\n" + confval[:-1]
+        return confval
