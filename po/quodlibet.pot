@@ -2962,7 +2962,7 @@ msgid "Edit _Tags"
 msgstr ""
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr ""
 
@@ -6915,47 +6915,47 @@ msgstr ""
 msgid "_Remove from Library…"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:410
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Unable to show files"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:411
+#: quodlibet/qltk/songsmenu.py:412
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:418
+#: quodlibet/qltk/songsmenu.py:419
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/qltk/songsmenu.py:435
+#: quodlibet/qltk/songsmenu.py:436
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/qltk/songsmenu.py:442
+#: quodlibet/qltk/songsmenu.py:443
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:443
+#: quodlibet/qltk/songsmenu.py:444
 msgid "failed"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:446
+#: quodlibet/qltk/songsmenu.py:447
 msgid "Downloads complete"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:452
+#: quodlibet/qltk/songsmenu.py:453
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/qltk/songsmenu.py:458
+#: quodlibet/qltk/songsmenu.py:459
 msgid "Download here"
 msgstr ""
 
