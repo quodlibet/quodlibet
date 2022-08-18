@@ -31,12 +31,13 @@ from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.qltk import Icons
-from quodlibet.qltk.image import (scale, add_border_widget,
-                                  get_surface_for_pixbuf)
+from quodlibet.qltk import Icons, ConfigRHPaned
+from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.image import scale, add_border_widget, get_surface_for_pixbuf
 from quodlibet.qltk.msg import ConfirmFileReplace
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import Paned, Align, Button
+from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.x import Align, Button
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import iscommand
@@ -229,10 +230,10 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         self.name_combo = Gtk.ComboBoxText()
         self.name_combo.set_tooltip_text(
-             _("See '[plugins] cover_filenames' config entry " +
-               "for image filename strings"))
+            _("See '[plugins] cover_filenames' config entry " +
+              "for image filename strings"))
 
-        self.cmd = qltk.entry.ValidatingEntry(iscommand)
+        self.cmd = ValidatingEntry(iscommand)
 
         # Both labels
         label_open = Gtk.Label(label=_('_Program:'))
@@ -251,7 +252,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         # populate the filename combo box
         fn_list = self.config_get_stringlist('filenames',
-                      ["cover.jpg", "folder.jpg", ".folder.jpg"])
+                                             ["cover.jpg", "folder.jpg", ".folder.jpg"])
         # Issue 374 - add dynamic file names
         fn_dynlist = []
         artist = song("artist")
@@ -359,7 +360,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             f.close()
         except IOError:
             qltk.ErrorMessage(None, _('Saving failed'),
-                _('Unable to save "%s".') % file_path).run()
+                              _('Unable to save "%s".') % file_path).run()
         else:
             if self.open_check.get_active():
                 try:
@@ -503,14 +504,15 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.loading = False
 
 
-class AlbumArtWindow(qltk.Window, PluginConfigMixin):
+class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
     """The main window including the search list"""
 
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
-    THUMB_SIZE = 50
+    THUMB_SIZE = 128
 
     def __init__(self, songs):
         super().__init__()
+        self.enable_window_tracking(f"plugin_{PLUGIN_CONFIG_SECTION}")
 
         self.image_cache = []
         self.image_cache_size = 10
@@ -538,7 +540,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         treeselection.connect('changed', self.__select_callback, image)
 
         self.treeview.connect("drag-data-get",
-            self.__drag_data_get, treeselection)
+                              self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn('Thumb')
@@ -554,8 +556,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
         border_width = self.get_scale_factor() * 2
-        rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
-        rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
+        rend_pix.set_property('width', self.THUMB_SIZE + 6 + border_width)
+        rend_pix.set_property('height', self.THUMB_SIZE + 6 + border_width)
 
         def escape_data(data):
             for rep in ('\n', '\t', '\r', '\v'):
@@ -610,8 +612,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
                                                  label=None)
         self.search_radioclean.connect("toggled", self.__searchtypetoggled,
                                        "clean")
-        #note: set_active(False) appears to have no effect
-        #self.search_radioraw.set_active(
+        # note: set_active(False) appears to have no effect
+        # self.search_radioraw.set_active(
         #    self.config_get_bool('searchraw', False))
         if self.config_get_bool('searchraw', False):
             self.search_radioraw.set_active(True)
@@ -621,7 +623,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         search_labelresultsmax = Gtk.Label('limit')
         search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
         search_labelresultsmax.set_tooltip_text(
-             _("Per engine 'at best' results limit"))
+            _("Per engine 'at best' results limit"))
         search_adjresultsmax = Gtk.Adjustment(
             value=int(self.config_get("resultsmax", 3)), lower=1,
             upper=REQUEST_LIMIT_MAX, step_incr=1,
@@ -638,6 +640,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         search_button_box.add(self.search_button)
 
         search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
+        search_table.set_col_spacings(6)
+        search_table.set_row_spacings(6)
         search_table.attach(search_labelraw, 0, 1, 0, 1,
                             xoptions=Gtk.AttachOptions.FILL, xpadding=6)
         search_table.attach(self.search_radioraw, 1, 2, 0, 1,
@@ -662,11 +666,11 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         left_vbox.pack_start(search_table, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
-        hpaned = Paned()
+        hpaned = ConfigRHPaned(section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos",
+                               default=0.3)
         hpaned.set_border_width(widget_space)
         hpaned.pack1(left_vbox, shrink=False)
         hpaned.pack2(image, shrink=False)
-        hpaned.set_position(275)
 
         self.add(hpaned)
 
@@ -696,7 +700,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def __searchfieldchanged(self, *data):
         search = data[0].get_text()
         clean = cleanup_query(search, ' ')
-        self.search_fieldclean.set_text('<b>' + clean + '</b>')
+        self.search_fieldclean.set_text(f"<i>{clean}</i>")
         self.search_fieldclean.set_use_markup(True)
 
     def __searchtypetoggled(self, *data):
@@ -922,8 +926,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
             button = Gtk.Button(label=eng['url'])
             button.connect('clicked', lambda s: util.website(s.get_label()))
             table.attach(button, 1, 2, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
         return frame
 
     def plugin_album(self, songs):
