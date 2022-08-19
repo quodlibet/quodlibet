@@ -21,58 +21,58 @@ msgstr ""
 "X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
-#: quodlibet/browsers/covergrid/main.py:56
+#: quodlibet/browsers/covergrid/main.py:58
 msgid "_Title"
 msgstr "_Título"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57
+#: quodlibet/browsers/covergrid/main.py:59
 #, fuzzy
 msgid "_People"
 msgstr "pessoas"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
 msgid "_Date"
 msgstr "_Data"
 
 #: quodlibet/browsers/albums/main.py:226
-#: quodlibet/browsers/covergrid/main.py:59
+#: quodlibet/browsers/covergrid/main.py:61
 #, fuzzy
 msgid "_Date Added"
 msgstr "Cabeçalhos de _data"
 
 #: quodlibet/browsers/albums/main.py:227
-#: quodlibet/browsers/covergrid/main.py:60
+#: quodlibet/browsers/covergrid/main.py:62
 msgid "_Original Date"
 msgstr "Data _original"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr "_Gênero"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Avaliação"
 
 #: quodlibet/browsers/albums/main.py:230
-#: quodlibet/browsers/covergrid/main.py:63
+#: quodlibet/browsers/covergrid/main.py:65
 #, fuzzy
 msgid "Play_count"
 msgstr "_Número de reproduções"
 
 #: quodlibet/browsers/albums/main.py:235
-#: quodlibet/browsers/covergrid/main.py:69
+#: quodlibet/browsers/covergrid/main.py:71
 msgid "Sort _by…"
 msgstr "_Ordenar por…"
 
 #: quodlibet/browsers/albums/main.py:256
-#: quodlibet/browsers/covergrid/main.py:90
+#: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferências"
@@ -86,14 +86,12 @@ msgid "_Album List"
 msgstr "_Lista de álbuns"
 
 #: quodlibet/browsers/albums/main.py:546
-#: quodlibet/browsers/covergrid/main.py:290
-#: quodlibet/browsers/covergrid/main.py:506
+#: quodlibet/browsers/covergrid/models.py:77
 msgid "All Albums"
 msgstr "Todos os álbuns"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:291
-#: quodlibet/browsers/covergrid/main.py:507
+#: quodlibet/browsers/covergrid/models.py:78
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -101,7 +99,7 @@ msgstr[0] "%d álbum"
 msgstr[1] "%d álbuns"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:485
+#: quodlibet/browsers/covergrid/main.py:340
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Recarregar _capa"
@@ -152,20 +150,20 @@ msgid "Inline _search includes people"
 msgstr "_Pesquisa inline inclui pessoas"
 
 #: quodlibet/browsers/albums/prefs.py:71
-#: quodlibet/browsers/covergrid/prefs.py:124
+#: quodlibet/browsers/covergrid/prefs.py:103
 #: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "Opções"
 
 #: quodlibet/browsers/albums/prefs.py:74
-#: quodlibet/browsers/covergrid/prefs.py:127
+#: quodlibet/browsers/covergrid/prefs.py:106
 msgid "Album Display"
 msgstr "Visualização do álbum"
 
 #: quodlibet/browsers/albums/prefs.py:78
-#: quodlibet/browsers/covergrid/prefs.py:131
+#: quodlibet/browsers/covergrid/prefs.py:110
 #: quodlibet/browsers/playlists/prefs.py:56
-#: quodlibet/ext/songsmenu/albumart.py:330
+#: quodlibet/ext/songsmenu/albumart.py:224
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
@@ -221,7 +219,7 @@ msgid "_Refresh"
 msgstr "Atuali_zar"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:485
+#: quodlibet/browsers/playlists/main.py:480
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -249,11 +247,11 @@ msgstr ""
 "O backend atual de áudio não suporta URLs. Assim, o navegador de feeds de "
 "áudio está desabilitado."
 
-#: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
+#: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "Navegador da biblioteca"
 
-#: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
+#: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:560
@@ -263,7 +261,7 @@ msgid_plural "%d songs"
 msgstr[0] "%d música"
 msgstr[1] "%d músicas"
 
-#: quodlibet/browsers/_base.py:402 quodlibet/browsers/_base.py:407
+#: quodlibet/browsers/_base.py:406 quodlibet/browsers/_base.py:411
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
 #: quodlibet/util/__init__.py:575
 msgid "Invalid pattern"
@@ -359,11 +357,11 @@ msgstr "_Aplicar"
 msgid "_Cancel"
 msgstr "_Cancelar"
 
-#: quodlibet/browsers/covergrid/main.py:131
+#: quodlibet/browsers/covergrid/main.py:116
 msgid "Cover Grid"
 msgstr "Grade de capas"
 
-#: quodlibet/browsers/covergrid/main.py:132
+#: quodlibet/browsers/covergrid/main.py:117
 msgid "_Cover Grid"
 msgstr "_Grade de capas"
 
@@ -375,16 +373,16 @@ msgstr "Preferências da grade de capas"
 msgid "Show album _text"
 msgstr "Mostrar dados do álbum"
 
-#: quodlibet/browsers/covergrid/prefs.py:71
+#: quodlibet/browsers/covergrid/prefs.py:70
 msgid "Show \"All Albums\" Item"
 msgstr "Incluir item \"Todos os álbuns\" na grade"
 
-#: quodlibet/browsers/covergrid/prefs.py:82
+#: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
 msgstr "Modo largo"
 
-#: quodlibet/browsers/covergrid/prefs.py:114
-#: quodlibet/browsers/covergrid/prefs.py:115
+#: quodlibet/browsers/covergrid/prefs.py:95
+#: quodlibet/browsers/covergrid/prefs.py:96
 msgid "Cover Magnification"
 msgstr "Ampliação das capas"
 
@@ -697,61 +695,61 @@ msgstr "Conteúdo dos painéis"
 msgid "Equal pane width"
 msgstr "Igualar largura dos painéis"
 
-#: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:48
+#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listas de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:50
+#: quodlibet/browsers/playlists/main.py:49
 msgid "_Playlists"
 msgstr "Listas de re_produção"
 
-#: quodlibet/browsers/playlists/main.py:171
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "_Remover da lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:215 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Novo"
 
-#: quodlibet/browsers/playlists/main.py:216
+#: quodlibet/browsers/playlists/main.py:211
 msgid "New"
 msgstr "Nova"
 
-#: quodlibet/browsers/playlists/main.py:218
+#: quodlibet/browsers/playlists/main.py:213
 #, fuzzy
 msgid "_Import…"
 msgstr "_Importar"
 
-#: quodlibet/browsers/playlists/main.py:219
+#: quodlibet/browsers/playlists/main.py:214
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "Importar"
 
-#: quodlibet/browsers/playlists/main.py:442
+#: quodlibet/browsers/playlists/main.py:437
 msgid "Unable to import playlist"
 msgstr "Não foi possível importar a lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:443
+#: quodlibet/browsers/playlists/main.py:438
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet só é capaz de importar listas de reprodução nos formatos M3U/M3U8 "
 "e PLS."
 
-#: quodlibet/browsers/playlists/main.py:492
+#: quodlibet/browsers/playlists/main.py:487
 msgid "_Rename"
 msgstr "_Renomear"
 
-#: quodlibet/browsers/playlists/main.py:591
+#: quodlibet/browsers/playlists/main.py:586
 msgid "Unable to rename playlist"
 msgstr "Não foi possível renomear a lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:606
+#: quodlibet/browsers/playlists/main.py:601
 msgid "Import Playlist"
 msgstr "Importar lista de reprodução"
 
-#: quodlibet/browsers/playlists/main.py:606
+#: quodlibet/browsers/playlists/main.py:601
 msgid "_Import"
 msgstr "_Importar"
 
@@ -1810,7 +1808,7 @@ msgstr "Nome da predefinição:"
 #: quodlibet/ext/events/equalizer.py:336
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
-#: quodlibet/ext/songsmenu/albumart.py:326
+#: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
@@ -3147,7 +3145,7 @@ msgid "Edit _Tags"
 msgstr "Editar _etiquetas"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Informações"
 
@@ -3927,89 +3925,89 @@ msgid ""
 "Please choose the player"
 msgstr "O servidor Squeezebox foi encontrado. Por favor escolha o reprodutor"
 
-#: quodlibet/ext/songsmenu/albumart.py:333
+#: quodlibet/ext/songsmenu/albumart.py:227
 msgid "Fit image to _window"
 msgstr "Ajustar à _janela"
 
-#: quodlibet/ext/songsmenu/albumart.py:339
+#: quodlibet/ext/songsmenu/albumart.py:233
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr ""
 "Refira-se à entrada \"[plugins] cover_filenames\", no ficheiro de "
 "configuração"
 
 #. Both labels
-#: quodlibet/ext/songsmenu/albumart.py:345
+#: quodlibet/ext/songsmenu/albumart.py:239
 msgid "_Program:"
 msgstr "_Programa:"
 
-#: quodlibet/ext/songsmenu/albumart.py:350
+#: quodlibet/ext/songsmenu/albumart.py:244
 msgid "_Edit image after saving"
 msgstr "_Editar imagem após salvar"
 
-#: quodlibet/ext/songsmenu/albumart.py:352
+#: quodlibet/ext/songsmenu/albumart.py:246
 msgid "File_name:"
 msgstr "_Nome do ficheiro:"
 
-#: quodlibet/ext/songsmenu/albumart.py:468
+#: quodlibet/ext/songsmenu/albumart.py:362
 msgid "Saving failed"
 msgstr "Falha ao salvar"
 
-#: quodlibet/ext/songsmenu/albumart.py:469
+#: quodlibet/ext/songsmenu/albumart.py:363
 #, python-format
 msgid "Unable to save \"%s\"."
 msgstr "Não foi possível salvar \"%s\"."
 
-#: quodlibet/ext/songsmenu/albumart.py:569
+#: quodlibet/ext/songsmenu/albumart.py:463
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr "Erro HTTP: %s"
 
-#: quodlibet/ext/songsmenu/albumart.py:626
+#: quodlibet/ext/songsmenu/albumart.py:521
 msgid "Album Art Downloader"
 msgstr "Baixar capa de álbum"
 
-#: quodlibet/ext/songsmenu/albumart.py:679
+#: quodlibet/ext/songsmenu/albumart.py:574
 #, python-format
 msgid "from %(source)s"
 msgstr "obtido de %(source)s"
 
-#: quodlibet/ext/songsmenu/albumart.py:682
+#: quodlibet/ext/songsmenu/albumart.py:577
 #, python-format
 msgid "Resolution: %s"
 msgstr "Resolução: %s"
 
-#: quodlibet/ext/songsmenu/albumart.py:685
+#: quodlibet/ext/songsmenu/albumart.py:580
 #, python-format
 msgid "Size: %s"
 msgstr "Tamanho: %s"
 
-#: quodlibet/ext/songsmenu/albumart.py:731
+#: quodlibet/ext/songsmenu/albumart.py:626
 msgid "Per engine 'at best' results limit"
 msgstr "Limite de capas por fonte"
 
-#: quodlibet/ext/songsmenu/albumart.py:741
+#: quodlibet/ext/songsmenu/albumart.py:636
 msgid "_Search"
 msgstr "_Procurar"
 
-#: quodlibet/ext/songsmenu/albumart.py:823
+#: quodlibet/ext/songsmenu/albumart.py:720
 #: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr "Procurando…"
 
-#: quodlibet/ext/songsmenu/albumart.py:890
+#: quodlibet/ext/songsmenu/albumart.py:787
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
 msgstr "Concluído"
 
-#: quodlibet/ext/songsmenu/albumart.py:1012
+#: quodlibet/ext/songsmenu/albumart.py:903
 msgid "Download Album Art"
 msgstr "Baixar capas de álbum"
 
-#: quodlibet/ext/songsmenu/albumart.py:1013
+#: quodlibet/ext/songsmenu/albumart.py:904
 msgid "Downloads album covers from various websites."
 msgstr "Baixa capas de álbum de diversos websites."
 
-#: quodlibet/ext/songsmenu/albumart.py:1026
+#: quodlibet/ext/songsmenu/albumart.py:917
 msgid "Sources"
 msgstr "Fontes"
 
@@ -7374,16 +7372,16 @@ msgstr "Adicionar à _fila"
 msgid "_Remove from Library…"
 msgstr "_Remover da biblioteca…"
 
-#: quodlibet/qltk/songsmenu.py:410
+#: quodlibet/qltk/songsmenu.py:411
 msgid "Unable to show files"
 msgstr "Não foi possível exibir os ficheiros"
 
-#: quodlibet/qltk/songsmenu.py:411
+#: quodlibet/qltk/songsmenu.py:412
 msgid "Error showing files, or no program available to show them."
 msgstr ""
 "Falha ao exibir ficheiros, ou não há um programa disponível para exibi-los."
 
-#: quodlibet/qltk/songsmenu.py:418
+#: quodlibet/qltk/songsmenu.py:419
 #, fuzzy, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
@@ -7392,35 +7390,35 @@ msgstr[0] ""
 "gerenciador de ficheiros"
 msgstr[1] ""
 
-#: quodlibet/qltk/songsmenu.py:435
+#: quodlibet/qltk/songsmenu.py:436
 #, fuzzy, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "_Baixar…"
 msgstr[1] "_Baixar…"
 
-#: quodlibet/qltk/songsmenu.py:442
+#: quodlibet/qltk/songsmenu.py:443
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:443
+#: quodlibet/qltk/songsmenu.py:444
 #, fuzzy
 msgid "failed"
 msgstr "Falha ao salvar"
 
-#: quodlibet/qltk/songsmenu.py:446
+#: quodlibet/qltk/songsmenu.py:447
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Baixar arquivo"
 
-#: quodlibet/qltk/songsmenu.py:452
+#: quodlibet/qltk/songsmenu.py:453
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "Baixar capas de álbum"
 msgstr[1] "Baixar capas de álbum"
 
-#: quodlibet/qltk/songsmenu.py:458
+#: quodlibet/qltk/songsmenu.py:459
 #, fuzzy
 msgid "Download here"
 msgstr "Baixar arquivo"
