@@ -309,15 +309,15 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         songs = set(songs)
         cover_size = _get_cover_size()
 
-        for item in self.__model:
+        for row in self.__model:
             if not songs:
                 break
-            album = item.album
+            album = row[0].album
             if album is None:
                 continue
             match = songs & album.songs
             if match:
-                item.load_cover(cover_size, cancelable=self.__cover_cancel)
+                row[0].load_cover(cover_size, cancelable=self.__cover_cancel)
                 songs -= match
 
     def __update_filter(self, scroll_up=True):

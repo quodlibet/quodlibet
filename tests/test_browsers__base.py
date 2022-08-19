@@ -1,6 +1,6 @@
 # Copyright 2006 Joe Wreschnig
 #           2013 Christoph Reiter
-#           2016 Nick Boultbee
+#        2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,10 +12,11 @@ from gi.repository import Gtk
 
 from quodlibet.browsers._base import FakeDisplayItem as FDI, \
     DisplayPatternMixin, FakeDisplayItem
-from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp
+from quodlibet.util.cover import CoverManager
+from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp, run_gtk_loop
 from .helper import realized, dummy_path
 
-from quodlibet import browsers
+from quodlibet import browsers, app
 from quodlibet.formats import AudioFile
 from quodlibet import config
 from quodlibet.browsers import Browser
@@ -74,6 +75,7 @@ class TBrowserBase(TestCase):
     def setUp(self):
         config.init()
         init_fake_app()
+        app.cover_manager = CoverManager()
         self.library = library = SongFileLibrary()
         library.librarian = SongLibrarian()
         library.add(SONGS)
@@ -179,6 +181,12 @@ class TBrowserMixin:
     def test_filter_other(self):
         with realized(self.b):
             self.b.unfilter()
+
+    def test_cover_art_changed(self):
+        # See #4110
+        app.cover_manager.emit("cover-changed", SONGS[2:3])
+        run_gtk_loop()
+        # No (generic) assertions, but ensure coverage
 
 
 class TFakeDisplayItem(TestCase):
