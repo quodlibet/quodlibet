@@ -103,7 +103,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         return (width, width)
 
     def __get_image_size(self) -> int:
-        return self.props.cover_size * self.props.scale_factor + 2
+        return self.props.cover_size + 2
 
     def populate(self):
         self._populate_on_draw()
