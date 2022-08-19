@@ -20,55 +20,55 @@ msgstr ""
 "X-Generator: Weblate 4.14-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
-#: quodlibet/browsers/covergrid/main.py:56
+#: quodlibet/browsers/covergrid/main.py:58
 msgid "_Title"
 msgstr "_Başlık"
 
 #: quodlibet/browsers/albums/main.py:224
-#: quodlibet/browsers/covergrid/main.py:57
+#: quodlibet/browsers/covergrid/main.py:59
 msgid "_People"
 msgstr "_Kişiler"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:58 quodlibet/qltk/prefs.py:54
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
 msgid "_Date"
 msgstr "_Tarih"
 
 #: quodlibet/browsers/albums/main.py:226
-#: quodlibet/browsers/covergrid/main.py:59
+#: quodlibet/browsers/covergrid/main.py:61
 msgid "_Date Added"
 msgstr "_Eklenme Tarihi"
 
 #: quodlibet/browsers/albums/main.py:227
-#: quodlibet/browsers/covergrid/main.py:60
+#: quodlibet/browsers/covergrid/main.py:62
 msgid "_Original Date"
 msgstr "_Çıkış Tarihi"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:61 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:53
 msgid "_Genre"
 msgstr "_Tür"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:58
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Puan"
 
 #: quodlibet/browsers/albums/main.py:230
-#: quodlibet/browsers/covergrid/main.py:63
+#: quodlibet/browsers/covergrid/main.py:65
 msgid "Play_count"
 msgstr "Çalma sayısı"
 
 #: quodlibet/browsers/albums/main.py:235
-#: quodlibet/browsers/covergrid/main.py:69
+#: quodlibet/browsers/covergrid/main.py:71
 msgid "Sort _by…"
 msgstr "_Sırala…"
 
 #: quodlibet/browsers/albums/main.py:256
-#: quodlibet/browsers/covergrid/main.py:90
+#: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:675 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Tercihler"
@@ -82,14 +82,12 @@ msgid "_Album List"
 msgstr "_Albüm Listesi"
 
 #: quodlibet/browsers/albums/main.py:546
-#: quodlibet/browsers/covergrid/main.py:290
-#: quodlibet/browsers/covergrid/main.py:506
+#: quodlibet/browsers/covergrid/models.py:77
 msgid "All Albums"
 msgstr "Bütün Albümler"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/main.py:291
-#: quodlibet/browsers/covergrid/main.py:507
+#: quodlibet/browsers/covergrid/models.py:78
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -97,7 +95,7 @@ msgstr[0] "%d albüm"
 msgstr[1] "%d albüm"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:485
+#: quodlibet/browsers/covergrid/main.py:340
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Albüm _kapağını yeniden yükle"
@@ -148,20 +146,20 @@ msgid "Inline _search includes people"
 msgstr "_Arama kişileri de içerir"
 
 #: quodlibet/browsers/albums/prefs.py:71
-#: quodlibet/browsers/covergrid/prefs.py:124
+#: quodlibet/browsers/covergrid/prefs.py:103
 #: quodlibet/ext/songsmenu/cover_download.py:307
 msgid "Options"
 msgstr "Seçenekler"
 
 #: quodlibet/browsers/albums/prefs.py:74
-#: quodlibet/browsers/covergrid/prefs.py:127
+#: quodlibet/browsers/covergrid/prefs.py:106
 msgid "Album Display"
 msgstr "Albüm Görünümü"
 
 #: quodlibet/browsers/albums/prefs.py:78
-#: quodlibet/browsers/covergrid/prefs.py:131
+#: quodlibet/browsers/covergrid/prefs.py:110
 #: quodlibet/browsers/playlists/prefs.py:56
-#: quodlibet/ext/songsmenu/albumart.py:330
+#: quodlibet/ext/songsmenu/albumart.py:224
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
@@ -216,7 +214,7 @@ msgid "_Refresh"
 msgstr "_Yenile"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:485
+#: quodlibet/browsers/playlists/main.py:480
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -244,11 +242,11 @@ msgstr ""
 "Mevcut ses arka ucu URL'leri desteklemiyor, Ses Beslemeleri gözatıcısı devre "
 "dışı."
 
-#: quodlibet/browsers/_base.py:147 quodlibet/browsers/_base.py:150
+#: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "Kitaplık Gezici"
 
-#: quodlibet/browsers/_base.py:274 quodlibet/ext/songsmenu/console.py:46
+#: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:560
@@ -258,7 +256,7 @@ msgid_plural "%d songs"
 msgstr[0] "%d şarkı"
 msgstr[1] "%d şarkı"
 
-#: quodlibet/browsers/_base.py:402 quodlibet/browsers/_base.py:407
+#: quodlibet/browsers/_base.py:406 quodlibet/browsers/_base.py:411
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
 #: quodlibet/util/__init__.py:575
 msgid "Invalid pattern"
@@ -354,11 +352,11 @@ msgstr "_Uygula"
 msgid "_Cancel"
 msgstr "_İptal"
 
-#: quodlibet/browsers/covergrid/main.py:131
+#: quodlibet/browsers/covergrid/main.py:116
 msgid "Cover Grid"
 msgstr "Kapak Izgarası"
 
-#: quodlibet/browsers/covergrid/main.py:132
+#: quodlibet/browsers/covergrid/main.py:117
 msgid "_Cover Grid"
 msgstr "_Kapak Izgarası"
 
@@ -370,16 +368,16 @@ msgstr "Kapak Izgarası Tercihleri"
 msgid "Show album _text"
 msgstr "Albüm _metnini göster"
 
-#: quodlibet/browsers/covergrid/prefs.py:71
+#: quodlibet/browsers/covergrid/prefs.py:70
 msgid "Show \"All Albums\" Item"
 msgstr "\"Bütün Albümler\" Ögesini Göster"
 
-#: quodlibet/browsers/covergrid/prefs.py:82
+#: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
 msgstr "Geniş Kip"
 
-#: quodlibet/browsers/covergrid/prefs.py:114
-#: quodlibet/browsers/covergrid/prefs.py:115
+#: quodlibet/browsers/covergrid/prefs.py:95
+#: quodlibet/browsers/covergrid/prefs.py:96
 msgid "Cover Magnification"
 msgstr "Kapak Resmi Büyütme"
 
@@ -689,59 +687,59 @@ msgstr "Sütun içeriği"
 msgid "Equal pane width"
 msgstr "Eşit panel genişliği"
 
-#: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:605 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:48
+#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Çalma Listeleri"
 
-#: quodlibet/browsers/playlists/main.py:50
+#: quodlibet/browsers/playlists/main.py:49
 msgid "_Playlists"
 msgstr "_Çalma Listeleri"
 
-#: quodlibet/browsers/playlists/main.py:171
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "Çalma Listesinden _Çıkar"
 
-#: quodlibet/browsers/playlists/main.py:215 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Yeni"
 
-#: quodlibet/browsers/playlists/main.py:216
+#: quodlibet/browsers/playlists/main.py:211
 msgid "New"
 msgstr "Yeni"
 
-#: quodlibet/browsers/playlists/main.py:218
+#: quodlibet/browsers/playlists/main.py:213
 msgid "_Import…"
 msgstr "İçe _Aktar…"
 
-#: quodlibet/browsers/playlists/main.py:219
+#: quodlibet/browsers/playlists/main.py:214
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Import"
 msgstr "İçe Aktar"
 
-#: quodlibet/browsers/playlists/main.py:442
+#: quodlibet/browsers/playlists/main.py:437
 msgid "Unable to import playlist"
 msgstr "Çalma listesi içe aktarılamadı"
 
-#: quodlibet/browsers/playlists/main.py:443
+#: quodlibet/browsers/playlists/main.py:438
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet sadece M3U/M3U8 ve PLS biçimli çalma listelerini içe aktarabilir."
 
-#: quodlibet/browsers/playlists/main.py:492
+#: quodlibet/browsers/playlists/main.py:487
 msgid "_Rename"
 msgstr "_Yeniden Adlandır"
 
-#: quodlibet/browsers/playlists/main.py:591
+#: quodlibet/browsers/playlists/main.py:586
 msgid "Unable to rename playlist"
 msgstr "Çalma listesinin adı değiştirilemedi"
 
-#: quodlibet/browsers/playlists/main.py:606
+#: quodlibet/browsers/playlists/main.py:601
 msgid "Import Playlist"
 msgstr "Çalma Listesi İçe Aktar"
 
-#: quodlibet/browsers/playlists/main.py:606
+#: quodlibet/browsers/playlists/main.py:601
 msgid "_Import"
 msgstr "İçe _Aktar"
 
@@ -1790,7 +1788,7 @@ msgstr "Kaydedilecek hazır ayar adı:"
 #: quodlibet/ext/events/equalizer.py:336
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
-#: quodlibet/ext/songsmenu/albumart.py:326
+#: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/cover_download.py:383
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
@@ -3105,7 +3103,7 @@ msgid "Edit _Tags"
 msgstr "Etike_tleri Düzenle"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:391
+#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Bilgi"
 
@@ -3852,87 +3850,87 @@ msgid ""
 "Please choose the player"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/albumart.py:333
+#: quodlibet/ext/songsmenu/albumart.py:227
 msgid "Fit image to _window"
 msgstr "Resmi _pencereye sığdır"
 
-#: quodlibet/ext/songsmenu/albumart.py:339
+#: quodlibet/ext/songsmenu/albumart.py:233
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr ""
 
 #. Both labels
-#: quodlibet/ext/songsmenu/albumart.py:345
+#: quodlibet/ext/songsmenu/albumart.py:239
 msgid "_Program:"
 msgstr "_Program:"
 
-#: quodlibet/ext/songsmenu/albumart.py:350
+#: quodlibet/ext/songsmenu/albumart.py:244
 msgid "_Edit image after saving"
 msgstr "Kaydettikten sonra resmi düz_enle"
 
-#: quodlibet/ext/songsmenu/albumart.py:352
+#: quodlibet/ext/songsmenu/albumart.py:246
 msgid "File_name:"
 msgstr "Dosya _adı:"
 
-#: quodlibet/ext/songsmenu/albumart.py:468
+#: quodlibet/ext/songsmenu/albumart.py:362
 msgid "Saving failed"
 msgstr "Kayıt başarısız"
 
-#: quodlibet/ext/songsmenu/albumart.py:469
+#: quodlibet/ext/songsmenu/albumart.py:363
 #, python-format
 msgid "Unable to save \"%s\"."
 msgstr "\"%s\" kaydedilemedi."
 
-#: quodlibet/ext/songsmenu/albumart.py:569
+#: quodlibet/ext/songsmenu/albumart.py:463
 #, python-format
 msgid "[albumart] HTTP Error: %s"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/albumart.py:626
+#: quodlibet/ext/songsmenu/albumart.py:521
 msgid "Album Art Downloader"
 msgstr "Albüm Resmi İndirici"
 
-#: quodlibet/ext/songsmenu/albumart.py:679
+#: quodlibet/ext/songsmenu/albumart.py:574
 #, python-format
 msgid "from %(source)s"
 msgstr "%(source)s den"
 
-#: quodlibet/ext/songsmenu/albumart.py:682
+#: quodlibet/ext/songsmenu/albumart.py:577
 #, python-format
 msgid "Resolution: %s"
 msgstr "Çözünürlük: %s"
 
-#: quodlibet/ext/songsmenu/albumart.py:685
+#: quodlibet/ext/songsmenu/albumart.py:580
 #, python-format
 msgid "Size: %s"
 msgstr "Boyut: %s"
 
-#: quodlibet/ext/songsmenu/albumart.py:731
+#: quodlibet/ext/songsmenu/albumart.py:626
 msgid "Per engine 'at best' results limit"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/albumart.py:741
+#: quodlibet/ext/songsmenu/albumart.py:636
 msgid "_Search"
 msgstr "_Ara"
 
-#: quodlibet/ext/songsmenu/albumart.py:823
+#: quodlibet/ext/songsmenu/albumart.py:720
 #: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr "Aranıyor…"
 
-#: quodlibet/ext/songsmenu/albumart.py:890
+#: quodlibet/ext/songsmenu/albumart.py:787
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
 msgstr "Tamamlandı"
 
-#: quodlibet/ext/songsmenu/albumart.py:1012
+#: quodlibet/ext/songsmenu/albumart.py:903
 msgid "Download Album Art"
 msgstr "Albüm Resmi İndir"
 
-#: quodlibet/ext/songsmenu/albumart.py:1013
+#: quodlibet/ext/songsmenu/albumart.py:904
 msgid "Downloads album covers from various websites."
 msgstr "Albüm kapaklarını çeşitli web sayfalarından indirir."
 
-#: quodlibet/ext/songsmenu/albumart.py:1026
+#: quodlibet/ext/songsmenu/albumart.py:917
 msgid "Sources"
 msgstr "Kaynaklar"
 
@@ -7293,51 +7291,51 @@ msgstr "Çalma _Kuyruğuna Ekle"
 msgid "_Remove from Library…"
 msgstr "Kitaplıktan kaldı_r…"
 
-#: quodlibet/qltk/songsmenu.py:410
+#: quodlibet/qltk/songsmenu.py:411
 #, fuzzy
 msgid "Unable to show files"
 msgstr "Dosya silinemedi"
 
-#: quodlibet/qltk/songsmenu.py:411
+#: quodlibet/qltk/songsmenu.py:412
 msgid "Error showing files, or no program available to show them."
 msgstr "Dosyaları gösterme hatası veya dosyaları gösterecek uygun program yok."
 
-#: quodlibet/qltk/songsmenu.py:418
+#: quodlibet/qltk/songsmenu.py:419
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
 msgstr[0] "Do_sya Yöneticisi'nde Göster"
 msgstr[1] "%(total)d Dosyayı Do_sya Yöneticisinde Göster"
 
-#: quodlibet/qltk/songsmenu.py:435
+#: quodlibet/qltk/songsmenu.py:436
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "Dosyayı _indir…"
 msgstr[1] "%(total)dosyayı indir…"
 
-#: quodlibet/qltk/songsmenu.py:442
+#: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
 msgid "successful"
 msgstr "Başarılı"
 
-#: quodlibet/qltk/songsmenu.py:443
+#: quodlibet/qltk/songsmenu.py:444
 #, fuzzy
 msgid "failed"
 msgstr "Kayıt başarısız"
 
-#: quodlibet/qltk/songsmenu.py:446
+#: quodlibet/qltk/songsmenu.py:447
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Dosyayı İndir"
 
-#: quodlibet/qltk/songsmenu.py:452
+#: quodlibet/qltk/songsmenu.py:453
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "{name!r} indir"
 msgstr[1] "{total} dosyayı şuraya indir"
 
-#: quodlibet/qltk/songsmenu.py:458
+#: quodlibet/qltk/songsmenu.py:459
 #, fuzzy
 msgid "Download here"
 msgstr "Dosyayı İndir"
