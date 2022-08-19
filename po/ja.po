@@ -1225,7 +1225,7 @@ msgid ""
 "the Soundcloud browser."
 msgstr ""
 "<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。これ"
-"はSoundCloudブラウザで動作します。"
+"は SoundCloud ブラウザで動作します。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1274,7 +1274,7 @@ msgstr "名前を変更する前に、かな/漢字をローマ字に変換し�
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
-msgstr "日本語のテキストをローマ字化する"
+msgstr "日本語のテキストをローマ字化する(_J)"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
@@ -4100,7 +4100,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/console.py:77
 msgid "You can access the following objects by default:"
-msgstr "デフォルトでは以下のオブジェクトにアクセスできます:"
+msgstr "以下のオブジェクトにアクセスできます:"
 
 #: quodlibet/ext/songsmenu/console.py:86
 msgid "Your current working directory is:"
@@ -6185,8 +6185,8 @@ msgid ""
 "that shouldn't be matched):"
 msgstr ""
 "左側の列が右側の列とほぼ一致しているかどうかを確認してください。一致しない場"
-"合は、ここで順序を変更することができます (一致させるべきではない行には _ を使"
-"用します):"
+"合は、ここで順序を変更することができます (一致させるべきではない行には「_」を"
+"使用します):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
@@ -6221,7 +6221,7 @@ msgstr "「%(file-name)s」を置換しますか?"
 
 #: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
-msgstr "ファイルを置換"
+msgstr "ファイルを置換(_R)"
 
 #: quodlibet/qltk/notif.py:182
 msgid "Active tasks"
@@ -6513,7 +6513,7 @@ msgstr "ReplayGain音量調整"
 
 #: quodlibet/qltk/prefs.py:441
 msgid "_Continue playback on startup"
-msgstr "起動時に再生を再開する"
+msgstr "起動時に再生を再開する(_C)"
 
 #: quodlibet/qltk/prefs.py:443
 msgid ""
@@ -6773,7 +6773,7 @@ msgstr "場所の追加(_A)…"
 
 #: quodlibet/qltk/quodlibetwindow.py:926
 msgid "Edit Bookmarks…"
-msgstr "ブックマークの編集(_E)…"
+msgstr "ブックマークの編集…"
 
 #: quodlibet/qltk/quodlibetwindow.py:946
 msgid "Stop After This Song"
@@ -6870,7 +6870,7 @@ msgstr "発音記号を削除する(_D)"
 
 #: quodlibet/qltk/renamefiles.py:111
 msgid "Strip non-_ASCII characters"
-msgstr "非 ASCII 文字を削除する"
+msgstr "非ASCII文字を削除する(_A)"
 
 #: quodlibet/qltk/renamefiles.py:121
 msgid "Use only _lowercase characters"
@@ -7251,13 +7251,13 @@ msgstr "ファイル表示のエラー、または表示できるプログラム
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] "ファイルマネージャで%(total)d個のファイルを表示"
+msgstr[0] "ファイルマネージャで%(total)d個のファイルを表示(_S)"
 
 #: quodlibet/qltk/songsmenu.py:435 quodlibet/qltk/songsmenu.py:436
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "%(total)d ファイルをダウンロード(_D)…"
+msgstr[0] "%(total)d個のファイルをダウンロード(_D)…"
 
 #: quodlibet/qltk/songsmenu.py:442 quodlibet/qltk/songsmenu.py:443
 msgid "successful"
@@ -7274,7 +7274,7 @@ msgstr "ダウンロード完了"
 #: quodlibet/qltk/songsmenu.py:452 quodlibet/qltk/songsmenu.py:453
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
-msgstr[0] "{total} ファイルのダウンロード先"
+msgstr[0] "{total}個のファイルのダウンロード先"
 
 #: quodlibet/qltk/songsmenu.py:458 quodlibet/qltk/songsmenu.py:459
 msgid "Download here"
@@ -7843,11 +7843,11 @@ msgstr "リファレンスラウドネス"
 
 #: quodlibet/util/tags.py:153
 msgid "discs"
-msgstr "ディスク"
+msgstr "ディスク数"
 
 #: quodlibet/util/tags.py:155
 msgid "tracks"
-msgstr "トラック"
+msgstr "トラック数"
 
 #: quodlibet/util/tags.py:156
 msgid "last started"
