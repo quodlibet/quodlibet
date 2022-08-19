@@ -1029,32 +1029,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         except Exception as e:
             print_w(f"Couldn't process removed songs: {e}", self)
 
-    def __song_properties(self, librarian):
-        model, rows = self.get_selection().get_selected_rows()
-        if rows:
-            songs = [model[row][0] for row in rows]
-        else:
-            from quodlibet import app
-            if app.player.song:
-                songs = [app.player.song]
-            else:
-                return
-        window = SongProperties(librarian, songs, parent=self)
-        window.show()
-
-    def __information(self, librarian):
-        model, rows = self.get_selection().get_selected_rows()
-        if rows:
-            songs = [model[row][0] for row in rows]
-        else:
-            from quodlibet import app
-            if app.player.song:
-                songs = [app.player.song]
-            else:
-                return
-        window = Information(librarian, songs, self)
-        window.show()
-
     def set_first_column_type(self, column_type):
         """Set a column that will be included at the beginning"""
 
