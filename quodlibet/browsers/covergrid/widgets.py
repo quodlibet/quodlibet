@@ -67,20 +67,23 @@ class AlbumWidget(Gtk.FlowBoxChild):
         box.pack_start(self._image, True, True, 0)
         box.pack_start(self._label, True, True, 0)
 
-        self.bind_property(
-            'padding', box, 'margin', GObject.BindingFlags.SYNC_CREATE)
-        self.bind_property(
-            'padding', box, 'spacing', GObject.BindingFlags.SYNC_CREATE)
-        self.bind_property(
-            'text-visible', label, 'visible', GObject.BindingFlags.SYNC_CREATE)
-
         eb = Gtk.EventBox()
         eb.connect('popup-menu', lambda _: self.emit('songs-menu'))
         eb.connect('button-press-event', self.__rightclick)
         eb.add(box)
 
         self.add(eb)
+
+        # show all before binding "visible" so the label will stay hidden if so
+        # configured by the "text_visible" property.
         self.show_all()
+
+        self.bind_property(
+            'padding', box, 'margin', GObject.BindingFlags.SYNC_CREATE)
+        self.bind_property(
+            'padding', box, 'spacing', GObject.BindingFlags.SYNC_CREATE)
+        self.bind_property(
+            'text-visible', label, 'visible', GObject.BindingFlags.SYNC_CREATE)
 
         model.connect('notify::album', lambda *a: self._populate())
         model.connect('notify::label', lambda *a: self._set_text(model.label))
