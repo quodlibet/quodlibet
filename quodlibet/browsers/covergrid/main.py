@@ -309,7 +309,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         songs = set(songs)
         cover_size = _get_cover_size()
 
-        for item in self.__model:
+        for item in self.__model.itervalues():
             if not songs:
                 break
             album = item.album
