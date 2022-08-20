@@ -7340,41 +7340,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Filtrēt pēc %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Albumu galvenes"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_Celiņu galvenes"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "_Albumu galvenes"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "C_ilvēku galvenes"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "_Datumu galvenes"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "_Failu galvenes"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "_Producēšanas galvenes"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "Pielāg_ot galvenes..."
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr ""
 

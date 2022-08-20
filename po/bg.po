@@ -7298,44 +7298,44 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Само този %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 #, fuzzy
 msgid "All _Headers"
 msgstr "Спис_ък с албуми"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 #, fuzzy
 msgid "_Track Headers"
 msgstr "Номера на песните"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 #, fuzzy
 msgid "_Album Headers"
 msgstr "Спис_ък с албуми"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 #, fuzzy
 msgid "_File Headers"
 msgstr "_Филтри"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Филтри"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr ""
 

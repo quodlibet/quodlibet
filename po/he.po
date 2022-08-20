@@ -7108,39 +7108,39 @@ msgstr "בחירת כל השירים בכל החלוניות"
 msgid "_Filter on %s"
 msgstr "_מיין לפי %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "כל _הכותרות"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_כותרות רצועות"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "כ_ותרות אלבומים"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "כותרות _מבצעים"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "כותרות ת_אריך"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "_כותרות קבצים"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "כות_רות הפקה"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Customize Headers…"
 msgstr "_כותרות מותאמת אישית…"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr "_הרחבת עמודה"
 

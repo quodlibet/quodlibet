@@ -7335,40 +7335,40 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Filtras laukui „%s“"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "_Visos antraštės"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_Takelio antraštės"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "_Albumo antraštės"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "A_tlikėjų antraštės"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "Dat_os antraštės"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "_Failo antraštės"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "_Produkcijos antraštės"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Individualizuoti antraštes..."
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr ""
 

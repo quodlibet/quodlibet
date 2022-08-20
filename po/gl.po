@@ -7370,41 +7370,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Filtrar por %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 #, fuzzy
 msgid "All _Headers"
 msgstr "Cabeceiras dos _álbuns"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_Cabeceiras da pista"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "Cabeceiras do á_lbum"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "Cabeceiras dos _componentes"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "Cabeceiras da _data"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "Cabeceiras do _arquivo"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "Cabeceiras de p_rodución"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Personalizar as cabeceiras..."
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 #, fuzzy
 msgid "_Expand Column"
 msgstr "Colunas adicionais"
