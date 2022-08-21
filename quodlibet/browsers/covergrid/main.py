@@ -307,17 +307,16 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     def __cover_changed(self, manager, songs):
         songs = set(songs)
-        cover_size = _get_cover_size()
 
-        for item in self.__model.itervalues():
+        for child in self.view:
             if not songs:
                 break
-            album = item.album
+            album = child.model.album
             if album is None:
                 continue
             match = songs & album.songs
             if match:
-                item.load_cover(cover_size, cancelable=self.__cover_cancel)
+                child.populate()
                 songs -= match
 
     def __update_filter(self, scroll_up=True):
@@ -347,9 +346,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
 
     def __refresh_cover(self, menuitem, view):
-        cover_size = _get_cover_size()
         for child in self.view.get_selected_children():
-            child.model.load_cover(cover_size, cancelable=self.__cover_cancel)
+            child.populate()
 
     def refresh_all(self):
         display_pattern = self.display_pattern
