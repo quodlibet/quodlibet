@@ -93,7 +93,7 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] ""
