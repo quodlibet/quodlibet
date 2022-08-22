@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-20 04:38+0000\n"
+"PO-Revision-Date: 2022-08-23 14:15+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -7574,11 +7574,11 @@ msgstr "編曲"
 
 #: quodlibet/util/tags.py:86
 msgid "author"
-msgstr "著作者"
+msgstr "原作者"
 
 #: quodlibet/util/tags.py:86
 msgid "authors"
-msgstr "著作者"
+msgstr "原作者"
 
 #: quodlibet/util/tags.py:87
 msgid "comment"
