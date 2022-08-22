@@ -102,7 +102,7 @@ msgstr[0] "%d албум"
 msgstr[1] "%d албума"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"

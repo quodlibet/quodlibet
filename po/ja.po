@@ -94,7 +94,7 @@ msgid_plural "%d albums"
 msgstr[0] "%dアルバム"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "アルバムカバーを再読込(_C)"
