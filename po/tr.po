@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-15 05:07+0000\n"
+"PO-Revision-Date: 2022-08-23 23:22+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -115,8 +115,8 @@ msgstr "Bir albümde olmayan şarkılar"
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
-msgstr[0] "%d şarkı"
-msgstr[1] "%d şarkı"
+msgstr[0] "%d parça"
+msgstr[1] "%d parça"
 
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
@@ -409,8 +409,8 @@ msgid ""
 "lists or playlists. The following locations cannot be loaded:\n"
 "%s"
 msgstr ""
-"Kanal listesi sadece kanal adresi içerebilir. Diğer kanal listelerini veya "
-"çalma listelerini içeremez. Bu adres yüklenemiyor:\n"
+"İstasyon listesi sadece İstasyon adresi içerebilir. Diğer İstasyon "
+"listelerini veya çalma listelerini içeremez. Bu adres yüklenemiyor:\n"
 "%s"
 
 #: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
@@ -420,19 +420,19 @@ msgstr "İnternet Radyosu"
 
 #: quodlibet/browsers/iradio.py:224
 msgid "Add stations"
-msgstr "Kanal ekle"
+msgstr "İstasyon ekle"
 
 #: quodlibet/browsers/iradio.py:265
 msgid "Downloading station list"
-msgstr "Kanal listesi indiriliyor"
+msgstr "İstasyon listesi indiriliyor"
 
 #: quodlibet/browsers/iradio.py:366
 msgid "New Station"
-msgstr "Yeni Kanal"
+msgstr "Yeni İstasyon"
 
 #: quodlibet/browsers/iradio.py:367
 msgid "Enter the location of an Internet radio station:"
-msgstr "İnternet radyo kanalı adresi girin:"
+msgstr "İnternet radyo istasyonu adresi girin:"
 
 #: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
@@ -440,7 +440,7 @@ msgstr "Elektronik"
 
 #: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
-msgstr "Hip Hop / Rep"
+msgstr "Hip Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
@@ -512,7 +512,7 @@ msgstr "Metal"
 
 #: quodlibet/browsers/iradio.py:408
 msgid "Country"
-msgstr "Halk Müziği"
+msgstr "Country"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "News"
@@ -524,7 +524,7 @@ msgstr "Schlager"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr "Damar"
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
@@ -532,7 +532,7 @@ msgstr "Bağımsız"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Blues"
-msgstr "Hüzünlü"
+msgstr "Blues"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Soul"
@@ -540,11 +540,11 @@ msgstr "Soul"
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
-msgstr "Salon Popu"
+msgstr "Lounge"
 
 #: quodlibet/browsers/iradio.py:416
 msgid "Punk"
-msgstr "Punk Rock"
+msgstr "Punk"
 
 #: quodlibet/browsers/iradio.py:417
 msgid "Reggaeton"
@@ -568,11 +568,11 @@ msgstr "Rock"
 
 #: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
-msgstr "Yaygın bir radyo kanalları listesini yüklemek ister misiniz?"
+msgstr "Yaygın radyo istasyonlarının listesini yüklemek ister misiniz?"
 
 #: quodlibet/browsers/iradio.py:482
 msgid "_Load Stations"
-msgstr "_Kanalları Yükle"
+msgstr "_İstasyonları Yükle"
 
 #: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
@@ -580,7 +580,7 @@ msgstr "_İnternet Radyosu"
 
 #: quodlibet/browsers/iradio.py:586
 msgid "All Stations"
-msgstr "Bütün Kanallar"
+msgstr "Bütün İstasyonlar"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
@@ -598,16 +598,16 @@ msgstr "_İstasyon Ekle…"
 
 #: quodlibet/browsers/iradio.py:652
 msgid "_Update Stations"
-msgstr "Kanalları _Güncelle"
+msgstr "İstasyonları _Güncelle"
 
 #: quodlibet/browsers/iradio.py:831
 msgid "No stations found"
-msgstr "Kanal bulunamadı"
+msgstr "İstasyon bulunamadı"
 
 #: quodlibet/browsers/iradio.py:832
 #, python-format
 msgid "No Internet radio stations were found at %s."
-msgstr "%s adresinde İnternet radyo kanalı bulunamadı."
+msgstr "%s adresinde İnternet radyo istasyonu bulunamadı."
 
 #: quodlibet/browsers/iradio.py:845
 msgid "Nothing to add"
@@ -615,7 +615,7 @@ msgstr "Eklenecek bir şey yok"
 
 #: quodlibet/browsers/iradio.py:846
 msgid "All stations listed are already in your library."
-msgstr "Listelenen bütün radyolar zaten arşivinizde."
+msgstr "Listelenen bütün radyo istasyonları zaten kitaplığınızda."
 
 #: quodlibet/browsers/iradio.py:867
 msgid "Add to Favorites"
@@ -623,14 +623,14 @@ msgstr "Beğenilenlere Ekle"
 
 #: quodlibet/browsers/iradio.py:871
 msgid "Remove from Favorites"
-msgstr "Beğenilenlerden Çıkar"
+msgstr "Beğenilenlerden Kaldır"
 
 #: quodlibet/browsers/iradio.py:971
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
-msgstr[0] "%(count)d kanal"
-msgstr[1] "%(count)d kanal"
+msgstr[0] "%(count)d istasyon"
+msgstr[1] "%(count)d istasyon"
 
 #: quodlibet/browsers/paned/main.py:41 quodlibet/qltk/shortcuts.py:44
 msgid "Paned Browser"
@@ -698,7 +698,7 @@ msgstr "_Çalma Listeleri"
 
 #: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
-msgstr "Çalma Listesinden _Çıkar"
+msgstr "Çalma Listesinden _Kaldır"
 
 #: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
@@ -822,11 +822,11 @@ msgstr "Çoklu sıraya koymaya _izin ver"
 
 #: quodlibet/browsers/tracks.py:51 quodlibet/qltk/information.py:468
 msgid "Track List"
-msgstr "Şarkı Listesi"
+msgstr "Parça Listesi"
 
 #: quodlibet/browsers/tracks.py:52
 msgid "_Track List"
-msgstr "_Şarkı Listesi"
+msgstr "_Parça Listesi"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
@@ -847,7 +847,7 @@ msgstr "Ara"
 
 #: quodlibet/browsers/soundcloud/main.py:70
 msgid "My tracks"
-msgstr "Şarkılarım"
+msgstr "Parçalarım"
 
 #: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
@@ -1106,7 +1106,7 @@ msgstr "dosya adı"
 
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "Sorgu sonuçlarının dosya adlarını stdout'a yazdır"
 
 #: quodlibet/cli.py:145
 msgid "Unqueue a file or query"
@@ -1762,7 +1762,7 @@ msgstr "%.1f dB"
 
 #: quodlibet/ext/events/equalizer.py:272
 msgid "Default presets"
-msgstr "Varsayılan hazır ayarlar"
+msgstr "Varsayılan ön ayarlar"
 
 #: quodlibet/ext/events/equalizer.py:278 quodlibet/ext/events/equalizer.py:305
 msgid "Select…"
@@ -1774,7 +1774,7 @@ msgstr "EQ sıfı_rla"
 
 #: quodlibet/ext/events/equalizer.py:299
 msgid "Custom presets"
-msgstr "Özel hazır ayarlar"
+msgstr "Özel ön ayarlar"
 
 #: quodlibet/ext/events/equalizer.py:315
 msgid "_Delete selected"
@@ -1782,7 +1782,7 @@ msgstr "_Seçileni sil"
 
 #: quodlibet/ext/events/equalizer.py:326
 msgid "Preset name for saving:"
-msgstr "Kaydedilecek hazır ayar adı:"
+msgstr "Kaydedilecek ön ayar adı:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
@@ -2010,6 +2010,10 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus "
+"Arayüz Spesifikasyonunu kullanarak Quod Libet'in denetimine izin verir. Bu, "
+"çeşitli Linux masaüstü tümleşimlerine (örneğin çoklu ortam tuşları) izin "
+"verir."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -2299,9 +2303,8 @@ msgstr ""
 "boş bırakın."
 
 #: quodlibet/ext/events/qlscrobbler.py:593
-#, fuzzy
 msgid "Songs matching this filter will not be submitted"
-msgstr "Bu süzgeçle eşleşen şarkılar sunulmayacaktır"
+msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/plugins/listenbrainz/__init__.py:553
@@ -2324,7 +2327,7 @@ msgid ""
 "Stations: di.fm."
 msgstr ""
 "Raydo reklamları çalıyorken çıkışı susturur.\n"
-"Kanallar: di.fm."
+"İstasyonlar: di.fm."
 
 #: quodlibet/ext/events/randomalbum.py:26
 msgid "Random Album Playback"
@@ -2463,6 +2466,8 @@ msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
 msgstr ""
+"Parçanın ne zaman başlatıldığını denetlemek için yer imi adı, ve bulunursa "
+"oynatıcı zaman damgasını arar"
 
 #: quodlibet/ext/events/seekpoints.py:124
 msgid "Bookmark name for point B"
@@ -2492,6 +2497,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
+"Yapılandırmayı <a href=\"%(plugin_link)s\">Squeezebox eklentisine paylaş</a> "
+"ile paylaşır."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2936,7 +2943,7 @@ msgid ""
 "Shows synchronized lyrics from an .lrc file with same name as the track (or "
 "similar)."
 msgstr ""
-"Parça ile aynı (veya benzer) isme sahip bir .lrc dosyasından eşitlenen şarkı "
+"Parça ile aynı (veya benzer) ada sahip .lrc dosyasından eşitlenen şarkı "
 "sözlerini göster."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:67
@@ -3233,7 +3240,6 @@ msgid "_Threshold:"
 msgstr "_Eşik:"
 
 #: quodlibet/ext/gstreamer/compressor.py:22
-#, fuzzy
 msgid "Threshold until the filter is activated"
 msgstr "Süzgeç etkinleşinceye kadarki eşik"
 
@@ -3266,11 +3272,11 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "_Preset:"
-msgstr "_Hazır Ayar:"
+msgstr "_Ön ayar:"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:20
 msgid "Filter preset"
-msgstr "Süzgeç hazır ayarı"
+msgstr "Süzgeç ön ayarı"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:21
 msgid "_Frequency cut:"
@@ -3395,7 +3401,7 @@ msgstr "Ses akışının perdesini denetler."
 #: quodlibet/ext/playlist/export_to_folder.py:98
 #: quodlibet/ext/playlist/export_to_folder.py:147
 msgid "Export Playlist to Folder"
-msgstr "Çalma Listesini Dizine Aktarır"
+msgstr "Çalma Listesini Klasöre Aktar"
 
 #: quodlibet/ext/playlist/export_to_folder.py:39
 msgid "_Export"
@@ -3590,7 +3596,7 @@ msgstr "Çalma _Kuyruğu"
 
 #: quodlibet/ext/playorder/queue.py:34
 msgid "Automatically start playing double-clicked songs"
-msgstr ""
+msgstr "Çift tıklanan şarkıları kendiliğinden çalmaya başla"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
@@ -3700,11 +3706,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/track_repeat.py:32
 msgid "Repeat each track"
-msgstr "Her Parçayı Tekrarla"
+msgstr "Her parçayı tekrarla"
 
 #: quodlibet/ext/playorder/track_repeat.py:33
 msgid "Repeat _each track"
-msgstr "H_er Parçayı Tekrarla"
+msgstr "H_er parçayı tekrarla"
 
 #: quodlibet/ext/playorder/track_repeat.py:52
 msgid "Number of times to play each song:"
@@ -3731,9 +3737,8 @@ msgid "Matches songs without the given tag."
 msgstr "Verilen etiketi olmayan şarkıları eşleştirir."
 
 #: quodlibet/ext/query/missing.py:36
-#, fuzzy
 msgid "Include empty tags"
-msgstr "Geçersiz etiketler"
+msgstr "Boş etiketleri içer"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
@@ -3745,7 +3750,7 @@ msgstr "🐍Sorgularda Python ifadeleri kullan."
 
 #: quodlibet/ext/query/pythonexpression.py:21
 msgid "@(python: expression)"
-msgstr ""
+msgstr "@(python: ifade)"
 
 #: quodlibet/ext/query/pythonexpression.py:23
 msgid ""
@@ -3764,9 +3769,8 @@ msgstr ""
 "(==<tt>random.Random</tt>) öbeği de mevcuttur."
 
 #: quodlibet/ext/query/savedsearch.py:20
-#, fuzzy
 msgid "Include Saved Search"
-msgstr "Kayıtlı Değerler"
+msgstr "Kayıtlı Aramayı İçer"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
@@ -3849,6 +3853,8 @@ msgid ""
 "Found Squeezebox server.\n"
 "Please choose the player"
 msgstr ""
+"Squeezebox sunucusu bulundu.\n"
+"Lütfen oynatıcıyı seçin"
 
 #: quodlibet/ext/songsmenu/albumart.py:227
 msgid "Fit image to _window"
@@ -3883,7 +3889,7 @@ msgstr "\"%s\" kaydedilemedi."
 #: quodlibet/ext/songsmenu/albumart.py:463
 #, python-format
 msgid "[albumart] HTTP Error: %s"
-msgstr ""
+msgstr "[albumart] HTTP Hatası: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:521
 msgid "Album Art Downloader"
@@ -3976,11 +3982,11 @@ msgstr "\"tarih\" etiketi için sadece yıl kullan"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:51
 msgid "Write \"_albumartist\" when needed"
-msgstr ""
+msgstr "Gerektiğinde \"_albumartist\" yazın"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:52
 msgid "Write sort tags for artist names"
-msgstr ""
+msgstr "Sanatçı adları için sıralama etiketleri yazın"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:53
 msgid "Write _standard MusicBrainz tags"
@@ -3988,7 +3994,7 @@ msgstr "_Standart MusicBrainz etiketlerini yaz"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:54
 msgid "Write \"labelid\" tag"
-msgstr ""
+msgstr "\"labelid\" etiketini yazın"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:129
 msgid "Filename"
@@ -4230,7 +4236,7 @@ msgstr "maks dğşk"
 msgid ""
 "The maximum number of argument to pass to the command at one time (like "
 "xargs)"
-msgstr ""
+msgstr "Tek seferde komuta aktarılacak azami argüman sayısı (xargs gibi)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
 msgid "reverse"
@@ -4258,12 +4264,14 @@ msgid ""
 "Runs custom commands (in batches if required) on songs using any of their "
 "tags."
 msgstr ""
+"Etiketlerinden herhangi birini kullanarak şarkılar üzerinde özel komutlar ("
+"gerekirse toplu olarak) çalıştırır."
 
 #: quodlibet/ext/songsmenu/custom_commands.py:211
 #: quodlibet/ext/songsmenu/custom_commands.py:221
 #: quodlibet/ext/songsmenu/custom_commands.py:273
 msgid "Edit Custom Commands"
-msgstr ""
+msgstr "Özel Komutları Düzenle"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:304
 #, python-format
@@ -4274,8 +4282,8 @@ msgstr "%s özel komutu çalıştırılamıyor"
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d yinelenen grup"
+msgstr[1] "%d yinelenen grup"
 
 #: quodlibet/ext/songsmenu/duplicates.py:338
 msgid "Collapse / Expand all"
@@ -4284,7 +4292,7 @@ msgstr "Hepsini Daralt /Genişlet"
 #: quodlibet/ext/songsmenu/duplicates.py:342
 #, python-format
 msgid "Duplicate key expression is '%s'"
-msgstr ""
+msgstr "Yinelenen anahtar ifade '%s'"
 
 #: quodlibet/ext/songsmenu/duplicates.py:358
 msgid "Duplicates Browser"
@@ -4302,11 +4310,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
-msgstr ""
+msgstr "_Yinelenenleri şuna göre gruplandır:"
 
 #: quodlibet/ext/songsmenu/duplicates.py:403
 msgid "Duplicate Key"
-msgstr ""
+msgstr "Yinelenen Anahtar"
 
 #: quodlibet/ext/songsmenu/duplicates.py:408
 msgid "Remove _Whitespace"
@@ -4318,13 +4326,12 @@ msgid "Remove _Diacritics"
 msgstr "_Puan"
 
 #: quodlibet/ext/songsmenu/duplicates.py:410
-#, fuzzy
 msgid "Remove _Punctuation"
-msgstr "_Puan"
+msgstr "_Noktalama İşaretlerini Kaldır"
 
 #: quodlibet/ext/songsmenu/duplicates.py:411
 msgid "Case _Insensitive"
-msgstr ""
+msgstr "Büyük/Küçük Harf _Duyarsız"
 
 #: quodlibet/ext/songsmenu/duplicates.py:419
 msgid "Matching options"
@@ -4361,24 +4368,23 @@ msgid "Edit Embedded Images"
 msgstr "Gömülü Resimleri Düzenle"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Gömülü resimleri kaldırır veya değiştirir."
+msgstr "Gömülü resimleri ekler, kaldırır veya değiştirir."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Göm"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d parçaya gömmek için resim seçin"
+msgstr[1] "%d parçaya gömmek için resim seçin"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
-msgstr "_Bütün resimleri kaldır"
+msgstr "_Bütün Resimleri Kaldır"
 
 #: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Embed Current Image"
@@ -4386,77 +4392,80 @@ msgstr "G_eçerli Resmi Gömülü Yap"
 
 #: quodlibet/ext/songsmenu/embedded.py:114
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Resim Seç…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
-msgstr ""
+msgstr "Kesin Derecelendirmeyi Ayarla"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:24
 msgid "Allows setting the rating of songs with a number."
-msgstr ""
+msgstr "Şarkıların derecelendirmesini sayıyla ayarlamasına izin verir."
 
 #: quodlibet/ext/songsmenu/exact_rating.py:36
 msgid "Please give your desired rating on a scale from 0.0 to 1.0"
-msgstr ""
+msgstr "Lütfen istediğiniz puanı 0.0 ile 1.0 arasında verin"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
-#, fuzzy
 msgid "Filter on Any Tag"
-msgstr "Bir etiket değerine göre süz"
+msgstr "Herhangi Bir Etikette Süz"
 
 #: quodlibet/ext/songsmenu/filterall.py:81
 msgid "Creates a search query based on tags of the selected songs."
-msgstr ""
+msgstr "Seçilen şarkıların etiketlerine dayalı arama sorgusu oluşturur."
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:19
 msgid "Filter on Directory"
-msgstr "Dizine göre Süz"
+msgstr "Dizinde Süz"
 
 #: quodlibet/ext/songsmenu/filterbrowser.py:20
 msgid "Filters on directory in a new browser window."
-msgstr ""
+msgstr "Yeni tarayıcı penceresinde dizinde filtreler."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:30
 msgid "Acoustic Fingerprint Lookup"
-msgstr ""
+msgstr "Akustik Parmak İzi Arama"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:31
 msgid "Looks up song metadata through acoustic fingerprinting."
-msgstr ""
+msgstr "Akustik parmak izi yoluyla şarkı üstverilerini arar."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:51
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:40
 msgid "Submit Acoustic Fingerprints"
-msgstr ""
+msgstr "Akustik Parmak İzlerini Gönder"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:52
 msgid ""
 "Generates acoustic fingerprints using chromaprint and submits them to "
 "acoustid.org."
 msgstr ""
+"Chromaprint kullanarak akustik parmak izleri oluşturur ve bunları "
+"acoustid.org'a gönderir."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:60
 msgid "API Key Missing"
-msgstr ""
+msgstr "API Anahtarı Eksik"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:61
 msgid ""
 "You have to specify an acoustid.org API key in the plugin preferences before "
 "you can submit fingerprints."
 msgstr ""
+"Parmak izi gönderebilmeniz için eklenti tercihlerinde acoustid.org API "
+"anahtarı belirtmeniz gerekir."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:75
 msgid "Request API key"
-msgstr ""
+msgstr "API anahtarı iste"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:82
 msgid "API _key:"
-msgstr ""
+msgstr "API _anahtarı:"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:89
 msgid "AcoustID Web Service"
-msgstr ""
+msgstr "AcoustID Web Hizmeti"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:36
 msgid "Queued"
@@ -4468,7 +4477,7 @@ msgstr "Çözümleniyor"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:40
 msgid "Lookup"
-msgstr ""
+msgstr "Ara"
 
 #: quodlibet/ext/songsmenu/fingerprint/search.py:116
 msgid "Write"
@@ -4496,10 +4505,12 @@ msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
 msgstr ""
+"Albümle ilgili etiketler yazın ve farklı albüm yayınlarının sayısını "
+"azaltmaya çalışın"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:48
 msgid "Generating fingerprints:"
-msgstr ""
+msgstr "Parmak izi oluşturma:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:64
 msgid "_Details"
@@ -4507,13 +4518,16 @@ msgstr "_Ayrıntılar"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:87
 msgid "_Submit"
-msgstr ""
+msgstr "_Gönder"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:117
 msgid ""
 "Songs either need a <i><b>musicbrainz_trackid</b></i>, or <i><b>artist</b></"
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
+"Şarkıların gönderilebilmesi için <i><b>musicbrainz_trackid</b></i> ya da "
+"<i><b>sanatçı</b></i> / <i><b>başlık</b></i> / <i><b>albüm</b></i> "
+"etiketlerine ihtiyaç vardır."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Fingerprints:"
@@ -4529,7 +4543,7 @@ msgstr "Yeterli etikete sahip şarkılar:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:126
 msgid "Songs to submit:"
-msgstr ""
+msgstr "Gönderilecek şarkılar:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:164
 #, python-format
@@ -4538,11 +4552,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:180
 msgid "Submitting fingerprints:"
-msgstr ""
+msgstr "Parmak izi gönderiliyor:"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:188
 msgid "Submitting…"
-msgstr ""
+msgstr "Gönderiliyor…"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:17
 msgid "Update Tags in Files"
@@ -4581,6 +4595,8 @@ msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
+"iFP aygıtıyla bağlantı kurulamıyor. Aygıtın açık ve takılı olduğunu ve ifp-"
+"line (http://ifp-driver.sf.net) yüklü olduğunu denetleyin."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -4595,7 +4611,7 @@ msgstr "Yüklenme hatası"
 #, python-format
 msgid ""
 "Unable to upload <b>%s</b>. The device may be out of space, or turned off."
-msgstr ""
+msgstr "<b>%s</b> yüklenemiyor. Aygıtta yer kalmamış veya kapalı olabilir."
 
 #. Could be made configurable in the future, but these likely suffice
 #. "tag1 tag2" will result in only tag1 and tag2 being exported
@@ -4615,15 +4631,15 @@ msgstr "Etiketleri ve Kullanıcı Verisini Dışa Aktar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:62
 msgid "Export File Stems and User Data"
-msgstr ""
+msgstr "Dosya Gövdelerini ve Kullanıcı Verilerini Dışa Aktar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:64
 msgid "Export File Stems and Tags"
-msgstr ""
+msgstr "Dosya Gövdelerini ve Etiketleri Dışa Aktar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:65
 msgid "Export File Stems, Tags and User Data"
-msgstr ""
+msgstr "Dosya Gövdelerini, Etiketleri ve Kullanıcı Verilerini Dışa Aktar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
@@ -4676,11 +4692,11 @@ msgstr "İçe aktarmada kullanıcı etkileşimi"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:215
 msgid "Require confirmation if number of tracks differs"
-msgstr ""
+msgstr "Parça sayısı farklıysa onay iste"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:221
 msgid "Require confirmation if number of albums differs"
-msgstr ""
+msgstr "Albüm sayısı farklıysa onay gerektir"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:226
 msgid ""
@@ -4702,11 +4718,11 @@ msgstr "Dosyaları dışa aktar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
 msgid "Write pretty and clear JSON (slower)"
-msgstr ""
+msgstr "Güzel ve net JSON yaz (daha yavaş)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
 msgid "Delete export files after they've been imported"
-msgstr ""
+msgstr "Dışa aktarılan dosyaları içe aktardıktan sonra sil"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 msgid "Open Export Directory"
@@ -4728,7 +4744,7 @@ msgstr "Sanatçı(lar)"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
 msgid "End of path"
-msgstr ""
+msgstr "Yolun sonu"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
 msgid "Match Albums"
@@ -4744,30 +4760,29 @@ msgstr "İçe aktaracak hiçbir şey yok"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
 msgid "You have to export something before you can import."
-msgstr ""
+msgstr "Bir şeyi içe aktarabilmeniz için önce dışa aktarmanız gerekir."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:446
 msgid "The index was corrupt."
-msgstr ""
+msgstr "Dizin bozuk."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:500
 #, python-format
 msgid "Couldn't parse JSON in %s"
-msgstr ""
+msgstr "%s içinde JSON ayrıştırılamadı"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:504
 #, python-format
 msgid "Couldn't read %s"
-msgstr ""
+msgstr "%s okunamadı"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 msgid "File name"
 msgstr "Dosya adı"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-#, fuzzy
 msgid "Match Tracks"
-msgstr "şarkılar"
+msgstr "Parçaları Eşleştir"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:86
 msgid "Updating chart list."
@@ -4776,7 +4791,7 @@ msgstr ""
 #. No charts to fetch, no update scheduled.
 #: quodlibet/ext/songsmenu/lastfmsync.py:104
 msgid "Already up-to-date."
-msgstr ""
+msgstr "Zaten güncel."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:111
 #, python-format
@@ -4812,7 +4827,7 @@ msgstr "Sınıf Etiketleri Oluştur"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
-msgstr ""
+msgstr "Albüm ve sanatçı adlarını kısa adlara dönüştür, kabaca."
 
 #: quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as M3U / PLS Playlist File"
@@ -4937,12 +4952,12 @@ msgstr "Albümü Ayır"
 
 #: quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
-msgstr ""
+msgstr "Disk numarasını ayır."
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
 msgid "n/a"
-msgstr ""
+msgstr "yok"
 
 #. TRANSLATORS: BPM mean "beats per minute"
 #: quodlibet/ext/songsmenu/tapbpm.py:31
@@ -5198,9 +5213,8 @@ msgid "Can't remove {tagname} from {filename}"
 msgstr "{filename} dosyasından {tagname} etiketi kaldırılamıyor"
 
 #: quodlibet/operon/commands.py:382
-#, fuzzy
 msgid "Remove a tag value"
-msgstr "Bir etiket değerine göre süz"
+msgstr "Etiket değerini kaldır"
 
 #: quodlibet/operon/commands.py:431
 #, fuzzy
@@ -5404,7 +5418,7 @@ msgstr "Eğer uygunsa oynatma için JACK kullan"
 
 #: quodlibet/player/gstbe/prefs.py:77
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
-msgstr ""
+msgstr "Tespit edilebilirse playbin havuzu için `jackaudiosink` kullanır"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
@@ -5468,7 +5482,7 @@ msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
-msgstr ""
+msgstr "Dinlemeleri ListenBrainz'e gönderin."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:455
 #, fuzzy
@@ -5484,10 +5498,12 @@ msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
+"Gönderimde içerilecek etiketlerin listesi. Virgülle ayrılmış, gerekirse çift "
+"tırnak işareti kullanın."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
-msgstr ""
+msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek."
 
 #: quodlibet/plugins/playlist.py:23
 #, python-format
@@ -5604,9 +5620,8 @@ msgid "Auto_matic"
 msgstr "Oto_matik"
 
 #: quodlibet/qltk/controls.py:113
-#, fuzzy
 msgid "_Track Mode"
-msgstr "Şarkı _Numarası Etiketleri"
+msgstr "_Parça Kipi"
 
 #: quodlibet/qltk/controls.py:114
 #, fuzzy
@@ -5674,9 +5689,8 @@ msgstr[0] "%(file_count)d dosya kalıcı olarak silinsin mi?"
 msgstr[1] "%(file_count)d dosya kalıcı olarak silinsin mi?"
 
 #: quodlibet/qltk/delete.py:91
-#, fuzzy
 msgid "_Delete Files"
-msgstr "Dosyaları Sil"
+msgstr "_Dosyaları Sil"
 
 #: quodlibet/qltk/delete.py:106
 msgid ""
@@ -5720,9 +5734,8 @@ msgid "Deleting %(current)d/%(total)d."
 msgstr "%(current)d/%(total)d Siliniyor."
 
 #: quodlibet/qltk/delete.py:236 quodlibet/qltk/delete.py:269
-#, fuzzy
 msgid "Unable to delete files"
-msgstr "Dosya silinemedi"
+msgstr "Dosyalar silinemedi"
 
 #: quodlibet/qltk/delete.py:237 quodlibet/qltk/delete.py:270
 #, fuzzy
@@ -5800,6 +5813,8 @@ msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
+"Makine tarafından oluşturulanlar da dahil olmak üzere tüm etiketlere eriş, "
+"ör. MusicBrainz veya Replay Gain etiketleri"
 
 #: quodlibet/qltk/edittags.py:535
 #, fuzzy
@@ -5808,7 +5823,7 @@ msgstr "_Programatik etiketleri göster"
 
 #: quodlibet/qltk/edittags.py:539
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
-msgstr ""
+msgstr "Olası çok satırlı etiketleri (örneğin 'şarkı sözleri') burada da göster"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:569
@@ -5951,31 +5966,31 @@ msgstr "Ex Falso Ayarları"
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
-msgstr "Dizinler"
+msgstr "Klasörler"
 
 #: quodlibet/qltk/filesel.py:254
 msgid "_New Folder…"
-msgstr "Ye_ni Dizin…"
+msgstr "Ye_ni Klasör…"
 
 #: quodlibet/qltk/filesel.py:263
 msgid "_Select all Sub-Folders"
-msgstr "_Bütün Alt Dizinleri Seç"
+msgstr "_Bütün Alt Klasörleri Seç"
 
 #: quodlibet/qltk/filesel.py:373
 msgid "New Folder"
-msgstr "Yeni Dizin"
+msgstr "Yeni Klasör"
 
 #: quodlibet/qltk/filesel.py:373
 msgid "Enter a name for the new folder:"
-msgstr "Yeni dizin için isim girin:"
+msgstr "Yeni klasör için ad girin:"
 
 #: quodlibet/qltk/filesel.py:385
 msgid "Unable to create folder"
-msgstr "Dizin yaratılamadı"
+msgstr "Klasör oluşturulamadı"
 
 #: quodlibet/qltk/filesel.py:402
 msgid "Unable to delete folder"
-msgstr "Dizin silinemedi"
+msgstr "Klasör silinemedi"
 
 #: quodlibet/qltk/filesel.py:518 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
@@ -5996,7 +6011,7 @@ msgstr "Disk %s"
 #: quodlibet/qltk/info.py:45 quodlibet/qltk/information.py:176
 #, python-format
 msgid "Track %s"
-msgstr "Şarkı %s"
+msgstr "Parça %s"
 
 #: quodlibet/qltk/info.py:104
 msgid "Current _Song"
@@ -6122,7 +6137,7 @@ msgstr[1] "%d tane seçili"
 
 #: quodlibet/qltk/information.py:462
 msgid "Track unavailable"
-msgstr "Şarkı yok"
+msgstr "Parça yok"
 
 #: quodlibet/qltk/information.py:500 quodlibet/qltk/information.py:590
 #, python-format
@@ -6191,7 +6206,7 @@ msgstr ""
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
-msgstr ""
+msgstr "Sağ taraf sırası:"
 
 #: quodlibet/qltk/msg.py:46
 msgid "Discard tag changes?"
@@ -6330,7 +6345,7 @@ msgstr "_Disk"
 
 #: quodlibet/qltk/prefs.py:46
 msgid "_Track"
-msgstr "Şarkı _No"
+msgstr "_Parça"
 
 #: quodlibet/qltk/prefs.py:47
 #, fuzzy
@@ -6389,12 +6404,11 @@ msgstr "Görünen Sütunlar"
 
 #: quodlibet/qltk/prefs.py:109
 msgid "Title includes _version"
-msgstr "İsim _versiyonları içersin"
+msgstr "Başlık _sürümleri içersin"
 
 #: quodlibet/qltk/prefs.py:111
-#, fuzzy
 msgid "Artist includes all _people"
-msgstr "_Arama kişileri de içerir"
+msgstr "_Sanatçı tüm kişileri içerir"
 
 #: quodlibet/qltk/prefs.py:113
 msgid "Album includes _disc subtitle"
@@ -6402,7 +6416,7 @@ msgstr "Albüm _disk altyazısını içersin"
 
 #: quodlibet/qltk/prefs.py:115
 msgid "Filename includes _folder"
-msgstr "Dosya adı _dizinleri içersin"
+msgstr "Dosya adı _klasörleri içersin"
 
 #: quodlibet/qltk/prefs.py:128
 #, fuzzy
@@ -6433,7 +6447,7 @@ msgstr "_Evrensel süzgeç:"
 
 #: quodlibet/qltk/prefs.py:287
 msgid "Apply this query in addition to all others"
-msgstr ""
+msgstr "Diğerlerine ek olarak bu sorguyu uygula"
 
 #. Translators: The heading of the preference group, no action
 #: quodlibet/qltk/prefs.py:293
@@ -6572,7 +6586,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:571
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "_Bayes ortalama miktarı:"
 
 #: quodlibet/qltk/prefs.py:588
 msgid "_Email:"
@@ -6640,12 +6654,14 @@ msgstr "Başlangıçta arşivi _yenile"
 
 #: quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "_Dizinleri değişiklikler için izle"
 
 #: quodlibet/qltk/prefs.py:712
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Harici dosya eklemeleri, silmeleri ve yeniden adlandırmaları için kitaplık "
+"dizinlerini izle."
 
 #: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 #, fuzzy
@@ -6801,7 +6817,7 @@ msgstr "_Yardım"
 
 #: quodlibet/qltk/quodlibetwindow.py:887
 msgid "_Add a Folder…"
-msgstr "Dizin _Ekle…"
+msgstr "Klasör _Ekle…"
 
 #: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_Add a File…"
@@ -6857,7 +6873,7 @@ msgstr "Şarkı Ekle"
 
 #: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
-msgstr "Dizinler _Ekle"
+msgstr "Klasörler _Ekle"
 
 #: quodlibet/qltk/quodlibetwindow.py:1301
 #, fuzzy
@@ -6949,9 +6965,8 @@ msgid "_Overwrite album art at target"
 msgstr "_Hedefteki albüm resmi üzerine yaz"
 
 #: quodlibet/qltk/renamefiles.py:224
-#, fuzzy
 msgid "_Remove empty directories"
-msgstr "Kullanılmayan albüm kapakları ve dizinleri _sil"
+msgstr "Boş dizinleri _kaldır"
 
 #: quodlibet/qltk/renamefiles.py:230
 #, fuzzy
@@ -6975,7 +6990,7 @@ msgid ""
 msgstr ""
 "<b>%(old-name)s</b>, <b>%(new-name)s</b> olarak yeniden adlandırılamadı. "
 "Yeni isimle zaten bir dosya olabilir veya yeni bir dosya yaratmak veya "
-"eskisini silmek için izniniz olmayabilir."
+"eskisini kaldırmak için izniniz olmayabilir."
 
 #: quodlibet/qltk/renamefiles.py:346
 #, fuzzy
@@ -7006,16 +7021,17 @@ msgid ""
 msgstr ""
 "Girdiğiniz bu süzgeç;\n"
 "\t<b>%s</b>\n"
-"/ karakteri içermekle beraber kök dizininden başlamıyor. Hatalı "
+"/ karakteri içermekle beraber kök klasörden başlamıyor. Hatalı "
 "isimlendirmelerden sakınmak için süzgeçinize / veya ~/ şeklinde bir kök "
 "verin."
 
 #: quodlibet/qltk/scanbox.py:49
-#, fuzzy
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
-msgstr "Bu (':' ile ayrılmış) dizinlerdeki şarkılar arşivinize eklenecek"
+msgstr ""
+"Listelenen klasörlerdeki şarkılar, kitaplık yenileme sırasında kitaplığa "
+"eklenecek"
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
@@ -7086,7 +7102,7 @@ msgstr ""
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
-msgstr ""
+msgstr "Tarama kökü{dir!r} taşınsın mı?"
 
 #: quodlibet/qltk/scanbox.py:157
 msgid "OK, move it!"
@@ -7187,7 +7203,7 @@ msgstr "Ağaç Görünümü"
 
 #: quodlibet/qltk/shortcuts.py:36
 msgid "Collapses the element or select the parent element"
-msgstr ""
+msgstr "Ögeyi daraltır veya üst ögeyi seçer"
 
 #: quodlibet/qltk/shortcuts.py:37
 msgid "Expands the element"
@@ -7221,7 +7237,7 @@ msgstr "_Albüm Etiketleri"
 
 #: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
-msgstr "Şarkı _Numarası Etiketleri"
+msgstr "_Parça Başlıkları"
 
 #: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
@@ -7289,7 +7305,7 @@ msgstr "Çalma _Kuyruğuna Ekle"
 
 #: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
-msgstr "Kitaplıktan kaldı_r…"
+msgstr "Kitaplıktan Kaldı_r…"
 
 #: quodlibet/qltk/songsmenu.py:411
 #, fuzzy
@@ -7411,7 +7427,7 @@ msgstr "Görünümü Değiştir"
 
 #: quodlibet/qltk/tracknumbers.py:38
 msgid "Track Numbers"
-msgstr "Şarkı Numaraları"
+msgstr "Parça Numaraları"
 
 #: quodlibet/qltk/tracknumbers.py:41
 msgid "Start fro_m:"
@@ -7419,7 +7435,7 @@ msgstr "_Başlangıç:"
 
 #: quodlibet/qltk/tracknumbers.py:50
 msgid "_Total tracks:"
-msgstr "_Toplam Şarkı:"
+msgstr "_Toplam parça:"
 
 #: quodlibet/qltk/unity.py:52
 msgid "Play/Pause"
@@ -7817,7 +7833,7 @@ msgstr "disk"
 
 #: quodlibet/util/tags.py:115 quodlibet/util/tags.py:154
 msgid "track"
-msgstr "şarkı no"
+msgstr "parça"
 
 #: quodlibet/util/tags.py:116
 msgid "label ID"
@@ -7858,9 +7874,8 @@ msgid "MusicBrainz recording ID"
 msgstr "MusicBrainz şarkı ID'si"
 
 #: quodlibet/util/tags.py:132
-#, fuzzy
 msgid "MusicBrainz release track ID"
-msgstr "MusicBrainz yayın ID'si"
+msgstr "MusicBrainz yayın parça kimliği"
 
 #: quodlibet/util/tags.py:133
 msgid "MusicBrainz release ID"
@@ -7900,11 +7915,11 @@ msgstr "MusicBrainz yayın ID'si"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:143
 msgid "track gain"
-msgstr "şarkı ses seviyesi"
+msgstr "parça ses ayarlaması"
 
 #: quodlibet/util/tags.py:144
 msgid "track peak"
-msgstr "şarkı tepe ses seviyesi"
+msgstr "parça tepe ses seviyesi"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:146
@@ -7925,7 +7940,7 @@ msgstr "diskler"
 
 #: quodlibet/util/tags.py:155
 msgid "tracks"
-msgstr "şarkılar"
+msgstr "parçalar"
 
 #: quodlibet/util/tags.py:156
 msgid "last started"
