@@ -208,10 +208,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __configure_buttons(self, library):
         new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
-        new_pl.set_tooltip_text(_("New"))
         new_pl.connect('clicked', self.__new_playlist, library)
         import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
-        import_pl.set_tooltip_text(_("Import"))
         import_pl.connect('clicked', self.__import, library)
 
         fb = Gtk.FlowBox()
