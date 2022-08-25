@@ -8,9 +8,11 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from functools import partial
 import os
 
 from gi.repository import Gtk, Gdk, GLib, Gio, GObject
+from quodlibet.qltk.seekbutton import SeekButton
 from senf import uri2fsn, fsnative, path2fsn
 
 import quodlibet
@@ -31,7 +33,7 @@ from quodlibet.formats.remote import RemoteFile
 from quodlibet.qltk.browser import LibraryBrowser, FilterMenu
 from quodlibet.qltk.chooser import choose_folders, choose_files, \
     create_chooser_filter
-from quodlibet.qltk.controls import PlayControls
+from quodlibet.qltk.controls import PlayPauseButton, Volume
 from quodlibet.qltk.cover import CoverImage
 from quodlibet.qltk.getstring import GetStringDialog
 from quodlibet.qltk.bookmarks import EditBookmarks
@@ -48,10 +50,10 @@ from quodlibet.qltk.prefs import PreferencesWindow
 from quodlibet.qltk.queue import QueueExpander
 from quodlibet.qltk.songlist import SongList, get_columns, set_columns
 from quodlibet.qltk.songmodel import PlaylistMux
-from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action
+from quodlibet.qltk.x import RVPaned, Align, ScrolledWindow, Action, SymbolicIconImage
 from quodlibet.qltk.x import ToggleAction, RadioAction, HighlightToggleButton
 from quodlibet.qltk.x import SeparatorMenuItem, MenuItem
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.util import copool, connect_destroy, connect_after_destroy
 from quodlibet.util.library import get_scan_dirs
@@ -250,14 +252,12 @@ class MainSongList(SongList):
 
 
 class TopBar(Gtk.Toolbar):
-    def __init__(self, parent, player, library):
+    def __init__(self, parent, player, library, button_bar=[]):
         super().__init__()
 
         # play controls
         control_item = Gtk.ToolItem()
         self.insert(control_item, 0)
-        t = PlayControls(player, library.librarian)
-        self.volume = t.volume
 
         # only restore the volume in case it is managed locally, otherwise
         # this could affect the system volume
@@ -265,12 +265,19 @@ class TopBar(Gtk.Toolbar):
             player.volume = config.getfloat("memory", "volume")
 
         connect_destroy(player, "notify::volume", self._on_volume_changed)
-        control_item.add(t)
 
-        self.insert(Gtk.SeparatorToolItem(), 1)
+        button_item = Gtk.ToolItem()
+        button_box = Gtk.VBox()
+        for button in button_bar:
+            button.props.relief = Gtk.ReliefStyle.NONE
+            button_box.add(button)
+        button_item.add(button_box)
+        self.insert(button_item, 1)
+
+        self.insert(Gtk.SeparatorToolItem(), 2)
 
         info_item = Gtk.ToolItem()
-        self.insert(info_item, 2)
+        self.insert(info_item, 3)
         info_item.set_expand(True)
 
         box = Gtk.Box(spacing=6)
@@ -283,6 +290,7 @@ class TopBar(Gtk.Toolbar):
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
         self._pattern_box.pack_start(text, True, True, 0)
+
         box.pack_start(self._pattern_box, True, True, 0)
 
         # cover image
@@ -530,6 +538,8 @@ class SongListPaned(RVPaned):
 
 class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
+    browser = None
+
     def __init__(self, library, player, headless=False, restore_cb=None):
         super().__init__(dialog=False)
 
@@ -575,7 +585,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.__jump_to_current(True, None, True)
 
         keyval, mod = Gtk.accelerator_parse("<Primary><shift>J")
-        accel_group.connect(keyval, mod, 0, scroll_and_jump)
+        #accel_group.connect(keyval, mod, 0, scroll_and_jump)
 
         # custom accel map
         accel_fn = os.path.join(quodlibet.get_user_dir(), "accels")
@@ -584,19 +594,193 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         # accels
         Gtk.AccelMap.save(accel_fn)
 
-        menubar = ui.get_widget("/Menu")
+        def check_updates_handler():
+            d = UpdateDialog(self)
+            d.run()
+            d.destroy()
 
-        # Since https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        # toplevel menu items show an empty 16x16 image. While we don't
-        # need image items there UIManager creates them by default.
-        # Work around by removing the empty GtkImages
-        for child in menubar.get_children():
-            if isinstance(child, Gtk.ImageMenuItem):
-                child.set_image(None)
+        action_group_app = Gio.SimpleActionGroup()
+        action_group_app.add_action_entries([
+            ["Preferences", lambda *a: self.__preferences(None)],
+            ["Plugins", lambda *a: self.__plugins(None)],
+            ["Shortcuts", lambda *a: self.__keyboard_shortcuts(None)],
+            ["OnlineHelp", lambda *a: util.website(const.ONLINE_HELP)],
+            ["SearchHelp", lambda *a: util.website(const.SEARCH_HELP)],
+            ["CheckUpdates", lambda *a: check_updates_handler()],
+            ["About", lambda *a: self.__show_about()],
+            #["Quit", lambda *a: self.destroy()]
+        ])
+        self.insert_action_group("App", action_group_app)
 
-        main_box.pack_start(menubar, False, True, 0)
+        action_group_library = Gio.SimpleActionGroup()
+        action_group_library.add_action_entries([
+            ["AddFolders", lambda *a: self.open_chooser(None)],
+            ["AddFiles", lambda *a: self.open_chooser(None)],
+            ["AddLocation", lambda *a: self.open_location(None)],
+            ["Refresh", lambda *a: self.__rebuild(None, False)]
+        ])
+        self.insert_action_group("Library", action_group_library)
 
-        top_bar = TopBar(self, player, library)
+        action_group_track = Gio.SimpleActionGroup()
+        action_group_track.add_action_entries([
+            ["StopAfter", lambda *a: self.stop_after.set_active(True)],
+            ["Jump", lambda *a: self.__jump_to_current(True)],
+            ["Bookmark", lambda *a: self.__edit_bookmarks(library.librarian, player)]
+        ])
+        self.insert_action_group("Track", action_group_track)
+
+        action_group_view = Gio.SimpleActionGroup()
+        action_group_view.add_action_entries([
+            [Kind.__name__, partial(
+                lambda Kind, *a:
+                    self._select_browser(None, browsers.name(Kind), library, player), Kind)]
+            for Kind in browsers.browsers
+        ])
+        self.insert_action_group("View", action_group_view)
+
+        action_group_browser = Gio.SimpleActionGroup()
+        action_group_browser.add_action_entries([
+            [Kind.__name__, partial(
+                lambda Kind, *a: LibraryBrowser.open(Kind, library, player), Kind)]
+            for Kind in browsers.browsers
+        ])
+        self.insert_action_group("Browser", action_group_browser)
+
+        action_group_filter = Gio.SimpleActionGroup()
+        action_group_filter.add_action_entries([
+            ["Filter" + tag.capitalize(),
+             partial(lambda tag, *a: self.browser.filter_on([player.song], tag), tag)]
+            for tag in ["genre", "artist", "album"]
+        ] + [
+            ["Random" + tag.capitalize(),
+             partial(lambda tag, *a: self.browser.filter_random(tag), tag)]
+            for tag in ["genre", "artist", "album"]
+        ])
+        self.insert_action_group("Search", action_group_filter)
+
+        header_bar = self.use_header_bar()
+        main_box.pack_start(header_bar, False, True, 0)
+
+        prev = Gtk.Button(
+            image=SymbolicIconImage("media-skip-backward", Gtk.IconSize.BUTTON))
+        play = PlayPauseButton()
+        next_ = Gtk.Button(
+            image=SymbolicIconImage("media-skip-forward", Gtk.IconSize.BUTTON))
+        button_box = Gtk.ButtonBox(layout_style=Gtk.ButtonBoxStyle.EXPAND)
+        for b in [prev, play, next_]:
+            button_box.add(b)
+        volume = Volume(player)
+        volume.props.relief = Gtk.ReliefStyle.NONE
+        seekbutton = SeekButton(player, library)
+        seekbutton.set_relief(Gtk.ReliefStyle.NONE)
+
+        menu_filter = Gio.Menu()
+        menu_filter_tag = Gio.Menu()
+        menu_filter_tag.append(_("On Current _Genre(s)"), "Search.FilterGenre")
+        menu_filter_tag.append(_("On Current _Artist(s)"), "Search.FilterArtist")
+        menu_filter_tag.append(_("On Current Al_bum"), "Search.FilterAlbum")
+        menu_filter.append_section(None, menu_filter_tag)
+        menu_filter_random = Gio.Menu()
+        menu_filter_random.append(_("Random _Genre"), "Search.RandomGenre")
+        menu_filter_random.append(_("Random _Artist"), "Search.RandomArtist")
+        menu_filter_random.append(_("Random Al_bum"), "Search.RandomAlbum")
+        menu_filter.append_section(None, menu_filter_random)
+
+        for widget in [button_box, seekbutton, volume]:
+            header_bar.pack_start(widget)
+
+        menu_app = Gio.Menu()
+        menu_app_add = Gio.Menu()
+        menu_app_add.append(_(u'_Add a Folder…'), "Library.AddFolders")
+        menu_app_add.append(_(u'_Add a File…'), "Library.AddFiles")
+        menu_app_add.append(_(u'_Add a Location…'), "Library.AddLocation")
+        menu_app_add.append(_("_Scan Library"), "Library.Refresh")
+        menu_app.append_section(None, menu_app_add)
+        menu_app_configure = Gio.Menu()
+        menu_app_configure.append(_('_Plugins'), "App.Plugins")
+        menu_app_configure.append(_('_Preferences'), "App.Preferences")
+        menu_app.append_section(None, menu_app_configure)
+        menu_app.append(_("_Keyboard Shortcuts"), "App.Shortcuts")
+        menu_app.append(_("Search Help"), "App.SearchHelp")
+        menu_app.append(_("Online Help"), "App.OnlineHelp")
+        menu_app.append(_("_Check for Updates…"), "App.CheckUpdates")
+        menu_app.append(_("_About"), "App.About")
+        #menu_app.append(_('_Quit'), "Quit")
+
+        menu_browse_library = Gio.Menu()
+        menu_browse_external = Gio.Menu()
+        for Kind in browsers.browsers:
+            menu = (menu_browse_library if Kind.uses_main_library
+                else menu_browse_external)
+            menu.append(Kind.name, "Browser." + Kind.__name__)
+        menu_browse = Gio.Menu()
+        menu_browse.append_section(None, menu_browse_library)
+        menu_browse.append_section(None, menu_browse_external)
+
+        menu_view_library = Gio.Menu()
+        menu_view_external = Gio.Menu()
+        for Kind in browsers.browsers:
+            menu = (menu_view_library if Kind.uses_main_library
+                else menu_view_external)
+            menu.append(Kind.name, "View." + Kind.__name__)
+        menu_view = Gio.Menu()
+        menu_view.append_section(None, menu_view_library)
+        menu_view.append_section(None, menu_view_external)
+
+        button_app = Gtk.MenuButton(
+            image=Gtk.Image(icon_name="open-menu-symbolic"),
+            popover=Gtk.Popover.new_from_model(None, menu_app))
+        header_bar.pack_end(button_app)
+
+        button_browse = Gtk.MenuButton(
+            image=Gtk.Image(icon_name="window-new-symbolic"),
+            popover=Gtk.Popover.new_from_model(None, menu_browse))
+        header_bar.pack_end(button_browse)
+
+        view_button = Gtk.MenuButton(
+            popover=Gtk.Popover.new_from_model(None, menu_view),
+            relief=Gtk.ReliefStyle.NONE)
+        browser_button_box = Gtk.VBox()
+
+        add_css(view_button,
+            b"button { padding-top: 0; padding-bottom: 0 }")
+
+        l1 = Gtk.Label("")
+        ctx = l1.get_style_context()
+        ctx.add_class("title")
+
+        l2 = Gtk.Label("")
+        ctx = l2.get_style_context()
+        ctx.add_class("subtitle")
+
+        browser_button_hbox = Gtk.HBox(halign=Gtk.Align.CENTER)
+        browser_button_hbox.add(l1)
+        browser_button_hbox.add(Gtk.Image(icon_name="pan-down-symbolic"))
+
+        browser_button_box.add(browser_button_hbox)
+        browser_button_box.add(l2)
+        view_button.add(browser_button_box)
+
+        header_bar.props.custom_title = view_button
+        header_bar.bind_property("title", l1, "label", GObject.BindingFlags.SYNC_CREATE)
+        header_bar.bind_property("subtitle", l2, "label", GObject.BindingFlags.SYNC_CREATE)
+        header_bar.show_all()
+
+        self.stop_after = stop_after = Gtk.ToggleButton(
+            image=Gtk.Image(icon_name="process-stop-symbolic"),
+            tooltip_text=_("Stop After This Song"))
+
+        button_jump = Gtk.ModelButton(
+            image=Gtk.Image(icon_name="go-jump-symbolic"),
+            tooltip_text=_('Jump to Playing Song'),
+            action_name="Track.Jump")
+
+        button_filter = Gtk.MenuButton(
+            image=Gtk.Image(icon_name="edit-find-symbolic"),
+            popover=Gtk.Popover.new_from_model(None, menu_filter))
+
+        top_bar = TopBar(self, player, library, button_bar=[
+            stop_after, button_jump, button_filter])
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
@@ -1133,6 +1317,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         container.show()
         self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
+        self.__update_title(player)
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
@@ -1166,10 +1351,16 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def __update_title(self, player):
         song = player.info
         title = "Quod Libet"
+        if self.browser:
+            title = self.browser.name + " - " + title
         if song:
             tag = config.gettext("settings", "window_title_pattern")
             if tag:
-                title = song.comma(tag) + " - " + title
+                song_title = song.comma(tag)
+                if self._header_bar:
+                    self._header_bar.props.subtitle = song_title
+                else:
+                    title = song_title + " - " + title
         self.set_title(title)
 
     def __song_started(self, player, song):

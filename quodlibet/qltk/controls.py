@@ -176,11 +176,11 @@ class PlayPauseButton(Gtk.Button):
     }
 
     def __init__(self):
-        super().__init__(relief=Gtk.ReliefStyle.NONE)
+        super().__init__()
         self._pause_image = SymbolicIconImage("media-playback-pause",
-                                               Gtk.IconSize.LARGE_TOOLBAR)
+                                               Gtk.IconSize.BUTTON)
         self._play_image = SymbolicIconImage("media-playback-start",
-                                             Gtk.IconSize.LARGE_TOOLBAR)
+                                             Gtk.IconSize.BUTTON)
         self._set_active(False)
         self.connect("clicked", self._on_clicked)
 

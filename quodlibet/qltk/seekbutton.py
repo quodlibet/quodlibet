@@ -70,36 +70,30 @@ class TimeLabel(Gtk.Label):
             self.set_time(self._last_time)
 
 
-class HSlider(Gtk.Button):
+class HSlider(Gtk.MenuButton):
 
     def __init__(self, child=None):
         super().__init__()
         if child:
             self.add(child)
-        self.connect('clicked', self.__clicked)
 
         self._disable_slider = False
         self.__grabbed = []
 
-        window = self.__window = Gtk.Window(type=Gtk.WindowType.POPUP)
         self.__adj = Gtk.Adjustment.new(0, 0, 0, 3, 15, 0)
+        self._popover = popover = Gtk.Popover(position=Gtk.PositionType.BOTTOM)
 
-        frame = Gtk.Frame()
-        frame.set_border_width(0)
-        frame.set_shadow_type(Gtk.ShadowType.OUT)
+        self.props.popover = popover
 
         self.add_events(Gdk.EventMask.SCROLL_MASK)
 
-        hscale = Gtk.Scale(adjustment=self.__adj)
+        self.scale = hscale = Gtk.Scale(adjustment=self.__adj)
         hscale.set_orientation(Gtk.Orientation.HORIZONTAL)
-        window.connect('button-press-event', self.__button)
-        window.connect('key-press-event', self.__key)
         hscale.set_draw_value(False)
-        self.scale = hscale
-        window.add(frame)
         self._box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._box.add(hscale)
-        frame.add(self._box)
+        popover.add(self._box)
+        popover.show_all()
         self.connect('scroll-event', self.__scroll, hscale)
 
         self.connect("destroy", self.__destroy)
@@ -107,7 +101,7 @@ class HSlider(Gtk.Button):
         # forward scroll event to the button
         def foward_scroll(scale, event):
             self.emit('scroll-event', event.copy())
-        window.connect('scroll-event', foward_scroll)
+        popover.connect('scroll-event', foward_scroll)
 
         # ignore scroll events on the scale, the window handles it instead
         self.scale.connect('scroll-event', lambda *x: True)
@@ -122,7 +116,7 @@ class HSlider(Gtk.Button):
         # forward release event to the scale
         def foward_release(scale, event):
             self.scale.emit('button-release-event', event.copy())
-        window.connect('button-release-event', foward_release)
+        popover.connect('button-release-event', foward_release)
 
         self.set_slider_length(200)
 
@@ -130,7 +124,6 @@ class HSlider(Gtk.Button):
             self.get_child().show_all()
 
     def __destroy(self, *args):
-        self.__window.destroy()
         self.__window = None
 
     def set_slider_disabled(self, disable):
@@ -145,12 +138,9 @@ class HSlider(Gtk.Button):
     def set_slider_length(self, length):
         self.scale.set_size_request(length, -1)
 
-        # force a window resize..
-        self.__window.resize(1, 1)
-
     def set_slider_widget(self, widget):
-        self._box.pack_start(
-            Align(widget, border=6, left=-3), False, True, 0)
+        self._box.add(Align(widget, border=6, left=-3))
+        self._box.show_all()
 
     def __clicked(self, button):
         if self.__window.get_property('visible'):
@@ -194,16 +184,8 @@ class HSlider(Gtk.Button):
         v = min(adj.props.upper, max(adj.props.lower, v))
         hscale.set_value(v)
 
-    def __button(self, widget, ev):
-        self.__popup_hide()
-
-    def __key(self, hscale, ev):
-        if ev.string in ["\n", "\r", " ", "\x1b"]:  # enter, space, escape
-            self.__popup_hide()
-
     def __popup_hide(self):
-        window_ungrab_and_unmap(self.__window, self.__grabbed)
-        del self.__grabbed[:]
+        self._popover.popdown()
 
 
 class SeekButton(HSlider):
@@ -216,8 +198,7 @@ class SeekButton(HSlider):
         l = TimeLabel()
         self._time_label = l
         hbox.pack_start(l, True, True, 0)
-        arrow = Gtk.Arrow.new(Gtk.ArrowType.RIGHT, Gtk.ShadowType.NONE)
-        hbox.pack_start(arrow, False, True, 0)
+        hbox.pack_start(Gtk.Image(icon_name="pan-down-symbolic"), False, True, 0)
         super().__init__(hbox)
 
         self._slider_label = TimeLabel()
