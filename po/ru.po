@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-06-10 17:15+0000\n"
-"Last-Translator: МАН69К <weblate@mah69k.net>\n"
+"PO-Revision-Date: 2022-08-29 19:11+0000\n"
+"Last-Translator: Vik <xasertop@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
 "Language: ru\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -34,9 +34,8 @@ msgstr "_Название"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:59
-#, fuzzy
 msgid "_People"
-msgstr "люди"
+msgstr "_Люди"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
@@ -66,7 +65,6 @@ msgstr "О_ценка"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:65
-#, fuzzy
 msgid "Play_count"
 msgstr "Воспроизведени_й"
 
@@ -219,9 +217,8 @@ msgid "_Audio Feeds"
 msgstr "Аудио _ленты"
 
 #: quodlibet/browsers/audiofeeds.py:374
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "Добавить _файл…"
+msgstr "Добавить _ленту…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -386,7 +383,7 @@ msgstr "Показывать текст _альбомов"
 
 #: quodlibet/browsers/covergrid/prefs.py:70
 msgid "Show \"All Albums\" Item"
-msgstr "Показывать пункт \"Все альбомы\" "
+msgstr "Показывать пункт \"Все альбомы\""
 
 #: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
@@ -609,7 +606,6 @@ msgid "No Category"
 msgstr "Без категории"
 
 #: quodlibet/browsers/iradio.py:650
-#, fuzzy
 msgid "_Add Station…"
 msgstr "_Новая станция…"
 
@@ -726,9 +722,8 @@ msgid "New"
 msgstr "Создать"
 
 #: quodlibet/browsers/playlists/main.py:213
-#, fuzzy
 msgid "_Import…"
-msgstr "_Импортировать"
+msgstr "_Импорт…"
 
 #: quodlibet/browsers/playlists/main.py:214
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
@@ -759,7 +754,7 @@ msgstr "Импортировать плейлист"
 
 #: quodlibet/browsers/playlists/main.py:601
 msgid "_Import"
-msgstr "_Импортировать"
+msgstr "_Импорт"
 
 #: quodlibet/browsers/playlists/menu.py:24
 msgid "_New Playlist…"
@@ -780,7 +775,7 @@ msgstr "Подтвердите действие для плейлиста '%s'"
 
 #: quodlibet/browsers/playlists/prefs.py:21
 msgid "empty"
-msgstr "пустой"
+msgstr "пусто"
 
 #: quodlibet/browsers/playlists/prefs.py:39
 msgid "Example Playlist"
@@ -816,7 +811,7 @@ msgstr "Введите название нового плейлиста:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "_Создать"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -825,7 +820,7 @@ msgid ""
 "\n"
 "%(current)d/%(total)d songs added."
 msgstr ""
-"Импорт плейлиста.\n"
+"Импортирование плейлиста.\n"
 "\n"
 "%(current)d/%(total)d треков добавлено."
 
@@ -847,9 +842,8 @@ msgstr "_Список треков"
 
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
-#, fuzzy
 msgid "Soundcloud"
-msgstr "Обзор Sound_cloud"
+msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
@@ -874,12 +868,12 @@ msgstr "Перейти к %s"
 
 #: quodlibet/browsers/soundcloud/main.py:444
 msgid "Connected"
-msgstr "Соединение"
+msgstr "Подключено"
 
 #: quodlibet/browsers/soundcloud/main.py:445
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "Quod Libet подключен, <b>%s</b>!"
+msgstr "Quod Libet подключен, %s!"
 
 #: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
@@ -1223,12 +1217,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Обложки - для Artwork URL"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud browser."
 msgstr ""
-"Загрузки обложек для тега 'artwork_url'. Это работает с браузером Soundcloud."
+"Загрузки обложек для тега <tt>artwork_url</tt>. Это работает при просмотре в "
+"Soundcloud."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1287,13 +1281,12 @@ msgid "Regex Substitution"
 msgstr "Теги - Замена по Regex"
 
 #: quodlibet/ext/editing/resub.py:20
-#, fuzzy
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"Использование регулярных выражений для замены (s///) при получении тегов из "
-"имени файла или переименовании файла по тегам."
+"Разрешает замены регулярных выражений (<tt>s/from/to/</tt>) при получении "
+"тегов или переименовании файлов."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1655,36 +1648,30 @@ msgid "Fades out and pauses your music."
 msgstr "Постепенно убавляет громкость и приостанавливает воспроизведение."
 
 #: quodlibet/ext/events/discord_status.py:44
-#, fuzzy
 msgid "Discord status message"
-msgstr "Gajim статус"
+msgstr "Состояние Discord"
 
 #: quodlibet/ext/events/discord_status.py:45
-#, fuzzy
 msgid "Discord Status Message"
-msgstr "Gajim статус"
+msgstr "Состояние Discord"
 
 #: quodlibet/ext/events/discord_status.py:46
-#, fuzzy
 msgid ""
 "Change your Discord status message according to what you're currently "
 "listening to."
-msgstr "Обновляет ваш статус Gaim в соответствии с воспроизводимым треком."
+msgstr "Обновляет ваш статус Discord в соответствии с воспроизводимым треком."
 
 #: quodlibet/ext/events/discord_status.py:85
-#, fuzzy
 msgid "Paused"
-msgstr "Пауза:"
+msgstr "Пауза"
 
 #: quodlibet/ext/events/discord_status.py:136
-#, fuzzy
 msgid "Status Line #1"
-msgstr "Текст статуса"
+msgstr "Строка состояния 1"
 
 #: quodlibet/ext/events/discord_status.py:147
-#, fuzzy
 msgid "Status Line #2"
-msgstr "Текст статуса"
+msgstr "Строка состояния 2"
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
@@ -1948,9 +1935,8 @@ msgid "JEP-118"
 msgstr ""
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy
 msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
-msgstr "Выводит файл Jabber User Tunes в ~/.quodlibet/jabber."
+msgstr "Выводит файл Jabber User Tunes в <tt>~/.quodlibet/jabber</tt>."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2059,9 +2045,8 @@ msgid "Broker port"
 msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:140
-#, fuzzy
 msgid "Defaults to 1883"
-msgstr "По умолчанию"
+msgstr "По умолчанию 1883"
 
 #: quodlibet/ext/events/mqtt.py:142
 msgid "Broker username"
@@ -2113,7 +2098,7 @@ msgid "Connected to broker at %(host)s:%(port)d"
 msgstr "Подключен к брокеру %(host)s:%(port)d"
 
 #: quodlibet/ext/events/mqtt.py:210
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
 msgstr "Не удалось подключится к %(host)s:%(port)d (%(msg)s)"
 
@@ -2122,14 +2107,12 @@ msgid "Connection error"
 msgstr "Ошибка соединения"
 
 #: quodlibet/ext/events/musicbrainzsync.py:36
-#, fuzzy
 msgid "MusicBrainz Sync"
-msgstr "Теги - Поиск на MusicBrainz"
+msgstr "Синхронизация MusicBrainz"
 
 #: quodlibet/ext/events/musicbrainzsync.py:37
-#, fuzzy
 msgid "Syncs the rating of a song with MusicBrainz."
-msgstr "Позволяет дать точную оценку треку в числах."
+msgstr "Синхронизирует рейтинг песни с MusicBrainz."
 
 #: quodlibet/ext/events/musicbrainzsync.py:84
 #: quodlibet/ext/events/qlscrobbler.py:487
@@ -2441,11 +2424,11 @@ msgstr "Поставщик поиска GNOME"
 
 #: quodlibet/ext/events/searchprovider.py:80
 msgid "Allows GNOME Shell to search the library."
-msgstr "Позволяет GNOME Shell искать по фонотеке."
+msgstr "Позволяет GNOME Shell искать в фонотеке."
 
 #: quodlibet/ext/events/seekbar.py:122
 msgid "Alternative Seek Bar"
-msgstr "Панель перемотки"
+msgstr "Альтернативная панель поиска"
 
 #: quodlibet/ext/events/seekbar.py:123
 msgid ""
@@ -2456,10 +2439,9 @@ msgstr ""
 
 #: quodlibet/ext/events/seekpoints.py:20
 msgid "Seekpoint Bookmarks"
-msgstr "Закладки - Перемотка"
+msgstr "Закладки точки поиска"
 
 #: quodlibet/ext/events/seekpoints.py:24
-#, fuzzy
 msgid ""
 "Store Seekpoints A and/or B for tracks. Skip to time A and stop after time B "
 "when track is played.\n"
@@ -2468,11 +2450,12 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
-"Сохранять точки поиска A и/или B для треков. Пропустить время до A и "
-"остановиться после времени B, при воспроизведении трека.\n"
+"Сохранять точки поиска A и/или B для треков. Переход к время A и остановка "
+"после времени B, при воспроизведении трека.\n"
+"\n"
 "Обратите внимание, что изменение имен нижеуказанных точек не обновляет "
-"фактические имена закладок, точки используются только плагином поиска при "
-"принятии решения о пропуске фрагментов."
+"фактические имена закладок, меняются только имена закладок, которые ищет "
+"плагин при решении о поиске."
 
 #: quodlibet/ext/events/seekpoints.py:108
 msgid "Bookmark name for point A"
@@ -2500,7 +2483,7 @@ msgstr ""
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
-msgstr "Squeezebox синхронизация"
+msgstr "Синхронизация Squeezebox"
 
 #: quodlibet/ext/events/squeezebox_sync.py:30
 msgid ""
@@ -2516,6 +2499,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
+"Совместно использует конфигурацию с <a href=\"%(plugin_link)s\">плагином "
+"Экспорт в Squeezebox</a>."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2549,74 +2534,67 @@ msgid "Only Seekable Sources"
 msgstr ""
 
 #: quodlibet/ext/events/stop_on_pause.py:86
-#, fuzzy
 msgid "Plugin Options"
-msgstr "Параметры"
+msgstr "Параметры плагина"
 
 #: quodlibet/ext/events/synchronize_to_device.py:52
-#, fuzzy
 msgid "Pending copy"
-msgstr "декодер"
+msgstr "Ожидание копирования"
 
 #: quodlibet/ext/events/synchronize_to_device.py:53
-#, fuzzy
 msgid "Pending delete"
-msgstr "дата записи"
+msgstr "Ожидание удаления"
 
 #: quodlibet/ext/events/synchronize_to_device.py:54
-#, fuzzy
 msgid "delete"
-msgstr "_Удалить файлы"
+msgstr "удалить"
 
 #: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "Skip"
-msgstr ""
+msgstr "Пропустить"
 
 #: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "DUPLICATE"
-msgstr ""
+msgstr "КОПИЯ"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
-#, fuzzy
 msgid "Synchronizing"
-msgstr "Текст песни - синхронно"
+msgstr "Синхронизация"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
-#, fuzzy
 msgid "Deleting"
-msgstr "_Удалить файлы"
+msgstr "Удаление"
 
 #: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "Success"
-msgstr ""
+msgstr "Успешно"
 
 #: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "FAILURE"
-msgstr ""
+msgstr "СБОЙ"
 
 #: quodlibet/ext/events/synchronize_to_device.py:61
-#, fuzzy
 msgid "Skipped existing file"
-msgstr "Чаще пропускаются"
+msgstr "Пропущен существующий файл"
 
 #: quodlibet/ext/events/synchronize_to_device.py:81
 msgid "Cannot set the filename of a song."
-msgstr ""
+msgstr "Невозможно задать имя файла песни."
 
 #: quodlibet/ext/events/synchronize_to_device.py:87
-#, fuzzy
 msgid "Synchronize to Device"
-msgstr "Текст песни - синхронно"
+msgstr "Синхронизировать с устройством"
 
 #: quodlibet/ext/events/synchronize_to_device.py:88
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
 msgstr ""
+"Синхронизирует все песни из выбранных сохраненных поисков с указанной папкой."
 
 #: quodlibet/ext/events/synchronize_to_device.py:141
 msgid "Synchronize the following saved searches:"
-msgstr ""
+msgstr "Синхронизирует следующие сохраненные поиски:"
 
 #: quodlibet/ext/events/synchronize_to_device.py:147
 msgid "The absolute path to your export location"
@@ -2652,33 +2630,29 @@ msgstr "Изменить сохранённые шаблоны…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
-msgstr ""
+msgstr "Структура имен экспортируемых файлов на основе их тегов"
 
 #: quodlibet/ext/events/synchronize_to_device.py:196
-#, fuzzy
 msgid "Export pattern:"
-msgstr "Шаблон _Исполнителя:"
+msgstr "Шаблон экспорта:"
 
 #. Stop preview button
 #: quodlibet/ext/events/synchronize_to_device.py:208
-#, fuzzy
 msgid "Stop preview"
-msgstr "Предпросмотр"
+msgstr "Остановить предпросмотр"
 
 #: quodlibet/ext/events/synchronize_to_device.py:227
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
-msgstr "Статус"
+msgstr "Состояние"
 
 #: quodlibet/ext/events/synchronize_to_device.py:234
-#, fuzzy
 msgid "Source File"
-msgstr "Источники"
+msgstr "Источник"
 
 #: quodlibet/ext/events/synchronize_to_device.py:243
-#, fuzzy
 msgid "Export Path"
-msgstr "Теги - Экспорт метаданных"
+msgstr "Путь экспорта"
 
 #: quodlibet/ext/events/synchronize_to_device.py:253
 msgid ""
@@ -2693,28 +2667,27 @@ msgstr ""
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:272
 msgid "Start synchronization"
-msgstr ""
+msgstr "Начать синхронизацию"
 
 #. Stop sync button
 #: quodlibet/ext/events/synchronize_to_device.py:280
-#, fuzzy
 msgid "Stop synchronization"
-msgstr "организация"
+msgstr "Остановить синхронизацию"
 
 #: quodlibet/ext/events/synchronize_to_device.py:303
 msgid "No saved searches yet, create some and come back!"
-msgstr ""
+msgstr "Пока нет сохраненных поисков, создайте их и возвращайтесь!"
 
 #: quodlibet/ext/events/synchronize_to_device.py:385
-#, fuzzy
 msgid "Choose destination path"
-msgstr "Сохранить расположение"
+msgstr "Выберите путь"
 
 #: quodlibet/ext/events/synchronize_to_device.py:537
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
 msgstr ""
+"Путь экспорта для файла [{filename}] изменен с [{old_path}] на [{new_path}]"
 
 #: quodlibet/ext/events/synchronize_to_device.py:651
 msgid "Starting synchronization preview"
@@ -2973,7 +2946,7 @@ msgstr "Фон:"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:88
 msgid "Font"
-msgstr "Шрифт:"
+msgstr "Шрифт"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:91
 msgid "Size (px):"
@@ -4204,7 +4177,9 @@ msgstr "Сохранить расположение"
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
-msgstr "Если это не JPEG, конвертирует изображение в HD JPEG того же размера."
+msgstr ""
+"Если это не JPEG, конвертирует изображение в высококачественный JPEG того же "
+"размера"
 
 #: quodlibet/ext/songsmenu/cover_download.py:374
 msgid "Save as JPEG"
@@ -4241,10 +4216,10 @@ msgid ""
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
 "of '{PARAM}' in your command will have the value prompted for when run"
 msgstr ""
-"Если указано, параметр вхождения которого, в команде, будут заменены "
+"Если указано, параметр вхождения которого в команду будут заменены "
 "пользовательским значением, например, с помощью параметра 'PARAM' все "
-"экземпляры '{PARAM}', в вашей команде, будут иметь значение, запрошенное при "
-"запуске."
+"экземпляры '{PARAM}' в вашей команде будут иметь значение, запрошенное при "
+"запуске"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -4561,8 +4536,8 @@ msgid ""
 "Write album related tags and try to reduce the number of different album "
 "releases"
 msgstr ""
-"Создание тегов, связанных с альбомами в попытке уменьшить количество версий "
-"альбома."
+"Создание тегов, связанных с альбомами, для попытки уменьшения количества "
+"версий альбома"
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:48
 msgid "Generating fingerprints:"
@@ -5501,7 +5476,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
-msgstr "Не удалось найти модуль '{module}'. Возможно, нужно установить пакет."
+msgstr ""
+"Не удалось найти модуль '{module}'. Возможно, вам нужно установить пакет?"
 
 #: quodlibet/plugins/__init__.py:73
 #, python-brace-format
@@ -6590,7 +6566,7 @@ msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 "Если музыка воспроизводится при выключении, автоматически начинать "
-"воспроизведение при следующем запуске."
+"воспроизведение при следующем запуске"
 
 #: quodlibet/qltk/prefs.py:447
 msgid "Startup"
@@ -7501,16 +7477,15 @@ msgid ""
 "\n"
 "Visit the <a href='%(url)s'>website</a>"
 msgstr ""
-"Доступна новая версия %(new-version)s \n"
+"Доступна новая версия %(new-version)s\n"
 "\n"
 "Вы используете версию %(old-version)s\n"
 "\n"
-"Посетите <a href='%(url)s'>Website</a>"
+"Посетите <a href='%(url)s'>веб-сайт</a>"
 
 #: quodlibet/util/collection.py:347
-#, fuzzy
 msgid "Empty Playlist"
-msgstr "Импортировать плейлист"
+msgstr "Пустой плейлист"
 
 #: quodlibet/util/collection.py:445
 msgid "Playlists must have a name"
@@ -7561,7 +7536,7 @@ msgstr "Вывести отладочную информацию"
 #: quodlibet/util/__init__.py:120
 #, python-format
 msgid "Usage: %(program)s %(usage)s"
-msgstr "Используется:  %(program)s %(usage)s"
+msgstr "Используется: %(program)s %(usage)s"
 
 #: quodlibet/util/__init__.py:122
 msgid "[options]"
@@ -7851,7 +7826,7 @@ msgstr "Label-ID"
 
 #: quodlibet/util/tags.py:117
 msgid "original release date"
-msgstr "дата оригинала"
+msgstr "оригинальная дата выпуска"
 
 #: quodlibet/util/tags.py:118
 msgid "original album"
@@ -7907,7 +7882,7 @@ msgstr "MusicIP PUID"
 
 #: quodlibet/util/tags.py:138
 msgid "MusicBrainz album status"
-msgstr "MusicBrainz статус альбома"
+msgstr "Состояние альбома MusicBrainz"
 
 #: quodlibet/util/tags.py:139
 msgid "MusicBrainz album type"
@@ -7915,7 +7890,7 @@ msgstr "Тип альбома MusicBrainz"
 
 #: quodlibet/util/tags.py:140
 msgid "MusicBrainz release group ID"
-msgstr "MusicBrainz ID выпуска"
+msgstr "ID группы выпуска MusicBrainz"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:143
@@ -7969,7 +7944,7 @@ msgstr "год"
 
 #: quodlibet/util/tags.py:169
 msgid "original release year"
-msgstr "год оригинала"
+msgstr "оригинальный год выпуска"
 
 #: quodlibet/util/tags.py:170
 msgid "bookmark"
@@ -8008,7 +7983,7 @@ msgstr "роли"
 #: data/io.github.quodlibet.ExFalso.desktop.in:3
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:5
 msgid "Ex Falso"
-msgstr ""
+msgstr "Ex Falso"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:4
 msgid "Audio tag editor"
@@ -8022,7 +7997,7 @@ msgstr "Редактирование тегов в аудиофайлах"
 #: data/io.github.quodlibet.QuodLibet.desktop.in:3
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:5
 msgid "Quod Libet"
-msgstr ""
+msgstr "Quod Libet"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:4
 msgid "Music Player"
@@ -8039,8 +8014,8 @@ msgid ""
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
-"Ex Falso - это редактор тегов с интерфейсом как в Quod Libet. Он позволяет "
-"отображать и редактировать любые теги поддерживаемых форматов."
+"Ex Falso — это редактор тегов с интерфейсом как в Quod Libet. Он позволяет "
+"отображать и редактировать любые теги в файлах поддерживаемых форматов."
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
@@ -8059,7 +8034,7 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
-"Quod Libet - это программа для управления музыкой. Предоставляет несколько "
+"Quod Libet — это программа управления музыкой. Предоставляет несколько "
 "различных способов просмотра вашей аудиотеки, а также поддержку интернет-"
 "радио и аудиопотоков. Имеет чрезвычайно гибкие возможности редактирования и "
 "поиска тегов метаданных."
