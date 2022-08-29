@@ -4,18 +4,25 @@
 # (at your option) any later version.
 
 import io
+from bz2 import BZ2Compressor
+from http.server import HTTPServer, BaseHTTPRequestHandler
+from threading import Thread
+from typing import Generator
 
+import pytest
+
+import quodlibet.config
+from quodlibet.browsers.iradio import (InternetRadio, IRFile, QuestionBar,
+                                       parse_taglist, parse_pls, parse_m3u,
+                                       download_taglist)
+from quodlibet.formats import AudioFile
+from quodlibet.library import SongLibrary
 from quodlibet.util import is_windows, is_osx
 from tests import TestCase, skipIf, run_gtk_loop
 
-from quodlibet.library import SongLibrary
-from quodlibet.formats import AudioFile
-from quodlibet.browsers.iradio import (InternetRadio, IRFile, QuestionBar,
-                                       parse_taglist, parse_pls, parse_m3u,
-                                       download_taglist, STATION_LIST_URL)
-import quodlibet.config
-
 quodlibet.config.RATINGS = quodlibet.config.HardCodedRatingsPrefs()
+
+FAKE_URLS = ["http://example.com", "https://quodlibet.readthedocs.io"]
 
 
 def test_parse_taglist():
@@ -87,6 +94,14 @@ class TInternetRadio(TestCase):
         self.assertEqual(self.bar.status_text(1), "1 station")
         self.assertEqual(self.bar.status_text(101, 123), "101 stations")
 
+    @skipIf(is_windows() or is_osx(), "Don't need to test downloads all the time")
+    def test_click_add_station(self):
+        self.bar._update_button.emit('clicked')
+        assert not self.bar.has_stations
+        # Run the actual download from real URL
+        run_gtk_loop()
+        assert self.bar.has_stations
+
     def tearDown(self):
         self.bar.destroy()
         quodlibet.config.quit()
@@ -154,19 +169,40 @@ class TIRFile(TestCase):
         self.assertTrue("title" not in new)
         self.assertTrue("artist" not in new)
 
-    @skipIf(is_windows() or is_osx(), "Don't need to test all the time")
-    def test_download_tags(self):
-        self.received = []
-        # TODO: parameterise this, spin up a local HTTP server, inject this.
-        url = STATION_LIST_URL
 
-        def cb(data):
-            assert data
-            self.received += data
+class Bzip2GetHandler(BaseHTTPRequestHandler):
 
-        ret = list(download_taglist(cb, None))
-        run_gtk_loop()
-        assert all(ret)
-        assert self.received, "No stations received from %s" % url
-        assert len(self.received) > 100
-        # TODO: some more targeted tests
+    # Not thread-safe, but won't be an issue here
+    compressor = BZ2Compressor()
+
+    def do_GET(self) -> None:
+        uris = [f"uri={url}" for url in FAKE_URLS]
+        content = "\n".join(uris).encode("utf-8")
+        self.compressor.compress(content)
+        bz2 = self.compressor.flush()
+        self.send_response(200)
+        self.send_header("Content-Length", str(len(bz2)))
+        self.send_header("Content-type", "application/x-bzip2")
+        self.end_headers()
+        self.wfile.write(bz2)
+
+
+@pytest.fixture
+def test_server() -> Generator[HTTPServer, None, None]:
+    server = HTTPServer(("localhost", 0), Bzip2GetHandler)
+    Thread(target=server.serve_forever, daemon=True).start()
+    yield server
+    server.shutdown()
+
+
+def test_download_tags(test_server):
+    received = []
+    host, port = test_server.server_address
+    url = f"http://{host}:{port:d}"
+
+    ret = list(download_taglist(url, received.extend, None))
+    run_gtk_loop()
+    assert len(ret), "No stations"
+    assert all(ret), "Got some falsey stations"
+    assert received, f"No stations received from {url}"
+    assert {s("~filename") for s in received} == set(FAKE_URLS)

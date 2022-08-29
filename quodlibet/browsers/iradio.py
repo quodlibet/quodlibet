@@ -256,7 +256,7 @@ def _get_stations_from(uri: str,
     on_done(irfs, uri)
 
 
-def download_taglist(callback, cofuncid, step=1024 * 10):
+def download_taglist(url, callback, cofuncid, step=1024 * 10):
     """Generator for loading the bz2 compressed tag list.
 
     Calls callback with the decompressed data or None in case of
@@ -267,9 +267,9 @@ def download_taglist(callback, cofuncid, step=1024 * 10):
             task.copool(cofuncid)
 
         try:
-            response = urlopen(STATION_LIST_URL)
+            response = urlopen(url)
         except (EnvironmentError, HTTPException) as e:
-            print_e("Failed fetching from %s" % STATION_LIST_URL, e)
+            print_e(f"Failed fetching from {url}", e)
             GLib.idle_add(callback, None)
             return
         try:
@@ -551,8 +551,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         if not self.instances():
             self._destroy()
 
-    def __init__(self, library):
+    def __init__(self, library, station_list_url: str = STATION_LIST_URL):
         super().__init__(spacing=12)
+        self.station_list_url = station_list_url
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
         if not self.instances():
@@ -638,7 +639,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         self.qbar = QuestionBar()
         self.qbar.connect("response", qbar_response)
-        if self._is_library_empty():
+        if not self.has_stations:
             self.qbar.show()
 
         pane = qltk.ConfigRHPaned("browsers", "internetradio_pos", 0.4)
@@ -648,11 +649,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
         new_station = Button(_(u"_Add Station…"), Icons.LIST_ADD)
-        new_station.connect('activate', self.__add)
-        update_station = Button(_("_Update Stations"), Icons.VIEW_REFRESH)
-        update_station.connect('activate', self.__update)
+        new_station.connect('clicked', self.__add)
+        self._update_button = Button(_("_Update Stations"), Icons.VIEW_REFRESH)
+        self._update_button.connect('clicked', self.__update)
         fb.insert(new_station, 1)
-        fb.insert(update_station, 2)
+        fb.insert(self._update_button, 2)
         vb.pack_end(Align(fb, left=3), False, False, 3)
         pane.pack1(vb, resize=False, shrink=False)
         pane.show_all()
@@ -667,8 +668,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.pack_start(pane, True, True, 0)
         self.show()
 
-    def _is_library_empty(self):
-        return not len(self.__stations) and not len(self.__fav_stations)
+    @property
+    def has_stations(self) -> bool:
+        return bool(len(self.__stations or []) + len(self.__fav_stations or []))
 
     def pack(self, songpane):
         container = Gtk.VBox()
@@ -682,7 +684,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
     def __update(self, *args):
         self.qbar.hide()
-        copool.add(download_taglist, self.__update_done,
+        copool.add(download_taglist, self.station_list_url, self.__update_done,
                    cofuncid="radio-load", funcid="radio-load")
 
     def __update_done(self, stations):
