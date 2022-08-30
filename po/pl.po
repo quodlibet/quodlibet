@@ -71,7 +71,7 @@ msgstr "Porządkowanie _według…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Preferencje"
@@ -99,7 +99,7 @@ msgstr[1] "%d albumy"
 msgstr[2] "%d albumów"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Ponownie wczytaj o_kładkę albumu"
@@ -222,7 +222,7 @@ msgid "_Refresh"
 msgstr "_Odśwież"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:480
+#: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -588,55 +588,55 @@ msgstr "_Wczytaj stacje"
 msgid "_Internet Radio"
 msgstr "Radio _internetowe"
 
-#: quodlibet/browsers/iradio.py:586
+#: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
 msgstr "Wszystkie stacje"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Ulubione"
 
-#: quodlibet/browsers/iradio.py:597
+#: quodlibet/browsers/iradio.py:598
 msgid "No Category"
 msgstr "Bez kategorii"
 
-#: quodlibet/browsers/iradio.py:650
+#: quodlibet/browsers/iradio.py:651
 #, fuzzy
 msgid "_Add Station…"
 msgstr "_Nowa stacja…"
 
-#: quodlibet/browsers/iradio.py:652
+#: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
 msgstr "Zakt_ualizuj stacje"
 
-#: quodlibet/browsers/iradio.py:831
+#: quodlibet/browsers/iradio.py:833
 msgid "No stations found"
 msgstr "Nie odnaleziono żadnych stacji"
 
-#: quodlibet/browsers/iradio.py:832
+#: quodlibet/browsers/iradio.py:834
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Nie odnaleziono internetowych stacji radiowych w %s."
 
-#: quodlibet/browsers/iradio.py:845
+#: quodlibet/browsers/iradio.py:847
 msgid "Nothing to add"
 msgstr ""
 
-#: quodlibet/browsers/iradio.py:846
+#: quodlibet/browsers/iradio.py:848
 msgid "All stations listed are already in your library."
 msgstr "Wszystkie podane stacje już znajdują się w kolekcji."
 
-#: quodlibet/browsers/iradio.py:867
+#: quodlibet/browsers/iradio.py:869
 msgid "Add to Favorites"
 msgstr "Dodaj do ulubionych"
 
-#: quodlibet/browsers/iradio.py:871
+#: quodlibet/browsers/iradio.py:873
 msgid "Remove from Favorites"
 msgstr "Usuń z ulubionych"
 
-#: quodlibet/browsers/iradio.py:971
+#: quodlibet/browsers/iradio.py:973
 #, fuzzy, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -699,7 +699,7 @@ msgid "Equal pane width"
 msgstr "Równa szerokość paneli"
 
 #: quodlibet/browsers/playlists/main.py:48
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
@@ -715,42 +715,32 @@ msgstr "_Usuń z listy odtwarzania"
 msgid "_New"
 msgstr "_Nowe"
 
-#: quodlibet/browsers/playlists/main.py:211
-msgid "New"
-msgstr "Nowa"
-
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 #, fuzzy
 msgid "_Import…"
 msgstr "Za_importuj"
 
-#: quodlibet/browsers/playlists/main.py:214
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-msgid "Import"
-msgstr "Zaimportuj"
-
-#: quodlibet/browsers/playlists/main.py:437
+#: quodlibet/browsers/playlists/main.py:435
 msgid "Unable to import playlist"
 msgstr "Nie można zaimportować listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:438
+#: quodlibet/browsers/playlists/main.py:436
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Można importować tylko listy odtwarzania w formatach M3U/M3U8 i PLS."
 
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
 msgstr "_Zmień nazwę"
 
-#: quodlibet/browsers/playlists/main.py:586
+#: quodlibet/browsers/playlists/main.py:584
 msgid "Unable to rename playlist"
 msgstr "Nie można zmienić nazwy listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr "Zaimportuj listę odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr "Za_importuj"
 
@@ -4792,6 +4782,11 @@ msgstr ""
 msgid "Delete export files after they've been imported"
 msgstr ""
 
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+msgid "Import"
+msgstr "Zaimportuj"
+
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 #, fuzzy
 msgid "Open Export Directory"
@@ -7262,39 +7257,39 @@ msgstr "Zaznaczenie wszystkich utworów we wszystkich panelach"
 msgid "_Filter on %s"
 msgstr "_Filtrowanie według %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "Wszystkie _nagłówki"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "Nagłówki ś_cieżek"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "Nagłówki _albumów"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "Nagłówki _osób"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "Nagłówki _dat"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "Nagłówki p_lików"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "Nagłówki p_rodukcji"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Customize Headers…"
 msgstr "_Dostosuj nagłówki…"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr "_Rozwiń kolumnę"
 
@@ -8092,6 +8087,9 @@ msgstr ""
 "na przeglądanie kolekcji muzyki, a także obsługę radia internetowego "
 "i kanałów dźwiękowych. Posiada on także niezwykle elastyczne funkcje "
 "modyfikowania etykiet metadanych i wyszukiwania."
+
+#~ msgid "New"
+#~ msgstr "Nowa"
 
 #~ msgid "Automatic Library Update"
 #~ msgstr "Automatyczna aktualizacja kolekcji"

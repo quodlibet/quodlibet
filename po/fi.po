@@ -72,7 +72,7 @@ msgstr "_Järjestä…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Asetukset"
@@ -99,7 +99,7 @@ msgstr[0] "%d albumi"
 msgstr[1] "%d albumia"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Lataa albumin _kansi uudelleen"
@@ -219,7 +219,7 @@ msgid "_Refresh"
 msgstr "_Päivitä"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:480
+#: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -584,55 +584,55 @@ msgstr "_Lataa asemat"
 msgid "_Internet Radio"
 msgstr "I_nternet-radio"
 
-#: quodlibet/browsers/iradio.py:586
+#: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
 msgstr "Kaikki asemat"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Suosikit"
 
-#: quodlibet/browsers/iradio.py:597
+#: quodlibet/browsers/iradio.py:598
 msgid "No Category"
 msgstr "Ei luokkaa"
 
-#: quodlibet/browsers/iradio.py:650
+#: quodlibet/browsers/iradio.py:651
 #, fuzzy
 msgid "_Add Station…"
 msgstr "_Uusi asema…"
 
-#: quodlibet/browsers/iradio.py:652
+#: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
 msgstr "_Päivitä asemat"
 
-#: quodlibet/browsers/iradio.py:831
+#: quodlibet/browsers/iradio.py:833
 msgid "No stations found"
 msgstr "Asemia ei löytynyt"
 
-#: quodlibet/browsers/iradio.py:832
+#: quodlibet/browsers/iradio.py:834
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Internet-radioasemia ei löytynyt sijainnista %s."
 
-#: quodlibet/browsers/iradio.py:845
+#: quodlibet/browsers/iradio.py:847
 msgid "Nothing to add"
 msgstr "Ei lisättävää"
 
-#: quodlibet/browsers/iradio.py:846
+#: quodlibet/browsers/iradio.py:848
 msgid "All stations listed are already in your library."
 msgstr "Kaikki luetellut asemat ovat jo kirjastossasi."
 
-#: quodlibet/browsers/iradio.py:867
+#: quodlibet/browsers/iradio.py:869
 msgid "Add to Favorites"
 msgstr "_Lisää suosikkeihin"
 
-#: quodlibet/browsers/iradio.py:871
+#: quodlibet/browsers/iradio.py:873
 msgid "Remove from Favorites"
 msgstr "_Poista suosikeista"
 
-#: quodlibet/browsers/iradio.py:971
+#: quodlibet/browsers/iradio.py:973
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -694,7 +694,7 @@ msgid "Equal pane width"
 msgstr "Samanlevyiset paneelit"
 
 #: quodlibet/browsers/playlists/main.py:48
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Soittolistat"
 
@@ -710,42 +710,32 @@ msgstr "_Poista soittolistalta"
 msgid "_New"
 msgstr "_Uusi"
 
-#: quodlibet/browsers/playlists/main.py:211
-msgid "New"
-msgstr "Uusi"
-
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 #, fuzzy
 msgid "_Import…"
 msgstr "_Tuo"
 
-#: quodlibet/browsers/playlists/main.py:214
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-msgid "Import"
-msgstr "Tuo"
-
-#: quodlibet/browsers/playlists/main.py:437
+#: quodlibet/browsers/playlists/main.py:435
 msgid "Unable to import playlist"
 msgstr "Soittolistan tuonti ei onnistu"
 
-#: quodlibet/browsers/playlists/main.py:438
+#: quodlibet/browsers/playlists/main.py:436
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet voi tuoda vain M3U/M3U8- ja PLS-muotoisia soittolistoja."
 
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
 msgstr "_Nimeä uudelleen"
 
-#: quodlibet/browsers/playlists/main.py:586
+#: quodlibet/browsers/playlists/main.py:584
 msgid "Unable to rename playlist"
 msgstr "Soittolistan uudelleennimeäminen ei onnistu"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr "Tuo soittolista"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr "_Tuo"
 
@@ -4784,6 +4774,11 @@ msgstr "Kirjoita JSON siististi muotoiltuna (hitaampi)"
 msgid "Delete export files after they've been imported"
 msgstr "Poista vientitiedostot tuonnin jälkeen"
 
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+msgid "Import"
+msgstr "Tuo"
+
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 msgid "Open Export Directory"
 msgstr "Avaa vientikansio"
@@ -7231,39 +7226,39 @@ msgstr "Valitse kaikki kappaleet kaikissa paneeleissa"
 msgid "_Filter on %s"
 msgstr "_Suodata sarakkeen %s perusteella"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "Kaikki _otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_Raitaotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "_Albumiotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "_Tekijäotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "Ai_kaotsakkeet"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "Tie_dosto-otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "T_uotanto-otsakkeet"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Customize Headers…"
 msgstr "_Mukauta otsakkeita…"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr "_Laajenna sarake"
 
@@ -8042,6 +8037,9 @@ msgstr ""
 "Quod Libet on musiikinhallintaohjelma. Se tarjoaa useita eri tapoja selata "
 "musiikkikirjastoasi ja tukee myös Internet-radioita ja äänisyötteitä. Siinä "
 "on hyvin joustavat metatietotunnisteiden muokkaus- ja hakuominaisuudet."
+
+#~ msgid "New"
+#~ msgstr "Uusi"
 
 #~ msgid "Automatic Library Update"
 #~ msgstr "Automaattinen kirjaston päivitys"

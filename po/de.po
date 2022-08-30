@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-09 14:15+0000\n"
+"PO-Revision-Date: 2022-08-27 10:16+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -72,7 +72,7 @@ msgstr "Sortieren _nach …"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Einstellungen"
@@ -99,7 +99,7 @@ msgstr[0] "%d Album"
 msgstr[1] "%d Alben"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Album-_Cover neu laden"
@@ -218,7 +218,7 @@ msgid "_Refresh"
 msgstr "_Aktualisieren"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:480
+#: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -583,54 +583,54 @@ msgstr "Sender _laden"
 msgid "_Internet Radio"
 msgstr "Internet-_Radio"
 
-#: quodlibet/browsers/iradio.py:586
+#: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
 msgstr "Alle Sender"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Favoriten"
 
-#: quodlibet/browsers/iradio.py:597
+#: quodlibet/browsers/iradio.py:598
 msgid "No Category"
 msgstr "Keine Kategorie"
 
-#: quodlibet/browsers/iradio.py:650
+#: quodlibet/browsers/iradio.py:651
 msgid "_Add Station…"
 msgstr "_Neuer Sender …"
 
-#: quodlibet/browsers/iradio.py:652
+#: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
 msgstr "Sender akt_ualisieren"
 
-#: quodlibet/browsers/iradio.py:831
+#: quodlibet/browsers/iradio.py:833
 msgid "No stations found"
 msgstr "Keine Sender gefunden"
 
-#: quodlibet/browsers/iradio.py:832
+#: quodlibet/browsers/iradio.py:834
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Unter %s wurden keine Internet-Radiosender gefunden."
 
-#: quodlibet/browsers/iradio.py:845
+#: quodlibet/browsers/iradio.py:847
 msgid "Nothing to add"
 msgstr "Nichts hinzuzufügen"
 
-#: quodlibet/browsers/iradio.py:846
+#: quodlibet/browsers/iradio.py:848
 msgid "All stations listed are already in your library."
 msgstr "Alle aufgelisteten Sender befinden sich bereits in Ihrer Bibliothek."
 
-#: quodlibet/browsers/iradio.py:867
+#: quodlibet/browsers/iradio.py:869
 msgid "Add to Favorites"
 msgstr "Zu Favoriten hinzufügen"
 
-#: quodlibet/browsers/iradio.py:871
+#: quodlibet/browsers/iradio.py:873
 msgid "Remove from Favorites"
 msgstr "Aus Favoriten entfernen"
 
-#: quodlibet/browsers/iradio.py:971
+#: quodlibet/browsers/iradio.py:973
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -692,7 +692,7 @@ msgid "Equal pane width"
 msgstr "Gleichmäßige Leistenbreite"
 
 #: quodlibet/browsers/playlists/main.py:48
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Wiedergabelisten"
 
@@ -708,43 +708,33 @@ msgstr "Aus der Wiede_rgabeliste entfernen"
 msgid "_New"
 msgstr "_Neu"
 
-#: quodlibet/browsers/playlists/main.py:211
-msgid "New"
-msgstr "Neu"
-
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
 msgstr "_Importieren …"
 
-#: quodlibet/browsers/playlists/main.py:214
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-msgid "Import"
-msgstr "Importieren"
-
-#: quodlibet/browsers/playlists/main.py:437
+#: quodlibet/browsers/playlists/main.py:435
 msgid "Unable to import playlist"
 msgstr "Wiedergabeliste konnte nicht importiert werden"
 
-#: quodlibet/browsers/playlists/main.py:438
+#: quodlibet/browsers/playlists/main.py:436
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet kann nur Wiedergabelisten in den Formaten M3U/M3U8 und PLS "
 "importieren."
 
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
 msgstr "_Umbenennen"
 
-#: quodlibet/browsers/playlists/main.py:586
+#: quodlibet/browsers/playlists/main.py:584
 msgid "Unable to rename playlist"
 msgstr "Wiedergabeliste konnte nicht umbenannt werden"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr "Wiedergabeliste importieren"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr "_Importieren"
 
@@ -804,7 +794,7 @@ msgstr "Geben Sie einen Namen für die neue Wiedergabeliste ein:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr "_Erstellen"
+msgstr "A_nlegen"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4836,6 +4826,11 @@ msgstr "Formatiertes JSON schreiben (langsamer)"
 msgid "Delete export files after they've been imported"
 msgstr "Exportdateien nach dem Import löschen"
 
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+msgid "Import"
+msgstr "Importieren"
+
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 msgid "Open Export Directory"
 msgstr "Export-Verzeichnis öffnen"
@@ -7312,39 +7307,39 @@ msgstr "Alle Titel in allen Leisten auswählen"
 msgid "_Filter on %s"
 msgstr "Nach %s _filtern"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "_Alle Listenspalten"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "Listenspalten zu _Titeln"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "Listenspalten zu _Alben"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "Listenspalten zu _Mitwirkenden"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "Listenspalten zum _Datum"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "Listenspalten zu _Dateien"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "Listenspalten zur _Produktion"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Customize Headers…"
 msgstr "Listenspalten _anpassen …"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr "Listenspalte ausd_ehnen"
 
@@ -8132,6 +8127,9 @@ msgstr ""
 "Audiobibliothek auf verschiedene Arten darstellen und unterstützt "
 "Internetradio sowie Audio-Feeds. Quod Libet enthält äußerst flexible "
 "Funktionen zur Metadaten-Bearbeitung und Suche."
+
+#~ msgid "New"
+#~ msgstr "Neu"
 
 #~ msgid "Automatic Library Update"
 #~ msgstr "Automatische Bibliotheks-Aktualisierung"

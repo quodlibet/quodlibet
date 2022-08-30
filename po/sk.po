@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-03 21:00+0000\n"
-"Last-Translator: menom <menom1@protonmail.com>\n"
+"PO-Revision-Date: 2022-08-22 05:13+0000\n"
+"Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
 "Language: sk\n"
@@ -23,9 +23,8 @@ msgstr "_Názov"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:59
-#, fuzzy
 msgid "_People"
-msgstr "ľudia"
+msgstr "Ľu_dia"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
@@ -55,9 +54,8 @@ msgstr "_Hodnotenie"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:65
-#, fuzzy
 msgid "Play_count"
-msgstr "_Počet prehratí"
+msgstr "Počet _prehratí"
 
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:71
@@ -67,7 +65,7 @@ msgstr "Zoradiť _podľa…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:670 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
 msgid "_Preferences"
 msgstr "_Nastavenia"
@@ -95,7 +93,7 @@ msgstr[1] "%d albumy"
 msgstr[2] "%d albumov"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:340
+#: quodlibet/browsers/covergrid/main.py:339
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Opätovne načítať _obal albumu"
@@ -208,9 +206,8 @@ msgid "_Audio Feeds"
 msgstr "_Zdroje zvukových záznamov"
 
 #: quodlibet/browsers/audiofeeds.py:374
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "_Pridať súbor…"
+msgstr "_Pridať zdroj…"
 
 #: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -218,7 +215,7 @@ msgid "_Refresh"
 msgstr "_Obnoviť"
 
 #: quodlibet/browsers/audiofeeds.py:442
-#: quodlibet/browsers/playlists/main.py:480
+#: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
 #: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
@@ -584,55 +581,54 @@ msgstr "_Načítať stanice"
 msgid "_Internet Radio"
 msgstr "_Internetové rádio"
 
-#: quodlibet/browsers/iradio.py:586
+#: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
 msgstr "Všetky stanice"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:589 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
 msgstr "Obľúbené"
 
-#: quodlibet/browsers/iradio.py:597
+#: quodlibet/browsers/iradio.py:598
 msgid "No Category"
 msgstr "Žiadna kategória"
 
-#: quodlibet/browsers/iradio.py:650
-#, fuzzy
+#: quodlibet/browsers/iradio.py:651
 msgid "_Add Station…"
-msgstr "_Nová stanica…"
+msgstr "_Pridať stanicu…"
 
-#: quodlibet/browsers/iradio.py:652
+#: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
 msgstr "_Aktualizovať stanice"
 
-#: quodlibet/browsers/iradio.py:831
+#: quodlibet/browsers/iradio.py:833
 msgid "No stations found"
 msgstr "Nenašli sa žiadne stanice"
 
-#: quodlibet/browsers/iradio.py:832
+#: quodlibet/browsers/iradio.py:834
 #, python-format
 msgid "No Internet radio stations were found at %s."
 msgstr "Na %s sa nenašla žiadna internetová rozhlasová stanica."
 
-#: quodlibet/browsers/iradio.py:845
+#: quodlibet/browsers/iradio.py:847
 msgid "Nothing to add"
 msgstr "Niet čo pridať"
 
-#: quodlibet/browsers/iradio.py:846
+#: quodlibet/browsers/iradio.py:848
 msgid "All stations listed are already in your library."
 msgstr "Všetky stanice na zozname sú už v knižnici."
 
-#: quodlibet/browsers/iradio.py:867
+#: quodlibet/browsers/iradio.py:869
 msgid "Add to Favorites"
 msgstr "Pridať do obľúbených"
 
-#: quodlibet/browsers/iradio.py:871
+#: quodlibet/browsers/iradio.py:873
 msgid "Remove from Favorites"
 msgstr "Odstrániť z obľúbených"
 
-#: quodlibet/browsers/iradio.py:971
+#: quodlibet/browsers/iradio.py:973
 #, python-format
 msgid "%(count)d station"
 msgid_plural "%(count)d stations"
@@ -695,7 +691,7 @@ msgid "Equal pane width"
 msgstr "Rovnomerná šírka panelov"
 
 #: quodlibet/browsers/playlists/main.py:48
-#: quodlibet/browsers/playlists/main.py:600 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Zoznamy prehrávania"
 
@@ -711,44 +707,33 @@ msgstr "_Odstrániť zo zoznamu prehrávania"
 msgid "_New"
 msgstr "_Nový"
 
-#: quodlibet/browsers/playlists/main.py:211
-msgid "New"
-msgstr "Nový"
-
-#: quodlibet/browsers/playlists/main.py:213
-#, fuzzy
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
-msgstr "_Načítať"
+msgstr "_Načítať…"
 
-#: quodlibet/browsers/playlists/main.py:214
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
-msgid "Import"
-msgstr "Načítať"
-
-#: quodlibet/browsers/playlists/main.py:437
+#: quodlibet/browsers/playlists/main.py:435
 msgid "Unable to import playlist"
 msgstr "Nepodarilo sa načítať zoznam prehrávania"
 
-#: quodlibet/browsers/playlists/main.py:438
+#: quodlibet/browsers/playlists/main.py:436
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet môže načítať len zoznamy prehrávania vo formáte M3U/M3U8 alebo "
 "PLS."
 
-#: quodlibet/browsers/playlists/main.py:487
+#: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
 msgstr "_Premenovať"
 
-#: quodlibet/browsers/playlists/main.py:586
+#: quodlibet/browsers/playlists/main.py:584
 msgid "Unable to rename playlist"
 msgstr "Neporadilo sa premenovať zoznam prehrávania"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "Import Playlist"
 msgstr "Načítať zoznam prehrávania"
 
-#: quodlibet/browsers/playlists/main.py:601
+#: quodlibet/browsers/playlists/main.py:599
 msgid "_Import"
 msgstr "_Načítať"
 
@@ -809,7 +794,7 @@ msgstr "Zadajte názov nového zoznamu prehrávania:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "Vy_tvoriť"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -4791,6 +4776,11 @@ msgstr "Zapísať úhľadný a čistý JSON (pomalšie)"
 msgid "Delete export files after they've been imported"
 msgstr "Zmazať súbory exportu po ich načítaní"
 
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+msgid "Import"
+msgstr "Načítať"
+
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
 msgid "Open Export Directory"
 msgstr "Otvoriť priečinok exportu"
@@ -5697,9 +5687,8 @@ msgid "(unknown)"
 msgstr "(neznáme)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "_Pridať"
+msgstr "_Pridať…"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
@@ -7240,39 +7229,39 @@ msgstr "Vybrať všetky skladby vo všetkých paneloch"
 msgid "_Filter on %s"
 msgstr "_Filter na %s"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1154
 msgid "All _Headers"
 msgstr "Všetky _hlavičky"
 
-#: quodlibet/qltk/songlist.py:1181
+#: quodlibet/qltk/songlist.py:1155
 msgid "_Track Headers"
 msgstr "_Hlavičky skladby"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1156
 msgid "_Album Headers"
 msgstr "_Hlavičky albumu"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
 msgstr "_Hlavičky ľudí"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
 msgstr "_Hlavičky dátumu"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1159
 msgid "_File Headers"
 msgstr "_Hlavičky súboru"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Production Headers"
 msgstr "_Hlavičky produkcie"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Customize Headers…"
 msgstr "_Prispôsobiť hlavičky…"
 
-#: quodlibet/qltk/songlist.py:1206
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
 msgstr "_Rozšíriť stĺpec"
 
@@ -8060,6 +8049,9 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#~ msgid "New"
+#~ msgstr "Nový"
 
 #~ msgid "Automatic Library Update"
 #~ msgstr "Automatická aktualizácia knižnice"
