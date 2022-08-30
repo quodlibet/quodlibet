@@ -336,8 +336,7 @@ class AudioFeeds(Browser):
 
     @classmethod
     def __do_check(klass):
-        thread = threading.Thread(target=klass.__check, args=())
-        thread.setDaemon(True)
+        thread = threading.Thread(target=klass.__check, args=(), daemon=True)
         thread.start()
 
     @classmethod
@@ -492,15 +491,16 @@ class AudioFeeds(Browser):
 
     def feed_error(self, feed: Feed) -> ErrorMessage:
         return ErrorMessage(
-            self, _("Unable to add feed"),
+            self,
+            _("Unable to add feed"),
             _("%s could not be added. The server may be down, "
               "or the location may not be an audio feed.") %
-            util.bold(util.escape(feed.uri)))
+            util.bold(util.escape(feed.uri)), escape_desc=False)
 
     def restore(self):
         try:
             names = config.get("browsers", "audiofeeds").split("\t")
-        except:
+        except Exception:
             pass
         else:
             self.__view.select_by_func(lambda r: r[0].name in names)
