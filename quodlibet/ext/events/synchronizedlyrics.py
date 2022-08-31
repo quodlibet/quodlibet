@@ -42,7 +42,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     CFG_FONTSIZE_KEY = "fontSize"
 
     # Note the trimming of whitespace, seems "most correct" behaviour
-    LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)\]\s*(.+)\s*")
+    LINE_REGEX = re.compile(r"\s*\[([0-9]+:[0-9.]*)]\s*(.+)\s*")
 
     def __init__(self) -> None:
         super().__init__()
@@ -103,17 +103,20 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         vb.pack_start(t, False, False, 0)
         return vb
 
-    def _get_text_color(self):
-        v = self.config_get(self.CFG_TXTCOLOR_KEY, self.DEFAULT_TXTCOLOR)
+    @classmethod
+    def _get_text_color(cls):
+        v = cls.config_get(cls.CFG_TXTCOLOR_KEY, cls.DEFAULT_TXTCOLOR)
         return v[:3] + v[5:7] + v[9:11]
 
-    def _get_background_color(self):
-        v = self.config_get(self.CFG_BGCOLOR_KEY, self.DEFAULT_BGCOLOR)
+    @classmethod
+    def _get_background_color(cls):
+        v = cls.config_get(cls.CFG_BGCOLOR_KEY, cls.DEFAULT_BGCOLOR)
         return v[:3] + v[5:7] + v[9:11]
 
-    def _get_font_size(self):
-        return int(self.config_get(self.CFG_FONTSIZE_KEY,
-                                   self.DEFAULT_FONTSIZE))
+    @classmethod
+    def _get_font_size(cls):
+        return int(cls.config_get(cls.CFG_FONTSIZE_KEY,
+                                  cls.DEFAULT_FONTSIZE))
 
     def _set_text_color(self, button):
         self.config_set(self.CFG_TXTCOLOR_KEY, button.get_color().to_string())
