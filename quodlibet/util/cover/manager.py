@@ -235,7 +235,7 @@ class CoverManager(GObject.Object):
             total = self._total_groupings(all_groups)
 
             frac = len(processed) / total
-            print_d(f"Got result for {provider} ({len(processed)} / {total})")
+            print_d(f"Got result for {provider} ({len(processed)} / {total} group(s))")
             task.update(frac)
             if frac >= 1:
                 task.finish()
