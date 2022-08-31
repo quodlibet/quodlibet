@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#      2017-2020 Nick Boultbee
+#      2017-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

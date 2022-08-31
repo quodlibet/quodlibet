@@ -26,7 +26,7 @@ from .menu import IndicatorMenu
 
 
 def get_next_app_id(state=[0]):
-    """Returns an ever increasing app id variant.. I can't find a way
+    """Returns an ever-increasing app id variant... I can't find a way
     to remove an indicator, so just hide old ones and add new different ones
     this way.
     """

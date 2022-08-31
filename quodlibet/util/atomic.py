@@ -28,7 +28,7 @@ def _windows_rename(source, dest):
 
     assert os.name == "nt"
 
-    # not atomic, but better than removing the original first..
+    # not atomic, but better than removing the original first...
     status = winapi.MoveFileExW(
         source, dest,
         winapi.MOVEFILE_WRITE_THROUGH | winapi.MOVEFILE_REPLACE_EXISTING)

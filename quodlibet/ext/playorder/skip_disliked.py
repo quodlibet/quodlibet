@@ -30,7 +30,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
     accelerated_name = _("Skip _disliked tracks")
 
     @classmethod
-    def PluginPreferences(self, window):
+    def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=10)
         vb.set_border_width(0)
 

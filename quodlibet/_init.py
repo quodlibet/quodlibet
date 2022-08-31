@@ -105,7 +105,7 @@ def _init_python():
 
     if is_windows() and os.sep != "\\":
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
-        # If you hit this do a "setup.py clean -all" to get rid of the
+        # If you hit this, do a "setup.py clean -all" to get rid of the
         # bytecode cache then start things with "MSYSTEM= ..."
         raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
 
@@ -249,7 +249,7 @@ def _init_gtk():
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
 
-    # PyGObject doesn't fail anymore when init fails, so do it ourself
+    # PyGObject doesn't fail anymore when init fails, so do it ourselves
     initialized, sys.argv[:] = Gtk.init_check(sys.argv)
     if not initialized:
         raise SystemExit("Gtk.init failed")

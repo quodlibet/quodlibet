@@ -100,7 +100,7 @@ class FingerPrintPipeline:
 
     def stop(self):
         """Abort processing. Can be called multiple times.
-        After this returns the pipeline isn't usable any more.
+        After this returns the pipeline isn't usable anymore.
         """
 
         self._reset()

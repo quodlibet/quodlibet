@@ -332,7 +332,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
 
-        # For managing fast selection switches of covers..
+        # For managing fast selection switches of covers...
         self.stop_loading = False
         self.loading = False
         self.current_job = 0
@@ -851,7 +851,7 @@ class CoverSearch:
 
 
 def cleanup_query(query, replace):
-    """split up at '-', remove some chars, only keep the longest words..
+    """split up at '-', remove some chars, only keep the longest words...
     more false positives but much better results"""
 
     query = query.lower()

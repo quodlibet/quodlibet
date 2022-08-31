@@ -55,7 +55,7 @@ class Filter:
         return False
 
     def filter_albums(self, values):
-        """Do filtering base on a list of album keys"""
+        """Filter based on a list of album keys"""
         raise NotImplementedError
 
     def list_albums(self):
@@ -94,7 +94,7 @@ class Filter:
         return c or (key is not None and self.can_filter_tag(key))
 
     def filter_on(self, songs, key):
-        """Do filtering in the best way the browser can handle"""
+        """Filter in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
             values = {s.album_key for s in songs}
             self.filter_albums(values)

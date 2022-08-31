@@ -507,7 +507,7 @@ class PluginConfigMixin:
                                  default)
 
     def config_entry_changed(self, entry, key):
-        """React to a change in an gtk.Entry (by saving it to config)"""
+        """React to a change in a gtk.Entry (by saving it to config)"""
         if entry.get_property('sensitive'):
             self.config_set(key, entry.get_text())
 

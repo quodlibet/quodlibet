@@ -150,7 +150,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
     The property "filter" is a function which defines visibility for all
     remaining entries of the child model. If "filter" is set to None, all
-    entries are visibile.
+    entries are visible.
     """
 
     __item_all: AlbumListItem

@@ -36,7 +36,7 @@ class RemoteBase:
         raise NotImplementedError
 
     @classmethod
-    def remote_exists(self):
+    def remote_exists(cls):
         """See if another instance exists
 
         Returns:

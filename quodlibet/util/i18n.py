@@ -298,7 +298,7 @@ def get_available_languages(domain):
         Set[str]
     """
 
-    langs = set(["C"])
+    langs = {"C"}
 
     for locale_dir in iter_locale_dirs():
         try:

@@ -25,7 +25,7 @@ PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
 
 class Application:
     """A main application class for controlling the application as a whole
-    and accessing sub-modules.
+    and accessing submodules.
 
     window    - The main window which is present as long as QL is running
     library   - The main library (see library.SongFileLibrary)
@@ -336,7 +336,7 @@ def run(window, before_quit=None):
         copool.pause_all()
 
         # See which browser windows are open and save their names
-        # so we can restore them on start
+        # so that we can restore them on start
         from quodlibet.qltk.browser import LibraryBrowser
         LibraryBrowser.save()
 

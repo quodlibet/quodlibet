@@ -52,6 +52,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         self.textview = None
         self.scrolled_window = None
 
+    @classmethod
     def PluginPreferences(cls, window):
         vb = Gtk.VBox(spacing=6)
         vb.set_border_width(6)

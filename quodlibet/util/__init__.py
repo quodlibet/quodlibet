@@ -1091,7 +1091,7 @@ class MainRunner:
 
 
 def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
-    """A re.escape which also works with unicode"""
+    """A `re.escape` which also works with unicode"""
 
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
     return type(string)().join(map(needs_escape, string))

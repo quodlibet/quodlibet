@@ -93,8 +93,7 @@ class PreferencesWindow(UniqueWindow):
                     label=_(u"_Edit…"), use_underline=True)
                 edit_button.connect("clicked", self.__config_cols, buttons)
                 edit_button.set_tooltip_text(
-                    _("Add or remove additional column "
-                      "headers"))
+                    _("Add or remove additional column headers"))
                 l.set_mnemonic_widget(edit_button)
                 l.set_use_underline(True)
                 hbox.pack_start(others, True, True, 0)

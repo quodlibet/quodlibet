@@ -193,7 +193,7 @@ class Release:
         """Returns a new Release instance containing more info
         or raises MusicBrainzError
 
-        This method is blocking..
+        This method is blocking...
         """
 
         return Release(_get_release(self.id))

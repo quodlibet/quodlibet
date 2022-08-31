@@ -92,7 +92,7 @@ class AlbumLibrary(Library[AlbumKey, Album]):
             self.emit('changed', changed)
 
     def __changed(self, library, items):
-        """Album keys could change between already existing ones.. so we
+        """Album keys could change between already existing ones... so we
         have to do it the hard way and search by id."""
         print_d("Updating affected albums for %d items" % len(items))
         changed = set()
@@ -103,7 +103,7 @@ class AlbumLibrary(Library[AlbumKey, Album]):
             key = song.album_key
             if key in self._contents and song in self._contents[key].songs:
                 changed.add(self._contents[key])
-            else:  # key changed.. look for it in each album
+            else:  # key changed... look for it in each album
                 to_add.append(song)
                 for key, album in self._contents.items():
                     if song in album.songs:
