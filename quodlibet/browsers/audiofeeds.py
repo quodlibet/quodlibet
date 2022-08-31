@@ -33,6 +33,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.util.path import uri_is_valid
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
@@ -215,13 +216,21 @@ class AddFeedDialog(GetStringDialog):
             _("Enter the location of an audio feed:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
-    def run(self, text='', test=False):
-        uri = super().run(text=text, test=test)
+    def run(self, text='', clipboard=True, test=False):
+        uri = super().run(text=text, clipboard=clipboard, test=test)
         if uri:
             if not isinstance(uri, str):
                 uri = uri.decode('utf-8')
             return Feed(uri)
         return None
+
+    def _verify_clipboard(self, text):
+        # try to extract a URI from the clipboard
+        for line in text.splitlines():
+            line = line.strip()
+
+            if uri_is_valid(line):
+                return line
 
 
 def hacky_py2_unpickle_recover(fileobj):
