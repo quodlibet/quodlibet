@@ -10,7 +10,7 @@ jobs:
     if: github.repository == 'quodlibet/quodlibet'
     permissions:
       contents: write
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     name: update-pot
     steps:
     - uses: actions/checkout@v2
