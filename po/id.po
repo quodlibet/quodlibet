@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-06-10 17:15+0000\n"
-"Last-Translator: I. Musthafa <i.musthafa66@gmail.com>\n"
+"PO-Revision-Date: 2022-09-03 08:28+0000\n"
+"Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.13-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -301,7 +301,7 @@ msgstr "_Hapus"
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
 #: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:481
 msgid "Tag"
-msgstr "Tag"
+msgstr "Tanda"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
@@ -549,7 +549,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:419
 msgid "Slavic"
-msgstr ""
+msgstr "Slavik"
 
 #: quodlibet/browsers/iradio.py:421
 msgid "Greek"
@@ -561,46 +561,45 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr ""
+msgstr "Rock"
 
 #: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
-msgstr ""
+msgstr "Apakah Anda mau untuk memuat daftar stasiun radio yang populer?"
 
 #: quodlibet/browsers/iradio.py:482
 msgid "_Load Stations"
-msgstr ""
+msgstr "_Muat Stasiun"
 
 #: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
-msgstr ""
+msgstr "Radio _Internet"
 
 #: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
-msgstr ""
+msgstr "Semua Stasiun"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
 #: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
 msgid "Favorites"
-msgstr ""
+msgstr "Favorit"
 
 #: quodlibet/browsers/iradio.py:598
 msgid "No Category"
 msgstr ""
 
 #: quodlibet/browsers/iradio.py:651
-#, fuzzy
 msgid "_Add Station…"
-msgstr "_Tambah Lokasi…"
+msgstr "_Tambah Stasiun…"
 
 #: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
-msgstr ""
+msgstr "_Perbarui Stasiun"
 
 #: quodlibet/browsers/iradio.py:833
 msgid "No stations found"
-msgstr ""
+msgstr "Tidak ada stasiun yang ditemukan"
 
 #: quodlibet/browsers/iradio.py:834
 #, python-format
@@ -699,9 +698,8 @@ msgid "_New"
 msgstr "_Baru"
 
 #: quodlibet/browsers/playlists/main.py:212
-#, fuzzy
 msgid "_Import…"
-msgstr "_Impor"
+msgstr "_Impor…"
 
 #: quodlibet/browsers/playlists/main.py:435
 msgid "Unable to import playlist"
@@ -733,11 +731,10 @@ msgid "_New Playlist…"
 msgstr "Daftar Putar _Baru…"
 
 #: quodlibet/browsers/playlists/menu.py:78
-#, python-format
+#, fuzzy, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Apa yang Anda ingin lakukan pada lagu %d tersebut?"
 
 #: quodlibet/browsers/playlists/menu.py:82
 #, python-format
@@ -784,7 +781,7 @@ msgstr "Masukkan nama untuk daftar putar baru:"
 
 #: quodlibet/browsers/playlists/util.py:52
 msgid "_Create"
-msgstr ""
+msgstr "_Buat"
 
 #: quodlibet/browsers/playlists/util.py:87
 #, python-format
@@ -799,7 +796,7 @@ msgstr ""
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
-msgstr ""
+msgstr "_Batasi Hasil"
 
 #: quodlibet/browsers/tracks.py:37
 msgid "_Allow multiple queries"
@@ -816,19 +813,19 @@ msgstr ""
 #. Pre-cache. It's horrible, but at least you can play things immediately
 #: quodlibet/browsers/soundcloud/library.py:71
 msgid "Soundcloud"
-msgstr ""
+msgstr "Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:40
 msgid "Soundcloud Browser"
-msgstr ""
+msgstr "Peramban Soundcloud"
 
 #: quodlibet/browsers/soundcloud/main.py:41
 msgid "Sound_cloud"
-msgstr ""
+msgstr "Sound_cloud"
 
 #: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
 msgid "Search"
-msgstr ""
+msgstr "Cari"
 
 #: quodlibet/browsers/soundcloud/main.py:70
 msgid "My tracks"
@@ -837,38 +834,38 @@ msgstr ""
 #: quodlibet/browsers/soundcloud/main.py:143
 #, python-format
 msgid "Go to %s"
-msgstr ""
+msgstr "Pergi ke %s"
 
 #: quodlibet/browsers/soundcloud/main.py:444
 msgid "Connected"
-msgstr ""
+msgstr "Terhubung"
 
 #: quodlibet/browsers/soundcloud/main.py:445
 #, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr ""
+msgstr "Quod Libet sekarang terhubung, %s!"
 
 #: quodlibet/browsers/soundcloud/main.py:457
 #, python-format
 msgid "Log out of %s"
-msgstr ""
+msgstr "Keluar dari %s"
 
 #: quodlibet/browsers/soundcloud/main.py:459
 msgid "Enter code…"
-msgstr ""
+msgstr "Masukkan kode…"
 
 #: quodlibet/browsers/soundcloud/main.py:460
 #, python-format
 msgid "Log in to %s"
-msgstr ""
+msgstr "Masuk ke %s"
 
 #: quodlibet/browsers/soundcloud/util.py:94
 msgid "Soundcloud authorisation"
-msgstr ""
+msgstr "Otorisasi Soundcloud"
 
 #: quodlibet/browsers/soundcloud/util.py:95
 msgid "Enter Soundcloud auth code:"
-msgstr ""
+msgstr "Masukkan kode autentikasi Soundcloud:"
 
 #: quodlibet/cli.py:50
 msgid "Quod Libet is not running (add '--run' to start it)"
@@ -876,7 +873,7 @@ msgstr ""
 
 #: quodlibet/cli.py:86
 msgid "a music library and player"
-msgstr ""
+msgstr "sebuah pemutar dan pustaka musik"
 
 #: quodlibet/cli.py:87
 msgid "[option]"
@@ -924,11 +921,11 @@ msgstr ""
 
 #: quodlibet/cli.py:102
 msgid "Turn up volume"
-msgstr ""
+msgstr "Besarkan volume"
 
 #: quodlibet/cli.py:103
 msgid "Turn down volume"
-msgstr ""
+msgstr "Kecilkan volume"
 
 #: quodlibet/cli.py:104
 msgid "Increase rating of playing song by one star"
@@ -944,11 +941,11 @@ msgstr ""
 
 #: quodlibet/cli.py:107
 msgid "Hide main window"
-msgstr ""
+msgstr "Sembunyikan jendela utama"
 
 #: quodlibet/cli.py:108
 msgid "Show main window"
-msgstr ""
+msgstr "Tampilkan jendela utama"
 
 #: quodlibet/cli.py:109
 msgid "Toggle main window visibility"
@@ -988,11 +985,11 @@ msgstr ""
 
 #: quodlibet/cli.py:118
 msgid "Start Quod Libet if it isn't running"
-msgstr ""
+msgstr "Mulai Quod Libet jika belum dimulai"
 
 #: quodlibet/cli.py:119
 msgid "Exit Quod Libet"
-msgstr ""
+msgstr "Keluar Quod Libet"
 
 #: quodlibet/cli.py:124
 msgid "Seek within the playing song"
@@ -1024,7 +1021,7 @@ msgstr ""
 
 #: quodlibet/cli.py:130
 msgid "Search your audio library"
-msgstr ""
+msgstr "Cari pustaka audio Anda"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
 #: quodlibet/cli.py:146
@@ -1033,12 +1030,12 @@ msgstr ""
 
 #: quodlibet/cli.py:131
 msgid "Play a file"
-msgstr ""
+msgstr "Putar sebuah berkas"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
 msgctxt "command"
 msgid "filename"
-msgstr ""
+msgstr "nama berkas"
 
 #: quodlibet/cli.py:132
 msgid "Set rating of playing song"
@@ -1050,11 +1047,11 @@ msgstr ""
 
 #: quodlibet/cli.py:134
 msgid "Stop after the playing song"
-msgstr ""
+msgstr "Berhenti setelah lagu yang sedang diputar"
 
 #: quodlibet/cli.py:135
 msgid "Open a new browser"
-msgstr ""
+msgstr "Buka peramban baru"
 
 #: quodlibet/cli.py:136
 msgid "Show or hide the queue"
@@ -1067,7 +1064,7 @@ msgstr ""
 #: quodlibet/cli.py:137
 msgctxt "command"
 msgid "tag"
-msgstr ""
+msgstr "tanda"
 
 #: quodlibet/cli.py:138
 msgid "Filter on a tag value"
@@ -1087,7 +1084,7 @@ msgstr ""
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
-msgstr ""
+msgstr "nama berkas"
 
 #: quodlibet/cli.py:143
 msgid "Print filenames of results of query to stdout"
@@ -1103,7 +1100,7 @@ msgstr ""
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
-msgstr ""
+msgstr "lokasi"
 
 #: quodlibet/cli.py:213
 #, python-format
@@ -1113,11 +1110,11 @@ msgstr ""
 #: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
 #, python-format
 msgid "Try %s --help."
-msgstr ""
+msgstr "Coba %s --help"
 
 #: quodlibet/errorreport/ui.py:58
 msgid "An Error Occurred"
-msgstr ""
+msgstr "Sebuah Galat Terjadi"
 
 #: quodlibet/errorreport/ui.py:60
 msgid ""
@@ -1125,22 +1122,25 @@ msgid ""
 "restarted. Submitting an error report will only take a few seconds and would "
 "help us a lot."
 msgstr ""
+"Anda bisa mengabaikan galat ini, tetapi aplikasi mungkin tidak stabil hingga "
+"dimulai ulang. Mengirimkan laporan galat hanya memakan sedikit waktu dan "
+"akan membantu banyak kami."
 
 #: quodlibet/errorreport/ui.py:69 quodlibet/errorreport/ui.py:85
 msgid "Submit Error Report"
-msgstr ""
+msgstr "Kirim Laporan Galat"
 
 #: quodlibet/errorreport/ui.py:70
 msgid "Restart"
-msgstr ""
+msgstr "Mulai Ulang"
 
 #: quodlibet/errorreport/ui.py:71
 msgid "Ignore Error"
-msgstr ""
+msgstr "Abaikan Galat"
 
 #: quodlibet/errorreport/ui.py:75
 msgid "Error details:"
-msgstr ""
+msgstr "Detail galat:"
 
 #: quodlibet/errorreport/ui.py:87
 msgid ""
@@ -1154,34 +1154,36 @@ msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
 msgstr ""
+"(opsional) Mohon berikan deskripsi singkat tentang apa yang terjadi saat "
+"galat terjadi:"
 
 #: quodlibet/errorreport/ui.py:104
 msgid "_Send"
-msgstr ""
+msgstr "_Kirim"
 
 #: quodlibet/errorreport/ui.py:110
 msgid "Short description…"
-msgstr ""
+msgstr "Deskripsi singkat…"
 
 #: quodlibet/errorreport/ui.py:113
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Data yang akan dikirim:"
 
 #: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
-msgstr ""
+msgstr "penyunting tanda audio"
 
 #: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
-msgstr ""
+msgstr "direktori"
 
 #: quodlibet/exfalso.py:42
 msgid "Audio metadata editor"
-msgstr ""
+msgstr "Penyunting metadata audio"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "URL Sumber Sampul"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
@@ -1191,7 +1193,7 @@ msgstr ""
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
-msgstr ""
+msgstr "Sumber Sampul Discogz"
 
 #: quodlibet/ext/covers/discogs.py:29
 msgid "Downloads covers from Discogs."
@@ -1286,7 +1288,7 @@ msgstr ""
 
 #: quodlibet/ext/events/advanced_preferences.py:257
 msgid "I know what I'm doing"
-msgstr ""
+msgstr "Saya tahu apa yang saya lakukan"
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1298,11 +1300,11 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:177
 msgid "_Position:"
-msgstr ""
+msgstr "_Posisi:"
 
 #: quodlibet/ext/events/animosd/prefs.py:189
 msgid "_Cover size:"
-msgstr ""
+msgstr "Ukuran _Sampul:"
 
 #: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
 msgid "Display"
@@ -1310,19 +1312,19 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:208
 msgid "_Font:"
-msgstr ""
+msgstr "_Fonta:"
 
 #: quodlibet/ext/events/animosd/prefs.py:213
 msgid "Left"
-msgstr ""
+msgstr "Kiri"
 
 #: quodlibet/ext/events/animosd/prefs.py:214
 msgid "Center"
-msgstr ""
+msgstr "Tengah"
 
 #: quodlibet/ext/events/animosd/prefs.py:215
 msgid "Right"
-msgstr ""
+msgstr "Kanan"
 
 #: quodlibet/ext/events/animosd/prefs.py:218
 msgid "_Align text:"
@@ -1330,11 +1332,11 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:224
 msgid "Text"
-msgstr ""
+msgstr "Teks"
 
 #: quodlibet/ext/events/animosd/prefs.py:235
 msgid "_Text:"
-msgstr ""
+msgstr "_Teks:"
 
 #: quodlibet/ext/events/animosd/prefs.py:245
 msgid "_Fill:"
@@ -1343,11 +1345,11 @@ msgstr ""
 #: quodlibet/ext/events/animosd/prefs.py:250
 #: quodlibet/ext/events/synchronizedlyrics.py:64
 msgid "Colors"
-msgstr ""
+msgstr "Warna"
 
 #: quodlibet/ext/events/animosd/prefs.py:258
 msgid "_Shadows"
-msgstr ""
+msgstr "Ba_yangan"
 
 #: quodlibet/ext/events/animosd/prefs.py:259
 msgid "_Outline"
@@ -1359,7 +1361,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/prefs.py:276
 msgid "_Delay:"
-msgstr ""
+msgstr "_Jeda:"
 
 #: quodlibet/ext/events/animosd/prefs.py:282 quodlibet/qltk/pluginwin.py:43
 msgid "Effects"
@@ -1609,7 +1611,7 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:26
 msgid "Flat"
-msgstr ""
+msgstr "Datar"
 
 #: quodlibet/ext/events/equalizer.py:27
 msgid "Live"
@@ -2733,11 +2735,11 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization has finished."
-msgstr ""
+msgstr "Sinkronisasi telah selesai."
 
 #: quodlibet/ext/events/synchronize_to_device.py:1011
 msgid "Stopped song synchronization"
-msgstr ""
+msgstr "Berhentikan sinkronisasi lagu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1015
 msgid "A different plugin was selected - stop synchronization"
@@ -2800,7 +2802,7 @@ msgstr[1] ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:29
 msgid "Synchronized Lyrics"
-msgstr ""
+msgstr "Lirik Tersinkronisasi"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:30
 msgid ""
@@ -2810,19 +2812,19 @@ msgstr ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:67
 msgid "Text:"
-msgstr ""
+msgstr "Teks:"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:77
 msgid "Background:"
-msgstr ""
+msgstr "Latar belakang:"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:88
 msgid "Font"
-msgstr ""
+msgstr "Fonta"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:91
 msgid "Size (px):"
-msgstr ""
+msgstr "Ukuran (piksel):"
 
 #: quodlibet/ext/events/telepathy_status.py:68
 msgid "Telepathy Status Messages"
@@ -2836,7 +2838,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
-msgstr ""
+msgstr "Diputar:"
 
 #: quodlibet/ext/events/telepathy_status.py:129
 #, python-format
@@ -2845,7 +2847,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:145
 msgid "Paused:"
-msgstr ""
+msgstr "Dijeda:"
 
 #: quodlibet/ext/events/telepathy_status.py:146
 #, python-format
@@ -2875,11 +2877,11 @@ msgstr ""
 
 #: quodlibet/ext/events/themeswitcher.py:49
 msgid "_Theme:"
-msgstr ""
+msgstr "_Tema:"
 
 #: quodlibet/ext/events/themeswitcher.py:54
 msgid "Default Theme"
-msgstr ""
+msgstr "Tema Baku"
 
 #: quodlibet/ext/events/themeswitcher.py:66
 msgid "Prefer dark theme version"
@@ -2927,40 +2929,40 @@ msgstr ""
 #: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
 #: quodlibet/qltk/quodlibetwindow.py:1142
 msgid "_Play"
-msgstr ""
+msgstr "_Putar"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
 #: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
-msgstr ""
+msgstr "Je_da"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
 #: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:931
 msgid "Pre_vious"
-msgstr ""
+msgstr "Se_belumnya"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
 #: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:941
 msgid "_Next"
-msgstr ""
+msgstr "_Selanjutnya"
 
 #: quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
-msgstr ""
+msgstr "_Acak"
 
 #: quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
-msgstr ""
+msgstr "_Ulang"
 
 #: quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
-msgstr ""
+msgstr "Berhenti Setelah _Lagu Ini"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:902
 msgid "Open _Browser"
-msgstr ""
+msgstr "Buka _Peramban"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
 #: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
@@ -2970,7 +2972,7 @@ msgstr ""
 #: quodlibet/ext/events/trayicon/menu.py:112
 #: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
-msgstr ""
+msgstr "_Informasi"
 
 #: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
 msgid "Play_lists"
@@ -2979,7 +2981,7 @@ msgstr ""
 #: quodlibet/ext/events/trayicon/menu.py:132
 #: quodlibet/qltk/quodlibetwindow.py:916
 msgid "_Quit"
-msgstr ""
+msgstr "_Keluar"
 
 #: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:74
 msgid "Behavior"
@@ -3003,7 +3005,7 @@ msgstr ""
 
 #: quodlibet/ext/events/viewlyrics.py:25
 msgid "View Lyrics"
-msgstr ""
+msgstr "Lihat Lirik"
 
 #: quodlibet/ext/events/viewlyrics.py:26
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
@@ -3015,6 +3017,8 @@ msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr ""
+"Tidak ada lirik yang ditemukan untuk\n"
+" %s"
 
 #: quodlibet/ext/events/viewlyrics.py:117
 msgid "No active song"
@@ -3036,7 +3040,7 @@ msgstr ""
 #: quodlibet/ext/events/visualisations.py:57
 #: quodlibet/ext/songsmenu/fingerprint/search.py:44
 msgid "Error"
-msgstr ""
+msgstr "Galat"
 
 #: quodlibet/ext/events/visualisations.py:76
 msgid "Visualiser executable:"
@@ -3044,7 +3048,7 @@ msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:91
 msgid "Reload"
-msgstr ""
+msgstr "Memuat ulang"
 
 #: quodlibet/ext/events/waveformseekbar.py:602
 msgid "Waveform Seek Bar"
@@ -3056,7 +3060,7 @@ msgstr ""
 
 #: quodlibet/ext/events/waveformseekbar.py:674
 msgid "Override foreground color:"
-msgstr ""
+msgstr "Timpa warna depan:"
 
 #: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override hover color:"
@@ -3068,7 +3072,7 @@ msgstr ""
 
 #: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Show current position"
-msgstr ""
+msgstr "Tampilkan posisi saat ini"
 
 #: quodlibet/ext/events/waveformseekbar.py:691
 msgid "Show time labels"
@@ -3080,7 +3084,7 @@ msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
-msgstr ""
+msgstr "Penyimpan Gambar"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
@@ -3088,7 +3092,7 @@ msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:67
 msgid "File:"
-msgstr ""
+msgstr "Berkas:"
 
 #: quodlibet/ext/gstreamer/compressor.py:21
 msgid "_Threshold:"
@@ -3100,11 +3104,11 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "R_atio:"
-msgstr ""
+msgstr "R_asio:"
 
 #: quodlibet/ext/gstreamer/compressor.py:23
 msgid "Compression ratio"
-msgstr ""
+msgstr "Rasio kompresi"
 
 #: quodlibet/ext/gstreamer/compressor.py:75
 #: quodlibet/ext/gstreamer/karaoke.py:92
@@ -3149,7 +3153,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/crossfeed.py:26
 msgid "Default"
-msgstr ""
+msgstr "Baku"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:27
 msgid "Closest to virtual speaker placement (30°, 3 meter)"
@@ -3215,11 +3219,11 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Karaoke"
-msgstr ""
+msgstr "Karaoke"
 
 #: quodlibet/ext/gstreamer/karaoke.py:107
 msgid "Removes main vocals from audio."
-msgstr ""
+msgstr "Hapus vokal utama dari audio."
 
 #: quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
@@ -3253,15 +3257,15 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_folder.py:98
 #: quodlibet/ext/playlist/export_to_folder.py:147
 msgid "Export Playlist to Folder"
-msgstr ""
+msgstr "Ekspor Daftar Putar ke Folder"
 
 #: quodlibet/ext/playlist/export_to_folder.py:39
 msgid "_Export"
-msgstr ""
+msgstr "_Ekspor"
 
 #: quodlibet/ext/playlist/export_to_folder.py:44
 msgid "Destination folder:"
-msgstr ""
+msgstr "Folder tujuan:"
 
 #: quodlibet/ext/playlist/export_to_folder.py:59
 msgid "Filename pattern:"
@@ -3274,11 +3278,11 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_folder.py:121
 #: quodlibet/ext/songsmenu/playlist.py:132
 msgid "Unable to export playlist"
-msgstr ""
+msgstr "Tidak bisa mengekspor daftar putar"
 
 #: quodlibet/ext/playlist/export_to_folder.py:122
 msgid "Ensure you have write access to the destination."
-msgstr ""
+msgstr "Pastikan Anda memiliki akses tulis ke tujuan"
 
 #: quodlibet/ext/playlist/export_to_folder.py:165
 msgid "Default filename pattern:"
@@ -3287,7 +3291,7 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_sonos.py:96
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
-msgstr ""
+msgstr "_OK"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
 msgid ""
@@ -3297,29 +3301,31 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_sonos.py:131
 msgid "Export to Sonos Playlist"
-msgstr ""
+msgstr "Ekspor ke Daftar Putar Sonos"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid ""
 "Exports a playlist to Sonos playlist, provided both share a directory "
 "structure."
 msgstr ""
+"Ekspor sebuah daftar putar ke daftar putar Sonos, asalkan keduanya memiliki "
+"struktur direktori yang sama."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:223
 msgid "Error finding Sonos device(s)"
-msgstr ""
+msgstr "Galat mencari perangkat Sonos"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:224
 msgid "Error finding Sonos. Please check settings"
-msgstr ""
+msgstr "Galat mencari Sonos. Mohon periksa pengaturan"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:241
 msgid "Export to Sonos playlist"
-msgstr ""
+msgstr "Ekspor ke daftar putar Sonos"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
-msgstr ""
+msgstr "Ekspor ke Squeezebox"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:24
 msgid ""
@@ -3336,19 +3342,20 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
-msgstr ""
+msgstr "Ekspor daftar putar ke Squeezebox"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:79
 msgid "Playlist name (will overwrite existing)"
-msgstr ""
+msgstr "Nama daftar putar (akan menimpa yang ada)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:97
 msgid "Export to Squeezebox playlist"
-msgstr ""
+msgstr "Ekspor ke daftar putar Squeezebox"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:20
+#, fuzzy
 msgid "Remove Playlist Duplicates"
-msgstr ""
+msgstr "Hapus Daftar Putar Duplikat"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:21
 msgid "Removes duplicate entries in a playlist."
@@ -3368,7 +3375,7 @@ msgstr ""
 
 #: quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
-msgstr ""
+msgstr "Acak Daftar Putar"
 
 #: quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
@@ -3386,11 +3393,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/follow.py:22
 msgid "Follow cursor"
-msgstr ""
+msgstr "Ikuti kursor"
 
 #: quodlibet/ext/playorder/follow.py:23
 msgid "_Follow cursor"
-msgstr ""
+msgstr "_Ikuti kursor"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
@@ -3468,11 +3475,11 @@ msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:96
 msgid "Waiting to start new group…"
-msgstr ""
+msgstr "Menunggu untuk memulai kelompok baru…"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:146
 msgid "Grouping tag:"
-msgstr ""
+msgstr "Pengelompokan tanda:"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:150
 msgid "Tag to group songs by"
@@ -3500,7 +3507,7 @@ msgstr ""
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:184
 msgid "Reset to defaults"
-msgstr ""
+msgstr "Atur ulang ke yang baku"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
@@ -3608,23 +3615,23 @@ msgstr ""
 #: quodlibet/ext/_shared/squeezebox/base.py:86
 #, python-format
 msgid "Couldn't connect to %s"
-msgstr ""
+msgstr "Tidak bisa menyambung ke %s"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
-msgstr ""
+msgstr "Nama hos:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:118
 msgid "Port:"
-msgstr ""
+msgstr "Porta:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:125
 msgid "Username:"
-msgstr ""
+msgstr "Nama pengguna:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:132
 msgid "Password:"
-msgstr ""
+msgstr "Kata sandi:"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:138
 msgid "Library directory the server connects to"
@@ -3632,7 +3639,7 @@ msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:140
 msgid "Library path:"
-msgstr ""
+msgstr "Jalur pustaka:"
 
 #. Add verify button
 #: quodlibet/ext/_shared/squeezebox/base.py:151
@@ -3642,7 +3649,7 @@ msgstr ""
 #. Server settings Frame
 #: quodlibet/ext/_shared/squeezebox/base.py:157
 msgid "Squeezebox Server"
-msgstr ""
+msgstr "Peladen Squeezebox"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:160
 msgid "Debug"
@@ -3695,12 +3702,12 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:362
 msgid "Saving failed"
-msgstr ""
+msgstr "Gagal menyimpan"
 
 #: quodlibet/ext/songsmenu/albumart.py:363
 #, python-format
 msgid "Unable to save \"%s\"."
-msgstr ""
+msgstr "Tidak bisa menyimpan \"%s\"."
 
 #: quodlibet/ext/songsmenu/albumart.py:463
 #, python-format
@@ -3724,7 +3731,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/albumart.py:580
 #, python-format
 msgid "Size: %s"
-msgstr ""
+msgstr "Ukuran: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:626
 msgid "Per engine 'at best' results limit"
@@ -3732,17 +3739,17 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:636
 msgid "_Search"
-msgstr ""
+msgstr "_Cari"
 
 #: quodlibet/ext/songsmenu/albumart.py:720
 #: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
-msgstr ""
+msgstr "Mencari…"
 
 #: quodlibet/ext/songsmenu/albumart.py:787
 #: quodlibet/ext/songsmenu/fingerprint/search.py:42
 msgid "Done"
-msgstr ""
+msgstr "Selesai"
 
 #: quodlibet/ext/songsmenu/albumart.py:903
 msgid "Download Album Art"
@@ -3754,7 +3761,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:917
 msgid "Sources"
-msgstr ""
+msgstr "Sumber"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
@@ -3767,20 +3774,21 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
+#, fuzzy
 msgid "Go to Bookmark"
-msgstr ""
+msgstr "Ke Markah"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
-msgstr ""
+msgstr "Kelola markah di berkas yang dipilih."
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
 msgid "_Edit Bookmarks…"
-msgstr ""
+msgstr "_Sunting Markah…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:73
 msgid "No Bookmarks"
-msgstr ""
+msgstr "Tidak Ada Markah"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
 msgid "MusicBrainz Lookup"
@@ -3812,7 +3820,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:129
 msgid "Filename"
-msgstr ""
+msgstr "Nama Berkas"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
@@ -3830,7 +3838,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:385
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
 msgid "Title"
-msgstr ""
+msgstr "Judul"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:133
 msgid "Artist"
@@ -3846,7 +3854,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:378
 msgid "S_earch"
-msgstr ""
+msgstr "Ca_ri"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:391
 msgid "Results <i>(drag to reorder)</i>"
@@ -3859,7 +3867,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/brainz/widgets.py:467
 #: quodlibet/ext/songsmenu/brainz/widgets.py:498
 msgid "Error encountered. Please retry."
-msgstr ""
+msgstr "Terjadi galat. Mohon coba kembali."
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:474
 #: quodlibet/ext/songsmenu/brainz/widgets.py:490
@@ -3967,7 +3975,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:332
 msgid "Preview size"
-msgstr ""
+msgstr "Ukuran pratinjau"
 
 #: quodlibet/ext/songsmenu/cover_download.py:341
 msgid "Save destination"
@@ -4363,7 +4371,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/html.py:66 quodlibet/ext/songsmenu/html.py:76
 msgid "Export to HTML"
-msgstr ""
+msgstr "Ekspor ke HTML"
 
 #: quodlibet/ext/songsmenu/html.py:67
 msgid "Exports the selected song list to HTML."
@@ -4432,7 +4440,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
-msgstr ""
+msgstr "Impor/Ekspor"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:163
 msgid "Imports and exports tags and track user data."
@@ -4489,7 +4497,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:262
 msgid "Export files"
-msgstr ""
+msgstr "Ekspor berkas"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
 msgid "Write pretty and clear JSON (slower)"
@@ -4497,7 +4505,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
 msgid "Delete export files after they've been imported"
-msgstr ""
+msgstr "Hapus berkas ekspor setelah itu diimpor"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
@@ -4532,7 +4540,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
 msgid "Continue"
-msgstr ""
+msgstr "Lanjut"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:422
 msgid "Nothing to import"
@@ -4554,11 +4562,11 @@ msgstr ""
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:504
 #, python-format
 msgid "Couldn't read %s"
-msgstr ""
+msgstr "Tidak bisa membaca %s"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 msgid "File name"
-msgstr ""
+msgstr "Nama berkas"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "Match Tracks"
@@ -4580,7 +4588,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:133
 msgid "Sync complete."
-msgstr ""
+msgstr "Sinkronisasi selesai."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:139
 #, python-format
@@ -4590,7 +4598,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/lastfmsync.py:202
 #: quodlibet/ext/songsmenu/lastfmsync.py:231
 msgid "Last.fm Sync"
-msgstr ""
+msgstr "Sinkronisasi Last.fm"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:232
 msgid "Updates your library's statistics from your Last.fm profile."
@@ -4610,11 +4618,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as M3U / PLS Playlist File"
-msgstr ""
+msgstr "Ekspor sebagai Berkas Daftar Putar M3U/PLS"
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
-msgstr ""
+msgstr "Ekspor lagu ke daftar putar M3U atau PLS."
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use relative paths"
@@ -4632,7 +4640,7 @@ msgstr ""
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
 msgid "Rescan Songs"
-msgstr ""
+msgstr "Pindai Ulang Lagu"
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
@@ -4688,7 +4696,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
-msgstr ""
+msgstr "selalu"
 
 #: quodlibet/ext/songsmenu/replaygain.py:611
 msgid "if <b>any</b> RG tags are missing"
@@ -4753,7 +4761,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/website_search.py:36
 msgid "Website Search"
-msgstr ""
+msgstr "Pencarian Web"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
 #, python-format
@@ -4777,7 +4785,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid "Search Tag in Wikipedia"
-msgstr ""
+msgstr "Cari Tanda di Wikipedia"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:37
 msgid ""
@@ -4793,16 +4801,16 @@ msgstr ""
 #: quodlibet/ext/songsmenu/wikipedia.py:70
 #: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:452
 msgid "Edit Tags"
-msgstr ""
+msgstr "Sunting Tanda"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:110
 msgid "Search failed"
-msgstr ""
+msgstr "Pencarian gagal"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:111
 #, python-format
 msgid "Tag \"%s\" not found."
-msgstr ""
+msgstr "Tanda \"%s\" tidak ditemukan."
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
@@ -4811,7 +4819,7 @@ msgstr ""
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
 #: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
 msgid "Library"
-msgstr ""
+msgstr "Pustaka"
 
 #: quodlibet/library/file.py:156
 msgid "Checking mount points"
@@ -4819,12 +4827,12 @@ msgstr ""
 
 #: quodlibet/library/file.py:166
 msgid "Scanning library"
-msgstr ""
+msgstr "Memindai pustaka"
 
 #: quodlibet/library/file.py:230
 #, python-format
 msgid "Scanning %s"
-msgstr ""
+msgstr "Memindai %s"
 
 #: quodlibet/library/file.py:250
 msgid "Loading files"
@@ -4890,7 +4898,7 @@ msgstr ""
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
 #: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:372
 msgid "Description"
-msgstr ""
+msgstr "Deskripsi"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
 #: quodlibet/qltk/edittags.py:504
@@ -4948,7 +4956,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:321
 msgid "Remove tags"
-msgstr ""
+msgstr "Hapus tanda"
 
 #: quodlibet/operon/commands.py:328 quodlibet/operon/commands.py:389
 msgid "Value is a regular expression"
@@ -4956,7 +4964,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:330
 msgid "Remove all tags"
-msgstr ""
+msgstr "Hapus semua tanda"
 
 #: quodlibet/operon/commands.py:334
 msgid "Can't combine '--all' with '--regexp'"
@@ -5016,7 +5024,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:642
 msgid "Rename files based on tags"
-msgstr ""
+msgstr "Ubah nama berkas berdasarkan pada tanda"
 
 #: quodlibet/operon/commands.py:657
 msgid "Fill tags based on the file path"
@@ -5026,7 +5034,7 @@ msgstr ""
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:228 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
-msgstr ""
+msgstr "Berkas"
 
 #: quodlibet/operon/commands.py:715
 msgid "Fill tracknumbers for all files"
@@ -5038,7 +5046,7 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:771
 msgid "Display help information"
-msgstr ""
+msgstr "Tampilkan informasi bantuan"
 
 #: quodlibet/operon/util.py:41
 #, python-format
@@ -5047,7 +5055,7 @@ msgstr ""
 
 #: quodlibet/order/__init__.py:32
 msgid "_Unknown"
-msgstr ""
+msgstr "Tidak _diketahui"
 
 #: quodlibet/order/__init__.py:144
 msgid "In Order"
@@ -5083,11 +5091,11 @@ msgstr ""
 
 #: quodlibet/order/repeat.py:57
 msgid "Repeat all"
-msgstr ""
+msgstr "Ulang semua"
 
 #: quodlibet/order/repeat.py:58
 msgid "Repeat _all"
-msgstr ""
+msgstr "Ulang _semua"
 
 #: quodlibet/order/repeat.py:73
 msgid "One song"
@@ -5229,7 +5237,7 @@ msgstr ""
 
 #: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
-msgstr ""
+msgstr "Ta_nda:"
 
 #: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
@@ -5255,7 +5263,7 @@ msgstr ""
 
 #: quodlibet/plugins/query.py:73
 msgid "Usage"
-msgstr ""
+msgstr "Penggunaan"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -5268,11 +5276,11 @@ msgstr ""
 
 #: quodlibet/qltk/bookmarks.py:83
 msgid "Time"
-msgstr ""
+msgstr "Waktu"
 
 #: quodlibet/qltk/bookmarks.py:89 quodlibet/qltk/bookmarks.py:124
 msgid "Bookmark Name"
-msgstr ""
+msgstr "Nama Markah"
 
 #: quodlibet/qltk/bookmarks.py:122
 msgid "MM:SS"
@@ -5280,7 +5288,7 @@ msgstr ""
 
 #: quodlibet/qltk/bookmarks.py:210 quodlibet/qltk/information.py:132
 msgid "Bookmarks"
-msgstr ""
+msgstr "Markah"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
@@ -5300,7 +5308,7 @@ msgstr ""
 
 #: quodlibet/qltk/browser.py:63
 msgid "All _Songs"
-msgstr ""
+msgstr "Semua _Lagu"
 
 #: quodlibet/qltk/browser.py:71
 msgid "On Current _Genre(s)"
@@ -5334,7 +5342,7 @@ msgstr ""
 
 #: quodlibet/qltk/cbes.py:42
 msgid "_Name:"
-msgstr ""
+msgstr "_Nama:"
 
 #: quodlibet/qltk/cbes.py:50 quodlibet/qltk/edittags.py:354
 msgid "_Value:"
@@ -5350,7 +5358,7 @@ msgstr ""
 
 #: quodlibet/qltk/controls.py:112
 msgid "Auto_matic"
-msgstr ""
+msgstr "Oto_matis"
 
 #: quodlibet/qltk/controls.py:113
 msgid "_Track Mode"
@@ -5377,12 +5385,11 @@ msgstr ""
 
 #: quodlibet/qltk/data_editors.py:216
 msgid "(unknown)"
-msgstr ""
+msgstr "(tidak diketahui)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "_Tambah"
+msgstr "_Tambah…"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
@@ -5398,7 +5405,7 @@ msgstr ""
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
-msgstr ""
+msgstr "Berkas:"
 
 #: quodlibet/qltk/delete.py:63
 msgid ""
@@ -5520,11 +5527,11 @@ msgstr ""
 
 #: quodlibet/qltk/edittags.py:326
 msgid "Add a Tag"
-msgstr ""
+msgstr "Tambahkan tanda"
 
 #: quodlibet/qltk/edittags.py:345
 msgid "_Tag:"
-msgstr ""
+msgstr "_Tanda:"
 
 #: quodlibet/qltk/edittags.py:527
 msgid "Show _programmatic tags"
@@ -5554,7 +5561,7 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:574
 msgctxt "edittags"
 msgid "_Save"
-msgstr ""
+msgstr "_Simpan"
 
 #: quodlibet/qltk/edittags.py:714
 msgid "_Configure"
@@ -5570,12 +5577,12 @@ msgstr ""
 
 #: quodlibet/qltk/edittags.py:769
 msgid "Unable to add tag"
-msgstr ""
+msgstr "Tidak bisa menambahkan tanda"
 
 #: quodlibet/qltk/edittags.py:770
 #, python-format
 msgid "Unable to add <b>%s</b>"
-msgstr ""
+msgstr "Tidak bisa menambahkan <b>%s</b>"
 
 #: quodlibet/qltk/edittags.py:772
 #, python-format
@@ -5588,7 +5595,7 @@ msgstr ""
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
-msgstr ""
+msgstr "Tanda tidak valid"
 
 #: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:212
@@ -5624,7 +5631,7 @@ msgstr ""
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
-msgstr ""
+msgstr "Tidak bisa menyimpan lagu"
 
 #: quodlibet/qltk/_editutils.py:53
 #, python-format
@@ -5647,11 +5654,11 @@ msgstr ""
 
 #: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:956
 msgid "_About"
-msgstr ""
+msgstr "_Tentang"
 
 #: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:978
 msgid "_Check for Updates…"
-msgstr ""
+msgstr "_Periksa Pembaruan"
 
 #: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
 #: quodlibet/qltk/songsmenu.py:295
@@ -5671,11 +5678,11 @@ msgstr ""
 
 #: quodlibet/qltk/filesel.py:199
 msgid "Folders"
-msgstr ""
+msgstr "Folder"
 
 #: quodlibet/qltk/filesel.py:254
 msgid "_New Folder…"
-msgstr ""
+msgstr "_Folder Baru…"
 
 #: quodlibet/qltk/filesel.py:263
 msgid "_Select all Sub-Folders"
@@ -5683,7 +5690,7 @@ msgstr ""
 
 #: quodlibet/qltk/filesel.py:373
 msgid "New Folder"
-msgstr ""
+msgstr "Folder Baru"
 
 #: quodlibet/qltk/filesel.py:373
 msgid "Enter a name for the new folder:"
@@ -5691,21 +5698,21 @@ msgstr ""
 
 #: quodlibet/qltk/filesel.py:385
 msgid "Unable to create folder"
-msgstr ""
+msgstr "Tidak bisa membuat folder"
 
 #: quodlibet/qltk/filesel.py:402
 msgid "Unable to delete folder"
-msgstr ""
+msgstr "Tidak bisa menghapus folder"
 
 #: quodlibet/qltk/filesel.py:518 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
-msgstr ""
+msgstr "Lagu"
 
 #. Translators: As in "by Artist Name"
 #: quodlibet/qltk/info.py:43
-#, python-format
+#, fuzzy, python-format
 msgid "by %s"
-msgstr ""
+msgstr "oleh %s"
 
 #: quodlibet/qltk/info.py:44 quodlibet/qltk/information.py:171
 #: quodlibet/qltk/information.py:452
@@ -5720,7 +5727,7 @@ msgstr ""
 
 #: quodlibet/qltk/info.py:104
 msgid "Current _Song"
-msgstr ""
+msgstr "Lagu _Saat Ini"
 
 #: quodlibet/qltk/info.py:114
 msgid "_Edit Display…"
@@ -5728,7 +5735,7 @@ msgstr ""
 
 #: quodlibet/qltk/information.py:106
 msgid "No songs are selected."
-msgstr ""
+msgstr "Tidak ada lagu yang dipilih."
 
 #: quodlibet/qltk/information.py:107
 msgid "No Songs"
@@ -5737,11 +5744,11 @@ msgstr ""
 #: quodlibet/qltk/information.py:122 quodlibet/qltk/information.py:342
 #: quodlibet/qltk/information.py:475 quodlibet/qltk/information.py:543
 msgid "Information"
-msgstr ""
+msgstr "Informasi"
 
 #: quodlibet/qltk/information.py:127
 msgid "Lyrics"
-msgstr ""
+msgstr "Lirik"
 
 #: quodlibet/qltk/information.py:188 quodlibet/qltk/information.py:400
 #, python-format
@@ -5766,7 +5773,7 @@ msgstr ""
 #: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
 #: quodlibet/qltk/songlistcolumns.py:273
 msgid "Never"
-msgstr ""
+msgstr "Tidak Pernah"
 
 #: quodlibet/qltk/information.py:240
 #, python-format
@@ -5777,11 +5784,11 @@ msgstr[1] ""
 
 #: quodlibet/qltk/information.py:258 quodlibet/util/tags.py:150
 msgid "added"
-msgstr ""
+msgstr "ditambahkan"
 
 #: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:151
 msgid "last played"
-msgstr ""
+msgstr "terakhir diputar"
 
 #: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:161
 msgid "plays"
@@ -5793,11 +5800,11 @@ msgstr "lanjut"
 
 #: quodlibet/qltk/information.py:262 quodlibet/util/tags.py:167
 msgid "rating"
-msgstr ""
+msgstr "peringkat"
 
 #: quodlibet/qltk/information.py:291
 msgid "path"
-msgstr ""
+msgstr "jalur"
 
 #: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:165
 msgid "length"
@@ -5821,7 +5828,7 @@ msgstr ""
 
 #: quodlibet/qltk/information.py:297 quodlibet/util/tags.py:173
 msgid "file size"
-msgstr ""
+msgstr "ukuran berkas"
 
 #: quodlibet/qltk/information.py:298 quodlibet/util/tags.py:160
 msgid "modified"
@@ -5870,23 +5877,23 @@ msgstr ""
 
 #: quodlibet/qltk/information.py:615
 msgid "Total size:"
-msgstr ""
+msgstr "Total ukuran:"
 
 #: quodlibet/qltk/information.py:618
 msgid "Files"
-msgstr ""
+msgstr "Berkas"
 
 #: quodlibet/qltk/lyrics.py:34
 msgid "_View online"
-msgstr ""
+msgstr "_Lihat secara daring"
 
 #: quodlibet/qltk/lyrics.py:61
 msgid "No lyrics found for this song."
-msgstr ""
+msgstr "Tidak ditemukan lirik untuk lagu ini."
 
 #: quodlibet/qltk/maskedbox.py:20
 msgid "Are you sure you want to remove all songs?"
-msgstr ""
+msgstr "Apakah Anda yakin ingin menghapus semua lagu?"
 
 #: quodlibet/qltk/maskedbox.py:21
 msgid "The selected songs will be removed from the library."
@@ -5925,7 +5932,7 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
-msgstr ""
+msgstr "_Urung"
 
 #: quodlibet/qltk/msg.py:108
 msgid "File exists"
@@ -5938,7 +5945,7 @@ msgstr ""
 
 #: quodlibet/qltk/msg.py:116
 msgid "_Replace File"
-msgstr ""
+msgstr "_Ganti Berkas"
 
 #: quodlibet/qltk/notif.py:182
 msgid "Active tasks"
@@ -5967,7 +5974,7 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:40
 msgid "Editing"
-msgstr ""
+msgstr "Menyunting"
 
 #: quodlibet/qltk/pluginwin.py:41
 msgid "Renaming"
@@ -5979,7 +5986,7 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
-msgstr ""
+msgstr "Sampul"
 
 #: quodlibet/qltk/pluginwin.py:66
 msgid "Plugin Errors"
@@ -6002,8 +6009,9 @@ msgid "No category"
 msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:186
+#, fuzzy
 msgid "Any category"
-msgstr ""
+msgstr "Kategori Apa Pun"
 
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
@@ -6027,7 +6035,7 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:414
 msgid "Show _Errors"
-msgstr ""
+msgstr "Tampilkan _Galat"
 
 #: quodlibet/qltk/prefs.py:45
 msgid "_Disc"
@@ -6051,7 +6059,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:55
 msgid "_Filename"
-msgstr ""
+msgstr "_Nama Berkas"
 
 #: quodlibet/qltk/prefs.py:57
 msgid "_Length"
@@ -6075,11 +6083,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:87
 msgid "_Others:"
-msgstr ""
+msgstr "_Lain-lain:"
 
 #: quodlibet/qltk/prefs.py:93
 msgid "_Edit…"
-msgstr ""
+msgstr "_Sunting…"
 
 #: quodlibet/qltk/prefs.py:96
 msgid "Add or remove additional column headers"
@@ -6115,7 +6123,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:149 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
-msgstr ""
+msgstr "Daftar Lagu"
 
 #: quodlibet/qltk/prefs.py:232
 msgid "Edit Columns"
@@ -6137,11 +6145,11 @@ msgstr ""
 #: quodlibet/qltk/prefs.py:293
 msgctxt "heading"
 msgid "Search"
-msgstr ""
+msgstr "Cari"
 
 #: quodlibet/qltk/prefs.py:297 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
-msgstr ""
+msgstr "Peramban"
 
 #: quodlibet/qltk/prefs.py:303
 msgid "Confirm _multiple ratings"
@@ -6162,7 +6170,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:682
 msgid "Ratings"
-msgstr ""
+msgstr "Peringkat"
 
 #. Filename choice algorithm config
 #: quodlibet/qltk/prefs.py:322
@@ -6259,7 +6267,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:588
 msgid "_Email:"
-msgstr ""
+msgstr "_Surel"
 
 #: quodlibet/qltk/prefs.py:590
 msgid "Ratings and play counts will be saved in tags for this email address"
@@ -6296,11 +6304,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:676
 msgid "Tags"
-msgstr ""
+msgstr "Tanda"
 
 #: quodlibet/qltk/prefs.py:679
 msgid "Tag Editing"
-msgstr ""
+msgstr "Penyunting Tanda"
 
 #: quodlibet/qltk/prefs.py:697
 msgid "Updating for new ratings"
@@ -6308,7 +6316,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:707
 msgid "Scan library _on start"
-msgstr ""
+msgstr "Pindai pustaka _pada pemulaian"
 
 #: quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
@@ -6321,7 +6329,7 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
-msgstr ""
+msgstr "_Pindai Pustaka"
 
 #: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
@@ -6337,11 +6345,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:744
 msgid "Scan Directories"
-msgstr ""
+msgstr "Pindai Direktori"
 
 #: quodlibet/qltk/prefs.py:750
 msgid "Hidden Songs"
-msgstr ""
+msgstr "Lagu Tersembunyi"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
@@ -6399,7 +6407,7 @@ msgstr[1] ""
 
 #: quodlibet/qltk/quodlibetwindow.py:198
 msgid "_Browse Library"
-msgstr ""
+msgstr "_Jelajah Pustaka"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
 msgid "Toggle queue visibility"
@@ -6419,11 +6427,11 @@ msgstr ""
 
 #: quodlibet/qltk/quodlibetwindow.py:391
 msgid "_Not Now"
-msgstr ""
+msgstr "Jangan _Sekarang"
 
 #: quodlibet/qltk/quodlibetwindow.py:392
 msgid "_Set Up"
-msgstr ""
+msgstr "_Atur"
 
 #: quodlibet/qltk/quodlibetwindow.py:845
 msgid "Unable to add songs"
@@ -6578,20 +6586,20 @@ msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:121
 msgid "Use only _lowercase characters"
-msgstr ""
+msgstr "Gunakan hanya karakter huruf _kecil"
 
 #: quodlibet/qltk/renamefiles.py:149
 msgid "Rename Files"
-msgstr ""
+msgstr "Ubah Nama Berkas"
 
 #: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:119
 #: quodlibet/qltk/tracknumbers.py:57
 msgid "_Preview"
-msgstr ""
+msgstr "_Pratinjau"
 
 #: quodlibet/qltk/renamefiles.py:198
 msgid "File names"
-msgstr ""
+msgstr "Nama berkas"
 
 #: quodlibet/qltk/renamefiles.py:208
 msgid "_Move album art"
@@ -6615,11 +6623,11 @@ msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:259
 msgid "New Name"
-msgstr ""
+msgstr "Nama Baru"
 
 #: quodlibet/qltk/renamefiles.py:337
 msgid "Unable to rename file"
-msgstr ""
+msgstr "Tidak bisa mengubah nama berkas"
 
 #: quodlibet/qltk/renamefiles.py:338
 #, python-format
@@ -6637,11 +6645,11 @@ msgstr ""
 #. number of steps.
 #: quodlibet/qltk/renamefiles.py:347 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
-msgstr ""
+msgstr "_Berhenti"
 
 #: quodlibet/qltk/renamefiles.py:349
 msgid "_Continue"
-msgstr ""
+msgstr "_Lanjut"
 
 #: quodlibet/qltk/renamefiles.py:463
 #, fuzzy
@@ -6912,7 +6920,7 @@ msgstr ""
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
-msgstr ""
+msgstr "Hapus dari Pustaka"
 
 #: quodlibet/qltk/songsmenu.py:57
 #, python-format
@@ -6938,11 +6946,11 @@ msgstr ""
 
 #: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
-msgstr ""
+msgstr "_Hapus dari Pustaka…"
 
 #: quodlibet/qltk/songsmenu.py:411
 msgid "Unable to show files"
-msgstr ""
+msgstr "Tidak bisa menampilkan berkas"
 
 #: quodlibet/qltk/songsmenu.py:412
 msgid "Error showing files, or no program available to show them."
@@ -7019,7 +7027,7 @@ msgstr ""
 
 #: quodlibet/qltk/tagsfrompath.py:215
 msgid "Invalid tags"
-msgstr ""
+msgstr "Tanda tidak valid"
 
 #: quodlibet/qltk/tagsfrompath.py:216
 #, python-format
@@ -7056,11 +7064,11 @@ msgstr ""
 
 #: quodlibet/qltk/unity.py:52
 msgid "Play/Pause"
-msgstr ""
+msgstr "Putar/Jeda"
 
 #: quodlibet/qltk/unity.py:72
 msgid "Previous"
-msgstr ""
+msgstr "Sebelumnya"
 
 #: quodlibet/qltk/views.py:934
 #, python-format
@@ -7069,7 +7077,7 @@ msgstr ""
 
 #: quodlibet/qltk/wlw.py:199
 msgid "Saving the songs you changed."
-msgstr ""
+msgstr "Menyimpan lagu yang Anda ubah"
 
 #: quodlibet/qltk/wlw.py:200
 #, python-format
@@ -7085,16 +7093,16 @@ msgstr ""
 
 #: quodlibet/update.py:90
 msgid "Checking for Updates"
-msgstr ""
+msgstr "Memeriksa Pembaruan"
 
 #: quodlibet/update.py:125
 msgid "Connection failed"
-msgstr ""
+msgstr "Koneksi gagal"
 
 #: quodlibet/update.py:134
 #, python-format
 msgid "You are already using the newest version %(version)s"
-msgstr ""
+msgstr "Anda telah menggunakan versi terbaru %(version)s"
 
 #: quodlibet/update.py:137
 #, python-format
@@ -7108,16 +7116,16 @@ msgstr ""
 
 #: quodlibet/util/collection.py:347
 msgid "Empty Playlist"
-msgstr ""
+msgstr "Daftar Putar Kosong"
 
 #: quodlibet/util/collection.py:445
 msgid "Playlists must have a name"
-msgstr ""
+msgstr "Daftar putar harus memiliki nama"
 
 #: quodlibet/util/collection.py:649
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
-msgstr ""
+msgstr "Daftar putar dengan nama %(name)s sudah ada pada %(path)s"
 
 #: quodlibet/util/cover/built_in.py:38
 msgid "Embedded album covers"
@@ -7137,8 +7145,9 @@ msgid ""
 msgstr ""
 
 #: quodlibet/util/cover/manager.py:230
+#, fuzzy
 msgid "Cover Art"
-msgstr ""
+msgstr "Sampul"
 
 #: quodlibet/util/cover/manager.py:230
 msgid "Querying album art providers"
@@ -7150,7 +7159,7 @@ msgstr ""
 
 #: quodlibet/util/__init__.py:80
 msgid "Display version and copyright"
-msgstr ""
+msgstr "Tampilkan versi dan hak cipta"
 
 #: quodlibet/util/__init__.py:81
 msgid "Print debugging information"
@@ -7181,55 +7190,49 @@ msgid "%r is not a unique prefix."
 msgstr ""
 
 #: quodlibet/util/__init__.py:349
-#, python-format
+#, fuzzy, python-format
 msgid "%d kbps"
-msgstr ""
+msgstr "%d kbps"
 
 #: quodlibet/util/__init__.py:404
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s detik"
 
 #: quodlibet/util/__init__.py:417
 msgid "No time information"
-msgstr ""
+msgstr "Tidak ada informasi jam"
 
 #: quodlibet/util/__init__.py:420
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d detik"
 
 #: quodlibet/util/__init__.py:421
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d menit"
 
 #: quodlibet/util/__init__.py:422
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d jam"
 
 #: quodlibet/util/__init__.py:423
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d hari"
 
 #: quodlibet/util/__init__.py:424
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d tahun"
 
 #. Translators: If tag names, when capitalized, should not
 #. be title-cased ("Looks Like This"), but rather only have
@@ -7271,7 +7274,7 @@ msgstr ""
 
 #: quodlibet/util/songwrapper.py:116
 msgid "Unable to edit song"
-msgstr ""
+msgstr "Tidak bisa menyunting lagu"
 
 #: quodlibet/util/songwrapper.py:117
 #, python-format
@@ -7310,7 +7313,7 @@ msgstr ""
 
 #: quodlibet/util/tags.py:87
 msgid "comment"
-msgstr ""
+msgstr "komentar"
 
 #: quodlibet/util/tags.py:88
 msgid "composer"
@@ -7339,19 +7342,19 @@ msgstr ""
 
 #: quodlibet/util/tags.py:91
 msgid "contact"
-msgstr ""
+msgstr "kontak"
 
 #: quodlibet/util/tags.py:92
 msgid "copyright"
-msgstr ""
+msgstr "hak cipta"
 
 #: quodlibet/util/tags.py:93
 msgid "date"
-msgstr ""
+msgstr "tanggal"
 
 #: quodlibet/util/tags.py:94
 msgid "description"
-msgstr ""
+msgstr "deskripsi"
 
 #: quodlibet/util/tags.py:95
 msgid "genre"
@@ -7371,15 +7374,15 @@ msgstr ""
 
 #: quodlibet/util/tags.py:97
 msgid "grouping"
-msgstr ""
+msgstr "pengelompokan"
 
 #: quodlibet/util/tags.py:98
 msgid "language"
-msgstr ""
+msgstr "bahasa"
 
 #: quodlibet/util/tags.py:99
 msgid "license"
-msgstr ""
+msgstr "lisensi"
 
 #: quodlibet/util/tags.py:101
 msgid "lyricist"
@@ -7391,7 +7394,7 @@ msgstr ""
 
 #: quodlibet/util/tags.py:101
 msgid "lyrics"
-msgstr ""
+msgstr "lirik"
 
 #. Translators: Also e.g. "record label", "publisher"
 #: quodlibet/util/tags.py:103
@@ -7400,15 +7403,15 @@ msgstr ""
 
 #: quodlibet/util/tags.py:104
 msgid "title"
-msgstr ""
+msgstr "judul"
 
 #: quodlibet/util/tags.py:105
 msgid "version"
-msgstr ""
+msgstr "versi"
 
 #: quodlibet/util/tags.py:106
 msgid "website"
-msgstr ""
+msgstr "situs web"
 
 #: quodlibet/util/tags.py:108
 msgid "album artist"
@@ -7432,12 +7435,13 @@ msgid "track"
 msgstr ""
 
 #: quodlibet/util/tags.py:116
+#, fuzzy
 msgid "label ID"
-msgstr ""
+msgstr "ID label"
 
 #: quodlibet/util/tags.py:117
 msgid "original release date"
-msgstr ""
+msgstr "tanggal rilis orisinal"
 
 #: quodlibet/util/tags.py:118
 msgid "original album"
@@ -7494,11 +7498,11 @@ msgstr ""
 
 #: quodlibet/util/tags.py:138
 msgid "MusicBrainz album status"
-msgstr ""
+msgstr "Status album MusicBrainz"
 
 #: quodlibet/util/tags.py:139
 msgid "MusicBrainz album type"
-msgstr ""
+msgstr "Jenis album MusicBrainz"
 
 #: quodlibet/util/tags.py:140
 msgid "MusicBrainz release group ID"
@@ -7539,8 +7543,9 @@ msgid "last started"
 msgstr ""
 
 #: quodlibet/util/tags.py:157
+#, fuzzy
 msgid "full name"
-msgstr ""
+msgstr "nama penuh"
 
 #: quodlibet/util/tags.py:164
 msgid "mount point"
@@ -7552,15 +7557,15 @@ msgstr ""
 
 #: quodlibet/util/tags.py:168
 msgid "year"
-msgstr ""
+msgstr "tahun"
 
 #: quodlibet/util/tags.py:169
 msgid "original release year"
-msgstr ""
+msgstr "tahun rilis orisinal"
 
 #: quodlibet/util/tags.py:170
 msgid "bookmark"
-msgstr ""
+msgstr "markah"
 
 #: quodlibet/util/tags.py:171
 msgid "bitdepth"
@@ -7568,11 +7573,11 @@ msgstr ""
 
 #: quodlibet/util/tags.py:174
 msgid "file format"
-msgstr ""
+msgstr "format berkas"
 
 #: quodlibet/util/tags.py:177
 msgid "playlists"
-msgstr ""
+msgstr "daftar putar"
 
 #: quodlibet/util/tags.py:178
 msgid "sample rate"
@@ -7585,7 +7590,7 @@ msgstr ""
 #. Translators: e.g. "artist (sort)"
 #: quodlibet/util/tags.py:269
 msgid "sort"
-msgstr ""
+msgstr "urut"
 
 #. Translators: e.g. "performer (roles)"
 #: quodlibet/util/tags.py:277
@@ -7599,26 +7604,26 @@ msgstr ""
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:4
 msgid "Audio tag editor"
-msgstr ""
+msgstr "Penyunting tanda audio"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:5
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:6
 msgid "Edit tags in your audio files"
-msgstr ""
+msgstr "Sunting tanda di berkas audio Anda"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:3
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:5
 msgid "Quod Libet"
-msgstr ""
+msgstr "Quod Libet"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:4
 msgid "Music Player"
-msgstr ""
+msgstr "Pemutar Musik"
 
 #: data/io.github.quodlibet.QuodLibet.desktop.in:5
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:6
 msgid "Listen to, browse, or edit your audio collection"
-msgstr ""
+msgstr "Dengar, jelajah, atau sunting koleksi audio Anda"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
 msgid ""
@@ -7633,6 +7638,8 @@ msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
+"Format berkas yang didukung termasuk Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
+"MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
 msgid ""
@@ -7641,6 +7648,10 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
+"Quod Libet adalah program pengelola musik. Program ini memberikan beberapa "
+"cara untuk melihat pustaka audio Anda, serta dukungan untuk radio internet "
+"dan umpan audio. Memiliki kemampuan mencari dan menyunting tanda metadata "
+"yang fleksibel."
 
 #~ msgid "New"
 #~ msgstr "Baru"
