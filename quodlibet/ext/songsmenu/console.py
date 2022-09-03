@@ -484,7 +484,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         import inspect
 
         def get_comp(obj, pre):
-            """ get completion item names from `obj`-object or `self.namespace` with prefix `pre`
+            """ get completion item names from `obj`-object or `self.namespace`
+            with prefix `pre`
             """
             dir_result = dir(obj) if obj is not None else self.namespace
 
