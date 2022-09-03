@@ -149,7 +149,7 @@ msgstr "Η _αναζήτηση συμπεριλαμβάνει ονόματα σ�
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:103
-#: quodlibet/ext/songsmenu/cover_download.py:307
+#: quodlibet/ext/songsmenu/cover_download.py:310
 msgid "Options"
 msgstr "Επιλογές"
 
@@ -171,8 +171,8 @@ msgstr "Προβολή Άλμπουμ"
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
-#: quodlibet/browsers/audiofeeds.py:52 quodlibet/browsers/audiofeeds.py:64
-#: quodlibet/browsers/audiofeeds.py:66 quodlibet/browsers/audiofeeds.py:153
+#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
+#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -181,15 +181,15 @@ msgstr "_Κλείσιμο"
 msgid "Unknown"
 msgstr "Άγνωστο"
 
-#: quodlibet/browsers/audiofeeds.py:214
+#: quodlibet/browsers/audiofeeds.py:215
 msgid "New Feed"
 msgstr "Νέα Ροή"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:216
 msgid "Enter the location of an audio feed:"
 msgstr "Εισήγαγε την τοποθεσία μιας ροής ήχου"
 
-#: quodlibet/browsers/audiofeeds.py:216
+#: quodlibet/browsers/audiofeeds.py:217
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
@@ -198,25 +198,25 @@ msgstr "Εισήγαγε την τοποθεσία μιας ροής ήχου"
 msgid "_Add"
 msgstr "_Προσθήκη"
 
-#: quodlibet/browsers/audiofeeds.py:270
+#: quodlibet/browsers/audiofeeds.py:279
 msgid "Audio Feeds"
 msgstr "Ροές Ήχου"
 
-#: quodlibet/browsers/audiofeeds.py:271
+#: quodlibet/browsers/audiofeeds.py:280
 msgid "_Audio Feeds"
 msgstr "_Ροές Ήχου"
 
-#: quodlibet/browsers/audiofeeds.py:374
+#: quodlibet/browsers/audiofeeds.py:382
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "Προσθήκη _Αρχείου…"
 
-#: quodlibet/browsers/audiofeeds.py:441 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "Α_νανέωση"
 
-#: quodlibet/browsers/audiofeeds.py:442
+#: quodlibet/browsers/audiofeeds.py:450
 #: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
@@ -224,11 +224,11 @@ msgstr "Α_νανέωση"
 msgid "_Delete"
 msgstr "_Διαγραφή Αρχείων"
 
-#: quodlibet/browsers/audiofeeds.py:495
+#: quodlibet/browsers/audiofeeds.py:504
 msgid "Unable to add feed"
 msgstr "Αδυναμία προσθήκης ροής"
 
-#: quodlibet/browsers/audiofeeds.py:496
+#: quodlibet/browsers/audiofeeds.py:505
 #, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -237,7 +237,7 @@ msgstr ""
 "Η ροή <b>%s</b> δεν ήταν δυνατό να προστεθεί. Ίσως ο διακομιστής να είναι "
 "εκτός λειτουργίας, ή η τοποθεσία δεν είναι ροή ήχου."
 
-#: quodlibet/browsers/audiofeeds.py:513
+#: quodlibet/browsers/audiofeeds.py:522
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
@@ -655,7 +655,7 @@ msgid "All"
 msgstr "Όλα"
 
 #: quodlibet/browsers/paned/prefs.py:41
-#: quodlibet/ext/songsmenu/cover_download.py:157
+#: quodlibet/ext/songsmenu/cover_download.py:158
 msgid "Small"
 msgstr "Μικρή"
 
@@ -1792,7 +1792,7 @@ msgstr ""
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
-#: quodlibet/ext/songsmenu/cover_download.py:383
+#: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
 #: quodlibet/ext/songsmenu/playlist.py:51
@@ -4125,47 +4125,47 @@ msgid "Download Cover Art"
 msgstr "Λήψη Εξώφυλλων Άλμπουμ"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-msgid "Downloads high-quality album covers using cover plugins."
+msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:158
+#: quodlibet/ext/songsmenu/cover_download.py:159
 #, fuzzy
 msgid "Classic"
 msgstr "Κλασική"
 
-#: quodlibet/ext/songsmenu/cover_download.py:159
+#: quodlibet/ext/songsmenu/cover_download.py:160
 #, fuzzy
 msgid "Large"
 msgstr "Μεγάλη Αίθουσα"
 
-#: quodlibet/ext/songsmenu/cover_download.py:160
+#: quodlibet/ext/songsmenu/cover_download.py:161
 msgid "HD"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:161
+#: quodlibet/ext/songsmenu/cover_download.py:162
 #, fuzzy
 msgid "Full HD"
 msgstr "Πλήρης Μπάσα"
 
-#: quodlibet/ext/songsmenu/cover_download.py:162
+#: quodlibet/ext/songsmenu/cover_download.py:163
 msgid "WQXGA"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:163
+#: quodlibet/ext/songsmenu/cover_download.py:164
 msgid "4K UHD"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:169
+#: quodlibet/ext/songsmenu/cover_download.py:170
 #, fuzzy
 msgid "Cover Art Download"
 msgstr "Λήψη Εξώφυλλων Άλμπουμ"
 
-#: quodlibet/ext/songsmenu/cover_download.py:229
+#: quodlibet/ext/songsmenu/cover_download.py:233
 #, python-format
 msgid "Loading %(source)s - %(dimensions)s…"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:293
+#: quodlibet/ext/songsmenu/cover_download.py:296
 #, python-format
 msgid ""
 "Nothing found for albums:\n"
@@ -4175,32 +4175,32 @@ msgid ""
 "<tt>%(providers)s</tt>"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:296
+#: quodlibet/ext/songsmenu/cover_download.py:299
 #, fuzzy
 msgid "No covers found"
 msgstr "Δεν βρέθηκαν στίχοι"
 
-#: quodlibet/ext/songsmenu/cover_download.py:319
+#: quodlibet/ext/songsmenu/cover_download.py:322
 #, python-brace-format
 msgid "{size} ✕ {size} px"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:332
+#: quodlibet/ext/songsmenu/cover_download.py:335
 #, fuzzy
 msgid "Preview size"
 msgstr "Προεπισκόπηση"
 
-#: quodlibet/ext/songsmenu/cover_download.py:341
+#: quodlibet/ext/songsmenu/cover_download.py:344
 msgid "Save destination"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:372
+#: quodlibet/ext/songsmenu/cover_download.py:375
 msgid ""
 "If not already a JPEG, convert the image to a high-quality JPEG of the same "
 "size"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/cover_download.py:374
+#: quodlibet/ext/songsmenu/cover_download.py:377
 msgid "Save as JPEG"
 msgstr ""
 
