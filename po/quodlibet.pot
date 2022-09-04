@@ -3883,7 +3883,7 @@ msgstr ""
 msgid "Your current working directory is:"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/console.py:617
+#: quodlibet/ext/songsmenu/console.py:618
 msgid "Completion"
 msgstr ""
 
