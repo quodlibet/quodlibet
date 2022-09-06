@@ -120,7 +120,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         Args:
             volume (float): 0.0..1.0
         Returns:
-            float: adjusted volume, can be outside of 0.0..0.1
+            float: adjusted volume, can be outside 0.0..0.1
         """
 
         if self.song and config.getboolean("player", "replaygain"):

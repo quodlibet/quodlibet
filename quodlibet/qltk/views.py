@@ -1,5 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012, 2013 Christoph Reiter
+#                 2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -1163,7 +1164,7 @@ class _TreeViewColumnLabel(Gtk.Label):
     """A label which fades  into the background at the end; for use
     only in TreeViewColumns.
 
-    The hackery with using the parents allocation is needed because
+    The hackery with using the parent's allocation is needed because
     the label always gets the allocation it has requested, ignoring
     the actual width of the column header.
     """

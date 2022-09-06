@@ -15,7 +15,7 @@ re_add_variants(u"Mum") =>
 This is similar to Asymmetric Search:
     http://unicode.org/reports/tr10/#Asymmetric_Search
 
-The goal is to make searching easy using a english keyboard without any
+The goal is to make searching easy using an English keyboard without any
 knowledge of other languages.
 """
 

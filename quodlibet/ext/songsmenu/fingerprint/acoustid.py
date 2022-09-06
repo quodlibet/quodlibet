@@ -117,7 +117,7 @@ class AcoustidSubmissionThread(threading.Thread):
 
             tuples = []
             for key, value in track.items():
-                # this also dismisses 0.. which should be ok here.
+                # this also dismisses 0... which should be ok here.
                 if not value:
                     continue
                 # the postfixes don't have to start at a specific point,

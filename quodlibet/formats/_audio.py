@@ -1050,7 +1050,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         """Remove a value from the given key.
 
         If value is None remove all values for that key, if it exists.
-        If the key or value is not found do nothing.
+        If the key or value is not found, do nothing.
         """
 
         if key not in self:

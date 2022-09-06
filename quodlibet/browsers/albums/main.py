@@ -883,7 +883,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         albums = model.get_albums(paths)
 
         confval = "\n".join((a.str_key for a in albums))
-        # ConfigParser strips a trailing \n so we move it to the front
+        # ConfigParser strips a trailing \n - so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]
         return confval

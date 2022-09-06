@@ -45,7 +45,7 @@ class MyBrainz(SongsMenuPlugin):
         start_processing(albums.pop(0))
 
     @classmethod
-    def PluginPreferences(self, win):
+    def PluginPreferences(cls, win):
         items = [
             ('year_only', _('Only use year for "date" tag')),
             ('albumartist', _('Write "_albumartist" when needed')),

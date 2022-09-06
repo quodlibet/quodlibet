@@ -215,7 +215,7 @@ class ID3File(AudioFile):
         pass
 
     def __validate_name(self, k):
-        """Returns a ascii string or None if the key isn't supported"""
+        """Returns an ascii string or None if the key isn't supported"""
 
         if not k or "=" in k or "~" in k:
             return
