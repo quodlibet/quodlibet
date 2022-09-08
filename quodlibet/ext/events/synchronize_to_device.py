@@ -743,7 +743,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             for name in files:
                 file_path = os.path.join(root, name)
                 if file_path not in export_paths and \
-                        not file_path.__contains__("cover.jpg"):
+                        "cover.jpg" not in file_path:
                     entry = Entry(None)
                     entry.filename = file_path
                     entry.tag = Entry.Tags.PENDING_DELETE
