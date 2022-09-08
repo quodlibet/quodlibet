@@ -1078,10 +1078,9 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         """
         Delete all empty sub-directories from the given path.
         """
-        for root, dirs, __ in os.walk(self.expanded_destination, topdown=False):
+        for root, dirs, files in os.walk(self.expanded_destination, topdown=False):
             for dirname in dirs:
                 dir_path = os.path.realpath(os.path.join(root, dirname))
-                files = os.listdir(dir_path)
                 last_file_is_cover = files and files[0] == 'cover.jpg'
                 if not files or last_file_is_cover:
                     entry = Entry(None)
