@@ -14,8 +14,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-29 19:11+0000\n"
-"Last-Translator: Vik <xasertop@gmail.com>\n"
+"PO-Revision-Date: 2022-09-08 12:15+0000\n"
+"Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
 "Language: ru\n"
@@ -35,7 +35,7 @@ msgstr "_Название"
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:59
 msgid "_People"
-msgstr "_Люди"
+msgstr "_Исполнители"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
@@ -198,7 +198,7 @@ msgstr "Новая лента"
 
 #: quodlibet/browsers/audiofeeds.py:216
 msgid "Enter the location of an audio feed:"
-msgstr "Введите адрес аудио ленты:"
+msgstr "Введите адрес аудио-ленты:"
 
 #: quodlibet/browsers/audiofeeds.py:217
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
@@ -211,11 +211,11 @@ msgstr "_Добавить"
 
 #: quodlibet/browsers/audiofeeds.py:279
 msgid "Audio Feeds"
-msgstr "Аудио ленты"
+msgstr "Аудио-ленты"
 
 #: quodlibet/browsers/audiofeeds.py:280
 msgid "_Audio Feeds"
-msgstr "Аудио _ленты"
+msgstr "Аудио-_ленты"
 
 #: quodlibet/browsers/audiofeeds.py:382
 msgid "_Add Feed…"
@@ -252,8 +252,8 @@ msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
 msgstr ""
-"Используемая система аудиовывода не поддерживает адреса URL. Поддержка аудио "
-"лент отключена."
+"Используемый движок аудио не поддерживает адреса URL. Поддержка лент аудио "
+"отключена."
 
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
@@ -629,7 +629,7 @@ msgstr "Добавить нечего"
 
 #: quodlibet/browsers/iradio.py:848
 msgid "All stations listed are already in your library."
-msgstr "Все перечисленные станции уже в вашей библиотеке."
+msgstr "Все перечисленные станции уже в вашей фонотеке."
 
 #: quodlibet/browsers/iradio.py:869
 msgid "Add to Favorites"
@@ -982,7 +982,7 @@ msgstr "Убрать текущие фильтры просмотра"
 
 #: quodlibet/cli.py:112
 msgid "Refresh and rescan library"
-msgstr "Пересканировать фонотеку"
+msgstr "Обновить и пересканировать фонотеку"
 
 #: quodlibet/cli.py:113
 msgid "List available browsers"
@@ -1042,7 +1042,7 @@ msgstr "Установить громкость"
 
 #: quodlibet/cli.py:130
 msgid "Search your audio library"
-msgstr "Поиск в фонотеке"
+msgstr "Поиск в вашей фонотеке"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
 #: quodlibet/cli.py:146
@@ -1117,7 +1117,7 @@ msgstr "Удалить из очереди файл или запрос"
 
 #: quodlibet/cli.py:147
 msgid "Add a file or directory to the library"
-msgstr "Добавить файл или папку в фонотеку"
+msgstr "Добавить файл или каталог в фонотеку"
 
 #: quodlibet/cli.py:148 quodlibet/util/tags.py:100
 msgid "location"
@@ -1833,13 +1833,13 @@ msgstr "невидимый"
 
 #: quodlibet/ext/events/gajim_status.py:38
 msgid "Gajim Status Message"
-msgstr "Gajim статус"
+msgstr "Статусное сообщение Gajim"
 
 #: quodlibet/ext/events/gajim_status.py:39
 msgid ""
 "Changes Gajim status message according to what you are currently listening "
 "to."
-msgstr "Обновляет ваш статус Gaim в соответствии с воспроизводимым треком."
+msgstr "Обновляет ваш статус Gajim в соответствии с прослушиваемым треком."
 
 #: quodlibet/ext/events/gajim_status.py:114 quodlibet/ext/events/mqtt.py:47
 #: quodlibet/ext/events/telepathy_status.py:75
@@ -1882,7 +1882,7 @@ msgstr "Пауза при отключении наушников"
 msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
-msgstr "Пауза при отключении наушников и снятие с нее при их включении."
+msgstr "Пауза при отключении наушников и снятие с неё при их включении."
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
@@ -2489,7 +2489,7 @@ msgid ""
 "an identical library."
 msgstr ""
 "Делает Logitech Squeezebox зеркалом Quod Libet, при условии, что оба читают "
-"идентичные библиотеки."
+"идентичные фонотеки."
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
@@ -2641,7 +2641,7 @@ msgstr "Изменить сохранённые шаблоны…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:190
 msgid "The structure of the exported filenames, based on their tags"
-msgstr "Структура имен экспортируемых файлов на основе их тегов"
+msgstr "Структура имён экспортируемых файлов на основе их тегов"
 
 #: quodlibet/ext/events/synchronize_to_device.py:196
 msgid "Export pattern:"
@@ -3202,7 +3202,7 @@ msgstr "Обновить"
 
 #: quodlibet/ext/events/waveformseekbar.py:602
 msgid "Waveform Seek Bar"
-msgstr "Панель перемотки Waveform "
+msgstr "Панель перемотки Waveform"
 
 #: quodlibet/ext/events/waveformseekbar.py:605
 msgid "∿ A seekbar in the shape of the waveform of the current song."
@@ -3411,7 +3411,7 @@ msgstr "Управление параметрами аудиопотока."
 #: quodlibet/ext/playlist/export_to_folder.py:98
 #: quodlibet/ext/playlist/export_to_folder.py:147
 msgid "Export Playlist to Folder"
-msgstr "Экспорт файлов плейлиста"
+msgstr "Экспорт плейлиста в папку"
 
 #: quodlibet/ext/playlist/export_to_folder.py:39
 msgid "_Export"
@@ -3427,12 +3427,12 @@ msgstr "Шаблон имени файла:"
 
 #: quodlibet/ext/playlist/export_to_folder.py:100
 msgid "Exports a playlist by copying files to a folder."
-msgstr "Экспорт плейлиста путем копирования файлов в папку."
+msgstr "Экспорт плейлиста путём копирования файлов в папку."
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
 #: quodlibet/ext/songsmenu/playlist.py:132
 msgid "Unable to export playlist"
-msgstr "Не удается экспортировать плейлист"
+msgstr "Не удаётся экспортировать плейлист"
 
 #: quodlibet/ext/playlist/export_to_folder.py:122
 msgid "Ensure you have write access to the destination."
@@ -3497,6 +3497,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
+"Совместно использует конфигурацию с <a href=\"%(plugin_link)s\">расширением "
+"Squeezebox Sync</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3508,7 +3510,7 @@ msgstr "Имя плейлиста (перезапишет существующи
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:97
 msgid "Export to Squeezebox playlist"
-msgstr "Экспорт в Squeezebox плейлист"
+msgstr "Экспорт в плейлист Squeezebox"
 
 #: quodlibet/ext/playlist/remove_duplicates.py:20
 msgid "Remove Playlist Duplicates"
@@ -3578,16 +3580,16 @@ msgid "Queue Only"
 msgstr "Очередь - Только очередь"
 
 #: quodlibet/ext/playorder/queue.py:25
-#, fuzzy
 msgid ""
 "Limits playing of songs to the queue.\n"
 "\n"
 "Select this play order in the main window, then double-clicking any song "
 "will enqueue it instead of playing."
 msgstr ""
-"Будут воспроизведены только треки в очереди.\n"
-"При выборе этого порядка воспроизведения в главном окне - двойной щелчок "
-"будет ставить трек в очередь, а не запускать его воспроизведение."
+"Ограничивает воспроизведение песен очередью.\n"
+"\n"
+"Выберите этот порядок проигрывания в главном окне, затем двойной щелчок по "
+"любой песне поставит её в очередь вместо воспроизведения."
 
 #: quodlibet/ext/playorder/queue.py:29
 msgid "Queue only"
@@ -3612,9 +3614,8 @@ msgstr ""
 "воспроизведения песен."
 
 #: quodlibet/ext/playorder/reverse.py:19
-#, fuzzy
 msgid "Re_verse"
-msgstr "Очередь - Реверс"
+msgstr "Ревер_с"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
@@ -3622,7 +3623,6 @@ msgid "Shuffle by Grouping"
 msgstr "Очередь - По группе"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:33
-#, fuzzy
 msgid ""
 "Adds a shuffle mode that groups songs with a common tag – similar to album "
 "shuffles.\n"
@@ -3630,8 +3630,12 @@ msgid ""
 "This is useful for shuffling multi-movement classical pieces, making sure "
 "all movements play in order before shuffling to the next piece."
 msgstr ""
-"Перетасовка по группе, определенной общим тегом, аналогично перетасовке "
-"альбома. Полезно для раздельного тасования нескольких групп."
+"Добавляет режим перемешивания, в котором песни группируются общим тегом — "
+"аналогично перемешиванию альбомов.\n"
+"\n"
+"Полезно для перетасовки классических пьес, состоящих из нескольких частей, "
+"чтобы убедиться, что все части воспроизводятся по порядку, прежде чем "
+"переходить к следующей пьесе."
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:39
 msgid "Shuffle by grouping"
@@ -3772,6 +3776,12 @@ msgid ""
 "Modules <tt>time</tt> and <tt>random</tt> are also available, and the class "
 "<tt>Random</tt> (==<tt>random.Random</tt>) too."
 msgstr ""
+"Переменная <tt>s</tt> (или <tt>a</tt>) соответствует песне/альбому.\n"
+"\n"
+"<tt>_ts</tt> — метка времени (действительное число) в начале запроса.\n"
+"\n"
+"Также доступны модули <tt>time</tt> и <tt>random</tt>, а также класс "
+"<tt>Random</tt> (==<tt>random.Random</tt>)."
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
@@ -4257,9 +4267,8 @@ msgstr ""
 "раз (аналогично xargs)"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:69
-#, fuzzy
 msgid "reverse"
-msgstr "Очередь - Реверс"
+msgstr "реверс"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:70
 msgid "If set, the argument list will be reversed"
@@ -4365,7 +4374,6 @@ msgid "Edit Playcount"
 msgstr "Теги - Счетчик воспроизведений"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
-#, fuzzy
 msgid ""
 "Edit a song's <tt>~#playcount</tt> and <tt>~#skipcount.</tt>\n"
 "\n"
@@ -4376,14 +4384,14 @@ msgid ""
 "and <tt>~#laststarted</tt> entries will be cleared. However, when setting a "
 "0-play song to a positive play count, no play times will be created."
 msgstr ""
-"Изменение значений ~#playcount и ~#skipcount для треков.\n"
+"Изменить значения <tt>~#playcount</tt> и <tt>~#skipcount</tt> для треков \n"
 "\n"
-"Когда выбрано несколько треков, счетчики будут увеличены.\n"
+"Когда выбрано несколько треков, счётчики будут увеличены, а не заданы.\n"
 "\n"
-"Если для трека значение ~#playcount установлено на 0, то ~#lastplayed и "
-"~#laststarted записи будут очищены. Однако, если для трека с 0 "
-"воспроизведений установлено положительное число, время ~#lastplayed и "
-"~#laststarted не создается."
+"Если для трека значение <tt>~#playcount</tt> установлено на 0, то записи "
+"<tt>~#lastplayed</tt> и <tt>~#laststarted</tt> будут очищены. Однако, если "
+"для трека с 0 прослушиваний установлено положительное число, количество "
+"воспроизведений не создаётся."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
@@ -4398,21 +4406,20 @@ msgid "Edit Embedded Images"
 msgstr "Обложка - Изменение"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Удаление или замена встроенных изображений."
+msgstr "Добавляет, удаляет или заменяет вложенные изображения."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Вложить"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Выберите изображение для вложения в %d трек"
+msgstr[1] "Выберите изображение для вложения в %d трека"
+msgstr[2] "Выберите изображение для вложения в %d треков"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
@@ -4626,7 +4633,7 @@ msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
-"Не удается связаться с устройством iFP. Убедитесь, что устройство включено и "
+"Не удаётся связаться с устройством iFP. Убедитесь, что устройство включено и "
 "подключено, и у вас установлена ifp-line (http://ifp-driver.sf.net)."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
@@ -4662,17 +4669,16 @@ msgid "Export Tags and User Data"
 msgstr "Экспорт тегов и данных пользователя"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:62
-#, fuzzy
 msgid "Export File Stems and User Data"
-msgstr "Теги - Экспорт метаданных"
+msgstr "Экспорт имён файлов без расширения и данных пользователя"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:64
 msgid "Export File Stems and Tags"
-msgstr ""
+msgstr "Экспорт имён файлов без расширения и тегов"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:65
 msgid "Export File Stems, Tags and User Data"
-msgstr ""
+msgstr "Экспорт имён файлов без расширения, тегов и данных пользователя"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:162
 msgid "Import / Export"
@@ -4704,6 +4710,20 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
+"Термин «пользовательские данные трека» включает списки воспроизведения, в "
+"которых находятся выбранные треки, и следующие метаданные:\n"
+"\n"
+"<tt>%s</tt>\n"
+"\n"
+"Имейте в виду, что все, что вы выбрали для экспорта, будет импортировано. "
+"Если вы экспортировали имена файлов без расширения, то при импорте выбранные "
+"файлы будут переименованы.\n"
+"\n"
+"После экспорта альбома вы можете импортировать данные в другую версию "
+"альбома. Порядок и число дорожек могут быть разными. Расширение сопоставляет "
+"экспортированные данные с новыми треками, даже если названия треков немного "
+"отличаются. Автоматическое сопоставление не всегда верно, поэтому следующие "
+"значения сходства лучше не занижать."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
 msgid "User interaction on import"
@@ -4722,6 +4742,8 @@ msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
 msgstr ""
+"Процент, ниже которого пользователю придётся вручную проверять и при "
+"необходимости изменять, сопоставление треков."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
 msgid "Track similarity:"
@@ -4855,11 +4877,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:31
 msgid "Export as M3U / PLS Playlist File"
-msgstr "Экспорт в M3U / PLS плейлист"
+msgstr "Экспорт в файл плейлиста M3U/PLS"
 
 #: quodlibet/ext/songsmenu/playlist.py:32
 msgid "Exports songs to an M3U or PLS playlist."
-msgstr "Экспорт треков в файл M3U или PLS."
+msgstr "Экспорт треков в файл плейлиста M3U или PLS."
 
 #: quodlibet/ext/songsmenu/playlist.py:77
 msgid "Use relative paths"
@@ -5006,13 +5028,13 @@ msgid "Website Search"
 msgstr "Теги - Поиск в интернете"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. <tt>%(pattern-example)s</tt>."
 msgstr ""
-"Поиск на любых выбранных веб-сайтах по любым тегам.\n"
-"Поддерживает шаблоны, например: %(pattern-example)s."
+"Поиск на выбранном вами сайте с использованием любых тегов песен.\n"
+"Поддерживает шаблоны, например, <tt>%(pattern-example)s</tt> ."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5096,7 +5118,7 @@ msgstr "Удаление файлов фонотеки"
 #: quodlibet/library/file.py:569
 #, python-format
 msgid "Adding watches for %s"
-msgstr ""
+msgstr "Добавление наблюдения за %s"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -5424,6 +5446,7 @@ msgstr "Использовать JACK для воспроизведения по
 #: quodlibet/player/gstbe/prefs.py:77
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
 msgstr ""
+"Использует `jackaudiosink` для выхода playbin, если его можно обнаружить"
 
 #: quodlibet/player/gstbe/prefs.py:79
 msgid "Auto-connect to JACK output devices"
@@ -5468,13 +5491,12 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Не удалось найти элемент GStreamer: '{element}'."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:229
-#, fuzzy
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Необходимо настроить расширение QLScrobbler в окне расширений. Иначе "
-"скробблинг треков не будет работать."
+"Пожалуйста, откройте окно Расширений для настройки ListenBrainz. Без этого "
+"прослушивания не будут отправляться."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
@@ -5508,11 +5530,12 @@ msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
+"Список тегов для включения в отправку. Через запятую, при необходимости "
+"используйте двойные кавычки."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:545
-#, fuzzy
 msgid "Songs matching this filter will not be submitted."
-msgstr "Треки, соответствующие этому фильтру, не будут отправлены"
+msgstr "Песни, соответствующие этому фильтру, не будут отправлены."
 
 #: quodlibet/plugins/playlist.py:23
 #, python-format
@@ -5680,8 +5703,7 @@ msgstr "Файлы:"
 msgid ""
 "The selected songs will be removed from the library and their files deleted "
 "from disk."
-msgstr ""
-"Выбранные треки будут удалены из фонотеки, а их файлы будут удалены с диска."
+msgstr "Выбранные треки будут удалены из фонотеки, а их файлы — с диска."
 
 #: quodlibet/qltk/delete.py:72
 msgid "The selected files will be deleted from disk."
@@ -5704,8 +5726,7 @@ msgid ""
 "The selected songs will be removed from the library and their files moved to "
 "the trash."
 msgstr ""
-"Выбранные треки будут удалены из фонотеки, а их файлы будут перемещены в "
-"корзину."
+"Выбранные треки будут удалены из фонотеки, а их файлы переместятся в корзину."
 
 #: quodlibet/qltk/delete.py:115
 msgid "The selected files will be moved to the trash."
@@ -5826,6 +5847,8 @@ msgstr "Показыват_ь многострочные теги"
 #: quodlibet/qltk/edittags.py:539
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
 msgstr ""
+"Показывать здесь потенциально многострочные теги (например, «текст песни») "
+"тоже"
 
 #. Translators: Revert button in the tag editor
 #: quodlibet/qltk/edittags.py:569
@@ -5910,8 +5933,8 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"%(file-name)s был изменён сторонней программой. Сохранение файла без "
-"обновления фонотеки может привести к перезаписи других изменений."
+"%(file-name)s был изменён во время работы программы. Сохранение файла без "
+"обновления фонотеки может привести к перезаписи других изменений песни."
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -6204,6 +6227,9 @@ msgid ""
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
 msgstr ""
+"Убедитесь, что столбцы слева примерно совпадают со столбцами справа. Если "
+"это не так, вы можете изменить порядок здесь (используйте «_» для строк, "
+"которые не должны сопоставляться):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
@@ -6292,11 +6318,11 @@ msgstr "Любое состояние"
 
 #: quodlibet/qltk/pluginwin.py:146
 msgid "Enabled"
-msgstr "Включен"
+msgstr "Включено"
 
 #: quodlibet/qltk/pluginwin.py:147
 msgid "Disabled"
-msgstr "Отключен"
+msgstr "Отключено"
 
 #: quodlibet/qltk/pluginwin.py:153
 msgid "No category"
@@ -6402,7 +6428,7 @@ msgstr "Исполнитель содержит всех _людей"
 
 #: quodlibet/qltk/prefs.py:113 quodlibet/qltk/prefs.py:112
 msgid "Album includes _disc subtitle"
-msgstr "Альбом содержит _раздел диска"
+msgstr "Альбом содержит _номер диска"
 
 #: quodlibet/qltk/prefs.py:115 quodlibet/qltk/prefs.py:114
 msgid "Filename includes _folder"
@@ -6479,7 +6505,7 @@ msgstr "_Предпочитать внедрённую обложку"
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
-msgstr "Предпочитать изображение, внедрённое в аудиофайл, если такое есть "
+msgstr "Предпочитать изображение, внедрённое в аудиофайл, если такое есть"
 
 #: quodlibet/qltk/prefs.py:331 quodlibet/qltk/prefs.py:330
 msgid ""
@@ -6636,9 +6662,9 @@ msgstr "Обновлять оценки"
 
 #: quodlibet/qltk/prefs.py:707 quodlibet/qltk/prefs.py:706
 msgid "Scan library _on start"
-msgstr "Сканировать ф_онотеку при запуске"
+msgstr "Сканировать фонотеку при _запуске"
 
-#: quodlibet/qltk/prefs.py:710
+#: quodlibet/qltk/prefs.py:710 quodlibet/qltk/prefs.py:711
 msgid "_Watch directories for changes"
 msgstr "Следить за изменени_ями в каталогах"
 
@@ -6646,24 +6672,27 @@ msgstr "Следить за изменени_ями в каталогах"
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Наблюдать за каталогами фонотеки на предмет добавления, удаления и "
+"переименования внешних файлов."
 
 #: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
 #: quodlibet/qltk/prefs.py:721
 msgid "_Scan Library"
-msgstr "_Сканировать"
+msgstr "_Сканировать фонотеку"
 
 #: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
 #: quodlibet/qltk/prefs.py:723
 msgid "Check for changes in your library"
-msgstr "Проверить наличие изменений в фонотеке"
+msgstr "Проверить наличие изменений в вашей фонотеке"
 
 #: quodlibet/qltk/prefs.py:729 quodlibet/qltk/prefs.py:728
 msgid "Re_build Library"
-msgstr "Пере_загрузить фонотеку"
+msgstr "_Пересоздать фонотеку"
 
 #: quodlibet/qltk/prefs.py:732 quodlibet/qltk/prefs.py:731
 msgid "Reload all songs in your library. This can take a long time."
-msgstr "Перезагрузить все треки в фонотеке. Это может занять много времени."
+msgstr ""
+"Перезагрузить все треки в вашей фонотеке. Это может занять много времени."
 
 #: quodlibet/qltk/prefs.py:744 quodlibet/qltk/prefs.py:743
 msgid "Scan Directories"
@@ -6703,7 +6732,7 @@ msgstr "Эфемерный"
 
 #: quodlibet/qltk/queue.py:151
 msgid "Remove songs from the queue after playing them"
-msgstr "Удалять треки из очереди после их воспроизведения."
+msgstr "Удалять треки из очереди после их воспроизведения"
 
 #: quodlibet/qltk/queue.py:158
 msgid "Persistent"
@@ -6711,7 +6740,7 @@ msgstr "Настойчивый"
 
 #: quodlibet/qltk/queue.py:159
 msgid "Keep songs in the queue after playing them"
-msgstr "Оставлять треки в очереди после их воспроизведения."
+msgstr "Оставлять треки в очереди после их воспроизведения"
 
 #: quodlibet/qltk/queue.py:167
 msgid "Mode"
@@ -6731,7 +6760,7 @@ msgstr[2] "%(count)d треков (%(time)s)"
 
 #: quodlibet/qltk/quodlibetwindow.py:198
 msgid "_Browse Library"
-msgstr "Про_смотр фонотеки"
+msgstr "Обзор фонотек_и"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
 msgid "Toggle queue visibility"
@@ -6743,11 +6772,11 @@ msgstr "Ошибка воспроизведения"
 
 #: quodlibet/qltk/quodlibetwindow.py:384
 msgid "Set up library directories?"
-msgstr "Выбрать расположение фонотеки?"
+msgstr "Настроить каталоги фонотеки?"
 
 #: quodlibet/qltk/quodlibetwindow.py:385
 msgid "You don't have any music library set up. Would you like to do that now?"
-msgstr "Расположение фонотеки ещё не выбрано. Сделать это сейчас?"
+msgstr "У вас нет настроенной фонотеки. Хотите сделать это сейчас?"
 
 #: quodlibet/qltk/quodlibetwindow.py:391
 msgid "_Not Now"
@@ -6792,7 +6821,7 @@ msgstr "_Управление"
 
 #: quodlibet/qltk/quodlibetwindow.py:881
 msgid "_Help"
-msgstr "Помо_щь"
+msgstr "_Справка"
 
 #: quodlibet/qltk/quodlibetwindow.py:887
 msgid "_Add a Folder…"
@@ -6875,9 +6904,9 @@ msgid "_Remove Rating"
 msgstr "_Удалить оценку"
 
 #: quodlibet/qltk/ratingsmenu.py:32
-#, fuzzy, python-format
+#, python-format
 msgid "The rating of all selected songs will be changed to %s"
-msgstr "Оценка всех треков будет изменена на '%s'."
+msgstr "Оценка всех треков будет изменена на «%s»"
 
 #: quodlibet/qltk/ratingsmenu.py:34
 msgid "Change _Rating"
@@ -6998,17 +7027,16 @@ msgstr ""
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
-msgstr "Треки, расположенные в этих папках, будут добавлены в фонотеку"
+msgstr "Треки из этих папок будут добавлены в фонотеку во время её обновления"
 
 #: quodlibet/qltk/scanbox.py:64
 msgid "The new directory will be scanned after adding"
 msgstr "Новый каталог будет отсканирован после добавления"
 
 #: quodlibet/qltk/scanbox.py:67
-#, fuzzy
 msgid ""
 "All songs in the selected directories will also be removed from the library"
-msgstr "Выбранные треки будут удалены из фонотеки."
+msgstr "Все песни в выбранных каталогах также будут удалены из фонотеки"
 
 #: quodlibet/qltk/scanbox.py:70
 msgid "_Move"
@@ -7019,6 +7047,8 @@ msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
 msgstr ""
+"Переместить корень сканирования (но не файлы) с миграцией метаданных всех "
+"включённых треков."
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
@@ -7030,12 +7060,11 @@ msgid "Remove {n} library paths and their tracks?"
 msgstr "Удалить {n} путей фонотеки и их треки?"
 
 #: quodlibet/qltk/scanbox.py:116
-#, fuzzy
 msgid "Remove library path?"
 msgid_plural "Remove library paths?"
-msgstr[0] "Путь к фонотеке:"
-msgstr[1] "Путь к фонотеке:"
-msgstr[2] "Путь к фонотеке:"
+msgstr[0] "Удалить путь фонотеки?"
+msgstr[1] "Удалить пути фонотеки?"
+msgstr[2] "Удалить пути фонотеки?"
 
 #: quodlibet/qltk/scanbox.py:117
 msgid "Remove"
@@ -7062,6 +7091,13 @@ msgid ""
 "The audio files themselves are not moved by this.\n"
 "Nonetheless, a backup is recommended (including the Quod Libet 'songs' file)."
 msgstr ""
+"Это приведёт к перемещению метаданных QL:\n"
+"\n"
+"{old!r} → {new!r}\n"
+"\n"
+"Сами аудиофайлы при этом не перемещаются.\n"
+"Тем не менее, рекомендуется сделать резервную копию (включая файл Quod Libet "
+"«songs»)."
 
 #: quodlibet/qltk/scanbox.py:155
 msgid "Move scan root {dir!r}?"
@@ -7081,7 +7117,7 @@ msgstr "Изменить сохранённые запросы…"
 
 #: quodlibet/qltk/searchbar.py:83
 msgid "Search your library, using free text or QL queries"
-msgstr "Поиск по фонотеке с помощью свободного текста или запросов QL"
+msgstr "Поиск в вашей фонотеке с помощью свободного текста или запросов QL"
 
 #: quodlibet/qltk/searchbar.py:145
 msgid "Search after _typing"
@@ -7206,7 +7242,7 @@ msgstr "_Альбом"
 
 #: quodlibet/qltk/songlist.py:1157
 msgid "_People Headers"
-msgstr "_Люди"
+msgstr "_Заголовки исполнителей"
 
 #: quodlibet/qltk/songlist.py:1158
 msgid "_Date Headers"
@@ -7290,9 +7326,9 @@ msgstr[2] "_Показать %(total)d файлов"
 #, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "_Загрузить %(total)d файл…"
+msgstr[1] "_Загрузить %(total)d файла…"
+msgstr[2] "_Загрузить %(total)d файлов…"
 
 #: quodlibet/qltk/songsmenu.py:443
 msgid "successful"
@@ -7307,12 +7343,11 @@ msgid "Downloads complete"
 msgstr "Загрузки завершены"
 
 #: quodlibet/qltk/songsmenu.py:453
-#, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
-msgstr[0] "Обложки - Загрузка"
-msgstr[1] "Обложки - Загрузка"
-msgstr[2] "Обложки - Загрузка"
+msgstr[0] "Загрузить {name!r} в"
+msgstr[1] "Загрузить {total} файла в"
+msgstr[2] "Загрузить {total} файлов в"
 
 #: quodlibet/qltk/songsmenu.py:459
 msgid "Download here"
@@ -7481,7 +7516,7 @@ msgstr "Показывает обложки, внедрённые в аудио�
 
 #: quodlibet/util/cover/built_in.py:61
 msgid "Filesystem cover"
-msgstr "Обложки из отдельных файлов"
+msgstr "Обложка из отдельного файла"
 
 #: quodlibet/util/cover/built_in.py:62
 msgid ""
@@ -7596,7 +7631,7 @@ msgstr[2] "%d лет"
 #: quodlibet/util/__init__.py:516
 msgctxt "check"
 msgid "titlecase?"
-msgstr "titlecase?"
+msgstr "регистр_заголовка?"
 
 #: quodlibet/util/massagers.py:115
 msgid ""
@@ -7784,7 +7819,7 @@ msgstr "BPM"
 #. Translators: This used to be called "part".
 #: quodlibet/util/tags.py:112 quodlibet/util/tags.py:113
 msgid "disc subtitle"
-msgstr "раздел диска"
+msgstr "номер диска"
 
 #: quodlibet/util/tags.py:114 quodlibet/util/tags.py:152
 msgid "disc"
@@ -7911,7 +7946,7 @@ msgstr "точка монтирования"
 
 #: quodlibet/util/tags.py:166
 msgid "people"
-msgstr "люди"
+msgstr "исполнители"
 
 #: quodlibet/util/tags.py:168
 msgid "year"
@@ -8010,9 +8045,9 @@ msgid ""
 "capabilities."
 msgstr ""
 "Quod Libet — это программа управления музыкой. Предоставляет несколько "
-"различных способов просмотра вашей аудиотеки, а также поддержку интернет-"
-"радио и аудиопотоков. Имеет чрезвычайно гибкие возможности редактирования и "
-"поиска тегов метаданных."
+"различных способов просмотра вашей фонотеки, а также поддержку интернет-"
+"радио и аудиопотоков. Содержит крайне гибкие возможности правки и поиска "
+"тегов метаданных."
 
 #~ msgid "New"
 #~ msgstr "Создать"
