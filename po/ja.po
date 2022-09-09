@@ -913,7 +913,7 @@ msgstr "一時停止"
 
 #: quodlibet/cli.py:100
 msgid "Toggle play/pause mode"
-msgstr "再生/一時停止の切替"
+msgstr "再生/一時停止のトグル"
 
 #: quodlibet/cli.py:101
 msgid "Stop playback"
@@ -949,7 +949,7 @@ msgstr "メインウィンドウを表示する"
 
 #: quodlibet/cli.py:109
 msgid "Toggle main window visibility"
-msgstr "メインウィンドウの表示/非表示の切替"
+msgstr "メインウィンドウ表示のトグル"
 
 #: quodlibet/cli.py:110
 msgid "Focus the running player"
@@ -1001,7 +1001,7 @@ msgstr "[+|-][HH:]MM:SS"
 
 #: quodlibet/cli.py:125
 msgid "Set or toggle shuffle mode"
-msgstr "シャッフルモードを設定または切替"
+msgstr "シャッフルモードのオフ/オンまたはトグル"
 
 #: quodlibet/cli.py:126
 msgid "Set shuffle mode type"
@@ -1009,7 +1009,7 @@ msgstr "シャッフルモードのタイプを設定"
 
 #: quodlibet/cli.py:127
 msgid "Turn repeat off, on, or toggle it"
-msgstr "リピートのオン/オフまたは切替"
+msgstr "リピートモードのオフ/オンまたはトグル"
 
 #: quodlibet/cli.py:128
 msgid "Set repeat mode type"
@@ -3017,7 +3017,7 @@ msgstr "トグルメニューバー"
 
 #: quodlibet/ext/events/toggle_menu.py:19
 msgid "Toggle the menu bar by pressing the Alt key."
-msgstr "Alt キーを押してメニューバーを切り替えます。"
+msgstr "Altキーを押すとメニューバー表示をトグルします。"
 
 #: quodlibet/ext/events/trayicon/appindicator.py:76
 #: quodlibet/ext/events/trayicon/prefs.py:106
@@ -6197,11 +6197,11 @@ msgstr "%d個のタスクを実行中"
 
 #: quodlibet/qltk/playorder.py:256
 msgid "Toggle shuffle mode"
-msgstr "シャッフルモードの切替"
+msgstr "シャッフルモードのトグル"
 
 #: quodlibet/qltk/playorder.py:272
 msgid "Toggle repeat mode"
-msgstr "リピートモードの切替"
+msgstr "リピートモードのトグル"
 
 #: quodlibet/qltk/pluginwin.py:38
 msgid "Events"
@@ -6668,7 +6668,7 @@ msgstr "ライブラリの参照(_B)"
 
 #: quodlibet/qltk/quodlibetwindow.py:348
 msgid "Toggle queue visibility"
-msgstr "キューの表示/非表示の切替"
+msgstr "キュー表示のトグル"
 
 #: quodlibet/qltk/quodlibetwindow.py:376
 msgid "Playback Error"
