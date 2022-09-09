@@ -113,7 +113,7 @@ msgstr "Lagu tidak di album"
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
-msgstr[0] "%d trek"
+msgstr[0] "%d trek lagu"
 
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
@@ -1309,8 +1309,9 @@ msgstr "Ukuran _Sampul:"
 
 #: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
 #: quodlibet/qltk/prefs.py:275
+#, fuzzy
 msgid "Display"
-msgstr ""
+msgstr "Tampilan"
 
 #: quodlibet/ext/events/animosd/prefs.py:208
 msgid "_Font:"
@@ -1512,7 +1513,7 @@ msgstr "Strategi _pembaruan:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:760
+#: quodlibet/qltk/prefs.py:760 quodlibet/qltk/prefs.py:761
 msgid "Preferences"
 msgstr "Preferensi"
 
@@ -1650,8 +1651,9 @@ msgid "Headphones"
 msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:53
+#, fuzzy
 msgid "Soft Rock"
-msgstr ""
+msgstr "Rock Pelan"
 
 #: quodlibet/ext/events/equalizer.py:55
 msgid "Full Treble"
@@ -1857,10 +1859,13 @@ msgid "Internet Radio Log"
 msgstr "Log Radio Internet"
 
 #: quodlibet/ext/events/iradiolog.py:18
+#, fuzzy
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
 msgstr ""
+"Rekam 10 lagu terakhir yang diputar di stasiun radio, dan cantumkan mereka "
+"di menu konteks pencarian"
 
 #: quodlibet/ext/events/jep118.py:30
 msgid "JEP-118"
@@ -2262,7 +2267,7 @@ msgstr "Diputar lebih sering"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Skipped more often"
-msgstr "Diloncat lebih sering"
+msgstr "Dilanjutkan lebih sering"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Played more recently"
@@ -3939,8 +3944,9 @@ msgid "Large"
 msgstr "Besar"
 
 #: quodlibet/ext/songsmenu/cover_download.py:161
+#, fuzzy
 msgid "HD"
-msgstr ""
+msgstr "HD"
 
 #: quodlibet/ext/songsmenu/cover_download.py:162
 msgid "Full HD"
@@ -3951,8 +3957,9 @@ msgid "WQXGA"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:164
+#, fuzzy
 msgid "4K UHD"
-msgstr ""
+msgstr "4K UHD"
 
 #: quodlibet/ext/songsmenu/cover_download.py:170
 msgid "Cover Art Download"
@@ -3987,8 +3994,9 @@ msgid "Preview size"
 msgstr "Ukuran pratinjau"
 
 #: quodlibet/ext/songsmenu/cover_download.py:344
+#, fuzzy
 msgid "Save destination"
-msgstr ""
+msgstr "Tujuan penyimpanan"
 
 #: quodlibet/ext/songsmenu/cover_download.py:375
 msgid ""
@@ -4136,8 +4144,9 @@ msgid "_Group duplicates by:"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/duplicates.py:403
+#, fuzzy
 msgid "Duplicate Key"
-msgstr ""
+msgstr "Kunci Duplikat"
 
 #: quodlibet/ext/songsmenu/duplicates.py:408
 msgid "Remove _Whitespace"
@@ -4545,8 +4554,9 @@ msgid "Artist(s)"
 msgstr "Artis"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
+#, fuzzy
 msgid "End of path"
-msgstr ""
+msgstr "Akhir jalur"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
 msgid "Match Albums"
