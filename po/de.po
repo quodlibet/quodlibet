@@ -168,7 +168,7 @@ msgstr "Alben-Anzeige"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:785
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:784
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "S_chließen"
@@ -323,7 +323,7 @@ msgstr "Einstellungen der Albensammlung"
 #: quodlibet/browsers/paned/prefs.py:247
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:131
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
 msgstr "_Anwenden"
@@ -1336,7 +1336,7 @@ msgstr "_Position:"
 msgid "_Cover size:"
 msgstr "_Covergröße:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:275
 msgid "Display"
 msgstr "Anzeige"
 
@@ -1373,7 +1373,7 @@ msgid "_Fill:"
 msgstr "_Füllung:"
 
 #: quodlibet/ext/events/animosd/prefs.py:250
-#: quodlibet/ext/events/synchronizedlyrics.py:64
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Farben"
 
@@ -1536,7 +1536,7 @@ msgstr ""
 "%s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:580
+#: quodlibet/qltk/prefs.py:579
 msgid "Save ratings and play _counts in tags"
 msgstr "Bewertungen und Wiedergabe_anzahl in Metadaten speichern"
 
@@ -1566,7 +1566,7 @@ msgstr "_Aktualisierungsstrategie:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:761
+#: quodlibet/qltk/prefs.py:760
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -1959,7 +1959,7 @@ msgstr "Die Sprache der Benutzeroberfläche ändern."
 msgid "System Default"
 msgstr "Systemvorgabe"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:709
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:708
 msgid "A restart is required for any changes to take effect"
 msgstr "Ein Neustart ist notwendig, damit Änderungen wirksam werden"
 
@@ -2981,19 +2981,19 @@ msgstr ""
 "Zeigt Liedtexte aus einer .lrc-Datei mit demselben (oder einem ähnlichen) "
 "Namen wie der abgespielte Titel synchron an."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:67
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "Text:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:77
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "Hintergrund:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:88
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Schrift"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:91
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "Größe (px):"
 
@@ -4156,7 +4156,7 @@ msgstr "Sie können standardmäßig auf die folgenden Objekte zugreifen:"
 msgid "Your current working directory is:"
 msgstr "Ihr aktuelles Arbeitsverzeichnis ist:"
 
-#: quodlibet/ext/songsmenu/console.py:617
+#: quodlibet/ext/songsmenu/console.py:618
 msgid "Completion"
 msgstr "Vervollständigung"
 
@@ -5148,7 +5148,7 @@ msgstr "Feld »%s« wurde nicht gefunden."
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:704 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Bibliothek"
 
@@ -6312,8 +6312,8 @@ msgstr ""
 "Die Metadaten wurden verändert, aber noch nicht gespeichert. Sollen die "
 "Änderungen gespeichert oder verworfen werden?"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
-#: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:640
+#: quodlibet/qltk/prefs.py:647 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "Zu_rücksetzen"
@@ -6478,96 +6478,96 @@ msgstr "B_earbeiten …"
 msgid "Add or remove additional column headers"
 msgstr "Weitere Listenspalten hinzufügen oder entfernen"
 
-#: quodlibet/qltk/prefs.py:106
+#: quodlibet/qltk/prefs.py:105
 msgid "Visible Columns"
 msgstr "Anzuzeigende Listenspalten"
 
-#: quodlibet/qltk/prefs.py:109
+#: quodlibet/qltk/prefs.py:108
 msgid "Title includes _version"
 msgstr "Titel mit _Version"
 
-#: quodlibet/qltk/prefs.py:111
+#: quodlibet/qltk/prefs.py:110
 msgid "Artist includes all _people"
 msgstr "Künstler mit allen _Mitwirkenden"
 
-#: quodlibet/qltk/prefs.py:113
+#: quodlibet/qltk/prefs.py:112
 msgid "Album includes _disc subtitle"
 msgstr "Albu_m mit CD-Untertitel"
 
-#: quodlibet/qltk/prefs.py:115
+#: quodlibet/qltk/prefs.py:114
 msgid "Filename includes _folder"
 msgstr "Dateiname mit _Pfad"
 
-#: quodlibet/qltk/prefs.py:128
+#: quodlibet/qltk/prefs.py:127
 msgid "Column Preferences"
 msgstr "Einstellungen für Listenspalten"
 
-#: quodlibet/qltk/prefs.py:134
+#: quodlibet/qltk/prefs.py:133
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Aktuelle Konfiguration auf Titelliste anwenden. Neue Listenspalten werden am "
 "Ende hinzugefügt"
 
-#: quodlibet/qltk/prefs.py:149 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:148 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Titelliste"
 
-#: quodlibet/qltk/prefs.py:232
+#: quodlibet/qltk/prefs.py:231
 msgid "Edit Columns"
 msgstr "Listenspalten bearbeiten"
 
-#: quodlibet/qltk/prefs.py:269
+#: quodlibet/qltk/prefs.py:268
 msgid "Duration totals"
 msgstr "Gesamtdauer"
 
-#: quodlibet/qltk/prefs.py:281
+#: quodlibet/qltk/prefs.py:280
 msgid "_Global filter:"
 msgstr "_Globaler Filter:"
 
-#: quodlibet/qltk/prefs.py:287
+#: quodlibet/qltk/prefs.py:286
 msgid "Apply this query in addition to all others"
 msgstr "Diese Abfrage zusätzlich zu allen anderen anwenden"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:293
+#: quodlibet/qltk/prefs.py:292
 msgctxt "heading"
 msgid "Search"
 msgstr "Suche"
 
-#: quodlibet/qltk/prefs.py:297 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:296 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Browser"
 
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:302
 msgid "Confirm _multiple ratings"
 msgstr "Gleichzeitiges Bewerten _mehrerer Titel bestätigen"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:304
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 "Eine Bestätigung anfordern, bevor die Bewertungen mehrerer Titel "
 "gleichzeitig geändert werden"
 
-#: quodlibet/qltk/prefs.py:308
+#: quodlibet/qltk/prefs.py:307
 msgid "Enable _one-click ratings"
 msgstr "Bewertungen mit _einfachem Klick zulassen"
 
-#: quodlibet/qltk/prefs.py:310
+#: quodlibet/qltk/prefs.py:309
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Das Ändern von Bewertungen durch Klicken in der Spalte »Bewertung« zulassen"
 
-#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:682
+#: quodlibet/qltk/prefs.py:315 quodlibet/qltk/prefs.py:681
 msgid "Ratings"
 msgstr "Bewertungen"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:322
+#: quodlibet/qltk/prefs.py:321
 msgid "Prefer _embedded art"
 msgstr "_Eingebettete Coverbilder bevorzugen"
 
-#: quodlibet/qltk/prefs.py:324
+#: quodlibet/qltk/prefs.py:323
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6575,7 +6575,7 @@ msgstr ""
 "Falls verfügbar, immer die in Audiodateien eingebetteten Coverbilder "
 "verwenden"
 
-#: quodlibet/qltk/prefs.py:331
+#: quodlibet/qltk/prefs.py:330
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
@@ -6583,23 +6583,23 @@ msgstr ""
 "Die zu verwendenden Coverbild-Dateien, sofern vorhanden. Mehrere Einträge "
 "können mit Kommata getrennt werden. Unterstützt Platzhalter."
 
-#: quodlibet/qltk/prefs.py:335
+#: quodlibet/qltk/prefs.py:334
 msgid "_Preferred image filename(s):"
 msgstr "_Bevorzugte Dateinamen für Coverbilder:"
 
-#: quodlibet/qltk/prefs.py:350
+#: quodlibet/qltk/prefs.py:349
 msgid "Album Art"
 msgstr "Alben-Cover"
 
-#: quodlibet/qltk/prefs.py:371
+#: quodlibet/qltk/prefs.py:370
 msgid "Playback"
 msgstr "Wiedergabe"
 
-#: quodlibet/qltk/prefs.py:376
+#: quodlibet/qltk/prefs.py:375
 msgid "Output Configuration"
 msgstr "Konfiguration der Tonausgabe"
 
-#: quodlibet/qltk/prefs.py:387
+#: quodlibet/qltk/prefs.py:386
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -6607,53 +6607,53 @@ msgstr ""
 "Lautstärke um diesen Wert skalieren, falls ein Titel keine ReplayGain-"
 "Informationen bietet"
 
-#: quodlibet/qltk/prefs.py:390
+#: quodlibet/qltk/prefs.py:389
 msgid "_Fall-back gain (dB):"
 msgstr "_Standardverstärkung (dB):"
 
-#: quodlibet/qltk/prefs.py:401
+#: quodlibet/qltk/prefs.py:400
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Lautstärke aller Titel um diesen Wert skalieren, solange dadurch keine "
 "Übersteuerung auftritt"
 
-#: quodlibet/qltk/prefs.py:404
+#: quodlibet/qltk/prefs.py:403
 msgid "_Pre-amp gain (dB):"
 msgstr "_Vorverstärkung (dB):"
 
-#: quodlibet/qltk/prefs.py:409
+#: quodlibet/qltk/prefs.py:408
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "ReplayGain-Lautstärkeanpassung _aktivieren"
 
-#: quodlibet/qltk/prefs.py:434
+#: quodlibet/qltk/prefs.py:433
 msgid "Replay Gain Volume Adjustment"
 msgstr "ReplayGain-Lautstärkeanpassung"
 
-#: quodlibet/qltk/prefs.py:441
+#: quodlibet/qltk/prefs.py:440
 msgid "_Continue playback on startup"
 msgstr "Wiedergabe beim Programmstart _fortsetzen"
 
-#: quodlibet/qltk/prefs.py:443
+#: quodlibet/qltk/prefs.py:442
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 "Wird beim Beenden Musik wiedergegeben, die Wiedergabe beim nächsten "
 "Programmstart automatisch fortsetzen"
 
-#: quodlibet/qltk/prefs.py:447
+#: quodlibet/qltk/prefs.py:446
 msgid "Startup"
 msgstr "Start"
 
-#: quodlibet/qltk/prefs.py:474
+#: quodlibet/qltk/prefs.py:473
 msgid "_Default rating:"
 msgstr "_Standardbewertung:"
 
-#: quodlibet/qltk/prefs.py:517
+#: quodlibet/qltk/prefs.py:516
 msgid "Rating _scale:"
 msgstr "Bewertungs_skala:"
 
-#: quodlibet/qltk/prefs.py:566
+#: quodlibet/qltk/prefs.py:565
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6665,31 +6665,31 @@ msgstr ""
 "Alben mit wenigen Titeln schwächere Bewertungen erhalten. Eine Änderung "
 "dieses Wertes bewirkt eine Neubewertung aller Alben."
 
-#: quodlibet/qltk/prefs.py:571
+#: quodlibet/qltk/prefs.py:570
 msgid "_Bayesian averaging amount:"
 msgstr "_Bayesscher Mittelwert:"
 
-#: quodlibet/qltk/prefs.py:588
+#: quodlibet/qltk/prefs.py:587
 msgid "_Email:"
 msgstr "_E-Mail:"
 
-#: quodlibet/qltk/prefs.py:590
+#: quodlibet/qltk/prefs.py:589
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "Bewertungen und Angaben zur Wiedergabeanzahl werden zu dieser E-Mail-Adresse "
 "in den Metadaten gespeichert"
 
-#: quodlibet/qltk/prefs.py:610
+#: quodlibet/qltk/prefs.py:609
 msgid "Auto-save tag changes"
 msgstr "Änderungen an Metadaten automatisch speichern"
 
-#: quodlibet/qltk/prefs.py:612
+#: quodlibet/qltk/prefs.py:611
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 "Änderungen an den Metadaten beim Bearbeiten mehrerer Dateien ohne Rückfrage "
 "speichern"
 
-#: quodlibet/qltk/prefs.py:621
+#: quodlibet/qltk/prefs.py:620
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
@@ -6698,7 +6698,7 @@ msgstr ""
 "verwendet werden. Einträge dieser Liste werden durch Leerzeichen voneinander "
 "getrennt."
 
-#: quodlibet/qltk/prefs.py:631
+#: quodlibet/qltk/prefs.py:630
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
@@ -6708,35 +6708,35 @@ msgstr ""
 "Editor verwendet werden. Einträge dieser Liste werden durch Leerzeichen "
 "voneinander getrennt, und jeder Eintrag muss aus exakt zwei Zeichen bestehen."
 
-#: quodlibet/qltk/prefs.py:644
+#: quodlibet/qltk/prefs.py:643
 msgid "Split _tag on:"
 msgstr "Trenne _Felder nach:"
 
-#: quodlibet/qltk/prefs.py:651
+#: quodlibet/qltk/prefs.py:650
 msgid "Split _subtag on:"
 msgstr "Trenne _Unterfelder nach:"
 
-#: quodlibet/qltk/prefs.py:676
+#: quodlibet/qltk/prefs.py:675
 msgid "Tags"
 msgstr "Metadaten"
 
-#: quodlibet/qltk/prefs.py:679
+#: quodlibet/qltk/prefs.py:678
 msgid "Tag Editing"
 msgstr "Metadaten-Bearbeitung"
 
-#: quodlibet/qltk/prefs.py:697
+#: quodlibet/qltk/prefs.py:696
 msgid "Updating for new ratings"
 msgstr "Aktualisiere Bewertungen"
 
-#: quodlibet/qltk/prefs.py:707
+#: quodlibet/qltk/prefs.py:706
 msgid "Scan library _on start"
 msgstr "Bibliothek beim _Programmstart aktualisieren"
 
-#: quodlibet/qltk/prefs.py:711
+#: quodlibet/qltk/prefs.py:710
 msgid "_Watch directories for changes"
 msgstr "Verzeichnisse auf Änderungen über_wachen"
 
-#: quodlibet/qltk/prefs.py:712
+#: quodlibet/qltk/prefs.py:711
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
@@ -6744,29 +6744,29 @@ msgstr ""
 "überwachen."
 
 # »Einlesen« würde nach einem aufwendigeren Vorgang klingen
-#: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "Bibliothek aktuali_sieren"
 
-#: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "Bibliothek auf Änderungen überprüfen"
 
-#: quodlibet/qltk/prefs.py:729
+#: quodlibet/qltk/prefs.py:728
 msgid "Re_build Library"
 msgstr "Bibliothek neu auf_bauen"
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:731
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
 "Alle Titel in der Bibliothek neu laden. Dieser Vorgang dauert möglicherweise "
 "lange."
 
-#: quodlibet/qltk/prefs.py:744
+#: quodlibet/qltk/prefs.py:743
 msgid "Scan Directories"
 msgstr "Ordner einlesen"
 
-#: quodlibet/qltk/prefs.py:750
+#: quodlibet/qltk/prefs.py:749
 msgid "Hidden Songs"
 msgstr "Ausgeblendete Titel"
 
@@ -7521,7 +7521,7 @@ msgstr "Abspielen/Pause"
 msgid "Previous"
 msgstr "Vorheriger"
 
-#: quodlibet/qltk/views.py:934
+#: quodlibet/qltk/views.py:935
 #, python-format
 msgid "and %d more…"
 msgstr "und %d weitere …"
