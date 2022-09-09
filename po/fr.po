@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-09 14:15+0000\n"
+"PO-Revision-Date: 2022-09-09 20:18+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.14.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -1242,7 +1242,7 @@ msgstr "Transcoder"
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
 msgstr ""
-"Corriger dans l'éditeur d'étiquettes les étiquettes comportant des erreurs "
+"Corriger dans l'éditeur d'étiquettes les balises comportant des erreurs "
 "d'encodage."
 
 #: quodlibet/ext/editing/iconv.py:33
@@ -1439,9 +1439,9 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
-"Chaque fois qu'un morceau a été joué mais pas sauté, le plugin écrira les "
-"tags dans le fichier. Le nombre de sauts n'est pas du tout stocké dans les "
-"fichiers, ce qui évite les écritures inutiles."
+"Chaque fois qu'un morceau a été joué mais pas sauté, le greffon écrira les "
+"étiquettes dans le fichier. Le nombre de sauts n'est pas du tout stocké dans "
+"les fichiers, ce qui évite les écritures inutiles."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
@@ -1477,14 +1477,14 @@ msgid ""
 msgstr ""
 "Quand un morceau a été joué ou sauté, l'album de ce morceau sera vérifié. Si "
 "tous les morceaux de l'album ont été évalués et qu'au moins l'un d'entre eux "
-"n'a pas d'évaluation ou de compte de lecture dans son fichier, le plugin "
+"n'a pas d'évaluation ou de compte de lecture dans son fichier, le greffon "
 "écrira les étiquettes dans les fichiers des morceaux.\n"
 "\n"
 "Utilisez cette méthode pour éviter les mises à jour constantes des fichiers, "
 "mais sachez qu'une fois qu'un album a été mis à jour, vous devrez utiliser "
-"le plugin \" Mise à jour des étiquettes dans les fichiers \" chaque fois que "
-"vous voudrez que les évaluations et les comptes de lecture modifiés soient "
-"écrits dans les fichiers."
+"le greffon \" Mise à jour des étiquettes dans les fichiers \" chaque fois "
+"que vous voudrez que les évaluations et les comptes de lecture modifiés "
+"soient écrits dans les fichiers."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:57
 #, python-format
@@ -1495,9 +1495,9 @@ msgid ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 msgstr ""
-"Lorsque le plugin écrit les étiquettes d'un album, il met d'abord le compte "
+"Lorsque le greffon écrit les étiquettes d'un album, il met d'abord le compte "
 "de lecture des morceaux qui sont à zéro à un.\n"
-"Parfois, vous savez déjà que vous n'aimez pas une chanson, donc le mettre à "
+"Parfois, vous savez déjà que vous n'aimez pas un morceau, donc le mettre à "
 "un lors de la sauvegarde peut être utile plus tard, lors de la recherche "
 "d'albums que vous avez entièrement écoutés (%s)."
 
@@ -1528,7 +1528,7 @@ msgid ""
 "%s"
 msgstr ""
 "Le paramètre suivant a été activé car il est nécessaire pour le "
-"fonctionnement de ce plugin :\n"
+"fonctionnement de ce greffon :\n"
 "\n"
 "%s"
 
@@ -2224,7 +2224,7 @@ msgid ""
 "will not be submitted."
 msgstr ""
 "Veuillez visiter la fenêtre Greffons pour configurer QLScrobbler. D'ici là, "
-"les chansons ne seront pas soumises."
+"les morceaux ne seront pas soumises."
 
 #: quodlibet/ext/events/qlscrobbler.py:260
 #, python-format
@@ -2474,11 +2474,11 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
-"Stockez les points de recherche A et/ou B pour les pistes. Passez à l'heure "
-"A et arrêtez-vous après l'heure B lorsque la piste est jouée.\n"
+"Mémoriser les points de recherche A et/ou B pour les pistes. Passer au temps "
+"A et s'arrêter après le temps B lorsque la piste est jouée.\n"
 "\n"
 "ℹ Notez que changer le nom des points ci-dessous ne met pas à jour les noms "
-"de signets actuels, mais seulement les noms de signets que le plugin "
+"de signets actuels, mais seulement les noms de signets que le greffon "
 "recherche lorsqu'il décide de les chercher."
 
 #: quodlibet/ext/events/seekpoints.py:108
@@ -2524,8 +2524,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
-"Partage la configuration avec <a href=\"%(plugin_link)s\">Exporter vers le "
-"plugin Squeezebox</a>."
+"Partage la configuration avec <a href=\"%(plugin_link)s\">le greffon "
+"Exporter vers Squeezebox</a>."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -2553,7 +2553,7 @@ msgid ""
 "Seekable Sources' is off. Otherwise, playback is left stopped and must be "
 "restarted from the beginning."
 msgstr ""
-"Ce plugin change Pause en Stop/Lecture/Recherche.\n"
+"Ce greffon change Pause en Stop/Lecture/Recherche.\n"
 "\n"
 "Utile si Quod Libet ne peut pas changer de périphérique audio lorsqu'un "
 "nouveau matériel (enceinte Bluetooth, DAC USB, etc.) est ajouté au système.\n"
@@ -2763,7 +2763,7 @@ msgstr "Aperçu de la synchronisation arrêté"
 
 #: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
-msgstr "Un autre plugin a été sélectionné - arrêter la prévisualisation"
+msgstr "Un autre greffon a été sélectionné - arrêter la prévisualisation"
 
 #: quodlibet/ext/events/synchronize_to_device.py:757
 msgid "Synchronization will:"
@@ -2906,7 +2906,7 @@ msgstr "Arrêt de la synchronisation du morceau"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1015
 msgid "A different plugin was selected - stop synchronization"
-msgstr "Un autre plugin a été sélectionné - Arrêt de la synchronisation"
+msgstr "Un autre greffon a été sélectionné - Arrêt de la synchronisation"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1018
 #, python-brace-format
@@ -3185,8 +3185,8 @@ msgstr "Voir les paroles"
 #: quodlibet/ext/events/viewlyrics.py:26
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
-"Affiche automatiquement les paroles du tag ou du fichier dans une barre "
-"latérale."
+"Affiche automatiquement les paroles basées sur une balise ou un fichier dans "
+"une barre latérale."
 
 #: quodlibet/ext/events/viewlyrics.py:87
 #, python-format
@@ -3525,8 +3525,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
-"Partage la configuration avec <a href=\"%(plugin_link)s\">Plugin Squeezebox "
-"Sync</a>."
+"Partage la configuration avec <a href=\"%(plugin_link)s\">le greffon "
+"Synchronisation Squeezebox</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -4149,11 +4149,10 @@ msgid "Download Cover Art"
 msgstr "Télécharger l'illustration de la pochette"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
 msgstr ""
-"Télécharge des pochettes d'album de haute qualité à l'aide du plugin de "
-"pochette."
+"Téléchargez des pochettes d'album de haute qualité à l'aide des greffons de "
+"pochette de Quod Libet."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Classic"
@@ -4373,7 +4372,7 @@ msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
-"Accepte les expressions du tag QL comme <tt>~artist~title</tt> ou "
+"Accepte les expressions de la balise QL comme <tt>~artist~title</tt> ou "
 "<tt>musicbrainz_track_id</tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
@@ -4768,7 +4767,7 @@ msgstr ""
 "\n"
 "Après avoir exporté un album, vous pouvez importer les données dans une "
 "autre version de l'album. L'ordre et le nombre de pistes peuvent être "
-"différents. Le plugin fait correspondre les données exportées aux nouveaux "
+"différents. Le greffon fait correspondre les données exportées aux nouveaux "
 "morceaux, même si les noms des morceaux sont légèrement différents. La "
 "correspondance automatique n'est pas toujours correcte, il est donc "
 "préférable de ne pas trop réduire les valeurs de similarité suivantes."
@@ -5552,7 +5551,7 @@ msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
 msgstr ""
-"Veuillez visiter la fenêtre des plugins pour configurer ListenBrainz. En "
+"Veuillez visiter la fenêtre des greffons pour configurer ListenBrainz. En "
 "attendant, les écoutes ne seront pas soumises."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:301
@@ -5563,7 +5562,7 @@ msgid ""
 "will not be submitted."
 msgstr ""
 "Trop d'échecs de soumission consécutifs (%d). Passage en mode hors ligne. "
-"Veuillez visiter la fenêtre des plugins pour réinitialiser ListenBrainz. En "
+"Veuillez visiter la fenêtre des greffons pour réinitialiser ListenBrainz. En "
 "attendant, les écoutes ne seront pas soumises."
 
 #: quodlibet/plugins/listenbrainz/__init__.py:356
@@ -5604,7 +5603,7 @@ msgstr[1] "Lancer le greffon \"%(name)s\" sur les listes %(count)s ?"
 #: quodlibet/plugins/playlist.py:27 quodlibet/qltk/songsmenu.py:61
 #: quodlibet/qltk/songsmenu.py:72
 msgid "_Run Plugin"
-msgstr "Lancer un greffons"
+msgstr "_Lancer un greffon"
 
 #: quodlibet/plugins/query.py:73
 msgid "Usage"
@@ -6397,15 +6396,15 @@ msgstr "Greffons"
 
 #: quodlibet/qltk/pluginwin.py:400
 msgid "Filter by plugin state / tag"
-msgstr "Filtrer sur l'état du plugin / étiquette"
+msgstr "Filtrer sur l'état du greffon / étiquette"
 
 #: quodlibet/qltk/pluginwin.py:406
 msgid "Filter by plugin type"
-msgstr "Filtrer par type de plugin"
+msgstr "Filtrer par type de greffon"
 
 #: quodlibet/qltk/pluginwin.py:411
 msgid "Filter by plugin name or description"
-msgstr "Filtrer par nom ou description du plugin"
+msgstr "Filtrer par nom ou description du greffon"
 
 #: quodlibet/qltk/pluginwin.py:414
 msgid "Show _Errors"
