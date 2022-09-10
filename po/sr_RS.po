@@ -173,7 +173,7 @@ msgstr "Приказ албума"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:785
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:784
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Затвори"
@@ -329,7 +329,7 @@ msgstr "Поставке библиотеке албума"
 #: quodlibet/browsers/paned/prefs.py:247
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:132
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:131
 #: quodlibet/qltk/textedit.py:64
 msgid "_Apply"
 msgstr "_Примени"
@@ -1337,7 +1337,7 @@ msgstr "_Позиција:"
 msgid "_Cover size:"
 msgstr "_Величина омота:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:276
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:275
 msgid "Display"
 msgstr "Приказ"
 
@@ -1374,7 +1374,7 @@ msgid "_Fill:"
 msgstr "_Испуни:"
 
 #: quodlibet/ext/events/animosd/prefs.py:250
-#: quodlibet/ext/events/synchronizedlyrics.py:64
+#: quodlibet/ext/events/synchronizedlyrics.py:65
 msgid "Colors"
 msgstr "Боје"
 
@@ -1514,7 +1514,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:580
+#: quodlibet/qltk/prefs.py:579
 msgid "Save ratings and play _counts in tags"
 msgstr "Сачувај оцене и _број пуштања у ознакама"
 
@@ -1545,7 +1545,7 @@ msgstr "_Ажурирај станице"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:761
+#: quodlibet/qltk/prefs.py:760
 msgid "Preferences"
 msgstr "Поставке"
 
@@ -1937,7 +1937,7 @@ msgstr "Мења језик кориснилког сучеља."
 msgid "System Default"
 msgstr "Подразумевана подешавања"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:709
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:708
 msgid "A restart is required for any changes to take effect"
 msgstr "Поновно покретање је потребно да би измене имале ефекат"
 
@@ -2942,19 +2942,19 @@ msgstr ""
 "Показује синхронизовани текст песме из .lrc датотеке са истим именом као "
 "запис."
 
-#: quodlibet/ext/events/synchronizedlyrics.py:67
+#: quodlibet/ext/events/synchronizedlyrics.py:68
 msgid "Text:"
 msgstr "Текст:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:77
+#: quodlibet/ext/events/synchronizedlyrics.py:78
 msgid "Background:"
 msgstr "Позадина:"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:88
+#: quodlibet/ext/events/synchronizedlyrics.py:89
 msgid "Font"
 msgstr "Фонт"
 
-#: quodlibet/ext/events/synchronizedlyrics.py:91
+#: quodlibet/ext/events/synchronizedlyrics.py:92
 msgid "Size (px):"
 msgstr "Величина (px):"
 
@@ -4097,7 +4097,7 @@ msgstr "Можете приступити следећим подразумев�
 msgid "Your current working directory is:"
 msgstr "Ваш тренутни радни директоријум је:"
 
-#: quodlibet/ext/songsmenu/console.py:617
+#: quodlibet/ext/songsmenu/console.py:618
 #, fuzzy
 msgid "Completion"
 msgstr "Веза"
@@ -5076,7 +5076,7 @@ msgstr "Ознака \"%s\" није нађена."
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:705 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:704 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Библиотека"
 
@@ -6246,8 +6246,8 @@ msgstr ""
 "Ознаке су измењене али нису сачуване. сачувај датотеке или опозови и "
 "занемари измене?"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:641
-#: quodlibet/qltk/prefs.py:648 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:640
+#: quodlibet/qltk/prefs.py:647 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "_Опозови"
@@ -6413,92 +6413,92 @@ msgstr "_Уреди…"
 msgid "Add or remove additional column headers"
 msgstr "Додај или уклони додатна заглавља колона"
 
-#: quodlibet/qltk/prefs.py:106
+#: quodlibet/qltk/prefs.py:105
 msgid "Visible Columns"
 msgstr "Видљиве колоне"
 
-#: quodlibet/qltk/prefs.py:109
+#: quodlibet/qltk/prefs.py:108
 msgid "Title includes _version"
 msgstr "Име укључује _верзију"
 
-#: quodlibet/qltk/prefs.py:111
+#: quodlibet/qltk/prefs.py:110
 msgid "Artist includes all _people"
 msgstr "Уметник укључује све _људе"
 
-#: quodlibet/qltk/prefs.py:113
+#: quodlibet/qltk/prefs.py:112
 msgid "Album includes _disc subtitle"
 msgstr "Албум укључује _диск поднатпис"
 
-#: quodlibet/qltk/prefs.py:115
+#: quodlibet/qltk/prefs.py:114
 msgid "Filename includes _folder"
 msgstr "Име датотеке укључује _фасциклу"
 
-#: quodlibet/qltk/prefs.py:128
+#: quodlibet/qltk/prefs.py:127
 msgid "Column Preferences"
 msgstr "Поставке колоне"
 
-#: quodlibet/qltk/prefs.py:134
+#: quodlibet/qltk/prefs.py:133
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Примени тренутну конфигурацију на листу песама, додај нову колону на крају"
 
-#: quodlibet/qltk/prefs.py:149 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:148 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Листа песама"
 
-#: quodlibet/qltk/prefs.py:232
+#: quodlibet/qltk/prefs.py:231
 msgid "Edit Columns"
 msgstr "Уреди колоне"
 
-#: quodlibet/qltk/prefs.py:269
+#: quodlibet/qltk/prefs.py:268
 msgid "Duration totals"
 msgstr "Укупно трајање"
 
-#: quodlibet/qltk/prefs.py:281
+#: quodlibet/qltk/prefs.py:280
 msgid "_Global filter:"
 msgstr "_Глобални филтер:"
 
-#: quodlibet/qltk/prefs.py:287
+#: quodlibet/qltk/prefs.py:286
 msgid "Apply this query in addition to all others"
 msgstr "Примени овај упит уз све друге"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:293
+#: quodlibet/qltk/prefs.py:292
 msgctxt "heading"
 msgid "Search"
 msgstr "Претрага"
 
-#: quodlibet/qltk/prefs.py:297 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:296 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Претраживачи"
 
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:302
 msgid "Confirm _multiple ratings"
 msgstr "Потврди _више оцена"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:304
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "Питај за потврду пре него што променим оцене за више песама одједном"
 
-#: quodlibet/qltk/prefs.py:308
+#: quodlibet/qltk/prefs.py:307
 msgid "Enable _one-click ratings"
 msgstr "Омогући _један-клик оцене"
 
-#: quodlibet/qltk/prefs.py:310
+#: quodlibet/qltk/prefs.py:309
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Омогућава оцењивање кликом на колону оцене у листи песама"
 
-#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:682
+#: quodlibet/qltk/prefs.py:315 quodlibet/qltk/prefs.py:681
 msgid "Ratings"
 msgstr "Оцене"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:322
+#: quodlibet/qltk/prefs.py:321
 msgid "Prefer _embedded art"
 msgstr "Преферирај _уграђени омот"
 
-#: quodlibet/qltk/prefs.py:324
+#: quodlibet/qltk/prefs.py:323
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6506,81 +6506,81 @@ msgstr ""
 "Одаберите за коришћење омота уграђеног у аудио запис (када је доступно) пре "
 "других извора"
 
-#: quodlibet/qltk/prefs.py:331
+#: quodlibet/qltk/prefs.py:330
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:335
+#: quodlibet/qltk/prefs.py:334
 #, fuzzy
 msgid "_Preferred image filename(s):"
 msgstr "_Фиксирано име слике:"
 
-#: quodlibet/qltk/prefs.py:350
+#: quodlibet/qltk/prefs.py:349
 msgid "Album Art"
 msgstr "Омот албума"
 
-#: quodlibet/qltk/prefs.py:371
+#: quodlibet/qltk/prefs.py:370
 msgid "Playback"
 msgstr "Репродукција"
 
-#: quodlibet/qltk/prefs.py:376
+#: quodlibet/qltk/prefs.py:375
 msgid "Output Configuration"
 msgstr "Конфигурација излаза"
 
-#: quodlibet/qltk/prefs.py:387
+#: quodlibet/qltk/prefs.py:386
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
 "Ако нема Replay Gain информација за песму, постави јачину по овој вредности"
 
-#: quodlibet/qltk/prefs.py:390
+#: quodlibet/qltk/prefs.py:389
 msgid "_Fall-back gain (dB):"
 msgstr "_Fall-back gain (dB):"
 
-#: quodlibet/qltk/prefs.py:401
+#: quodlibet/qltk/prefs.py:400
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "Постави јачину за све песме по задатој вредности"
 
-#: quodlibet/qltk/prefs.py:404
+#: quodlibet/qltk/prefs.py:403
 msgid "_Pre-amp gain (dB):"
 msgstr "_Pre-amp gain (dB):"
 
-#: quodlibet/qltk/prefs.py:409
+#: quodlibet/qltk/prefs.py:408
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Omogući Replay Gain промену јачине"
 
-#: quodlibet/qltk/prefs.py:434
+#: quodlibet/qltk/prefs.py:433
 msgid "Replay Gain Volume Adjustment"
 msgstr "Replay Gain промена јачине"
 
-#: quodlibet/qltk/prefs.py:441
+#: quodlibet/qltk/prefs.py:440
 msgid "_Continue playback on startup"
 msgstr "_Настави репродукцију при покретању"
 
-#: quodlibet/qltk/prefs.py:443
+#: quodlibet/qltk/prefs.py:442
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 "Ако је музика свирала при гашењу, аутоматски настави репродукцију при "
 "следећем покретању"
 
-#: quodlibet/qltk/prefs.py:447
+#: quodlibet/qltk/prefs.py:446
 msgid "Startup"
 msgstr "Покретање"
 
-#: quodlibet/qltk/prefs.py:474
+#: quodlibet/qltk/prefs.py:473
 msgid "_Default rating:"
 msgstr "_Подразумевана оцена:"
 
-#: quodlibet/qltk/prefs.py:517
+#: quodlibet/qltk/prefs.py:516
 msgid "Rating _scale:"
 msgstr "Скала _оцена:"
 
-#: quodlibet/qltk/prefs.py:566
+#: quodlibet/qltk/prefs.py:565
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6592,29 +6592,29 @@ msgstr ""
 "записа имати мање екстремне оцене. Промена ове вредности узрокује поновно "
 "рачунање за све албуме."
 
-#: quodlibet/qltk/prefs.py:571
+#: quodlibet/qltk/prefs.py:570
 msgid "_Bayesian averaging amount:"
 msgstr "_Bayesian просечна количина:"
 
-#: quodlibet/qltk/prefs.py:588
+#: quodlibet/qltk/prefs.py:587
 msgid "_Email:"
 msgstr "_Имејл:"
 
-#: quodlibet/qltk/prefs.py:590
+#: quodlibet/qltk/prefs.py:589
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "Оцене и број пуштања ће бити сачуване у ознакама за ову адресу електронске "
 "поште"
 
-#: quodlibet/qltk/prefs.py:610
+#: quodlibet/qltk/prefs.py:609
 msgid "Auto-save tag changes"
 msgstr "Аутоматски сачувај промену оцена"
 
-#: quodlibet/qltk/prefs.py:612
+#: quodlibet/qltk/prefs.py:611
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "Сачувај промене у ознакама без потврде при уређивању више датотека"
 
-#: quodlibet/qltk/prefs.py:621
+#: quodlibet/qltk/prefs.py:620
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
@@ -6622,7 +6622,7 @@ msgstr ""
 "Скуп операција за коришћење при дељењу вредности датотека у уређивачу "
 "ознака. Листа је одвојена простором."
 
-#: quodlibet/qltk/prefs.py:631
+#: quodlibet/qltk/prefs.py:630
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
@@ -6631,60 +6631,60 @@ msgstr ""
 "Скуп операција за коришћење при извлачењу под-ознака из ознака у уређивачу "
 "ознака. Листа је одвојена простором, и сваки унос мора садржати два знака."
 
-#: quodlibet/qltk/prefs.py:644
+#: quodlibet/qltk/prefs.py:643
 msgid "Split _tag on:"
 msgstr "Подели _ознаке на:"
 
-#: quodlibet/qltk/prefs.py:651
+#: quodlibet/qltk/prefs.py:650
 msgid "Split _subtag on:"
 msgstr "Подели _подознаке на:"
 
-#: quodlibet/qltk/prefs.py:676
+#: quodlibet/qltk/prefs.py:675
 msgid "Tags"
 msgstr "Ознаке"
 
-#: quodlibet/qltk/prefs.py:679
+#: quodlibet/qltk/prefs.py:678
 msgid "Tag Editing"
 msgstr "Уређивање ознака"
 
-#: quodlibet/qltk/prefs.py:697
+#: quodlibet/qltk/prefs.py:696
 msgid "Updating for new ratings"
 msgstr "Ажурирам за нове оцене"
 
-#: quodlibet/qltk/prefs.py:707
+#: quodlibet/qltk/prefs.py:706
 msgid "Scan library _on start"
 msgstr "Скенирај библиотеку _при покретању"
 
-#: quodlibet/qltk/prefs.py:711
+#: quodlibet/qltk/prefs.py:710
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:712
+#: quodlibet/qltk/prefs.py:711
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:722 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:990
 msgid "_Scan Library"
 msgstr "_Скенирај библиотеку"
 
-#: quodlibet/qltk/prefs.py:724 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1052
 msgid "Check for changes in your library"
 msgstr "Провери промене у библиотеци"
 
-#: quodlibet/qltk/prefs.py:729
+#: quodlibet/qltk/prefs.py:728
 msgid "Re_build Library"
 msgstr "Поново _изгради библиотеку"
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:731
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Поново учитај све песме у библиотеку. Ово може потрајати веома дуго."
 
-#: quodlibet/qltk/prefs.py:744
+#: quodlibet/qltk/prefs.py:743
 msgid "Scan Directories"
 msgstr "Skeniraj direktorijume"
 
-#: quodlibet/qltk/prefs.py:750
+#: quodlibet/qltk/prefs.py:749
 msgid "Hidden Songs"
 msgstr "Скривене песме"
 
@@ -7431,7 +7431,7 @@ msgstr "Пусти/Паузирај"
 msgid "Previous"
 msgstr "Претходно"
 
-#: quodlibet/qltk/views.py:934
+#: quodlibet/qltk/views.py:935
 #, python-format
 msgid "and %d more…"
 msgstr "и %d још…"
