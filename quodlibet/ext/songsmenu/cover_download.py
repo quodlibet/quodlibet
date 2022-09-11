@@ -51,7 +51,7 @@ class DownloadCoverArt(SongsMenuPlugin):
 
     PLUGIN_ID = 'Download Cover Art'
     PLUGIN_NAME = _('Download Cover Art')
-    PLUGIN_DESC = _('Downloads high-quality album covers'
+    PLUGIN_DESC = _('Downloads high-quality album covers '
                     'using Quod Libet cover plugins.')
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
