@@ -6,7 +6,7 @@
 from gi.repository import Gtk
 
 import quodlibet.config
-from quodlibet.browsers.audiofeeds import AudioFeeds, AddFeedDialog, Feed
+from quodlibet.browsers.podcasts import Podcasts, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
 from senf import fsn2uri
 from tests import TestCase, get_data_path
@@ -18,7 +18,7 @@ class TAudioFeeds(TestCase):
     def setUp(self):
         quodlibet.config.init()
         self.library = SongLibrary()
-        self.bar = AudioFeeds(self.library)
+        self.bar = Podcasts(self.library)
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
@@ -49,7 +49,7 @@ class TFeed(TestCase):
         quodlibet.config.init()
 
     def test_feed(self):
-        fn = get_data_path('valid_feed.xml')
+        fn = get_data_path('valid_podcast.xml')
         feed = Feed(fsn2uri(fn))
         result = feed.parse()
         # Assume en_US / en_GB locale here in tests

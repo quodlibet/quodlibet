@@ -86,6 +86,10 @@ class Feed(list):
                     af.add(songkey, value)
 
         try:
+            af.add("artwork_url", feed.image["href"])
+        except (AttributeError, KeyError):
+            pass
+        try:
             author = feed.author_detail
         except AttributeError:
             try:
@@ -213,7 +217,7 @@ class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
         super().__init__(
             qltk.get_top_parent(parent), _("New Feed"),
-            _("Enter the location of an audio feed:"),
+            _("Enter the podcast / audio feed location:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
     def run(self, text='', clipboard=True, test=False):
@@ -270,15 +274,20 @@ def hacky_py2_unpickle_recover(fileobj):
     return [Feed(u) for u in uris]
 
 
-class AudioFeeds(Browser):
+class Podcasts(Browser):
+    """
+    Allows interacting with remote feeds for playing and exploring podcasts
+    and their episodes (or other forms of audio feeds)
+    Formerly known as the AudioFeeds browser.
+    """
     __feeds = Gtk.ListStore(object)  # unread
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
 
-    name = _("Audio Feeds")
-    accelerated_name = _("_Audio Feeds")
-    keys = ["AudioFeeds"]
+    name = _("Podcasts")
+    accelerated_name = _("_Podcasts")
+    keys = ["AudioFeeds", "Podcasts"]
     priority = 20
     uses_main_library = False
 
@@ -307,7 +316,7 @@ class AudioFeeds(Browser):
             if row[0] in feeds:
                 row[0].changed = True
                 row[0] = row[0]
-        AudioFeeds.write()
+        Podcasts.write()
 
     @classmethod
     def write(klass):
@@ -368,7 +377,7 @@ class AudioFeeds(Browser):
         self.__render = render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn("Audio Feeds", render)
-        col.set_cell_data_func(render, AudioFeeds.cell_data)
+        col.set_cell_data_func(render, Podcasts.cell_data)
         view.append_column(col)
         view.set_model(self.__feeds)
         view.set_rules_hint(True)
@@ -439,21 +448,28 @@ class AudioFeeds(Browser):
         feed.changed = feed.parse()
         if feed:
             self.__feeds.append(row=[feed])
-            AudioFeeds.write()
+            Podcasts.write()
         else:
             self.feed_error(feed).run()
 
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
-        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,
+               tooltip=_("Search source for new episodes"))
+        rebuild = MenuItem(_("_Rebuild"), Icons.EDIT_FIND_REPLACE,
+               tooltip=_("Remove all existing episodes then reload from source"))
+        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE,
+                tooltip=_("Remove this podcast and its episodes"))
 
         connect_obj(refresh, 'activate',
                     self.__refresh, [model[p][0] for p in paths])
+        connect_obj(rebuild, 'activate',
+                    self.__rebuild, [model[p][0] for p in paths])
         connect_obj(delete, 'activate', self.__remove_paths, model, paths)
 
         menu.append(refresh)
+        menu.append(rebuild)
         menu.append(delete)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
@@ -464,7 +480,7 @@ class AudioFeeds(Browser):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __save(self, view):
-        AudioFeeds.write()
+        Podcasts.write()
 
     def __refresh(self, feeds):
         changed = list(filter(Feed.parse, feeds))
@@ -494,7 +510,7 @@ class AudioFeeds(Browser):
             feed.changed = feed.parse()
             if feed:
                 self.__feeds.append(row=[feed])
-                AudioFeeds.write()
+                Podcasts.write()
             else:
                 self.feed_error(feed).run()
 
@@ -503,7 +519,7 @@ class AudioFeeds(Browser):
             self,
             _("Unable to add feed"),
             _("%s could not be added. The server may be down, "
-              "or the location may not be an audio feed.") %
+              "or the location may not be a podcast / audio feed.") %
             util.bold(util.escape(feed.uri)), escape_desc=False)
 
     def restore(self):
@@ -517,7 +533,7 @@ class AudioFeeds(Browser):
 
 browsers = []
 if not app.player or app.player.can_play_uri("http://"):
-    browsers = [AudioFeeds]
+    browsers = [Podcasts]
 else:
     print_w(_("The current audio backend does not support URLs, "
-              "Audio Feeds browser disabled."))
+              "Podcast browser disabled."))
