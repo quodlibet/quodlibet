@@ -484,7 +484,7 @@ class Podcasts(Browser):
 
     def __refresh(self, feeds):
         changed = list(filter(Feed.parse, feeds))
-        AudioFeeds.changed(changed)
+        Podcasts.changed(changed)
 
     def __remove_paths(self, model, paths):
         for path in paths:
