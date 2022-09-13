@@ -10,6 +10,7 @@ import os
 import sys
 import threading
 import time
+from urllib.request import urlopen, Request
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 import feedparser
@@ -140,10 +141,29 @@ class Feed(list):
                     af.add("genre", value)
 
     def parse(self):
+        req = Request(self.uri, method="HEAD")
         try:
-            doc = feedparser.parse(self.uri)
+            with urlopen(req, timeout=5) as head:
+                # Some requests don't support status, e.g. file://
+                if hasattr(head, "status"):
+                    print_d(f"Feed URL {self.uri!r} ({head.url}) "
+                            f"returned HTTP {head.status}, "
+                            f"with content {head.headers.get('Content-Type')}")
+                    if head.status and head.status >= 400:
+                        return False
+                if head.headers.get("Content-Type").lower().startswith("audio"):
+                    print_w("Looks like an audio stream / radio, not a audio feed.")
+                    return False
+            # Don't pass feedparser URLs
+            # see https://github.com/kurtmckee/feedparser/pull/80#issuecomment-449543486
+            content = urlopen(self.uri, timeout=15).read()
+        except IOError as e:
+            print_w(f"Couldn't fetch content from {self.uri} ({e})")
+            return False
+        try:
+            doc = feedparser.parse(content)
         except Exception as e:
-            print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
+            print_w(f"Couldn't parse feed: {self.uri} ({e})")
             return False
 
         try:
