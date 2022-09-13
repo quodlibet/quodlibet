@@ -139,12 +139,14 @@ class Feed(list):
         req = Request(self.uri, method="HEAD")
         try:
             with urlopen(req, timeout=5) as head:
+                # Some requests don't support status, e.g. file://
+                if hasattr(head, "status") and head.status and head.status >= 400:
+                    print_w(f"Feed URL {self.uri!r} ({head.url}) "
+                            f"returned HTTP {head.status}")
+                    return False
                 print_d(f"Feed URL {self.uri!r} ({head.url}) "
                         f"returned HTTP {head.status}, "
                         f"with content {head.headers.get('Content-Type')}")
-                # Some requests don't support status, e.g. file://
-                if hasattr(head, "status") and head.status and head.status >= 400:
-                    return False
                 if head.headers.get("Content-Type").lower().startswith("audio"):
                     print_w("Looks like an audio stream / radio, not a audio feed.")
                     return False
