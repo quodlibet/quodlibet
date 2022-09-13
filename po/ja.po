@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-27 10:16+0000\n"
+"PO-Revision-Date: 2022-09-13 20:41+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -2059,7 +2059,7 @@ msgstr "曲なしテキスト"
 
 #: quodlibet/ext/events/mqtt.py:158
 msgid "Plain text for when there is no current song"
-msgstr "現在の曲がないときのプレーンなステータステキスト"
+msgstr "曲を再生していないときのプレーンなステータステキスト"
 
 #: quodlibet/ext/events/mqtt.py:169
 msgid "MQTT Configuration"
@@ -2936,8 +2936,9 @@ msgid ""
 "Updates all Telepathy-based IM accounts (as configured in Empathy etc) with "
 "a status message based on current song."
 msgstr ""
-"全ての Telepathy ベースのインスタントメッセンジャーアカウント (Empathy などで"
-"設定されたもの) を、現在の曲に基づくステータスメッセージで更新します。"
+"全ての Telepathy ベースのインスタントメッセンジャーアカウント (Empathy "
+"などで設定されたもの) "
+"を、再生中の曲に基づくステータスメッセージで更新します。"
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
@@ -2959,7 +2960,7 @@ msgstr "一時停止したときのステータステキスト。QLパターン�
 
 #: quodlibet/ext/events/telepathy_status.py:162
 msgid "Plain text for status when there is no current song"
-msgstr "現在の曲がないときのプレーンなステータステキスト"
+msgstr "曲を再生していないときのプレーンなステータステキスト"
 
 #: quodlibet/ext/events/telepathy_status.py:163
 msgid "No song:"
@@ -3161,7 +3162,7 @@ msgstr "波形シークバー"
 
 #: quodlibet/ext/events/waveformseekbar.py:605
 msgid "∿ A seekbar in the shape of the waveform of the current song."
-msgstr "∿ 現在の曲の波形の形をしたシークバーです。"
+msgstr "∿ 再生中の曲の波形の形をしたシークバーです。"
 
 #: quodlibet/ext/events/waveformseekbar.py:674
 msgid "Override foreground color:"
@@ -3193,7 +3194,7 @@ msgstr "画像保存"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
-msgstr "現在の曲のカバー画像をファイルに保存します。"
+msgstr "再生中の曲のカバー画像をファイルに保存します。"
 
 #: quodlibet/ext/events/write_cover.py:67
 msgid "File:"
@@ -3697,7 +3698,7 @@ msgstr "欠落クエリ"
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
-msgstr "指定されたタグのない曲とマッチします。"
+msgstr "指定されたタグが無い曲とマッチします。"
 
 #: quodlibet/ext/query/missing.py:36
 msgid "Include empty tags"
@@ -4061,11 +4062,9 @@ msgid "Download Cover Art"
 msgstr "カバーアートのダウンロード"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
-msgstr ""
-"Quod Libet カバープラグインを使用して高画質なアルバムカバーをダウンロードしま"
-"す。"
+msgstr "Quod Libet "
+"カバープラグインを使用して高画質なアルバムカバーをダウンロードします。"
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Classic"
@@ -5528,15 +5527,15 @@ msgstr "全ての曲(_S)"
 
 #: quodlibet/qltk/browser.py:71
 msgid "On Current _Genre(s)"
-msgstr "現在再生中のジャンル(_G)"
+msgstr "再生中の曲のジャンル(_G)"
 
 #: quodlibet/qltk/browser.py:72
 msgid "On Current _Artist(s)"
-msgstr "現在再生中のアーティスト(_A)"
+msgstr "再生中の曲のアーティスト(_A)"
 
 #: quodlibet/qltk/browser.py:73
 msgid "On Current Al_bum"
-msgstr "現在再生中のアルバム(_B)"
+msgstr "再生中の曲のアルバム(_B)"
 
 #: quodlibet/qltk/browser.py:81
 msgid "Random _Genre"
@@ -5956,7 +5955,7 @@ msgstr "トラック %s"
 
 #: quodlibet/qltk/info.py:104
 msgid "Current _Song"
-msgstr "現在の曲(_S)"
+msgstr "再生中の曲(_S)"
 
 #: quodlibet/qltk/info.py:114
 msgid "_Edit Display…"
@@ -6820,7 +6819,7 @@ msgstr "Windowsと互換性のない文字を削除する(_W)"
 
 #: quodlibet/qltk/renamefiles.py:100
 msgid "Strip _diacritical marks"
-msgstr "発音記号を削除する(_D)"
+msgstr "発音区別符号を削除する(_D)"
 
 #: quodlibet/qltk/renamefiles.py:111
 msgid "Strip non-_ASCII characters"
@@ -6880,8 +6879,8 @@ msgid ""
 "file or remove the old one."
 msgstr ""
 "<b>%(old-name)s</b> から <b>%(new-name)s</b> への名前変更に失敗しました。変更"
-"先のファイルが既に存在する、新規ファイルを作成する権限がない、旧ファイルを削"
-"除する権限がないなどの可能性があります。"
+"先のファイルが既に存在する、新規ファイルを作成する権限が無い、旧ファイルを削"
+"除する権限が無い、などの可能性があります。"
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
