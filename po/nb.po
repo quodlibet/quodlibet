@@ -4171,7 +4171,7 @@ msgstr "Last ned omslag"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
 #, fuzzy
-msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
+msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr "Laster ned album-omslag i høy kvalitet ved bruk av programtillegg."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
