@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-09 20:18+0000\n"
+"PO-Revision-Date: 2022-09-13 20:41+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -4149,11 +4149,10 @@ msgid "Download Cover Art"
 msgstr "Télécharger l'illustration de la pochette"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
-"Téléchargez des pochettes d'album de haute qualité à l'aide des greffons de "
-"pochette de Quod Libet."
+"Télécharger des pochettes d'album de haute qualité en utilisant les greffons "
+"de Quod Libet dédiés aux pochettes."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Classic"
