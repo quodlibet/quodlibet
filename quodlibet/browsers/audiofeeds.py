@@ -143,7 +143,7 @@ class Feed(list):
                         f"returned HTTP {head.status}, "
                         f"with content {head.headers.get('Content-Type')}")
                 # Some requests don't support status, e.g. file://
-                if head.status and head.status >= 400:
+                if hasattr(head, "status") and head.status and head.status >= 400:
                     return False
                 if head.headers.get("Content-Type").lower().startswith("audio"):
                     print_w("Looks like an audio stream / radio, not a audio feed.")
