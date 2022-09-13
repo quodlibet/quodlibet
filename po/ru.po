@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-08 12:15+0000\n"
+"PO-Revision-Date: 2022-09-13 20:41+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -375,7 +375,7 @@ msgstr "Сетка _обложек"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
 msgid "Cover Grid Preferences"
-msgstr "Параметры сетки"
+msgstr "Настройки сетки обложек"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
 msgid "Show album _text"
@@ -686,7 +686,7 @@ msgstr ""
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
-msgstr "Параметры панелей"
+msgstr "Настройки панелей обзора"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
@@ -957,7 +957,7 @@ msgstr "Уменьшить рейтинг проигрываемой песни 
 
 #: quodlibet/cli.py:106
 msgid "Print player status"
-msgstr "Показать состояние воспроизведения"
+msgstr "Вывести состояние воспроизведения"
 
 #: quodlibet/cli.py:107
 msgid "Hide main window"
@@ -1192,7 +1192,7 @@ msgstr "Данные для отправки:"
 
 #: quodlibet/exfalso.py:35
 msgid "an audio tag editor"
-msgstr "в редакторе аудио тегов"
+msgstr "редактор тегов аудио"
 
 #: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
 msgid "directory"
@@ -1421,7 +1421,7 @@ msgstr "Поддерживаемые форматы"
 
 #: quodlibet/ext/events/appinfo.py:70
 msgid "Configuration Directory"
-msgstr "Каталог конфигураций"
+msgstr "Каталог конфигурации"
 
 #: quodlibet/ext/events/appinfo.py:77
 msgid "Cache Directory"
@@ -1429,7 +1429,7 @@ msgstr "Каталог кэша"
 
 #: quodlibet/ext/events/appinfo.py:84
 msgid "Audio Backend"
-msgstr "Аудио обработка"
+msgstr "Обработчик аудио"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:35
 msgid "After every play (default)"
@@ -1442,9 +1442,9 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
-"Каждый раз, при воспроизведении трека, плагин будет записывать теги в файл. "
-"За исключением пропущенных треков. Счетчики пропусков не хранятся в файлах, "
-"это позволяет избежать ненужных операций записи."
+"Каждый раз при воспроизведении трека плагин будет записывать теги в файл. За "
+"исключением пропущенных треков. Счётчики пропусков не хранятся в файлах, это "
+"позволяет избежать ненужных операций записи."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
@@ -1518,7 +1518,7 @@ msgid ""
 "play counts and ratings are up to date."
 msgstr ""
 "Если песни были воспроизведены, обновить теги в их файлах. Это гарантирует, "
-"что количество воспроизведений и рейтинги будут в актуальном состоянии."
+"что счётчики воспроизведений и оценки будут в актуальном состоянии."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1534,7 +1534,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:579
 msgid "Save ratings and play _counts in tags"
-msgstr "Сохранять рейтинги и _кол-во воспроизведений в тегах"
+msgstr "Сохранять оценки и _счётчики воспроизведений в тегах"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
 msgid "Settings updated"
@@ -1548,7 +1548,7 @@ msgstr "Ошибка в %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
 msgid "Ensure play counts are above zero when saving"
-msgstr "Убедиться, что кол-во воспроизведений больше нуля при сохранении"
+msgstr "Убедиться, что счётчики воспроизведений больше нуля, при сохранении"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
 msgid "_Update strategy:"
@@ -1584,8 +1584,8 @@ msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux by Brian Nelson."
 msgstr ""
-"Авто-оценка треков в зависимости от того, воспроизведены ли они полностью "
-"или пропущены. Использует алгоритм Брайана Нельсона."
+"Автооценка треков в зависимости от того, воспроизведены ли они полностью или "
+"пропущены. Использует ускоренный алгоритм Брайана Нельсона."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1883,19 +1883,19 @@ msgstr "Пауза при отключении наушников и сняти�
 
 #: quodlibet/ext/events/inhibit.py:50
 msgid "Inhibit Screensaver/Suspend"
-msgstr "Запретить скринсейвер"
+msgstr "Запретить хранитель экрана / ждущий режим"
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
 msgstr ""
-"На рабочем столе GNOME, при воспроизведении трека, будет запрещен как "
-"скринсейвер так и приостановка работы компьютера."
+"На рабочем столе GNOME при воспроизведении трека будут запрещены как "
+"хранитель экрана, так и ждущий режим компьютера."
 
 #: quodlibet/ext/events/inhibit.py:63
 msgid "Music is playing"
-msgstr "Воспроизведение"
+msgstr "Играет музыка"
 
 #. Translators: Inhibiting Mode
 #: quodlibet/ext/events/inhibit.py:123
@@ -1904,7 +1904,7 @@ msgstr "Режим:"
 
 #: quodlibet/ext/events/inhibit.py:125
 msgid "Inhibit Screensaver"
-msgstr "Запретить скринсейвер"
+msgstr "Запретить хранитель экрана"
 
 #: quodlibet/ext/events/inhibit.py:126
 msgid "Inhibit Suspend"
@@ -2314,7 +2314,7 @@ msgid ""
 "Mutes output while radio advertisements are playing.\n"
 "Stations: di.fm."
 msgstr ""
-"Выключает звук при воспроизведении рекламы на радио.\n"
+"Приглушает звук при воспроизведении рекламы на радио.\n"
 "Станция: di.fm."
 
 #: quodlibet/ext/events/randomalbum.py:26
@@ -2401,12 +2401,11 @@ msgstr "Импорт оценок и статистики из Rhythmbox."
 
 #: quodlibet/ext/events/screensaver.py:26
 msgid "Screensaver Pause"
-msgstr "Скринсейвер пауза"
+msgstr "Пауза при хранителе экрана"
 
 #: quodlibet/ext/events/screensaver.py:27
 msgid "Pauses playback while the GNOME screensaver is active."
-msgstr ""
-"Приостанавливает воспроизведение, когда хранитель экрана GNOME активен."
+msgstr "Приостанавливает воспроизведение, пока хранитель экрана GNOME активен."
 
 #: quodlibet/ext/events/searchprovider.py:73
 msgid "No GNOME Shell search provider for Quod Libet installed."
@@ -3749,7 +3748,7 @@ msgstr "Включать пустые теги"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
-msgstr "Поиск - Python запросы"
+msgstr "Запросы Python"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
@@ -4066,11 +4065,11 @@ msgstr "Ничего не найдено."
 
 #: quodlibet/ext/songsmenu/console.py:41
 msgid "Python Console"
-msgstr "Python консоль"
+msgstr "Консоль Python"
 
 #: quodlibet/ext/songsmenu/console.py:42
 msgid "Interactive Python console. Opens a new window."
-msgstr "Интерактивная консоль Python. В новом окне."
+msgstr "Интерактивная консоль Python. Открывает новое окно."
 
 #: quodlibet/ext/songsmenu/console.py:50
 #, python-brace-format
@@ -4079,14 +4078,14 @@ msgstr "{plugin_name} для {songs} ({app})"
 
 #: quodlibet/ext/songsmenu/console.py:57
 msgid "Python Console Sidebar"
-msgstr "Python консоль в панели"
+msgstr "Боковая панель консоли Python"
 
 #: quodlibet/ext/songsmenu/console.py:58
 msgid ""
 "Interactive Python console sidebar, that follows the selected songs in the "
 "main window."
 msgstr ""
-"Интерактивная панель Python Console, которая следует за выбранными песнями в "
+"Интерактивная панель консоли Python, которая следует за выбранными песнями в "
 "главном окне."
 
 #: quodlibet/ext/songsmenu/console.py:77
@@ -4106,7 +4105,6 @@ msgid "Download Cover Art"
 msgstr "Обложки - Загрузка"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
 "Загружает высококачественные обложки альбомов с помощью плагинов обложек "
@@ -4364,7 +4362,7 @@ msgstr "Настройки сравнения"
 #: quodlibet/ext/songsmenu/editplaycount.py:19
 #: quodlibet/ext/songsmenu/editplaycount.py:43
 msgid "Edit Playcount"
-msgstr "Теги - Счетчик воспроизведений"
+msgstr "Править счётчик воспроизведений"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:21
 msgid ""
@@ -4388,11 +4386,11 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
-msgstr "Теги - Счетчик воспроизведений"
+msgstr "Счётчик воспроизведений"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:71
 msgid "Skip Count"
-msgstr "Счетчик пропусков"
+msgstr "Счётчик пропусков"
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4598,8 +4596,8 @@ msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
 msgstr ""
-"Обновление измененных тегов в файлах. Это обеспечит атуализацию счетчика "
-"воспроизведений и рейтинга."
+"Обновление изменённых тегов в файлах. Это обеспечит актуализацию счётчика "
+"воспроизведений и оценок."
 
 #: quodlibet/ext/songsmenu/html.py:66 quodlibet/ext/songsmenu/html.py:76
 msgid "Export to HTML"
@@ -5284,7 +5282,7 @@ msgstr "Извлечь внедрённые изображения в %(filepath
 #: quodlibet/operon/commands.py:583
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
-msgstr "Путь к месту сохранения изображений (по умолчанию-рабочий каталог)"
+msgstr "Путь к месту сохранения изображений (по умолчанию — рабочий каталог)"
 
 #: quodlibet/operon/commands.py:642
 msgid "Rename files based on tags"
@@ -6091,7 +6089,7 @@ msgstr "добавлен"
 
 #: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:151
 msgid "last played"
-msgstr "воспроизведен"
+msgstr "последний раз"
 
 #: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:161
 msgid "plays"
@@ -6131,7 +6129,7 @@ msgstr "битрейт"
 
 #: quodlibet/qltk/information.py:297 quodlibet/util/tags.py:173
 msgid "file size"
-msgstr "размер"
+msgstr "размер файла"
 
 #: quodlibet/qltk/information.py:298 quodlibet/util/tags.py:160
 msgid "modified"
@@ -6301,7 +6299,7 @@ msgstr "Обложки"
 
 #: quodlibet/qltk/pluginwin.py:66
 msgid "Plugin Errors"
-msgstr "Ошибки плагина"
+msgstr "Ошибки расширений"
 
 #: quodlibet/qltk/pluginwin.py:144
 msgid "Any state"
@@ -6415,7 +6413,7 @@ msgstr "Название содержит _версию"
 
 #: quodlibet/qltk/prefs.py:110
 msgid "Artist includes all _people"
-msgstr "Исполнитель содержит всех _людей"
+msgstr "Исполнитель содержит всех _артистов"
 
 #: quodlibet/qltk/prefs.py:112
 msgid "Album includes _disc subtitle"
@@ -6461,7 +6459,7 @@ msgstr "Поиск"
 
 #: quodlibet/qltk/prefs.py:296 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
-msgstr "Режимы отображения"
+msgstr "Отображение"
 
 #: quodlibet/qltk/prefs.py:302
 msgid "Confirm _multiple ratings"
@@ -6518,7 +6516,7 @@ msgstr "Воспроизведение"
 
 #: quodlibet/qltk/prefs.py:375
 msgid "Output Configuration"
-msgstr "Параметры воспроизведения"
+msgstr "Настройки вывода"
 
 #: quodlibet/qltk/prefs.py:386
 msgid ""
@@ -6592,7 +6590,7 @@ msgstr "_Усреднение по Байесу:"
 
 #: quodlibet/qltk/prefs.py:587
 msgid "_Email:"
-msgstr "_Электронная почта:"
+msgstr "_Эл. почта:"
 
 #: quodlibet/qltk/prefs.py:589
 msgid "Ratings and play counts will be saved in tags for this email address"
@@ -6634,7 +6632,7 @@ msgstr "Разделить _тег на:"
 
 #: quodlibet/qltk/prefs.py:650
 msgid "Split _subtag on:"
-msgstr "Разделить _субтег на:"
+msgstr "Разделить _подтег на:"
 
 #: quodlibet/qltk/prefs.py:675
 msgid "Tags"
@@ -7422,7 +7420,7 @@ msgstr "Всего _треков:"
 
 #: quodlibet/qltk/unity.py:52
 msgid "Play/Pause"
-msgstr "Воспроизведение/Пауза"
+msgstr "Воспроизведение/пауза"
 
 #: quodlibet/qltk/unity.py:72
 msgid "Previous"
@@ -7952,7 +7950,7 @@ msgstr "битовая глубина"
 
 #: quodlibet/util/tags.py:174
 msgid "file format"
-msgstr "тип"
+msgstr "формат файла"
 
 #: quodlibet/util/tags.py:177
 msgid "playlists"
@@ -7964,7 +7962,7 @@ msgstr "частота дискретизации"
 
 #: quodlibet/util/tags.py:179
 msgid "channel count"
-msgstr "каналов"
+msgstr "число каналов"
 
 #. Translators: e.g. "artist (sort)"
 #: quodlibet/util/tags.py:269
@@ -7983,7 +7981,7 @@ msgstr "Ex Falso"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:4
 msgid "Audio tag editor"
-msgstr "Редактор аудио тегов"
+msgstr "Редактор тегов аудио"
 
 #: data/io.github.quodlibet.ExFalso.desktop.in:5
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:6
