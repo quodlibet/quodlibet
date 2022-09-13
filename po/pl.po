@@ -4140,7 +4140,7 @@ msgstr "Pobieranie okładek"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
 #, fuzzy
-msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
+msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr "Pobiera wysokiej jakości okładki albumów za pomocą wtyczek."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159

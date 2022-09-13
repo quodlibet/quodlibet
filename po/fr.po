@@ -4149,7 +4149,8 @@ msgid "Download Cover Art"
 msgstr "Télécharger l'illustration de la pochette"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
+#, fuzzy
+msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
 "Téléchargez des pochettes d'album de haute qualité à l'aide des greffons de "
 "pochette de Quod Libet."

@@ -4125,7 +4125,7 @@ msgid "Download Cover Art"
 msgstr "Λήψη Εξώφυλλων Άλμπουμ"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
+msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
