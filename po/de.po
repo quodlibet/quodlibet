@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-27 10:16+0000\n"
+"PO-Revision-Date: 2022-09-13 20:41+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -4165,7 +4165,6 @@ msgid "Download Cover Art"
 msgstr "Cover-Art herunterladen"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr "Lädt Alben-Cover in hoher Qualität über Cover-Plugins herunter."
 
