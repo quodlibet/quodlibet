@@ -179,8 +179,8 @@ msgstr "Показване на албум"
 msgid "_Close"
 msgstr "_Затваряне"
 
-#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
-#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
+#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
+#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -189,15 +189,15 @@ msgstr "_Затваряне"
 msgid "Unknown"
 msgstr "Неизвестен"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:235
 msgid "New Feed"
 msgstr "Нова емисия"
 
-#: quodlibet/browsers/audiofeeds.py:216
+#: quodlibet/browsers/audiofeeds.py:236
 msgid "Enter the location of an audio feed:"
 msgstr "Въведете местоположението на аудио емисия:"
 
-#: quodlibet/browsers/audiofeeds.py:217
+#: quodlibet/browsers/audiofeeds.py:237
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
@@ -206,27 +206,27 @@ msgstr "Въведете местоположението на аудио еми
 msgid "_Add"
 msgstr "Добавяне"
 
-#: quodlibet/browsers/audiofeeds.py:279
+#: quodlibet/browsers/audiofeeds.py:299
 #, fuzzy
 msgid "Audio Feeds"
 msgstr "_Аудио емисии"
 
-#: quodlibet/browsers/audiofeeds.py:280
+#: quodlibet/browsers/audiofeeds.py:300
 msgid "_Audio Feeds"
 msgstr "_Аудио емисии"
 
-#: quodlibet/browsers/audiofeeds.py:382
+#: quodlibet/browsers/audiofeeds.py:402
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "_Добавяне на файл..."
 
-#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 #, fuzzy
 msgid "_Refresh"
 msgstr "_Опресняване"
 
-#: quodlibet/browsers/audiofeeds.py:450
+#: quodlibet/browsers/audiofeeds.py:470
 #: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
@@ -235,11 +235,11 @@ msgstr "_Опресняване"
 msgid "_Delete"
 msgstr "Из_триване"
 
-#: quodlibet/browsers/audiofeeds.py:504
+#: quodlibet/browsers/audiofeeds.py:524
 msgid "Unable to add feed"
 msgstr "Неуспех при добавяне на емисията"
 
-#: quodlibet/browsers/audiofeeds.py:505
+#: quodlibet/browsers/audiofeeds.py:525
 #, fuzzy, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -248,7 +248,7 @@ msgstr ""
 "<b>%s</b> не може да бъде добавена. Сървърът може да не е на линия или "
 "местоположението да не е аудио емисия."
 
-#: quodlibet/browsers/audiofeeds.py:522
+#: quodlibet/browsers/audiofeeds.py:542
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."

@@ -175,8 +175,8 @@ msgstr "專輯顯示"
 msgid "_Close"
 msgstr ""
 
-#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
-#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
+#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
+#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -185,15 +185,15 @@ msgstr ""
 msgid "Unknown"
 msgstr "未知"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:235
 msgid "New Feed"
 msgstr "新的饋流"
 
-#: quodlibet/browsers/audiofeeds.py:216
+#: quodlibet/browsers/audiofeeds.py:236
 msgid "Enter the location of an audio feed:"
 msgstr "輸入音訊檔案饋流位置："
 
-#: quodlibet/browsers/audiofeeds.py:217
+#: quodlibet/browsers/audiofeeds.py:237
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
@@ -202,26 +202,26 @@ msgstr "輸入音訊檔案饋流位置："
 msgid "_Add"
 msgstr ""
 
-#: quodlibet/browsers/audiofeeds.py:279
+#: quodlibet/browsers/audiofeeds.py:299
 msgid "Audio Feeds"
 msgstr "音訊饋流"
 
-#: quodlibet/browsers/audiofeeds.py:280
+#: quodlibet/browsers/audiofeeds.py:300
 msgid "_Audio Feeds"
 msgstr "音訊饋流 (_A)"
 
-#: quodlibet/browsers/audiofeeds.py:382
+#: quodlibet/browsers/audiofeeds.py:402
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "加入檔案... (_A)"
 
-#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 #, fuzzy
 msgid "_Refresh"
 msgstr "重新整理資料庫 (_F)"
 
-#: quodlibet/browsers/audiofeeds.py:450
+#: quodlibet/browsers/audiofeeds.py:470
 #: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
@@ -230,18 +230,18 @@ msgstr "重新整理資料庫 (_F)"
 msgid "_Delete"
 msgstr "刪除檔案"
 
-#: quodlibet/browsers/audiofeeds.py:504
+#: quodlibet/browsers/audiofeeds.py:524
 msgid "Unable to add feed"
 msgstr "無法加入饋流"
 
-#: quodlibet/browsers/audiofeeds.py:505
+#: quodlibet/browsers/audiofeeds.py:525
 #, fuzzy, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
 "audio feed."
 msgstr "<b>%s</b> 不能被加入。伺服器可能關機中，或者這位置可能不是音訊饋流。"
 
-#: quodlibet/browsers/audiofeeds.py:522
+#: quodlibet/browsers/audiofeeds.py:542
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."

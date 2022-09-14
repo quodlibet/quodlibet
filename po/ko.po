@@ -167,8 +167,8 @@ msgstr "앨범 표시"
 msgid "_Close"
 msgstr "닫기"
 
-#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
-#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
+#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
+#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -177,15 +177,15 @@ msgstr "닫기"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:235
 msgid "New Feed"
 msgstr "새 피드"
 
-#: quodlibet/browsers/audiofeeds.py:216
+#: quodlibet/browsers/audiofeeds.py:236
 msgid "Enter the location of an audio feed:"
 msgstr "오디오 피드의 주소를 입력하십시오:"
 
-#: quodlibet/browsers/audiofeeds.py:217
+#: quodlibet/browsers/audiofeeds.py:237
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
@@ -194,25 +194,25 @@ msgstr "오디오 피드의 주소를 입력하십시오:"
 msgid "_Add"
 msgstr "추가"
 
-#: quodlibet/browsers/audiofeeds.py:279
+#: quodlibet/browsers/audiofeeds.py:299
 msgid "Audio Feeds"
 msgstr "오디오 피드"
 
-#: quodlibet/browsers/audiofeeds.py:280
+#: quodlibet/browsers/audiofeeds.py:300
 msgid "_Audio Feeds"
 msgstr "_오디오 피드"
 
-#: quodlibet/browsers/audiofeeds.py:382
+#: quodlibet/browsers/audiofeeds.py:402
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "파일 추가..."
 
-#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 msgid "_Refresh"
 msgstr "_ 새로 고침"
 
-#: quodlibet/browsers/audiofeeds.py:450
+#: quodlibet/browsers/audiofeeds.py:470
 #: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
@@ -220,11 +220,11 @@ msgstr "_ 새로 고침"
 msgid "_Delete"
 msgstr "_제거"
 
-#: quodlibet/browsers/audiofeeds.py:504
+#: quodlibet/browsers/audiofeeds.py:524
 msgid "Unable to add feed"
 msgstr "피드를 추가할 수 없습니다"
 
-#: quodlibet/browsers/audiofeeds.py:505
+#: quodlibet/browsers/audiofeeds.py:525
 #, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -233,7 +233,7 @@ msgstr ""
 "%s (을)를 추가할 수 없습니다. 서버가 다운되었거나, 입력한 주소가 오디오 피드"
 "가 아닐 수 있습니다."
 
-#: quodlibet/browsers/audiofeeds.py:522
+#: quodlibet/browsers/audiofeeds.py:542
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
