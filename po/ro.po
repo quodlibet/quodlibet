@@ -187,8 +187,8 @@ msgstr "Afişare albume"
 msgid "_Close"
 msgstr ""
 
-#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
-#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
+#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
+#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
 #: quodlibet/browsers/paned/models.py:88
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
 #: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
@@ -197,15 +197,15 @@ msgstr ""
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: quodlibet/browsers/audiofeeds.py:215
+#: quodlibet/browsers/audiofeeds.py:235
 msgid "New Feed"
 msgstr "Flux nou"
 
-#: quodlibet/browsers/audiofeeds.py:216
+#: quodlibet/browsers/audiofeeds.py:236
 msgid "Enter the location of an audio feed:"
 msgstr "Introduceţi locaţia unui flux audio:"
 
-#: quodlibet/browsers/audiofeeds.py:217
+#: quodlibet/browsers/audiofeeds.py:237
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
@@ -214,26 +214,26 @@ msgstr "Introduceţi locaţia unui flux audio:"
 msgid "_Add"
 msgstr ""
 
-#: quodlibet/browsers/audiofeeds.py:279
+#: quodlibet/browsers/audiofeeds.py:299
 msgid "Audio Feeds"
 msgstr "Fluxuri audio"
 
-#: quodlibet/browsers/audiofeeds.py:280
+#: quodlibet/browsers/audiofeeds.py:300
 msgid "_Audio Feeds"
 msgstr "Fluxuri a_udio"
 
-#: quodlibet/browsers/audiofeeds.py:382
+#: quodlibet/browsers/audiofeeds.py:402
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "Adăugare _fişier..."
 
-#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 #, fuzzy
 msgid "_Refresh"
 msgstr "Reactualizare c_olecţie"
 
-#: quodlibet/browsers/audiofeeds.py:450
+#: quodlibet/browsers/audiofeeds.py:470
 #: quodlibet/browsers/playlists/main.py:478
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
 #: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
@@ -242,11 +242,11 @@ msgstr "Reactualizare c_olecţie"
 msgid "_Delete"
 msgstr "Ştergere fişiere"
 
-#: quodlibet/browsers/audiofeeds.py:504
+#: quodlibet/browsers/audiofeeds.py:524
 msgid "Unable to add feed"
 msgstr "Nu s-a putut adăuga fluxul"
 
-#: quodlibet/browsers/audiofeeds.py:505
+#: quodlibet/browsers/audiofeeds.py:525
 #, fuzzy, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be an "
@@ -255,7 +255,7 @@ msgstr ""
 "<b>%s</b> nu a putut fi adăugat. Serverul ar putea fi nefuncţional ori "
 "locaţia ar putea să nu fie a unui flux audio."
 
-#: quodlibet/browsers/audiofeeds.py:522
+#: quodlibet/browsers/audiofeeds.py:542
 msgid ""
 "The current audio backend does not support URLs, Audio Feeds browser "
 "disabled."
