@@ -17,13 +17,13 @@ SYNOPSIS
 DESCRIPTION
 ===========
 
-Quod Libet is a music management program. It provides several different
-ways to view your audio library, as well as support for Internet radio and
-audio feeds. It has extremely flexible metadata tag editing and searching
-capabilities.
+Quod Libet is a music management program.
+It provides several different ways to view your audio library,
+as well as support for Internet radio and podcasts.
+It has extremely flexible metadata tag editing and searching capabilities.
 
-This manual page is only a short reference for Quod Libet. Complete
-documentation is available at
+This manual page is only a short reference for Quod Libet.
+Complete documentation is available at
 https://quodlibet.readthedocs.io/en/latest/guide/index.html.
 
 OPTIONS

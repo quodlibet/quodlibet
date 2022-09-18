@@ -15,7 +15,7 @@ class TBrowsers(TestCase):
         self.failUnless(browsers.tracks)
         self.failUnless(browsers.paned)
         self.failUnless(browsers.iradio)
-        self.failUnless(browsers.audiofeeds)
+        self.failUnless(browsers.podcasts)
         self.failUnless(browsers.albums)
         self.failUnless(browsers.playlists)
         self.failUnless(browsers.filesystem)
@@ -28,6 +28,11 @@ class TBrowsers(TestCase):
         self.assertEqual(browsers.get("paned"), browsers.paned.PanedBrowser)
         self.assertEqual(browsers.get("panedbrowser"),
                          browsers.paned.PanedBrowser)
+
+    def test_get_podcasts_aka_feeds(self):
+        cls = browsers.podcasts.Podcasts
+        assert browsers.get("Podcasts") == cls
+        assert browsers.get("audiofeeds") == cls, "Legacy name unsupported"
 
     def test_default(self):
         self.assertEqual(browsers.default, browsers.tracks.TrackList)
@@ -51,7 +56,7 @@ class TBrowsers(TestCase):
 
     def test_migrate(self):
         self.failUnless(
-            sys.modules["browsers.audiofeeds"] is browsers.audiofeeds)
+            sys.modules["browsers.audiofeeds"] is browsers.podcasts)
         self.failUnless(
             sys.modules["browsers.iradio"] is browsers.iradio)
 
