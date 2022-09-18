@@ -102,6 +102,59 @@ class PreferencesButton(AlbumPreferencesButton):
         self.pack_start(button, True, True, 0)
 
 
+class CoverGridContainer(ScrolledWindow):
+    def __init__(self, fb):
+        super().__init__(
+            hscrollbar_policy=Gtk.PolicyType.NEVER,
+            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
+            shadow_type=Gtk.ShadowType.IN)
+        self._fb = fb
+        fb.set_hadjustment(self.props.hadjustment)
+        fb.set_vadjustment(self.props.vadjustment)
+        self.add(fb)
+
+    def scroll_up(self):
+        va = self.props.vadjustment
+        va.props.value = va.props.lower
+
+    def scroll_to_child(self, child):
+        def scroll():
+            va = self.props.vadjustment
+            if va is None:
+                return
+            v = va.props.value
+            coords = child.translate_coordinates(self, 0, v)
+            if coords is None:
+                return
+            x, y = coords
+            h = child.get_allocation().height
+            p = va.props.page_size
+            if y < v:
+                va.props.value = y
+            elif y + h > v + p:
+                va.props.value = y - p + h
+
+        GLib.idle_add(scroll, priority=GLib.PRIORITY_LOW)
+
+    def do_focus(self, direction):
+        is_tab = (direction == Gtk.DirectionType.TAB_FORWARD
+            or direction == Gtk.DirectionType.TAB_BACKWARD)
+        if not is_tab:
+            self._fb.child_focus(direction)
+            return True
+
+        if self.get_focus_child():
+            # [Tab] moves focus beyond this container
+            return False
+
+        children = self._fb.get_selected_children()
+        if children:
+            children[0].grab_focus()
+        else:
+            self._fb.child_focus(direction)
+        return True
+
+
 def _get_cover_size():
     mag = config.getfloat("browsers", "covergrid_magnification", 3.)
     return mag * config.getint("browsers", "cover_size", 48)
@@ -216,13 +269,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             row_spacing=config.getint("browsers", "row_spacing", 6),
             column_spacing=config.getint("browsers", "column_spacing", 6))
 
-        self.scrollwin = sw = ScrolledWindow(
-            hscrollbar_policy=Gtk.PolicyType.NEVER,
-            vscrollbar_policy=Gtk.PolicyType.AUTOMATIC)
-        sw.set_shadow_type(Gtk.ShadowType.IN)
-        view.set_hadjustment(self.scrollwin.get_hadjustment())
-        view.set_vadjustment(self.scrollwin.get_vadjustment())
-        sw.add(view)
+        self.scrollwin = sw = CoverGridContainer(view)
 
         view.connect("selected-children-changed",
             util.DeferredSignal(
@@ -321,8 +368,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     def __update_filter(self, scroll_up=True):
         if scroll_up:
-            adjustment = self.scrollwin.props.vadjustment
-            adjustment.props.value = adjustment.props.lower
+            self.scrollwin.scroll_up()
 
         q = self.__search.get_query(star=["~people", "album"])
         self.__model_filter.props.filter = None if q.matches_all else q.search
@@ -443,32 +489,13 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
                 view.unselect_all()
                 view.select_child(child)
                 if scroll:
-                    self.__scroll_to_child(child)
+                    self.scrollwin.scroll_to_child(child)
                 first = False
                 if one:
                     break
             else:
                 view.select_child(child)
         return not first
-
-    def __scroll_to_child(self, child):
-        def scroll():
-            va = self.scrollwin.props.vadjustment
-            if va is None:
-                return
-            v = va.props.value
-            coords = child.translate_coordinates(self.scrollwin, 0, v)
-            if coords is None:
-                return
-            x, y = coords
-            h = child.get_allocation().height
-            p = va.props.page_size
-            if y < v:
-                va.props.value = y
-            elif y + h > v + p:
-                va.props.value = y - p + h
-
-        GLib.idle_add(scroll, priority=GLib.PRIORITY_LOW)
 
     def save(self):
         conf = self.__get_config_string()
