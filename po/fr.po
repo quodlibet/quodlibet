@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-13 20:41+0000\n"
+"PO-Revision-Date: 2022-09-20 00:20+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.14.1-dev\n"
+"X-Generator: Weblate 4.14.1\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -765,17 +765,16 @@ msgid "New Feed"
 msgstr "Nouveau flux"
 
 #: quodlibet/browsers/podcasts.py:240
-#, fuzzy
 msgid "Enter the podcast / audio feed location:"
-msgstr "Saisir l'adresse d'un flux audio :"
+msgstr "Indiquer l'emplacement du podcast / flux audio :"
 
 #: quodlibet/browsers/podcasts.py:308
 msgid "Podcasts"
-msgstr ""
+msgstr "Podcasts"
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Podcasts"
 
 #: quodlibet/browsers/podcasts.py:411
 msgid "_Add Feed…"
@@ -787,41 +786,41 @@ msgid "_Refresh"
 msgstr "_Rafraîchir"
 
 #: quodlibet/browsers/podcasts.py:479
-#, fuzzy
 msgid "Search source for new episodes"
-msgstr "Surveiller les modifications sur ce dossier"
+msgstr "Rechercher la source de nouveaux événements"
 
 #: quodlibet/browsers/podcasts.py:480
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Reconstruire"
 
 #: quodlibet/browsers/podcasts.py:481
 msgid "Remove all existing episodes then reload from source"
 msgstr ""
+"Supprimer tous les événements existants puis recharger à partir de la source"
 
 #: quodlibet/browsers/podcasts.py:483
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Supprimer ce podcast et ses événements"
 
 #: quodlibet/browsers/podcasts.py:540
 msgid "Unable to add feed"
 msgstr "Impossible d'ajouter le flux"
 
 #: quodlibet/browsers/podcasts.py:541
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
 msgstr ""
-"%s n'a pas pu être ajouté. Le serveur est peut-être en dérangement ou la "
-"ressource n'est pas un flux audio."
+"%s n'a pas pu être ajouté. Le serveur est peut-être en panne, ou "
+"l'emplacement n'est peut-être pas un podcast / flux audio."
 
 #: quodlibet/browsers/podcasts.py:558
-#, fuzzy
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
-"Le système audio ne supporte pas les URLs. Les flux audio ont été désactivés."
+"Le backend audio actuel ne prend pas en charge les URL, navigateur de "
+"podcast désactivé."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
