@@ -97,7 +97,7 @@ msgstr[0] "%d άλμπουμ"
 msgstr[1] "%d άλμπουμς"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:339
+#: quodlibet/browsers/covergrid/main.py:385
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Επαναφόρτωση ε_ξώφυλλου του άλμπουμ"
@@ -171,80 +171,6 @@ msgstr "Προβολή Άλμπουμ"
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
-#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
-#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
-#: quodlibet/browsers/paned/models.py:88
-#: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
-#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
-msgid "Unknown"
-msgstr "Άγνωστο"
-
-#: quodlibet/browsers/audiofeeds.py:235
-msgid "New Feed"
-msgstr "Νέα Ροή"
-
-#: quodlibet/browsers/audiofeeds.py:236
-msgid "Enter the location of an audio feed:"
-msgstr "Εισήγαγε την τοποθεσία μιας ροής ήχου"
-
-#: quodlibet/browsers/audiofeeds.py:237
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
-#: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-msgid "_Add"
-msgstr "_Προσθήκη"
-
-#: quodlibet/browsers/audiofeeds.py:299
-msgid "Audio Feeds"
-msgstr "Ροές Ήχου"
-
-#: quodlibet/browsers/audiofeeds.py:300
-msgid "_Audio Feeds"
-msgstr "_Ροές Ήχου"
-
-#: quodlibet/browsers/audiofeeds.py:402
-#, fuzzy
-msgid "_Add Feed…"
-msgstr "Προσθήκη _Αρχείου…"
-
-#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:426
-msgid "_Refresh"
-msgstr "Α_νανέωση"
-
-#: quodlibet/browsers/audiofeeds.py:470
-#: quodlibet/browsers/playlists/main.py:478
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
-msgid "_Delete"
-msgstr "_Διαγραφή Αρχείων"
-
-#: quodlibet/browsers/audiofeeds.py:524
-msgid "Unable to add feed"
-msgstr "Αδυναμία προσθήκης ροής"
-
-#: quodlibet/browsers/audiofeeds.py:525
-#, python-format
-msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
-msgstr ""
-"Η ροή <b>%s</b> δεν ήταν δυνατό να προστεθεί. Ίσως ο διακομιστής να είναι "
-"εκτός λειτουργίας, ή η τοποθεσία δεν είναι ροή ήχου."
-
-#: quodlibet/browsers/audiofeeds.py:542
-msgid ""
-"The current audio backend does not support URLs, Audio Feeds browser "
-"disabled."
-msgstr ""
-"Το τρέχων ηχητικό σύστημα δεν υποστηρίζει απομακρυσμένες διευθύνσεις ο "
-"περιηγητής Ροών Ήχου απενεργοποιήθηκε"
-
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "Περιηγητής Μουσικοθήκης"
@@ -287,6 +213,15 @@ msgstr "Πολλαπλές Τιμές %s"
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
 msgstr "_Προσαρμοσμένο"
+
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/paned/prefs.py:120
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1276
+#: quodlibet/qltk/scanbox.py:63
+msgid "_Add"
+msgstr "_Προσθήκη"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -355,11 +290,11 @@ msgstr "_Εφαρμογή"
 msgid "_Cancel"
 msgstr "_Ακύρωση"
 
-#: quodlibet/browsers/covergrid/main.py:116
+#: quodlibet/browsers/covergrid/main.py:169
 msgid "Cover Grid"
 msgstr "Πλέγμα Εξώφυλλων"
 
-#: quodlibet/browsers/covergrid/main.py:117
+#: quodlibet/browsers/covergrid/main.py:170
 msgid "_Cover Grid"
 msgstr "_Πλέγμα Εξώφυλλων"
 
@@ -650,6 +585,16 @@ msgstr "Περιηγητής με _Στήλες"
 msgid "Select _All"
 msgstr "Επιλογή Όλ_ων"
 
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
+#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
+#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/ext/songsmenu/fingerprint/search.py:46
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
+msgid "Unknown"
+msgstr "Άγνωστο"
+
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "Όλα"
@@ -721,6 +666,14 @@ msgstr "Αδυναμία εισαγωγής λίστας αναπαραγωγή�
 #: quodlibet/browsers/playlists/main.py:436
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M3U/M3U8 και PLS."
+
+#: quodlibet/browsers/playlists/main.py:478
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/songsmenu.py:359
+msgid "_Delete"
+msgstr "_Διαγραφή Αρχείων"
 
 #: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
@@ -807,6 +760,71 @@ msgstr ""
 "Εισαγωγή λίστας αναπαραγωγής.\n"
 "\n"
 "%(current)d/%(total)d τραγούδια προστέθηκαν."
+
+#: quodlibet/browsers/podcasts.py:239
+msgid "New Feed"
+msgstr "Νέα Ροή"
+
+#: quodlibet/browsers/podcasts.py:240
+#, fuzzy
+msgid "Enter the podcast / audio feed location:"
+msgstr "Εισήγαγε την τοποθεσία μιας ροής ήχου"
+
+#: quodlibet/browsers/podcasts.py:308
+msgid "Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:309
+msgid "_Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:411
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "Προσθήκη _Αρχείου…"
+
+#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/qltk/pluginwin.py:426
+msgid "_Refresh"
+msgstr "Α_νανέωση"
+
+#: quodlibet/browsers/podcasts.py:479
+#, fuzzy
+msgid "Search source for new episodes"
+msgstr "Παρακολούθηση αυτού του φακέλου για νέα τραγούδια"
+
+#: quodlibet/browsers/podcasts.py:480
+msgid "_Rebuild"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:481
+msgid "Remove all existing episodes then reload from source"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:483
+msgid "Remove this podcast and its episodes"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:540
+msgid "Unable to add feed"
+msgstr "Αδυναμία προσθήκης ροής"
+
+#: quodlibet/browsers/podcasts.py:541
+#, fuzzy, python-format
+msgid ""
+"%s could not be added. The server may be down, or the location may not be a "
+"podcast / audio feed."
+msgstr ""
+"Η ροή <b>%s</b> δεν ήταν δυνατό να προστεθεί. Ίσως ο διακομιστής να είναι "
+"εκτός λειτουργίας, ή η τοποθεσία δεν είναι ροή ήχου."
+
+#: quodlibet/browsers/podcasts.py:558
+#, fuzzy
+msgid ""
+"The current audio backend does not support URLs, Podcast browser disabled."
+msgstr ""
+"Το τρέχων ηχητικό σύστημα δεν υποστηρίζει απομακρυσμένες διευθύνσεις ο "
+"περιηγητής Ροών Ήχου απενεργοποιήθηκε"
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -8134,6 +8152,12 @@ msgstr ""
 "υποστήριξη για διαδικτυακό ραδιόφωνο και ροών ήχου. Έχει απίστευτα ευέλικτες "
 "δυνατότητες επεξεργασίας και αναζήτησης μεταδεδομένων ετικετών μουσικής."
 
+#~ msgid "Audio Feeds"
+#~ msgstr "Ροές Ήχου"
+
+#~ msgid "_Audio Feeds"
+#~ msgstr "_Ροές Ήχου"
+
 #~ msgid "New"
 #~ msgstr "Νέο"
 
@@ -8472,9 +8496,6 @@ msgstr ""
 
 #~ msgid "Unable to download lyrics."
 #~ msgstr "Αδυναμία λήψης στίχων."
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Παρακολούθηση αυτού του φακέλου για νέα τραγούδια"
 
 #~ msgid "Set or toggle the playback order"
 #~ msgstr "Καθορισμός ή εναλλαγή της σειράς αναπαραγωγής"

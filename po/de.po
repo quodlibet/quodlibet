@@ -99,7 +99,7 @@ msgstr[0] "%d Album"
 msgstr[1] "%d Alben"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:339
+#: quodlibet/browsers/covergrid/main.py:385
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Album-_Cover neu laden"
@@ -173,79 +173,6 @@ msgstr "Alben-Anzeige"
 msgid "_Close"
 msgstr "S_chließen"
 
-#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
-#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
-#: quodlibet/browsers/paned/models.py:88
-#: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
-#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
-msgid "Unknown"
-msgstr "Unbekannt"
-
-#: quodlibet/browsers/audiofeeds.py:235
-msgid "New Feed"
-msgstr "Neuer Feed"
-
-#: quodlibet/browsers/audiofeeds.py:236
-msgid "Enter the location of an audio feed:"
-msgstr "Geben Sie die URL des Audio-Feeds an:"
-
-#: quodlibet/browsers/audiofeeds.py:237
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
-#: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-msgid "_Add"
-msgstr "_Hinzufügen"
-
-#: quodlibet/browsers/audiofeeds.py:299
-msgid "Audio Feeds"
-msgstr "Audio-Feeds"
-
-#: quodlibet/browsers/audiofeeds.py:300
-msgid "_Audio Feeds"
-msgstr "_Audio-Feeds"
-
-#: quodlibet/browsers/audiofeeds.py:402
-msgid "_Add Feed…"
-msgstr "_Neuer Feed …"
-
-#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:426
-msgid "_Refresh"
-msgstr "_Aktualisieren"
-
-#: quodlibet/browsers/audiofeeds.py:470
-#: quodlibet/browsers/playlists/main.py:478
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
-msgid "_Delete"
-msgstr "_Löschen"
-
-#: quodlibet/browsers/audiofeeds.py:524
-msgid "Unable to add feed"
-msgstr "Feed konnte nicht hinzugefügt werden"
-
-#: quodlibet/browsers/audiofeeds.py:525
-#, python-format
-msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
-msgstr ""
-"%s konnte nicht hinzugefügt werden. Möglicherweise ist der Server gerade "
-"außer Betrieb, oder die angegebene URL enthält keinen Audio-Feed."
-
-#: quodlibet/browsers/audiofeeds.py:542
-msgid ""
-"The current audio backend does not support URLs, Audio Feeds browser "
-"disabled."
-msgstr ""
-"Das aktuelle Audio-Backend unterstützt keine URLs, der Browser für Audio-"
-"Feeds wurde deaktiviert."
-
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "Bibliothek-Browser"
@@ -288,6 +215,15 @@ msgstr "Mehrere %s-Werte"
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
 msgstr "_Benutzerdefiniert"
+
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/paned/prefs.py:120
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1276
+#: quodlibet/qltk/scanbox.py:63
+msgid "_Add"
+msgstr "_Hinzufügen"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -356,11 +292,11 @@ msgstr "_Anwenden"
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: quodlibet/browsers/covergrid/main.py:116
+#: quodlibet/browsers/covergrid/main.py:169
 msgid "Cover Grid"
 msgstr "Albenraster"
 
-#: quodlibet/browsers/covergrid/main.py:117
+#: quodlibet/browsers/covergrid/main.py:170
 msgid "_Cover Grid"
 msgstr "Alben_raster"
 
@@ -649,6 +585,16 @@ msgstr "Br_owser"
 msgid "Select _All"
 msgstr "A_lle auswählen"
 
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
+#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
+#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/ext/songsmenu/fingerprint/search.py:46
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
+msgid "Unknown"
+msgstr "Unbekannt"
+
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "Alle"
@@ -721,6 +667,14 @@ msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet kann nur Wiedergabelisten in den Formaten M3U/M3U8 und PLS "
 "importieren."
+
+#: quodlibet/browsers/playlists/main.py:478
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/songsmenu.py:359
+msgid "_Delete"
+msgstr "_Löschen"
 
 #: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
@@ -806,6 +760,70 @@ msgstr ""
 "Wiedergabeliste wird importiert.\n"
 "\n"
 "%(current)d/%(total)d Titel hinzugefügt."
+
+#: quodlibet/browsers/podcasts.py:239
+msgid "New Feed"
+msgstr "Neuer Feed"
+
+#: quodlibet/browsers/podcasts.py:240
+#, fuzzy
+msgid "Enter the podcast / audio feed location:"
+msgstr "Geben Sie die URL des Audio-Feeds an:"
+
+#: quodlibet/browsers/podcasts.py:308
+msgid "Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:309
+msgid "_Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:411
+msgid "_Add Feed…"
+msgstr "_Neuer Feed …"
+
+#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/qltk/pluginwin.py:426
+msgid "_Refresh"
+msgstr "_Aktualisieren"
+
+#: quodlibet/browsers/podcasts.py:479
+#, fuzzy
+msgid "Search source for new episodes"
+msgstr "Diesen Ordner auf neue Titel prüfen"
+
+#: quodlibet/browsers/podcasts.py:480
+msgid "_Rebuild"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:481
+msgid "Remove all existing episodes then reload from source"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:483
+msgid "Remove this podcast and its episodes"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:540
+msgid "Unable to add feed"
+msgstr "Feed konnte nicht hinzugefügt werden"
+
+#: quodlibet/browsers/podcasts.py:541
+#, fuzzy, python-format
+msgid ""
+"%s could not be added. The server may be down, or the location may not be a "
+"podcast / audio feed."
+msgstr ""
+"%s konnte nicht hinzugefügt werden. Möglicherweise ist der Server gerade "
+"außer Betrieb, oder die angegebene URL enthält keinen Audio-Feed."
+
+#: quodlibet/browsers/podcasts.py:558
+#, fuzzy
+msgid ""
+"The current audio backend does not support URLs, Podcast browser disabled."
+msgstr ""
+"Das aktuelle Audio-Backend unterstützt keine URLs, der Browser für Audio-"
+"Feeds wurde deaktiviert."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -8128,6 +8146,12 @@ msgstr ""
 "Internetradio sowie Audio-Feeds. Quod Libet enthält äußerst flexible "
 "Funktionen zur Metadaten-Bearbeitung und Suche."
 
+#~ msgid "Audio Feeds"
+#~ msgstr "Audio-Feeds"
+
+#~ msgid "_Audio Feeds"
+#~ msgstr "_Audio-Feeds"
+
 #~ msgid "New"
 #~ msgstr "Neu"
 
@@ -8408,9 +8432,6 @@ msgstr ""
 
 #~ msgid "_Open"
 #~ msgstr "_Öffnen"
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Diesen Ordner auf neue Titel prüfen"
 
 #~ msgid "browsers"
 #~ msgstr "Browser"

@@ -103,7 +103,7 @@ msgstr[1] "%d albumi"
 msgstr[2] "%d albumu"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:339
+#: quodlibet/browsers/covergrid/main.py:385
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -183,82 +183,6 @@ msgstr "Albuma attēlojums"
 msgid "_Close"
 msgstr ""
 
-#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
-#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
-#: quodlibet/browsers/paned/models.py:88
-#: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
-#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
-msgid "Unknown"
-msgstr "Nezināms"
-
-#: quodlibet/browsers/audiofeeds.py:235
-msgid "New Feed"
-msgstr "Jauna barotne"
-
-#: quodlibet/browsers/audiofeeds.py:236
-msgid "Enter the location of an audio feed:"
-msgstr "Ievadiet audio barotnes adresi:"
-
-#: quodlibet/browsers/audiofeeds.py:237
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
-#: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-msgid "_Add"
-msgstr ""
-
-#: quodlibet/browsers/audiofeeds.py:299
-msgid "Audio Feeds"
-msgstr "Audio barotnes"
-
-#: quodlibet/browsers/audiofeeds.py:300
-msgid "_Audio Feeds"
-msgstr "_Audio barotnes"
-
-#: quodlibet/browsers/audiofeeds.py:402
-#, fuzzy
-msgid "_Add Feed…"
-msgstr "Pievienot _failu..."
-
-#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:426
-#, fuzzy
-msgid "_Refresh"
-msgstr "_Atsvaidzināt bibliotēku"
-
-#: quodlibet/browsers/audiofeeds.py:470
-#: quodlibet/browsers/playlists/main.py:478
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
-#, fuzzy
-msgid "_Delete"
-msgstr "Dzēst failus"
-
-#: quodlibet/browsers/audiofeeds.py:524
-msgid "Unable to add feed"
-msgstr "Neizdevās pievienot barotni"
-
-#: quodlibet/browsers/audiofeeds.py:525
-#, fuzzy, python-format
-msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
-msgstr ""
-"<b>%s</b> neizdevās pievienot. Iespējams, nedarbojas serveris, vai arī "
-"ievadītā adrese nav audio barotne."
-
-#: quodlibet/browsers/audiofeeds.py:542
-msgid ""
-"The current audio backend does not support URLs, Audio Feeds browser "
-"disabled."
-msgstr ""
-"Pašreizējā audio aizmugure neatbalsta URL, audio barotņu pārlūks tiks "
-"atslēgts."
-
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "Bibliotēkas pārlūks"
@@ -302,6 +226,15 @@ msgstr "Sadalīt _vairākās vērtībās"
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
 msgstr "_Pielāgots"
+
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/paned/prefs.py:120
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1276
+#: quodlibet/qltk/scanbox.py:63
+msgid "_Add"
+msgstr ""
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -372,12 +305,12 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: quodlibet/browsers/covergrid/main.py:116
+#: quodlibet/browsers/covergrid/main.py:169
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Kopējais izmērs:"
 
-#: quodlibet/browsers/covergrid/main.py:117
+#: quodlibet/browsers/covergrid/main.py:170
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "Kopējais izmērs:"
@@ -681,6 +614,16 @@ msgstr "Sadalītais _pārlūks"
 msgid "Select _All"
 msgstr "Iezīmēt visus"
 
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
+#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
+#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/ext/songsmenu/fingerprint/search.py:46
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
+msgid "Unknown"
+msgstr "Nezināms"
+
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "Visi"
@@ -752,6 +695,15 @@ msgstr "Neizdevās importēt repertuāru"
 #, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet var importēt repertuārus tikai M3U un PLS formātā."
+
+#: quodlibet/browsers/playlists/main.py:478
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/songsmenu.py:359
+#, fuzzy
+msgid "_Delete"
+msgstr "Dzēst failus"
 
 #: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
@@ -847,6 +799,72 @@ msgstr ""
 "Importē repertuāru.\n"
 "\n"
 "%(current)d/%(total)d dziesmas pievienotas."
+
+#: quodlibet/browsers/podcasts.py:239
+msgid "New Feed"
+msgstr "Jauna barotne"
+
+#: quodlibet/browsers/podcasts.py:240
+#, fuzzy
+msgid "Enter the podcast / audio feed location:"
+msgstr "Ievadiet audio barotnes adresi:"
+
+#: quodlibet/browsers/podcasts.py:308
+msgid "Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:309
+msgid "_Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:411
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "Pievienot _failu..."
+
+#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/qltk/pluginwin.py:426
+#, fuzzy
+msgid "_Refresh"
+msgstr "_Atsvaidzināt bibliotēku"
+
+#: quodlibet/browsers/podcasts.py:479
+#, fuzzy
+msgid "Search source for new episodes"
+msgstr "Vērot šo mapi"
+
+#: quodlibet/browsers/podcasts.py:480
+msgid "_Rebuild"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:481
+msgid "Remove all existing episodes then reload from source"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:483
+msgid "Remove this podcast and its episodes"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:540
+msgid "Unable to add feed"
+msgstr "Neizdevās pievienot barotni"
+
+#: quodlibet/browsers/podcasts.py:541
+#, fuzzy, python-format
+msgid ""
+"%s could not be added. The server may be down, or the location may not be a "
+"podcast / audio feed."
+msgstr ""
+"<b>%s</b> neizdevās pievienot. Iespējams, nedarbojas serveris, vai arī "
+"ievadītā adrese nav audio barotne."
+
+#: quodlibet/browsers/podcasts.py:558
+#, fuzzy
+msgid ""
+"The current audio backend does not support URLs, Podcast browser disabled."
+msgstr ""
+"Pašreizējā audio aizmugure neatbalsta URL, audio barotņu pārlūks tiks "
+"atslēgts."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -8177,6 +8195,12 @@ msgid ""
 "capabilities."
 msgstr ""
 
+#~ msgid "Audio Feeds"
+#~ msgstr "Audio barotnes"
+
+#~ msgid "_Audio Feeds"
+#~ msgstr "_Audio barotnes"
+
 #, fuzzy
 #~ msgid "Searching for lyrics…"
 #~ msgstr "Meklē dziesmas vārdus..."
@@ -8402,9 +8426,6 @@ msgstr ""
 
 #~ msgid "Unable to download lyrics."
 #~ msgstr "Neizdevās lejupielādēt dziesmas vārdus."
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Vērot šo mapi"
 
 #~ msgid "Set or toggle the playback order"
 #~ msgstr "Iestatīt vai pārslēgt atskaņošanas kārtību"

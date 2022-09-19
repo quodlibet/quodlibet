@@ -94,7 +94,7 @@ msgid_plural "%d albums"
 msgstr[0] "%dアルバム"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:339
+#: quodlibet/browsers/covergrid/main.py:385
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "アルバムカバーを再読込(_C)"
@@ -165,79 +165,6 @@ msgstr "アルバムの表示"
 msgid "_Close"
 msgstr "閉じる(_C)"
 
-#: quodlibet/browsers/audiofeeds.py:54 quodlibet/browsers/audiofeeds.py:66
-#: quodlibet/browsers/audiofeeds.py:68 quodlibet/browsers/audiofeeds.py:174
-#: quodlibet/browsers/paned/models.py:88
-#: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
-#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
-msgid "Unknown"
-msgstr "不明"
-
-#: quodlibet/browsers/audiofeeds.py:235
-msgid "New Feed"
-msgstr "新規フィード"
-
-#: quodlibet/browsers/audiofeeds.py:236
-msgid "Enter the location of an audio feed:"
-msgstr "オーディオフィードの場所を入力してください:"
-
-#: quodlibet/browsers/audiofeeds.py:237
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
-#: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-msgid "_Add"
-msgstr "追加(_A)"
-
-#: quodlibet/browsers/audiofeeds.py:299
-msgid "Audio Feeds"
-msgstr "オーディオフィード"
-
-#: quodlibet/browsers/audiofeeds.py:300
-msgid "_Audio Feeds"
-msgstr "オーディオフィード(_A)"
-
-#: quodlibet/browsers/audiofeeds.py:402
-msgid "_Add Feed…"
-msgstr "フィードの追加(_A)…"
-
-#: quodlibet/browsers/audiofeeds.py:469 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:426
-msgid "_Refresh"
-msgstr "再表示(_R)"
-
-#: quodlibet/browsers/audiofeeds.py:470
-#: quodlibet/browsers/playlists/main.py:478
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
-msgid "_Delete"
-msgstr "削除(_D)"
-
-#: quodlibet/browsers/audiofeeds.py:524
-msgid "Unable to add feed"
-msgstr "フィードを追加できません"
-
-#: quodlibet/browsers/audiofeeds.py:525
-#, python-format
-msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
-msgstr ""
-"%s を追加できませんでした。サーバがダウンしているか、もしくはオーディオフィー"
-"ドの場所を間違えている可能性があります。"
-
-#: quodlibet/browsers/audiofeeds.py:542
-msgid ""
-"The current audio backend does not support URLs, Audio Feeds browser "
-"disabled."
-msgstr ""
-"現在のオーディオバックエンドはURLに対応していないため、オーディオフィードブラ"
-"ウザは無効になっています。"
-
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
 msgstr "ライブラリブラウザ"
@@ -279,6 +206,15 @@ msgstr "複数の%s"
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
 msgstr "カスタム(_C)"
+
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/paned/prefs.py:120
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1276
+#: quodlibet/qltk/scanbox.py:63
+msgid "_Add"
+msgstr "追加(_A)"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -347,11 +283,11 @@ msgstr "適用(_A)"
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
-#: quodlibet/browsers/covergrid/main.py:116
+#: quodlibet/browsers/covergrid/main.py:169
 msgid "Cover Grid"
 msgstr "カバーグリッド"
 
-#: quodlibet/browsers/covergrid/main.py:117
+#: quodlibet/browsers/covergrid/main.py:170
 msgid "_Cover Grid"
 msgstr "カバーグリッド(_C)"
 
@@ -638,6 +574,16 @@ msgstr "ペインブラウザ(_P)"
 msgid "Select _All"
 msgstr "全て選択(_A)"
 
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
+#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
+#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/ext/songsmenu/fingerprint/search.py:46
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
+msgid "Unknown"
+msgstr "不明"
+
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "全て"
@@ -709,6 +655,14 @@ msgstr "プレイリストをインポートできません"
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet では M3U/M3U8 と PLS 形式のプレイリストしかインポートできません。"
+
+#: quodlibet/browsers/playlists/main.py:478
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/songsmenu.py:359
+msgid "_Delete"
+msgstr "削除(_D)"
 
 #: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
@@ -792,6 +746,70 @@ msgstr ""
 "プレイリストをインポートしています。\n"
 "\n"
 "%(current)d/%(total)d曲を追加しました。"
+
+#: quodlibet/browsers/podcasts.py:239
+msgid "New Feed"
+msgstr "新規フィード"
+
+#: quodlibet/browsers/podcasts.py:240
+#, fuzzy
+msgid "Enter the podcast / audio feed location:"
+msgstr "オーディオフィードの場所を入力してください:"
+
+#: quodlibet/browsers/podcasts.py:308
+msgid "Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:309
+msgid "_Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:411
+msgid "_Add Feed…"
+msgstr "フィードの追加(_A)…"
+
+#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/qltk/pluginwin.py:426
+msgid "_Refresh"
+msgstr "再表示(_R)"
+
+#: quodlibet/browsers/podcasts.py:479
+#, fuzzy
+msgid "Search source for new episodes"
+msgstr "このフォルダの新しい曲をチェックする"
+
+#: quodlibet/browsers/podcasts.py:480
+msgid "_Rebuild"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:481
+msgid "Remove all existing episodes then reload from source"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:483
+msgid "Remove this podcast and its episodes"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:540
+msgid "Unable to add feed"
+msgstr "フィードを追加できません"
+
+#: quodlibet/browsers/podcasts.py:541
+#, fuzzy, python-format
+msgid ""
+"%s could not be added. The server may be down, or the location may not be a "
+"podcast / audio feed."
+msgstr ""
+"%s を追加できませんでした。サーバがダウンしているか、もしくはオーディオフィー"
+"ドの場所を間違えている可能性があります。"
+
+#: quodlibet/browsers/podcasts.py:558
+#, fuzzy
+msgid ""
+"The current audio backend does not support URLs, Podcast browser disabled."
+msgstr ""
+"現在のオーディオバックエンドはURLに対応していないため、オーディオフィードブラ"
+"ウザは無効になっています。"
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -7919,6 +7937,12 @@ msgstr ""
 "しています。また、非常に柔軟なメタデータタグの編集および検索機能を備えていま"
 "す。"
 
+#~ msgid "Audio Feeds"
+#~ msgstr "オーディオフィード"
+
+#~ msgid "_Audio Feeds"
+#~ msgstr "オーディオフィード(_A)"
+
 #~ msgid "New"
 #~ msgstr "新規"
 
@@ -8118,9 +8142,6 @@ msgstr ""
 
 #~ msgid "Unable to download lyrics."
 #~ msgstr "歌詞のダウンロードに失敗しました。"
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "このフォルダの新しい曲をチェックする"
 
 #~ msgid "Set or toggle the playback order"
 #~ msgstr "再生順のセットまたは切替"
