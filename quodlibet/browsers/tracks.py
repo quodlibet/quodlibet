@@ -9,10 +9,12 @@
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.qltk import is_accel
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
@@ -81,6 +83,7 @@ class TrackList(Browser):
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
+        sbb.connect('key-press-event', self.__sb_key_pressed)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
@@ -115,6 +118,14 @@ class TrackList(Browser):
 
     def __text_parse(self, bar, text):
         self.activate()
+
+    def __sb_key_pressed(self, entry, event):
+        if (is_accel(event, "<Primary>Return") or
+                is_accel(event, "<Primary>KP_Enter")):
+            songs = app.window.songlist.get_songs()
+            app.window.playlist.enqueue(songs)
+            return True
+        return False
 
     def save(self):
         config.settext("browsers", "query_text", self._get_text())
