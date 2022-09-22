@@ -81,7 +81,8 @@ class SongLibrary(Library[K, V], PicklingMixin):
 
         songs = self.values()
         if text != "":
-            songs = [s for s in songs if Query(text, star).search(s)]
+            search = Query(text, star).search
+            songs = [s for s in songs if search(s)]
         return songs
 
 
