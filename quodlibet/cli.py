@@ -86,6 +86,8 @@ def process_arguments(argv):
         _("a music library and player"),
         _("[option]"))
 
+    options.add("set-pattern", help="Set template for --print-* commands")
+    options.add("set-pattern-help", help="Show help for --set-pattern")
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
     options.add("start-hidden", help=_("Don't show any windows on start"))
@@ -239,6 +241,13 @@ def process_arguments(argv):
             queue(command, filename)
         elif command == "enqueue-files":
             queue(command, arg)
+        elif command == "set-pattern":
+            try:
+                queue(command, args[0])
+            except IndexError:
+                queue(command)
+        elif command == "set-pattern-help":
+            queue(command)
         elif command == "play-file":
             if uri_is_valid(arg) and arg.startswith("quodlibet://"):
                 # TODO: allow handling of URIs without --play-file

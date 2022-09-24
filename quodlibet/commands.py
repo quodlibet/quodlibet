@@ -26,6 +26,7 @@ from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, OneSong
 from quodlibet.order.reorder import OrderWeighted, OrderShuffle
 
 from quodlibet.config import RATINGS
+from quodlibet.pattern import Pattern
 
 
 class CommandError(Exception):
@@ -123,6 +124,19 @@ def arg2text(arg):
         return fsn2text(arg, strict=True)
     except ValueError as e:
         raise CommandError(e)
+
+
+default_patterns = {
+    'playing': Pattern('<artist~album~tracknumber~title>'),
+    'playlist': Pattern('<~uri>'),
+    'query': Pattern('<~filename>'),
+    'queue': Pattern('<~uri>'),
+}
+print_pattern = None
+
+
+def get_pattern(kind):
+    return print_pattern or default_patterns[kind]
 
 
 registry = CommandRegistry()
@@ -504,24 +518,52 @@ def _queue(app, value):
 @registry.register("dump-playlist")
 def _dump_playlist(app):
     window = app.window
-    uris = []
+    items = []
+    pattern = get_pattern('playlist')
     for song in window.playlist.pl.get():
-        uris.append(song("~uri"))
-    return text2fsn(u"\n".join(uris) + u"\n")
+        items.append(pattern.format(song))
+    return text2fsn(u"\n".join(items) + u"\n")
 
 
 @registry.register("dump-queue")
 def _dump_queue(app):
     window = app.window
-    uris = []
+    items = []
+    pattern = get_pattern('queue')
     for song in window.playlist.q.get():
-        uris.append(song("~uri"))
-    return text2fsn(u"\n".join(uris) + u"\n")
+        items.append(pattern.format(song))
+    return text2fsn(u"\n".join(items) + u"\n")
 
 
 @registry.register("refresh")
 def _refresh(app):
     scan_library(app.library, False)
+
+
+@registry.register("set-pattern", optional=1)
+def _set_pattern(app, fmt=None):
+    global print_pattern
+    if fmt is None:
+        print_pattern = None
+    else:
+        print_pattern = Pattern(arg2text(fmt))
+    return
+
+
+@registry.register("set-pattern-help", optional=1)
+def _set_pattern_help(app, fmt=None):
+    import textwrap
+    return textwrap.dedent('''
+      --set-pattern=PATTERN sets the output format of --print-playing,
+                            --print-playlist, --print-query, and
+                            --print-queue to PATTERN.
+
+      --set-patern          resets the output format to the default.
+
+      PATTERN can contain tag patterns and should follow the format of
+      file renaming patterns.  See the Renaming Files section of the
+      manual page for details.
+      ''')
 
 
 @registry.register("print-query", args=1)
@@ -532,7 +574,8 @@ def _print_query(app, query):
 
     query = arg2text(query)
     songs = app.library.query(query)
-    return "\n".join([song("~filename") for song in songs]) + "\n"
+    pattern = get_pattern('query')
+    return "\n".join([text2fsn(pattern.format(song)) for song in songs]) + "\n"
 
 
 @registry.register("print-query-text")
@@ -547,9 +590,9 @@ def _print_playing(app, fstring=None):
     from quodlibet.pattern import Pattern
 
     if fstring is None:
-        fstring = u"<artist~album~tracknumber~title>"
+        pattern = get_pattern('playing')
     else:
-        fstring = arg2text(fstring)
+        pattern = Pattern(arg2text(fstring))
 
     song = app.player.info
     if song is None:
@@ -557,7 +600,7 @@ def _print_playing(app, fstring=None):
         song.sanitize()
     else:
         song = app.player.with_elapsed_info(song)
-    return text2fsn(Pattern(fstring).format(song) + u"\n")
+    return text2fsn(pattern.format(song) + u"\n")
 
 
 @registry.register("uri-received", args=1)

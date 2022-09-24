@@ -46,6 +46,18 @@ class TCommands(TestCase):
         app.player.seek(234.56 * 1000)
         assert self.__send("print-playing <~#elapsed>") == "234.56\n"
 
+    def test_set_pattern(self):
+        app.player.info = AudioFile(
+            {"album": "foo",
+             "artist": "artist",
+             "title": "title",
+             "~filename": fsnative("/dev/null"),
+             })
+        self.__send("set-pattern <album>-bar")
+        assert self.__send("print-playing") == "foo-bar\n"
+        self.__send("set-pattern")
+        assert self.__send("print-playing") == "artist - foo - title\n"
+
     def test_player(self):
         self.__send("previous")
         self.__send("force-previous")
