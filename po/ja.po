@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-22 12:15+0000\n"
+"PO-Revision-Date: 2022-09-25 13:04+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -63,7 +63,7 @@ msgstr "再生回数(_C)"
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:71
 msgid "Sort _by…"
-msgstr "並べ替え(_B)…"
+msgstr "ソート(_B)…"
 
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
@@ -599,7 +599,7 @@ msgstr "ワイド"
 
 #: quodlibet/browsers/paned/prefs.py:43
 msgid "Columnar"
-msgstr "コラムナー"
+msgstr "カラムナー"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-format
@@ -2829,7 +2829,7 @@ msgstr "同期できません"
 
 #: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
-msgstr "<b>状態</b>で並べ替えている間は同期を開始できません。"
+msgstr "<b>状態</b>でソートされている間は同期を開始できません。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:950
 msgid "Starting song synchronization"
@@ -3014,7 +3014,7 @@ msgid ""
 "tt></b>."
 msgstr ""
 "評価値に変換されるサムズアップ/ダウン・スコアリングシステムを追加します。投票"
-"総数を維持し、<b><tt>~#score</tt></b> で並べ替えるのに便利です。"
+"総数を維持し、<b><tt>~#score</tt></b> でソートするのに便利です。"
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -5264,7 +5264,7 @@ msgstr "ヘルプ情報の表示"
 #: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
-msgstr "「%(column-id)s」は有効な列名ではありません (%(all-column-ids)s)。"
+msgstr "「%(column-id)s」は有効なカラム名ではありません (%(all-column-ids)s)。"
 
 #: quodlibet/order/__init__.py:32
 msgid "_Unknown"
@@ -6150,9 +6150,9 @@ msgid ""
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
 msgstr ""
-"左側の列が右側の列とほぼ一致しているかどうかを確認してください。一致しない場"
-"合は、ここで順序を変更することができます (一致させるべきではない行には「_」を"
-"使用します):"
+"左側のカラムが右側のカラムとほぼ一致しているかどうかを確認してください。一致"
+"しない場合は、ここで順序を変更することができます "
+"(一致させるべきではない行には「_」を使用します):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"
@@ -6320,7 +6320,7 @@ msgstr "タグが変更されたときに曲をソートする"
 
 #: quodlibet/qltk/prefs.py:70
 msgid "Automatically re-sort songs in the song list when tags are modified"
-msgstr "タグが変更されると、ソングリスト内の曲が自動的に並べ替えられます"
+msgstr "タグが変更されると、ソングリスト内の曲を自動的に再ソートします"
 
 #: quodlibet/qltk/prefs.py:87
 msgid "_Others:"
@@ -6407,7 +6407,7 @@ msgstr "ワンクリック評価を有効にする(_O)"
 
 #: quodlibet/qltk/prefs.py:309
 msgid "Enable rating by clicking on the rating column in the song list"
-msgstr "ソングリストの評価カラムのクリックによる評価を有効にします"
+msgstr "ソングリストで「評価」カラムをクリックすることで評価できるようにします"
 
 #: quodlibet/qltk/prefs.py:315 quodlibet/qltk/prefs.py:681
 msgid "Ratings"
@@ -7096,7 +7096,7 @@ msgstr "カラムヘッダを左クリック"
 
 #: quodlibet/qltk/shortcuts.py:32
 msgid "Add the column to the list of columns to sort by"
-msgstr "並べ替えの対象となるカラムのリストに追加する"
+msgstr "ソート対象カラムのリストに追加する"
 
 #: quodlibet/qltk/shortcuts.py:34
 msgid "Tree View"
@@ -7165,7 +7165,7 @@ msgstr "ヘッダのカスタマイズ(_C)…"
 
 #: quodlibet/qltk/songlist.py:1180
 msgid "_Expand Column"
-msgstr "展開カラム(_E)"
+msgstr "カラム幅の自動伸縮(_E)"
 
 #: quodlibet/qltk/songsmenu.py:44
 #, python-format
