@@ -1,4 +1,4 @@
-# Copyright 2016-2021 Nick Boultbee
+# Copyright 2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_NAME = _("Artwork URL Cover Source")
     PLUGIN_DESC_MARKUP = _(
         "Downloads covers linked to by the <tt>artwork_url</tt> tag. "
-        "This works with the Soundcloud browser.")
+        "This works with the Soundcloud and Podcasts browsers.")
 
     @classmethod
     def group_by(cls, song):
