@@ -803,7 +803,8 @@ msgstr "_Пересобрать"
 
 #: quodlibet/browsers/podcasts.py:481
 msgid "Remove all existing episodes then reload from source"
-msgstr "Удалить все существующие эпизоды, затем повторно загрузить из источника"
+msgstr ""
+"Удалить все существующие эпизоды, затем повторно загрузить из источника"
 
 #: quodlibet/browsers/podcasts.py:483
 msgid "Remove this podcast and its episodes"
@@ -1222,9 +1223,10 @@ msgid "Artwork URL Cover Source"
 msgstr "Обложки - для Artwork URL"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Загрузки обложек для тега <tt>artwork_url</tt>. Это работает при просмотре в "
 "Soundcloud."

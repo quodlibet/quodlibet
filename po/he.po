@@ -1213,7 +1213,7 @@ msgstr "URL מקור תמונות עטיפה"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "הורדת תמונות עטיפה באמצעות הקישור בתג artwork_url. עובד עם דפדפן סאונדקלאוד."
 

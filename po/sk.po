@@ -1222,9 +1222,10 @@ msgid "Artwork URL Cover Source"
 msgstr "URL zdroj obalu albumu"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Stiahne obaly albumov prostredníctvom prepojenia v značke <tt>artwork_url</"
 "tt>. Toto funguje v prehliadači Soundcloud."

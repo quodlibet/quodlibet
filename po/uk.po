@@ -1236,7 +1236,7 @@ msgstr "URL-джерело обкладинки"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Завантажує обкладинки і привʼязує її до мітки artwork_url. Це працює з "
 "оглядачем Soundcloud."

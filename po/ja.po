@@ -797,13 +797,15 @@ msgstr "フィードを追加できません"
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
-msgstr "%s を追加できませんでした。サーバがダウンしているか、もしくはポッドキャスト/"
+msgstr ""
+"%s を追加できませんでした。サーバがダウンしているか、もしくはポッドキャスト/"
 "オーディオフィードの場所を間違えている可能性があります。"
 
 #: quodlibet/browsers/podcasts.py:558
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
-msgstr "現在のオーディオバックエンドはURLに対応していないため、ポッドキャストブラウザ"
+msgstr ""
+"現在のオーディオバックエンドはURLに対応していないため、ポッドキャストブラウザ"
 "は無効になっています。"
 
 #: quodlibet/browsers/tracks.py:32
@@ -1199,9 +1201,10 @@ msgid "Artwork URL Cover Source"
 msgstr "アートワークURLカバーソース"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。これ"
 "は SoundCloud ブラウザで動作します。"
@@ -6151,8 +6154,8 @@ msgid ""
 "that shouldn't be matched):"
 msgstr ""
 "左側のカラムが右側のカラムとほぼ一致しているかどうかを確認してください。一致"
-"しない場合は、ここで順序を変更することができます "
-"(一致させるべきではない行には「_」を使用します):"
+"しない場合は、ここで順序を変更することができます (一致させるべきではない行に"
+"は「_」を使用します):"
 
 #: quodlibet/qltk/matchdialog.py:74
 msgid "Right side order:"

@@ -1222,9 +1222,10 @@ msgid "Artwork URL Cover Source"
 msgstr "Fuente de cubiertas por URL de imágenes"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Descarga cubiertas enlazadas mediante la etiqueta <tt>artwork_url</tt>. "
 "Funciona con el navegador de Soundcloud."

@@ -1246,7 +1246,7 @@ msgstr "URL zdroj přebalu alba"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Stažení přebalů alb pomocí odkazu ve značce artwork_url. Funguje s "
 "prohlížečem Soundcloudu."

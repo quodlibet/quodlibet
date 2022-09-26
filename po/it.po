@@ -1232,7 +1232,7 @@ msgstr "URL Opera d'arte sorgente copertina "
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Scarica copertine collegate dal tag artwork_url dell'opera d'arte. Questo "
 "funziona con il navigatore Soundcloud."

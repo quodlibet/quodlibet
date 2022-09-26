@@ -1224,9 +1224,10 @@ msgid "Artwork URL Cover Source"
 msgstr "Nettadresse til omslagsbilde"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Laster ned omslagsbilder fra adressen i taggen <tt>artwork_url</tt>. Dette "
 "fungerer med Soundcloud-utforskeren."
