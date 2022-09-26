@@ -24,7 +24,7 @@ from quodlibet.util.path import strip_win32_incompat_from_path, limit_path
 from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
 
 # Token types.
-(OPEN, CLOSE, TEXT, COND, EOF) = range(5)
+(OPEN, CLOSE, TEXT, COND, EOF, DISJ) = range(6)
 
 
 class error(ValueError):
@@ -41,7 +41,7 @@ class LexerError(error):
 
 class PatternLexeme:
     _reverse = {OPEN: "OPEN", CLOSE: "CLOSE", TEXT: "TEXT", COND: "COND",
-                EOF: "EOF"}
+                EOF: "EOF", DISJ: "DISJ"}
 
     def __init__(self, typ, lexeme):
         self.type = typ
@@ -59,7 +59,7 @@ class PatternLexer(Scanner):
         self.string = s
         Scanner.__init__(self,
                          [(r"([^<>|\\]|\\.)+", self.text),
-                          (r"[<>|]", self.table),
+                          (r"\|\||[<>|]", self.table),
                           ])
 
     def text(self, scanner, string):
@@ -67,7 +67,7 @@ class PatternLexer(Scanner):
 
     def table(self, scanner, string):
         return PatternLexeme(
-            {"|": COND, "<": OPEN, ">": CLOSE}[string], string)
+            {"||": DISJ, "|": COND, "<": OPEN, ">": CLOSE}[string], string)
 
     def __iter__(self):
         s = self.scan(self.string)
@@ -104,6 +104,15 @@ class ConditionNode:
         return "Condition(expression: \"%s\", if: %s, else: %s)" % (t, i, e)
 
 
+class DisjunctionNode:
+    def __init__(self, nodelist):
+        self.nodelist = nodelist
+
+    def __repr__(self):
+        nlrepr = repr([repr(node) for node in self.nodelist])
+        return "Disjunction(%s)" % nlrepr
+
+
 class TagNode:
     def __init__(self, tag):
         self.tag = tag
@@ -135,8 +144,12 @@ class PatternParser:
         # fix bad tied tags
         if tag[:1] != "~" and "~" in tag:
             tag = "~" + tag
+        first_node = None
         try:
-            self.match(TEXT)
+            if self.lookahead.type == OPEN:
+                first_node = self.Pattern()
+            else:
+                self.match(TEXT)
         except ParseError:
             while self.lookahead.type not in [CLOSE, EOF]:
                 self.match(self.lookahead.type)
@@ -150,6 +163,19 @@ class PatternParser:
             else:
                 elsecase = None
             nodes.append(ConditionNode(tag, ifcase, elsecase))
+
+            try:
+                self.match(CLOSE)
+            except ParseError:
+                nodes.pop(-1)
+                while self.lookahead.type not in [EOF, OPEN]:
+                    self.match(self.lookahead.type)
+        elif self.lookahead.type == DISJ and first_node:
+            nodelist = [first_node]
+            while self.lookahead.type == DISJ:
+                self.match(DISJ)
+                nodelist.append(self.Pattern())
+            nodes.append(DisjunctionNode(nodelist))
 
             try:
                 self.match(CLOSE)
@@ -349,6 +375,21 @@ class PatternCompiler:
             else:
                 text.append('if not %s:' % var)
                 text.extend(ec)
+        elif isinstance(node, DisjunctionNode):
+            text.append("while True:")
+            for n in node.nodelist:
+                tag = self.__tag(
+                    n, dict(scope), dict(qscope), tags, queries, text_formatter
+                )
+                text.extend(tag)
+                non_empty_or_pop = [
+                    "  if r:",
+                    "    if r[-1]:",
+                    "       break",
+                    "    r.pop()"
+                ]
+                text.extend(non_empty_or_pop)
+            text.append("  break")
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
             var = self.__get_value(text, scope, node.tag)
