@@ -1187,7 +1187,7 @@ msgstr ""
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 
 #: quodlibet/ext/covers/discogs.py:28
