@@ -1228,7 +1228,7 @@ msgstr "Πηγή URL Εξωφύλλου"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Κατεβάζει εξώφυλλα συνδεδεμένα με την ετικέτα artwork_url. Χρησιμοποιείται "
 "με τον περιηγητή Soundcloud."

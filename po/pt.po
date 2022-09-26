@@ -1233,7 +1233,7 @@ msgstr "Fonte de capas artwork_url"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Baixa imagens de capa de álbuns através do link descrito na etiqueta "
 "\"artwork_url\" (se estiver presente). Funciona com o navegador Soundcloud."

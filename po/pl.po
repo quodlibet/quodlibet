@@ -1230,7 +1230,7 @@ msgstr "Źródło okładek z adresu URL"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Pobiera okładki powiązane przez etykietę „artwork_url”. Działa "
 "z przeglądarką SoundCloud."

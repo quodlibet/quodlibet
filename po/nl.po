@@ -1220,9 +1220,10 @@ msgid "Artwork URL Cover Source"
 msgstr "URL van albumhoesbron"
 
 #: quodlibet/ext/covers/artwork_url.py:21
+#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Haalt albumhoezen op van de bij <tt>artwork_url-tag</tt> opgegeven link. Dit "
 "werkt met de Soundcloud-verkenner."

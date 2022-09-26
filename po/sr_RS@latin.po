@@ -1228,7 +1228,7 @@ msgstr "URL izvor omota"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Preuzima povezane omote po artwork_url oznaci. Ovo radi sa Soundcloud "
 "pretraživačem."

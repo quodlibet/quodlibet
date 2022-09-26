@@ -1225,7 +1225,7 @@ msgstr "Grafik URL-cover-kilde"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Downloader covere som der linkes til af artwork_url-tagget. Det virker med "
 "Soundcloud-browseren."
