@@ -1,4 +1,5 @@
 # Copyright 2010 Steven Robertson
+#      2020-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +33,7 @@ from gi.repository import Gtk, GLib, Pango
 from quodlibet import _
 from quodlibet.util import copool
 from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
-from quodlibet.qltk import Icons
+from quodlibet.qltk import Icons, add_css
 
 
 class ParentProperty:
@@ -235,25 +236,26 @@ class TaskWidget(Gtk.HBox):
     Displays a task.
     """
     def __init__(self, task):
-        super().__init__(spacing=2)
+        super().__init__(spacing=3)
         self.task = task
         self.label = Gtk.Label()
         self.label.set_alignment(1.0, 0.5)
         self.label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(self.label, True, True, 12)
+        self.pack_start(self.label, True, False, 3)
         self.progress = Gtk.ProgressBar()
-        self.progress.set_size_request(100, -1)
-        self.pack_start(self.progress, True, True, 0)
+        self.progress.set_size_request(200, 12)
+        add_css(self.progress, "progress, trough { min-height: 12px }")
+        vb = Gtk.VBox(valign=Gtk.Align.CENTER)
+        vb.pack_start(self.progress, True, True, 0)
+        self.pack_start(vb, True, True, 3)
         self.pause = SmallImageToggleButton()
         self.pause.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE,
-                                         Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
         self.pause.connect('toggled', self.__pause_toggled)
-        self.pack_start(self.pause, False, True, 0)
+        self.pack_start(self.pause, False, True, 3)
         self.stop = SmallImageButton()
         self.stop.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP,
-                                         Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.MENU))
         self.stop.connect('clicked', self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)
 
@@ -266,8 +268,7 @@ class TaskWidget(Gtk.HBox):
             self.task.stop()
 
     def update(self):
-        formatted_label = "<small><b>%s</b>\n%s</small>" % (self.task.source,
-            self.task.desc)
+        formatted_label = f"<b>{self.task.source}</b> – {self.task.desc}"
         self.label.set_markup(formatted_label)
         if self.task.frac is not None:
             self.progress.set_fraction(self.task.frac)
@@ -296,7 +297,7 @@ class StatusBar(Gtk.HBox):
             Align(self.default_label, halign=Gtk.Align.END),
             True, True, 0)
         self.task_widget = TaskWidget(task_controller)
-        self.pack_start(self.task_widget, True, True, 0)
+        self.pack_start(self.task_widget, False, False, 0)
 
         self.show_all()
         self.set_no_show_all(True)

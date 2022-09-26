@@ -612,9 +612,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.order = play_order
         self.statusbar = statusbox.statusbar
 
-        main_box.pack_start(
-            Align(statusbox, border=3, top=-3),
-            False, True, 0)
+        align = Align(statusbox, top=1, bottom=4, left=6, right=6)
+        main_box.pack_start(align, False, True, 0)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
         self.songpane.show_all()
