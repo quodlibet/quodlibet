@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-26 19:17+0000\n"
+"PO-Revision-Date: 2022-09-26 20:56+0000\n"
 "Last-Translator: Adolfo Jayme Barrientos <fitojb@ubuntu.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -764,22 +764,20 @@ msgid "New Feed"
 msgstr "Suministro nuevo"
 
 #: quodlibet/browsers/podcasts.py:240
-#, fuzzy
 msgid "Enter the podcast / audio feed location:"
-msgstr "Proporcione la ubicación de un suministro de audio:"
+msgstr "Proporcione la ubicación de un suministro de audio o pódcast:"
 
 #: quodlibet/browsers/podcasts.py:308
 msgid "Podcasts"
-msgstr ""
+msgstr "Pódcast"
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Pódcast"
 
 #: quodlibet/browsers/podcasts.py:411
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "_Añadir archivo…"
+msgstr "_Añadir suministro…"
 
 #: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -787,42 +785,40 @@ msgid "_Refresh"
 msgstr "Act_ualizar"
 
 #: quodlibet/browsers/podcasts.py:479
-#, fuzzy
 msgid "Search source for new episodes"
-msgstr "Monitorizar este directorio en busca de nuevas canciones"
+msgstr "Buscar episodios nuevos en el origen"
 
 #: quodlibet/browsers/podcasts.py:480
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Reconstruir"
 
 #: quodlibet/browsers/podcasts.py:481
 msgid "Remove all existing episodes then reload from source"
-msgstr ""
+msgstr "Eliminar todos los episodios existentes y recargar desde el origen"
 
 #: quodlibet/browsers/podcasts.py:483
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Eliminar este pódcast y sus episodios"
 
 #: quodlibet/browsers/podcasts.py:540
 msgid "Unable to add feed"
 msgstr "No se pudo añadir el suministro"
 
 #: quodlibet/browsers/podcasts.py:541
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
 msgstr ""
 "No se pudo añadir %s. Puede que el servidor esté inactivo o que la ubicación "
-"no apunte a un suministro de audio."
+"no apunte a un pódcast o suministro de audio."
 
 #: quodlibet/browsers/podcasts.py:558
-#, fuzzy
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
 "El motor de audio actual no admite los URL; por tanto, el navegador de "
-"suministros de audio está desactivado."
+"pódcast está desactivado."
 
 #: quodlibet/browsers/tracks.py:32
 msgid "_Limit Results"
@@ -1222,13 +1218,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Fuente de cubiertas por URL de imágenes"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
 "Descarga cubiertas enlazadas mediante la etiqueta <tt>artwork_url</tt>. "
-"Funciona con el navegador de Soundcloud."
+"Funciona con los navegadores de Soundcloud y de pódcast."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -4827,7 +4822,7 @@ msgstr "Nombre de _usuario:"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:36
 msgid "Create Sort Tags"
-msgstr ""
+msgstr "Crear etiquetas de ordenación"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
@@ -5638,9 +5633,8 @@ msgid "(unknown)"
 msgstr "(desconocido)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
-#, fuzzy
 msgid "_Add…"
-msgstr "_Añadir"
+msgstr "_Añadir…"
 
 #: quodlibet/qltk/data_editors.py:363
 msgid "Tag expression"
@@ -6245,19 +6239,16 @@ msgid "Play Order"
 msgstr "Orden de reproducción"
 
 #: quodlibet/qltk/pluginwin.py:40
-#, fuzzy
 msgid "Editing"
-msgstr "Edición de etiquetas"
+msgstr "Edición"
 
 #: quodlibet/qltk/pluginwin.py:41
-#, fuzzy
 msgid "Renaming"
-msgstr "_Cambiar el nombre"
+msgstr "Cambio de nombre"
 
 #: quodlibet/qltk/pluginwin.py:42
-#, fuzzy
 msgid "Querying"
-msgstr "búsqueda"
+msgstr "Consulta"
 
 #: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
@@ -6435,7 +6426,6 @@ msgid "Confirm _multiple ratings"
 msgstr "Confirmar la puntuación _múltiple"
 
 #: quodlibet/qltk/prefs.py:304
-#, fuzzy
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
@@ -6679,9 +6669,8 @@ msgid "_Queue"
 msgstr "_Cola de reproducción"
 
 #: quodlibet/qltk/queue.py:130
-#, fuzzy
 msgid "Clear Queue"
-msgstr "_Vaciar cola"
+msgstr "Vaciar cola"
 
 #: quodlibet/qltk/queue.py:139
 msgid "Disable queue - the queue will be ignored when playing"
@@ -7133,11 +7122,11 @@ msgstr "Restablecer filtros y saltar a la canción en reproducción"
 
 #: quodlibet/qltk/shortcuts.py:26
 msgid "Open the information window for the selected songs"
-msgstr ""
+msgstr "Abrir la ventana de información para las canciones seleccionadas"
 
 #: quodlibet/qltk/shortcuts.py:27
 msgid "Open the tag editor for the selected songs"
-msgstr ""
+msgstr "Abrir el editor de etiquetas para las canciones seleccionadas"
 
 #: quodlibet/qltk/shortcuts.py:28
 msgid "Queue the selected songs"
@@ -7225,19 +7214,18 @@ msgid "_Customize Headers…"
 msgstr "_Personalizar cabeceras…"
 
 #: quodlibet/qltk/songlist.py:1180
-#, fuzzy
 msgid "_Expand Column"
-msgstr "Columnas adicionales"
+msgstr "_Expandir columna"
 
 #: quodlibet/qltk/songsmenu.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "¿Quiere quitar la pista «%%(title)s» de la fonoteca?"
+msgstr "¿Quiere quitar la pista «%(title)s» de la fonoteca?"
 
 #: quodlibet/qltk/songsmenu.py:47
-#, fuzzy, python-format
+#, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "¿Quiere quitar la pista «%%(title)s» de la fonoteca?"
+msgstr "¿Quiere quitar %(count)d pistas de la fonoteca?"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
@@ -7287,11 +7275,11 @@ msgstr[0] "_Mostrar en gestor de archivos"
 msgstr[1] "_Mostrar %(total)d archivos en gestor de archivos"
 
 #: quodlibet/qltk/songsmenu.py:436
-#, fuzzy, python-format
+#, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "_Descargar"
-msgstr[1] "_Descargar"
+msgstr[0] "_Descargar archivo…"
+msgstr[1] "_Descargar %(total)d archivos…"
 
 #: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
@@ -7304,9 +7292,8 @@ msgid "failed"
 msgstr "No se pudo guardar"
 
 #: quodlibet/qltk/songsmenu.py:447
-#, fuzzy
 msgid "Downloads complete"
-msgstr "Descargar archivo"
+msgstr "Descargas completadas"
 
 #: quodlibet/qltk/songsmenu.py:453
 msgid "Download {name!r} to"
