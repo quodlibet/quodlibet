@@ -523,9 +523,8 @@ class PythonConsole(Gtk.ScrolledWindow):
                             if i < noargs:
                                 sargs.append(spec.args[i])
                             else:
-                                sargs.append(spec.args[i] + '=' +
-                                             spec.defaults[i -
-                                                           noargs].__repr__())
+                                default_arg = repr(spec.defaults[i - noargs])
+                                sargs.append(spec.args[i] + '=' + default_arg)
 
                         details = " ({})".format(", ".join(sargs))
                         comp.append((name, details))
