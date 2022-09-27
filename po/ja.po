@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-25 13:04+0000\n"
+"PO-Revision-Date: 2022-09-27 19:31+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -1201,13 +1201,12 @@ msgid "Artwork URL Cover Source"
 msgstr "アートワークURLカバーソース"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。これ"
-"は SoundCloud ブラウザで動作します。"
+"<tt>artwork_url</tt> タグでリンクされたカバーアートをダウンロードします。"
+"これは SoundCloud ブラウザとポッドキャストブラウザで動作します。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
