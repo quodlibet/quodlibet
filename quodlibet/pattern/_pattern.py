@@ -13,6 +13,7 @@
 
 import os
 import re
+from collections import OrderedDict
 from re import Scanner  # type: ignore
 from urllib.parse import quote_plus
 
@@ -361,14 +362,17 @@ class PatternCompiler:
         return text
 
 
-def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache={}):
+def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache=OrderedDict()):
     if (Kind, string) not in cache:
-        if len(cache) > MAX_CACHE_SIZE:
-            cache.clear()
+        while len(cache) >= MAX_CACHE_SIZE:
+            cache.popitem(last=False)
         comp = PatternCompiler(PatternParser(PatternLexer(string)))
         func, tags = comp.compile("comma", Kind._text)
         list_func, tags = comp.compile("list_separate", Kind._text)
         cache[(Kind, string)] = Kind(func, list_func, tags)
+    else:
+        # promote recently accessed items to front of cache
+        cache.move_to_end((Kind, string))
     return cache[(Kind, string)]
 
 
