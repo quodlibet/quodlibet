@@ -316,6 +316,9 @@ class TagListEditor(qltk.Window):
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
         vbbox.pack_start(remove, False, True, 0)
+        edit = Button(_("_Edit"), Icons.LIST_EDIT)
+        edit.connect("clicked", self.__edit)
+        vbbox.pack_start(edit, False, True, 0)
         hbox.pack_start(vbbox, False, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
@@ -397,6 +400,16 @@ class TagListEditor(qltk.Window):
         new = dialog.run()
         if new:
             self.model.append(row=[new])
+
+    def __edit(self, *args):
+        path, col = self.view.get_cursor()
+        tooltip = _('Tag expression e.g. people:real or ~album~year')
+        dialog = GetStringDialog(self, _("Edit tag"), "",
+                                 button_icon=None,
+                                 tooltip=tooltip)
+        edited = dialog.run(text=self.model[path][0])
+        if edited:
+            self.model[path][0] = edited
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time()).show()

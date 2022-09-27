@@ -161,7 +161,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
-#: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
+#: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:784
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
@@ -228,7 +228,7 @@ msgstr ""
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:79 quodlibet/qltk/data_editors.py:92
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
-#: quodlibet/qltk/data_editors.py:324 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:555
 #: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
@@ -4886,7 +4886,7 @@ msgid "Too many arguments"
 msgstr ""
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:372
+#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:375
 msgid "Description"
 msgstr ""
 
@@ -5381,16 +5381,24 @@ msgstr ""
 msgid "_Add…"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:363
+#: quodlibet/qltk/data_editors.py:319
+msgid "_Edit"
+msgstr ""
+
+#: quodlibet/qltk/data_editors.py:366
 msgid "Tag expression"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:393
+#: quodlibet/qltk/data_editors.py:396 quodlibet/qltk/data_editors.py:406
 msgid "Tag expression e.g. people:real or ~album~year"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:394
+#: quodlibet/qltk/data_editors.py:397
 msgid "Enter new tag"
+msgstr ""
+
+#: quodlibet/qltk/data_editors.py:407
+msgid "Edit tag"
 msgstr ""
 
 #: quodlibet/qltk/delete.py:37

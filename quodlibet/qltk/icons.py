@@ -81,6 +81,7 @@ class Icons(str):
     INSERT_IMAGE = "insert-image"
     INSERT_TEXT = "insert-text"
     LIST_ADD = "list-add"  # "_Add"
+    LIST_EDIT = "list-edit"  # "_Edit"
     LIST_REMOVE = "list-remove"  # "_Remove"
     MEDIA_EJECT = "media-eject"
     MEDIA_OPTICAL = "media-optical"  # "_CD-ROM"
