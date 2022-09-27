@@ -123,7 +123,8 @@ class TrackList(Browser):
         if (is_accel(event, "<Primary>Return") or
                 is_accel(event, "<Primary>KP_Enter")):
             songs = app.window.songlist.get_songs()
-            app.window.playlist.enqueue(songs)
+            limit = config.getint("browsers", "searchbar_enqueue_limit")
+            app.window.enqueue(songs, limit)
             return True
         return False
 
