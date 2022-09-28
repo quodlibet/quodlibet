@@ -78,7 +78,7 @@ msgstr "Sort by date"
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
 #: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:905
 #, fuzzy
 msgid "_Preferences"
 msgstr "Preferences"
@@ -229,7 +229,7 @@ msgstr "_Custom"
 #: quodlibet/browsers/paned/prefs.py:120
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1276
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1275
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
@@ -3101,27 +3101,27 @@ msgid "_Show %(application-name)s"
 msgstr ""
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
-#: quodlibet/qltk/quodlibetwindow.py:1142
+#: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:935
+#: quodlibet/qltk/quodlibetwindow.py:1141
 #, fuzzy
 msgid "_Play"
 msgstr "Player"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
+#: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1143
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
 msgstr "_Pause"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:931
+#: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:930
 #, fuzzy
 msgid "Pre_vious"
 msgstr "Pre_vious"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:941
+#: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:940
 #, fuzzy
 msgid "_Next"
 msgstr "_Next"
@@ -3140,18 +3140,18 @@ msgid "Stop _After This Song"
 msgstr "Stop after this song"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:902
+#: quodlibet/qltk/quodlibetwindow.py:901
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Open a new browser"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:920 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Edit _Tags"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:863 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Information"
 
@@ -3161,7 +3161,7 @@ msgid "Play_lists"
 msgstr "Playlists"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:916
+#: quodlibet/qltk/quodlibetwindow.py:915
 msgid "_Quit"
 msgstr ""
 
@@ -5150,6 +5150,24 @@ msgstr "Remove active browser filters"
 msgid "Adding watches for %s"
 msgstr ""
 
+#: quodlibet/library/playlist.py:79
+#, python-format
+msgid ""
+"No library songs found in legacy playlist %(filename)r (of size %(size).1f "
+"kB)."
+msgstr ""
+
+#: quodlibet/library/playlist.py:82
+msgid "Have you changed library root dir(s), but not this playlist?"
+msgstr ""
+
+#: quodlibet/library/playlist.py:97
+#, python-format
+msgid "%d playlist failed to convert"
+msgid_plural "%d playlists failed to convert"
+msgstr[0] ""
+msgstr[1] ""
+
 #: quodlibet/main.py:48
 #, fuzzy
 msgid "Music player and music library manager"
@@ -6015,15 +6033,15 @@ msgstr ""
 msgid "_Redo"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:956
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:955
 msgid "_About"
 msgstr "_About"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:978
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_Check for Updates…"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:910
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Plugins"
@@ -6319,11 +6337,11 @@ msgstr ""
 msgid "_Replace File"
 msgstr "Rename Files"
 
-#: quodlibet/qltk/notif.py:182
+#: quodlibet/qltk/notif.py:183
 msgid "Active tasks"
 msgstr ""
 
-#: quodlibet/qltk/notif.py:188
+#: quodlibet/qltk/notif.py:189
 #, fuzzy, python-format
 msgid "%d tasks running"
 msgstr "Quod Libet is running"
@@ -6733,12 +6751,12 @@ msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:989
 #, fuzzy
 msgid "_Scan Library"
 msgstr "_Search Library"
 
-#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1051
 msgid "Check for changes in your library"
 msgstr "Check for changes in your library"
 
@@ -6850,118 +6868,118 @@ msgstr ""
 msgid "_Set Up"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:845
+#: quodlibet/qltk/quodlibetwindow.py:844
 msgid "Unable to add songs"
 msgstr "Unable to add songs"
 
-#: quodlibet/qltk/quodlibetwindow.py:846 quodlibet/qltk/quodlibetwindow.py:1286
+#: quodlibet/qltk/quodlibetwindow.py:845 quodlibet/qltk/quodlibetwindow.py:1285
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> uses an unsupported protocol."
 
-#: quodlibet/qltk/quodlibetwindow.py:869
+#: quodlibet/qltk/quodlibetwindow.py:868
 msgid "_Jump to Playing Song"
 msgstr "_Jump to Playing Song"
 
-#: quodlibet/qltk/quodlibetwindow.py:876
+#: quodlibet/qltk/quodlibetwindow.py:875
 #, fuzzy
 msgid "_File"
 msgstr "File"
 
-#: quodlibet/qltk/quodlibetwindow.py:877
+#: quodlibet/qltk/quodlibetwindow.py:876
 #, fuzzy
 msgid "_Song"
 msgstr "Songs"
 
-#: quodlibet/qltk/quodlibetwindow.py:878
+#: quodlibet/qltk/quodlibetwindow.py:877
 msgid "_View"
 msgstr "_View"
 
-#: quodlibet/qltk/quodlibetwindow.py:879
+#: quodlibet/qltk/quodlibetwindow.py:878
 #, fuzzy
 msgid "_Browse"
 msgstr "Browsers"
 
-#: quodlibet/qltk/quodlibetwindow.py:880
+#: quodlibet/qltk/quodlibetwindow.py:879
 msgid "_Control"
 msgstr "_Control"
 
-#: quodlibet/qltk/quodlibetwindow.py:881
+#: quodlibet/qltk/quodlibetwindow.py:880
 msgid "_Help"
 msgstr "_Help"
 
-#: quodlibet/qltk/quodlibetwindow.py:887
+#: quodlibet/qltk/quodlibetwindow.py:886
 #, fuzzy
 msgid "_Add a Folder…"
 msgstr "_Add a Folder..."
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:891
 #, fuzzy
 msgid "_Add a File…"
 msgstr "_Add a File..."
 
-#: quodlibet/qltk/quodlibetwindow.py:897
+#: quodlibet/qltk/quodlibetwindow.py:896
 #, fuzzy
 msgid "_Add a Location…"
 msgstr "Add a Location"
 
-#: quodlibet/qltk/quodlibetwindow.py:926
+#: quodlibet/qltk/quodlibetwindow.py:925
 #, fuzzy
 msgid "Edit Bookmarks…"
 msgstr "_Edit Bookmarks..."
 
-#: quodlibet/qltk/quodlibetwindow.py:946
+#: quodlibet/qltk/quodlibetwindow.py:945
 #, fuzzy
 msgid "Stop After This Song"
 msgstr "Stop after this song"
 
-#: quodlibet/qltk/quodlibetwindow.py:952
+#: quodlibet/qltk/quodlibetwindow.py:951
 msgid "_Keyboard Shortcuts"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:961
+#: quodlibet/qltk/quodlibetwindow.py:960
 msgid "Online Help"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:970
+#: quodlibet/qltk/quodlibetwindow.py:969
 #, fuzzy
 msgid "Search Help"
 msgstr "Search"
 
-#: quodlibet/qltk/quodlibetwindow.py:1274
+#: quodlibet/qltk/quodlibetwindow.py:1273
 msgid "Add a Location"
 msgstr "Add a Location"
 
-#: quodlibet/qltk/quodlibetwindow.py:1275
+#: quodlibet/qltk/quodlibetwindow.py:1274
 msgid "Enter the location of an audio file:"
 msgstr "Enter the location of an audio file:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1280
-#: quodlibet/qltk/quodlibetwindow.py:1285
+#: quodlibet/qltk/quodlibetwindow.py:1279
+#: quodlibet/qltk/quodlibetwindow.py:1284
 msgid "Unable to add location"
 msgstr "Unable to add location"
 
-#: quodlibet/qltk/quodlibetwindow.py:1281
+#: quodlibet/qltk/quodlibetwindow.py:1280
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> is not a valid location."
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1293
+#: quodlibet/qltk/quodlibetwindow.py:1302
 msgid "Add Music"
 msgstr "Add Music"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1293 quodlibet/qltk/scanbox.py:124
 #, fuzzy
 msgid "_Add Folders"
 msgstr "_Add a Folder..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1301
+#: quodlibet/qltk/quodlibetwindow.py:1300
 #, fuzzy
 msgid "Music Files"
 msgstr "Music Player"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1302
 #, fuzzy
 msgid "_Add Files"
 msgstr "_Add a File..."
