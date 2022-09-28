@@ -174,6 +174,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self.__orders = values
         if self.__current not in self.orders:
             self.__current = None
+            # if current order has become invalid, deactivate
+            self.enabled = False
         self.__rebuild_menu()
 
     @property
