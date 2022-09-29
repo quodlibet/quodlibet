@@ -106,3 +106,7 @@ class TToggledPlayOrderMenu(TestCase):
     def test_set_orders(self):
         self.tpom.set_orders([])
         self.failIf(self.tpom.current)
+
+    def test_playorder_disables_when_order_disappears(self):
+        self.tpom.orders = Orders([OrderWeighted, FakeOrder])
+        self.failIf(self.tpom.enabled)
