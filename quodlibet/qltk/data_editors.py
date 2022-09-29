@@ -404,7 +404,7 @@ class TagListEditor(qltk.Window):
     def __edit(self, *args):
         path, col = self.view.get_cursor()
         tooltip = _('Tag expression e.g. people:real or ~album~year')
-        dialog = GetStringDialog(self, _("Edit tag"), "",
+        dialog = GetStringDialog(self, _("Edit tag expression"), "",
                                  button_icon=None,
                                  tooltip=tooltip)
         edited = dialog.run(text=self.model[path][0])
