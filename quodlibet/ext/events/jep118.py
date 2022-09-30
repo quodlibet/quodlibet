@@ -29,7 +29,7 @@ class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
     PLUGIN_DESC_MARKUP = _("Outputs a Jabber User Tunes file to "
-                           "$XDG_CACHE_HOME/jabber")
+                           "<tt>$XDG_CACHE_HOME/jabber</tt>.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):

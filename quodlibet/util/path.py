@@ -25,7 +25,6 @@ from . import windows
 from . import print_w
 from .environment import is_windows
 from .misc import NamedTemporaryFile
-from .util import print_w
 
 if sys.platform == "darwin":
     from Foundation import NSString
@@ -275,7 +274,7 @@ def xdg_get_config_home():
 def xdg_get_runtime_dir():
     if os.name == "nt":
         from gi.repository import GLib
-        return glib2fsn(GLib.get_user_runtime_dir())
+        return GLib.get_user_runtime_dir()
 
     data_home = os.getenv("XDG_RUNTIME_DIR")
     if data_home:
