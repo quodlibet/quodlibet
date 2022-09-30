@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-23 12:18+0000\n"
+"PO-Revision-Date: 2022-10-01 08:29+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -682,7 +682,7 @@ msgstr ""
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
 #: quodlibet/qltk/songsmenu.py:359
 msgid "_Delete"
-msgstr "_Удалить файлы"
+msgstr "_Удалить"
 
 #: quodlibet/browsers/playlists/main.py:485
 msgid "_Rename"
@@ -1223,13 +1223,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Обложки - для Artwork URL"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"Загрузки обложек для тега <tt>artwork_url</tt>. Это работает при просмотре в "
-"Soundcloud."
+"Загружает обложки по тегу <tt>artwork_url</tt>. Это работает при просмотре в "
+"Soundcloud и Подкастах."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -5133,18 +5132,20 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"В унаследованном плейлисте %(filename)r (размером %(size).1f КБ) не найдены "
+"песни из фонотеки."
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
-msgstr ""
+msgstr "Вы меняли корневой каталог(и) фонотеки, но не этот плейлист?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d плейлист не удалось конвертировать"
+msgstr[1] "%d плейлиста не удалось конвертировать"
+msgstr[2] "%d плейлистов не удалось конвертировать"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
