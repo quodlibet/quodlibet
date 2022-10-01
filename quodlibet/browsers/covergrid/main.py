@@ -157,7 +157,10 @@ class CoverGridContainer(ScrolledWindow):
 
 def _get_cover_size():
     mag = config.getfloat("browsers", "covergrid_magnification", 3.)
-    return mag * config.getint("browsers", "cover_size", 48)
+    size = config.getint("browsers", "cover_size")
+    if size <= 0:
+        size = 48
+    return mag * size
 
 
 class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
