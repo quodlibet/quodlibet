@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-27 19:31+0000\n"
+"PO-Revision-Date: 2022-10-01 08:29+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -5066,11 +5066,11 @@ msgid "Adding watches for %s"
 msgstr "%s の監視を追加"
 
 #: quodlibet/library/playlist.py:79
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
-msgstr ""
+msgstr "\\"
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
