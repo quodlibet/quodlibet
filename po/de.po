@@ -99,7 +99,7 @@ msgstr[0] "%d Album"
 msgstr[1] "%d Alben"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Album-_Cover neu laden"
@@ -292,11 +292,11 @@ msgstr "_Anwenden"
 msgid "_Cancel"
 msgstr "_Abbrechen"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "Albenraster"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "Alben_raster"
 
@@ -6376,11 +6376,11 @@ msgstr "Aktive Prozesse"
 msgid "%d tasks running"
 msgstr "%d aktive Prozesse"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "Zufallsmodus ein-/ausschalten"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "Endlosschleife ein-/ausschalten"
 

@@ -101,7 +101,7 @@ msgstr[0] "album %d"
 msgstr[1] "%d album"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 #, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
@@ -299,12 +299,12 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Tamaina guztira:"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "Tamaina guztira:"
@@ -6375,12 +6375,12 @@ msgstr "Lan aktiboak"
 msgid "%d tasks running"
 msgstr "Lan aktiboak: %d"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 #, fuzzy
 msgid "Toggle shuffle mode"
 msgstr "Txandakatu erreproduzitu/gelditu modua"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 #, fuzzy
 msgid "Toggle repeat mode"
 msgstr "Txandakatu erreproduzitu/gelditu modua"

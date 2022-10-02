@@ -101,7 +101,7 @@ msgstr[1] "%d alba"
 msgstr[2] "%d alb"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Znovu _načíst přebal"
@@ -298,11 +298,11 @@ msgstr "_Použít"
 msgid "_Cancel"
 msgstr "_Zrušit"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "Mřížka přebalů alb"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "_Mřížka přebalů alb"
 
@@ -6348,11 +6348,11 @@ msgstr "Aktivní úlohy"
 msgid "%d tasks running"
 msgstr "%d úlohy běží"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "Prohodit mód promíchání"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "Prohodit mód opakování"
 

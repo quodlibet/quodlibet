@@ -95,7 +95,7 @@ msgstr[0] "%d albüm"
 msgstr[1] "%d albüm"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Albüm _kapağını yeniden yükle"
@@ -288,11 +288,11 @@ msgstr "_Uygula"
 msgid "_Cancel"
 msgstr "_İptal"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "Kapak Izgarası"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "_Kapak Izgarası"
 
@@ -6271,11 +6271,11 @@ msgstr "Görevleri etkinleştir"
 msgid "%d tasks running"
 msgstr "%d görev çalışıyor"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "Karıştırma kipini aç/kapat"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "Tekrarlama kipini aç/kapat"
 

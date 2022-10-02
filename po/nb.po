@@ -99,7 +99,7 @@ msgstr[0] "%d album"
 msgstr[1] "%d album"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Last inn album_omslag på nytt"
@@ -292,11 +292,11 @@ msgstr "_Bruk"
 msgid "_Cancel"
 msgstr "Avbr_yt"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "Omslagsnett"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "_Omslagsnett"
 
@@ -6398,11 +6398,11 @@ msgstr "Pågående oppgaver"
 msgid "%d tasks running"
 msgstr "%d kjørende oppgaver"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "Slå av/på tilfeldig rekkefølge"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "Slå av/på gjentakelse"
 

@@ -102,7 +102,7 @@ msgstr[1] "%d albumai"
 msgstr[2] "%d albumų"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Atnaujinti albumo _viršelį"
@@ -302,12 +302,12 @@ msgstr ""
 msgid "_Cancel"
 msgstr ""
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Visas dydis:"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "Visas dydis:"
@@ -6379,12 +6379,12 @@ msgstr "Aktyvios užduotys"
 msgid "%d tasks running"
 msgstr "%d užduotys vykdomos"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 #, fuzzy
 msgid "Toggle shuffle mode"
 msgstr "Perjungti grojimo/pauzės režimą"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 #, fuzzy
 msgid "Toggle repeat mode"
 msgstr "Perjungti grojimo/pauzės režimą"
