@@ -94,7 +94,7 @@ msgid_plural "%d albums"
 msgstr[0] "%d 专辑"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "重新加载专辑封面(_C)"
@@ -283,11 +283,11 @@ msgstr "应用"
 msgid "_Cancel"
 msgstr "取消"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "封面网格"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "封面网格(_C)"
 
@@ -5960,11 +5960,11 @@ msgstr "激活的任务"
 msgid "%d tasks running"
 msgstr "%d 项任务正在进行"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "开/关随机播放模式"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "开/关重复播放模式"
 

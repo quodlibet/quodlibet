@@ -99,7 +99,7 @@ msgstr[0] "%d אלבום"
 msgstr[1] "%d אלבומים"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "טעינה חוזרת של עטיפת _אלבום"
@@ -292,11 +292,11 @@ msgstr "_החלה"
 msgid "_Cancel"
 msgstr "_ביטול"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
 msgstr "שבכת תמונות עטיפה"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
 msgstr "_שבכת תמונות עטיפה"
 
@@ -6214,11 +6214,11 @@ msgstr "משימות פעילות"
 msgid "%d tasks running"
 msgstr "%d משימות רצות"
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 msgid "Toggle shuffle mode"
 msgstr "החלפת מצב אקראי"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 msgid "Toggle repeat mode"
 msgstr "החלפת מצב חזרה"
 

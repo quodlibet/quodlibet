@@ -99,7 +99,7 @@ msgstr[1] "%d альбоми"
 msgstr[2] "%d альбомів"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:385
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Перезавантажити о_бкладинку альбому"
@@ -296,12 +296,12 @@ msgstr "_Застосувати"
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: quodlibet/browsers/covergrid/main.py:169
+#: quodlibet/browsers/covergrid/main.py:172
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Сітка обкладинки"
 
-#: quodlibet/browsers/covergrid/main.py:170
+#: quodlibet/browsers/covergrid/main.py:173
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "_Сітка обкладинки"
@@ -6266,12 +6266,12 @@ msgstr ""
 msgid "%d tasks running"
 msgstr ""
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 #, fuzzy
 msgid "Toggle shuffle mode"
 msgstr "Перемикнути режим програвання/паузи"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 #, fuzzy
 msgid "Toggle repeat mode"
 msgstr "Перемикнути режим програвання/паузи"
