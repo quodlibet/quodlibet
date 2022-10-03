@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-20 00:20+0000\n"
+"PO-Revision-Date: 2022-10-04 18:17+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -1220,13 +1220,12 @@ msgid "Artwork URL Cover Source"
 msgstr "URL des sources de pochettes"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
 "Téléchargements de pochettes liées par la balise <tt>artwork_url</tt>. Cela "
-"fonctionne avec le navigateur Soundcloud."
+"fonctionne avec les navigateurs Soundcloud et Podcasts."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -5195,17 +5194,21 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"Aucun morceau de la bibliothèque n'a été trouvé dans l'ancienne liste de "
+"lecture %(filename)r (d'une taille de %(size).1f Ko)."
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
 msgstr ""
+"Avez-vous modifié le(s) répertoire(s) racine(s) de la bibliothèque, mais pas "
+"cette liste de lecture ?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "la liste de lecture %d n'a pas pu être convertie"
+msgstr[1] "les listes de lecture %d n'ont pas pu être converties"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
