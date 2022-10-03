@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-01 08:29+0000\n"
+"PO-Revision-Date: 2022-10-04 18:17+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -330,7 +330,7 @@ msgstr "選択されたファイルのソングリストまたはキューへの
 
 #: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
-msgstr "ライブラリへ追加(_A)"
+msgstr "ライブラリに追加(_A)"
 
 #: quodlibet/browsers/iradio.py:188
 #, python-format
@@ -907,7 +907,7 @@ msgstr "ウィンドウを表示せずに起動"
 
 #: quodlibet/cli.py:94
 msgid "Jump to next song"
-msgstr "次の曲へジャンプ"
+msgstr "次の曲にジャンプ"
 
 #: quodlibet/cli.py:96
 msgid "Jump to previous song or restart if near the beginning"
@@ -915,7 +915,7 @@ msgstr "前の曲にジャンプするか、冒頭に近い場合は再スター
 
 #: quodlibet/cli.py:97
 msgid "Jump to previous song"
-msgstr "前の曲へジャンプ"
+msgstr "前の曲にジャンプ"
 
 #: quodlibet/cli.py:98
 msgid "Start playback"
@@ -4567,7 +4567,7 @@ msgstr "選択した曲のリストを HTML にエクスポートします。"
 
 #: quodlibet/ext/songsmenu/ifp.py:21
 msgid "Send to iFP"
-msgstr "iFPへ送信"
+msgstr "iFPに送信"
 
 #: quodlibet/ext/songsmenu/ifp.py:22
 msgid "Uploads songs to an iRiver iFP device."
@@ -5066,21 +5066,23 @@ msgid "Adding watches for %s"
 msgstr "%s の監視を追加"
 
 #: quodlibet/library/playlist.py:79
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
-msgstr "\\"
+msgstr "レガシープレイリスト「%(filename)r」(サイズ %(size).1f kB) "
+"にはライブラリ登録曲が見つかりません。"
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
-msgstr ""
+msgstr "ライブラリのルートディレクトリを変更したのに、このプレイリストは変更していな"
+"いということはないですか?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
+msgstr[0] "%d個のプレイリストの変換に失敗しました"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -5696,7 +5698,7 @@ msgstr[0] "%(file_count)d個のファイルをゴミ箱に移動しますか?"
 
 #: quodlibet/qltk/delete.py:134 quodlibet/qltk/delete.py:141
 msgid "_Move to Trash"
-msgstr "ゴミ箱へ移動する(_M)"
+msgstr "ゴミ箱に移動(_M)"
 
 #: quodlibet/qltk/delete.py:152 quodlibet/qltk/delete.py:187
 #, python-format
@@ -6910,9 +6912,9 @@ msgid ""
 "target file already exists, or you do not have permission to make the new "
 "file or remove the old one."
 msgstr ""
-"<b>%(old-name)s</b> から <b>%(new-name)s</b> への名前変更に失敗しました。変更"
-"先のファイルが既に存在する、新規ファイルを作成する権限が無い、旧ファイルを削"
-"除する権限が無い、などの可能性があります。"
+"<b>「%(old-name)s」</b>から<b>「%(new-name)s」</b> への名前変更に失敗しました"
+"。変更先のファイルが既に存在する、新規ファイルを作成する権限が無い、旧ファイ"
+"ルを削除する権限が無い、などの可能性があります。"
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7218,7 +7220,7 @@ msgstr "プラグインの設定…"
 
 #: quodlibet/qltk/songsmenu.py:324
 msgid "Add to _Queue"
-msgstr "キューへ追加(_Q)"
+msgstr "キューに追加(_Q)"
 
 #: quodlibet/qltk/songsmenu.py:344
 msgid "_Remove from Library…"
