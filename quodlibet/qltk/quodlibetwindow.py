@@ -22,6 +22,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import ngettext
 from quodlibet import _
 from quodlibet.qltk.paned import ConfigRHPaned
 
@@ -756,6 +757,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         else:
             return False
 
+    def enqueue(self, songs, limit=0):
+        """Append `songs` to the queue
+
+        Ask for confimation if the number of songs exceeds `limit`.
+        """
+
+        if len(songs) > limit:
+            dialog = ConfirmEnqueue(self, len(songs))
+            if dialog.run() != Gtk.ResponseType.YES:
+                return
+
+        self.playlist.enqueue(songs)
+
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
         if self._playback_error_dialog:
@@ -1386,3 +1400,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         t = self.browser.status_text(count=len(songs),
                                      time=util.format_time_preferred(length))
         self.statusbar.set_default_text(t)
+
+
+class ConfirmEnqueue(qltk.Message):
+    def __init__(self, parent, count):
+        title = ngettext("Are you sure you want to enqueue %d song?",
+                         "Are you sure you want to enqueue %d songs?",
+                         count) % count
+        description = ""
+
+        super().__init__(
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Enqueue"), Icons.LIST_ADD,
+                             Gtk.ResponseType.YES)
