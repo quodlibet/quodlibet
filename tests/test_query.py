@@ -194,7 +194,7 @@ class TQuery(TestCase):
              "version": u"cake mix",
              "~filename": fsnative(u"/dir1/foobar.ogg"),
              "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
-             "date": u"2007-05-24"})
+             "date": u"2007-05-24", "~#samplerate": 44100})
         self.s2 = AudioFile(
             {"album": u"Foo the Bar", "artist": u"mu", "title": u"Rockin' Out",
              "~filename": fsnative(u"/dir2/something.mp3"),
@@ -521,6 +521,10 @@ class TQuery(TestCase):
         assert Query("#(date > 4)").search(self.s1)
         assert Query("#(date > 0004)").search(self.s1)
         assert Query("#(date > 0000)").search(self.s1)
+
+    def test_large_numbers(self):
+        assert Query("#(playcount = 00024)").search(self.s1)
+        assert Query("#(samplerate = 44100)").search(self.s1)
 
     def test_ignore_characters(self):
         try:
