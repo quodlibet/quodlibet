@@ -109,8 +109,7 @@ There are in general two types of tag splitting possible: splitting on a single
 character and *subtag* splitting (extracting values in enclosures). The
 separating characters for both can be configured in the *Tags* tab in the
 preferences.
-(Note that the "Split on" values in the configure dialog are space-separated)
-separated).
+Note that the "Split on" values in the configure dialog are space-separated.
 
 Splitting on a single character - like ``,`` or ``&`` - will split a tag into
 multiple tags of the same type, but with different values. An example of this
