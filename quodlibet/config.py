@@ -122,6 +122,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
         # number of history entries in the search bar
         "searchbar_historic_entries": "8",
 
+        # confirmation limit on enqueuing songs from the search bar
+        "searchbar_enqueue_limit": "50",
+
         # panes in paned browser
         "panes":
             "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",

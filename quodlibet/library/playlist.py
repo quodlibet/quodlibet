@@ -8,7 +8,7 @@ import re
 from typing import Iterable, Generator, Optional
 
 import quodlibet
-from quodlibet import print_d, print_w
+from quodlibet import print_d, print_w, print_e, ngettext, _
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
 from quodlibet.util.collection import (Playlist, XSPFBackedPlaylist,
@@ -20,6 +20,9 @@ _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlis
 
 HIDDEN_RE = re.compile(r'^\.\w[^.]*')
 """Hidden-like files, to ignored"""
+
+_MIN_NON_EMPTY_PL_BYTES = 4
+"""Arbitrary minimum file size for a legacy non-empty playlist file"""
 
 
 class PlaylistLibrary(Library[str, Playlist]):
@@ -54,6 +57,7 @@ class PlaylistLibrary(Library[str, Playlist]):
 
         # Populate this library by relying on existing signal passing.
         # Weird, but allows keeping the logic in one place
+        failed = []
         for fn in fns:
             full_path = os.path.join(self.pl_dir, fn)
             if os.path.isdir(full_path):
@@ -67,10 +71,31 @@ class PlaylistLibrary(Library[str, Playlist]):
                 # Don't add to library - it's temporary
                 legacy = FileBackedPlaylist(self.pl_dir, fn,
                                             songs_lib=library, pl_lib=None)
+                if not len(legacy):
+                    try:
+                        size = os.stat(legacy._last_fn).st_size
+                        if size >= _MIN_NON_EMPTY_PL_BYTES:
+                            data = {"filename": fn, "size": size / 1024}
+                            print_w(_("No library songs found in legacy playlist "
+                                      "%(filename)r (of size %(size).1f kB).") % data +
+                                    " " +
+                                    _("Have you changed library root dir(s), "
+                                      "but not this playlist?"))
+                            continue
+                    except OSError:
+                        print_e(f"Problem reading {legacy._last_fn!r}")
+                        continue
+                    finally:
+                        failed.append(fn)
                 print_w(f"Converting {fn!r} to XSPF format ({e})")
                 XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
             except EnvironmentError:
                 print_w(f"Invalid Playlist {fn!r}")
+                failed.append(fn)
+        if failed:
+            total = len(failed)
+            print_e(ngettext("%d playlist failed to convert",
+                             "%d playlists failed to convert", total) % len(failed))
 
     def create(self, name_base: Optional[str] = None) -> Playlist:
         if name_base:

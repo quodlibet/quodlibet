@@ -217,6 +217,11 @@ class AdvancedPreferences(EventPlugin):
                 "browsers", "searchbar_historic_entries",
                 "Number of history entries in the search bar:",
                 "8 by default (restart advised)"),
+            int_config(
+                "browsers", "searchbar_enqueue_limit",
+                "Search bar confirmation limit for enqueue:",
+                ("Maximal size of the song list that can be enqueued from "
+                 "the search bar without confirmation.")),
             slider_config(
                 "player", "playcount_minimum_length_proportion",
                 "Minimum length proportion to consider a track as played:",

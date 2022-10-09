@@ -369,7 +369,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
         self.pl_lib = pl_lib
         # Libraries are dict-like so falsey if empty
         if self.pl_lib is None:
-            print_w("Playlist initialised without library")
+            print_d(f"Playlist {name!r} initialised without library")
         else:
             self.pl_lib.add([self])
         self.__inhibit_library_signals = False
