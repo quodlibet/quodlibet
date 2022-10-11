@@ -61,3 +61,9 @@ Paned Browser
 
 * :kbd:`Primary` + :kbd:`Home` - Select all songs in all panes
 * :kbd:`Primary` + :kbd:`Return` - When the search entry is in focus: enqueue all songs in the song list
+
+
+Track List Browser
+------------------
+
+* :kbd:`Primary` + :kbd:`Return` - When the search entry is in focus: enqueue all songs in the song list
