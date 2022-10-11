@@ -118,3 +118,46 @@ class TCommands(TestCase):
         self.assertAlmostEqual(app.player.song['~#rating'], 0.41)
         self.__send("rating -10")
         self.assertEquals(app.player.song['~#rating'], 0)
+
+    def test_with_pattern(self):
+        songs = [AudioFile({"~filename": fn, "title": fn.upper()})
+                 for fn in ["one", "two, please", "slash\\.mp3", "4.0-four"]]
+        app.library.add(songs)
+
+        self.assertFalse(app.window.playlist.q.get())
+        self.__send("enqueue-files "
+                    "one,two\\, please,slash\\\\.mp3,4.0-four")
+        # Old syntax
+        assert self.__send("print-query two ") == "two, please\n"
+        # Old syntax that is also a valid json
+        assert self.__send("print-query \"one\"") == "one\n"
+        assert self.__send("print-query 4.0") == "4.0-four\n"
+        assert self.__send("print-query true") == "\n"
+        # New syntax
+        assert self.__send(
+            "print-query {\"query\": \"two\", \"pattern\": null}"
+        ) == "two, please\n"
+        assert self.__send(
+            "print-query {\"query\": \"two\", \"pattern\": \"asdf\"}"
+        ) == "asdf\n"
+        assert self.__send(
+            "print-query {\"query\": \"slash\", \"pattern\": \"<title>\"}"
+        ) == "SLASH\\.MP3\n"
+        # The query itself is valid json
+        assert self.__send(
+            "print-query {\"query\": \"\\\"one\\\"\", \"pattern\": \"<title>\"}"
+        ) == "ONE\n"
+        assert self.__send(
+            "print-query {\"query\": \"4.0\", \"pattern\": \"<title>\"}"
+        ) == "4.0-FOUR\n"
+        # Query is valid json, but not came from the CLI. (It's not a string.)
+        assert self.__send(
+            "print-query {\"query\": 4.0, \"pattern\": \"<title>\"}"
+        ) == "\n"
+        assert self.__send(
+            "print-query {\"query\": true, \"pattern\": \"<title>\"}"
+        ) == "\n"
+        # Invalid args
+        assert self.__send(
+            "print-query {\"query\": \"slash\", \"unknown\": \"<title>\"}"
+        ) == "\n"

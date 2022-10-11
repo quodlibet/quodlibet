@@ -5,6 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import json
 import os
 
 from senf import fsn2text, uri2fsn
@@ -146,6 +147,8 @@ def process_arguments(argv):
             C_("command", "filename"), _("query"))),
         ("add-location", _("Add a file or directory to the library"),
             _("location")),
+        ("with-pattern", _("Set template for --print-* commands"),
+            _("pattern")),
             ]:
         options.add(opt, help=help, arg=arg)
 
@@ -218,9 +221,9 @@ def process_arguments(argv):
         elif command == "status":
             queue("status")
         elif command == "print-playlist":
-            queue("dump-playlist")
+            queue("dump-playlist", opts.get('with-pattern'))
         elif command == "print-queue":
-            queue("dump-queue")
+            queue("dump-queue", opts.get('with-pattern'))
         elif command == "list-browsers":
             queue("dump-browsers")
         elif command == "volume-up":
@@ -261,9 +264,10 @@ def process_arguments(argv):
             try:
                 queue("print-playing", args[0])
             except IndexError:
-                queue("print-playing")
+                queue("print-playing", opts.get('with-pattern'))
         elif command == "print-query":
-            queue(command, arg)
+            pattern = opts.get('with-pattern')
+            queue(command, json.dumps({"query": arg, 'pattern': pattern}))
         elif command == "print-query-text":
             queue(command)
         elif command == "start-playing":
