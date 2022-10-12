@@ -186,9 +186,9 @@ def _print_message(string, custom_context, debug_only, prefix,
     if custom_context:
         context = "%s(%r)" % (context, custom_context)
 
-    timestr = ("%2.3f" % (time.time() - start_time))[-6:]
+    timestr = ("%08.3f" % (time.time() - start_time))[-9:]
 
-    info = "%s: %s: %s:" % (
+    info = "%s: [%s] %s:" % (
         getattr(Colorise, color)(prefix),
         Colorise.magenta(timestr),
         Colorise.blue(context))

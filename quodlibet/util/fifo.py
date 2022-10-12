@@ -9,6 +9,7 @@
 import os
 import signal
 import stat
+from tempfile import mkstemp
 
 try:
     import fcntl
@@ -16,7 +17,7 @@ except ImportError:
     pass
 
 from gi.repository import GLib
-from senf import mkstemp, fsn2bytes
+from senf import fsn2bytes
 
 from quodlibet import print_d, print_e
 from quodlibet.util.path import mkdir

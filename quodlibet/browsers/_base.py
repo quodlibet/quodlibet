@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016-2020 Nick Boultbee
+#           2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ class Filter:
         return False
 
     def filter_albums(self, values):
-        """Do filtering base on a list of album keys"""
+        """Filter based on a list of album keys"""
         raise NotImplementedError
 
     def list_albums(self):
@@ -94,7 +94,7 @@ class Filter:
         return c or (key is not None and self.can_filter_tag(key))
 
     def filter_on(self, songs, key):
-        """Do filtering in the best way the browser can handle"""
+        """Filter in the best way the browser can handle"""
         if key == "album" and self.can_filter_albums():
             values = {s.album_key for s in songs}
             self.filter_albums(values)
@@ -129,6 +129,10 @@ class Filter:
                 value = random.choice(values)
                 query = util.build_filter_query(key, [value])
                 self.filter_text(query)
+
+
+class BrowserError(Exception):
+    pass
 
 
 class Browser(Gtk.Box, Filter):

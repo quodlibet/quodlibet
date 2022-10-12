@@ -1,9 +1,10 @@
-# Copyright 2012-2016 Nick Boultbee
+# Copyright 2012-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from typing import Iterable
 
 from gi.repository import Gtk
 from gi.repository import Pango
@@ -16,7 +17,7 @@ from quodlibet.qltk.x import MenuItem, Button, Align
 from quodlibet.qltk import Icons
 from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
-from quodlibet.util import connect_obj
+from quodlibet.util import connect_obj, escape
 from quodlibet.qltk.getstring import GetStringDialog
 
 
@@ -267,7 +268,6 @@ class TagListEditor(qltk.Window):
     def __init__(self, title, values=None):
         super().__init__()
         self.use_header_bar()
-        self.data = values or []
         self.set_border_width(12)
         self.set_title(title)
         self.set_default_size(self._WIDTH, self._HEIGHT)
@@ -277,12 +277,17 @@ class TagListEditor(qltk.Window):
 
         # Set up the model for this widget
         self.model = Gtk.ListStore(str)
-        self.__fill_values()
+        self.__fill_values(values or [])
+
+        def on_row_activated(view, path, column):
+            self._renderer.set_property('editable', True)
+            view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
         # Main view
         view = self.view = HintedTreeView(model=self.model)
         view.set_fixed_height_mode(True)
         view.set_headers_visible(False)
+        view.connect("row-activated", on_row_activated)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -305,12 +310,15 @@ class TagListEditor(qltk.Window):
         vbbox = Gtk.VButtonBox()
         vbbox.set_layout(Gtk.ButtonBoxStyle.START)
         vbbox.set_spacing(6)
-        add = Button(_("_Add"), Icons.LIST_ADD)
+        add = Button(_("_Add…"), Icons.LIST_ADD)
         add.connect("clicked", self.__add)
         vbbox.pack_start(add, False, True, 0)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.connect("clicked", self.__remove)
         vbbox.pack_start(remove, False, True, 0)
+        edit = Button(_("_Edit"), Icons.LIST_EDIT)
+        edit.connect("clicked", self.__edit)
+        vbbox.pack_start(edit, False, True, 0)
         hbox.pack_start(vbbox, False, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
@@ -329,6 +337,13 @@ class TagListEditor(qltk.Window):
         self.add(vbox)
         self.get_child().show_all()
 
+    def __start_editing(self, _render, editable, path):
+        editable.set_text(self.model[path][0])
+
+    def __edited(self, _render, path, new_name):
+        self.model[path][0] = new_name
+        self.model.row_changed(path, self.model.get_iter(path))
+
     def __setup_column(self, view):
         def tag_cdf(column, cell, model, iter, data):
             row = model[iter]
@@ -338,31 +353,41 @@ class TagListEditor(qltk.Window):
         def desc_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                cell.set_property('text', util.tag(row[0]))
+                escaped = escape(util.tag(row[0]))
+                cell.set_property('markup', f"<i>{escaped}</i>")
 
-        render = Gtk.CellRendererText()
-        column = Gtk.TreeViewColumn(_("Tag expression"), render)
-        column.set_cell_data_func(render, tag_cdf)
+        def __create_cell_renderer():
+            r = Gtk.CellRendererText()
+            r.connect('editing-started', self.__start_editing)
+            r.connect('edited', self.__edited)
+            return r
+
+        self._renderer = renderer = __create_cell_renderer()
+        column = Gtk.TreeViewColumn(_("Tag expression"), renderer)
+        column.set_cell_data_func(renderer, tag_cdf)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_expand(True)
         view.append_column(column)
 
-        render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        column = Gtk.TreeViewColumn(_("Description"), render)
-        column.set_cell_data_func(render, desc_cdf)
+        renderer = Gtk.CellRendererText()
+        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
+        renderer.set_property('sensitive', False)
+        column = Gtk.TreeViewColumn(_("Description"), renderer)
+        column.set_cell_data_func(renderer, desc_cdf)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_expand(True)
+
         view.append_column(column)
         view.set_headers_visible(True)
 
-    def __fill_values(self):
-        for s in self.data:
+    def __fill_values(self, data: Iterable[str]):
+        for s in data:
             self.model.append(row=[s])
 
-    def get_strings(self):
-        strings = [row[0] for row in self.model if row]
-        return strings
+    @property
+    def tags(self):
+        """Returns the tag names as edited"""
+        return [row[0] for row in self.model if row]
 
     def __remove(self, *args):
         self.view.remove_selection()
@@ -375,6 +400,16 @@ class TagListEditor(qltk.Window):
         new = dialog.run()
         if new:
             self.model.append(row=[new])
+
+    def __edit(self, *args):
+        path, col = self.view.get_cursor()
+        tooltip = _('Tag expression e.g. people:real or ~album~year')
+        dialog = GetStringDialog(self, _("Edit tag expression"), "",
+                                 button_icon=None,
+                                 tooltip=tooltip)
+        edited = dialog.run(text=self.model[path][0])
+        if edited:
+            self.model[path][0] = edited
 
     def __popup(self, view, menu):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time()).show()

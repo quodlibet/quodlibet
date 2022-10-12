@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2021 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2018-2020 Uriel Zajaczkovski
 #           2019      Ruud van Asseldonk
@@ -37,7 +37,7 @@ from quodlibet.qltk.properties import SongProperties
 from quodlibet.qltk.searchbar import SearchBarBox
 from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk.x import MenuItem, Align, ScrolledWindow, RadioMenuItem
+from quodlibet.qltk.x import MenuItem, ScrolledWindow, RadioMenuItem
 from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.query import Query
 from quodlibet.util import connect_obj, DeferredSignal
@@ -98,7 +98,7 @@ def compare_title(a1, a2):
             cmp(a1.key, a2.key))
 
 
-def compare_artist(a1, a2):
+def compare_people(a1, a2):
     a1, a2 = a1.album, a2.album
     if a1 is None:
         return -1
@@ -221,19 +221,18 @@ class PreferencesButton(Gtk.HBox):
 
         sort_orders = [
             (_("_Title"), self.__compare_title),
-            (_("_Artist"), self.__compare_artist),
+            (_("_People"), self.__compare_people),
             (_("_Date"), self.__compare_date),
             (_("_Date Added"), self.__compare_date_added),
             (_("_Original Date"), self.__compare_original_date),
             (_("_Genre"), self.__compare_genre),
             (_("_Rating"), self.__compare_rating),
-            (_("_Playcount"), self.__compare_avgplaycount),
+            (_("Play_count"), self.__compare_avgplaycount),
         ]
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(
-            label=_(u"Sort _by…"), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_(u"Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint('browsers', 'album_sort', 1)
@@ -264,7 +263,7 @@ class PreferencesButton(Gtk.HBox):
                 SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
                 arrow=True)
         button.set_menu(menu)
-        self.pack_start(button, True, True, 0)
+        self.pack_start(button, False, False, 0)
 
     def __sort_toggled_cb(self, item, model, num):
         if item.get_active():
@@ -275,9 +274,9 @@ class PreferencesButton(Gtk.HBox):
         a1, a2 = model.get_value(i1), model.get_value(i2)
         return compare_title(a1, a2)
 
-    def __compare_artist(self, model, i1, i2, data):
+    def __compare_people(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
-        return compare_artist(a1, a2)
+        return compare_people(a1, a2)
 
     def __compare_date(self, model, i1, i2, data):
         a1, a2 = model.get_value(i1), model.get_value(i2)
@@ -589,7 +588,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         prefs = PreferencesButton(self, model_sort)
         search.pack_start(prefs, False, True, 0)
-        self.pack_start(Align(search, left=6, top=6), False, True, 0)
+        hb = Gtk.Box(spacing=3)
+        hb.pack_start(search, True, True, 6)
+        self.pack_start(hb, False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         self.connect("destroy", self.__destroy)
@@ -882,7 +883,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         albums = model.get_albums(paths)
 
         confval = "\n".join((a.str_key for a in albums))
-        # ConfigParser strips a trailing \n so we move it to the front
+        # ConfigParser strips a trailing \n - so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]
         return confval

@@ -1,6 +1,6 @@
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
-#                 2017-2018 Nick Boultbee
+#                 2017-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -241,7 +241,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         hbox.pack_start(search, True, True, 0)
         hbox.pack_start(prefs, False, True, 0)
 
-        self.pack_start(Align(hbox, left=6, top=6), False, True, 0)
+        self.pack_start(Align(hbox, left=6, top=0), False, True, 0)
         self.pack_start(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)

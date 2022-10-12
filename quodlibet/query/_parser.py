@@ -27,7 +27,7 @@ SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
 DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
 MODIFIERS = re.compile(r'[cisld]*')
 TEXT = re.compile(r'[^,)]+')
-DATE = re.compile(r'\d{4}(-\d{1,2}(-\d{1,2})?)?')
+DATE = re.compile(r'\d{4}(?!\d)(-\d{1,2}(-\d{1,2})?)?')
 
 
 class QueryParser:

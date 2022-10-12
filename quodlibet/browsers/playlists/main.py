@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#    2012 - 2021 Nick Boultbee
+#      2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,9 +16,8 @@ from quodlibet import _
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet.browsers import Browser
-from quodlibet.browsers._base import DisplayPatternMixin
-from quodlibet.browsers.playlists.prefs import (Preferences,
-                                                DEFAULT_PATTERN_TEXT)
+from quodlibet.browsers._base import DisplayPatternMixin, BrowserError
+from quodlibet.browsers.playlists.prefs import Preferences, DEFAULT_PATTERN_TEXT
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
@@ -40,7 +39,9 @@ from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.urllib import urlopen
-from .util import parse_m3u, parse_pls, confirm_remove_playlist_dialog_invoke, _name_for
+from .util import parse_m3u, parse_pls, _name_for, \
+    confirm_remove_playlist_dialog_invoke, \
+    confirm_dnd_playlist_dialog_invoke
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -56,20 +57,19 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
     def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
-        super().__init__(spacing=6)
-        self._lists = ObjectModelSort(model=ObjectStore())
-        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
-
+        super().__init__(spacing=3)
         self.songs_lib = songs_lib
         try:
             self.pl_lib: PlaylistLibrary = songs_lib.playlists
         except (AttributeError, TypeError):
-            print_w("No playlist library available")
-        else:
-            model = self._lists.get_model()
-            print_d(f"Reading playlists from library: {self.pl_lib}")
-            for playlist in self.pl_lib:
-                model.append(row=[playlist])
+            raise BrowserError(f"No playlist library available in {songs_lib!r}")
+
+        self._lists = ObjectModelSort(model=ObjectStore())
+        self._lists.set_default_sort_func(ObjectStore._sort_on_value)
+        model = self._lists.get_model()
+        print_d(f"Reading playlists from library: {self.pl_lib}")
+        for playlist in self.pl_lib:
+            model.append(row=[playlist])
 
         # this is instanced with the necessary gtkdialog-settings, and afterwards
         # its run-method is called to get a to-be-compared Gtk.ResponseType
@@ -89,15 +89,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         for child in self.get_children():
             child.show_all()
 
-        if hasattr(self, "pl_lib"):
-            self._ids = [
-                self.pl_lib.connect('removed', self.__removed),
-                self.pl_lib.connect('added', self.__added),
-                self.pl_lib.connect('changed', self.__changed),
-            ]
-            print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
-        else:
-            self._ids = []
+        self._ids = [
+            self.pl_lib.connect('removed', self.__removed),
+            self.pl_lib.connect('added', self.__added),
+            self.pl_lib.connect('changed', self.__changed),
+        ]
+        print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
         self.connect("destroy", self._destroy)
 
     def _destroy(self, _browser):
@@ -108,7 +105,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def pack(self, songpane):
         self._main_box.pack1(self, True, False)
         self._rh_box = rhbox = Gtk.VBox(spacing=6)
-        align = Align(self._sb_box, left=0, right=6, top=6)
+        align = Align(self._sb_box, left=0, right=6, top=0)
         rhbox.pack_start(align, False, True, 0)
         rhbox.pack_start(songpane, True, True, 0)
         self._main_box.pack2(rhbox, True, False)
@@ -129,12 +126,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return [row[0] for row in self._lists]
 
     def changed(self, playlist, refresh=True):
+        current = self._selected_playlist()
         for row in self._lists:
             if row[0] is playlist:
                 if refresh:
                     # Changes affect aggregate caches etc
                     print_d(f"Refreshing view in {self} for {playlist}")
                     self._lists.row_changed(row.path, row.iter)
+                    if playlist is current:
+                        self.activate()
                 break
 
     def __removed(self, lib, playlists):
@@ -209,12 +209,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.pack_start(swin, True, True, 0)
 
     def __configure_buttons(self, library):
-        new_pl = qltk.Button(None, Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
-        new_pl.set_tooltip_text(_("New"))
+        new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
         new_pl.connect('clicked', self.__new_playlist, library)
-        import_pl = qltk.Button(None, Icons.LIST_ADD,
-                                Gtk.IconSize.MENU)
-        import_pl.set_tooltip_text(_("Import"))
+        import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
         import_pl.connect('clicked', self.__import, library)
 
         fb = Gtk.FlowBox()
@@ -223,6 +220,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb.insert(new_pl, 0)
         fb.insert(import_pl, 1)
         fb.set_max_children_per_line(2)
+        fb.set_column_spacing(3)
 
         # The pref button is in its own flowbox instead of directly under the
         # HBox to make it the same height as the other buttons
@@ -231,8 +229,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fb2.insert(pref, 0)
 
         hb = Gtk.HBox()
-        hb.pack_start(fb, True, True, 0)
-        hb.pack_start(fb2, False, False, 0)
+        hb.pack_start(fb, True, True, 3)
+        hb.pack_end(fb2, False, False, 0)
         self.pack_start(hb, False, False, 0)
 
     def __create_playlists_view(self, render):
@@ -380,6 +378,24 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         playlist = model[path][0]
         return playlist
 
+    def _add_drag_data_tracks_to_playlist(self, target_playlist, songs):
+        """helper-function to facilitate unit-tests without fiddling with views"""
+        # Accidentally extending through DnD'ing a playlist can be a fairly
+        # large operation, so prompt the user before proceeding.
+        # See issue #2367
+        playlist_name = target_playlist.name
+        response = confirm_dnd_playlist_dialog_invoke(
+            self, songs, playlist_name, self.Confirmer)
+        if response:
+            target_playlist.extend(songs)
+            self.changed(target_playlist)
+            was_modified = True
+        else:
+            print_d("DnD-extension of playlist cancelled through prompt")
+            was_modified = False
+
+        return was_modified
+
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
         view.emit_stop_by_name('drag-data-received')
@@ -387,22 +403,38 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
             songs = list(filter(None, [self.songs_lib.get(f) for f in filenames]))
+            # Used in conjunction with the prompt for DnD to decide whether to
+            # perform various updates/refreshes.
+            was_modified = True
             if not songs:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
+
             try:
                 path, pos = view.get_dest_row_at_pos(x, y)
             except TypeError:
+                # e.g. the target is the empty area after the list of playlists?
+                # TODO: Maybe prompt for this too? Though getting a new playlist is
+                # less intrusive than modifying an existing playlist.
+                # XXX: There does not seem to be an empty area anymore (changed
+                # by one of these pull-requests: #3751 #3974 or the newish browser
+                # code?).
                 playlist = self.pl_lib.create_from_songs(songs)
                 GLib.idle_add(self._select_playlist, playlist)
+                # self.changed()
             else:
                 playlist = model[path][0]
-                playlist.extend(songs)
+                # Call a helper-function that adds the tracks to the playlist if the
+                # user accepts the prompt.
+                was_modified = self._add_drag_data_tracks_to_playlist(
+                    playlist, songs
+                )
+
             # self.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
             # Cause a refresh to the dragged-to playlist if it is selected
             # so that the dragged (duplicate) track(s) appears
-            if playlist is self._selected_playlist():
+            if playlist is self._selected_playlist() and was_modified:
                 model, plist_iter = self.__selected_playlists()
                 songlist = qltk.get_top_parent(self).songlist
                 self.activate(resort=not songlist.is_sorted())
@@ -578,13 +610,16 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __edited(self, render, path, newname):
         return self._rename(path, newname)
 
-    def _rename(self, path, newname):
+    def _rename(self, path: Gtk.TreePath,
+                new_name: str, show_error: bool = True) -> bool:
         playlist = self._lists[path][0]
         try:
-            playlist.rename(newname)
-        except ValueError as s:
-            qltk.ErrorMessage(
-                None, _("Unable to rename playlist"), s).run()
+            playlist.rename(new_name)
+        except ValueError as e:
+            if show_error:
+                qltk.ErrorMessage(None, _("Unable to rename playlist"), str(e)).run()
+            print_w(f"Unable to rename playlist {playlist} ({e})")
+            return False
         else:
             row = self._lists[path]
             child_model = self.model
@@ -592,6 +627,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 self._lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
             self._select_playlist(playlist, scroll=True)
+            return True
 
     def __import(self, activator, library):
         formats = ["*.pls", "*.m3u", "*.m3u8"]

@@ -9,7 +9,7 @@
 import os
 import sys
 
-from senf import environ, path2fsn
+from senf import path2fsn
 
 from quodlibet import util
 from quodlibet import const
@@ -25,7 +25,7 @@ PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
 
 class Application:
     """A main application class for controlling the application as a whole
-    and accessing sub-modules.
+    and accessing submodules.
 
     window    - The main window which is present as long as QL is running
     library   - The main library (see library.SongFileLibrary)
@@ -160,8 +160,8 @@ def get_user_dir():
             if os.path.exists(tmp):
                 USERDIR = tmp
 
-    if 'QUODLIBET_USERDIR' in environ:
-        USERDIR = environ['QUODLIBET_USERDIR']
+    if 'QUODLIBET_USERDIR' in os.environ:
+        USERDIR = os.environ['QUODLIBET_USERDIR']
 
     if build.BUILD_TYPE == u"windows-portable":
         USERDIR = os.path.normpath(os.path.join(
@@ -336,7 +336,7 @@ def run(window, before_quit=None):
         copool.pause_all()
 
         # See which browser windows are open and save their names
-        # so we can restore them on start
+        # so that we can restore them on start
         from quodlibet.qltk.browser import LibraryBrowser
         LibraryBrowser.save()
 
@@ -377,7 +377,7 @@ def run(window, before_quit=None):
 
     # set QUODLIBET_START_PERF to measure startup time until the
     # windows is first shown.
-    if "QUODLIBET_START_PERF" in environ:
+    if "QUODLIBET_START_PERF" in os.environ:
         window.connect("draw", Gtk.main_quit)
         Gtk.main()
         sys.exit()

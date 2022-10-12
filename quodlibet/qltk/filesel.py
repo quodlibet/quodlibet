@@ -25,7 +25,7 @@ from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
 from quodlibet.util.path import listdir, \
-    glib2fsn, xdg_get_user_dirs, get_home_dir, xdg_get_config_home
+    xdg_get_user_dirs, get_home_dir, xdg_get_config_home
 from quodlibet.util import connect_obj
 
 
@@ -130,7 +130,7 @@ def get_drives():
     for mount in Gio.VolumeMonitor.get().get_mounts():
         path = mount.get_root().get_path()
         if path is not None:
-            paths.append(glib2fsn(path))
+            paths.append(path)
     if os.name != "nt":
         paths.append("/")
     return sorted(paths)
@@ -375,7 +375,6 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         if not dir_:
             return
 
-        dir_ = glib2fsn(dir_)
         fullpath = os.path.realpath(os.path.join(directory, dir_))
 
         try:

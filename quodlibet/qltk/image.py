@@ -75,28 +75,32 @@ def add_border(pixbuf, color, width=1, radius=0):
     Can not fail.
     """
 
-    w, h = pixbuf.get_width(), pixbuf.get_height()
-    w += width * 2
-    h += width * 2
+    pi = math.pi
+
+    def new_border_path(ctx, w, h, r, margin=0):
+        d = r + margin
+        ctx.new_path()
+        ctx.arc(w - d, d, r, -pi / 2, 0)
+        ctx.arc(w - d, h - d, r, 0, pi / 2)
+        ctx.arc(d, h - d, r, pi / 2, pi)
+        ctx.arc(d, d, r, pi, pi * 3 / 2)
+        ctx.close_path()
+
+    w = pixbuf.get_width() + width * 2
+    h = pixbuf.get_height() + width * 2
+    r = min(radius, min(w, h) / 2)
+
     surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, w, h)
     ctx = cairo.Context(surface)
 
-    pi = math.pi
-    r = min(radius, min(w, h) / 2)
-    ctx.new_path()
-    ctx.arc(w - r, r, r, -pi / 2, 0)
-    ctx.arc(w - r, h - r, r, 0, pi / 2)
-    ctx.arc(r, h - r, r, pi / 2, pi)
-    ctx.arc(r, r, r, pi, pi * 3 / 2)
-    ctx.close_path()
-
-    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, width, width)
-    ctx.clip_preserve()
+    new_border_path(ctx, w, h, r + width)
+    ctx.clip()
+    ctx.set_source_rgba(color.red, color.green, color.blue, color.alpha)
     ctx.paint()
 
-    ctx.set_source_rgba(color.red, color.green, color.blue, color.alpha)
-    ctx.set_line_width(width * 2)
-    ctx.stroke()
+    new_border_path(ctx, w, h, r, width)
+    Gdk.cairo_set_source_pixbuf(ctx, pixbuf, width, width)
+    ctx.fill()
 
     return Gdk.pixbuf_get_from_surface(surface, 0, 0, w, h)
 
@@ -108,6 +112,7 @@ def add_border_widget(pixbuf, widget):
 
     context = widget.get_style_context()
     color = context.get_color(context.get_state())
+    color.alpha *= 0.1
     scale_factor = widget.get_scale_factor()
     border_radius = get_border_radius() * scale_factor
 

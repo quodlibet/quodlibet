@@ -1,4 +1,4 @@
-# Copyright 2018-2021 Nick Boultbee
+# Copyright 2018-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -9,7 +9,7 @@ import operator
 import os
 import shutil
 from functools import reduce
-from typing import Iterable
+from typing import Iterable, List
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 
@@ -51,7 +51,8 @@ class DownloadCoverArt(SongsMenuPlugin):
 
     PLUGIN_ID = 'Download Cover Art'
     PLUGIN_NAME = _('Download Cover Art')
-    PLUGIN_DESC = _('Downloads high-quality album covers using cover plugins.')
+    PLUGIN_DESC = _('Downloads high-quality album covers '
+                    'using Quod Libet cover plugins.')
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
 
@@ -186,9 +187,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 if cover:
                     self.button.set_sensitive(True)
 
-        # Only supported on GTK >= 3.18 (not Ubuntu 16.04)
-        # Re-enable some day perhaps...
-        # box.bind_model(self.model, self.create_widget, None)
         box.set_valign(Gtk.Align.START)
         box.set_max_children_per_line(4)
         box.connect("selected-children-changed", selected)
@@ -209,6 +207,12 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         # Do the search
         self._groups = manager.search_cover(cancellable, songs)
+
+    def destroy(self):
+        if self.__cancellable:
+            print_d("Cancelling remaining requests...")
+            self.__cancellable.cancel()
+        super().destroy()
 
     def _image_failed(self, _view, message: str, widget: Gtk.Widget):
         print_d(f"Failed downloading image ({message}), removing result.")
@@ -254,7 +258,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             self.__save(None)
             self.destroy()
 
-    def _filenames(self, pat_text, ext, full_path=False):
+    def _filenames(self, pat_text, ext, full_path=False) -> List[str]:
         def fn_for(song):
             pat = ArbitraryExtensionFileFromPattern(f"{pat_text}.{ext}")
             fn = pat.format(song)
@@ -272,7 +276,6 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self.show_all()
 
     def _finished(self, manager, results):
-        self.__cancellable.cancel()
         if not any(results.values()):
             print_w(f"Nothing found from {len(self._groups)} provider(s)")
 
@@ -290,10 +293,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
         data = {'albums': escape(albums), 'providers': escape(providers)}
-        text = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
-                 "Providers used:\n<tt>%(providers)s</tt>") % data
+        markup = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
+                   "Providers used:\n<tt>%(providers)s</tt>") % data
         dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,
-                              title=_("No covers found"), description=text)
+                              title=_("No covers found"), description=markup,
+                              escape_desc=False)
         dialog.run()
         self.destroy()
 
@@ -394,9 +398,14 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
     def _save_images(self, data: CoverData, img: Gtk.Image):
         paths = self._filenames(self.config.save_pattern, img.extension,
                                 full_path=True)
-        first_path = paths.pop()
+        try:
+            first_path = paths.pop()
+        except IndexError:
+            print_w("No paths to save somewhow", self)
         print_d(f"Saving {data} to {first_path}")
         img.save_image(first_path)
         # Copying faster than potentially resizing
-        for path in paths:
-            shutil.copy(first_path, path)
+        if paths:
+            for path in paths:
+                shutil.copy(first_path, path)
+            print_d(f"Finished copying to {paths}")

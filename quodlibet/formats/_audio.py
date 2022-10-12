@@ -19,12 +19,12 @@ from typing import Any, List, Tuple, Generic, TypeVar, Optional
 from collections import OrderedDict
 from itertools import zip_longest
 
-from senf import fsn2uri, fsnative, fsn2text, devnull, bytes2fsn, path2fsn
+from senf import fsn2uri, fsnative, fsn2text, bytes2fsn, path2fsn
 
 from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, mtime, expanduser, normalize_path, \
+from quodlibet.util.path import mkdir, mtime, normalize_path, \
                                 ismount, get_home_dir, RootPathFile
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
@@ -595,8 +595,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         def expand_pathfile(rpf):
             """Return the expanded RootPathFile"""
             expanded = []
-            root = expanduser(rpf.root)
-            pathfile = expanduser(rpf.pathfile)
+            root = os.path.expanduser(rpf.root)
+            pathfile = os.path.expanduser(rpf.pathfile)
             if rx_params.search(pathfile):
                 root = expand_patterns(root).format(self)
                 pathfile = expand_patterns(pathfile).format(self)
@@ -1050,7 +1050,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         """Remove a value from the given key.
 
         If value is None remove all values for that key, if it exists.
-        If the key or value is not found do nothing.
+        If the key or value is not found, do nothing.
         """
 
         if key not in self:
@@ -1158,7 +1158,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
 # Looks like the real thing.
 DUMMY_SONG = AudioFile({
-    '~#length': 234, '~filename': devnull,
+    '~#length': 234, '~filename': os.devnull,
     'artist': 'The Artist', 'album': 'An Example Album',
     'title': 'First Track', 'tracknumber': 1,
     'date': '2010-12-31',

@@ -11,8 +11,9 @@ import threading
 import traceback
 import time
 import logging
+from pathlib import Path
 
-from senf import getcwd, fsnative, fsn2bytes, bytes2fsn, mkdtemp, environ
+from senf import fsnative, fsn2bytes, bytes2fsn
 
 from quodlibet import _
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
@@ -24,17 +25,16 @@ from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
     format_time_display, format_time_seconds
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
-from quodlibet.util.path import fsn2glib, glib2fsn, \
+from quodlibet.util.path import \
     parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
     strip_win32_incompat_from_path, xdg_get_cache_home, \
-    xdg_get_data_home, unexpand, expanduser, xdg_get_user_dirs, \
+    xdg_get_data_home, unexpand, xdg_get_user_dirs, \
     xdg_get_config_home, get_temp_cover_file, mkdir, mtime
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.environment import is_osx
 
 from . import TestCase, skipIf
-from .helper import capture_output, locale_numeric_conv
-
+from .helper import capture_output, locale_numeric_conv, temp_filename
 
 is_win = os.name == "nt"
 
@@ -48,7 +48,7 @@ class Tmkdir(TestCase):
 
     def test_manydeep(self):
         self.failUnless(not os.path.isdir("nonext"))
-        t = mkdtemp()
+        t = tempfile.mkdtemp()
         path = os.path.join(t, "nonext", "test", "test2", "test3")
         mkdir(path)
         try:
@@ -67,7 +67,7 @@ class Tmkdir(TestCase):
 class Tgetcwd(TestCase):
 
     def test_Tgetcwd(self):
-        self.assertTrue(isinstance(getcwd(), fsnative))
+        self.assertTrue(isinstance(os.getcwd(), fsnative))
 
 
 class Tmtime(TestCase):
@@ -96,7 +96,7 @@ class Tformat_locale(TestCase):
 
 
 class Tunexpand(TestCase):
-    d = expanduser("~")
+    d = os.path.expanduser("~")
     u = unexpand(d)
 
     def test_base(self):
@@ -107,7 +107,7 @@ class Tunexpand(TestCase):
             self.failUnlessEqual(path, "~")
 
     def test_only_profile_case(self):
-        assert isinstance(unexpand(expanduser(fsnative(u"~"))), fsnative)
+        assert isinstance(unexpand(os.path.expanduser(fsnative(u"~"))), fsnative)
 
     def test_base_trailing(self):
         path = unexpand(self.d + os.path.sep)
@@ -636,12 +636,12 @@ class Txdg_dirs(TestCase):
         data = b'# foo\nBLA="$HOME/blah"\n'
         vars_ = parse_xdg_user_dirs(data)
         self.assertTrue(b"BLA" in vars_)
-        expected = os.path.join(environ.get("HOME", ""), "blah")
+        expected = os.path.join(os.environ.get("HOME", ""), "blah")
         self.assertEqual(vars_[b"BLA"], expected)
 
         vars_ = parse_xdg_user_dirs(b'BLA="$HOME/"')
         self.assertTrue(b"BLA" in vars_)
-        self.assertEqual(vars_[b"BLA"], environ.get("HOME", ""))
+        self.assertEqual(vars_[b"BLA"], os.environ.get("HOME", ""))
 
         # some invalid
         self.assertFalse(parse_xdg_user_dirs(b"foo"))
@@ -700,7 +700,7 @@ class TNormalizePath(TestCase):
         os.close(f)
         path = norm(path)
 
-        link_dir = mkdtemp()
+        link_dir = tempfile.mkdtemp()
         link = None
         if not is_win:
             link = os.path.join(link_dir, str(uuid.uuid4()))
@@ -722,6 +722,15 @@ class TNormalizePath(TestCase):
                 os.remove(link)
             os.remove(path)
             os.rmdir(link_dir)
+
+    def test_pathlib_is_equivalent(self):
+        from quodlibet.util.path import normalize_path
+        with temp_filename() as fn:
+            assert normalize_path(Path(fn)) == normalize_path(fn)
+        with temp_filename() as fn:
+            path = Path(fn)
+            assert normalize_path(path / "./..") == normalize_path(fn + "./..")
+            assert normalize_path(path / ".." / path.name) == normalize_path(path)
 
 
 class Tescape_filename(TestCase):
@@ -796,10 +805,6 @@ class TPathHandling(TestCase):
     def test_main(self):
         v = fsnative(u"foo")
         self.assertTrue(isinstance(v, fsnative))
-
-        v2 = glib2fsn(fsn2glib(v))
-        self.assertTrue(isinstance(v2, fsnative))
-        self.assertEqual(v, v2)
 
         v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")
         self.assertTrue(isinstance(v3, fsnative))
@@ -1095,7 +1100,7 @@ class Treraise(TestCase):
 class Tenviron(TestCase):
 
     def test_main(self):
-        for v in environ.values():
+        for v in os.environ.values():
             if os.name == "nt":
                 self.assertTrue(isinstance(v, str))
             else:
@@ -1176,3 +1181,26 @@ class Textract_tb(TestCase):
                 self.assertTrue(isinstance(l, int))
                 self.assertTrue(isinstance(fu, str))
                 self.assertTrue(isinstance(text, str))
+
+
+def test_capture_output():
+    with capture_output() as (o, e):
+        sys.stdout.write("foo")
+        sys.stderr.write("bar")
+    assert o.getvalue() == "foo"
+    assert e.getvalue() == "bar"
+
+    # also make sure sys.stdout.buffer exists and works,
+    # for completeness
+    with capture_output() as (o, e):
+        sys.stdout.write("foo")
+        sys.stdout.buffer.write(b"bar")
+        sys.stderr.write("baz")
+        sys.stderr.buffer.write(b"quux")
+    assert o.getvalue() == "foobar"
+    assert e.getvalue() == "bazquux"
+
+    # newlines are preserved as is
+    with capture_output() as (o, e):
+        sys.stdout.write("a\nb\r\nc\rd")
+    assert o.getvalue() == "a\nb\r\nc\rd"

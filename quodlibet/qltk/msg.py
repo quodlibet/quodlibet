@@ -1,36 +1,38 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2021 Nick Boultbee
+#       2021-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from gi.repository import Gtk
+from typing import Type
 
-from quodlibet.util import escape
-from senf import fsn2text, path2fsn
+from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import util
-from quodlibet.qltk.icons import Icons
 from quodlibet.qltk import get_top_parent
+from quodlibet.qltk.icons import Icons
 from quodlibet.qltk.window import Dialog
+from quodlibet.util import escape
+from senf import fsn2text, path2fsn
 
 
 class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(self, kind, parent, title, description, buttons=Gtk.ButtonsType.OK,
-                 escape_desc=True):
+    def __init__(self, kind: Type, parent: Gtk.Widget, title: str, description: str,
+                 buttons: Gtk.ButtonsType = Gtk.ButtonsType.OK,
+                 escape_desc: bool = True):
         parent = get_top_parent(parent)
-        text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
-                % (escape(title), escape(description) if escape_desc else description))
+        markup = (f"<span weight='bold' size='larger'>{escape(title)}</span>\n\n"
+                  + escape(description) if escape_desc else description)
         super().__init__(
             transient_for=parent, modal=True, destroy_with_parent=True,
             message_type=kind, buttons=buttons)
-        self.set_markup(text)
+        self.set_markup(markup)
 
     def run(self, destroy=True):
         resp = super().run()
@@ -69,6 +71,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
 
 class ErrorMessage(Message):
     """Like Message, but uses an error-indicating picture."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             Gtk.MessageType.ERROR, *args, **kwargs)
@@ -76,6 +79,7 @@ class ErrorMessage(Message):
 
 class WarningMessage(Message):
     """Like Message, but uses an warning-indicating picture."""
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             Gtk.MessageType.WARNING, *args, **kwargs)

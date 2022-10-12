@@ -153,7 +153,7 @@ class ExportToFolder(PlaylistPlugin):
         dialog.destroy()
 
     @classmethod
-    def PluginPreferences(self, parent):
+    def PluginPreferences(cls, parent):
         def changed(entry):
             CONFIG.default_pattern = entry.get_text()
 

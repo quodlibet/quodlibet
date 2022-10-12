@@ -25,7 +25,7 @@ try:
 except ImportError:
     fcntl = None  # type: ignore
 
-from senf import fsnative, argv
+from senf import fsnative
 
 from quodlibet.util.string.titlecase import title
 
@@ -118,7 +118,7 @@ class OptionParser:
             l = max(l, len(k) + len(self.__args.get(k, "")) + 4)
 
         s = _("Usage: %(program)s %(usage)s") % {
-            "program": argv[0],
+            "program": sys.argv[0],
             "usage": self.__usage if self.__usage else _("[options]"),
         }
         s += "\n"
@@ -155,7 +155,7 @@ class OptionParser:
 
     def parse(self, args=None):
         if args is None:
-            args = argv[1:]
+            args = sys.argv[1:]
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
@@ -172,7 +172,7 @@ class OptionParser:
                 text.append(
                     _("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
-                text.append(_("Try %s --help.") % argv[0])
+                text.append(_("Try %s --help.") % sys.argv[0])
 
             print_e("\n".join(text))
             raise SystemExit(True)
@@ -1091,7 +1091,7 @@ class MainRunner:
 
 
 def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
-    """A re.escape which also works with unicode"""
+    """A `re.escape` which also works with unicode"""
 
     needs_escape = lambda c: (c in BAD and "\\" + c) or c
     return type(string)().join(map(needs_escape, string))

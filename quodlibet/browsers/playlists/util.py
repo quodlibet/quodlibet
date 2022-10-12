@@ -1,4 +1,4 @@
-# Copyright 2014-2021 Nick Boultbee
+# Copyright 2014-2022 Nick Boultbee
 #                2022 TheMelmacian
 #
 # This program is free software; you can redistribute it and/or modify
@@ -8,7 +8,7 @@
 
 import os
 
-from quodlibet import _, print_w
+from quodlibet import _, print_w, ngettext
 from quodlibet import formats
 from quodlibet.qltk import Icons
 from quodlibet.qltk.getstring import GetStringDialog
@@ -44,12 +44,33 @@ def confirm_remove_playlist_dialog_invoke(
     return response
 
 
+def confirm_dnd_playlist_dialog_invoke(
+    parent, songs, target_playlist_name, Confirmer=ConfirmationPrompt):
+    """see confirm_remove_playlist_dialog_invoke above, except for
+       the action of attempting to extend a playlist with a second
+       dragged and dropped playlist.
+    """
+    title = ngettext(
+        "Extend \"{pl_name}\" with {num} additional track?",
+        "Extend \"{pl_name}\" with {num} additional tracks?",
+        len(songs),
+    ).format(pl_name=target_playlist_name, num=len(songs))
+
+    description = ""
+    ok_text = _("_Add Tracks")
+
+    dialog = Confirmer(parent, title, description, ok_text)
+    prompt = dialog.run()
+    response = (prompt == Confirmer.RESPONSE_INVOKE)
+    return response
+
+
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
         super().__init__(
             parent, _("New Playlist"),
             _("Enter a name for the new playlist:"),
-            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
+            button_label=_("_Create"), button_icon=Icons.DOCUMENT_NEW)
 
 
 def parse_m3u(filelike, pl_name, songs_lib=None, pl_lib=None):

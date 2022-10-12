@@ -5,6 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
 import sqlite3
 
 from gi.repository import Gtk
@@ -17,7 +18,7 @@ from quodlibet import util
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.qltk.msg import Message, WarningMessage, ErrorMessage
-from quodlibet.util.path import expanduser, normalize_path
+from quodlibet.util.path import normalize_path
 from quodlibet.plugins.events import EventPlugin
 
 
@@ -95,7 +96,7 @@ class BansheeDBImporter:
 
 
 def do_import(parent, library):
-    db_path = expanduser(BansheeImport.USR_PATH)
+    db_path = os.path.expanduser(BansheeImport.USR_PATH)
 
     importer = BansheeDBImporter(library)
     try:

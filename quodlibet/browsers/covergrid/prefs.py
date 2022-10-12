@@ -62,41 +62,22 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         vbox = Gtk.VBox(spacing=6)
         cb = ConfigCheckButton(
             _("Show album _text"), "browsers", "album_text")
-        cb.set_active(config.getboolean("browsers", "album_text"))
-        cb.connect('toggled',
-                   lambda s: browser.toggle_text())
+        cb.set_active(config.getboolean("browsers", "album_text", True))
+        cb.connect('toggled', lambda s: browser.toggle_text())
         vbox.pack_start(cb, False, True, 0)
 
         cb2 = ConfigCheckButton(
             _("Show \"All Albums\" Item"), "browsers", "covergrid_all")
         cb2.set_active(config.getboolean("browsers", "covergrid_all", True))
-
-        def refilter(s):
-            mod = browser.view.get_model()
-            if mod:
-                mod.refilter()
-        cb2.connect('toggled', refilter)
+        cb2.connect('toggled', lambda s: browser.toggle_item_all())
         vbox.pack_start(cb2, False, True, 0)
 
-        cb3 = ConfigCheckButton(
-            _("Wide Mode"), "browsers", "covergrid_wide")
-        cb3.set_active(config.getboolean("browsers",
-            "covergrid_wide", False))
-        cb3.connect('toggled',
-                   lambda s: browser.toggle_wide())
+        cb3 = ConfigCheckButton(_("Wide Mode"), "browsers", "covergrid_wide")
+        cb3.set_active(config.getboolean("browsers", "covergrid_wide", False))
+        cb3.connect('toggled', lambda s: browser.toggle_wide())
         vbox.pack_start(cb3, False, True, 0)
 
-        # Redraws the covers only when the user releases the slider
-        def mag_button_press(*_):
-            self.mag_lock = True
-
-        def mag_button_release(mag, _):
-            self.mag_lock = False
-            mag_changed(mag)
-
         def mag_changed(mag):
-            if self.mag_lock:
-                return
             newmag = mag.get_value()
             oldmag = config.getfloat("browsers", "covergrid_magnification", 3.)
             if newmag == oldmag:
@@ -110,12 +91,10 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         mag_scale = Gtk.HScale(
             adjustment=Gtk.Adjustment.new(config.getfloat("browsers",
-                "covergrid_magnification", 3), 0., 10., .5, .5, 0))
+                "covergrid_magnification", 3), 1, 10., .5, .5, 0))
         mag_scale.set_tooltip_text(_("Cover Magnification"))
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
-        mag_scale.connect('button-press-event', mag_button_press)
-        mag_scale.connect('button-release-event', mag_button_release)
         mag_scale.connect('value-changed', mag_changed)
 
         vbox.pack_start(l, False, True, 0)

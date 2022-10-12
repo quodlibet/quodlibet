@@ -7,9 +7,10 @@
 # (at your option) any later version.
 
 import re
+import os
 from typing import Iterable
 
-from senf import fsn2bytes, bytes2fsn, fsnative, expanduser
+from senf import fsn2bytes, bytes2fsn, fsnative
 
 from quodlibet import _
 from quodlibet import app
@@ -69,7 +70,7 @@ def get_scan_dirs():
     """
 
     joined_paths = bytes2fsn(config.getbytes("settings", "scan"), "utf-8")
-    return [expanduser(p) for p in split_scan_dirs(joined_paths)]
+    return [os.path.expanduser(p) for p in split_scan_dirs(joined_paths)]
 
 
 def set_scan_dirs(dirs):
@@ -93,7 +94,7 @@ def get_exclude_dirs() -> Iterable[fsnative]:
 
     paths = split_scan_dirs(
         bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
-    return [expanduser(p) for p in paths]  # type: ignore
+    return [os.path.expanduser(p) for p in paths]  # type: ignore
 
 
 def scan_library(library, force):

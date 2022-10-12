@@ -4,7 +4,7 @@
 #                Anthony Bretaudeau <wxcover@users.sourceforge.net>,
 #           2010 Aymeric Mansoux <aymeric@goto10.org>
 #           2008-2013 Christoph Reiter
-#           2011-2017 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #                2016 Mice Pápai
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,39 +12,39 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import gzip
 import json
 import os
 import re
-import time
 import threading
-import gzip
+import time
 from io import BytesIO
+from typing import List, Dict, Any
 from urllib.parse import urlencode
 
-from xml.dom import minidom
-
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
+
+from quodlibet import _
+from quodlibet import util, qltk, app
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 from quodlibet.pattern import Pattern
 from quodlibet.plugins import PluginConfigMixin
 from quodlibet.plugins.songshelpers import any_song, is_a_file
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons, ConfigRHPaned
+from quodlibet.qltk.entry import ValidatingEntry
+from quodlibet.qltk.image import scale, add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.msg import ConfirmFileReplace
+from quodlibet.qltk.views import AllTreeView
+from quodlibet.qltk.window import PersistentWindowMixin
+from quodlibet.qltk.x import Align, Button
 from quodlibet.util import format_size, print_exc
 from quodlibet.util.dprint import print_d, print_w
-
-from quodlibet import _
-from quodlibet import util, qltk, app
-from quodlibet.qltk.msg import ConfirmFileReplace
-from quodlibet.qltk.x import Paned, Align, Button
-from quodlibet.qltk.views import AllTreeView
-from quodlibet.qltk import Icons
-from quodlibet.qltk.image import scale, add_border_widget, \
-    get_surface_for_pixbuf
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
 
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
-    "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
+             "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
 PLUGIN_CONFIG_SECTION = 'cover'
 CONFIG_ENG_PREFIX = 'engine_'
@@ -104,117 +104,13 @@ def get_encoding(url):
     return get_encoding_from_socket(url_sock)
 
 
-class AmazonParser:
-    """A class for searching covers from Amazon"""
-
-    def __init__(self):
-        self.page_count = 1
-        self.covers = []
-        self.limit = 0
-
-    def __parse_page(self, page, query):
-        """Gets all item tags and calls the item parsing function for each"""
-
-        # Amazon now requires that all requests be signed.
-        # I have built a webapp on AppEngine for this purpose. -- wm_eddie
-        # url = 'https://webservices.amazon.com/onca/xml'
-        url = 'https://qlwebservices.appspot.com/onca/xml'
-
-        parameters = {
-            'Service': 'AWSECommerceService',
-            'AWSAccessKeyId': '0RKH4ZH1JCFZHMND91G2', # Now Ignored.
-            'Operation': 'ItemSearch',
-            'ResponseGroup': 'Images,Small',
-            'SearchIndex': 'Music',
-            'Keywords': query,
-            'ItemPage': page,
-            # This specifies where the money goes and needed since 1.11.2011
-            # (What a good reason to break API..)
-            # ...so use the eff.org one: https://www.eff.org/helpout
-            'AssociateTag': 'electronicfro-20',
-        }
-        data = get_url(url, get=parameters)
-        dom = minidom.parseString(data)
-
-        pages = dom.getElementsByTagName('TotalPages')
-        if pages:
-            self.page_count = int(pages[0].firstChild.data)
-
-        items = dom.getElementsByTagName('Item')
-        print_d("Amazon: got %d search result(s)" % len(items))
-        for item in items:
-            self.__parse_item(item)
-            if len(self.covers) >= self.limit:
-                break
-
-    def __parse_item(self, item):
-        """Extract all information and add the covers to the list."""
-
-        large = item.getElementsByTagName('LargeImage')
-        small = item.getElementsByTagName('SmallImage')
-        title = item.getElementsByTagName('Title')
-
-        if large and small and title:
-            cover = {}
-
-            artist = item.getElementsByTagName('Artist')
-            creator = item.getElementsByTagName('Creator')
-
-            text = ''
-            if artist:
-                text = artist[0].firstChild.data
-            elif creator:
-                if len(creator) > 1:
-                    text = ', '.join([i.firstChild.data for i in creator])
-                else:
-                    text = creator[0].firstChild.data
-
-            title_text = title[0].firstChild.data
-
-            if len(text) and len(title_text):
-                text += ' - '
-
-            cover['name'] = text + title_text
-
-            url_tag = small[0].getElementsByTagName('URL')[0]
-            cover['thumbnail'] = url_tag.firstChild.data
-
-            url_tag = large[0].getElementsByTagName('URL')[0]
-            cover['cover'] = url_tag.firstChild.data
-
-            #Since we don't know the size, use the one from the HTML header.
-            cover['size'] = get_size_of_url(cover['cover'])
-
-            h_tag = large[0].getElementsByTagName('Height')[0]
-            height = h_tag.firstChild.data
-
-            w_tag = large[0].getElementsByTagName('Width')[0]
-            width = w_tag.firstChild.data
-
-            cover['resolution'] = '%s x %s px' % (width, height)
-
-            cover['source'] = 'https://www.amazon.com'
-
-            self.covers.append(cover)
-
-    def start(self, query, limit=5):
-        """Start the search and returns the covers"""
-
-        self.page_count = 0
-        self.covers = []
-        self.limit = limit
-        page = 1
-
-        while len(self.covers) < limit:
-            self.__parse_page(page, query)
-            if page >= self.page_count:
-                break
-            page += 1
-
-        return self.covers
+class CoverSearcher:
+    def start(self, query, limit=5) -> List[Dict[str, Any]]:
+        """Start the search and return the covers"""
+        raise NotImplementedError()
 
 
-class DiscogsParser:
+class DiscogsSearcher(CoverSearcher):
     """A class for searching covers from Amazon"""
 
     def __init__(self):
@@ -291,8 +187,6 @@ class DiscogsParser:
                 break
 
     def start(self, query, limit=3):
-        """Start the search and returns the covers"""
-
         self.page_count = 0
         self.covers = []
         self.limit = limit
@@ -336,10 +230,10 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         self.name_combo = Gtk.ComboBoxText()
         self.name_combo.set_tooltip_text(
-             _("See '[plugins] cover_filenames' config entry " +
-               "for image filename strings"))
+            _("See '[plugins] cover_filenames' config entry " +
+              "for image filename strings"))
 
-        self.cmd = qltk.entry.ValidatingEntry(iscommand)
+        self.cmd = ValidatingEntry(iscommand)
 
         # Both labels
         label_open = Gtk.Label(label=_('_Program:'))
@@ -358,7 +252,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         # populate the filename combo box
         fn_list = self.config_get_stringlist('filenames',
-                      ["cover.jpg", "folder.jpg", ".folder.jpg"])
+                                             ["cover.jpg", "folder.jpg", ".folder.jpg"])
         # Issue 374 - add dynamic file names
         fn_dynlist = []
         artist = song("artist")
@@ -438,7 +332,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # 5 MB image cache size
         self.max_cache_size = 1024 * 1024 * 5
 
-        # For managing fast selection switches of covers..
+        # For managing fast selection switches of covers...
         self.stop_loading = False
         self.loading = False
         self.current_job = 0
@@ -466,7 +360,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             f.close()
         except IOError:
             qltk.ErrorMessage(None, _('Saving failed'),
-                _('Unable to save "%s".') % file_path).run()
+                              _('Unable to save "%s".') % file_path).run()
         else:
             if self.open_check.get_active():
                 try:
@@ -522,7 +416,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
     def set_cover(self, url):
         thr = threading.Thread(target=self.__set_async, args=(url,))
-        thr.setDaemon(True)
+        thr.daemon = True
         thr.start()
 
     def __set_async(self, url):
@@ -610,14 +504,15 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.loading = False
 
 
-class AlbumArtWindow(qltk.Window, PluginConfigMixin):
+class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
     """The main window including the search list"""
 
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
-    THUMB_SIZE = 50
+    THUMB_SIZE = 128
 
     def __init__(self, songs):
         super().__init__()
+        self.enable_window_tracking(f"plugin_{PLUGIN_CONFIG_SECTION}")
 
         self.image_cache = []
         self.image_cache_size = 10
@@ -645,7 +540,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         treeselection.connect('changed', self.__select_callback, image)
 
         self.treeview.connect("drag-data-get",
-            self.__drag_data_get, treeselection)
+                              self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn('Thumb')
@@ -661,8 +556,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         rend_pix.set_property('xpad', 2)
         rend_pix.set_property('ypad', 2)
         border_width = self.get_scale_factor() * 2
-        rend_pix.set_property('width', self.THUMB_SIZE + 4 + border_width)
-        rend_pix.set_property('height', self.THUMB_SIZE + 4 + border_width)
+        rend_pix.set_property('width', self.THUMB_SIZE + 6 + border_width)
+        rend_pix.set_property('height', self.THUMB_SIZE + 6 + border_width)
 
         def escape_data(data):
             for rep in ('\n', '\t', '\r', '\v'):
@@ -717,8 +612,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
                                                  label=None)
         self.search_radioclean.connect("toggled", self.__searchtypetoggled,
                                        "clean")
-        #note: set_active(False) appears to have no effect
-        #self.search_radioraw.set_active(
+        # note: set_active(False) appears to have no effect
+        # self.search_radioraw.set_active(
         #    self.config_get_bool('searchraw', False))
         if self.config_get_bool('searchraw', False):
             self.search_radioraw.set_active(True)
@@ -728,7 +623,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         search_labelresultsmax = Gtk.Label('limit')
         search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
         search_labelresultsmax.set_tooltip_text(
-             _("Per engine 'at best' results limit"))
+            _("Per engine 'at best' results limit"))
         search_adjresultsmax = Gtk.Adjustment(
             value=int(self.config_get("resultsmax", 3)), lower=1,
             upper=REQUEST_LIMIT_MAX, step_incr=1,
@@ -745,6 +640,8 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         search_button_box.add(self.search_button)
 
         search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
+        search_table.set_col_spacings(6)
+        search_table.set_row_spacings(6)
         search_table.attach(search_labelraw, 0, 1, 0, 1,
                             xoptions=Gtk.AttachOptions.FILL, xpadding=6)
         search_table.attach(self.search_radioraw, 1, 2, 0, 1,
@@ -769,11 +666,11 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
         left_vbox.pack_start(search_table, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
-        hpaned = Paned()
+        hpaned = ConfigRHPaned(section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos",
+                               default=0.3)
         hpaned.set_border_width(widget_space)
         hpaned.pack1(left_vbox, shrink=False)
         hpaned.pack2(image, shrink=False)
-        hpaned.set_position(275)
 
         self.add(hpaned)
 
@@ -803,7 +700,7 @@ class AlbumArtWindow(qltk.Window, PluginConfigMixin):
     def __searchfieldchanged(self, *data):
         search = data[0].get_text()
         clean = cleanup_query(search, ' ')
-        self.search_fieldclean.set_text('<b>' + clean + '</b>')
+        self.search_fieldclean.set_text(f"<i>{clean}</i>")
         self.search_fieldclean.set_use_markup(True)
 
     def __searchtypetoggled(self, *data):
@@ -925,10 +822,10 @@ class CoverSearch:
         for engine, replace in self.engine_list:
             thr = threading.Thread(target=self.__search_thread,
                                    args=(engine, query, replace, raw, limit))
-            thr.setDaemon(True)
+            thr.daemon = True
             thr.start()
 
-        #tell the other side that we are finished if there is nothing to do.
+        # tell the other side that we are finished if there is nothing to do.
         if not len(self.engine_list):
             GLib.idle_add(self.callback, [], 1)
 
@@ -948,13 +845,13 @@ class CoverSearch:
             print_exc()
 
         self.finished += 1
-        #progress is between 0..1
+        # progress is between 0..1
         progress = float(self.finished) / len(self.engine_list)
         GLib.idle_add(self.callback, result, progress)
 
 
 def cleanup_query(query, replace):
-    """split up at '-', remove some chars, only keep the longest words..
+    """split up at '-', remove some chars, only keep the longest words...
     more false positives but much better results"""
 
     query = query.lower()
@@ -991,13 +888,7 @@ def get_size_of_url(url):
 
 ENGINES = [
     {
-        'class': AmazonParser,
-        'url': 'https://www.amazon.com/',
-        'replace': ' ',
-        'config_id': 'amazon',
-    },
-    {
-        'class': DiscogsParser,
+        'class': DiscogsSearcher,
         'url': 'https://www.discogs.com/',
         'replace': ' ',
         'config_id': 'discogs',
@@ -1035,8 +926,7 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
             button = Gtk.Button(label=eng['url'])
             button.connect('clicked', lambda s: util.website(s.get_label()))
             table.attach(button, 1, 2, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
         return frame
 
     def plugin_album(self, songs):

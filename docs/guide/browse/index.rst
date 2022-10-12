@@ -13,5 +13,5 @@ Browsing Your Library
     paned
     filesystem
     iradio
-    audiofeeds
+    podcasts
     soundcloud

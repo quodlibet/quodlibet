@@ -5,8 +5,10 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import os
+
 from gi.repository import Gtk
-from senf import fsnative, getcwd
+from senf import fsnative
 
 from quodlibet.qltk.chooser import choose_files, get_current_dir, \
     set_current_dir, choose_folders, create_chooser_filter, \
@@ -62,4 +64,4 @@ class Tchooser(TestCase):
 
     def test_set_current_dir(self):
         set_current_dir(fsnative(u"."))
-        assert get_current_dir() == getcwd()
+        assert get_current_dir() == os.getcwd()

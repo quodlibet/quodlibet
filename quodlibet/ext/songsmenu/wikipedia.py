@@ -1,5 +1,6 @@
 # Copyright 2005 Inigo Serna
 #           2018 Phoenix Dailey, Fredrik Strupe
+#           2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -63,12 +64,10 @@ class WikiSearch(SongsMenuPlugin):
 
         def _open_editor(widget):
             def _editor_closed(widget):
-                tags = widget.get_strings()
-                config.setlist("plugins", "wiki_tags", tags)
+                config.setlist("plugins", "wiki_tags", widget.tags)
 
             tags = config.getlist("plugins", "wiki_tags", self.DEFAULT_TAGS)
-            editor = TagListEditor(_("Edit Tags"),
-                        [] if tags == [''] else tags)
+            editor = TagListEditor(_("Edit Tags"), [] if tags == [''] else tags)
             editor.set_transient_for(get_top_parent(parent))
             editor.connect('destroy', _editor_closed)
             editor.show()

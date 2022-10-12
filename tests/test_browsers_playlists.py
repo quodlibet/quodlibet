@@ -7,11 +7,13 @@ import os
 import shutil
 from pathlib import Path
 
+import pytest
 from gi.repository import Gdk, Gtk
 
 import quodlibet.config
 from quodlibet import app
 from quodlibet import qltk
+from quodlibet.browsers._base import BrowserError
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
 from quodlibet.browsers.playlists.util import (parse_m3u,
@@ -288,9 +290,12 @@ class TPlaylistsBrowser(TestCase):
 
     def test_rename(self):
         self.assertEquals(self.bar.playlists()[1], self.small)
-        self.bar._rename(0, "zBig")
+        assert self.bar._rename(0, "zBig")
         self.assertEquals(self.bar.playlists()[0], self.small)
         self.assertEquals(self.bar.playlists()[1].name, "zBig")
+
+    def test_rename_empty(self):
+        assert not self.bar._rename(0, "", show_error=False)
 
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
@@ -304,6 +309,42 @@ class TPlaylistsBrowser(TestCase):
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
+
+    def test_playlist_drag_data_extend_accept(self):
+        b = self.bar
+        song1 = AudioFile()
+        song2 = AudioFile()
+        song3 = AudioFile()
+        song1["~filename"] = fsnative(u"foo1")
+        song2["~filename"] = fsnative(u"foo2")
+        song3["~filename"] = fsnative(u"foo3")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song1, song2, song3])
+        filenames = qltk.selection_get_filenames(sel)
+
+        first_pl = b.playlists()[0]
+        original_length = len(first_pl)
+        # This is usually called by __drag_data_received, but that is heavily
+        # dependent on gtk-views, so is more conveniently called manually.
+        b._add_drag_data_tracks_to_playlist(first_pl, filenames)
+        self.failUnlessEqual(len(first_pl), original_length + 3)
+
+    def test_playlist_drag_data_extend_decline(self):
+        b = self.bar_decline
+        song1 = AudioFile()
+        song2 = AudioFile()
+        song3 = AudioFile()
+        song1["~filename"] = fsnative(u"foo1")
+        song2["~filename"] = fsnative(u"foo2")
+        song3["~filename"] = fsnative(u"foo3")
+        sel = MockSelData()
+        qltk.selection_set_songs(sel, [song1, song2, song3])
+        filenames = qltk.selection_get_filenames(sel)
+
+        first_pl = b.playlists()[0]
+        original_length = len(first_pl)
+        b._add_drag_data_tracks_to_playlist(first_pl, filenames)
+        self.failUnlessEqual(len(first_pl), original_length)
 
     def test_songs_deletion(self):
         b = self.bar
@@ -371,7 +412,8 @@ class TPlaylistsBrowser(TestCase):
 
     def test_no_pl_lib(self):
         """Probably not possible in real runtime situations"""
-        assert PlaylistsBrowser(FileLibrary("no-playlists"))
+        with pytest.raises(BrowserError):
+            assert PlaylistsBrowser(FileLibrary("no-playlists"))
 
     @staticmethod
     def a_delete_event():

@@ -1,5 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012, 2013 Christoph Reiter
+#                 2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,10 +9,10 @@
 
 import contextlib
 import sys
+import os
 
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
-from senf import environ
 
 from quodlibet import _, print_e
 from quodlibet import config
@@ -1153,7 +1154,7 @@ class HintedTreeView(BaseView):
         display scroll bars instead for example.
         """
 
-        if "QUODLIBET_NO_HINTS" in environ:
+        if "QUODLIBET_NO_HINTS" in os.environ:
             return False
 
         return not config.state('disable_hints')
@@ -1163,7 +1164,7 @@ class _TreeViewColumnLabel(Gtk.Label):
     """A label which fades  into the background at the end; for use
     only in TreeViewColumns.
 
-    The hackery with using the parents allocation is needed because
+    The hackery with using the parent's allocation is needed because
     the label always gets the allocation it has requested, ignoring
     the actual width of the column header.
     """

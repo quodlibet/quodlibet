@@ -4,12 +4,12 @@ data/io.github.quodlibet.QuodLibet.appdata.xml.in
 data/io.github.quodlibet.QuodLibet.desktop.in
 quodlibet/browsers/albums/main.py
 quodlibet/browsers/albums/prefs.py
-quodlibet/browsers/audiofeeds.py
 quodlibet/browsers/_base.py
 quodlibet/browsers/collection/main.py
 quodlibet/browsers/collection/models.py
 quodlibet/browsers/collection/prefs.py
 quodlibet/browsers/covergrid/main.py
+quodlibet/browsers/covergrid/models.py
 quodlibet/browsers/covergrid/prefs.py
 quodlibet/browsers/filesystem.py
 quodlibet/browsers/__init__.py
@@ -21,6 +21,7 @@ quodlibet/browsers/playlists/main.py
 quodlibet/browsers/playlists/menu.py
 quodlibet/browsers/playlists/prefs.py
 quodlibet/browsers/playlists/util.py
+quodlibet/browsers/podcasts.py
 quodlibet/browsers/tracks.py
 quodlibet/browsers/soundcloud/library.py
 quodlibet/browsers/soundcloud/main.py

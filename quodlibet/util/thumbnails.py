@@ -8,12 +8,13 @@
 
 import os
 import hashlib
+from tempfile import gettempdir
 from typing import Optional
 
 from gi.repository import GdkPixbuf, GLib
 
 from quodlibet import print_w
-from senf import fsn2uri, fsnative, gettempdir
+from senf import fsn2uri, fsnative
 
 import quodlibet
 from quodlibet.util.path import mtime, mkdir, xdg_get_cache_home

@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2012-2017 Nick Boultbee
+#           2012-2022 Nick Boultbee
 #           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,6 +22,7 @@ from quodlibet import formats
 from quodlibet import qltk
 from quodlibet import util
 from quodlibet import app
+from quodlibet import ngettext
 from quodlibet import _
 from quodlibet.qltk.paned import ConfigRHPaned
 
@@ -277,12 +278,12 @@ class TopBar(Gtk.Toolbar):
         info_item.add(box)
         qltk.add_css(self, "GtkToolbar {padding: 3px;}")
 
-        self._pattern_box = Gtk.VBox()
+        self._pattern_box = Gtk.VBox(spacing=3)
 
         # song text
         info_pattern_path = os.path.join(quodlibet.get_user_dir(), "songinfo")
         text = SongInfo(library.librarian, player, info_pattern_path)
-        self._pattern_box.pack_start(Align(text, border=3), True, True, 0)
+        self._pattern_box.pack_start(text, True, True, 0)
         box.pack_start(self._pattern_box, True, True, 0)
 
         # cover image
@@ -295,7 +296,7 @@ class TopBar(Gtk.Toolbar):
                 app.cover_manager, 'cover-changed',
                 self.__song_art_changed, library)
 
-        box.pack_start(Align(self.image, border=2), False, True, 0)
+        box.pack_start(Align(self.image, top=3, right=3), False, True, 0)
 
         # On older Gtk+ (3.4, at least)
         # setting a margin on CoverImage leads to errors and result in the
@@ -600,7 +601,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         main_box.pack_start(top_bar, False, True, 0)
         self.top_bar = top_bar
 
-        self.__browserbox = Align(bottom=3)
+        self.__browserbox = Align(top=3, bottom=3)
         self.__paned = paned = ConfigRHPaned("memory", "sidebar_pos", 0.25)
         paned.pack1(self.__browserbox, resize=True)
         # We'll pack2 when necessary (when the first sidebar plugin is set up)
@@ -612,9 +613,8 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.order = play_order
         self.statusbar = statusbox.statusbar
 
-        main_box.pack_start(
-            Align(statusbox, border=3, top=-3),
-            False, True, 0)
+        align = Align(statusbox, top=1, bottom=4, left=6, right=6)
+        main_box.pack_start(align, False, True, 0)
 
         self.songpane = SongListPaned(self.song_scroller, self.qexpander)
         self.songpane.show_all()
@@ -756,6 +756,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             return True
         else:
             return False
+
+    def enqueue(self, songs, limit=0):
+        """Append `songs` to the queue
+
+        Ask for confimation if the number of songs exceeds `limit`.
+        """
+
+        if len(songs) > limit:
+            dialog = ConfirmEnqueue(self, len(songs))
+            if dialog.run() != Gtk.ResponseType.YES:
+                return
+
+        self.playlist.enqueue(songs)
 
     def __player_error(self, player, song, player_error):
         # it's modal, but mmkeys etc. can still trigger new ones
@@ -1387,3 +1400,19 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         t = self.browser.status_text(count=len(songs),
                                      time=util.format_time_preferred(length))
         self.statusbar.set_default_text(t)
+
+
+class ConfirmEnqueue(qltk.Message):
+    def __init__(self, parent, count):
+        title = ngettext("Are you sure you want to enqueue %d song?",
+                         "Are you sure you want to enqueue %d songs?",
+                         count) % count
+        description = ""
+
+        super().__init__(
+            Gtk.MessageType.WARNING, parent, title, description,
+            Gtk.ButtonsType.NONE)
+
+        self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
+        self.add_icon_button(_("_Enqueue"), Icons.LIST_ADD,
+                             Gtk.ResponseType.YES)

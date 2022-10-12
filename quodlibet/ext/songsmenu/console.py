@@ -484,7 +484,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         import inspect
 
         def get_comp(obj, pre):
-            """ get completion item names from `obj`-object or `self.namespace` with prefix `pre`
+            """ get completion item names from `obj`-object or `self.namespace`
+            with prefix `pre`
             """
             dir_result = dir(obj) if obj is not None else self.namespace
 
@@ -522,9 +523,8 @@ class PythonConsole(Gtk.ScrolledWindow):
                             if i < noargs:
                                 sargs.append(spec.args[i])
                             else:
-                                sargs.append(spec.args[i] + '=' +
-                                             spec.defaults[i -
-                                                           noargs].__repr__())
+                                default_arg = repr(spec.defaults[i - noargs])
+                                sargs.append(spec.args[i] + '=' + default_arg)
 
                         details = " ({})".format(", ".join(sargs))
                         comp.append((name, details))

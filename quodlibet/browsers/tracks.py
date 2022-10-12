@@ -1,4 +1,4 @@
-# Copyright 2004-2020 Joe Wreschnig, Michael Urman, Iñigo Serna,
+# Copyright 2004-2022 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson, Nick Boultbee,
 #           2018-2019 Peter Strulo
 #
@@ -9,16 +9,18 @@
 
 from gi.repository import Gtk, GLib
 
+from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import _
 from quodlibet.browsers import Browser
+from quodlibet.qltk import is_accel
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.completion import LibraryTagCompletion
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.searchbar import MultiSearchBarBox
 from quodlibet.qltk.songlist import SongList
-from quodlibet.qltk.x import SymbolicIconImage
+from quodlibet.qltk.x import SymbolicIconImage, Align
 from quodlibet.qltk import Icons
 
 
@@ -64,8 +66,7 @@ class TrackList(Browser):
         container.remove(self)
 
     def __init__(self, library):
-        super().__init__(margin=6, spacing=6,
-                         orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(spacing=6, orientation=Gtk.Orientation.VERTICAL)
 
         self._query = None
         self._library = library
@@ -82,12 +83,13 @@ class TrackList(Browser):
 
         sbb.connect('query-changed', self.__text_parse)
         sbb.connect('focus-out', self.__focus)
+        sbb.connect('key-press-event', self.__sb_key_pressed)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
         sbb.pack_start(prefs, False, True, 0)
 
-        self.pack_start(sbb, False, True, 0)
+        self.pack_start(Align(sbb, left=6, right=6), False, True, 0)
         self.pack_start(sbb.flow_box, False, True, 0)
         self.connect('destroy', self.__destroy)
         self.show_all()
@@ -116,6 +118,15 @@ class TrackList(Browser):
 
     def __text_parse(self, bar, text):
         self.activate()
+
+    def __sb_key_pressed(self, entry, event):
+        if (is_accel(event, "<Primary>Return") or
+                is_accel(event, "<Primary>KP_Enter")):
+            songs = app.window.songlist.get_songs()
+            limit = config.getint("browsers", "searchbar_enqueue_limit")
+            app.window.enqueue(songs, limit)
+            return True
+        return False
 
     def save(self):
         config.settext("browsers", "query_text", self._get_text())

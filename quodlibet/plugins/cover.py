@@ -1,4 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
+#           2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,7 +44,7 @@ class CoverSourcePlugin(GObject.Object):
         return type(self).__name__
 
     def __str__(self):
-        return "%s for %s" % (self.name, self.group_by(self.song))
+        return f"<{self.name} for {self.group_by(self.song)!r}>"
 
     embedded = False
     """Whether the source is an embedded one"""

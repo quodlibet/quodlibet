@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#      2017-2020 Nick Boultbee
+#      2017-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,6 +10,7 @@ import os
 import sys
 import threading
 import time
+from urllib.request import urlopen, Request
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 import feedparser
@@ -33,6 +34,7 @@ from quodlibet.qltk.views import AllTreeView
 from quodlibet.qltk import Icons
 from quodlibet.util import connect_obj, print_w
 from quodlibet.qltk.x import ScrolledWindow, Align, Button, MenuItem
+from quodlibet.util.path import uri_is_valid
 from quodlibet.util.picklehelper import pickle_load, pickle_dump, PickleError
 
 
@@ -85,6 +87,10 @@ class Feed(list):
                     af.add(songkey, value)
 
         try:
+            af.add("artwork_url", feed.image["href"])
+        except (AttributeError, KeyError):
+            pass
+        try:
             author = feed.author_detail
         except AttributeError:
             try:
@@ -135,10 +141,29 @@ class Feed(list):
                     af.add("genre", value)
 
     def parse(self):
+        req = Request(self.uri, method="HEAD")
         try:
-            doc = feedparser.parse(self.uri)
+            with urlopen(req, timeout=5) as head:
+                # Some requests don't support status, e.g. file://
+                if hasattr(head, "status"):
+                    print_d(f"Feed URL {self.uri!r} ({head.url}) "
+                            f"returned HTTP {head.status}, "
+                            f"with content {head.headers.get('Content-Type')}")
+                    if head.status and head.status >= 400:
+                        return False
+                if head.headers.get("Content-Type").lower().startswith("audio"):
+                    print_w("Looks like an audio stream / radio, not a audio feed.")
+                    return False
+            # Don't pass feedparser URLs
+            # see https://github.com/kurtmckee/feedparser/pull/80#issuecomment-449543486
+            content = urlopen(self.uri, timeout=15).read()
+        except IOError as e:
+            print_w(f"Couldn't fetch content from {self.uri} ({e})")
+            return False
+        try:
+            doc = feedparser.parse(content)
         except Exception as e:
-            print_w("Couldn't parse feed: %s (%s)" % (self.uri, e))
+            print_w(f"Couldn't parse feed: {self.uri} ({e})")
             return False
 
         try:
@@ -212,16 +237,24 @@ class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
         super().__init__(
             qltk.get_top_parent(parent), _("New Feed"),
-            _("Enter the location of an audio feed:"),
+            _("Enter the podcast / audio feed location:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
-    def run(self, text='', test=False):
-        uri = super().run(text=text, test=test)
+    def run(self, text='', clipboard=True, test=False):
+        uri = super().run(text=text, clipboard=clipboard, test=test)
         if uri:
             if not isinstance(uri, str):
                 uri = uri.decode('utf-8')
             return Feed(uri)
         return None
+
+    def _verify_clipboard(self, text):
+        # try to extract a URI from the clipboard
+        for line in text.splitlines():
+            line = line.strip()
+
+            if uri_is_valid(line):
+                return line
 
 
 def hacky_py2_unpickle_recover(fileobj):
@@ -261,15 +294,20 @@ def hacky_py2_unpickle_recover(fileobj):
     return [Feed(u) for u in uris]
 
 
-class AudioFeeds(Browser):
+class Podcasts(Browser):
+    """
+    Allows interacting with remote feeds for playing and exploring podcasts
+    and their episodes (or other forms of audio feeds)
+    Formerly known as the AudioFeeds browser.
+    """
     __feeds = Gtk.ListStore(object)  # unread
 
     headers = ("title artist performer ~people album date website language "
                "copyright organization license contact").split()
 
-    name = _("Audio Feeds")
-    accelerated_name = _("_Audio Feeds")
-    keys = ["AudioFeeds"]
+    name = _("Podcasts")
+    accelerated_name = _("_Podcasts")
+    keys = ["AudioFeeds", "Podcasts"]
     priority = 20
     uses_main_library = False
 
@@ -298,7 +336,7 @@ class AudioFeeds(Browser):
             if row[0] in feeds:
                 row[0].changed = True
                 row[0] = row[0]
-        AudioFeeds.write()
+        Podcasts.write()
 
     @classmethod
     def write(klass):
@@ -336,8 +374,7 @@ class AudioFeeds(Browser):
 
     @classmethod
     def __do_check(klass):
-        thread = threading.Thread(target=klass.__check, args=())
-        thread.setDaemon(True)
+        thread = threading.Thread(target=klass.__check, args=(), daemon=True)
         thread.start()
 
     @classmethod
@@ -360,7 +397,7 @@ class AudioFeeds(Browser):
         self.__render = render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn("Audio Feeds", render)
-        col.set_cell_data_func(render, AudioFeeds.cell_data)
+        col.set_cell_data_func(render, Podcasts.cell_data)
         view.append_column(col)
         view.set_model(self.__feeds)
         view.set_rules_hint(True)
@@ -371,7 +408,7 @@ class AudioFeeds(Browser):
         swin.add(view)
         self.pack_start(swin, True, True, 0)
 
-        new = Button(_("_New"), Icons.LIST_ADD, Gtk.IconSize.MENU)
+        new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.MENU)
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -431,21 +468,28 @@ class AudioFeeds(Browser):
         feed.changed = feed.parse()
         if feed:
             self.__feeds.append(row=[feed])
-            AudioFeeds.write()
+            Podcasts.write()
         else:
             self.feed_error(feed).run()
 
     def __popup_menu(self, view):
         model, paths = view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
-        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,
+               tooltip=_("Search source for new episodes"))
+        rebuild = MenuItem(_("_Rebuild"), Icons.EDIT_FIND_REPLACE,
+               tooltip=_("Remove all existing episodes then reload from source"))
+        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE,
+                tooltip=_("Remove this podcast and its episodes"))
 
         connect_obj(refresh, 'activate',
                     self.__refresh, [model[p][0] for p in paths])
+        connect_obj(rebuild, 'activate',
+                    self.__rebuild, [model[p][0] for p in paths])
         connect_obj(delete, 'activate', self.__remove_paths, model, paths)
 
         menu.append(refresh)
+        menu.append(rebuild)
         menu.append(delete)
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
@@ -456,11 +500,11 @@ class AudioFeeds(Browser):
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __save(self, view):
-        AudioFeeds.write()
+        Podcasts.write()
 
     def __refresh(self, feeds):
         changed = list(filter(Feed.parse, feeds))
-        AudioFeeds.changed(changed)
+        Podcasts.changed(changed)
 
     def __remove_paths(self, model, paths):
         for path in paths:
@@ -486,21 +530,22 @@ class AudioFeeds(Browser):
             feed.changed = feed.parse()
             if feed:
                 self.__feeds.append(row=[feed])
-                AudioFeeds.write()
+                Podcasts.write()
             else:
                 self.feed_error(feed).run()
 
     def feed_error(self, feed: Feed) -> ErrorMessage:
         return ErrorMessage(
-            self, _("Unable to add feed"),
+            self,
+            _("Unable to add feed"),
             _("%s could not be added. The server may be down, "
-              "or the location may not be an audio feed.") %
-            util.bold(util.escape(feed.uri)))
+              "or the location may not be a podcast / audio feed.") %
+            util.bold(util.escape(feed.uri)), escape_desc=False)
 
     def restore(self):
         try:
             names = config.get("browsers", "audiofeeds").split("\t")
-        except:
+        except Exception:
             pass
         else:
             self.__view.select_by_func(lambda r: r[0].name in names)
@@ -508,7 +553,7 @@ class AudioFeeds(Browser):
 
 browsers = []
 if not app.player or app.player.can_play_uri("http://"):
-    browsers = [AudioFeeds]
+    browsers = [Podcasts]
 else:
     print_w(_("The current audio backend does not support URLs, "
-              "Audio Feeds browser disabled."))
+              "Podcast browser disabled."))

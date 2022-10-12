@@ -1,7 +1,7 @@
 # Copyright 2004-2008 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
-#           2011-2018 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -84,7 +84,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         sbb.connect('key-press-event', self.__sb_key_pressed)
         self._sb_box = sbb
 
-        align = Align(sbb, left=6, right=6, top=6)
+        align = Align(sbb, left=6, right=6, top=0)
         self.pack_start(align, False, True, 0)
 
         keyval, mod = Gtk.accelerator_parse("<Primary>Home")
@@ -146,7 +146,8 @@ class PanedBrowser(Browser, util.InstanceTracker):
         if (is_accel(event, "<Primary>Return") or
                 is_accel(event, "<Primary>KP_Enter")):
             songs = app.window.songlist.get_songs()
-            app.window.playlist.enqueue(songs)
+            limit = config.getint("browsers", "searchbar_enqueue_limit")
+            app.window.enqueue(songs, limit)
             return True
         return False
 
