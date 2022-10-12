@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-04 18:17+0000\n"
+"PO-Revision-Date: 2022-10-18 11:15+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -740,13 +740,12 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Prolonger \"{pl_name}\" avec {num} piste supplémentaire ?"
+msgstr[1] "Prolonger \"{pl_name}\" avec {num} pistes supplémentaires ?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Pistes"
+msgstr "_Ajouter des pistes"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -5805,9 +5804,8 @@ msgid "Enter new tag"
 msgstr "Saisir une nouvelle étiquette"
 
 #: quodlibet/qltk/data_editors.py:407
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "Motif d'étiquette"
+msgstr "Modifier l'expression de la balise"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -7008,16 +7006,15 @@ msgid "_Add Files"
 msgstr "_Ajouter des fichiers"
 
 #: quodlibet/qltk/quodlibetwindow.py:1407
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Confirmer la suppression de tous les titres ?"
-msgstr[1] "Confirmer la suppression de tous les titres ?"
+msgstr[0] "Voulez-vous vraiment mettre en file d'attente le titre %d ?"
+msgstr[1] "Voulez-vous vraiment mettre en file d'attente les titres %d ?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
-#, fuzzy
 msgid "_Enqueue"
-msgstr "_File d'attente"
+msgstr "_Mettre en file d'attente"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
