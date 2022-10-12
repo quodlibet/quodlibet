@@ -51,7 +51,24 @@ class DiscordStatusMessage(EventPlugin):
         self.song = None
         self.discordrp = None
 
+    @staticmethod
+    def __pad_text(text):
+        # XXX Discord status cannot handle less than 2 characters,
+        # or more than 128 characters, so pad or truncate appropriately.
+        if text is None:
+            return text
+
+        if len(text) < 2:
+            return text + " " * (2 - len(text))
+        elif len(text) > 128:
+            return text[:125] + "..."
+        else:
+            return text
+
     def update_discordrp(self, details, state=None):
+        details = self.__pad_text(details)
+        state = self.__pad_text(state)
+
         if not self.discordrp:
             try:
                 self.discordrp = Presence(QL_DISCORD_RP_ID, pipe=0)
@@ -71,13 +88,6 @@ class DiscordStatusMessage(EventPlugin):
         if self.song:
             details = Pattern(discord_status_config.rp_line1) % self.song
             state = Pattern(discord_status_config.rp_line2) % self.song
-
-            # The details and state fields must be atleast 2 characters.
-            if len(details) < 2:
-                details = None
-
-            if len(state) < 2:
-                state = None
 
             self.update_discordrp(details, state)
 
