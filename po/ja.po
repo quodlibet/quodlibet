@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-04 18:17+0000\n"
+"PO-Revision-Date: 2022-10-18 11:15+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -727,12 +727,11 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
+msgstr[0] "「{pl_name}」に{num}個のトラックを追加しますか?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "トラック数"
+msgstr "トラックの追加(_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -1101,11 +1100,11 @@ msgstr "タグ=値"
 
 #: quodlibet/cli.py:139
 msgid "Enqueue a file or query"
-msgstr "ファイルまたはクエリの内容をキューに入れる"
+msgstr "ファイルまたはクエリの内容をキューに追加する"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
-msgstr "カンマ区切りで指定したファイルをキューに入れる"
+msgstr "カンマ区切りで指定したファイルをキューに追加する"
 
 #: quodlibet/cli.py:142 quodlibet/util/tags.py:158
 msgid "filename"
@@ -3568,7 +3567,7 @@ msgstr ""
 "曲の再生をキューに限定します。\n"
 "\n"
 "メインウィンドウでこの再生順序を選択し、曲をダブルクリックすると、再生する代"
-"わりにキューに入れられます。"
+"わりにキューに追加されます。"
 
 #: quodlibet/ext/playorder/queue.py:29
 msgid "Queue only"
@@ -4285,7 +4284,7 @@ msgstr "全て折りたたむ/展開する"
 #: quodlibet/ext/songsmenu/duplicates.py:342
 #, python-format
 msgid "Duplicate key expression is '%s'"
-msgstr "重複キー表現は「%s」"
+msgstr "重複キーを表すタグ式は「%s」"
 
 #: quodlibet/ext/songsmenu/duplicates.py:358
 msgid "Duplicates Browser"
@@ -4299,9 +4298,8 @@ msgstr "類似のタグが付けられた曲を検索して表示します。"
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
-msgstr ""
-"<tt>~artist~title</tt> や <tt>musicbrainz_track_id</tt> などのQLタグ表現を受"
-"け付けます"
+msgstr "<tt>~artist~title</tt> や <tt>musicbrainz_track_id</tt> "
+"などのQLタグ式を受け付けます"
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
@@ -4313,15 +4311,15 @@ msgstr "重複キー"
 
 #: quodlibet/ext/songsmenu/duplicates.py:408
 msgid "Remove _Whitespace"
-msgstr "空白を削除(_W)"
+msgstr "空白を削除する(_W)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:409
 msgid "Remove _Diacritics"
-msgstr "発音区別符号の削除(_D)"
+msgstr "発音区別符号を削除する(_D)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:410
 msgid "Remove _Punctuation"
-msgstr "句読点の削除(_P)"
+msgstr "約物を削除する(_P)"
 
 #: quodlibet/ext/songsmenu/duplicates.py:411
 msgid "Case _Insensitive"
@@ -5656,26 +5654,24 @@ msgid "_Add…"
 msgstr "追加(_A)…"
 
 #: quodlibet/qltk/data_editors.py:319
-#, fuzzy
 msgid "_Edit"
-msgstr "ディスプレイの編集(_E)"
+msgstr "編集(_E)"
 
 #: quodlibet/qltk/data_editors.py:366
 msgid "Tag expression"
-msgstr "タグ表現"
+msgstr "タグ式"
 
 #: quodlibet/qltk/data_editors.py:396 quodlibet/qltk/data_editors.py:406
 msgid "Tag expression e.g. people:real or ~album~year"
-msgstr "タグ表現 (例: people:real、~album~year)"
+msgstr "タグ式 (例: people:real、~album~year)"
 
 #: quodlibet/qltk/data_editors.py:397
 msgid "Enter new tag"
 msgstr "タグの入力"
 
 #: quodlibet/qltk/data_editors.py:407
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "タグ表現"
+msgstr "タグ式の編集"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -6837,15 +6833,14 @@ msgid "_Add Files"
 msgstr "ファイルの追加(_A)"
 
 #: quodlibet/qltk/quodlibetwindow.py:1407
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "全ての曲を削除してもよろしいですか?"
+msgstr[0] "%d曲をキューに追加してもよろしいですか?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
-#, fuzzy
 msgid "_Enqueue"
-msgstr "キュー(_Q)"
+msgstr "キューに追加(_E)"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7135,7 +7130,7 @@ msgstr "選択した曲のタグエディタを開く"
 
 #: quodlibet/qltk/shortcuts.py:28
 msgid "Queue the selected songs"
-msgstr "選択した曲をキューに入れる"
+msgstr "選択した曲をキューに追加する"
 
 #: quodlibet/qltk/shortcuts.py:29
 msgid "Delete the selected songs"
