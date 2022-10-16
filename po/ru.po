@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-01 08:29+0000\n"
+"PO-Revision-Date: 2022-10-18 11:15+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -661,7 +661,7 @@ msgstr "Удалить из плейли_ста"
 
 #: quodlibet/browsers/playlists/main.py:212 quodlibet/qltk/data_editors.py:94
 msgid "_New"
-msgstr "С_оздать"
+msgstr "_Новый"
 
 #: quodlibet/browsers/playlists/main.py:214
 msgid "_Import…"
@@ -748,14 +748,13 @@ msgstr "Плейлист будет удалён безвозвратно."
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Дополнить «{pl_name}» ещё {num} треком?"
+msgstr[1] "Дополнить «{pl_name}» ещё {num} треками?"
+msgstr[2] "Дополнить «{pl_name}» ещё {num} треками?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Треки"
+msgstr "_Добавить треки"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -1125,7 +1124,7 @@ msgstr "тег=значение"
 
 #: quodlibet/cli.py:139
 msgid "Enqueue a file or query"
-msgstr "Добавить в очередь файл или запрос"
+msgstr "Добавить файл или запрос в очередь"
 
 #: quodlibet/cli.py:141
 msgid "Enqueue comma-separated files"
@@ -1233,15 +1232,15 @@ msgstr "Редактор аудио тегов"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr "Обложки - для Artwork URL"
+msgstr "Адрес источника обложки"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"Загружает обложки по тегу <tt>artwork_url</tt>. Это работает при просмотре в "
-"Soundcloud и Подкастах."
+"Загружает обложки, привязанные по тегу <tt>artwork_url</tt>. Это работает "
+"при просмотре в Soundcloud и Подкастах."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1269,7 +1268,7 @@ msgstr "Загружать обложки с MusicBrainz."
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
-msgstr "Теги - Кодировка"
+msgstr "Преобразовать кодировки"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
@@ -1297,7 +1296,7 @@ msgstr "Не удалось найти 'Kanji Kana Simple Inverter' (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
-msgstr "Теги - Замена по Regex"
+msgstr "Замена регулярных выражений"
 
 #: quodlibet/ext/editing/resub.py:20
 msgid ""
@@ -1309,7 +1308,7 @@ msgstr ""
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
-msgstr "Теги - Все с заглавных"
+msgstr "Регистр заголовков"
 
 #: quodlibet/ext/editing/titlecase.py:21
 msgid "Title-cases tag values in the tag editor."
@@ -1539,7 +1538,7 @@ msgstr "Не удалось записать '%s'"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 msgid "Auto Update Tags in Files"
-msgstr "Теги - Автообновление"
+msgstr "Автообновление тегов в файлов"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:81
 msgid ""
@@ -1606,7 +1605,7 @@ msgstr ""
 
 #: quodlibet/ext/events/autorating.py:15
 msgid "Automatic Rating"
-msgstr "Оценка - авто"
+msgstr "Автоматическая оценка"
 
 #: quodlibet/ext/events/autorating.py:16
 msgid ""
@@ -1758,7 +1757,7 @@ msgstr "Ноутбук"
 
 #: quodlibet/ext/events/equalizer.py:112
 msgid "Equalizer"
-msgstr "Эффекты - Эквалайзер"
+msgstr "Эквалайзер"
 
 #: quodlibet/ext/events/equalizer.py:113
 msgid ""
@@ -2348,7 +2347,7 @@ msgstr ""
 
 #: quodlibet/ext/events/randomalbum.py:26
 msgid "Random Album Playback"
-msgstr "Очередь - Случайный альбом"
+msgstr "Играть случайный альбом"
 
 #: quodlibet/ext/events/randomalbum.py:27
 msgid ""
@@ -3254,7 +3253,7 @@ msgstr "Шаг при прокрутке (миллисекунды):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
-msgstr "Обложка - Импорт"
+msgstr "Хранитель изображений"
 
 #: quodlibet/ext/events/write_cover.py:34
 msgid "Saves the cover image of the current song to a file."
@@ -3289,7 +3288,7 @@ msgstr "%d %%"
 
 #: quodlibet/ext/gstreamer/compressor.py:106
 msgid "Audio Compressor"
-msgstr "Эффекты - Компрессор"
+msgstr "Аудиокомпрессор"
 
 #: quodlibet/ext/gstreamer/compressor.py:107
 msgid ""
@@ -3357,7 +3356,7 @@ msgstr "Свои настройки"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:153
 msgid "Crossfeed"
-msgstr "Эффекты - Crossfeed"
+msgstr "Смешение каналов"
 
 #: quodlibet/ext/gstreamer/crossfeed.py:154
 msgid ""
@@ -3393,7 +3392,7 @@ msgstr "Интенсивность эффекта"
 
 #: quodlibet/ext/gstreamer/karaoke.py:106
 msgid "Karaoke"
-msgstr "Эффекты - Караоке"
+msgstr "Караоке"
 
 #: quodlibet/ext/gstreamer/karaoke.py:107
 msgid "Removes main vocals from audio."
@@ -3401,7 +3400,7 @@ msgstr "Убирает вокал из аудио."
 
 #: quodlibet/ext/gstreamer/mono.py:16
 msgid "Mono Downmix"
-msgstr "Эффекты - Mono Downmix"
+msgstr "Сведение в моно"
 
 #: quodlibet/ext/gstreamer/mono.py:17
 msgid "Downmixes audio channels to mono."
@@ -3421,7 +3420,7 @@ msgstr "_Высота:"
 
 #: quodlibet/ext/gstreamer/pitch.py:96
 msgid "Audio Pitch / Speed"
-msgstr "Эффекты - Pitch / Speed"
+msgstr "Высота и скорость звука"
 
 #: quodlibet/ext/gstreamer/pitch.py:97
 msgid "Controls the pitch of an audio stream."
@@ -3555,7 +3554,7 @@ msgstr "Из плейлиста '%s' будут удалены все дубли
 
 #: quodlibet/ext/playlist/shuffle.py:15
 msgid "Shuffle Playlist"
-msgstr "Очередь - Перемешать плейлист"
+msgstr "Перемешать плейлист"
 
 #: quodlibet/ext/playlist/shuffle.py:16
 msgid "Randomly shuffles a playlist."
@@ -3563,7 +3562,7 @@ msgstr "Переставляет треки в плейлисте в случа�
 
 #: quodlibet/ext/playorder/follow.py:18
 msgid "Follow Cursor"
-msgstr "Очередь - Выбор"
+msgstr "Следовать за курсором"
 
 #: quodlibet/ext/playorder/follow.py:20
 msgid ""
@@ -3581,7 +3580,7 @@ msgstr "Следов_ать за курсором"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
 msgid "Playcount Equalizer"
-msgstr "Очередь - Меньше прослушиваний"
+msgstr "Уравнитель прослушиваний"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
@@ -3597,7 +3596,7 @@ msgstr "Пре_дпочитать наименее прослушиваемые"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
-msgstr "Очередь - Только очередь"
+msgstr "Только очередь"
 
 #: quodlibet/ext/playorder/queue.py:25
 msgid ""
@@ -3625,7 +3624,7 @@ msgstr "Автозапускать воспроизведение песен п�
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:18
 msgid "Reverse"
-msgstr "Очередь - Реверс"
+msgstr "Реверс"
 
 #: quodlibet/ext/playorder/reverse.py:16
 msgid "Adds a shuffle mode that reverses the play order of songs."
@@ -3640,7 +3639,7 @@ msgstr "Ревер_с"
 #: quodlibet/ext/playorder/shufflebygrouping.py:32
 #: quodlibet/ext/playorder/shufflebygrouping.py:95
 msgid "Shuffle by Grouping"
-msgstr "Очередь - По группе"
+msgstr "Перемешать по группировке"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:33
 msgid ""
@@ -3707,7 +3706,7 @@ msgstr "Сброс к значениям по умолчанию"
 
 #: quodlibet/ext/playorder/skip_disliked.py:24
 msgid "Skip Disliked Tracks"
-msgstr "Очередь - Пропуск треков"
+msgstr "Пропуск непонравившихся треков"
 
 #: quodlibet/ext/playorder/skip_disliked.py:26
 msgid ""
@@ -3728,7 +3727,7 @@ msgstr "Пропустить не понра_вившиеся треки"
 
 #: quodlibet/ext/playorder/track_repeat.py:28
 msgid "Repeat Each Track"
-msgstr "Очередь - Повторить N раз"
+msgstr "Повтор каждого трека"
 
 #: quodlibet/ext/playorder/track_repeat.py:30
 msgid ""
@@ -3753,7 +3752,7 @@ msgstr "Сколько раз воспроизводить каждый трек
 
 #: quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
-msgstr "Поиск - Условный запрос"
+msgstr "Условный запрос"
 
 #: quodlibet/ext/query/conditional.py:16
 msgid "Chooses the query to match based on a condition query."
@@ -3765,7 +3764,7 @@ msgstr "@(if: condition-query, then-query, else-query)"
 
 #: quodlibet/ext/query/missing.py:17
 msgid "Missing Query"
-msgstr "Поиск - Отсутствующий запрос"
+msgstr "Отсутствующий запрос"
 
 #: quodlibet/ext/query/missing.py:18
 msgid "Matches songs without the given tag."
@@ -3777,7 +3776,7 @@ msgstr "Включать пустые теги"
 
 #: quodlibet/ext/query/pythonexpression.py:18
 msgid "Python Query"
-msgstr "Запросы Python"
+msgstr "Запрос Python"
 
 #: quodlibet/ext/query/pythonexpression.py:19
 msgid "🐍Use Python expressions in queries."
@@ -3805,7 +3804,7 @@ msgstr ""
 
 #: quodlibet/ext/query/savedsearch.py:20
 msgid "Include Saved Search"
-msgstr "Поиск - Сохранение запросов"
+msgstr "Учитывать сохранённый поиск"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
@@ -3978,7 +3977,7 @@ msgstr "Источники"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:26
 msgid "APEv2 to ID3v2"
-msgstr "Теги - APEv2 в ID3v2"
+msgstr "APEv2 в ID3v2"
 
 #: quodlibet/ext/songsmenu/ape2id3.py:27
 msgid ""
@@ -4006,7 +4005,7 @@ msgstr "Нет закладок"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:24
 msgid "MusicBrainz Lookup"
-msgstr "Теги - Поиск на MusicBrainz"
+msgstr "Поиск на MusicBrainz"
 
 #: quodlibet/ext/songsmenu/brainz/__init__.py:26
 msgid "Re-tags an album based on a MusicBrainz search."
@@ -4060,7 +4059,7 @@ msgstr "Исполнитель"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:352
 msgid "MusicBrainz lookup"
-msgstr "Теги - Поиск на MusicBrainz"
+msgstr "Поиск на MusicBrainz"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:375
 msgid "_Query:"
@@ -4345,7 +4344,7 @@ msgstr "Выражение для поиска дублей: '%s'"
 
 #: quodlibet/ext/songsmenu/duplicates.py:358
 msgid "Duplicates Browser"
-msgstr "Теги - Поиск дублей по тегам"
+msgstr "Поиск дублей"
 
 #: quodlibet/ext/songsmenu/duplicates.py:359
 msgid "Finds and displays similarly tagged versions of songs."
@@ -4423,7 +4422,7 @@ msgstr "Счётчик пропусков"
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
-msgstr "Обложка - Изменение"
+msgstr "Править вложенные изображения"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
 msgid "Adds, removes or replaces embedded images."
@@ -4467,7 +4466,7 @@ msgstr "Введите оценку в виде числа от 0.0 до 1.0"
 
 #: quodlibet/ext/songsmenu/filterall.py:80
 msgid "Filter on Any Tag"
-msgstr "Поиск - Фильтр по тегу"
+msgstr "Фильтр по любому тегу"
 
 #: quodlibet/ext/songsmenu/filterall.py:81
 msgid "Creates a search query based on tags of the selected songs."
@@ -4483,7 +4482,7 @@ msgstr "Фильтр по папке в новом окне."
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:30
 msgid "Acoustic Fingerprint Lookup"
-msgstr "Акустич. отпечатки - поиск"
+msgstr "Поиск акустических отпечатков"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:31
 msgid "Looks up song metadata through acoustic fingerprinting."
@@ -4492,7 +4491,7 @@ msgstr "Поиск информации о треках по их акустич
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:51
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:40
 msgid "Submit Acoustic Fingerprints"
-msgstr "Акустич. отпечатки - отправка"
+msgstr "Отправлять акустические отпечатки"
 
 #: quodlibet/ext/songsmenu/fingerprint/__init__.py:52
 msgid ""
@@ -4618,7 +4617,7 @@ msgstr "Отправка…"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:17
 msgid "Update Tags in Files"
-msgstr "Теги - Обновить в файлах"
+msgstr "Обновить теги в файлах"
 
 #: quodlibet/ext/songsmenu/forcewrite.py:18
 msgid ""
@@ -4888,7 +4887,7 @@ msgstr "_Имя пользователя:"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:36
 msgid "Create Sort Tags"
-msgstr "Теги - Теги сортировки"
+msgstr "Создать теги сортировки"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:37
 msgid "Converts album and artist names to sort names, poorly."
@@ -4963,7 +4962,7 @@ msgstr[2] "Обновляется <b>%(to-process)s</b> альбомов (из %
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
-msgstr "Теги - Replay Gain"
+msgstr "Усиление (Replay Gain)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:571
 #, python-format
@@ -5001,7 +5000,7 @@ msgstr "Существующие теги"
 
 #: quodlibet/ext/songsmenu/splitting.py:31
 msgid "Split Tags"
-msgstr "Теги - Отделить"
+msgstr "Разделить теги"
 
 #: quodlibet/ext/songsmenu/splitting.py:32
 msgid ""
@@ -5011,7 +5010,7 @@ msgstr "Отделить номер диска от альбома, а верс�
 
 #: quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
-msgstr "Теги - Отделить альбом"
+msgstr "Разделить альбом"
 
 #: quodlibet/ext/songsmenu/splitting.py:57
 msgid "Split out disc number."
@@ -5045,7 +5044,7 @@ msgstr "🥁Получить значение Tap BPM (ударов в мину�
 
 #: quodlibet/ext/songsmenu/website_search.py:36
 msgid "Website Search"
-msgstr "Теги - Поиск в интернете"
+msgstr "Поиск в интернете"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
 #, python-format
@@ -5071,7 +5070,7 @@ msgstr "Настройка поиска…"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
 msgid "Search Tag in Wikipedia"
-msgstr "Теги - Поиск на Википедии"
+msgstr "Поиск тегов в Википедии"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:37
 msgid ""
@@ -5322,12 +5321,12 @@ msgstr ""
 
 #: quodlibet/operon/commands.py:541
 msgid "Remove all embedded images"
-msgstr "Удалить все внедрённые изображения"
+msgstr "Удалить все вложенные изображения"
 
 #: quodlibet/operon/commands.py:571
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
-msgstr "Извлечь внедрённые изображения в %(filepath)s"
+msgstr "Извлечь вложенные изображения в %(filepath)s"
 
 #: quodlibet/operon/commands.py:583
 msgid ""
@@ -5450,9 +5449,9 @@ msgid ""
 "pipeline. In case the pipeline contains a sink, it will be used instead of "
 "the default one."
 msgstr ""
-"Конвейер вывода GStreamer. Пустое поле соответствует конвейеру по умолчанию. "
-"Если будет указано устройство вывода, оно будет использовано вместо "
-"устройства по умолчанию."
+"Используется конвейер вывода GStreamer для воспроизведения. Пустое поле "
+"соответствует конвейеру по умолчанию. Если будет указано устройство вывода, "
+"оно будет использовано вместо устройства по умолчанию."
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5724,9 +5723,8 @@ msgid "_Add…"
 msgstr "Доба_вить…"
 
 #: quodlibet/qltk/data_editors.py:319
-#, fuzzy
 msgid "_Edit"
-msgstr "_Изменить…"
+msgstr "_Изменить"
 
 #: quodlibet/qltk/data_editors.py:366
 msgid "Tag expression"
@@ -5741,9 +5739,8 @@ msgid "Enter new tag"
 msgstr "Введите новое значение"
 
 #: quodlibet/qltk/data_editors.py:407
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "Выражение тега"
+msgstr "Изменить выражение тега"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -6339,7 +6336,7 @@ msgstr "События"
 
 #: quodlibet/qltk/pluginwin.py:39
 msgid "Play Order"
-msgstr "Очередь"
+msgstr "Порядок проигрывания"
 
 #: quodlibet/qltk/pluginwin.py:40
 msgid "Editing"
@@ -6545,13 +6542,14 @@ msgstr "Оценка"
 #. Filename choice algorithm config
 #: quodlibet/qltk/prefs.py:321
 msgid "Prefer _embedded art"
-msgstr "_Предпочитать внедрённую обложку"
+msgstr "_Предпочитать вложенную обложку"
 
 #: quodlibet/qltk/prefs.py:323
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
-msgstr "Предпочитать изображение, внедрённое в аудиофайл, если такое есть"
+msgstr ""
+"Предпочитать вложенную в аудио обложку (если есть) вместо других источников"
 
 #: quodlibet/qltk/prefs.py:330
 msgid ""
@@ -6768,7 +6766,7 @@ msgstr "Очистить очередь"
 
 #: quodlibet/qltk/queue.py:139
 msgid "Disable queue - the queue will be ignored when playing"
-msgstr "Отключить очередь - очередь будет игнорироваться при воспроизведении"
+msgstr "Отключить очередь — очередь будет игнорироваться при воспроизведении"
 
 #: quodlibet/qltk/queue.py:150
 msgid "Ephemeral"
@@ -6935,17 +6933,16 @@ msgid "_Add Files"
 msgstr "Добавить _файлы"
 
 #: quodlibet/qltk/quodlibetwindow.py:1407
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Удалить все треки?"
-msgstr[1] "Удалить все треки?"
-msgstr[2] "Удалить все треки?"
+msgstr[0] "Уверены, что хотите поставить %d песню в очередь?"
+msgstr[1] "Уверены, что хотите поставить %d песни в очередь?"
+msgstr[2] "Уверены, что хотите поставить %d песен в очередь?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
-#, fuzzy
 msgid "_Enqueue"
-msgstr "_Очередь"
+msgstr "_В очередь"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7569,7 +7566,7 @@ msgstr "Встроенные обложки альбомов"
 
 #: quodlibet/util/cover/built_in.py:39
 msgid "Uses covers embedded into audio files."
-msgstr "Показывает обложки, внедрённые в аудиофайлы."
+msgstr "Использует вложенные в аудиофайлы обложки."
 
 #: quodlibet/util/cover/built_in.py:61
 msgid "Filesystem cover"
