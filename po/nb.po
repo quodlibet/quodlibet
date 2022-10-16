@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-12 22:25+0000\n"
+"PO-Revision-Date: 2022-10-18 11:15+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/nb_NO/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -742,8 +742,8 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Utvid «{pl_name}» med {num} ytterligere spor?"
+msgstr[1] "Utvid «{pl_name}» med {num} ytterligere spor?"
 
 #: quodlibet/browsers/playlists/util.py:60
 #, fuzzy
@@ -786,11 +786,11 @@ msgstr "Skriv inn adressen til en lydstrøm:"
 
 #: quodlibet/browsers/podcasts.py:308
 msgid "Podcasts"
-msgstr ""
+msgstr "Nettradioopptak"
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Nettradioopptak"
 
 #: quodlibet/browsers/podcasts.py:411
 #, fuzzy
@@ -809,15 +809,15 @@ msgstr "Se etter nye låter i denne mappa"
 
 #: quodlibet/browsers/podcasts.py:480
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Bygg igjen"
 
 #: quodlibet/browsers/podcasts.py:481
 msgid "Remove all existing episodes then reload from source"
-msgstr ""
+msgstr "Fjern alle eksisterende episoder og gjeninnlast fra kilde."
 
 #: quodlibet/browsers/podcasts.py:483
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Fjern dette nettradioopptaket og dets episoder"
 
 #: quodlibet/browsers/podcasts.py:540
 msgid "Unable to add feed"
@@ -4956,9 +4956,9 @@ msgid "Sync complete."
 msgstr "Synk utført."
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:139
-#, fuzzy, python-format
+#, python-format
 msgid "Error during sync (%s)"
-msgstr "Feil under synk"
+msgstr "Feil under synkronisering (%s)"
 
 #: quodlibet/ext/songsmenu/lastfmsync.py:202
 #: quodlibet/ext/songsmenu/lastfmsync.py:231
@@ -5160,9 +5160,8 @@ msgid "Configure Searches…"
 msgstr "Sett opp søk …"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:36
-#, fuzzy
 msgid "Search Tag in Wikipedia"
-msgstr "Søk etter etikett  på Wikipedia"
+msgstr "Søk etter etikett på Wikipedia"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:37
 #, fuzzy
@@ -5234,22 +5233,25 @@ msgid "Adding watches for %s"
 msgstr "Legger til oppsyn av %s"
 
 #: quodlibet/library/playlist.py:79
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"Fant ingen biblioteksspor i foreldet spilleliste %(filename)r (som er %(size)"
+".1f kB)."
 
 #: quodlibet/library/playlist.py:82
+#, fuzzy
 msgid "Have you changed library root dir(s), but not this playlist?"
-msgstr ""
+msgstr "Har du endre bibliotekrotmappe(r), men ikke denne spillelisten?"
 
 #: quodlibet/library/playlist.py:97
-#, python-format
+#, fuzzy, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kunne ikke konvertere %d spilleliste"
+msgstr[1] "Kunne ikke konvertere %d spillelister"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -7039,8 +7041,8 @@ msgstr "_Legg til filer"
 #, fuzzy, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Er du sikker på at du vil fjerne alle låter?"
-msgstr[1] "Er du sikker på at du vil fjerne alle låter?"
+msgstr[0] "Legg %d spor i kø?"
+msgstr[1] "Legg %d spor i køen?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
 #, fuzzy
@@ -7486,11 +7488,11 @@ msgstr[0] "_Vis i filbehandler"
 msgstr[1] "_Vis %(total)d filer i filbehandler"
 
 #: quodlibet/qltk/songsmenu.py:436
-#, fuzzy, python-format
+#, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
-msgstr[0] "Last ne_d …"
-msgstr[1] "Last ne_d …"
+msgstr[0] "_Last ned fil …"
+msgstr[1] "_Last ned %(total)d filer …"
 
 #: quodlibet/qltk/songsmenu.py:443
 #, fuzzy
