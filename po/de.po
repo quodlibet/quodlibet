@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-18 11:15+0000\n"
+"PO-Revision-Date: 2022-10-19 22:04+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -798,22 +798,18 @@ msgid "_Refresh"
 msgstr "_Aktualisieren"
 
 #: quodlibet/browsers/podcasts.py:479
-#, fuzzy
 msgid "Search source for new episodes"
 msgstr "Quelle auf neue Episoden überprüfen"
 
 #: quodlibet/browsers/podcasts.py:480
-#, fuzzy
 msgid "_Rebuild"
-msgstr "_Neuladen"
+msgstr "_Neu laden"
 
 #: quodlibet/browsers/podcasts.py:481
-#, fuzzy
 msgid "Remove all existing episodes then reload from source"
-msgstr "Alle existierenden Episoden entfernen, dann von der Quelle neuladen"
+msgstr "Alle existierenden Episoden entfernen, dann von der Quelle neu laden"
 
 #: quodlibet/browsers/podcasts.py:483
-#, fuzzy
 msgid "Remove this podcast and its episodes"
 msgstr "Diesen Podcast und zugehörige Episoden entfernen"
 
@@ -5213,23 +5209,22 @@ msgid "Adding watches for %s"
 msgstr "Füge Überwachungen für %s hinzu"
 
 #: quodlibet/library/playlist.py:79
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
 "Es konnten keine Bibliothekstitel in der veralteten Wiedergabeliste "
-"»%(filename)s« gefunden werden (Größe %(size).1f kB)."
+"%(filename)r gefunden werden (Größe %(size).1f kB)."
 
 #: quodlibet/library/playlist.py:82
-#, fuzzy
 msgid "Have you changed library root dir(s), but not this playlist?"
 msgstr ""
 "Haben Sie das Wurzelverzeichnis der Bibliothek geändert, nicht jedoch diese "
 "Wiedergabeliste?"
 
 #: quodlibet/library/playlist.py:97
-#, fuzzy, python-format
+#, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
 msgstr[0] "%d Wiedergabeliste konnte nicht umgewandelt werden"
@@ -5878,7 +5873,7 @@ msgstr "Verschiebe %(current)d/%(total)d."
 
 #: quodlibet/qltk/delete.py:173 quodlibet/qltk/delete.py:205
 msgid "Unable to move to trash"
-msgstr "Konnte nicht in den Müll verschieben"
+msgstr "Verschieben in den Papierkorb fehlgeschlagen"
 
 #: quodlibet/qltk/delete.py:174 quodlibet/qltk/delete.py:206
 msgid "Moving one or more files to the trash failed."
