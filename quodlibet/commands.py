@@ -323,7 +323,7 @@ def _rating(app, value):
             change = (1 / RATINGS.number)
         if value[0] == '-':
             change = -change
-        rating = song["~#rating"] + change
+        rating = song("~#rating") + change
     else:
         try:
             rating = float(value)
