@@ -42,7 +42,8 @@ class GstPlayerPreferences(Gtk.VBox):
         apply_button = Button(_("_Apply"), Icons.VIEW_REFRESH)
 
         def format_buffer(scale, value):
-            return _("%.1f seconds") % value
+            # Translators: s = seconds
+            return _("%.1f s") % value
 
         def scale_changed(scale):
             duration_msec = int(scale.get_value() * 1000)

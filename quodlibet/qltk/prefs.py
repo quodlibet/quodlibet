@@ -367,6 +367,17 @@ class PreferencesWindow(UniqueWindow):
     class Player(Gtk.VBox):
         name = "playback"
 
+        def _gain_scale_for(self, adj: Gtk.Adjustment) -> Gtk.Scale:
+            def format_gain(scale, value):
+                return f"{value:.0f} dB"
+
+            scale = Gtk.Scale.new(Gtk.Orientation.HORIZONTAL, adj)
+            scale.set_show_fill_level(True)
+            scale.set_property("round-digits", 0)
+            scale.set_value_pos(Gtk.PositionType.LEFT)
+            scale.connect('format-value', format_gain)
+            return scale
+
         def __init__(self):
             super().__init__(spacing=MARGIN)
             self.set_border_width(12)
@@ -380,36 +391,29 @@ class PreferencesWindow(UniqueWindow):
                 f = qltk.Frame(_("Output Configuration"), child=player_prefs)
                 self.pack_start(f, False, True, MARGIN)
 
-            # replaygain
             fallback_gain = config.getfloat("player", "fallback_gain", 0.0)
-            adj = Gtk.Adjustment.new(fallback_gain, -12.0, 12.0, 0.5, 0.5, 0.0)
-            fb_spin = Gtk.SpinButton(adjustment=adj)
-            fb_spin.set_digits(1)
-            fb_spin.connect('changed', self.__changed,
-                            'player', 'fallback_gain')
-            fb_spin.set_tooltip_text(
-                _("If no Replay Gain information is available "
-                  "for a song, scale the volume by this value"))
+            adj = Gtk.Adjustment.new(fallback_gain, -12.0, 6.0, 0.5, 1, 0.0)
+            adj.connect('value-changed', self.__changed, 'player', 'fallback_gain')
+            fb_scale = self._gain_scale_for(adj)
+            fb_scale.set_tooltip_text(_("If no Replay Gain information is available "
+                                        "for a song, scale the volume by this value"))
 
-            fb_label = Gtk.Label(label=_("_Fall-back gain (dB):"))
+            fb_label = Gtk.Label(label=_("_Fall-back gain:"))
             fb_label.set_use_underline(True)
-            fb_label.set_mnemonic_widget(fb_spin)
+            fb_label.set_mnemonic_widget(fb_scale)
 
             pre_amp_gain = config.getfloat("player", "pre_amp_gain", 0.0)
-            adj = Gtk.Adjustment.new(pre_amp_gain, -12, 12, 0.5, 0.5, 0.0)
-            adj.connect('value-changed', self.__changed,
-                        'player', 'pre_amp_gain')
-            pre_spin = Gtk.SpinButton(adjustment=adj)
-            pre_spin.set_digits(1)
-            pre_spin.set_tooltip_text(
-                _("Scale volume for all songs by this value, "
-                  "as long as the result will not clip"))
+            adj = Gtk.Adjustment.new(pre_amp_gain, -12, 12, 0.5, 1, 0)
+            adj.connect('value-changed', self.__changed, 'player', 'pre_amp_gain')
+            pre_scale = self._gain_scale_for(adj)
+            pre_scale.set_tooltip_text(_("Scale volume for all songs by this value, "
+                                         "as long as the result will not clip"))
 
-            pre_label = Gtk.Label(label=_("_Pre-amp gain (dB):"))
+            pre_label = Gtk.Label(label=_("_Pre-amp gain:"))
             pre_label.set_use_underline(True)
-            pre_label.set_mnemonic_widget(pre_spin)
+            pre_label.set_mnemonic_widget(pre_scale)
 
-            widgets = [pre_label, pre_spin, fb_label, fb_spin]
+            widgets = [pre_label, pre_scale, fb_label, fb_scale]
             enable_rg = CS(_("_Enable Replay Gain volume adjustment"),
                            "player", "replaygain", populate=True)
             enable_rg.connect('notify::active', self.__activated_gain, widgets)
@@ -419,8 +423,8 @@ class PreferencesWindow(UniqueWindow):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             vb.pack_start(enable_rg, False, False, 0)
 
-            vb.pack_start(self.hb_for_widgets(fb_label, fb_spin), False, False, 0)
-            vb.pack_start(self.hb_for_widgets(pre_label, pre_spin), False, False, 0)
+            vb.pack_start(self.hb_for_widgets(fb_label, fb_scale), False, False, 0)
+            vb.pack_start(self.hb_for_widgets(pre_label, pre_scale), False, False, 0)
 
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
             self.pack_start(f, False, True, MARGIN)
@@ -441,9 +445,7 @@ class PreferencesWindow(UniqueWindow):
         def hb_for_widgets(self, label: Gtk.Label, widget: Gtk.Widget):
             hb = Gtk.Box()
             hb.pack_start(label, False, False, 0)
-            fb_align = Align(halign=Gtk.Align.START)
-            fb_align.add(widget)
-            hb.pack_end(fb_align, False, False, 0)
+            hb.pack_start(widget, True, True, 6)
             return hb
 
         def __activated_gain(self, activator, state, widgets):
