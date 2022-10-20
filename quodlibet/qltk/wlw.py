@@ -143,7 +143,8 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             window = parent.get_window()
             if window:
                 window.set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-        self.set_modal(True)
+        # Note that this should not be modal as popups occuring during
+        # progress will not be clickable
         self.add(Gtk.Frame())
         self.get_child().set_shadow_type(Gtk.ShadowType.OUT)
         vbox = Gtk.VBox(spacing=12)
