@@ -254,7 +254,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
               'edited before starting the synchronization.'),
             Icons.DIALOG_WARNING, visible=False)
         self.status_deletions = self._label_with_icon(
-            _('Existing files in the destination path will be deleted!'),
+            _("Existing files in the destination path will be deleted (except "
+              "files named 'cover.jpg')!"),
             Icons.DIALOG_WARNING, visible=False)
 
         # Section for previewing exported files
@@ -741,7 +742,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         for root, __, files in os.walk(self.expanded_destination):
             for name in files:
                 file_path = os.path.join(root, name)
-                if file_path not in export_paths:
+                if file_path not in export_paths and \
+                        "cover.jpg" not in file_path:
                     entry = Entry(None)
                     entry.filename = file_path
                     entry.tag = Entry.Tags.PENDING_DELETE
@@ -1076,10 +1078,11 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         """
         Delete all empty sub-directories from the given path.
         """
-        for root, dirs, __ in os.walk(self.expanded_destination, topdown=False):
+        for root, dirs, files in os.walk(self.expanded_destination, topdown=False):
             for dirname in dirs:
                 dir_path = os.path.realpath(os.path.join(root, dirname))
-                if not os.listdir(dir_path):
+                last_file_is_cover = files and files[0] == 'cover.jpg'
+                if not files or last_file_is_cover:
                     entry = Entry(None)
                     entry.filename = dir_path
                     entry.tag = Entry.Tags.IN_PROGRESS_DELETE
@@ -1087,6 +1090,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
                     print_d(_('Removing "{}"').format(entry.filename))
                     self.c_songs_delete += 1
                     try:
+                        if last_file_is_cover:
+                            os.remove(os.path.join(dir_path, files[0]))
                         os.rmdir(dir_path)
                     except Exception as ex:
                         entry.tag = Entry.Tags.RESULT_FAILURE + ': ' + str(ex)
