@@ -14,7 +14,7 @@ from typing import List, Tuple
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
 
-from quodlibet import app, print_w
+from quodlibet import app, print_w, print_d
 from quodlibet import config
 from quodlibet import const
 from quodlibet import qltk
@@ -671,6 +671,22 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         elif qltk.is_accel(event, "space", "KP_Space") and player is not None:
             player.paused = not player.paused
             return True
+        elif qltk.is_accel(event, "F2"):
+            songs = self.get_selected_songs()
+            if len(songs) > 1:
+                print_d("Can't edit more than one")
+            elif songs:
+                path, col = songlist.get_cursor()
+                song = self.get_first_selected_song()
+                cls = type(col).__name__
+                if col.can_edit:
+                    print_d(f"Let's edit this: {song} ({cls} can be edited)")
+                    renderers = col.get_cells()
+                    renderers[0].props.editable = True
+                    self.set_cursor(path, col, start_editing=True)
+                else:
+                    print_d(f"Can't edit {cls}. Maybe it's synthetic / numeric?")
+
         return False
 
     def __enqueue(self, songs):
@@ -692,7 +708,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         SongList.headers = headers
 
     def __column_width_changed(self, *args):
-        # make sure non resizable columns stay non expanding.
+        # make sure non-resizable columns stay non-expanding.
         # gtk likes to change them sometimes
         for c in self.get_columns():
             if not c.get_resizable() and c.get_expand():
@@ -1064,7 +1080,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             column_expands[ce[i]] = int(ce[i + 1])
 
         for t in headers:
-            column = create_songlist_column(t)
+            column = create_songlist_column(self.model, t)
             if column.get_resizable():
                 if t in column_widths:
                     column.set_fixed_width(column_widths[t])

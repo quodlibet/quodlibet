@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
-#      2011-2020 Nick Boultbee
+#      2011-2022 Nick Boultbee
 #           2014 Jan Path
 #
 # This program is free software; you can redistribute it and/or modify
@@ -12,7 +12,7 @@ from gi.repository import Gtk, Pango, GLib, Gio
 from senf import fsnative, fsn2text
 
 from quodlibet.util.string.date import format_date
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
 from quodlibet import app
@@ -24,7 +24,7 @@ from quodlibet.formats._audio import FILESYSTEM_TAGS
 from quodlibet.qltk.x import CellRendererPixbuf
 
 
-def create_songlist_column(t):
+def create_songlist_column(model, t):
     """Returns a SongListColumn instance for the given tag"""
 
     if t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
@@ -42,7 +42,7 @@ def create_songlist_column(t):
     elif "<" in t:
         return PatternColumn(t)
     elif "~" not in t and t != "title":
-        return NonSynthTextColumn(t)
+        return NonSynthTextColumn(model, t)
     else:
         return WideTextColumn(t)
 
@@ -101,6 +101,8 @@ class SongListCellAreaBox(Gtk.CellAreaBox):
 
 
 class SongListColumn(TreeViewColumnButton):
+    can_edit = False
+    """Whether this column can support editing"""
 
     def __init__(self, tag):
         """tag e.g. 'artist'"""
@@ -281,6 +283,17 @@ class NonSynthTextColumn(WideTextColumn):
     """Optimize for non-synthesized keys by grabbing them directly.
     Used for any tag without a '~' except 'title'.
     """
+    can_edit = True
+
+    def __row_edited(self, render, path, new: str, model: Gtk.TreeModel) -> None:
+        tree_path = Gtk.TreePath.new_from_string(path)
+        print_d(f"Trying to edit {self.header_name} to {new!r}")
+        model[path][0][self.header_name] = new
+        model.path_changed(path)
+
+    def __init__(self, model, tag):
+        super().__init__(tag)
+        self._render.connect("edited", self.__row_edited, model)
 
     def _fetch_value(self, model, iter_):
         return model.get_value(iter_).get(self.header_name, "")

@@ -16,6 +16,13 @@ path* tab to populate these tags automatically. Please see
 process for several songs (the process is the same).
 
 
+Editing tags in-place
+---------------------
+As of QL 4.6, for plain, textual tags (not internal, and not *tag expressions*)
+you can edit these in-place in the songlist, by navigating to the column within
+the song's row, and pressing F2. Changes are immediate.
+
+
 Editing tags for several songs at once
 --------------------------------------
 
