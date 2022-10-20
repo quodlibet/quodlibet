@@ -165,7 +165,7 @@ def get_sort_tag(tag):
         for key, value in replace_order.items():
             if value:
                 value = f"<{value}>"
-            tag = tag.replace("<%s>" % key, value)
+            tag = tag.replace(f"<{key}>", value)
         for key, value in TAG_TO_SORT.items():
             tag = tag.replace("<%s>" % key,
                               "<{1}|<{1}>|<{0}>>".format(key, value))
