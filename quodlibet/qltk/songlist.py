@@ -440,7 +440,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.connect('destroy', self.__destroy)
 
     @property
-    def model(self):
+    def model(self) -> Gtk.TreeModel:
         return self.get_model()
 
     @property

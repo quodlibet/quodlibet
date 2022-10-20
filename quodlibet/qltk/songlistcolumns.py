@@ -24,7 +24,7 @@ from quodlibet.formats._audio import FILESYSTEM_TAGS
 from quodlibet.qltk.x import CellRendererPixbuf
 
 
-def create_songlist_column(model, t):
+def create_songlist_column(model: Gtk.TreeModel, t):
     """Returns a SongListColumn instance for the given tag"""
 
     if t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
