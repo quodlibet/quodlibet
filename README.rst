@@ -19,6 +19,7 @@
 
 .. raw:: html
 
+    <p></p>
     <img src="https://github.com/quodlibet/quodlibet/raw/master/quodlibet/images/hicolor/256x256/apps/io.github.quodlibet.QuodLibet.png" width="104px" alt="Quod Libet logo" />
 
 Quod Libet: an audio library, manager & player
