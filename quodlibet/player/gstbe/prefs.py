@@ -1,6 +1,6 @@
 # Copyright 2004-2011 Joe Wreschnig, Michael Urman, Steven Robertson,
 #           2011-2014 Christoph Reiter
-#                2020 Nick Boultbee
+#           2020-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,7 +11,7 @@ from gi.repository import Gtk
 
 from quodlibet import config
 from quodlibet import _
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigCheckButton, ConfigSwitch
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk.x import Button
 from quodlibet.qltk import Icons
@@ -20,12 +20,12 @@ from quodlibet.util import connect_obj
 
 class GstPlayerPreferences(Gtk.VBox):
     def __init__(self, player, debug=False):
-        super().__init__(spacing=6)
+        super().__init__(spacing=12)
 
         e = UndoEntry()
         e.set_tooltip_text(_("The GStreamer output pipeline used for "
                              "playback. Leave blank for the default pipeline. "
-                             "In case the pipeline contains a sink, "
+                             "If the pipeline contains a sink, "
                              "it will be used instead of the default one."))
 
         e.set_text(config.get('player', 'gst_pipeline'))
@@ -39,7 +39,7 @@ class GstPlayerPreferences(Gtk.VBox):
         pipe_label.set_use_underline(True)
         pipe_label.set_mnemonic_widget(e)
 
-        apply_button = Button(_("_Apply"))
+        apply_button = Button(_("_Apply"), Icons.VIEW_REFRESH)
 
         def format_buffer(scale, value):
             return _("%.1f seconds") % value
@@ -49,9 +49,8 @@ class GstPlayerPreferences(Gtk.VBox):
             player._set_buffer_duration(duration_msec)
 
         duration = config.getfloat("player", "gst_buffer")
-        scale = Gtk.HScale.new(
-            Gtk.Adjustment(value=duration, lower=0.2, upper=10))
-        scale.set_value_pos(Gtk.PositionType.RIGHT)
+        scale = Gtk.HScale.new(Gtk.Adjustment(value=duration, lower=0.2, upper=10))
+        scale.set_value_pos(Gtk.PositionType.LEFT)
         scale.set_show_fill_level(True)
         scale.connect('format-value', format_buffer)
         scale.connect('value-changed', scale_changed)
@@ -65,48 +64,36 @@ class GstPlayerPreferences(Gtk.VBox):
 
         apply_button.connect('clicked', rebuild_pipeline)
 
-        gapless_button = ConfigCheckButton(
+        gapless_button = ConfigSwitch(
             _('Disable _gapless playback'),
             "player", "gst_disable_gapless", populate=True,
             tooltip=_("Disabling gapless playback can avoid track changing problems "
                       "with some GStreamer versions"))
-
-        jack_button = ConfigCheckButton(
+        jack_button = ConfigSwitch(
             _('Use JACK for playback if available'),
             "player", "gst_use_jack", populate=True,
             tooltip=_("Uses `jackaudiosink` for playbin sink if it can be detected"))
-        jack_connect = ConfigCheckButton(
+        jack_connect = ConfigSwitch(
             _('Auto-connect to JACK output devices'),
             "player", "gst_jack_auto_connect",
             populate=True, tooltip=_("Tells `jackaudiosink` to auto-connect"))
 
-        def _jack_toggled(widget: ConfigCheckButton) -> None:
+        def _jack_activated(widget: ConfigCheckButton, *args) -> None:
             jack_connect.set_sensitive(widget.get_active())
 
-        jack_button.connect("clicked", _jack_toggled)
-        _jack_toggled(jack_button)
-        widgets = [(pipe_label, e, apply_button),
-                   (buffer_label, scale, None)]
+        jack_button.connect("notify::active", _jack_activated)
+        _jack_activated(jack_button, None)
 
-        table = Gtk.Table(n_rows=len(widgets) + 3, n_columns=3)
-        table.set_col_spacings(6)
-        table.set_row_spacings(6)
-        for i, (left, middle, right) in enumerate(widgets):
-            left.set_alignment(0.0, 0.5)
-            table.attach(left, 0, 1, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
-            if right:
-                table.attach(middle, 1, 2, i, i + 1)
-                table.attach(right, 2, 3, i, i + 1,
-                             xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
-            else:
-                table.attach(middle, 1, 3, i, i + 1)
+        hb = self._create_pipeline_box(pipe_label, e, apply_button)
+        self.pack_start(hb, False, False, 0)
 
-        table.attach(gapless_button, 0, 3, 2, 3)
-        table.attach(jack_button, 0, 3, 3, 4)
-        table.attach(jack_connect, 0, 3, 4, 5)
+        # Buffer
+        hb = self._create_buffer_box(buffer_label, scale)
+        self.pack_start(hb, False, False, 0)
 
-        self.pack_start(table, True, True, 0)
+        self.pack_start(gapless_button, False, False, 0)
+        self.pack_start(jack_button, False, False, 0)
+        self.pack_start(jack_connect, False, False, 0)
 
         if debug:
             def print_bin(player):
@@ -114,4 +101,20 @@ class GstPlayerPreferences(Gtk.VBox):
 
             b = Button("Print Pipeline", Icons.DIALOG_INFORMATION)
             connect_obj(b, 'clicked', print_bin, player)
-            self.pack_start(b, True, True, 0)
+            hb = Gtk.Box(spacing=6)
+            hb.pack_end(b, False, False, 0)
+            self.pack_end(hb, False, False, 0)
+
+    def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.HScale):
+        hb = Gtk.Box(spacing=6)
+        hb.pack_start(label, False, False, 0)
+        hb.pack_end(scale, True, True, 0)
+        return hb
+
+    def _create_pipeline_box(self, pipe_label: Gtk.Label, e: Gtk.Widget,
+                             apply_button: Gtk.Button):
+        hb = Gtk.Box(spacing=6)
+        hb.pack_start(pipe_label, False, False, 0)
+        hb.pack_start(e, True, True, 0)
+        hb.pack_end(apply_button, False, False, 0)
+        return hb
