@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-18 11:15+0000\n"
+"PO-Revision-Date: 2022-10-21 05:14+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -798,7 +798,7 @@ msgstr "_Rafraîchir"
 
 #: quodlibet/browsers/podcasts.py:479
 msgid "Search source for new episodes"
-msgstr "Rechercher la source de nouveaux événements"
+msgstr "Chercher de nouveaux épisodes à la source"
 
 #: quodlibet/browsers/podcasts.py:480
 msgid "_Rebuild"
@@ -811,7 +811,7 @@ msgstr ""
 
 #: quodlibet/browsers/podcasts.py:483
 msgid "Remove this podcast and its episodes"
-msgstr "Supprimer ce podcast et ses événements"
+msgstr "Supprimer ce podcast et ses épisodes"
 
 #: quodlibet/browsers/podcasts.py:540
 msgid "Unable to add feed"
@@ -830,7 +830,7 @@ msgstr ""
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
-"Le backend audio actuel ne prend pas en charge les URL, navigateur de "
+"Le système audio actuel ne prend pas en charge les URL, navigateur de "
 "podcast désactivé."
 
 #: quodlibet/browsers/tracks.py:34
