@@ -163,7 +163,7 @@ def get_sort_tag(tag):
 
     if "<" in tag:
         for key, value in replace_order.items():
-            if value != "":
+            if value:
                 value = "<%s>" % value
             tag = tag.replace("<%s>" % key, value)
         for key, value in TAG_TO_SORT.items():
