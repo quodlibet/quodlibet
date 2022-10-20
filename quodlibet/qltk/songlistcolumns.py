@@ -286,7 +286,6 @@ class NonSynthTextColumn(WideTextColumn):
     can_edit = True
 
     def __row_edited(self, render, path, new: str, model: Gtk.TreeModel) -> None:
-        tree_path = Gtk.TreePath.new_from_string(path)
         print_d(f"Trying to edit {self.header_name} to {new!r}")
         model[path][0][self.header_name] = new
         model.path_changed(path)
