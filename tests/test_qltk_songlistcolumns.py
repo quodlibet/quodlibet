@@ -17,13 +17,20 @@ import quodlibet.config
 import datetime
 import time
 
+A_DATETIME = datetime.datetime(year=1999, month=5, day=1, hour=23, minute=11,
+                               second=59)
+
 
 class TSongListColumns(TestCase):
     def setUp(self):
         quodlibet.config.init()
+        self.model = object()
 
     def tearDown(self):
         quodlibet.config.quit()
+
+    def _create_col(self, t):
+        return create_songlist_column(self.model, t)
 
     def _render_column(self, column, **kwargs):
         view = Gtk.TreeView()
@@ -44,57 +51,57 @@ class TSongListColumns(TestCase):
         return text
 
     def test_date(self):
-        column = create_songlist_column("~#added")
+        column = self._create_col("~#added")
         self._render_column(column)
 
         # column reuse triggers warning somwhow
-        column = create_songlist_column("~#added")
+        column = self._create_col("~#added")
         self._render_column(column, **{"~#added": 100})
 
     def test_length(self):
-        column = create_songlist_column("~length")
+        column = self._create_col("~length")
         self._render_column(column)
 
     def test_filesize(self):
-        column = create_songlist_column("~#filesize")
+        column = self._create_col("~#filesize")
         self._render_column(column)
 
     def test_rating(self):
-        column = create_songlist_column("~rating")
+        column = self._create_col("~rating")
         text = self._render_column(column)
         self.assertNotEqual(text, "0.67")
 
-        column = create_songlist_column("~#rating")
+        column = self._create_col("~#rating")
         text = self._render_column(column)
         self.assertEqual(text, "0.67")
 
     def test_bitrate(self):
-        column = create_songlist_column("~#bitrate")
+        column = self._create_col("~#bitrate")
         self._render_column(column)
 
     def test_basename(self):
-        column = create_songlist_column("~basename")
+        column = self._create_col("~basename")
         self._render_column(column)
 
     def test_pattern(self):
-        column = create_songlist_column("<artist>-<album>")
+        column = self._create_col("<artist>-<album>")
         self._render_column(column)
 
     def test_artist(self):
-        column = create_songlist_column("artist")
+        column = self._create_col("artist")
         self._render_column(column)
 
     def test_people(self):
-        column = create_songlist_column("~people")
+        column = self._create_col("~people")
         self._render_column(column)
 
     def test_bpm(self):
-        column = create_songlist_column("bpm")
+        column = self._create_col("bpm")
         text = self._render_column(column, **{"bpm": "123"})
         self.assertEqual(text, "123")
 
     def test_initialkey(self):
-        column = create_songlist_column("initialkey")
+        column = self._create_col("initialkey")
         text = self._render_column(column, **{"initialkey": "F"})
         self.assertEqual(text, "F")
 
@@ -103,10 +110,8 @@ class TSongListColumns(TestCase):
         quodlibet.config.settext("settings", "datecolumn_timestamp_format",
                                  format)
 
-        d = datetime.datetime(year=1999, month=5, day=1,
-                              hour=23, minute=11, second=59)
-        stamp = int(time.mktime(d.timetuple()))
-        column = create_songlist_column("~#added")
+        stamp = int(time.mktime(A_DATETIME.timetuple()))
+        column = self._create_col("~#added")
         text = self._render_column(column, **{"~#added": stamp})
         self.assertEqual(text, "19990501 23:11:59 PLAINTEXT")
 
@@ -118,9 +123,7 @@ class TSongListColumns(TestCase):
 
         # make sure unset config option does not result in the
         # behaviour for testcase for set option above
-        d = datetime.datetime(year=1999, month=5, day=1,
-                              hour=23, minute=11, second=59)
-        stamp = int(time.mktime(d.timetuple()))
-        column = create_songlist_column("~#added")
+        stamp = int(time.mktime(A_DATETIME.timetuple()))
+        column = self._create_col("~#added")
         text = self._render_column(column, **{"~#added": stamp})
         self.assertNotEqual(text, "19990501 23:11:59 PLAINTEXT")
