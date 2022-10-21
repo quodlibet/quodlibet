@@ -87,9 +87,6 @@ class TCommands(TestCase):
         self.__send("random album")
         self.__send("refresh")
         self.__send("repeat 0")
-        self.__send("rating 0.5")
-        self.__send("rating +0.01")
-        self.__send("rating -10")
         self.__send("show-window")
         self.__send("song-list 1")
         self.__send("stop-after 1")
@@ -109,3 +106,15 @@ class TCommands(TestCase):
         self.__send("enqueue-files "
                     "one,two\\, please,slash\\\\.mp3,four")
         self.assertEquals(app.window.playlist.q.get(), songs)
+
+    def test_rating(self):
+        app.player.song = AudioFile(
+            {"album": "foo", "~filename": fsnative("/dev/null")})
+        self.__send("rating +")
+        self.assertAlmostEqual(app.player.song['~#rating'], 0.75)
+        self.__send("rating 0.4")
+        self.assertAlmostEqual(app.player.song['~#rating'], 0.4)
+        self.__send("rating +0.01")
+        self.assertAlmostEqual(app.player.song['~#rating'], 0.41)
+        self.__send("rating -10")
+        self.assertEquals(app.player.song['~#rating'], 0)
