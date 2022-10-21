@@ -282,18 +282,14 @@ class PreferencesWindow(UniqueWindow):
 
             def create_search_frame():
                 vb = Gtk.VBox(spacing=MARGIN)
-                hb = Gtk.HBox(spacing=MARGIN)
                 l = Gtk.Label(label=_("_Global filter:"))
                 l.set_use_underline(True)
                 e = ValidatingEntry(Query.validator)
                 e.set_text(config.get("browsers", "background"))
                 e.connect('changed', self._entry, 'background', 'browsers')
-                e.set_tooltip_text(
-                    _("Apply this query in addition to all others"))
+                e.set_tooltip_text(_("Apply this query in addition to all others"))
                 l.set_mnemonic_widget(e)
-                hb.pack_start(l, False, True, 0)
-                hb.pack_start(e, True, True, 0)
-                vb.pack_start(hb, False, True, 0)
+                vb.pack_start(hbox_for(l, e), False, True, 0)
                 # Translators: The heading of the preference group, no action
                 return qltk.Frame(C_("heading", "Search"), child=vb)
 
@@ -579,7 +575,6 @@ class PreferencesWindow(UniqueWindow):
                 email_entry.set_sensitive(widget.get_active())
 
             vb.pack_start(sw, True, True, 0)
-            hb = Gtk.HBox(spacing=12)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
             entry.set_tooltip_text(_("Ratings and play counts will be saved "
@@ -591,11 +586,9 @@ class PreferencesWindow(UniqueWindow):
             sw.connect('notify::active', update_entry, entry)
             update_entry(sw, None, entry)
 
-            hb.pack_start(lab, False, True, 0)
-            hb.pack_start(entry, True, True, 0)
             lab.set_mnemonic_widget(entry)
             lab.set_use_underline(True)
-            vb.pack_start(hb, True, True, 0)
+            vb.pack_start(hbox_for(lab, entry), True, True, 0)
 
             return vb
 
