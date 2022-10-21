@@ -104,7 +104,7 @@ class GstPlayerPreferences(Gtk.VBox):
             connect_obj(b, 'clicked', print_bin, player)
             hb = Gtk.Box(spacing=6)
             hb.pack_end(b, False, False, 0)
-            self.pack_end(hb, False, False, 0)
+            self.pack_start(hb, False, False, 0)
 
     def _create_buffer_box(self, label: Gtk.Label, scale: Gtk.HScale):
         hb = Gtk.Box(spacing=6)
@@ -114,7 +114,7 @@ class GstPlayerPreferences(Gtk.VBox):
 
     def _create_pipeline_box(self, pipe_label: Gtk.Label, e: Gtk.Widget,
                              apply_button: Gtk.Button):
-        hb = Gtk.Box(spacing=6)
+        hb = Gtk.Box(spacing=12)
         hb.pack_start(pipe_label, False, False, 0)
         hb.pack_start(e, True, True, 0)
         hb.pack_end(apply_button, False, False, 0)
