@@ -258,7 +258,7 @@ msgstr "適用(_A)"
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:390
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -320,11 +320,11 @@ msgstr "ファイルシステム"
 msgid "_File System"
 msgstr "ファイルシステム(_F)"
 
-#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:267
 msgid "Unable to copy songs"
 msgstr "曲のコピーができません"
 
-#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:268
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr "選択されたファイルのソングリストまたはキューへのコピーに失敗しました。"
 
@@ -1786,7 +1786,7 @@ msgstr "保存するプリセット名:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:392
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -2677,28 +2677,31 @@ msgstr ""
 "始する前に編集することができます。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-msgid "Existing files in the destination path will be deleted!"
+#, fuzzy
+msgid ""
+"Existing files in the destination path will be deleted (except files named "
+"'cover.jpg')!"
 msgstr "保存先パスにある既存のファイルは削除されます!"
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:272
+#: quodlibet/ext/events/synchronize_to_device.py:273
 msgid "Start synchronization"
 msgstr "同期の開始"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:280
+#: quodlibet/ext/events/synchronize_to_device.py:281
 msgid "Stop synchronization"
 msgstr "同期の中止"
 
-#: quodlibet/ext/events/synchronize_to_device.py:303
+#: quodlibet/ext/events/synchronize_to_device.py:304
 msgid "No saved searches yet, create some and come back!"
 msgstr "保存済み検索はまだありません。作成して戻ってきてください!"
 
-#: quodlibet/ext/events/synchronize_to_device.py:385
+#: quodlibet/ext/events/synchronize_to_device.py:386
 msgid "Choose destination path"
 msgstr "保存先パスを選択"
 
-#: quodlibet/ext/events/synchronize_to_device.py:537
+#: quodlibet/ext/events/synchronize_to_device.py:538
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
@@ -2706,82 +2709,82 @@ msgstr ""
 "ファイル [{filename}] のエクスポートパスを [{old_path}] から [{new_path}] に"
 "変更"
 
-#: quodlibet/ext/events/synchronize_to_device.py:651
+#: quodlibet/ext/events/synchronize_to_device.py:652
 msgid "Starting synchronization preview"
 msgstr "同期プレビュー開始"
 
-#: quodlibet/ext/events/synchronize_to_device.py:656
+#: quodlibet/ext/events/synchronize_to_device.py:657
 msgid "Synchronization preview in progress."
 msgstr "同期プレビューが進行中です。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:672
+#: quodlibet/ext/events/synchronize_to_device.py:673
 msgid "Finished synchronization preview"
 msgstr "同期プレビュー完了"
 
-#: quodlibet/ext/events/synchronize_to_device.py:681
+#: quodlibet/ext/events/synchronize_to_device.py:682
 msgid "Stopping synchronization preview"
 msgstr "同期プレビュー停止中"
 
-#: quodlibet/ext/events/synchronize_to_device.py:683
+#: quodlibet/ext/events/synchronize_to_device.py:684
 msgid "Synchronization preview was stopped."
 msgstr "同期プレビューを中止しました。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:686
+#: quodlibet/ext/events/synchronize_to_device.py:687
 msgid "Synchronization preview has finished."
 msgstr "同期プレビューが完了しました。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:716
+#: quodlibet/ext/events/synchronize_to_device.py:717
 msgid "Stopped synchronization preview"
 msgstr "同期プレビュー中止"
 
-#: quodlibet/ext/events/synchronize_to_device.py:720
+#: quodlibet/ext/events/synchronize_to_device.py:721
 msgid "A different plugin was selected - stop preview"
 msgstr "別のプラグインが選択されたためプレビュー中止"
 
-#: quodlibet/ext/events/synchronize_to_device.py:757
+#: quodlibet/ext/events/synchronize_to_device.py:759
 msgid "Synchronization will:"
 msgstr "同期の想定結果:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:763
+#: quodlibet/ext/events/synchronize_to_device.py:765
 #, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
 msgstr[0] "{count}個のファイルをコピー"
 
-#: quodlibet/ext/events/synchronize_to_device.py:770
+#: quodlibet/ext/events/synchronize_to_device.py:772
 #, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
 msgstr[0] "{count}個の重複ファイルをスキップ"
 
-#: quodlibet/ext/events/synchronize_to_device.py:780
+#: quodlibet/ext/events/synchronize_to_device.py:782
 #, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
 msgstr[0] "{count}個のファイルを削除"
 
-#: quodlibet/ext/events/synchronize_to_device.py:830
+#: quodlibet/ext/events/synchronize_to_device.py:832
 msgid "No destination path provided"
 msgstr "保存先パスが指定されていません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:831
+#: quodlibet/ext/events/synchronize_to_device.py:833
 msgid "Please specify the directory where songs should be exported."
 msgstr "曲をエクスポートするディレクトリを指定してください。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:838
+#: quodlibet/ext/events/synchronize_to_device.py:840
 msgid "No export pattern provided"
 msgstr "エクスポートパターンが指定されていません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:839
+#: quodlibet/ext/events/synchronize_to_device.py:841
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 "エクスポートされる曲のファイル名のエクスポートパターンを指定してください。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:849
+#: quodlibet/ext/events/synchronize_to_device.py:851
 msgid "Export path is not absolute"
 msgstr "エクスポートパスが絶対パスになっていません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:850
+#: quodlibet/ext/events/synchronize_to_device.py:852
 msgid ""
 "The pattern\n"
 "\n"
@@ -2797,31 +2800,31 @@ msgstr ""
 "に「/」が含まれていますが、ルートとなる位置を示していません。「/」または"
 "「~/」で始まることを確認して、保存先の絶対パスを指定してください。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:872
+#: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
 msgstr "保存済み検索が選択されていません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:873
+#: quodlibet/ext/events/synchronize_to_device.py:875
 msgid "Please select at least one saved search."
 msgstr "保存済み検索を1つ以上選択してください。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:882
+#: quodlibet/ext/events/synchronize_to_device.py:884
 msgid "No songs in the selected saved searches"
 msgstr "選択された保存済み検索には曲がありません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:883
+#: quodlibet/ext/events/synchronize_to_device.py:885
 msgid "All selected saved searches are empty."
 msgstr "選択された保存済み検索の結果は全て空です。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:886
+#: quodlibet/ext/events/synchronize_to_device.py:888
 msgid "Found {} songs to synchronize"
 msgstr "{}曲の同期対象を検出"
 
-#: quodlibet/ext/events/synchronize_to_device.py:905
+#: quodlibet/ext/events/synchronize_to_device.py:907
 msgid "Mismatch between destination path and export pattern"
 msgstr "保存先パスとエクスポートパターンが不整合です"
 
-#: quodlibet/ext/events/synchronize_to_device.py:907
+#: quodlibet/ext/events/synchronize_to_device.py:909
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2835,91 +2838,91 @@ msgstr ""
 "エラー:\n"
 "{}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:945
+#: quodlibet/ext/events/synchronize_to_device.py:947
 msgid "Unable to sync"
 msgstr "同期できません"
 
-#: quodlibet/ext/events/synchronize_to_device.py:946
+#: quodlibet/ext/events/synchronize_to_device.py:948
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr "<b>状態</b>でソートされている間は同期を開始できません。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:950
+#: quodlibet/ext/events/synchronize_to_device.py:952
 msgid "Starting song synchronization"
 msgstr "曲の同期開始"
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:954
+#: quodlibet/ext/events/synchronize_to_device.py:956
 msgid "Synchronization in progress."
 msgstr "同期が進行中です。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:966
+#: quodlibet/ext/events/synchronize_to_device.py:968
 msgid "Finished song synchronization"
 msgstr "曲の同期完了"
 
-#: quodlibet/ext/events/synchronize_to_device.py:975
+#: quodlibet/ext/events/synchronize_to_device.py:977
 msgid "Stopping song synchronization"
 msgstr "曲の同期停止中"
 
-#: quodlibet/ext/events/synchronize_to_device.py:976
+#: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization was stopped."
 msgstr "曲の同期を中止しました。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:978
+#: quodlibet/ext/events/synchronize_to_device.py:980
 msgid "Synchronization has finished."
 msgstr "曲の同期が完了しました。"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1011
+#: quodlibet/ext/events/synchronize_to_device.py:1013
 msgid "Stopped song synchronization"
 msgstr "曲の同期中止"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1015
+#: quodlibet/ext/events/synchronize_to_device.py:1017
 msgid "A different plugin was selected - stop synchronization"
 msgstr "別のプラグインが選択されたため同期中止"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1018
+#: quodlibet/ext/events/synchronize_to_device.py:1020
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr "{tag} - \"{filename}\""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1087
+#: quodlibet/ext/events/synchronize_to_device.py:1090
 msgid "Removing \"{}\""
 msgstr "「{}」を削除中"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1106
+#: quodlibet/ext/events/synchronize_to_device.py:1111
 msgid "Synchronization has:"
 msgstr "同期の結果:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1114
+#: quodlibet/ext/events/synchronize_to_device.py:1119
 #, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
 msgstr[0] "{count}/{total}個のファイルをコピー"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1121
+#: quodlibet/ext/events/synchronize_to_device.py:1126
 #, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
 msgstr[0] "({count}個の既存ファイルをスキップ)"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1130
+#: quodlibet/ext/events/synchronize_to_device.py:1135
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
 msgstr[0] "{count}/{total}個の重複ファイルをスキップ"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1137
+#: quodlibet/ext/events/synchronize_to_device.py:1142
 #, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
 msgstr[0] "{count}/{total}個のファイルを削除"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1144
+#: quodlibet/ext/events/synchronize_to_device.py:1149
 #, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
 msgstr[0] "{count}個のファイルの同期に失敗"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1151
+#: quodlibet/ext/events/synchronize_to_device.py:1156
 #, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
@@ -4298,8 +4301,9 @@ msgstr "類似のタグが付けられた曲を検索して表示します。"
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
-msgstr "<tt>~artist~title</tt> や <tt>musicbrainz_track_id</tt> "
-"などのQLタグ式を受け付けます"
+msgstr ""
+"<tt>~artist~title</tt> や <tt>musicbrainz_track_id</tt> などのQLタグ式を受け"
+"付けます"
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
@@ -7176,44 +7180,44 @@ msgstr "直前に取り消した変更をやり直す"
 msgid "Select all songs in all panes"
 msgstr "全てのペインで全ての曲を選択する"
 
-#: quodlibet/qltk/songlist.py:386
+#: quodlibet/qltk/songlist.py:390
 #, python-format
 msgid "_Filter on %s"
 msgstr "%sでフィルタリング(_F)"
 
-#: quodlibet/qltk/songlist.py:1154
+#: quodlibet/qltk/songlist.py:1158
 msgid "All _Headers"
 msgstr "全てのヘッダ(_H)"
 
-#: quodlibet/qltk/songlist.py:1155
+#: quodlibet/qltk/songlist.py:1159
 msgid "_Track Headers"
 msgstr "トラックヘッダ(_T)"
 
-#: quodlibet/qltk/songlist.py:1156
+#: quodlibet/qltk/songlist.py:1160
 msgid "_Album Headers"
 msgstr "アルバムヘッダ(_A)"
 
-#: quodlibet/qltk/songlist.py:1157
+#: quodlibet/qltk/songlist.py:1161
 msgid "_People Headers"
 msgstr "ピープルヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1158
+#: quodlibet/qltk/songlist.py:1162
 msgid "_Date Headers"
 msgstr "日付ヘッダ(_D)"
 
-#: quodlibet/qltk/songlist.py:1159
+#: quodlibet/qltk/songlist.py:1163
 msgid "_File Headers"
 msgstr "ファイルヘッダ(_F)"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1164
 msgid "_Production Headers"
 msgstr "プロダクションヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1175
+#: quodlibet/qltk/songlist.py:1179
 msgid "_Customize Headers…"
 msgstr "ヘッダのカスタマイズ(_C)…"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Expand Column"
 msgstr "カラム幅の自動伸縮(_E)"
 
@@ -7391,11 +7395,11 @@ msgstr "前へ"
 msgid "and %d more…"
 msgstr "他%d項目…"
 
-#: quodlibet/qltk/wlw.py:199
+#: quodlibet/qltk/wlw.py:200
 msgid "Saving the songs you changed."
 msgstr "変更した曲を保存しています。"
 
-#: quodlibet/qltk/wlw.py:200
+#: quodlibet/qltk/wlw.py:201
 #, python-format
 msgid ""
 "%(current)d/%(total)d songs saved\n"
@@ -7404,7 +7408,7 @@ msgstr ""
 "%(current)d/%(total)d曲を保存済み\n"
 "(残り%(remaining)s曲)"
 
-#: quodlibet/qltk/wlw.py:233
+#: quodlibet/qltk/wlw.py:234
 #, python-format
 msgid "%(current)s of %(all)s"
 msgstr "%(current)s / %(all)s"
