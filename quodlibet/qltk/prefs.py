@@ -423,8 +423,14 @@ class PreferencesWindow(UniqueWindow):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             vb.pack_start(enable_rg, False, False, 0)
 
-            vb.pack_start(self.hb_for_widgets(fb_label, fb_scale), False, False, 0)
-            vb.pack_start(self.hb_for_widgets(pre_label, pre_scale), False, False, 0)
+            t = Gtk.Table(n_rows=2, n_columns=2)
+            t.set_row_spacings(6)
+            t.set_col_spacing(0, 3)
+            t.attach(fb_label, 0, 1, 0, 1)
+            t.attach(fb_scale, 1, 2, 0, 1)
+            t.attach(pre_label, 0, 1, 1, 2)
+            t.attach(pre_scale, 1, 2, 1, 2)
+            vb.pack_start(t, False, False, 0)
 
             f = qltk.Frame(_("Replay Gain Volume Adjustment"), child=vb)
             self.pack_start(f, False, True, MARGIN)
