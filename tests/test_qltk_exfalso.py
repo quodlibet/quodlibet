@@ -28,6 +28,4 @@ class TExFalsoWindow(TestCase):
         self.prefs.present()
         assert self.prefs.get_title() == "Ex Falso Preferences"
         assert self.prefs.get_child(), "No window contents"
-        pages = [type(p) for p in self.prefs.get_child().get_children()]
-        assert pages == [self.prefs.Tagging], "Wrong prefs pages"
         self.prefs.destroy()
