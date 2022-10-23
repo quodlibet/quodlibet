@@ -6201,7 +6201,7 @@ msgid "performers"
 msgstr "interprètes"
 
 #: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
-#: quodlibet/qltk/songlistcolumns.py:273
+#: quodlibet/qltk/songlistcolumns.py:275
 msgid "Never"
 msgstr "Jamais"
 
@@ -7367,39 +7367,39 @@ msgstr "Sélectionner tous les titres des panneaux"
 msgid "_Filter on %s"
 msgstr "_Filtrer sur %s"
 
-#: quodlibet/qltk/songlist.py:1158
+#: quodlibet/qltk/songlist.py:1174
 msgid "All _Headers"
 msgstr "Toutes les entêtes"
 
-#: quodlibet/qltk/songlist.py:1159
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Track Headers"
 msgstr "Colonnes « _Piste »"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1176
 msgid "_Album Headers"
 msgstr "Colonnes « _Album »"
 
-#: quodlibet/qltk/songlist.py:1161
+#: quodlibet/qltk/songlist.py:1177
 msgid "_People Headers"
 msgstr "Colonnes « Ar_tistes »"
 
-#: quodlibet/qltk/songlist.py:1162
+#: quodlibet/qltk/songlist.py:1178
 msgid "_Date Headers"
 msgstr "Colonnes « _Date »"
 
-#: quodlibet/qltk/songlist.py:1163
+#: quodlibet/qltk/songlist.py:1179
 msgid "_File Headers"
 msgstr "En-têtes _Fichier"
 
-#: quodlibet/qltk/songlist.py:1164
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Production Headers"
 msgstr "En-têtes _Production"
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1195
 msgid "_Customize Headers…"
 msgstr "_Personnaliser les en-têtes…"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1200
 msgid "_Expand Column"
 msgstr "Dépli_er la colonne"
 

@@ -6118,7 +6118,7 @@ msgid "performers"
 msgstr "表演者"
 
 #: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
-#: quodlibet/qltk/songlistcolumns.py:273
+#: quodlibet/qltk/songlistcolumns.py:275
 msgid "Never"
 msgstr "從未"
 
@@ -7294,41 +7294,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "以 %s 篩選 (_F)"
 
-#: quodlibet/qltk/songlist.py:1158
+#: quodlibet/qltk/songlist.py:1174
 #, fuzzy
 msgid "All _Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1159
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Track Headers"
 msgstr "音軌檔頭 (_T)"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1176
 msgid "_Album Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1161
+#: quodlibet/qltk/songlist.py:1177
 msgid "_People Headers"
 msgstr "個人或團體檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1162
+#: quodlibet/qltk/songlist.py:1178
 msgid "_Date Headers"
 msgstr "日期檔頭 (_D)"
 
-#: quodlibet/qltk/songlist.py:1163
+#: quodlibet/qltk/songlist.py:1179
 msgid "_File Headers"
 msgstr "檔案檔頭 (_F)"
 
-#: quodlibet/qltk/songlist.py:1164
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Production Headers"
 msgstr "出版檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1195
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "設置檔頭... (_C)"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1200
 msgid "_Expand Column"
 msgstr ""
 

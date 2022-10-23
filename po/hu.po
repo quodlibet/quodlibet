@@ -6116,7 +6116,7 @@ msgid "performers"
 msgstr "előadók"
 
 #: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
-#: quodlibet/qltk/songlistcolumns.py:273
+#: quodlibet/qltk/songlistcolumns.py:275
 msgid "Never"
 msgstr "Soha"
 
@@ -7289,41 +7289,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "Szűrő itt: %s"
 
-#: quodlibet/qltk/songlist.py:1158
+#: quodlibet/qltk/songlist.py:1174
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Album fejlécek"
 
-#: quodlibet/qltk/songlist.py:1159
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Track Headers"
 msgstr "_Sáv fejlécek"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1176
 msgid "_Album Headers"
 msgstr "_Album fejlécek"
 
-#: quodlibet/qltk/songlist.py:1161
+#: quodlibet/qltk/songlist.py:1177
 msgid "_People Headers"
 msgstr "Személ_y fejlécek"
 
-#: quodlibet/qltk/songlist.py:1162
+#: quodlibet/qltk/songlist.py:1178
 msgid "_Date Headers"
 msgstr "_Dátum fejlécek"
 
-#: quodlibet/qltk/songlist.py:1163
+#: quodlibet/qltk/songlist.py:1179
 msgid "_File Headers"
 msgstr "_Fájl fejlécek"
 
-#: quodlibet/qltk/songlist.py:1164
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Production Headers"
 msgstr "_Termék fejlécek"
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1195
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Egyéni fejlécek..."
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1200
 msgid "_Expand Column"
 msgstr ""
 
