@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-10-22 05:08+0000\n"
+"PO-Revision-Date: 2022-10-23 16:47+0000\n"
 "Last-Translator: Eric <hamburger1024@mailbox.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -5165,9 +5165,9 @@ msgstr ""
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f 秒"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -6142,9 +6142,8 @@ msgid "Column Preferences"
 msgstr "列首选项"
 
 #: quodlibet/qltk/prefs.py:136
-#, fuzzy
 msgid "_Update Columns"
-msgstr "编辑列"
+msgstr "更新列 (_U)"
 
 #: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6242,9 +6241,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/qltk/prefs.py:401
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "音轨调整"
+msgstr "回退增益 (_F)："
 
 #: quodlibet/qltk/prefs.py:410
 msgid ""
@@ -6301,9 +6299,8 @@ msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 
 #: quodlibet/qltk/prefs.py:603
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "自动保存标签变化"
+msgstr "自动保存标签变化 (_A)"
 
 #: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
