@@ -54,4 +54,5 @@ _arguments \
   '--version[Display version and copyright]'\
   '--volume=[Set the volume]:[+|-]0..100'\
   '--volume-down[Turn down volume]'\
-  '--volume-up[Turn up volume]'
+  '--volume-up[Turn up volume]'\
+  '--with-pattern=[Set template for --print-* commands]:pattern'

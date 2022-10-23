@@ -7,6 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+import json
 import os
 
 from senf import uri2fsn, fsnative, fsn2text, text2fsn
@@ -24,6 +25,7 @@ from quodlibet.util.library import scan_library
 
 from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, OneSong
 from quodlibet.order.reorder import OrderWeighted, OrderShuffle
+from quodlibet.pattern import Pattern
 
 from quodlibet.config import RATINGS
 
@@ -123,6 +125,12 @@ def arg2text(arg):
         return fsn2text(arg, strict=True)
     except ValueError as e:
         raise CommandError(e)
+
+
+def make_pattern(fstring, default):
+    if fstring is None:
+        return Pattern(default)
+    return Pattern(arg2text(fstring))
 
 
 registry = CommandRegistry()
@@ -501,22 +509,24 @@ def _queue(app, value):
     window.qexpander.set_property('visible', value)
 
 
-@registry.register("dump-playlist")
-def _dump_playlist(app):
+@registry.register("dump-playlist", optional=1)
+def _dump_playlist(app, fstring=None):
+    pattern = make_pattern(fstring, '<~uri>')
     window = app.window
-    uris = []
+    items = []
     for song in window.playlist.pl.get():
-        uris.append(song("~uri"))
-    return text2fsn(u"\n".join(uris) + u"\n")
+        items.append(pattern.format(song))
+    return text2fsn(u"\n".join(items) + u"\n")
 
 
-@registry.register("dump-queue")
-def _dump_queue(app):
+@registry.register("dump-queue", optional=1)
+def _dump_queue(app, fstring=None):
+    pattern = make_pattern(fstring, '<~uri>')
     window = app.window
-    uris = []
+    items = []
     for song in window.playlist.q.get():
-        uris.append(song("~uri"))
-    return text2fsn(u"\n".join(uris) + u"\n")
+        items.append(pattern.format(song))
+    return text2fsn(u"\n".join(items) + u"\n")
 
 
 @registry.register("refresh")
@@ -525,14 +535,26 @@ def _refresh(app):
 
 
 @registry.register("print-query", args=1)
-def _print_query(app, query):
+def _print_query(app, json_encoded_args):
     """Queries library, dumping filenames of matches to stdout
     See Issue 716
     """
 
-    query = arg2text(query)
+    try:
+        args = json.loads(arg2text(json_encoded_args))
+        query = args['query']
+        fstring = args['pattern']
+    except (json.decoder.JSONDecodeError, KeyError, TypeError):
+        # backward compatibility
+        query = arg2text(json_encoded_args)
+        fstring = None
+    if (not isinstance(query, str)
+        or (fstring is not None and not isinstance(fstring, str))):
+        # This should not happen
+        return "\n"
+    pattern = make_pattern(fstring, '<~filename>')
     songs = app.library.query(query)
-    return "\n".join([song("~filename") for song in songs]) + "\n"
+    return "\n".join([text2fsn(pattern.format(song)) for song in songs]) + "\n"
 
 
 @registry.register("print-query-text")
@@ -544,20 +566,15 @@ def _print_query_text(app):
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring=None):
     from quodlibet.formats import AudioFile
-    from quodlibet.pattern import Pattern
 
-    if fstring is None:
-        fstring = u"<artist~album~tracknumber~title>"
-    else:
-        fstring = arg2text(fstring)
-
+    pattern = make_pattern(fstring, u"<artist~album~tracknumber~title>")
     song = app.player.info
     if song is None:
         song = AudioFile({"~filename": fsnative(u"/")})
         song.sanitize()
     else:
         song = app.player.with_elapsed_info(song)
-    return text2fsn(Pattern(fstring).format(song) + u"\n")
+    return text2fsn(pattern.format(song) + u"\n")
 
 
 @registry.register("uri-received", args=1)

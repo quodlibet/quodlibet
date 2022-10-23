@@ -186,6 +186,12 @@ OPTIONS
 --volume-up
     Turn up the volume
 
+--with-pattern=<pattern>
+    Set the output format of the --print-playing, --print-playlist,
+    --print-query, and --print-queue commands.  You may provide in a
+    tag-pattern string like the kind described in the RENAMING FILES
+    section below.
+
 ALBUM COVERS
 ============
 
