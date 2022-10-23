@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-18 11:15+0000\n"
+"PO-Revision-Date: 2022-10-22 19:03+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -2677,11 +2677,10 @@ msgstr ""
 "始する前に編集することができます。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "保存先パスにある既存のファイルは削除されます!"
+msgstr "保存先パスにある既存のファイルは削除されます (ただし「cover.jpg」は除く) !"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:273
