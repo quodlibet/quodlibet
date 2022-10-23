@@ -31,7 +31,7 @@ msgid "_People"
 msgstr "cilvēki"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
 msgid "_Date"
 msgstr "_Datums"
 
@@ -48,13 +48,13 @@ msgid "_Original Date"
 msgstr "oriģinālais mākslinieks"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:57
 #, fuzzy
 msgid "_Genre"
 msgstr "Žanrs"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:62
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Vērtējums"
@@ -178,7 +178,7 @@ msgstr "Albuma attēlojums"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:784
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:766
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr ""
@@ -272,8 +272,7 @@ msgstr "Albumu saraksta iestatījumi"
 #: quodlibet/browsers/paned/prefs.py:247
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:131
-#: quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
 msgid "_Apply"
 msgstr ""
 
@@ -1417,7 +1416,7 @@ msgstr ""
 msgid "_Cover size:"
 msgstr "Kopējais izmērs:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:275
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:281
 #, fuzzy
 msgid "Display"
 msgstr "Rediģēt rādāmo"
@@ -1600,7 +1599,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:579
+#: quodlibet/qltk/prefs.py:576
 #, fuzzy
 msgid "Save ratings and play _counts in tags"
 msgstr "Saglabāt vērtējumus un _atskaņošanu skaitu"
@@ -1632,7 +1631,7 @@ msgstr "Jau_na stacija"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:760
+#: quodlibet/qltk/prefs.py:741
 #, fuzzy
 msgid "Preferences"
 msgstr "Iestatījumi"
@@ -2024,7 +2023,7 @@ msgstr ""
 msgid "System Default"
 msgstr ""
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:708
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:720
 msgid "A restart is required for any changes to take effect"
 msgstr ""
 
@@ -3199,7 +3198,8 @@ msgstr "Repertuāri"
 msgid "_Quit"
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:74
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:78
+#: quodlibet/qltk/prefs.py:450 quodlibet/qltk/prefs.py:727
 msgid "Behavior"
 msgstr ""
 
@@ -5147,7 +5147,7 @@ msgstr ""
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:704 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:680 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Bibliotēka"
 
@@ -5503,8 +5503,8 @@ msgstr ""
 #, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
-"pipeline. In case the pipeline contains a sink, it will be used instead of "
-"the default one."
+"pipeline. If the pipeline contains a sink, it will be used instead of the "
+"default one."
 msgstr ""
 "GStreamer izvades līnija, kas tiks izmantota atskaņošanai, piemēram, "
 "'alsasink device=default'. Atstājiet tukšu, lai izmantotu noklusēto līniju."
@@ -5513,9 +5513,10 @@ msgstr ""
 msgid "_Output pipeline:"
 msgstr "_Izvades līnija:"
 
-#: quodlibet/player/gstbe/prefs.py:45
+#. Translators: s = seconds
+#: quodlibet/player/gstbe/prefs.py:46
 #, fuzzy, python-format
-msgid "%.1f seconds"
+msgid "%.1f s"
 msgstr "%d sekunde"
 
 #: quodlibet/player/gstbe/prefs.py:59
@@ -5532,19 +5533,19 @@ msgid ""
 "GStreamer versions"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:75
+#: quodlibet/player/gstbe/prefs.py:74
 msgid "Use JACK for playback if available"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:77
+#: quodlibet/player/gstbe/prefs.py:76
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:79
+#: quodlibet/player/gstbe/prefs.py:78
 msgid "Auto-connect to JACK output devices"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:81
+#: quodlibet/player/gstbe/prefs.py:80
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
@@ -6375,8 +6376,7 @@ msgstr ""
 "Tagi tika izmainīti, bet netika saglabāti. Saglabāt šos failus, vai "
 "atgriezties un izmest izmaiņas?"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:640
-#: quodlibet/qltk/prefs.py:647 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 #, fuzzy
 msgid "_Revert"
@@ -6494,188 +6494,195 @@ msgstr ""
 msgid "Show _Errors"
 msgstr "Rādīt _kļūdas"
 
-#: quodlibet/qltk/prefs.py:45
+#: quodlibet/qltk/prefs.py:49
 msgid "_Disc"
 msgstr "_Disks"
 
-#: quodlibet/qltk/prefs.py:46
+#: quodlibet/qltk/prefs.py:50
 msgid "_Track"
 msgstr "_Celiņš"
 
-#: quodlibet/qltk/prefs.py:47
+#: quodlibet/qltk/prefs.py:51
 #, fuzzy
 msgid "Grou_ping"
 msgstr "grupēšana"
 
-#: quodlibet/qltk/prefs.py:49
+#: quodlibet/qltk/prefs.py:53
 msgid "_Artist"
 msgstr "_Mākslinieks"
 
-#: quodlibet/qltk/prefs.py:50
+#: quodlibet/qltk/prefs.py:54
 msgid "Al_bum"
 msgstr "Al_bums"
 
-#: quodlibet/qltk/prefs.py:55
+#: quodlibet/qltk/prefs.py:59
 msgid "_Filename"
 msgstr "_Faila nosaukums"
 
-#: quodlibet/qltk/prefs.py:57
+#: quodlibet/qltk/prefs.py:61
 msgid "_Length"
 msgstr "_Ilgums"
 
-#: quodlibet/qltk/prefs.py:64
+#: quodlibet/qltk/prefs.py:68
 msgid "_Jump to playing song automatically"
 msgstr "_Pārlēkt uz atskaņoto dziesmu automātiski"
 
-#: quodlibet/qltk/prefs.py:66
+#: quodlibet/qltk/prefs.py:70
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Kad atskaņotā dziesma izmainās, pāriet uz to arī dziesmu sarakstā"
 
-#: quodlibet/qltk/prefs.py:68
+#: quodlibet/qltk/prefs.py:72
 msgid "Sort songs when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:70
+#: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:87
+#: quodlibet/qltk/prefs.py:90
 msgid "_Others:"
 msgstr "C_iti:"
 
-#: quodlibet/qltk/prefs.py:93
+#. Stock edit doesn't have ellipsis chars.
+#: quodlibet/qltk/prefs.py:95
 #, fuzzy
 msgid "_Edit…"
 msgstr "R_ediģēt rādāmo..."
 
-#: quodlibet/qltk/prefs.py:96
+#: quodlibet/qltk/prefs.py:98
 msgid "Add or remove additional column headers"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:105
+#: quodlibet/qltk/prefs.py:107
 msgid "Visible Columns"
 msgstr "Redzamās kolonnas"
 
-#: quodlibet/qltk/prefs.py:108
+#: quodlibet/qltk/prefs.py:129
 msgid "Title includes _version"
 msgstr "Nosaukums iekļauj _versiju"
 
-#: quodlibet/qltk/prefs.py:110
+#: quodlibet/qltk/prefs.py:130
+msgid "Album includes _disc subtitle"
+msgstr "Albums iekļauj _diska apakšnosaukumu"
+
+#: quodlibet/qltk/prefs.py:131
 #, fuzzy
 msgid "Artist includes all _people"
 msgstr "Iegultajā _meklēšanā tiek iekļauti cilvēki"
 
-#: quodlibet/qltk/prefs.py:112
-msgid "Album includes _disc subtitle"
-msgstr "Albums iekļauj _diska apakšnosaukumu"
-
-#: quodlibet/qltk/prefs.py:114
+#: quodlibet/qltk/prefs.py:132
 msgid "Filename includes _folder"
 msgstr "_Faila nosaukums iekļauj mapi"
 
-#: quodlibet/qltk/prefs.py:127
+#: quodlibet/qltk/prefs.py:133
 #, fuzzy
 msgid "Column Preferences"
 msgstr "Iestatījumi"
 
-#: quodlibet/qltk/prefs.py:133
+#: quodlibet/qltk/prefs.py:136
+#, fuzzy
+msgid "_Update Columns"
+msgstr "Redzamās kolonnas"
+
+#: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:148 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:152 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Dziesmu saraksts"
 
-#: quodlibet/qltk/prefs.py:231
+#: quodlibet/qltk/prefs.py:237
 #, fuzzy
 msgid "Edit Columns"
 msgstr "Redzamās kolonnas"
 
-#: quodlibet/qltk/prefs.py:268
+#: quodlibet/qltk/prefs.py:274
 msgid "Duration totals"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:280
+#: quodlibet/qltk/prefs.py:285
 msgid "_Global filter:"
 msgstr "_Globālais filtrs:"
 
-#: quodlibet/qltk/prefs.py:286
+#: quodlibet/qltk/prefs.py:290
 msgid "Apply this query in addition to all others"
 msgstr ""
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:292
+#: quodlibet/qltk/prefs.py:294
 #, fuzzy
 msgctxt "heading"
 msgid "Search"
 msgstr "Meklēt"
 
-#: quodlibet/qltk/prefs.py:296 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:298 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Pārlūki"
 
-#: quodlibet/qltk/prefs.py:302
+#. Ratings
+#: quodlibet/qltk/prefs.py:303
 msgid "Confirm _multiple ratings"
 msgstr "Apstiprināt vairākus vērtēju_mus"
 
-#: quodlibet/qltk/prefs.py:304
+#: quodlibet/qltk/prefs.py:305
 #, fuzzy
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 "Vaicāt pēc apstiprinājuma, pirms mainīt vērtējumu vairākām dziesmām uzreiz"
 
-#: quodlibet/qltk/prefs.py:307
+#: quodlibet/qltk/prefs.py:308
 msgid "Enable _one-click ratings"
 msgstr "Ieslēgt viena klikšķa vērtējumus"
 
-#: quodlibet/qltk/prefs.py:309
+#: quodlibet/qltk/prefs.py:310
 #, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Ieslēgt novērtējumu, noklikšķinot uz vērtējumu kolonnas dziesmu sarakstā"
 
-#: quodlibet/qltk/prefs.py:315 quodlibet/qltk/prefs.py:681
+#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:657
 msgid "Ratings"
 msgstr "Vērtējumi"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:321
+#: quodlibet/qltk/prefs.py:322
 msgid "Prefer _embedded art"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:323
+#: quodlibet/qltk/prefs.py:324
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:330
+#: quodlibet/qltk/prefs.py:329
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:334
-msgid "_Preferred image filename(s):"
+#: quodlibet/qltk/prefs.py:333
+msgid "_Preferred fixed image filename(s)"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:349
+#: quodlibet/qltk/prefs.py:351
 #, fuzzy
 msgid "Album Art"
 msgstr "Albumu saraksts"
 
-#: quodlibet/qltk/prefs.py:370
+#: quodlibet/qltk/prefs.py:384
 #, fuzzy
 msgid "Playback"
 msgstr "Pauzēt atskaņošanu"
 
-#: quodlibet/qltk/prefs.py:375
+#: quodlibet/qltk/prefs.py:391
 #, fuzzy
 msgid "Output Configuration"
 msgstr "Izvades žurnāls"
 
-#: quodlibet/qltk/prefs.py:386
+#: quodlibet/qltk/prefs.py:398
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -6683,43 +6690,38 @@ msgstr ""
 "Ja dziesmai nav pieejama Replay Gain informācija, mērogot skaļumu par šo "
 "vērtību"
 
-#: quodlibet/qltk/prefs.py:389
+#: quodlibet/qltk/prefs.py:401
 #, fuzzy
-msgid "_Fall-back gain (dB):"
+msgid "_Fall-back gain:"
 msgstr "Atkāpšanās pastiprinājums (dB):"
 
-#: quodlibet/qltk/prefs.py:400
+#: quodlibet/qltk/prefs.py:410
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Mērogot skaļumu visām dziesmām par šo vērtību, ja vien neparādās apgriešana"
 
-#: quodlibet/qltk/prefs.py:403
+#: quodlibet/qltk/prefs.py:413
 #, fuzzy
-msgid "_Pre-amp gain (dB):"
+msgid "_Pre-amp gain:"
 msgstr "Priekšpastiprinājuma pastiprinājums (dB):"
 
-#: quodlibet/qltk/prefs.py:408
+#: quodlibet/qltk/prefs.py:419
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "I_eslēgt Replay Gain skaļuma regulāciju"
 
-#: quodlibet/qltk/prefs.py:433
+#: quodlibet/qltk/prefs.py:436
 msgid "Replay Gain Volume Adjustment"
 msgstr "Replay Gain skaļuma regulācija"
 
-#: quodlibet/qltk/prefs.py:440
+#: quodlibet/qltk/prefs.py:444
 msgid "_Continue playback on startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:442
+#: quodlibet/qltk/prefs.py:447
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
-
-#: quodlibet/qltk/prefs.py:446
-#, fuzzy
-msgid "Startup"
-msgstr "_Importēt"
 
 #: quodlibet/qltk/prefs.py:473
 msgid "_Default rating:"
@@ -6742,21 +6744,21 @@ msgstr ""
 msgid "_Bayesian averaging amount:"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:587
+#: quodlibet/qltk/prefs.py:583
 msgid "_Email:"
 msgstr "_E-pasts:"
 
-#: quodlibet/qltk/prefs.py:589
+#: quodlibet/qltk/prefs.py:585
 #, fuzzy
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Vērtējumi un atskaņošanu skaits tiks iestatīts šajai e-pasta adresei"
 
-#: quodlibet/qltk/prefs.py:609
+#: quodlibet/qltk/prefs.py:603
 #, fuzzy
-msgid "Auto-save tag changes"
+msgid "_Auto-save tag changes"
 msgstr "Izmest tagu izmaiņas?"
 
-#: quodlibet/qltk/prefs.py:611
+#: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 
@@ -6766,79 +6768,79 @@ msgid ""
 "list is space-separated."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:630
+#: quodlibet/qltk/prefs.py:623
+#, fuzzy
+msgid "Split _tag on:"
+msgstr "Sadalīt _pie:"
+
+#: quodlibet/qltk/prefs.py:636
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
 "characters."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:643
-#, fuzzy
-msgid "Split _tag on:"
-msgstr "Sadalīt _pie:"
-
-#: quodlibet/qltk/prefs.py:650
+#: quodlibet/qltk/prefs.py:641
 #, fuzzy
 msgid "Split _subtag on:"
 msgstr "Sadalīt _pie:"
 
-#: quodlibet/qltk/prefs.py:675
+#: quodlibet/qltk/prefs.py:651
 #, fuzzy
 msgid "Tags"
 msgstr "Rediģēt tagus"
 
-#: quodlibet/qltk/prefs.py:678
+#: quodlibet/qltk/prefs.py:654
 msgid "Tag Editing"
 msgstr "Tagu rediģēšana"
 
-#: quodlibet/qltk/prefs.py:696
+#: quodlibet/qltk/prefs.py:672
 #, fuzzy
 msgid "Updating for new ratings"
 msgstr "Jau_na stacija"
 
-#: quodlibet/qltk/prefs.py:706
-#, fuzzy
-msgid "Scan library _on start"
-msgstr "A_tsvaidzināt bibliotēku, palaižot programmu"
-
-#: quodlibet/qltk/prefs.py:710
-msgid "_Watch directories for changes"
-msgstr ""
-
-#: quodlibet/qltk/prefs.py:711
-msgid ""
-"Watch library directories for external file additions, deletions and renames."
-msgstr ""
-
-#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:1003
+#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1003
 #, fuzzy
 msgid "_Scan Library"
 msgstr "_Meklēt bibliotēkā"
 
-#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1065
+#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1065
 msgid "Check for changes in your library"
 msgstr "Pārbaudīt izmaiņas jūsu bibliotēkā"
 
-#: quodlibet/qltk/prefs.py:728
+#: quodlibet/qltk/prefs.py:692
 #, fuzzy
 msgid "Re_build Library"
 msgstr "Pār_lādēt bibliotēku"
 
-#: quodlibet/qltk/prefs.py:731
+#: quodlibet/qltk/prefs.py:695
 #, fuzzy
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Pārlādēt visas dziesmas jūsu bibliotēkā (tas var aizņemt ilgu laiku)"
 
-#: quodlibet/qltk/prefs.py:743
-#, fuzzy
-msgid "Scan Directories"
-msgstr "Skenēt _mapes"
-
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:710
 #, fuzzy
 msgid "Hidden Songs"
 msgstr "Nav dziesmu"
+
+#: quodlibet/qltk/prefs.py:718
+#, fuzzy
+msgid "Scan library _on start"
+msgstr "A_tsvaidzināt bibliotēku, palaižot programmu"
+
+#: quodlibet/qltk/prefs.py:722
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:723
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:733
+#, fuzzy
+msgid "Scan Directories"
+msgstr "Skenēt _mapes"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
@@ -8257,6 +8259,14 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
+
+#, fuzzy, python-format
+#~ msgid "%.1f seconds"
+#~ msgstr "%d sekunde"
+
+#, fuzzy
+#~ msgid "Startup"
+#~ msgstr "_Importēt"
 
 #~ msgid "Audio Feeds"
 #~ msgstr "Audio barotnes"
