@@ -5392,15 +5392,14 @@ msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "GStreamer プラグイン「%(name)s」を初期化できませんでした"
 
 #: quodlibet/player/gstbe/prefs.py:26
-#, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
 msgstr ""
-"再生に使用される GStreamer 出力パイプライン。デフォルトのパイプラインを使用す"
-"る場合は空白のままにします。パイプラインにシンクが含まれる場合、デフォルトの"
-"代わりに使用されます。"
+"再生に使用される GStreamer 出力パイプライン。空白の場合はデフォルトのパイプラ"
+"インが使用されます。パイプラインにシンクが含まれる場合、デフォルトの代わりに"
+"使用されます。"
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5408,9 +5407,9 @@ msgstr "出力パイプライン(_O):"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f秒"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -6423,9 +6422,8 @@ msgid "Column Preferences"
 msgstr "カラム設定"
 
 #: quodlibet/qltk/prefs.py:136
-#, fuzzy
 msgid "_Update Columns"
-msgstr "カラムの編集"
+msgstr "カラムの更新(_U)"
 
 #: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6505,9 +6503,8 @@ msgstr ""
 "数指定する場合は、カンマで区切ってください。"
 
 #: quodlibet/qltk/prefs.py:333
-#, fuzzy
 msgid "_Preferred fixed image filename(s)"
-msgstr "画像ファイル名(_P):"
+msgstr "固定の画像ファイル名を優先する(_P)"
 
 #: quodlibet/qltk/prefs.py:351
 msgid "Album Art"
@@ -6528,9 +6525,8 @@ msgid ""
 msgstr "曲に ReplayGain 情報が無い場合、この値で音量を調整します"
 
 #: quodlibet/qltk/prefs.py:401
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "フォールバックゲイン(dB)(_F):"
+msgstr "フォールバックゲイン(_F):"
 
 #: quodlibet/qltk/prefs.py:410
 msgid ""
@@ -6538,9 +6534,8 @@ msgid ""
 msgstr "結果がクリップしない限り、この値で全ての曲の音量を調整します"
 
 #: quodlibet/qltk/prefs.py:413
-#, fuzzy
 msgid "_Pre-amp gain:"
-msgstr "プリアンプゲイン(dB)(_P):"
+msgstr "プリアンプゲイン(_P):"
 
 #: quodlibet/qltk/prefs.py:419
 msgid "_Enable Replay Gain volume adjustment"
@@ -6593,9 +6588,8 @@ msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "評価と再生回数はこのメールアドレスのタグに保存されます"
 
 #: quodlibet/qltk/prefs.py:603
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "タグの変更を自動保存する"
+msgstr "タグの変更を自動保存する(_A)"
 
 #: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
