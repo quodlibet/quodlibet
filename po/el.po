@@ -911,250 +911,252 @@ msgstr "Εξουσιοδότηση Soundcloud"
 msgid "Enter Soundcloud auth code:"
 msgstr "Εισαγωγή κωδικού εξουσιοδότησης Soundcloud:"
 
-#: quodlibet/cli.py:50
+#: quodlibet/cli.py:50 quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Ο Quod Libet δεν εκτελείται (προσθέστε '--run' για να τον ξεκινήσετε)"
 
-#: quodlibet/cli.py:86
+#: quodlibet/cli.py:86 quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "Μουσικοθήκη και αναπαραγωγέας"
 
-#: quodlibet/cli.py:87
+#: quodlibet/cli.py:87 quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[επιλογή]"
 
-#: quodlibet/cli.py:89
+#: quodlibet/cli.py:89 quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Εμφάνιση του αναπαραγόμενου τραγουδιού και έξοδος"
 
-#: quodlibet/cli.py:90
+#: quodlibet/cli.py:90 quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Έναρξη αναπαραγωγής άμεσα"
 
-#: quodlibet/cli.py:91
+#: quodlibet/cli.py:91 quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Μην προβάλεις παράθυρα στην εκκίνηση"
 
-#: quodlibet/cli.py:94
+#: quodlibet/cli.py:94 quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Μεταπήδηση στο επόμενο τραγούδι"
 
-#: quodlibet/cli.py:96
+#: quodlibet/cli.py:96 quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 "Μεταπήδηση στην αρχή του τραγουδιού ή στο προηγούμενο αν είναι ήδη κοντά "
 "στην αρχή"
 
-#: quodlibet/cli.py:97
+#: quodlibet/cli.py:97 quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Μεταπήδηση στο προηγούμενο τραγούδι"
 
-#: quodlibet/cli.py:98
+#: quodlibet/cli.py:98 quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Έναρξη αναπαραγωγής"
 
-#: quodlibet/cli.py:99
+#: quodlibet/cli.py:99 quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Παύση αναπαραγωγής"
 
-#: quodlibet/cli.py:100
+#: quodlibet/cli.py:100 quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Εναλλαγή αναπαραγωγής/παύσης"
 
-#: quodlibet/cli.py:101
+#: quodlibet/cli.py:101 quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Σταμάτημα αναπαραγωγής"
 
-#: quodlibet/cli.py:102
+#: quodlibet/cli.py:102 quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Αύξηση της έντασης αναπαραγωγής"
 
-#: quodlibet/cli.py:103
+#: quodlibet/cli.py:103 quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Μείωση της έντασης αναπαραγωγής"
 
-#: quodlibet/cli.py:104
+#: quodlibet/cli.py:104 quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "Αύξησε τη βαθμολογία του αναπαραγόμενου τραγουδιού κατά ένα αστέρι"
 
-#: quodlibet/cli.py:105
+#: quodlibet/cli.py:105 quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "Μείωση βαθμολογίας αναπαραγόμενου τραγουδιού κατά ένα αστέρι"
 
-#: quodlibet/cli.py:106
+#: quodlibet/cli.py:106 quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Εμφάνιση της κατάστασης του αναπαραγωγέα"
 
-#: quodlibet/cli.py:107
+#: quodlibet/cli.py:107 quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Απόκρυψη του κυρίου παραθύρου"
 
-#: quodlibet/cli.py:108
+#: quodlibet/cli.py:108 quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Εμφάνιση του κυρίου παραθύρου"
 
-#: quodlibet/cli.py:109
+#: quodlibet/cli.py:109 quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Εναλλαγή ορατότητας κυρίου παραθύρου"
 
-#: quodlibet/cli.py:110
+#: quodlibet/cli.py:110 quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Εστίαση του εκτελούμενου αναπαραγωγέα"
 
-#: quodlibet/cli.py:111
+#: quodlibet/cli.py:111 quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Αφαίρεση ενεργών φίλτρων περιηγητή"
 
-#: quodlibet/cli.py:112
+#: quodlibet/cli.py:112 quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Ανανέωση και σάρωση ξανά της μουσικοθήκης"
 
-#: quodlibet/cli.py:113
+#: quodlibet/cli.py:113 quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Προβολή διαθέσιμων περιηγητών"
 
-#: quodlibet/cli.py:114
+#: quodlibet/cli.py:114 quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Εμφάνιση της τρέχουσας λίστας αναπαραγωγής"
 
-#: quodlibet/cli.py:115
+#: quodlibet/cli.py:115 quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Εμφάνιση των περιεχομένων της ουράς αναπαραγωγής"
 
-#: quodlibet/cli.py:116
+#: quodlibet/cli.py:116 quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Εμφάνιση της ενεργής αναζήτησης"
 
-#: quodlibet/cli.py:117
+#: quodlibet/cli.py:117 quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Εκκίνηση χωρίς πρόσθετα"
 
-#: quodlibet/cli.py:118
+#: quodlibet/cli.py:118 quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Εκκινήστε τον Quod Libet αν δεν εκτελείται"
 
-#: quodlibet/cli.py:119
+#: quodlibet/cli.py:119 quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Έξοδος από τον Quod Libet"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Αναζήτηση στο αναπαραγόμενο τραγούδι"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ΩΩ:]ΛΛ:ΔΔ"
 
-#: quodlibet/cli.py:125
+#: quodlibet/cli.py:125 quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Ενεργοποίηση ή εναλλαγή τυχαίας σειράς"
 
-#: quodlibet/cli.py:126
+#: quodlibet/cli.py:126 quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Ρύθμιση λειτουργίας τυχαίας σειράς"
 
-#: quodlibet/cli.py:127
+#: quodlibet/cli.py:127 quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Ενεργοποίηση, απενεργοποίηση ή εναλλαγή της επανάληψης"
 
-#: quodlibet/cli.py:128
+#: quodlibet/cli.py:128 quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Ρύθμιση λειτουργίας επανάληψης"
 
-#: quodlibet/cli.py:129
+#: quodlibet/cli.py:129 quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Καθορισμός έντασης"
 
-#: quodlibet/cli.py:130
+#: quodlibet/cli.py:130 quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Αναζήτηση στην μουσικοθήκη"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146
+#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
+#: quodlibet/cli.py:145 quodlibet/cli.py:147
 msgid "query"
 msgstr "ερώτημα"
 
-#: quodlibet/cli.py:131
+#: quodlibet/cli.py:131 quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Αναπαραγωγή αρχείου"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
+#: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "όνομα αρχείου"
 
-#: quodlibet/cli.py:132
+#: quodlibet/cli.py:132 quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Ορισμός βαθμολογίας τρέχοντος τραγουδιού"
 
-#: quodlibet/cli.py:133
+#: quodlibet/cli.py:133 quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Καθορισμός τρέχοντος περιηγητή"
 
-#: quodlibet/cli.py:134
+#: quodlibet/cli.py:134 quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Βαθμολόγηση τρέχοντος τραγουδιού"
 
-#: quodlibet/cli.py:135
+#: quodlibet/cli.py:135 quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Άνοιγμα νέου περιηγητή"
 
-#: quodlibet/cli.py:136
+#: quodlibet/cli.py:136 quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Εμφάνιση ή απόκρυψη της ουράς αναπαραγωγής"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Φιλτρο βάσει τυχαίας τιμής"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "ετικέτα"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Φίλτρο βάσει ετικέτας"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "ετικέτα=τιμή"
 
-#: quodlibet/cli.py:139
+#: quodlibet/cli.py:139 quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Προσθήκη ενός αρχείου ή ενός ερωτήματος στην ουρά"
 
-#: quodlibet/cli.py:141
+#: quodlibet/cli.py:141 quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "Προσθήκη στην ουρά αρχείων διαχωρισμένων με κόμματα"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158
+#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
 msgid "filename"
 msgstr "όνομα αρχείου"
 
-#: quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 "Εμφάνιση ονομάτων αρχείων ή αποτελεσμάτων ερωτήματος στην κανονική έξοδο"
 
-#: quodlibet/cli.py:145
+#: quodlibet/cli.py:145 quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Αφαίρεση αρχείου ή ερωτήματος από την ουρά αναπαραγωγής"
 
-#: quodlibet/cli.py:147
+#: quodlibet/cli.py:147 quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Προσθήκη αρχείου ή φακέλου στη μουσικοθήκη"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100
+#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
 msgid "location"
 msgstr "τοποθεσία"
 
-#: quodlibet/cli.py:213
+#: quodlibet/cli.py:213 quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Μη έγκυρο όρισμα για το '%s'."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
 #, python-format
 msgid "Try %s --help."
 msgstr "Δοκιμάστε το %s --help."
@@ -2182,6 +2184,7 @@ msgstr "_Κωδικός:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
+#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Λογαριασμός"
 
@@ -2317,21 +2320,25 @@ msgstr "_Επαλήθευση δεδομένων λογαριασμού"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Πρότυπο _Καλλιτέχνη:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Πρότυπο Τίτλου:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_Φίλτρο εξαιρέσεων:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
+#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2341,6 +2348,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
+#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2353,11 +2361,13 @@ msgstr "Τα τραγούδια που ταιριάζουν με αυτό το �
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
+#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "Λειτουργία Εκτός _Σύνδεσης (να μην υποβληθεί τίποτα)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
+#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Υποβολή"
 
@@ -4272,7 +4282,7 @@ msgstr ""
 "'{PARAM}' στην εντολή σας θα αντικατασταθούν με τιμή που θα σας ζητηθεί κατά "
 "την εκτέλεση."
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55
+#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
 msgid "pattern"
 msgstr "πρότυπο"
 
@@ -5588,6 +5598,7 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Αδυναμία εύρεσης του στοιχείου '{element}' του  GStreamer."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
+#: quodlibet/plugins/listenbrainz/__init__.py:229
 #, fuzzy
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
@@ -5597,6 +5608,7 @@ msgstr ""
 "Διαφορετικά τα τραγούδια δεν θα υποβάλλονται."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
+#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, fuzzy, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5607,30 +5619,36 @@ msgstr ""
 "Διαφορετικά τα τραγούδια δεν θα υποβάλλονται."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
+#: quodlibet/plugins/listenbrainz/__init__.py:356
 #, fuzzy
 msgid "ListenBrainz Submission"
 msgstr "Υποβολή"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
+#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
+#: quodlibet/plugins/listenbrainz/__init__.py:455
 #, fuzzy
 msgid "User _token:"
 msgstr "Όνομα _χρήστη:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
+#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
+#: quodlibet/plugins/listenbrainz/__init__.py:545
 #, fuzzy
 msgid "Songs matching this filter will not be submitted."
 msgstr "Τα τραγούδια που ταιριάζουν με αυτό το φίλτρο δεν θα υποβάλλονται"
@@ -8210,6 +8228,10 @@ msgstr ""
 "πολλούς διαφορετικούς τρόπους προβολής της μουσικοθήκης σας, καθώς και "
 "υποστήριξη για διαδικτυακό ραδιόφωνο και ροών ήχου. Έχει απίστευτα ευέλικτες "
 "δυνατότητες επεξεργασίας και αναζήτησης μεταδεδομένων ετικετών μουσικής."
+
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Startup"

@@ -902,247 +902,249 @@ msgstr "אימות סאונדקלאוד"
 msgid "Enter Soundcloud auth code:"
 msgstr "הזנת קוד אימות סאונדקלאוד:"
 
-#: quodlibet/cli.py:50
+#: quodlibet/cli.py:50 quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "קְווֹדְלִיבֵּט אינה פועלת (הוספת '--run' לאתחול)"
 
-#: quodlibet/cli.py:86
+#: quodlibet/cli.py:86 quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "ספרית מוזיקה ונגן"
 
-#: quodlibet/cli.py:87
+#: quodlibet/cli.py:87 quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[אפשרות]"
 
-#: quodlibet/cli.py:89
+#: quodlibet/cli.py:89 quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "הדפסת השיר המושמע ויציאה"
 
-#: quodlibet/cli.py:90
+#: quodlibet/cli.py:90 quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "השמעה מיידית"
 
-#: quodlibet/cli.py:91
+#: quodlibet/cli.py:91 quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "לא להציג כל חלון בהפעלה"
 
-#: quodlibet/cli.py:94
+#: quodlibet/cli.py:94 quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "מעבר לשיר הבא"
 
-#: quodlibet/cli.py:96
+#: quodlibet/cli.py:96 quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr "מעבר לשיר הקודם או השמעה מבראשית במידה וסמוך לתחילת השיר"
 
-#: quodlibet/cli.py:97
+#: quodlibet/cli.py:97 quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "מעבר לשיר הקודם"
 
-#: quodlibet/cli.py:98
+#: quodlibet/cli.py:98 quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "התחלת השמעה"
 
-#: quodlibet/cli.py:99
+#: quodlibet/cli.py:99 quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "השהיית השמעה"
 
-#: quodlibet/cli.py:100
+#: quodlibet/cli.py:100 quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "החלפה בין מצב השמעה/השהייה"
 
-#: quodlibet/cli.py:101
+#: quodlibet/cli.py:101 quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "עצירת השמעה"
 
-#: quodlibet/cli.py:102
+#: quodlibet/cli.py:102 quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "הגברת עצמה"
 
-#: quodlibet/cli.py:103
+#: quodlibet/cli.py:103 quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "הנמכת עצמה"
 
-#: quodlibet/cli.py:104
+#: quodlibet/cli.py:104 quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "הוספת כוכב אחד לדרוג השיר המושמע"
 
-#: quodlibet/cli.py:105
+#: quodlibet/cli.py:105 quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "הסרת כוכב אחד מדרוג השיר המושמע"
 
-#: quodlibet/cli.py:106
+#: quodlibet/cli.py:106 quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "הדפסת מצב נגן"
 
-#: quodlibet/cli.py:107
+#: quodlibet/cli.py:107 quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "הסתרת חלון ראשי"
 
-#: quodlibet/cli.py:108
+#: quodlibet/cli.py:108 quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "הצגת חלון ראשי"
 
-#: quodlibet/cli.py:109
+#: quodlibet/cli.py:109 quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "החלפת מצג חלון ראשי"
 
-#: quodlibet/cli.py:110
+#: quodlibet/cli.py:110 quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "מיקוד על הנגן שבשימוש כעת"
 
-#: quodlibet/cli.py:111
+#: quodlibet/cli.py:111 quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "הסרת מסנן דפדפן פעיל"
 
-#: quodlibet/cli.py:112
+#: quodlibet/cli.py:112 quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "רענון ספרית שירים"
 
-#: quodlibet/cli.py:113
+#: quodlibet/cli.py:113 quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "רשימת דפדפנים זמינים"
 
-#: quodlibet/cli.py:114
+#: quodlibet/cli.py:114 quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "הדפסת רשימת הדמעה נוכחית"
 
-#: quodlibet/cli.py:115
+#: quodlibet/cli.py:115 quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "הדפסת תוכן תור ההשמעה"
 
-#: quodlibet/cli.py:116
+#: quodlibet/cli.py:116 quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "הדפסת מלל שאילתה נוכחית"
 
-#: quodlibet/cli.py:117
+#: quodlibet/cli.py:117 quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "הפעלה ללא מתקעים"
 
-#: quodlibet/cli.py:118
+#: quodlibet/cli.py:118 quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "אתחול קְווֹדְלִיבֵּט במידה ואינה פועלת"
 
-#: quodlibet/cli.py:119
+#: quodlibet/cli.py:119 quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "יציאה מקְווֹדְלִיבֵּט"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "הזחה בתוך השיר המתנגן"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: quodlibet/cli.py:125
+#: quodlibet/cli.py:125 quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "הגדרת או החלפת מצב אקראי"
 
-#: quodlibet/cli.py:126
+#: quodlibet/cli.py:126 quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "הגדרת סוג מצב אקראי"
 
-#: quodlibet/cli.py:127
+#: quodlibet/cli.py:127 quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "כיבוי, הפעלת, או החלפת מצב חזרה"
 
-#: quodlibet/cli.py:128
+#: quodlibet/cli.py:128 quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "הגדרת סוג מצב חזרה"
 
-#: quodlibet/cli.py:129
+#: quodlibet/cli.py:129 quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "קביעת העוצמה"
 
-#: quodlibet/cli.py:130
+#: quodlibet/cli.py:130 quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "חיפוש בספרית השמע"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146
+#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
+#: quodlibet/cli.py:145 quodlibet/cli.py:147
 msgid "query"
 msgstr "שאילתה"
 
-#: quodlibet/cli.py:131
+#: quodlibet/cli.py:131 quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "השמעת קובץ"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
+#: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "שם קובץ"
 
-#: quodlibet/cli.py:132
+#: quodlibet/cli.py:132 quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "דרוג השיר המתנגן"
 
-#: quodlibet/cli.py:133
+#: quodlibet/cli.py:133 quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "קביעת הדפדפן הנוכחי"
 
-#: quodlibet/cli.py:134
+#: quodlibet/cli.py:134 quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "עצירה לאחר השיר המושמע"
 
-#: quodlibet/cli.py:135
+#: quodlibet/cli.py:135 quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "פתיחת דפדפן חדש"
 
-#: quodlibet/cli.py:136
+#: quodlibet/cli.py:136 quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "הצגת או הסתרת התור"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "סינון לפי ערך אקראי"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "תג"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "סינון לפי ערך תג"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "תג=ערך"
 
-#: quodlibet/cli.py:139
+#: quodlibet/cli.py:139 quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "הוספת קובץ או שאילתה לתור"
 
-#: quodlibet/cli.py:141
+#: quodlibet/cli.py:141 quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "הוספת קבצים לתור, מופרדים בפסיק"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158
+#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
 msgid "filename"
 msgstr "שם קובץ"
 
-#: quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "הדפסת שמות קבצים של תוצאות שאילתה ל- stdout"
 
-#: quodlibet/cli.py:145
+#: quodlibet/cli.py:145 quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "הסרת קובץ או שאילתה מהתור"
 
-#: quodlibet/cli.py:147
+#: quodlibet/cli.py:147 quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "הוספת קובץ או מחיצה לספריה"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100
+#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
 msgid "location"
 msgstr "מיקום"
 
-#: quodlibet/cli.py:213
+#: quodlibet/cli.py:213 quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "ערך לא תקין עבור '%s'."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
 #, python-format
 msgid "Try %s --help."
 msgstr "נסו %s --help."
@@ -2129,6 +2131,7 @@ msgstr "_ססמה:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
+#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "חשבון"
 
@@ -2259,21 +2262,25 @@ msgstr "_אימות נתוני חשבון"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_דפוס אמן:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_דפוס שם קובץ:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_מסנן החרגה:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
+#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2281,6 +2288,7 @@ msgstr "הדפוס משמש תִּיבְנוּת שם האמן לשגור. לה�
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
+#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr "הדפוס משמש לתִּיבְנוּת כותרת לשגור. להשאיר ריק לברירת המחדל."
@@ -2291,11 +2299,13 @@ msgstr "שירים התואמים למסנן זה לא ישוגרו"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
+#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_מצב לא מקוון (לא לשגר דבר)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
+#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "שגור"
 
@@ -4198,7 +4208,7 @@ msgstr ""
 "לדוגמה בהזנת '{PARAM}' כל המופעים של '{PARAM}' בפקודה יקבלו את הערך הנחוץ "
 "בעת ההפעלה"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55
+#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
 msgid "pattern"
 msgstr "דפוס"
 
@@ -5462,6 +5472,7 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "לא ניתן למצוא רכיב ג'סטרימר '{element}'."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
+#: quodlibet/plugins/listenbrainz/__init__.py:229
 #, fuzzy
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
@@ -5469,6 +5480,7 @@ msgid ""
 msgstr "נא להגדיר את QLScrobbler בחלון המתקעים. עד אז השירים לא ישוגרו."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
+#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, fuzzy, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5477,30 +5489,36 @@ msgid ""
 msgstr "נא להגדיר את QLScrobbler בחלון המתקעים. עד אז השירים לא ישוגרו."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
+#: quodlibet/plugins/listenbrainz/__init__.py:356
 #, fuzzy
 msgid "ListenBrainz Submission"
 msgstr "שגור"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
+#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
+#: quodlibet/plugins/listenbrainz/__init__.py:455
 #, fuzzy
 msgid "User _token:"
 msgstr "שם _משתש:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
+#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
+#: quodlibet/plugins/listenbrainz/__init__.py:545
 #, fuzzy
 msgid "Songs matching this filter will not be submitted."
 msgstr "שירים התואמים למסנן זה לא ישוגרו"
@@ -7991,6 +8009,10 @@ msgstr ""
 "קְווֹדְלִיבֵּט היא תכנה לניהול מוזיקה. המספקת דרכים שונות להצגת ספריית השמע, כמו "
 "גם תמיכה ברדיו מרשתת והזנות שמע. התכנה בעלת גמישות מרבית לעריכת תגי מטה-דטה "
 "ויכולות חיפוש."
+
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"

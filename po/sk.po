@@ -910,250 +910,252 @@ msgstr "Soundcloud overenie"
 msgid "Enter Soundcloud auth code:"
 msgstr "Vložiť overovací kód pre Soundcloud:"
 
-#: quodlibet/cli.py:50
+#: quodlibet/cli.py:50 quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Quod Libet nie je spustený (pre spustenie pridajte „--run“)"
 
-#: quodlibet/cli.py:86
+#: quodlibet/cli.py:86 quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "hudobná knižnica a prehrávač"
 
-#: quodlibet/cli.py:87
+#: quodlibet/cli.py:87 quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[možnosť]"
 
-#: quodlibet/cli.py:89
+#: quodlibet/cli.py:89 quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Vypísať prehrávanú skladbu a skončiť"
 
-#: quodlibet/cli.py:90
+#: quodlibet/cli.py:90 quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Začať prehrávanie okamžite"
 
-#: quodlibet/cli.py:91
+#: quodlibet/cli.py:91 quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Pri spustení nezobrazovať žiadne okná"
 
-#: quodlibet/cli.py:94
+#: quodlibet/cli.py:94 quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Preskočiť na nasledujúcu skladbu"
 
-#: quodlibet/cli.py:96
+#: quodlibet/cli.py:96 quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 "Preskočiť na predchádzajúcu skladbu alebo začať odznova, ak je prehrávanie "
 "na začiatku"
 
-#: quodlibet/cli.py:97
+#: quodlibet/cli.py:97 quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Preskočiť na predchádzajúcu skladbu"
 
-#: quodlibet/cli.py:98
+#: quodlibet/cli.py:98 quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Spustiť prehrávanie"
 
-#: quodlibet/cli.py:99
+#: quodlibet/cli.py:99 quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Pozastaviť prehrávanie"
 
-#: quodlibet/cli.py:100
+#: quodlibet/cli.py:100 quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Prepnúť medzi prehrávaním a pozastavením"
 
-#: quodlibet/cli.py:101
+#: quodlibet/cli.py:101 quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Zastaviť prehrávanie"
 
-#: quodlibet/cli.py:102
+#: quodlibet/cli.py:102 quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Zvýšiť hlasitosť"
 
-#: quodlibet/cli.py:103
+#: quodlibet/cli.py:103 quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Znížiť hlasitosť"
 
-#: quodlibet/cli.py:104
+#: quodlibet/cli.py:104 quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "Zvýšiť hodnotenie práve prehrávanej skladby o jednu hviezdičku"
 
-#: quodlibet/cli.py:105
+#: quodlibet/cli.py:105 quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "Znížiť hodnotenie práve prehrávanej skladby o jednu hviezdičku"
 
-#: quodlibet/cli.py:106
+#: quodlibet/cli.py:106 quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Zobraziť stav prehrávača"
 
-#: quodlibet/cli.py:107
+#: quodlibet/cli.py:107 quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Skryť hlavné okno"
 
-#: quodlibet/cli.py:108
+#: quodlibet/cli.py:108 quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Zobraziť hlavné okno"
 
-#: quodlibet/cli.py:109
+#: quodlibet/cli.py:109 quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Prepnúť viditeľnosť hlavného okna"
 
-#: quodlibet/cli.py:110
+#: quodlibet/cli.py:110 quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Zamerať spustený prehrávač"
 
-#: quodlibet/cli.py:111
+#: quodlibet/cli.py:111 quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Odstrániť použité filtre prehliadača"
 
-#: quodlibet/cli.py:112
+#: quodlibet/cli.py:112 quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Obnoviť a opätovne načítať knižnicu"
 
-#: quodlibet/cli.py:113
+#: quodlibet/cli.py:113 quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Zobraziť zoznam dostupných prehliadačov"
 
-#: quodlibet/cli.py:114
+#: quodlibet/cli.py:114 quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Vypísať terajší zoznam prehrávania"
 
-#: quodlibet/cli.py:115
+#: quodlibet/cli.py:115 quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Vypísať obsah fronty"
 
-#: quodlibet/cli.py:116
+#: quodlibet/cli.py:116 quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Vypísať použitú textovú požiadavku"
 
-#: quodlibet/cli.py:117
+#: quodlibet/cli.py:117 quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Spustiť bez zásuvných modulov"
 
-#: quodlibet/cli.py:118
+#: quodlibet/cli.py:118 quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Spustiť Quod Libet, ak ešte nie je spustený"
 
-#: quodlibet/cli.py:119
+#: quodlibet/cli.py:119 quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Ukončiť Quod Libet"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Presunúť sa v prehrávanej skladbe"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: quodlibet/cli.py:125
+#: quodlibet/cli.py:125 quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Nastaviť alebo prepnúť náhodné prehrávanie"
 
-#: quodlibet/cli.py:126
+#: quodlibet/cli.py:126 quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Nastaviť spôsob náhodného prehrávania"
 
-#: quodlibet/cli.py:127
+#: quodlibet/cli.py:127 quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Zapnúť, vypnúť alebo prepnúť opakovanie"
 
-#: quodlibet/cli.py:128
+#: quodlibet/cli.py:128 quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Nastaviť spôsob opakovania"
 
-#: quodlibet/cli.py:129
+#: quodlibet/cli.py:129 quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Nastaviť hlasitosť"
 
-#: quodlibet/cli.py:130
+#: quodlibet/cli.py:130 quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Prehľadávať hudobnú knižnicu"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146
+#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
+#: quodlibet/cli.py:145 quodlibet/cli.py:147
 msgid "query"
 msgstr "požiadavka"
 
-#: quodlibet/cli.py:131
+#: quodlibet/cli.py:131 quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Prehrať súbor"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
+#: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "názov súboru"
 
-#: quodlibet/cli.py:132
+#: quodlibet/cli.py:132 quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Nastaviť hodnotenie prehrávanej skladby"
 
-#: quodlibet/cli.py:133
+#: quodlibet/cli.py:133 quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Nastaviť súčasný prehliadač"
 
-#: quodlibet/cli.py:134
+#: quodlibet/cli.py:134 quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Zastaviť prehrávanie po skončení súčasnej skladby"
 
-#: quodlibet/cli.py:135
+#: quodlibet/cli.py:135 quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Otvoriť nový prehliadač"
 
-#: quodlibet/cli.py:136
+#: quodlibet/cli.py:136 quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Zobraziť alebo skryť frontu"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Filtrovať podľa náhodnej hodnoty"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "značka"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Filtrovať podľa značky"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "značka=hodnota"
 
-#: quodlibet/cli.py:139
+#: quodlibet/cli.py:139 quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Pridať súbor alebo požiadavku do fronty"
 
-#: quodlibet/cli.py:141
+#: quodlibet/cli.py:141 quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "Pridať súbory oddelené čiarkou do fronty"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158
+#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
 msgid "filename"
 msgstr "názov súboru"
 
-#: quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr ""
 "Zobraziť názvy súborov, ktoré sú výsledkom požiadavky, na štandardnom výstupe"
 
-#: quodlibet/cli.py:145
+#: quodlibet/cli.py:145 quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Odobrať súbor alebo požiadavku z fronty"
 
-#: quodlibet/cli.py:147
+#: quodlibet/cli.py:147 quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Pridať súbor alebo priečinok do knižnice"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100
+#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
 msgid "location"
 msgstr "umiestnenie"
 
-#: quodlibet/cli.py:213
+#: quodlibet/cli.py:213 quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Neplatný parameter pre „%s“."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
 #, python-format
 msgid "Try %s --help."
 msgstr "Skúste %s --help."
@@ -2163,6 +2165,7 @@ msgstr "_Heslo:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
+#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Účet"
 
@@ -2299,21 +2302,25 @@ msgstr "_Overiť údaje účtu"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Vzor pre umelca:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Vzor pre názov skladby:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Vylučovací _filter:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
+#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2323,6 +2330,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
+#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2335,11 +2343,13 @@ msgstr "Skladby zodpovedajúce tomuto filtru sa neodošlú"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
+#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Režim offline (neodosielať nič)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
+#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Odoslanie"
 
@@ -4275,7 +4285,7 @@ msgstr ""
 "„{PARAM}“ vo vašom príkaze nahradené hodnotou, o ktorú bude používateľ pri "
 "spustení požiadaný"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55
+#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
 msgid "pattern"
 msgstr "vzor"
 
@@ -5558,6 +5568,7 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Nepodarilo sa nájsť prvok GStreamera „{element}“."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
+#: quodlibet/plugins/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5566,6 +5577,7 @@ msgstr ""
 "údaje o počúvaní nebudú odovzdávať."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
+#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5577,22 +5589,27 @@ msgstr ""
 "ListenBrainz. Dovtedy sa údaje o počúvaní nebudú odovzdávať."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
+#: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "Odovzdávanie do ListenBrainz"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
+#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Odovzdávať údaje o počúvaní do ListenBrainz."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
+#: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Používateľov _token:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "Značky:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
+#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5601,6 +5618,7 @@ msgstr ""
 "prípade potreby použite úvodzovky."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
+#: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Skladby zhodujúce sa s týmto filtrom sa neodovzdajú."
 
@@ -8135,6 +8153,10 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"
