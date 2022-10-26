@@ -912,247 +912,249 @@ msgstr "Soundcloud-autorisatie"
 msgid "Enter Soundcloud auth code:"
 msgstr "Voer de Soundcloud-autorisatiecode in:"
 
-#: quodlibet/cli.py:50
+#: quodlibet/cli.py:50 quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Quod Libet is niet actief (voeg ‘--run’ toe om te starten)"
 
-#: quodlibet/cli.py:86
+#: quodlibet/cli.py:86 quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "een muziekverzameling en -speler"
 
-#: quodlibet/cli.py:87
+#: quodlibet/cli.py:87 quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[optie]"
 
-#: quodlibet/cli.py:89
+#: quodlibet/cli.py:89 quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Toon het spelende nummer en sluit af"
 
-#: quodlibet/cli.py:90
+#: quodlibet/cli.py:90 quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Onmiddelijk beginnen met afspelen"
 
-#: quodlibet/cli.py:91
+#: quodlibet/cli.py:91 quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Geminimaliseerd opstarten"
 
-#: quodlibet/cli.py:94
+#: quodlibet/cli.py:94 quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Ga naar volgend nummer"
 
-#: quodlibet/cli.py:96
+#: quodlibet/cli.py:96 quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr "Ga naar vorig nummer of begin afspelen opnieuw indien dichtbij begin"
 
-#: quodlibet/cli.py:97
+#: quodlibet/cli.py:97 quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Ga naar vorig nummer"
 
-#: quodlibet/cli.py:98
+#: quodlibet/cli.py:98 quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Afspelen"
 
-#: quodlibet/cli.py:99
+#: quodlibet/cli.py:99 quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Afspelen onderbreken"
 
-#: quodlibet/cli.py:100
+#: quodlibet/cli.py:100 quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Afspelen/Pauzeren aan/uit"
 
-#: quodlibet/cli.py:101
+#: quodlibet/cli.py:101 quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Afspelen stoppen"
 
-#: quodlibet/cli.py:102
+#: quodlibet/cli.py:102 quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Volume verhogen"
 
-#: quodlibet/cli.py:103
+#: quodlibet/cli.py:103 quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Volume verlagen"
 
-#: quodlibet/cli.py:104
+#: quodlibet/cli.py:104 quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "Waardering van spelend nummer verhogen met één ster"
 
-#: quodlibet/cli.py:105
+#: quodlibet/cli.py:105 quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "Waardering van spelend nummer verlagen met één ster"
 
-#: quodlibet/cli.py:106
+#: quodlibet/cli.py:106 quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Toon de spelerstatus"
 
-#: quodlibet/cli.py:107
+#: quodlibet/cli.py:107 quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Hoofdvenster verbergen"
 
-#: quodlibet/cli.py:108
+#: quodlibet/cli.py:108 quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Hoofdvenster tonen"
 
-#: quodlibet/cli.py:109
+#: quodlibet/cli.py:109 quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Hoofdvenster tonen/verbergen"
 
-#: quodlibet/cli.py:110
+#: quodlibet/cli.py:110 quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Actieve speler focussen"
 
-#: quodlibet/cli.py:111
+#: quodlibet/cli.py:111 quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Actieve verkennerfilters wissen"
 
-#: quodlibet/cli.py:112
+#: quodlibet/cli.py:112 quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Verversen en verzameling opnieuw doorzoeken"
 
-#: quodlibet/cli.py:113
+#: quodlibet/cli.py:113 quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Beschikbare verkenners tonen"
 
-#: quodlibet/cli.py:114
+#: quodlibet/cli.py:114 quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Toon de huidige afspeellijst"
 
-#: quodlibet/cli.py:115
+#: quodlibet/cli.py:115 quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Toon de inhoud van de wachtrij"
 
-#: quodlibet/cli.py:116
+#: quodlibet/cli.py:116 quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Toon de actieve tekstzoekopdracht"
 
-#: quodlibet/cli.py:117
+#: quodlibet/cli.py:117 quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Starten zonder plug-ins"
 
-#: quodlibet/cli.py:118
+#: quodlibet/cli.py:118 quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Start Quod Libet indien inactief"
 
-#: quodlibet/cli.py:119
+#: quodlibet/cli.py:119 quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Sluit Quod Libet af"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Spelend nummer verderspoelen"
 
-#: quodlibet/cli.py:124
+#: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][UU:]MM:SS"
 
-#: quodlibet/cli.py:125
+#: quodlibet/cli.py:125 quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Willekeurig aan/uit"
 
-#: quodlibet/cli.py:126
+#: quodlibet/cli.py:126 quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Willekeurige modus instellen"
 
-#: quodlibet/cli.py:127
+#: quodlibet/cli.py:127 quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Herhalen aan/uit"
 
-#: quodlibet/cli.py:128
+#: quodlibet/cli.py:128 quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Herhaalmodus instellen"
 
-#: quodlibet/cli.py:129
+#: quodlibet/cli.py:129 quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Volume instellen"
 
-#: quodlibet/cli.py:130
+#: quodlibet/cli.py:130 quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Verzameling doorzoeken"
 
 #: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146
+#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
+#: quodlibet/cli.py:145 quodlibet/cli.py:147
 msgid "query"
 msgstr "zoekopdracht"
 
-#: quodlibet/cli.py:131
+#: quodlibet/cli.py:131 quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Bestand afspelen"
 
 #: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
+#: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "bestandsnaam"
 
-#: quodlibet/cli.py:132
+#: quodlibet/cli.py:132 quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Spelende nummer waarderen"
 
-#: quodlibet/cli.py:133
+#: quodlibet/cli.py:133 quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Huidige verkenner instellen"
 
-#: quodlibet/cli.py:134
+#: quodlibet/cli.py:134 quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Stoppen na spelende nummer"
 
-#: quodlibet/cli.py:135
+#: quodlibet/cli.py:135 quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Nieuwe verkenner openen"
 
-#: quodlibet/cli.py:136
+#: quodlibet/cli.py:136 quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Wachtrij tonen/verbergen"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Filteren op willekeurige waarde"
 
-#: quodlibet/cli.py:137
+#: quodlibet/cli.py:137 quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "tag"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Filteren op tagwaarde"
 
-#: quodlibet/cli.py:138
+#: quodlibet/cli.py:138 quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "tag=waarde"
 
-#: quodlibet/cli.py:139
+#: quodlibet/cli.py:139 quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Bestand of zoekopdracht in wachtrij zetten"
 
-#: quodlibet/cli.py:141
+#: quodlibet/cli.py:141 quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "Plaats door komma's gescheiden bestanden in wachtrij"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158
+#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
 msgid "filename"
 msgstr "bestandsnaam"
 
-#: quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "Stuur bestandsnamen van zoekresultaten naar stdout"
 
-#: quodlibet/cli.py:145
+#: quodlibet/cli.py:145 quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Bestand of zoekopdracht uit wachtrij halen"
 
-#: quodlibet/cli.py:147
+#: quodlibet/cli.py:147 quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Bestand of map toevoegen aan verzameling"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100
+#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
 msgid "location"
 msgstr "locatie"
 
-#: quodlibet/cli.py:213
+#: quodlibet/cli.py:213 quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Ongeldig argument voor ‘%s’."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
 #, python-format
 msgid "Try %s --help."
 msgstr "Probeer %s --help."
@@ -2163,6 +2165,7 @@ msgstr "_Wachtwoord:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
+#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Account"
 
@@ -2299,21 +2302,25 @@ msgstr "Accountgegevens _verifiëren"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Artiestpatroon:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
+#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Titelpatroon:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Uitsluit_filter:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
+#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2323,6 +2330,7 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
+#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2335,11 +2343,13 @@ msgstr "Nummers die overeenkomen met dit filter worden niet ingediend"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
+#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Offline-modus (niets indienen)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
+#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Indienen"
 
@@ -4263,7 +4273,7 @@ msgstr ""
 "Voorbeeld: door ‘PARAM’ te gebruiken zullen alle vermeldingen van ‘{PARAM}’ "
 "in je opdracht de opgegeven waarde hebben als de opdracht wordt uitgevoerd."
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55
+#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
 msgid "pattern"
 msgstr "patroon"
 
@@ -5554,6 +5564,7 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Het GStreamer-element ‘{element}’ is niet aangetroffen."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
+#: quodlibet/plugins/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5562,6 +5573,7 @@ msgstr ""
 "ingediend."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
+#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5573,22 +5585,27 @@ msgstr ""
 "ingediend."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
+#: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "ListenBrainz-indiening"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
+#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Dient beluisterde nummers in op ListenBrainz."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
+#: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Gebruikers_sleutel:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
+#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "T_ags:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
+#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5597,6 +5614,7 @@ msgstr ""
 "aanhalingstekens zijn toegestaan."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
+#: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Nummers die overeenkomen met dit filter worden niet ingediend."
 
@@ -8124,6 +8142,10 @@ msgstr ""
 "verschillende manieren om je audioverzameling te tonen en ondersteunt online-"
 "radiostations en audiofeeds. Het biedt zeer flexibele mogelijkheden om "
 "metagegevenstags te bewerken en je verzameling te doorzoeken."
+
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"
