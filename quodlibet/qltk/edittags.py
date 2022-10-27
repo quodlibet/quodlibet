@@ -772,7 +772,7 @@ class EditTags(Gtk.VBox):
             msg += _("The files currently"
                      " selected do not support multiple values for <b>%s</b>."
                      ) % util.escape(tag)
-            qltk.ErrorMessage(self, title, msg).run()
+            qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
             return
 
         entry = ListEntry(tag, Comment(value))
@@ -981,7 +981,7 @@ class EditTags(Gtk.VBox):
             msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
                     " selected do not support editing this tag."
                     ) % util.escape(new_tag)
-            qltk.ErrorMessage(self, title, msg).run()
+            qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
         else:
             # FIXME: In case this is a special one we only
             # validate one value and never write it back..

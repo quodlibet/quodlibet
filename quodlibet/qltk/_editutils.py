@@ -50,12 +50,10 @@ class WriteFailedError(ErrorMessage):
         title = _("Unable to save song")
 
         fn_format = "<b>%s</b>" % util.escape(fsn2text(song("~basename")))
-        description = _("Saving %(file-name)s failed. The file may be "
-            "read-only, corrupted, or you do not have "
-            "permission to edit it.") % {"file-name": fn_format}
-
-        super().__init__(
-            parent, title, description)
+        description = _("Saving %(file-name)s failed."
+                        "The file may be read-only, corrupted, or you do not have "
+                        "permission to edit it.") % {"file-name": fn_format}
+        super().__init__(parent, title, description, escape_desc=False)
 
 
 class EditingPluginHandler(GObject.GObject, PluginHandler):

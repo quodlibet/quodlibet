@@ -127,10 +127,12 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
         return files
 
     def __file_error(self, file_path):
-        qltk.ErrorMessage(
+        dialog = qltk.ErrorMessage(
             None,
             _("Unable to export playlist"),
-            _("Writing to <b>%s</b> failed.") % util.escape(file_path)).run()
+            _("Writing to <b>%s</b> failed.") % util.escape(file_path),
+            escape_desc=False)
+        dialog.run()
 
     def __m3u_export(self, file_path, files):
         try:

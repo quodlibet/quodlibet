@@ -572,12 +572,12 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
             txt = '<b><i>%s</i></b>' % esc(cover['name'])
             txt += "\n<small>%s</small>" % (
                 _('from %(source)s') % {
-                    "source": util.italic(esc(cover['source']))})
+                    "source": util.italic(cover['source'], escaper=esc)})
             if 'resolution' in cover:
                 txt += "\n" + _('Resolution: %s') % util.italic(
-                    esc(cover['resolution']))
+                    cover['resolution'], escaper=esc)
             if 'size' in cover:
-                txt += "\n" + _('Size: %s') % util.italic(esc(cover['size']))
+                txt += "\n" + _('Size: %s') % util.italic(cover['size'], escaper=esc)
 
             cell.markup = txt
             cell.set_property('markup', cell.markup)

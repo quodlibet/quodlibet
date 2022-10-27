@@ -213,8 +213,7 @@ class RandomAlbum(EventPlugin):
             srcid = GLib.timeout_add(1000 * self.delay,
                                      self.change_album, album)
             task = notif.Task(_("Random Album"),
-                              _("Waiting to start %s") %
-                                    util.bold(util.escape(album("album"))),
+                              _("Waiting to start %s") % util.bold(album("album")),
                               stop=lambda: GLib.source_remove(srcid))
 
             def countdown():

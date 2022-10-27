@@ -1,4 +1,4 @@
-# Copyright 2016 - 2020 Nick Boultbee
+# Copyright 2016 - 2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ if os.name == "nt" or sys.platform == "darwin":
 
 from quodlibet import _
 from quodlibet.formats import AudioFile
-from quodlibet.util import monospace, escape
+from quodlibet.util import monospace
 from quodlibet.util.tags import _TAGS
 
 _TOTAL_MQTT_ITEMS = 5
@@ -54,7 +54,7 @@ class Config:
 
 
 _ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s") %
-                     monospace(escape('<~artist~title>')))
+                     monospace('<~artist~title>'))
 
 
 class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):

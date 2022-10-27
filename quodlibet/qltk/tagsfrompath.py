@@ -194,7 +194,7 @@ class TagsFromPath(Gtk.VBox):
                 _("The pattern\n\t<b>%s</b>\nis invalid. "
                   "Possibly it contains the same tag twice or "
                   "it has unbalanced brackets (&lt; / &gt;).") % (
-                util.escape(pattern_text))).run()
+                util.escape(pattern_text)), escape_desc=False).run()
             return
         else:
             if pattern_text:
