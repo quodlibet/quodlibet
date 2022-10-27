@@ -8010,6 +8010,16 @@ msgstr ""
 msgid "Set template for --print-* commands"
 msgstr ""
 
+#: quodlibet/ext/events/autorating.py:16
+#, fuzzy
+msgid ""
+"Rates songs automatically when they are played or skipped. This uses the "
+"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
+"Brian Nelson."
+msgstr ""
+"曲の再生やスキップ時に自動的に評価を設定します。これは Brian Nelson による "
+"vux の「加速」アルゴリズムを使用しています。"
+
 #, python-format
 #~ msgid "%.1f seconds"
 #~ msgstr "%.1f秒"
