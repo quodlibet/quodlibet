@@ -31,7 +31,7 @@ import quodlibet
 from quodlibet.util.path import join_path_with_escaped_name_of_legal_length, \
     stem_of_file_name, extension_of_file_name
 
-from quodlibet.util.songwrapper import SongWrapper, background_check_wrapper_changed
+from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
 
 from quodlibet import _, app, print_e, print_d, qltk
 
@@ -454,7 +454,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         export_path = self._album_id_to_export_path[export_album_id]
         changed_songs = self.import_data_and_get_changed(songs, export_path)
         if changed_songs:
-            background_check_wrapper_changed(app.library, changed_songs)
+            check_wrapper_changed(app.library, changed_songs)
 
             # Remove used up export
             del self._album_id_to_export_path[export_album_id]
@@ -466,7 +466,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             else:
                 move_export_to_used(export_path)
 
-    def import_data_and_get_changed(self, songs: List[SongWrapper],  #
+    def import_data_and_get_changed(self, songs: List[SongWrapper],
                                     source_path: Path) -> List[SongWrapper]:
         """:return: List of changed songs"""
 
