@@ -1012,7 +1012,7 @@ msgstr "Quod Libet が実行中でなければ起動する"
 
 #: quodlibet/cli.py:119 quodlibet/cli.py:120
 msgid "Exit Quod Libet"
-msgstr "Quod Libetの終了"
+msgstr "Quod Libet を終了する"
 
 #: quodlibet/cli.py:124 quodlibet/cli.py:125
 msgid "Seek within the playing song"
@@ -8008,17 +8008,17 @@ msgstr ""
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "「--print-*」コマンド用のテンプレートを設定する"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
 "曲の再生やスキップ時に自動的に評価を設定します。これは Brian Nelson による "
-"vux の「加速」アルゴリズムを使用しています。"
+"vux (Vacillating Utilitarian eXtemporizer) の「加速」アルゴリズムを使用してい"
+"ます。"
 
 #, python-format
 #~ msgid "%.1f seconds"
