@@ -8134,14 +8134,14 @@ msgid "Set template for --print-* commands"
 msgstr "Установить шаблон для команд вида --print-*"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Автооценка треков в зависимости от того, воспроизведены ли они полностью или "
-"пропущены. Использует ускоренный алгоритм Брайана Нельсона."
+"Оценивает песни автоматически, когда они воспроизводятся или пропускаются. "
+"Использует ускоренный алгоритм из vux (Vacillating Utilitarian eXtemporizer) "
+"от Брайана Нельсона."
 
 #, python-format
 #~ msgid "%.1f seconds"
