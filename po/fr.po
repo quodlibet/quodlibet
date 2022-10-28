@@ -2739,12 +2739,12 @@ msgstr ""
 "ci-dessus peuvent être modifiés avant de lancer la synchronisation."
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
 msgstr ""
-"Les fichiers existants dans le chemin de destination seront supprimés !"
+"Les fichiers existants dans le chemin de destination seront supprimés (sauf "
+"les fichiers nommés 'cover.jpg') !"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:273
@@ -5524,15 +5524,14 @@ msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "Le greffon GStreamer '%(name)s' n'a pas pu être lancé correctement"
 
 #: quodlibet/player/gstbe/prefs.py:26
-#, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
 msgstr ""
-"Le pipeline de sortie GStreamer utilisé pour la lecture. Laisser vide pour "
-"le pipeline par défaut. Dans le cas où le pipeline contient un puits, il "
-"sera utilisé à la place de celui par défaut."
+"Le canal de sortie GStreamer utilisé pour la lecture. Laisser vide pour le "
+"canal par défaut. Si le canal contient un récepteur, il sera utilisé à la "
+"place de celui par défaut."
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5540,9 +5539,9 @@ msgstr "Pipeline de s_ortie :"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f s"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -6574,9 +6573,8 @@ msgid "Column Preferences"
 msgstr "Préférences des colonnes"
 
 #: quodlibet/qltk/prefs.py:136
-#, fuzzy
 msgid "_Update Columns"
-msgstr "Modifier les colonnes"
+msgstr "_Mettre à jour les colonnes"
 
 #: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6659,9 +6657,8 @@ msgstr ""
 "plusieurs, séparez-les par des virgules."
 
 #: quodlibet/qltk/prefs.py:333
-#, fuzzy
 msgid "_Preferred fixed image filename(s)"
-msgstr "_Nom(s) de fichier(s) image(s) préféré(s) :"
+msgstr "_Nom(s) de fichier d'image(s) fixe(s) préférée(s)"
 
 #: quodlibet/qltk/prefs.py:351
 msgid "Album Art"
@@ -6684,9 +6681,8 @@ msgstr ""
 "multiplier le volume par cette valeur"
 
 #: quodlibet/qltk/prefs.py:401
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "Gain par _défaut (dB) :"
+msgstr "_Gain de repli :"
 
 #: quodlibet/qltk/prefs.py:410
 msgid ""
@@ -6696,9 +6692,8 @@ msgstr ""
 "résultat ne sature pas"
 
 #: quodlibet/qltk/prefs.py:413
-#, fuzzy
 msgid "_Pre-amp gain:"
-msgstr "Gain _global (dB) :"
+msgstr "Gain de _préamplification :"
 
 #: quodlibet/qltk/prefs.py:419
 msgid "_Enable Replay Gain volume adjustment"
@@ -6755,9 +6750,8 @@ msgstr ""
 "étiquettes pour cette adresse électronique"
 
 #: quodlibet/qltk/prefs.py:603
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "Sauvegarde automatique des changements d' étiquette"
+msgstr "_Enregistrement automatique des changements de balises"
 
 #: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -8210,17 +8204,17 @@ msgstr ""
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Définir le modèle pour les commandes --print-*"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Évaluer automatiquement les titres, selon qu'il sont joués ou passés. Cette "
-"méthode utilise l'algorithme 'accéléré' de vux par Brian Nelson."
+"Classe les morceaux automatiquement lorsqu'ils sont lus ou sautés. Ceci "
+"utilise l'algorithme 'accéléré' de vux (Vacillating Utilitarian "
+"eXtemporizer) de Brian Nelson."
 
 #, python-format
 #~ msgid "%.1f seconds"
