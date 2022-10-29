@@ -99,7 +99,7 @@ class RandomAlbum(EventPlugin):
         less_lbl = Gtk.Label()
         arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT,
                         shadow_type=Gtk.ShadowType.OUT)
-        less_lbl.set_markup("<i>%s</i>" % util.escape(_("avoid")))
+        less_lbl.set_markup(util.italic(_("avoid")))
         less_lbl.set_alignment(0, 0)
         hb = Gtk.HBox(spacing=0)
         hb.pack_start(arr, False, True, 0)
@@ -110,7 +110,7 @@ class RandomAlbum(EventPlugin):
         more_lbl = Gtk.Label()
         arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT,
                         shadow_type=Gtk.ShadowType.OUT)
-        more_lbl.set_markup("<i>%s</i>" % util.escape(_("prefer")))
+        more_lbl.set_markup(util.italic(_("prefer")))
         more_lbl.set_alignment(1, 0)
         hb = Gtk.HBox(spacing=0)
         hb.pack_end(arr, False, True, 0)

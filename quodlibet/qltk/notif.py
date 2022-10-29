@@ -30,7 +30,7 @@ Of course, right now it does none of these things.
 
 from gi.repository import Gtk, GLib, Pango
 
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet.util import copool
 from quodlibet.qltk.x import SmallImageToggleButton, SmallImageButton, Align
 from quodlibet.qltk import Icons, add_css
@@ -268,7 +268,7 @@ class TaskWidget(Gtk.HBox):
             self.task.stop()
 
     def update(self):
-        formatted_label = f"<b>{self.task.source}</b> – {self.task.desc}"
+        formatted_label = f"{util.bold(self.task.source)} – {self.task.desc}"
         self.label.set_markup(formatted_label)
         if self.task.frac is not None:
             self.progress.set_fraction(self.task.frac)

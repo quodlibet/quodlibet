@@ -231,7 +231,7 @@ def Frame(label, child=None):
     """A Gtk.Frame with no shadow, 12px left padding, and 6px top padding."""
     frame = Gtk.Frame()
     label_w = Gtk.Label()
-    label_w.set_markup("<b>%s</b>" % util.escape(label))
+    label_w.set_markup(util.bold(label))
     align = Align(left=12, top=6)
     frame.add(align)
     frame.set_shadow_type(Gtk.ShadowType.NONE)

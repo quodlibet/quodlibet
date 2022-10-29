@@ -130,7 +130,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
         dialog = qltk.ErrorMessage(
             None,
             _("Unable to export playlist"),
-            _("Writing to <b>%s</b> failed.") % util.escape(file_path),
+            _("Writing to %s failed.") % util.bold(file_path),
             escape_desc=False)
         dialog.run()
 

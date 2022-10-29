@@ -203,6 +203,7 @@ class Tpango(TestCase):
         assert util.bold("foo & bar") == "<b>foo &amp; bar</b>"
         assert util.italic("foo & bar") == "<i>foo &amp; bar</i>"
         assert util.monospace("foo & bar") == "<tt>foo &amp; bar</tt>"
+        assert util.bold_italic("foo & bar") == "<b><i>foo &amp; bar</i></b>"
 
 
 class Tre_esc(TestCase):

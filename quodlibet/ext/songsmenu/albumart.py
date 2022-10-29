@@ -569,7 +569,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
             esc = escape_data
 
-            txt = '<b><i>%s</i></b>' % esc(cover['name'])
+            txt = util.bold_italic(cover['name'], escaper=esc)
             txt += "\n<small>%s</small>" % (
                 _('from %(source)s') % {
                     "source": util.italic(cover['source'], escaper=esc)})
@@ -700,7 +700,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
     def __searchfieldchanged(self, *data):
         search = data[0].get_text()
         clean = cleanup_query(search, ' ')
-        self.search_fieldclean.set_text(f"<i>{clean}</i>")
+        self.search_fieldclean.set_text(util.italic(clean))
         self.search_fieldclean.set_use_markup(True)
 
     def __searchtypetoggled(self, *data):

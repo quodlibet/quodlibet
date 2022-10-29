@@ -22,7 +22,7 @@ from gi.repository import Gtk
 import feedparser
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet.build import BUILD_TYPE
 from quodlibet.qltk.window import Dialog
 from quodlibet.util.dprint import print_exc
@@ -128,7 +128,7 @@ class UpdateDialog(Dialog):
             version = quodlibet.get_build_version()
 
             def f(v):
-                return "<b>%s</b>" % escape(format_version(v))
+                return util.bold(format_version(v))
 
             if version >= versions[-1]:
                 text = (_("You are already using the newest version "

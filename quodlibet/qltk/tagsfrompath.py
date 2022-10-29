@@ -13,7 +13,7 @@ from senf import fsn2text
 
 import quodlibet
 
-from quodlibet import _
+from quodlibet import _, ngettext
 from quodlibet import config
 from quodlibet import qltk
 from quodlibet import util
@@ -191,10 +191,10 @@ class TagsFromPath(Gtk.VBox):
         except re.error:
             qltk.ErrorMessage(
                 self, _("Invalid pattern"),
-                _("The pattern\n\t<b>%s</b>\nis invalid. "
+                _("The pattern\n\t%s\nis invalid. "
                   "Possibly it contains the same tag twice or "
                   "it has unbalanced brackets (&lt; / &gt;).") % (
-                util.escape(pattern_text)), escape_desc=False).run()
+                util.bold(pattern_text)), escape_desc=False).run()
             return
         else:
             if pattern_text:
@@ -206,17 +206,15 @@ class TagsFromPath(Gtk.VBox):
         for header in pattern.headers:
             if not min([song.can_change(header) for song in songs]):
                 invalid.append(header)
-        if len(invalid) and songs:
-            if len(invalid) == 1:
-                title = _("Invalid tag")
-                msg = _("Invalid tag <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing this tag.")
-            else:
-                title = _("Invalid tags")
-                msg = _("Invalid tags <b>%s</b>\n\nThe files currently"
-                        " selected do not support editing these tags.")
-            qltk.ErrorMessage(
-                self, title, msg % ", ".join(invalid)).run()
+        total = len(invalid)
+        if total and songs:
+            title = ngettext("Invalid tag", "Invalid tags", total)
+            msg = ngettext("Invalid tag %s\n\nThe files currently "
+                           "selected do not support editing this tag.",
+                           "Invalid tags %s\n\nThe files currently "
+                           "selected do not support editing these tags.", total)
+            tags_str = util.bold(", ".join(invalid))
+            qltk.ErrorMessage(self, title, msg % tags_str, escape_desc=False).run()
             pattern = TagsFromPattern("")
 
         self.view.set_model(None)

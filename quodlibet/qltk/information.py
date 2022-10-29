@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2018 Nick Boultbee
+#           2016-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,7 +48,7 @@ class TitleLabel(Gtk.Label):
     def __init__(self, text, is_markup=False):
         super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
-        markup = text if is_markup else ("<i>%s</i>" % util.escape(text))
+        markup = text if is_markup else (util.italic(text))
         markup = "<span size='xx-large'>%s</span>" % markup
         self.set_markup(markup)
         self.set_selectable(True)
@@ -164,14 +164,12 @@ class OneSong(qltk.Notebook):
     def _album(self, song, box):
         if "album" not in song:
             return
-        text = ["<span size='x-large'><i>%s</i></span>"
-                % util.escape(song.comma("album"))]
+        text = [f"<span size='x-large'>{util.italic(song.comma('album'))}</span>"]
         secondary = []
         if "discnumber" in song:
             secondary.append(_("Disc %s") % song["discnumber"])
         if "discsubtitle" in song:
-            secondary.append("<i>%s</i>" %
-                             util.escape(song.comma("discsubtitle")))
+            secondary.append(util.italic(song.comma("discsubtitle")))
         if "tracknumber" in song:
             secondary.append(_("Track %s") % song["tracknumber"])
         if secondary:
@@ -315,7 +313,7 @@ class OneSong(qltk.Notebook):
 
         if "comment" in song:
             comments = song.list("comment")
-            markups = ["<i>%s</i>" % util.escape(c) for c in comments]
+            markups = [util.italic(c) for c in comments]
             markup_data.append(("comment", markups))
 
         if "website" in song:
@@ -354,7 +352,7 @@ class OneAlbum(qltk.Notebook):
     def _title(self, songs, box):
         song = songs[0]
         self.title = text = song["album"]
-        markup = "<i>%s</i>" % util.escape(text)
+        markup = util.italic(text)
         if "date" in song:
             markup += " <small>(%s)</small>" % util.escape(song("~year"))
         box.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
@@ -461,9 +459,8 @@ class OneAlbum(qltk.Notebook):
                 text.append("{ts}{cur: >2}. {text}".format(
                     ts=ts, cur=cur_track, text=_("Track unavailable")))
                 cur_track += 1
-            markup = util.escape(song.comma("~title~version"))
-            text.append("{ts}{cur: >2}. <i>{text}</i>".format(
-                    ts=ts, cur=track, text=markup))
+            title = util.italic(song.comma("~title~version"))
+            text.append(f"{ts}{track: >2}. {title}")
         l = Label(markup="\n".join(text), ellipsize=True)
         box.pack_start(Frame(_("Track List"), l), False, False, 0)
 
@@ -490,7 +487,7 @@ class OneArtist(qltk.Notebook):
 
         def format(args):
             date, song, album = args
-            markup = "<big><i>%s</i></big>" % util.escape(album)
+            markup = f"<big>{util.italic(album)}</big>"
             return "%s (%s)" % (markup, date[:4]) if date else markup
 
         get_cover = app.cover_manager.get_cover
@@ -498,7 +495,7 @@ class OneArtist(qltk.Notebook):
         albums = [format(a) for a in albums]
         if noalbum:
             albums.append(ngettext("%d song with no album",
-                "%d songs with no album", noalbum) % noalbum)
+                                   "%d songs with no album", noalbum) % noalbum)
         l = Label(markup="\n".join(albums), ellipsize=True)
         box.pack_start(Frame(_("Selected Discography"), l), False, False, 0)
 
@@ -585,18 +582,17 @@ class ManySongs(qltk.Notebook):
         albums = sorted(albums)
         num_albums = len(albums)
 
-        markup = "\n".join("<i>%s</i>" % util.escape(a) for a in albums)
+        markup = "\n".join(util.italic(a) for a in albums)
         if none:
             text = ngettext("%d song with no album",
                             "%d songs with no album",
                             none) % none
-            markup += "\n%s" % util.escape(text)
+            markup += f"\n{util.escape(text)}"
 
         label = Label()
         label.set_markup(markup)
-        box.pack_start(Frame(
-            "%s (%d)" % (util.capitalize(_("albums")), num_albums),
-            label), False, False, 0)
+        albums = util.capitalize(_('albums'))
+        box.pack_start(Frame(f"{albums} ({num_albums})", label), False, False, 0)
 
     def _file(self, songs, box):
         length = 0
@@ -656,7 +652,7 @@ class Information(Window, PersistentWindowMixin):
         elif len(songs) == 1:
             self.add(OneSong(library, songs[0]))
         else:
-            tags = [(s.get("artist", u""), s.get("album", u"")) for s in songs]
+            tags = [(s.get("artist", ""), s.get("album", "")) for s in songs]
             artists, albums = zip(*tags)
             if min(albums) == max(albums) and albums[0]:
                 self.add(OneAlbum(songs))

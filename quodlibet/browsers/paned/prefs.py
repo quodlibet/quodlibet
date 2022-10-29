@@ -19,7 +19,7 @@ from quodlibet.qltk.x import SymbolicIconImage, MenuItem, Button
 from quodlibet.qltk import Icons
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.ccb import ConfigCheckButton
-from quodlibet.util import connect_obj, escape
+from quodlibet.util import connect_obj
 from .util import get_headers, save_headers
 
 
@@ -106,9 +106,8 @@ class PatternEditor(Gtk.VBox):
 
         self.pack_start(radio_box, False, True, 0)
 
-        tooltip = _("Tag pattern with optional markup "
-                    "e.g. <tt>composer</tt> or\n<tt>%s</tt>"
-                    % escape(self._COMPLEX_PATTERN_EXAMPLE))
+        tooltip = _("Tag pattern with optional markup e.g. <tt>composer</tt> or\n%s"
+                    % util.monospace(self._COMPLEX_PATTERN_EXAMPLE))
         cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 
         view = BaseView(model=model)

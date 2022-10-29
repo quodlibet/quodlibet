@@ -222,6 +222,10 @@ def italic(string: str, escaper: Callable[[str], str] = escape) -> str:
     return "<i>%s</i>" % escaper(string)
 
 
+def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
+    return "<b><i>%s</i></b>" % escaper(string)
+
+
 def parse_time(timestr, err=object()):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
 

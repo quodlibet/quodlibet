@@ -335,12 +335,12 @@ class RenameFiles(Gtk.VBox):
                 RESPONSE_SKIP_ALL = 1
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
-                    _("Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> "
-                      "failed. Possibly the target file already exists, "
+                    _("Renaming %(old-name)s to %(new-name)s failed. "
+                      "Possibly the target file already exists, "
                       "or you do not have permission to make the "
                       "new file or remove the old one.") % {
-                        "old-name": util.escape(old_name),
-                        "new-name": util.escape(new_name),
+                        "old-name": util.bold(old_name),
+                        "new-name": util.bold(new_name),
                     },
                     buttons=Gtk.ButtonsType.NONE)
                 msg.add_button(_("Ignore _All Errors"), RESPONSE_SKIP_ALL)
@@ -461,11 +461,10 @@ class RenameFiles(Gtk.VBox):
         except ValueError:
             qltk.ErrorMessage(
                 self, _("Path is not absolute"),
-                _("The pattern\n\t<b>%s</b>\ncontains / but "
-                  "does not start from root. To avoid misnamed "
-                  "folders, root your pattern by starting "
-                  "it with / or ~/.") % (
-                    util.escape(pattern_text))).run()
+                _("The pattern\n\t%s\ncontains / but does not start from root. "
+                  "To avoid misnamed folders, "
+                  "root your pattern by starting it with / or ~/.") % (
+                    util.bold(pattern_text))).run()
             return
         else:
             if pattern:

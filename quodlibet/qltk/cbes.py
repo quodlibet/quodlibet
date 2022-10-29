@@ -11,7 +11,7 @@ from typing import Dict
 
 from gi.repository import Gtk, Pango, GObject, GLib
 
-from quodlibet import _, config
+from quodlibet import _, config, util
 from quodlibet import qltk
 from quodlibet.qltk.views import RCMHintedTreeView
 from quodlibet.qltk.util import GSignals
@@ -141,8 +141,8 @@ class _KeyValueEditor(qltk.Window):
         row = model[iter]
         content, name = row
         cell.set_property("markup",
-                          f"<b>{escape(name)}</b>\n"
-                          f"<tt>{escape(content)}</tt>")
+                          util.bold(name) + "\n",
+                          util.monospace(content))
 
     def __changed(self, entry, buttons):
         for b in buttons:

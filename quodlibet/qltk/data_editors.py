@@ -17,7 +17,7 @@ from quodlibet.qltk.x import MenuItem, Button, Align
 from quodlibet.qltk import Icons
 from quodlibet.query import Query
 from quodlibet.util.json_data import JSONObjectDict
-from quodlibet.util import connect_obj, escape
+from quodlibet.util import connect_obj
 from quodlibet.qltk.getstring import GetStringDialog
 
 
@@ -249,7 +249,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         obj = row[0]
         obj_name = util.escape(obj.name)
         obj_description = util.escape(str(obj))
-        markup = '<b>%s</b>\n%s' % (obj_name, obj_description)
+        markup = f"{util.bold(obj_name)}\n{obj_description}"
         cell.markup = markup
         cell.set_property('markup', markup)
 
@@ -353,8 +353,7 @@ class TagListEditor(qltk.Window):
         def desc_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                escaped = escape(util.tag(row[0]))
-                cell.set_property('markup', f"<i>{escaped}</i>")
+                cell.set_property('markup', util.italic(util.tag(row[0])))
 
         def __create_cell_renderer():
             r = Gtk.CellRendererText()

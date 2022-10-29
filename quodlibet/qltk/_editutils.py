@@ -30,7 +30,7 @@ class OverwriteWarning(WarningMessage):
     def __init__(self, parent, song):
         title = _("Tag may not be accurate")
 
-        fn_format = "<b>%s</b>" % util.escape(fsn2text(song("~basename")))
+        fn_format = util.bold(fsn2text(song("~basename")))
         description = _("%(file-name)s changed while the program was running. "
             "Saving without refreshing your library may "
             "overwrite other changes to the song.") % {"file-name": fn_format}
@@ -49,7 +49,7 @@ class WriteFailedError(ErrorMessage):
     def __init__(self, parent, song):
         title = _("Unable to save song")
 
-        fn_format = "<b>%s</b>" % util.escape(fsn2text(song("~basename")))
+        fn_format = util.bold(fsn2text(song("~basename")))
         description = _("Saving %(file-name)s failed."
                         "The file may be read-only, corrupted, or you do not have "
                         "permission to edit it.") % {"file-name": fn_format}

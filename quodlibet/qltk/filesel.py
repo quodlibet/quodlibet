@@ -397,7 +397,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             try:
                 os.rmdir(directory)
             except EnvironmentError as err:
-                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+                error = f"{util.bold(err.filename)}: {err.strerror}"
                 qltk.ErrorMessage(
                     None, _("Unable to delete folder"), error, escape_desc=False).run()
                 return
