@@ -71,4 +71,4 @@ class SongsMenuPlugin(MenuItemPlugin):
                                   self.plugin_album, self.plugin_albums]))
 
     def plugin_finish(self):
-        check_wrapper_changed(self.__library, self.plugin_window, self.__songs)
+        check_wrapper_changed(self.__library, self.__songs)

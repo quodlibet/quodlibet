@@ -248,7 +248,7 @@ class SongsMenuPluginHandler(PluginHandler):
                         return
 
         finally:
-            check_wrapper_changed(library, parent, filter(None, songs))
+            check_wrapper_changed(library, filter(None, songs))
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, SongsMenuPlugin)

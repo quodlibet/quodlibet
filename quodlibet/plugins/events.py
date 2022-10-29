@@ -144,12 +144,11 @@ class EventPluginHandler(PluginHandler):
                     errorhook()
 
         if event not in ["removed", "changed"] and args:
-            from quodlibet import app
             songs = args[0]
             if not isinstance(songs, (set, list)):
                 songs = [songs]
             songs = filter(None, songs)
-            check_wrapper_changed(librarian, app.window, songs)
+            check_wrapper_changed(librarian, songs)
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, EventPlugin)
