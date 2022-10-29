@@ -115,7 +115,6 @@ def check_wrapper_changed(library, songs):
                 for i, song in enumerate(need_write):
                     try:
                         song._song.write()
-                        raise AudioFileError()
                     except AudioFileError as e:
                         dialog = qltk.ErrorMessage(
                             None,
