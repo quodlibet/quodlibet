@@ -915,249 +915,255 @@ msgstr "Авторизация в SoundCloud"
 msgid "Enter Soundcloud auth code:"
 msgstr "Введите код авторизации SoundCloud:"
 
-#: quodlibet/cli.py:50 quodlibet/cli.py:51
+#: quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Quod Libet не запущен ('--run' для запуска)"
 
-#: quodlibet/cli.py:86 quodlibet/cli.py:87
+#: quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "музыкальный проигрыватель и фонотека"
 
-#: quodlibet/cli.py:87 quodlibet/cli.py:88
+#: quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[option]"
 
-#: quodlibet/cli.py:89 quodlibet/cli.py:90
+#: quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Вывести текущий трек и выйти"
 
-#: quodlibet/cli.py:90 quodlibet/cli.py:91
+#: quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Сразу начать воспроизведение"
 
-#: quodlibet/cli.py:91 quodlibet/cli.py:92
+#: quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Не показывать окна при запуске"
 
-#: quodlibet/cli.py:94 quodlibet/cli.py:95
+#: quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Перейти к следующему треку"
 
-#: quodlibet/cli.py:96 quodlibet/cli.py:97
+#: quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr "Перейти к предыдущему треку или в начало текущего"
 
-#: quodlibet/cli.py:97 quodlibet/cli.py:98
+#: quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Перейти к предыдущему треку"
 
-#: quodlibet/cli.py:98 quodlibet/cli.py:99
+#: quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Воспроизвести"
 
-#: quodlibet/cli.py:99 quodlibet/cli.py:100
+#: quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Пауза воспроизведения"
 
-#: quodlibet/cli.py:100 quodlibet/cli.py:101
+#: quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Воспроизведение/пауза"
 
-#: quodlibet/cli.py:101 quodlibet/cli.py:102
+#: quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Остановить воспроизведение"
 
-#: quodlibet/cli.py:102 quodlibet/cli.py:103
+#: quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Увеличить громкость"
 
-#: quodlibet/cli.py:103 quodlibet/cli.py:104
+#: quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Уменьшить громкость"
 
-#: quodlibet/cli.py:104 quodlibet/cli.py:105
+#: quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "Увеличить рейтинг проигрываемой песни на одну звезду"
 
-#: quodlibet/cli.py:105 quodlibet/cli.py:106
+#: quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "Уменьшить рейтинг проигрываемой песни на одну звезду"
 
-#: quodlibet/cli.py:106 quodlibet/cli.py:107
+#: quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Вывести состояние воспроизведения"
 
-#: quodlibet/cli.py:107 quodlibet/cli.py:108
+#: quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Скрыть главное окно"
 
-#: quodlibet/cli.py:108 quodlibet/cli.py:109
+#: quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Показать главное окно"
 
-#: quodlibet/cli.py:109 quodlibet/cli.py:110
+#: quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Показать/скрыть главное окно"
 
-#: quodlibet/cli.py:110 quodlibet/cli.py:111
+#: quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Фокус на окно Quod Libet"
 
-#: quodlibet/cli.py:111 quodlibet/cli.py:112
+#: quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Убрать текущие фильтры просмотра"
 
-#: quodlibet/cli.py:112 quodlibet/cli.py:113
+#: quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Обновить и пересканировать фонотеку"
 
-#: quodlibet/cli.py:113 quodlibet/cli.py:114
+#: quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Список режимов просмотра"
 
-#: quodlibet/cli.py:114 quodlibet/cli.py:115
+#: quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Показать текущий плейлист"
 
-#: quodlibet/cli.py:115 quodlibet/cli.py:116
+#: quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Показать содержимое очереди"
 
-#: quodlibet/cli.py:116 quodlibet/cli.py:117
+#: quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Показать содержимое очереди"
 
-#: quodlibet/cli.py:117 quodlibet/cli.py:118
+#: quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Отключить расширения"
 
-#: quodlibet/cli.py:118 quodlibet/cli.py:119
+#: quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Запустить Quod Libet, если он не запущен"
 
-#: quodlibet/cli.py:119 quodlibet/cli.py:120
+#: quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Выйти из Quod Libet"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Перемотка по воспроизводимому треку"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][ЧЧ:]ММ:СС"
 
-#: quodlibet/cli.py:125 quodlibet/cli.py:126
+#: quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Установить или переключить режим случайного порядка"
 
-#: quodlibet/cli.py:126 quodlibet/cli.py:127
+#: quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Режим случайного порядка"
 
-#: quodlibet/cli.py:127 quodlibet/cli.py:128
+#: quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Вкл./выкл. повтор треков"
 
-#: quodlibet/cli.py:128 quodlibet/cli.py:129
+#: quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Режим типа повтора"
 
-#: quodlibet/cli.py:129 quodlibet/cli.py:130
+#: quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Установить громкость"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:131
+#: quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Поиск в вашей фонотеке"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
-#: quodlibet/cli.py:145 quodlibet/cli.py:147
+#: quodlibet/cli.py:131 quodlibet/cli.py:141 quodlibet/cli.py:145
+#: quodlibet/cli.py:147
 msgid "query"
 msgstr "запрос"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:132
+#: quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Воспроизвести файл"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
 #: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "имя файла"
 
-#: quodlibet/cli.py:132 quodlibet/cli.py:133
+#: quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Оценить воспроизводимый трек"
 
-#: quodlibet/cli.py:133 quodlibet/cli.py:134
+#: quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Режим текущего просмотра"
 
-#: quodlibet/cli.py:134 quodlibet/cli.py:135
+#: quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Оценить воспроизводимый трек"
 
-#: quodlibet/cli.py:135 quodlibet/cli.py:136
+#: quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Открыть новый просмотр"
 
-#: quodlibet/cli.py:136 quodlibet/cli.py:137
+#: quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Показать/скрыть очередь"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Фильтр по случайному значению"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "тег"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Фильтр по значению тега"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "тег=значение"
 
-#: quodlibet/cli.py:139 quodlibet/cli.py:140
+#: quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Добавить файл или запрос в очередь"
 
-#: quodlibet/cli.py:141 quodlibet/cli.py:142
+#: quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "Добавить в очередь разделённые запятыми файлы"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/util/tags.py:158
 msgid "filename"
 msgstr "имя файла"
 
-#: quodlibet/cli.py:143 quodlibet/cli.py:144
+#: quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "Отправить полученные имена файлов в стандартный вывод"
 
-#: quodlibet/cli.py:145 quodlibet/cli.py:146
+#: quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Удалить из очереди файл или запрос"
 
-#: quodlibet/cli.py:147 quodlibet/cli.py:148
+#: quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Добавить файл или каталог в фонотеку"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
+#: quodlibet/cli.py:149 quodlibet/util/tags.py:100
 msgid "location"
 msgstr "расположение"
 
-#: quodlibet/cli.py:213 quodlibet/cli.py:216
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr "Установить шаблон для команд вида --print-*"
+
+#: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
+msgid "pattern"
+msgstr "шаблон"
+
+#: quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Недопустимый аргумент для «%s»."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
+#: quodlibet/cli.py:217 quodlibet/util/__init__.py:175
 #, python-format
 msgid "Try %s --help."
 msgstr "Попробуйте '%s --help'."
@@ -1570,24 +1576,21 @@ msgstr "Сохранять оценки и _счётчики воспроизв�
 msgid "Settings updated"
 msgstr "Настройки обновлены"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #, python-format
 msgid "Error in %s"
 msgstr "Ошибка в %s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:187
 #: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "Убедиться, что счётчики воспроизведений больше нуля, при сохранении"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:221
 #: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Стратегия обновления:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:235
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1595,7 +1598,6 @@ msgstr "_Стратегия обновления:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Параметры"
 
@@ -1616,10 +1618,12 @@ msgstr "Автоматическая оценка"
 #: quodlibet/ext/events/autorating.py:16
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux by Brian Nelson."
+"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
+"Brian Nelson."
 msgstr ""
-"Автооценка треков в зависимости от того, воспроизведены ли они полностью или "
-"пропущены. Использует ускоренный алгоритм Брайана Нельсона."
+"Оценивает песни автоматически, когда они воспроизводятся или пропускаются. "
+"Использует ускоренный алгоритм из vux (Vacillating Utilitarian eXtemporizer) "
+"от Брайана Нельсона."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -2161,7 +2165,6 @@ msgstr "_Пароль:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
-#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Аккаунт"
 
@@ -2297,25 +2300,21 @@ msgstr "_Проверка учетной записи"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Шаблон _Исполнителя:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Шаблон _Имени файла:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "И_сключать:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
-#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2325,7 +2324,6 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
-#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2338,13 +2336,11 @@ msgstr "Треки, соответствующие этому фильтру, н
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
-#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Автономный режим (ничего не отправлять)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
-#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Отправка"
 
@@ -4271,10 +4267,6 @@ msgstr ""
 "экземпляры '{PARAM}' в вашей команде будут иметь значение, запрошенное при "
 "запуске"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
-msgid "pattern"
-msgstr "шаблон"
-
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
 "The QL pattern, e.g. <~filename>, to use to compute a value for the command. "
@@ -5551,7 +5543,6 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Не удалось найти элемент GStreamer: '{element}'."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
-#: quodlibet/plugins/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5560,7 +5551,6 @@ msgstr ""
 "прослушивания не будут отправляться."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
-#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5572,27 +5562,22 @@ msgstr ""
 "этого прослушивания отправляться не будут."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
-#: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "Отправка в ListenBrainz"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
-#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Отправлять прослушивания в ListenBrainz."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
-#: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Ток_ен пользователя:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "Т_еги:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
-#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5601,7 +5586,6 @@ msgstr ""
 "используйте двойные кавычки."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
-#: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Песни, соответствующие этому фильтру, не будут отправлены."
 
@@ -7749,11 +7733,23 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Язык должен быть трёхзначным кодом ISO 639-2"
 
-#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Не удалось сохранить"
+msgstr[1] "Не удалось сохранить"
+msgstr[2] "Не удалось сохранить"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
+
+#: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Не удалось изменить трек"
 
-#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
+#: quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8133,31 +8129,12 @@ msgstr ""
 "радио и аудиопотоков. Содержит крайне гибкие возможности правки и поиска "
 "тегов метаданных."
 
-#: quodlibet/cli.py:150
-msgid "Set template for --print-* commands"
-msgstr "Установить шаблон для команд вида --print-*"
-
-#: quodlibet/ext/events/autorating.py:16
-msgid ""
-"Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
-"Brian Nelson."
-msgstr ""
-"Оценивает песни автоматически, когда они воспроизводятся или пропускаются. "
-"Использует ускоренный алгоритм из vux (Vacillating Utilitarian eXtemporizer) "
-"от Брайана Нельсона."
-
-#: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
-msgid "Saving %d file"
-msgid_plural "Saving %d files"
-msgstr[0] "Не удалось сохранить"
-msgstr[1] "Не удалось сохранить"
-msgstr[2] "Не удалось сохранить"
-
-#: quodlibet/util/songwrapper.py:113
-msgid "Auto-Saving"
-msgstr ""
+#~ msgid ""
+#~ "Rates songs automatically when they are played or skipped. This uses the "
+#~ "'accelerated' algorithm from vux by Brian Nelson."
+#~ msgstr ""
+#~ "Автооценка треков в зависимости от того, воспроизведены ли они полностью "
+#~ "или пропущены. Использует ускоренный алгоритм Брайана Нельсона."
 
 #, python-format
 #~ msgid "%.1f seconds"
