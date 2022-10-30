@@ -1574,16 +1574,19 @@ msgstr "Einstellungen aktualisiert"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, python-format
 msgid "Error in %s"
 msgstr "Fehler in %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 "Beim Speichern sicherstellen, dass die Wiedergabeanzahl größer null ist"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Aktualisierungsstrategie:"
 
@@ -1595,6 +1598,7 @@ msgstr "_Aktualisierungsstrategie:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -7837,11 +7841,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Der Sprachcode muss aus drei Buchstaben bestehen (ISO 639-2)"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Der Titel kann nicht bearbeitet werden"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8235,6 +8239,17 @@ msgid ""
 msgstr ""
 "Bewertet Titel automatisch, wenn sie abgespielt oder übersprungen werden. "
 "Benutzt den »beschleunigten« Algorithmus aus vux von Brian Nelson."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Speichern fehlgeschlagen"
+msgstr[1] "Speichern fehlgeschlagen"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"

@@ -1613,15 +1613,18 @@ msgstr "ierakstīšanas datums"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, fuzzy, python-format
 msgid "Error in %s"
 msgstr "Kļūda ielādējot %r"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 #, fuzzy
 msgid "_Update strategy:"
 msgstr "Jau_na stacija"
@@ -1634,6 +1637,7 @@ msgstr "Jau_na stacija"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #, fuzzy
 msgid "Preferences"
 msgstr "Iestatījumi"
@@ -7888,11 +7892,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr ""
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Neizdevās rediģēt dziesmu"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8287,6 +8291,18 @@ msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
+msgstr ""
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Neizdevās izgrūzt <b>%s</b>."
+msgstr[1] "Neizdevās izgrūzt <b>%s</b>."
+msgstr[2] "Neizdevās izgrūzt <b>%s</b>."
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
 msgstr ""
 
 #, fuzzy, python-format

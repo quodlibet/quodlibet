@@ -1572,15 +1572,18 @@ msgstr "Настройки обновлены"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, python-format
 msgid "Error in %s"
 msgstr "Ошибка в %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "Убедиться, что счётчики воспроизведений больше нуля, при сохранении"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Стратегия обновления:"
 
@@ -1592,6 +1595,7 @@ msgstr "_Стратегия обновления:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Параметры"
 
@@ -7745,11 +7749,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Язык должен быть трёхзначным кодом ISO 639-2"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Не удалось изменить трек"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8142,6 +8146,18 @@ msgstr ""
 "Оценивает песни автоматически, когда они воспроизводятся или пропускаются. "
 "Использует ускоренный алгоритм из vux (Vacillating Utilitarian eXtemporizer) "
 "от Брайана Нельсона."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Не удалось сохранить"
+msgstr[1] "Не удалось сохранить"
+msgstr[2] "Не удалось сохранить"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"

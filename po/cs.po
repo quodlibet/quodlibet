@@ -1579,15 +1579,18 @@ msgstr "datum nahrávání"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, fuzzy, python-format
 msgid "Error in %s"
 msgstr "Chyba během synchronizace"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 #, fuzzy
 msgid "_Update strategy:"
 msgstr "_Aktualizace stanic"
@@ -1600,6 +1603,7 @@ msgstr "_Aktualizace stanic"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Nastavení"
 
@@ -7805,11 +7809,11 @@ msgstr "Status MusicBrainz musí být 'official', 'promotional', nebo 'bootleg'.
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Jazyk musí být ISO 639-2 trojpísmenný kód"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Skladbu nelze upravit"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8204,6 +8208,18 @@ msgid ""
 msgstr ""
 "Automatické hodnocení skladeb, které jsou přeskočeny nebo přehrány. Používá "
 "se ‚urychlený‘ algorytmus z vux od Briana Nelsona."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Ukládání selhalo"
+msgstr[1] "Ukládání selhalo"
+msgstr[2] "Ukládání selhalo"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"
