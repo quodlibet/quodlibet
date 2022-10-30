@@ -906,255 +906,261 @@ msgstr "Soundcloud-Autorisierung"
 msgid "Enter Soundcloud auth code:"
 msgstr "Geben Sie den Soundcloud-Autorisierungs-Code ein:"
 
-#: quodlibet/cli.py:50 quodlibet/cli.py:51
+#: quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr ""
 "Quod Libet läuft momentan nicht (fügen Sie »--run« an, um es zu starten)"
 
-#: quodlibet/cli.py:86 quodlibet/cli.py:87
+#: quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "Musikbibliothek und Musikwiedergabe"
 
-#: quodlibet/cli.py:87 quodlibet/cli.py:88
+#: quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[Option]"
 
-#: quodlibet/cli.py:89 quodlibet/cli.py:90
+#: quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Momentan gespielten Titel anzeigen"
 
-#: quodlibet/cli.py:90 quodlibet/cli.py:91
+#: quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Wiedergabe sofort starten"
 
-#: quodlibet/cli.py:91 quodlibet/cli.py:92
+#: quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Keine Fenster beim Programmstart anzeigen"
 
-#: quodlibet/cli.py:94 quodlibet/cli.py:95
+#: quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Nächsten Titel abspielen"
 
-#: quodlibet/cli.py:96 quodlibet/cli.py:97
+#: quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr ""
 "Zum vorherigen Titel oder – falls Titel noch nicht lange läuft – zum "
 "Titelanfang springen"
 
-#: quodlibet/cli.py:97 quodlibet/cli.py:98
+#: quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Vorherigen Titel abspielen"
 
-#: quodlibet/cli.py:98 quodlibet/cli.py:99
+#: quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Wiedergabe starten"
 
-#: quodlibet/cli.py:99 quodlibet/cli.py:100
+#: quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Wiedergabe pausieren"
 
-#: quodlibet/cli.py:100 quodlibet/cli.py:101
+#: quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Zwischen Wiedergabe/Pause umschalten"
 
-#: quodlibet/cli.py:101 quodlibet/cli.py:102
+#: quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Wiedergabe stoppen"
 
-#: quodlibet/cli.py:102 quodlibet/cli.py:103
+#: quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Lautstärke erhöhen"
 
-#: quodlibet/cli.py:103 quodlibet/cli.py:104
+#: quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Lautstärke senken"
 
-#: quodlibet/cli.py:104 quodlibet/cli.py:105
+#: quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr ""
 "Die Bewertung des aktuell wiedergegebenen Titels um einen Stern erhöhen"
 
-#: quodlibet/cli.py:105 quodlibet/cli.py:106
+#: quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr ""
 "Die Bewertung des aktuell wiedergegebenen Titels um einen Stern verringern"
 
-#: quodlibet/cli.py:106 quodlibet/cli.py:107
+#: quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Wiedergabestatus anzeigen"
 
-#: quodlibet/cli.py:107 quodlibet/cli.py:108
+#: quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Hauptfenster verbergen"
 
-#: quodlibet/cli.py:108 quodlibet/cli.py:109
+#: quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Hauptfenster anzeigen"
 
-#: quodlibet/cli.py:109 quodlibet/cli.py:110
+#: quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Hauptfenster anzeigen/verbergen"
 
-#: quodlibet/cli.py:110 quodlibet/cli.py:111
+#: quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Fokus auf laufenden Player setzen"
 
-#: quodlibet/cli.py:111 quodlibet/cli.py:112
+#: quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Aktive Browserfilter entfernen"
 
-#: quodlibet/cli.py:112 quodlibet/cli.py:113
+#: quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Bibliothek aktualisieren und neu einlesen"
 
-#: quodlibet/cli.py:113 quodlibet/cli.py:114
+#: quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Verfügbare Browser auflisten"
 
-#: quodlibet/cli.py:114 quodlibet/cli.py:115
+#: quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Aktuelle Wiedergabeliste anzeigen"
 
-#: quodlibet/cli.py:115 quodlibet/cli.py:116
+#: quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Aktuelle Warteschlange anzeigen"
 
-#: quodlibet/cli.py:116 quodlibet/cli.py:117
+#: quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Den aktuellen Abfragetext anzeigen"
 
-#: quodlibet/cli.py:117 quodlibet/cli.py:118
+#: quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Ohne Plugins starten"
 
-#: quodlibet/cli.py:118 quodlibet/cli.py:119
+#: quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Quod Libet starten, wenn es nicht läuft"
 
-#: quodlibet/cli.py:119 quodlibet/cli.py:120
+#: quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Quod Libet beenden"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Zu einer bestimmten Position im momentan abgespielten Titel gehen"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][HH:]MM:SS"
 
-#: quodlibet/cli.py:125 quodlibet/cli.py:126
+#: quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Zufallsmodus setzen oder umschalten"
 
-#: quodlibet/cli.py:126 quodlibet/cli.py:127
+#: quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Art des Zufallsmodus setzen"
 
-#: quodlibet/cli.py:127 quodlibet/cli.py:128
+#: quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Endlosschleife ein-, aus-, oder zwischen beiden Modi umschalten"
 
-#: quodlibet/cli.py:128 quodlibet/cli.py:129
+#: quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Art des Endlosschleifenmodus setzen"
 
-#: quodlibet/cli.py:129 quodlibet/cli.py:130
+#: quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Lautstärke einstellen"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:131
+#: quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Audio-Bibliothek durchsuchen"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
-#: quodlibet/cli.py:145 quodlibet/cli.py:147
+#: quodlibet/cli.py:131 quodlibet/cli.py:141 quodlibet/cli.py:145
+#: quodlibet/cli.py:147
 msgid "query"
 msgstr "Abfrage"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:132
+#: quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Datei abspielen"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
 #: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "Dateiname"
 
-#: quodlibet/cli.py:132 quodlibet/cli.py:133
+#: quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Die Bewertung des aktuell wiedergegebenen Titels setzen"
 
-#: quodlibet/cli.py:133 quodlibet/cli.py:134
+#: quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Aktuellen Browser einstellen"
 
-#: quodlibet/cli.py:134 quodlibet/cli.py:135
+#: quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Nach dem momentan gespielten Titel stoppen"
 
-#: quodlibet/cli.py:135 quodlibet/cli.py:136
+#: quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Neuen Browser öffnen"
 
-#: quodlibet/cli.py:136 quodlibet/cli.py:137
+#: quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Warteschlange anzeigen oder verbergen"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Nach zufälligem Wert filtern"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "Feld"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Nach Metadatenfeldwert filtern"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "tag=Wert"
 
-#: quodlibet/cli.py:139 quodlibet/cli.py:140
+#: quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Eine Datei oder eine Abfrage zur Warteschlange hinzufügen"
 
-#: quodlibet/cli.py:141 quodlibet/cli.py:142
+#: quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr ""
 "Mehrere Dateien – durch Kommata getrennt – zur Warteschlange hinzufügen"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/util/tags.py:158
 msgid "filename"
 msgstr "Dateiname"
 
-#: quodlibet/cli.py:143 quodlibet/cli.py:144
+#: quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "Dateinamen von Abfrageergebnissen auf Standardausgabe ausgeben"
 
-#: quodlibet/cli.py:145 quodlibet/cli.py:146
+#: quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Eine Datei oder eine Abfrage aus Warteschlange entfernen"
 
-#: quodlibet/cli.py:147 quodlibet/cli.py:148
+#: quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Eine Datei oder ein Verzeichnis zur Bibliothek hinzufügen"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
+#: quodlibet/cli.py:149 quodlibet/util/tags.py:100
 msgid "location"
 msgstr "URL"
 
-#: quodlibet/cli.py:213 quodlibet/cli.py:216
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr "Muster für --print-*-Befehle festlegen"
+
+#: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
+msgid "pattern"
+msgstr "Muster"
+
+#: quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "Argument für »%s« ungültig."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
+#: quodlibet/cli.py:217 quodlibet/util/__init__.py:175
 #, python-format
 msgid "Try %s --help."
 msgstr "Geben Sie »%s --help« ein."
@@ -1572,25 +1578,22 @@ msgstr "Bewertungen und _Wiedergabeanzahl in Metadaten speichern"
 msgid "Settings updated"
 msgstr "Einstellungen aktualisiert"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #, python-format
 msgid "Error in %s"
 msgstr "Fehler in %s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:187
 #: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 "Beim Speichern sicherstellen, dass die Wiedergabeanzahl größer null ist"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:221
 #: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Aktualisierungsstrategie:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:235
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1598,7 +1601,6 @@ msgstr "_Aktualisierungsstrategie:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Einstellungen"
 
@@ -1618,9 +1620,11 @@ msgid "Automatic Rating"
 msgstr "Automatische Bewertung"
 
 #: quodlibet/ext/events/autorating.py:16
+#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux by Brian Nelson."
+"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
+"Brian Nelson."
 msgstr ""
 "Bewertet Titel automatisch, wenn sie abgespielt oder übersprungen werden. "
 "Benutzt den »beschleunigten« Algorithmus aus vux von Brian Nelson."
@@ -2180,7 +2184,6 @@ msgstr "_Passwort:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
-#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Konto"
 
@@ -2320,25 +2323,21 @@ msgstr "Kontodaten _verifizieren"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Künstler-Muster:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Titel-Muster:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Ausschluss_filter:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
-#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2348,7 +2347,6 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
-#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2361,13 +2359,11 @@ msgstr "Titel, die diesem Filter entsprechen, werden nicht eingesendet"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
-#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Offlinemodus (nichts einsenden)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
-#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Einsendung"
 
@@ -4326,10 +4322,6 @@ msgstr ""
 "Vorkommen von »{PARAM}« im Befehl mit dem Wert ersetzt, den der Benutzer in "
 "einer Eingabeaufforderung eingibt"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
-msgid "pattern"
-msgstr "Muster"
-
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
 "The QL pattern, e.g. <~filename>, to use to compute a value for the command. "
@@ -5624,7 +5616,6 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Das GStreamer-Element »{element}« wurde nicht gefunden."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
-#: quodlibet/plugins/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5633,7 +5624,6 @@ msgstr ""
 "Solange werden keine Statistiken gesendet."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
-#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5645,27 +5635,22 @@ msgstr ""
 "zurückzusetzen. Solange werden keine Statistiken gesendet."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
-#: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "ListenBrainz-Einsendung"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
-#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Hörstatistiken an ListenBrainz senden."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
-#: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Benutzer-_Token:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "Metad_atenfelder:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
-#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5674,7 +5659,6 @@ msgstr ""
 "Kommasepariert, bei Bedarf doppelte Anführungszeichen verwenden."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
-#: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Titel, die diesem Filter entsprechen, werden nicht eingesendet."
 
@@ -7841,11 +7825,22 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Der Sprachcode muss aus drei Buchstaben bestehen (ISO 639-2)"
 
-#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Speichern fehlgeschlagen"
+msgstr[1] "Speichern fehlgeschlagen"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
+
+#: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Der Titel kann nicht bearbeitet werden"
 
-#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
+#: quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8226,30 +8221,12 @@ msgstr ""
 "Internetradio sowie Audio-Feeds. Quod Libet enthält äußerst flexible "
 "Funktionen zur Metadaten-Bearbeitung und Suche."
 
-#: quodlibet/cli.py:150
-msgid "Set template for --print-* commands"
-msgstr "Muster für --print-*-Befehle festlegen"
-
-#: quodlibet/ext/events/autorating.py:16
-#, fuzzy
-msgid ""
-"Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
-"Brian Nelson."
-msgstr ""
-"Bewertet Titel automatisch, wenn sie abgespielt oder übersprungen werden. "
-"Benutzt den »beschleunigten« Algorithmus aus vux von Brian Nelson."
-
-#: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
-msgid "Saving %d file"
-msgid_plural "Saving %d files"
-msgstr[0] "Speichern fehlgeschlagen"
-msgstr[1] "Speichern fehlgeschlagen"
-
-#: quodlibet/util/songwrapper.py:113
-msgid "Auto-Saving"
-msgstr ""
+#~ msgid ""
+#~ "Rates songs automatically when they are played or skipped. This uses the "
+#~ "'accelerated' algorithm from vux by Brian Nelson."
+#~ msgstr ""
+#~ "Bewertet Titel automatisch, wenn sie abgespielt oder übersprungen werden. "
+#~ "Benutzt den »beschleunigten« Algorithmus aus vux von Brian Nelson."
 
 #, python-format
 #~ msgid "%.1f seconds"

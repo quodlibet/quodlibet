@@ -900,249 +900,255 @@ msgstr "Soundcloud kimlik doğrulama"
 msgid "Enter Soundcloud auth code:"
 msgstr "Soundcloud kimlik doğrulaması kodunu girin:"
 
-#: quodlibet/cli.py:50 quodlibet/cli.py:51
+#: quodlibet/cli.py:51
 msgid "Quod Libet is not running (add '--run' to start it)"
 msgstr "Quod Libet çalışmıyor (program adı yanına '--run' ekleyip çalıştırın)"
 
-#: quodlibet/cli.py:86 quodlibet/cli.py:87
+#: quodlibet/cli.py:87
 msgid "a music library and player"
 msgstr "bir müzik kitaplığı ve müzik çalar"
 
-#: quodlibet/cli.py:87 quodlibet/cli.py:88
+#: quodlibet/cli.py:88
 msgid "[option]"
 msgstr "[seçenek]"
 
-#: quodlibet/cli.py:89 quodlibet/cli.py:90
+#: quodlibet/cli.py:90
 msgid "Print the playing song and exit"
 msgstr "Çalan şarkıyı yazdır ve çık"
 
-#: quodlibet/cli.py:90 quodlibet/cli.py:91
+#: quodlibet/cli.py:91
 msgid "Begin playing immediately"
 msgstr "Hemen çalmaya başla"
 
-#: quodlibet/cli.py:91 quodlibet/cli.py:92
+#: quodlibet/cli.py:92
 msgid "Don't show any windows on start"
 msgstr "Başlangıçta hiç pencere gösterme"
 
-#: quodlibet/cli.py:94 quodlibet/cli.py:95
+#: quodlibet/cli.py:95
 msgid "Jump to next song"
 msgstr "Sonraki şarkıya atla"
 
-#: quodlibet/cli.py:96 quodlibet/cli.py:97
+#: quodlibet/cli.py:97
 msgid "Jump to previous song or restart if near the beginning"
 msgstr "Önceki şarkıya atla veya başlangıca yakınsa yeniden başla"
 
-#: quodlibet/cli.py:97 quodlibet/cli.py:98
+#: quodlibet/cli.py:98
 msgid "Jump to previous song"
 msgstr "Önceki şarkıya atla"
 
-#: quodlibet/cli.py:98 quodlibet/cli.py:99
+#: quodlibet/cli.py:99
 msgid "Start playback"
 msgstr "Çalmaya başla"
 
-#: quodlibet/cli.py:99 quodlibet/cli.py:100
+#: quodlibet/cli.py:100
 msgid "Pause playback"
 msgstr "Çalmayı duraklat"
 
-#: quodlibet/cli.py:100 quodlibet/cli.py:101
+#: quodlibet/cli.py:101
 msgid "Toggle play/pause mode"
 msgstr "Çalma/duraklama kipini aç/kapat"
 
-#: quodlibet/cli.py:101 quodlibet/cli.py:102
+#: quodlibet/cli.py:102
 msgid "Stop playback"
 msgstr "Çalmayı durdur"
 
-#: quodlibet/cli.py:102 quodlibet/cli.py:103
+#: quodlibet/cli.py:103
 msgid "Turn up volume"
 msgstr "Sesi aç"
 
-#: quodlibet/cli.py:103 quodlibet/cli.py:104
+#: quodlibet/cli.py:104
 msgid "Turn down volume"
 msgstr "Sesi kıs"
 
-#: quodlibet/cli.py:104 quodlibet/cli.py:105
+#: quodlibet/cli.py:105
 msgid "Increase rating of playing song by one star"
 msgstr "Şarkıyı çalma puanını bir yıldız artır"
 
-#: quodlibet/cli.py:105 quodlibet/cli.py:106
+#: quodlibet/cli.py:106
 msgid "Decrease rating of playing song by one star"
 msgstr "Şarkıyı çalma puanını bir yıldız azalt"
 
-#: quodlibet/cli.py:106 quodlibet/cli.py:107
+#: quodlibet/cli.py:107
 msgid "Print player status"
 msgstr "Durum bilgisini göster"
 
-#: quodlibet/cli.py:107 quodlibet/cli.py:108
+#: quodlibet/cli.py:108
 msgid "Hide main window"
 msgstr "Ana pencereyi gizle"
 
-#: quodlibet/cli.py:108 quodlibet/cli.py:109
+#: quodlibet/cli.py:109
 msgid "Show main window"
 msgstr "Ana pencereyi göster"
 
-#: quodlibet/cli.py:109 quodlibet/cli.py:110
+#: quodlibet/cli.py:110
 msgid "Toggle main window visibility"
 msgstr "Ana pencere görünürlüğünü aç/kapat"
 
-#: quodlibet/cli.py:110 quodlibet/cli.py:111
+#: quodlibet/cli.py:111
 msgid "Focus the running player"
 msgstr "Çalışan müzikçalara odaklan"
 
-#: quodlibet/cli.py:111 quodlibet/cli.py:112
+#: quodlibet/cli.py:112
 msgid "Remove active browser filters"
 msgstr "Etkin tarayıcı süzgeçlerini kaldır"
 
-#: quodlibet/cli.py:112 quodlibet/cli.py:113
+#: quodlibet/cli.py:113
 msgid "Refresh and rescan library"
 msgstr "Kitaplığı yenile ve tekrar tara"
 
-#: quodlibet/cli.py:113 quodlibet/cli.py:114
+#: quodlibet/cli.py:114
 msgid "List available browsers"
 msgstr "Mevcut tarayıcıları listele"
 
-#: quodlibet/cli.py:114 quodlibet/cli.py:115
+#: quodlibet/cli.py:115
 msgid "Print the current playlist"
 msgstr "Şu anki çalma listesini göster"
 
-#: quodlibet/cli.py:115 quodlibet/cli.py:116
+#: quodlibet/cli.py:116
 msgid "Print the contents of the queue"
 msgstr "Kuyruğun içeriğini göster"
 
-#: quodlibet/cli.py:116 quodlibet/cli.py:117
+#: quodlibet/cli.py:117
 msgid "Print the active text query"
 msgstr "Etkin yazı sorgusunu ekrana yazdır"
 
-#: quodlibet/cli.py:117 quodlibet/cli.py:118
+#: quodlibet/cli.py:118
 msgid "Start without plugins"
 msgstr "Eklentiler olmadan başlat"
 
-#: quodlibet/cli.py:118 quodlibet/cli.py:119
+#: quodlibet/cli.py:119
 msgid "Start Quod Libet if it isn't running"
 msgstr "Quod Libet çalışmıyorsa başlat"
 
-#: quodlibet/cli.py:119 quodlibet/cli.py:120
+#: quodlibet/cli.py:120
 msgid "Exit Quod Libet"
 msgstr "Quod Libet'ten çık"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "Seek within the playing song"
 msgstr "Şarkı içinde ileri/geri git"
 
-#: quodlibet/cli.py:124 quodlibet/cli.py:125
+#: quodlibet/cli.py:125
 msgid "[+|-][HH:]MM:SS"
 msgstr "[+|-][SS:]DD:SS"
 
-#: quodlibet/cli.py:125 quodlibet/cli.py:126
+#: quodlibet/cli.py:126
 msgid "Set or toggle shuffle mode"
 msgstr "Karıştırma kipini ayarla veya kipe geç"
 
-#: quodlibet/cli.py:126 quodlibet/cli.py:127
+#: quodlibet/cli.py:127
 msgid "Set shuffle mode type"
 msgstr "Karışıktırma kipi türünü ayarla"
 
-#: quodlibet/cli.py:127 quodlibet/cli.py:128
+#: quodlibet/cli.py:128
 msgid "Turn repeat off, on, or toggle it"
 msgstr "Tekrarlamayı aç, kapat veya değiştir"
 
-#: quodlibet/cli.py:128 quodlibet/cli.py:129
+#: quodlibet/cli.py:129
 msgid "Set repeat mode type"
 msgstr "Tekrarlama kipi türünü ayarla"
 
-#: quodlibet/cli.py:129 quodlibet/cli.py:130
+#: quodlibet/cli.py:130
 msgid "Set the volume"
 msgstr "Ses yüksekliğini değiştir"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:131
+#: quodlibet/cli.py:131
 msgid "Search your audio library"
 msgstr "Müzik kitaplığınızda arama yapın"
 
-#: quodlibet/cli.py:130 quodlibet/cli.py:140 quodlibet/cli.py:144
-#: quodlibet/cli.py:146 quodlibet/cli.py:131 quodlibet/cli.py:141
-#: quodlibet/cli.py:145 quodlibet/cli.py:147
+#: quodlibet/cli.py:131 quodlibet/cli.py:141 quodlibet/cli.py:145
+#: quodlibet/cli.py:147
 msgid "query"
 msgstr "sorgu"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:132
+#: quodlibet/cli.py:132
 msgid "Play a file"
 msgstr "Bir ses dosyası çal"
 
-#: quodlibet/cli.py:131 quodlibet/cli.py:140 quodlibet/cli.py:146
 #: quodlibet/cli.py:132 quodlibet/cli.py:141 quodlibet/cli.py:147
 msgctxt "command"
 msgid "filename"
 msgstr "dosyaadi"
 
-#: quodlibet/cli.py:132 quodlibet/cli.py:133
+#: quodlibet/cli.py:133
 msgid "Set rating of playing song"
 msgstr "Çalan şarkının puanını ayarla"
 
-#: quodlibet/cli.py:133 quodlibet/cli.py:134
+#: quodlibet/cli.py:134
 msgid "Set the current browser"
 msgstr "Geçerli tarayıcıyı ayarla"
 
-#: quodlibet/cli.py:134 quodlibet/cli.py:135
+#: quodlibet/cli.py:135
 msgid "Stop after the playing song"
 msgstr "Çalan şarkıdan sonra durdur"
 
-#: quodlibet/cli.py:135 quodlibet/cli.py:136
+#: quodlibet/cli.py:136
 msgid "Open a new browser"
 msgstr "Yeni tarayıcı aç"
 
-#: quodlibet/cli.py:136 quodlibet/cli.py:137
+#: quodlibet/cli.py:137
 msgid "Show or hide the queue"
 msgstr "Kuyruğu göster veya gizle"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgid "Filter on a random value"
 msgstr "Rastgele bir değerle süz"
 
-#: quodlibet/cli.py:137 quodlibet/cli.py:138
+#: quodlibet/cli.py:138
 msgctxt "command"
 msgid "tag"
 msgstr "etiket"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "Filter on a tag value"
 msgstr "Bir etiket değerine göre süz"
 
-#: quodlibet/cli.py:138 quodlibet/cli.py:139
+#: quodlibet/cli.py:139
 msgid "tag=value"
 msgstr "etiket=değer"
 
-#: quodlibet/cli.py:139 quodlibet/cli.py:140
+#: quodlibet/cli.py:140
 msgid "Enqueue a file or query"
 msgstr "Dosya veya sorguyu kuyruğa ekle"
 
-#: quodlibet/cli.py:141 quodlibet/cli.py:142
+#: quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
 msgstr "Virgülle ayrılan dosyaları kuyruğa ekle"
 
-#: quodlibet/cli.py:142 quodlibet/util/tags.py:158 quodlibet/cli.py:143
+#: quodlibet/cli.py:143 quodlibet/util/tags.py:158
 msgid "filename"
 msgstr "dosyaadı"
 
-#: quodlibet/cli.py:143 quodlibet/cli.py:144
+#: quodlibet/cli.py:144
 msgid "Print filenames of results of query to stdout"
 msgstr "Sorgu sonuçlarının dosya adlarını stdout'a yazdır"
 
-#: quodlibet/cli.py:145 quodlibet/cli.py:146
+#: quodlibet/cli.py:146
 msgid "Unqueue a file or query"
 msgstr "Dosya veya sorguyu çalma kuyruğundan çıkar"
 
-#: quodlibet/cli.py:147 quodlibet/cli.py:148
+#: quodlibet/cli.py:148
 msgid "Add a file or directory to the library"
 msgstr "Dosya veya dizini kitaplığa ekle"
 
-#: quodlibet/cli.py:148 quodlibet/util/tags.py:100 quodlibet/cli.py:149
+#: quodlibet/cli.py:149 quodlibet/util/tags.py:100
 msgid "location"
 msgstr "konum"
 
-#: quodlibet/cli.py:213 quodlibet/cli.py:216
+#: quodlibet/cli.py:150
+msgid "Set template for --print-* commands"
+msgstr ""
+
+#: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
+msgid "pattern"
+msgstr "kalıp"
+
+#: quodlibet/cli.py:216
 #, python-format
 msgid "Invalid argument for '%s'."
 msgstr "'%s' için geçersiz parametre."
 
-#: quodlibet/cli.py:214 quodlibet/util/__init__.py:175 quodlibet/cli.py:217
+#: quodlibet/cli.py:217 quodlibet/util/__init__.py:175
 #, python-format
 msgid "Try %s --help."
 msgstr "Yardım için %s --help komutunu deneyin."
@@ -1557,24 +1563,21 @@ msgstr "Puan ve _çalma sayılarını etiketlerde kaydet"
 msgid "Settings updated"
 msgstr "Ayarlar güncellendi"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:123
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #, python-format
 msgid "Error in %s"
 msgstr "%s te hata"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:187
 #: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "Kayıt ederken, çalma sayılarını sıfırın üzerinde tutar"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:221
 #: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Stratejiyi güncelle:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:235
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1582,7 +1585,6 @@ msgstr "_Stratejiyi güncelle:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Tercihler"
 
@@ -1602,9 +1604,11 @@ msgid "Automatic Rating"
 msgstr "Otomatik Puanlama"
 
 #: quodlibet/ext/events/autorating.py:16
+#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux by Brian Nelson."
+"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
+"Brian Nelson."
 msgstr ""
 "Çalındığında veya atlandığında şarkıları otomatik puanlar. Bu, Brian "
 "Nelson'un vux kitaplığından 'hızlandırılmış' algoritma kullanır."
@@ -2158,7 +2162,6 @@ msgstr "_Parola:"
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
 #: quodlibet/ext/events/listenbrainz/__init__.py:489
-#: quodlibet/plugins/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Hesap"
 
@@ -2293,25 +2296,21 @@ msgstr "Hesap _verisini doğrula"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Sanatçı kalıbı:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
 #: quodlibet/ext/events/listenbrainz/__init__.py:497
-#: quodlibet/plugins/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Başlık kalıbı:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Süzgeci _hariç tut:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
 #: quodlibet/ext/events/listenbrainz/__init__.py:516
-#: quodlibet/plugins/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2321,7 +2320,6 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
 #: quodlibet/ext/events/listenbrainz/__init__.py:526
-#: quodlibet/plugins/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2334,13 +2332,11 @@ msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
 #: quodlibet/ext/events/listenbrainz/__init__.py:553
-#: quodlibet/plugins/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Çevrimdışı kip (hiçbir şey gönderme)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
 #: quodlibet/ext/events/listenbrainz/__init__.py:557
-#: quodlibet/plugins/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Gönderim"
 
@@ -4257,10 +4253,6 @@ msgstr ""
 "değiştirilecek olan parametre. Örn. 'PARAM' kullanarak, komutunuzdaki tüm "
 "'{PARAM}' örnekleri çalıştırıldığında istenen değere sahip olur"
 
-#: quodlibet/ext/songsmenu/custom_commands.py:55 quodlibet/cli.py:151
-msgid "pattern"
-msgstr "kalıp"
-
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
 "The QL pattern, e.g. <~filename>, to use to compute a value for the command. "
@@ -5530,7 +5522,6 @@ msgid "Couldn't find GStreamer element '{element}'."
 msgstr "GStreamer elemanı '{element}' bulunamadı."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:229
-#: quodlibet/plugins/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5539,7 +5530,6 @@ msgstr ""
 "zamana kadar dinlemeler gönderilmeyecek."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:301
-#: quodlibet/plugins/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5551,27 +5541,22 @@ msgstr ""
 "zamana kadar dinlemeler gönderilmeyecek."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
-#: quodlibet/plugins/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "ListenBrainz Gönderimi"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:357
-#: quodlibet/plugins/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Dinlemeleri ListenBrainz'e gönderin."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:455
-#: quodlibet/plugins/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Kullanıcı _belirteci:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:498
-#: quodlibet/plugins/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "Etike_tler:"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:536
-#: quodlibet/plugins/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5580,7 +5565,6 @@ msgstr ""
 "tırnak işareti kullanın."
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:545
-#: quodlibet/plugins/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek."
 
@@ -7711,11 +7695,22 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Dil, ISO 639-2 üç-harf kod olmalıdır"
 
-#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Kayıt başarısız"
+msgstr[1] "Kayıt başarısız"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
+
+#: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Şarkı değiştirilemedi"
 
-#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
+#: quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8094,30 +8089,12 @@ msgstr ""
 "destekler. Son derece esnek üstveri etiket düzenleme ve arama yeteneklerine "
 "sahiptir."
 
-#: quodlibet/cli.py:150
-msgid "Set template for --print-* commands"
-msgstr ""
-
-#: quodlibet/ext/events/autorating.py:16
-#, fuzzy
-msgid ""
-"Rates songs automatically when they are played or skipped. This uses the "
-"'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
-"Brian Nelson."
-msgstr ""
-"Çalındığında veya atlandığında şarkıları otomatik puanlar. Bu, Brian "
-"Nelson'un vux kitaplığından 'hızlandırılmış' algoritma kullanır."
-
-#: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
-msgid "Saving %d file"
-msgid_plural "Saving %d files"
-msgstr[0] "Kayıt başarısız"
-msgstr[1] "Kayıt başarısız"
-
-#: quodlibet/util/songwrapper.py:113
-msgid "Auto-Saving"
-msgstr ""
+#~ msgid ""
+#~ "Rates songs automatically when they are played or skipped. This uses the "
+#~ "'accelerated' algorithm from vux by Brian Nelson."
+#~ msgstr ""
+#~ "Çalındığında veya atlandığında şarkıları otomatik puanlar. Bu, Brian "
+#~ "Nelson'un vux kitaplığından 'hızlandırılmış' algoritma kullanır."
 
 #, python-format
 #~ msgid "%.1f seconds"
