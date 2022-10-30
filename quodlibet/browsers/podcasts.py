@@ -10,6 +10,7 @@ import os
 import sys
 import threading
 import time
+from typing import Optional
 from urllib.request import urlopen, Request
 
 from gi.repository import Gtk, GLib, Pango, Gdk
@@ -393,7 +394,7 @@ class Podcasts(Browser):
         super().__init__(spacing=6)
         self.set_orientation(Gtk.Orientation.VERTICAL)
 
-        self.__view = view = AllTreeView()
+        self._view = view = AllTreeView()
         self.__render = render = Gtk.CellRendererText()
         render.set_property('ellipsize', Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn("Audio Feeds", render)
@@ -412,7 +413,7 @@ class Podcasts(Browser):
         new.connect('clicked', self.__new_feed)
         view.get_selection().connect('changed', self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        view.connect('popup-menu', self.__popup_menu)
+        view.connect('popup-menu', self._popup_menu)
 
         targets = [
             ("text/uri-list", 0, DND_URI_LIST),
@@ -472,20 +473,20 @@ class Podcasts(Browser):
         else:
             self.feed_error(feed).run()
 
-    def __popup_menu(self, view):
-        model, paths = view.get_selection().get_selected_rows()
+    def _popup_menu(self, view: Gtk.Widget) -> Optional[Gtk.Menu]:
+        model, paths = self._view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
         refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,
-               tooltip=_("Search source for new episodes"))
-        rebuild = MenuItem(_("_Rebuild"), Icons.EDIT_FIND_REPLACE,
-               tooltip=_("Remove all existing episodes then reload from source"))
+                           tooltip=_("Search source for new episodes"))
+        rebuild = MenuItem(
+            _("_Rebuild"),
+            Icons.EDIT_FIND_REPLACE,
+            tooltip=_("Remove all existing episodes then reload from source"))
         delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE,
-                tooltip=_("Remove this podcast and its episodes"))
+                          tooltip=_("Remove this podcast and its episodes"))
 
-        connect_obj(refresh, 'activate',
-                    self.__refresh, [model[p][0] for p in paths])
-        connect_obj(rebuild, 'activate',
-                    self.__rebuild, [model[p][0] for p in paths])
+        connect_obj(refresh, 'activate', self.__refresh, [model[p][0] for p in paths])
+        connect_obj(rebuild, 'activate', self.__rebuild, [model[p][0] for p in paths])
         connect_obj(delete, 'activate', self.__remove_paths, model, paths)
 
         menu.append(refresh)
@@ -494,10 +495,9 @@ class Podcasts(Browser):
         menu.show_all()
         menu.connect('selection-done', lambda m: m.destroy())
 
-        # XXX: keep the menu around
-        self.__menu = menu
-
-        return view.popup_menu(menu, 0, Gtk.get_current_event_time())
+        if self._view.popup_menu(menu, 0, Gtk.get_current_event_time()):
+            return menu
+        return None
 
     def __save(self, view):
         Podcasts.write()
@@ -506,12 +506,18 @@ class Podcasts(Browser):
         changed = list(filter(Feed.parse, feeds))
         Podcasts.changed(changed)
 
+    def __rebuild(self, feeds):
+        for feed in feeds:
+            feed.clear()
+        changed = list(filter(Feed.parse, feeds))
+        Podcasts.changed(changed)
+
     def __remove_paths(self, model, paths):
         for path in paths:
             model.remove(model.get_iter(path))
 
     def activate(self):
-        self.__changed(self.__view.get_selection())
+        self.__changed(self._view.get_selection())
 
     def __changed(self, selection):
         model, paths = selection.get_selected_rows()
@@ -548,7 +554,7 @@ class Podcasts(Browser):
         except Exception:
             pass
         else:
-            self.__view.select_by_func(lambda r: r[0].name in names)
+            self._view.select_by_func(lambda r: r[0].name in names)
 
 
 browsers = []
