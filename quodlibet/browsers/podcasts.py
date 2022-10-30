@@ -325,7 +325,7 @@ class Podcasts(Browser):
     @staticmethod
     def cell_data(col, render, model, iter, data):
         if model[iter][0].changed:
-            render.markup = "<b>%s</b>" % util.escape(model[iter][0].name)
+            render.markup = util.bold(model[iter][0].name)
         else:
             render.markup = util.escape(model[iter][0].name)
         render.set_property('markup', render.markup)

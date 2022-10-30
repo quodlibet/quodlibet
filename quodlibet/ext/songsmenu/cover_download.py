@@ -13,7 +13,7 @@ from typing import Iterable, List
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 
-from quodlibet import _, app, print_d, print_w
+from quodlibet import _, app, print_d, print_w, util
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from senf import path2fsn
@@ -225,7 +225,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             source = escape(item.source)
             text = (f"{source} - {format}, "
                     f"{props.width} x {props.height}, "
-                    f"<b>{format_size(size)}</b>")
+                    f"{util.bold(format_size(size))}")
             frame.get_label_widget().set_markup(text)
             frame.get_child().set_reveal_child(True)
 
@@ -292,9 +292,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                  reduce(operator.concat, group_songs, [])}
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
-        data = {'albums': escape(albums), 'providers': escape(providers)}
-        markup = _("Nothing found for albums:\n<i>%(albums)s</i>.\n\n"
-                   "Providers used:\n<tt>%(providers)s</tt>") % data
+        data = {'albums': util.italic(albums), 'providers': util.monospace(providers)}
+        markup = _("Nothing found for albums:\n%(albums)s.\n\n"
+                   "Providers used:\n%(providers)s") % data
         dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,
                               title=_("No covers found"), description=markup,
                               escape_desc=False)
@@ -355,7 +355,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                 pat_text = model[it][0]
                 ext = "jpg" if self.config.re_encode else "*"
                 text = list(self._filenames(pat_text, ext))[0]
-                cell.set_property("markup", f"<tt>{escape(text)}</tt>")
+                cell.set_property("markup", util.monospace(text))
 
             save_filename.set_cell_data_func(cell, draw_save_type, None)
 

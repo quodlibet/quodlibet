@@ -14,7 +14,7 @@ import os
 from gi.repository import Gtk, Gdk, GObject, Pango, GLib
 import cairo
 
-from quodlibet import _, print_e
+from quodlibet import _, print_e, util
 from quodlibet import config
 from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
     menu_popup, get_primary_accel_mod
@@ -933,7 +933,7 @@ class DragIconTreeView(BaseView):
         layout = None
         if len(paths) > max_rows:
             more = _(u"and %d more…") % (len(paths) - max_rows)
-            more = "<i>%s</i>" % more
+            more = util.italic(more)
             layout = self.create_pango_layout("")
             layout.set_markup(more)
             layout.set_alignment(Pango.Alignment.CENTER)

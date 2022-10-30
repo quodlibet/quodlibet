@@ -1,5 +1,5 @@
 # Copyright 2012-2015 Ryan "ZDBioHazard" Turner <zdbiohazard2@gmail.com>
-#                2016 Nick Boultbee
+#             2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet.plugins.songshelpers import each_song, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
@@ -82,8 +82,8 @@ class EditPlaycount(SongsMenuPlugin):
         else:
             note = Gtk.Label()
             note.set_justify(Gtk.Justification.CENTER)
-            note.set_markup("<b>Multiple files selected.</b>\n"
-                            "Counts will be incremented.")
+            note.set_markup(util.bold(_("Multiple files selected."))
+                            + "\n" + _("Counts will be incremented."))
             dlg.vbox.add(note)
 
         dlg.show_all()
@@ -105,8 +105,7 @@ class EditPlaycount(SongsMenuPlugin):
                 # itself and the last played/started time. We don't
                 # want unused or impossible data floating around.
                 if song.get('~#playcount', 0) == 0:
-                    for tag in ['~#playcount', '~#lastplayed',
-                                '~#laststarted']:
+                    for tag in ['~#playcount', '~#lastplayed', '~#laststarted']:
                         song.pop(tag, None)
 
                 # Also delete the skip count if it's zero.

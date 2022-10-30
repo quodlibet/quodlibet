@@ -33,7 +33,7 @@ from quodlibet.util.path import join_path_with_escaped_name_of_legal_length, \
 
 from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
 
-from quodlibet import _, app, print_e, print_d, qltk
+from quodlibet import _, app, print_e, print_d, qltk, util
 
 from quodlibet.plugins.songshelpers import each_song, is_writable, is_finite
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
@@ -192,8 +192,9 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         info_frame = qltk.Frame(_("Further information"), child=info_box)
         vbox.pack_start(info_frame, False, True, 0)
 
+        meta_markup = util.monospace(", ".join(MIGRATE))
         info_text = _("The term 'track user data' includes the playlists in which the "
-                      "selected tracks are and the following metadata:\n\n<tt>%s</tt>\n"
+                      "selected tracks are and the following metadata:\n\n%s\n"
                       "\nBe aware that whatever you chose to export will be imported. "
                       "If you exported the file stems (file names without extension), "
                       "then, on import, the selected files will be renamed.\n\nAfter "
@@ -202,7 +203,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
                       "The plugin matches the exported data to the new tracks, even if "
                       "the names of the tracks are slightly different. The automatic "
                       "matching is not always correct, so it is better to not reduce "
-                      "the following similarity values too much.") % ", ".join(MIGRATE)
+                      "the following similarity values too much.") % meta_markup
 
         info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
         info_box.pack_start(info_lbl, True, True, 0)

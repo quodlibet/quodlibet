@@ -12,7 +12,7 @@ from urllib.parse import urlsplit
 from gi.repository import Gtk, GObject, Gdk, Gio, Pango
 from senf import uri2fsn, fsnative, fsn2text, bytes2fsn
 
-from quodlibet import formats, print_d
+from quodlibet import formats, print_d, util
 from quodlibet import qltk
 from quodlibet import _
 
@@ -380,9 +380,9 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         try:
             os.makedirs(fullpath)
         except EnvironmentError as err:
-            error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+            error = f"{util.bold(err.filename)}: {util.escape(err.strerror)}"
             qltk.ErrorMessage(
-                None, _("Unable to create folder"), error).run()
+                None, _("Unable to create folder"), error, escape_desc=False).run()
             return
 
         self.emit('test-expand-row', model.get_iter(path), path)
@@ -397,9 +397,9 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             try:
                 os.rmdir(directory)
             except EnvironmentError as err:
-                error = "<b>%s</b>: %s" % (err.filename, err.strerror)
+                error = f"{util.bold(err.filename)}: {err.strerror}"
                 qltk.ErrorMessage(
-                    None, _("Unable to delete folder"), error).run()
+                    None, _("Unable to delete folder"), error, escape_desc=False).run()
                 return
 
         ppath = Gtk.TreePath(paths[0][:-1])

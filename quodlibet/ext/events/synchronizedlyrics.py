@@ -1,6 +1,6 @@
 # Synchronized Lyrics: a Quod Libet plugin for showing synchronized lyrics.
 # Copyright (C) 2015 elfalem
-#            2016-20 Nick Boultbee
+#            2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ from typing import List, Tuple, Optional
 
 from gi.repository import Gtk, Gdk, GLib
 
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
@@ -62,7 +62,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         t.set_row_spacings(3)
 
         clr_section = Gtk.Label()
-        clr_section.set_markup("<b>" + _("Colors") + "</b>")
+        clr_section.set_markup(util.bold(_("Colors")))
         t.attach(clr_section, 0, 2, 0, 1)
 
         l = Gtk.Label(label=_("Text:"))
@@ -86,7 +86,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         b.connect('color-set', cls._set_background_color)
 
         font_section = Gtk.Label()
-        font_section.set_markup("<b>" + _("Font") + "</b>")
+        font_section.set_markup(util.bold(_("Font")))
         t.attach(font_section, 0, 2, 3, 4)
 
         l = Gtk.Label(label=_("Size (px):"))

@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2020 Nick Boultbee
+#           2011-2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@ import sys
 import unicodedata
 import threading
 import locale
-from typing import Dict, List
+from typing import Dict, List, Callable
 from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
@@ -200,26 +200,30 @@ class OptionParser:
             return transopts, args
 
 
-def escape(str):
+def escape(string: str) -> str:
     """Escape a string in a manner suitable for XML/Pango."""
-    return str.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+    return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def unescape(str):
+def unescape(string: str) -> str:
     """Unescape a string in a manner suitable for XML/Pango."""
-    return str.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
+    return string.replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&")
 
 
-def bold(string):
-    return "<b>%s</b>" % string
+def bold(string: str, escaper: Callable[[str], str] = escape) -> str:
+    return "<b>%s</b>" % escaper(string)
 
 
-def monospace(string):
-    return "<tt>%s</tt>" % string
+def monospace(string: str, escaper: Callable[[str], str] = escape) -> str:
+    return "<tt>%s</tt>" % escaper(string)
 
 
-def italic(string):
-    return "<i>%s</i>" % string
+def italic(string: str, escaper: Callable[[str], str] = escape) -> str:
+    return "<i>%s</i>" % escaper(string)
+
+
+def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
+    return "<b><i>%s</i></b>" % escaper(string)
 
 
 def parse_time(timestr, err=object()):

@@ -119,10 +119,10 @@ def check_wrapper_changed(library, songs):
                         dialog = qltk.ErrorMessage(
                             None,
                             _("Unable to edit song"),
-                            _("Saving <b>%s</b> failed. "
+                            _("Saving %s failed. "
                               "The file may be read-only, corrupted, or you "
                               "do not have permission to edit it.") %
-                            util.escape(song('~basename')), escape_desc=False)
+                            util.bold(song('~basename')), escape_desc=False)
                         dialog.run()
                         print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
                     else:

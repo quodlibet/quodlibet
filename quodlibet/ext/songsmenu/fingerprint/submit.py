@@ -1,5 +1,5 @@
 # Copyright 2011,2013 Christoph Reiter
-#                2016 Nick Boultbee
+#             2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk, Pango, GLib
 
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet.qltk import Button, Window
 from quodlibet.util import connect_obj, print_w
 
@@ -45,7 +45,7 @@ class FingerprintDialog(Window):
         box = Gtk.VBox(spacing=6)
 
         self.__label = label = Gtk.Label()
-        label.set_markup("<b>%s</b>" % _("Generating fingerprints:"))
+        label.set_markup(util.bold(_("Generating fingerprints:")))
         label.set_alignment(0, 0.5)
         box.pack_start(label, False, True, 0)
 
@@ -115,15 +115,15 @@ class FingerprintDialog(Window):
         got_mbid, got_meta = get_stats(results)
 
         text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
-            "or <i><b>artist</b></i> / "
-            "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
-        text += "\n\n" + "<i>%s</i>" % _("Fingerprints:")
+                 "or <i><b>artist</b></i> / "
+                 "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
+        text += "\n\n" + util.italic(_("Fingerprints:"))
         text += " %d/%d" % (valid_fp, all_)
-        text += "\n" + "<i>%s</i>" % _("Songs with MBIDs:")
+        text += "\n" + util.italic(_("Songs with MBIDs:"))
         text += " %d/%d" % (got_mbid, all_)
-        text += "\n" + "<i>%s</i>" % _("Songs with sufficient tags:")
+        text += "\n" + util.italic(_("Songs with sufficient tags:"))
         text += " %d/%d" % (got_meta, all_)
-        text += "\n" + "<i>%s</i>" % _("Songs to submit:")
+        text += "\n" + util.italic(_("Songs to submit:"))
         text += " %d/%d" % (to_send, all_)
         self.__stats.set_markup(text)
 
@@ -177,7 +177,7 @@ class FingerprintDialog(Window):
 
     def __submit_cb(self, *args):
         self.__submit.set_sensitive(False)
-        self.__label.set_markup("<b>%s</b>" % _("Submitting fingerprints:"))
+        self.__label.set_markup(util.bold(_("Submitting fingerprints:")))
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
             list(filter(can_submit, self.__fp_results.values())),
@@ -185,7 +185,7 @@ class FingerprintDialog(Window):
 
     def __acoustid_update(self, progress):
         self.__set_fraction(progress)
-        self.__label_song.set_text(_(u"Submitting…"))
+        self.__label_song.set_text(_("Submitting…"))
 
     def __acoustid_done(self):
         self.__acoustid_thread.join()

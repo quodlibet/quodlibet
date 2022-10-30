@@ -97,8 +97,8 @@ class ResultComboBox(Gtk.ComboBox):
             discs_text = numeric_phrase("%d disc", "%d discs", disc_count)
             tracks_text = numeric_phrase("%d track", "%d tracks", track_count)
 
-            markup = "<b>%s</b>\n%s - %s, %s (%s)" % (
-                    util.escape(release.title),
+            markup = "%s\n%s - %s, %s (%s)" % (
+                    util.bold(release.title),
                     util.escape(", ".join(artist_names)),
                     util.escape(discs_text),
                     util.escape(tracks_text),
@@ -445,12 +445,11 @@ class SearchWindow(Dialog):
         query = self.search_query.get_text()
 
         if not query:
-            self.result_label.set_markup(
-                "<b>%s</b>" % _("Please enter a query."))
+            self.result_label.set_markup(util.bold(_("Please enter a query.")))
             self.search_button.set_sensitive(True)
             return
 
-        self.result_label.set_markup("<i>%s</i>" % _(u"Searching…"))
+        self.result_label.set_markup(util.italic(_("Searching…")))
 
         self._qthread.add(self._process_results, search_releases, query)
 
@@ -471,7 +470,7 @@ class SearchWindow(Dialog):
         self._resultlist.append_many(results)
 
         if len(results) > 0:
-            self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
+            self.result_label.set_markup(util.italic(_("Loading result…")))
             self.result_combo.set_active(0)
         else:
             self.result_label.set_markup(_("No results found."))
@@ -487,7 +486,7 @@ class SearchWindow(Dialog):
         if release.id in self._releasecache:
             self._update_result(self._releasecache[release.id])
         else:
-            self.result_label.set_markup("<i>%s</i>" % _(u"Loading result…"))
+            self.result_label.set_markup(util.italic(_("Loading result…")))
             self.result_treeview.update_release(None)
             self._qthread.add(self._update_result, release.fetch_full)
 
