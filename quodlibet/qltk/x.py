@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2020 Nick Boultbee
+#        2020-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,7 +10,7 @@
 Things that are more or less direct wrappers around GTK widgets to
 ease constructors.
 """
-
+from typing import Optional
 from urllib.request import urlopen
 
 from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf, Gdk
@@ -294,13 +294,15 @@ class Align(Gtk.Alignment):
         return self.props.right_padding
 
 
-def MenuItem(label, icon_name=None):
+def MenuItem(label, icon_name: Optional[str] = None, tooltip: Optional[str] = None):
     """An ImageMenuItem with a custom label and stock image."""
 
     if icon_name is None:
         return Gtk.MenuItem.new_with_mnemonic(label)
 
     item = Gtk.ImageMenuItem.new_with_mnemonic(label)
+    if tooltip:
+        item.set_tooltip_text(tooltip)
     item.set_always_show_image(True)
     image = Gtk.Image.new_from_icon_name(icon_name, Gtk.IconSize.MENU)
     image.show()
