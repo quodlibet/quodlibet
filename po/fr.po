@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-21 05:14+0000\n"
+"PO-Revision-Date: 2022-10-30 18:35+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -7807,15 +7807,15 @@ msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "La langue doit être au format ISO 639-2 avec trois caractères"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Échec de l'enregistrement"
-msgstr[1] "Échec de l'enregistrement"
+msgstr[0] "Sauvegarder le fichier %d"
+msgstr[1] "Sauvegarder les fichiers %d"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Sauvegarde automatique"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
