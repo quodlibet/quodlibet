@@ -1566,15 +1566,18 @@ msgstr "Instellingen bijgewerkt"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, python-format
 msgid "Error in %s"
 msgstr "Fout in %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "Verzekert dat afspeeltellingen niet op nul staan tijdens het opslaan"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Bijwerkmethode:"
 
@@ -1586,6 +1589,7 @@ msgstr "_Bijwerkmethode:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Voorkeuren"
 
@@ -7759,11 +7763,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "De taal moet een ISO 639-2 drielettercode zijn"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Kan nummer niet aanpassen"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8157,6 +8161,17 @@ msgstr ""
 "Geeft nummers automatisch een waardering als ze worden afgespeeld of "
 "overgeslagen. Dit gebruikt het ‘accelerated’-algoritme van vux door Brian "
 "Nelson."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Opslaan mislukt"
+msgstr[1] "Opslaan mislukt"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"

@@ -1559,15 +1559,18 @@ msgstr "data di registrazione"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, fuzzy, python-format
 msgid "Error in %s"
 msgstr "Errore durante la sincronizzazione"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 #, fuzzy
 msgid "_Update strategy:"
 msgstr "_Aggiorna stazioni"
@@ -1580,6 +1583,7 @@ msgstr "_Aggiorna stazioni"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Preferenze"
 
@@ -7785,11 +7789,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "La lingua dev'essere un codice ISO 639-2 di tre lettere"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Impossibile modificare il brano"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8184,6 +8188,17 @@ msgid ""
 msgstr ""
 "Giudica automaticamente i brani quando sono riprodotti o saltati. Questo usa "
 "l'algoritmo 'accelerated' da vux di Brian Nelson."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Salvatagggio fallito"
+msgstr[1] "Salvatagggio fallito"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, fuzzy
 #~ msgid "Startup"

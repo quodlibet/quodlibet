@@ -1507,15 +1507,18 @@ msgstr "设置更改日期"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, python-format
 msgid "Error in %s"
 msgstr "同步时%s发生异常"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "确保保存时播放计数大于零"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "更新策略(_U)："
 
@@ -1527,6 +1530,7 @@ msgstr "更新策略(_U)："
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "首选项"
 
@@ -7311,11 +7315,11 @@ msgstr "MusicBrainz 状态必须是 'official', 'promotional', 或者 'bootleg'.
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "当前语言必须是ISO 639-2 三字符编码"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "无法编辑曲目"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -7702,6 +7706,16 @@ msgid ""
 msgstr ""
 "播放或跳过歌曲时，自动给歌曲评分。此功能使用了 Brain Nelson 所写程序 vux "
 "(Vacillating Utilitarian eXtemporizer) 的 'accelerated' 算法。"
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "保存失败"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"

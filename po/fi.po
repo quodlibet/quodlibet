@@ -1571,15 +1571,18 @@ msgstr "Asetukset päivitetty"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:123
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #, python-format
 msgid "Error in %s"
 msgstr "Virhe liitännäisessä %s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr "Varmista toistokertojen määrän olevan nollaa suurempi tallennettaessa"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "_Päivitystapa:"
 
@@ -1591,6 +1594,7 @@ msgstr "_Päivitystapa:"
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
 #: quodlibet/qltk/prefs.py:741
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 msgid "Preferences"
 msgstr "Asetukset"
 
@@ -7756,11 +7760,11 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Kielen täytyy olla ISO 639-2:n mukainen kolmikirjaiminen koodi"
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:116 quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Kappaleen muokkaaminen epäonnistui"
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:117 quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
@@ -8152,6 +8156,17 @@ msgstr ""
 "Arvostelee kappaleita automaattisesti kun ne toistetaan tai ohitetaan. "
 "Käyttää accelerated-algoritmia ohjelmasta vux, jonka on kehittänyt Brian "
 "Nelson."
+
+#: quodlibet/util/songwrapper.py:112
+#, fuzzy, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] "Tallennus epäonnistui"
+msgstr[1] "Tallennus epäonnistui"
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
 
 #, python-format
 #~ msgid "%.1f seconds"
