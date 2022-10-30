@@ -2151,7 +2151,7 @@ msgstr "_Parola:"
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
-#: quodlibet/plugins/listenbrainz/__init__.py:489
+#: quodlibet/ext/events/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Hesap"
 
@@ -2285,22 +2285,22 @@ msgid "_Verify account data"
 msgstr "Hesap _verisini doğrula"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "_Sanatçı kalıbı:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "_Başlık kalıbı:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "Süzgeci _hariç tut:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-#: quodlibet/plugins/listenbrainz/__init__.py:516
+#: quodlibet/ext/events/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2309,7 +2309,7 @@ msgstr ""
 "için boş bırakın."
 
 #: quodlibet/ext/events/qlscrobbler.py:584
-#: quodlibet/plugins/listenbrainz/__init__.py:526
+#: quodlibet/ext/events/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2321,12 +2321,12 @@ msgid "Songs matching this filter will not be submitted"
 msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
-#: quodlibet/plugins/listenbrainz/__init__.py:553
+#: quodlibet/ext/events/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "_Çevrimdışı kip (hiçbir şey gönderme)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
-#: quodlibet/plugins/listenbrainz/__init__.py:557
+#: quodlibet/ext/events/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Gönderim"
 
@@ -5515,7 +5515,7 @@ msgstr ""
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "GStreamer elemanı '{element}' bulunamadı."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:229
+#: quodlibet/ext/events/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5523,7 +5523,7 @@ msgstr ""
 "ListenBrainz'i ayarlamak için lütfen Eklentiler penceresini ziyaret edin. O "
 "zamana kadar dinlemeler gönderilmeyecek."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:301
+#: quodlibet/ext/events/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5534,23 +5534,23 @@ msgstr ""
 "ListenBrainz'i sıfırlamak için lütfen Eklentiler penceresini ziyaret edin. O "
 "zamana kadar dinlemeler gönderilmeyecek."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:356
+#: quodlibet/ext/events/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "ListenBrainz Gönderimi"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:357
+#: quodlibet/ext/events/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Dinlemeleri ListenBrainz'e gönderin."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:455
+#: quodlibet/ext/events/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Kullanıcı _belirteci:"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "Etike_tler:"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:536
+#: quodlibet/ext/events/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5558,7 +5558,7 @@ msgstr ""
 "Gönderimde içerilecek etiketlerin listesi. Virgülle ayrılmış, gerekirse çift "
 "tırnak işareti kullanın."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:545
+#: quodlibet/ext/events/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Bu süzgeçle eşleşen şarkılar gönderilmeyecek."
 

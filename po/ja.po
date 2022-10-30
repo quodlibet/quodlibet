@@ -2133,7 +2133,7 @@ msgstr "パスワード(_P):"
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
-#: quodlibet/plugins/listenbrainz/__init__.py:489
+#: quodlibet/ext/events/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "アカウント"
 
@@ -2269,22 +2269,22 @@ msgid "_Verify account data"
 msgstr "アカウントデータの確認(_V)"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "アーティストパターン(_A):"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "タイトルパターン(_T):"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "除外フィルター(_F):"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-#: quodlibet/plugins/listenbrainz/__init__.py:516
+#: quodlibet/ext/events/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2293,7 +2293,7 @@ msgstr ""
 "ます。"
 
 #: quodlibet/ext/events/qlscrobbler.py:584
-#: quodlibet/plugins/listenbrainz/__init__.py:526
+#: quodlibet/ext/events/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2304,12 +2304,12 @@ msgid "Songs matching this filter will not be submitted"
 msgstr "このフィルターに一致する曲は送信されません"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
-#: quodlibet/plugins/listenbrainz/__init__.py:553
+#: quodlibet/ext/events/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "オフラインモード(何も送信されない)(_O)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
-#: quodlibet/plugins/listenbrainz/__init__.py:557
+#: quodlibet/ext/events/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "送信"
 
@@ -5469,7 +5469,7 @@ msgstr ""
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "GStreamer エレメント「{element}」が見つかりませんでした。"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:229
+#: quodlibet/ext/events/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5477,7 +5477,7 @@ msgstr ""
 "プラグインウィンドウで ListenBrainz の設定を行ってください。それまでは、聴取"
 "情報は送信されません。"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:301
+#: quodlibet/ext/events/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5488,23 +5488,23 @@ msgstr ""
 "グインウィンドウで ListenBrainz の再設定を行ってください。それまでは、聴取情"
 "報は送信されません。"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:356
+#: quodlibet/ext/events/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "ListenBrainzの送信"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:357
+#: quodlibet/ext/events/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "ListenBrainz に聴取情報を送信します。"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:455
+#: quodlibet/ext/events/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "ユーザートークン(_T):"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "タグ(_A):"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:536
+#: quodlibet/ext/events/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5512,7 +5512,7 @@ msgstr ""
 "送信に含めるタグのリスト。カンマで区切り、必要に応じてダブルクォートを使用し"
 "てください。"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:545
+#: quodlibet/ext/events/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "このフィルターに一致する曲は送信されません。"
 

@@ -2176,7 +2176,7 @@ msgstr "Mot de _passe :"
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
-#: quodlibet/plugins/listenbrainz/__init__.py:489
+#: quodlibet/ext/events/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Compte"
 
@@ -2314,22 +2314,22 @@ msgid "_Verify account data"
 msgstr "_Vérification des données du compte"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Motif de l'_artiste :"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Motif du _titre :"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_Filtre d'exclusion :"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-#: quodlibet/plugins/listenbrainz/__init__.py:516
+#: quodlibet/ext/events/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2338,7 +2338,7 @@ msgstr ""
 "pour la valeur par défaut."
 
 #: quodlibet/ext/events/qlscrobbler.py:584
-#: quodlibet/plugins/listenbrainz/__init__.py:526
+#: quodlibet/ext/events/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2350,12 +2350,12 @@ msgid "Songs matching this filter will not be submitted"
 msgstr "Les titres correspondant à cette recherche ne seront pas soumis"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
-#: quodlibet/plugins/listenbrainz/__init__.py:553
+#: quodlibet/ext/events/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "M_ode non-connecté (ne rien soumettre)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
-#: quodlibet/plugins/listenbrainz/__init__.py:557
+#: quodlibet/ext/events/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Soumission"
 
@@ -5601,7 +5601,7 @@ msgstr ""
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Impossible de trouver l'élément GStreamer '{element}'."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:229
+#: quodlibet/ext/events/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5609,7 +5609,7 @@ msgstr ""
 "Veuillez visiter la fenêtre des greffons pour configurer ListenBrainz. En "
 "attendant, les écoutes ne seront pas soumises."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:301
+#: quodlibet/ext/events/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5620,23 +5620,23 @@ msgstr ""
 "Veuillez visiter la fenêtre des greffons pour réinitialiser ListenBrainz. En "
 "attendant, les écoutes ne seront pas soumises."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:356
+#: quodlibet/ext/events/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "Soumission ListenBrainz"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:357
+#: quodlibet/ext/events/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Soumettre des écoutes à ListenBrainz."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:455
+#: quodlibet/ext/events/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "Je_ton d'utilisateur :"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "É_tiquettes :"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:536
+#: quodlibet/ext/events/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5644,7 +5644,7 @@ msgstr ""
 "Liste de étiquettes à inclure dans la soumission. Séparées par des virgules, "
 "utilisez des guillemets si nécessaire."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:545
+#: quodlibet/ext/events/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "Les morceaux correspondant à ce filtre ne seront pas soumis."
 

@@ -2152,7 +2152,7 @@ msgstr "_Contraseña:"
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
-#: quodlibet/plugins/listenbrainz/__init__.py:489
+#: quodlibet/ext/events/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Cuenta"
 
@@ -2289,22 +2289,22 @@ msgid "_Verify account data"
 msgstr "_Verificar datos de cuenta"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Pauta de _artistas:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Pauta de _títulos:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr "_Filtro de exclusión:"
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-#: quodlibet/plugins/listenbrainz/__init__.py:516
+#: quodlibet/ext/events/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
@@ -2313,7 +2313,7 @@ msgstr ""
 "en blanco para utilizar la predeterminada."
 
 #: quodlibet/ext/events/qlscrobbler.py:584
-#: quodlibet/plugins/listenbrainz/__init__.py:526
+#: quodlibet/ext/events/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2325,12 +2325,12 @@ msgid "Songs matching this filter will not be submitted"
 msgstr "No se enviarán aquellas canciones que encuentre este filtro"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
-#: quodlibet/plugins/listenbrainz/__init__.py:553
+#: quodlibet/ext/events/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "Modo _sin conexión (no enviar nada)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
-#: quodlibet/plugins/listenbrainz/__init__.py:557
+#: quodlibet/ext/events/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Envío"
 
@@ -5480,7 +5480,7 @@ msgstr ""
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "No se pudo encontrar el elemento «{element}» de GStreamer."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:229
+#: quodlibet/ext/events/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
@@ -5488,7 +5488,7 @@ msgstr ""
 "Vaya a la ventana Complementos para configurar ListenBrainz. Mientras no lo "
 "haga, no se enviará ninguna escucha."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:301
+#: quodlibet/ext/events/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5499,23 +5499,23 @@ msgstr ""
 "conexión. Visite el diálogo Complementos para restablecer ListenBrainz. "
 "Hasta entonces, no se enviará ninguna escucha."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:356
+#: quodlibet/ext/events/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
 msgstr "Envío a ListenBrainz"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:357
+#: quodlibet/ext/events/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr "Envíe las escuchas a ListenBrainz."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:455
+#: quodlibet/ext/events/listenbrainz/__init__.py:455
 msgid "User _token:"
 msgstr "_Ficha de usuario:"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr "E_tiquetas:"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:536
+#: quodlibet/ext/events/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
@@ -5523,7 +5523,7 @@ msgstr ""
 "La lista de etiquetas que incluir en el envío. Sepárelas con comas y utilice "
 "comillas dobles si es necesario."
 
-#: quodlibet/plugins/listenbrainz/__init__.py:545
+#: quodlibet/ext/events/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr "No se enviará ninguna de las canciones que encuentre este filtro."
 
