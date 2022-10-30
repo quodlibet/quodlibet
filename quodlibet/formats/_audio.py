@@ -11,6 +11,7 @@
 # are called in tight loops. Don't change things just to make them
 # more readable, unless they're also faster.
 
+import json
 import os
 import re
 import shutil
@@ -517,6 +518,9 @@ class AudioFile(dict, ImageContainer, HasKey):
                             return float(val)
                         except ValueError:
                             return default
+            elif key == "json":
+                # Help the testing by being determinstic with sort_keys.
+                return json.dumps(self, sort_keys=True)
             else:
                 return dict.get(self, "~" + key, default)
 

@@ -232,6 +232,17 @@ class TPattern(_TPattern):
         s.assertEquals(pat.format(song),
             b"5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode('utf-8'))
 
+    def test_json(s):
+        pat = Pattern('<~json>')
+        if os.name != "nt":
+            s.assertEquals(pat.format(s.a),
+                '{"artist": "Artist", "title": "Title5", "tracknumber": "5/6",'
+                ' "xmltest": "<&>", "~filename": "/path/to/a.mp3"}')
+        else:
+            s.assertEquals(pat.format(s.a),
+                '{"artist": "Artist", "title": "Title5", "tracknumber": "5/6",'
+                ' "xmltest": "<&>", "~filename": "C:\\\\path\\\\to\\\\a.mp3"}')
+
 
 class _TFileFromPattern(_TPattern):
     def _create(self, string):
