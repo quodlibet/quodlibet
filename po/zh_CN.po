@@ -7708,10 +7708,10 @@ msgstr ""
 "(Vacillating Utilitarian eXtemporizer) 的 'accelerated' 算法。"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "保存失败"
+msgstr[0] "正在保存 %d 个文件"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
