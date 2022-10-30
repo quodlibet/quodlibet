@@ -99,7 +99,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
-            text = "\"%s\" --%s" % (com['body'], com['user']['username'])
+            text = "\"%s\" – %s" % (com['body'], com['user']['username'])
             return max(0, int((com.get('timestamp') or 0) / 1000.0)), text
 
         try:
@@ -109,6 +109,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
             print_exc()
             return
         song.bookmarks = [bookmark_for(c) for c in comments]
+        print_d(f"Updated song bookmarks for {song('title')}")
 
     def song_by_track_id(self, track_id):
         for song in self.values():
