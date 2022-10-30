@@ -1,4 +1,5 @@
 # Copyright 2022 Thomas Leberbauer
+#           2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -74,8 +75,9 @@ class AlbumListCountItem(AlbumListItem):
 
     def format_label(self, pattern=None):
         n = self.__n_albums
-        title = '<b>%s</b>\n' % util.escape(_('All Albums'))
-        self._label = title + numeric_phrase('%d album', '%d albums', n)
+        title = util.bold(_('All Albums'))
+        number_phrase = numeric_phrase('%d album', '%d albums', n)
+        self._label = f"{title}\n{number_phrase}"
         self.notify('label')
 
     @GObject.Property

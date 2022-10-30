@@ -32,7 +32,7 @@ msgid "_People"
 msgstr "люди"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:54
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
 msgid "_Date"
 msgstr "_Дата"
 
@@ -47,12 +47,12 @@ msgid "_Original Date"
 msgstr "_Ориґінальна дата"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:53
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:57
 msgid "_Genre"
 msgstr "_Жанр"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:62
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "О_цінка"
@@ -71,8 +71,8 @@ msgstr "Сортувати _за…"
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:203
-#: quodlibet/browsers/playlists/main.py:668 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:906
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:919
 msgid "_Preferences"
 msgstr "Нала_штування"
 
@@ -99,7 +99,7 @@ msgstr[1] "%d альбоми"
 msgstr[2] "%d альбомів"
 
 #: quodlibet/browsers/albums/main.py:730
-#: quodlibet/browsers/covergrid/main.py:339
+#: quodlibet/browsers/covergrid/main.py:388
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
 msgstr[0] "Перезавантажити о_бкладинку альбому"
@@ -170,83 +170,11 @@ msgstr "Відображення альбомів"
 #: quodlibet/ext/songsmenu/duplicates.py:345
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
-#: quodlibet/qltk/data_editors.py:326 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:784
+#: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:766
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Закрити"
-
-#: quodlibet/browsers/audiofeeds.py:53 quodlibet/browsers/audiofeeds.py:65
-#: quodlibet/browsers/audiofeeds.py:67 quodlibet/browsers/audiofeeds.py:154
-#: quodlibet/browsers/paned/models.py:88
-#: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
-#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
-msgid "Unknown"
-msgstr "Невідомо"
-
-#: quodlibet/browsers/audiofeeds.py:215
-msgid "New Feed"
-msgstr "Нова стрічка"
-
-#: quodlibet/browsers/audiofeeds.py:216
-msgid "Enter the location of an audio feed:"
-msgstr "Введіть адресу авдіо-стрічки:"
-
-#: quodlibet/browsers/audiofeeds.py:217
-#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/qltk/bookmarks.py:62
-#: quodlibet/qltk/cbes.py:57 quodlibet/qltk/edittags.py:331
-#: quodlibet/qltk/quodlibetwindow.py:1276 quodlibet/qltk/scanbox.py:63
-msgid "_Add"
-msgstr "_Додати"
-
-#: quodlibet/browsers/audiofeeds.py:279
-msgid "Audio Feeds"
-msgstr "Авідо-стрічки"
-
-#: quodlibet/browsers/audiofeeds.py:280
-msgid "_Audio Feeds"
-msgstr "_Авдіо-стрічки"
-
-#: quodlibet/browsers/audiofeeds.py:382
-#, fuzzy
-msgid "_Add Feed…"
-msgstr "_Додати файл..."
-
-#: quodlibet/browsers/audiofeeds.py:449 quodlibet/qltk/filesel.py:260
-#: quodlibet/qltk/pluginwin.py:426
-msgid "_Refresh"
-msgstr "_Оновити"
-
-#: quodlibet/browsers/audiofeeds.py:450
-#: quodlibet/browsers/playlists/main.py:478
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/qltk/delete.py:143
-#: quodlibet/qltk/filesel.py:257 quodlibet/qltk/lyrics.py:33
-#: quodlibet/qltk/maskedbox.py:28 quodlibet/qltk/songsmenu.py:359
-msgid "_Delete"
-msgstr "_Видалити"
-
-#: quodlibet/browsers/audiofeeds.py:504
-msgid "Unable to add feed"
-msgstr "Не вдалося додати стрічку"
-
-#: quodlibet/browsers/audiofeeds.py:505
-#, python-format
-msgid ""
-"%s could not be added. The server may be down, or the location may not be an "
-"audio feed."
-msgstr ""
-"Не вдається додати <b>%s</b>. Можливо, вказаний сервер не працює, або адреса "
-"не є авдіо-стрічкою."
-
-#: quodlibet/browsers/audiofeeds.py:522
-msgid ""
-"The current audio backend does not support URLs, Audio Feeds browser "
-"disabled."
-msgstr ""
 
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
@@ -292,6 +220,15 @@ msgstr "Декілька %s значень"
 msgid "_Custom"
 msgstr "_Власний"
 
+#: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
+#: quodlibet/browsers/paned/prefs.py:120
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
+#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1289
+#: quodlibet/qltk/scanbox.py:63
+msgid "_Add"
+msgstr "_Додати"
+
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
 #: quodlibet/browsers/paned/prefs.py:124
@@ -301,7 +238,7 @@ msgstr "_Власний"
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:79 quodlibet/qltk/data_editors.py:92
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
-#: quodlibet/qltk/data_editors.py:324 quodlibet/qltk/edittags.py:555
+#: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:555
 #: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
@@ -326,15 +263,14 @@ msgstr "Налаштування колекції альбомів"
 #: quodlibet/browsers/paned/prefs.py:247
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/prefs.py:131
-#: quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
 msgid "_Apply"
 msgstr "_Застосувати"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:390
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:95
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -354,17 +290,17 @@ msgstr "_Застосувати"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/ratingsmenu.py:39 quodlibet/qltk/scanbox.py:139
-#: quodlibet/update.py:95
+#: quodlibet/qltk/quodlibetwindow.py:1416 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_Скасувати"
 
-#: quodlibet/browsers/covergrid/main.py:116
+#: quodlibet/browsers/covergrid/main.py:172
 #, fuzzy
 msgid "Cover Grid"
 msgstr "Сітка обкладинки"
 
-#: quodlibet/browsers/covergrid/main.py:117
+#: quodlibet/browsers/covergrid/main.py:173
 #, fuzzy
 msgid "_Cover Grid"
 msgstr "_Сітка обкладинки"
@@ -399,11 +335,11 @@ msgstr "Файлова система"
 msgid "_File System"
 msgstr "_Файлова система"
 
-#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:263
+#: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:267
 msgid "Unable to copy songs"
 msgstr "Не вдалося скопіювати пісню"
 
-#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:264
+#: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:268
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
 "Вибрані файли не можуть скопіюватися до іншого списку пісень або черги."
@@ -658,6 +594,16 @@ msgstr "_Панельний оглядач"
 msgid "Select _All"
 msgstr "Вибрати _все"
 
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
+#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
+#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/ext/songsmenu/fingerprint/search.py:46
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
+#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
+msgid "Unknown"
+msgstr "Невідомо"
+
 #: quodlibet/browsers/paned/models.py:106
 msgid "All"
 msgstr "Усі"
@@ -701,50 +647,58 @@ msgstr "Вміст стовпців"
 msgid "Equal pane width"
 msgstr "Рівна ширина панелей"
 
-#: quodlibet/browsers/playlists/main.py:48
-#: quodlibet/browsers/playlists/main.py:598 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:50
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Списки відтворення"
 
-#: quodlibet/browsers/playlists/main.py:49
+#: quodlibet/browsers/playlists/main.py:51
 msgid "_Playlists"
 msgstr "_Списки відтворення"
 
-#: quodlibet/browsers/playlists/main.py:166
+#: quodlibet/browsers/playlists/main.py:168
 msgid "_Remove from Playlist"
 msgstr "_Вилучити зі списку відтворення"
 
-#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:212 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Нова"
 
-#: quodlibet/browsers/playlists/main.py:212
+#: quodlibet/browsers/playlists/main.py:214
 #, fuzzy
 msgid "_Import…"
 msgstr "_Імпортувати"
 
-#: quodlibet/browsers/playlists/main.py:435
+#: quodlibet/browsers/playlists/main.py:471
 msgid "Unable to import playlist"
 msgstr "Не вдалося імпортувати список відтворення"
 
-#: quodlibet/browsers/playlists/main.py:436
+#: quodlibet/browsers/playlists/main.py:472
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet здатне імпортувати списки відтворення лише у форматах M3U та PLS."
 
-#: quodlibet/browsers/playlists/main.py:485
+#: quodlibet/browsers/playlists/main.py:514
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
+#: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
+#: quodlibet/qltk/songsmenu.py:359
+msgid "_Delete"
+msgstr "_Видалити"
+
+#: quodlibet/browsers/playlists/main.py:521
 msgid "_Rename"
 msgstr "_Перейменувати"
 
-#: quodlibet/browsers/playlists/main.py:584
+#: quodlibet/browsers/playlists/main.py:620
 msgid "Unable to rename playlist"
 msgstr "Не вдалося перейменувати список відтворення"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Імпортувати список відтворення"
 
-#: quodlibet/browsers/playlists/main.py:599
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Імпортувати"
 
@@ -794,20 +748,33 @@ msgstr ""
 "Уся інформація про вибрані списки відтворення видалиться і не можливо буде "
 "відновити."
 
-#: quodlibet/browsers/playlists/util.py:50
-#: quodlibet/browsers/playlists/util.py:136 quodlibet/util/collection.py:611
+#: quodlibet/browsers/playlists/util.py:54
+#, python-brace-format
+msgid "Extend \"{pl_name}\" with {num} additional track?"
+msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: quodlibet/browsers/playlists/util.py:60
+#, fuzzy
+msgid "_Add Tracks"
+msgstr "Трек"
+
+#: quodlibet/browsers/playlists/util.py:71
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
 msgid "New Playlist"
 msgstr "Новий список відтворення"
 
-#: quodlibet/browsers/playlists/util.py:51
+#: quodlibet/browsers/playlists/util.py:72
 msgid "Enter a name for the new playlist:"
 msgstr "Введіть назву нового списку відтворення:"
 
-#: quodlibet/browsers/playlists/util.py:52
+#: quodlibet/browsers/playlists/util.py:73
 msgid "_Create"
 msgstr ""
 
-#: quodlibet/browsers/playlists/util.py:87
+#: quodlibet/browsers/playlists/util.py:108
 #, python-format
 msgid ""
 "Importing playlist.\n"
@@ -818,19 +785,81 @@ msgstr ""
 "\n"
 "%(current)d/%(total)d пісень додано."
 
-#: quodlibet/browsers/tracks.py:32
+#: quodlibet/browsers/podcasts.py:239
+msgid "New Feed"
+msgstr "Нова стрічка"
+
+#: quodlibet/browsers/podcasts.py:240
+#, fuzzy
+msgid "Enter the podcast / audio feed location:"
+msgstr "Введіть адресу авдіо-стрічки:"
+
+#: quodlibet/browsers/podcasts.py:308
+msgid "Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:309
+msgid "_Podcasts"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:411
+#, fuzzy
+msgid "_Add Feed…"
+msgstr "_Додати файл..."
+
+#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/qltk/pluginwin.py:426
+msgid "_Refresh"
+msgstr "_Оновити"
+
+#: quodlibet/browsers/podcasts.py:479
+#, fuzzy
+msgid "Search source for new episodes"
+msgstr "Слідкувати за появою нових пісень в цьому каталозі"
+
+#: quodlibet/browsers/podcasts.py:480
+msgid "_Rebuild"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:481
+msgid "Remove all existing episodes then reload from source"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:483
+msgid "Remove this podcast and its episodes"
+msgstr ""
+
+#: quodlibet/browsers/podcasts.py:540
+msgid "Unable to add feed"
+msgstr "Не вдалося додати стрічку"
+
+#: quodlibet/browsers/podcasts.py:541
+#, fuzzy, python-format
+msgid ""
+"%s could not be added. The server may be down, or the location may not be a "
+"podcast / audio feed."
+msgstr ""
+"Не вдається додати <b>%s</b>. Можливо, вказаний сервер не працює, або адреса "
+"не є авдіо-стрічкою."
+
+#: quodlibet/browsers/podcasts.py:558
+msgid ""
+"The current audio backend does not support URLs, Podcast browser disabled."
+msgstr ""
+
+#: quodlibet/browsers/tracks.py:34
 msgid "_Limit Results"
 msgstr "_Обмежити результати"
 
-#: quodlibet/browsers/tracks.py:37
+#: quodlibet/browsers/tracks.py:39
 msgid "_Allow multiple queries"
 msgstr "_Дозволити кілька запитів"
 
-#: quodlibet/browsers/tracks.py:51 quodlibet/qltk/information.py:468
+#: quodlibet/browsers/tracks.py:53 quodlibet/qltk/information.py:468
 msgid "Track List"
 msgstr "Список доріжок"
 
-#: quodlibet/browsers/tracks.py:52
+#: quodlibet/browsers/tracks.py:54
 msgid "_Track List"
 msgstr "Список _доріжок"
 
@@ -1219,7 +1248,7 @@ msgstr "URL-джерело обкладинки"
 #, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud browser."
+"the Soundcloud and Podcasts browsers."
 msgstr ""
 "Завантажує обкладинки і привʼязує її до мітки artwork_url. Це працює з "
 "оглядачем Soundcloud."
@@ -1323,7 +1352,7 @@ msgstr "Розширені налаштування"
 msgid "Allow editing of advanced config settings."
 msgstr "Дозволити редагування розширених налаштувань."
 
-#: quodlibet/ext/events/advanced_preferences.py:257
+#: quodlibet/ext/events/advanced_preferences.py:262
 msgid "I know what I'm doing"
 msgstr "Я знаю що роблю"
 
@@ -1344,7 +1373,7 @@ msgstr "_Позиція:"
 msgid "_Cover size:"
 msgstr "Розмір _обкладинки:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:275
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:281
 msgid "Display"
 msgstr "Відображення"
 
@@ -1516,7 +1545,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:579
+#: quodlibet/qltk/prefs.py:576
 msgid "Save ratings and play _counts in tags"
 msgstr "Зберігати оцінки та _к-сть відтворень у мітках"
 
@@ -1545,7 +1574,7 @@ msgstr "_Оновити стратегію:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:760
+#: quodlibet/qltk/prefs.py:741
 msgid "Preferences"
 msgstr "Налаштування"
 
@@ -1776,7 +1805,7 @@ msgstr ""
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:392
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -1925,7 +1954,7 @@ msgstr "Змінити мову користувацького інтерфей�
 msgid "System Default"
 msgstr "Типово для системи"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:708
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:720
 msgid "A restart is required for any changes to take effect"
 msgstr "Потрібно перезапустити, щоб зміни мали ефект"
 
@@ -2106,7 +2135,7 @@ msgstr "_Пароль:"
 #: quodlibet/ext/events/musicbrainzsync.py:113
 #: quodlibet/ext/events/qlscrobbler.py:546
 #: quodlibet/ext/songsmenu/lastfmsync.py:296
-#: quodlibet/plugins/listenbrainz/__init__.py:489
+#: quodlibet/ext/events/listenbrainz/__init__.py:489
 msgid "Account"
 msgstr "Обліківка"
 
@@ -2241,29 +2270,29 @@ msgid "_Verify account data"
 msgstr "_Перевірити дані обліківки"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Artist pattern:"
 msgstr "Шаблон _виконавця:"
 
 #: quodlibet/ext/events/qlscrobbler.py:554
-#: quodlibet/plugins/listenbrainz/__init__.py:497
+#: quodlibet/ext/events/listenbrainz/__init__.py:497
 msgid "_Title pattern:"
 msgstr "Шаблон _назви:"
 
 #: quodlibet/ext/events/qlscrobbler.py:555
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "Exclude _filter:"
 msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:573
-#: quodlibet/plugins/listenbrainz/__init__.py:516
+#: quodlibet/ext/events/listenbrainz/__init__.py:516
 msgid ""
 "The pattern used to format the artist name for submission. Leave blank for "
 "default."
 msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:584
-#: quodlibet/plugins/listenbrainz/__init__.py:526
+#: quodlibet/ext/events/listenbrainz/__init__.py:526
 msgid ""
 "The pattern used to format the title for submission. Leave blank for default."
 msgstr ""
@@ -2273,12 +2302,12 @@ msgid "Songs matching this filter will not be submitted"
 msgstr "Пісні, що відповідають цьому фільтру не надсилатимуться"
 
 #: quodlibet/ext/events/qlscrobbler.py:601
-#: quodlibet/plugins/listenbrainz/__init__.py:553
+#: quodlibet/ext/events/listenbrainz/__init__.py:553
 msgid "_Offline mode (don't submit anything)"
 msgstr "Режим _Поза мережею (нічого не надсилається)"
 
 #: quodlibet/ext/events/qlscrobbler.py:605
-#: quodlibet/plugins/listenbrainz/__init__.py:557
+#: quodlibet/ext/events/listenbrainz/__init__.py:557
 msgid "Submission"
 msgstr "Надсилання"
 
@@ -2613,28 +2642,30 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-msgid "Existing files in the destination path will be deleted!"
+msgid ""
+"Existing files in the destination path will be deleted (except files named "
+"'cover.jpg')!"
 msgstr ""
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:272
+#: quodlibet/ext/events/synchronize_to_device.py:273
 msgid "Start synchronization"
 msgstr "Почати синхронізацію"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:280
+#: quodlibet/ext/events/synchronize_to_device.py:281
 msgid "Stop synchronization"
 msgstr "Зупинити синхронізацію"
 
-#: quodlibet/ext/events/synchronize_to_device.py:303
+#: quodlibet/ext/events/synchronize_to_device.py:304
 msgid "No saved searches yet, create some and come back!"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:385
+#: quodlibet/ext/events/synchronize_to_device.py:386
 msgid "Choose destination path"
 msgstr "Оберіть шлях розташування"
 
-#: quodlibet/ext/events/synchronize_to_device.py:537
+#: quodlibet/ext/events/synchronize_to_device.py:538
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
@@ -2642,43 +2673,43 @@ msgstr ""
 "Шлях експортування змінено з [{old_path}] на [{new_path}] для файлу "
 "[{filename}]"
 
-#: quodlibet/ext/events/synchronize_to_device.py:651
+#: quodlibet/ext/events/synchronize_to_device.py:652
 msgid "Starting synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:656
+#: quodlibet/ext/events/synchronize_to_device.py:657
 msgid "Synchronization preview in progress."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:672
+#: quodlibet/ext/events/synchronize_to_device.py:673
 msgid "Finished synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:681
+#: quodlibet/ext/events/synchronize_to_device.py:682
 msgid "Stopping synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:683
+#: quodlibet/ext/events/synchronize_to_device.py:684
 msgid "Synchronization preview was stopped."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:686
+#: quodlibet/ext/events/synchronize_to_device.py:687
 msgid "Synchronization preview has finished."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:716
+#: quodlibet/ext/events/synchronize_to_device.py:717
 msgid "Stopped synchronization preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:720
+#: quodlibet/ext/events/synchronize_to_device.py:721
 msgid "A different plugin was selected - stop preview"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:757
+#: quodlibet/ext/events/synchronize_to_device.py:759
 msgid "Synchronization will:"
 msgstr "Синхронізація буде:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:763
+#: quodlibet/ext/events/synchronize_to_device.py:765
 #, fuzzy, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
@@ -2686,7 +2717,7 @@ msgstr[0] "не вдалося синхронізувати {count} {file_str}"
 msgstr[1] "не вдалося синхронізувати {count} {file_str}"
 msgstr[2] "не вдалося синхронізувати {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:770
+#: quodlibet/ext/events/synchronize_to_device.py:772
 #, fuzzy, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
@@ -2694,7 +2725,7 @@ msgstr[0] "(пропущено {count} наявного {file_str})"
 msgstr[1] "(пропущено {count} наявного {file_str})"
 msgstr[2] "(пропущено {count} наявного {file_str})"
 
-#: quodlibet/ext/events/synchronize_to_device.py:780
+#: quodlibet/ext/events/synchronize_to_device.py:782
 #, fuzzy, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
@@ -2702,27 +2733,27 @@ msgstr[0] "видалено {count}/{total} {file_str}"
 msgstr[1] "видалено {count}/{total} {file_str}"
 msgstr[2] "видалено {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:830
+#: quodlibet/ext/events/synchronize_to_device.py:832
 msgid "No destination path provided"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:831
+#: quodlibet/ext/events/synchronize_to_device.py:833
 msgid "Please specify the directory where songs should be exported."
 msgstr "Будь ласка, вкажіть каталог куди експортувати пісні."
 
-#: quodlibet/ext/events/synchronize_to_device.py:838
+#: quodlibet/ext/events/synchronize_to_device.py:840
 msgid "No export pattern provided"
 msgstr "Не надано шаблону експортування"
 
-#: quodlibet/ext/events/synchronize_to_device.py:839
+#: quodlibet/ext/events/synchronize_to_device.py:841
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:849
+#: quodlibet/ext/events/synchronize_to_device.py:851
 msgid "Export path is not absolute"
 msgstr "Неабсолютний шлях експортування"
 
-#: quodlibet/ext/events/synchronize_to_device.py:850
+#: quodlibet/ext/events/synchronize_to_device.py:852
 msgid ""
 "The pattern\n"
 "\n"
@@ -2738,31 +2769,31 @@ msgstr ""
 "містить „/“, але починається не з кореневого каталогу. Для запобігання "
 "помилок в назвах каталогів, почніть шаблон з кореневого каталогу."
 
-#: quodlibet/ext/events/synchronize_to_device.py:872
+#: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
 msgstr "Не вибрано збережених пошуків"
 
-#: quodlibet/ext/events/synchronize_to_device.py:873
+#: quodlibet/ext/events/synchronize_to_device.py:875
 msgid "Please select at least one saved search."
 msgstr "Будь ласка, виберіть останній збережений пошук."
 
-#: quodlibet/ext/events/synchronize_to_device.py:882
+#: quodlibet/ext/events/synchronize_to_device.py:884
 msgid "No songs in the selected saved searches"
 msgstr "Нема пісень у вибраному збереженому пошуку"
 
-#: quodlibet/ext/events/synchronize_to_device.py:883
+#: quodlibet/ext/events/synchronize_to_device.py:885
 msgid "All selected saved searches are empty."
 msgstr "Усі вибрані збережені пошуки порожні."
 
-#: quodlibet/ext/events/synchronize_to_device.py:886
+#: quodlibet/ext/events/synchronize_to_device.py:888
 msgid "Found {} songs to synchronize"
 msgstr "Знайдено {} пісень для синхронізації"
 
-#: quodlibet/ext/events/synchronize_to_device.py:905
+#: quodlibet/ext/events/synchronize_to_device.py:907
 msgid "Mismatch between destination path and export pattern"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:907
+#: quodlibet/ext/events/synchronize_to_device.py:909
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2771,61 +2802,61 @@ msgid ""
 "{}"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:945
+#: quodlibet/ext/events/synchronize_to_device.py:947
 msgid "Unable to sync"
 msgstr "Не можливо синхронізувати"
 
-#: quodlibet/ext/events/synchronize_to_device.py:946
+#: quodlibet/ext/events/synchronize_to_device.py:948
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr "Не можливо почати синхронізацію, коли відсортовано за <b>Станом</b>."
 
-#: quodlibet/ext/events/synchronize_to_device.py:950
+#: quodlibet/ext/events/synchronize_to_device.py:952
 msgid "Starting song synchronization"
 msgstr "Початок синхронізації пісні"
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:954
+#: quodlibet/ext/events/synchronize_to_device.py:956
 msgid "Synchronization in progress."
 msgstr "Синхронізація в процесі."
 
-#: quodlibet/ext/events/synchronize_to_device.py:966
+#: quodlibet/ext/events/synchronize_to_device.py:968
 msgid "Finished song synchronization"
 msgstr "Завершено синхронізацію пісні"
 
-#: quodlibet/ext/events/synchronize_to_device.py:975
+#: quodlibet/ext/events/synchronize_to_device.py:977
 msgid "Stopping song synchronization"
 msgstr "Зупинено синхронізацію пісні"
 
-#: quodlibet/ext/events/synchronize_to_device.py:976
+#: quodlibet/ext/events/synchronize_to_device.py:978
 msgid "Synchronization was stopped."
 msgstr "Синхронізацію зупинено."
 
-#: quodlibet/ext/events/synchronize_to_device.py:978
+#: quodlibet/ext/events/synchronize_to_device.py:980
 msgid "Synchronization has finished."
 msgstr "Синхронізацію завершено."
 
-#: quodlibet/ext/events/synchronize_to_device.py:1011
+#: quodlibet/ext/events/synchronize_to_device.py:1013
 msgid "Stopped song synchronization"
 msgstr "Зупинено синхронізацію пісні"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1015
+#: quodlibet/ext/events/synchronize_to_device.py:1017
 msgid "A different plugin was selected - stop synchronization"
 msgstr ""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1018
+#: quodlibet/ext/events/synchronize_to_device.py:1020
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr "{tag} - \"{filename}\""
 
-#: quodlibet/ext/events/synchronize_to_device.py:1087
+#: quodlibet/ext/events/synchronize_to_device.py:1090
 msgid "Removing \"{}\""
 msgstr "Вилучення „{}“"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1106
+#: quodlibet/ext/events/synchronize_to_device.py:1111
 msgid "Synchronization has:"
 msgstr "Синхронізація має:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1114
+#: quodlibet/ext/events/synchronize_to_device.py:1119
 #, fuzzy, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
@@ -2833,7 +2864,7 @@ msgstr[0] "записано {count}/{total} {file_str}"
 msgstr[1] "записано {count}/{total} {file_str}"
 msgstr[2] "записано {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1121
+#: quodlibet/ext/events/synchronize_to_device.py:1126
 #, fuzzy, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
@@ -2841,7 +2872,7 @@ msgstr[0] "(пропущено {count} наявного {file_str})"
 msgstr[1] "(пропущено {count} наявного {file_str})"
 msgstr[2] "(пропущено {count} наявного {file_str})"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1130
+#: quodlibet/ext/events/synchronize_to_device.py:1135
 #, fuzzy, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
@@ -2849,7 +2880,7 @@ msgstr[0] "видалено {count}/{total} {file_str}"
 msgstr[1] "видалено {count}/{total} {file_str}"
 msgstr[2] "видалено {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1137
+#: quodlibet/ext/events/synchronize_to_device.py:1142
 #, fuzzy, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
@@ -2857,7 +2888,7 @@ msgstr[0] "видалено {count}/{total} {file_str}"
 msgstr[1] "видалено {count}/{total} {file_str}"
 msgstr[2] "видалено {count}/{total} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1144
+#: quodlibet/ext/events/synchronize_to_device.py:1149
 #, fuzzy, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
@@ -2865,7 +2896,7 @@ msgstr[0] "не вдалося синхронізувати {count} {file_str}"
 msgstr[1] "не вдалося синхронізувати {count} {file_str}"
 msgstr[2] "не вдалося синхронізувати {count} {file_str}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1151
+#: quodlibet/ext/events/synchronize_to_device.py:1156
 #, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
@@ -3000,27 +3031,27 @@ msgid "_Show %(application-name)s"
 msgstr "_Показати %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:183 quodlibet/qltk/quodlibetwindow.py:936
-#: quodlibet/qltk/quodlibetwindow.py:1142
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:949
+#: quodlibet/qltk/quodlibetwindow.py:1155
 #, fuzzy
 msgid "_Play"
 msgstr "_Списки програвання"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:185 quodlibet/qltk/quodlibetwindow.py:1144
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1157
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
 msgstr "Програвач"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:190 quodlibet/qltk/quodlibetwindow.py:931
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:944
 #, fuzzy
 msgid "Pre_vious"
 msgstr "_Попередній перегляд"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:194 quodlibet/qltk/quodlibetwindow.py:941
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:954
 msgid "_Next"
 msgstr "_Наступна"
 
@@ -3038,18 +3069,18 @@ msgid "Stop _After This Song"
 msgstr "Зупинитись після цієї пісні"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:902
+#: quodlibet/qltk/quodlibetwindow.py:915
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Відкрити новий переглядач"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:921 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:934 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Редагувати _теги"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:864 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:877 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Інформація"
 
@@ -3059,11 +3090,12 @@ msgid "Play_lists"
 msgstr "Списки програвання"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:916
+#: quodlibet/qltk/quodlibetwindow.py:929
 msgid "_Quit"
 msgstr "_Вийти"
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:74
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:78
+#: quodlibet/qltk/prefs.py:450 quodlibet/qltk/prefs.py:727
 msgid "Behavior"
 msgstr "Поведінка"
 
@@ -4041,7 +4073,7 @@ msgstr ""
 msgid "Your current working directory is:"
 msgstr "Ваш поточний робочий каталог:"
 
-#: quodlibet/ext/songsmenu/console.py:618
+#: quodlibet/ext/songsmenu/console.py:617
 #, fuzzy
 msgid "Completion"
 msgstr "Зʼєднання"
@@ -4052,7 +4084,7 @@ msgid "Download Cover Art"
 msgstr "Список альбомів"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-msgid "Downloads high-quality album coversusing Quod Libet cover plugins."
+msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
@@ -5008,7 +5040,7 @@ msgstr "Мітку „%s“ не знайдено."
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
-#: quodlibet/qltk/prefs.py:704 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:680 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Бібліотека"
 
@@ -5043,6 +5075,25 @@ msgstr "Видалити фільтри активного переглядач�
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
+
+#: quodlibet/library/playlist.py:79
+#, python-format
+msgid ""
+"No library songs found in legacy playlist %(filename)r (of size %(size).1f "
+"kB)."
+msgstr ""
+
+#: quodlibet/library/playlist.py:82
+msgid "Have you changed library root dir(s), but not this playlist?"
+msgstr ""
+
+#: quodlibet/library/playlist.py:97
+#, python-format
+msgid "%d playlist failed to convert"
+msgid_plural "%d playlists failed to convert"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
 
 #: quodlibet/main.py:48
 #, fuzzy
@@ -5091,7 +5142,7 @@ msgid "Too many arguments"
 msgstr ""
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:372
+#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:375
 #, fuzzy
 msgid "Description"
 msgstr "опис"
@@ -5344,18 +5395,19 @@ msgstr ""
 #: quodlibet/player/gstbe/prefs.py:26
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
-"pipeline. In case the pipeline contains a sink, it will be used instead of "
-"the default one."
+"pipeline. If the pipeline contains a sink, it will be used instead of the "
+"default one."
 msgstr ""
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:45
+#. Translators: s = seconds
+#: quodlibet/player/gstbe/prefs.py:46
 #, fuzzy, python-format
-msgid "%.1f seconds"
-msgstr "%d секунда"
+msgid "%.1f s"
+msgstr "%.1f дБ"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -5371,19 +5423,19 @@ msgid ""
 "GStreamer versions"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:75
+#: quodlibet/player/gstbe/prefs.py:74
 msgid "Use JACK for playback if available"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:77
+#: quodlibet/player/gstbe/prefs.py:76
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:79
+#: quodlibet/player/gstbe/prefs.py:78
 msgid "Auto-connect to JACK output devices"
 msgstr ""
 
-#: quodlibet/player/gstbe/prefs.py:81
+#: quodlibet/player/gstbe/prefs.py:80
 msgid "Tells `jackaudiosink` to auto-connect"
 msgstr ""
 
@@ -5419,13 +5471,13 @@ msgstr ""
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:229
+#: quodlibet/ext/events/listenbrainz/__init__.py:229
 msgid ""
 "Please visit the Plugins window to set ListenBrainz up. Until then, listens "
 "will not be submitted."
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:301
+#: quodlibet/ext/events/listenbrainz/__init__.py:301
 #, python-format
 msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
@@ -5433,31 +5485,31 @@ msgid ""
 "will not be submitted."
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:356
+#: quodlibet/ext/events/listenbrainz/__init__.py:356
 #, fuzzy
 msgid "ListenBrainz Submission"
 msgstr "Надсилання"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:357
+#: quodlibet/ext/events/listenbrainz/__init__.py:357
 msgid "Submit listens to ListenBrainz."
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:455
+#: quodlibet/ext/events/listenbrainz/__init__.py:455
 #, fuzzy
 msgid "User _token:"
 msgstr "_Назва:"
 
-#: quodlibet/plugins/listenbrainz/__init__.py:498
+#: quodlibet/ext/events/listenbrainz/__init__.py:498
 msgid "T_ags:"
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:536
+#: quodlibet/ext/events/listenbrainz/__init__.py:536
 msgid ""
 "List of tags to include in the submission. Comma-separated, use double-"
 "quotes if necessary."
 msgstr ""
 
-#: quodlibet/plugins/listenbrainz/__init__.py:545
+#: quodlibet/ext/events/listenbrainz/__init__.py:545
 msgid "Songs matching this filter will not be submitted."
 msgstr ""
 
@@ -5615,18 +5667,28 @@ msgstr "Невідомо"
 msgid "_Add…"
 msgstr "_Додати"
 
-#: quodlibet/qltk/data_editors.py:363
+#: quodlibet/qltk/data_editors.py:319
+#, fuzzy
+msgid "_Edit"
+msgstr "_Змінити зовнішній вигляд..."
+
+#: quodlibet/qltk/data_editors.py:366
 msgid "Tag expression"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:393
+#: quodlibet/qltk/data_editors.py:396 quodlibet/qltk/data_editors.py:406
 msgid "Tag expression e.g. people:real or ~album~year"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:394
+#: quodlibet/qltk/data_editors.py:397
 #, fuzzy
 msgid "Enter new tag"
 msgstr "Фільтрувати за тегом"
+
+#: quodlibet/qltk/data_editors.py:407
+#, fuzzy
+msgid "Edit tag expression"
+msgstr "Значення є регулярним виразом"
 
 #: quodlibet/qltk/delete.py:37
 #, fuzzy
@@ -5912,15 +5974,15 @@ msgstr ""
 msgid "_Redo"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:956
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:969
 msgid "_About"
 msgstr "_Про програму"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:978
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:991
 msgid "_Check for Updates…"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:911
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:924
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Розширення"
@@ -6035,7 +6097,7 @@ msgid "performers"
 msgstr "виконавці"
 
 #: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
-#: quodlibet/qltk/songlistcolumns.py:273
+#: quodlibet/qltk/songlistcolumns.py:275
 msgid "Never"
 msgstr "Ніколи"
 
@@ -6200,8 +6262,7 @@ msgstr ""
 "Теги було змінено, але зміни не були збережені. Зберегти їх чи повернути "
 "зміни?"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/prefs.py:640
-#: quodlibet/qltk/prefs.py:647 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:63
 #: quodlibet/qltk/tracknumbers.py:116
 #, fuzzy
 msgid "_Revert"
@@ -6221,21 +6282,21 @@ msgstr ""
 msgid "_Replace File"
 msgstr "Перейменувати файли"
 
-#: quodlibet/qltk/notif.py:182
+#: quodlibet/qltk/notif.py:183
 msgid "Active tasks"
 msgstr ""
 
-#: quodlibet/qltk/notif.py:188
+#: quodlibet/qltk/notif.py:189
 #, python-format
 msgid "%d tasks running"
 msgstr ""
 
-#: quodlibet/qltk/playorder.py:256
+#: quodlibet/qltk/playorder.py:258
 #, fuzzy
 msgid "Toggle shuffle mode"
 msgstr "Перемикнути режим програвання/паузи"
 
-#: quodlibet/qltk/playorder.py:272
+#: quodlibet/qltk/playorder.py:274
 #, fuzzy
 msgid "Toggle repeat mode"
 msgstr "Перемикнути режим програвання/паузи"
@@ -6320,231 +6381,233 @@ msgstr ""
 msgid "Show _Errors"
 msgstr "_Помилки"
 
-#: quodlibet/qltk/prefs.py:45
+#: quodlibet/qltk/prefs.py:49
 msgid "_Disc"
 msgstr "_Диск"
 
-#: quodlibet/qltk/prefs.py:46
+#: quodlibet/qltk/prefs.py:50
 msgid "_Track"
 msgstr "_Номер треку"
 
-#: quodlibet/qltk/prefs.py:47
+#: quodlibet/qltk/prefs.py:51
 #, fuzzy
 msgid "Grou_ping"
 msgstr "групування"
 
-#: quodlibet/qltk/prefs.py:49
+#: quodlibet/qltk/prefs.py:53
 msgid "_Artist"
 msgstr "_Виконавець"
 
-#: quodlibet/qltk/prefs.py:50
+#: quodlibet/qltk/prefs.py:54
 msgid "Al_bum"
 msgstr "_Альбом"
 
-#: quodlibet/qltk/prefs.py:55
+#: quodlibet/qltk/prefs.py:59
 msgid "_Filename"
 msgstr "Назва _файлу"
 
-#: quodlibet/qltk/prefs.py:57
+#: quodlibet/qltk/prefs.py:61
 msgid "_Length"
 msgstr "_Тривалість"
 
-#: quodlibet/qltk/prefs.py:64
+#: quodlibet/qltk/prefs.py:68
 msgid "_Jump to playing song automatically"
 msgstr ""
 "Автоматично переходити _до відтворюваної \n"
 "пісні"
 
-#: quodlibet/qltk/prefs.py:66
+#: quodlibet/qltk/prefs.py:70
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "При зміні пісні переходити до неї в списку програвання"
 
-#: quodlibet/qltk/prefs.py:68
+#: quodlibet/qltk/prefs.py:72
 msgid "Sort songs when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:70
+#: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:87
+#: quodlibet/qltk/prefs.py:90
 msgid "_Others:"
 msgstr "_Інші:"
 
-#: quodlibet/qltk/prefs.py:93
+#. Stock edit doesn't have ellipsis chars.
+#: quodlibet/qltk/prefs.py:95
 #, fuzzy
 msgid "_Edit…"
 msgstr "_Змінити зовнішній вигляд..."
 
-#: quodlibet/qltk/prefs.py:96
+#: quodlibet/qltk/prefs.py:98
 msgid "Add or remove additional column headers"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:105
+#: quodlibet/qltk/prefs.py:107
 msgid "Visible Columns"
 msgstr "Стовпець"
 
-#: quodlibet/qltk/prefs.py:108
+#: quodlibet/qltk/prefs.py:129
 msgid "Title includes _version"
 msgstr "Назва включає _версію"
 
-#: quodlibet/qltk/prefs.py:110
-#, fuzzy
-msgid "Artist includes all _people"
-msgstr "Назва включає _версію"
-
-#: quodlibet/qltk/prefs.py:112
+#: quodlibet/qltk/prefs.py:130
 #, fuzzy
 msgid "Album includes _disc subtitle"
 msgstr "Альбом включає _частину"
 
-#: quodlibet/qltk/prefs.py:114
+#: quodlibet/qltk/prefs.py:131
+#, fuzzy
+msgid "Artist includes all _people"
+msgstr "Назва включає _версію"
+
+#: quodlibet/qltk/prefs.py:132
 msgid "Filename includes _folder"
 msgstr "Назва файлу включає _каталог"
 
-#: quodlibet/qltk/prefs.py:127
+#: quodlibet/qltk/prefs.py:133
 #, fuzzy
 msgid "Column Preferences"
 msgstr "Налаштування"
 
-#: quodlibet/qltk/prefs.py:133
+#: quodlibet/qltk/prefs.py:136
+#, fuzzy
+msgid "_Update Columns"
+msgstr "Стовпець"
+
+#: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:148 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:152 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Список пісень"
 
-#: quodlibet/qltk/prefs.py:231
+#: quodlibet/qltk/prefs.py:237
 #, fuzzy
 msgid "Edit Columns"
 msgstr "Стовпець"
 
-#: quodlibet/qltk/prefs.py:268
+#: quodlibet/qltk/prefs.py:274
 msgid "Duration totals"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:280
+#: quodlibet/qltk/prefs.py:285
 msgid "_Global filter:"
 msgstr "_Загальний фільтр"
 
-#: quodlibet/qltk/prefs.py:286
+#: quodlibet/qltk/prefs.py:290
 msgid "Apply this query in addition to all others"
 msgstr ""
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:292
+#: quodlibet/qltk/prefs.py:294
 #, fuzzy
 msgctxt "heading"
 msgid "Search"
 msgstr "Пошук"
 
-#: quodlibet/qltk/prefs.py:296 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:298 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Вибір пісень"
 
-#: quodlibet/qltk/prefs.py:302
+#. Ratings
+#: quodlibet/qltk/prefs.py:303
 msgid "Confirm _multiple ratings"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:304
+#: quodlibet/qltk/prefs.py:305
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:307
+#: quodlibet/qltk/prefs.py:308
 msgid "Enable _one-click ratings"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:309
+#: quodlibet/qltk/prefs.py:310
 #, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "При зміні пісні переходити до неї в списку програвання"
 
-#: quodlibet/qltk/prefs.py:315 quodlibet/qltk/prefs.py:681
+#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:657
 #, fuzzy
 msgid "Ratings"
 msgstr "_Рейтинг"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:321
+#: quodlibet/qltk/prefs.py:322
 msgid "Prefer _embedded art"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:323
+#: quodlibet/qltk/prefs.py:324
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:330
+#: quodlibet/qltk/prefs.py:329
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:334
-msgid "_Preferred image filename(s):"
+#: quodlibet/qltk/prefs.py:333
+msgid "_Preferred fixed image filename(s)"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:349
+#: quodlibet/qltk/prefs.py:351
 #, fuzzy
 msgid "Album Art"
 msgstr "Список альбомів"
 
-#: quodlibet/qltk/prefs.py:370
+#: quodlibet/qltk/prefs.py:384
 #, fuzzy
 msgid "Playback"
 msgstr "Призупинити програвання"
 
-#: quodlibet/qltk/prefs.py:375
+#: quodlibet/qltk/prefs.py:391
 msgid "Output Configuration"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:386
+#: quodlibet/qltk/prefs.py:398
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:389
+#: quodlibet/qltk/prefs.py:401
 #, fuzzy
-msgid "_Fall-back gain (dB):"
+msgid "_Fall-back gain:"
 msgstr "Приріст гучності (дБ):"
 
-#: quodlibet/qltk/prefs.py:400
+#: quodlibet/qltk/prefs.py:410
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:403
+#: quodlibet/qltk/prefs.py:413
 #, fuzzy
-msgid "_Pre-amp gain (dB):"
+msgid "_Pre-amp gain:"
 msgstr "Приріст гучності (дБ):"
 
-#: quodlibet/qltk/prefs.py:408
+#: quodlibet/qltk/prefs.py:419
 #, fuzzy
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "Корегування гучності Replay Gain"
 
-#: quodlibet/qltk/prefs.py:433
+#: quodlibet/qltk/prefs.py:436
 #, fuzzy
 msgid "Replay Gain Volume Adjustment"
 msgstr "Корегування гучності Replay Gain"
 
-#: quodlibet/qltk/prefs.py:440
+#: quodlibet/qltk/prefs.py:444
 msgid "_Continue playback on startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:442
+#: quodlibet/qltk/prefs.py:447
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
-
-#: quodlibet/qltk/prefs.py:446
-#, fuzzy
-msgid "Startup"
-msgstr "_Імпортувати"
 
 #: quodlibet/qltk/prefs.py:473
 msgid "_Default rating:"
@@ -6567,21 +6630,21 @@ msgstr ""
 msgid "_Bayesian averaging amount:"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:587
+#: quodlibet/qltk/prefs.py:583
 msgid "_Email:"
 msgstr "_Електронна пошта:"
 
-#: quodlibet/qltk/prefs.py:589
+#: quodlibet/qltk/prefs.py:585
 #, fuzzy
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Рейтинги та лічильники програвань будуть прив'язані до цієї адреси"
 
-#: quodlibet/qltk/prefs.py:609
+#: quodlibet/qltk/prefs.py:603
 #, fuzzy
-msgid "Auto-save tag changes"
+msgid "_Auto-save tag changes"
 msgstr "Скасувати зміни в тегу?"
 
-#: quodlibet/qltk/prefs.py:611
+#: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 
@@ -6591,79 +6654,79 @@ msgid ""
 "list is space-separated."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:630
+#: quodlibet/qltk/prefs.py:623
+#, fuzzy
+msgid "Split _tag on:"
+msgstr "_Розділяти по:"
+
+#: quodlibet/qltk/prefs.py:636
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
 "characters."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:643
-#, fuzzy
-msgid "Split _tag on:"
-msgstr "_Розділяти по:"
-
-#: quodlibet/qltk/prefs.py:650
+#: quodlibet/qltk/prefs.py:641
 #, fuzzy
 msgid "Split _subtag on:"
 msgstr "_Розділяти по:"
 
-#: quodlibet/qltk/prefs.py:675
+#: quodlibet/qltk/prefs.py:651
 #, fuzzy
 msgid "Tags"
 msgstr "Редагувати теги"
 
-#: quodlibet/qltk/prefs.py:678
+#: quodlibet/qltk/prefs.py:654
 msgid "Tag Editing"
 msgstr "Редагування тегів"
 
-#: quodlibet/qltk/prefs.py:696
+#: quodlibet/qltk/prefs.py:672
 #, fuzzy
 msgid "Updating for new ratings"
 msgstr "_Нова станція"
 
-#: quodlibet/qltk/prefs.py:706
-#, fuzzy
-msgid "Scan library _on start"
-msgstr "_Оновити бібліотеку"
-
-#: quodlibet/qltk/prefs.py:710
-msgid "_Watch directories for changes"
-msgstr ""
-
-#: quodlibet/qltk/prefs.py:711
-msgid ""
-"Watch library directories for external file additions, deletions and renames."
-msgstr ""
-
-#: quodlibet/qltk/prefs.py:721 quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1003
 #, fuzzy
 msgid "_Scan Library"
 msgstr "_Пошук бібліотекою"
 
-#: quodlibet/qltk/prefs.py:723 quodlibet/qltk/quodlibetwindow.py:1052
+#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1065
 msgid "Check for changes in your library"
 msgstr "Перевірити наявність змін в бібліотеці"
 
-#: quodlibet/qltk/prefs.py:728
+#: quodlibet/qltk/prefs.py:692
 #, fuzzy
 msgid "Re_build Library"
 msgstr "_Перезавантажити бібліотеку"
 
-#: quodlibet/qltk/prefs.py:731
+#: quodlibet/qltk/prefs.py:695
 #, fuzzy
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Перезавантажити всі пісні в бібліотеці (це може зайняти багато часу)"
 
-#: quodlibet/qltk/prefs.py:743
-#, fuzzy
-msgid "Scan Directories"
-msgstr "_Сканувати каталоги"
-
-#: quodlibet/qltk/prefs.py:749
+#: quodlibet/qltk/prefs.py:710
 #, fuzzy
 msgid "Hidden Songs"
 msgstr "Немає пісень"
+
+#: quodlibet/qltk/prefs.py:718
+#, fuzzy
+msgid "Scan library _on start"
+msgstr "_Оновити бібліотеку"
+
+#: quodlibet/qltk/prefs.py:722
+msgid "_Watch directories for changes"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:723
+msgid ""
+"Watch library directories for external file additions, deletions and renames."
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:733
+#, fuzzy
+msgid "Scan Directories"
+msgstr "_Сканувати каталоги"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, fuzzy, python-format
@@ -6724,152 +6787,165 @@ msgstr[0] "%(count)d пісня (%(time)s)"
 msgstr[1] "%(count)d пісні (%(time)s)"
 msgstr[2] "%(count)d пісень (%(time)s)"
 
-#: quodlibet/qltk/quodlibetwindow.py:198
+#: quodlibet/qltk/quodlibetwindow.py:199
 msgid "_Browse Library"
 msgstr "_Переглянути бібліотеку"
 
-#: quodlibet/qltk/quodlibetwindow.py:348
+#: quodlibet/qltk/quodlibetwindow.py:349
 #, fuzzy
 msgid "Toggle queue visibility"
 msgstr "Показати/сховати головне вікно"
 
-#: quodlibet/qltk/quodlibetwindow.py:376
+#: quodlibet/qltk/quodlibetwindow.py:377
 #, fuzzy
 msgid "Playback Error"
 msgstr "Призупинити програвання"
 
-#: quodlibet/qltk/quodlibetwindow.py:384
+#: quodlibet/qltk/quodlibetwindow.py:385
 #, fuzzy
 msgid "Set up library directories?"
 msgstr "Вибір каталогів"
 
-#: quodlibet/qltk/quodlibetwindow.py:385
+#: quodlibet/qltk/quodlibetwindow.py:386
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:391
+#: quodlibet/qltk/quodlibetwindow.py:392
 msgid "_Not Now"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:392
+#: quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Set Up"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:845
+#: quodlibet/qltk/quodlibetwindow.py:858
 msgid "Unable to add songs"
 msgstr "Не вдається додати пісні"
 
-#: quodlibet/qltk/quodlibetwindow.py:846 quodlibet/qltk/quodlibetwindow.py:1286
+#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1299
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> використовує протокол, що не підтримується."
 
-#: quodlibet/qltk/quodlibetwindow.py:869
+#: quodlibet/qltk/quodlibetwindow.py:882
 msgid "_Jump to Playing Song"
 msgstr "_Перейти до відтворюваної пісні"
 
-#: quodlibet/qltk/quodlibetwindow.py:876
+#: quodlibet/qltk/quodlibetwindow.py:889
 #, fuzzy
 msgid "_File"
 msgstr "Файл"
 
-#: quodlibet/qltk/quodlibetwindow.py:877
+#: quodlibet/qltk/quodlibetwindow.py:890
 #, fuzzy
 msgid "_Song"
 msgstr "Пісні"
 
-#: quodlibet/qltk/quodlibetwindow.py:878
+#: quodlibet/qltk/quodlibetwindow.py:891
 msgid "_View"
 msgstr "_Вигляд"
 
-#: quodlibet/qltk/quodlibetwindow.py:879
+#: quodlibet/qltk/quodlibetwindow.py:892
 #, fuzzy
 msgid "_Browse"
 msgstr "Вибір пісень"
 
-#: quodlibet/qltk/quodlibetwindow.py:880
+#: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_Control"
 msgstr "_Керування"
 
-#: quodlibet/qltk/quodlibetwindow.py:881
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_Help"
 msgstr "_Довідка"
 
-#: quodlibet/qltk/quodlibetwindow.py:887
+#: quodlibet/qltk/quodlibetwindow.py:900
 #, fuzzy
 msgid "_Add a Folder…"
 msgstr "_Додати каталог..."
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:905
 #, fuzzy
 msgid "_Add a File…"
 msgstr "_Додати файл..."
 
-#: quodlibet/qltk/quodlibetwindow.py:897
+#: quodlibet/qltk/quodlibetwindow.py:910
 #, fuzzy
 msgid "_Add a Location…"
 msgstr "Додати адресу"
 
-#: quodlibet/qltk/quodlibetwindow.py:926
+#: quodlibet/qltk/quodlibetwindow.py:939
 #, fuzzy
 msgid "Edit Bookmarks…"
 msgstr "_Редагувати закладки..."
 
-#: quodlibet/qltk/quodlibetwindow.py:946
+#: quodlibet/qltk/quodlibetwindow.py:959
 #, fuzzy
 msgid "Stop After This Song"
 msgstr "Зупинитись після цієї пісні"
 
-#: quodlibet/qltk/quodlibetwindow.py:952
+#: quodlibet/qltk/quodlibetwindow.py:965
 msgid "_Keyboard Shortcuts"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:961
+#: quodlibet/qltk/quodlibetwindow.py:974
 msgid "Online Help"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:970
+#: quodlibet/qltk/quodlibetwindow.py:983
 #, fuzzy
 msgid "Search Help"
 msgstr "Пошук"
 
-#: quodlibet/qltk/quodlibetwindow.py:1274
+#: quodlibet/qltk/quodlibetwindow.py:1287
 msgid "Add a Location"
 msgstr "Додати адресу"
 
-#: quodlibet/qltk/quodlibetwindow.py:1275
+#: quodlibet/qltk/quodlibetwindow.py:1288
 msgid "Enter the location of an audio file:"
 msgstr "Введіть адресу аудіо-файлу:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1280
-#: quodlibet/qltk/quodlibetwindow.py:1285
+#: quodlibet/qltk/quodlibetwindow.py:1293
+#: quodlibet/qltk/quodlibetwindow.py:1298
 msgid "Unable to add location"
 msgstr "Не вдалося додати адресу"
 
-#: quodlibet/qltk/quodlibetwindow.py:1281
+#: quodlibet/qltk/quodlibetwindow.py:1294
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> не є правильною адресою."
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1316
 msgid "Add Music"
 msgstr "Додати музику"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1307 quodlibet/qltk/scanbox.py:124
 #, fuzzy
 msgid "_Add Folders"
 msgstr "_Додати каталог..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1301
+#: quodlibet/qltk/quodlibetwindow.py:1314
 #, fuzzy
 msgid "Music Files"
 msgstr "Музичний програвач"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1316
 #, fuzzy
 msgid "_Add Files"
 msgstr "_Додати файл..."
+
+#: quodlibet/qltk/quodlibetwindow.py:1407
+#, fuzzy, python-format
+msgid "Are you sure you want to enqueue %d song?"
+msgid_plural "Are you sure you want to enqueue %d songs?"
+msgstr[0] "Ви дійсно хочете видалити список відтворення '%s'?"
+msgstr[1] "Ви дійсно хочете видалити список відтворення '%s'?"
+msgstr[2] "Ви дійсно хочете видалити список відтворення '%s'?"
+
+#: quodlibet/qltk/quodlibetwindow.py:1417
+#, fuzzy
+msgid "_Enqueue"
+msgstr "_Черга"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7216,46 +7292,46 @@ msgstr ""
 msgid "Select all songs in all panes"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:386
+#: quodlibet/qltk/songlist.py:390
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Фільтрувати по %s"
 
-#: quodlibet/qltk/songlist.py:1154
+#: quodlibet/qltk/songlist.py:1174
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Альбом"
 
-#: quodlibet/qltk/songlist.py:1155
+#: quodlibet/qltk/songlist.py:1175
 msgid "_Track Headers"
 msgstr "_Трек"
 
-#: quodlibet/qltk/songlist.py:1156
+#: quodlibet/qltk/songlist.py:1176
 msgid "_Album Headers"
 msgstr "_Альбом"
 
-#: quodlibet/qltk/songlist.py:1157
+#: quodlibet/qltk/songlist.py:1177
 msgid "_People Headers"
 msgstr "_Люди"
 
-#: quodlibet/qltk/songlist.py:1158
+#: quodlibet/qltk/songlist.py:1178
 msgid "_Date Headers"
 msgstr "_Дата"
 
-#: quodlibet/qltk/songlist.py:1159
+#: quodlibet/qltk/songlist.py:1179
 msgid "_File Headers"
 msgstr "_Файл"
 
-#: quodlibet/qltk/songlist.py:1160
+#: quodlibet/qltk/songlist.py:1180
 msgid "_Production Headers"
 msgstr "_Виробництво"
 
-#: quodlibet/qltk/songlist.py:1175
+#: quodlibet/qltk/songlist.py:1195
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Налаштувати заголовки..."
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1200
 msgid "_Expand Column"
 msgstr ""
 
@@ -7453,18 +7529,18 @@ msgstr "_Попередній перегляд"
 msgid "and %d more…"
 msgstr "%d інших..."
 
-#: quodlibet/qltk/wlw.py:199
+#: quodlibet/qltk/wlw.py:200
 msgid "Saving the songs you changed."
 msgstr "Збереження змінених вами пісень."
 
-#: quodlibet/qltk/wlw.py:200
+#: quodlibet/qltk/wlw.py:201
 #, python-format
 msgid ""
 "%(current)d/%(total)d songs saved\n"
 "(%(remaining)s remaining)"
 msgstr ""
 
-#: quodlibet/qltk/wlw.py:233
+#: quodlibet/qltk/wlw.py:234
 #, fuzzy, python-format
 msgid "%(current)s of %(all)s"
 msgstr "Перенесення %d/%d."
@@ -8074,6 +8150,20 @@ msgstr ""
 "підписки. Також має надзвичайно гнучкі можливості для редагування та пошуку "
 "міток метаданих."
 
+#, fuzzy, python-format
+#~ msgid "%.1f seconds"
+#~ msgstr "%d секунда"
+
+#, fuzzy
+#~ msgid "Startup"
+#~ msgstr "_Імпортувати"
+
+#~ msgid "Audio Feeds"
+#~ msgstr "Авідо-стрічки"
+
+#~ msgid "_Audio Feeds"
+#~ msgstr "_Авдіо-стрічки"
+
 #~ msgid "New"
 #~ msgstr "Новий"
 
@@ -8267,10 +8357,6 @@ msgstr ""
 #~ msgid "_Download"
 #~ msgstr "_Завантажити"
 
-#, fuzzy
-#~ msgid "_Edit"
-#~ msgstr "_Змінити зовнішній вигляд..."
-
 #~ msgid "_Copy to Device"
 #~ msgstr "_Копіювати до пристрою"
 
@@ -8280,9 +8366,6 @@ msgstr ""
 
 #~ msgid "Unable to download lyrics."
 #~ msgstr "Не вдалося завантажити текст пісні."
-
-#~ msgid "Watch this folder for new songs"
-#~ msgstr "Слідкувати за появою нових пісень в цьому каталозі"
 
 #~ msgid "Set or toggle the playback order"
 #~ msgstr "Перемикнути порядок програвання"

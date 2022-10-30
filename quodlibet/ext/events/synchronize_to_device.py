@@ -849,10 +849,10 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         except ValueError:
             self._show_sync_error(
                 _('Export path is not absolute'),
-                _('The pattern\n\n<b>{}</b>\n\ncontains "/" but does not start '
+                _('The pattern\n\n{}\n\ncontains "/" but does not start '
                   'from root. Please provide an absolute destination path by '
                   'making sure it starts with / or ~/.')
-                .format(util.escape(full_export_path)))
+                .format(util.bold(full_export_path)))
             return None, None
 
         return destination_path, pattern

@@ -14,7 +14,7 @@ from gi.repository import Pango
 from gi.repository import Gst
 from gi.repository import GLib
 
-from quodlibet import print_d, ngettext, C_, _
+from quodlibet import print_d, ngettext, C_, _, util
 from quodlibet.plugins import PluginConfigMixin
 
 from quodlibet.browsers.collection.models import EMPTY
@@ -450,12 +450,12 @@ class RGDialog(Dialog):
         self.__fill_view(view, albums)
         num_to_process = sum(int(rga.should_process) for rga in self._todo)
         template = ngettext(
-            "There is <b>%(to-process)s</b> album to update (of %(all)s)",
-            "There are <b>%(to-process)s</b> albums to update (of %(all)s)",
+            "There is %(to-process)s album to update (of %(all)s)",
+            "There are %(to-process)s albums to update (of %(all)s)",
             num_to_process)
         info.set_markup(template % {
-            "to-process": format_int_locale(num_to_process),
-            "all": format_int_locale(len(self._todo)),
+            "to-process": util.bold(format_int_locale(num_to_process)),
+            "all": util.bold(format_int_locale(len(self._todo))),
         })
         self.connect("destroy", self.__destroy)
         self.connect('response', self.__response)
@@ -607,7 +607,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         def create_model():
             model = Gtk.ListStore(str, str)
-            model.append(["<b>%s</b>" % _("always"), UpdateMode.ALWAYS])
+            model.append([util.bold(_("always")), UpdateMode.ALWAYS])
             model.append([_("if <b>any</b> RG tags are missing"),
                           UpdateMode.ANY_MISSING])
             model.append([_("if <b>album</b> RG tags are missing"),

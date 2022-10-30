@@ -1,4 +1,5 @@
 # Copyright 2019-2020 Joschua Gandert
+#                2022 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,8 +15,7 @@ from quodlibet.plugins import PluginConfig, BoolConfProp, IntConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.plugins.songshelpers import is_writable
 from quodlibet.util import print_e
-from quodlibet.util.songwrapper import SongWrapper, \
-    background_check_wrapper_changed
+from quodlibet.util.songwrapper import SongWrapper
 
 
 class UpdateStrategy(IntEnum):
@@ -114,7 +114,6 @@ class AutoUpdateTagsInFiles(EventPlugin):
     def _try_to_update_song(self, song_wrapper):
         try:
             song_wrapper._needs_write = True
-            self._write_tags_to_files([song_wrapper])
         except Exception as e:
             print_e(e)
             self._error_msg(WRITE_ERROR_FMT % song_wrapper._song)
@@ -159,11 +158,6 @@ class AutoUpdateTagsInFiles(EventPlugin):
             wrapper = SongWrapper(song)
             wrapper._needs_write = True
             song_wrappers.append(wrapper)
-
-        self._write_tags_to_files(song_wrappers)
-
-    def _write_tags_to_files(self, song_wrappers):
-        background_check_wrapper_changed(app.library, song_wrappers)
 
 
 class AutoUpdateTagsPrefs(Gtk.Box):

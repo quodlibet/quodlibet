@@ -1,5 +1,5 @@
 # Copyright 2010, 2012-2014 Christoph Reiter
-#                      2020 Nick Boultbee
+#                   2020-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,8 +21,8 @@ ALBUM_PATTERN = r"""
 ALBUM_PATTERN = ALBUM_PATTERN.lstrip()
 PAT = XMLFromPattern(ALBUM_PATTERN)
 
-UNKNOWN_PATTERN = "<b><i>%s</i></b>" % _("Unknown %s")
-MULTI_PATTERN = "<b><i>%s</i></b>" % _("Multiple %s Values")
+UNKNOWN_PATTERN = util.bold_italic(_("Unknown %s"))
+MULTI_PATTERN = util.bold_italic(_("Multiple %s Values"))
 COUNT_PATTERN = " <span size='small' color='#777'>(%s)</span>"
 
 

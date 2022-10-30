@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 from gi.repository import Gtk
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons, ToggleButton
 from quodlibet.plugins.gui import UserInterfacePlugin
@@ -59,9 +59,7 @@ class RatingBox(Gtk.VBox):
     def __set_pending_score_value(self, score):
         existing_score = self.thumb_ups - self.thumb_downs
         if score == existing_score:
-            self.score_label.set_markup("<b>"
-                                        + str(int(score))
-                                        + "</b>")
+            self.score_label.set_markup(util.bold(str(int(score))))
         elif score > existing_score:
             self.score_label.set_markup("<b><span foreground=\"green\">"
                                         + str(int(score))

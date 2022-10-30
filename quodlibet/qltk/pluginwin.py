@@ -78,7 +78,7 @@ class PluginErrorWindow(UniqueWindow):
         keys = failures.keys()
         show_expanded = len(keys) <= 3
         for key in sorted(keys):
-            expander = Gtk.Expander(label="<b>%s</b>" % util.escape(key))
+            expander = Gtk.Expander(label=util.bold(key))
             expander.set_use_markup(True)
             if show_expanded:
                 expander.set_expanded(True)

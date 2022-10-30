@@ -2,12 +2,13 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-
+from _pytest.fixtures import fixture
 from gi.repository import Gtk
 
 import quodlibet.config
 from quodlibet.browsers.podcasts import Podcasts, AddFeedDialog, Feed
 from quodlibet.library import SongLibrary
+from quodlibet.util.config import Config
 from senf import fsn2uri
 from tests import TestCase, get_data_path
 
@@ -62,3 +63,25 @@ class TFeed(TestCase):
 
     def tearDown(self):
         quodlibet.config.quit()
+
+
+@fixture
+def config():
+    quodlibet.config.init()
+    yield quodlibet.config
+    quodlibet.config.quit()
+
+
+@fixture
+def podcasts():
+    library = SongLibrary()
+    return Podcasts(library)
+
+
+def test_menu_items_can_be_clicked(config: Config, podcasts: Podcasts):
+    view = podcasts._view
+    view.popup_menu = lambda *args: True
+    menu = podcasts._popup_menu(None)
+    assert menu
+    for item in menu.get_children():
+        item.emit('activate')

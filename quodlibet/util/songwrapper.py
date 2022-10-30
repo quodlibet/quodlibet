@@ -1,17 +1,18 @@
 # Copyright 2005 Michael Urman
-#           2016 Nick Boultbee
+#        2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import _
+from quodlibet import _, ngettext
+from quodlibet.qltk.notif import Task
+from quodlibet.util import copool
 from quodlibet.util.dprint import print_w
 from quodlibet.formats import AudioFileError
 from quodlibet import util
 from quodlibet import qltk
-from quodlibet.qltk.wlw import WritingWindow
 from quodlibet.util.misc import total_ordering, hashable
 
 
@@ -102,28 +103,35 @@ def ListWrapper(songs):
     return [wrap(s) for s in songs]
 
 
-def check_wrapper_changed(library, parent, songs):
+def check_wrapper_changed(library, songs):
     need_write = [s for s in songs if s._needs_write]
-
     if need_write:
-        win = WritingWindow(parent, len(need_write))
-        win.show()
-        for song in need_write:
-            try:
-                song._song.write()
-            except AudioFileError as e:
-                qltk.ErrorMessage(
-                    None, _("Unable to edit song"),
-                    _("Saving <b>%s</b> failed. The file "
-                      "may be read-only, corrupted, or you "
-                      "do not have permission to edit it.") %
-                    util.escape(song('~basename'))).run()
-                print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+        total = len(need_write)
 
-            if win.step():
-                break
-        win.destroy()
+        def generate():
+            msg = ngettext("Saving %d file", "Saving %d files", total) % total
+            with Task(_("Auto-Saving"), msg) as task:
+                yield
+                for i, song in enumerate(need_write):
+                    try:
+                        song._song.write()
+                    except AudioFileError as e:
+                        dialog = qltk.ErrorMessage(
+                            None,
+                            _("Unable to edit song"),
+                            _("Saving %s failed. "
+                              "The file may be read-only, corrupted, or you "
+                              "do not have permission to edit it.") %
+                            util.bold(song('~basename')), escape_desc=False)
+                        dialog.run()
+                        print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+                    else:
+                        task.update((i + 1) / total)
+                        yield
 
+        # Small enough to see if there's only one or two, very small if lots
+        interval = max(250 // total, 5)
+        copool.add(generate, timeout=interval, funcid="update_wrapped_songs")
     _inform_library_of_changed(library, songs)
 
 

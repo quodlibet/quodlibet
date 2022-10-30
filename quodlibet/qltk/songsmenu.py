@@ -15,7 +15,7 @@ from quodlibet.qltk.chooser import choose_folders
 from quodlibet.qltk.download import DownloadProgress
 from quodlibet.qltk.pluginwin import PluginWindow
 
-from quodlibet import ngettext, _, print_d, app
+from quodlibet import ngettext, _, print_d, app, util
 from quodlibet import qltk
 from quodlibet.errorreport import errorhook
 from quodlibet.qltk.showfiles import show_songs
@@ -248,7 +248,7 @@ class SongsMenuPluginHandler(PluginHandler):
                         return
 
         finally:
-            check_wrapper_changed(library, parent, filter(None, songs))
+            check_wrapper_changed(library, filter(None, songs))
 
     def plugin_handle(self, plugin):
         return issubclass(plugin.cls, SongsMenuPlugin)
@@ -440,8 +440,8 @@ class SongsMenu(Gtk.Menu):
                             and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
 
             def _finished(p, successes, failures):
-                msg = (f"<b>{successes}</b> " + _("successful") +
-                       f"\n<b>{failures}</b> " + _("failed"))
+                msg = (f"{util.bold(successes)} " + _("successful") +
+                       f"\n{util.bold(failures)} " + _("failed"))
                 print_d(msg.replace("\n", "; "))
                 warning = Message(Gtk.MessageType.INFO, app.window,
                                   _("Downloads complete"), msg, escape_desc=False)

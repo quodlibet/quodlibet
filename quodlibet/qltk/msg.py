@@ -106,7 +106,7 @@ class ConfirmFileReplace(WarningMessage):
 
     def __init__(self, parent, path):
         title = _("File exists")
-        fn_format = "<b>%s</b>" % util.escape(fsn2text(path2fsn(path)))
+        fn_format = util.bold(fsn2text(path2fsn(path)))
         description = _("Replace %(file-name)s?") % {"file-name": fn_format}
 
         super().__init__(

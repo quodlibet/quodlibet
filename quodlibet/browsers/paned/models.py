@@ -85,7 +85,7 @@ class UnknownEntry(SongsEntry):
         super().__init__("", tuple(), songs)
 
     def get_text(self, config):
-        return True, "<b>%s</b>" % _("Unknown")
+        return True, util.bold(_("Unknown"))
 
     def contains_text(self, text):
         return False
@@ -103,7 +103,7 @@ class AllEntry(BaseEntry):
         return u""
 
     def get_text(self, config):
-        return True, "<b>%s</b>" % _("All")
+        return True, util.bold(_("All"))
 
     def contains_text(self, text):
         return False

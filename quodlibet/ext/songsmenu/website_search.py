@@ -11,7 +11,7 @@ from urllib.parse import quote_plus
 from gi.repository import Gtk
 
 import quodlibet
-from quodlibet import _
+from quodlibet import _, util
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.pattern import Pattern
@@ -36,8 +36,8 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_NAME = _("Website Search")
     PLUGIN_DESC_MARKUP = (_(
         "Searches your choice of website using any song tags.\n"
-        "Supports patterns e.g. <tt>%(pattern-example)s</tt>.")
-         % {"pattern-example": "https://duckduckgo.com?q=&lt;~artist~title&gt;"}
+        "Supports patterns e.g. %(pattern)s.")
+         % {"pattern": util.monospace("https://duckduckgo.com?q=&lt;~artist~title&gt;")}
     )
 
     # Here are some starters...

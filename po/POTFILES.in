@@ -164,8 +164,8 @@ quodlibet/player/gstbe/util.py
 quodlibet/player/__init__.py
 quodlibet/player/xinebe/player.py
 quodlibet/plugins/__init__.py
-quodlibet/plugins/listenbrainz/__init__.py
-quodlibet/plugins/listenbrainz/listenbrainz.py
+quodlibet/ext/events/listenbrainz/__init__.py
+quodlibet/ext/events/listenbrainz/listenbrainz.py
 quodlibet/plugins/playlist.py
 quodlibet/plugins/query.py
 quodlibet.py

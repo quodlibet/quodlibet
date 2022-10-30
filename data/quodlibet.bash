@@ -127,7 +127,7 @@ _quodlibet() {
             return 0
             ;;
 
-        --open-browser|--query|--print-query|--seek|--set-browser|--set-rating|--volume)
+        --open-browser|--query|--print-query|--seek|--set-browser|--set-rating|--volume|--with-pattern)
             # These options expect an argument that we can't guess.
             # --open-browser=BrowserName
             # --query=query
@@ -136,6 +136,7 @@ _quodlibet() {
             # --set-browser=BrowserName
             # --set-rating=0.0..1.0
             # --volume=(+|-|)0..100
+            # --with-pattern=pattern
             return 0
             ;;
 

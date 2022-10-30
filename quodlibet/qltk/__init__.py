@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#          2016-17 Nick Boultbee
+#          2016-22 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,6 +10,7 @@
 import os
 import signal
 import socket
+from typing import Union
 from urllib.parse import urlparse
 
 import gi
@@ -351,7 +352,7 @@ def is_accel(event, *accels):
     return False
 
 
-def add_css(widget, css):
+def add_css(widget: Gtk.Widget, css: Union[bytes, str]):
     """Add css for the widget, overriding the theme.
 
     Can raise GLib.GError in case the css is invalid
