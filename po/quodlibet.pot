@@ -1503,21 +1503,21 @@ msgstr ""
 msgid "Settings updated"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:123
+#: quodlibet/ext/events/auto_update_tags_in_files.py:122
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
 #, python-format
 msgid "Error in %s"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:187
+#: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:221
+#: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:235
+#: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -7309,11 +7309,22 @@ msgstr ""
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr ""
 
-#: quodlibet/util/songwrapper.py:116
+#: quodlibet/util/songwrapper.py:112
+#, python-format
+msgid "Saving %d file"
+msgid_plural "Saving %d files"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/util/songwrapper.py:113
+msgid "Auto-Saving"
+msgstr ""
+
+#: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr ""
 
-#: quodlibet/util/songwrapper.py:117
+#: quodlibet/util/songwrapper.py:122
 #, python-format
 msgid ""
 "Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
