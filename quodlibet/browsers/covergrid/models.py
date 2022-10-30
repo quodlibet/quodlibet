@@ -76,7 +76,8 @@ class AlbumListCountItem(AlbumListItem):
     def format_label(self, pattern=None):
         n = self.__n_albums
         title = util.bold(_('All Albums'))
-        self._label = title + numeric_phrase('%d album', '%d albums', n)
+        number_phrase = numeric_phrase('%d album', '%d albums', n)
+        self._label = f"{title}\n{number_phrase}"
         self.notify('label')
 
     @GObject.Property
