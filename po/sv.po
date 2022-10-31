@@ -9,15 +9,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2013-07-20 22:30+0100\n"
-"Last-Translator: Daniel Nyberg <p.daniel.nyberg@gmail.com>\n"
-"Language-Team: SWEDISH\n"
+"PO-Revision-Date: 2022-10-31 05:02+0000\n"
+"Last-Translator: Kristofer Rickheden Gustavsson <hackan@bahnhof.se>\n"
+"Language-Team: Swedish <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/sv/>\n"
 "Language: sv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 4.14.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -26,9 +27,8 @@ msgstr "_Titel"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:59
-#, fuzzy
 msgid "_People"
-msgstr "personer"
+msgstr "_Personer"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
@@ -37,15 +37,13 @@ msgstr "_Datum"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:61
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Datumkolumner"
+msgstr "_Datum Tillagd"
 
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:62
-#, fuzzy
 msgid "_Original Date"
-msgstr "ursprunglig artist"
+msgstr "_Ursprungligt Datum"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:57
@@ -60,15 +58,14 @@ msgstr "_Betyg"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:65
-#, fuzzy
 msgid "Play_count"
-msgstr "Redigera visning"
+msgstr "Spelnings_Antal"
 
 #: quodlibet/browsers/albums/main.py:235
 #: quodlibet/browsers/covergrid/main.py:71
 #, fuzzy
 msgid "Sort _by…"
-msgstr "Sortera _på..."
+msgstr "Sortera _på…"
 
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
@@ -135,9 +132,8 @@ msgstr[1] "%d skivor"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "Alla album"
+msgstr "Ett Exempelalbum"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -154,9 +150,8 @@ msgstr "Sökning inkluderar personer"
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:103
 #: quodlibet/ext/songsmenu/cover_download.py:310
-#, fuzzy
 msgid "Options"
-msgstr "[alternativ]"
+msgstr "Alternativ"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:106
@@ -174,7 +169,7 @@ msgstr "Albumvisning"
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:766
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
-msgstr ""
+msgstr "_Stäng"
 
 #: quodlibet/browsers/_base.py:151 quodlibet/browsers/_base.py:154
 msgid "Library Browser"
@@ -226,7 +221,7 @@ msgstr "_Anpassad"
 #: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1289
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
-msgstr ""
+msgstr "_Lägg till"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -241,9 +236,8 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#, fuzzy
 msgid "_Remove"
-msgstr "Ta bort taggar"
+msgstr "_Ta bort"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
@@ -265,7 +259,7 @@ msgstr "Inställningar för skivsamling"
 #: quodlibet/ext/songsmenu/exact_rating.py:38
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_Tillämpa"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:251
@@ -293,7 +287,7 @@ msgstr ""
 #: quodlibet/qltk/quodlibetwindow.py:1416 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_Avrbyt"
 
 #: quodlibet/browsers/covergrid/main.py:172
 #, fuzzy
