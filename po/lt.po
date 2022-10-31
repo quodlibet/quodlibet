@@ -73,9 +73,9 @@ msgstr "Rikiuoti _pagal..."
 
 #: quodlibet/browsers/albums/main.py:256
 #: quodlibet/browsers/covergrid/main.py:92
-#: quodlibet/browsers/paned/prefs.py:203
+#: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:919
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:920
 msgid "_Preferences"
 msgstr "_Nuostatos"
 
@@ -88,12 +88,12 @@ msgid "_Album List"
 msgstr "_Albumų sąrašas"
 
 #: quodlibet/browsers/albums/main.py:546
-#: quodlibet/browsers/covergrid/models.py:77
+#: quodlibet/browsers/covergrid/models.py:78
 msgid "All Albums"
 msgstr "Visi albumai"
 
 #: quodlibet/browsers/albums/main.py:547
-#: quodlibet/browsers/covergrid/models.py:78
+#: quodlibet/browsers/covergrid/models.py:79
 #, python-format
 msgid "%d album"
 msgid_plural "%d albums"
@@ -119,7 +119,7 @@ msgstr "Dainos nėra albume"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:385 quodlibet/util/collection.py:266
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:266
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -130,7 +130,7 @@ msgstr[2] "%d takelių"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:270
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:270
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -187,7 +187,7 @@ msgstr "Bibliotekos naršyklė"
 
 #: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
-#: quodlibet/qltk/information.py:554 quodlibet/qltk/maskedbox.py:68
+#: quodlibet/qltk/information.py:551 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:560
 #, python-format
 msgid "%d song"
@@ -198,7 +198,7 @@ msgstr[2] "%d dainų"
 
 #: quodlibet/browsers/_base.py:406 quodlibet/browsers/_base.py:411
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
-#: quodlibet/util/__init__.py:575
+#: quodlibet/util/__init__.py:579
 msgid "Invalid pattern"
 msgstr "Netaisyklingas šablonas"
 
@@ -226,25 +226,25 @@ msgid "_Custom"
 msgstr "_Individualus"
 
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
-#: quodlibet/browsers/paned/prefs.py:120
-#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:241
+#: quodlibet/browsers/paned/prefs.py:119
+#: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:331 quodlibet/qltk/quodlibetwindow.py:1289
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1290
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
-#: quodlibet/browsers/paned/prefs.py:124
+#: quodlibet/browsers/paned/prefs.py:123
 #: quodlibet/browsers/playlists/menu.py:89
 #: quodlibet/ext/playlist/remove_duplicates.py:60
 #: quodlibet/qltk/bookmarks.py:97 quodlibet/qltk/bookmarks.py:127
 #: quodlibet/qltk/cbes.py:85 quodlibet/qltk/cbes.py:92
 #: quodlibet/qltk/data_editors.py:79 quodlibet/qltk/data_editors.py:92
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
-#: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:555
-#: quodlibet/qltk/edittags.py:743 quodlibet/qltk/maskedbox.py:48
+#: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
+#: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 #, fuzzy
@@ -253,7 +253,7 @@ msgstr "Pašalinti pasikartojančias dainas"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
-#: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:481
+#: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:480
 msgid "Tag"
 msgstr "Žymė"
 
@@ -266,7 +266,7 @@ msgid "Album Collection Preferences"
 msgstr "Albumų sąrašo nuostatos"
 
 #: quodlibet/browsers/collection/prefs.py:194
-#: quodlibet/browsers/paned/prefs.py:247
+#: quodlibet/browsers/paned/prefs.py:246
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
@@ -274,7 +274,7 @@ msgid "_Apply"
 msgstr ""
 
 #: quodlibet/browsers/collection/prefs.py:197
-#: quodlibet/browsers/paned/prefs.py:251
+#: quodlibet/browsers/paned/prefs.py:250
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
@@ -292,7 +292,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/tapbpm.py:186 quodlibet/qltk/chooser.py:188
 #: quodlibet/qltk/chooser.py:209 quodlibet/qltk/chooser.py:233
 #: quodlibet/qltk/chooser.py:257 quodlibet/qltk/delete.py:90
-#: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:330
+#: quodlibet/qltk/delete.py:133 quodlibet/qltk/edittags.py:329
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
@@ -604,12 +604,12 @@ msgstr "_Langų naršyklė"
 msgid "Select _All"
 msgstr "P_asirinkti viską"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:54
-#: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
-#: quodlibet/browsers/podcasts.py:178
+#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
+#: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:244
-#: quodlibet/qltk/information.py:251 quodlibet/qltk/information.py:277
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
+#: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
 msgstr "Nežinoma"
@@ -636,22 +636,22 @@ msgstr "Matomi stulpeliai"
 #, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
-"<tt>%s</tt>"
+"%s"
 msgstr ""
 
-#: quodlibet/browsers/paned/prefs.py:231
+#: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
 msgstr "Langų naršyklės nuostatos"
 
-#: quodlibet/browsers/paned/prefs.py:236
+#: quodlibet/browsers/paned/prefs.py:235
 msgid "Column layout"
 msgstr ""
 
-#: quodlibet/browsers/paned/prefs.py:240
+#: quodlibet/browsers/paned/prefs.py:239
 msgid "Column content"
 msgstr ""
 
-#: quodlibet/browsers/paned/prefs.py:242
+#: quodlibet/browsers/paned/prefs.py:241
 msgid "Equal pane width"
 msgstr ""
 
@@ -687,7 +687,7 @@ msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet gali importuoti tik M3U ir PLS formato grojaraščius."
 
 #: quodlibet/browsers/playlists/main.py:514
-#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:482
+#: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:485
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
 #: quodlibet/qltk/songsmenu.py:359
@@ -797,56 +797,56 @@ msgstr ""
 "\n"
 "%(current)d/%(total)d dainų pridėta."
 
-#: quodlibet/browsers/podcasts.py:239
+#: quodlibet/browsers/podcasts.py:240
 msgid "New Feed"
 msgstr "Naujas kanalas"
 
-#: quodlibet/browsers/podcasts.py:240
+#: quodlibet/browsers/podcasts.py:241
 #, fuzzy
 msgid "Enter the podcast / audio feed location:"
 msgstr "Įveskite garso kanalo vietą:"
 
-#: quodlibet/browsers/podcasts.py:308
+#: quodlibet/browsers/podcasts.py:309
 msgid "Podcasts"
 msgstr ""
 
-#: quodlibet/browsers/podcasts.py:309
+#: quodlibet/browsers/podcasts.py:310
 msgid "_Podcasts"
 msgstr ""
 
-#: quodlibet/browsers/podcasts.py:411
+#: quodlibet/browsers/podcasts.py:412
 #, fuzzy
 msgid "_Add Feed…"
 msgstr "_Pridėti failą..."
 
-#: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
+#: quodlibet/browsers/podcasts.py:479 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
 #, fuzzy
 msgid "_Refresh"
 msgstr "Atnaujinti biblioteką"
 
-#: quodlibet/browsers/podcasts.py:479
+#: quodlibet/browsers/podcasts.py:480
 #, fuzzy
 msgid "Search source for new episodes"
 msgstr "Stebėti šį aplanką dėl naujų dainų"
 
-#: quodlibet/browsers/podcasts.py:480
+#: quodlibet/browsers/podcasts.py:482
 msgid "_Rebuild"
 msgstr ""
 
-#: quodlibet/browsers/podcasts.py:481
+#: quodlibet/browsers/podcasts.py:484
 msgid "Remove all existing episodes then reload from source"
 msgstr ""
 
-#: quodlibet/browsers/podcasts.py:483
+#: quodlibet/browsers/podcasts.py:486
 msgid "Remove this podcast and its episodes"
 msgstr ""
 
-#: quodlibet/browsers/podcasts.py:540
+#: quodlibet/browsers/podcasts.py:546
 msgid "Unable to add feed"
 msgstr "Negalima pridėti kanalo"
 
-#: quodlibet/browsers/podcasts.py:541
+#: quodlibet/browsers/podcasts.py:547
 #, fuzzy, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
@@ -855,7 +855,7 @@ msgstr ""
 "<b>%s</b> negali būti pridėta. Serveris gali neveikti arba nurodyta vieta "
 "nėra garso kanalas."
 
-#: quodlibet/browsers/podcasts.py:558
+#: quodlibet/browsers/podcasts.py:564
 #, fuzzy
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
@@ -872,7 +872,7 @@ msgstr "Ap_riboti rezultatus"
 msgid "_Allow multiple queries"
 msgstr "Išskaidyti į keletą _reikšmių"
 
-#: quodlibet/browsers/tracks.py:53 quodlibet/qltk/information.py:468
+#: quodlibet/browsers/tracks.py:53 quodlibet/qltk/information.py:465
 msgid "Track List"
 msgstr "Takelių sąrašas"
 
@@ -1571,7 +1571,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:540
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
 #, fuzzy, python-format
 msgid "Couldn't write '%s'"
 msgstr "%s: Nepavyko rasti %s."
@@ -1607,7 +1607,7 @@ msgid "Settings updated"
 msgstr "įrašymo data"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:122
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:343
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:344
 #, fuzzy, python-format
 msgid "Error in %s"
 msgstr "Klaida įkeliant %r"
@@ -2008,7 +2008,8 @@ msgid "JEP-118"
 msgstr ""
 
 #: quodlibet/ext/events/jep118.py:31
-msgid "Outputs a Jabber User Tunes file to <tt>~/.quodlibet/jabber</tt>."
+#, python-format
+msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr ""
 
 #: quodlibet/ext/events/language.py:21
@@ -2284,6 +2285,17 @@ msgstr ""
 #: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
 msgid "Next"
 msgstr "Kita"
+
+#: quodlibet/ext/events/notify_bookmarks.py:34
+#, fuzzy
+msgid "Bookmark Notifications"
+msgstr "Žymės vardas"
+
+#: quodlibet/ext/events/notify_bookmarks.py:35
+msgid ""
+"Uses notifications to display bookmarks / comments in real-time. Works well "
+"for the Soundcloud browser."
+msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2858,7 +2870,7 @@ msgstr "Kelias neabsoliutus"
 msgid ""
 "The pattern\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
 "contains \"/\" but does not start from root. Please provide an absolute "
 "destination path by making sure it starts with / or ~/."
@@ -3054,26 +3066,26 @@ msgstr "Negrojama"
 msgid "Status text when a song is started. Accepts QL Patterns e.g. %s"
 msgstr ""
 
-#: quodlibet/ext/events/telepathy_status.py:145
+#: quodlibet/ext/events/telepathy_status.py:144
 msgid "Paused:"
 msgstr ""
 
-#: quodlibet/ext/events/telepathy_status.py:146
+#: quodlibet/ext/events/telepathy_status.py:145
 #, python-format
 msgid "Status text when a song is paused. Accepts QL Patterns e.g. %s"
 msgstr ""
 
-#: quodlibet/ext/events/telepathy_status.py:162
+#: quodlibet/ext/events/telepathy_status.py:160
 msgid "Plain text for status when there is no current song"
 msgstr ""
 
-#: quodlibet/ext/events/telepathy_status.py:163
+#: quodlibet/ext/events/telepathy_status.py:161
 #, fuzzy
 msgid "No song:"
 msgstr "%d daina"
 
 #. Frame
-#: quodlibet/ext/events/telepathy_status.py:170
+#: quodlibet/ext/events/telepathy_status.py:168
 #, fuzzy
 msgid "Status Patterns"
 msgstr "Kelio šablonai"
@@ -3098,12 +3110,12 @@ msgstr ""
 msgid "Prefer dark theme version"
 msgstr ""
 
-#: quodlibet/ext/events/thumbrating.py:91
+#: quodlibet/ext/events/thumbrating.py:89
 #, fuzzy
 msgid "Thumb Rating"
 msgstr "Auto_matinis"
 
-#: quodlibet/ext/events/thumbrating.py:92
+#: quodlibet/ext/events/thumbrating.py:90
 msgid ""
 "Adds a thumb-up / thumb-down scoring system which is converted to a rating "
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
@@ -3138,27 +3150,27 @@ msgid "_Show %(application-name)s"
 msgstr ""
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:949
-#: quodlibet/qltk/quodlibetwindow.py:1155
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:950
+#: quodlibet/qltk/quodlibetwindow.py:1156
 #, fuzzy
 msgid "_Play"
 msgstr "_Grojaraščiai"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1157
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1158
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
 msgstr "Groti/Pristabdyti"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:944
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:945
 #, fuzzy
 msgid "Pre_vious"
 msgstr "Ankstesnė"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:954
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:955
 #, fuzzy
 msgid "_Next"
 msgstr "Kita"
@@ -3177,18 +3189,18 @@ msgid "Stop _After This Song"
 msgstr "Po šios dainos sustabdyti"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:915
+#: quodlibet/qltk/quodlibetwindow.py:916
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Atverti naują naršyklę"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:934 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:935 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "_Redaguoti žymes"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:877 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:878 quodlibet/qltk/songsmenu.py:392
 #, fuzzy
 msgid "_Information"
 msgstr "Informacija"
@@ -3199,7 +3211,7 @@ msgid "Play_lists"
 msgstr "Grojaraščiai"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:929
+#: quodlibet/qltk/quodlibetwindow.py:930
 msgid "_Quit"
 msgstr ""
 
@@ -3337,7 +3349,7 @@ msgstr ""
 
 #: quodlibet/ext/gstreamer/compressor.py:75
 #: quodlibet/ext/gstreamer/karaoke.py:92
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:235
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:236
 #, python-format
 msgid "%d %%"
 msgstr ""
@@ -4003,7 +4015,7 @@ msgid "_Search"
 msgstr "_Paieška:"
 
 #: quodlibet/ext/songsmenu/albumart.py:720
-#: quodlibet/ext/songsmenu/brainz/widgets.py:453
+#: quodlibet/ext/songsmenu/brainz/widgets.py:452
 #, fuzzy
 msgid "Searching…"
 msgstr "Ieškoti"
@@ -4090,20 +4102,20 @@ msgstr "Failo vardas"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:559
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
 #, fuzzy
 msgid "Disc"
 msgstr "_Diskas"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
 #: quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr "Takelis"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:385
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
 #, fuzzy
 msgid "Title"
 msgstr "Pa_vadinimas"
@@ -4131,21 +4143,21 @@ msgstr "Ieškoti"
 msgid "Results <i>(drag to reorder)</i>"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:449
+#: quodlibet/ext/songsmenu/brainz/widgets.py:448
 msgid "Please enter a query."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:467
-#: quodlibet/ext/songsmenu/brainz/widgets.py:498
+#: quodlibet/ext/songsmenu/brainz/widgets.py:466
+#: quodlibet/ext/songsmenu/brainz/widgets.py:497
 msgid "Error encountered. Please retry."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:474
-#: quodlibet/ext/songsmenu/brainz/widgets.py:490
+#: quodlibet/ext/songsmenu/brainz/widgets.py:473
+#: quodlibet/ext/songsmenu/brainz/widgets.py:489
 msgid "Loading result…"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:477
+#: quodlibet/ext/songsmenu/brainz/widgets.py:476
 #, fuzzy
 msgid "No results found."
 msgstr "Nerasta priedų."
@@ -4234,10 +4246,10 @@ msgstr ""
 #, python-format
 msgid ""
 "Nothing found for albums:\n"
-"<i>%(albums)s</i>.\n"
+"%(albums)s.\n"
 "\n"
 "Providers used:\n"
-"<tt>%(providers)s</tt>"
+"%(providers)s"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
@@ -4459,6 +4471,15 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/editplaycount.py:71
 msgid "Skip Count"
+msgstr ""
+
+#: quodlibet/ext/songsmenu/editplaycount.py:85
+#, fuzzy
+msgid "Multiple files selected."
+msgstr "Kelios lauko %s reikšmės"
+
+#: quodlibet/ext/songsmenu/editplaycount.py:86
+msgid "Counts will be incremented."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/embedded.py:26
@@ -4700,16 +4721,15 @@ msgstr ""
 msgid "Uploading %(current)d/%(total)d"
 msgstr "Perkeliama %(current)d/%(total)d."
 
-#: quodlibet/ext/songsmenu/ifp.py:62
+#: quodlibet/ext/songsmenu/ifp.py:61
+#, python-format
+msgid "Unable to upload %s.The device may be out of space, or turned off."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/ifp.py:63
 #, fuzzy
 msgid "Error uploading"
 msgstr "Klaida įkeliant %r"
-
-#: quodlibet/ext/songsmenu/ifp.py:63
-#, python-format
-msgid ""
-"Unable to upload <b>%s</b>. The device may be out of space, or turned off."
-msgstr ""
 
 #. Could be made configurable in the future, but these likely suffice
 #. "tag1 tag2" will result in only tag1 and tag2 being exported
@@ -4754,13 +4774,13 @@ msgstr ""
 msgid "Further information"
 msgstr "Nėra laiko informacijos"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:195
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
 #, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Be aware that whatever you chose to export will be imported. If you exported "
 "the file stems (file names without extension), then, on import, the selected "
@@ -4773,116 +4793,116 @@ msgid ""
 "better to not reduce the following similarity values too much."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:211
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:212
 msgid "User interaction on import"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:215
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:216
 msgid "Require confirmation if number of tracks differs"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:221
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:222
 msgid "Require confirmation if number of albums differs"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:226
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:227
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:256
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:257
 msgid "Track similarity:"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:259
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:260
 #, fuzzy
 msgid "Album similarity:"
 msgstr "Albumų viršeliai"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:262
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:263
 #, fuzzy
 msgid "Export files"
 msgstr "Importuoti grojaraštį"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:265
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:266
 msgid "Write pretty and clear JSON (slower)"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:270
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:271
 msgid "Delete export files after they've been imported"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:315
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:316
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
 #, fuzzy
 msgid "Import"
 msgstr "_Importuoti"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:330
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:331
 #, fuzzy
 msgid "Open Export Directory"
 msgstr "Filtras _žanrui"
 
 #.
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:383
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:384
 #, fuzzy
 msgid "Discs"
 msgstr "_Diskas"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:384
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:385
 #, fuzzy
 msgid "Tracks"
 msgstr "Takelis"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 #, fuzzy
 msgid "Artist(s)"
 msgstr "Atlikėjas"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:388
 msgid "End of path"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:391
 #, fuzzy
 msgid "Match Albums"
 msgstr "albumai"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:390
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:391
 #, fuzzy
 msgid "Continue"
 msgstr "_Tęsti"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:422
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
 msgid "Nothing to import"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:423
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:424
 msgid "You have to export something before you can import."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:446
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:447
 msgid "The index was corrupt."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:500
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:501
 #, fuzzy, python-format
 msgid "Couldn't parse JSON in %s"
 msgstr "%s: Nepavyko rasti %s."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:504
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:505
 #, fuzzy, python-format
 msgid "Couldn't read %s"
 msgstr "%s: Nepavyko rasti %s."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
 #, fuzzy
 msgid "File name"
 msgstr "Failo vardas"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
 #, fuzzy
 msgid "Match Tracks"
 msgstr "takeliai"
@@ -4951,7 +4971,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:133
 #, fuzzy, python-format
-msgid "Writing to <b>%s</b> failed."
+msgid "Writing to %s failed."
 msgstr "Nepavyko atjungti <b>%s</b>."
 
 #. Translators: Plugin name
@@ -4994,8 +5014,8 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
 #, python-format
-msgid "There is <b>%(to-process)s</b> album to update (of %(all)s)"
-msgid_plural "There are <b>%(to-process)s</b> albums to update (of %(all)s)"
+msgid "There is %(to-process)s album to update (of %(all)s)"
+msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
 msgstr[0] ""
 msgstr[1] ""
 msgstr[2] ""
@@ -5095,7 +5115,7 @@ msgstr "Ieškoti"
 #, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
-"Supports patterns e.g. <tt>%(pattern-example)s</tt>."
+"Supports patterns e.g. %(pattern)s."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/website_search.py:82
@@ -5130,7 +5150,7 @@ msgid "Search at %(website)s"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/wikipedia.py:70
-#: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:452
+#: quodlibet/ext/songsmenu/wikipedia.py:75 quodlibet/qltk/edittags.py:451
 msgid "Edit Tags"
 msgstr "Redaguoti žymes"
 
@@ -5148,7 +5168,7 @@ msgstr ""
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
-#: quodlibet/library/file.py:570 quodlibet/qltk/information.py:272
+#: quodlibet/library/file.py:570 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:680 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Biblioteka"
@@ -5252,13 +5272,13 @@ msgid "Too many arguments"
 msgstr "Per daug klaidų"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:375
+#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:374
 #, fuzzy
 msgid "Description"
 msgstr "aprašymas"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
-#: quodlibet/qltk/edittags.py:504
+#: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Reikšmė"
 
@@ -5395,9 +5415,9 @@ msgstr ""
 msgid "Fill tags based on the file path"
 msgstr ""
 
-#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:309
+#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:307
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
-#: quodlibet/qltk/tagsfrompath.py:228 quodlibet/qltk/tracknumbers.py:78
+#: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Failas"
 
@@ -5729,7 +5749,7 @@ msgstr ""
 msgid "_Name:"
 msgstr "_Vardas:"
 
-#: quodlibet/qltk/cbes.py:50 quodlibet/qltk/edittags.py:354
+#: quodlibet/qltk/cbes.py:50 quodlibet/qltk/edittags.py:353
 msgid "_Value:"
 msgstr "_Reikšmė:"
 
@@ -5775,7 +5795,7 @@ msgstr ""
 msgid "(unknown)"
 msgstr "Nežinoma"
 
-#: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:549
+#: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:548
 #, fuzzy
 msgid "_Add…"
 msgstr "_Pridėti failą..."
@@ -5785,20 +5805,20 @@ msgstr "_Pridėti failą..."
 msgid "_Edit"
 msgstr "_Redaguoti vaizdą..."
 
-#: quodlibet/qltk/data_editors.py:366
+#: quodlibet/qltk/data_editors.py:365
 msgid "Tag expression"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:396 quodlibet/qltk/data_editors.py:406
+#: quodlibet/qltk/data_editors.py:395 quodlibet/qltk/data_editors.py:405
 msgid "Tag expression e.g. people:real or ~album~year"
 msgstr ""
 
-#: quodlibet/qltk/data_editors.py:397
+#: quodlibet/qltk/data_editors.py:396
 #, fuzzy
 msgid "Enter new tag"
 msgstr "Filtruoti pagal žymės reikšmę"
 
-#: quodlibet/qltk/data_editors.py:407
+#: quodlibet/qltk/data_editors.py:406
 #, fuzzy
 msgid "Edit tag expression"
 msgstr "Garso žymių redaktorius"
@@ -5912,47 +5932,47 @@ msgstr[0] "skirtinga tarp %d dainos"
 msgstr[1] "skirtinga tarp %d dainų"
 msgstr[2] "skirtinga tarp %d dainų"
 
-#: quodlibet/qltk/edittags.py:199
+#: quodlibet/qltk/edittags.py:198
 msgid "Split into _Multiple Values"
 msgstr "Iš_skaidyti į keletą reikšmių"
 
-#: quodlibet/qltk/edittags.py:221
+#: quodlibet/qltk/edittags.py:220
 msgid "Split Disc out of _Album"
 msgstr "Išskaidyti diską iš _albumo"
 
-#: quodlibet/qltk/edittags.py:245
+#: quodlibet/qltk/edittags.py:244
 msgid "Split _Version out of Title"
 msgstr "Išskaidyti _versiją iš pavadinimo"
 
-#: quodlibet/qltk/edittags.py:302
+#: quodlibet/qltk/edittags.py:301
 msgid "Split Arranger out of Ar_tist"
 msgstr "Išskaidyti aranžuotoją iš a_tlikėjo"
 
-#: quodlibet/qltk/edittags.py:307
+#: quodlibet/qltk/edittags.py:306
 msgid "Split _Performer out of Artist"
 msgstr "Išskaidyti muzikantą iš atlikėjo"
 
-#: quodlibet/qltk/edittags.py:313
+#: quodlibet/qltk/edittags.py:312
 msgid "Split _Performer out of Title"
 msgstr "Išskaidyti _Muzikantą iš Pavadinimo žymės"
 
-#: quodlibet/qltk/edittags.py:319
+#: quodlibet/qltk/edittags.py:318
 msgid "Split _Originalartist out of Title"
 msgstr "Išskaidyti _Originalo atlikėją iš Pavadinimo žymės"
 
-#: quodlibet/qltk/edittags.py:326
+#: quodlibet/qltk/edittags.py:325
 msgid "Add a Tag"
 msgstr "Pridėti žymę"
 
-#: quodlibet/qltk/edittags.py:345
+#: quodlibet/qltk/edittags.py:344
 msgid "_Tag:"
 msgstr "Žy_mė:"
 
-#: quodlibet/qltk/edittags.py:527
+#: quodlibet/qltk/edittags.py:526
 msgid "Show _programmatic tags"
 msgstr "Rodyti su_generuotas programines žymes"
 
-#: quodlibet/qltk/edittags.py:528
+#: quodlibet/qltk/edittags.py:527
 msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
@@ -5960,88 +5980,103 @@ msgstr ""
 "Prieiti prie visų žymių, įskaitant kompiuterio sugeneruotas, pvz. "
 "MusicBrainz ar ReplayGain žymes"
 
-#: quodlibet/qltk/edittags.py:535
+#: quodlibet/qltk/edittags.py:534
 #, fuzzy
 msgid "Show _multi-line tags"
 msgstr "Rodyti su_generuotas programines žymes"
 
-#: quodlibet/qltk/edittags.py:539
+#: quodlibet/qltk/edittags.py:538
 msgid "Show potentially multi-line tags (e.g 'lyrics') here too"
 msgstr ""
 
 #. Translators: Revert button in the tag editor
-#: quodlibet/qltk/edittags.py:569
+#: quodlibet/qltk/edittags.py:568
 #, fuzzy
 msgctxt "edittags"
 msgid "_Revert"
 msgstr "Niekada"
 
 #. Translators: Save button in the tag editor
-#: quodlibet/qltk/edittags.py:574
+#: quodlibet/qltk/edittags.py:573
 msgctxt "edittags"
 msgid "_Save"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:714
+#: quodlibet/qltk/edittags.py:713
 #, fuzzy
 msgid "_Configure"
 msgstr "_Tęsti"
 
-#: quodlibet/qltk/edittags.py:729
+#: quodlibet/qltk/edittags.py:728
 #, fuzzy
 msgid "_Split Tag"
 msgstr "Redaguoti žymes"
 
-#: quodlibet/qltk/edittags.py:738
+#: quodlibet/qltk/edittags.py:737
 #, fuzzy
 msgid "_Copy Value(s)"
 msgstr "Kopijuoti albumų _viršelius"
 
-#: quodlibet/qltk/edittags.py:769
+#: quodlibet/qltk/edittags.py:768
 msgid "Unable to add tag"
 msgstr "Negalima pridėti žymės"
 
-#: quodlibet/qltk/edittags.py:770
+#: quodlibet/qltk/edittags.py:769
 #, fuzzy, python-format
-msgid "Unable to add <b>%s</b>"
-msgstr "Negalima pridėti dainos"
+msgid "Unable to add %s"
+msgstr "Negalima pridėti dainų"
 
-#: quodlibet/qltk/edittags.py:772
+#: quodlibet/qltk/edittags.py:771
 #, fuzzy, python-format
-msgid ""
-"The files currently selected do not support multiple values for <b>%s</b>."
+msgid "The files currently selected do not support multiple values for %s."
 msgstr ""
 "Negalima pridėti <b>%s</b>\n"
 "\n"
 "Failai, kuriuos pasirinkote, nepalaiko kelių reikšmių redagavimo."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:507
+#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
+#, fuzzy
 msgid "Invalid tag"
-msgstr "Netaisyklinga žymė"
+msgid_plural "Invalid tags"
+msgstr[0] "Netaisyklinga žymė"
+msgstr[1] "Netaisyklinga žymė"
+msgstr[2] "Netaisyklinga žymė"
 
-#: quodlibet/qltk/edittags.py:800 quodlibet/qltk/edittags.py:981
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"Invalid tag <b>%s</b>\n"
+"Invalid tag %s\n"
 "\n"
 "The files currently selected do not support editing this tag."
-msgstr ""
+msgid_plural ""
+"Invalid tags %s\n"
+"\n"
+"The files currently selected do not support editing these tags."
+msgstr[0] ""
+"Netaisyklinga žymė <b>%s</b>\n"
+"\n"
+"Failai, kuriuos pasirinkote, nepalaiko šios žymės redagavimo."
+msgstr[1] ""
+"Netaisyklinga žymė <b>%s</b>\n"
+"\n"
+"Failai, kuriuos pasirinkote, nepalaiko šios žymės redagavimo."
+msgstr[2] ""
 "Netaisyklinga žymė <b>%s</b>\n"
 "\n"
 "Failai, kuriuos pasirinkote, nepalaiko šios žymės redagavimo."
 
-#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
+#: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Netaisyklinga reikšmė"
 
-#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:993
-#, python-format
+#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
+#, fuzzy, python-format
 msgid ""
-"Invalid value: <b>%(value)s</b>\n"
+"Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
@@ -6071,13 +6106,13 @@ msgstr "Negalima išsaugoti dainos"
 #: quodlibet/qltk/_editutils.py:53
 #, fuzzy, python-format
 msgid ""
-"Saving %(file-name)s failed. The file may be read-only, corrupted, or you do "
+"Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
 "Nepavyko išsaugoti <b>%s</b>. Failas gali būti apsaugotas nuo rašymo, "
 "sugadintas arba neturite teisių jo redaguoti."
 
-#: quodlibet/qltk/_editutils.py:146
+#: quodlibet/qltk/_editutils.py:144
 #, fuzzy
 msgid "_More options…"
 msgstr "_Daugiau pasirinkčių..."
@@ -6090,15 +6125,15 @@ msgstr ""
 msgid "_Redo"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:969
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:970
 msgid "_About"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:991
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:992
 msgid "_Check for Updates…"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:924
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:925
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Priedai"
@@ -6155,13 +6190,13 @@ msgstr "Dainos"
 msgid "by %s"
 msgstr "atliko %s"
 
-#: quodlibet/qltk/info.py:44 quodlibet/qltk/information.py:171
-#: quodlibet/qltk/information.py:452
+#: quodlibet/qltk/info.py:44 quodlibet/qltk/information.py:170
+#: quodlibet/qltk/information.py:450
 #, python-format
 msgid "Disc %s"
 msgstr "Diskas %s"
 
-#: quodlibet/qltk/info.py:45 quodlibet/qltk/information.py:176
+#: quodlibet/qltk/info.py:45 quodlibet/qltk/information.py:174
 #, python-format
 msgid "Track %s"
 msgstr "Takelis %s"
@@ -6183,8 +6218,8 @@ msgstr "Nepasirinkta jokių dainų."
 msgid "No Songs"
 msgstr "Nėra dainų"
 
-#: quodlibet/qltk/information.py:122 quodlibet/qltk/information.py:342
-#: quodlibet/qltk/information.py:475 quodlibet/qltk/information.py:543
+#: quodlibet/qltk/information.py:122 quodlibet/qltk/information.py:340
+#: quodlibet/qltk/information.py:472 quodlibet/qltk/information.py:540
 msgid "Information"
 msgstr "Informacija"
 
@@ -6192,32 +6227,32 @@ msgstr "Informacija"
 msgid "Lyrics"
 msgstr "Dainos žodžiai"
 
-#: quodlibet/qltk/information.py:188 quodlibet/qltk/information.py:400
+#: quodlibet/qltk/information.py:186 quodlibet/qltk/information.py:398
 #, python-format
 msgid "Produced by %s"
 msgstr "Prodiusavo %s"
 
-#: quodlibet/qltk/information.py:203 quodlibet/util/tags.py:85
+#: quodlibet/qltk/information.py:201 quodlibet/util/tags.py:85
 msgid "artist"
 msgstr "atlikėjas"
 
-#: quodlibet/qltk/information.py:204 quodlibet/qltk/information.py:573
+#: quodlibet/qltk/information.py:202 quodlibet/qltk/information.py:570
 #: quodlibet/util/tags.py:85
 msgid "artists"
 msgstr "atlikėjai"
 
 #. for backwards compat
-#: quodlibet/qltk/information.py:225 quodlibet/util/tags.py:96
+#: quodlibet/qltk/information.py:223 quodlibet/util/tags.py:96
 #: quodlibet/util/tags.py:125
 msgid "performers"
 msgstr "muzikantai"
 
-#: quodlibet/qltk/information.py:239 quodlibet/qltk/information.py:252
+#: quodlibet/qltk/information.py:237 quodlibet/qltk/information.py:250
 #: quodlibet/qltk/songlistcolumns.py:275
 msgid "Never"
 msgstr "Niekada"
 
-#: quodlibet/qltk/information.py:240
+#: quodlibet/qltk/information.py:238
 #, python-format
 msgid "%(n)d time"
 msgid_plural "%(n)d times"
@@ -6225,65 +6260,65 @@ msgstr[0] "%(n)d  kartą"
 msgstr[1] "%(n)d kartus"
 msgstr[2] "%(n)d kartų"
 
-#: quodlibet/qltk/information.py:258 quodlibet/util/tags.py:150
+#: quodlibet/qltk/information.py:256 quodlibet/util/tags.py:150
 msgid "added"
 msgstr "pridėta"
 
-#: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:151
+#: quodlibet/qltk/information.py:257 quodlibet/util/tags.py:151
 msgid "last played"
 msgstr "paskutinį kartą grota"
 
-#: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:161
+#: quodlibet/qltk/information.py:258 quodlibet/util/tags.py:161
 msgid "plays"
 msgstr "grota"
 
-#: quodlibet/qltk/information.py:261 quodlibet/util/tags.py:162
+#: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:162
 msgid "skips"
 msgstr "praleista"
 
-#: quodlibet/qltk/information.py:262 quodlibet/util/tags.py:167
+#: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:167
 msgid "rating"
 msgstr "įvertis"
 
-#: quodlibet/qltk/information.py:291
+#: quodlibet/qltk/information.py:289
 msgid "path"
 msgstr ""
 
-#: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:165
+#: quodlibet/qltk/information.py:290 quodlibet/util/tags.py:165
 msgid "length"
 msgstr "trukmė"
 
-#: quodlibet/qltk/information.py:293
+#: quodlibet/qltk/information.py:291
 #, fuzzy
 msgid "format"
 msgstr "Informacija"
 
-#: quodlibet/qltk/information.py:294 quodlibet/util/tags.py:175
+#: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:175
 msgid "codec"
 msgstr ""
 
-#: quodlibet/qltk/information.py:295 quodlibet/util/tags.py:176
+#: quodlibet/qltk/information.py:293 quodlibet/util/tags.py:176
 #, fuzzy
 msgid "encoding"
 msgstr "Didėjančia tvarka"
 
-#: quodlibet/qltk/information.py:296 quodlibet/util/tags.py:172
+#: quodlibet/qltk/information.py:294 quodlibet/util/tags.py:172
 msgid "bitrate"
 msgstr "bitų dažnis"
 
-#: quodlibet/qltk/information.py:297 quodlibet/util/tags.py:173
+#: quodlibet/qltk/information.py:295 quodlibet/util/tags.py:173
 msgid "file size"
 msgstr "failo dydis"
 
-#: quodlibet/qltk/information.py:298 quodlibet/util/tags.py:160
+#: quodlibet/qltk/information.py:296 quodlibet/util/tags.py:160
 msgid "modified"
 msgstr "paskutinį kartą pakeista"
 
-#: quodlibet/qltk/information.py:335
+#: quodlibet/qltk/information.py:333
 msgid "Additional"
 msgstr ""
 
-#: quodlibet/qltk/information.py:387
+#: quodlibet/qltk/information.py:385
 #, python-format
 msgid "%d selected"
 msgid_plural "%d selected"
@@ -6291,11 +6326,11 @@ msgstr[0] "%d pasirinkta"
 msgstr[1] "%d pasirinkta"
 msgstr[2] "%d pasirinkta"
 
-#: quodlibet/qltk/information.py:462
+#: quodlibet/qltk/information.py:460
 msgid "Track unavailable"
 msgstr "Takelis neprieinamas"
 
-#: quodlibet/qltk/information.py:500 quodlibet/qltk/information.py:590
+#: quodlibet/qltk/information.py:497 quodlibet/qltk/information.py:587
 #, python-format
 msgid "%d song with no album"
 msgid_plural "%d songs with no album"
@@ -6303,11 +6338,11 @@ msgstr[0] "%d daina be jokio albumo"
 msgstr[1] "%d dainos be jokio albumo"
 msgstr[2] "%d dainų be jokio albumo"
 
-#: quodlibet/qltk/information.py:503
+#: quodlibet/qltk/information.py:500
 msgid "Selected Discography"
 msgstr "Pasirinkta diskografija"
 
-#: quodlibet/qltk/information.py:570
+#: quodlibet/qltk/information.py:567
 #, python-format
 msgid "%d song with no artist"
 msgid_plural "%d songs with no artist"
@@ -6315,19 +6350,19 @@ msgstr[0] "%d daina be jokio atlikėjo"
 msgstr[1] "%d dainos be jokio atlikėjo"
 msgstr[2] "%d dainų be jokio atlikėjo"
 
-#: quodlibet/qltk/information.py:598 quodlibet/util/tags.py:83
+#: quodlibet/qltk/information.py:594 quodlibet/util/tags.py:83
 msgid "albums"
 msgstr "albumai"
 
-#: quodlibet/qltk/information.py:611
+#: quodlibet/qltk/information.py:607
 msgid "Total length:"
 msgstr "Visa trukmė:"
 
-#: quodlibet/qltk/information.py:615
+#: quodlibet/qltk/information.py:611
 msgid "Total size:"
 msgstr "Visas dydis:"
 
-#: quodlibet/qltk/information.py:618
+#: quodlibet/qltk/information.py:614
 msgid "Files"
 msgstr "Failų"
 
@@ -6805,12 +6840,12 @@ msgstr "Žymių redagavimas"
 msgid "Updating for new ratings"
 msgstr "_Atnaujinti stotis"
 
-#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1003
+#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1004
 #, fuzzy
 msgid "_Scan Library"
 msgstr "Pa_ieška bibliotekoje"
 
-#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1065
+#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1066
 msgid "Check for changes in your library"
 msgstr "Ieškoti pasikeitimų bibliotekoje"
 
@@ -6947,88 +6982,88 @@ msgstr "Negalima pridėti dainų"
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> naudoja nepalaikomą protokolą."
 
-#: quodlibet/qltk/quodlibetwindow.py:882
+#: quodlibet/qltk/quodlibetwindow.py:883
 msgid "_Jump to Playing Song"
 msgstr "_Peršokti ties grojama daina"
 
-#: quodlibet/qltk/quodlibetwindow.py:889
+#: quodlibet/qltk/quodlibetwindow.py:890
 #, fuzzy
 msgid "_File"
 msgstr "Failas"
 
-#: quodlibet/qltk/quodlibetwindow.py:890
+#: quodlibet/qltk/quodlibetwindow.py:891
 #, fuzzy
 msgid "_Song"
 msgstr "Dainos"
 
-#: quodlibet/qltk/quodlibetwindow.py:891
+#: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_View"
 msgstr "_Rodymas"
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:893
 #, fuzzy
 msgid "_Browse"
 msgstr "Naršyklės"
 
-#: quodlibet/qltk/quodlibetwindow.py:893
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_Control"
 msgstr "_Valdymas"
 
-#: quodlibet/qltk/quodlibetwindow.py:894
+#: quodlibet/qltk/quodlibetwindow.py:895
 msgid "_Help"
 msgstr "_Pagalba"
 
-#: quodlibet/qltk/quodlibetwindow.py:900
+#: quodlibet/qltk/quodlibetwindow.py:901
 #, fuzzy
 msgid "_Add a Folder…"
 msgstr "_Pridėti aplanką..."
 
-#: quodlibet/qltk/quodlibetwindow.py:905
+#: quodlibet/qltk/quodlibetwindow.py:906
 #, fuzzy
 msgid "_Add a File…"
 msgstr "_Pridėti failą..."
 
-#: quodlibet/qltk/quodlibetwindow.py:910
+#: quodlibet/qltk/quodlibetwindow.py:911
 #, fuzzy
 msgid "_Add a Location…"
 msgstr "Pridėti vietą"
 
-#: quodlibet/qltk/quodlibetwindow.py:939
+#: quodlibet/qltk/quodlibetwindow.py:940
 #, fuzzy
 msgid "Edit Bookmarks…"
 msgstr "Redaguoti _žymes..."
 
-#: quodlibet/qltk/quodlibetwindow.py:959
+#: quodlibet/qltk/quodlibetwindow.py:960
 #, fuzzy
 msgid "Stop After This Song"
 msgstr "Po šios dainos sustabdyti"
 
-#: quodlibet/qltk/quodlibetwindow.py:965
+#: quodlibet/qltk/quodlibetwindow.py:966
 msgid "_Keyboard Shortcuts"
 msgstr ""
 
-#: quodlibet/qltk/quodlibetwindow.py:974
+#: quodlibet/qltk/quodlibetwindow.py:975
 msgid "Online Help"
 msgstr "Pagalba Internete"
 
-#: quodlibet/qltk/quodlibetwindow.py:983
+#: quodlibet/qltk/quodlibetwindow.py:984
 msgid "Search Help"
 msgstr "Paieškos bibliotekoje pagalba"
 
-#: quodlibet/qltk/quodlibetwindow.py:1287
+#: quodlibet/qltk/quodlibetwindow.py:1288
 msgid "Add a Location"
 msgstr "Pridėti vietą"
 
-#: quodlibet/qltk/quodlibetwindow.py:1288
+#: quodlibet/qltk/quodlibetwindow.py:1289
 msgid "Enter the location of an audio file:"
 msgstr "Įveskite garso failo vietą:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1293
+#: quodlibet/qltk/quodlibetwindow.py:1294
 #: quodlibet/qltk/quodlibetwindow.py:1298
 msgid "Unable to add location"
 msgstr "Negalima pridėti vietos"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
+#: quodlibet/qltk/quodlibetwindow.py:1295
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> nėra tinkama vieta."
@@ -7167,9 +7202,9 @@ msgstr "Negalima pervadinti failo"
 #: quodlibet/qltk/renamefiles.py:338
 #, fuzzy, python-format
 msgid ""
-"Renaming <b>%(old-name)s</b> to <b>%(new-name)s</b> failed. Possibly the "
-"target file already exists, or you do not have permission to make the new "
-"file or remove the old one."
+"Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
+"already exists, or you do not have permission to make the new file or remove "
+"the old one."
 msgstr ""
 "Pervadinimas iš <b>%s</b> į <b>%s</b> nepavyko. Greičiausiai paskirties "
 "failas jau egzistuoja arba neturite teisių sukurti naują ar pašalinti seną."
@@ -7193,10 +7228,10 @@ msgid "Path is not absolute"
 msgstr "Kelias neabsoliutus"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "The pattern\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
@@ -7573,10 +7608,10 @@ msgid "Tags are added to existing ones"
 msgstr "Žymės pridedamos prie esamų"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, python-format
+#, fuzzy, python-format
 msgid ""
 "The pattern\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "is invalid. Possibly it contains the same tag twice or it has unbalanced "
 "brackets (&lt; / &gt;)."
 msgstr ""
@@ -7584,21 +7619,6 @@ msgstr ""
 "\t<b>%s</b>\n"
 "yra netaisyklingas. Greičiausiai jame yra kelios tos pačios žymės ar "
 "netvarkingi skliausteliai (&lt; / &gt;)."
-
-#: quodlibet/qltk/tagsfrompath.py:215
-msgid "Invalid tags"
-msgstr "Netaisyklingos žymės"
-
-#: quodlibet/qltk/tagsfrompath.py:216
-#, python-format
-msgid ""
-"Invalid tags <b>%s</b>\n"
-"\n"
-"The files currently selected do not support editing these tags."
-msgstr ""
-"Netaisyklingos žymės <b>%s</b>\n"
-"\n"
-"Failai, kuriuos pasirinkote, nepalaiko šių žymų redagavimo."
 
 #: quodlibet/qltk/textedit.py:141
 #, python-format
@@ -7764,12 +7784,12 @@ msgstr "Pasirinkimas „%r“ reikalauja argumento."
 msgid "%r is not a unique prefix."
 msgstr "„%r“ nėra unikalus priešdėlis."
 
-#: quodlibet/util/__init__.py:349
+#: quodlibet/util/__init__.py:353
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:404
+#: quodlibet/util/__init__.py:408
 #, fuzzy, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
@@ -7777,11 +7797,11 @@ msgstr[0] "%d sekundė"
 msgstr[1] "%d sekundės"
 msgstr[2] "%d sekundžių"
 
-#: quodlibet/util/__init__.py:417
+#: quodlibet/util/__init__.py:421
 msgid "No time information"
 msgstr "Nėra laiko informacijos"
 
-#: quodlibet/util/__init__.py:420
+#: quodlibet/util/__init__.py:424
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -7789,7 +7809,7 @@ msgstr[0] "%d sekundė"
 msgstr[1] "%d sekundės"
 msgstr[2] "%d sekundžių"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:425
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -7797,7 +7817,7 @@ msgstr[0] "%d minutė"
 msgstr[1] "%d minutės"
 msgstr[2] "%d minučių"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:426
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -7805,7 +7825,7 @@ msgstr[0] "%d valanda"
 msgstr[1] "%d valandos"
 msgstr[2] "%d valandų"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -7813,7 +7833,7 @@ msgstr[0] "%d diena"
 msgstr[1] "%d dienos"
 msgstr[2] "%d dienų"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7825,7 +7845,7 @@ msgstr[2] "%d metų"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:516
+#: quodlibet/util/__init__.py:520
 #, fuzzy
 msgctxt "check"
 msgid "titlecase?"
@@ -7881,10 +7901,10 @@ msgid "Unable to edit song"
 msgstr "Negalima redaguoti dainos"
 
 #: quodlibet/util/songwrapper.py:122
-#, python-format
+#, fuzzy, python-format
 msgid ""
-"Saving <b>%s</b> failed. The file may be read-only, corrupted, or you do not "
-"have permission to edit it."
+"Saving %s failed. The file may be read-only, corrupted, or you do not have "
+"permission to edit it."
 msgstr ""
 "Nepavyko išsaugoti <b>%s</b>. Failas gali būti apsaugotas nuo rašymo, "
 "sugadintas arba neturite teisių jo redaguoti."
@@ -8262,6 +8282,23 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
+
+#, fuzzy, python-format
+#~ msgid "Unable to add <b>%s</b>"
+#~ msgstr "Negalima pridėti dainos"
+
+#~ msgid "Invalid tags"
+#~ msgstr "Netaisyklingos žymės"
+
+#, python-format
+#~ msgid ""
+#~ "Invalid tags <b>%s</b>\n"
+#~ "\n"
+#~ "The files currently selected do not support editing these tags."
+#~ msgstr ""
+#~ "Netaisyklingos žymės <b>%s</b>\n"
+#~ "\n"
+#~ "Failai, kuriuos pasirinkote, nepalaiko šių žymų redagavimo."
 
 #, python-format
 #~ msgid "%.1f seconds"
