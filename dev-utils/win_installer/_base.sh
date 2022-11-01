@@ -150,7 +150,7 @@ function install_quodlibet {
     QL_VERSION=$(MSYSTEM="" build_python -c \
         "import quodlibet.const; import sys; sys.stdout.write(quodlibet.const.VERSION)")
     QL_VERSION_DESC="$QL_VERSION"
-    if [ "$1" = "master" ]
+    if [ "$1" = "main" ]
     then
         local GIT_REV
         local GIT_HASH

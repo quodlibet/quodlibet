@@ -32,7 +32,7 @@ sys.path.append(os.path.join(dir_, "ext"))
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks', 'contributors']
 
 source_suffix = '.rst'
-master_doc = 'index'
+root_doc = 'index'
 project = 'Quod Libet'
 copyright = u""
 exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']

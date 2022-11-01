@@ -46,7 +46,7 @@ Simply run ``./build.sh [git-tag]`` and both the installer and the portable
 installer should appear in this directory.
 
 You can pass a git tag ``./build.sh release-3.8.0`` to build a specific tag or
-pass nothing to build master. Note that it will clone from this repository and
+pass nothing to build main. Note that it will clone from this repository and
 not from github so any commits present locally will be cloned as well.
 
 

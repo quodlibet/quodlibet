@@ -34,7 +34,7 @@ Now clone the Git repository and start Quod Libet::
 On MacOS (formerly OS X) all the needed dependencies are included in the provided bundle
 itself.
 Download the latest bundle, which is guaranteed to work with current
-Git ``master``: `QuodLibet-latest.dmg
+Git ``main``: `QuodLibet-latest.dmg
 <https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest.dmg>`__.
 It contains a ``run`` script which passes all arguments to the included Python with
 the right environment set up.
@@ -72,7 +72,7 @@ and packages:
 
 
 .. |quodlibet.modules ref| replace:: ``quodlibet.modules`` moduleset file 
-.. _quodlibet.modules ref: https://github.com/quodlibet/quodlibet/tree/master/dev-utils/osx_bundle/modulesets/quodlibet.modules
+.. _quodlibet.modules ref: https://github.com/quodlibet/quodlibet/tree/main/dev-utils/osx_bundle/modulesets/quodlibet.modules
 
 This will *almost* cover all the dependencies that the bundle will contain; at the time of writing the brew
 gstreamer plugins do not include the wavpack (``gst-plugins-good``) or game-music-emu (gme, in ``gst-plugins-bad``)
@@ -81,7 +81,7 @@ for a more up-to-date list of dependencies.
 
 If you want to build a bundle yourself or change/add dependencies,
 see the `osx_bundle directory
-<https://github.com/quodlibet/quodlibet/tree/master/dev-utils/osx_bundle>`__
+<https://github.com/quodlibet/quodlibet/tree/main/dev-utils/osx_bundle>`__
 in the Git repo for further instructions.
 
 
@@ -92,7 +92,7 @@ On Windows we use the `msys2 <http://www.msys2.org/>`__ environment for
 development.
 
 Check out the `win_installer
-<https://github.com/quodlibet/quodlibet/tree/master/dev-utils/win_installer>`__
+<https://github.com/quodlibet/quodlibet/tree/main/dev-utils/win_installer>`__
 directory in the Git repo for further instructions.
 
 

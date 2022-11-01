@@ -29,7 +29,7 @@ It has extremely flexible metadata editing and searching capabilities.
 With over 90 plugins included, you can extend and integrate with almost anything,
 or `write your own <https://quodlibet.readthedocs.io/en/latest/development/plugins.html>`_!
 
-.. image:: https://github.com/quodlibet/quodlibet/raw/master/docs/images/album-list-2017-08.png
+.. image:: https://github.com/quodlibet/quodlibet/raw/main/docs/images/album-list-2017-08.png
     :align: center
 
 

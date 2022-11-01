@@ -57,7 +57,7 @@ New stable branch
 * ``git checkout -b quodlibet-x.y``
 * ``git commit -m "new stable branch"``
 * ``git push``
-* ``git checkout master``
+* ``git checkout main``
 * Update version in ``const.py`` to ``(X, Y + 1, -1)``
 * ``git commit -m "version bump"``
 

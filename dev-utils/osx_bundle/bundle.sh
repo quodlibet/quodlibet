@@ -15,7 +15,7 @@ source env.sh
 DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 function main {
-    local GIT_TAG=${1:-"master"}
+    local GIT_TAG=${1:-"main"}
 
     PYTHON="python3"
     PYTHONID="python"$(jhbuild run "${PYTHON}" -c \
