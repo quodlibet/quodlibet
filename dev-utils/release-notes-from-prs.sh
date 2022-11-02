@@ -27,7 +27,7 @@ git log \
     --grep "Update translation files" \
     --grep "Translated using Weblate" \
     --grep "Update quodlibet.pot" \
-    --first-parent master \
+    --first-parent main \
     --since="$from_date" \
     | sed -nre 's/(.+)+\|(.*)/ * \2 (:user:`\1`)/p' \
     | sed -r \

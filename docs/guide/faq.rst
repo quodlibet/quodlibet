@@ -32,7 +32,7 @@ Under there you'll find all sorts of things,
 separate from the audio file tags themselves, e.g.
 
  * ``songs`` - the pickled songs database.
- * ``config`` - the master Quod Libet configuration file - edit with care
+ * ``config`` - the main Quod Libet configuration file - edit with care
  * ``playlists/`` - a directory for all playlists
  * ``lists/`` - a directory for saved searches and so on
  * ``stations`` / ``stations_all`` - the Internet radio stations lists
@@ -230,11 +230,11 @@ fewer choices for tag editors. You could also :ref:`help us make Quod Libet
 better <Contribute>`.
 
 
-Changing the volume in Quod Libet changes the master volume!
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Changing the volume in Quod Libet changes the main volume!
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Since version 3.5, Quod Libet will control the PulseAudio stream volume directly (same
 as the application slider in ``pavucontrol``) which might have an effect on
-the master volume and vice versa. To restore the old behavior disable
+the main volume and vice versa. To restore the old behavior disable
 ``flat-volumes`` mode in PulseAudio. See ``man pulse-daemon.conf`` for more
 information.

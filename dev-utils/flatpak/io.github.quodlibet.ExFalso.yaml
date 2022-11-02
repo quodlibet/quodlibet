@@ -90,7 +90,7 @@ modules:
     sources:
       - type: git
         url: https://github.com/quodlibet/quodlibet.git
-        tag: master
+        tag: main
 cleanup:
   - /include
   - /share/gtk-doc

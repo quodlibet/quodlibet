@@ -88,8 +88,8 @@ Tips:
 
 * The best way to find out what is possible is to read the documentation of 
   the `plugin base classes
-  <https://github.com/quodlibet/quodlibet/tree/master/quodlibet/plugins>`_ .
+  <https://github.com/quodlibet/quodlibet/tree/main/quodlibet/plugins>`_ .
 
 * The easiest way to get started creating a new plugin is to look for `existing plugins
-  <https://github.com/quodlibet/quodlibet/tree/master/quodlibet/ext>`_ that do
+  <https://github.com/quodlibet/quodlibet/tree/main/quodlibet/ext>`_ that do
   something similar to what you want.
