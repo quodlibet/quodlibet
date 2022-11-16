@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-19 22:04+0000\n"
+"PO-Revision-Date: 2022-11-05 14:09+0000\n"
 "Last-Translator: Till Berger <till@mellthas.de>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.14.2\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -612,13 +612,13 @@ msgid "Columnar"
 msgstr "Säulenförmig"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
 "Feldmuster mit optionalem Markup, z.B. <tt>composer</tt> oder\n"
-"<tt>%s</tt>"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -1124,8 +1124,7 @@ msgstr "Eine Datei oder eine Abfrage zur Warteschlange hinzufügen"
 
 #: quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
-msgstr ""
-"Mehrere Dateien – durch Kommata getrennt – zur Warteschlange hinzufügen"
+msgstr "Mehrere Dateien – durch Kommata getrennt – zur Warteschlange hinzufügen"
 
 #: quodlibet/cli.py:143 quodlibet/util/tags.py:158
 msgid "filename"
@@ -1620,14 +1619,14 @@ msgid "Automatic Rating"
 msgstr "Automatische Bewertung"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
 "Bewertet Titel automatisch, wenn sie abgespielt oder übersprungen werden. "
-"Benutzt den »beschleunigten« Algorithmus aus vux von Brian Nelson."
+"Benutzt den »beschleunigten« Algorithmus aus vux (Vacillating Utilitarian "
+"eXtemporizer) von Brian Nelson."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1979,10 +1978,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr ""
-"Speichert eine Jabber-User-Tunes-Datei in <tt>~/.quodlibet/jabber</tt>."
+msgstr "Speichert eine Jabber-User-Tunes-Datei in %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2247,23 +2245,23 @@ msgstr "Wiedergabebenachrichtigungen"
 
 #: quodlibet/ext/events/notify.py:223
 msgid "Displays a notification when the song changes."
-msgstr ""
-"Eine Benachrichtigung anzeigen, wenn der wiedergegebene Titel wechselt."
+msgstr "Eine Benachrichtigung anzeigen, wenn der wiedergegebene Titel wechselt."
 
 #: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
 msgid "Next"
 msgstr "Nächster"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Wiedergabebenachrichtigungen"
+msgstr "Lesezeichenbenachrichtigungen"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Benutzt Benachrichtigungen, um Lesezeichen und Kommentare in Echtzeit "
+"anzuzeigen. Hervorragend für die Verwendung im Soundcloud-Browser geeignet."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2869,7 +2867,6 @@ msgid "Export path is not absolute"
 msgstr "Exportpfad ist nicht absolut"
 
 #: quodlibet/ext/events/synchronize_to_device.py:852
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2880,11 +2877,11 @@ msgid ""
 msgstr ""
 "Das Muster\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
 "enthält »/«, startet aber nicht vom Wurzelverzeichnis. Bitte geben Sie einen "
-"absoluten Zielpfad an, indem Sie sicherstellen, dass dieser mit »/« oder "
-"»~/« beginnt."
+"absoluten Zielpfad an, indem Sie sicherstellen, dass dieser mit »/« oder »~/«"
+" beginnt."
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
@@ -4256,7 +4253,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "%(source)s – %(dimensions)s wird geladen …"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4265,10 +4262,10 @@ msgid ""
 "%(providers)s"
 msgstr ""
 "Keine Ergebnisse für die folgenden Alben:\n"
-"<i>%(albums)s</i>.\n"
+"%(albums)s.\n"
 "\n"
 "Verwendete Provider:\n"
-"<tt>%(providers)s</tt>"
+"%(providers)s"
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
 msgid "No covers found"
@@ -4429,8 +4426,7 @@ msgstr "Duplikatbrowser"
 
 #: quodlibet/ext/songsmenu/duplicates.py:359
 msgid "Finds and displays similarly tagged versions of songs."
-msgstr ""
-"Findet Versionen von Titeln mit ähnlichen Metadaten und zeigt diese an."
+msgstr "Findet Versionen von Titeln mit ähnlichen Metadaten und zeigt diese an."
 
 #: quodlibet/ext/songsmenu/duplicates.py:396
 msgid ""
@@ -4488,8 +4484,8 @@ msgstr ""
 "Bearbeitet die Anzahl der Wiedergaben und des Überspringens für einen Titel "
 "(<tt>~#playcount</tt> bzw. <tt>~#skipcount</tt>).\n"
 "\n"
-"Sind mehrere Titel ausgewählt, werden die Anzahlen inkrementiert statt "
-"gesetzt.\n"
+"Sind mehrere Titel ausgewählt, werden die Werte inkrementiert statt gesetzt."
+"\n"
 "\n"
 "Wird <tt>~#playcount</tt> für einen Titel auf 0 gesetzt, werden die Einträge "
 "<tt>~#lastplayed</tt> und <tt>~#laststarted</tt> geleert. Wenn allerdings "
@@ -4505,13 +4501,12 @@ msgid "Skip Count"
 msgstr "Anzahl übersprungen"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Mehrere %s-Werte"
+msgstr "Mehrere Dateien ausgewählt."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Werte werden inkrementiert."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4750,8 +4745,8 @@ msgid ""
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
 "Ihr iFP-Gerät konnte nicht angesprochen werden. Bitte überprüfen Sie, dass "
-"das Gerät eingeschaltet und eingesteckt ist, und dass Sie ifp-line (http://"
-"ifp-driver.sf.net) installiert haben."
+"das Gerät eingeschaltet und eingesteckt ist, und dass Sie ifp-line (http"
+"://ifp-driver.sf.net) installiert haben."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -4759,11 +4754,11 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "Lade %(current)d/%(total)d hoch"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
 msgstr ""
-"<b>%s</b> konnte nicht hochgeladen werden. Das Gerät hat möglicherweise "
-"keinen Speicherplatz mehr oder ist ausgeschaltet."
+"%s konnte nicht hochgeladen werden. Das Gerät hat möglicherweise keinen "
+"Speicherplatz mehr oder ist ausgeschaltet."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4810,7 +4805,7 @@ msgid "Further information"
 msgstr "Weitere Informationen"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4830,7 +4825,7 @@ msgstr ""
 "Der Begriff »Titel-Benutzerdaten« schließt die Wiedergabelisten, die die "
 "ausgewählten Titel enthalten, ein und außerdem die folgenden Metadaten:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Seien Sie sich im Klaren darüber, dass alles, was beim Export ausgewählt "
 "wurde, auch wieder importiert wird. Wenn die Dateinamenstämme (Dateinamen "
@@ -5011,9 +5006,9 @@ msgid "Use absolute paths"
 msgstr "Absolute Pfade benutzen"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "Schreiben nach <b>%s</b> fehlgeschlagen."
+msgstr "Schreiben nach %s fehlgeschlagen."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -5053,11 +5048,11 @@ msgid "Peak"
 msgstr "Spitzenpegel"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "<b>%(to-process)s</b> Album zu aktualisieren (von %(all)s)"
-msgstr[1] "<b>%(to-process)s</b> Alben zu aktualisieren (von %(all)s)"
+msgstr[0] "%(to-process)s Album zu aktualisieren (von %(all)s)"
+msgstr[1] "%(to-process)s Alben zu aktualisieren (von %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -5106,8 +5101,7 @@ msgstr "Metadatenfelder aufteilen"
 msgid ""
 "Splits the disc number from the album and the version from the title at the "
 "same time."
-msgstr ""
-"Gleichzeitig die CD-Nummer vom Album und die Version vom Titel trennen."
+msgstr "Gleichzeitig die CD-Nummer vom Album und die Version vom Titel trennen."
 
 #: quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
@@ -5148,13 +5142,13 @@ msgid "Website Search"
 msgstr "Websitesuche"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
 "Durchsucht die ausgewählte Website mithilfe beliebiger Metadaten.\n"
-"Unterstützt Muster, z. B. <tt>%(pattern-example)s</tt>."
+"Unterstützt Muster, z. B. %(pattern)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -6033,30 +6027,28 @@ msgid "Unable to add tag"
 msgstr "Feld konnte nicht hinzugefügt werden"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Titel konnten nicht hinzugefügt werden"
+msgstr "%s konnte nicht hinzugefügt werden"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
 msgstr ""
-"Die momentan ausgewählten Dateien unterstützen keine mehrfachen Werte für <b>"
-"%s</b>."
+"Die momentan ausgewählten Dateien unterstützen keine mehrfachen Werte für %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Ungültiges Feld"
-msgstr[1] "Ungültiges Feld"
+msgstr[1] "Ungültige Felder"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -6066,26 +6058,26 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"Ungültiges Feld <b>%s</b>\n"
+"Ungültiges Feld %s\n"
 "\n"
 "Die ausgewählten Dateien unterstützen das Bearbeiten dieses Feldes nicht."
 msgstr[1] ""
-"Ungültiges Feld <b>%s</b>\n"
+"Ungültige Felder %s\n"
 "\n"
-"Die ausgewählten Dateien unterstützen das Bearbeiten dieses Feldes nicht."
+"Die ausgewählten Dateien unterstützen das Bearbeiten dieser Felder nicht."
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Ungültiger Wert"
 
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Ungültiger Wert: <b>%(value)s</b>\n"
+"Ungültiger Wert: %(value)s\n"
 "\n"
 "%(error)s"
 
@@ -6108,7 +6100,7 @@ msgid "Unable to save song"
 msgstr "Der Titel konnte nicht gespeichert werden"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
@@ -7165,16 +7157,15 @@ msgid "Unable to rename file"
 msgstr "Die Datei konnte nicht umbenannt werden"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"Umbenennen von <b>%(old-name)s</b> nach <b>%(new-name)s</b> fehlgeschlagen. "
-"Möglicherweise existiert die Zieldatei bereits, oder Sie haben keine "
-"ausreichenden Benutzerrechte, um die neue Datei anzulegen oder die alte zu "
-"entfernen."
+"Umbenennen von %(old-name)s nach %(new-name)s fehlgeschlagen. Möglicherweise "
+"existiert die Zieldatei bereits, oder Sie haben keine ausreichenden "
+"Benutzerrechte, um die neue Datei anzulegen oder die alte zu entfernen."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7195,18 +7186,18 @@ msgid "Path is not absolute"
 msgstr "Der Pfad ist nicht absolut"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
-"Die Vorlage\n"
-"\t<b>%s</b>\n"
+"Das Muster\n"
+"\t%s\n"
 "enthält »/«, startet aber nicht vom Stammverzeichnis. Um zu vermeiden, dass "
-"Ordner falsch benannt werden, sollte die Vorlage entweder mit »/« oder mit "
-"»~/« beginnen."
+"Ordner falsch benannt werden, sollte das Muster entweder mit »/« oder »~/« "
+"beginnen."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -7567,7 +7558,7 @@ msgid "Tags are added to existing ones"
 msgstr "Neue Felder werden zu den vorhandenen Feldern hinzugefügt"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7575,7 +7566,7 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 "Das Muster\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "ist ungültig. Möglicherweise enthält es das gleiche Feld zweimal, oder es "
 "enthält nicht zueinander passende Klammern (&lt; / &gt;)."
 
@@ -7833,37 +7824,37 @@ msgstr "MusicBrainz-IDs müssen dem Format UUID entsprechen."
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
-"Der MusicBrainz Release-Status muss »official«, »promotional«, oder "
-"»bootleg« sein."
+"Der MusicBrainz Release-Status muss »official«, »promotional«, oder »bootleg«"
+" sein."
 
 #: quodlibet/util/massagers.py:208
 msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Der Sprachcode muss aus drei Buchstaben bestehen (ISO 639-2)"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Speichern fehlgeschlagen"
-msgstr[1] "Speichern fehlgeschlagen"
+msgstr[0] "Speichere %d Datei"
+msgstr[1] "Speichere %d Dateien"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Automatisches Speichern"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Der Titel kann nicht bearbeitet werden"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"Speichern von <b>%s</b> fehlgeschlagen. Die Datei ist möglicherweise nur "
-"lesbar, beschädigt, oder Sie haben keine ausreichenden Benutzerrechte zum "
-"Bearbeiten der Datei."
+"Speichern von %s fehlgeschlagen. Die Datei ist möglicherweise nur lesbar, "
+"beschädigt, oder Sie haben keine ausreichenden Benutzerrechte zum Bearbeiten "
+"der Datei."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
