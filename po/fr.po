@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-30 18:35+0000\n"
+"PO-Revision-Date: 2022-11-01 09:14+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -611,13 +611,14 @@ msgid "Columnar"
 msgstr "Chronique"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
-"Ajouter au motif une balise optionnelle, par exemple <tt>composer</tt> ou\n"
-"<tt>%s</tt>"
+"Modèle de balise avec balisage facultatif, par exemple <tt>compositeur</tt> "
+"ou \n"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -1982,10 +1983,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr ""
-"Produit un fichier Jabber User Tunes vers <tt>~/.quodlibet/jabber</tt>."
+msgstr "Produit un fichier Jabber User Tunes vers %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2257,15 +2257,16 @@ msgid "Next"
 msgstr "Suivant"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Notifications de titre"
+msgstr "Notifications du signet"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Utilise les notifications pour afficher les signets / commentaires en temps "
+"réel. Fonctionne bien pour le navigateur Soundcloud."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2866,7 +2867,6 @@ msgid "Export path is not absolute"
 msgstr "Le chemin d'exportation n'est pas absolu"
 
 #: quodlibet/ext/events/synchronize_to_device.py:852
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2875,11 +2875,11 @@ msgid ""
 "contains \"/\" but does not start from root. Please provide an absolute "
 "destination path by making sure it starts with / or ~/."
 msgstr ""
-"Le modèle\n"
-"\n"
-"<b>{}</b>\n"
-"\n"
-"contient \"/\" mais ne commence pas à la racine. Veuillez fournir un chemin "
+"Le modèle \n"
+" \n"
+"{} \n"
+" \n"
+"contient \"/\" mais ne commence pas à la racine. Merci de fournir un chemin "
 "de destination absolu en vous assurant qu'il commence par / ou ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
@@ -4242,7 +4242,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "Chargement %(source)s - %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4250,11 +4250,11 @@ msgid ""
 "Providers used:\n"
 "%(providers)s"
 msgstr ""
-"Rien trouvé pour les albums :\n"
-"<i>%(albums)s</i>.\n"
-"\n"
-"Fournisseurs utilisés :\n"
-"<tt>%(providers)s</tt>"
+"Rien trouvé pour les albums : \n"
+"%(albums)s. \n"
+" \n"
+"Fournisseurs utilisés : \n"
+"%(providers)s"
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
 msgid "No covers found"
@@ -4489,13 +4489,12 @@ msgid "Skip Count"
 msgstr "Comptage du nombre de fois où un titre est sauté"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "%s : valeurs multiples"
+msgstr "Plusieurs fichiers sélectionnés."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Les comptes seront incrémentés."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4743,10 +4742,10 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "Téléchargement de %(current)d/%(total)d"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
 msgstr ""
-"Impossible de télécharger <b>%s</b>. L'appareil peut être hors de portée ou "
+"Impossible de télécharger %s. L'appareil peut manquer d'espace ou être "
 "éteint."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
@@ -4796,7 +4795,7 @@ msgid "Further information"
 msgstr "Plus d'information"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4815,20 +4814,20 @@ msgid ""
 msgstr ""
 "Le terme \"données utilisateur des pistes\" comprend les listes de lecture "
 "dans lesquelles se trouvent les pistes sélectionnées et les métadonnées "
-"suivantes :\n"
-"\n"
-"<tt>%s</tt>\n"
-"\n"
+"suivantes : \n"
+" \n"
+"%s \n"
+" \n"
 "Sachez que tout ce que vous avez choisi d'exporter sera importé. Si vous "
-"avez exporté les sources des fichiers (noms de fichiers sans extension), "
-"alors, à l'importation, les fichiers sélectionnés seront renommés.\n"
-"\n"
+"avez exporté les troncs de fichiers (noms de fichiers sans extension), "
+"alors, à l'importation, les fichiers sélectionnés seront renommés. \n"
+" \n"
 "Après avoir exporté un album, vous pouvez importer les données dans une "
 "autre version de l'album. L'ordre et le nombre de pistes peuvent être "
-"différents. Le greffon fait correspondre les données exportées aux nouveaux "
-"morceaux, même si les noms des morceaux sont légèrement différents. La "
+"différents. Le greffon fait correspondre les données exportées aux nouvelles "
+"pistes, même si les noms de celles-ci sont légèrement différents. La "
 "correspondance automatique n'est pas toujours correcte, il est donc "
-"préférable de ne pas trop réduire les valeurs de similarité suivantes."
+"conseillé de ne pas trop réduire les valeurs de similarité suivantes."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:212
 msgid "User interaction on import"
@@ -5000,9 +4999,9 @@ msgid "Use absolute paths"
 msgstr "Utiliser des chemins absolus"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "L'écriture sur <b>%s</b> a échoué."
+msgstr "L'écriture dans %s a échoué."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -5042,11 +5041,11 @@ msgid "Peak"
 msgstr "Pic"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "Il y a <b>%(to-process)s</b> album à mettre à jour (of %(all)s)"
-msgstr[1] "Il y a <b>%(to-process)s</b> albums à mettre à jour (sur %(all)s)"
+msgstr[0] "Il y a %(to-process)s album à mettre à jour (sur %(all)s)"
+msgstr[1] "Il y a %(to-process)s albums à mettre à jour (sur %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -5137,14 +5136,14 @@ msgid "Website Search"
 msgstr "Recherche site Internet"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
-"Recherche le site web de votre choix en utilisant n'importe quelle étiquette "
-"du morceau.\n"
-"Supporte les modèles, par exemple <tt>%(pattern-example)s</tt>."
+"Recherche sur le site Web de votre choix en utilisant les balises des "
+"morceaux. \n"
+"Prend en charge les motifs, par exemple %(pattern)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -6024,30 +6023,29 @@ msgid "Unable to add tag"
 msgstr "Impossible d'ajouter l'étiquette"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Impossible d'ajouter les titres"
+msgstr "Impossible d'ajouter %s"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
 msgstr ""
 "Les fichiers actuellement sélectionnés ne supportent pas les valeurs "
-"multiples pour <b>%s</b>."
+"multiples pour %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Étiquette non valide"
-msgstr[1] "Étiquette non valide"
+msgstr[1] "Étiquettes non valides"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -6057,29 +6055,29 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"Étiquette invalide <b>%s</b>\n"
-"\n"
+"Étiquette invalide %s \n"
+" \n"
 "Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
-"étiquette."
+"balise."
 msgstr[1] ""
-"Étiquette invalide <b>%s</b>\n"
-"\n"
-"Les fichiers sélectionnés actuellement ne permettent pas l'édition de cette "
-"étiquette."
+"Étiquettes invalides %s \n"
+" \n"
+"Les fichiers sélectionnés actuellement ne permettent pas l'édition de ces "
+"balises."
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Valeur non valide"
 
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Valeur invalide : <b>%(value)s</b>\n"
-"\n"
+"Valeur invalide : %(value)s \n"
+" \n"
 "%(error)s"
 
 #: quodlibet/qltk/_editutils.py:31
@@ -6101,13 +6099,13 @@ msgid "Unable to save song"
 msgstr "Impossible d'enregistrer le titre"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
 "L'enregistrement de %(file-name)s a échoué. Le fichier peut être en lecture "
-"seule, corrompu, ou vous n'avez pas la permission de l'éditer."
+"seule, corrompu ou vous n'avez pas la permission pour le modifier."
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -7153,15 +7151,15 @@ msgid "Unable to rename file"
 msgstr "Impossible de renommer le fichier"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"Le renommage de <b>%(old-name)s</b> en <b>%(new-name)s</b> a échoué. Il se "
-"peut que le fichier destination existe déjà, ou que vous n'ayez pas la "
-"permission de créer le nouveau fichier ou de supprimer l'ancien."
+"Le renommage de %(old-name)s en %(new-name)s a échoué. Il est possible que "
+"le fichier cible existe déjà, ou que vous n'ayez pas la permission pour "
+"créer le nouveau fichier ou de supprimer l'ancien."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7182,18 +7180,17 @@ msgid "Path is not absolute"
 msgstr "Le chemin n'est pas absolu"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
-"Le motif\n"
-"\t<b>%s</b>\n"
-"contient / mais ne commence pas à la racine. Pour éviter des répertoires mal "
-"nommés, enracinez votre motif en le commençant par le répertoire / ou le "
-"répertoire ~/."
+"Le modèle \n"
+"\t%s \n"
+"contient / mais ne commence pas à la racine. Pour éviter les dossiers mal "
+"nommés, utilisez la racine de votre modèle en le commençant par / ou ~/."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -7554,17 +7551,17 @@ msgid "Tags are added to existing ones"
 msgstr "Les étiquettes sont ajoutées à celles existantes"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
 "is invalid. Possibly it contains the same tag twice or it has unbalanced "
 "brackets (&lt; / &gt;)."
 msgstr ""
-"Le motif\n"
-"\t<b>%s</b>\n"
-"n'est pas valide. Il peut contenir deux fois la même étiquette ou des "
-"parenthèses sans correspondance (&lt; / &gt;)."
+"Le modèle \n"
+"\t%s \n"
+"n'est pas valide. Il est possible qu'il contienne deux fois la même balise "
+"ou qu'il ait des parenthèses déséquilibrées (&lt; / &gt;)."
 
 #: quodlibet/qltk/textedit.py:141
 #, python-format
@@ -7838,13 +7835,13 @@ msgid "Unable to edit song"
 msgstr "Impossible d'éditer le titre"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"La sauvegarde de <b>%s</b> a échoué. Le fichier peut être en lecture seule, "
-"corrompu, ou vous n'avez pas la permission de l'éditer."
+"La sauvegarde de %s a échoué. Le fichier peut être en lecture seule, "
+"corrompu, ou vous n'avez pas la permission de le modifier."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
