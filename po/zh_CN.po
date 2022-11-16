@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-10-23 16:47+0000\n"
+"PO-Revision-Date: 2022-11-05 14:09+0000\n"
 "Last-Translator: Eric <hamburger1024@mailbox.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 4.14.2\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -2154,9 +2154,8 @@ msgid "Next"
 msgstr ""
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "歌曲通知"
+msgstr "书签通知"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
@@ -4196,9 +4195,8 @@ msgid "Skip Count"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "多个 %s 值"
+msgstr "选中了多个文件。"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
@@ -4662,9 +4660,9 @@ msgid "Use absolute paths"
 msgstr "使用绝对路径"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "写入 <b>%s</b> 失败。"
+msgstr "写入 %s 失败了。"
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -5629,27 +5627,26 @@ msgid "Unable to add tag"
 msgstr "无法增加标签"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "无法添加曲目信息"
+msgstr "无法添加 %s"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "当前所选文件不支持 <b>%s</b> 的多个值。"
+msgstr "当前所选文件不支持多个 %s 值。"
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
-msgstr[0] "非法标签"
+msgstr[0] "无效标签"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -5659,9 +5656,9 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"无效标签 <b>%s</b>\n"
+"无效标签 %s\n"
 "\n"
-"当前选中的文件不支持编辑这个标签。"
+"当前选中的文件不支持编辑这些标签。"
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
@@ -5693,12 +5690,12 @@ msgid "Unable to save song"
 msgstr "无法保存曲目"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
-msgstr ""
-"保存 %(file-name)s 失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
+msgstr "保存 %(file-name)s "
+"失败了。可能原因是该文件为只读文件，文件损坏，或者你没有权限编辑它。"
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -6694,13 +6691,13 @@ msgid "Unable to rename file"
 msgstr "无法重命名文件"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
-msgstr ""
-"保存 %(file-name)s 失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
+msgstr "重命名 %(old-name)s 为 %(new-name)s "
+"失败了。可能原因是目标文件已存在，或者你没有权限创建新文件或删除旧文件。"
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7327,12 +7324,11 @@ msgid "Unable to edit song"
 msgstr "无法编辑曲目"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
-msgstr ""
-"保存<b>%s</b>失败。该文件可能是只读的，损坏了，或者您并没有权限编辑它。"
+msgstr "保存 %s 失败了。可能原因该文件是只读文件，文件损坏，或者你没有权限编辑它。"
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
