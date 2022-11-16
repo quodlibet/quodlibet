@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-08-22 05:13+0000\n"
-"Last-Translator: Marek Felšöci <marek@felsoci.sk>\n"
+"PO-Revision-Date: 2022-11-12 23:52+0000\n"
+"Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
 "Language: sk\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.14-dev\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -611,13 +611,13 @@ msgid "Columnar"
 msgstr "Stĺpcovité"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
 "Vzor značky s voliteľným značením, napr. <tt>composer</tt> alebo\n"
-"<tt>%s</tt>"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -740,14 +740,13 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Chcete rozšíriť \"{pl_name}\" o {num} ďalšiu skladbu?"
+msgstr[1] "Chcete rozšíriť \"{pl_name}\" o {num} ďalšie skladby?"
+msgstr[2] "Chcete rozšíriť \"{pl_name}\" o {num} ďalších skladieb?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Stopy"
+msgstr "_Pridať Stopy"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -778,17 +777,16 @@ msgid "New Feed"
 msgstr "Nový zdroj"
 
 #: quodlibet/browsers/podcasts.py:241
-#, fuzzy
 msgid "Enter the podcast / audio feed location:"
-msgstr "Zadajte umiestnenie zdroja zvukových záznamov:"
+msgstr "Zadajte umiestnenie podcastu / zdroja zvuku:"
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "Podcasts"
-msgstr ""
+msgstr "Podcasty"
 
 #: quodlibet/browsers/podcasts.py:310
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Podcasty"
 
 #: quodlibet/browsers/podcasts.py:412
 msgid "_Add Feed…"
@@ -800,42 +798,41 @@ msgid "_Refresh"
 msgstr "_Obnoviť"
 
 #: quodlibet/browsers/podcasts.py:480
-#, fuzzy
 msgid "Search source for new episodes"
-msgstr "Sledovať túto zložku pre nové skladby"
+msgstr "Vyhľadajte zdroj nových epizód"
 
 #: quodlibet/browsers/podcasts.py:482
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Prestavať"
 
 #: quodlibet/browsers/podcasts.py:484
 msgid "Remove all existing episodes then reload from source"
 msgstr ""
+"Odstráňte všetky existujúce epizódy a potom ich znova načítajte zo zdroja"
 
 #: quodlibet/browsers/podcasts.py:486
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Odstráňte tento podcast a jeho epizódy"
 
 #: quodlibet/browsers/podcasts.py:546
 msgid "Unable to add feed"
 msgstr "Nepodarilo sa pridať zdroj"
 
 #: quodlibet/browsers/podcasts.py:547
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
 msgstr ""
-"%s sa nepodarilo pridať. Možno, že je server mimo prevádzky alebo zadané "
-"umiestnenie nie je platný zdroj zvukových záznamov."
+"%s nebolo možné pridať. Server môže byť mimo prevádzky alebo umiestnenie "
+"nemusí byť podcast / zvukový kanál."
 
 #: quodlibet/browsers/podcasts.py:564
-#, fuzzy
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
-"Súčasná obslužná zvuková aplikácia nepodporuje URL prepojenia, Prehliadač "
-"zdrojov zvukových záznamov je zakázaný."
+"Aktuálny zvukový backend nepodporuje adresy URL, prehliadač podcastov je "
+"vypnutý."
 
 #: quodlibet/browsers/tracks.py:34
 msgid "_Limit Results"
@@ -1150,7 +1147,7 @@ msgstr "umiestnenie"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Nastaviť šablónu pre príkazy --print-*"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1242,13 +1239,12 @@ msgid "Artwork URL Cover Source"
 msgstr "URL zdroj obalu albumu"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"Stiahne obaly albumov prostredníctvom prepojenia v značke <tt>artwork_url</"
-"tt>. Toto funguje v prehliadači Soundcloud."
+"Sťahuje obaly, na ktoré je odkazované značkou <tt>artwork_url</tt>. Funguje "
+"to s prehliadačmi Soundcloud a Podcasts."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
