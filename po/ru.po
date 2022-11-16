@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-18 11:15+0000\n"
+"PO-Revision-Date: 2022-11-12 23:52+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -621,13 +621,13 @@ msgid "Columnar"
 msgstr "Столбчатый"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
-"Шаблон тега с дополнительной разметкой, например:\n"
-" <tt>композитор</tt> либо <tt>%s</tt>"
+"Шаблон тега с дополнительной разметкой, например: \n"
+"<tt>композитор</tt> или %s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -1963,9 +1963,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr "Выводит файл Jabber User Tunes в <tt>~/.quodlibet/jabber</tt>."
+msgstr "Выводит файл Jabber User Tunes в %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2235,15 +2235,16 @@ msgid "Next"
 msgstr "Следующий"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Системные уведомления"
+msgstr "Уведомления о закладках"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Использует уведомления для отображения закладок/комментариев в режиме "
+"реального времени. Хорошо работает в браузере Soundcloud."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2834,7 +2835,6 @@ msgid "Export path is not absolute"
 msgstr "Путь экспорта не является абсолютным"
 
 #: quodlibet/ext/events/synchronize_to_device.py:852
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2845,7 +2845,7 @@ msgid ""
 msgstr ""
 "Шаблон \n"
 " \n"
-"<b>{}</b> \n"
+"{} \n"
 "\n"
 "содержит «/», но начинается не с корневого каталога. Пожалуйста, укажите "
 "абсолютный путь назначения, убедившись, что он начинается с «/» или «~/»."
@@ -4201,7 +4201,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "Загрузка %(source)s – %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4210,10 +4210,10 @@ msgid ""
 "%(providers)s"
 msgstr ""
 "Нет результатов для следующих альбомов:\n"
-"<i>%(albums)s</i>.\n"
+"%(albums)s.\n"
 "\n"
 "Используемые поставщики:\n"
-"<tt>%(providers)s</tt>"
+"%(providers)s"
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
 msgid "No covers found"
@@ -4446,13 +4446,12 @@ msgid "Skip Count"
 msgstr "Счётчик пропусков"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Несколько значений %s"
+msgstr "Выбрано несколько файлов."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Счётчики будут приращены."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4695,10 +4694,9 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "Загрузка %(current)d/%(total)d"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
-msgstr ""
-"Не удаётся отправить <b>%s</b>. Возможно устройство недоступно или отключено."
+msgstr "Не удаётся отправить %s. Возможно устройство недоступно или отключено."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4745,7 +4743,7 @@ msgid "Further information"
 msgstr "Прочая информация"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4765,14 +4763,14 @@ msgstr ""
 "Термин «пользовательские данные трека» включает списки воспроизведения, в "
 "которых находятся выбранные треки, и следующие метаданные:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Имейте в виду, что все, что вы выбрали для экспорта, будет импортировано. "
 "Если вы экспортировали имена файлов без расширения, то при импорте выбранные "
 "файлы будут переименованы.\n"
 "\n"
 "После экспорта альбома вы можете импортировать данные в другую версию "
-"альбома. Порядок и число дорожек могут быть разными. Расширение сопоставляет "
+"альбома. Порядок и число дорожек могут быть разными. Плагин сопоставляет "
 "экспортированные данные с новыми треками, даже если названия треков немного "
 "отличаются. Автоматическое сопоставление не всегда верно, поэтому следующие "
 "значения сходства лучше не занижать."
@@ -4944,9 +4942,9 @@ msgid "Use absolute paths"
 msgstr "Абсолютные пути"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "Не удалось записать в <b>%s</b>."
+msgstr "Не удалось записать в %s."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -4986,12 +4984,12 @@ msgid "Peak"
 msgstr "Пик"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "Обновляется <b>%(to-process)s</b> альбом (из %(all)s)"
-msgstr[1] "Обновляется <b>%(to-process)s</b> альбома (из %(all)s)"
-msgstr[2] "Обновляется <b>%(to-process)s</b> альбомов (из %(all)s)"
+msgstr[0] "Обновляется %(to-process)s альбом (из %(all)s)"
+msgstr[1] "Обновляется %(to-process)s альбома (из %(all)s)"
+msgstr[2] "Обновляется %(to-process)s альбомов (из %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -5080,13 +5078,13 @@ msgid "Website Search"
 msgstr "Поиск в интернете"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
 "Поиск на выбранном вами сайте с использованием любых тегов песен.\n"
-"Поддерживает шаблоны, например, <tt>%(pattern-example)s</tt> ."
+"Поддерживает шаблоны, например, %(pattern)s ."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5960,29 +5958,28 @@ msgid "Unable to add tag"
 msgstr "Не удалось добавить тег"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Не удалось добавить треки"
+msgstr "Не удаётся добавить %s"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "Выбранные файлы не поддерживают множественные значения для <b>%s</b>."
+msgstr "Выбранные файлы не поддерживают множественные значения для %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Недопустимый тег"
-msgstr[1] "Недопустимый тег"
-msgstr[2] "Недопустимый тег"
+msgstr[1] "Недопустимые теги"
+msgstr[2] "Недопустимые теги"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -5992,30 +5989,30 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"Недопустимый тег <b>%s</b>\n"
+"Недопустимый тег %s\n"
 "\n"
 "Выбранные файлы не поддерживают изменение этого тега."
 msgstr[1] ""
-"Недопустимый тег <b>%s</b>\n"
+"Недопустимые теги %s\n"
 "\n"
-"Выбранные файлы не поддерживают изменение этого тега."
+"Выбранные файлы не поддерживают изменение этих тегов."
 msgstr[2] ""
-"Недопустимый тег <b>%s</b>\n"
+"Недопустимые теги %s\n"
 "\n"
-"Выбранные файлы не поддерживают изменение этого тега."
+"Выбранные файлы не поддерживают изменение этих тегов."
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Недопустимое значение"
 
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Некорректное значение: <b>%(value)s</b>\n"
+"Некорректное значение: %(value)s\n"
 "\n"
 "%(error)s"
 
@@ -6037,13 +6034,13 @@ msgid "Unable to save song"
 msgstr "Не удалось сохранить трек"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
 "Не удалось сохранить %(file-name)s. Возможно, файл доступен только для "
-"чтения, испорчен, или вы не имеете прав для его изменения."
+"чтения, испорчен, или у вас нет прав для его изменения."
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -7086,15 +7083,15 @@ msgid "Unable to rename file"
 msgstr "Не удалось переименовать файл"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"Не удалось переименовать <b>%(old-name)s</b> в <b>%(new-name)s</b>. "
-"Возможно, целевой файл уже существует, или вы не имеете прав для создания "
-"нового или удаления старого файла."
+"Не удалось переименовать %(old-name)s в %(new-name)s. Возможно, целевой файл "
+"уже существует, или у вас нет прав для создания нового или удаления старого "
+"файла."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7115,7 +7112,7 @@ msgid "Path is not absolute"
 msgstr "Неабсолютный путь"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7123,9 +7120,9 @@ msgid ""
 "your pattern by starting it with / or ~/."
 msgstr ""
 "Шаблон\n"
-"\t<b>%s</b>\n"
-"содержит '/', но начинается не с корневого каталога. Чтобы избежать ошибки в "
-"названиях папок, начните шаблон с '/' или '~/'."
+"\t%s\n"
+"содержит «/», но начинается не с корневого каталога. Чтобы избежать ошибки в "
+"названиях папок, начните шаблон с «/» или «~/»."
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -7482,7 +7479,7 @@ msgid "Tags are added to existing ones"
 msgstr "Теги будут добавлены к существующим"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7490,7 +7487,7 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 "Шаблон\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "недопустим. Возможно, он содержит незакрытые скобки (&lt; / &gt;) или один и "
 "тот же тег дважды."
 
@@ -7755,29 +7752,29 @@ msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Язык должен быть трёхзначным кодом ISO 639-2"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Не удалось сохранить"
-msgstr[1] "Не удалось сохранить"
-msgstr[2] "Не удалось сохранить"
+msgstr[0] "Сохраняется %d файл"
+msgstr[1] "Сохраняются %d файла"
+msgstr[2] "Сохраняются %d файлов"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Автосохранение"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Не удалось изменить трек"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"Не удалось сохранить <b>%s</b>. Возможно, файл доступен только для чтения, "
-"испорчен или вы не имеете прав для его изменения."
+"Не удалось сохранить %s. Возможно, файл доступен только для чтения, испорчен "
+"или у вас нет прав для его изменения."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
