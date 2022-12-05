@@ -172,7 +172,8 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         already in the library.
         """
 
-        items = {item for item in items if item not in self}
+        items = {item for item in items
+                 if item is not None and item not in self}
         if not items:
             return items
         if len(items) == 1:
