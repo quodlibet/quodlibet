@@ -141,7 +141,7 @@ class _KeyValueEditor(qltk.Window):
         row = model[iter]
         content, name = row
         cell.set_property("markup",
-                          util.bold(name) + "\n",
+                          util.bold(name) + "\n" +
                           util.monospace(content))
 
     def __changed(self, entry, buttons):
