@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import _
+from quodlibet import _, ngettext
 
 """Database of all known tags, their translations and how they are used"""
 
@@ -241,7 +241,7 @@ def readable(tag, plural=False):
             else:
                 tag = tag[1:]
     except IndexError:
-        return _("Invalid tag")
+        return ngettext("Invalid tag", "Invalid tags", 1)
 
     def desc(tag):
         if plural:

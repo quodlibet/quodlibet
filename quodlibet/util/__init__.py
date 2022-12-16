@@ -36,7 +36,7 @@ from .misc import cached_func, get_module_dir, get_ca_file, \
 from .environment import is_plasma, is_unity, is_enlightenment, \
     is_linux, is_windows, is_wine, is_osx, is_flatpak, matches_flatpak_runtime
 from .enum import enum
-from .i18n import _, C_
+from .i18n import _, ngettext, C_
 
 
 # flake8
@@ -508,7 +508,7 @@ def tag(name, cap=True):
     # Strips ~ and ~# from the start and runs it through a map (which
     # the user can configure).
     if not name:
-        return _("Invalid tag")
+        return ngettext("Invalid tag", "Invalid tags", 1)
     else:
         from quodlibet.util.tags import readable
         parts = map(readable, tagsplit(name))
