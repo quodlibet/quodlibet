@@ -796,8 +796,8 @@ class EditTags(Gtk.VBox):
             assert isinstance(value, str)
             if not self._group_info.can_change(tag):
                 title = ngettext("Invalid tag", "Invalid tags", 1)
-                msg = ngettext("Invalid tag %s\n\nThe files currently"
-                        " selected do not support editing this tag.",
+                msg = ngettext("Invalid tag %s\n\nThe files currently "
+                        "selected do not support editing this tag.",
                         "Invalid tags %s\n\nThe files currently "
                         "selected do not support editing these tags.", 1
                         ) % util.bold(tag)
@@ -979,8 +979,8 @@ class EditTags(Gtk.VBox):
         elif not self._group_info.can_change(new_tag):
             # Can't add the new tag.
             title = ngettext("Invalid tag", "Invalid tags", 1)
-            msg = ngettext("Invalid tag %s\n\nThe files currently"
-                    " selected do not support editing this tag.",
+            msg = ngettext("Invalid tag %s\n\nThe files currently "
+                    "selected do not support editing this tag.",
                     "Invalid tags %s\n\nThe files currently "
                     "selected do not support editing these tags.", 1
                     ) % util.bold(new_tag)
