@@ -1124,7 +1124,8 @@ msgstr "Eine Datei oder eine Abfrage zur Warteschlange hinzufügen"
 
 #: quodlibet/cli.py:142
 msgid "Enqueue comma-separated files"
-msgstr "Mehrere Dateien – durch Kommata getrennt – zur Warteschlange hinzufügen"
+msgstr ""
+"Mehrere Dateien – durch Kommata getrennt – zur Warteschlange hinzufügen"
 
 #: quodlibet/cli.py:143 quodlibet/util/tags.py:158
 msgid "filename"
@@ -1977,7 +1978,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr "Speichert eine Jabber-User-Tunes-Datei in %(path)s."
@@ -2245,7 +2246,8 @@ msgstr "Wiedergabebenachrichtigungen"
 
 #: quodlibet/ext/events/notify.py:223
 msgid "Displays a notification when the song changes."
-msgstr "Eine Benachrichtigung anzeigen, wenn der wiedergegebene Titel wechselt."
+msgstr ""
+"Eine Benachrichtigung anzeigen, wenn der wiedergegebene Titel wechselt."
 
 #: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
 msgid "Next"
@@ -2880,8 +2882,8 @@ msgstr ""
 "{}\n"
 "\n"
 "enthält »/«, startet aber nicht vom Wurzelverzeichnis. Bitte geben Sie einen "
-"absoluten Zielpfad an, indem Sie sicherstellen, dass dieser mit »/« oder »~/«"
-" beginnt."
+"absoluten Zielpfad an, indem Sie sicherstellen, dass dieser mit »/« oder "
+"»~/« beginnt."
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
@@ -4426,7 +4428,8 @@ msgstr "Duplikatbrowser"
 
 #: quodlibet/ext/songsmenu/duplicates.py:359
 msgid "Finds and displays similarly tagged versions of songs."
-msgstr "Findet Versionen von Titeln mit ähnlichen Metadaten und zeigt diese an."
+msgstr ""
+"Findet Versionen von Titeln mit ähnlichen Metadaten und zeigt diese an."
 
 #: quodlibet/ext/songsmenu/duplicates.py:396
 msgid ""
@@ -4484,8 +4487,8 @@ msgstr ""
 "Bearbeitet die Anzahl der Wiedergaben und des Überspringens für einen Titel "
 "(<tt>~#playcount</tt> bzw. <tt>~#skipcount</tt>).\n"
 "\n"
-"Sind mehrere Titel ausgewählt, werden die Werte inkrementiert statt gesetzt."
-"\n"
+"Sind mehrere Titel ausgewählt, werden die Werte inkrementiert statt "
+"gesetzt.\n"
 "\n"
 "Wird <tt>~#playcount</tt> für einen Titel auf 0 gesetzt, werden die Einträge "
 "<tt>~#lastplayed</tt> und <tt>~#laststarted</tt> geleert. Wenn allerdings "
@@ -4745,8 +4748,8 @@ msgid ""
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
 msgstr ""
 "Ihr iFP-Gerät konnte nicht angesprochen werden. Bitte überprüfen Sie, dass "
-"das Gerät eingeschaltet und eingesteckt ist, und dass Sie ifp-line (http"
-"://ifp-driver.sf.net) installiert haben."
+"das Gerät eingeschaltet und eingesteckt ist, und dass Sie ifp-line (http://"
+"ifp-driver.sf.net) installiert haben."
 
 #: quodlibet/ext/songsmenu/ifp.py:39
 #, python-format
@@ -5101,7 +5104,8 @@ msgstr "Metadatenfelder aufteilen"
 msgid ""
 "Splits the disc number from the album and the version from the title at the "
 "same time."
-msgstr "Gleichzeitig die CD-Nummer vom Album und die Version vom Titel trennen."
+msgstr ""
+"Gleichzeitig die CD-Nummer vom Album und die Version vom Titel trennen."
 
 #: quodlibet/ext/songsmenu/splitting.py:56
 msgid "Split Album"
@@ -7824,8 +7828,8 @@ msgstr "MusicBrainz-IDs müssen dem Format UUID entsprechen."
 msgid ""
 "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
 msgstr ""
-"Der MusicBrainz Release-Status muss »official«, »promotional«, oder »bootleg«"
-" sein."
+"Der MusicBrainz Release-Status muss »official«, »promotional«, oder "
+"»bootleg« sein."
 
 #: quodlibet/util/massagers.py:208
 msgid "Language must be an ISO 639-2 three-letter code"

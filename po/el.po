@@ -1974,7 +1974,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr ""
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, fuzzy, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr "Εξάγει αρχείο μουσικής χρήστη Jabber στο ~/.quodlibet/jabber"

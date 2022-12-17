@@ -652,7 +652,8 @@ msgstr "プレイリストをインポートできません"
 
 #: quodlibet/browsers/playlists/main.py:472
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
-msgstr "Quod Libet は M3U/M3U8 と PLS 形式のプレイリストのみインポートできます。"
+msgstr ""
+"Quod Libet は M3U/M3U8 と PLS 形式のプレイリストのみインポートできます。"
 
 #: quodlibet/browsers/playlists/main.py:514
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:485
@@ -1938,7 +1939,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr "Jabber User Tunes ファイルを「%(path)s」に出力します。"
@@ -2219,7 +2220,8 @@ msgstr "ブックマーク通知"
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
-msgstr "通知を使用して、ブックマーク/コメントをリアルタイムで表示します。SoundCloud "
+msgstr ""
+"通知を使用して、ブックマーク/コメントをリアルタイムで表示します。SoundCloud "
 "ブラウザでうまく機能します。"
 
 #: quodlibet/ext/events/qlscrobbler.py:183
@@ -2816,8 +2818,8 @@ msgstr ""
 "\n"
 "{}\n"
 "\n"
-"に「/」が含まれていますが、ルートとなる位置を示していません。「/」または「~/"
-"」で始まることを確認して、保存先の絶対パスを指定してください。"
+"に「/」が含まれていますが、ルートとなる位置を示していません。「/」または"
+"「~/」で始まることを確認して、保存先の絶対パスを指定してください。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
@@ -4368,8 +4370,8 @@ msgid ""
 msgstr ""
 "曲の <tt>~#playcount</tt> および <tt>~#skipcount</tt> を編集します。\n"
 "\n"
-"複数の曲を選択すると、それぞれのカウントは指定した回数に設定されるのではなく"
-"、指定回数分増加されます。\n"
+"複数の曲を選択すると、それぞれのカウントは指定した回数に設定されるのではな"
+"く、指定回数分増加されます。\n"
 "\n"
 "曲の <tt>~#playcount</tt> を0に設定した場合、<tt>~#lastplayed</tt> および "
 "<tt>~#laststarted</tt> がクリアされます。ただし、再生回数0の曲に1以上の再生回"
@@ -4631,7 +4633,8 @@ msgstr "%(current)d/%(total)d アップロード中"
 #: quodlibet/ext/songsmenu/ifp.py:61
 #, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
-msgstr "「%s」をアップロードできません。デバイスの容量が不足しているか、電源がオフに"
+msgstr ""
+"「%s」をアップロードできません。デバイスの容量が不足しているか、電源がオフに"
 "なっている可能性があります。"
 
 #: quodlibet/ext/songsmenu/ifp.py:63
@@ -4707,9 +4710,9 @@ msgstr ""
 "\n"
 "アルバムをエクスポートした後、そのデータを別のバージョンのアルバムにインポー"
 "トすることができます。トラックの順番や数は異なってもかまいません。プラグイン"
-"は、トラックの名前が多少異なっていても、エクスポートされたデータを新しいトラ"
-"ックに合わせます。自動マッチングが常に正しいとは限らないので、以下の類似度の"
-"値をあまり下げない方がよいでしょう。"
+"は、トラックの名前が多少異なっていても、エクスポートされたデータを新しいト"
+"ラックに合わせます。自動マッチングが常に正しいとは限らないので、以下の類似度"
+"の値をあまり下げない方がよいでしょう。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:212
 msgid "User interaction on import"
@@ -5038,8 +5041,9 @@ msgstr "Wikipediaでタグを検索"
 msgid ""
 "Opens a browser window with the Wikipedia article on the selected song's "
 "corresponding tag."
-msgstr "選択した曲の対応するタグに関する Wikipedia "
-"の記事をウェブブラウザで表示します。"
+msgstr ""
+"選択した曲の対応するタグに関する Wikipedia の記事をウェブブラウザで表示しま"
+"す。"
 
 #: quodlibet/ext/songsmenu/wikipedia.py:57
 #, python-format
@@ -5472,7 +5476,8 @@ msgstr "オーディオ出力を作成できません"
 msgid ""
 "The audio device %r was not found. Check your Xine settings in ~/.quodlibet/"
 "config."
-msgstr "オーディオ デバイス「%r」が見つかりませんでした。「~/.quodlibet/config」で "
+msgstr ""
+"オーディオ デバイス「%r」が見つかりませんでした。「~/.quodlibet/config」で "
 "Xine の設定を確認してください。"
 
 #: quodlibet/plugins/__init__.py:64
@@ -5882,7 +5887,8 @@ msgstr "「%s」を追加できません"
 #: quodlibet/qltk/edittags.py:771
 #, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "選択されているファイルには「%s」タグに複数の値を設定することができません。"
+msgstr ""
+"選択されているファイルには「%s」タグに複数の値を設定することができません。"
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
@@ -5933,9 +5939,9 @@ msgid ""
 "%(file-name)s changed while the program was running. Saving without "
 "refreshing your library may overwrite other changes to the song."
 msgstr ""
-"プログラム動作中に「%(file-name)s」の内容が変更されました。ライブラリをリフレ"
-"ッシュせずに保存すると、この曲に対する他の修正内容を上書きしてしまう可能性が"
-"あります。"
+"プログラム動作中に「%(file-name)s」の内容が変更されました。ライブラリをリフ"
+"レッシュせずに保存すると、この曲に対する他の修正内容を上書きしてしまう可能性"
+"があります。"
 
 #: quodlibet/qltk/_editutils.py:50
 msgid "Unable to save song"
@@ -7011,7 +7017,8 @@ msgstr ""
 msgid ""
 "Songs in the listed folders will be added to the library during a library "
 "refresh"
-msgstr "リストされたフォルダ内の曲は、ライブラリのリフレッシュ時にライブラリに追加さ"
+msgstr ""
+"リストされたフォルダ内の曲は、ライブラリのリフレッシュ時にライブラリに追加さ"
 "れます"
 
 #: quodlibet/qltk/scanbox.py:64
@@ -7360,8 +7367,8 @@ msgid ""
 msgstr ""
 "パターン\n"
 "\t%s\n"
-"は不正です。同じタグが二度使われているか、ブラケット (&lt; / &gt;) "
-"の開始、終了の対応が取れていない可能性があります。"
+"は不正です。同じタグが二度使われているか、ブラケット (&lt; / &gt;) の開始、終"
+"了の対応が取れていない可能性があります。"
 
 #: quodlibet/qltk/textedit.py:141
 #, python-format
@@ -7634,8 +7641,8 @@ msgid ""
 "permission to edit it."
 msgstr ""
 "「%s」の保存に失敗しました。ファイルが読み取り専用になっている、あるいは破損"
-"している、またはあなたにファイル編集の権限が与えられていない可能性があります"
-"。"
+"している、またはあなたにファイル編集の権限が与えられていない可能性がありま"
+"す。"
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"

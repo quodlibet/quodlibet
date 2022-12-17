@@ -1964,7 +1964,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr "Uloží súbor Jabber User Tunes do %(path)s."

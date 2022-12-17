@@ -1953,7 +1953,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr "Bir Jabber Kullanıcı Ayarları dosyasını %(path)s adresine gönderir."
@@ -4965,8 +4965,10 @@ msgstr "Tepe Noktası"
 #, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "Güncellenecek <b>%(to-process)s</b> albüm var (toplama oranı %(all)s)"
-msgstr[1] "Güncellenecek <b>%(to-process)s</b> albüm var (toplama oranı %(all)s)"
+msgstr[0] ""
+"Güncellenecek <b>%(to-process)s</b> albüm var (toplama oranı %(all)s)"
+msgstr[1] ""
+"Güncellenecek <b>%(to-process)s</b> albüm var (toplama oranı %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -7074,8 +7076,8 @@ msgid ""
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
-"Girdiğiniz %s kalıbı / karakteri içermekle beraber kök klasörden başlamıyor. "
-"\n"
+"Girdiğiniz %s kalıbı / karakteri içermekle beraber kök klasörden "
+"başlamıyor. \n"
 "Hatalı adlandırılmış klasörlerden sakınmak için kalıbınıza\n"
 "/ veya ~/ şeklinde bir kök verin."
 
