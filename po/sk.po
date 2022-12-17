@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-11-12 23:52+0000\n"
+"PO-Revision-Date: 2022-12-11 00:57+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -1612,14 +1612,13 @@ msgid "Automatic Rating"
 msgstr "Automatické hodnotenie"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Automaticky ohodnotiť skladby pri prehratí alebo preskočení. Táto funkcia "
-"používa „zrýchlený“ algoritmus z vuxu od Briana Nelsona."
+"Automaticky hodnotí skladby, keď sa prehrajú alebo preskočia. Používa sa "
+"'zrýchlený' algoritmus z vux od Briana Nelsona."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1966,9 +1965,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr "Uloží súbor Jabber User Tunes do <tt>~/.quodlibet/jabber</tt>."
+msgstr "Uloží súbor Jabber User Tunes do %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2239,15 +2238,16 @@ msgid "Next"
 msgstr "Ďalšie"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Oznámenia o skladbách"
+msgstr "Upozornenia na záložky"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Používa upozornenia na zobrazenie záložiek / komentárov v reálnom čase. "
+"Funguje dobre pre prehliadač Soundcloud."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2730,11 +2730,12 @@ msgstr ""
 "upraviť vyššie uvedené cesty."
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "Jestvujúce súbory v cieľovom umiestnení sa zmažú!"
+msgstr ""
+"Existujúce súbory v cieľovej ceste budú vymazané (okrem súborov s názvom "
+"'cover.jpg')!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:273
@@ -2845,7 +2846,6 @@ msgid "Export path is not absolute"
 msgstr "Cesta exportu nie je úplná"
 
 #: quodlibet/ext/events/synchronize_to_device.py:852
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2856,10 +2856,10 @@ msgid ""
 msgstr ""
 "Vzor\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
-"obsahuje „/“, ale nezačína v koreňovom priečinku. Zadajte úplnú cieľovú "
-"cestu, ktorá začína „/“ alebo „~/“."
+"obsahuje \"/\" ale nezačína v koreňovom priečinku. Zadajte úplnú cieľovú "
+"cestu, ktorá začína / alebo ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "No saved searches selected"
@@ -4175,11 +4175,9 @@ msgid "Download Cover Art"
 msgstr "Stiahnuť obrázok albumu"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
 msgstr ""
-"Sťahuje vysokokvalitné obrázky albumov pomocou zásuvných modulov obalov "
-"albumov."
+"Sťahuje vysokokvalitné obaly albumov pomocou doplnkov pre obaly Quod Libet."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Classic"
@@ -4215,7 +4213,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "Načítava sa %(source)s - %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4223,11 +4221,11 @@ msgid ""
 "Providers used:\n"
 "%(providers)s"
 msgstr ""
-"Pre nasledovné albumy sa nič nenašlo:\n"
-"<i>%(albums)s</i>.\n"
+"Nenašlo sa nič pre albumy:\n"
+"%(albums)s.\n"
 "\n"
-"Využití poskytovatelia:\n"
-"<tt>%(providers)s</tt>"
+"Používaní poskytovatelia:\n"
+"%(providers)s"
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
 msgid "No covers found"
@@ -4460,13 +4458,12 @@ msgid "Skip Count"
 msgstr "Počet preskočení"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Viacero %s hodnôt"
+msgstr "Vybratých viacero súborov."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Počty sa budú zvyšovať."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4711,11 +4708,11 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "Nahráva sa %(current)d/%(total)d"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
 msgstr ""
-"Nepodarilo sa nahrať <b>%s</b>. V zariadení možno nie je dostatok voľného "
-"miesta alebo je vypnuté."
+"Nie je možné nahrať %s. Zariadenie môže mať nedostatok miesta alebo je "
+"vypnuté."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4762,7 +4759,7 @@ msgid "Further information"
 msgstr "Viac podrobností"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4779,20 +4776,20 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
-"Výraz „používateľské údaje stopy“ zahŕňa zoznamy prehrávania obsahujúce "
-"vybrané stopy ako aj nasledovné údaje:\n"
+"Pojem „údaje používateľa stopy“ zahŕňa zoznamy skladieb, v ktorých sú "
+"vybraté stopy, a nasledujúce metadáta:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Uvedomte si, že všetko čo sa rozhodnete exportovať sa zohľadní aj pri "
 "načítaní. Ak ste vyexportovali názvy súborov (bez prípon), potom sa vybrané "
 "súbory pri načítaní premenujú.\n"
 "\n"
 "Po vyexportovaní albumu môžete údaje načítať do inej verzie albumu. Poradie "
-"a počet skladieb sa môžu líšiť. Zásuvný modul spáruje exportované údaje s "
-"novými stopami a to aj v prípade, že sa názvy skladieb mierne líšia. "
-"Automatické spárovanie sa nepodarí vždy, takže je lepšie zachovať čo "
-"najväčšiu podobnosť hodnôt."
+"a počet skladieb sa môžu líšiť. Doplnok priraďuje exportované údaje k novým "
+"skladbám a to aj v prípade, že sa názvy skladieb mierne líšia. Automatická "
+"zhoda nie je vždy správna, takže je lepšie zachovať čo najväčšiu podobnosť "
+"hodnôt."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:212
 msgid "User interaction on import"
@@ -4961,9 +4958,9 @@ msgid "Use absolute paths"
 msgstr "Používať úplné cesty"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "Zapisovanie do <b>%s</b> zlyhalo."
+msgstr "Zápis do %s zlyhal."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -5003,12 +5000,12 @@ msgid "Peak"
 msgstr "Vrcholová hodnota"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "Je potrebné aktualizovať <b>%(to-process)s</b> album (z %(all)s)"
-msgstr[1] "Je potrebné aktualizovať <b>%(to-process)s</b> albumy (z %(all)s)"
-msgstr[2] "Je potrebné aktualizovať <b>%(to-process)s</b> albumov (z %(all)s)"
+msgstr[0] "Je tu %(to-process)s album na aktualizáciu (z %(all)s)"
+msgstr[1] "Sú tu %(to-process)s albumy na aktualizáciu (z %(all)s)"
+msgstr[2] "Je tu %(to-process)s albumov na aktualizáciu (z %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -5097,14 +5094,14 @@ msgid "Website Search"
 msgstr "Vyhľadávanie na internete"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
-"Prehľadáva stránky podľa vášho výberu s použitím akýchkoľvek značiek "
+"Vyhľadá webovú lokalitu podľa vášho výberu pomocou akýchkoľvek značiek "
 "skladieb.\n"
-"Podporuje vzory, napr. <tt>%(pattern-example)s</tt>."
+"Podporuje vzory napr. %(pattern)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5195,18 +5192,20 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"V starom zozname skladieb %(filename)r (s veľkosťou %(size).1f kB) sa "
+"nenašli žiadne skladby z knižnice."
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
-msgstr ""
+msgstr "Zmenili ste koreňové adresáre knižnice, ale nie tento zoznam skladieb?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%d zoznam skladieb sa nepodarilo konvertovať"
+msgstr[1] "%d zoznamy skladieb sa nepodarilo konvertovať"
+msgstr[2] "%d zoznamov skladieb sa nepodarilo konvertovať"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -5494,15 +5493,14 @@ msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "Zásuvný modul GStreamera „%(name)s“ sa nepodarilo spustiť"
 
 #: quodlibet/player/gstbe/prefs.py:26
-#, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
 msgstr ""
-"Výstupná rúra GStreamera použitá na prehrávanie. Ponechajte prázdne pre "
-"použitie predvolenej rúry. V prípade, že rúra obsahuje prietok, použije sa "
-"namiesto predvolenej."
+"Na prehrávanie je použitý výstupný kanál GStreamer. Ponechajte prázdne pre "
+"použitie predvoleného kanála. V prípade, že kanál obsahuje vývod, použije sa "
+"namiesto predvoleného."
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5510,9 +5508,9 @@ msgstr "_Výstupná rúra:"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f s"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -5771,9 +5769,8 @@ msgid "_Add…"
 msgstr "_Pridať…"
 
 #: quodlibet/qltk/data_editors.py:319
-#, fuzzy
 msgid "_Edit"
-msgstr "_Upraviť zobrazenie..."
+msgstr "_Upraviť"
 
 #: quodlibet/qltk/data_editors.py:365
 msgid "Tag expression"
@@ -5788,9 +5785,8 @@ msgid "Enter new tag"
 msgstr "Zadajte novú značku"
 
 #: quodlibet/qltk/data_editors.py:406
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "Výraz značky"
+msgstr "Upraviť výraz značky"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -5977,30 +5973,28 @@ msgid "Unable to add tag"
 msgstr "Nepodarilo sa pridať tag"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Neporadilo sa pridať skladby"
+msgstr "Nie je možné pridať %s"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr ""
-"Práve vybrané súbory nepodporujú pridanie viacerých hodnôt pre <b>%s</b>."
+msgstr "Práve vybrané súbory nepodporujú viacero hodnôt pre %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Neplatný tag"
-msgstr[1] "Neplatný tag"
-msgstr[2] "Neplatný tag"
+msgstr[1] "Neplatné tagy"
+msgstr[2] "Neplatných tagov"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -6010,30 +6004,30 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"Neplatný tag <b>%s</b>\n"
+"Neplatný tag %s\n"
 "\n"
-"Vybrané súbory nepodporujú editovanie tagu."
+"Vybraný súbor nepodporuje editovanie tagu."
 msgstr[1] ""
-"Neplatný tag <b>%s</b>\n"
+"Neplatné tagy %s\n"
 "\n"
-"Vybrané súbory nepodporujú editovanie tagu."
+"Vybrané súbory nepodporujú editovanie tagov."
 msgstr[2] ""
-"Neplatný tag <b>%s</b>\n"
+"Neplatných tagov %s\n"
 "\n"
-"Vybrané súbory nepodporujú editovanie tagu."
+"Vybrané súbory nepodporujú editovanie tagov."
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Neplatná hodnota"
 
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Neplatná hodnota: <b>%(value)s</b>\n"
+"Neplatná hodnota: %(value)s\n"
 "\n"
 "%(error)s"
 
@@ -6055,12 +6049,12 @@ msgid "Unable to save song"
 msgstr "Nepodarilo sa uložiť skladbu"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
-"Ukladanie %(file-name)s zlyhalo. Súbor je možno len pre čítanie, poškodený "
+"Uloženie %(file-name)s zlyhalo. Súbor je možno len pre čítanie, poškodený "
 "alebo nemáte práva na jeho zmenu."
 
 #: quodlibet/qltk/_editutils.py:144
@@ -6549,9 +6543,8 @@ msgid "Column Preferences"
 msgstr "Nastavenie stĺpca"
 
 #: quodlibet/qltk/prefs.py:136
-#, fuzzy
 msgid "_Update Columns"
-msgstr "Upraviť stĺpce"
+msgstr "_Aktualizovať stĺpce"
 
 #: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6632,9 +6625,8 @@ msgstr ""
 "sú podporované). Ak chcete zadať viac ako jeden súbor, oddeľte ich čiarkami."
 
 #: quodlibet/qltk/prefs.py:333
-#, fuzzy
 msgid "_Preferred fixed image filename(s)"
-msgstr "_Uprednostňované názvy súborov obrázkov:"
+msgstr "_Preferované názvy súborov obrázkov"
 
 #: quodlibet/qltk/prefs.py:351
 msgid "Album Art"
@@ -6657,9 +6649,8 @@ msgstr ""
 "touto hodnotou"
 
 #: quodlibet/qltk/prefs.py:401
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "_Predvolené zosilnenie (dB):"
+msgstr "_Spätné zosilnenie:"
 
 #: quodlibet/qltk/prefs.py:410
 msgid ""
@@ -6669,9 +6660,8 @@ msgstr ""
 "zníženiu kvality"
 
 #: quodlibet/qltk/prefs.py:413
-#, fuzzy
 msgid "_Pre-amp gain:"
-msgstr "_Predzosilnenie (dB):"
+msgstr "_Predzosilnenie:"
 
 #: quodlibet/qltk/prefs.py:419
 msgid "_Enable Replay Gain volume adjustment"
@@ -6727,9 +6717,8 @@ msgstr ""
 "elektronickej pošty"
 
 #: quodlibet/qltk/prefs.py:603
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "Automatické ukladanie zmien v značkách"
+msgstr "_Automaticky ukladať zmeny značiek"
 
 #: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -7003,17 +6992,16 @@ msgid "_Add Files"
 msgstr "_Pridať súbory"
 
 #: quodlibet/qltk/quodlibetwindow.py:1407
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Ste si istí, že chcete odstrániť všetky skladby?"
-msgstr[1] "Ste si istí, že chcete odstrániť všetky skladby?"
-msgstr[2] "Ste si istí, že chcete odstrániť všetky skladby?"
+msgstr[0] "Naozaj chcete zaradiť %d skladbu?"
+msgstr[1] "Naozaj chcete zaradiť %d skladby?"
+msgstr[2] "Naozaj chcete zaradiť %d skladieb?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
-#, fuzzy
 msgid "_Enqueue"
-msgstr "_Fronta"
+msgstr "_Zaradiť"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7107,15 +7095,14 @@ msgid "Unable to rename file"
 msgstr "Nepodarilo sa premenovať súbory"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"Premenovávanie <b>%(old-name)s</b> na <b>%(new-name)s</b>zlyhalo. Možno "
-"cieľový súbor už jestvuje alebo nemáte právo vytvoriť nový súbor či "
-"odstrániť starý."
+"Premenovanie %(old-name)s na %(new-name)s zlyhalo. Možno cieľový súbor už "
+"jestvuje alebo nemáte právo vytvoriť nový súbor či odstrániť starý."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7136,7 +7123,7 @@ msgid "Path is not absolute"
 msgstr "Cesta nie je absolútna"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7144,7 +7131,7 @@ msgid ""
 "your pattern by starting it with / or ~/."
 msgstr ""
 "Vzor\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "obsahuje / ale nezačína v koreňovom priečinku. Aby ste sa vyhli nesprávne "
 "pomenovaným priečinkom, pridajte na začiatok vášho vzoru / alebo ~/."
 
@@ -7503,7 +7490,7 @@ msgid "Tags are added to existing ones"
 msgstr "Pridať k pôvodným tagom"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7511,7 +7498,7 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 "Vzor\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "je neplatný. Možno obsahuje rovnakú značku dvakrát alebo má neuzavreté "
 "zátvorky (&lt; / &gt;)."
 
@@ -7777,28 +7764,28 @@ msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Jazyk musí byť v tvare troj-písmenového kódu ISO 639-2"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Ukladanie zlyhalo"
-msgstr[1] "Ukladanie zlyhalo"
-msgstr[2] "Ukladanie zlyhalo"
+msgstr[0] "Ukladá sa %d súbor"
+msgstr[1] "Ukladajú sa %d súbory"
+msgstr[2] "Ukladá sa %d súborov"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Automatické ukladanie"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Neporadilo sa editovať skladbu"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"Ukladanie <b>%s</b> zlyhalo. Súbor je možno len pre čítanie alebo nemáte "
+"Uloženie %s zlyhalo. Súbor môže byť len na čítanie, poškodený alebo nemáte "
 "práva na jeho zmenu."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
