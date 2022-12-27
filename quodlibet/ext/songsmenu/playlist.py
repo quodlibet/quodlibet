@@ -1,5 +1,6 @@
 # Copyright 2009 Christoph Reiter
 #      2014-2020 Nick Boultbee
+#      2022 Felix Krull
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,28 +24,32 @@ from quodlibet.qltk import Icons
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
+FORMAT_M3U = "m3u"
+FORMAT_PLS = "pls"
+
+
 lastfolder = get_home_dir()
 
 
 class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
-    PLUGIN_ID = 'Playlist Export'
-    PLUGIN_NAME = _('Export as M3U / PLS Playlist File')
-    PLUGIN_DESC = _('Exports songs to an M3U or PLS playlist.')
+    PLUGIN_ID = "Playlist Export"
+    PLUGIN_NAME = _("Export as M3U / PLS Playlist File")
+    PLUGIN_DESC = _("Exports songs to an M3U or PLS playlist.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE_AS
     REQUIRES_ACTION = True
 
     lastfolder = None
 
     def plugin_single_playlist(self, playlist):
-        return self.__save_playlist(playlist.songs, playlist.name)
+        return self.__save_playlist_ui(playlist.songs, playlist.name)
 
     def plugin_songs(self, songs):
-        self.__save_playlist(songs)
+        self.__save_playlist_ui(songs)
 
-    def __save_playlist(self, songs, name=None):
-        dialog = Gtk.FileChooserDialog(self.PLUGIN_NAME,
-            None,
-            Gtk.FileChooserAction.SAVE)
+    def __save_playlist_ui(self, songs, name=None):
+        dialog = Gtk.FileChooserDialog(
+            self.PLUGIN_NAME, None, Gtk.FileChooserAction.SAVE
+        )
         dialog.set_show_hidden(False)
         dialog.set_create_folders(True)
         dialog.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
@@ -54,13 +59,13 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
             dialog.set_current_name(name)
 
         ffilter = Gtk.FileFilter()
-        ffilter.set_name("m3u")
+        ffilter.set_name(FORMAT_M3U)
         ffilter.add_mime_type("audio/x-mpegurl")
         ffilter.add_pattern("*.m3u")
         dialog.add_filter(ffilter)
 
         ffilter = Gtk.FileFilter()
-        ffilter.set_name("pls")
+        ffilter.set_name(FORMAT_PLS)
         ffilter.add_mime_type("audio/x-scpls")
         ffilter.add_pattern("*.pls")
         dialog.add_filter(ffilter)
@@ -82,8 +87,6 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
         if response == Gtk.ResponseType.OK:
             file_path = dialog.get_filename()
-            dir_path = os.path.dirname(file_path)
-
             file_format = dialog.get_filter().get_name()
             extension = "." + file_format
             if not file_path.endswith(extension):
@@ -96,36 +99,41 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
             relative = combo_path.get_active() == 0
 
-            files = self.__get_files(songs, dir_path, relative)
-            if file_format == "m3u":
-                self.__m3u_export(file_path, files)
-            elif file_format == "pls":
-                self.__pls_export(file_path, files)
+            self.save_playlist(songs, file_path, file_format, relative)
 
-            self.lastfolder = dir_path
+            self.lastfolder = os.path.dirname(file_path)
 
         dialog.destroy()
+
+    def save_playlist(self, songs, file_path, file_format, relative):
+        dir_path = os.path.dirname(file_path)
+        files = self.__get_files(songs, dir_path, relative)
+        if file_format == FORMAT_M3U:
+            self.__m3u_export(file_path, files)
+        elif file_format == FORMAT_PLS:
+            self.__pls_export(file_path, files)
 
     def __get_files(self, songs, dir_path, relative=False):
         files = []
         for song in songs:
             f = {}
             if "~uri" in song:
-                f['path'] = song('~filename')
-                f['title'] = song("title")
-                f['length'] = -1
+                f["path"] = song("~filename")
+                f["title"] = song("title")
+                f["length"] = -1
             else:
-                path = song('~filename')
+                path = song("~filename")
                 if relative:
                     path = relpath(path, dir_path)
                     if path.startswith("#"):
                         # avoid lines starting with '#' which don't work with M3U
                         path = os.path.join(os.curdir, path)
-                f['path'] = path
-                f['title'] = "%s - %s" % (
-                    song('~people').replace("\n", ", "),
-                    song('~title~version'))
-                f['length'] = song('~#length')
+                f["path"] = path
+                f["title"] = "%s - %s" % (
+                    song("~people").replace("\n", ", "),
+                    song("~title~version"),
+                )
+                f["length"] = song("~#length")
             files.append(f)
         return files
 
@@ -134,7 +142,8 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
             None,
             _("Unable to export playlist"),
             _("Writing to %s failed.") % util.bold(file_path),
-            escape_desc=False)
+            escape_desc=False,
+        )
         dialog.run()
 
     def __m3u_export(self, file_path, files):
@@ -146,8 +155,8 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
             text = "#EXTM3U\n"
 
             for f in files:
-                text += "#EXTINF:%d,%s\n" % (f['length'], f['title'])
-                text += f['path'] + "\n"
+                text += "#EXTINF:%d,%s\n" % (f["length"], f["title"])
+                text += f["path"] + "\n"
 
             fhandler.write(text.encode("utf-8"))
             fhandler.close()
@@ -162,9 +171,9 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
 
             for num, f in enumerate(files):
                 num += 1
-                text += "File%d=%s\n" % (num, f['path'])
-                text += "Title%d=%s\n" % (num, f['title'])
-                text += "Length%d=%s\n" % (num, f['length'])
+                text += "File%d=%s\n" % (num, f["path"])
+                text += "Title%d=%s\n" % (num, f["title"])
+                text += "Length%d=%s\n" % (num, f["length"])
 
             text += "NumberOfEntries=%d\n" % len(files)
             text += "Version=2\n"
