@@ -118,6 +118,9 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
                 path = song('~filename')
                 if relative:
                     path = relpath(path, dir_path)
+                    if path.startswith("#"):
+                        # avoid lines starting with '#' which don't work with M3U
+                        path = os.path.join(os.curdir, path)
                 f['path'] = path
                 f['title'] = "%s - %s" % (
                     song('~people').replace("\n", ", "),
