@@ -543,7 +543,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             album = model.get_album(iter_)
 
             if album is None:
-                text = util.bold(_("All Albums"))
+                text = util.bold(_("All Albums")) + "\n"
                 text += numeric_phrase("%d album", "%d albums", len(model) - 1)
                 markup = text
             else:
