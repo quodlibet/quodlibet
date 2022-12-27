@@ -57,35 +57,6 @@ class TPlaylistExport(PluginTestCase):
             ),
         )
 
-    def test_pls_playlist(self):
-        plugin = self.mod.PlaylistExport()
-        song1 = audio_file(filename="/a/b/c.mp3", length=123, artist="a", title="c")
-        song2 = audio_file(filename="/a/b/d.mp3", length=400, artist="b", title="d")
-
-        with temp_filename() as playlist_file_path:
-            plugin.save_playlist(
-                [song1, song2], playlist_file_path, self.mod.FORMAT_PLS, relative=False
-            )
-            with open(playlist_file_path, "r") as f:
-                result = f.read()
-
-        self.assertEqual(
-            result,
-            dedent(
-                """\
-            [playlist]
-            File1=/a/b/c.mp3
-            Title1=a - c
-            Length1=123
-            File2=/a/b/d.mp3
-            Title2=b - d
-            Length2=400
-            NumberOfEntries=2
-            Version=2
-            """
-            ),
-        )
-
     def test_m3u_playlist_relative(self):
         plugin = self.mod.PlaylistExport()
         with temp_filename() as playlist_file_path:
