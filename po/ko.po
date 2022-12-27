@@ -1470,8 +1470,8 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
-"곡이 재생되거나 건너뛸 때마다 플러그인이 파일에 태그를 씁니다. 싫어해서 "
-"건너뛴 노래의 별점이 파일에 기록되도록 하려는 경우에 유용할 수 있습니다."
+"곡이 재생되거나 건너뛸 때마다 플러그인이 파일에 태그를 씁니다. 싫어해서 건너"
+"뛴 노래의 별점이 파일에 기록되도록 하려는 경우에 유용할 수 있습니다."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
@@ -1489,13 +1489,13 @@ msgid ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 msgstr ""
-"곡을 재생하거나 건너뛸 때 해당 노래의 앨범이 확인됩니다. 앨범의 모든 곡에 "
-"별점이 지정되었고 파일에 별점이나 재생 횟수가 저장된 노래 중 하나 이상이 "
-"없는 경우 플러그인은 노래 파일에 태그를 기록합니다.\n"
+"곡을 재생하거나 건너뛸 때 해당 노래의 앨범이 확인됩니다. 앨범의 모든 곡에 별"
+"점이 지정되었고 파일에 별점이나 재생 횟수가 저장된 노래 중 하나 이상이 없는 "
+"경우 플러그인은 노래 파일에 태그를 기록합니다.\n"
 "\n"
-"이 기능을 사용하여 지속적인 파일 업데이트를 방지하지만 앨범이 업데이트되면 "
-"수정된 별점 및 재생 횟수를 파일에 기록할 때마다 '파일의 태그 업데이트' "
-"플러그인을 사용해야 합니다."
+"이 기능을 사용하여 지속적인 파일 업데이트를 방지하지만 앨범이 업데이트되면 수"
+"정된 별점 및 재생 횟수를 파일에 기록할 때마다 '파일의 태그 업데이트' 플러그인"
+"을 사용해야 합니다."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:57
 #, python-format
@@ -1522,8 +1522,9 @@ msgstr "새 방송국"
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
-msgstr "곡이 재생되면 파일의 태그를 업데이트합니다. 이렇게 하면 재생 횟수와 별점이 "
-"최신 상태로 유지됩니다."
+msgstr ""
+"곡이 재생되면 파일의 태그를 업데이트합니다. 이렇게 하면 재생 횟수와 별점이 최"
+"신 상태로 유지됩니다."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1931,7 +1932,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr ""
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr ""
@@ -3026,8 +3027,8 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
-"별점 값으로 변환되는 thumb-up / thumb-down 채점 시스템을 추가합니다. 총 "
-"투표수를 유지하고 <b><tt>~#score</tt></b>별로 정렬하는 데 유용합니다."
+"별점 값으로 변환되는 thumb-up / thumb-down 채점 시스템을 추가합니다. 총 투표"
+"수를 유지하고 <b><tt>~#score</tt></b>별로 정렬하는 데 유용합니다."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3668,8 +3669,9 @@ msgstr ""
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
-msgstr "순서대로 재생되는 재생 순서(순서섞기) 모드를 추가하지만 별점이 지정된 "
-"임계값보다 낮거나 같은 트랙은 건너뜁니다."
+msgstr ""
+"순서대로 재생되는 재생 순서(순서섞기) 모드를 추가하지만 별점이 지정된 임계값"
+"보다 낮거나 같은 트랙은 건너뜁니다."
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
 msgid "Skip disliked tracks"
@@ -4556,7 +4558,8 @@ msgstr "새 방송국"
 msgid ""
 "Update modified tags in files. This will ensure play counts and ratings are "
 "up to date."
-msgstr "파일에서 수정된 태그를 업데이트합니다. 이렇게 하면 플레이 횟수와 별점이 최신 "
+msgstr ""
+"파일에서 수정된 태그를 업데이트합니다. 이렇게 하면 플레이 횟수와 별점이 최신 "
 "상태로 유지됩니다."
 
 #: quodlibet/ext/songsmenu/html.py:66 quodlibet/ext/songsmenu/html.py:76
@@ -4594,8 +4597,9 @@ msgstr "%(current)d/%(total)d곡 올리는 중"
 #: quodlibet/ext/songsmenu/ifp.py:61
 #, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
-msgstr "%s을(를) 업로드할 수 없습니다. 장치의 공간이 부족하거나 꺼져 있을 수 "
-"있습니다."
+msgstr ""
+"%s을(를) 업로드할 수 없습니다. 장치의 공간이 부족하거나 꺼져 있을 수 있습니"
+"다."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4661,18 +4665,18 @@ msgid ""
 "slightly different. The automatic matching is not always correct, so it is "
 "better to not reduce the following similarity values too much."
 msgstr ""
-"'트랙 사용자 데이터'라는 용어에는 선택한 트랙이 있는 재생 목록과 다음 "
-"메타데이터가 포함됩니다:\n"
+"'트랙 사용자 데이터'라는 용어에는 선택한 트랙이 있는 재생 목록과 다음 메타데"
+"이터가 포함됩니다:\n"
 "\n"
 "%s\n"
 "\n"
 "내보내기로 선택한 모든 항목을 가져옵니다. 파일 스템(확장자가 없는 파일 이름)"
 "을 내보낸 경우 가져올 때 선택한 파일의 이름이 바뀝니다.\n"
 "\n"
-"앨범을 내보낸 후 데이터를 앨범의 다른 버전으로 가져올 수 있습니다. 트랙의 "
-"순서와 수는 다를 수 있습니다. 플러그인은 트랙 이름이 약간 다르더라도 내보낸 "
-"데이터를 새 트랙과 일치시킵니다. 자동 매칭이 항상 정확한 것은 아니므로 다음 "
-"유사도 값을 너무 많이 줄이지 않는 것이 좋습니다."
+"앨범을 내보낸 후 데이터를 앨범의 다른 버전으로 가져올 수 있습니다. 트랙의 순"
+"서와 수는 다를 수 있습니다. 플러그인은 트랙 이름이 약간 다르더라도 내보낸 데"
+"이터를 새 트랙과 일치시킵니다. 자동 매칭이 항상 정확한 것은 아니므로 다음 유"
+"사도 값을 너무 많이 줄이지 않는 것이 좋습니다."
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:212
 msgid "User interaction on import"
@@ -5389,8 +5393,8 @@ msgid ""
 "default one."
 msgstr ""
 "재생에 사용되는 GStreamer 출력 파이프라인입니다. 기본 파이프라인에 대해서는 "
-"비워 둡니다. 파이프라인에 싱크가 포함되어 있으면 기본 싱크 대신 싱크가 "
-"사용됩니다."
+"비워 둡니다. 파이프라인에 싱크가 포함되어 있으면 기본 싱크 대신 싱크가 사용됩"
+"니다."
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5926,8 +5930,8 @@ msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
-"%(file-name)s을(를) 저장하지 못했습니다. 파일이 읽기 전용이거나, "
-"손상되었거나, 편집할 수 있는 권한이 없을 수 있습니다."
+"%(file-name)s을(를) 저장하지 못했습니다. 파일이 읽기 전용이거나, 손상되었거"
+"나, 편집할 수 있는 권한이 없을 수 있습니다."
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -6570,9 +6574,8 @@ msgid ""
 "calculation for all albums."
 msgstr ""
 "집계된 별점에 대한 베이지안 평균 계수(C)입니다.\n"
-"0은 일반적인 평균을 의미하고 값이 높을수록 트랙 수가 적은 앨범의 등급이 덜 "
-"극단적임을 의미합니다. 이 값을 변경하면 모든 앨범에 대한 재계산이 "
-"트리거됩니다."
+"0은 일반적인 평균을 의미하고 값이 높을수록 트랙 수가 적은 앨범의 등급이 덜 극"
+"단적임을 의미합니다. 이 값을 변경하면 모든 앨범에 대한 재계산이 트리거됩니다."
 
 #: quodlibet/qltk/prefs.py:570
 msgid "_Bayesian averaging amount:"
@@ -6598,8 +6601,9 @@ msgstr ""
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
-msgstr "태그 편집기에서 태그 값을 분할할 때 사용할 구분 기호 집합입니다. 목록은 "
-"공백으로 구분됩니다."
+msgstr ""
+"태그 편집기에서 태그 값을 분할할 때 사용할 구분 기호 집합입니다. 목록은 공백"
+"으로 구분됩니다."
 
 #: quodlibet/qltk/prefs.py:623
 msgid "Split _tag on:"
@@ -6643,7 +6647,8 @@ msgstr "라이브러리 다시 빌드(_B)"
 
 #: quodlibet/qltk/prefs.py:695
 msgid "Reload all songs in your library. This can take a long time."
-msgstr "사용자의 라이브러리에 있는 모든 노래를 다시 불러옵니다. 시간이 오래 걸릴 수 "
+msgstr ""
+"사용자의 라이브러리에 있는 모든 노래를 다시 불러옵니다. 시간이 오래 걸릴 수 "
 "있습니다."
 
 #: quodlibet/qltk/prefs.py:710
@@ -6977,8 +6982,8 @@ msgid ""
 "the old one."
 msgstr ""
 "%(old-name)s의 이름을 %(new-name)s(으)로 바꾸지 못했습니다. 대상 파일이 이미 "
-"있거나, 새 파일을 만들거나, 이전 파일을 제거할 수 있는 권한이 없을 수 "
-"있습니다."
+"있거나, 새 파일을 만들거나, 이전 파일을 제거할 수 있는 권한이 없을 수 있습니"
+"다."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7037,8 +7042,9 @@ msgstr ""
 msgid ""
 "Move a scan root (but not the files), migrating metadata for all included "
 "tracks."
-msgstr "포함된 모든 트랙의 메타데이터를 마이그레이션하여 스캔 루트(파일 제외)를 "
-"이동합니다."
+msgstr ""
+"포함된 모든 트랙의 메타데이터를 마이그레이션하여 스캔 루트(파일 제외)를 이동"
+"합니다."
 
 #: quodlibet/qltk/scanbox.py:113
 msgid "Remove {dir!r} and all its tracks?"
@@ -7486,7 +7492,8 @@ msgstr "파일시스템 표지"
 #: quodlibet/util/cover/built_in.py:62
 msgid ""
 "Uses commonly named images found in common directories alongside the song."
-msgstr "곡과 함께 공통 디렉터리에 있는 일반적으로 이름이 지정된 이미지를 사용합니다."
+msgstr ""
+"곡과 함께 공통 디렉터리에 있는 일반적으로 이름이 지정된 이미지를 사용합니다."
 
 #: quodlibet/util/cover/manager.py:230
 msgid "Cover Art"

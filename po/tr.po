@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-09-23 12:18+0000\n"
+"PO-Revision-Date: 2022-11-20 18:48+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.1\n"
+"X-Generator: Weblate 4.15-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -608,13 +608,13 @@ msgid "Columnar"
 msgstr "Sütunlu"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
 "İsteğe bağlı biçimlendirmeli etiket kalıbı örn. <tt>composer</tt> veya\n"
-"<tt>%s</tt>"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -739,9 +739,8 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Parçalar"
+msgstr "_Parça Ekle"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -1137,7 +1136,7 @@ msgstr "konum"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "--print-* komutları için şablon ayarla"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1230,13 +1229,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Sanatsal URL Albüm Kapağı Kaynağı"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"<tt>artwork_url</tt> ile bağlantılanmış albüm kapaklarını indirir. "
-"Soundcloud tarayıcı ile çalışır."
+"<tt>artwork_url</tt> etiketi ile bağlantılı kapakları indirir. Bu, "
+"Soundcloud ve Podcasts tarayıcıları ile çalışır."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1604,14 +1602,14 @@ msgid "Automatic Rating"
 msgstr "Otomatik Puanlama"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Çalındığında veya atlandığında şarkıları otomatik puanlar. Bu, Brian "
-"Nelson'un vux kitaplığından 'hızlandırılmış' algoritma kullanır."
+"Şarkılar çalındığında veya atlandığında otomatik olarak derecelendirir. Bu, "
+"Brian Nelson'ın vux (Vacillating Utilitarian eXtemporizer) 'hızlandırılmış' "
+"algoritmasını kullanır."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1955,12 +1953,10 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#: quodlibet/ext/events/jep118.py:32
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr ""
-"Jabber Kullanıcı Ayarları dosyasını <tt>~/.quodlibet/jabber</tt> adresine "
-"çıktı alır."
+msgstr "Bir Jabber Kullanıcı Ayarları dosyasını %(path)s adresine gönderir."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2232,15 +2228,16 @@ msgid "Next"
 msgstr "Sonraki"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Şarkı Bildirimleri"
+msgstr "Yer İmi Bildirimleri"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Yer imlerini / yorumları gerçek zamanlı olarak görüntülemek için "
+"bildirimleri kullanır. Soundcloud tarayıcısı ile iyi çalışır."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2717,11 +2714,11 @@ msgstr ""
 "yollar, eşitleme başlamadan önce düzenlenebilir."
 
 #: quodlibet/ext/events/synchronize_to_device.py:257
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "Hedef yoldaki mevcut dosyalar silinecek!"
+msgstr ""
+"Hedef yoldaki mevcut dosyalar silinecektir ('cover.jpg' adlı dosyalar hariç)!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:273
@@ -2829,7 +2826,6 @@ msgid "Export path is not absolute"
 msgstr "Dışa aktarma yolu mutlak değil"
 
 #: quodlibet/ext/events/synchronize_to_device.py:852
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -4188,7 +4184,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "%(source)s - %(dimensions)s yükleniyor…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4429,13 +4425,12 @@ msgid "Skip Count"
 msgstr "Atlama Sayısı"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Çoklu %s Değer"
+msgstr "Birden fazla dosya seçildi."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Sayılar artırılacaktır."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
@@ -4678,9 +4673,9 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "%(current)d/%(total)d yükleniyor"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
-msgstr "<b>%s</b> yüklenemiyor. Aygıtta yer kalmamış veya kapalı olabilir."
+msgstr "%s yüklenemiyor. Aygıtta yer kalmamış veya kapalı olabilir."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4727,7 +4722,7 @@ msgid "Further information"
 msgstr "İlave bilgiler"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4747,7 +4742,7 @@ msgstr ""
 "Burada kullanılan 'parça kullanıcı verisi' ifadesi, seçilen şarkıların "
 "bulunduğu çalma listelerini ve aşağıdaki üstverileri içerir:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Dışa aktarmak için her ne seçtiyseniz içe aktarılacağını unutmayın. Eğer "
 "dosya köklerini (uzantısız dosya adlarını) dışa aktardıysanız, o halde, içe "
@@ -4925,9 +4920,9 @@ msgid "Use absolute paths"
 msgstr "Tam yolları kullan"
 
 #: quodlibet/ext/songsmenu/playlist.py:133
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "<b>%s</b>' e yazma başarısız."
+msgstr "%s adresine yazma işlemi başarısız oldu."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -4967,7 +4962,7 @@ msgid "Peak"
 msgstr "Tepe Noktası"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
 msgstr[0] ""
@@ -5062,13 +5057,13 @@ msgid "Website Search"
 msgstr "Web Sitesi Ara"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
-"Herhangi bir şarkı etiketi kullanarak web sayfası seçiminizi arar.\n"
-"<tt>%(pattern-example)s</tt> gibi kalıpları destekler."
+"Herhangi bir şarkı etiketini kullanarak seçtiğiniz web sitesini arar.\n"
+"Kalıpları destekler, örneğin %(pattern)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5159,17 +5154,21 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"Eski çalma listesi %(filename)r içinde ( %(size).1f kB boyutunda) kitaplık "
+"şarkısı bulunamadı."
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
 msgstr ""
+"Kütüphane kök dizinini/dizinlerini değiştirdiniz ama bu çalma listesini "
+"değiştirmediniz mi?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d çalma listesi dönüştürülemedi"
+msgstr[1] "%d çalma listesi dönüştürülemedi"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -5456,13 +5455,12 @@ msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "GStreamer eklentisi '%(name)s' başlatılamadı"
 
 #: quodlibet/player/gstbe/prefs.py:26
-#, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
 msgstr ""
-"Çalma için kullanılan GStreamer çıkış iletişim hattı. Varsayılan iletişim "
+"Çalma için kullanılan GStreamer çıktı iletişim hattı. Varsayılan iletişim "
 "hattı için boş bırakın. İletişim hattının bir alış noktası içermesi halinde, "
 "bu hat varsayılanın yerine kullanılacaktır."
 
@@ -5472,9 +5470,9 @@ msgstr "_Çıkış iletişim hattı:"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f sn"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -5732,9 +5730,8 @@ msgid "_Add…"
 msgstr "_Ekle…"
 
 #: quodlibet/qltk/data_editors.py:319
-#, fuzzy
 msgid "_Edit"
-msgstr "_Görünümü düzenle..."
+msgstr "_Düzenle"
 
 #: quodlibet/qltk/data_editors.py:365
 msgid "Tag expression"
@@ -5749,9 +5746,8 @@ msgid "Enter new tag"
 msgstr "Yeni etiket girin"
 
 #: quodlibet/qltk/data_editors.py:406
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "Etiket ifadesi"
+msgstr "Etiket ifadesini düzenle"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -5934,28 +5930,27 @@ msgid "Unable to add tag"
 msgstr "Etiket eklenemedi"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Şarkılar eklenemedi"
+msgstr "%s eklenemedi"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "Seçilen dosyalar <b>%s</b> için çoklu değeri desteklemiyor."
+msgstr "Seçilen dosyalar %s için çoklu değeri desteklemiyor."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Geçersiz etiket"
-msgstr[1] "Geçersiz etiket"
+msgstr[1] "Geçersiz etiketler"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -5965,26 +5960,26 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"<b>%s</b> geçersiz bir etiket\n"
+"%s etiketi geçersiz\n"
 "\n"
 "Seçili dosyalar bu etiketi değiştirmeyi desteklemiyor."
 msgstr[1] ""
-"<b>%s</b> geçersiz bir etiket\n"
+"%s etiketleri geçersiz\n"
 "\n"
-"Seçili dosyalar bu etiketi değiştirmeyi desteklemiyor."
+"Seçili dosyalar bu etiketleri değiştirmeyi desteklemiyor."
 
 #: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
 msgid "Invalid value"
 msgstr "Geçersiz değer"
 
 #: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Geçersiz değer: <b>%(value)s</b>\n"
+"Geçersiz değer: %(value)s\n"
 "\n"
 "%(error)s"
 
@@ -6006,13 +6001,13 @@ msgid "Unable to save song"
 msgstr "Şarkı kaydedilemedi"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
 msgstr ""
-"%(file-name)s kaydedilemedi. Dosya salt okunur, bozuk olabilir veya sizin "
-"dosyayı değiştirme izniniz olmayabilir."
+"%(file-name)s kaydedilemedi. Dosya salt okunur olabilir, bozuk olabilir veya "
+"sizin dosyayı değiştirme izniniz olmayabilir."
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -6497,9 +6492,8 @@ msgid "Column Preferences"
 msgstr "Sütun Tercihleri"
 
 #: quodlibet/qltk/prefs.py:136
-#, fuzzy
 msgid "_Update Columns"
-msgstr "Sütunları Düzenle"
+msgstr "_Sütunları Güncelle"
 
 #: quodlibet/qltk/prefs.py:138
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6581,9 +6575,8 @@ msgstr ""
 "ayırınız."
 
 #: quodlibet/qltk/prefs.py:333
-#, fuzzy
 msgid "_Preferred fixed image filename(s)"
-msgstr "_Tercih edilen resim dosya ad(lar)ı:"
+msgstr "_Tercih edilen sabit görüntü dosya ad(lar)ı"
 
 #: quodlibet/qltk/prefs.py:351
 msgid "Album Art"
@@ -6606,9 +6599,8 @@ msgstr ""
 "ölçekle"
 
 #: quodlibet/qltk/prefs.py:401
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "_Geri dönüş ses düzeltmesi (dB):"
+msgstr "_Geri dönüş kazancı:"
 
 #: quodlibet/qltk/prefs.py:410
 msgid ""
@@ -6618,9 +6610,8 @@ msgstr ""
 "ölçekle"
 
 #: quodlibet/qltk/prefs.py:413
-#, fuzzy
 msgid "_Pre-amp gain:"
-msgstr "_Ön amfi ses düzeltmesi (dB):"
+msgstr "_Ön amfi kazancı:"
 
 #: quodlibet/qltk/prefs.py:419
 msgid "_Enable Replay Gain volume adjustment"
@@ -6673,9 +6664,8 @@ msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Puan ve çalma sayıları bu posta adresi için etiketlerde kaydedilecek"
 
 #: quodlibet/qltk/prefs.py:603
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "Etiket değişikliklerini oto-kaydet"
+msgstr "_Etiket değişikliklerini otomatik kaydet"
 
 #: quodlibet/qltk/prefs.py:605
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -6945,16 +6935,15 @@ msgid "_Add Files"
 msgstr "Dosyalar _Ekle"
 
 #: quodlibet/qltk/quodlibetwindow.py:1407
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Bütün şarkıları kaldırmak istediğinize emin misiniz?"
-msgstr[1] "Bütün şarkıları kaldırmak istediğinize emin misiniz?"
+msgstr[0] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
+msgstr[1] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1417
-#, fuzzy
 msgid "_Enqueue"
-msgstr "_Kuyruk"
+msgstr "_Kuyrukla"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7051,15 +7040,15 @@ msgid "Unable to rename file"
 msgstr "Dosya yeniden adlandırılamadı"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"<b>%(old-name)s</b>, <b>%(new-name)s</b> olarak yeniden adlandırılamadı. "
-"Yeni adla zaten bir dosya olabilir veya yeni bir dosya yaratmak veya "
-"eskisini kaldırmak için izniniz olmayabilir."
+"%(old-name)s dosyası %(new-name)s olarak yeniden adlandırılamadı. Yeni adla "
+"zaten bir dosya olabilir veya yeni bir dosya oluşturmak veya eskisini "
+"kaldırmak için izniniz olmayabilir."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7080,14 +7069,14 @@ msgid "Path is not absolute"
 msgstr "Yol mutlak değil"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
 "contains / but does not start from root. To avoid misnamed folders, root "
 "your pattern by starting it with / or ~/."
 msgstr ""
-"Girdiğiniz <b>%s</b> kalıbı / karakteri içermekle beraber kök klasörden "
+"Girdiğiniz %s kalıbı / karakteri içermekle beraber kök klasörden "
 "başlamıyor. \n"
 "Hatalı adlandırılmış klasörlerden sakınmak için kalıbınıza\n"
 "/ veya ~/ şeklinde bir kök verin."
@@ -7443,7 +7432,7 @@ msgid "Tags are added to existing ones"
 msgstr "Yeni etiketler eskilerine eklensin"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7712,28 +7701,28 @@ msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Dil, ISO 639-2 üç-harf kod olmalıdır"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Kayıt başarısız"
-msgstr[1] "Kayıt başarısız"
+msgstr[0] "%d dosya kaydediliyor"
+msgstr[1] "%d dosya kaydediliyor"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Otomatik Kaydetme"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Şarkı değiştirilemedi"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"<b>%s</b> kaydedilemedi. Dosya salt okunur olabilir veya sizin dosyayı "
-"değiştirme izniniz olmayabilir."
+"%s kaydedilemedi. Dosya salt okunur olabilir veya dosyayı değiştirme izniniz "
+"olmayabilir."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"

@@ -1889,7 +1889,7 @@ msgstr ""
 msgid "JEP-118"
 msgstr "JEP-118"
 
-#: quodlibet/ext/events/jep118.py:31
+#: quodlibet/ext/events/jep118.py:32
 #, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
 msgstr ""
@@ -5694,8 +5694,9 @@ msgstr "无法保存曲目"
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
-msgstr "保存 %(file-name)s "
-"失败了。可能原因是该文件为只读文件，文件损坏，或者你没有权限编辑它。"
+msgstr ""
+"保存 %(file-name)s 失败了。可能原因是该文件为只读文件，文件损坏，或者你没有权"
+"限编辑它。"
 
 #: quodlibet/qltk/_editutils.py:144
 msgid "_More options…"
@@ -6696,8 +6697,9 @@ msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
-msgstr "重命名 %(old-name)s 为 %(new-name)s "
-"失败了。可能原因是目标文件已存在，或者你没有权限创建新文件或删除旧文件。"
+msgstr ""
+"重命名 %(old-name)s 为 %(new-name)s 失败了。可能原因是目标文件已存在，或者你"
+"没有权限创建新文件或删除旧文件。"
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7328,7 +7330,8 @@ msgstr "无法编辑曲目"
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
-msgstr "保存 %s 失败了。可能原因该文件是只读文件，文件损坏，或者你没有权限编辑它。"
+msgstr ""
+"保存 %s 失败了。可能原因该文件是只读文件，文件损坏，或者你没有权限编辑它。"
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
