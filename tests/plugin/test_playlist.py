@@ -44,29 +44,27 @@ class TPlaylistExport(PluginTestCase):
             with open(playlist_file_path, "r") as f:
                 result = f.read()
 
-        self.assertEqual(
-            result,
-            dedent(
-                """\
+        assert result == dedent(
+            """\
             #EXTM3U
             #EXTINF:123,a - c
             /a/b/c.mp3
             #EXTINF:400,b - d
             /a/b/d.mp3
             """
-            ),
         )
 
     def test_m3u_playlist_relative(self):
         plugin = self.mod.PlaylistExport()
-        with temp_filename() as playlist_file_path:
-            d = os.path.dirname(playlist_file_path)
-            pd = os.path.dirname(d)
+        with temp_filename(as_path=True) as playlist_file_path:
             song1 = audio_file(
-                filename=os.path.join(d, "a", "b.mp3"), length=23, artist="a", title="b"
+                filename=playlist_file_path.parent / "a" / "b.mp3",
+                length=23,
+                artist="a",
+                title="b",
             )
             song2 = audio_file(
-                filename=os.path.join(pd, "c.mp3"),
+                filename=playlist_file_path.parent.parent / "c.mp3",
                 length=1,
                 artist="a",
                 title="c",
@@ -75,20 +73,16 @@ class TPlaylistExport(PluginTestCase):
             plugin.save_playlist(
                 [song1, song2], playlist_file_path, self.mod.FORMAT_M3U, relative=True
             )
-            with open(playlist_file_path, "r") as f:
-                result = f.read()
+            result = playlist_file_path.read_text()
 
-        self.assertEqual(
-            result,
-            dedent(
-                f"""\
+        assert result == dedent(
+            f"""\
             #EXTM3U
             #EXTINF:23,a - b
             {os.path.join("a", "b.mp3")}
             #EXTINF:1,a - c
             {os.path.join(os.pardir, "c.mp3")}
             """
-            ),
         )
 
     def test_pls_playlist(self):
@@ -103,10 +97,8 @@ class TPlaylistExport(PluginTestCase):
             with open(playlist_file_path, "r") as f:
                 result = f.read()
 
-        self.assertEqual(
-            result,
-            dedent(
-                """\
+        assert result == dedent(
+            """\
             [playlist]
             File1=/a/b/c.mp3
             Title1=a - c
@@ -117,19 +109,19 @@ class TPlaylistExport(PluginTestCase):
             NumberOfEntries=2
             Version=2
             """
-            ),
         )
 
     def test_pls_playlist_relative(self):
         plugin = self.mod.PlaylistExport()
-        with temp_filename() as playlist_file_path:
-            d = os.path.dirname(playlist_file_path)
-            pd = os.path.dirname(d)
+        with temp_filename(as_path=True) as playlist_file_path:
             song1 = audio_file(
-                filename=os.path.join(d, "a", "b.mp3"), length=23, artist="a", title="b"
+                filename=playlist_file_path.parent / "a" / "b.mp3",
+                length=23,
+                artist="a",
+                title="b",
             )
             song2 = audio_file(
-                filename=os.path.join(pd, "c.mp3"),
+                filename=playlist_file_path.parent.parent / "c.mp3",
                 length=1,
                 artist="a",
                 title="c",
@@ -138,13 +130,10 @@ class TPlaylistExport(PluginTestCase):
             plugin.save_playlist(
                 [song1, song2], playlist_file_path, self.mod.FORMAT_PLS, relative=True
             )
-            with open(playlist_file_path, "r") as f:
-                result = f.read()
+            result = playlist_file_path.read_text()
 
-        self.assertEqual(
-            result,
-            dedent(
-                f"""\
+        assert result == dedent(
+            f"""\
             [playlist]
             File1={os.path.join("a", "b.mp3")}
             Title1=a - b
@@ -155,39 +144,36 @@ class TPlaylistExport(PluginTestCase):
             NumberOfEntries=2
             Version=2
             """
-            ),
         )
 
     def test_m3u_relative_path_starting_with_octothorpe(self):
         plugin = self.mod.PlaylistExport()
-        with temp_filename() as playlist_file_path:
-            d = os.path.dirname(playlist_file_path)
+        with temp_filename(as_path=True) as playlist_file_path:
             song = audio_file(
-                filename=os.path.join(d, "#file.mp3"), length=1, artist="a", title="b"
+                filename=playlist_file_path.parent / "#file.mp3",
+                length=1,
+                artist="a",
+                title="b",
             )
 
             plugin.save_playlist(
                 [song], playlist_file_path, self.mod.FORMAT_M3U, relative=True
             )
-            with open(playlist_file_path, "r") as f:
-                result = f.read()
+            result = playlist_file_path.read_text()
 
-        self.assertEqual(
-            result,
-            dedent(
-                f"""\
+        assert result == dedent(
+            f"""\
             #EXTM3U
             #EXTINF:1,a - b
             {os.path.join(os.curdir, "#file.mp3")}
             """
-            ),
         )
 
 
 def audio_file(filename, length, artist, title):
     return AudioFile(
         {
-            "~filename": filename,
+            "~filename": str(filename),
             "~#length": length,
             "artist": artist,
             "title": title,
