@@ -1,4 +1,4 @@
-.. image:: https://img.shields.io/github/workflow/status/quodlibet/quodlibet/test
+.. image:: https://img.shields.io/github/actions/workflow/status/quodlibet/quodlibet/main.yml?branch=main
     :target: https://github.com/quodlibet/quodlibet/actions
 
 .. image:: https://readthedocs.org/projects/quodlibet/badge/?version=latest
