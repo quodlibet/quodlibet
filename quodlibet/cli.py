@@ -251,14 +251,14 @@ def process_arguments(argv):
                     filename = uri2fsn(arg)
                 except ValueError:
                     filename = arg
-                filename = os.path.abspath(util.path.expanduser(arg))
+                filename = os.path.abspath(os.path.expanduser(arg))
                 queue("play-file", filename)
         elif command == 'add-location':
             try:
                 path = uri2fsn(arg)
             except ValueError:
                 path = arg
-            path = os.path.abspath(util.path.expanduser(arg))
+            path = os.path.abspath(os.path.expanduser(arg))
             queue("add-location", path)
         elif command == "print-playing":
             try:
