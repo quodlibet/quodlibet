@@ -110,3 +110,14 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
                 return s, None
         else:
             return s, None
+
+
+def split_genre(s, tag_splitters=DEFAULT_TAG_SPLITTERS):
+    """Splits a single genre tag into multiple genre tags"""
+    splitchars = set(tag_splitters).intersection(s)
+    # find any chars in tag_splitters in s
+    if len(splitchars) < 1:
+        return s
+    splitchar = splitchars.pop()
+    # use the last char matched, use configure to change order
+    s = [ _.strip() for _ in s.split(splitchar) ]
