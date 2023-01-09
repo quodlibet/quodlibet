@@ -113,11 +113,16 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
 
 
 def split_genre(s, tag_splitters=DEFAULT_TAG_SPLITTERS):
-    """Splits a single genre tag into multiple genre tags"""
-    splitchars = set(tag_splitters).intersection(s)
-    # find any chars in tag_splitters in s
-    if len(splitchars) < 1:
+    """Splits a single genre tag into multiple genre tags
+    """
+    valid_split_chars = []
+    for char in tag_splitters:
+        if char in s:
+            valid_split_chars.append(char)
+    if not valid_split_chars:
         return s
-    splitchar = splitchars.pop()
-    # use the last char matched, use configure to change order
+    splitchar = valid_split_chars[-1]
+    # Reverses the order of DEFAULT_TAG_SPLITTERS
+    # Because Genre0/Genre1, Genre2 should be split on ,
     s = [ _.strip() for _ in s.split(splitchar) ]
+    return s

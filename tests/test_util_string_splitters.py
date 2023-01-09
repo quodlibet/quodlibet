@@ -6,7 +6,7 @@
 from tests import TestCase
 
 from quodlibet.util.string.splitters import split_value, split_title, \
-    split_album, split_people
+    split_album, split_people, split_genre
 
 
 class Tsplit_value(TestCase):
@@ -152,3 +152,37 @@ class Tsplit_people(TestCase):
     def test_custom_splitter(self):
         self.failUnlessEqual(
             split_people("foo |With bar|", " ", ["||"]), ("foo", ["bar"]))
+
+class Tsplit_genre(TestCase):
+#  DEFAULT_TAG_SPLITTERS = ["/", "&", ","]
+    def test_genre_semicolon(self):
+        self.failUnlessEqual(
+            split_genre("rock ; rap; country;pop ;techno;metal",
+                        tag_splitters=";"),
+            ["rock", "rap", "country", "pop", "techno", "metal"]
+            )
+        
+    def test_genre_comma(self):
+        self.failUnlessEqual(
+            split_genre("rock , rap, country,pop ,techno,metal"),
+            ["rock", "rap", "country", "pop", "techno", "metal"]
+            )
+        
+    def test_genre_ampersand(self):
+        self.failUnlessEqual(
+            split_genre("rock & rap& country&pop & techno &metal"),
+            ["rock", "rap", "country", "pop", "techno", "metal"]
+            )
+        
+    def test_genre_slash(self):
+        self.failUnlessEqual(
+            split_genre(" rock / rap/ country/pop /techno/metal"),
+            ["rock", "rap", "country", "pop", "techno", "metal"]
+            )
+
+    def test_genre_slash_before_comma(self):
+        # slash should be interpreted AFTER a comma
+        self.failUnlessEqual(
+            split_genre(" Indie/Rock, Country, Alt/Country "),
+            ["Indie/Rock", "Country", "Alt/Country"]
+            )
