@@ -3,6 +3,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from quodlibet.qltk.queue import QueueModel
 from tests import TestCase
 
 from gi.repository import Gtk
@@ -251,7 +252,7 @@ class TPlaylistModel(TestCase):
 
 class TPlaylistMux(TestCase):
     def setUp(self):
-        self.q = PlaylistModel()
+        self.q = QueueModel()
         self.pl = PlaylistModel()
         self.p = NullPlayer()
         self.mux = PlaylistMux(self.p, self.q, self.pl)
