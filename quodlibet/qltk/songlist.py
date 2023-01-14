@@ -991,8 +991,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         Warning: This makes the row-changed signal useless.
         """
         model = self.get_model()
-        if not config.getboolean("memory", "shuffle", False) and \
-            config.getboolean("song_list", "auto_sort") and self.is_sorted():
+        if config.getboolean("song_list", "auto_sort") and self.is_sorted():
             iters, _, complete = self.__find_iters_in_selection(songs)
 
             if not complete:
