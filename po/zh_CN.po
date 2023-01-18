@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2022-11-05 14:09+0000\n"
-"Last-Translator: Eric <hamburger1024@mailbox.org>\n"
+"PO-Revision-Date: 2023-01-18 16:19+0000\n"
+"Last-Translator: 宿命 <331874545@qq.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -605,6 +605,8 @@ msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
+"标签模式与可选的标记，例如 <tt>作曲家</tt> 或\n"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -721,7 +723,7 @@ msgstr "选中的播放列表即将被删除，并且无法复原。"
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
+msgstr[0] "扩展\"{pl_name}\" 与 {num} 附加轨道?"
 
 #: quodlibet/browsers/playlists/util.py:60
 msgid "_Add Tracks"
@@ -738,7 +740,7 @@ msgstr "输入新播放列表的名字："
 
 #: quodlibet/browsers/playlists/util.py:73
 msgid "_Create"
-msgstr ""
+msgstr "_创建"
 
 #: quodlibet/browsers/playlists/util.py:108
 #, python-format
@@ -761,11 +763,11 @@ msgstr "输入播客/音频源的位置："
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "Podcasts"
-msgstr ""
+msgstr "播客"
 
 #: quodlibet/browsers/podcasts.py:310
 msgid "_Podcasts"
-msgstr ""
+msgstr "_播客"
 
 #: quodlibet/browsers/podcasts.py:412
 msgid "_Add Feed…"
@@ -782,15 +784,15 @@ msgstr "搜索新节目源"
 
 #: quodlibet/browsers/podcasts.py:482
 msgid "_Rebuild"
-msgstr ""
+msgstr "_重建"
 
 #: quodlibet/browsers/podcasts.py:484
 msgid "Remove all existing episodes then reload from source"
-msgstr ""
+msgstr "删除所有现有剧集，然后从源代码重新加载"
 
 #: quodlibet/browsers/podcasts.py:486
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "删除这个播客和它的剧集"
 
 #: quodlibet/browsers/podcasts.py:546
 msgid "Unable to add feed"
@@ -1118,7 +1120,7 @@ msgstr "位置"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "设置模版 --打印-* 命令"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1204,13 +1206,14 @@ msgstr "音频元数据编辑器"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "图片URL封面来源"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
-msgstr ""
+msgstr "下载由<tt>artwork_url</tt>标签链接的封面。这适用于Soundcloud和Podcasts浏览器"
+"。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1467,6 +1470,11 @@ msgid ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 msgstr ""
+"当播放或跳过一首歌时，将检查该歌曲的专辑。如果专辑中的每首歌都已被评级，并且"
+"至少有一首没有评级或播放计数存储在其文件中，插件将把标签写入歌曲的文件。\n"
+"\n"
+"使用这种方法可以避免文件的持续更新，但要注意，一旦专辑更新，当你想修改评级并"
+"把播放计数写入文件时，你必须使用“Update Tags in Files”插件。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:57
 #, python-format
@@ -1477,6 +1485,9 @@ msgid ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 msgstr ""
+"当插件写入一个专辑的标签时，它会首先设置歌曲的播放计数为0到1。\n"
+"有时你已经知道你不喜欢一首歌，所以在保存时将它设置为1，"
+"在以后搜索你已经完全听过的专辑时很有用 (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
@@ -1501,6 +1512,9 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
+"这个插件需要启用以下设置：\n"
+"\n"
+"%s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:576
@@ -1820,7 +1834,8 @@ msgstr "非法参数："
 msgid ""
 "List accounts, separated by spaces, for changing status message. If none are "
 "specified, status message of all accounts will be changed."
-msgstr ""
+msgstr "列出用于更改状态消息的帐户，以空格分隔。如果不指定，所有帐户的状态信息都将被"
+"更改。"
 
 #: quodlibet/ext/events/gajim_status.py:157
 msgid "Accounts:"
@@ -1836,7 +1851,7 @@ msgstr "选中后，暂停时 [paused] 将会显示在状态消息中"
 
 #: quodlibet/ext/events/gajim_status.py:188
 msgid "Statuses for which message will be changed"
-msgstr ""
+msgstr "更改消息的状态"
 
 #: quodlibet/ext/events/headphonemon.py:157
 msgid "Pause on Headphone Unplug"
@@ -1856,7 +1871,7 @@ msgstr "阻止屏幕保护程序或睡眠"
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
-msgstr ""
+msgstr "在GNOME桌面上，当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
 
 #: quodlibet/ext/events/inhibit.py:63
 msgid "Music is playing"
@@ -1883,7 +1898,7 @@ msgstr "互联网广播日志"
 msgid ""
 "Records the last 10 songs played on radio stations, and lists them in the "
 "seek context menu."
-msgstr ""
+msgstr "记录广播电台播放的最后10首歌曲，并在寻找上下文菜单中列出它们。"
 
 #: quodlibet/ext/events/jep118.py:30
 msgid "JEP-118"
@@ -1912,18 +1927,18 @@ msgstr "需要重启程序才能使更改生效"
 
 #: quodlibet/ext/events/mediaserver.py:36
 msgid "UPnP AV Media Server"
-msgstr ""
+msgstr "UPnP AV Media 服务"
 
 #: quodlibet/ext/events/mediaserver.py:37
 msgid ""
 "Exposes all albums to the Rygel UPnP Media Server through the MediaServer2 D-"
 "Bus interface."
-msgstr ""
+msgstr "通过MediaServer2 D-Bus接口向Rygel UPnP媒体服务器公开所有专辑。"
 
 #: quodlibet/ext/events/mediaserver.py:44
 msgid ""
 "Ensure the following is in your rygel config file (~/.config/rygel.conf):"
-msgstr ""
+msgstr "确保以下内容包含在你的rygel配置文件中(~/.config/rygel.conf)："
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
@@ -1965,6 +1980,8 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-"
+"Bus 规范控制Quod Libet。 这允许各种Linux桌面集成(如多媒体键)。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -1974,7 +1991,7 @@ msgstr "关闭时隐藏主窗口"
 #: quodlibet/ext/events/mqtt.py:56
 #, python-format
 msgid "Accepts QL Patterns e.g. %s"
-msgstr ""
+msgstr "接受QL模式，例如 %s"
 
 #: quodlibet/ext/events/mqtt.py:62
 msgid "MQTT Publisher"
@@ -1982,7 +1999,7 @@ msgstr "MQTT 发布者"
 
 #: quodlibet/ext/events/mqtt.py:63
 msgid "Publishes status messages to an MQTT topic."
-msgstr ""
+msgstr "将状态消息发布到MQTT主题。"
 
 #: quodlibet/ext/events/mqtt.py:137
 msgid "Broker hostname / IP"
