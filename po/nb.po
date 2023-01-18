@@ -277,7 +277,7 @@ msgstr "_Bruk"
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
-#: quodlibet/ext/songsmenu/playlist.py:50
+#: quodlibet/ext/songsmenu/playlist.py:55
 #: quodlibet/ext/songsmenu/replaygain.py:353
 #: quodlibet/ext/songsmenu/tapbpm.py:186 quodlibet/qltk/chooser.py:188
 #: quodlibet/qltk/chooser.py:209 quodlibet/qltk/chooser.py:233
@@ -1818,7 +1818,7 @@ msgstr "Forvalgt navn for lagring:"
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
-#: quodlibet/ext/songsmenu/playlist.py:51
+#: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
 #: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
@@ -3457,7 +3457,7 @@ msgid "Exports a playlist by copying files to a folder."
 msgstr "Eksporterer en spilleliste ved å kopiere filer til en mappe."
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
-#: quodlibet/ext/songsmenu/playlist.py:132
+#: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Klarte ikke å eksportere spilleliste"
 
@@ -4899,23 +4899,23 @@ msgstr "Lag sorteringstagger"
 msgid "Converts album and artist names to sort names, poorly."
 msgstr "Konverterer album- og artistnavn til sorteringsnavn, på enkelt vis."
 
-#: quodlibet/ext/songsmenu/playlist.py:31
+#: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
 msgstr "Eksporter som M3U-/PLS-spillelistefil"
 
-#: quodlibet/ext/songsmenu/playlist.py:32
+#: quodlibet/ext/songsmenu/playlist.py:37
 msgid "Exports songs to an M3U or PLS playlist."
 msgstr "Eksporterer låter til M3U- eller PLS-spilleliste."
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use relative paths"
 msgstr "Bruk relative filstier"
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use absolute paths"
 msgstr "Bruk fullstendige filstier"
 
-#: quodlibet/ext/songsmenu/playlist.py:133
+#: quodlibet/ext/songsmenu/playlist.py:144
 #, python-format
 msgid "Writing to %s failed."
 msgstr "Skriving til %s mislyktes."
@@ -8163,13 +8163,13 @@ msgstr ""
 
 #~ msgid ""
 #~ "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-#~ "both share a directory structure. Shares configuration with <a "
-#~ "href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync "
-#~ "plugin</a>."
+#~ "both share a directory structure. Shares configuration with <a href="
+#~ "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</"
+#~ "a>."
 #~ msgstr ""
 #~ "Eksporterer en spilleliste dynamisk til Logitech Squeezebox, gitt at "
-#~ "begge bruker samme mappestruktur. Deler oppsett med <a "
-#~ "href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync</a>-"
+#~ "begge bruker samme mappestruktur. Deler oppsett med <a href="
+#~ "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync</a>-"
 #~ "tillegget."
 
 #~ msgid "Exports metadata of selected songs as a .tags file."
@@ -8490,8 +8490,8 @@ msgstr ""
 #~ msgstr "_Åpne"
 
 #~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b "
-#~ ">%(dump-path)s</b> that will help us debug the crash. Please file a new "
+#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
+#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
 #~ "issue at %(new-issue-url)sand attach this file or include its contents. "
 #~ "This file may contain some identifying information about you or your "
 #~ "system, such as a list of recent files played. If this is unacceptable, "
