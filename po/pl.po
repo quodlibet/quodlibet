@@ -281,7 +281,7 @@ msgstr "_Zastosuj"
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
-#: quodlibet/ext/songsmenu/playlist.py:50
+#: quodlibet/ext/songsmenu/playlist.py:55
 #: quodlibet/ext/songsmenu/replaygain.py:353
 #: quodlibet/ext/songsmenu/tapbpm.py:186 quodlibet/qltk/chooser.py:188
 #: quodlibet/qltk/chooser.py:209 quodlibet/qltk/chooser.py:233
@@ -1830,7 +1830,7 @@ msgstr "Nazwa zapisywanych ustawień:"
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
-#: quodlibet/ext/songsmenu/playlist.py:51
+#: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
 #: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
@@ -3488,7 +3488,7 @@ msgid "Exports a playlist by copying files to a folder."
 msgstr "Eksportuje listę odtwarzania przez skopiowanie plików do katalogu."
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
-#: quodlibet/ext/songsmenu/playlist.py:132
+#: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Nie można wyeksportować listy odtwarzania"
 
@@ -4958,24 +4958,24 @@ msgid "Converts album and artist names to sort names, poorly."
 msgstr ""
 "Konwertuje nazwy albumów i wykonawców do ich porządkowania (niezbyt dobrze)."
 
-#: quodlibet/ext/songsmenu/playlist.py:31
+#: quodlibet/ext/songsmenu/playlist.py:36
 #, fuzzy
 msgid "Export as M3U / PLS Playlist File"
 msgstr "Wyeksportuj jako listę odtwarzania"
 
-#: quodlibet/ext/songsmenu/playlist.py:32
+#: quodlibet/ext/songsmenu/playlist.py:37
 msgid "Exports songs to an M3U or PLS playlist."
 msgstr "Eksportuje utwory do listy odtwarzania M3U lub PLS."
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use relative paths"
 msgstr "Ścieżki względne"
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use absolute paths"
 msgstr "Ścieżki bezwzględne"
 
-#: quodlibet/ext/songsmenu/playlist.py:133
+#: quodlibet/ext/songsmenu/playlist.py:144
 #, fuzzy, python-format
 msgid "Writing to %s failed."
 msgstr "Zapisanie do <b>%s</b> się nie powiodło."
