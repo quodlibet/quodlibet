@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2021-11-05 03:34+0000\n"
-"Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
+"PO-Revision-Date: 2023-01-11 16:50+0000\n"
+"Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
 "Language: pt\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.9-dev\n"
+"X-Generator: Weblate 4.15.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -1783,8 +1783,8 @@ msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
-"Controla o  tom da sua música com um equalizador.\n"
-"Use o mouse o teclado para configurar os diversos níveis (o botão direito "
+"Controla o tom da sua música com um equalizador.\n"
+"Use o rato o teclado para configurar os diversos níveis (o botão direito "
 "restaura a faixa para o valor padrão)."
 
 #: quodlibet/ext/events/equalizer.py:150
@@ -3207,15 +3207,15 @@ msgstr "Comportamento"
 
 #: quodlibet/ext/events/trayicon/prefs.py:48
 msgid "Scroll wheel adjusts volume"
-msgstr "Roda do mouse ajusta volume"
+msgstr "Roda do rato ajusta volume"
 
 #: quodlibet/ext/events/trayicon/prefs.py:54
 msgid "Scroll wheel changes song"
-msgstr "Roda do mouse troca de música"
+msgstr "Roda do rato troca de música"
 
 #: quodlibet/ext/events/trayicon/prefs.py:62
 msgid "Scroll _Wheel"
-msgstr "_Roda do mouse"
+msgstr "_Roda do rato"
 
 #: quodlibet/ext/events/trayicon/prefs.py:92
 msgid "Tooltip Display"
@@ -3287,7 +3287,7 @@ msgstr "Cor de fundo:"
 
 #: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override hover color:"
-msgstr "Cor ao passar o mouse:"
+msgstr "Cor ao passar o rato:"
 
 #: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override remaining color:"
@@ -3303,9 +3303,7 @@ msgstr "Mostrar tempo"
 
 #: quodlibet/ext/events/waveformseekbar.py:698
 msgid "Seek amount when scrolling (milliseconds):"
-msgstr ""
-"Quantidade de tempo para avançar/retroceder com o roda do mouse "
-"(milissegundos)"
+msgstr "Quantidade de busca ao rolar (milissegundos):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
