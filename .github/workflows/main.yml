@@ -49,6 +49,7 @@ jobs:
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
+          export SETUPTOOLS_USE_DISTUTILS=stdlib
           poetry install -E plugins
 
       - name: Run tests
