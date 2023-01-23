@@ -46,6 +46,7 @@ jobs:
             mingw-w64-x86_64-cc
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python-poetry
+            mingw-w64-x86_64-gobject-introspection
 
       - name: Install additional dependencies
         shell: msys2 {0}
