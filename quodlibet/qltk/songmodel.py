@@ -224,12 +224,7 @@ class TrackCurrentModel(ObjectStore):
         """
 
         songs = set(songs)
-        found = []
-        append = found.append
-        for iter_, value in self.iterrows():
-            if value in songs:
-                append(iter_)
-        return found
+        return [iter_ for iter_, value in self.iterrows() if value in songs]
 
     def remove(self, iter_):
         if self.__iter and self[iter_].path == self[self.__iter].path:
