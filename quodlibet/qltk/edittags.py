@@ -11,7 +11,7 @@ from typing import Optional, Type, Sequence
 
 from gi.repository import Gtk, Pango, Gdk
 
-from quodlibet import C_, _, print_e, print_d
+from quodlibet import C_, _, ngettext, print_e, print_d
 from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
@@ -795,9 +795,11 @@ class EditTags(Gtk.VBox):
             value = massagers.validate(tag, value)
             assert isinstance(value, str)
             if not self._group_info.can_change(tag):
-                title = _("Invalid tag")
-                msg = _("Invalid tag %s\n\nThe files currently"
-                        " selected do not support editing this tag."
+                title = ngettext("Invalid tag", "Invalid tags", 1)
+                msg = ngettext("Invalid tag %s\n\nThe files currently "
+                        "selected do not support editing this tag.",
+                        "Invalid tags %s\n\nThe files currently "
+                        "selected do not support editing these tags.", 1
                         ) % util.bold(tag)
                 qltk.ErrorMessage(self, title, msg).run()
             else:
@@ -976,9 +978,11 @@ class EditTags(Gtk.VBox):
             return
         elif not self._group_info.can_change(new_tag):
             # Can't add the new tag.
-            title = _("Invalid tag")
-            msg = _("Invalid tag %s\n\nThe files currently"
-                    " selected do not support editing this tag."
+            title = ngettext("Invalid tag", "Invalid tags", 1)
+            msg = ngettext("Invalid tag %s\n\nThe files currently "
+                    "selected do not support editing this tag.",
+                    "Invalid tags %s\n\nThe files currently "
+                    "selected do not support editing these tags.", 1
                     ) % util.bold(new_tag)
             qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
         else:
