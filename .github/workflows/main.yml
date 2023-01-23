@@ -43,7 +43,7 @@ jobs:
             mingw-w64-x86_64-gst-libav
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-python
-            mingw-w64-x86_64-python-gobject
+            mingw-w64-x86_64-cc
             mingw-w64-x86_64-python-poetry
 
       - name: Install additional dependencies
