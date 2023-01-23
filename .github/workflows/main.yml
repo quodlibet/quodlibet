@@ -44,14 +44,11 @@ jobs:
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-python
             mingw-w64-x86_64-python-gobject
-            mingw-w64-x86_64-python-cairo
-            mingw-w64-x86_64-python-dulwich
-            mingw-w64-x86_64-python-pip
+            mingw-w64-x86_64-python-poetry
 
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          pip install poetry
           poetry install -E plugins
 
       - name: Run tests
