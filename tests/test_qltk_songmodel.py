@@ -3,6 +3,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from random import Random
+from quodlibet.qltk.queue import QueueModel
 from tests import TestCase
 
 from gi.repository import Gtk
@@ -125,6 +127,20 @@ class TPlaylistModel(TestCase):
             self.pl.next()
             self.assertEqual(self.pl.current, None)
             self.pl.order.reset(self.pl)
+
+    def test_shuffle_previous_after_reorder(self):
+        rand = Random(7)
+        self.pl.order = OrderShuffle()
+        history = [self.pl.current for _ in range(10) if self.pl.next() or True]
+        order = list(range(10))
+        for i in reversed(range(10)):
+            values = list(self.pl.itervalues())
+            rand.shuffle(order)
+            self.pl.reorder(order)
+            self.assertNotEqual(values, list(self.pl.itervalues()))
+            self.failUnlessEqual(self.pl.current, history[i],
+                    f"expected different item at index {i}")
+            self.pl.previous()
 
     def test_shuffle_repeat_forever(self):
         self.pl.order = RepeatSongForever(OrderShuffle())
@@ -251,7 +267,7 @@ class TPlaylistModel(TestCase):
 
 class TPlaylistMux(TestCase):
     def setUp(self):
-        self.q = PlaylistModel()
+        self.q = QueueModel()
         self.pl = PlaylistModel()
         self.p = NullPlayer()
         self.mux = PlaylistMux(self.p, self.q, self.pl)

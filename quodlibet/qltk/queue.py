@@ -9,7 +9,7 @@
 
 import os
 import time
-from typing import Optional
+from typing import Any, Optional, Sequence
 
 from gi.repository import Gtk, Gdk, Pango, GLib
 
@@ -345,7 +345,35 @@ class QueueExpander(Gtk.Expander):
 
 
 class QueueModel(PlaylistModel):
-    """Own class for debugging"""
+    """
+    A play list model for queues.
+
+    In contrast to `PlaylistModel`, when new songs have been set, its play order
+    will disregard the current song from the old set of songs and start from
+    scratch.
+    """
+
+    __reset = False
+
+    def set(self, songs: Sequence[Any]):
+        self.__reset = True
+        super().set(songs)
+
+    def next(self):
+        print_d(f"Using {self.order}.next_explicit() to get next song")
+
+        iter_ = None if self.__reset else self.current_iter
+        self.__reset = False
+        self.current_iter = self.order.next_explicit(self, iter_)
+
+    def previous(self):
+        iter_ = None if self.__reset else self.current_iter
+        self.__reset = False
+        self.current_iter = self.order.previous_explicit(self, iter_)
+
+    def go_to(self, song_or_iter, explicit=False, source=None):
+        self.__reset = False
+        return super().go_to(song_or_iter, explicit, source)
 
 
 class PlayQueue(SongList):
