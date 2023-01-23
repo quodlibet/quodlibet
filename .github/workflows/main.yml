@@ -44,7 +44,7 @@ jobs:
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-python
             mingw-w64-x86_64-cc
-            mingw-w64-x86_64-pkgconfig
+            mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python-poetry
 
       - name: Install additional dependencies
