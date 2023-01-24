@@ -9,7 +9,7 @@ Play Count
 The internal ``~#playcount`` tag is incremented when a song ends
 or is forced to end by the user, and the playback time has exceeded
 a certain proportion of the song's duration. This proportion is
-configurable in the config file or with the *Advanced Preferences* plugin.
+configurable in the config file or in the advanced preferences pane.
 
 In case of radio streams, which don't have a defined duration, the play
 count gets incremented whenever the stream is played.
