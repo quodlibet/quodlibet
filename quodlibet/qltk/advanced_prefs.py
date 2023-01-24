@@ -35,6 +35,7 @@ def _config(section, option, label, tooltip=None, getter=None):
     revert.add(Gtk.Image.new_from_icon_name(
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
+    revert.set_tooltip_text(_("Revert to default"))
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(entry)
