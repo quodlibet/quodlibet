@@ -227,7 +227,7 @@ msgstr "添加"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "删除 (_R)"
@@ -576,7 +576,7 @@ msgstr "全选(_A)"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1212,8 +1212,9 @@ msgstr "图片URL封面来源"
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
-msgstr "下载由<tt>artwork_url</tt>标签链接的封面。这适用于Soundcloud和Podcasts浏览器"
-"。"
+msgstr ""
+"下载由<tt>artwork_url</tt>标签链接的封面。这适用于Soundcloud和Podcasts浏览"
+"器。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1486,8 +1487,8 @@ msgid ""
 "listened to (%s)."
 msgstr ""
 "当插件写入一个专辑的标签时，它会首先设置歌曲的播放计数为0到1。\n"
-"有时你已经知道你不喜欢一首歌，所以在保存时将它设置为1，"
-"在以后搜索你已经完全听过的专辑时很有用 (%s)."
+"有时你已经知道你不喜欢一首歌，所以在保存时将它设置为1，在以后搜索你已经完全听"
+"过的专辑时很有用 (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
@@ -1834,7 +1835,8 @@ msgstr "非法参数："
 msgid ""
 "List accounts, separated by spaces, for changing status message. If none are "
 "specified, status message of all accounts will be changed."
-msgstr "列出用于更改状态消息的帐户，以空格分隔。如果不指定，所有帐户的状态信息都将被"
+msgstr ""
+"列出用于更改状态消息的帐户，以空格分隔。如果不指定，所有帐户的状态信息都将被"
 "更改。"
 
 #: quodlibet/ext/events/gajim_status.py:157
@@ -1871,7 +1873,8 @@ msgstr "阻止屏幕保护程序或睡眠"
 msgid ""
 "On a GNOME desktop, when a song is playing, prevents either the screensaver "
 "from activating, or prevents the computer from suspending."
-msgstr "在GNOME桌面上，当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
+msgstr ""
+"在GNOME桌面上，当播放歌曲时，会阻止屏幕保护程序激活，或阻止计算机挂起。"
 
 #: quodlibet/ext/events/inhibit.py:63
 msgid "Music is playing"
@@ -5113,15 +5116,15 @@ msgstr "显示帮助信息"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' 不是有效的列名 (%(all-column-ids)s)。"
 
-#: quodlibet/order/__init__.py:32
+#: quodlibet/order/__init__.py:34
 msgid "_Unknown"
 msgstr "未知(_U)"
 
-#: quodlibet/order/__init__.py:144
+#: quodlibet/order/__init__.py:149
 msgid "In Order"
 msgstr "顺序"
 
-#: quodlibet/order/__init__.py:145
+#: quodlibet/order/__init__.py:150
 msgid "_In Order"
 msgstr "顺序(_I)"
 
@@ -5133,11 +5136,11 @@ msgstr "随机"
 msgid "_Random"
 msgstr "随机(_R)"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:39
 msgid "Prefer higher rated"
 msgstr "优先播放高评分曲目"
 
-#: quodlibet/order/reorder.py:41
+#: quodlibet/order/reorder.py:40
 msgid "Prefer _higher rated"
 msgstr "优先播放高评分曲目(_h)"
 
@@ -5654,14 +5657,14 @@ msgid "The files currently selected do not support multiple values for %s."
 msgstr "当前所选文件不支持多个 %s 值。"
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
+#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "无效标签"
 
-#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:982
 #: quodlibet/qltk/tagsfrompath.py:212
 #, python-format
 msgid ""
@@ -5677,11 +5680,11 @@ msgstr[0] ""
 "\n"
 "当前选中的文件不支持编辑这些标签。"
 
-#: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:995
 msgid "Invalid value"
 msgstr "非法的值"
 
-#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
+#: quodlibet/qltk/edittags.py:953 quodlibet/qltk/edittags.py:996
 #, python-format
 msgid ""
 "Invalid value: %(value)s\n"
@@ -6939,39 +6942,39 @@ msgstr "选中所有面板中的曲目"
 msgid "_Filter on %s"
 msgstr "以 %s 过滤(_F)"
 
-#: quodlibet/qltk/songlist.py:1174
+#: quodlibet/qltk/songlist.py:1182
 msgid "All _Headers"
 msgstr "所有标题(_H)"
 
-#: quodlibet/qltk/songlist.py:1175
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr "音轨信息(_T)"
 
-#: quodlibet/qltk/songlist.py:1176
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr "专辑信息(_A)"
 
-#: quodlibet/qltk/songlist.py:1177
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr "表演者信息"
 
-#: quodlibet/qltk/songlist.py:1178
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr "日期信息"
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr "文件信息(_F)"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr "制作信息"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Customize Headers…"
 msgstr "定制表头(_C)…"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
 msgstr "扩展列宽"
 
