@@ -237,7 +237,7 @@ msgstr ""
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 #, fuzzy
 msgid "_Remove"
@@ -603,7 +603,7 @@ msgstr "全選 (_A)"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -5370,16 +5370,16 @@ msgstr "顯示基本的使用方法"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "<b>%s</b> 不是有效的位置。"
 
-#: quodlibet/order/__init__.py:32
+#: quodlibet/order/__init__.py:34
 #, fuzzy
 msgid "_Unknown"
 msgstr "未知"
 
-#: quodlibet/order/__init__.py:144
+#: quodlibet/order/__init__.py:149
 msgid "In Order"
 msgstr "順序"
 
-#: quodlibet/order/__init__.py:145
+#: quodlibet/order/__init__.py:150
 msgid "_In Order"
 msgstr "順序 (_I)"
 
@@ -5392,11 +5392,11 @@ msgstr "隨機 (_R)"
 msgid "_Random"
 msgstr "隨機 (_R)"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:39
 msgid "Prefer higher rated"
 msgstr ""
 
-#: quodlibet/order/reorder.py:41
+#: quodlibet/order/reorder.py:40
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "上次播放"
@@ -5950,7 +5950,7 @@ msgstr ""
 "當前選取的檔案不支援多重設定值。"
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
+#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
 #, fuzzy
@@ -5958,7 +5958,7 @@ msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "無效的標籤"
 
-#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:982
 #: quodlibet/qltk/tagsfrompath.py:212
 #, fuzzy, python-format
 msgid ""
@@ -5974,11 +5974,11 @@ msgstr[0] ""
 "\n"
 "當前選取的檔案不支援標籤編輯。"
 
-#: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:995
 msgid "Invalid value"
 msgstr "無效的設定值"
 
-#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
+#: quodlibet/qltk/edittags.py:953 quodlibet/qltk/edittags.py:996
 #, fuzzy, python-format
 msgid ""
 "Invalid value: %(value)s\n"
@@ -7326,41 +7326,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "以 %s 篩選 (_F)"
 
-#: quodlibet/qltk/songlist.py:1174
+#: quodlibet/qltk/songlist.py:1182
 #, fuzzy
 msgid "All _Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1175
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr "音軌檔頭 (_T)"
 
-#: quodlibet/qltk/songlist.py:1176
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1177
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr "個人或團體檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1178
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr "日期檔頭 (_D)"
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr "檔案檔頭 (_F)"
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr "出版檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "設置檔頭... (_C)"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
 msgstr ""
 
