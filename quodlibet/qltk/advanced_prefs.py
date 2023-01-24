@@ -255,8 +255,8 @@ class AdvancedPreferencesPane():
         help_text.set_text(_("Allow editing of advanced config settings."))
         button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
-        vb.pack_start(help_text, True, True, 12)
-        vb.pack_start(button, True, True, 0)
+        vb.pack_start(help_text, False, True, 12)
+        vb.pack_start(button, False, True, 0)
         vb.pack_start(table, True, True, 0)
         table.set_no_show_all(True)
 

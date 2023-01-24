@@ -744,8 +744,14 @@ class PreferencesWindow(UniqueWindow):
             self.title = _("Advanced")
 
             advanced_pane = AdvancedPreferencesPane()
-            vb = advanced_pane.create_display_frame()
-            self.pack_start(vb, False, True, MARGIN)
+            vbox = advanced_pane.create_display_frame()
+
+            scrolledwin = Gtk.ScrolledWindow()
+            scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                Gtk.PolicyType.AUTOMATIC)
+            scrolledwin.add_with_viewport(vbox)
+
+            self.pack_start(scrolledwin, True, True, MARGIN)
 
     def __init__(self, parent, open_page=None, all_pages=True):
         if self.is_not_unique():
