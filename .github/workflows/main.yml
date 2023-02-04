@@ -43,26 +43,21 @@ jobs:
             mingw-w64-x86_64-gst-libav
             mingw-w64-x86_64-gst-plugins-ugly
             mingw-w64-x86_64-python
-            mingw-w64-x86_64-python-gobject
-            mingw-w64-x86_64-python-cairo
-            mingw-w64-x86_64-python-pip
-            mingw-w64-x86_64-python-setuptools
-            mingw-w64-x86_64-python-pytest
-            mingw-w64-x86_64-python-certifi
-            mingw-w64-x86_64-python-coverage
-            mingw-w64-x86_64-python-flake8
-            mingw-w64-x86_64-python-entrypoints
-            mingw-w64-x86_64-python-toml
+            mingw-w64-x86_64-cc
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python-poetry
+            mingw-w64-x86_64-gobject-introspection
 
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          pip3 install feedparser musicbrainzngs mutagen flaky
+          export SETUPTOOLS_USE_DISTUTILS=stdlib
+          poetry install -E plugins
 
       - name: Run tests
         shell: msys2 {0}
         run: |
-          MSYSTEM= python3 -R -bb setup.py test --no-quality
+          MSYSTEM= poetry run setup.py test --no-quality
 
   flatpak:
     runs-on: ubuntu-20.04

@@ -682,7 +682,7 @@ plugins = ["musicbrainzngs", "dbus-python", "soco", "pypresence"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "cfd3755de9276830d84fb519fe59b6e883baa93aac6eb55d54b3ed553afdd924"
+content-hash = "ac35f145809da31b0091ecef0610fb02d470512d23d4e0ebae5361035a14e0a6"
 
 [metadata.files]
 alabaster = [
@@ -805,6 +805,7 @@ jinja2 = [
     {file = "Jinja2-3.1.2.tar.gz", hash = "sha256:31351a702a408a9e7595a8fc6150fc3f43bb6bf7e319770cbc0db9df9437e852"},
 ]
 livereload = [
+    {file = "livereload-2.6.3-py2.py3-none-any.whl", hash = "sha256:ad4ac6f53b2d62bb6ce1a5e6e96f1f00976a32348afedcb4b6d68df2a1d346e4"},
     {file = "livereload-2.6.3.tar.gz", hash = "sha256:776f2f865e59fde56490a56bcc6773b6917366bce0c267c60ee8aaf1a0959869"},
 ]
 markupsafe = [
