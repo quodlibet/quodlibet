@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Quod Libet 2.3\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-04-25 11:38+0100\n"
+"POT-Creation-Date: 2023-02-06 21:53+0100\n"
 "PO-Revision-Date: 2021-11-05 03:34+0000\n"
 "Last-Translator: Allan Nordhøy <epost@anotheragency.no>\n"
 "Language-Team: English (United Kingdom) <https://hosted.weblate.org/projects/"
@@ -234,7 +234,7 @@ msgstr ""
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:479
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr ""
@@ -275,7 +275,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:90
 #: quodlibet/ext/songsmenu/lastfmsync.py:203
-#: quodlibet/ext/songsmenu/playlist.py:50
+#: quodlibet/ext/songsmenu/playlist.py:55
 #: quodlibet/ext/songsmenu/replaygain.py:353
 #: quodlibet/ext/songsmenu/tapbpm.py:186 quodlibet/qltk/chooser.py:188
 #: quodlibet/qltk/chooser.py:209 quodlibet/qltk/chooser.py:233
@@ -582,7 +582,7 @@ msgstr ""
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1762,7 +1762,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
-#: quodlibet/ext/songsmenu/playlist.py:51
+#: quodlibet/ext/songsmenu/playlist.py:56
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
 #: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
@@ -3322,7 +3322,7 @@ msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 
 #: quodlibet/ext/playlist/export_to_folder.py:121
-#: quodlibet/ext/songsmenu/playlist.py:132
+#: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr ""
 
@@ -3650,6 +3650,18 @@ msgstr ""
 
 #: quodlibet/ext/query/savedsearch.py:24
 msgid "@(saved: search-name)"
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:24
+msgid "Unique Query"
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:25
+msgid "Filter search results by unique tags."
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:27
+msgid "@(unique: tag)"
 msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
@@ -4667,23 +4679,23 @@ msgstr ""
 msgid "Converts album and artist names to sort names, poorly."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/playlist.py:31
+#: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/playlist.py:32
+#: quodlibet/ext/songsmenu/playlist.py:37
 msgid "Exports songs to an M3U or PLS playlist."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use relative paths"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/playlist.py:77
+#: quodlibet/ext/songsmenu/playlist.py:82
 msgid "Use absolute paths"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/playlist.py:133
+#: quodlibet/ext/songsmenu/playlist.py:144
 #, python-format
 msgid "Writing to %s failed."
 msgstr ""
@@ -5125,15 +5137,15 @@ msgstr ""
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr ""
 
-#: quodlibet/order/__init__.py:32
+#: quodlibet/order/__init__.py:34
 msgid "_Unknown"
 msgstr ""
 
-#: quodlibet/order/__init__.py:144
+#: quodlibet/order/__init__.py:149
 msgid "In Order"
 msgstr ""
 
-#: quodlibet/order/__init__.py:145
+#: quodlibet/order/__init__.py:150
 msgid "_In Order"
 msgstr ""
 
@@ -5145,11 +5157,11 @@ msgstr ""
 msgid "_Random"
 msgstr ""
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:39
 msgid "Prefer higher rated"
 msgstr ""
 
-#: quodlibet/order/reorder.py:41
+#: quodlibet/order/reorder.py:40
 msgid "Prefer _higher rated"
 msgstr ""
 
@@ -5675,7 +5687,7 @@ msgid "The files currently selected do not support multiple values for %s."
 msgstr "The current backend does not support equalisation."
 
 #. Can't add the new tag.
-#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:979
+#: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
 msgid "Invalid tag"
@@ -5683,7 +5695,7 @@ msgid_plural "Invalid tags"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:980
+#: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:982
 #: quodlibet/qltk/tagsfrompath.py:212
 #, fuzzy, python-format
 msgid ""
@@ -5709,11 +5721,11 @@ msgstr[1] ""
 "\n"
 "The files currently selected do not support editing these tags."
 
-#: quodlibet/qltk/edittags.py:950 quodlibet/qltk/edittags.py:991
+#: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:995
 msgid "Invalid value"
 msgstr ""
 
-#: quodlibet/qltk/edittags.py:951 quodlibet/qltk/edittags.py:992
+#: quodlibet/qltk/edittags.py:953 quodlibet/qltk/edittags.py:996
 #, python-format
 msgid ""
 "Invalid value: %(value)s\n"
@@ -6977,39 +6989,39 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1174
+#: quodlibet/qltk/songlist.py:1182
 msgid "All _Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1175
+#: quodlibet/qltk/songlist.py:1183
 msgid "_Track Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1176
+#: quodlibet/qltk/songlist.py:1184
 msgid "_Album Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1177
+#: quodlibet/qltk/songlist.py:1185
 msgid "_People Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1178
+#: quodlibet/qltk/songlist.py:1186
 msgid "_Date Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1179
+#: quodlibet/qltk/songlist.py:1187
 msgid "_File Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1180
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Production Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Customize Headers…"
 msgstr "_Customise Headers…"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Expand Column"
 msgstr ""
 

@@ -107,6 +107,7 @@ quodlibet/ext/query/conditional.py
 quodlibet/ext/query/missing.py
 quodlibet/ext/query/pythonexpression.py
 quodlibet/ext/query/savedsearch.py
+quodlibet/ext/query/unique.py
 quodlibet/ext/_shared/squeezebox/base.py
 quodlibet/ext/_shared/squeezebox/server.py
 quodlibet/ext/_shared/squeezebox/util.py
