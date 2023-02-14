@@ -3793,6 +3793,19 @@ msgstr "💾 保存済み検索の結果を別のクエリの一部として含�
 msgid "@(saved: search-name)"
 msgstr "@(saved: 検索の名前)"
 
+#: quodlibet/ext/query/unique.py:16
+msgid "Unique Query"
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:17
+msgid "Filter search results by unique tags."
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:19
+#, fuzzy
+msgid "@(unique: tag)"
+msgstr "ユニーク"
+
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."

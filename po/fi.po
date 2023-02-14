@@ -3860,6 +3860,19 @@ msgstr "💾 Sisällytä tallennetun haun tulokset toiseen hakuun."
 msgid "@(saved: search-name)"
 msgstr "@(saved: haun nimi)"
 
+#: quodlibet/ext/query/unique.py:16
+msgid "Unique Query"
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:17
+msgid "Filter search results by unique tags."
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:19
+#, fuzzy
+msgid "@(unique: tag)"
+msgstr "yksilöllinen"
+
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."
