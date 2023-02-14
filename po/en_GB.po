@@ -3652,15 +3652,15 @@ msgstr ""
 msgid "@(saved: search-name)"
 msgstr ""
 
-#: quodlibet/ext/query/unique.py:24
+#: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
 msgstr ""
 
-#: quodlibet/ext/query/unique.py:25
+#: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
 msgstr ""
 
-#: quodlibet/ext/query/unique.py:27
+#: quodlibet/ext/query/unique.py:19
 msgid "@(unique: tag)"
 msgstr ""
 

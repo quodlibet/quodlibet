@@ -3851,6 +3851,19 @@ msgstr "💾 Toon ook resultaten van opgeslagen zoekopdrachten."
 msgid "@(saved: search-name)"
 msgstr "@(saved: zoekopdracht)"
 
+#: quodlibet/ext/query/unique.py:16
+msgid "Unique Query"
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:17
+msgid "Filter search results by unique tags."
+msgstr ""
+
+#: quodlibet/ext/query/unique.py:19
+#, fuzzy
+msgid "@(unique: tag)"
+msgstr "uniek"
+
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
 msgid "Squeezebox OK. Using the only player (%s)."
