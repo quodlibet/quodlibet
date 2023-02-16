@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-11-20 18:48+0000\n"
+"PO-Revision-Date: 2023-02-17 17:36+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -3829,16 +3829,15 @@ msgstr "@(saved: ad-ara)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
-msgstr ""
+msgstr "Benzersiz Sorgu"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "Arama sonuçlarını benzersiz etiketlere göre süz."
 
 #: quodlibet/ext/query/unique.py:19
-#, fuzzy
 msgid "@(unique: tag)"
-msgstr "tek"
+msgstr "@(unique: tag)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
