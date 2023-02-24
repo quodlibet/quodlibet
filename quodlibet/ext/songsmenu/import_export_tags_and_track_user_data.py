@@ -1,4 +1,5 @@
 # Copyright 2021 Joschua Gandert
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,18 +29,17 @@ from quodlibet.formats._audio import MIGRATE, AudioFile
 from quodlibet.util import connect_obj, print_exc
 
 import quodlibet
-from quodlibet.util.path import join_path_with_escaped_name_of_legal_length, \
-    stem_of_file_name, extension_of_file_name
+from quodlibet.util.path import (join_path_with_escaped_name_of_legal_length,
+                                 stem_of_file_name, extension_of_file_name)
 
 from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
 
-from quodlibet import _, app, print_e, print_d, qltk, util
+from quodlibet import _, app, print_e, qltk, util, print_d
 
 from quodlibet.plugins.songshelpers import each_song, is_writable, is_finite
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk import Icons, SeparatorMenuItem
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-
 
 __all__ = ['ImportExportTagsAndTrackUserDataPlugin']
 
@@ -136,19 +136,19 @@ class TrackId(NamedTuple):
 class Config:
     _config = PluginConfig(_PLUGIN_ID)
 
-    need_user_check_if_number_of_albums_differs = BoolConfProp(  #
+    need_user_check_if_number_of_albums_differs = BoolConfProp(
         _config, "need_user_check_if_number_of_albums_differs", True)
 
-    need_user_check_if_number_of_tracks_differs = BoolConfProp(  #
+    need_user_check_if_number_of_tracks_differs = BoolConfProp(
         _config, "need_user_check_if_number_of_tracks_differs", True)
 
-    max_track_similarity_to_need_user_check = FloatConfProp(  #
+    max_track_similarity_to_need_user_check = FloatConfProp(
         _config, "max_track_similarity_to_need_user_check", 0.76)
 
-    max_album_similarity_to_need_user_check = FloatConfProp(  #
+    max_album_similarity_to_need_user_check = FloatConfProp(
         _config, "max_album_similarity_to_need_user_check", 0.80)
 
-    delete_exports_after_importing = BoolConfProp(  #
+    delete_exports_after_importing = BoolConfProp(
         _config, "delete_exports_after_importing", True)
 
     pretty_print_json = BoolConfProp(_config, "pretty_print_json", False)
@@ -494,6 +494,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
     def _try_read_source_json(self, path: Path):
         try:
+            print_d(f"Loading from {str(path)!r}")
             with path.open(encoding="utf-8") as f:
                 return json.load(f)
         except ValueError:
@@ -535,6 +536,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
     def _rewrite_json(self, obj, path):
         try:
+            print_d(f"Writing to {str(path)!r}")
             with path.open('w+', encoding='utf-8') as f:
                 json.dump(obj, f, indent=self._get_json_indent())
         except (ValueError, OSError):
@@ -603,7 +605,6 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         album_id = AlbumId.of_song(songs[0])
 
         prev_path = self._album_id_to_export_path.get(album_id)
-        print_d(prev_path)
 
         # this overrides export data with the same album key by design, so a user
         # can simply rerun the export on an album they've modified
