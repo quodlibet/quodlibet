@@ -69,11 +69,20 @@ class PreferencesWindow(UniqueWindow):
                                  'settings', 'jump', populate=True,
                                  tooltip=_("When the playing song changes, "
                                            "scroll to it in the song list"))
-                autosort_button = CS(_("Sort songs when tags are modified"),
+                autosort_button = CS(_("_Sort songs when tags are modified"),
                                      'song_list', 'auto_sort', populate=True,
                                      tooltip=_("Automatically re-sort songs in "
                                                "the song list when tags are modified"))
+                always_sortable = CS(_("Always allow sorting"),
+                                     'song_list', 'always_allow_sorting', populate=True,
+                                     tooltip=_("Allow sorting by column headers, "
+                                               "even for playlists etc"))
+
+                def refresh_browser(*args):
+                    app.window.set_sortability()
+                always_sortable.connect("notify::active", refresh_browser)
                 vbox.pack_start(jump_button, False, True, 0)
+                vbox.pack_start(always_sortable, False, True, 0)
                 vbox.pack_start(autosort_button, False, True, 0)
                 return qltk.Frame(_("Behavior"), child=vbox)
 
