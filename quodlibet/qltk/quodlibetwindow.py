@@ -1,6 +1,6 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2012-2022 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #           2017 Uriel Zajaczkovski
 #
 # This program is free software; you can redistribute it and/or modify
@@ -1134,7 +1134,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self.songlist.disable_drop()
         if self.browser.accelerators:
             self.add_accel_group(self.browser.accelerators)
-
+        self.set_sortability()
         container = self.browser.__container = self.browser.pack(self.songpane)
 
         # Reset the cursor when done loading the browser
@@ -1147,6 +1147,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         container.show()
         self._filter_menu.set_browser(self.browser)
         self.__hide_headers()
+
+    def set_sortability(self):
+        # It's either sortable or clickable columns, both ends in a buggy UI (see #4099)
+        always_sortable = config.getboolean("song_list", "always_allow_sorting")
+        self.songlist.sortable = not self.browser.can_reorder or always_sortable
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
