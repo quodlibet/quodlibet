@@ -46,7 +46,9 @@ class ConfigSwitch(Gtk.Box):
         self.label = Gtk.Label(label, use_underline=True)
         self.switch = Gtk.Switch()
         self.label.set_mnemonic_widget(self.switch)
-        self.pack_start(self.label, False, True, 0)
+        eb = Gtk.EventBox()
+        eb.add(self.label)
+        self.pack_start(eb, False, True, 0)
         self.pack_end(self.switch, False, True, 0)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)
@@ -54,8 +56,10 @@ class ConfigSwitch(Gtk.Box):
         if populate:
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
-            self.switch.set_tooltip_text(tooltip)
+            self.label.set_tooltip_text(tooltip)
         self.switch.connect('notify::active', self.__activated, section, option)
+        eb.connect('button_press_event',
+                   lambda *_: self.switch.set_state(not self.switch.get_state()))
 
     def set_active(self, value: bool):
         self.switch.set_active(value)
