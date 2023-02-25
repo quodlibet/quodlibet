@@ -7,16 +7,18 @@
 import io
 import os
 import shutil
+import time
 from contextlib import contextmanager
 from tempfile import mkstemp, mkdtemp
 
 from quodlibet import config, app
 from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
-from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT
+from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, TIME_TAGS
 from quodlibet.util.environment import is_windows
 from quodlibet.util.path import (normalize_path, mkdir, get_home_dir, unquote,
                                  escape_filename, RootPathFile)
+from quodlibet.util.string.date import format_date
 from quodlibet.util.tags import _TAGS as TAGS
 from senf import fsnative, fsn2text, bytes2fsn
 from tests import TestCase, get_data_path, init_fake_app, destroy_fake_app
@@ -1167,3 +1169,12 @@ class Treplay_gain(TestCase):
             self.failUnlessAlmostEqual(
                 val, exp, places=5,
                 msg="%s should be %s not %s" % (key, exp, val))
+
+    def test_human_time_tags(self):
+        now = int(time.time())
+        tags = {t: now for t in TIME_TAGS}
+        tags["~filename"] = "/dev/null"
+        af = AudioFile(tags)
+        for t in TIME_TAGS:
+            assert af(t) == now, "Numeric dates broken"
+            assert af(t.replace("~#", "~")) == format_date(now), "Human date broken"
