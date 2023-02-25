@@ -14,7 +14,7 @@ def format_date(seconds: float, format_setting: Optional[Text] = None) -> Text:
     try:
         date = datetime.fromtimestamp(seconds).date()
     except (OverflowError, ValueError, OSError):
-        text = u""
+        text = ""
     else:
         if format_setting:
             format_ = format_setting

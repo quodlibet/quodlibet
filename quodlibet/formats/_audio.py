@@ -55,6 +55,8 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
 """Time in seconds since epoch, defaults to 0"""
 
+HUMAN_TO_NUMERIC_TIME_TAGS = {t.replace("~#", "~"): t for t in TIME_TAGS}
+
 DURATION_TAGS = {"~#length"}
 """Duration in seconds"""
 
@@ -148,6 +150,9 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     mimes: List[str] = []
     """MIME types this class can represent"""
+
+    # Faster than per-call
+    date_format = config.gettext("settings", "datecolumn_timestamp_format")
 
     def __init__(self, default=tuple(), **kwargs):
         for key, value in dict(default).items():
@@ -500,6 +505,9 @@ class AudioFile(dict, ImageContainer, HasKey):
                     return round(float(val.split(" ")[0]), 2)
                 except (ValueError, TypeError, AttributeError):
                     return default
+            elif real_key in HUMAN_TO_NUMERIC_TIME_TAGS:
+                time_value = self.get(HUMAN_TO_NUMERIC_TIME_TAGS[real_key], 0)
+                return format_date(time_value, self.date_format)
             elif key[:1] == "#":
                 key = "~" + key
                 if key in self:
@@ -621,7 +629,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             return expanded
 
         def sanitise(sep, parts):
-            """Return a santisied version of a path's parts"""
+            """Return a sanitised version of a path's parts"""
             return sep.join(part.replace(os.path.sep, u'')[:128] for part in parts)
 
         # setup defaults (user-defined take precedence)
