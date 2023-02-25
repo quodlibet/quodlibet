@@ -30,7 +30,7 @@ from quodlibet.util.path import mkdir, mtime, normalize_path, \
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
 
-from quodlibet.util import iso639
+from quodlibet.util import iso639, cached_property
 from quodlibet.util import human_sort_key as human, capitalize
 
 from quodlibet.util.string.date import format_date
@@ -152,8 +152,9 @@ class AudioFile(dict, ImageContainer, HasKey):
     mimes: List[str] = []
     """MIME types this class can represent"""
 
-    # Faster than per-call
-    date_format = config.gettext("settings", "datecolumn_timestamp_format")
+    @cached_property
+    def _date_format(self) -> str:
+        return config.gettext("settings", "datecolumn_timestamp_format")
 
     def __init__(self, default=tuple(), **kwargs):
         for key, value in dict(default).items():
@@ -506,12 +507,12 @@ class AudioFile(dict, ImageContainer, HasKey):
                 except (ValueError, TypeError, AttributeError):
                     return default
             elif real_key in HUMAN_TO_NUMERIC_TIME_TAGS:
-                time_value = self.get(HUMAN_TO_NUMERIC_TIME_TAGS[real_key], 0)
-                return format_date(time_value, self.date_format)
+                time_value = float(self.get(HUMAN_TO_NUMERIC_TIME_TAGS[real_key], 0))
+                return format_date(time_value, self._date_format)
             elif key[:1] == "#":
                 if real_key in self:
                     return self[real_key]
-                elif key in NUMERIC_ZERO_DEFAULT:
+                elif real_key in NUMERIC_ZERO_DEFAULT:
                     return 0
                 else:
                     try:
