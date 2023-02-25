@@ -419,7 +419,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self._first_column = None
         # A priority list of how to apply the sort keys.
         # might contain column header names not present...
-        self._sort_sequence = []
+        self._sort_sequence: List[str] = []
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
 
