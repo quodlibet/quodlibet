@@ -30,9 +30,10 @@ from quodlibet.util.path import mkdir, mtime, normalize_path, \
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
 
-from quodlibet.util import iso639
+from quodlibet.util import iso639, cached_property
 from quodlibet.util import human_sort_key as human, capitalize
 
+from quodlibet.util.string.date import format_date
 from quodlibet.util.tags import TAG_ROLES, TAG_TO_SORT
 
 from ._image import ImageContainer
@@ -54,6 +55,8 @@ PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
 """Time in seconds since epoch, defaults to 0"""
+
+HUMAN_TO_NUMERIC_TIME_TAGS = {t.replace("~#", "~"): t for t in TIME_TAGS}
 
 DURATION_TAGS = {"~#length"}
 """Duration in seconds"""
@@ -148,6 +151,10 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     mimes: List[str] = []
     """MIME types this class can represent"""
+
+    @cached_property
+    def _date_format(self) -> str:
+        return config.gettext("settings", "datecolumn_timestamp_format")
 
     def __init__(self, default=tuple(), **kwargs):
         for key, value in dict(default).items():
@@ -329,14 +336,13 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         For details on tied tags, see the documentation for `util.tagsplit`.
         """
-
+        real_key = key
         if key[:1] == "~":
             key = key[1:]
             if "~" in key:
-                real_key = "~" + key
                 values = []
                 sub_tags = util.tagsplit(real_key)
-                # If it's genuinely a tied tag (not ~~people etc), we want
+                # If it's genuinely a tied tag (not ~~people etc.), we want
                 # to delimit the multi-values separately from the tying
                 j = joiner if len(sub_tags) > 1 else "\n"
                 for t in sub_tags:
@@ -362,7 +368,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 else:
                     return util.format_time_display(length)
             elif key == "#rating":
-                return dict.get(self, "~" + key, config.RATINGS.default)
+                return dict.get(self, real_key, config.RATINGS.default)
             elif key == "rating":
                 return util.format_rating(self("~#rating"))
             elif key == "people":
@@ -391,12 +397,12 @@ class AudioFile(dict, ImageContainer, HasKey):
                 return self._prefixvalue("performer") or default
             elif key in ("performerssort", "performersort"):
                 return (self._prefixvalue("performersort") or
-                        self("~" + key[-4:], default, connector))
+                        self(real_key[-4:], default, connector))
             elif key in ("performers:roles", "performer:roles"):
                 return (self._role_call("performer") or default)
             elif key in ("performerssort:roles", "performersort:roles"):
                 return (self._role_call("performersort")
-                        or self("~" + key.replace("sort", ""), default,
+                        or self(real_key.replace("sort", ""), default,
                                 connector))
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
@@ -500,15 +506,17 @@ class AudioFile(dict, ImageContainer, HasKey):
                     return round(float(val.split(" ")[0]), 2)
                 except (ValueError, TypeError, AttributeError):
                     return default
+            elif real_key in HUMAN_TO_NUMERIC_TIME_TAGS:
+                time_value = float(self.get(HUMAN_TO_NUMERIC_TIME_TAGS[real_key], 0))
+                return format_date(time_value, self._date_format)
             elif key[:1] == "#":
-                key = "~" + key
-                if key in self:
-                    return self[key]
-                elif key in NUMERIC_ZERO_DEFAULT:
+                if real_key in self:
+                    return self[real_key]
+                elif real_key in NUMERIC_ZERO_DEFAULT:
                     return 0
                 else:
                     try:
-                        val = self[key[2:]]
+                        val = self[real_key[2:]]
                     except KeyError:
                         return default
                     try:
@@ -519,10 +527,10 @@ class AudioFile(dict, ImageContainer, HasKey):
                         except ValueError:
                             return default
             elif key == "json":
-                # Help the testing by being determinstic with sort_keys.
+                # Help the testing by being deterministic with sort_keys.
                 return json.dumps(self, sort_keys=True)
             else:
-                return dict.get(self, "~" + key, default)
+                return dict.get(self, real_key, default)
 
         elif key == "title":
             title = dict.get(self, "title")
@@ -621,7 +629,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             return expanded
 
         def sanitise(sep, parts):
-            """Return a santisied version of a path's parts"""
+            """Return a sanitised version of a path's parts"""
             return sep.join(part.replace(os.path.sep, u'')[:128] for part in parts)
 
         # setup defaults (user-defined take precedence)
