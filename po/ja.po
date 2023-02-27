@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-11-05 14:09+0000\n"
+"PO-Revision-Date: 2023-02-24 13:37+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.16-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -980,7 +980,7 @@ msgstr "実行中のプレイヤーをフォーカス"
 
 #: quodlibet/cli.py:112
 msgid "Remove active browser filters"
-msgstr "ブラウザからフィルタを削除"
+msgstr "ブラウザからフィルターを削除"
 
 #: quodlibet/cli.py:113
 msgid "Refresh and rescan library"
@@ -3356,7 +3356,7 @@ msgstr "周波数帯域(_B):"
 
 #: quodlibet/ext/gstreamer/karaoke.py:22
 msgid "The Frequency band of the filter"
-msgstr "フィルタの周波数帯域"
+msgstr "フィルターの周波数帯域"
 
 #: quodlibet/ext/gstreamer/karaoke.py:23
 msgid "Filter _width:"
@@ -3364,7 +3364,7 @@ msgstr "周波数幅(_W):"
 
 #: quodlibet/ext/gstreamer/karaoke.py:24
 msgid "The Frequency width of the filter"
-msgstr "フィルタの周波数幅"
+msgstr "フィルターの周波数幅"
 
 #: quodlibet/ext/gstreamer/karaoke.py:25
 msgid "_Level:"
@@ -3659,7 +3659,7 @@ msgstr "曲をグルーピングするためのタグ"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:152
 msgid "Filter tag:"
-msgstr "フィルタタグ:"
+msgstr "フィルタータグ:"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:157
 msgid ""
@@ -3668,9 +3668,9 @@ msgid ""
 "a group consisting only of itself. Typically the filter\n"
 "tag should match or partially match the grouping tag."
 msgstr ""
-"グルーピングは、フィルタタグが定義されている場合のみ適用されます。\n"
-"フィルタタグが定義されていない曲は、その曲だけで構成されるグループ\n"
-"として扱われます。通常、フィルタタグはグルーピングタグと完全一致か\n"
+"グルーピングは、フィルタータグが定義されている場合のみ適用されます。\n"
+"フィルタータグが定義されていない曲は、その曲だけで構成されるグループ\n"
+"として扱われます。通常、フィルタータグはグルーピングタグと完全一致か\n"
 "部分一致している必要があります。"
 
 #: quodlibet/ext/playorder/shufflebygrouping.py:162
@@ -3795,16 +3795,15 @@ msgstr "@(saved: 検索の名前)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
-msgstr ""
+msgstr "ユニーククエリ"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "タグが一意となるように検索結果をフィルタリングします。"
 
 #: quodlibet/ext/query/unique.py:19
-#, fuzzy
 msgid "@(unique: tag)"
-msgstr "ユニーク"
+msgstr "@(unique: タグ)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -5595,7 +5594,7 @@ msgstr "ブックマーク"
 
 #: quodlibet/qltk/browser.py:56
 msgid "_Filters"
-msgstr "フィルタ(_F)"
+msgstr "フィルター(_F)"
 
 #: quodlibet/qltk/browser.py:57
 msgid "Recently _Played"
@@ -6468,7 +6467,7 @@ msgstr "総再生時間"
 
 #: quodlibet/qltk/prefs.py:285
 msgid "_Global filter:"
-msgstr "グローバルに適用するフィルタ(_G):"
+msgstr "グローバルに適用するフィルター(_G):"
 
 #: quodlibet/qltk/prefs.py:290
 msgid "Apply this query in addition to all others"
@@ -7168,7 +7167,7 @@ msgstr "検索ボックスをフォーカス"
 
 #: quodlibet/qltk/shortcuts.py:22
 msgid "Reset filters and jump to the playing song"
-msgstr "フィルタをリセットして、再生中の曲にジャンプ"
+msgstr "フィルターをリセットして、再生中の曲にジャンプ"
 
 #: quodlibet/qltk/shortcuts.py:26
 msgid "Open the information window for the selected songs"
