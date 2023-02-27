@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-02-17 17:36+0000\n"
+"PO-Revision-Date: 2023-02-25 17:16+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -452,7 +452,7 @@ msgstr "Поп"
 
 #: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
-msgstr "Альтернативая"
+msgstr "Альтернативная"
 
 #: quodlibet/browsers/iradio.py:407
 msgid "Metal"
