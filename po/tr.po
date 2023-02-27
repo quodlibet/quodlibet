@@ -1524,7 +1524,7 @@ msgstr ""
 "ileride kullanışlı olabilir (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:543
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "'%s' yazılamadı"
@@ -4061,19 +4061,19 @@ msgstr "Dosya adı"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
 msgid "Disc"
 msgstr "Disk"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 #: quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr "Parça"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
 msgid "Title"
 msgstr "Başlık"
 
@@ -4807,7 +4807,7 @@ msgid "Delete export files after they've been imported"
 msgstr "Dışa aktarılan dosyaları içe aktardıktan sonra sil"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:316
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 msgid "Import"
 msgstr "İçe Aktar"
 
@@ -4825,7 +4825,7 @@ msgid "Tracks"
 msgstr "Parçalar"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:565
 msgid "Artist(s)"
 msgstr "Sanatçı(lar)"
 
@@ -4853,21 +4853,21 @@ msgstr "Bir şeyi içe aktarabilmeniz için önce dışa aktarmanız gerekir."
 msgid "The index was corrupt."
 msgstr "Dizin bozuk."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:501
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:502
 #, python-format
 msgid "Couldn't parse JSON in %s"
 msgstr "%s içinde JSON ayrıştırılamadı"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:505
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:506
 #, python-format
 msgid "Couldn't read %s"
 msgstr "%s okunamadı"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "File name"
 msgstr "Dosya adı"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 msgid "Match Tracks"
 msgstr "Parçaları Eşleştir"
 
