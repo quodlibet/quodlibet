@@ -1571,7 +1571,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:543
 #, fuzzy, python-format
 msgid "Couldn't write '%s'"
 msgstr "%s: Nepavyko rasti %s."
@@ -4114,20 +4114,20 @@ msgstr "Failo vardas"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
 #, fuzzy
 msgid "Disc"
 msgstr "_Diskas"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 #: quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr "Takelis"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
 #, fuzzy
 msgid "Title"
 msgstr "Pa_vadinimas"
@@ -4846,7 +4846,7 @@ msgid "Delete export files after they've been imported"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:316
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 #, fuzzy
 msgid "Import"
 msgstr "_Importuoti"
@@ -4868,7 +4868,7 @@ msgid "Tracks"
 msgstr "Takelis"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:565
 #, fuzzy
 msgid "Artist(s)"
 msgstr "Atlikėjas"
@@ -4899,22 +4899,22 @@ msgstr ""
 msgid "The index was corrupt."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:501
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:502
 #, fuzzy, python-format
 msgid "Couldn't parse JSON in %s"
 msgstr "%s: Nepavyko rasti %s."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:505
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:506
 #, fuzzy, python-format
 msgid "Couldn't read %s"
 msgstr "%s: Nepavyko rasti %s."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 #, fuzzy
 msgid "File name"
 msgstr "Failo vardas"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 #, fuzzy
 msgid "Match Tracks"
 msgstr "takeliai"

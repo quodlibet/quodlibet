@@ -1534,7 +1534,7 @@ msgstr ""
 "albumov (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:541
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:543
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "Nepodarilo sa zapísať „%s“"
@@ -4092,19 +4092,19 @@ msgstr "Názov súboru"
 
 #.
 #: quodlibet/ext/songsmenu/brainz/widgets.py:130
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:560
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
 msgid "Disc"
 msgstr "Disk"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:131
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:561
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
 #: quodlibet/qltk/tracknumbers.py:91
 msgid "Track"
 msgstr "Skladba"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:132
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:386
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:562
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
 msgid "Title"
 msgstr "Názov"
 
@@ -4846,7 +4846,7 @@ msgid "Delete export files after they've been imported"
 msgstr "Zmazať súbory exportu po ich načítaní"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:316
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 msgid "Import"
 msgstr "Načítať"
 
@@ -4864,7 +4864,7 @@ msgid "Tracks"
 msgstr "Stopy"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:387
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:563
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:565
 msgid "Artist(s)"
 msgstr "Umelci"
 
@@ -4892,21 +4892,21 @@ msgstr "Predtým než budete môcť niečo načítať, musíte najprv niečo exp
 msgid "The index was corrupt."
 msgstr "Index bol poškodený."
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:501
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:502
 #, python-format
 msgid "Couldn't parse JSON in %s"
 msgstr "Nepodarilo sa prečítať JSON v „%s“"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:505
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:506
 #, python-format
 msgid "Couldn't read %s"
 msgstr "Nepodarilo sa čítať „%s“"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:564
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:566
 msgid "File name"
 msgstr "Názov súboru"
 
-#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:567
+#: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:569
 msgid "Match Tracks"
 msgstr "Spárovať stopy"
 
