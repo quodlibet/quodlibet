@@ -57,7 +57,7 @@ jobs:
       - name: Run tests
         shell: msys2 {0}
         run: |
-          MSYSTEM= poetry run setup.py test --no-quality
+          MSYSTEM= poetry run python setup.py test --no-quality
 
   flatpak:
     runs-on: ubuntu-20.04
