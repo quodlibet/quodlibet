@@ -10,13 +10,13 @@ on:
 
 jobs:
   fedora:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run tests in Docker container
-        uses: ./.github/workflows/fedora36
+        uses: ./.github/workflows/fedora
 
   msys2:
     runs-on: windows-latest
