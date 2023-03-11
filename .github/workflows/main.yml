@@ -52,12 +52,12 @@ jobs:
         shell: msys2 {0}
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
-          poetry install -E plugins
+          MSYSTEM= poetry install -E plugins
 
       - name: Run tests
         shell: msys2 {0}
         run: |
-          MSYSTEM= poetry run setup.py test --no-quality
+          MSYSTEM= poetry run python setup.py test --no-quality
 
   flatpak:
     runs-on: ubuntu-20.04
