@@ -10,13 +10,13 @@ on:
 
 jobs:
   fedora:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
       - name: Run tests in Docker container
-        uses: ./.github/workflows/fedora36
+        uses: ./.github/workflows/fedora
 
   msys2:
     runs-on: windows-latest
@@ -52,12 +52,12 @@ jobs:
         shell: msys2 {0}
         run: |
           export SETUPTOOLS_USE_DISTUTILS=stdlib
-          poetry install -E plugins
+          MSYSTEM= poetry install -E plugins
 
       - name: Run tests
         shell: msys2 {0}
         run: |
-          MSYSTEM= poetry run setup.py test --no-quality
+          MSYSTEM= poetry run python setup.py test --no-quality
 
   flatpak:
     runs-on: ubuntu-20.04
@@ -157,10 +157,10 @@ jobs:
           libcairo2-dev \
           libgirepository1.0-dev \
           pkg-config \
-          python3-dev \
-          python3-poetry \
-          python3-cachecontrol \
+          pipx \
           xvfb
+        pipx install poetry
+        pipx ensurepath
 
     - name: Install project virtualenv
       run: poetry install -E plugins

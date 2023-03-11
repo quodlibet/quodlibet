@@ -6,6 +6,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Optional, Type
+
 import mutagen.id3
 
 from quodlibet import config, const, print_w
@@ -95,7 +97,7 @@ class ID3File(AudioFile):
         }
     PAM_XXXT = dict((v, k) for k, v in TXXX_MAP.items())
 
-    Kind = None
+    Kind: Optional[Type[mutagen.FileType]] = None
 
     def __init__(self, filename):
         with translate_errors():

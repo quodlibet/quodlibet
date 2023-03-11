@@ -7,7 +7,7 @@
 
 from difflib import SequenceMatcher
 from operator import itemgetter
-from typing import Generic, TypeVar, Mapping, Callable, Any, Union, List, Sequence, \
+from typing import Generic, TypeVar, Mapping, Union, List, Sequence, \
     Optional, Tuple
 
 
@@ -114,7 +114,7 @@ class ObjectListMatcher(Generic[T]):
     minimum_similarity_ratio: float
 
     _matcher: SequenceMatcher
-    _attr_with_weight: List[Tuple[Callable[[T], Any], float]]
+    _attr_with_weight: List[Tuple[itemgetter, float]]
     _b_idx_to_a_match_data: List[Optional[_MatchData]]
 
     def __init__(self, attr_to_weight: AttributeGetterToWeight):

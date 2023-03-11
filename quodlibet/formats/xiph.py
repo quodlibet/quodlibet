@@ -10,6 +10,8 @@
 import sys
 import base64
 
+from typing import List, Type, Optional
+
 import mutagen
 from mutagen.flac import Picture, error as FLACError
 from mutagen.id3 import ID3
@@ -29,7 +31,7 @@ sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 
 class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"
-    MutagenType = None
+    MutagenType: Optional[Type[mutagen.FileType]] = None
 
     supports_rating_and_play_count_in_file = True
 
@@ -321,7 +323,7 @@ class MutagenVCFile(AudioFile):
         self.sanitize()
 
 extensions = []
-ogg_formats = []
+ogg_formats: List[Type[mutagen.FileType]] = []
 
 from mutagen.oggvorbis import OggVorbis
 extensions.append(".ogg")

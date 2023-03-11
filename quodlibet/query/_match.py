@@ -425,7 +425,7 @@ class NumexprGroup(Numexpr):
 class NumexprNumber(Numexpr):
     """Number in numeric expression"""
 
-    def __init__(self, value: Real, units: Units = None):
+    def __init__(self, value: Real, units: Optional[Units] = None):
         self._value = float(value)
         self._units = units
 

@@ -55,7 +55,7 @@ class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
     PYTHON3 = Version("Python3", 3, 8)
-    MUTAGEN = Version("Mutagen", 1, 34,
+    MUTAGEN = Version("Mutagen", 1, 37,
                       message="Use the Quod Libet unstable PPAs/repos to get a newer "
                               "mutagen version.")
     GTK = Version("GTK+", 3, 18)
