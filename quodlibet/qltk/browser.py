@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2016 Nick Boultbee
+#        2016-23 Nick Boultbee
 #           2018 Peter Strulo
 #
 # This program is free software; you can redistribute it and/or modify
@@ -317,6 +317,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
                 songs = list(filter(bg, songs))
         print_d(f"Setting {len(songs)} songs...")
         self.songlist.set_songs(songs, sorted)
+        self.songlist.sortable = browser.can_reorder
 
     def __enqueue(self, view, path, column, player):
         app.window.playlist.enqueue([view.get_model()[path][0]])

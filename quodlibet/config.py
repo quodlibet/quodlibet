@@ -112,6 +112,9 @@ INITIAL: Dict[str, Dict[str, str]] = {
     "song_list": {
         # Automatically re-sort song list when tags are modified
         "auto_sort": "true",
+
+        # Make all browsers sortable even
+        "always_allow_sorting": "true"
     },
 
     "browsers": {

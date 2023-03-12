@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2016-2021 Nick Boultbee
+#           2016-2023 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -378,14 +378,13 @@ class QueueModel(PlaylistModel):
 
 class PlayQueue(SongList):
 
-    sortable = False
     _activated = False
     _MAX_PENDING = 5
     """Maximum number of queue items to leave unpersisted (batching)"""
 
     def __init__(self, library: Library, player: BasePlayer,
                  autosave_interval_secs: Optional[int] = None):
-        super().__init__(library, player, model_cls=QueueModel)
+        super().__init__(library, player, model_cls=QueueModel, sortable=False)
         self._updated_time = time.time()
         self.autosave_interval = autosave_interval_secs
         self._pending = 0

@@ -1,7 +1,7 @@
 # Copyright 2005 Joe Wreschnig
 #           2012 Christoph Reiter
 #           2014 Jan Path
-#      2011-2022 Nick Boultbee
+#      2011-2023 Nick Boultbee
 #           2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -376,7 +376,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     """The list of current headers."""
 
     star = list(Query.STAR)
-    sortable = True
 
     def Menu(self, header, browser, library):
         songs = self.get_selected_songs()
@@ -405,8 +404,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         menu.show_all()
         return menu
 
-    def __init__(self, library, player=None, update=False, model_cls=PlaylistModel):
+    def __init__(self, library, player=None, update=False, model_cls=PlaylistModel,
+                 sortable: bool = True):
         super().__init__()
+        self._sortable = sortable
         self._register_instance(SongList)
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
@@ -418,7 +419,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self._first_column = None
         # A priority list of how to apply the sort keys.
         # might contain column header names not present...
-        self._sort_sequence = []
+        self._sort_sequence: List[str] = []
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
 
@@ -442,6 +443,16 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_search_equal_func(self.__search_func, None)
 
         self.connect('destroy', self.__destroy)
+
+    @property
+    def sortable(self) -> bool:
+        """Whether the columns clicked to enable sorting of songs"""
+        return self._sortable
+
+    @sortable.setter
+    def sortable(self, value: bool):
+        self._sortable = value
+        self.set_headers_clickable(value)
 
     @property
     def model(self) -> Gtk.TreeModel:
