@@ -424,6 +424,7 @@ MENU = """
       <menuitem action='Previous' always-show-image='true'/>
       <menuitem action='PlayPause' always-show-image='true'/>
       <menuitem action='Next' always-show-image='true'/>
+      <menuitem action='Stop' always-show-image='true'/>
       <menuitem action='StopAfter' always-show-image='true'/>
     </menu>
 
@@ -957,6 +958,11 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         act.connect('activate', self.__next_song)
         ag.add_action_with_accel(act, "<Primary>period")
 
+        act = Action(name="Stop", label=_("Stop"),
+                     icon_name=Icons.MEDIA_PLAYBACK_STOP)
+        act.connect('activate', self.__stop)
+        ag.add_action(act)
+
         act = ToggleAction(name="StopAfter", label=_("Stop After This Song"))
         ag.add_action_with_accel(act, "<shift>space")
 
@@ -1216,6 +1222,9 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
 
     def __play_pause(self, *args):
         app.player.playpause()
+
+    def __stop(self, *args):
+        app.player.stop()
 
     def __jump_to_current(self, explicit, songlist=None, force_scroll=False):
         """Select/scroll to the current playing song in the playlist.
