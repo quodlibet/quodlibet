@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-02-24 13:37+0000\n"
+"PO-Revision-Date: 2023-03-15 12:40+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -160,7 +160,7 @@ msgstr "アルバムの表示"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:766
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:775
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "閉じる(_C)"
@@ -211,7 +211,7 @@ msgstr "カスタム(_C)"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1290
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1295
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "追加(_A)"
@@ -227,7 +227,7 @@ msgstr "追加(_A)"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "削除(_R)"
@@ -277,7 +277,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1416 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1421 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
@@ -1345,7 +1345,7 @@ msgstr "位置(_P):"
 msgid "_Cover size:"
 msgstr "カバーのサイズ(_C):"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:281
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:290
 msgid "Display"
 msgstr "表示"
 
@@ -1538,7 +1538,7 @@ msgstr ""
 "%s"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:576
+#: quodlibet/qltk/prefs.py:585
 msgid "Save ratings and play _counts in tags"
 msgstr "評価と再生回数をタグに保存する(_C)"
 
@@ -1567,7 +1567,7 @@ msgstr "更新方法(_U):"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:741
+#: quodlibet/qltk/prefs.py:750
 msgid "Preferences"
 msgstr "設定"
 
@@ -1956,7 +1956,7 @@ msgstr "ユーザーインターフェースの言語を変更します。"
 msgid "System Default"
 msgstr "システムのデフォルト"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:720
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:729
 msgid "A restart is required for any changes to take effect"
 msgstr "変更を有効にするには再起動が必要です"
 
@@ -3081,12 +3081,12 @@ msgstr "%(application-name)s の表示(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:950
-#: quodlibet/qltk/quodlibetwindow.py:1156
+#: quodlibet/qltk/quodlibetwindow.py:1161
 msgid "_Play"
 msgstr "再生(_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1158
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1163
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "一時停止(_A)"
@@ -3137,8 +3137,8 @@ msgstr "プレイリスト(_L)"
 msgid "_Quit"
 msgstr "終了(_Q)"
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:78
-#: quodlibet/qltk/prefs.py:450 quodlibet/qltk/prefs.py:727
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:87
+#: quodlibet/qltk/prefs.py:459 quodlibet/qltk/prefs.py:736
 msgid "Behavior"
 msgstr "挙動"
 
@@ -5081,7 +5081,7 @@ msgstr "タグ「%s」が見つかりません。"
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:270
-#: quodlibet/qltk/prefs.py:680 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:689 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "ライブラリ"
 
@@ -6401,116 +6401,124 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "再生する曲が変わったときにソングリストをスクロールさせます"
 
 #: quodlibet/qltk/prefs.py:72
-msgid "Sort songs when tags are modified"
-msgstr "タグが変更されたときに曲をソートする"
+msgid "_Sort songs when tags are modified"
+msgstr "タグが変更されたときに曲をソートする(_S)"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr "タグが変更されると、ソングリスト内の曲を自動的に再ソートします"
 
-#: quodlibet/qltk/prefs.py:90
+#: quodlibet/qltk/prefs.py:76
+msgid "Always allow sorting"
+msgstr "常にソートを可能にする"
+
+#: quodlibet/qltk/prefs.py:78
+msgid "Allow sorting by column headers, even for playlists etc"
+msgstr "プレイリストなどでも、カラムヘッダでソートできるようにします"
+
+#: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
 msgstr "その他(_O):"
 
 #. Stock edit doesn't have ellipsis chars.
-#: quodlibet/qltk/prefs.py:95
+#: quodlibet/qltk/prefs.py:104
 msgid "_Edit…"
 msgstr "編集(_E)…"
 
-#: quodlibet/qltk/prefs.py:98
+#: quodlibet/qltk/prefs.py:107
 msgid "Add or remove additional column headers"
 msgstr "追加表示するカラムヘッダを追加または削除します"
 
-#: quodlibet/qltk/prefs.py:107
+#: quodlibet/qltk/prefs.py:116
 msgid "Visible Columns"
 msgstr "表示するカラム"
 
-#: quodlibet/qltk/prefs.py:129
+#: quodlibet/qltk/prefs.py:138
 msgid "Title includes _version"
 msgstr "タイトルにバージョンを含める(_V)"
 
-#: quodlibet/qltk/prefs.py:130
+#: quodlibet/qltk/prefs.py:139
 msgid "Album includes _disc subtitle"
 msgstr "アルバムにディスクサブタイトルを含める(_D)"
 
-#: quodlibet/qltk/prefs.py:131
+#: quodlibet/qltk/prefs.py:140
 msgid "Artist includes all _people"
 msgstr "アーティストに全てのピープルを含める(_P)"
 
-#: quodlibet/qltk/prefs.py:132
+#: quodlibet/qltk/prefs.py:141
 msgid "Filename includes _folder"
 msgstr "ファイル名にフォルダ名を含める(_F)"
 
-#: quodlibet/qltk/prefs.py:133
+#: quodlibet/qltk/prefs.py:142
 msgid "Column Preferences"
 msgstr "カラム設定"
 
-#: quodlibet/qltk/prefs.py:136
+#: quodlibet/qltk/prefs.py:145
 msgid "_Update Columns"
 msgstr "カラムの更新(_U)"
 
-#: quodlibet/qltk/prefs.py:138
+#: quodlibet/qltk/prefs.py:147
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr "現在の設定をソングリストに適用し、新しいカラムは最後に追加します"
 
-#: quodlibet/qltk/prefs.py:152 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:161 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "ソングリスト"
 
-#: quodlibet/qltk/prefs.py:237
+#: quodlibet/qltk/prefs.py:246
 msgid "Edit Columns"
 msgstr "カラムの編集"
 
-#: quodlibet/qltk/prefs.py:274
+#: quodlibet/qltk/prefs.py:283
 msgid "Duration totals"
 msgstr "総再生時間"
 
-#: quodlibet/qltk/prefs.py:285
+#: quodlibet/qltk/prefs.py:294
 msgid "_Global filter:"
 msgstr "グローバルに適用するフィルター(_G):"
 
-#: quodlibet/qltk/prefs.py:290
+#: quodlibet/qltk/prefs.py:299
 msgid "Apply this query in addition to all others"
 msgstr "他の全ての検索条件に加えてこのクエリを適用します"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:294
+#: quodlibet/qltk/prefs.py:303
 msgctxt "heading"
 msgid "Search"
 msgstr "検索"
 
-#: quodlibet/qltk/prefs.py:298 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:307 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "ブラウザ"
 
 #. Ratings
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:312
 msgid "Confirm _multiple ratings"
 msgstr "複数の評価時に確認する(_M)"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:314
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "複数の曲の評価を一度に変更する前に確認を求めます"
 
-#: quodlibet/qltk/prefs.py:308
+#: quodlibet/qltk/prefs.py:317
 msgid "Enable _one-click ratings"
 msgstr "ワンクリック評価を有効にする(_O)"
 
-#: quodlibet/qltk/prefs.py:310
+#: quodlibet/qltk/prefs.py:319
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "ソングリストで「評価」カラムをクリックすることで評価できるようにします"
 
-#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:657
+#: quodlibet/qltk/prefs.py:325 quodlibet/qltk/prefs.py:666
 msgid "Ratings"
 msgstr "評価"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:322
+#: quodlibet/qltk/prefs.py:331
 msgid "Prefer _embedded art"
 msgstr "埋め込み画像を優先する(_E)"
 
-#: quodlibet/qltk/prefs.py:324
+#: quodlibet/qltk/prefs.py:333
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6518,7 +6526,7 @@ msgstr ""
 "他のソースより、オーディオファイルに埋め込まれたアートワーク(利用可能な場合)"
 "を選択します"
 
-#: quodlibet/qltk/prefs.py:329
+#: quodlibet/qltk/prefs.py:338
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
@@ -6526,69 +6534,69 @@ msgstr ""
 "利用可能な場合に使用するアルバムアート画像ファイル(ワイルドカードに対応)。複"
 "数指定する場合は、カンマで区切ってください。"
 
-#: quodlibet/qltk/prefs.py:333
+#: quodlibet/qltk/prefs.py:342
 msgid "_Preferred fixed image filename(s)"
 msgstr "固定の画像ファイル名を優先する(_P)"
 
-#: quodlibet/qltk/prefs.py:351
+#: quodlibet/qltk/prefs.py:360
 msgid "Album Art"
 msgstr "アルバムアート"
 
-#: quodlibet/qltk/prefs.py:384
+#: quodlibet/qltk/prefs.py:393
 msgid "Playback"
 msgstr "再生"
 
-#: quodlibet/qltk/prefs.py:391
+#: quodlibet/qltk/prefs.py:400
 msgid "Output Configuration"
 msgstr "出力設定"
 
-#: quodlibet/qltk/prefs.py:398
+#: quodlibet/qltk/prefs.py:407
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr "曲に ReplayGain 情報が無い場合、この値で音量を調整します"
 
-#: quodlibet/qltk/prefs.py:401
+#: quodlibet/qltk/prefs.py:410
 msgid "_Fall-back gain:"
 msgstr "フォールバックゲイン(_F):"
 
-#: quodlibet/qltk/prefs.py:410
+#: quodlibet/qltk/prefs.py:419
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "結果がクリップしない限り、この値で全ての曲の音量を調整します"
 
-#: quodlibet/qltk/prefs.py:413
+#: quodlibet/qltk/prefs.py:422
 msgid "_Pre-amp gain:"
 msgstr "プリアンプゲイン(_P):"
 
-#: quodlibet/qltk/prefs.py:419
+#: quodlibet/qltk/prefs.py:428
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "ReplayGain音量調整を有効にする(_E)"
 
-#: quodlibet/qltk/prefs.py:436
+#: quodlibet/qltk/prefs.py:445
 msgid "Replay Gain Volume Adjustment"
 msgstr "ReplayGain音量調整"
 
-#: quodlibet/qltk/prefs.py:444
+#: quodlibet/qltk/prefs.py:453
 msgid "_Continue playback on startup"
 msgstr "起動時に再生を再開する(_C)"
 
-#: quodlibet/qltk/prefs.py:447
+#: quodlibet/qltk/prefs.py:456
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 "シャットダウン時に音楽が再生されていた場合は、次回の起動時に自動的に再生を開"
 "始します"
 
-#: quodlibet/qltk/prefs.py:473
+#: quodlibet/qltk/prefs.py:482
 msgid "_Default rating:"
 msgstr "デフォルトの評価(_D):"
 
-#: quodlibet/qltk/prefs.py:516
+#: quodlibet/qltk/prefs.py:525
 msgid "Rating _scale:"
 msgstr "評価尺度(_S):"
 
-#: quodlibet/qltk/prefs.py:565
+#: quodlibet/qltk/prefs.py:574
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6599,27 +6607,27 @@ msgstr ""
 "0は従来の平均を意味し、値が高いほど、トラックの少ないアルバムの極端な評価が低"
 "くなります。この値を変更すると全てのアルバムが再計算されます。"
 
-#: quodlibet/qltk/prefs.py:570
+#: quodlibet/qltk/prefs.py:579
 msgid "_Bayesian averaging amount:"
 msgstr "ベイジアン平均量(_B):"
 
-#: quodlibet/qltk/prefs.py:583
+#: quodlibet/qltk/prefs.py:592
 msgid "_Email:"
 msgstr "メールアドレス(_E):"
 
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:594
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "評価と再生回数はこのメールアドレスのタグに保存されます"
 
-#: quodlibet/qltk/prefs.py:603
+#: quodlibet/qltk/prefs.py:612
 msgid "_Auto-save tag changes"
 msgstr "タグの変更を自動保存する(_A)"
 
-#: quodlibet/qltk/prefs.py:605
+#: quodlibet/qltk/prefs.py:614
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "複数ファイルの編集時に確認なしでタグの変更を保存します"
 
-#: quodlibet/qltk/prefs.py:620
+#: quodlibet/qltk/prefs.py:629
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
@@ -6627,11 +6635,11 @@ msgstr ""
 "タグエディタでタグの値を分割するときに使用する区切り文字のセット。このリスト"
 "はスペースで区切られます。"
 
-#: quodlibet/qltk/prefs.py:623
+#: quodlibet/qltk/prefs.py:632
 msgid "Split _tag on:"
 msgstr "タグの分割に用いる文字(_T):"
 
-#: quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/prefs.py:645
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
@@ -6640,59 +6648,59 @@ msgstr ""
 "タグエディタでタグからサブタグを抽出するときに使用する区切り文字のセット。こ"
 "のリストはスペースで区切られ、各エントリには2文字のみを含める必要があります。"
 
-#: quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/prefs.py:650
 msgid "Split _subtag on:"
 msgstr "サブタグの分離に用いる文字(_S):"
 
-#: quodlibet/qltk/prefs.py:651
+#: quodlibet/qltk/prefs.py:660
 msgid "Tags"
 msgstr "タグ"
 
-#: quodlibet/qltk/prefs.py:654
+#: quodlibet/qltk/prefs.py:663
 msgid "Tag Editing"
 msgstr "タグの編集"
 
-#: quodlibet/qltk/prefs.py:672
+#: quodlibet/qltk/prefs.py:681
 msgid "Updating for new ratings"
 msgstr "新しい評価に更新中"
 
-#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1004
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1004
 msgid "_Scan Library"
 msgstr "ライブラリのスキャン(_S)"
 
-#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1066
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1066
 msgid "Check for changes in your library"
 msgstr "ライブラリの変更内容をチェックします"
 
-#: quodlibet/qltk/prefs.py:692
+#: quodlibet/qltk/prefs.py:701
 msgid "Re_build Library"
 msgstr "ライブラリの再構築(_B)"
 
-#: quodlibet/qltk/prefs.py:695
+#: quodlibet/qltk/prefs.py:704
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
 "ライブラリの全曲を再読込します。この処理はやや時間がかかるかもしれません。"
 
-#: quodlibet/qltk/prefs.py:710
+#: quodlibet/qltk/prefs.py:719
 msgid "Hidden Songs"
 msgstr "非表示の曲"
 
-#: quodlibet/qltk/prefs.py:718
+#: quodlibet/qltk/prefs.py:727
 msgid "Scan library _on start"
 msgstr "起動時にライブラリをスキャンする(_O)"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:731
 msgid "_Watch directories for changes"
 msgstr "ディレクトリの変更を監視する(_W)"
 
-#: quodlibet/qltk/prefs.py:723
+#: quodlibet/qltk/prefs.py:732
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 "外部ファイルの追加、削除、名前の変更についてライブラリディレクトリを監視しま"
 "す。"
 
-#: quodlibet/qltk/prefs.py:733
+#: quodlibet/qltk/prefs.py:742
 msgid "Scan Directories"
 msgstr "スキャンするディレクトリ"
 
@@ -6780,7 +6788,7 @@ msgstr "設定する(_S)"
 msgid "Unable to add songs"
 msgstr "曲を追加できません"
 
-#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1299
+#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1304
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s で使われているプロトコルに対応していません。"
@@ -6845,48 +6853,48 @@ msgstr "オンラインヘルプ"
 msgid "Search Help"
 msgstr "検索のヘルプ"
 
-#: quodlibet/qltk/quodlibetwindow.py:1288
+#: quodlibet/qltk/quodlibetwindow.py:1293
 msgid "Add a Location"
 msgstr "場所の追加"
 
-#: quodlibet/qltk/quodlibetwindow.py:1289
+#: quodlibet/qltk/quodlibetwindow.py:1294
 msgid "Enter the location of an audio file:"
 msgstr "オーディオファイルのある場所を入力してください:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
-#: quodlibet/qltk/quodlibetwindow.py:1298
+#: quodlibet/qltk/quodlibetwindow.py:1299
+#: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "Unable to add location"
 msgstr "場所の追加ができません"
 
-#: quodlibet/qltk/quodlibetwindow.py:1295
+#: quodlibet/qltk/quodlibetwindow.py:1300
 #, python-format
 msgid "%s is not a valid location."
 msgstr "指定された場所 %s にアクセスできません。"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307
-#: quodlibet/qltk/quodlibetwindow.py:1316
+#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1321
 msgid "Add Music"
 msgstr "ミュージックの追加"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1312 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "フォルダの追加(_A)"
 
-#: quodlibet/qltk/quodlibetwindow.py:1314
+#: quodlibet/qltk/quodlibetwindow.py:1319
 msgid "Music Files"
 msgstr "ミュージックファイル"
 
-#: quodlibet/qltk/quodlibetwindow.py:1316
+#: quodlibet/qltk/quodlibetwindow.py:1321
 msgid "_Add Files"
 msgstr "ファイルの追加(_A)"
 
-#: quodlibet/qltk/quodlibetwindow.py:1407
+#: quodlibet/qltk/quodlibetwindow.py:1412
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
 msgstr[0] "%d曲をキューに追加してもよろしいですか?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1417
+#: quodlibet/qltk/quodlibetwindow.py:1422
 msgid "_Enqueue"
 msgstr "キューに追加(_E)"
 
@@ -7225,44 +7233,44 @@ msgstr "直前に取り消した変更をやり直す"
 msgid "Select all songs in all panes"
 msgstr "全てのペインで全ての曲を選択する"
 
-#: quodlibet/qltk/songlist.py:390
+#: quodlibet/qltk/songlist.py:389
 #, python-format
 msgid "_Filter on %s"
 msgstr "%sでフィルタリング(_F)"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1193
 msgid "All _Headers"
 msgstr "全てのヘッダ(_H)"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1194
 msgid "_Track Headers"
 msgstr "トラックヘッダ(_T)"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1195
 msgid "_Album Headers"
 msgstr "アルバムヘッダ(_A)"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1196
 msgid "_People Headers"
 msgstr "ピープルヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Date Headers"
 msgstr "日付ヘッダ(_D)"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1198
 msgid "_File Headers"
 msgstr "ファイルヘッダ(_F)"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Production Headers"
 msgstr "プロダクションヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1214
 msgid "_Customize Headers…"
 msgstr "ヘッダのカスタマイズ(_C)…"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1219
 msgid "_Expand Column"
 msgstr "カラム幅の自動伸縮(_E)"
 

@@ -173,7 +173,7 @@ msgstr "Prikaz Albuma"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:766
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:775
 #: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Zatvori"
@@ -226,7 +226,7 @@ msgstr "_Prilagođeno"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1290
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1295
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Dodaj"
@@ -242,7 +242,7 @@ msgstr "_Dodaj"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Ukloni"
@@ -292,7 +292,7 @@ msgstr "_Primeni"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1416 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1421 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_Otkaži"
@@ -1375,7 +1375,7 @@ msgstr "_Pozicija:"
 msgid "_Cover size:"
 msgstr "_Veličina omota:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:281
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:290
 msgid "Display"
 msgstr "Prikaz"
 
@@ -1552,7 +1552,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:576
+#: quodlibet/qltk/prefs.py:585
 msgid "Save ratings and play _counts in tags"
 msgstr "Sačuvaj ocene i _broj puštanja u oznakama"
 
@@ -1583,7 +1583,7 @@ msgstr "_Ažuriraj stanice"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:741
+#: quodlibet/qltk/prefs.py:750
 msgid "Preferences"
 msgstr "Postavke"
 
@@ -1977,7 +1977,7 @@ msgstr "Menja jezik korisničkog sučelja."
 msgid "System Default"
 msgstr "Podrazumevana podešavanja"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:720
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:729
 msgid "A restart is required for any changes to take effect"
 msgstr "Ponovno pokretanje je potrebno da bi izmene imale efekat"
 
@@ -3118,12 +3118,12 @@ msgstr "_Prikaži %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:950
-#: quodlibet/qltk/quodlibetwindow.py:1156
+#: quodlibet/qltk/quodlibetwindow.py:1161
 msgid "_Play"
 msgstr "_Pusti"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1158
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1163
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "P_auziraj"
@@ -3174,8 +3174,8 @@ msgstr "Lista _izvođenja"
 msgid "_Quit"
 msgstr "_Odustani"
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:78
-#: quodlibet/qltk/prefs.py:450 quodlibet/qltk/prefs.py:727
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:87
+#: quodlibet/qltk/prefs.py:459 quodlibet/qltk/prefs.py:736
 msgid "Behavior"
 msgstr "Ponašanje"
 
@@ -5147,7 +5147,7 @@ msgstr "Oznaka \"%s\" nije nađena."
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:270
-#: quodlibet/qltk/prefs.py:680 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:689 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Biblioteka"
 
@@ -6510,118 +6510,126 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Kada se promeni puštena pesma, premotaj do nje u listi pesama"
 
 #: quodlibet/qltk/prefs.py:72
-msgid "Sort songs when tags are modified"
+msgid "_Sort songs when tags are modified"
 msgstr ""
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:90
+#: quodlibet/qltk/prefs.py:76
+msgid "Always allow sorting"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:78
+msgid "Allow sorting by column headers, even for playlists etc"
+msgstr ""
+
+#: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
 msgstr "_Drugi:"
 
 #. Stock edit doesn't have ellipsis chars.
-#: quodlibet/qltk/prefs.py:95
+#: quodlibet/qltk/prefs.py:104
 msgid "_Edit…"
 msgstr "_Uredi…"
 
-#: quodlibet/qltk/prefs.py:98
+#: quodlibet/qltk/prefs.py:107
 msgid "Add or remove additional column headers"
 msgstr "Dodaj ili ukloni dodatna zaglavlja kolona"
 
-#: quodlibet/qltk/prefs.py:107
+#: quodlibet/qltk/prefs.py:116
 msgid "Visible Columns"
 msgstr "Vidljive kolone"
 
-#: quodlibet/qltk/prefs.py:129
+#: quodlibet/qltk/prefs.py:138
 msgid "Title includes _version"
 msgstr "Ime uključuje _verziju"
 
-#: quodlibet/qltk/prefs.py:130
+#: quodlibet/qltk/prefs.py:139
 msgid "Album includes _disc subtitle"
 msgstr "Album uključuje _disk podnatpis"
 
-#: quodlibet/qltk/prefs.py:131
+#: quodlibet/qltk/prefs.py:140
 msgid "Artist includes all _people"
 msgstr "Umetnik uključuje sve _ljude"
 
-#: quodlibet/qltk/prefs.py:132
+#: quodlibet/qltk/prefs.py:141
 msgid "Filename includes _folder"
 msgstr "Ime datoteke uključjue _fasciklu"
 
-#: quodlibet/qltk/prefs.py:133
+#: quodlibet/qltk/prefs.py:142
 msgid "Column Preferences"
 msgstr "Postavke kolone"
 
-#: quodlibet/qltk/prefs.py:136
+#: quodlibet/qltk/prefs.py:145
 #, fuzzy
 msgid "_Update Columns"
 msgstr "Uredi kolone"
 
-#: quodlibet/qltk/prefs.py:138
+#: quodlibet/qltk/prefs.py:147
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Primeni trenutnu konfiguraciju na listu pesama, dodaj novu kolonu na kraju"
 
-#: quodlibet/qltk/prefs.py:152 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:161 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Lista pesama"
 
-#: quodlibet/qltk/prefs.py:237
+#: quodlibet/qltk/prefs.py:246
 msgid "Edit Columns"
 msgstr "Uredi kolone"
 
-#: quodlibet/qltk/prefs.py:274
+#: quodlibet/qltk/prefs.py:283
 msgid "Duration totals"
 msgstr "Ukupno trajanje"
 
-#: quodlibet/qltk/prefs.py:285
+#: quodlibet/qltk/prefs.py:294
 msgid "_Global filter:"
 msgstr "_Globalni filter:"
 
-#: quodlibet/qltk/prefs.py:290
+#: quodlibet/qltk/prefs.py:299
 msgid "Apply this query in addition to all others"
 msgstr "Primeni ovaj upit uz sve druge"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:294
+#: quodlibet/qltk/prefs.py:303
 msgctxt "heading"
 msgid "Search"
 msgstr "Pretraga"
 
-#: quodlibet/qltk/prefs.py:298 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:307 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Pretraživači"
 
 #. Ratings
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:312
 msgid "Confirm _multiple ratings"
 msgstr "Potvrdi _više ocena"
 
-#: quodlibet/qltk/prefs.py:305
+#: quodlibet/qltk/prefs.py:314
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr "Pitaj za potvrdu pre nego što promenim ocene za više pesama odjednom"
 
-#: quodlibet/qltk/prefs.py:308
+#: quodlibet/qltk/prefs.py:317
 msgid "Enable _one-click ratings"
 msgstr "Omogući _jedan-klik ocene"
 
-#: quodlibet/qltk/prefs.py:310
+#: quodlibet/qltk/prefs.py:319
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr "Omogućava ocenjivanje klikom na kolonu ocene u listi pesama"
 
-#: quodlibet/qltk/prefs.py:316 quodlibet/qltk/prefs.py:657
+#: quodlibet/qltk/prefs.py:325 quodlibet/qltk/prefs.py:666
 msgid "Ratings"
 msgstr "Ocene"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:322
+#: quodlibet/qltk/prefs.py:331
 msgid "Prefer _embedded art"
 msgstr "Preferiraj _ugrađeni omot"
 
-#: quodlibet/qltk/prefs.py:324
+#: quodlibet/qltk/prefs.py:333
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6629,79 +6637,79 @@ msgstr ""
 "Odaberite za korišćenje omota ugrađenog u audio zapis (kada je dostupno) pre "
 "drugih izvora"
 
-#: quodlibet/qltk/prefs.py:329
+#: quodlibet/qltk/prefs.py:338
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:333
+#: quodlibet/qltk/prefs.py:342
 #, fuzzy
 msgid "_Preferred fixed image filename(s)"
 msgstr "_Fiksirano ime slike:"
 
-#: quodlibet/qltk/prefs.py:351
+#: quodlibet/qltk/prefs.py:360
 msgid "Album Art"
 msgstr "Omot albuma"
 
-#: quodlibet/qltk/prefs.py:384
+#: quodlibet/qltk/prefs.py:393
 msgid "Playback"
 msgstr "Reprodukcija"
 
-#: quodlibet/qltk/prefs.py:391
+#: quodlibet/qltk/prefs.py:400
 msgid "Output Configuration"
 msgstr "Konfiguracija izlaza"
 
-#: quodlibet/qltk/prefs.py:398
+#: quodlibet/qltk/prefs.py:407
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
 "Ako nema Replay Gain informacija za pesmu, postavi jačinu po ovoj vrednosti"
 
-#: quodlibet/qltk/prefs.py:401
+#: quodlibet/qltk/prefs.py:410
 #, fuzzy
 msgid "_Fall-back gain:"
 msgstr "_Fall-back gain (dB):"
 
-#: quodlibet/qltk/prefs.py:410
+#: quodlibet/qltk/prefs.py:419
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr "Postavi jačinu za sve pesme po zadatoj vrednosti"
 
-#: quodlibet/qltk/prefs.py:413
+#: quodlibet/qltk/prefs.py:422
 #, fuzzy
 msgid "_Pre-amp gain:"
 msgstr "_Pre-amp gain (dB):"
 
-#: quodlibet/qltk/prefs.py:419
+#: quodlibet/qltk/prefs.py:428
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Omogući Replay Gain promenu jačine"
 
-#: quodlibet/qltk/prefs.py:436
+#: quodlibet/qltk/prefs.py:445
 msgid "Replay Gain Volume Adjustment"
 msgstr "Replay Gain promena jačine"
 
-#: quodlibet/qltk/prefs.py:444
+#: quodlibet/qltk/prefs.py:453
 msgid "_Continue playback on startup"
 msgstr "_Nastavi reprodukciju pri pokretanju"
 
-#: quodlibet/qltk/prefs.py:447
+#: quodlibet/qltk/prefs.py:456
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 "Ako je muzika svirala pri gašenju, automatski nastavi reprodukciju pri "
 "sledećem pokretanju"
 
-#: quodlibet/qltk/prefs.py:473
+#: quodlibet/qltk/prefs.py:482
 msgid "_Default rating:"
 msgstr "_Podrazumevana ocena:"
 
-#: quodlibet/qltk/prefs.py:516
+#: quodlibet/qltk/prefs.py:525
 msgid "Rating _scale:"
 msgstr "Skala _ocena:"
 
-#: quodlibet/qltk/prefs.py:565
+#: quodlibet/qltk/prefs.py:574
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6713,30 +6721,30 @@ msgstr ""
 "zapisa imati manje ekstremne ocene. Promena ove vrednosti uzrokuje ponovno "
 "računanje za sve albume."
 
-#: quodlibet/qltk/prefs.py:570
+#: quodlibet/qltk/prefs.py:579
 msgid "_Bayesian averaging amount:"
 msgstr "_Bayesian prosečna količina:"
 
-#: quodlibet/qltk/prefs.py:583
+#: quodlibet/qltk/prefs.py:592
 msgid "_Email:"
 msgstr "_Imejl:"
 
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:594
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "Ocene i broj puštanja će biti sačuvane u oznakama za ovu adresu elektronske "
 "pošte"
 
-#: quodlibet/qltk/prefs.py:603
+#: quodlibet/qltk/prefs.py:612
 #, fuzzy
 msgid "_Auto-save tag changes"
 msgstr "Automatski sačuvaj promene ocena"
 
-#: quodlibet/qltk/prefs.py:605
+#: quodlibet/qltk/prefs.py:614
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr "Sačuvaj promene u oznakama bez potvrde pru uređivanju više datoteka"
 
-#: quodlibet/qltk/prefs.py:620
+#: quodlibet/qltk/prefs.py:629
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
@@ -6744,11 +6752,11 @@ msgstr ""
 "Skup operacija za korišćenje pri deljenju vrednosti oznaka u uređivaču "
 "oznaka. Lista je odvojena prostorom."
 
-#: quodlibet/qltk/prefs.py:623
+#: quodlibet/qltk/prefs.py:632
 msgid "Split _tag on:"
 msgstr "Podeli _oznake na:"
 
-#: quodlibet/qltk/prefs.py:636
+#: quodlibet/qltk/prefs.py:645
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
 "editor. The list is space-separated, and each entry must only contain two "
@@ -6757,56 +6765,56 @@ msgstr ""
 "Skup operacija za korišćenje pri izvlačenju pod-oznaka iz oznaka u uređivaču "
 "oznaka. Lista je odvojena prostorom, i svaki unos mora sadržati dva znaka."
 
-#: quodlibet/qltk/prefs.py:641
+#: quodlibet/qltk/prefs.py:650
 msgid "Split _subtag on:"
 msgstr "Podeli _podoznake na:"
 
-#: quodlibet/qltk/prefs.py:651
+#: quodlibet/qltk/prefs.py:660
 msgid "Tags"
 msgstr "Oznake"
 
-#: quodlibet/qltk/prefs.py:654
+#: quodlibet/qltk/prefs.py:663
 msgid "Tag Editing"
 msgstr "Uređivanje oznaka"
 
-#: quodlibet/qltk/prefs.py:672
+#: quodlibet/qltk/prefs.py:681
 msgid "Updating for new ratings"
 msgstr "Ažuriram za nove ocene"
 
-#: quodlibet/qltk/prefs.py:685 quodlibet/qltk/quodlibetwindow.py:1004
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1004
 msgid "_Scan Library"
 msgstr "_Skeniraj biblioteku"
 
-#: quodlibet/qltk/prefs.py:687 quodlibet/qltk/quodlibetwindow.py:1066
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1066
 msgid "Check for changes in your library"
 msgstr "Proveri promene u biblioteci"
 
-#: quodlibet/qltk/prefs.py:692
+#: quodlibet/qltk/prefs.py:701
 msgid "Re_build Library"
 msgstr "Ponovo _izgradi biblioteku"
 
-#: quodlibet/qltk/prefs.py:695
+#: quodlibet/qltk/prefs.py:704
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Ponovo učitaj sve pesme u biblioteku. Ovo može potrajati veoma dugo."
 
-#: quodlibet/qltk/prefs.py:710
+#: quodlibet/qltk/prefs.py:719
 msgid "Hidden Songs"
 msgstr "Skrivene pesme"
 
-#: quodlibet/qltk/prefs.py:718
+#: quodlibet/qltk/prefs.py:727
 msgid "Scan library _on start"
 msgstr "Skeniraj biblioteku _pri pokretanju"
 
-#: quodlibet/qltk/prefs.py:722
+#: quodlibet/qltk/prefs.py:731
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:723
+#: quodlibet/qltk/prefs.py:732
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:733
+#: quodlibet/qltk/prefs.py:742
 msgid "Scan Directories"
 msgstr "Skeniraj direktorijume"
 
@@ -6899,7 +6907,7 @@ msgstr "_Dodaj"
 msgid "Unable to add songs"
 msgstr "Ne mogu da dodam pesme"
 
-#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1299
+#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1304
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s koristi nepodržan protokol."
@@ -6964,42 +6972,42 @@ msgstr "Pomoć na mreži"
 msgid "Search Help"
 msgstr "Potraži pomoć"
 
-#: quodlibet/qltk/quodlibetwindow.py:1288
+#: quodlibet/qltk/quodlibetwindow.py:1293
 msgid "Add a Location"
 msgstr "Dodaj lokaciju"
 
-#: quodlibet/qltk/quodlibetwindow.py:1289
+#: quodlibet/qltk/quodlibetwindow.py:1294
 msgid "Enter the location of an audio file:"
 msgstr "Unesi lokaciju audio datoteke:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
-#: quodlibet/qltk/quodlibetwindow.py:1298
+#: quodlibet/qltk/quodlibetwindow.py:1299
+#: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "Unable to add location"
 msgstr "Ne mogu da dodam lokaciju"
 
-#: quodlibet/qltk/quodlibetwindow.py:1295
+#: quodlibet/qltk/quodlibetwindow.py:1300
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s nije ispravna lokacija."
 
-#: quodlibet/qltk/quodlibetwindow.py:1307
-#: quodlibet/qltk/quodlibetwindow.py:1316
+#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1321
 msgid "Add Music"
 msgstr "Dodaj muziku"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1312 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "_Dodaj fascikle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1314
+#: quodlibet/qltk/quodlibetwindow.py:1319
 msgid "Music Files"
 msgstr "Muzičke datoteke"
 
-#: quodlibet/qltk/quodlibetwindow.py:1316
+#: quodlibet/qltk/quodlibetwindow.py:1321
 msgid "_Add Files"
 msgstr "_Dodaj datoteke"
 
-#: quodlibet/qltk/quodlibetwindow.py:1407
+#: quodlibet/qltk/quodlibetwindow.py:1412
 #, fuzzy, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
@@ -7007,7 +7015,7 @@ msgstr[0] "Da li ste sigurni da želite da uklonite sve pesme?"
 msgstr[1] "Da li ste sigurni da želite da uklonite sve pesme?"
 msgstr[2] "Da li ste sigurni da želite da uklonite sve pesme?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1417
+#: quodlibet/qltk/quodlibetwindow.py:1422
 #, fuzzy
 msgid "_Enqueue"
 msgstr "_Niz"
@@ -7342,44 +7350,44 @@ msgstr "Ponovi zadnju izmenu"
 msgid "Select all songs in all panes"
 msgstr "Odaberi sve pesme u svim panoima"
 
-#: quodlibet/qltk/songlist.py:390
+#: quodlibet/qltk/songlist.py:389
 #, python-format
 msgid "_Filter on %s"
 msgstr "_Filtriraj po %s"
 
-#: quodlibet/qltk/songlist.py:1182
+#: quodlibet/qltk/songlist.py:1193
 msgid "All _Headers"
 msgstr "Sva _zaglavlja"
 
-#: quodlibet/qltk/songlist.py:1183
+#: quodlibet/qltk/songlist.py:1194
 msgid "_Track Headers"
 msgstr "_Zapis zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1184
+#: quodlibet/qltk/songlist.py:1195
 msgid "_Album Headers"
 msgstr "_Album zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1185
+#: quodlibet/qltk/songlist.py:1196
 msgid "_People Headers"
 msgstr "_Ljudi zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1186
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Date Headers"
 msgstr "_Datum zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1198
 msgid "_File Headers"
 msgstr "_Datoteka zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Production Headers"
 msgstr "_Produkcija zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1203
+#: quodlibet/qltk/songlist.py:1214
 msgid "_Customize Headers…"
 msgstr "_Prolagodi zaglavlje…"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1219
 msgid "_Expand Column"
 msgstr "_Proširi kolonu"
 
