@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-01-11 16:50+0000\n"
+"PO-Revision-Date: 2023-03-19 11:37+0000\n"
 "Last-Translator: ssantos <ssantos@web.de>\n"
 "Language-Team: Portuguese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/pt/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 4.15.1-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -1279,7 +1279,7 @@ msgstr "Fonte de capas MusicBrainz"
 
 #: quodlibet/ext/covers/musicbrainz.py:22
 msgid "Downloads covers from MusicBrainz's cover art archive."
-msgstr "Decarrega imagens de capa de álbum pelo MusicBrainz."
+msgstr "Descarrega imagens de capa de álbum pelo MusicBrainz."
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
