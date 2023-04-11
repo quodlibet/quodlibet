@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-02-27 14:39+0000\n"
+"PO-Revision-Date: 2023-03-21 17:41+0000\n"
 "Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -6556,9 +6556,8 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Défiler jusqu'au titre, dès qu'il est joué"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
-msgstr "Trier les morceaux lorsque les étiquettes sont modifiées"
+msgstr "_Trier les morceaux lorsque les étiquettes sont modifiées"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
@@ -6568,11 +6567,13 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Toujours autoriser le tri"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
+"Autoriser le tri par en-tête de colonne, y compris pour les listes de "
+"lecture, etc"
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
