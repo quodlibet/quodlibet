@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-02-25 17:16+0000\n"
+"PO-Revision-Date: 2023-03-15 12:40+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -22,9 +22,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 4.16.2-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -6498,9 +6498,8 @@ msgstr ""
 "плейлисте"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
-msgstr "Сортировать песни при изменении тегов"
+msgstr "Сортиро_вать песни при изменении тегов"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
@@ -6508,11 +6507,12 @@ msgstr "Автоматически пересортировать песни в 
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Всегда разрешать сортировку"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
+"Разрешить сортировать по заголовкам столбцов, даже для плейлистов и т. п."
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
