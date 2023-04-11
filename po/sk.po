@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-12-11 00:57+0000\n"
+"PO-Revision-Date: 2023-04-08 19:49+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 4.17-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -3860,16 +3860,15 @@ msgstr "@(saved: názov-vyhľadávania)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
-msgstr ""
+msgstr "Unikátny dopyt"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "Filtrujte výsledky vyhľadávania podľa unikátnych značiek."
 
 #: quodlibet/ext/query/unique.py:19
-#, fuzzy
 msgid "@(unique: tag)"
-msgstr "jedinečný"
+msgstr "@(unikátne: značka)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -6511,9 +6510,8 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Keď sa prehrávaná skladba zmení, posunúť sa k nej v zoznam skladieb"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
-msgstr "Vytriediť skladby pri zmene značiek"
+msgstr "_Triediť skladby pri úprave značiek"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
@@ -6521,11 +6519,12 @@ msgstr "Automaticky vytriediť skladby v zoznam pri zmene značiek"
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Vždy povoliť triedenie"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
+"Povoliť triedenie podľa hlavičiek stĺpcov, a to aj pre zoznamy skladieb atď"
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
