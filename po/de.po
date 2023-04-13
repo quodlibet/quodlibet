@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-11-05 14:09+0000\n"
-"Last-Translator: Till Berger <till@mellthas.de>\n"
+"PO-Revision-Date: 2023-04-13 20:50+0000\n"
+"Last-Translator: Martin <martin_kolbe@gmx.net>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2\n"
+"X-Generator: Weblate 4.17-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -3901,16 +3901,15 @@ msgstr "@(saved: Suchlaufname)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
-msgstr ""
+msgstr "Einmalige Abfrage"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "Suchergebnisse nach eindeutigen Metadaten filtern."
 
 #: quodlibet/ext/query/unique.py:19
-#, fuzzy
 msgid "@(unique: tag)"
-msgstr "Einzigartig"
+msgstr "@(unique: tag)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -6563,7 +6562,6 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Zu Titel in der Titelliste gehen, sobald dessen Wiedergabe beginnt"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
 msgstr "Titel nach Änderung der Metadaten sortieren"
 
@@ -6575,11 +6573,12 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Sortierung immer ermöglichen"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
+"Sortierung nach Spaltenüberschriften erlauben, auch für Wiedergabelisten usw."
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
@@ -7026,9 +7025,8 @@ msgid "Edit Bookmarks…"
 msgstr "_Lesezeichen bearbeiten …"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "_Stop"
+msgstr "Stop"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
