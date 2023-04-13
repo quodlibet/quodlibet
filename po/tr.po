@@ -69,7 +69,7 @@ msgstr "_Sırala…"
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:920
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:921
 msgid "_Preferences"
 msgstr "_Tercihler"
 
@@ -216,7 +216,7 @@ msgstr "_Özel"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1295
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1304
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Ekle"
@@ -282,7 +282,7 @@ msgstr "_Uygula"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1421 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_İptal"
@@ -3107,24 +3107,24 @@ msgid "_Show %(application-name)s"
 msgstr "%(application-name)s'i gö_ster"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:950
-#: quodlibet/qltk/quodlibetwindow.py:1161
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
+#: quodlibet/qltk/quodlibetwindow.py:1167
 msgid "_Play"
 msgstr "_Çal"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1163
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1169
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "Dur_aklat"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:945
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:946
 msgid "Pre_vious"
 msgstr "_Önceki"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:955
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:956
 msgid "_Next"
 msgstr "So_nraki"
 
@@ -3141,17 +3141,17 @@ msgid "Stop _After This Song"
 msgstr "Bu Ş_arkıdan Sonra Dur"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:916
+#: quodlibet/qltk/quodlibetwindow.py:917
 msgid "Open _Browser"
 msgstr "Tarayıcı _Aç"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:935 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:936 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "_Etiketleri Düzenle"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:878 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:879 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Bilgi"
 
@@ -3160,7 +3160,7 @@ msgid "Play_lists"
 msgstr "Çalma _Listeleri"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:930
+#: quodlibet/qltk/quodlibetwindow.py:931
 msgid "_Quit"
 msgstr "_Çık"
 
@@ -6033,15 +6033,15 @@ msgstr "_Geri al"
 msgid "_Redo"
 msgstr "_Yinele"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:970
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:976
 msgid "_About"
 msgstr "H_akkında"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:992
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:998
 msgid "_Check for Updates…"
 msgstr "Gün_cellemeleri Denetle…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:925
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:926
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Eklentiler"
@@ -6730,11 +6730,11 @@ msgstr "Etiket Düzenleme"
 msgid "Updating for new ratings"
 msgstr "Yeni puanlar için güncelleniyor"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1004
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1010
 msgid "_Scan Library"
 msgstr "Kitaplığı _Tara"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1066
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1072
 msgid "Check for changes in your library"
 msgstr "Kitaplığınızdaki değişiklikleri denetle"
 
@@ -6851,118 +6851,123 @@ msgstr "_Şimdi Değil"
 msgid "_Set Up"
 msgstr "_Kur"
 
-#: quodlibet/qltk/quodlibetwindow.py:858
+#: quodlibet/qltk/quodlibetwindow.py:859
 msgid "Unable to add songs"
 msgstr "Şarkılar eklenemedi"
 
-#: quodlibet/qltk/quodlibetwindow.py:859 quodlibet/qltk/quodlibetwindow.py:1304
+#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1313
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s desteklenmeyen iletişim kuralı kullanıyor."
 
-#: quodlibet/qltk/quodlibetwindow.py:883
+#: quodlibet/qltk/quodlibetwindow.py:884
 msgid "_Jump to Playing Song"
 msgstr "Çalan Şarkıya _Atla"
 
-#: quodlibet/qltk/quodlibetwindow.py:890
+#: quodlibet/qltk/quodlibetwindow.py:891
 msgid "_File"
 msgstr "_Dosya"
 
-#: quodlibet/qltk/quodlibetwindow.py:891
+#: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_Song"
 msgstr "_Şarkı"
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_View"
 msgstr "_Görünüm"
 
-#: quodlibet/qltk/quodlibetwindow.py:893
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_Browse"
 msgstr "_Gözat"
 
-#: quodlibet/qltk/quodlibetwindow.py:894
+#: quodlibet/qltk/quodlibetwindow.py:895
 msgid "_Control"
 msgstr "_Denetle"
 
-#: quodlibet/qltk/quodlibetwindow.py:895
+#: quodlibet/qltk/quodlibetwindow.py:896
 msgid "_Help"
 msgstr "_Yardım"
 
-#: quodlibet/qltk/quodlibetwindow.py:901
+#: quodlibet/qltk/quodlibetwindow.py:902
 msgid "_Add a Folder…"
 msgstr "Klasör _Ekle…"
 
-#: quodlibet/qltk/quodlibetwindow.py:906
+#: quodlibet/qltk/quodlibetwindow.py:907
 msgid "_Add a File…"
 msgstr "Dosya _Ekle…"
 
-#: quodlibet/qltk/quodlibetwindow.py:911
+#: quodlibet/qltk/quodlibetwindow.py:912
 msgid "_Add a Location…"
 msgstr "_Konum Ekle…"
 
-#: quodlibet/qltk/quodlibetwindow.py:940
+#: quodlibet/qltk/quodlibetwindow.py:941
 msgid "Edit Bookmarks…"
 msgstr "Yer İmlerini Düzenle…"
 
-#: quodlibet/qltk/quodlibetwindow.py:960
+#: quodlibet/qltk/quodlibetwindow.py:961
+#, fuzzy
+msgid "Stop"
+msgstr "_Durdur"
+
+#: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
 msgstr "Bu Şarkıdan Sonra Dur"
 
-#: quodlibet/qltk/quodlibetwindow.py:966
+#: quodlibet/qltk/quodlibetwindow.py:972
 msgid "_Keyboard Shortcuts"
 msgstr "_Klavye Kısayolları"
 
-#: quodlibet/qltk/quodlibetwindow.py:975
+#: quodlibet/qltk/quodlibetwindow.py:981
 msgid "Online Help"
 msgstr "Çevrimiçi Yardım"
 
-#: quodlibet/qltk/quodlibetwindow.py:984
+#: quodlibet/qltk/quodlibetwindow.py:990
 msgid "Search Help"
 msgstr "Yardım Ara"
 
-#: quodlibet/qltk/quodlibetwindow.py:1293
+#: quodlibet/qltk/quodlibetwindow.py:1302
 msgid "Add a Location"
 msgstr "Konum Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1294
+#: quodlibet/qltk/quodlibetwindow.py:1303
 msgid "Enter the location of an audio file:"
 msgstr "Ses dosyasının konumunu gir:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1299
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1308
+#: quodlibet/qltk/quodlibetwindow.py:1312
 msgid "Unable to add location"
 msgstr "Konum eklenemedi"
 
-#: quodlibet/qltk/quodlibetwindow.py:1300
+#: quodlibet/qltk/quodlibetwindow.py:1309
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s geçerli bir konum değil."
 
-#: quodlibet/qltk/quodlibetwindow.py:1312
 #: quodlibet/qltk/quodlibetwindow.py:1321
+#: quodlibet/qltk/quodlibetwindow.py:1330
 msgid "Add Music"
 msgstr "Müzik Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1312 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1321 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "Klasörler _Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1319
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "Music Files"
 msgstr "Müzik Dosyaları"
 
-#: quodlibet/qltk/quodlibetwindow.py:1321
+#: quodlibet/qltk/quodlibetwindow.py:1330
 msgid "_Add Files"
 msgstr "Dosyalar _Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1412
+#: quodlibet/qltk/quodlibetwindow.py:1421
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
 msgstr[0] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
 msgstr[1] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1422
+#: quodlibet/qltk/quodlibetwindow.py:1431
 msgid "_Enqueue"
 msgstr "_Kuyrukla"
 
