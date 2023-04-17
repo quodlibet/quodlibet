@@ -8,7 +8,8 @@ RUN dnf -y install \
       python3-devel \
       dbus-devel \
       gobject-introspection-devel \
-      cairo-gobject-devel
+      cairo-gobject-devel \
+      libsoup
 
 # Dependencies for tests
 RUN dnf -y install \
