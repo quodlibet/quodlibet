@@ -185,6 +185,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
     def __add_songs(self, task: Task, songs: Collection[AudioFile],
                     spl: DidlPlaylistContainer):
         """Generator for copool to add songs to the temp playlist"""
+        assert self.device
         task_total = float(len(songs))
         print_d("Adding %d song(s) to Sonos playlist. "
                 "This might take a while..." % task_total)
