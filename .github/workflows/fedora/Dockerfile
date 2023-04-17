@@ -1,6 +1,5 @@
 FROM fedora:38
 
-# DNF dependencies required before poetry can install virtualenv dependencies
 RUN dnf -y install \
       poetry \
       cairo-devel \
@@ -8,10 +7,8 @@ RUN dnf -y install \
       python3-devel \
       dbus-devel \
       gobject-introspection-devel \
-      cairo-gobject-devel
-
-# Dependencies for tests
-RUN dnf -y install \
+      cairo-gobject-devel \
+      libsoup \
       Xvfb \
       # Contains 'GdkPixbuf' namespace (used by 'gi') \
       gtk3 \
