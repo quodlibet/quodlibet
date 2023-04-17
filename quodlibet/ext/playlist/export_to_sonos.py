@@ -12,8 +12,7 @@ DEVICE_CACHE_SEC = 600
 
 try:
     from soco import SoCo, SoCoException
-    from soco.data_structures import (DidlMusicTrack, DidlPlaylistContainer,
-                                      DidlItem)
+    from soco.data_structures import DidlMusicTrack, DidlPlaylistContainer, DidlItem
 except ImportError:
     raise quodlibet.plugins.MissingModulePluginException("soco")
 
@@ -131,7 +130,7 @@ class GetSonosPlaylistDialog(Dialog):
 class SonosPlaylistPlugin(PlaylistPlugin):
     PLUGIN_ID = "Export to Sonos Playlist"
     PLUGIN_NAME = _("Export to Sonos Playlist")
-    PLUGIN_DESC = _("Exports a playlist to Sonos by matching tracks")
+    PLUGIN_DESC = _("Exports a playlist to Sonos by matching tracks.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     REQUIRES_ACTION = True
 
