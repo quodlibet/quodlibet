@@ -17,10 +17,11 @@
     :alt: Translation status
     :target: https://hosted.weblate.org/engage/quodlibet/
 
-.. raw:: html
 
-    <p></p>
-    <img src="https://github.com/quodlibet/quodlibet/raw/master/quodlibet/images/hicolor/256x256/apps/io.github.quodlibet.QuodLibet.png" width="104px" alt="Quod Libet logo" />
+.. image:: ./quodlibet/images/hicolor/scalable/apps/io.github.quodlibet.QuodLibet.svg
+   :width: 128px
+   :alt: Quod Libet logo
+   :align: left
 
 Quod Libet: an audio library, manager & player
 ---------------------------------------------
