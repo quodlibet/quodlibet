@@ -18,13 +18,14 @@
     :target: https://hosted.weblate.org/engage/quodlibet/
 
 
+
+Quod Libet: an audio library, manager & player
+==============================================
+
 .. image:: ./quodlibet/images/hicolor/scalable/apps/io.github.quodlibet.QuodLibet.svg
    :width: 128px
    :alt: Quod Libet logo
    :align: left
-
-Quod Libet: an audio library, manager & player
----------------------------------------------
 
 `Quod Libet <https://quodlibet.readthedocs.io>`_
 is a cross-platform audio / music management program.
@@ -33,11 +34,15 @@ and supports streaming audio and podcast feeds.
 It has extremely flexible metadata editing and searching capabilities.
 
 With over 90 plugins included, you can extend and integrate with almost anything,
-or `write your own <https://quodlibet.readthedocs.io/en/latest/development/plugins.html>`_!
+or `write your own <https://quodlibet.readthedocs.io/en/latest/development/plugins.html>`_ in Python!
 
-.. image:: https://github.com/quodlibet/quodlibet/raw/main/docs/images/album-list-2017-08.png
+Quod Libet in action
+--------------------
+
+.. figure:: https://github.com/quodlibet/quodlibet/raw/main/docs/images/album-list-2017-08.png
     :align: center
 
+See more `screenshots in the user guide <https://quodlibet.readthedocs.io/en/latest/screenshots.html>`_.
 
 Ex Falso: just the tag editor
 -----------------------------
