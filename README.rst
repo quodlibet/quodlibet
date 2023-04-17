@@ -17,13 +17,19 @@
     :alt: Translation status
     :target: https://hosted.weblate.org/engage/quodlibet/
 
+
+.. image:: ./quodlibet/images/hicolor/scalable/apps/io.github.quodlibet.QuodLibet.svg
+   :width: 128px
+   :alt: Quod Libet logo
+   :align: left
+
 Quod Libet: an audio library, manager & player
 ---------------------------------------------
 
 `Quod Libet <https://quodlibet.readthedocs.io>`_
 is a cross-platform audio / music management program.
-It provides many ways to view your local library,
-and supports streaming audio and feeds (podcasts etc).
+It provides many ways to view your local libraries,
+and supports streaming audio and podcast feeds.
 It has extremely flexible metadata editing and searching capabilities.
 
 With over 90 plugins included, you can extend and integrate with almost anything,
