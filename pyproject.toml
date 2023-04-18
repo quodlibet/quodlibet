@@ -35,7 +35,7 @@ pypresence = { version = "^4.2.1", optional = true }
 
 [tool.poetry.extras]
 # Use with poetry install -E plugins
-plugins = ["musicbrainzngs", "pyinotify", "dbus-python", "paho-mqtt", "soco", "pypresence"]
+plugins = ["musicbrainzngs", "dbus-python", "paho-mqtt", "soco", "pypresence"]
 
 [tool.poetry.dev-dependencies]
 pytest = '^7.2.2'

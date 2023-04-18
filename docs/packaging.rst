@@ -93,15 +93,6 @@ plugin from loading.
 **GStreamer Plugins Bad**:
     * For the acoustid plugin
 
-**python-dbus**:
-    * "Browse Folders"
-    * Screensaver plugins
-    * uPnP server
-    * Gnome search provider
-    * gajim status updater
-    * MPRIS
-    * ...
-
 **rygel**:
     * The uPnP media server
 
@@ -115,15 +106,26 @@ Python libraries
 ^^^^^^^^^^^^^^^^
 These can be installed with pip (as well as OS-level packages in some places).
 
+**dbus-python**:
+    * "Browse Folders"
+    * Screensaver plugins
+    * uPnP server
+    * Gnome search provider
+    * gajim status updater
+    * MPRIS
+    * ...
+
 **paho-mqtt**
     * For the MQTT plugin
-
-**pyinotify**:
-    * For the auto library update plugin
 
 **musicbrainzngs** (>= 0.6):
     * For the Musicbrainz plugin
 
+**soco** (>0.27):
+    * For the Sonos plugins
+
+**pypresence**:
+    * For the Discord plugin
 
 Build Dependencies
 ------------------
