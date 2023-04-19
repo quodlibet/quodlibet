@@ -33,7 +33,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.34)
 * **GTK+** (>= 3.18)
-* **libsoup** (>= 2.52)
+* **libsoup** (>= 3.0)
 * On OS X only: **PyObjC**
 * **feedparser**
 

@@ -108,4 +108,4 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
 
 
 def escape_query_value(s):
-    return Soup.URI.encode(s, '&')
+    return GLib.Uri.escape_string(s, None, True)

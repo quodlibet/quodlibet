@@ -243,7 +243,7 @@ def _init_gtk():
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
     gi.require_version("Pango", "1.0")
-    gi.require_version('Soup', '2.4')
+    gi.require_version('Soup', '3.0')
     gi.require_version('PangoCairo', "1.0")
 
     from gi.repository import Gtk

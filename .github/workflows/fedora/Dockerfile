@@ -8,7 +8,7 @@ RUN dnf -y install \
       dbus-devel \
       gobject-introspection-devel \
       cairo-gobject-devel \
-      libsoup \
+      libsoup3 \
       Xvfb \
       # Contains 'GdkPixbuf' namespace (used by 'gi') \
       gtk3 \

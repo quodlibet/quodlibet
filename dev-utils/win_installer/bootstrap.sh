@@ -25,7 +25,7 @@ function main {
         mingw-w64-$MSYS2_ARCH-gdk-pixbuf2 \
         mingw-w64-$MSYS2_ARCH-librsvg \
         mingw-w64-$MSYS2_ARCH-gtk3 \
-        mingw-w64-$MSYS2_ARCH-libsoup \
+        mingw-w64-$MSYS2_ARCH-libsoup3 \
         mingw-w64-$MSYS2_ARCH-gstreamer \
         mingw-w64-$MSYS2_ARCH-gst-plugins-base \
         mingw-w64-$MSYS2_ARCH-gst-plugins-good \
