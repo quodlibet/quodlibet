@@ -64,11 +64,11 @@ class Thttps(TestCase):
     def test_soup(self):
         for url in self.GOOD:
             session = Soup.Session()
-            request = session.request_http("get", url)
-            request.send(None).close()
+            msg = Soup.Message.new("GET", url)
+            session.send_and_read(msg)
 
         for url in self.BAD:
             with self.assertRaises(GLib.GError):
                 session = Soup.Session()
-                request = session.request_http("get", url)
-                request.send(None).close()
+                msg = Soup.Message.new("GET", url)
+                session.send_and_read(msg)
