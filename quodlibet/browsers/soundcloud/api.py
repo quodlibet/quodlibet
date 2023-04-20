@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Optional, Any
 from urllib.parse import urlencode
 
-from gi.repository import GObject, Gio, Soup
+from gi.repository import GObject, Gio, Soup, GLib
 
 from quodlibet import util, config
 from quodlibet.formats import AudioFile
@@ -43,11 +43,9 @@ class RestApi(GObject.Object):
 
     def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
         if self.access_token:
-            try:
-                msg.request_headers.append("Authorization",
-                                           f"OAuth {self.access_token}")
-            except AttributeError as e:
-                print_d(f"No headers ({e}) - try {dir(msg)}")
+            msg.get_request_headers().append(
+                "Authorization",
+                f"OAuth {self.access_token}")
         return msg
 
     def _post(self, path, callback, **kwargs):
@@ -57,8 +55,9 @@ class RestApi(GObject.Object):
         post_body = urlencode(args)
         if not isinstance(post_body, bytes):
             post_body = post_body.encode("ascii")
-        msg.set_request('application/x-www-form-urlencoded',
-                        Soup.MemoryUse.COPY, post_body)
+        msg.set_request_body_from_bytes(
+            'application/x-www-form-urlencoded',
+            GLib.Bytes.new(post_body))
         download_json(msg, self._cancellable, callback, None, self._on_failure)
 
     def _delete(self, path, callback, **kwargs):
@@ -70,8 +69,9 @@ class RestApi(GObject.Object):
         if not isinstance(body, bytes):
             body = body.encode("ascii")
         msg = self._add_auth_to(Soup.Message.new('DELETE', self._url(path)))
-        msg.set_request('application/x-www-form-urlencoded',
-                        Soup.MemoryUse.COPY, body)
+        msg.set_request_body_from_bytes(
+            'application/x-www-form-urlencoded',
+            GLib.Bytes.new(body))
         download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
