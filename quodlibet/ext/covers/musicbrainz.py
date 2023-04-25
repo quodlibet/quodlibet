@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#           2018-20 Nick Boultbee
+#           2018-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -12,7 +12,7 @@ from gi.repository import Soup
 
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin, cover_dir
-from quodlibet.util.cover.http import HTTPDownloadMixin
+from quodlibet.util.cover.http import HTTPDownloadMixin, escape_query_value
 from quodlibet.util.path import escape_filename
 
 
@@ -59,7 +59,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     def urls(self) -> Dict[str, str]:
         if not self.mbid:
             return {}
-        mbid = Soup.URI.encode(self.mbid, None)
+        mbid = escape_query_value(self.mbid)
         return {dim: f"https://coverartarchive.org/release/{mbid}/{extra}"
                 for dim, extra in self._SIZES.items()}
 
