@@ -272,7 +272,7 @@ msgstr "_Zastosuj"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3500,42 +3500,46 @@ msgstr "Proszę się upewnić, że cel jest dostępny do zapisu."
 msgid "Default filename pattern:"
 msgstr "Domyślny wzorzec nazw plików:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "_OK"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 #, fuzzy
 msgid "Export to Sonos Playlist"
 msgstr "Wyeksportuj jako listę odtwarzania"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
-msgstr ""
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+#, fuzzy
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "Eksportuje listę odtwarzania przez skopiowanie plików do katalogu."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 #, fuzzy
 msgid "Error finding Sonos device(s)"
 msgstr "Błąd podczas wyszukiwania serwera Squeezebox"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 #, fuzzy
 msgid "Error finding Sonos. Please check settings"
 msgstr "Błąd podczas wyszukiwania %s. Proszę sprawdzić poprawność ustawień"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
-msgid "Export to Sonos playlist"
-msgstr "Eksport do listy odtwarzania urządzenia Squeezebox"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr ""
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -8232,6 +8236,10 @@ msgstr ""
 "na przeglądanie kolekcji muzyki, a także obsługę radia internetowego "
 "i kanałów dźwiękowych. Posiada on także niezwykle elastyczne funkcje "
 "modyfikowania etykiet metadanych i wyszukiwania."
+
+#, fuzzy
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Eksport do listy odtwarzania urządzenia Squeezebox"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"
