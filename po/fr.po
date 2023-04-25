@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-13 20:50+0000\n"
+"PO-Revision-Date: 2023-04-23 15:47+0000\n"
 "Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -3541,9 +3541,10 @@ msgid "Export to Sonos Playlist"
 msgstr "Exporter vers liste de lecture de Sonos"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "Exporte une liste de lecture en copiant les pistes dans un dossier."
+msgstr ""
+"Exporte une liste de lecture vers Sonos en fonction des pistes "
+"correspondantes."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3556,12 +3557,12 @@ msgstr "Erreur dans la recherche de Sonos. Veuillez vérifier les paramètres"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Échec de la suppression de la liste de lecture Sonos existante %s :"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Exporter vers la liste de lecture %(playlist)r (%(total)d pistes)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
