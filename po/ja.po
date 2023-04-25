@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-03-15 12:40+0000\n"
+"PO-Revision-Date: 2023-04-19 04:22+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -279,6 +279,7 @@ msgstr "適用(_A)"
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
 #: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 msgid "_Cancel"
 msgstr "キャンセル(_C)"
 
@@ -3447,10 +3448,12 @@ msgstr "デフォルトのファイル名のパターン:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:96
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 msgid "_OK"
 msgstr "OK(_O)"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
@@ -3459,8 +3462,9 @@ msgstr ""
 "または既存の Sonos プレイリストを選択して上書きしてください"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid "Export to Sonos Playlist"
-msgstr "Sonosプレイリストにエクスポート"
+msgstr "Sonos プレイリストにエクスポート"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid ""
@@ -3471,10 +3475,12 @@ msgstr ""
 "レクトリ構造を共有している場合)。"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
 msgstr "Sonos デバイスの検索エラー"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 msgid "Error finding Sonos. Please check settings"
 msgstr "Sonos の検索中にエラーが発生しました。設定を確認してください"
 
@@ -6838,9 +6844,8 @@ msgid "Edit Bookmarks…"
 msgstr "ブックマークの編集…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "中止(_S)"
+msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
@@ -8038,6 +8043,20 @@ msgstr ""
 "な方法を提供するのみならず、インターネットラジオやオーディオフィードにも対応"
 "しています。また、非常に柔軟なメタデータタグの編集および検索機能を備えていま"
 "す。"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "マッチングしたトラックを Sonos プレイリストにエクスポートします。"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr "既存の Sonos プレイリスト「%s」の削除に失敗しました:"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr "プレイリスト「%(playlist)r」(%(total)dトラック) にエクスポート"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"
