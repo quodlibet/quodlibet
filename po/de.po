@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-13 20:50+0000\n"
+"PO-Revision-Date: 2023-04-20 20:12+0000\n"
 "Last-Translator: Martin <martin_kolbe@gmx.net>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -3572,12 +3572,12 @@ msgstr "Fehler beim Finden von Sonos. Bitte überprüfen Sie die Einstellungen"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Fehler beim Löschen der vorhandenen Sonos Wiedergabeliste %s:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Exportiere in Wiedergabeliste %(playlist)r (%(total)d Titel)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
