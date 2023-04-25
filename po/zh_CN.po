@@ -9,7 +9,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
 "PO-Revision-Date: 2023-04-25 02:37+0000\n"
-"Last-Translator: 只三言两语 <yanzilisan183@sina.com>\n"
+"Last-Translator: JER-ry <jer-public@outlook.com>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -1288,7 +1288,7 @@ msgstr "对标签编辑器内的标签值进行大小写处理。"
 
 #: quodlibet/ext/editing/titlecase.py:40
 msgid "Title-_case Value"
-msgstr "标题大小写值(_C)"
+msgstr "标题大小写标签(_C)"
 
 #: quodlibet/ext/editing/titlecase.py:51
 msgid "Allow _ALL-CAPS in tags"
