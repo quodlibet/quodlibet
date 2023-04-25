@@ -22,8 +22,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.17-dev\n"
 "X-Poedit-Basepath: .\n"
 
@@ -277,7 +277,7 @@ msgstr "_Применить"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3490,12 +3490,12 @@ msgstr "Убедитесь, что у вас есть доступ на запи
 msgid "Default filename pattern:"
 msgstr "_Шаблон имени файла:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "_Хорошо"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
@@ -3503,29 +3503,32 @@ msgstr ""
 "Введите новое имя плейлиста, \n"
 "или выберите существующий плейлист Sonos для перезаписи"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid "Export to Sonos Playlist"
 msgstr "Экспорт в плейлист Sonos"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
-msgstr ""
-"Экспортирует плейлист в плейлист Sonos, при условии, что оба имеют общую "
-"структуру каталогов."
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+#, fuzzy
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "Экспорт плейлиста путём копирования файлов в папку."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
 msgstr "Ошибка обнаружения устройства Sonos"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 msgid "Error finding Sonos. Please check settings"
 msgstr "Ошибка поиска Sonos. Пожалуйста, проверьте настройки"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-msgid "Export to Sonos playlist"
-msgstr "Экспорт в плейлист Sonos"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr ""
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -8171,6 +8174,16 @@ msgstr ""
 "различных способов просмотра вашей фонотеки, а также поддержку интернет-"
 "радио и аудиопотоков. Содержит крайне гибкие возможности правки и поиска "
 "тегов метаданных."
+
+#~ msgid ""
+#~ "Exports a playlist to Sonos playlist, provided both share a directory "
+#~ "structure."
+#~ msgstr ""
+#~ "Экспортирует плейлист в плейлист Sonos, при условии, что оба имеют общую "
+#~ "структуру каталогов."
+
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Экспорт в плейлист Sonos"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"
