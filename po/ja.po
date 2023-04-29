@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-19 04:22+0000\n"
+"PO-Revision-Date: 2023-05-01 03:50+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -3078,7 +3078,7 @@ msgstr "システムトレイから Quod Libet を制御します。"
 #: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr "%(application-name)s の表示(_S)"
+msgstr "%(application-name)sの表示(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
@@ -7019,7 +7019,7 @@ msgstr "全てのエラーを無視(_A)"
 #. number of steps.
 #: quodlibet/qltk/renamefiles.py:347 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
-msgstr "中止(_S)"
+msgstr "停止(_S)"
 
 #: quodlibet/qltk/renamefiles.py:349
 msgid "_Continue"
