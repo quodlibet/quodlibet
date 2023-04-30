@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-02-17 17:36+0000\n"
+"PO-Revision-Date: 2023-05-01 03:50+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.16-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -3494,9 +3494,8 @@ msgid "Export to Sonos Playlist"
 msgstr "Sonos Çalma Listesine Dışa Aktar"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "Çalma listesini, dosyaları bir klasöre kopyalayarak dışa aktarır."
+msgstr "Parçaları eşleştirerek bir çalma listesini Sonos'a dışa aktarır."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3509,12 +3508,12 @@ msgstr "Sonos bulma hatası. Lütfen ayarları denetleyin"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Mevcut Sonos çalma listesi silinemedi %s:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Çalma listesine aktar %(playlist)r (%(total)d parça)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -6461,9 +6460,8 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Çalan şarkı değişince listede yeni şarkıya git"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
-msgstr "Etiketler değiştirildiğinde şarkıları sırala"
+msgstr "_Etiketler değiştirildiğinde şarkıları sırala"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
@@ -6472,11 +6470,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Her zaman sıralamaya izin ver"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
-msgstr ""
+msgstr "Oyun listeleri için bile, sütun başlıklarına göre sıralamaya izin ver"
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
@@ -6908,9 +6906,8 @@ msgid "Edit Bookmarks…"
 msgstr "Yer İmlerini Düzenle…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "_Durdur"
+msgstr "Durdur"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
