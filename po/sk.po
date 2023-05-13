@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-08 19:49+0000\n"
+"PO-Revision-Date: 2023-05-11 20:47+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -3521,9 +3521,8 @@ msgid "Export to Sonos Playlist"
 msgstr "Exportovať do zoznamu prehrávania Sonos"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "Vyexportuje zoznam prehrávania skopírovaním súborov do priečinka."
+msgstr "Exportuje zoznam skladieb do systému Sonos priraďovaním skladieb."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3536,12 +3535,12 @@ msgstr "Chyba pri vyhľadávaní Sonos. Preverte nastavenia"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Nepodarilo sa odstrániť existujúci zoznam skladieb Sonos %s:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Exportovať do zoznamu skladieb %(playlist)r (%(total)d tracks)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -6965,9 +6964,8 @@ msgid "Edit Bookmarks…"
 msgstr "Upraviť záložky…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "_Zastaviť"
+msgstr "Zastaviť"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
