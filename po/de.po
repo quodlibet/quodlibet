@@ -3501,7 +3501,7 @@ msgstr "Steuert die Tonhöhe eines Audiostroms."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "Wiedergabeliste in Ordner exportieren"
 
@@ -3517,23 +3517,23 @@ msgstr "Zielordner:"
 msgid "Filename pattern:"
 msgstr "Muster für Dateinamen:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 "Eine Wiedergabeliste exportieren, indem die Dateien in einen Ordner kopiert "
 "werden."
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Die Wiedergabeliste konnte nicht exportiert werden"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 "Stellen Sie sicher, dass sie Schreibzugriff auf das Zielverzeichnis haben."
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "Standardmuster für Dateinamen:"
 

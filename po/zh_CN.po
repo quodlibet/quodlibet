@@ -2219,7 +2219,8 @@ msgstr "AudioScrobbler 提交"
 msgid ""
 "Audioscrobbler client for Last.fm, Libre.fm and other Audioscrobbler "
 "services."
-msgstr "用于 Last.fm、Libre.fm 和其他 Audioscrobbler 服务的 Audioscrrobbler 客户端。"
+msgstr ""
+"用于 Last.fm、Libre.fm 和其他 Audioscrobbler 服务的 Audioscrrobbler 客户端。"
 
 #: quodlibet/ext/events/qlscrobbler.py:475
 msgid "Authentication successful."
@@ -2443,7 +2444,8 @@ msgstr "B 的书签名"
 msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
-msgstr "在曲目播放期间使用每个刻度的书签名称（如果存在）。如果当前位置超过时间戳，则"
+msgstr ""
+"在曲目播放期间使用每个刻度的书签名称（如果存在）。如果当前位置超过时间戳，则"
 "寻找到曲目的结尾。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
@@ -2454,7 +2456,8 @@ msgstr "Squeezebox同步"
 msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
-msgstr "使 Logitech Squeezebox 镜像 Quod Libet 输出，前提是两者都从相同的曲库中读取。"
+msgstr ""
+"使 Logitech Squeezebox 镜像 Quod Libet 输出，前提是两者都从相同的曲库中读取。"
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
@@ -2491,8 +2494,8 @@ msgid ""
 msgstr ""
 "此插件将暂停更改为停止/播放/搜索。\n"
 "\n"
-"如果一个新的音频设备（蓝牙音箱、USB DAC 等）被添加到系统中时， Quod Libet "
-"无法切换音频设备，那么这个插件就很有用。\n"
+"如果一个新的音频设备（蓝牙音箱、USB DAC 等）被添加到系统中时， Quod Libet 无"
+"法切换音频设备，那么这个插件就很有用。\n"
 "\n"
 "只要“仅可搜索的来源”处于关闭状态，就能确保当前音源中的位置不变。否则，回放将"
 "停止并且必须从头重新开始。"
@@ -2579,9 +2582,8 @@ msgid ""
 "transfer it to your device with rsync. Or, when syncing many files to an "
 "Android Device, use adb-sync, which is much faster."
 msgstr ""
-"对于挂载了 MTP 的设备，请导出到本地目标文件夹，然后使用 rsync "
-"将其传输到您的设备。或者，将许多文件同步到 Android 设备时，请使用adb-"
-"sync，这要快得多。"
+"对于挂载了 MTP 的设备，请导出到本地目标文件夹，然后使用 rsync 将其传输到您的"
+"设备。或者，将许多文件同步到 Android 设备时，请使用adb-sync，这要快得多。"
 
 #: quodlibet/ext/events/synchronize_to_device.py:179
 msgid "Destination path:"
@@ -2909,8 +2911,9 @@ msgstr "Telepathy 状态消息"
 msgid ""
 "Updates all Telepathy-based IM accounts (as configured in Empathy etc) with "
 "a status message based on current song."
-msgstr "使用基于当前歌曲的状态消息更新所有基于 Telepathy 的 IM 帐户（如在 Empathy "
-"等中配置的）。"
+msgstr ""
+"使用基于当前歌曲的状态消息更新所有基于 Telepathy 的 IM 帐户（如在 Empathy 等"
+"中配置的）。"
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
@@ -2973,8 +2976,8 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
-"添加一个拇指向上/拇指向下的评分系统，它被转换为一个评分值。"
-"对保持运行中的投票总数和按 <b><tt>~#score</tt></b> 进行排序很有用。"
+"添加一个拇指向上/拇指向下的评分系统，它被转换为一个评分值。对保持运行中的投票"
+"总数和按 <b><tt>~#score</tt></b> 进行排序很有用。"
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3270,7 +3273,8 @@ msgstr "交叉馈送"
 msgid ""
 "Mixes the left and right channel in a way that simulates a speaker setup "
 "while using headphones, or to adjust for early Stereo recordings."
-msgstr "在使用耳机时，以模拟扬声器设置的方式混合左、右声道，或针对早期的立体声录音进"
+msgstr ""
+"在使用耳机时，以模拟扬声器设置的方式混合左、右声道，或针对早期的立体声录音进"
 "行调整。"
 
 #: quodlibet/ext/gstreamer/karaoke.py:21
@@ -3335,7 +3339,7 @@ msgstr "控制音频流的音调。"
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "导出播放列表到文件夹"
 
@@ -3351,20 +3355,20 @@ msgstr "目标文件夹："
 msgid "Filename pattern:"
 msgstr "文件名格式："
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr "通过将文件复制到文件夹来导出播放列表。"
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "无法导出播放列表"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr "确保您对目标具有写入权限。"
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "默认文件名模式："
 
@@ -3415,8 +3419,9 @@ msgstr "导出到 Squeezebox"
 msgid ""
 "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
 "both share a directory structure."
-msgstr "将播放列表动态导出到 Logitech Squeezebox "
-"播放列表，前提是两者共享一个目录结构。"
+msgstr ""
+"将播放列表动态导出到 Logitech Squeezebox 播放列表，前提是两者共享一个目录结"
+"构。"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
@@ -3611,7 +3616,8 @@ msgstr "跳过标记不喜欢的歌曲"
 msgid ""
 "Adds a play order (shuffle) mode that plays in order, but skips tracks with "
 "a rating below (or equal to) a given threshold."
-msgstr "添加按顺序播放的播放顺序（随机播放）模式，但跳过评分低于（或等于）给定阈值的"
+msgstr ""
+"添加按顺序播放的播放顺序（随机播放）模式，但跳过评分低于（或等于）给定阈值的"
 "曲目。"
 
 #: quodlibet/ext/playorder/skip_disliked.py:29
@@ -4140,8 +4146,9 @@ msgid ""
 "If specified, a parameter whose occurrences in the command will be "
 "substituted with a user-supplied value, e.g. by using 'PARAM' all instances "
 "of '{PARAM}' in your command will have the value prompted for when run"
-msgstr "如果指定，则在命令中出现的参数将替换为用户提供的值，例如通过在命令中使用“PARA"
-"M”，所有“{PARAM}”实例都将在运行时提示输入值"
+msgstr ""
+"如果指定，则在命令中出现的参数将替换为用户提供的值，例如通过在命令中使"
+"用“PARAM”，所有“{PARAM}”实例都将在运行时提示输入值"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:56
 msgid ""
@@ -4149,8 +4156,8 @@ msgid ""
 "For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
-"QL 模式，例如<~filename>，用于计算命令的值。对于播放列表，这也支持虚拟标签 <~"
-"playlistname> 和 <~#playlistindex>。"
+"QL 模式，例如<~filename>，用于计算命令的值。对于播放列表，这也支持虚拟标签 "
+"<~playlistname> 和 <~#playlistindex>。"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:61
 msgid "unique"
@@ -4235,8 +4242,9 @@ msgstr "查找并显示带有相似标签的歌曲版本。"
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
-msgstr "接受 QL 标签表达式，如 <tt>~artist~title</tt> 或 "
-"<tt>musicbrainz_track_id</tt>"
+msgstr ""
+"接受 QL 标签表达式，如 <tt>~artist~title</tt> 或 <tt>musicbrainz_track_id</"
+"tt>"
 
 #: quodlibet/ext/songsmenu/duplicates.py:398
 msgid "_Group duplicates by:"
@@ -4288,8 +4296,8 @@ msgstr ""
 "选择多首歌曲时，计数将递增，而不是设置。\n"
 "\n"
 "将歌曲的 <tt>~#playcount</tt> 设置为 0 时，将清除 <tt>~#lastplayed</tt> 和 "
-"<tt>~#laststarted</tt> 条目。但是，将 0 "
-"播放歌曲设置为正播放计数时，不会创建播放次数。"
+"<tt>~#laststarted</tt> 条目。但是，将 0 播放歌曲设置为正播放计数时，不会创建"
+"播放次数。"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:70
 msgid "Play Count"
@@ -4528,7 +4536,8 @@ msgstr "未找到 iFP 设备"
 msgid ""
 "Unable to contact your iFP device. Check that the device is powered on and "
 "plugged in, and that you have ifp-line (http://ifp-driver.sf.net) installed."
-msgstr "无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp 线 "
+msgstr ""
+"无法联系您的 iFP 设备。检查设备是否已通电并接通电源，以及是否安装了 ifp 线 "
 "（http://ifp-driver.sf.net）。"
 
 #: quodlibet/ext/songsmenu/ifp.py:39
@@ -4630,7 +4639,8 @@ msgstr "如果专辑数量不同，则需要确认"
 msgid ""
 "Percentage below which the user will have to manually check and optionally "
 "change which track is matched with which."
-msgstr "低于此百分比，用户将不得不手动检查并有选择地更改哪个曲目与哪个曲目匹配。"
+msgstr ""
+"低于此百分比，用户将不得不手动检查并有选择地更改哪个曲目与哪个曲目匹配。"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:257
 msgid "Track similarity:"
@@ -4832,8 +4842,9 @@ msgstr "回放增益"
 msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
-msgstr "使用 GStreamer 分析和更新 <a href=\"%(rg_link)s\">ReplayGain</a> "
-"信息。结果按专辑分组。"
+msgstr ""
+"使用 GStreamer 分析和更新 <a href=\"%(rg_link)s\">ReplayGain</a> 信息。结果按"
+"专辑分组。"
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -5301,8 +5312,9 @@ msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
-msgstr "用于播放的 GStreamer "
-"输出管道。如果管道包含接收器，则将使用它而不是默认接收器。"
+msgstr ""
+"用于播放的 GStreamer 输出管道。如果管道包含接收器，则将使用它而不是默认接收"
+"器。"
 
 #: quodlibet/player/gstbe/prefs.py:38
 msgid "_Output pipeline:"
@@ -5387,8 +5399,9 @@ msgid ""
 "Too many consecutive submission failures (%d). Setting to offline mode. "
 "Please visit the Plugins window to reset ListenBrainz. Until then, listens "
 "will not be submitted."
-msgstr "连续提交失败次数过多（%d）。设置为脱机模式。请访问插件窗口重置 "
-"ListenBrainz。在此之前，不会提交收听。"
+msgstr ""
+"连续提交失败次数过多（%d）。设置为脱机模式。请访问插件窗口重置 ListenBrainz。"
+"在此之前，不会提交收听。"
 
 #: quodlibet/ext/events/listenbrainz/__init__.py:356
 msgid "ListenBrainz Submission"
@@ -6091,7 +6104,8 @@ msgid ""
 "Check if the columns on the left side approximately match the ones on the "
 "right side. If they don't, you can change the order here (use _ for rows "
 "that shouldn't be matched):"
-msgstr "检查左边的列是否与右边的列大致匹配。如果不匹配，你可以在这里改变顺序（对于不"
+msgstr ""
+"检查左边的列是否与右边的列大致匹配。如果不匹配，你可以在这里改变顺序（对于不"
 "应该被匹配的行使用）(_F)："
 
 #: quodlibet/qltk/matchdialog.py:74
@@ -6379,7 +6393,8 @@ msgstr "选择使用音频中嵌入的艺术作品（如果可用）而不是其
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
-msgstr "可用时使用的专辑封面图像文件（支持通配符）。如果您想提供多个，请用逗号分隔它"
+msgstr ""
+"可用时使用的专辑封面图像文件（支持通配符）。如果您想提供多个，请用逗号分隔它"
 "们。"
 
 #: quodlibet/qltk/prefs.py:342
@@ -6872,8 +6887,8 @@ msgid ""
 msgstr ""
 "模式\n"
 "\t%s\n"
-"包含 / 但不从根开始。为避免文件夹命名错误，请使用以 / 或 ~/ "
-"开头的绝对路径模式。"
+"包含 / 但不从根开始。为避免文件夹命名错误，请使用以 / 或 ~/ 开头的绝对路径模"
+"式。"
 
 #: quodlibet/qltk/scanbox.py:49
 msgid ""
@@ -7234,8 +7249,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"您输入的模式无效。请确保将 &lt; 和 &gt; 输入为 \\&lt; 和 \\"
-"&gt;，并且标签是平衡的。\n"
+"您输入的模式无效。请确保将 &lt; 和 &gt; 输入为 \\&lt; 和 \\&gt;，并且标签是平"
+"衡的。\n"
 "\n"
 "%s"
 
