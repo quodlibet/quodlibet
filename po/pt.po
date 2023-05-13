@@ -3484,7 +3484,7 @@ msgstr "Controla a afinação e velocidade do fluxo de áudio."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "Exportar lista de reprodução para pasta"
 
@@ -3500,21 +3500,21 @@ msgstr "Pasta de destino:"
 msgid "Filename pattern:"
 msgstr "Padrão de nome de ficheiro:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr "Exporta uma lista de reprodução, copiando ficheiros para uma pasta."
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Não foi possível exportar a lista de reprodução"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 "Certifique-se de que você tem permissão de escrita para a pasta de destino."
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "Formato padrão de _nome de ficheiro:"
 

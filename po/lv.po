@@ -3504,7 +3504,7 @@ msgstr "Ievadiet audio barotnes adresi:"
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 #, fuzzy
 msgid "Export Playlist to Folder"
 msgstr "Importēt repertuāru"
@@ -3524,21 +3524,21 @@ msgstr "Nav atrasta neviena stacija"
 msgid "Filename pattern:"
 msgstr "_Faila nosaukuma paraugs:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 #, fuzzy
 msgid "Unable to export playlist"
 msgstr "Neizdevās importēt repertuāru"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 #, fuzzy
 msgid "Default filename pattern:"
 msgstr "_Faila nosaukuma paraugs:"

@@ -3396,7 +3396,7 @@ msgstr "오디오 스트림의 피치를 제어합니다."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 #, fuzzy
 msgid "Export Playlist to Folder"
 msgstr "재생목록 가져오기"
@@ -3414,21 +3414,21 @@ msgstr "대상 폴더:"
 msgid "Filename pattern:"
 msgstr "파일이름 패턴:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 #, fuzzy
 msgid "Unable to export playlist"
 msgstr "재생목록을 가져올 수 없습니다"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "기본 파일이름 패턴:"
 
