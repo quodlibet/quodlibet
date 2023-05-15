@@ -11,8 +11,8 @@
 
 set -e
 
+# shellcheck source-path=SCRIPTDIR
 source env.sh
-DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 function main {
     local GIT_TAG=${1:-"main"}
