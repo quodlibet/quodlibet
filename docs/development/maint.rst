@@ -54,12 +54,7 @@ Release Checklist
 New stable branch
 ^^^^^^^^^^^^^^^^^
 
-* ``git checkout -b quodlibet-x.y``
-* ``git commit -m "new stable branch"``
-* ``git push``
-* ``git checkout main``
-* Update version in ``const.py`` to ``(X, Y + 1, -1)``
-* ``git commit -m "version bump"``
+You can now use the ``dev-utils/new-branch.sh`` script to help do this.
 
 New stable release
 ^^^^^^^^^^^^^^^^^^
