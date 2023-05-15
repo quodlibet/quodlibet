@@ -186,4 +186,4 @@ jobs:
         with:
           version: v0.8.0
           check_together: 'yes'
-          ignore_paths: ./data
+          ignore_paths: ./data/**
