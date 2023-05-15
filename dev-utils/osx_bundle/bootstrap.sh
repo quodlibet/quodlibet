@@ -11,6 +11,8 @@ rm -Rf "$HOME/.local"
 rm -f "$HOME/.jhbuildrc"
 rm -f "$HOME/.jhbuildrc-custom"
 
+rustup install 1.69.0
+
 JHBUILD_REVISION="fe1552ad15999f023b01bc009dabb1b1956cd9ac"
 
 mkdir -p "$HOME"
