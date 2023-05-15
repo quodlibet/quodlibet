@@ -17,6 +17,8 @@ DIR="$( cd "$( dirname "$0" )" && pwd )"
 function main {
     local GIT_TAG=${1:-"main"}
 
+    rm -rf "$QL_OSXBUNDLE_BUNDLE_DEST"
+
     PYTHON="python3"
     PYTHONID="python"$(jhbuild run "${PYTHON}" -c \
         "import sys;sys.stdout.write('.'.join(map(str, sys.version_info[:2])))")
@@ -43,6 +45,9 @@ function main {
         -prune -exec rm -rf {} \;
     find "${APP_PREFIX}"/lib/"${PYTHONID}" -type d -name "*_test*" \
         -prune -exec rm -rf {} \;
+
+    # strip debug symbols
+    find "${APP_PREFIX}"/lib -type f -name "*.dylib" -exec strip -S {} \;
 
     # remove some larger icon theme files
     rm -Rf "${APP_PREFIX}/share/icons/Adwaita/cursors"
