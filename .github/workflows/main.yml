@@ -185,3 +185,5 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           version: v0.8.0
+          check_together: 'yes'
+          ignore_paths: data/
