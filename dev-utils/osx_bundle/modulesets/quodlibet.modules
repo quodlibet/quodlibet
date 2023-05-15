@@ -435,15 +435,24 @@
     </dependencies>
   </autotools>
 
-  <meson id="glib2" mesonargs="-Dinternal_pcre=true">
-    <branch module="glib/2.68/glib-${version}.tar.xz"  version="2.68.3"
-            hash="sha256:e7e1a3c20c026109c45c9ec4a31d8dcebc22e86c69486993e565817d64be3138">
+  <autotools id="pcre2"
+             autogenargs="--enable-jit --enable-pcre2-8 --enable-pcre2-16 --enable-pcre2-32">
+    <branch repo="github-tar"
+            module="PhilipHazel/pcre2/releases/download/pcre2-${version}/pcre2-${version}.tar.bz2"
+            version="10.39"
+            hash="sha256:0f03caf57f81d9ff362ac28cd389c055ec2bf0678d277349a1a4bee00ad6d440"/>
+  </autotools>
+
+  <meson id="glib2">
+    <branch module="glib/2.74/glib-${version}.tar.xz" version="2.74.7"
+            hash="sha256:196ab86c27127a61b7a70c3ba6af7b97bdc01c07cd3b21abd5e778b955eccb1b">
     </branch>
     <dependencies>
         <dep package="libffi"/>
         <dep package="gettext"/>
         <dep package="gtk-doc"/>
         <dep package="libffi"/>
+        <dep package="pcre2"/>
         <dep package="zlib"/>
     </dependencies>
   </meson>
@@ -461,8 +470,8 @@
     <branch repo="pypi.org"
             checkoutdir="meson-${version}"
             module="m/meson/meson-${version}.tar.gz"
-            version="0.56.2"
-            hash="sha256:3cb8bdb91383f7f8da642f916e4c44066a29262caa499341e2880f010edb87f4"/>
+            version="1.0.2"
+            hash="sha256:c406fcc898f1d042ac5194e96fed630355c6e77e6855c94126c892f77299ec72"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="ninja"/>
@@ -539,7 +548,7 @@
      </dependencies>
   </meson>
 
-  <meson id="gdk-pixbuf2" mesonargs="-Dx11=false -Dman=false">
+  <meson id="gdk-pixbuf2" mesonargs="-Dman=false">
     <branch version="2.42.6"
             module="gdk-pixbuf/2.42/gdk-pixbuf-${version}.tar.xz"
             hash="sha256:c4a6b75b7ed8f58ca48da830b9fa00ed96d668d3ab4b1f723dcf902f78bde77f">
@@ -553,9 +562,9 @@
   </meson>
 
   <meson id="gobject-introspection">
-    <branch module="gobject-introspection/1.68/gobject-introspection-${version}.tar.xz"
-            version="1.68.0"
-            hash="sha256:d229242481a201b84a0c66716de1752bca41db4133672cfcfb37c93eb6e54a27">
+    <branch module="gobject-introspection/1.74/gobject-introspection-${version}.tar.xz"
+            version="1.74.0"
+            hash="sha256:347b3a719e68ba4c69ff2d57ee2689233ea8c07fc492205e573386779e42d653">
     </branch>
     <dependencies>
       <dep package="glib2"/>
@@ -592,9 +601,9 @@
   <distutils id="python-setuptools" python3="1">
     <branch repo="pypi.org"
             module="s/setuptools/setuptools-${version}.tar.gz"
-            version="57.2.0"
+            version="64.0.3"
             checkoutdir="python-setuptools-${version}"
-            hash="sha256:a7e88b9bbaece494162d697d19525c567ab60c85dd7e2fd90cb7dfe8d8129a62"/>
+            hash="sha256:3bcaf6e27ad3b0f643ba0a48c5ab9eca930c3eb51df0e068f4826ab880c394ea"/>
     <dependencies>
       <dep package="python"/>
     </dependencies>
@@ -811,7 +820,7 @@
   <autotools id="soundtouch" autogen-sh="autoreconf">
     <branch repo="soundtouch" checkoutdir="soundtouch-${version}" module="soundtouch-${version}.tar.gz"
             version="2.0.0"
-            hash="sha256:d224f7d1421b5f8e74a74c85741345bd9802618a40ae30ce5b427a5705c89d25">
+            hash="sha256:efa1f63b1bb60cae4565307757234936b0a19e2fa7913651eba9b9f82eeeb915">
     </branch>
   </autotools>
 
@@ -827,8 +836,8 @@
 
   <meson id="gstreamer">
     <branch repo="gstreamer" module="gstreamer/gstreamer-${version}.tar.xz"
-            version="1.18.4"
-            hash="sha256:9aeec99b38e310817012aa2d1d76573b787af47f8a725a65b833880a094dfbc5">
+            version="1.18.6"
+            hash="sha256:4ec816010dd4d3a93cf470ad0a6f25315f52b204eb1d71dfa70ab8a1c3bd06e6">
     </branch>
     <dependencies>
       <dep package="glib2"/>
@@ -884,6 +893,13 @@
             hash="sha256:0c6d9636c96f95c7d736f097d418829ced8ec6dbd899cc6cc82b728480a84bfb"/>
   </autotools>
 
+  <autotools id="libnghttp2" autogen-sh="autoreconf">
+    <branch repo="github-tar" version="1.53.0"
+            module="nghttp2/nghttp2/releases/download/v${version}/nghttp2-${version}.tar.gz"
+            checkoutdir="libnghttp2-${version}"
+            hash="sha256:f5f3f18b377d1e7658e4655a32d9a7ce6fef39fa13f600fe920f5f77c60fc34b"/>
+  </autotools>
+
   <autotools id="libbs2b" autogen-sh="autoreconf"
              autogenargs="">
     <branch repo="sourceforge" version="3.1.0"
@@ -916,15 +932,16 @@
   </meson>
 
   <meson id="libsoup" mesonargs="-Dsysprof=disabled">
-    <branch repo="ftp.gnome.org" module="libsoup/2.72/libsoup-${version}.tar.xz"
-            version="2.72.0"
-            hash="sha256:170c3f8446b0f65f8e4b93603349172b1085fb8917c181d10962f02bb85f5387" />
+    <branch repo="ftp.gnome.org" module="libsoup/3.4/libsoup-${version}.tar.xz"
+            version="3.4.2"
+            hash="sha256:78c8fa37cb152d40ec8c4a148d6155e2f6947f3f1602a7cda3a31ad40f5ee2f3" />
     <dependencies>
       <dep package="glib2"/>
       <dep package="glib-networking"/>
       <dep package="gobject-introspection"/>
       <dep package="sqlite"/>
       <dep package="libpsl"/>
+      <dep package="libnghttp2"/>
     </dependencies>
   </meson>
 
