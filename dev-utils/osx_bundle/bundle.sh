@@ -62,7 +62,7 @@ function main {
     git clone ../.. "$CLONE"
     (cd "$CLONE"; git checkout "$GIT_TAG")
     jhbuild run "$PYTHON" "$CLONE"/setup.py install \
-        --prefix="$APP_PREFIX" \
+        --prefix="$APP_PREFIX" --root="/" \
         --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
     rm -Rf "$CLONE"
 
