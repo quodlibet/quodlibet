@@ -4,7 +4,9 @@ shopt -s expand_aliases
 DIR="$(cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)"
 cd "$DIR" || exit
 
-ORIG_HOME="$HOME"
+if [[ -z "$ORIG_HOME" ]]; then
+  export ORIG_HOME="$HOME"
+fi
 export HOME="$DIR/_home"
 export QL_OSXBUNDLE_JHBUILD_DEST="$DIR/_jhbuild"
 export QL_OSXBUNDLE_BUNDLER_DEST="$DIR/_bundler"
