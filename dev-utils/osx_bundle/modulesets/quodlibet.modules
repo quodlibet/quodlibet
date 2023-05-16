@@ -73,6 +73,7 @@
       <dep package="cmake"/>
       <dep package="libtool"/>
       <dep package="pkg-config"/>
+      <dep package="ninja"/>
       <dep package="meson"/>
     </dependencies>
   </metamodule>
@@ -110,6 +111,14 @@
     <branch repo="cmake" module="v3.20/cmake-${version}.tar.gz" version="3.20.5"
             hash="sha256:12c8040ef5c6f1bc5b8868cede16bb7926c18980f59779e299ab52cbc6f15bb0"/>
   </autotools>
+
+  <cmake id="ninja" use-ninja="no" cmakeargs="-DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'" bootstrap="true">
+	<branch repo="github-tar"
+            version="1.11.1"
+            module="ninja-build/ninja/archive/refs/tags/v${version}.tar.gz"
+            checkoutdir="ninja-${version}"
+            hash="sha256:31747ae633213f1eda3842686f83c2aa1412e0f5691d1c14dbbcc67fe7400cea"/>
+  </cmake>
 
   <autotools id="pkg-config" autogen-sh="configure"
              autogenargs="--with-internal-glib">
@@ -426,15 +435,6 @@
         <dep package="zlib"/>
     </dependencies>
   </meson>
-
-  <systemmodule id="ninja">
-    <branch repo="system"/>
-    <systemdependencies>
-      <dep type="path" name="ninja">
-        <altdep type="path" name="ninja-build"/>
-      </dep>
-    </systemdependencies>
-  </systemmodule>
 
   <distutils id="meson" python3="1">
     <branch repo="pypi.org"
