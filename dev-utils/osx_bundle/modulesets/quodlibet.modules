@@ -2,7 +2,6 @@
 <!DOCTYPE moduleset SYSTEM "moduleset.dftd">
 <!-- :mode=xml:tabSize=4:indentSize=4:folding=explicit: -->
 <moduleset>
-  <repository type="system" name="system"/>
   <repository type="git" name="git.gnome.org"
       href="git://git.gnome.org/"/>
   <repository type="tarball" name="git.gnome.org/browse"
@@ -66,6 +65,9 @@
               href="https://www.zlib.net/"/>
   <repository type="tarball" name="pkgconfig"
               href="http://pkgconfig.freedesktop.org/releases/"/>
+  <repository type="tarball" name="ffmpeg"
+              href="https://ffmpeg.org/"/>
+
 
   <metamodule id="meta-bootstrap">
     <dependencies>
@@ -148,9 +150,9 @@
   </autotools>
 
   <autotools id="automake" autogen-sh="configure" bootstrap="true">
-    <branch repo="ftp.gnu.org" version="1.16.3"
+    <branch repo="ftp.gnu.org" version="1.16.5"
             module="automake/automake-${version}.tar.gz"
-            hash="sha256:ce010788b51f64511a1e9bb2a1ec626037c6d0e7ede32c1c103611b9d3cba65f"/>
+            hash="sha256:07bd24ad08a64bc17250ce09ec56e921d6343903943e99ccf63bbf0705e34605"/>
     <dependencies>
       <dep package="autoconf"/>
     </dependencies>
@@ -165,8 +167,8 @@
 
   <autotools id="readline" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="readline/readline-${version}.tar.gz"
-      version="8.1"
-      hash="sha256:f8ceb4ee131e3232226a17f51b164afc46cd0b9e6cef344be87c65962cb82b02">
+      version="8.2"
+      hash="sha256:3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35">
     </branch>
   </autotools>
 
@@ -224,8 +226,8 @@
   </autotools>
 
   <autotools id="librsvg" autogenargs="--disable-Bsymbolic">
-    <branch module="librsvg/2.52/librsvg-${version}.tar.xz" version="2.52.9"
-        hash="sha256:1dc6a02df36eedc2d9f4a24cd8f9bc9d5f2874824f152e28ab4417103a6903e0"/>
+    <branch module="librsvg/2.56/librsvg-${version}.tar.xz" version="2.56.0"
+        hash="sha256:194b5097d9cd107495f49c291cf0da65ec2b4bb55e5628369751a3f44ba222b3"/>
     <dependencies>>
       <dep package="freetype"/>
       <dep package="gdk-pixbuf2"/>
@@ -397,29 +399,44 @@
   <autotools id="gettext" autogen-sh="configure"
              autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-libxml --with-included-libcroco --with-included-glib">
     <branch repo="ftp.gnu.org"
-            module="gettext/gettext-${version}.tar.xz" version="0.21"
-            hash="sha256:d20fcbb537e02dcf1383197ba05bd0734ef7bf5db06bdb241eb69b7d16b73192"/>
+            module="gettext/gettext-${version}.tar.xz" version="0.21.1"
+            hash="sha256:50dbc8f39797950aa2c98e939947c527e5ac9ebd2c1b99dd7b06ba33a6767ae6"/>
   </autotools>
 
-  <autotools id="gst-libav" supports-non-srcdir-builds="no"
-             autogen-sh="configure"
-             autogenargs="--enable-gpl --disable-tests">
-    <branch repo="gstreamer" version="1.16.3"
+  <autotools id="ffmpeg"
+			 autogen-sh="configure"
+			 autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s --disable-metal">
+    <branch module="releases/ffmpeg-${version}.tar.xz"
+            repo="ffmpeg"
+            version="5.1.3"
+            hash="sha256:1b113593ff907293be7aed95acdda5e785dd73616d7d4ec90a0f6adbc5a0312e"/>
+    <dependencies>
+        <dep package="nasm"/>
+        <dep package="libogg"/>
+		<dep package="libvorbis"/>
+		<dep package="opus"/>
+		<dep package="mpg123"/>
+		<dep package="speex"/>
+    </dependencies>
+  </autotools>
+
+  <meson id="gst-libav">
+    <branch repo="gstreamer" version="1.20.6"
             module="gst-libav/gst-libav-${version}.tar.xz"
-            hash="sha256:d10c5eb1a00a91de97c85c0956c663aa6e99d268195cdec4534c179b831538ec"/>
+            hash="sha256:7d619a030542a4a5a11e0302742a3d9b05f8e5cfc453025683a0379bc50aa013"/>
     <dependencies>
         <dep package="gstreamer"/>
         <dep package="gst-plugins-base"/>
-        <dep package="nasm"/>
+        <dep package="ffmpeg"/>
     </dependencies>
-  </autotools>
+  </meson>
 
   <autotools id="pcre2"
              autogenargs="--enable-jit --enable-pcre2-8 --enable-pcre2-16 --enable-pcre2-32">
     <branch repo="github-tar"
             module="PhilipHazel/pcre2/releases/download/pcre2-${version}/pcre2-${version}.tar.bz2"
-            version="10.39"
-            hash="sha256:0f03caf57f81d9ff362ac28cd389c055ec2bf0678d277349a1a4bee00ad6d440"/>
+            version="10.42"
+            hash="sha256:8d36cd8cb6ea2a4c2bb358ff6411b0c788633a2a45dabbf1aeb4b701d1b5e840"/>
   </autotools>
 
   <meson id="glib2">
@@ -617,8 +634,8 @@
     <branch repo="pypi.org"
           checkoutdir="python-certifi-${version}"
             module="c/certifi/certifi-${version}.tar.gz"
-            version="2021.5.30"
-            hash="sha256:2bbf76fd432960138b3ef6dda3dde0544f27cbf8546c458e60baf371917ba9ee"/>
+            version="2022.12.7"
+            hash="sha256:35824b4c3a97115964b408844d64aa14db1cc518f6562e8d7261699d1350a9e3"/>
   </distutils>
 
   <distutils id="python-sgmllib3k" python3="1">
@@ -633,7 +650,8 @@
   <distutils id="python-feedparser" python3="1">
     <branch repo="pypi.org" module="f/feedparser/feedparser-${version}.tar.gz"
             checkoutdir="python-feedparser-${version}"
-            version="6.0.8"/>
+            version="6.0.10"
+            hash="sha256:27da485f4637ce7163cdeab13a80312b93b7d0c1b775bef4a47629a3110bca51"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-sgmllib3k"/>
@@ -642,8 +660,8 @@
 
   <distutils id="python-mutagen" python3="1">
     <branch repo="pypi.org" checkoutdir="python-mutagen-${version}" module="m/mutagen/mutagen-${version}.tar.gz"
-            version="1.45.1"
-            hash="sha256:6397602efb3c2d7baebd2166ed85731ae1c1d475abca22090b7141ff5034b3e1"/>
+            version="1.46.0"
+            hash="sha256:6e5f8ba84836b99fe60be5fb27f84be4ad919bbb6b49caa6ae81e70584b55e58"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -721,8 +739,8 @@
 
   <meson id="gst-plugins-base">
     <branch repo="gstreamer" module="gst-plugins-base/gst-plugins-base-${version}.tar.xz"
-            version="1.18.6"
-            hash="sha256:56a9ff2fe9e6603b9e658cf6897d412a173d2180829fe01e92568549c6bd0f5b"/>
+            version="1.20.6"
+            hash="sha256:54eac357d6cd66f183b94a26e493bf4d5781bc76bc60cad122742626caf8f1a3"/>
     <dependencies>
       <dep package="gstreamer"/>
       <dep package="orc"/>
@@ -735,8 +753,8 @@
 
   <meson id="gst-plugins-good">
     <branch repo="gstreamer" module="gst-plugins-good/gst-plugins-good-${version}.tar.xz"
-            version="1.18.6"
-            hash="sha256:26723ac01fcb360ade1f41d168c7c322d8af4ceb7e55c8c12ed2690d06a76eed"/>
+            version="1.20.6"
+            hash="sha256:e51365cfa9b19bd736dafe2c8828254a55d66996a3c60550bb0d50041c381a44"/>
     <dependencies>
       <dep package="gstreamer"/>
       <dep package="gst-plugins-base"/>
@@ -752,15 +770,15 @@
 
   <autotools id="wavpack" autogen-sh="configure">
     <branch module="wavpack-${version}.tar.bz2"
-            repo="wavpack" version="5.4.0"
-            hash="sha256:0716a6dcf9a72d61005e1b09bbbd61aaf49837cb4e4a351992a6daed16cac034">
+            repo="wavpack" version="5.6.0"
+            hash="sha256:8cbfa15927d29bcf953db35c0cfca7424344ff43ebe4083daf161577fb839cc1">
     </branch>
   </autotools>
 
   <meson id="gst-plugins-bad" mesonargs="-Dapplemedia=disabled">
-    <branch repo="gstreamer" version="1.18.6"
+    <branch repo="gstreamer" version="1.20.6"
             module="gst-plugins-bad/gst-plugins-bad-${version}.tar.xz"
-            hash="sha256:0b1b50ac6311f0c510248b6cd64d6d3c94369344828baa602db85ded5bc70ec9"/>
+            hash="sha256:d98c73fa5cdddb372a91199464515cfc80c89bbe05e3d4387ea4381e4224483a"/>
     <dependencies>
       <dep package="gstreamer"/>
       <dep package="gst-plugins-base"/>
@@ -797,8 +815,8 @@
 
   <meson id="gst-plugins-ugly">
     <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-${version}.tar.xz"
-            version="1.18.6"
-            hash="sha256:4969c409cb6a88317d2108b8577108e18623b2333d7b587ae3f39459c70e3a7f"/>
+            version="1.20.6"
+            hash="sha256:ca3fb6abc9f6e981d204a736c254e50cc1786a2f5038d83023e42ea009b10246"/>
     <dependencies>
       <dep package="gstreamer"/>
       <dep package="gst-plugins-base"/>
@@ -807,8 +825,8 @@
 
   <meson id="gstreamer">
     <branch repo="gstreamer" module="gstreamer/gstreamer-${version}.tar.xz"
-            version="1.18.6"
-            hash="sha256:4ec816010dd4d3a93cf470ad0a6f25315f52b204eb1d71dfa70ab8a1c3bd06e6">
+            version="1.20.6"
+            hash="sha256:0545b030960680f71a95f9d39c95daae54b4d317d335e8f239d81138773c9b90">
     </branch>
     <dependencies>
       <dep package="glib2"/>
@@ -832,8 +850,8 @@
   </autotools>
 
   <autotools id="speex" autogen-sh="configure">
-    <branch module="speex/speex-1.2.0.tar.gz"
-        repo="xiph" version="1.2.0" hash="sha256:eaae8af0ac742dc7d542c9439ac72f1f385ce838392dc849cae4536af9210094"/>
+    <branch module="speex/speex-${version}.tar.gz"
+        repo="xiph" version="1.2.1" hash="sha256:4b44d4f2b38a370a2d98a78329fefc56a0cf93d1c1be70029217baae6628feea"/>
     <dependencies>
       <dep package="libogg"/>
     </dependencies>
@@ -841,16 +859,16 @@
 
   <autotools id="mpg123" autogen-sh="configure">
       <branch module="mpg123-${version}.tar.bz2"
-          repo="mpg123" version="1.28.2"
-          hash="sha256:7eefd4b68fdac7e138d04c37efe12155a8ebf25a5bccf0fb7e775af22d21db00">
+          repo="mpg123" version="1.31.3"
+          hash="sha256:1ca77d3a69a5ff845b7a0536f783fee554e1041139a6b978f6afe14f5814ad1a">
       </branch>
   </autotools>
 
   <autotools id="flac"  autogen-sh="autoreconf" autogenargs="--disable-silent-rules --disable-xmms-plugin" makeargs="OBJ_FORMAT=macho">
     <branch module="flac/flac-${version}.tar.xz"
             repo="xiph"
-            version="1.3.3"
-            hash="sha256:213e82bd716c9de6db2f98bcadbc4c24c7e2efe8c75939a1a84e28539c4e1748"/>
+            version="1.4.2"
+            hash="sha256:e322d58a1f48d23d9dd38f432672865f6f79e73a6f9cc5a5f57fcaa83eb5a8e4"/>
     <dependencies>
       <dep package="libogg"/>
     </dependencies>
