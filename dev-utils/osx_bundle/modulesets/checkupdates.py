@@ -53,7 +53,7 @@ def fix_name(name):
     if name == "freetype":
         name = "freetype2"
     if name == "openssl":
-        name = "openssl-1.0"
+        name = "openssl-1.1"
     if name == "libxml2-python2":
         name = "libxml2"
     return name
