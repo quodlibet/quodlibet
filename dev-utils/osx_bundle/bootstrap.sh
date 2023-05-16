@@ -2,6 +2,7 @@
 
 set -e
 
+# shellcheck source-path=SCRIPTDIR
 source env.sh
 
 # to allow bootstrapping again, try to delete everything first

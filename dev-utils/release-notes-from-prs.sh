@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
+# We use lots of embedded quotes here that worry Shellcheck, so disable rule
+# shellcheck disable=SC2016
+
 set -e
 
 usage() {
     echo "FATAL: $*"
-    echo "Usage: $(basename $0) SINCE_RELEASE"
+    echo "Usage: $(basename "$0") SINCE_RELEASE"
     exit 1
 }
 GIT_REGEX='^.* #([0-9]+) from ([^/]+)\/.+\|(.*)$'

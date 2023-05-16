@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
+# shellcheck source-path=SCRIPTDIR
 source "$DIR"/_base.sh
 
 set_build_root "${DIR}/_rebuild_root"
@@ -18,6 +19,7 @@ function main {
     [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
 
     # started from the wrong env -> switch
+    # shellcheck disable=SC2019,SC2018
     if [ "$(echo "$MSYSTEM" | tr 'A-Z' 'a-z')" != "$MINGW" ]; then
         "/${MINGW}.exe" "$0"
         exit $?

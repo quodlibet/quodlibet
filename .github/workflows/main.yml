@@ -175,3 +175,15 @@ jobs:
       with:
         fail_ci_if_error: false
         verbose: true # optional (default = false)
+
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          version: v0.8.0
+          check_together: 'yes'
+          ignore_paths: ./data/**
