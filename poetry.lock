@@ -283,6 +283,17 @@ optional = false
 python-versions = ">=3.7"
 
 [[package]]
+name = "paho-mqtt"
+version = "1.6.1"
+description = "MQTT version 5.0/3.1.1 client class"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+proxy = ["PySocks"]
+
+[[package]]
 name = "pluggy"
 version = "1.0.0"
 description = "plugin and hook calling mechanisms for python"
@@ -708,7 +719,7 @@ plugins = ["musicbrainzngs", "dbus-python", "soco", "pypresence"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.1"
-content-hash = "4379f26be79380abc94a19092dc5b81090af8f91d36bdb3a28d820a117b4dbd1"
+content-hash = "25372349afab86695ff859705a0701706136bf7811a6d35ad9e5d9a5564961b2"
 
 [metadata.files]
 alabaster = [
@@ -1015,6 +1026,9 @@ mypy-extensions = [
 packaging = [
     {file = "packaging-23.0-py3-none-any.whl", hash = "sha256:714ac14496c3e68c99c29b00845f7a2b85f3bb6f1078fd9f72fd20f0570002b2"},
     {file = "packaging-23.0.tar.gz", hash = "sha256:b6ad297f8907de0fa2fe1ccbd26fdaf387f5f47c7275fedf8cce89f99446cf97"},
+]
+paho-mqtt = [
+    {file = "paho-mqtt-1.6.1.tar.gz", hash = "sha256:2a8291c81623aec00372b5a85558a372c747cbca8e9934dfe218638b8eefc26f"},
 ]
 pluggy = [
     {file = "pluggy-1.0.0-py2.py3-none-any.whl", hash = "sha256:74134bbf457f031a36d68416e1509f34bd5ccc019f0bcc952c7b909d06b37bd3"},

@@ -32,6 +32,7 @@ dbus-python = { version = "*", platform="linux", optional = true }
 # 0.28 switched to lxml which is proving tricky on Windows
 soco = { version = ">=0.27, <0.28", optional = true }
 pypresence = { version = "^4.2.1", optional = true }
+paho-mqtt = { version = "^1.6.1", optional = true }
 
 [tool.poetry.extras]
 # Use with poetry install -E plugins
