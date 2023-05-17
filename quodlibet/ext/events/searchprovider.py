@@ -33,6 +33,8 @@ from quodlibet.plugins import PluginImportException
 from quodlibet.util.path import xdg_get_system_data_dirs
 from quodlibet.qltk import Icons
 
+DEFAULT_SEARCH_PROVIDER_DIR = "/usr/share/gnome-shell/search-providers"
+
 
 def get_gs_provider_files():
     """Return all installed search provider files for GNOME Shell"""
