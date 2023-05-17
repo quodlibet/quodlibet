@@ -162,6 +162,11 @@ jobs:
         pipx install poetry
         pipx ensurepath
 
+    - name: Check Poetry project
+      run: |
+        poetry check
+        poetry lock --check
+
     - name: Install project virtualenv
       run: poetry install -E plugins
 

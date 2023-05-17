@@ -708,7 +708,7 @@ plugins = ["musicbrainzngs", "dbus-python", "soco", "pypresence"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8.1"
-content-hash = "dc066a48a88bb57b407576b48554dc73cf59e1f60cee127fefaf3a4595ad946b"
+content-hash = "4379f26be79380abc94a19092dc5b81090af8f91d36bdb3a28d820a117b4dbd1"
 
 [metadata.files]
 alabaster = [
