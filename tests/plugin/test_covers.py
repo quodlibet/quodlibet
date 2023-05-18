@@ -5,10 +5,10 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from collections import namedtuple
-from dataclasses import dataclass, Field, field
+
+from dataclasses import dataclass, field
 from time import time, sleep
-from typing import List, Any, Optional
+from typing import Any, Optional
 
 import pytest as pytest
 from gi.repository import Gtk
@@ -17,7 +17,6 @@ from quodlibet.formats import AudioFile
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from senf import fsnative
 from tests.plugin import PluginTestCase, plugins
-
 
 AN_ARTIST = "The Beatles"
 AN_ALBUM = "Let It Be"
