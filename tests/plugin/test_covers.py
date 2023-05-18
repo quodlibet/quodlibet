@@ -17,7 +17,6 @@ from time import time, sleep
 from typing import Any, Optional, List
 
 import pytest as pytest
-from gi.repository import Gtk
 
 from quodlibet.formats import AudioFile
 from quodlibet.util.cover.http import ApiCoverSourcePlugin
