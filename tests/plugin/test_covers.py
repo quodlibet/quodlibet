@@ -26,7 +26,7 @@ AN_MBID = "82a4adf2-008b-3236-bb7a-bd93d7ed9677"
 
 def delay_rerun(self, *args):
     # Try to recover from any network blips
-    sleep(1)
+    sleep(10)
     return True
 
 
@@ -57,7 +57,7 @@ class Results:
     success: Optional[bool] = None
 
 
-@pytest.mark.flaky(max_runs=2, min_passes=2, rerun_filter=delay_rerun)
+@pytest.mark.flaky(max_runs=5, min_passes=2, rerun_filter=delay_rerun)
 @pytest.mark.parametrize("plugin_class_name",
                          ["lastfm-cover", "discogs-cover", "musicbrainz-cover"])
 def test_live_cover_download(plugin_class_name):
