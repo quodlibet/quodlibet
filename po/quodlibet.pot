@@ -2352,15 +2352,20 @@ msgstr ""
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:73
+#: quodlibet/ext/events/searchprovider.py:70
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:79
+#: quodlibet/ext/events/searchprovider.py:71
+#, python-format
+msgid "Have you copied the ini file to %s (or similar)?"
+msgstr ""
+
+#: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:80
+#: quodlibet/ext/events/searchprovider.py:78
 msgid "Allows GNOME Shell to search the library."
 msgstr ""
 
