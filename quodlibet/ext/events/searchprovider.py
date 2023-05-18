@@ -1,5 +1,5 @@
 # Copyright 2013 Christoph Reiter <reiter.christoph@gmail.com>
-#
+#           2023 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -9,14 +9,9 @@
 For this plugin to work GNOME Shell needs this file:
 
 /usr/share/gnome-shell/search-providers/io.github.quodlibet.QuodLibet-search-provider.ini
+(or in a similar XDG directory)
 
-with the following content:
-
-[Shell Search Provider]
-DesktopId=quodlibet.desktop
-BusName=io.github.quodlibet.QuodLibet.SearchProvider
-ObjectPath=/io/github/quodlibet/QuodLibet/SearchProvider
-Version=2
+A copy of this file can be found in ../../../data/
 """
 
 import os
@@ -38,6 +33,8 @@ from quodlibet.plugins import PluginImportException
 from quodlibet.util.path import xdg_get_system_data_dirs
 from quodlibet.qltk import Icons
 
+DEFAULT_SEARCH_PROVIDER_DIR = "/usr/share/gnome-shell/search-providers"
+
 
 def get_gs_provider_files():
     """Return all installed search provider files for GNOME Shell"""
@@ -57,21 +54,22 @@ def get_gs_provider_files():
 def check_ini_installed():
     """Raise if no GNOME Shell ini file for Quod Libet is found"""
 
-    quodlibet_installed = False
+    provider_installed = False
     for path in get_gs_provider_files():
         try:
             with open(path, "rb") as handle:
                 data = handle.read().decode("utf-8", "replace")
                 if SearchProvider.BUS_NAME in data:
-                    quodlibet_installed = True
+                    provider_installed = True
                     break
         except EnvironmentError:
             pass
 
-    if not quodlibet_installed:
-        raise PluginImportException(
-            _("No GNOME Shell search provider for "
-              "Quod Libet installed."))
+    if not provider_installed:
+        path = DEFAULT_SEARCH_PROVIDER_DIR
+        msg = (_("No GNOME Shell search provider for Quod Libet installed.") + " \n" +
+               _("Have you copied the ini file to %s (or similar)?") % path)
+        raise PluginImportException(msg)
 
 
 class GnomeSearchProvider(EventPlugin):
@@ -91,8 +89,7 @@ class GnomeSearchProvider(EventPlugin):
         gc.collect()
 
 
-ENTRY_ICON = (". GThemedIcon audio-mpeg gnome-mime-audio-mpeg "
-              "audio-x-generic")
+ENTRY_ICON = ". GThemedIcon audio-mpeg gnome-mime-audio-mpeg audio-x-generic"
 
 
 def get_song_id(song):
@@ -126,16 +123,16 @@ class SearchProvider:
       <interface name="org.gnome.Shell.SearchProvider2">
         <method name="GetInitialResultSet">
           <arg direction="in"  type="as" name="terms" />
-          <arg direction="out" type="as" />
+          <arg direction="out" type="as" name="results" />
         </method>
         <method name="GetSubsearchResultSet">
           <arg direction="in"  type="as" name="previous_results" />
           <arg direction="in"  type="as" name="terms" />
-          <arg direction="out" type="as" />
+          <arg direction="out" type="as" name="results" />
         </method>
         <method name="GetResultMetas">
           <arg direction="in"  type="as" name="identifiers" />
-          <arg direction="out" type="aa{sv}" />
+          <arg direction="out" type="aa{sv}" name="metas" />
         </method>
         <method name="ActivateResult">
           <arg direction="in"  type="s" name="identifier" />

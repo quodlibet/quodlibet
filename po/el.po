@@ -266,7 +266,7 @@ msgstr "_Εφαρμογή"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3467,7 +3467,7 @@ msgstr "Έλεγχος του ηχητικού τόνου."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 #, fuzzy
 msgid "Export Playlist to Folder"
 msgstr "Εξαγωγή της λίστας αναπαραγωγής στο Squeezebox"
@@ -3487,60 +3487,63 @@ msgstr "Δεν βρέθηκαν σταθμοί"
 msgid "Filename pattern:"
 msgstr "_Πρότυπο ονόματος αρχείου:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Αδυναμία εξαγωγής λίστας αναπαραγωγής"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 #, fuzzy
 msgid "Default filename pattern:"
 msgstr "_Πρότυπο ονόματος αρχείου:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "_Εντάξει"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 #, fuzzy
 msgid "Export to Sonos Playlist"
 msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+msgid "Exports a playlist to Sonos by matching tracks."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 #, fuzzy
 msgid "Error finding Sonos device(s)"
 msgstr "Σφάλμα στην εύρεση του διακομιστή Squeezebox"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 #, fuzzy
 msgid "Error finding Sonos. Please check settings"
 msgstr "Σφάλμα στην εύρεση του %s. Παρακαλώ ελέγξτε τις ρυθμίσεις"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
-msgid "Export to Sonos playlist"
-msgstr "Εξαγωγή σε λίστα του Squeezebox"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr ""
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 #, fuzzy
@@ -8268,6 +8271,10 @@ msgstr ""
 "πολλούς διαφορετικούς τρόπους προβολής της μουσικοθήκης σας, καθώς και "
 "υποστήριξη για διαδικτυακό ραδιόφωνο και ροών ήχου. Έχει απίστευτα ευέλικτες "
 "δυνατότητες επεξεργασίας και αναζήτησης μεταδεδομένων ετικετών μουσικής."
+
+#, fuzzy
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Εξαγωγή σε λίστα του Squeezebox"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"

@@ -145,8 +145,8 @@ class AdvancedPreferences(EventPlugin):
                  "UTF-8 is always tried first, and Latin-1 is always tried last.")),
             text_config(
                 "settings", "search_tags",
-                "Search tags:",
-                ("Tags which get searched in addition to "
+                "Extra search tags:",
+                ("Tags that get searched in addition to "
                  "the ones present in the song list. Separate with \",\"")),
             text_config("editing", "multi_line_tags",
                         "Multi-line tags:",

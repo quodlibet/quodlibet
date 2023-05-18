@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-03-15 12:40+0000\n"
+"PO-Revision-Date: 2023-05-01 03:50+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.16.2-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -259,7 +259,7 @@ msgstr "適用(_A)"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3077,7 +3077,7 @@ msgstr "システムトレイから Quod Libet を制御します。"
 #: quodlibet/ext/events/trayicon/menu.py:41
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr "%(application-name)s の表示(_S)"
+msgstr "%(application-name)sの表示(_S)"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
@@ -3412,7 +3412,7 @@ msgstr "オーディオストリームのピッチを制御します。"
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "フォルダにプレイリストをエクスポート"
 
@@ -3428,29 +3428,29 @@ msgstr "保存先フォルダ:"
 msgid "Filename pattern:"
 msgstr "ファイル名のパターン:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr "ファイルをフォルダにコピーする形でプレイリストをエクスポートします。"
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "プレイリストをエクスポートできません"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr "保存先への書き込み権限があることを確認してください。"
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "デフォルトのファイル名のパターン:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "OK(_O)"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
@@ -3458,29 +3458,31 @@ msgstr ""
 "新しいプレイリスト名を入力、\n"
 "または既存の Sonos プレイリストを選択して上書きしてください"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
-msgid "Export to Sonos Playlist"
-msgstr "Sonosプレイリストにエクスポート"
-
 #: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
-msgstr ""
-"Quod Libet プレイリストを Sonos プレイリストにエクスポートします (両方がディ"
-"レクトリ構造を共有している場合)。"
+msgid "Export to Sonos Playlist"
+msgstr "Sonos プレイリストにエクスポート"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "マッチングしたトラックを Sonos プレイリストにエクスポートします。"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
 msgstr "Sonos デバイスの検索エラー"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 msgid "Error finding Sonos. Please check settings"
 msgstr "Sonos の検索中にエラーが発生しました。設定を確認してください"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-msgid "Export to Sonos playlist"
-msgstr "Sonosプレイリストにエクスポート"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr "既存の Sonos プレイリスト「%s」の削除に失敗しました:"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr "プレイリスト「%(playlist)r」(%(total)dトラック) にエクスポート"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -6838,9 +6840,8 @@ msgid "Edit Bookmarks…"
 msgstr "ブックマークの編集…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "中止(_S)"
+msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
@@ -7014,7 +7015,7 @@ msgstr "全てのエラーを無視(_A)"
 #. number of steps.
 #: quodlibet/qltk/renamefiles.py:347 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
-msgstr "中止(_S)"
+msgstr "停止(_S)"
 
 #: quodlibet/qltk/renamefiles.py:349
 msgid "_Continue"
@@ -8038,6 +8039,16 @@ msgstr ""
 "な方法を提供するのみならず、インターネットラジオやオーディオフィードにも対応"
 "しています。また、非常に柔軟なメタデータタグの編集および検索機能を備えていま"
 "す。"
+
+#~ msgid ""
+#~ "Exports a playlist to Sonos playlist, provided both share a directory "
+#~ "structure."
+#~ msgstr ""
+#~ "Quod Libet プレイリストを Sonos プレイリストにエクスポートします (両方が"
+#~ "ディレクトリ構造を共有している場合)。"
+
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Sonosプレイリストにエクスポート"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"

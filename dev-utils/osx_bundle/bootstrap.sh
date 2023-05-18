@@ -2,6 +2,7 @@
 
 set -e
 
+# shellcheck source-path=SCRIPTDIR
 source env.sh
 
 # to allow bootstrapping again, try to delete everything first
@@ -11,7 +12,9 @@ rm -Rf "$HOME/.local"
 rm -f "$HOME/.jhbuildrc"
 rm -f "$HOME/.jhbuildrc-custom"
 
-JHBUILD_REVISION="fe1552ad15999f023b01bc009dabb1b1956cd9ac"
+rustup install 1.69.0
+
+JHBUILD_REVISION="624bcf68591aaa17d9f6119c8b9672b92ac6120c"
 
 mkdir -p "$HOME"
 git clone https://gitlab.gnome.org/GNOME/jhbuild.git "$QL_OSXBUNDLE_JHBUILD_DEST"

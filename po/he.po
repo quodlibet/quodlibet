@@ -268,7 +268,7 @@ msgstr "_החלה"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3399,7 +3399,7 @@ msgstr "שולט על גובה הצליל של זרם שמע."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "יצוא רשימת השמעה לתקיה"
 
@@ -3415,59 +3415,63 @@ msgstr "תיקית יעד:"
 msgid "Filename pattern:"
 msgstr "דפוס שם קובץ:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr "יצוא רשימת שמע תוך העתקת קבצים לתיקיה."
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "לא ניתן לייצא רשימת ההשמעה"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr "נא לוודא כי קימות הרשאות כתיבה ליעד."
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "דפוס שם קובץ ברירת מחדל:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "_אוקיי"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 #, fuzzy
 msgid "Export to Sonos Playlist"
 msgstr "יצוא כרשימת השמעה"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
-msgstr ""
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+#, fuzzy
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "יצוא רשימת שמע תוך העתקת קבצים לתיקיה."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 #, fuzzy
 msgid "Error finding Sonos device(s)"
 msgstr "אירעה שגיאה במציאת שרת סקוויזבוקס"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 #, fuzzy
 msgid "Error finding Sonos. Please check settings"
 msgstr "אירעה שגיאה במציאת %s. נא לבדוק הגדרות"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-#, fuzzy
-msgid "Export to Sonos playlist"
-msgstr "יצוא רשימת השמעה לסקוויזבוקס"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr ""
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -8048,6 +8052,10 @@ msgstr ""
 "קְווֹדְלִיבֵּט היא תכנה לניהול מוזיקה. המספקת דרכים שונות להצגת ספריית השמע, כמו "
 "גם תמיכה ברדיו מרשתת והזנות שמע. התכנה בעלת גמישות מרבית לעריכת תגי מטה-דטה "
 "ויכולות חיפוש."
+
+#, fuzzy
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "יצוא רשימת השמעה לסקוויזבוקס"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"

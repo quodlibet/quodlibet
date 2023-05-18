@@ -11,11 +11,13 @@
 
 set -e
 
+# shellcheck source-path=SCRIPTDIR
 source env.sh
-DIR="$( cd "$( dirname "$0" )" && pwd )"
 
 function main {
     local GIT_TAG=${1:-"main"}
+
+    rm -rf "$QL_OSXBUNDLE_BUNDLE_DEST"
 
     PYTHON="python3"
     PYTHONID="python"$(jhbuild run "${PYTHON}" -c \
@@ -39,10 +41,13 @@ function main {
     find "$APP_PREFIX"/lib/"$PYTHONID" -name '*.whl' -delete
     rm -Rf "$APP_PREFIX"/lib/"$PYTHONID"/*/test
     rm -Rf "${APP_PREFIX}"/lib/"${PYTHONID}"/test
-    find "${APP_PREFIX}"/lib/"${PYTHON_ID}" -type d -name "test*" \
+    find "${APP_PREFIX}"/lib/"${PYTHONID}" -type d -name "test*" \
         -prune -exec rm -rf {} \;
-    find "${APP_PREFIX}"/lib/"${PYTHON_ID}" -type d -name "*_test*" \
+    find "${APP_PREFIX}"/lib/"${PYTHONID}" -type d -name "*_test*" \
         -prune -exec rm -rf {} \;
+
+    # strip debug symbols
+    find "${APP_PREFIX}"/lib -type f -name "*.dylib" -exec strip -S {} \;
 
     # remove some larger icon theme files
     rm -Rf "${APP_PREFIX}/share/icons/Adwaita/cursors"
@@ -62,7 +67,7 @@ function main {
     git clone ../.. "$CLONE"
     (cd "$CLONE"; git checkout "$GIT_TAG")
     jhbuild run "$PYTHON" "$CLONE"/setup.py install \
-        --prefix="$APP_PREFIX" \
+        --prefix="$APP_PREFIX" --root="/" \
         --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
     rm -Rf "$CLONE"
 

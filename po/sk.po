@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-08 19:49+0000\n"
+"PO-Revision-Date: 2023-05-11 20:47+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 4.18-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -266,7 +266,7 @@ msgstr "_Použiť"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3470,7 +3470,7 @@ msgstr "Ovláda výšku tónov zvukového prúdu."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "Exportovať zoznam prehrávania do priečinka"
 
@@ -3486,29 +3486,29 @@ msgstr "Cieľový priečinok:"
 msgid "Filename pattern:"
 msgstr "_Vzor názvu súborov:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr "Vyexportuje zoznam prehrávania skopírovaním súborov do priečinka."
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Nepodarilo sa exportovať zoznam prehrávania"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr "Uistite sa, že máte právo zapisovať do cieľového umiestnenia."
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "Predvolený vzor názvu súborov:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "D_obre"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
@@ -3516,29 +3516,31 @@ msgstr ""
 "Zadajte názov nového zoznamu prehrávania\n"
 "alebo vyberte jestvujúci zoznam prehrávania Sonos na prepísanie"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid "Export to Sonos Playlist"
 msgstr "Exportovať do zoznamu prehrávania Sonos"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
-msgstr ""
-"Vyexportuje zoznam prehrávania do zoznamu prehrávania Sonos pokiaľ obidva "
-"zdieľajú usporiadanie priečinka."
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+msgid "Exports a playlist to Sonos by matching tracks."
+msgstr "Exportuje zoznam skladieb do systému Sonos priraďovaním skladieb."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
 msgstr "Nastala chyba pri vyhľadávaní zariadení Sonos"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 msgid "Error finding Sonos. Please check settings"
 msgstr "Chyba pri vyhľadávaní Sonos. Preverte nastavenia"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-msgid "Export to Sonos playlist"
-msgstr "Exportovať do zoznamu prehrávania Sonos"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr "Nepodarilo sa odstrániť existujúci zoznam skladieb Sonos %s:"
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr "Exportovať do zoznamu skladieb %(playlist)r (%(total)d tracks)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -6962,9 +6964,8 @@ msgid "Edit Bookmarks…"
 msgstr "Upraviť záložky…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "_Zastaviť"
+msgstr "Zastaviť"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
@@ -8183,6 +8184,16 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#~ msgid ""
+#~ "Exports a playlist to Sonos playlist, provided both share a directory "
+#~ "structure."
+#~ msgstr ""
+#~ "Vyexportuje zoznam prehrávania do zoznamu prehrávania Sonos pokiaľ obidva "
+#~ "zdieľajú usporiadanie priečinka."
+
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Exportovať do zoznamu prehrávania Sonos"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"

@@ -78,7 +78,7 @@ class ErrorMessage(Message):
 
 
 class WarningMessage(Message):
-    """Like Message, but uses an warning-indicating picture."""
+    """Like Message, but uses a warning-indicating picture."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(

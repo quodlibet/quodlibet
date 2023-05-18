@@ -112,7 +112,7 @@ flake8==5.0.4
 "
 
     build_pip install --no-binary ":all:" \
-        --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr "\\n" " ")
+        --force-reinstall "$(echo "$PIP_REQUIREMENTS" | tr "\\n" " ")"
 
     build_pacman --noconfirm -Rdds \
         mingw-w64-"${ARCH}"-shared-mime-info \

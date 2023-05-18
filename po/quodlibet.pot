@@ -2352,15 +2352,20 @@ msgstr ""
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:73
+#: quodlibet/ext/events/searchprovider.py:70
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:79
+#: quodlibet/ext/events/searchprovider.py:71
+#, python-format
+msgid "Have you copied the ini file to %s (or similar)?"
+msgstr ""
+
+#: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:80
+#: quodlibet/ext/events/searchprovider.py:78
 msgid "Allows GNOME Shell to search the library."
 msgstr ""
 
@@ -3281,7 +3286,7 @@ msgstr ""
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr ""
 
@@ -3297,20 +3302,20 @@ msgstr ""
 msgid "Filename pattern:"
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr ""
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr ""
 

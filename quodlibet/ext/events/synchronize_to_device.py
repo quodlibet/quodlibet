@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 Jan Korte
 #           2020 Daniel Petrescu
 #

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")"; pwd)
+bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")" || exit; pwd)
 bundle_contents="$bundle"/Contents
 bundle_res="$bundle_contents"/Resources
 bundle_lib="$bundle_res"/lib
@@ -36,15 +36,16 @@ if /bin/expr "x$1" : '^x-psn_' > /dev/null; then
 fi
 
 #Set $PYTHON to point inside the bundle
-export PYTHON=$(echo "$bundle_contents/MacOS/python"*)
-export PYTHONHOME="$bundle_res"
+PYTHON=$(echo "$bundle_contents/MacOS/python"*)
+PYTHONHOME="$bundle_res"
+export PYTHON PYTHONHOME
 
 export GIO_MODULE_DIR="$bundle_lib/gio/modules"
 
 # GTLS_SYSTEM_CA_FILE sets the path in the gnutls backend of glib-networking
 # (the env var gets respected because we patch it.. not available upstream)
-export GTLS_SYSTEM_CA_FILE=$(\
-    echo "$bundle_lib/python"*"/site-packages/certifi/cacert.pem")
+GTLS_SYSTEM_CA_FILE=$(echo "$bundle_lib/python"*"/site-packages/certifi/cacert.pem")
+export GTLS_SYSTEM_CA_FILE
 # Same for OpenSSL
 export SSL_CERT_FILE="$GTLS_SYSTEM_CA_FILE"
 

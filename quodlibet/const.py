@@ -83,9 +83,9 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"Copyright 2004-2022"
+COPYRIGHT = "Copyright 2004-2023"
 
-AUTHORS = sorted(u"""\
+AUTHORS = sorted("""\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
@@ -203,7 +203,7 @@ a-vrma@github
 Phidica@github
 """.strip().split("\n"))
 
-TRANSLATORS = sorted(u"""
+TRANSLATORS = sorted("""
 Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
@@ -269,7 +269,7 @@ Kirill Romanov (ru)
 wvxwxvw@github (ru)
 """.strip().splitlines())
 
-ARTISTS = sorted(u"""\
+ARTISTS = sorted("""\
 Tobias
 Jakub Steiner
 Fabien Devaux

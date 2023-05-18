@@ -268,7 +268,7 @@ msgstr "Toep_assen"
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_folder.py:38
-#: quodlibet/ext/playlist/export_to_sonos.py:95
+#: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
 #: quodlibet/ext/songsmenu/brainz/widgets.py:354
@@ -3465,7 +3465,7 @@ msgstr "Bepaalt de toonhoogte van een audiostream."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
-#: quodlibet/ext/playlist/export_to_folder.py:147
+#: quodlibet/ext/playlist/export_to_folder.py:146
 msgid "Export Playlist to Folder"
 msgstr "Afspeellijst exporteren naar map"
 
@@ -3481,30 +3481,30 @@ msgstr "Bestemming:"
 msgid "Filename pattern:"
 msgstr "Bestandsnaampatroon:"
 
-#: quodlibet/ext/playlist/export_to_folder.py:100
+#: quodlibet/ext/playlist/export_to_folder.py:99
 msgid "Exports a playlist by copying files to a folder."
 msgstr ""
 "Exporteert een afspeellijst door de bestanden te kopiëren naar een map."
 
-#: quodlibet/ext/playlist/export_to_folder.py:121
+#: quodlibet/ext/playlist/export_to_folder.py:120
 #: quodlibet/ext/songsmenu/playlist.py:143
 msgid "Unable to export playlist"
 msgstr "Kan afspeellijst niet exporteren"
 
-#: quodlibet/ext/playlist/export_to_folder.py:122
+#: quodlibet/ext/playlist/export_to_folder.py:121
 msgid "Ensure you have write access to the destination."
 msgstr "Zorg dat je schrijfrechten hebt op de map."
 
-#: quodlibet/ext/playlist/export_to_folder.py:165
+#: quodlibet/ext/playlist/export_to_folder.py:164
 msgid "Default filename pattern:"
 msgstr "Standaard bestandsnaampatroon:"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:96
+#: quodlibet/ext/playlist/export_to_sonos.py:98
 #: quodlibet/ext/_shared/squeezebox/util.py:20 quodlibet/qltk/getstring.py:21
 msgid "_OK"
 msgstr "_Oké"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:102
+#: quodlibet/ext/playlist/export_to_sonos.py:104
 msgid ""
 "Type a new playlist name,\n"
 "or choose an existing Sonos playlist to overwrite"
@@ -3512,29 +3512,33 @@ msgstr ""
 "Geef de afspeellijst een nieuwe naam\n"
 "of kies een te overschrijven Sonos-afspeellijst"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:131
+#: quodlibet/ext/playlist/export_to_sonos.py:132
 msgid "Export to Sonos Playlist"
 msgstr "Exporteren als Sonos-afspeellijst"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:132
-msgid ""
-"Exports a playlist to Sonos playlist, provided both share a directory "
-"structure."
+#: quodlibet/ext/playlist/export_to_sonos.py:133
+#, fuzzy
+msgid "Exports a playlist to Sonos by matching tracks."
 msgstr ""
-"Exporteert een afspeellijst als Sonos-afspeellijst, mits deze dezelfde "
-"mappenstructuur delen."
+"Exporteert een afspeellijst door de bestanden te kopiëren naar een map."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:223
+#: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
 msgstr "Fout bij zoeken naar Sonos-apparaten"
 
-#: quodlibet/ext/playlist/export_to_sonos.py:224
+#: quodlibet/ext/playlist/export_to_sonos.py:247
 msgid "Error finding Sonos. Please check settings"
 msgstr "Fout bij zoeken naar Sonos. Controleer de instellingen."
 
-#: quodlibet/ext/playlist/export_to_sonos.py:241
-msgid "Export to Sonos playlist"
-msgstr "Exporteren naar Sonos-afspeellijst"
+#: quodlibet/ext/playlist/export_to_sonos.py:264
+#, python-format
+msgid "Failed to delete existing Sonos playlist %s:"
+msgstr ""
+
+#: quodlibet/ext/playlist/export_to_sonos.py:275
+#, python-format
+msgid "Export to playlist %(playlist)r (%(total)d tracks)"
+msgstr ""
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -8184,6 +8188,16 @@ msgstr ""
 "verschillende manieren om je audioverzameling te tonen en ondersteunt online-"
 "radiostations en audiofeeds. Het biedt zeer flexibele mogelijkheden om "
 "metagegevenstags te bewerken en je verzameling te doorzoeken."
+
+#~ msgid ""
+#~ "Exports a playlist to Sonos playlist, provided both share a directory "
+#~ "structure."
+#~ msgstr ""
+#~ "Exporteert een afspeellijst als Sonos-afspeellijst, mits deze dezelfde "
+#~ "mappenstructuur delen."
+
+#~ msgid "Export to Sonos playlist"
+#~ msgstr "Exporteren naar Sonos-afspeellijst"
 
 #, python-format
 #~ msgid "Unable to add <b>%s</b>"
