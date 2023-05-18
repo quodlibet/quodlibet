@@ -18,9 +18,11 @@ from quodlibet.util.cover.http import ApiCoverSourcePlugin
 from senf import fsnative
 from tests.plugin import PluginTestCase, plugins
 
+
 AN_ARTIST = "The Beatles"
 AN_ALBUM = "Let It Be"
 A_SONG = AudioFile({"album": AN_ALBUM, "artist": AN_ARTIST})
+AN_MBID = "82a4adf2-008b-3236-bb7a-bd93d7ed9677"
 
 
 def delay_rerun(self, *args):
@@ -73,7 +75,7 @@ def test_live_cover_download(plugin_class_name):
     plugin_cls = plugins[plugin_class_name].cls
     song = A_SONG
     if "musicbrainz" in plugin_class_name:
-        song["musicbrainz_albumid"] = "82a4adf2-008b-3236-bb7a-bd93d7ed9677"
+        song["musicbrainz_albumid"] = AN_MBID
     plugin: ApiCoverSourcePlugin = plugin_cls(A_SONG)
 
     sig = plugin.connect("search-complete", good, results)
