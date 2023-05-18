@@ -8,7 +8,7 @@
 
 from dataclasses import dataclass, field
 from time import time, sleep
-from typing import Any, Optional
+from typing import Any, Optional, List
 
 import pytest as pytest
 from gi.repository import Gtk
@@ -53,7 +53,7 @@ class TCovers(PluginTestCase):
 
 @dataclass
 class Results:
-    covers: list[Any] = field(default_factory=list)
+    covers: List[Any] = field(default_factory=list)
     success: Optional[bool] = None
 
 
