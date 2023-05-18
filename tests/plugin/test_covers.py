@@ -6,6 +6,12 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+
+import gi
+
+gi.require_version('Soup', '3.0')
+from gi.repository import Gtk
+
 from dataclasses import dataclass, field
 from time import time, sleep
 from typing import Any, Optional, List
