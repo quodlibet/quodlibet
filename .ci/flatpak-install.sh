@@ -2,9 +2,8 @@
 
 set -e
 
-sudo add-apt-repository --yes ppa:alexlarsson/flatpak
-sudo apt-get update
-sudo apt-get install -y ca-certificates flatpak xvfb libsoup-3.0-0
+sudo apt-get update -qq
+sudo apt-get install -qq -y ca-certificates flatpak xvfb libsoup-3.0-0
 
 flatpak remote-add --user flathub https://dl.flathub.org/repo/flathub.flatpakrepo
 flatpak install --user -y flathub io.github.quodlibet.QuodLibet
