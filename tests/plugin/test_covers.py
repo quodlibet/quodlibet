@@ -88,7 +88,7 @@ def test_live_cover_download(plugin_class_name):
         while time() - start < 5 and results.success is None:
             Gtk.main_iteration_do(False)
 
-        assert results.success is not None, f"No signal triggered"
+        assert results.success is not None, "No signal triggered"
         assert results.success, f"Didn't succeed: {results.covers}"
         covers = results.covers
         assert covers, "Didn't download a cover"
