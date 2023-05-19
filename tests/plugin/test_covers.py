@@ -62,8 +62,8 @@ class Results:
     covers: List[Any] = field(default_factory=list)
     success: Optional[bool] = None
 
-
-@pytest.mark.flaky(max_runs=1, min_passes=1, rerun_filter=delay_rerun)
+@pytest.mark.network
+@pytest.mark.flaky(max_runs=3, min_passes=1, rerun_filter=delay_rerun)
 @pytest.mark.parametrize("plugin_class_name",
                          ["lastfm-cover", "discogs-cover", "musicbrainz-cover"])
 def test_live_cover_download(plugin_class_name):
