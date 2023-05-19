@@ -62,6 +62,7 @@ class Results:
     covers: List[Any] = field(default_factory=list)
     success: Optional[bool] = None
 
+
 @pytest.mark.network
 @pytest.mark.flaky(max_runs=3, min_passes=1, rerun_filter=delay_rerun)
 @pytest.mark.parametrize("plugin_class_name",
