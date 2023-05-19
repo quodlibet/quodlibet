@@ -6,8 +6,9 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-
 import gi
+
+from tests import run_gtk_loop
 
 gi.require_version('Soup', '3.0')
 from gi.repository import Gtk
@@ -62,17 +63,25 @@ class Results:
     success: Optional[bool] = None
 
 
-@pytest.mark.flaky(max_runs=5, min_passes=2, rerun_filter=delay_rerun)
+@pytest.mark.flaky(max_runs=1, min_passes=1, rerun_filter=delay_rerun)
 @pytest.mark.parametrize("plugin_class_name",
                          ["lastfm-cover", "discogs-cover", "musicbrainz-cover"])
 def test_live_cover_download(plugin_class_name):
     results = Results()
+    # Just in case overhanging events
+    run_gtk_loop()
+
+    def search_complete(source, data, results):
+        results.covers = data
 
     def good(source, data, results):
         results.success = True
-        results.covers = data
+        header = data.read(4)
+        data.close()
+        assert header.startswith(b"\x89PNG") or header.startswith(b"\xFF\xD8")
 
     def bad(source, error, results):
+        # For debugging
         results.covers = error
         results.success = False
 
@@ -80,10 +89,11 @@ def test_live_cover_download(plugin_class_name):
     song = A_SONG
     if "musicbrainz" in plugin_class_name:
         song["musicbrainz_albumid"] = AN_MBID
-    plugin: ApiCoverSourcePlugin = plugin_cls(A_SONG)
+    plugin: ApiCoverSourcePlugin = plugin_cls(song)
 
-    sig = plugin.connect("search-complete", good, results)
-    sig2 = plugin.connect("fetch-failure", bad, results)
+    sig = plugin.connect("search-complete", search_complete, results)
+    sig2 = plugin.connect("fetch-success", good, results)
+    sig3 = plugin.connect("fetch-failure", bad, results)
     try:
         start = time()
         if "musicbrainz" in plugin_class_name:
@@ -96,7 +106,7 @@ def test_live_cover_download(plugin_class_name):
         assert results.success is not None, "No signal triggered"
         assert results.success, f"Didn't succeed: {results.covers}"
         covers = results.covers
-        assert covers, "Didn't download a cover"
+        assert covers, "Didn't get search results"
         first = covers[0]
         assert first["cover"].startswith("http")
         assert "dimensions" in first
@@ -106,3 +116,4 @@ def test_live_cover_download(plugin_class_name):
     finally:
         plugin.disconnect(sig)
         plugin.disconnect(sig2)
+        plugin.disconnect(sig3)
