@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-01 03:50+0000\n"
+"PO-Revision-Date: 2023-05-20 14:48+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -2445,7 +2445,7 @@ msgstr ""
 #: quodlibet/ext/events/searchprovider.py:71
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "iniファイルを %s (または同様の場所) にコピーしましたか?"
 
 #: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
