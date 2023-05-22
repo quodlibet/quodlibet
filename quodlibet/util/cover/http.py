@@ -1,5 +1,5 @@
 # Copyright 2013 Simonas Kazlauskas
-#      2016-2018 Nick Boultbee
+#      2016-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,7 +43,10 @@ class HTTPDownloadMixin:
                              self.cancellable, replaced, None)
 
     def _download_received(self, request, ostream):
-        ostream.close(None)
+        try:
+            ostream.close(None)
+        except GLib.GError as e:
+            print_w(f"Got {e!r} trying to close handle after download")
         self.emit('fetch-success', self.cover)
 
     def _receive_fail(self, request, exception, gfile):
@@ -52,8 +55,10 @@ class HTTPDownloadMixin:
                 gfile.delete_finish(task)
             except GLib.GError:
                 print_w('Could not clean up cover which failed to download')
-        ostream = request.ostream
-        ostream.close(None)
+        try:
+            request.ostream.close(None)
+        except GLib.GError as e:
+            print_w(f"Got {e!r} trying to close handle during failure")
         gfile.delete_async(GLib.PRIORITY_DEFAULT, None, deleted, None)
 
     def _download_failure(self, request, exception):
@@ -76,16 +81,14 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
         if not self.url:
             return self.emit('search-complete', [])
         msg = Soup.Message.new('GET', self.url)
-        download_json(msg, self.cancellable, self._handle_search_response,
-                      None)
+        download_json(msg, self.cancellable, self._handle_search_response, None)
 
     def _handle_search_response(self, message, json_dict, data=None):
         self.emit('search-complete', [])
 
     def fetch_cover(self):
         if not self.url:
-            return self.fail('Not enough data to get cover from %s'
-                             % type(self).__name__)
+            return self.fail(f"Not enough data to get cover from {type(self).__name__}")
 
         def search_complete(self, res):
             self.disconnect(sci)
