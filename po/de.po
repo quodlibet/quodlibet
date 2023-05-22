@@ -266,7 +266,7 @@ msgstr "_Anwenden"
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:250
 #: quodlibet/browsers/playlists/menu.py:87 quodlibet/errorreport/ui.py:103
-#: quodlibet/ext/events/synchronize_to_device.py:391
+#: quodlibet/ext/events/synchronize_to_device.py:390
 #: quodlibet/ext/playlist/export_to_folder.py:38
 #: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
@@ -1437,7 +1437,7 @@ msgstr "Anzeigemuster b_earbeiten …"
 
 #. Start preview button
 #: quodlibet/ext/events/animosd/prefs.py:292
-#: quodlibet/ext/events/synchronize_to_device.py:201
+#: quodlibet/ext/events/synchronize_to_device.py:200
 #: quodlibet/ext/events/trayicon/prefs.py:86
 msgid "Preview"
 msgstr "Vorschau"
@@ -1831,7 +1831,7 @@ msgstr "Vorgabename zum Speichern:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:336
-#: quodlibet/ext/events/synchronize_to_device.py:392
+#: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
 #: quodlibet/ext/songsmenu/brainz/widgets.py:355
@@ -2483,15 +2483,20 @@ msgstr "Bildschirmschoner-Pause"
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "Pausiert die Wiedergabe während der GNOME-Bildschirmschoner aktiv ist."
 
-#: quodlibet/ext/events/searchprovider.py:73
+#: quodlibet/ext/events/searchprovider.py:70
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "Kein GNOME-Shell-Suchprovider für Quod Libet installiert."
 
-#: quodlibet/ext/events/searchprovider.py:79
+#: quodlibet/ext/events/searchprovider.py:71
+#, python-format
+msgid "Have you copied the ini file to %s (or similar)?"
+msgstr ""
+
+#: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
 msgstr "GNOME-Suchprovider"
 
-#: quodlibet/ext/events/searchprovider.py:80
+#: quodlibet/ext/events/searchprovider.py:78
 msgid "Allows GNOME Shell to search the library."
 msgstr "Erlaubt es GNOME Shell, die Bibliothek zu durchsuchen."
 
@@ -2621,55 +2626,55 @@ msgstr "Nur Quellen, die Anpassen der Titelposition erlauben"
 msgid "Plugin Options"
 msgstr "Pluginoptionen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:52
+#: quodlibet/ext/events/synchronize_to_device.py:51
 msgid "Pending copy"
 msgstr "Kopieren steht aus"
 
-#: quodlibet/ext/events/synchronize_to_device.py:53
+#: quodlibet/ext/events/synchronize_to_device.py:52
 msgid "Pending delete"
 msgstr "Löschen steht aus"
 
-#: quodlibet/ext/events/synchronize_to_device.py:54
+#: quodlibet/ext/events/synchronize_to_device.py:53
 msgid "delete"
 msgstr "Löschen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:55
+#: quodlibet/ext/events/synchronize_to_device.py:54
 msgid "Skip"
 msgstr "Überspringen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:56
+#: quodlibet/ext/events/synchronize_to_device.py:55
 msgid "DUPLICATE"
 msgstr "DUPLIKAT"
 
-#: quodlibet/ext/events/synchronize_to_device.py:57
+#: quodlibet/ext/events/synchronize_to_device.py:56
 msgid "Synchronizing"
 msgstr "Synchronisiere"
 
-#: quodlibet/ext/events/synchronize_to_device.py:58
+#: quodlibet/ext/events/synchronize_to_device.py:57
 msgid "Deleting"
 msgstr "Lösche"
 
-#: quodlibet/ext/events/synchronize_to_device.py:59
+#: quodlibet/ext/events/synchronize_to_device.py:58
 msgid "Success"
 msgstr "Erfolg"
 
-#: quodlibet/ext/events/synchronize_to_device.py:60
+#: quodlibet/ext/events/synchronize_to_device.py:59
 msgid "FAILURE"
 msgstr "FEHLSCHLAG"
 
-#: quodlibet/ext/events/synchronize_to_device.py:61
+#: quodlibet/ext/events/synchronize_to_device.py:60
 msgid "Skipped existing file"
 msgstr "Existierende Datei ausgelassen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:81
+#: quodlibet/ext/events/synchronize_to_device.py:80
 msgid "Cannot set the filename of a song."
 msgstr "Kann den Dateinamen eines Titels nicht setzen."
 
-#: quodlibet/ext/events/synchronize_to_device.py:87
+#: quodlibet/ext/events/synchronize_to_device.py:86
 msgid "Synchronize to Device"
 msgstr "Zu Gerät synchronisieren"
 
-#: quodlibet/ext/events/synchronize_to_device.py:88
+#: quodlibet/ext/events/synchronize_to_device.py:87
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
@@ -2677,15 +2682,15 @@ msgstr ""
 "Synchronisiert alle Titel, die auf die ausgewählten Suchläufe zutreffen, mit "
 "dem angegebenen Ordner."
 
-#: quodlibet/ext/events/synchronize_to_device.py:141
+#: quodlibet/ext/events/synchronize_to_device.py:140
 msgid "Synchronize the following saved searches:"
 msgstr "Die folgenden gespeicherten Suchläufe synchronisieren:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:147
+#: quodlibet/ext/events/synchronize_to_device.py:146
 msgid "The absolute path to your export location"
 msgstr "Der absolute Pfad zum Exportverzeichnis"
 
-#: quodlibet/ext/events/synchronize_to_device.py:164
+#: quodlibet/ext/events/synchronize_to_device.py:163
 msgid ""
 "All pre-existing files in the destination folder that aren't in the saved "
 "searches will be deleted."
@@ -2693,7 +2698,7 @@ msgstr ""
 "Alle im Zielordner existierenden Dateien, die nicht in den gewählten "
 "Suchläufen enthalten sind, werden gelöscht."
 
-#: quodlibet/ext/events/synchronize_to_device.py:168
+#: quodlibet/ext/events/synchronize_to_device.py:167
 msgid ""
 "For devices mounted with MTP, export to a local destination folder, then "
 "transfer it to your device with rsync. Or, when syncing many files to an "
@@ -2704,47 +2709,47 @@ msgstr ""
 "nutzen Sie adb-sync, was deutlich schneller ist, wenn Sie viele Dateien zu "
 "einem Android-Gerät synchronisieren."
 
-#: quodlibet/ext/events/synchronize_to_device.py:179
+#: quodlibet/ext/events/synchronize_to_device.py:178
 msgid "Destination path:"
 msgstr "Zielpfad:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:185
+#: quodlibet/ext/events/synchronize_to_device.py:184
 #: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr "Muster für Dateipfade"
 
-#: quodlibet/ext/events/synchronize_to_device.py:185
+#: quodlibet/ext/events/synchronize_to_device.py:184
 #: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
 msgstr "Gespeicherte Muster bearbeiten …"
 
-#: quodlibet/ext/events/synchronize_to_device.py:190
+#: quodlibet/ext/events/synchronize_to_device.py:189
 msgid "The structure of the exported filenames, based on their tags"
 msgstr "Die Struktur der exportierten Dateinamen, basierend auf den Metadaten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:196
+#: quodlibet/ext/events/synchronize_to_device.py:195
 msgid "Export pattern:"
 msgstr "Exportmuster:"
 
 #. Stop preview button
-#: quodlibet/ext/events/synchronize_to_device.py:208
+#: quodlibet/ext/events/synchronize_to_device.py:207
 msgid "Stop preview"
 msgstr "Vorschau anhalten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:227
+#: quodlibet/ext/events/synchronize_to_device.py:226
 #: quodlibet/ext/songsmenu/fingerprint/search.py:144
 msgid "Status"
 msgstr "Status"
 
-#: quodlibet/ext/events/synchronize_to_device.py:234
+#: quodlibet/ext/events/synchronize_to_device.py:233
 msgid "Source File"
 msgstr "Quelldatei"
 
-#: quodlibet/ext/events/synchronize_to_device.py:243
+#: quodlibet/ext/events/synchronize_to_device.py:242
 msgid "Export Path"
 msgstr "Exportpfad"
 
-#: quodlibet/ext/events/synchronize_to_device.py:253
+#: quodlibet/ext/events/synchronize_to_device.py:252
 msgid ""
 "Duplicate export paths detected! The export paths above can be edited before "
 "starting the synchronization."
@@ -2752,7 +2757,7 @@ msgstr ""
 "Doppelte Exportpfade erkannt! Die Exportpfade können oben vor Start der "
 "Synchronisierung geändert werden."
 
-#: quodlibet/ext/events/synchronize_to_device.py:257
+#: quodlibet/ext/events/synchronize_to_device.py:256
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
@@ -2761,26 +2766,26 @@ msgstr ""
 "mit dem Namen »cover.jpg«)!"
 
 #. Start sync button
-#: quodlibet/ext/events/synchronize_to_device.py:273
+#: quodlibet/ext/events/synchronize_to_device.py:272
 msgid "Start synchronization"
 msgstr "Synchronisierung starten"
 
 #. Stop sync button
-#: quodlibet/ext/events/synchronize_to_device.py:281
+#: quodlibet/ext/events/synchronize_to_device.py:280
 msgid "Stop synchronization"
 msgstr "Synchronisierung anhalten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:304
+#: quodlibet/ext/events/synchronize_to_device.py:303
 msgid "No saved searches yet, create some and come back!"
 msgstr ""
 "Noch keine gespeicherten Suchläufe vorhanden. Erstellen Sie welche und "
 "kommen Sie wieder!"
 
-#: quodlibet/ext/events/synchronize_to_device.py:386
+#: quodlibet/ext/events/synchronize_to_device.py:385
 msgid "Choose destination path"
 msgstr "Zielpfad wählen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:538
+#: quodlibet/ext/events/synchronize_to_device.py:537
 #, python-brace-format
 msgid ""
 "Export path changed from [{old_path}] to [{new_path}] for file [{filename}]"
@@ -2788,87 +2793,87 @@ msgstr ""
 "Exportpfad wurde von [{old_path}] zu [{new_path}] geändert für Datei "
 "[{filename}]"
 
-#: quodlibet/ext/events/synchronize_to_device.py:652
+#: quodlibet/ext/events/synchronize_to_device.py:651
 msgid "Starting synchronization preview"
 msgstr "Starte Synchronisierungsvorschau"
 
-#: quodlibet/ext/events/synchronize_to_device.py:657
+#: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
 msgstr "Synchronisierungsvorschau wird erstellt."
 
-#: quodlibet/ext/events/synchronize_to_device.py:673
+#: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
 msgstr "Synchronisierungsvorschau erstellt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:682
+#: quodlibet/ext/events/synchronize_to_device.py:681
 msgid "Stopping synchronization preview"
 msgstr "Halte Synchronisierungsvorschau an"
 
-#: quodlibet/ext/events/synchronize_to_device.py:684
+#: quodlibet/ext/events/synchronize_to_device.py:683
 msgid "Synchronization preview was stopped."
 msgstr "Synchronisierungsvorschau wurde angehalten."
 
-#: quodlibet/ext/events/synchronize_to_device.py:687
+#: quodlibet/ext/events/synchronize_to_device.py:686
 msgid "Synchronization preview has finished."
 msgstr "Synchronisierungsvorschau erstellt."
 
-#: quodlibet/ext/events/synchronize_to_device.py:717
+#: quodlibet/ext/events/synchronize_to_device.py:716
 msgid "Stopped synchronization preview"
 msgstr "Synchronisierungsvorschau angehalten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:721
+#: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
 msgstr "Ein anderes Plugin wurde ausgewählt – Vorschau anhalten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:759
+#: quodlibet/ext/events/synchronize_to_device.py:758
 msgid "Synchronization will:"
 msgstr "Die Synchronisierung wird:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:765
+#: quodlibet/ext/events/synchronize_to_device.py:764
 #, python-brace-format
 msgid "attempt to write {count} file"
 msgid_plural "attempt to write {count} files"
 msgstr[0] "{count} Datei schreiben"
 msgstr[1] "{count} Dateien schreiben"
 
-#: quodlibet/ext/events/synchronize_to_device.py:772
+#: quodlibet/ext/events/synchronize_to_device.py:771
 #, python-brace-format
 msgid "skip {count} duplicate file"
 msgid_plural "skip {count} duplicate files"
 msgstr[0] "{count} doppelte Datei auslassen"
 msgstr[1] "{count} doppelte Dateien auslassen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:782
+#: quodlibet/ext/events/synchronize_to_device.py:781
 #, python-brace-format
 msgid "delete {count} file"
 msgid_plural "delete {count} files"
 msgstr[0] "{count} Datei löschen"
 msgstr[1] "{count} Dateien löschen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:832
+#: quodlibet/ext/events/synchronize_to_device.py:831
 msgid "No destination path provided"
 msgstr "Kein Zielpfad angegeben"
 
-#: quodlibet/ext/events/synchronize_to_device.py:833
+#: quodlibet/ext/events/synchronize_to_device.py:832
 msgid "Please specify the directory where songs should be exported."
 msgstr ""
 "Bitte geben Sie den Ordner an, in den die Titel exportiert werden sollen."
 
-#: quodlibet/ext/events/synchronize_to_device.py:840
+#: quodlibet/ext/events/synchronize_to_device.py:839
 msgid "No export pattern provided"
 msgstr "Kein Exportmuster angegeben"
 
-#: quodlibet/ext/events/synchronize_to_device.py:841
+#: quodlibet/ext/events/synchronize_to_device.py:840
 msgid "Please specify an export pattern for the names of the exported songs."
 msgstr ""
 "Bitte geben Sie ein Exportmuster für die Dateinamen der zu exportierenden "
 "Titel an."
 
-#: quodlibet/ext/events/synchronize_to_device.py:851
+#: quodlibet/ext/events/synchronize_to_device.py:850
 msgid "Export path is not absolute"
 msgstr "Exportpfad ist nicht absolut"
 
-#: quodlibet/ext/events/synchronize_to_device.py:852
+#: quodlibet/ext/events/synchronize_to_device.py:851
 msgid ""
 "The pattern\n"
 "\n"
@@ -2885,31 +2890,31 @@ msgstr ""
 "absoluten Zielpfad an, indem Sie sicherstellen, dass dieser mit »/« oder "
 "»~/« beginnt."
 
-#: quodlibet/ext/events/synchronize_to_device.py:874
+#: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "No saved searches selected"
 msgstr "Keine Suchläufe ausgewählt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:875
+#: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "Please select at least one saved search."
 msgstr "Bitte wählen Sie mindestens einen gespeicherten Suchlauf aus."
 
-#: quodlibet/ext/events/synchronize_to_device.py:884
+#: quodlibet/ext/events/synchronize_to_device.py:883
 msgid "No songs in the selected saved searches"
 msgstr "Keine Titel durch die gewählten Suchläufe ausgewählt"
 
-#: quodlibet/ext/events/synchronize_to_device.py:885
+#: quodlibet/ext/events/synchronize_to_device.py:884
 msgid "All selected saved searches are empty."
 msgstr "Die gewählten Suchläufe sind leer."
 
-#: quodlibet/ext/events/synchronize_to_device.py:888
+#: quodlibet/ext/events/synchronize_to_device.py:887
 msgid "Found {} songs to synchronize"
 msgstr "{} zu synchronisierende Titel gefunden"
 
-#: quodlibet/ext/events/synchronize_to_device.py:907
+#: quodlibet/ext/events/synchronize_to_device.py:906
 msgid "Mismatch between destination path and export pattern"
 msgstr "Zielpfad und Exportmuster passen nicht zusammen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:909
+#: quodlibet/ext/events/synchronize_to_device.py:908
 msgid ""
 "The export pattern starts with a path that differs from the destination "
 "path. Please correct the pattern.\n"
@@ -2923,98 +2928,98 @@ msgstr ""
 "Fehler:\n"
 "{}"
 
-#: quodlibet/ext/events/synchronize_to_device.py:947
+#: quodlibet/ext/events/synchronize_to_device.py:946
 msgid "Unable to sync"
 msgstr "Synchronisierung kann nicht gestartet werden"
 
-#: quodlibet/ext/events/synchronize_to_device.py:948
+#: quodlibet/ext/events/synchronize_to_device.py:947
 msgid "Cannot start synchronization while sorting by <b>Status</b>."
 msgstr ""
 "Die Synchronisierung kann nicht gestartet werden, solange nach <b>Status</b> "
 "sortiert wird."
 
-#: quodlibet/ext/events/synchronize_to_device.py:952
+#: quodlibet/ext/events/synchronize_to_device.py:951
 msgid "Starting song synchronization"
 msgstr "Starte Titelsynchronisierung"
 
 #. Summary labels
-#: quodlibet/ext/events/synchronize_to_device.py:956
+#: quodlibet/ext/events/synchronize_to_device.py:955
 msgid "Synchronization in progress."
 msgstr "Synchronisierung läuft."
 
-#: quodlibet/ext/events/synchronize_to_device.py:968
+#: quodlibet/ext/events/synchronize_to_device.py:967
 msgid "Finished song synchronization"
 msgstr "Titelsynchronisierung abgeschlossen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:977
+#: quodlibet/ext/events/synchronize_to_device.py:976
 msgid "Stopping song synchronization"
 msgstr "Halte Titelsynchronisierung an"
 
-#: quodlibet/ext/events/synchronize_to_device.py:978
+#: quodlibet/ext/events/synchronize_to_device.py:977
 msgid "Synchronization was stopped."
 msgstr "Synchronisierung wurde angehalten."
 
-#: quodlibet/ext/events/synchronize_to_device.py:980
+#: quodlibet/ext/events/synchronize_to_device.py:979
 msgid "Synchronization has finished."
 msgstr "Synchronisierung abgeschlossen."
 
-#: quodlibet/ext/events/synchronize_to_device.py:1013
+#: quodlibet/ext/events/synchronize_to_device.py:1012
 msgid "Stopped song synchronization"
 msgstr "Titelsynchronisierung angehalten"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1017
+#: quodlibet/ext/events/synchronize_to_device.py:1016
 msgid "A different plugin was selected - stop synchronization"
 msgstr "Ein anderes Plugin wurde ausgewählt – halte Synchronisierung an"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1020
+#: quodlibet/ext/events/synchronize_to_device.py:1019
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
 msgstr "{tag} – »{filename}«"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1090
+#: quodlibet/ext/events/synchronize_to_device.py:1089
 msgid "Removing \"{}\""
 msgstr "Entferne »{}«"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1111
+#: quodlibet/ext/events/synchronize_to_device.py:1110
 msgid "Synchronization has:"
 msgstr "Die Synchronisierung hat:"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1119
+#: quodlibet/ext/events/synchronize_to_device.py:1118
 #, python-brace-format
 msgid "written {count}/{total} file"
 msgid_plural "written {count}/{total} files"
 msgstr[0] "{count}/{total} Datei geschrieben"
 msgstr[1] "{count}/{total} Dateien geschrieben"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1126
+#: quodlibet/ext/events/synchronize_to_device.py:1125
 #, python-brace-format
 msgid "(skipped {count} existing file)"
 msgid_plural "(skipped {count} existing files)"
 msgstr[0] "({count} existierende Datei ausgelassen)"
 msgstr[1] "({count} existierende Dateien ausgelassen)"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1135
+#: quodlibet/ext/events/synchronize_to_device.py:1134
 #, python-brace-format
 msgid "skipped {count}/{total} duplicate file"
 msgid_plural "skipped {count}/{total} duplicate files"
 msgstr[0] "{count}/{total} doppelte Datei ausgelassen"
 msgstr[1] "{count}/{total} doppelte Dateien ausgelassen"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1142
+#: quodlibet/ext/events/synchronize_to_device.py:1141
 #, python-brace-format
 msgid "deleted {count}/{total} file"
 msgid_plural "deleted {count}/{total} files"
 msgstr[0] "{count}/{total} Datei gelöscht"
 msgstr[1] "{count}/{total} Dateien gelöscht"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1149
+#: quodlibet/ext/events/synchronize_to_device.py:1148
 #, python-brace-format
 msgid "failed to sync {count} file"
 msgid_plural "failed to sync {count} files"
 msgstr[0] "{count} Datei nicht erfolgreich synchronisiert"
 msgstr[1] "{count} Dateien nicht erfolgreich synchronisiert"
 
-#: quodlibet/ext/events/synchronize_to_device.py:1156
+#: quodlibet/ext/events/synchronize_to_device.py:1155
 #, python-brace-format
 msgid "skipped {count} file synchronized previously"
 msgid_plural "skipped {count} files synchronized previously"
