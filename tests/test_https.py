@@ -1,9 +1,11 @@
 # Copyright 2016 Christoph Reiter
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import os
 
 import pytest
 from gi.repository import Gio, Soup, GLib
@@ -15,9 +17,10 @@ from quodlibet.util import is_linux, get_ca_file
 
 
 @pytest.mark.network
-@skipIf(is_linux(), "not on linux")
+# See https://stackoverflow.com/questions/75274925
+@skipIf(is_linux() and not os.environ.get("container"), "Only on Flatpak linux")
 class Thttps(TestCase):
-    """For Windows/OSX to check if we can create a TLS connection
+    """For Windows/OSX/Flatpak to check if we can create a TLS connection
     using both openssl and whatever backend soup/gio uses.
     """
 
