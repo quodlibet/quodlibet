@@ -25,8 +25,6 @@
               href="http://www.surina.net/soundtouch/"/>
   <repository type="tarball" name="xiph"
           href="http://downloads.xiph.org/releases/"/>
-  <repository type="tarball" name="mozilla"
-          href="https://archive.mozilla.org/pub/"/>
   <repository type="tarball" name="gstreamer"
           href="http://gstreamer.freedesktop.org/src/"/>
   <repository type="tarball" name="sqlite" href="http://www.sqlite.org/"/>
@@ -44,8 +42,6 @@
           href="http://www.freedesktop.org/software/fontconfig/release/"/>
   <repository type="tarball" name="icon-theme"
           href="http://icon-theme.freedesktop.org/releases/"/>
-  <repository type="tarball" name="xmlsoft.org"
-          href="ftp://xmlsoft.org/libxml2/"/>
   <repository type="tarball" name="libtiff"
           href="http://download.osgeo.org/"/>
   <repository type="tarball" name="sourceware.org"
@@ -110,8 +106,8 @@
 
   <autotools id="cmake" autogen-sh="bootstrap"
              autogen-template="%(srcdir)s/%(autogen-sh)s --prefix=%(prefix)s">
-    <branch repo="cmake" module="v3.20/cmake-${version}.tar.gz" version="3.20.5"
-            hash="sha256:12c8040ef5c6f1bc5b8868cede16bb7926c18980f59779e299ab52cbc6f15bb0"/>
+    <branch repo="cmake" module="v3.20/cmake-${version}.tar.gz" version="3.20.6"
+            hash="sha256:a0bd485e1a38dd13c0baec89d5f4adbf61c7fd32fddb38eabc69a75bc0b65d72"/>
   </autotools>
 
   <cmake id="ninja" use-ninja="no" cmakeargs="-DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'" bootstrap="true">
@@ -173,8 +169,8 @@
   </autotools>
 
   <autotools id="itstool" autogen-sh="configure" autogenargs="PYTHON=$JHBUILD_PREFIX/bin/python3">
-    <branch module="itstool/itstool-${version}.tar.bz2" version="2.0.6"
-            hash="sha256:6233cc22726a9a5a83664bf67d1af79549a298c23185d926c3677afa917b92a9"
+    <branch module="itstool/itstool-${version}.tar.bz2" version="2.0.7"
+            hash="sha256:6b9a7cd29a12bb95598f5750e8763cee78836a1a207f85b74d8b3275b27e87ca"
             repo="itstool"/>
       <patch file="patches/itstool.use-correct-libxml.patch" strip="1"/>
     <dependencies>
@@ -354,8 +350,8 @@
 
   <autotools id="bison" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="bison/bison-${version}.tar.xz"
-            version="3.7.6"
-            hash="sha256:67d68ce1e22192050525643fc0a7a22297576682bef6a5c51446903f5aeef3cf">
+            version="3.8.2"
+            hash="sha256:9bba0214ccf7f1079c5d59210045227bcf619519840ebfa80cd3849cff5a5bf2">
     </branch>
     <dependencies>
       <dep package="gettext"/>
@@ -363,9 +359,9 @@
   </autotools>
 
   <autotools id="adwaita-icon-theme" autogen-sh="configure">
-    <branch module="adwaita-icon-theme/40/adwaita-icon-theme-${version}.tar.xz"
-            version="40.1.1"
-            hash="sha256:0b6c436ed6ad9887a88ada1f72a0197b1eb73b020d8d344abab4c7fa7250f8f6"/>
+    <branch module="adwaita-icon-theme/43/adwaita-icon-theme-${version}.tar.xz"
+            version="43"
+            hash="sha256:2e3ac77d32a6aa5554155df37e8f0a0dd54fc5a65fd721e88d505f970da32ec6"/>
     <dependencies>
       <dep package="librsvg"/>
       <dep package="hicolor-icon-theme"/>
@@ -385,8 +381,8 @@
   <autotools id="python" autogenargs="--enable-shared --without-ensurepip"
          autogen-sh="configure" supports-non-srcdir-builds="no">
     <branch repo="python"
-        module="${version}/Python-${version}.tar.xz" version="3.8.16"
-        hash="sha256:d85dbb3774132473d8081dcb158f34a10ccad7a90b96c7e50ea4bb61f5ce4562">
+        module="${version}/Python-${version}.tar.xz" version="3.11.3"
+        hash="sha256:8a5db99c961a7ecf27c75956189c9602c968751f11dbeae2b900dbff1c085b5e">
     </branch>
     <dependencies>
       <dep package="gettext"/>
@@ -397,7 +393,7 @@
   </autotools>
 
   <autotools id="gettext" autogen-sh="configure"
-             autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-libxml --with-included-libcroco --with-included-glib">
+             autogenargs="--without-emacs --disable-java --disable-native-java --disable-libasprintf --disable-csharp --with-included-libxml --with-included-libcroco --with-included-glib --with-included-libunistring">
     <branch repo="ftp.gnu.org"
             module="gettext/gettext-${version}.tar.xz" version="0.21.1"
             hash="sha256:50dbc8f39797950aa2c98e939947c527e5ac9ebd2c1b99dd7b06ba33a6767ae6"/>
@@ -476,8 +472,8 @@
   </meson>
 
   <meson id="gtk3" mesonargs="-Dexamples=false -Dtests=false">
-    <branch module="gtk+/3.24/gtk+-${version}.tar.xz"  version="3.24.37"
-            hash="sha256:6745f0b4c053794151fd0f0e2474b077cccff5f83e9dd1bf3d39fe9fe5fb7f57">
+    <branch module="gtk+/3.24/gtk+-${version}.tar.xz"  version="3.24.38"
+            hash="sha256:ce11decf018b25bdd8505544a4f87242854ec88be054d9ade5f3a20444dd8ee7">
     </branch>
     <dependencies>
         <dep package="glib2"/>
@@ -498,9 +494,9 @@
 
   <autotools id="sqlite" autogenargs="--disable-tcl --enable-threadsafe"
          autogen-sh="configure">
-    <branch module="2021/sqlite-autoconf-3360000.tar.gz" version="3.36.0"
+    <branch module="2023/sqlite-autoconf-3420000.tar.gz" version="3.42.0"
         repo="sqlite"
-        hash="sha256:bd90c3eb96bee996206b83be7065c9ce19aef38c3f4fb53073ada0d0b69bbce3"/>
+        hash="sha256:7abcfd161c6e2742ca5c6c0895d1f853c940f203304a0b49da4e1eca5d088ca6"/>
   </autotools>
 
   <autotools id="libtiff" autogen-sh="configure" autogenargs="--without-x">
@@ -514,10 +510,10 @@
 
   <meson id="fribidi" mesonargs="-Ddocs=false">
     <branch repo="github-tar"
-            version="1.0.12"
+            version="1.0.13"
             module="fribidi/fribidi/archive/v${version}.tar.gz"
             checkoutdir="fribidi-${version}"
-            hash="sha256:2e9e859876571f03567ac91e5ed3b5308791f31cda083408c2b60fa1fe00a39d">
+            hash="sha256:f24e8e381bcf76533ae56bd776196f3a0369ec28e9c0fdb6edd163277e008314">
     </branch>
   </meson>
 
@@ -669,8 +665,8 @@
 
   <distutils id="python-pip" python3="1">
     <branch repo="pypi.org" checkoutdir="python-pip-${version}" module="p/pip/pip-${version}.tar.gz"
-            version="21.1.3"
-            hash="sha256:b5b1eb91b36894bd01b8e5a56a422c2f3838573da0b0a1c63a096bb454e3b23f"/>
+            version="23.1.2"
+            hash="sha256:0e7c86f486935893c708287b30bd050a36ac827ec7fe5e43fe7cb198dd835fba"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -691,8 +687,8 @@
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-core-${version}"
             module="p/pyobjc-core/pyobjc-core-${version}.tar.gz"
-            version="4.2.1"
-            hash="sha256:a712eae1d89f952d3814df90eed7b6afcb5816db24d1a86b4f97e0810534119e"/>
+            version="8.5.1"
+            hash="sha256:f8592a12de076c27006700c4a46164478564fa33d7da41e7cbdd0a3bf9ddbccf"/>
     <dependencies>
       <dep package="python-setuptools"/>
     </dependencies>
@@ -702,8 +698,8 @@
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Cocoa-${version}"
             module="p/pyobjc-framework-Cocoa/pyobjc-framework-Cocoa-${version}.tar.gz"
-            version="4.2.1"
-            hash="sha256:8ef446b1803b2392ce4df1a3600e8d5f1bc577206d57e30142c8425555009000"/>
+            version="8.5.1"
+            hash="sha256:9a3de5cdb4644e85daf53f2ed912ef6c16ea5804a9e65552eafe62c2e139eb8c"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -714,8 +710,8 @@
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-framework-Quartz-${version}"
             module="p/pyobjc-framework-Quartz/pyobjc-framework-Quartz-${version}.tar.gz"
-            version="4.2.1"
-            hash="sha256:11161f7c5d0602786f9b401183fe2f8e19291813d5d07fdfc0681b3e8ae00f07"/>
+            version="8.5.1"
+            hash="sha256:37ba625b6c240d4f5aea02f1672b16e53e39de07dbaf33751a61b5a0be7dc9fa"/>
     <dependencies>
       <dep package="python-setuptools"/>
       <dep package="python-pyobjc-core"/>
@@ -727,8 +723,8 @@
     <branch repo="pypi.org"
             checkoutdir="python-pyobjc-${version}"
             module="p/pyobjc/pyobjc-${version}.tar.gz"
-            version="4.2.1"
-            hash="sha256:b156abab60da3f3c4bc65a919eabb2c98539a94163a277efba5828358396d23e"/>
+            version="8.5.1"
+            hash="sha256:d424702249f00dc55a2ea73d7d71fd7fb6fa37c6442f75896975f49c3976c9d0"/>
     <dependencies>
     <dep package="python-setuptools"/>
     <dep package="python-pyobjc-core"/>
@@ -794,15 +790,15 @@
   <cmake id="chromaprint" use-ninja="no" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
     <branch repo="chromaprint" checkoutdir="chromaprint-${version}"
             module="v${version}/chromaprint-${version}.tar.gz"
-            version="1.5.0"
-            hash="sha256:573a5400e635b3823fc2394cfa7a217fbb46e8e50ecebd4a61991451a8af766a">
+            version="1.5.1"
+            hash="sha256:a1aad8fa3b8b18b78d3755b3767faff9abb67242e01b478ec9a64e190f335e1c">
     </branch>
   </cmake>
 
   <cmake id="libgme" use-ninja="no" cmakeargs="-DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
     <branch repo="libgme" checkoutdir="libgme-${version}" module="game-music-emu-${version}.tar.xz"
-            version="0.6.2"
-            hash="sha256:5046cb471d422dbe948b5f5dd4e5552aaef52a0899c4b2688e5a68a556af7342">
+            version="0.6.3"
+            hash="sha256:aba34e53ef0ec6a34b58b84e28bf8cfbccee6585cebca25333604c35db3e051d">
     </branch>
   </cmake>
 
@@ -898,9 +894,9 @@
   </autotools>
 
   <autotools id="opus" autogenargs="--disable-doc">
-    <branch module="opus/opus-${version}.tar.gz"
-        repo="mozilla" version="1.3.1"
-        hash="sha256:65b58e1e25b2a114157014736a3d9dfeaad8d41be1c8179866f144a2fb44ff9d"/>
+    <branch module="xiph/opus/releases/download/v${version}/opus-${version}.tar.gz"
+        repo="github-tar" version="1.4"
+        hash="sha256:c9b32b4253be5ae63d1ff16eea06b94b5f0f2951b7a02aceef58e3a3ce49c51f"/>
   </autotools>
 
   <meson id="graphene" mesonargs="-Dtests=false">
@@ -948,28 +944,25 @@
   </meson>
 
   <autotools id="libxml2" autogen-sh="configure"
-             autogenargs='--libdir="$JHBUILD_LIBDIR" --without-python'>
-    <branch version="2.9.12" module="libxml2-${version}.tar.gz"
-        repo="xmlsoft.org"
-        hash="sha256:c8d6681e38c56f172892c85ddc0852e1fd4b53b4209e7f4ebf17f7e2eae71d92"/>
+             autogenargs='--without-python'>
+    <branch version="2.10.4" module="libxml2/2.10/libxml2-${version}.tar.xz"
+        hash="sha256:ed0c91c5845008f1936739e4eee2035531c1c94742c6541f44ee66d885948d45"/>
   </autotools>
 
   <autotools id="libxml2-python" autogen-sh="configure"
-             autogenargs='--libdir="$JHBUILD_LIBDIR" --with-python=$JHBUILD_PREFIX/bin/python3'>
-    <branch version="2.9.12" module="libxml2-${version}.tar.gz"
-        repo="xmlsoft.org"
+             autogenargs='--with-python PYTHON=$JHBUILD_PREFIX/bin/python3'>
+    <branch version="2.10.4" module="libxml2/2.10/libxml2-${version}.tar.xz"
         checkoutdir="libxml2-python-${version}"
-        hash="sha256:c8d6681e38c56f172892c85ddc0852e1fd4b53b4209e7f4ebf17f7e2eae71d92"/>
+        hash="sha256:ed0c91c5845008f1936739e4eee2035531c1c94742c6541f44ee66d885948d45"/>
     <dependencies>
       <dep package="libxml2"/>
       <dep package="python"/>
     </dependencies>
   </autotools>
 
-  <autotools id="libxslt" autogen-sh="configure">
-    <branch version="1.1.34" module="libxslt-${version}.tar.gz"
-        repo="xmlsoft.org"
-        hash="sha256:98b1bd46d6792925ad2dfe9a87452ea2adebf69dcb9919ffd55bf926a7f93f7f"/>
+  <autotools id="libxslt" autogen-sh="configure" autogenargs="--without-python">
+    <branch version="1.1.38" module="libxslt/1.1/libxslt-${version}.tar.xz"
+        hash="sha256:1f32450425819a09acaff2ab7a5a7f8a2ec7956e505d7beeb45e843d0e1ecab1"/>
     <dependencies>
       <dep package="libxml2"/>
     </dependencies>
@@ -977,9 +970,9 @@
 
   <autotools id="gtk-mac-integration"
              autogenargs="--enable-python">
-    <branch module="gtk-mac-integration/2.1/gtk-mac-integration-${version}.tar.xz"
-            version="2.1.3"
-            hash="sha256:d5f72302daad1f517932194d72967a32e72ed8177cfa38aaf64f0a80564ce454">
+    <branch module="gtk-mac-integration/3.0/gtk-mac-integration-${version}.tar.xz"
+            version="3.0.1"
+            hash="sha256:f19e35bc4534963127bbe629b9b3ccb9677ef012fc7f8e97fd5e890873ceb22d">
     </branch>
     <dependencies>
         <dep package="gtk3"/>
@@ -988,9 +981,9 @@
   </autotools>
 
   <autotools id="libunistring" autogen-sh="configure" supports-non-srdir-builds="no">
-    <branch repo="ftp.gnu.org" version="0.9.10"
+    <branch repo="ftp.gnu.org" version="1.1"
         module="libunistring/libunistring-${version}.tar.xz"
-        hash="sha256:eb8fb2c3e4b6e2d336608377050892b54c3c983b646c561836550863003c05d7"/>
+        hash="sha256:827c1eb9cb6e7c738b171745dac0888aa58c5924df2e59239318383de0729b98"/>
   </autotools>
 
 
