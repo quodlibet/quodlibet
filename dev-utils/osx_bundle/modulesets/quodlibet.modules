@@ -795,7 +795,7 @@
     </branch>
   </cmake>
 
-  <cmake id="libgme" use-ninja="no" cmakeargs="-DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
+  <cmake id="libgme" use-ninja="no" cmakeargs="-DCMAKE_INSTALL_NAME_DIR='${prefix}/lib' -DENABLE_UBSAN=OFF">
     <branch repo="libgme" checkoutdir="libgme-${version}" module="game-music-emu-${version}.tar.xz"
             version="0.6.3"
             hash="sha256:aba34e53ef0ec6a34b58b84e28bf8cfbccee6585cebca25333604c35db3e051d">
