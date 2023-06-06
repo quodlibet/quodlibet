@@ -472,8 +472,8 @@
   </meson>
 
   <meson id="gtk3" mesonargs="-Dexamples=false -Dtests=false">
-    <branch module="gtk+/3.24/gtk+-${version}.tar.xz"  version="3.24.38"
-            hash="sha256:ce11decf018b25bdd8505544a4f87242854ec88be054d9ade5f3a20444dd8ee7">
+    <branch module="gtk+/3.24/gtk+-${version}.tar.xz"  version="3.24.30"
+            hash="sha256:ba75bfff320ad1f4cfbee92ba813ec336322cc3c660d406aad014b07087a3ba9">
     </branch>
     <dependencies>
         <dep package="glib2"/>
