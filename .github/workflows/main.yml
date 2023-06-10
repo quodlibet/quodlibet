@@ -129,7 +129,7 @@ jobs:
           xvfb
 
         python3 -m pip install --user --upgrade \
-          xvfbwrapper \
+          PyVirtualDisplay \
           pytest-faulthandler \
           flake8==5.0.4 \
           flaky
