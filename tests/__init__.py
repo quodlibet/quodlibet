@@ -18,9 +18,9 @@ except ImportError:
     raise SystemExit("pytest missing: sudo apt-get install python3-pytest")
 
 try:
-    import xvfbwrapper
+    import pyvirtualdisplay
 except ImportError:
-    xvfbwrapper = None
+    pyvirtualdisplay = None
 
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
@@ -218,8 +218,8 @@ def init_test_environ():
     # Force the default theme so broken themes don't affect the tests
     os.environ["GTK_THEME"] = "Adwaita"
 
-    if xvfbwrapper is not None:
-        _VDISPLAY = xvfbwrapper.Xvfb()
+    if pyvirtualdisplay is not None:
+        _VDISPLAY = pyvirtualdisplay.Display()
         _VDISPLAY.start()
 
     _BUS_INFO = None
