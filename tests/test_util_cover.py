@@ -244,3 +244,4 @@ class THttp(TestCase):
         assert escape_query_value("foo bar") == "foo%20bar"
         assert escape_query_value("foo?") == "foo%3F"
         assert escape_query_value("foo&bar") == "foo%26bar"
+        assert escape_query_value("¿fübàr?") == "¿fübàr%3F"

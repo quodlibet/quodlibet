@@ -182,11 +182,6 @@ def init_test_environ():
     # create a user dir in /tmp and set env vars
     _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
 
-    # needed for dbus/dconf
-    runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
-    os.chmod(runtime_dir, 0o700)
-    os.environ["XDG_RUNTIME_DIR"] = runtime_dir
-
     # force the old cache dir so that GStreamer can re-use the GstRegistry
     # cache file
     os.environ["XDG_CACHE_HOME"] = xdg_get_cache_home()

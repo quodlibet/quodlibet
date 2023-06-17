@@ -2,7 +2,7 @@
 
 set -e
 
-.ci/retry wget -O ql.dmg https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest-v8.dmg
+.ci/retry wget -O ql.dmg https://github.com/quodlibet/quodlibet/releases/download/ci/QuodLibet-latest-v11.dmg
 hdiutil attach -noverify -readonly -mountpoint _mount ql.dmg
 cp -R _mount/QuodLibet.app "$TMPDIR/_app"
 hdiutil detach -force _mount

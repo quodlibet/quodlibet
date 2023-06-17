@@ -92,7 +92,7 @@ function install_deps {
         mingw-w64-"${ARCH}"-python3-gobject \
         mingw-w64-"${ARCH}"-python3-cairo \
         mingw-w64-"${ARCH}"-python3-pip \
-        mingw-w64-"${ARCH}"-libsoup \
+        mingw-w64-"${ARCH}"-libsoup3 \
         mingw-w64-"${ARCH}"-gstreamer \
         mingw-w64-"${ARCH}"-gst-plugins-base \
         mingw-w64-"${ARCH}"-gst-plugins-good \

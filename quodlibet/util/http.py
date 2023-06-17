@@ -59,30 +59,30 @@ class HTTPRequest(GObject.Object):
 
         # For simple access
         self._receive_started = False
-        self._uri = self.message.get_uri().to_string(False)
+        self._uri = self.message.get_uri().to_string()
 
     def send(self):
         """
         Send the request and receive HTTP headers. Some of the body might
         get downloaded too.
         """
-        session.send_async(self.message, self.cancellable, self._sent, None)
+        session.send_async(self.message, 1, self.cancellable, self._sent, None)
 
     def _sent(self, session, task, data):
         try:
             status = int(self.message.get_property('status-code'))
             if status >= 400:
                 msg = 'HTTP {0} error in {1} request to {2}'.format(
-                    status, self.message.method, self._uri)
+                    status, self.message.get_method(), self._uri)
                 print_w(msg)
                 return self.emit('send-failure', Exception(msg))
             self.istream = session.send_finish(task)
             print_d('Got HTTP {code} on {method} request to {uri}.'.format(
-                uri=self._uri, code=status, method=self.message.method))
+                uri=self._uri, code=status, method=self.message.get_method()))
             self.emit('sent', self.message)
         except GLib.GError as e:
             print_w('Failed sending {method} request to {uri} ({err})'.format(
-                method=self.message.method, uri=self._uri, err=e))
+                method=self.message.get_method(), uri=self._uri, err=e))
             self.emit('send-failure', e)
 
     def provide_target(self, stream):
@@ -114,8 +114,6 @@ class HTTPRequest(GObject.Object):
         if self.istream and not self._receive_started:
             if not self.istream.is_closed():
                 self.istream.close(None)
-        else:
-            session.cancel_message(self.message, Soup.Status.CANCELLED)
 
     def receive(self):
         """
