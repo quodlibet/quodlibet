@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-07-07 04:44+0000\n"
+"PO-Revision-Date: 2023-07-06 12:50+0000\n"
 "Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.13.1-dev\n"
+"X-Generator: Weblate 5.0-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -28,9 +28,8 @@ msgstr "_Nimi"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:59
-#, fuzzy
 msgid "_People"
-msgstr "tekijät"
+msgstr "_Tekijät"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
@@ -60,7 +59,6 @@ msgstr "Ar_vosana"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:65
-#, fuzzy
 msgid "Play_count"
 msgstr "Toistokertojen _määrä"
 
@@ -533,9 +531,8 @@ msgid "No Category"
 msgstr "Ei luokkaa"
 
 #: quodlibet/browsers/iradio.py:651
-#, fuzzy
 msgid "_Add Station…"
-msgstr "_Uusi asema…"
+msgstr "_Lisää asema…"
 
 #: quodlibet/browsers/iradio.py:653
 msgid "_Update Stations"
@@ -613,13 +610,13 @@ msgid "Columnar"
 msgstr "Sarakkeittainen"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
 "Tunnistekaava, joka voi sisältää muotoiluja, esim. <tt>composer</tt> tai\n"
-"<tt>%s</tt>"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -655,9 +652,8 @@ msgid "_New"
 msgstr "_Uusi"
 
 #: quodlibet/browsers/playlists/main.py:214
-#, fuzzy
 msgid "_Import…"
-msgstr "_Tuo"
+msgstr "_Tuo…"
 
 #: quodlibet/browsers/playlists/main.py:471
 msgid "Unable to import playlist"
@@ -738,13 +734,12 @@ msgstr "Valitun soittolistan kaikki tiedot poistetaan eikä sitä voi palauttaa.
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Lisätäänkö soittolistaan \"{pl_name}\" {num} kappale?"
+msgstr[1] "Lisätäänkö soittolistaan \"{pl_name}\" {num} kappaletta?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Raidat"
+msgstr "_Lisää kappaleita"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
@@ -757,7 +752,7 @@ msgstr "Anna uuden soittolistan nimi:"
 
 #: quodlibet/browsers/playlists/util.py:73
 msgid "_Create"
-msgstr ""
+msgstr "_Luo"
 
 #: quodlibet/browsers/playlists/util.py:108
 #, python-format
@@ -775,22 +770,20 @@ msgid "New Feed"
 msgstr "Uusi syöte"
 
 #: quodlibet/browsers/podcasts.py:241
-#, fuzzy
 msgid "Enter the podcast / audio feed location:"
-msgstr "Anna äänisyötteen sijainti:"
+msgstr "Anna podcastin / äänisyötteen sijainti:"
 
 #: quodlibet/browsers/podcasts.py:309
 msgid "Podcasts"
-msgstr ""
+msgstr "Podcastit"
 
 #: quodlibet/browsers/podcasts.py:310
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Podcastit"
 
 #: quodlibet/browsers/podcasts.py:412
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "Lisää _tiedosto…"
+msgstr "Lisää _syöte…"
 
 #: quodlibet/browsers/podcasts.py:479 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -798,41 +791,39 @@ msgid "_Refresh"
 msgstr "_Päivitä"
 
 #: quodlibet/browsers/podcasts.py:480
-#, fuzzy
 msgid "Search source for new episodes"
-msgstr "Tarkkaile tätä kansiota uusien kappaleitten varalta"
+msgstr "Etsi uusia jaksoja lähteestä"
 
 #: quodlibet/browsers/podcasts.py:482
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Hae kaikki uudelleen"
 
 #: quodlibet/browsers/podcasts.py:484
 msgid "Remove all existing episodes then reload from source"
-msgstr ""
+msgstr "Poista olemassa olevat jaksot ja hae kaikki uudelleen lähteestä"
 
 #: quodlibet/browsers/podcasts.py:486
 msgid "Remove this podcast and its episodes"
-msgstr ""
+msgstr "Poista tämä podcast ja sen jaksot"
 
 #: quodlibet/browsers/podcasts.py:546
 msgid "Unable to add feed"
 msgstr "Syötettä ei voitu lisätä"
 
 #: quodlibet/browsers/podcasts.py:547
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "%s could not be added. The server may be down, or the location may not be a "
 "podcast / audio feed."
 msgstr ""
 "Sijainnin %s lisääminen ei onnistunut. Ehkä palvelin ei ole linjoilla tai "
-"sijainti ei ole äänisyöte."
+"sijainti ei ole podcast / äänisyöte."
 
 #: quodlibet/browsers/podcasts.py:564
-#, fuzzy
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
-"Nykyinen äänen taustaohjelma ei tue URL-osoitteita. Äänisyötteiden selain on "
+"Nykyinen äänen taustaohjelma ei tue URL-osoitteita. Podcast-selain on "
 "poistettu käytöstä."
 
 #: quodlibet/browsers/tracks.py:34
@@ -1145,7 +1136,7 @@ msgstr "sijainti"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Aseta malli --print-*-komentoja varten"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1237,13 +1228,12 @@ msgid "Artwork URL Cover Source"
 msgstr "Artwork URL -kansikuvalähde"
 
 #: quodlibet/ext/covers/artwork_url.py:21
-#, fuzzy
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
 "Lataa kansikuva kappaleen <tt>artwork_url</tt>-tunnisteessa määritetystä "
-"osoitteesta. Toimii Soundcloud-selaimen kanssa."
+"osoitteesta. Toimii Soundcloud- ja Podcast-selainten kanssa."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1616,15 +1606,14 @@ msgid "Automatic Rating"
 msgstr "Automaattinen arvosana"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
 "Arvostelee kappaleita automaattisesti kun ne toistetaan tai ohitetaan. "
-"Käyttää accelerated-algoritmia ohjelmasta vux, jonka on kehittänyt Brian "
-"Nelson."
+"Käyttää accelerated-algoritmia ohjelmasta vux (Vacillating Utilitarian "
+"eXtemporizer), jonka on kehittänyt Brian Nelson."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1972,10 +1961,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:32
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr ""
-"Kirjoittaa Jabber User Tunes -tiedoston polkuun <tt>~/.quodlibet/jabber</tt>."
+msgstr "Kirjoittaa Jabber User Tunes -tiedoston polkuun %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2248,15 +2236,16 @@ msgid "Next"
 msgstr "Seuraava"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Ilmoitukset kappaleista"
+msgstr "Ilmoitukset kirjanmerkeistä"
 
 #: quodlibet/ext/events/notify_bookmarks.py:35
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Käyttää ilmoituksia näyttääkseen kirjanmerkkejä / kommentteja reaaliajassa. "
+"Toimii hyvin Soundcloud-selaimen kanssa."
 
 #: quodlibet/ext/events/qlscrobbler.py:183
 msgid ""
@@ -2478,7 +2467,7 @@ msgstr "Ei asennettua GNOME Shell -hakupalveluntarjoajaa Quod Libetille."
 #: quodlibet/ext/events/searchprovider.py:71
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "Onko ini-tiedosto kopioitu polkuun %s (tai vastaavaan)?"
 
 #: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
@@ -2741,11 +2730,12 @@ msgstr ""
 "ennen synkronoinnin aloittamista."
 
 #: quodlibet/ext/events/synchronize_to_device.py:256
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "Olemassa olevat tiedostot kohdepolussa poistetaan!"
+msgstr ""
+"Olemassa olevat tiedostot kohdepolussa poistetaan (paitsi cover.jpg-nimiset "
+"tiedostot)!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:272
@@ -2851,7 +2841,6 @@ msgid "Export path is not absolute"
 msgstr "Vientipolku ei ole absoluuttinen"
 
 #: quodlibet/ext/events/synchronize_to_device.py:851
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2862,7 +2851,7 @@ msgid ""
 msgstr ""
 "Kaava\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
 "sisältää merkin /, mutta ei ala juurihakemistosta. Määritä absoluuttinen "
 "kohdepolku aloittamalla kaava merkeillä / tai ~/."
@@ -3528,9 +3517,8 @@ msgid "Export to Sonos Playlist"
 msgstr "Vie Sonos-soittolistaksi"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "Vie soittolistan kopioimalla tiedostot kansioon."
+msgstr "Vie soittolistan Sonosiin täsmäyttämällä kappaleita."
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3543,12 +3531,12 @@ msgstr "Virhe Sonos-laitteiden löytämisessä. Tarkista asetukset."
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "Olemassa olevan Sonos-soittolistan %s poistaminen epäonnistui:"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "Vie soittolistaan %(playlist)r (%(total)d kappaletta)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3870,16 +3858,15 @@ msgstr "@(saved: haun nimi)"
 
 #: quodlibet/ext/query/unique.py:16
 msgid "Unique Query"
-msgstr ""
+msgstr "Yksilöllinen haku"
 
 #: quodlibet/ext/query/unique.py:17
 msgid "Filter search results by unique tags."
-msgstr ""
+msgstr "Suodata hakutulokset yksilöllisten tunnisteiden mukaan."
 
 #: quodlibet/ext/query/unique.py:19
-#, fuzzy
 msgid "@(unique: tag)"
-msgstr "yksilöllinen"
+msgstr "@(unique: tunniste)"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:77
 #, python-format
@@ -4199,9 +4186,10 @@ msgid "Download Cover Art"
 msgstr "Lataa kansikuvia"
 
 #: quodlibet/ext/songsmenu/cover_download.py:54
-#, fuzzy
 msgid "Downloads high-quality album covers using Quod Libet cover plugins."
-msgstr "Lataa korkealaatuisia albumikansikuvia kansikuvalisäosien avulla."
+msgstr ""
+"Lataa korkealaatuisia albumikansikuvia Quod Libetin kansikuvalisäosien "
+"avulla."
 
 #: quodlibet/ext/songsmenu/cover_download.py:159
 msgid "Classic"
@@ -4237,7 +4225,7 @@ msgid "Loading %(source)s - %(dimensions)s…"
 msgstr "Ladataan %(source)s - %(dimensions)s…"
 
 #: quodlibet/ext/songsmenu/cover_download.py:296
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Nothing found for albums:\n"
 "%(albums)s.\n"
@@ -4246,10 +4234,10 @@ msgid ""
 "%(providers)s"
 msgstr ""
 "Kansikuvia ei löytynyt albumeille:\n"
-"<i>%(albums)s</i>.\n"
+"%(albums)s.\n"
 "\n"
 "Käytetyt lähteet:\n"
-"<tt>%(providers)s</tt>"
+"%(providers)s"
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
 msgid "No covers found"
@@ -4482,33 +4470,31 @@ msgid "Skip Count"
 msgstr "Ohituskertojen määrä"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Useita %s-arvoja"
+msgstr "Useita tiedostoja valittu."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
-msgstr ""
+msgstr "Lukumääriä kasvatetaan."
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
 msgstr "Muokkaa upotettuja kuvia"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
-#, fuzzy
 msgid "Adds, removes or replaces embedded images."
-msgstr "Poistaa tai korvaa upotettuja kuvia."
+msgstr "Lisää, poistaa tai korvaa upotettuja kuvia."
 
 #: quodlibet/ext/songsmenu/embedded.py:77
 msgid "_Embed"
-msgstr ""
+msgstr "_Upota"
 
 #: quodlibet/ext/songsmenu/embedded.py:79
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Valitse upotettava kuva (kohdistuu %d kappaleeseen)"
+msgstr[1] "Valitse upotettava kuva (kohdistuu %d kappaleeseen)"
 
 #: quodlibet/ext/songsmenu/embedded.py:105
 msgid "_Remove all Images"
@@ -4520,7 +4506,7 @@ msgstr "_Upota nykyinen kuva"
 
 #: quodlibet/ext/songsmenu/embedded.py:114
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Valitse kuva…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -4733,11 +4719,11 @@ msgid "Uploading %(current)d/%(total)d"
 msgstr "Lähetetään kappaletta %(current)d/%(total)d"
 
 #: quodlibet/ext/songsmenu/ifp.py:61
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to upload %s.The device may be out of space, or turned off."
 msgstr ""
-"Tiedostoa <b>%s</b> ei voitu lähettää. Laitteen tallennustila voi olla "
-"täynnä tai laite voi olla pois päältä."
+"Tiedostoa %s ei voitu lähettää. Laitteen tallennustila voi olla täynnä tai "
+"laite voi olla pois päältä."
 
 #: quodlibet/ext/songsmenu/ifp.py:63
 msgid "Error uploading"
@@ -4784,7 +4770,7 @@ msgid "Further information"
 msgstr "Lisätietoja"
 
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:196
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The term 'track user data' includes the playlists in which the selected "
 "tracks are and the following metadata:\n"
@@ -4804,7 +4790,7 @@ msgstr ""
 "”Kappaleisiin liittyvät käyttäjätiedot” tarkoittaa tietoa soittolistoista, "
 "joihin valitut kappaleet kuuluvat, sekä seuraavia metatietoja:\n"
 "\n"
-"<tt>%s</tt>\n"
+"%s\n"
 "\n"
 "Huomaa, että tuodessa tietoja takaisin kaikki viedyt tiedot muutetaan. Jos "
 "tiedostonimien rungot (nimet ilman tiedostopäätteitä) sisällytetään "
@@ -4985,9 +4971,9 @@ msgid "Use absolute paths"
 msgstr "Käytä absoluuttisia polkuja"
 
 #: quodlibet/ext/songsmenu/playlist.py:144
-#, fuzzy, python-format
+#, python-format
 msgid "Writing to %s failed."
-msgstr "Kirjoittaminen kohteeseen <b>%s</b> epäonnistui."
+msgstr "Kirjoittaminen kohteeseen %s epäonnistui."
 
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
@@ -5027,11 +5013,11 @@ msgid "Peak"
 msgstr "Huippu"
 
 #: quodlibet/ext/songsmenu/replaygain.py:453
-#, fuzzy, python-format
+#, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] "<b>%(to-process)s</b> albumi päivitettäväksi (yhteensä %(all)s)"
-msgstr[1] "<b>%(to-process)s</b> albumia päivitettäväksi (yhteensä %(all)s)"
+msgstr[0] "%(to-process)s albumi päivitettäväksi (yhteensä %(all)s)"
+msgstr[1] "%(to-process)s albumia päivitettäväksi (yhteensä %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:569
 msgid "Replay Gain"
@@ -5122,14 +5108,14 @@ msgid "Website Search"
 msgstr "Verkkosivuhaku"
 
 #: quodlibet/ext/songsmenu/website_search.py:38
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Searches your choice of website using any song tags.\n"
 "Supports patterns e.g. %(pattern)s."
 msgstr ""
 "Suorittaa haun haluamallasi verkkosivulla kappaleiden tunnisteiden "
 "perusteella.\n"
-"Tukee kaavoja, esim. <tt>%(pattern-example)s</tt>."
+"Tukee kaavoja, esim. %(pattern)s."
 
 #: quodlibet/ext/songsmenu/website_search.py:82
 msgid "Search URL patterns"
@@ -5220,17 +5206,20 @@ msgid ""
 "No library songs found in legacy playlist %(filename)r (of size %(size).1f "
 "kB)."
 msgstr ""
+"Vanhalta soittolistalta %(filename)r (koko %(size).1f kt) ei löytynyt "
+"kirjastossa olevia kappaleita."
 
 #: quodlibet/library/playlist.py:82
 msgid "Have you changed library root dir(s), but not this playlist?"
 msgstr ""
+"Onko kirjaston luettavaa kansiopolkua muutettu, mutta ei tätä soittolistaa?"
 
 #: quodlibet/library/playlist.py:97
 #, python-format
 msgid "%d playlist failed to convert"
 msgid_plural "%d playlists failed to convert"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d soittolistan muuntaminen epäonnistui"
+msgstr[1] "%d soittolistan muuntaminen epäonnistui"
 
 #: quodlibet/main.py:48
 msgid "Music player and music library manager"
@@ -5520,7 +5509,6 @@ msgid "GStreamer plugin '%(name)s' could not be initialized"
 msgstr "GStreamer-liitännäistä %(name)s ei voitu alustaa"
 
 #: quodlibet/player/gstbe/prefs.py:26
-#, fuzzy
 msgid ""
 "The GStreamer output pipeline used for playback. Leave blank for the default "
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
@@ -5536,9 +5524,9 @@ msgstr "_Ulostuloliukuhihna:"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:46
-#, fuzzy, python-format
+#, python-format
 msgid "%.1f s"
-msgstr "%.1f dB"
+msgstr "%.1f s"
 
 #: quodlibet/player/gstbe/prefs.py:59
 msgid "_Buffer duration:"
@@ -5793,9 +5781,8 @@ msgid "(unknown)"
 msgstr "(tuntematon)"
 
 #: quodlibet/qltk/data_editors.py:313 quodlibet/qltk/edittags.py:548
-#, fuzzy
 msgid "_Add…"
-msgstr "_Lisää"
+msgstr "_Lisää…"
 
 #: quodlibet/qltk/data_editors.py:319
 msgid "_Edit"
@@ -5814,9 +5801,8 @@ msgid "Enter new tag"
 msgstr "Anna uusi tunniste"
 
 #: quodlibet/qltk/data_editors.py:406
-#, fuzzy
 msgid "Edit tag expression"
-msgstr "Tunnistelauseke"
+msgstr "Muokkaa tunnistelauseketta"
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
@@ -6001,28 +5987,27 @@ msgid "Unable to add tag"
 msgstr "Tunnistetta ei voi lisätä"
 
 #: quodlibet/qltk/edittags.py:769
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to add %s"
-msgstr "Kappaleita ei voi lisätä"
+msgstr "Tunnistetta %s ei voi lisätä"
 
 #: quodlibet/qltk/edittags.py:771
-#, fuzzy, python-format
+#, python-format
 msgid "The files currently selected do not support multiple values for %s."
-msgstr "Valitut tiedostot eivät tue useaa arvoa tunnisteelle <b>%s</b>."
+msgstr "Valitut tiedostot eivät tue useaa arvoa tunnisteelle %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
 #: quodlibet/util/tags.py:244
-#, fuzzy
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "Virheellinen tunniste"
-msgstr[1] "Virheellinen tunniste"
+msgstr[1] "Virheelliset tunnisteet"
 
 #: quodlibet/qltk/edittags.py:799 quodlibet/qltk/edittags.py:982
 #: quodlibet/qltk/tagsfrompath.py:212
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid tag %s\n"
 "\n"
@@ -6032,26 +6017,26 @@ msgid_plural ""
 "\n"
 "The files currently selected do not support editing these tags."
 msgstr[0] ""
-"Tunniste <b>%s</b> ei kelpaa\n"
+"Virheellinen tunniste %s\n"
 "\n"
 "Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
 msgstr[1] ""
-"Tunniste <b>%s</b> ei kelpaa\n"
+"Virheelliset tunnisteet %s\n"
 "\n"
-"Valitut tiedostot eivät tue tämän tunnisteen muokkaamista."
+"Valitut tiedostot eivät tue näiden tunnisteiden muokkaamista."
 
 #: quodlibet/qltk/edittags.py:952 quodlibet/qltk/edittags.py:995
 msgid "Invalid value"
 msgstr "Virheellinen arvo"
 
 #: quodlibet/qltk/edittags.py:953 quodlibet/qltk/edittags.py:996
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Invalid value: %(value)s\n"
 "\n"
 "%(error)s"
 msgstr ""
-"Arvo ei kelpaa: <b>%(value)s</b>\n"
+"Virheellinen arvo: %(value)s\n"
 "\n"
 "%(error)s"
 
@@ -6073,7 +6058,7 @@ msgid "Unable to save song"
 msgstr "Kappaletta ei voi tallentaa"
 
 #: quodlibet/qltk/_editutils.py:53
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %(file-name)s failed.The file may be read-only, corrupted, or you do "
 "not have permission to edit it."
@@ -6518,9 +6503,8 @@ msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Kun toistettava kappale vaihtuu, vieritä kappalelista sen kohdalle"
 
 #: quodlibet/qltk/prefs.py:72
-#, fuzzy
 msgid "_Sort songs when tags are modified"
-msgstr "Järjestä kappaleet kun tunnisteita muokataan"
+msgstr "_Järjestä kappaleet kun tunnisteita muokataan"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "Automatically re-sort songs in the song list when tags are modified"
@@ -6530,11 +6514,11 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:76
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Salli järjestäminen aina"
 
 #: quodlibet/qltk/prefs.py:78
 msgid "Allow sorting by column headers, even for playlists etc"
-msgstr ""
+msgstr "Salli järjestäminen sarakeotsakkeiden mukaan, myös soittolistoille jne."
 
 #: quodlibet/qltk/prefs.py:99
 msgid "_Others:"
@@ -6574,9 +6558,8 @@ msgid "Column Preferences"
 msgstr "Sarakeasetukset"
 
 #: quodlibet/qltk/prefs.py:145
-#, fuzzy
 msgid "_Update Columns"
-msgstr "Muokkaa sarakkeita"
+msgstr "_Päivitä sarakkeet"
 
 #: quodlibet/qltk/prefs.py:147
 msgid "Apply current configuration to song list, adding new columns to the end"
@@ -6656,9 +6639,8 @@ msgstr ""
 "jokerimerkkejä). Erota useampi tiedostonimi toisistaan pilkulla."
 
 #: quodlibet/qltk/prefs.py:342
-#, fuzzy
 msgid "_Preferred fixed image filename(s)"
-msgstr "_Kuvatiedostonimet:"
+msgstr "_Ensisijaiset kiinteät kuvatiedostonimet"
 
 #: quodlibet/qltk/prefs.py:360
 msgid "Album Art"
@@ -6681,9 +6663,8 @@ msgstr ""
 "arvon verran"
 
 #: quodlibet/qltk/prefs.py:410
-#, fuzzy
 msgid "_Fall-back gain:"
-msgstr "_Oletusvahvistus (dB):"
+msgstr "_Oletusvahvistus:"
 
 #: quodlibet/qltk/prefs.py:419
 msgid ""
@@ -6693,9 +6674,8 @@ msgstr ""
 "ei leikkaannu"
 
 #: quodlibet/qltk/prefs.py:422
-#, fuzzy
 msgid "_Pre-amp gain:"
-msgstr "_Esivahvistus (dB):"
+msgstr "_Esivahvistus:"
 
 #: quodlibet/qltk/prefs.py:428
 msgid "_Enable Replay Gain volume adjustment"
@@ -6749,9 +6729,8 @@ msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr "Arvosanat ja toistokertojen määrät asetetaan tälle osoitteelle"
 
 #: quodlibet/qltk/prefs.py:612
-#, fuzzy
 msgid "_Auto-save tag changes"
-msgstr "Tallenna muutokset tunnisteisiin automaattisesti"
+msgstr "Tallenna muutokset tunnisteisiin _automaattisesti"
 
 #: quodlibet/qltk/prefs.py:614
 msgid "Save changes to tags without confirmation when editing multiple files"
@@ -6973,9 +6952,8 @@ msgid "Edit Bookmarks…"
 msgstr "Muokkaa kirjanmerkkejä…"
 
 #: quodlibet/qltk/quodlibetwindow.py:961
-#, fuzzy
 msgid "Stop"
-msgstr "_Pysäytä"
+msgstr "Pysäytä"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
@@ -7029,16 +7007,15 @@ msgid "_Add Files"
 msgstr "Lisää _tiedostoja"
 
 #: quodlibet/qltk/quodlibetwindow.py:1421
-#, fuzzy, python-format
+#, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
-msgstr[0] "Haluatko varmasti poistaa kaikki kappaleet?"
-msgstr[1] "Haluatko varmasti poistaa kaikki kappaleet?"
+msgstr[0] "Haluatko varmasti lisätä jonoon %d kappaleen?"
+msgstr[1] "Haluatko varmasti lisätä jonoon %d kappaletta?"
 
 #: quodlibet/qltk/quodlibetwindow.py:1431
-#, fuzzy
 msgid "_Enqueue"
-msgstr "J_ono"
+msgstr "_Lisää jonoon"
 
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
@@ -7133,15 +7110,15 @@ msgid "Unable to rename file"
 msgstr "Tiedoston nimeäminen ei onnistu"
 
 #: quodlibet/qltk/renamefiles.py:338
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
 "already exists, or you do not have permission to make the new file or remove "
 "the old one."
 msgstr ""
-"Nimeäminen lähteestä <b>%(old-name)s</b> kohteeseen <b>%(new-name)s</b> ei "
-"onnistu. Kohdetiedosto on mahdollisesti jo olemassa, tai sinulla ei ole "
-"oikeuksia uuden tiedoston luomiseen tai vanhan poistamiseen."
+"Nimeäminen lähteestä %(old-name)s kohteeseen %(new-name)s ei onnistu. "
+"Kohdetiedosto on mahdollisesti jo olemassa, tai uuden tiedoston luomiseen "
+"tai vanhan poistamiseen ei ole oikeuksia."
 
 #: quodlibet/qltk/renamefiles.py:346
 msgid "Ignore _All Errors"
@@ -7162,7 +7139,7 @@ msgid "Path is not absolute"
 msgstr "Polku ei ole absoluuttinen"
 
 #: quodlibet/qltk/renamefiles.py:464
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7170,7 +7147,7 @@ msgid ""
 "your pattern by starting it with / or ~/."
 msgstr ""
 "Kaava\n"
-"\t<b>%s</b>\n"
+"\t%s<\n"
 "sisältää merkin /, mutta ei ala juurihakemistosta. Välttääksesi kansioiden "
 "nimeämisen väärin, aloita kaavasi merkeillä / tai ~/."
 
@@ -7527,7 +7504,7 @@ msgid "Tags are added to existing ones"
 msgstr "Tunnisteet lisätään jo olemassa oleviin"
 
 #: quodlibet/qltk/tagsfrompath.py:194
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "The pattern\n"
 "\t%s\n"
@@ -7535,7 +7512,7 @@ msgid ""
 "brackets (&lt; / &gt;)."
 msgstr ""
 "Kaava\n"
-"\t<b>%s</b>\n"
+"\t%s\n"
 "on virheellinen. Se saattaa sisältää saman tunnisteen kahdesti tai "
 "parittomia kulmasulkumerkkejä (&lt; / &gt;)."
 
@@ -7796,28 +7773,28 @@ msgid "Language must be an ISO 639-2 three-letter code"
 msgstr "Kielen täytyy olla ISO 639-2:n mukainen kolmikirjaiminen koodi"
 
 #: quodlibet/util/songwrapper.py:112
-#, fuzzy, python-format
+#, python-format
 msgid "Saving %d file"
 msgid_plural "Saving %d files"
-msgstr[0] "Tallennus epäonnistui"
-msgstr[1] "Tallennus epäonnistui"
+msgstr[0] "Tallennetaan %d tiedosto"
+msgstr[1] "Tallennetaan %d tiedostoa"
 
 #: quodlibet/util/songwrapper.py:113
 msgid "Auto-Saving"
-msgstr ""
+msgstr "Automaattinen tallennus"
 
 #: quodlibet/util/songwrapper.py:121
 msgid "Unable to edit song"
 msgstr "Kappaleen muokkaaminen epäonnistui"
 
 #: quodlibet/util/songwrapper.py:122
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Saving %s failed. The file may be read-only, corrupted, or you do not have "
 "permission to edit it."
 msgstr ""
-"Kappaleen <b>%s</b> tallentaminen epäonnistui. Tiedosto saattaa olla vain "
-"luku -muodossa, viallinen, tai sen muokkaamiseen ei ole oikeuksia."
+"Kappaleen %s tallentaminen epäonnistui. Tiedosto saattaa olla vain luku -"
+"muodossa, viallinen, tai sen muokkaamiseen ei ole oikeuksia."
 
 #: quodlibet/util/string/__init__.py:32 quodlibet/util/string/__init__.py:42
 msgid "[Invalid Encoding]"
