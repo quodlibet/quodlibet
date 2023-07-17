@@ -256,6 +256,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_totals)
         self.songlist = view
+        self.songlist.sortable = not Kind.can_reorder
 
         sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
@@ -317,7 +318,6 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
                 songs = list(filter(bg, songs))
         print_d(f"Setting {len(songs)} songs...")
         self.songlist.set_songs(songs, sorted)
-        self.songlist.sortable = browser.can_reorder
 
     def __enqueue(self, view, path, column, player):
         app.window.playlist.enqueue([view.get_model()[path][0]])
