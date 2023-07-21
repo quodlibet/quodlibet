@@ -73,7 +73,7 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
 
 
 def create_console(songs=None):
-    console = PythonConsole(namespace_for(songs)) if songs else PythonConsole()
+    console = PythonConsole(namespace_for(songs))
     access_string = _("You can access the following objects by default:")
     access_string += "\\n".join([
                     "",
@@ -96,17 +96,22 @@ def create_console(songs=None):
 
 
 def namespace_for(song_wrappers):
-    files = [song('~filename') for song in song_wrappers]
-    song_dicts = [song._song for song in song_wrappers]
-    collection = Collection()
-    collection.songs = song_dicts
-    return {
-        'songs': song_wrappers,
-        'files': files,
-        'sdict': song_dicts,
-        'col': collection,
-        'app': app
-    }
+    if song_wrappers is None:
+        return {
+            'app': app
+        }
+    else:
+        files = [song('~filename') for song in song_wrappers]
+        song_dicts = [song._song for song in song_wrappers]
+        collection = Collection()
+        collection.songs = song_dicts
+        return {
+            'songs': song_wrappers,
+            'files': files,
+            'sdict': song_dicts,
+            'col': collection,
+            'app': app
+        }
 
 
 class ConsoleWindow(Gtk.Window):
