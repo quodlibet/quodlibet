@@ -43,6 +43,12 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
     def next(self, playlist, current_song):
         return self._next(playlist, current_song)
 
+    def next_explicit(self, playlist, current_song):
+        return self._next(playlist, current_song, delay_on=False)
+
+    def previous(self, playlist, current_song):
+        return OrderRemembered.previous(self, playlist, current_song)
+
     def _next(self, playlist, current_song, delay_on=True):
         grouping = str(pconfig.gettext("grouping")).strip()
         grouping_filter = str(pconfig.gettext("grouping_filter")).strip()
@@ -110,12 +116,6 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
             return True
         tag_value = song(tag_name)
         return bool(tag_value.strip())
-
-    def next_explicit(self, playlist, current_song):
-        return self._next(playlist, current_song, delay_on=False)
-
-    def previous(self, playlist, current_song):
-        return OrderRemembered.previous(self, playlist, current_song)
 
     @classmethod
     def PluginPreferences(cls, window):
