@@ -12,6 +12,7 @@ from gi.repository import Gtk, GLib
 
 from quodlibet import _
 from quodlibet import app
+from quodlibet.commands import registry as cmd_registry
 from quodlibet.order import OrderInOrder
 from quodlibet.order import OrderRemembered
 from quodlibet.order.reorder import Reorder
@@ -44,6 +45,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
     def __init__(self):
         super().__init__()
         self._order = None
+        self._register_commands()
 
     def next(self, playlist, iter):
         return self._next(playlist, iter)
@@ -132,6 +134,65 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
                 return song
 
         return f
+
+    def _register_commands(self):
+        @cmd_registry.register("next-album")
+        def _next_album(app):
+            playlist = app.window.playlist.pl
+
+            song_grouping = self._grouping_function(playlist)
+
+            def playlist_index(iter):
+                return playlist.get_path(iter).get_indices()[0]
+
+            iter = playlist.current_iter
+            if iter:
+                grouping = song_grouping(iter)
+                i = playlist_index(iter)
+                while True:
+                    playlist.next()
+                    iter = playlist.current_iter
+                    if song_grouping(iter) != grouping or playlist_index(iter) <= i:
+                        break
+                app.player.go_to(iter)
+                app.player.play()
+            else:
+                app.player.next()
+
+        @cmd_registry.register("previous-album")
+        def _previous_album(app):
+            playlist = app.window.playlist.pl
+
+            if not playlist.current_iter:
+                return
+
+            song_grouping = self._grouping_function(playlist)
+
+            def playlist_index(iter):
+                return playlist.get_path(iter).get_indices()[0]
+
+            playlist.previous()
+            playlist.previous() # first is not changing current_iter, why?
+            iter = playlist.current_iter
+
+            if not iter:
+                app.player.previous()
+                return
+
+            grouping = song_grouping(iter)
+            i = playlist_index(iter)
+            while True:
+                playlist.previous()
+                previous = playlist.current_iter
+                if previous is None or song_grouping(previous) != grouping or playlist_index(previous) >= i:
+                    break
+                iter = previous
+
+            if playlist.current_iter:
+                playlist.next()
+
+            app.player.go_to(iter)
+            app.player.play()
 
     @classmethod
     def PluginPreferences(cls, window):
