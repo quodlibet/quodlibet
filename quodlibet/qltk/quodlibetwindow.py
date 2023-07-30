@@ -1155,9 +1155,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         self.__hide_headers()
 
     def set_sortability(self):
-        # It's either sortable or clickable columns, both ends in a buggy UI (see #4099)
-        always_sortable = config.getboolean("song_list", "always_allow_sorting")
-        self.songlist.sortable = not self.browser.can_reorder or always_sortable
+        self.songlist.sortable = not self.browser.can_reorder
 
     def __update_paused(self, player, paused):
         menu = self.ui.get_widget("/Menu/Control/PlayPause")
