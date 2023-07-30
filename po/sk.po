@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-11 20:47+0000\n"
+"PO-Revision-Date: 2023-06-04 12:49+0000\n"
 "Last-Translator: menom <menom1@protonmail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -2472,7 +2472,7 @@ msgstr ""
 #: quodlibet/ext/events/searchprovider.py:71
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "Skopírovali ste ini súbor do %s (alebo podobného)?"
 
 #: quodlibet/ext/events/searchprovider.py:77
 msgid "GNOME Search Provider"
