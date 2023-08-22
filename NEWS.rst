@@ -1,5 +1,90 @@
 .. _News:
 
+.. _release-4.6.0:
+
+4.6.0 (2023-08-22) - Ah, perfect, the banner that satisfies everyone
+--------------------------------------------------------------------
+
+Packaging Changes
+ * Quodlibet now requires Python 3.8+
+ * It also now supports Python 3.11
+ * libsoup3 is now required (up from version 2)
+
+ℹ️ A highlight of the changes in 4.6.0 is below.
+For full details,
+see `the 4.6 commit log <https://github.com/quodlibet/quodlibet/compare/release-4.5.0...release-4.6.0>`_.
+
+General
+ * Audiofeeds: enable clipboard when adding feed :pr:`4128` (:user:`Nick Boultbee <declension>`)
+ * Fix aggregate units on numeric comparisons :pr:`4089` (:user:`Nick Boultbee <declension>`)
+ * Fix playlist renaming bug :pr:`4079` (:user:`Nick Boultbee <declension>`)
+ * Remove some senf helpers that are more or less the same in the Python 3 stdlib :pr:`4041` (:user:`lazka`)
+ * Require Python 3.8 :pr:`3956` (:user:`lazka`)
+ * Move to libsoup3 (#4294) (:user:`Nick Boultbee <declension>`)
+ * Add Stop command to Control menu (#4213) (:user:`Markus Koller`)
+ * Allow disabling of songlist sorting (#4273) (:user:`Nick Boultbee <declension>`)
+ * Add human time tags (#4275) (:user:`Nick Boultbee <declension>`)
+ * Nicer prefs switches (#4274) (:user:`Nick Boultbee <declension>`)
+ * Fix shuffle history (#4255) (:user:`Thomas Leberbauer`)
+ * Fix pop-up menu for Podcasts (#4193) (:user:`Nick Boultbee <declension>`)
+ * Add CLI arg: --with-pattern (#4166) (:user:`Felicián Németh`)
+ * Modernise entire preferences UI 🎨 (#4175) (:user:`Nick Boultbee <declension>`)
+ * Allow songlist editing of simple text tags in-place 🆙 (#4173) (:user:`Nick Boultbee <declension>`)
+ * Make --rating-up work when song has no previous rating (#4172) (:user:`Felicián Németh`)
+ * Don't make the WaitLoadWindow modal (#4171) (:user:`David Greaves`)
+ * Prompt on attempting to extend a playlist with DnD'ed tracks (#2746) (:user:`Meriipu`)
+ * Stop query date regex from matching > 4 digit year (#4162) (:user:`afontenot`)
+ * Add "edit" button to column tag editor window (#4148) (:user:`afontenot`)
+ * Track List: Add shortcut Ctrl-Return to the searchbar (#4141) (:user:`Felicián Németh`)
+ * Fix crash when using covergrid + default art size (#4151) (:user:`afontenot`)
+ * Disable ordering when active order disappears (#4156) (:user:`afontenot`)
+ * Improve notif progress bar (#4147) (:user:`Nick Boultbee <declension>`)
+ * Playlists: log about potential import failures (#4146) (:user:`Nick Boultbee <declension>`)
+ * Fix regression of --print-query (#4142) (:user:`Felicián Németh`)
+ * Rename feeds -> podcasts (#3513) (#4139) (:user:`Nick Boultbee <declension>`)
+ * Audiofeeds: handle non-feed URLs (#4126) (:user:`Nick Boultbee <declension>`)
+ * Fix image size scaling when cover is reloaded (#4115) (:user:`Thomas Leberbauer`)
+ * Covergrid using FlowBox (#4101) (:user:`Thomas Leberbauer`)
+ * Softer cover art outline (#4096) (:user:`Nick Boultbee <declension>`)
+ * Disable editing for Soundcloud tracks (#4097) (:user:`Nick Boultbee <declension>`)
+ * Fix lots of browser padding issues (#4066) (:user:`Nick Boultbee <declension>`)
+ * Make songs heading entries editable (#4046) (#4047) (:user:`Nick Boultbee <declension>`)
+ * XSPF formatting (#4028) (:user:`Nick Boultbee <declension>`)
+ * Support library watching in the core (#3654) (:user:`Nick Boultbee <declension>`)
+ * Write XSPFs with proper namespace (internal v2) (#3984) (:user:`Nick Boultbee <declension>`)
+ * Move library: don't force source dir to exist (#3980) (:user:`Nick Boultbee <declension>`)
+ * Fix add playlists errors (#3973) (#3974) (:user:`TheMelmacian`)
+ * Fix display pattern not updating in browsers (#3975) (:user:`Thomas Leberbauer`)
+
+
+Developer
+ * osx: fix installation with setuptools (:user:`Christoph Reiter <lazka>`)
+ * osx: update jhbuild (:user:`Christoph Reiter <lazka>`)
+ * osx: fix cargo/rustup usage in jhbuild (:user:`Christoph Reiter <lazka>`)
+ * osx_bundle: move to 10.13+ (:user:`Christoph Reiter <lazka>`)
+
+
+Plugins
+ * Improve and fix Sonos plugin (#4290) (:user:`Nick Boultbee <declension>`)
+ * Tidy export to folder plugin (:user:`Nick Boultbee <declension>`)
+ * Unique filters plugin (#4264) (:user:`LoveIsGrief`)
+ * playlist export: prefix relative paths with '.' if the path starts with '#' (#4236) (:user:`Felix Krull`)
+ * Add a new internal tag: ~json (#4195) (:user:`Felicián Németh`)
+ * 🆕 Bookmarks notifications plugin (#4174) (:user:`Nick Boultbee <declension>`)
+ * Move listenbrainz plugin to the right location (#4192) (:user:`Felicián Németh`)
+ * the sync_to_device plugin shouldn't delete files named 'cover.jpg' (#4083) (:user:`Jan`)
+ * Album art downloader: improve GUI (#4106) (:user:`Nick Boultbee <declension>`)
+ * Album art downloader: remove Amazon (#4105) (:user:`Nick Boultbee <declension>`)
+ * Embed Images plugin: allow choosing a file from disk (#4071) (:user:`Nick Boultbee <declension>`)
+ * Add plugin for rich presence in Discord. (#3998) (:user:`Aditi K`)
+
+
+Translations
+ * Thanks to all our translators old and new.
+ * These are now listed on the `Weblate QL project <https://hosted.weblate.org/projects/quodlibet/quodlibet/>`_.
+
+
+
 .. _release-4.5.0:
 
 4.5.0 (2022-03-29) - What sort of things would you like to know?
