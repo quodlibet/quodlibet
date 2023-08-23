@@ -92,8 +92,8 @@ def load_module(name, package, path):
     except KeyError:
         pass
 
-    loader = importlib.find_loader(fullname, [path])
-    if loader is None:
+    spec = importlib.machinery.PathFinder.find_spec(fullname, [path])
+    if spec is None:
         return
 
     # modules need a parent package
@@ -101,7 +101,7 @@ def load_module(name, package, path):
         spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
         sys.modules[package] = importlib.util.module_from_spec(spec)
 
-    mod = loader.load_module(fullname)
+    mod = spec.loader.load_module(fullname)
 
     # make it accessible from the parent, like __import__ does
     vars(sys.modules[package])[name] = mod
