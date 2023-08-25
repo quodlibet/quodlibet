@@ -120,7 +120,6 @@ mutagen
         mingw-w64-"${ARCH}"-ncurses \
         mingw-w64-"${ARCH}"-tk \
         mingw-w64-"${ARCH}"-tcl \
-        mingw-w64-"${ARCH}"-opencv \
         mingw-w64-"${ARCH}"-libdvdcss \
         mingw-w64-"${ARCH}"-libdvdnav \
         mingw-w64-"${ARCH}"-libdvdread \
