@@ -11,7 +11,7 @@ import os
 # MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
 # Python build. Unset here and restart.. (does not work for py.test etc.)
 # XXX: do this here since it gets executed by all scripts
-if os.name == "nt" and "MSYSTEM" in os.environ:
+if os.name == "nt" and os.environ.get("MSYSTEM"):
     import subprocess
 
     del os.environ["MSYSTEM"]
