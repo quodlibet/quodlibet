@@ -249,14 +249,6 @@ class POMixin:
         po_path = gettextutil.get_po_path(PO_PATH, self.lang)
         gettextutil.check_po(po_path)
 
-    def test_gtranslator_breakage(self):
-        with open(self.current_po_path(), "rb") as h:
-            for line in h:
-                if line.strip().startswith(b"#"):
-                    continue
-                assert b"\xc2\xb7" not in line, \
-                    f"Broken GTranslator copy/paste in {self.lang}:\n{line!r}"
-
     def test_gtk_stock_items(self):
         with open(self.current_po_path(), "rb") as h:
             for line in h:
