@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet.util import format_time_display, format_time_long,\
+from quodlibet.util import format_time_display, format_time_long, \
     format_size, tag
 from quodlibet import _
 from quodlibet import qltk
