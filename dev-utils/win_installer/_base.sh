@@ -112,6 +112,7 @@ mutagen
     build_pip install --no-binary ":all:" \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr "\\n" " ")
 
+    # transitive dependencies which we don't need
     build_pacman --noconfirm -Rdds \
         "${MINGW_PACKAGE_PREFIX}"-shared-mime-info \
         "${MINGW_PACKAGE_PREFIX}"-python-pip \
@@ -125,7 +126,8 @@ mutagen
         "${MINGW_PACKAGE_PREFIX}"-openexr \
         "${MINGW_PACKAGE_PREFIX}"-openh264 \
         "${MINGW_PACKAGE_PREFIX}"-zbar \
-        "${MINGW_PACKAGE_PREFIX}"-gsl
+        "${MINGW_PACKAGE_PREFIX}"-gsl \
+        "${MINGW_PACKAGE_PREFIX}"-vulkan-headers
 
     build_pacman --noconfirm -S \
         "${MINGW_PACKAGE_PREFIX}"-python-setuptools
