@@ -131,7 +131,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           PyVirtualDisplay \
           pytest-faulthandler \
-          flake8==5.0.4 \
+          flake8==6.1.0 \
           flaky
 
     - name: Run tests
