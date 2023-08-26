@@ -216,7 +216,7 @@ msgstr "_Özel"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1304
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Ekle"
@@ -282,7 +282,7 @@ msgstr "_Uygula"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_İptal"
@@ -3113,12 +3113,12 @@ msgstr "%(application-name)s'i gö_ster"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:1165
 msgid "_Play"
 msgstr "_Çal"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1169
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "Dur_aklat"
@@ -6861,7 +6861,7 @@ msgstr "_Kur"
 msgid "Unable to add songs"
 msgstr "Şarkılar eklenemedi"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1313
+#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s desteklenmeyen iletişim kuralı kullanıyor."
@@ -6930,49 +6930,49 @@ msgstr "Çevrimiçi Yardım"
 msgid "Search Help"
 msgstr "Yardım Ara"
 
-#: quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/quodlibetwindow.py:1300
 msgid "Add a Location"
 msgstr "Konum Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Enter the location of an audio file:"
 msgstr "Ses dosyasının konumunu gir:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1308
-#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1306
+#: quodlibet/qltk/quodlibetwindow.py:1310
 msgid "Unable to add location"
 msgstr "Konum eklenemedi"
 
-#: quodlibet/qltk/quodlibetwindow.py:1309
+#: quodlibet/qltk/quodlibetwindow.py:1307
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s geçerli bir konum değil."
 
-#: quodlibet/qltk/quodlibetwindow.py:1321
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1319
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "Add Music"
 msgstr "Müzik Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1321 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "Klasörler _Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1326
 msgid "Music Files"
 msgstr "Müzik Dosyaları"
 
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "_Add Files"
 msgstr "Dosyalar _Ekle"
 
-#: quodlibet/qltk/quodlibetwindow.py:1421
+#: quodlibet/qltk/quodlibetwindow.py:1419
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
 msgstr[0] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
 msgstr[1] "%d şarkıyı kuyruğa almak istediğinizden emin misiniz?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1431
+#: quodlibet/qltk/quodlibetwindow.py:1429
 msgid "_Enqueue"
 msgstr "_Kuyrukla"
 
@@ -7318,39 +7318,39 @@ msgstr "Bütün panolardaki bütün şarkıları seç"
 msgid "_Filter on %s"
 msgstr "_Süzme türü: %s"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1195
 msgid "All _Headers"
 msgstr "Bütün _Başlıklar"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1196
 msgid "_Track Headers"
 msgstr "_Parça Başlıkları"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Album Headers"
 msgstr "_Albüm Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1198
 msgid "_People Headers"
 msgstr "_Kişi Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Date Headers"
 msgstr "_Tarih Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1200
 msgid "_File Headers"
 msgstr "_Dosya Başlıkları"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Production Headers"
 msgstr "_Yapımcı Etiketleri"
 
-#: quodlibet/qltk/songlist.py:1214
+#: quodlibet/qltk/songlist.py:1216
 msgid "_Customize Headers…"
 msgstr "_Başlıkları Özelleştir…"
 
-#: quodlibet/qltk/songlist.py:1219
+#: quodlibet/qltk/songlist.py:1221
 msgid "_Expand Column"
 msgstr "_Sütunu Genişlet"
 

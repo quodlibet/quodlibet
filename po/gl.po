@@ -226,7 +226,7 @@ msgstr "_Personalizada"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1304
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
@@ -294,7 +294,7 @@ msgstr ""
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr ""
@@ -3158,13 +3158,13 @@ msgstr ""
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:1165
 #, fuzzy
 msgid "_Play"
 msgstr "Reprodutor"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1169
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
@@ -7025,7 +7025,7 @@ msgstr ""
 msgid "Unable to add songs"
 msgstr "Non se puideron engadir as cancións"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1313
+#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b> emprega um protocolo nom admitido."
@@ -7102,45 +7102,45 @@ msgstr "Axuda en Internet"
 msgid "Search Help"
 msgstr "Procurar"
 
-#: quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/quodlibetwindow.py:1300
 msgid "Add a Location"
 msgstr "Engadir un enderezo"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Enter the location of an audio file:"
 msgstr "Insire o enderezo dun arquivo de música:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1308
-#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1306
+#: quodlibet/qltk/quodlibetwindow.py:1310
 msgid "Unable to add location"
 msgstr "Non se puido engadir o enderezo"
 
-#: quodlibet/qltk/quodlibetwindow.py:1309
+#: quodlibet/qltk/quodlibetwindow.py:1307
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> nom é umha localizaçom válida."
 
-#: quodlibet/qltk/quodlibetwindow.py:1321
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1319
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "Add Music"
 msgstr "Engadir música"
 
-#: quodlibet/qltk/quodlibetwindow.py:1321 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
 #, fuzzy
 msgid "_Add Folders"
 msgstr "_Engadir um Cartafol..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1326
 #, fuzzy
 msgid "Music Files"
 msgstr "Reprodutor de música"
 
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1328
 #, fuzzy
 msgid "_Add Files"
 msgstr "_Engadir um arquivo..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1421
+#: quodlibet/qltk/quodlibetwindow.py:1419
 #, fuzzy, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
@@ -7151,7 +7151,7 @@ msgstr[1] ""
 "Está a piques de mudar as qualificações de %d canções.\n"
 "Deseja continuar?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1431
+#: quodlibet/qltk/quodlibetwindow.py:1429
 #, fuzzy
 msgid "_Enqueue"
 msgstr "_Fileira"
@@ -7509,41 +7509,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Filtrar por %s"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1195
 #, fuzzy
 msgid "All _Headers"
 msgstr "Cabeceiras dos _álbuns"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1196
 msgid "_Track Headers"
 msgstr "_Cabeceiras da pista"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Album Headers"
 msgstr "Cabeceiras do á_lbum"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1198
 msgid "_People Headers"
 msgstr "Cabeceiras dos _componentes"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Date Headers"
 msgstr "Cabeceiras da _data"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1200
 msgid "_File Headers"
 msgstr "Cabeceiras do _arquivo"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Production Headers"
 msgstr "Cabeceiras de p_rodución"
 
-#: quodlibet/qltk/songlist.py:1214
+#: quodlibet/qltk/songlist.py:1216
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Personalizar as cabeceiras..."
 
-#: quodlibet/qltk/songlist.py:1219
+#: quodlibet/qltk/songlist.py:1221
 #, fuzzy
 msgid "_Expand Column"
 msgstr "Colunas adicionais"
