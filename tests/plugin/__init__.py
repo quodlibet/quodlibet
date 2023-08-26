@@ -37,7 +37,7 @@ ms.rescan()
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
     exc = err.exception
-    assert issubclass(type(exc), (PluginImportException, ImportError)),\
+    assert issubclass(type(exc), (PluginImportException, ImportError)), \
         "'%s' plugin shouldn't have raised a %s, but it did (%r)."\
         % (name, type(exc).__name__, exc)
 
