@@ -6,7 +6,7 @@ on:
       ref:
         description: 'The git ref to build. Current ref if empty.'
         default: ''
-        required: true
+        required: false
         type: string
 
 jobs:
