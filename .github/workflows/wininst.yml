@@ -4,8 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       ref:
-        description: 'The git references to build. Defaults to the current branch.'
-        default: 'main'
+        description: 'The git ref to build. Current ref if empty.'
+        default: ''
         required: true
         type: string
 
