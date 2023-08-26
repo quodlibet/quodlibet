@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-01 03:50+0000\n"
+"PO-Revision-Date: 2023-08-21 19:50+0000\n"
 "Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.0-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -4098,7 +4098,7 @@ msgstr "_Sorgu:"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:378
 msgid "S_earch"
-msgstr "_Ara"
+msgstr "A_ra"
 
 #: quodlibet/ext/songsmenu/brainz/widgets.py:391
 msgid "Results <i>(drag to reorder)</i>"
