@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-20 14:48+0000\n"
-"Last-Translator: Jej <weblate@gogomail.trickip.net>\n"
+"PO-Revision-Date: 2023-08-26 19:30+0000\n"
+"Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.0.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -383,7 +383,7 @@ msgstr "Hip Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
-msgstr "Vieilles chansons"
+msgstr "Chansons rétro"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "R&B"
@@ -3173,12 +3173,12 @@ msgstr "P_ause"
 #: quodlibet/ext/events/trayicon/menu.py:68
 #: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:946
 msgid "Pre_vious"
-msgstr "Précédent"
+msgstr "Pré_cédent"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
 #: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:956
 msgid "_Next"
-msgstr "Suivant"
+msgstr "_Suivant"
 
 #: quodlibet/ext/events/trayicon/menu.py:76
 msgid "_Shuffle"
@@ -5027,7 +5027,7 @@ msgstr "L'écriture dans %s a échoué."
 #. Translators: Plugin name
 #: quodlibet/ext/songsmenu/refresh.py:22
 msgid "Rescan Songs"
-msgstr "Rescanner les titres"
+msgstr "Re-scanner les titres"
 
 #: quodlibet/ext/songsmenu/refresh.py:23
 msgid "Checks for file changes and reloads / removes the songs if needed."
@@ -5037,7 +5037,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/refresh.py:31
 msgid "Rescan songs"
-msgstr "Rescanner les titres"
+msgstr "Re-scanner les titres"
 
 #: quodlibet/ext/songsmenu/replaygain.py:351
 msgid "ReplayGain Analyzer"
