@@ -22,8 +22,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.18-dev\n"
 "X-Poedit-Basepath: .\n"
 
@@ -229,7 +229,7 @@ msgstr "Св_ои"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1304
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Добавить"
@@ -295,7 +295,7 @@ msgstr "_Применить"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_Отмена"
@@ -3129,12 +3129,12 @@ msgstr "_Показать %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:1165
 msgid "_Play"
 msgstr "_Играть"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1169
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "_Пауза"
@@ -6907,7 +6907,7 @@ msgstr "_Выбрать"
 msgid "Unable to add songs"
 msgstr "Не удалось добавить треки"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1313
+#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s использует неподдерживаемый протокол."
@@ -6976,42 +6976,42 @@ msgstr "Справка онлайн"
 msgid "Search Help"
 msgstr "Справка онлайн по поиску"
 
-#: quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/quodlibetwindow.py:1300
 msgid "Add a Location"
 msgstr "Добавить адрес"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Enter the location of an audio file:"
 msgstr "Введите адрес аудиофайла:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1308
-#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1306
+#: quodlibet/qltk/quodlibetwindow.py:1310
 msgid "Unable to add location"
 msgstr "Не удалось добавить адрес"
 
-#: quodlibet/qltk/quodlibetwindow.py:1309
+#: quodlibet/qltk/quodlibetwindow.py:1307
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s не является корректным адресом."
 
-#: quodlibet/qltk/quodlibetwindow.py:1321
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1319
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "Add Music"
 msgstr "Добавить музыку"
 
-#: quodlibet/qltk/quodlibetwindow.py:1321 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "Добавить пап_ки"
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1326
 msgid "Music Files"
 msgstr "Музыкальные файлы"
 
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "_Add Files"
 msgstr "Добавить _файлы"
 
-#: quodlibet/qltk/quodlibetwindow.py:1421
+#: quodlibet/qltk/quodlibetwindow.py:1419
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
@@ -7019,7 +7019,7 @@ msgstr[0] "Уверены, что хотите поставить %d песню 
 msgstr[1] "Уверены, что хотите поставить %d песни в очередь?"
 msgstr[2] "Уверены, что хотите поставить %d песен в очередь?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1431
+#: quodlibet/qltk/quodlibetwindow.py:1429
 msgid "_Enqueue"
 msgstr "_В очередь"
 
@@ -7361,39 +7361,39 @@ msgstr "Выбрать все треки на всех панелях"
 msgid "_Filter on %s"
 msgstr "Фильтр по %s"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1195
 msgid "All _Headers"
 msgstr "_Все заголовки"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1196
 msgid "_Track Headers"
 msgstr "_Трек"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Album Headers"
 msgstr "_Альбом"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1198
 msgid "_People Headers"
 msgstr "_Заголовки исполнителей"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Date Headers"
 msgstr "_Дата"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1200
 msgid "_File Headers"
 msgstr "_Файл"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Production Headers"
 msgstr "_Производство"
 
-#: quodlibet/qltk/songlist.py:1214
+#: quodlibet/qltk/songlist.py:1216
 msgid "_Customize Headers…"
 msgstr "_Настроить…"
 
-#: quodlibet/qltk/songlist.py:1219
+#: quodlibet/qltk/songlist.py:1221
 msgid "_Expand Column"
 msgstr "Автоши_рина"
 

@@ -225,7 +225,7 @@ msgstr "_Personalizatu"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1304
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr ""
@@ -293,7 +293,7 @@ msgstr ""
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1430 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr ""
@@ -3152,13 +3152,13 @@ msgstr ""
 
 #: quodlibet/ext/events/trayicon/menu.py:60
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:1165
 #, fuzzy
 msgid "_Play"
 msgstr "_Erreprodukzio-zerrendak"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1169
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
@@ -7009,7 +7009,7 @@ msgstr ""
 msgid "Unable to add songs"
 msgstr "Ezin dira abestiak gehitu"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1313
+#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
 #, fuzzy, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "<b>%s</b>k onartzen ez den protokolo bat erabiltzen du."
@@ -7087,45 +7087,45 @@ msgstr "Laguntza sarean"
 msgid "Search Help"
 msgstr "Bilatu"
 
-#: quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/quodlibetwindow.py:1300
 msgid "Add a Location"
 msgstr "Gehitu kokapena"
 
-#: quodlibet/qltk/quodlibetwindow.py:1303
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Enter the location of an audio file:"
 msgstr "Idatzi audio fitxategiaren kokapena:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1308
-#: quodlibet/qltk/quodlibetwindow.py:1312
+#: quodlibet/qltk/quodlibetwindow.py:1306
+#: quodlibet/qltk/quodlibetwindow.py:1310
 msgid "Unable to add location"
 msgstr "Ezin da kokapena gehitu"
 
-#: quodlibet/qltk/quodlibetwindow.py:1309
+#: quodlibet/qltk/quodlibetwindow.py:1307
 #, fuzzy, python-format
 msgid "%s is not a valid location."
 msgstr "<b>%s</b> ez da baliozko kokapen bat."
 
-#: quodlibet/qltk/quodlibetwindow.py:1321
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1319
+#: quodlibet/qltk/quodlibetwindow.py:1328
 msgid "Add Music"
 msgstr "Gehitu musika"
 
-#: quodlibet/qltk/quodlibetwindow.py:1321 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
 #, fuzzy
 msgid "_Add Folders"
 msgstr "_Gehitu karpeta bat..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1326
 #, fuzzy
 msgid "Music Files"
 msgstr "Musika erreproduzigailua"
 
-#: quodlibet/qltk/quodlibetwindow.py:1330
+#: quodlibet/qltk/quodlibetwindow.py:1328
 #, fuzzy
 msgid "_Add Files"
 msgstr "_Gehitu fitxategi bat..."
 
-#: quodlibet/qltk/quodlibetwindow.py:1421
+#: quodlibet/qltk/quodlibetwindow.py:1419
 #, fuzzy, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
@@ -7136,7 +7136,7 @@ msgstr[1] ""
 "%d abestiren balorazioa aldatzera zoaz.\n"
 "Jarraitu nahi duzu?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1431
+#: quodlibet/qltk/quodlibetwindow.py:1429
 #, fuzzy
 msgid "_Enqueue"
 msgstr "_Ilara"
@@ -7494,41 +7494,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Iragazi %s-ez"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1195
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Album goiburuak"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1196
 msgid "_Track Headers"
 msgstr "Pis_ta goiburuak"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1197
 msgid "_Album Headers"
 msgstr "_Album goiburuak"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1198
 msgid "_People Headers"
 msgstr "_Pertsona goiburuak"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1199
 msgid "_Date Headers"
 msgstr "_Data goiburuak"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1200
 msgid "_File Headers"
 msgstr "_fixategi goiburuak"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1201
 msgid "_Production Headers"
 msgstr "P_rodukzio goiburuak"
 
-#: quodlibet/qltk/songlist.py:1214
+#: quodlibet/qltk/songlist.py:1216
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Pertsonalizatu goiburuak..."
 
-#: quodlibet/qltk/songlist.py:1219
+#: quodlibet/qltk/songlist.py:1221
 #, fuzzy
 msgid "_Expand Column"
 msgstr "Zutabe gehigarriak"
