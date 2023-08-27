@@ -52,6 +52,7 @@ types-docutils = "^0.19.0"
 types-certifi = "^2021.10.8.3"
 types-requests = "^2.28.11.15"
 pyvirtualdisplay = { version = "^3.0", platform = "linux" }
+setuptools = "^68.1.2"
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]
