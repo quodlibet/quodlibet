@@ -94,6 +94,7 @@ class TInternetRadio(TestCase):
         self.assertEqual(self.bar.status_text(1), "1 station")
         self.assertEqual(self.bar.status_text(101, 123), "101 stations")
 
+    @pytest.mark.network
     @skipIf(is_windows() or is_osx(), "Don't need to test downloads all the time")
     def test_click_add_station(self):
         self.bar._update_button.emit('clicked')
