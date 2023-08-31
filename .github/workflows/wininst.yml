@@ -1,0 +1,50 @@
+name: 'wininst'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'The git ref to build. Current ref if empty.'
+        default: ''
+        required: false
+        type: string
+
+jobs:
+  build-installer:
+    runs-on: windows-2022
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: setup-msys2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: UCRT64
+          update: true
+          install: >-
+            git
+            dos2unix
+            mingw-w64-ucrt-x86_64-7zip
+            mingw-w64-ucrt-x86_64-nsis
+            mingw-w64-ucrt-x86_64-curl
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-cc
+
+      - name: Build Installer
+        env:
+          BUILD_REF: ${{ github.event.inputs.ref }}
+        shell: msys2 {0}
+        run: |
+          if [[ -z "$BUILD_REF" ]]; then
+            BUILD_REF="$(git rev-parse --abbrev-ref HEAD)"
+          fi
+          cd dev-utils/win_installer
+          ./build.sh "$BUILD_REF"
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: installer
+          path: dev-utils/win_installer/*.exe

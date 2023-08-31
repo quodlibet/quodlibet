@@ -19,13 +19,6 @@ function main {
 
     [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
 
-    # started from the wrong env -> switch
-    # shellcheck disable=SC2019,SC2018
-    if [ "$(echo "$MSYSTEM" | tr 'A-Z' 'a-z')" != "$MINGW" ]; then
-        "/${MINGW}.exe" "$0" "$1"
-        exit $?
-    fi
-
     install_pre_deps
     create_root
     install_deps

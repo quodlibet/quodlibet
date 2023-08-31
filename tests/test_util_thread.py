@@ -7,6 +7,8 @@
 
 import threading
 
+import pytest as pytest
+
 from tests import TestCase, run_gtk_loop
 
 from gi.repository import Gtk
@@ -17,6 +19,7 @@ from quodlibet.util.thread import call_async, call_async_background, \
 
 class Tcall_async(TestCase):
 
+    @pytest.mark.flaky(max_runs=3, min_passes=2)
     def test_main(self):
         cancel = Cancellable()
 

@@ -103,12 +103,22 @@ class TSongList(TestCase):
         self.assertFalse(s.get_sort_orders())
 
     def test_not_sortable(self):
+        config.set("song_list", "always_allow_sorting", False)
         s = self.songlist
         s.sortable = False
         s.set_column_headers(["foo"])
         s.toggle_column_sort(s.get_columns()[0])
-        self.assertEqual(self.orders_changed, 0)
-        self.assertFalse(s.get_sort_orders())
+        assert self.orders_changed == 0
+        assert not s.get_sort_orders()
+
+    def test_sortable_if_config_overrides(self):
+        config.set("song_list", "always_allow_sorting", True)
+        s = self.songlist
+        s.sortable = False
+        assert s.sortable
+        s.set_column_headers(["foo"])
+        s.toggle_column_sort(s.get_columns()[0])
+        assert s.get_sort_orders()
 
     def test_find_default_sort_column(self):
         s = self.songlist

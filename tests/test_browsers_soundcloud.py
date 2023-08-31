@@ -4,7 +4,8 @@
 # (at your option) any later version.
 
 import time
-from unittest import TestCase
+
+from tests import TestCase
 
 from gi.repository import Gtk
 

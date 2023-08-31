@@ -961,7 +961,7 @@ def load_library(names, shared=True):
 
         try:
             return load_func(dlopen_name), name
-        except OSError as e:
+        except (OSError, AttributeError) as e:
             errors.append(str(e))
 
     raise OSError("\n".join(errors))

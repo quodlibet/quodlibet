@@ -101,7 +101,7 @@ def test_live_cover_download(plugin_class_name):
             # Isn't called by fetch_cover()
             plugin.search()
         plugin.fetch_cover()
-        while time() - start < 5 and results.success is None:
+        while time() - start < 10 and results.success is None:
             Gtk.main_iteration_do(False)
 
         assert results.success is not None, "No signal triggered"

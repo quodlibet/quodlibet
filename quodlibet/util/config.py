@@ -377,7 +377,7 @@ class Config:
             with open(filename, "rb") as fileobj:
                 fileobj = StringIO(
                     fileobj.read().decode("utf-8", "surrogateescape"))
-                self._config.readfp(fileobj, filename)
+                self._config.read_file(fileobj, filename)
         except (IOError, OSError):
             return
 

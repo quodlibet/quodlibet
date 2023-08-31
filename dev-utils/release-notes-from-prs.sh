@@ -21,7 +21,7 @@ git log \
     --since="$from_date" \
     --grep "pull request" \
     | sed -nre "s/$GIT_REGEX"'/ * \3 :pr:`\1` (:user:`\2`)/p'
-echo -e "\n\nMaster:"
+echo -e "\n\nMain:"
 git log \
     --pretty=format:"%aN|%s" \
     --no-merges \
@@ -32,6 +32,7 @@ git log \
     --grep "Update quodlibet.pot" \
     --first-parent main \
     --since="$from_date" \
+    | sed -nre 's/\(#([0-9]+)\)$/:pr:`\1`/p' \
     | sed -nre 's/(.+)+\|(.*)/ * \2 (:user:`\1`)/p' \
     | sed -r \
           -e 's/`Nick B`|`Nick Boultbee`/`Nick Boultbee <declension>`/g' \
