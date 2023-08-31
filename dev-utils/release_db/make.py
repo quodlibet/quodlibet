@@ -45,9 +45,11 @@ BUILD_TYPE_SHORT_TITLES = {
 RELEASES = [
     {
         "version": "4.6.0",
-        "date": "2023-06-22",
+        "date": "2023-08-22",
         "builds": {
-            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"]
+            TARBALL: [GITHUB + "quodlibet-%(version)s.tar.gz"],
+            WIN: [GITHUB + "quodlibet-%(version)s-installer.exe"],
+            WIN_PORT: [GITHUB + "quodlibet-%(version)s-portable.exe"],
         }
     },
     {
