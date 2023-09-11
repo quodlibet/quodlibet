@@ -21,8 +21,11 @@ class Repeat(Order):
     def next(self, playlist, iter):
         raise NotImplementedError
 
-    def set(self, playlist, iter):
-        return self.wrapped.set(playlist, iter)
+    def set_explicit(self, playlist, iter):
+        return self.wrapped.set_explicit(playlist, iter)
+
+    def set_implicit(self, playlist, iter):
+        return self.wrapped.set_implicit(playlist, iter)
 
     def previous(self, playlist, iter):
         return self.wrapped.previous(playlist, iter)
