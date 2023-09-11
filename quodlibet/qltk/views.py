@@ -124,7 +124,7 @@ class TreeViewHints(Gtk.Window):
 
         self.__handlers[view] = [
             view.connect('motion-notify-event', self.__motion),
-            view.connect('leave-notify-event', self.__motion),
+            view.connect('leave-notify-event', self.__undisplay),
             view.connect('scroll-event', self.__undisplay),
             view.connect('key-press-event', self.__undisplay),
             view.connect('unmap', self.__undisplay),
