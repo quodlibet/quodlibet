@@ -112,7 +112,7 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
             return s, None
 
 
-def split_genre(s, tag_splitters=DEFAULT_TAG_SPLITTERS):
+def split_genre(s: str, tag_splitters: Iterable[str] = DEFAULT_TAG_SPLITTERS) -> List[str]:
     """Splits a single genre tag into multiple genre tags
     """
     valid_split_chars = []
