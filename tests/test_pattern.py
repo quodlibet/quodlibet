@@ -123,6 +123,31 @@ class TPattern(_TPattern):
         pat = Pattern(u'<artist=un élève français|matched|not matched>')
         s.assertEquals(pat.format(s.g), 'matched')
 
+    def test_disjunction(s):
+        pat = Pattern('<<composer>||<albumartist>>')
+        s.assertEquals(pat.format(s.a), '')
+        pat = Pattern('<<composer>||<artist>>')
+        s.assertEquals(pat.format(s.a), 'Artist')
+        pat = Pattern('<<artist>||<albumartist>>')
+        s.assertEquals(pat.format(s.a), 'Artist')
+
+    def test_disjunction_chain(s):
+        pat = Pattern('<<composer>||<albumartist>||<artist>>')
+        s.assertEquals(pat.format(s.a), 'Artist')
+        pat = Pattern('<<composer>||<albumartist>||no tag>')
+        s.assertEquals(pat.format(s.a), 'no tag')
+
+    def test_disjunction_conjunction_nested(s):
+        pat = Pattern('<<album|<albumartist>>||<artist>>')
+        s.assertEquals(pat.format(s.a), 'Artist')
+        s.assertEquals(pat.format(s.f), 'foo.bar')
+        pat = Pattern('<<album|<composer>>||<artist>>')
+        s.assertEquals(pat.format(s.f), 'Foo')
+        pat = Pattern('<<album|<albumartist>|text>||<artist>>')
+        s.assertEquals(pat.format(s.a), 'text')
+        pat = Pattern('<<album>||<artist=x|<artist>|<title>>>')
+        s.assertEquals(pat.format(s.a), 'Title5')
+
     def test_duplicate_query(self):
         pat = Pattern('<u=yes|<u=yes|x|y>|<u=yes|q|z>>')
         self.assertEqual(pat.format(AudioFile({"u": u"yes"})), "x")
