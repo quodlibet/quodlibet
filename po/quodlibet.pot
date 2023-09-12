@@ -5146,27 +5146,27 @@ msgstr ""
 msgid "Prefer _higher rated"
 msgstr ""
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr ""
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
 msgstr ""
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 msgid "One song"
 msgstr ""
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 msgid "One _song"
 msgstr ""
 
