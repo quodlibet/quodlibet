@@ -56,7 +56,7 @@
     <url type="homepage">https://quodlibet.readthedocs.org</url>
     <url type="bugtracker">https://quodlibet.readthedocs.io/en/latest/bugs_repo.html</url>
     <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
-    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
+    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/index.html</url>
     <update_contact>quod-libet-development@googlegroups.com</update_contact>
 
     <content_rating type="oars-1.1">
