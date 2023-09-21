@@ -54,7 +54,7 @@ class build_appdata(Command):
     def run(self):
         self.run_command("build_po")
 
-        basepath = os.path.join(self.build_base, 'share', 'appdata')
+        basepath = os.path.join(self.build_base, 'share', 'metainfo')
         self.mkpath(basepath)
         for appdata in self.appdata:
             if os.path.exists(appdata + ".in"):
@@ -70,7 +70,7 @@ class install_appdata(Command):
     """Install .appdata.xml files
 
     Install any .appdata.xml files from the build tree to their final
-    location, under $prefix/share/appdata.
+    location, under $prefix/share/metainfo.
     """
 
     description = "install .appdata.xml files"
@@ -100,8 +100,8 @@ class install_appdata(Command):
         if not self.skip_build:
             self.run_command('build_appdata')
 
-        basepath = os.path.join(self.install_dir, 'share', 'appdata')
-        srcpath = os.path.join(self.build_base, 'share', 'appdata')
+        basepath = os.path.join(self.install_dir, 'share', 'metainfo')
+        srcpath = os.path.join(self.build_base, 'share', 'metainfo')
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for appdata in self.appdata:
