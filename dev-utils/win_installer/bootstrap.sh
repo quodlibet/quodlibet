@@ -35,9 +35,11 @@ function main {
         "${MINGW_PACKAGE_PREFIX}"-python-pytest \
         "${MINGW_PACKAGE_PREFIX}"-python-certifi \
         "${MINGW_PACKAGE_PREFIX}"-python-coverage \
-        "${MINGW_PACKAGE_PREFIX}"-python-flake8
+        "${MINGW_PACKAGE_PREFIX}"-python-flake8 \
+        "${MINGW_PACKAGE_PREFIX}"-python-mutagen
 
-    pip install --user -U feedparser musicbrainzngs mutagen
+
+    pip install --user -U feedparser musicbrainzngs
 }
 
 main;
