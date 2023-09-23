@@ -71,7 +71,7 @@ Optional Runtime Dependencies
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
-**libgtksourceview-3** + **typelib**:
+**libgtksourceview-4** + **typelib**:
     * Undo/Redo support for multiline text fields
 
 **libmodplug1**:

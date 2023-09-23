@@ -107,7 +107,7 @@ jobs:
           gir1.2-gst-plugins-base-1.0 \
           gir1.2-gstreamer-1.0 \
           gir1.2-gtk-3.0 \
-          gir1.2-gtksource-3.0 \
+          gir1.2-gtksource-4 \
           gir1.2-keybinder-3.0 \
           gir1.2-soup-3.0 \
           gir1.2-webkit2-4.0 \
