@@ -49,6 +49,7 @@ jobs:
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python-poetry
             mingw-w64-x86_64-gobject-introspection
+            mingw-w64-x86_64-appstream
 
       - name: Install additional dependencies
         shell: msys2 {0}
@@ -100,7 +101,7 @@ jobs:
       run: |
         sudo apt update -qq
         sudo apt install -qqy \
-          appstream-util \
+          appstream \
           dbus-x11 \
           gettext \
           gir1.2-appindicator3-0.1 \
