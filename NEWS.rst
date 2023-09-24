@@ -1,5 +1,15 @@
 .. _News:
 
+
+4.7.0 - Unreleased
+------------------
+
+Packaging Changes
+ * Quodlibet now uses ``gtksourceview4`` optionally instead of ``gtksourceview3`` :pr:`4377`
+ * Appdata is now installed into ``/usr/share/metainfo`` instead of ``/usr/share/appdata`` :pr:`4375`
+ * The tests now use use ``appstream`` optionally instead of ``appstream-util`` :pr:`4376`
+
+
 .. _release-4.6.0:
 
 4.6.0 (2023-08-22) - Ah, perfect, the banner that satisfies everyone
