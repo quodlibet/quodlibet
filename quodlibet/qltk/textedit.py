@@ -21,7 +21,7 @@ from quodlibet.util import connect_obj
 
 try:
     import gi
-    gi.require_version("GtkSource", "3.0")
+    gi.require_version("GtkSource", "4")
     from gi.repository import GtkSource
 except (ValueError, ImportError):
     TextView = Gtk.TextView
