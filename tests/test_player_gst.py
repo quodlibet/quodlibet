@@ -260,7 +260,7 @@ class TGStreamerCodecs(TestCase):
             # https://gitlab.com/freedesktop-sdk/freedesktop-sdk/issues/809
             files.append("silence-44-s.spx")
 
-        if not is_osx():
+        if not is_osx() and not is_flatpak():
             # gstlibav gets stuck decoding this.. not sure
             files.append("silence-44-s.sv8.mpc")
 
