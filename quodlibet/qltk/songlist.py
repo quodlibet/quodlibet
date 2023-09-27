@@ -9,7 +9,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List, Optional, Sequence, Tuple
+from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
@@ -501,6 +501,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         # set the indicators
         default_order = Gtk.SortType.ASCENDING
+        reversed_ = False
         for c in self.get_columns():
             if c is column:
                 if c.get_sort_indicator():
@@ -508,6 +509,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                         order = c.get_sort_order()
                     else:
                         order = not c.get_sort_order()
+                        reversed_ = True
                 else:
                     order = default_order
                 c.set_sort_order(order)
@@ -519,13 +521,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         if refresh:
             songs = self.get_songs()
-            song_order = self._get_song_order(songs)
-            self.model.reorder(song_order)
-
-            selection = self.get_selection()
-            _, paths = selection.get_selected_rows()
-            if paths:
-                self.scroll_to_cell(paths[0], use_align=True, row_align=0.5)
+            if reversed_:
+                # python sort is faster if presorted
+                songs.reverse()
+            self.set_songs(songs, scroll_select=True)
 
         self.emit("orders-changed")
 
@@ -784,18 +783,14 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return []
         return model.get()
 
-    def _get_song_order(self, songs: List[AudioFile]) -> Optional[Sequence[int]]:
-        """Returns mapping from new position to position in given list of songs
-        when sorted based on the column sort orders"""
+    def _sort_songs(self, songs: List[AudioFile]):
+        """Sort passed songs in place based on the column sort orders"""
 
-        orders = self.get_sort_orders()
-        if orders:
-            song_order = list(range(len(songs)))
-            for key, reverse in self.__get_song_sort_key_func(orders):
-                song_order.sort(key=lambda i: key(songs[i]), reverse=reverse)
-            return song_order
-        else:
-            return None
+        order = self.get_sort_orders()
+        if not order:
+            return
+        for key, reverse in self.__get_song_sort_key_func(order):
+            songs.sort(key=key, reverse=reverse)
 
     def __get_song_sort_key_func(self, order):
         last_tag = None
@@ -860,15 +855,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         model = self.get_model()
         assert model is not None
 
-        song_order = None
-
         if not sorted:
             # make sure some sorting is set and visible
             if not self.is_sorted():
                 default = self.find_default_sort_column()
                 if default:
                     self.toggle_column_sort(default, refresh=False)
-            song_order = self._get_song_order(songs)
+            self._sort_songs(songs)
         else:
             self.clear_sort()
 
@@ -878,8 +871,6 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         with self.without_model() as model:
             model.set(songs)
-            if song_order:
-                model.reorder(song_order)
 
         # scroll to the first selected or current song and restore
         # selection for the first selected item if there was one
@@ -1004,7 +995,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         Warning: This makes the row-changed signal useless.
         """
         model = self.get_model()
-        if config.getboolean("song_list", "auto_sort") and self.is_sorted():
+        if not config.getboolean("memory", "shuffle", False) and \
+            config.getboolean("song_list", "auto_sort") and self.is_sorted():
             iters, _, complete = self.__find_iters_in_selection(songs)
 
             if not complete:

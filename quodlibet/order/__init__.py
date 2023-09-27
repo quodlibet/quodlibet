@@ -6,9 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Any, Dict, List, Optional
-
-from gi.repository import Gtk
+from typing import Optional
 
 from quodlibet import _, print_d
 
@@ -105,42 +103,39 @@ class OrderRemembered(Order):
     """Shared class for all the shuffle modes that keep a memory
     of their previously played songs."""
 
-    _played: List[Gtk.TreeIter]
-
     def __init__(self):
         super().__init__()
         self._played = []
 
     def next(self, playlist, iter):
         if iter is not None:
-            self._played.append(iter)
+            self._played.append(playlist.get_path(iter).get_indices()[0])
 
     def previous(self, playlist, iter):
-        if self._played:
-            return self._played.pop()
-        return None
+        try:
+            path = self._played.pop()
+        except IndexError:
+            return None
+        else:
+            return playlist.get_iter(path)
 
     def set(self, playlist, iter):
         if iter is not None:
-            self._played.append(iter)
+            self._played.append(playlist.get_path(iter).get_indices()[0])
         return iter
 
     def reset(self, playlist):
         del(self._played[:])
 
-    def remaining(self, playlist) -> Dict[int, Any]:
+    def remaining(self, playlist):
         """Gets a map of all song indices to their song from the `playlist`
         that haven't yet been played"""
-
-        def get_index(iter):
-            return playlist.get_path(iter).get_indices()[0]
-
-        played = set(map(get_index, self._played))
+        all_indices = set(range(len(playlist)))
+        played = set(self._played)
         print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
-        remaining = (
-            (get_index(iter), value) for iter, value in playlist.iterrows())
-        return {
-            index: song for (index, song) in remaining if index not in played}
+        remaining = list(all_indices.difference(played))
+        all_songs = playlist.get()
+        return {i: all_songs[i] for i in remaining}
 
 
 class OrderInOrder(Order):

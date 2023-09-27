@@ -24,14 +24,15 @@ class OrderShuffle(Reorder, OrderRemembered):
 
     def next(self, playlist, iter):
         super().next(playlist, iter)
-        remaining = self.remaining(playlist)
+        played = set(self._played)
+        songs = set(range(len(playlist)))
+        remaining = songs.difference(played)
 
-        if not remaining:
-            self.reset(playlist)
-            return None
+        if remaining:
+            return playlist.get_iter((random.choice(list(remaining)),))
 
-        index = random.choice(list(remaining))
-        return playlist.get_iter((index,))
+        self.reset(playlist)
+        return None
 
 
 class OrderWeighted(Reorder, OrderRemembered):
@@ -44,7 +45,7 @@ class OrderWeighted(Reorder, OrderRemembered):
         remaining = self.remaining(playlist)
 
         # Don't try to search through an empty / played playlist.
-        if not remaining:
+        if len(remaining) <= 0:
             self.reset(playlist)
             return None
 
