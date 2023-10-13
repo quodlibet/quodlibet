@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#                2020 Nick Boultbee
+#             2020-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -208,8 +208,8 @@ class RenameFiles(Gtk.VBox):
             _('_Move album art'),
             "rename", "move_art", populate=True)
         self.moveart.set_tooltip_text(
-            _("See '[albumart] filenames' config entry "
-              "for image search strings"))
+            _("See '[albumart] search_filenames' config entry "
+              "for which images will be moved"))
         self.moveart.show()
         moveart_box.pack_start(self.moveart, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(

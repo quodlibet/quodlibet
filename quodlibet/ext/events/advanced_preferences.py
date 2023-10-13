@@ -1,5 +1,5 @@
 # Copyright 2015    Christoph Reiter
-#           2016-22 Nick Boultbee
+#           2016-23 Nick Boultbee
 #           2019    Peter Strulo
 #           2022    Jej@github
 #
@@ -167,6 +167,10 @@ class AdvancedPreferences(EventPlugin):
                 "Album cover size:",
                 ("Size of the album cover images in the album list browser "
                  "(restart required)")),
+            text_config(
+                "albumart", "search_filenames",
+                "Album art search filenames:",
+                "Which specific files are (also) tried for album art"),
             boolean_config(
                 "settings", "disable_mmkeys",
                 "Disable multimedia keys:",
