@@ -1,3 +1,5 @@
+.. _Translating:
+
 How-to (Legacy Manual Process)
 ==============================
 
