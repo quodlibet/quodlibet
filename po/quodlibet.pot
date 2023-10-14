@@ -1303,7 +1303,7 @@ msgstr ""
 msgid "Allow editing of advanced config settings."
 msgstr ""
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr ""
 
@@ -6708,7 +6708,8 @@ msgid "_Move album art"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:216
