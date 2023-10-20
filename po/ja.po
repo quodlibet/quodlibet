@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-20 14:48+0000\n"
+"PO-Revision-Date: 2023-10-16 04:09+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -1070,7 +1070,7 @@ msgstr "現在のブラウザを変更"
 
 #: quodlibet/cli.py:135
 msgid "Stop after the playing song"
-msgstr "再生中の曲の後で停止"
+msgstr "再生中の曲の終了後に停止"
 
 #: quodlibet/cli.py:136
 msgid "Open a new browser"
@@ -3116,7 +3116,7 @@ msgstr "リピート(_R)"
 
 #: quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
-msgstr "この曲の後で停止(_A)"
+msgstr "この曲の再生後に停止(_A)"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:917
@@ -6850,7 +6850,7 @@ msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
-msgstr "この曲の後で停止"
+msgstr "この曲の再生後に停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:972
 msgid "_Keyboard Shortcuts"
@@ -6977,11 +6977,10 @@ msgid "_Move album art"
 msgstr "アルバムアートを移動する(_M)"
 
 #: quodlibet/qltk/renamefiles.py:211
-#, fuzzy
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
-msgstr ""
-"画像検索文字列については「[albumart] filenames」設定項目を参照してください"
+msgstr "移動される画像ファイル名については「[albumart] "
+"search_filenames」設定項目を参照してください"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
