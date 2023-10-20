@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2023-06-28 08:47+0000\n"
+"PO-Revision-Date: 2023-10-16 04:09+0000\n"
 "Last-Translator: Eric <hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 4.18.1\n"
+"X-Generator: Weblate 5.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -6831,10 +6831,9 @@ msgid "_Move album art"
 msgstr "移动专辑封面(_M)"
 
 #: quodlibet/qltk/renamefiles.py:211
-#, fuzzy
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
-msgstr "参见\"[albumart] filenames\"配置条目，了解图像搜索字符串"
+msgstr "查看 '[albumart] search_filenames' 配置项定义哪些图片将被移动"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
