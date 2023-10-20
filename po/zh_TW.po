@@ -227,7 +227,7 @@ msgstr "增加 (_A)"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "移除 (_R)"
@@ -575,7 +575,7 @@ msgstr "全選 (_A)"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1313,7 +1313,7 @@ msgstr "進階偏好設定"
 msgid "Allow editing of advanced config settings."
 msgstr "允許進階設定編輯。"
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "我明白現在所作所為"
 
@@ -5334,15 +5334,15 @@ msgstr "顯示輔助資訊"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "不明 (_U)"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "順序"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "順序 (_I)"
 
@@ -5354,35 +5354,35 @@ msgstr "隨機"
 msgid "_Random"
 msgstr "隨機 (_R)"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "偏好較高評分"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 msgid "Prefer _higher rated"
 msgstr "偏好較高評分 (_h)"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "重覆這首音軌"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr "重覆這首音軌 (_t)"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "重覆全部"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
 msgstr "重覆全部 (_a)"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 msgid "One song"
 msgstr "單曲"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 msgid "One _song"
 msgstr "單曲 (_s)"
 
@@ -6943,7 +6943,9 @@ msgid "_Move album art"
 msgstr "移動專輯演藝 (_M)"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+#, fuzzy
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr "See '[albumart] filenames' config entry for image search strings"
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7209,39 +7211,39 @@ msgstr "在全部盤中選擇全部歌曲"
 msgid "_Filter on %s"
 msgstr "以 %s 篩選 (_F)"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "全部檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "音軌檔頭 (_T)"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "專輯檔頭 (_A)"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "人員檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "日期檔頭 (_D)"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "檔案檔頭 (_F)"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "產出檔頭 (_P)"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "自訂檔頭 (_C)…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "擴展橫列 (_E)"
 

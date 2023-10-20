@@ -245,7 +245,7 @@ msgstr "_Добавить"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Удалить"
@@ -597,7 +597,7 @@ msgstr "В_ыбрать всё"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1351,7 +1351,7 @@ msgstr "Расширенные настройки"
 msgid "Allow editing of advanced config settings."
 msgstr "Настройка дополнительных параметров."
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "Я знаю, что делаю"
 
@@ -5414,15 +5414,15 @@ msgstr "Вывести справку"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' недопустимое имя столбца (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "_Неизвестно"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "По порядку"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_По порядку"
 
@@ -5434,35 +5434,35 @@ msgstr "Случайно"
 msgid "_Random"
 msgstr "_Случайно"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "По рейтингу"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 msgid "Prefer _higher rated"
 msgstr "П_редпочитать более оценённые"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "Повторить этот"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr "Повторить этот тр_ек"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "Повторить все"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
 msgstr "Повторить _все"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 msgid "One song"
 msgstr "Одна песня"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 msgid "One _song"
 msgstr "Одна пе_сня"
 
@@ -7091,7 +7091,9 @@ msgid "_Move album art"
 msgstr "Переместить обложку альбома"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+#, fuzzy
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr "Смотрите строку конфигурации '[albumart] filenames' поиска имен файлов"
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7361,39 +7363,39 @@ msgstr "Выбрать все треки на всех панелях"
 msgid "_Filter on %s"
 msgstr "Фильтр по %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "_Все заголовки"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "_Трек"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "_Альбом"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "_Заголовки исполнителей"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "_Дата"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "Заголовки _файла"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "_Производство"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "_Настроить…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "Автоши_рина"
 

@@ -237,7 +237,7 @@ msgstr "_Aggiungi"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Rimuovi"
@@ -590,7 +590,7 @@ msgstr "Selezion_a tutto"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1356,7 +1356,7 @@ msgstr "Preferenze avanzate"
 msgid "Allow editing of advanced config settings."
 msgstr "Consenti la modifica delle impostazioni di configurazione avanzate."
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "_So quello che sto facendo"
 
@@ -3547,8 +3547,8 @@ msgid ""
 msgstr ""
 "Esporta dinamicamente una scaletta ad una scaletta Squeezebox di Logitech, "
 "purché entrambi condividano una struttura di directory. Condivide la "
-"configurazione con il <a href=\"quodlibet:///prefs/plugins/Squeezebox Output"
-"\">plugin sincronizzazione Squeezebox</a>."
+"configurazione con il <a href=\"quodlibet:///prefs/plugins/Squeezebox "
+"Output\">plugin sincronizzazione Squeezebox</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:26
 #, python-format
@@ -5441,15 +5441,15 @@ msgstr "Mostra informazioni di aiuto"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' non è un nome di colonna valido (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "_Sconosciuto"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "In ordine"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_In ordine"
 
@@ -5461,39 +5461,39 @@ msgstr "Casuale"
 msgid "_Random"
 msgstr "_Casuale"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "Preferisci i _giudicati più alti"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "Preferisci i _giudicati più alti"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "_Ripeti questa traccia"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 #, fuzzy
 msgid "Repeat _this track"
 msgstr "_Ripeti questa traccia"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "Ripeti tutti"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 #, fuzzy
 msgid "Repeat _all"
 msgstr "Ripeti tutti"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 #, fuzzy
 msgid "One song"
 msgstr "Un brano"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 #, fuzzy
 msgid "One _song"
 msgstr "Un brano"
@@ -7132,7 +7132,9 @@ msgid "_Move album art"
 msgstr "Sposta grafica dell'albu_m"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+#, fuzzy
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 "Vedi la voce di configurazione '[albumart] filenames' per le stringhe di "
 "ricerca immagine"
@@ -7402,39 +7404,39 @@ msgstr "Seleziona tutti i brani in tutti i pannelli"
 msgid "_Filter on %s"
 msgstr "_Filtro su %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "Tutte le _intestazioni"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "Intestazioni delle _tracce"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "Intestazioni degli _album"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "Intestazioni delle pe_rsone"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "Intestazione della _data"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "Intestazioni dei _file"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "Intestazioni della _produzione "
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "Personali_zza intestazioni…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "_Espandi colonna"
 
@@ -8644,8 +8646,8 @@ msgstr ""
 
 #, fuzzy
 #~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
+#~ "An exception has occured in Quod Libet. A dump file has been saved to <b "
+#~ ">%(dump-path)s</b> that will help us debug the crash. Please file a new "
 #~ "issue at %(new-issue-url)sand attach this file or include its contents. "
 #~ "This file may contain some identifying information about you or your "
 #~ "system, such as a list of recent files played. If this is unacceptable, "
@@ -9275,12 +9277,12 @@ msgstr ""
 #~ "(<~length>)><version|\n"
 #~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
 #~ "by <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - "
+#~ "\\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
 #~ msgstr ""
 #~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
 #~ "(<~length>)><version|\n"
 #~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
 #~ "di <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Disco <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Traccia <tracknumber>>>"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disco <discnumber>><part| - "
+#~ "\\<b\\><part>\\</b\\>><tracknumber| - Traccia <tracknumber>>>"

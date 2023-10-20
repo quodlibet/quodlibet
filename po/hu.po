@@ -232,7 +232,7 @@ msgstr ""
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 #, fuzzy
 msgid "_Remove"
@@ -598,7 +598,7 @@ msgstr "Mindent kijelöl"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1372,7 +1372,7 @@ msgstr "Paneles böngésző beállítások"
 msgid "Allow editing of advanced config settings."
 msgstr ""
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr ""
 
@@ -5386,16 +5386,16 @@ msgstr "Kiírja a tömör útmutatót"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "<b>%s</b> nem egy érvényes hely"
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 #, fuzzy
 msgid "_Unknown"
 msgstr "Ismeretlen"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "Sorban"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_Sorban"
 
@@ -5408,39 +5408,39 @@ msgstr "Véletlen"
 msgid "_Random"
 msgstr "Véletlen"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr ""
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "utolsó lejátszás"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 #, fuzzy
 msgid "Repeat all"
 msgstr "Ismétlés"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 #, fuzzy
 msgid "Repeat _all"
 msgstr "Ismétlés"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 #, fuzzy
 msgid "One song"
 msgstr "Egy dal"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 #, fuzzy
 msgid "One _song"
 msgstr "Egy dal"
@@ -7079,7 +7079,8 @@ msgid "_Move album art"
 msgstr "album művész"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7353,41 +7354,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "Szűrő itt: %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 #, fuzzy
 msgid "All _Headers"
 msgstr "_Album fejlécek"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "_Sáv fejlécek"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "_Album fejlécek"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "Személ_y fejlécek"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "_Dátum fejlécek"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "_Fájl fejlécek"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "_Termék fejlécek"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Egyéni fejlécek..."
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr ""
 

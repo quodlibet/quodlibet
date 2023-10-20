@@ -242,7 +242,7 @@ msgstr "Добавяне"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 #, fuzzy
 msgid "_Remove"
@@ -615,7 +615,7 @@ msgstr "_Избор на всички"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1393,7 +1393,7 @@ msgstr "Настройки на панели"
 msgid "Allow editing of advanced config settings."
 msgstr ""
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr ""
 
@@ -5434,16 +5434,16 @@ msgstr "Показване на кратка информация за упот�
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "<b>%s</b> не е валидно местоположение."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 #, fuzzy
 msgid "_Unknown"
 msgstr "непознат"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "Подред"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "П_одред"
 
@@ -5456,39 +5456,39 @@ msgstr "Произв_олен"
 msgid "_Random"
 msgstr "Произв_олен"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr ""
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "последно слушана"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr ""
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 #, fuzzy
 msgid "Repeat all"
 msgstr "П_овтаряне"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 #, fuzzy
 msgid "Repeat _all"
 msgstr "П_овтаряне"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 #, fuzzy
 msgid "One song"
 msgstr "Една песен"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 #, fuzzy
 msgid "One _song"
 msgstr "Една песен"
@@ -7156,7 +7156,8 @@ msgid "_Move album art"
 msgstr "Артист на албума"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7432,44 +7433,44 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Само този %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 #, fuzzy
 msgid "All _Headers"
 msgstr "Спис_ък с албуми"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 #, fuzzy
 msgid "_Track Headers"
 msgstr "Номера на песните"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 #, fuzzy
 msgid "_Album Headers"
 msgstr "Спис_ък с албуми"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 #, fuzzy
 msgid "_File Headers"
 msgstr "_Филтри"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr ""
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Филтри"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr ""
 
@@ -8949,15 +8950,15 @@ msgstr ""
 #~ "(<~length>)><version|\n"
 #~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
 #~ "by <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Disc <discnumber>><part| - "
+#~ "\\<b\\><part>\\</b\\>><tracknumber| - Track <tracknumber>>>"
 #~ msgstr ""
 #~ "\\<span weight='bold' size='large'\\><title>\\</span\\><~length| "
 #~ "(<~length>)><version|\n"
 #~ "\\<small\\>\\<b\\><version>\\</b\\>\\</small\\>><~people|\n"
 #~ "на <~people>><album|\n"
-#~ "\\<b\\><album>\\</b\\><discnumber| - Диск <discnumber>><part| - \\<b"
-#~ "\\><part>\\</b\\>><tracknumber| - Песен номер <tracknumber>>>"
+#~ "\\<b\\><album>\\</b\\><discnumber| - Диск <discnumber>><part| - "
+#~ "\\<b\\><part>\\</b\\>><tracknumber| - Песен номер <tracknumber>>>"
 
 #~ msgid "The library cannot be refreshed while Quod Libet is running."
 #~ msgstr "Фонотеката не може да бъде опреснена, докато Quod Libet върви."

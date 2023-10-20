@@ -17,8 +17,8 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Weblate 4.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
@@ -242,7 +242,7 @@ msgstr "_Dodaj"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "_Ukloni"
@@ -595,7 +595,7 @@ msgstr "Odaberi _sve"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1355,7 +1355,7 @@ msgstr "Napredne postavke"
 msgid "Allow editing of advanced config settings."
 msgstr "Dozvoli menjanje naprednih podešavanja konfiguracije."
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "Znam šta radim"
 
@@ -5416,15 +5416,15 @@ msgstr "Prikaži pomoćne informacije"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' nije važeče ime kolone (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "_Nepoznato"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "Po redu"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_Po redu"
 
@@ -5436,39 +5436,39 @@ msgstr "Nasumično"
 msgid "_Random"
 msgstr "_Nasumično"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "Preferiraj bolje ocenjene"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "Preferiraj bolje ocenjene"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "Ponovi ovaj zapis"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 #, fuzzy
 msgid "Repeat _this track"
 msgstr "Ponovi ovaj zapis"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "Ponovi sve"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 #, fuzzy
 msgid "Repeat _all"
 msgstr "Ponovi sve"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 #, fuzzy
 msgid "One song"
 msgstr "Jedna pesma"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 #, fuzzy
 msgid "One _song"
 msgstr "Jedna pesma"
@@ -7102,7 +7102,9 @@ msgid "_Move album art"
 msgstr "_Pomeri omot albuma"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+#, fuzzy
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr "Vidite '[albumart] filenames' unos konfiguracije za pretragu slika"
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7369,39 +7371,39 @@ msgstr "Odaberi sve pesme u svim panoima"
 msgid "_Filter on %s"
 msgstr "_Filtriraj po %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "Sva _zaglavlja"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "_Zapis zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "_Album zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "_Ljudi zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "_Datum zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "_Datoteka zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "_Produkcija zaglavlje"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "_Prolagodi zaglavlje…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "_Proširi kolonu"
 
