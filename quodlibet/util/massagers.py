@@ -93,7 +93,7 @@ def error_message(tag, value):
     """Returns an error message for invalid tag values"""
 
     try:
-        return Massager.for_tag(tag).Error
+        return Massager.for_tag(tag).error
     except KeyError:
         return u""
 
