@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-05-20 14:48+0000\n"
+"PO-Revision-Date: 2023-10-16 04:09+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -227,7 +227,7 @@ msgstr "追加(_A)"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "削除(_R)"
@@ -577,7 +577,7 @@ msgstr "全て選択(_A)"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1070,7 +1070,7 @@ msgstr "現在のブラウザを変更"
 
 #: quodlibet/cli.py:135
 msgid "Stop after the playing song"
-msgstr "再生中の曲の後で停止"
+msgstr "再生中の曲の終了後に停止"
 
 #: quodlibet/cli.py:136
 msgid "Open a new browser"
@@ -1325,7 +1325,7 @@ msgstr "高度な設定"
 msgid "Allow editing of advanced config settings."
 msgstr "高度な設定の編集を可能にします。"
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "理解した上で編集"
 
@@ -3116,7 +3116,7 @@ msgstr "リピート(_R)"
 
 #: quodlibet/ext/events/trayicon/menu.py:86
 msgid "Stop _After This Song"
-msgstr "この曲の後で停止(_A)"
+msgstr "この曲の再生後に停止(_A)"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
 #: quodlibet/qltk/quodlibetwindow.py:917
@@ -5346,15 +5346,15 @@ msgstr "ヘルプ情報の表示"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "「%(column-id)s」は有効なカラム名ではありません (%(all-column-ids)s)。"
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "不明(_U)"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "並び順"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "並び順(_I)"
 
@@ -5366,35 +5366,35 @@ msgstr "ランダム"
 msgid "_Random"
 msgstr "ランダム(_R)"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "高評価の曲を優先"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 msgid "Prefer _higher rated"
 msgstr "高評価の曲を優先(_H)"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "このトラックをリピート"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr "このトラックをリピート(_T)"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "全体をリピート"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
 msgstr "全体をリピート(_A)"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 msgid "One song"
 msgstr "1曲のみ"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 msgid "One _song"
 msgstr "1曲のみ(_S)"
 
@@ -6850,7 +6850,7 @@ msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:966
 msgid "Stop After This Song"
-msgstr "この曲の後で停止"
+msgstr "この曲の再生後に停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:972
 msgid "_Keyboard Shortcuts"
@@ -6977,9 +6977,10 @@ msgid "_Move album art"
 msgstr "アルバムアートを移動する(_M)"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
-msgstr ""
-"画像検索文字列については「[albumart] filenames」設定項目を参照してください"
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
+msgstr "移動される画像ファイル名については「[albumart] "
+"search_filenames」設定項目を参照してください"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
@@ -7249,39 +7250,39 @@ msgstr "全てのペインで全ての曲を選択する"
 msgid "_Filter on %s"
 msgstr "%sでフィルタリング(_F)"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "全てのヘッダ(_H)"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "トラックヘッダ(_T)"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "アルバムヘッダ(_A)"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "ピープルヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "日付ヘッダ(_D)"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "ファイルヘッダ(_F)"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "プロダクションヘッダ(_P)"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "ヘッダのカスタマイズ(_C)…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "カラム幅の自動伸縮(_E)"
 

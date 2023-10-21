@@ -242,7 +242,7 @@ msgstr "_Přidat"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "Odstranit"
@@ -597,7 +597,7 @@ msgstr "Vybrat _vše"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1371,7 +1371,7 @@ msgstr "Pokročilá nastavení"
 msgid "Allow editing of advanced config settings."
 msgstr "Povolit konfiguraci pokročilých nastavení."
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "Vím, co dělám"
 
@@ -5451,15 +5451,15 @@ msgstr "Zobrazit informace o pomoci"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "'%(column-id)s' není platné jméno sloupce (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "_Neznámé"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "V pořadí"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_V pořadí"
 
@@ -5471,39 +5471,39 @@ msgstr "Náhodně"
 msgid "_Random"
 msgstr "_Náhodně"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "Přednostně lépe hodnocené"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 #, fuzzy
 msgid "Prefer _higher rated"
 msgstr "Přednostně lépe hodnocené"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "Opakovat skladbu"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 #, fuzzy
 msgid "Repeat _this track"
 msgstr "Opakovat skladbu"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "Opakovat všechny"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 #, fuzzy
 msgid "Repeat _all"
 msgstr "Opakovat všechny"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 #, fuzzy
 msgid "One song"
 msgstr "Jedna skladba"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 #, fuzzy
 msgid "One _song"
 msgstr "Jedna skladba"
@@ -7144,7 +7144,8 @@ msgid "_Move album art"
 msgstr "umělec alba"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
 #: quodlibet/qltk/renamefiles.py:216
@@ -7414,39 +7415,39 @@ msgstr "Vybrat všechny skladby ve všech panelech."
 msgid "_Filter on %s"
 msgstr "_Filtr na %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "Všechny _Hlavičky"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "Hlavičky _Skladeb"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "Hlavičky _Alb"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "Hlavičky _Lidí"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "Hlavičky _Dat"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "Hlavičky _Souborů"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "Hlavičky _Produkce"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "_Upravit hlavičky..."
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "_Rozšířit sloupec"
 
@@ -8647,16 +8648,16 @@ msgstr ""
 #~ msgstr "_Otevřít"
 
 #~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
+#~ "An exception has occured in Quod Libet. A dump file has been saved to <b "
+#~ ">%(dump-path)s</b> that will help us debug the crash. Please file a new "
 #~ "issue at %(new-issue-url)sand attach this file or include its contents. "
 #~ "This file may contain some identifying information about you or your "
 #~ "system, such as a list of recent files played. If this is unacceptable, "
 #~ "send <b>%(mini-dump-path)s</b> instead with a description of what you "
 #~ "were doing."
 #~ msgstr ""
-#~ "V aplikaci Quod Libet došlo k výjimce. Zpráva o ní byla uložena do<b >"
-#~ "%(dump-path)s</b>, může pomoci závadu odstranit. Prosíme, ohlašte ji na "
+#~ "V aplikaci Quod Libet došlo k výjimce. Zpráva o ní byla uložena do<b "
+#~ ">%(dump-path)s</b>, může pomoci závadu odstranit. Prosíme, ohlašte ji na "
 #~ "%(new-issue-url)s a uvedenou zprávu přiložte, nebo vložte přímo její "
 #~ "obsah. Soubor se zprávou může obsahovat informace o vás nebo vašem "
 #~ "systému, jako například seznam naposled hraných skladeb. Pokud je to pro "

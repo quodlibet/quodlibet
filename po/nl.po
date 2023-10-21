@@ -236,7 +236,7 @@ msgstr "_Toevoegen"
 #: quodlibet/qltk/data_editors.py:303 quodlibet/qltk/data_editors.py:316
 #: quodlibet/qltk/data_editors.py:327 quodlibet/qltk/edittags.py:554
 #: quodlibet/qltk/edittags.py:742 quodlibet/qltk/maskedbox.py:48
-#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:506
+#: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:478
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
 msgid "_Remove"
 msgstr "Ve_rwijderen"
@@ -590,7 +590,7 @@ msgstr "_Alles selecteren"
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
-#: quodlibet/order/__init__.py:31 quodlibet/qltk/information.py:242
+#: quodlibet/order/__init__.py:29 quodlibet/qltk/information.py:242
 #: quodlibet/qltk/information.py:249 quodlibet/qltk/information.py:275
 #: quodlibet/qltk/pluginwin.py:53 quodlibet/qltk/wlw.py:69
 msgid "Unknown"
@@ -1347,7 +1347,7 @@ msgstr "Geavanceerde voorkeuren"
 msgid "Allow editing of advanced config settings."
 msgstr "Pas de geavanceerde configuratie-instellingen aan."
 
-#: quodlibet/ext/events/advanced_preferences.py:262
+#: quodlibet/ext/events/advanced_preferences.py:266
 msgid "I know what I'm doing"
 msgstr "Ik weet wat ik doe"
 
@@ -2559,8 +2559,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Export to Squeezebox "
 "plugin</a>."
 msgstr ""
-"Deelt zijn configuratie met de plug-in ‘<a href=\"%(plugin_link)s"
-"\">Exporteren naar Squeezebox</a>’."
+"Deelt zijn configuratie met de plug-in ‘<a "
+"href=\"%(plugin_link)s\">Exporteren naar Squeezebox</a>’."
 
 #: quodlibet/ext/events/squeezebox_sync.py:61
 #: quodlibet/ext/playlist/export_to_squeezebox.py:90
@@ -3563,8 +3563,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
-"Deelt zijn configuratie met de plug-in ‘<a href=\"%(plugin_link)s"
-"\">Squeezebox-synchronisatie</a>’."
+"Deelt zijn configuratie met de plug-in ‘<a "
+"href=\"%(plugin_link)s\">Squeezebox-synchronisatie</a>’."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -5434,15 +5434,15 @@ msgstr "Hulpinformatie tonen"
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
 msgstr "‘%(column-id)s’ is geen geldige kolomnaam (%(all-column-ids)s)."
 
-#: quodlibet/order/__init__.py:34
+#: quodlibet/order/__init__.py:32
 msgid "_Unknown"
 msgstr "_Onbekend"
 
-#: quodlibet/order/__init__.py:149
+#: quodlibet/order/__init__.py:144
 msgid "In Order"
 msgstr "Op volgorde"
 
-#: quodlibet/order/__init__.py:150
+#: quodlibet/order/__init__.py:145
 msgid "_In Order"
 msgstr "_Op volgorde"
 
@@ -5454,35 +5454,35 @@ msgstr "Willekeurig"
 msgid "_Random"
 msgstr "Willekeu_rig"
 
-#: quodlibet/order/reorder.py:39
+#: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
 msgstr "Voorkeur voor hoger gewaardeerd"
 
-#: quodlibet/order/reorder.py:40
+#: quodlibet/order/reorder.py:41
 msgid "Prefer _higher rated"
 msgstr "Voorkeur voor _hoger gewaardeerd"
 
-#: quodlibet/order/repeat.py:43
+#: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
 msgstr "Nummer herhalen"
 
-#: quodlibet/order/repeat.py:44
+#: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
 msgstr "Numme_r herhalen"
 
-#: quodlibet/order/repeat.py:57
+#: quodlibet/order/repeat.py:60
 msgid "Repeat all"
 msgstr "Alles herhalen"
 
-#: quodlibet/order/repeat.py:58
+#: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
 msgstr "_Alles herhalen"
 
-#: quodlibet/order/repeat.py:73
+#: quodlibet/order/repeat.py:76
 msgid "One song"
 msgstr "Eén nummer"
 
-#: quodlibet/order/repeat.py:74
+#: quodlibet/order/repeat.py:77
 msgid "One _song"
 msgstr "Eén _nummer"
 
@@ -7108,7 +7108,9 @@ msgid "_Move album art"
 msgstr "Albu_mhoezen verplaatsen"
 
 #: quodlibet/qltk/renamefiles.py:211
-msgid "See '[albumart] filenames' config entry for image search strings"
+#, fuzzy
+msgid ""
+"See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 "Neem ‘[albumart] filenames’ in het configuratiebestand door voor meer "
 "informatie"
@@ -7382,39 +7384,39 @@ msgstr "Alle nummers in alle panelen selecteren"
 msgid "_Filter on %s"
 msgstr "_Filteren op %s"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1187
 msgid "All _Headers"
 msgstr "Alle _koppen"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Track Headers"
 msgstr "_Nummerkoppen"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1189
 msgid "_Album Headers"
 msgstr "_Albumkoppen"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1190
 msgid "_People Headers"
 msgstr "_Persoonkoppen"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1191
 msgid "_Date Headers"
 msgstr "_Datumkoppen"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1192
 msgid "_File Headers"
 msgstr "_Bestandskoppen"
 
-#: quodlibet/qltk/songlist.py:1201
+#: quodlibet/qltk/songlist.py:1193
 msgid "_Production Headers"
 msgstr "_Productiekoppen"
 
-#: quodlibet/qltk/songlist.py:1216
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Customize Headers…"
 msgstr "Kop_pen aanpassen…"
 
-#: quodlibet/qltk/songlist.py:1221
+#: quodlibet/qltk/songlist.py:1213
 msgid "_Expand Column"
 msgstr "Kolom uitvouw_en"
 
@@ -8295,14 +8297,14 @@ msgstr ""
 
 #~ msgid ""
 #~ "Dynamically exports a playlist to Logitech Squeezebox playlist, provided "
-#~ "both share a directory structure. Shares configuration with <a href="
-#~ "\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync plugin</"
-#~ "a>."
+#~ "both share a directory structure. Shares configuration with <a "
+#~ "href=\"quodlibet:///prefs/plugins/Squeezebox Output\">Squeezebox Sync "
+#~ "plugin</a>."
 #~ msgstr ""
 #~ "Exporteert dynamisch een afspeellijst naar een Logitech Squeezebox-"
 #~ "afspeellijst, mits beide een mappenstructuur delen. Deelt configuratie "
-#~ "met de <a href=\"quodlibet:///prefs/plugins/Squeezebox Output"
-#~ "\">Squeezebox Sync-plug-in</a>."
+#~ "met de <a href=\"quodlibet:///prefs/plugins/Squeezebox "
+#~ "Output\">Squeezebox Sync-plug-in</a>."
 
 #~ msgid "Exports metadata of selected songs as a .tags file."
 #~ msgstr ""
@@ -8623,8 +8625,8 @@ msgstr ""
 #~ msgstr "_Openen"
 
 #~ msgid ""
-#~ "An exception has occured in Quod Libet. A dump file has been saved to <b >"
-#~ "%(dump-path)s</b> that will help us debug the crash. Please file a new "
+#~ "An exception has occured in Quod Libet. A dump file has been saved to <b "
+#~ ">%(dump-path)s</b> that will help us debug the crash. Please file a new "
 #~ "issue at %(new-issue-url)sand attach this file or include its contents. "
 #~ "This file may contain some identifying information about you or your "
 #~ "system, such as a list of recent files played. If this is unacceptable, "
