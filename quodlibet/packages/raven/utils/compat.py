@@ -7,7 +7,7 @@ raven.utils.compat
 
 Utilities for writing code that runs on Python 2 and 3
 """
-# noqa
+# flake8: noqa
 
 # Copyright (c) 2010-2013 Benjamin Peterson
 #
@@ -29,6 +29,7 @@ Utilities for writing code that runs on Python 2 and 3
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 from __future__ import absolute_import
 
+import operator
 import sys
 import types
 
@@ -177,9 +178,19 @@ else:
 
 
 if PY3:
-    pass
+    from urllib.error import HTTPError
+    from http import client as httplib
+    import urllib.request as urllib2
+    from queue import Queue
+    from urllib.parse import quote as urllib_quote
+    from urllib import parse as urlparse
 else:
-    pass
+    from urllib2 import HTTPError
+    import httplib
+    import urllib2
+    from Queue import Queue
+    from urllib import quote as urllib_quote
+    import urlparse
 
 
 def get_code(func):
