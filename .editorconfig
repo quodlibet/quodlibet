@@ -11,3 +11,6 @@ indent_size = 2
 [*.py]
 # See Flake8 config
 max_line_length = 88
+
+[*.nix]
+indent_size = 2
