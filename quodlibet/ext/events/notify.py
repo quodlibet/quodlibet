@@ -369,9 +369,12 @@ class Notify(EventPlugin):
             self.__disconnect()
             return False
 
-        strip_markup = lambda t: re.subn(r"\</?[iub]\>", "", t)[0]
-        strip_links = lambda t: re.subn(r"\</?a.*?\>", "", t)[0]
-        strip_images = lambda t: re.subn(r"\<img.*?\>", "", t)[0]
+        def strip_markup(t):
+            return re.subn("\\</?[iub]\\>", "", t)[0]
+        def strip_links(t):
+            return re.subn("\\</?a.*?\\>", "", t)[0]
+        def strip_images(t):
+            return re.subn("\\<img.*?\\>", "", t)[0]
 
         title = XMLFromPattern(pconfig.gettext("titlepattern")) % song
         title = unescape(strip_markup(strip_links(strip_images(title))))

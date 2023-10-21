@@ -249,12 +249,14 @@ class TreeViewHints(Gtk.Window):
         markup = getattr(renderer, "markup", None)
         if markup is None:
             text = renderer.get_property('text')
-            set_text = lambda l: l.set_text(text)
+            def set_text(l):
+                return l.set_text(text)
         else:
             # markup can also be column index
             if isinstance(markup, int):
                 markup = model[path][markup]
-            set_text = lambda l: l.set_markup(markup)
+            def set_text(l):
+                return l.set_markup(markup)
 
         # Use the renderer padding as label padding so the text offset matches
         render_xpad = renderer.get_property("xpad")

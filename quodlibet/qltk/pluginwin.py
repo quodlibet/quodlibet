@@ -352,7 +352,7 @@ class PluginPreferencesContainer(Gtk.VBox):
             if plugin and hasattr(instance_or_cls, 'PluginPreferences'):
                 try:
                     prefs = instance_or_cls.PluginPreferences(self)
-                except:
+                except Exception:
                     util.print_exc()
                     frame.hide()
                 else:

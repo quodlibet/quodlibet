@@ -406,7 +406,8 @@ class RemoveCommand(Command):
         else:
             value = args[1]
             paths = args[2:]
-            match = lambda v: v == value
+            def match(v):
+                return v == value
 
         songs = []
         for path in paths:

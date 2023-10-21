@@ -89,7 +89,7 @@ def _humanise(text):
         if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
             prev = previous_real_word(words, i)
             # Add an exception for would-be ellipses...
-            if (prev and (not prev[-1] in ENGLISH_SENTENCE_ENDS
+            if (prev and (prev[-1] not in ENGLISH_SENTENCE_ENDS
                           or prev[-3:] == '...')):
                 words[i] = word.lower()
     return u" ".join(words)

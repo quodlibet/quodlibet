@@ -11,6 +11,7 @@ import shutil
 import atexit
 import subprocess
 import locale
+from pathlib import Path
 
 try:
     import pytest
@@ -28,6 +29,10 @@ from quodlibet import util
 
 from senf import fsnative, path2fsn
 from unittest import TestCase as OrigTestCase
+
+
+# Don't use get_module_dir(), as venvs can arrange things differently
+QL_BASE_PATH = Path(__file__).parent.parent
 
 
 class TestCase(OrigTestCase):

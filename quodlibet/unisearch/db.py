@@ -268,8 +268,10 @@ def get_decomps_mapping(regenerate=False) -> Dict[str, str]:
         if line.startswith("#"):
             continue
 
-        to_uni = lambda x: chr(int(x, 16))
-        is_letter = lambda x: unicodedata.category(x) in ("Lu", "Ll", "Lt")
+        def to_uni(x):
+            return chr(int(x, 16))
+        def is_letter(x):
+            return unicodedata.category(x) in ('Lu', 'Ll', 'Lt')
 
         cp, line = line.split(";", 1)
         tag, line = line.split(";", 1)
@@ -318,7 +320,8 @@ def get_punctuation_mapping(regenerate=False) -> Dict[str, str]:
         char, repls = line.split(";", 2)[:2]
         char = char.strip()
         repls = repls.split()
-        to_uni = lambda x: chr(int(x, 16))
+        def to_uni(x):
+            return chr(int(x, 16))
         char = to_uni(char)
         repls = [to_uni(r) for r in repls]
 

@@ -78,7 +78,7 @@ class test_cmd(Command):
 
 
 class quality_cmd(Command):
-    description = "Run flake8/mypy tests"
+    description = "Run linting / mypy tests"
     user_options = []
 
     def initialize_options(self):

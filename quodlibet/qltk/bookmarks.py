@@ -152,7 +152,7 @@ class EditBookmarksPane(Gtk.VBox):
     def __edit_time(self, render, path, new, model):
         try:
             time = util.parse_time(new, None)
-        except:
+        except Exception:
             pass
         else:
             model[path][0] = time
@@ -160,7 +160,7 @@ class EditBookmarksPane(Gtk.VBox):
     def __check_entry(self, add, time, name):
         try:
             util.parse_time(time.get_text(), None)
-        except:
+        except Exception:
             add.set_sensitive(False)
         else:
             add.set_sensitive(bool(name.get_text()))
@@ -168,7 +168,7 @@ class EditBookmarksPane(Gtk.VBox):
     def __add(self, model, time, name):
         try:
             time = util.parse_time(time.get_text(), None)
-        except:
+        except Exception:
             pass
         else:
             model.append([time, name.get_text()])

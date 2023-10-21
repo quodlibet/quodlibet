@@ -110,7 +110,7 @@ def load_audio_files(data, process=True):
         # return a straight dict subclass so that unpickle doesn't call
         # our __setitem__. Further down we simply change the __class__
         # to our real type.
-        if not real_type in temp_type_cache:
+        if real_type not in temp_type_cache:
             new_type = type(name, (dict,), {"real_type": real_type})
             temp_type_cache[real_type] = new_type
 

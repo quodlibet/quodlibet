@@ -146,5 +146,5 @@ Testing Dependencies
 
 * The build dependencies
 * **pytest**
-* **flake8**
+* **ruff**
 * **polib**

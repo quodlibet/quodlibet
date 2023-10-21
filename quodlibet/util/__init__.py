@@ -39,7 +39,7 @@ from .enum import enum
 from .i18n import _, ngettext, C_
 
 
-# flake8
+# linters
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
 NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
@@ -945,7 +945,8 @@ def load_library(names, shared=True):
         raise ValueError
 
     if shared:
-        load_func = lambda n: getattr(ctypes.cdll, n)
+        def load_func(n):
+            return getattr(ctypes.cdll, n)
     else:
         load_func = ctypes.cdll.LoadLibrary
 
@@ -1097,7 +1098,8 @@ class MainRunner:
 def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
     """A `re.escape` which also works with unicode"""
 
-    needs_escape = lambda c: (c in BAD and "\\" + c) or c
+    def needs_escape(c):
+        return c in BAD and '\\' + c or c
     return type(string)().join(map(needs_escape, string))
 
 

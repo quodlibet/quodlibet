@@ -26,7 +26,7 @@ jobs:
           pkg-config \
           python3-dev \
           pipx
-        pipx install poetry
+        pipx install "poetry==1.4.2"
         pipx ensurepath
 
     - name: Install project virtualenv

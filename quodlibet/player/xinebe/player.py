@@ -334,6 +334,6 @@ def init(librarian):
 
     try:
         driver = config.getbytes("settings", "xine_driver")
-    except:
+    except Exception:
         driver = None
     return XinePlaylistPlayer(driver, librarian)

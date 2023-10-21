@@ -44,5 +44,5 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         to = self._to.get_text()
         try:
             return re.sub(fr, to, value)
-        except:
+        except Exception:
             return value

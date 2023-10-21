@@ -52,7 +52,7 @@ def _get_pool(priority):
 
     global _pools
 
-    if not priority in _pools:
+    if priority not in _pools:
         try:
             cpus = cpu_count()
         except NotImplementedError:
@@ -69,7 +69,7 @@ def _wrap_function(function, cancellable, args, kwargs):
         if not cancellable.is_cancelled():
             try:
                 return function(*args, **kwargs)
-            except:
+            except Exception:
                 # ThreadPool catches the exception for the async result
                 # which we don't use. Print instead as if it was not caught.
                 util.print_exc()

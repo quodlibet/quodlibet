@@ -176,7 +176,7 @@ class Plugin:
         if self.instance is None:
             try:
                 obj = self.cls()
-            except:
+            except Exception:
                 util.print_exc()
                 return
             self.instance = obj

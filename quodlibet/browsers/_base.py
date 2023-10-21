@@ -402,7 +402,7 @@ class EditDisplayPatternMixin:
     def _preview_pattern(self, edit, label):
         try:
             text = XMLFromMarkupPattern(edit.text) % self._PREVIEW_ITEM
-        except:
+        except Exception:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         try:

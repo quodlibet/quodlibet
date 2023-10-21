@@ -243,7 +243,8 @@ def build_song_data(release, track):
 
     meta = {}
 
-    join = lambda l: "\n".join(l)
+    def join(l):
+        return "\n".join(l)
 
     # track/disc data
     meta["tracknumber"] = "%s/%d" % (track.tracknumber, track.track_count)

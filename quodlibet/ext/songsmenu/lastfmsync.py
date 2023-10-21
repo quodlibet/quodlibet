@@ -255,7 +255,7 @@ class LastFMSync(SongsMenuPlugin):
     def plugin_songs(self, songs):
         try:
             self.cache_shelf = shelve.open(self.CACHE_PATH)
-        except:
+        except Exception:
             # some Python 2 DB types can't be opened in Python 3
             self.cache_shelf = shelve.open(self.CACHE_PATH, "n")
 

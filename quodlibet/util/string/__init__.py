@@ -54,7 +54,8 @@ def split_escape(string, sep, maxsplit=None, escape_char="\\"):
     if isinstance(string, bytes):
         if isinstance(escape_char, str):
             escape_char = escape_char.encode("ascii")
-        iter_ = lambda b: (bytes([v]) for v in b)
+        def iter_(b):
+            return (bytes([v]) for v in b)
     else:
         iter_ = iter
 

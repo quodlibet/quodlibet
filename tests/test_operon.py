@@ -340,7 +340,8 @@ class TOperonEdit(TOperonBase):
             return
 
         os.environ["VISUAL"] = "touch -t 197001010101"
-        realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
+        def realitems(s):
+            return [(k, s[k]) for k in s.realkeys()]
         old_items = realitems(self.s)
         self.check_true(["edit", self.f], False, False)
         self.s.reload()
@@ -359,7 +360,8 @@ class TOperonEdit(TOperonBase):
         if os.name == "nt" or sys.platform == "darwin":
             return
 
-        realitems = lambda s: [(k, s[k]) for k in s.realkeys()]
+        def realitems(s):
+            return [(k, s[k]) for k in s.realkeys()]
 
         os.environ["VISUAL"] = "truncate -s 0"
         old_items = realitems(self.s)

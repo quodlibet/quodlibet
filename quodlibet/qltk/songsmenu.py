@@ -114,7 +114,7 @@ class SongsMenuPluginHandler(PluginHandler):
             if usable:
                 try:
                     items.append(Kind(songs, library))
-                except:
+                except Exception:
                     print_e("Couldn't initialise song plugin %s. Stack trace:"
                             % Kind)
                     errorhook()
@@ -133,7 +133,7 @@ class SongsMenuPluginHandler(PluginHandler):
                     else:
                         item.connect(
                             'activate', self.__on_activate, item, *args)
-                except:
+                except Exception:
                     errorhook()
                     item.destroy()
             menu.append(SeparatorMenuItem())

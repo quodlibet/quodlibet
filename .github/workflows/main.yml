@@ -132,7 +132,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           PyVirtualDisplay \
           pytest-faulthandler \
-          flake8==6.1.0 \
+          "ruff<2.0" \
           flaky
 
     - name: Run tests
@@ -160,7 +160,7 @@ jobs:
           pkg-config \
           pipx \
           xvfb
-        pipx install poetry
+        pipx install "poetry==1.4.2"
         pipx ensurepath
 
     - name: Check Poetry project

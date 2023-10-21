@@ -108,7 +108,7 @@ class PlaylistPluginHandler(PluginHandler):
             if usable:
                 try:
                     items.append(Kind(playlists=playlists, library=library))
-                except:
+                except Exception:
                     print_e("Couldn't initialise playlist plugin %s: " % Kind)
                     print_exc()
         items = [i for i in items if i.initialized]
@@ -126,7 +126,7 @@ class PlaylistPluginHandler(PluginHandler):
                     else:
                         item.connect(
                             'activate', self.__on_activate, item, *args)
-                except:
+                except Exception:
                     print_exc()
                     item.destroy()
 

@@ -11,7 +11,6 @@ from __future__ import print_function
 import requests
 import re
 import urllib
-import sys
 import cPickle as pickle
 from multiprocessing.pool import ThreadPool
 import xml.etree.ElementTree as ET

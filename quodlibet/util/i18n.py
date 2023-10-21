@@ -29,7 +29,8 @@ def bcp47_to_language(code):
         return "zh_TW"
 
     parts = code.split("-")
-    is_iso = lambda s: len(s) == 2 and s.isalpha()
+    def is_iso(s):
+        return len(s) == 2 and s.isalpha()
 
     # we only support ISO 639-1
     if not is_iso(parts[0]):
@@ -50,7 +51,7 @@ def bcp47_to_language(code):
 def osx_locale_id_to_lang(id_):
     """Converts a NSLocale identifier to something suitable for LANG"""
 
-    if not "_" in id_:
+    if "_" not in id_:
         return id_
     # id_ can be "zh-Hans_TW"
     parts = id_.rsplit("_", 1)
@@ -236,7 +237,8 @@ def register_translation(domain, localedir=None):
     if localedir is None:
         iterdirs = iter_locale_dirs
     else:
-        iterdirs = lambda: (yield localedir)
+        def iterdirs():
+            return (yield localedir)
 
     for dir_ in iterdirs():
         try:

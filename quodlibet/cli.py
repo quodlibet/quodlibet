@@ -175,7 +175,7 @@ def process_arguments(argv):
         if len(parts) > 3:
             return False
         else:
-            return not (False in [p.isdigit() for p in parts])
+            return False not in [p.isdigit() for p in parts]
 
     def is_float(str):
         try:

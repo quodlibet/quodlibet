@@ -87,12 +87,12 @@ rather than try and open each and every component that MacOS will refuse to open
 
     $ xattr -rd com.apple.quarantine ./QuodLibet.app/Contents
 
-The bundle includes `pip`, so you can always install additional packages (such as `flake8`, `pytest` and
-`flaky`, which would let you run the test suite):
+The bundle includes `pip`, so you can always install additional packages
+(such as `ruff`, `pytest` and `flaky`, for the test suite (or use Poetry)):
 
 ::
 
-    $ ./QuodLibet.app/Contents/MacOS/run -m pip install flake8 pytest flaky
+    $ ./QuodLibet.app/Contents/MacOS/run -m pip install ruff pytest flaky
     $ ./QuodLibet.app/Contents/MacOS/run <path_to_git_repo>/setup.py test
 
 If you want to run the tests with your own Python command, you'll need to install some additonal software

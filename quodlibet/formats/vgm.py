@@ -44,7 +44,8 @@ class VgmFile(AudioFile):
                     # filename useful to show (helps w/ faulty VGM files.)
                     raise Exception(filename + " not a VGM file")
 
-                samples_to_sec = lambda s: s / 44100.
+                def samples_to_sec(s):
+                    return s / 44100.0
                 samples = struct.unpack('<i', header[24:28])[0]
                 loop_offset = struct.unpack('<i', header[28:32])[0]
                 loop_samples = struct.unpack('<i', header[32:36])[0]

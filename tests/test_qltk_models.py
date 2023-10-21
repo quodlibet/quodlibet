@@ -78,7 +78,8 @@ class _TObjectStoreMixin:
 
 class TOrigObjectStore(TestCase, _TObjectStoreMixin):
 
-    Store = lambda *x: Gtk.ListStore(object)
+    def Store(*x):
+        return Gtk.ListStore(object)
 
 
 class TObjectStore(TestCase, _TObjectStoreMixin):
@@ -308,7 +309,8 @@ class _TObjectTreeStoreMixin:
 
 class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
 
-    Store = lambda *x: Gtk.TreeStore(object)
+    def Store(*x):
+        return Gtk.TreeStore(object)
 
 
 class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):

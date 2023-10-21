@@ -1140,14 +1140,14 @@ class Tprint_exc(TestCase):
     def test_main(self):
         try:
             1 / 0
-        except:
+        except Exception:
             with capture_output():
                 print_exc()
 
     def test_pass_exc_info(self):
         try:
             1 / 0
-        except:
+        except Exception:
             with capture_output():
                 print_exc(exc_info=sys.exc_info(), context="foo")
 
@@ -1168,7 +1168,7 @@ class Tformat_exception(TestCase):
     def test_main(self):
         try:
             1 / 0
-        except:
+        except Exception:
             result = format_exception(*sys.exc_info())
             self.assertTrue(isinstance(result, list))
             self.assertTrue(all([isinstance(l, str) for l in result]))
@@ -1179,7 +1179,7 @@ class Textract_tb(TestCase):
     def test_main(self):
         try:
             1 / 0
-        except:
+        except Exception:
             result = extract_tb(sys.exc_info()[2])
             self.assertTrue(isinstance(result, list))
             for fn, l, fu, text in result:

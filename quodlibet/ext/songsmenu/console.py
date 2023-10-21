@@ -468,7 +468,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                     print_(repr(r))
             except SyntaxError:
                 exec(command, self.namespace)
-        except:
+        except Exception:
             if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
                 self.destroy()
             else:
@@ -498,7 +498,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 if obj is not None:
                     try:
                         f = getattr(obj, name)
-                    except:
+                    except Exception:
                         continue
                 else:
                     f = self.namespace.get(name)
@@ -549,7 +549,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 else:
                     try:
                         var = getattr(var, fname, None)
-                    except:
+                    except Exception:
                         pass
 
                 if var is None:

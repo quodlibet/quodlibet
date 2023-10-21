@@ -10,6 +10,8 @@ import gi
 
 from tests import run_gtk_loop
 
+FORMAT_HEADERS = (b"\x89PNG", b"\xFF\xD8\xFF", b"GIF")
+
 gi.require_version('Soup', '3.0')
 from gi.repository import Gtk
 
@@ -79,7 +81,8 @@ def test_live_cover_download(plugin_class_name):
         results.success = True
         header = data.read(4)
         data.close()
-        assert header.startswith(b"\x89PNG") or header.startswith(b"\xFF\xD8")
+        assert any(header.startswith(f)
+                   for f in FORMAT_HEADERS), f"Unknown format: {header}"
 
     def bad(source, error, results):
         # For debugging
