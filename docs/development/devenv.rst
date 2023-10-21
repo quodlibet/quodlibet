@@ -10,6 +10,41 @@ your machine and allow you to change it as you wish. The main task here is to
 install all the software which Quod Libet uses and depends on.
 
 
+Nix Flake
+---------
+
+To help with consistent tooling across machines and platforms,
+we now include a basic `Nix Flake <https://nixos.wiki/wiki/Flakes>`__
+which currently provides suitable versions for Python and Poetry (see below)
+as well as some linter tooling.
+To run a Bash shell with this set up, install Nix (with Flake support),
+then run::
+
+    $ nix develop
+    $ python --version  # or whatever
+
+You can also run Flake apps directly, e.g.::
+
+    $ nix run .#poetry -- --version
+
+
+
+Poetry
+------
+
+Across all environments, we now support Virtualenvs with Pip dependencies,
+managed by `Poetry <https://python-poetry.org/>`__.
+
+Installation, once cloned is just::
+
+    $ poetry install
+
+
+If you want all the *optional* dependencies for various plugins::
+
+    $ poetry install -E plugins
+
+
 |linux-logo| Linux
 ------------------
 
@@ -95,18 +130,3 @@ Check out the `win_installer
 <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/win_installer>`__
 directory in the Git repo for further instructions.
 
-
-Poetry
-------
-
-Across all environments, we now support Virtualenvs with Pip dependencies,
-managed by `Poetry <https://python-poetry.org/>`__.
-
-Installation, once cloned is just::
-
-    $ poetry install
-
-
-If you want all the *optional* dependencies for various plugins::
-
-    $ poetry install -E plugins
