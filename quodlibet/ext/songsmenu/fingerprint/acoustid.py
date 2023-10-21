@@ -81,7 +81,7 @@ class AcoustidSubmissionThread(threading.Thread):
             xml = response.read()
             try:
                 dom = parseString(xml)
-            except:
+            except Exception:
                 error = "xml error"
             else:
                 status = dom.getElementsByTagName("status")

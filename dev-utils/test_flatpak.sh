@@ -8,7 +8,7 @@ if [[ $1 == "inflatpak" ]]; then
     python3 -m venv --system-site-packages /tmp/_flatpak_venv
     # shellcheck disable=SC1091
     source /tmp/_flatpak_venv/bin/activate
-    python3 -m pip install pytest flake8
+    python3 -m pip install pytest "ruff<2.0"
     python3 setup.py test
 else
     flatpak run --env=LC_ALL=C.utf8 --devel --command="bash" \

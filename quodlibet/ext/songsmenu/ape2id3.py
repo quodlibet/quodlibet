@@ -33,7 +33,7 @@ class APEv2toID3v2(SongsMenuPlugin):
     def plugin_song(self, song):
         try:
             apesong = APEv2File(song["~filename"])
-        except:
+        except Exception:
             return # File doesn't have an APEv2 tag
         song.update(apesong)
         mutagen.apev2.delete(song["~filename"])

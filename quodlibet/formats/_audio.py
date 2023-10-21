@@ -657,7 +657,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 pathfile = os.path.join(r, os.path.dirname(f),
                                         fsnative(os.path.basename(f)))
                 rpf = RootPathFile(r, pathfile)
-                if not pathfile in pathfiles:
+                if pathfile not in pathfiles:
                     pathfiles[pathfile] = rpf
 
         #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
@@ -1138,12 +1138,12 @@ class AudioFile(dict, ImageContainer, HasKey):
         for line in self.list("~bookmark"):
             try:
                 time, mark = line.split(" ", 1)
-            except:
+            except Exception:
                 invalid.append((-1, line))
             else:
                 try:
                     time = util.parse_time(time, None)
-                except:
+                except Exception:
                     invalid.append((-1, line))
                 else:
                     if time >= 0:

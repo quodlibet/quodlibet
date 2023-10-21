@@ -186,7 +186,7 @@ def _wrap_logging_method(meth, level=None):
         'name': func.__name__,
         'args': ', '.join(args),
         'fwd': fwd,
-        'level': level,
+        
     }, logging_srcfile, 'exec'), logging.__dict__, ns)
 
     new_func = ns['factory'](meth, _record_log_breadcrumb)

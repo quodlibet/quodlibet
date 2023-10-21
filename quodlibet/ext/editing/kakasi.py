@@ -58,7 +58,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
 
         try:
             return result.decode('shift-jis').strip().split("\n")
-        except:
+        except Exception:
             return values
 
 

@@ -48,25 +48,25 @@ class GajimStatusMessage(EventPlugin):
     def __init__(self):
         try:
             self.accounts = config.get('plugins', self.c_accounts).split()
-        except:
+        except Exception:
             self.accounts = []
             config.set('plugins', self.c_accounts, '')
 
         try:
             self.paused = config.getboolean('plugins', self.c_paused)
-        except:
+        except Exception:
             self.paused = True
             config.set('plugins', self.c_paused, 'True')
 
         try:
             self.statuses = config.get('plugins', self.c_statuses).split()
-        except:
+        except Exception:
             self.statuses = ['online', 'chat']
             config.set('plugins', self.c_statuses, " ".join(self.statuses))
 
         try:
             self.pattern = config.get('plugins', self.c_pattern)
-        except:
+        except Exception:
             self.pattern = '<artist> - <title>'
             config.set('plugins', self.c_pattern, self.pattern)
 

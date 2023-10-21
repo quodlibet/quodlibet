@@ -87,7 +87,7 @@ class CommandRegistry:
         except CommandError as e:
             print_e(e)
             util.print_exc()
-        except:
+        except Exception:
             util.print_exc()
 
     def run(self, app, name, *args):

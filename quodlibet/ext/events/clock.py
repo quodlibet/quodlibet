@@ -32,7 +32,7 @@ class Alarm(EventPlugin):
     def __init__(self):
         try:
             self._times = config.get("plugins", self._pref_name).split(' ')[:7]
-        except:
+        except Exception:
             pass
         else:
             self._times = (self._times + ["HH:MM"] * 7)[:7]
@@ -48,7 +48,7 @@ class Alarm(EventPlugin):
     def is_valid_time(time):
         try:
             hour, minute = map(int, time.split(":"))
-        except:
+        except Exception:
             return False
         else:
             return (hour < 24 and minute < 60)
@@ -65,7 +65,7 @@ class Alarm(EventPlugin):
         goal = self._times[tdata.tm_wday]
         try:
             ghour, gminute = map(int, goal.split(":"))
-        except:
+        except Exception:
             return False
         else:
             return (tdata.tm_hour, tdata.tm_min) == (ghour, gminute)

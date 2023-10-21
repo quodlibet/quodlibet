@@ -97,7 +97,7 @@ class FilterCheckButton(ConfigCheckButton):
             self._label, self._section, self._key, tooltip=self._tooltip)
         try:
             self.set_active(config.getboolean(self._section, self._key))
-        except:
+        except Exception:
             pass
         connect_obj(self, 'toggled', self.emit, 'preview')
 
@@ -172,7 +172,7 @@ class FilterPluginBox(Gtk.VBox):
         for Kind in handler.plugins:
             try:
                 f = Kind()
-            except:
+            except Exception:
                 errorhook()
                 continue
             else:
@@ -186,17 +186,17 @@ class FilterPluginBox(Gtk.VBox):
         for f in instances:
             try:
                 vbox.pack_start(f, True, True, 0)
-            except:
+            except Exception:
                 errorhook()
                 f.destroy()
                 continue
 
             try:
                 f.connect('preview', lambda *x: self.emit('preview'))
-            except:
+            except Exception:
                 try:
                     f.connect('changed', lambda *x: self.emit('changed'))
-                except:
+                except Exception:
                     errorhook()
                     continue
 

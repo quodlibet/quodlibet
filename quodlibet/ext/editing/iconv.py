@@ -46,7 +46,7 @@ class Iconv(EditTagsPlugin):
             else:
                 if new == value:
                     continue
-                if not new in items:
+                if new not in items:
                     items.append(new)
 
         if not items:

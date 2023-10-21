@@ -50,7 +50,7 @@ def bcp47_to_language(code):
 def osx_locale_id_to_lang(id_):
     """Converts a NSLocale identifier to something suitable for LANG"""
 
-    if not "_" in id_:
+    if "_" not in id_:
         return id_
     # id_ can be "zh-Hans_TW"
     parts = id_.rsplit("_", 1)

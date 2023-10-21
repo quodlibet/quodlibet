@@ -94,7 +94,7 @@ def get_config():
             config_dict = {"Current": config_dict}
         if not isinstance(config_dict, dict):
             raise ValueError("Saved config is of wrong type.")
-        if not "Current" in config_dict.keys():
+        if "Current" not in config_dict.keys():
             raise ValueError("Saved config was malformed.")
 
         # Run through the values to check everything is of correct type.
@@ -219,7 +219,7 @@ class Equalizer(EventPlugin):
         # Save custom preset button
         def clicked_sb(button):
             name = self._preset_name_entry.get_text()
-            is_new = not name in self._config.keys()
+            is_new = name not in self._config.keys()
 
             levels = [adj.get_value() for adj in adjustments]
             self._config[name] = levels

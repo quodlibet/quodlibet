@@ -65,7 +65,7 @@ class TPlaylistUtil(TestCase):
         with open(self.PLAYLIST_FILE_PATH, "rb") as file:
             try:
                 playlist = parse_m3u(file, fileName, self.sfLib, self.plLib)
-            except:
+            except Exception:
                 assert False, ("parsing m3u8 playlists in correct format"
                                " should not cause errors")
 

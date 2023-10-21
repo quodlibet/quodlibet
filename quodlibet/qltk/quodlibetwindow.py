@@ -655,7 +655,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
             self._select_browser(
                 self, config.get("memory", "browser"), library, player,
                 restore_browser)
-        except:
+        except Exception:
             config.set("memory", "browser", browsers.name(browsers.default))
             config.save()
             raise

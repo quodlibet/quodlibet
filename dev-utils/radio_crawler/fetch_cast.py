@@ -12,11 +12,10 @@ Loads and parses shoutcast/icecast pages and also adds new stream uris.
 
 from multiprocessing import Pool
 import traceback
-import cPickle as pickle
 
 from util import (parse_shoutcast1, parse_shoutcast2, parse_icecast,
                   ParseError, LISTENERPEAK, LISTENERCURRENT, get_root,
-                  get_cache, set_cache, get_failed, set_failed)
+                  get_cache, set_cache, get_failed)
 
 
 PROCESSES = 20
@@ -43,7 +42,7 @@ def fetch_stream_infos(uri):
         return uri, [parse_shoutcast1(uri)]
     except ParseError:
         pass
-    except:
+    except Exception:
         print(uri)
         traceback.print_exc()
         raise
@@ -52,7 +51,7 @@ def fetch_stream_infos(uri):
         return uri, parse_icecast(uri)
     except ParseError:
         pass
-    except:
+    except Exception:
         print(uri)
         traceback.print_exc()
         raise
@@ -61,7 +60,7 @@ def fetch_stream_infos(uri):
         return uri, parse_shoutcast2(uri)
     except ParseError:
         pass
-    except:
+    except Exception:
         print(uri)
         traceback.print_exc()
         raise

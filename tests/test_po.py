@@ -7,7 +7,7 @@ from pathlib import Path
 
 import pytest
 
-from tests import TestCase, skipUnless
+from tests import TestCase, skipUnless, QL_BASE_PATH
 from tests.helper import ListWithUnused as L
 
 ACCEPTABLE_STOCK = [
@@ -22,8 +22,6 @@ except ImportError:
 from quodlibet.util.string.titlecase import human_title
 from gdist import gettextutil
 
-# Don't use get_module_dir(), as venvs can arrange things differently
-QL_BASE_PATH = Path(__file__).parent.parent
 PO_PATH = QL_BASE_PATH / "po"
 
 

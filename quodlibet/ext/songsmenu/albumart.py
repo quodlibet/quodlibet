@@ -365,7 +365,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             if self.open_check.get_active():
                 try:
                     util.spawn([self.cmd.get_text(), file_path])
-                except:
+                except Exception:
                     pass
 
             app.cover_manager.cover_changed([self.song._song])

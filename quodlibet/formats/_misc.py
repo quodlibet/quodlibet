@@ -115,7 +115,7 @@ def MusicFile(filename):
         except AudioFileError:
             print_w("Error loading %r" % filename)
             util.print_exc()
-        except:
+        except Exception:
             print_w("Error loading %r" % filename)
             raise
 
