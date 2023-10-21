@@ -717,7 +717,7 @@ name = "ruff"
 version = "0.1.1"
 description = "An extremely fast Python linter, written in Rust."
 category = "dev"
-optional = true
+optional = false
 python-versions = ">=3.7"
 files = [
     {file = "ruff-0.1.1-py3-none-macosx_10_7_x86_64.whl", hash = "sha256:b7cdc893aef23ccc14c54bd79a8109a82a2c527e11d030b62201d86f6c2b81c5"},
@@ -1132,4 +1132,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "soco"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "9d42cb69b033a2aa61368204cf18383b0477da43fea644a5de9f3150e6d410ff"
+content-hash = "f4ec24bf39b78d99bf8383ee01b6a035cd9f619570e3476aaea8d242e8b21270"
