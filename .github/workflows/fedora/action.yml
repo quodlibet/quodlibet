@@ -1,6 +1,6 @@
 # action.yml
-name: Fedora 36
-description: Run tests for Fedora 36
+name: Fedora 38
+description: Run tests for Fedora 38
 runs:
   using: docker
   image: Dockerfile
