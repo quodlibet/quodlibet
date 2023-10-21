@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "quodlibet"
-version = "4.6.0-pre"
+version = "4.7.0-pre"
 description = "A music library, tagger, and player"
 authors = ["Joe Wreschnig", "Michael Urman", "Steven Robertson",
     "Christoph Reiter", "Nick Boultbee", "(many others)"]
