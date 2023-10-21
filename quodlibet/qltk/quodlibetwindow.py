@@ -367,7 +367,8 @@ class StatusBarBox(Gtk.HBox):
 class PlaybackErrorDialog(ErrorMessage):
 
     def __init__(self, parent, player_error):
-        add_full_stop = lambda s: s and (s.rstrip(".") + ".")
+        def add_full_stop(s):
+            return s and s.rstrip('.') + '.'
         description = add_full_stop(util.escape(player_error.short_desc))
         details = add_full_stop(util.escape(player_error.long_desc or ""))
         if details:

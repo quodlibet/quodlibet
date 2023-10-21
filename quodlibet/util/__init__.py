@@ -945,7 +945,8 @@ def load_library(names, shared=True):
         raise ValueError
 
     if shared:
-        load_func = lambda n: getattr(ctypes.cdll, n)
+        def load_func(n):
+            return getattr(ctypes.cdll, n)
     else:
         load_func = ctypes.cdll.LoadLibrary
 
@@ -1097,7 +1098,8 @@ class MainRunner:
 def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
     """A `re.escape` which also works with unicode"""
 
-    needs_escape = lambda c: (c in BAD and "\\" + c) or c
+    def needs_escape(c):
+        return c in BAD and '\\' + c or c
     return type(string)().join(map(needs_escape, string))
 
 

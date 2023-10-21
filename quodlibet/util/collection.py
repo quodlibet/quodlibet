@@ -195,7 +195,8 @@ class Collection:
                 length = self.__get_value("~#length")
                 if not length:
                     return 0
-                w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
+                def w(s):
+                    return s("~#bitrate", 0) * s("~#length", 0)
                 return sum(w(song) for song in self.songs) / length
             else:
                 # Standard or unknown numeric key.

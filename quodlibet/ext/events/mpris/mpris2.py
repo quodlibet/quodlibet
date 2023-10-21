@@ -360,7 +360,8 @@ value="false"/>
                 return "io.github.quodlibet.QuodLibet"
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
-                can = lambda s: False
+                def can(s):
+                    return False
                 #can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)

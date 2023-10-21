@@ -19,7 +19,8 @@ from tests.helper import temp_filename
 class Tsplit_message(TestCase):
 
     def test_main(self):
-        func = lambda d: list(split_message(d))
+        def func(d):
+            return list(split_message(d))
 
         # no response format
         self.assertEqual(func(b""), [])

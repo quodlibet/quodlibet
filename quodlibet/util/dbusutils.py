@@ -90,9 +90,11 @@ def filter_property_spec(spec, wl=None, bl=None):
         spec.encode("utf-8") +
         b'</props>')
     if wl:
-        to_rm = lambda e: e.attrib["name"] not in wl
+        def to_rm(e):
+            return e.attrib["name"] not in wl
     elif bl:
-        to_rm = lambda e: e.attrib["name"] in bl
+        def to_rm(e):
+            return e.attrib["name"] in bl
     strs = []
     for element in root:
         if element.tag != "property" or not to_rm(element):

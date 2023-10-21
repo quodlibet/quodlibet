@@ -80,7 +80,8 @@ def listdir(path, hidden=False):
     if hidden:
         filt = None
     else:
-        filt = lambda base: not base.startswith(".")
+        def filt(base):
+            return not base.startswith(".")
     if path.endswith(os.sep):
         join = "".join
     else:

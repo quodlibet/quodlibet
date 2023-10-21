@@ -33,9 +33,12 @@ class PaneConfig:
         parts = [p.replace(r"\:", ":")
                  for p in (re.split(r"(?<!\\):", row_pattern))]
 
-        is_numeric = lambda s: s[:2] == "~#" and "~" not in s[2:]
-        is_pattern = lambda s: '<' in s
-        f_round = lambda s: (isinstance(s, float) and "%.2f" % s) or s
+        def is_numeric(s):
+            return s[:2] == "~#" and "~" not in s[2:]
+        def is_pattern(s):
+            return "<" in s
+        def f_round(s):
+            return isinstance(s, float) and "%.2f" % s or s
 
         def is_date(s):
             return s in TIME_TAGS
@@ -79,9 +82,11 @@ class PaneConfig:
             format_display = pd.format
         else:
             if is_numeric(disp):
-                format_display = lambda coll: str(f_round(coll(disp)))
+                def format_display(coll):
+                    return str(f_round(coll(disp)))
             else:
-                format_display = lambda coll: util.escape(coll.comma(disp))
+                def format_display(coll):
+                    return util.escape(coll.comma(disp))
 
         self.title = title
         self.tags = set(tags)

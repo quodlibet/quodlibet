@@ -209,9 +209,11 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
         if b is None and value is None:
             f = None
         elif b is None:
-            f = lambda item: value(item.album)
+            def f(item):
+                return value(item.album)
         else:
-            f = lambda item: b(item.album) and value(item.album)
+            def f(item):
+                return b(item.album) and value(item.album)
         if f or self.__filter:
             self.__filter = f
             self._model.refilter()
