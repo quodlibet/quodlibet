@@ -25,7 +25,7 @@
 
           # build time
           pkgs.gettext
-          pkgs.gobject-introspection
+          pkgs.gobject-introspection  # or -unwrapped?
           pkgs.wrapGAppsHook
 
           ## runtime
@@ -53,6 +53,10 @@
           pkgs.shellcheck
           pkgs.alejandra
         ];
+        shellHook = ''
+          export XDG_DATA_DIRS="${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}:$XDG_ICON_DIRS:$XDG_DATA_DIRS"
+          export GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+        '';
       };
 
       # Allow `nix fmt` to "just work"
