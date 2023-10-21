@@ -22,11 +22,11 @@ class SerializationError(Exception):
 def _py2_to_py3(items):
     for i in items:
         try:
-            items = list(i.items())
+            li = list(i.items())
         except AttributeError as e:
             raise SerializationError from e
         i.clear()
-        for k, v in items:
+        for k, v in li:
             if isinstance(k, bytes):
                 k = k.decode("utf-8", "replace")
             else:
