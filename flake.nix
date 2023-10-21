@@ -40,7 +40,7 @@
           pkgs.libappindicator-gtk3
           pkgs.libmodplug
           pkgs.librsvg
-          pkgs.libsoup
+          pkgs.libsoup_3
           pkgs.webkitgtk
 
           # tests

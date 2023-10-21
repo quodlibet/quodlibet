@@ -25,10 +25,11 @@ then run::
 
 You can also run Flake apps directly, e.g.::
 
-    $ nix run .#poetry -- --version
+    $ nix run .#poetry -- lock --no-update
 
-However, currently it is only recommended to use this for basic tooling.
+⚠️ However, currently it is only recommended to use this for basic tooling.
 Running GTK+ apps is complex in Nix and Flakes even more so.
+See some `Gnome Nix notes here <https://ryantm.github.io/nixpkgs/languages-frameworks/gnome/>`__.
 
 
 Poetry
