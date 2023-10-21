@@ -60,6 +60,10 @@ ignore = [
     "E402",  # Allow imports not at top
 ]
 line-length = 88
+extend-exclude = [
+    "dev-utils/*",
+    "quodlibet/packages/"
+]
 
 [tool.coverage.run]
 omit = ["quodlibet/packages/*"]
