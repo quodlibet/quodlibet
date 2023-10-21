@@ -217,13 +217,13 @@ class TPlayerMixin:
         self.assertEqual(self.player.song, FILES[0])
 
     def test_equalizer(self):
-        self.player.eq_bands
-        self.player.eq_values
+        assert self.player.eq_bands is not None
+        assert self.player.eq_values is not None
         self.player.eq_values = [1, 2, 3, 4]
         self.player.next()
 
     def test_unpause_while_no_song(self):
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.go_to(None)
         self.player.paused = False
         self.player.next()

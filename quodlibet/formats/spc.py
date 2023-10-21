@@ -17,15 +17,17 @@ extensions = [".spc"]
 class SPCFile(AudioFile):
     format = "SPC700"
 
+    TAGS = ["artist", "album", "title", "comments"]
+
     def __init__(self, filename):
         with translate_errors():
             with open(filename, "rb") as h:
                 head = h.read(46)
                 if len(head) != 46 or \
-                        head[:27] != b'SNES-SPC700 Sound File Data':
+                        head[:27] != b"SNES-SPC700 Sound File Data":
                     raise IOError("Not a valid SNES-SPC700 file")
 
-                if head[35:35 + 1] == b'\x1a':
+                if head[35:35 + 1] == b"\x1a":
                     data = h.read(210)
                     if len(data) == 210:
                         self.update(parse_id666(data))
@@ -38,11 +40,11 @@ class SPCFile(AudioFile):
         pass
 
     def can_change(self, k=None):
-        TAGS = ["artist", "album", "title", "comments"]
+
         if k is None:
-            return TAGS
+            return self.TAGS
         else:
-            return k in TAGS
+            return k in self.TAGS
 
 
 def parse_id666(data):
@@ -59,7 +61,7 @@ def parse_id666(data):
     # Instead of detecting "perfectly", we'll just detect enough for
     # the "artist" field. This fails for artist names that begin with
     # numbers or symbols less than ascii value A.
-    if data[130:130 + 1] < b'A':
+    if data[130:130 + 1] < b"A":
         try:
             tags["~#length"] = int(data[123:126].strip(b"\x00"))
         except ValueError:

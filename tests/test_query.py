@@ -19,12 +19,12 @@ from tests import TestCase, skip
 
 class TestQuery_is_valid:
     def test_re(self):
-        assert Query('t = /an re/').valid
-        assert Query('t = /an re/c').valid
-        assert Query('t = /an\\/re/').valid
-        assert not Query('t = /an/re/').valid
-        assert Query('t = /aaa/lsic').valid
-        assert not Query('t = /aaa/icslx').valid
+        assert Query("t = /an re/").valid
+        assert Query("t = /an re/c").valid
+        assert Query("t = /an\\/re/").valid
+        assert not Query("t = /an/re/").valid
+        assert Query("t = /aaa/lsic").valid
+        assert not Query("t = /aaa/icslx").valid
 
     def test_str(self):
         assert Query('t = "a str"').valid
@@ -34,17 +34,17 @@ class TestQuery_is_valid:
         # read as a set of modifiers
 
     def test_tag(self):
-        assert Query('t = tag').valid
-        assert Query('t = !tag').valid
-        assert Query('t = |(tag, bar)').valid
+        assert Query("t = tag").valid
+        assert Query("t = !tag").valid
+        assert Query("t = |(tag, bar)").valid
         assert Query('t = a"tag"').valid
-        assert not Query('t = a, tag').valid
-        assert Query('tag with spaces = tag').valid
+        assert not Query("t = a, tag").valid
+        assert Query("tag with spaces = tag").valid
 
     def test_empty(self):
-        assert Query('').valid
-        assert Query('').is_parsable
-        assert Query('')
+        assert Query("").valid
+        assert Query("").is_parsable
+        assert Query("")
 
     def test_emptylist(self):
         assert not Query("a = &()").valid
@@ -53,39 +53,39 @@ class TestQuery_is_valid:
         assert not Query("&()").valid
 
     def test_nonsense(self):
-        assert not Query('a string').valid
-        assert not Query('t = #(a > b)').valid
+        assert not Query("a string").valid
+        assert not Query("t = #(a > b)").valid
         assert not Query("=a= = /b/").valid
         assert not Query("a = &(/b//").valid
         assert not Query("(a = &(/b//)").valid
 
     def test_trailing(self):
-        assert not Query('t = /an re/)').valid
-        assert not Query('|(a, b = /a/, c, d = /q/) woo').valid
+        assert not Query("t = /an re/)").valid
+        assert not Query("|(a, b = /a/, c, d = /q/) woo").valid
 
     def test_not(self):
-        assert Query('t = !/a/').valid
-        assert Query('t = !!/a/').valid
+        assert Query("t = !/a/").valid
+        assert Query("t = !!/a/").valid
         assert Query('!t = "a"').valid
         assert Query('!!t = "a"').valid
         assert Query('t = !|(/a/, !"b")').valid
         assert Query('t = !!|(/a/, !"b")').valid
-        assert Query('!|(t = /a/)').valid
+        assert Query("!|(t = /a/)").valid
 
     def test_taglist(self):
-        assert Query('a, b = /a/').valid
-        assert Query('a, b, c = |(/a/)').valid
-        assert Query('|(a, b = /a/, c, d = /q/)').valid
-        assert not Query('a = /a/, b').valid
+        assert Query("a, b = /a/").valid
+        assert Query("a, b, c = |(/a/)").valid
+        assert Query("|(a, b = /a/, c, d = /q/)").valid
+        assert not Query("a = /a/, b").valid
 
     def test_andor(self):
-        assert Query('a = |(/a/, /b/)').valid
-        assert Query('a = |(/b/)').valid
-        assert Query('|(a = /b/, c = /d/)').valid
+        assert Query("a = |(/a/, /b/)").valid
+        assert Query("a = |(/b/)").valid
+        assert Query("|(a = /b/, c = /d/)").valid
 
-        assert Query('a = &(/a/, /b/)').valid
-        assert Query('a = &(/b/)').valid
-        assert Query('&(a = /b/, c = /d/)').valid
+        assert Query("a = &(/a/, /b/)").valid
+        assert Query("a = &(/b/)").valid
+        assert Query("&(a = /b/, c = /d/)").valid
 
     def test_numcmp(self):
         assert Query("#(t < 3)").valid
@@ -223,24 +223,25 @@ class TQuery(TestCase):
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_performance(self):
         t = time.time()
-        for i in range(500):
+        total = 500
+        for _i in range(total):
             # Native assert is a bit lighter...
             assert Query("album!=foo the bar").search(self.s1)
             assert Query("album=foo the bar").search(self.s2)
             assert Query("foo the bar").search(self.s2)
             assert not Query("foo the bar").search(self.s1)
-        us = (time.time() - t) * 1000000 / ((i + 1) * 4)
+        us = (time.time() - t) * 1000000 / ((total + 1) * 4)
         print("Blended Query searches average %.0f μs" % us)
 
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_equalish_performance(self):
         t0 = time.time()
         repeats = 2000
-        for i in range(repeats):
+        for _i in range(repeats):
             assert Query("album!=foo the bar").search(self.s1)
         ineq_time = (time.time() - t0)
         t1 = time.time()
-        for i in range(repeats):
+        for _i in range(repeats):
             assert Query("album=!foo the bar").search(self.s1)
         not_val_time = (time.time() - t1)
         assert ineq_time == pytest.approx(not_val_time, abs=0.1)
@@ -274,10 +275,10 @@ class TQuery(TestCase):
         assert f(self.s2)
 
     def test_re_escape(self):
-        af = AudioFile({"foo": "\""})
+        af = AudioFile({"foo": '"'})
         assert Query('foo="\\""').search(af)
         af = AudioFile({"foo": "/"})
-        assert Query('foo=/\\//').search(af)
+        assert Query("foo=/\\//").search(af)
 
     def test_not(self):
         for s in ["album = !hate", "artist = !pi"]:
@@ -473,28 +474,28 @@ class TQuery(TestCase):
             Query(u"foobar", star=["~#mtime"])
 
     def test_match_diacriticals_explcit(self):
-        assert Query(u'title=angstrom').search(self.s4)
+        assert Query(u"title=angstrom").search(self.s4)
         assert not Query(u'title="Ångstrom"').search(self.s4)
         assert Query(u'title="Ångstrom"d').search(self.s4)
-        assert Query(u'title=Ångström').search(self.s4)
+        assert Query(u"title=Ångström").search(self.s4)
         assert Query(u'title="Ångström"').search(self.s4)
-        assert Query(u'title=/Ångström/').search(self.s4)
+        assert Query(u"title=/Ångström/").search(self.s4)
         assert Query(u'title="Ångstrom"d').search(self.s4)
-        assert Query(u'title=/Angstrom/d').search(self.s4)
+        assert Query(u"title=/Angstrom/d").search(self.s4)
         assert Query(u'""d').search(self.s4)
 
     def test_match_diacriticals_dumb(self):
-        assert Query(u'Angstrom').search(self.s4)
-        assert Query(u'Ångström').search(self.s4)
-        assert Query(u'Ångstrom').search(self.s4)
-        assert not Query(u'Ängström').search(self.s4)
+        assert Query(u"Angstrom").search(self.s4)
+        assert Query(u"Ångström").search(self.s4)
+        assert Query(u"Ångstrom").search(self.s4)
+        assert not Query(u"Ängström").search(self.s4)
 
     def test_match_diacriticals_invalid_or_unsupported(self):
         # these fall back to test dumb searches:
         # invalid regex
-        Query(u'/Sigur [r-zos/d')
+        Query(u"/Sigur [r-zos/d")
         # group refs unsupported for diacritic matching
-        Query(u'/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d')
+        Query(u"/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d")
 
     def test_numexpr(self):
         assert Query("#(length = 224)").search(self.s1)

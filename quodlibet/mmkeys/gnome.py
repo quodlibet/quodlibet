@@ -85,7 +85,7 @@ class GnomeBackend(MMKeysBackend):
             return
 
         try:
-            iface.GrabMediaPlayerKeys('(su)', self.__name, self.__grab_time)
+            iface.GrabMediaPlayerKeys("(su)", self.__name, self.__grab_time)
         except GLib.Error:
             print_exc()
 
@@ -104,7 +104,7 @@ class GnomeBackend(MMKeysBackend):
             print_exc()
         else:
             self.__key_pressed_sig = iface.connect(
-                'g-signal', self.__on_signal)
+                "g-signal", self.__on_signal)
             self.__interface = iface
 
         return self.__interface
@@ -142,7 +142,7 @@ class GnomeBackend(MMKeysBackend):
         self.__release()
 
     def __on_signal(self, proxy, sender, signal, args):
-        if signal == 'MediaPlayerKeyPressed':
+        if signal == "MediaPlayerKeyPressed":
             application, action = tuple(args)[:2]
             self.__key_pressed(application, action)
 
@@ -165,7 +165,7 @@ class GnomeBackend(MMKeysBackend):
             self.__key_pressed_sig = None
 
         try:
-            self.__interface.ReleaseMediaPlayerKeys('(s)', self.__name)
+            self.__interface.ReleaseMediaPlayerKeys("(s)", self.__name)
         except GLib.Error:
             print_exc()
         self.__interface = None

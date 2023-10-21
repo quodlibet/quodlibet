@@ -49,6 +49,6 @@ def enum(cls):
         except KeyError:
             return "%s(%s)" % (name, self)
 
-    setattr(new_type, "__repr__", repr_)
+    new_type.__repr__ = repr_
 
     return new_type

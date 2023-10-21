@@ -13,8 +13,8 @@ DEVICE_CACHE_SEC = 600
 try:
     from soco import SoCo, SoCoException
     from soco.data_structures import DidlMusicTrack, DidlPlaylistContainer, DidlItem
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
 from typing import Text, Optional, Dict, Tuple, Collection
 from gi.repository import Gtk
@@ -31,8 +31,8 @@ from quodlibet.util.string.filter import remove_punctuation
 
 try:
     import soco
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
 PlaylistID = Text
 ID = Text
@@ -54,7 +54,7 @@ class ComboBoxEntry(Gtk.ComboBox):
         self.clear()
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
-        self.add_attribute(render, 'text', 1)
+        self.add_attribute(render, "text", 1)
 
         model = self.get_model()
         for id_, name in choices.items():
@@ -213,7 +213,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 print_d(f"From {len(results)} choice(s) for {desc!r}, "
                         f"chose {self.uri_for(track)}")
             else:
-                print_w("No results for \"%s\"" % search_term)
+                print_w('No results for "%s"' % search_term)
                 failures.append(search_term)
                 track = None
             if track:

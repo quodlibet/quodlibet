@@ -27,7 +27,7 @@ class TConfig(TestCase):
         conf.defaults.set("foo", "blah", 1)
         conf.set("foo", "blah", 1)
         conf.set("foo", "quux", 1)
-        self.assertEqual(conf.options("foo"), ['blah', 'quux', 'bar'])
+        self.assertEqual(conf.options("foo"), ["blah", "quux", "bar"])
         conf.defaults.clear()
 
     def test_options_no_default(self):

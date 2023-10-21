@@ -99,7 +99,7 @@ class FilterCheckButton(ConfigCheckButton):
             self.set_active(config.getboolean(self._section, self._key))
         except Exception:
             pass
-        connect_obj(self, 'toggled', self.emit, 'preview')
+        connect_obj(self, "toggled", self.emit, "preview")
 
     @property
     def active(self):
@@ -148,7 +148,7 @@ class FilterPluginBox(Gtk.VBox):
         self.pack_start(hb, False, True, 0)
 
         for filt in filters:
-            filt.connect('preview', lambda *x: self.emit("preview"))
+            filt.connect("preview", lambda *x: self.emit("preview"))
 
         vbox = Gtk.VBox()
         expander.add(vbox)
@@ -165,7 +165,7 @@ class FilterPluginBox(Gtk.VBox):
         plugin_handler.changed()
 
     def __notify_expanded(self, expander, event, vbox):
-        vbox.set_property('visible', expander.get_property('expanded'))
+        vbox.set_property("visible", expander.get_property("expanded"))
 
     def __refresh_plugins(self, handler, vbox, expander):
         instances = []
@@ -192,10 +192,10 @@ class FilterPluginBox(Gtk.VBox):
                 continue
 
             try:
-                f.connect('preview', lambda *x: self.emit('preview'))
+                f.connect("preview", lambda *x: self.emit("preview"))
             except Exception:
                 try:
-                    f.connect('changed', lambda *x: self.emit('changed'))
+                    f.connect("changed", lambda *x: self.emit("changed"))
                 except Exception:
                     errorhook()
                     continue

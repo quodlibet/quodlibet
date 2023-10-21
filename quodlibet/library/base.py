@@ -48,9 +48,9 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
     """
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "removed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "added": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     librarian: Optional["quodlibet.library.librarians.Librarian"] = None
@@ -107,7 +107,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         print_d(f"Emitting changed for {len(items)} item(s) "
                 f"(e.g. {list(items)[0].key!r}...)", self._name)
         self.dirty = True
-        self.emit('changed', items)
+        self.emit("changed", items)
 
     def __iter__(self) -> Iterator[V]:
         """Iterate over the items in the library."""
@@ -184,7 +184,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             self._contents[item.key] = item
 
         self.dirty = True
-        self.emit('added', items)
+        self.emit("added", items)
         return items
 
     def remove(self, items: Iterable[V]) -> Set[V]:
@@ -202,7 +202,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             del self._contents[item.key]
 
         self.dirty = True
-        self.emit('removed', items)
+        self.emit("removed", items)
         return items
 
 

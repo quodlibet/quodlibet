@@ -21,10 +21,10 @@ from quodlibet.util.songwrapper import SongWrapper
 class ViewLyrics(EventPlugin, UserInterfacePlugin):
     """The plugin for viewing lyrics in the main window."""
 
-    PLUGIN_ID = 'View Lyrics'
-    PLUGIN_NAME = _('View Lyrics')
-    PLUGIN_DESC = _('Automatically displays tag or file-based lyrics '
-                    'in a sidebar.')
+    PLUGIN_ID = "View Lyrics"
+    PLUGIN_NAME = _("View Lyrics")
+    PLUGIN_DESC = _("Automatically displays tag or file-based lyrics "
+                    "in a sidebar.")
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
@@ -41,7 +41,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
         self.textview.set_justification(Gtk.Justification.CENTER)
-        self.textview.connect('key-press-event', self.key_press_event_cb)
+        self.textview.connect("key-press-event", self.key_press_event_cb)
         add_css(self.textview, "* { padding: 6px; }")
         vbox = Gtk.VBox()
         vbox.pack_start(self.textview, True, True, 0)
@@ -96,7 +96,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
             if self._sig:
                 self._edit_button.disconnect(self._sig)
-            self._sig = self._edit_button.connect('clicked', edit)
+            self._sig = self._edit_button.connect("clicked", edit)
 
     def _set_italicised(self, title):
         self.textbuffer.set_text(title)

@@ -33,7 +33,7 @@ class TReplayGain(PluginTestCase):
         del cls.kind
 
     def setUp(self):
-        self.song = AudioFile({'artist': 'foo', 'album': 'the album'})
+        self.song = AudioFile({"artist": "foo", "album": "the album"})
         self.plugin = self.kind([self.song], None)
 
     def tearDown(self):
@@ -63,7 +63,7 @@ class TReplayGain(PluginTestCase):
     def test_RGAlbum_properties(self):
         rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
         self.failIf(rga.done)
-        self.failUnlessEqual(rga.title, 'foo - the album')
+        self.failUnlessEqual(rga.title, "foo - the album")
 
     def test_delete_bs1770gain(self):
         tags = ["replaygain_reference_loudness", "replaygain_algorithm",
@@ -90,7 +90,7 @@ class TReplayGain(PluginTestCase):
                 self.analysed = [album]
 
             pipeline = self.mod.ReplayGainPipeline()
-            sig = pipeline.connect('done', on_complete)
+            sig = pipeline.connect("done", on_complete)
 
             pipeline.start(album)
             start = time.time()
@@ -115,10 +115,10 @@ class TReplayGain(PluginTestCase):
 
         track_gain = song("~#replaygain_track_gain")
         self.failUnless(track_gain, msg="No Track Gain added")
-        self.failUnless(re.match(r'\-[0-9]\.[0-9]{1,2}', str(track_gain)))
+        self.failUnless(re.match(r"\-[0-9]\.[0-9]{1,2}", str(track_gain)))
 
         # For one-song album, track == album
-        self.failUnlessEqual(track_gain, song('~#replaygain_album_gain'))
+        self.failUnlessEqual(track_gain, song("~#replaygain_album_gain"))
 
     def test_analyze_silence(self):
         song = MusicFile(get_data_path("silence-44-s.ogg"))
@@ -133,7 +133,7 @@ class TReplayGain(PluginTestCase):
         self.failUnless(track_gain, msg="No Track Gain added")
 
         # For one-song album, track == album
-        self.failUnlessEqual(track_gain, song('~#replaygain_album_gain'))
+        self.failUnlessEqual(track_gain, song("~#replaygain_album_gain"))
 
 
 class FakePipeline(ReplayGainPipeline):
@@ -188,6 +188,6 @@ class TRGDialog(TestCase):
 
 
 def a_song(n):
-    d = {'replaygain_album_gain': -6.0} if n % 2 else {}
-    d['tracknumber'] = n
+    d = {"replaygain_album_gain": -6.0} if n % 2 else {}
+    d["tracknumber"] = n
     return AudioFile(d)

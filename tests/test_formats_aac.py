@@ -48,7 +48,7 @@ class _TAACFileMixin:
         self.assertTrue(self.song.can_multiple_values("title"))
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
+        path = get_data_path("empty.xm")
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, AACFile, path)
 

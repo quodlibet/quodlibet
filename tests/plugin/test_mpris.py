@@ -24,17 +24,17 @@ from quodlibet import app
 
 
 A1 = AudioFile(
-        {'album': u'greatness', 'title': 'excellent', 'artist': 'fooman\ngo',
-         '~#lastplayed': 1234, '~#rating': 0.75,
-         '~filename': fsnative(u'/foo a/b'),
+        {"album": u"greatness", "title": "excellent", "artist": "fooman\ngo",
+         "~#lastplayed": 1234, "~#rating": 0.75,
+         "~filename": fsnative(u"/foo a/b"),
          "~#length": 123, "albumartist": "aa\nbb", "bpm": "123.5",
          "tracknumber": "6/7"})
 A1.sanitize()
 
 A2 = AudioFile(
-        {'album': u'greatness2\ufffe', 'title': 'superlative',
-         'artist': u'fooman\ufffe', '~#lastplayed': 1234, '~#rating': 1.0,
-         '~filename': fsnative(u'/foo'), 'discnumber': '4294967296'})
+        {"album": u"greatness2\ufffe", "title": "superlative",
+         "artist": u"fooman\ufffe", "~#lastplayed": 1234, "~#rating": 1.0,
+         "~filename": fsnative(u"/foo"), "discnumber": "4294967296"})
 A2.sanitize()
 
 MAX_TIME = 3
@@ -248,7 +248,7 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.failUnlessEqual(resp["xesam:album"], u'greatness2\ufffd')
-        self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
+        self.failUnlessEqual(resp["xesam:album"], u"greatness2\ufffd")
+        self.failUnlessEqual(resp["xesam:artist"], [u"fooman\ufffd"])
         # overflow
         assert resp["xesam:discNumber"] == 0

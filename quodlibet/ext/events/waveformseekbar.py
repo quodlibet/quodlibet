@@ -55,23 +55,23 @@ class WaveformSeekBar(Gtk.Box):
             child.show_all()
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
-        self._waveform_scale.connect('size-allocate', self._update_redraw_interval)
-        self._waveform_scale.connect('motion-notify-event', self._on_mouse_hover)
-        self._waveform_scale.connect('leave-notify-event', self._on_mouse_leave)
+        self._waveform_scale.connect("size-allocate", self._update_redraw_interval)
+        self._waveform_scale.connect("motion-notify-event", self._on_mouse_hover)
+        self._waveform_scale.connect("leave-notify-event", self._on_mouse_leave)
 
         self._label_tracker = TimeTracker(player)
-        self._label_tracker.connect('tick', self._on_tick_label, player)
+        self._label_tracker.connect("tick", self._on_tick_label, player)
 
         self._redraw_tracker = TimeTracker(player)
-        self._redraw_tracker.connect('tick', self._on_tick_waveform, player)
+        self._redraw_tracker.connect("tick", self._on_tick_waveform, player)
 
-        connect_destroy(player, 'seek', self._on_player_seek)
-        connect_destroy(player, 'song-started', self._on_song_started)
-        connect_destroy(player, 'song-ended', self._on_song_ended)
-        connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
-        connect_destroy(library, 'changed', self._on_song_changed, player)
+        connect_destroy(player, "seek", self._on_player_seek)
+        connect_destroy(player, "song-started", self._on_song_started)
+        connect_destroy(player, "song-ended", self._on_song_ended)
+        connect_destroy(player, "notify::seekable", self._on_seekable_changed)
+        connect_destroy(library, "changed", self._on_song_changed, player)
 
-        self.connect('destroy', self._on_destroy)
+        self.connect("destroy", self._on_destroy)
         self._update(player)
 
         if player.info:
@@ -403,7 +403,7 @@ class WaveformScale(Gtk.EventBox):
         data = self._rms_vals
 
         # Use the clip rectangles to redraw only what is necessary
-        for (cx, cy, cw, ch) in cr.copy_clip_rectangle_list():
+        for (cx, _cy, cw, _ch) in cr.copy_clip_rectangle_list():
             for x in range(int(floor(cx * pixel_ratio)),
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
@@ -667,7 +667,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             entry = Gtk.Entry()
             if color:
                 entry.set_text(color)
-            entry.connect('changed', callback)
+            entry.connect("changed", callback)
             hbox.pack_start(entry, True, True, 0)
             return hbox
 

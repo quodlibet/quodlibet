@@ -144,11 +144,11 @@ def find_audio_sink() -> Tuple[Gst.Element, str]:
         if element is not None:
             return element, sink.value
     else:
-        details = ', '.join(s.value for s in options) if options else "[]"
+        details = ", ".join(s.value for s in options) if options else "[]"
         raise PlayerError(_("No GStreamer audio sink found. Tried: %s") % details)
 
 
-def GStreamerSink(pipeline_desc):
+def gstreamer_sink(pipeline_desc):
     """Returns a list of unlinked gstreamer elements ending with an audio sink
     and a textual description of the pipeline.
 
@@ -161,10 +161,10 @@ def GStreamerSink(pipeline_desc):
     pipe = None
     if pipeline_desc:
         try:
-            pipe = [Gst.parse_launch(e) for e in pipeline_desc.split('!')]
+            pipe = [Gst.parse_launch(e) for e in pipeline_desc.split("!")]
         except GLib.GError as e:
             message = e.message
-            raise PlayerError(_("Invalid GStreamer output pipeline"), message)
+            raise PlayerError(_("Invalid GStreamer output pipeline"), message) from e
 
     if pipe:
         # In case the last element is linkable with a fakesink
@@ -285,7 +285,7 @@ def bin_debug(elements, depth=0, lines=None):
     else:
         lines.append(" " * (depth - 1) + "\\")
 
-    for i, elm in enumerate(elements):
+    for _i, elm in enumerate(elements):
         for pad in iter_to_list(elm.iterate_sink_pads):
             caps = pad.get_current_caps()
             if caps:

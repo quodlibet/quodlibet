@@ -28,7 +28,7 @@ class ConfigCheckButton(Gtk.CheckButton):
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
             self.set_tooltip_text(tooltip)
-        self.connect('toggled', ConfigCheckButton.__toggled, section, option)
+        self.connect("toggled", ConfigCheckButton.__toggled, section, option)
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())
@@ -57,8 +57,8 @@ class ConfigSwitch(Gtk.Box):
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
             self.label.set_tooltip_text(tooltip)
-        self.switch.connect('notify::active', self.__activated, section, option)
-        eb.connect('button_press_event',
+        self.switch.connect("notify::active", self.__activated, section, option)
+        eb.connect("button_press_event",
                    lambda *_: self.switch.set_state(not self.switch.get_state()))
 
     def set_active(self, value: bool):
@@ -85,7 +85,7 @@ class ConfigCheckMenuItem(Gtk.CheckMenuItem):
             label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option, default))
-        self.connect('toggled', ConfigCheckMenuItem.__toggled, section, option)
+        self.connect("toggled", ConfigCheckMenuItem.__toggled, section, option)
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())

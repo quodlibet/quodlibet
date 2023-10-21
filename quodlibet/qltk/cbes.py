@@ -83,7 +83,7 @@ class _KeyValueEditor(qltk.Window):
 
         menu = Gtk.Menu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        connect_obj(remove, 'activate', self.__remove, view)
+        connect_obj(remove, "activate", self.__remove, view)
         qltk.add_fake_accel(remove, "Delete")
         menu.append(remove)
         menu.show_all()
@@ -101,17 +101,17 @@ class _KeyValueEditor(qltk.Window):
         self.get_child().pack_start(bbox, False, True, 0)
 
         selection = view.get_selection()
-        connect_obj(name, 'activate', Gtk.Entry.grab_focus, self.value)
-        connect_obj(self.value, 'activate', Gtk.Button.clicked, add)
-        self.value.connect('changed', self.__changed, [add])
-        connect_obj(add, 'clicked', self.__add, selection, name, self.value,
+        connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
+        connect_obj(self.value, "activate", Gtk.Button.clicked, add)
+        self.value.connect("changed", self.__changed, [add])
+        connect_obj(add, "clicked", self.__add, selection, name, self.value,
                     self.model)
-        selection.connect('changed', self.__set_text, name, self.value, rem_b)
-        view.connect('popup-menu', self.__popup, menu)
-        connect_obj(rem_b, 'clicked', self.__remove, view)
-        connect_obj(close, 'clicked', qltk.Window.destroy, self)
-        view.connect('key-press-event', self.__view_key_press)
-        connect_obj(self, 'destroy', Gtk.Menu.destroy, menu)
+        selection.connect("changed", self.__set_text, name, self.value, rem_b)
+        view.connect("popup-menu", self.__popup, menu)
+        connect_obj(rem_b, "clicked", self.__remove, view)
+        connect_obj(close, "clicked", qltk.Window.destroy, self)
+        view.connect("key-press-event", self.__view_key_press)
+        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
 
         name.grab_focus()
         self.get_child().show_all()
@@ -162,7 +162,7 @@ class CBESEditor(_KeyValueEditor):
         self.cbes = cbes
         super().__init__(title, validator)
         self.set_transient_for(qltk.get_top_parent(cbes))
-        connect_obj(self, 'destroy', self.__finish, cbes)
+        connect_obj(self, "destroy", self.__finish, cbes)
         self.value.set_text(cbes.get_child().get_text())
 
     def fill_values(self):
@@ -203,7 +203,7 @@ class StandaloneEditor(_KeyValueEditor):
         self.filename = filename
         self.initial = initial or []
         super().__init__(title, validator)
-        connect_obj(self, 'destroy', self.write, True)
+        connect_obj(self, "destroy", self.write, True)
 
     def fill_values(self):
         filename = self.filename + ".saved"
@@ -254,15 +254,16 @@ class ComboBoxEntrySave(Gtk.ComboBox):
     # gets emitted if the text entry changes
     # mainly to filter out model changes that don't have any effect
     __gsignals__: GSignals = {
-        'text-changed': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "text-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     __models: Dict[str, Gtk.TreeModel] = {}
     __last = ""
 
-    def __init__(self, filename=None, initial=[], count=5, id=None,
-                 validator=None, title=_("Saved Values"),
-                 edit_title=_(u"Edit saved values…")):
+    def __init__(self, filename=None, initial=None, count=5, id=None,
+                 validator=None, title=_("Saved Values"),  # noqa
+                 edit_title=_(u"Edit saved values…")):  # noqa
+        initial = initial if initial is not None else []
         self.count = count
         self.filename = filename
         id = filename or id
@@ -278,11 +279,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
         render = Gtk.CellRendererPixbuf()
         self.pack_start(render, False)
-        self.add_attribute(render, 'icon-name', 2)
+        self.add_attribute(render, "icon-name", 2)
 
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
-        self.add_attribute(render, 'text', 1)
+        self.add_attribute(render, "text", 1)
 
         self.set_row_separator_func(self.__separator_func, None)
 
@@ -302,8 +303,8 @@ class ComboBoxEntrySave(Gtk.ComboBox):
             # Call once more to ensure correct theme colours
             GLib.idle_add(new_entry._set_color, None, validator)
 
-        connect_obj(self, 'destroy', self.set_model, None)
-        connect_obj(self, 'changed', self.__changed, model, validator, title)
+        connect_obj(self, "destroy", self.set_model, None)
+        connect_obj(self, "changed", self.__changed, model, validator, title)
 
     def enable_clear_button(self):
         self.get_child().enable_clear_button()
@@ -325,10 +326,14 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __focus_entry(self):
         self.get_child().grab_focus()
-        self.get_child().emit('move-cursor',
+        self.get_child().emit("move-cursor",
                               Gtk.MovementStep.BUFFER_ENDS, 0, False)
 
-    def __fill(self, filename, initial, edit_title):
+    def __fill(self, filename: str | os.PathLike, initial: list[str] | None,
+               edit_title: str) -> None:
+
+        initial = initial or []
+
         model = self.get_model()
         model.append(row=["", edit_title, Icons.DOCUMENT_PROPERTIES])
         model.append(row=[None, None, None])
@@ -336,8 +341,9 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         if filename is None:
             return
 
-        if os.path.exists(filename + ".saved"):
-            with open(filename + ".saved", "r", encoding="utf-8") as fileobj:
+        saved_ = str(filename) + ".saved"
+        if os.path.exists(saved_):
+            with open(saved_, "r", encoding="utf-8") as fileobj:
                 lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:

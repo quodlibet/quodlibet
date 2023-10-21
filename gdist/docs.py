@@ -25,7 +25,7 @@ import sys
 from .util import Command
 
 
-class build_sphinx(Command):
+class BuildSphinx(Command):
     description = "build sphinx documentation"
     user_options = [
         ("build-dir=", "d", "build directory"),
@@ -41,11 +41,11 @@ class build_sphinx(Command):
         self.all = bool(self.all)
 
     def run(self):
-        DOCS_ROOT = "docs"
-        GUIDE_ROOT = os.path.join(DOCS_ROOT, "guide")
-        TARGET = os.path.join(self.build_dir, "sphinx")
+        docs_root = "docs"
+        guide_root = os.path.join(docs_root, "guide")
+        target = os.path.join(self.build_dir, "sphinx")
 
-        srcdir = GUIDE_ROOT if not self.all else DOCS_ROOT
+        src_dir = guide_root if not self.all else docs_root
         self.spawn([sys.executable, "-m", "sphinx",
-                    "-j", "auto", "-b", "html", "-c", DOCS_ROOT,
-                    "-n", "-E", "-W", srcdir, TARGET])
+                    "-j", "auto", "-b", "html", "-c", docs_root,
+                    "-n", "-E", "-W", src_dir, target])

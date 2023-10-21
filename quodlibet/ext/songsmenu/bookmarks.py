@@ -64,9 +64,9 @@ class Bookmarks(SongsMenuPlugin):
 
                 def edit_bookmarks_cb(menu_item):
                     window = EditBookmarks(self.plugin_window, app.library,
-                                           fake_player)
+                                           fake_player)  # noqa
                     window.show()
-                i.connect('activate', edit_bookmarks_cb)
+                i.connect("activate", edit_bookmarks_cb)
                 song_menu.append(i)
 
         if menu.get_active() is None:

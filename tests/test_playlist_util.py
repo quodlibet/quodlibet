@@ -15,21 +15,22 @@ from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.util.collection import Playlist
 from quodlibet.util.urllib import urlopen
 from tests import TestCase, get_data_path
+import pytest
 
 
 class TPlaylistUtil(TestCase):
 
-    PLAYLIST_FILE_PATH = get_data_path('test.m3u8')
-    sfLib: SongFileLibrary = None
-    plLib: PlaylistLibrary = None
+    PLAYLIST_FILE_PATH = get_data_path("test.m3u8")
+    sf_lib: SongFileLibrary = None
+    pf_lib: PlaylistLibrary = None
 
     def setUp(self):
-        self.sfLib = SongFileLibrary()
-        self.plLib = PlaylistLibrary(self.sfLib)
+        self.sf_lib = SongFileLibrary()
+        self.pf_lib = PlaylistLibrary(self.sf_lib)
 
     def tearDown(self):
-        self.plLib.destroy()
-        self.sfLib.destroy()
+        self.pf_lib.destroy()
+        self.sf_lib.destroy()
 
     def test_dir_for(self):
         # uri format of files added via drag and drop or add button
@@ -64,10 +65,10 @@ class TPlaylistUtil(TestCase):
 
         with open(self.PLAYLIST_FILE_PATH, "rb") as file:
             try:
-                playlist = parse_m3u(file, fileName, self.sfLib, self.plLib)
+                playlist = parse_m3u(file, fileName, self.sf_lib, self.pf_lib)
             except Exception:
-                assert False, ("parsing m3u8 playlists in correct format"
-                               " should not cause errors")
+                pytest.fail("parsing m3u8 playlists in correct format"
+                            " should not cause errors")
 
         self.assertIsNotNone(playlist, ("parsing an m3u8 playlist in the correct format"
                                         " should result in a playlist"))

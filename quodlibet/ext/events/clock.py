@@ -31,7 +31,7 @@ class Alarm(EventPlugin):
 
     def __init__(self):
         try:
-            self._times = config.get("plugins", self._pref_name).split(' ')[:7]
+            self._times = config.get("plugins", self._pref_name).split(" ")[:7]
         except Exception:
             pass
         else:
@@ -110,7 +110,7 @@ class Alarm(EventPlugin):
             t.attach(e, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             entries.append(e)
         for e in entries:
-            connect_obj(e, 'changed', self._entry_changed, entries)
+            connect_obj(e, "changed", self._entry_changed, entries)
         return t
 
 

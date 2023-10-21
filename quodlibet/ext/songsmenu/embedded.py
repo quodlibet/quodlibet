@@ -74,7 +74,7 @@ class EditEmbedded(SongsMenuPlugin):
 
     def __choose_image(self, menu_item, songs):
 
-        dialog = _get_chooser(_('_Embed'), _('_Cancel'))
+        dialog = _get_chooser(_("_Embed"), _("_Cancel"))
         total = len(songs)
         msg = ngettext("Choose image to embed in the %d track",
                        "Choose image to embed in %d tracks", total) % total
@@ -103,16 +103,16 @@ class EditEmbedded(SongsMenuPlugin):
 
     def _init_submenu_items(self, menu, songs):
         remove_item = MenuItem(_("_Remove all Images"), Icons.EDIT_DELETE)
-        remove_item.connect('activate', self.__remove_images, songs)
+        remove_item.connect("activate", self.__remove_images, songs)
         remove_item.set_sensitive(any(song.has_images for song in songs))
         menu.append(remove_item)
 
         set_item = MenuItem(_("_Embed Current Image"), Icons.EDIT_PASTE)
-        set_item.connect('activate', self.__set_image, songs)
+        set_item.connect("activate", self.__set_image, songs)
         menu.append(set_item)
 
         set_item = MenuItem(_("_Choose Image…"), Icons.DOCUMENT_OPEN)
-        set_item.connect('activate', self.__choose_image, songs)
+        set_item.connect("activate", self.__choose_image, songs)
         menu.append(set_item)
 
         menu.show_all()

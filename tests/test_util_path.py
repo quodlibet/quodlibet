@@ -16,7 +16,7 @@ from quodlibet.util import print_d
 from . import TestCase, skipIf
 
 is_win = os.name == "nt"
-path_set = bool(os.environ.get('PATH', False))
+path_set = bool(os.environ.get("PATH", False))
 
 
 def test_uri2gsturi():
@@ -114,11 +114,11 @@ class Tlimit_path(TestCase):
 
     def test_main(self):
         if os.name == "nt":
-            path = u'C:\\foobar\\ä%s\\%s' % ("x" * 300, "x" * 300)
+            path = u"C:\\foobar\\ä%s\\%s" % ("x" * 300, "x" * 300)
             path = limit_path(path)
             self.failUnlessEqual(len(path), 3 + 6 + 1 + 255 + 1 + 255)
         else:
-            path = '/foobar/ä%s/%s' % ("x" * 300, "x" * 300)
+            path = "/foobar/ä%s/%s" % ("x" * 300, "x" * 300)
             path = limit_path(path)
             self.failUnlessEqual(len(path), 1 + 6 + 1 + 255 + 1 + 255)
 
@@ -155,7 +155,7 @@ class Tiscommand(TestCase):
     @unittest.skipUnless(path_set, "Can only test with a valid $PATH")
     @unittest.skipIf(is_win, "needs porting")
     def test_looks_in_path(self):
-        path_dirs = set(os.environ['PATH'].split(os.path.pathsep))
+        path_dirs = set(os.environ["PATH"].split(os.path.pathsep))
         dirs = path_dirs - set(os.defpath.split(os.path.pathsep))
         for d in dirs:
             if os.path.isdir(d):

@@ -14,7 +14,7 @@ from quodlibet.qltk.chooser import choose_target_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
-HTML = '''<html>
+HTML = """<html>
 <head><title>Quod Libet Playlist</title>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
  <style type="text/css">
@@ -37,7 +37,7 @@ HTML = '''<html>
   </table>
 </body>
 </html>
-'''
+"""
 
 
 def to_html(songs):
@@ -45,20 +45,20 @@ def to_html(songs):
 
     cols_s = ""
     for col in cols:
-        cols_s += '<th>%s</th>' % tag(col)
+        cols_s += "<th>%s</th>" % tag(col)
 
     songs_s = ""
     for song in songs:
-        s = '<tr>'
+        s = "<tr>"
         for col in cols:
             col = {"~#rating": "~rating", "~#length": "~length"}.get(
                 col, col)
-            s += '\n<td>%s</td>' % (
-                escape(str(song.comma(col))) or '&nbsp;')
-        s += '</tr>'
+            s += "\n<td>%s</td>" % (
+                escape(str(song.comma(col))) or "&nbsp;")
+        s += "</tr>"
         songs_s += s
 
-    return HTML % {'headers': cols_s, 'songs': songs_s}
+    return HTML % {"headers": cols_s, "songs": songs_s}
 
 
 class ExportToHTML(SongsMenuPlugin):

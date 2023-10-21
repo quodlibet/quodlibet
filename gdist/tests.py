@@ -31,7 +31,7 @@ from distutils import dir_util
 from .util import Command, get_dist_class
 
 
-class test_cmd(Command):
+class TestCmd(Command):
     description = "run automated tests"
     user_options = [
         ("to-run=", None, "list of tests to run (default all)"),
@@ -77,7 +77,7 @@ class test_cmd(Command):
             raise SystemExit(status)
 
 
-class quality_cmd(Command):
+class QualityCmd(Command):
     description = "Run linting / mypy tests"
     user_options = []
 
@@ -98,7 +98,7 @@ class quality_cmd(Command):
 sdist = get_dist_class("sdist")
 
 
-class distcheck_cmd(sdist):
+class DistcheckCmd(sdist):
     description = "run tests on a fresh sdist"
 
     def _check_manifest(self):

@@ -10,7 +10,7 @@ from gi.repository import Gtk
 from pytest import fixture
 
 from quodlibet import config, app
-from quodlibet.ext._shared.squeezebox.server import SqueezeboxException
+from quodlibet.ext._shared.squeezebox.server import SqueezeboxError
 from quodlibet.plugins import Plugin
 from tests.plugin import (init_fake_app, destroy_fake_app, plugins)
 
@@ -42,6 +42,6 @@ class TestPluginPrefs:
             plugin = plugin()
         try:
             plugin.PluginPreferences(Gtk.Window())
-        except (SqueezeboxException,):
+        except SqueezeboxError:
             # TODO: fix squeezebox init errors where config exists
             pass

@@ -7,16 +7,16 @@
 
 try:
     import musicbrainzngs
-except ImportError:
+except ImportError as e:
     from quodlibet import plugins
-    raise plugins.MissingModulePluginException("musicbrainzngs")
+    raise plugins.MissingModulePluginError("musicbrainzngs") from e
 
 from quodlibet import app
 from quodlibet import const
 from quodlibet import util
 
 
-VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
+VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
 
 
 def is_mbid(id_):

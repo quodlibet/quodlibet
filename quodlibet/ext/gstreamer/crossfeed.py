@@ -52,7 +52,7 @@ def set_cfg(option, value):
 
 class Preferences(Gtk.VBox):
     __gsignals__: GSignals = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -92,7 +92,7 @@ class Preferences(Gtk.VBox):
 
         def format_hz(scale, value):
             return _("%d Hz") % value
-        fcut_scale.connect('format-value', format_hz)
+        fcut_scale.connect("format-value", format_hz)
         table.attach(fcut_scale, 1, 2, 1, 2)
 
         def fcut_changed(scale):
@@ -100,7 +100,7 @@ class Preferences(Gtk.VBox):
             set_cfg("fcut", value)
             self.__update_combo()
             self.emit("changed")
-        fcut_scale.connect('value-changed', fcut_changed)
+        fcut_scale.connect("value-changed", fcut_changed)
         fcut_scale.set_value(get_cfg("fcut"))
 
         level_scale = Gtk.HScale(
@@ -111,7 +111,7 @@ class Preferences(Gtk.VBox):
 
         def format_db(scale, value):
             return _("%.1f dB") % (value / 10.0)
-        level_scale.connect('format-value', format_db)
+        level_scale.connect("format-value", format_db)
         table.attach(level_scale, 1, 2, 2, 3)
 
         def level_changed(scale):
@@ -119,7 +119,7 @@ class Preferences(Gtk.VBox):
             set_cfg("feed", value)
             self.__update_combo()
             self.emit("changed")
-        level_scale.connect('value-changed', level_changed)
+        level_scale.connect("value-changed", level_changed)
         level_scale.set_value(get_cfg("feed"))
 
         def combo_change(combo, level_scale, fcut_scale):
@@ -158,7 +158,7 @@ class Crossfeed(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        return Gst.ElementFactory.make('bs2b', cls.PLUGIN_ID)
+        return Gst.ElementFactory.make("bs2b", cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):
@@ -173,4 +173,4 @@ class Crossfeed(GStreamerPlugin):
 
 
 if not Crossfeed.setup_element():
-    raise plugins.MissingGstreamerElementPluginException("bs2b")
+    raise plugins.MissingGstreamerElementPluginError("bs2b")

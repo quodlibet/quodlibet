@@ -72,7 +72,7 @@ class TPluginsSongsMenu(PluginTestCase):
                 self.h.plugin_disable(plugin)
 
     def test_handles_albums(self):
-        for id_, plugin in self.plugins.items():
+        for plugin in self.plugins.values():
             if isinstance(plugin, SongsMenuPlugin):
                 ha = plugin.handles_albums
                 self.failIf(hasattr(plugin, "plugin_single_album") and not ha)

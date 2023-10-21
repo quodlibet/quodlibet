@@ -19,11 +19,11 @@ from . import PluginTestCase
 def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
                    dateadded):
     # create a temporary database in memory
-    db = sqlite3.connect(':memory:')
+    db = sqlite3.connect(":memory:")
 
     # create a simplified version of a banshee track table
     csr = db.cursor()
-    csr.execute('''CREATE TABLE CoreTracks(
+    csr.execute("""CREATE TABLE CoreTracks(
                 ArtistID INTEGER,
                 AlbumID INTEGER,
                 Uri TEXT,
@@ -34,12 +34,12 @@ def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
                 LastPlayedStamp INTEGER,
                 DateAddedStamp INTEGER
                 )
-                ''')
+                """)
 
     # insert song and save
     song_uri = fsn2uri(song_path)
-    csr.execute('INSERT INTO CoreTracks VALUES (?,?,?,?,?,?,?,?,?)',
-                (1, 1, song_uri, 'Music', rating, playcount, skipcount,
+    csr.execute("INSERT INTO CoreTracks VALUES (?,?,?,?,?,?,?,?,?)",
+                (1, 1, song_uri, "Music", rating, playcount, skipcount,
                 lastplayed, dateadded))
     db.commit()
 

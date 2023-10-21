@@ -20,7 +20,7 @@ class _Routine:
         self._source_id = None
 
         def wrap(func, funcid, args, kwargs):
-            for value in func(*args, **kwargs):
+            for _value in func(*args, **kwargs):
                 yield True
             pool.remove(funcid)
             yield False

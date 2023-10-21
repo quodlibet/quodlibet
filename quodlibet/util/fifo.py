@@ -60,13 +60,13 @@ def _write_fifo(fifo_path, data):
         with open(fifo_path, "wb") as f:
             signal.signal(signal.SIGALRM, signal.SIG_IGN)
             f.write(data)
-    except (OSError, TimeoutError):
+    except (OSError, TimeoutError) as e:
         # Unable to write to the fifo. Removing it.
         try:
             os.unlink(fifo_path)
         except OSError:
             pass
-        raise FIFOError(f"Couldn't write to fifo {fifo_path!r}")
+        raise FIFOError(f"Couldn't write to fifo {fifo_path!r}") from e
 
 
 def split_message(data):
@@ -127,7 +127,7 @@ def write_fifo(fifo_path, data):
             with open(filename, "rb") as h:
                 signal.signal(signal.SIGALRM, signal.SIG_IGN)
                 return h.read()
-        except TimeoutError:
+        except TimeoutError as e:
             # In case the main instance deadlocks we can write to it, but
             # reading will time out. Assume it is broken and delete the
             # fifo.
@@ -135,9 +135,9 @@ def write_fifo(fifo_path, data):
                 os.unlink(fifo_path)
             except OSError:
                 pass
-            raise FIFOError("Timeout reached")
+            raise FIFOError("Timeout reached") from e
     except OSError as e:
-        raise FIFOError(*e.args)
+        raise FIFOError(*e.args) from e
     finally:
         try:
             os.unlink(filename)
@@ -222,9 +222,9 @@ class FIFO:
                 fcntl.flock(fifo, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except InterruptedError:  # EINTR
                 continue
-            except BlockingIOError:  # EWOULDBLOCK
+            except BlockingIOError as e:  # EWOULDBLOCK
                 if not ignore_lock:
-                    raise FIFOError("fifo already locked")
+                    raise FIFOError("fifo already locked") from e
             except OSError as e:
                 print_d(f"fifo locking failed: {e!r}")
             break

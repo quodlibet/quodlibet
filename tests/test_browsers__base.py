@@ -96,7 +96,7 @@ class TBrowserMixin:
         # FIXME: the playlist browser accesses the song list directly
         if self.b.name == "Playlists":
             return
-        menu = self.b.Menu([], self.library, [])
+        menu = self.b.menu([], self.library, [])
         self.assertTrue(isinstance(menu, Gtk.Menu))
 
     def test_key(self):

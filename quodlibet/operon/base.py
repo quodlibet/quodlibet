@@ -80,7 +80,7 @@ class Command:
             try:
                 song.write()
             except AudioFileError as e:
-                raise CommandError(e)
+                raise CommandError(e) from e
 
     def _execute(self, options, args):
         """Override to execute something"""

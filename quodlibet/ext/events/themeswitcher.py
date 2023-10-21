@@ -38,9 +38,9 @@ class ThemeSwitcher(EventPlugin):
         self.__defaults = True
 
         settings = Gtk.Settings.get_default()
-        self.__default_theme = settings.get_property('gtk-theme-name')
+        self.__default_theme = settings.get_property("gtk-theme-name")
         self.__default_dark = settings.get_property(
-            'gtk-application-prefer-dark-theme')
+            "gtk-application-prefer-dark-theme")
 
     def PluginPreferences(self, *args):
         self.__init_defaults()
@@ -60,7 +60,7 @@ class ThemeSwitcher(EventPlugin):
                 select = i + 1
 
         combo.set_active(select)
-        combo.connect('changed', self.__changed)
+        combo.connect("changed", self.__changed)
 
         dark_button = ConfigCheckButton(
             _("Prefer dark theme version"),
@@ -70,7 +70,7 @@ class ThemeSwitcher(EventPlugin):
         def dark_cb(button):
             self.__set_dark(button.get_active())
 
-        dark_button.connect('toggled', dark_cb)
+        dark_button.connect("toggled", dark_cb)
 
         label.set_mnemonic_widget(combo)
         label.set_use_underline(True)
@@ -138,7 +138,7 @@ class ThemeSwitcher(EventPlugin):
         themes = self.__get_themes()
         name = ((name in themes) and name) or self.__default_theme
 
-        settings.set_property('gtk-theme-name', name)
+        settings.set_property("gtk-theme-name", name)
 
     def __set_dark(self, value):
         if not self.__enabled:
@@ -146,7 +146,7 @@ class ThemeSwitcher(EventPlugin):
         settings = Gtk.Settings.get_default()
         if value is None:
             value = self.__default_dark
-        settings.set_property('gtk-application-prefer-dark-theme', value)
+        settings.set_property("gtk-application-prefer-dark-theme", value)
 
     def __get_dark(self):
         return config.getboolean(

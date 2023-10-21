@@ -38,7 +38,7 @@ class _ListEntry:
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     def __init__(self, library, songs, parent=None):
@@ -56,7 +56,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                                     size_suffix=config_suffix)
 
         self.auto_save_on_change = config.getboolean(
-                'editing', 'auto_save_changes', False)
+                "editing", "auto_save_changes", False)
 
         paned = ConfigRPaned("memory", "quodlibet_properties_pos", 0.4)
         notebook = qltk.Notebook()
@@ -73,21 +73,21 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         fbasemodel = ObjectStore()
         fmodel = ObjectModelSort(model=fbasemodel)
         fview = HintedTreeView(model=fmodel)
-        fview.connect('button-press-event', self.__pre_selection_changed)
+        fview.connect("button-press-event", self.__pre_selection_changed)
         fview.set_rules_hint(True)
         selection = fview.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__save = None
 
         render = Gtk.CellRendererText()
-        c1 = Gtk.TreeViewColumn(_('File'), render)
+        c1 = Gtk.TreeViewColumn(_("File"), render)
         if fview.supports_hints():
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        render.set_property('xpad', 3)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        render.set_property("xpad", 3)
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property('text', entry.name)
+            cell.set_property("text", entry.name)
 
         c1.set_cell_data_func(render, cell_data)
 
@@ -119,13 +119,13 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         selection.select_all()
         paned.pack2(notebook, shrink=False, resize=True)
 
-        csig = selection.connect('changed', self.__selection_changed)
+        csig = selection.connect("changed", self.__selection_changed)
         connect_destroy(library,
-            'changed', self.__on_library_changed, fbasemodel, fview)
+            "changed", self.__on_library_changed, fbasemodel, fview)
         connect_destroy(library,
-            'removed', self.__on_library_removed, fbasemodel, selection, csig)
+            "removed", self.__on_library_removed, fbasemodel, selection, csig)
 
-        self.emit('changed', songs)
+        self.emit("changed", songs)
         self.add(paned)
         paned.set_position(175)
         notebook.show()
@@ -146,7 +146,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
 
         selection.handler_unblock(sig)
         if changed:
-            selection.emit('changed')
+            selection.emit("changed")
 
     def __on_changed(self, widget, songs):
         if songs:
@@ -156,8 +156,8 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                 title = ngettext(
                     "%(title)s and %(count)d more",
                     "%(title)s and %(count)d more",
-                    len(songs) - 1) % {'title': songs[0].comma("title"),
-                                       'count': len(songs) - 1}
+                    len(songs) - 1) % {"title": songs[0].comma("title"),
+                                       "count": len(songs) - 1}
             self.set_title("%s - %s" % (title, _("Properties")))
         else:
             self.set_title(_("Properties"))
@@ -178,7 +178,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                 changed = changed or (row.path in paths)
 
         if changed:
-            view.get_selection().emit('changed')
+            view.get_selection().emit("changed")
 
     def set_pending(self, button, *excess):
         self.__save = button
@@ -200,4 +200,4 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         model = selection.get_tree_view().get_model()
         model, paths = selection.get_selected_rows()
         songs = [model[path][0].song for path in paths]
-        self.emit('changed', songs)
+        self.emit("changed", songs)

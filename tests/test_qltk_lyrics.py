@@ -66,7 +66,7 @@ class TLyricsPane(TestCase):
         self.failIf(os.path.exists(lf_name))
 
     def temp_mp3(self):
-        name = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        name = get_temp_copy(get_data_path("silence-44-s.mp3"))
         af = MP3File(name)
         af.sanitize()
         return af

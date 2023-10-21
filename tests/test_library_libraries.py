@@ -104,9 +104,9 @@ class TLibrary(TestCase):
         self.changed = []
         self.removed = []
 
-        connect_obj(self.library, 'added', list.extend, self.added)
-        connect_obj(self.library, 'changed', list.extend, self.changed)
-        connect_obj(self.library, 'removed', list.extend, self.removed)
+        connect_obj(self.library, "added", list.extend, self.added)
+        connect_obj(self.library, "changed", list.extend, self.changed)
+        connect_obj(self.library, "removed", list.extend, self.removed)
 
     def test_add(self):
         self.library.add(self.Frange(12))
@@ -147,7 +147,7 @@ class TLibrary(TestCase):
 
     def test___iter__(self):
         self.library.add(self.Frange(10))
-        self.failUnlessEqual(sorted(list(self.library)), self.Frange(10))
+        self.failUnlessEqual(sorted(self.library), self.Frange(10))
 
     def test___iter___empty(self):
         self.failIf(list(self.library))
@@ -220,7 +220,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        expected = list(zip(range(100, 120), range(20)))
+        expected = list(zip(range(100, 120), range(20), strict=False))
         self.failUnlessEqual(sorted(self.library.items()), expected)
 
     def test_has_key(self):
@@ -298,8 +298,9 @@ class TPicklingMixin(TestCase):
 
             library = self.Library()
             library.load(filename)
-            for (k, v), (k2, v2) in zip(
-                sorted(self.library.items()), sorted(library.items())):
+            zipped = zip(sorted(self.library.items()),
+                         sorted(library.items()), strict=False)
+            for (k, v), (k2, v2) in zipped:
                 assert k == k2
                 assert v.key == v2.key
         finally:

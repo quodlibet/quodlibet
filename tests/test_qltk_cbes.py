@@ -35,7 +35,7 @@ class TComboBoxEntrySave(TestCase):
         rows1 = list(model1)
         rows2 = list(model2)
 
-        for row1, row2 in zip(rows1, rows2):
+        for row1, row2 in zip(rows1, rows2, strict=False):
             self.failUnlessEqual(row1[0], row2[0])
             self.failUnlessEqual(row1[1], row2[1])
             self.failUnlessEqual(row1[2], row2[2])

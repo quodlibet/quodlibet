@@ -39,11 +39,11 @@ def get_surface_extents(surface):
     return (x1, y1, x2, y2)
 
 
-def get_border_radius(_widgets=[]):
+def get_border_radius(_widgets=None):
     """Returns the border radius commonly used in the current theme.
     If there are no rounded corners 0 will be returned.
     """
-
+    _widgets = _widgets or []
     if not _widgets:
         b = Gtk.Button()
         b.show()

@@ -39,7 +39,7 @@ class IFPUpload(SongsMenuPlugin):
             None, len(songs), _("Uploading %(current)d/%(total)d"))
         w.show()
 
-        for i, song in enumerate(songs):
+        for _i, song in enumerate(songs):
             if self.__upload(song) or w.step():
                 w.destroy()
                 return True

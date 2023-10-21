@@ -8,11 +8,11 @@ from pathlib import Path
 import pytest
 
 from tests import TestCase, skipUnless, QL_BASE_PATH
-from tests.helper import ListWithUnused as L
+from tests.helper import ListWithUnused
 
 ACCEPTABLE_STOCK = [
-    b'media-next', b'media-previous', b'media-play',
-    b'media-pause']
+    b"media-next", b"media-previous", b"media-play",
+    b"media-pause"]
 
 try:
     import polib
@@ -33,7 +33,7 @@ def has_gettext_util():
     return True
 
 
-class MissingTranslationsException(Exception):
+class MissingTranslationsError(Exception):
     def __init__(self, missing):
         super().__init__("No reference in POTFILES.in to: " + ", ".join(missing))
 
@@ -57,7 +57,7 @@ class TPOTFILESIN(TestCase):
     def test_missing(self):
         results = gettextutil.get_missing(PO_PATH)
         if results:
-            raise MissingTranslationsException(results)
+            raise MissingTranslationsError(results)
 
 
 @skipUnless(polib, "polib not found")
@@ -72,7 +72,7 @@ class TPot(TestCase):
     def conclude(self, fails, reason):
         if fails:
             def format_occurrences(e):
-                return ', '.join('%s:%s' % o for o in e.occurrences)
+                return ", ".join("%s:%s" % o for o in e.occurrences)
             msg = "\n".join(f"{e.msgid!r} ({format_occurrences(e)})" for e in fails)
             self.fail(f"One or more messages did not pass ({reason}):\n{msg}")
 
@@ -99,12 +99,12 @@ class TPot(TestCase):
             Send to Kitchen: - will erroneously pass the test
         """
         fails = []
-        ok_labels = L('Local _IP:', 'Songs with MBIDs:')
+        ok_labels = ListWithUnused("Local _IP:", "Songs with MBIDs:")
 
         for entry in self.pot:
-            if not entry.msgid.endswith(':'):
+            if not entry.msgid.endswith(":"):
                 continue
-            if ' ' not in entry.msgid.strip():
+            if " " not in entry.msgid.strip():
                 continue
             if entry.msgid == human_title(entry.msgid):
                 if entry.msgid not in ok_labels:
@@ -127,7 +127,7 @@ class TPot(TestCase):
             expressions, don't forget to use double backslash.
         """
         fails = []
-        regex = re.compile(r'[^\\n] {2,}')
+        regex = re.compile(r"[^\\n] {2,}")
 
         for entry in self.pot:
             if regex.findall(entry.msgid):
@@ -147,8 +147,8 @@ class TPot(TestCase):
             Hello,world - missing whitespace
         """
         fails = []
-        regex = re.compile(r'\s[.,:;!?](?![a-z])|'
-                           r'[a-z](?<!people)[,:;][a-zA-Z]')
+        regex = re.compile(r"\s[.,:;!?](?![a-z])|"
+                           r"[a-z](?<!people)[,:;][a-zA-Z]")
 
         for entry in self.pot:
             if regex.findall(entry.msgid):
@@ -189,11 +189,11 @@ class TPot(TestCase):
             @(musicbrainz - ok
         """
         terms = (
-            'AcoustID', 'D-Bus', 'Ex Falso', 'GNOME', 'GStreamer', 'Internet',
-            'iPod', 'Last.fm', 'MusicBrainz', 'Python', 'Quod Libet',
-            'Replay Gain', 'ReplayGain', 'Squeezebox', 'Wikipedia')
-        ok_prefixes = ('@(')
-        ok_suffixes = ('_', '.org')
+            "AcoustID", "D-Bus", "Ex Falso", "GNOME", "GStreamer", "Internet",
+            "iPod", "Last.fm", "MusicBrainz", "Python", "Quod Libet",
+            "Replay Gain", "ReplayGain", "Squeezebox", "Wikipedia")
+        ok_prefixes = ("@(")
+        ok_suffixes = ("_", ".org")
         fails = []
 
         for entry in self.pot:
@@ -219,7 +219,7 @@ class TPot(TestCase):
             Last.fm - ok
             LastFM - common misspelling
         """
-        incorrect_terms = ('Acoustid.org', 'ExFalso', 'LastFM', 'QuodLibet')
+        incorrect_terms = ("Acoustid.org", "ExFalso", "LastFM", "QuodLibet")
         fails = []
 
         for entry in self.pot:
@@ -261,18 +261,18 @@ class POMixin:
             def format_occurrences(e):
                 occurences = [(self.lang + ".po", e.linenum)]
                 occurences += e.occurrences
-                return ', '.join('%s:%s' % o for o in occurences)
+                return ", ".join("%s:%s" % o for o in occurences)
             message = "\n".join(f"{e.msgid!r} - {e.msgstr!r} ({format_occurrences(e)})"
                                 for e in fails)
             self.fail(f"One or more messages did not pass ({reason}).\n{message}")
+
+    LANGUAGES_TO_CHECK = ("ru", "de")
 
     def test_original_punctuation_present(self):
         if polib is None:
             return
 
-        LANGUAGES_TO_CHECK = ('ru', 'de')
-
-        if self.lang not in LANGUAGES_TO_CHECK:
+        if self.lang not in self.LANGUAGES_TO_CHECK:
             return
 
         fails = []
@@ -280,16 +280,16 @@ class POMixin:
         # In some languages, for example Chinese and Japanese, it's usual to
         # put accelerators separately, on the end of the string in parentheses,
         # so the test needs to strip that part before checking the endings.
-        par = re.compile(r' ?\(_\w\)$')
+        par = re.compile(r" ?\(_\w\)$")
 
         for entry in polib.pofile(str(self.current_po_path())):
-            if not entry.msgstr or entry.obsolete or 'fuzzy' in entry.flags:
+            if not entry.msgstr or entry.obsolete or "fuzzy" in entry.flags:
                 continue
 
             # Possible endings for the strings. Make sure to put longer
             # endings before shorter ones, for example: '...', '.'
             # otherwise this pair: 'a...', 'b..' will pass the test.
-            ends = [(':', u'：'), u'…', '...', ('.', u'。'), ' ']
+            ends = [(":", u"："), u"…", "...", (".", u"。"), " "]
 
             # First find the appropriate ending of msgid
             for end in ends:
@@ -313,6 +313,6 @@ class POMixin:
 
 
 for lang in gettextutil.list_languages(PO_PATH):
-    testcase = type('PO.' + str(lang), (TestCase, POMixin), {})
+    testcase = type("PO." + str(lang), (TestCase, POMixin), {})
     testcase.lang = lang
-    globals()['PO.' + lang] = testcase
+    globals()["PO." + lang] = testcase

@@ -119,17 +119,17 @@ class TCoverManager(TestCase):
         f = self.add_file(path)
 
         # Change the song's path to contain the invalid glob
-        old_song_path = self.song['~filename']
+        old_song_path = self.song["~filename"]
         new_song_path = os.path.join(os.path.dirname(path),
                                      os.path.basename(old_song_path))
-        self.song['~filename'] = new_song_path
+        self.song["~filename"] = new_song_path
 
         # The glob in the dirname should be ignored, while the
         # glob in the filename/basename is honored
         assert path_equal(
             os.path.abspath(self._find_cover(self.song).name), f)
 
-        self.song['~filename'] = old_song_path
+        self.song["~filename"] = old_song_path
 
     def test_multiple_entries(self):
         config.set("albumart", "force_filename", str(True))
@@ -170,14 +170,14 @@ class TCoverManager(TestCase):
             "title": "Ode to Baz",
             "artist": "Q-Man",
         })
-        data = [('back.jpg', False),
-                ('discovery.jpg', False),
+        data = [("back.jpg", False),
+                ("discovery.jpg", False),
                 ("Pharell - frontin'.jpg", False),
-                ('nickelback - Curb.jpg', False),
-                ('foobar.jpg', True),
-                ('folder.jpg', True),  # Though this order is debatable
-                ('Q-Man - foobar.jpg', True),
-                ('Q-man - foobar (cover).jpg', True)]
+                ("nickelback - Curb.jpg", False),
+                ("foobar.jpg", True),
+                ("folder.jpg", True),  # Though this order is debatable
+                ("Q-Man - foobar.jpg", True),
+                ("Q-man - foobar (cover).jpg", True)]
         for fn, should_find in data:
             f = self.add_file(fn)
             cover = self._find_cover(song)
@@ -213,7 +213,7 @@ class TCoverManager(TestCase):
             actual = os.path.abspath(cover.name)
             cover.close()
             assert path_equal(
-                actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
+                actual, f, '"%s" should trump "%s"' % (f, actual))
 
     def test_get_thumbnail(self):
         self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
@@ -226,14 +226,14 @@ class TCoverManager(TestCase):
                  self.an_album_song()]
         plugin = Plugin(ArtworkUrlCover)
         self.manager.plugin_handler.plugin_enable(plugin)
-        self.add_file('cover.jpg')
+        self.add_file("cover.jpg")
         cover = self.manager.get_cover_many(songs)
         assert cover
 
     def test_search_missing_artist(self):
-        titled_album_song = self.an_album_song('z.ogg')
+        titled_album_song = self.an_album_song("z.ogg")
         titled_album_song["artist"] = "foo"
-        album_songs = [self.an_album_song('x.ogg'), titled_album_song,
+        album_songs = [self.an_album_song("x.ogg"), titled_album_song,
                        self.an_album_song()]
         self.manager.search_cover(Gio.Cancellable(), album_songs)
 

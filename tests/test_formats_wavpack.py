@@ -12,7 +12,7 @@ from quodlibet.formats.wavpack import WavpackFile
 class TWavpackFile(TestCase):
 
     def setUp(self):
-        self.song = WavpackFile(get_data_path('silence-44-s.wv'))
+        self.song = WavpackFile(get_data_path("silence-44-s.wv"))
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.68471, 3)

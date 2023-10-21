@@ -106,12 +106,12 @@ class DuplicateSongsView(RCMHintedTreeView):
             key = Duplicates.get_key(song)
             row = model.find_row(song)
             if row:
-                print_d("Changed duplicated file \"%s\" (Row=%s)" %
+                print_d('Changed duplicated file "%s" (Row=%s)' %
                         (song("~artist~title"), row))
                 parent = model.iter_parent(row.iter)
                 old_key = model[parent][0]
                 if old_key != key:
-                    print_d("Key changed from \"%s\" -> \"%s\"" %
+                    print_d('Key changed from "%s" -> "%s"' %
                             (old_key, key))
                     self._removed(library, [song])
                     self._added(library, [song])
@@ -125,19 +125,19 @@ class DuplicateSongsView(RCMHintedTreeView):
 
     def __init__(self, model):
         super().__init__(model)
-        connect_obj(self, 'row-activated',
-                            self.__select_song, app.player)
+        connect_obj(self, "row-activated",
+                    self.__select_song, app.player)
         # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
         # Handle signals propagated from the underlying library
         self.connected_library_sigs = []
-        SIGNAL_MAP = {
-            'removed': self._removed,
-            'added': self._added,
-            'changed': self._changed
+        signal_map = {
+            "removed": self._removed,
+            "added": self._added,
+            "changed": self._changed
         }
-        for (sig, callback) in SIGNAL_MAP.items():
+        for (sig, callback) in signal_map.items():
             print_d("Listening to library.%s signals" % sig)
             connect_destroy(app.library, sig, callback)
 
@@ -146,8 +146,10 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     """A tree store to model duplicated song information"""
 
     # Define columns to display (and how, in lieu of using qltk.browsers)
+    @staticmethod
     def i(x):
         return x
+
     TAG_MAP = [
         ("artist", i), ("title", i), ("album", i),
         ("~#length", lambda s: util.format_time_display(int(s))),
@@ -206,8 +208,8 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         group = AudioFileGroup(songs, real_keys_only=False)
         # Add the group first.
         parent = self.append(None,
-            [key] +
-            [self.group_value(group, tag) for tag, f in self.TAG_MAP])
+                             [key] +
+                             [self.group_value(group, tag) for tag, f in self.TAG_MAP])
 
         for s in songs:
             self.append(parent, self.__make_row(s))
@@ -269,7 +271,7 @@ class DuplicateDialog(Gtk.Window):
 
     def __quit(self, widget=None, response=None):
         if response == Gtk.ResponseType.OK or \
-                response == Gtk.ResponseType.CLOSE:
+            response == Gtk.ResponseType.CLOSE:
             print_d("Exiting plugin on user request...")
         self.finished = True
         self.destroy()
@@ -277,7 +279,7 @@ class DuplicateDialog(Gtk.Window):
 
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
-        menu = songlist.Menu(app.library)
+        menu = songlist.menu(app.library)
         if menu is not None:
             return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
 
@@ -304,9 +306,9 @@ class DuplicateDialog(Gtk.Window):
             cell.set_property("markup", text)
 
         # Set up the columns
-        for i, (tag, f) in enumerate(DuplicatesTreeModel.TAG_MAP):
-            e = (Pango.EllipsizeMode.START if tag == '~filename'
-                else Pango.EllipsizeMode.END)
+        for i, (tag, _f) in enumerate(DuplicatesTreeModel.TAG_MAP):
+            e = (Pango.EllipsizeMode.START if tag == "~filename"
+                 else Pango.EllipsizeMode.END)
             render = Gtk.CellRendererText()
             render.set_property("ellipsize", e)
             col = Gtk.TreeViewColumn(util.tag(tag), render)
@@ -321,7 +323,7 @@ class DuplicateDialog(Gtk.Window):
             col.set_cell_data_func(render, cell_text, i + 1)
             view.append_column(col)
 
-        view.connect('popup-menu', self.__songs_popup_menu)
+        view.connect("popup-menu", self.__songs_popup_menu)
         swin.add(view)
         # A basic information area
         hbox = Gtk.HBox(spacing=6)
@@ -340,10 +342,10 @@ class DuplicateDialog(Gtk.Window):
         hbox.pack_start(expand, False, True, 0)
 
         label = Gtk.Label(label=_("Duplicate key expression is '%s'") %
-                Duplicates.get_key_expression())
+                                Duplicates.get_key_expression())
         hbox.pack_start(label, True, True, 0)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', self.__quit)
+        close.connect("clicked", self.__quit)
         hbox.pack_start(close, False, True, 0)
 
         vbox = Gtk.VBox(spacing=6)
@@ -354,19 +356,19 @@ class DuplicateDialog(Gtk.Window):
 
 
 class Duplicates(SongsMenuPlugin, PluginConfigMixin):
-    PLUGIN_ID = 'Duplicates'
-    PLUGIN_NAME = _('Duplicates Browser')
-    PLUGIN_DESC = _('Finds and displays similarly tagged versions of songs.')
+    PLUGIN_ID = "Duplicates"
+    PLUGIN_NAME = _("Duplicates Browser")
+    PLUGIN_DESC = _("Finds and displays similarly tagged versions of songs.")
     PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 
     MIN_GROUP_SIZE = 2
     _CFG_KEY_KEY = "key_expression"
     __DEFAULT_KEY_VALUE = "~artist~title~version"
 
-    _CFG_REMOVE_WHITESPACE = 'remove_whitespace'
-    _CFG_REMOVE_DIACRITICS = 'remove_diacritics'
-    _CFG_REMOVE_PUNCTUATION = 'remove_punctuation'
-    _CFG_CASE_INSENSITIVE = 'case_insensitive'
+    _CFG_REMOVE_WHITESPACE = "remove_whitespace"
+    _CFG_REMOVE_DIACRITICS = "remove_diacritics"
+    _CFG_REMOVE_PUNCTUATION = "remove_punctuation"
+    _CFG_CASE_INSENSITIVE = "case_insensitive"
 
     plugin_handles = any_song(is_finite)
 
@@ -377,7 +379,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     def get_key_expression(cls):
         if not cls.key_expression:
             cls.key_expression = (
-                    cls.config_get(cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE))
+                cls.config_get(cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE))
         return cls.key_expression
 
     @classmethod
@@ -394,7 +396,8 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         e.set_text(cls.get_key_expression())
         e.connect("changed", key_changed)
         e.set_tooltip_markup(_("Accepts QL tag expressions like "
-                "<tt>~artist~title</tt> or <tt>musicbrainz_track_id</tt>"))
+                               "<tt>~artist~title</tt> or "
+                               "<tt>musicbrainz_track_id</tt>"))
         lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
@@ -412,7 +415,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         ]
         vb2 = Gtk.VBox(spacing=6)
         for key, label in toggles:
-            ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
+            ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
             vb2.pack_start(ccb, True, True, 0)
 

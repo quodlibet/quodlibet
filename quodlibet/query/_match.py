@@ -71,9 +71,9 @@ class Regex(Node):
         try:
             re = compile(self.pattern, ignore_case, dot_all, asym)
             self.search = re  # type: ignore
-        except ValueError:
+        except ValueError as e:
             raise ParseError(
-                "The regular expression /%s/ is invalid." % self.pattern)
+                "The regular expression /%s/ is invalid." % self.pattern) from e
 
     def __repr__(self):
         return "<Regex pattern=%s mod=%s>" % (self.pattern, self.mod_string)
@@ -310,8 +310,8 @@ class NumexprTag(Numexpr):
         return self._base_ftag in UNITS_TO_TAGS[units]
 
     def evaluate(self, data, time, use_date):
-        if self._tag == 'date':
-            date = data('date')
+        if self._tag == "date":
+            date = data("date")
             if not date:
                 return None
             try:
@@ -330,14 +330,14 @@ class NumexprTag(Numexpr):
         return "<NumexprTag tag=%r>" % self._tag
 
     def use_date(self):
-        return self._tag == 'date'
+        return self._tag == "date"
 
 
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
 
     operators = {
-        '-': operator.neg
+        "-": operator.neg
     }
 
     def __init__(self, op: str, expr: Numexpr):
@@ -361,10 +361,10 @@ class NumexprBinary(Numexpr):
     """Binary numeric operation (like + or *)"""
 
     operators = {
-        '-': operator.sub,
-        '+': operator.add,
-        '*': operator.mul,
-        '/': operator.floordiv,
+        "-": operator.sub,
+        "+": operator.add,
+        "*": operator.mul,
+        "/": operator.floordiv,
     }
 
     precedence = {
@@ -395,7 +395,7 @@ class NumexprBinary(Numexpr):
             try:
                 return self.__op(val, val2)
             except ZeroDivisionError:
-                return val * float('inf')
+                return val * float("inf")
         return None
 
     def __repr__(self):
@@ -458,7 +458,7 @@ class NumexprNumberOrDate(Numexpr):
 
     def __init__(self, date):
         self.date = parse_date(date)
-        parts = date.split('-')
+        parts = date.split("-")
         self.number = int(parts[0])
         if len(parts) > 1:
             self.number -= int(parts[1])
@@ -472,7 +472,7 @@ class NumexprNumberOrDate(Numexpr):
             return self.number
 
     def __repr__(self):
-        return ('<NumexprNumberOrDate number=%r date=%r>' %
+        return ("<NumexprNumberOrDate number=%r date=%r>" %
                 (self.number, self.date))
 
 
@@ -544,7 +544,7 @@ class Tag(Node):
              "d": "date",
              }
 
-    def __init__(self, names, res):
+    def __init__(self, names: Iterable[str], res):
         self.res = res
         self._names = []
         self.__intern = []
@@ -640,7 +640,7 @@ class Extension(Node):
         return self.__valid
 
     def __repr__(self):
-        return ('<Extension name=%r valid=%r body=%r>'
+        return ("<Extension name=%r valid=%r body=%r>"
                 % (self.__name, self.__valid, self.__body))
 
     def __and__(self, other):

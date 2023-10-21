@@ -297,7 +297,7 @@ def add_fake_accel(widget, accel):
     assert key is not None
     assert val is not None
     widget.add_accelerator(
-        'activate', group, key, val, Gtk.AccelFlags.VISIBLE)
+        "activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
 def is_accel(event, *accels):
@@ -440,7 +440,7 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
 
 
-def add_signal_watch(signal_action, _sockets=[]):
+def add_signal_watch(signal_action, _sockets=[]):  # noqa
     """Catches signals which should exit the program and calls `signal_action`
     after the main loop has started, even if the signal occurred before the
     main loop has started.

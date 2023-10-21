@@ -28,7 +28,7 @@ from .util import get_dist_class
 du_build_scripts = get_dist_class("build_scripts")
 
 
-class build_scripts(du_build_scripts):
+class BuildScripts(du_build_scripts):
     description = "copy scripts to build directory"
 
     def run(self):

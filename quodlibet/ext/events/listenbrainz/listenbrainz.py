@@ -44,7 +44,7 @@ class Track:
     See https://listenbrainz.readthedocs.io/en/latest/dev/json.html
     """
     def __init__(self, artist_name, track_name,
-                 release_name=None, additional_info={}):
+                 release_name=None, additional_info=None):
         """
         Create a new Track instance
         @param artist_name as str
@@ -55,7 +55,7 @@ class Track:
         self.artist_name = artist_name
         self.track_name = track_name
         self.release_name = release_name
-        self.additional_info = additional_info
+        self.additional_info = additional_info or {}
 
     @staticmethod
     def from_dict(data):
@@ -85,7 +85,8 @@ class ListenBrainzClient:
     See https://listenbrainz.readthedocs.io/en/latest/dev/api.html
     """
 
-    def __init__(self, logger=logging.getLogger(__name__)):
+    def __init__(self, logger=None):
+        logger = logger or logging.getLogger(__name__)
         self.__next_request_time = 0
         self.user_token = None
         self.logger = logger

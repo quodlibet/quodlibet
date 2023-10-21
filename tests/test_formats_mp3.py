@@ -12,9 +12,9 @@ from quodlibet.formats.mp3 import MP3File
 class TMP3File(TestCase):
 
     def setUp(self):
-        self.song = MP3File(get_data_path('silence-44-s.mp3'))
-        self.song2 = MP3File(get_data_path('test.mp2'))
-        self.song3 = MP3File(get_data_path('lame.mp3'))
+        self.song = MP3File(get_data_path("silence-44-s.mp3"))
+        self.song2 = MP3File(get_data_path("test.mp2"))
+        self.song3 = MP3File(get_data_path("lame.mp3"))
 
     def test_channels(self):
         assert self.song("~#channels") == 2

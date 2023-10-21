@@ -42,7 +42,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
 
 class RatingsMenuItem(Gtk.ImageMenuItem):
 
-    def __init__(self, songs, library, label=_("_Rating")):
+    def __init__(self, songs, library, label=_("_Rating")):  # noqa
         super().__init__(label=label, use_underline=True)
         self._songs = songs
         image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
@@ -58,10 +58,10 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
             itm.rating = i
             submenu.append(itm)
             handler = itm.connect(
-                'toggled', self._on_rating_change, i, library)
+                "toggled", self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
-        reset.connect('activate', self._on_rating_remove, library)
+        reset.connect("activate", self._on_rating_remove, library)
         self._select_ratings()
 
         submenu.append(SeparatorMenuItem())

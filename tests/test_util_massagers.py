@@ -59,13 +59,13 @@ class TMassagers(TestCase):
 
     def test_gain_valid(self):
         gains = ["+2.12 dB", "99. dB", "-1.11 dB", "-0.99 dB", "0 dB"]
-        self.validate('replaygain_track_gain', gains)
-        self.validate('replaygain_album_gain', gains)
+        self.validate("replaygain_track_gain", gains)
+        self.validate("replaygain_album_gain", gains)
 
     def test_gain_invalid(self):
         gains = ["hooray", "", "dB dB"]
-        self.invalidate('replaygain_track_gain', gains)
-        self.invalidate('replaygain_album_gain', gains)
+        self.invalidate("replaygain_track_gain", gains)
+        self.invalidate("replaygain_album_gain", gains)
 
     def test_gain_equivs(self):
         equivs = {"12.1 dB": "+12.1 dB", "-1.00 dB": "-1.00 dB", "0": "+0. dB"}
@@ -74,13 +74,13 @@ class TMassagers(TestCase):
 
     def test_peak_valid(self):
         peaks = ["0.54", "0.999", "0", "1.234", "1.99"]
-        self.validate('replaygain_track_peak', peaks)
-        self.validate('replaygain_album_peak', peaks)
+        self.validate("replaygain_track_peak", peaks)
+        self.validate("replaygain_album_peak", peaks)
 
     def test_peak_invalid(self):
         peaks = ["", "100 dB", "woooo", "12.12.12", "-18", "2.23"]
-        self.invalidate('replaygain_track_peak', peaks)
-        self.invalidate('replaygain_album_peak', peaks)
+        self.invalidate("replaygain_track_peak", peaks)
+        self.invalidate("replaygain_album_peak", peaks)
 
     def test_mbid_valid(self):
         self.validate("musicbrainz_trackid",

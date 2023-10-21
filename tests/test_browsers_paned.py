@@ -418,7 +418,7 @@ class TPaneModel(TestCase):
             self._verify_model(m)
 
         self.assertEqual(len(m), len(m2))
-        for e1, e2 in zip(m.itervalues(), m2.itervalues()):
+        for e1, e2 in zip(m.itervalues(), m2.itervalues(), strict=False):
             self.assertEqual(e1.key, e2.key)
 
         m3 = PaneModel(conf)
@@ -427,7 +427,7 @@ class TPaneModel(TestCase):
             self._verify_model(m)
 
         self.assertEqual(len(m), len(m3))
-        for e1, e2 in zip(m.itervalues(), m3.itervalues()):
+        for e1, e2 in zip(m.itervalues(), m3.itervalues(), strict=False):
             self.assertEqual(e1.key, e2.key)
 
     def test_add_unknown_first(self):
@@ -485,7 +485,7 @@ class TPaneModel(TestCase):
         m.add_songs(SONGS)
 
         self.assertEqual(m.list("artist"), {"boris", "mu", "piman"})
-        self.assertEqual(set(m.list("foo")), {'nope', 'bar', 'quux'})
+        self.assertEqual(set(m.list("foo")), {"nope", "bar", "quux"})
 
     def test_get_keys(self):
         conf = PaneConfig("artist")

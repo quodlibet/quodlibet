@@ -37,7 +37,7 @@ class ProjectM(EventPlugin):
     PLUGIN_ICON = Icons.IMAGE_X_GENERIC
     PLUGIN_DESC = _("Launch external visualisations.")
 
-    DEFAULT_EXEC = 'projectM-pulseaudio'
+    DEFAULT_EXEC = "projectM-pulseaudio"
 
     def __init__(self):
         self._pid = None
@@ -78,7 +78,7 @@ class ProjectM(EventPlugin):
         def edited(widget):
             self.executable = widget.get_text()
         entry = UndoEntry()
-        entry.connect('changed', edited)
+        entry.connect("changed", edited)
         entry.set_text(self.executable)
         hbox = Gtk.HBox(spacing=6)
         hbox.pack_start(label, False, False, 0)
@@ -89,14 +89,14 @@ class ProjectM(EventPlugin):
             self.disabled()
             self.enabled()
         refresh_button = Button(_("Reload"), Icons.VIEW_REFRESH)
-        refresh_button.connect('clicked', refresh_clicked)
+        refresh_button.connect("clicked", refresh_clicked)
         vbox.pack_start(refresh_button, False, False, 0)
         return vbox
 
     @property
     def executable(self):
-        return self._config.get('executable', self.DEFAULT_EXEC)
+        return self._config.get("executable", self.DEFAULT_EXEC)
 
     @executable.setter
     def executable(self, value):
-        self._config.set('executable', value)
+        self._config.set("executable", value)

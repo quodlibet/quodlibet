@@ -34,8 +34,8 @@ class TOperonBase(TestCase):
     def setUp(self):
         config.init()
 
-        self.f = get_temp_copy(get_data_path('silence-44-s.ogg'))
-        self.f2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        self.f = get_temp_copy(get_data_path("silence-44-s.ogg"))
+        self.f2 = get_temp_copy(get_data_path("silence-44-s.mp3"))
         self.s = MusicFile(self.f)
         self.s2 = MusicFile(self.f2)
 
@@ -484,7 +484,7 @@ class TOperonImageExtract(TOperonBase):
     def setUp(self):
         super().setUp()
 
-        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
+        self.fcover = get_temp_copy(get_data_path("test-2.wma"))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -548,10 +548,10 @@ class TOperonImageSet(TOperonBase):
         wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
         wide.savev(self.filename, "png", [], [])
 
-        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
+        self.fcover = get_temp_copy(get_data_path("test-2.wma"))
         self.cover = MusicFile(self.fcover)
 
-        self.fcover2 = get_temp_copy(get_data_path('test-2.wma'))
+        self.fcover2 = get_temp_copy(get_data_path("test-2.wma"))
         self.cover2 = MusicFile(self.fcover2)
 
     def tearDown(self):
@@ -566,7 +566,7 @@ class TOperonImageSet(TOperonBase):
         self.check_false(["image-set", self.filename], False, True)
 
     def test_not_supported(self):
-        path = get_data_path('test.mid')
+        path = get_data_path("test.mid")
         out, err = self.check_false(
             ["image-set", self.filename, path], False, True)
         self.assertTrue("supported" in err)
@@ -603,7 +603,7 @@ class TOperonImageClear(TOperonBase):
 
     def setUp(self):
         super().setUp()
-        self.fcover = get_temp_copy(get_data_path('test-2.wma'))
+        self.fcover = get_temp_copy(get_data_path("test-2.wma"))
         self.cover = MusicFile(self.fcover)
 
     def tearDown(self):
@@ -616,7 +616,7 @@ class TOperonImageClear(TOperonBase):
         self.check_false(["image-clear"], False, True)
 
     def test_not_supported(self):
-        path = get_data_path('test.mid')
+        path = get_data_path("test.mid")
         out, err = self.check_false(["image-clear", path], False, True)
         self.assertTrue("supported" in err)
 

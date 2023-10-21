@@ -63,7 +63,7 @@ class QueryPlugin:
         return body
 
     @classmethod
-    def PluginPreferences(cls, window):
+    def PluginPreferences(cls, window):  # noqa
         if not cls.usage:
             return Gtk.VBox()
         label = Gtk.Label(label=cls.usage, use_markup=True,

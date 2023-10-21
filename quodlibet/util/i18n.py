@@ -73,18 +73,18 @@ def set_i18n_envvars():
                                       [GetUserDefaultUILanguage(),
                                        GetSystemDefaultUILanguage()])))
         if langs:
-            os.environ.setdefault('LANG', langs[0])
-            os.environ.setdefault('LANGUAGE', ":".join(langs))
+            os.environ.setdefault("LANG", langs[0])
+            os.environ.setdefault("LANGUAGE", ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
         locale_id = NSLocale.currentLocale().localeIdentifier()
         lang = osx_locale_id_to_lang(locale_id)
-        os.environ.setdefault('LANG', lang)
+        os.environ.setdefault("LANG", lang)
 
         preferred_langs = NSLocale.preferredLanguages()
         if preferred_langs:
             languages = map(bcp47_to_language, preferred_langs)
-            os.environ.setdefault('LANGUAGE', ":".join(languages))
+            os.environ.setdefault("LANGUAGE", ":".join(languages))
     else:
         return
 
@@ -275,7 +275,7 @@ def init(language=None):
     print_d("LANG: %r" % os.environ.get("LANG"))
 
     try:
-        locale.setlocale(locale.LC_ALL, '')
+        locale.setlocale(locale.LC_ALL, "")
     except locale.Error:
         pass
 
@@ -397,15 +397,15 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale.format_string('%d', n, grouping=True)
+    num_text = locale.format_string("%d", n, grouping=True)
     if not template_var:
-        template_var = '%d'
-        replacement = '%s'
+        template_var = "%d"
+        replacement = "%s"
         params = num_text
     else:
-        template_var = '%(' + template_var + ')d'
-        replacement = '%(' + template_var + ')s'
-        params = dict()
+        template_var = "%(" + template_var + ")d"
+        replacement = "%(" + template_var + ")s"
+        params = {}
         params[template_var] = num_text
     return (ngettext(singular, plural, n).replace(template_var, replacement) %
             params)

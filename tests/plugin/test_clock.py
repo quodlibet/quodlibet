@@ -28,10 +28,10 @@ class TClock(PluginTestCase):
             return e
         plugin = self.mod.Alarm()
         plugin.enabled()
-        entries = [fake_entry(s) for s in ['1', '3', '5'] + ['HH:MM'] * 4]
+        entries = [fake_entry(s) for s in ["1", "3", "5"] + ["HH:MM"] * 4]
         plugin._entry_changed(entries)
         plugin._ready()
 
-        self.failUnlessEqual(config.get('plugins', 'alarm_times'),
+        self.failUnlessEqual(config.get("plugins", "alarm_times"),
                              "1 3 5 HH:MM HH:MM HH:MM HH:MM")
         plugin.disabled()

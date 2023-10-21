@@ -99,9 +99,9 @@ class AvahiService:
         """
 
         try:
-            GLib.Variant('q', port)  # guint16
+            GLib.Variant("q", port)  # guint16
         except OverflowError as e:
-            raise AvahiError(e)
+            raise AvahiError(e) from e
 
         self.name = name
         self._real_name = name
@@ -117,7 +117,7 @@ class AvahiService:
             else:
                 self._try_update_service()
         except GLib.Error as e:
-            raise AvahiError(e)
+            raise AvahiError(e) from e
 
     def unregister(self):
         """Unregister the service.
@@ -149,7 +149,7 @@ class AvahiService:
         self._last_server_state = None
 
     def _on_group_signal(self, proxy, sender, signal, *args):
-        if signal == 'StateChanged':
+        if signal == "StateChanged":
             self._group_state_change(args[0])
 
     def _group_state_change(self, state, *args):
@@ -160,9 +160,9 @@ class AvahiService:
     def _group_add_service_and_commit(self, group, flags):
         print_d("name=%s, flags=%x, stype=%s, port=%d" % (
             self._real_name, flags, self.stype, self.port))
-        group.AddService('(iiussssqaay)',
+        group.AddService("(iiussssqaay)",
              AVAHI_IF_UNSPEC, AvahiProtocol.UNSPEC, flags,
-             self._real_name, self.stype, '', '', self.port, [])
+             self._real_name, self.stype, "", "", self.port, [])
         group.Commit()
 
     def _add_service(self):
@@ -180,7 +180,7 @@ class AvahiService:
                 bus, Gio.DBusProxyFlags.NONE, None, self.DBUS_NAME,
                 group_path, self.DBUS_INTERFACE_ENTRY_GROUP, None)
 
-            self._group_id = group.connect('g-signal', self._on_group_signal)
+            self._group_id = group.connect("g-signal", self._on_group_signal)
 
             self._group_add_service_and_commit(group, AvahiPublishFlags.NONE)
             self._group = group
@@ -234,7 +234,7 @@ class AvahiService:
                 Gio.BusType.SYSTEM, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_PATH_SERVER,
                 self.DBUS_INTERFACE_SERVER, None)
-            self._server_id = server.connect('g-signal',
+            self._server_id = server.connect("g-signal",
                                              self._on_server_signal)
             self._server_state_changed(server.GetState())
             self._server = server
@@ -242,7 +242,7 @@ class AvahiService:
             self._remove_server()
 
     def _on_server_signal(self, proxy, sender, signal, *args):
-        if signal == 'StateChanged':
+        if signal == "StateChanged":
             self._server_state_changed(args[0])
 
     def _server_state_changed(self, state, *args):

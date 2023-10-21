@@ -38,15 +38,15 @@ class SeekBar(Gtk.Box):
             child.show_all()
 
         self._id = self._scale.connect(
-            'value-changed', self._on_user_changed, player)
+            "value-changed", self._on_user_changed, player)
         self._scale.connect(
-            'value-changed', self._on_scale_value_changed, player)
+            "value-changed", self._on_scale_value_changed, player)
 
         self._tracker = TimeTracker(player)
-        self._tracker.connect('tick', self._on_tick, player)
+        self._tracker.connect("tick", self._on_tick, player)
 
-        connect_destroy(player, 'seek', self._on_player_seek)
-        connect_destroy(player, 'song-started', self._on_song_started)
+        connect_destroy(player, "seek", self._on_player_seek)
+        connect_destroy(player, "song-started", self._on_song_started)
         connect_destroy(player, "notify::seekable", self._on_seekable_changed)
 
         connect_destroy(

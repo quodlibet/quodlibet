@@ -27,14 +27,14 @@ class HTTPRequest(GObject.Object):
 
     __gsignals__ = {
         # Successes
-        'sent': (SignalFlags.RUN_LAST, None, (Soup.Message,)),
-        'received': (SignalFlags.RUN_LAST, None, (Gio.OutputStream,)),
+        "sent": (SignalFlags.RUN_LAST, None, (Soup.Message,)),
+        "received": (SignalFlags.RUN_LAST, None, (Gio.OutputStream,)),
         # Failures
-        'send-failure': (SignalFlags.RUN_LAST, None, (object,)),
-        'receive-failure': (SignalFlags.RUN_LAST, None, (object,)),
+        "send-failure": (SignalFlags.RUN_LAST, None, (object,)),
+        "receive-failure": (SignalFlags.RUN_LAST, None, (object,)),
         # Common failure signal which will be emitted when either of above
         # failure signals are.
-        'failure': (SignalFlags.RUN_LAST, None, (object,)),
+        "failure": (SignalFlags.RUN_LAST, None, (object,)),
     }
 
     message = GObject.Property(type=Soup.Message,
@@ -46,7 +46,7 @@ class HTTPRequest(GObject.Object):
 
     def __init__(self, message, cancellable):
         if message is None:
-            raise ValueError('Message may not be None')
+            raise ValueError("Message may not be None")
 
         inner_cancellable = Gio.Cancellable()
         super().__init__(message=message,
@@ -54,8 +54,8 @@ class HTTPRequest(GObject.Object):
         if cancellable is not None:
             cancellable.connect(lambda *x: self.cancel(), None)
 
-        self.connect('send-failure', lambda r, e: r.emit('failure', e))
-        self.connect('receive-failure', lambda r, e: r.emit('failure', e))
+        self.connect("send-failure", lambda r, e: r.emit("failure", e))
+        self.connect("receive-failure", lambda r, e: r.emit("failure", e))
 
         # For simple access
         self._receive_started = False
@@ -70,28 +70,28 @@ class HTTPRequest(GObject.Object):
 
     def _sent(self, session, task, data):
         try:
-            status = int(self.message.get_property('status-code'))
+            status = int(self.message.get_property("status-code"))
             if status >= 400:
-                msg = 'HTTP {0} error in {1} request to {2}'.format(
+                msg = "HTTP {0} error in {1} request to {2}".format(
                     status, self.message.get_method(), self._uri)
                 print_w(msg)
-                return self.emit('send-failure', Exception(msg))
+                return self.emit("send-failure", Exception(msg))
             self.istream = session.send_finish(task)
-            print_d('Got HTTP {code} on {method} request to {uri}.'.format(
+            print_d("Got HTTP {code} on {method} request to {uri}.".format(
                 uri=self._uri, code=status, method=self.message.get_method()))
-            self.emit('sent', self.message)
+            self.emit("sent", self.message)
         except GLib.GError as e:
-            print_w('Failed sending {method} request to {uri} ({err})'.format(
+            print_w("Failed sending {method} request to {uri} ({err})".format(
                 method=self.message.get_method(), uri=self._uri, err=e))
-            self.emit('send-failure', e)
+            self.emit("send-failure", e)
 
     def provide_target(self, stream):
         if not stream:
-            raise ValueError('Provided stream may not be None')
+            raise ValueError("Provided stream may not be None")
         if not self.ostream:
             self.ostream = stream
         else:
-            raise RuntimeError('Only one output stream may be provided')
+            raise RuntimeError("Only one output stream may be provided")
 
     def cancel(self):
         """
@@ -130,21 +130,21 @@ class HTTPRequest(GObject.Object):
         GOutputStreams, delete files on failure et cetera).
         """
         if not self.istream:
-            raise RuntimeError('Cannot receive unsent request')
+            raise RuntimeError("Cannot receive unsent request")
         if not self.ostream:
-            raise RuntimeError('Cannot receive request without output stream')
+            raise RuntimeError("Cannot receive request without output stream")
         if self._receive_started:
-            raise RuntimeError('Can receive only once')
+            raise RuntimeError("Can receive only once")
         self._receive_started = True
 
         def spliced(ostream, task, data):
             try:
                 ostream.splice_finish(task)
                 self.istream.close(None)
-                self.emit('received', ostream)
+                self.emit("received", ostream)
             except GLib.GError as e:
                 self.istream.close(None)
-                self.emit('receive-failure', e)
+                self.emit("receive-failure", e)
 
         # Do not ask splice to close the stream as Soup gets confused and
         # doesn't close connections
@@ -167,12 +167,12 @@ def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Call
             callback(message, bs, data)
             return
         # Otherwise try to decode data
-        code = int(message.get_property('status-code'))
+        code = int(message.get_property("status-code"))
         if code >= 400:
             print_w("HTTP %d error received on %s" % (code, request._uri))
             return
-        ctype = message.get_property('response-headers').get_content_type()
-        encoding = ctype[1].get('charset', 'utf-8')
+        ctype = message.get_property("response-headers").get_content_type()
+        encoding = ctype[1].get("charset", "utf-8")
         try:
             callback(message, bs.decode(encoding), data)
         except UnicodeDecodeError:
@@ -180,10 +180,10 @@ def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Call
 
     request = HTTPRequest(message, cancellable)
     request.provide_target(Gio.MemoryOutputStream.new_resizable())
-    request.connect('received', received)
-    request.connect('sent', lambda r, m: r.receive())
+    request.connect("received", received)
+    request.connect("sent", lambda r, m: r.receive())
     if failure_callback:
-        request.connect('send-failure', failure_callback, data)
+        request.connect("send-failure", failure_callback, data)
     request.send()
 
 

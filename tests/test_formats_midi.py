@@ -11,7 +11,7 @@ from quodlibet.formats.midi import MidiFile
 
 class TMidiFile(TestCase):
     def setUp(self):
-        self.song = MidiFile(get_data_path('test.mid'))
+        self.song = MidiFile(get_data_path("test.mid"))
 
     def test_length(self):
         self.failUnlessAlmostEqual(87, self.song("~#length", 0), 0)
@@ -30,7 +30,7 @@ class TMidiFile(TestCase):
         self.failIf(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
+        path = get_data_path("empty.xm")
         self.failUnlessRaises(Exception, MidiFile, path)
 
     def test_format_codec(self):

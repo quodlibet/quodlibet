@@ -117,7 +117,7 @@ class Equalizer(EventPlugin):
 
     @property
     def player_has_eq(self):
-        return hasattr(app.player, 'eq_bands') and app.player.eq_bands
+        return hasattr(app.player, "eq_bands") and app.player.eq_bands
 
     def __init__(self):
         super().__init__()
@@ -147,14 +147,14 @@ class Equalizer(EventPlugin):
         if not self.player_has_eq:
             l = Gtk.Label()
             l.set_markup(
-                _('The current backend does not support equalization.'))
+                _("The current backend does not support equalization."))
             main_vbox.pack_start(l, False, True, 0)
             return main_vbox
 
         def format_hertz(band):
             if band >= 1000:
-                return _('%.1f kHz') % (band / 1000.)
-            return _('%d Hz') % band
+                return _("%.1f kHz") % (band / 1000.)
+            return _("%d Hz") % band
 
         bands = [format_hertz(band) for band in app.player.eq_bands]
         self._config = get_config()
@@ -174,7 +174,7 @@ class Equalizer(EventPlugin):
             levels[idx] = rounded
 
             self._config["Current"] = levels
-            config.set('plugins', 'equalizer_levels', str(self._config))
+            config.set("plugins", "equalizer_levels", str(self._config))
             self.apply()
 
         adjustments = []
@@ -189,13 +189,13 @@ class Equalizer(EventPlugin):
             lbl.set_alignment(1, 0.5)
             table.attach(lbl, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             adj = Gtk.Adjustment.new(levels[i], -24., 12., 0.5, 3, 0)
-            adj.connect('value-changed', set_band, i)
+            adj.connect("value-changed", set_band, i)
             adjustments.append(adj)
             hs = Gtk.HScale(adjustment=adj)
-            hs.connect('button-press-event', self.__rightclick)
+            hs.connect("button-press-event", self.__rightclick)
             hs.set_draw_value(True)
             hs.set_value_pos(Gtk.PositionType.RIGHT)
-            hs.connect('format-value', lambda s, v: _('%.1f dB') % v)
+            hs.connect("format-value", lambda s, v: _("%.1f dB") % v)
             table.attach(hs, 2, 3, i, i + 1)
         main_vbox.pack_start(table, True, True, 0)
 
@@ -214,7 +214,7 @@ class Equalizer(EventPlugin):
             self._combo_custom.set_active(0)
             self._combo_custom.remove(selected_index)
             del self._config[selected]
-            config.set('plugins', 'equalizer_levels', str(self._config))
+            config.set("plugins", "equalizer_levels", str(self._config))
 
         # Save custom preset button
         def clicked_sb(button):
@@ -223,7 +223,7 @@ class Equalizer(EventPlugin):
 
             levels = [adj.get_value() for adj in adjustments]
             self._config[name] = levels
-            config.set('plugins', 'equalizer_levels', str(self._config))
+            config.set("plugins", "equalizer_levels", str(self._config))
 
             self._preset_name_entry.set_text("")
             if is_new:
@@ -248,7 +248,7 @@ class Equalizer(EventPlugin):
             self._combo_custom.set_active(0)
             gain = sorted_presets[combo.get_active() - 1][1][1]
             gain = interp_bands(PRESET_BANDS, app.player.eq_bands, gain)
-            for (g, a) in zip(gain, adjustments):
+            for (g, a) in zip(gain, adjustments, strict=False):
                 a.set_value(g)
 
         def custom_combo_changed(combo):
@@ -259,7 +259,7 @@ class Equalizer(EventPlugin):
             self._combo_default.set_active(0)
             self._delete_button.set_sensitive(True)
             gain = self._config[combo.get_active_text()]
-            for (g, a) in zip(gain, adjustments):
+            for (g, a) in zip(gain, adjustments, strict=False):
                 a.set_value(g)
 
         def save_name_changed(entry):
@@ -277,7 +277,7 @@ class Equalizer(EventPlugin):
         self._combo_default = combo
         combo.append_text(_("Select…"))
         combo.set_active(0)
-        for key, (name, gain) in sorted_presets:
+        for _key, (name, _gain) in sorted_presets:
             combo.append_text(name)
         combo.connect("changed", default_combo_changed)
 
@@ -291,7 +291,7 @@ class Equalizer(EventPlugin):
         main_middle_hbox.pack_start(frame, True, True, 0)
 
         reset = Button(_("_Reset EQ"), Icons.EDIT_UNDO)
-        reset.connect('clicked', clicked_rb)
+        reset.connect("clicked", clicked_rb)
         main_middle_hbox.pack_start(reset, False, False, 0)
 
         main_vbox.pack_start(main_middle_hbox, False, False, 0)
@@ -313,7 +313,7 @@ class Equalizer(EventPlugin):
         hb.pack_start(combo, True, True, 0)
 
         delete = Button(_("_Delete selected"), Icons.EDIT_DELETE)
-        delete.connect('clicked', clicked_db)
+        delete.connect("clicked", clicked_db)
         delete.set_sensitive(False)
         self._delete_button = delete
         hb.pack_start(delete, False, False, 0)
@@ -334,7 +334,7 @@ class Equalizer(EventPlugin):
         hb.pack_start(e, True, True, 0)
 
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
-        save.connect('clicked', clicked_sb)
+        save.connect("clicked", clicked_sb)
         save.set_sensitive(False)
         self._save_button = save
         hb.pack_start(save, False, False, 0)

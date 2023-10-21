@@ -46,11 +46,11 @@ class TUniSearch(TestCase):
         assert "`" in r
         assert "'" in r
         r = re_add_variants(u"''")
-        assert "\"" in r
+        assert '"' in r
         r = re_add_variants(u'"')
         assert "”" in r
         assert "“" in r
-        r = re_add_variants(u'\\*')
+        r = re_add_variants(u"\\*")
         assert re.match(r, "*")
 
     def test_re_replace_multi_fixme(self):

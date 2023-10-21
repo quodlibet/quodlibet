@@ -23,11 +23,11 @@ class TAlbumLibrary(TestCase):
         self.removed = []
 
         self._sigs = [
-            connect_obj(self.underlying, 'added', list.extend, self.added),
+            connect_obj(self.underlying, "added", list.extend, self.added),
             connect_obj(self.underlying,
-                        'changed', list.extend, self.changed),
+                        "changed", list.extend, self.changed),
             connect_obj(self.underlying,
-                        'removed', list.extend, self.removed),
+                        "removed", list.extend, self.removed),
         ]
 
         self.library = AlbumLibrary(self.underlying)
@@ -108,16 +108,16 @@ class TAlbumLibrarySignals(TestCase):
             received.append(name)
 
         self._sigs = [
-            connect_obj(lib, 'added', listen, 'added'),
-            connect_obj(lib, 'changed', listen, 'changed'),
-            connect_obj(lib, 'removed', listen, 'removed'),
+            connect_obj(lib, "added", listen, "added"),
+            connect_obj(lib, "changed", listen, "changed"),
+            connect_obj(lib, "removed", listen, "removed"),
         ]
 
         albums = lib.albums
         self._asigs = [
-            connect_obj(albums, 'added', listen, 'a_added'),
-            connect_obj(albums, 'changed', listen, 'a_changed'),
-            connect_obj(albums, 'removed', listen, 'a_removed'),
+            connect_obj(albums, "added", listen, "a_added"),
+            connect_obj(albums, "changed", listen, "a_changed"),
+            connect_obj(albums, "removed", listen, "a_removed"),
         ]
 
         self.lib = lib

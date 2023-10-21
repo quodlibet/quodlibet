@@ -23,7 +23,7 @@ class MyBrainz(SongsMenuPlugin):
     PLUGIN_ID = "MusicBrainz lookup"
     PLUGIN_NAME = _("MusicBrainz Lookup")
     PLUGIN_ICON = Icons.MEDIA_OPTICAL
-    PLUGIN_DESC = _('Re-tags an album based on a MusicBrainz search.')
+    PLUGIN_DESC = _("Re-tags an album based on a MusicBrainz search.")
 
     plugin_handles = each_song(is_writable, is_finite)
 
@@ -47,11 +47,11 @@ class MyBrainz(SongsMenuPlugin):
     @classmethod
     def PluginPreferences(cls, win):
         items = [
-            ('year_only', _('Only use year for "date" tag')),
-            ('albumartist', _('Write "_albumartist" when needed')),
-            ('artist_sort', _('Write sort tags for artist names')),
-            ('standard', _('Write _standard MusicBrainz tags')),
-            ('labelid2', _('Write "labelid" tag')),
+            ("year_only", _('Only use year for "date" tag')),
+            ("albumartist", _('Write "_albumartist" when needed')),
+            ("artist_sort", _("Write sort tags for artist names")),
+            ("standard", _("Write _standard MusicBrainz tags")),
+            ("labelid2", _('Write "labelid" tag')),
         ]
 
         vb = Gtk.VBox()

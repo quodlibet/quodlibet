@@ -135,20 +135,20 @@ class XinePlaylistPlayer(BasePlayer):
             self.info.multisong = False
         changed = False
         meta = [
-            (XINE_META_INFO_TITLE, 'title'),
-            (XINE_META_INFO_ARTIST, 'artist'),
-            (XINE_META_INFO_ALBUM, 'album'),
+            (XINE_META_INFO_TITLE, "title"),
+            (XINE_META_INFO_ARTIST, "artist"),
+            (XINE_META_INFO_ALBUM, "album"),
         ]
         for info, name in meta:
             text = xine_get_meta_info(self._stream, info)
             if not text:
                 continue
-            text = text.decode('UTF-8', 'replace')
+            text = text.decode("UTF-8", "replace")
             if self.info.get(name) != text:
                 self.info[name] = text
                 changed = True
         if changed:
-            self.emit('song-started', self.info)
+            self.emit("song-started", self.info)
             if self._librarian is not None:
                 self._librarian.changed([self.song])
         return False
@@ -174,13 +174,13 @@ class XinePlaylistPlayer(BasePlayer):
         return True
 
     def do_get_property(self, property):
-        if property.name == 'volume':
+        if property.name == "volume":
             return self._volume
-        elif property.name == 'seekable':
+        elif property.name == "seekable":
             if self.song is None:
                 return False
             return True
-        elif property.name == 'mute':
+        elif property.name == "mute":
             if not self._destroyed:
                 return xine_get_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE)
             return False
@@ -188,13 +188,13 @@ class XinePlaylistPlayer(BasePlayer):
             raise AttributeError
 
     def do_set_property(self, property, v):
-        if property.name == 'volume':
+        if property.name == "volume":
             self._volume = v
             v = self.calc_replaygain_volume(v)
             v = min(100, int(v * 100))
             if not self._destroyed:
                 xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_LEVEL, v)
-        elif property.name == 'mute':
+        elif property.name == "mute":
             if not self._destroyed:
                 xine_set_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE, v)
         else:
@@ -228,7 +228,7 @@ class XinePlaylistPlayer(BasePlayer):
         if paused == self._paused:
             return
         self._paused = paused
-        self.emit((paused and 'paused') or 'unpaused')
+        self.emit((paused and "paused") or "unpaused")
         if self._paused != paused:
             return
 
@@ -252,7 +252,7 @@ class XinePlaylistPlayer(BasePlayer):
         self.error = True
         self.paused = True
         if player_error:
-            self.emit('error', self.song, player_error)
+            self.emit("error", self.song, player_error)
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""
@@ -261,7 +261,7 @@ class XinePlaylistPlayer(BasePlayer):
             xine_set_param(self._stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE)
         else:
             xine_play(self._stream, 0, int(pos))
-        self.emit('seek', self.song, pos)
+        self.emit("seek", self.song, pos)
 
     def _end(self, stopped, next_song=None, gapless=False):
         # We need to set self.song to None before calling our signal
@@ -269,7 +269,7 @@ class XinePlaylistPlayer(BasePlayer):
         # (e.g. by removing it), then we get in an infinite loop.
         song = self.song
         self.song = self.info = None
-        self.emit('song-ended', song, stopped)
+        self.emit("song-ended", song, stopped)
 
         # reset error state
         self.error = False
@@ -278,7 +278,7 @@ class XinePlaylistPlayer(BasePlayer):
 
         # Then, set up the next song.
         self.song = self.info = current
-        self.emit('song-started', self.song)
+        self.emit("song-started", self.song)
 
         if self.song is not None:
             self.volume = self.volume
@@ -315,7 +315,7 @@ class XinePlaylistPlayer(BasePlayer):
         bands = self.eq_bands
         need_eq = any(self._eq_values)
         for band, val in enumerate(self._eq_values):
-            param = getattr(cdefs, 'XINE_PARAM_EQ_%dHZ' % bands[band])
+            param = getattr(cdefs, "XINE_PARAM_EQ_%dHZ" % bands[band])
             # between 1..200; 100 is the default gain; 0 means no EQ filter
             # only negative gain seems to work
             val = (int(val * 100 / 24.0) + 100) or 1

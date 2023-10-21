@@ -20,8 +20,8 @@ def confirm_multi_playlist_invoke(parent, plugin_name, count):
     in case X is high
     """
     params = {"name": plugin_name, "count": format_int_locale(count)}
-    title = ngettext("Run the plugin \"%(name)s\" on %(count)s playlist?",
-                     "Run the plugin \"%(name)s\" on %(count)s playlists?",
+    title = ngettext('Run the plugin "%(name)s" on %(count)s playlist?',
+                     'Run the plugin "%(name)s" on %(count)s playlists?',
                      count) % params
     description = ""
     ok_text = _("_Run Plugin")
@@ -94,22 +94,22 @@ class PlaylistPluginHandler(PluginHandler):
         """Appends items onto `menu` for each enabled playlist plugin,
         separated as necessary. """
 
-        attrs = ['plugin_playlist', 'plugin_playlists']
+        attrs = ["plugin_playlist", "plugin_playlists"]
 
         if len(playlists) == 1:
-            attrs.append('plugin_single_playlist')
+            attrs.append("plugin_single_playlist")
 
         items = []
         kinds = self.__plugins
         kinds.sort(key=lambda plugin: plugin.PLUGIN_ID)
         print_d("Found %d Playlist plugin(s): %s" % (len(kinds), kinds))
-        for Kind in kinds:
-            usable = any([callable(getattr(Kind, s)) for s in attrs])
+        for kind in kinds:
+            usable = any(callable(getattr(kind, s)) for s in attrs)
             if usable:
                 try:
-                    items.append(Kind(playlists=playlists, library=library))
+                    items.append(kind(playlists=playlists, library=library))
                 except Exception:
-                    print_e("Couldn't initialise playlist plugin %s: " % Kind)
+                    print_e("Couldn't initialise playlist plugin %s: " % kind)
                     print_exc()
         items = [i for i in items if i.initialized]
 
@@ -122,10 +122,10 @@ class PlaylistPluginHandler(PluginHandler):
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
                             subitem.connect(
-                                'activate', self.__on_activate, item, *args)
+                                "activate", self.__on_activate, item, *args)
                     else:
                         item.connect(
-                            'activate', self.__on_activate, item, *args)
+                            "activate", self.__on_activate, item, *args)
                 except Exception:
                     print_exc()
                     item.destroy()
@@ -175,7 +175,7 @@ class PlaylistPluginHandler(PluginHandler):
             try:
                 ret = map(plugin.plugin_playlist, playlists)
                 if ret:
-                    for update, pl in zip(ret, playlists):
+                    for update, pl in zip(ret, playlists, strict=False):
                         if update:
                             print_d("Updating %s" % pl)
                             browser.changed(pl)

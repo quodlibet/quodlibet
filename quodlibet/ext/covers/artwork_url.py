@@ -23,7 +23,7 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     @classmethod
     def group_by(cls, song):
-        return song.get('album', None)
+        return song.get("album", None)
 
     @staticmethod
     def priority():
@@ -37,9 +37,9 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
 
     @property
     def url(self):
-        return self.song.get('artwork_url', None)
+        return self.song.get("artwork_url", None)
 
     def fetch_cover(self):
         if not self.url:
-            return self.fail('artwork_url missing')
-        self.download(Soup.Message.new('GET', self.url))
+            return self.fail("artwork_url missing")
+        self.download(Soup.Message.new("GET", self.url))

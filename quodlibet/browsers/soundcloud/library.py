@@ -26,9 +26,9 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         super().__init__("Soundcloud")
         self.client = client
         self._sids = [
-            self.client.connect('songs-received', self._on_songs_received),
-            self.client.connect('stream-uri-received', self._on_stream_uri_received),
-            self.client.connect('comments-received', self._on_comments_received)
+            self.client.connect("songs-received", self._on_songs_received),
+            self.client.connect("stream-uri-received", self._on_stream_uri_received),
+            self.client.connect("comments-received", self._on_comments_received)
         ]
         self._psid = None
         # Keep track of async-changed songs for bulk signalling
@@ -36,7 +36,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         GLib.timeout_add(2000, self._on_tick)
         if player:
             self.player = player
-            self._psid = self.player.connect('song-started', self.__song_started)
+            self._psid = self.player.connect("song-started", self.__song_started)
 
     def destroy(self):
         super().destroy()
@@ -99,8 +99,8 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
-            text = "\"%s\" – %s" % (com['body'], com['user']['username'])
-            return max(0, int((com.get('timestamp') or 0) / 1000.0)), text
+            text = '"%s" – %s' % (com["body"], com["user"]["username"])
+            return max(0, int((com.get("timestamp") or 0) / 1000.0)), text
 
         try:
             song = self.song_by_track_id(track_id)
@@ -143,7 +143,7 @@ class SoundcloudFile(RemoteFile):
         self["soundcloud_track_id"] = track_id
         self.favorite = favorite
         if self.favorite:
-            self['~#rating'] = 1.0
+            self["~#rating"] = 1.0
 
     def set_image(self, image):
         raise TypeError("Can't change images on Soundcloud")

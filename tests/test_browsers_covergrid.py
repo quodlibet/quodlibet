@@ -89,7 +89,7 @@ class TCoverGridBrowser(TestCase):
         with realized(self.bar):
             view = self.bar.view
             child = view.get_child_at_index(0)
-            child.emit('activate')
+            child.emit("activate")
             self._wait()
             self.failUnless(self.activated)
 

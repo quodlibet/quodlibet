@@ -22,7 +22,7 @@ from quodlibet import config
 
 
 def get_ext(s):
-    return os.path.splitext(s)[1].lstrip('.')
+    return os.path.splitext(s)[1].lstrip(".")
 
 
 def prefer_embedded():
@@ -30,7 +30,7 @@ def prefer_embedded():
 
 
 def word_regex(s: Text) -> re.Pattern:
-    return re.compile(r'(\b|_)' + s + r'(\b|_)')
+    return re.compile(r"(\b|_)" + s + r"(\b|_)")
 
 
 class EmbeddedCover(CoverSourcePlugin):
@@ -78,7 +78,7 @@ class FilesystemCover(CoverSourcePlugin):
     @classmethod
     def group_by(cls, song):
         # in the common case this means we only search once per album
-        return song('~dirname'), song.album_key
+        return song("~dirname"), song.album_key
 
     @property
     def name(self):
@@ -97,7 +97,7 @@ class FilesystemCover(CoverSourcePlugin):
         if not self.song.is_file:
             return None
 
-        base = self.song('~dirname')
+        base = self.song("~dirname")
         images = []
 
         def safe_glob(*args, **kwargs):
@@ -195,13 +195,13 @@ class FilesystemCover(CoverSourcePlugin):
                     images.append((score, os.path.join(base, fn)))
 
         images.sort(reverse=True)
-        for score, path in images:
+        for _score, path in images:
             # could be a directory
             if not os.path.isfile(path):
                 continue
             try:
                 return open(path, "rb")
             except IOError:
-                print_w("Failed reading album art \"%s\"" % path)
+                print_w('Failed reading album art "%s"' % path)
 
         return None

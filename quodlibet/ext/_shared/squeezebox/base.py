@@ -17,7 +17,7 @@ from quodlibet.qltk.entry import UndoEntry
 from quodlibet.util.library import get_scan_dirs
 
 from .util import GetPlayerDialog
-from .server import SqueezeboxServer, SqueezeboxException
+from .server import SqueezeboxServer, SqueezeboxError
 
 
 class SqueezeboxPluginMixin(PluginConfigMixin):
@@ -39,7 +39,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     @classmethod
     def get_sb_path(cls, song):
         """Gets a SB path to `song` by simple substitution"""
-        path = song('~filename')
+        path = song("~filename")
         return path.replace(
             cls._get_ql_base_dir(), cls.server.get_library_dir())
 
@@ -50,7 +50,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     @staticmethod
     def _show_dialog(dialog_type, msg):
         dialog = Message(dialog_type, app.window, "Squeezebox", msg)
-        dialog.connect('response', lambda dia, resp: dia.destroy())
+        dialog.connect("response", lambda dia, resp: dia.destroy())
         dialog.show()
 
     @staticmethod
@@ -89,7 +89,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     @classmethod
     def PluginPreferences(cls, parent):
         def value_changed(entry, key):
-            if entry.get_property('sensitive'):
+            if entry.get_property("sensitive"):
                 cls.server.config[key] = entry.get_text()
                 config.set("plugins", "squeezebox_" + key, entry.get_text())
 
@@ -106,7 +106,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
 
         ve = UndoEntry()
         ve.set_text(cfg["hostname"])
-        ve.connect('changed', value_changed, 'server_hostname')
+        ve.connect("changed", value_changed, "server_hostname")
         lbl = Gtk.Label(label=_("Hostname:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
@@ -114,21 +114,21 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve = UndoEntry()
         ve.set_width_chars(5)
         ve.set_text(str(cfg["port"]))
-        ve.connect('changed', value_changed, 'server_port')
+        ve.connect("changed", value_changed, "server_port")
         lbl = Gtk.Label(label=_("Port:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
         ve = UndoEntry()
         ve.set_text(cfg["user"])
-        ve.connect('changed', value_changed, 'server_user')
+        ve.connect("changed", value_changed, "server_user")
         lbl = Gtk.Label(label=_("Username:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
         ve = UndoEntry()
         ve.set_text(str(cfg["password"]))
-        ve.connect('changed', value_changed, 'server_password')
+        ve.connect("changed", value_changed, "server_password")
         lbl = Gtk.Label(label=_("Password:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
@@ -136,7 +136,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         ve = UndoEntry()
         ve.set_text(str(cfg["library_dir"]))
         ve.set_tooltip_text(_("Library directory the server connects to"))
-        ve.connect('changed', value_changed, 'server_library_dir')
+        ve.connect("changed", value_changed, "server_library_dir")
         lbl = Gtk.Label(label=_("Library path:"), use_underline=True)
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
@@ -150,7 +150,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         # Add verify button
         button = Gtk.Button(label=_("_Verify settings"), use_underline=True)
         button.set_sensitive(cls.server is not None)
-        button.connect('clicked', cls.check_settings)
+        button.connect("clicked", cls.check_settings)
         table.attach(button, 0, 2, row + 1, row + 2)
 
         # Server settings Frame
@@ -183,5 +183,5 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                 print_d(
                     "Squeezebox server version: %s. Current player: #%d (%s)."
                     % (ver, cur, cls.server.get_players()[cur]["name"]))
-        except (IndexError, KeyError, SqueezeboxException) as e:
+        except (IndexError, KeyError, SqueezeboxError) as e:
             print_d("Couldn't get player info (%s)." % e)

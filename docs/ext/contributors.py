@@ -10,22 +10,22 @@ class ContributorsDirective(Directive):
     def run(self):
         role = self.arguments[0]
 
-        roles = ['authors', 'translators', 'artists']
+        roles = ["authors", "translators", "artists"]
         if role not in roles:
-            raise Exception('Argument must be in {}'.format(roles))
+            raise Exception("Argument must be in {}".format(roles))
 
         const = self.state.document.settings.env.config.const
-        if role == 'authors':
+        if role == "authors":
             people = const.AUTHORS
-        elif role == 'translators':
+        elif role == "translators":
             people = const.TRANSLATORS
         else:
             people = const.ARTISTS
 
-        output = ', '.join(people)
+        output = ", ".join(people)
         return [paragraph(text=output)]
 
 
 def setup(app):
-    app.add_directive('contributors', ContributorsDirective)
+    app.add_directive("contributors", ContributorsDirective)
     return {"parallel_read_safe": True, "parallel_write_safe": True}

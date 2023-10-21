@@ -112,7 +112,7 @@ class TSongFileLibrary(TSongLibrary):
         self.failUnless(self.library.masked(new))
 
     def __get_file(self):
-        return get_temp_copy(get_data_path('empty.flac'))
+        return get_temp_copy(get_data_path("empty.flac"))
 
     def test_add_filename(self):
         config.init()

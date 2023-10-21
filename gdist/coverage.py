@@ -28,7 +28,7 @@ from urllib.request import pathname2url
 from .util import Command
 
 
-class coverage_cmd(Command):
+class CoverageCmd(Command):
     description = "generate test coverage data"
     user_options = [
         ("to-run=", None, "list of tests to run (default all)"),
@@ -40,7 +40,7 @@ class coverage_cmd(Command):
     def finalize_options(self):
         self.options = self.distribution.coverage_options
         self.packages = self.distribution.packages
-        include = set([p.split(".", 1)[0] + "*" for p in self.packages])
+        include = {p.split(".", 1)[0] + "*" for p in self.packages}
         self.options.setdefault("include", include)
         self.options.setdefault("directory", "coverage")
 

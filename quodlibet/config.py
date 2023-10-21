@@ -210,10 +210,10 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": u'\u2605',
+        "rating_symbol_full": u"\u2605",
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": u'\u2606',
+        "rating_symbol_blank": u"\u2606",
 
         # Comma-separated columns to display in the song list
         "columns": ",".join(const.DEFAULT_COLUMNS),

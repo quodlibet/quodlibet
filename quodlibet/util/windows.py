@@ -12,7 +12,7 @@ import os
 import ctypes
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, S_OK, MAX_PATH, \

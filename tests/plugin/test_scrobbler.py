@@ -60,13 +60,13 @@ class TScrobbler(PluginTestCase):
         queue.dump_queue()
 
         loaded = self.load_queue()
-        assert all(actual['a'] == expected["artist"]
-                   and actual['t'] == expected["title"]
-                   for actual, expected in zip(loaded, songs))
+        assert all(actual["a"] == expected["artist"]
+                   and actual["t"] == expected["title"]
+                   for actual, expected in zip(loaded, songs, strict=False))
 
     def load_queue(self) -> List[Dict]:
         try:
-            with open(self.SCROBBLER_CACHE_FILE, 'rb') as f:
+            with open(self.SCROBBLER_CACHE_FILE, "rb") as f:
                 return pickle_load(f)
         except FileNotFoundError:
             return []

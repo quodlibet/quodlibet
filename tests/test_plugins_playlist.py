@@ -54,25 +54,25 @@ class TPlaylistPlugins(TestCase):
         self.pm.register_handler(self.handler)
         self.pm.rescan()
         self.assertEquals(self.pm.plugins, [])
-        self.library = SongLibrary('foo')
+        self.library = SongLibrary("foo")
 
     def tearDown(self):
         self.library.destroy()
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, id='', name='', desc='', icon='',
+    def create_plugin(self, id="", name="", desc="", icon="",
                       funcs=None, mod=False):
-        fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)
-        file = os.fdopen(fd, 'w')
+        fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
+        file = os.fdopen(fd, "w")
 
         if mod:
-            indent = ''
+            indent = ""
         else:
             file.write(
                 "from quodlibet.plugins.playlist import PlaylistPlugin\n")
             file.write("class %s(PlaylistPlugin):\n" % name)
-            indent = '    '
+            indent = "    "
             file.write("%spass\n" % indent)
 
         if name:
@@ -86,7 +86,7 @@ class TPlaylistPlugins(TestCase):
         for f in (funcs or []):
             if f in ["__init__"]:
                 file.write("%sdef %s(self, *args): super().__init__("
-                           "*args); raise Exception(\"as expected.\")\n"
+                           '*args); raise Exception("as expected.")\n'
                            % (indent, f))
             else:
                 file.write("%sdef %s(*args): return args\n" % (indent, f))
@@ -98,30 +98,30 @@ class TPlaylistPlugins(TestCase):
         self.assertEquals(self.pm.plugins, [])
 
     def test_name_and_desc_plus_func_is_one(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_playlist'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
 
     def test_additional_functions_still_only_one(self):
-        self.create_plugin(name='Name', desc='Desc',
-                           funcs=['plugin_playlist', 'plugin_playlists'])
+        self.create_plugin(name="Name", desc="Desc",
+                           funcs=["plugin_playlist", "plugin_playlists"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
 
     def test_two_plugins_are_two(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_playlist'])
-        self.create_plugin(name='Name2', desc='Desc2',
-                           funcs=['plugin_albums'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
+        self.create_plugin(name="Name2", desc="Desc2",
+                           funcs=["plugin_albums"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 2)
 
     def test_disables_plugin(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_playlist'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
         self.failIf(self.pm.enabled(self.pm.plugins[0]))
 
     def test_enabledisable_plugin(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_playlist'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)

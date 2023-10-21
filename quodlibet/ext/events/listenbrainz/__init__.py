@@ -10,7 +10,7 @@
 #
 # QLScrobbler: an Audioscrobbler client plugin for Quod Libet.
 # version 0.11
-# (C) 2005-2016 by Joshua Kwan <joshk@triplehelix.org>,
+# (C) 2005-2023 by Joshua Kwan <joshk@triplehelix.org>,
 #                  Joe Wreschnig <piman@sacredchao.net>,
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
@@ -47,8 +47,8 @@ from io import StringIO
 
 from . import listenbrainz
 
-DEFAULT_TITLEPAT = '<title><version| (<version>)>'
-DEFAULT_ARTISTPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
+DEFAULT_TITLEPAT = "<title><version| (<version>)>"
+DEFAULT_ARTISTPAT = "<artist|<artist>|<composer|<composer>|<performer>>>"
 
 plugin_config = PluginConfig("listenbrainz")
 defaults = plugin_config.defaults
@@ -63,22 +63,22 @@ defaults.set("tags", "")
 
 
 def config_get_title_pattern():
-    return plugin_config.get('titlepat') or DEFAULT_TITLEPAT
+    return plugin_config.get("titlepat") or DEFAULT_TITLEPAT
 
 
 def config_get_artist_pattern():
-    return plugin_config.get('artistpat') or DEFAULT_ARTISTPAT
+    return plugin_config.get("artistpat") or DEFAULT_ARTISTPAT
 
 
 def config_get_tags():
-    tags = plugin_config.get('tags') or None
+    tags = plugin_config.get("tags") or None
     if tags is None:
         return []
     parser = csv.reader(StringIO(tags), quoting=csv.QUOTE_ALL, skipinitialspace=True)
     try:
         return next(parser)
     except Exception as e:
-        print_d("Failed to parse tags \"%s\": %s" % tags, e)
+        print_d('Failed to parse tags "%s": %s' % tags, e)
         return []
 
 
@@ -171,15 +171,15 @@ class ListenBrainzSubmitQueue():
         additional_info = {}
 
         for (k, v) in [
-            ('artist_mbids', song.list("musicbrainz_artistid")),
-            ('release_group_mbid', song.get("musicbrainz_releasegroupid", None)),
-            ('release_mbid', song.get("musicbrainz_albumid", None)),
-            ('recording_mbid', song.get("musicbrainz_trackid", None)),
-            ('track_mbid', song.get("musicbrainz_releasetrackid", None)),
-            ('work_mbids', song.list("musicbrainz_workid")),
-            ('tracknumber', song.get("tracknumber", None)),
-            ('isrc', song.get("isrc", None)),
-            ('tags', self.tags)]:
+            ("artist_mbids", song.list("musicbrainz_artistid")),
+            ("release_group_mbid", song.get("musicbrainz_releasegroupid", None)),
+            ("release_mbid", song.get("musicbrainz_albumid", None)),
+            ("recording_mbid", song.get("musicbrainz_trackid", None)),
+            ("track_mbid", song.get("musicbrainz_releasetrackid", None)),
+            ("work_mbids", song.list("musicbrainz_workid")),
+            ("tracknumber", song.get("tracknumber", None)),
+            ("isrc", song.get("isrc", None)),
+            ("tags", self.tags)]:
             if v is not None and v != []:
                 additional_info[k] = v
 
@@ -203,7 +203,7 @@ class ListenBrainzSubmitQueue():
         self.tags = config_get_tags()
 
         try:
-            with open(self.DUMP, 'rb') as disk_queue_file:
+            with open(self.DUMP, "rb") as disk_queue_file:
                 disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.DUMP)
             self.queue += disk_queue
@@ -211,18 +211,18 @@ class ListenBrainzSubmitQueue():
             pass
 
     @classmethod
-    def dump_queue(klass):
-        if klass.queue:
+    def dump_queue(cls):
+        if cls.queue:
             try:
-                with open(klass.DUMP, 'wb') as disk_queue_file:
-                    pickle_dump(klass.queue, disk_queue_file)
+                with open(cls.DUMP, "wb") as disk_queue_file:
+                    pickle_dump(cls.queue, disk_queue_file)
             except (EnvironmentError, PickleError):
                 pass
 
     # Must be called with self.condition acquired
     def _check_config(self):
         #endpoint = plugin_config.get('endpoint')
-        user_token = plugin_config.get('user_token')
+        user_token = plugin_config.get("user_token")
         #if not endpoint or not user_token:
         if not user_token:
             if self.queue and not self.broken:
@@ -237,7 +237,7 @@ class ListenBrainzSubmitQueue():
             print_d("Setting user_token %s" % user_token)
             self.lb.user_token = user_token
             self.broken = False
-        self.offline = plugin_config.getboolean('offline')
+        self.offline = plugin_config.getboolean("offline")
         self.titlepat = Pattern(config_get_title_pattern())
         self.artpat = Pattern(config_get_artist_pattern())
         self.tags = config_get_tags()
@@ -317,7 +317,7 @@ class ListenBrainzSubmitQueue():
                 (listened_at, track) = submit
                 print_d("Submitting: %s" % track)
 
-                if not with_backoff(lambda: self.lb.listen(listened_at, track)):
+                if not with_backoff(lambda: self.lb.listen(listened_at, track)):  # noqa
                     continue
 
                 print_d("Submission successful")
@@ -331,7 +331,7 @@ class ListenBrainzSubmitQueue():
             if nowplaying:
                 print_d("Now playing: %s" % nowplaying)
 
-                if not with_backoff(lambda: self.lb.playing_now(nowplaying)):
+                if not with_backoff(lambda: self.lb.playing_now(nowplaying)):  # noqa
                     continue
 
                 print_d("Now playing submission successful")
@@ -344,7 +344,7 @@ class ListenBrainzSubmitQueue():
 
     def quick_dialog_helper(self, dialog_type, msg):
         dialog = Message(dialog_type, app.window, "ListenBrainz", msg)
-        dialog.connect('response', lambda dia, resp: dia.destroy())
+        dialog.connect("response", lambda dia, resp: dia.destroy())
         dialog.show()
 
     def quick_dialog(self, msg, dialog_type):
@@ -369,7 +369,7 @@ class ListenbrainzSubmission(EventPlugin):
         self.elapsed = 0
         self.nowplaying = None
 
-        self.exclude = plugin_config.get('exclude')
+        self.exclude = plugin_config.get("exclude")
 
     def plugin_on_song_ended(self, song, stopped):
         if song is None or not self.__enabled:
@@ -440,7 +440,7 @@ class ListenbrainzSubmission(EventPlugin):
 
     def PluginPreferences(self, parent):
         def changed(entry, key):
-            if entry.get_property('sensitive'):
+            if entry.get_property("sensitive"):
                 plugin_config.set(key, entry.get_text())
 
         box = Gtk.VBox(spacing=12)
@@ -474,8 +474,8 @@ class ListenbrainzSubmission(EventPlugin):
 
         # token
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('user_token'))
-        entry.connect('changed', changed, 'user_token')
+        entry.set_text(plugin_config.get("user_token"))
+        entry.connect("changed", changed, "user_token")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
@@ -510,8 +510,8 @@ class ListenbrainzSubmission(EventPlugin):
         row = 0
         # artist pattern
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('artistpat'))
-        entry.connect('changed', changed, 'artistpat')
+        entry.set_text(plugin_config.get("artistpat"))
+        entry.connect("changed", changed, "artistpat")
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
             "the artist name for submission. Leave blank for default."))
@@ -520,8 +520,8 @@ class ListenbrainzSubmission(EventPlugin):
 
         # title pattern
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('titlepat'))
-        entry.connect('changed', changed, 'titlepat')
+        entry.set_text(plugin_config.get("titlepat"))
+        entry.connect("changed", changed, "titlepat")
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
             "the title for submission. Leave blank for default."))
@@ -530,8 +530,8 @@ class ListenbrainzSubmission(EventPlugin):
 
         # tags
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('tags'))
-        entry.connect('changed', changed, 'tags')
+        entry.set_text(plugin_config.get("tags"))
+        entry.connect("changed", changed, "tags")
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("List of tags to include in the submission. "
                                  "Comma-separated, use double-quotes if necessary."))
@@ -540,10 +540,10 @@ class ListenbrainzSubmission(EventPlugin):
 
         # exclude filter
         entry = ValidatingEntry(Query.validator)
-        entry.set_text(plugin_config.get('exclude'))
+        entry.set_text(plugin_config.get("exclude"))
         entry.set_tooltip_text(
                 _("Songs matching this filter will not be submitted."))
-        entry.connect('changed', changed, 'exclude')
+        entry.connect("changed", changed, "exclude")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
@@ -551,7 +551,7 @@ class ListenbrainzSubmission(EventPlugin):
         # offline mode
         offline = plugin_config.ConfigCheckButton(
                 _("_Offline mode (don't submit anything)"),
-                'offline', populate=True)
+                "offline", populate=True)
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)

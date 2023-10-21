@@ -19,7 +19,7 @@ class _TagsCombo:
         self.clear()
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
-        self.add_attribute(render, 'text', 1)
+        self.add_attribute(render, "text", 1)
 
         if can_change is None:
             can_change = self.__tags

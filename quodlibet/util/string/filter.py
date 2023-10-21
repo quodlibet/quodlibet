@@ -11,7 +11,7 @@ import unicodedata
 
 _remove_punctuation_trans = dict.fromkeys(
     i for i in range(sys.maxunicode)
-    if unicodedata.category(chr(i)).startswith('P'))
+    if unicodedata.category(chr(i)).startswith("P"))
 
 
 def remove_punctuation(s: str) -> str:
@@ -21,5 +21,5 @@ def remove_punctuation(s: str) -> str:
 
 def remove_diacritics(s: str) -> str:
     """Canonicalises and removes all diacritics from the given string"""
-    return "".join(c for c in unicodedata.normalize('NFKD', str(s))
+    return "".join(c for c in unicodedata.normalize("NFKD", str(s))
                    if not unicodedata.combining(c))

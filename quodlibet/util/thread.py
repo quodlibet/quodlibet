@@ -11,7 +11,7 @@ from multiprocessing import cpu_count
 try:
     from concurrent.futures import ThreadPoolExecutor
 except ImportError as e:
-    raise ImportError("python-futures is missing: %r" % e)
+    raise ImportError("python-futures is missing: %r" % e) from e
 
 from gi.repository import GLib
 
@@ -104,7 +104,7 @@ def _call_async(priority, function, cancellable, callback, args, kwargs):
     assert callback is not None
 
     if args is None:
-        args = tuple()
+        args = ()
     if kwargs is None:
         kwargs = {}
 

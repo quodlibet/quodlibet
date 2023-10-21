@@ -15,8 +15,8 @@ from pathlib import Path
 
 try:
     import pytest
-except ImportError:
-    raise SystemExit("pytest missing: sudo apt-get install python3-pytest")
+except ImportError as e:
+    raise SystemExit("pytest missing: sudo apt-get install python3-pytest") from e
 
 try:
     import pyvirtualdisplay
@@ -75,7 +75,7 @@ def is_ci():
     """Guesses if this is being run in (Travis, maybe other) CI.
        See https://docs.travis-ci.com/user/environment-variables
     """
-    return os.environ.get('CI', "").lower() == 'true'
+    return os.environ.get("CI", "").lower() == "true"
 
 _DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert isinstance(_DATA_DIR, fsnative)
@@ -266,10 +266,10 @@ init_test_environ()
 atexit.register(exit_test_environ)
 
 
-def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
+def unit(run=None, suite=None, strict=False, exitfirst=False, network=True,
          quality=True):
     """Returns 0 if everything passed"""
-
+    run = run or []
     # make glib warnings fatal
     if strict:
         from gi.repository import GLib

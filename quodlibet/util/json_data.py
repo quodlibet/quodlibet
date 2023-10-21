@@ -25,7 +25,7 @@ class JSONObject:
     NAME = ""
 
     # The format for JSONObject.
-    Field = namedtuple('Field', ['human_name', 'doc'])
+    Field = namedtuple("Field", ["human_name", "doc"])
     EMPTY_FIELD = Field(None, None)
 
     # Override this to specify a set of field names,
@@ -51,12 +51,12 @@ class JSONObject:
                     for k in self.FIELDS]
         else:
             print_d("No order specified for class %s" % type(self).__name__)
-            return dict((k, v) for k, v in self.__dict__.items()
-                        if self._should_store(k))
+            return {k: v for k, v in self.__dict__.items()
+                    if self._should_store(k)}
 
     def field(self, name):
         """Returns the Field metadata of field `name` if available,
-        or an null / empty one"""
+        or a null / empty one"""
         if isinstance(self.FIELDS, dict):
             return self.FIELDS.get(name, self.EMPTY_FIELD)
 
@@ -78,17 +78,17 @@ class JSONObject:
 class JSONObjectDict(dict):
     """A dict wrapper to persist named `JSONObject`-style objects"""
 
-    def __init__(self, Item=JSONObject):
-        self.Item = Item
+    def __init__(self, item_cls=JSONObject):
+        self.Item = item_cls
         dict.__init__(self)
 
     @classmethod
-    def from_json(cls, ItemKind, json_str):
+    def from_json(cls, item_cls, json_str):
         """
         Factory method for building from an input string,
         a JSON map of {item_name1: {key:value, key2:value2...}, item_name2:...}
         """
-        new = cls(ItemKind)
+        new = cls(item_cls)
 
         try:
             data = json.loads(json_str)
@@ -97,10 +97,10 @@ class JSONObjectDict(dict):
         else:
             for name, blob in data.items():
                 try:
-                    new[name] = ItemKind(**blob)
+                    new[name] = item_cls(**blob)
                 except TypeError as e:
                     raise IOError("Couldn't instantiate %s from JSON (%s)"
-                                  % (ItemKind.__name__, e))
+                                  % (item_cls.__name__, e)) from e
         return new
 
     @classmethod
@@ -132,7 +132,7 @@ class JSONObjectDict(dict):
         """
         print_d("Saving %d %s(s) to JSON.." % (len(self), self.Item.__name__))
         try:
-            obj_dict = dict((o.name, dict(o.data)) for o in self.values())
+            obj_dict = {o.name: dict(o.data) for o in self.values()}
         except AttributeError:
             raise
         json_str = json.dumps(obj_dict, indent=4)

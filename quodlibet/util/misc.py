@@ -77,7 +77,7 @@ def get_module_dir(module=None):
     if module is None:
         file_path = sys._getframe(1).f_globals["__file__"]
     else:
-        file_path = getattr(module, "__file__")
+        file_path = module.__file__
     file_path = path2fsn(file_path)
     return os.path.dirname(os.path.realpath(file_path))
 
@@ -97,7 +97,7 @@ def get_ca_file():
     return os.path.join(get_module_dir(certifi), "cacert.pem")
 
 
-def NamedTemporaryFile(*args, **kwargs):
+def NamedTemporaryFile(*args, **kwargs):  # noqa
     """Like tempfile.NamedTemporaryFile, but supports unicode paths on
     Py2+Windows
     """

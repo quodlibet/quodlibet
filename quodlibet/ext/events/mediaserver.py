@@ -144,7 +144,7 @@ class MediaContainer:
 <signal name="Updated"/>
 """
 
-    def __init__(self, optional=tuple()):
+    def __init__(self, optional=()):
         self.set_introspection(MediaContainer.IFACE, MediaContainer.ISPEC)
 
         props = ["ChildCount", "ItemCount", "ContainerCount", "Searchable"]
@@ -233,7 +233,7 @@ class MediaItem:
 <property type="i" name="TrackNumber" access="read"/>
 """
 
-    def __init__(self, optional=tuple()):
+    def __init__(self, optional=()):
         props = ["URLs", "MIMEType"] + list(optional)
         self.set_properties(MediaItem.IFACE, MediaItem.ISPEC, wl=props)
         self.implement_interface(MediaItem.IFACE, MediaObject.IFACE)
@@ -440,8 +440,8 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         dbus.service.FallbackObject.__init__(self, bus, self.PATH)
 
         self.__library = library
-        self.__map = dict((id(v), v) for v in self.__library.values())
-        self.__reverse = dict((v, k) for k, v in self.__map.items())
+        self.__map = {id(v): v for v in self.__library.values()}
+        self.__reverse = {v: k for k, v in self.__map.items()}
 
         self.__song = DummySongObject(self)
 
@@ -452,8 +452,7 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
             ("removed", self.__songs_removed),
             ("added", self.__songs_added),
         ]
-        self.__sigs = map(
-            lambda x: self.__library.connect(x[0], x[1]), signals)
+        self.__sigs = (self.__library.connect(x[0], x[1]) for x in signals)
 
     def __songs_changed(self, lib, songs):
         # We don't know what changed, so get all properties
@@ -518,16 +517,15 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         self.__library = library.albums
         self.__library.load()
 
-        self.__map = dict((id(v), v) for v in self.__library.values())
-        self.__reverse = dict((v, k) for k, v in self.__map.items())
+        self.__map = {id(v): v for v in self.__library.values()}
+        self.__reverse = {v: k for k, v in self.__map.items()}
 
         signals = [
             ("changed", self.__albums_changed),
             ("removed", self.__albums_removed),
             ("added", self.__albums_added),
         ]
-        self.__sigs = map(
-            lambda x: self.__library.connect(x[0], x[1]), signals)
+        self.__sigs = (self.__library.connect(x[0], x[1]) for x in signals)
 
         self.__dummy = DummyAlbumObject(self)
 

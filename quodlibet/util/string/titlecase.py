@@ -28,7 +28,7 @@ def iswbound(char):
     """Returns whether the given character is a word boundary."""
     category = unicodedata.category(char)
     # If it's a space separator or punctuation
-    return 'Zs' == category or 'Sk' == category or 'P' == category[0]
+    return "Zs" == category or "Sk" == category or "P" == category[0]
 
 
 def utitle(string):
@@ -90,7 +90,7 @@ def _humanise(text):
             prev = previous_real_word(words, i)
             # Add an exception for would-be ellipses...
             if (prev and (prev[-1] not in ENGLISH_SENTENCE_ENDS
-                          or prev[-3:] == '...')):
+                          or prev[-3:] == "...")):
                 words[i] = word.lower()
     return u" ".join(words)
 

@@ -75,25 +75,25 @@ class BasePlayer(GObject.GObject, Equalizer):
     _source = None
 
     __gsignals__ = {
-        'song-started':
+        "song-started":
         (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'song-ended':
+        "song-ended":
         (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
-        'seek':
+        "seek":
         (GObject.SignalFlags.RUN_LAST, None, (object, int)),
-        'paused': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'unpaused': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "paused": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
         # (song, PlayerError)
-        'error': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     __gproperties__ = {
-        'volume': (float, 'player volume', 'the volume of the player',
+        "volume": (float, "player volume", "the volume of the player",
                    0.0, 1.0, 1.0,
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
-        'seekable': (bool, 'seekable', 'if the stream is seekable', True,
+        "seekable": (bool, "seekable", "if the stream is seekable", True,
                      GObject.ParamFlags.READABLE),
-        'mute': (bool, 'mute', 'if the stream is muted', False,
+        "mute": (bool, "mute", "if the stream is muted", False,
                  GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
     }
 

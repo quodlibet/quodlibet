@@ -165,7 +165,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                     " -i "
                         "/usr/share/icons/hicolor/scalable/apps/"
                         "io.github.quodlibet.QuodLibet.svg",
-                pattern="<~rating> \"<title><version| (<version>)>\""
+                pattern='<~rating> "<title><version| (<version>)>"'
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"
                     "<~length| (<~length>)>",
@@ -188,7 +188,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     ]
 
     COMS_FILE = os.path.join(
-        quodlibet.get_user_dir(), 'lists', 'customcommands.json')
+        quodlibet.get_user_dir(), "lists", "customcommands.json")
 
     _commands = None
     """Commands known to the class"""
@@ -250,13 +250,13 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
-        pl_mode = hasattr(self, '_playlists') and bool(len(self._playlists))
+        pl_mode = hasattr(self, "_playlists") and bool(len(self._playlists))
         self.com_index = None
         self.unique_only = False
         submenu = Gtk.Menu()
         for name, c in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
-            connect_obj(item, 'activate', self.__set_pat, name)
+            connect_obj(item, "activate", self.__set_pat, name)
             if pl_mode and not c.playlists_only:
                 continue
             item.set_sensitive(c.playlists_only == pl_mode)
@@ -271,7 +271,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def add_edit_item(cls, submenu):
         config = Gtk.MenuItem(label=_("Edit Custom Commands") + "…")
-        connect_obj(config, 'activate', cls.edit_patterns, config)
+        connect_obj(config, "activate", cls.edit_patterns, config)
         config.set_sensitive(not JSONBasedEditor.is_not_unique())
         submenu.append(SeparatorMenuItem())
         submenu.append(config)

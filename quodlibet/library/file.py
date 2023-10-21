@@ -127,12 +127,12 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         if was_changed:
             if changed is None:
-                self.emit('changed', {item})
+                self.emit("changed", {item})
             else:
                 changed.add(item)
         elif was_removed:
             if removed is None:
-                self.emit('removed', {item})
+                self.emit("removed", {item})
             else:
                 removed.add(item)
 
@@ -156,11 +156,11 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         task = Task(_("Library"), _("Checking mount points"))
         if cofuncid:
             task.copool(cofuncid)
-        for i, (point, items) in task.list(enumerate(self._masked.items())):
+        for _i, (point, items) in task.list(enumerate(self._masked.items())):
             if ismount(point):
                 self._contents.update(items)
                 del self._masked[point]
-                self.emit('added', list(items.values()))
+                self.emit("added", list(items.values()))
                 yield True
 
         task = Task(_("Library"), _("Scanning library"))
@@ -174,18 +174,18 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
             # often than we emit signals; that way the main loop stays
             # interactive and doesn't get bogged down in updates.
             if len(changed) >= 200:
-                self.emit('changed', changed)
+                self.emit("changed", changed)
                 changed = set()
             if len(removed) >= 200:
-                self.emit('removed', removed)
+                self.emit("removed", removed)
                 removed = set()
             if len(changed) > 20 or i % 200 == 0:
                 yield True
         print_d(f"Removing {len(removed)}, changing {len(changed)}).", self._name)
         if removed:
-            self.emit('removed', removed)
+            self.emit("removed", removed)
         if changed:
-            self.emit('changed', changed)
+            self.emit("changed", changed)
 
         for value in self.scan(paths, exclude, cofuncid):
             yield value
@@ -209,17 +209,17 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
              exclude: Optional[Iterable[fsnative]] = None,
              cofuncid=None):
 
-        def need_yield(last_yield=[0]):
+        def need_yield(last_yield=[0]):  # noqa
             current = time.time()
             if abs(current - last_yield[0]) > 0.015:
-                last_yield[0] = current
+                last_yield[0] = current  # noqa
                 return True
             return False
 
-        def need_added(last_added=[0]):
+        def need_added(last_added=[0]):  # noqa
             current = time.time()
             if abs(current - last_added[0]) > 1.0:
-                last_added[0] = current
+                last_added[0] = current  # noqa
                 return True
             return False
 
@@ -574,7 +574,7 @@ class WatchedFileLibraryMixin(FileLibrary):
                         continue
                     unpulsed = 0
                     self.monitor_dir(normalised)
-                    for path, dirs, files in os.walk(normalised):
+                    for path, dirs, _files in os.walk(normalised):
                         normalised = Path(normalize_path(path, True))
                         for d in dirs:
                             self.monitor_dir(normalised / d)

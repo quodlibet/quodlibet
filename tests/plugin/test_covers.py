@@ -12,7 +12,7 @@ from tests import run_gtk_loop
 
 FORMAT_HEADERS = (b"\x89PNG", b"\xFF\xD8\xFF", b"GIF")
 
-gi.require_version('Soup', '3.0')
+gi.require_version("Soup", "3.0")
 from gi.repository import Gtk
 
 from dataclasses import dataclass, field

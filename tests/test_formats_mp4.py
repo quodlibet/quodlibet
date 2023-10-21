@@ -22,7 +22,7 @@ from .helper import get_temp_copy
 class TMP4File(TestCase):
 
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('test.m4a'))
+        self.f = get_temp_copy(get_data_path("test.m4a"))
         self.song = MP4File(self.f)
 
     def tearDown(self):
@@ -76,11 +76,11 @@ class TMP4File(TestCase):
         self._assert_tag_supported("description")
 
     def test_replaygain_tags(self):
-        self._assert_tag_supported('replaygain_album_gain', '-5.67 dB')
-        self._assert_tag_supported('replaygain_album_peak', '1.0')
-        self._assert_tag_supported('replaygain_track_gain', '-5.67 dB')
-        self._assert_tag_supported('replaygain_track_peak', '1.0')
-        self._assert_tag_supported('replaygain_reference_loudness', '89 dB')
+        self._assert_tag_supported("replaygain_album_gain", "-5.67 dB")
+        self._assert_tag_supported("replaygain_album_peak", "1.0")
+        self._assert_tag_supported("replaygain_track_gain", "-5.67 dB")
+        self._assert_tag_supported("replaygain_track_peak", "1.0")
+        self._assert_tag_supported("replaygain_reference_loudness", "89 dB")
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7079, 3)
@@ -122,7 +122,7 @@ class TMP4File(TestCase):
         self.assertTrue("albumartist" in self.song.can_change())
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
+        path = get_data_path("empty.xm")
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, MP4File, path)
 
@@ -171,8 +171,8 @@ class TMP4File(TestCase):
         self.assertFalse(self.song.can_multiple_values("artist"))
 
     def test_m4b_support(self):
-        path = get_data_path('test.m4a')
-        fd, filename = mkstemp(suffix='m4b')
+        path = get_data_path("test.m4a")
+        fd, filename = mkstemp(suffix="m4b")
         os.close(fd)
         shutil.copy(path, filename)
         self.song = MP4File(filename)

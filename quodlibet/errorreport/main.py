@@ -26,6 +26,9 @@ from .ui import ErrorDialog, find_active_window, SubmitErrorDialog
 from .faulthandling import FaultHandlerCrash
 from .logdump import dump_to_disk
 
+SENTRY_DSN = ("514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
+              "0d15f73b978d143b5e84030a1ddf9a73//:sptth")[::-1]
+
 
 @cached_func
 def get_sentry():
@@ -36,9 +39,6 @@ def get_sentry():
     """
 
     # reverse, so it isn't so easy to search for at least
-    SENTRY_DSN = (
-        "514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
-        "0d15f73b978d143b5e84030a1ddf9a73//:sptth")[::-1]
 
     sentry = Sentry(SENTRY_DSN)
     sentry.add_tag("release", quodlibet.get_build_description())

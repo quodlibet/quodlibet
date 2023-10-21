@@ -157,12 +157,12 @@ def process_arguments(argv):
     options.add("screen", arg="dummy")
 
     def is_vol(str):
-        if len(str) == 1 and str[0] in '+-':
+        if len(str) == 1 and str[0] in "+-":
             return True
         return is_float(str)
 
     def is_rate(str):
-        if len(str) == 1 and str[0] in '+-':
+        if len(str) == 1 and str[0] in "+-":
             return True
         return is_float(str)
 
@@ -221,9 +221,9 @@ def process_arguments(argv):
         elif command == "status":
             queue("status")
         elif command == "print-playlist":
-            queue("dump-playlist", opts.get('with-pattern'))
+            queue("dump-playlist", opts.get("with-pattern"))
         elif command == "print-queue":
-            queue("dump-queue", opts.get('with-pattern'))
+            queue("dump-queue", opts.get("with-pattern"))
         elif command == "list-browsers":
             queue("dump-browsers")
         elif command == "volume-up":
@@ -253,7 +253,7 @@ def process_arguments(argv):
                     filename = arg
                 filename = os.path.abspath(os.path.expanduser(arg))
                 queue("play-file", filename)
-        elif command == 'add-location':
+        elif command == "add-location":
             try:
                 path = uri2fsn(arg)
             except ValueError:
@@ -264,10 +264,10 @@ def process_arguments(argv):
             try:
                 queue("print-playing", args[0])
             except IndexError:
-                queue("print-playing", opts.get('with-pattern'))
+                queue("print-playing", opts.get("with-pattern"))
         elif command == "print-query":
-            pattern = opts.get('with-pattern')
-            queue(command, json.dumps({"query": arg, 'pattern': pattern}))
+            pattern = opts.get("with-pattern")
+            queue(command, json.dumps({"query": arg, "pattern": pattern}))
         elif command == "print-query-text":
             queue(command)
         elif command == "start-playing":
@@ -284,6 +284,6 @@ def process_arguments(argv):
             control(*cmd, **{"ignore_error": "run" in actions})
     else:
         # this will exit if it succeeds
-        control('focus', ignore_error=True)
+        control("focus", ignore_error=True)
 
     return actions, cmds_todo

@@ -21,7 +21,7 @@ from quodlibet import _
 from quodlibet import util
 from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.util.path import mtime
-from quodlibet.pattern import Pattern, error as PatternError
+from quodlibet.pattern import Pattern, Error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
 
@@ -248,12 +248,12 @@ class EditCommand(Command):
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
                 self.log(str(e))
-                raise CommandError(_("Editing aborted"))
+                raise CommandError(_("Editing aborted")) from e
             except OSError as e:
                 self.log(str(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
-                        "editor-name": editor_args[0]})
+                        "editor-name": editor_args[0]}) from e
 
             was_changed = mtime(path) != old_mtime
             if not was_changed:
@@ -268,7 +268,7 @@ class EditCommand(Command):
         try:
             text = data.decode("utf-8")
         except ValueError as e:
-            raise CommandError("Invalid data: %r" % e)
+            raise CommandError(f"Invalid data: {e!r}") from e
 
         if options.dry_run:
             self.verbose = True
@@ -301,7 +301,8 @@ class SetCommand(Command):
             song = self.load_song(path)
 
             if not song.can_change(tag):
-                vars = dict(tag=tag, format=type(song).format, file=song("~filename"))
+                vars = {"tag": tag, "format": type(song).format,
+                        "file": song("~filename")}
                 raise CommandError(
                     _("Can not set %(tag)r for %(format)s file %(file)r") % vars)
 
@@ -533,7 +534,7 @@ class ImageSetCommand(Command):
             try:
                 song.set_image(image)
             except AudioFileError as e:
-                raise CommandError(e)
+                raise CommandError(e) from e
 
 
 @Command.register
@@ -562,7 +563,7 @@ class ImageClearCommand(Command):
             try:
                 song.clear_images()
             except AudioFileError as e:
-                raise CommandError(e)
+                raise CommandError(e) from e
 
 
 @Command.register
@@ -751,8 +752,8 @@ class PrintCommand(Command):
 
         try:
             pattern = Pattern(pattern)
-        except PatternError:
-            raise CommandError("Invalid pattern: %r" % pattern)
+        except PatternError as e:
+            raise CommandError(f"Invalid pattern: {pattern!r}") from e
 
         paths = args
         error = False

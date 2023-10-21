@@ -62,7 +62,7 @@ def boolean_config(section, option, label, tooltip):
     button = Gtk.CheckButton()
     button.set_active(config.getboolean(section, option, default))
     button.set_tooltip_text(tooltip)
-    button.connect('toggled', __toggled, section, option)
+    button.connect("toggled", __toggled, section, option)
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
@@ -102,8 +102,8 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
     scale.set_tooltip_text(_(tooltip))
 
     if label_value_callback:
-        scale.connect('format-value', lambda _, value: label_value_callback(value))
-    scale.connect('value-changed', on_change)
+        scale.connect("format-value", lambda _, value: label_value_callback(value))
+    scale.connect("value-changed", on_change)
 
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
@@ -147,7 +147,7 @@ class AdvancedPreferences(EventPlugin):
                 "settings", "search_tags",
                 "Extra search tags:",
                 ("Tags that get searched in addition to "
-                 "the ones present in the song list. Separate with \",\"")),
+                 'the ones present in the song list. Separate with ","')),
             text_config("editing", "multi_line_tags",
                         "Multi-line tags:",
                         ("Tags to consider as multi-line (delimited by \\n) "

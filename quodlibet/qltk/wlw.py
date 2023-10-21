@@ -20,7 +20,7 @@ class WaitLoadBase:
     """Abstract class providing a label, a progressbar, pause/stop buttons,
     and the stepping logic."""
 
-    def __init__(self, count=0, text="", initial={}, limit=3):
+    def __init__(self, count=0, text="", initial=None, limit=3):
         """count: the total amount of items expected, 0 for unknown/indefinite
         text: text to display in the label; may contain % formats
         initial: initial values for % formats (text % initial)
@@ -49,8 +49,8 @@ class WaitLoadBase:
             self._cancel_button = Button(_("_Stop"), Icons.PROCESS_STOP)
             self._pause_button = ToggleButton(_("P_ause"),
                                               Icons.MEDIA_PLAYBACK_PAUSE)
-            self._cancel_button.connect('clicked', self.__cancel_clicked)
-            self._pause_button.connect('clicked', self.__pause_clicked)
+            self._cancel_button.connect("clicked", self.__cancel_clicked)
+            self._pause_button.connect("clicked", self.__pause_clicked)
         else:
             self._cancel_button = None
             self._pause_button = None
@@ -69,9 +69,9 @@ class WaitLoadBase:
         initial.setdefault("remaining", _("Unknown"))
 
         def localeify(k, v):
-            foo = '%(' + k + ')d'
+            foo = "%(" + k + ")d"
             if foo in self._text:
-                self._text = self._text.replace(foo, '%(' + k + ')s')
+                self._text = self._text.replace(foo, "%(" + k + ")s")
                 return k, format_int_locale(int(v))
             return k, v
 
@@ -133,12 +133,12 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
 
         parent = get_top_parent(parent)
         if parent:
-            sig = parent.connect('configure-event', self.__recenter)
-            self.connect('destroy', self.__reset_cursor, parent)
-            self.connect('destroy', self.__disconnect, sig, parent)
+            sig = parent.connect("configure-event", self.__recenter)
+            self.connect("destroy", self.__reset_cursor, parent)
+            self.connect("destroy", self.__disconnect, sig, parent)
             sig_vis = parent.connect(
-                'visibility-notify-event', self.__update_visible)
-            self.connect('destroy', self.__disconnect, sig_vis, parent)
+                "visibility-notify-event", self.__update_visible)
+            self.connect("destroy", self.__disconnect, sig_vis, parent)
             self.set_transient_for(parent)
             window = parent.get_window()
             if window:

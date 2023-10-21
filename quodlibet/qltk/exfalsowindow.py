@@ -44,7 +44,7 @@ from quodlibet.update import UpdateDialog
 class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     pm = SongsMenuPluginHandler()
@@ -138,22 +138,22 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             page.show()
             nb.append_page(page)
         hp.pack2(nb, resize=True, shrink=False)
-        fs.connect('changed', self.__changed, l)
+        fs.connect("changed", self.__changed, l)
         if dir:
             fs.go_to(dir)
 
-        connect_destroy(self.__library, 'changed', self.__library_changed, fs)
+        connect_destroy(self.__library, "changed", self.__library_changed, fs)
 
         self.__save = None
-        connect_obj(self, 'changed', self.set_pending, None)
+        connect_obj(self, "changed", self.set_pending, None)
         for c in fs.get_children():
-            c.get_child().connect('button-press-event',
+            c.get_child().connect("button-press-event",
                 self.__pre_selection_changed, fs, nb)
-            c.get_child().connect('focus',
+            c.get_child().connect("focus",
                                   self.__pre_selection_changed, fs, nb)
-        fs.get_children()[1].get_child().connect('popup-menu',
+        fs.get_children()[1].get_child().connect("popup-menu",
                                                  self.__popup_menu, fs)
-        self.emit('changed', [])
+        self.emit("changed", [])
 
         self.get_child().show()
 
@@ -215,13 +215,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             menu = Gtk.Menu()
 
         b = TrashMenuItem()
-        b.connect('activate', self.__delete, filenames, fs)
+        b.connect("activate", self.__delete, filenames, fs)
         menu.prepend(b)
 
         def selection_done_cb(menu):
             menu.destroy()
 
-        menu.connect('selection-done', selection_done_cb)
+        menu.connect("selection-done", selection_done_cb)
         menu.show_all()
         return view.popup_menu(menu, 0, Gtk.get_current_event_time())
 
@@ -259,15 +259,15 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         elif len(files) == 1:
             self.set_title("%s - Ex Falso" % files[0].comma("title"))
         else:
-            params = ({'title': files[0].comma("title"),
-                       'count': format_int_locale(len(files) - 1)})
+            params = ({"title": files[0].comma("title"),
+                       "count": format_int_locale(len(files) - 1)})
             self.set_title(
                 "%s - Ex Falso" %
                 (ngettext("%(title)s and %(count)s more",
                           "%(title)s and %(count)s more", len(files) - 1)
                  % params))
         self.__library.add(files)
-        self.emit('changed', files)
+        self.emit("changed", files)
 
 
 class PreferencesWindow(QLPreferencesWindow):

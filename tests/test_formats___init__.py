@@ -60,7 +60,7 @@ class TFormats(TestCase):
         self.assertFalse(formats.filter("foomp3"))
 
     def test_music_file(self):
-        path = get_data_path('silence-44-s.mp3')
+        path = get_data_path("silence-44-s.mp3")
         self.assertTrue(formats.MusicFile(path))
 
         # non existing
@@ -125,7 +125,7 @@ class TPickle(TestCase):
         items = load_audio_files(data, process=False)
 
         assert len(items) == len(self.instances)
-        for a, b in zip(items, self.instances):
+        for a, b in zip(items, self.instances, strict=False):
             a = dict(a)
             b = dict(b)
             for key in a:

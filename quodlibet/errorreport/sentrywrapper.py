@@ -48,7 +48,7 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
     comment = str(comment).encode("utf-8")
 
     data = urlencode(
-        [('name', name), ('email', email), ('comments', comment)])
+        [("name", name), ("email", email), ("comments", comment)])
     if not isinstance(data, bytes):
         # py3
         data = data.encode("utf-8")
@@ -63,7 +63,7 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
 
         urlopen(req, timeout=timeout).close()
     except EnvironmentError as e:
-        raise SentryError(e)
+        raise SentryError(e) from e
 
 
 def urlopen_hack(**kwargs):
@@ -140,7 +140,7 @@ class CapturedException:
 
         try:
             raise Exception
-        except Exception:
+        except Exception as e:
             client = Client(
                 self._dsn + "?timeout=%d" % timeout, install_sys_hook=False,
                 install_logging_hook=False, capture_locals=False,
@@ -158,7 +158,7 @@ class CapturedException:
 
             event_id = client.captureException()
             if client.state.did_fail():
-                raise SentryError("captureException failed")
+                raise SentryError("captureException failed") from e
 
             # fix leak
             client.context.deactivate()
@@ -221,7 +221,7 @@ class Sentry:
             from raven.transport import Transport
             from raven.processors import Processor
         except ImportError as e:
-            raise SentryError(e)
+            raise SentryError(e) from e
 
         class DummyTransport(Transport):
             """A sync raven transport which does nothing"""
@@ -267,7 +267,7 @@ class Sentry:
             """
 
             def filter_stacktrace(self, data, **kwargs):
-                for frame in data.get('frames', []):
+                for frame in data.get("frames", []):
                     if frame.get("abs_path"):
                         frame["abs_path"] = \
                             frame["abs_path"].replace(os.sep, "/")

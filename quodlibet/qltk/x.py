@@ -26,8 +26,7 @@ from .paned import Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, \
     ConfigRHPaned, ConfigRVPaned
 
 
-Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned
-
+Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned  # noqa
 
 class ScrolledWindow(Gtk.ScrolledWindow):
     """Draws a border around all edges that don't touch the parent window"""
@@ -219,8 +218,8 @@ class Notebook(Gtk.Notebook):
         if label is None:
             try:
                 label = page.title
-            except AttributeError:
-                raise TypeError("no page.title and no label given")
+            except AttributeError as e:
+                raise TypeError("no page.title and no label given") from e
 
         if not isinstance(label, Gtk.Widget):
             label = Gtk.Label(label=label)

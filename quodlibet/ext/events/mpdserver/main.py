@@ -100,7 +100,7 @@ def parse_command(line):
         lex = shlex.shlex(bytes2fsn(parts[1], "utf-8"), posix=True)
         lex.whitespace_split = True
         lex.commenters = ""
-        lex.quotes = "\""
+        lex.quotes = '"'
         lex.whitespace = " \t"
         args = [fsn2bytes(a, "utf-8") for a in lex]
     else:
@@ -109,14 +109,14 @@ def parse_command(line):
     try:
         command = command.decode("utf-8")
     except ValueError as e:
-        raise ParseError(e)
+        raise ParseError(e) from e
 
     dec_args = []
     for arg in args:
         try:
             arg = arg.decode("utf-8")
         except ValueError as e:
-            raise ParseError(e)
+            raise ParseError(e) from e
         dec_args.append(arg)
 
     return command, dec_args
@@ -226,7 +226,7 @@ class MPDService:
         self._idle_subscriptions.pop(connection, None)
 
     def emit_changed(self, subsystem):
-        for conn, subs in self._idle_queue.items():
+        for _conn, subs in self._idle_queue.items():
             subs.add(subsystem)
         self.flush_idle()
 
@@ -526,7 +526,7 @@ class MPDConnection(BaseTCPConnection):
 
         if command == u"command_list_end":
             if not self._use_command_list:
-                self._error(u"list_end without begin")
+                self._error(u"list_end without begin", 0, 0)
                 return
 
             for i, (cmd, args) in enumerate(self._command_list):
@@ -534,7 +534,7 @@ class MPDConnection(BaseTCPConnection):
                     self._exec_command(cmd, args)
                 except MPDRequestError as e:
                     # reraise with index
-                    raise MPDRequestError(e.msg, e.code, i)
+                    raise MPDRequestError(e.msg, e.code, i) from e
 
             self.ok()
             self._use_command_list = False
@@ -609,8 +609,8 @@ def _verify_length(args, length):
 def _parse_int(arg):
     try:
         return int(arg)
-    except ValueError:
-        raise MPDRequestError("invalid arg")
+    except ValueError as e:
+        raise MPDRequestError("invalid arg") from e
 
 
 def _parse_bool(arg):
@@ -618,8 +618,8 @@ def _parse_bool(arg):
         value = int(arg)
         if value not in (0, 1):
             raise ValueError
-    except ValueError:
-        raise MPDRequestError("invalid arg")
+    except ValueError as e:
+        raise MPDRequestError("invalid arg") from e
     else:
         return bool(value)
 
@@ -627,8 +627,8 @@ def _parse_bool(arg):
 def _parse_range(arg):
     try:
         values = [int(v) for v in arg.split(":")]
-    except ValueError:
-        raise MPDRequestError("arg in range not a number")
+    except ValueError as e:
+        raise MPDRequestError("arg in range not a number") from e
 
     if len(values) == 1:
         return (values[0], values[0] + 1)
@@ -816,8 +816,8 @@ def _cmd_seekcur(conn, service, args):
 
     try:
         time_ = int(time_)
-    except ValueError:
-        raise MPDRequestError("arg not a number")
+    except ValueError as e:
+        raise MPDRequestError("arg not a number") from e
 
     service.seekcur(time_, relative)
 
@@ -837,7 +837,7 @@ def _cmd_commands(conn, service, args):
 
 @MPDConnection.Command("tagtypes")
 def _cmd_tagtypes(conn, service, args):
-    for mpd_key, ql_key in TAG_MAPPING:
+    for mpd_key, _ql_key in TAG_MAPPING:
         conn.write_line(mpd_key)
 
 

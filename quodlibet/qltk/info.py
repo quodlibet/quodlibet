@@ -59,12 +59,12 @@ class SongInfo(Gtk.EventBox):
         align.add(label)
         label.set_alignment(0.0, 0.0)
         self._label = label
-        connect_destroy(library, 'changed', self._on_library_changed, player)
-        connect_destroy(player, 'song-started', self._on_song_started)
+        connect_destroy(library, "changed", self._on_library_changed, player)
+        connect_destroy(player, "song-started", self._on_song_started)
 
-        label.connect('populate-popup', self._on_label_popup, player, library)
-        self.connect('key-press-event', self._on_key_press_event, player)
-        self.connect('button-press-event', self._on_button_press_event,
+        label.connect("populate-popup", self._on_label_popup, player, library)
+        self.connect("key-press-event", self._on_key_press_event, player)
+        self.connect("button-press-event", self._on_button_press_event,
                      player, library)
 
         try:
@@ -112,7 +112,7 @@ class SongInfo(Gtk.EventBox):
 
     def _get_menu(self, player, library):
         item = qltk.MenuItem(_(u"_Edit Display…"), Icons.EDIT)
-        item.connect('activate', self._on_edit_display, player)
+        item.connect("activate", self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
         song_menu = SongsMenu(library, songs, remove=False, delete=True,
@@ -125,7 +125,7 @@ class SongInfo(Gtk.EventBox):
         editor = PatternEdit(
             self, SongInfo._pattern, alternative_markup=True, links=True)
         editor.text = self._pattern
-        editor.apply.connect('clicked', self._on_set_pattern, editor, player)
+        editor.apply.connect("clicked", self._on_set_pattern, editor, player)
         editor.show()
 
     def _on_set_pattern(self, button, edit, player):
@@ -152,7 +152,7 @@ class SongInfo(Gtk.EventBox):
     def _on_song_started(self, player, song):
         self._update_info(player)
 
-    def _update_info(self, player, _last={}):
+    def _update_info(self, player, _last={}):  # noqa
         text = (self._not_playing if player.info is None
                 else self._compiled % player.info)
 

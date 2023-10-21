@@ -67,16 +67,16 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
 
     def test_ends_with_dots_or_spaces(self):
         empty = fsnative(u"")
-        v = self.c.filter(empty, fsnative(u'foo. . '))
+        v = self.c.filter(empty, fsnative(u"foo. . "))
         self.failUnlessEqual(v, fsnative(u"foo. ._"))
         self.assertTrue(isinstance(v, fsnative))
 
         if os.name == "nt":
             self.failUnlessEqual(
-                self.c.filter(empty, u'foo. \\bar .'), u"foo._\\bar _")
+                self.c.filter(empty, u"foo. \\bar ."), u"foo._\\bar _")
         else:
             self.failUnlessEqual(
-                self.c.filter(empty, u'foo. /bar .'), "foo._/bar _")
+                self.c.filter(empty, u"foo. /bar ."), "foo._/bar _")
 
 
 class TReplaceColons(TFilter, TFilterMixin):
@@ -153,7 +153,7 @@ class TLowercase(TFilter, TFilterMixin):
 
 class Renamer(Gtk.EventBox):
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -205,7 +205,7 @@ class TMoveArt(TestCase):
         config.init()
         self.root_path = mkdtemp()
         self.filenames = \
-            ['cover.jpg', 'info.jpg', 'title.jpg', 'title2.jpg']
+            ["cover.jpg", "info.jpg", "title.jpg", "title2.jpg"]
 
     def generate_songs(self, path, quantity):
         return [Song(path, num) for num in range(quantity)]
@@ -227,7 +227,7 @@ class TMoveArt(TestCase):
 
     def song_set(self, path):
         songs = self.generate_songs(path, 1)
-        files = self.generate_files(path, [os.path.basename(song['~filename'])
+        files = self.generate_files(path, [os.path.basename(song["~filename"])
                                            for song in songs])
         return files, songs
 
@@ -235,7 +235,7 @@ class TMoveArt(TestCase):
         return (os.path.join(root_path, album, artist),
                 os.path.join(root_path + "_2", album, artist))
 
-    def moveart_set(self, artist='artist', album='album',
+    def moveart_set(self, artist="artist", album="album",
                     source=None, target=None, file_pattern="<title>"):
         source2, target2 = \
             self.source_target(self.root_path, artist, album)
@@ -256,7 +256,7 @@ class TMoveArt(TestCase):
         # move art not set, no art files should move
         count_expected = 0
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -268,7 +268,7 @@ class TMoveArt(TestCase):
         # "cover.jpg,folder.jpg,.folder.jpg"
         count_expected = 1
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -280,7 +280,7 @@ class TMoveArt(TestCase):
         # wildcard added to search_filenames for catchall"
         count_expected = 4
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -288,12 +288,12 @@ class TMoveArt(TestCase):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
-        self.filenames = ['artist_[x].jpg']
+        self.filenames = ["artist_[x].jpg"]
 
         # test whether we cope with non-escaped special glob characters"
         count_expected = 1
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -304,8 +304,8 @@ class TMoveArt(TestCase):
 
         # should be a no-op"
         count_expected = 4
-        source, target = self.moveart_set(target='')
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        source, target = self.moveart_set(target="")
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -313,12 +313,12 @@ class TMoveArt(TestCase):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "<artist>.jpg")
-        self.filenames = ['cover.jpg', 'artist.jpg']
+        self.filenames = ["cover.jpg", "artist.jpg"]
 
         # should be a no-op
         count_expected = 1
-        source, target = self.moveart_set(target='')
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        source, target = self.moveart_set(target="")
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -326,7 +326,7 @@ class TMoveArt(TestCase):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
-        self.filenames = ['art.jpg']
+        self.filenames = ["art.jpg"]
 
         # move set
         source, target = self.moveart_set()
@@ -334,24 +334,24 @@ class TMoveArt(TestCase):
         self.assertRaises(Exception, self.moveart_set())
 
         # remove audio
-        os.remove(os.path.join(target, 'title_1.mp3'))
+        os.remove(os.path.join(target, "title_1.mp3"))
 
         # move exising target art to .orig suffix
         count_expected = 2
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*jpg*'))
+        target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
         # remove audio
-        os.remove(os.path.join(target, 'title_1.mp3'))
-        os.remove(os.path.join(target, 'art.jpg.orig'))
+        os.remove(os.path.join(target, "title_1.mp3"))
+        os.remove(os.path.join(target, "art.jpg.orig"))
         config.set("rename", "move_art_overwrite", True)
 
         # overwrite existing target arg
         count_expected = 1
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*jpg*'))
+        target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)
 
@@ -361,13 +361,13 @@ class TMoveArt(TestCase):
         config.set("albumart", "search_filenames", "*.jpg")
 
         source, target = \
-            self.source_target(self.root_path, 'artist', 'album')
+            self.source_target(self.root_path, "artist", "album")
         source2, target2 = \
-            self.source_target(self.root_path, 'artist', 'album2')
+            self.source_target(self.root_path, "artist", "album2")
 
-        self.filenames = ['art.jpg']
+        self.filenames = ["art.jpg"]
         self.art_set(source)
-        self.filenames = ['art2.jpg']
+        self.filenames = ["art2.jpg"]
         self.art_set(source2)
 
         song_files, songs = self.song_set(source)
@@ -376,12 +376,12 @@ class TMoveArt(TestCase):
         self.renamer.add_songs(songs + songs2)
 
         # avoid audio file clashes
-        pattern = os.path.join(target, '[<album>] artist - <title>')
+        pattern = os.path.join(target, "[<album>] artist - <title>")
         self.renamer.rename(pattern, songs + songs2)
 
         # album art sets merged
         count_expected = 2
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
         self.failUnlessEqual(count_target, count_expected)

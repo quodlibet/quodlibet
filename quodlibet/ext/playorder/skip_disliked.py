@@ -42,7 +42,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         def on_changed(button):
             pconfig.set("threshold", button.get_value())
 
-        fb_spin.connect('changed', on_changed)
+        fb_spin.connect("changed", on_changed)
 
         vb.add(fb_spin)
         vb.show_all()

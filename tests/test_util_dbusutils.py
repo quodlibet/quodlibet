@@ -57,7 +57,7 @@ class TDbusUtils(TestCase):
 
         self.failUnlessRaises(TypeError, apply_signature, 2, "a(s)")
 
-        text = b'\xc3\xb6\xc3\xa4\xc3\xbc'
+        text = b"\xc3\xb6\xc3\xa4\xc3\xbc"
         value = apply_signature(text, "s", utf8_strings=True)
         self.failUnless(isinstance(value, str))
         value = apply_signature(text, "s")
@@ -96,8 +96,8 @@ class TDbusUtils(TestCase):
         self.failUnlessEqual(len(list_spec_properties(spec).keys()), 2)
 
     def test_validate_utf8(self):
-        self.failUnlessEqual(dbus_unicode_validate(u'X\ufffeX'), u"X\ufffdX")
-        self.failUnlessEqual(dbus_unicode_validate(b'X\xef\xbf\xbeX'),
+        self.failUnlessEqual(dbus_unicode_validate(u"X\ufffeX"), u"X\ufffdX")
+        self.failUnlessEqual(dbus_unicode_validate(b"X\xef\xbf\xbeX"),
                              u"X\ufffdX")
 
     def test_property_mixin(self):

@@ -12,10 +12,10 @@ from quodlibet.order.repeat import OneSong
 from quodlibet.qltk.songmodel import PlaylistModel
 from tests import TestCase
 
-r0 = AudioFile({'~#rating': 0})
-r1 = AudioFile({'~#rating': 0.33})
-r2 = AudioFile({'~#rating': 0.66})
-r3 = AudioFile({'~#rating': 1.0})
+r0 = AudioFile({"~#rating": 0})
+r1 = AudioFile({"~#rating": 0.33})
+r2 = AudioFile({"~#rating": 0.66})
+r3 = AudioFile({"~#rating": 1.0})
 
 
 class TOrderWeighted(TestCase):
@@ -25,7 +25,7 @@ class TOrderWeighted(TestCase):
         pl.set([r3, r1, r2, r0])
         order = OrderWeighted()
         scores = defaultdict(int)
-        for i in range(500):
+        for _i in range(500):
             order.reset(pl)
             cur = pl.current_iter
             for j in range(3, -1, -1):
@@ -58,5 +58,5 @@ class TOrderOneSong(TestCase):
         order = OneSong(OrderInOrder())
         pl = PlaylistModel(OrderInOrder)
         pl.set([r0, r1])
-        for i in range(2):
+        for _i in range(2):
             self.failUnlessEqual(order.next(pl, pl.current_iter), None)

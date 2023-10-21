@@ -11,7 +11,7 @@ from typing import Generic, TypeVar, Mapping, Union, List, Sequence, \
     Optional, Tuple
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 Real = Union[int, float]
 AttributeGetter = itemgetter
 AttributeGetterToWeight = Mapping[AttributeGetter, Real]
@@ -30,9 +30,9 @@ class _MatchData(Generic[T]):
         self.b_idx_to_similarity = [0.0 for _ in range(b_size)]
 
         self.best_b_idx = None
-        self.best_b_similarity = float('-inf')
+        self.best_b_similarity = float("-inf")
         self.second_best_b_idx = None
-        self.second_best_b_similarity = float('-inf')
+        self.second_best_b_similarity = float("-inf")
 
         self.continue_attr_index = 0
 
@@ -74,7 +74,7 @@ class _MatchData(Generic[T]):
             # None left, which means all others a's have better values
             # than this one. As a result, this a will stay alone :(
             self.best_b_idx = None
-            self.best_b_similarity = float('-inf')
+            self.best_b_similarity = float("-inf")
             return
 
         sim, idx = self._sorted_b_similarity_with_idx_pairs[-1]

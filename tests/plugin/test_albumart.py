@@ -12,8 +12,8 @@ from tests.plugin import PluginTestCase
 from quodlibet import library, config
 from quodlibet import app
 
-A_SONG = AudioFile({'~filename': '/dev/null', 'artist': 'Mr Man',
-                    'album': 'Bars of Foo'})
+A_SONG = AudioFile({"~filename": "/dev/null", "artist": "Mr Man",
+                    "album": "Bars of Foo"})
 
 # Keep IDEs happy
 DownloadAlbumArt = AlbumArtWindow = CoverArea = None

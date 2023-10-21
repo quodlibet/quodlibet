@@ -38,7 +38,7 @@ from quodlibet.util.path import mkdir
 # In newer RawConfigParser it is possible to replace the internal dict. The
 # implementation only uses items() for writing, so replace with a dict that
 # returns them sorted. This makes it easier to look up entries in the file.
-class _sorted_dict(collections.OrderedDict):
+class _sorted_dict(collections.OrderedDict):  # noqa
     def items(self):
         return sorted(super().items())
 
@@ -175,7 +175,7 @@ class Config:
                         return self.defaults.getbytes(section, option)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def getboolean(self, section, option, default=_DEFAULT):
@@ -193,7 +193,7 @@ class Config:
                         return self.defaults.getboolean(section, option)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def getint(self, section, option, default=_DEFAULT):
@@ -211,7 +211,7 @@ class Config:
                         return self.defaults.getint(section, option)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def getfloat(self, section, option, default=_DEFAULT):
@@ -229,7 +229,7 @@ class Config:
                         return self.defaults.getfloat(section, option)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def getstringlist(self, section, option, default=_DEFAULT):
@@ -243,11 +243,11 @@ class Config:
             value = self._config.get(section, option)
 
             parser = csv.reader(
-                [value], lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+                [value], lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
             try:
                 vals = next(parser)
             except (csv.Error, ValueError) as e:
-                raise Error(e)
+                raise Error(e) from e
             return vals
         except Error as e:
             if default is _DEFAULT:
@@ -256,7 +256,7 @@ class Config:
                         return self.defaults.getstringlist(section, option)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def setstringlist(self, section, option, values):
@@ -265,7 +265,7 @@ class Config:
         sw = StringIO()
         values = [str(v) for v in values]
 
-        writer = csv.writer(sw, lineterminator='\n', quoting=csv.QUOTE_MINIMAL)
+        writer = csv.writer(sw, lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
         writer.writerow(values)
         self.set(section, option, sw.getvalue())
 
@@ -289,7 +289,7 @@ class Config:
                         return self.defaults.getlist(section, option, sep=sep)
                     except Error:
                         pass
-                raise Error(e)
+                raise Error(e) from e
             return default
 
     def set(self, section, option, value):
