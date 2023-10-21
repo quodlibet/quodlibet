@@ -8,11 +8,17 @@
 import os
 import subprocess
 
-from ruff.__main__ import find_ruff_bin
+import pytest
 
-from tests import QL_BASE_PATH
+try:
+    from ruff.__main__ import find_ruff_bin
+except ImportError:
+    find_ruff_bin = None
+from tests import QL_BASE_PATH, skipUnless
 
 
+@pytest.mark.quality
+@skipUnless(find_ruff_bin, "Can't find ruff executable")
 def test_ruff():
     ruff = find_ruff_bin()
     completed_process = subprocess.run([os.fsdecode(ruff), "check", str(QL_BASE_PATH)])
