@@ -228,7 +228,7 @@ class AdvancedPreferences(EventPlugin):
                  "the search bar without confirmation.")),
             slider_config(
                 "player", "playcount_minimum_length_proportion",
-                "Minimum length proportion to consider a track as played:",
+                "Minimum length to consider a track as played:",
                 ("Consider a track played after listening to this proportion of "
                  "its total duration"),
                 label_value_callback=lambda value: f"{int(value * 100)}%"),
