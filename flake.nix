@@ -25,7 +25,7 @@
 
           # build time
           pkgs.gettext
-          pkgs.gobject-introspection  # or -unwrapped?
+          pkgs.gobject-introspection-unwrapped
           pkgs.wrapGAppsHook
 
           ## runtime
