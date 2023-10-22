@@ -20,13 +20,13 @@ from .helper import get_temp_copy
 class TWMAFile(TestCase):
 
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('test.wma'))
+        self.f = get_temp_copy(get_data_path("test.wma"))
         self.song = WMAFile(self.f)
 
-        self.f2 = get_temp_copy(get_data_path('test-2.wma'))
+        self.f2 = get_temp_copy(get_data_path("test-2.wma"))
         self.song2 = WMAFile(self.f2)
 
-        self.f3 = get_temp_copy(get_data_path('test.asf'))
+        self.f3 = get_temp_copy(get_data_path("test.asf"))
         self.song3 = WMAFile(self.f3)
 
     def tearDown(self):
@@ -113,7 +113,7 @@ class TWMAFile(TestCase):
         self.assertEqual(tag["MusicBrainz/Release Track Id"], [u"bla"])
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
+        path = get_data_path("empty.xm")
         self.assertTrue(os.path.exists(path))
         self.assertRaises(Exception, WMAFile, path)
 

@@ -161,7 +161,7 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
                     msg += stderr or ("Got error: %d" % p.returncode)
                     raise GettextError(msg)
                 if stderr:
-                    warnings.warn(stderr, GettextWarning)
+                    warnings.warn(stderr, GettextWarning, stacklevel=2)
             finally:
                 potfiles_in.unlink()
     except Exception:
@@ -207,7 +207,7 @@ def compile_po(po_path: Path, target_file: Path):
             ["msgfmt", "-o", str(target_file), str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def po_stats(po_path: Path):
@@ -218,7 +218,7 @@ def po_stats(po_path: Path):
             ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def merge_file(po_dir, file_type, source_file, target_file):
@@ -238,7 +238,7 @@ def merge_file(po_dir, file_type, source_file, target_file):
              "-o", target_file],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def get_po_path(po_path: Path, lang_code: str) -> Path:
@@ -263,7 +263,7 @@ def update_po(pot_path: Path, po_path: Path, out_path: Optional[Path] = None) ->
             ["msgmerge", "-o", str(out_path), str(po_path), str(pot_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def check_po(po_path: Path, ignore_header=False):
@@ -278,7 +278,7 @@ def check_po(po_path: Path, ignore_header=False):
             ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def check_pot(pot_path: Path) -> None:
@@ -318,7 +318,7 @@ def create_po(pot_path: Path, po_path: Path) -> None:
             ["msginit", "--no-translator", "-i", str(pot_path), "-o", str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
     if not po_path.exists():
         raise GettextError(f"something went wrong; {po_path!s} didn't get created")
@@ -389,12 +389,12 @@ def _get_xgettext_version() -> Tuple:
     try:
         result = subprocess.check_output(["xgettext", "--version"])
     except subprocess.CalledProcessError as e:
-        raise GettextError(e)
+        raise GettextError(e) from e
 
     try:
         return tuple(map(int, result.splitlines()[0].split()[-1].split(b".")))
     except (IndexError, ValueError) as e:
-        raise GettextError(e)
+        raise GettextError(e) from e
 
 
 @functools.lru_cache(None)

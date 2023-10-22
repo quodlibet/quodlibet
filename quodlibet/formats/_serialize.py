@@ -22,11 +22,11 @@ class SerializationError(Exception):
 def _py2_to_py3(items):
     for i in items:
         try:
-            l = list(i.items())
-        except AttributeError:
-            raise SerializationError
+            li = list(i.items())
+        except AttributeError as e:
+            raise SerializationError from e
         i.clear()
-        for k, v in l:
+        for k, v in li:
             if isinstance(k, bytes):
                 k = k.decode("utf-8", "replace")
             else:
@@ -119,7 +119,7 @@ def load_audio_files(data, process=True):
     try:
         items = pickle_loads(data, lookup_func)
     except pickle.UnpicklingError as e:
-        raise SerializationError(e)
+        raise SerializationError(e) from e
 
     if error_occured:
         items = [i for i in items if not isinstance(i, dummy)]
@@ -135,7 +135,7 @@ def load_audio_files(data, process=True):
         for i in items:
             i.__class__ = i.real_type
     except AttributeError as e:
-        raise SerializationError(e)
+        raise SerializationError(e) from e
 
     return items
 
@@ -158,4 +158,4 @@ def dump_audio_files(item_list, process=True):
     try:
         return pickle_dumps(item_list, 2)
     except pickle.PicklingError as e:
-        raise SerializationError(e)
+        raise SerializationError(e) from e

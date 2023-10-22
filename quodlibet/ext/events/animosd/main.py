@@ -33,7 +33,7 @@ class AnimOsd(EventPlugin):
 
     @cached_property
     def Conf(self):
-        return get_config('animosd')
+        return get_config("animosd")
 
     def PluginPreferences(self, parent):
         return AnimOsdPrefs(self)
@@ -52,8 +52,8 @@ class AnimOsd(EventPlugin):
 
         window = OSDWindow(self.Conf, song)
         window.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
-        window.connect('button-press-event', self.__buttonpress)
-        window.connect('fade-finished', self.__fade_finished)
+        window.connect("button-press-event", self.__buttonpress)
+        window.connect("fade-finished", self.__fade_finished)
         self.__current_window = window
 
         window.set_opacity(0.0)

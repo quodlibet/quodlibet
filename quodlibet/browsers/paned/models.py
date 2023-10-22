@@ -23,7 +23,7 @@ class BaseEntry(Collection):
 
         self.songs = set(songs or [])
         self.key = key # not used for sorting!
-        self.sort = tuple()
+        self.sort = ()
 
     def all_have(self, tag, value):
         """Check if all songs have tag `tag` set to `value`"""
@@ -82,7 +82,7 @@ class SongsEntry(BaseEntry):
 class UnknownEntry(SongsEntry):
 
     def __init__(self, songs=None):
-        super().__init__("", tuple(), songs)
+        super().__init__("", (), songs)
 
     def get_text(self, config):
         return True, util.bold(_("Unknown"))
@@ -131,7 +131,7 @@ class PaneModel(ObjectStore):
             self.__key_cache[song] = [v for v in self.config.format(song) if v[0]]
             return self.__key_cache[song]
 
-    def __human_sort_key(self, text, reg=re.compile('<.*?>')):
+    def __human_sort_key(self, text, reg=re.compile("<.*?>")):
         try:
             return self.__sort_cache[text], text
         except KeyError:
@@ -236,7 +236,7 @@ class PaneModel(ObjectStore):
             if unknown.songs:
                 self.insert(0, [unknown])
             entries = []
-            for key, (val, sort_key, srtp) in items:
+            for _key, (val, _sort_key, _srtp) in items:
                 entries.append(val)
             self.insert_many(0, reversed(entries))
             if len(self) > 1:
@@ -273,7 +273,7 @@ class PaneModel(ObjectStore):
         # insert the left over songs
         if items:
             entries = []
-            for key, (val, srt, srtp) in items:
+            for _key, (val, _srt, _srtp) in items:
                 entries.append(val)
             if isinstance(self[-1][0], UnknownEntry):
                 self.insert_many(len(self) - 1, entries)

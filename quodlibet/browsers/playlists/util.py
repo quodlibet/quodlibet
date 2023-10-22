@@ -21,7 +21,7 @@ from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
 def confirm_remove_playlist_dialog_invoke(
-    parent, playlist, Confirmer=ConfirmationPrompt):
+    parent, playlist, confirmer_cls=ConfirmationPrompt):
     """Creates and invokes a confirmation dialog that asks the user whether or not
        to go forth with the deletion of the selected playlist.
 
@@ -38,30 +38,30 @@ def confirm_remove_playlist_dialog_invoke(
     ok_text = _("_Delete")
     ok_icon = Icons.EDIT_DELETE
 
-    dialog = Confirmer(parent, title, description, ok_text, ok_icon)
+    dialog = confirmer_cls(parent, title, description, ok_text, ok_icon)
     prompt = dialog.run()
-    response = (prompt == Confirmer.RESPONSE_INVOKE)
+    response = (prompt == confirmer_cls.RESPONSE_INVOKE)
     return response
 
 
 def confirm_dnd_playlist_dialog_invoke(
-    parent, songs, target_playlist_name, Confirmer=ConfirmationPrompt):
+    parent, songs, target_playlist_name, confirmer_cls=ConfirmationPrompt):
     """see confirm_remove_playlist_dialog_invoke above, except for
        the action of attempting to extend a playlist with a second
        dragged and dropped playlist.
     """
     title = ngettext(
-        "Extend \"{pl_name}\" with {num} additional track?",
-        "Extend \"{pl_name}\" with {num} additional tracks?",
+        'Extend "{pl_name}" with {num} additional track?',
+        'Extend "{pl_name}" with {num} additional tracks?',
         len(songs),
     ).format(pl_name=target_playlist_name, num=len(songs))
 
     description = ""
     ok_text = _("_Add Tracks")
 
-    dialog = Confirmer(parent, title, description, ok_text)
+    dialog = confirmer_cls(parent, title, description, ok_text)
     prompt = dialog.run()
-    response = (prompt == Confirmer.RESPONSE_INVOKE)
+    response = (prompt == confirmer_cls.RESPONSE_INVOKE)
     return response
 
 
@@ -96,7 +96,7 @@ def parse_pls(filelike, pl_name, songs_lib=None, pl_lib=None):
 
 def __attempt_add(filename, filenames):
     try:
-        filenames.append(bytes2fsn(filename, 'utf-8'))
+        filenames.append(bytes2fsn(filename, "utf-8"))
     except ValueError:
         print_w(f"Ignoring invalid filename {filename!r}")
 
@@ -107,7 +107,7 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         None, len(files),
         _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
     win.show()
-    for i, filename in enumerate(files):
+    for _i, filename in enumerate(files):
         song = None
         if not uri_is_valid(filename):
             # Plain filename.
@@ -169,4 +169,4 @@ def _dir_for(filelike):
             return os.path.dirname(path2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
-        return text2fsn(u'')
+        return text2fsn(u"")

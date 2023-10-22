@@ -1,6 +1,6 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2022 Nick Boultbee
+#           2011-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -129,9 +129,8 @@ class Collection:
                 return x
 
             v = map(default_funct, v)
-            v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
-            v = map(
-                lambda x: isinstance(x, str) and x or str(x), v)
+            v = ((isinstance(x, float) and "%.2f" % x) or x for x in v)
+            v = (isinstance(x, str) and x or str(x) for x in v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -195,8 +194,10 @@ class Collection:
                 length = self.__get_value("~#length")
                 if not length:
                     return 0
+
                 def w(s):
                     return s("~#bitrate", 0) * s("~#length", 0)
+
                 return sum(w(song) for song in self.songs) / length
             else:
                 # Standard or unknown numeric key.
@@ -289,8 +290,7 @@ class Collection:
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        values = list(map(lambda x: x[0],
-                          sorted(result.items(), key=lambda x: (x[1], x[0]))))
+        values = [x[0] for x in sorted(result.items(), key=lambda x: (x[1], x[0]))]
         return "\n".join(values) if values else None
 
 
@@ -506,11 +506,11 @@ class Playlist(Collection, abc.Iterable, HasKey):
             print_d(f"Changed playlist {self!r} ({msg})")
             self.inhibit = True
             # Awkward, but we don't want to make Collection a GObject really
-            self.pl_lib.emit('changed', [self])
+            self.pl_lib.emit("changed", [self])
             self.inhibit = False
         if self.songs_lib and not self.inhibit and songs:
             # See above re: emitting
-            self.songs_lib.emit('changed', songs)
+            self.songs_lib.emit("changed", songs)
 
     def has_songs(self, songs):
         # TODO(rm): consider the "library.masked" business
@@ -560,7 +560,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
     def __str__(self):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
-        return u"\"%s\" (%s)" % (self.name, songs_text)
+        return u'"%s" (%s)' % (self.name, songs_text)
 
 
 class FileBackedPlaylist(Playlist):
@@ -609,7 +609,8 @@ class FileBackedPlaylist(Playlist):
                     self._list.append(line)
 
     @classmethod
-    def new(cls, dir_, base=_("New Playlist"), songs_lib=None, pl_lib=None):
+    def new(cls, dir_: _fsnative, base: str | None = None, songs_lib=None, pl_lib=None):
+        base = base or _("New Playlist")
         assert isinstance(dir_, fsnative)
 
         if not (dir_ and os.path.realpath(dir_)):
@@ -686,7 +687,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
     _SAFER = {c: quote(c, safe="")
-              for c in ("\\/:*?\"<>|" if is_windows() else "\0/")}
+              for c in ('\\/:*?"<>|' if is_windows() else "\0/")}
 
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, songs_lib, pl_lib):

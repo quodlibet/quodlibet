@@ -117,7 +117,7 @@ class ResultView(AllTreeView):
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property('icon-name', Icons.EDIT)
+            cell.set_property("icon-name", Icons.EDIT)
             cell.set_sensitive(entry.can_write)
 
         column.set_cell_data_func(render, cell_data)
@@ -125,27 +125,27 @@ class ResultView(AllTreeView):
         column.set_min_width(60)
         self.append_column(column)
 
-        self.connect('button-press-event', self.__button_press, column)
+        self.connect("button-press-event", self.__button_press, column)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column = Gtk.TreeViewColumn(util.tag("~basename"), render)
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property('text', entry.song("~basename"))
+            cell.set_property("text", entry.song("~basename"))
 
         column.set_cell_data_func(render, cell_data)
         column.set_expand(True)
         self.append_column(column)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column = Gtk.TreeViewColumn(_("Status"), render)
 
         def cell_data(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property('text', Status.to_string(entry.status))
+            cell.set_property("text", Status.to_string(entry.status))
 
         column.set_cell_data_func(render, cell_data)
         column.set_expand(False)
@@ -153,7 +153,7 @@ class ResultView(AllTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         # Translators: album release ID
         column = Gtk.TreeViewColumn(_("Release"), render)
         self._release_column = column
@@ -173,7 +173,7 @@ class ResultView(AllTreeView):
 
         for tag in ["tracknumber", "artist", "title", "album"]:
             render = Gtk.CellRendererText()
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
             column = Gtk.TreeViewColumn(util.tag(tag), render)
 
             def cell_data2(column, cell, model, iter_, data, tag=tag):
@@ -264,9 +264,9 @@ class SearchWindow(Window):
         sw.add(view)
 
         self.pool = pool = FingerPrintPool()
-        pool.connect('fingerprint-done', self.__fp_done_cb)
-        pool.connect('fingerprint-error', self.__fp_error_cb)
-        pool.connect('fingerprint-started', self.__fp_started_cb)
+        pool.connect("fingerprint-done", self.__fp_done_cb)
+        pool.connect("fingerprint-error", self.__fp_error_cb)
+        pool.connect("fingerprint-started", self.__fp_started_cb)
         for song in songs:
             pool.push(song)
 
@@ -415,10 +415,10 @@ class SearchWindow(Window):
             # update display
             if lresult.releases:
                 self.__update_active_releases()
-            elif lresult.error:
+            elif lresult.Error:
                 entry.status = Status.ERROR
                 # we don't expose in the UI, so at least print it
-                print_w(lresult.error)
+                print_w(lresult.Error)
             else:
                 entry.status = Status.UNKNOWN
 

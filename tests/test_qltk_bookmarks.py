@@ -43,7 +43,7 @@ class TBookmarks(TestCase):
         song = self.player.song
         pane = EditBookmarksPane(self.library, song, close=True)
         model = [(31, "thirty-one seconds"),
-                 (180, "three minutes".encode('utf-8'))]
+                 (180, "three minutes".encode("utf-8"))]
         pane._set_bookmarks(model, None, None, self.library, song)
         self.failUnlessEqual(len(song.bookmarks), 2)
         self.failUnlessEqual(song.bookmarks[1], (180, "three minutes"))

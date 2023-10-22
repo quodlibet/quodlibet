@@ -110,7 +110,7 @@ class CommandRegistry:
         try:
             result = cmd(app, *args)
         except CommandError as e:
-            raise CommandError("%s: %s" % (name, str(e)))
+            raise CommandError("%s: %s" % (name, str(e))) from e
         else:
             if result is not None and not isinstance(result, fsnative):
                 raise CommandError(
@@ -124,7 +124,7 @@ def arg2text(arg):
     try:
         return fsn2text(arg, strict=True)
     except ValueError as e:
-        raise CommandError(e)
+        raise CommandError(e) from e
 
 
 def make_pattern(fstring, default):
@@ -181,7 +181,7 @@ def _volume(app, value):
     if not value:
         raise CommandError("invalid arg")
 
-    if value[0] in ('+', '-'):
+    if value[0] in ("+", "-"):
         if len(value) > 1:
             try:
                 change = (float(value[1:]) / 100.0)
@@ -189,7 +189,7 @@ def _volume(app, value):
                 return
         else:
             change = 0.05
-        if value[0] == '-':
+        if value[0] == "-":
             change = -change
         volume = app.player.volume + change
     else:
@@ -299,7 +299,7 @@ def _add_location(app, value):
 
 @registry.register("toggle-window")
 def _toggle_window(app):
-    if app.window.get_property('visible'):
+    if app.window.get_property("visible"):
         app.hide()
     else:
         app.show()
@@ -321,7 +321,7 @@ def _rating(app, value):
     if not song:
         return
 
-    if value[0] in ('+', '-'):
+    if value[0] in ("+", "-"):
         if len(value) > 1:
             try:
                 change = float(value[1:])
@@ -329,7 +329,7 @@ def _rating(app, value):
                 return
         else:
             change = (1 / RATINGS.number)
-        if value[0] == '-':
+        if value[0] == "-":
             change = -change
         rating = song("~#rating") + change
     else:
@@ -360,10 +360,10 @@ def _open_browser(app, value):
     value = arg2text(value)
 
     try:
-        Kind = browsers.get(value)
-    except ValueError:
-        raise CommandError("Unknown browser %r" % value)
-    LibraryBrowser.open(Kind, app.library, app.player)
+        browser_cls = browsers.get(value)
+    except ValueError as e:
+        raise CommandError("Unknown browser %r" % value) from e
+    LibraryBrowser.open(browser_cls, app.library, app.player)
 
 
 @registry.register("random", args=1)
@@ -378,9 +378,9 @@ def _filter(app, value):
     value = arg2text(value)
 
     try:
-        tag, value = value.split('=', 1)
-    except ValueError:
-        raise CommandError("invalid argument")
+        tag, value = value.split("=", 1)
+    except ValueError as e:
+        raise CommandError("invalid argument") from e
 
     if app.browser.can_filter(tag):
         app.browser.filter(tag, [value])
@@ -503,15 +503,15 @@ def _queue(app, value):
     value = arg2text(value)
 
     if value.startswith("t"):
-        value = not window.qexpander.get_property('visible')
+        value = not window.qexpander.get_property("visible")
     else:
-        value = value not in ['0', 'off', 'false']
-    window.qexpander.set_property('visible', value)
+        value = value not in ["0", "off", "false"]
+    window.qexpander.set_property("visible", value)
 
 
 @registry.register("dump-playlist", optional=1)
 def _dump_playlist(app, fstring=None):
-    pattern = make_pattern(fstring, '<~uri>')
+    pattern = make_pattern(fstring, "<~uri>")
     window = app.window
     items = []
     for song in window.playlist.pl.get():
@@ -521,7 +521,7 @@ def _dump_playlist(app, fstring=None):
 
 @registry.register("dump-queue", optional=1)
 def _dump_queue(app, fstring=None):
-    pattern = make_pattern(fstring, '<~uri>')
+    pattern = make_pattern(fstring, "<~uri>")
     window = app.window
     items = []
     for song in window.playlist.q.get():
@@ -542,8 +542,8 @@ def _print_query(app, json_encoded_args):
 
     try:
         args = json.loads(arg2text(json_encoded_args))
-        query = args['query']
-        fstring = args['pattern']
+        query = args["query"]
+        fstring = args["pattern"]
     except (json.decoder.JSONDecodeError, KeyError, TypeError):
         # backward compatibility
         query = arg2text(json_encoded_args)
@@ -552,7 +552,7 @@ def _print_query(app, json_encoded_args):
         or (fstring is not None and not isinstance(fstring, str))):
         # This should not happen
         return "\n"
-    pattern = make_pattern(fstring, '<~filename>')
+    pattern = make_pattern(fstring, "<~filename>")
     songs = app.library.query(query)
     return "\n".join([text2fsn(pattern.format(song)) for song in songs]) + "\n"
 

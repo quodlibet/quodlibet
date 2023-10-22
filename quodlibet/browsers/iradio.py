@@ -142,7 +142,7 @@ class IRFile(RemoteFile):
 def parse_pls(file) -> Collection[IRFile]:
     data = {}
 
-    lines = file.read().decode('utf-8', 'replace').splitlines()
+    lines = file.read().decode("utf-8", "replace").splitlines()
 
     if not lines or "[playlist]" not in lines.pop(0):
         return []
@@ -195,7 +195,7 @@ def parse_pls(file) -> Collection[IRFile]:
 def parse_m3u(fileobj) -> Collection[IRFile]:
     files = []
     pending_title = None
-    lines = fileobj.read().decode('utf-8', 'replace').splitlines()
+    lines = fileobj.read().decode("utf-8", "replace").splitlines()
     for line in lines:
         line = line.strip()
         if line.startswith("#EXTINF:"):
@@ -227,9 +227,9 @@ def _get_stations_from(uri: str,
         if (uri.lower().endswith(".pls")
                 or uri.lower().endswith(".m3u")
                 or uri.lower().endswith(".m3u8")):
-            if not re.match('^([^/:]+)://', uri):
+            if not re.match("^([^/:]+)://", uri):
                 # Assume HTTP if no protocol given. See #2731
-                uri = 'http://' + uri
+                uri = "http://" + uri
                 print_d("Assuming http: %s" % uri)
 
             # Error handling outside
@@ -507,32 +507,32 @@ class InternetRadio(Browser, util.InstanceTracker):
     STAR = ["artist", "title", "website", "genre", "comment"]
 
     @classmethod
-    def _init(klass, library):
-        klass.__librarian = library.librarian
+    def _init(cls, library):
+        cls.__librarian = library.librarian
 
-        klass.__stations = SongLibrary("iradio-remote")
-        klass.__stations.load(STATIONS_ALL)
+        cls.__stations = SongLibrary("iradio-remote")
+        cls.__stations.load(STATIONS_ALL)
 
-        klass.__fav_stations = SongLibrary("iradio")
-        klass.__fav_stations.load(STATIONS_FAV)
+        cls.__fav_stations = SongLibrary("iradio")
+        cls.__fav_stations.load(STATIONS_FAV)
 
-        klass.filters = GenreFilter()
+        cls.filters = GenreFilter()
 
     @classmethod
-    def _destroy(klass):
-        if klass.__stations.dirty:
-            klass.__stations.save()
-        klass.__stations.destroy()
-        klass.__stations = None
+    def _destroy(cls):
+        if cls.__stations.dirty:
+            cls.__stations.save()
+        cls.__stations.destroy()
+        cls.__stations = None
 
-        if klass.__fav_stations.dirty:
-            klass.__fav_stations.save()
-        klass.__fav_stations.destroy()
-        klass.__fav_stations = None
+        if cls.__fav_stations.dirty:
+            cls.__fav_stations.save()
+        cls.__fav_stations.destroy()
+        cls.__fav_stations = None
 
-        klass.__librarian = None
+        cls.__librarian = None
 
-        klass.filters = None
+        cls.filters = None
 
     def finalize(self, restored):
         if not restored:
@@ -560,17 +560,17 @@ class InternetRadio(Browser, util.InstanceTracker):
             self._init(library)
         self._register_instance()
 
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
 
         completion = LibraryTagCompletion(self.__stations)
         self.accelerators = Gtk.AccelGroup()
         self.__searchbar = search = SearchBarBox(completion=completion,
                                                  accel_group=self.accelerators)
-        search.connect('query-changed', self.__filter_changed)
+        search.connect("query-changed", self.__filter_changed)
 
         def focus(widget, *args):
             qltk.get_top_parent(widget).songlist.grab_focus()
-        search.connect('focus-out', focus)
+        search.connect("focus-out", focus)
 
         # treeview
         scrolled_window = ScrolledWindow()
@@ -615,7 +615,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         column.add_attribute(renderpb, "icon-name", self.ICON_NAME)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         view.append_column(column)
         column.pack_start(render, True)
         column.add_attribute(render, "text", self.NAME)
@@ -625,7 +625,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         # selection
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__changed_sig = connect_destroy(selection, 'changed',
+        self.__changed_sig = connect_destroy(selection, "changed",
             util.DeferredSignal(lambda x: self.activate()))
 
         box = Gtk.HBox(spacing=6)
@@ -649,9 +649,9 @@ class InternetRadio(Browser, util.InstanceTracker):
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
         new_station = Button(_(u"_Add Station…"), Icons.LIST_ADD)
-        new_station.connect('clicked', self.__add)
+        new_station.connect("clicked", self.__add)
         self._update_button = Button(_("_Update Stations"), Icons.VIEW_REFRESH)
-        self._update_button.connect('clicked', self.__update)
+        self._update_button.connect("clicked", self.__update)
         fb.insert(new_station, 1)
         fb.insert(self._update_button, 2)
         vb.pack_end(Align(fb, left=3), False, False, 3)
@@ -712,7 +712,7 @@ class InternetRadio(Browser, util.InstanceTracker):
 
         # keep at most 2 URLs for each group
         stations = []
-        for key, sub in groups.items():
+        for sub in groups.values():
             sub.sort(key=lambda s: s.get("~#listenerpeak", 0), reverse=True)
             stations.extend(sub[:2])
 
@@ -727,7 +727,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             s.pop("~#listenerpeak", None)
 
         # update the libraries
-        stations = dict(((s.key, s) for s in stations))
+        stations = {s.key: s for s in stations}
         # don't add ones that are in the fav list
         for fav in self.__fav_stations.keys():
             stations.pop(fav, None)
@@ -854,7 +854,7 @@ class InternetRadio(Browser, util.InstanceTracker):
             print_d("Quitting thread")
         Thread(target=_get_stations_from, args=(uri, on_done)).start()
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items):
         in_fav = False
         in_all = False
         for song in songs:
@@ -868,11 +868,11 @@ class InternetRadio(Browser, util.InstanceTracker):
         iradio_items = []
         button = MenuItem(_("Add to Favorites"), Icons.LIST_ADD)
         button.set_sensitive(in_all)
-        connect_obj(button, 'activate', self.__add_fav, songs)
+        connect_obj(button, "activate", self.__add_fav, songs)
         iradio_items.append(button)
         button = MenuItem(_("Remove from Favorites"), Icons.LIST_REMOVE)
         button.set_sensitive(in_fav)
-        connect_obj(button, 'activate', self.__remove_fav, songs)
+        connect_obj(button, "activate", self.__remove_fav, songs)
         iradio_items.append(button)
 
         items.append(iradio_items)
@@ -970,7 +970,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
     def status_text(self, count: int, time: Optional[str] = None) -> str:
-        return numeric_phrase("%(count)d station", "%(count)d stations", count, 'count')
+        return numeric_phrase("%(count)d station", "%(count)d stations", count, "count")
 
 
 from quodlibet import app

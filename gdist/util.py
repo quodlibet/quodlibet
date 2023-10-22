@@ -28,4 +28,4 @@ def get_dist_class(name):
     return Distribution({}).get_command_class(name)
 
 
-Distribution, Command, get_dist_class
+Distribution, Command, get_dist_class  # noqa

@@ -16,12 +16,12 @@ from gi.repository import Gtk
 
 try:
     from pypresence import Presence, InvalidID, DiscordNotFound
-except ImportError:
-    from quodlibet.plugins import MissingModulePluginException
-    raise MissingModulePluginException("pypresence")
+except ImportError as e:
+    from quodlibet.plugins import MissingModulePluginError
+    raise MissingModulePluginError("pypresence") from e
 
 # The below resources are from/uploaded-to the Discord Application portal.
-QL_DISCORD_RP_ID = '974521025356242984'
+QL_DISCORD_RP_ID = "974521025356242984"
 QL_LARGE_IMAGE = "io-github-quodlibet-quodlibet"
 
 VERSION = "1.0"
@@ -131,7 +131,7 @@ class DiscordStatusMessage(EventPlugin):
 
         status_line1 = Gtk.Entry()
         status_line1.set_text(discord_status_config.rp_line1)
-        status_line1.connect('changed', rp_line1_changed)
+        status_line1.connect("changed", rp_line1_changed)
 
         status_line1_box.pack_start(Gtk.Label(label=_("Status Line #1")),
                                         False, True, 0)
@@ -142,9 +142,9 @@ class DiscordStatusMessage(EventPlugin):
 
         status_line2 = Gtk.Entry()
         status_line2.set_text(discord_status_config.rp_line2)
-        status_line2.connect('changed', rp_line2_changed)
+        status_line2.connect("changed", rp_line2_changed)
 
-        status_line2_box.pack_start(Gtk.Label(label=_('Status Line #2')),
+        status_line2_box.pack_start(Gtk.Label(label=_("Status Line #2")),
                                         False, True, 0)
         status_line2_box.pack_start(status_line2, True, True, 0)
 

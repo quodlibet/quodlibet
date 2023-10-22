@@ -34,7 +34,7 @@ def quit():
     PluginManager.instance = None
 
 
-class PluginImportException(Exception):
+class PluginImportError(Exception):
     desc = ""
 
     def __init__(self, desc, *args, **kwargs):
@@ -47,7 +47,7 @@ class PluginImportException(Exception):
         return True
 
 
-class PluginNotSupportedError(PluginImportException):
+class PluginNotSupportedError(PluginImportError):
     """To hide the plugin (e.g. on Windows)"""
 
     def __init__(self, msg=None):
@@ -58,7 +58,7 @@ class PluginNotSupportedError(PluginImportException):
         return False
 
 
-class MissingModulePluginException(PluginImportException):
+class MissingModulePluginError(PluginImportError):
     """Consistent Exception for reporting missing modules for plugins"""
     def __init__(self, module_name):
         msg = (_("Couldn't find module '{module}'. Perhaps you need to "
@@ -66,7 +66,7 @@ class MissingModulePluginException(PluginImportException):
         super().__init__(msg)
 
 
-class MissingGstreamerElementPluginException(PluginImportException):
+class MissingGstreamerElementPluginError(PluginImportError):
     """Consistent Exception for reporting missing Gstreamer elements for
     plugins"""
     def __init__(self, element_name):
@@ -152,7 +152,7 @@ class Plugin:
     @property
     def description_markup(self):
         try:
-            return getattr(self.cls, "PLUGIN_DESC_MARKUP")
+            return self.cls.PLUGIN_DESC_MARKUP
         except AttributeError:
             return escape(self.description)
 
@@ -377,7 +377,7 @@ class PluginManager:
         errors = {}
         for name, error in self.__scanner.failures.items():
             exception = error.exception
-            if isinstance(exception, PluginImportException):
+            if isinstance(exception, PluginImportError):
                 if not exception.should_show():
                     continue
                 errors[name] = [exception.desc]
@@ -455,7 +455,7 @@ class PluginConfig(ConfigProxy):
     def _option(self, name):
         return "%s_%s" % (self._prefix, name)
 
-    def ConfigCheckButton(self, label, option, **kwargs):
+    def ConfigCheckButton(self, label, option, **kwargs):  # noqa
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
                                  self._option(option), **kwargs)
 
@@ -508,11 +508,11 @@ class PluginConfigMixin:
 
     def config_entry_changed(self, entry, key):
         """React to a change in a gtk.Entry (by saving it to config)"""
-        if entry.get_property('sensitive'):
+        if entry.get_property("sensitive"):
             self.config_set(key, entry.get_text())
 
     @classmethod
-    def ConfigCheckButton(cls, label, name, default=False):
+    def ConfigCheckButton(cls, label, name, default=False):  # noqa
         """
         Create a new `ConfigCheckButton` for `name`, pre-populated correctly
         """
@@ -521,8 +521,7 @@ class PluginConfigMixin:
             config.getboolean(PM.CONFIG_SECTION, option)
         except config.Error:
             cls.config_set(name, default)
-        return ConfigCheckButton(label, PM.CONFIG_SECTION,
-                                 option, populate=True)
+        return ConfigCheckButton(label, PM.CONFIG_SECTION, option, populate=True)
 
 
 class ConfProp:

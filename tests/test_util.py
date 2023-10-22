@@ -66,7 +66,7 @@ class Tmkdir(TestCase):
 
 class Tgetcwd(TestCase):
 
-    def test_Tgetcwd(self):
+    def test_getcwd(self):
         self.assertTrue(isinstance(os.getcwd(), fsnative))
 
 
@@ -235,7 +235,7 @@ class Tdecode(TestCase):
 
     def test_invalid(self):
         self.failUnlessEqual(
-            decode(b"fo\xde"), u'fo\ufffd [Invalid Encoding]')
+            decode(b"fo\xde"), u"fo\ufffd [Invalid Encoding]")
 
 
 class Tencode(TestCase):
@@ -319,7 +319,7 @@ class Tparse_time(TestCase):
         self.failUnlessEqual(util.parse_time("not a time"), 0)
 
     def test_except(self):
-        self.failUnlessRaises(ValueError, util.parse_time, "not a time", None)
+        self.failUnlessRaises(ValueError, util.parse_time, "not a time", False)
 
     def test_empty(self):
         self.failUnlessEqual(util.parse_time(""), 0)
@@ -510,88 +510,88 @@ class Tpattern(TestCase):
 
 class Tformat_time_long(TestCase):
 
-    def test_second(s):
-        s.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))
+    def test_second(self):
+        self.assertEquals(f_t_l(1).split(", ")[0], _("1 second"))
 
-    def test_seconds(s):
-        s.assertEquals(f_t_l(2).split(", ")[0], _("%d seconds") % 2)
+    def test_seconds(self):
+        self.assertEquals(f_t_l(2).split(", ")[0], _("%d seconds") % 2)
 
-    def test_notminutes(s):
-        s.assertEquals(f_t_l(59).split(", ")[0], _("%d seconds") % 59)
+    def test_notminutes(self):
+        self.assertEquals(f_t_l(59).split(", ")[0], _("%d seconds") % 59)
 
-    def test_minute(s):
-        s.assertEquals(f_t_l(60), _("1 minute"))
+    def test_minute(self):
+        self.assertEquals(f_t_l(60), _("1 minute"))
 
-    def test_minutes(s):
-        s.assertEquals(f_t_l(120).split(", ")[0], _("%d minutes") % 2)
+    def test_minutes(self):
+        self.assertEquals(f_t_l(120).split(", ")[0], _("%d minutes") % 2)
 
-    def test_nothours(s):
-        s.assertEquals(f_t_l(3599).split(", ")[0], _("%d minutes") % 59)
+    def test_nothours(self):
+        self.assertEquals(f_t_l(3599).split(", ")[0], _("%d minutes") % 59)
 
-    def test_hour(s):
-        s.assertEquals(f_t_l(3600), _("1 hour"))
+    def test_hour(self):
+        self.assertEquals(f_t_l(3600), _("1 hour"))
 
-    def test_hours(s):
-        s.assertEquals(f_t_l(7200), _("%d hours") % 2)
+    def test_hours(self):
+        self.assertEquals(f_t_l(7200), _("%d hours") % 2)
 
-    def test_notdays(s):
-        s.assertEquals(f_t_l(86399).split(", ")[0], _("%d hours") % 23)
+    def test_notdays(self):
+        self.assertEquals(f_t_l(86399).split(", ")[0], _("%d hours") % 23)
 
-    def test_seconds_dropped(s):
-        s.assertEquals(len(f_t_l(3601).split(", ")), 2)
+    def test_seconds_dropped(self):
+        self.assertEquals(len(f_t_l(3601).split(", ")), 2)
 
-    def test_day(s):
-        s.assertEquals(f_t_l(86400), _("1 day"))
+    def test_day(self):
+        self.assertEquals(f_t_l(86400), _("1 day"))
 
-    def test_days(s):
-        s.assertEquals(f_t_l(172800).split(", ")[0], _("%d days") % 2)
+    def test_days(self):
+        self.assertEquals(f_t_l(172800).split(", ")[0], _("%d days") % 2)
 
-    def test_notyears(s):
-        s.assertEquals(f_t_l(31535999).split(", ")[0], _("%d days") % 364)
+    def test_notyears(self):
+        self.assertEquals(f_t_l(31535999).split(", ")[0], _("%d days") % 364)
 
-    def test_year(s):
-        s.assertEquals(f_t_l(31536000), _("1 year"))
+    def test_year(self):
+        self.assertEquals(f_t_l(31536000), _("1 year"))
 
-    def test_years(s):
-        s.assertEquals(f_t_l(63072000).split(", ")[0], _("%d years") % 2)
+    def test_years(self):
+        self.assertEquals(f_t_l(63072000).split(", ")[0], _("%d years") % 2)
 
-    def test_drop_zero(s):
-        s.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
+    def test_drop_zero(self):
+        self.assertEquals(f_t_l(3601), ", ".join([_("1 hour"), _("1 second")]))
 
-    def test_limit_zero(s):
-        s.assertEquals(f_t_l(1, limit=0), _("1 second"))
+    def test_limit_zero(self):
+        self.assertEquals(f_t_l(1, limit=0), _("1 second"))
 
-    def test_limit(s):
-        s.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
+    def test_limit(self):
+        self.assertEquals(len(f_t_l(2 ** 31).split(", ")), 2)
 
 
 class TFormatTimePreferred(TestCase):
 
-    def test_default_setting_is_standard(s):
-        s.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
+    def test_default_setting_is_standard(self):
+        self.assertEquals(config.DURATION.format, DurationFormat.STANDARD)
 
-    def test_raw_config_is_standard(s):
-        s.assertEquals(config.get('display', 'duration_format'),
+    def test_raw_config_is_standard(self):
+        self.assertEquals(config.get("display", "duration_format"),
                        DurationFormat.STANDARD)
 
-    def test_acts_like_long(s):
-        s._fuzz_loop(format_time_preferred, f_t_l)
+    def test_acts_like_long(self):
+        self._fuzz_loop(format_time_preferred, f_t_l)
 
-    def _fuzz_loop(s, f, f2):
+    def _fuzz_loop(self, f, f2):
         x = 1
         while x < 100000000:
-            s.assertEquals(f(x), f2(x))
+            self.assertEquals(f(x), f2(x))
             x = x * 3 / 2 + 1
 
-    def test_acts_like_display(s):
+    def test_acts_like_display(self):
         def fmt_numeric(x):
             return format_time_preferred(x, DurationFormat.NUMERIC)
-        s._fuzz_loop(fmt_numeric, format_time_display)
+        self._fuzz_loop(fmt_numeric, format_time_display)
 
-    def test_seconds(s):
+    def test_seconds(self):
         def fmt_seconds(x):
             return format_time_preferred(x, DurationFormat.SECONDS)
-        s._fuzz_loop(fmt_seconds, format_time_seconds)
+        self._fuzz_loop(fmt_seconds, format_time_seconds)
 
 
 class Tspawn(TestCase):
@@ -747,12 +747,12 @@ class Tescape_filename(TestCase):
         self.assertTrue(isinstance(result, fsnative))
 
     def test_unicode(self):
-        result = escape_filename(u'abc\xe4')
+        result = escape_filename(u"abc\xe4")
         self.assertEqual(result, "abc%C3%A4")
         self.assertTrue(isinstance(result, fsnative))
 
     def test_safe_chars(self):
-        result = escape_filename('1, 2, and -3', safe=' -')
+        result = escape_filename("1, 2, and -3", safe=" -")
         self.assertEqual(result, "1%2C 2%2C and -3")
         self.assertTrue(isinstance(result, fsnative))
 
@@ -873,7 +873,7 @@ class Tsplit_escape(TestCase):
         self.assertTrue(isinstance(join_escape([], b":"), bytes))
         self.assertTrue(isinstance(join_escape([], u":"), str))
         self.assertEqual(join_escape([b"\xff", b"\xff"], b":"), b"\xff:\xff")
-        self.assertEqual(join_escape([u'\xe4', u'\xe4'], ":"), u'\xe4:\xe4')
+        self.assertEqual(join_escape([u"\xe4", u"\xe4"], ":"), u"\xe4:\xe4")
 
     def test_join_escape(self):
         self.assertEqual(join_escape([b":"], b":"), b"\\:")
@@ -907,7 +907,7 @@ class TMainRunner(TestCase):
                 util.MainRunnerTimeoutError, runner.call, lambda: None,
                 timeout=0.00001)
 
-        for i in range(3):
+        for _i in range(3):
             thread = threading.Thread(target=worker)
             thread.start()
             thread.join()
@@ -1139,14 +1139,14 @@ class Tprint_exc(TestCase):
 
     def test_main(self):
         try:
-            1 / 0
+            1 / 0  # noqa
         except Exception:
             with capture_output():
                 print_exc()
 
     def test_pass_exc_info(self):
         try:
-            1 / 0
+            1 / 0  # noqa
         except Exception:
             with capture_output():
                 print_exc(exc_info=sys.exc_info(), context="foo")
@@ -1167,18 +1167,18 @@ class Tformat_exception(TestCase):
 
     def test_main(self):
         try:
-            1 / 0
+            1 / 0  # noqa
         except Exception:
             result = format_exception(*sys.exc_info())
-            self.assertTrue(isinstance(result, list))
-            self.assertTrue(all([isinstance(l, str) for l in result]))
+            assert isinstance(result, list)
+            assert all(isinstance(r, str) for r in result)
 
 
 class Textract_tb(TestCase):
 
     def test_main(self):
         try:
-            1 / 0
+            1 / 0  # noqa
         except Exception:
             result = extract_tb(sys.exc_info()[2])
             self.assertTrue(isinstance(result, list))

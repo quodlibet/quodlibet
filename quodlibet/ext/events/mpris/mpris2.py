@@ -302,16 +302,16 @@ value="false"/>
             dbus.Double, song("~#rating"))
 
         # Dates
-        ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
+        iso_8601_format = "%Y-%m-%dT%H:%M:%S"
         tuple_time = time.gmtime(song("~#lastplayed"))
-        iso_time = time.strftime(ISO_8601_format, tuple_time)
+        iso_time = time.strftime(iso_8601_format, tuple_time)
         metadata["xesam:lastUsed"] = iso_time
 
         year = song("~year")
         if year:
             try:
                 tuple_time = time.strptime(year, "%Y")
-                iso_time = time.strftime(ISO_8601_format, tuple_time)
+                iso_time = time.strftime(iso_8601_format, tuple_time)
             except ValueError:
                 pass
             else:

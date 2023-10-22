@@ -161,7 +161,7 @@ class TTotalTagsBase(TestCase):
 
     def setUp(self):
         config.init()
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
 
     def tearDown(self):
         os.unlink(self.filename)
@@ -289,7 +289,7 @@ class TFLACFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
         self.song = FLACFile(self.filename)
 
     def test_format_codec(self):
@@ -495,7 +495,7 @@ class TVCCoverMixin:
 class TVCCoverOgg(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
         self.MutagenType = OggVorbis
         self.QLType = OggFile
 
@@ -503,7 +503,7 @@ class TVCCoverOgg(TVCCover, TVCCoverMixin):
 class TVCCoverFlac(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
         self.MutagenType = FLAC
         self.QLType = FLACFile
 
@@ -511,7 +511,7 @@ class TVCCoverFlac(TVCCover, TVCCoverMixin):
 class TFlacPicture(TestCase):
     def setUp(self):
         config.init()
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
 
     def test_get_images(self):
         pic = Picture()
@@ -586,7 +586,7 @@ class TOggFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
         self.song = OggFile(self.filename)
 
     def tearDown(self):
@@ -607,7 +607,7 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.opus'))
+        self.filename = get_temp_copy(get_data_path("empty.opus"))
         self.song = OggOpusFile(self.filename)
 
     def test_length(self):

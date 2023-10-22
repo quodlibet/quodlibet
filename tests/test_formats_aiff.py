@@ -12,7 +12,7 @@ from quodlibet.formats.aiff import AIFFFile
 class TAIFFFile(TestCase):
 
     def setUp(self):
-        self.song = AIFFFile(get_data_path('test.aiff'))
+        self.song = AIFFFile(get_data_path("test.aiff"))
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 1.0, 1)

@@ -54,7 +54,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         main_box = Gtk.VBox(spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)

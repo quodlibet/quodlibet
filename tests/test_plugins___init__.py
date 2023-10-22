@@ -9,7 +9,7 @@ import os
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.util.songwrapper import SongWrapper, list_wrapper
 from quodlibet.plugins import PluginConfig
 
 
@@ -131,16 +131,16 @@ class TSongWrapper(TestCase):
 
 class TListWrapper(TestCase):
     def test_empty(self):
-        wrapped = ListWrapper([])
+        wrapped = list_wrapper([])
         self.failUnlessEqual(wrapped, [])
 
     def test_empty_song(self):
-        wrapped = ListWrapper([{}])
+        wrapped = list_wrapper([{}])
         self.failUnless(len(wrapped) == 1)
         self.failIf(isinstance(wrapped[0], dict))
 
     def test_none(self):
-        wrapped = ListWrapper([None, None])
+        wrapped = list_wrapper([None, None])
         self.failUnless(len(wrapped) == 2)
         self.failUnlessEqual(wrapped, [None, None])
 

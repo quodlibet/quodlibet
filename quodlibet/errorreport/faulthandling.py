@@ -24,7 +24,7 @@ from quodlibet.util.dprint import print_exc
 _fileobj = None
 
 
-class FaultHandlerCrash(Exception):
+class FaultHandlerCrash(Exception):  # noqa
     """The exception type used for raising errors with a faulthandler
     stacktrace. Needed so we can add special handling in the error reporting
     code paths.
@@ -142,11 +142,11 @@ def crash():
     """Makes the process segfault. For testing purposes"""
 
     if os.name == "nt":
-        i = ctypes.c_char(b'a')
+        i = ctypes.c_char(b"a")
         j = ctypes.pointer(i)
         c = 0
         while True:
-            j[c] = b'a'
+            j[c] = b"a"
             c += 1
     else:
         ctypes.string_at(0)

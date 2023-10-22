@@ -126,8 +126,8 @@ class Window(Gtk.Window):
             self.set_type_hint(Gdk.WindowTypeHint.DIALOG)
         self.set_destroy_with_parent(True)
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
-        connect_obj(self, 'destroy', type(self).windows.remove, self)
-        self.connect('key-press-event', self._on_key_press)
+        connect_obj(self, "destroy", type(self).windows.remove, self)
+        self.connect("key-press-event", self._on_key_press)
 
     def _on_key_press(self, widget, event):
         is_dialog = (self.get_type_hint() == Gdk.WindowTypeHint.DIALOG)
@@ -293,13 +293,13 @@ class PersistentWindowMixin:
         self.__size_suffix = size_suffix
         self.__save_size_pos_deferred = DeferredSignal(
             self.__do_save_size_pos, timeout=50, owner=self)
-        self.connect('configure-event', self.__configure_event)
-        self.connect('window-state-event', self.__window_state_changed)
-        self.connect('notify::visible', self.__visible_changed)
+        self.connect("configure-event", self.__configure_event)
+        self.connect("window-state-event", self.__window_state_changed)
+        self.connect("notify::visible", self.__visible_changed)
         parent = self.get_transient_for()
         if parent:
             connect_destroy(
-                parent, 'configure-event', self.__parent_configure_event)
+                parent, "configure-event", self.__parent_configure_event)
         self.__restore_window_state()
 
     def __visible_changed(self, *args):
@@ -329,7 +329,7 @@ class PersistentWindowMixin:
 
     def __restore_position(self):
         print_d("Restore position")
-        pos = config.get('memory', self.__conf("position"), "")
+        pos = config.get("memory", self.__conf("position"), "")
         if not pos:
             return
 
@@ -348,7 +348,7 @@ class PersistentWindowMixin:
 
     def __restore_size(self):
         print_d("Restore size")
-        value = config.get('memory', self.__conf("size"), "")
+        value = config.get("memory", self.__conf("size"), "")
         if not value:
             return
 
@@ -408,8 +408,8 @@ class PersistentWindowMixin:
             x -= px
             y -= py
 
-        pos_value = '%s %s' % (x, y)
-        config.set('memory', self.__conf("position"), pos_value)
+        pos_value = "%s %s" % (x, y)
+        config.set("memory", self.__conf("position"), pos_value)
 
     def __window_state_changed(self, window, event):
         self.__state = event.new_window_state
@@ -424,10 +424,10 @@ class _Unique:
 
     __window = None
 
-    def __new__(klass, *args, **kwargs):
-        window = klass.__window
+    def __new__(cls, *args, **kwargs):
+        window = cls.__window
         if window is None:
-            return super(_Unique, klass).__new__(klass, *args, **kwargs)
+            return super(_Unique, cls).__new__(cls, *args, **kwargs)
         # Look for widgets in the args, if there is one and it has
         # a new top level window, re-parent and reposition the window.
         widgets = [w for w in args if isinstance(w, Gtk.Widget)]
@@ -442,9 +442,9 @@ class _Unique:
         return window
 
     @classmethod
-    def is_not_unique(klass):
+    def is_not_unique(cls):
         """Returns True if a window instance already exists."""
-        return bool(klass.__window)
+        return bool(cls.__window)
 
     def __init__(self, *args, **kwargs):
         if type(self).__window:
@@ -452,7 +452,7 @@ class _Unique:
         else:
             type(self).__window = self
         super().__init__(*args, **kwargs)
-        connect_obj(self, 'destroy', self.__destroy, self)
+        connect_obj(self, "destroy", self.__destroy, self)
 
     def __destroy(self, *args):
         type(self).__window = None

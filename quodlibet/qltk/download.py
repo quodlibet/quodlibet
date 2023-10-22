@@ -25,7 +25,7 @@ class DownloadProgress(GObject.Object):
     """Downloads songs asynchronously, updating a Task"""
 
     __gsignals__ = {
-        'finished': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "finished": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     def __init__(self, songs: Collection[AudioFile], task=None) -> None:
@@ -56,9 +56,9 @@ class DownloadProgress(GObject.Object):
     def _downloaded(self, msg: Soup.Message, result: Any, data: Tuple) -> None:
         path, song = data
         try:
-            headers = msg.get_property('response-headers')
-            size = int(headers.get('content-length'))
-            content_type = headers.get('content-type')
+            headers = msg.get_property("response-headers")
+            size = int(headers.get("content-length"))
+            content_type = headers.get("content-type")
             print_d(
                 f"Downloaded {format_size(size)} of {content_type}: {song('title')}")
             _, ext = splitext(urlparse(song("~uri")).path)
@@ -84,7 +84,7 @@ class DownloadProgress(GObject.Object):
 
     def download_songs(self, path: Path):
         for s in self.songs:
-            msg = Soup.Message.new('GET', s("~uri"))
+            msg = Soup.Message.new("GET", s("~uri"))
             http.download(msg, cancellable=None, callback=self._downloaded,
                           failure_callback=self._failed, data=(path, s))
             yield

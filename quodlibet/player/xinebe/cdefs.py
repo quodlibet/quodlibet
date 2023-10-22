@@ -12,7 +12,7 @@ from quodlibet.util import load_library
 try:
     _libxine, name = load_library(["libxine.so.2", "libxine.so.1"])
 except OSError as e:
-    raise ImportError(e)
+    raise ImportError(e) from e
 
 if name.endswith("2"):
     _version = 2
@@ -23,30 +23,30 @@ else:
 class xine_event_t(ctypes.Structure):
     if _version == 1:
         _fields_ = [
-            ('type', ctypes.c_int),
-            ('stream', ctypes.c_void_p),
-            ('data', ctypes.c_void_p),
-            ('data_length', ctypes.c_int),
+            ("type", ctypes.c_int),
+            ("stream", ctypes.c_void_p),
+            ("data", ctypes.c_void_p),
+            ("data_length", ctypes.c_int),
         ]
     elif _version == 2:
         _fields_ = [
-            ('stream', ctypes.c_void_p),
-            ('data', ctypes.c_void_p),
-            ('data_length', ctypes.c_int),
-            ('type', ctypes.c_int),
+            ("stream", ctypes.c_void_p),
+            ("data", ctypes.c_void_p),
+            ("data_length", ctypes.c_int),
+            ("type", ctypes.c_int),
         ]
 
 
 class xine_ui_message_data_t(ctypes.Structure):
     _fields_ = [
-        ('compatibility_num_buttons', ctypes.c_int),
-        ('compatibility_str_len', ctypes.c_int),
-        ('compatibility_str', 256 * ctypes.c_char),
-        ('type', ctypes.c_int),
-        ('explanation', ctypes.c_int),
-        ('num_parameters', ctypes.c_int),
-        ('parameters', ctypes.c_void_p),
-        ('messages', ctypes.c_char),
+        ("compatibility_num_buttons", ctypes.c_int),
+        ("compatibility_str_len", ctypes.c_int),
+        ("compatibility_str", 256 * ctypes.c_char),
+        ("type", ctypes.c_int),
+        ("explanation", ctypes.c_int),
+        ("num_parameters", ctypes.c_int),
+        ("parameters", ctypes.c_void_p),
+        ("messages", ctypes.c_char),
     ]
 
 # event listener callback type

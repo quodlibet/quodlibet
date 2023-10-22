@@ -29,11 +29,11 @@ def update_icon_cache(*args):
     args = list(args)
     try:
         subprocess.check_call(
-            ['gtk-update-icon-cache-3.0'] + args)
+            ["gtk-update-icon-cache-3.0"] + args)
     except OSError:
         try:
             subprocess.check_call(
-                ['gtk-update-icon-cache'] + args)
+                ["gtk-update-icon-cache"] + args)
         except OSError:
             return False
         except subprocess.CalledProcessError:
@@ -43,7 +43,7 @@ def update_icon_cache(*args):
     return True
 
 
-class install_icons(Command):
+class InstallIcons(Command):
     """Copy app icons to hicolor/pixmaps and update the global cache"""
 
     user_options = []
@@ -53,15 +53,15 @@ class install_icons(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('install',
-                                   ('install_data', 'install_dir'))
+        self.set_undefined_options("install",
+                                   ("install_data", "install_dir"))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         # install into hicolor icon theme
-        basepath = os.path.join(self.install_dir, 'share', 'icons', 'hicolor')
+        basepath = os.path.join(self.install_dir, "share", "icons", "hicolor")
 
         local = os.path.join("quodlibet", "images", "hicolor")
 

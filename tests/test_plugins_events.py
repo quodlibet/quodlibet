@@ -36,14 +36,14 @@ class TEventPlugins(TestCase):
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, name='', funcs=None):
-        fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)
-        file = os.fdopen(fd, 'w')
+    def create_plugin(self, name="", funcs=None):
+        fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
+        file = os.fdopen(fd, "w")
 
         file.write("from quodlibet.plugins.events import EventPlugin\n")
         file.write("log = []\n")
         file.write("class %s(EventPlugin):\n" % name)
-        indent = '    '
+        indent = "    "
         file.write("%spass\n" % indent)
 
         if name:
@@ -61,22 +61,22 @@ class TEventPlugins(TestCase):
         return mod.log
 
     def test_found(self):
-        self.create_plugin(name='Name')
+        self.create_plugin(name="Name")
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
 
     def test_player_paused(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_paused"])
+        self.create_plugin(name="Name", funcs=["plugin_on_paused"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]
         self.pm.enable(plugin, True)
         self.player.emit("paused")
-        self.failUnlessEqual([("plugin_on_paused", tuple())],
+        self.failUnlessEqual([("plugin_on_paused", ())],
                              self._get_calls(plugin))
 
     def test_lib_changed(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_changed"])
+        self.create_plugin(name="Name", funcs=["plugin_on_changed"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]
@@ -86,7 +86,7 @@ class TEventPlugins(TestCase):
                              self._get_calls(plugin))
 
     def test_songs_selected(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_songs_selected"])
+        self.create_plugin(name="Name", funcs=["plugin_on_songs_selected"])
         self.pm.rescan()
         self.assertEquals(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]

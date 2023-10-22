@@ -15,7 +15,7 @@ class UniqueQuery(QueryPlugin):
     PLUGIN_ID = "unique_query"
     PLUGIN_NAME = _("Unique Query")
     PLUGIN_DESC = _("Filter search results by unique tags.")
-    key = 'unique'
+    key = "unique"
     query_syntax = _("@(unique: tag)")
     query_description = "<tt>tag</tt> can be album, artist, title or any other tag. " \
         "Use multiple <tt>@(unique: tag)</tt> to filter by multiple tags."

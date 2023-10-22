@@ -43,15 +43,15 @@ class TRatingsMenuItem(TestCase):
         self.failUnlessEqual(children[1].get_active(), False)
 
     def test_no_rating(self):
-        af = AudioFile({"~filename": fsnative(u"/foobar"), 'artist': 'foo'})
+        af = AudioFile({"~filename": fsnative(u"/foobar"), "artist": "foo"})
         rmi = RatingsMenuItem([af], self.library)
         children = [mi for mi in rmi.get_submenu().get_children()
                     if isinstance(mi, Gtk.CheckMenuItem)]
-        self.failIf(any([c.get_active() for c in children]))
+        assert not any(c.get_active() for c in children)
 
     def test_set_remove_rating(self):
         self.rmi.set_rating(0.5, [self.af], self.library)
         self.failUnless(self.af.has_rating)
-        self.failUnlessEqual(self.af('~#rating'), 0.5)
+        self.failUnlessEqual(self.af("~#rating"), 0.5)
         self.rmi.remove_rating([self.af], self.library)
         self.failIf(self.af.has_rating)

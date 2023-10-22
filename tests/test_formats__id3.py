@@ -109,13 +109,13 @@ class TID3ImagesMixin:
 class TID3ImagesMP3(TID3ImagesBase, TID3ImagesMixin):
 
     KIND = MP3File
-    PATH = get_data_path('silence-44-s.mp3')
+    PATH = get_data_path("silence-44-s.mp3")
 
 
 class TID3ImagesAIFF(TID3ImagesBase, TID3ImagesMixin):
 
     KIND = AIFFFile
-    PATH = get_data_path('test.aiff')
+    PATH = get_data_path("test.aiff")
 
 
 class TID3FileBase(TestCase):
@@ -154,94 +154,94 @@ class TID3FileMixin:
     def test_TXXX_DATE(self):
         # https://github.com/quodlibet/quodlibet/issues/220
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.TXXX(encoding=3, desc=u'DATE',
-                                    text=u'2010-01-13'))
-        f.tags.add(mutagen.id3.TDRC(encoding=3, text=u'2010-01-14'))
+        f.tags.add(mutagen.id3.TXXX(encoding=3, desc=u"DATE",
+                                    text=u"2010-01-13"))
+        f.tags.add(mutagen.id3.TDRC(encoding=3, text=u"2010-01-14"))
         f.save()
-        self.assertEquals(self.KIND(self.filename)['date'], '2010-01-14')
-        f.tags.delall('TDRC')
+        self.assertEquals(self.KIND(self.filename)["date"], "2010-01-14")
+        f.tags.delall("TDRC")
         f.save()
-        self.assertEquals(self.KIND(self.filename)['date'], '2010-01-13')
+        self.assertEquals(self.KIND(self.filename)["date"], "2010-01-13")
         f.delete()
         self.KIND(self.filename)
 
     def test_USLT(self):
         """Tests reading and writing of lyrics in USLT"""
         f = mutagen.File(self.filename)
-        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u'', lang='\x00\x00\x00',
-                   text=u'lyrics'))
-        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u'desc',
-                   lang='\x00\x00\x00', text=u'lyrics with non-empty desc'))
-        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u'', lang='xyz',
-                   text=u'lyrics with non-empty lang'))
+        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u"", lang="\x00\x00\x00",
+                   text=u"lyrics"))
+        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u"desc",
+                   lang="\x00\x00\x00", text=u"lyrics with non-empty desc"))
+        f.tags.add(mutagen.id3.USLT(encoding=3, desc=u"", lang="xyz",
+                   text=u"lyrics with non-empty lang"))
         f.save()
 
         f = mutagen.File(self.filename)
-        self.failUnlessEqual(f.tags[u'USLT::\x00\x00\x00'], u'lyrics')
-        self.failUnlessEqual(f.tags[u'USLT:desc:\x00\x00\x00'],
-                             u'lyrics with non-empty desc')
-        self.failUnlessEqual(f.tags[u'USLT::xyz'],
-                             u'lyrics with non-empty lang')
+        self.failUnlessEqual(f.tags[u"USLT::\x00\x00\x00"], u"lyrics")
+        self.failUnlessEqual(f.tags[u"USLT:desc:\x00\x00\x00"],
+                             u"lyrics with non-empty desc")
+        self.failUnlessEqual(f.tags[u"USLT::xyz"],
+                             u"lyrics with non-empty lang")
 
         f = self.KIND(self.filename)
-        self.failUnlessEqual(sorted(f['lyrics'].split('\n')),
-                             sorted([u'lyrics',
-                                     u'lyrics with non-empty lang',
-                                     u'lyrics with non-empty desc']))
+        self.failUnlessEqual(sorted(f["lyrics"].split("\n")),
+                             sorted([u"lyrics",
+                                     u"lyrics with non-empty lang",
+                                     u"lyrics with non-empty desc"]))
         # multiple USLT tags are not supported so the behavior seems random
-        self.assertIn(f['~lyricsdescription'], [u'desc', u''])
-        self.assertIn(f['~lyricslanguage'], [u'xyz', u''])
-        f['lyrics'] = u'modified lyrics'
-        f['~lyricsdescription'] = u''
+        self.assertIn(f["~lyricsdescription"], [u"desc", u""])
+        self.assertIn(f["~lyricslanguage"], [u"xyz", u""])
+        f["lyrics"] = u"modified lyrics"
+        f["~lyricsdescription"] = u""
         f.write()
 
         f = self.KIND(self.filename)
-        self.assertEqual(f['lyrics'], u'modified lyrics')
-        self.assertEqual(f['~lyricsdescription'], u'')
+        self.assertEqual(f["lyrics"], u"modified lyrics")
+        self.assertEqual(f["~lyricsdescription"], u"")
         # languages were invalid regarding ISO_639_2 → *und*efined is written
-        self.assertEqual(f['~lyricslanguage'], u'und')
-        f['lyrics'] = u'modified lyrics\nwith two lines'
-        f['~lyricsdescription'] = u'desc'
-        f['~lyricslanguage'] = u'eng'
+        self.assertEqual(f["~lyricslanguage"], u"und")
+        f["lyrics"] = u"modified lyrics\nwith two lines"
+        f["~lyricsdescription"] = u"desc"
+        f["~lyricslanguage"] = u"eng"
         f.write()
 
         f = self.KIND(self.filename)
-        self.assertEqual(f['lyrics'], u'modified lyrics\nwith two lines')
-        self.assertEqual(f['~lyricsdescription'], u'desc')
-        self.assertEqual(f['~lyricslanguage'], u'eng')
-        del f['lyrics']
+        self.assertEqual(f["lyrics"], u"modified lyrics\nwith two lines")
+        self.assertEqual(f["~lyricsdescription"], u"desc")
+        self.assertEqual(f["~lyricslanguage"], u"eng")
+        del f["lyrics"]
         f.write()
 
         f = mutagen.File(self.filename)
-        self.failIf('USLT' in f.tags,
-                    'There should be no USLT tag when lyrics were deleted')
+        self.failIf("USLT" in f.tags,
+                    "There should be no USLT tag when lyrics were deleted")
 
         f = self.KIND(self.filename)
-        self.failIf('lyrics' in f,
-                   'There should be no lyrics key when there is no USLT')
+        self.failIf("lyrics" in f,
+                   "There should be no lyrics key when there is no USLT")
 
     def test_lang_read(self):
         """Tests reading of language from TXXX"""
         # https://github.com/quodlibet/quodlibet/issues/439
         f = mutagen.File(self.filename)
         try:
-            lang = u'free-text'
+            lang = u"free-text"
             f.tags.add(
-                mutagen.id3.TXXX(encoding=3, desc=u'QuodLibet::language',
+                mutagen.id3.TXXX(encoding=3, desc=u"QuodLibet::language",
                                  text=lang))
             f.save()
-            self.assertEquals(self.KIND(self.filename)['language'], lang)
+            self.assertEquals(self.KIND(self.filename)["language"], lang)
         finally:
             f.delete()
 
     def test_lang_read_TLAN(self):
         """Tests reading language from TLAN"""
         f = mutagen.File(self.filename)
-        lang = u'eng'
+        lang = u"eng"
         try:
             f.tags.add(mutagen.id3.TLAN(encoding=3, text=lang))
             f.save()
-            self.assertEquals(self.KIND(self.filename)['language'], lang)
+            self.assertEquals(self.KIND(self.filename)["language"], lang)
         finally:
             f.delete()
 
@@ -249,12 +249,12 @@ class TID3FileMixin:
         """Tests reading multiple language from TLAN"""
         f = mutagen.File(self.filename)
         # Include an invalid one; current behaviour is to load anyway
-        lang = u'eng\0der\0fra\0fooooo'
-        exp = u'eng\nder\nfra\nfooooo'
+        lang = u"eng\0der\0fra\0fooooo"
+        exp = u"eng\nder\nfra\nfooooo"
         try:
             f.tags.add(mutagen.id3.TLAN(encoding=3, text=lang))
             f.save()
-            self.assertEquals(self.KIND(self.filename)['language'], exp)
+            self.assertEquals(self.KIND(self.filename)["language"], exp)
         finally:
             f.delete()
 
@@ -270,34 +270,34 @@ class TID3FileMixin:
             self.failUnlessEqual(af("language"), val)
             af.write()
             tags = mutagen.File(self.filename).tags
-            self.failUnlessEqual(tags[u'TXXX:QuodLibet::language'], val)
+            self.failUnlessEqual(tags[u"TXXX:QuodLibet::language"], val)
             self.failIf("TLAN" in tags)
 
     def test_write_lang_iso(self):
         """Tests that if you use an ISO 639-2 code, TLAN gets populated"""
-        for iso_lang in ['eng', 'ger', 'zho']:
+        for iso_lang in ["eng", "ger", "zho"]:
             af = self.KIND(self.filename)
             af["language"] = iso_lang
             self.failUnlessEqual(af("language"), iso_lang)
             af.write()
             tags = mutagen.File(self.filename).tags
-            self.failIf(u'TXXX:QuodLibet::language' in tags,
+            self.failIf(u"TXXX:QuodLibet::language" in tags,
                     "Should have used TLAN tag for '%s'" % iso_lang)
-            self.failUnlessEqual(tags[u'TLAN'], iso_lang)
+            self.failUnlessEqual(tags[u"TLAN"], iso_lang)
             af.clear()
 
     def test_write_multiple_lang_iso(self):
         """Tests using multiple ISO 639-2 codes"""
-        iso_langs = ['eng', 'ger', 'zho']
+        iso_langs = ["eng", "ger", "zho"]
         iso_langs_str = "\n".join(iso_langs)
         af = self.KIND(self.filename)
         af["language"] = iso_langs_str
         self.failUnlessEqual(af("language"), iso_langs_str)
         af.write()
         tags = mutagen.File(self.filename).tags
-        self.failIf(u'TXXX:QuodLibet::language' in tags,
+        self.failIf(u"TXXX:QuodLibet::language" in tags,
                     "Should have used TLAN for %s" % iso_langs)
-        self.failUnlessEqual(tags[u'TLAN'], iso_langs,
+        self.failUnlessEqual(tags[u"TLAN"], iso_langs,
                 msg="Wrong tags: %s" % tags)
         af.clear()
 
@@ -672,25 +672,25 @@ class TID3FileMixin:
 
     def test_handled_txxx_encoding(self):
         song = self.KIND(self.filename)
-        song['albumartistsort'] = u'Dvo\u0159\xe1k, Anton\xedn'
-        song["replaygain_track_peak"] = u'Dvo\u0159\xe1k, Anton\xedn'
+        song["albumartistsort"] = u"Dvo\u0159\xe1k, Anton\xedn"
+        song["replaygain_track_peak"] = u"Dvo\u0159\xe1k, Anton\xedn"
         song.write()
 
     def test_albumartistsort(self):
         song = self.KIND(self.filename)
-        song['albumartistsort'] = u"foo"
+        song["albumartistsort"] = u"foo"
         song.write()
         song = self.KIND(self.filename)
-        self.assertEqual(song['albumartistsort'], u"foo")
+        self.assertEqual(song["albumartistsort"], u"foo")
 
 
 class TID3FileMP3(TID3FileBase, TID3FileMixin):
 
     KIND = MP3File
-    PATH = get_data_path('silence-44-s.mp3')
+    PATH = get_data_path("silence-44-s.mp3")
 
 
 class TID3FileAIFF(TID3FileBase, TID3FileMixin):
 
     KIND = AIFFFile
-    PATH = get_data_path('test.aiff')
+    PATH = get_data_path("test.aiff")

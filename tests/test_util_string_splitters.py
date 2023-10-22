@@ -45,7 +45,7 @@ class Tsplit_value(TestCase):
                              ["Red Elvises", "[dialogue]"])
 
     def test_unicode_word_boundary(self):
-        val = b'\xe3\x81\x82&\xe3\x81\x84'.decode('utf-8')
+        val = b"\xe3\x81\x82&\xe3\x81\x84".decode("utf-8")
         self.failUnlessEqual(split_value(val), val.split("&"))
 
 

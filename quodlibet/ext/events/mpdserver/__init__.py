@@ -130,7 +130,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         entry = UndoEntry()
         entry.set_text(self.config_get("password"))
-        entry.connect('changed', self.config_entry_changed, "password")
+        entry.connect("changed", self.config_entry_changed, "password")
 
         table.attach(entry, 1, 3, 2, 3)
 

@@ -47,7 +47,7 @@ class TAlbum(TestCase):
     def setUp(self):
         config.init()
 
-    def test_people_sort(s):
+    def test_people_sort(self):
         songs = [
             Fakesong({"albumartist": "aa", "artist": "b\na"}),
             Fakesong({"albumartist": "aa", "artist": "a\na"})
@@ -56,9 +56,9 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~people"), "aa, a, b")
+        assert album.comma("~people") == "aa, a, b"
 
-    def test_peoplesort_sort(s):
+    def test_peoplesort_sort(self):
         songs = [
             Fakesong({"albumartistsort": "aa", "artist": "b\na"}),
             Fakesong({"albumartist": "aa", "artistsort": "a\na"})
@@ -67,9 +67,9 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~peoplesort"), "aa, a, b")
+        assert album.comma("~peoplesort") == "aa, a, b"
 
-    def test_tied_tags(s):
+    def test_tied_tags(self):
         songs = [
             Fakesong({"artist": "a", "title": "c"}),
             Fakesong({"artist": "a", "dummy": "d\ne"})
@@ -78,9 +78,9 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~artist~dummy"), "a - d, e")
+        assert album.comma("~artist~dummy") == "a - d, e"
 
-    def test_tied_num_tags(s):
+    def test_tied_num_tags(self):
         songs = [
             Fakesong({"~#length": 5, "title": "c", "~#rating": 0.4}),
             Fakesong({"~#length": 7, "dummy": "d\ne", "~#rating": 0.6}),
@@ -90,14 +90,14 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.comma("~foo~~s~~~"), "")
-        s.failUnlessEqual(album.comma("~#length~dummy"), "12 - d, e")
-        s.failUnlessEqual(album.comma("~#rating~dummy"), "0.50 - d, e")
-        s.failUnlessEqual(album.comma("~#length:sum~dummy"), "12 - d, e")
-        s.failUnlessEqual(album.comma("~#dummy2"), 5)
-        s.failUnlessEqual(album.comma("~#dummy3"), "")
+        assert album.comma("~foo~~s~~~") == ""
+        assert album.comma("~#length~dummy") == "12 - d, e"
+        assert album.comma("~#rating~dummy") == "0.50 - d, e"
+        assert album.comma("~#length:sum~dummy") == "12 - d, e"
+        assert album.comma("~#dummy2") == 5
+        assert album.comma("~#dummy3") == ""
 
-    def test_internal_tags(s):
+    def test_internal_tags(self):
         songs = [
             Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
             Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
@@ -106,33 +106,33 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failIfEqual(album.comma("~long-length"), "")
-        s.failIfEqual(album.comma("~tracks"), "")
-        s.failIfEqual(album.comma("~discs"), "")
-        s.failUnlessEqual(album.comma("~foo"), "")
+        self.failIfEqual(album.comma("~long-length"), "")
+        self.failIfEqual(album.comma("~tracks"), "")
+        self.failIfEqual(album.comma("~discs"), "")
+        assert album.comma("~foo") == ""
 
-        s.failUnlessEqual(album.comma(""), "")
-        s.failUnlessEqual(album.comma("~"), "")
-        s.failUnlessEqual(album.get("~#"), "")
+        assert album.comma("") == ""
+        assert album.comma("~") == ""
+        assert album.get("~#") == ""
 
-    def test_numeric_ops(s):
+    def test_numeric_ops(self):
         songs = NUMERIC_SONGS
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.get("~#length"), 12)
-        s.failUnlessEqual(album.get("~#length:sum"), 12)
-        s.failUnlessEqual(album.get("~#length:max"), 7)
-        s.failUnlessEqual(album.get("~#length:min"), 1)
-        s.failUnlessEqual(album.get("~#length:avg"), 4)
-        s.failUnlessEqual(album.get("~#length:foo"), 0)
+        assert album.get("~#length") == 12
+        assert album.get("~#length:sum") == 12
+        assert album.get("~#length:max") == 7
+        assert album.get("~#length:min") == 1
+        assert album.get("~#length:avg") == 4
+        assert album.get("~#length:foo") == 0
 
-        s.failUnlessEqual(album.get("~#added"), 7)
-        s.failUnlessEqual(album.get("~#lastplayed"), 88)
-        s.failUnlessEqual(album.get("~#bitrate"), 200)
-        s.failUnlessEqual(album.get("~#year"), 33)
-        s.failUnlessEqual(album.get("~#rating"), 0.3)
-        s.failUnlessEqual(album.get("~#originalyear"), 2002)
+        assert album.get("~#added") == 7
+        assert album.get("~#lastplayed") == 88
+        assert album.get("~#bitrate") == 200
+        assert album.get("~#year") == 33
+        assert album.get("~#rating") == 0.3
+        assert album.get("~#originalyear") == 2002
 
     def test_numeric_comma(self):
         songs = [Fakesong({
@@ -162,28 +162,28 @@ class TAlbum(TestCase):
         self.assertEqual(album("~rating:min"), format_rating(0.1))
         self.assertEqual(album("~filesize:min"), "0 B")
 
-    def test_single_rating(s):
+    def test_single_rating(self):
         songs = [Fakesong({"~#rating": 0.75})]
         album = Album(songs[0])
         album.songs = set(songs)
         # One song should average to its own rating
-        s.failUnlessEqual(album.get("~#rating:avg"), songs[0]("~#rating"))
+        assert album.get("~#rating:avg") == songs[0]("~#rating")
         # BAV should now be default for rating
-        s.failUnlessEqual(album.get("~#rating:bav"), album.get("~#rating:avg"))
+        assert album.get("~#rating:bav") == album.get("~#rating:avg")
 
-    def test_multiple_ratings(s):
+    def test_multiple_ratings(self):
         r1, r2 = 1.0, 0.5
         songs = [Fakesong({"~#rating": r1}), Fakesong({"~#rating": r2})]
         album = Album(songs[0])
         album.songs = set(songs)
         # Standard averaging still available
-        s.failUnlessEqual(album("~#rating:avg"), avg([r1, r2]))
+        assert album("~#rating:avg") == avg([r1, r2])
 
         # C = 0.0 => emulate arithmetic mean
         config.set("settings", "bayesian_rating_factor", 0.0)
-        s.failUnlessEqual(album("~#rating:bav"), album("~#rating:avg"))
+        assert album("~#rating:bav") == album("~#rating:avg")
 
-    def test_bayesian_multiple_ratings(s):
+    def test_bayesian_multiple_ratings(self):
         # separated from above to avoid caching
         c, r1, r2 = 5, 1.0, 0.5
         songs = [Fakesong({"~#rating": r1}), Fakesong({"~#rating": r2})]
@@ -191,62 +191,60 @@ class TAlbum(TestCase):
         album.songs = set(songs)
 
         config.set("settings", "bayesian_rating_factor", float(c))
-        s.failUnlessEqual(
-            config.getfloat("settings", "bayesian_rating_factor"), float(c))
+        assert config.getfloat("settings", "bayesian_rating_factor") == float(c)
         expected = avg(c * [config.RATINGS.default] + [r1, r2])
-        s.failUnlessEqual(album("~#rating:bav"), expected)
-        s.failUnlessEqual(album("~#rating"), expected)
+        assert album("~#rating:bav") == expected
+        assert album("~#rating") == expected
 
-    def test_bayesian_average(s):
+    def test_bayesian_average(self):
         bav = bayesian_average
         l = [1, 2, 3, 4]
         a = avg(l)
         # c=0 => this becomes a mean regardless of m
-        s.failUnlessEqual(bav(l, 0, 0), a)
-        s.failUnlessEqual(bav(l, 0, 999), a)
+        assert bav(l, 0, 0) == a
+        assert bav(l, 0, 999) == a
         # c=1, m = a (i.e. just adding another mean score) => no effect
-        s.failUnlessEqual(bav(l, 1, a), a)
+        assert bav(l, 1, a) == a
         # Harder ones
-        s.failUnlessEqual(bav(l, 5, 2), 20.0 / 9)
+        assert bav(l, 5, 2) == 20.0 / 9
         expected = 40.0 / 14
-        s.failUnlessEqual(bav(l, 10, 3), expected)
+        assert bav(l, 10, 3) == expected
         # Also check another iterable
-        s.failUnlessEqual(bav(tuple(l), 10, 3), expected)
+        assert bav(tuple(l), 10, 3) == expected
 
-    def test_defaults(s):
-        failUnlessEq = s.failUnlessEqual
+    def test_defaults(self):
         song = Fakesong({})
         album = Album(song)
 
-        failUnlessEq(album("foo", "x"), "x")
+        assert album("foo", "x") == "x"
 
         album.songs.add(song)
 
-        failUnlessEq(album("~#length", "x"), song("~#length", "x"))
-        failUnlessEq(album("~#bitrate", "x"), song("~#bitrate", "x"))
-        failUnlessEq(album("~#rating", "x"), song("~#rating", "x"))
-        failUnlessEq(album("~#playcount", "x"), song("~#playcount", "x"))
-        failUnlessEq(album("~#mtime", "x"), song("~#mtime", "x"))
-        failUnlessEq(album("~#year", "x"), song("~#year", "x"))
+        assert album("~#length", "x") == song("~#length", "x")
+        assert album("~#bitrate", "x") == song("~#bitrate", "x")
+        assert album("~#rating", "x") == song("~#rating", "x")
+        assert album("~#playcount", "x") == song("~#playcount", "x")
+        assert album("~#mtime", "x") == song("~#mtime", "x")
+        assert album("~#year", "x") == song("~#year", "x")
 
-        failUnlessEq(album("~#foo", "x"), song("~#foo", "x"))
-        failUnlessEq(album("foo", "x"), song("foo", "x"))
-        failUnlessEq(album("~foo", "x"), song("~foo", "x"))
+        assert album("~#foo", "x") == song("~#foo", "x")
+        assert album("foo", "x") == song("foo", "x")
+        assert album("~foo", "x") == song("~foo", "x")
 
-        failUnlessEq(album("~people", "x"), song("~people", "x"))
-        failUnlessEq(album("~peoplesort", "x"), song("~peoplesort", "x"))
-        failUnlessEq(album("~performer", "x"), song("~performer", "x"))
-        failUnlessEq(album("~performersort", "x"), song("~performersort", "x"))
+        assert album("~people", "x") == song("~people", "x")
+        assert album("~peoplesort", "x") == song("~peoplesort", "x")
+        assert album("~performer", "x") == song("~performer", "x")
+        assert album("~performersort", "x") == song("~performersort", "x")
 
-        failUnlessEq(album("~rating", "x"), song("~rating", "x"))
+        assert album("~rating", "x") == song("~rating", "x")
 
         for p in PEOPLE:
-            failUnlessEq(album(p, "x"), song(p, "x"))
+            assert album(p, "x") == song(p, "x")
 
         for p in NUMERIC_ZERO_DEFAULT:
-            failUnlessEq(album(p, "x"), song(p, "x"))
+            assert album(p, "x") == song(p, "x")
 
-    def test_methods(s):
+    def test_methods(self):
         songs = [
             Fakesong({"b": "bb4\nbb1\nbb1",
                       "c": "cc1\ncc3\ncc3",
@@ -259,12 +257,12 @@ class TAlbum(TestCase):
         album = Album(songs[0])
         album.songs = set(songs)
 
-        s.failUnlessEqual(album.list("c"), ["cc3", "cc1"])
-        s.failUnlessEqual(album.list("~c~b"), ["cc3", "cc1", "bb1", "bb4"])
-        s.failUnlessEqual(album.list("#d"), ["0.1", "0.2"])
+        assert album.list("c") == ["cc3", "cc1"]
+        assert album.list("~c~b") == ["cc3", "cc1", "bb1", "bb4"]
+        assert album.list("#d") == ["0.1", "0.2"]
 
-        s.failUnlessEqual(album.comma("c"), "cc3, cc1")
-        s.failUnlessEqual(album.comma("~c~b"), "cc3, cc1 - bb1, bb4")
+        assert album.comma("c") == "cc3, cc1"
+        assert album.comma("~c~b") == "cc3, cc1 - bb1, bb4"
 
     def tearDown(self):
         config.quit()
@@ -303,7 +301,7 @@ class TPlaylist(TestCase):
 
         @property
         def changed(self):
-            return self.emitted.get('changed', [])
+            return self.emitted.get("changed", [])
 
         @property
         def playlists(self):
@@ -321,79 +319,79 @@ class TPlaylist(TestCase):
     def wrap(self, name, lib=FAKE_LIB):
         return PlaylistResource(self.pl(name, lib))
 
-    def test_equality(s):
-        pl = s.pl("playlist")
-        pl2 = s.pl("playlist")
-        pl3 = s.pl("playlist")
-        s.failUnlessEqual(pl, pl2)
+    def test_equality(self):
+        pl = self.pl("playlist")
+        pl2 = self.pl("playlist")
+        pl3 = self.pl("playlist")
+        self.failUnlessEqual(pl, pl2)
         # Debatable
-        s.failUnlessEqual(pl, pl3)
-        pl4 = s.pl("foobar")
-        s.failIfEqual(pl, pl4)
+        self.failUnlessEqual(pl, pl3)
+        pl4 = self.pl("foobar")
+        self.failIfEqual(pl, pl4)
         pl.delete()
         pl2.delete()
         pl3.delete()
         pl4.delete()
 
-    def test_index(s):
-        with s.wrap("playlist") as pl:
-            songs = s.TWO_SONGS
+    def test_index(self):
+        with self.wrap("playlist") as pl:
+            songs = self.TWO_SONGS
             pl.extend(songs)
             # Just a sanity check...
-            s.failUnlessEqual(songs.index(songs[1]), 1)
-            # And now the happy paths..
-            s.failUnlessEqual(pl.index(songs[0]), 0)
-            s.failUnlessEqual(pl.index(songs[1]), 1)
+            self.failUnlessEqual(songs.index(songs[1]), 1)
+            # And now the happy paths...
+            self.failUnlessEqual(pl.index(songs[0]), 0)
+            self.failUnlessEqual(pl.index(songs[1]), 1)
             # ValueError is what we want here
             try:
                 pl.index(Fakesong({}))
-                s.fail()
+                self.fail()
             except ValueError:
                 pass
 
-    def test_name_tag(s):
-        with s.wrap("a playlist") as pl:
-            s.failUnlessEqual(pl("~name"), "a playlist")
-            s.failUnlessEqual(pl.get("~name"), "a playlist")
+    def test_name_tag(self):
+        with self.wrap("a playlist") as pl:
+            self.failUnlessEqual(pl("~name"), "a playlist")
+            self.failUnlessEqual(pl.get("~name"), "a playlist")
 
-    def test_internal_tags(s):
-        with s.wrap("playlist") as pl:
-            pl.extend(s.TWO_SONGS)
+    def test_internal_tags(self):
+        with self.wrap("playlist") as pl:
+            pl.extend(self.TWO_SONGS)
 
-            s.failIfEqual(pl.comma("~long-length"), "")
-            s.failIfEqual(pl.comma("~tracks"), "")
-            s.failIfEqual(pl.comma("~discs"), "")
-            s.failUnlessEqual(pl.comma("~foo"), "")
+            self.failIfEqual(pl.comma("~long-length"), "")
+            self.failIfEqual(pl.comma("~tracks"), "")
+            self.failIfEqual(pl.comma("~discs"), "")
+            self.failUnlessEqual(pl.comma("~foo"), "")
 
-            s.failUnlessEqual(pl.comma(""), "")
-            s.failUnlessEqual(pl.comma("~"), "")
-            s.failUnlessEqual(pl.get("~#"), "")
+            self.failUnlessEqual(pl.comma(""), "")
+            self.failUnlessEqual(pl.comma("~"), "")
+            self.failUnlessEqual(pl.get("~#"), "")
 
-    def test_numeric_ops(s):
+    def test_numeric_ops(self):
         songs = NUMERIC_SONGS
-        with s.wrap("playlist") as pl:
+        with self.wrap("playlist") as pl:
             pl.extend(songs)
 
-            s.failUnlessEqual(pl.get("~#length"), 12)
-            s.failUnlessEqual(pl.get("~#length:sum"), 12)
-            s.failUnlessEqual(pl.get("~#length:max"), 7)
-            s.failUnlessEqual(pl.get("~#length:min"), 1)
-            s.failUnlessEqual(pl.get("~#length:avg"), 4)
-            s.failUnlessEqual(pl.get("~#length:foo"), 0)
+            self.failUnlessEqual(pl.get("~#length"), 12)
+            self.failUnlessEqual(pl.get("~#length:sum"), 12)
+            self.failUnlessEqual(pl.get("~#length:max"), 7)
+            self.failUnlessEqual(pl.get("~#length:min"), 1)
+            self.failUnlessEqual(pl.get("~#length:avg"), 4)
+            self.failUnlessEqual(pl.get("~#length:foo"), 0)
 
-            s.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
+            self.failUnlessEqual(pl.get("~#rating:avg"), avg([0.1, 0.3, 0.5]))
 
-            s.failUnlessEqual(pl.get("~#filesize"), 303)
+            self.failUnlessEqual(pl.get("~#filesize"), 303)
 
-            s.failUnlessEqual(pl.get("~#added"), 7)
-            s.failUnlessEqual(pl.get("~#lastplayed"), 88)
-            s.failUnlessEqual(pl.get("~#bitrate"), 200)
-            s.failUnlessEqual(pl.get("~#year"), 33)
-            s.failUnlessEqual(pl.get("~#rating"), 0.3)
-            s.failUnlessEqual(pl.get("~#originalyear"), 2002)
+            self.failUnlessEqual(pl.get("~#added"), 7)
+            self.failUnlessEqual(pl.get("~#lastplayed"), 88)
+            self.failUnlessEqual(pl.get("~#bitrate"), 200)
+            self.failUnlessEqual(pl.get("~#year"), 33)
+            self.failUnlessEqual(pl.get("~#rating"), 0.3)
+            self.failUnlessEqual(pl.get("~#originalyear"), 2002)
 
-    def test_updating_aggregates_extend(s):
-        with s.wrap("playlist") as pl:
+    def test_updating_aggregates_extend(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
             old_length = pl.get("~#length")
             old_size = pl.get("~#filesize")
@@ -403,61 +401,61 @@ class TPlaylist(TestCase):
 
             new_length = pl.get("~#length")
             new_size = pl.get("~#filesize")
-            s.failUnless(new_length > old_length,
-                         msg="Ooops, %d <= %d" % (new_length, old_length))
+            self.failUnless(new_length > old_length,
+                            msg="Ooops, %d <= %d" % (new_length, old_length))
 
-            s.failUnless(new_size > old_size,
-                         msg="Ooops, %d <= %d" % (new_size, old_size))
+            self.failUnless(new_size > old_size,
+                            msg="Ooops, %d <= %d" % (new_size, old_size))
 
-    def test_updating_aggregates_append(s):
-        with s.wrap("playlist") as pl:
+    def test_updating_aggregates_append(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
             old_rating = pl.get("~#rating")
 
             pl.append(AMAZING_SONG)
 
             new_rating = pl.get("~#filesize")
-            s.failUnless(new_rating > old_rating)
+            self.failUnless(new_rating > old_rating)
 
-    def test_updating_aggregates_clear(s):
-        with s.wrap("playlist") as pl:
+    def test_updating_aggregates_clear(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            s.failUnless(pl.get("~#length"))
+            self.failUnless(pl.get("~#length"))
 
             pl.clear()
-            s.failIf(pl.get("~#length"))
+            self.failIf(pl.get("~#length"))
 
-    def test_updating_aggregates_remove_songs(s):
-        with s.wrap("playlist") as pl:
+    def test_updating_aggregates_remove_songs(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            s.failUnless(pl.get("~#length"))
+            self.failUnless(pl.get("~#length"))
 
             pl.remove_songs(NUMERIC_SONGS)
-            s.failIf(pl.get("~#length"))
+            self.failIf(pl.get("~#length"))
 
-    def test_listlike(s):
-        with s.wrap("playlist") as pl:
+    def test_listlike(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            s.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
-            s.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
-            s.failUnless(NUMERIC_SONGS[1] in pl)
+            self.failUnlessEqual(NUMERIC_SONGS[0], pl[0])
+            self.failUnlessEqual(NUMERIC_SONGS[1:2], pl[1:2])
+            self.failUnless(NUMERIC_SONGS[1] in pl)
 
-    def test_extend_signals(s):
-        with s.wrap("playlist") as pl:
+    def test_extend_signals(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS)
+            self.failUnlessEqual(self.FAKE_LIB.changed, NUMERIC_SONGS)
 
-    def test_append_signals(s):
-        with s.wrap("playlist") as pl:
+    def test_append_signals(self):
+        with self.wrap("playlist") as pl:
             song = NUMERIC_SONGS[0]
             pl.append(song)
-            s.failUnlessEqual(s.FAKE_LIB.changed, [song])
+            self.failUnlessEqual(self.FAKE_LIB.changed, [song])
 
-    def test_clear_signals(s):
-        with s.wrap("playlist") as pl:
+    def test_clear_signals(self):
+        with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
             pl.clear()
-            s.failUnlessEqual(s.FAKE_LIB.changed, NUMERIC_SONGS * 2)
+            self.failUnlessEqual(self.FAKE_LIB.changed, NUMERIC_SONGS * 2)
 
     def test_make(self):
         with self.wrap("Does not exist") as pl:
@@ -495,7 +493,7 @@ class TPlaylist(TestCase):
             self.failUnlessEqual(len(pl), 4)
             self.failUnless(pl.has_duplicates,
                             ("Playlist has un-detected duplicates: %s "
-                             % "\n".join([str(s) for s in pl._list])))
+                             % "\n".join([str(self) for s in pl._list])))
 
     def test_remove_leaving_duplicates(self):
         with self.wrap("playlist") as pl:
@@ -564,7 +562,7 @@ class TFileBackedPlaylist(TPlaylist):
         lib = FileLibrary("foobar")
         tempdir = mkdtemp()
         self.add_songs_in_temp_dir(lib, tempdir, NUMERIC_SONGS)
-        name = "c:?\"problem?\" / foo* / 100% ə! COM"
+        name = 'c:?"problem?" / foo* / 100% ə! COM'
         with self.wrap(name, lib) as pl:
             pl.extend(NUMERIC_SONGS)
             pl.write()
@@ -579,9 +577,9 @@ class TFileBackedPlaylist(TPlaylist):
             lib.add([l])
 
     def test_symmetric(self):
-        P = self.Playlist
+        pcls = self.Playlist
         for name in ("bar & foo?", "100% cool.now 😀", "COM:", "a/b"):
-            new_name = P.name_for(P.filename_for(name))
+            new_name = pcls.name_for(pcls.filename_for(name))
             assert new_name == name
 
     def test_make_dup(self):
@@ -596,8 +594,8 @@ class TFileBackedPlaylist(TPlaylist):
     def test_rename_removes(self):
         with self.wrap("foo") as pl:
             pl.rename("bar")
-            self.failUnless(exists(self.path_for('bar')))
-            self.failIf(exists(self.path_for('foo')))
+            self.failUnless(exists(self.path_for("bar")))
+            self.failIf(exists(self.path_for("foo")))
 
     def path_for(self, name: str):
         return os.path.join(self.temp, self.Playlist.filename_for(name))

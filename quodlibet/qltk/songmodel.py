@@ -25,7 +25,7 @@ class PlaylistMux:
     def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        self._id = player.connect('song-started', self.__song_started)
+        self._id = player.connect("song-started", self.__song_started)
         self._player = player
 
     def destroy(self):
@@ -162,7 +162,7 @@ class TrackCurrentModel(ObjectStore):
         self.__iter = None
 
         oldsong = self.last_current
-        for iter_, song in zip(self.iter_append_many(songs), songs):
+        for iter_, song in zip(self.iter_append_many(songs), songs, strict=False):
             if song is oldsong:
                 self.__iter = iter_
 
@@ -257,7 +257,7 @@ class PlaylistModel(TrackCurrentModel):
         # The playorder plugins use paths atm to remember songs so
         # we need to reset them if the paths change somehow.
         self.__sigs = []
-        for sig in ['row-deleted', 'row-inserted', 'rows-reordered']:
+        for sig in ["row-deleted", "row-inserted", "rows-reordered"]:
             s = self.connect(sig, lambda pl, *x: self.order.reset(pl))
             self.__sigs.append(s)
 

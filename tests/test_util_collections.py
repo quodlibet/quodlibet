@@ -120,7 +120,7 @@ class THashedList(TestCase):
 
     def test_iter(self):
         l = HashedList([1, 2, 3, 3])
-        new = [a for a in l]
+        new = list(l)
         self.failUnlessEqual(new, [1, 2, 3, 3])
 
     def test_del_slice(self):

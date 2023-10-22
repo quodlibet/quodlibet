@@ -166,7 +166,7 @@ class ExportToFolder(PlaylistPlugin):
             entry = UndoEntry()
             if CONFIG.default_pattern:
                 entry.set_text(CONFIG.default_pattern)
-            entry.connect('changed', changed)
+            entry.connect("changed", changed)
             hbox.pack_start(entry, True, True, 0)
             return hbox
 

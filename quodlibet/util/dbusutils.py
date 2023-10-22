@@ -60,7 +60,7 @@ def list_spec_properties(spec):
     root = ET.fromstring(
         b'<?xml version="1.0" encoding="UTF-8"?><props>' +
         spec.encode("utf-8") +
-        b'</props>')
+        b"</props>")
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -88,7 +88,7 @@ def filter_property_spec(spec, wl=None, bl=None):
     root = ET.fromstring(
         b'<?xml version="1.0" encoding="UTF-8"?><props>' +
         spec.encode("utf-8") +
-        b'</props>')
+        b"</props>")
     if wl:
         def to_rm(e):
             return e.attrib["name"] not in wl
@@ -177,7 +177,7 @@ class DBusIntrospectable:
         parts = []
         parts.append("<node>")
         for iface, intros in self.__ispec.items():
-            parts.append("<interface name=\"%s\">" % iface)
+            parts.append('<interface name="%s">' % iface)
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")

@@ -60,7 +60,7 @@ def iscommand(s):
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        path = os.environ.get('PATH', '') or os.defpath
+        path = os.environ.get("PATH", "") or os.defpath
         for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
@@ -107,7 +107,7 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s: str, safe: bytes = b''):
+def escape_filename(s: str, safe: bytes = b""):
     """Escape a string in a manner suitable for a filename.
 
     Args:
@@ -118,7 +118,7 @@ def escape_filename(s: str, safe: bytes = b''):
     """
 
     s = str(s)
-    quoted = quote(s, safe=safe, encoding='utf-8')
+    quoted = quote(s, safe=safe, encoding="utf-8")
     if isinstance(quoted, bytes):
         return bytes2fsn(quoted, "utf-8")
     return bytes2fsn(quoted.encode("ascii"), "utf-8")
@@ -142,7 +142,7 @@ def join_path_with_escaped_name_of_legal_length(path: str, stem: str, ext: str) 
     Stem is trimmed until the filename fits into the filesystems maximum file length"""
 
     # returns the maximum possible filename length at path (subtract one for dot)
-    max_stem_length = os.pathconf(path, 'PC_NAME_MAX') - 1 - len(ext)
+    max_stem_length = os.pathconf(path, "PC_NAME_MAX") - 1 - len(ext)
 
     escaped_stem = escape_filename(stem)
     while len(escaped_stem) > max_stem_length:
@@ -151,7 +151,7 @@ def join_path_with_escaped_name_of_legal_length(path: str, stem: str, ext: str) 
         max_stem_length -= 1
         escaped_stem = escape_filename(stem)
 
-    return os.path.join(path, f'{escaped_stem}.{ext}')
+    return os.path.join(path, f"{escaped_stem}.{ext}")
 
 
 def stem_of_file_name(file_name: str) -> str:
@@ -329,21 +329,21 @@ def get_temp_cover_file(data):
         return fn
 
 
-def _strip_win32_incompat(string, BAD=r'\:*?;"<>|'):
+def _strip_win32_incompat(string, bad=r'\:*?;"<>|'):
     """Strip Win32-incompatible characters from a Windows or Unix path."""
 
     if os.name == "nt":
-        BAD += "/"
+        bad += "/"
 
     if not string:
         return string
 
-    new = "".join((s in BAD and "_") or s
+    new = "".join((s in bad and "_") or s
                   for s in string)
     parts = new.split(os.sep)
 
     def fix_end(string):
-        return re.sub(r'[\. ]$', "_", string)
+        return re.sub(r"[\. ]$", "_", string)
     return os.sep.join(fix_end(p)
                        for p in parts)
 
@@ -496,8 +496,8 @@ class RootPathFile:
     and 'end' part. The variable depth of a pathfile's 'end' part renders
     os.path built-ins (basename etc.) useless for this purpose"""
 
-    _root = ''  # 'root' of full file path
-    _pathfile = ''  # full file path
+    _root = ""  # 'root' of full file path
+    _pathfile = ""  # full file path
 
     def __init__(self, root, pathfile):
         self._root = root
@@ -532,7 +532,7 @@ class RootPathFile:
             return valid
         else:
             try:
-                with io.open(self.pathfile, "w", encoding='utf-8') as f:
+                with io.open(self.pathfile, "w", encoding="utf-8") as f:
                     f.close()  # do nothing
             except OSError:
                 valid = False

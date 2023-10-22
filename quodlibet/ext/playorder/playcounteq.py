@@ -38,8 +38,8 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered):
             return None
 
         # Set-up the search information.
-        max_count = max([song('~#playcount') for song in remaining.values()])
-        weights = {i: max_count - song('~#playcount')
+        max_count = max([song("~#playcount") for song in remaining.values()])
+        weights = {i: max_count - song("~#playcount")
                    for i, song in remaining.items()}
         choice = int(max(1, math.ceil(sum(weights) * random.random())))
 

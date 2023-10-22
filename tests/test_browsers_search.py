@@ -52,7 +52,7 @@ class TSearchBar(TestCase):
             af.sanitize()
         quodlibet.browsers.tracks.library.add(SONGS)
         self.bar = self.Bar(quodlibet.browsers.tracks.library)
-        self._sid = self.bar.connect('songs-selected', self._expected)
+        self._sid = self.bar.connect("songs-selected", self._expected)
         self.success = False
 
     def _expected(self, bar, songs, sort):
@@ -70,7 +70,7 @@ class TSearchBar(TestCase):
 
     def test_empty_is_all(self):
         self.bar.filter_text("")
-        self.expected = list(sorted(SONGS))
+        self.expected = sorted(SONGS)
         self._do()
 
     def test_active_filter(self):
@@ -133,7 +133,7 @@ class TSearchBar(TestCase):
         self._do()
         self.bar.save()
         self.bar.filter_text("")
-        self.expected = list(sorted(SONGS))
+        self.expected = sorted(SONGS)
         self._do()
         self.bar.restore()
         self.bar.activate()

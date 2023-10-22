@@ -45,7 +45,7 @@ class TSoundcloudFile(TestCase):
         client = self.client
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=False)
         self.failIf(song.has_rating)
-        song['~#rating'] = 1.0
+        song["~#rating"] = 1.0
         self.failUnless(song.has_rating)
         self.failUnlessEqual(song("~#rating"), 1.0)
         song.write()
@@ -60,7 +60,7 @@ class TSoundcloudFile(TestCase):
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=True)
         self.failUnless(song.has_rating)
         self.failUnlessEqual(song("~#rating"), 1.0)
-        song['~#rating'] = 0.2
+        song["~#rating"] = 0.2
         song.write()
         self.failIf(song.favorite)
         self.failUnlessEqual(client.unfavoritings[TRACK_ID], 1)

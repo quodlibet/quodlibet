@@ -8,7 +8,7 @@
 from gi.repository import Gst, Gtk, GObject
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet import qltk
 from quodlibet import config
@@ -40,7 +40,7 @@ def set_cfg(option, value):
 
 class Preferences(Gtk.VBox):
     __gsignals__: GSignals = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -85,17 +85,17 @@ class Preferences(Gtk.VBox):
             labels[key].set_mnemonic_widget(scale)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             table.attach(scale, 1, 2, idx, idx + 1)
-            scale.connect('value-changed', scale_changed, key)
+            scale.connect("value-changed", scale_changed, key)
             scale.set_value(get_cfg(key))
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
-        scales["level"].connect('format-value', format_perc)
+        scales["level"].connect("format-value", format_perc)
 
         def format_hertz(scale, value):
             return _("%d Hz") % value
-        scales["band"].connect('format-value', format_hertz)
-        scales["width"].connect('format-value', format_hertz)
+        scales["band"].connect("format-value", format_hertz)
+        scales["width"].connect("format-value", format_hertz)
 
         self.pack_start(qltk.Frame(_("Preferences"), child=table),
                         True, True, 0)
@@ -109,7 +109,7 @@ class Karaoke(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        return Gst.ElementFactory.make('audiokaraoke', cls.PLUGIN_ID)
+        return Gst.ElementFactory.make("audiokaraoke", cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):
@@ -125,5 +125,5 @@ class Karaoke(GStreamerPlugin):
 
 
 if not Karaoke.setup_element():
-    raise PluginImportException(
+    raise PluginImportError(
         "GStreamer element 'audiokaraoke' missing (gst-plugins-good)")

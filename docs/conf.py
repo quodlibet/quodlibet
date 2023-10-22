@@ -29,20 +29,20 @@ needs_sphinx = "1.3"
 
 sys.path.append(os.path.join(dir_, "ext"))
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.extlinks', 'contributors']
+extensions = ["sphinx.ext.autodoc", "sphinx.ext.extlinks", "contributors"]
 
-source_suffix = '.rst'
-root_doc = 'index'
-project = 'Quod Libet'
+source_suffix = ".rst"
+root_doc = "index"
+project = "Quod Libet"
 copyright = u""
-exclude_patterns = ['_build', '_build_all', 'README.rst', '**/README.rst']
+exclude_patterns = ["_build", "_build_all", "README.rst", "**/README.rst"]
 html_theme = "sphinx_rtd_theme"
 html_title = project
 
 extlinks = {
-    'bug': ('https://github.com/quodlibet/quodlibet/issues/%s', '#%s'),
-    'pr': ('https://github.com/quodlibet/quodlibet/pull/%s', '#%s'),
-    'user': ('https://github.com/%s', '%s'),
+    "bug": ("https://github.com/quodlibet/quodlibet/issues/%s", "#%s"),
+    "pr": ("https://github.com/quodlibet/quodlibet/pull/%s", "#%s"),
+    "user": ("https://github.com/%s", "%s"),
 }
 
 linkcheck_anchors = True
@@ -53,9 +53,9 @@ linkcheck_ignore = [
 ]
 
 html_context = {
-    'extra_css_files': [
-        '//quodlibet.github.io/fonts/font-mfizz.css',
-        '_static/extra.css',
+    "extra_css_files": [
+        "//quodlibet.github.io/fonts/font-mfizz.css",
+        "_static/extra.css",
     ],
 }
 
@@ -72,4 +72,4 @@ html_show_copyright = False
 
 
 def setup(app):
-    app.add_config_value('const', const, True)
+    app.add_config_value("const", const, True)

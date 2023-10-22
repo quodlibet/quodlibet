@@ -32,7 +32,7 @@ def get_thumbnail_folder():
         thumb_folder = os.path.join(quodlibet.get_cache_dir(), "thumbnails")
     else:
         cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
-        thumb_folder = os.path.expanduser('~/.thumbnails')
+        thumb_folder = os.path.expanduser("~/.thumbnails")
         if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
             thumb_folder = cache_folder
 

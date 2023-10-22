@@ -127,8 +127,8 @@ def _construct_in(pattern, mapping):
             }
             try:
                 parts.append(cats[av])
-            except KeyError:
-                raise NotImplementedError(av)
+            except KeyError as e:
+                raise NotImplementedError(av) from e
         else:
             raise NotImplementedError(op)
 
@@ -163,8 +163,8 @@ def _construct_regexp(
             }
             try:
                 parts.append(cats[av])
-            except KeyError:
-                raise NotImplementedError(av)
+            except KeyError as e:
+                raise NotImplementedError(av) from e
         elif op == "any":
             parts.append(u".")
         elif op == "in":
@@ -194,8 +194,8 @@ def _construct_regexp(
             }
             try:
                 parts.append(ats[av])
-            except KeyError:
-                raise NotImplementedError(av)
+            except KeyError as e:
+                raise NotImplementedError(av) from e
         elif op == "subpattern":
             # Python 3.6 extended this
             # https://bugs.python.org/issue433028
@@ -230,7 +230,7 @@ def _construct_regexp(
                 raise NotImplementedError(direction)
         elif op == "branch":
             dummy, branches = av
-            branches = map(lambda b: _construct_regexp(b, mapping), branches)
+            branches = (_construct_regexp(b, mapping) for b in branches)
             pad = u"|".join(branches)
             if parent != "subpattern":
                 parts.append("(?:%s)" % pad)
@@ -296,7 +296,7 @@ def compile(pattern: str, ignore_case: bool = True, dot_all: bool = False,
             # too complex, just skip this step
             print_d("regex not supported: %s" % pattern)
         except re.error as e:
-            raise ValueError(e)
+            raise ValueError(e) from e
 
     mods = re.MULTILINE | re.UNICODE
     if ignore_case:
@@ -307,7 +307,7 @@ def compile(pattern: str, ignore_case: bool = True, dot_all: bool = False,
     try:
         reg = re.compile(pattern, mods)
     except re.error as e:
-        raise ValueError(e)
+        raise ValueError(e) from e
     normalize = unicodedata.normalize
 
     def search(text: str):

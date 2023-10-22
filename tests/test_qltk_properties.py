@@ -50,13 +50,13 @@ class TSongProperties(TestCase):
     def test_changed(self):
         self.test_twosong()
         self.window.hide()
-        self.library.emit('changed', [self.af2])
+        self.library.emit("changed", [self.af2])
         run_gtk_loop()
 
     def test_removed(self):
         self.test_twosong()
         self.window.hide()
-        self.library.emit('removed', [self.af2])
+        self.library.emit("removed", [self.af2])
         run_gtk_loop()
 
     def tearDown(self):

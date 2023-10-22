@@ -142,10 +142,10 @@ class Browser(Gtk.Box, Filter):
     """
 
     __gsignals__ = {
-        'songs-selected':
+        "songs-selected":
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
-        'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'uri-received': (GObject.SignalFlags.RUN_LAST, None, (str,))
+        "songs-activated": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "uri-received": (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     name = _("Library Browser")
@@ -203,7 +203,7 @@ class Browser(Gtk.Box, Filter):
     """A list of column headers to display; None means all are okay."""
 
     @classmethod
-    def init(klass, library):
+    def init(cls, library):
         """Called after library and MainWindow initialization, before the
         GTK main loop starts.
         """
@@ -267,7 +267,7 @@ class Browser(Gtk.Box, Filter):
     the browser is.
     """
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items) -> Gtk.Menu:
         """This method returns a Gtk.Menu, probably a SongsMenu. After this
         menu is returned the SongList may modify it further.
         """
@@ -347,7 +347,7 @@ class FakeDisplayItem(dict):
     See also `util.pattern`"""
 
     def get(self, key, default="", connector=" - "):
-        if key[:1] == "~" and '~' in key[1:]:
+        if key[:1] == "~" and "~" in key[1:]:
             return connector.join(map(self.get, util.tagsplit(key)))
         elif key[:1] == "~" and key[-4:-3] == ":":
             func = key[-3:]
@@ -388,9 +388,9 @@ class EditDisplayPatternMixin:
         eb.add(label)
         edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
-        edit.apply.connect('clicked', self._set_pattern, edit, browser)
+        edit.apply.connect("clicked", self._set_pattern, edit, browser)
         connect_obj(
-                edit.buffer, 'changed', self._preview_pattern, edit, label)
+                edit.buffer, "changed", self._preview_pattern, edit, label)
         vbox.pack_start(eb, False, True, 3)
         vbox.pack_start(edit, True, True, 0)
         self._preview_pattern(edit, label)

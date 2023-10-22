@@ -153,7 +153,7 @@ def _init_dbus():
     except ImportError:
         try:
             import dbus.glib
-            dbus.glib
+            dbus.glib  # noqa
         except ImportError:
             return
     else:
@@ -211,7 +211,7 @@ def _init_g():
     # even with stable releases.
     if is_release():
         warnings.filterwarnings(
-            'ignore', '.* It will be removed in a future version.',
+            "ignore", ".* It will be removed in a future version.",
             Warning)
 
     # blacklist some modules, simply loading can cause segfaults
@@ -236,15 +236,15 @@ def _init_gtk():
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
         from gi.repository import GdkX11
-        GdkX11
+        GdkX11  # noqa
     except (ValueError, ImportError):
         pass
 
     gi.require_version("Gtk", "3.0")
     gi.require_version("Gdk", "3.0")
     gi.require_version("Pango", "1.0")
-    gi.require_version('Soup', '3.0')
-    gi.require_version('PangoCairo', "1.0")
+    gi.require_version("Soup", "3.0")
+    gi.require_version("PangoCairo", "1.0")
 
     from gi.repository import Gtk
     from quodlibet.qltk import ThemeOverrider, gtk_version
@@ -264,15 +264,15 @@ def _init_gtk():
     # but this makes sure we don't miss cases where we forgot to force them
     # per widget.
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
-    warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
+    warnings.filterwarnings("ignore", ".*g_value_get_int.*", Warning)
 
     # some day... but not now
     warnings.filterwarnings(
-        'ignore', '.*Stock items are deprecated.*', Warning)
+        "ignore", ".*Stock items are deprecated.*", Warning)
     warnings.filterwarnings(
-        'ignore', '.*:use-stock.*', Warning)
+        "ignore", ".*:use-stock.*", Warning)
     warnings.filterwarnings(
-        'ignore', r'.*The property GtkAlignment:[^\s]+ is deprecated.*',
+        "ignore", r".*The property GtkAlignment:[^\s]+ is deprecated.*",
         Warning)
 
     settings = Gtk.Settings.get_default()
@@ -365,7 +365,7 @@ def _init_gtk():
         css_override.register_provider("", style_provider)
 
     # https://bugzilla.gnome.org/show_bug.cgi?id=708676
-    warnings.filterwarnings('ignore', '.*g_value_get_int.*', Warning)
+    warnings.filterwarnings("ignore", ".*g_value_get_int.*", Warning)
 
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["gtk"] = None

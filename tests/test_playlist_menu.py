@@ -60,7 +60,7 @@ class TPlaylistMenu(TestCase):
         quodlibet.config.quit()
 
     def test__on_new_playlist_activate(self):
-        main = qltk.MenuItem('Menu')
+        main = qltk.MenuItem("Menu")
         menu = StubbedPlaylistMenu(self.SONGS, PlaylistLibrary(SongFileLibrary()))
         main.set_submenu(menu)
 

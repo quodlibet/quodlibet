@@ -1,6 +1,6 @@
 # Copyright 2004-2010 Joe Wreschnig, Michael Urman
 # Copyright 2010,2013 Christoph Reiter
-# Copyright 2013-2015 Nick Boultbee
+# Copyright 2013-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,15 +28,15 @@ from quodlibet.formats._audio import decode_value, FILESYSTEM_TAGS
 (OPEN, CLOSE, TEXT, COND, EOF, DISJ) = range(6)
 
 
-class error(ValueError):
+class Error(ValueError):
     pass
 
 
-class ParseError(error):
+class ParseError(Error):
     pass
 
 
-class LexerError(error):
+class LexerError(Error):
     pass
 
 
@@ -91,7 +91,7 @@ class TextNode:
         self.text = text
 
     def __repr__(self):
-        return "Text(\"%s\")" % self.text
+        return 'Text("%s")' % self.text
 
 
 class ConditionNode:
@@ -102,7 +102,7 @@ class ConditionNode:
 
     def __repr__(self):
         t, i, e = self.expr, repr(self.ifcase), repr(self.elsecase)
-        return "Condition(expression: \"%s\", if: %s, else: %s)" % (t, i, e)
+        return 'Condition(expression: "%s", if: %s, else: %s)' % (t, i, e)
 
 
 class DisjunctionNode:
@@ -119,7 +119,7 @@ class TagNode:
         self.tag = tag
 
     def __repr__(self):
-        return "Tag(\"%s\")" % self.tag
+        return 'Tag("%s")' % self.tag
 
 
 class PatternParser:
@@ -322,9 +322,9 @@ class PatternCompiler:
 
     def __get_value(self, text, scope, tag):
         if tag not in scope:
-            t_var = 'v%d' % len(scope)
+            t_var = "v%d" % len(scope)
             scope[tag] = t_var
-            text.append('%s = x(%r)' % (t_var, tag))
+            text.append("%s = x(%r)" % (t_var, tag))
         else:
             t_var = scope[tag]
         return t_var
@@ -333,16 +333,16 @@ class PatternCompiler:
         if query not in qscope:
             if query in queries:
                 q_var = queries[query][0]
-                r_var = 'r%d' % len(qscope)
-                text.append('%s = %s(s)' % (r_var, q_var))
+                r_var = "r%d" % len(qscope)
+                text.append("%s = %s(s)" % (r_var, q_var))
                 qscope[query] = r_var
             else:
                 q = Query.StrictQueryMatcher(query)
                 if q is not None:
-                    q_var = 'q%d' % len(queries)
-                    r_var = 'r%d' % len(qscope)
+                    q_var = "q%d" % len(queries)
+                    r_var = "r%d" % len(qscope)
                     queries[query] = (q_var, q.search)
-                    text.append('%s = %s(s)' % (r_var, q_var))
+                    text.append("%s = %s(s)" % (r_var, q_var))
                     qscope[query] = r_var
                 else:
                     r_var = self.__get_value(text, scope, query)
@@ -354,9 +354,9 @@ class PatternCompiler:
         text = []
         if isinstance(node, TextNode):
             if text_formatter:
-                text.append('a(_format(%r))' % node.text)
+                text.append("a(_format(%r))" % node.text)
             else:
-                text.append('a(%r)' % node.text)
+                text.append("a(%r)" % node.text)
         elif isinstance(node, ConditionNode):
             var = self.__get_query(text, scope, qscope, node.expr, queries)
             ic = self.__tag(
@@ -368,13 +368,13 @@ class PatternCompiler:
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append('if %s:' % var)
+                text.append("if %s:" % var)
                 text.extend(ic)
                 if ec:
-                    text.append('else:')
+                    text.append("else:")
                     text.extend(ec)
             else:
-                text.append('if not %s:' % var)
+                text.append("if not %s:" % var)
                 text.extend(ec)
         elif isinstance(node, DisjunctionNode):
             text.append("while True:")
@@ -395,7 +395,7 @@ class PatternCompiler:
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
             var = self.__get_value(text, scope, node.tag)
-            text.append('a(%s)' % var)
+            text.append("a(%s)" % var)
         elif isinstance(node, PatternNode):
             for child in node.children:
                 for line in self.__tag(child, scope, qscope, tags, queries,
@@ -404,18 +404,19 @@ class PatternCompiler:
         return text
 
 
-def Pattern(string, Kind=PatternFormatter, MAX_CACHE_SIZE=100, cache=OrderedDict()):
-    if (Kind, string) not in cache:
-        while len(cache) >= MAX_CACHE_SIZE:
+def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100,
+            cache=OrderedDict()):  # noqa
+    if (formatter_cls, string) not in cache:
+        while len(cache) >= max_cache_size:
             cache.popitem(last=False)
         comp = PatternCompiler(PatternParser(PatternLexer(string)))
-        func, tags = comp.compile("comma", Kind._text)
-        list_func, tags = comp.compile("list_separate", Kind._text)
-        cache[(Kind, string)] = Kind(func, list_func, tags)
+        func, tags = comp.compile("comma", formatter_cls._text)
+        list_func, tags = comp.compile("list_separate", formatter_cls._text)
+        cache[(formatter_cls, string)] = formatter_cls(func, list_func, tags)
     else:
         # promote recently accessed items to front of cache
-        cache.move_to_end((Kind, string))
-    return cache[(Kind, string)]
+        cache.move_to_end((formatter_cls, string))
+    return cache[(formatter_cls, string)]
 
 
 def _number(key, value):
@@ -490,7 +491,7 @@ def replace_nt_seps(string):
     """On Windows, users may use backslashes in patterns as path separators.
        Since Windows filenames can't use '<>|' anyway, preserving backslash
        escapes is unnecessary, so we just replace them blindly."""
-    return string.replace("\\", r"\\") if os.name == 'nt' else string
+    return string.replace("\\", r"\\") if os.name == "nt" else string
 
 
 def FileFromPattern(string):
@@ -539,7 +540,7 @@ def XMLFromMarkupPattern(string):
 class _URLFromPattern(PatternFormatter):
 
     def _format(self, key, value):
-        return quote_plus(value.encode('utf8'))
+        return quote_plus(value.encode("utf8"))
 
 
 def URLFromPattern(string):

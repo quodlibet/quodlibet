@@ -8,11 +8,12 @@
 # (at your option) any later version.
 
 import gi
+
 try:
     gi.require_version("Gst", "1.0")
     gi.require_version("GstPbutils", "1.0")
 except ValueError as e:
-    raise ImportError(e)
+    raise ImportError(e) from e
 
 from gi.repository import Gst, GLib, GstPbutils
 
@@ -32,12 +33,13 @@ from quodlibet.qltk.notif import Task
 from quodlibet.formats.mod import ModFile
 
 from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
-                   GStreamerSink, link_many, bin_debug, AudioSinks)
+                   gstreamer_sink, link_many, bin_debug, AudioSinks)
 from .plugins import GStreamerPluginHandler
 from .prefs import GstPlayerPreferences
 
 STATE_CHANGE_TIMEOUT = Gst.SECOND * 4
-
+GST_PLAY_FLAG_VIDEO = 1 << 0
+GST_PLAY_FLAG_TEXT = 1 << 2
 
 const.MinVersions.GSTREAMER.check(Gst.version())
 
@@ -66,7 +68,7 @@ class BufferingWrapper:
 
         bus = self.bin.get_bus()
         bus.add_signal_watch()
-        self.__bus_id = bus.connect('message', self.__message)
+        self.__bus_id = bus.connect("message", self.__message)
 
     def __message(self, bus, message):
         if message.type == Gst.MessageType.BUFFERING:
@@ -108,7 +110,7 @@ class BufferingWrapper:
             status, state, pending = self.bin.get_state(
                 timeout=STATE_CHANGE_TIMEOUT)
             if status == Gst.StateChangeReturn.SUCCESS and \
-                    state == Gst.State.PLAYING:
+                state == Gst.State.PLAYING:
                 self._wanted_state = state
             else:
                 # no idea, at least don't play
@@ -191,7 +193,7 @@ class Seeker:
 
         bus = playbin.get_bus()
         bus.add_signal_watch()
-        self._bus_id = bus.connect('message', self._on_message)
+        self._bus_id = bus.connect("message", self._on_message)
         player.notify("seekable")
 
     @property
@@ -314,7 +316,7 @@ class Seeker:
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
-    def PlayerPreferences(self):
+    def PlayerPreferences(self):  # noqa
         return GstPlayerPreferences(self, const.DEBUG)
 
     def __init__(self, librarian=None):
@@ -378,7 +380,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self.bin:
             value = duration * Gst.MSECOND
-            self.bin.set_property('buffer-duration', value)
+            self.bin.set_property("buffer-duration", value)
 
     def _print_pipeline(self):
         """Print debug information for the active pipeline to stdout
@@ -407,12 +409,12 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         pipeline = config.get("player", "gst_pipeline")
         print_d(f"User pipeline (from player.gst_pipeline): {pipeline!r}")
         try:
-            pipeline, self._pipeline_desc = GStreamerSink(pipeline)
+            pipeline, self._pipeline_desc = gstreamer_sink(pipeline)
         except PlayerError as e:
             self._error(e)
             return False
 
-        if self._use_eq and Gst.ElementFactory.find('equalizer-10bands'):
+        if self._use_eq and Gst.ElementFactory.find("equalizer-10bands"):
             # The equalizer only operates on 16-bit ints or floats, and
             # will only pass these types through even when inactive.
             # We push floats through to this point, then let the second
@@ -421,20 +423,20 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # select the highest-precision format supported by the
             # rest of the chain.
             print_d("Setting up Gstreamer equalizer")
-            filt = self._make('capsfilter', None)
-            filt.set_property('caps',
-                              Gst.Caps.from_string('audio/x-raw,format=F32LE'))
-            eq = self._make('equalizer-10bands', None)
+            filt = self._make("capsfilter", None)
+            filt.set_property("caps",
+                              Gst.Caps.from_string("audio/x-raw,format=F32LE"))
+            eq = self._make("equalizer-10bands", None)
             self._eq_element = eq
             self.update_eq_values()
-            conv = self._make('audioconvert', None)
-            resample = self._make('audioresample', None)
+            conv = self._make("audioconvert", None)
+            resample = self._make("audioresample", None)
             pipeline = [filt, eq, conv, resample] + pipeline
 
         # playbin2 has started to control the volume through pulseaudio,
         # which means the volume property can change without us noticing.
         # Use our own volume element for now until this works with PA.
-        self._int_vol_element = self._make('volume', None)
+        self._int_vol_element = self._make("volume", None)
         pipeline.insert(0, self._int_vol_element)
 
         # Get all plugin elements and append audio converters.
@@ -443,9 +445,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         for plugin in self._get_plugin_elements():
             plugin_pipeline.append(plugin)
             plugin_pipeline.append(
-                self._make('audioconvert', None))
+                self._make("audioconvert", None))
             plugin_pipeline.append(
-                self._make('audioresample', None))
+                self._make("audioresample", None))
         print_d(f"GStreamer plugin pipeline: {plugin_pipeline}")
         pipeline = plugin_pipeline + pipeline
 
@@ -486,7 +488,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._ext_mute_element = None
         if hasattr(sink_element.props, "mute") and \
-                sink_element.get_factory().get_name() != "directsoundsink":
+            sink_element.get_factory().get_name() != "directsoundsink":
             # directsoundsink has a mute property but it doesn't work
             # https://bugzilla.gnome.org/show_bug.cgi?id=755106
             self._ext_mute_element = sink_element
@@ -498,10 +500,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._ext_mute_element.connect("notify::mute", mute_notify)
 
         # Make the sink of the first element the sink of the bin
-        gpad = Gst.GhostPad.new('sink', pipeline[0].get_static_pad('sink'))
+        gpad = Gst.GhostPad.new("sink", pipeline[0].get_static_pad("sink"))
         bufbin.add_pad(gpad)
 
-        bin_ = self._make('playbin', None)
+        bin_ = self._make("playbin", None)
         assert bin_
 
         self.bin = BufferingWrapper(bin_, self)
@@ -509,25 +511,23 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         bus = bin_.get_bus()
         bus.add_signal_watch()
-        self.__bus_id = bus.connect('message', self.__message, self._librarian)
+        self.__bus_id = bus.connect("message", self.__message, self._librarian)
 
-        self.__atf_id = self.bin.connect('about-to-finish',
-            self.__about_to_finish)
+        self.__atf_id = self.bin.connect("about-to-finish",
+                                         self.__about_to_finish)
 
         # set buffer duration
         duration = config.getfloat("player", "gst_buffer")
         self._set_buffer_duration(int(duration * 1000))
 
         # connect playbin to our plugin / volume / EQ pipeline
-        self.bin.set_property('audio-sink', bufbin)
+        self.bin.set_property("audio-sink", bufbin)
 
         # by default playbin will render video -> suppress using fakesink
         vsink = self._make(AudioSinks.FAKE.value, None)
-        self.bin.set_property('video-sink', vsink)
+        self.bin.set_property("video-sink", vsink)
 
         # disable all video/text decoding in playbin
-        GST_PLAY_FLAG_VIDEO = 1 << 0
-        GST_PLAY_FLAG_TEXT = 1 << 2
         flags = self.bin.get_property("flags")
         flags &= ~(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_TEXT)
         self.bin.set_property("flags", flags)
@@ -697,7 +697,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         print_d("Gstreamer plugin install result: %r" % res)
 
         if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
-                GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
+                   GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
             self._error(PlayerError(title, error_details))
 
     def __about_to_finish_sync(self):
@@ -769,10 +769,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.__destroy_pipeline()
 
     def do_get_property(self, property):
-        if property.name == 'volume':
+        if property.name == "volume":
             if self._ext_vol_element is not None and \
-                    sink_has_external_state(self._ext_vol_element) and \
-                    sink_state_is_valid(self._ext_vol_element):
+                sink_has_external_state(self._ext_vol_element) and \
+                sink_state_is_valid(self._ext_vol_element):
                 # never read back the volume if we don't have to, e.g.
                 # directsoundsink maps volume to an int which makes UI
                 # sliders jump if we read the value back
@@ -780,8 +780,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return self._volume
         elif property.name == "mute":
             if self._ext_mute_element is not None and \
-                    sink_has_external_state(self._ext_mute_element) and \
-                    sink_state_is_valid(self._ext_mute_element):
+                sink_has_external_state(self._ext_mute_element) and \
+                sink_state_is_valid(self._ext_mute_element):
                 self._mute = self._ext_mute_element.get_property("mute")
             return self._mute
         elif property.name == "seekable":
@@ -798,10 +798,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         v = 1.0 if self._ext_vol_element is not None else self._volume
         v = self.calc_replaygain_volume(v)
         v = min(10.0, max(0.0, v))
-        self._int_vol_element.set_property('volume', v)
+        self._int_vol_element.set_property("volume", v)
 
     def do_set_property(self, property, v):
-        if property.name == 'volume':
+        if property.name == "volume":
             self._volume = v
             if self._ext_vol_element:
                 v = min(10.0, max(0.0, v))
@@ -810,8 +810,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 v = self.calc_replaygain_volume(v)
                 if self.bin:
                     v = min(10.0, max(0.0, v))
-                    self._int_vol_element.set_property('volume', v)
-        elif property.name == 'mute':
+                    self._int_vol_element.set_property("volume", v)
+        elif property.name == "mute":
             self._mute = v
             if self._ext_mute_element is not None:
                 self._ext_mute_element.set_property("mute", v)
@@ -839,7 +839,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             return
 
         self._paused = paused
-        self.emit((paused and 'paused') or 'unpaused')
+        self.emit((paused and "paused") or "unpaused")
         # in case a signal handler changed the paused state, abort this
         if self._paused != paused:
             return
@@ -881,7 +881,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.paused = True
 
         print_w(player_error)
-        self.emit('error', self.song, player_error)
+        self.emit("error", self.song, player_error)
         self._active_error = False
 
     def seek(self, pos):
@@ -897,7 +897,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def sync(self, timeout):
         if self.bin is not None:
             # XXX: This is flaky, try multiple times
-            for i in range(5):
+            for _i in range(5):
                 self.bin.get_state(Gst.SECOND * timeout)
                 # we have some logic in the main loop, so iterate there
                 while GLib.MainContext.default().iteration(False):
@@ -917,8 +917,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # (e.g. by removing it), then we get in an infinite loop.
         self.__info_buffer = self.song = self.info = None
         if song is not info:
-            self.emit('song-ended', info, stopped)
-        self.emit('song-ended', song, stopped)
+            self.emit("song-ended", info, stopped)
+        self.emit("song-ended", song, stopped)
 
         current = next_song if next_song else (self._source and self._source.current)
 
@@ -949,7 +949,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # we could have a gapless transition to a non-seekable -> update
             self._seeker.reset()
 
-        self.emit('song-started', self.song)
+        self.emit("song-started", self.song)
 
         if self.song is None:
             self.paused = True
@@ -994,10 +994,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # and emit ended/started for the old/new one
             if self.info.get("title") != new_info.get("title"):
                 if self.info is not self.song:
-                    self.emit('song-ended', self.info, False)
+                    self.emit("song-ended", self.info, False)
                 self.info = new_info
                 self.__info_buffer = None
-                self.emit('song-started', self.info)
+                self.emit("song-started", self.info)
             else:
                 # in case title didn't change, update the values of the
                 # old instance if there is one and tell the library.
@@ -1014,7 +1014,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     @property
     def eq_bands(self):
-        if Gst.ElementFactory.find('equalizer-10bands'):
+        if Gst.ElementFactory.find("equalizer-10bands"):
             return [29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011]
         else:
             return []
@@ -1027,13 +1027,13 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         if self._eq_element:
             for band, val in enumerate(self._eq_values):
-                self._eq_element.set_property('band%d' % band, val)
+                self._eq_element.set_property("band%d" % band, val)
 
     def can_play_uri(self, uri):
         if not Gst.uri_is_valid(uri):
             return False
         try:
-            Gst.Element.make_from_uri(Gst.URIType.SRC, uri, '')
+            Gst.Element.make_from_uri(Gst.URIType.SRC, uri, "")
         except GLib.GError:
             return False
         return True

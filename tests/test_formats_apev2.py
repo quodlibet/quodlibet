@@ -111,7 +111,7 @@ class TAPEv2FileMixin:
 
 class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('silence-44-s.mpc'))
+        self.f = get_temp_copy(get_data_path("silence-44-s.mpc"))
         self.s = MPCFile(self.f)
 
     def tearDown(self):
@@ -120,7 +120,7 @@ class TMPCFileAPEv2(TestCase, TAPEv2FileMixin):
 
 class TMAFile(TestCase, TAPEv2FileMixin):
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('silence-44-s.ape'))
+        self.f = get_temp_copy(get_data_path("silence-44-s.ape"))
         self.s = MonkeysAudioFile(self.f)
 
     def tearDown(self):
@@ -142,7 +142,7 @@ class TMAFile(TestCase, TAPEv2FileMixin):
 
 
 def test_ma_file_old():
-    s = MonkeysAudioFile(get_data_path('mac-396.ape'))
+    s = MonkeysAudioFile(get_data_path("mac-396.ape"))
 
     assert s("~format") == "Monkey's Audio"
     assert s("~codec") == "Monkey's Audio"
@@ -156,7 +156,7 @@ def test_ma_file_old():
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('silence-44-s.wv'))
+        self.f = get_temp_copy(get_data_path("silence-44-s.wv"))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):
@@ -171,7 +171,7 @@ class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 class TWvCoverArt(TestCase):
 
     def setUp(self):
-        self.f = get_temp_copy(get_data_path('coverart.wv'))
+        self.f = get_temp_copy(get_data_path("coverart.wv"))
         self.s = WavpackFile(self.f)
 
     def tearDown(self):

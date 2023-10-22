@@ -50,7 +50,7 @@ class TFeed(TestCase):
         quodlibet.config.init()
 
     def test_feed(self):
-        fn = get_data_path('valid_podcast.xml')
+        fn = get_data_path("valid_podcast.xml")
         feed = Feed(fsn2uri(fn))
         result = feed.parse()
         # Assume en_US / en_GB locale here in tests
@@ -58,8 +58,8 @@ class TFeed(TestCase):
         # Do this after the above, as many exceptions can be swallowed
         self.failUnless(result)
         self.failUnlessEqual(len(feed), 2)
-        self.failUnlessEqual(feed[0]('title'),
-                             'Full Episode: Tuesday, November 28, 2017')
+        self.failUnlessEqual(feed[0]("title"),
+                             "Full Episode: Tuesday, November 28, 2017")
 
     def tearDown(self):
         quodlibet.config.quit()
@@ -84,4 +84,4 @@ def test_menu_items_can_be_clicked(config: Config, podcasts: Podcasts):
     menu = podcasts._popup_menu(None)
     assert menu
     for item in menu.get_children():
-        item.emit('activate')
+        item.emit("activate")

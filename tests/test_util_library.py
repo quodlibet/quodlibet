@@ -46,26 +46,26 @@ class Tlibrary_utils(TestCase):
         some_path = os.path.join(get_home_dir(), "foo")
         if os.name != "nt":
             some_path = unexpand(some_path)
-        config.set('library', 'exclude', some_path)
+        config.set("library", "exclude", some_path)
         assert os.path.expanduser(some_path) in get_exclude_dirs()
 
-        assert all([isinstance(p, fsnative) for p in get_exclude_dirs()])
+        assert all(isinstance(p, fsnative) for p in get_exclude_dirs())
 
     def test_get_scan_dirs(self):
         some_path = os.path.join(get_home_dir(), "foo")
         if os.name != "nt":
             some_path = unexpand(some_path)
-        config.set('settings', 'scan', some_path)
+        config.set("settings", "scan", some_path)
         assert os.path.expanduser(some_path) in get_scan_dirs()
 
-        assert all([isinstance(p, fsnative) for p in get_scan_dirs()])
+        assert all(isinstance(p, fsnative) for p in get_scan_dirs())
 
 
 class Tset_scan_dirs(TestCase):
 
     @property
     def scan_dirs(self):
-        return config.get('settings', 'scan')
+        return config.get("settings", "scan")
 
     def test_set_scan_dirs_empty(self):
         set_scan_dirs([])

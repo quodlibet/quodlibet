@@ -48,7 +48,7 @@ class _TAppDataFileMixin:
                 ["appstreamcli", "validate", "--no-net", self.PATH],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            raise Exception(e.output)
+            raise Exception(e.output) from e
 
 
 @skipIf(is_too_old_appstream_cli_version(), "appstreamcli is too old")

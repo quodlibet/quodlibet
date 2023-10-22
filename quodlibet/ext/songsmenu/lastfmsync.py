@@ -32,21 +32,21 @@ API_KEY = "f536cdadb4c2aec75ae15e2b719cb3a1"
 
 def apicall(method, **kwargs):
     """Performs Last.fm API call."""
-    real_args = {'api_key': API_KEY, 'format': 'json', 'method': method}
+    real_args = {"api_key": API_KEY, "format": "json", "method": method}
     real_args.update(kwargs)
-    url = ''.join(["https://ws.audioscrobbler.com/2.0/?", urlencode(real_args)])
+    url = "".join(["https://ws.audioscrobbler.com/2.0/?", urlencode(real_args)])
     uobj = urlopen(url)
     json_text = uobj.read().decode("utf-8")
     resp = json.loads(json_text)
-    if 'error' in resp:
+    if "error" in resp:
         errmsg = f"Last.fm API error: {resp.get('message', '')}"
         print_e(errmsg)
-        raise EnvironmentError(resp['error'], errmsg)
+        raise EnvironmentError(resp["error"], errmsg)
     return resp
 
 
 def config_get(key, default=None):
-    return config.get('plugins', f"lastfmsync_{key}", default)
+    return config.get("plugins", f"lastfmsync_{key}", default)
 
 
 class LastFMSyncCache:
@@ -78,18 +78,18 @@ class LastFMSyncCache:
             # Last.fm updates their charts weekly; we only poll for new
             # charts if it's been more than a day since the last poll
             if not self.registered:
-                resp = apicall('user.getinfo', user=self.username)
-                self.registered = int(resp['user']['registered']['unixtime'])
+                resp = apicall("user.getinfo", user=self.username)
+                self.registered = int(resp["user"]["registered"]["unixtime"])
 
             now = time.time()
             if not self.lastupdated or self.lastupdated + (24 * 60 * 60) < now:
                 prog(_("Updating chart list."), 0)
-                resp = apicall('user.getweeklychartlist', user=self.username)
-                charts = resp['weeklychartlist']['chart']
+                resp = apicall("user.getweeklychartlist", user=self.username)
+                charts = resp["weeklychartlist"]["chart"]
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = [int(chart[s]) for s in ('from', 'to')]
+                    fro, to = [int(chart[s]) for s in ("from", "to")]
 
                     # If the chart is older than the register date of the
                     # user, don't download it. (So the download doesn't start
@@ -110,18 +110,18 @@ class LastFMSyncCache:
                 chart_week = date.fromtimestamp(fro).isoformat()
                 prog(_("Fetching chart for week of %s.") % chart_week,
                      (idx + 1.) / (len(new_charts) + 2.))
-                args = {'user': self.username, 'from': fro, 'to': to}
+                args = {"user": self.username, "from": fro, "to": to}
                 try:
-                    resp = apicall('user.getweeklytrackchart', **args)
+                    resp = apicall("user.getweeklytrackchart", **args)
                 except EnvironmentError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
                     print_w(msg % (err.code, max_wait))
                     for i in range(max_wait, 0, -1):
                         time.sleep(1)
                         prog(msg % (err.code, i), None)
-                    resp = apicall('user.getweeklytrackchart', **args)
+                    resp = apicall("user.getweeklytrackchart", **args)
                 try:
-                    tracks = resp['weeklytrackchart']['track']
+                    tracks = resp["weeklytrackchart"]["track"]
                 except KeyError:
                     tracks = []
                 # Delightfully, the API JSON frontend unboxes 1-element lists.
@@ -147,27 +147,27 @@ class LastFMSyncCache:
 
         # we try track mbid, (artist mbid, name), (artist name, name) as keys
         keys = []
-        if track['mbid']:
-            keys.append(track['mbid'])
-        for artist in (track['artist']['mbid'], track['artist']['#text']):
+        if track["mbid"]:
+            keys.append(track["mbid"])
+        for artist in (track["artist"]["mbid"], track["artist"]["#text"]):
             if artist:
-                keys.append((artist.lower(), track['name'].lower()))
+                keys.append((artist.lower(), track["name"].lower()))
 
         stats = list(filter(None, map(self.songs.get, keys)))
         if stats:
             # Not sure if last.fm ever changes their tag values, but this
             # should map all changed values to the same object correctly
-            plays = max(map(lambda d: d.get('playcount', 0), stats))
-            last = max(map(lambda d: d.get('lastplayed', 0), stats))
-            added = max(map(lambda d: d.get('added', chart_to), stats))
+            plays = max((d.get("playcount", 0) for d in stats))
+            last = max((d.get("lastplayed", 0) for d in stats))
+            added = max((d.get("added", chart_to) for d in stats))
             stats = stats[0]
-            stats.update({'playcount': plays, 'lastplayed': last, 'added': added})
+            stats.update({"playcount": plays, "lastplayed": last, "added": added})
         else:
-            stats = {'playcount': 0, 'lastplayed': 0, 'added': chart_to}
+            stats = {"playcount": 0, "lastplayed": 0, "added": chart_to}
 
-        stats['playcount'] = stats['playcount'] + int(track['playcount'])
-        stats['lastplayed'] = max(stats['lastplayed'], chart_fro)
-        stats['added'] = min(stats['added'], chart_to)
+        stats["playcount"] = stats["playcount"] + int(track["playcount"])
+        stats["lastplayed"] = max(stats["lastplayed"], chart_fro)
+        stats["added"] = min(stats["added"], chart_to)
 
         for key in keys:
             self.songs[key] = stats
@@ -176,25 +176,25 @@ class LastFMSyncCache:
         """Updates each SongFile in songs from the cache."""
         for song in songs:
             keys = []
-            if 'musicbrainz_trackid' in song:
-                keys.append(song['musicbrainz_trackid'].lower())
-            if 'musiscbrainz_artistid' in song:
-                keys.append((song['musicbrainz_artistid'].lower(),
-                            song.get('title', '').lower()))
-            keys.append((song.get('artist', '').lower(),
-                         song.get('title', '').lower()))
+            if "musicbrainz_trackid" in song:
+                keys.append(song["musicbrainz_trackid"].lower())
+            if "musiscbrainz_artistid" in song:
+                keys.append((song["musicbrainz_artistid"].lower(),
+                            song.get("title", "").lower()))
+            keys.append((song.get("artist", "").lower(),
+                         song.get("title", "").lower()))
             stats = list(filter(None, map(self.songs.get, keys)))
             if not stats:
                 continue
             stats = stats[0]
 
-            playcount = max(song.get('~#playcount', 0), stats['playcount'])
+            playcount = max(song.get("~#playcount", 0), stats["playcount"])
             if playcount != 0:
-                song['~#playcount'] = playcount
-            lastplayed = max(song.get('~#lastplayed', 0), stats['lastplayed'])
+                song["~#playcount"] = playcount
+            lastplayed = max(song.get("~#lastplayed", 0), stats["lastplayed"])
             if lastplayed != 0:
-                song['~#lastplayed'] = lastplayed
-            song['~#added'] = min(song['~#added'], stats['added'])
+                song["~#lastplayed"] = lastplayed
+            song["~#added"] = min(song["~#added"], stats["added"])
 
 
 class LastFMSyncWindow(qltk.Dialog):
@@ -259,7 +259,7 @@ class LastFMSync(SongsMenuPlugin):
             # some Python 2 DB types can't be opened in Python 3
             self.cache_shelf = shelve.open(self.CACHE_PATH, "n")
 
-        user = config_get('username', '')
+        user = config_get("username", "")
         try:
             cache = self.cache_shelf.setdefault(user, LastFMSyncCache(user))
         except Exception:
@@ -278,14 +278,14 @@ class LastFMSync(SongsMenuPlugin):
         self.dialog.destroy()
 
     @classmethod
-    def PluginPreferences(klass, win):
+    def PluginPreferences(cls, win):
         def entry_changed(entry):
-            config.set('plugins', 'lastfmsync_username', entry.get_text())
+            config.set("plugins", "lastfmsync_username", entry.get_text())
 
         label = Gtk.Label(label=_("_Username:"), use_underline=True)
         entry = UndoEntry()
-        entry.set_text(config_get('username', ''))
-        entry.connect('changed', entry_changed)
+        entry.set_text(config_get("username", ""))
+        entry.connect("changed", entry_changed)
         label.set_mnemonic_widget(entry)
 
         hbox = Gtk.HBox()

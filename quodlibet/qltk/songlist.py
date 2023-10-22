@@ -64,7 +64,7 @@ class SongSelectionInfo(GObject.Object):
 
     __gsignals__: GSignals = {
         # changed(songs:list)
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     def __init__(self, songlist):
@@ -74,8 +74,8 @@ class SongSelectionInfo(GObject.Object):
         self.__songlist = songlist
         self.__selection = sel = songlist.get_selection()
         self.__count = sel.count_selected_rows()
-        self.__sel_id = songlist.connect('selection-changed', self.__selection_changed)
-        self.__sel_id = songlist.connect('songs-removed', self.__songs_removed)
+        self.__sel_id = songlist.connect("selection-changed", self.__selection_changed)
+        self.__sel_id = songlist.connect("songs-removed", self.__songs_removed)
 
     def destroy(self):
         self.__songlist.disconnect(self.__sel_id)
@@ -85,7 +85,7 @@ class SongSelectionInfo(GObject.Object):
     def refresh(self):
         songlist = self.__songlist
         songs = songlist.get_selected_songs() or songlist.get_songs()
-        self.emit('changed', songs)
+        self.emit("changed", songs)
 
     def _update_songs(self, songs):
         """After making changes (filling the list) call this to
@@ -99,7 +99,7 @@ class SongSelectionInfo(GObject.Object):
                 songs = self.__songlist.get_songs()
             else:
                 songs = self.__songlist.get_selected_songs()
-        self.emit('changed', songs)
+        self.emit("changed", songs)
         self.__idle = None
 
     def __emit_info_selection(self, songs=None):
@@ -200,11 +200,11 @@ class SongListDnDMixin(GObject.GObject):
     """DnD support for the SongList class"""
 
     def setup_drop(self, library):
-        self.connect('drag-begin', self.__drag_begin)
-        self.connect('drag-motion', self.__drag_motion)
-        self.connect('drag-leave', self.__drag_leave)
-        self.connect('drag-data-get', self.__drag_data_get)
-        self.connect('drag-data-received', self.__drag_data_received, library)
+        self.connect("drag-begin", self.__drag_begin)
+        self.connect("drag-motion", self.__drag_motion)
+        self.connect("drag-leave", self.__drag_leave)
+        self.connect("drag-data-get", self.__drag_data_get)
+        self.connect("drag-data-received", self.__drag_data_received, library)
 
     def __drag_begin(self, *args):
         ok, state = Gtk.get_current_event_state()
@@ -368,8 +368,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     """A TreeView containing a list of songs."""
 
     __gsignals__: GSignals = {
-        'songs-removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'orders-changed': (GObject.SignalFlags.RUN_LAST, None, [])
+        "songs-removed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "orders-changed": (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
     headers: List[str] = []
@@ -387,7 +387,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             # selected column (a translated tag name).
             b = qltk.MenuItem(
                 _("_Filter on %s") % util.tag(t, True), Icons.EDIT_FIND)
-            b.connect('activate', self.__filter_on, t, songs, browser)
+            b.connect("activate", self.__filter_on, t, songs, browser)
             return b
 
         header = header_tag_split(header)[0]
@@ -400,7 +400,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         if can_filter("album"):
             menu_items.append(Filter("album"))
 
-        menu = browser.Menu(songs, library, items=[menu_items])
+        menu = browser.menu(songs, library, items=[menu_items])
         menu.show_all()
         return menu
 
@@ -415,7 +415,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_rules_hint(True)
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.set_fixed_height_mode(True)
-        self.__csig = self.connect('columns-changed', self.__columns_changed)
+        self.__csig = self.connect("columns-changed", self.__columns_changed)
         self._first_column = None
         # A priority list of how to apply the sort keys.
         # might contain column header names not present...
@@ -423,26 +423,26 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
 
-        connect_destroy(librarian, 'changed', self.__song_updated)
-        connect_destroy(librarian, 'removed', self.__song_removed, player)
+        connect_destroy(librarian, "changed", self.__song_updated)
+        connect_destroy(librarian, "removed", self.__song_removed, player)
 
         if update:
-            connect_destroy(librarian, 'added', self.__song_added)
+            connect_destroy(librarian, "added", self.__song_added)
 
         if player:
-            connect_destroy(player, 'paused', lambda *x: self.__redraw_current())
-            connect_destroy(player, 'unpaused', lambda *x: self.__redraw_current())
-            connect_destroy(player, 'error', lambda *x: self.__redraw_current())
+            connect_destroy(player, "paused", lambda *x: self.__redraw_current())
+            connect_destroy(player, "unpaused", lambda *x: self.__redraw_current())
+            connect_destroy(player, "error", lambda *x: self.__redraw_current())
 
-        self.connect('button-press-event', self.__button_press, library)
-        self.connect('key-press-event', self.__key_press, library, player)
+        self.connect("button-press-event", self.__button_press, library)
+        self.connect("key-press-event", self.__key_press, library, player)
 
         self.setup_drop(library)
         self.disable_drop()
 
         self.set_search_equal_func(self.__search_func, None)
 
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
 
     @property
     def sortable(self) -> bool:
@@ -666,7 +666,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             self.__enqueue(self.get_selected_songs())
             return True
         elif qltk.is_accel(event, "<Primary>F"):
-            self.emit('start-interactive-search')
+            self.emit("start-interactive-search")
             return True
         elif qltk.is_accel(event, "<Primary>Delete"):
             songs = self.get_selected_songs()
@@ -1057,7 +1057,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                         removed_songs.append(value)
 
             if removed_songs:
-                self.emit('songs-removed', set(removed_songs))
+                self.emit("songs-removed", set(removed_songs))
             self.remove_iters(iters)
         except Exception as e:
             print_w(f"Couldn't process removed songs: {e}", self)
@@ -1118,10 +1118,10 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
                 self.toggle_column_sort(column, replace=not ctrl_held)
 
-            column.connect('clicked', column_clicked)
-            column.connect('button-press-event', self.__showmenu)
-            column.connect('popup-menu', self.__showmenu)
-            column.connect('notify::width', self.__column_width_changed)
+            column.connect("clicked", column_clicked)
+            column.connect("button-press-event", self.__showmenu)
+            column.connect("popup-menu", self.__showmenu)
+            column.connect("notify::width", self.__column_width_changed)
             column.set_reorderable(True)
             self.append_column(column)
 
@@ -1136,7 +1136,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         def selection_done_cb(menu):
             menu.destroy()
 
-        menu.connect('selection-done', selection_done_cb)
+        menu.connect("selection-done", selection_done_cb)
 
         current_set = set(SongList.headers)
 
@@ -1147,19 +1147,18 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
         current = [(tag_title(c), c) for c in SongList.headers]
 
-        def add_header_toggle(menu: Gtk.Menu, pair: Tuple[str, str], active: bool,
+        def add_header_toggle(menu: Gtk.Menu, header: str, tag: str, active: bool,
                               column: SongListColumn = column):
-            header, tag = pair
             item = Gtk.CheckMenuItem(label=header)
             item.tag = tag
             item.set_active(active)
-            item.connect('activate', self.__toggle_header_item, column)
+            item.connect("activate", self.__toggle_header_item, column)
             item.show()
             item.set_tooltip_text(tag)
             menu.append(item)
 
-        for header in current:
-            add_header_toggle(menu, header, True)
+        for header, tag in current:
+            add_header_toggle(menu, header, tag,True)
 
         sep = SeparatorMenuItem()
         sep.show()
@@ -1197,8 +1196,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             menu.append(item)
             submenu = Gtk.Menu()
             item.set_submenu(submenu)
-            for header in sorted(zip(map(util.tag, group), group)):
-                add_header_toggle(submenu, header, header[1] in current_set)
+            for header, tag in sorted(zip(map(util.tag, group), group)):  # noqa
+                add_header_toggle(submenu, header, tag, tag in current_set)
 
         sep = SeparatorMenuItem()
         sep.show()
@@ -1207,7 +1206,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         custom = Gtk.MenuItem(
             label=_(u"_Customize Headers…"), use_underline=True)
         custom.show()
-        custom.connect('activate', self.__add_custom_column)
+        custom.connect("activate", self.__add_custom_column)
         menu.append(custom)
 
         item = Gtk.CheckMenuItem(label=_("_Expand Column"), use_underline=True)
@@ -1232,7 +1231,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         sep.show()
         menu.append(sep)
 
-        item.connect('activate', set_expand_cb, column)
+        item.connect("activate", set_expand_cb, column)
         item.show()
         menu.append(item)
 

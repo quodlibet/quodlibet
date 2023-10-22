@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
-#           2012-2022 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,6 @@ T = TypeVar("T")
 
 
 class FileSystem(Browser, Gtk.HBox):
-
     __library = None
 
     name = _("File System")
@@ -58,22 +57,22 @@ class FileSystem(Browser, Gtk.HBox):
         container.remove(self)
 
     @classmethod
-    def __added(klass, library, songs):
-        klass.__library.remove(songs)
+    def __added(cls, library, songs):
+        cls.__library.remove(songs)
 
     @classmethod
-    def init(klass, library):
-        if klass.__library is not None:
+    def init(cls, library):
+        if cls.__library is not None:
             return
 
-        klass.__glibrary = library
-        klass.__library = SongFileLibrary("filesystem")
-        library.connect('added', klass.__remove_because_added)
+        cls.__glibrary = library
+        cls.__library = SongFileLibrary("filesystem")
+        library.connect("added", cls.__remove_because_added)
 
     @classmethod
-    def __remove_because_added(klass, library, songs):
-        songs = klass._only_known(songs)
-        klass.__library.remove(songs)
+    def __remove_because_added(cls, library, songs):
+        songs = cls._only_known(songs)
+        cls.__library.remove(songs)
 
     @classmethod
     def _only_known(cls, songs: Iterable[T]) -> List[T]:
@@ -92,13 +91,13 @@ class FileSystem(Browser, Gtk.HBox):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
-        dt.connect('drag-data-get', self.__drag_data_get)
+        dt.connect("drag-data-get", self.__drag_data_get)
 
         sel = dt.get_selection()
         sel.unselect_all()
-        connect_obj(sel, 'changed', copool.add, self.__songs_selected, dt)
+        connect_obj(sel, "changed", copool.add, self.__songs_selected, dt)
         sel.connect("changed", self._on_selection_changed)
-        dt.connect('row-activated', lambda *a: self.songs_activated())
+        dt.connect("row-activated", lambda *a: self.songs_activated())
         sw.add(dt)
         self.pack_start(sw, True, True, 0)
 
@@ -121,7 +120,8 @@ class FileSystem(Browser, Gtk.HBox):
     def __drag_data_get(self, view, ctx, sel, tid, etime):
         model, rows = view.get_selection().get_selected_rows()
         dirs = [model[row][0] for row in rows]
-        for songs in self.__find_songs(view.get_selection()):
+        songs = []
+        for songs in self.__find_songs(view.get_selection()):  # noqa
             pass
         if tid == self.TARGET_QL:
             cant_add = [s for s in songs if not s.can_add]
@@ -198,11 +198,11 @@ class FileSystem(Browser, Gtk.HBox):
     def activate(self):
         copool.add(self.__songs_selected, self.get_child())
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items):
 
         i = qltk.MenuItem(_("_Add to Library"), Icons.LIST_ADD)
         i.set_sensitive(False)
-        i.connect('activate', self.__add_songs, songs)
+        i.connect("activate", self.__add_songs, songs)
         for song in songs:
             if song not in self.__glibrary:
                 i.set_sensitive(True)
@@ -247,18 +247,20 @@ class FileSystem(Browser, Gtk.HBox):
                             self.__library.reload(song)
                         if song in self.__library:
                             songs.append(song)
-            except OSError:
-                pass
+            except OSError as e:
+                print_d(f"Got {e} in {dir}")
         self.__library.add(to_add)
         yield songs
 
     def __songs_selected(self, view):
         if self.get_window():
             self.get_window().set_cursor(Gdk.Cursor.new(Gdk.CursorType.WATCH))
-        for songs in self.__find_songs(view.get_selection()):
+        songs = []
+        for songs in self.__find_songs(view.get_selection()):  # noqa
             yield True
         if self.get_window():
             self.get_window().set_cursor(None)
         self.songs_selected(songs)
+
 
 browsers = [FileSystem]

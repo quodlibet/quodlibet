@@ -21,7 +21,7 @@ class AlbumItem:
         self.album = album
 
     @property
-    def COVER_SIZE(self):
+    def cover_size(self):
         size = config.getint("browsers", "cover_size")
         if size <= 0:
             size = 48
@@ -38,7 +38,7 @@ class AlbumItem:
             self.cover = pixbuf
             callback()
 
-        s = self.COVER_SIZE * scale_factor
+        s = self.cover_size * scale_factor
         app.cover_manager.get_pixbuf_many_async(
             self.album.songs, s, s, cancel, set_cover_cb)
 
@@ -83,7 +83,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
     def refresh_all(self):
         """Trigger redraws for all rows"""
 
-        for iter_, value in self.iterrows():
+        for iter_, _value in self.iterrows():
             self.row_changed(self.get_path(iter_), iter_)
 
     def destroy(self):

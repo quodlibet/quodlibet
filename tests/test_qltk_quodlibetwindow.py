@@ -37,5 +37,5 @@ class TQuodLibetWindow(TestCase):
         window.destroy()
 
     def test_playback_error_dialog(self):
-        error = player.PlayerError(u'\xf6\xe4\xfc', u'\xf6\xe4\xfc')
+        error = player.PlayerError(u"\xf6\xe4\xfc", u"\xf6\xe4\xfc")
         PlaybackErrorDialog(None, error)

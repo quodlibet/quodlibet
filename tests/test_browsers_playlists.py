@@ -213,13 +213,13 @@ class TPlaylistsBrowser(TestCase):
         PlaylistsBrowser.init(self.lib)
 
         self.bar = PlaylistsBrowser(self.lib, self.MockConfirmerAccepting)
-        self.bar.connect('songs-selected', self._expected)
+        self.bar.connect("songs-selected", self._expected)
         self.bar._select_playlist(self.bar.playlists()[0])
         self.expected = None
 
         # Uses the declining confirmer.
         self.bar_decline = PlaylistsBrowser(self.lib, self.MockConfirmerDeclining)
-        self.bar_decline.connect('songs-selected', self._expected_decline)
+        self.bar_decline.connect("songs-selected", self._expected_decline)
         self.bar_decline._select_playlist(self.bar_decline.playlists()[0])
         # Note that _do() uses self.expected, but _do() is not called by the
         # testcase for declining the prompt. Tests fail with a shared expected.
@@ -260,7 +260,7 @@ class TPlaylistsBrowser(TestCase):
         self._do()
         self.bar.save()
         self.bar.filter_text("")
-        self.expected = list(sorted(SONGS))
+        self.expected = sorted(SONGS)
         self._do()
         self.bar.restore()
         self.bar.activate()
@@ -389,7 +389,7 @@ class TPlaylistsBrowser(TestCase):
 
     def test_import(self):
         def fns(songs):
-            return [song('~filename') for song in songs]
+            return [song("~filename") for song in songs]
         pl_lib = self.bar.pl_lib
         assert len(self.bar.playlists()) == 2, "Should start with two playlists"
         assert len(pl_lib) == 2, f"Started with {pl_lib.keys()}"
@@ -451,8 +451,8 @@ class TPlaylistsBrowser(TestCase):
 class TPlaylistUtils(TestCase):
 
     def test_naming(self):
-        self.failUnlessEqual(_name_for('/foo/bar.m3u'), 'bar')
-        self.failUnlessEqual(_name_for('/foo/Will.I.Am.m3u'), 'Will.I.Am')
+        self.failUnlessEqual(_name_for("/foo/bar.m3u"), "bar")
+        self.failUnlessEqual(_name_for("/foo/Will.I.Am.m3u"), "Will.I.Am")
 
     def test_naming_default(self):
-        self.failUnlessEqual(_name_for(''), __('New Playlist'))
+        self.failUnlessEqual(_name_for(""), __("New Playlist"))

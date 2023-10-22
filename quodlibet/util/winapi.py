@@ -17,7 +17,7 @@ import ctypes
 from .enum import enum
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     from ctypes import wintypes, cdll, windll, oledll
 
     class GUID(ctypes.Structure):
@@ -335,7 +335,7 @@ if sys.platform == 'win32':
 
     class COMInterface(type(ctypes.c_void_p)):
 
-        def __new__(mcls, cls_name, bases, d):
+        def __new__(cls, cls_name, bases, d):
 
             offset = 0
             for base in bases:
@@ -351,7 +351,7 @@ if sys.platform == 'win32':
                 m = COMMethod(name, offset + i, restype, argtypes)
                 d[name] = m
 
-            return type(ctypes.c_void_p).__new__(mcls, cls_name, bases, dict(d))
+            return type(ctypes.c_void_p).__new__(cls, cls_name, bases, dict(d))
 
     class IUnknown(ctypes.c_void_p, metaclass=COMInterface):
 

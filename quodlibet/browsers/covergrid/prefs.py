@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#      2012,2013,2016 Nick Boultbee
+#         2012 - 2023 Nick Boultbee
 #           2009-2013 Christoph Reiter
 #                2016 Mice Pápai
 #
@@ -23,7 +23,7 @@ from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
 from quodlibet.util.dprint import print_d
 
-PEOPLE
+PEOPLE  # noqa
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
                          util.tag("composer"), util.tag("arranger"), ])
 
@@ -63,18 +63,18 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         cb = ConfigCheckButton(
             _("Show album _text"), "browsers", "album_text")
         cb.set_active(config.getboolean("browsers", "album_text", True))
-        cb.connect('toggled', lambda s: browser.toggle_text())
+        cb.connect("toggled", lambda s: browser.toggle_text())
         vbox.pack_start(cb, False, True, 0)
 
         cb2 = ConfigCheckButton(
-            _("Show \"All Albums\" Item"), "browsers", "covergrid_all")
+            _('Show "All Albums" Item'), "browsers", "covergrid_all")
         cb2.set_active(config.getboolean("browsers", "covergrid_all", True))
-        cb2.connect('toggled', lambda s: browser.toggle_item_all())
+        cb2.connect("toggled", lambda s: browser.toggle_item_all())
         vbox.pack_start(cb2, False, True, 0)
 
         cb3 = ConfigCheckButton(_("Wide Mode"), "browsers", "covergrid_wide")
         cb3.set_active(config.getboolean("browsers", "covergrid_wide", False))
-        cb3.connect('toggled', lambda s: browser.toggle_wide())
+        cb3.connect("toggled", lambda s: browser.toggle_wide())
         vbox.pack_start(cb3, False, True, 0)
 
         def mag_changed(mag):
@@ -84,7 +84,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
                 print_d("Covergrid magnification haven't changed: {0}"
                         .format(newmag))
                 return
-            print_d('Covergrid magnification update from {0} to {1}'
+            print_d("Covergrid magnification update from {0} to {1}"
                     .format(oldmag, newmag))
             config.set("browsers", "covergrid_magnification", mag.get_value())
             browser.update_mag()
@@ -95,7 +95,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         mag_scale.set_tooltip_text(_("Cover Magnification"))
         l = Gtk.Label(label=_("Cover Magnification"))
         mag_scale.set_value_pos(Gtk.PositionType.RIGHT)
-        mag_scale.connect('value-changed', mag_changed)
+        mag_scale.connect("value-changed", mag_changed)
 
         vbox.pack_start(l, False, True, 0)
         vbox.pack_start(mag_scale, False, True, 0)
@@ -108,7 +108,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         main_box = Gtk.VBox(spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)

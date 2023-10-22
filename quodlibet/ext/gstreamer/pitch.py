@@ -9,7 +9,7 @@
 from gi.repository import Gtk, GObject, Gst
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.qltk.util import GSignals
 from quodlibet import qltk
@@ -45,7 +45,7 @@ def set_cfg(option, value):
 
 class Preferences(Gtk.VBox):
     __gsignals__: GSignals = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -84,7 +84,7 @@ class Preferences(Gtk.VBox):
             table.attach(spin, 2, 3, idx, idx + 1,
                          xoptions=Gtk.AttachOptions.FILL |
                          Gtk.AttachOptions.SHRINK)
-            scale.connect('value-changed', scale_changed, key)
+            scale.connect("value-changed", scale_changed, key)
             scale.set_value(get_cfg(key))
 
         self.pack_start(qltk.Frame(_("Preferences"), child=table),
@@ -98,7 +98,7 @@ class Pitch(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        return Gst.ElementFactory.make('pitch', cls.PLUGIN_ID)
+        return Gst.ElementFactory.make("pitch", cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):
@@ -113,5 +113,5 @@ class Pitch(GStreamerPlugin):
 
 
 if not Pitch.setup_element():
-    raise PluginImportException(
+    raise PluginImportError(
         "GStreamer element 'pitch' missing (gst-plugins-bad)")

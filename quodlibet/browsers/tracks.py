@@ -81,9 +81,9 @@ class TrackList(Browser):
                                 show_limit=show_limit,
                                 show_multi=show_multi)
 
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
-        sbb.connect('key-press-event', self.__sb_key_pressed)
+        sbb.connect("query-changed", self.__text_parse)
+        sbb.connect("focus-out", self.__focus)
+        sbb.connect("key-press-event", self.__sb_key_pressed)
         self._sb_box = sbb
 
         prefs = PreferencesButton(sbb)
@@ -91,7 +91,7 @@ class TrackList(Browser):
 
         self.pack_start(Align(sbb, left=6, right=6), False, True, 0)
         self.pack_start(sbb.flow_box, False, True, 0)
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
         self.show_all()
 
     def _get_text(self):

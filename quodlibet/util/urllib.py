@@ -23,7 +23,7 @@ def urlopen(*args, **kwargs):
         return request_module.urlopen(*args, **kwargs)
     except HTTPException as e:
         # https://bugs.python.org/issue8823
-        raise EnvironmentError(e)
+        raise EnvironmentError(e) from e
 
 
 def install_urllib2_ca_file():

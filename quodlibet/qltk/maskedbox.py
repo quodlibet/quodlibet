@@ -42,15 +42,15 @@ class MaskedBox(Gtk.HBox):
 
         menu = Gtk.Menu()
         unhide_item = qltk.MenuItem(_("Unhide"), Icons.LIST_ADD)
-        connect_obj(unhide_item, 'activate', self.__unhide, view, library)
+        connect_obj(unhide_item, "activate", self.__unhide, view, library)
         menu.append(unhide_item)
 
         remove_item = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        connect_obj(remove_item, 'activate', self.__remove, view, library)
+        connect_obj(remove_item, "activate", self.__remove, view, library)
         menu.append(remove_item)
 
         menu.show_all()
-        view.connect('popup-menu', self.__popup, menu)
+        view.connect("popup-menu", self.__popup, menu)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -60,19 +60,19 @@ class MaskedBox(Gtk.HBox):
 
         def cdf(column, cell, model, iter, data):
             row = model[iter]
-            cell.set_property('text', fsn2text(row[0]))
+            cell.set_property("text", fsn2text(row[0]))
 
         def cdf_count(column, cell, model, iter, data):
             mount = model[iter][0]
             song_count = len(library.get_masked(mount))
             text = ngettext("%d song", "%d songs", song_count) % song_count
-            cell.set_property('text', text)
+            cell.set_property("text", text)
 
         column = Gtk.TreeViewColumn(None)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(render, True)
         column.set_cell_data_func(render, cdf)
 

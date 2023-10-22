@@ -10,6 +10,7 @@
 
 import os
 import subprocess
+from typing import Optional, Iterable
 
 from gi.repository import GLib
 from gi.repository import Gio
@@ -20,7 +21,7 @@ from quodlibet import print_d
 from quodlibet.util import is_windows, is_osx
 
 
-def show_files(dirname, entries=[]):
+def show_files(dirname, entries: Optional[Iterable[fsnative]] = None):
     """Shows the directory in the default file browser and if passed
     a list of directory entries will highlight those.
 
@@ -34,7 +35,7 @@ def show_files(dirname, entries=[]):
     Returns:
         bool: if the action was successful or not
     """
-
+    entries = entries or []
     assert isinstance(dirname, fsnative)
     assert all(isinstance(e, fsnative) and os.path.basename(e) == e
                for e in entries)
@@ -104,13 +105,13 @@ def _show_files_fdo(dirname, entries):
         dbus_proxy = _get_dbus_proxy(FDO_NAME, FDO_PATH, FDO_IFACE)
 
         if not entries:
-            dbus_proxy.ShowFolders('(ass)',
+            dbus_proxy.ShowFolders("(ass)",
                                    [fsn2uri(dirname)], _get_startup_id())
         else:
             item_uri = fsn2uri(os.path.join(dirname, entries[0]))
-            dbus_proxy.ShowItems('(ass)', [item_uri], _get_startup_id())
+            dbus_proxy.ShowItems("(ass)", [item_uri], _get_startup_id())
     except GLib.Error as e:
-        raise BrowseError(e)
+        raise BrowseError(e) from e
 
 
 def _show_files_thunar(dirname, entries):
@@ -123,13 +124,13 @@ def _show_files_thunar(dirname, entries):
         dbus_proxy = _get_dbus_proxy(XFCE_NAME, XFCE_PATH, XFCE_IFACE)
 
         if not entries:
-            dbus_proxy.DisplayFolder('(sss)',
+            dbus_proxy.DisplayFolder("(sss)",
                                      fsn2uri(dirname), "", _get_startup_id())
         else:
             dbus_proxy.DisplayFolderAndSelect(
-                '(ssss)', fsn2uri(dirname), entries[0], "", _get_startup_id())
+                "(ssss)", fsn2uri(dirname), entries[0], "", _get_startup_id())
     except GLib.Error as e:
-        raise BrowseError(e)
+        raise BrowseError(e) from e
 
 
 def _show_files_gnome_open(dirname, *args):
@@ -137,7 +138,7 @@ def _show_files_gnome_open(dirname, *args):
         if subprocess.call(["gnome-open", dirname]) != 0:
             raise EnvironmentError("gnome-open error return status")
     except EnvironmentError as e:
-        raise BrowseError(e)
+        raise BrowseError(e) from e
 
 
 def _show_files_xdg_open(dirname, *args):
@@ -145,7 +146,7 @@ def _show_files_xdg_open(dirname, *args):
         if subprocess.call(["xdg-open", dirname]) != 0:
             raise EnvironmentError("xdg-open error return status")
     except EnvironmentError as e:
-        raise BrowseError(e)
+        raise BrowseError(e) from e
 
 
 def _show_files_win32(dirname, entries):
@@ -159,14 +160,14 @@ def _show_files_win32(dirname, entries):
             if subprocess.call(["explorer", dirname]) != 0:
                 raise EnvironmentError("explorer error return status")
         except EnvironmentError as e:
-            raise BrowseError(e)
+            raise BrowseError(e) from e
     else:
         from quodlibet.util.windows import open_folder_and_select_items
 
         try:
             open_folder_and_select_items(dirname, entries)
         except WindowsError as e:
-            raise BrowseError(e)
+            raise BrowseError(e) from e
 
 
 def _show_files_finder(dirname, *args):
@@ -177,4 +178,4 @@ def _show_files_finder(dirname, *args):
         if subprocess.call(["open", "-R", dirname]) != 0:
             raise EnvironmentError("open error return status")
     except EnvironmentError as e:
-        raise BrowseError(e)
+        raise BrowseError(e) from e

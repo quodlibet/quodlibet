@@ -33,8 +33,8 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         return _humanise(value) if self.human else value
 
     def __init__(self, tag, value):
-        self.allow_all_caps = self.config_get_bool('allow_all_caps', True)
-        self.human = self.config_get_bool('human_title_case', True)
+        self.allow_all_caps = self.config_get_bool("allow_all_caps", True)
+        self.human = self.config_get_bool("human_title_case", True)
 
         super().__init__(
             label=_("Title-_case Value"), use_underline=True)
@@ -48,10 +48,10 @@ class TitleCase(EditTagsPlugin, PluginConfigMixin):
         vb = Gtk.VBox()
         vb.set_spacing(8)
         config_toggles = [
-            ('allow_all_caps', _("Allow _ALL-CAPS in tags"), None, True),
-            ('human_title_case', _("_Human title case"),
+            ("allow_all_caps", _("Allow _ALL-CAPS in tags"), None, True),
+            ("human_title_case", _("_Human title case"),
              _("Uses common English rules for title casing, as in"
-               " \"Dark Night of the Soul\""), True),
+               ' "Dark Night of the Soul"'), True),
         ]
         for key, label, tooltip, default in config_toggles:
             ccb = cls.ConfigCheckButton(label, key, default)

@@ -39,13 +39,13 @@ class TagsComboMixin:
 @skipIf(is_wayland(), "crashes..")
 class TTagsComboBox(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
-    Kind
+    Kind  # noqa
 
 
 @skipIf(is_wayland(), "crashes..")
 class TTagsComboBoxEntry(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
-    Kind
+    Kind  # noqa
 
     def test_custom(self):
         self.all.get_child().set_text("a new tag")

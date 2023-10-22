@@ -30,7 +30,7 @@ from quodlibet.qltk.ratingsmenu import RatingsMenuItem
 from quodlibet.qltk import get_top_parent, get_menu_item_top_parent, Icons
 from quodlibet.plugins import PluginManager, PluginHandler
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util.songwrapper import ListWrapper, check_wrapper_changed
+from quodlibet.util.songwrapper import list_wrapper, check_wrapper_changed
 
 
 def confirm_song_removal_invoke(parent, songs):
@@ -41,11 +41,11 @@ def confirm_song_removal_invoke(parent, songs):
     count = len(songs)
     song = next(iter(songs))
     if count == 1:
-        title = _("Remove track: \"%(title)s\" from the library?") % {
-                    'title': song('title') or song('~basename')}
+        title = _('Remove track: "%(title)s" from the library?') % {
+                    "title": song("title") or song("~basename")}
     else:
         title = _("Remove %(count)d tracks from the library?") % {
-                    'count': count}
+                    "count": count}
 
     prompt = ConfirmationPrompt(parent, title, "", _("Remove from Library"),
                                 ok_button_icon=Icons.LIST_REMOVE)
@@ -54,8 +54,8 @@ def confirm_song_removal_invoke(parent, songs):
 
 def confirm_multi_song_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X songs in case X is high"""
-    title = ngettext("Run the plugin \"%(name)s\" on %(count)d song?",
-                     "Run the plugin \"%(name)s\" on %(count)d songs?",
+    title = ngettext('Run the plugin "%(name)s" on %(count)d song?',
+                     'Run the plugin "%(name)s" on %(count)d songs?',
                      count) % {"name": plugin_name, "count": count}
     description = ""
     ok_text = _("_Run Plugin")
@@ -65,8 +65,8 @@ def confirm_multi_song_invoke(parent, plugin_name, count):
 
 def confirm_multi_album_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X albums in case X is high"""
-    title = ngettext("Run the plugin \"%(name)s\" on %(count)d album?",
-                     "Run the plugin \"%(name)s\" on %(count)d albums?",
+    title = ngettext('Run the plugin "%(name)s" on %(count)d album?',
+                     'Run the plugin "%(name)s" on %(count)d albums?',
                      count) % {"name": plugin_name, "count": count}
     description = ""
     ok_text = _("_Run Plugin")
@@ -90,13 +90,13 @@ class SongsMenuPluginHandler(PluginHandler):
             self._confirm_multiple_albums = album_confirmer
 
     def Menu(self, library, songs):
-        songs = ListWrapper(songs)
+        songs = list_wrapper(songs)
 
-        attrs = ['plugin_song', 'plugin_songs',
-                 'plugin_album', 'plugin_albums']
+        attrs = ["plugin_song", "plugin_songs",
+                 "plugin_album", "plugin_albums"]
 
         if len(songs) == 1:
-            attrs.append('plugin_single_song')
+            attrs.append("plugin_single_song")
 
         last = (songs and songs[-1]) or None
         for song in songs:
@@ -104,7 +104,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 break
             last = song
         else:
-            attrs.append('plugin_single_album')
+            attrs.append("plugin_single_album")
 
         items = []
         kinds = self.__plugins
@@ -129,10 +129,10 @@ class SongsMenuPluginHandler(PluginHandler):
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
                             subitem.connect(
-                                'activate', self.__on_activate, item, *args)
+                                "activate", self.__on_activate, item, *args)
                     else:
                         item.connect(
-                            'activate', self.__on_activate, item, *args)
+                            "activate", self.__on_activate, item, *args)
                 except Exception:
                     errorhook()
                     item.destroy()
@@ -165,7 +165,7 @@ class SongsMenuPluginHandler(PluginHandler):
 
         for plugin in self.__plugins:
             if plugin.PLUGIN_ID == plugin_id:
-                songs = ListWrapper(songs)
+                songs = list_wrapper(songs)
                 try:
                     plugin = plugin(songs, library)
                 except Exception:
@@ -274,7 +274,7 @@ class SongsMenu(Gtk.Menu):
         super().__init__()
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
-        librarian = getattr(library, 'librarian', library)
+        librarian = getattr(library, "librarian", library)
 
         if ratings:
             ratings_item = RatingsMenuItem(songs, librarian)
@@ -310,169 +310,192 @@ class SongsMenu(Gtk.Menu):
                 is_file = False
 
         if playlists:
-            try:
-                from quodlibet.browsers.playlists.menu import PlaylistMenu
-                submenu = PlaylistMenu(songs, library.playlists)
-            except AttributeError as e:
-                print_w("Couldn't get Playlists menu: %s" % e)
-            else:
-                b = qltk.MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
-                b.set_sensitive(can_add and bool(songs))
-                b.set_submenu(submenu)
-                self.append(b)
+            self.init_playlists(can_add, library, songs)
         if queue:
-            b = qltk.MenuItem(_("Add to _Queue"), Icons.LIST_ADD)
-
-            def enqueue_cb(item, songs):
-                songs = [s for s in songs if s.can_add]
-                if songs:
-                    from quodlibet import app
-                    app.window.playlist.enqueue(songs)
-
-            b.connect('activate', enqueue_cb, songs)
-            if accels:
-                qltk.add_fake_accel(b, "<Primary>Return")
-            self.append(b)
-            b.set_sensitive(can_add and bool(songs))
+            self.init_queue(accels, can_add, songs)
 
         if remove or delete:
             self.separate()
 
         if remove:
-            self._confirm_song_removal = (removal_confirmer or
-                                          confirm_song_removal_invoke)
-            b = qltk.MenuItem(_("_Remove from Library…"), Icons.LIST_REMOVE)
-            if callable(remove):
-                b.connect('activate', lambda item: remove(songs))
-            else:
-                def remove_cb(item, songs, library):
-                    parent = get_menu_item_top_parent(item)
-                    if self._confirm_song_removal(parent, songs):
-                        library.remove(songs)
-
-                b.connect('activate', remove_cb, songs, library)
-                b.set_sensitive(in_lib and bool(songs))
-            self.append(b)
+            self.init_remove(in_lib, library, removal_confirmer, remove, songs)
 
         if delete:
-            if callable(delete):
-                b = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
-                b.connect('activate', lambda item: delete(songs))
-                if accels:
-                    qltk.add_fake_accel(b, "<Primary>Delete")
-            else:
-                b = TrashMenuItem()
-                if accels:
-                    qltk.add_fake_accel(b, "<Primary>Delete")
-
-                def trash_cb(item):
-                    parent = get_menu_item_top_parent(item)
-                    trash_songs(parent, songs, librarian)
-
-                b.connect('activate', trash_cb)
-                b.set_sensitive(is_file and bool(songs))
-            self.append(b)
+            self.init_delete(accels, delete, is_file, songs, librarian)
 
         if edit:
-            self.separate()
-            b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
-            b.set_sensitive(bool(songs))
-            if accels:
-                qltk.add_fake_accel(b, "<alt>Return")
-
-            def song_properties_cb(menu_item):
-                parent = get_menu_item_top_parent(menu_item)
-                window = SongProperties(librarian, songs, parent)
-                window.show()
-
-            b.connect('activate', song_properties_cb)
-            self.append(b)
+            self.init_edit(accels, songs, librarian)
 
         if info:
-            b = qltk.MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
-            b.set_sensitive(bool(songs))
-            if accels:
-                qltk.add_fake_accel(b, "<Primary>I")
-
-            def information_cb(menu_item):
-                parent = get_menu_item_top_parent(menu_item)
-                window = Information(librarian, songs, parent)
-                window.show()
-
-            b.connect('activate', information_cb)
-            self.append(b)
+            self.init_info(accels, songs, librarian)
 
         if show_files and any(is_a_file(s) for s in songs):
-            def show_files_cb(menu_item):
-                print_d("Trying to show files...")
-                if not show_songs(songs):
-                    parent = get_menu_item_top_parent(menu_item)
-                    msg = ErrorMessage(parent,
-                                 _("Unable to show files"),
-                                 _("Error showing files, "
-                                   "or no program available to show them."))
-                    msg.run()
-
-            self.separate()
-            total = len([s for s in songs if is_a_file(s)])
-            text = ngettext(
-                "_Show in File Manager",
-                "_Show %(total)d Files in File Manager", total) % {"total": total}
-            b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
-            b.set_sensitive(bool(songs)
-                            and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
-            b.connect('activate', show_files_cb)
-            self.append(b)
+            self.init_show_files(songs)
 
         if download:
-
-            def is_downloadable(song: AudioFile):
-                return bool(not song.is_file and song.get("~uri", False))
-
-            self.separate()
-            relevant = [s for s in songs if is_downloadable(s)]
-            total = len(relevant)
-            text = ngettext(
-                "_Download file…",
-                "_Download %(total)d files…", total) % {"total": total}
-            b = qltk.MenuItem(text, Icons.EMBLEM_DOWNLOADS)
-            b.set_sensitive(relevant
-                            and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
-
-            def _finished(p, successes, failures):
-                msg = (f"{util.bold(successes)} " + _("successful") +
-                       f"\n{util.bold(failures)} " + _("failed"))
-                print_d(msg.replace("\n", "; "))
-                warning = Message(Gtk.MessageType.INFO, app.window,
-                                  _("Downloads complete"), msg, escape_desc=False)
-                warning.run()
-
-            def download_cb(menu_item):
-                songs = relevant
-                total = len(songs)
-                msg = ngettext("Download {name!r} to",
-                               "Download {total} files to",
-                               total)
-                msg = msg.format(name=next(iter(songs))("title")[:99] if total else "?",
-                                 total=total)
-                chooser = folder_chooser or choose_folders
-                paths = chooser(None, msg, _("Download here"), allow_multiple=False)
-                if not paths:
-                    print_d("Cancelling download")
-                    return
-                path = paths[0]
-                progress = DownloadProgress(songs)
-
-                progress.connect('finished', _finished)
-                copool.add(progress.download_songs, path)
-
-            b.connect('activate', download_cb)
-            self.append(b)
+            self.init_download(songs, folder_chooser)
 
         def selection_done_cb(menu):
             menu.destroy()
 
-        self.connect('selection-done', selection_done_cb)
+        self.connect("selection-done", selection_done_cb)
+
+    def init_download(self, songs, folder_chooser):
+        def is_downloadable(song: AudioFile):
+            return bool(not song.is_file and song.get("~uri", False))
+
+        self.separate()
+        relevant = [s for s in songs if is_downloadable(s)]
+        total = len(relevant)
+        text = ngettext(
+            "_Download file…",
+            "_Download %(total)d files…", total) % {"total": total}
+        b = qltk.MenuItem(text, Icons.EMBLEM_DOWNLOADS)
+        b.set_sensitive(relevant
+                        and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
+
+        def _finished(p, successes, failures):
+            msg = (f"{util.bold(successes)} " + _("successful") +
+                   f"\n{util.bold(failures)} " + _("failed"))
+            print_d(msg.replace("\n", "; "))
+            warning = Message(Gtk.MessageType.INFO, app.window,
+                              _("Downloads complete"), msg, escape_desc=False)
+            warning.run()
+
+        def download_cb(menu_item):
+            songs = relevant
+            total = len(songs)
+            msg = ngettext("Download {name!r} to",
+                           "Download {total} files to",
+                           total)
+            msg = msg.format(name=next(iter(songs))("title")[:99] if total else "?",
+                             total=total)
+            chooser = folder_chooser or choose_folders
+            paths = chooser(None, msg, _("Download here"), allow_multiple=False)
+            if not paths:
+                print_d("Cancelling download")
+                return
+            path = paths[0]
+            progress = DownloadProgress(songs)
+
+            progress.connect("finished", _finished)
+            copool.add(progress.download_songs, path)
+
+        b.connect("activate", download_cb)
+        self.append(b)
+
+    def init_show_files(self, songs):
+        def show_files_cb(menu_item):
+            print_d("Trying to show files...")
+            if not show_songs(songs):
+                parent = get_menu_item_top_parent(menu_item)
+                msg = ErrorMessage(parent,
+                                   _("Unable to show files"),
+                                   _("Error showing files, "
+                                     "or no program available to show them."))
+                msg.run()
+
+        self.separate()
+        total = len([s for s in songs if is_a_file(s)])
+        text = ngettext(
+            "_Show in File Manager",
+            "_Show %(total)d Files in File Manager", total) % {"total": total}
+        b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
+        b.set_sensitive(bool(songs)
+                        and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
+        b.connect("activate", show_files_cb)
+        self.append(b)
+
+    def init_info(self, accels, songs, librarian):
+        b = qltk.MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
+        b.set_sensitive(bool(songs))
+        if accels:
+            qltk.add_fake_accel(b, "<Primary>I")
+
+        def information_cb(menu_item):
+            parent = get_menu_item_top_parent(menu_item)
+            window = Information(librarian, songs, parent)
+            window.show()
+
+        b.connect("activate", information_cb)
+        self.append(b)
+
+    def init_edit(self, accels, songs, librarian):
+        self.separate()
+        b = qltk.MenuItem(_("Edit _Tags"), Icons.EDIT)
+        b.set_sensitive(bool(songs))
+        if accels:
+            qltk.add_fake_accel(b, "<alt>Return")
+
+        def song_properties_cb(menu_item):
+            parent = get_menu_item_top_parent(menu_item)
+            window = SongProperties(librarian, songs, parent)
+            window.show()
+
+        b.connect("activate", song_properties_cb)
+        self.append(b)
+
+    def init_delete(self, accels, delete, is_file, songs, librarian):
+        if callable(delete):
+            b = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+            b.connect("activate", lambda item: delete(songs))
+            if accels:
+                qltk.add_fake_accel(b, "<Primary>Delete")
+        else:
+            b = TrashMenuItem()
+            if accels:
+                qltk.add_fake_accel(b, "<Primary>Delete")
+
+            def trash_cb(item):
+                parent = get_menu_item_top_parent(item)
+                trash_songs(parent, songs, librarian)
+
+            b.connect("activate", trash_cb)
+            b.set_sensitive(is_file and bool(songs))
+        self.append(b)
+
+    def init_remove(self, in_lib, library, removal_confirmer, remove, songs):
+        self._confirm_song_removal = (removal_confirmer or
+                                      confirm_song_removal_invoke)
+        b = qltk.MenuItem(_("_Remove from Library…"), Icons.LIST_REMOVE)
+        if callable(remove):
+            b.connect("activate", lambda item: remove(songs))
+        else:
+            def remove_cb(item, songs, library):
+                parent = get_menu_item_top_parent(item)
+                if self._confirm_song_removal(parent, songs):
+                    library.remove(songs)
+
+            b.connect("activate", remove_cb, songs, library)
+            b.set_sensitive(in_lib and bool(songs))
+        self.append(b)
+
+    def init_queue(self, accels, can_add, songs):
+        b = qltk.MenuItem(_("Add to _Queue"), Icons.LIST_ADD)
+
+        def enqueue_cb(item, songs):
+            songs = [s for s in songs if s.can_add]
+            if songs:
+                from quodlibet import app
+                app.window.playlist.enqueue(songs)
+
+        b.connect("activate", enqueue_cb, songs)
+        if accels:
+            qltk.add_fake_accel(b, "<Primary>Return")
+        self.append(b)
+        b.set_sensitive(can_add and bool(songs))
+
+    def init_playlists(self, can_add, library, songs):
+        try:
+            from quodlibet.browsers.playlists.menu import PlaylistMenu
+            submenu = PlaylistMenu(songs, library.playlists)
+        except AttributeError as e:
+            print_w("Couldn't get Playlists menu: %s" % e)
+        else:
+            b = qltk.MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
+            b.set_sensitive(can_add and bool(songs))
+            b.set_submenu(submenu)
+            self.append(b)
 
     def separate(self):
         if not self.get_children():

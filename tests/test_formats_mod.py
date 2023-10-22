@@ -11,7 +11,7 @@ from quodlibet.formats.mod import ModFile, extensions
 @skipUnless(extensions, "ModPlug missing")
 class TModFile(TestCase):
     def setUp(self):
-        self.song = ModFile(get_data_path('empty.xm'))
+        self.song = ModFile(get_data_path("empty.xm"))
 
     def test_length(self):
         self.failUnlessEqual(self.song("~#length", 0), 0)

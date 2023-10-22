@@ -77,7 +77,7 @@ class SongLibrary(Library[K, V], PicklingMixin):
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
         if isinstance(text, bytes):
-            text = text.decode('utf-8')
+            text = text.decode("utf-8")
 
         songs = self.values()
         if text != "":

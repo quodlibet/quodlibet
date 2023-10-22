@@ -18,7 +18,7 @@ class GetStringDialog(Dialog):
     """Simple dialog to return a string from the user"""
 
     def __init__(self, parent, title, text,
-                 button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN,
+                 button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN,  # noqa
                  tooltip=None):
         super().__init__(
             title=title, transient_for=parent, use_header_bar=True)

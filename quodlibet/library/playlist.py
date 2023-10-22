@@ -18,7 +18,7 @@ from senf import text2fsn, _fsnative, fsn2text
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
 
-HIDDEN_RE = re.compile(r'^\.\w[^.]*')
+HIDDEN_RE = re.compile(r"^\.\w[^.]*")
 """Hidden-like files, to ignored"""
 
 _MIN_NON_EMPTY_PL_BYTES = 4
@@ -43,8 +43,8 @@ class PlaylistLibrary(Library[str, Playlist]):
         self._library = library
         self._read_playlists(library)
 
-        self._rsig = library.connect('removed', self.__songs_removed)
-        self._csig = library.connect('changed', self.__songs_changed)
+        self._rsig = library.connect("removed", self.__songs_removed)
+        self._csig = library.connect("changed", self.__songs_changed)
 
     def _read_playlists(self, library) -> None:
         print_d(f"Reading playlist directory {self.pl_dir} (library: {library})")

@@ -86,7 +86,7 @@ def _run_chooser(parent, chooser):
         response = chooser.run()
 
     if response == Gtk.ResponseType.ACCEPT:
-        result = [fn for fn in chooser.get_filenames()]
+        result = list(chooser.get_filenames())
 
         current_dir = chooser.get_current_folder()
         if current_dir:

@@ -139,8 +139,8 @@ class GainMassager(Massager):
             except (IndexError, TypeError, ValueError):
                 try:
                     f = locale.atof(value.split()[0])
-                except (IndexError, TypeError, ValueError):
-                    raise ValidationError
+                except (IndexError, TypeError, ValueError) as e:
+                    raise ValidationError from e
             else:
                 return (u"%+f" % f).rstrip("0") + " dB"
 
@@ -157,8 +157,8 @@ class PeakMassager(Massager):
         except (TypeError, ValueError):
             try:
                 f = locale.atof(value)
-            except (TypeError, ValueError):
-                raise ValidationError
+            except (TypeError, ValueError) as e:
+                raise ValidationError from e
         else:
             if f < 0 or f >= 2:
                 raise ValidationError
@@ -173,12 +173,12 @@ class MBIDMassager(Massager):
     error = _("MusicBrainz IDs must be in UUID format.")
 
     def validate(self, value):
-        value = value.encode('ascii', 'replace').decode("ascii")
+        value = value.encode("ascii", "replace").decode("ascii")
         value = u"".join(filter(str.isalnum, value.strip().lower()))
         try:
             int(value, 16)
-        except ValueError:
-            raise ValidationError
+        except ValueError as e:
+            raise ValidationError from e
         else:
             if len(value) != 32:
                 raise ValidationError

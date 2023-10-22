@@ -61,12 +61,12 @@ def json_callback(wrapped):
             print_d(f"[HTTP {message.status_code}] Invalid / empty JSON. "
                     f"Body: {message.response_body.data!r} (request: {data})")
             return
-        if 'errors' in json:
+        if "errors" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json['errors']))
-        if 'error' in json:
+                                                   json["errors"]))
+        if "error" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json['error']))
+                                                   json["error"]))
         return wrapped(self, json, data)
 
     return _callback
@@ -104,8 +104,8 @@ def sanitise_tag(value):
     """QL doesn't want newlines in tags, but they Soundcloud ones
      are not always best represented as multi-value tags (comments, etc)
     """
-    return (value or '').replace('\n', '\t').replace('\r', '')
+    return (value or "").replace("\n", "\t").replace("\r", "")
 
 
 def sc_btn_image(path, w, h):
-    return WebImage('https://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
+    return WebImage("https://connect.soundcloud.com/2/btn-%s.png" % path, w, h)

@@ -32,9 +32,9 @@ class CoverSourcePlugin(GObject.Object):
     """
 
     __gsignals__ = {
-        'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'search-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "fetch-success": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "search-complete": (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
     PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
 
@@ -139,7 +139,7 @@ class CoverSourcePlugin(GObject.Object):
         """
         cp = self.cover_path
         try:
-            return open(cp, 'rb') if cp and path.isfile(cp) else None
+            return open(cp, "rb") if cp and path.isfile(cp) else None
         except IOError:
             print_w('Failed reading album art "{}"'.format(path))
 
@@ -155,7 +155,7 @@ class CoverSourcePlugin(GObject.Object):
         By convention better quality and more accurate covers are expected to
         appear first in the list.
         """
-        self.emit('search-complete', [])
+        self.emit("search-complete", [])
 
     def fetch_cover(self):
         """
@@ -168,7 +168,7 @@ class CoverSourcePlugin(GObject.Object):
 
         Return value of this function doesn't have any meaning whatsoever.
         """
-        self.fail('This source is incapable of fetching covers')
+        self.fail("This source is incapable of fetching covers")
 
     def fail(self, message):
         """
@@ -177,10 +177,10 @@ class CoverSourcePlugin(GObject.Object):
         Most common use pattern would be:
             return self.fail("Failure message")
         """
-        self.emit('fetch-failure', message)
+        self.emit("fetch-failure", message)
 
 
-cover_dir = path.join(get_cache_dir(), 'covers')
+cover_dir = path.join(get_cache_dir(), "covers")
 
 try:
     makedirs(cover_dir)

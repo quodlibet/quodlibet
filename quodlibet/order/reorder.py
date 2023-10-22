@@ -49,7 +49,7 @@ class OrderWeighted(Reorder, OrderRemembered):
             self.reset(playlist)
             return None
 
-        total_score = sum([song('~#rating') for song in remaining.values()])
+        total_score = sum([song("~#rating") for song in remaining.values()])
         if total_score == 0:
             # When all songs are rated zero, fall back to unweighted shuffle
             return playlist.get_iter((random.choice(list(remaining)),))

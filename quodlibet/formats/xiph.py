@@ -13,7 +13,7 @@ import base64
 from typing import List, Type, Optional
 
 import mutagen
-from mutagen.flac import Picture, error as FLACError
+from mutagen.flac import Picture, error as FLACError  # noqa
 from mutagen.id3 import ID3
 
 from quodlibet import config
@@ -221,7 +221,7 @@ class MutagenVCFile(AudioFile):
         try:
             data = image.read()
         except EnvironmentError as e:
-            raise AudioFileError(e)
+            raise AudioFileError(e) from e
 
         pic = Picture()
         pic.data = data
@@ -297,7 +297,7 @@ class MutagenVCFile(AudioFile):
 
     def has_rating_and_playcount_in_file(self, email):
         with translate_errors():
-            audio = self.MutagenType(self['~filename'])
+            audio = self.MutagenType(self["~filename"])
         tags = audio.tags
         if tags is None:
             return False
@@ -459,7 +459,7 @@ class FLACFile(MutagenVCFile):
         try:
             data = image.read()
         except EnvironmentError as e:
-            raise AudioFileError(e)
+            raise AudioFileError(e) from e
 
         pic = Picture()
         pic.data = data
@@ -487,7 +487,7 @@ class FLACFile(MutagenVCFile):
 
 types = []
 for var in list(globals().values()):
-    if getattr(var, 'MutagenType', None):
+    if getattr(var, "MutagenType", None):
         types.append(var)
 
 
@@ -509,8 +509,8 @@ def loader(filename):
                 pass
         if audio is None:
             raise AudioFileError("file type could not be determined")
-        Kind = type(audio)
+        audio_cls = type(audio)
         for klass in globals().values():
-            if Kind is getattr(klass, 'MutagenType', None):
+            if audio_cls is getattr(klass, "MutagenType", None):
                 return klass(filename, audio)
         raise AudioFileError("file type could not be determined")

@@ -20,7 +20,6 @@ from quodlibet.util import print_w
 from quodlibet.util.urllib import urlopen, Request
 from .util import get_api_key, GateKeeper
 
-
 APP_KEY = "C6IduH7D"
 gatekeeper = GateKeeper(requests_per_sec=3)
 
@@ -94,7 +93,7 @@ class AcoustidSubmissionThread(threading.Thread):
 
         # emit progress
         self.__idle(self.__progress_cb,
-                float(self.__done) / len(self.__results))
+                    float(self.__done) / len(self.__results))
 
     def run(self):
         urldata = []
@@ -163,6 +162,8 @@ Release = collections.namedtuple(
     "Release", ["id", "score", "sources", "all_sources",
                 "medium_count", "tags"])
 
+VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
+
 
 def parse_acoustid_response(json_data):
     """Get all possible tag combinations including the release ID and score.
@@ -173,8 +174,6 @@ def parse_acoustid_response(json_data):
 
     Needs meta=releases+recordings+tracks responses.
     """
-
-    VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
 
     releases = []
     for res in json_data.get("results", []):

@@ -67,6 +67,6 @@ class PictureSaver(EventPlugin):
         hb.pack_start(Gtk.Label(label=_("File:")), False, True, 0)
         e = Gtk.Entry()
         e.set_text(get_path())
-        e.connect('changed', changed)
+        e.connect("changed", changed)
         hb.pack_start(e, True, True, 0)
         return hb

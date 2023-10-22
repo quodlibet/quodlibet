@@ -33,8 +33,8 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
         box = Gtk.HBox()
         ccb = ConfigCheckButton(_("Automatically start playing "
                                   "double-clicked songs"),
-                                'plugins', 'queue_only_autoplay')
-        autoplay = config.getboolean('plugins', 'queue_only_autoplay', False)
+                                "plugins", "queue_only_autoplay")
+        autoplay = config.getboolean("plugins", "queue_only_autoplay", False)
         ccb.set_active(autoplay)
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box

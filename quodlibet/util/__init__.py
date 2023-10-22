@@ -39,7 +39,7 @@ from .enum import enum
 from .i18n import _, ngettext, C_
 
 
-# linters
+# flake8
 cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
 is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
 NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
@@ -57,11 +57,11 @@ class InstanceTracker:
         if klass is None:
             klass = type(self)
         self.__kinds.setdefault(klass, []).append(self)
-        self.connect('destroy', self.__kinds[klass].remove)
+        self.connect("destroy", self.__kinds[klass].remove)
 
     @classmethod
-    def instances(klass):
-        return klass.__kinds.get(klass, [])
+    def instances(cls):
+        return cls.__kinds.get(cls, [])
 
 
 class OptionParser:
@@ -80,7 +80,8 @@ class OptionParser:
             "version", shorts="v", help=_("Display version and copyright"))
         self.add("debug", shorts="d", help=_("Print debugging information"))
 
-    def add(self, canon, help=None, arg="", shorts="", longs=[]):
+    def add(self, canon, help=None, arg="", shorts="", longs=None):
+        longs = longs or []
         self.__args[canon] = arg
         for s in shorts:
             self.__translate_short[s] = canon
@@ -159,23 +160,20 @@ class OptionParser:
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
-        except GetoptError as s:
-            s = str(s)
+        except GetoptError as e:
+            s = str(e)
             text = []
             if "not recognized" in s:
-                text.append(
-                    _("Option %r not recognized.") % s.split()[1])
+                text.append(_("Option %r not recognized.") % s.split()[1])
             elif "requires argument" in s:
-                text.append(
-                    _("Option %r requires an argument.") % s.split()[1])
+                text.append(_("Option %r requires an argument.") % s.split()[1])
             elif "unique prefix" in s:
-                text.append(
-                    _("%r is not a unique prefix.") % s.split()[1])
+                text.append(_("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
                 text.append(_("Try %s --help.") % sys.argv[0])
 
             print_e("\n".join(text))
-            raise SystemExit(True)
+            raise SystemExit(True) from e
         else:
             transopts = {}
             for o, a in opts:
@@ -226,20 +224,20 @@ def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
     return "<b><i>%s</i></b>" % escaper(string)
 
 
-def parse_time(timestr, err=object()):
+def parse_time(time_str: str, suppress_errors: bool = True):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
 
-    if timestr[0:1] == "-":
+    if time_str[0:1] == "-":
         m = -1
-        timestr = timestr[1:]
+        time_str = time_str[1:]
     else:
         m = 1
 
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
-                          re.split(r":|\.", timestr), 0)
+                          re.split(r":|\.", time_str), 0)
     except (ValueError, re.error):
-        if err is None:
+        if not suppress_errors:
             raise
         return 0
 
@@ -294,7 +292,7 @@ def date_key(datestr):
     parts += default[len(parts):]
 
     value = 0
-    for d, p, m in zip(default, parts, (10000, 100, 1)):
+    for d, p, m in zip(default, parts, (10000, 100, 1), strict=False):
         try:
             value += int(p) * m
         except ValueError:
@@ -313,13 +311,13 @@ def parse_date(datestr):
 
     try:
         frmt = ["%Y", "%Y-%m", "%Y-%m-%d"][datestr.count("-")]
-    except IndexError:
-        raise ValueError
+    except IndexError as e:
+        raise ValueError from e
 
     try:
         return time.mktime(time.strptime(datestr, frmt))
     except OverflowError as e:
-        raise ValueError(e)
+        raise ValueError(e) from e
 
 
 def format_int_locale(value):
@@ -474,7 +472,7 @@ def _split_numeric_sortkey(s, limit=10,
     result = reg(s)
     if not result or not limit:
         text = join(s.split())
-        return (text,) if text else tuple()
+        return (text,) if text else ()
     else:
         start, end = result.span()
         return (
@@ -564,9 +562,9 @@ def pattern(pat, cap=True, esc=False, markup=False):
         def __call__(self, tag, *args):
             if tag in FILESYSTEM_TAGS:
                 return fsnative(str(tag))
-            return 0 if '~#' in tag[:2] else self.comma(tag)
+            return 0 if "~#" in tag[:2] else self.comma(tag)
 
-    fakesong = Fakesong({'filename': tag('filename', cap)})
+    fakesong = Fakesong({"filename": tag("filename", cap)})
     fakesong.cap = cap
     try:
         if markup:
@@ -745,7 +743,7 @@ def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     def disconnect_cb(*args):
         sender.disconnect(handler_id)
 
-    obj.connect('destroy', disconnect_cb)
+    obj.connect("destroy", disconnect_cb)
     return handler_id
 
 
@@ -757,7 +755,7 @@ def connect_after_destroy(sender, *args, **kwargs):
     return _connect_destroy(sender, sender.connect_after, *args, **kwargs)
 
 
-class cached_property:
+class cached_property:  # noqa
     """A read-only @property that is only evaluated once.
     TODO: work out some typing for this, see test_query.py"""
 
@@ -1022,7 +1020,7 @@ class MainRunner:
             finally:
                 self._source_id = None
                 self._cond.notify()
-                return False
+            return False
 
     def abort(self):
         """After this call returns no function will be executed anymore
@@ -1095,13 +1093,15 @@ class MainRunner:
             return self._return
 
 
-def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
+def re_escape(string, bad="/.^$*+-?{,\\[]|()<>#=!:"):
     """A `re.escape` which also works with unicode"""
 
     def needs_escape(c):
-        return c in BAD and '\\' + c or c
+        return c in bad and "\\" + c or c
     return type(string)().join(map(needs_escape, string))
 
+
+PR_SET_NAME = 15
 
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc
@@ -1123,8 +1123,6 @@ def set_process_title(title):
             ctypes.c_ulong, ctypes.c_ulong,
         ]
         prctl.restype = ctypes.c_int
-
-        PR_SET_NAME = 15
         data = ctypes.create_string_buffer(title.encode("utf-8"))
         res = prctl(PR_SET_NAME, ctypes.addressof(data), 0, 0, 0)
         if res != 0:

@@ -22,7 +22,7 @@ class PlaylistMenu(Gtk.Menu):
         super().__init__()
         self.pl_lib = pl_lib
         i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
-        i.connect('activate', self._on_new_playlist_activate, songs)
+        i.connect("activate", self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
@@ -35,7 +35,7 @@ class PlaylistMenu(Gtk.Menu):
             i.set_inconsistent(some and not all)
             i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
             i.connect(
-                'activate', self._on_toggle_playlist_activate, playlist, songs)
+                "activate", self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 
     def _on_new_playlist_activate(self, item, songs) -> Optional[Playlist]:
@@ -79,7 +79,7 @@ class ConfirmMultipleSongsAction(qltk.Message):
                         "What do you want to do with those %d songs?",
                         len(songs)) % len(songs)
 
-        title = _("Confirm action for playlist \"%s\"") % playlist.name
+        title = _('Confirm action for playlist "%s"') % playlist.name
         super().__init__(
             Gtk.MessageType.QUESTION, parent, title, desc,
             Gtk.ButtonsType.NONE)

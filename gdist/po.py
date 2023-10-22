@@ -39,7 +39,7 @@ from .util import Command
 from . import gettextutil
 
 
-class po_stats(Command):
+class PoStats(Command):
 
     description = "Show translation statistics"
     user_options = []
@@ -83,7 +83,7 @@ class po_stats(Command):
                   (po, trans / all_, fuzzy / all_))
 
 
-class update_po(Command):
+class UpdatePo(Command):
 
     description = "update po files"
     user_options = [
@@ -100,7 +100,7 @@ class update_po(Command):
         try:
             gettextutil.check_version()
         except gettextutil.GettextError as e:
-            raise SystemExit(e)
+            raise SystemExit(e) from e
 
         po_directory = Path(self.distribution.po_directory)
 
@@ -117,7 +117,7 @@ class update_po(Command):
                 gettextutil.update_po(pot_path, po_path)
 
 
-class create_po(Command):
+class CreatePo(Command):
 
     description = "create a new po file"
     user_options = [
@@ -135,7 +135,7 @@ class create_po(Command):
         try:
             gettextutil.check_version()
         except gettextutil.GettextError as e:
-            raise SystemExit(e)
+            raise SystemExit(e) from e
 
         po_directory = Path(self.distribution.po_directory)
         po_path = gettextutil.get_po_path(po_directory, self.lang)
@@ -144,7 +144,7 @@ class create_po(Command):
             print(f"Created {po_path.absolute()}")
 
 
-class create_pot(Command):
+class CreatePot(Command):
 
     description = "create a new pot file"
     user_options = []
@@ -159,7 +159,7 @@ class create_pot(Command):
         try:
             gettextutil.check_version()
         except gettextutil.GettextError as e:
-            raise SystemExit(e)
+            raise SystemExit(e) from e
 
         po_package = self.distribution.po_package
         po_directory = Path(self.distribution.po_directory)
@@ -185,7 +185,7 @@ def strip_pot_date(path):
         h.write(b"".join(lines))
 
 
-class build_po(Command):
+class BuildPo(Command):
 
     description = "update and copy .po files to the build dir"
     user_options = []
@@ -195,8 +195,8 @@ class build_po(Command):
         self.po_build_dir: Optional[Path] = None
 
     def finalize_options(self):
-        self.set_undefined_options('build', ('build_base', 'build_base'))
-        self.po_build_dir = Path(self.build_base) / '_po_build'
+        self.set_undefined_options("build", ("build_base", "build_base"))
+        self.po_build_dir = Path(self.build_base) / "_po_build"
 
     def run(self):
         po_directory = Path(self.distribution.po_directory)
@@ -223,7 +223,7 @@ class build_po(Command):
         gettextutil.update_linguas(self.po_build_dir)
 
 
-class build_mo(Command):
+class BuildMo(Command):
     """build message catalog files
 
     Build message catalog (.mo) files from .po files using gettext.
@@ -241,9 +241,9 @@ class build_mo(Command):
         self.po_build_dir: Optional[str] = None
 
     def finalize_options(self):
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'build_po', ('po_build_dir', 'po_build_dir'))
+            "build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
@@ -270,7 +270,7 @@ class build_mo(Command):
                 gettextutil.compile_po(po_path, destpath)
 
 
-class install_mo(Command):
+class InstallMo(Command):
     """install message catalog files
 
     Copy compiled message catalog files into their installation
@@ -287,21 +287,21 @@ class install_mo(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'install',
-            ('install_data', 'install_dir'),
-            ('skip_build', 'skip_build'))
+            "install",
+            ("install_data", "install_dir"),
+            ("skip_build", "skip_build"))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         if not self.skip_build:
-            self.run_command('build_mo')
+            self.run_command("build_mo")
         src = os.path.join(self.build_base, "share", "locale")
         dest = os.path.join(self.install_dir, "share", "locale")
         out = self.copy_tree(src, dest)
         self.outfiles.extend(out)
 
-__all__ = ["build_mo", "install_mo", "po_stats", "update_po"]
+__all__ = ["BuildMo", "InstallMo", "PoStats", "UpdatePo"]

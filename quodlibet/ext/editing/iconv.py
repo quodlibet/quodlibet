@@ -40,7 +40,7 @@ class Iconv(EditTagsPlugin):
 
         for enc in ENCODINGS:
             try:
-                new = value.encode('latin1').decode(enc)
+                new = value.encode("latin1").decode(enc)
             except (UnicodeEncodeError, UnicodeDecodeError, LookupError):
                 continue
             else:
@@ -58,7 +58,7 @@ class Iconv(EditTagsPlugin):
             item_label = Gtk.Label(label=i)
             item_label.set_alignment(0.0, 0.5)
             item.add(item_label)
-            item.connect('activate', self.__convert)
+            item.connect("activate", self.__convert)
             submenu.append(item)
         self.set_submenu(submenu)
 

@@ -33,7 +33,7 @@ class TMPDServer(PluginTestCase):
         self.assertEqual(parse(b"foo\t bar"), ("foo", ["bar"]))
         self.assertEqual(parse(b"foo\t bar quux"), ("foo", ["bar", "quux"]))
         self.assertEqual(
-            parse(b"foo\t bar \"q 2\" x"), ("foo", ["bar", "q 2", "x"]))
+            parse(b'foo\t bar "q 2" x'), ("foo", ["bar", "q 2", "x"]))
         self.assertEqual(parse(b"foo 'bar  quux'"), ("foo", ["'bar", "quux'"]))
         self.assertEqual(
             parse(b"foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", [u"\xf6\xe4\xfc"]))

@@ -50,7 +50,7 @@ class DummyCoverSource2(CoverSourcePlugin):
 
     def fetch_cover(self):
         DummyCoverSource2.fetch_call = True
-        return self.emit('fetch-success', self.cover)
+        return self.emit("fetch-success", self.cover)
 
 
 class DummyCoverSource3(ApiCoverSourcePlugin):
@@ -64,11 +64,11 @@ class DummyCoverSource3(ApiCoverSourcePlugin):
         return None
 
     def search(self):
-        return self.emit('search-complete', [{'cover': DUMMY_COVER}])
+        return self.emit("search-complete", [{"cover": DUMMY_COVER}])
 
     def fetch_cover(self):
         DummyCoverSource3.fetch_call = True
-        return self.emit('fetch-success', DUMMY_COVER)
+        return self.emit("fetch-success", DUMMY_COVER)
 
 
 dummy_sources = [Plugin(s) for s in
@@ -222,9 +222,9 @@ class TCoverManager(TestCase):
         def finished(manager, songs):
             print("Finished!")
 
-        manager.connect('covers-found', done)
+        manager.connect("covers-found", done)
         manager.search_cover(Cancellable(), songs)
-        manager.connect('searches-complete', finished)
+        manager.connect("searches-complete", finished)
         run_gtk_loop()
 
         self.failUnlessEqual(len(results), 1)
@@ -253,8 +253,8 @@ class TCoverManagerBuiltin(TestCase):
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
         pb.savev(self.cover2, "png", [], [])
 
-        self.file1 = get_temp_copy(get_data_path('silence-44-s.mp3'))
-        self.file2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        self.file1 = get_temp_copy(get_data_path("silence-44-s.mp3"))
+        self.file2 = get_temp_copy(get_data_path("silence-44-s.mp3"))
 
         self.manager = CoverManager()
 

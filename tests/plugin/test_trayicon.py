@@ -102,6 +102,6 @@ class TIndicatorMenu(TestCase):
     def test_playlist_menu_populates(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
         menu = IndicatorMenu(app)
-        song = AudioFile({'~filename': '/dev/null'})
+        song = AudioFile({"~filename": "/dev/null"})
         menu._new_playlist_submenu_for(song)
         self.failUnless(menu._playlists_item.get_submenu())

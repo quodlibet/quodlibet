@@ -32,27 +32,27 @@ def set_lang(value):
 
 
 class WikiSearch(SongsMenuPlugin):
-    PLUGIN_ID = 'Search Tag in Wikipedia'
-    PLUGIN_NAME = _('Search Tag in Wikipedia')
+    PLUGIN_ID = "Search Tag in Wikipedia"
+    PLUGIN_NAME = _("Search Tag in Wikipedia")
     PLUGIN_DESC = _("Opens a browser window with the Wikipedia article "
                     "on the selected song's corresponding tag.")
     PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
-    DEFAULT_TAGS = ['album', 'artist', 'composer']
+    DEFAULT_TAGS = ["album", "artist", "composer"]
 
     @classmethod
-    def changed(self, e):
+    def changed(cls, e):
         set_lang(e.get_text())
 
     @classmethod
-    def PluginPreferences(self, parent):
+    def PluginPreferences(cls, parent):
         hb = Gtk.HBox(spacing=3)
         hb.set_border_width(6)
         e = Entry(max_length=2)
         e.set_width_chars(3)
         e.set_max_width_chars(3)
         e.set_text(get_lang())
-        e.connect('changed', self.changed)
+        e.connect("changed", cls.changed)
         hb.pack_start(
             Gtk.Label(label=_("Search at %(website)s") % {
                 "website": "https://"}),
@@ -66,14 +66,14 @@ class WikiSearch(SongsMenuPlugin):
             def _editor_closed(widget):
                 config.setlist("plugins", "wiki_tags", widget.tags)
 
-            tags = config.getlist("plugins", "wiki_tags", self.DEFAULT_TAGS)
-            editor = TagListEditor(_("Edit Tags"), [] if tags == [''] else tags)
+            tags = config.getlist("plugins", "wiki_tags", cls.DEFAULT_TAGS)
+            editor = TagListEditor(_("Edit Tags"), [] if tags == [""] else tags)
             editor.set_transient_for(get_top_parent(parent))
-            editor.connect('destroy', _editor_closed)
+            editor.connect("destroy", _editor_closed)
             editor.show()
 
         button = Gtk.Button(_("Edit Tags"))
-        button.connect('clicked', _open_editor)
+        button.connect("clicked", _open_editor)
         vb.pack_start(button, False, True, 0)
         vb.show_all()
 
@@ -90,7 +90,7 @@ class WikiSearch(SongsMenuPlugin):
         for tag in tags:
             if tag:
                 item = Gtk.MenuItem(label=util.tag(tag))
-                item.connect('activate', self._set_selected_tag, tag)
+                item.connect("activate", self._set_selected_tag, tag)
                 submenu.append(item)
 
         if submenu.get_children():
@@ -106,13 +106,13 @@ class WikiSearch(SongsMenuPlugin):
             return
         l = dict.fromkeys([song(self.selected_tag) for song in songs]).keys()
         # If no tags values were found, show an error dialog
-        if list(l) == ['']:
-            ErrorMessage(app.window, _('Search failed'),
+        if list(l) == [""]:
+            ErrorMessage(app.window, _("Search failed"),
                 _('Tag "%s" not found.') %
                     self.selected_tag).run()
             return
         for a in l:
             # Only search for non-empty tags
             if a:
-                a = quote(str(a).title().replace(' ', '_'))
+                a = quote(str(a).title().replace(" ", "_"))
                 util.website(WIKI_URL % get_lang() + a)

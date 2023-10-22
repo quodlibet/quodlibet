@@ -24,16 +24,16 @@ from . import logging as ql_logging
 
 class Color:
 
-    NO_COLOR = '\033[0m'
-    MAGENTA = '\033[95m'
-    BLUE = '\033[94m'
-    CYAN = '\033[96m'
-    WHITE = '\033[97m'
-    YELLOW = '\033[93m'
-    GREEN = '\033[92m'
-    RED = '\033[91m'
-    BLACK = '\033[90m'
-    GRAY = '\033[2m'
+    NO_COLOR = "\033[0m"
+    MAGENTA = "\033[95m"
+    BLUE = "\033[94m"
+    CYAN = "\033[96m"
+    WHITE = "\033[97m"
+    YELLOW = "\033[93m"
+    GREEN = "\033[92m"
+    RED = "\033[91m"
+    BLACK = "\033[90m"
+    GRAY = "\033[2m"
 
 
 class Colorise:
@@ -76,7 +76,7 @@ class Colorise:
 
     @classmethod
     def bold(cls, text):
-        return cls.__reset('\033[1m' + text)
+        return cls.__reset("\033[1m" + text)
 
     @classmethod
     def gray(cls, text):
@@ -111,7 +111,7 @@ def frame_info(level=0):
     else:
         return ""
 
-    for i in range(level + 1):
+    for _i in range(level + 1):
         try:
             frame = frame.f_back
         except AttributeError:
@@ -128,7 +128,7 @@ def frame_info(level=0):
         cls = frame.f_locals[co_varnames[0]]
 
         # If it's an instance get the class
-        if not hasattr(cls, '__name__'):
+        if not hasattr(cls, "__name__"):
             cls = cls.__class__
 
         # the arg has an attr that is named like the function
@@ -172,8 +172,9 @@ def _supports_ansi_escape_codes(file_):
 
 
 def _print_message(string, custom_context, debug_only, prefix,
-                   color, logging_category, start_time=time.time()):
+                   color, logging_category, start_time=None):
 
+    start_time = start_time or time.time()
     if not isinstance(string, (str, fsnative)):
         string = str(string)
 
@@ -237,7 +238,7 @@ def format_exc(limit=None):
     """Returns str"""
 
     etype, value, tb = sys.exc_info()
-    return u''.join(format_exception(etype, value, tb, limit))
+    return u"".join(format_exception(etype, value, tb, limit))
 
 
 def extract_tb(*args, **kwargs):
@@ -302,8 +303,8 @@ class PrintHandler(logging.Handler):
 
     def emit(self, record):
         print_func = {
-            'DEBUG': print_d, 'INFO': print_d, 'WARNING': print_w,
-            'ERROR': print_e, 'CRITICAL': print_e,
+            "DEBUG": print_d, "INFO": print_d, "WARNING": print_w,
+            "ERROR": print_e, "CRITICAL": print_e,
         }.get(record.levelname, print_d)
 
         exc_info = record.exc_info

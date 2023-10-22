@@ -36,9 +36,9 @@ class Librarian(GObject.GObject):
     """
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "removed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "added": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self):
@@ -54,9 +54,9 @@ class Librarian(GObject.GObject):
         if name in self.libraries or name in self.__signals:
             raise ValueError("library %r is already active" % name)
 
-        added_sig = library.connect('added', self.__added)
-        removed_sig = library.connect('removed', self.__removed)
-        changed_sig = library.connect('changed', self.__changed)
+        added_sig = library.connect("added", self.__added)
+        removed_sig = library.connect("removed", self.__removed)
+        changed_sig = library.connect("changed", self.__changed)
         self.libraries[name] = library
         self.__signals[library] = [added_sig, removed_sig, changed_sig]
 
@@ -75,19 +75,19 @@ class Librarian(GObject.GObject):
     # one fires a signal often).
 
     def __changed(self, _library: Library, items: Iterable) -> None:
-        self.emit('changed', items)
+        self.emit("changed", items)
 
     def __added(self, _library: Library, items: Iterable) -> None:
-        self.emit('added', items)
+        self.emit("added", items)
 
     def __removed(self, _library: Library, items: Iterable) -> None:
-        self.emit('removed', items)
+        self.emit("removed", items)
 
     def changed(self, items: Iterable) -> None:
         """Triage the items and inform their real libraries."""
 
         for library in self.libraries.values():
-            in_library = set(item for item in items if item in library)
+            in_library = {item for item in items if item in library}
             if in_library:
                 library._changed(in_library)
 
@@ -223,7 +223,7 @@ class SongLibrarian(Librarian):
         if was_removed:
             if removed is None:
                 for library in had_item:
-                    library.emit('removed', {item})
+                    library.emit("removed", {item})
             else:
                 removed.add(item)
         elif was_changed:
@@ -232,7 +232,7 @@ class SongLibrarian(Librarian):
 
             if changed is None:
                 for library in had_item:
-                    library.emit('changed', {item})
+                    library.emit("changed", {item})
             else:
                 changed.add(item)
 

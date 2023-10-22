@@ -27,7 +27,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
     def __init__(self):
         super().__init__()
         self.set_match_func(self.__match_filter, None)
-        self.connect('match-selected', self.__match_selected)
+        self.connect("match-selected", self.__match_selected)
 
     def __match_filter(self, completion, entrytext, iter, data):
         model = completion.get_model()
@@ -51,11 +51,11 @@ class EntryWordCompletion(Gtk.EntryCompletion):
             return False
         key = entrytext[left:cursor]
 
-        value = model.get_value(iter, self.get_property('text-column'))
+        value = model.get_value(iter, self.get_property("text-column"))
         return bool(value and value.startswith(key))
 
     def __match_selected(self, completion, model, iter):
-        value = model.get_value(iter, self.get_property('text-column'))
+        value = model.get_value(iter, self.get_property("text-column"))
         entry = self.get_entry()
         cursor = entry.get_position()
 
@@ -84,30 +84,30 @@ class LibraryTagCompletion(EntryWordCompletion):
             model = self.__model
         except AttributeError:
             model = type(self).__model = Gtk.ListStore(str)
-            library.connect('changed', self.__update_song, model)
-            library.connect('added', self.__update_song, model)
-            library.connect('removed', self.__update_song, model)
+            library.connect("changed", self.__update_song, model)
+            library.connect("added", self.__update_song, model)
+            library.connect("removed", self.__update_song, model)
             copool.add(self.__build_model, library, model)
         self.set_model(model)
         self.set_text_column(0)
 
     @classmethod
-    def __update_song(klass, library, songs, model):
+    def __update_song(cls, library, songs, model):
         if not songs:
             return
-        tags = klass.__tags
+        tags = cls.__tags
         for song in songs:
             for tag in song.keys():
                 if not (tag.startswith("~#") or tag in MACHINE_TAGS
                         or tag in tags):
-                    klass.__tags.add(tag)
+                    cls.__tags.add(tag)
                     model.append([tag])
         print_d("Updated tag model for %d songs" % len(songs))
 
     @classmethod
-    def __build_model(klass, library, model):
+    def __build_model(cls, library, model):
         print_d("Updating tag model for whole library")
-        all_tags = klass.__tags
+        all_tags = cls.__tags
         model.clear()
 
         tags = set()

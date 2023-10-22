@@ -60,7 +60,7 @@ class DictMixin:
         return iter(self.values())
 
     def items(self):
-        return list(zip(self.keys(), self.values()))
+        return list(zip(self.keys(), self.values(), strict=False))
 
     def iteritems(self):
         return iter(self.items())
@@ -86,8 +86,8 @@ class DictMixin:
         try:
             key = list(self.keys())[0]
             return key, self.pop(key)
-        except IndexError:
-            raise KeyError("dictionary is empty")
+        except IndexError as e:
+            raise KeyError("dictionary is empty") from e
 
     def update(self, other=None, **kwargs):
         if other is None:

@@ -26,7 +26,7 @@ def _fill_view(view):
     column.pack_start(title, True)
     column.add_attribute(title, "text", 0)
     view.append_column(column)
-    for x in range(100):
+    for _x in range(100):
         model.append(row=["foo"])
     view.set_model(model)
     return model

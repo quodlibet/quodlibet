@@ -63,7 +63,7 @@ class TPlayQueue(TestCase):
         model.append(row=[DUMMY_SONG])
         run_gtk_loop()
         assert not self.get_queue()
-        for i in range(PlayQueue._MAX_PENDING + 1):
+        for _i in range(PlayQueue._MAX_PENDING + 1):
             model.append(row=[DUMMY_SONG])
         run_gtk_loop()
         assert len(self.get_queue()) == PlayQueue._MAX_PENDING + 1

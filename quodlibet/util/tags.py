@@ -79,7 +79,7 @@ def _get_role_map(tags):
 
 
 T = TagName
-_TAGS = dict((t.name, t) for t in [
+_TAGS = {t.name: t for t in [
     T("album", "us", _("album"), _("albums")),
     T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
     T("artist", "us", _("artist"), _("artists")),
@@ -177,7 +177,7 @@ _TAGS = dict((t.name, t) for t in [
     T("playlists", "i", _("playlists")),
     T("samplerate", "n", _("sample rate")),
     T("channels", "n", _("channel count")),
-])
+]}
 
 
 def _get_sort_map(tags):
@@ -252,8 +252,8 @@ def readable(tag, plural=False):
 
     if tag in _TAGS:
         return desc(tag)
-    elif tag == 'people:real':
-        return desc('people')
+    elif tag == "people:real":
+        return desc("people")
     else:
         roles = False
         if tag.endswith(":roles"):

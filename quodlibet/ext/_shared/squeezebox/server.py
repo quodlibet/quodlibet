@@ -1,4 +1,4 @@
-# Copyright 2014-2020 Nick Boultbee
+# Copyright 2014-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@ from quodlibet import app
 from quodlibet.util.dprint import print_w, print_d, print_
 
 
-class SqueezeboxException(Exception):
+class SqueezeboxError(Exception):
     """Errors communicating with the Squeezebox"""
 
 
@@ -51,7 +51,7 @@ class SqueezeboxServer:
     _debug = False
 
     def __init__(self, hostname="localhost", port=9090, user="", password="",
-                 library_dir='', current_player=0, debug=False):
+                 library_dir="", current_player=0, debug=False):
         self._debug = debug
         self.failures = 0
         self.delta = 600    # Default in ms
@@ -68,8 +68,8 @@ class SqueezeboxServer:
                 print_d("Couldn't talk to %s (%s)" % (self.config, e))
             else:
                 result = self.__request("login %s %s" % (user, password))
-                if result != (6 * '*'):
-                    raise SqueezeboxException(
+                if result != (6 * "*"):
+                    raise SqueezeboxError(
                         "Couldn't log in to squeezebox: response was '%s'"
                         % result)
                 self.is_connected = True
@@ -80,7 +80,7 @@ class SqueezeboxServer:
                 self.get_players()
 
     def get_library_dir(self):
-        return self.config['library_dir']
+        return self.config["library_dir"]
 
     def __request(self, line, raw=False, want_reply=True):
         """
@@ -88,17 +88,17 @@ class SqueezeboxServer:
         """
         line = line.strip()
 
-        if not (self.is_connected or line.split()[0] == 'login'):
+        if not (self.is_connected or line.split()[0] == "login"):
             print_d("Can't do '%s' - not connected" % line.split()[0], self)
             return None
 
         if self._debug:
-            print_(">>>> \"%s\"" % line)
+            print_('>>>> "%s"' % line)
         try:
-            self.telnet.write((line + "\n").encode('utf-8'))
+            self.telnet.write((line + "\n").encode("utf-8"))
             if not want_reply:
                 return None
-            raw_response = self.telnet.read_until(b"\n", 5).decode('utf-8')
+            raw_response = self.telnet.read_until(b"\n", 5).decode("utf-8")
         except socket.error as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
@@ -108,7 +108,7 @@ class SqueezeboxServer:
             return None
         response = (raw_response if raw else unquote(raw_response)).strip()
         if self._debug:
-            print_("<<<< \"%s\"" % (response,))
+            print_('<<<< "%s"' % (response,))
         return (response[len(line) - 1:] if line.endswith("?")
                 else response[len(line) + 1:])
 

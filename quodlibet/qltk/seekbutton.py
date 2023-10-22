@@ -76,7 +76,7 @@ class HSlider(Gtk.Button):
         super().__init__()
         if child:
             self.add(child)
-        self.connect('clicked', self.__clicked)
+        self.connect("clicked", self.__clicked)
 
         self._disable_slider = False
         self.__grabbed = []
@@ -92,37 +92,37 @@ class HSlider(Gtk.Button):
 
         hscale = Gtk.Scale(adjustment=self.__adj)
         hscale.set_orientation(Gtk.Orientation.HORIZONTAL)
-        window.connect('button-press-event', self.__button)
-        window.connect('key-press-event', self.__key)
+        window.connect("button-press-event", self.__button)
+        window.connect("key-press-event", self.__key)
         hscale.set_draw_value(False)
         self.scale = hscale
         window.add(frame)
         self._box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL)
         self._box.add(hscale)
         frame.add(self._box)
-        self.connect('scroll-event', self.__scroll, hscale)
+        self.connect("scroll-event", self.__scroll, hscale)
 
         self.connect("destroy", self.__destroy)
 
         # forward scroll event to the button
         def foward_scroll(scale, event):
-            self.emit('scroll-event', event.copy())
-        window.connect('scroll-event', foward_scroll)
+            self.emit("scroll-event", event.copy())
+        window.connect("scroll-event", foward_scroll)
 
         # ignore scroll events on the scale, the window handles it instead
-        self.scale.connect('scroll-event', lambda *x: True)
+        self.scale.connect("scroll-event", lambda *x: True)
 
         # handle all unhandled button events on the scale
         # so only events not on the scale hide the window
         def handle_all(scale, event):
             return True
-        self.scale.connect_after('button-press-event', handle_all)
-        self.scale.connect_after('button-release-event', handle_all)
+        self.scale.connect_after("button-press-event", handle_all)
+        self.scale.connect_after("button-release-event", handle_all)
 
         # forward release event to the scale
         def foward_release(scale, event):
-            self.scale.emit('button-release-event', event.copy())
-        window.connect('button-release-event', foward_release)
+            self.scale.emit("button-release-event", event.copy())
+        window.connect("button-release-event", foward_release)
 
         self.set_slider_length(200)
 
@@ -153,7 +153,7 @@ class HSlider(Gtk.Button):
             Align(widget, border=6, left=-3), False, True, 0)
 
     def __clicked(self, button):
-        if self.__window.get_property('visible'):
+        if self.__window.get_property("visible"):
             return
 
         if self._disable_slider:
@@ -226,18 +226,18 @@ class SeekButton(HSlider):
         self._on_seekable_changed(player)
         connect_destroy(player, "notify::seekable", self._on_seekable_changed)
 
-        self.scale.connect('button-press-event', self.__seek_lock)
-        self.scale.connect('button-release-event', self.__seek_unlock, player)
-        self.scale.connect('key-press-event', self.__seek_lock)
-        self.scale.connect('key-release-event', self.__seek_unlock, player)
-        self.connect('scroll-event', self.__scroll, player)
-        self.scale.connect('value-changed', self.__update_time, l)
+        self.scale.connect("button-press-event", self.__seek_lock)
+        self.scale.connect("button-release-event", self.__seek_unlock, player)
+        self.scale.connect("key-press-event", self.__seek_lock)
+        self.scale.connect("key-release-event", self.__seek_unlock, player)
+        self.connect("scroll-event", self.__scroll, player)
+        self.scale.connect("value-changed", self.__update_time, l)
 
         m = Gtk.Menu()
         c = ConfigCheckMenuItem(
             _("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
-        connect_obj(c, 'toggled', self.scale.emit, 'value-changed')
+        connect_obj(c, "toggled", self.scale.emit, "value-changed")
         self.__remaining = c
         m.append(c)
         m.append(SeparatorMenuItem())
@@ -247,22 +247,22 @@ class SeekButton(HSlider):
             window = bookmarks.EditBookmarks(self, library, player)
             window.show()
 
-        i.connect('activate', edit_bookmarks_cb)
+        i.connect("activate", edit_bookmarks_cb)
         m.append(i)
         m.show_all()
 
         connect_obj(self,
-            'button-press-event', self.__check_menu, m, player, c)
-        connect_obj(self, 'popup-menu', self.__popup_menu, m, player)
+            "button-press-event", self.__check_menu, m, player, c)
+        connect_obj(self, "popup-menu", self.__popup_menu, m, player)
 
         timer = TimeTracker(player)
-        connect_obj(timer, 'tick', self.__check_time, player)
+        connect_obj(timer, "tick", self.__check_time, player)
 
         connect_destroy(
             library, "changed", self.__songs_changed, player, m)
 
-        connect_destroy(player, 'song-started', self.__song_started, m)
-        connect_destroy(player, 'seek', self.__seeked)
+        connect_destroy(player, "song-started", self.__song_started, m)
+        connect_destroy(player, "seek", self.__seeked)
 
     def _on_seekable_changed(self, player, *args):
         self._time_label.set_disabled(not player.seekable)
@@ -370,4 +370,4 @@ class SeekButton(HSlider):
             menu.remove(child)
             child.destroy()
         menu.get_children()[-1].set_sensitive(self.__seekable)
-        self.scale.emit('value-changed')
+        self.scale.emit("value-changed")

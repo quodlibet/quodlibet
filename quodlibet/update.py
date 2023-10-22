@@ -63,7 +63,7 @@ def fetch_versions(build_type, timeout=5.0):
             u"https://quodlibet.github.io/appcast/%s.rss" % build_type,
             timeout=timeout).read()
     except Exception as error:
-        raise UpdateError(error)
+        raise UpdateError(error) from error
 
     d = feedparser.parse(content)
     if d.bozo:
@@ -73,12 +73,12 @@ def fetch_versions(build_type, timeout=5.0):
         link = d.feed.link
         enclosures = [e for entry in d.entries for e in entry.enclosures]
     except AttributeError as error:
-        raise UpdateError(error)
+        raise UpdateError(error) from error
 
     try:
         versions = [parse_version(en.version) for en in enclosures]
     except ValueError as error:
-        raise UpdateError(error)
+        raise UpdateError(error) from error
 
     return sorted(versions), link
 

@@ -15,11 +15,11 @@ from quodlibet.player._base import BasePlayer
 from quodlibet.qltk import Icons
 
 try:
-    gi.require_version('Notify', '0.7')
+    gi.require_version("Notify", "0.7")
     from gi.repository import GLib, Notify
 except (ValueError, ImportError) as e:
     from quodlibet import plugins
-    raise plugins.PluginNotSupportedError(f"Can't load GI Notify module ({e!r})")
+    raise plugins.PluginNotSupportedError(f"Can't load GI Notify module ({e!r})") from e
 
 
 from quodlibet import app, _

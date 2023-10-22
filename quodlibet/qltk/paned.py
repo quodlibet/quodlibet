@@ -125,10 +125,10 @@ class ConfigRPaned(RPaned):
     def __init__(self, section, option, default, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_relative(config.getfloat(section, option, default))
-        self.connect('notify::position', self.__changed, section, option)
+        self.connect("notify::position", self.__changed, section, option)
 
     def __changed(self, widget, event, section, option):
-        if self.get_property('position-set'):
+        if self.get_property("position-set"):
             config.set(section, option, str(self.get_relative()))
 
 
@@ -251,7 +251,7 @@ class ConfigMultiRPaned(MultiRPaned):
 
         # Connect all paneds
         for paned in paneds:
-            paned.connect('notify::position', self.__changed)
+            paned.connect("notify::position", self.__changed)
 
         self._restore_widths()
 

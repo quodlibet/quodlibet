@@ -66,11 +66,11 @@ def build_query(album):
     if not album:
         return u""
 
-    alb = '"%s"' % album[0].comma("album").replace('"', '')
+    alb = '"%s"' % album[0].comma("album").replace('"', "")
     art = get_artist(album)
     if art:
-        alb = '%s AND artist:"%s"' % (alb, art.replace('"', ''))
-    return u'%s AND tracks:%d' % (alb, get_trackcount(album))
+        alb = '%s AND artist:"%s"' % (alb, art.replace('"', ""))
+    return u"%s AND tracks:%d" % (alb, get_trackcount(album))
 
 
 class ResultComboBox(Gtk.ComboBox):
@@ -103,7 +103,7 @@ class ResultComboBox(Gtk.ComboBox):
                     util.escape(discs_text),
                     util.escape(tracks_text),
                     extra_info)
-            cell.set_property('markup', markup)
+            cell.set_property("markup", markup)
 
         self.pack_start(render, True)
         self.set_cell_data_func(render, celldata, None)
@@ -126,16 +126,16 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
 
         mode = Pango.EllipsizeMode
         cols = [
-                (_('Filename'), self.__name_datafunc, True, mode.MIDDLE),
-                (_('Disc'), self.__disc_datafunc, False, mode.END),
-                (_('Track'), self.__track_datafunc, False, mode.END),
-                (_('Title'), self.__title_datafunc, True, mode.END),
-                (_('Artist'), self.__artist_datafunc, True, mode.END),
+                (_("Filename"), self.__name_datafunc, True, mode.MIDDLE),
+                (_("Disc"), self.__disc_datafunc, False, mode.END),
+                (_("Track"), self.__track_datafunc, False, mode.END),
+                (_("Title"), self.__title_datafunc, True, mode.END),
+                (_("Artist"), self.__artist_datafunc, True, mode.END),
             ]
 
         for title, func, resize, mode in cols:
             render = Gtk.CellRendererText()
-            render.set_property('ellipsize', mode)
+            render.set_property("ellipsize", mode)
             col = Gtk.TreeViewColumn(title, render)
             col.set_cell_data_func(render, func)
             col.set_resizable(resize)
@@ -168,9 +168,9 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         else:
             tracks = []
 
-        for i in range(len(self.model), len(tracks)):
+        for _i in range(len(self.model), len(tracks)):
             self.model.append((None, ))
-        for i in range(len(self.model), len(tracks), -1):
+        for _i in range(len(self.model), len(tracks), -1):
             if self.model[-1][0] is not None:
                 break
             itr = self.model.get_iter_from_string(str(len(self.model) - 1))
@@ -202,38 +202,38 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
     def __name_datafunc(self, col, cell, model, itr, data):
         song = model[itr][0]
         if song:
-            cell.set_property('text', fsn2text(song("~basename")))
+            cell.set_property("text", fsn2text(song("~basename")))
         else:
-            cell.set_property('text', '')
+            cell.set_property("text", "")
 
     def __track_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self._tracks):
-            cell.set_property('text', '')
+            cell.set_property("text", "")
         else:
-            cell.set_property('text', self._tracks[idx].tracknumber)
+            cell.set_property("text", self._tracks[idx].tracknumber)
 
     def __disc_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self._tracks):
-            cell.set_property('text', '')
+            cell.set_property("text", "")
         else:
-            cell.set_property('text', self._tracks[idx].discnumber)
+            cell.set_property("text", self._tracks[idx].discnumber)
 
     def __title_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self._tracks):
-            cell.set_property('text', '')
+            cell.set_property("text", "")
         else:
-            cell.set_property('text', self._tracks[idx].title)
+            cell.set_property("text", self._tracks[idx].title)
 
     def __artist_datafunc(self, col, cell, model, itr, data):
         idx = model.get_path(itr)[0]
         if idx >= len(self._tracks):
-            cell.set_property('text', '')
+            cell.set_property("text", "")
         else:
             names = [a.name for a in self._tracks[idx].artists]
-            cell.set_property('text', ", ".join(names))
+            cell.set_property("text", ", ".join(names))
 
 
 def build_song_data(release, track):
@@ -301,7 +301,7 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
     """
 
     if year_only:
-        meta["date"] = meta["date"].split('-', 1)[0]
+        meta["date"] = meta["date"].split("-", 1)[0]
 
     if not albumartist:
         meta["albumartist"] = u""
@@ -369,22 +369,22 @@ class SearchWindow(Dialog):
         hb = Gtk.HBox()
         hb.set_spacing(8)
         sq = self.search_query = Gtk.Entry()
-        sq.connect('activate', self._do_query)
+        sq.connect("activate", self._do_query)
 
         sq.set_text(build_query(album))
 
         lbl = Gtk.Label(label=_("_Query:"))
         lbl.set_use_underline(True)
         lbl.set_mnemonic_widget(sq)
-        stb = self.search_button = Gtk.Button(_('S_earch'), use_underline=True)
-        stb.connect('clicked', self._do_query)
+        stb = self.search_button = Gtk.Button(_("S_earch"), use_underline=True)
+        stb.connect("clicked", self._do_query)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(sq, True, True, 0)
         hb.pack_start(stb, False, True, 0)
         vb.pack_start(hb, False, True, 0)
 
         self.result_combo = ResultComboBox(self._resultlist)
-        self.result_combo.connect('changed', self._result_changed)
+        self.result_combo.connect("changed", self._result_changed)
         vb.pack_start(self.result_combo, False, True, 0)
 
         rhb = Gtk.HBox()
@@ -407,10 +407,10 @@ class SearchWindow(Dialog):
         # https://developer.gnome.org/gtk3/stable/GtkDialog.html#gtk-dialog-get-action-area
         self.get_action_area().set_border_width(4)
         self.get_content_area().pack_start(vb, True, True, 0)
-        self.connect('response', self._on_response)
+        self.connect("response", self._on_response)
         self.connect("destroy", self._on_destroy)
 
-        stb.emit('clicked')
+        stb.emit("clicked")
         self.get_child().show_all()
 
     def _on_destroy(self, *args):

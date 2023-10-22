@@ -22,8 +22,8 @@ from quodlibet.qltk import notif, Icons
 
 
 class RandomAlbum(EventPlugin):
-    PLUGIN_ID = 'Random Album Playback'
-    PLUGIN_NAME = _('Random Album Playback')
+    PLUGIN_ID = "Random Album Playback"
+    PLUGIN_NAME = _("Random Album Playback")
     PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
                     "end. It requires that your active browser supports "
                     "filtering by album.")
@@ -35,8 +35,8 @@ class RandomAlbum(EventPlugin):
     # Third item is to specify a non-default aggregation function
     keys = [
                 ("rating", _("Rated higher"), None),
-                ("playcount", _("Played more often"), 'avg'),
-                ("skipcount", _("Skipped more often"), 'avg'),
+                ("playcount", _("Played more often"), "avg"),
+                ("skipcount", _("Skipped more often"), "avg"),
                 ("lastplayed", _("Played more recently"), None),
                 ("laststarted", _("Started more recently"), None),
                 ("added", _("Added more recently"), None),
@@ -44,7 +44,7 @@ class RandomAlbum(EventPlugin):
             ]
 
     def __init__(self):
-        for (key, text, func) in self.keys:
+        for (key, _text, _func) in self.keys:
             val = config.getfloat("plugins", "randomalbum_%s" % key, 0.0)
             self.weights[key] = val
 
@@ -118,7 +118,7 @@ class RandomAlbum(EventPlugin):
         table.attach(hb, 2, 3, 0, 1, xpadding=3,
                      xoptions=Gtk.AttachOptions.FILL)
 
-        for (idx, (key, text, func)) in enumerate(self.keys):
+        for (idx, (key, text, _func)) in enumerate(self.keys):
             lbl = Gtk.Label(label=text)
             lbl.set_alignment(0, 0)
             table.attach(lbl, 0, 1, idx + 1, idx + 2,
@@ -144,7 +144,7 @@ class RandomAlbum(EventPlugin):
         # based on normalized means, and also normalizes the scale of each
         # weight slider in the prefs pane.
         ranked = {}
-        for (tag, text, func) in self.keys:
+        for (tag, _text, func) in self.keys:
             tag_key = ("~#%s:%s" % (tag, func) if func
                        else "~#%s" % tag)
             ranked[tag] = sorted(albums,
@@ -153,7 +153,7 @@ class RandomAlbum(EventPlugin):
         scores = {}
         for album in albums:
             scores[album] = 0
-            for (tag, text, func) in self.keys:
+            for (tag, _text, _func) in self.keys:
                 rank = ranked[tag].index(album)
                 scores[album] += rank * self.weights[tag]
 
@@ -196,7 +196,7 @@ class RandomAlbum(EventPlugin):
                           for sc, al in album_scores
                           if sc == max_score]
                 print_d("Albums with maximum score:")
-                for score, album in albums:
+                for _score, album in albums:
                     print_d("  %s" % album("album"))
 
                 # Pick random album from list of highest scored albums
@@ -234,7 +234,7 @@ class RandomAlbum(EventPlugin):
         if browser.can_filter_albums():
             browser.filter_albums([album.key])
         else:
-            browser.filter('album', [album("album")])
+            browser.filter("album", [album("album")])
         GLib.idle_add(self.unpause)
 
     def unpause(self):

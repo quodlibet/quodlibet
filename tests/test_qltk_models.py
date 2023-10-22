@@ -128,23 +128,23 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test_iter_append_many_iterable_int(self):
         m = ObjectStore()
-        for x in m.iter_append_many((i for i in range(10))):
+        for _x in m.iter_append_many((i for i in range(10))):
             pass
         self.failUnlessEqual([r[0] for r in m], list(range(10)))
 
     def test_iter_append_many_iterable_object(self):
         objects = [object() for i in range(10)]
         m = ObjectStore()
-        for x in m.iter_append_many((i for i in objects)):
+        for _x in m.iter_append_many((i for i in objects)):
             pass
         self.failUnlessEqual([r[0] for r in m], objects)
 
     def test_iter_append_many_empty(self):
         m = ObjectStore()
-        for x in m.iter_append_many([]):
+        for _x in m.iter_append_many([]):
             pass
 
-        for x in m.iter_append_many(iter([])):
+        for _x in m.iter_append_many(iter([])):
             pass
 
     def test_insert_many(self):
@@ -224,10 +224,10 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test__sort_on_value(self):
         m = ObjectStore()
-        iterBob = m.append(row=["bob"])
-        iterAlice = m.append(row=["alice"])
+        iter_bob = m.append(row=["bob"])
+        iter_alice = m.append(row=["alice"])
         m.append(row=["charlie"])
-        result = ObjectStore._sort_on_value(m, iterAlice, iterBob, None)
+        result = ObjectStore._sort_on_value(m, iter_alice, iter_bob, None)
         self.assertEqual(result, cmp("alice", "bob"))
 
 
@@ -267,7 +267,7 @@ class _TObjectTreeStoreMixin:
         new_iter = m.insert_after(iter_, iter2_, [3])
         self.failUnlessEqual(m.get_value(new_iter, 0), 3)
         self.failUnlessEqual([1], [r[0] for r in m])
-        self.failUnlessEqual([2, 3], list(r[0] for r in m[0].iterchildren()))
+        self.failUnlessEqual([2, 3], [r[0] for r in m[0].iterchildren()])
 
     def test_insert_after_noiter(self):
         m = self.Store()
@@ -289,7 +289,7 @@ class _TObjectTreeStoreMixin:
         new_iter = m.insert_before(iter_, iter2_, [3])
         self.failUnlessEqual(m.get_value(new_iter, 0), 3)
         self.failUnlessEqual([1], [r[0] for r in m])
-        self.failUnlessEqual([3, 2], list(r[0] for r in m[0].iterchildren()))
+        self.failUnlessEqual([3, 2], [r[0] for r in m[0].iterchildren()])
 
     def test_insert_before_noiter(self):
         m = self.Store()

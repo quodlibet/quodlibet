@@ -31,8 +31,8 @@ class AutoMasking(EventPlugin):
         if self.__monitor is None:
             self.__monitor = Gio.VolumeMonitor.get()
             self.__sigs = [
-                self.__monitor.connect('mount-added', self.__mounted),
-                self.__monitor.connect('mount-removed', self.__unmounted),
+                self.__monitor.connect("mount-added", self.__mounted),
+                self.__monitor.connect("mount-removed", self.__unmounted),
                 ]
         else:
             for signal_id in self.__sigs:

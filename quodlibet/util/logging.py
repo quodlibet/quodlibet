@@ -24,7 +24,7 @@ class Logs:
         # only pop/append/len are threadsafe, implement iter with them
         with self._iter_lock:
             temp = collections.deque()
-            for i in range(len(self._log)):
+            for _i in range(len(self._log)):
                 item = self._log.popleft()
                 yield item
                 temp.append(item)
@@ -47,7 +47,7 @@ class Logs:
         """
 
         with self._iter_lock:
-            for i in range(len(self._log)):
+            for _i in range(len(self._log)):
                 self._log.popleft()
 
     def get_content(self, category=None, limit=None):

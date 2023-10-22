@@ -30,7 +30,7 @@ from quodlibet import pattern
 class OSDWindow(Gtk.Window):
 
     __gsignals__ = {
-        'fade-finished': (GObject.SignalFlags.RUN_LAST, None, (bool,)),
+        "fade-finished": (GObject.SignalFlags.RUN_LAST, None, (bool,)),
     }
 
     MARGIN = 50
@@ -75,14 +75,14 @@ class OSDWindow(Gtk.Window):
         else:
             self.cover_surface = None
 
-        layout = self.create_pango_layout('')
+        layout = self.create_pango_layout("")
         layout.set_alignment((Pango.Alignment.LEFT, Pango.Alignment.CENTER,
                               Pango.Alignment.RIGHT)[conf.align])
         layout.set_spacing(Pango.SCALE * 7)
         layout.set_font_description(Pango.FontDescription(conf.font))
         try:
             layout.set_markup(pattern.XMLFromMarkupPattern(conf.string) % song)
-        except pattern.error:
+        except pattern.Error:
             layout.set_markup("")
         layout.set_width(Pango.SCALE * textwidth)
         layoutsize = layout.get_pixel_size()
@@ -300,6 +300,6 @@ class OSDWindow(Gtk.Window):
 
         if fraction >= 1.0:
             self.iteration_source = None
-            self.emit('fade-finished', self.fading_in)
+            self.emit("fade-finished", self.fading_in)
             return False
         return True

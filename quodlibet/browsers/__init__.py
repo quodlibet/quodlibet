@@ -47,20 +47,20 @@ def init() -> None:
         except AttributeError:
             util.print_w("%r doesn't contain any browsers." % browser.__name__)
 
-    def is_browser(Kind):
-        return isinstance(Kind, type) and issubclass(Kind, Browser)
+    def is_browser(klass):
+        return isinstance(klass, type) and issubclass(klass, Browser)
 
     browsers = list(filter(is_browser, browsers))
 
     if not browsers:
         raise SystemExit("No browsers found!")
 
-    browsers.sort(key=lambda Kind: Kind.priority)
+    browsers.sort(key=lambda cls: cls.priority)
 
     try:
         default = get("SearchBar")
-    except ValueError:
-        raise SystemExit("Default browser not found!")
+    except ValueError as e:
+        raise SystemExit("Default browser not found!") from e
 
 
 def name(browser: Browser) -> BrowserName:
@@ -81,9 +81,9 @@ def get(i: BrowserKey) -> Type[Browser]:
     except (IndexError, ValueError, TypeError):
         try:
             return get(index(cast(str, i)))
-        except IndexError:
+        except IndexError as e:
             # ValueError will fall through
-            raise ValueError("%r not found" % i)
+            raise ValueError(f"{i!r} not found") from e
 
 
 def index(name: BrowserName) -> int:

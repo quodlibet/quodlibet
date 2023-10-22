@@ -33,7 +33,7 @@ class AlbumNode:
         self.scanned = False
 
     @property
-    def COVER_SIZE(self):
+    def cover_size(self):
         size = config.getint("browsers", "cover_size")
         if size <= 0:
             size = 48
@@ -45,7 +45,7 @@ class AlbumNode:
         self.scanned = True
 
         from quodlibet import app
-        s = self.COVER_SIZE * scale_factor * 0.5
+        s = self.cover_size * scale_factor * 0.5
         self.cover = app.cover_manager.get_pixbuf_many(self.album.songs, s, s)
 
 

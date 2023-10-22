@@ -68,13 +68,13 @@ class ReplaceColons(FilterCheckButton):
     def __init__(self):
         super().__init__()
         # If on Windows, force this to be inactive (and hidden)
-        if os.name == 'nt':
+        if os.name == "nt":
             self.set_active(False)
             self.set_sensitive(False)
             self.set_no_show_all(True)
 
     def filter(self, original, filename):
-        regx = re.compile(r'\s*[:;]\s+\b')
+        regx = re.compile(r"\s*[:;]\s+\b")
         return regx.sub(" - ", filename)
 
 
@@ -87,7 +87,7 @@ class StripWindowsIncompat(FilterCheckButton):
     def __init__(self):
         super().__init__()
         # If on Windows, force this to be inactive (and hidden)
-        if os.name == 'nt':
+        if os.name == "nt":
             self.set_active(False)
             self.set_sensitive(False)
             self.set_no_show_all(True)
@@ -104,7 +104,7 @@ class StripDiacriticals(FilterCheckButton):
 
     def filter(self, original, filename):
         return u"".join(filter(lambda s: not unicodedata.combining(s),
-                               unicodedata.normalize('NFKD', filename)))
+                               unicodedata.normalize("NFKD", filename)))
 
 
 class StripNonASCII(FilterCheckButton):
@@ -114,7 +114,7 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        return u"".join(map(lambda s: (s <= "~" and s) or u"_", filename))
+        return u"".join(((s <= "~" and s) or u"_" for s in filename))
 
 
 class Lowercase(FilterCheckButton):
@@ -145,12 +145,15 @@ class Entry:
         return fsn2text(self.song("~basename"))
 
 
+RESPONSE_SKIP_ALL = 1
+
+
 class RenameFiles(Gtk.VBox):
     title = _("Rename Files")
     FILTERS = [SpacesToUnderscores, ReplaceColons, StripWindowsIncompat,
                StripDiacriticals, StripNonASCII, Lowercase]
     handler = RenameFilesPluginHandler()
-    IMAGE_EXTENSIONS = ['jpg', 'jpeg', 'png', 'bmp']
+    IMAGE_EXTENSIONS = ["jpg", "jpeg", "png", "bmp"]
 
     @classmethod
     def init_plugins(cls):
@@ -172,7 +175,7 @@ class RenameFiles(Gtk.VBox):
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)
-        self.combo.get_child().connect('changed', self._changed)
+        self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
         self.view = Gtk.TreeView(model=model)
@@ -205,7 +208,7 @@ class RenameFiles(Gtk.VBox):
         # move art
         moveart_box = Gtk.VBox()
         self.moveart = ConfigCheckButton(
-            _('_Move album art'),
+            _("_Move album art"),
             "rename", "move_art", populate=True)
         self.moveart.set_tooltip_text(
             _("See '[albumart] search_filenames' config entry "
@@ -213,7 +216,7 @@ class RenameFiles(Gtk.VBox):
         self.moveart.show()
         moveart_box.pack_start(self.moveart, False, True, 0)
         self.moveart_overwrite = ConfigCheckButton(
-            _('_Overwrite album art at target'),
+            _("_Overwrite album art at target"),
             "rename", "move_art_overwrite", populate=True)
         self.moveart_overwrite.show()
         moveart_box.pack_start(self.moveart_overwrite, False, True, 0)
@@ -221,7 +224,7 @@ class RenameFiles(Gtk.VBox):
         # remove empty
         removeemptydirs_box = Gtk.VBox()
         self.removeemptydirs = ConfigCheckButton(
-            _('_Remove empty directories'),
+            _("_Remove empty directories"),
             "rename", "remove_empty_dirs", populate=True)
         self.removeemptydirs.show()
         removeemptydirs_box.pack_start(self.removeemptydirs, False, True, 0)
@@ -242,7 +245,7 @@ class RenameFiles(Gtk.VBox):
         self.pack_start(bbox, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(title=_('File'))
+        column = TreeViewColumn(title=_("File"))
         column.pack_start(render, True)
 
         def cell_data_file(column, cell, model, iter_, data):
@@ -255,8 +258,8 @@ class RenameFiles(Gtk.VBox):
         self.view.append_column(column)
 
         render = Gtk.CellRendererText()
-        render.set_property('editable', True)
-        column = TreeViewColumn(title=_('New Name'))
+        render.set_property("editable", True)
+        column = TreeViewColumn(title=_("New Name"))
         column.pack_start(render, True)
 
         def cell_data_new_name(column, cell, model, iter_, data):
@@ -268,12 +271,12 @@ class RenameFiles(Gtk.VBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         self.view.append_column(column)
 
-        connect_obj(self.preview, 'clicked', self._preview, None)
+        connect_obj(self.preview, "clicked", self._preview, None)
 
-        connect_obj(parent, 'changed', self.__class__._preview, self)
-        connect_obj(self.save, 'clicked', self._rename, library)
+        connect_obj(parent, "changed", self.__class__._preview, self)
+        connect_obj(self.save, "clicked", self._rename, library)
 
-        render.connect('edited', self.__row_edited)
+        render.connect("edited", self.__row_edited)
 
         for child in self.get_children():
             child.show()
@@ -314,12 +317,12 @@ class RenameFiles(Gtk.VBox):
                 continue
             song = entry.song
             old_name = entry.name
-            old_pathfile = song['~filename']
+            old_pathfile = song["~filename"]
             new_name = entry.new_name
             new_pathfile = ""
             # ensure target is a full path
             if os.path.abspath(new_name) != \
-                    os.path.abspath(os.path.join(os.getcwd(), new_name)):
+                os.path.abspath(os.path.join(os.getcwd(), new_name)):
                 new_pathfile = new_name
             else:
                 # must be a relative pattern, so prefix the path
@@ -332,7 +335,6 @@ class RenameFiles(Gtk.VBox):
                 util.print_exc()
                 if skip_all:
                     continue
-                RESPONSE_SKIP_ALL = 1
                 msg = qltk.Message(
                     Gtk.MessageType.ERROR, win, _("Unable to rename file"),
                     _("Renaming %(old-name)s to %(new-name)s failed. "
@@ -392,8 +394,8 @@ class RenameFiles(Gtk.VBox):
             images = art_sets[path_old]
         else:
             def glob_escape(s):
-                for c in '[*?':
-                    s = s.replace(c, '[' + c + ']')
+                for c in "[*?":
+                    s = s.replace(c, "[" + c + "]")
                 return s
 
             # generate art set for path
@@ -479,7 +481,7 @@ class RenameFiles(Gtk.VBox):
                 newnames = f.filter_list(orignames, newnames)
 
         model.clear()
-        for song, newname in zip(songs, newnames):
+        for song, newname in zip(songs, newnames, strict=False):
             entry = Entry(song)
             entry.new_name = newname
             model.append(row=[entry])

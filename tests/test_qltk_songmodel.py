@@ -75,7 +75,7 @@ class TPlaylistModel(TestCase):
     def test_find_all(self):
         to_find = [1, 4, 5, 8, 9]
         iters = self.pl.find_all(to_find)
-        for i, v in zip(iters, to_find):
+        for i, v in zip(iters, to_find, strict=False):
             self.failUnlessEqual(self.pl[i][0], v)
 
     def test_find_all_duplicates(self):
@@ -90,7 +90,7 @@ class TPlaylistModel(TestCase):
         iters = self.pl.find_all(to_find)
         to_find.remove(18)
         to_find.remove(-1)
-        for i, v in zip(iters, to_find):
+        for i, v in zip(iters, to_find, strict=False):
             self.failUnlessEqual(self.pl[i][0], v)
 
     def test_find_all_empty(self):
@@ -117,7 +117,7 @@ class TPlaylistModel(TestCase):
 
     def test_shuffle(self):
         self.pl.order = OrderShuffle()
-        for i in range(5):
+        for _i in range(5):
             history = [self.pl.current for _ in range(10)
                        if self.pl.next() or True]
             self.assertNotEqual(history, list(range(10)))
@@ -129,7 +129,7 @@ class TPlaylistModel(TestCase):
     def test_shuffle_repeat_forever(self):
         self.pl.order = RepeatSongForever(OrderShuffle())
         old = self.pl.current
-        for i in range(5):
+        for _i in range(5):
             self.pl.next_ended()
             self.assertEqual(self.pl.current, old)
 
@@ -161,7 +161,7 @@ class TPlaylistModel(TestCase):
         self.failUnlessEqual(self.pl.current, 3)
         self.pl.next()
         self.failUnlessEqual(self.pl.current, 4)
-        for i in range(9):
+        for _i in range(9):
             self.pl.next_ended()
         self.failUnlessEqual(self.pl.current, 3)
 
@@ -185,7 +185,7 @@ class TPlaylistModel(TestCase):
 
     def test_go_to_order(self):
         self.pl.order = OrderShuffle()
-        for i in range(5):
+        for _i in range(5):
             self.pl.go_to(5)
             self.failUnlessEqual(self.pl.current, 5)
             self.pl.go_to(1)
@@ -207,7 +207,7 @@ class TPlaylistModel(TestCase):
         self.failUnlessEqual(self.pl[self.pl.go_to(5, False)][0], 7)
 
     def test_go_to_none(self):
-        for i in range(5):
+        for _i in range(5):
             self.pl.go_to(None)
             self.failUnlessEqual(self.pl.current, None)
             self.pl.next()
@@ -333,14 +333,14 @@ class TPlaylistMux(TestCase):
     def next(self):
         self.mux.next()
         song = self.mux.current
-        self.p.emit('song-started', self.mux.current)
+        self.p.emit("song-started", self.mux.current)
         do_events()
         return song
 
     def previous(self):
         self.mux.previous()
         song = self.mux.current
-        self.p.emit('song-started', self.mux.current)
+        self.p.emit("song-started", self.mux.current)
         do_events()
         return song
 
@@ -374,7 +374,7 @@ class TPlaylistMux(TestCase):
         self.failUnlessEqual(self.next(), 11)
 
     def test_random_queue_666(self):
-        for i in range(5):
+        for _i in range(5):
             self.mux.go_to(None)
             self.pl.set([1])
             do_events()

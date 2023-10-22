@@ -14,7 +14,7 @@ from gi.repository import GLib, GObject
 try:
     h = ctypes.cdll.LoadLibrary("libSM.so.6")
 except OSError as e:
-    raise ImportError(e)
+    raise ImportError(e) from e
 
 
 @ctypes.POINTER
@@ -218,9 +218,9 @@ class XSMPClient(GObject.Object):
         "save-yourself":
             (GObject.SignalFlags.RUN_LAST, None,
              (object, object, object, object)),
-        "die": (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        "save-complete": (GObject.SignalFlags.RUN_LAST, None, tuple()),
-        "shutdown-cancelled": (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "die": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "save-complete": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "shutdown-cancelled": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):

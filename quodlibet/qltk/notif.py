@@ -43,10 +43,10 @@ class ParentProperty:
     property to 'None' before you can set a new parent.
     """
     def __get__(self, inst, owner):
-        return getattr(inst, '_parent', None)
+        return getattr(inst, "_parent", None)
 
     def __set__(self, inst, value):
-        if getattr(inst, '_parent', None) is not None and value is not None:
+        if getattr(inst, "_parent", None) is not None and value is not None:
             raise ValueError("Cannot set parent property without first "
                     "setting it to 'None'.")
         inst._parent = value
@@ -114,7 +114,7 @@ class Task:
         used to set the fraction accordingly.
         """
         try:
-            if hasattr(gen, '__len__'):
+            if hasattr(gen, "__len__"):
                 for i, x in enumerate(gen):
                     self.update(float(i) / len(gen))
                     yield x
@@ -251,12 +251,12 @@ class TaskWidget(Gtk.HBox):
         self.pause = SmallImageToggleButton()
         self.pause.add(
             Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
-        self.pause.connect('toggled', self.__pause_toggled)
+        self.pause.connect("toggled", self.__pause_toggled)
         self.pack_start(self.pause, False, True, 3)
         self.stop = SmallImageButton()
         self.stop.add(
             Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.MENU))
-        self.stop.connect('clicked', self.__stop_clicked)
+        self.stop.connect("clicked", self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)
 
     def __pause_toggled(self, btn):
@@ -301,18 +301,18 @@ class StatusBar(Gtk.HBox):
 
         self.show_all()
         self.set_no_show_all(True)
-        self.__set_shown('default')
+        self.__set_shown("default")
         self.connect("destroy", self.__destroy)
 
     def __destroy(self, *args):
         self.task_controller.parent = None
 
     def __set_shown(self, type):
-        if type == 'default':
+        if type == "default":
             self.default_label.show()
         else:
             self.default_label.hide()
-        if type == 'task':
+        if type == "task":
             self.task_widget.show()
         else:
             self.task_widget.hide()
@@ -323,10 +323,10 @@ class StatusBar(Gtk.HBox):
     def __update(self):
         self.__dirty = False
         if self.task_controller.active_tasks:
-            self.__set_shown('task')
+            self.__set_shown("task")
             self.task_widget.update()
         else:
-            self.__set_shown('default')
+            self.__set_shown("default")
 
     def update(self):
         if not self.__dirty:

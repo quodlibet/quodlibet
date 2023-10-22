@@ -108,19 +108,19 @@ class SystemTray(BaseIndicator):
 
         self._icon = Gtk.StatusIcon()
         self.__icon_theme = Gtk.IconTheme.get_default()
-        self.__theme_sig = self.__icon_theme.connect('changed',
+        self.__theme_sig = self.__icon_theme.connect("changed",
             self.__theme_changed)
 
-        self._icon.connect('size-changed', self.__size_changed)
+        self._icon.connect("size-changed", self.__size_changed)
         self._icon.connect("notify::embedded", self.__embedded_changed)
         self.__embedded_changed(self._icon)
-        self._icon.connect('popup-menu', self.__popup_menu)
-        self._icon.connect('activate', self.__button_left)
+        self._icon.connect("popup-menu", self.__popup_menu)
+        self._icon.connect("activate", self.__button_left)
 
-        self._icon.connect('scroll-event', self.__scroll)
-        self._icon.connect('button-press-event', self.__button_middle)
+        self._icon.connect("scroll-event", self.__scroll)
+        self._icon.connect("button-press-event", self.__button_middle)
 
-        self.__w_sig_del = app.window.connect('delete-event',
+        self.__w_sig_del = app.window.connect("delete-event",
                                               self.__window_delete)
 
         # If after the main loop is idle and 3 seconds have passed
@@ -279,12 +279,12 @@ class SystemTray(BaseIndicator):
     def __button_left(self, icon):
         if self.__destroy_win32_menu():
             return
-        if app.window.get_property('visible'):
+        if app.window.get_property("visible"):
             self.__hide_window()
         else:
             self.__show_window()
 
-    def __button_middle(self, widget, event, _last_timestamp=[0]):
+    def __button_middle(self, widget, event, _last_timestamp=[0]):  # noqa
         if event.type == Gdk.EventType.BUTTON_PRESS and \
                 event.button == Gdk.BUTTON_MIDDLE:
             if self.__destroy_win32_menu():
@@ -306,20 +306,20 @@ class SystemTray(BaseIndicator):
         except config.Error:
             pass
 
-        DIR = Gdk.ScrollDirection
-        if event.direction in [DIR.LEFT, DIR.RIGHT]:
+        Dir = Gdk.ScrollDirection  # noqa
+        if event.direction in [Dir.LEFT, Dir.RIGHT]:
             state = Gdk.ModifierType.SHIFT_MASK
 
         player = app.player
         if state & Gdk.ModifierType.SHIFT_MASK:
-            if event.direction in [DIR.UP, DIR.LEFT]:
+            if event.direction in [Dir.UP, Dir.LEFT]:
                 player.previous()
-            elif event.direction in [DIR.DOWN, DIR.RIGHT]:
+            elif event.direction in [Dir.DOWN, Dir.RIGHT]:
                 player.next()
         else:
-            if event.direction in [DIR.UP, DIR.LEFT]:
+            if event.direction in [Dir.UP, Dir.LEFT]:
                 player.volume += 0.05
-            elif event.direction in [DIR.DOWN, DIR.RIGHT]:
+            elif event.direction in [Dir.DOWN, Dir.RIGHT]:
                 player.volume -= 0.05
 
     def __destroy_win32_menu(self):

@@ -8,7 +8,7 @@ from tests.helper import __
 
 import os
 import sys
-sys.modules['dircache'] = os # cheat the dircache effects
+sys.modules["dircache"] = os # cheat the dircache effects
 
 from senf import fsnative
 
@@ -29,8 +29,8 @@ class Tget_gtk_bookmarks(TestCase):
         if is_windows():
             return
 
-        data = (b'file:///foo/bar\nfile:///home/user\n'
-                b'file:///home/user/Downloads Downloads\n')
+        data = (b"file:///foo/bar\nfile:///home/user\n"
+                b"file:///home/user/Downloads Downloads\n")
         paths = parse_gtk_bookmarks(data)
         assert all(isinstance(p, fsnative) for p in paths)
 
@@ -112,7 +112,7 @@ class TDirectoryTree(TestCase):
         self.failUnless(select_sub.get_sensitive())
         sel = dt.get_selection()
         model = dt.get_model()
-        for it, pth in model.iterrows(None):
+        for it, _pth in model.iterrows(None):
             sel.select_iter(it)
         self.failUnless(select_sub.get_sensitive(),
                         msg="Select All should work for multiple")
@@ -139,7 +139,7 @@ class TFileSelector(TestCase):
         self.fs = FileSelector(
             initial=self.INITIAL, filter=(lambda s: s in self.PATHS),
             folders=self.ROOTS)
-        self.fs.connect('changed', self._changed)
+        self.fs.connect("changed", self._changed)
         self.files = None
         self.fs.rescan()
 

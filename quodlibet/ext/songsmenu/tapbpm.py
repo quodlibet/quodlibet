@@ -34,14 +34,14 @@ class TapBpmPanel(Gtk.VBox):
         box.pack_start(self.bpm_label, True, True, 0)
 
         self.reset_btn = Gtk.Button(label=_("Reset"))
-        self.reset_btn.connect('clicked', lambda *x: self.reset())
+        self.reset_btn.connect("clicked", lambda *x: self.reset())
         box.pack_end(self.reset_btn, False, True, 0)
 
         self.pack_start(box, False, True, 0)
 
         self.tap_btn = Gtk.Button(label=_("Tap"))
-        self.tap_btn.connect('button-press-event', self.tap)
-        self.tap_btn.connect('key-press-event', self.key_tap)
+        self.tap_btn.connect("button-press-event", self.tap)
+        self.tap_btn.connect("key-press-event", self.key_tap)
         self.pack_start(self.tap_btn, True, True, 0)
 
         self.init_tap()
@@ -189,7 +189,7 @@ class TapBpm(SongsMenuPlugin):
 
         window.set_default_size(300, 100)
         window.set_border_width(6)
-        self.__resp_sig = window.connect('response', self.response)
+        self.__resp_sig = window.connect("response", self.response)
 
         self._panel = TapBpmPanel(window, song)
         window.vbox.pack_start(self._panel, False, True, 0)

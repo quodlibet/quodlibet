@@ -82,8 +82,8 @@ class TAlbumSort(TestCase):
     def assertOrder(self, func, list_):
         key = cmp_to_key(func)
         # sort twice for full line coverage of the compare function
-        reversed_ = list(sorted(list_, key=key, reverse=True))
-        sorted_ = list(sorted(list_, key=key))
+        reversed_ = sorted(list_, key=key, reverse=True)
+        sorted_ = sorted(list_, key=key)
         self.assertEqual(reversed_[::-1], sorted_)
         self.assertEqual(list_, sorted_)
 

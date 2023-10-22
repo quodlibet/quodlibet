@@ -15,7 +15,7 @@ except ImportError:
 from tests import TestCase, skipUnless, get_data_path
 
 try:
-    from quodlibet.player.gstbe.util import GStreamerSink as Sink
+    from quodlibet.player.gstbe.util import gstreamer_sink
     from quodlibet.player.gstbe.util import parse_gstreamer_taglist
     from quodlibet.player.gstbe.util import find_audio_sink
     from quodlibet.player.gstbe.prefs import GstPlayerPreferences
@@ -55,16 +55,16 @@ class TGStreamerSink(TestCase):
     def test_simple(self):
         sinks = ["gconfaudiosink", "alsasink"]
         for n in filter(Gst.ElementFactory.find, sinks):
-            obj, name = Sink(n)
+            obj, name = gstreamer_sink(n)
             self.failUnless(obj)
             self.failUnlessEqual(name, n)
 
     def test_invalid(self):
         with ignore_gst_errors():
-            self.assertRaises(PlayerError, Sink, "notarealsink")
+            self.assertRaises(PlayerError, gstreamer_sink, "notarealsink")
 
     def test_fallback(self):
-        obj, name = Sink("")
+        obj, name = gstreamer_sink("")
         self.failUnless(obj)
         if os.name == "nt":
             self.failUnlessEqual(name, "directsoundsink")
@@ -72,9 +72,9 @@ class TGStreamerSink(TestCase):
             self.failUnlessEqual(name, find_audio_sink()[1])
 
     def test_append_sink(self):
-        obj, name = Sink("volume")
+        obj, name = gstreamer_sink("volume")
         self.failUnless(obj)
-        self.failUnlessEqual(name.split("!")[-1].strip(), Sink("")[1])
+        self.failUnlessEqual(name.split("!")[-1].strip(), gstreamer_sink("")[1])
 
 
 @skipUnless(Gst, "GStreamer missing")

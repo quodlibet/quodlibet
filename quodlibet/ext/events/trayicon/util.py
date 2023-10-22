@@ -17,10 +17,10 @@ DEFAULT_PATTERN = ("<album|<album~discnumber~part~tracknumber~title~version>|"
 
 def _get_plugin_config():
     # migrate option
-    if config.has_option('plugins', 'trayicon_window_hide'):
-        value = config.getboolean('plugins', 'trayicon_window_hide')
-        config.remove_option('plugins', 'trayicon_window_hide')
-        config.set('plugins', 'icon_window_hide', value)
+    if config.has_option("plugins", "trayicon_window_hide"):
+        value = config.getboolean("plugins", "trayicon_window_hide")
+        config.remove_option("plugins", "trayicon_window_hide")
+        config.set("plugins", "icon_window_hide", value)
 
     pconfig = PluginConfig("icon")
     pconfig.defaults.set("window_hide", True)

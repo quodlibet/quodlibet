@@ -95,13 +95,13 @@ class QuodLibetWinRemote(RemoteBase):
         try:
             winpipe.write_pipe(cls._NAME, data)
         except EnvironmentError as e:
-            raise RemoteError(e)
+            raise RemoteError(e) from e
 
     def start(self):
         try:
             self._server.start()
         except winpipe.NamedPipeServerError as e:
-            raise RemoteError(e)
+            raise RemoteError(e) from e
 
     def stop(self):
         self._server.stop()
@@ -132,13 +132,13 @@ class QuodLibetUnixRemote(RemoteBase):
         try:
             return fifo.write_fifo(cls._PATH, fsn2bytes(message, None))
         except fifo.FIFOError as e:
-            raise RemoteError(e)
+            raise RemoteError(e) from e
 
     def start(self):
         try:
             self._fifo.open()
         except fifo.FIFOError as e:
-            raise RemoteError(e)
+            raise RemoteError(e) from e
 
     def stop(self):
         self._fifo.destroy()

@@ -147,7 +147,7 @@ class NamedPipeServer(threading.Thread):
                 break
             finally:
                 if self._stopped:
-                    break
+                    break  # noqa
                 if data:
                     self._process(bytes(data))
 

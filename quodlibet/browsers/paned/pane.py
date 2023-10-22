@@ -54,7 +54,7 @@ class Pane(AllTreeView):
         column.set_fixed_width(50)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(render, True)
 
         def text_cdf(column, cell, model, iter_, data):
@@ -62,22 +62,22 @@ class Pane(AllTreeView):
             is_markup, text = entry.get_text(self.config)
             if is_markup:
                 cell.markup = text
-                cell.set_property('markup', text)
+                cell.set_property("markup", text)
             else:
                 cell.markup = None
-                cell.set_property('text', text)
+                cell.set_property("text", text)
 
         column.set_cell_data_func(render, text_cdf)
 
         render_count = Gtk.CellRendererText()
-        render_count.set_property('xalign', 1.0)
+        render_count.set_property("xalign", 1.0)
         column.pack_start(render_count, False)
 
         def count_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
             markup = entry.get_count_text(self.config)
             cell.markup = markup
-            cell.set_property('markup', markup)
+            cell.set_property("markup", markup)
 
         column.set_cell_data_func(render_count, count_cdf)
         self.append_column(column)
@@ -92,9 +92,9 @@ class Pane(AllTreeView):
         selection = self.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
         self.__sig = self.connect(
-            'selection-changed', self.__selection_changed)
-        s = self.connect('popup-menu', self.__popup_menu, library)
-        connect_obj(self, 'destroy', self.disconnect, s)
+            "selection-changed", self.__selection_changed)
+        s = self.connect("popup-menu", self.__popup_menu, library)
+        connect_obj(self, "destroy", self.disconnect, s)
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
@@ -295,7 +295,7 @@ class Pane(AllTreeView):
             self.select_by_func(select_func, scroll=jump)
             self.uninhibit()
 
-            self.get_selection().emit('changed')
+            self.get_selection().emit("changed")
 
         if force_any and self.get_selection().count_selected_rows() == 0:
             self.set_cursor((0,))

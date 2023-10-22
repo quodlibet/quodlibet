@@ -49,8 +49,8 @@ class BigCenteredImage(qltk.Window):
 
         self.add(frame)
 
-        event_box.connect('button-press-event', self.__destroy)
-        event_box.connect('key-press-event', self.__destroy)
+        event_box.connect("button-press-event", self.__destroy)
+        event_box.connect("key-press-event", self.__destroy)
 
         self.get_child().show_all()
 
@@ -220,7 +220,7 @@ class CoverImage(Gtk.EventBox):
         # is created or set_song is called. This signal allows callers know
         # when the cover is visible for sure. The signal argument tells whether
         # cover shown is not the fallback image.
-        'cover-visible': (GObject.SignalFlags.RUN_LAST, None, (bool,))
+        "cover-visible": (GObject.SignalFlags.RUN_LAST, None, (bool,))
     }
 
     def __init__(self, resize=False, size=70, song=None):
@@ -233,13 +233,13 @@ class CoverImage(Gtk.EventBox):
         self._scale = 0.9
 
         self.add(ResizeImage(resize, size))
-        self.connect('button-press-event', self.__album_clicked)
+        self.connect("button-press-event", self.__album_clicked)
         self.set_song(song)
         self.get_child().show_all()
 
     def set_image(self, _file):
         if _file is not None and not _file.name:
-            print_w('Got file which is not in the filesystem!')
+            print_w("Got file which is not in the filesystem!")
         self.__file = _file
         self.get_child().set_file(_file)
 
@@ -255,7 +255,7 @@ class CoverImage(Gtk.EventBox):
                 if success:
                     try:
                         self.set_image(result)
-                        self.emit('cover-visible', success)
+                        self.emit("cover-visible", success)
                         self.update_bci(result)
                         # If this widget is already 'destroyed', we will get
                         # following error.
@@ -324,6 +324,6 @@ class CoverImage(Gtk.EventBox):
             self.refresh()
         else:
             self.__current_bci.show()
-            self.__current_bci.connect('destroy', self.__reset_bci)
+            self.__current_bci.connect("destroy", self.__reset_bci)
 
         return True
