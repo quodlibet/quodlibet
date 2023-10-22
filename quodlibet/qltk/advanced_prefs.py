@@ -1,7 +1,7 @@
 # Copyright 2015    Christoph Reiter
 #           2016-23 Nick Boultbee
 #           2019    Peter Strulo
-#           2022    Jej@github
+#           2022-23 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
-from quodlibet.plugins.events import EventPlugin
 
 
 def _config(section, option, label, tooltip=None, getter=None):
@@ -36,6 +35,7 @@ def _config(section, option, label, tooltip=None, getter=None):
     revert.add(Gtk.Image.new_from_icon_name(
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
+    revert.set_tooltip_text(_("Revert to default"))
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(entry)
@@ -114,17 +114,9 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
     return lbl, scale, revert
 
 
-class AdvancedPreferences(EventPlugin):
-    PLUGIN_ID = "Advanced Preferences"
-    PLUGIN_NAME = _("Advanced Preferences")
-    PLUGIN_DESC = _("Allow editing of advanced config settings.")
-    PLUGIN_CAN_ENABLE = False
-    PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
+class AdvancedPreferencesPane():
 
-    def __init_defaults(self):
-        self.__enabled = False
-
-    def PluginPreferences(self, *args):
+    def create_display_frame(self, *args):
         def changed(entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
@@ -263,9 +255,12 @@ class AdvancedPreferences(EventPlugin):
             table.set_no_show_all(False)
             table.show_all()
 
+        help_text = Gtk.Label()
+        help_text.set_text(_("Allow editing of advanced config settings."))
         button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
-        vb.pack_start(button, True, True, 0)
+        vb.pack_start(help_text, False, True, 12)
+        vb.pack_start(button, False, True, 0)
         vb.pack_start(table, True, True, 0)
         table.set_no_show_all(True)
 
