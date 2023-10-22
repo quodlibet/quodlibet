@@ -11,7 +11,8 @@
 import os
 import shutil
 from typing import TypeVar, Optional, Generic
-from collections.abc import Collection, Sequence, Iterable, Iterator, MutableMapping, Generator
+from collections.abc import Collection, Sequence, Iterable, Iterator, MutableMapping, \
+    Generator
 
 from gi.repository import GObject
 

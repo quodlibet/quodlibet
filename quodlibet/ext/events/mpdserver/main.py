@@ -417,7 +417,7 @@ class MPDConnection(BaseTCPConnection):
         service.add_connection(self)
 
         str_version = ".".join(map(str, service.version))
-        self._buf = bytearray(f"OK MPD {str_version}\n".encode("utf-8"))
+        self._buf = bytearray(f"OK MPD {str_version}\n".encode())
         self._read_buf = bytearray()
 
         # begin - command processing state

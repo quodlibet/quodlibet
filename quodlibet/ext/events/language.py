@@ -44,7 +44,7 @@ class LanguagePreference(EventPlugin):
             else:
                 if value == "C":
                     value = "en"
-                translated = escape(iso639.translate(value.split('_', 1)[0]))
+                translated = escape(iso639.translate(value.split("_", 1)[0]))
                 text = f"{escape(value)} <span weight='light'>({translated})</span>"
             render.set_property("markup", text)
 

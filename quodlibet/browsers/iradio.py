@@ -89,7 +89,7 @@ class IRFile(RemoteFile):
             return base_call("website", *args)
 
         if key == "~format" and "audio-codec" in self:
-            codec = base_call('audio-codec', *args, **kwargs)
+            codec = base_call("audio-codec", *args, **kwargs)
             return f"{self.format} ({codec})"
         return base_call(key, *args, **kwargs)
 

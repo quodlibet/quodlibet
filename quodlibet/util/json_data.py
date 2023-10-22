@@ -125,7 +125,7 @@ class JSONObjectDict(dict):
         the data serialised as a JSON string,
         also writing (prettily) to file `filename` if specified.
         """
-        print_d("Saving %d %s(s) to JSON.." % (len(self), self.Item.__name__))
+        print_d(f"Saving {len(self):d} {self.Item.__name__}(s) to JSON..")
         try:
             obj_dict = {o.name: dict(o.data) for o in self.values()}
         except AttributeError:
@@ -137,5 +137,6 @@ class JSONObjectDict(dict):
                 with open(filename, "wb") as f:
                     f.write(json_str)
             except OSError as e:
-                print_w(f"Couldn't write JSON for {type(self).__name__} object(s) ({e})")
+                print_w("Couldn't write JSON for "
+                        f"{type(self).__name__} object(s) ({e})")
         return json_str

@@ -70,8 +70,8 @@ class TestExtract(TestCase):
     def verify(self, text, expected, term="q"):
         print_d("Trying '%s'..." % text)
         terms = SoundcloudQuery(text).terms
-        self.assertEqual(terms[term], expected,
-                             msg=f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}")
+        msg = f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}"
+        assert terms[term] == expected, msg
 
 
 class TestMenu(TBrowserBase):

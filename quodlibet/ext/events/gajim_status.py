@@ -110,7 +110,7 @@ class GajimStatusMessage(EventPlugin):
 
     def plugin_on_paused(self):
         if self.paused and self.current != "":
-            paused = _('paused')
+            paused = _("paused")
             self.change_status(self.accounts, f"{self.current} [{paused}]")
 
     def plugin_on_unpaused(self):

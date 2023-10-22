@@ -640,7 +640,8 @@ class Extension(Node):
         return self.__valid
 
     def __repr__(self):
-        return f"<Extension name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>"
+        return (f"<Extension "
+                f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>")
 
     def __and__(self, other):
         other = other._unpack()
