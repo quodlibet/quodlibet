@@ -12,7 +12,7 @@ except ImportError:
     import collections as abc  # type: ignore
 import subprocess
 from enum import Enum
-from typing import Iterable, Tuple
+from collections.abc import Iterable
 from gi.repository import GLib, Gst
 
 from quodlibet import _, print_d, config
@@ -113,7 +113,7 @@ def iter_to_list(func):
     return objects
 
 
-def find_audio_sink() -> Tuple[Gst.Element, str]:
+def find_audio_sink() -> tuple[Gst.Element, str]:
     """Get the best audio sink available.
 
     Returns (element, description) or raises PlayerError.
@@ -253,7 +253,7 @@ def parse_gstreamer_taglist(tags):
             value = value.to_iso8601_string()
             merged[key] = value
         else:
-            if isinstance(value, (int, float)):
+            if isinstance(value, int | float):
                 merged[key] = value
                 continue
 
@@ -289,10 +289,10 @@ def bin_debug(elements, depth=0, lines=None):
         for pad in iter_to_list(elm.iterate_sink_pads):
             caps = pad.get_current_caps()
             if caps:
-                lines.append("%s| %s" % (" " * depth, caps.to_string()))
+                lines.append("{}| {}".format(" " * depth, caps.to_string()))
         name = elm.get_name()
         cls = Colorise.blue(type(elm).__name__.split(".", 1)[-1])
-        lines.append("%s|-%s (%s)" % (" " * depth, cls, name))
+        lines.append("{}|-{} ({})".format(" " * depth, cls, name))
 
         if isinstance(elm, Gst.Bin):
             children = reversed(iter_to_list(elm.iterate_sorted))

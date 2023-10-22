@@ -30,12 +30,12 @@ class TPlaylistMenu(TestCase):
     SONG = AudioFile({
         "title": "two",
         "artist": "mu",
-        "~filename": dummy_path(u"/dev/zero")})
+        "~filename": dummy_path("/dev/zero")})
     SONGS = [
         AudioFile({
             "title": "one",
             "artist": "piman",
-            "~filename": dummy_path(u"/dev/null")}),
+            "~filename": dummy_path("/dev/null")}),
         SONG,
     ]
 
@@ -45,7 +45,7 @@ class TPlaylistMenu(TestCase):
                         msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR)
         try:
             os.mkdir(_DEFAULT_PLAYLIST_DIR)
-        except EnvironmentError:
+        except OSError:
             pass
         quodlibet.config.init()
         self.lib = FileLibrary()

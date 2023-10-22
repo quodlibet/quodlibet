@@ -9,7 +9,8 @@
 from os.path import splitext
 from pathlib import Path
 from time import sleep
-from typing import Tuple, Collection, Any, Set
+from typing import Any
+from collections.abc import Collection
 from urllib.parse import urlparse
 
 from gi.repository import Soup, GObject
@@ -31,8 +32,8 @@ class DownloadProgress(GObject.Object):
     def __init__(self, songs: Collection[AudioFile], task=None) -> None:
         super().__init__()
         self.songs = songs
-        self.successful: Set[AudioFile] = set()
-        self.failed: Set[AudioFile] = set()
+        self.successful: set[AudioFile] = set()
+        self.failed: set[AudioFile] = set()
         self.task = task or Task(_("Browser"), _("Downloading files"))
 
     def success(self, song: AudioFile) -> None:
@@ -53,7 +54,7 @@ class DownloadProgress(GObject.Object):
         frac = (len(self.successful) + len(self.failed)) / len(self.songs)
         return frac
 
-    def _downloaded(self, msg: Soup.Message, result: Any, data: Tuple) -> None:
+    def _downloaded(self, msg: Soup.Message, result: Any, data: tuple) -> None:
         path, song = data
         try:
             headers = msg.get_property("response-headers")
@@ -78,7 +79,7 @@ class DownloadProgress(GObject.Object):
             print_e(f"Failed download ({e})")
             self.failure(song)
 
-    def _failed(self, _req: Any, _exc: Exception, data: Tuple) -> None:
+    def _failed(self, _req: Any, _exc: Exception, data: tuple) -> None:
         path, song = data
         self.failure(song)
 

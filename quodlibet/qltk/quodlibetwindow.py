@@ -467,7 +467,7 @@ def browser_menu_items():
 
 
 def _browser_items(prefix, external=False):
-    return ["<menuitem action='%s%s'/>" % (prefix, kind.__name__)
+    return [f"<menuitem action='{prefix}{kind.__name__}'/>"
             for kind in browsers.browsers if kind.uses_main_library ^ external]
 
 
@@ -900,17 +900,17 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         add_top_level_items(ag)
         add_view_items(ag)
 
-        act = Action(name="AddFolders", label=_(u"_Add a Folder…"),
+        act = Action(name="AddFolders", label=_("_Add a Folder…"),
                      icon_name=Icons.LIST_ADD)
         act.connect("activate", self.open_chooser)
         ag.add_action_with_accel(act, "<Primary>O")
 
-        act = Action(name="AddFiles", label=_(u"_Add a File…"),
+        act = Action(name="AddFiles", label=_("_Add a File…"),
                      icon_name=Icons.LIST_ADD)
         act.connect("activate", self.open_chooser)
         ag.add_action(act)
 
-        act = Action(name="AddLocation", label=_(u"_Add a Location…"),
+        act = Action(name="AddLocation", label=_("_Add a Location…"),
                      icon_name=Icons.LIST_ADD)
         act.connect("activate", self.open_location)
         ag.add_action(act)
@@ -939,7 +939,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         act.connect("activate", self.__current_song_prop)
         ag.add_action(act)
 
-        act = Action(name="EditBookmarks", label=_(u"Edit Bookmarks…"))
+        act = Action(name="EditBookmarks", label=_("Edit Bookmarks…"))
         connect_obj(act, "activate", self.__edit_bookmarks,
                            library.librarian, player)
         ag.add_action_with_accel(act, "<Primary>B")

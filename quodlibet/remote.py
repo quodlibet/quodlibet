@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-from typing import Type
 
 from senf import path2fsn, fsn2bytes, bytes2fsn, fsnative
 
@@ -94,7 +93,7 @@ class QuodLibetWinRemote(RemoteBase):
         data = fsn2bytes(path2fsn(message), "utf-8")
         try:
             winpipe.write_pipe(cls._NAME, data)
-        except EnvironmentError as e:
+        except OSError as e:
             raise RemoteError(e) from e
 
     def start(self):
@@ -161,7 +160,7 @@ class QuodLibetUnixRemote(RemoteBase):
                         h.write(fsn2bytes(response, None))
 
 
-Remote: Type[RemoteBase]
+Remote: type[RemoteBase]
 
 if os.name == "nt":
     Remote = QuodLibetWinRemote

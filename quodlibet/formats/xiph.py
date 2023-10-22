@@ -10,7 +10,6 @@
 import sys
 import base64
 
-from typing import List, Type, Optional
 
 import mutagen
 from mutagen.flac import Picture, error as FLACError  # noqa
@@ -31,7 +30,7 @@ sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 
 class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"
-    MutagenType: Optional[Type[mutagen.FileType]] = None
+    MutagenType: type[mutagen.FileType] | None = None
 
     supports_rating_and_play_count_in_file = True
 
@@ -220,7 +219,7 @@ class MutagenVCFile(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
+        except OSError as e:
             raise AudioFileError(e) from e
 
         pic = Picture()
@@ -323,7 +322,7 @@ class MutagenVCFile(AudioFile):
         self.sanitize()
 
 extensions = []
-ogg_formats: List[Type[mutagen.FileType]] = []
+ogg_formats: list[type[mutagen.FileType]] = []
 
 from mutagen.oggvorbis import OggVorbis
 extensions.append(".ogg")
@@ -458,7 +457,7 @@ class FLACFile(MutagenVCFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
+        except OSError as e:
             raise AudioFileError(e) from e
 
         pic = Picture()

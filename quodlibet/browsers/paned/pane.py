@@ -134,7 +134,7 @@ class Pane(AllTreeView):
         return False
 
     def __repr__(self):
-        return "<%s config=%r>" % (type(self).__name__, self.config)
+        return f"<{type(self).__name__} config={self.config!r}>"
 
     def parse_restore_string(self, config_value):
         assert isinstance(config_value, str)
@@ -164,9 +164,9 @@ class Pane(AllTreeView):
 
         # The config lib strips all whitespace,
         # so add a bogus . at the end
-        values.append(u".")
+        values.append(".")
 
-        return u"\t".join(values)
+        return "\t".join(values)
 
     @property
     def tags(self):

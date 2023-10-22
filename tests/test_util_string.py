@@ -12,8 +12,8 @@ class Tisascii(TestCase):
 
     def test_main(self):
         self.assertTrue(isascii(""))
-        self.assertTrue(isascii(u""))
+        self.assertTrue(isascii(""))
         self.assertTrue(isascii("abc"))
-        self.assertTrue(isascii(u"abc"))
+        self.assertTrue(isascii("abc"))
         self.assertFalse(isascii("\xffbc"))
-        self.assertFalse(isascii(u"übc"))
+        self.assertFalse(isascii("übc"))

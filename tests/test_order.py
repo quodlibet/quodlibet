@@ -31,9 +31,9 @@ class TOrderWeighted(TestCase):
             for j in range(3, -1, -1):
                 cur = order.next_explicit(pl, cur)
                 scores[pl[cur][0]] += j
-        self.failUnless(scores[r1] > scores[r0])
-        self.failUnless(scores[r2] > scores[r1])
-        self.failUnless(scores[r3] > scores[r2])
+        self.assertTrue(scores[r1] > scores[r0])
+        self.assertTrue(scores[r2] > scores[r1])
+        self.assertTrue(scores[r3] > scores[r2])
 
 
 class TOrderShuffle(TestCase):
@@ -46,10 +46,10 @@ class TOrderShuffle(TestCase):
         cur = pl.current_iter
         for i in range(4, 0, -1):
             cur = order.next_explicit(pl, cur)
-            self.failUnlessEqual(len(order.remaining(pl)), i)
+            self.assertEqual(len(order.remaining(pl)), i)
         # The playlist should reset after the last song
         cur = order.next_explicit(pl, cur)
-        self.failUnlessEqual(len(order.remaining(pl)), len(songs))
+        self.assertEqual(len(order.remaining(pl)), len(songs))
 
 
 class TOrderOneSong(TestCase):
@@ -59,4 +59,4 @@ class TOrderOneSong(TestCase):
         pl = PlaylistModel(OrderInOrder)
         pl.set([r0, r1])
         for _i in range(2):
-            self.failUnlessEqual(order.next(pl, pl.current_iter), None)
+            self.assertEqual(order.next(pl, pl.current_iter), None)

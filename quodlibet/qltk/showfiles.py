@@ -10,7 +10,7 @@
 
 import os
 import subprocess
-from typing import Optional, Iterable
+from collections.abc import Iterable
 
 from gi.repository import GLib
 from gi.repository import Gio
@@ -21,7 +21,7 @@ from quodlibet import print_d
 from quodlibet.util import is_windows, is_osx
 
 
-def show_files(dirname, entries: Optional[Iterable[fsnative]] = None):
+def show_files(dirname, entries: Iterable[fsnative] | None = None):
     """Shows the directory in the default file browser and if passed
     a list of directory entries will highlight those.
 
@@ -58,7 +58,7 @@ def show_files(dirname, entries: Optional[Iterable[fsnative]] = None):
         try:
             impl(dirname, entries)
         except BrowseError as e:
-            print_d("Couldn't show files with %s (%s), ignoring." % (impl, e))
+            print_d(f"Couldn't show files with {impl} ({e}), ignoring.")
             continue
         else:
             return True
@@ -136,16 +136,16 @@ def _show_files_thunar(dirname, entries):
 def _show_files_gnome_open(dirname, *args):
     try:
         if subprocess.call(["gnome-open", dirname]) != 0:
-            raise EnvironmentError("gnome-open error return status")
-    except EnvironmentError as e:
+            raise OSError("gnome-open error return status")
+    except OSError as e:
         raise BrowseError(e) from e
 
 
 def _show_files_xdg_open(dirname, *args):
     try:
         if subprocess.call(["xdg-open", dirname]) != 0:
-            raise EnvironmentError("xdg-open error return status")
-    except EnvironmentError as e:
+            raise OSError("xdg-open error return status")
+    except OSError as e:
         raise BrowseError(e) from e
 
 
@@ -158,15 +158,15 @@ def _show_files_win32(dirname, entries):
         # are passed, so execute explorer directly for that case
         try:
             if subprocess.call(["explorer", dirname]) != 0:
-                raise EnvironmentError("explorer error return status")
-        except EnvironmentError as e:
+                raise OSError("explorer error return status")
+        except OSError as e:
             raise BrowseError(e) from e
     else:
         from quodlibet.util.windows import open_folder_and_select_items
 
         try:
             open_folder_and_select_items(dirname, entries)
-        except WindowsError as e:
+        except OSError as e:
             raise BrowseError(e) from e
 
 
@@ -176,6 +176,6 @@ def _show_files_finder(dirname, *args):
 
     try:
         if subprocess.call(["open", "-R", dirname]) != 0:
-            raise EnvironmentError("open error return status")
-    except EnvironmentError as e:
+            raise OSError("open error return status")
+    except OSError as e:
         raise BrowseError(e) from e

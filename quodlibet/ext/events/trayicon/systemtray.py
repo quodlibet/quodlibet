@@ -170,7 +170,7 @@ class SystemTray(BaseIndicator):
             try:
                 pattern = Pattern(pconfig.get("tooltip"))
             except ValueError:
-                tooltip = u""
+                tooltip = ""
             else:
                 tooltip = pattern % song
         else:

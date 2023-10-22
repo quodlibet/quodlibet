@@ -109,13 +109,13 @@ class LyricsPane(Gtk.VBox):
             return
         try:
             os.makedirs(os.path.dirname(lyric_fn), exist_ok=True)
-        except EnvironmentError:
+        except OSError:
             errorhook()
         try:
             with open(lyric_fn, "wb") as f:
                 f.write(text.encode("utf-8"))
             print_d(f"Saved lyrics to file {lyric_fn!r}")
-        except EnvironmentError:
+        except OSError:
             errorhook()
 
     def __delete(self, delete, song, save):
@@ -136,11 +136,11 @@ class LyricsPane(Gtk.VBox):
         try:
             os.unlink(filename)
             print_d(f"Removed lyrics file {filename!r}")
-        except EnvironmentError:
+        except OSError:
             pass
         lyric_dir = os.path.dirname(filename)
         try:
             os.rmdir(lyric_dir)
             print_d(f"Removed lyrics directory {lyric_dir}")
-        except EnvironmentError:
+        except OSError:
             pass

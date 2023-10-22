@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import sys
 import time
@@ -83,7 +82,7 @@ class Colorise:
         return cls.__reset(Color.GRAY + text)
 
 
-_ANSI_ESC_RE = re.compile(u"(\x1b\\[\\d\\d?m)")
+_ANSI_ESC_RE = re.compile("(\x1b\\[\\d\\d?m)")
 _ANSI_ESC_RE_B = re.compile(b"(\x1b\\[\\d\\d?m)")
 
 
@@ -92,7 +91,7 @@ def strip_color(text):
 
     if isinstance(text, bytes):
         return _ANSI_ESC_RE_B.sub(b"", text)
-    return _ANSI_ESC_RE.sub(u"", text)
+    return _ANSI_ESC_RE.sub("", text)
 
 
 def frame_info(level=0):
@@ -159,7 +158,7 @@ def _should_write_to_file(file_):
 
     try:
         return file_.fileno() >= 0
-    except (IOError, AttributeError):
+    except (OSError, AttributeError):
         return True
 
 
@@ -167,7 +166,7 @@ def _supports_ansi_escape_codes(file_):
     assert file_ is not None
     try:
         return supports_ansi_escape_codes(file_.fileno())
-    except (IOError, AttributeError):
+    except (OSError, AttributeError):
         return False
 
 
@@ -175,7 +174,7 @@ def _print_message(string, custom_context, debug_only, prefix,
                    color, logging_category, start_time=None):
 
     start_time = start_time or time.time()
-    if not isinstance(string, (str, fsnative)):
+    if not isinstance(string, str | fsnative):
         string = str(string)
 
     context = frame_info(2)
@@ -185,11 +184,11 @@ def _print_message(string, custom_context, debug_only, prefix,
         context = context.split(".", 1)[-1]
 
     if custom_context:
-        context = "%s(%r)" % (context, custom_context)
+        context = f"{context}({custom_context!r})"
 
     timestr = ("%08.3f" % (time.time() - start_time))[-9:]
 
-    info = "%s: [%s] %s:" % (
+    info = "{}: [{}] {}:".format(
         getattr(Colorise, color)(prefix),
         Colorise.magenta(timestr),
         Colorise.blue(context))
@@ -207,7 +206,7 @@ def _print_message(string, custom_context, debug_only, prefix,
                 string = strip_color(string)
             try:
                 print_(string, file=file_, flush=True)
-            except (IOError, OSError) as e:
+            except OSError as e:
                 if e.errno == errno.EIO:
                     # When we are started in a terminal with --debug and the
                     # terminal gets closed we lose stdio/err before we stop
@@ -238,7 +237,7 @@ def format_exc(limit=None):
     """Returns str"""
 
     etype, value, tb = sys.exc_info()
-    return u"".join(format_exception(etype, value, tb, limit))
+    return "".join(format_exception(etype, value, tb, limit))
 
 
 def extract_tb(*args, **kwargs):
@@ -262,18 +261,18 @@ def print_exc(exc_info=None, context=None):
     etype, value, tb = exc_info
 
     if const.DEBUG:
-        string = u"".join(format_exception(etype, value, tb))
+        string = "".join(format_exception(etype, value, tb))
     else:
         # try to get a short error message pointing at the cause of
         # the exception
-        text = u"".join(format_exception_only(etype, value))
+        text = "".join(format_exception_only(etype, value))
         try:
             filename, lineno, name, line = extract_tb(tb)[-1]
         except IndexError:
             # no stack
             string = text
         else:
-            string = u"%s:%s:%s: %s" % (
+            string = "{}:{}:{}: {}".format(
                 fsn2text(path2fsn(os.path.basename(filename))),
                 lineno, name, text)
 
@@ -308,7 +307,7 @@ class PrintHandler(logging.Handler):
         }.get(record.levelname, print_d)
 
         exc_info = record.exc_info
-        context = "%s.%s" % (record.module, record.funcName)
+        context = f"{record.module}.{record.funcName}"
         record.exc_info = None
         print_func(self.format(record), context=context)
         if exc_info is not None:

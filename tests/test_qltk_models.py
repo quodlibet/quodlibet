@@ -22,58 +22,58 @@ class _TObjectStoreMixin:
         m = self.Store()
         for i in range(10):
             m.append(row=[i])
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_column_count(self):
         m = self.Store()
-        self.failUnlessEqual(m.get_n_columns(), 1)
+        self.assertEqual(m.get_n_columns(), 1)
 
     def test_insert(self):
         m = self.Store()
         for i in reversed(range(10)):
             m.insert(0, row=[i])
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_prepend(self):
         m = self.Store()
         for i in reversed(range(10)):
             m.prepend(row=[i])
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_insert_before(self):
         m = self.Store()
         iter_ = m.append(row=[1])
         new_iter = m.insert_before(iter_, [2])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
-        self.failUnlessEqual([2, 1], [r[0] for r in m])
+        self.assertEqual(m.get_value(new_iter, 0), 2)
+        self.assertEqual([2, 1], [r[0] for r in m])
 
     def test_insert_before_noiter(self):
         m = self.Store()
         m.append(row=[1])
         m.insert_before(None, [2])
-        self.failUnlessEqual([r[0] for r in m], [1, 2])
+        self.assertEqual([r[0] for r in m], [1, 2])
 
     def test_insert_after(self):
         m = self.Store()
         iter_ = m.append(row=[1])
         new_iter = m.insert_after(iter_, [2])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
-        self.failUnlessEqual([1, 2], [r[0] for r in m])
+        self.assertEqual(m.get_value(new_iter, 0), 2)
+        self.assertEqual([1, 2], [r[0] for r in m])
 
     def test_insert_after_noiter(self):
         m = self.Store()
         m.append(row=[1])
         m.insert_after(None, [2])
-        self.failUnlessEqual([r[0] for r in m], [2, 1])
+        self.assertEqual([r[0] for r in m], [2, 1])
 
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.failUnless(m.insert(0))
-        self.failUnless(m.prepend())
-        self.failUnless(m.append())
-        self.failUnless(m.insert_before(None))
-        self.failUnless(m.insert_after(None))
+        self.assertTrue(m.insert(0))
+        self.assertTrue(m.prepend())
+        self.assertTrue(m.append())
+        self.assertTrue(m.insert_before(None))
+        self.assertTrue(m.insert_after(None))
 
 
 class TOrigObjectStore(TestCase, _TObjectStoreMixin):
@@ -87,10 +87,10 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
     Store = ObjectStore
 
     def test_validate(self):
-        self.failUnlessRaises(ValueError, ObjectStore, int)
+        self.assertRaises(ValueError, ObjectStore, int)
         ObjectStore()
         ObjectStore(object)
-        self.failUnlessRaises(ValueError, ObjectStore, object, object)
+        self.assertRaises(ValueError, ObjectStore, object, object)
 
     def test_iter_path_changed(self):
         m = ObjectStore()
@@ -111,33 +111,33 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
     def test_append_many(self):
         m = ObjectStore()
         m.append_many(range(10))
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_append_many_set(self):
         m = ObjectStore()
         m.append_many(set())
         m.append_many(set(range(10)))
-        self.failUnlessEqual({r[0] for r in m}, set(range(10)))
+        self.assertEqual({r[0] for r in m}, set(range(10)))
 
     def test_iter_append_many(self):
         m = ObjectStore()
         iters = list(m.iter_append_many(range(10)))
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
         values = [m.get_value(i) for i in iters]
-        self.failUnlessEqual(values, list(range(10)))
+        self.assertEqual(values, list(range(10)))
 
     def test_iter_append_many_iterable_int(self):
         m = ObjectStore()
-        for _x in m.iter_append_many((i for i in range(10))):
+        for _x in m.iter_append_many(i for i in range(10)):
             pass
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_iter_append_many_iterable_object(self):
         objects = [object() for i in range(10)]
         m = ObjectStore()
-        for _x in m.iter_append_many((i for i in objects)):
+        for _x in m.iter_append_many(i for i in objects):
             pass
-        self.failUnlessEqual([r[0] for r in m], objects)
+        self.assertEqual([r[0] for r in m], objects)
 
     def test_iter_append_many_empty(self):
         m = ObjectStore()
@@ -152,21 +152,21 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         m.append(row=[42])
         m.append(row=[24])
         m.insert_many(1, range(10))
-        self.failUnlessEqual([r[0] for r in m], [42] + list(range(10)) + [24])
+        self.assertEqual([r[0] for r in m], [42] + list(range(10)) + [24])
 
     def test_insert_many_append(self):
         m = ObjectStore()
         m.insert_many(-1, range(10))
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
         m = ObjectStore()
         m.insert_many(99, range(10))
-        self.failUnlessEqual([r[0] for r in m], list(range(10)))
+        self.assertEqual([r[0] for r in m], list(range(10)))
 
     def test_itervalues(self):
         m = ObjectStore()
         m.insert_many(0, range(10))
-        self.failUnlessEqual(list(range(10)), list(m.itervalues()))
+        self.assertEqual(list(range(10)), list(m.itervalues()))
 
     def test_itervalues_empty(self):
         m = ObjectStore()
@@ -176,7 +176,7 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
         m = ObjectStore()
         m.insert_many(0, range(10))
         for iter_, value in m.iterrows():
-            self.failUnlessEqual(m.get_value(iter_), value)
+            self.assertEqual(m.get_value(iter_), value)
 
     def test_iterrows_empty(self):
         m = ObjectStore()
@@ -237,13 +237,13 @@ class _TObjectTreeStoreMixin:
 
     def test_column_count(self):
         m = self.Store()
-        self.failUnlessEqual(m.get_n_columns(), 1)
+        self.assertEqual(m.get_n_columns(), 1)
 
     def test_append_int(self):
         m = self.Store()
         m.append(None, row=[1])
         m.append(None, row=[2])
-        self.failUnlessEqual([r[0] for r in m], [1, 2])
+        self.assertEqual([r[0] for r in m], [1, 2])
 
     def test_append_obj(self):
         m = self.Store()
@@ -251,60 +251,60 @@ class _TObjectTreeStoreMixin:
         obj2 = object()
         m.append(None, row=[obj])
         m.append(None, row=[obj2])
-        self.failUnlessEqual([r[0] for r in m], [obj, obj2])
+        self.assertEqual([r[0] for r in m], [obj, obj2])
 
     def test_insert_after(self):
         m = self.Store()
         iter_ = m.append(None, row=[1])
         new_iter = m.insert_after(None, iter_, [2])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
-        self.failUnlessEqual([1, 2], [r[0] for r in m])
+        self.assertEqual(m.get_value(new_iter, 0), 2)
+        self.assertEqual([1, 2], [r[0] for r in m])
 
     def test_insert_after_noroot(self):
         m = self.Store()
         iter_ = m.append(None, row=[1])
         iter2_ = m.append(iter_, row=[2])
         new_iter = m.insert_after(iter_, iter2_, [3])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 3)
-        self.failUnlessEqual([1], [r[0] for r in m])
-        self.failUnlessEqual([2, 3], [r[0] for r in m[0].iterchildren()])
+        self.assertEqual(m.get_value(new_iter, 0), 3)
+        self.assertEqual([1], [r[0] for r in m])
+        self.assertEqual([2, 3], [r[0] for r in m[0].iterchildren()])
 
     def test_insert_after_noiter(self):
         m = self.Store()
         m.append(None, row=[1])
         m.insert_after(None, None, [2])
-        self.failUnlessEqual([r[0] for r in m], [2, 1])
+        self.assertEqual([r[0] for r in m], [2, 1])
 
     def test_insert_before(self):
         m = self.Store()
         iter_ = m.append(None, row=[1])
         new_iter = m.insert_before(None, iter_, [2])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 2)
-        self.failUnlessEqual([2, 1], [r[0] for r in m])
+        self.assertEqual(m.get_value(new_iter, 0), 2)
+        self.assertEqual([2, 1], [r[0] for r in m])
 
     def test_insert_before_noroot(self):
         m = self.Store()
         iter_ = m.append(None, row=[1])
         iter2_ = m.append(iter_, row=[2])
         new_iter = m.insert_before(iter_, iter2_, [3])
-        self.failUnlessEqual(m.get_value(new_iter, 0), 3)
-        self.failUnlessEqual([1], [r[0] for r in m])
-        self.failUnlessEqual([3, 2], [r[0] for r in m[0].iterchildren()])
+        self.assertEqual(m.get_value(new_iter, 0), 3)
+        self.assertEqual([1], [r[0] for r in m])
+        self.assertEqual([3, 2], [r[0] for r in m[0].iterchildren()])
 
     def test_insert_before_noiter(self):
         m = self.Store()
         m.append(None, row=[1])
         m.insert_before(None, None, [2])
-        self.failUnlessEqual([r[0] for r in m], [1, 2])
+        self.assertEqual([r[0] for r in m], [1, 2])
 
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.failUnless(m.insert(None, 0))
-        self.failUnless(m.prepend(None))
-        self.failUnless(m.append(None))
-        self.failUnless(m.insert_before(None, None))
-        self.failUnless(m.insert_after(None, None))
+        self.assertTrue(m.insert(None, 0))
+        self.assertTrue(m.prepend(None))
+        self.assertTrue(m.append(None))
+        self.assertTrue(m.insert_before(None, None))
+        self.assertTrue(m.insert_after(None, None))
 
 
 class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
@@ -318,10 +318,10 @@ class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
     Store = ObjectTreeStore
 
     def test_validate(self):
-        self.failUnlessRaises(ValueError, ObjectTreeStore, int)
+        self.assertRaises(ValueError, ObjectTreeStore, int)
         ObjectTreeStore()
         ObjectTreeStore(object)
-        self.failUnlessRaises(ValueError, ObjectTreeStore, object, object)
+        self.assertRaises(ValueError, ObjectTreeStore, object, object)
 
     def test_iter_path_changed(self):
         m = ObjectTreeStore()
@@ -434,7 +434,7 @@ class TObjectModelFilter(TestCase):
         m = ObjectStore()
         f = ObjectModelFilter(child_model=m)
         m.insert_many(0, range(10))
-        self.failUnlessEqual(list(range(10)), list(f.itervalues()))
+        self.assertEqual(list(range(10)), list(f.itervalues()))
 
     def test_filter(self):
         m = ObjectStore()
@@ -448,7 +448,7 @@ class TObjectModelFilter(TestCase):
 
         f.set_visible_func(filter_func)
         f.refilter()
-        self.failUnlessEqual(list(range(0, 10, 2)), list(f.itervalues()))
+        self.assertEqual(list(range(0, 10, 2)), list(f.itervalues()))
 
 
 class TObjectModelSort(TestCase):
@@ -457,7 +457,7 @@ class TObjectModelSort(TestCase):
         m = ObjectStore()
         f = ObjectModelSort(model=m)
         m.insert_many(0, range(10))
-        self.failUnlessEqual(list(range(10)), list(f.itervalues()))
+        self.assertEqual(list(range(10)), list(f.itervalues()))
 
     def test_sort(self):
         m = ObjectStore()
@@ -471,5 +471,5 @@ class TObjectModelSort(TestCase):
 
         f.set_default_sort_func(sort_func)
 
-        self.failUnlessEqual(sorted(range(10), reverse=True),
+        self.assertEqual(sorted(range(10), reverse=True),
                              list(f.itervalues()))

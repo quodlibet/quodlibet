@@ -5,7 +5,6 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Dict
 
 from os import path
 from gi.repository import Soup
@@ -56,7 +55,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
                    for dims, url in self.urls.items()])
 
     @property
-    def urls(self) -> Dict[str, str]:
+    def urls(self) -> dict[str, str]:
         if not self.mbid:
             return {}
         mbid = escape_query_value(self.mbid)

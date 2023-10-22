@@ -9,7 +9,7 @@ import operator
 import os
 import shutil
 from functools import reduce
-from typing import Iterable, List
+from collections.abc import Iterable
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 
@@ -146,7 +146,7 @@ class ResizeWebImage(Gtk.Image):
             print_d(f"Converting image to JPEG @ {quality}%")
             ret = self._pixbuf.savev(fsn, "jpeg", ["quality"], [quality])
             if not ret:
-                raise IOError("Couldn't save to %s" % fsn)
+                raise OSError("Couldn't save to %s" % fsn)
         else:
             print_d("Saving original image to %s" % fsn)
             with open(fsn, "wb") as f:
@@ -258,7 +258,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             self.__save(None)
             self.destroy()
 
-    def _filenames(self, pat_text, ext, full_path=False) -> List[str]:
+    def _filenames(self, pat_text, ext, full_path=False) -> list[str]:
         def fn_for(song):
             pat = ArbitraryExtensionFileFromPattern(f"{pat_text}.{ext}")
             fn = pat.format(song)

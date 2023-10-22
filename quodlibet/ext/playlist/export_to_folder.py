@@ -115,7 +115,7 @@ class ExportToFolder(PlaylistPlugin):
             try:
                 self._copy_file(song, directory, i + 1, pattern)
             except OSError as e:
-                print_d("Unable to copy file: {}".format(e))
+                print_d(f"Unable to copy file: {e}")
                 ErrorMessage(parent,
                         _("Unable to export playlist"),
                         _("Ensure you have write access to the destination.")

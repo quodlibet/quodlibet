@@ -334,7 +334,7 @@ class Notify(EventPlugin):
         self._set_image_fileobj(fileobj)
         if fileobj:
             return fsn2uri(fileobj.name)
-        return u""
+        return ""
 
     def show_notification(self, song):
         """Returns True if showing the notification was successful"""

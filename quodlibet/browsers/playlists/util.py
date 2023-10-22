@@ -169,4 +169,4 @@ def _dir_for(filelike):
             return os.path.dirname(path2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
-        return text2fsn(u"")
+        return text2fsn("")

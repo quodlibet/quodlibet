@@ -24,13 +24,13 @@ class WinHookBackend(MMKeysBackend):
         self._kb_proc_ptr = None
         try:
             self._start()
-        except WindowsError:
+        except OSError:
             pass
 
     def cancel(self):
         try:
             self._stop()
-        except WindowsError:
+        except OSError:
             pass
 
     def _kb_proc(self, nCode, wParam, lParam):

@@ -8,7 +8,6 @@
 
 import sys
 import os
-from typing import List
 
 from gi.repository import Gtk, Gdk
 
@@ -110,7 +109,7 @@ class Window(Gtk.Window):
     ^W will close the window.
     """
 
-    windows: List[Gtk.Window] = []
+    windows: list[Gtk.Window] = []
     _preven_inital_show = False
 
     def __init__(self, *args, **kwargs):
@@ -318,7 +317,7 @@ class PersistentWindowMixin:
     def __conf(self, name):
         if name == "size":
             name += "_" + self.__size_suffix
-        return "%s_%s" % (self.__name, name)
+        return f"{self.__name}_{name}"
 
     def __restore_state(self):
         print_d("Restore state")
@@ -408,7 +407,7 @@ class PersistentWindowMixin:
             x -= px
             y -= py
 
-        pos_value = "%s %s" % (x, y)
+        pos_value = f"{x} {y}"
         config.set("memory", self.__conf("position"), pos_value)
 
     def __window_state_changed(self, window, event):
@@ -427,7 +426,7 @@ class _Unique:
     def __new__(cls, *args, **kwargs):
         window = cls.__window
         if window is None:
-            return super(_Unique, cls).__new__(cls, *args, **kwargs)
+            return super().__new__(cls, *args, **kwargs)
         # Look for widgets in the args, if there is one and it has
         # a new top level window, re-parent and reposition the window.
         widgets = [w for w in args if isinstance(w, Gtk.Widget)]

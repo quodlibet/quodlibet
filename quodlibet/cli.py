@@ -137,13 +137,13 @@ def process_arguments(argv):
         ("queue", _("Show or hide the queue"), "on|off|t"),
         ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
-        ("enqueue", _("Enqueue a file or query"), "%s|%s" % (
+        ("enqueue", _("Enqueue a file or query"), "{}|{}".format(
             C_("command", "filename"), _("query"))),
-        ("enqueue-files", _("Enqueue comma-separated files"), "%s[,%s..]" % (
+        ("enqueue-files", _("Enqueue comma-separated files"), "{}[,{}..]".format(
             _("filename"), _("filename"))),
         ("print-query", _("Print filenames of results of query to stdout"),
             _("query")),
-        ("unqueue", _("Unqueue a file or query"), "%s|%s" % (
+        ("unqueue", _("Unqueue a file or query"), "{}|{}".format(
             C_("command", "filename"), _("query"))),
         ("add-location", _("Add a file or directory to the library"),
             _("location")),

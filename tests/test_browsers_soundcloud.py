@@ -35,7 +35,7 @@ class TestExtract(TestCase):
         self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
-        self.failUnlessEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
+        self.assertEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
                              QueryType.INVALID)
 
     def test_extract_composite_text(self):
@@ -48,7 +48,7 @@ class TestExtract(TestCase):
     def test_extract_date(self):
         now = int(time.time())
         terms = SoundcloudQuery("#(date>today)", clock=lambda: now).terms
-        self.failUnlessEqual(terms["created_at[from]"].pop(),
+        self.assertEqual(terms["created_at[from]"].pop(),
                              convert_time(now - 86400))
 
     def test_numeric_relative(self):
@@ -70,9 +70,8 @@ class TestExtract(TestCase):
     def verify(self, text, expected, term="q"):
         print_d("Trying '%s'..." % text)
         terms = SoundcloudQuery(text).terms
-        self.failUnlessEqual(terms[term], expected,
-                             msg="terms[%s] wasn't %r. Full terms: %r"
-                                 % (term, expected, terms))
+        self.assertEqual(terms[term], expected,
+                             msg=f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}")
 
 
 class TestMenu(TBrowserBase):
@@ -97,5 +96,5 @@ class TestHttpsDefault(TestCase):
         config.quit()
 
     def test_setup_default(self):
-        self.failUnless(SoundcloudApiClient().root.startswith("https://"),
+        self.assertTrue(SoundcloudApiClient().root.startswith("https://"),
                         msg="API client should use HTTPS")

@@ -1,7 +1,7 @@
 #
 #    Duplicates songs plugin.
 #
-#    Copyright (C) 2011-2019 Nick Boultbee
+#    Copyright (C) 2011-2023 Nick Boultbee
 #
 #    Finds "duplicates" of songs selected by searching the library for
 #    others with the same user-configurable "key", presenting a browser-like
@@ -106,19 +106,17 @@ class DuplicateSongsView(RCMHintedTreeView):
             key = Duplicates.get_key(song)
             row = model.find_row(song)
             if row:
-                print_d('Changed duplicated file "%s" (Row=%s)' %
-                        (song("~artist~title"), row))
+                print_d(f"Changed duplicated file {song('~artist~title')!r} "
+                        f"(Row={row})")
                 parent = model.iter_parent(row.iter)
                 old_key = model[parent][0]
                 if old_key != key:
-                    print_d('Key changed from "%s" -> "%s"' %
-                            (old_key, key))
+                    print_d(f'Key changed from "{old_key}" -> "{key}"')
                     self._removed(library, [song])
                     self._added(library, [song])
                 else:
                     # Still might be a displayable change
-                    print_d("Calling model.row_changed(%s, %s)..." %
-                            (row.path, row.iter))
+                    print_d(f"Calling model.row_changed({row.path}, {row.iter})...")
                     model.row_changed(row.path, row.iter)
             else:
                 model.add_to_existing_group(key, song)
@@ -289,8 +287,7 @@ class DuplicateDialog(Gtk.Window):
                                     len(model))
         super().__init__()
         self.set_destroy_with_parent(True)
-        self.set_title("Quod Libet - %s (%s)" % (Duplicates.PLUGIN_NAME,
-                                                 songs_text))
+        self.set_title(f"Quod Libet - {Duplicates.PLUGIN_NAME} ({songs_text})")
         self.finished = False
         self.set_default_size(960, 480)
         self.set_border_width(6)

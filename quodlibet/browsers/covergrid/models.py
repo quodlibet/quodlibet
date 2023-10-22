@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Callable, Optional
+from collections.abc import Callable
 from gi.repository import GObject, Gio
 
 from quodlibet import _, app, util
@@ -23,7 +23,7 @@ class AlbumListItem(GObject.Object):
     It will load the album cover and generate the album label on demand.
     """
 
-    def __init__(self, album: Optional[Album] = None):
+    def __init__(self, album: Album | None = None):
         super().__init__()
         self._album = album
         self._cover = None
@@ -33,7 +33,7 @@ class AlbumListItem(GObject.Object):
 
     def load_cover(self,
             size: int,
-            cancelable: Optional[Gio.Cancellable] = None):
+            cancelable: Gio.Cancellable | None = None):
         def callback(cover):
             self._cover = cover
             self.notify("cover")
@@ -157,7 +157,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
     __item_all: AlbumListItem
     __include_item_all: bool
-    __filter: Optional[Callable[[AlbumListItem], bool]] = None
+    __filter: Callable[[AlbumListItem], bool] | None = None
 
     def __init__(self, child_model=None, include_item_all=True, **kwargs):
         super().__init__(**kwargs)
@@ -238,7 +238,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
             index += 1
         return self._get_item(index)
 
-    def _get_item(self, index: int) -> Optional[AlbumListItem]:
+    def _get_item(self, index: int) -> AlbumListItem | None:
         model = self._model
         iter = model.iter_nth_child(None, index)
         return model.get_value(iter) if iter else None

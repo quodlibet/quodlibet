@@ -19,7 +19,6 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Optional
 import json
 import logging
 import os
@@ -27,9 +26,9 @@ import ssl
 import time
 from http.client import HTTPConnection, HTTPSConnection
 
-HOST_NAME: Optional[str] = "api.listenbrainz.org"
+HOST_NAME: str | None = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
-SSL_CONTEXT: Optional[ssl.SSLContext] = ssl.create_default_context()
+SSL_CONTEXT: ssl.SSLContext | None = ssl.create_default_context()
 
 # to run against a local dev server
 if os.getenv("QL_LISTENBRAINZ_DEV_SERVER") is not None:
@@ -75,7 +74,7 @@ class Track:
         }
 
     def __repr__(self):
-        return "Track(%s, %s)" % (self.artist_name, self.track_name)
+        return f"Track({self.artist_name}, {self.track_name})"
 
 
 class ListenBrainzClient:
@@ -149,7 +148,7 @@ class ListenBrainzClient:
             response_data = response_text
 
         self._handle_ratelimit(response)
-        log_msg = "Response %s: %r" % (response.status, response_data)
+        log_msg = f"Response {response.status}: {response_data!r}"
         if response.status == 429 and retry < 5:  # Too Many Requests
             self.logger.warning(log_msg)
             return self._submit(listen_type, payload, retry + 1)

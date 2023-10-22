@@ -18,7 +18,7 @@ class TAIFFFile(TestCase):
         self.assertAlmostEqual(self.song("~#length"), 1.0, 1)
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.song("~#bitrate"), 128)
+        self.assertEqual(self.song("~#bitrate"), 128)
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "AIFF")

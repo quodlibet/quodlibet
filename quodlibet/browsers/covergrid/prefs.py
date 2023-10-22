@@ -81,11 +81,9 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
             newmag = mag.get_value()
             oldmag = config.getfloat("browsers", "covergrid_magnification", 3.)
             if newmag == oldmag:
-                print_d("Covergrid magnification haven't changed: {0}"
-                        .format(newmag))
+                print_d(f"Covergrid magnification haven't changed: {newmag}")
                 return
-            print_d("Covergrid magnification update from {0} to {1}"
-                    .format(oldmag, newmag))
+            print_d(f"Covergrid magnification update from {oldmag} to {newmag}")
             config.set("browsers", "covergrid_magnification", mag.get_value())
             browser.update_mag()
 

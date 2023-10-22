@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-from typing import Optional, Tuple
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -369,7 +368,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __rebuild_playlist_from_songs_model(self, playlist, smodel):
         self.pl_lib.recreate(playlist, [row[0] for row in smodel])
 
-    def _selected_playlist(self) -> Optional[Playlist]:
+    def _selected_playlist(self) -> Playlist | None:
         """The currently selected playlist's, or None if none selected"""
         model, iter = self.__selected_playlists()
         if not iter:
@@ -459,12 +458,12 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                     playlist = parse_m3u(sock, name,
                                          songs_lib=self.songs_lib, pl_lib=self.pl_lib)
                 else:
-                    raise IOError
+                    raise OSError
                 self.songs_lib.add(playlist.songs)
                 # TODO: change to use playlist library too?
                 # self.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
-            except IOError:
+            except OSError:
                 Gtk.drag_finish(ctx, False, False, etime)
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
@@ -635,7 +634,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
         self._import_playlists(fns)
 
-    def _import_playlists(self, fns) -> Tuple[int, int]:
+    def _import_playlists(self, fns) -> tuple[int, int]:
         """ Import m3u / pls playlists into QL
         Returns the (total playlists, total songs) added
         TODO: move this to Playlists library and watch here for new playlists

@@ -82,7 +82,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
             return self.emit("search-complete", [])
         else:
             msg = Soup.Message.new("GET",
-                                   "%s?%s" % (res_url, self.credentials))
+                                   f"{res_url}?{self.credentials}")
             download_json(msg, self.cancellable, self._handle_album_data, None)
 
     def _handle_album_data(self, message, json_dict, data=None):

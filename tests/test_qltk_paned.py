@@ -22,7 +22,7 @@ class TRPaned:
     def test_pre_alloc(self):
         p = self.Kind()
         p.set_relative(0.25)
-        self.failUnlessEqual(p.get_relative(), 0.25)
+        self.assertEqual(p.get_relative(), 0.25)
         self.assertRaises(ValueError, p.set_relative, 2.0)
         self.assertRaises(ValueError, p.set_relative, -2.0)
 
@@ -36,16 +36,16 @@ class TRPaned:
         p.pack1(Gtk.Button())
         p.pack2(Gtk.Button())
         p.set_relative(0.75)
-        self.failUnlessAlmostEqual(p.get_relative(), 0.75)
+        self.assertAlmostEqual(p.get_relative(), 0.75)
         with visible(p, width=200, height=200) as p:
-            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
+            self.assertAlmostEqual(p.get_relative(), 0.75, 2)
 
     def test_visible_pre_setup_empty(self):
         p = self.Kind()
         p.set_relative(0.75)
-        self.failUnlessEqual(p.get_relative(), 0.75)
+        self.assertEqual(p.get_relative(), 0.75)
         with visible(p) as p:
-            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
+            self.assertAlmostEqual(p.get_relative(), 0.75, 2)
 
     def test_min_size_child(self):
         p = self.Kind()
@@ -76,19 +76,19 @@ class TConfigRPaned(TestCase):
         config.quit()
 
     def test_basic(self):
-        self.failUnless(config.get("memory", "foobar", None) is None)
+        self.assertTrue(config.get("memory", "foobar", None) is None)
 
         p = ConfigRVPaned("memory", "foobar", 0.75)
         p.pack1(Gtk.Button())
         p.pack2(Gtk.Button())
 
         with visible(p, width=200, height=200) as p:
-            self.failUnlessAlmostEqual(p.get_relative(), 0.75, 2)
+            self.assertAlmostEqual(p.get_relative(), 0.75, 2)
             p.props.position = 20
-            self.failUnlessAlmostEqual(p.get_relative(), 0.10, 2)
+            self.assertAlmostEqual(p.get_relative(), 0.10, 2)
 
         config_value = config.getfloat("memory", "foobar")
-        self.failUnlessAlmostEqual(config_value, 0.10, 2)
+        self.assertAlmostEqual(config_value, 0.10, 2)
 
 
 class TMultiRPaned:
@@ -137,9 +137,9 @@ class TMultiRPaned:
         p.make_pane_widths_equal()
 
         paneds = p._get_paneds()
-        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
-        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
-        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
+        self.assertAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
+        self.assertAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
+        self.assertAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
 
     def test_change_orientation(self):
         p = self.Kind()

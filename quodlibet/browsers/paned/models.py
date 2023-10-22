@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import re
-from typing import Tuple, Text
 from quodlibet.browsers.paned.util import PaneConfig
 
 from quodlibet import _
@@ -62,7 +61,7 @@ class SongsEntry(BaseEntry):
     def get_count_text(self, config):
         return config.format_display(self)
 
-    def get_text(self, config: PaneConfig) -> Tuple[bool, Text]:
+    def get_text(self, config: PaneConfig) -> tuple[bool, str]:
         if config.has_markup:
             return True, self.key
         else:
@@ -100,7 +99,7 @@ class AllEntry(BaseEntry):
         super().__init__()
 
     def get_count_text(self, config):
-        return u""
+        return ""
 
     def get_text(self, config):
         return True, util.bold(_("All"))
@@ -112,7 +111,7 @@ class AllEntry(BaseEntry):
         return False
 
     def __repr__(self):
-        return "<%s>" % (type(self).__name__,)
+        return f"<{type(self).__name__}>"
 
 
 class PaneModel(ObjectStore):

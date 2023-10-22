@@ -5,7 +5,6 @@
 
 import os
 import glob
-from typing import Text
 
 from gi.repository import Gtk, GObject
 
@@ -32,22 +31,22 @@ class TFilter(TestCase):
 class TFilterMixin:
 
     def test_mix_empty(self):
-        empty = fsnative(u"")
-        v = self.c.filter(empty, u"")
-        self.failUnlessEqual(v, u"")
-        self.failUnless(isinstance(v, str))
+        empty = fsnative("")
+        v = self.c.filter(empty, "")
+        self.assertEqual(v, "")
+        self.assertTrue(isinstance(v, str))
 
     def test_mix_safe(self):
-        empty = fsnative(u"")
-        safe = u"safe"
-        self.failUnlessEqual(self.c.filter(empty, safe), safe)
+        empty = fsnative("")
+        safe = "safe"
+        self.assertEqual(self.c.filter(empty, safe), safe)
 
 
 class TSpacesToUnderscores(TFilter, TFilterMixin):
     Kind = SpacesToUnderscores
 
     def test_conv(self):
-        self.failUnlessEqual(self.c.filter("", "foo bar "), "foo_bar_")
+        self.assertEqual(self.c.filter("", "foo bar "), "foo_bar_")
 
 
 class TStripWindowsIncompat(TFilter, TFilterMixin):
@@ -55,28 +54,28 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
 
     def test_conv(self):
         if os.name == "nt":
-            self.failUnlessEqual(
-                self.c.filter(u"", u'foo\\:*?;"<>|/'), u"foo\\_________")
+            self.assertEqual(
+                self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
         else:
-            self.failUnlessEqual(
+            self.assertEqual(
                 self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
 
     def test_type(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
         self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
 
     def test_ends_with_dots_or_spaces(self):
-        empty = fsnative(u"")
-        v = self.c.filter(empty, fsnative(u"foo. . "))
-        self.failUnlessEqual(v, fsnative(u"foo. ._"))
+        empty = fsnative("")
+        v = self.c.filter(empty, fsnative("foo. . "))
+        self.assertEqual(v, fsnative("foo. ._"))
         self.assertTrue(isinstance(v, fsnative))
 
         if os.name == "nt":
-            self.failUnlessEqual(
-                self.c.filter(empty, u"foo. \\bar ."), u"foo._\\bar _")
+            self.assertEqual(
+                self.c.filter(empty, "foo. \\bar ."), "foo._\\bar _")
         else:
-            self.failUnlessEqual(
-                self.c.filter(empty, u"foo. /bar ."), "foo._/bar _")
+            self.assertEqual(
+                self.c.filter(empty, "foo. /bar ."), "foo._/bar _")
 
 
 class TReplaceColons(TFilter, TFilterMixin):
@@ -102,13 +101,13 @@ class TReplaceColons(TFilter, TFilterMixin):
                 == self.conv('No. 1 "Minute" - Molto vivace'))
 
     def test_type(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
         self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
 
-    def conv(self, s: Text):
+    def conv(self, s: str):
         return self.c.filter(fsnative(""), s)
 
-    def unaffected(self, s: Text) -> bool:
+    def unaffected(self, s: str) -> bool:
         return self.conv(s) == s
 
 
@@ -116,39 +115,39 @@ class TStripDiacriticals(TFilter, TFilterMixin):
     Kind = StripDiacriticals
 
     def test_conv(self):
-        empty = fsnative(u"")
-        test = u"\u00c1 test"
-        out = u"A test"
+        empty = fsnative("")
+        test = "\u00c1 test"
+        out = "A test"
         v = self.c.filter(empty, test)
-        self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, str))
+        self.assertEqual(v, out)
+        self.assertTrue(isinstance(v, str))
 
 
 class TStripNonASCII(TFilter, TFilterMixin):
     Kind = StripNonASCII
 
     def test_conv(self):
-        empty = fsnative(u"")
-        in_ = u"foo \u00c1 \u1234"
-        out = u"foo _ _"
+        empty = fsnative("")
+        in_ = "foo \u00c1 \u1234"
+        out = "foo _ _"
         v = self.c.filter(empty, in_)
-        self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, str))
+        self.assertEqual(v, out)
+        self.assertTrue(isinstance(v, str))
 
 
 class TLowercase(TFilter, TFilterMixin):
     Kind = Lowercase
 
     def test_conv(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
 
-        v = self.c.filter(empty, fsnative(u"foobar baz"))
-        self.failUnlessEqual(v, fsnative(u"foobar baz"))
-        self.failUnless(isinstance(v, fsnative))
+        v = self.c.filter(empty, fsnative("foobar baz"))
+        self.assertEqual(v, fsnative("foobar baz"))
+        self.assertTrue(isinstance(v, fsnative))
 
-        v = self.c.filter(empty, fsnative(u"Foobar.BAZ"))
-        self.failUnlessEqual(v, fsnative(u"foobar.baz"))
-        self.failUnless(isinstance(v, fsnative))
+        v = self.c.filter(empty, fsnative("Foobar.BAZ"))
+        self.assertEqual(v, fsnative("foobar.baz"))
+        self.assertTrue(isinstance(v, fsnative))
 
 
 class Renamer(Gtk.EventBox):
@@ -258,7 +257,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_defaults(self):
         self.reset_environment()
@@ -270,7 +269,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_all_wildcard(self):
         self.reset_environment()
@@ -282,7 +281,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_escape_glob_characters(self):
         self.reset_environment()
@@ -295,7 +294,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_relative_pattern(self):
         self.reset_environment()
@@ -307,7 +306,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set(target="")
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_selective_pattern(self):
         self.reset_environment()
@@ -320,7 +319,7 @@ class TMoveArt(TestCase):
         source, target = self.moveart_set(target="")
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_overwrite(self):
         self.reset_environment()
@@ -341,7 +340,7 @@ class TMoveArt(TestCase):
         self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
         # remove audio
         os.remove(os.path.join(target, "title_1.mp3"))
@@ -353,7 +352,7 @@ class TMoveArt(TestCase):
         self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_multi_source(self):
         self.reset_environment()
@@ -384,4 +383,4 @@ class TMoveArt(TestCase):
         self.moveart_set()
         target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)

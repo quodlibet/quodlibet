@@ -8,7 +8,6 @@
 import os
 import threading
 from time import sleep, time
-from typing import List, Dict
 
 from quodlibet import config
 from quodlibet.ext.events.qlscrobbler import QLSubmitQueue
@@ -64,7 +63,7 @@ class TScrobbler(PluginTestCase):
                    and actual["t"] == expected["title"]
                    for actual, expected in zip(loaded, songs, strict=False))
 
-    def load_queue(self) -> List[Dict]:
+    def load_queue(self) -> list[dict]:
         try:
             with open(self.SCROBBLER_CACHE_FILE, "rb") as f:
                 return pickle_load(f)

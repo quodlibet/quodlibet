@@ -81,7 +81,7 @@ def _get_fd_trash_dirs(path):
                 subdirs_valid = False
         if subdirs_valid:
             return tuple([trash_root] + subdirs)
-    raise TrashError("No valid trash folder exists for %r" % (path,))
+    raise TrashError(f"No valid trash folder exists for {path!r}")
 
 
 def trash_free_desktop(path):

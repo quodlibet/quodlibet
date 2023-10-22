@@ -28,7 +28,7 @@ from quodlibet.util.path import normalize_path
 def dummy_path(path):
     path = fsnative(path)
     if os.name == "nt":
-        return normalize_path(u"z:\\" + path.replace(u"/", u"\\"))
+        return normalize_path("z:\\" + path.replace("/", "\\"))
     return path
 
 

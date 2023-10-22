@@ -53,7 +53,7 @@ class TPlaylistPlugins(TestCase):
         self.handler = PlaylistPluginHandler(self._confirmer)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
-        self.assertEquals(self.pm.plugins, [])
+        self.assertEqual(self.pm.plugins, [])
         self.library = SongLibrary("foo")
 
     def tearDown(self):
@@ -76,58 +76,57 @@ class TPlaylistPlugins(TestCase):
             file.write("%spass\n" % indent)
 
         if name:
-            file.write("%sPLUGIN_ID = %r\n" % (indent, name))
+            file.write(f"{indent}PLUGIN_ID = {name!r}\n")
         if name:
-            file.write("%sPLUGIN_NAME = %r\n" % (indent, name))
+            file.write(f"{indent}PLUGIN_NAME = {name!r}\n")
         if desc:
-            file.write("%sPLUGIN_DESC = %r\n" % (indent, desc))
+            file.write(f"{indent}PLUGIN_DESC = {desc!r}\n")
         if icon:
-            file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
+            file.write(f"{indent}PLUGIN_ICON = {icon!r}\n")
         for f in (funcs or []):
             if f in ["__init__"]:
-                file.write("%sdef %s(self, *args): super().__init__("
-                           '*args); raise Exception("as expected.")\n'
-                           % (indent, f))
+                file.write(f"{indent}def {f}(self, *args): super().__init__("
+                           '*args); raise Exception("as expected.")\n')
             else:
-                file.write("%sdef %s(*args): return args\n" % (indent, f))
+                file.write(f"{indent}def {f}(*args): return args\n")
         file.flush()
         file.close()
 
     def test_empty_has_no_plugins(self):
         self.pm.rescan()
-        self.assertEquals(self.pm.plugins, [])
+        self.assertEqual(self.pm.plugins, [])
 
     def test_name_and_desc_plus_func_is_one(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
 
     def test_additional_functions_still_only_one(self):
         self.create_plugin(name="Name", desc="Desc",
                            funcs=["plugin_playlist", "plugin_playlists"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
 
     def test_two_plugins_are_two(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.create_plugin(name="Name2", desc="Desc2",
                            funcs=["plugin_albums"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 2)
+        self.assertEqual(len(self.pm.plugins), 2)
 
     def test_disables_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
-        self.failIf(self.pm.enabled(self.pm.plugins[0]))
+        self.assertFalse(self.pm.enabled(self.pm.plugins[0]))
 
     def test_enabledisable_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        self.failUnless(self.pm.enabled(plug))
+        self.assertTrue(self.pm.enabled(plug))
         self.pm.enable(plug, False)
-        self.failIf(self.pm.enabled(plug))
+        self.assertFalse(self.pm.enabled(plug))
 
     def test_ignores_broken_plugin(self):
         self.create_plugin(name="Broken", desc="Desc",
@@ -140,7 +139,7 @@ class TPlaylistPlugins(TestCase):
         with capture_output():
             self.handler.populate_menu(menu, None, self.mock_browser,
                                        [TEST_PLAYLIST])
-        self.failUnlessEqual(len(menu.get_children()), 0,
+        self.assertEqual(len(menu.get_children()), 0,
                              msg="Shouldn't have enabled a broken plugin")
 
     def test_populate_menu(self):
@@ -151,7 +150,7 @@ class TPlaylistPlugins(TestCase):
                                    [TEST_PLAYLIST])
         # Don't forget the separator
         num = len(menu.get_children()) - 1
-        self.failUnlessEqual(num, 1, msg="Need 1 plugin not %d" % num)
+        self.assertEqual(num, 1, msg="Need 1 plugin not %d" % num)
 
     def test_handling_playlists_without_confirmation(self):
         plugin = Plugin(FakePlaylistPlugin)
@@ -159,9 +158,9 @@ class TPlaylistPlugins(TestCase):
         playlists = generate_playlists(MAX_PLAYLISTS)
         self.handler.handle(plugin.id, self.library, self.mock_browser,
                             playlists)
-        self.failUnless("Didn't execute plugin",
+        self.assertTrue("Didn't execute plugin",
                         FakePlaylistPlugin.total > 0)
-        self.failIf(self.confirmed, ("Wasn't expecting a confirmation for %d"
+        self.assertFalse(self.confirmed, ("Wasn't expecting a confirmation for %d"
                                      " invocations" % len(playlists)))
 
     def test_handling_lots_of_songs_with_confirmation(self):
@@ -170,7 +169,7 @@ class TPlaylistPlugins(TestCase):
         playlists = generate_playlists(MAX_PLAYLISTS + 1)
         self.handler.handle(plugin.id, self.library, self.mock_browser,
                             playlists)
-        self.failUnless(self.confirmed,
+        self.assertTrue(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(playlists), MAX_PLAYLISTS)))
 

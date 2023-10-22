@@ -18,7 +18,6 @@ to unicode with utf-8/surrogateescape.
 The final representation on disk should then in both cases be the same.
 """
 
-from __future__ import absolute_import
 
 import os
 import csv
@@ -378,7 +377,7 @@ class Config:
                 fileobj = StringIO(
                     fileobj.read().decode("utf-8", "surrogateescape"))
                 self._config.read_file(fileobj, filename)
-        except (IOError, OSError):
+        except OSError:
             return
 
         # don't upgrade if we just created a new config

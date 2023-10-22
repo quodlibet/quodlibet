@@ -56,7 +56,7 @@ class FaultHandlerCrash(Exception):  # noqa
                 path, func = m.groups()
                 path = os.path.basename(path)
                 values.extend([path, func])
-        return u"|".join(values)
+        return "|".join(values)
 
 
 def enable(path):
@@ -76,7 +76,7 @@ def enable(path):
     # we open as reading so raise_and_clear_error() can extract the old error
     try:
         _fileobj = open(path, "rb+")
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             _fileobj = open(path, "wb+")
         else:
@@ -101,7 +101,7 @@ def disable():
     try:
         _fileobj.close()
         os.unlink(_fileobj.name)
-    except (OSError, IOError):
+    except OSError:
         pass
     _fileobj = None
 
@@ -131,7 +131,7 @@ def raise_and_clear_error():
         text = _fileobj.read().decode("utf-8", "replace").strip()
         _fileobj.seek(0)
         _fileobj.truncate()
-    except IOError:
+    except OSError:
         print_exc()
     else:
         if text:

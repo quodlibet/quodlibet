@@ -25,7 +25,7 @@ class HTTPDownloadMixin:
         status = message.get_property("status-code")
         if not 200 <= status < 400:
             request.cancel()
-            return self.fail("Bad HTTP code {0}".format(status))
+            return self.fail(f"Bad HTTP code {status}")
 
         target = Gio.file_new_for_path(self.cover_path)
         flags = Gio.FileCreateFlags.NONE

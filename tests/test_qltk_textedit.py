@@ -14,11 +14,11 @@ class TTextEditBox(TestCase):
         self.box = TextEditBox()
 
     def test_empty(self):
-        self.failUnlessEqual(self.box.text, "")
+        self.assertEqual(self.box.text, "")
 
     def test_set(self):
         self.box.text = "bazquux"
-        self.failUnlessEqual(self.box.text, "bazquux")
+        self.assertEqual(self.box.text, "bazquux")
 
     def test_clicked(self):
         self.box.apply.clicked()
@@ -38,7 +38,7 @@ class TTextEditBox2(TestCase):
 
     def test_revert(self):
         self.foobar.revert.clicked()
-        self.failUnless(self.foobar.text, "foobar")
+        self.assertTrue(self.foobar.text, "foobar")
 
     def tearDown(self):
         self.foobar.destroy()
@@ -52,20 +52,20 @@ class TTextEdit2(TTextEditBox2):
 class Tvalidate_markup_pattern(TestCase):
 
     def test_valid(self):
-        for t in [u"", u"<foo>", u"\\<b\\><foo>bar\\</b\\>", u"[b]"]:
+        for t in ["", "<foo>", "\\<b\\><foo>bar\\</b\\>", "[b]"]:
             validate_markup_pattern(t, False, False)
 
-        for t in [u"[b][/b]"]:
+        for t in ["[b][/b]"]:
             validate_markup_pattern(t, True, False)
 
-        for t in [u"[a href=''][/a]", u"\\<a href=''\\>\\</a\\>"]:
+        for t in ["[a href=''][/a]", "\\<a href=''\\>\\</a\\>"]:
             validate_markup_pattern(t, True, True)
 
     def test_invalid(self):
-        for t in [u"\\<", u"\\<a href=''\\>\\</a\\>"]:
+        for t in ["\\<", "\\<a href=''\\>\\</a\\>"]:
             self.assertRaises(
                 ValueError, validate_markup_pattern, t, False, False)
 
-        for t in [u"[b]"]:
+        for t in ["[b]"]:
             self.assertRaises(
                 ValueError, validate_markup_pattern, t, True, False)

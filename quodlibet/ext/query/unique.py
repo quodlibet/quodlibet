@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Any, Optional
+from typing import Any
 
 from quodlibet import _, print_d, print_w
 from quodlibet.formats import AudioFile
@@ -28,7 +28,7 @@ class UniqueQuery(QueryPlugin):
         self._reported = set()
         """Unique errors to counter error log spam"""
 
-    def search(self, song: AudioFile, body: Optional[Any]) -> bool:
+    def search(self, song: AudioFile, body: Any | None) -> bool:
         return_value = False
         try:
             field_value = song[body]

@@ -5,7 +5,7 @@
 
 import os
 import re
-from typing import Iterable, Generator, Optional
+from collections.abc import Iterable, Generator
 
 import quodlibet
 from quodlibet import print_d, print_w, print_e, ngettext, _
@@ -89,7 +89,7 @@ class PlaylistLibrary(Library[str, Playlist]):
                         failed.append(fn)
                 print_w(f"Converting {fn!r} to XSPF format ({e})")
                 XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
-            except EnvironmentError:
+            except OSError:
                 print_w(f"Invalid Playlist {fn!r}")
                 failed.append(fn)
         if failed:
@@ -97,7 +97,7 @@ class PlaylistLibrary(Library[str, Playlist]):
             print_e(ngettext("%d playlist failed to convert",
                              "%d playlists failed to convert", total) % len(failed))
 
-    def create(self, name_base: Optional[str] = None) -> Playlist:
+    def create(self, name_base: str | None = None) -> Playlist:
         if name_base:
             return XSPFBackedPlaylist.new(self.pl_dir, name_base,
                                           songs_lib=self._library, pl_lib=self)

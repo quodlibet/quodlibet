@@ -12,6 +12,7 @@ import os
 from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import _
+
 from quodlibet import print_w
 from quodlibet import qltk
 from quodlibet.player._base import BasePlayer
@@ -31,19 +32,21 @@ class SongInfo(Gtk.EventBox):
     song information and a song context menu.
     """
 
-    _pattern = (u"""\
-[span weight='bold' size='large']<title>[/span]\
-<~length| (<~length>)><version|
-[small][b]<version>[/b][/small]><~people|
-%(people)s><album|
-[b]<album>[/b]<discnumber| - %(disc)s>\
-<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - %(track)s>>"""
-        % {
+    _FORMAT_VARS = {
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
         "track": _("Track %s") % "<tracknumber>"
-        })
+    }
+
+    _pattern = ("""\
+[span weight='bold' size='large']<title>[/span]\
+<~length| (<~length>)><version|
+[small][b]<version>[/b][/small]><~people|
+{people}><album|
+[b]<album>[/b]<discnumber| - {disc}>\
+<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - {track}>>"""
+                .format(**_FORMAT_VARS))
 
     _not_playing = "<span size='xx-large'>%s</span>" % _("Not playing")
 
@@ -70,7 +73,7 @@ class SongInfo(Gtk.EventBox):
         try:
             with open(self._pattern_filename, "rb") as h:
                 self._pattern = h.read().strip().decode("utf-8")
-        except (EnvironmentError, UnicodeDecodeError):
+        except (OSError, UnicodeDecodeError):
             pass
 
         self._compiled = XMLFromMarkupPattern(self._pattern)
@@ -111,7 +114,7 @@ class SongInfo(Gtk.EventBox):
             menu.append(sub)
 
     def _get_menu(self, player, library):
-        item = qltk.MenuItem(_(u"_Edit Display…"), Icons.EDIT)
+        item = qltk.MenuItem(_("_Edit Display…"), Icons.EDIT)
         item.connect("activate", self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
@@ -139,9 +142,8 @@ class SongInfo(Gtk.EventBox):
             try:
                 with open(self._pattern_filename, "wb") as h:
                     h.write(self._pattern.encode("utf-8") + b"\n")
-            except EnvironmentError as e:
-                print_w("Couldn't save display pattern '%s' (%s)"
-                        % (self._pattern, e))
+            except OSError as e:
+                print_w(f"Couldn't save display pattern '{self._pattern}' ({e})")
         self._compiled = XMLFromMarkupPattern(self._pattern)
         self._update_info(player)
 

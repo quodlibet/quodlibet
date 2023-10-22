@@ -91,17 +91,17 @@ class TIndicatorMenu(TestCase):
         icons = [item.get_image().get_icon_name()[0]
                  for item in menu.get_children()
                  if isinstance(item, Gtk.ImageMenuItem)]
-        self.failUnless(Icons.EDIT in icons)
-        self.failUnless(Icons.FOLDER_DRAG_ACCEPT in icons)
-        self.failUnless(Icons.MEDIA_PLAYBACK_START in icons)
-        self.failUnless(Icons.MEDIA_SKIP_FORWARD in icons)
-        self.failUnless(Icons.MEDIA_SKIP_BACKWARD in icons)
-        self.failUnless(Icons.APPLICATION_EXIT in icons)
-        self.failUnless(Icons.FAVORITE in icons)
+        self.assertTrue(Icons.EDIT in icons)
+        self.assertTrue(Icons.FOLDER_DRAG_ACCEPT in icons)
+        self.assertTrue(Icons.MEDIA_PLAYBACK_START in icons)
+        self.assertTrue(Icons.MEDIA_SKIP_FORWARD in icons)
+        self.assertTrue(Icons.MEDIA_SKIP_BACKWARD in icons)
+        self.assertTrue(Icons.APPLICATION_EXIT in icons)
+        self.assertTrue(Icons.FAVORITE in icons)
 
     def test_playlist_menu_populates(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
         menu = IndicatorMenu(app)
         song = AudioFile({"~filename": "/dev/null"})
         menu._new_playlist_submenu_for(song)
-        self.failUnless(menu._playlists_item.get_submenu())
+        self.assertTrue(menu._playlists_item.get_submenu())

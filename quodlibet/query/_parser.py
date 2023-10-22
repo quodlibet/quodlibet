@@ -9,7 +9,7 @@
 
 import codecs
 import re
-from typing import Iterable, Optional
+from collections.abc import Iterable
 
 from . import _match as match
 from ._match import ParseError, Units
@@ -33,7 +33,7 @@ DATE = re.compile(r"\d{4}(?!\d)(-\d{1,2}(-\d{1,2})?)?")
 class QueryParser:
     """Parse the input. One lookahead token, start symbol is Query."""
 
-    def __init__(self, tokens, star: Optional[Iterable[str]] = None):
+    def __init__(self, tokens, star: Iterable[str] | None = None):
         self.tokens = tokens
         self.index = 0
         self.last_match = None
@@ -70,14 +70,14 @@ class QueryParser:
     def expect(self, token):
         """Raise an error if the next token doesn't match the provided token"""
         if not self.accept(token):
-            raise ParseError("'{0}' expected at index {1}, but not found"
-                             .format(token, self.index))
+            raise ParseError(f"'{token}' expected at index {self.index}, but not found"
+                             )
 
     def expect_re(self, regexp):
         """Same as expect, but with a regexp instead of a single token"""
         if self.accept_re(regexp) is None:
-            raise ParseError("RE match expected at index {0}, but not found"
-                             .format(self.index))
+            raise ParseError(f"RE match expected at index {self.index}, but not found"
+                             )
         return self.last_match
 
     def eof(self):
@@ -278,7 +278,7 @@ class QueryParser:
                 # Hack to force plain text parsing for top level free text
                 raise ParseError("Free text not allowed at top level of query")
 
-            return match.Regex(re_escape(self.expect_re(TEXT)), u"d")
+            return match.Regex(re_escape(self.expect_re(TEXT)), "d")
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp

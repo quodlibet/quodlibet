@@ -9,7 +9,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import os
 
@@ -68,7 +67,7 @@ class PreferencesButton(AlbumPreferencesButton):
         menu = Gtk.Menu()
 
         sort_item = Gtk.MenuItem(
-            label=_(u"Sort _by…"), use_underline=True)
+            label=_("Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint("browsers", "album_sort", 1)
@@ -186,7 +185,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     @classmethod
     def init(cls, library):
-        super(CoverGrid, cls).load_pattern()
+        super().load_pattern()
 
     @classmethod
     def _init_model(cls, library):
@@ -547,7 +546,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         if not albums:
             return ""
 
-        confval = "\n".join((a.str_key for a in albums))
+        confval = "\n".join(a.str_key for a in albums)
         # ConfigParser strips a trailing \n so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]

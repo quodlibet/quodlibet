@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Type, Optional
 
 from gi.repository import Gtk
 
@@ -144,7 +143,7 @@ class MultiRPaned:
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)
-    PANED: Optional[Type[RPaned]] = None
+    PANED: type[RPaned] | None = None
 
     def __init__(self):
         self._root_paned = None

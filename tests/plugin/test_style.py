@@ -25,7 +25,7 @@ class TPluginStyle(PluginTestCase):
                 plugin, string = f[:2]
                 pclass = plugin.cls.__name__
                 ppath = plugin.cls.__module__.rpartition(".plugins.")[2]
-                lines.append("%s.%s: %r" % (ppath, pclass, string))
+                lines.append(f"{ppath}.{pclass}: {string!r}")
         self.fail("One or more plugins did not pass:\n" + "\n".join(lines))
 
     def test_plugin_name(self):

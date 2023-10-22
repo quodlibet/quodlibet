@@ -70,6 +70,6 @@ class Ttrash(TestCase):
         filename = mkstemp()[1]
         with open(filename, "w") as f:
             f.write("\n")
-        self.failUnless(os.path.exists(filename))
+        self.assertTrue(os.path.exists(filename))
         trash(filename)
-        self.failIf(os.path.exists(filename))
+        self.assertFalse(os.path.exists(filename))

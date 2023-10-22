@@ -30,7 +30,7 @@ class Iconv(EditTagsPlugin):
 
     def __init__(self, tag, value):
         super().__init__(
-            _(u"_Convert Encoding…"), use_underline=True)
+            _("_Convert Encoding…"), use_underline=True)
 
         submenu = Gtk.Menu()
 

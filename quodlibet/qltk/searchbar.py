@@ -56,7 +56,7 @@ class SearchBarBox(Gtk.Box):
 
         combo = ComboBoxEntrySave(
             filename, count=historic_entries_count, validator=validator,
-            title=_("Saved Searches"), edit_title=_(u"Edit saved searches…"))
+            title=_("Saved Searches"), edit_title=_("Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
             self._filter_changed, timeout=timeout, owner=self)

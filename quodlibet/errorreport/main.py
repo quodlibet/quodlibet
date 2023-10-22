@@ -1,5 +1,5 @@
 # Copyright 2017 Christoph Reiter
-#
+#           2023 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -80,11 +80,10 @@ def enable_errorhook(value):
 def run_error_dialogs(exc_info, sentry_error):
     assert sentry_error is not None
 
-    error_text = u"%s: %s" % (
-        exc_info[0].__name__,
-        (str(exc_info[1]).strip() or u"\n").splitlines()[0])
-    error_text += u"\n------\n"
-    error_text += u"\n".join(format_exception(*exc_info))
+    first = (str(exc_info[1]).strip() or "\n").splitlines()[0]
+    error_text = f"{exc_info[0].__name__}: {first}"
+    error_text += "\n------\n"
+    error_text += "\n".join(format_exception(*exc_info))
 
     # Don't reshow the error dialog in case the user wanted to quit the app
     # but due to the error state more errors pile up..

@@ -6,7 +6,6 @@
 # (at your option) any later version.
 
 import sys
-from typing import Type, List
 from optparse import OptionParser
 
 from quodlibet import _
@@ -27,7 +26,7 @@ class Command:
     NAME = ""
     DESCRIPTION = ""
     USAGE = ""
-    COMMANDS: "List[Type[Command]]" = []
+    COMMANDS: "list[type[Command]]" = []
 
     @classmethod
     def register(cls, cmd_cls):
@@ -36,7 +35,7 @@ class Command:
 
     def __init__(self, main_cmd, options=None):
         self._main_cmd = main_cmd
-        usage = "%s %s %s" % (main_cmd, self.NAME, self.USAGE)
+        usage = f"{main_cmd} {self.NAME} {self.USAGE}"
         self.__parser = OptionParser(usage=usage, description=self.DESCRIPTION)
         if options is None:
             options = self.__parser.parse_args([])[0]

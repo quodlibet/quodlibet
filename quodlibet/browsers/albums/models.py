@@ -78,7 +78,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
         ]
 
         self.append(row=[AlbumItem(None)])
-        self.append_many((AlbumItem(a) for a in albums.values()))
+        self.append_many(AlbumItem(a) for a in albums.values())
 
     def refresh_all(self):
         """Trigger redraws for all rows"""
@@ -99,7 +99,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
             self.row_changed(row.path, row.iter)
 
     def _add_albums(self, library, added):
-        self.append_many((AlbumItem(a) for a in added))
+        self.append_many(AlbumItem(a) for a in added)
         self._update_all()
 
     def _remove_albums(self, library, removed):

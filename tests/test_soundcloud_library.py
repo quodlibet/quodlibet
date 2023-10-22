@@ -17,7 +17,7 @@ from tests import TestCase
 PERMALINK = "https://soundcloud.com/"
 "kerstineden/banging-techno-sets-098-kerstin-eden-02-2015"
 
-AVATAR_URL = u"https://i1.sndcdn.com/avatars-000127864033-q70sz6-large.jpg"
+AVATAR_URL = "https://i1.sndcdn.com/avatars-000127864033-q70sz6-large.jpg"
 
 TEST_DATA_PATH = Path(__file__).parent.parent / "tests" / "data"
 

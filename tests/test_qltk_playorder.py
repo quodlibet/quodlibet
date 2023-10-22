@@ -29,38 +29,38 @@ class TPlayOrderWidget(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        self.failIf(self.po.repeated)
-        self.failIf(self.po.shuffled)
-        self.failUnless(isinstance(self.po.order, OrderInOrder))
-        self.failUnless(self.replaygain_profiles[2], ["album", "track"])
+        self.assertFalse(self.po.repeated)
+        self.assertFalse(self.po.shuffled)
+        self.assertTrue(isinstance(self.po.order, OrderInOrder))
+        self.assertTrue(self.replaygain_profiles[2], ["album", "track"])
 
     def test_replay_gain(self):
         self.po.shuffled = True
         self.po.shuffler = OrderWeighted
-        self.failUnlessEqual(self.replaygain_profiles[2], ["track"])
+        self.assertEqual(self.replaygain_profiles[2], ["track"])
         self.po.shuffled = False
-        self.failUnlessEqual(self.replaygain_profiles[2], ["album", "track"])
+        self.assertEqual(self.replaygain_profiles[2], ["album", "track"])
 
     def test_get_name(self):
         orders = [OrderShuffle, OrderWeighted]
         for order in orders:
             self.po.shuffler = order
-            self.failUnlessEqual(self.po.shuffler, order)
+            self.assertEqual(self.po.shuffler, order)
 
     def test_shuffle(self):
-        self.failIf(self.po.repeated)
+        self.assertFalse(self.po.repeated)
         self.po.shuffled = True
         self.assertTrue(self.po.shuffled)
         self.assertEqual(self.po.shuffler, OrderShuffle)
-        self.failUnless(isinstance(self.order, OrderShuffle))
+        self.assertTrue(isinstance(self.order, OrderShuffle))
 
     def test_shuffle_defaults_to_inorder(self):
         self.po.shuffler = OrderWeighted
         self.po.shuffled = False
-        self.failUnlessEqual(type(self.po.order), OrderInOrder)
+        self.assertEqual(type(self.po.order), OrderInOrder)
         self.po.shuffled = True
         self.assertEqual(self.po.shuffler, OrderWeighted)
-        self.failUnlessEqual(type(self.po.order), OrderWeighted)
+        self.assertEqual(type(self.po.order), OrderWeighted)
 
 
 class FakeOrder(Order):
@@ -80,33 +80,33 @@ class TToggledPlayOrderMenu(TestCase):
         self.tpom.destroy()
 
     def test_enabled_initially(self):
-        self.failUnless(self.tpom.enabled)
+        self.assertTrue(self.tpom.enabled)
 
     def test_setting_enabled(self):
         self.tpom.enabled = False
-        self.failIf(self.tpom.enabled)
+        self.assertFalse(self.tpom.enabled)
         self.tpom.enabled = True
-        self.failUnless(self.tpom.enabled)
+        self.assertTrue(self.tpom.enabled)
 
     def test_initial(self):
-        self.failUnlessEqual(self.tpom.current, OrderShuffle)
+        self.assertEqual(self.tpom.current, OrderShuffle)
 
     def test_unknown_name(self):
         self.assertRaises(ValueError, self.tpom.set_active_by_name, "foobar")
 
     def test_set_by_name(self):
         self.tpom.set_active_by_name("fake")
-        self.failUnlessEqual(self.tpom.current.name, "fake")
+        self.assertEqual(self.tpom.current.name, "fake")
 
     def test_get_name(self):
         for order in self.orders:
             self.tpom.current = order
-            self.failUnlessEqual(self.tpom.current, order)
+            self.assertEqual(self.tpom.current, order)
 
     def test_set_orders(self):
         self.tpom.set_orders([])
-        self.failIf(self.tpom.current)
+        self.assertFalse(self.tpom.current)
 
     def test_playorder_disables_when_order_disappears(self):
         self.tpom.orders = Orders([OrderWeighted, FakeOrder])
-        self.failIf(self.tpom.enabled)
+        self.assertFalse(self.tpom.enabled)

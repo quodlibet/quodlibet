@@ -9,7 +9,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Dict
 import shutil
 
 from quodlibet.util import enum
@@ -23,7 +22,7 @@ AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
 
 
 # this defines the initial and default values
-INITIAL: Dict[str, Dict[str, str]] = {
+INITIAL: dict[str, dict[str, str]] = {
     # User-defined tag name -> human name mappings
     "header_maps": {
     },
@@ -210,10 +209,10 @@ INITIAL: Dict[str, Dict[str, str]] = {
         "bayesian_rating_factor": "0.0",
 
         # rating symbol (black star)
-        "rating_symbol_full": u"\u2605",
+        "rating_symbol_full": "\u2605",
 
         # rating symbol (hollow star)
-        "rating_symbol_blank": u"\u2606",
+        "rating_symbol_blank": "\u2606",
 
         # Comma-separated columns to display in the song list
         "columns": ",".join(const.DEFAULT_COLUMNS),
@@ -385,13 +384,13 @@ def init(filename=None):
     if filename is not None:
         try:
             _config.read(filename)
-        except (Error, EnvironmentError):
+        except (OSError, Error):
             print_w("Reading config file %r failed." % filename)
 
             # move the broken file out of the way
             try:
                 shutil.copy(filename, filename + ".not-valid")
-            except EnvironmentError:
+            except OSError:
                 pass
 
 
@@ -411,7 +410,7 @@ def save(filename=None):
     print_d("Writing config...")
     try:
         _config.write(filename)
-    except EnvironmentError:
+    except OSError:
         print_w("Unable to write config.")
 
 

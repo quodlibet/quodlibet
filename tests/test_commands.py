@@ -33,8 +33,8 @@ class TCommandBase(TestCase):
 
 class TCommands(TCommandBase):
     def test_query(self):
-        self._send(u"query foo")
-        self.assertEqual(self._send("print-query-text"), u"foo\n")
+        self._send("query foo")
+        self.assertEqual(self._send("print-query-text"), "foo\n")
 
     def test_print_playing_elapsed(self):
         app.player.info = AudioFile(
@@ -107,7 +107,7 @@ class TCommands(TCommandBase):
         self.assertFalse(app.window.playlist.q.get())
         self._send("enqueue-files "
                     "one,two\\, please,slash\\\\.mp3,four")
-        self.assertEquals(app.window.playlist.q.get(), songs)
+        self.assertEqual(app.window.playlist.q.get(), songs)
 
     def test_rating(self):
         app.player.song = AudioFile(
@@ -119,7 +119,7 @@ class TCommands(TCommandBase):
         self._send("rating +0.01")
         self.assertAlmostEqual(app.player.song["~#rating"], 0.41)
         self._send("rating -10")
-        self.assertEquals(app.player.song["~#rating"], 0)
+        self.assertEqual(app.player.song["~#rating"], 0)
 
 
 class TCommandWithPattern(TCommandBase):

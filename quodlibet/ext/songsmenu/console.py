@@ -1,5 +1,5 @@
 # Copyright (C) 2006 - Steve Frécinaux
-#            2016-17 - Nick Boultbee
+#            2016-23 - Nick Boultbee
 #               2021 - halfbrained@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -87,9 +87,9 @@ def create_console(songs=None):
 
     console.eval("import mutagen", False)
     console.eval("import os", False)
-    console.eval(
-        'print("Python: %s / Quod Libet: %s")' %
-        (sys.version.split()[0], const.VERSION), False)
+    python_major_ver = sys.version.split()[0]
+    console.eval(f'print("Python: {python_major_ver} / Quod Libet: {const.VERSION}")',
+                 False)
     console.eval('print("%s")' % access_string, False)
     console.eval('print("%s "+ os.getcwd())' % dir_string, False)
     return console
@@ -440,7 +440,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         lin = buffer.get_mark("input-line")
         buffer.delete(buffer.get_iter_at_mark(lin), buffer.get_end_iter())
 
-        if isinstance(command, (list, tuple)):
+        if isinstance(command, list | tuple):
             for c in command:
                 if display_command:
                     self.write(">>> " + c + "\n", self.command)
@@ -579,7 +579,7 @@ class OutFile:
         pass
 
     def fileno(self):
-        raise IOError
+        raise OSError
 
     def isatty(self):
         return 0
@@ -600,10 +600,10 @@ class OutFile:
         self.console.write(l, self.tag)
 
     def seek(self, a):
-        raise IOError(29, "Illegal seek")
+        raise OSError(29, "Illegal seek")
 
     def tell(self):
-        raise IOError(29, "Illegal seek")
+        raise OSError(29, "Illegal seek")
 
     truncate = tell
 

@@ -92,7 +92,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
 
     assert isinstance(text, str)
 
-    f = AudioFile({"~filename": fsnative(u"dummy")})
+    f = AudioFile({"~filename": fsnative("dummy")})
 
     try:
         if alternative_markup:
@@ -104,7 +104,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
         return ValueError(e)
 
     try:
-        Pango.parse_markup(text, -1, u"\u0000")
+        Pango.parse_markup(text, -1, "\u0000")
     except GLib.GError as e:
         if not links:
             raise ValueError(e) from e

@@ -108,7 +108,7 @@ class WMAFile(AudioFile):
 
         if type_:
             self["~codec"] = type_
-        encoding = u"\n".join(filter(None, [name, desc]))
+        encoding = "\n".join(filter(None, [name, desc]))
         if encoding:
             self["~encoding"] = encoding
 
@@ -119,7 +119,7 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = u"\n".join(map(str, values))
+            self[name] = "\n".join(map(str, values))
         self.sanitize(filename)
 
     def write(self):
@@ -209,11 +209,11 @@ class WMAFile(AudioFile):
 
         try:
             imagedata = image.read()
-        except EnvironmentError as e:
+        except OSError as e:
             raise AudioFileError(e) from e
 
         # thumbnail gets used in WMP..
-        data = pack_image(image.mime_type, u"thumbnail",
+        data = pack_image(image.mime_type, "thumbnail",
                           imagedata, APICType.COVER_FRONT)
 
         value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)

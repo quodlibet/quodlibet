@@ -56,9 +56,9 @@ class TFIFO(TestCase):
 
         with temp_filename() as fn:
             fifo = FIFO(fn, cb)
-            self.failIf(fifo_exists(fifo._path))
+            self.assertFalse(fifo_exists(fifo._path))
             fifo.open()
-            self.failUnless(fifo_exists(fifo._path))
+            self.assertTrue(fifo_exists(fifo._path))
         # Should *not* error if file is gone
         fifo.destroy()
 
@@ -66,7 +66,7 @@ class TFIFO(TestCase):
         fifo = FIFO("/dev/not-here", None)
         fifo.open()
         with self.assertRaises(FIFOError):
-            write_fifo(fifo._path, "foobar".encode())
+            write_fifo(fifo._path, b"foobar")
         fifo.destroy()
 
     def test_empty_read(self):

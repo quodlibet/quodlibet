@@ -24,7 +24,7 @@ class TLogging(TestCase):
     def test_binary(self):
         l = Logs()
         l.log(b"\xff")
-        self.assertEqual(l.get_content(), [u"\ufffd"])
+        self.assertEqual(l.get_content(), ["\ufffd"])
 
     def test_max_logs(self):
         l = Logs(2)

@@ -30,13 +30,13 @@ class TMPCFile(TestCase):
         assert self.song2("~#samplerate") == 44100
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.song("~#bitrate"), 239)
-        self.failUnlessEqual(self.song2("~#bitrate"), 1)
+        self.assertEqual(self.song("~#bitrate"), 239)
+        self.assertEqual(self.song2("~#bitrate"), 1)
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.failUnless(os.path.exists(path))
-        self.failUnlessRaises(Exception, MPCFile, path)
+        self.assertTrue(os.path.exists(path))
+        self.assertRaises(Exception, MPCFile, path)
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "Musepack")

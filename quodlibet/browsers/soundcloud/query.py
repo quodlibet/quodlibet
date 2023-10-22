@@ -1,4 +1,4 @@
-# Copyright 2016-22 Nick Boultbee
+# Copyright 2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@ from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
 from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
     Numexpr, True_, False_
-
 
 INVERSE_OPS = {operator.le: operator.gt,
                operator.gt: operator.le,
@@ -81,8 +80,8 @@ class SoundcloudQuery(Query):
                 api_tag, converter = _QL_TO_SC[tag] if tag else ("q", None)
             except KeyError as e:
                 if tag not in SUPPORTED:
-                    raise self.Error("Unsupported '%s' tag. Try: %s"
-                                     % (tag, ", ". join(SUPPORTED))) from e
+                    raise self.Error(f"Unsupported {tag!r} tag. "
+                                     f"Try: {', '.join(SUPPORTED)}") from e
                 return None, None
             else:
                 value = str(converter(raw_value) if converter else raw_value)
@@ -98,7 +97,7 @@ class SoundcloudQuery(Query):
             if len(node._names) == 1:
                 return self._extract_terms_set(node.res, tag=node._names[0])
             return self._extract_terms_set(node.res)
-        elif isinstance(node, (Inter, Union)):
+        elif isinstance(node, Inter | Union):
             # Treat identically as the text-based query will perform
             # relevance ranking itself, meaning that any term is still useful
             terms = set()
@@ -133,4 +132,4 @@ class SoundcloudQuery(Query):
             return set()
         elif isinstance(node, False_):
             raise self.Error("False can never be queried")
-        raise self.Error("Unhandled node: %r" % (node,))
+        raise self.Error(f"Unhandled node: {node!r}")

@@ -13,7 +13,6 @@
 # (at your option) any later version.
 
 from math import ceil, floor
-from typing import List
 
 from gi.repository import Gtk, Gdk, Gst
 import cairo
@@ -120,9 +119,8 @@ class WaveformSeekBar(Gtk.Box):
         force_stop = False
         if message.type == Gst.MessageType.ERROR:
             error, debug = message.parse_error()
-            print_d("Error received from element {name}: {error}".format(
-                name=message.src.get_name(), error=error))
-            print_d("Debugging information: {}".format(debug))
+            print_d(f"Error received from element {message.src.get_name()}: {error}")
+            print_d(f"Debugging information: {debug}")
         elif message.type == Gst.MessageType.ELEMENT:
             structure = message.get_structure()
             if structure.get_name() == "level":
@@ -139,8 +137,7 @@ class WaveformSeekBar(Gtk.Box):
                         # short interval set.
                         force_stop = True
             else:
-                print_w("Got unexpected message of type {}"
-                        .format(message.type))
+                print_w(f"Got unexpected message of type {message.type}")
 
         if message.type == Gst.MessageType.EOS or force_stop:
             self._clean_pipeline()
@@ -308,7 +305,7 @@ class WaveformSeekBar(Gtk.Box):
 class WaveformScale(Gtk.EventBox):
     """The waveform widget."""
 
-    _rms_vals: List[int] = []
+    _rms_vals: list[int] = []
     _player = None
 
     def __init__(self, player):

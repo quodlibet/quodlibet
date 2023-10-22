@@ -20,22 +20,22 @@ class TConfigCheckButton(TestCase):
         config.set("memory", "bar", "on")
         c = ConfigCheckButton("dummy", "memory", "bar")
         c.set_active(True)
-        self.failUnless(config.getboolean("memory", "bar") and c.get_active())
+        self.assertTrue(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
         run_gtk_loop()
-        self.failIf(config.getboolean("memory", "bar") or c.get_active())
+        self.assertFalse(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
         run_gtk_loop()
-        self.failUnless(c.get_active())
+        self.assertTrue(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckButton("dummy", "memory", "bar", populate=True)
         run_gtk_loop()
-        self.failIf(c.get_active())
+        self.assertFalse(c.get_active())
 
 
 class TConfigCheckMenuItem(TestCase):
@@ -49,19 +49,19 @@ class TConfigCheckMenuItem(TestCase):
         config.set("memory", "bar", "on")
         c = ConfigCheckMenuItem("dummy", "memory", "bar")
         c.set_active(True)
-        self.failUnless(config.getboolean("memory", "bar") and c.get_active())
+        self.assertTrue(config.getboolean("memory", "bar") and c.get_active())
         c.set_active(False)
         run_gtk_loop()
-        self.failIf(config.getboolean("memory", "bar") or c.get_active())
+        self.assertFalse(config.getboolean("memory", "bar") or c.get_active())
 
     def test_populate(self):
         # Assert that active state works
         config.set("memory", "bar", "on")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
         run_gtk_loop()
-        self.failUnless(c.get_active())
+        self.assertTrue(c.get_active())
         # ...and inactive
         config.set("memory", "bar", "off")
         c = ConfigCheckMenuItem("dummy", "memory", "bar", populate=True)
         run_gtk_loop()
-        self.failIf(c.get_active())
+        self.assertFalse(c.get_active())

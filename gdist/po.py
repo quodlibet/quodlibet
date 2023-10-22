@@ -33,7 +33,6 @@ from pathlib import Path
 from tempfile import mkstemp
 from distutils.errors import DistutilsOptionError
 from distutils.dep_util import newer_group, newer
-from typing import Optional
 
 from .util import Command
 from . import gettextutil
@@ -191,8 +190,8 @@ class BuildPo(Command):
     user_options = []
 
     def initialize_options(self):
-        self.build_base: Optional[str] = None
-        self.po_build_dir: Optional[Path] = None
+        self.build_base: str | None = None
+        self.po_build_dir: Path | None = None
 
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))
@@ -236,9 +235,9 @@ class BuildMo(Command):
     ]
 
     def initialize_options(self):
-        self.build_base: Optional[str] = None
+        self.build_base: str | None = None
         self.lang = None
-        self.po_build_dir: Optional[str] = None
+        self.po_build_dir: str | None = None
 
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))

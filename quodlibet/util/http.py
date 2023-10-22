@@ -7,7 +7,8 @@
 # (at your option) any later version.
 
 import json
-from typing import Optional, Any, Callable
+from typing import Any
+from collections.abc import Callable
 
 from gi.repository import Soup, Gio, GLib, GObject
 from gi.repository.GObject import ParamFlags, SignalFlags
@@ -72,7 +73,7 @@ class HTTPRequest(GObject.Object):
         try:
             status = int(self.message.get_property("status-code"))
             if status >= 400:
-                msg = "HTTP {0} error in {1} request to {2}".format(
+                msg = "HTTP {} error in {} request to {}".format(
                     status, self.message.get_method(), self._uri)
                 print_w(msg)
                 return self.emit("send-failure", Exception(msg))
@@ -159,7 +160,7 @@ FailureCallback = Callable[[HTTPRequest, Exception, Any], None]
 
 def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Callable,
              data: Any, try_decode: bool = False,
-             failure_callback: Optional[FailureCallback] = None):
+             failure_callback: FailureCallback | None = None):
     def received(request, ostream):
         ostream.close(None)
         bs = ostream.steal_as_bytes().get_data()
@@ -189,7 +190,7 @@ def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Call
 
 def download_json(message: Soup.Message, cancellable: Gio.Cancellable,
                   callback: Callable, data: Any,
-                  failure_callback: Optional[FailureCallback] = None):
+                  failure_callback: FailureCallback | None = None):
     def cb(message, result, d):
         try:
             callback(message, json.loads(result), data)
@@ -200,5 +201,5 @@ def download_json(message: Soup.Message, cancellable: Gio.Cancellable,
 
 
 session = Soup.Session()
-ua_string = "Quodlibet/{0} (+{1})".format(VERSION, WEBSITE)
+ua_string = f"Quodlibet/{VERSION} (+{WEBSITE})"
 session.set_properties(user_agent=ua_string, timeout=15)

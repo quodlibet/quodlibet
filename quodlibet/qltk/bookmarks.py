@@ -189,8 +189,7 @@ class EditBookmarksPane(Gtk.VBox):
         try:
             song.bookmarks = [(t, stringify(l)) for t, l in model]
         except (AttributeError, ValueError) as e:
-            print_w("Couldn't save bookmark for %s (%s)"
-                    % (song("~filename"), e))
+            print_w(f"Couldn't save bookmark for {song('~filename')} ({e})")
         else:
             if library is not None:
                 library.changed([song])

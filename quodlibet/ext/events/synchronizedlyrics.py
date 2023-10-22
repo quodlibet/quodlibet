@@ -10,7 +10,6 @@ import functools
 import os
 import re
 from os.path import splitext
-from typing import List, Tuple, Optional
 
 from gi.repository import Gtk, Gdk, GLib
 
@@ -46,8 +45,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     def __init__(self) -> None:
         super().__init__()
-        self._lines: List[Tuple[int, str]] = []
-        self._timers: List[Tuple[int, int]] = []
+        self._lines: list[tuple[int, str]] = []
+        self._timers: list[tuple[int, int]] = []
         self._start_clearing_from = 0
         self.textview = None
         self.scrolled_window = None
@@ -182,7 +181,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return app.player.get_position()
 
     @functools.lru_cache()  # noqa
-    def _build_data(self, song: Optional[AudioFile]) -> List[Tuple[int, str]]:
+    def _build_data(self, song: AudioFile | None) -> list[tuple[int, str]]:
         if self.textview:
             self.textview.get_buffer().set_text("")
         if song:
@@ -202,7 +201,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                              ]:
                 print_d(f"Looking for {filename!r}")
                 try:
-                    with open(os.path.join(dir_, filename), "r", encoding="utf-8") as f:
+                    with open(os.path.join(dir_, filename), encoding="utf-8") as f:
                         print_d(f"Found lyrics file: {filename}")
                         contents = f.read()
                 except FileNotFoundError:
@@ -211,7 +210,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
             print_d(f"No lyrics found for {track_name!r}")
         return []
 
-    def _parse_lrc(self, contents: str) -> List[Tuple[int, str]]:
+    def _parse_lrc(self, contents: str) -> list[tuple[int, str]]:
         data = []
         for line in contents.splitlines():
             match = self.LINE_REGEX.match(line)

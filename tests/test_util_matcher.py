@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 from dataclasses import dataclass
-from typing import List
 
 from quodlibet.util.matcher import ObjectListMatcher
 
@@ -256,4 +255,4 @@ class TMatchClassFields(TestCase):
 class Car:
     seats: int
     name: str
-    features: List[str]
+    features: list[str]

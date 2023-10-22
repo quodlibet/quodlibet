@@ -1,4 +1,4 @@
-# Copyright 2016-21 Nick Boultbee
+# Copyright 2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 from quodlibet import print_d, _
 from quodlibet.qltk import WebImage
@@ -24,13 +24,13 @@ SITE_URL = "https://soundcloud.com"
 class Wrapper:
     """Object-like wrapper for read-only dictionaries"""
 
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: dict[str, Any]):
         self._raw = data
         assert isinstance(data, dict)
 
-        self.data: Dict = {}
+        self.data: dict = {}
         for k, v in data.items():
-            if isinstance(v, Dict):
+            if isinstance(v, dict):
                 self.data[k] = Wrapper(v)
             else:
                 self.data[k] = v
@@ -38,7 +38,7 @@ class Wrapper:
     def __getattr__(self, name):
         if name in self.data:
             return self.data.get(name)
-        raise AttributeError("'%s' not found" % (name,))
+        raise AttributeError(f"{name!r} not found")
 
     def __getitem__(self, item):
         return self.data[item]

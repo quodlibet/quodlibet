@@ -64,13 +64,14 @@ def build_query(album):
     """
 
     if not album:
-        return u""
+        return ""
 
     alb = '"%s"' % album[0].comma("album").replace('"', "")
     art = get_artist(album)
     if art:
-        alb = '%s AND artist:"%s"' % (alb, art.replace('"', ""))
-    return u"%s AND tracks:%d" % (alb, get_trackcount(album))
+        art_safe = art.replace('"', "")
+        alb = f'{alb} AND artist:"{art_safe}"'
+    return f"{alb} AND tracks:{get_trackcount(album):d}"
 
 
 class ResultComboBox(Gtk.ComboBox):
@@ -97,7 +98,7 @@ class ResultComboBox(Gtk.ComboBox):
             discs_text = numeric_phrase("%d disc", "%d discs", disc_count)
             tracks_text = numeric_phrase("%d track", "%d tracks", track_count)
 
-            markup = "%s\n%s - %s, %s (%s)" % (
+            markup = "{}\n{} - {}, {} ({})".format(
                     util.bold(release.title),
                     util.escape(", ".join(artist_names)),
                     util.escape(discs_text),
@@ -254,7 +255,7 @@ def build_song_data(release, track):
         meta["discnumber"] = ""
     meta["title"] = track.title
     meta["musicbrainz_releasetrackid"] = track.id
-    meta["musicbrainz_trackid"] = u""  # we used to write those, so delete
+    meta["musicbrainz_trackid"] = ""  # we used to write those, so delete
 
     # disc data
     meta["discsubtitle"] = track.disctitle
@@ -304,16 +305,16 @@ def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
         meta["date"] = meta["date"].split("-", 1)[0]
 
     if not albumartist:
-        meta["albumartist"] = u""
+        meta["albumartist"] = ""
 
     if not artistsort:
-        meta["albumartistsort"] = u""
-        meta["artistsort"] = u""
+        meta["albumartistsort"] = ""
+        meta["artistsort"] = ""
 
     if not musicbrainz:
         for key in meta:
             if key.startswith("musicbrainz_"):
-                meta[key] = u""
+                meta[key] = ""
 
     if not labelid:
         meta["labelid"] = ""
@@ -498,7 +499,7 @@ class SearchWindow(Dialog):
             self.result_label.set_text(_("Error encountered. Please retry."))
             return
 
-        self.result_label.set_text(u"")
+        self.result_label.set_text("")
         self._releasecache.setdefault(full_release.id, full_release)
 
         self.result_treeview.update_release(full_release)

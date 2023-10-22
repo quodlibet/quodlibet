@@ -934,7 +934,7 @@ class DragIconTreeView(BaseView):
 
         layout = None
         if len(paths) > max_rows:
-            more = _(u"and %d more…") % (len(paths) - max_rows)
+            more = _("and %d more…") % (len(paths) - max_rows)
             more = util.italic(more)
             layout = self.create_pango_layout("")
             layout.set_markup(more)
@@ -1247,7 +1247,7 @@ class TreeViewColumn(Gtk.TreeViewColumn):
     }
 
     def __init__(self, **kwargs):
-        title = kwargs.pop("title", u"")
+        title = kwargs.pop("title", "")
         # skip overrides which don't allow to set properties
         GObject.Object.__init__(self, **kwargs)
 

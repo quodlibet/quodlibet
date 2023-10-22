@@ -1,4 +1,5 @@
 # Copyright 2017 Christoph Reiter
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -48,8 +49,8 @@ class AppInformation(EventPlugin):
                              width_chars=25, selectable=True)
 
         def label_path(path):
-            l = Gtk.Label(label="<a href='%s'>%s</a>" % (
-                            fsn2uri(path), escape(fsn2text(unexpand(path)))),
+            text = escape(fsn2text(unexpand(path)))
+            l = Gtk.Label(label=f"<a href='{fsn2uri(path)}'>{text}</a>",
                           use_markup=True,
                           ellipsize=Pango.EllipsizeMode.MIDDLE,
                           xalign=0,
@@ -82,7 +83,7 @@ class AppInformation(EventPlugin):
 
         grid.insert_row(row)
         l = label_title(_("Audio Backend"))
-        v = label_value("%s\n%s" % (app.player.name, app.player.version_info))
+        v = label_value(f"{app.player.name}\n{app.player.version_info}")
         grid.attach(l, 0, row, 1, 1)
         grid.attach(v, 1, row, 1, 1)
         row += 1
@@ -103,7 +104,7 @@ class AppInformation(EventPlugin):
 
         grid.insert_row(row)
         l = label_title("Gtk+")
-        v = label_value("%s (%s, %s)" % (
+        v = label_value("{} ({}, {})".format(
             fver(gtk_version), get_backend_name(), get_font_backend_name()))
         grid.attach(l, 0, row, 1, 1)
         grid.attach(v, 1, row, 1, 1)

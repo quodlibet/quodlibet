@@ -38,7 +38,7 @@ class XSMPSessionClient(SessionClient):
         print_d("Connected. Client ID: %s" % client.client_id)
 
         def save_yourself(client, *args):
-            print_d("xsmp: save_yourself %r" % (args,))
+            print_d(f"xsmp: save_yourself {args!r}")
             client.save_yourself_done(True)
 
         def die(client, *args):

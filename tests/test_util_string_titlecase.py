@@ -15,53 +15,53 @@ from quodlibet.util.string.titlecase import human_title as ht
 class Ttitle(TestCase):
 
     def test_basics(self):
-        self.assertEquals(u"Mama's Boy", title(u"mama's boy"))
-        self.assertEquals(u"The A-Sides", title(u"the a-sides"))
-        self.assertEquals(u"Hello Goodbye", title(u"hello goodbye"))
-        self.assertEquals(u"HELLO GOODBYE", title(u"HELLO GOODBYE"))
-        self.assertEquals(u"", title(u""))
+        self.assertEqual("Mama's Boy", title("mama's boy"))
+        self.assertEqual("The A-Sides", title("the a-sides"))
+        self.assertEqual("Hello Goodbye", title("hello goodbye"))
+        self.assertEqual("HELLO GOODBYE", title("HELLO GOODBYE"))
+        self.assertEqual("", title(""))
 
     def test_extra_spaces(self):
-        self.assertEquals(u"  Space", title(u"  space"))
-        self.assertEquals(u" Dodgy  Spaces ", title(u" dodgy  spaces "))
+        self.assertEqual("  Space", title("  space"))
+        self.assertEqual(" Dodgy  Spaces ", title(" dodgy  spaces "))
 
     def test_quirks(self):
         # This character is not an apostrophe, it's a single quote!
-        self.assertEquals(u"Mama’S Boy", title(u"mama’s boy"))
+        self.assertEqual("Mama’S Boy", title("mama’s boy"))
         # This is actually an accent character, not an apostrophe either.
-        self.assertEquals(u"Mama`S Boy", title(u"mama`s boy"))
+        self.assertEqual("Mama`S Boy", title("mama`s boy"))
 
     def test_quotes(self):
-        self.assertEquals(u"Hello Goodbye (A Song)",
-                          title(u"hello goodbye (a song)"))
-        self.assertEquals(u"Hello Goodbye 'A Song'",
-                          title(u"hello goodbye 'a song'"))
-        self.assertEquals(u'Hello Goodbye "A Song"',
-                          title(u'hello goodbye "a song"'))
-        self.assertEquals(u"Hello Goodbye „A Song”",
-                          title(u"hello goodbye „a song”"))
-        self.assertEquals(u"Hello Goodbye ‘A Song’",
-                          title(u"hello goodbye ‘a song’"))
-        self.assertEquals(u"Hello Goodbye “A Song”",
-                          title(u"hello goodbye “a song”"))
-        self.assertEquals(u"Hello Goodbye »A Song«",
-                          title(u"hello goodbye »a song«"))
-        self.assertEquals(u"Hello Goodbye «A Song»",
-                          title(u"hello goodbye «a song»"))
-        self.assertEquals(u'"24" Theme',
-                          title(u'"24" theme'))
-        self.assertEquals(u'"Mad-Dog" Mike',
-                          title(u'"mad-dog" mike'))
+        self.assertEqual("Hello Goodbye (A Song)",
+                          title("hello goodbye (a song)"))
+        self.assertEqual("Hello Goodbye 'A Song'",
+                          title("hello goodbye 'a song'"))
+        self.assertEqual('Hello Goodbye "A Song"',
+                          title('hello goodbye "a song"'))
+        self.assertEqual("Hello Goodbye „A Song”",
+                          title("hello goodbye „a song”"))
+        self.assertEqual("Hello Goodbye ‘A Song’",
+                          title("hello goodbye ‘a song’"))
+        self.assertEqual("Hello Goodbye “A Song”",
+                          title("hello goodbye “a song”"))
+        self.assertEqual("Hello Goodbye »A Song«",
+                          title("hello goodbye »a song«"))
+        self.assertEqual("Hello Goodbye «A Song»",
+                          title("hello goodbye «a song»"))
+        self.assertEqual('"24" Theme',
+                          title('"24" theme'))
+        self.assertEqual('"Mad-Dog" Mike',
+                          title('"mad-dog" mike'))
 
     def test_unicode(self):
-        self.assertEquals(u"Fooäbar",
-                          title(u"fooäbar"))
-        self.assertEquals(u"Los Años Felices",
-                          title(u"los años felices"))
-        self.assertEquals(u"Ñandú",
-                          title(u"ñandú"))
-        self.assertEquals(u"Österreich",
-                          title(u"österreich"))
+        self.assertEqual("Fooäbar",
+                          title("fooäbar"))
+        self.assertEqual("Los Años Felices",
+                          title("los años felices"))
+        self.assertEqual("Ñandú",
+                          title("ñandú"))
+        self.assertEqual("Österreich",
+                          title("österreich"))
         # Not a real word - there is none with this character at the beginning
         # but still Python doesn't capitalize the es-zed properly.
         # s.assertEquals(u"SSbahn", title(u"ßbahn"))
@@ -70,56 +70,56 @@ class Ttitle(TestCase):
     # too many tests...
 
     def test_empty(self):
-        self.failUnlessEqual(title(""), "")
+        self.assertEqual(title(""), "")
 
     def test_oneword(self):
-        self.failUnlessEqual(title("foobar"), "Foobar")
+        self.assertEqual(title("foobar"), "Foobar")
 
     def test_twowords(self):
-        self.failUnlessEqual(title("foo bar"), "Foo Bar")
+        self.assertEqual(title("foo bar"), "Foo Bar")
 
     def test_preserve(self):
-        self.failUnlessEqual(title("fooBar"), "FooBar")
+        self.assertEqual(title("fooBar"), "FooBar")
 
     def test_nonalphabet(self):
-        self.failUnlessEqual(title("foo 1bar"), "Foo 1bar")
+        self.assertEqual(title("foo 1bar"), "Foo 1bar")
 
     def test_two_words_and_one_not(self):
-        self.failUnlessEqual(title("foo 1  bar"), "Foo 1  Bar")
+        self.assertEqual(title("foo 1  bar"), "Foo 1  Bar")
 
     def test_apostrophe(self):
-        self.failUnlessEqual(title("it's"), "It's")
+        self.assertEqual(title("it's"), "It's")
 
     def test_english_human_title_case(self):
-        self.assertEquals(u"System of a Down", ht(u"System Of A Down"))
-        self.assertEquals(u"The Man with the Golden Gun",
-                          ht(u"The Man With The Golden gun"))
-        self.assertEquals(u"Live and Let Die", ht(u"Live And Let Die"))
+        self.assertEqual("System of a Down", ht("System Of A Down"))
+        self.assertEqual("The Man with the Golden Gun",
+                          ht("The Man With The Golden gun"))
+        self.assertEqual("Live and Let Die", ht("Live And Let Die"))
         # Updated to match modifications to is/are/am rules:
-        self.assertEquals(u"The Vitamins Are in My Fresh California Raisins",
-                          ht(u"the vitamins are in my fresh california raisins"))
-        self.assertEquals(u"Dig In",
-                          ht(u"dig in"))
-        self.assertEquals(u"In da Club",
-                          ht(u"in da club"))
+        self.assertEqual("The Vitamins Are in My Fresh California Raisins",
+                          ht("the vitamins are in my fresh california raisins"))
+        self.assertEqual("Dig In",
+                          ht("dig in"))
+        self.assertEqual("In da Club",
+                          ht("in da club"))
         # See Issue 616
-        self.assertEquals(u" Dodgy Are  the Spaces ",
-                          ht(u" dodgy are  the spaces "))
-        self.assertEquals(u"Space:  The Final Frontier",
-                          ht(u"Space:  the final frontier"))
-        self.assertEquals(u"- Out of Space", ht(u"- out Of space"))
+        self.assertEqual(" Dodgy Are  the Spaces ",
+                          ht(" dodgy are  the spaces "))
+        self.assertEqual("Space:  The Final Frontier",
+                          ht("Space:  the final frontier"))
+        self.assertEqual("- Out of Space", ht("- out Of space"))
 
     def test_tricky_apostrophes(self):
-        self.assertEquals(u"Guns 'n' Roses", ht(u"Guns 'n' roses"))
-        self.assertEquals(u"Scarlett O'Hara", ht(u"scarlett o'hara"))
-        self.assertEquals(u"Scarlett O'Hara", ht(u"Scarlett O'hara"))
-        self.assertEquals(u"No Life 'til Leather", ht(u"no life 'til leather"))
+        self.assertEqual("Guns 'n' Roses", ht("Guns 'n' roses"))
+        self.assertEqual("Scarlett O'Hara", ht("scarlett o'hara"))
+        self.assertEqual("Scarlett O'Hara", ht("Scarlett O'hara"))
+        self.assertEqual("No Life 'til Leather", ht("no life 'til leather"))
 
     def test_english_humanise_sentences(self):
         """Checks trickier human title casing"""
-        self.assertEquals(u"Buffy the Vampire Slayer: The Album",
-                          ht(u"Buffy the vampire slayer: the album"))
-        self.assertEquals(u"Killing Is My Business... and Business Is Good!",
-                          ht(u"Killing is my business... And business is good!"))
-        self.assertEquals(u"Herbie Hancock - The Definitive",
-                          ht(u"herbie hancock - the definitive"))
+        self.assertEqual("Buffy the Vampire Slayer: The Album",
+                          ht("Buffy the vampire slayer: the album"))
+        self.assertEqual("Killing Is My Business... and Business Is Good!",
+                          ht("Killing is my business... And business is good!"))
+        self.assertEqual("Herbie Hancock - The Definitive",
+                          ht("herbie hancock - the definitive"))

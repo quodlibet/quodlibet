@@ -15,7 +15,6 @@
 import os
 import threading
 import time
-from typing import Dict, List
 from hashlib import md5
 from urllib.parse import urlencode
 
@@ -91,7 +90,7 @@ class QLSubmitQueue:
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
-    queue: List[Dict[str, str]] = []
+    queue: list[dict[str, str]] = []
     changed_event = threading.Event()
 
     def set_nowplaying(self, song):
@@ -161,7 +160,7 @@ class QLSubmitQueue:
                 disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.SCROBBLER_CACHE_FILE)
             self.queue += disk_queue
-        except (EnvironmentError, PickleError):
+        except (OSError, PickleError):
             pass
 
     @classmethod
@@ -171,7 +170,7 @@ class QLSubmitQueue:
             try:
                 with open(cls.SCROBBLER_CACHE_FILE, "wb") as disk_queue_file:
                     pickle_dump(cls.queue, disk_queue_file)
-            except (EnvironmentError, PickleError) as e:
+            except (OSError, PickleError) as e:
                 print_w(f"Couldn't persist scrobble queue ({e})")
 
     def _check_config(self):
@@ -275,8 +274,9 @@ class QLSubmitQueue:
         if status == "OK":
             self.session_id, self.nowplaying_url, self.submit_url = lines
             self.handshake_sent = True
-            print_d("Session ID: %s, NP URL: %s, Submit URL: %s" % (
-                self.session_id, self.nowplaying_url, self.submit_url))
+            print_d(f"Session ID: {self.session_id}, "
+                    f"NP URL: {self.nowplaying_url}, "
+                    f"Submit URL: {self.submit_url}")
             return True
         print_w(f"Bad handshake status: {status}")
         if status == "BADAUTH":
@@ -300,7 +300,7 @@ class QLSubmitQueue:
         data_str = urlencode(data).encode("ascii")
         try:
             resp = urlopen(url, data_str)
-        except EnvironmentError:
+        except OSError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 
@@ -337,8 +337,8 @@ class QLSubmitQueue:
         data = {"s": self.session_id}
         for key, val in self.nowplaying_song.items():
             data[key] = val.encode("utf-8")
-        print_d("Now playing song: %s - %s" %
-                (self.nowplaying_song["a"], self.nowplaying_song["t"]))
+        print_d("Now playing song: "
+                f"{self.nowplaying_song['a']} - {self.nowplaying_song['t']}")
 
         return self._check_submit(self.nowplaying_url, data)
 
@@ -405,8 +405,7 @@ class QLScrobbler(EventPlugin):
 
     def song_excluded(self, song):
         if self.exclude and Query(self.exclude).search(song):
-            print_d("%s is excluded by %s" %
-                    (song("~artist~title"), self.exclude))
+            print_d("{} is excluded by {}".format(song("~artist~title"), self.exclude))
             return True
         return False
 
@@ -464,7 +463,7 @@ class QLScrobbler(EventPlugin):
         def combo_changed(widget, urlent):
             service = widget.get_active_text()
             plugin_config.set("service", service)
-            urlent.set_sensitive((service not in SERVICES))
+            urlent.set_sensitive(service not in SERVICES)
             urlent.set_text(config_get_url())
 
         def check_login(*args):
@@ -500,7 +499,7 @@ class QLScrobbler(EventPlugin):
         cur_service = plugin_config.get("service")
 
         # Translators: Other service
-        other_label = _(u"Other…")
+        other_label = _("Other…")
         for idx, serv in enumerate(sorted(SERVICES.keys()) + [other_label]):
             service_combo.append_text(serv)
             if cur_service == serv:

@@ -17,7 +17,7 @@ from gi.repository import Gtk
 
 from dataclasses import dataclass, field
 from time import time, sleep
-from typing import Any, Optional, List
+from typing import Any
 
 import pytest as pytest
 
@@ -61,8 +61,8 @@ class TCovers(PluginTestCase):
 
 @dataclass
 class Results:
-    covers: List[Any] = field(default_factory=list)
-    success: Optional[bool] = None
+    covers: list[Any] = field(default_factory=list)
+    success: bool | None = None
 
 
 @pytest.mark.network

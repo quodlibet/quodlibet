@@ -86,7 +86,7 @@ class ListEntry:
         self.matches = {}
 
     def get_match(self, key):
-        return self.matches.get(key, u"")
+        return self.matches.get(key, "")
 
     def replace_match(self, key, value):
         self.matches[key] = value
@@ -113,7 +113,7 @@ class TagsFromPath(Gtk.VBox):
         cbes_defaults = TBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(TBP, cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_(u"Edit saved patterns…"))
+            edit_title=_("Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
@@ -257,7 +257,7 @@ class TagsFromPath(Gtk.VBox):
                     if f.active:
                         text = f.filter(h, text)
                 if not song.can_multiple_values(h):
-                    text = u", ".join(text.split("\n"))
+                    text = ", ".join(text.split("\n"))
                 entry.matches[h] = text
             model.append([entry])
 

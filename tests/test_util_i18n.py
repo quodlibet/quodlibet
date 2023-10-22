@@ -113,31 +113,31 @@ class Tgettext(TestCase):
 
     def test_numeric_phrase(self):
         actual = numeric_phrase("%d green bottle", "%d green bottles", 1)
-        self.failUnlessEqual(actual, "1 green bottle")
+        self.assertEqual(actual, "1 green bottle")
 
         with locale_numeric_conv():
             actual = numeric_phrase(
                 "%d green bottle", "%d green bottles", 1234)
-            self.failUnlessEqual(actual, "1,234 green bottles")
+            self.assertEqual(actual, "1,234 green bottles")
 
     def test_numeric_phrase_locales(self):
         with locale_numeric_conv(thousands_sep=" "):
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
-            self.failUnlessEqual(actual, "1 234 green bottles")
+            self.assertEqual(actual, "1 234 green bottles")
 
     def test_numeric_phrase_templated(self):
         actual = numeric_phrase("%(bottles)d green bottle",
                                 "%(bottles)d green bottles", 1, "bottles")
-        self.failUnlessEqual(actual, "1 green bottle")
+        self.assertEqual(actual, "1 green bottle")
 
         with locale_numeric_conv():
             actual = numeric_phrase("%(bottles)d green bottle",
                                     "%(bottles)d green bottles",
                                     1234, "bottles")
 
-            self.failUnlessEqual(actual, "1,234 green bottles")
+            self.assertEqual(actual, "1,234 green bottles")
 
     def test_numeric_phrase_translation(self):
         # See issue 2166
@@ -145,10 +145,10 @@ class Tgettext(TestCase):
         with use_dummy_ngettext("%d text", "%d texts",
                                 "%d translation", "%d translations"):
             actual = numeric_phrase("%d text", "%d texts", 1)
-            self.failUnlessEqual(actual, "1 translation")
+            self.assertEqual(actual, "1 translation")
 
             actual = numeric_phrase("%d text", "%d texts", 2)
-            self.failUnlessEqual(actual, "2 translations")
+            self.assertEqual(actual, "2 translations")
 
     def test_numeric_phrase_translation_templated(self):
         # See issue 2166
@@ -156,7 +156,7 @@ class Tgettext(TestCase):
         with use_dummy_ngettext("%(n)d text", "%(n)d texts",
                                 "%(n)d translation", "%(n)d translations"):
             actual = numeric_phrase("%(n)d text", "%(n)d texts", 1, "n")
-            self.failUnlessEqual(actual, "1 translation")
+            self.assertEqual(actual, "1 translation")
 
             actual = numeric_phrase("%(n)d text", "%(n)d texts", 2, "n")
-            self.failUnlessEqual(actual, "2 translations")
+            self.assertEqual(actual, "2 translations")

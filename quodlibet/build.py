@@ -7,11 +7,11 @@
 
 """This file gets edited at build time to add build specific data"""
 
-BUILD_TYPE = u"default"
+BUILD_TYPE = "default"
 """Either 'windows', 'windows-portable', 'osx-quodlibet',
 'osx-exfalso' or 'default'"""
 
-BUILD_INFO = u""
+BUILD_INFO = ""
 """Additional build info like git revision etc"""
 
 BUILD_VERSION = 0

@@ -41,7 +41,7 @@ def parse_version(version_string):
 
 
 def format_version(version_tuple):
-    return u".".join(map(str, version_tuple))
+    return ".".join(map(str, version_tuple))
 
 
 def fetch_versions(build_type, timeout=5.0):
@@ -60,7 +60,7 @@ def fetch_versions(build_type, timeout=5.0):
 
     try:
         content = urlopen(
-            u"https://quodlibet.github.io/appcast/%s.rss" % build_type,
+            "https://quodlibet.github.io/appcast/%s.rss" % build_type,
             timeout=timeout).read()
     except Exception as error:
         raise UpdateError(error) from error

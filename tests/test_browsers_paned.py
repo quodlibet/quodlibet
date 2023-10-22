@@ -27,18 +27,18 @@ from quodlibet.library import SongLibrary, SongLibrarian
 SONGS = [
     AudioFile({
         "title": "three", "artist": "boris", "genre": "Rock",
-        "~filename": fsnative(u"/bin/ls"), "foo": "bar"}),
+        "~filename": fsnative("/bin/ls"), "foo": "bar"}),
     AudioFile({
         "title": "two", "artist": "mu", "genre": "Rock",
-        "~filename": fsnative(u"/dev/zero"), "foo": "bar"}),
+        "~filename": fsnative("/dev/zero"), "foo": "bar"}),
     AudioFile({
         "title": "four", "artist": "piman", "genre": "J-Pop",
-        "~filename": fsnative(u"/dev/null"), "foo": "bar\nquux"}),
+        "~filename": fsnative("/dev/null"), "foo": "bar\nquux"}),
     AudioFile({
         "title": "one", "artist": "piman", "genre": "J-Pop",
-        "~filename": fsnative(u"/bin/foo"), "foo": "bar\nnope"}),
+        "~filename": fsnative("/bin/foo"), "foo": "bar\nnope"}),
     AudioFile({
-        "title": "xxx", "~filename": fsnative(u"/bin/bar"), "foo": "bar"}),
+        "title": "xxx", "~filename": fsnative("/bin/bar"), "foo": "bar"}),
 ]
 
 UNKNOWN_ARTIST = AudioFile(dict(SONGS[0]))
@@ -81,42 +81,42 @@ class TPanedBrowser(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.bar.can_filter_tag(key))
-        self.failUnless(self.bar.can_filter("artist"))
-        self.failUnless(self.bar.can_filter_text())
+            self.assertFalse(self.bar.can_filter_tag(key))
+        self.assertTrue(self.bar.can_filter("artist"))
+        self.assertTrue(self.bar.can_filter_text())
 
     def test_filter_text(self):
         self.bar.activate()
 
         self.bar.filter_text("artist=nope")
         run_gtk_loop()
-        self.failUnlessEqual(set(self.last), set())
+        self.assertEqual(set(self.last), set())
 
         self.bar.filter_text("artist=!boris")
         run_gtk_loop()
-        self.failUnlessEqual(set(self.last), set(SONGS[1:]))
+        self.assertEqual(set(self.last), set(SONGS[1:]))
 
     def test_filter_value(self):
         self.bar.activate()
         expected = [SONGS[0]]
         self.bar.filter("artist", ["boris"])
         run_gtk_loop()
-        self.failUnlessEqual(self.last, expected)
+        self.assertEqual(self.last, expected)
 
     def test_filter_notvalue(self):
         self.bar.activate()
         expected = SONGS[1:4]
         self.bar.filter("artist", ["notvalue", "mu", "piman"])
         run_gtk_loop()
-        self.failUnlessEqual(set(self.last), set(expected))
+        self.assertEqual(set(self.last), set(expected))
 
     def test_restore(self):
         config.set("browsers", "query_text", "foo")
         self.bar.restore()
-        self.failUnlessEqual(self.bar._get_text(), "foo")
+        self.assertEqual(self.bar._get_text(), "foo")
         self.bar.finalize(True)
         run_gtk_loop()
-        self.failUnlessEqual(self.emit_count, 0)
+        self.assertEqual(self.emit_count, 0)
 
     def test_numeric_config_search(self):
         config.set("browsers", "panes", "~#track")
@@ -128,20 +128,20 @@ class TPanedBrowser(TestCase):
         self.bar.save()
         self.bar._set_text("nope")
         self.bar.restore()
-        self.failUnlessEqual(self.bar._get_text(), "foobar")
+        self.assertEqual(self.bar._get_text(), "foobar")
         run_gtk_loop()
-        self.failUnlessEqual(self.emit_count, 1)
+        self.assertEqual(self.emit_count, 1)
 
     def test_restore_selection(self):
         self.bar.activate()
-        self.bar.filter("artist", [u"piman"])
+        self.bar.filter("artist", ["piman"])
         self.bar.save()
         self.bar.unfilter()
         self.bar.restore()
         self.bar.activate()
         run_gtk_loop()
         for song in self.last:
-            self.assertTrue(u"piman" in song.list("artist"))
+            self.assertTrue("piman" in song.list("artist"))
 
     def test_set_all_panes(self):
         self.bar.activate()
@@ -154,7 +154,7 @@ class TPanedBrowser(TestCase):
         paned = self.bar.multi_paned.get_paned()
         paned.set_relative(0.8)
         self.bar.set_all_panes()
-        self.failUnlessAlmostEqual(paned.get_relative(), 0.8)
+        self.assertAlmostEqual(paned.get_relative(), 0.8)
 
     def test_make_pane_widths_equal(self):
         config.set("browsers", "panes", "artist\talbum\t~year\t~#track")
@@ -162,9 +162,9 @@ class TPanedBrowser(TestCase):
         self.bar.make_pane_widths_equal()
         paneds = self.bar.multi_paned._get_paneds()
 
-        self.failUnlessAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
-        self.failUnlessAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
-        self.failUnlessAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
+        self.assertAlmostEqual(paneds[0].get_relative(), 1.0 / 4.0)
+        self.assertAlmostEqual(paneds[1].get_relative(), 1.0 / 3.0)
+        self.assertAlmostEqual(paneds[2].get_relative(), 1.0 / 2.0)
 
     def test_column_mode(self):
         self.bar.set_all_column_mode(ColumnMode.SMALL)
@@ -179,56 +179,56 @@ class TPanedBrowser(TestCase):
 class TPaneConfig(TestCase):
     def test_tag(self):
         p = PaneConfig("title")
-        self.failUnlessEqual(p.title, "Title")
-        self.failUnlessEqual(p.tags, {"title"})
+        self.assertEqual(p.title, "Title")
+        self.assertEqual(p.tags, {"title"})
 
-        self.failUnlessEqual(p.format(SONGS[0]), [("three", "three")])
-        self.failUnless(str(len(ALBUM.songs)) in p.format_display(ALBUM))
-        self.failIf(p.has_markup)
+        self.assertEqual(p.format(SONGS[0]), [("three", "three")])
+        self.assertTrue(str(len(ALBUM.songs)) in p.format_display(ALBUM))
+        self.assertFalse(p.has_markup)
 
     def test_numeric(self):
         a_date_format = "%Y-%m-%d"
         config.set("settings", "datecolumn_timestamp_format", a_date_format)
         p = PaneConfig("~#lastplayed")
-        self.failUnlessEqual(p.title, "Last Played")
-        self.failUnlessEqual(p.tags, {"~#lastplayed"})
+        self.assertEqual(p.title, "Last Played")
+        self.assertEqual(p.tags, {"~#lastplayed"})
 
         zero_date = format_date(0, a_date_format)
-        self.failUnlessEqual(p.format(SONGS[0]), [(zero_date, zero_date)])
-        self.failIf(p.has_markup)
+        self.assertEqual(p.format(SONGS[0]), [(zero_date, zero_date)])
+        self.assertFalse(p.has_markup)
 
     def test_tied(self):
         p = PaneConfig("~title~artist")
-        self.failUnlessEqual(p.title, "Title / Artist")
-        self.failUnlessEqual(p.tags, {"title", "artist"})
+        self.assertEqual(p.title, "Title / Artist")
+        self.assertEqual(p.tags, {"title", "artist"})
 
-        self.failUnlessEqual(p.format(SONGS[0]),
+        self.assertEqual(p.format(SONGS[0]),
                              [("three", "three"), ("boris", "boris")])
-        self.failIf(p.has_markup)
+        self.assertFalse(p.has_markup)
 
     def test_pattern(self):
         p = PaneConfig("<foo>")
-        self.failUnlessEqual(p.title, "Foo")
-        self.failUnlessEqual(p.tags, {"foo"})
-        self.failUnless(p.has_markup)
+        self.assertEqual(p.title, "Foo")
+        self.assertEqual(p.tags, {"foo"})
+        self.assertTrue(p.has_markup)
 
     def test_condition(self):
         p = PaneConfig("<foo|a <bar>|quux>")
-        self.failUnlessEqual(p.title, "a Bar")
-        self.failUnlessEqual(p.tags, {"bar"})
-        self.failUnless(p.has_markup)
+        self.assertEqual(p.title, "a Bar")
+        self.assertEqual(p.tags, {"bar"})
+        self.assertTrue(p.has_markup)
 
     def test_group(self):
         p = PaneConfig(r"a\:b:<title>")
-        self.failUnlessEqual(p.title, "A:B")
-        self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
+        self.assertEqual(p.title, "A:B")
+        self.assertEqual(set(p.format_display(ALBUM).split(", ")),
                              {"one", "two", "three", "four", "xxx"})
 
         p = PaneConfig("foo:~#lastplayed")
-        self.failUnlessEqual(p.format_display(ALBUM), "0")
+        self.assertEqual(p.format_display(ALBUM), "0")
 
         p = PaneConfig("foo:title")
-        self.failUnlessEqual(set(p.format_display(ALBUM).split(", ")),
+        self.assertEqual(set(p.format_display(ALBUM).split(", ")),
                              {"one", "two", "three", "four", "xxx"})
 
 
@@ -399,7 +399,7 @@ class TPaneModel(TestCase):
                 self.assertTrue(isinstance(row[0], SongsEntry))
 
             self.assertTrue(
-                isinstance(model[-1][0], (SongsEntry, UnknownEntry)))
+                isinstance(model[-1][0], SongsEntry | UnknownEntry))
 
     def test_add_songs(self):
         conf = PaneConfig("artist")

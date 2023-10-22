@@ -216,7 +216,7 @@ class OneSong(qltk.Notebook):
                     performers[role].append(person)
 
         if performers:
-            text = "\n".join("%s (%s)" % (", ".join(names), part)
+            text = "\n".join("{} ({})".format(", ".join(names), part)
                              for part, names in performers.items())
 
             name = (tag("performer") if len(performers) == 1
@@ -317,9 +317,7 @@ class OneSong(qltk.Notebook):
             markup_data.append(("comment", markups))
 
         if "website" in song:
-            markups = ['<a href="%(url)s">%(text)s</a>' %
-                       {"text": util.escape(website),
-                        "url": util.escape(website)}
+            markups = [f'<a href="{util.escape(website)}">{util.escape(website)}</a>'
                        for website in song.list("website")]
             markup_data.append(("website", markups))
 
@@ -452,7 +450,7 @@ class OneAlbum(qltk.Notebook):
                 ts = "    " * bool(disc)
                 cur_part = part
                 if part:
-                    text.append("%s%s" % (ts, util.escape(part)))
+                    text.append(f"{ts}{util.escape(part)}")
             cur_track += 1
             ts = "    " * (bool(disc) + bool(part))
             while cur_track < track:
@@ -488,7 +486,7 @@ class OneArtist(qltk.Notebook):
         def format(args):
             date, song, album = args
             markup = f"<big>{util.italic(album)}</big>"
-            return "%s (%s)" % (markup, date[:4]) if date else markup
+            return f"{markup} ({date[:4]})" if date else markup
 
         get_cover = app.cover_manager.get_cover
         covers = [(a, get_cover(s), s) for d, s, a in albums]
@@ -601,7 +599,7 @@ class ManySongs(qltk.Notebook):
             length += song.get("~#length", 0)
             try:
                 size += filesize(song["~filename"])
-            except EnvironmentError:
+            except OSError:
                 pass
         table = Table(2)
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,

@@ -41,7 +41,7 @@ def apicall(method, **kwargs):
     if "error" in resp:
         errmsg = f"Last.fm API error: {resp.get('message', '')}"
         print_e(errmsg)
-        raise EnvironmentError(resp["error"], errmsg)
+        raise OSError(resp["error"], errmsg)
     return resp
 
 
@@ -89,7 +89,7 @@ class LastFMSyncCache:
                 for chart in charts:
                     # Charts keys are 2-tuple (from_timestamp, to_timestamp);
                     # values are whether we still need to fetch the chart
-                    fro, to = [int(chart[s]) for s in ("from", "to")]
+                    fro, to = (int(chart[s]) for s in ("from", "to"))
 
                     # If the chart is older than the register date of the
                     # user, don't download it. (So the download doesn't start
@@ -113,7 +113,7 @@ class LastFMSyncCache:
                 args = {"user": self.username, "from": fro, "to": to}
                 try:
                     resp = apicall("user.getweeklytrackchart", **args)
-                except EnvironmentError as err:
+                except OSError as err:
                     msg = "HTTP error %d, retrying in %d seconds."
                     print_w(msg % (err.code, max_wait))
                     for i in range(max_wait, 0, -1):
@@ -157,9 +157,9 @@ class LastFMSyncCache:
         if stats:
             # Not sure if last.fm ever changes their tag values, but this
             # should map all changed values to the same object correctly
-            plays = max((d.get("playcount", 0) for d in stats))
-            last = max((d.get("lastplayed", 0) for d in stats))
-            added = max((d.get("added", chart_to) for d in stats))
+            plays = max(d.get("playcount", 0) for d in stats)
+            last = max(d.get("lastplayed", 0) for d in stats)
+            added = max(d.get("added", chart_to) for d in stats)
             stats = stats[0]
             stats.update({"playcount": plays, "lastplayed": last, "added": added})
         else:

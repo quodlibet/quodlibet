@@ -42,11 +42,10 @@ class LanguagePreference(EventPlugin):
             if value is None:
                 text = escape(_("System Default"))
             else:
-                if value == u"C":
-                    value = u"en"
-                text = "%s <span weight='light'>(%s)</span>" % (
-                    escape(value),
-                    escape(iso639.translate(value.split("_", 1)[0])))
+                if value == "C":
+                    value = "en"
+                translated = escape(iso639.translate(value.split('_', 1)[0]))
+                text = f"{escape(value)} <span weight='light'>({translated})</span>"
             render.set_property("markup", text)
 
         render = Gtk.CellRendererText()
@@ -57,7 +56,7 @@ class LanguagePreference(EventPlugin):
         def on_combo_changed(combo):
             new_language = model.get_value(combo.get_active_iter())
             if new_language is None:
-                new_language = u""
+                new_language = ""
             config.settext("settings", "language", new_language)
 
         combo.connect("changed", on_combo_changed)

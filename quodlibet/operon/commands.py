@@ -168,16 +168,16 @@ class EditCommand(Command):
         lines = []
         for key in sorted(song.realkeys(), key=sortkey):
             for value in song.list(key):
-                lines.append(u"%s=%s" % (key, value))
+                lines.append(f"{key}={value}")
 
         lines += [
-            u"",
-            u"#" * 80,
-            u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsn2text(song("~filename")),
+            "",
+            "#" * 80,
+            "# Lines that are empty or start with '#' will be ignored",
+            "# File: %r" % fsn2text(song("~filename")),
         ]
 
-        return u"\n".join(lines)
+        return "\n".join(lines)
 
     def _text_to_song(self, text, song):
         assert isinstance(text, str)
@@ -185,10 +185,10 @@ class EditCommand(Command):
         # parse
         tags = {}
         for line in text.splitlines():
-            if not line.strip() or line.startswith(u"#"):
+            if not line.strip() or line.startswith("#"):
                 continue
             try:
-                key, value = line.split(u"=", 1)
+                key, value = line.split("=", 1)
             except ValueError:
                 continue
 
@@ -200,11 +200,11 @@ class EditCommand(Command):
             old = song.list(key)
             for value in old:
                 if value not in new:
-                    self.log("Remove %s=%s" % (key, value))
+                    self.log(f"Remove {key}={value}")
                     song.remove(key, value)
             for value in new:
                 if value not in old:
-                    self.log("Add %s=%s" % (key, value))
+                    self.log(f"Add {key}={value}")
                     song.add(key, value)
 
         for key, values in tags.items():
@@ -212,7 +212,7 @@ class EditCommand(Command):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})
             for value in values:
-                self.log("Add %s=%s" % (key, value))
+                self.log(f"Add {key}={value}")
                 song.add(key, value)
 
     def _execute(self, options, args):
@@ -306,7 +306,7 @@ class SetCommand(Command):
                 raise CommandError(
                     _("Can not set %(tag)r for %(format)s file %(file)r") % vars)
 
-            self.log("Set %r to %r" % (value, tag))
+            self.log(f"Set {value!r} to {tag!r}")
             if tag in song:
                 del song[tag]
             song.add(tag, value)
@@ -419,7 +419,7 @@ class RemoveCommand(Command):
 
             for v in song.list(tag):
                 if match(v):
-                    self.log("Remove %r from %r" % (v, tag))
+                    self.log(f"Remove {v!r} from {tag!r}")
                     song.remove(tag, v)
             songs.append(song)
 
@@ -448,7 +448,7 @@ class AddCommand(Command):
             if not song.can_change(tag):
                 raise CommandError(_("Can not set %r") % tag)
 
-            self.log("Add %r to %r" % (value, tag))
+            self.log(f"Add {value!r} to {tag!r}")
             song.add(tag, value)
             songs.append(song)
 
@@ -604,7 +604,7 @@ class ImageExtractCommand(Command):
             else:
                 images = song.get_images()
 
-            self.log("Images for %r: %r" % (path, images))
+            self.log(f"Images for {path!r}: {images!r}")
 
             if not images:
                 continue
@@ -623,7 +623,7 @@ class ImageExtractCommand(Command):
 
                 if options.primary:
                     # mysong.mp3 -> mysong.jpeg
-                    filename = "%s.%s" % (name, ext)
+                    filename = f"{name}.{ext}"
                 else:
                     # mysong.mp3 -> mysong-00.jpeg
                     pattern = "%s-" + number_pattern + ".%s"
@@ -689,7 +689,7 @@ class FillCommand(Command):
     def __apply(self, pattern, songs):
         for song in songs:
             match = pattern.match(song)
-            self.log("%r: %r" % (song("~basename"), match))
+            self.log("{!r}: {!r}".format(song("~basename"), match))
             for header in pattern.headers:
                 if header in match:
                     value = match[header]
@@ -703,7 +703,7 @@ class FillCommand(Command):
             match = pattern.match(song)
             row = [fsn2text(song("~basename"))]
             for header in pattern.headers:
-                row.append(match.get(header, u""))
+                row.append(match.get(header, ""))
             rows.append(row)
 
         headers = [_("File")] + pattern.headers

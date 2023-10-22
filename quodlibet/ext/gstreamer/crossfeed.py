@@ -36,7 +36,7 @@ _CUSTOM_INDEX = 3
 
 
 def get_cfg(option):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
 
     if option == "feed":
         return config.getint("plugins", cfg_option, _PRESETS[0][4])
@@ -45,7 +45,7 @@ def get_cfg(option):
 
 
 def set_cfg(option, value):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
     if get_cfg(option) != value:
         config.set("plugins", cfg_option, value)
 

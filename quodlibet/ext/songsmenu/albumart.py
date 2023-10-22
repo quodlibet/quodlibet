@@ -19,7 +19,7 @@ import re
 import threading
 import time
 from io import BytesIO
-from typing import List, Dict, Any
+from typing import Any
 from urllib.parse import urlencode
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
@@ -71,7 +71,7 @@ def get_url(url, post=None, get=None):
         get_params = "?" + get_params
 
     # add post, get data and headers
-    url = "%s%s" % (url, get_params)
+    url = f"{url}{get_params}"
     if post_params:
         request = Request(url, post_params)
     else:
@@ -91,7 +91,7 @@ def get_url(url, post=None, get=None):
     url_sock.close()
     content_type = url_sock.headers.get("Content-Type", "").split(";", 1)[0]
     domain = re.compile(r"\w+://([^/]+)/").search(url).groups(0)[0]
-    print_d("Got %s data from %s" % (content_type, domain))
+    print_d(f"Got {content_type} data from {domain}")
     return (data if content_type.startswith("image")
             else data.decode(enc))
 
@@ -105,7 +105,7 @@ def get_encoding(url):
 
 
 class CoverSearcher:
-    def start(self, query, limit=5) -> List[Dict[str, Any]]:
+    def start(self, query, limit=5) -> list[dict[str, Any]]:
         """Start the search and return the covers"""
         raise NotImplementedError()
 
@@ -180,7 +180,7 @@ class DiscogsSearcher(CoverSearcher):
 
             width = image.get("width", 0)
             height = image.get("height", 0)
-            cover["resolution"] = "%s x %s px" % (width, height)
+            cover["resolution"] = f"{width} x {height} px"
 
             self.covers.append(cover)
             if len(self.covers) >= self.limit:
@@ -266,8 +266,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             else:
                 fn_dynlist.append("<artist> - <album>.jpg")
         else:
-            print_w(u'No album for "%s". Could be difficult '
-                    u"finding art…" % song("~filename"))
+            print_w(f"No album for {song('~filename')}. "
+                    f"Could be difficult finding art…")
             title = song("title")
             if title and artist:
                 fn_dynlist.append("<artist> - <title>.jpg")
@@ -346,7 +346,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # Allow use of patterns in creating cover filenames
         pattern = ArbitraryExtensionFileFromPattern(save_format)
         filename = pattern.format(self.song)
-        print_d("Using '%s' as filename based on %s" % (filename, save_format))
+        print_d(f"Using {filename!r} as filename based on {save_format}")
         file_path = os.path.join(self.dirname, filename)
 
         if os.path.exists(file_path):
@@ -358,7 +358,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             f = open(file_path, "wb")
             f.write(self.current_data)
             f.close()
-        except IOError:
+        except OSError:
             qltk.ErrorMessage(None, _("Saving failed"),
                               _('Unable to save "%s".') % file_path).run()
         else:
@@ -459,7 +459,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 request = Request(url)
                 request.add_header("User-Agent", USER_AGENT)
                 url_sock = urlopen(request)
-            except EnvironmentError:
+            except OSError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -717,7 +717,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search_button.set_sensitive(False)
 
         self.progress.set_fraction(0)
-        self.progress.set_text(_(u"Searching…"))
+        self.progress.set_text(_("Searching…"))
         self.progress.show()
 
         self.liststore.clear()
@@ -769,7 +769,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
             if not pixbuf:
                 return
             surface = get_surface_for_pixbuf(self, pixbuf)
-        except (GLib.GError, IOError):
+        except (OSError, GLib.GError):
             pass
         else:
             def append(data):
@@ -835,8 +835,7 @@ class CoverSearch:
 
         search = query if raw else cleanup_query(query, replace)
 
-        print_d("[AlbumArt] running search %r on engine %s" %
-                (search, engine.__name__))
+        print_d(f"[AlbumArt] running search {search!r} on engine {engine.__name__}")
         result = []
         try:
             result = engine().start(search, limit)

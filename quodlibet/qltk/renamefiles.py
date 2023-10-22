@@ -103,7 +103,7 @@ class StripDiacriticals(FilterCheckButton):
     _order = 1.2
 
     def filter(self, original, filename):
-        return u"".join(filter(lambda s: not unicodedata.combining(s),
+        return "".join(filter(lambda s: not unicodedata.combining(s),
                                unicodedata.normalize("NFKD", filename)))
 
 
@@ -114,7 +114,7 @@ class StripNonASCII(FilterCheckButton):
     _order = 1.3
 
     def filter(self, original, filename):
-        return u"".join(((s <= "~" and s) or u"_" for s in filename))
+        return "".join((s <= "~" and s) or "_" for s in filename)
 
 
 class Lowercase(FilterCheckButton):
@@ -168,7 +168,7 @@ class RenameFiles(Gtk.VBox):
         cbes_defaults = NBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(NBP, cbes_defaults,
                                        title=_("Path Patterns"),
-                                       edit_title=_(u"Edit saved patterns…"))
+                                       edit_title=_("Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
@@ -264,7 +264,7 @@ class RenameFiles(Gtk.VBox):
 
         def cell_data_new_name(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.set_property("text", entry.new_name or u"")
+            cell.set_property("text", entry.new_name or "")
 
         column.set_cell_data_func(render, cell_data_new_name)
 

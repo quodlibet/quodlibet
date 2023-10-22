@@ -23,5 +23,5 @@ class TRemoteFile(TestCase):
         f = RemoteFile("http://example.com")
         dict.__setitem__(f, "~filename", b"foo")
         self.assertTrue(isinstance(f["~filename"], fsnative))
-        dict.__setitem__(f, "~filename", u"foo")
+        dict.__setitem__(f, "~filename", "foo")
         self.assertTrue(isinstance(f["~filename"], fsnative))

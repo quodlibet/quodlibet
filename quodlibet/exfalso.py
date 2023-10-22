@@ -34,7 +34,7 @@ def main(argv=None):
         "Ex Falso", const.VERSION,
         _("an audio tag editor"), "[%s]" % _("directory"))
 
-    argv.append(os.path.abspath(fsnative(u".")))
+    argv.append(os.path.abspath(fsnative(".")))
     opts, args = opts.parse(argv[1:])
     args[0] = os.path.realpath(args[0])
 

@@ -485,7 +485,7 @@ class PreferencesWindow(UniqueWindow):
 
             def draw_rating(column, cell, model, it, data):
                 num = model[it][0]
-                text = "%0.2f: %s" % (num, util.format_rating(num))
+                text = f"{num:0.2f}: {util.format_rating(num)}"
                 cell.set_property("text", text)
 
             def default_rating_changed(combo, model):

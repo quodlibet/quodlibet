@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
 
 import quodlibet.qltk.playorder
 
@@ -30,7 +29,7 @@ class PlayOrderPlugin(quodlibet.qltk.playorder.Order):
 
     # Note these values unset the base versions, as the plugin handler logic
     # does some auto-setting of these, based on PLUGIN_NAME, if they're None
-    name: Optional[str] = None
+    name: str | None = None
     display_name = None
     accelerated_name = None
 

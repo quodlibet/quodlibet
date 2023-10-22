@@ -9,7 +9,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List, Tuple
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
@@ -168,7 +167,7 @@ def get_sort_tag(tag):
             tag = tag.replace(f"<{key}>", value)
         for key, value in TAG_TO_SORT.items():
             tag = tag.replace("<%s>" % key,
-                              "<{1}|<{1}>|<{0}>>".format(key, value))
+                              f"<{value}|<{value}>|<{key}>>")
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)
@@ -317,7 +316,7 @@ class SongListDnDMixin(GObject.GObject):
             elif filename not in library:
                 to_add.append(librarian[filename])
         library.add(to_add)
-        songs: List = list(filter(None, map(library.get, filenames)))
+        songs: list = list(filter(None, map(library.get, filenames)))
         if not songs:
             Gtk.drag_finish(ctx, bool(not filenames), False, etime)
             return
@@ -372,7 +371,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         "orders-changed": (GObject.SignalFlags.RUN_LAST, None, [])
     }
 
-    headers: List[str] = []
+    headers: list[str] = []
     """The list of current headers."""
 
     star = list(Query.STAR)
@@ -419,7 +418,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         self._first_column = None
         # A priority list of how to apply the sort keys.
         # might contain column header names not present...
-        self._sort_sequence: List[str] = []
+        self._sort_sequence: list[str] = []
         self.set_column_headers(self.headers)
         librarian = library.librarian or library
 
@@ -783,7 +782,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return []
         return model.get()
 
-    def _sort_songs(self, songs: List[AudioFile]):
+    def _sort_songs(self, songs: list[AudioFile]):
         """Sort passed songs in place based on the column sort orders"""
 
         order = self.get_sort_orders()
@@ -839,7 +838,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             insert_iter = self.__find_song_position(song)
             model.insert_before(insert_iter, row=[song])
 
-    def set_songs(self, songs: List[AudioFile], sorted: bool = False,
+    def set_songs(self, songs: list[AudioFile], sorted: bool = False,
                   scroll: bool = True, scroll_select: bool = False):
         """Fill the song list.
 
@@ -978,7 +977,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return model.iter_nth_child(None, i)
         return None
 
-    def __find_iters_in_selection(self, songs) -> Tuple[List, List, bool]:
+    def __find_iters_in_selection(self, songs) -> tuple[list, list, bool]:
         model, rows = self.get_selection().get_selected_rows()
         rows = rows or []
         iters = []
@@ -1178,7 +1177,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             ~#samplerate""".split()
         copyinfo = """copyright organization location isrc
             contact website""".split()
-        all_headers: List[str] = sum(
+        all_headers: list[str] = sum(
             [trackinfo, peopleinfo, albuminfo, dateinfo, fileinfo, copyinfo],
             [])
 
@@ -1204,7 +1203,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         menu.append(sep)
 
         custom = Gtk.MenuItem(
-            label=_(u"_Customize Headers…"), use_underline=True)
+            label=_("_Customize Headers…"), use_underline=True)
         custom.show()
         custom.connect("activate", self.__add_custom_column)
         menu.append(custom)

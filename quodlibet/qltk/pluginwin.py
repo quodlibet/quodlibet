@@ -525,7 +525,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         self._enabled_combo.set_active(0)
         self._type_combo.set_active(0)
-        self._filter_entry.set_text(u"")
+        self._filter_entry.set_text("")
 
     def move_to(self, plugin_id):
         def selector(r):

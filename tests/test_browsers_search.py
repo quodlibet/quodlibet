@@ -17,28 +17,28 @@ from tests import TestCase, run_gtk_loop
 SONGS = [AudioFile({
                 "title": "one",
                 "artist": "piman",
-                "~filename": fsnative(u"/dev/null")}),
+                "~filename": fsnative("/dev/null")}),
          AudioFile({
                 "title": "two",
                 "artist": "mu",
                 "~#length": 234,
-                "~filename": fsnative(u"/dev/zero")}),
+                "~filename": fsnative("/dev/zero")}),
          AudioFile({
                 "title": "three",
                 "artist": "boris",
-                "~filename": fsnative(u"/bin/ls")}),
+                "~filename": fsnative("/bin/ls")}),
          AudioFile({
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": fsnative(u"/dev/random")}),
+                "~filename": fsnative("/dev/random")}),
          AudioFile({
                 "title": "five € and a £",
                 "artist": "shell",
                 "album": "don't stop",
                 "labelid": "12345-6",
-                "~filename": fsnative(u"/tmp/five € and £!")})]
+                "~filename": fsnative("/tmp/five € and £!")})]
 
 
 class TSearchBar(TestCase):
@@ -57,16 +57,16 @@ class TSearchBar(TestCase):
 
     def _expected(self, bar, songs, sort):
         songs.sort()
-        self.failUnlessEqual(self.expected, songs)
+        self.assertEqual(self.expected, songs)
         self.success = True
 
     def _do(self):
         run_gtk_loop()
-        self.failUnless(self.success or self.expected is None)
+        self.assertTrue(self.success or self.expected is None)
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failUnless(self.bar.can_filter(key))
+            self.assertTrue(self.bar.can_filter(key))
 
     def test_empty_is_all(self):
         self.bar.filter_text("")

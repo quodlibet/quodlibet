@@ -12,7 +12,7 @@ Librarians for libraries.
 """
 
 import itertools
-from typing import Dict, Iterable, Iterator, Generator
+from collections.abc import Iterable, Iterator, Generator
 
 from gi.repository import GObject
 
@@ -43,7 +43,7 @@ class Librarian(GObject.GObject):
 
     def __init__(self):
         super().__init__()
-        self.libraries: Dict[str, Library] = {}
+        self.libraries: dict[str, Library] = {}
         self.__signals = {}
 
     def destroy(self) -> None:

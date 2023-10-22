@@ -25,7 +25,7 @@ from tests import TestCase, mkdtemp
 
 
 bar_2_1 = AudioFile({
-    "~filename": fsnative(u"does not/exist"),
+    "~filename": fsnative("does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
@@ -43,7 +43,7 @@ class TCoverManager(TestCase):
         self.song = self.an_album_song()
 
         # Safety check
-        self.failIf(glob.glob(os.path.join(self.dir + "*.jpg")))
+        self.assertFalse(glob.glob(os.path.join(self.dir + "*.jpg")))
         files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
         for f in files:
             open(f, "w").close()
@@ -51,8 +51,8 @@ class TCoverManager(TestCase):
     def an_album_song(self, fn="asong.ogg"):
         return AudioFile({
             "~filename": os.path.join(self.dir, fn),
-            "album": u"Quuxly",
-            "artist": u"Some One",
+            "album": "Quuxly",
+            "artist": "Some One",
         })
 
     def tearDown(self):
@@ -66,10 +66,10 @@ class TCoverManager(TestCase):
         return os.path.join(self.dir, path)
 
     def test_dir_not_exist(self):
-        self.failIf(self._find_cover(bar_2_1))
+        self.assertFalse(self._find_cover(bar_2_1))
 
     def test_nothing(self):
-        self.failIf(self._find_cover(self.song))
+        self.assertFalse(self._find_cover(self.song))
 
     def test_labelid(self):
         self.song["labelid"] = "12345"
@@ -87,7 +87,7 @@ class TCoverManager(TestCase):
         self.test_labelid() # labelid must work with other files present
 
     def test_file_encoding(self):
-        f = self.add_file(fsnative(u"öäü - Quuxly - cover.jpg"))
+        f = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
         self.assertTrue(isinstance(self.song("album"), str))
         h = self._find_cover(self.song)
         assert h, "Nothing found"
@@ -165,7 +165,7 @@ class TCoverManager(TestCase):
         See Issue 818"""
 
         song = AudioFile({
-            "~filename": fsnative(os.path.join(self.dir, u"asong.ogg")),
+            "~filename": fsnative(os.path.join(self.dir, "asong.ogg")),
             "album": "foobar",
             "title": "Ode to Baz",
             "artist": "Q-Man",
@@ -186,8 +186,7 @@ class TCoverManager(TestCase):
                 assert path_equal(actual, f), \
                     f"{basename(f)!r} should trump {basename(actual)!r}"
             else:
-                self.failIf(should_find, msg="Couldn't find %s for %s" %
-                                             (f, song("~filename")))
+                assert not should_find, f"Couldn't find {f} for {song('~filename')}"
 
     def add_file(self, fn):
         f = self.full_path(fn)
@@ -209,11 +208,11 @@ class TCoverManager(TestCase):
                    "The Composer - The Conductor, The Performer - foobar.jpg"]:
             f = self.add_file(fn)
             cover = self._find_cover(song)
-            self.failUnless(cover)
+            self.assertTrue(cover)
             actual = os.path.abspath(cover.name)
             cover.close()
             assert path_equal(
-                actual, f, '"%s" should trump "%s"' % (f, actual))
+                actual, f, f'"{f}" should trump "{actual}"')
 
     def test_get_thumbnail(self):
         self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)

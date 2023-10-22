@@ -1,5 +1,5 @@
 # Copyright 2011 Joe Wreschnig, Christoph Reiter
-#      2013-2022 Nick Boultbee
+#      2013-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@ from functools import reduce
 from http.client import HTTPException
 from os.path import splitext
 from threading import Thread
-from typing import Dict, Collection, Callable, Iterable, Optional
+from collections.abc import Collection, Callable, Iterable
 from urllib.request import urlopen
 
 import re
@@ -89,8 +89,8 @@ class IRFile(RemoteFile):
             return base_call("website", *args)
 
         if key == "~format" and "audio-codec" in self:
-            return "%s (%s)" % (self.format,
-                                base_call("audio-codec", *args, **kwargs))
+            codec = base_call('audio-codec', *args, **kwargs)
+            return f"{self.format} ({codec})"
         return base_call(key, *args, **kwargs)
 
     def __call__(self, key, *args, **kwargs):
@@ -123,7 +123,7 @@ class IRFile(RemoteFile):
         return b"\n".join(lines)
 
     @property
-    def lyric_filename(self) -> Optional[str]:
+    def lyric_filename(self) -> str | None:
         return None
 
     def can_change(self, k=None):
@@ -243,7 +243,7 @@ def _get_stations_from(uri: str,
                 elif ext in (".m3u", ".m3u8"):
                     irfs = parse_m3u(sock)
                 GLib.idle_add(task.pulse)
-            except IOError as e:
+            except OSError as e:
                 print_e(f"Couldn't download from {uri} ({e})")
             finally:
                 if sock:
@@ -268,7 +268,7 @@ def download_taglist(url, callback, cofuncid, step=1024 * 10):
 
         try:
             response = urlopen(url)
-        except (EnvironmentError, HTTPException) as e:
+        except (OSError, HTTPException) as e:
             print_e(f"Failed fetching from {url}", e)
             GLib.idle_add(callback, None)
             return
@@ -294,7 +294,7 @@ def download_taglist(url, callback, cofuncid, step=1024 * 10):
             try:
                 data += decomp.decompress(temp)
                 temp = response.read(step)
-            except (IOError, EOFError):
+            except (OSError, EOFError):
                 data = None
                 break
         response.close()
@@ -424,7 +424,7 @@ class GenreFilter:
     }
 
     # parsing all above takes 350ms on an atom, so only generate when needed
-    __CACHE: Dict[str, Query] = {}
+    __CACHE: dict[str, Query] = {}
 
     def keys(self):
         return self.GENRES.keys()
@@ -648,7 +648,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         fb = Gtk.FlowBox()
         fb.set_column_spacing(3)
         fb.set_homogeneous(True)
-        new_station = Button(_(u"_Add Station…"), Icons.LIST_ADD)
+        new_station = Button(_("_Add Station…"), Icons.LIST_ADD)
         new_station.connect("clicked", self.__add)
         self._update_button = Button(_("_Update Stations"), Icons.VIEW_REFRESH)
         self._update_button.connect("clicked", self.__update)
@@ -969,7 +969,7 @@ class InternetRadio(Browser, util.InstanceTracker):
         self.view.set_cursor(path)
         self.view.scroll_to_cell(path, use_align=True, row_align=0.5)
 
-    def status_text(self, count: int, time: Optional[str] = None) -> str:
+    def status_text(self, count: int, time: str | None = None) -> str:
         return numeric_phrase("%(count)d station", "%(count)d stations", count, "count")
 
 

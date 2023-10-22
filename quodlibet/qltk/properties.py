@@ -158,7 +158,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                     "%(title)s and %(count)d more",
                     len(songs) - 1) % {"title": songs[0].comma("title"),
                                        "count": len(songs) - 1}
-            self.set_title("%s - %s" % (title, _("Properties")))
+            self.set_title("{} - {}".format(title, _("Properties")))
         else:
             self.set_title(_("Properties"))
 

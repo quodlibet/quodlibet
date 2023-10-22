@@ -65,7 +65,7 @@ def _init_gettext(no_translations=False):
     """Call before using gettext helpers"""
 
     if no_translations:
-        language = u"C"
+        language = "C"
     else:
         language = config.gettext("settings", "language")
         if language:
@@ -382,7 +382,7 @@ def _init_gst():
     """Call once before importing GStreamer"""
 
     arch_key = "64" if sys.maxsize > 2**32 else "32"
-    registry_name = "gst-registry-%s-%s.bin" % (sys.platform, arch_key)
+    registry_name = f"gst-registry-{sys.platform}-{arch_key}.bin"
     os.environ["GST_REGISTRY"] = os.path.join(get_cache_dir(), registry_name)
 
     assert "gi.repository.Gst" not in sys.modules

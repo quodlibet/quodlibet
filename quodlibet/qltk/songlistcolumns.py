@@ -179,7 +179,7 @@ class TextColumn(SongListColumn):
         return text_width + 8 + cell_pad
 
     def _check_width_update(self):
-        width = self._cell_width(u"abc 123")
+        width = self._cell_width("abc 123")
         if self._last_width == width:
             self._force_update = False
             return
@@ -312,7 +312,7 @@ class FSColumn(WideTextColumn):
 
     def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
-        return values[0] if values else fsnative(u"")
+        return values[0] if values else fsnative("")
 
     def _apply_value(self, model, iter_, cell, value):
         cell.set_property("text", fsn2text(unexpand(value)))
@@ -335,7 +335,7 @@ class PatternColumn(WideTextColumn):
         song = model.get_value(iter_)
         if self._pattern is not None:
             return self._pattern % song
-        return u""
+        return ""
 
     def _apply_value(self, model, iter_, cell, value):
         cell.set_property("text", value)
@@ -373,7 +373,7 @@ class NumericColumn(TextColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         if isinstance(value, float):
-            text = u"%.2f" % round(value, 2)
+            text = "%.2f" % round(value, 2)
         else:
             text = str(value)
 
@@ -479,7 +479,7 @@ class CurrentColumn(SongListColumn):
         self.set_cell_data_func(self._render, self._cdf)
 
     def _format_title(self, tag):
-        return u""
+        return ""
 
     def _cdf(self, column, cell, model, iter_, user_data):
         PLAY = "media-playback-start"

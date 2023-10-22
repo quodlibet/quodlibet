@@ -22,18 +22,18 @@ class TagsCombo(TestCase):
 class TagsComboMixin:
 
     def test_none(self):
-        self.failUnlessRaises(ValueError, self.Kind, [])
+        self.assertRaises(ValueError, self.Kind, [])
 
     def test_some(self):
         self.some.set_active(2)
-        self.failUnlessEqual(self.some.tag, "foobar")
+        self.assertEqual(self.some.tag, "foobar")
 
     def test_all(self):
         tags = list(USER_TAGS)
         tags.sort()
         for i, value in enumerate(tags):
             self.all.set_active(i)
-            self.failUnlessEqual(self.all.tag, value)
+            self.assertEqual(self.all.tag, value)
 
 
 @skipIf(is_wayland(), "crashes..")
@@ -49,4 +49,4 @@ class TTagsComboBoxEntry(TagsCombo, TagsComboMixin):
 
     def test_custom(self):
         self.all.get_child().set_text("a new tag")
-        self.failUnlessEqual(self.all.tag, "a new tag")
+        self.assertEqual(self.all.tag, "a new tag")

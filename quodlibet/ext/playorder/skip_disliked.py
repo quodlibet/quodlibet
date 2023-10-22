@@ -77,6 +77,6 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         threshold = pconfig.getfloat("threshold")
 
         if rating <= threshold:
-            print_d("Rating is %f <= %f; skipping..." % (rating, threshold))
+            print_d(f"Rating is {rating:f} <= {threshold:f}; skipping...")
             return True
         return False

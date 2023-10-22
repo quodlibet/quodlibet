@@ -25,7 +25,7 @@ _SETTINGS = {
 
 
 def get_cfg(option):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
     default = _SETTINGS[option][2]
 
     if option == "threshold":
@@ -35,7 +35,7 @@ def get_cfg(option):
 
 
 def set_cfg(option, value):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
     if get_cfg(option) != value:
         config.set("plugins", cfg_option, value)
 

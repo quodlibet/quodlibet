@@ -11,7 +11,8 @@
 # needs them to be there.
 
 import os
-from typing import TypeVar, Iterable, List
+from typing import TypeVar
+from collections.abc import Iterable
 
 from gi.repository import Gtk, Gdk
 from senf import fsn2uri, fsn2bytes, bytes2fsn
@@ -75,7 +76,7 @@ class FileSystem(Browser, Gtk.HBox):
         cls.__library.remove(songs)
 
     @classmethod
-    def _only_known(cls, songs: Iterable[T]) -> List[T]:
+    def _only_known(cls, songs: Iterable[T]) -> list[T]:
         return [s for s in songs if cls.__library.__contains__(s)]  # type:ignore
 
     def __init__(self, library):

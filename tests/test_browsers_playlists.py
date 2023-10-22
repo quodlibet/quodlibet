@@ -48,7 +48,7 @@ class TParsePlaylistMixin:
         with temp_filename() as name:
             with open(name) as f:
                 pl = self.Parse(f, name, pl_lib=self.pl_lib)
-        self.failIf(pl)
+        self.assertFalse(pl)
         pl.delete()
 
     def test_parse_onesong(self):
@@ -59,8 +59,8 @@ class TParsePlaylistMixin:
                 af.write(target)
             with open(name, "rb") as f:
                 pl = self.Parse(f, name, pl_lib=self.pl_lib)
-        self.failUnlessEqual(len(pl), 1)
-        self.failUnlessEqual(pl[0]("title"), "Silence")
+        self.assertEqual(len(pl), 1)
+        self.assertEqual(pl[0]("title"), "Silence")
         pl.delete()
 
     def test_parse_onesong_uri(self):
@@ -72,8 +72,8 @@ class TParsePlaylistMixin:
                 f.write(target)
             with open(name, "rb") as f:
                 pl = self.Parse(f, name, pl_lib=self.pl_lib)
-        self.failUnlessEqual(len(pl), 1)
-        self.failUnlessEqual(pl[0]("title"), "Silence")
+        self.assertEqual(len(pl), 1)
+        self.assertEqual(pl[0]("title"), "Silence")
         pl.delete()
 
 
@@ -98,23 +98,23 @@ class TPlaylistIntegration(TestCase):
     SONG = AudioFile({
                 "title": "two",
                 "artist": "mu",
-                "~filename": dummy_path(u"/dev/zero")})
+                "~filename": dummy_path("/dev/zero")})
     SONGS = [
         AudioFile({
                 "title": "one",
                 "artist": "piman",
-                "~filename": dummy_path(u"/dev/null")}),
+                "~filename": dummy_path("/dev/null")}),
         SONG,
         AudioFile({
                 "title": "three",
                 "artist": "boris",
-                "~filename": dummy_path(u"/bin/ls")}),
+                "~filename": dummy_path("/bin/ls")}),
         AudioFile({
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": dummy_path(u"/dev/random")}),
+                "~filename": dummy_path("/dev/random")}),
         SONG,
         ]
 
@@ -139,28 +139,28 @@ class TPlaylistIntegration(TestCase):
 
     def test_remove_song(self):
         # Check: library should have one song fewer (the duplicate)
-        self.failUnlessEqual(len(self.lib),
+        self.assertEqual(len(self.lib),
                              len(self.SONGS) - self.DUPLICATES)
-        self.failUnlessEqual(len(self.pl), len(self.SONGS))
+        self.assertEqual(len(self.pl), len(self.SONGS))
 
         # Remove an unduplicated song
         self.pl.remove_songs([self.SONGS[0]])
-        self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
+        self.assertEqual(len(self.pl), len(self.SONGS) - 1)
 
     def test_remove_duplicated_song(self):
-        self.failUnlessEqual(self.SONGS[1], self.SONGS[4])
+        self.assertEqual(self.SONGS[1], self.SONGS[4])
         self.pl.remove_songs([self.SONGS[1]])
-        self.failUnlessEqual(len(self.pl), len(self.SONGS) - 2)
+        self.assertEqual(len(self.pl), len(self.SONGS) - 2)
 
     def test_remove_multi_duplicated_song(self):
         self.pl.extend([self.SONG, self.SONG])
-        self.failUnlessEqual(len(self.pl), 7)
+        self.assertEqual(len(self.pl), 7)
         self.pl.remove_songs([self.SONG], False)
-        self.failUnlessEqual(len(self.pl), 7 - 2 - 2)
+        self.assertEqual(len(self.pl), 7 - 2 - 2)
 
     def test_remove_duplicated_song_leave_dupes(self):
         self.pl.remove_songs([self.SONGS[1]], True)
-        self.failUnlessEqual(len(self.pl), len(self.SONGS) - 1)
+        self.assertEqual(len(self.pl), len(self.SONGS) - 1)
 
     def test_remove_no_lib(self):
         pl = FileBackedPlaylist.new(self._dir, "Foobar")
@@ -176,7 +176,7 @@ class TPlaylistsBrowser(TestCase):
     ANOTHER_SONG = AudioFile({
         "title": "lonely",
         "artist": "new artist",
-        "~filename": dummy_path(u"/dev/urandom")})
+        "~filename": dummy_path("/dev/urandom")})
 
     ALL_SONGS = SONGS + [ANOTHER_SONG]
 
@@ -236,18 +236,18 @@ class TPlaylistsBrowser(TestCase):
     def _expected(self, bar, songs, sort):
         songs.sort()
         if self.expected is not None:
-            self.failUnlessEqual(self.expected, songs)
+            self.assertEqual(self.expected, songs)
         self.success = True
 
     def _expected_decline(self, bar, songs, sort):
         songs.sort()
         if self.expected_decline is not None:
-            self.failUnlessEqual(self.expected_decline, songs)
+            self.assertEqual(self.expected_decline, songs)
         self.success = True
 
     def _do(self):
         run_gtk_loop()
-        self.failUnless(self.success or self.expected is None)
+        self.assertTrue(self.success or self.expected is None)
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
@@ -289,23 +289,23 @@ class TPlaylistsBrowser(TestCase):
                          msg="Shouldn't have matched 'piman' on second list")
 
     def test_rename(self):
-        self.assertEquals(self.bar.playlists()[1], self.small)
+        self.assertEqual(self.bar.playlists()[1], self.small)
         assert self.bar._rename(0, "zBig")
-        self.assertEquals(self.bar.playlists()[0], self.small)
-        self.assertEquals(self.bar.playlists()[1].name, "zBig")
+        self.assertEqual(self.bar.playlists()[0], self.small)
+        self.assertEqual(self.bar.playlists()[1].name, "zBig")
 
     def test_rename_empty(self):
         assert not self.bar._rename(0, "", show_error=False)
 
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
-        self.failUnlessEqual(pattern_text, DEFAULT_PATTERN_TEXT)
-        self.failUnless("<~name>" in pattern_text)
+        self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
+        self.assertTrue("<~name>" in pattern_text)
 
     def test_drag_data_get(self):
         b = self.bar
         song = AudioFile()
-        song["~filename"] = fsnative(u"foo")
+        song["~filename"] = fsnative("foo")
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
         b._drag_data_get(None, None, sel, DND_QL, None)
@@ -315,9 +315,9 @@ class TPlaylistsBrowser(TestCase):
         song1 = AudioFile()
         song2 = AudioFile()
         song3 = AudioFile()
-        song1["~filename"] = fsnative(u"foo1")
-        song2["~filename"] = fsnative(u"foo2")
-        song3["~filename"] = fsnative(u"foo3")
+        song1["~filename"] = fsnative("foo1")
+        song2["~filename"] = fsnative("foo2")
+        song3["~filename"] = fsnative("foo3")
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song1, song2, song3])
         filenames = qltk.selection_get_filenames(sel)
@@ -327,16 +327,16 @@ class TPlaylistsBrowser(TestCase):
         # This is usually called by __drag_data_received, but that is heavily
         # dependent on gtk-views, so is more conveniently called manually.
         b._add_drag_data_tracks_to_playlist(first_pl, filenames)
-        self.failUnlessEqual(len(first_pl), original_length + 3)
+        self.assertEqual(len(first_pl), original_length + 3)
 
     def test_playlist_drag_data_extend_decline(self):
         b = self.bar_decline
         song1 = AudioFile()
         song2 = AudioFile()
         song3 = AudioFile()
-        song1["~filename"] = fsnative(u"foo1")
-        song2["~filename"] = fsnative(u"foo2")
-        song3["~filename"] = fsnative(u"foo3")
+        song1["~filename"] = fsnative("foo1")
+        song2["~filename"] = fsnative("foo2")
+        song3["~filename"] = fsnative("foo3")
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song1, song2, song3])
         filenames = qltk.selection_get_filenames(sel)
@@ -344,7 +344,7 @@ class TPlaylistsBrowser(TestCase):
         first_pl = b.playlists()[0]
         original_length = len(first_pl)
         b._add_drag_data_tracks_to_playlist(first_pl, filenames)
-        self.failUnlessEqual(len(first_pl), original_length)
+        self.assertEqual(len(first_pl), original_length)
 
     def test_songs_deletion(self):
         b = self.bar
@@ -357,8 +357,8 @@ class TPlaylistsBrowser(TestCase):
                                            scroll=False, one=True)
         original_length = len(first_pl)
         ret = b.key_pressed(event)
-        self.failUnless(ret, msg="Didn't simulate a delete keypress")
-        self.failUnlessEqual(len(first_pl), original_length - 1)
+        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        self.assertEqual(len(first_pl), original_length - 1)
 
     def test_playlist_deletion_ACCEPT(self):
         b = self.bar
@@ -369,9 +369,9 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.failUnless(ret, msg="Didn't simulate a delete keypress")
-        self.failUnlessEqual(len(b.playlists()), orig_length - 1)
-        self.failUnlessEqual(b.playlists()[0], second_pl)
+        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        self.assertEqual(len(b.playlists()), orig_length - 1)
+        self.assertEqual(b.playlists()[0], second_pl)
 
     def test_playlist_deletion_CANCEL(self):
         b = self.bar_decline
@@ -382,10 +382,10 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.failUnless(ret, msg="Didn't simulate a delete keypress")
-        self.failUnlessEqual(len(b.playlists()), orig_length)
-        self.failUnlessEqual(b.playlists()[0], first_pl)
-        self.failUnlessEqual(b.playlists()[1], second_pl)
+        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        self.assertEqual(len(b.playlists()), orig_length)
+        self.assertEqual(b.playlists()[0], first_pl)
+        self.assertEqual(b.playlists()[1], second_pl)
 
     def test_import(self):
         def fns(songs):
@@ -408,7 +408,7 @@ class TPlaylistsBrowser(TestCase):
         assert len(pls) == 3, f"Got PL rows: {', '.join(str(pl) for pl in pls)}"
         # Leading underscore makes it always the last entry
         imported = pls[-1]
-        self.failUnlessEqual(fns(imported.songs), fns(SONGS))
+        self.assertEqual(fns(imported.songs), fns(SONGS))
 
     def test_no_pl_lib(self):
         """Probably not possible in real runtime situations"""
@@ -451,8 +451,8 @@ class TPlaylistsBrowser(TestCase):
 class TPlaylistUtils(TestCase):
 
     def test_naming(self):
-        self.failUnlessEqual(_name_for("/foo/bar.m3u"), "bar")
-        self.failUnlessEqual(_name_for("/foo/Will.I.Am.m3u"), "Will.I.Am")
+        self.assertEqual(_name_for("/foo/bar.m3u"), "bar")
+        self.assertEqual(_name_for("/foo/Will.I.Am.m3u"), "Will.I.Am")
 
     def test_naming_default(self):
-        self.failUnlessEqual(_name_for(""), __("New Playlist"))
+        self.assertEqual(_name_for(""), __("New Playlist"))

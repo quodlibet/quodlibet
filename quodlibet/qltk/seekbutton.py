@@ -65,7 +65,7 @@ class TimeLabel(Gtk.Label):
 
         self._disabled = disabled
         if disabled:
-            self.set_text(u"‒\u2236‒‒")
+            self.set_text("‒\u2236‒‒")
         else:
             self.set_time(self._last_time)
 
@@ -241,7 +241,7 @@ class SeekButton(HSlider):
         self.__remaining = c
         m.append(c)
         m.append(SeparatorMenuItem())
-        i = qltk.MenuItem(_(u"_Edit Bookmarks…"), Icons.EDIT)
+        i = qltk.MenuItem(_("_Edit Bookmarks…"), Icons.EDIT)
 
         def edit_bookmarks_cb(menu_item):
             window = bookmarks.EditBookmarks(self, library, player)

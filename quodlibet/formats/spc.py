@@ -25,7 +25,7 @@ class SPCFile(AudioFile):
                 head = h.read(46)
                 if len(head) != 46 or \
                         head[:27] != b"SNES-SPC700 Sound File Data":
-                    raise IOError("Not a valid SNES-SPC700 file")
+                    raise OSError("Not a valid SNES-SPC700 file")
 
                 if head[35:35 + 1] == b"\x1a":
                     data = h.read(210)

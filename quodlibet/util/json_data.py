@@ -5,9 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
-from typing import Dict
 import json
 from collections import namedtuple
 
@@ -31,7 +29,7 @@ class JSONObject:
     # Override this to specify a set of field names,
     # or a dict of field: FieldData
     # Must include "name" if dict is specified.
-    FIELDS: Dict[str, Field] = {}
+    FIELDS: dict[str, Field] = {}
 
     @classmethod
     def _should_store(cls, field_name):
@@ -71,8 +69,7 @@ class JSONObject:
         return self.data < other.data
 
     def __str__(self):
-        return "<%s '%s' with %s>" % (self.__class__.__name__,
-                                      self.name, self.json)
+        return f"<{self.__class__.__name__} '{self.name}' with {self.json}>"
 
 
 class JSONObjectDict(dict):
@@ -99,8 +96,8 @@ class JSONObjectDict(dict):
                 try:
                     new[name] = item_cls(**blob)
                 except TypeError as e:
-                    raise IOError("Couldn't instantiate %s from JSON (%s)"
-                                  % (item_cls.__name__, e)) from e
+                    msg = f"Couldn't instantiate {item_cls.__name__} from JSON ({e})"
+                    raise OSError(msg) from e
         return new
 
     @classmethod
@@ -116,11 +113,9 @@ class JSONObjectDict(dict):
                     print_d(msg)
             else:
                 if not j.name and raise_errors:
-                    raise ValueError("Null key for %s object %s"
-                                     % (cls.__name__, j))
+                    raise ValueError(f"Null key for {cls.__name__} object {j}")
                 if j.name in new:
-                    print_w("Duplicate %s found named '%s'. Removing..."
-                            % (cls.__name__, j.name))
+                    print_w(f"Duplicate {cls.__name__} found: '{j.name}'. Removing…")
                 new[j.name] = j
         return new
 
@@ -141,7 +136,6 @@ class JSONObjectDict(dict):
             try:
                 with open(filename, "wb") as f:
                     f.write(json_str)
-            except IOError as e:
-                print_w("Couldn't write JSON for %s object(s) (%s)"
-                        % (type(self).__name__, e))
+            except OSError as e:
+                print_w(f"Couldn't write JSON for {type(self).__name__} object(s) ({e})")
         return json_str

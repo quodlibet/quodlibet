@@ -115,7 +115,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
 
         # Read saved searches from file
         self.queries = {}
-        with open(self.path_query, "r", encoding="utf-8") as query_file:
+        with open(self.path_query, encoding="utf-8") as query_file:
             for query_string in query_file:
                 name = next(query_file).strip()
                 self.queries[name] = Query(query_string.strip())
@@ -181,7 +181,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         # Export pattern frame
         export_pattern_combo = ComboBoxEntrySave(
             self.path_pattern, [self.default_export_pattern],
-            title=_("Path Patterns"), edit_title=_(u"Edit saved patterns…"))
+            title=_("Path Patterns"), edit_title=_("Edit saved patterns…"))
         export_pattern_combo.enable_clear_button()
         export_pattern_combo.show_all()
         export_pattern_entry = export_pattern_combo.get_child()
@@ -923,8 +923,8 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         """
         # Remove diacritics (accents)
         safe_filename = unicodedata.normalize("NFKD", str(input_path))
-        safe_filename = u"".join(
-            [c for c in safe_filename if not unicodedata.combining(c)])
+        safe_filename = "".join(c for c in safe_filename
+                                if not unicodedata.combining(c))
 
         if os.name != "nt":
             # Ensure that Win32-incompatible chars are always removed.

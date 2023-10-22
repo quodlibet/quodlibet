@@ -31,7 +31,7 @@ def dbus_unicode_validate(text):
             cps.append(c)
         else:
             cps.append(0xFFFD)
-    return u"".join(map(chr, cps))
+    return "".join(map(chr, cps))
 
 
 def list_spec_properties(spec):

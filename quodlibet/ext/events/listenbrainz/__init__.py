@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 Ian Campbell <ijc@hellion.org.uk>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -22,7 +21,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List, Tuple
 import os
 import threading
 import time
@@ -78,11 +76,11 @@ def config_get_tags():
     try:
         return next(parser)
     except Exception as e:
-        print_d('Failed to parse tags "%s": %s' % tags, e)
+        print_d('Failed to parse tags "{}": {}'.format(*tags), e)
         return []
 
 
-class ListenBrainzSubmitQueue():
+class ListenBrainzSubmitQueue:
     """Manages the submit queue for listens. Works independently of the
     plugin being enabled; other plugins may use submit() to queue songs for
     submission.
@@ -91,7 +89,7 @@ class ListenBrainzSubmitQueue():
 
     # These objects are shared across instances, to allow other plugins to
     # queue listens in future versions of QL.
-    queue: List[Tuple[int, listenbrainz.Track]] = []
+    queue: list[tuple[int, listenbrainz.Track]] = []
     condition = threading.Condition()
 
     def set_nowplaying(self, song):
@@ -183,7 +181,7 @@ class ListenBrainzSubmitQueue():
             if v is not None and v != []:
                 additional_info[k] = v
 
-        print_d("Track(%s,%s,%s,%s)" % (artist, title, album, additional_info))
+        print_d(f"Track({artist},{title},{album},{additional_info})")
         return listenbrainz.Track(artist, title, album, additional_info)
 
     def __init__(self):
@@ -207,7 +205,7 @@ class ListenBrainzSubmitQueue():
                 disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.DUMP)
             self.queue += disk_queue
-        except (EnvironmentError, PickleError):
+        except (OSError, PickleError):
             pass
 
     @classmethod
@@ -216,7 +214,7 @@ class ListenBrainzSubmitQueue():
             try:
                 with open(cls.DUMP, "wb") as disk_queue_file:
                     pickle_dump(cls.queue, disk_queue_file)
-            except (EnvironmentError, PickleError):
+            except (OSError, PickleError):
                 pass
 
     # Must be called with self.condition acquired
@@ -395,8 +393,7 @@ class ListenbrainzSubmission(EventPlugin):
 
     def song_excluded(self, song):
         if self.exclude and Query(self.exclude).search(song):
-            print_d("%s is excluded by %s" %
-                    (song("~artist~title"), self.exclude))
+            print_d(f"{song('~artist~title')} is excluded by {self.exclude}")
             return True
         return False
 

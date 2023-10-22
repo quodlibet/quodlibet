@@ -1,23 +1,23 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2012 Christoph Reiter
-#           2016-21 Nick Boultbee
+#           2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List, Type, Union, cast
+from typing import cast
 
 from quodlibet import util
 from quodlibet.util.importhelper import load_dir_modules
 
 from ._base import Browser
 
-browsers: List[Type[Browser]] = []
+browsers: list[type[Browser]] = []
 
 BrowserName = str
-BrowserKey = Union[int, BrowserName]
+BrowserKey = int | BrowserName
 """Either the index or the string key of the browser"""
 
 default = None
@@ -69,7 +69,7 @@ def name(browser: Browser) -> BrowserName:
     return browser.keys[0]
 
 
-def get(i: BrowserKey) -> Type[Browser]:
+def get(i: BrowserKey) -> type[Browser]:
     """Return a constructor for a browser, either given by number, a string
     of the number, or the name.
 

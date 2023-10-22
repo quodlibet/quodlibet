@@ -62,7 +62,7 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
             data=data, headers=headers)
 
         urlopen(req, timeout=timeout).close()
-    except EnvironmentError as e:
+    except OSError as e:
         raise SentryError(e) from e
 
 
@@ -107,9 +107,9 @@ class CapturedException:
 
         def compact(l):
             level = len(l) - len(l.lstrip())
-            return u" " * (level // 4) + l.lstrip()
+            return " " * (level // 4) + l.lstrip()
 
-        return u"\n".join(map(compact, lines))
+        return "\n".join(map(compact, lines))
 
     def set_comment(self, comment):
         """Attach a user provided comment to the error.
