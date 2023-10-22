@@ -77,7 +77,7 @@ msgstr "Сортировать _по…"
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:921
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Настройки"
 
@@ -121,7 +121,7 @@ msgstr "Треки не в альбоме"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:266
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:267
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -132,7 +132,7 @@ msgstr[2] "%d треков"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:270
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:271
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -188,7 +188,7 @@ msgstr "Браузер фонотеки"
 #: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:551 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:561
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -229,7 +229,7 @@ msgstr "Св_ои"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1303
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Добавить"
@@ -280,7 +280,7 @@ msgstr "_Применить"
 #: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:354
+#: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/editplaycount.py:46
 #: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -295,7 +295,7 @@ msgstr "_Применить"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1429 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_Отмена"
@@ -757,7 +757,7 @@ msgid "_Add Tracks"
 msgstr "_Добавить треки"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
 msgid "New Playlist"
 msgstr "Новый плейлист"
 
@@ -1828,7 +1828,7 @@ msgstr "Имя предустановки для сохранения:"
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
-#: quodlibet/ext/songsmenu/brainz/widgets.py:355
+#: quodlibet/ext/songsmenu/brainz/widgets.py:356
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
@@ -2218,7 +2218,7 @@ msgid "Connection Error"
 msgstr "Ошибка соединения"
 
 #: quodlibet/ext/events/notify.py:208 quodlibet/ext/events/notify.py:368
-#: quodlibet/ext/events/notify.py:410
+#: quodlibet/ext/events/notify.py:413
 msgid "Couldn't connect to notification daemon."
 msgstr "Не удалось подключиться к системе уведомлений."
 
@@ -2230,7 +2230,7 @@ msgstr "Системные уведомления"
 msgid "Displays a notification when the song changes."
 msgstr "Показывать уведомление при смене трека."
 
-#: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
+#: quodlibet/ext/events/notify.py:395 quodlibet/qltk/unity.py:62
 msgid "Next"
 msgstr "Следующий"
 
@@ -3128,24 +3128,24 @@ msgid "_Show %(application-name)s"
 msgstr "_Показать %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1165
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:952
+#: quodlibet/qltk/quodlibetwindow.py:1166
 msgid "_Play"
 msgstr "_Играть"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1168
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "_Пауза"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:946
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:947
 msgid "Pre_vious"
 msgstr "_Предыдущий"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:956
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:957
 msgid "_Next"
 msgstr "_Следующий"
 
@@ -3162,17 +3162,17 @@ msgid "Stop _After This Song"
 msgstr "Стоп после _трека"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:917
+#: quodlibet/qltk/quodlibetwindow.py:918
 msgid "Open _Browser"
 msgstr "В новом о_кне"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:936 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Править т_еги"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:879 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Информация"
 
@@ -3181,7 +3181,7 @@ msgid "Play_lists"
 msgstr "Плейли_сты"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:931
+#: quodlibet/qltk/quodlibetwindow.py:932
 msgid "_Quit"
 msgstr "_Выход"
 
@@ -4002,7 +4002,7 @@ msgid "_Search"
 msgstr "На_йти"
 
 #: quodlibet/ext/songsmenu/albumart.py:720
-#: quodlibet/ext/songsmenu/brainz/widgets.py:452
+#: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr "Поиск…"
 
@@ -4105,37 +4105,37 @@ msgstr "Название"
 msgid "Artist"
 msgstr "Исполнитель"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:352
+#: quodlibet/ext/songsmenu/brainz/widgets.py:353
 msgid "MusicBrainz lookup"
 msgstr "Поиск на MusicBrainz"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:375
+#: quodlibet/ext/songsmenu/brainz/widgets.py:376
 msgid "_Query:"
 msgstr "_Запрос:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:378
+#: quodlibet/ext/songsmenu/brainz/widgets.py:379
 msgid "S_earch"
 msgstr "Н_айти"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:391
+#: quodlibet/ext/songsmenu/brainz/widgets.py:392
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Результаты <i>(порядок можно изменить перетаскиванием)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:448
+#: quodlibet/ext/songsmenu/brainz/widgets.py:449
 msgid "Please enter a query."
 msgstr "Введите запрос."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:466
-#: quodlibet/ext/songsmenu/brainz/widgets.py:497
+#: quodlibet/ext/songsmenu/brainz/widgets.py:467
+#: quodlibet/ext/songsmenu/brainz/widgets.py:498
 msgid "Error encountered. Please retry."
 msgstr "Обнаружена ошибка. Повторите попытку."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:473
-#: quodlibet/ext/songsmenu/brainz/widgets.py:489
+#: quodlibet/ext/songsmenu/brainz/widgets.py:474
+#: quodlibet/ext/songsmenu/brainz/widgets.py:490
 msgid "Loading result…"
 msgstr "Загрузка результата…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:476
+#: quodlibet/ext/songsmenu/brainz/widgets.py:477
 msgid "No results found."
 msgstr "Ничего не найдено."
 
@@ -5223,12 +5223,12 @@ msgid "List tags"
 msgstr "Список тегов"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:464
+#: quodlibet/operon/commands.py:465
 msgid "Print terse output"
 msgstr "Показать сокращенный вывод"
 
 #: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:466
+#: quodlibet/operon/commands.py:467
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Столбцы и порядок отображения в сокращённом режиме (%s)"
@@ -5241,24 +5241,24 @@ msgstr "Показывать программные теги"
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
 #: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
 #: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
-#: quodlibet/operon/commands.py:436 quodlibet/operon/commands.py:471
-#: quodlibet/operon/commands.py:511 quodlibet/operon/commands.py:546
-#: quodlibet/operon/commands.py:588
+#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
+#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
+#: quodlibet/operon/commands.py:589
 msgid "Not enough arguments"
 msgstr "Недостаточно аргументов"
 
 #: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
 #: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:473
+#: quodlibet/operon/commands.py:474
 msgid "Too many arguments"
 msgstr "Слишком много аргументов"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:374
 msgid "Description"
 msgstr "Описание"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
+#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Значение"
@@ -5337,20 +5337,20 @@ msgstr "Не удается удалить {tagname} из {filename}"
 msgid "Remove a tag value"
 msgstr "Удалить значение тега"
 
-#: quodlibet/operon/commands.py:431
+#: quodlibet/operon/commands.py:432
 msgid "Add a tag value"
 msgstr "Добавить значение тега"
 
-#: quodlibet/operon/commands.py:447 quodlibet/operon/commands.py:679
+#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
 #, python-format
 msgid "Can not set %r"
 msgstr "Не удалось установить %r"
 
-#: quodlibet/operon/commands.py:459
+#: quodlibet/operon/commands.py:460
 msgid "List file information"
 msgstr "Вывести информацию о файле"
 
-#: quodlibet/operon/commands.py:505
+#: quodlibet/operon/commands.py:506
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -5358,54 +5358,54 @@ msgstr ""
 "Установить полученное изображение в качестве основного вложенного "
 "изображения и удалить все другие вложенные изображения"
 
-#: quodlibet/operon/commands.py:518
+#: quodlibet/operon/commands.py:519
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Не удалось загрузить файл: %r"
 
-#: quodlibet/operon/commands.py:525 quodlibet/operon/commands.py:554
+#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Изменение изображения %(file_name)s (%(file_format)s) не поддерживается"
 
-#: quodlibet/operon/commands.py:541
+#: quodlibet/operon/commands.py:542
 msgid "Remove all embedded images"
 msgstr "Удалить все вложенные изображения"
 
-#: quodlibet/operon/commands.py:571
+#: quodlibet/operon/commands.py:572
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Извлечь вложенные изображения в %(filepath)s"
 
-#: quodlibet/operon/commands.py:583
+#: quodlibet/operon/commands.py:584
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr "Путь к месту сохранения изображений (по умолчанию — рабочий каталог)"
 
-#: quodlibet/operon/commands.py:642
+#: quodlibet/operon/commands.py:643
 msgid "Rename files based on tags"
 msgstr "Переименование файлов на основе тегов"
 
-#: quodlibet/operon/commands.py:657
+#: quodlibet/operon/commands.py:658
 msgid "Fill tags based on the file path"
 msgstr "Заполнение тегов на основе пути к файлу"
 
-#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:307
+#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:307
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Файл"
 
-#: quodlibet/operon/commands.py:715
+#: quodlibet/operon/commands.py:716
 msgid "Fill tracknumbers for all files"
 msgstr "Заполнить номер трека для всех файлов"
 
-#: quodlibet/operon/commands.py:734
+#: quodlibet/operon/commands.py:735
 msgid "Print tags based on the given pattern"
 msgstr "Выводить теги на основе указанного шаблона"
 
-#: quodlibet/operon/commands.py:771
+#: quodlibet/operon/commands.py:772
 msgid "Display help information"
 msgstr "Вывести справку"
 
@@ -6073,15 +6073,15 @@ msgstr "_Отменить"
 msgid "_Redo"
 msgstr "_Вернуть"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:976
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "_О программе"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:998
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "_Проверить обновления…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:926
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Расширения"
@@ -6779,11 +6779,11 @@ msgstr "Редактор тегов"
 msgid "Updating for new ratings"
 msgstr "Обновлять оценки"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1010
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1011
 msgid "_Scan Library"
 msgstr "_Сканировать фонотеку"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1072
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1073
 msgid "Check for changes in your library"
 msgstr "Проверить наличие изменений в вашей фонотеке"
 
@@ -6819,7 +6819,7 @@ msgstr ""
 msgid "Scan Directories"
 msgstr "Сканировать папки"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -6883,135 +6883,135 @@ msgstr "Обзор фонотек_и"
 msgid "Toggle queue visibility"
 msgstr "Показать/скрыть очередь"
 
-#: quodlibet/qltk/quodlibetwindow.py:377
+#: quodlibet/qltk/quodlibetwindow.py:378
 msgid "Playback Error"
 msgstr "Ошибка воспроизведения"
 
-#: quodlibet/qltk/quodlibetwindow.py:385
+#: quodlibet/qltk/quodlibetwindow.py:386
 msgid "Set up library directories?"
 msgstr "Настроить каталоги фонотеки?"
 
-#: quodlibet/qltk/quodlibetwindow.py:386
+#: quodlibet/qltk/quodlibetwindow.py:387
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr "У вас нет настроенной фонотеки. Хотите сделать это сейчас?"
 
-#: quodlibet/qltk/quodlibetwindow.py:392
+#: quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Not Now"
 msgstr "_Не сейчас"
 
-#: quodlibet/qltk/quodlibetwindow.py:393
+#: quodlibet/qltk/quodlibetwindow.py:394
 msgid "_Set Up"
 msgstr "_Выбрать"
 
-#: quodlibet/qltk/quodlibetwindow.py:859
+#: quodlibet/qltk/quodlibetwindow.py:860
 msgid "Unable to add songs"
 msgstr "Не удалось добавить треки"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
+#: quodlibet/qltk/quodlibetwindow.py:861 quodlibet/qltk/quodlibetwindow.py:1312
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s использует неподдерживаемый протокол."
 
-#: quodlibet/qltk/quodlibetwindow.py:884
+#: quodlibet/qltk/quodlibetwindow.py:885
 msgid "_Jump to Playing Song"
 msgstr "Перейти _к текущему"
 
-#: quodlibet/qltk/quodlibetwindow.py:891
+#: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_File"
 msgstr "_Файл"
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_Song"
 msgstr "_Трек"
 
-#: quodlibet/qltk/quodlibetwindow.py:893
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_View"
 msgstr "_Вид"
 
-#: quodlibet/qltk/quodlibetwindow.py:894
+#: quodlibet/qltk/quodlibetwindow.py:895
 msgid "_Browse"
 msgstr "_Вид"
 
-#: quodlibet/qltk/quodlibetwindow.py:895
+#: quodlibet/qltk/quodlibetwindow.py:896
 msgid "_Control"
 msgstr "_Управление"
 
-#: quodlibet/qltk/quodlibetwindow.py:896
+#: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Help"
 msgstr "_Справка"
 
-#: quodlibet/qltk/quodlibetwindow.py:902
+#: quodlibet/qltk/quodlibetwindow.py:903
 msgid "_Add a Folder…"
 msgstr "Добавить пап_ку…"
 
-#: quodlibet/qltk/quodlibetwindow.py:907
+#: quodlibet/qltk/quodlibetwindow.py:908
 msgid "_Add a File…"
 msgstr "Добавить _файл…"
 
-#: quodlibet/qltk/quodlibetwindow.py:912
+#: quodlibet/qltk/quodlibetwindow.py:913
 msgid "_Add a Location…"
 msgstr "Добавить _адрес…"
 
-#: quodlibet/qltk/quodlibetwindow.py:941
+#: quodlibet/qltk/quodlibetwindow.py:942
 msgid "Edit Bookmarks…"
 msgstr "Закладки…"
 
-#: quodlibet/qltk/quodlibetwindow.py:961
+#: quodlibet/qltk/quodlibetwindow.py:962
 msgid "Stop"
 msgstr "Стоп"
 
-#: quodlibet/qltk/quodlibetwindow.py:966
+#: quodlibet/qltk/quodlibetwindow.py:967
 msgid "Stop After This Song"
 msgstr "Стоп после трека"
 
-#: quodlibet/qltk/quodlibetwindow.py:972
+#: quodlibet/qltk/quodlibetwindow.py:973
 msgid "_Keyboard Shortcuts"
 msgstr "Сочетания клавиш"
 
-#: quodlibet/qltk/quodlibetwindow.py:981
+#: quodlibet/qltk/quodlibetwindow.py:982
 msgid "Online Help"
 msgstr "Справка онлайн"
 
-#: quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/quodlibetwindow.py:991
 msgid "Search Help"
 msgstr "Справка онлайн по поиску"
 
-#: quodlibet/qltk/quodlibetwindow.py:1300
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Add a Location"
 msgstr "Добавить адрес"
 
-#: quodlibet/qltk/quodlibetwindow.py:1301
+#: quodlibet/qltk/quodlibetwindow.py:1302
 msgid "Enter the location of an audio file:"
 msgstr "Введите адрес аудиофайла:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1306
-#: quodlibet/qltk/quodlibetwindow.py:1310
+#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1311
 msgid "Unable to add location"
 msgstr "Не удалось добавить адрес"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1308
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s не является корректным адресом."
 
-#: quodlibet/qltk/quodlibetwindow.py:1319
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1320
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "Add Music"
 msgstr "Добавить музыку"
 
-#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1320 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "Добавить пап_ки"
 
-#: quodlibet/qltk/quodlibetwindow.py:1326
+#: quodlibet/qltk/quodlibetwindow.py:1327
 msgid "Music Files"
 msgstr "Музыкальные файлы"
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "_Add Files"
 msgstr "Добавить _файлы"
 
-#: quodlibet/qltk/quodlibetwindow.py:1419
+#: quodlibet/qltk/quodlibetwindow.py:1420
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
@@ -7019,7 +7019,7 @@ msgstr[0] "Уверены, что хотите поставить %d песню 
 msgstr[1] "Уверены, что хотите поставить %d песни в очередь?"
 msgstr[2] "Уверены, что хотите поставить %d песен в очередь?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1429
+#: quodlibet/qltk/quodlibetwindow.py:1430
 msgid "_Enqueue"
 msgstr "_В очередь"
 
@@ -7094,8 +7094,8 @@ msgstr "Переместить обложку альбома"
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
-"Смотрите какие изображения будут перемещены в строке конфигурации «[albumart]"
-" search_filenames»"
+"Смотрите какие изображения будут перемещены в строке конфигурации "
+"«[albumart] search_filenames»"
 
 #: quodlibet/qltk/renamefiles.py:216
 msgid "_Overwrite album art at target"
@@ -7563,7 +7563,7 @@ msgstr "Воспроизведение/пауза"
 msgid "Previous"
 msgstr "Предыдущий"
 
-#: quodlibet/qltk/views.py:935
+#: quodlibet/qltk/views.py:937
 #, python-format
 msgid "and %d more…"
 msgstr "и ещё %d…"
@@ -7614,15 +7614,15 @@ msgstr ""
 "\n"
 "Посетите <a href='%(url)s'>веб-сайт</a>"
 
-#: quodlibet/util/collection.py:347
+#: quodlibet/util/collection.py:348
 msgid "Empty Playlist"
 msgstr "Пустой плейлист"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:446
 msgid "Playlists must have a name"
 msgstr "Плейлисты должны иметь имя"
 
-#: quodlibet/util/collection.py:649
+#: quodlibet/util/collection.py:650
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Плейлист с названием %(name)s уже существует в %(path)s"
