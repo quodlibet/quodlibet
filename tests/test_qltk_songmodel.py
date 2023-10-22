@@ -142,6 +142,18 @@ class TPlaylistModel(TestCase):
                     f"expected different item at index {i}")
             self.pl.previous()
 
+    def test_shuffle_next_after_remove(self):
+        self.pl.order = OrderShuffle()
+        history = []
+        items = set(self.pl.itervalues())
+        self.pl.next()
+        for _ in range(10):
+            history.append(self.pl.current)
+            iter = self.pl.current_iter
+            self.pl.next()
+            self.pl.remove(iter)
+        self.assertSetEqual(set(history), items)
+
     def test_shuffle_repeat_forever(self):
         self.pl.order = RepeatSongForever(OrderShuffle())
         old = self.pl.current

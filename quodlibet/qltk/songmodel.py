@@ -308,6 +308,14 @@ class PlaylistModel(TrackCurrentModel):
         self.order.reset(self)
         super().set(songs)
 
+    def remove(self, iter_):
+        self.order.reset(self)
+        super().remove(iter_)
+
+    def clear(self):
+        self.order.reset(self)
+        super().clear()
+
     def reset(self):
         """Switch to the first song"""
 
