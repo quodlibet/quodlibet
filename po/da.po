@@ -72,7 +72,7 @@ msgstr "Sortér _efter…"
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:921
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Præferencer"
 
@@ -114,7 +114,7 @@ msgstr "Sange som ikke er i et album"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:266
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:267
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -124,7 +124,7 @@ msgstr[1] "%d spor"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:270
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:271
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -179,7 +179,7 @@ msgstr "Bibliotek-browser"
 #: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:551 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:561
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -219,7 +219,7 @@ msgstr "_Brugerdefineret"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1303
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "_Tilføj"
@@ -270,7 +270,7 @@ msgstr "_Anvend"
 #: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:354
+#: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/editplaycount.py:46
 #: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -285,7 +285,7 @@ msgstr "_Anvend"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1429 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "_Annuller"
@@ -748,7 +748,7 @@ msgid "_Add Tracks"
 msgstr "Spor"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
 msgid "New Playlist"
 msgstr "Ny spilleliste"
 
@@ -1820,7 +1820,7 @@ msgstr ""
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
-#: quodlibet/ext/songsmenu/brainz/widgets.py:355
+#: quodlibet/ext/songsmenu/brainz/widgets.py:356
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
@@ -2219,7 +2219,7 @@ msgid "Connection Error"
 msgstr "Forbindelsesfejl"
 
 #: quodlibet/ext/events/notify.py:208 quodlibet/ext/events/notify.py:368
-#: quodlibet/ext/events/notify.py:410
+#: quodlibet/ext/events/notify.py:413
 msgid "Couldn't connect to notification daemon."
 msgstr "Kunne ikke oprette forbindelse til notifikationsdæmon."
 
@@ -2231,7 +2231,7 @@ msgstr "Sang-notifikationer"
 msgid "Displays a notification when the song changes."
 msgstr "Viser en notifikation når sangen skiftes."
 
-#: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
+#: quodlibet/ext/events/notify.py:395 quodlibet/qltk/unity.py:62
 msgid "Next"
 msgstr "Næste"
 
@@ -3108,24 +3108,24 @@ msgid "_Show %(application-name)s"
 msgstr "_Vis %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1165
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:952
+#: quodlibet/qltk/quodlibetwindow.py:1166
 msgid "_Play"
 msgstr "_Afspil"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1168
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "_Pause"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:946
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:947
 msgid "Pre_vious"
 msgstr "_Forrige"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:956
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:957
 msgid "_Next"
 msgstr "_Næste"
 
@@ -3142,17 +3142,17 @@ msgid "Stop _After This Song"
 msgstr "Stop _efter denne sang"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:917
+#: quodlibet/qltk/quodlibetwindow.py:918
 msgid "Open _Browser"
 msgstr "Åbn _browser"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:936 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "Rediger _tags"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:879 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "_Information"
 
@@ -3161,7 +3161,7 @@ msgid "Play_lists"
 msgstr "_Spillelister"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:931
+#: quodlibet/qltk/quodlibetwindow.py:932
 msgid "_Quit"
 msgstr "_Afslut"
 
@@ -4000,7 +4000,7 @@ msgid "_Search"
 msgstr "_Søg"
 
 #: quodlibet/ext/songsmenu/albumart.py:720
-#: quodlibet/ext/songsmenu/brainz/widgets.py:452
+#: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr "Søger…"
 
@@ -4103,37 +4103,37 @@ msgstr "Titel"
 msgid "Artist"
 msgstr "Kunstner"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:352
+#: quodlibet/ext/songsmenu/brainz/widgets.py:353
 msgid "MusicBrainz lookup"
 msgstr "MusicBrainz-opslag"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:375
+#: quodlibet/ext/songsmenu/brainz/widgets.py:376
 msgid "_Query:"
 msgstr "_Anmodning:"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:378
+#: quodlibet/ext/songsmenu/brainz/widgets.py:379
 msgid "S_earch"
 msgstr "_Søg"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:391
+#: quodlibet/ext/songsmenu/brainz/widgets.py:392
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "Resultater <i>(træk for at ændre rækkefølge)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:448
+#: quodlibet/ext/songsmenu/brainz/widgets.py:449
 msgid "Please enter a query."
 msgstr "Indtast venligst en anmodning."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:466
-#: quodlibet/ext/songsmenu/brainz/widgets.py:497
+#: quodlibet/ext/songsmenu/brainz/widgets.py:467
+#: quodlibet/ext/songsmenu/brainz/widgets.py:498
 msgid "Error encountered. Please retry."
 msgstr "Stødte på fejl. Prøv venligst igen."
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:473
-#: quodlibet/ext/songsmenu/brainz/widgets.py:489
+#: quodlibet/ext/songsmenu/brainz/widgets.py:474
+#: quodlibet/ext/songsmenu/brainz/widgets.py:490
 msgid "Loading result…"
 msgstr "Indlæser resultat…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:476
+#: quodlibet/ext/songsmenu/brainz/widgets.py:477
 msgid "No results found."
 msgstr "Ingen resultater fundet."
 
@@ -5225,12 +5225,12 @@ msgid "List tags"
 msgstr "Vis tags"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:464
+#: quodlibet/operon/commands.py:465
 msgid "Print terse output"
 msgstr "Vis kortfattet output"
 
 #: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:466
+#: quodlibet/operon/commands.py:467
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Kolonner til at vise og bestemme rækkefølge i kortfattet tilstand (%s)"
@@ -5243,24 +5243,24 @@ msgstr "Vis også programmatiske tags"
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
 #: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
 #: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
-#: quodlibet/operon/commands.py:436 quodlibet/operon/commands.py:471
-#: quodlibet/operon/commands.py:511 quodlibet/operon/commands.py:546
-#: quodlibet/operon/commands.py:588
+#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
+#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
+#: quodlibet/operon/commands.py:589
 msgid "Not enough arguments"
 msgstr "Ikke nok argumenter"
 
 #: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
 #: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:473
+#: quodlibet/operon/commands.py:474
 msgid "Too many arguments"
 msgstr "For mange argumenter"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:374
 msgid "Description"
 msgstr "Beskrivelse"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
+#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Værdi"
@@ -5339,20 +5339,20 @@ msgstr "Kan ikke fjerne %r fra %r"
 msgid "Remove a tag value"
 msgstr "Fjern en tag-værdi"
 
-#: quodlibet/operon/commands.py:431
+#: quodlibet/operon/commands.py:432
 msgid "Add a tag value"
 msgstr "Tilføj en tag-værdi"
 
-#: quodlibet/operon/commands.py:447 quodlibet/operon/commands.py:679
+#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
 #, python-format
 msgid "Can not set %r"
 msgstr "Kan ikke sætte %r"
 
-#: quodlibet/operon/commands.py:459
+#: quodlibet/operon/commands.py:460
 msgid "List file information"
 msgstr "Vis filinformation"
 
-#: quodlibet/operon/commands.py:505
+#: quodlibet/operon/commands.py:506
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -5360,53 +5360,53 @@ msgstr ""
 "Sæt det medfølgende billede som primære indlejret billede og fjern alle "
 "andre indlejrede billeder"
 
-#: quodlibet/operon/commands.py:518
+#: quodlibet/operon/commands.py:519
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Kunne ikke indlæse billedfilen: %r"
 
-#: quodlibet/operon/commands.py:525 quodlibet/operon/commands.py:554
+#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr "Billedredigering understøttes ikke for %(file_name)s (%(file_format)s)"
 
-#: quodlibet/operon/commands.py:541
+#: quodlibet/operon/commands.py:542
 msgid "Remove all embedded images"
 msgstr "Fejl alle indlejrede billeder"
 
-#: quodlibet/operon/commands.py:571
+#: quodlibet/operon/commands.py:572
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Udtræk indlejrede billeder til %(filepath)s"
 
-#: quodlibet/operon/commands.py:583
+#: quodlibet/operon/commands.py:584
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr "Sti til hvor billederne vil blive gemt (standard er arbejdsmappen)"
 
-#: quodlibet/operon/commands.py:642
+#: quodlibet/operon/commands.py:643
 msgid "Rename files based on tags"
 msgstr "Omdøb filer baseret på tags"
 
-#: quodlibet/operon/commands.py:657
+#: quodlibet/operon/commands.py:658
 msgid "Fill tags based on the file path"
 msgstr "Udfyld tags baseret på filstien"
 
-#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:307
+#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:307
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Fil"
 
-#: quodlibet/operon/commands.py:715
+#: quodlibet/operon/commands.py:716
 msgid "Fill tracknumbers for all files"
 msgstr "Udfyld spornumre for alle filer"
 
-#: quodlibet/operon/commands.py:734
+#: quodlibet/operon/commands.py:735
 msgid "Print tags based on the given pattern"
 msgstr "Vis tags baseret på det givne mønster"
 
-#: quodlibet/operon/commands.py:771
+#: quodlibet/operon/commands.py:772
 msgid "Display help information"
 msgstr "Viser hjælpinformation"
 
@@ -6080,15 +6080,15 @@ msgstr "_Fortryd"
 msgid "_Redo"
 msgstr "_Omgør"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:976
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "_Om"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:998
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "_Søg efter opdateringer…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:926
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Plugins"
@@ -6782,11 +6782,11 @@ msgstr "Tag-redigering"
 msgid "Updating for new ratings"
 msgstr "Opdaterer for nye bedømmelser"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1010
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1011
 msgid "_Scan Library"
 msgstr "_Skan bibliotek"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1072
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1073
 msgid "Check for changes in your library"
 msgstr "Søg efter ændringer i dit bibliotek"
 
@@ -6819,7 +6819,7 @@ msgstr ""
 msgid "Scan Directories"
 msgstr "Mapper som skal skannes"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -6884,144 +6884,144 @@ msgstr "_Gennemse bibliotek"
 msgid "Toggle queue visibility"
 msgstr "Køens synlighed til/fra"
 
-#: quodlibet/qltk/quodlibetwindow.py:377
+#: quodlibet/qltk/quodlibetwindow.py:378
 msgid "Playback Error"
 msgstr "Fejl ved afspilning"
 
-#: quodlibet/qltk/quodlibetwindow.py:385
+#: quodlibet/qltk/quodlibetwindow.py:386
 msgid "Set up library directories?"
 msgstr "Opsæt biblioteksmapper?"
 
-#: quodlibet/qltk/quodlibetwindow.py:386
+#: quodlibet/qltk/quodlibetwindow.py:387
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr "Du har ikke opsat nogen musikbiblioteker. Vil du gøre det nu?"
 
-#: quodlibet/qltk/quodlibetwindow.py:392
+#: quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Not Now"
 msgstr "_Ikke nu"
 
-#: quodlibet/qltk/quodlibetwindow.py:393
+#: quodlibet/qltk/quodlibetwindow.py:394
 msgid "_Set Up"
 msgstr "_Sæt op"
 
-#: quodlibet/qltk/quodlibetwindow.py:859
+#: quodlibet/qltk/quodlibetwindow.py:860
 msgid "Unable to add songs"
 msgstr "Kan ikke tilføje sange"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
+#: quodlibet/qltk/quodlibetwindow.py:861 quodlibet/qltk/quodlibetwindow.py:1312
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s bruger en ikke-understøttet protokol."
 
-#: quodlibet/qltk/quodlibetwindow.py:884
+#: quodlibet/qltk/quodlibetwindow.py:885
 msgid "_Jump to Playing Song"
 msgstr "_Hop til sangen som afspilles"
 
 # scootergrisen: jeg prøver med "Arkiv" fremfor "Fil/Filer" for at afprøve det lidt
-#: quodlibet/qltk/quodlibetwindow.py:891
+#: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_File"
 msgstr "_Arkiv"
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_Song"
 msgstr "_Sang"
 
-#: quodlibet/qltk/quodlibetwindow.py:893
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_View"
 msgstr "_Visning"
 
-#: quodlibet/qltk/quodlibetwindow.py:894
+#: quodlibet/qltk/quodlibetwindow.py:895
 msgid "_Browse"
 msgstr "_Gennemse"
 
-#: quodlibet/qltk/quodlibetwindow.py:895
+#: quodlibet/qltk/quodlibetwindow.py:896
 msgid "_Control"
 msgstr "_Betjening"
 
-#: quodlibet/qltk/quodlibetwindow.py:896
+#: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Help"
 msgstr "_Hjælp"
 
-#: quodlibet/qltk/quodlibetwindow.py:902
+#: quodlibet/qltk/quodlibetwindow.py:903
 msgid "_Add a Folder…"
 msgstr "_Tilføj en mappe…"
 
-#: quodlibet/qltk/quodlibetwindow.py:907
+#: quodlibet/qltk/quodlibetwindow.py:908
 msgid "_Add a File…"
 msgstr "_Tilføj en fil…"
 
-#: quodlibet/qltk/quodlibetwindow.py:912
+#: quodlibet/qltk/quodlibetwindow.py:913
 msgid "_Add a Location…"
 msgstr "_Tilføj en placering…"
 
-#: quodlibet/qltk/quodlibetwindow.py:941
+#: quodlibet/qltk/quodlibetwindow.py:942
 msgid "Edit Bookmarks…"
 msgstr "Rediger bogmærker…"
 
-#: quodlibet/qltk/quodlibetwindow.py:961
+#: quodlibet/qltk/quodlibetwindow.py:962
 #, fuzzy
 msgid "Stop"
 msgstr "_Stop"
 
-#: quodlibet/qltk/quodlibetwindow.py:966
+#: quodlibet/qltk/quodlibetwindow.py:967
 msgid "Stop After This Song"
 msgstr "Stop efter denne sang"
 
-#: quodlibet/qltk/quodlibetwindow.py:972
+#: quodlibet/qltk/quodlibetwindow.py:973
 msgid "_Keyboard Shortcuts"
 msgstr "_Tastaturgenveje"
 
-#: quodlibet/qltk/quodlibetwindow.py:981
+#: quodlibet/qltk/quodlibetwindow.py:982
 msgid "Online Help"
 msgstr "Onlinehjælp"
 
-#: quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/quodlibetwindow.py:991
 msgid "Search Help"
 msgstr "Søgehjælp"
 
-#: quodlibet/qltk/quodlibetwindow.py:1300
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Add a Location"
 msgstr "Tilføj en placering"
 
-#: quodlibet/qltk/quodlibetwindow.py:1301
+#: quodlibet/qltk/quodlibetwindow.py:1302
 msgid "Enter the location of an audio file:"
 msgstr "Indtast placeringen af en lydfil:"
 
-#: quodlibet/qltk/quodlibetwindow.py:1306
-#: quodlibet/qltk/quodlibetwindow.py:1310
+#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1311
 msgid "Unable to add location"
 msgstr "Kan ikke tilføje placering"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1308
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s er ikke en gyldig placering."
 
-#: quodlibet/qltk/quodlibetwindow.py:1319
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1320
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "Add Music"
 msgstr "Tilføj musik"
 
-#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1320 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "_Tilføj mapper"
 
-#: quodlibet/qltk/quodlibetwindow.py:1326
+#: quodlibet/qltk/quodlibetwindow.py:1327
 msgid "Music Files"
 msgstr "Musikfiler"
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "_Add Files"
 msgstr "_Tilføj filer"
 
-#: quodlibet/qltk/quodlibetwindow.py:1419
+#: quodlibet/qltk/quodlibetwindow.py:1420
 #, fuzzy, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
 msgstr[0] "Er du sikker på, at du vil fjerne alle sange?"
 msgstr[1] "Er du sikker på, at du vil fjerne alle sange?"
 
-#: quodlibet/qltk/quodlibetwindow.py:1429
+#: quodlibet/qltk/quodlibetwindow.py:1430
 #, fuzzy
 msgid "_Enqueue"
 msgstr "_Kø"
@@ -7564,7 +7564,7 @@ msgstr "Afspil/pause"
 msgid "Previous"
 msgstr "Forrige"
 
-#: quodlibet/qltk/views.py:935
+#: quodlibet/qltk/views.py:937
 #, python-format
 msgid "and %d more…"
 msgstr "og %d mere…"
@@ -7615,16 +7615,16 @@ msgstr ""
 "\n"
 "Besøg <a href='%(url)s'>webstedet</a>"
 
-#: quodlibet/util/collection.py:347
+#: quodlibet/util/collection.py:348
 #, fuzzy
 msgid "Empty Playlist"
 msgstr "Importér spilleliste"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:446
 msgid "Playlists must have a name"
 msgstr "Spillelister skal have et navn"
 
-#: quodlibet/util/collection.py:649
+#: quodlibet/util/collection.py:650
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "En spilleliste ved navn %s findes allerede."

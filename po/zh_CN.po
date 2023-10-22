@@ -69,7 +69,7 @@ msgstr "排序依据(_B) …"
 #: quodlibet/browsers/covergrid/main.py:92
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
-#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:921
+#: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "首选项(_P)"
 
@@ -109,7 +109,7 @@ msgstr "不在专辑里的曲目"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:266
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:267
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -118,7 +118,7 @@ msgstr[0] "%d 音轨"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:270
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:271
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -172,7 +172,7 @@ msgstr "曲库浏览器"
 #: quodlibet/browsers/_base.py:278 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:551 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:561
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -211,7 +211,7 @@ msgstr "自定义(_C)"
 #: quodlibet/browsers/paned/prefs.py:119
 #: quodlibet/browsers/playlists/menu.py:88 quodlibet/browsers/podcasts.py:242
 #: quodlibet/qltk/bookmarks.py:62 quodlibet/qltk/cbes.py:57
-#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1302
+#: quodlibet/qltk/edittags.py:330 quodlibet/qltk/quodlibetwindow.py:1303
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
 msgstr "添加"
@@ -262,7 +262,7 @@ msgstr "应用"
 #: quodlibet/ext/playlist/export_to_sonos.py:97
 #: quodlibet/ext/playlist/remove_duplicates.py:59
 #: quodlibet/ext/_shared/squeezebox/util.py:19
-#: quodlibet/ext/songsmenu/brainz/widgets.py:354
+#: quodlibet/ext/songsmenu/brainz/widgets.py:355
 #: quodlibet/ext/songsmenu/editplaycount.py:46
 #: quodlibet/ext/songsmenu/embedded.py:77
 #: quodlibet/ext/songsmenu/fingerprint/search.py:281
@@ -277,7 +277,7 @@ msgstr "应用"
 #: quodlibet/qltk/_editutils.py:41 quodlibet/qltk/getstring.py:28
 #: quodlibet/qltk/maskedbox.py:27 quodlibet/qltk/matchdialog.py:69
 #: quodlibet/qltk/msg.py:59 quodlibet/qltk/msg.py:98 quodlibet/qltk/msg.py:115
-#: quodlibet/qltk/quodlibetwindow.py:1428 quodlibet/qltk/ratingsmenu.py:39
+#: quodlibet/qltk/quodlibetwindow.py:1429 quodlibet/qltk/ratingsmenu.py:39
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
 msgstr "取消"
@@ -730,7 +730,7 @@ msgid "_Add Tracks"
 msgstr "添加曲目(_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:611
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
 msgid "New Playlist"
 msgstr "新播放列表"
 
@@ -1774,7 +1774,7 @@ msgstr "用于保存的预设名称："
 #: quodlibet/ext/events/synchronize_to_device.py:391
 #: quodlibet/ext/playlist/export_to_squeezebox.py:80
 #: quodlibet/ext/songsmenu/albumart.py:220
-#: quodlibet/ext/songsmenu/brainz/widgets.py:355
+#: quodlibet/ext/songsmenu/brainz/widgets.py:356
 #: quodlibet/ext/songsmenu/cover_download.py:386
 #: quodlibet/ext/songsmenu/fingerprint/search.py:278
 #: quodlibet/ext/songsmenu/html.py:76 quodlibet/ext/songsmenu/lastfmsync.py:204
@@ -2157,7 +2157,7 @@ msgid "Connection Error"
 msgstr "连接错误"
 
 #: quodlibet/ext/events/notify.py:208 quodlibet/ext/events/notify.py:368
-#: quodlibet/ext/events/notify.py:410
+#: quodlibet/ext/events/notify.py:413
 msgid "Couldn't connect to notification daemon."
 msgstr "无法连接到通知后台程序。"
 
@@ -2169,7 +2169,7 @@ msgstr "歌曲通知"
 msgid "Displays a notification when the song changes."
 msgstr "当歌曲切换时显示一条通知。"
 
-#: quodlibet/ext/events/notify.py:392 quodlibet/qltk/unity.py:62
+#: quodlibet/ext/events/notify.py:395 quodlibet/qltk/unity.py:62
 msgid "Next"
 msgstr "下一首"
 
@@ -3012,24 +3012,24 @@ msgid "_Show %(application-name)s"
 msgstr "显示(_S) %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:60
-#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:951
-#: quodlibet/qltk/quodlibetwindow.py:1165
+#: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:952
+#: quodlibet/qltk/quodlibetwindow.py:1166
 msgid "_Play"
 msgstr "播放 (_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:63
-#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1167
+#: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1168
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "暂停(_P)"
 
 #: quodlibet/ext/events/trayicon/menu.py:68
-#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:946
+#: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:947
 msgid "Pre_vious"
 msgstr "上一首(_V)"
 
 #: quodlibet/ext/events/trayicon/menu.py:71
-#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:956
+#: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:957
 msgid "_Next"
 msgstr "下一首(_N)"
 
@@ -3046,17 +3046,17 @@ msgid "Stop _After This Song"
 msgstr "这首曲目放完后就停止(_A)"
 
 #: quodlibet/ext/events/trayicon/menu.py:92
-#: quodlibet/qltk/quodlibetwindow.py:917
+#: quodlibet/qltk/quodlibetwindow.py:918
 msgid "Open _Browser"
 msgstr "打开新的浏览器(_B)"
 
 #: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:936 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:378
 msgid "Edit _Tags"
 msgstr "编辑标签(_T)"
 
 #: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:879 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:392
 msgid "_Information"
 msgstr "信息(_I)"
 
@@ -3065,7 +3065,7 @@ msgid "Play_lists"
 msgstr "播放列表(_L)"
 
 #: quodlibet/ext/events/trayicon/menu.py:132
-#: quodlibet/qltk/quodlibetwindow.py:931
+#: quodlibet/qltk/quodlibetwindow.py:932
 msgid "_Quit"
 msgstr "退出(_Q)"
 
@@ -3868,7 +3868,7 @@ msgid "_Search"
 msgstr "搜索(_S)"
 
 #: quodlibet/ext/songsmenu/albumart.py:720
-#: quodlibet/ext/songsmenu/brainz/widgets.py:452
+#: quodlibet/ext/songsmenu/brainz/widgets.py:453
 msgid "Searching…"
 msgstr "搜索中…"
 
@@ -3969,37 +3969,37 @@ msgstr "标题"
 msgid "Artist"
 msgstr "歌手"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:352
+#: quodlibet/ext/songsmenu/brainz/widgets.py:353
 msgid "MusicBrainz lookup"
 msgstr "MusicBrainz 查询"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:375
+#: quodlibet/ext/songsmenu/brainz/widgets.py:376
 msgid "_Query:"
 msgstr "查询(_Q)："
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:378
+#: quodlibet/ext/songsmenu/brainz/widgets.py:379
 msgid "S_earch"
 msgstr "搜索(_E)"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:391
+#: quodlibet/ext/songsmenu/brainz/widgets.py:392
 msgid "Results <i>(drag to reorder)</i>"
 msgstr "结果<i>(拖动以重新排序)</i>"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:448
+#: quodlibet/ext/songsmenu/brainz/widgets.py:449
 msgid "Please enter a query."
 msgstr "请输入查询。"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:466
-#: quodlibet/ext/songsmenu/brainz/widgets.py:497
+#: quodlibet/ext/songsmenu/brainz/widgets.py:467
+#: quodlibet/ext/songsmenu/brainz/widgets.py:498
 msgid "Error encountered. Please retry."
 msgstr "遇到错误。请重试。"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:473
-#: quodlibet/ext/songsmenu/brainz/widgets.py:489
+#: quodlibet/ext/songsmenu/brainz/widgets.py:474
+#: quodlibet/ext/songsmenu/brainz/widgets.py:490
 msgid "Loading result…"
 msgstr "载入结果…"
 
-#: quodlibet/ext/songsmenu/brainz/widgets.py:476
+#: quodlibet/ext/songsmenu/brainz/widgets.py:477
 msgid "No results found."
 msgstr "没有找到结果。"
 
@@ -5045,12 +5045,12 @@ msgid "List tags"
 msgstr "列表标签"
 
 #: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:464
+#: quodlibet/operon/commands.py:465
 msgid "Print terse output"
 msgstr "打印简洁输出"
 
 #: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:466
+#: quodlibet/operon/commands.py:467
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "以简洁模式显示和排序的列 (%s)"
@@ -5063,24 +5063,24 @@ msgstr "同时列出程序化的标签"
 #: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
 #: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
 #: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
-#: quodlibet/operon/commands.py:436 quodlibet/operon/commands.py:471
-#: quodlibet/operon/commands.py:511 quodlibet/operon/commands.py:546
-#: quodlibet/operon/commands.py:588
+#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
+#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
+#: quodlibet/operon/commands.py:589
 msgid "Not enough arguments"
 msgstr "参数过少"
 
 #: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
 #: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:473
+#: quodlibet/operon/commands.py:474
 msgid "Too many arguments"
 msgstr "参数过多"
 
 #: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:478 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:374
 msgid "Description"
 msgstr "描述"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:478
+#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "值"
@@ -5159,72 +5159,72 @@ msgstr "无法从 {filename} 删除标签 {tagname}"
 msgid "Remove a tag value"
 msgstr "移除标签值"
 
-#: quodlibet/operon/commands.py:431
+#: quodlibet/operon/commands.py:432
 msgid "Add a tag value"
 msgstr "添加标签值"
 
-#: quodlibet/operon/commands.py:447 quodlibet/operon/commands.py:679
+#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
 #, python-format
 msgid "Can not set %r"
 msgstr "无法设置 %r"
 
-#: quodlibet/operon/commands.py:459
+#: quodlibet/operon/commands.py:460
 msgid "List file information"
 msgstr "列出文件信息"
 
-#: quodlibet/operon/commands.py:505
+#: quodlibet/operon/commands.py:506
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr "将提供的图像设置为主要的嵌入图像，并删除所有其他的嵌入图像"
 
-#: quodlibet/operon/commands.py:518
+#: quodlibet/operon/commands.py:519
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "未能加载图像文件：%r"
 
-#: quodlibet/operon/commands.py:525 quodlibet/operon/commands.py:554
+#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr "无法编辑图片 %(file_name)s (%(file_format)s)"
 
-#: quodlibet/operon/commands.py:541
+#: quodlibet/operon/commands.py:542
 msgid "Remove all embedded images"
 msgstr "删除所有内嵌图片"
 
-#: quodlibet/operon/commands.py:571
+#: quodlibet/operon/commands.py:572
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "将嵌入的图片导出到路径 %(filepath)s"
 
-#: quodlibet/operon/commands.py:583
+#: quodlibet/operon/commands.py:584
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr "图片保存的路径（默认为工作目录）"
 
-#: quodlibet/operon/commands.py:642
+#: quodlibet/operon/commands.py:643
 msgid "Rename files based on tags"
 msgstr "根据标签重命名文件"
 
-#: quodlibet/operon/commands.py:657
+#: quodlibet/operon/commands.py:658
 msgid "Fill tags based on the file path"
 msgstr "根据文件路径填充标签"
 
-#: quodlibet/operon/commands.py:707 quodlibet/qltk/information.py:307
+#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:307
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "文件"
 
-#: quodlibet/operon/commands.py:715
+#: quodlibet/operon/commands.py:716
 msgid "Fill tracknumbers for all files"
 msgstr "为所有文件填写曲目编号"
 
-#: quodlibet/operon/commands.py:734
+#: quodlibet/operon/commands.py:735
 msgid "Print tags based on the given pattern"
 msgstr "根据给定的模式打印标签"
 
-#: quodlibet/operon/commands.py:771
+#: quodlibet/operon/commands.py:772
 msgid "Display help information"
 msgstr "显示帮助信息"
 
@@ -5854,15 +5854,15 @@ msgstr "撤销"
 msgid "_Redo"
 msgstr "重做"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:976
+#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "关于"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:998
+#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "检查更新(_C)…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:926
+#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "插件(_P)"
@@ -6528,11 +6528,11 @@ msgstr "标签编辑"
 msgid "Updating for new ratings"
 msgstr "更新新评分"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1010
+#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1011
 msgid "_Scan Library"
 msgstr "扫描曲库(_S)"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1072
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1073
 msgid "Check for changes in your library"
 msgstr "检查您曲库的更改"
 
@@ -6565,7 +6565,7 @@ msgstr "监视曲库目录以了解外部文件的添加、删除和重命名。
 msgid "Scan Directories"
 msgstr "扫描目录"
 
-#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
+#: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
 msgid "%(title)s and %(count)d more"
 msgid_plural "%(title)s and %(count)d more"
@@ -6625,141 +6625,141 @@ msgstr "浏览曲库(_B)"
 msgid "Toggle queue visibility"
 msgstr "切换队列可见性"
 
-#: quodlibet/qltk/quodlibetwindow.py:377
+#: quodlibet/qltk/quodlibetwindow.py:378
 msgid "Playback Error"
 msgstr "播放错误"
 
-#: quodlibet/qltk/quodlibetwindow.py:385
+#: quodlibet/qltk/quodlibetwindow.py:386
 msgid "Set up library directories?"
 msgstr "设置曲库目录？"
 
-#: quodlibet/qltk/quodlibetwindow.py:386
+#: quodlibet/qltk/quodlibetwindow.py:387
 msgid "You don't have any music library set up. Would you like to do that now?"
 msgstr "您还没有设置曲库，需要现在设置吗？"
 
-#: quodlibet/qltk/quodlibetwindow.py:392
+#: quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Not Now"
 msgstr "暂时不要"
 
-#: quodlibet/qltk/quodlibetwindow.py:393
+#: quodlibet/qltk/quodlibetwindow.py:394
 msgid "_Set Up"
 msgstr "现在设置"
 
-#: quodlibet/qltk/quodlibetwindow.py:859
+#: quodlibet/qltk/quodlibetwindow.py:860
 msgid "Unable to add songs"
 msgstr "无法添加曲目信息"
 
-#: quodlibet/qltk/quodlibetwindow.py:860 quodlibet/qltk/quodlibetwindow.py:1311
+#: quodlibet/qltk/quodlibetwindow.py:861 quodlibet/qltk/quodlibetwindow.py:1312
 #, python-format
 msgid "%s uses an unsupported protocol."
 msgstr "%s 使用不受支持的协议。"
 
-#: quodlibet/qltk/quodlibetwindow.py:884
+#: quodlibet/qltk/quodlibetwindow.py:885
 msgid "_Jump to Playing Song"
 msgstr "跳到正在播放的曲目(_J)"
 
-#: quodlibet/qltk/quodlibetwindow.py:891
+#: quodlibet/qltk/quodlibetwindow.py:892
 msgid "_File"
 msgstr "文件(_F)"
 
-#: quodlibet/qltk/quodlibetwindow.py:892
+#: quodlibet/qltk/quodlibetwindow.py:893
 msgid "_Song"
 msgstr "歌曲(_S)"
 
-#: quodlibet/qltk/quodlibetwindow.py:893
+#: quodlibet/qltk/quodlibetwindow.py:894
 msgid "_View"
 msgstr "查看(_V)"
 
-#: quodlibet/qltk/quodlibetwindow.py:894
+#: quodlibet/qltk/quodlibetwindow.py:895
 msgid "_Browse"
 msgstr "浏览(_B)"
 
-#: quodlibet/qltk/quodlibetwindow.py:895
+#: quodlibet/qltk/quodlibetwindow.py:896
 msgid "_Control"
 msgstr "控制(_C)"
 
-#: quodlibet/qltk/quodlibetwindow.py:896
+#: quodlibet/qltk/quodlibetwindow.py:897
 msgid "_Help"
 msgstr "帮助(_H)"
 
-#: quodlibet/qltk/quodlibetwindow.py:902
+#: quodlibet/qltk/quodlibetwindow.py:903
 msgid "_Add a Folder…"
 msgstr "添加一个文件夹(_A)…"
 
-#: quodlibet/qltk/quodlibetwindow.py:907
+#: quodlibet/qltk/quodlibetwindow.py:908
 msgid "_Add a File…"
 msgstr "加入文件(_A)…"
 
-#: quodlibet/qltk/quodlibetwindow.py:912
+#: quodlibet/qltk/quodlibetwindow.py:913
 msgid "_Add a Location…"
 msgstr "加入位置(_A)…"
 
-#: quodlibet/qltk/quodlibetwindow.py:941
+#: quodlibet/qltk/quodlibetwindow.py:942
 msgid "Edit Bookmarks…"
 msgstr "编辑书签…"
 
-#: quodlibet/qltk/quodlibetwindow.py:961
+#: quodlibet/qltk/quodlibetwindow.py:962
 msgid "Stop"
 msgstr "停止"
 
-#: quodlibet/qltk/quodlibetwindow.py:966
+#: quodlibet/qltk/quodlibetwindow.py:967
 msgid "Stop After This Song"
 msgstr "当前歌曲结束后停止播放"
 
-#: quodlibet/qltk/quodlibetwindow.py:972
+#: quodlibet/qltk/quodlibetwindow.py:973
 msgid "_Keyboard Shortcuts"
 msgstr "快捷键"
 
-#: quodlibet/qltk/quodlibetwindow.py:981
+#: quodlibet/qltk/quodlibetwindow.py:982
 msgid "Online Help"
 msgstr "在线手册"
 
-#: quodlibet/qltk/quodlibetwindow.py:990
+#: quodlibet/qltk/quodlibetwindow.py:991
 msgid "Search Help"
 msgstr "搜索帮助文件"
 
-#: quodlibet/qltk/quodlibetwindow.py:1300
+#: quodlibet/qltk/quodlibetwindow.py:1301
 msgid "Add a Location"
 msgstr "加入位置"
 
-#: quodlibet/qltk/quodlibetwindow.py:1301
+#: quodlibet/qltk/quodlibetwindow.py:1302
 msgid "Enter the location of an audio file:"
 msgstr "输入音频文件的位置："
 
-#: quodlibet/qltk/quodlibetwindow.py:1306
-#: quodlibet/qltk/quodlibetwindow.py:1310
+#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1311
 msgid "Unable to add location"
 msgstr "无法添加位置"
 
-#: quodlibet/qltk/quodlibetwindow.py:1307
+#: quodlibet/qltk/quodlibetwindow.py:1308
 #, python-format
 msgid "%s is not a valid location."
 msgstr "%s 不是有效位置。"
 
-#: quodlibet/qltk/quodlibetwindow.py:1319
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1320
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "Add Music"
 msgstr "添加音乐"
 
-#: quodlibet/qltk/quodlibetwindow.py:1319 quodlibet/qltk/scanbox.py:124
+#: quodlibet/qltk/quodlibetwindow.py:1320 quodlibet/qltk/scanbox.py:124
 msgid "_Add Folders"
 msgstr "加入文件夹(_A)"
 
-#: quodlibet/qltk/quodlibetwindow.py:1326
+#: quodlibet/qltk/quodlibetwindow.py:1327
 msgid "Music Files"
 msgstr "音乐文件"
 
-#: quodlibet/qltk/quodlibetwindow.py:1328
+#: quodlibet/qltk/quodlibetwindow.py:1329
 msgid "_Add Files"
 msgstr "加入文件(_A)"
 
-#: quodlibet/qltk/quodlibetwindow.py:1419
+#: quodlibet/qltk/quodlibetwindow.py:1420
 #, python-format
 msgid "Are you sure you want to enqueue %d song?"
 msgid_plural "Are you sure you want to enqueue %d songs?"
 msgstr[0] "确认要将 %d 首歌加入队列吗？"
 
-#: quodlibet/qltk/quodlibetwindow.py:1429
+#: quodlibet/qltk/quodlibetwindow.py:1430
 msgid "_Enqueue"
 msgstr "加入队列(_E)"
 
@@ -7284,7 +7284,7 @@ msgstr "播放/暂停"
 msgid "Previous"
 msgstr "上一首"
 
-#: quodlibet/qltk/views.py:935
+#: quodlibet/qltk/views.py:937
 #, python-format
 msgid "and %d more…"
 msgstr "及另外 %d …"
@@ -7335,15 +7335,15 @@ msgstr ""
 "\n"
 "请访问官网下载 <a href='%(url)s'>website</a>"
 
-#: quodlibet/util/collection.py:347
+#: quodlibet/util/collection.py:348
 msgid "Empty Playlist"
 msgstr "空播放列表"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:446
 msgid "Playlists must have a name"
 msgstr "播放列表必须有名称"
 
-#: quodlibet/util/collection.py:649
+#: quodlibet/util/collection.py:650
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "名为 %(name)s 的播放列表存在于 %(path)s"
