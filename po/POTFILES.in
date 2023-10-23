@@ -37,7 +37,6 @@ quodlibet/ext/editing/iconv.py
 quodlibet/ext/editing/kakasi.py
 quodlibet/ext/editing/resub.py
 quodlibet/ext/editing/titlecase.py
-quodlibet/ext/events/advanced_preferences.py
 quodlibet/ext/events/animosd/main.py
 quodlibet/ext/events/animosd/prefs.py
 quodlibet/ext/events/appinfo.py
@@ -171,6 +170,7 @@ quodlibet/plugins/playlist.py
 quodlibet/plugins/query.py
 quodlibet.py
 quodlibet/qltk/about.py
+quodlibet/qltk/advanced_prefs.py
 quodlibet/qltk/bookmarks.py
 quodlibet/qltk/browser.py
 quodlibet/qltk/cbes.py
