@@ -123,12 +123,6 @@ class AdvancedPreferencesPane():
         def changed(entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
-        vb = Gtk.VBox(spacing=12)
-
-        # Tabulate all settings for neatness
-        table = Gtk.Table(n_rows=14, n_columns=4)
-        table.set_col_spacings(12)
-        table.set_row_spacings(6)
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
         # TODO: rethink translation here? (#3494)
@@ -236,6 +230,12 @@ class AdvancedPreferencesPane():
             )
         ]
 
+        # Tabulate all settings for neatness
+        table = Gtk.Table(n_rows=len(rows), n_columns=4)
+        table.set_col_spacings(12)
+        table.set_row_spacings(6)
+        table.set_no_show_all(True)
+
         for (row, (label, widget, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
@@ -259,11 +259,13 @@ class AdvancedPreferencesPane():
 
         help_text = Gtk.Label()
         help_text.set_text(_("Allow editing of advanced config settings."))
+
         button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
+
+        vb = Gtk.VBox(spacing=12)
         vb.pack_start(help_text, False, True, 12)
         vb.pack_start(button, False, True, 0)
         vb.pack_start(table, True, True, 0)
-        table.set_no_show_all(True)
 
         return vb
