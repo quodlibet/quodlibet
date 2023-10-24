@@ -363,7 +363,7 @@ class TOperonEdit(TOperonBase):
         def realitems(s):
             return [(k, s[k]) for k in s.realkeys()]
 
-        os.environ["VISUAL"] = "truncate -s 0"
+        os.environ["VISUAL"] = "sed -i -n /^File:/p"
         old_items = realitems(self.s)
         os.utime(self.f, (42, 42))
         e = self.check_true(["edit", "--dry-run", self.f], False, True)[1]
@@ -379,13 +379,41 @@ class TOperonEdit(TOperonBase):
     @skipIf(is_windows() or is_osx(), "Linux only, uses truncate")
     def test_remove_all(self):
 
-        os.environ["VISUAL"] = "truncate -s 0"
+        os.environ["VISUAL"] = "sed -i -n /^File:/p"
         os.utime(self.f, (42, 42))
         self.check_true(["edit", self.f], False, False)
 
         # all should be gone
         self.s.reload()
         assert not self.s.realkeys()
+
+    def test_multi_remove_all(self):
+        if os.name == "nt" or sys.platform == "darwin":
+            return
+
+        os.environ["VISUAL"] = "sed -i -n /^File:/p"
+        os.utime(self.f, (42, 42))
+        self.check_true(["edit", self.f, self.f2], False, False)
+
+        # all should be gone on both files
+        self.s.reload()
+        self.assertFalse(self.s.realkeys())
+        self.s2.reload()
+        self.assertFalse(self.s2.realkeys())
+
+    def test_multi_edit(self):
+        if os.name == "nt" or sys.platform == "darwin":
+            return
+
+        os.environ["VISUAL"] = "sed -i '/^File:/a comment=multi edited'"
+        os.utime(self.f, (42, 42))
+        self.check_true(["edit", self.f, self.f2], False, False)
+
+        # all should be gone on both files
+        self.s.reload()
+        self.failUnlessEqual(self.s["comment"], "multi edited")
+        self.s2.reload()
+        self.failUnlessEqual(self.s2["comment"], "multi edited")
 
 
 class TOperonInfo(TOperonBase):

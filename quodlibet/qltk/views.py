@@ -16,8 +16,8 @@ import cairo
 
 from quodlibet import _, print_e, util
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
-    menu_popup, get_primary_accel_mod
+from quodlibet.qltk import (get_top_parent, is_accel, is_wayland, menu_popup,
+                            get_primary_accel_mod)
 from quodlibet.qltk.image import get_surface_extents
 
 from .util import GSignals
@@ -88,8 +88,6 @@ class TreeViewHints(Gtk.Window):
         self.set_accept_focus(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
-        if gtk_version < (3, 13):
-            self.set_border_width(1)
 
         self.connect("leave-notify-event", self.__undisplay)
 
@@ -414,16 +412,9 @@ class TreeViewHints(Gtk.Window):
             self.hide()
             return False
 
-        if gtk_version < (3, 13):
-            # https://bugzilla.gnome.org/show_bug.cgi?id=731055
-            # Work around Gnome Shell redraw bugs: it doesn't like
-            # multiple hide()/show(), so we try to reduce calls to hide
-            # by aborting it if the pointer is on a new cell shortly after.
-            self.__hide_id = GLib.timeout_add(20, hide, fake_event)
-        else:
-            # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
-            # to assume we have a fixed mutter release..
-            hide(fake_event)
+        # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
+        # to assume we have a fixed mutter release..
+        hide(fake_event)
 
     def __event(self, event):
         if not self.__view:
