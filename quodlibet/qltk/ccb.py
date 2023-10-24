@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#        2012-22 Nick Boultbee
+#        2012-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,11 +43,12 @@ class ConfigSwitch(Gtk.Box):
     def __init__(self, label, section, option, populate=False, tooltip=None,
                  default=None):
         super().__init__()
-        self.label = Gtk.Label(label, use_underline=True)
         self.switch = Gtk.Switch()
-        self.label.set_mnemonic_widget(self.switch)
         eb = Gtk.EventBox()
-        eb.add(self.label)
+        if label is not None:
+            self.label = Gtk.Label(label, use_underline=True)
+            self.label.set_mnemonic_widget(self.switch)
+            eb.add(self.label)
         self.pack_start(eb, False, True, 0)
         self.pack_end(self.switch, False, True, 0)
         if default is None:
@@ -56,7 +57,7 @@ class ConfigSwitch(Gtk.Box):
         if populate:
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
-            self.label.set_tooltip_text(tooltip)
+            self.switch.set_tooltip_text(tooltip)
         self.switch.connect("notify::active", self.__activated, section, option)
         eb.connect("button_press_event",
                    lambda *_: self.switch.set_state(not self.switch.get_state()))

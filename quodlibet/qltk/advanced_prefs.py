@@ -12,6 +12,7 @@ from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import config
+from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
@@ -55,14 +56,7 @@ def boolean_config(section, option, label, tooltip):
         config.reset(section, option)
         button.set_active(config.getboolean(section, option))
 
-    def __toggled(switch, state, section, option):
-        config.set(section, option, str(bool(switch.get_active())).lower())
-
-    default = config.getboolean(section, option)
-    button = Gtk.Switch()
-    button.set_active(config.getboolean(section, option, default))
-    button.set_tooltip_text(tooltip)
-    button.connect("notify::active", __toggled, section, option)
+    button = ConfigSwitch(None, section, option, tooltip=tooltip, populate=True)
     button_box = Gtk.VBox(homogeneous=True)
     button_box.pack_start(button, False, False, 0)
 
@@ -83,7 +77,7 @@ def int_config(section, option, label, tooltip):
 
 
 def slider_config(section, option, label, tooltip, lower=0, upper=1,
-                 on_change_callback=None, label_value_callback=None):
+                  on_change_callback=None, label_value_callback=None):
     def on_reverted(*args):
         config.reset(section, option)
         scale.set_value(config.getfloat(section, option))
@@ -97,9 +91,8 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
 
     default = config.getfloat(section, option)
 
-    scale = Gtk.HScale.new(Gtk.Adjustment(
-                                       value=default,
-                                       lower=lower, upper=upper))
+    adjustment = Gtk.Adjustment(value=default, lower=lower, upper=upper)
+    scale = Gtk.HScale.new(adjustment)
     scale.set_value_pos(Gtk.PositionType.LEFT)
     scale.set_show_fill_level(True)
     scale.set_tooltip_text(_(tooltip))
@@ -117,11 +110,11 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
     return lbl, scale, revert
 
 
-class AdvancedPreferencesPane():
+class AdvancedPreferencesPane(Gtk.VBox):
+    MARGIN = 12
 
-    def create_display_frame(self, *args):
-        def changed(entry, name, section="settings"):
-            config.set(section, name, entry.get_text())
+    def __init__(self, *args):
+        super().__init__()
 
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
@@ -236,8 +229,8 @@ class AdvancedPreferencesPane():
         table.set_row_spacings(8)
         table.set_no_show_all(True)
 
-        for (row, (label, widget, button)) in enumerate(rows):
-            label.set_alignment(1.0, 0.5)
+        for row, (label, widget, button) in enumerate(rows):
+            label.set_alignment(0.0, 0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
             if isinstance(widget, Gtk.VBox):
                 # This stops checkbox from expanding too big, or shrinking text entries
@@ -257,15 +250,8 @@ class AdvancedPreferencesPane():
             table.set_no_show_all(False)
             table.show_all()
 
-        help_text = Gtk.Label()
-        help_text.set_text(_("Allow editing of advanced config settings."))
-
-        button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
+        button = Gtk.Button(label=_("I know what I'm doing!"), use_underline=True)
         button.connect("clicked", on_click)
 
-        vb = Gtk.VBox(spacing=12)
-        vb.pack_start(help_text, False, True, 12)
-        vb.pack_start(button, False, True, 0)
-        vb.pack_start(table, True, True, 0)
-
-        return vb
+        self.pack_start(button, False, True, 0)
+        self.pack_start(table, True, True, 0)
