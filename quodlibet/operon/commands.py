@@ -219,9 +219,11 @@ class EditCommand(Command):
                 song.add(key, value)
 
     def _text_to_songs(self, text, songs):
-        text = re.sub(r"^#.*", "", text, 0, re.MULTILINE) # remove comments
-        text = re.sub(r"(\r?\n){2,}", "\n", text.strip()) # remove empty lines
-        _, *texts = re.split(r"^File:\s+", text, 0, re.MULTILINE)
+        # remove comments
+        text = re.sub(r"^#.*", "", text, count=0, flags=re.MULTILINE)
+        # remove empty lines
+        text = re.sub(r"(\r?\n){2,}", "\n", text.strip())
+        _, *texts = re.split(r"^File:\s+", text, maxsplit=0, flags=re.MULTILINE)
 
         for text in texts:
             filename, *lines = text.splitlines()
