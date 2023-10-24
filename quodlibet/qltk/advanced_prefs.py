@@ -233,7 +233,7 @@ class AdvancedPreferencesPane():
         # Tabulate all settings for neatness
         table = Gtk.Table(n_rows=len(rows), n_columns=4)
         table.set_col_spacings(12)
-        table.set_row_spacings(6)
+        table.set_row_spacings(8)
         table.set_no_show_all(True)
 
         for (row, (label, widget, button)) in enumerate(rows):
