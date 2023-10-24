@@ -8,13 +8,15 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Callable
+
 from gi.repository import Gtk
 
 from quodlibet import _
 from quodlibet import config
+from quodlibet.qltk import Icons
 from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk.entry import UndoEntry
-from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
 
 
@@ -32,16 +34,10 @@ def _config(section, option, label, tooltip=None, getter=None):
         config.reset(section, option)
         entry.set_text(config.gettext(section, option))
 
-    revert = Gtk.Button()
-    revert.add(Gtk.Image.new_from_icon_name(
-        Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
-    revert.connect("clicked", on_reverted)
-    revert.set_tooltip_text(_("Revert to default"))
-
+    revert = revert_button(on_reverted)
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(entry)
-
-    return (lbl, entry, revert)
+    return lbl, entry, revert
 
 
 def text_config(section, option, label, tooltip=None):
@@ -60,13 +56,18 @@ def boolean_config(section, option, label, tooltip):
     button_box = Gtk.VBox(homogeneous=True)
     button_box.pack_start(button, False, False, 0)
 
+    lbl = Gtk.Label(label=label, use_underline=True)
+    lbl.set_mnemonic_widget(button.switch)
+    revert = revert_button(on_reverted)
+    return lbl, button_box, revert
+
+
+def revert_button(on_reverted: Callable[[...], None]) -> Gtk.Button:
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
-
-    lbl = Gtk.Label(label=label, use_underline=True)
-    lbl.set_mnemonic_widget(button)
-    return lbl, button_box, revert
+    revert.set_tooltip_text(_("Revert to default"))
+    return revert
 
 
 def int_config(section, option, label, tooltip):
@@ -101,10 +102,7 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
         scale.connect("format-value", lambda _, value: label_value_callback(value))
     scale.connect("value-changed", on_change)
 
-    revert = Gtk.Button()
-    revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
-    revert.connect("clicked", on_reverted)
-
+    revert = revert_button(on_reverted)
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(scale)
     return lbl, scale, revert
