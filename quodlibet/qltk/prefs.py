@@ -3,6 +3,7 @@
 #           2011-2022 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
+#           2023      Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,6 +28,7 @@ from quodlibet.qltk.maskedbox import MaskedBox
 from quodlibet.qltk.songlist import SongList, get_columns
 from quodlibet.qltk.window import UniqueWindow
 from quodlibet.qltk.x import Button, Align
+from quodlibet.qltk.advanced_prefs import AdvancedPreferencesPane
 from quodlibet.qltk import Icons, add_css
 from quodlibet.util import copool, format_time_preferred
 from quodlibet.util.dprint import print_d
@@ -742,6 +744,24 @@ class PreferencesWindow(UniqueWindow):
             f = qltk.Frame(_("Scan Directories"), child=vb)
             return f
 
+    class Advanced(Gtk.VBox):
+        name = "advanced"
+
+        def __init__(self):
+            super().__init__(spacing=MARGIN)
+            self.set_border_width(12)
+            self.title = _("Advanced")
+
+            advanced_pane = AdvancedPreferencesPane()
+            vbox = advanced_pane.create_display_frame()
+
+            scrolledwin = Gtk.ScrolledWindow()
+            scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC,
+                                Gtk.PolicyType.AUTOMATIC)
+            scrolledwin.add_with_viewport(vbox)
+
+            self.pack_start(scrolledwin, True, True, MARGIN)
+
     def __init__(self, parent, open_page=None, all_pages=True):
         if self.is_not_unique():
             return
@@ -755,7 +775,8 @@ class PreferencesWindow(UniqueWindow):
         add_css(notebook, "tab { padding: 6px 24px } ")
         pages = [self.Tagging]
         if all_pages:
-            pages = [self.SongList, self.Browsers, self.Player, self.Library] + pages
+            pages = [self.SongList, self.Browsers, self.Player,
+                        self.Library] + pages + [self.Advanced]
         for Page in pages:
             page = Page()
             page.show()

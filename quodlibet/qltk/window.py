@@ -208,16 +208,6 @@ class Window(Gtk.Window):
         if self._header_bar is not None:
             return self._header_bar.get_show_close_button()
 
-        screen = Gdk.Screen.get_default()
-        if hasattr(screen, "get_window_manager_name"):
-            # X11 only
-            wm_name = screen.get_window_manager_name()
-            # Older Gnome Shell didn't show close buttons.
-            # We can't get the version but the GTK+ version is a good guess,
-            # I guess..
-            if wm_name == "GNOME Shell" and gtk_version < (3, 18):
-                return False
-
         return True
 
     def present(self):

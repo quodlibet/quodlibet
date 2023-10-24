@@ -405,11 +405,6 @@ class CellRendererPixbuf(Gtk.CellRendererPixbuf):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if gtk_version < (3, 16):
-            # was deprecated in 3.16 and defaults to True now. Since it was
-            # False before force it here so we have the same behavior in all
-            # cases
-            self.set_property("follow-state", True)
 
 
 class Action(Gtk.Action):

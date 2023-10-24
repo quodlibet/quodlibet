@@ -1,7 +1,7 @@
 # Copyright 2015    Christoph Reiter
 #           2016-23 Nick Boultbee
 #           2019    Peter Strulo
-#           2022    Jej@github
+#           2022-23 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@ from quodlibet import config
 from quodlibet.qltk.entry import UndoEntry
 from quodlibet.qltk import Icons
 from quodlibet.util.string import decode
-from quodlibet.plugins.events import EventPlugin
 
 
 def _config(section, option, label, tooltip=None, getter=None):
@@ -36,6 +35,7 @@ def _config(section, option, label, tooltip=None, getter=None):
     revert.add(Gtk.Image.new_from_icon_name(
         Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
+    revert.set_tooltip_text(_("Revert to default"))
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(entry)
@@ -55,21 +55,24 @@ def boolean_config(section, option, label, tooltip):
         config.reset(section, option)
         button.set_active(config.getboolean(section, option))
 
-    def __toggled(self, section, option):
-        config.set(section, option, str(bool(self.get_active())).lower())
+    def __toggled(switch, state, section, option):
+        config.set(section, option, str(bool(switch.get_active())).lower())
 
     default = config.getboolean(section, option)
-    button = Gtk.CheckButton()
+    button = Gtk.Switch()
     button.set_active(config.getboolean(section, option, default))
     button.set_tooltip_text(tooltip)
-    button.connect("toggled", __toggled, section, option)
+    button.connect("notify::active", __toggled, section, option)
+    button_box = Gtk.VBox(homogeneous=True)
+    button_box.pack_start(button, False, False, 0)
+
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(button)
-    return lbl, button, revert
+    return lbl, button_box, revert
 
 
 def int_config(section, option, label, tooltip):
@@ -114,26 +117,12 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
     return lbl, scale, revert
 
 
-class AdvancedPreferences(EventPlugin):
-    PLUGIN_ID = "Advanced Preferences"
-    PLUGIN_NAME = _("Advanced Preferences")
-    PLUGIN_DESC = _("Allow editing of advanced config settings.")
-    PLUGIN_CAN_ENABLE = False
-    PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
+class AdvancedPreferencesPane():
 
-    def __init_defaults(self):
-        self.__enabled = False
-
-    def PluginPreferences(self, *args):
+    def create_display_frame(self, *args):
         def changed(entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
-        vb = Gtk.VBox(spacing=12)
-
-        # Tabulate all settings for neatness
-        table = Gtk.Table(n_rows=14, n_columns=4)
-        table.set_col_spacings(12)
-        table.set_row_spacings(6)
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
         # TODO: rethink translation here? (#3494)
@@ -241,17 +230,22 @@ class AdvancedPreferences(EventPlugin):
             )
         ]
 
+        # Tabulate all settings for neatness
+        table = Gtk.Table(n_rows=len(rows), n_columns=4)
+        table.set_col_spacings(12)
+        table.set_row_spacings(8)
+        table.set_no_show_all(True)
+
         for (row, (label, widget, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
-            if isinstance(widget, Gtk.CheckButton):
-                xoptions = Gtk.AttachOptions.FILL
-                widget.set_alignment(0.0, 0.5)
-                table.attach(widget, 1, 2, row, row + 1, xoptions=xoptions)
+            if isinstance(widget, Gtk.VBox):
                 # This stops checkbox from expanding too big, or shrinking text entries
                 blank = Gtk.Label()
-                table.attach(blank, 2, 3, row, row + 1,
+                table.attach(blank, 1, 2, row, row + 1,
                              xoptions=Gtk.AttachOptions.EXPAND)
+                table.attach(widget, 2, 3, row, row + 1,
+                             xoptions=Gtk.AttachOptions.SHRINK)
             else:
                 xoptions = Gtk.AttachOptions.FILL
                 table.attach(widget, 1, 3, row, row + 1, xoptions=xoptions)
@@ -263,10 +257,15 @@ class AdvancedPreferences(EventPlugin):
             table.set_no_show_all(False)
             table.show_all()
 
+        help_text = Gtk.Label()
+        help_text.set_text(_("Allow editing of advanced config settings."))
+
         button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
-        vb.pack_start(button, True, True, 0)
+
+        vb = Gtk.VBox(spacing=12)
+        vb.pack_start(help_text, False, True, 12)
+        vb.pack_start(button, False, True, 0)
         vb.pack_start(table, True, True, 0)
-        table.set_no_show_all(True)
 
         return vb
