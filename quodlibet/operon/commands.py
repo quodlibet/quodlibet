@@ -9,13 +9,14 @@
 # RenameCommand
 # FillTracknumberCommand
 
+import ast
 import os
 import re
 import shutil
 import subprocess
 import tempfile
 
-from senf import fsn2text
+from senf import fsn2text, text2fsn
 
 from quodlibet import _
 from quodlibet import util
@@ -155,9 +156,7 @@ class CopyCommand(Command):
 class EditCommand(Command):
     NAME = "edit"
     DESCRIPTION = _("Edit tags in a text editor")
-    USAGE = "[--dry-run] <file>"
-
-    # TODO: support editing multiple files
+    USAGE = "[--dry-run] <file> [<files>]"
 
     def _add_options(self, p):
         p.add_option("--dry-run", action="store_true",
@@ -165,19 +164,23 @@ class EditCommand(Command):
 
     def _song_to_text(self, song):
         # to text
-        lines = []
+        lines = [
+            u"File: %r" % fsn2text(song("~filename")),
+            u"",
+        ]
         for key in sorted(song.realkeys(), key=sortkey):
             for value in song.list(key):
-                lines.append(u"%s=%s" % (key, value))
+                lines.append(u"  %s=%s" % (key, value))
 
-        lines += [
+        return u"\n".join(lines + [u""])
+
+    def _songs_to_text(self, songs):
+        header = [
+            u"# Lines before the first 'File:' statement, or"
+            u" lines that are empty or start with '#' will be ignored.",
             u"",
-            u"#" * 80,
-            u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsn2text(song("~filename")),
         ]
-
-        return u"\n".join(lines)
+        return u"\n".join(header + [self._song_to_text(song) for song in songs])
 
     def _text_to_song(self, text, song):
         assert isinstance(text, str)
@@ -188,7 +191,7 @@ class EditCommand(Command):
             if not line.strip() or line.startswith(u"#"):
                 continue
             try:
-                key, value = line.split(u"=", 1)
+                key, value = line.strip().split(u"=", 1)
             except ValueError:
                 continue
 
@@ -215,14 +218,29 @@ class EditCommand(Command):
                 self.log("Add %s=%s" % (key, value))
                 song.add(key, value)
 
+    def _text_to_songs(self, text, songs):
+        text = re.sub(r"^#.*", "", text, 0, re.MULTILINE) # remove comments
+        text = re.sub(r"(\r?\n){2,}", "\n", text.strip()) # remove empty lines
+        _, *texts = re.split(r"^File:\s+", text, 0, re.MULTILINE)
+
+        for text in texts:
+            filename, *lines = text.splitlines()
+            filename = text2fsn(ast.literal_eval(filename))
+            text = u"\n".join(lines)
+
+            song = next((song for song in songs if song("~filename") == filename), None)
+            if not song:
+                raise CommandError("No match for %r." % (filename))
+
+            self.log("Update song: %r" % (filename))
+            self._text_to_song(text, song)
+
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
-            raise CommandError(_("Too many arguments"))
 
-        song = self.load_song(args[0])
-        dump = self._song_to_text(song).encode("utf-8")
+        songs = [self.load_song(path) for path in args]
+        dump = self._songs_to_text(songs).encode("utf-8")
 
         # write to tmp file
         fd, path = tempfile.mkstemp(suffix=".txt")
@@ -272,10 +290,10 @@ class EditCommand(Command):
 
         if options.dry_run:
             self.verbose = True
-        self._text_to_song(text, song)
+        self._text_to_songs(text, songs)
 
         if not options.dry_run:
-            self.save_songs([song])
+            self.save_songs(songs)
 
 
 @Command.register
