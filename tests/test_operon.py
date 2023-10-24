@@ -411,9 +411,9 @@ class TOperonEdit(TOperonBase):
 
         # all should be gone on both files
         self.s.reload()
-        self.failUnlessEqual(self.s["comment"], "multi edited")
+        self.assertEqual(self.s["comment"], "multi edited")
         self.s2.reload()
-        self.failUnlessEqual(self.s2["comment"], "multi edited")
+        self.assertEqual(self.s2["comment"], "multi edited")
 
 
 class TOperonInfo(TOperonBase):

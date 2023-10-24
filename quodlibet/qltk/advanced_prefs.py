@@ -117,7 +117,7 @@ def slider_config(section, option, label, tooltip, lower=0, upper=1,
     return lbl, scale, revert
 
 
-class AdvancedPreferencesPane():
+class AdvancedPreferencesPane:
 
     def create_display_frame(self, *args):
         def changed(entry, name, section="settings"):

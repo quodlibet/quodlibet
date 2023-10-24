@@ -165,22 +165,22 @@ class EditCommand(Command):
     def _song_to_text(self, song):
         # to text
         lines = [
-            u"File: %r" % fsn2text(song("~filename")),
-            u"",
+            "File: %r" % fsn2text(song("~filename")),
+            "",
         ]
         for key in sorted(song.realkeys(), key=sortkey):
             for value in song.list(key):
-                lines.append(u"  %s=%s" % (key, value))
+                lines.append(f"  {key}={value}")
 
-        return u"\n".join(lines + [u""])
+        return "\n".join(lines + [""])
 
     def _songs_to_text(self, songs):
         header = [
-            u"# Lines before the first 'File:' statement, or"
+            "# Lines before the first 'File:' statement, or"
             u" lines that are empty or start with '#' will be ignored.",
-            u"",
+            "",
         ]
-        return u"\n".join(header + [self._song_to_text(song) for song in songs])
+        return "\n".join(header + [self._song_to_text(song) for song in songs])
 
     def _text_to_song(self, text, song):
         assert isinstance(text, str)
@@ -191,7 +191,7 @@ class EditCommand(Command):
             if not line.strip() or line.startswith("#"):
                 continue
             try:
-                key, value = line.strip().split(u"=", 1)
+                key, value = line.strip().split("=", 1)
             except ValueError:
                 continue
 
@@ -219,14 +219,16 @@ class EditCommand(Command):
                 song.add(key, value)
 
     def _text_to_songs(self, text, songs):
-        text = re.sub(r"^#.*", "", text, 0, re.MULTILINE) # remove comments
-        text = re.sub(r"(\r?\n){2,}", "\n", text.strip()) # remove empty lines
-        _, *texts = re.split(r"^File:\s+", text, 0, re.MULTILINE)
+        # remove comments
+        text = re.sub(r"^#.*", "", text, count=0, flags=re.MULTILINE)
+        # remove empty lines
+        text = re.sub(r"(\r?\n){2,}", "\n", text.strip())
+        _, *texts = re.split(r"^File:\s+", text, maxsplit=0, flags=re.MULTILINE)
 
         for text in texts:
             filename, *lines = text.splitlines()
             filename = text2fsn(ast.literal_eval(filename))
-            text = u"\n".join(lines)
+            text = "\n".join(lines)
 
             song = next((song for song in songs if song("~filename") == filename), None)
             if not song:
