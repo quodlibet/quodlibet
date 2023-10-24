@@ -55,21 +55,24 @@ def boolean_config(section, option, label, tooltip):
         config.reset(section, option)
         button.set_active(config.getboolean(section, option))
 
-    def __toggled(self, section, option):
-        config.set(section, option, str(bool(self.get_active())).lower())
+    def __toggled(switch, state, section, option):
+        config.set(section, option, str(bool(switch.get_active())).lower())
 
     default = config.getboolean(section, option)
-    button = Gtk.CheckButton()
+    button = Gtk.Switch()
     button.set_active(config.getboolean(section, option, default))
     button.set_tooltip_text(tooltip)
-    button.connect("toggled", __toggled, section, option)
+    button.connect("notify::active", __toggled, section, option)
+    button_box = Gtk.VBox(homogeneous=True)
+    button_box.pack_start(button, False, False, 0)
+
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
 
     lbl = Gtk.Label(label=label, use_underline=True)
     lbl.set_mnemonic_widget(button)
-    return lbl, button, revert
+    return lbl, button_box, revert
 
 
 def int_config(section, option, label, tooltip):
@@ -120,12 +123,6 @@ class AdvancedPreferencesPane():
         def changed(entry, name, section="settings"):
             config.set(section, name, entry.get_text())
 
-        vb = Gtk.VBox(spacing=12)
-
-        # Tabulate all settings for neatness
-        table = Gtk.Table(n_rows=14, n_columns=4)
-        table.set_col_spacings(12)
-        table.set_row_spacings(6)
         # We don't use translations as these things are internal
         # and don't want to burden the translators...
         # TODO: rethink translation here? (#3494)
@@ -233,17 +230,22 @@ class AdvancedPreferencesPane():
             )
         ]
 
+        # Tabulate all settings for neatness
+        table = Gtk.Table(n_rows=len(rows), n_columns=4)
+        table.set_col_spacings(12)
+        table.set_row_spacings(8)
+        table.set_no_show_all(True)
+
         for (row, (label, widget, button)) in enumerate(rows):
             label.set_alignment(1.0, 0.5)
             table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
-            if isinstance(widget, Gtk.CheckButton):
-                xoptions = Gtk.AttachOptions.FILL
-                widget.set_alignment(0.0, 0.5)
-                table.attach(widget, 1, 2, row, row + 1, xoptions=xoptions)
+            if isinstance(widget, Gtk.VBox):
                 # This stops checkbox from expanding too big, or shrinking text entries
                 blank = Gtk.Label()
-                table.attach(blank, 2, 3, row, row + 1,
+                table.attach(blank, 1, 2, row, row + 1,
                              xoptions=Gtk.AttachOptions.EXPAND)
+                table.attach(widget, 2, 3, row, row + 1,
+                             xoptions=Gtk.AttachOptions.SHRINK)
             else:
                 xoptions = Gtk.AttachOptions.FILL
                 table.attach(widget, 1, 3, row, row + 1, xoptions=xoptions)
@@ -257,11 +259,13 @@ class AdvancedPreferencesPane():
 
         help_text = Gtk.Label()
         help_text.set_text(_("Allow editing of advanced config settings."))
+
         button = Gtk.Button(label=_("I know what I'm doing"), use_underline=True)
         button.connect("clicked", on_click)
+
+        vb = Gtk.VBox(spacing=12)
         vb.pack_start(help_text, False, True, 12)
         vb.pack_start(button, False, True, 0)
         vb.pack_start(table, True, True, 0)
-        table.set_no_show_all(True)
 
         return vb
