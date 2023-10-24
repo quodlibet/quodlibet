@@ -62,7 +62,7 @@ def boolean_config(section, option, label, tooltip):
     return lbl, button_box, revert
 
 
-def revert_button(on_reverted: Callable[[...], None]) -> Gtk.Button:
+def revert_button(on_reverted: Callable[..., None]) -> Gtk.Button:
     revert = Gtk.Button()
     revert.add(Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
     revert.connect("clicked", on_reverted)
