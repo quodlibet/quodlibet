@@ -140,7 +140,7 @@ class CreatePo(Command):
         po_directory = Path(self.distribution.po_directory)
         po_path = gettextutil.get_po_path(po_directory, self.lang)
         with gettextutil.create_pot(po_directory) as pot_path:
-            gettextutil.create_po(pot_path, po_path)
+            gettextutil.create_po(pot_path, po_path, self.lang)
             print(f"Created {po_path.absolute()}")
 
 
