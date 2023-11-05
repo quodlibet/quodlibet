@@ -1,5 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2017 Fredrik Strupe
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,16 +44,6 @@ class Paned(Gtk.Paned):
                 }
             """)
             return
-
-        # gtk 3.14
-        add_css(self, """
-            GtkPaned {
-                -GtkPaned-handle-size: 6;
-                background-image: none;
-                margin: 0;
-                border-width: 0;
-            }
-        """)
 
 
 class RPaned(Paned):
