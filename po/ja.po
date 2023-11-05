@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-10-16 04:09+0000\n"
+"PO-Revision-Date: 2023-11-05 19:22+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.1-dev\n"
+"X-Generator: Weblate 5.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -5513,9 +5513,8 @@ msgstr ""
 #, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
-msgstr ""
-"モジュール「{module}」が見つかりませんでした。おそらくパッケージのインストー"
-"ルが必要ではないでしょうか?"
+msgstr "モジュール「{module}」が見つかりませんでした。おそらくパッケージが未インスト"
+"ールなのではないでしょうか?"
 
 #: quodlibet/plugins/__init__.py:73
 #, python-brace-format
@@ -5584,7 +5583,7 @@ msgstr "プラグインの実行(_R)"
 msgid "Usage"
 msgstr "使用法"
 
-#: quodlibet/qltk/advanced_prefs.py:69
+#: quodlibet/qltk/advanced_prefs.py:69 quodlibet/qltk/advanced_prefs.py:38
 msgid "Revert to default"
 msgstr "デフォルト値に戻す"
 
@@ -5594,7 +5593,7 @@ msgstr "高度な設定の編集を可能にします。"
 
 #: quodlibet/qltk/advanced_prefs.py:260
 msgid "I know what I'm doing"
-msgstr "理解した上で編集"
+msgstr "分かってるから任せて"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -7484,7 +7483,7 @@ msgid ""
 "(%(remaining)s remaining)"
 msgstr ""
 "%(current)d/%(total)d曲を保存済み\n"
-"(残り%(remaining)s曲)"
+"(あと %(remaining)s)"
 
 #: quodlibet/qltk/wlw.py:234
 #, python-format
@@ -8075,9 +8074,8 @@ msgstr ""
 "す。"
 
 #: quodlibet/qltk/advanced_prefs.py:251
-#, fuzzy
 msgid "I know what I'm doing!"
-msgstr "理解した上で編集"
+msgstr "分かってるから任せて!"
 
 #~ msgid "Advanced Preferences"
 #~ msgstr "高度な設定"
