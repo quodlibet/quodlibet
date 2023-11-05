@@ -60,13 +60,7 @@ class Pane(AllTreeView):
 
         def text_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            is_markup, text = entry.get_text(self.config)
-            if is_markup:
-                cell.markup = text
-                cell.set_property("markup", text)
-            else:
-                cell.markup = None
-                cell.set_property("text", text)
+            cell.markup = entry.get_markup(self.config)
 
         column.set_cell_data_func(render, text_cdf)
 
@@ -79,7 +73,7 @@ class Pane(AllTreeView):
 
         def count_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            markup = entry.get_count_text(self.config)
+            markup = entry.get_count_markup(self.config)
             cell.markup = markup
             cell.set_property("markup", markup)
 
