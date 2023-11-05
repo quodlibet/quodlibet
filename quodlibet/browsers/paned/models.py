@@ -1,5 +1,5 @@
 # Copyright 2013 Christoph Reiter
-#        2020-22 Nick Boultbee
+#        2020-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,12 +7,12 @@
 # (at your option) any later version.
 
 import re
-from typing import Tuple, Text
 from quodlibet.browsers.paned.util import PaneConfig
 
 from quodlibet import _
 from quodlibet import util
 from quodlibet.qltk.models import ObjectStore
+from quodlibet.util import escape
 from quodlibet.util.collection import Collection
 
 
@@ -38,12 +38,10 @@ class BaseEntry(Collection):
                     return False
         return True
 
-    def get_count_text(self, config):
+    def get_count_markup(self, config: PaneConfig) -> str:
         raise NotImplementedError
 
-    def get_text(self, config):
-        """Returns (is_markup, text)"""
-
+    def get_markup(self, config: PaneConfig) -> str:
         raise NotImplementedError
 
     def contains_text(self, text):
@@ -59,24 +57,20 @@ class SongsEntry(BaseEntry):
 
         self.sort = sort # value used for sorting
 
-    def get_count_text(self, config):
+    def get_count_markup(self, config: PaneConfig) -> str:
         return config.format_display(self)
 
-    def get_text(self, config: PaneConfig) -> Tuple[bool, Text]:
-        if config.has_markup:
-            return True, self.key
-        else:
-            return False, self.key
+    def get_markup(self, config: PaneConfig) -> str:
+        return self.key if config.has_markup else escape(self.key)
 
-    def contains_text(self, text):
+    def contains_text(self, text: str) -> bool:
         return text.lower() in self.key.lower()
 
-    def contains_song(self, song):
+    def contains_song(self, song) -> bool:
         return song in self.songs
 
     def __repr__(self):
-        return "<%s key=%r songs=%d>" % (
-            type(self).__name__, self.key, len(self.songs))
+        return f"<{type(self).__name__} key={self.key!r} songs={len(self.songs):d}>"
 
 
 class UnknownEntry(SongsEntry):
@@ -84,14 +78,14 @@ class UnknownEntry(SongsEntry):
     def __init__(self, songs=None):
         super().__init__("", (), songs)
 
-    def get_text(self, config):
-        return True, util.bold(_("Unknown"))
+    def get_markup(self, config: PaneConfig) -> str:
+        return util.bold(_("Unknown"))
 
     def contains_text(self, text):
         return False
 
     def __repr__(self):
-        return "<%s songs=%d>" % (type(self).__name__, len(self.songs))
+        return f"<{type(self).__name__} songs={len(self.songs):d}>"
 
 
 class AllEntry(BaseEntry):
@@ -99,10 +93,10 @@ class AllEntry(BaseEntry):
     def __init__(self):
         super().__init__()
 
-    def get_count_text(self, config):
-        return u""
+    def get_count_markup(self, config: PaneConfig) -> str:
+        return ""
 
-    def get_text(self, config):
+    def get_markup(self, config):
         return True, util.bold(_("All"))
 
     def contains_text(self, text):
@@ -112,7 +106,7 @@ class AllEntry(BaseEntry):
         return False
 
     def __repr__(self):
-        return "<%s>" % (type(self).__name__,)
+        return f"<{type(self).__name__}>"
 
 
 class PaneModel(ObjectStore):
