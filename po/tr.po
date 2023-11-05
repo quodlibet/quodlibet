@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-08-21 19:50+0000\n"
-"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"PO-Revision-Date: 2023-10-30 10:02+0000\n"
+"Last-Translator: Ege Esin <ege_e@icloud.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -6774,9 +6774,8 @@ msgid "Scan Directories"
 msgstr "Dizinleri Tara"
 
 #: quodlibet/qltk/prefs.py:753
-#, fuzzy
 msgid "Advanced"
-msgstr "Dans"
+msgstr "Gelişmiş"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
