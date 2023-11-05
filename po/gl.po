@@ -31,7 +31,7 @@ msgid "_People"
 msgstr "componentes"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:60
 msgid "_Date"
 msgstr "_Data"
 
@@ -48,13 +48,13 @@ msgid "_Original Date"
 msgstr "artista original"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:57
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:59
 #, fuzzy
 msgid "_Genre"
 msgstr "Estilo"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:62
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:64
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Puntuación"
@@ -119,7 +119,7 @@ msgstr "Cancións sen álbum"
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -129,7 +129,7 @@ msgstr[1] "%d pistas"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:271
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:272
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -170,12 +170,12 @@ msgstr "Vista de álbuns"
 #: quodlibet/browsers/covergrid/prefs.py:110
 #: quodlibet/browsers/playlists/prefs.py:56
 #: quodlibet/ext/songsmenu/albumart.py:224
-#: quodlibet/ext/songsmenu/duplicates.py:345
+#: quodlibet/ext/songsmenu/duplicates.py:347
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:775
-#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr ""
 
@@ -194,8 +194,8 @@ msgstr[0] "%d canción"
 msgstr[1] "%d cancións"
 
 #: quodlibet/browsers/_base.py:406 quodlibet/browsers/_base.py:411
-#: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
-#: quodlibet/util/__init__.py:579
+#: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
+#: quodlibet/util/__init__.py:577
 msgid "Invalid pattern"
 msgstr "Padrón inválido"
 
@@ -249,8 +249,8 @@ msgid "_Remove"
 msgstr "_Eliminar Emisora"
 
 #: quodlibet/browsers/collection/prefs.py:121
-#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
-#: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:480
+#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:56
+#: quodlibet/operon/commands.py:92 quodlibet/qltk/edittags.py:480
 msgid "Tag"
 msgstr "Etiqueta"
 
@@ -267,7 +267,7 @@ msgstr "Preferências da Lista de Álbuns"
 #: quodlibet/browsers/paned/prefs.py:246
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr ""
 
@@ -334,11 +334,11 @@ msgstr ""
 msgid "Cover Magnification"
 msgstr "Nom há novas emisoras"
 
-#: quodlibet/browsers/filesystem.py:42
+#: quodlibet/browsers/filesystem.py:41
 msgid "File System"
 msgstr "Sistema de arquivos"
 
-#: quodlibet/browsers/filesystem.py:43
+#: quodlibet/browsers/filesystem.py:42
 msgid "_File System"
 msgstr "_Sistema de arquivos"
 
@@ -543,7 +543,7 @@ msgstr "Nova Emisora"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:65
 msgid "Favorites"
 msgstr "Preferidos"
 
@@ -694,7 +694,7 @@ msgstr "O Quod Libet só pode importar listas nos formatos M3U ou PLS."
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:485
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
-#: quodlibet/qltk/songsmenu.py:359
+#: quodlibet/qltk/songsmenu.py:440
 #, fuzzy
 msgid "_Delete"
 msgstr "Eliminar os ficheiros"
@@ -781,7 +781,7 @@ msgid "_Add Tracks"
 msgstr "Pista"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "Nova lista"
 
@@ -895,49 +895,49 @@ msgstr "Lista de pistas"
 msgid "Soundcloud"
 msgstr "Vista em paneis"
 
-#: quodlibet/browsers/soundcloud/main.py:40
+#: quodlibet/browsers/soundcloud/main.py:39
 #, fuzzy
 msgid "Soundcloud Browser"
 msgstr "Vista em paneis"
 
-#: quodlibet/browsers/soundcloud/main.py:41
+#: quodlibet/browsers/soundcloud/main.py:40
 msgid "Sound_cloud"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Procurar"
 
-#: quodlibet/browsers/soundcloud/main.py:70
+#: quodlibet/browsers/soundcloud/main.py:69
 #, fuzzy
 msgid "My tracks"
 msgstr "pistas"
 
-#: quodlibet/browsers/soundcloud/main.py:143
+#: quodlibet/browsers/soundcloud/main.py:142
 #, python-format
 msgid "Go to %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:444
+#: quodlibet/browsers/soundcloud/main.py:445
 #, fuzzy
 msgid "Connected"
 msgstr "endereço"
 
-#: quodlibet/browsers/soundcloud/main.py:445
+#: quodlibet/browsers/soundcloud/main.py:446
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "<b>%s</b> nom está conectado."
 
-#: quodlibet/browsers/soundcloud/main.py:457
+#: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log out of %s"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:460
 msgid "Enter code…"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:460
+#: quodlibet/browsers/soundcloud/main.py:461
 #, python-format
 msgid "Log in to %s"
 msgstr ""
@@ -1214,7 +1214,7 @@ msgstr "Padrom inválido"
 msgid "Invalid argument for '%s'."
 msgstr "Argumento inválido para '%s'."
 
-#: quodlibet/cli.py:217 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:217 quodlibet/util/__init__.py:173
 #, python-format
 msgid "Try %s --help."
 msgstr "Proba %s --help"
@@ -1390,19 +1390,6 @@ msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
 msgstr ""
 
-#: quodlibet/ext/events/advanced_preferences.py:119
-#, fuzzy
-msgid "Advanced Preferences"
-msgstr "Preferências do Navegador em paneis"
-
-#: quodlibet/ext/events/advanced_preferences.py:120
-msgid "Allow editing of advanced config settings."
-msgstr ""
-
-#: quodlibet/ext/events/advanced_preferences.py:266
-msgid "I know what I'm doing"
-msgstr ""
-
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
 msgstr ""
@@ -1420,7 +1407,7 @@ msgstr ""
 msgid "_Cover size:"
 msgstr "Tamanho total:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:290
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:292
 #, fuzzy
 msgid "Display"
 msgstr "Editar a vista"
@@ -1603,7 +1590,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:587
 #, fuzzy
 msgid "Save ratings and play _counts in tags"
 msgstr "Guardar qualificações e o _contador"
@@ -1635,7 +1622,7 @@ msgstr "_Nova Emisora"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:750
+#: quodlibet/qltk/prefs.py:764
 #, fuzzy
 msgid "Preferences"
 msgstr "Preferências"
@@ -1888,7 +1875,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
 #: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
-#: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
+#: quodlibet/qltk/renamefiles.py:240 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
 msgstr ""
@@ -2033,7 +2020,7 @@ msgstr ""
 msgid "System Default"
 msgstr "Predefinido"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:729
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:731
 msgid "A restart is required for any changes to take effect"
 msgstr ""
 
@@ -2568,12 +2555,12 @@ msgid ""
 "seeks to that timestamp"
 msgstr ""
 
-#: quodlibet/ext/events/seekpoints.py:124
+#: quodlibet/ext/events/seekpoints.py:125
 #, fuzzy
 msgid "Bookmark name for point B"
 msgstr "Nome do marcador"
 
-#: quodlibet/ext/events/seekpoints.py:125
+#: quodlibet/ext/events/seekpoints.py:126
 msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
@@ -2719,13 +2706,13 @@ msgid "Destination path:"
 msgstr "Nom se atopárom emisoras"
 
 #: quodlibet/ext/events/synchronize_to_device.py:184
-#: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
+#: quodlibet/qltk/renamefiles.py:170 quodlibet/qltk/tagsfrompath.py:115
 #, fuzzy
 msgid "Path Patterns"
 msgstr "padrom"
 
 #: quodlibet/ext/events/synchronize_to_device.py:184
-#: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
+#: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:116
 #, fuzzy
 msgid "Edit saved patterns…"
 msgstr "Editar os valores guardados..."
@@ -3151,78 +3138,78 @@ msgstr "Preferências da Ícona"
 msgid "Controls Quod Libet from the system tray."
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/menu.py:41
+#: quodlibet/ext/events/trayicon/menu.py:40
 #, python-format
 msgid "_Show %(application-name)s"
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/menu.py:60
+#: quodlibet/ext/events/trayicon/menu.py:59
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:952
 #: quodlibet/qltk/quodlibetwindow.py:1166
 #, fuzzy
 msgid "_Play"
 msgstr "Reprodutor"
 
-#: quodlibet/ext/events/trayicon/menu.py:63
+#: quodlibet/ext/events/trayicon/menu.py:62
 #: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1168
 #: quodlibet/qltk/wlw.py:50
 #, fuzzy
 msgid "P_ause"
 msgstr "_Parar"
 
-#: quodlibet/ext/events/trayicon/menu.py:68
+#: quodlibet/ext/events/trayicon/menu.py:67
 #: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:947
 #, fuzzy
 msgid "Pre_vious"
 msgstr "_Antever"
 
-#: quodlibet/ext/events/trayicon/menu.py:71
+#: quodlibet/ext/events/trayicon/menu.py:70
 #: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:957
 #, fuzzy
 msgid "_Next"
 msgstr "Seguinte"
 
-#: quodlibet/ext/events/trayicon/menu.py:76
+#: quodlibet/ext/events/trayicon/menu.py:75
 msgid "_Shuffle"
 msgstr "_Barallar"
 
-#: quodlibet/ext/events/trayicon/menu.py:81
+#: quodlibet/ext/events/trayicon/menu.py:80
 msgid "_Repeat"
 msgstr "_Repetición"
 
-#: quodlibet/ext/events/trayicon/menu.py:86
+#: quodlibet/ext/events/trayicon/menu.py:85
 #, fuzzy
 msgid "Stop _After This Song"
 msgstr "Parar despois desta cançom"
 
-#: quodlibet/ext/events/trayicon/menu.py:92
+#: quodlibet/ext/events/trayicon/menu.py:91
 #: quodlibet/qltk/quodlibetwindow.py:918
 #, fuzzy
 msgid "Open _Browser"
 msgstr "Abrir um novo navegador"
 
-#: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/ext/events/trayicon/menu.py:102
+#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:425
 msgid "Edit _Tags"
 msgstr "Editar as e_tiquetas"
 
-#: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/ext/events/trayicon/menu.py:111
+#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:410
 msgid "_Information"
 msgstr "_Información"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
+#: quodlibet/ext/events/trayicon/menu.py:113 quodlibet/qltk/songsmenu.py:495
 #, fuzzy
 msgid "Play_lists"
 msgstr "Listas"
 
-#: quodlibet/ext/events/trayicon/menu.py:132
+#: quodlibet/ext/events/trayicon/menu.py:131
 #: quodlibet/qltk/quodlibetwindow.py:932
 msgid "_Quit"
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:87
-#: quodlibet/qltk/prefs.py:459 quodlibet/qltk/prefs.py:736
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:89
+#: quodlibet/qltk/prefs.py:461 quodlibet/qltk/prefs.py:738
 msgid "Behavior"
 msgstr "Comportamento"
 
@@ -4410,66 +4397,66 @@ msgstr ""
 msgid "Unable to run custom command %s"
 msgstr "Nom foi possível copiar as canções"
 
-#: quodlibet/ext/songsmenu/duplicates.py:285
+#: quodlibet/ext/songsmenu/duplicates.py:287
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
 msgstr[0] ""
 msgstr[1] ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:338
+#: quodlibet/ext/songsmenu/duplicates.py:340
 msgid "Collapse / Expand all"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:342
+#: quodlibet/ext/songsmenu/duplicates.py:344
 #, python-format
 msgid "Duplicate key expression is '%s'"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:358
+#: quodlibet/ext/songsmenu/duplicates.py:360
 #, fuzzy
 msgid "Duplicates Browser"
 msgstr "Desactivar o Navegador"
 
-#: quodlibet/ext/songsmenu/duplicates.py:359
+#: quodlibet/ext/songsmenu/duplicates.py:361
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:396
+#: quodlibet/ext/songsmenu/duplicates.py:398
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:398
+#: quodlibet/ext/songsmenu/duplicates.py:401
 msgid "_Group duplicates by:"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:403
+#: quodlibet/ext/songsmenu/duplicates.py:406
 #, fuzzy
 msgid "Duplicate Key"
 msgstr "Eliminar a tag seleccionada"
 
-#: quodlibet/ext/songsmenu/duplicates.py:408
+#: quodlibet/ext/songsmenu/duplicates.py:411
 #, fuzzy
 msgid "Remove _Whitespace"
 msgstr "Eliminar a tag seleccionada"
 
-#: quodlibet/ext/songsmenu/duplicates.py:409
+#: quodlibet/ext/songsmenu/duplicates.py:412
 #, fuzzy
 msgid "Remove _Diacritics"
 msgstr "Eliminar a tag seleccionada"
 
-#: quodlibet/ext/songsmenu/duplicates.py:410
+#: quodlibet/ext/songsmenu/duplicates.py:413
 #, fuzzy
 msgid "Remove _Punctuation"
 msgstr "_Eliminar Emisora"
 
-#: quodlibet/ext/songsmenu/duplicates.py:411
+#: quodlibet/ext/songsmenu/duplicates.py:414
 msgid "Case _Insensitive"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/duplicates.py:419
+#: quodlibet/ext/songsmenu/duplicates.py:422
 msgid "Matching options"
 msgstr ""
 
@@ -5196,7 +5183,7 @@ msgstr ""
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:270
-#: quodlibet/qltk/prefs.py:689 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Colección"
 
@@ -5260,202 +5247,201 @@ msgstr "um gestor de música e reprodutor"
 msgid "Failed to load file: %r"
 msgstr "Imposíbel carregar o arquivo: %r"
 
-#: quodlibet/operon/commands.py:36
+#: quodlibet/operon/commands.py:37
 msgid "List tags"
 msgstr "Mostrar as etiquetas"
 
-#: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:465
+#: quodlibet/operon/commands.py:42 quodlibet/operon/commands.py:81
+#: quodlibet/operon/commands.py:486
 msgid "Print terse output"
 msgstr "Mostrar a saída para depuración"
 
-#: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:467
+#: quodlibet/operon/commands.py:44 quodlibet/operon/commands.py:83
+#: quodlibet/operon/commands.py:488
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Colunas e orde para mostralas no modo depuración (%s)"
 
-#: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:85
+#: quodlibet/operon/commands.py:47 quodlibet/operon/commands.py:86
 #, fuzzy
 msgid "Also list programmatic tags"
 msgstr "Mostrar informaçom para de_puraçom"
 
-#: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
-#: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
-#: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
-#: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
-#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
-#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
-#: quodlibet/operon/commands.py:589
+#: quodlibet/operon/commands.py:51 quodlibet/operon/commands.py:129
+#: quodlibet/operon/commands.py:242 quodlibet/operon/commands.py:313
+#: quodlibet/operon/commands.py:359 quodlibet/operon/commands.py:363
+#: quodlibet/operon/commands.py:415 quodlibet/operon/commands.py:418
+#: quodlibet/operon/commands.py:458 quodlibet/operon/commands.py:493
+#: quodlibet/operon/commands.py:533 quodlibet/operon/commands.py:568
+#: quodlibet/operon/commands.py:610
 msgid "Not enough arguments"
 msgstr "Sen argumentos dabondo"
 
-#: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
-#: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:474
+#: quodlibet/operon/commands.py:53 quodlibet/operon/commands.py:90
+#: quodlibet/operon/commands.py:131 quodlibet/operon/commands.py:495
 #, fuzzy
 msgid "Too many arguments"
 msgstr "Demasiados erros"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:92
+#: quodlibet/operon/commands.py:500 quodlibet/qltk/data_editors.py:374
 #, fuzzy
 msgid "Description"
 msgstr "descriçom"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:500
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Valor"
 
-#: quodlibet/operon/commands.py:75
+#: quodlibet/operon/commands.py:76
 msgid "List all common tags"
 msgstr "Mostrar todas as etiquetas habituais"
 
-#: quodlibet/operon/commands.py:117
+#: quodlibet/operon/commands.py:118
 msgid "Copy tags from one file to another"
 msgstr "Copiar as etiquetas dun arquivo a outro"
 
-#: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
-#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:326
-#: quodlibet/operon/commands.py:387
+#: quodlibet/operon/commands.py:123 quodlibet/operon/commands.py:163
+#: quodlibet/operon/commands.py:309 quodlibet/operon/commands.py:347
+#: quodlibet/operon/commands.py:408
 msgid "Show changes, don't apply them"
 msgstr "Mostrar as mudanzas, sen aplicalas"
 
-#: quodlibet/operon/commands.py:124
+#: quodlibet/operon/commands.py:125
 msgid "Skip tags that can't be written"
 msgstr "Saltar as etiquetas que nom se poidan escreber"
 
-#: quodlibet/operon/commands.py:145
+#: quodlibet/operon/commands.py:146
 #, fuzzy, python-brace-format
 msgid "Can't copy tag {tagname} to file: {filename}"
 msgstr "Nom se puido copiar a etiqueta %r para o arquivo: %r"
 
-#: quodlibet/operon/commands.py:157
+#: quodlibet/operon/commands.py:158
 #, fuzzy
 msgid "Edit tags in a text editor"
 msgstr "Editor de etiquetas de áudio"
 
-#: quodlibet/operon/commands.py:251
+#: quodlibet/operon/commands.py:271
 msgid "Editing aborted"
 msgstr ""
 
-#: quodlibet/operon/commands.py:255
+#: quodlibet/operon/commands.py:275
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
 msgstr ""
 
-#: quodlibet/operon/commands.py:260
+#: quodlibet/operon/commands.py:280
 #, fuzzy
 msgid "No changes detected"
 msgstr "Sem canções seleccionadas."
 
-#: quodlibet/operon/commands.py:284
+#: quodlibet/operon/commands.py:304
 msgid "Set a tag and remove existing values"
 msgstr "Estabelece unha etiqueta e elimina os valores existentes"
 
-#: quodlibet/operon/commands.py:306
+#: quodlibet/operon/commands.py:327
 #, fuzzy, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
 msgstr "Nom se puido copiar a etiqueta %r para o arquivo: %r"
 
-#: quodlibet/operon/commands.py:321
+#: quodlibet/operon/commands.py:342
 #, fuzzy
 msgid "Remove tags"
 msgstr "_Eliminar Emisora"
 
-#: quodlibet/operon/commands.py:328 quodlibet/operon/commands.py:389
+#: quodlibet/operon/commands.py:349 quodlibet/operon/commands.py:410
 msgid "Value is a regular expression"
 msgstr "O valor é unha expresión regular"
 
-#: quodlibet/operon/commands.py:330
+#: quodlibet/operon/commands.py:351
 #, fuzzy
 msgid "Remove all tags"
 msgstr "Eliminar a tag seleccionada"
 
-#: quodlibet/operon/commands.py:334
+#: quodlibet/operon/commands.py:355
 msgid "Can't combine '--all' with '--regexp'"
 msgstr "Non se pode combinar '--all' con '--regexp'"
 
-#: quodlibet/operon/commands.py:368
+#: quodlibet/operon/commands.py:389
 #, fuzzy, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
 msgstr "Impossível eliminar %r de %r"
 
-#: quodlibet/operon/commands.py:382
+#: quodlibet/operon/commands.py:403
 #, fuzzy
 msgid "Remove a tag value"
 msgstr "Filtrar num valor da etiqueta"
 
-#: quodlibet/operon/commands.py:432
+#: quodlibet/operon/commands.py:453
 #, fuzzy
 msgid "Add a tag value"
 msgstr "Filtrar num valor da etiqueta"
 
-#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
+#: quodlibet/operon/commands.py:469 quodlibet/operon/commands.py:701
 #, python-format
 msgid "Can not set %r"
 msgstr "Non se puido estabelecer %r"
 
-#: quodlibet/operon/commands.py:460
+#: quodlibet/operon/commands.py:481
 #, fuzzy
 msgid "List file information"
 msgstr "Sem informaçom sobre a duraçom"
 
-#: quodlibet/operon/commands.py:506
+#: quodlibet/operon/commands.py:527
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr ""
 
-#: quodlibet/operon/commands.py:519
+#: quodlibet/operon/commands.py:540
 #, fuzzy, python-format
 msgid "Failed to load image file: %r"
 msgstr "Erro ao carregar o arquivo: %r"
 
-#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
+#: quodlibet/operon/commands.py:547 quodlibet/operon/commands.py:576
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 
-#: quodlibet/operon/commands.py:542
+#: quodlibet/operon/commands.py:563
 #, fuzzy
 msgid "Remove all embedded images"
 msgstr "Extrair as imagens incrustadas"
 
-#: quodlibet/operon/commands.py:572
+#: quodlibet/operon/commands.py:593
 #, fuzzy, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Extrair as imagens incrustadas"
 
-#: quodlibet/operon/commands.py:584
+#: quodlibet/operon/commands.py:605
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 
-#: quodlibet/operon/commands.py:643
+#: quodlibet/operon/commands.py:664
 msgid "Rename files based on tags"
 msgstr "Mudar o nome dos arquivos baseándose nas etiquetas"
 
-#: quodlibet/operon/commands.py:658
+#: quodlibet/operon/commands.py:679
 msgid "Fill tags based on the file path"
 msgstr "Crear as etiquetas baseándose na rota ao arquivo"
 
-#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:307
-#: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
+#: quodlibet/operon/commands.py:729 quodlibet/qltk/information.py:307
+#: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:248
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Arquivo"
 
-#: quodlibet/operon/commands.py:716
+#: quodlibet/operon/commands.py:737
 msgid "Fill tracknumbers for all files"
 msgstr "Crear os números de pista para todos os arquivos"
 
-#: quodlibet/operon/commands.py:735
+#: quodlibet/operon/commands.py:756
 msgid "Print tags based on the given pattern"
 msgstr "Mostrar as etiquetas coincidentes co padrón indicado"
 
-#: quodlibet/operon/commands.py:772
+#: quodlibet/operon/commands.py:793
 #, fuzzy
 msgid "Display help information"
 msgstr "Mostra informaçom sumária sobre o modo de utilizaçom"
@@ -5523,15 +5509,15 @@ msgstr "Umha cançom"
 msgid "One _song"
 msgstr "Umha cançom"
 
-#: quodlibet/player/gstbe/player.py:100
+#: quodlibet/player/gstbe/player.py:102
 msgid "Stream"
 msgstr "Stream"
 
-#: quodlibet/player/gstbe/player.py:100
+#: quodlibet/player/gstbe/player.py:102
 msgid "Buffering"
 msgstr "A encher o buffer"
 
-#: quodlibet/player/gstbe/player.py:463
+#: quodlibet/player/gstbe/player.py:465
 #, fuzzy, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Nom se puido criar a pipeline GStreamer predefinida."
@@ -5693,6 +5679,14 @@ msgstr "_Extensões"
 msgid "Usage"
 msgstr ""
 
+#: quodlibet/qltk/advanced_prefs.py:69
+msgid "Revert to default"
+msgstr ""
+
+#: quodlibet/qltk/advanced_prefs.py:251
+msgid "I know what I'm doing!"
+msgstr ""
+
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
 msgid "Beginning"
@@ -5784,6 +5778,7 @@ msgstr "_Valor:"
 msgid "Saved Values"
 msgstr "Valores gardados"
 
+#. noqa
 #: quodlibet/qltk/cbes.py:265
 #, fuzzy
 msgid "Edit saved values…"
@@ -6065,7 +6060,7 @@ msgstr ""
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:509
 #: quodlibet/util/tags.py:244
 #, fuzzy
 msgid "Invalid tag"
@@ -6436,7 +6431,7 @@ msgstr ""
 "As etiquetas mudaron pero non se gardaron. Gardar os arquivos ou descartar "
 "as mudanzas?"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:116
 #, fuzzy
 msgid "_Revert"
@@ -6554,174 +6549,174 @@ msgstr ""
 msgid "Show _Errors"
 msgstr "Mostrar os _erros"
 
-#: quodlibet/qltk/prefs.py:49
+#: quodlibet/qltk/prefs.py:51
 msgid "_Disc"
 msgstr "_Disco"
 
-#: quodlibet/qltk/prefs.py:50
+#: quodlibet/qltk/prefs.py:52
 msgid "_Track"
 msgstr "_Pista"
 
-#: quodlibet/qltk/prefs.py:51
+#: quodlibet/qltk/prefs.py:53
 #, fuzzy
 msgid "Grou_ping"
 msgstr "agrupaçom"
 
-#: quodlibet/qltk/prefs.py:53
+#: quodlibet/qltk/prefs.py:55
 msgid "_Artist"
 msgstr "_Artista"
 
-#: quodlibet/qltk/prefs.py:54
+#: quodlibet/qltk/prefs.py:56
 msgid "Al_bum"
 msgstr "Ál_bum"
 
-#: quodlibet/qltk/prefs.py:59
+#: quodlibet/qltk/prefs.py:61
 msgid "_Filename"
 msgstr "_Nome"
 
-#: quodlibet/qltk/prefs.py:61
+#: quodlibet/qltk/prefs.py:63
 msgid "_Length"
 msgstr "_Duración"
 
-#: quodlibet/qltk/prefs.py:68
+#: quodlibet/qltk/prefs.py:70
 msgid "_Jump to playing song automatically"
 msgstr "_Ir á canción reproducida automaticamente"
 
-#: quodlibet/qltk/prefs.py:70
+#: quodlibet/qltk/prefs.py:72
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr "Ao mudar a canción reproducida, rolar cara ela na lista"
 
-#: quodlibet/qltk/prefs.py:72
+#: quodlibet/qltk/prefs.py:74
 msgid "_Sort songs when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:74
+#: quodlibet/qltk/prefs.py:76
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:76
+#: quodlibet/qltk/prefs.py:78
 msgid "Always allow sorting"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:78
+#: quodlibet/qltk/prefs.py:80
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:99
+#: quodlibet/qltk/prefs.py:101
 msgid "_Others:"
 msgstr "_Outras:"
 
 #. Stock edit doesn't have ellipsis chars.
-#: quodlibet/qltk/prefs.py:104
+#: quodlibet/qltk/prefs.py:106
 #, fuzzy
 msgid "_Edit…"
 msgstr "_Editar a vista..."
 
-#: quodlibet/qltk/prefs.py:107
+#: quodlibet/qltk/prefs.py:109
 msgid "Add or remove additional column headers"
 msgstr "Engadir ou eliminar colunas de información adicional"
 
-#: quodlibet/qltk/prefs.py:116
+#: quodlibet/qltk/prefs.py:118
 msgid "Visible Columns"
 msgstr "Colunas visíbeis"
 
-#: quodlibet/qltk/prefs.py:138
+#: quodlibet/qltk/prefs.py:140
 msgid "Title includes _version"
 msgstr "O título inclúe a _versión"
 
-#: quodlibet/qltk/prefs.py:139
+#: quodlibet/qltk/prefs.py:141
 msgid "Album includes _disc subtitle"
 msgstr "O álbum inclúe a _parte"
 
-#: quodlibet/qltk/prefs.py:140
+#: quodlibet/qltk/prefs.py:142
 #, fuzzy
 msgid "Artist includes all _people"
 msgstr "A procura _inclúi \"componentes\""
 
-#: quodlibet/qltk/prefs.py:141
+#: quodlibet/qltk/prefs.py:143
 msgid "Filename includes _folder"
 msgstr "O nome inclúe o carta_fol"
 
-#: quodlibet/qltk/prefs.py:142
+#: quodlibet/qltk/prefs.py:144
 #, fuzzy
 msgid "Column Preferences"
 msgstr "Preferências"
 
-#: quodlibet/qltk/prefs.py:145
+#: quodlibet/qltk/prefs.py:147
 #, fuzzy
 msgid "_Update Columns"
 msgstr "Colunas adicionais"
 
-#: quodlibet/qltk/prefs.py:147
+#: quodlibet/qltk/prefs.py:149
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Aplicar a configuración actual á lista, engadindo as novas colunas ao final"
 
-#: quodlibet/qltk/prefs.py:161 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:163 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Lista de cancións"
 
-#: quodlibet/qltk/prefs.py:246
+#: quodlibet/qltk/prefs.py:248
 #, fuzzy
 msgid "Edit Columns"
 msgstr "Colunas adicionais"
 
-#: quodlibet/qltk/prefs.py:283
+#: quodlibet/qltk/prefs.py:285
 msgid "Duration totals"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:294
+#: quodlibet/qltk/prefs.py:296
 msgid "_Global filter:"
 msgstr "Filtro _global:"
 
-#: quodlibet/qltk/prefs.py:299
+#: quodlibet/qltk/prefs.py:301
 msgid "Apply this query in addition to all others"
 msgstr "Aplicar esta procura engadíndoa ás demais"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:305
 #, fuzzy
 msgctxt "heading"
 msgid "Search"
 msgstr "Procurar"
 
-#: quodlibet/qltk/prefs.py:307 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:309 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Navegadores"
 
 #. Ratings
-#: quodlibet/qltk/prefs.py:312
+#: quodlibet/qltk/prefs.py:314
 msgid "Confirm _multiple ratings"
 msgstr "Confirmar a puntuación _múltipla"
 
-#: quodlibet/qltk/prefs.py:314
+#: quodlibet/qltk/prefs.py:316
 #, fuzzy
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 "Obter confirmaçom antes de mudar a qualificaçom de várias canções à vez."
 
-#: quodlibet/qltk/prefs.py:317
+#: quodlibet/qltk/prefs.py:319
 msgid "Enable _one-click ratings"
 msgstr "Activar as puntuacións c_un click"
 
-#: quodlibet/qltk/prefs.py:319
+#: quodlibet/qltk/prefs.py:321
 #, fuzzy
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Permitir mudar a qualificaçom com um click na coluna de qualificações da "
 "lista"
 
-#: quodlibet/qltk/prefs.py:325 quodlibet/qltk/prefs.py:666
+#: quodlibet/qltk/prefs.py:327 quodlibet/qltk/prefs.py:668
 msgid "Ratings"
 msgstr "Puntuacións"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:331
+#: quodlibet/qltk/prefs.py:333
 msgid "Prefer _embedded art"
 msgstr "Preferir as portadas _incrustadas"
 
-#: quodlibet/qltk/prefs.py:333
+#: quodlibet/qltk/prefs.py:335
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6729,33 +6724,33 @@ msgstr ""
 "Escoller utilizar as portadas incrustadas no ficheiro de audio (de estaren "
 "disponíbeis) antes que doutras fontes"
 
-#: quodlibet/qltk/prefs.py:338
+#: quodlibet/qltk/prefs.py:340
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:342
+#: quodlibet/qltk/prefs.py:344
 #, fuzzy
 msgid "_Preferred fixed image filename(s)"
 msgstr "_Forçar o nome de arquivo da imagem:"
 
-#: quodlibet/qltk/prefs.py:360
+#: quodlibet/qltk/prefs.py:362
 #, fuzzy
 msgid "Album Art"
 msgstr "Lista de Álbuns"
 
-#: quodlibet/qltk/prefs.py:393
+#: quodlibet/qltk/prefs.py:395
 #, fuzzy
 msgid "Playback"
 msgstr "Parar a reproduçom"
 
-#: quodlibet/qltk/prefs.py:400
+#: quodlibet/qltk/prefs.py:402
 #, fuzzy
 msgid "Output Configuration"
 msgstr "Saída do registro"
 
-#: quodlibet/qltk/prefs.py:407
+#: quodlibet/qltk/prefs.py:409
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -6763,51 +6758,51 @@ msgstr ""
 "De non existir información sobre o axuste Replay Gain para a canción, "
 "multiplicar o volume por este valor"
 
-#: quodlibet/qltk/prefs.py:410
+#: quodlibet/qltk/prefs.py:412
 #, fuzzy
 msgid "_Fall-back gain:"
 msgstr "Ganância por defeito (dB):"
 
-#: quodlibet/qltk/prefs.py:419
+#: quodlibet/qltk/prefs.py:421
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Multiplicar o volume de todas as cancións por este valor, sempre que non se "
 "produzan cortes"
 
-#: quodlibet/qltk/prefs.py:422
+#: quodlibet/qltk/prefs.py:424
 #, fuzzy
 msgid "_Pre-amp gain:"
 msgstr "Ganância do _volume (dB)"
 
-#: quodlibet/qltk/prefs.py:428
+#: quodlibet/qltk/prefs.py:430
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Activar o axuste do Replay Gain"
 
-#: quodlibet/qltk/prefs.py:445
+#: quodlibet/qltk/prefs.py:447
 msgid "Replay Gain Volume Adjustment"
 msgstr "Axuste do Replay Gain"
 
-#: quodlibet/qltk/prefs.py:453
+#: quodlibet/qltk/prefs.py:455
 msgid "_Continue playback on startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:456
+#: quodlibet/qltk/prefs.py:458
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:482
+#: quodlibet/qltk/prefs.py:484
 #, fuzzy
 msgid "_Default rating:"
 msgstr "Predefinido"
 
-#: quodlibet/qltk/prefs.py:525
+#: quodlibet/qltk/prefs.py:527
 #, fuzzy
 msgid "Rating _scale:"
 msgstr "Qualificações"
 
-#: quodlibet/qltk/prefs.py:574
+#: quodlibet/qltk/prefs.py:576
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6821,32 +6816,32 @@ msgstr ""
 "un recálculo \n"
 "para todos os álbuns."
 
-#: quodlibet/qltk/prefs.py:579
+#: quodlibet/qltk/prefs.py:581
 msgid "_Bayesian averaging amount:"
 msgstr "Cantidade de media _Bayesiana:"
 
-#: quodlibet/qltk/prefs.py:592
+#: quodlibet/qltk/prefs.py:594
 msgid "_Email:"
 msgstr "_Correo-e:"
 
-#: quodlibet/qltk/prefs.py:594
+#: quodlibet/qltk/prefs.py:596
 #, fuzzy
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "As qualificações e o contador determinarám-se para este endereço de correio-e"
 
-#: quodlibet/qltk/prefs.py:612
+#: quodlibet/qltk/prefs.py:614
 #, fuzzy
 msgid "_Auto-save tag changes"
 msgstr "Descartar as mudanças na etiqueta?"
 
-#: quodlibet/qltk/prefs.py:614
+#: quodlibet/qltk/prefs.py:616
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 "Gardar as mudanzas nas etiquetas sen solicitar confirmación individual ao se "
 "editaren varios arquivos"
 
-#: quodlibet/qltk/prefs.py:629
+#: quodlibet/qltk/prefs.py:631
 #, fuzzy
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
@@ -6855,12 +6850,12 @@ msgstr ""
 "Relaçom de separadores para diferenciar os valores das etiquetas, separados "
 "por espaços"
 
-#: quodlibet/qltk/prefs.py:632
+#: quodlibet/qltk/prefs.py:634
 #, fuzzy
 msgid "Split _tag on:"
 msgstr "Extraer _de:"
 
-#: quodlibet/qltk/prefs.py:645
+#: quodlibet/qltk/prefs.py:647
 #, fuzzy
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
@@ -6870,67 +6865,71 @@ msgstr ""
 "Relaçom de separadores para diferenciar os valores das etiquetas, separados "
 "por espaços"
 
-#: quodlibet/qltk/prefs.py:650
+#: quodlibet/qltk/prefs.py:652
 #, fuzzy
 msgid "Split _subtag on:"
 msgstr "Extraer _de:"
 
-#: quodlibet/qltk/prefs.py:660
+#: quodlibet/qltk/prefs.py:662
 #, fuzzy
 msgid "Tags"
 msgstr "Editar as etiquetas"
 
-#: quodlibet/qltk/prefs.py:663
+#: quodlibet/qltk/prefs.py:665
 msgid "Tag Editing"
 msgstr "Edición de etiquetas"
 
-#: quodlibet/qltk/prefs.py:681
+#: quodlibet/qltk/prefs.py:683
 #, fuzzy
 msgid "Updating for new ratings"
 msgstr "_Nova Emisora"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1011
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1011
 #, fuzzy
 msgid "_Scan Library"
 msgstr "_Procurar na colecçom"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1073
+#: quodlibet/qltk/prefs.py:698 quodlibet/qltk/quodlibetwindow.py:1073
 msgid "Check for changes in your library"
 msgstr "Escrutar por modificacións na colección de música"
 
-#: quodlibet/qltk/prefs.py:701
+#: quodlibet/qltk/prefs.py:703
 #, fuzzy
 msgid "Re_build Library"
 msgstr "Reler a colecçom"
 
-#: quodlibet/qltk/prefs.py:704
+#: quodlibet/qltk/prefs.py:706
 #, fuzzy
 msgid "Reload all songs in your library. This can take a long time."
 msgstr "Reler todas as canções da sua colecçom (pode demorar moito tempo)"
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:721
 #, fuzzy
 msgid "Hidden Songs"
 msgstr "Sem Canções"
 
-#: quodlibet/qltk/prefs.py:727
+#: quodlibet/qltk/prefs.py:729
 #, fuzzy
 msgid "Scan library _on start"
 msgstr "Actualizar a colecçom ao iniciar"
 
-#: quodlibet/qltk/prefs.py:731
+#: quodlibet/qltk/prefs.py:733
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:734
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:742
+#: quodlibet/qltk/prefs.py:744
 #, fuzzy
 msgid "Scan Directories"
 msgstr "Analisar os _cartafoles"
+
+#: quodlibet/qltk/prefs.py:753
+msgid "Advanced"
+msgstr ""
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
@@ -7211,53 +7210,53 @@ msgstr "Eliminar os caracteres non-_ASCII"
 msgid "Use only _lowercase characters"
 msgstr "Empregar unicamente caracteres de caixa-_baixa"
 
-#: quodlibet/qltk/renamefiles.py:149
+#: quodlibet/qltk/renamefiles.py:152
 msgid "Rename Files"
 msgstr "Mudar o nome dos arquivos"
 
-#: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:119
+#: quodlibet/qltk/renamefiles.py:174 quodlibet/qltk/tagsfrompath.py:119
 #: quodlibet/qltk/tracknumbers.py:57
 msgid "_Preview"
 msgstr "_Antever"
 
-#: quodlibet/qltk/renamefiles.py:198
+#: quodlibet/qltk/renamefiles.py:201
 #, fuzzy
 msgid "File names"
 msgstr "Nome do ficheiro"
 
-#: quodlibet/qltk/renamefiles.py:208
+#: quodlibet/qltk/renamefiles.py:211
 #, fuzzy
 msgid "_Move album art"
 msgstr "artista do álbum"
 
-#: quodlibet/qltk/renamefiles.py:211
+#: quodlibet/qltk/renamefiles.py:214
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:216
+#: quodlibet/qltk/renamefiles.py:219
 msgid "_Overwrite album art at target"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:224
+#: quodlibet/qltk/renamefiles.py:227
 #, fuzzy
 msgid "_Remove empty directories"
 msgstr "_Eliminar cobertas e cartafoles nom utilizados"
 
-#: quodlibet/qltk/renamefiles.py:230
+#: quodlibet/qltk/renamefiles.py:233
 #, fuzzy
 msgid "Album art"
 msgstr "Lista de Álbuns"
 
-#: quodlibet/qltk/renamefiles.py:259
+#: quodlibet/qltk/renamefiles.py:262
 msgid "New Name"
 msgstr "Novo nome"
 
-#: quodlibet/qltk/renamefiles.py:337
+#: quodlibet/qltk/renamefiles.py:339
 msgid "Unable to rename file"
 msgstr "Non se puido mudar o nome do arquivo"
 
-#: quodlibet/qltk/renamefiles.py:338
+#: quodlibet/qltk/renamefiles.py:340
 #, fuzzy, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
@@ -7268,25 +7267,25 @@ msgstr ""
 "de destino já exista, ou que nom tenha permissões para criar o novo arquivo "
 "ou eliminar o antigo."
 
-#: quodlibet/qltk/renamefiles.py:346
+#: quodlibet/qltk/renamefiles.py:348
 msgid "Ignore _All Errors"
 msgstr "Ignorar todos os _erros"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
-#: quodlibet/qltk/renamefiles.py:347 quodlibet/qltk/wlw.py:49
+#: quodlibet/qltk/renamefiles.py:349 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:349
+#: quodlibet/qltk/renamefiles.py:351
 msgid "_Continue"
 msgstr "_Continuar"
 
-#: quodlibet/qltk/renamefiles.py:463
+#: quodlibet/qltk/renamefiles.py:465
 msgid "Path is not absolute"
 msgstr "O enderezo non é absoluto"
 
-#: quodlibet/qltk/renamefiles.py:464
+#: quodlibet/qltk/renamefiles.py:466
 #, fuzzy, python-format
 msgid ""
 "The pattern\n"
@@ -7510,41 +7509,41 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Filtrar por %s"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1186
 #, fuzzy
 msgid "All _Headers"
 msgstr "Cabeceiras dos _álbuns"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1187
 msgid "_Track Headers"
 msgstr "_Cabeceiras da pista"
 
-#: quodlibet/qltk/songlist.py:1189
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Album Headers"
 msgstr "Cabeceiras do á_lbum"
 
-#: quodlibet/qltk/songlist.py:1190
+#: quodlibet/qltk/songlist.py:1189
 msgid "_People Headers"
 msgstr "Cabeceiras dos _componentes"
 
-#: quodlibet/qltk/songlist.py:1191
+#: quodlibet/qltk/songlist.py:1190
 msgid "_Date Headers"
 msgstr "Cabeceiras da _data"
 
-#: quodlibet/qltk/songlist.py:1192
+#: quodlibet/qltk/songlist.py:1191
 msgid "_File Headers"
 msgstr "Cabeceiras do _arquivo"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1192
 msgid "_Production Headers"
 msgstr "Cabeceiras de p_rodución"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1207
 #, fuzzy
 msgid "_Customize Headers…"
 msgstr "_Personalizar as cabeceiras..."
 
-#: quodlibet/qltk/songlist.py:1213
+#: quodlibet/qltk/songlist.py:1212
 #, fuzzy
 msgid "_Expand Column"
 msgstr "Colunas adicionais"
@@ -7583,63 +7582,63 @@ msgstr[1] ""
 msgid "Configure Plugins…"
 msgstr "Cores nos termos da _procura"
 
-#: quodlibet/qltk/songsmenu.py:324
-msgid "Add to _Queue"
-msgstr "Engadir á _fileira"
-
-#: quodlibet/qltk/songsmenu.py:344
-#, fuzzy
-msgid "_Remove from Library…"
-msgstr "_Eliminar da Colecçom"
-
-#: quodlibet/qltk/songsmenu.py:411
-#, fuzzy
-msgid "Unable to show files"
-msgstr "Nom foi possível eliminar o arquivo"
-
-#: quodlibet/qltk/songsmenu.py:412
-msgid "Error showing files, or no program available to show them."
-msgstr ""
-
-#: quodlibet/qltk/songsmenu.py:419
-#, python-format
-msgid "_Show in File Manager"
-msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] ""
-msgstr[1] ""
-
-#: quodlibet/qltk/songsmenu.py:436
+#: quodlibet/qltk/songsmenu.py:351
 #, fuzzy, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "_Baixar"
 msgstr[1] "_Baixar"
 
-#: quodlibet/qltk/songsmenu.py:443
+#: quodlibet/qltk/songsmenu.py:358
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:359
 #, fuzzy
 msgid "failed"
 msgstr "Barra de pesquisa"
 
-#: quodlibet/qltk/songsmenu.py:447
+#: quodlibet/qltk/songsmenu.py:362
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Baixar o arquivo"
 
-#: quodlibet/qltk/songsmenu.py:453
+#: quodlibet/qltk/songsmenu.py:368
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "Lista de Álbuns"
 msgstr[1] "Lista de Álbuns"
 
-#: quodlibet/qltk/songsmenu.py:459
+#: quodlibet/qltk/songsmenu.py:374
 #, fuzzy
 msgid "Download here"
 msgstr "Baixar o arquivo"
+
+#: quodlibet/qltk/songsmenu.py:393
+#, fuzzy
+msgid "Unable to show files"
+msgstr "Nom foi possível eliminar o arquivo"
+
+#: quodlibet/qltk/songsmenu.py:394
+msgid "Error showing files, or no program available to show them."
+msgstr ""
+
+#: quodlibet/qltk/songsmenu.py:401
+#, python-format
+msgid "_Show in File Manager"
+msgid_plural "_Show %(total)d Files in File Manager"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/qltk/songsmenu.py:460
+#, fuzzy
+msgid "_Remove from Library…"
+msgstr "_Eliminar da Colecçom"
+
+#: quodlibet/qltk/songsmenu.py:474
+msgid "Add to _Queue"
+msgstr "Engadir á _fileira"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
@@ -7678,7 +7677,7 @@ msgstr ""
 "non é válido. Pode que conteña a mesma etiqueta dúas veces ou que teña "
 "parénteses ou chaves desaxustadas (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:141
+#: quodlibet/qltk/textedit.py:140
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7691,7 +7690,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:157
+#: quodlibet/qltk/textedit.py:156
 msgid "Edit Display"
 msgstr "Editar a vista"
 
@@ -7717,7 +7716,7 @@ msgstr "_Parar"
 msgid "Previous"
 msgstr "_Antever"
 
-#: quodlibet/qltk/views.py:937
+#: quodlibet/qltk/views.py:928
 #, fuzzy, python-format
 msgid "and %d more…"
 msgstr "e %d  mais..."
@@ -7774,7 +7773,7 @@ msgstr "Importar lista"
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:651
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Xá existe umha lista co nome  %s ."
@@ -7820,12 +7819,12 @@ msgstr "Amosar a versión e o copyright"
 msgid "Print debugging information"
 msgstr "Sem informaçom sobre a duraçom"
 
-#: quodlibet/util/__init__.py:120
+#: quodlibet/util/__init__.py:121
 #, python-format
 msgid "Usage: %(program)s %(usage)s"
 msgstr ""
 
-#: quodlibet/util/__init__.py:122
+#: quodlibet/util/__init__.py:123
 msgid "[options]"
 msgstr "[opcións]"
 
@@ -7834,61 +7833,61 @@ msgstr "[opcións]"
 msgid "Option %r not recognized."
 msgstr "Non se recoñeceu a opción %r."
 
-#: quodlibet/util/__init__.py:170
+#: quodlibet/util/__init__.py:169
 #, python-format
 msgid "Option %r requires an argument."
 msgstr "A opción %r require un argumento."
 
-#: quodlibet/util/__init__.py:173
+#: quodlibet/util/__init__.py:171
 #, python-format
 msgid "%r is not a unique prefix."
 msgstr "%r non é un prefixo único."
 
-#: quodlibet/util/__init__.py:353
+#: quodlibet/util/__init__.py:351
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:408
+#: quodlibet/util/__init__.py:406
 #, fuzzy, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:419
 msgid "No time information"
 msgstr "Non consta a duración"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:422
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:423
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: quodlibet/util/__init__.py:426
+#: quodlibet/util/__init__.py:424
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: quodlibet/util/__init__.py:427
+#: quodlibet/util/__init__.py:425
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d día"
 msgstr[1] "%d días"
 
-#: quodlibet/util/__init__.py:428
+#: quodlibet/util/__init__.py:426
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7899,7 +7898,7 @@ msgstr[1] "%d anos"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:520
+#: quodlibet/util/__init__.py:518
 #, fuzzy
 msgctxt "check"
 msgid "titlecase?"
@@ -8338,6 +8337,10 @@ msgid ""
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
 msgstr ""
+
+#, fuzzy
+#~ msgid "Advanced Preferences"
+#~ msgstr "Preferências do Navegador em paneis"
 
 #, fuzzy
 #~ msgid "Export to Sonos playlist"
