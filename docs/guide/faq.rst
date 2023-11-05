@@ -224,10 +224,12 @@ I like <my favorite player>, so I won't use Quod Libet!
 Okay. We think Quod Libet beats other players in the areas where it counts
 (where exactly it does count is undecided; 'tag editing', 'massive libraries',
 and 'regexp searching' have all been cited); we didn't like the other players.
-If you do, continue using them. You still might want to check out Ex Falso,
-since while there's an awful lot of media players out there, there are far
-fewer choices for tag editors. You could also :ref:`help us make Quod Libet
-better <Contribute>`.
+If you do, continue using them.
+You still might want to check out Ex Falso,
+since while there's an awful lot of media players out there,
+there are far fewer choices for tag editors.
+
+You could also :ref:`help us make Quod Libet better <Contribute>`!
 
 
 Changing the volume in Quod Libet changes the main volume!
