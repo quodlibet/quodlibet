@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2022-11-15 13:48+0000\n"
-"Last-Translator: Neko Nekowazarashi <kodra@nekoweb.my.id>\n"
+"PO-Revision-Date: 2023-10-30 17:12+0000\n"
+"Last-Translator: Christian Elbrianno <crse@protonmail.ch>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.15-dev\n"
+"X-Generator: Weblate 5.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -368,7 +368,7 @@ msgstr "Elektronik"
 
 #: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hip Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:389
 #, fuzzy
@@ -388,9 +388,8 @@ msgid "Indian"
 msgstr "India"
 
 #: quodlibet/browsers/iradio.py:394
-#, fuzzy
 msgid "Religious"
-msgstr "Agamis"
+msgstr "Religi"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Charts"
@@ -402,7 +401,7 @@ msgstr "Turki"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
-msgstr ""
+msgstr "Reggae / Dancehall"
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Latin"
@@ -495,7 +494,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr "Rock"
+msgstr "Rok"
 
 #: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
