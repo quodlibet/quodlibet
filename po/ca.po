@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-09-10 18:02+0000\n"
+"PO-Revision-Date: 2023-11-01 14:01+0000\n"
 "Last-Translator: Marc Riera <marcriera@softcatala.org>\n"
 "Language-Team: Catalan <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ca/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0.1-dev\n"
+"X-Generator: Weblate 5.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -186,7 +186,7 @@ msgstr[1] "%d cançons"
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:577
 msgid "Invalid pattern"
-msgstr ""
+msgstr "El patró no és vàlid"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
@@ -209,7 +209,7 @@ msgstr ""
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
 msgid "_Custom"
-msgstr ""
+msgstr "_Personalitzat"
 
 #: quodlibet/browsers/collection/prefs.py:89 quodlibet/browsers/iradio.py:368
 #: quodlibet/browsers/paned/prefs.py:119
@@ -288,23 +288,23 @@ msgstr "_Cancel·la"
 
 #: quodlibet/browsers/covergrid/main.py:172
 msgid "Cover Grid"
-msgstr ""
+msgstr "Quadrícula de cobertes"
 
 #: quodlibet/browsers/covergrid/main.py:173
 msgid "_Cover Grid"
-msgstr ""
+msgstr "Quadrícula de _cobertes"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
 msgid "Cover Grid Preferences"
-msgstr ""
+msgstr "Preferències de la quadrícula de cobertes"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
 msgid "Show album _text"
-msgstr ""
+msgstr "Mostra el _text de l'àlbum"
 
 #: quodlibet/browsers/covergrid/prefs.py:70
 msgid "Show \"All Albums\" Item"
-msgstr ""
+msgstr "Mostra l'element «Tots els àlbums»"
 
 #: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
@@ -325,11 +325,13 @@ msgstr "Sistema de _fitxers"
 
 #: quodlibet/browsers/filesystem.py:130 quodlibet/qltk/songlist.py:267
 msgid "Unable to copy songs"
-msgstr ""
+msgstr "No s'han pogut copiar les cançons"
 
 #: quodlibet/browsers/filesystem.py:131 quodlibet/qltk/songlist.py:268
 msgid "The files selected cannot be copied to other song lists or the queue."
 msgstr ""
+"Els fitxers seleccionats no es poden copiar a altres llistes de cançons o a "
+"la cua."
 
 #: quodlibet/browsers/filesystem.py:203
 msgid "_Add to Library"
@@ -350,11 +352,11 @@ msgstr "Ràdio per Internet"
 
 #: quodlibet/browsers/iradio.py:224
 msgid "Add stations"
-msgstr ""
+msgstr "Afegeix emissores"
 
 #: quodlibet/browsers/iradio.py:265
 msgid "Downloading station list"
-msgstr ""
+msgstr "S'està baixant la llista d'emissores"
 
 #: quodlibet/browsers/iradio.py:366
 msgid "New Station"
@@ -362,15 +364,15 @@ msgstr "Emissora nova"
 
 #: quodlibet/browsers/iradio.py:367
 msgid "Enter the location of an Internet radio station:"
-msgstr ""
+msgstr "Indiqueu la ubicació de l'emissora de ràdio per Internet:"
 
 #: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
-msgstr ""
+msgstr "Electrònica"
 
 #: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hip-hop/rap"
 
 #: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
@@ -378,11 +380,11 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:390
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Japanese"
-msgstr ""
+msgstr "Japonesa"
 
 #: quodlibet/browsers/iradio.py:392
 msgid "Indian"
@@ -390,15 +392,15 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Religious"
-msgstr ""
+msgstr "Religiosa"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Charts"
-msgstr ""
+msgstr "Èxits"
 
 #: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
-msgstr ""
+msgstr "Turca"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
@@ -406,35 +408,35 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Latin"
-msgstr ""
+msgstr "Llatinoamericana"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "College Radio"
-msgstr ""
+msgstr "Ràdio universitària"
 
 #: quodlibet/browsers/iradio.py:401
 msgid "Talk / News"
-msgstr ""
+msgstr "Debat/notícies"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
-msgstr ""
+msgstr "Ambient"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: quodlibet/browsers/iradio.py:404 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr ""
+msgstr "Clàssica"
 
 #: quodlibet/browsers/iradio.py:405 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
-msgstr ""
+msgstr "Alternativa"
 
 #: quodlibet/browsers/iradio.py:407
 msgid "Metal"
@@ -446,7 +448,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:409
 msgid "News"
-msgstr ""
+msgstr "Notícies"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
@@ -454,7 +456,7 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr ""
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
@@ -462,11 +464,11 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Blues"
-msgstr ""
+msgstr "Blues"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Soul"
-msgstr ""
+msgstr "Soul"
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
@@ -482,23 +484,23 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:419
 msgid "Slavic"
-msgstr ""
+msgstr "Eslava"
 
 #: quodlibet/browsers/iradio.py:421
 msgid "Greek"
-msgstr ""
+msgstr "Grega"
 
 #: quodlibet/browsers/iradio.py:422
 msgid "Gothic"
-msgstr ""
+msgstr "Gòtica"
 
 #: quodlibet/browsers/iradio.py:423 quodlibet/ext/events/equalizer.py:38
 msgid "Rock"
-msgstr ""
+msgstr "Rock"
 
 #: quodlibet/browsers/iradio.py:476
 msgid "Would you like to load a list of popular radio stations?"
-msgstr ""
+msgstr "Voleu carregar una llista d'emissores de ràdio populars?"
 
 #: quodlibet/browsers/iradio.py:482
 msgid "_Load Stations"
@@ -506,11 +508,11 @@ msgstr ""
 
 #: quodlibet/browsers/iradio.py:498
 msgid "_Internet Radio"
-msgstr ""
+msgstr "Ràdio per _Internet"
 
 #: quodlibet/browsers/iradio.py:587
 msgid "All Stations"
-msgstr ""
+msgstr "Totes les emissores"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
