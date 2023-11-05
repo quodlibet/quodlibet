@@ -31,7 +31,7 @@ msgid "_People"
 msgstr "συντελεστές"
 
 #: quodlibet/browsers/albums/main.py:225
-#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:58
+#: quodlibet/browsers/covergrid/main.py:60 quodlibet/qltk/prefs.py:60
 msgid "_Date"
 msgstr "_Ημερομηνία"
 
@@ -46,12 +46,12 @@ msgid "_Original Date"
 msgstr "_Αρχική Ημερομηνία"
 
 #: quodlibet/browsers/albums/main.py:228
-#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:57
+#: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:59
 msgid "_Genre"
 msgstr "_Είδος μουσικής"
 
 #: quodlibet/browsers/albums/main.py:229
-#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:62
+#: quodlibet/browsers/covergrid/main.py:64 quodlibet/qltk/prefs.py:64
 #: quodlibet/qltk/ratingsmenu.py:45
 msgid "_Rating"
 msgstr "_Βαθμολογία"
@@ -113,7 +113,7 @@ msgstr "Τραγούδια που δεν ανήκουν σε κάποιο άλμ
 #: quodlibet/browsers/covergrid/prefs.py:43
 #: quodlibet/browsers/playlists/prefs.py:35
 #: quodlibet/ext/songsmenu/brainz/widgets.py:98
-#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:267
+#: quodlibet/qltk/information.py:383 quodlibet/util/collection.py:268
 #, python-format
 msgid "%d track"
 msgid_plural "%d tracks"
@@ -123,7 +123,7 @@ msgstr[1] "%d τραγούδια"
 #: quodlibet/browsers/albums/prefs.py:42
 #: quodlibet/browsers/covergrid/prefs.py:44
 #: quodlibet/ext/songsmenu/brainz/widgets.py:97
-#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:271
+#: quodlibet/qltk/information.py:381 quodlibet/util/collection.py:272
 #, python-format
 msgid "%d disc"
 msgid_plural "%d discs"
@@ -162,12 +162,12 @@ msgstr "Προβολή Άλμπουμ"
 #: quodlibet/browsers/covergrid/prefs.py:110
 #: quodlibet/browsers/playlists/prefs.py:56
 #: quodlibet/ext/songsmenu/albumart.py:224
-#: quodlibet/ext/songsmenu/duplicates.py:345
+#: quodlibet/ext/songsmenu/duplicates.py:347
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:775
-#: quodlibet/qltk/textedit.py:163 quodlibet/update.py:149
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Κλείσιμο"
 
@@ -186,8 +186,8 @@ msgstr[0] "%d τραγούδι"
 msgstr[1] "%d τραγούδια"
 
 #: quodlibet/browsers/_base.py:406 quodlibet/browsers/_base.py:411
-#: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:140
-#: quodlibet/util/__init__.py:579
+#: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
+#: quodlibet/util/__init__.py:577
 msgid "Invalid pattern"
 msgstr "Μη έγκυρη αναζήτηση"
 
@@ -240,8 +240,8 @@ msgid "_Remove"
 msgstr "_Αφαίρεση"
 
 #: quodlibet/browsers/collection/prefs.py:121
-#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
-#: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:480
+#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:56
+#: quodlibet/operon/commands.py:92 quodlibet/qltk/edittags.py:480
 msgid "Tag"
 msgstr "Ετικέτα"
 
@@ -257,7 +257,7 @@ msgstr "Προτιμήσεις Συλλογής Άλμπουμ"
 #: quodlibet/browsers/paned/prefs.py:246
 #: quodlibet/ext/songsmenu/editplaycount.py:47
 #: quodlibet/ext/songsmenu/exact_rating.py:38
-#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:64
+#: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
 msgstr "_Εφαρμογή"
 
@@ -318,11 +318,11 @@ msgstr "Λειτουργία Πλατιάς προβολής"
 msgid "Cover Magnification"
 msgstr "Μεγέθυνση Εξώφυλλου"
 
-#: quodlibet/browsers/filesystem.py:42
+#: quodlibet/browsers/filesystem.py:41
 msgid "File System"
 msgstr "Σύστημα Αρχείων"
 
-#: quodlibet/browsers/filesystem.py:43
+#: quodlibet/browsers/filesystem.py:42
 msgid "_File System"
 msgstr "_Σύστημα Αρχείων"
 
@@ -523,7 +523,7 @@ msgstr "Όλοι οι Σταθμοί"
 
 #. Translators: Favorite radio stations
 #. TODO: support for ~#rating=!None etc (#1940)
-#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:66
+#: quodlibet/browsers/iradio.py:590 quodlibet/browsers/soundcloud/main.py:65
 msgid "Favorites"
 msgstr "Αγαπημένα"
 
@@ -670,7 +670,7 @@ msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:485
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
-#: quodlibet/qltk/songsmenu.py:359
+#: quodlibet/qltk/songsmenu.py:440
 msgid "_Delete"
 msgstr "_Διαγραφή Αρχείων"
 
@@ -748,7 +748,7 @@ msgid "_Add Tracks"
 msgstr "Κομμάτι"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:613
 msgid "New Playlist"
 msgstr "Νέα Λίστα Αναπαραγωγής"
 
@@ -859,46 +859,46 @@ msgstr "Λίστα _Κομματιών"
 msgid "Soundcloud"
 msgstr "Περιηγητής Soundcloud"
 
-#: quodlibet/browsers/soundcloud/main.py:40
+#: quodlibet/browsers/soundcloud/main.py:39
 msgid "Soundcloud Browser"
 msgstr "Περιηγητής Soundcloud"
 
-#: quodlibet/browsers/soundcloud/main.py:41
+#: quodlibet/browsers/soundcloud/main.py:40
 msgid "Sound_cloud"
 msgstr ""
 
-#: quodlibet/browsers/soundcloud/main.py:61 quodlibet/qltk/searchbar.py:82
+#: quodlibet/browsers/soundcloud/main.py:60 quodlibet/qltk/searchbar.py:82
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: quodlibet/browsers/soundcloud/main.py:70
+#: quodlibet/browsers/soundcloud/main.py:69
 msgid "My tracks"
 msgstr "Τα κομμάτια μου"
 
-#: quodlibet/browsers/soundcloud/main.py:143
+#: quodlibet/browsers/soundcloud/main.py:142
 #, python-format
 msgid "Go to %s"
 msgstr "Μετάβαση στο %s"
 
-#: quodlibet/browsers/soundcloud/main.py:444
+#: quodlibet/browsers/soundcloud/main.py:445
 msgid "Connected"
 msgstr "Συνδεδεμένο"
 
-#: quodlibet/browsers/soundcloud/main.py:445
+#: quodlibet/browsers/soundcloud/main.py:446
 #, fuzzy, python-format
 msgid "Quod Libet is now connected, %s!"
 msgstr "Ο Quod Libet είναι πλέον συνδεδεμένος, <b>%s</b>!"
 
-#: quodlibet/browsers/soundcloud/main.py:457
+#: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
 msgid "Log out of %s"
 msgstr "Αποσύνδεση %s"
 
-#: quodlibet/browsers/soundcloud/main.py:459
+#: quodlibet/browsers/soundcloud/main.py:460
 msgid "Enter code…"
 msgstr "Εισαγωγή κωδικού…"
 
-#: quodlibet/browsers/soundcloud/main.py:460
+#: quodlibet/browsers/soundcloud/main.py:461
 #, python-format
 msgid "Log in to %s"
 msgstr "Σύνδεση στο %s"
@@ -1162,7 +1162,7 @@ msgstr "πρότυπο"
 msgid "Invalid argument for '%s'."
 msgstr "Μη έγκυρο όρισμα για το '%s'."
 
-#: quodlibet/cli.py:217 quodlibet/util/__init__.py:175
+#: quodlibet/cli.py:217 quodlibet/util/__init__.py:173
 #, python-format
 msgid "Try %s --help."
 msgstr "Δοκιμάστε το %s --help."
@@ -1346,18 +1346,6 @@ msgstr ""
 "Χρήση κοινών αγγλικών κανόνων για την κεφαλαιοποίηση, όπως στο \"Dark Night "
 "of the Soul\""
 
-#: quodlibet/ext/events/advanced_preferences.py:119
-msgid "Advanced Preferences"
-msgstr "Προχωρημένες Προτιμήσεις"
-
-#: quodlibet/ext/events/advanced_preferences.py:120
-msgid "Allow editing of advanced config settings."
-msgstr "Επιτρέψτε την επεξεργασία ρυθμίσεων για προχωρημένους."
-
-#: quodlibet/ext/events/advanced_preferences.py:266
-msgid "I know what I'm doing"
-msgstr "Ξέρω τι κάνω"
-
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
 msgstr "Κινούμενες Ειδοποιήσεις Οθόνης"
@@ -1374,7 +1362,7 @@ msgstr "_Θέση:"
 msgid "_Cover size:"
 msgstr "Μέγεθος _Εξώφυλλου:"
 
-#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:290
+#: quodlibet/ext/events/animosd/prefs.py:195 quodlibet/qltk/prefs.py:292
 msgid "Display"
 msgstr "Προβολή"
 
@@ -1557,7 +1545,7 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
-#: quodlibet/qltk/prefs.py:585
+#: quodlibet/qltk/prefs.py:587
 #, fuzzy
 msgid "Save ratings and play _counts in tags"
 msgstr "Αποθήκευση βαθμολογιών και _μετρητών αναπαραγωγών"
@@ -1589,7 +1577,7 @@ msgstr "_Ανανέωση Σταθμών"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:750
+#: quodlibet/qltk/prefs.py:764
 msgid "Preferences"
 msgstr "Προτιμήσεις"
 
@@ -1838,7 +1826,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/replaygain.py:354
 #: quodlibet/ext/songsmenu/tapbpm.py:187 quodlibet/qltk/_editutils.py:42
 #: quodlibet/qltk/lyrics.py:32 quodlibet/qltk/msg.py:57
-#: quodlibet/qltk/renamefiles.py:237 quodlibet/qltk/tagsfrompath.py:152
+#: quodlibet/qltk/renamefiles.py:240 quodlibet/qltk/tagsfrompath.py:152
 #: quodlibet/qltk/tracknumbers.py:112
 msgid "_Save"
 msgstr "_Αποθήκευση"
@@ -1993,7 +1981,7 @@ msgstr ""
 msgid "System Default"
 msgstr "Προεπιλογή"
 
-#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:729
+#: quodlibet/ext/events/language.py:70 quodlibet/qltk/prefs.py:731
 msgid "A restart is required for any changes to take effect"
 msgstr ""
 
@@ -2539,12 +2527,12 @@ msgid ""
 "seeks to that timestamp"
 msgstr ""
 
-#: quodlibet/ext/events/seekpoints.py:124
+#: quodlibet/ext/events/seekpoints.py:125
 #, fuzzy
 msgid "Bookmark name for point B"
 msgstr "Όνομα Σελιδοδείκτη"
 
-#: quodlibet/ext/events/seekpoints.py:125
+#: quodlibet/ext/events/seekpoints.py:126
 msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
@@ -2693,12 +2681,12 @@ msgid "Destination path:"
 msgstr "Δεν βρέθηκαν σταθμοί"
 
 #: quodlibet/ext/events/synchronize_to_device.py:184
-#: quodlibet/qltk/renamefiles.py:167 quodlibet/qltk/tagsfrompath.py:115
+#: quodlibet/qltk/renamefiles.py:170 quodlibet/qltk/tagsfrompath.py:115
 msgid "Path Patterns"
 msgstr "Πρότυπα Διαδρομών"
 
 #: quodlibet/ext/events/synchronize_to_device.py:184
-#: quodlibet/qltk/renamefiles.py:168 quodlibet/qltk/tagsfrompath.py:116
+#: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:116
 msgid "Edit saved patterns…"
 msgstr "Επεξεργασία αποθηκευμένων προτύπων…"
 
@@ -3126,72 +3114,72 @@ msgstr "Εικονίδιο Περιοχής Συστήματος"
 msgid "Controls Quod Libet from the system tray."
 msgstr "Έλεγχος του Quod Libet από την περιοχή συστήματος."
 
-#: quodlibet/ext/events/trayicon/menu.py:41
+#: quodlibet/ext/events/trayicon/menu.py:40
 #, python-format
 msgid "_Show %(application-name)s"
 msgstr ""
 
-#: quodlibet/ext/events/trayicon/menu.py:60
+#: quodlibet/ext/events/trayicon/menu.py:59
 #: quodlibet/qltk/quodlibetwindow.py:184 quodlibet/qltk/quodlibetwindow.py:952
 #: quodlibet/qltk/quodlibetwindow.py:1166
 msgid "_Play"
 msgstr "_Αναπαραγωγή"
 
-#: quodlibet/ext/events/trayicon/menu.py:63
+#: quodlibet/ext/events/trayicon/menu.py:62
 #: quodlibet/qltk/quodlibetwindow.py:186 quodlibet/qltk/quodlibetwindow.py:1168
 #: quodlibet/qltk/wlw.py:50
 msgid "P_ause"
 msgstr "_Παύση"
 
-#: quodlibet/ext/events/trayicon/menu.py:68
+#: quodlibet/ext/events/trayicon/menu.py:67
 #: quodlibet/qltk/quodlibetwindow.py:191 quodlibet/qltk/quodlibetwindow.py:947
 msgid "Pre_vious"
 msgstr "Προη_γούμενο"
 
-#: quodlibet/ext/events/trayicon/menu.py:71
+#: quodlibet/ext/events/trayicon/menu.py:70
 #: quodlibet/qltk/quodlibetwindow.py:195 quodlibet/qltk/quodlibetwindow.py:957
 msgid "_Next"
 msgstr "Επό_μενο"
 
-#: quodlibet/ext/events/trayicon/menu.py:76
+#: quodlibet/ext/events/trayicon/menu.py:75
 msgid "_Shuffle"
 msgstr "_Ανακάτεμα"
 
-#: quodlibet/ext/events/trayicon/menu.py:81
+#: quodlibet/ext/events/trayicon/menu.py:80
 msgid "_Repeat"
 msgstr "_Επανάληψη"
 
-#: quodlibet/ext/events/trayicon/menu.py:86
+#: quodlibet/ext/events/trayicon/menu.py:85
 #, fuzzy
 msgid "Stop _After This Song"
 msgstr "Σταμάτησε μετά από αυτό το τραγούδι"
 
-#: quodlibet/ext/events/trayicon/menu.py:92
+#: quodlibet/ext/events/trayicon/menu.py:91
 #: quodlibet/qltk/quodlibetwindow.py:918
 msgid "Open _Browser"
 msgstr "Άνοιγμα _Περιηγητή"
 
-#: quodlibet/ext/events/trayicon/menu.py:103
-#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:378
+#: quodlibet/ext/events/trayicon/menu.py:102
+#: quodlibet/qltk/quodlibetwindow.py:937 quodlibet/qltk/songsmenu.py:425
 msgid "Edit _Tags"
 msgstr "Επε_ξεργασία Ετικετών"
 
-#: quodlibet/ext/events/trayicon/menu.py:112
-#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:392
+#: quodlibet/ext/events/trayicon/menu.py:111
+#: quodlibet/qltk/quodlibetwindow.py:880 quodlibet/qltk/songsmenu.py:410
 msgid "_Information"
 msgstr "Π_ληροφορίες"
 
-#: quodlibet/ext/events/trayicon/menu.py:114 quodlibet/qltk/songsmenu.py:319
+#: quodlibet/ext/events/trayicon/menu.py:113 quodlibet/qltk/songsmenu.py:495
 msgid "Play_lists"
 msgstr "_Λίστες Αναπαραγωγής"
 
-#: quodlibet/ext/events/trayicon/menu.py:132
+#: quodlibet/ext/events/trayicon/menu.py:131
 #: quodlibet/qltk/quodlibetwindow.py:932
 msgid "_Quit"
 msgstr "Έ_ξοδος"
 
-#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:87
-#: quodlibet/qltk/prefs.py:459 quodlibet/qltk/prefs.py:736
+#: quodlibet/ext/events/trayicon/prefs.py:38 quodlibet/qltk/prefs.py:89
+#: quodlibet/qltk/prefs.py:461 quodlibet/qltk/prefs.py:738
 msgid "Behavior"
 msgstr "Συμπεριφορά"
 
@@ -4385,31 +4373,31 @@ msgstr "Επεξεργασία Προσαρμοσμένων Εντολών"
 msgid "Unable to run custom command %s"
 msgstr "Αδυναμία εκτέλεσης προσαρμοσμένης εντολής %s"
 
-#: quodlibet/ext/songsmenu/duplicates.py:285
+#: quodlibet/ext/songsmenu/duplicates.py:287
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
 msgstr[0] "%d ομάδα διπλότυπων"
 msgstr[1] "%d ομάδες διπλότυπων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:338
+#: quodlibet/ext/songsmenu/duplicates.py:340
 msgid "Collapse / Expand all"
 msgstr "Σύμπτυξη / Ανάπτυξη όλων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:342
+#: quodlibet/ext/songsmenu/duplicates.py:344
 #, python-format
 msgid "Duplicate key expression is '%s'"
 msgstr "Το πρότυπο για το κλειδί διπλοτύπων είναι '%s'"
 
-#: quodlibet/ext/songsmenu/duplicates.py:358
+#: quodlibet/ext/songsmenu/duplicates.py:360
 msgid "Duplicates Browser"
 msgstr "Αναζήτηση Διπλότυπων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:359
+#: quodlibet/ext/songsmenu/duplicates.py:361
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "Εύρεση παρόμοιων εκδόσεων τραγουδιών."
 
-#: quodlibet/ext/songsmenu/duplicates.py:396
+#: quodlibet/ext/songsmenu/duplicates.py:398
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -4417,31 +4405,31 @@ msgstr ""
 "Δέχεται εκφράσεις QL όπως <tt>~artist~title</tt> ή <tt>musicbrainz_track_id</"
 "tt>"
 
-#: quodlibet/ext/songsmenu/duplicates.py:398
+#: quodlibet/ext/songsmenu/duplicates.py:401
 msgid "_Group duplicates by:"
 msgstr "_Ομαδοποίηση διπλοτύπων με βάση:"
 
-#: quodlibet/ext/songsmenu/duplicates.py:403
+#: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "Duplicate Key"
 msgstr "Κλειδί Διπλοτύπων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:408
+#: quodlibet/ext/songsmenu/duplicates.py:411
 msgid "Remove _Whitespace"
 msgstr "Διαγραφή _Κενών"
 
-#: quodlibet/ext/songsmenu/duplicates.py:409
+#: quodlibet/ext/songsmenu/duplicates.py:412
 msgid "Remove _Diacritics"
 msgstr "Διαγραφή _Διακριτικών Σημείων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:410
+#: quodlibet/ext/songsmenu/duplicates.py:413
 msgid "Remove _Punctuation"
 msgstr "Διαγραφή _Στίξης"
 
-#: quodlibet/ext/songsmenu/duplicates.py:411
+#: quodlibet/ext/songsmenu/duplicates.py:414
 msgid "Case _Insensitive"
 msgstr "Αγνόησε διαφορές πεζών/Κεφαλαίων"
 
-#: quodlibet/ext/songsmenu/duplicates.py:419
+#: quodlibet/ext/songsmenu/duplicates.py:422
 msgid "Matching options"
 msgstr "Επιλογές ταιριάσματος"
 
@@ -5197,7 +5185,7 @@ msgstr ""
 #: quodlibet/library/file.py:231 quodlibet/library/file.py:250
 #: quodlibet/library/file.py:357 quodlibet/library/file.py:415
 #: quodlibet/library/file.py:570 quodlibet/qltk/information.py:270
-#: quodlibet/qltk/prefs.py:689 quodlibet/util/library.py:122
+#: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Μουσικοθήκη"
 
@@ -5262,139 +5250,138 @@ msgstr "Μουσικοθήκη και αναπαραγωγέας"
 msgid "Failed to load file: %r"
 msgstr "Αποτυχία ανοίγματος αρχείου: %r"
 
-#: quodlibet/operon/commands.py:36
+#: quodlibet/operon/commands.py:37
 msgid "List tags"
 msgstr "Εμφάνιση ετικετών"
 
-#: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:465
+#: quodlibet/operon/commands.py:42 quodlibet/operon/commands.py:81
+#: quodlibet/operon/commands.py:486
 msgid "Print terse output"
 msgstr "Εμφάνιση ωμής εξόδου"
 
-#: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:467
+#: quodlibet/operon/commands.py:44 quodlibet/operon/commands.py:83
+#: quodlibet/operon/commands.py:488
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Στήλες και η σειρά που θα εμφανιστούν στην ωμή έξοδο (%s)"
 
-#: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:85
+#: quodlibet/operon/commands.py:47 quodlibet/operon/commands.py:86
 msgid "Also list programmatic tags"
 msgstr "Εμφάνιση _προγραμματικών ετικετών"
 
-#: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
-#: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
-#: quodlibet/operon/commands.py:338 quodlibet/operon/commands.py:342
-#: quodlibet/operon/commands.py:394 quodlibet/operon/commands.py:397
-#: quodlibet/operon/commands.py:437 quodlibet/operon/commands.py:472
-#: quodlibet/operon/commands.py:512 quodlibet/operon/commands.py:547
-#: quodlibet/operon/commands.py:589
+#: quodlibet/operon/commands.py:51 quodlibet/operon/commands.py:129
+#: quodlibet/operon/commands.py:242 quodlibet/operon/commands.py:313
+#: quodlibet/operon/commands.py:359 quodlibet/operon/commands.py:363
+#: quodlibet/operon/commands.py:415 quodlibet/operon/commands.py:418
+#: quodlibet/operon/commands.py:458 quodlibet/operon/commands.py:493
+#: quodlibet/operon/commands.py:533 quodlibet/operon/commands.py:568
+#: quodlibet/operon/commands.py:610
 msgid "Not enough arguments"
 msgstr "Μη αρκετός αριθμός ορισμάτων"
 
-#: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
-#: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:474
+#: quodlibet/operon/commands.py:53 quodlibet/operon/commands.py:90
+#: quodlibet/operon/commands.py:131 quodlibet/operon/commands.py:495
 msgid "Too many arguments"
 msgstr "Υπερβολικός αριθμός ορισμάτων"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:479 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:92
+#: quodlibet/operon/commands.py:500 quodlibet/qltk/data_editors.py:374
 msgid "Description"
 msgstr "Περιγραφή"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:479
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:500
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Τιμή"
 
-#: quodlibet/operon/commands.py:75
+#: quodlibet/operon/commands.py:76
 msgid "List all common tags"
 msgstr "Εμφάνιση όλων των κοινών ετικετών"
 
-#: quodlibet/operon/commands.py:117
+#: quodlibet/operon/commands.py:118
 msgid "Copy tags from one file to another"
 msgstr "Αντιγραφή ετικετών από ένα αρχείο σε άλλο"
 
-#: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
-#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:326
-#: quodlibet/operon/commands.py:387
+#: quodlibet/operon/commands.py:123 quodlibet/operon/commands.py:163
+#: quodlibet/operon/commands.py:309 quodlibet/operon/commands.py:347
+#: quodlibet/operon/commands.py:408
 msgid "Show changes, don't apply them"
 msgstr "Δείξε τις αλλαγές χωρίς να τις εφαρμόσεις"
 
-#: quodlibet/operon/commands.py:124
+#: quodlibet/operon/commands.py:125
 msgid "Skip tags that can't be written"
 msgstr "Παράλειψη ετικετών που δεν μπορούν να γραφούν"
 
-#: quodlibet/operon/commands.py:145
+#: quodlibet/operon/commands.py:146
 #, fuzzy, python-brace-format
 msgid "Can't copy tag {tagname} to file: {filename}"
 msgstr "Αδύνατη αντιγραφή της ετικέτας %r στο αρχείο %r"
 
-#: quodlibet/operon/commands.py:157
+#: quodlibet/operon/commands.py:158
 msgid "Edit tags in a text editor"
 msgstr "Επεξεργασία ετικετών σε κειμενογράφο"
 
-#: quodlibet/operon/commands.py:251
+#: quodlibet/operon/commands.py:271
 msgid "Editing aborted"
 msgstr "Ακύρωση επεξεργασίας"
 
-#: quodlibet/operon/commands.py:255
+#: quodlibet/operon/commands.py:275
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
 msgstr "Η εκκίνηση του επεξεργαστή κειμένου '%(editor-name)s' απέτυχε."
 
-#: quodlibet/operon/commands.py:260
+#: quodlibet/operon/commands.py:280
 msgid "No changes detected"
 msgstr "Δεν ανιχνεύθηκαν αλλαγές"
 
-#: quodlibet/operon/commands.py:284
+#: quodlibet/operon/commands.py:304
 msgid "Set a tag and remove existing values"
 msgstr "Καθόρισε μια ετικέτα και αφαίρεσε τις παρούσες τιμές της"
 
-#: quodlibet/operon/commands.py:306
+#: quodlibet/operon/commands.py:327
 #, fuzzy, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
 msgstr "Αδύνατη αντιγραφή της ετικέτας %r στο αρχείο %r"
 
-#: quodlibet/operon/commands.py:321
+#: quodlibet/operon/commands.py:342
 msgid "Remove tags"
 msgstr "Διαγραφή ετικετών"
 
-#: quodlibet/operon/commands.py:328 quodlibet/operon/commands.py:389
+#: quodlibet/operon/commands.py:349 quodlibet/operon/commands.py:410
 msgid "Value is a regular expression"
 msgstr "Η τιμή είναι κανονική παράσταση"
 
-#: quodlibet/operon/commands.py:330
+#: quodlibet/operon/commands.py:351
 msgid "Remove all tags"
 msgstr "Διαγραφή όλων των ετικετών"
 
-#: quodlibet/operon/commands.py:334
+#: quodlibet/operon/commands.py:355
 msgid "Can't combine '--all' with '--regexp'"
 msgstr "Αδύνατος ο συνδυασμός του '--all' με το '--regexp'"
 
-#: quodlibet/operon/commands.py:368
+#: quodlibet/operon/commands.py:389
 #, fuzzy, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
 msgstr "Αδύνατη η αφαίρεση του %r από το %r"
 
-#: quodlibet/operon/commands.py:382
+#: quodlibet/operon/commands.py:403
 msgid "Remove a tag value"
 msgstr "Διαγραφή της τιμής ετικέτας"
 
-#: quodlibet/operon/commands.py:432
+#: quodlibet/operon/commands.py:453
 msgid "Add a tag value"
 msgstr "Προσθήκη τιμής σε ετικέτα"
 
-#: quodlibet/operon/commands.py:448 quodlibet/operon/commands.py:680
+#: quodlibet/operon/commands.py:469 quodlibet/operon/commands.py:701
 #, python-format
 msgid "Can not set %r"
 msgstr "Αδύνατος ο ορισμός του %r"
 
-#: quodlibet/operon/commands.py:460
+#: quodlibet/operon/commands.py:481
 msgid "List file information"
 msgstr "Προβολή πληροφοριών αρχείου"
 
-#: quodlibet/operon/commands.py:506
+#: quodlibet/operon/commands.py:527
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
@@ -5402,55 +5389,55 @@ msgstr ""
 "Καθορισμός της εικόνας ως κύριας ενσωματωμένης εικόνας και αφαίρεση των "
 "υπολοίπων ενσωματωμένων εικόνων."
 
-#: quodlibet/operon/commands.py:519
+#: quodlibet/operon/commands.py:540
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "Αποτυχία ανοίγματος αρχείου εικόνας: %r"
 
-#: quodlibet/operon/commands.py:526 quodlibet/operon/commands.py:555
+#: quodlibet/operon/commands.py:547 quodlibet/operon/commands.py:576
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 "Η επεξεργασία εικόνων δεν επιτρέπεται για %(file_name)s (%(file_format)s)"
 
-#: quodlibet/operon/commands.py:542
+#: quodlibet/operon/commands.py:563
 msgid "Remove all embedded images"
 msgstr "Διαγραφή όλων των ενσωματωμένων εικόνων"
 
-#: quodlibet/operon/commands.py:572
+#: quodlibet/operon/commands.py:593
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Εξαγωγή ενσωματωμένων εικόνων σε %(filepath)s"
 
-#: quodlibet/operon/commands.py:584
+#: quodlibet/operon/commands.py:605
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 "Τοποθεσία αποθήκευσης εικόνων (η προεπιλογή είναι ο κατάλογος εργασίας)"
 
-#: quodlibet/operon/commands.py:643
+#: quodlibet/operon/commands.py:664
 msgid "Rename files based on tags"
 msgstr "Μετονομασία αρχείων βάσει ετικετών"
 
-#: quodlibet/operon/commands.py:658
+#: quodlibet/operon/commands.py:679
 msgid "Fill tags based on the file path"
 msgstr "Συμπλήρωση ετικετών βάσει διαδρομής αρχείου"
 
-#: quodlibet/operon/commands.py:708 quodlibet/qltk/information.py:307
-#: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:245
+#: quodlibet/operon/commands.py:729 quodlibet/qltk/information.py:307
+#: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:248
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Αρχείο"
 
-#: quodlibet/operon/commands.py:716
+#: quodlibet/operon/commands.py:737
 msgid "Fill tracknumbers for all files"
 msgstr "Συμπλήρωση αριθμών κομματιού για όλα τα αρχεία"
 
-#: quodlibet/operon/commands.py:735
+#: quodlibet/operon/commands.py:756
 msgid "Print tags based on the given pattern"
 msgstr "Εμφάνιση ετικετών βάσει παρεχόμενου προτύπου"
 
-#: quodlibet/operon/commands.py:772
+#: quodlibet/operon/commands.py:793
 msgid "Display help information"
 msgstr "Προβολή σύντομων πληροφοριών χρήσης"
 
@@ -5517,15 +5504,15 @@ msgstr "Ένα Τραγούδι"
 msgid "One _song"
 msgstr "Ένα Τραγούδι"
 
-#: quodlibet/player/gstbe/player.py:100
+#: quodlibet/player/gstbe/player.py:102
 msgid "Stream"
 msgstr "Ροή"
 
-#: quodlibet/player/gstbe/player.py:100
+#: quodlibet/player/gstbe/player.py:102
 msgid "Buffering"
 msgstr "Buffering"
 
-#: quodlibet/player/gstbe/player.py:463
+#: quodlibet/player/gstbe/player.py:465
 #, fuzzy, python-format
 msgid "Could not create GStreamer pipeline (%s)"
 msgstr "Αδυναμία δημιουργίας διασωλήνωσης GStreamer"
@@ -5699,6 +5686,16 @@ msgstr "_Εκτέλεση Πρόσθετου"
 msgid "Usage"
 msgstr ""
 
+#: quodlibet/qltk/advanced_prefs.py:69
+#, fuzzy
+msgid "Revert to default"
+msgstr "Επαναφορά στο προκαθορισμένο πρότυπο"
+
+#: quodlibet/qltk/advanced_prefs.py:251
+#, fuzzy
+msgid "I know what I'm doing!"
+msgstr "Ξέρω τι κάνω"
+
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
 msgid "Beginning"
@@ -5788,6 +5785,7 @@ msgstr "_Τιμή"
 msgid "Saved Values"
 msgstr "Αποθηκευμένες Τιμές"
 
+#. noqa
 #: quodlibet/qltk/cbes.py:265
 msgid "Edit saved values…"
 msgstr "Επεξεργασία αποθηκευμένων τιμών…"
@@ -6050,7 +6048,7 @@ msgstr "Τα επιλεγμένα αρχεία δεν υποστηρίζουν �
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:798 quodlibet/qltk/edittags.py:981
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:511
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:509
 #: quodlibet/util/tags.py:244
 #, fuzzy
 msgid "Invalid tag"
@@ -6411,7 +6409,7 @@ msgstr ""
 "Ετικέτες έχουν αλλαχθεί αλλά δεν έχουν αποθηκευθεί. Αποθήκευση αυτών των "
 "αρχείων ή επαναφορά και απόρριψη των αλλαγών;"
 
-#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:63
+#: quodlibet/qltk/msg.py:60 quodlibet/qltk/textedit.py:62
 #: quodlibet/qltk/tracknumbers.py:116
 msgid "_Revert"
 msgstr "Επανέφε_ρε"
@@ -6526,172 +6524,172 @@ msgstr ""
 msgid "Show _Errors"
 msgstr "Εμφάνιση _Λαθών"
 
-#: quodlibet/qltk/prefs.py:49
+#: quodlibet/qltk/prefs.py:51
 msgid "_Disc"
 msgstr "_Δίσκος"
 
-#: quodlibet/qltk/prefs.py:50
+#: quodlibet/qltk/prefs.py:52
 msgid "_Track"
 msgstr "_Κομμάτι"
 
-#: quodlibet/qltk/prefs.py:51
+#: quodlibet/qltk/prefs.py:53
 msgid "Grou_ping"
 msgstr "Ομα_δοποίηση"
 
-#: quodlibet/qltk/prefs.py:53
+#: quodlibet/qltk/prefs.py:55
 msgid "_Artist"
 msgstr "_Καλλιτέχνης"
 
-#: quodlibet/qltk/prefs.py:54
+#: quodlibet/qltk/prefs.py:56
 msgid "Al_bum"
 msgstr "Ά_λμπουμ"
 
-#: quodlibet/qltk/prefs.py:59
+#: quodlibet/qltk/prefs.py:61
 msgid "_Filename"
 msgstr "Ό_νομα Αρχείου"
 
-#: quodlibet/qltk/prefs.py:61
+#: quodlibet/qltk/prefs.py:63
 msgid "_Length"
 msgstr "_Διάρκεια"
 
-#: quodlibet/qltk/prefs.py:68
+#: quodlibet/qltk/prefs.py:70
 msgid "_Jump to playing song automatically"
 msgstr "Α_υτόματη μεταπήδηση στο αναπαραγώμενο τραγούδι"
 
-#: quodlibet/qltk/prefs.py:70
+#: quodlibet/qltk/prefs.py:72
 msgid "When the playing song changes, scroll to it in the song list"
 msgstr ""
 "Όταν το αναπαραγώμενο τραγούδι αλλάζει, μετάβαση σε αυτό στην λίστα "
 "τραγουδιών"
 
-#: quodlibet/qltk/prefs.py:72
+#: quodlibet/qltk/prefs.py:74
 #, fuzzy
 msgid "_Sort songs when tags are modified"
 msgstr "Προβολή στίχων κάτω από την λίστα τραγουδιών"
 
-#: quodlibet/qltk/prefs.py:74
+#: quodlibet/qltk/prefs.py:76
 #, fuzzy
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr "Προβολή στίχων κάτω από την λίστα τραγουδιών"
 
-#: quodlibet/qltk/prefs.py:76
+#: quodlibet/qltk/prefs.py:78
 msgid "Always allow sorting"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:78
+#: quodlibet/qltk/prefs.py:80
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:99
+#: quodlibet/qltk/prefs.py:101
 msgid "_Others:"
 msgstr "Ά_λλα:"
 
 #. Stock edit doesn't have ellipsis chars.
-#: quodlibet/qltk/prefs.py:104
+#: quodlibet/qltk/prefs.py:106
 msgid "_Edit…"
 msgstr "_Επεξεργασία…"
 
-#: quodlibet/qltk/prefs.py:107
+#: quodlibet/qltk/prefs.py:109
 msgid "Add or remove additional column headers"
 msgstr "Προσθαφαίρεση κεφαλίδων στηλών"
 
-#: quodlibet/qltk/prefs.py:116
+#: quodlibet/qltk/prefs.py:118
 msgid "Visible Columns"
 msgstr "Ορατές Στήλες"
 
-#: quodlibet/qltk/prefs.py:138
+#: quodlibet/qltk/prefs.py:140
 msgid "Title includes _version"
 msgstr "Ο Τίτλος να περιλαμβάνει την έκ_δοση"
 
-#: quodlibet/qltk/prefs.py:139
+#: quodlibet/qltk/prefs.py:141
 msgid "Album includes _disc subtitle"
 msgstr "Το Άλμπουμ περιλαμβάνει τον υπότιτλο του _δίσκου"
 
-#: quodlibet/qltk/prefs.py:140
+#: quodlibet/qltk/prefs.py:142
 msgid "Artist includes all _people"
 msgstr "Το πεδίο Καλλιτέχνης συμπεριλαμβάνει τα ονόματα όλων των συντελεστών"
 
-#: quodlibet/qltk/prefs.py:141
+#: quodlibet/qltk/prefs.py:143
 msgid "Filename includes _folder"
 msgstr "Το Όνομα Αρχείου συμπεριλαμβάνει και τον _φάκελο"
 
-#: quodlibet/qltk/prefs.py:142
+#: quodlibet/qltk/prefs.py:144
 msgid "Column Preferences"
 msgstr "Προτιμήσεις Στηλών"
 
-#: quodlibet/qltk/prefs.py:145
+#: quodlibet/qltk/prefs.py:147
 #, fuzzy
 msgid "_Update Columns"
 msgstr "Επεξεργασία Στηλών"
 
-#: quodlibet/qltk/prefs.py:147
+#: quodlibet/qltk/prefs.py:149
 msgid "Apply current configuration to song list, adding new columns to the end"
 msgstr ""
 "Εφαρμογή τρεχόντων ρυθμίσεων στην λίστα τραγουδιών, προσθέτοντας νέες στήλες "
 "στο τέλος"
 
-#: quodlibet/qltk/prefs.py:161 quodlibet/qltk/shortcuts.py:24
+#: quodlibet/qltk/prefs.py:163 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
 msgstr "Λίστα Τραγουδιών"
 
-#: quodlibet/qltk/prefs.py:246
+#: quodlibet/qltk/prefs.py:248
 msgid "Edit Columns"
 msgstr "Επεξεργασία Στηλών"
 
-#: quodlibet/qltk/prefs.py:283
+#: quodlibet/qltk/prefs.py:285
 msgid "Duration totals"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:294
+#: quodlibet/qltk/prefs.py:296
 msgid "_Global filter:"
 msgstr "Κα_θολικό φίλτρο:"
 
-#: quodlibet/qltk/prefs.py:299
+#: quodlibet/qltk/prefs.py:301
 msgid "Apply this query in addition to all others"
 msgstr "Εφαρμογή αυτού του ερωτήματος επιπροσθέτως από όλα τα άλλα"
 
 #. Translators: The heading of the preference group, no action
-#: quodlibet/qltk/prefs.py:303
+#: quodlibet/qltk/prefs.py:305
 msgctxt "heading"
 msgid "Search"
 msgstr "Αναζήτηση"
 
-#: quodlibet/qltk/prefs.py:307 quodlibet/qltk/shortcuts.py:21
+#: quodlibet/qltk/prefs.py:309 quodlibet/qltk/shortcuts.py:21
 msgid "Browsers"
 msgstr "Περιηγητές"
 
 #. Ratings
-#: quodlibet/qltk/prefs.py:312
+#: quodlibet/qltk/prefs.py:314
 msgid "Confirm _multiple ratings"
 msgstr "Επιβεβαίωση πο_λλαπλών βαθμολογήσεων"
 
-#: quodlibet/qltk/prefs.py:314
+#: quodlibet/qltk/prefs.py:316
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
 "Ζήτησε επιβεβαίωση πριν αλλάξεις τις βαθμολογίες πολλαπλών τραγουδιών "
 "μονομιάς"
 
-#: quodlibet/qltk/prefs.py:317
+#: quodlibet/qltk/prefs.py:319
 msgid "Enable _one-click ratings"
 msgstr "Ενεργοποίηση βαθμολόγησης με έ_να κλικ"
 
-#: quodlibet/qltk/prefs.py:319
+#: quodlibet/qltk/prefs.py:321
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
 "Επέτρεψε τη βαθμολόγηση κάνοντας κλικ στην στήλη βαθμολογίας της λίστας "
 "τραγουδιών"
 
-#: quodlibet/qltk/prefs.py:325 quodlibet/qltk/prefs.py:666
+#: quodlibet/qltk/prefs.py:327 quodlibet/qltk/prefs.py:668
 msgid "Ratings"
 msgstr "Βαθμολογίες"
 
 #. Filename choice algorithm config
-#: quodlibet/qltk/prefs.py:331
+#: quodlibet/qltk/prefs.py:333
 msgid "Prefer _embedded art"
 msgstr "Προτίμηση _ενσωματωμένων εικόνων"
 
-#: quodlibet/qltk/prefs.py:333
+#: quodlibet/qltk/prefs.py:335
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
@@ -6699,30 +6697,30 @@ msgstr ""
 "Χρήση εξώφυλλων ενσωματωμένων στο αρχείο ήχου (όταν είναι διαθέσιμο) αντί "
 "από άλλες πηγές"
 
-#: quodlibet/qltk/prefs.py:338
+#: quodlibet/qltk/prefs.py:340
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:342
+#: quodlibet/qltk/prefs.py:344
 #, fuzzy
 msgid "_Preferred fixed image filename(s)"
 msgstr "Ε_ξαναγκασμός ονόματος αρχείου εικόνας:"
 
-#: quodlibet/qltk/prefs.py:360
+#: quodlibet/qltk/prefs.py:362
 msgid "Album Art"
 msgstr "Εξώφυλλα Άλμπουμ"
 
-#: quodlibet/qltk/prefs.py:393
+#: quodlibet/qltk/prefs.py:395
 msgid "Playback"
 msgstr "Αναπαραγωγή"
 
-#: quodlibet/qltk/prefs.py:400
+#: quodlibet/qltk/prefs.py:402
 msgid "Output Configuration"
 msgstr "Ρύθμιση Εξόδου"
 
-#: quodlibet/qltk/prefs.py:407
+#: quodlibet/qltk/prefs.py:409
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
@@ -6730,49 +6728,49 @@ msgstr ""
 "Αν δεν είναι διαθέσιμες πληροφορίες Replay Gain για ένα τραγούδι, κλιμάκωσε "
 "την ένταση του ήχου κατά αυτή την τιμή"
 
-#: quodlibet/qltk/prefs.py:410
+#: quodlibet/qltk/prefs.py:412
 #, fuzzy
 msgid "_Fall-back gain:"
 msgstr "Εναλλακτική τιμή gain (dB):"
 
-#: quodlibet/qltk/prefs.py:419
+#: quodlibet/qltk/prefs.py:421
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
 "Κλιμάκωσε την ένταση για όλα τα τραγούδια κατά αυτή την τιμή, αρκεί να μην "
 "υπάρξει αποκοπή"
 
-#: quodlibet/qltk/prefs.py:422
+#: quodlibet/qltk/prefs.py:424
 #, fuzzy
 msgid "_Pre-amp gain:"
 msgstr "Gain _προενίσχυσης (dB):"
 
-#: quodlibet/qltk/prefs.py:428
+#: quodlibet/qltk/prefs.py:430
 msgid "_Enable Replay Gain volume adjustment"
 msgstr "_Ρύθμιση της έντασης ήχου από το Replay Gain"
 
-#: quodlibet/qltk/prefs.py:445
+#: quodlibet/qltk/prefs.py:447
 msgid "Replay Gain Volume Adjustment"
 msgstr "Ρύθμισης Έντασης Replay Gain"
 
-#: quodlibet/qltk/prefs.py:453
+#: quodlibet/qltk/prefs.py:455
 msgid "_Continue playback on startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:456
+#: quodlibet/qltk/prefs.py:458
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:482
+#: quodlibet/qltk/prefs.py:484
 msgid "_Default rating:"
 msgstr "_Προεπιλεγμένη βαθμολογία:"
 
-#: quodlibet/qltk/prefs.py:525
+#: quodlibet/qltk/prefs.py:527
 msgid "Rating _scale:"
 msgstr "_Βαθμολογική κλίμακα:"
 
-#: quodlibet/qltk/prefs.py:574
+#: quodlibet/qltk/prefs.py:576
 msgid ""
 "Bayesian Average factor (C) for aggregated ratings.\n"
 "0 means a conventional average, higher values mean that albums with few "
@@ -6784,33 +6782,33 @@ msgstr ""
 "άλμπουμ με λίγα τραγούδια θα έχουν λιγότερο ακραίες βαθμολογίες. Αν αλλαχθεί "
 "αυτή η τιμή ενεργοποιείται επανυπολογισμός για όλα τα άλμπουμ."
 
-#: quodlibet/qltk/prefs.py:579
+#: quodlibet/qltk/prefs.py:581
 msgid "_Bayesian averaging amount:"
 msgstr "_Μπαγεσιανός παράγοντας μέσου όρου:"
 
-#: quodlibet/qltk/prefs.py:592
+#: quodlibet/qltk/prefs.py:594
 msgid "_Email:"
 msgstr "Διεύθυνση ηλεκτρονικού _ταχυδρομείου:"
 
-#: quodlibet/qltk/prefs.py:594
+#: quodlibet/qltk/prefs.py:596
 #, fuzzy
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
 "Οι βαθμολογίες και οι μετρητές αναπαραγωγών θα καθοριστούν γι' αυτή την "
 "διεύθυνση"
 
-#: quodlibet/qltk/prefs.py:612
+#: quodlibet/qltk/prefs.py:614
 #, fuzzy
 msgid "_Auto-save tag changes"
 msgstr "Αυτόματη αποθήκευση αλλαγών στις ετικέτες"
 
-#: quodlibet/qltk/prefs.py:614
+#: quodlibet/qltk/prefs.py:616
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
 "Αποθήκευση αλλαγών στις ετικέτες χωρίς επιβεβαίωση όταν γίνεται επεξεργασία "
 "πολλαπλών αρχείων"
 
-#: quodlibet/qltk/prefs.py:629
+#: quodlibet/qltk/prefs.py:631
 #, fuzzy
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
@@ -6819,12 +6817,12 @@ msgstr ""
 "Λίστα διαχωριστών που θα χρησιμοποιηθούν κατά των διαχωρισμό τιμών ετικετών. "
 "Η λίστα είναι διαχωρισμένη με κενά"
 
-#: quodlibet/qltk/prefs.py:632
+#: quodlibet/qltk/prefs.py:634
 #, fuzzy
 msgid "Split _tag on:"
 msgstr "Διαχωρισμός _στο:"
 
-#: quodlibet/qltk/prefs.py:645
+#: quodlibet/qltk/prefs.py:647
 #, fuzzy
 msgid ""
 "A set of separators to use when extracting subtags from tags in the tag "
@@ -6834,64 +6832,69 @@ msgstr ""
 "Λίστα διαχωριστών που θα χρησιμοποιηθούν κατά των διαχωρισμό τιμών ετικετών. "
 "Η λίστα είναι διαχωρισμένη με κενά"
 
-#: quodlibet/qltk/prefs.py:650
+#: quodlibet/qltk/prefs.py:652
 #, fuzzy
 msgid "Split _subtag on:"
 msgstr "Διαχωρισμός _στο:"
 
-#: quodlibet/qltk/prefs.py:660
+#: quodlibet/qltk/prefs.py:662
 msgid "Tags"
 msgstr "Ετικέτες"
 
-#: quodlibet/qltk/prefs.py:663
+#: quodlibet/qltk/prefs.py:665
 msgid "Tag Editing"
 msgstr "Επεξεργασία ετικετών"
 
-#: quodlibet/qltk/prefs.py:681
+#: quodlibet/qltk/prefs.py:683
 msgid "Updating for new ratings"
 msgstr "Ανανέωση για τις νέες βαθμολογίες"
 
-#: quodlibet/qltk/prefs.py:694 quodlibet/qltk/quodlibetwindow.py:1011
+#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1011
 #, fuzzy
 msgid "_Scan Library"
 msgstr "_Αναζήτηση στην Μουσικοθήκη"
 
-#: quodlibet/qltk/prefs.py:696 quodlibet/qltk/quodlibetwindow.py:1073
+#: quodlibet/qltk/prefs.py:698 quodlibet/qltk/quodlibetwindow.py:1073
 msgid "Check for changes in your library"
 msgstr "Έλεγχος για αλλαγές στην μουσικοθήκη σας"
 
-#: quodlibet/qltk/prefs.py:701
+#: quodlibet/qltk/prefs.py:703
 #, fuzzy
 msgid "Re_build Library"
 msgstr "_Επαναφόρτωση Μουσικοθήκης"
 
-#: quodlibet/qltk/prefs.py:704
+#: quodlibet/qltk/prefs.py:706
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
 "Επαναφόρτωση όλων των τραγουδιών της μουσικοθήκης σας. Πιθανό να χρειαστεί "
 "αρκετό χρόνο."
 
-#: quodlibet/qltk/prefs.py:719
+#: quodlibet/qltk/prefs.py:721
 msgid "Hidden Songs"
 msgstr "Κρυμμένα Τραγούδια"
 
-#: quodlibet/qltk/prefs.py:727
+#: quodlibet/qltk/prefs.py:729
 #, fuzzy
 msgid "Scan library _on start"
 msgstr "_Ανανέωση της μουσικοθήκης κατά την εκκίνηση"
 
-#: quodlibet/qltk/prefs.py:731
+#: quodlibet/qltk/prefs.py:733
 msgid "_Watch directories for changes"
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:732
+#: quodlibet/qltk/prefs.py:734
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
 
-#: quodlibet/qltk/prefs.py:742
+#: quodlibet/qltk/prefs.py:744
 msgid "Scan Directories"
 msgstr "Σάρωση Καταλόγων"
+
+#: quodlibet/qltk/prefs.py:753
+#, fuzzy
+msgid "Advanced"
+msgstr "Χορευτική"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
@@ -7157,53 +7160,53 @@ msgstr "Αφαίρεση μη-_ASCII χαρακτήρων"
 msgid "Use only _lowercase characters"
 msgstr "Χρήση μόνο πε_ζών γραμμάτων"
 
-#: quodlibet/qltk/renamefiles.py:149
+#: quodlibet/qltk/renamefiles.py:152
 msgid "Rename Files"
 msgstr "Μετονομασία Αρχείων"
 
-#: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:119
+#: quodlibet/qltk/renamefiles.py:174 quodlibet/qltk/tagsfrompath.py:119
 #: quodlibet/qltk/tracknumbers.py:57
 msgid "_Preview"
 msgstr "_Προεπισκόπηση"
 
-#: quodlibet/qltk/renamefiles.py:198
+#: quodlibet/qltk/renamefiles.py:201
 #, fuzzy
 msgid "File names"
 msgstr "Όνομα Αρχείου"
 
-#: quodlibet/qltk/renamefiles.py:208
+#: quodlibet/qltk/renamefiles.py:211
 #, fuzzy
 msgid "_Move album art"
 msgstr "καλλιτέχνης άλμπουμ"
 
-#: quodlibet/qltk/renamefiles.py:211
+#: quodlibet/qltk/renamefiles.py:214
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:216
+#: quodlibet/qltk/renamefiles.py:219
 msgid "_Overwrite album art at target"
 msgstr ""
 
-#: quodlibet/qltk/renamefiles.py:224
+#: quodlibet/qltk/renamefiles.py:227
 #, fuzzy
 msgid "_Remove empty directories"
 msgstr "_Αφαίρεση αχρείαστων εξώφυλλων και φακέλων"
 
-#: quodlibet/qltk/renamefiles.py:230
+#: quodlibet/qltk/renamefiles.py:233
 #, fuzzy
 msgid "Album art"
 msgstr "Εξώφυλλα Άλμπουμ"
 
-#: quodlibet/qltk/renamefiles.py:259
+#: quodlibet/qltk/renamefiles.py:262
 msgid "New Name"
 msgstr "Νέο Όνομα"
 
-#: quodlibet/qltk/renamefiles.py:337
+#: quodlibet/qltk/renamefiles.py:339
 msgid "Unable to rename file"
 msgstr "Αδυναμία μετονομασίας αρχείου"
 
-#: quodlibet/qltk/renamefiles.py:338
+#: quodlibet/qltk/renamefiles.py:340
 #, fuzzy, python-format
 msgid ""
 "Renaming %(old-name)s to %(new-name)s failed. Possibly the target file "
@@ -7214,25 +7217,25 @@ msgstr ""
 "Πιθανότατα το αρχείο προορισμού υπάρχει ήδη, ή δεν έχετε δικαιώματα "
 "δημιουργίας νέου αρχείου ή διαγραφής του παλιού."
 
-#: quodlibet/qltk/renamefiles.py:346
+#: quodlibet/qltk/renamefiles.py:348
 msgid "Ignore _All Errors"
 msgstr "Αγνόηση Όλων των Σ_φαλμάτων"
 
 #. Add stop/pause buttons. count = 0 means an indefinite
 #. number of steps.
-#: quodlibet/qltk/renamefiles.py:347 quodlibet/qltk/wlw.py:49
+#: quodlibet/qltk/renamefiles.py:349 quodlibet/qltk/wlw.py:49
 msgid "_Stop"
 msgstr "_Σταμάτα"
 
-#: quodlibet/qltk/renamefiles.py:349
+#: quodlibet/qltk/renamefiles.py:351
 msgid "_Continue"
 msgstr "Συνέ_χεια"
 
-#: quodlibet/qltk/renamefiles.py:463
+#: quodlibet/qltk/renamefiles.py:465
 msgid "Path is not absolute"
 msgstr "Η διαδρομή αρχείου δεν είναι απόλυτη"
 
-#: quodlibet/qltk/renamefiles.py:464
+#: quodlibet/qltk/renamefiles.py:466
 #, fuzzy, python-format
 msgid ""
 "The pattern\n"
@@ -7456,39 +7459,39 @@ msgstr ""
 msgid "_Filter on %s"
 msgstr "_Φίλτρο στο %s"
 
-#: quodlibet/qltk/songlist.py:1187
+#: quodlibet/qltk/songlist.py:1186
 msgid "All _Headers"
 msgstr "Όλες οι Κε_φαλίδες"
 
-#: quodlibet/qltk/songlist.py:1188
+#: quodlibet/qltk/songlist.py:1187
 msgid "_Track Headers"
 msgstr "Κεφαλίδες _Κομματιών"
 
-#: quodlibet/qltk/songlist.py:1189
+#: quodlibet/qltk/songlist.py:1188
 msgid "_Album Headers"
 msgstr "Κεφαλίδες Ά_λμπουμ"
 
-#: quodlibet/qltk/songlist.py:1190
+#: quodlibet/qltk/songlist.py:1189
 msgid "_People Headers"
 msgstr "Κεφαλίδες _Συντελεστών"
 
-#: quodlibet/qltk/songlist.py:1191
+#: quodlibet/qltk/songlist.py:1190
 msgid "_Date Headers"
 msgstr "Κεφαλίδες _Ημερομηνιών"
 
-#: quodlibet/qltk/songlist.py:1192
+#: quodlibet/qltk/songlist.py:1191
 msgid "_File Headers"
 msgstr "Κεφαλίδες Αρ_χείων"
 
-#: quodlibet/qltk/songlist.py:1193
+#: quodlibet/qltk/songlist.py:1192
 msgid "_Production Headers"
 msgstr "Κεφαλίδες Παρα_γωγής"
 
-#: quodlibet/qltk/songlist.py:1208
+#: quodlibet/qltk/songlist.py:1207
 msgid "_Customize Headers…"
 msgstr "Προσαρμογή _Κεφαλίδων…"
 
-#: quodlibet/qltk/songlist.py:1213
+#: quodlibet/qltk/songlist.py:1212
 msgid "_Expand Column"
 msgstr "_Επέκταση Στήλης"
 
@@ -7526,63 +7529,63 @@ msgstr[1] "Εκτέλεση του πρόσθετου \"%(name)s\" σε %(count)
 msgid "Configure Plugins…"
 msgstr "Επεξεργασία αναζητήσεων…"
 
-#: quodlibet/qltk/songsmenu.py:324
-msgid "Add to _Queue"
-msgstr "Προσθήκη στην _Ουρά"
-
-#: quodlibet/qltk/songsmenu.py:344
-#, fuzzy
-msgid "_Remove from Library…"
-msgstr "Α_φαίρεση από την μουσικοθήκη"
-
-#: quodlibet/qltk/songsmenu.py:411
-#, fuzzy
-msgid "Unable to show files"
-msgstr "Αδυναμία διαγραφής αρχείου"
-
-#: quodlibet/qltk/songsmenu.py:412
-msgid "Error showing files, or no program available to show them."
-msgstr ""
-
-#: quodlibet/qltk/songsmenu.py:419
-#, python-format
-msgid "_Show in File Manager"
-msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] ""
-msgstr[1] ""
-
-#: quodlibet/qltk/songsmenu.py:436
+#: quodlibet/qltk/songsmenu.py:351
 #, fuzzy, python-format
 msgid "_Download file…"
 msgid_plural "_Download %(total)d files…"
 msgstr[0] "_Λήψη"
 msgstr[1] "_Λήψη"
 
-#: quodlibet/qltk/songsmenu.py:443
+#: quodlibet/qltk/songsmenu.py:358
 msgid "successful"
 msgstr ""
 
-#: quodlibet/qltk/songsmenu.py:444
+#: quodlibet/qltk/songsmenu.py:359
 #, fuzzy
 msgid "failed"
 msgstr "Η αποθήκευση απέτυχε"
 
-#: quodlibet/qltk/songsmenu.py:447
+#: quodlibet/qltk/songsmenu.py:362
 #, fuzzy
 msgid "Downloads complete"
 msgstr "Κατέβασμα Αρχείου"
 
-#: quodlibet/qltk/songsmenu.py:453
+#: quodlibet/qltk/songsmenu.py:368
 #, fuzzy
 msgid "Download {name!r} to"
 msgid_plural "Download {total} files to"
 msgstr[0] "Λήψη Εξώφυλλων Άλμπουμ"
 msgstr[1] "Λήψη Εξώφυλλων Άλμπουμ"
 
-#: quodlibet/qltk/songsmenu.py:459
+#: quodlibet/qltk/songsmenu.py:374
 #, fuzzy
 msgid "Download here"
 msgstr "Κατέβασμα Αρχείου"
+
+#: quodlibet/qltk/songsmenu.py:393
+#, fuzzy
+msgid "Unable to show files"
+msgstr "Αδυναμία διαγραφής αρχείου"
+
+#: quodlibet/qltk/songsmenu.py:394
+msgid "Error showing files, or no program available to show them."
+msgstr ""
+
+#: quodlibet/qltk/songsmenu.py:401
+#, python-format
+msgid "_Show in File Manager"
+msgid_plural "_Show %(total)d Files in File Manager"
+msgstr[0] ""
+msgstr[1] ""
+
+#: quodlibet/qltk/songsmenu.py:460
+#, fuzzy
+msgid "_Remove from Library…"
+msgstr "Α_φαίρεση από την μουσικοθήκη"
+
+#: quodlibet/qltk/songsmenu.py:474
+msgid "Add to _Queue"
+msgstr "Προσθήκη στην _Ουρά"
 
 #: quodlibet/qltk/tagsfrompath.py:47
 msgid "Replace _underscores with spaces"
@@ -7621,7 +7624,7 @@ msgstr ""
 "δεν είναι έγκυρο. Πιθανότατα περιέχει την ίδια ετικέτα δύο φορές ή έχει μη "
 "ισορροπημένες γωνιακές αγκύλες (&lt; / &gt;)."
 
-#: quodlibet/qltk/textedit.py:141
+#: quodlibet/qltk/textedit.py:140
 #, python-format
 msgid ""
 "The pattern you entered was invalid. Make sure you enter &lt; and &gt; as "
@@ -7634,7 +7637,7 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/qltk/textedit.py:157
+#: quodlibet/qltk/textedit.py:156
 msgid "Edit Display"
 msgstr "Επεξεργασία Προβολής"
 
@@ -7658,7 +7661,7 @@ msgstr "Αναπαραγωγή/Παύση"
 msgid "Previous"
 msgstr "Προηγούμενο"
 
-#: quodlibet/qltk/views.py:937
+#: quodlibet/qltk/views.py:928
 #, python-format
 msgid "and %d more…"
 msgstr "και %d ακόμη…"
@@ -7715,7 +7718,7 @@ msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:651
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Υπάρχει ήδη λίστα αναπαραγωγής με το όνομα %s."
@@ -7760,12 +7763,12 @@ msgstr "Προβολή έκδοσης και πνευματικών δικαιω
 msgid "Print debugging information"
 msgstr "Προβολή πληροφοριών αρχείου"
 
-#: quodlibet/util/__init__.py:120
+#: quodlibet/util/__init__.py:121
 #, python-format
 msgid "Usage: %(program)s %(usage)s"
 msgstr "Χρήση: %(program)s %(usage)s"
 
-#: quodlibet/util/__init__.py:122
+#: quodlibet/util/__init__.py:123
 msgid "[options]"
 msgstr "[επιλογές]"
 
@@ -7774,61 +7777,61 @@ msgstr "[επιλογές]"
 msgid "Option %r not recognized."
 msgstr "Η επιλογή %r δεν αναγνωρίστηκε"
 
-#: quodlibet/util/__init__.py:170
+#: quodlibet/util/__init__.py:169
 #, python-format
 msgid "Option %r requires an argument."
 msgstr "Η επιλογή %r χρειάζεται ένα όρισμα"
 
-#: quodlibet/util/__init__.py:173
+#: quodlibet/util/__init__.py:171
 #, python-format
 msgid "%r is not a unique prefix."
 msgstr "Το %r δεν είναι μοναδικά ταυτοποιήσιμο πρόθεμα"
 
-#: quodlibet/util/__init__.py:353
+#: quodlibet/util/__init__.py:351
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:408
+#: quodlibet/util/__init__.py:406
 #, fuzzy, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%d δευτερόλεπτο"
 msgstr[1] "%d δευτερόλεπτα"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:419
 msgid "No time information"
 msgstr "Χωρίς πληροφορίες χρόνου"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:422
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d δευτερόλεπτο"
 msgstr[1] "%d δευτερόλεπτα"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:423
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d λεπτό"
 msgstr[1] "%d λεπτά"
 
-#: quodlibet/util/__init__.py:426
+#: quodlibet/util/__init__.py:424
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d ώρα"
 msgstr[1] "%d ώρες"
 
-#: quodlibet/util/__init__.py:427
+#: quodlibet/util/__init__.py:425
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d ημέρα"
 msgstr[1] "%d ημέρες"
 
-#: quodlibet/util/__init__.py:428
+#: quodlibet/util/__init__.py:426
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7839,7 +7842,7 @@ msgstr[1] "%d χρόνια"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:520
+#: quodlibet/util/__init__.py:518
 msgctxt "check"
 msgid "titlecase?"
 msgstr ""
@@ -8277,6 +8280,12 @@ msgstr ""
 "πολλούς διαφορετικούς τρόπους προβολής της μουσικοθήκης σας, καθώς και "
 "υποστήριξη για διαδικτυακό ραδιόφωνο και ροών ήχου. Έχει απίστευτα ευέλικτες "
 "δυνατότητες επεξεργασίας και αναζήτησης μεταδεδομένων ετικετών μουσικής."
+
+#~ msgid "Allow editing of advanced config settings."
+#~ msgstr "Επιτρέψτε την επεξεργασία ρυθμίσεων για προχωρημένους."
+
+#~ msgid "Advanced Preferences"
+#~ msgstr "Προχωρημένες Προτιμήσεις"
 
 #, fuzzy
 #~ msgid "Export to Sonos playlist"
