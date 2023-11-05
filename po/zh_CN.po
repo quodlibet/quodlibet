@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2023-10-16 04:09+0000\n"
+"PO-Revision-Date: 2023-10-28 13:02+0000\n"
 "Last-Translator: Eric <hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.1-dev\n"
+"X-Generator: Weblate 5.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:58
@@ -5459,7 +5459,7 @@ msgstr "运行插件(_R)"
 msgid "Usage"
 msgstr "用法"
 
-#: quodlibet/qltk/advanced_prefs.py:69
+#: quodlibet/qltk/advanced_prefs.py:69 quodlibet/qltk/advanced_prefs.py:38
 msgid "Revert to default"
 msgstr "退回到默认"
 
@@ -7909,9 +7909,8 @@ msgstr ""
 "持网络电台和音频源。此外它还有非常灵活的标签编辑以及搜索功能。"
 
 #: quodlibet/qltk/advanced_prefs.py:251
-#, fuzzy
 msgid "I know what I'm doing!"
-msgstr "我知道我接下来要做什么"
+msgstr "我知道我在做什么！"
 
 #~ msgid "Advanced Preferences"
 #~ msgstr "高级选项"
