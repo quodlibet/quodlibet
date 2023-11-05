@@ -5720,7 +5720,7 @@ msgstr "_Lancer un greffon"
 msgid "Usage"
 msgstr "Utilisation"
 
-#: quodlibet/qltk/advanced_prefs.py:69
+#: quodlibet/qltk/advanced_prefs.py:69 quodlibet/qltk/advanced_prefs.py:38
 msgid "Revert to default"
 msgstr "Rétablir la valeur par défaut"
 

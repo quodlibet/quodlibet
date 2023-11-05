@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-20 20:12+0000\n"
-"Last-Translator: Martin <martin_kolbe@gmx.net>\n"
+"PO-Revision-Date: 2023-10-24 08:03+0000\n"
+"Last-Translator: Jej <weblate@gogomail.trickip.net>\n"
 "Language-Team: German <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/de/>\n"
 "Language: de\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"X-Generator: Weblate 5.1.1-dev\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-Basepath: .\n"
 
@@ -6899,9 +6899,8 @@ msgid "Scan Directories"
 msgstr "Ordner einlesen"
 
 #: quodlibet/qltk/prefs.py:753
-#, fuzzy
 msgid "Advanced"
-msgstr "Dance"
+msgstr "Erweiterte"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:353
 #, python-format
