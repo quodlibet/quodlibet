@@ -54,6 +54,8 @@ Let's consider some more sophisticated tag expressions.
 Fallback Tags
 -------------
 
+🆕 `from QL 4.7 onwards`
+
 It's useful to be able to print the contents of a tag only if it exists,
 as shown above.
 However, you might want to print a tag if it exists,

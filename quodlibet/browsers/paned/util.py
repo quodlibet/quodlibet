@@ -42,8 +42,8 @@ class PaneConfig:
         def is_date(s):
             return s in TIME_TAGS
 
-        disp = parts[1] if len(
-            parts) >= 2 else r"[i][span alpha='40%']<~#tracks>[/span][/i]"
+        disp = (parts[1] if len(parts) >= 2
+                else "[i][span alpha='40%']<~#tracks>[/span][/i]")
         cat = parts[0]
 
         if is_pattern(cat):

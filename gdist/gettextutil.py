@@ -293,7 +293,7 @@ def check_pot(pot_path: Path) -> None:
     po_path = Path(po_path)
     os.close(fd)
     po_path.unlink()
-    create_po(pot_path, po_path)
+    create_po(pot_path, po_path, "C")
 
     try:
         check_po(po_path, ignore_header=True)
@@ -301,7 +301,7 @@ def check_pot(pot_path: Path) -> None:
         os.remove(po_path)
 
 
-def create_po(pot_path: Path, po_path: Path) -> None:
+def create_po(pot_path: Path, po_path: Path, lang_code: str) -> None:
     """Create a new <po_path> file based on <pot_path>
 
     :raises GettextError: in case something went wrong or the file already exists.
@@ -315,7 +315,8 @@ def create_po(pot_path: Path, po_path: Path) -> None:
 
     try:
         subprocess.check_output(
-            ["msginit", "--no-translator", "-i", str(pot_path), "-o", str(po_path)],
+            ["msginit", "--no-translator", "--locale", lang_code,
+             "-i", str(pot_path), "-o", str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e

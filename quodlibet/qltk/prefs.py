@@ -1,6 +1,6 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Steven Robertson
-#           2011-2022 Nick Boultbee
+#           2011-2023 Nick Boultbee
 #           2013      Christoph Reiter
 #           2014      Jan Path
 #           2023      Jej@github
@@ -751,16 +751,10 @@ class PreferencesWindow(UniqueWindow):
             super().__init__(spacing=MARGIN)
             self.set_border_width(12)
             self.title = _("Advanced")
-
-            advanced_pane = AdvancedPreferencesPane()
-            vbox = advanced_pane.create_display_frame()
-
             scrolledwin = Gtk.ScrolledWindow()
-            scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                Gtk.PolicyType.AUTOMATIC)
-            scrolledwin.add_with_viewport(vbox)
-
-            self.pack_start(scrolledwin, True, True, MARGIN)
+            scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
+            scrolledwin.add_with_viewport(AdvancedPreferencesPane())
+            self.pack_start(scrolledwin, True, True, 3)
 
     def __init__(self, parent, open_page=None, all_pages=True):
         if self.is_not_unique():

@@ -1,4 +1,5 @@
 # Copyright 2013 Christoph Reiter
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -51,7 +52,7 @@ class Pane(AllTreeView):
         column.connect("button-press-event", on_column_header_clicked)
         column.set_use_markup(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
-        column.set_fixed_width(50)
+        column.set_fixed_width(60)
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
@@ -59,23 +60,20 @@ class Pane(AllTreeView):
 
         def text_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            is_markup, text = entry.get_text(self.config)
-            if is_markup:
-                cell.markup = text
-                cell.set_property("markup", text)
-            else:
-                cell.markup = None
-                cell.set_property("text", text)
+            cell.markup = entry.get_markup(self.config)
 
         column.set_cell_data_func(render, text_cdf)
 
         render_count = Gtk.CellRendererText()
         render_count.set_property("xalign", 1.0)
-        column.pack_start(render_count, False)
+        render_count.set_property("max-width-chars", 5)
+        column.pack_end(render_count, True)
+        # Tiny columns break too much rendering
+        column.set_min_width(150)
 
         def count_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            markup = entry.get_count_text(self.config)
+            markup = entry.get_count_markup(self.config)
             cell.markup = markup
             cell.set_property("markup", markup)
 

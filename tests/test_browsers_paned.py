@@ -9,7 +9,7 @@ from .helper import realized
 from gi.repository import Gtk
 from senf import fsnative
 
-from quodlibet import config
+from quodlibet import config, util
 
 from quodlibet.browsers.paned import PanedBrowser
 from quodlibet.browsers.paned.util import PaneConfig
@@ -26,7 +26,7 @@ from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
     AudioFile({
-        "title": "three", "artist": "boris", "genre": "Rock",
+        "title": "three", "artist": "<boris>", "genre": "Rock",
         "~filename": fsnative("/bin/ls"), "foo": "bar"}),
     AudioFile({
         "title": "two", "artist": "mu", "genre": "Rock",
@@ -92,14 +92,14 @@ class TPanedBrowser(TestCase):
         run_gtk_loop()
         self.assertEqual(set(self.last), set())
 
-        self.bar.filter_text("artist=!boris")
+        self.bar.filter_text("artist=!<boris>")
         run_gtk_loop()
         self.assertEqual(set(self.last), set(SONGS[1:]))
 
     def test_filter_value(self):
         self.bar.activate()
         expected = [SONGS[0]]
-        self.bar.filter("artist", ["boris"])
+        self.bar.filter("artist", ["<boris>"])
         run_gtk_loop()
         self.assertEqual(self.last, expected)
 
@@ -202,9 +202,8 @@ class TPaneConfig(TestCase):
         self.assertEqual(p.title, "Title / Artist")
         self.assertEqual(p.tags, {"title", "artist"})
 
-        self.assertEqual(p.format(SONGS[0]),
-                             [("three", "three"), ("boris", "boris")])
-        self.assertFalse(p.has_markup)
+        assert p.format(SONGS[0]) == [("three", "three"), ("<boris>", "<boris>")]
+        assert not p.has_markup
 
     def test_pattern(self):
         p = PaneConfig("<foo>")
@@ -243,8 +242,8 @@ class TPaneEntry(TestCase):
     def test_all(self):
         entry = AllEntry()
         conf = PaneConfig("title:artist")
-        self.assertFalse(entry.get_count_text(conf))
-        entry.get_text(conf)
+        assert not entry.get_count_markup(conf)
+        entry.get_markup(conf)
         self.assertEqual(list(entry.songs), [])
         self.assertFalse(entry.contains_text(""))
         repr(entry)
@@ -255,23 +254,23 @@ class TPaneEntry(TestCase):
         self.assertEqual(entry.songs, set(SONGS))
         self.assertEqual(entry.key, "")
         self.assertFalse(entry.contains_text(""))
-        self.assertTrue(SONGS[0]("artist") in entry.get_count_text(conf))
-        entry.get_text(conf)
+        assert util.escape(SONGS[0]("artist")) in entry.get_count_markup(conf)
+        entry.get_markup(conf)
         repr(entry)
 
     def test_songs(self):
         entry = SongsEntry("key", "key", SONGS)
         self.assertEqual(entry.key, "key")
         conf = PaneConfig("title:artist")
-        self.assertTrue("boris" in entry.get_count_text(conf))
-        self.assertEqual(entry.get_text(conf), (False, "key"))
-        self.assertTrue(entry.contains_text("key"))
+        assert "boris" in entry.get_count_markup(conf)
+        assert entry.get_markup(conf) == "key"
+        assert entry.contains_text("key")
         repr(entry)
 
     def test_songs_markup(self):
         entry = SongsEntry("key", "key", SONGS)
         conf = PaneConfig("<title>")
-        self.assertEqual(entry.get_text(conf), (True, "key"))
+        assert entry.get_markup(conf) == "key"
 
 
 class TPane(TestCase):
@@ -467,32 +466,31 @@ class TPaneModel(TestCase):
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.get_keys_by_tag("title", ["three"]), ["boris"])
-        self.assertEqual(m.get_keys_by_tag("nope", ["foo", ""]), [""])
+        assert m.get_keys_by_tag("title", ["three"]) ==  ["<boris>"]
+        assert m.get_keys_by_tag("nope", ["foo", ""]) == [""]
 
-        self.assertEqual(
-            m.get_keys_by_tag("artist", ["piman", "foo"]), ["piman"])
+        assert m.get_keys_by_tag("artist", ["piman", "foo"]) == ["piman"]
 
     def test_list(self):
         conf = PaneConfig("artist")
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.list("artist"), {"boris", "mu", "piman", ""})
+        assert m.list("artist") == {"<boris>", "mu", "piman", ""}
 
         conf = PaneConfig("<artist><foo>")
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        self.assertEqual(m.list("artist"), {"boris", "mu", "piman"})
-        self.assertEqual(set(m.list("foo")), {"nope", "bar", "quux"})
+        assert m.list("artist") == {"<boris>", "mu", "piman"}
+        assert set(m.list("foo")) == {"nope", "bar", "quux"}
 
     def test_get_keys(self):
         conf = PaneConfig("artist")
         m = PaneModel(conf)
         m.add_songs(SONGS)
-        self.assertFalse(m.get_keys([]))
-        self.assertEqual(m.get_keys([0, 1]), {None, "boris"})
+        assert not m.get_keys([])
+        assert m.get_keys([0, 1]) == {None, "<boris>"}
 
     def test_remove_songs_keep_rows(self):
         conf = PaneConfig("artist")
