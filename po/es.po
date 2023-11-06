@@ -168,7 +168,7 @@ msgstr "Vista de álbumes"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:96 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:796
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Cerrar"
@@ -242,8 +242,8 @@ msgid "_Remove"
 msgstr "_Quitar"
 
 #: quodlibet/browsers/collection/prefs.py:121
-#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:55
-#: quodlibet/operon/commands.py:91 quodlibet/qltk/edittags.py:480
+#: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:56
+#: quodlibet/operon/commands.py:92 quodlibet/qltk/edittags.py:480
 msgid "Tag"
 msgstr "Etiqueta"
 
@@ -584,7 +584,7 @@ msgstr "_Vista en paneles"
 msgid "Select _All"
 msgstr "Seleccionar _todo"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/paned/models.py:82 quodlibet/browsers/podcasts.py:55
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
@@ -594,7 +594,7 @@ msgstr "Seleccionar _todo"
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: quodlibet/browsers/paned/models.py:106
+#: quodlibet/browsers/paned/models.py:100
 msgid "All"
 msgstr "Todo"
 
@@ -1570,7 +1570,7 @@ msgstr "Estrategia de act_ualización:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:770
+#: quodlibet/qltk/prefs.py:764
 msgid "Preferences"
 msgstr "Preferencias"
 
@@ -5149,193 +5149,192 @@ msgstr "Reproductor y gestor de fonotecas musicales"
 msgid "Failed to load file: %r"
 msgstr "Error al abrir el archivo: %r"
 
-#: quodlibet/operon/commands.py:36
+#: quodlibet/operon/commands.py:37
 msgid "List tags"
 msgstr "Mostrar las etiquetas"
 
-#: quodlibet/operon/commands.py:41 quodlibet/operon/commands.py:80
-#: quodlibet/operon/commands.py:466
+#: quodlibet/operon/commands.py:42 quodlibet/operon/commands.py:81
+#: quodlibet/operon/commands.py:486
 msgid "Print terse output"
 msgstr "Mostrar salida para depuración"
 
-#: quodlibet/operon/commands.py:43 quodlibet/operon/commands.py:82
-#: quodlibet/operon/commands.py:468
+#: quodlibet/operon/commands.py:44 quodlibet/operon/commands.py:83
+#: quodlibet/operon/commands.py:488
 #, python-format
 msgid "Columns to display and order in terse mode (%s)"
 msgstr "Columnas y orden de disposición en el modo depuración (%s)"
 
-#: quodlibet/operon/commands.py:46 quodlibet/operon/commands.py:85
+#: quodlibet/operon/commands.py:47 quodlibet/operon/commands.py:86
 msgid "Also list programmatic tags"
 msgstr "Mostrar también etiquetas programáticas"
 
-#: quodlibet/operon/commands.py:50 quodlibet/operon/commands.py:128
-#: quodlibet/operon/commands.py:220 quodlibet/operon/commands.py:293
-#: quodlibet/operon/commands.py:339 quodlibet/operon/commands.py:343
-#: quodlibet/operon/commands.py:395 quodlibet/operon/commands.py:398
-#: quodlibet/operon/commands.py:438 quodlibet/operon/commands.py:473
-#: quodlibet/operon/commands.py:513 quodlibet/operon/commands.py:548
-#: quodlibet/operon/commands.py:590
+#: quodlibet/operon/commands.py:51 quodlibet/operon/commands.py:129
+#: quodlibet/operon/commands.py:242 quodlibet/operon/commands.py:313
+#: quodlibet/operon/commands.py:359 quodlibet/operon/commands.py:363
+#: quodlibet/operon/commands.py:415 quodlibet/operon/commands.py:418
+#: quodlibet/operon/commands.py:458 quodlibet/operon/commands.py:493
+#: quodlibet/operon/commands.py:533 quodlibet/operon/commands.py:568
+#: quodlibet/operon/commands.py:610
 msgid "Not enough arguments"
 msgstr "Sin argumentos suficientes"
 
-#: quodlibet/operon/commands.py:52 quodlibet/operon/commands.py:89
-#: quodlibet/operon/commands.py:130 quodlibet/operon/commands.py:222
-#: quodlibet/operon/commands.py:475
+#: quodlibet/operon/commands.py:53 quodlibet/operon/commands.py:90
+#: quodlibet/operon/commands.py:131 quodlibet/operon/commands.py:495
 msgid "Too many arguments"
 msgstr "Demasiados argumentos"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:91
-#: quodlibet/operon/commands.py:480 quodlibet/qltk/data_editors.py:374
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:92
+#: quodlibet/operon/commands.py:500 quodlibet/qltk/data_editors.py:374
 msgid "Description"
 msgstr "Descripción"
 
-#: quodlibet/operon/commands.py:55 quodlibet/operon/commands.py:480
+#: quodlibet/operon/commands.py:56 quodlibet/operon/commands.py:500
 #: quodlibet/qltk/edittags.py:503
 msgid "Value"
 msgstr "Valor"
 
-#: quodlibet/operon/commands.py:75
+#: quodlibet/operon/commands.py:76
 msgid "List all common tags"
 msgstr "Mostrar las etiquetas habituales"
 
-#: quodlibet/operon/commands.py:117
+#: quodlibet/operon/commands.py:118
 msgid "Copy tags from one file to another"
 msgstr "Copiar las etiquetas de un archivo a otro"
 
-#: quodlibet/operon/commands.py:122 quodlibet/operon/commands.py:164
-#: quodlibet/operon/commands.py:289 quodlibet/operon/commands.py:327
-#: quodlibet/operon/commands.py:388
+#: quodlibet/operon/commands.py:123 quodlibet/operon/commands.py:163
+#: quodlibet/operon/commands.py:309 quodlibet/operon/commands.py:347
+#: quodlibet/operon/commands.py:408
 msgid "Show changes, don't apply them"
 msgstr "Mostrar los cambios, sin aplicarlos"
 
-#: quodlibet/operon/commands.py:124
+#: quodlibet/operon/commands.py:125
 msgid "Skip tags that can't be written"
 msgstr "Saltar las etiquetas que no se puedan escribir"
 
-#: quodlibet/operon/commands.py:145
+#: quodlibet/operon/commands.py:146
 #, python-brace-format
 msgid "Can't copy tag {tagname} to file: {filename}"
 msgstr "No se puede copiar la etiqueta {tagname} en el archivo: {filename}"
 
-#: quodlibet/operon/commands.py:157
+#: quodlibet/operon/commands.py:158
 msgid "Edit tags in a text editor"
 msgstr "Editar etiquetas en editor de texto"
 
-#: quodlibet/operon/commands.py:251
+#: quodlibet/operon/commands.py:271
 msgid "Editing aborted"
 msgstr "Se interrumpió la edición"
 
-#: quodlibet/operon/commands.py:255
+#: quodlibet/operon/commands.py:275
 #, python-format
 msgid "Starting text editor '%(editor-name)s' failed."
 msgstr "Falló el inicio del editor de textos «%(editor-name)s»."
 
-#: quodlibet/operon/commands.py:260
+#: quodlibet/operon/commands.py:280
 msgid "No changes detected"
 msgstr "No se detectó ningún cambio"
 
-#: quodlibet/operon/commands.py:284
+#: quodlibet/operon/commands.py:304
 msgid "Set a tag and remove existing values"
 msgstr "Establecer una etiqueta y eliminar los valores existentes"
 
-#: quodlibet/operon/commands.py:307
+#: quodlibet/operon/commands.py:327
 #, python-format
 msgid "Can not set %(tag)r for %(format)s file %(file)r"
 msgstr "No se puede establecer %(tag)r para el archivo %(format)s «%(file)r»"
 
-#: quodlibet/operon/commands.py:322
+#: quodlibet/operon/commands.py:342
 msgid "Remove tags"
 msgstr "Quitar etiquetas"
 
-#: quodlibet/operon/commands.py:329 quodlibet/operon/commands.py:390
+#: quodlibet/operon/commands.py:349 quodlibet/operon/commands.py:410
 msgid "Value is a regular expression"
 msgstr "El valor es una expresión regular"
 
-#: quodlibet/operon/commands.py:331
+#: quodlibet/operon/commands.py:351
 msgid "Remove all tags"
 msgstr "Quitar todas las etiquetas"
 
-#: quodlibet/operon/commands.py:335
+#: quodlibet/operon/commands.py:355
 msgid "Can't combine '--all' with '--regexp'"
 msgstr "No se puede combinar «--all» con «--regexp»"
 
-#: quodlibet/operon/commands.py:369
+#: quodlibet/operon/commands.py:389
 #, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
 msgstr "No se puede quitar {tagname} de {filename}"
 
-#: quodlibet/operon/commands.py:383
+#: quodlibet/operon/commands.py:403
 msgid "Remove a tag value"
 msgstr "Quitar un valor de etiqueta"
 
-#: quodlibet/operon/commands.py:433
+#: quodlibet/operon/commands.py:453
 msgid "Add a tag value"
 msgstr "Añadir un valor de etiqueta"
 
-#: quodlibet/operon/commands.py:449 quodlibet/operon/commands.py:681
+#: quodlibet/operon/commands.py:469 quodlibet/operon/commands.py:701
 #, python-format
 msgid "Can not set %r"
 msgstr "No se pudo establecer %r"
 
-#: quodlibet/operon/commands.py:461
+#: quodlibet/operon/commands.py:481
 msgid "List file information"
 msgstr "Información del archivo de lista"
 
-#: quodlibet/operon/commands.py:507
+#: quodlibet/operon/commands.py:527
 msgid ""
 "Set the provided image as primary embedded image and remove all other "
 "embedded images"
 msgstr ""
 
-#: quodlibet/operon/commands.py:520
+#: quodlibet/operon/commands.py:540
 #, python-format
 msgid "Failed to load image file: %r"
 msgstr "No se pudo cargar el archivo de imagen: %r"
 
-#: quodlibet/operon/commands.py:527 quodlibet/operon/commands.py:556
+#: quodlibet/operon/commands.py:547 quodlibet/operon/commands.py:576
 #, python-format
 msgid "Image editing not supported for %(file_name)s (%(file_format)s)"
 msgstr ""
 
-#: quodlibet/operon/commands.py:543
+#: quodlibet/operon/commands.py:563
 msgid "Remove all embedded images"
 msgstr "Quitar todas las imágenes incrustadas"
 
-#: quodlibet/operon/commands.py:573
+#: quodlibet/operon/commands.py:593
 #, python-format
 msgid "Extract embedded images to %(filepath)s"
 msgstr "Extraer imágenes incrustadas en %(filepath)s"
 
-#: quodlibet/operon/commands.py:585
+#: quodlibet/operon/commands.py:605
 msgid ""
 "Path to where the images will be saved to (defaults to the working directory)"
 msgstr ""
 "Ruta en que se guardarán las imágenes (directorio de trabajo de manera "
 "predeterminada)"
 
-#: quodlibet/operon/commands.py:644
+#: quodlibet/operon/commands.py:664
 msgid "Rename files based on tags"
 msgstr "Cambiar nombre de archivos según las etiquetas"
 
-#: quodlibet/operon/commands.py:659
+#: quodlibet/operon/commands.py:679
 msgid "Fill tags based on the file path"
 msgstr "Rellenar las etiquetas según la ruta al archivo"
 
-#: quodlibet/operon/commands.py:709 quodlibet/qltk/information.py:307
+#: quodlibet/operon/commands.py:729 quodlibet/qltk/information.py:307
 #: quodlibet/qltk/properties.py:83 quodlibet/qltk/renamefiles.py:248
 #: quodlibet/qltk/tagsfrompath.py:226 quodlibet/qltk/tracknumbers.py:78
 msgid "File"
 msgstr "Archivo"
 
-#: quodlibet/operon/commands.py:717
+#: quodlibet/operon/commands.py:737
 msgid "Fill tracknumbers for all files"
 msgstr "Rellenar los números de pista de todos los archivos"
 
-#: quodlibet/operon/commands.py:736
+#: quodlibet/operon/commands.py:756
 msgid "Print tags based on the given pattern"
 msgstr "Mostrar etiquetas basándose en la pauta indicada"
 
-#: quodlibet/operon/commands.py:773
+#: quodlibet/operon/commands.py:793
 msgid "Display help information"
 msgstr "Mostrar información de ayuda"
 
@@ -5578,17 +5577,14 @@ msgstr "_Ejecutar complemento"
 msgid "Usage"
 msgstr "Uso"
 
-#: quodlibet/qltk/advanced_prefs.py:38
+#: quodlibet/qltk/advanced_prefs.py:69
 #, fuzzy
 msgid "Revert to default"
 msgstr "Restablecer valores predeterminados"
 
-#: quodlibet/qltk/advanced_prefs.py:259
-msgid "Allow editing of advanced config settings."
-msgstr "Permite la edición de las opciones de configuración avanzadas."
-
-#: quodlibet/qltk/advanced_prefs.py:260
-msgid "I know what I'm doing"
+#: quodlibet/qltk/advanced_prefs.py:251
+#, fuzzy
+msgid "I know what I'm doing!"
 msgstr "Sé lo que hago"
 
 #. Translators: Refers to the beginning of the playing song.
@@ -7518,7 +7514,7 @@ msgstr "Reproducir/pausar"
 msgid "Previous"
 msgstr "Anterior"
 
-#: quodlibet/qltk/views.py:937
+#: quodlibet/qltk/views.py:928
 #, python-format
 msgid "and %d more…"
 msgstr "y %d más…"
@@ -8137,6 +8133,9 @@ msgstr ""
 "visualizar la fonoteca y admite la reproducción de radios por Internet y "
 "suministros de audio. Brinda una edición muy flexible de etiquetas de "
 "metadatos y posee funciones de búsqueda avanzadas."
+
+#~ msgid "Allow editing of advanced config settings."
+#~ msgstr "Permite la edición de las opciones de configuración avanzadas."
 
 #~ msgid "Advanced Preferences"
 #~ msgstr "Preferencias avanzadas"

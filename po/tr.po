@@ -580,7 +580,7 @@ msgstr "_Panelli Tarayıcı"
 msgid "Select _All"
 msgstr "Hepsini _Seç"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/paned/models.py:82 quodlibet/browsers/podcasts.py:55
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
@@ -590,7 +590,7 @@ msgstr "Hepsini _Seç"
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: quodlibet/browsers/paned/models.py:106
+#: quodlibet/browsers/paned/models.py:100
 msgid "All"
 msgstr "Hepsi"
 

@@ -572,7 +572,7 @@ msgstr "_창 탐색기"
 msgid "Select _All"
 msgstr "모두 선택하기(_A)"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/paned/models.py:82 quodlibet/browsers/podcasts.py:55
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
@@ -582,7 +582,7 @@ msgstr "모두 선택하기(_A)"
 msgid "Unknown"
 msgstr "알 수 없음"
 
-#: quodlibet/browsers/paned/models.py:106
+#: quodlibet/browsers/paned/models.py:100
 msgid "All"
 msgstr "모두"
 
