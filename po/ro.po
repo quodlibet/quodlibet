@@ -616,7 +616,7 @@ msgstr "_Navigator încastrat"
 msgid "Select _All"
 msgstr "Selectează t_ot"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/paned/models.py:82 quodlibet/browsers/podcasts.py:55
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
@@ -626,7 +626,7 @@ msgstr "Selectează t_ot"
 msgid "Unknown"
 msgstr "Necunoscut"
 
-#: quodlibet/browsers/paned/models.py:106
+#: quodlibet/browsers/paned/models.py:100
 msgid "All"
 msgstr "Toate"
 

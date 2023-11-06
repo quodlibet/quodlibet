@@ -583,7 +583,7 @@ msgstr "_Rutevisning"
 msgid "Select _All"
 msgstr "Velg alle"
 
-#: quodlibet/browsers/paned/models.py:88 quodlibet/browsers/podcasts.py:55
+#: quodlibet/browsers/paned/models.py:82 quodlibet/browsers/podcasts.py:55
 #: quodlibet/browsers/podcasts.py:67 quodlibet/browsers/podcasts.py:69
 #: quodlibet/browsers/podcasts.py:179
 #: quodlibet/ext/songsmenu/fingerprint/search.py:46
@@ -593,7 +593,7 @@ msgstr "Velg alle"
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: quodlibet/browsers/paned/models.py:106
+#: quodlibet/browsers/paned/models.py:100
 msgid "All"
 msgstr "Alle"
 
