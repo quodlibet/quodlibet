@@ -96,8 +96,8 @@ class AllEntry(BaseEntry):
     def get_count_markup(self, config: PaneConfig) -> str:
         return ""
 
-    def get_markup(self, config):
-        return True, util.bold(_("All"))
+    def get_markup(self, config: PaneConfig) -> str:
+        return util.bold(_("All"))
 
     def contains_text(self, text):
         return False
