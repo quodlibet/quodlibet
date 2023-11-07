@@ -132,8 +132,9 @@ class OrderRemembered(Order):
         """Gets a map of all song indices to their song from the `playlist`
         that haven't yet been played"""
 
-        def get_index(iter):
-            return playlist.get_path(iter).get_indices()[0]
+        def get_index(iter) -> int:
+            path = playlist.get_path(iter)
+            return path.get_indices()[0]
 
         played = set(map(get_index, self._played))
         print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
