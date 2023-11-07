@@ -137,9 +137,9 @@ class TPlaylistModel(TestCase):
             values = list(self.pl.itervalues())
             rand.shuffle(order)
             self.pl.reorder(order)
-            self.assertNotEqual(values, list(self.pl.itervalues()))
-            self.failUnlessEqual(self.pl.current, history[i],
-                    f"expected different item at index {i}")
+            assert values != list(self.pl.itervalues())
+            assert self.pl.current == history[i], (
+                f"expected different item at index {i}")
             self.pl.previous()
 
     def test_shuffle_next_after_remove(self):
@@ -152,7 +152,7 @@ class TPlaylistModel(TestCase):
             iter = self.pl.current_iter
             self.pl.next()
             self.pl.remove(iter)
-        self.assertSetEqual(set(history), items)
+        assert set(history) == items
 
     def test_shuffle_repeat_forever(self):
         self.pl.order = RepeatSongForever(OrderShuffle())
