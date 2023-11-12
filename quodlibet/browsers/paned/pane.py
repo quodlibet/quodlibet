@@ -60,7 +60,8 @@ class Pane(AllTreeView):
 
         def text_cdf(column, cell, model, iter_, data):
             entry = model.get_value(iter_)
-            cell.markup = entry.get_markup(self.config)
+            markup = entry.get_markup(self.config)
+            cell.set_property("markup", markup)
 
         column.set_cell_data_func(render, text_cdf)
 
