@@ -28,18 +28,18 @@ def format_dump_header(exc_info):
     """
 
     lines = [
-        u"=== SYSTEM INFORMATION:"
-        u"",
-        u"Quod Libet %s" % quodlibet.get_build_description(),
-        u"Mutagen %s" % mutagen.version_string,
-        u"Python %s %s" % (sys.version, sys.platform),
-        u"Platform %s" % platform.platform(),
-        u"=== STACK TRACE",
-        u"",
+        "=== SYSTEM INFORMATION:"
+        "",
+        f"Quod Libet {quodlibet.get_build_description()}",
+        f"Mutagen {mutagen.version_string}",
+        f"Python {sys.version} {sys.platform}",
+        f"Platform {platform.platform()}",
+        "=== STACK TRACE",
+        "",
     ]
 
     lines.extend(format_exception(*exc_info))
-    lines.append(u"")
+    lines.append("")
     return os.linesep.join(lines)
 
 
@@ -52,7 +52,7 @@ def format_dump_log(limit=75):
         str
     """
 
-    dump = [u"=== LOG:"]
+    dump = ["=== LOG:"]
     dump.extend(logging.get_content(limit=limit))
     return os.linesep.join(dump)
 
@@ -67,7 +67,7 @@ def dump_to_disk(dump_dir, exc_info):
 
     try:
         mkdir(dump_dir)
-    except EnvironmentError:
+    except OSError:
         print_exc()
         return
 
@@ -82,5 +82,5 @@ def dump_to_disk(dump_dir, exc_info):
         with open(dump_path, "wb") as dump:
             dump.write(header)
             dump.write(log)
-    except EnvironmentError:
+    except OSError:
         print_exc()

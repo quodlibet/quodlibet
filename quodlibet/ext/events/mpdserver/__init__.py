@@ -40,7 +40,7 @@ def fetch_local_ip():
         s.connect(("8.8.8.8", 80))
         addr = s.getsockname()[0]
         s.close()
-    except EnvironmentError:
+    except OSError:
         addr = "?.?.?.?"
     return addr
 
@@ -149,7 +149,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         clients = Gtk.Label()
         clients.set_padding(6, 6)
-        clients.set_markup(u"""\
+        clients.set_markup("""\
 \u2022 <a href="https://play.google.com/store/apps/details?id=com.\
 namelessdev.mpdroid">MPDroid</a> (Android)
 \u2022 <a href="https://play.google.com/store/apps/details?id=org.\

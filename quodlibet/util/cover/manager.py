@@ -47,8 +47,7 @@ class CoverPluginHandler(PluginHandler):
         """Yields all active CoverSourcePlugin classes sorted by priority"""
 
         sources = chain((p.cls for p in self.providers), self.built_in)
-        for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
-            yield p
+        yield from sorted(sources, reverse=True, key=lambda x: x.priority())
 
 
 class CoverManager(GObject.Object):

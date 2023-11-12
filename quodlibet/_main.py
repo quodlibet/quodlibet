@@ -134,7 +134,7 @@ def get_image_dir():
 def get_cache_dir():
     """The directory to store things into which can be deleted at any time"""
 
-    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
+    if os.name == "nt" and build.BUILD_TYPE == "windows-portable":
         # avoid writing things to the host system for the portable build
         path = os.path.join(get_user_dir(), "cache")
     else:
@@ -163,7 +163,7 @@ def get_user_dir():
     if "QUODLIBET_USERDIR" in os.environ:
         user_dir = os.environ["QUODLIBET_USERDIR"]
 
-    if build.BUILD_TYPE == u"windows-portable":
+    if build.BUILD_TYPE == "windows-portable":
         user_dir = os.path.normpath(os.path.join(
             os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
 
@@ -202,13 +202,13 @@ def get_build_description():
     notes = []
     if not is_release():
         version = version[:-1]
-        notes.append(u"development")
+        notes.append("development")
 
         if build.BUILD_INFO:
             notes.append(build.BUILD_INFO)
 
-    version_string = u".".join(map(str, version))
-    note = u" (%s)" % u", ".join(notes) if notes else u""
+    version_string = ".".join(map(str, version))
+    note = " (%s)" % ", ".join(notes) if notes else ""
 
     return version_string + note
 
@@ -369,7 +369,7 @@ def run(window, before_quit=None):
     if not is_osx():
         try:
             faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
-        except IOError:
+        except OSError:
             util.print_exc()
         else:
             GLib.idle_add(faulthandling.raise_and_clear_error)

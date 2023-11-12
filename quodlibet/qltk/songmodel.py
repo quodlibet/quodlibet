@@ -1,5 +1,5 @@
 # Copyright 2012 Christoph Reiter
-#           2016 Nick Boultbee
+#        2016-23 Nick Boultbee
 #      2018-2019 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,7 +7,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Any, Iterable, List, Optional, Sequence, Type
+from typing import Any
+from collections.abc import Iterable, Sequence
 
 from gi.repository import Gtk
 
@@ -154,7 +155,7 @@ class TrackCurrentModel(ObjectStore):
         super().__init__(*args, **kwargs)
         self.__iter = None
 
-    last_current: Optional[Any] = None
+    last_current: Any | None = None
     """The last valid current song"""
 
     def set(self, songs: Sequence[Any]):
@@ -169,13 +170,13 @@ class TrackCurrentModel(ObjectStore):
             if song is oldsong:
                 self.__iter = iter_
 
-    def get(self) -> List[Any]:
+    def get(self) -> list[Any]:
         """A list of all contained songs"""
 
         return list(self.itervalues())
 
     @property
-    def current(self) -> Optional[Any]:
+    def current(self) -> Any | None:
         """The current song or None"""
 
         return self.__iter and self.get_value(self.__iter, 0)
@@ -248,7 +249,7 @@ class PlaylistModel(TrackCurrentModel):
     sourced = False
     """True in case this model is the source of the currently playing song"""
 
-    def __init__(self, order_cls: Type[Order] = OrderInOrder):
+    def __init__(self, order_cls: type[Order] = OrderInOrder):
         super().__init__(object)
         self.order = order_cls()
 

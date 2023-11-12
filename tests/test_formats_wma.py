@@ -35,17 +35,17 @@ class TWMAFile(TestCase):
         os.unlink(self.f3)
 
     def test_basic(self):
-        self.song["title"] = u"SomeTestValue"
+        self.song["title"] = "SomeTestValue"
         self.song.write()
         self.song.reload()
-        self.assertEqual(self.song("title"), u"SomeTestValue")
+        self.assertEqual(self.song("title"), "SomeTestValue")
 
     def test_multi(self):
-        self.song["genre"] = u"Rock\nPop"
+        self.song["genre"] = "Rock\nPop"
         self.song.write()
         self.song.reload()
         # XXX: mutagen doesn't preserve order.. fix it!
-        self.assertEqual(set(self.song.list("genre")), {u"Rock", u"Pop"})
+        self.assertEqual(set(self.song.list("genre")), {"Rock", "Pop"})
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.7120, 3)
@@ -84,33 +84,33 @@ class TWMAFile(TestCase):
 
     def test_codec(self):
         self.assertEqual(self.song("~codec"),
-                         u"Windows Media Audio 9 Standard")
+                         "Windows Media Audio 9 Standard")
         self.assertEqual(self.song2("~codec"),
-                         u"Windows Media Audio 9 Professional")
+                         "Windows Media Audio 9 Professional")
         self.assertEqual(self.song3("~codec"),
-                         u"Intel G.723")
+                         "Intel G.723")
 
     def test_encoding(self):
         self.assertEqual(
             self.song("~encoding"),
-            u"Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
+            "Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
         self.assertEqual(
             self.song2("~encoding"),
-            (u"Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
+            ("Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
              "2 channel 24 bit 2-pass VBR"))
         self.assertEqual(self.song3("~encoding"),
-                         u"Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
+                         "Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
 
     def test_mb_release_track_id(self):
         tag = asf.ASF(self.f)
-        tag["MusicBrainz/Release Track Id"] = [u"foo"]
+        tag["MusicBrainz/Release Track Id"] = ["foo"]
         tag.save()
         song = WMAFile(self.f)
-        self.assertEqual(song("musicbrainz_releasetrackid"), u"foo")
-        song["musicbrainz_releasetrackid"] = u"bla"
+        self.assertEqual(song("musicbrainz_releasetrackid"), "foo")
+        song["musicbrainz_releasetrackid"] = "bla"
         song.write()
         tag = asf.ASF(self.f)
-        self.assertEqual(tag["MusicBrainz/Release Track Id"], [u"bla"])
+        self.assertEqual(tag["MusicBrainz/Release Track Id"], ["bla"])
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
@@ -149,8 +149,8 @@ class TWMAFile(TestCase):
     def test_unpack_image_min(self):
         data = b"\x03" + b"\x00" * 4 + b"\x00" * 4
         mime, desc, data, type_ = unpack_image(data)
-        self.assertEqual(mime, u"")
-        self.assertEqual(desc, u"")
+        self.assertEqual(mime, "")
+        self.assertEqual(desc, "")
         self.assertEqual(data, b"")
         self.assertEqual(type_, 3)
 
@@ -162,10 +162,10 @@ class TWMAFile(TestCase):
 
     def test_pack_image(self):
         d = pack_image(
-            u"image/jpeg", u"Description", b"foo", APICType.COVER_FRONT)
+            "image/jpeg", "Description", b"foo", APICType.COVER_FRONT)
         mime, desc, data, type_ = unpack_image(d)
-        self.assertEqual(mime, u"image/jpeg")
-        self.assertEqual(desc, u"Description")
+        self.assertEqual(mime, "image/jpeg")
+        self.assertEqual(desc, "Description")
         self.assertEqual(data, b"foo")
         self.assertEqual(type_, APICType.COVER_FRONT)
 

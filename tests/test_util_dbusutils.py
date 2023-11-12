@@ -41,64 +41,64 @@ class TDbusUtils(TestCase):
 
     def test_prop_sig(self):
         value = apply_signature(2, "u")
-        self.failUnless(isinstance(value, dbus.UInt32))
+        self.assertTrue(isinstance(value, dbus.UInt32))
 
         value = apply_signature({"a": "b"}, "a{ss}")
-        self.failUnlessEqual(value.signature, "ss")
-        self.failUnless(isinstance(value, dbus.Dictionary))
+        self.assertEqual(value.signature, "ss")
+        self.assertTrue(isinstance(value, dbus.Dictionary))
 
         value = apply_signature(("a",), "a(s)")
-        self.failUnlessEqual(value.signature, "s")
-        self.failUnless(isinstance(value, dbus.Struct))
+        self.assertEqual(value.signature, "s")
+        self.assertTrue(isinstance(value, dbus.Struct))
 
         value = apply_signature(("a", "b"), "as")
-        self.failUnlessEqual(value.signature, "s")
-        self.failUnless(isinstance(value, dbus.Array))
+        self.assertEqual(value.signature, "s")
+        self.assertTrue(isinstance(value, dbus.Array))
 
-        self.failUnlessRaises(TypeError, apply_signature, 2, "a(s)")
+        self.assertRaises(TypeError, apply_signature, 2, "a(s)")
 
         text = b"\xc3\xb6\xc3\xa4\xc3\xbc"
         value = apply_signature(text, "s", utf8_strings=True)
-        self.failUnless(isinstance(value, str))
+        self.assertTrue(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, str))
+        self.assertTrue(isinstance(value, str))
 
-        text = u"öäü"
+        text = "öäü"
         value = apply_signature(text, "s", utf8_strings=True)
-        self.failUnless(isinstance(value, str))
+        self.assertTrue(isinstance(value, str))
         value = apply_signature(text, "s")
-        self.failUnless(isinstance(value, str))
+        self.assertTrue(isinstance(value, str))
 
     def test_list_props(self):
         props = list_spec_properties(ANN1)
-        self.failUnlessEqual(props["Position"]["access"], "read")
-        self.failUnlessEqual(props["Position"]["emit"], "false")
-        self.failUnlessEqual(props["Position"]["type"], "s")
+        self.assertEqual(props["Position"]["access"], "read")
+        self.assertEqual(props["Position"]["emit"], "false")
+        self.assertEqual(props["Position"]["type"], "s")
 
-        self.failUnlessEqual(props["MinimumRate"]["emit"], "true")
+        self.assertEqual(props["MinimumRate"]["emit"], "true")
 
         props = list_spec_properties(ANN2)
-        self.failUnlessEqual(props["Foobar"]["emit"], "invalidates")
-        self.failUnlessEqual(props["XXX"]["emit"], "false")
+        self.assertEqual(props["Foobar"]["emit"], "invalidates")
+        self.assertEqual(props["XXX"]["emit"], "false")
 
     def test_filter_props(self):
         spec = filter_property_spec(ANN1, wl=["Position"])
-        self.failUnlessEqual(
+        self.assertEqual(
             list(list_spec_properties(spec).keys()), ["Position"])
         props = list_spec_properties(spec)
-        self.failUnlessEqual(props["Position"]["emit"], "false")
+        self.assertEqual(props["Position"]["emit"], "false")
 
         spec = filter_property_spec(ANN1, bl=["Position"])
-        self.failUnlessEqual(list(list_spec_properties(spec).keys()),
+        self.assertEqual(list(list_spec_properties(spec).keys()),
                              ["MinimumRate"])
 
         spec = filter_property_spec(ANN1)
-        self.failUnlessEqual(len(list_spec_properties(spec).keys()), 2)
+        self.assertEqual(len(list_spec_properties(spec).keys()), 2)
 
     def test_validate_utf8(self):
-        self.failUnlessEqual(dbus_unicode_validate(u"X\ufffeX"), u"X\ufffdX")
-        self.failUnlessEqual(dbus_unicode_validate(b"X\xef\xbf\xbeX"),
-                             u"X\ufffdX")
+        self.assertEqual(dbus_unicode_validate("X\ufffeX"), "X\ufffdX")
+        self.assertEqual(dbus_unicode_validate(b"X\xef\xbf\xbeX"),
+                             "X\ufffdX")
 
     def test_property_mixin(self):
 
@@ -120,14 +120,14 @@ class TDbusUtils(TestCase):
         x.implement_interface("a1", "a2")
 
         props = x.get_properties("a1")
-        self.failUnless(("a1", "Position") in props)
-        self.failUnless(("a2", "XXX") in props)
+        self.assertTrue(("a1", "Position") in props)
+        self.assertTrue(("a2", "XXX") in props)
         props = x.get_properties("a2")
-        self.failIf(("a1", "Position") in props)
+        self.assertFalse(("a1", "Position") in props)
 
-        self.failUnlessEqual(x.get_interface("a2", "XXX"), "a2")
-        self.failUnlessEqual(x.get_interface("a1", "XXX"), "a2")
+        self.assertEqual(x.get_interface("a2", "XXX"), "a2")
+        self.assertEqual(x.get_interface("a1", "XXX"), "a2")
 
-        self.failUnlessEqual(x.get_value("a2", "XXX"), "a2")
-        self.failUnlessEqual(x.get_value("a1", "XXX"), "a2")
-        self.failUnlessEqual(x.get_value("a1", "Position"), "a1")
+        self.assertEqual(x.get_value("a2", "XXX"), "a2")
+        self.assertEqual(x.get_value("a1", "XXX"), "a2")
+        self.assertEqual(x.get_value("a1", "Position"), "a1")

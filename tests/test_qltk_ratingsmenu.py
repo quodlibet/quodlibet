@@ -22,10 +22,10 @@ class TRatingsMenuItem(TestCase):
 
     def setUp(self):
         config.RATINGS = config.HardCodedRatingsPrefs()
-        self.failUnlessEqual(config.RATINGS.number, NUM_RATINGS)
+        self.assertEqual(config.RATINGS.number, NUM_RATINGS)
         self.library = SongLibrary()
         self.library.librarian = SongLibrarian()
-        self.af = AudioFile({"~filename": fsnative(u"/foo"), "~#rating": 1.0})
+        self.af = AudioFile({"~filename": fsnative("/foo"), "~#rating": 1.0})
         self.af.sanitize()
         self.rmi = RatingsMenuItem([self.af], self.library)
 
@@ -37,13 +37,13 @@ class TRatingsMenuItem(TestCase):
     def test_menuitem_children(self):
         children = [mi for mi in self.rmi.get_submenu().get_children()
                     if isinstance(mi, Gtk.CheckMenuItem)]
-        self.failUnlessEqual(len(children), NUM_RATINGS + 1)
+        self.assertEqual(len(children), NUM_RATINGS + 1)
         highest = children[-1]
-        self.failUnlessEqual(highest.get_active(), True)
-        self.failUnlessEqual(children[1].get_active(), False)
+        self.assertEqual(highest.get_active(), True)
+        self.assertEqual(children[1].get_active(), False)
 
     def test_no_rating(self):
-        af = AudioFile({"~filename": fsnative(u"/foobar"), "artist": "foo"})
+        af = AudioFile({"~filename": fsnative("/foobar"), "artist": "foo"})
         rmi = RatingsMenuItem([af], self.library)
         children = [mi for mi in rmi.get_submenu().get_children()
                     if isinstance(mi, Gtk.CheckMenuItem)]
@@ -51,7 +51,7 @@ class TRatingsMenuItem(TestCase):
 
     def test_set_remove_rating(self):
         self.rmi.set_rating(0.5, [self.af], self.library)
-        self.failUnless(self.af.has_rating)
-        self.failUnlessEqual(self.af("~#rating"), 0.5)
+        self.assertTrue(self.af.has_rating)
+        self.assertEqual(self.af("~#rating"), 0.5)
         self.rmi.remove_rating([self.af], self.library)
-        self.failIf(self.af.has_rating)
+        self.assertFalse(self.af.has_rating)

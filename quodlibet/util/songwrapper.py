@@ -124,7 +124,7 @@ def check_wrapper_changed(library, songs):
                               "do not have permission to edit it.") %
                             util.bold(song("~basename")), escape_desc=False)
                         dialog.run()
-                        print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+                        print_w(f"Couldn't save song {song('~filename')} ({e!r})")
                     else:
                         task.update((i + 1) / total)
                         yield
@@ -143,7 +143,7 @@ def background_check_wrapper_changed(library, songs):
         try:
             song._song.write()
         except AudioFileError as e:
-            print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+            print_w("Couldn't save song {} ({})".format(song("~filename"), e))
 
     _inform_library_of_changed(library, songs)
 

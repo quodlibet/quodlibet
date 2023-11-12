@@ -8,7 +8,6 @@
 # (at your option) any later version.
 
 import re
-from typing import Tuple, Text, List
 
 from quodlibet.formats import TIME_TAGS
 from quodlibet import config
@@ -61,17 +60,17 @@ class PaneConfig:
             tags = util.tagsplit(cat)
             has_markup = False
             if is_date(cat):
-                def format(song: AudioFile) -> List[Tuple[Text, Text]]:
+                def format(song: AudioFile) -> list[tuple[str, str]]:
                     fmt = config.gettext("settings",
                                          "datecolumn_timestamp_format")
                     date_str = format_date(song(cat), fmt)
                     return [(date_str, date_str)]
             elif is_numeric(cat):
-                def format(song: AudioFile) -> List[Tuple[Text, Text]]:
+                def format(song: AudioFile) -> list[tuple[str, str]]:
                     v = str(f_round(song(cat)))
                     return [(v, v)]
             else:
-                def format(song: AudioFile) -> List[Tuple[Text, Text]]:
+                def format(song: AudioFile) -> list[tuple[str, str]]:
                     return song.list_separate(cat)
 
         if is_pattern(disp):
@@ -95,8 +94,7 @@ class PaneConfig:
         self.has_markup = has_markup
 
     def __repr__(self):
-        return "<%s title=%r tags=%r>" % (
-            self.__class__.__name__, self.title, self.tags)
+        return f"<{self.__class__.__name__} title={self.title!r} tags={self.tags!r}>"
 
 
 def get_headers():

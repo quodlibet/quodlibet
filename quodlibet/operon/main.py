@@ -83,7 +83,7 @@ def main(argv=None):
 
     # --version somewhere
     if options.version:
-        print_("%s version %s" % (main_cmd, const.VERSION))
+        print_(f"{main_cmd} version {const.VERSION}")
         return 0
 
     # no sub command followed, help to stderr
@@ -106,11 +106,11 @@ def main(argv=None):
             try:
                 cmd.execute(argv[offset + 1:])
             except CommandError as e:
-                print_(u"%s: %s" % (command.NAME, e), file=sys.stderr)
+                print_(f"{command.NAME}: {e}", file=sys.stderr)
                 return 1
             break
     else:
-        print_(u"Unknown command '%s'. See '%s help'." % (arg, main_cmd),
+        print_(f"Unknown command '{arg}'. See '{main_cmd} help'.",
                file=sys.stderr)
         return 1
 

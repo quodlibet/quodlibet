@@ -38,8 +38,8 @@ class PictureSaver(EventPlugin):
         def delete(outfile):
             try:
                 os.unlink(outfile)
-            except EnvironmentError as e:
-                print_w("Couldn't delete '%s' (%s)" % (outfile, e))
+            except OSError as e:
+                print_w(f"Couldn't delete {outfile!r} ({e})")
 
         outfile = get_path()
         if song is None:
@@ -57,7 +57,7 @@ class PictureSaver(EventPlugin):
             fn = entry.get_text()
             try:
                 shutil.move(get_path(), fn)
-            except EnvironmentError:
+            except OSError:
                 pass
             else:
                 set_path(fn)

@@ -10,7 +10,6 @@ import os
 import sys
 import threading
 import time
-from typing import Optional
 from urllib.request import urlopen, Request
 
 from gi.repository import Gtk, GLib, Pango, Gdk
@@ -158,7 +157,7 @@ class Feed(list):
             # Don't pass feedparser URLs
             # see https://github.com/kurtmckee/feedparser/pull/80#issuecomment-449543486
             content = urlopen(self.uri, timeout=15).read()
-        except IOError as e:
+        except OSError as e:
             print_w(f"Couldn't fetch content from {self.uri} ({e})")
             return False
         try:
@@ -182,7 +181,7 @@ class Feed(list):
         try:
             self.__fill_af(doc.channel, defaults)
         except Exception as e:
-            print_w("Error creating feed data: %s (%s)" % (self.uri, e))
+            print_w(f"Error creating feed data: {self.uri} ({e})")
             return False
 
         entries = []
@@ -227,7 +226,7 @@ class Feed(list):
                 try:
                     self.__fill_af(entry, song)
                 except Exception as e:
-                    print_d("Couldn't convert %s to AudioFile (%s)" % (uri, e))
+                    print_d(f"Couldn't convert {uri} to AudioFile ({e})")
                 else:
                     self.insert(0, song)
         self.__lastgot = time.time()
@@ -353,7 +352,7 @@ class Podcasts(Browser):
         try:
             with open(FEEDS, "rb") as fileobj:
                 feeds = pickle_load(fileobj)
-        except (PickleError, EnvironmentError):
+        except (OSError, PickleError):
             try:
                 with open(FEEDS, "rb") as fileobj:
                     feeds = hacky_py2_unpickle_recover(fileobj)
@@ -473,7 +472,7 @@ class Podcasts(Browser):
         else:
             self.feed_error(feed).run()
 
-    def _popup_menu(self, view: Gtk.Widget) -> Optional[Gtk.Menu]:
+    def _popup_menu(self, view: Gtk.Widget) -> Gtk.Menu | None:
         model, paths = self._view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
         refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,

@@ -117,8 +117,7 @@ class CollectionModelMixin:
             if isinstance(value, AlbumNode):
                 yield value.album
             else:
-                for album in self.iter_albums(child_iter):
-                    yield album
+                yield from self.iter_albums(child_iter)
 
     def get_markup(self, tags, iter_):
         obj = self.get_value(iter_, 0)

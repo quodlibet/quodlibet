@@ -189,7 +189,7 @@ class TrackNumbers(Gtk.VBox):
         total = total.get_value_as_int()
         for row in model:
             if total:
-                s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
+                s = "%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
                 s = str(row.path.get_indices()[0] + start)
             entry = row[0]

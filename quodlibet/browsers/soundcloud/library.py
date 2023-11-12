@@ -1,4 +1,4 @@
-# Copyright 2016-2022 Nick Boultbee
+# Copyright 2016-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -99,7 +99,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
 
     def _on_comments_received(self, client, track_id, comments):
         def bookmark_for(com):
-            text = '"%s" – %s' % (com["body"], com["user"]["username"])
+            text = f'{com["body"]!r} – {com["user"]["username"]}'
             return max(0, int((com.get("timestamp") or 0) / 1000.0)), text
 
         try:
@@ -115,8 +115,8 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         for song in self.values():
             if song.track_id == track_id:
                 return song
-        raise KeyError("No track with id %s. Do have %s"
-                       % (track_id, [s.track_id for s in self.values()]))
+        raise KeyError(f"No track with id {track_id}. "
+                       f"Do have {[s.track_id for s in self.values()]}")
 
     def _changed(self, items):
         super()._changed(items)
@@ -126,7 +126,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
 
     def __song_started(self, player, song):
         if isinstance(song, SoundcloudFile):
-            print_d("Getting comments for %s (%s)" % (song("title"), song.key))
+            print_d(f"Getting comments for {song('title')} ({song.key})")
             self.client.get_comments(song.track_id)
 
 
@@ -139,7 +139,7 @@ class SoundcloudFile(RemoteFile):
         self.sanitize(fsnative(uri))
         self.client = client
         if not self.client:
-            raise EnvironmentError("Must have a Soundcloud client")
+            raise OSError("Must have a Soundcloud client")
         self["soundcloud_track_id"] = track_id
         self.favorite = favorite
         if self.favorite:
@@ -154,7 +154,7 @@ class SoundcloudFile(RemoteFile):
 
     @cached_property
     def key(self):
-        return "track-%s" % (self.track_id,)
+        return f"track-{self.track_id}"
 
     def can_change(self, k=None):
         if k is None:

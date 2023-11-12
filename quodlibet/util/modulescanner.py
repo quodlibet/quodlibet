@@ -38,7 +38,7 @@ class Module:
         return False
 
     def __repr__(self):
-        return "<%s name=%r>" % (type(self).__name__, self.name)
+        return f"<{type(self).__name__} name={self.name!r}>"
 
 
 class ModuleImportError:

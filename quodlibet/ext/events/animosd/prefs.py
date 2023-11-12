@@ -285,7 +285,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
-            edit_button = qltk.Button(_(u"Ed_it Display Pattern…"),
+            edit_button = qltk.Button(_("Ed_it Display Pattern…"),
                                       Icons.EDIT)
             edit_button.connect("clicked", edit_pattern)
             hb.pack_start(edit_button, False, True, 0)

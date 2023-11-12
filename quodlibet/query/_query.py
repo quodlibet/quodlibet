@@ -11,7 +11,8 @@
 from __future__ import annotations
 
 from enum import Enum, auto
-from typing import Optional, Type, Iterable, TypeVar
+from typing import TypeVar
+from collections.abc import Iterable
 
 from quodlibet import print_d, config
 from quodlibet.util import re_escape, cached_property
@@ -39,16 +40,16 @@ class Query(Node):
     STAR: Iterable[str] = ["artist", "album", "title"]
     """Default tags to search in, use/extend and pass to Query()"""
 
-    Error: Type[Exception] = Error
+    Error: type[Exception] = Error
     """Base error type"""
 
-    type: Optional[QueryType] = None
+    type: QueryType | None = None
     """The QueryType value: VALID or TEXT"""
 
-    string: Optional[str] = None
+    string: str | None = None
     """The original string which was used to create this query"""
 
-    def __init__(self, string: str, star: Optional[Iterable[str]] = None):
+    def __init__(self, string: str, star: Iterable[str] | None = None):
         """Parses the query string and returns a match object.
 
         :param string: The text to parse
@@ -112,8 +113,7 @@ class Query(Node):
             return None
 
     def __repr__(self) -> str:
-        return "<Query string=%r type=%r star=%r>" % (
-            self.string, self.type, self.star)
+        return f"<Query string={self.string!r} type={self.type!r} star={self.star!r}>"
 
     @cached_property
     def search(self):
@@ -157,7 +157,7 @@ class Query(Node):
                 self.type == other.type)
 
     @classmethod
-    def validator(cls, string: str) -> Optional[bool]:
+    def validator(cls, string: str) -> bool | None:
         """Returns True/False for a query, None for a text only query"""
 
         query = cls(string)

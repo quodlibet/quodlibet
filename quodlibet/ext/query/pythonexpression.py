@@ -48,10 +48,8 @@ class PythonQuery(QueryPlugin):
             key = str(e)
             if key not in self._reported:
                 self._reported.add(key)
-                print_w("%s(%s) in expression '%s'. "
-                        "Example failing data: %s"
-                        % (type(e).__name__, key, self._raw_body,
-                           self._globals))
+                print_w(f"{type(e).__name__}({key}) in expression {self._raw_body!r}. "
+                        f"Example failing data: {self._globals}")
             return False
 
     def parse_body(self, body):

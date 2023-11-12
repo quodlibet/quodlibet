@@ -10,7 +10,6 @@
 Things that are more or less direct wrappers around GTK widgets to
 ease constructors.
 """
-from typing import Optional
 from urllib.request import urlopen
 
 from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf, Gdk
@@ -293,7 +292,7 @@ class Align(Gtk.Alignment):
         return self.props.right_padding
 
 
-def MenuItem(label, icon_name: Optional[str] = None, tooltip: Optional[str] = None):
+def MenuItem(label, icon_name: str | None = None, tooltip: str | None = None):
     """An ImageMenuItem with a custom label and stock image."""
 
     if icon_name is None:
@@ -453,7 +452,7 @@ class WebImage(Gtk.Image):
         try:
             data = urlopen(url).read()
         except Exception as e:
-            print_w("Couldn't read web image from %s (%s)" % (url, e))
+            print_w(f"Couldn't read web image from {url} ({e})")
             return None
         try:
             loader = GdkPixbuf.PixbufLoader()
@@ -523,7 +522,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
 
             provider = Gtk.CssProvider()
             provider.load_from_data(
-                (u"* {color: %s}" % self._color).encode("ascii"))
+                ("* {color: %s}" % self._color).encode("ascii"))
             style_context.add_provider(
                 provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
             self._provider = provider

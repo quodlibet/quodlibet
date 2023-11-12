@@ -21,4 +21,4 @@ class TIconTheme(TestCase):
             "io.github.quodlibet.ExFalso",
             "quodlibet-missing-cover"
         ]:
-            self.failUnless(theme.has_icon(i))
+            self.assertTrue(theme.has_icon(i))

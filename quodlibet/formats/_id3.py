@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Type
 
 import mutagen.id3
 
@@ -79,25 +78,25 @@ class ID3File(AudioFile):
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
     TXXX_MAP = {
-        u"MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
-        u"MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
-        u"MusicBrainz Artist Id": "musicbrainz_artistid",
-        u"MusicBrainz Album Id": "musicbrainz_albumid",
-        u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
-        u"MusicBrainz TRM Id": "musicbrainz_trmid",
-        u"MusicIP PUID": "musicip_puid",
-        u"MusicMagic Fingerprint": "musicip_fingerprint",
-        u"MusicBrainz Album Status": "musicbrainz_albumstatus",
-        u"MusicBrainz Album Type": "musicbrainz_albumtype",
-        u"MusicBrainz Album Release Country": "releasecountry",
-        u"MusicBrainz Disc Id": "musicbrainz_discid",
-        u"ASIN": "asin",
-        u"ALBUMARTISTSORT": "albumartistsort",
-        u"BARCODE": "barcode",
+        "MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
+        "MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
+        "MusicBrainz Artist Id": "musicbrainz_artistid",
+        "MusicBrainz Album Id": "musicbrainz_albumid",
+        "MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
+        "MusicBrainz TRM Id": "musicbrainz_trmid",
+        "MusicIP PUID": "musicip_puid",
+        "MusicMagic Fingerprint": "musicip_fingerprint",
+        "MusicBrainz Album Status": "musicbrainz_albumstatus",
+        "MusicBrainz Album Type": "musicbrainz_albumtype",
+        "MusicBrainz Album Release Country": "releasecountry",
+        "MusicBrainz Disc Id": "musicbrainz_discid",
+        "ASIN": "asin",
+        "ALBUMARTISTSORT": "albumartistsort",
+        "BARCODE": "barcode",
         }
     PAM_XXXT = {v: k for k, v in TXXX_MAP.items()}
 
-    Kind: Optional[Type[mutagen.FileType]] = None
+    Kind: type[mutagen.FileType] | None = None
 
     def __init__(self, filename):
         with translate_errors():
@@ -207,7 +206,7 @@ class ID3File(AudioFile):
         for frame in tag.getall("TXXX"):
             k = frame.desc.lower()
             if k in RG_KEYS:
-                self[str(k)] = u"\n".join(map(str, frame.text))
+                self[str(k)] = "\n".join(map(str, frame.text))
 
         self.sanitize(filename)
 
@@ -349,7 +348,7 @@ class ID3File(AudioFile):
 
             f = mutagen.id3.TXXX(
                 encoding=enc, text=self[key].split("\n"),
-                desc=u"QuodLibet::%s" % key)
+                desc="QuodLibet::%s" % key)
             tag.add(f)
 
         if mcl.people:
@@ -369,7 +368,7 @@ class ID3File(AudioFile):
         if "comment" in self:
             enc = encoding_for(self["comment"])
             t = self["comment"].split("\n")
-            tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
+            tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc="",
                                      lang="\x00\x00\x00"))
 
         tag.delall("USLT")
@@ -523,13 +522,13 @@ class ID3File(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
+        except OSError as e:
             raise AudioFileError(e) from e
 
         tag.delall("APIC")
         frame = mutagen.id3.APIC(
             encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
-            desc=u"", data=data)
+            desc="", data=data)
         tag.add(frame)
 
         with translate_errors():

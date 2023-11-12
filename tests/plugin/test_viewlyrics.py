@@ -38,14 +38,14 @@ class TViewlyrics(PluginTestCase):
         tb = self.plugin.textbuffer
         actual = tb.get_text(tb.get_start_iter(), tb.get_end_iter(), True)
         # en_US is the default for tests so shouldn't need translation
-        self.failUnlessEqual(actual, "No active song")
+        self.assertEqual(actual, "No active song")
 
     def test_on_changed(self):
         app.player.info = AUDIO_FILE
         self.plugin.plugin_on_changed([SongWrapper(AUDIO_FILE)])
         tb = self.plugin.textbuffer
         actual = tb.get_text(tb.get_start_iter(), tb.get_end_iter(), True)
-        self.failUnlessEqual(actual, AUDIO_FILE("lyrics"))
+        self.assertEqual(actual, AUDIO_FILE("lyrics"))
 
     def test_startup_playing_then_edit(self):
         app.player.info = AUDIO_FILE

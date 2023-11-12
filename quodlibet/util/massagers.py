@@ -7,7 +7,6 @@
 
 import locale
 import re
-from typing import List, Dict
 
 from quodlibet import _
 
@@ -22,11 +21,11 @@ class Massager:
     """Massage a tag value from various 'okay' formats to the
     'correct' format."""
 
-    tags: List[str] = []
+    tags: list[str] = []
     error = "Metaerror. This should be overridden in subclasses."
-    options: List[str] = []
+    options: list[str] = []
 
-    _massagers: "Dict[str, Massager]" = {}
+    _massagers: "dict[str, Massager]" = {}
 
     def validate(self, value):
         """Returns a validated value.
@@ -95,7 +94,7 @@ def error_message(tag, value):
     try:
         return Massager.for_tag(tag).error
     except KeyError:
-        return u""
+        return ""
 
 
 def get_options(tag):
@@ -142,7 +141,7 @@ class GainMassager(Massager):
                 except (IndexError, TypeError, ValueError) as e:
                     raise ValidationError from e
             else:
-                return (u"%+f" % f).rstrip("0") + " dB"
+                return ("%+f" % f).rstrip("0") + " dB"
 
 
 @Massager._register
@@ -174,7 +173,7 @@ class MBIDMassager(Massager):
 
     def validate(self, value):
         value = value.encode("ascii", "replace").decode("ascii")
-        value = u"".join(filter(str.isalnum, value.strip().lower()))
+        value = "".join(filter(str.isalnum, value.strip().lower()))
         try:
             int(value, 16)
         except ValueError as e:
@@ -183,7 +182,7 @@ class MBIDMassager(Massager):
             if len(value) != 32:
                 raise ValidationError
             else:
-                return u"-".join([value[:8], value[8:12], value[12:16],
+                return "-".join([value[:8], value[8:12], value[12:16],
                                   value[16:20], value[20:]])
 
 

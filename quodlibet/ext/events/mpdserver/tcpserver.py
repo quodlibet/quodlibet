@@ -155,7 +155,7 @@ class BaseTCPConnection:
                 while True:
                     try:
                         data = sock.recv(4096)
-                    except (IOError, OSError) as e:
+                    except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
                         elif e.errno == errno.EINTR:
@@ -206,7 +206,7 @@ class BaseTCPConnection:
                 while True:
                     try:
                         result = sock.send(write_buffer)
-                    except (IOError, OSError) as e:
+                    except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
                         elif e.errno == errno.EINTR:

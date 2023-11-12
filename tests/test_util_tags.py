@@ -16,7 +16,7 @@ class TTags(TestCase):
         t = ["album", "title", "artist", "part", "musicbrainz_trackid"]
         t.sort(key=sortkey)
         expected = ["title", "artist", "album", "part", "musicbrainz_trackid"]
-        self.failUnlessEqual(t, expected)
+        self.assertEqual(t, expected)
 
     def test_readable(self):
         self.assertEqual(readable("artistsort"), "artist (sort)")

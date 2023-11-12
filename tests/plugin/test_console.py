@@ -39,9 +39,9 @@ class TConsole(PluginTestCase):
     def test_sidebar_plugin(self):
         plugin = self.mod.PyConsoleSidebar()
         plugin.enabled()
-        self.failUnless(isinstance(plugin.create_sidebar(), Gtk.Widget), True)
+        self.assertTrue(isinstance(plugin.create_sidebar(), Gtk.Widget), True)
         plugin.plugin_on_songs_selected([AUDIO_FILE])
-        self.failUnlessEqual(plugin.console.namespace.get("songs"),
+        self.assertEqual(plugin.console.namespace.get("songs"),
                              [AUDIO_FILE])
         plugin.disabled()
 
@@ -52,7 +52,7 @@ class TConsole(PluginTestCase):
         plugin.console.namespace["dummy"] = Dummy()
 
         comp = plugin.console.get_completion_items("dummy.")
-        self.failUnlessEqual(comp, DUMMY_COMPLETIONS)
+        self.assertEqual(comp, DUMMY_COMPLETIONS)
 
         comp = plugin.console.get_completion_items("")
         assert NAMESPACE_COMPLETIONS in comp

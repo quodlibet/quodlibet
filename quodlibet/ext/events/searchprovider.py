@@ -46,7 +46,7 @@ def get_gs_provider_files():
             for entry in os.listdir(path):
                 if entry.endswith(".ini"):
                     ini_files.append(os.path.join(path, entry))
-        except EnvironmentError:
+        except OSError:
             pass
     return ini_files
 
@@ -62,7 +62,7 @@ def check_ini_installed():
                 if SearchProvider.BUS_NAME in data:
                     provider_installed = True
                     break
-        except EnvironmentError:
+        except OSError:
             pass
 
     if not provider_installed:

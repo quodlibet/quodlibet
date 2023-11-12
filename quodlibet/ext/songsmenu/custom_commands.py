@@ -1,4 +1,4 @@
-# Copyright 2012-2017 Nick Boultbee
+# Copyright 2012-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ class Command(JSONObject):
                 args.append(arg)
             elif arg not in args:
                 args.append(arg)
-        max = int((self.max_args or 10000))
+        max = int(self.max_args or 10000)
         com_words = actual_command.split(" ")
 
         if self.reverse:
@@ -236,9 +236,9 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         print_d("Loading saved commands from '%s'..." % filename)
         coms = None
         try:
-            with open(filename, "r", encoding="utf-8") as f:
+            with open(filename, encoding="utf-8") as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
-        except (IOError, ValueError) as e:
+        except (OSError, ValueError) as e:
             print_w("Couldn't parse saved commands (%s)" % e)
 
         # Failing all else...
@@ -296,8 +296,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
             try:
                 com.run(songs, playlist and playlist.name)
             except Exception as err:
-                print_e("Couldn't run command %s: %s %s at:"
-                        % (com.name, type(err), err, ))
+                print_e(f"Couldn't run command {com.name}: {type(err)} {err} at:")
                 print_exc()
                 ErrorMessage(
                     self.plugin_window,

@@ -5,7 +5,6 @@
 
 import os
 from time import sleep
-from typing import List
 
 from quodlibet.order.reorder import OrderShuffle
 from senf import bytes2fsn
@@ -50,7 +49,7 @@ class TPlayQueue(TestCase):
         # Doesn't prove much but still
         assert not q._tid
 
-    def get_queue(self) -> List[str]:
+    def get_queue(self) -> list[str]:
         try:
             with open(QUEUE, "rb") as f:
                 return [bytes2fsn(line.strip(), "utf-8") for line in f.readlines()]
@@ -87,11 +86,11 @@ class TQueueExpander(TestCase):
         widget.pause()
 
     def test_random_at_startup(self):
-        self.failIf(isinstance(self.queue.model.order, OrderShuffle))
+        self.assertFalse(isinstance(self.queue.model.order, OrderShuffle))
         quodlibet.config.set("memory", "shufflequeue", True)
         self.queue = self.queue = QueueExpander(SongLibrary(), NullPlayer())
         # See issue #2411
-        self.failUnless(isinstance(self.queue.model.order, OrderShuffle))
+        self.assertTrue(isinstance(self.queue.model.order, OrderShuffle))
 
     def tearDown(self):
         self.queue.destroy()

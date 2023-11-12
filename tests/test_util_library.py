@@ -18,11 +18,11 @@ from quodlibet.util.path import get_home_dir, unexpand
 from tests import TestCase
 
 
-STANDARD_PATH = fsnative(u"/home/user/Music")
-OTHER_PATH = fsnative(u"/opt/party")
-GVFS_PATH = fsnative(u"/run/user/12345/gvfs/smb-share"
+STANDARD_PATH = fsnative("/home/user/Music")
+OTHER_PATH = fsnative("/opt/party")
+GVFS_PATH = fsnative("/run/user/12345/gvfs/smb-share"
                       ":server=12.23.34.45,share=/foo/bar/baz/path")
-GVFS_PATH_ESCAPED = fsnative(u"/run/user/12345/gvfs/smb-share"
+GVFS_PATH_ESCAPED = fsnative("/run/user/12345/gvfs/smb-share"
                               "\\:server=12.23.34.45,share=/foo/bar/baz/path")
 
 
@@ -30,17 +30,17 @@ class Tlibrary_utils(TestCase):
 
     def test_basic(self):
         if is_windows():
-            res = split_scan_dirs(u":Z:\\foo:C:/windows:")
-            self.assertEquals(res, [u"Z:\\foo", u"C:/windows"])
+            res = split_scan_dirs(":Z:\\foo:C:/windows:")
+            self.assertEqual(res, ["Z:\\foo", "C:/windows"])
         else:
-            res = split_scan_dirs(":%s:%s:" % (STANDARD_PATH, OTHER_PATH))
-            self.assertEquals(res, [STANDARD_PATH, OTHER_PATH])
+            res = split_scan_dirs(f":{STANDARD_PATH}:{OTHER_PATH}:")
+            self.assertEqual(res, [STANDARD_PATH, OTHER_PATH])
 
     def test_colon_paths(self):
         if not is_windows():
             res = split_scan_dirs(
-                ":%s:%s" % (STANDARD_PATH, GVFS_PATH_ESCAPED))
-            self.assertEquals(res, [STANDARD_PATH, GVFS_PATH])
+                f":{STANDARD_PATH}:{GVFS_PATH_ESCAPED}")
+            self.assertEqual(res, [STANDARD_PATH, GVFS_PATH])
 
     def test_get_exclude_dirs(self):
         some_path = os.path.join(get_home_dir(), "foo")
@@ -78,9 +78,9 @@ class Tset_scan_dirs(TestCase):
     def test_set_scan_dirs_multiple(self):
         set_scan_dirs([OTHER_PATH, STANDARD_PATH])
         self.assertEqual(self.scan_dirs,
-                         "%s:%s" % (OTHER_PATH, STANDARD_PATH))
+                         f"{OTHER_PATH}:{STANDARD_PATH}")
 
     def test_set_scan_dirs_colons(self):
         set_scan_dirs([STANDARD_PATH, GVFS_PATH])
         expected = GVFS_PATH if is_windows() else GVFS_PATH_ESCAPED
-        self.assertEqual(self.scan_dirs, "%s:%s" % (STANDARD_PATH, expected))
+        self.assertEqual(self.scan_dirs, f"{STANDARD_PATH}:{expected}")

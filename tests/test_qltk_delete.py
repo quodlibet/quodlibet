@@ -12,7 +12,7 @@ from quodlibet import config
 from quodlibet.formats import AudioFile
 from quodlibet.qltk.delete import DeleteDialog, TrashDialog, TrashMenuItem
 
-SONG = AudioFile({"~filename": fsnative(u"/dev/null")})
+SONG = AudioFile({"~filename": fsnative("/dev/null")})
 SONG.sanitize()
 
 

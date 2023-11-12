@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
 
 from gi.repository import GObject
 
@@ -17,7 +16,7 @@ from quodlibet import config
 
 
 class Equalizer:
-    _eq_values: List[int] = []
+    _eq_values: list[int] = []
 
     @property
     def eq_bands(self):

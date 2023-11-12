@@ -16,7 +16,8 @@ from gi.repository import Gtk
 
 from senf import path2fsn
 
-from typing import NamedTuple, List, Callable, Any, MutableMapping, Set, Union
+from typing import NamedTuple, Any
+from collections.abc import Callable, MutableMapping
 
 from quodlibet.plugins import PluginConfig, BoolConfProp, FloatConfProp
 from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
@@ -112,7 +113,7 @@ class TrackId(NamedTuple):
     file_name: str
 
     @classmethod
-    def of_song(cls, s: Union[SongWrapper, AudioFile]):
+    def of_song(cls, s: SongWrapper | AudioFile):
         return TrackId(s("artist"), s("title"), s("~#disc", 1), s("~#discs", 1),
                        s("~#track", 1), s("~#tracks", 1), s("~basename"))
 
@@ -446,7 +447,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         self._error_msg(_("The index was corrupt."))
 
-    def import_data(self, export_album_id: AlbumId, songs: List[SongWrapper]):
+    def import_data(self, export_album_id: AlbumId, songs: list[SongWrapper]):
         songs = [s for s in songs if is_writable(s)]
         if not songs:
             return
@@ -467,8 +468,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             else:
                 move_export_to_used(export_path)
 
-    def import_data_and_get_changed(self, songs: List[SongWrapper],
-                                    source_path: Path) -> List[SongWrapper]:
+    def import_data_and_get_changed(self, songs: list[SongWrapper],
+                                    source_path: Path) -> list[SongWrapper]:
         """:return: List of changed songs"""
 
         exported = self._try_read_source_json(source_path)
@@ -653,7 +654,7 @@ def track_data_collector_for(query: str) -> TrackDataCollector:
     return func
 
 
-def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollector:
+def excluding_track_data_collector(excluded_keys: set[str]) -> TrackDataCollector:
     include_playlist = PLAYLISTS_KEY not in excluded_keys
     include_file_stem = FILE_STEM_KEY not in excluded_keys
 
@@ -668,7 +669,7 @@ def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollecto
     return func
 
 
-def including_track_data_collector(keys: List[str]) -> TrackDataCollector:
+def including_track_data_collector(keys: list[str]) -> TrackDataCollector:
     include_playlist = was_removed(keys, PLAYLISTS_KEY)
     include_file_stem = was_removed(keys, FILE_STEM_KEY)
 

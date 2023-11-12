@@ -39,63 +39,63 @@ class TInformation(TestCase):
         Information(self.library, []).destroy()
 
     def test_one(self):
-        f = AF({"~filename": fsnative(u"/dev/null")})
+        f = AF({"~filename": fsnative("/dev/null")})
         self.inf = Information(self.library, [f])
         self.assert_child_is(OneSong)
 
     def test_two(self):
-        f = AF({"~filename": fsnative(u"/dev/null")})
-        f2 = AF({"~filename": fsnative(u"/dev/null2")})
+        f = AF({"~filename": fsnative("/dev/null")})
+        f2 = AF({"~filename": fsnative("/dev/null2")})
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(ManySongs)
 
     def test_album(self):
-        f = AF({"~filename": fsnative(u"/dev/null"), "album": "woo"})
-        f2 = AF({"~filename": fsnative(u"/dev/null2"), "album": "woo"})
+        f = AF({"~filename": fsnative("/dev/null"), "album": "woo"})
+        f2 = AF({"~filename": fsnative("/dev/null2"), "album": "woo"})
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(OneAlbum)
 
     def test_album_special_chars(self):
-        f = AF({"~filename": fsnative(u"/dev/null"), "album": "woo & hoo"})
-        f2 = AF({"~filename": fsnative(u"/dev/null2"), "album": "woo & hoo"})
+        f = AF({"~filename": fsnative("/dev/null"), "album": "woo & hoo"})
+        f2 = AF({"~filename": fsnative("/dev/null2"), "album": "woo & hoo"})
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(OneAlbum)
 
     def test_artist(self):
-        f = AF({"~filename": fsnative(u"/dev/null"), "artist": "woo"})
-        f2 = AF({"~filename": fsnative(u"/dev/null2"), "artist": "woo"})
+        f = AF({"~filename": fsnative("/dev/null"), "artist": "woo"})
+        f2 = AF({"~filename": fsnative("/dev/null2"), "artist": "woo"})
         self.inf = Information(self.library, [f, f2])
         self.assert_child_is(OneArtist)
 
     def test_performer_roles(self):
-        f = AF({"~filename": fsnative(u"/dev/null"), "performer:piano": "woo"})
+        f = AF({"~filename": fsnative("/dev/null"), "performer:piano": "woo"})
         self.inf = Information(self.library, [f])
         self.assert_child_is(OneSong)
 
     def test_remove_song(self):
-        f = AF({"~filename": fsnative(u"/dev/null"), "artist": "woo"})
-        f2 = AF({"~filename": fsnative(u"/dev/null2"), "artist": "woo"})
+        f = AF({"~filename": fsnative("/dev/null"), "artist": "woo"})
+        f2 = AF({"~filename": fsnative("/dev/null2"), "artist": "woo"})
         self.library.add([f, f2])
         self.inf = Information(self.library, [f, f2])
         self.library.remove([f])
 
     def assert_child_is(self, cls):
-        self.failUnless(isinstance(self.inf.get_child(), cls))
+        self.assertTrue(isinstance(self.inf.get_child(), cls))
 
 
 class TUtils(TestCase):
     def test_sort_albums(self):
         # Make sure we have more than one album, one having a null date
-        f = AF({"~filename": fsnative(u"/1"), "album": "one"})
-        f2 = AF({"~filename": fsnative(u"/2"), "album": "one"})
-        f3 = AF({"~filename": fsnative(u"/3"), "album": "two", "date": "2009"})
-        f4 = AF({"~filename": fsnative(u"/4")})
+        f = AF({"~filename": fsnative("/1"), "album": "one"})
+        f2 = AF({"~filename": fsnative("/2"), "album": "one"})
+        f3 = AF({"~filename": fsnative("/3"), "album": "two", "date": "2009"})
+        f4 = AF({"~filename": fsnative("/4")})
         albums, count = _sort_albums([f, f2, f3, f4])
-        self.failUnlessEqual(count, 1)
-        self.failUnlessEqual(len(albums), 2)
+        self.assertEqual(count, 1)
+        self.assertEqual(len(albums), 2)
 
 
 class TTitleLabel(TestCase):
     def test_foo(self):
         label = TitleLabel("foo & bar")
-        self.failUnlessEqual(label.get_text(), "foo & bar")
+        self.assertEqual(label.get_text(), "foo & bar")

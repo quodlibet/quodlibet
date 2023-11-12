@@ -11,7 +11,6 @@ import glob
 import os.path
 import re
 import sre_constants
-from typing import Text
 
 from senf import fsn2text
 
@@ -29,7 +28,7 @@ def prefer_embedded():
     return config.getboolean("albumart", "prefer_embedded", False)
 
 
-def word_regex(s: Text) -> re.Pattern:
+def word_regex(s: str) -> re.Pattern:
     return re.compile(r"(\b|_)" + s + r"(\b|_)")
 
 
@@ -126,7 +125,7 @@ class FilesystemCover(CoverSourcePlugin):
             entries = []
             try:
                 entries = os.listdir(base)
-            except EnvironmentError:
+            except OSError:
                 print_w("Can't list album art directory %s" % base)
 
             fns = []
@@ -139,7 +138,7 @@ class FilesystemCover(CoverSourcePlugin):
                     sub_entries = []
                     try:
                         sub_entries = os.listdir(subdir)
-                    except EnvironmentError:
+                    except OSError:
                         pass
                     for sub_entry in sub_entries:
                         lsub_entry = sub_entry.lower()
@@ -201,7 +200,7 @@ class FilesystemCover(CoverSourcePlugin):
                 continue
             try:
                 return open(path, "rb")
-            except IOError:
+            except OSError:
                 print_w('Failed reading album art "%s"' % path)
 
         return None

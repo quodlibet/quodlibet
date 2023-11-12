@@ -45,7 +45,7 @@ class AlbumSong(AudioFile):
 
     def __init__(self, num, album=None):
         super().__init__()
-        self["~filename"] = fsnative(u"file_%d.mp3" % (num + 1))
+        self["~filename"] = fsnative("file_%d.mp3" % (num + 1))
         self["title"] = "Song %d" % (num + 1)
         self["artist"] = "Fakeman"
         if album is None:
@@ -74,7 +74,7 @@ class FakeSongFile(FakeSong):
         if self._exists:
             self._valid = True
         else:
-            raise IOError("doesn't exist")
+            raise OSError("doesn't exist")
 
     def mounted(self):
         return self._mounted
@@ -110,21 +110,21 @@ class TLibrary(TestCase):
 
     def test_add(self):
         self.library.add(self.Frange(12))
-        self.failUnlessEqual(self.added, self.Frange(12))
+        self.assertEqual(self.added, self.Frange(12))
         del self.added[:]
         self.library.add(self.Frange(12, 24))
-        self.failUnlessEqual(self.added, self.Frange(12, 24))
+        self.assertEqual(self.added, self.Frange(12, 24))
 
     def test_remove(self):
         self.library.add(self.Frange(10))
         self.assertTrue(self.library.remove(self.Frange(3, 6)))
-        self.failUnlessEqual(self.removed, self.Frange(3, 6))
+        self.assertEqual(self.removed, self.Frange(3, 6))
 
         # Neither the objects nor their keys should be present.
-        self.failIf(self.Fake(3) in self.library)
-        self.failUnless(self.Fake(6) in self.library)
-        self.failIf(3 in self.library)
-        self.failUnless(6 in self.library)
+        self.assertFalse(self.Fake(3) in self.library)
+        self.assertTrue(self.Fake(6) in self.library)
+        self.assertFalse(3 in self.library)
+        self.assertTrue(6 in self.library)
 
     def test_remove_when_not_present(self):
         self.assertFalse(self.library.remove([self.Fake(12)]))
@@ -133,13 +133,13 @@ class TLibrary(TestCase):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(5))
         run_gtk_loop()
-        self.failUnlessEqual(self.changed, self.Frange(5))
+        self.assertEqual(self.changed, self.Frange(5))
 
     def test_changed_not_present(self):
         self.library.add(self.Frange(10))
         self.library.changed(self.Frange(2, 20, 3))
         run_gtk_loop()
-        self.failUnlessEqual(set(self.changed), {2, 5, 8})
+        self.assertEqual(set(self.changed), {2, 5, 8})
 
     def test_changed_none_present(self):
         self.library.changed(self.Frange(5))
@@ -147,30 +147,30 @@ class TLibrary(TestCase):
 
     def test___iter__(self):
         self.library.add(self.Frange(10))
-        self.failUnlessEqual(sorted(self.library), self.Frange(10))
+        self.assertEqual(sorted(self.library), self.Frange(10))
 
     def test___iter___empty(self):
-        self.failIf(list(self.library))
+        self.assertFalse(list(self.library))
 
     def test___len__(self):
-        self.failUnlessEqual(len(self.library), 0)
+        self.assertEqual(len(self.library), 0)
         self.library.add(self.Frange(10))
-        self.failUnlessEqual(len(self.library), 10)
+        self.assertEqual(len(self.library), 10)
         self.library.remove(self.Frange(3))
-        self.failUnlessEqual(len(self.library), 7)
+        self.assertEqual(len(self.library), 7)
 
     def test___getitem__(self):
         self.library.add(self.Frange(10))
-        self.failUnlessEqual(self.library[5], Fake(5))
+        self.assertEqual(self.library[5], Fake(5))
         new = self.Fake(12)
         new.key = 100
         self.library.add([new])
-        self.failUnlessEqual(self.library[100], new)
-        self.failIf(12 in self.library)
+        self.assertEqual(self.library[100], new)
+        self.assertFalse(12 in self.library)
 
     def test___getitem___not_present(self):
         self.library.add(self.Frange(10))
-        self.failUnlessRaises(KeyError, self.library.__getitem__, 12)
+        self.assertRaises(KeyError, self.library.__getitem__, 12)
 
     def test___contains__(self):
         self.library.add(self.Frange(10))
@@ -181,21 +181,21 @@ class TLibrary(TestCase):
             # 0, 1, 2, 6, 9: all added by self.Frange
             # 100: key for new
             # new: is itself present
-            self.failUnless(value in self.library, "didn't find %s" % value)
+            self.assertTrue(value in self.library, "didn't find %s" % value)
 
         for value in [-1, 10, 12, 101]:
             # -1, 10, 101: boundary values
             # 12: equal but non-key-equal to new
-            self.failIf(value in self.library, "found %d" % value)
+            self.assertFalse(value in self.library, "found %d" % value)
 
     def test_get(self):
-        self.failUnless(self.library.get(12) is None)
-        self.failUnless(self.library.get(12, "foo") == "foo")
+        self.assertTrue(self.library.get(12) is None)
+        self.assertTrue(self.library.get(12, "foo") == "foo")
         new = self.Fake(12)
         new.key = 100
         self.library.add([new])
-        self.failUnless(self.library.get(12) is None)
-        self.failUnless(self.library.get(100) is new)
+        self.assertTrue(self.library.get(12) is None)
+        self.assertTrue(self.library.get(100) is new)
 
     def test_keys(self):
         items = []
@@ -203,7 +203,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(
+        self.assertEqual(
             sorted(self.library.keys()), list(range(100, 120)))
 
     def test_values(self):
@@ -212,7 +212,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.failUnlessEqual(sorted(self.library.values()), list(self.Frange(20)))
+        self.assertEqual(sorted(self.library.values()), list(self.Frange(20)))
 
     def test_items(self):
         items = []
@@ -221,15 +221,15 @@ class TLibrary(TestCase):
             items[-1].key = i + 100
         self.library.add(items)
         expected = list(zip(range(100, 120), range(20), strict=False))
-        self.failUnlessEqual(sorted(self.library.items()), expected)
+        self.assertEqual(sorted(self.library.items()), expected)
 
     def test_has_key(self):
-        self.failIf(self.library.has_key(10))
+        self.assertFalse(self.library.has_key(10))
         new = self.Fake(10)
         new.key = 20
         self.library.add([new])
-        self.failIf(self.library.has_key(10))
-        self.failUnless(self.library.has_key(20))
+        self.assertFalse(self.library.has_key(10))
+        self.assertTrue(self.library.has_key(20))
 
     def tearDown(self):
         self.library.destroy()

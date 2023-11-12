@@ -9,7 +9,8 @@
 import os
 import re
 from pathlib import Path
-from typing import List, Iterable, Pattern
+from re import Pattern
+from collections.abc import Iterable
 
 import pytest
 from gi.repository import Gtk
@@ -106,7 +107,7 @@ class TestStockIcons:
                           "[\"\'](gtk-[\\-a-z]*)")]
 
     @fixture
-    def white(self) -> List[str]:
+    def white(self) -> list[str]:
         # gtk setting keys start like stock icons, so white list them
         white = [x.replace("_", "-") for x in
                  dir(Gtk.Settings.get_default().props)

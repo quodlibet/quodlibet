@@ -89,7 +89,7 @@ class SubmitErrorDialog(Gtk.MessageDialog):
             "(<a href='https://www.sentry.io'>www.sentry.io</a>). You can "
             "review the data before sending it below.")
 
-        secondary_text += u"\n\n"
+        secondary_text += "\n\n"
 
         secondary_text += _(
             "(optional) Please provide a short description of what happened "

@@ -17,7 +17,7 @@ class TExFalsoWindow(TestCase):
         self.ef = ExFalsoWindow(SongLibrary())
 
     def test_nothing(self):
-        self.failUnless(self.ef.get_child())
+        self.assertTrue(self.ef.get_child())
 
     def tearDown(self):
         self.ef.destroy()

@@ -85,7 +85,7 @@ def _get_win_favorites():
                 try:
                     target = windows.get_link_target(
                         os.path.join(links, entry))
-                except WindowsError:
+                except OSError:
                     pass
                 else:
                     if target:
@@ -174,7 +174,7 @@ def get_gtk_bookmarks():
     try:
         with open(path, "rb") as f:
             folders = parse_gtk_bookmarks(f.read())
-    except (EnvironmentError, ValueError):
+    except (OSError, ValueError):
         pass
 
     return folders
@@ -226,7 +226,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             niter = model.append(None, [path])
             if path is not None:
                 assert isinstance(path, fsnative)
-                model.append(niter, [fsnative(u"dummy")])
+                model.append(niter, [fsnative("dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
@@ -251,7 +251,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
     def _create_menu(self):
         menu = Gtk.Menu()
-        m = qltk.MenuItem(_(u"_New Folder…"), Icons.DOCUMENT_NEW)
+        m = qltk.MenuItem(_("_New Folder…"), Icons.DOCUMENT_NEW)
         m.connect("activate", self.__mkdir)
         menu.append(m)
         m = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
@@ -286,7 +286,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         # Find the top level row which has the largest common
         # path with the path we want to go to
         roots = {p: i for (i, p) in model.iterrows(None)}
-        head, tail = path_to_go, fsnative(u"")
+        head, tail = path_to_go, fsnative("")
         to_find = []
         while head and head not in roots:
             new_head, tail = os.path.split(head)
@@ -379,7 +379,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         try:
             os.makedirs(fullpath)
-        except EnvironmentError as err:
+        except OSError as err:
             error = f"{util.bold(err.filename)}: {util.escape(err.strerror)}"
             qltk.ErrorMessage(
                 None, _("Unable to create folder"), error, escape_desc=False).run()
@@ -396,7 +396,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         for directory in directories:
             try:
                 os.rmdir(directory)
-            except EnvironmentError as err:
+            except OSError as err:
                 error = f"{util.bold(err.filename)}: {err.strerror}"
                 qltk.ErrorMessage(
                     None, _("Unable to delete folder"), error, escape_desc=False).run()

@@ -34,7 +34,7 @@ class Repeat(Order):
         return self.wrapped.reset(playlist)
 
     def __str__(self):
-        return "<%s ∘ %s>" % (self.display_name, self.wrapped.display_name)
+        return f"<{self.display_name} ∘ {self.wrapped.display_name}>"
 
 
 class RepeatSongForever(Repeat):

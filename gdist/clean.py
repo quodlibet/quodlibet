@@ -78,7 +78,7 @@ class Clean(distutils_clean):
             for filename in filter(should_remove, files):
                 try:
                     os.unlink(os.path.join(pathname, filename))
-                except EnvironmentError as err:
+                except OSError as err:
                     print(str(err))
 
         # setup.py byproducts
@@ -94,7 +94,7 @@ class Clean(distutils_clean):
 
         try:
             os.remove("MANIFEST")
-        except EnvironmentError:
+        except OSError:
             pass
 
 __all__ = ["Clean"]

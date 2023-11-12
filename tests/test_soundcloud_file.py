@@ -44,26 +44,26 @@ class TSoundcloudFile(TestCase):
     def test_favoriting(self):
         client = self.client
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=False)
-        self.failIf(song.has_rating)
+        self.assertFalse(song.has_rating)
         song["~#rating"] = 1.0
-        self.failUnless(song.has_rating)
-        self.failUnlessEqual(song("~#rating"), 1.0)
+        self.assertTrue(song.has_rating)
+        self.assertEqual(song("~#rating"), 1.0)
         song.write()
-        self.failUnless(song.favorite)
-        self.failUnlessEqual(client.favoritings[TRACK_ID], 1)
-        self.failUnlessEqual(client.unfavoritings[TRACK_ID], 0)
+        self.assertTrue(song.favorite)
+        self.assertEqual(client.favoritings[TRACK_ID], 1)
+        self.assertEqual(client.unfavoritings[TRACK_ID], 0)
         song.write()
-        self.failUnlessEqual(client.favoritings[TRACK_ID], 1)
+        self.assertEqual(client.favoritings[TRACK_ID], 1)
 
     def test_unfavoriting(self):
         client = self.client
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=True)
-        self.failUnless(song.has_rating)
-        self.failUnlessEqual(song("~#rating"), 1.0)
+        self.assertTrue(song.has_rating)
+        self.assertEqual(song("~#rating"), 1.0)
         song["~#rating"] = 0.2
         song.write()
-        self.failIf(song.favorite)
-        self.failUnlessEqual(client.unfavoritings[TRACK_ID], 1)
-        self.failUnlessEqual(client.favoritings[TRACK_ID], 0)
+        self.assertFalse(song.favorite)
+        self.assertEqual(client.unfavoritings[TRACK_ID], 1)
+        self.assertEqual(client.favoritings[TRACK_ID], 0)
         song.write()
-        self.failUnlessEqual(client.unfavoritings[TRACK_ID], 1)
+        self.assertEqual(client.unfavoritings[TRACK_ID], 1)

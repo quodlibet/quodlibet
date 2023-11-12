@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Iterable
+from collections.abc import Iterable
 
 from gi.repository import Gtk
 from gi.repository import Pango
@@ -199,7 +199,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
             l.set_alignment(0.0, 0.5)
-            if isinstance(val, (int, bool)):
+            if isinstance(val, int | bool):
                 align = Align(entry, halign=Gtk.Align.START)
                 t.attach(align, 1, 2, i, i + 1)
             else:

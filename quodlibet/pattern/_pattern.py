@@ -102,7 +102,7 @@ class ConditionNode:
 
     def __repr__(self):
         t, i, e = self.expr, repr(self.ifcase), repr(self.elsecase)
-        return 'Condition(expression: "%s", if: %s, else: %s)' % (t, i, e)
+        return f'Condition(expression: "{t}", if: {i}, else: {e})'
 
 
 class DisjunctionNode:
@@ -223,16 +223,16 @@ class PatternFormatter:
 
         def __call__(self, key, *args):
             if key in FILESYSTEM_TAGS:
-                return fsnative(u"_")
+                return fsnative("_")
             if key[:2] == "~#" and "~" not in key[2:]:
                 return 0
-            return u"_"
+            return "_"
 
         def comma(self, key, *args):
-            return u"_"
+            return "_"
 
         def list_separate(self, key):
-            return [u""]
+            return [""]
 
     class SongProxy:
         def __init__(self, realsong, formatter):
@@ -247,7 +247,7 @@ class PatternFormatter:
 
         def comma(self, key):
             value = self.__song.comma(key)
-            if isinstance(value, (int, float)):
+            if isinstance(value, int | float):
                 value = decode_value(key, value)
             if self.__formatter:
                 return self.__formatter(key, value)
@@ -269,7 +269,7 @@ class PatternFormatter:
             return values
 
     def format(self, song):
-        value = u"".join(self.__func(self.SongProxy(song, self._format)))
+        value = "".join(self.__func(self.SongProxy(song, self._format)))
         if self._post:
             return self._post(value, song)
         return value
@@ -279,7 +279,7 @@ class PatternFormatter:
         combinations always returns pairs of display and sort values. The
         returned set will never be empty (e.g. for an empty pattern).
         """
-        vals = [(u"", u"")]
+        vals = [("", "")]
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
@@ -324,7 +324,7 @@ class PatternCompiler:
         if tag not in scope:
             t_var = "v%d" % len(scope)
             scope[tag] = t_var
-            text.append("%s = x(%r)" % (t_var, tag))
+            text.append(f"{t_var} = x({tag!r})")
         else:
             t_var = scope[tag]
         return t_var
@@ -334,7 +334,7 @@ class PatternCompiler:
             if query in queries:
                 q_var = queries[query][0]
                 r_var = "r%d" % len(qscope)
-                text.append("%s = %s(s)" % (r_var, q_var))
+                text.append(f"{r_var} = {q_var}(s)")
                 qscope[query] = r_var
             else:
                 q = Query.StrictQueryMatcher(query)
@@ -342,7 +342,7 @@ class PatternCompiler:
                     q_var = "q%d" % len(queries)
                     r_var = "r%d" % len(qscope)
                     queries[query] = (q_var, q.search)
-                    text.append("%s = %s(s)" % (r_var, q_var))
+                    text.append(f"{r_var} = {q_var}(s)")
                     qscope[query] = r_var
                 else:
                     r_var = self.__get_value(text, scope, query)
@@ -445,7 +445,7 @@ class _FileFromPattern(PatternFormatter):
     def _format(self, key, value):
         value = _number(key, value)
         value = value.replace(os.sep, "_")
-        value = value.replace(u"\uff0f", "_")
+        value = value.replace("\uff0f", "_")
         value = value.strip()
         return value
 
@@ -520,7 +520,7 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
             orig, pre, body = match.group(0, 1, 2)
             if len(pre) % 2:
                 return orig[1:]
-            return r"%s<%s>" % (pre, body)
+            return fr"{pre}<{body}>"
 
         string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
         string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)

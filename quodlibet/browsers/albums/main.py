@@ -10,10 +10,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import os
-from typing import Optional
 
 import cairo
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
@@ -70,7 +68,7 @@ class AlbumTagCompletion(EntryWordCompletion):
             self.__model.append(row=["#(" + tag])
         for tag in ["rating", "playcount", "skipcount"]:
             for suffix in ["avg", "max", "min", "sum"]:
-                self.__model.append(row=["#(%s:%s" % (tag, suffix)])
+                self.__model.append(row=[f"#({tag}:{suffix}"])
 
 
 def cmpa(a, b):
@@ -232,7 +230,7 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(label=_(u"Sort _by…"), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint("browsers", "album_sort", 1)
@@ -444,7 +442,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     @classmethod
     def init(cls, library):
-        super(AlbumList, cls).load_pattern()
+        super().load_pattern()
 
     def finalize(self, restored):
         if not restored:
@@ -472,14 +470,14 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         cls.__library = library
 
     @util.cached_property
-    def _no_cover(self) -> Optional[cairo.Surface]:
+    def _no_cover(self) -> cairo.Surface | None:
         """Returns a cairo surface representing a missing cover"""
 
         cover_size = get_cover_size()
         scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         if not pb:
-            raise IOError("Can't find / scale missing art image")
+            raise OSError("Can't find / scale missing art image")
         return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
@@ -883,7 +881,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         # All selected albums
         albums = model.get_albums(paths)
 
-        confval = "\n".join((a.str_key for a in albums))
+        confval = "\n".join(a.str_key for a in albums)
         # ConfigParser strips a trailing \n - so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]

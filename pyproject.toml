@@ -56,7 +56,7 @@ ruff = { version = "^0.1.1", platform = "linux" }
 
 [tool.ruff]
 target-version = "py310"
-select = ["E", "F", "B", "Q", "C", "N"]
+select = ["E", "F", "B", "Q", "C", "N", "UP"]
 ignore = [
     "E741", # Allow single-letter variables
     "E402", # Allow imports not at top

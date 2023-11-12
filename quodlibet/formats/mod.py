@@ -45,7 +45,7 @@ class ModFile(AudioFile):
             data = open(filename, "rb").read()
             f = _modplug.ModPlug_Load(data, len(data))
             if not f:
-                raise IOError("%r not a valid MOD file" % filename)
+                raise OSError("%r not a valid MOD file" % filename)
             self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
             title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
             try:

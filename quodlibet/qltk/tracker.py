@@ -9,7 +9,7 @@
 
 import os
 import time
-from typing import Collection
+from collections.abc import Collection
 
 from gi.repository import GObject, GLib
 
@@ -193,7 +193,7 @@ class FSInterface:
             self._library.disconnect(id_)
         try:
             os.unlink(self.path)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def __started(self, player, song):
@@ -202,13 +202,13 @@ class FSInterface:
             try:
                 with open(self.path, "wb") as f:
                     f.write(song.to_dump())
-            except EnvironmentError:
+            except OSError:
                 pass
 
     def __ended(self, player, song, stopped):
         try:
             os.unlink(self.path)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def __changed(self, _lib: Library, songs: Collection[AudioFile]):

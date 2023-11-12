@@ -48,8 +48,8 @@ class TMP4File(TestCase):
         tag["----:com.apple.iTunes:MusicBrainz Release Track Id"] = [b"foo"]
         tag.save()
         song = MP4File(self.f)
-        self.assertEqual(song("musicbrainz_releasetrackid"), u"foo")
-        song["musicbrainz_releasetrackid"] = u"bla"
+        self.assertEqual(song("musicbrainz_releasetrackid"), "foo")
+        song["musicbrainz_releasetrackid"] = "bla"
         song.write()
         tag = mutagen.mp4.MP4(self.f)
         self.assertEqual(

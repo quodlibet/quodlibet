@@ -27,7 +27,7 @@ class _TagsCombo:
 
         model = self.get_model()
         for t in can_change:
-            model.append(row=[t, "%s (%s)" % (tag(t), t)])
+            model.append(row=[t, f"{tag(t)} ({t})"])
         self.set_model(model)
 
         if len(model) == 0:

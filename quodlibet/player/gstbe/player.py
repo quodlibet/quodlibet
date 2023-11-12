@@ -606,7 +606,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.__tag(message.parse_tag(), librarian)
         elif message.type == Gst.MessageType.ERROR:
             gerror, debug_info = message.parse_error()
-            message = u""
+            message = ""
             if gerror:
                 message = gerror.message.rstrip(".")
             details = None
@@ -663,8 +663,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         self.stop()
 
         format_desc = get_description(message)
-        title = _(u"No GStreamer element found to handle media format")
-        error_details = _(u"Media format: %(format-description)s") % {
+        title = _("No GStreamer element found to handle media format")
+        error_details = _("Media format: %(format-description)s") % {
             "format-description": format_desc}
 
         def install_done_cb(plugins_return, *args):

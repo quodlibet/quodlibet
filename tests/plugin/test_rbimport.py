@@ -21,7 +21,7 @@ def get_example_xml(song_path, rating, lastplayed):
     song_uri = fsn2uri(song_path)
     mount_uri = fsn2uri(find_mount_point(song_path))
 
-    return (u"""\
+    return ("""\
 <?xml version="1.0" standalone="yes"?>
 <rhythmdb version="1.9">
   <entry type="song">

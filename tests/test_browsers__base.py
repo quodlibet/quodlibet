@@ -27,17 +27,17 @@ SONGS = [
     AudioFile({
         "title": "one",
         "artist": "piman",
-        "~filename": dummy_path(u"/dev/null"),
+        "~filename": dummy_path("/dev/null"),
     }),
     AudioFile({
         "title": "two",
         "artist": "mu",
-        "~filename": dummy_path(u"/dev/zero"),
+        "~filename": dummy_path("/dev/zero"),
     }),
     AudioFile({
         "title": "three",
         "artist": "boris",
-        "~filename": dummy_path(u"/bin/ls"),
+        "~filename": dummy_path("/bin/ls"),
     })
 ]
 SONGS.sort()
@@ -52,12 +52,12 @@ class TBrowser(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.failIf(self.browser.can_filter(key))
+            self.assertFalse(self.browser.can_filter(key))
 
     def test_defaults(self):
-        self.failUnless(self.browser.background)
-        self.failIf(self.browser.can_reorder)
-        self.failIf(self.browser.headers)
+        self.assertTrue(self.browser.background)
+        self.assertFalse(self.browser.can_reorder)
+        self.assertFalse(self.browser.headers)
 
     def test_status_bar(self):
         self.assertEqual(self.browser.status_text(1, "21s"),
@@ -116,8 +116,8 @@ class TBrowserMixin:
         self.assertFalse(to_pack.get_visible())
 
     def test_name(self):
-        self.failIf("_" in self.b.name)
-        self.failUnless("_" in self.b.accelerated_name)
+        self.assertFalse("_" in self.b.name)
+        self.assertTrue("_" in self.b.accelerated_name)
 
     def test_init(self):
         self.Kind.init(self.library)
@@ -140,15 +140,15 @@ class TBrowserMixin:
             self.b.activate()
             self.b.status_text(1000)
             self.b.status_text(1)
-            song = AudioFile({"~filename": dummy_path(u"/fake")})
+            song = AudioFile({"~filename": dummy_path("/fake")})
             song.sanitize()
             self.b.scroll(song)
 
     def test_filters_caps(self):
         with realized(self.b):
-            self.failUnless(isinstance(self.b.can_filter_tag("foo"), bool))
-            self.failUnless(isinstance(self.b.can_filter_text(), bool))
-            self.failUnless(isinstance(self.b.can_filter("foo"), bool))
+            self.assertTrue(isinstance(self.b.can_filter_tag("foo"), bool))
+            self.assertTrue(isinstance(self.b.can_filter_text(), bool))
+            self.assertTrue(isinstance(self.b.can_filter("foo"), bool))
 
     def test_filter_text(self):
         with realized(self.b):
@@ -163,11 +163,11 @@ class TBrowserMixin:
     def test_get_filter_text(self):
         with realized(self.b):
             if self.b.can_filter_text():
-                self.assertEqual(self.b.get_filter_text(), u"")
+                self.assertEqual(self.b.get_filter_text(), "")
                 self.assertTrue(
                     isinstance(self.b.get_filter_text(), str))
-                self.b.filter_text(u"foo")
-                self.assertEqual(self.b.get_filter_text(), u"foo")
+                self.b.filter_text("foo")
+                self.assertEqual(self.b.get_filter_text(), "foo")
                 self.assertTrue(
                     isinstance(self.b.get_filter_text(), str))
 
@@ -215,7 +215,7 @@ class DummyDPM(DisplayPatternMixin):
 
 
 class TDisplayPatternMixin(TestCase):
-    TEST_PATTERN = u"<~name>: <artist|<artist>|?> [b]<~length>[/b]"
+    TEST_PATTERN = "<~name>: <artist|<artist>|?> [b]<~length>[/b]"
 
     def setUp(self):
         with open(DummyDPM._PATTERN_FN, "wb") as f:
@@ -228,13 +228,13 @@ class TDisplayPatternMixin(TestCase):
     def test_loading_pattern(self):
         dpm = DummyDPM()
         dpm.load_pattern()
-        self.failUnlessEqual(dpm.display_pattern_text, self.TEST_PATTERN)
+        self.assertEqual(dpm.display_pattern_text, self.TEST_PATTERN)
 
     def test_updating_pattern(self):
         dpm = DummyDPM()
         dpm.load_pattern()
         dpm.update_pattern("static")
-        self.failUnlessEqual(
+        self.assertEqual(
             dpm.display_pattern % FakeDisplayItem(),
             "static")
 
@@ -242,7 +242,7 @@ class TDisplayPatternMixin(TestCase):
         dpm = DummyDPM()
         dpm.load_pattern()
         item = FakeDisplayItem({"~length": "2:34"})
-        self.failUnlessEqual(dpm.display_pattern % item,
+        self.assertEqual(dpm.display_pattern % item,
                              "Name: Artist <b>2:34</b>")
 
 

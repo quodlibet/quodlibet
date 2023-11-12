@@ -304,7 +304,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             selected.append(pane.get_restore_string())
 
-        to_save = u"\n".join(selected)
+        to_save = "\n".join(selected)
         config.settext("browsers", "pane_selection", to_save)
 
     def restore(self):
@@ -319,11 +319,11 @@ class PanedBrowser(Browser, util.InstanceTracker):
         if not selected:
             return
 
-        for pane, string in zip(self._panes, selected.split(u"\n"), strict=False):
+        for pane, string in zip(self._panes, selected.split("\n"), strict=False):
             pane.parse_restore_string(string)
 
     def finalize(self, restored):
-        config.settext("browsers", "query_text", u"")
+        config.settext("browsers", "query_text", "")
 
     def fill(self, songs):
         GLib.idle_add(self.songs_selected, list(songs))

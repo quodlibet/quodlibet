@@ -129,7 +129,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
                         # avoid lines starting with '#' which don't work with M3U
                         path = os.path.join(os.curdir, path)
                 f["path"] = path
-                f["title"] = "%s - %s" % (
+                f["title"] = "{} - {}".format(
                     song("~people").replace("\n", ", "),
                     song("~title~version"),
                 )
@@ -149,7 +149,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     def __m3u_export(self, file_path, files):
         try:
             fhandler = open(file_path, "wb")
-        except IOError:
+        except OSError:
             self.__file_error(file_path)
         else:
             text = "#EXTM3U\n"
@@ -164,7 +164,7 @@ class PlaylistExport(PlaylistPlugin, SongsMenuPlugin):
     def __pls_export(self, file_path, files):
         try:
             fhandler = open(file_path, "wb")
-        except IOError:
+        except OSError:
             self.__file_error(file_path)
         else:
             text = "[playlist]\n"

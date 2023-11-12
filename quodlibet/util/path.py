@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-import io
 import re
 import stat
 import sys
@@ -190,7 +189,7 @@ def unexpand(filename):
         fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
+    sub = (os.name == "nt" and fsnative("%USERPROFILE%")) or fsnative("~")
     home = os.path.normcase(get_home_dir()).rstrip(os.path.sep)
     norm = os.path.normcase(filename)
     if norm == home:
@@ -310,7 +309,7 @@ def xdg_get_user_dirs():
     try:
         with open(os.path.join(config_home, "user-dirs.dirs"), "rb") as h:
             return parse_xdg_user_dirs(h.read())
-    except EnvironmentError:
+    except OSError:
         return {}
 
 
@@ -319,11 +318,11 @@ def get_temp_cover_file(data):
 
     try:
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = NamedTemporaryFile(prefix=fsnative(u"tmp"))
+        fn = NamedTemporaryFile(prefix=fsnative("tmp"))
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
-    except EnvironmentError:
+    except OSError:
         return
     else:
         return fn
@@ -392,7 +391,7 @@ if sys.platform == "darwin":
 
     def _osx_path_decode_error_handler(error):
         bytes_ = bytearray(error.object[error.start:error.end])
-        return u"".join("%%%X".__mod__(b) for b in bytes_), error.end
+        return "".join("%%%X".__mod__(b) for b in bytes_), error.end
 
     codecs.register_error(
         "quodlibet-osx-path-decode", _osx_path_decode_error_handler)
@@ -427,7 +426,7 @@ def limit_path(path, ellipsis=True):
 
         if len(p) > limit:
             if ellipsis:
-                p = p[:limit - 2] + fsnative(u"..")
+                p = p[:limit - 2] + fsnative("..")
             else:
                 p = p[:limit]
         parts[i] = p
@@ -532,7 +531,7 @@ class RootPathFile:
             return valid
         else:
             try:
-                with io.open(self.pathfile, "w", encoding="utf-8") as f:
+                with open(self.pathfile, "w", encoding="utf-8") as f:
                     f.close()  # do nothing
             except OSError:
                 valid = False

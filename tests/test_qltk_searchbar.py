@@ -13,17 +13,17 @@ class TSearchBarBox(TestCase):
 
     def test_get_query(self):
         sbb = SearchBarBox()
-        self.failIf(sbb.get_query(None))
+        self.assertFalse(sbb.get_query(None))
         a_star = ["artist", "date", "custom"]
         sbb.set_text("foobar")
         expected = Query("foobar", star=a_star)
-        self.failUnlessEqual(sbb.get_query(a_star), expected)
+        self.assertEqual(sbb.get_query(a_star), expected)
 
     def test_get_query_override_star(self):
         sbb = SearchBarBox(star=["initial"])
         text = "foobar"
         sbb.set_text(text)
-        self.failUnlessEqual(sbb.get_query(), Query(text, star=["initial"]))
+        self.assertEqual(sbb.get_query(), Query(text, star=["initial"]))
         another_star = ["another", "star"]
-        self.failUnlessEqual(sbb.get_query(star=another_star),
+        self.assertEqual(sbb.get_query(star=another_star),
                              Query(text, star=another_star))

@@ -7,7 +7,8 @@
 from dataclasses import dataclass
 
 from gi.repository import Gtk, Pango
-from typing import List, Optional, Generic, TypeVar, Callable
+from typing import Generic, TypeVar
+from collections.abc import Callable
 
 from quodlibet.qltk.models import ObjectStore
 
@@ -42,11 +43,11 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
     pressed cancel.
     """
 
-    def __init__(self, a_items: List[T], b_items: List[T], b_order: List[Optional[int]],
-                 columns: List[ColumnSpec[T]], title: str, ok_button_text: str,
+    def __init__(self, a_items: list[T], b_items: list[T], b_order: list[int | None],
+                 columns: list[ColumnSpec[T]], title: str, ok_button_text: str,
                  ok_button_icon: str = Icons.DOCUMENT_SAVE,
                  description: str = MATCH_DESC, parent=app.window,
-                 id_for_window_tracking: Optional[str] = None):
+                 id_for_window_tracking: str | None = None):
         super().__init__(title=title, transient_for=parent, modal=True,
                          destroy_with_parent=True)
 
@@ -109,7 +110,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
         self.order_entry.connect("changed", changed_order_entry)
 
-    def run(self, destroy=True) -> List[Optional[int]]:
+    def run(self, destroy=True) -> list[int | None]:
         self.show_all()
         resp = super().run()
         if destroy:
@@ -158,10 +159,10 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
 
 
 class MatchListsTreeView(HintedTreeView, Generic[T]):
-    _b_order: List[Optional[int]]
+    _b_order: list[int | None]
 
-    def __init__(self, a_items: List[T], b_items: List[T],
-                 columns: List[ColumnSpec[T]]):
+    def __init__(self, a_items: list[T], b_items: list[T],
+                 columns: list[ColumnSpec[T]]):
         self.model = ObjectStore()
         self.model.append_many(a_items)
         self._b_items = b_items
@@ -225,7 +226,7 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
                 text = get_attr(self._b_items[it_idx])
         cell.set_property("text", text)
 
-    def update_b_items(self, b_items: List[T]):
+    def update_b_items(self, b_items: list[T]):
         """
         Updates the TreeView, handling results with a different number of b_items than
         there are a_items.
@@ -249,11 +250,11 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
             self.model.row_changed(row.path, row.iter)
 
     @property
-    def b_order(self) -> List[Optional[int]]:
+    def b_order(self) -> list[int | None]:
         return list(self._b_order)
 
     @b_order.setter
-    def b_order(self, order: List[Optional[int]]):
+    def b_order(self, order: list[int | None]):
         """
         Supports a partial order list. For example, if there are 5 elements in the
         b_items list, you could supply [4, 1, 2]. This will result in an ascending order

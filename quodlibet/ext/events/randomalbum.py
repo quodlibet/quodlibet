@@ -1,5 +1,5 @@
 # Copyright 2005-2009 Joe Wreschnig, Steven Robertson
-#           2012-2018 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import random
-from typing import Dict
 
 from gi.repository import Gtk, GLib
 
@@ -29,7 +28,7 @@ class RandomAlbum(EventPlugin):
                     "filtering by album.")
     PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
 
-    weights: Dict[str, float] = {}
+    weights: dict[str, float] = {}
     use_weights = False
     # Not a dict because we want to impose a particular order
     # Third item is to specify a non-default aggregation function
@@ -67,8 +66,7 @@ class RandomAlbum(EventPlugin):
             self.use_weights = check.get_active()
             for w in widgets:
                 w.set_sensitive(self.use_weights)
-            config.set("plugins", "randomalbum_use_weights",
-                    str(int(self.use_weights)))
+            config.set("plugins", "randomalbum_use_weights", str(int(self.use_weights)))
 
         vbox = Gtk.VBox(spacing=12)
         table = Gtk.Table(n_rows=len(self.keys) + 1, n_columns=3)
@@ -131,8 +129,7 @@ class RandomAlbum(EventPlugin):
             hscale.set_show_fill_level(False)
             hscale.connect("value-changed", changed_cb, key)
             lbl.set_mnemonic_widget(hscale)
-            table.attach(hscale, 1, 3, idx + 1, idx + 2,
-                         xpadding=3, ypadding=3)
+            table.attach(hscale, 1, 3, idx + 1, idx + 2, xpadding=3, ypadding=3)
 
         return vbox
 
@@ -145,10 +142,8 @@ class RandomAlbum(EventPlugin):
         # weight slider in the prefs pane.
         ranked = {}
         for (tag, _text, func) in self.keys:
-            tag_key = ("~#%s:%s" % (tag, func) if func
-                       else "~#%s" % tag)
-            ranked[tag] = sorted(albums,
-                                 key=lambda al: al.get(tag_key))
+            tag_key = f"~#{tag}:{func}" if func else f"~#{tag}"
+            ranked[tag] = sorted(albums, key=lambda al: al.get(tag_key))
 
         scores = {}
         for album in albums:

@@ -39,20 +39,20 @@ class TLyricsPane(TestCase):
             self.pane.destroy()
 
     def test_construction(self):
-        af = AF({"~filename": fsnative(u"/dev/null")})
+        af = AF({"~filename": fsnative("/dev/null")})
         self.pane = LyricsPane(af)
 
     def test_save_lyrics(self):
         af = self.temp_mp3()
         self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
-        self.failUnlessEqual(af("~lyrics"), LYRICS)
+        self.assertEqual(af("~lyrics"), LYRICS)
 
     def test_save_encoded_lyrics(self):
         af = self.temp_mp3()
         self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
-        self.failUnlessEqual(af("~lyrics"), LYRICS)
+        self.assertEqual(af("~lyrics"), LYRICS)
 
     def test_save_lyrics_deletes_lyric_file(self):
         af = self.temp_mp3()
@@ -60,10 +60,10 @@ class TLyricsPane(TestCase):
         os.makedirs(os.path.dirname(lf_name))
         with open(lf_name, "wb") as f:
             f.write(LYRICS.encode("utf-8"))
-        self.failUnless(os.path.exists(lf_name))
+        self.assertTrue(os.path.exists(lf_name))
         self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
-        self.failIf(os.path.exists(lf_name))
+        self.assertFalse(os.path.exists(lf_name))
 
     def temp_mp3(self):
         name = get_temp_copy(get_data_path("silence-44-s.mp3"))

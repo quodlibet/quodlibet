@@ -96,16 +96,16 @@ class MP4File(AudioFile):
                     name = self.__tupletranslate[key]
                     cur, total = values[0]
                     if total:
-                        self[name] = u"%d/%d" % (cur, total)
+                        self[name] = f"{cur:d}/{total:d}"
                     else:
                         self[name] = str(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":
-                    self[name] = u"\n".join(map(str, values))
+                    self[name] = "\n".join(map(str, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
-                        (decode(v).strip("\x00") for v in values))
+                        decode(v).strip("\x00") for v in values)
                 else:
                     self[name] = "\n".join(values)
             elif key == "covr":
@@ -224,7 +224,7 @@ class MP4File(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError:
+        except OSError:
             return
 
         cover = MP4Cover(data, image_format)

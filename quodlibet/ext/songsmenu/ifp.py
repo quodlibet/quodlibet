@@ -57,7 +57,7 @@ class IFPUpload(SongsMenuPlugin):
         if dirname not in self.__madedir:
             os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
             self.__madedir.append(dirname)
-        if os.system("ifp upload %r %r > /dev/null" % (filename, target)):
+        if os.system(f"ifp upload {filename!r} {target!r} > /dev/null"):
             tmpl = _("Unable to upload %s."
                      "The device may be out of space, or turned off.")
             qltk.ErrorMessage(None, _("Error uploading"), tmpl % util.bold(filename),

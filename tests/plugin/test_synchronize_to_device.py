@@ -166,7 +166,7 @@ class TSyncToDevice(PluginTestCase):
         tag = model[path][self.plugin._model_col_id("tag")]
         self.assertTrue(
             any(tag.startswith(tag) for tag in data[0]),
-            'Song status "{}" does not start with "{}"'.format(tag, data[0]))
+            f'Song status "{tag}" does not start with "{data[0]}"')
 
         filename = model[path][self.plugin._model_col_id("filename")]
         self.assertIsNotNone(filename, "filename field shouldn't be None")
@@ -175,13 +175,12 @@ class TSyncToDevice(PluginTestCase):
         export = model[path][self.plugin._model_col_id("export")]
         self.assertTrue(
             any(export.startswith(export_path) for export_path in data[1]),
-            'Export path "{}" does not start with "{}"'.format(export, data[1]))
+            f'Export path "{export}" does not start with "{data[1]}"')
 
         song = model[path][self.plugin._model_col_id("entry")]._song
         if song and data[2] and data[3]:
             self.assertTrue(song[data[2]].startswith(data[3]),
-                'Data in given field "{}" does not start with {}'.format(
-                    song[data[2]], data[3]))
+                f'Data in given field "{song[data[2]]}" does not start with {data[3]}')
 
         return False
 

@@ -15,7 +15,8 @@ import operator
 import time
 from enum import auto, Enum
 from numbers import Real
-from typing import TypeVar, List, Iterable, Optional
+from typing import TypeVar
+from collections.abc import Iterable
 
 from quodlibet.formats import FILESYSTEM_TAGS, TIME_TAGS
 from quodlibet.formats._audio import SIZE_TAGS, DURATION_TAGS
@@ -39,7 +40,7 @@ class Node:
     def search(self, data: T) -> bool:
         raise NotImplementedError
 
-    def filter(self, sequence: Iterable[T]) -> List[T]:
+    def filter(self, sequence: Iterable[T]) -> list[T]:
         return [s for s in sequence if self.search(s)]
 
     def _unpack(self) -> Node:
@@ -76,7 +77,7 @@ class Regex(Node):
                 "The regular expression /%s/ is invalid." % self.pattern) from e
 
     def __repr__(self):
-        return "<Regex pattern=%s mod=%s>" % (self.pattern, self.mod_string)
+        return f"<Regex pattern={self.pattern} mod={self.mod_string}>"
 
 
 class True_(Node):
@@ -122,7 +123,7 @@ class False_(Node):
 class Union(Node):
     """True if the object matches any of its REs."""
 
-    def __init__(self, res: List[Node]):
+    def __init__(self, res: list[Node]):
         self.res = res
 
     def search(self, data):
@@ -147,7 +148,7 @@ class Union(Node):
     def __and__(self, other):
         other = other._unpack()
 
-        if isinstance(other, (Inter, True_)):
+        if isinstance(other, Inter | True_):
             return other.__and__(self)
 
         return Inter([self, other])
@@ -189,7 +190,7 @@ class Inter(Node):
 
     def __or__(self, other):
         other = other._unpack()
-        if isinstance(other, (Union, True_)):
+        if isinstance(other, Union | True_):
             return other.__or__(self)
         return Union([self, other])
 
@@ -254,7 +255,7 @@ class Numcmp(Node):
         return False
 
     def __repr__(self):
-        return "<Numcmp expr=%r, op=%r, expr2=%r>" % (
+        return "<Numcmp expr={!r}, op={!r}, expr2={!r}>".format(
             self._expr, self._op.__name__, self._expr2)
 
     def __and__(self, other):
@@ -288,7 +289,7 @@ class Numexpr:
         values instead of the number values."""
         return False
 
-    def units(self) -> Optional[Units]:
+    def units(self) -> Units | None:
         """Returns optional (converted) units for this number"""
         return None
 
@@ -351,7 +352,7 @@ class NumexprUnary(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprUnary op=%r expr=%r>" % (self.__op, self.__expr)
+        return f"<NumexprUnary op={self.__op!r} expr={self.__expr!r}>"
 
     def use_date(self):
         return self.__expr.use_date()
@@ -399,7 +400,7 @@ class NumexprBinary(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprBinary op=%r expr=%r expr2=%r>" % (
+        return "<NumexprBinary op={!r} expr={!r} expr2={!r}>".format(
             self.__op, self.__expr, self.__expr2)
 
     def use_date(self):
@@ -425,14 +426,14 @@ class NumexprGroup(Numexpr):
 class NumexprNumber(Numexpr):
     """Number in numeric expression"""
 
-    def __init__(self, value: Real, units: Optional[Units] = None):
+    def __init__(self, value: Real, units: Units | None = None):
         self._value = float(value)
         self._units = units
 
     def evaluate(self, data, time, use_date):
         return self._value
 
-    def units(self) -> Optional[Units]:
+    def units(self) -> Units | None:
         return self._units
 
     def __repr__(self):
@@ -472,8 +473,7 @@ class NumexprNumberOrDate(Numexpr):
             return self.number
 
     def __repr__(self):
-        return ("<NumexprNumberOrDate number=%r date=%r>" %
-                (self.number, self.date))
+        return (f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>")
 
 
 class Units(Enum):
@@ -572,7 +572,7 @@ class Tag(Node):
                 if name in ("filename", "mountpoint"):
                     val = fsn2text(data.get("~" + name, fs_default))
                 else:
-                    val = data.get("~" + name, u"")
+                    val = data.get("~" + name, "")
 
             if search(val):
                 return True
@@ -589,7 +589,7 @@ class Tag(Node):
 
     def __repr__(self):
         names = self._names + self.__intern
-        return ("<Tag names=%r, res=%r>" % (names, self.res))
+        return (f"<Tag names={names!r}, res={self.res!r}>")
 
     def __and__(self, other):
         other = other._unpack()
@@ -640,13 +640,13 @@ class Extension(Node):
         return self.__valid
 
     def __repr__(self):
-        return ("<Extension name=%r valid=%r body=%r>"
-                % (self.__name, self.__valid, self.__body))
+        return (f"<Extension "
+                f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>")
 
     def __and__(self, other):
         other = other._unpack()
 
-        if isinstance(other, (Inter, True_)):
+        if isinstance(other, Inter | True_):
             return other.__and__(self)
 
         return Inter([self] + [other])
@@ -654,7 +654,7 @@ class Extension(Node):
     def __or__(self, other):
         other = other._unpack()
 
-        if isinstance(other, (Union, True_)):
+        if isinstance(other, Union | True_):
             return other.__or__(self)
 
         return Union([self, other])

@@ -62,7 +62,7 @@ def write_cover(image):
 
     try:
         data = image.read()
-    except EnvironmentError as e:
+    except OSError as e:
         raise AudioFileError(e) from e
 
     ext = (image.extensions and image.extensions[0]) or "jpg"

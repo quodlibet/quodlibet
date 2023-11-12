@@ -32,6 +32,6 @@ class TClock(PluginTestCase):
         plugin._entry_changed(entries)
         plugin._ready()
 
-        self.failUnlessEqual(config.get("plugins", "alarm_times"),
+        self.assertEqual(config.get("plugins", "alarm_times"),
                              "1 3 5 HH:MM HH:MM HH:MM HH:MM")
         plugin.disabled()

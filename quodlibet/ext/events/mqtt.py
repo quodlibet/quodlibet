@@ -77,7 +77,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
     def on_message(self, client, userdata, msg):
         """The callback for messages received from the server."""
-        print_d("%s: %s" % (msg.topic, msg.payload))
+        print_d(f"{msg.topic}: {msg.payload}")
 
     def _set_up_mqtt_client(self):
         self.client = client = mqtt.Client()
@@ -206,7 +206,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
             msg = (_("Connected to broker at %(host)s:%(port)d")
                    % {"host": self.host, "port": self.port})
             Message(Gtk.MessageType.INFO, app.window, "Success", msg).run()
-        except IOError as e:
+        except OSError as e:
             template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s)")
             msg = template % {"host": self.host, "port": self.port, "msg": e}
             print_w(msg)

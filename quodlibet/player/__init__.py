@@ -25,13 +25,13 @@ class PlayerError(Exception):
 
     def __str__(self):
         return self.short_desc + (
-            u"\n" + self.long_desc if self.long_desc else u"")
+            "\n" + self.long_desc if self.long_desc else "")
 
     def __bytes__(self):
         return str(self).encode("utf-8")
 
     def __repr__(self):
-        return "%s(%r, %r)" % (
+        return "{}({!r}, {!r})".format(
             type(self).__name__, repr(self.short_desc), repr(self.long_desc))
 
 

@@ -19,7 +19,7 @@ class TMassagers(TestCase):
 
     def invalidate(self, key, values):
         for val in values:
-            self.failIf(Massager.for_tag(key).is_valid(val))
+            self.assertFalse(Massager.for_tag(key).is_valid(val))
 
     def equivs(self, key, equivs):
         massager = Massager.for_tag(key)
@@ -116,6 +116,6 @@ class TMassagers(TestCase):
 
         # Check completion help too
         for code in ["eng", "fra", "fre", "deu", "zho"]:
-            self.failUnless(code in mas.options,
+            self.assertTrue(code in mas.options,
                 "'%s' should be in languages options" % code)
-        self.failIf("" in mas.options)
+        self.assertFalse("" in mas.options)

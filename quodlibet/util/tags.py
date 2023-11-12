@@ -65,7 +65,7 @@ class TagName:
             assert self.user + self.internal == 1
 
     def __repr__(self):
-        return "%s(%r)" % (type(self).__name__, vars(self))
+        return f"{type(self).__name__}({vars(self)!r})"
 
 
 def _get_role_map(tags):

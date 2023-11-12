@@ -37,7 +37,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
         else:
             query_path = os.path.join(get_user_dir(), "lists", "queries.saved")
         try:
-            with open(query_path, "r", encoding="utf-8") as query_file:
+            with open(query_path, encoding="utf-8") as query_file:
                 for query_string in query_file:
                     name = next(query_file).strip().lower()
                     if name == body:
@@ -48,7 +48,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
             # We've searched the whole file and haven't found a match
             print_w(f"None found for {body}")
             raise QueryPluginError
-        except IOError as e:
+        except OSError as e:
             raise QueryPluginError from e
         except StopIteration:
             # The file has an odd number of lines. This shouldn't happen unless

@@ -41,7 +41,7 @@ def matches_flatpak_runtime(pattern: str) -> bool:
 
     config = configparser.ConfigParser()
     try:
-        with open("/.flatpak-info", "r", encoding="utf-8") as f:
+        with open("/.flatpak-info", encoding="utf-8") as f:
             config.read_file(f)
         runtime = config.get("Application", "runtime")
     except (OSError, configparser.Error):

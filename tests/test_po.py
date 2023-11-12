@@ -72,7 +72,7 @@ class TPot(TestCase):
     def conclude(self, fails, reason):
         if fails:
             def format_occurrences(e):
-                return ", ".join("%s:%s" % o for o in e.occurrences)
+                return ", ".join("{}:{}".format(*o) for o in e.occurrences)
             msg = "\n".join(f"{e.msgid!r} ({format_occurrences(e)})" for e in fails)
             self.fail(f"One or more messages did not pass ({reason}):\n{msg}")
 
@@ -162,7 +162,7 @@ class TPot(TestCase):
         for entry in self.pot:
             self.assertFalse(
                 "..." in entry.msgid,
-                msg=u"%s should use '…' (ELLIPSIS) instead of '...'" % entry)
+                msg="%s should use '…' (ELLIPSIS) instead of '...'" % entry)
 
     def test_markup(self):
         # https://wiki.gnome.org/Initiatives/GnomeGoals/RemoveMarkupInMessages
@@ -253,7 +253,7 @@ class POMixin:
                 if line.strip().startswith(b'msgstr "gtk-'):
                     parts = line.strip().split()
                     value = parts[1].strip('"')[4:]
-                    self.failIf(value and value not in ACCEPTABLE_STOCK,
+                    self.assertFalse(value and value not in ACCEPTABLE_STOCK,
                                 f"Invalid stock translation in {self.lang}\n{line}")
 
     def conclude(self, fails, reason):
@@ -261,7 +261,7 @@ class POMixin:
             def format_occurrences(e):
                 occurences = [(self.lang + ".po", e.linenum)]
                 occurences += e.occurrences
-                return ", ".join("%s:%s" % o for o in occurences)
+                return ", ".join("{}:{}".format(*o) for o in occurences)
             message = "\n".join(f"{e.msgid!r} - {e.msgstr!r} ({format_occurrences(e)})"
                                 for e in fails)
             self.fail(f"One or more messages did not pass ({reason}).\n{message}")
@@ -289,7 +289,7 @@ class POMixin:
             # Possible endings for the strings. Make sure to put longer
             # endings before shorter ones, for example: '...', '.'
             # otherwise this pair: 'a...', 'b..' will pass the test.
-            ends = [(":", u"："), u"…", "...", (".", u"。"), " "]
+            ends = [(":", "："), "…", "...", (".", "。"), " "]
 
             # First find the appropriate ending of msgid
             for end in ends:

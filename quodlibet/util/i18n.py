@@ -44,7 +44,7 @@ def bcp47_to_language(code):
         region = parts[2]
 
     if region:
-        return "%s_%s" % (lang_subtag, region)
+        return f"{lang_subtag}_{region}"
     return lang_subtag
 
 
@@ -57,7 +57,7 @@ def osx_locale_id_to_lang(id_):
     parts = id_.rsplit("_", 1)
     ll = parts[0]
     ll = bcp47_to_language(ll).split("_")[0]
-    return "%s_%s" % (ll, parts[1])
+    return f"{ll}_{parts[1]}"
 
 
 def set_i18n_envvars():
@@ -153,8 +153,8 @@ class GlibTranslations(gettext.GNUTranslations):
         context = str(context)
         msgid = str(msgid)
         msgidplural = str(msgidplural)
-        real_msgid = u"%s\x04%s" % (context, msgid)
-        real_msgidplural = u"%s\x04%s" % (context, msgidplural)
+        real_msgid = f"{context}\x04{msgid}"
+        real_msgidplural = f"{context}\x04{msgidplural}"
         result = self.ngettext(real_msgid, real_msgidplural, n)
         if result == real_msgid:
             return msgid
@@ -165,7 +165,7 @@ class GlibTranslations(gettext.GNUTranslations):
     def upgettext(self, context, msgid):
         context = str(context)
         msgid = str(msgid)
-        real_msgid = u"%s\x04%s" % (context, msgid)
+        real_msgid = f"{context}\x04{msgid}"
         result = self.ugettext(real_msgid)
         if result == real_msgid:
             return msgid

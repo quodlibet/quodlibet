@@ -36,12 +36,12 @@ TEST_SEARCH_RESULT = \
 
 TEST_SEARCH_RESULT_2 = \
 {"release-count": 1, "release-list": [{"artist-credit": [{"artist":
-{"alias-list": [{"alias": u"\u30a2\u30d0", "locale": "ja", "primary":
-"primary", "sort-name": u"\u30a2\u30d0", "type": "Artist name"}, {"alias":
-u"\u15c5\u15fa\u15f7\u15c5", "sort-name": u"\u15c5\u15fa\u15f7\u15c5", "type":
+{"alias-list": [{"alias": "\u30a2\u30d0", "locale": "ja", "primary":
+"primary", "sort-name": "\u30a2\u30d0", "type": "Artist name"}, {"alias":
+"\u15c5\u15fa\u15f7\u15c5", "sort-name": "\u15c5\u15fa\u15f7\u15c5", "type":
 "Search hint"}, {"alias": "Abba", "sort-name": "Abba"}, {"alias":
-u"Bj\xf6rn + Benny + Anna + Frieda", "sort-name":
-u"Bj\xf6rn + Benny + Anna + Frieda"}],
+"Bj\xf6rn + Benny + Anna + Frieda", "sort-name":
+"Bj\xf6rn + Benny + Anna + Frieda"}],
 "id": "d87e52c5-bb8d-4da8-b941-9f4928627dc8", "name": "ABBA", "sort-name":
 "ABBA"}}], "artist-credit-phrase": "ABBA", "barcode": "602537784608",
 "country": "XW", "date": "2014-04-04", "ext:score": "100", "id":
@@ -65,13 +65,13 @@ TEST_DATA = \
 "146c01d0-d3a2-44c3-acb5-9208bce75e14", "name": "The Hafler Trio"}}],
 "label-info-list": [{"catalog-number": "pgram002", "label": {"sort-name":
 "Phonometrography", "id": "a0759efa-f583-49ea-9a8d-d5bbce55541c", "name":
-"Phonometrography"}}], "title": u"\xe6\xb3o & h\xb3\xe6",
+"Phonometrography"}}], "title": "\xe6\xb3o & h\xb3\xe6",
 "release-event-count": 1, "medium-count": 2, "cover-art-archive": {"count":
 "1", "front": "true", "back": "false", "artwork": "true"},
 "release-event-list": [{"date": "2003-12-04", "area": {"sort-name":
 "United Kingdom", "iso-3166-1-code-list": ["GB"], "id":
 "8a754a16-0027-3a29-b6d7-2b40ea0481ed", "name": "United Kingdom"}}],
-"medium-list": [{"position": "1", "title": u"\xe6\xb3o", "track-list":
+"medium-list": [{"position": "1", "title": "\xe6\xb3o", "track-list":
 [{"artist-credit": [{"artist": {"sort-name": "Autechre", "id":
 "410c9baf-5469-44f6-9852-826524b80c61", "name": "Autechre"}}, " & ",
 {"artist": {"sort-name": "Hafler Trio, The", "id":
@@ -82,11 +82,11 @@ TEST_DATA = \
 {"artist": {"sort-name": "Hafler Trio, The", "id":
 "146c01d0-d3a2-44c3-acb5-9208bce75e14", "name": "The Hafler Trio"}}],
 "length": "974546", "artist-credit-phrase": "Autechre & The Hafler Trio",
-"id": "af87f070-238b-46c1-aa3e-f831ab91fa20", "title": u"\xe6\xb3o"},
+"id": "af87f070-238b-46c1-aa3e-f831ab91fa20", "title": "\xe6\xb3o"},
 "length": "974546", "position": "1", "id":
 "61af3e5a-14e0-350d-9826-a884c6e586b1", "track_or_recording_length":
 "974546"}], "track-count": 1, "format": "CD"}, {"position": "2", "title":
-u"h\xb3\xe6", "track-list": [{"artist-credit": [{"artist": {"sort-name":
+"h\xb3\xe6", "track-list": [{"artist-credit": [{"artist": {"sort-name":
 "Autechre", "id": "410c9baf-5469-44f6-9852-826524b80c61", "name":
 "Autechre"}}, " & ", {"artist": {"sort-name": "Hafler Trio, The", "id":
 "146c01d0-d3a2-44c3-acb5-9208bce75e14", "name": "The Hafler Trio"}}],
@@ -96,7 +96,7 @@ u"h\xb3\xe6", "track-list": [{"artist-credit": [{"artist": {"sort-name":
 {"artist": {"sort-name": "Hafler Trio, The", "id":
 "146c01d0-d3a2-44c3-acb5-9208bce75e14", "name": "The Hafler Trio"}}],
 "length": "922546", "artist-credit-phrase": "Autechre & The Hafler Trio",
-"id": "5aff6309-2e02-4a47-9233-32d7dcc9a960", "title": u"h\xb3\xe6"},
+"id": "5aff6309-2e02-4a47-9233-32d7dcc9a960", "title": "h\xb3\xe6"},
 "length": "922546", "position": "1", "id":
 "5f2031a2-c67d-3bec-8ae5-8d22847ab0a5", "track_or_recording_length":
 "922546"}], "track-count": 1, "format": "CD"}], "text-representation":
@@ -178,32 +178,32 @@ class TBrainz(PluginTestCase):
         self.assertEqual(get_artist([]), None)
 
         album = [
-            AudioFile({"artist": u"garbage"}),
-            AudioFile({"albumartist": u"foo"}),
+            AudioFile({"artist": "garbage"}),
+            AudioFile({"albumartist": "foo"}),
         ]
 
-        self.assertEqual(get_artist(album), u"foo")
+        self.assertEqual(get_artist(album), "foo")
 
         album = [
-            AudioFile({"artist": u"garbage"}),
-            AudioFile({"artist": u"bla"}),
+            AudioFile({"artist": "garbage"}),
+            AudioFile({"artist": "bla"}),
         ]
 
         self.assertEqual(get_artist(album), None)
 
         album = [
-            AudioFile({"artist": u"bla"}),
-            AudioFile({"artist": u"bla"}),
+            AudioFile({"artist": "bla"}),
+            AudioFile({"artist": "bla"}),
         ]
 
-        self.assertEqual(get_artist(album), u"bla")
+        self.assertEqual(get_artist(album), "bla")
 
     def test_build_query(self):
         build_query = brainz.widgets.build_query
 
         album = [
-            AudioFile({"artist": u"garbage", "album": "blah"}),
-            AudioFile({"albumartist": u"foo"}),
+            AudioFile({"artist": "garbage", "album": "blah"}),
+            AudioFile({"albumartist": "foo"}),
         ]
 
         self.assertEqual(
@@ -220,7 +220,7 @@ class TBrainz(PluginTestCase):
         self.assertEqual(release.disc_count, 2)
         self.assertEqual(release.track_count, 2)
         self.assertEqual(len(release.tracks), 2)
-        self.assertEqual(release.title, u"\xe6\xb3o & h\xb3\xe6")
+        self.assertEqual(release.title, "\xe6\xb3o & h\xb3\xe6")
         self.assertTrue(release.is_single_artist)
         self.assertFalse(release.is_various_artists)
         self.assertTrue(release.artists)
@@ -232,20 +232,20 @@ class TBrainz(PluginTestCase):
         track = release.tracks[0]
         self.assertEqual(track.id, "61af3e5a-14e0-350d-9826-a884c6e586b1")
         self.assertEqual(len(track.artists), 2)
-        self.assertEqual(track.title, u"\xe6\xb3o")
+        self.assertEqual(track.title, "\xe6\xb3o")
         self.assertEqual(track.tracknumber, "1")
         self.assertEqual(track.discnumber, "1")
         self.assertEqual(track.track_count, 1)
-        self.assertEqual(track.disctitle, u"\xe6\xb3o")
+        self.assertEqual(track.disctitle, "\xe6\xb3o")
 
     def test_labelid(self):
         Release = brainz.mb.Release
 
         release = Release(TEST_SEARCH_RESULT["release-list"][0])
-        self.assertEqual(release.labelid, u"FOM 0008")
+        self.assertEqual(release.labelid, "FOM 0008")
 
         release = Release(TEST_SEARCH_RESULT_2["release-list"][0])
-        self.assertEqual(release.labelid, u"")
+        self.assertEqual(release.labelid, "")
 
     def test_release_artist(self):
         Release = brainz.mb.Release
@@ -274,10 +274,10 @@ class TBrainz(PluginTestCase):
         apply_options(meta, True, False, False, False, False)
         dummy = AudioFile()
         apply_to_song(meta, dummy)
-        self.assertEqual(dummy("album"), u"\xe6\xb3o & h\xb3\xe6")
-        self.assertEqual(dummy("date"), u"2003")
-        self.assertEqual(dummy("title"), u"h\xb3\xe6")
-        self.assertEqual(dummy("pgram002"), u"")
+        self.assertEqual(dummy("album"), "\xe6\xb3o & h\xb3\xe6")
+        self.assertEqual(dummy("date"), "2003")
+        self.assertEqual(dummy("title"), "h\xb3\xe6")
+        self.assertEqual(dummy("pgram002"), "")
 
     def test_build_mbids_labelid(self):
         Release = brainz.mb.Release
@@ -296,9 +296,9 @@ class TBrainz(PluginTestCase):
         self.assertEqual(dummy("musicbrainz_albumid"), release.id)
         self.assertEqual(
             dummy.list("musicbrainz_artistid"),
-            [u"410c9baf-5469-44f6-9852-826524b80c61",
-             u"146c01d0-d3a2-44c3-acb5-9208bce75e14"])
-        self.assertEqual(dummy("labelid"), u"pgram002")
+            ["410c9baf-5469-44f6-9852-826524b80c61",
+             "146c01d0-d3a2-44c3-acb5-9208bce75e14"])
+        self.assertEqual(dummy("labelid"), "pgram002")
 
     def test_pregap(self):
         Release = brainz.mb.Release

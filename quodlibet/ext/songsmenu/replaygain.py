@@ -143,8 +143,8 @@ class RGSong:
                 return
             existing = song(tag, None)
             if existing and not self.overwrite_existing:
-                print_d("Not overwriting existing tag %s (=%s) for %s"
-                        % (tag, existing, self.song("~filename")))
+                fn = self.song("~filename")
+                print_d(f"Not overwriting existing tag {tag} (={existing}) for {fn}")
                 return
             song[tag] = pattern % value
 
@@ -211,7 +211,7 @@ class RGSong:
     def __str__(self):
         vals = {k: self._get_rg_tag(k)
                 for k in "track_gain album_gain album_peak track_peak".split()}
-        return "<Song=%s RG data=%s>" % (self.song, vals)
+        return f"<Song={self.song} RG data={vals}>"
 
 
 class ReplayGainPipeline(GObject.Object):

@@ -15,7 +15,7 @@ import sys
 import unicodedata
 import threading
 import locale
-from typing import Dict, List, Callable
+from collections.abc import Callable
 from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
@@ -50,7 +50,7 @@ class InstanceTracker:
     of a given type. Note that it must be used with a GObject or
     something with a connect method and destroy signal."""
 
-    __kinds: Dict[type, List[object]] = {}
+    __kinds: dict[type, list[object]] = {}
 
     def _register_instance(self, klass=None):
         """Register this object to be returned in the active instance list."""
@@ -108,8 +108,8 @@ class OptionParser:
         if opt in self.__help:
             help = self.__help[opt]
             if self.__args[opt]:
-                opt = "%s=%s" % (opt, self.__args[opt])
-            return "  --%s %s\n" % (opt.ljust(space), help)
+                opt = f"{opt}={self.__args[opt]}"
+            return f"  --{opt.ljust(space)} {help}\n"
         else:
             return ""
 
@@ -124,7 +124,7 @@ class OptionParser:
         }
         s += "\n"
         if self.__description:
-            s += "%s - %s\n" % (self.__name, self.__description)
+            s += f"{self.__name} - {self.__description}\n"
         s += "\n"
         keys = sorted(self.__help.keys())
         try:
@@ -147,12 +147,11 @@ class OptionParser:
         self.__help = newhelp
 
     def version(self):
-        return ("""\
-{title} {version}
-<{email}>
-{copyright}\
-""").format(title=self.__name, version=self.__version,
-            email=SUPPORT_EMAIL, copyright=COPYRIGHT)
+        return (f"""\
+{self.__name} {self.__version}
+<{SUPPORT_EMAIL}>
+{COPYRIGHT}\
+""")
 
     def parse(self, args=None):
         if args is None:
@@ -361,19 +360,19 @@ def format_size(size):
     """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
-        return u"%.1f GB" % (float(size) / (1024 ** 3))
+        return "%.1f GB" % (float(size) / (1024 ** 3))
     elif size >= 1024 ** 2 * 100:
-        return u"%.0f MB" % (float(size) / (1024 ** 2))
+        return "%.0f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2 * 10:
-        return u"%.1f MB" % (float(size) / (1024 ** 2))
+        return "%.1f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2:
-        return u"%.2f MB" % (float(size) / (1024 ** 2))
+        return "%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
-        return u"%d KB" % int(size / 1024)
+        return "%d KB" % int(size / 1024)
     elif size >= 1024:
-        return u"%.2f KB" % (float(size) / 1024)
+        return "%.2f KB" % (float(size) / 1024)
     else:
-        return u"%d B" % size
+        return "%d B" % size
 
 
 def format_time(time):
@@ -396,7 +395,7 @@ def format_time(time):
 def format_time_display(time):
     """Like format_time, but will use RATIO instead of a colon to separate"""
 
-    return format_time(time).replace(":", u"\u2236")
+    return format_time(time).replace(":", "\u2236")
 
 
 def format_time_seconds(time):
@@ -466,7 +465,7 @@ def capitalize(str):
 
 def _split_numeric_sortkey(s, limit=10,
                            reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-                           join=u" ".join):
+                           join=" ".join):
     """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
@@ -605,7 +604,7 @@ def fver(tup):
 
 
 def make_case_insensitive(filename):
-    return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
+    return "".join([f"[{c.lower()}{c.upper()}]" for c in filename])
 
 
 class DeferredSignal:
@@ -791,14 +790,14 @@ def sanitize_tags(tags, stream=False):
 
             if key == "channel-mode":
                 if "stereo" in lower or "dual" in lower:
-                    value = u"stereo"
+                    value = "stereo"
             elif key == "audio-codec":
                 if "mp3" in lower:
-                    value = u"MP3"
+                    value = "MP3"
                 elif "aac" in lower or "advanced" in lower:
-                    value = u"MPEG-4 AAC"
+                    value = "MPEG-4 AAC"
                 elif "vorbis" in lower:
-                    value = u"Ogg Vorbis"
+                    value = "Ogg Vorbis"
 
             if lower in ("http://www.shoutcast.com", "http://localhost/",
                          "default genre", "none", "http://", "unnamed server",
@@ -840,7 +839,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -871,12 +870,12 @@ def build_filter_query(key, values):
     """
 
     if not values:
-        return u""
+        return ""
     if key.startswith("~#"):
         nheader = key[2:]
-        queries = ["#(%s = %s)" % (nheader, i) for i in values]
+        queries = [f"#({nheader} = {i})" for i in values]
         if len(queries) > 1:
-            return u"|(%s)" % ", ".join(queries)
+            return "|(%s)" % ", ".join(queries)
         else:
             return queries[0]
     else:
@@ -884,9 +883,9 @@ def build_filter_query(key, values):
             ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
              for v in values])
         if len(values) == 1:
-            return u"%s = %s" % (key, text)
+            return f"{key} = {text}"
         else:
-            return u"%s = |(%s)" % (key, text)
+            return f"{key} = |({text})"
 
 
 def limit_songs(songs, max, weight_by_ratings=False):

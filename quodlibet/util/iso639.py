@@ -328,7 +328,7 @@ _ISO_639 = [
     ("Niger-Kordofanian languages", "", "nic", ""),
     ("Niuean", "", "niu", ""),
     ("Norwegian Nynorsk; Nynorsk, Norwegian", "nn", "nno", ""),
-    (u"Bokm\xe5l, Norwegian; Norwegian Bokm\xe5l", "nb", "nob", ""),
+    ("Bokm\xe5l, Norwegian; Norwegian Bokm\xe5l", "nb", "nob", ""),
     ("Nogai", "", "nog", ""),
     ("Norse, Old", "", "non", ""),
     ("Norwegian", "no", "nor", ""),
@@ -365,7 +365,7 @@ _ISO_639 = [
     ("Pohnpeian", "", "pon", ""),
     ("Portuguese", "pt", "por", ""),
     ("Prakrit languages", "", "pra", ""),
-    (u"Proven\xe7al, Old (to 1500); Occitan, Old (to 1500)", "", "pro", ""),
+    ("Proven\xe7al, Old (to 1500); Occitan, Old (to 1500)", "", "pro", ""),
     ("Pushto; Pashto", "ps", "pus", ""),
     ("Reserved for local use", "", "qaa-qtz", ""),
     ("Quechua", "qu", "que", ""),
@@ -475,7 +475,7 @@ _ISO_639 = [
     ("Vai", "", "vai", ""),
     ("Venda", "ve", "ven", ""),
     ("Vietnamese", "vi", "vie", ""),
-    (u"Volap\xfck", "vo", "vol", ""),
+    ("Volap\xfck", "vo", "vol", ""),
     ("Votic", "", "vot", ""),
     ("Wakashan languages", "", "wak", ""),
     ("Wolaitta; Wolaytta", "", "wal", ""),
@@ -543,7 +543,7 @@ def get_name(iso_code):
     elif iso_code in _ISO_639_2:
         return _ISO_639_2[iso_code][0]
 
-    return u""
+    return ""
 
 
 def translate(text):
@@ -563,7 +563,7 @@ def translate(text):
         lower = text.lower()
         if lower in _LOWER:
             return _gettext(_LOWER[lower])
-        return u""
+        return ""
 
 
 def _print_iso_639():

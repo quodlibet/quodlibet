@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 from .misc import get_ca_file
 
@@ -23,7 +22,7 @@ def urlopen(*args, **kwargs):
         return request_module.urlopen(*args, **kwargs)
     except HTTPException as e:
         # https://bugs.python.org/issue8823
-        raise EnvironmentError(e) from e
+        raise OSError(e) from e
 
 
 def install_urllib2_ca_file():

@@ -9,7 +9,8 @@
 
 import os
 import time
-from typing import Any, Optional, Sequence
+from typing import Any
+from collections.abc import Sequence
 
 from gi.repository import Gtk, Gdk, Pango, GLib
 
@@ -383,7 +384,7 @@ class PlayQueue(SongList):
     """Maximum number of queue items to leave unpersisted (batching)"""
 
     def __init__(self, library: Library, player: BasePlayer,
-                 autosave_interval_secs: Optional[int] = None):
+                 autosave_interval_secs: int | None = None):
         super().__init__(library, player, model_cls=QueueModel, sortable=False)
         self._updated_time = time.time()
         self.autosave_interval = autosave_interval_secs
@@ -439,7 +440,7 @@ class PlayQueue(SongList):
         try:
             with open(QUEUE, "rb") as f:
                 lines = f.readlines()
-        except EnvironmentError:
+        except OSError:
             return
 
         filenames = []
@@ -476,7 +477,7 @@ class PlayQueue(SongList):
                         print_w(f"Ignoring queue save error ({e})")
                         continue
                     f.write(line + b"\n")
-        except EnvironmentError as e:
+        except OSError as e:
             print_e(f"Error saving queue ({e})")
         self._updated_time = time.time()
         self._pending = 0

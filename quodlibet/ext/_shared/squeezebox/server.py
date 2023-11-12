@@ -5,8 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-import socket
-from typing import List
 from telnetlib import Telnet
 import time
 from urllib.parse import quote, unquote
@@ -46,7 +44,7 @@ class SqueezeboxServer:
     telnet = None
     is_connected = False
     current_player = 0
-    players: List[SqueezeboxPlayerSettings] = []
+    players: list[SqueezeboxPlayerSettings] = []
     config = SqueezeboxServerSettings()
     _debug = False
 
@@ -64,10 +62,10 @@ class SqueezeboxServer:
                 if self._debug:
                     print_d("Trying %s..." % self.config)
                 self.telnet = Telnet(hostname, port, self._TIMEOUT)
-            except socket.error as e:
-                print_d("Couldn't talk to %s (%s)" % (self.config, e))
+            except OSError as e:
+                print_d(f"Couldn't talk to {self.config} ({e})")
             else:
-                result = self.__request("login %s %s" % (user, password))
+                result = self.__request(f"login {user} {password}")
                 if result != (6 * "*"):
                     raise SqueezeboxError(
                         "Couldn't log in to squeezebox: response was '%s'"
@@ -93,13 +91,13 @@ class SqueezeboxServer:
             return None
 
         if self._debug:
-            print_('>>>> "%s"' % line)
+            print_(f'>>>> "{line}"')
         try:
             self.telnet.write((line + "\n").encode("utf-8"))
             if not want_reply:
                 return None
             raw_response = self.telnet.read_until(b"\n", 5).decode("utf-8")
-        except socket.error as e:
+        except OSError as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
@@ -108,7 +106,7 @@ class SqueezeboxServer:
             return None
         response = (raw_response if raw else unquote(raw_response)).strip()
         if self._debug:
-            print_('<<<< "%s"' % (response,))
+            print_(f'<<<< "{response}"')
         return (response[len(line) - 1:] if line.endswith("?")
                 else response[len(line) + 1:])
 
@@ -147,8 +145,7 @@ class SqueezeboxServer:
             return
         try:
             return self.__request(
-                "%s %s" %
-                (self.players[self.current_player]["playerid"], line),
+                f"{self.players[self.current_player]['playerid']} {line}",
                 want_reply=want_reply)
         except IndexError:
             return None
@@ -210,9 +207,9 @@ class SqueezeboxServer:
         new_delta = ql_pos - reported_time
         self.delta = (self.delta + new_delta) / 2
         if self._debug:
-            print_d("Player at %0.0f but QL at %0.2f."
-                    "(Took %0.0f ms). Drift was %+0.0f ms" %
-                    (reported_time / 1000.0, ql_pos / 1000.0, took, new_delta))
+            print_d(f"Player at {reported_time / 1000.0:0.0f} "
+                    f"but QL at {ql_pos / 1000.0:0.2f}."
+                    f"(Took {took:0.0f} ms). Drift was {new_delta:+0.0f} ms")
 
     def get_milliseconds(self):
         secs = self.player_request("time ?") or 0

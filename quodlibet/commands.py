@@ -80,7 +80,7 @@ class CommandRegistry:
         command = parts[0]
         args = parts[1:]
 
-        print_d("command: %r(*%r)" % (command, args))
+        print_d(f"command: {command!r}(*{args!r})")
 
         try:
             return self.run(app, command, *args)
@@ -105,16 +105,16 @@ class CommandRegistry:
         if len(args) > argcount + optcount:
             raise CommandError("Too many arguments for %r" % name)
 
-        print_d("Running %r with params %s " % (cmd.__name__, args))
+        print_d(f"Running {cmd.__name__!r} with params {args} ")
 
         try:
             result = cmd(app, *args)
         except CommandError as e:
-            raise CommandError("%s: %s" % (name, str(e))) from e
+            raise CommandError(f"{name}: {str(e)}") from e
         else:
             if result is not None and not isinstance(result, fsnative):
                 raise CommandError(
-                    "%s: returned %r which is not fsnative" % (name, result))
+                    f"{name}: returned {result!r} which is not fsnative")
             return result
 
 
@@ -343,9 +343,9 @@ def _rating(app, value):
 
 @registry.register("dump-browsers")
 def _dump_browsers(app):
-    response = u""
+    response = ""
     for i, b in enumerate(browsers.browsers):
-        response += u"%d. %s\n" % (i, browsers.name(b))
+        response += "%d. %s\n" % (i, browsers.name(b))
     return text2fsn(response)
 
 
@@ -492,7 +492,7 @@ def _status(app):
         if length:
             progress = player.get_position() / (length * 1000.0)
     strings.append("%0.3f" % progress)
-    status = u" ".join(strings) + u"\n"
+    status = " ".join(strings) + "\n"
 
     return text2fsn(status)
 
@@ -516,7 +516,7 @@ def _dump_playlist(app, fstring=None):
     items = []
     for song in window.playlist.pl.get():
         items.append(pattern.format(song))
-    return text2fsn(u"\n".join(items) + u"\n")
+    return text2fsn("\n".join(items) + "\n")
 
 
 @registry.register("dump-queue", optional=1)
@@ -526,7 +526,7 @@ def _dump_queue(app, fstring=None):
     items = []
     for song in window.playlist.q.get():
         items.append(pattern.format(song))
-    return text2fsn(u"\n".join(items) + u"\n")
+    return text2fsn("\n".join(items) + "\n")
 
 
 @registry.register("refresh")
@@ -560,21 +560,21 @@ def _print_query(app, json_encoded_args):
 @registry.register("print-query-text")
 def _print_query_text(app):
     if app.browser.can_filter_text():
-        return text2fsn(str(app.browser.get_filter_text()) + u"\n")
+        return text2fsn(str(app.browser.get_filter_text()) + "\n")
 
 
 @registry.register("print-playing", optional=1)
 def _print_playing(app, fstring=None):
     from quodlibet.formats import AudioFile
 
-    pattern = make_pattern(fstring, u"<artist~album~tracknumber~title>")
+    pattern = make_pattern(fstring, "<artist~album~tracknumber~title>")
     song = app.player.info
     if song is None:
-        song = AudioFile({"~filename": fsnative(u"/")})
+        song = AudioFile({"~filename": fsnative("/")})
         song.sanitize()
     else:
         song = app.player.with_elapsed_info(song)
-    return text2fsn(pattern.format(song) + u"\n")
+    return text2fsn(pattern.format(song) + "\n")
 
 
 @registry.register("uri-received", args=1)

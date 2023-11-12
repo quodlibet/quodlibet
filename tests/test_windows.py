@@ -41,7 +41,7 @@ class TWindows(TestCase):
         d = windows.get_link_target(path)
         self.assertTrue(isinstance(d, str))
         self.assertEqual(
-            normalize_path(d), normalize_path(u"C:\\Windows\\explorer.exe"))
+            normalize_path(d), normalize_path("C:\\Windows\\explorer.exe"))
 
     def test_get_link_target_unicode(self):
         path = get_data_path("test2.lnk")
@@ -49,10 +49,10 @@ class TWindows(TestCase):
         self.assertTrue(isinstance(d, str))
         if is_wine():
             # wine doesn't support unicode paths here..
-            self.assertEqual(os.path.basename(d), u"\xe1??.txt")
+            self.assertEqual(os.path.basename(d), "\xe1??.txt")
         else:
-            self.assertEqual(os.path.basename(d), u"\xe1\U00016826.txt")
+            self.assertEqual(os.path.basename(d), "\xe1\U00016826.txt")
 
     def test_get_link_target_non_exist(self):
         with self.assertRaises(WindowsError):
-            windows.get_link_target(u"nopenope.lnk")
+            windows.get_link_target("nopenope.lnk")

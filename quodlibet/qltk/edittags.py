@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 import sys
-from typing import Optional, Type, Sequence
+from collections.abc import Sequence
 
 from gi.repository import Gtk, Pango, Gdk
 
@@ -201,7 +201,7 @@ class SplitValues(TagSplitter):
         spls = config.gettext("editing", "split_on").split()
         vals = [val if len(val) <= 64 else val[:64] + "…"
                 for val in split_value(value, spls)]
-        string = ", ".join(["{}={}".format(tag, val) for val in vals])
+        string = ", ".join([f"{tag}={val}" for val in vals])
         self.set_label(string)
         self.set_sensitive(len(vals) > 1)
 
@@ -224,8 +224,7 @@ class SplitDisc(TagSplitter):
         album, disc = split_album(value)
         if disc is not None:
             album = album if len(album) <= 64 else album[:64] + "…"
-            self.set_label("{}={}, {}={}".format(tag, album,
-                                                 self.needs[0], disc))
+            self.set_label(f"{tag}={album}, {self.needs[0]}={disc}")
 
         self.set_sensitive(disc is not None)
 
@@ -252,8 +251,8 @@ class SplitTitle(TagSplitter):
             title = title if len(title) <= 64 else title[:64] + "…"
             versions = [ver if len(ver) <= 64 else ver[:64] + "…"
                         for ver in versions]
-            string = (", ".join(["{}={}".format(tag, title)] +
-                                ["{}={}".format(self.needs[0], ver) for ver in
+            string = (", ".join([f"{tag}={title}"] +
+                                [f"{self.needs[0]}={ver}" for ver in
                                  versions]))
             self.set_label(string)
 
@@ -282,8 +281,8 @@ class SplitPerson(TagSplitter):
             artist = artist if len(artist) <= 64 else artist[:64] + "…"
             others = [other if len(other) <= 64 else other[:64] + "…"
                       for other in others]
-            string = (", ".join(["{}={}".format(tag, artist)] +
-                                ["{}={}".format(self.needs[0], o) for o in
+            string = (", ".join([f"{tag}={artist}"] +
+                                [f"{self.needs[0]}={o}" for o in
                                  others]))
             self.set_label(string)
 
@@ -437,7 +436,7 @@ class ListEntry:
 class EditTags(Gtk.VBox):
     handler = EditTagsPluginHandler()
 
-    _SPLITTERS: Sequence[Type[TagSplitter]] = sorted(
+    _SPLITTERS: Sequence[type[TagSplitter]] = sorted(
         [SplitDisc, SplitTitle, SplitPerformer, SplitArranger, SplitValues,
          SplitPerformerFromTitle, SplitOriginalArtistFromTitle],
         key=lambda item: (item._order, item.__name__))
@@ -654,9 +653,9 @@ class EditTags(Gtk.VBox):
             model.path_changed(path)
 
     def __item_for(self, view: BaseView,
-                   item_cls: Type[EditTagsPlugin],
+                   item_cls: type[EditTagsPlugin],
                    tag: str,
-                   text: str) -> Optional[EditTagsPlugin]:
+                   text: str) -> EditTagsPlugin | None:
         try:
             item = item_cls(tag, text)
         except Exception as e:
@@ -1082,7 +1081,7 @@ class EditTags(Gtk.VBox):
 
                 # default tags
                 if tag not in info:
-                    entry = ListEntry(tag, Comment(u""))
+                    entry = ListEntry(tag, Comment(""))
                     entry.canedit = canedit
                     model.append(row=[entry])
                     continue
@@ -1118,7 +1117,7 @@ class EditTags(Gtk.VBox):
             if comment.shared:
                 editable.set_text(comment.text)
             else:
-                editable.set_text(u"")
+                editable.set_text("")
 
     def __tag_editing_started(self, render, editable, path, model, library):
         if not editable.get_completion():

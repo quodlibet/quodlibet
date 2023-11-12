@@ -62,7 +62,7 @@ class Orders(GObject.Object):
         return self.items.__contains__(y)
 
     def __str__(self):
-        return "<%s of %s>" % (type(self).__name__, self.items)
+        return f"<{type(self).__name__} of {self.items}>"
 
 
 class PluggableOrders(Orders, PluginManager):
@@ -113,8 +113,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         """arrow_down -- the direction of the menu and arrow icon"""
         assert issubclass(current_order, Order)
         if current_order not in orders:
-            raise ValueError("%s is not supported by %s"
-                             % (current_order.__name__, orders))
+            raise ValueError(f"{current_order.__name__} is not supported by {orders}")
 
         super().__init__()
         self.__inhibit = True
@@ -185,9 +184,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
     @current.setter
     def current(self, value):
         if value not in self.orders:
-            raise ValueError(
-                "Unknown order %s. Try: %s"
-                % (value, ", ".join([o.__name__ for o in self.__orders])))
+            orders = ", ".join(o.__name__ for o in self.__orders)
+            raise ValueError(f"Unknown order {value}. Try: {orders}")
 
         self.__current = value
         if not self.__inhibit:
@@ -199,8 +197,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if cls.name == name:
                 self.current = cls
                 return
-        raise ValueError('Unknown order named "%s". Try: %s'
-                         % (name, [o.name for o in self.__orders]))
+        raise ValueError(f'Unknown order named "{name}". '
+                         f'Try: {[o.name for o in self.__orders]}')
 
     def set_orders(self, orders):
         self.orders = orders
@@ -350,8 +348,7 @@ class PlayOrderWidget(Gtk.HBox):
         shuffle_cls = self.__get_shuffle_class()
         shuffler = (shuffle_cls() if self.shuffled else OrderInOrder())
         self.order = repeat_cls(shuffler) if self.repeated else shuffler
-        print_d("Updating %s order to %s"
-                % (type(self.__playlist).__name__, self.order))
+        print_d(f"Updating {type(self.__playlist).__name__} order to {self.order}")
         self.__playlist.order = self.order
         self.__player.replaygain_profiles[2] = shuffler.replaygain_profiles
         self.__player.reset_replaygain()

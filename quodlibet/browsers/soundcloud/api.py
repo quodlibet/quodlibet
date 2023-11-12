@@ -7,7 +7,7 @@
 
 import json
 from datetime import datetime
-from typing import Optional, Any
+from typing import Any
 from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup, GLib
@@ -75,8 +75,8 @@ class RestApi(GObject.Object):
         download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
-        path = "%s%s" % (self.root, path)
-        return "%s?%s" % (path, urlencode(args)) if args else path
+        path = f"{self.root}{path}"
+        return f"{path}?{urlencode(args)}" if args else path
 
 
 class SoundcloudApiClient(RestApi):
@@ -252,7 +252,7 @@ class SoundcloudApiClient(RestApi):
     def _on_favorited(self, json, _data):
         print_d("Successfully updated favorite")
 
-    def _audiofile_for(self, response) -> Optional[AudioFile]:
+    def _audiofile_for(self, response) -> AudioFile | None:
         r = Wrapper(response)
         d = r.data
         try:
@@ -322,7 +322,7 @@ class SoundcloudApiClient(RestApi):
 
     @util.cached_property
     def _authorize_url(self):
-        url = "%s/connect" % (self.API_ROOT,)
+        url = f"{self.API_ROOT}/connect"
         options = {
             "scope": "",
             "client_id": self.__CLIENT_ID,
@@ -330,4 +330,4 @@ class SoundcloudApiClient(RestApi):
             "redirect_uri": self.REDIRECT_URI
 
         }
-        return "%s?%s" % (url, urlencode(options))
+        return f"{url}?{urlencode(options)}"

@@ -30,15 +30,15 @@ class TComboBoxEntrySave(TestCase):
     def test_equivalence(self):
         model1 = self.cbes.get_model()
         model2 = self.cbes2.get_model()
-        self.failUnlessEqual(model1, model2)
+        self.assertEqual(model1, model2)
 
         rows1 = list(model1)
         rows2 = list(model2)
 
         for row1, row2 in zip(rows1, rows2, strict=False):
-            self.failUnlessEqual(row1[0], row2[0])
-            self.failUnlessEqual(row1[1], row2[1])
-            self.failUnlessEqual(row1[2], row2[2])
+            self.assertEqual(row1[0], row2[0])
+            self.assertEqual(row1[1], row2[1])
+            self.assertEqual(row1[2], row2[2])
 
     def test_text_changed_signal(self):
         called = [0]
@@ -54,12 +54,12 @@ class TComboBoxEntrySave(TestCase):
         self.cbes.connect("text-changed", cb)
         entry = self.cbes.get_child()
         entry.set_text("foo")
-        self.failUnlessEqual(get_count(), 1)
+        self.assertEqual(get_count(), 1)
         self.cbes.prepend_text("bar")
         # in case the model got changed but the entry is still the same
         # the text-changed signal should not be triggered
-        self.failUnlessEqual(entry.get_text(), "foo")
-        self.failUnlessEqual(get_count(), 0)
+        self.assertEqual(entry.get_text(), "foo")
+        self.assertEqual(get_count(), 0)
 
     def test_shared_model(self):
         self.cbes.prepend_text("a test")
@@ -67,7 +67,7 @@ class TComboBoxEntrySave(TestCase):
 
     def test_initial_size(self):
         # 1 saved, Edit, separator, 2 remembered
-        self.failUnlessEqual(len(self.cbes.get_model()), 5)
+        self.assertEqual(len(self.cbes.get_model()), 5)
 
     def test_prepend_text(self):
         self.cbes.prepend_text("pattern 3")
@@ -76,8 +76,8 @@ class TComboBoxEntrySave(TestCase):
 
     def test_save(self):
         self.cbes.write()
-        self.failUnlessEqual(self.memory, open(self.fname).read())
-        self.failUnlessEqual(self.saved, open(self.fname + ".saved").read())
+        self.assertEqual(self.memory, open(self.fname).read())
+        self.assertEqual(self.saved, open(self.fname + ".saved").read())
 
     def test_set_text_then_prepend(self):
         self.cbes.get_child().set_text("foobar")
@@ -103,18 +103,17 @@ class TStandaloneEditor(TestCase):
         os.close(h)
         with open(self.fname + ".saved", "w") as f:
             f.write(
-                "%s\n%s\n" % (self.TEST_KV_DATA[0][1],
-                              self.TEST_KV_DATA[0][0]))
+                f"{self.TEST_KV_DATA[0][1]}\n{self.TEST_KV_DATA[0][0]}\n")
         self.sae = StandaloneEditor(self.fname, "test", None, None)
 
     def test_constructor(self):
-        self.failUnless(self.sae.model)
+        self.assertTrue(self.sae.model)
         data = [(row[1], row[0]) for row in self.sae.model]
-        self.failUnlessEqual(data, self.TEST_KV_DATA)
+        self.assertEqual(data, self.TEST_KV_DATA)
 
     def test_load_values(self):
         values = StandaloneEditor.load_values(self.fname + ".saved")
-        self.failUnlessEqual(self.TEST_KV_DATA, values)
+        self.assertEqual(self.TEST_KV_DATA, values)
 
     def test_defaults(self):
         defaults = [("Dot-com Dream", "http://<artist>.com")]
@@ -128,7 +127,7 @@ class TStandaloneEditor(TestCase):
         self.sae = StandaloneEditor(self.fname, "test2", defaults, None)
         self.sae.write()
         data = [(row[1], row[0]) for row in self.sae.model]
-        self.failUnlessEqual(defaults, data)
+        self.assertEqual(defaults, data)
 
     def tearDown(self):
         self.sae.destroy()

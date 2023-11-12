@@ -89,7 +89,7 @@ class MMKeysHandler:
             self._backend.grab()
 
     def _callback(self, action):
-        print_d("Event %r from %r" % (action, type(self._backend).__name__))
+        print_d(f"Event {action!r} from {type(self._backend).__name__!r}")
 
         def seek_relative(seconds):
             current = player.get_position()

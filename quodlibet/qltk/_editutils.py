@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Type
 
 from gi.repository import Gtk, GObject
 from senf import fsn2text
@@ -61,7 +60,7 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
-    Kind: Optional[Type] = None
+    Kind: type | None = None
 
     def __init__(self):
         super().__init__()
@@ -141,7 +140,7 @@ class FilterPluginBox(Gtk.VBox):
         # plugins
         self.__plugins = []
         hb = Gtk.HBox()
-        expander = Gtk.Expander(label=_(u"_More options…"))
+        expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
         expander.set_no_show_all(True)
         hb.pack_start(expander, True, True, 0)

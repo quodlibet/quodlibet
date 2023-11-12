@@ -115,7 +115,7 @@ class WebsiteSearch(SongsMenuPlugin):
             connect_obj(item, "activate", self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_(u"Configure Searches…"))
+        configure = Gtk.MenuItem(label=_("Configure Searches…"))
         connect_obj(configure, "activate", self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)
@@ -158,5 +158,5 @@ def website_for(pat, song):
                 subs[k] = (vals if k in ["website", "~filename"]
                            else quote_plus(vals))
             except KeyError:
-                print_d("Problem with %s tag values: %r" % (k, vals))
+                print_d(f"Problem with {k} tag values: {vals!r}")
     return pat.format(subs) or None

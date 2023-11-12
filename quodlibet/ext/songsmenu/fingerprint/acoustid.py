@@ -74,7 +74,7 @@ class AcoustidSubmissionThread(threading.Thread):
         error = None
         try:
             response = urlopen(req, timeout=self.TIMEOUT)
-        except EnvironmentError as e:
+        except OSError as e:
             error = "urllib error: " + str(e)
         else:
             xml = response.read()
@@ -194,7 +194,7 @@ def parse_acoustid_response(json_data):
                 album = release.get("title", "")
                 album_id = release["id"]
                 parts = [date.get(k) for k in ["year", "month", "day"]]
-                date = "-".join([u"%02d" % p for p in parts if p is not None])
+                date = "-".join(["%02d" % p for p in parts if p is not None])
 
                 albumartists = []
                 albumartist_ids = []
@@ -216,14 +216,14 @@ def parse_acoustid_response(json_data):
                 title = track_info.get("title", "")
 
                 if disc and discs > 1:
-                    discnumber = u"%d/%d" % (disc, discs)
+                    discnumber = f"{disc:d}/{discs:d}"
                 else:
-                    discnumber = u""
+                    discnumber = ""
 
                 if track and tracks > 1:
-                    tracknumber = u"%d/%d" % (track, tracks)
+                    tracknumber = f"{track:d}/{tracks:d}"
                 else:
-                    tracknumber = u""
+                    tracknumber = ""
 
                 tags = {
                     "title": title,
@@ -313,7 +313,7 @@ class AcoustidLookupThread(threading.Thread):
         error = ""
         try:
             response = urlopen(req, timeout=self.TIMEOUT)
-        except EnvironmentError as e:
+        except OSError as e:
             error = "urllib error: " + str(e)
         else:
             try:

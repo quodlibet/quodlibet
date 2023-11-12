@@ -316,7 +316,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         except SoundcloudQuery.Error as e:
             print_d("Couldn't parse query: %s" % e)
         else:
-            print_d("Got terms from query: %s" % (self.__filter.terms,))
+            print_d(f"Got terms from query: {self.__filter.terms}")
             if not restore:
                 self.activate()
 
@@ -432,10 +432,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             except IndexError:
                 print_w("Malformed response in callback URI: %s" % uri)
                 return
-            print_d("Processing Soundcloud callback (%s)" % (uri,))
+            print_d(f"Processing Soundcloud callback ({uri})")
             self.api_client.get_tokens(code)
         else:
-            print_w("Unknown URL format (%s)" % (uri,))
+            print_w(f"Unknown URL format ({uri})")
 
     def __on_authenticated(self, obj, data):
         name = data.username

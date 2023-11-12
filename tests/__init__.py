@@ -185,7 +185,7 @@ def init_test_environ():
     global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     # create a user dir in /tmp and set env vars
-    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
+    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative("QL-TEST-"))
 
     # force the old cache dir so that GStreamer can re-use the GstRegistry
     # cache file
@@ -194,7 +194,7 @@ def init_test_environ():
     # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
     # disable it. If the registry cache is missing it will be created
     # despite this setting.
-    os.environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
+    os.environ["GST_REGISTRY_UPDATE"] = fsnative("no")
 
     # In flatpak we might get a registry from a different/old flatpak build
     # when testing new versions etc. Better always update in that case.
@@ -202,7 +202,7 @@ def init_test_environ():
         del os.environ["GST_REGISTRY_UPDATE"]
 
     # set HOME and remove all XDG vars that default to it if not set
-    home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
+    home_dir = tempfile.mkdtemp(prefix=fsnative("HOME-"), dir=_TEMP_DIR)
     os.environ["HOME"] = home_dir
 
     # set to new default
@@ -250,7 +250,7 @@ def exit_test_environ():
 
     try:
         shutil.rmtree(_TEMP_DIR)
-    except EnvironmentError:
+    except OSError:
         pass
 
     dbus_kill_user(_BUS_INFO)

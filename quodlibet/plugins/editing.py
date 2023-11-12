@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
 
 from gi.repository import Gtk
 
@@ -133,8 +132,8 @@ class EditTagsPlugin(Gtk.ImageMenuItem):
          clicked on, and your activate handler runs.
     """
 
-    tags: List[str] = []
-    needs: List[str] = []
+    tags: list[str] = []
+    needs: list[str] = []
     _order = 2.0
 
     def activated(self, tag, value):

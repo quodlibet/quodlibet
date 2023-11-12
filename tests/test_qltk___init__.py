@@ -25,7 +25,7 @@ def test_is_instance_of_gtype_name():
 
 class TQltk(TestCase):
     def test_none(self):
-        self.failUnless(qltk.get_top_parent(None) is None)
+        self.assertTrue(qltk.get_top_parent(None) is None)
 
     def test_get_fg_highlight_color(self):
         widget = Gtk.Button()
@@ -36,8 +36,8 @@ class TQltk(TestCase):
     def test_gtp(self):
         w = Gtk.Window()
         l = Gtk.Label()
-        self.failUnlessEqual(qltk.get_top_parent(w), w)
-        self.failUnlessEqual(qltk.get_top_parent(l), None)
+        self.assertEqual(qltk.get_top_parent(w), w)
+        self.assertEqual(qltk.get_top_parent(l), None)
         w.destroy()
         l.destroy()
 
@@ -45,26 +45,26 @@ class TQltk(TestCase):
         w = Gtk.Window()
         l = Gtk.Label()
         w.add(l)
-        self.failUnlessEqual(qltk.get_top_parent(w), w)
-        self.failUnlessEqual(qltk.get_top_parent(l), w)
+        self.assertEqual(qltk.get_top_parent(w), w)
+        self.assertEqual(qltk.get_top_parent(l), w)
         w.destroy()
         l.destroy()
 
     def test_is_accel(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
-        self.failIf(qltk.is_accel(e, "a"))
+        self.assertFalse(qltk.is_accel(e, "a"))
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
-        self.failUnless(qltk.is_accel(e, "<ctrl>Return"))
+        self.assertTrue(qltk.is_accel(e, "<ctrl>Return"))
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
-        self.failUnless(qltk.is_accel(e, "a", "<ctrl>Return"))
-        self.failUnless(qltk.is_accel(e, "<ctrl>Return", "b"))
-        self.failIf(qltk.is_accel(e, "a", "b"))
+        self.assertTrue(qltk.is_accel(e, "a", "<ctrl>Return"))
+        self.assertTrue(qltk.is_accel(e, "<ctrl>Return", "b"))
+        self.assertFalse(qltk.is_accel(e, "a", "b"))
 
     def test_is_accel_invalid(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
@@ -135,9 +135,9 @@ class Tselection_data(TestCase):
 
     def test_selection_set_songs(self):
         song = AudioFile()
-        song["~filename"] = fsnative(u"foo")
+        song["~filename"] = fsnative("foo")
         sel = MockSelData()
         qltk.selection_set_songs(sel, [song])
-        assert sel.data == fsn2bytes(fsnative(u"foo"), "utf-8")
+        assert sel.data == fsn2bytes(fsnative("foo"), "utf-8")
 
-        assert qltk.selection_get_filenames(sel) == [fsnative(u"foo")]
+        assert qltk.selection_get_filenames(sel) == [fsnative("foo")]

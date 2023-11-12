@@ -75,34 +75,34 @@ class TRandomAlbum(PluginTestCase):
     def test_empty_integration_weighted(self):
         # See issue #2756
         self.plugin.use_weights = True
-        self.failIf(self.plugin.plugin_on_song_started(None))
+        self.assertFalse(self.plugin.plugin_on_song_started(None))
 
     def test_empty_integration(self):
         # See issue #2756
         self.plugin.use_weights = False
-        self.failIf(self.plugin.plugin_on_song_started(None))
+        self.assertFalse(self.plugin.plugin_on_song_started(None))
 
     def test_score_rating(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
         weights["rating"] = 1
-        self.failUnlessEqual(A1, self.get_winner(self.albums))
+        self.assertEqual(A1, self.get_winner(self.albums))
 
     def test_score_length(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
         weights["length"] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_lastplayed(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
         weights["lastplayed"] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_lastplayed_added(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
         weights["lastplayed"] = 1
         # No data here
         weights["added"] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_mixed(self):
         print_d("Starting.")
@@ -111,9 +111,9 @@ class TRandomAlbum(PluginTestCase):
         weights["lastplayed"] = 2
         weights["rating"] = 1
         # A3 is #3 rating, #1 in lastplayed, #1 in length
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        self.assertEqual(A3, self.get_winner(self.albums))
         weights["lastplayed"] = 1
         weights["rating"] = 2
         weights["length"] = 0.5
         # A1 is #1 for Rating, #2 for lastplayed, #2 or 3 length
-        self.failUnlessEqual(A1, self.get_winner(self.albums))
+        self.assertEqual(A1, self.get_winner(self.albums))

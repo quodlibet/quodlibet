@@ -133,9 +133,9 @@ class FilterMenu:
         name = menuitem.get_name()
 
         if name == "PlayedRecently":
-            self._make_query(u"#(lastplayed < 7 days ago)")
+            self._make_query("#(lastplayed < 7 days ago)")
         elif name == "AddedRecently":
-            self._make_query(u"#(added < 7 days ago)")
+            self._make_query("#(added < 7 days ago)")
         elif name == "TopRated":
             bg = background_filter()
             songs = (bg and filter(bg, self._library)) or self._library
@@ -144,9 +144,9 @@ class FilterMenu:
                 return
             songs.sort()
             if len(songs) < 40:
-                self._make_query(u"#(playcount > %d)" % (songs[0] - 1))
+                self._make_query(f"#(playcount > {songs[0] - 1:d})")
             else:
-                self._make_query(u"#(playcount > %d)" % (songs[-40] - 1))
+                self._make_query(f"#(playcount > {songs[-40] - 1:d})")
         elif name == "All":
             self._browser.unfilter()
 

@@ -6,7 +6,7 @@
 import os
 import time
 from pathlib import Path
-from typing import Generator, Set, Iterable, Optional, Dict, Tuple, Union
+from collections.abc import Generator, Iterable
 
 from gi.repository import Gio, GLib, GObject
 
@@ -187,12 +187,11 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         if changed:
             self.emit("changed", changed)
 
-        for value in self.scan(paths, exclude, cofuncid):
-            yield value
+        yield from self.scan(paths, exclude, cofuncid)
 
     def add_filename(self,
-                     filename: Union[str, Path],
-                     add: bool = True) -> Optional[AudioFile]:
+                     filename: str | Path,
+                     add: bool = True) -> AudioFile | None:
         """Add a file based on its filename.
         Subclasses must override this to open the file correctly.
 
@@ -206,7 +205,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         return key in self._contents
 
     def scan(self, paths: Iterable[fsnative],
-             exclude: Optional[Iterable[fsnative]] = None,
+             exclude: Iterable[fsnative] | None = None,
              cofuncid=None):
 
         def need_yield(last_yield=[0]):  # noqa
@@ -349,7 +348,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
         print_d(f"Checking entire library for {str(old_path)!r}", self._name)
-        missing: Set[AudioFile] = set()
+        missing: set[AudioFile] = set()
         changed = set()
         total = len(self)
         if not total:
@@ -436,7 +435,7 @@ class WatchedFileLibraryMixin(FileLibrary):
 
     def __init__(self, name=None):
         super().__init__(name)
-        self._monitors: Dict[Path, Tuple[GObject.GObject, int]] = {}
+        self._monitors: dict[Path, tuple[GObject.GObject, int]] = {}
         print_d(f"Initialised {self!r}")
 
     def monitor_dir(self, path: Path) -> None:
@@ -458,7 +457,7 @@ class WatchedFileLibraryMixin(FileLibrary):
             print_d(f"Monitoring {path!s}", self._name)
 
     def __file_changed(self, _monitor, main_file: Gio.File,
-                       other_file: Optional[Gio.File],
+                       other_file: Gio.File | None,
                        event: Gio.FileMonitorEvent) -> None:
         if event == Event.CHANGES_DONE_HINT:
             # This seems to work fine on most Linux, but not on Windows / macOS

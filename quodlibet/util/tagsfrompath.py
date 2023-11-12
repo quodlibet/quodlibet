@@ -31,7 +31,7 @@ class TagsFromPattern:
                 if "~" in piece:
                     dummies_found += 1
                     piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
-                pieces[i] = "(?P%s%s)" % (piece, override.get(piece, ".+?"))
+                pieces[i] = "(?P{}{})".format(piece, override.get(piece, ".+?"))
                 if "QUOD_LIBET" not in piece:
                     self.headers.append(piece[1:-1])
             else:

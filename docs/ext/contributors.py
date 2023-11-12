@@ -12,7 +12,7 @@ class ContributorsDirective(Directive):
 
         roles = ["authors", "translators", "artists"]
         if role not in roles:
-            raise Exception("Argument must be in {}".format(roles))
+            raise Exception(f"Argument must be in {roles}")
 
         const = self.state.document.settings.env.config.const
         if role == "authors":

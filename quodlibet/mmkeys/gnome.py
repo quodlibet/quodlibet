@@ -75,7 +75,7 @@ class GnomeBackend(MMKeysBackend):
 
         if update:
             # so this breaks every 50 days.. ok..
-            self.__grab_time = int((time.time() * 1000)) & 0xFFFFFFFF
+            self.__grab_time = int(time.time() * 1000) & 0xFFFFFFFF
         elif self.__grab_time < 0:
             # can not send the last event if there was none
             return

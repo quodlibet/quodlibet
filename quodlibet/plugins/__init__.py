@@ -5,7 +5,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Iterable
+from typing import Optional
+from collections.abc import Iterable
 
 from quodlibet import _
 from quodlibet import config
@@ -131,7 +132,7 @@ class Plugin:
         self.instance = None
 
     def __repr__(self):
-        return "<%s id=%r name=%r>" % (type(self).__name__, self.id, self.name)
+        return f"<{type(self).__name__} id={self.id!r} name={self.name!r}>"
 
     @property
     def can_enable(self):
@@ -453,7 +454,7 @@ class PluginConfig(ConfigProxy):
         return PluginConfig(self._prefix, real_default_config, False)
 
     def _option(self, name):
-        return "%s_%s" % (self._prefix, name)
+        return f"{self._prefix}_{name}"
 
     def ConfigCheckButton(self, label, option, **kwargs):  # noqa
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
@@ -479,7 +480,7 @@ class PluginConfigMixin:
         if not prefix:
             prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
 
-        return "%s_%s" % (prefix, option)
+        return f"{prefix}_{option}"
 
     @classmethod
     def config_get(cls, name, default=""):
@@ -492,7 +493,7 @@ class PluginConfigMixin:
         try:
             config.set(PM.CONFIG_SECTION, cls._config_key(name), value)
         except config.Error:
-            print_d("Couldn't set config item '%s' to %r" % (name, value))
+            print_d(f"Couldn't set config item '{name}' to {value!r}")
 
     @classmethod
     def config_get_bool(cls, name, default=False):

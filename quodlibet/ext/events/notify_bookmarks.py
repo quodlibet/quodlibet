@@ -6,7 +6,6 @@
 # (at your option) any later version.
 
 from collections import deque
-from typing import Optional
 
 import gi
 
@@ -39,7 +38,7 @@ class BookmarkNotify(EventPlugin, PluginConfigMixin):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._timer = None
-        self.song: Optional[AudioFile] = None
+        self.song: AudioFile | None = None
         self._bookmarks = []
         self._loaded = False
 

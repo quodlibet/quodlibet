@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-from typing import Dict
 
 from gi.repository import Gtk, Pango, GObject, GLib
 
@@ -193,7 +192,7 @@ class StandaloneEditor(_KeyValueEditor):
         """Returns a list of tuples representing k,v pairs of the given file"""
         ret = []
         if os.path.exists(filename):
-            fileobj = open(filename, "r", encoding="utf-8")
+            fileobj = open(filename, encoding="utf-8")
             lines = list(fileobj.readlines())
             for i in range(len(lines) // 2):
                 ret.append((lines[i * 2 + 1].strip(), lines[i * 2].strip()))
@@ -208,7 +207,7 @@ class StandaloneEditor(_KeyValueEditor):
     def fill_values(self):
         filename = self.filename + ".saved"
         if os.path.exists(filename):
-            fileobj = open(filename, "r", encoding="utf-8")
+            fileobj = open(filename, encoding="utf-8")
             lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
@@ -231,7 +230,7 @@ class StandaloneEditor(_KeyValueEditor):
                 for row in self.model:
                     saved.write(row[0] + "\n")
                     saved.write(row[1] + "\n")
-        except EnvironmentError:
+        except OSError:
             pass
 
 
@@ -257,7 +256,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         "text-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
-    __models: Dict[str, Gtk.TreeModel] = {}
+    __models: dict[str, Gtk.TreeModel] = {}
     __last = ""
 
     def __init__(self, filename=None, initial=None, count=5, id=None,
@@ -343,7 +342,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
         saved_ = str(filename) + ".saved"
         if os.path.exists(saved_):
-            with open(saved_, "r", encoding="utf-8") as fileobj:
+            with open(saved_, encoding="utf-8") as fileobj:
                 lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
@@ -351,7 +350,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
                     row=[lines.pop(1).strip(), lines.pop(0).strip(), None])
 
         if os.path.exists(filename):
-            with open(filename, "r", encoding="utf-8") as fileobj:
+            with open(filename, encoding="utf-8") as fileobj:
                 for line in fileobj.readlines():
                     line = line.strip()
                     model.append(row=[line, line, None])
@@ -395,7 +394,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
                             target.write(row[0] + "\n")
                             if target is saved:
                                 target.write(row[1] + "\n")
-        except EnvironmentError:
+        except OSError:
             pass
 
     def __remove_if_present(self, text):

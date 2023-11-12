@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Dict, List
 import random
 
 from gi.repository import Gtk, GObject, GLib, Pango
@@ -199,7 +198,7 @@ class Browser(Gtk.Box, Filter):
     the songs returned.
     """
 
-    headers: Optional[List[str]] = None
+    headers: list[str] | None = None
     """A list of column headers to display; None means all are okay."""
 
     @classmethod
@@ -274,11 +273,11 @@ class Browser(Gtk.Box, Filter):
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def status_text(self, count: int, time: Optional[str] = None) -> str:
+    def status_text(self, count: int, time: str | None = None) -> str:
         tmpl = numeric_phrase("%d song", "%d songs", count)
         return f"{tmpl} ({time})" if time else tmpl
 
-    replaygain_profiles: Optional[List[str]] = None
+    replaygain_profiles: list[str] | None = None
     """Replay Gain profiles for this browser."""
 
     def __str__(self):
@@ -302,11 +301,10 @@ class DisplayPatternMixin:
         """Load the pattern as defined in `_PATTERN_FN`"""
         print_d("Loading pattern from %s" % cls._PATTERN_FN)
         try:
-            with open(cls._PATTERN_FN, "r", encoding="utf-8") as f:
+            with open(cls._PATTERN_FN, encoding="utf-8") as f:
                 pattern_text = f.read().rstrip()
-        except EnvironmentError as e:
-            print_d("Couldn't load pattern for %s (%s), using default." %
-                    (cls.__name__, e))
+        except OSError as e:
+            print_d(f"Couldn't load pattern for {cls.__name__} ({e}), using default.")
             pattern_text = cls._DEFAULT_PATTERN_TEXT
         cls.__refresh_pattern(pattern_text)
 
@@ -352,7 +350,7 @@ class FakeDisplayItem(dict):
         elif key[:1] == "~" and key[-4:-3] == ":":
             func = key[-3:]
             key = key[:-4]
-            return "%s<%s>" % (util.tag(key), func)
+            return f"{util.tag(key)}<{func}>"
         elif key in self:
             return self[key]
         return util.tag(key)
@@ -361,7 +359,7 @@ class FakeDisplayItem(dict):
 
     def comma(self, key):
         value = self.get(key)
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             return value
         return value.replace("\n", ", ")
 
@@ -369,10 +367,10 @@ class FakeDisplayItem(dict):
 class EditDisplayPatternMixin:
     """Provides a display Pattern in an editable frame"""
 
-    _PREVIEW_ITEM: Optional[Dict[str, str]] = None
+    _PREVIEW_ITEM: dict[str, str] | None = None
     """The `FakeItem` (or similar) to use to interpolate into the pattern"""
 
-    _DEFAULT_PATTERN: Optional[str] = None
+    _DEFAULT_PATTERN: str | None = None
     """The display pattern to use when none is saved"""
 
     def edit_display_pane(self, browser, frame_title=None):
@@ -406,7 +404,7 @@ class EditDisplayPatternMixin:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         try:
-            Pango.parse_markup(text, -1, u"\u0000")
+            Pango.parse_markup(text, -1, "\u0000")
         except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
