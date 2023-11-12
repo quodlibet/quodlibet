@@ -1,12 +1,12 @@
 # Copyright 2006 Joe Wreschnig
-#        2016-17 Nick Boultbee
+#        2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from gi.repository import Gtk
 
@@ -105,7 +105,7 @@ class OrderRemembered(Order):
     """Shared class for all the shuffle modes that keep a memory
     of their previously played songs."""
 
-    _played: List[Gtk.TreeIter]
+    _played: list[Gtk.TreeIter]
 
     def __init__(self):
         super().__init__()
@@ -128,7 +128,7 @@ class OrderRemembered(Order):
     def reset(self, playlist):
         del(self._played[:])
 
-    def remaining(self, playlist) -> Dict[int, Any]:
+    def remaining(self, playlist) -> dict[int, Any]:
         """Gets a map of all song indices to their song from the `playlist`
         that haven't yet been played"""
 

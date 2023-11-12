@@ -9,7 +9,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List, Optional, Sequence, Tuple
+from collections.abc import Sequence
 
 from gi.repository import Gtk, GLib, Gdk, GObject
 from senf import uri2fsn
@@ -784,7 +784,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
             return []
         return model.get()
 
-    def _get_song_order(self, songs: List[AudioFile]) -> Optional[Sequence[int]]:
+    def _get_song_order(self, songs: list[AudioFile]) -> Sequence[int] | None:
         """Returns mapping from new position to position in given list of songs
         when sorted based on the column sort orders"""
 

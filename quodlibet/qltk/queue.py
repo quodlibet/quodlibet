@@ -9,7 +9,8 @@
 
 import os
 import time
-from typing import Any, Sequence
+from typing import Any
+from collections.abc import Sequence
 
 from gi.repository import Gtk, Gdk, Pango, GLib
 
