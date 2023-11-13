@@ -340,7 +340,7 @@ class ReplayGainPipeline(GObject.Object):
             if gerror:
                 print_e(gerror.message)
             print_e(debug)
-            self._current.Error = True
+            self._current.error = True
             self._next_song()
 
 
@@ -373,7 +373,7 @@ class RGDialog(Dialog):
 
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            if item.Error:
+            if item.error:
                 cell.set_property("icon-name", Icons.DIALOG_ERROR)
             else:
                 cell.set_property("icon-name", Icons.NONE)
