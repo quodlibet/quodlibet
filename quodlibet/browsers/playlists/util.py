@@ -137,7 +137,7 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         if win.step():
             break
     win.destroy()
-    return pl_lib.create_from_songs(songs)
+    return pl_lib.create_from_songs(songs, title=name)
 
 
 def _af_for(filename, library, pl_dir):
