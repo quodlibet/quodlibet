@@ -22,4 +22,4 @@ from tests import QL_BASE_PATH, skipUnless
 def test_ruff():
     ruff = find_ruff_bin()
     completed_process = subprocess.run([os.fsdecode(ruff), "check", str(QL_BASE_PATH)])
-    assert completed_process.returncode == 0, "Failed with:\n{completed_process.stderr}"
+    assert completed_process.returncode == 0, f"Failed with:\n{completed_process.stderr}"
