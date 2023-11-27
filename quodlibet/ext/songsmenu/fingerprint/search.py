@@ -415,10 +415,10 @@ class SearchWindow(Window):
             # update display
             if lresult.releases:
                 self.__update_active_releases()
-            elif lresult.Error:
+            elif lresult.error:
                 entry.status = Status.ERROR
                 # we don't expose in the UI, so at least print it
-                print_w(lresult.Error)
+                print_w(lresult.error)
             else:
                 entry.status = Status.UNKNOWN
 
