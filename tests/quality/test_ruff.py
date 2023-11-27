@@ -21,5 +21,5 @@ from tests import QL_BASE_PATH, skipUnless
 @skipUnless(find_ruff_bin, "Can't find ruff executable")
 def test_ruff():
     ruff = find_ruff_bin()
-    completed_process = subprocess.run([os.fsdecode(ruff), "check", str(QL_BASE_PATH)])
-    assert completed_process.returncode == 0, "Failed with:\n{completed_process.stderr}"
+    completed_process = subprocess.run([os.fsdecode(ruff), "check", str(QL_BASE_PATH)], capture_output=True)
+    assert completed_process.returncode == 0, f"Failed with:\n{completed_process.stderr}"
