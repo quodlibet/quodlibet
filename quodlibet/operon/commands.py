@@ -177,7 +177,7 @@ class EditCommand(Command):
     def _songs_to_text(self, songs):
         header = [
             "# Lines before the first 'File:' statement, or"
-            u" lines that are empty or start with '#' will be ignored.",
+            " lines that are empty or start with '#' will be ignored.",
             "",
         ]
         return "\n".join(header + [self._song_to_text(song) for song in songs])

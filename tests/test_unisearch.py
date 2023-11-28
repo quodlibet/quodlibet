@@ -33,7 +33,7 @@ class TUniSearch(TestCase):
     def test_re_replace_multi(self):
         r = re_add_variants("ae")
         self.assertEqual(r, "(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
-                            u"[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
+                            "[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
 
         r = re_add_variants("SS")
         self.assertEqual(r, "(?:[SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
