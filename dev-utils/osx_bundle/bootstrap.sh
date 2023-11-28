@@ -12,9 +12,14 @@ rm -Rf "$HOME/.local"
 rm -f "$HOME/.jhbuildrc"
 rm -f "$HOME/.jhbuildrc-custom"
 
+# Delete all build products, so that we'll build everything from scratch.
+rm -Rf "$HOME/jhbuild_checkoutroot"
+rm -Rf "$HOME/.cache"
+rm -Rf "$HOME/jhbuild_prefix"
+
 rustup install 1.69.0
 
-JHBUILD_REVISION="624bcf68591aaa17d9f6119c8b9672b92ac6120c"
+JHBUILD_REVISION="3.38.0"
 
 mkdir -p "$HOME"
 git clone https://gitlab.gnome.org/GNOME/jhbuild.git "$QL_OSXBUNDLE_JHBUILD_DEST"

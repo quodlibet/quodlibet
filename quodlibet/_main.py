@@ -206,7 +206,7 @@ def get_build_description():
 
         if build.BUILD_INFO:
             notes.append(build.BUILD_INFO)
-
+    
     version_string = ".".join(map(str, version))
     note = " (%s)" % ", ".join(notes) if notes else ""
 

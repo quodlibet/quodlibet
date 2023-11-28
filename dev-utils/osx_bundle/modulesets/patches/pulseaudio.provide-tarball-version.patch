@@ -1,0 +1,6 @@
+diff -Nur pulseaudio-v16.1-orig/.tarball-version pulseaudio-v16.1/.tarball-version
+--- pulseaudio-v16.1-orig/.tarball-version	1969-12-31 18:00:00
++++ pulseaudio-v16.1/.tarball-version	2023-11-01 13:13:58
+@@ -0,0 +1 @@
++16.1
+

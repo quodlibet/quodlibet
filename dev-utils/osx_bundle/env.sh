@@ -18,4 +18,4 @@ export RUSTUP_HOME="$ORIG_HOME/.rustup"
 export PATH="$PATH:$HOME/.local/bin"
 export QL_OSXBUNDLE_MODULESETS_DIR="$DIR/modulesets"
 # shellcheck disable=SC2139
-alias jhbuild="python2.7 $(which jhbuild)"
+alias jhbuild="python3 $(which jhbuild)"

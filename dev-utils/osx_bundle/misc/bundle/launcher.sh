@@ -8,7 +8,7 @@ bundle_bin="$bundle_res"/bin
 bundle_data="$bundle_res"/share
 bundle_etc="$bundle_res"/etc
 
-export DYLD_LIBRARY_PATH="$bundle_lib"
+export DYLD_LIBRARY_PATH="$bundle_lib":"$bundle_lib/pulseaudio"
 
 export XDG_CONFIG_DIRS="$bundle_etc"/xdg
 export XDG_DATA_DIRS="$bundle_data"
@@ -53,7 +53,14 @@ export SSL_CERT_FILE="$GTLS_SYSTEM_CA_FILE"
 export QUODLIBET_NO_HINTS=yes
 
 # select target based on our basename
+# Beginning in MacOS 14.0, if the executable pointed to by an app's Info.plist
+# is a symbolic link to a script, Finder passes the path of the script as
+# $0, not the path of the symbolic link.  As a workaround, hardwire "quodlibet"
+# as the app name.  
 APP=$(basename "$0")
+if [ "$APP" = "_launcher" ]; then
+    APP="quodlibet"
+fi
 if [ "$APP" = "run" ]; then
     "$PYTHON" "$@"
 elif  [ "$APP" = "gst-plugin-scanner" ]; then

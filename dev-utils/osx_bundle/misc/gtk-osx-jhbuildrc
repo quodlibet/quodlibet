@@ -1,3 +1,6 @@
+# This file downloaded from: https://gitlab.gnome.org/GNOME/gtk-osx/-/blob/master/jhbuildrc-gtk-osx?ref_type=heads  cea03513 
+
+
 # -*- mode: python -*-
 #
 # Copyright (C) 2006, 2007, 2008 Imendio AB
@@ -27,6 +30,7 @@ import re
 #some variables we'll need defined later
 _default_arch = ""
 _osx_version = 0.0
+_target = '10.11'
 
 def _popen(cmd_arg):
     from subprocess import Popen, PIPE
@@ -37,8 +41,8 @@ def _popen(cmd_arg):
     cmd.stdout.close()
     devnull.close()
     if err:
-        raise RuntimeError, "Failed to close %s stream" % cmd_arg
-    return retval
+        raise RuntimeError("Failed to close %s stream" % cmd_arg)
+    return retval.decode('utf-8')
 
 # Register an extra command to get the checkout dir for a module.
 #
@@ -51,7 +55,7 @@ class _cmd_get_srcdir(jhbuild.commands.Command):
     name = 'gtk-osx-get-srcdir'
     usage_args = 'module'
 
-    def run(self, config, options, args):
+    def run(self, config, options, args, help=None):
         module_set = jhbuild.moduleset.load(config)
 
         if args:
@@ -59,12 +63,44 @@ class _cmd_get_srcdir(jhbuild.commands.Command):
             try:
                 module = module_set.get_module(modname, ignore_case = True)
             except KeyError:
-                raise FatalError(_('unknown module %s') % modname)
-            print module.get_srcdir(None)
+                raise RuntimeError(_('unknown module %s') % modname)
+            print(module.get_srcdir(None))
         else:
             raise FatalError('no module specified')
 
 jhbuild.commands.register_command(_cmd_get_srcdir)
+
+class _cmd_bootstrap_gtk_osx(jhbuild.commands.base.cmd_build):
+    doc = 'Build buildsystem tools not provided by MacOS.'
+
+    name = 'bootstrap-gtk-osx'
+
+    def run(self, config, options, args, help=None):
+        global use_local_modulesets
+        moduleset="bootstrap"
+        modulesets_dir = os.path.dirname(config.moduleset)
+        if (use_local_modulesets and
+            os.path.exists(os.path.join(modulesets_dir,
+                                        moduleset + '.modules'))):
+            config.modulesets_dir = modulesets_dir
+            config.moduleset = moduleset
+        elif (use_local_modulesets and config.modulesets_dir and
+              os.path.exists(os.path.join(config.modulesets_dir,
+                                          moduleset + '.modules'))):
+            config.moduleset = moduleset
+        else:
+            config.moduleset = 'https://gitlab.gnome.org/GNOME/gtk-osx/raw/master/modulesets-stable/bootstrap.modules'
+
+        args = ['meta-bootstrap']
+
+        for item in options.skip:
+            config.skip += item.split(',')
+        options.skip = []
+
+        rc = jhbuild.commands.base.cmd_build.run(self, config, options, args)
+        return rc
+
+jhbuild.commands.register_command(_cmd_bootstrap_gtk_osx)
 
 class _getenv(jhbuild.commands.Command):
     doc = "Retrieve an environment variable set within jhbuild"
@@ -79,38 +115,54 @@ class _getenv(jhbuild.commands.Command):
             raise FatalError("No environment variable")
 
         var = args[0]
-        if not os.environ.has_key(var):
+        if var not in os.environ:
             raise FatalError("variable " + var + " not defined in jhbuild environment")
-        print os.environ[var]
+        print(os.environ[var])
 
 jhbuild.commands.register_command(_getenv)
 
 # Determine the native system:
 def osx_ver():
-    global _default_arch, _osx_version
+    global _default_arch, _osx_version, _target
     vstring = _popen("uname -r")
     mstring = _popen("machine")
     exp = re.compile(r'(\d+\.\d+)\.\d+')
     vernum = exp.match(vstring)
     _osx_version = float(vernum.group(1)) - 4.0
-
-    x64bit = _popen("sysctl hw.cpu64bit_capable").endswith("1")
-    if x64bit and _osx_version >= 6.0:
-        _default_arch = "x86_64"
-    elif mstring.startswith("ppc") :
-        _default_arch = "ppc"
+    if _osx_version < 16:
+        _target = '10.%d' % int(_osx_version)
     else:
-        _default_arch = "i386"
+        _target = '%d' % (_osx_version - 5)
+
+    _default_arch = _popen("uname -m")
 
 # Determine the XCode Version:
 def xcode_ver():
-   ver = _popen("xcodebuild -version")
-   exp = re.compile(r'Xcode (\d+\.\d+)')
-   vernum = exp.match(ver)
-   if vernum:
-       return float(vernum.group(1))
-   else:
-       return 3.0
+   global conditions
+   devdir = _popen("xcode-select -p")
+   if devdir != "/Library/Developer/CommandLineTools":
+       ver = _popen("xcodebuild -version")
+       exp = re.compile(r'Xcode (\d+\.\d+)')
+       vernum = exp.match(ver)
+       if vernum:
+           _xcode_ver = float(vernum.group(1))
+           if _xcode_ver < 5.0:
+               raise EnvironmentError("Xcode Version %f is not supported; if you want to build with Xcode versions earlier than 5.0 checkout tag Last-Lion." % _xcode_ver)
+           if _xcode_ver < 10.0:
+               conditions.add('pre-Mavericks')
+           return _xcode_ver
+       else:
+           raise EnvironmentError("No suitable Xcode found. Xcode 5.0 or later is required.")
+   else: #Command-Line Tools instead of Xcode
+       ver_str = _popen("pkgutil --pkg-info=com.apple.pkg.CLTools_Executables | grep version*")
+       print("Found Command Line Tools '%s'" % ver_str)
+       exp = re.compile(r'version: (\d+\.\d+)')
+       vernum = exp.match(ver_str)
+       if vernum:
+           print("Command Line Tools version %f" % float(vernum.group(1)))
+           return float(vernum.group(1))
+       else:
+           return 8.0
 
 # Some utitily functions used here and in custom files:
 #
@@ -163,9 +215,9 @@ def setup_debug():
 # orderFront:] if gcc is passed -O0 for 64-bit compilation. The old
 # stabs+ debug format also doesn't work. See Snow Leopard in the Wiki
 # for more information about debugging.
-    environ_prepend('CFLAGS', "-O0 -ggdb3")
-    environ_prepend('CXXFLAGS', "-O0 -ggdb3")
-    environ_prepend('OBJCFLAGS', "-O0 -ggdb3")
+    environ_prepend('CFLAGS', "-O0 -g")
+    environ_prepend('CXXFLAGS', "-O0 -g")
+    environ_prepend('OBJCFLAGS', "-O0 -g")
 
 def setup_release():
     environ_prepend('CFLAGS', "-O2")
@@ -175,85 +227,33 @@ def setup_release():
 # Set up the environment for building against particular SDK.
 #
 
-# These first two are just utility functions.
-def make_sdk_name(sdk_version):
-    return "MacOSX" + sdk_version + ".sdk"
-
-def get_sdkdir(sdk_name, xcodepath, xcodeversion):
-    platformpath = None
-    if xcodeversion >= 4.3:
-        platformpath = os.path.join("Platforms", "MacOSX.platform", "Developer")
-    if xcodepath and platformpath:
-        sdkdir = os.path.join(xcodepath, platformpath, "SDKs", sdk_name)
-    elif xcodepath:
-        sdkdir = os.path.join(xcodepath, "SDKs", sdk_name)
-    else:
-        sdkdir = os.path.join("/Developer", "SDKs", sdk_name)
-
-    if not os.path.exists(sdkdir):
-        sdkdir = ''
-        if 'SDKPATH' in os.environ:
-            try:
-                sdkdir = [os.path.join(path, sdk_name) for path
-                          in os.environ['SDKPATH'].split(':')
-                          if os.path.exists(os.path.join(path, sdk_name))][0]
-            except IndexError:
-                pass
-        if not sdkdir:
-            raise EnvironmentError("%s not found" % sdk_name)
-    return sdkdir
-
-#We call osx_ver() here so that we can set up _default_arch for setup_sdk:
+#We call osx_ver() here so that we can set up _default_arch for setup_sdk
 osx_ver()
 
 #
-# This is the workhorse of the setup. Call this function with the
-# target OSX version (10.4, 10.5, 10.6, etc.), the sdk version you want
-# to use (10.4u, 10.5, 10.6, etc.), and a list of architectures. As you
-# can see, the architectures defaults to a single build of i386 or
-# ppc, depending on your machine. I386 is chosen for intel
-# architectures as a default to ensure compatibility: 64-bit hasn't
-# been tested much on 10.5 and not all dependent packages are ready
-# for it (including ige-mac-integration).
+# This is the workhorse of the setup. Call this function from
+# .jhbuildrc-custom to configure compile and link flags. Optionally
+# specify a minimum MacOS version (10.11, 10.12, 10.13, etc.) and a list
+# of architectures.
 #
-# Notes on 64-bit compilation: This function does what's required for
-# the packages that can be built for 64-bit; unfortunately, there are
-# still some issues in the underlying code that the gtk+ devs are
-# working on.
+# The sdk_version does nothing, as since Xcode 5 it is preferred to
+# build with the SDK that goes with the selected Xcode or command-line
+# tools, which we retrieve via xcrun. sdk_version remains in the
+# setup_sdk signature to prevent breaking existing jhbuildrc-customs.
 #
-def setup_sdk(target, sdk_version, architectures=[_default_arch]):
+# For most users accepting the defaults is the right course.
 
+def setup_sdk(target=_target, sdk_version=None, architectures=[_default_arch]):
+
+    global use_local_modulesets, conditions
     os.environ["MACOSX_DEPLOYMENT_TARGET"] = target
     sdkdir = None
     xcodepath = None
-    xcodeversion = None
+    xcodeversion = xcode_ver()
 
-    try:
-        xcodeversion = xcode_ver()
-    except:
-        print "Failed to find xcode. Make sure that it's installed and that xcode-select is set properly."
+    sdkdir = _popen("xcrun --show-sdk-path")
 
-
-#Note: You can use $DEVELOPER_DIR to override the default set with xcode-select.
-    if _osx_version >= 5.0:
-        xcodepath = _popen("xcode-select -print-path")
-    elif os.environ.has_key("DEVELOPER_DIR"):
-        xcodepath = os.environ["DEVELOPER_DIR"]
-
-#OSX 10.9 doesn't have /usr/include, so we need to set the sdkdir to XCode.app:
-    if sdk_version == 'native' and _osx_version >= 9.0:
-        sdk_version = '10.' + str(int(_osx_version))
-
-    _toolpath = os.path.join("/usr", "bin")
-    if xcodepath:
-        _toolpath = os.path.join(xcodepath, "usr", "bin")
-#For XCode4 we need to disable ppc when building perl:
-    if sdk_version != "native":
-        sdkdir = get_sdkdir(make_sdk_name(sdk_version), xcodepath, xcodeversion)
-        # Seems like we need this since many libraries otherwise only look for
-        # various dependencies (e.g. libiconv) in /usr/lib, hence pulling in
-        # the wrong -L that doesn't have fat binaries on pre-10.5.
-        #
+    if sdkdir:
         environ_prepend("LDFLAGS", "-L" + sdkdir + "/usr/lib")
         environ_prepend("CFLAGS", "-I" + sdkdir + "/usr/include")
         environ_prepend("CXXFLAGS", "-I" + sdkdir + "/usr/include")
@@ -261,36 +261,26 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         environ_prepend("CPPFLAGS", "-I" + sdkdir + "/usr/include")
         environ_prepend("CMAKE_PREFIX_PATH", os.path.join(sdkdir, 'usr'), ':')
         environ_prepend("LIBRARY_PATH", sdkdir + "/usr/lib", ':')
-        # It looks like -isysroot is broken when building on 10.4, causing link
-        # problems. But we don't really need to set it for 10.4 so just
-        # skip that.
-        #
 
-        #It's often necessary to look for things in the SDK when
-        #developing, and it takes a lot of typing, so define a
-        #convenience environment variable:
+        # It's often necessary to look for things in the SDK when
+        # developing, and it takes a lot of typing, so define a
+        # convenience environment variable:
         environ_append('SDKDIR', sdkdir)
-        environ_append('SDKROOT', sdkdir)
+        os.environ["SDKROOT"] = sdkdir
 
-#Apple Documentation says that "-syslibroot" is the arg to pass to the
-#linker, but we are using the compiler to control the linker, and
-#everything seems to be working correctly.
-        if not _osx_version < 5.0:
-            environ_append("CFLAGS", "-isysroot " + sdkdir)
-            environ_append("CPPFLAGS", "-isysroot " + sdkdir)
-            environ_append("CXXFLAGS", "-isysroot " + sdkdir)
-            environ_append("OBJCFLAGS", "-isysroot " + sdkdir)
-            environ_append("LDFLAGS", "-isysroot " + sdkdir)
+        # Apple Documentation says that "-syslibroot" is the arg to pass to the
+        # linker, but we are using the compiler to control the linker, and
+        # everything seems to be working correctly.
+        environ_append("CFLAGS", "-isysroot " + sdkdir)
+        environ_append("CPPFLAGS", "-isysroot " + sdkdir)
+        environ_append("CXXFLAGS", "-isysroot " + sdkdir)
+        environ_append("OBJCFLAGS", "-isysroot " + sdkdir)
+        environ_append("LDFLAGS", "-isysroot " + sdkdir)
 
-            # To pick up cups-config from the right place.
-            #
-            os.environ["CUPS_CONFIG"] = os.path.join(sdkdir,
-                                                     "usr/bin/cups-config")
+        # To pick up cups-config from the right place.
+        os.environ["CUPS_CONFIG"] = os.path.join(sdkdir, "usr/bin/cups-config")
 
-    #Glib and autoconf-2.63 have issues with endianness
-    #
     if architectures == ["i386"]:
-        append_autogenargs("glib", "ac_cv_c_bigendian=no")
         # The '#' on openssl is to stop jhbuild from appending any more autogen
         # arguments such as --disable-Werror; they cause openssl to error out
         append_autogenargs("openssl", "darwin-i386-cc #")
@@ -298,41 +288,24 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         conditions.add('64-bit')
         append_autogenargs("glib", "ac_cv_c_bigendian=no")
         append_autogenargs("openssl", "darwin64-x86_64-cc #")
-    elif architectures == ["ppc"]:
-        append_autogenargs("glib", "ac_cv_c_bigendian=yes")
-        append_autogenargs("gmp", 'CFLAGS="-force_cpusubtype_ALL $CFLAGS"')
-        append_autogenargs("openssl", "darwin-ppc-cc #")
-
+    elif architectures == ["arm64"]:
+        conditions.add('64-bit')
+        conditions.add('arm64')
+        append_autogenargs("glib", "ac_cv_c_bigendian=no")
+        append_autogenargs("openssl", "darwin64-arm64-cc #") # Not a legal value
+    elif len(set(architectures) - {"i386",  "x86_64", 'arm64'}) > 0:
+        raise EnvironmentError("Only architectures i386, x86_64, and arm64 are supported.")
+    if len(set(architectures)) > 1:
+        print("WARNING: Universal builds are neither prohibited nor supported. It might work, but if it doesn't you're on your own.")
     # For unknown reasons, iconv is not picked up correctly without this
     #
-        append_autogenargs('glib', ' --with-libiconv=gnu')
-
-    # If we're building on Snow Leopard for 32-bit, we need to make
-    # sure that Perl and Python are working in 32-bit mode.
-    #
-    if  _osx_version >= 6.0 and architectures == ["i386"]:
-        os.environ["VERSIONER_PERL_PREFER_32_BIT"] = "yes"
-        os.environ["VERSIONER_PYTHON_PREFER_32_BIT"] = "yes"
-
-    #SDK 10.4 doesn't support gcc4.2.
-    if  xcodeversion == 3.0 or sdk_version == "10.4u":
-        if xcodeversion > 4.0:
-            raise EnvironmentError("Can't build for 10.4 on Xcode 4 or later")
-        os.environ["CC"] = os.path.join(_toolpath, "gcc-4.0")
-        os.environ["OBJC"] = os.path.join(_toolpath, "gcc-4.0")
-        os.environ["CXX"] = os.path.join(_toolpath, "g++-4.0")
-    #Note that the following will use Clang with Xcode 5.0 and
-    #llvm-gcc-4.2 on Xcode 4.x
-    elif _osx_version >= 7.0 or xcodeversion > 4.0:
-        os.environ["CC"] = os.path.join(_toolpath, "gcc")
-        os.environ["OBJC"] = os.path.join(_toolpath, "gcc")
-        os.environ["CXX"] = os.path.join(_toolpath, "g++")
-    else:
-        os.environ["CC"] = os.path.join(_toolpath, "gcc-4.2")
-        os.environ["OBJC"] = os.path.join(_toolpath, "gcc-4.2")
-        os.environ["CXX"] = os.path.join(_toolpath, "g++-4.2")
-
-    os.environ['LD'] = os.path.join(_toolpath, "ld")
+    gcc = _popen("xcrun -f gcc")
+    gpp = _popen("xcrun -f g++")
+    ld = _popen("xcrun -f ld")
+    os.environ["CC"] = gcc
+    os.environ["OBJC"] = gcc
+    os.environ["CXX"] = gpp
+    os.environ['LD'] = ld
 
     # Set the -arch flags for everything we're building.
     #
@@ -355,18 +328,11 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
         append_autogenargs("gmp", "--host=x86_64-apple-darwin ABI=64")
         append_autogenargs("liboil", "--host=x86_64-apple-darwin")
         append_autogenargs("gnutls", "--host=x86_64-apple-darwin")
-
-    # Tiger has a somewhat messed-up resolv.h, so we need to explicitly
-    # link libresolv:
-    if _osx_version < 5.0 or sdk_version.startswith("10.4"):
-        append_autogenargs("glib", 'LIBS="-lresolv"')
-    else:
-        # Tiger's CUPS version is too old
-        skip.append('cups')
-
-    # Leopard and later have m4
-    if _osx_version >= 5.0:
-	skip.append('m4')
+    elif architectures == ["arm64"]:
+        append_autogenargs("glib", "--build=aarch64-apple-darwin")
+        append_autogenargs("gmp", "--host=aarch64-apple-darwin ABI=64")
+        append_autogenargs("liboil", "--host=aarch64-apple-darwin")
+        append_autogenargs("libffi", "--host=aarch64-apple-darwin")
 
     # El Capitan needs bash to work around SIP. If you're using a
     # common bootstrap directory (e.g. $HOME/.local) then override
@@ -374,9 +340,13 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     config_shell = os.path.join(prefix, 'bin', 'bash')
     if _osx_version < 11.0:
         skip.append('bash')
-        skip.append('openssl')  # openssl removed in El Capitan
     elif os.path.exists(config_shell):
         os.environ['CONFIG_SHELL'] = config_shell
+
+    if not sdkdir:
+        sdkdir = '/'
+    if os.path.exists(os.path.join(sdkdir, "usr", "include", "openssl")):
+        skip.append('openssl')  # openssl removed in El Capitan
 
     # gettext-fw rebuilds gettext with an in-tree libiconv to get
     # around the Apple-provided one not defining _libiconv_init for
@@ -391,40 +361,23 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     #Overcome Python's obnoxious misconfiguration of portable builds
     if len(architectures) == 1:
         os.environ["BUILDCFLAGS"] = os.environ["CFLAGS"]
-    #Glib wants to use posix_memalign if it's available, but it's only
-    #available after 10.6, and there's no weak linking support for it:
-    if ((target == "10.4" or target == "10.5")
-        and (sdk_version in ("10.6", "10.7", '10.8', '10.9', 'native')
-             and (_osx_version >= 6.0))):
-        append_autogenargs("glib", "ac_cv_compliant_posix_memalign=no")
-
-    append_autogenargs("gnutls", "--disable-guile")
-
-    #Guile doesn't handle optimization well with llvm-gcc
-    if _osx_version >= 7.0 and xcodeversion > 4.0:
-        append_autogenargs("guile", 'CFLAGS="$CFLAGS -O1"')
-    #Defining ARCHFLAGS globally messes up waf, so we need to define
-    #it here for our two perl modules:
-    if architectures != ['ppc']:
-        module_extra_env.update(
-            {"perl-xml-simple":{"ARCHFLAGS":"-arch i386 -arch x86_64"},
-             "perl-xml-parser":{"ARCHFLAGS":"-arch i386 -arch x86_64"}})
-    #Xcode 5 uses clang; there's no gcc-llvm anymore. Some packages
-    #require special arguments or flags to compile:
-    if xcodeversion >= 5.0:
-        module_extra_env["pkg-config"] = {'CFLAGS': os.environ['CFLAGS'] + ' -std=gnu89'}
-        append_autogenargs('libgcrypt', 'CFLAGS="$CFLAGS -fheinous-gnu-extensions"')
-        module_makeargs['liboil'] = 'CFLAGS="$CFLAGS -DHAVE_SYMBOL_UNDERSCORE -fheinous-gnu-extensions"'
-        module_extra_env["WebKit"] = {'CXXFLAGS':os.environ['CXXFLAGS'] +
-                                  ' -stdlib=libstdc++'}
-        append_autogenargs('babl', '--disable-sse')
+    append_autogenargs("gnutls", '--disable-guile CXXFLAGS="$CXXFLAGS -std=c++11"')
+    append_autogenargs("guile", 'CFLAGS="$CFLAGS -O1"')
+    #Some packages require special arguments or flags to compile with Clang:
+    module_extra_env["pkg-config"] = {'CFLAGS': os.environ['CFLAGS'] + ' -std=gnu89'}
+    append_autogenargs('libgcrypt', 'CFLAGS="$CFLAGS -fheinous-gnu-extensions"')
+    module_makeargs['liboil'] = 'CFLAGS="$CFLAGS -DHAVE_SYMBOL_UNDERSCORE -fheinous-gnu-extensions"'
 
     # openssl doesn't understand DESTDIR, but luckily it has its own mechanism.
     module_extra_env['openssl'] = {'INSTALL_PREFIX': os.path.join(prefix, '_jhbuild', 'root-openssl')}
-
-    if xcodeversion >= 4.0 and target in ('10.6', '10.5', '10.4'):
-        environ_append('LDFLAGS',
-                       '-Wl,-no_function_starts -Wl,-no_version_load_command')
+    # GMP deliberately attempts to use CC_FOR_BUILD with no separate
+    # cflags so we need to force it:
+    module_extra_env['gmp'] = {'CC_FOR_BUILD':os.environ['CC'] + ' ' + os.environ['CFLAGS']}
+    # Kill a couple of noisy warnings for webkit1:
+    module_extra_env["webkit"] = {'CPPFLAGS':os.environ['CPPFLAGS'] + " -Wno-unused-local-typedef -Wno-missing-field-initializsers"}
+    module_extra_env["webkit1gtk3"] = {'CPPFLAGS':os.environ['CPPFLAGS'] + " -Wno-unused-local-typedef -Wno-missing-field-initializsers -Wno-undefined-bool-conversion"}
+    module_extra_env["webkit"] = {'CXXFLAGS':os.environ['CXXFLAGS'] + ' -Wno-inconsistent-missing-override'}
+    module_extra_env["webkit1gtk3"] = {'CXXFLAGS':os.environ['CXXFLAGS'] + ' -Wno-inconsistent-missing-override'}
 
     # Finally when building normally we need to force CFLAGS_FOR_BUILD
     # to our current CFLAGS so that everything will link with other
@@ -437,56 +390,6 @@ def setup_sdk(target, sdk_version, architectures=[_default_arch]):
     environ_remove('PATH', '/opt/X11/bin')
     return sdkdir
 
-# This is a convenience function for older .jhbuildrc-customs.
-def setup_sdk_10_4():
-    print "*** Using setup_sdk_10_4() is deprecated. Use setup_sdk instead. ***"
-    if _default_arch == "x86_64":
-            return setup_sdk("10.4", "10.4u", ["i386"])
-    return setup_sdk("10.4", "10.4u")
-
-# For cross-compiling on an intel system. The need to build tool
-# packages universal for cross-compilation means that it will take
-# longer than necessary on a ppc machine, so just call
-# setup_sdk("10.4", "10.4", ["ppc"]) and all will be well (or with "10.5"
-# instead of "10.4" if you're building Tiger-incompatable versions).
-def setup_ppc_build():
-    print "Setup PPC"
-    _sdkdir = setup_sdk(target="10.4", sdk_version="10.5", architectures=["ppc"])
-
-    if _sdkdir == None:
-        raise Exception("Cross-compiling without specifying an SDK is not supported")
-
-    _cflags = '-isysroot ' + _sdkdir + ' -mmacosx-version-min=10.4'
-    _cxxflags = _cflags
-    _cppflags = '-I' + prefix + '/include -isysroot ' + _sdkdir
-    _ldflags = '-L' + prefix + '/lib -Wl,-syslibroot,' + _sdkdir +' -mmacosx-version-min=10.4'
-
-    environ_append('CFLAGS', '-arch ppc')
-    environ_append('CXXFLAGS', '-arch ppc')
-    environ_append('OBJCFLAGS', '-arch ppc')
-    environ_append('LDFLAGS', '-arch ppc')
-
-    _ppc_args = "CFLAGS='" + _cflags + " -arch ppc' CXXFLAGS='" + _cxxflags + " -arch ppc' LDFLAGS='" + _ldflags + " -arch ppc' --build=powerpc-apple-darwin NM=nm"
-
-    _univ_args = "CFLAGS='" + _cflags + " -arch ppc -arch i386' CXXFLAGS='" + _cxxflags + " -arch ppc -arch i386' LDFLAGS='" + _ldflags + " -arch ppc -arch i386'"
-
-# Some packages need to be build universal so that they'll work in a
-# cross-compiled environment:
-    append_autogenargs("gettext", _univ_args)
-    append_autogenargs("intltool", _univ_args)
-    append_autogenargs("expat", _univ_args)
-    append_autogenargs("gtk-doc", _univ_args)
-# Others need to be told explicitly that they're being cross-compiled:
-    append_autogenargs("glib", _ppc_args + " glib_cv_uscore=no ac_cv_func_posix_getgrgid_r=yes glib_cv_stack_grows=no ac_cv_func_posix_getpwuid_r=yes ac_cv_c_bigendian=yes" )
-
-    append_autogenargs("gtk", _ppc_args + " --with-gdktarget=quartz --without-libjasper --disable-glibtest gio_can_sniff='yes'")
-
-    append_autogenargs("libgcrypt", _ppc_args )
-    append_autogenargs("gnome-keyring", _ppc_args )
-    append_autogenargs("WebKit", _ppc_args)
-    append_autogenargs("OpenSP", _ppc_args)
-    append_autogenargs("libdbi", _ppc_args)
-    append_autogenargs("libdbi-drivers", _ppc_args)
 
 ###### End Function Definitions  #######
 
@@ -496,13 +399,14 @@ def setup_ppc_build():
 # Moduleset to use. You can override this in .jhbuildrc-custom or on
 # the command line.
 #
-moduleset = 'http://git.gnome.org/browse/gtk-osx/plain/modulesets-stable/gtk-osx.modules'
-use_local_modulesets = True
+moduleset = 'http://gitlab.gnome.org/GNOME/gtk-osx/raw/master/modulesets-stable/gtk-osx.modules'
+use_local_modulesets = False
+modulesets_dir = ""
 
 # A list of the modules to build. You can override this in
 # .jhbuildrc-custom or on the command line.
 #
-modules = [ 'meta-gtk-osx-bootstrap', 'meta-gtk-osx-core' ]
+modules = [ 'meta-gtk-osx-bootstrap', 'meta-gtk-osx-gtk3' ]
 
 # A list of modules to skip.
 #
@@ -517,6 +421,13 @@ tarballdir = None
 #
 autogenargs=''
 
+# Extra meson args. --wrapmode=nofallback prevents meson projects from
+# building dependencies on their own. We generally want failed
+# dependencies to error out so that we know to add them to the
+# appropriate modules.
+
+mesonargs='--wrap-mode=nofallback'
+
 # Use the included install-check program if available. It won't update
 # timestamps if the header hasn't changed, which speeds up builds.
 #
@@ -530,15 +441,9 @@ _gtk_osx_default_build = ""
 
 #print "Default Architecture %s\n" % _default_arch
 
-if _osx_version < 4.0:
-    print "Error: Mac OS X 10.4 or newer is required, exiting."
+if _osx_version < 11.0:
+    print("Error: Mac OS X 10.11 or newer is required, exiting.")
     raise SystemExit
-elif _osx_version < 5.0:
-    # Tiger, we want to use the python version from jhbuild.
-    _host_tiger = True
-else:
-    # Leopard or newer.
-    _host_tiger = False
 
 ###### Import Customizations ######
 
@@ -546,9 +451,30 @@ else:
 # the prefix or default build setup for example, or CFLAGS or
 # module_autogenargs, etc.
 #
-_userrc = os.path.join(os.environ['HOME'], '.jhbuildrc-custom')
-if os.path.exists(_userrc):
-    execfile(_userrc)
+_this_dir = os.path.dirname(__file__);
+_home = os.path.expanduser('~')
+_user_config_dir = os.environ.get('XDG_CONFIG_HOME',
+                                  os.path.join(_home, '.config'))
+
+_user_rc = ''
+if ('JHBUILDRC_CUSTOM' in os.environ and
+    os.environ['JHBUILDRC_CUSTOM']):
+    _user_rc = os.environ['JHBUILDRC_CUSTOM']
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_this_dir, 'jhbuildrc-custom');
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_this_dir, '.jhbuildrc-custom')
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_user_config_dir, 'jhbuildrc-custom')
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_user_config_dir, '.jhbuildrc-custom')
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_home, 'jhbuildrc-custom')
+if not os.path.exists(_user_rc):
+    _user_rc = os.path.join(_home, '.jhbuildrc-custom')
+
+if os.path.exists(_user_rc):
+    exec(compile(open(_user_rc, "rb").read(), _user_rc, 'exec'))
 
 # Allow including different variants depending on the environment
 # variable JHB. This can be used to have different setups for SDK
@@ -558,6 +484,26 @@ _build = os.environ.get('JHB', _gtk_osx_default_build)
 disable_Werror = False
 
 ###### Everything Below Uses (and Overrides) customizations! #######
+# jhbuild turns on 'nice' by default ut that messes up some of the
+# custom autogen-templates Gtk-OSX needs to use:"
+nice_build = False
+
+# Harfbuzz needs to be built twice, once before cairo and again after
+# gobject-introspection because cairo needs harfbuzz and
+# gobject-introspection needs cairo. The only way to get jhbuild to
+# run the configuration for harfbuzz the second time is to set
+# alwaysautogen to true.
+
+alwaysautogen = True
+
+# Freetype2 if left to itself will create an install name without the
+# path so none of the libraries that depend on it can link. Require
+# the install name to be an absolute path.
+
+module_cmakeargs["freetype"] = '-DCMAKE_INSTALL_NAME_DIR="' + os.path.join(prefix, 'lib') + '"'
+module_cmakeargs["freetype-no-harfbuzz"] = '-DCMAKE_INSTALL_NAME_DIR="' + os.path.join(prefix, 'lib') + '"'
+module_cmakeargs["webkit2gtk3"] = '-DCMAKE_INSTALL_NAME_DIR="' + os.path.join(prefix, 'lib') + '"'
+module_cmakeargs["zlib"] = '-DCMAKE_INSTALL_NAME_DIR="' + os.path.join(prefix, 'lib') + '"'
 
 # Check and warn if jhbuild is started from within jhbuild, since that
 # will mess up environment variables, especially if different build
@@ -568,16 +514,16 @@ _old_build = os.environ.get('JHBUILD_CONFIG', "")
 _ran_recursively = _old_prefix != ""
 if _ran_recursively:
     if _old_build != _build:
-        print "Error: jhbuild is already running with a different build setup, exiting."
+        print("Error: jhbuild is already running with a different build setup, exiting.")
         raise SystemExit
 
-    print "Warning: jhbuild is started from within a jhbuild session."
+    print("Warning: jhbuild is started from within a jhbuild session.")
 
 if _build != "":
     try:
-        execfile(os.path.join(os.environ['HOME'], '.jhbuildrc-' + _build))
-    except EnvironmentError, e:
-        print "Couldn't find the file '.jhbuildrc-" + _build + "', exiting."
+        exec(compile(open(os.path.join(os.environ['HOME'], '.jhbuildrc-' + _build), "rb").read(), os.path.join(os.environ['HOME'], '.jhbuildrc-' + _build), 'exec'))
+    except EnvironmentError as e:
+        print("Couldn't find the file '.jhbuildrc-" + _build + "', exiting.")
         raise SystemExit
 
 # The following parameters were set to None at the top of the file;
@@ -607,19 +553,16 @@ os.environ['JHBUILD_SOURCE'] = checkoutroot
 #os.environ['LIBTOOLIZE'] = _exec_prefix + '/bin/libtoolize'
 #Some autogens detect that it's a Mac and use glibtoolize if it's
 #available. Override this behavior.
-if not (os.environ.has_key ("LIBTOOLIZE") and os.environ["LIBTOOLIZE"]):
+if not ("LIBTOOLIZE" in os.environ and os.environ["LIBTOOLIZE"]):
     environ_append('LIBTOOLIZE', os.path.join(prefix, "bin", "libtoolize"))
 
-
-if not _host_tiger:
-    skip.append('make')
-    skip.append('subversion')
 
 # The option "headerpad_max_install_names" is there to leave some room for
 # changing the library locations with install_name_tool. Note that GNU
 # libtool seems to drop the option if we don't use -W here.
 #
 environ_append('LDFLAGS', '-Wl,-headerpad_max_install_names')
+#environ_append('LDFLAGS', '-Wl,-no_weak_imports')
 
 # Make sure we find our installed modules, and before other versions.
 environ_prepend('LDFLAGS', '-L' + prefix + '/lib')
@@ -635,7 +578,7 @@ prependpath('PERL5LIB', prefix + '/lib/perl5/site_perl')
 
 # Point gtk-doc and other xsltproc users to our XML catalog.
 #
-_pfx_cat_file = os.path.join(prefix, 'etc', 'xml', 'catalog')
+_pfx_cat_file = os.path.join(prefix, 'share', 'xml', 'catalog')
 if not os.path.exists(_pfx_cat_file):
     os.makedirs(os.path.dirname(_pfx_cat_file))
     open(_pfx_cat_file, "w").close()
@@ -645,10 +588,6 @@ if 'XML_CATALOG_FILES' in os.environ:
 else:
     os.environ['XML_CATALOG_FILES'] = _pfx_cat_file
 
-#Freetype has -ansi added by its configure, but uses c99 code
-#
-append_autogenargs("freetype", 'CFLAGS="$CFLAGS -std=c99"')
-
 #GConf needs to be built static, overriding the generic autogenargs,
 #but including it in the module puts it in front of where autogenargs
 #puts --disable-static, so we need the override here.
@@ -657,31 +596,56 @@ append_autogenargs("gconf", "--enable-static")
 
 if _build:
     if "shell" in sys.argv:
-        print "Build setup: %s, prefix: %s" % (_build, prefix)
+        print("Build setup: %s, prefix: %s" % (_build, prefix))
     os.environ["JHBUILD_CONFIG"] = _build
 else:
     if "shell" in sys.argv:
-        print "Prefix: %s" % (prefix)
+        print("Prefix: %s" % (prefix))
 
 if not _ran_recursively and _gtk_osx_prompt_prefix:
     os.environ["JHBUILD_PROMPT"] = "[" + _gtk_osx_prompt_prefix + "] "
 
-#Bug 766738: Apple's python tries to install extensions in
-#/Library/Python, which requires sudo. Change that to the right place
-#inside prefix. Note that we need the installed python's version to
-#get the right directory name.
+# We want libxml2 to install its python module in $PREFIX even if
+# we're not building python because if it tries to install in the
+# virtenv site-packages jhbuild will refuse to install it. Ideally
+# we'd do this only if not building python because if we do then it
+# finds the right place and does the right thing.
 
-if (not "python" in modules and
-    not os.path.exists(os.path.join(prefix, 'bin', 'python2'))):
-    _python_ver = 'python' + '.'.join([str(_x) for _x in sys.version_info[0:2]])
-    _python_install_path = os.path.join(prefix, 'lib',
-                                       _python_ver, 'site-packages')
+# Unfortunately there's no way to get the config object from the
+# project to find out if we're building python3. We test the modules
+# list here but that's not really reliable because python3 might be
+# pulled in as a dependency by another module.
+
+# Note that this will break if there's an undetected python3 build and
+# the built python is a different major + minor version from the
+# virtenv one.
+
+# Note that PYENV_VERSION sets the version of python that pyenv uses,
+# not pyenv's own version. It's defined by pyenv and can't be changed.
+
+_python3_path = os.path.join(prefix, 'bin', 'python3')
+if ('python3' in modules or 'pygments' in modules or
+    'meta-gtk-osx-python3' in modules or os.path.exists(_python3_path)):
+    os.environ['PYTHON'] = _python3_path
+    module_extra_env['pkg-config'] = {'PYTHON':sys.executable}
+else:
+    _python_ver = str(sys.version_info.major) + '.' + str(sys.version_info.minor)
+    _python_install_path = os.path.join(prefix, 'lib', 'python' + _python_ver,
+                                        'site-packages')
     append_autogenargs('libxml2',
                        '--with-python-install-dir=' + _python_install_path)
+    environ_append('PYTHONPATH', _python_install_path, ':')
+    _python_library_path = os.path.join(os.environ['PYENV_ROOT'], 'versions',
+                                       os.environ['PYENV_VERSION'], 'lib')
+    environ_append('LDFLAGS', '-L' + _python_library_path)
+    os.environ['PYTHON'] = sys.executable
+    environ_append('PKG_CONFIG_PATH', os.path.join(_python_library_path, 'pkgconfig'))
 
+module_extra_env["python3"] = {'LIBS':'-lintl'}
+module_extra_env["spidermonkey"] = {'AUTOCONF':'autoconf'}
 # Unset this so we don't mess with the check for not starting
 # recursively.
 os.unsetenv("JHB")
 
 if "shell" in sys.argv:
-    print "Entered jhbuild shell, type 'exit' to return."
+    print("Entered jhbuild shell, type 'exit' to return.")
