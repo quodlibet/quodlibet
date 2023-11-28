@@ -89,7 +89,7 @@ class RGAlbum:
     @property
     def error(self):
         for song in self.songs:
-            if song.Error:
+            if song.error:
                 return True
         return False
 

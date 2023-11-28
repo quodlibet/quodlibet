@@ -132,7 +132,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           PyVirtualDisplay \
           pytest-faulthandler \
-          "ruff<2.0" \
+          "ruff==0.1.6" \
           flaky
 
     - name: Run tests
