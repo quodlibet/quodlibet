@@ -932,7 +932,6 @@
             hash="sha256:b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b">
         <patch file="patches/libvorbis.dont-build-test_sharedbook.patch" strip="1"/>
     </branch>
-    <!-- FIXME:  This patch contains lots of irrelevant changes.  -->
   </autotools>
 
   <autotools id="speex" autogen-sh="configure">
