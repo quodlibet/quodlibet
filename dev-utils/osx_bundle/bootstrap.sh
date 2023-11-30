@@ -8,6 +8,9 @@ source env.sh
 # to allow bootstrapping again, try to delete everything first
 source clean.sh
 
+# Cargo and Rust must be installed in the user's home directory.
+# They cannot be run successfully from JHBuild's prefix or home
+# directory.
 rustup install 1.69.0
 
 JHBUILD_REVISION="3.38.0"
