@@ -377,7 +377,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
 
     star = list(Query.STAR)
 
-    def Menu(self, header, browser, library):
+    def menu(self, header: str, browser, library):
         songs = self.get_selected_songs()
         if not songs:
             return

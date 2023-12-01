@@ -214,10 +214,10 @@ class TSongList(TestCase):
 
         self.songlist.set_column_headers(["foo"])
 
-        self.assertFalse(self.songlist.Menu("foo", browser, library))
+        self.assertFalse(self.songlist.menu("foo", browser, library))
         sel = self.songlist.get_selection()
         sel.select_all()
-        self.assertTrue(self.songlist.Menu("foo", browser, library))
+        self.assertTrue(self.songlist.menu("foo", browser, library))
         librarian.destroy()
         self.lib.librarian = None
 

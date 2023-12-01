@@ -50,13 +50,11 @@ class DuplicateSongsView(RCMHintedTreeView):
                 selected.append(row[0])
         return selected
 
-    def Menu(self, library):
+    def menu(self, library):
         songs = self.get_selected_songs()
         if not songs:
             return
-
-        menu = SongsMenu(
-            library, songs, delete=True, plugins=False, playlists=False)
+        menu = SongsMenu(library, songs, delete=True, plugins=False, playlists=False)
         menu.show_all()
         return menu
 
