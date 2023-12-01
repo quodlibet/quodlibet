@@ -89,7 +89,7 @@ class SongsMenuPluginHandler(PluginHandler):
         if album_confirmer is not None:
             self._confirm_multiple_albums = album_confirmer
 
-    def Menu(self, library, songs):
+    def menu(self, library, songs):
         songs = list_wrapper(songs)
 
         attrs = ["plugin_song", "plugin_songs",
@@ -290,7 +290,7 @@ class SongsMenu(Gtk.Menu):
             self.separate()
 
         if plugins:
-            submenu = self.plugins.Menu(librarian, songs)
+            submenu = self.plugins.menu(librarian, songs)
             if submenu is not None:
                 b = qltk.MenuItem(_("_Plugins"), Icons.SYSTEM_RUN)
                 b.set_sensitive(bool(songs))

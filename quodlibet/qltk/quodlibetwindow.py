@@ -1334,7 +1334,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
     def __songs_popup_menu(self, songlist):
         path, col = songlist.get_cursor()
         header = col.header_name
-        menu = self.songlist.Menu(header, self.browser, self.__library)
+        menu = self.songlist.menu(header, self.browser, self.__library)
         if menu is not None:
             return self.songlist.popup_menu(menu, 0,
                     Gtk.get_current_event_time())

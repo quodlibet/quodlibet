@@ -113,12 +113,12 @@ class TSongsMenuPlugins(TestCase):
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
         with capture_output():
-            menu = self.handler.Menu(None, [AudioFile()])
+            menu = self.handler.menu(None, [AudioFile()])
         self.assertFalse(menu and menu.get_children())
 
     def test_Menu(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
-        self.handler.Menu(None, [AudioFile()])
+        self.handler.menu(None, [AudioFile()])
 
     def test_handling_songs_without_confirmation(self):
         plugin = Plugin(FakeSongsMenuPlugin)
