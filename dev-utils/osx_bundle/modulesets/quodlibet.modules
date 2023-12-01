@@ -91,10 +91,8 @@
       <dep package="adwaita-icon-theme"/>
       <dep package="dmgbuild"/>
       <dep package="gst-libav"/>
-      <dep package="gst-plugins-bad"/>
       <dep package="gst-plugins-base"/>
       <dep package="gst-plugins-good"/>
-      <dep package="gst-plugins-ugly"/>
       <dep package="gstreamer"/>
       <dep package="gtk-mac-integration"/>
       <dep package="gtk3"/>
@@ -855,24 +853,6 @@
     </branch>
   </autotools>
  
-  <meson id="gst-plugins-bad" mesonargs="-Dapplemedia=disabled">
-    <branch repo="gstreamer" version="1.20.6"
-            module="gst-plugins-bad/gst-plugins-bad-${version}.tar.xz"
-            hash="sha256:d98c73fa5cdddb372a91199464515cfc80c89bbe05e3d4387ea4381e4224483a"/>
-    <dependencies>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-      <dep package="faad2"/>
-      <dep package="libbs2b"/>
-      <dep package="chromaprint"/>
-      <dep package="soundtouch"/>
-      <dep package="libgme"/>
-      <dep package="openexr"/>
-      <dep package="gcrypt"/>
-      <dep package="gpg-error"/>
-    </dependencies>
-  </meson>
-
   <!-- CMAKE_INSTALL_NAME_DIR is needed to get an absolute path for the install name (otool -D) -->
   <cmake id="chromaprint" use-ninja="no" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
     <branch repo="chromaprint" checkoutdir="chromaprint-${version}"
@@ -895,16 +875,6 @@
             hash="sha256:efa1f63b1bb60cae4565307757234936b0a19e2fa7913651eba9b9f82eeeb915">
     </branch>
   </autotools>
-
-  <meson id="gst-plugins-ugly">
-    <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-${version}.tar.xz"
-            version="1.20.6"
-            hash="sha256:ca3fb6abc9f6e981d204a736c254e50cc1786a2f5038d83023e42ea009b10246"/>
-    <dependencies>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-    </dependencies>
-  </meson>
 
   <meson id="gstreamer">
     <branch repo="gstreamer" module="gstreamer/gstreamer-${version}.tar.xz"
