@@ -180,13 +180,13 @@
 
   <!--  Packages for quodlibet metamodule.  -->
 
-  <autotools id="gtk-osx-docbook" autogen-sh="configure"
+<autotools id="gtk-osx-docbook" autogen-sh="configure"
              supports-non-srcdir-builds="no" >
     <branch repo="sourceforge" module="gtk-osx/gtk-osx-docbook-1.2.tar.gz"
             version="1.2"/>
   </autotools>
 
-  <autotools id="readline" autogen-sh="configure">
+    <autotools id="readline" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="readline/readline-${version}.tar.gz"
       version="8.2"
       hash="sha256:3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35">
@@ -480,7 +480,6 @@
     <dependencies>
         <dep package="libffi"/>
         <dep package="gettext"/>
-        <dep package="gtk-doc"/>
         <dep package="libffi"/>
         <dep package="pcre2"/>
         <dep package="zlib"/>
@@ -1036,6 +1035,7 @@
     <dependencies>
         <dep package="gtk3"/>
         <dep package="python-gobject"/>
+        <dep package="gtk-doc"/>
     </dependencies>
   </autotools>
 
