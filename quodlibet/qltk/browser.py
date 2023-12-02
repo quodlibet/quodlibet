@@ -340,7 +340,7 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             else:
                 header.set_visible(False)
 
-    def _menu(self, view, library):
+    def _menu(self, view: SongList, library) -> bool:
         path, col = view.get_cursor()
         header = col.header_name
         menu = view.menu(header, self.browser, library)

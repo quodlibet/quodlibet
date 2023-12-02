@@ -110,7 +110,7 @@ def mkstemp(*args, **kwargs):
     return (fd, filename)
 
 
-def init_fake_app():
+def init_fake_app() -> None:
     from quodlibet import app
 
     from quodlibet import browsers
@@ -131,7 +131,7 @@ def init_fake_app():
     app.player_options = PlayerOptions(app.window)
 
 
-def destroy_fake_app():
+def destroy_fake_app() -> None:
     from quodlibet import app
 
     app.window.destroy()

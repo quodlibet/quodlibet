@@ -500,7 +500,7 @@ def website(site):
         print_exc()
 
 
-def tag(name, cap=True):
+def tag(name: str, cap: bool =True) -> str:
     # Return a 'natural' version of the tag for human-readable bits.
     # Strips ~ and ~# from the start and runs it through a map (which
     # the user can configure).
@@ -521,7 +521,7 @@ def tag(name, cap=True):
         return " / ".join(parts)
 
 
-def tagsplit(tag):
+def tagsplit(tag: str) -> list[str]:
     """Split a (potentially) tied tag into a list of atomic tags. Two ~~s
     make the next tag prefixed with a ~, so ~foo~~bar => [foo, ~bar]."""
     if "~" in tag[1:]:
