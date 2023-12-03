@@ -6,6 +6,7 @@ set -e
 source env.sh
 
 # to allow bootstrapping again, try to delete everything first
+# shellcheck source-path=SCRIPTDIR
 source clean.sh
 
 # Cargo and Rust must be installed in the user's home directory.
