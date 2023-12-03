@@ -90,7 +90,7 @@ def migrate_old_config():
             config._config.remove_option("plugins", key)
 
     if active:
-        config.set("plugins", "active_plugins", "\n".join(active))
+        config.set("plugins", "active_plugins", "\n".join(sorted(active)))
 
 
 def list_plugins(module):
@@ -330,7 +330,7 @@ class PluginManager:
         print_d("Saving plugins: %d active" % len(self.__enabled))
         config.set(self.CONFIG_SECTION,
                    self.CONFIG_OPTION,
-                   "\n".join(self.__enabled))
+                   "\n".join(sorted(self.__enabled)))
 
     def enabled(self, plugin):
         """Returns if the plugin is enabled."""
