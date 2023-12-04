@@ -136,7 +136,7 @@ def get_columns():
     return columns
 
 
-def set_columns(vals):
+def set_columns(vals: list[str]) -> None:
     """Persists the settings for songlist headings held in `vals`"""
 
     config.setstringlist("settings", "columns", vals)
@@ -743,7 +743,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         config.setstringlist("memory", "column_expands", expands)
 
     @classmethod
-    def set_all_column_headers(cls, headers):
+    def set_all_column_headers(cls, headers: list[str]):
         set_columns(headers)
         try:
             headers.remove("~current")
