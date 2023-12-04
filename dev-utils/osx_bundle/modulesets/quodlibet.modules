@@ -91,10 +91,8 @@
       <dep package="adwaita-icon-theme"/>
       <dep package="dmgbuild"/>
       <dep package="gst-libav"/>
-      <dep package="gst-plugins-bad"/>
       <dep package="gst-plugins-base"/>
       <dep package="gst-plugins-good"/>
-      <dep package="gst-plugins-ugly"/>
       <dep package="gstreamer"/>
       <dep package="gtk-mac-integration"/>
       <dep package="gtk3"/>
@@ -182,13 +180,13 @@
 
   <!--  Packages for quodlibet metamodule.  -->
 
-  <autotools id="gtk-osx-docbook" autogen-sh="configure"
+<autotools id="gtk-osx-docbook" autogen-sh="configure"
              supports-non-srcdir-builds="no" >
     <branch repo="sourceforge" module="gtk-osx/gtk-osx-docbook-1.2.tar.gz"
             version="1.2"/>
   </autotools>
 
-  <autotools id="readline" autogen-sh="configure">
+    <autotools id="readline" autogen-sh="configure">
     <branch repo="ftp.gnu.org" module="readline/readline-${version}.tar.gz"
       version="8.2"
       hash="sha256:3feb7171f16a84ee82ca18a36d7b9be109a52c04f492a053331d7d1095007c35">
@@ -482,7 +480,6 @@
     <dependencies>
         <dep package="libffi"/>
         <dep package="gettext"/>
-        <dep package="gtk-doc"/>
         <dep package="libffi"/>
         <dep package="pcre2"/>
         <dep package="zlib"/>
@@ -855,24 +852,6 @@
     </branch>
   </autotools>
  
-  <meson id="gst-plugins-bad" mesonargs="-Dapplemedia=disabled">
-    <branch repo="gstreamer" version="1.20.6"
-            module="gst-plugins-bad/gst-plugins-bad-${version}.tar.xz"
-            hash="sha256:d98c73fa5cdddb372a91199464515cfc80c89bbe05e3d4387ea4381e4224483a"/>
-    <dependencies>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-      <dep package="faad2"/>
-      <dep package="libbs2b"/>
-      <dep package="chromaprint"/>
-      <dep package="soundtouch"/>
-      <dep package="libgme"/>
-      <dep package="openexr"/>
-      <dep package="gcrypt"/>
-      <dep package="gpg-error"/>
-    </dependencies>
-  </meson>
-
   <!-- CMAKE_INSTALL_NAME_DIR is needed to get an absolute path for the install name (otool -D) -->
   <cmake id="chromaprint" use-ninja="no" cmakeargs="-DCMAKE_BUILD_TYPE=Release -DBUILD_FRAMEWORK=OFF -DCMAKE_INSTALL_NAME_DIR='${prefix}/lib'">
     <branch repo="chromaprint" checkoutdir="chromaprint-${version}"
@@ -895,16 +874,6 @@
             hash="sha256:efa1f63b1bb60cae4565307757234936b0a19e2fa7913651eba9b9f82eeeb915">
     </branch>
   </autotools>
-
-  <meson id="gst-plugins-ugly">
-    <branch repo="gstreamer" module="gst-plugins-ugly/gst-plugins-ugly-${version}.tar.xz"
-            version="1.20.6"
-            hash="sha256:ca3fb6abc9f6e981d204a736c254e50cc1786a2f5038d83023e42ea009b10246"/>
-    <dependencies>
-      <dep package="gstreamer"/>
-      <dep package="gst-plugins-base"/>
-    </dependencies>
-  </meson>
 
   <meson id="gstreamer">
     <branch repo="gstreamer" module="gstreamer/gstreamer-${version}.tar.xz"
@@ -932,7 +901,6 @@
             hash="sha256:b33cc4934322bcbf6efcbacf49e3ca01aadbea4114ec9589d1b1e9d20f72954b">
         <patch file="patches/libvorbis.dont-build-test_sharedbook.patch" strip="1"/>
     </branch>
-    <!-- FIXME:  This patch contains lots of irrelevant changes.  -->
   </autotools>
 
   <autotools id="speex" autogen-sh="configure">
@@ -1067,6 +1035,7 @@
     <dependencies>
         <dep package="gtk3"/>
         <dep package="python-gobject"/>
+        <dep package="gtk-doc"/>
     </dependencies>
   </autotools>
 

@@ -620,26 +620,19 @@ if not _ran_recursively and _gtk_osx_prompt_prefix:
 # the built python is a different major + minor version from the
 # virtenv one.
 
-# Note that PYENV_VERSION sets the version of python that pyenv uses,
-# not pyenv's own version. It's defined by pyenv and can't be changed.
-
 _python3_path = os.path.join(prefix, 'bin', 'python3')
 if ('python3' in modules or 'pygments' in modules or
     'meta-gtk-osx-python3' in modules or os.path.exists(_python3_path)):
     os.environ['PYTHON'] = _python3_path
     module_extra_env['pkg-config'] = {'PYTHON':sys.executable}
-else:
-    _python_ver = str(sys.version_info.major) + '.' + str(sys.version_info.minor)
-    _python_install_path = os.path.join(prefix, 'lib', 'python' + _python_ver,
-                                        'site-packages')
-    append_autogenargs('libxml2',
-                       '--with-python-install-dir=' + _python_install_path)
-    environ_append('PYTHONPATH', _python_install_path, ':')
-    _python_library_path = os.path.join(os.environ['PYENV_ROOT'], 'versions',
-                                       os.environ['PYENV_VERSION'], 'lib')
-    environ_append('LDFLAGS', '-L' + _python_library_path)
-    os.environ['PYTHON'] = sys.executable
-    environ_append('PKG_CONFIG_PATH', os.path.join(_python_library_path, 'pkgconfig'))
+
+# Original gtk-osx-jhbuildrc code appearing here was deleted because
+# it is not needed and broken.  It's broken because PYENV_VERSION is not
+# defined by pyenv--it's there for the user to define.  When we
+# build the meta-bootstrap metamodule, this code errors out as a result.
+# It's not needed because we build python3 as part of the
+# bootstrap, and then the code immediately above sets up
+# libxlm2 to build correctly as part of the quodlibet metamodule.
 
 module_extra_env["python3"] = {'LIBS':'-lintl'}
 module_extra_env["spidermonkey"] = {'AUTOCONF':'autoconf'}
