@@ -30,26 +30,28 @@ Prerequisites:
 * Xcode Command Line Tools
 * Rust
 * Git
-* Python3 (see caveats below)
+* Python3
 
 Note: In case you want to target `macOS 10.14` with the resulting bundle you
 have to build everything on `10.14`.
 
-1) Go to https://developer.apple.com/download/more/ or the Apple App Store
-   and install XCode.
-2) Install the command line tools using ``xcode-select --install``.
-3) Install rust: https://www.rust-lang.org/tools/install
-4) Verify that Xcode and git is installed and in your ``$PATH`` by invoking
-   ``git --version``, ``gcc --version``, ``xcodebuild -sdk -version`` and
-   ``cargo``. 
-5) Make sure that other package managers like homebrew or macports aren't in 
-   your ``$PATH`` and that the libraries they install aren't in your
-   ``$DYLD_LIBRARY_PATH`` or ``$LD_LIBRARY_PATH``.
-6) Call ``bootstrap.sh`` to install jhbuild and and copy files into place.
-7) Call ``build.sh`` to download and build all the dependencies.
-   This should not lead to errors; if it does please file a bug.
-8) Call ``bundle.sh`` to create the finished bundles for QL and EF in
-   ``_build``.
+* Go to https://developer.apple.com/download/more/ or the Apple App Store
+  and install XCode.
+* Install the command line tools using ``xcode-select --install``.
+* Install rust: https://www.rust-lang.org/tools/install
+* Install the tools described in `the Quod Libet development guide
+  https://quodlibet.readthedocs.io/en/latest/development/devenv.html`.
+* Verify that Xcode and git is installed and in your ``$PATH`` by invoking
+  ``git --version``, ``gcc --version``, ``xcodebuild -sdk -version`` and
+  ``cargo``. 
+* Make sure that other package managers like homebrew or macports aren't in 
+  your ``$PATH`` and that the libraries they install aren't in your
+  ``$DYLD_LIBRARY_PATH`` or ``$LD_LIBRARY_PATH``.
+* Call ``bootstrap.sh`` to install jhbuild and and copy files into place.
+* Call ``build.sh`` to download and build all the dependencies.
+  This should not lead to errors; if it does please file a bug.
+* Call ``bundle.sh`` to create the finished bundles for QL and EF in
+  ``_build``.
 
 Call ``clean.sh`` to remove everything created above again and get back to
 the initial state.
@@ -74,8 +76,6 @@ Caveats and Hints
 * No attempt has been made to build on or for Apple Silicon.
 * A complete build takes about two hours on a 2.4 GHz 8-Core Intel Core i9
   with 32 GB RAM and a 1 TB SSD.  Configure scripts consume most of this time.
-* The build uses Python distutils, which were removed in Python 3.12.
-  Recent development has used Python 3.11.3.  Issue #4442.
 * See env.sh for the directories used by jhbuild for the various package's
   source, build and prefix directories.
 * If you change or add a patch file, you need to delete the package's 
