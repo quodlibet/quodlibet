@@ -39,8 +39,8 @@ have to build everything on `10.14`.
   and install XCode.
 * Install the command line tools using ``xcode-select --install``.
 * Install rust: https://www.rust-lang.org/tools/install
-* Install the tools described in `the Quod Libet development guide
-  https://quodlibet.readthedocs.io/en/latest/development/devenv.html`.
+* Install the tools described in `the Quod Libet development guide 
+  <https://quodlibet.readthedocs.io/en/latest/development/devenv.html>`.
 * Verify that Xcode and git is installed and in your ``$PATH`` by invoking
   ``git --version``, ``gcc --version``, ``xcodebuild -sdk -version`` and
   ``cargo``. 
