@@ -407,7 +407,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
     def __init__(self, library, player=None, update=False, model_cls=PlaylistModel,
                  sortable: bool = True):
         super().__init__()
-        self._sortable = sortable
+        self.sortable = sortable
         self._register_instance(SongList)
         self.set_model(model_cls())
         self.info = SongSelectionInfo(self)
@@ -454,7 +454,7 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         # It's either sortable or clickable columns, both ends in a buggy UI (see #4099)
         always_sortable = config.getboolean("song_list", "always_allow_sorting")
         self._sortable = value or always_sortable
-        self.set_headers_clickable(value)
+        self.set_headers_clickable(self._sortable)
 
     @property
     def model(self) -> Gtk.TreeModel:
