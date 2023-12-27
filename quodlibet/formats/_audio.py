@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2022 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -50,7 +50,7 @@ MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
 """These get migrated if a song gets reloaded"""
 
 PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
-          "originalartist", "lyricist", "arranger", "conductor"]
+          "originalartist", "producer", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
