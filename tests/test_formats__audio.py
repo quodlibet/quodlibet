@@ -51,7 +51,8 @@ bar_va = AudioFile({
     "album": "Bar",
     "language": "de\neng",
     "albumartist": "Various Artists",
-    "performer": "Jay-Z"})
+    "performer": "Jay-Z",
+    "producer": "Kanye West"})
 
 num_call = AudioFile({"custom": "0.3"})
 ANOTHER_RATING = 0.2
@@ -200,8 +201,8 @@ class TAudioFile(TestCase):
         self.assertEqual(bar_1_2("~people"), "Lali-ho!")
         self.assertEqual(bar_2_1("~people"), "Foo\nI have two artists")
         # See Issue 1034
-        self.assertEqual(bar_va("~people"),
-                             "Foo\nI have two artists\nVarious Artists\nJay-Z")
+        expected = "Foo\nI have two artists\nVarious Artists\nJay-Z\nKanye West"
+        assert bar_va("~people") == expected
 
     def test_call_multiple(self):
         for song in [self.quux, bar_1_1, bar_2_1]:
@@ -681,6 +682,13 @@ class TAudioFile(TestCase):
                     "X (Vocals)",
                     "Y (Guitar, Vocals)",
                 })
+
+
+    def test_producer(self):
+        s = AudioFile({"producer": "Kanye West"})
+        assert s("producer") == "Kanye West"
+        assert set(s.list("~people")) == {"Kanye West"}
+
 
     def test_people(self):
         q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),

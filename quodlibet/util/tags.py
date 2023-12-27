@@ -1,6 +1,6 @@
 # Copyright 2007-2008 Joe Wreschnig
 #           2014 Christoph Reiter
-#      2014-2020 Nick Boultbee
+#      2014-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -93,7 +93,6 @@ _TAGS = {t.name: t for t in [
     T("date", "u", _("date")),
     T("description", "u", _("description")),
     T("genre", "u", _("genre"), _("genres")),
-    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
     T("grouping", "u", _("grouping")),
     T("language", "ui", _("language")),
     T("license", "u", _("license")),
@@ -101,6 +100,8 @@ _TAGS = {t.name: t for t in [
     T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
     # Translators: Also e.g. "record label", "publisher"
     T("organization", "u", _("organization")),
+    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
+    T("producer", "u", _("producer"), _("producers"), _("production")),
     T("title", "u", _("title")),
     T("version", "u", _("version")),
     T("website", "u", _("website")),
