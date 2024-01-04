@@ -105,10 +105,14 @@ class TSongList(TestCase):
         config.set("song_list", "always_allow_sorting", False)
         s = self.songlist
         s.sortable = False
+
         s.set_column_headers(["foo"])
         s.toggle_column_sort(s.get_columns()[0])
         assert self.orders_changed == 0
         assert not s.get_sort_orders()
+        # This appears buggy in tests
+        # assert s.get_headers_clickable() is False
+
 
     def test_sortable_if_config_overrides(self):
         config.set("song_list", "always_allow_sorting", True)
@@ -118,6 +122,7 @@ class TSongList(TestCase):
         s.set_column_headers(["foo"])
         s.toggle_column_sort(s.get_columns()[0])
         assert s.get_sort_orders()
+        assert s.get_headers_clickable() is True
 
     def test_find_default_sort_column(self):
         s = self.songlist
