@@ -9,8 +9,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2022-10-31 05:02+0000\n"
-"Last-Translator: Kristofer Rickheden Gustavsson <hackan@bahnhof.se>\n"
+"PO-Revision-Date: 2024-01-18 05:41+0000\n"
+"Last-Translator: Sean Elliot <sean.t.elliot@outlook.com>\n"
 "Language-Team: Swedish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sv/>\n"
 "Language: sv\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.14.2-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -310,9 +310,8 @@ msgid "Show album _text"
 msgstr "Visa album_omslag"
 
 #: quodlibet/browsers/covergrid/prefs.py:70
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "Alla album"
+msgstr "Visa \"Alla Album\""
 
 #: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
