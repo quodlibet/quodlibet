@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-10-28 13:01+0000\n"
+"PO-Revision-Date: 2023-12-30 01:08+0000\n"
 "Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -7999,17 +7999,15 @@ msgstr "performance"
 
 #: quodlibet/util/tags.py:104
 msgid "producer"
-msgstr ""
+msgstr "producteur"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "producers"
-msgstr "Produit par %s"
+msgstr "producteurs"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "production"
-msgstr "dirigeant"
+msgstr "production"
 
 #: quodlibet/util/tags.py:105
 msgid "title"
