@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-11-05 19:22+0000\n"
+"PO-Revision-Date: 2023-12-31 03:12+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -7797,17 +7797,15 @@ msgstr "演奏"
 
 #: quodlibet/util/tags.py:104
 msgid "producer"
-msgstr ""
+msgstr "プロデューサー"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "producers"
-msgstr "プロデュース %s"
+msgstr "プロデューサー"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "production"
-msgstr "指揮"
+msgstr "プロデュース"
 
 #: quodlibet/util/tags.py:105
 msgid "title"
