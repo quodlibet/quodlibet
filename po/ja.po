@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-11-05 19:22+0000\n"
+"PO-Revision-Date: 2023-12-31 03:12+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.4-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -156,7 +156,7 @@ msgstr "アルバムの表示"
 #: quodlibet/browsers/covergrid/prefs.py:108
 #: quodlibet/browsers/playlists/prefs.py:56
 #: quodlibet/ext/songsmenu/albumart.py:224
-#: quodlibet/ext/songsmenu/duplicates.py:344
+#: quodlibet/ext/songsmenu/duplicates.py:342
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
@@ -1105,7 +1105,7 @@ msgstr "ファイルまたはクエリ結果をキューに追加"
 msgid "Enqueue comma-separated files"
 msgstr "カンマ区切りで指定したファイルをキューに追加"
 
-#: quodlibet/cli.py:143 quodlibet/util/tags.py:158
+#: quodlibet/cli.py:143 quodlibet/util/tags.py:159
 msgid "filename"
 msgstr "ファイル名"
 
@@ -1121,7 +1121,7 @@ msgstr "ファイルまたはクエリ結果をキューから削除"
 msgid "Add a file or directory to the library"
 msgstr "ファイルまたはディレクトリをライブラリに追加"
 
-#: quodlibet/cli.py:149 quodlibet/util/tags.py:100
+#: quodlibet/cli.py:149 quodlibet/util/tags.py:99
 msgid "location"
 msgstr "場所"
 
@@ -1205,7 +1205,7 @@ msgstr "送信するデータ:"
 msgid "an audio tag editor"
 msgstr "オーディオタグエディタ"
 
-#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:159
+#: quodlibet/exfalso.py:35 quodlibet/util/tags.py:160
 msgid "directory"
 msgstr "ディレクトリ"
 
@@ -4299,30 +4299,30 @@ msgstr "カスタムコマンドの編集"
 msgid "Unable to run custom command %s"
 msgstr "カスタムコマンド %s を実行できません"
 
-#: quodlibet/ext/songsmenu/duplicates.py:285
+#: quodlibet/ext/songsmenu/duplicates.py:283
 #, python-format
 msgid "%d duplicate group"
 msgid_plural "%d duplicate groups"
 msgstr[0] "%d個の重複グループ"
 
-#: quodlibet/ext/songsmenu/duplicates.py:337
+#: quodlibet/ext/songsmenu/duplicates.py:335
 msgid "Collapse / Expand all"
 msgstr "全て折りたたむ/展開する"
 
-#: quodlibet/ext/songsmenu/duplicates.py:341
+#: quodlibet/ext/songsmenu/duplicates.py:339
 #, python-format
 msgid "Duplicate key expression is '%s'"
 msgstr "重複キーを表すタグ式は「%s」"
 
-#: quodlibet/ext/songsmenu/duplicates.py:357
+#: quodlibet/ext/songsmenu/duplicates.py:355
 msgid "Duplicates Browser"
 msgstr "重複した曲の表示"
 
-#: quodlibet/ext/songsmenu/duplicates.py:358
+#: quodlibet/ext/songsmenu/duplicates.py:356
 msgid "Finds and displays similarly tagged versions of songs."
 msgstr "類似のタグが付けられた曲を検索して表示します。"
 
-#: quodlibet/ext/songsmenu/duplicates.py:395
+#: quodlibet/ext/songsmenu/duplicates.py:393
 msgid ""
 "Accepts QL tag expressions like <tt>~artist~title</tt> or "
 "<tt>musicbrainz_track_id</tt>"
@@ -4330,31 +4330,31 @@ msgstr ""
 "<tt>~artist~title</tt> や <tt>musicbrainz_track_id</tt> などのQLタグ式を受け"
 "付けます"
 
-#: quodlibet/ext/songsmenu/duplicates.py:398
+#: quodlibet/ext/songsmenu/duplicates.py:396
 msgid "_Group duplicates by:"
 msgstr "重複グループ(_G):"
 
-#: quodlibet/ext/songsmenu/duplicates.py:403
+#: quodlibet/ext/songsmenu/duplicates.py:401
 msgid "Duplicate Key"
 msgstr "重複キー"
 
-#: quodlibet/ext/songsmenu/duplicates.py:408
+#: quodlibet/ext/songsmenu/duplicates.py:406
 msgid "Remove _Whitespace"
 msgstr "空白を削除する(_W)"
 
-#: quodlibet/ext/songsmenu/duplicates.py:409
+#: quodlibet/ext/songsmenu/duplicates.py:407
 msgid "Remove _Diacritics"
 msgstr "発音区別符号を削除する(_D)"
 
-#: quodlibet/ext/songsmenu/duplicates.py:410
+#: quodlibet/ext/songsmenu/duplicates.py:408
 msgid "Remove _Punctuation"
 msgstr "約物を削除する(_P)"
 
-#: quodlibet/ext/songsmenu/duplicates.py:411
+#: quodlibet/ext/songsmenu/duplicates.py:409
 msgid "Case _Insensitive"
 msgstr "大文字小文字を区別しない(_I)"
 
-#: quodlibet/ext/songsmenu/duplicates.py:419
+#: quodlibet/ext/songsmenu/duplicates.py:417
 msgid "Matching options"
 msgstr "マッチングオプション"
 
@@ -5908,7 +5908,7 @@ msgstr ""
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
 #: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
-#: quodlibet/util/tags.py:244
+#: quodlibet/util/tags.py:245
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
 msgstr[0] "不正なタグ"
@@ -6096,8 +6096,8 @@ msgid "artists"
 msgstr "アーティスト"
 
 #. for backwards compat
-#: quodlibet/qltk/information.py:223 quodlibet/util/tags.py:96
-#: quodlibet/util/tags.py:125
+#: quodlibet/qltk/information.py:223 quodlibet/util/tags.py:103
+#: quodlibet/util/tags.py:126
 msgid "performers"
 msgstr "演奏者"
 
@@ -6112,23 +6112,23 @@ msgid "%(n)d time"
 msgid_plural "%(n)d times"
 msgstr[0] "%(n)d回"
 
-#: quodlibet/qltk/information.py:256 quodlibet/util/tags.py:150
+#: quodlibet/qltk/information.py:256 quodlibet/util/tags.py:151
 msgid "added"
 msgstr "登録日時"
 
-#: quodlibet/qltk/information.py:257 quodlibet/util/tags.py:151
+#: quodlibet/qltk/information.py:257 quodlibet/util/tags.py:152
 msgid "last played"
 msgstr "再生完了日時"
 
-#: quodlibet/qltk/information.py:258 quodlibet/util/tags.py:161
+#: quodlibet/qltk/information.py:258 quodlibet/util/tags.py:162
 msgid "plays"
 msgstr "再生回数"
 
-#: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:162
+#: quodlibet/qltk/information.py:259 quodlibet/util/tags.py:163
 msgid "skips"
 msgstr "スキップ回数"
 
-#: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:167
+#: quodlibet/qltk/information.py:260 quodlibet/util/tags.py:168
 msgid "rating"
 msgstr "評価"
 
@@ -6136,7 +6136,7 @@ msgstr "評価"
 msgid "path"
 msgstr "パス"
 
-#: quodlibet/qltk/information.py:290 quodlibet/util/tags.py:165
+#: quodlibet/qltk/information.py:290 quodlibet/util/tags.py:166
 msgid "length"
 msgstr "時間"
 
@@ -6144,23 +6144,23 @@ msgstr "時間"
 msgid "format"
 msgstr "フォーマット"
 
-#: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:175
+#: quodlibet/qltk/information.py:292 quodlibet/util/tags.py:176
 msgid "codec"
 msgstr "コーデック"
 
-#: quodlibet/qltk/information.py:293 quodlibet/util/tags.py:176
+#: quodlibet/qltk/information.py:293 quodlibet/util/tags.py:177
 msgid "encoding"
 msgstr "エンコーディング"
 
-#: quodlibet/qltk/information.py:294 quodlibet/util/tags.py:172
+#: quodlibet/qltk/information.py:294 quodlibet/util/tags.py:173
 msgid "bitrate"
 msgstr "ビットレート"
 
-#: quodlibet/qltk/information.py:295 quodlibet/util/tags.py:173
+#: quodlibet/qltk/information.py:295 quodlibet/util/tags.py:174
 msgid "file size"
 msgstr "サイズ"
 
-#: quodlibet/qltk/information.py:296 quodlibet/util/tags.py:160
+#: quodlibet/qltk/information.py:296 quodlibet/util/tags.py:161
 msgid "modified"
 msgstr "修正日時"
 
@@ -7759,100 +7759,112 @@ msgid "genres"
 msgstr "ジャンル"
 
 #: quodlibet/util/tags.py:96
-msgid "performer"
-msgstr "演奏者"
-
-#: quodlibet/util/tags.py:96
-msgid "performance"
-msgstr "演奏"
-
-#: quodlibet/util/tags.py:97
 msgid "grouping"
 msgstr "グルーピング"
 
-#: quodlibet/util/tags.py:98
+#: quodlibet/util/tags.py:97
 msgid "language"
 msgstr "言語"
 
-#: quodlibet/util/tags.py:99
+#: quodlibet/util/tags.py:98
 msgid "license"
 msgstr "ライセンス"
 
-#: quodlibet/util/tags.py:101
+#: quodlibet/util/tags.py:100
 msgid "lyricist"
 msgstr "作詞者"
 
-#: quodlibet/util/tags.py:101
+#: quodlibet/util/tags.py:100
 msgid "lyricists"
 msgstr "作詞者"
 
-#: quodlibet/util/tags.py:101
+#: quodlibet/util/tags.py:100
 msgid "lyrics"
 msgstr "作詞"
 
 #. Translators: Also e.g. "record label", "publisher"
-#: quodlibet/util/tags.py:103
+#: quodlibet/util/tags.py:102
 msgid "organization"
 msgstr "組織"
 
+#: quodlibet/util/tags.py:103
+msgid "performer"
+msgstr "演奏者"
+
+#: quodlibet/util/tags.py:103
+msgid "performance"
+msgstr "演奏"
+
 #: quodlibet/util/tags.py:104
+msgid "producer"
+msgstr "プロデューサー"
+
+#: quodlibet/util/tags.py:104
+msgid "producers"
+msgstr "プロデューサー"
+
+#: quodlibet/util/tags.py:104
+msgid "production"
+msgstr "プロデュース"
+
+#: quodlibet/util/tags.py:105
 msgid "title"
 msgstr "タイトル"
 
-#: quodlibet/util/tags.py:105
+#: quodlibet/util/tags.py:106
 msgid "version"
 msgstr "バージョン"
 
-#: quodlibet/util/tags.py:106
+#: quodlibet/util/tags.py:107
 msgid "website"
 msgstr "ウェブサイト"
 
-#: quodlibet/util/tags.py:108
+#: quodlibet/util/tags.py:109
 msgid "album artist"
 msgstr "アルバムアーティスト"
 
-#: quodlibet/util/tags.py:109
+#: quodlibet/util/tags.py:110
 msgid "BPM"
 msgstr "BPM"
 
 #. Translators: This used to be called "part".
-#: quodlibet/util/tags.py:112 quodlibet/util/tags.py:113
+#: quodlibet/util/tags.py:113 quodlibet/util/tags.py:114
 msgid "disc subtitle"
 msgstr "ディスクサブタイトル"
 
-#: quodlibet/util/tags.py:114 quodlibet/util/tags.py:152
+#: quodlibet/util/tags.py:115 quodlibet/util/tags.py:153
 msgid "disc"
 msgstr "ディスク"
 
-#: quodlibet/util/tags.py:115 quodlibet/util/tags.py:154
+#: quodlibet/util/tags.py:116 quodlibet/util/tags.py:155
 msgid "track"
 msgstr "トラック"
 
-#: quodlibet/util/tags.py:116
+#: quodlibet/util/tags.py:117
 msgid "label ID"
 msgstr "レーベルID"
 
-#: quodlibet/util/tags.py:117
+#: quodlibet/util/tags.py:118
 msgid "original release date"
 msgstr "オリジナルリリース日時"
 
-#: quodlibet/util/tags.py:118
+#: quodlibet/util/tags.py:119
 msgid "original album"
 msgstr "オリジナルアルバム"
 
-#: quodlibet/util/tags.py:119
+#: quodlibet/util/tags.py:120
 msgid "original artist"
 msgstr "オリジナルアーティスト"
 
-#: quodlibet/util/tags.py:120
+#: quodlibet/util/tags.py:121
 msgid "recording date"
 msgstr "録音日時"
 
-#: quodlibet/util/tags.py:121
+#: quodlibet/util/tags.py:122
 msgid "release country"
 msgstr "リリース国"
 
-#: quodlibet/util/tags.py:122
+#: quodlibet/util/tags.py:123
 msgid "initial key"
 msgstr "最初の調"
 
@@ -7860,131 +7872,131 @@ msgstr "最初の調"
 #. Note: picard has changed musicbrainz_trackid to mean release track.
 #. We can't do that because of existing libraries, so use a new
 #. musicbrainz_releastrackid instead.
-#: quodlibet/util/tags.py:131
+#: quodlibet/util/tags.py:132
 msgid "MusicBrainz recording ID"
 msgstr "MusicBrainzレコーディングID"
 
-#: quodlibet/util/tags.py:132
+#: quodlibet/util/tags.py:133
 msgid "MusicBrainz release track ID"
 msgstr "MusicBrainzリリーストラックID"
 
-#: quodlibet/util/tags.py:133
+#: quodlibet/util/tags.py:134
 msgid "MusicBrainz release ID"
 msgstr "MusicBrainzリリースID"
 
-#: quodlibet/util/tags.py:134
+#: quodlibet/util/tags.py:135
 msgid "MusicBrainz artist ID"
 msgstr "MusicBrainzアーティストID"
 
-#: quodlibet/util/tags.py:135
+#: quodlibet/util/tags.py:136
 msgid "MusicBrainz release artist ID"
 msgstr "MusicBrainzリリースアーティストID"
 
-#: quodlibet/util/tags.py:136
+#: quodlibet/util/tags.py:137
 msgid "MusicBrainz TRM ID"
 msgstr "MusicBrainz TRM ID"
 
-#: quodlibet/util/tags.py:137
+#: quodlibet/util/tags.py:138
 msgid "MusicIP PUID"
 msgstr "MusicIP PUID"
 
-#: quodlibet/util/tags.py:138
+#: quodlibet/util/tags.py:139
 msgid "MusicBrainz album status"
 msgstr "MusicBrainzアルバムステータス"
 
-#: quodlibet/util/tags.py:139
+#: quodlibet/util/tags.py:140
 msgid "MusicBrainz album type"
 msgstr "MusicBrainzアルバムタイプ"
 
-#: quodlibet/util/tags.py:140
+#: quodlibet/util/tags.py:141
 msgid "MusicBrainz release group ID"
 msgstr "MusicBrainzリリースグループID"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
-#: quodlibet/util/tags.py:143
+#: quodlibet/util/tags.py:144
 msgid "track gain"
 msgstr "トラックゲイン"
 
-#: quodlibet/util/tags.py:144
+#: quodlibet/util/tags.py:145
 msgid "track peak"
 msgstr "トラックピーク"
 
 #. Translators: "gain" means a volume adjustment, not "to acquire".
-#: quodlibet/util/tags.py:146
+#: quodlibet/util/tags.py:147
 msgid "album gain"
 msgstr "アルバムゲイン"
 
-#: quodlibet/util/tags.py:147
+#: quodlibet/util/tags.py:148
 msgid "album peak"
 msgstr "アルバムピーク"
 
-#: quodlibet/util/tags.py:148
+#: quodlibet/util/tags.py:149
 msgid "reference loudness"
 msgstr "リファレンスラウドネス"
 
-#: quodlibet/util/tags.py:153
+#: quodlibet/util/tags.py:154
 msgid "discs"
 msgstr "ディスク数"
 
-#: quodlibet/util/tags.py:155
+#: quodlibet/util/tags.py:156
 msgid "tracks"
 msgstr "トラック数"
 
-#: quodlibet/util/tags.py:156
+#: quodlibet/util/tags.py:157
 msgid "last started"
 msgstr "再生開始日時"
 
-#: quodlibet/util/tags.py:157
+#: quodlibet/util/tags.py:158
 msgid "full name"
 msgstr "フルパス"
 
-#: quodlibet/util/tags.py:164
+#: quodlibet/util/tags.py:165
 msgid "mount point"
 msgstr "マウントポイント"
 
-#: quodlibet/util/tags.py:166
+#: quodlibet/util/tags.py:167
 msgid "people"
 msgstr "ピープル"
 
-#: quodlibet/util/tags.py:168
+#: quodlibet/util/tags.py:169
 msgid "year"
 msgstr "年"
 
-#: quodlibet/util/tags.py:169
+#: quodlibet/util/tags.py:170
 msgid "original release year"
 msgstr "オリジナルリリース年"
 
-#: quodlibet/util/tags.py:170
+#: quodlibet/util/tags.py:171
 msgid "bookmark"
 msgstr "ブックマーク"
 
-#: quodlibet/util/tags.py:171
+#: quodlibet/util/tags.py:172
 msgid "bitdepth"
 msgstr "ビット深度"
 
-#: quodlibet/util/tags.py:174
+#: quodlibet/util/tags.py:175
 msgid "file format"
 msgstr "ファイル形式"
 
-#: quodlibet/util/tags.py:177
+#: quodlibet/util/tags.py:178
 msgid "playlists"
 msgstr "プレイリスト"
 
-#: quodlibet/util/tags.py:178
+#: quodlibet/util/tags.py:179
 msgid "sample rate"
 msgstr "サンプリングレート"
 
-#: quodlibet/util/tags.py:179
+#: quodlibet/util/tags.py:180
 msgid "channel count"
 msgstr "チャンネル数"
 
 #. Translators: e.g. "artist (sort)"
-#: quodlibet/util/tags.py:269
+#: quodlibet/util/tags.py:270
 msgid "sort"
 msgstr "ソート"
 
 #. Translators: e.g. "performer (roles)"
-#: quodlibet/util/tags.py:277
+#: quodlibet/util/tags.py:278
 msgid "roles"
 msgstr "担当"
 
