@@ -454,7 +454,13 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
         # It's either sortable or clickable columns, both ends in a buggy UI (see #4099)
         always_sortable = config.getboolean("song_list", "always_allow_sorting")
         self._sortable = value or always_sortable
-        self.set_headers_clickable(self._sortable)
+        for col in self.get_columns():
+            try:
+                col.get_widget().set_sensitive(self._sortable)
+            except (TypeError, AttributeError):
+                # Just in case columns don't always work like this
+                pass
+
 
     @property
     def model(self) -> Gtk.TreeModel:
@@ -1115,6 +1121,8 @@ class SongList(AllTreeView, SongListDnDMixin, DragScroll, util.InstanceTracker):
                     column.set_expand(True)
 
             def column_clicked(column, *args):
+                if not self._sortable:
+                    return
                 # if ctrl is held during the sort click, append a sort key
                 # or change order if already sorted
                 ctrl_held = False
