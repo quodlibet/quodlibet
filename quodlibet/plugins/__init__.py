@@ -61,9 +61,12 @@ class PluginNotSupportedError(PluginImportError):
 
 class MissingModulePluginError(PluginImportError):
     """Consistent Exception for reporting missing modules for plugins"""
-    def __init__(self, module_name):
-        msg = (_("Couldn't find module '{module}'. Perhaps you need to "
-                 "install the package?").format(module=module_name))
+
+    def __init__(self, module_name: str, extra: str|None = None):
+        tmpl = _("Couldn't find module '{module}'. "
+                 "Perhaps you need to install the package?{extra}")
+        msg = tmpl.format(module=module_name,
+                          extra="" if extra is None else " " + extra)
         super().__init__(msg)
 
 
