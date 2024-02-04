@@ -1,11 +1,17 @@
-# Copyright 2014-2023 Nick Boultbee
+# Copyright 2014-2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from quodlibet.plugins import MissingModulePluginError
 
-from telnetlib import Telnet
+try:
+    # TODO: port Telnet code to raw socket
+    from telnetlib import Telnet
+except ImportError as e:
+    raise MissingModulePluginError("telnetlib", "Not supported in Python 3.13+") from e
+
 import time
 from urllib.parse import quote, unquote
 
