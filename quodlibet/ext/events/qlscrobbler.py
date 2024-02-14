@@ -5,7 +5,7 @@
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
 #                  Steven Robertson <steven@strobe.cc>
-#     2012-2023    Nick Boultbee
+#     2012-2024    Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,8 +36,8 @@ from quodlibet.util.urllib import urlopen, UrllibError
 from quodlibet.errorreport import errorhook
 
 SERVICES = {
-    "Last.fm": "http://post.audioscrobbler.com/",
-    "Libre.fm": "http://turtle.libre.fm/"
+    "Last.fm": "https://post.audioscrobbler.com/",
+    "Libre.fm": "https://turtle.libre.fm/"
 }
 
 DEFAULT_SERVICE = "Last.fm"
