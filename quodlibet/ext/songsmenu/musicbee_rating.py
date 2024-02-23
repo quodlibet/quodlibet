@@ -26,6 +26,7 @@ class MusicBeeRatingExport(SongsMenuPlugin):
             song["rating"] = int(song["~#rating"]*100)
             song._needs_write = True
         except Exception as e:
+            print(e)
             return
 
 class MusicBeeRatingImport(SongsMenuPlugin):
@@ -45,5 +46,6 @@ class MusicBeeRatingImport(SongsMenuPlugin):
             song["~#rating"] = int(tags["rating"][0])/100
             song._needs_write = True
         except Exception as e:
+            print(e)
             return
         
