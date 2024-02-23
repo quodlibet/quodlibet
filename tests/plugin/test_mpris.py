@@ -20,11 +20,14 @@ from tests.plugin import PluginTestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats import AudioFile
 from quodlibet import config
+from quodlibet import const
 from quodlibet import app
 
 
 A1 = AudioFile(
-        {"album": "greatness", "title": "excellent", "artist": "fooman\ngo",
+        {"album": "greatness", "discsubtitle": "unplugged",
+         "title": "excellent", "version": "remix",
+         "artist": "fooman\ngo",
          "~#lastplayed": 1234, "~#rating": 0.75,
          "~filename": fsnative("/foo a/b"),
          "~#length": 123, "albumartist": "aa\nbb", "bpm": "123.5",
@@ -220,8 +223,8 @@ class TMPRIS(PluginTestCase):
         self.assertEqual(resp["xesam:albumArtist"], ["aa", "bb"])
 
         # single text values
-        self.assertEqual(resp["xesam:album"], "greatness")
-        self.assertEqual(resp["xesam:title"], "excellent")
+        self.assertEqual(resp["xesam:album"], "greatness - unplugged")
+        self.assertEqual(resp["xesam:title"], "excellent - remix")
         self.assertEqual(resp["xesam:url"], "file:///foo%20a/b")
 
         # integers
@@ -252,3 +255,25 @@ class TMPRIS(PluginTestCase):
         self.assertEqual(resp["xesam:artist"], ["fooman\ufffd"])
         # overflow
         assert resp["xesam:discNumber"] == 0
+
+    def test_metadata_without_version_and_discsubtitle(self):
+        # configure columns
+        columns = list(set(const.DEFAULT_COLUMNS) -
+                       {"~album~discsubtitle", "~title~version"}) + \
+                       ["album", "title"]
+        config.setstringlist("settings", "columns", columns)
+
+        args = {"reply_handler": self._reply, "error_handler": self._error}
+        piface = "org.mpris.MediaPlayer2.Player"
+
+        # go to next song
+        self._player_iface().Next(**args)
+        self._wait()
+        self.m.plugin_on_song_started(app.player.info)
+
+        self._prop().Get(piface, "Metadata", **args)
+        resp = self._wait()[0]
+
+        # verify values
+        self.assertEqual(resp["xesam:album"], "greatness")
+        self.assertEqual(resp["xesam:title"], "excellent")
