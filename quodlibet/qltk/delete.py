@@ -224,7 +224,7 @@ def _do_delete_songs(parent, songs, librarian):
         filename = song("~filename")
         try:
             os.unlink(filename)
-        except EnvironmentError:
+        except OSError:
             failed.append(song)
         else:
             ok.append(song)
@@ -257,7 +257,7 @@ def _do_delete_files(parent, paths):
     for path in paths:
         try:
             os.unlink(path)
-        except EnvironmentError:
+        except OSError:
             failed.append(path)
         else:
             ok.append(path)

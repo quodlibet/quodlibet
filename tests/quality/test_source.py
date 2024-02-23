@@ -9,7 +9,8 @@
 import os
 import re
 from pathlib import Path
-from typing import List, Iterable, Pattern
+from re import Pattern
+from collections.abc import Iterable
 
 import pytest
 from gi.repository import Gtk
@@ -41,7 +42,7 @@ def iter_py_paths() -> Iterable[Path]:
             dirnames.clear()
             continue
         for filename in filenames:
-            if filename.endswith('.py'):
+            if filename.endswith(".py"):
                 yield root / filename
 
 
@@ -94,7 +95,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
         norm = b"".join(header.split())
         norm = norm.decode("utf-8")
-        assert any([l in norm for l in self.ALLOWED])
+        assert any(l in norm for l in self.ALLOWED)
 
 
 # Don't mark this as quality - useful to execute _everywhere_
@@ -106,7 +107,7 @@ class TestStockIcons:
                           "[\"\'](gtk-[\\-a-z]*)")]
 
     @fixture
-    def white(self) -> List[str]:
+    def white(self) -> list[str]:
         # gtk setting keys start like stock icons, so white list them
         white = [x.replace("_", "-") for x in
                  dir(Gtk.Settings.get_default().props)

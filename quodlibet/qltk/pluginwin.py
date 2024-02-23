@@ -85,7 +85,7 @@ class PluginErrorWindow(UniqueWindow):
 
             # second line is always the __rescan line; don't show it
             message = failures[key][0:1] + failures[key][3:]
-            failure = Gtk.Label(label=''.join(message).strip())
+            failure = Gtk.Label(label="".join(message).strip())
             failure.set_alignment(0, 0)
             failure.set_padding(12, 6)
             failure.set_selectable(True)
@@ -99,7 +99,7 @@ class PluginErrorWindow(UniqueWindow):
         if not self.has_close_button():
             vbox2 = Gtk.VBox(spacing=12)
             close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-            close.connect('clicked', lambda *x: self.destroy())
+            close.connect("clicked", lambda *x: self.destroy())
             b = Gtk.HButtonBox()
             b.set_layout(Gtk.ButtonBoxStyle.END)
             b.pack_start(close, True, True, 0)
@@ -219,7 +219,7 @@ class PluginListView(HintedTreeView):
             # show it as enabled so it doesn't look broken.
             render.set_active(pm.enabled(plugin) or not plugin.can_enable)
 
-        render.connect('toggled', self.__toggled)
+        render.connect("toggled", self.__toggled)
         column = Gtk.TreeViewColumn("enabled", render)
         column.set_cell_data_func(render, cell_data)
         self.append_column(column)
@@ -230,8 +230,8 @@ class PluginListView(HintedTreeView):
         def cell_data2(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
             icon = plugin.icon or Icons.SYSTEM_RUN
-            render.set_property('icon-name', icon)
-            render.set_property('stock-size', Gtk.IconSize.LARGE_TOOLBAR)
+            render.set_property("icon-name", icon)
+            render.set_property("stock-size", Gtk.IconSize.LARGE_TOOLBAR)
 
         column = Gtk.TreeViewColumn("image", render)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -239,14 +239,14 @@ class PluginListView(HintedTreeView):
         self.append_column(column)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        render.set_property('xalign', 0.0)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        render.set_property("xalign", 0.0)
         render.set_padding(6, 6)
         column = Gtk.TreeViewColumn("name", render)
 
         def cell_data3(col, render, model, iter_, data):
             plugin = model.get_value(iter_)
-            render.set_property('text', plugin.name)
+            render.set_property("text", plugin.name)
 
         column.set_cell_data_func(render, cell_data3)
         column.set_expand(True)
@@ -349,17 +349,17 @@ class PluginPreferencesContainer(Gtk.VBox):
         else:
             instance_or_cls = plugin.get_instance() or plugin.cls
 
-            if plugin and hasattr(instance_or_cls, 'PluginPreferences'):
+            if plugin and hasattr(instance_or_cls, "PluginPreferences"):
                 try:
                     prefs = instance_or_cls.PluginPreferences(self)
-                except:
+                except Exception:
                     util.print_exc()
                     frame.hide()
                 else:
                     if isinstance(prefs, Gtk.Window):
                         b = Button(_("_Preferences"), Icons.PREFERENCES_SYSTEM)
-                        connect_obj(b, 'clicked', Gtk.Window.show, prefs)
-                        connect_obj(b, 'destroy', Gtk.Window.destroy, prefs)
+                        connect_obj(b, "clicked", Gtk.Window.show, prefs)
+                        connect_obj(b, "destroy", Gtk.Window.destroy, prefs)
                         frame.add(b)
                         frame.get_child().set_border_width(6)
                     else:
@@ -413,7 +413,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         errors = qltk.Button(_("Show _Errors"), Icons.DIALOG_WARNING)
         errors.set_focus_on_click(False)
-        errors.connect('clicked', self.__show_errors)
+        errors.connect("clicked", self.__show_errors)
         errors.show()
         errors = Align(errors, top=6, bottom=6)
         errors.set_no_show_all(True)
@@ -425,7 +425,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         if const.DEBUG:
             refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
-            refresh.connect('clicked', self.__refresh, plv, pref_box, errors,
+            refresh.connect("clicked", self.__refresh, plv, pref_box, errors,
                             enabled_combo)
             bbox.pack_start(refresh, True, True, 0)
 
@@ -441,7 +441,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         paned.pack1(vbox, False, False)
 
         close = qltk.Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         bb_align = Align(halign=Gtk.Align.END, valign=Gtk.Align.END)
         bb = Gtk.HButtonBox()
         bb.set_layout(Gtk.ButtonBoxStyle.END)
@@ -449,8 +449,8 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         bb_align.add(bb)
 
         selection = plv.get_selection()
-        selection.connect('changed', self.__selection_changed, pref_box)
-        selection.emit('changed')
+        selection.connect("changed", self.__selection_changed, pref_box)
+        selection.emit("changed")
 
         right_box = Gtk.VBox()
         right_box.pack_start(pref_box, True, True, 0)
@@ -465,7 +465,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         self.__refill(plv, pref_box, errors, enabled_combo)
 
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
         filter_model.set_visible_func(
             self.__filter, (fe, enabled_combo, type_combo))
 
@@ -525,7 +525,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         self._enabled_combo.set_active(0)
         self._type_combo.set_active(0)
-        self._filter_entry.set_text(u"")
+        self._filter_entry.set_text("")
 
     def move_to(self, plugin_id):
         def selector(r):

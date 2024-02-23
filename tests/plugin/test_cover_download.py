@@ -14,8 +14,8 @@ from tests.plugin import PluginTestCase
 from quodlibet import config
 from quodlibet import app
 
-A_SONG = AudioFile({'~filename': '/dev/null', 'artist': 'Mr Man',
-                    'album': 'Bars of Foo'})
+A_SONG = AudioFile({"~filename": "/dev/null", "artist": "Mr Man",
+                    "album": "Bars of Foo"})
 
 
 class TAlbumArt(PluginTestCase):
@@ -35,7 +35,7 @@ class TAlbumArt(PluginTestCase):
         self.songs = [A_SONG]
         config.add_section(PluginManager.CONFIG_SECTION)
         config.set(PluginManager.CONFIG_SECTION,
-                   '%s_preview_size' % DownloadCoverArt.PLUGIN_ID,
+                   "%s_preview_size" % DownloadCoverArt.PLUGIN_ID,
                    200)
 
     def test_cover_art_window(self):

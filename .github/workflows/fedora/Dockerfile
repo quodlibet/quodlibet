@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:39
 
 RUN dnf -y install \
       poetry \

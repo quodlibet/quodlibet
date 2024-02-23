@@ -12,20 +12,18 @@ import gi
 
 try:
     gi.require_version("Keybinder", "3.0")
-except ValueError:
-    raise MMKeysImportError
+except ValueError as e:
+    raise MMKeysImportError from e
 
 try:
     from gi.repository import Keybinder
-except ImportError:
-    raise MMKeysImportError
-
+except ImportError as e:
+    raise MMKeysImportError from e
 
 Keybinder.init()
 
 
 class KeybinderBackend(MMKeysBackend):
-
     _EVENTS = {
         "XF86AudioPrev": MMKeysAction.PREV,
         "XF86AudioNext": MMKeysAction.NEXT,
@@ -41,7 +39,7 @@ class KeybinderBackend(MMKeysBackend):
         self._callback = callback
         self._worked = []
 
-        for keystring, action in self._EVENTS.items():
+        for keystring, _action in self._EVENTS.items():
             if Keybinder.bind(keystring, self._bind_cb, None):
                 self._worked.append(keystring)
 

@@ -27,32 +27,32 @@ class TFormats(TestCase):
         config.quit()
 
     def test_presence(self):
-        self.failUnless(formats.aac)
-        self.failUnless(formats.aiff)
-        self.failUnless(formats.midi)
-        self.failUnless(formats.mod)
-        self.failUnless(formats.monkeysaudio)
-        self.failUnless(formats.mp3)
-        self.failUnless(formats.mp4)
-        self.failUnless(formats.mpc)
-        self.failUnless(formats.spc)
-        self.failUnless(formats.trueaudio)
-        self.failUnless(formats.vgm)
-        self.failUnless(formats.wav)
-        self.failUnless(formats.wavpack)
-        self.failUnless(formats.wma)
-        self.failUnless(formats.xiph)
+        self.assertTrue(formats.aac)
+        self.assertTrue(formats.aiff)
+        self.assertTrue(formats.midi)
+        self.assertTrue(formats.mod)
+        self.assertTrue(formats.monkeysaudio)
+        self.assertTrue(formats.mp3)
+        self.assertTrue(formats.mp4)
+        self.assertTrue(formats.mpc)
+        self.assertTrue(formats.spc)
+        self.assertTrue(formats.trueaudio)
+        self.assertTrue(formats.vgm)
+        self.assertTrue(formats.wav)
+        self.assertTrue(formats.wavpack)
+        self.assertTrue(formats.wma)
+        self.assertTrue(formats.xiph)
 
     def test_loaders(self):
-        self.failUnless(formats.loaders[".mp3"] is formats.mp3.MP3File)
+        self.assertTrue(formats.loaders[".mp3"] is formats.mp3.MP3File)
 
     def test_migration(self):
-        self.failUnless(formats.mp3 is sys.modules["quodlibet.formats.mp3"])
-        self.failUnless(formats.mp3 is sys.modules["quodlibet/formats/mp3"])
-        self.failUnless(formats.mp3 is sys.modules["formats.mp3"])
+        self.assertTrue(formats.mp3 is sys.modules["quodlibet.formats.mp3"])
+        self.assertTrue(formats.mp3 is sys.modules["quodlibet/formats/mp3"])
+        self.assertTrue(formats.mp3 is sys.modules["formats.mp3"])
 
-        self.failUnless(formats.xiph is sys.modules["formats.flac"])
-        self.failUnless(formats.xiph is sys.modules["formats.oggvorbis"])
+        self.assertTrue(formats.xiph is sys.modules["formats.flac"])
+        self.assertTrue(formats.xiph is sys.modules["formats.oggvorbis"])
 
     def test_filter(self):
         self.assertTrue(formats.filter("foo.mp3"))
@@ -60,7 +60,7 @@ class TFormats(TestCase):
         self.assertFalse(formats.filter("foomp3"))
 
     def test_music_file(self):
-        path = get_data_path('silence-44-s.mp3')
+        path = get_data_path("silence-44-s.mp3")
         self.assertTrue(formats.MusicFile(path))
 
         # non existing
@@ -86,8 +86,8 @@ class TPickle(TestCase):
             # we want to pickle/unpickle everything, since historically
             # these things ended up in the file
             dict.__init__(
-                i, {b"foo": u"bar", u"quux": b"baz", "a": "b",
-                    u"b": 42, "c": 0.25})
+                i, {b"foo": "bar", "quux": b"baz", "a": "b",
+                    "b": 42, "c": 0.25})
             instances.append(i)
         self.instances = instances
 
@@ -103,10 +103,10 @@ class TPickle(TestCase):
         # this is something that old py2 versions could pickle
         dict.__init__(i, {
             b"bytes": b"bytes",
-            u"unicode": u"unicode",
+            "unicode": "unicode",
             b"~filename": b"somefile",
-            u"~mountpoint": u"somemount",
-            u"int": 42,
+            "~mountpoint": "somemount",
+            "int": 42,
             b"float": 1.25,
         })
         data = pickle_dumps([i], 1)
@@ -125,7 +125,7 @@ class TPickle(TestCase):
         items = load_audio_files(data, process=False)
 
         assert len(items) == len(self.instances)
-        for a, b in zip(items, self.instances):
+        for a, b in zip(items, self.instances, strict=False):
             a = dict(a)
             b = dict(b)
             for key in a:
@@ -135,7 +135,7 @@ class TPickle(TestCase):
 
     def test_save_ascii_keys_as_bytes_on_py3(self):
         i = AudioFile.__new__(list(formats.types)[0])
-        dict.__setitem__(i, u"foo", u"bar")
+        dict.__setitem__(i, "foo", "bar")
         data = dump_audio_files([i], process=True)
 
         items = load_audio_files(data, process=False)

@@ -7,7 +7,7 @@
 
 import json
 from datetime import datetime
-from typing import Optional, Any
+from typing import Any
 from urllib.parse import urlencode
 
 from gi.repository import GObject, Gio, Soup, GLib
@@ -38,7 +38,7 @@ class RestApi(GObject.Object):
     def _get(self, path, callback, data=None, **kwargs):
         args = self._default_params()
         args.update(kwargs)
-        msg = self._add_auth_to(Soup.Message.new('GET', self._url(path, args)))
+        msg = self._add_auth_to(Soup.Message.new("GET", self._url(path, args)))
         download_json(msg, self._cancellable, callback, data, self._on_failure)
 
     def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
@@ -51,12 +51,12 @@ class RestApi(GObject.Object):
     def _post(self, path, callback, **kwargs):
         args = self._default_params()
         args.update(kwargs)
-        msg = self._add_auth_to(Soup.Message.new('POST', self._url(path)))
+        msg = self._add_auth_to(Soup.Message.new("POST", self._url(path)))
         post_body = urlencode(args)
         if not isinstance(post_body, bytes):
             post_body = post_body.encode("ascii")
         msg.set_request_body_from_bytes(
-            'application/x-www-form-urlencoded',
+            "application/x-www-form-urlencoded",
             GLib.Bytes.new(post_body))
         download_json(msg, self._cancellable, callback, None, self._on_failure)
 
@@ -68,35 +68,35 @@ class RestApi(GObject.Object):
         body = urlencode(args)
         if not isinstance(body, bytes):
             body = body.encode("ascii")
-        msg = self._add_auth_to(Soup.Message.new('DELETE', self._url(path)))
+        msg = self._add_auth_to(Soup.Message.new("DELETE", self._url(path)))
         msg.set_request_body_from_bytes(
-            'application/x-www-form-urlencoded',
+            "application/x-www-form-urlencoded",
             GLib.Bytes.new(body))
         download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
-        path = "%s%s" % (self.root, path)
-        return "%s?%s" % (path, urlencode(args)) if args else path
+        path = f"{self.root}{path}"
+        return f"{path}?{urlencode(args)}" if args else path
 
 
 class SoundcloudApiClient(RestApi):
-    __CLIENT_SECRET = 'ca2b69301bd1f73985a9b47224a2a239'
-    __CLIENT_ID = '5acc74891941cfc73ec8ee2504be6617'
+    __CLIENT_SECRET = "ca2b69301bd1f73985a9b47224a2a239"
+    __CLIENT_ID = "5acc74891941cfc73ec8ee2504be6617"
     API_ROOT = "https://api.soundcloud.com"
-    REDIRECT_URI = 'https://quodlibet.github.io/callbacks/soundcloud.html'
+    REDIRECT_URI = "https://quodlibet.github.io/callbacks/soundcloud.html"
     PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
-    COUNT_TAGS = {'%s_count' % t
-                  for t in ('playback', 'download', 'likes', 'favoritings',
-                            'download', 'comments')}
+    COUNT_TAGS = {"%s_count" % t
+                  for t in ("playback", "download", "likes", "favoritings",
+                            "download", "comments")}
 
     __gsignals__ = {
-        'fetch-success': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'fetch-failure': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'songs-received': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'stream-uri-received': (GObject.SignalFlags.RUN_LAST, None, (object, str)),
-        'comments-received': (GObject.SignalFlags.RUN_LAST, None, (int, object,)),
-        'authenticated': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fetch-success": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "songs-received": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "stream-uri-received": (GObject.SignalFlags.RUN_LAST, None, (object, str)),
+        "comments-received": (GObject.SignalFlags.RUN_LAST, None, (int, object,)),
+        "authenticated": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self):
@@ -115,7 +115,7 @@ class SoundcloudApiClient(RestApi):
 
     def _on_failure(self, req: HTTPRequest, _exc: Exception, data: Any) -> None:
         """Callback for HTTP failures."""
-        code = req.message.get_property('status-code')
+        code = req.message.get_property("status-code")
         if code in (401,):
             print_w("User session no longer valid, logging out.")
             if self.access_token:
@@ -145,28 +145,28 @@ class SoundcloudApiClient(RestApi):
     def get_tokens(self, code):
         print_d("Getting access token...")
         options = {
-            'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': self.REDIRECT_URI,
-            'client_id': self.__CLIENT_ID,
-            'client_secret': self.__CLIENT_SECRET,
+            "grant_type": "authorization_code",
+            "code": code,
+            "redirect_uri": self.REDIRECT_URI,
+            "client_id": self.__CLIENT_ID,
+            "client_secret": self.__CLIENT_SECRET,
         }
-        self._post('/oauth2/token', self._receive_tokens, **options)
+        self._post("/oauth2/token", self._receive_tokens, **options)
 
     def _refresh_tokens(self):
         print_d("Refreshing access token...")
         options = {
-            'grant_type': 'refresh_token',
-            'refresh_token': self.refresh_token,
-            'client_id': self.__CLIENT_ID,
-            'client_secret': self.__CLIENT_SECRET,
+            "grant_type": "refresh_token",
+            "refresh_token": self.refresh_token,
+            "client_id": self.__CLIENT_ID,
+            "client_secret": self.__CLIENT_SECRET,
         }
-        self._post('/oauth2/token', self._receive_tokens, **options)
+        self._post("/oauth2/token", self._receive_tokens, **options)
 
     @json_callback
     def _receive_tokens(self, json, _data):
-        self.access_token = json['access_token']
-        refresh_token = json.get('refresh_token', None)
+        self.access_token = json["access_token"]
+        refresh_token = json.get("refresh_token", None)
         if refresh_token:
             # Just in case we don't get it...
             self.refresh_token = refresh_token
@@ -178,13 +178,13 @@ class SoundcloudApiClient(RestApi):
             self._get_me()
 
     def _get_me(self):
-        self._get('/me', self._receive_me)
+        self._get("/me", self._receive_me)
 
     @json_callback
     def _receive_me(self, json, _data):
-        self.username = json['username']
-        self.user_id = json['id']
-        self.emit('authenticated', Wrapper(json))
+        self.username = json["username"]
+        self.user_id = json["id"]
+        self.emit("authenticated", Wrapper(json))
 
     def get_tracks(self, params):
         merged = {
@@ -194,10 +194,10 @@ class SoundcloudApiClient(RestApi):
             "access": "playable",
         }
         for k, v in params.items():
-            delim = " " if k == 'q' else ","
+            delim = " " if k == "q" else ","
             merged[k] = delim.join(list(v))
         print_d("Getting tracks: params=%s" % merged)
-        self._get('/tracks', self._on_track_data, **merged)
+        self._get("/tracks", self._on_track_data, **merged)
 
     def get_stream_url(self, song):
         try:
@@ -208,19 +208,19 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _on_track_stream_urls_data(self, json, song):
-        uri = json['http_mp3_128_url']
+        uri = json["http_mp3_128_url"]
         self.emit("stream-uri-received", song, uri)
 
     @json_callback
     def _on_track_data(self, json, _data):
         songs = list(filter(None, [self._audiofile_for(r) for r in json]))
-        self.emit('songs-received', songs)
+        self.emit("songs-received", songs)
 
     def get_favorites(self):
         self._get("/me/likes/tracks", self._on_track_data, limit=self.PAGE_SIZE)
 
     def get_my_tracks(self):
-        self._get('/me/tracks', self._on_track_data, limit=self.PAGE_SIZE)
+        self._get("/me/tracks", self._on_track_data, limit=self.PAGE_SIZE)
 
     def get_comments(self, track_id):
         self._get(f"/tracks/{track_id}/comments", self._receive_comments, limit=500)
@@ -231,7 +231,7 @@ class SoundcloudApiClient(RestApi):
         if json and len(json):
             # Should all be the same track...
             track_id = json[0]["track_id"]
-            self.emit('comments-received', track_id, json)
+            self.emit("comments-received", track_id, json)
 
     def save_auth(self):
         config.set("browsers", "soundcloud_token", self.access_token or "")
@@ -252,7 +252,7 @@ class SoundcloudApiClient(RestApi):
     def _on_favorited(self, json, _data):
         print_d("Successfully updated favorite")
 
-    def _audiofile_for(self, response) -> Optional[AudioFile]:
+    def _audiofile_for(self, response) -> AudioFile | None:
         r = Wrapper(response)
         d = r.data
         try:
@@ -322,12 +322,12 @@ class SoundcloudApiClient(RestApi):
 
     @util.cached_property
     def _authorize_url(self):
-        url = '%s/connect' % (self.API_ROOT,)
+        url = f"{self.API_ROOT}/connect"
         options = {
-            'scope': '',
-            'client_id': self.__CLIENT_ID,
-            'response_type': 'code',
-            'redirect_uri': self.REDIRECT_URI
+            "scope": "",
+            "client_id": self.__CLIENT_ID,
+            "response_type": "code",
+            "redirect_uri": self.REDIRECT_URI
 
         }
-        return '%s?%s' % (url, urlencode(options))
+        return f"{url}?{urlencode(options)}"

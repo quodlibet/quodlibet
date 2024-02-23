@@ -25,22 +25,22 @@ SONGS = [
     AudioFile({
         "album": "one",
         "artist": "piman",
-        "~filename": fsnative(u"/dev/null"),
+        "~filename": fsnative("/dev/null"),
     }),
     AudioFile({
         "album": "two",
         "artist": "mu",
-        "~filename": fsnative(u"/dev/zero"),
+        "~filename": fsnative("/dev/zero"),
     }),
     AudioFile({
         "album": "three",
         "artist": "boris",
-        "~filename": fsnative(u"/bin/ls"),
+        "~filename": fsnative("/bin/ls"),
     }),
     AudioFile({
         "album": "three",
         "artist": "boris",
-        "~filename": fsnative(u"/bin/ls2"),
+        "~filename": fsnative("/bin/ls2"),
     }),
 ]
 SONGS.sort()
@@ -89,66 +89,66 @@ class TCoverGridBrowser(TestCase):
         with realized(self.bar):
             view = self.bar.view
             child = view.get_child_at_index(0)
-            child.emit('activate')
+            child.emit("activate")
             self._wait()
-            self.failUnless(self.activated)
+            self.assertTrue(self.activated)
 
     def test_can_filter(self):
         with realized(self.bar):
-            self.failUnless(self.bar.can_filter(None))
-            self.failUnless(self.bar.can_filter("album"))
-            self.failUnless(self.bar.can_filter("foobar"))
-            self.failIf(self.bar.can_filter("~#length"))
-            self.failIf(self.bar.can_filter("title"))
+            self.assertTrue(self.bar.can_filter(None))
+            self.assertTrue(self.bar.can_filter("album"))
+            self.assertTrue(self.bar.can_filter("foobar"))
+            self.assertFalse(self.bar.can_filter("~#length"))
+            self.assertFalse(self.bar.can_filter("title"))
 
     def test_set_text(self):
         with realized(self.bar):
             self.bar.filter_text("artist=piman")
             self._wait()
-            self.failUnlessEqual(len(self.songs), 1)
+            self.assertEqual(len(self.songs), 1)
             self.bar.filter_text("")
             self._wait()
-            self.failUnlessEqual(set(self.songs), set(SONGS))
+            self.assertEqual(set(self.songs), set(SONGS))
 
     def test_filter_album(self):
         with realized(self.bar):
             self.bar.filter_text("dsagfsag")
             self._wait()
-            self.failUnlessEqual(len(self.songs), 0)
+            self.assertEqual(len(self.songs), 0)
             self.bar.filter_text("")
             self._wait()
             self.bar.filter("album", ["one", "three"])
             self._wait()
-            self.failUnlessEqual(len(self.songs), 3)
+            self.assertEqual(len(self.songs), 3)
 
     def test_filter_artist(self):
         with realized(self.bar):
             self.bar.filter("artist", ["piman"])
             self._wait()
-            self.failUnlessEqual(len(self.songs), 1)
-            self.failUnlessEqual(self.songs[0]("artist"), "piman")
+            self.assertEqual(len(self.songs), 1)
+            self.assertEqual(self.songs[0]("artist"), "piman")
 
     def test_header(self):
-        self.failIf(self.bar.headers)
+        self.assertFalse(self.bar.headers)
 
     def test_list(self):
         albums = self.bar.list_albums()
-        self.failUnlessEqual(set(albums), {s.album_key for s in SONGS})
+        self.assertEqual(set(albums), {s.album_key for s in SONGS})
         self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        self.failUnlessEqual({s.album_key for s in self.songs},
+        self.assertEqual({s.album_key for s in self.songs},
                              {SONGS[0].album_key})
 
     def test_active_filter(self):
         with realized(self.bar):
             self.bar.filter("artist", ["piman"])
             self._wait()
-            self.failUnless(self.bar.active_filter(self.songs[0]))
+            self.assertTrue(self.bar.active_filter(self.songs[0]))
             for s in SONGS:
                 if s is not self.songs[0]:
-                    self.failIf(self.bar.active_filter(s))
+                    self.assertFalse(self.bar.active_filter(s))
 
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
-        self.failUnlessEqual(pattern_text, DEFAULT_PATTERN_TEXT)
-        self.failUnless("<album>" in pattern_text)
+        self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
+        self.assertTrue("<album>" in pattern_text)

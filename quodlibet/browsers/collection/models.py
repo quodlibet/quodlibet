@@ -33,7 +33,7 @@ class AlbumNode:
         self.scanned = False
 
     @property
-    def COVER_SIZE(self):
+    def cover_size(self):
         size = config.getint("browsers", "cover_size")
         if size <= 0:
             size = 48
@@ -45,7 +45,7 @@ class AlbumNode:
         self.scanned = True
 
         from quodlibet import app
-        s = self.COVER_SIZE * scale_factor * 0.5
+        s = self.cover_size * scale_factor * 0.5
         self.cover = app.cover_manager.get_pixbuf_many(self.album.songs, s, s)
 
 
@@ -117,8 +117,7 @@ class CollectionModelMixin:
             if isinstance(value, AlbumNode):
                 yield value.album
             else:
-                for album in self.iter_albums(child_iter):
-                    yield album
+                yield from self.iter_albums(child_iter)
 
     def get_markup(self, tags, iter_):
         obj = self.get_value(iter_, 0)

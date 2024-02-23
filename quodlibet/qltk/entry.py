@@ -53,8 +53,8 @@ class EditableUndo:
         self.__handlers = [
             self.connect("insert-text", self.__insert_before),
             self.connect("delete-text", self.__delete_before),
-            self.connect('populate-popup', self.__popup),
-            self.connect('key-press-event', self.__key_press),
+            self.connect("populate-popup", self.__popup),
+            self.connect("key-press-event", self.__key_press),
             ]
 
     def __key_press(self, entry, event):
@@ -86,8 +86,8 @@ class EditableUndo:
         for widget in [sep, redo, undo]:
             widget.show()
 
-        undo.connect('activate', lambda *x: self.undo())
-        redo.connect('activate', lambda *x: self.redo())
+        undo.connect("activate", lambda *x: self.undo())
+        redo.connect("activate", lambda *x: self.redo())
 
         undo.set_sensitive(self.can_undo())
         redo.set_sensitive(self.can_redo())
@@ -211,7 +211,7 @@ class ClearEntryMixin:
     """
 
     __gsignals__ = {
-        'clear': (GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION,
+        "clear": (GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION,
                   None, ())
     }
 
@@ -233,7 +233,7 @@ class ClearEntryMixin:
         # TODO: don't change the order.. we connect to clear and remove all
         # timeouts added for text change in the searchbar
         self.delete_text(0, -1)
-        self.emit('clear')
+        self.emit("clear")
 
 
 class ClearEntry(UndoEntry, ClearEntryMixin):
@@ -252,7 +252,7 @@ class ValidatingEntryMixin(Gtk.Widget):
 
     def set_validate(self, validator=None):
         if validator:
-            self.connect('changed', self._set_color, validator)
+            self.connect("changed", self._set_color, validator)
 
     def _default_color(self) -> Gdk.RGBA:
         # Don't use our *own* context here if possible else it changes as we mutate...
@@ -273,7 +273,7 @@ class ValidatingEntryMixin(Gtk.Widget):
         else:
             color = Gdk.RGBA(default.red, default.green, default.blue, self.ALPHA)
 
-        if color and self.get_property('sensitive'):
+        if color and self.get_property("sensitive"):
             self.override_color(Gtk.StateType.NORMAL, color)
         else:
             self.override_color(Gtk.StateType.NORMAL, None)

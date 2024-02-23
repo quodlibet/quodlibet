@@ -49,9 +49,9 @@ class BaseTCPServer:
         try:
             service.add_inet_port(self._port, None)
         except GLib.GError as e:
-            raise ServerError(e)
+            raise ServerError(e) from e
         except OverflowError as e:
-            raise ServerError("port: %s" % e)
+            raise ServerError(f"port: {e}") from e
         self._id = service.connect("incoming", self._incoming_connection_cb)
         service.start()
         self._sock_service = service
@@ -155,7 +155,7 @@ class BaseTCPConnection:
                 while True:
                     try:
                         data = sock.recv(4096)
-                    except (IOError, OSError) as e:
+                    except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
                         elif e.errno == errno.EINTR:
@@ -206,7 +206,7 @@ class BaseTCPConnection:
                 while True:
                     try:
                         result = sock.send(write_buffer)
-                    except (IOError, OSError) as e:
+                    except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
                         elif e.errno == errno.EINTR:

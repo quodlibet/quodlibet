@@ -21,9 +21,9 @@ class WMAFile(AudioFile):
              "audio/x-wma", "video/x-wmv"]
     format = "ASF"
 
-    #http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
-    #http://msdn.microsoft.com/en-us/library/dd743063%28VS.85%29.aspx
-    #http://msdn.microsoft.com/en-us/library/dd743220%28VS.85%29.aspx
+    # http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
+    # http://msdn.microsoft.com/en-us/library/dd743063%28VS.85%29.aspx
+    # http://msdn.microsoft.com/en-us/library/dd743220%28VS.85%29.aspx
     __translate = {
         "WM/AlbumTitle": "album",
         "Title": "title",
@@ -62,7 +62,7 @@ class WMAFile(AudioFile):
         "WM/AuthorURL": "website",
         "Description": "comment"
     }
-    __rtranslate = dict((v, k) for k, v in __translate.items())
+    __rtranslate = {v: k for k, v in __translate.items()}
 
     # http://msdn.microsoft.com/en-us/library/dd743065.aspx
     # note: not all names here are used by QL
@@ -108,7 +108,7 @@ class WMAFile(AudioFile):
 
         if type_:
             self["~codec"] = type_
-        encoding = u"\n".join(filter(None, [name, desc]))
+        encoding = "\n".join(filter(None, [name, desc]))
         if encoding:
             self["~encoding"] = encoding
 
@@ -119,7 +119,7 @@ class WMAFile(AudioFile):
                 name = self.__translate[name]
             except KeyError:
                 continue
-            self[name] = u"\n".join(map(str, values))
+            self[name] = "\n".join(map(str, values))
         self.sanitize(filename)
 
     def write(self):
@@ -127,7 +127,7 @@ class WMAFile(AudioFile):
             audio = mutagen.asf.ASF(self["~filename"])
         for key in self.__translate.keys():
             try:
-                del(audio[key])
+                del (audio[key])
             except KeyError:
                 pass
 
@@ -147,11 +147,11 @@ class WMAFile(AudioFile):
         return key in self.__multi_value_keys
 
     def can_change(self, key=None):
-        OK = self.__rtranslate.keys()
+        ok = self.__rtranslate.keys()
         if key is None:
-            return OK
+            return ok
         else:
-            return super().can_change(key) and (key in OK)
+            return super().can_change(key) and (key in ok)
 
     def get_images(self):
         images = []
@@ -209,11 +209,11 @@ class WMAFile(AudioFile):
 
         try:
             imagedata = image.read()
-        except EnvironmentError as e:
-            raise AudioFileError(e)
+        except OSError as e:
+            raise AudioFileError(e) from e
 
         # thumbnail gets used in WMP..
-        data = pack_image(image.mime_type, u"thumbnail",
+        data = pack_image(image.mime_type, "thumbnail",
                           imagedata, APICType.COVER_FRONT)
 
         value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)
@@ -241,7 +241,7 @@ def unpack_image(data):
     try:
         (type_, size) = struct.unpack_from("<bi", data)
     except struct.error as e:
-        raise ValueError(e)
+        raise ValueError(e) from e
     data = data[5:]
 
     mime = b""

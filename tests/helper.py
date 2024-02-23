@@ -28,18 +28,18 @@ from quodlibet.util.path import normalize_path
 def dummy_path(path):
     path = fsnative(path)
     if os.name == "nt":
-        return normalize_path(u"z:\\" + path.replace(u"/", u"\\"))
+        return normalize_path("z:\\" + path.replace("/", "\\"))
     return path
 
 
 @contextlib.contextmanager
 def locale_numeric_conv(
-        decimal_point=".", grouping=[3, 3, 0], thousands_sep=","):
+        decimal_point=".", grouping=None, thousands_sep=","):
     """Temporarily change number formatting conventions.
 
     By default this uses en_US conventions.
     """
-
+    grouping = grouping or [3, 3, 0]
     # XXX: locale internals
     override = locale._override_localeconv
     old = override.copy()
@@ -227,7 +227,7 @@ def preserve_environ():
     yield
     # don't touch existing values as os.environ is broken for empty
     # keys on Windows: http://bugs.python.org/issue20658
-    for key, value in list(os.environ.items()):
+    for key in list(os.environ.keys()):
         if key not in old:
             del os.environ[key]
     for key, value in old.items():
@@ -244,10 +244,10 @@ def capture_output():
     """
 
     err = io.TextIOWrapper(
-        io.BytesIO(), encoding="utf-8", write_through=True, newline='\n')
+        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n")
     err.getvalue = lambda: err.buffer.getvalue().decode()
     out = io.TextIOWrapper(
-        io.BytesIO(), encoding="utf-8", write_through=True, newline='\n')
+        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n")
     out.getvalue = lambda: out.buffer.getvalue().decode()
     old_err = sys.stderr
     old_out = sys.stdout
@@ -330,10 +330,10 @@ class ListWithUnused:
     def check_unused(self):
         if self.unused:
             from quodlibet import print_w
-            print_w('ListWithUnused has unused items: %s' % self.unused)
+            print_w("ListWithUnused has unused items: %s" % self.unused)
 
 
-def __(message):
+def __(message):  # noqa
     """See `quodlibet._`. Avoids triggering PO scanners"""
     t = GlibTranslations()
     return t.wrap_text(t.ugettext(message))

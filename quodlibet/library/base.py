@@ -10,8 +10,9 @@
 
 import os
 import shutil
-from typing import (Collection, TypeVar, Sequence, Iterable,
-                    Optional, Iterator, Generic, MutableMapping, Tuple, Set, Generator)
+from typing import TypeVar, Optional, Generic
+from collections.abc import Collection, Sequence, Iterable, Iterator, MutableMapping, \
+    Generator
 
 from gi.repository import GObject
 
@@ -48,9 +49,9 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
     """
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'removed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'added': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "removed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "added": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     librarian: Optional["quodlibet.library.librarians.Librarian"] = None
@@ -58,7 +59,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
 
     dirty = False
 
-    def __init__(self, name: Optional[str] = None):
+    def __init__(self, name: str | None = None):
         super().__init__()
         self._contents: MutableMapping[K, V] = {}
         self._name = name
@@ -107,13 +108,13 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         print_d(f"Emitting changed for {len(items)} item(s) "
                 f"(e.g. {list(items)[0].key!r}...)", self._name)
         self.dirty = True
-        self.emit('changed', items)
+        self.emit("changed", items)
 
     def __iter__(self) -> Iterator[V]:
         """Iterate over the items in the library."""
         return iter(self._contents.values())
 
-    def iteritems(self) -> Iterator[Tuple[K, V]]:
+    def iteritems(self) -> Iterator[tuple[K, V]]:
         return iter(self._contents.items())
 
     def iterkeys(self) -> Iterator[K]:
@@ -165,7 +166,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         for item in items:
             content[item.key] = item
 
-    def add(self, items: Iterable[V]) -> Set[V]:
+    def add(self, items: Iterable[V]) -> set[V]:
         """Add items. This causes an 'added' signal.
 
         Return the sequence of items actually added, filtering out items
@@ -184,10 +185,10 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             self._contents[item.key] = item
 
         self.dirty = True
-        self.emit('added', items)
+        self.emit("added", items)
         return items
 
-    def remove(self, items: Iterable[V]) -> Set[V]:
+    def remove(self, items: Iterable[V]) -> set[V]:
         """Remove items. This causes a 'removed' signal.
 
         Return the sequence of items actually removed.
@@ -202,7 +203,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
             del self._contents[item.key]
 
         self.dirty = True
-        self.emit('removed', items)
+        self.emit("removed", items)
         return items
 
 
@@ -215,7 +216,7 @@ def _load_items(filename) -> Iterable[V]:
     try:
         with open(filename, "rb") as fp:
             data = fp.read()
-    except EnvironmentError:
+    except OSError:
         print_w("Couldn't load library file from: %r" % filename)
         return []
 
@@ -228,7 +229,7 @@ def _load_items(filename) -> Iterable[V]:
         # move the broken file out of the way
         try:
             shutil.copy(filename, filename + ".not-valid")
-        except EnvironmentError:
+        except OSError:
             util.print_exc()
 
         return []
@@ -276,14 +277,14 @@ class PicklingMixin:
             # modified, like in the periodic 15min save.
             # Ignore, as it should try again later or on program exit.
             util.print_exc()
-        except EnvironmentError:
+        except OSError:
             print_w(f"Couldn't save library to path {filename!r}")
         else:
             self.dirty = False
 
 
 def iter_paths(root: fsnative,
-               exclude: Optional[Iterable[fsnative]] = None,
+               exclude: Iterable[fsnative] | None = None,
                skip_hidden: bool = True) -> Generator[fsnative, None, None]:
     """Yields paths contained in root (symlinks dereferenced)
 
@@ -303,14 +304,14 @@ def iter_paths(root: fsnative,
 
     assert isinstance(root, fsnative)
     exclude = exclude or []
-    assert all((isinstance(p, fsnative) for p in exclude))
+    assert all(isinstance(p, fsnative) for p in exclude)
     assert os.path.abspath(root)
 
     def skip(path):
         if skip_hidden and is_hidden(path):
             return True
         # FIXME: normalize paths..
-        return any((path.startswith(p) for p in exclude))
+        return any(path.startswith(p) for p in exclude)
 
     if skip_hidden and is_hidden(root):
         return

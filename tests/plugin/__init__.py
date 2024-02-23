@@ -9,12 +9,12 @@ import quodlibet
 from quodlibet import util
 from quodlibet.util import get_module_dir
 from quodlibet.util.modulescanner import ModuleScanner
-from quodlibet.plugins import list_plugins, Plugin, PluginImportException
+from quodlibet.plugins import list_plugins, Plugin, PluginImportError
 
 from tests import TestCase, init_fake_app, destroy_fake_app
 
 
-init_fake_app, destroy_fake_app
+init_fake_app, destroy_fake_app  # noqa
 
 # Nasty hack to allow importing of plugins...
 PLUGIN_DIRS = []
@@ -37,13 +37,14 @@ ms.rescan()
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
     exc = err.exception
-    assert issubclass(type(exc), (PluginImportException, ImportError)), \
-        "'%s' plugin shouldn't have raised a %s, but it did (%r)."\
-        % (name, type(exc).__name__, exc)
+    msg = (f"{name!r} plugin shouldn't have raised {type(exc).__name__} but did "
+           f"({exc!r}).")
+    assert isinstance(exc, PluginImportError | ImportError), msg
+
 
 plugins = {}
 modules = {}
-for name, module in ms.modules.items():
+for module in ms.modules.values():
     for plugin in list_plugins(module.module):
         plugins[plugin.PLUGIN_ID] = Plugin(plugin)
         modules[plugin.PLUGIN_ID] = module.module

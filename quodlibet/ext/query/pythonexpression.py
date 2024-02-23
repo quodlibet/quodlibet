@@ -17,7 +17,7 @@ class PythonQuery(QueryPlugin):
     PLUGIN_ID = "python_query"
     PLUGIN_NAME = _("Python Query")
     PLUGIN_DESC = _("🐍Use Python expressions in queries.")
-    key = 'python'
+    key = "python"
     query_syntax = _("@(python: expression)")
     query_description = _(
         "The variable <tt>s</tt> (or <tt>a</tt>) is the song / album being "
@@ -31,16 +31,16 @@ class PythonQuery(QueryPlugin):
 
     def __init__(self):
         print_d("Initialising")
-        self._globals = {'random': random, 'Random': random.Random,
-                         'time': time}
+        self._globals = {"random": random, "Random": random.Random,
+                         "time": time}
         self._reported = set()
         self._raw_body = None
 
     def search(self, data, body):
         try:
-            self._globals['s'] = data
+            self._globals["s"] = data
             # Albums can be queried too...
-            self._globals['a'] = data
+            self._globals["a"] = data
             # eval modifies the globals in place, it seems
             ret = eval(body, dict(self._globals))
             return ret
@@ -48,10 +48,8 @@ class PythonQuery(QueryPlugin):
             key = str(e)
             if key not in self._reported:
                 self._reported.add(key)
-                print_w("%s(%s) in expression '%s'. "
-                        "Example failing data: %s"
-                        % (type(e).__name__, key, self._raw_body,
-                           self._globals))
+                print_w(f"{type(e).__name__}({key}) in expression {self._raw_body!r}. "
+                        f"Example failing data: {self._globals}")
             return False
 
     def parse_body(self, body):
@@ -61,7 +59,7 @@ class PythonQuery(QueryPlugin):
         self._reported.clear()
         try:
             self._globals.update(_ts=time.time())
-            return compile(body.strip(), 'query', 'eval')
+            return compile(body.strip(), "query", "eval")
         except SyntaxError as e:
             print_w("Couldn't compile query (%s)" % e)
-            raise QueryPluginError
+            raise QueryPluginError from e

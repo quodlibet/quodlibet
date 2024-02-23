@@ -61,23 +61,23 @@ class MP4File(AudioFile):
             "musicbrainz_albumtype",
         "----:com.apple.iTunes:MusicBrainz Album Release Country":
             "releasecountry",
-        '----:com.apple.iTunes:MusicBrainz Release Group Id':
-            'musicbrainz_releasegroupid',
+        "----:com.apple.iTunes:MusicBrainz Release Group Id":
+            "musicbrainz_releasegroupid",
 
-        '----:com.apple.iTunes:replaygain_album_gain': 'replaygain_album_gain',
-        '----:com.apple.iTunes:replaygain_album_peak': 'replaygain_album_peak',
-        '----:com.apple.iTunes:replaygain_track_gain': 'replaygain_track_gain',
-        '----:com.apple.iTunes:replaygain_track_peak': 'replaygain_track_peak',
-        '----:com.apple.iTunes:replaygain_reference_loudness':
-            'replaygain_reference_loudness',
+        "----:com.apple.iTunes:replaygain_album_gain": "replaygain_album_gain",
+        "----:com.apple.iTunes:replaygain_album_peak": "replaygain_album_peak",
+        "----:com.apple.iTunes:replaygain_track_gain": "replaygain_track_gain",
+        "----:com.apple.iTunes:replaygain_track_peak": "replaygain_track_peak",
+        "----:com.apple.iTunes:replaygain_reference_loudness":
+            "replaygain_reference_loudness",
     }
-    __rtranslate = dict((v, k) for k, v in __translate.items())
+    __rtranslate = {v: k for k, v in __translate.items()}
 
     __tupletranslate = {
         "disk": "discnumber",
         "trkn": "tracknumber",
-        }
-    __rtupletranslate = dict((v, k) for k, v in __tupletranslate.items())
+    }
+    __rtupletranslate = {v: k for k, v in __tupletranslate.items()}
 
     def __init__(self, filename):
         with translate_errors():
@@ -96,16 +96,16 @@ class MP4File(AudioFile):
                     name = self.__tupletranslate[key]
                     cur, total = values[0]
                     if total:
-                        self[name] = u"%d/%d" % (cur, total)
+                        self[name] = f"{cur:d}/{total:d}"
                     else:
                         self[name] = str(cur)
             elif key in self.__translate:
                 name = self.__translate[key]
                 if key == "tmpo":
-                    self[name] = u"\n".join(map(str, values))
+                    self[name] = "\n".join(map(str, values))
                 elif key.startswith("----"):
                     self[name] = "\n".join(
-                        map(lambda v: decode(v).strip("\x00"), values))
+                        decode(v).strip("\x00") for v in values)
                 else:
                     self[name] = "\n".join(values)
             elif key == "covr":
@@ -119,7 +119,7 @@ class MP4File(AudioFile):
         for key in (list(self.__translate.keys()) +
                     list(self.__tupletranslate.keys())):
             try:
-                del(audio[key])
+                del (audio[key])
             except KeyError:
                 pass
 
@@ -130,9 +130,9 @@ class MP4File(AudioFile):
                 continue
             values = self.list(key)
             if name == "tmpo":
-                values = list(map(lambda v: int(round(float(v))), values))
+                values = [int(round(float(v))) for v in values]
             elif name.startswith("----"):
-                values = list(map(lambda v: v.encode("utf-8"), values))
+                values = [v.encode("utf-8") for v in values]
             audio[name] = values
         track, tracks = self("~#track"), self("~#tracks", 0)
         if track:
@@ -150,12 +150,11 @@ class MP4File(AudioFile):
         return False
 
     def can_change(self, key=None):
-        OK = list(self.__rtranslate.keys()) + \
-            list(self.__rtupletranslate.keys())
+        ok = list(self.__rtranslate.keys()) + list(self.__rtupletranslate.keys())
         if key is None:
-            return OK
+            return ok
         else:
-            return super().can_change(key) and (key in OK)
+            return super().can_change(key) and (key in ok)
 
     def get_images(self):
         images = []
@@ -225,7 +224,7 @@ class MP4File(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError:
+        except OSError:
             return
 
         cover = MP4Cover(data, image_format)
@@ -236,6 +235,7 @@ class MP4File(AudioFile):
 
         self.has_images = True
 
+
 loader = MP4File
 types = [MP4File]
-extensions = ['.mp4', '.m4a', '.m4b', '.m4v', '.3gp', '.3g2', '.3gp2']
+extensions = [".mp4", ".m4a", ".m4b", ".m4v", ".3gp", ".3g2", ".3gp2"]

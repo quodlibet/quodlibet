@@ -5,7 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 from dataclasses import dataclass
-from typing import List
 
 from quodlibet.util.matcher import ObjectListMatcher
 
@@ -23,29 +22,29 @@ class TMatchBasics(TestCase):
 class TMatchIdentity(TestCase):
     def test_all_elements_in_both_but_different_order(self):
         matcher = ObjectListMatcher.of_identity()
-        a = ['cookie', 'beach', 'house']
-        b = ['house', 'cookie', 'beach']
+        a = ["cookie", "beach", "house"]
+        b = ["house", "cookie", "beach"]
 
         b_match_indices = matcher.get_indices(a, b)
-        for a_item, b_idx in zip(a, b_match_indices):
+        for a_item, b_idx in zip(a, b_match_indices, strict=False):
             assert a_item == b[b_idx]
 
-        b = ['house', 'beach', 'cookie']
+        b = ["house", "beach", "cookie"]
         assert matcher.get_indices(a, b) == [2, 1, 0]
 
     def test_simple_unbalanced(self):
         matcher = ObjectListMatcher.of_identity()
-        a = ['hell', 'gel', 'shell']
-        b = ['yell']
+        a = ["hell", "gel", "shell"]
+        b = ["yell"]
         assert matcher.get_indices(a, b) == [0, None, None]
 
-        a = ['gel', 'hell', 'shell']
+        a = ["gel", "hell", "shell"]
         assert matcher.get_indices(a, b) == [None, 0, None]
 
     def test_minimum_similarity(self):
         matcher = ObjectListMatcher.of_identity()
-        a = ['mess', 'blessed', 'chess']
-        b = ['pudding', 'xylophone', 'yes']
+        a = ["mess", "blessed", "chess"]
+        b = ["pudding", "xylophone", "yes"]
         matcher.should_store_similarity_matrix = True
 
         assert matcher.get_indices(a, b) == [2, 0, 1], formatted_matrix(matcher)
@@ -61,8 +60,8 @@ class TMatchIdentity(TestCase):
 class TMatchListOfSequences(TestCase):
     def test_clear_match(self):
         matcher = ObjectListMatcher.for_sequence([3, 1.5, 2])
-        a = [('cacc', 'cacc', 2), ('bacc', 'baca', 1)]
-        b = [('caba', 'bacc', 2), ('abaa', 'bcca', 2)]
+        a = [("cacc", "cacc", 2), ("bacc", "baca", 1)]
+        b = [("caba", "bacc", 2), ("abaa", "bcca", 2)]
 
         assert matcher.get_indices(a, b) == [0, 1]
 
@@ -74,8 +73,8 @@ class TMatchListOfSequences(TestCase):
 
     def test_other_now_barely_better(self):
         matcher = ObjectListMatcher.for_sequence([3, 1.5, 2])
-        a = [('cacc', 'cacc', 2), ('bacc', 'baca', 1)]
-        b = [('caba', 'bacc', 1), ('abaa', 'bcca', 2)]  # third element of first changed
+        a = [("cacc", "cacc", 2), ("bacc", "baca", 1)]
+        b = [("caba", "bacc", 1), ("abaa", "bcca", 2)]  # third element of first changed
 
         assert matcher.get_indices(a, b) == [1, 0]
         assert matcher.get_indices(a, b) == [1, 0]
@@ -84,27 +83,27 @@ class TMatchListOfSequences(TestCase):
     def test_change_weights(self):
         # same as in previous test
         matcher = ObjectListMatcher.for_sequence([3, 1.5, 2])
-        a = [('cacc', 'cacc', 2), ('bacc', 'baca', 1)]
-        b = [('caba', 'bacc', 1), ('abaa', 'bcca', 2)]
+        a = [("cacc", "cacc", 2), ("bacc", "baca", 1)]
+        b = [("caba", "bacc", 1), ("abaa", "bcca", 2)]
 
         matcher.update_attr_to_weight({lambda i: i[1]: 1})
         assert matcher.get_indices(a, b) == [0, 1]
 
     def test_double_weight(self):
         matcher = ObjectListMatcher.for_sequence([4, 2])
-        a = [('Great Song', 'Law', 2), ('Night Mix', 'Beach', 1)]
-        b = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
+        a = [("Great Song", "Law", 2), ("Night Mix", "Beach", 1)]
+        b = [("Great Song", "Beach", 1), ("Great Sea", "Low", 2)]
 
         assert matcher.get_indices(a, b) == [0, 1]
 
         # changed "Law" to "Low"
-        a = [('Great Song', 'Low', 2), ('Night Mix', 'Beach', 1)]
+        a = [("Great Song", "Low", 2), ("Night Mix", "Beach", 1)]
         assert matcher.get_indices(a, b) == [1, 0]
 
     def test_nothing_to_match_b_to(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
         a = []
-        b = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
+        b = [("Great Song", "Beach", 1), ("Great Sea", "Low", 2)]
 
         # As this returns the indices of b to match a, it always has the size of a.
         assert matcher.get_indices(a, b) == []
@@ -112,7 +111,7 @@ class TMatchListOfSequences(TestCase):
 
     def test_match_a_to_nothing(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
-        a = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
+        a = [("Great Song", "Beach", 1), ("Great Sea", "Low", 2)]
         b = []
 
         # When no b element could be matched to an a element, -1 is used.
@@ -120,15 +119,15 @@ class TMatchListOfSequences(TestCase):
 
     def test_more_in_a(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
-        a = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
-        b = [('Great Sea', 'Light', 2)]
+        a = [("Great Song", "Beach", 1), ("Great Sea", "Low", 2)]
+        b = [("Great Sea", "Light", 2)]
 
         assert matcher.get_indices(a, b) == [None, 0]
 
     def test_more_in_b(self):
         matcher = ObjectListMatcher.for_sequence([7, 1])
-        a = [('Great Sea', 'Light', 2)]
-        b = [('Great Song', 'Beach', 1), ('Great Sea', 'Low', 2)]
+        a = [("Great Sea", "Light", 2)]
+        b = [("Great Song", "Beach", 1), ("Great Sea", "Low", 2)]
 
         assert matcher.get_indices(a, b) == [1]
 
@@ -183,8 +182,8 @@ class TMatchListOfSequences(TestCase):
 
         # There are undefeatable matches for the first attribute / weight here, and so
         # by default the algorithm will not even check the second attribute.
-        a = [('a', -8), ('very clear', 0), ('way', 33), ('forward', 2)]
-        b = [('very clear', 33), ('forward', -1), ('a', 5), ('way', 2)]
+        a = [("a", -8), ("very clear", 0), ("way", 33), ("forward", 2)]
+        b = [("very clear", 33), ("forward", -1), ("a", 5), ("way", 2)]
 
         assert matcher.get_indices(a, b) == [2, 0, 3, 1]
         partial_matrix = matcher.similarity_matrix
@@ -199,13 +198,13 @@ class TMatchListOfSequences(TestCase):
 
 
 def formatted_matrix(matcher: ObjectListMatcher) -> str:
-    lines = ['<Similarity Matrix']
+    lines = ["<Similarity Matrix"]
     for b_similarities in matcher.similarity_matrix:
-        l = ''
+        l = ""
         for b_sim in b_similarities:
-            l += f'{b_sim:1.4f}  '
+            l += f"{b_sim:1.4f}  "
         lines.append(l)
-    return '\n'.join(lines) + '\n>'
+    return "\n".join(lines) + "\n>"
 
 
 class TMatchClassFields(TestCase):
@@ -219,10 +218,10 @@ class TMatchClassFields(TestCase):
         assert matcher.get_indices(a, b) == [2, None, 1, 0]
 
     def _get_car_lists(self):
-        a = [Car(1, 'Speedy', ['gps', 'heater']), Car(2, 'Cheaporghiny', []),
-             Car(16, 'Half-a-Bus', ['buttons']), Car(5, 'Normal Model 1', ['music'])]
-        b = [Car(3, 'Mödel V5', ['gps']), Car(19, 'Cyberbus', ['buttons']),
-             Car(2, 'Sheeporghiny', ['gps', 'heater', 'sheep sound button'])]
+        a = [Car(1, "Speedy", ["gps", "heater"]), Car(2, "Cheaporghiny", []),
+             Car(16, "Half-a-Bus", ["buttons"]), Car(5, "Normal Model 1", ["music"])]
+        b = [Car(3, "Mödel V5", ["gps"]), Car(19, "Cyberbus", ["buttons"]),
+             Car(2, "Sheeporghiny", ["gps", "heater", "sheep sound button"])]
         return a, b
 
     def test_dominating_name_weights(self):
@@ -256,4 +255,4 @@ class TMatchClassFields(TestCase):
 class Car:
     seats: int
     name: str
-    features: List[str]
+    features: list[str]

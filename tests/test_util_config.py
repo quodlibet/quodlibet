@@ -27,7 +27,7 @@ class TConfig(TestCase):
         conf.defaults.set("foo", "blah", 1)
         conf.set("foo", "blah", 1)
         conf.set("foo", "quux", 1)
-        self.assertEqual(conf.options("foo"), ['blah', 'quux', 'bar'])
+        self.assertEqual(conf.options("foo"), ["blah", "quux", "bar"])
         conf.defaults.clear()
 
     def test_options_no_default(self):
@@ -62,8 +62,8 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
         conf.set("foo", "bar", 1)
-        self.failUnlessEqual(conf.get("foo", "bar"), "1")
-        self.failUnlessEqual(conf.getint("foo", "bar"), 1)
+        self.assertEqual(conf.get("foo", "bar"), "1")
+        self.assertEqual(conf.getint("foo", "bar"), 1)
 
     def test_setbytes(self):
         conf = Config()
@@ -139,10 +139,10 @@ class TConfig(TestCase):
         conf.set("foo", "float", "1.25")
         conf.set("foo", "str", "foobar")
         conf.set("foo", "bool", "True")
-        self.failUnlessEqual(conf.getint("foo", "int"), 1)
-        self.failUnlessEqual(conf.getfloat("foo", "float"), 1.25)
-        self.failUnlessEqual(conf.get("foo", "str"), "foobar")
-        self.failUnlessEqual(conf.getboolean("foo", "bool"), True)
+        self.assertEqual(conf.getint("foo", "int"), 1)
+        self.assertEqual(conf.getfloat("foo", "float"), 1.25)
+        self.assertEqual(conf.get("foo", "str"), "foobar")
+        self.assertEqual(conf.getboolean("foo", "bool"), True)
 
     def test_get_invalid_data(self):
         conf = Config()
@@ -163,37 +163,37 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
 
-        self.failUnlessEqual(conf.getboolean("foo", "nothing", True), True)
-        self.failUnlessEqual(conf.getint("foo", "nothing", 42), 42)
-        self.failUnlessEqual(conf.getfloat("foo", "nothing", 42.42), 42.42)
-        self.failUnlessEqual(conf.get("foo", "nothing", "foo"), "foo")
+        self.assertEqual(conf.getboolean("foo", "nothing", True), True)
+        self.assertEqual(conf.getint("foo", "nothing", 42), 42)
+        self.assertEqual(conf.getfloat("foo", "nothing", 42.42), 42.42)
+        self.assertEqual(conf.get("foo", "nothing", "foo"), "foo")
 
     def test_stringlist_simple(self):
         conf = Config()
         conf.add_section("foo")
 
-        self.failIf(conf.get("foo", "bar", None))
+        self.assertFalse(conf.get("foo", "bar", None))
         vals = ["one", "two", "three"]
         conf.setstringlist("foo", "bar", vals)
-        self.failUnlessEqual(conf.getstringlist("foo", "bar"), vals)
+        self.assertEqual(conf.getstringlist("foo", "bar"), vals)
 
     def test_stringlist_mixed(self):
         conf = Config()
         conf.add_section("foo")
 
-        self.failIf(conf.get("foo", "bar", None))
+        self.assertFalse(conf.get("foo", "bar", None))
         conf.setstringlist("foo", "bar", ["one", 2])
-        self.failUnlessEqual(conf.getstringlist("foo", "bar"), ["one", "2"])
+        self.assertEqual(conf.getstringlist("foo", "bar"), ["one", "2"])
 
     def test_stringlist_quoting(self):
         conf = Config()
         conf.add_section("foo")
 
-        self.failIf(conf.get("foo", "bar", None))
+        self.assertFalse(conf.get("foo", "bar", None))
         vals = ["foo's gold", "bar, \"best\" 'ever'",
-                u"le goût d'œufs à Noël"]
+                "le goût d'œufs à Noël"]
         conf.setstringlist("foo", "bar", vals)
-        self.failUnlessEqual(conf.getstringlist("foo", "bar"), vals)
+        self.assertEqual(conf.getstringlist("foo", "bar"), vals)
 
     def test_stringlist_spaces(self):
         conf = Config()
@@ -201,7 +201,7 @@ class TConfig(TestCase):
 
         vals = [" ", "  ", " \t ", " \n \n"]
         conf.setstringlist("foo", "bar", vals)
-        self.failUnlessEqual(conf.getstringlist("foo", "bar"), vals)
+        self.assertEqual(conf.getstringlist("foo", "bar"), vals)
 
     def test_stringlist_invalid_encoding(self):
         conf = Config()

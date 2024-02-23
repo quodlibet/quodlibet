@@ -16,16 +16,16 @@ from quodlibet.util import print_w
 class HTTPDownloadMixin:
     def download(self, message):
         request = HTTPRequest(message, self.cancellable)
-        request.connect('sent', self._download_sent)
-        request.connect('received', self._download_received)
-        request.connect('failure', self._download_failure)
+        request.connect("sent", self._download_sent)
+        request.connect("received", self._download_received)
+        request.connect("failure", self._download_failure)
         request.send()
 
     def _download_sent(self, request, message):
-        status = message.get_property('status-code')
+        status = message.get_property("status-code")
         if not 200 <= status < 400:
             request.cancel()
-            return self.fail('Bad HTTP code {0}'.format(status))
+            return self.fail(f"Bad HTTP code {status}")
 
         target = Gio.file_new_for_path(self.cover_path)
         flags = Gio.FileCreateFlags.NONE
@@ -34,11 +34,11 @@ class HTTPDownloadMixin:
             try:
                 ostr = cover_file.replace_finish(task)
                 request.provide_target(ostr)
-                request.connect('receive-failure', self._receive_fail, target)
+                request.connect("receive-failure", self._receive_fail, target)
                 request.receive()
             except GLib.GError:
                 request.cancel()
-                return self.fail('Cannot open cover file')
+                return self.fail("Cannot open cover file")
         target.replace_async(None, True, flags, GLib.PRIORITY_DEFAULT,
                              self.cancellable, replaced, None)
 
@@ -47,14 +47,14 @@ class HTTPDownloadMixin:
             ostream.close(None)
         except GLib.GError as e:
             print_w(f"Got {e!r} trying to close handle after download")
-        self.emit('fetch-success', self.cover)
+        self.emit("fetch-success", self.cover)
 
     def _receive_fail(self, request, exception, gfile):
         def deleted(gfile, task, data):
             try:
                 gfile.delete_finish(task)
             except GLib.GError:
-                print_w('Could not clean up cover which failed to download')
+                print_w("Could not clean up cover which failed to download")
         try:
             request.ostream.close(None)
         except GLib.GError as e:
@@ -63,7 +63,7 @@ class HTTPDownloadMixin:
 
     def _download_failure(self, request, exception):
         try:
-            self.fail(exception.message or ' '.join(exception.args))
+            self.fail(exception.message or " ".join(exception.args))
         except AttributeError:
             self.fail("Download error (%s)" % exception)
 
@@ -79,12 +79,12 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
 
     def search(self):
         if not self.url:
-            return self.emit('search-complete', [])
-        msg = Soup.Message.new('GET', self.url)
+            return self.emit("search-complete", [])
+        msg = Soup.Message.new("GET", self.url)
         download_json(msg, self.cancellable, self._handle_search_response, None)
 
     def _handle_search_response(self, message, json_dict, data=None):
-        self.emit('search-complete', [])
+        self.emit("search-complete", [])
 
     def fetch_cover(self):
         if not self.url:
@@ -93,19 +93,19 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
         def search_complete(self, res):
             self.disconnect(sci)
             if res:
-                self.download(Soup.Message.new('GET', res[0]['cover']))
+                self.download(Soup.Message.new("GET", res[0]["cover"]))
             else:
-                return self.fail('No cover was found')
+                return self.fail("No cover was found")
 
-        sci = self.connect('search-complete', search_complete)
+        sci = self.connect("search-complete", search_complete)
         self.search()
 
     def _album_artists_for(self, song):
         """Returns a comma-separated list of artists indicating the
         "main" artists from the song's album"""
         people = [song.comma(key)
-                  for key in ['albumartist', 'artist', 'composer', 'conductor',
-                              'performer']]
+                  for key in ["albumartist", "artist", "composer", "conductor",
+                              "performer"]]
         people = list(filter(None, people))
         return people[0] if people else None
 

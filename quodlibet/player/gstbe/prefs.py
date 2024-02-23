@@ -28,14 +28,14 @@ class GstPlayerPreferences(Gtk.VBox):
                              "If the pipeline contains a sink, "
                              "it will be used instead of the default one."))
 
-        e.set_text(config.get('player', 'gst_pipeline'))
+        e.set_text(config.get("player", "gst_pipeline"))
 
         def changed(entry):
-            config.set('player', 'gst_pipeline', entry.get_text())
+            config.set("player", "gst_pipeline", entry.get_text())
 
-        e.connect('changed', changed)
+        e.connect("changed", changed)
 
-        pipe_label = Gtk.Label(label=_('_Output pipeline:'))
+        pipe_label = Gtk.Label(label=_("_Output pipeline:"))
         pipe_label.set_use_underline(True)
         pipe_label.set_mnemonic_widget(e)
 
@@ -53,29 +53,29 @@ class GstPlayerPreferences(Gtk.VBox):
         scale = Gtk.HScale.new(Gtk.Adjustment(value=duration, lower=0.2, upper=10))
         scale.set_value_pos(Gtk.PositionType.LEFT)
         scale.set_show_fill_level(True)
-        scale.connect('format-value', format_buffer)
-        scale.connect('value-changed', scale_changed)
+        scale.connect("format-value", format_buffer)
+        scale.connect("value-changed", scale_changed)
 
-        buffer_label = Gtk.Label(label=_('_Buffer duration:'))
+        buffer_label = Gtk.Label(label=_("_Buffer duration:"))
         buffer_label.set_use_underline(True)
         buffer_label.set_mnemonic_widget(scale)
 
         def rebuild_pipeline(*args):
             player._rebuild_pipeline()
 
-        apply_button.connect('clicked', rebuild_pipeline)
+        apply_button.connect("clicked", rebuild_pipeline)
 
         gapless_button = ConfigSwitch(
-            _('Disable _gapless playback'),
+            _("Disable _gapless playback"),
             "player", "gst_disable_gapless", populate=True,
             tooltip=_("Disabling gapless playback can avoid track changing problems "
                       "with some GStreamer versions"))
         jack_button = ConfigSwitch(
-            _('Use JACK for playback if available'),
+            _("Use JACK for playback if available"),
             "player", "gst_use_jack", populate=True,
             tooltip=_("Uses `jackaudiosink` for playbin sink if it can be detected"))
         jack_connect = ConfigSwitch(
-            _('Auto-connect to JACK output devices'),
+            _("Auto-connect to JACK output devices"),
             "player", "gst_jack_auto_connect",
             populate=True, tooltip=_("Tells `jackaudiosink` to auto-connect"))
 
@@ -101,7 +101,7 @@ class GstPlayerPreferences(Gtk.VBox):
                 player._print_pipeline()
 
             b = Button("Print Pipeline", Icons.DIALOG_INFORMATION)
-            connect_obj(b, 'clicked', print_bin, player)
+            connect_obj(b, "clicked", print_bin, player)
             hb = Gtk.Box(spacing=6)
             hb.pack_end(b, False, False, 0)
             self.pack_start(hb, False, False, 0)

@@ -1,12 +1,12 @@
 # Copyright 2006 Joe Wreschnig
-#        2016-17 Nick Boultbee
+#        2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 from gi.repository import Gtk
 
@@ -25,7 +25,7 @@ class Order:
                    If the song is not in the list, this iter will be `None`.
     """
 
-    name: Optional[str] = "unknown_order"
+    name: str | None = "unknown_order"
     """The name by which this order is known"""
 
     display_name = _("Unknown")
@@ -105,7 +105,7 @@ class OrderRemembered(Order):
     """Shared class for all the shuffle modes that keep a memory
     of their previously played songs."""
 
-    _played: List[Gtk.TreeIter]
+    _played: list[Gtk.TreeIter]
 
     def __init__(self):
         super().__init__()
@@ -128,12 +128,13 @@ class OrderRemembered(Order):
     def reset(self, playlist):
         del(self._played[:])
 
-    def remaining(self, playlist) -> Dict[int, Any]:
+    def remaining(self, playlist) -> dict[int, Any]:
         """Gets a map of all song indices to their song from the `playlist`
         that haven't yet been played"""
 
-        def get_index(iter):
-            return playlist.get_path(iter).get_indices()[0]
+        def get_index(iter) -> int:
+            path = playlist.get_path(iter)
+            return path.get_indices()[0]
 
         played = set(map(get_index, self._played))
         print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
@@ -145,7 +146,7 @@ class OrderRemembered(Order):
 
 class OrderInOrder(Order):
     """Keep to the order of the supplied playlist"""
-    name: Optional[str] = "in_order"
+    name: str | None = "in_order"
     display_name = _("In Order")
     accelerated_name = _("_In Order")
     replaygain_profiles = ["album", "track"]

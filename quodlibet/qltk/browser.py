@@ -51,9 +51,9 @@ class FilterMenu:
         self._player = player
         self._standalone = not ui
 
-        ag = Gtk.ActionGroup.new('QuodLibetFilterActions')
+        ag = Gtk.ActionGroup.new("QuodLibetFilterActions")
         for name, icon_name, label, cb in [
-                ('Filters', "", _("_Filters"), None),
+                ("Filters", "", _("_Filters"), None),
                 ("PlayedRecently", Icons.EDIT_FIND, _("Recently _Played"),
                  self.__filter_menu_actions),
                 ("AddedRecently", Icons.EDIT_FIND, _("Recently _Added"),
@@ -64,7 +64,7 @@ class FilterMenu:
                  self.__filter_menu_actions)]:
             action = Action(name=name, icon_name=icon_name, label=label)
             if cb:
-                action.connect('activate', cb)
+                action.connect("activate", cb)
             ag.add_action(action)
 
         for tag_, lab in [
@@ -74,7 +74,7 @@ class FilterMenu:
             act = Action(
                 name="Filter%s" % util.capitalize(tag_), label=lab,
                 icon_name=Icons.EDIT_SELECT_ALL)
-            act.connect('activate', self.__filter_on, tag_, None, player)
+            act.connect("activate", self.__filter_on, tag_, None, player)
             ag.add_action(act)
 
         for (tag_, accel, label) in [
@@ -83,7 +83,7 @@ class FilterMenu:
             ("album", "M", _("Random Al_bum"))]:
             act = Action(name="Random%s" % util.capitalize(tag_),
                          label=label, icon_name=Icons.DIALOG_QUESTION)
-            act.connect('activate', self.__random, tag_)
+            act.connect("activate", self.__random, tag_)
             ag.add_action_with_accel(act, "<Primary>" + accel)
 
         if self._standalone:
@@ -97,7 +97,7 @@ class FilterMenu:
                   "be chosen if there are ties)"))
 
         # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
-        menu_item = self._get_child_widget('/Menu/Filters')
+        menu_item = self._get_child_widget("/Menu/Filters")
         if isinstance(menu_item, Gtk.ImageMenuItem):
             menu_item.set_image(None)
 
@@ -133,9 +133,9 @@ class FilterMenu:
         name = menuitem.get_name()
 
         if name == "PlayedRecently":
-            self._make_query(u"#(lastplayed < 7 days ago)")
+            self._make_query("#(lastplayed < 7 days ago)")
         elif name == "AddedRecently":
-            self._make_query(u"#(added < 7 days ago)")
+            self._make_query("#(added < 7 days ago)")
         elif name == "TopRated":
             bg = background_filter()
             songs = (bg and filter(bg, self._library)) or self._library
@@ -144,9 +144,9 @@ class FilterMenu:
                 return
             songs.sort()
             if len(songs) < 40:
-                self._make_query(u"#(playcount > %d)" % (songs[0] - 1))
+                self._make_query(f"#(playcount > {songs[0] - 1:d})")
             else:
-                self._make_query(u"#(playcount > %d)" % (songs[-40] - 1))
+                self._make_query(f"#(playcount > {songs[-40] - 1:d})")
         elif name == "All":
             self._browser.unfilter()
 
@@ -158,15 +158,15 @@ class FilterMenu:
 
     def _hide_menus(self):
         menus = {
-            'genre': [
+            "genre": [
                 "FilterGenre",
                 "RandomGenre",
             ],
-            'artist': [
+            "artist": [
                 "FilterArtist",
                 "RandomArtist",
             ],
-            'album': [
+            "album": [
                 "FilterAlbum",
                 "RandomAlbum",
             ],
@@ -184,7 +184,7 @@ class FilterMenu:
             else:
                 can_filter = False
             for name in widget_names:
-                self._get_child_widget(name).set_property('visible',
+                self._get_child_widget(name).set_property("visible",
                                                           can_filter)
 
     def set_browser(self, browser):
@@ -196,18 +196,18 @@ class FilterMenu:
             self._get_child_widget(wid).set_sensitive(bool(song))
 
         if song:
-            for h in ['genre', 'artist', 'album']:
+            for h in ["genre", "artist", "album"]:
                 widget = self._get_child_widget("Filter%s" % h.capitalize())
                 widget.set_sensitive(h in song)
 
     def _get_child_widget(self, name=None):
-        path = '/Menu%s/Filters' % ('' if self._standalone else '/Browse')
+        path = "/Menu%s/Filters" % ("" if self._standalone else "/Browse")
         if name:
             path += "/" + name
         return self._ui.get_widget(path)
 
     def get_widget(self):
-        path = '/Menu' if self._standalone else '/Menu/Browse'
+        path = "/Menu" if self._standalone else "/Menu/Browse"
         return self._ui.get_widget(path)
 
     def get_accel_group(self):
@@ -217,10 +217,10 @@ class FilterMenu:
 class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
 
     @classmethod
-    def open(cls, Kind, library, player):
+    def open(cls, browser_cls, library, player):
         """Creates and shows a new browser instance"""
 
-        browser = cls(Kind, library, player)
+        browser = cls(browser_cls, library, player)
         browser.show()
         return browser
 
@@ -243,27 +243,27 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             browser = cls(kind, library, player)
             browser.show_maybe()
 
-    def __init__(self, Kind, library, player):
+    def __init__(self, browser_cls, library, player):
         super().__init__(dialog=False)
         self._register_instance()
-        self.name = Kind.__name__
+        self.name = browser_cls.__name__
 
         self.set_default_size(600, 400)
         self.enable_window_tracking("browser_" + self.name)
-        self.set_title(Kind.name + " - Quod Libet")
+        self.set_title(browser_cls.name + " - Quod Libet")
         self.add(Gtk.VBox())
 
         view = SongList(library, update=True)
         view.info.connect("changed", self.__set_totals)
         self.songlist = view
-        self.songlist.sortable = not Kind.can_reorder
+        self.songlist.sortable = not browser_cls.can_reorder
 
         sw = ScrolledWindow()
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
-        self.browser = browser = Kind(library)
+        self.browser = browser = browser_cls(library)
         if browser.can_reorder:
             view.enable_drop()
         elif browser.dropped:
@@ -292,14 +292,14 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         self.__statusbar.show()
         bottom.show()
 
-        browser.connect('songs-selected', self.__browser_cb)
+        browser.connect("songs-selected", self.__browser_cb)
         browser.finalize(False)
-        view.connect('popup-menu', self.__menu, library)
-        view.connect('drag-data-received', self.__drag_data_recv)
-        view.connect('row-activated', self.__enqueue, player)
+        view.connect("popup-menu", self._menu, library)
+        view.connect("drag-data-received", self.__drag_data_recv)
+        view.connect("row-activated", self.__enqueue, player)
 
         if browser.headers is not None:
-            view.connect('columns-changed', self.__cols_changed, browser)
+            view.connect("columns-changed", self.__cols_changed, browser)
             self.__cols_changed(view, browser)
         sw.show_all()
         for c in self.get_child().get_children():
@@ -340,10 +340,10 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
             else:
                 header.set_visible(False)
 
-    def __menu(self, view, library):
+    def _menu(self, view: SongList, library) -> bool:
         path, col = view.get_cursor()
         header = col.header_name
-        menu = view.Menu(header, self.browser, library)
+        menu = view.menu(header, self.browser, library)
         if menu is not None:
             view.popup_menu(menu, 0, Gtk.get_current_event_time())
         return True

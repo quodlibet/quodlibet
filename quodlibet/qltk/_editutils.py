@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Type
 
 from gi.repository import Gtk, GObject
 from senf import fsn2text
@@ -61,7 +60,7 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
         "changed": (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
-    Kind: Optional[Type] = None
+    Kind: type | None = None
 
     def __init__(self):
         super().__init__()
@@ -97,9 +96,9 @@ class FilterCheckButton(ConfigCheckButton):
             self._label, self._section, self._key, tooltip=self._tooltip)
         try:
             self.set_active(config.getboolean(self._section, self._key))
-        except:
+        except Exception:
             pass
-        connect_obj(self, 'toggled', self.emit, 'preview')
+        connect_obj(self, "toggled", self.emit, "preview")
 
     @property
     def active(self):
@@ -141,14 +140,14 @@ class FilterPluginBox(Gtk.VBox):
         # plugins
         self.__plugins = []
         hb = Gtk.HBox()
-        expander = Gtk.Expander(label=_(u"_More options…"))
+        expander = Gtk.Expander(label=_("_More options…"))
         expander.set_use_underline(True)
         expander.set_no_show_all(True)
         hb.pack_start(expander, True, True, 0)
         self.pack_start(hb, False, True, 0)
 
         for filt in filters:
-            filt.connect('preview', lambda *x: self.emit("preview"))
+            filt.connect("preview", lambda *x: self.emit("preview"))
 
         vbox = Gtk.VBox()
         expander.add(vbox)
@@ -165,14 +164,14 @@ class FilterPluginBox(Gtk.VBox):
         plugin_handler.changed()
 
     def __notify_expanded(self, expander, event, vbox):
-        vbox.set_property('visible', expander.get_property('expanded'))
+        vbox.set_property("visible", expander.get_property("expanded"))
 
     def __refresh_plugins(self, handler, vbox, expander):
         instances = []
         for Kind in handler.plugins:
             try:
                 f = Kind()
-            except:
+            except Exception:
                 errorhook()
                 continue
             else:
@@ -186,17 +185,17 @@ class FilterPluginBox(Gtk.VBox):
         for f in instances:
             try:
                 vbox.pack_start(f, True, True, 0)
-            except:
+            except Exception:
                 errorhook()
                 f.destroy()
                 continue
 
             try:
-                f.connect('preview', lambda *x: self.emit('preview'))
-            except:
+                f.connect("preview", lambda *x: self.emit("preview"))
+            except Exception:
                 try:
-                    f.connect('changed', lambda *x: self.emit('changed'))
-                except:
+                    f.connect("changed", lambda *x: self.emit("changed"))
+                except Exception:
                     errorhook()
                     continue
 

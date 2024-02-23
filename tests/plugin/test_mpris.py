@@ -24,17 +24,17 @@ from quodlibet import app
 
 
 A1 = AudioFile(
-        {'album': u'greatness', 'title': 'excellent', 'artist': 'fooman\ngo',
-         '~#lastplayed': 1234, '~#rating': 0.75,
-         '~filename': fsnative(u'/foo a/b'),
+        {"album": "greatness", "title": "excellent", "artist": "fooman\ngo",
+         "~#lastplayed": 1234, "~#rating": 0.75,
+         "~filename": fsnative("/foo a/b"),
          "~#length": 123, "albumartist": "aa\nbb", "bpm": "123.5",
          "tracknumber": "6/7"})
 A1.sanitize()
 
 A2 = AudioFile(
-        {'album': u'greatness2\ufffe', 'title': 'superlative',
-         'artist': u'fooman\ufffe', '~#lastplayed': 1234, '~#rating': 1.0,
-         '~filename': fsnative(u'/foo'), 'discnumber': '4294967296'})
+        {"album": "greatness2\ufffe", "title": "superlative",
+         "artist": "fooman\ufffe", "~#lastplayed": 1234, "~#rating": 1.0,
+         "~filename": fsnative("/foo"), "discnumber": "4294967296"})
 A2.sanitize()
 
 MAX_TIME = 3
@@ -61,10 +61,10 @@ class TMPRIS(PluginTestCase):
 
     def tearDown(self):
         bus = dbus.SessionBus()
-        self.failUnless(
+        self.assertTrue(
             bus.name_has_owner(self.BUS_NAME))
         self.m.disabled()
-        self.failIf(bus.name_has_owner(self.BUS_NAME))
+        self.assertFalse(bus.name_has_owner(self.BUS_NAME))
 
         destroy_fake_app()
         config.quit()
@@ -72,7 +72,7 @@ class TMPRIS(PluginTestCase):
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
-        self.failUnless(bus.name_has_owner(self.BUS_NAME))
+        self.assertTrue(bus.name_has_owner(self.BUS_NAME))
 
     def _main_iface(self):
         bus = dbus.SessionBus()
@@ -102,7 +102,7 @@ class TMPRIS(PluginTestCase):
         self._replies.append(args)
 
     def _error(self, *args):
-        self.failIf(args)
+        self.assertFalse(args)
 
     def _wait(self, msg=""):
         start = time.time()
@@ -117,10 +117,10 @@ class TMPRIS(PluginTestCase):
         piface = "org.mpris.MediaPlayer2"
 
         app.window.hide()
-        self.failIf(app.window.get_visible())
+        self.assertFalse(app.window.get_visible())
         self._main_iface().Raise(**args)
-        self.failIf(self._wait())
-        self.failUnless(app.window.get_visible())
+        self.assertFalse(self._wait())
+        self.assertTrue(app.window.get_visible())
         app.window.hide()
 
         props = {
@@ -136,11 +136,11 @@ class TMPRIS(PluginTestCase):
         for key, value in props.items():
             self._prop().Get(piface, key, **args)
             resp = self._wait()[0]
-            self.failUnlessEqual(resp, value)
-            self.failUnless(isinstance(resp, type(value)))
+            self.assertEqual(resp, value)
+            self.assertTrue(isinstance(resp, type(value)))
 
         self._prop().Get(piface, "SupportedMimeTypes", **args)
-        self.failUnless("audio/vorbis" in self._wait()[0])
+        self.assertTrue("audio/vorbis" in self._wait()[0])
 
         self._introspect_iface().Introspect(**args)
         assert self._wait()
@@ -169,8 +169,8 @@ class TMPRIS(PluginTestCase):
         for key, value in props.items():
             self._prop().Get(piface, key, **args)
             resp = self._wait(msg="for key '%s'" % key)[0]
-            self.failUnlessEqual(resp, value)
-            self.failUnless(isinstance(resp, type(value)))
+            self.assertEqual(resp, value)
+            self.assertTrue(isinstance(resp, type(value)))
 
     def test_volume_property(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
@@ -194,9 +194,9 @@ class TMPRIS(PluginTestCase):
         # No song case
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.failUnlessEqual(resp["mpris:trackid"],
+        self.assertEqual(resp["mpris:trackid"],
                              "/net/sacredchao/QuodLibet/NoTrack")
-        self.failUnless(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+        self.assertTrue(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
 
         # go to next song
         self._player_iface().Next(**args)
@@ -205,41 +205,41 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.failIfEqual(resp["mpris:trackid"],
+        self.assertNotEqual(resp["mpris:trackid"],
                          "/net/sacredchao/QuodLibet/NoTrack")
 
         # mpris stuff
-        self.failIf(resp["mpris:trackid"].startswith("/org/mpris/"))
-        self.failUnless(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+        self.assertFalse(resp["mpris:trackid"].startswith("/org/mpris/"))
+        self.assertTrue(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
 
-        self.failUnlessEqual(resp["mpris:length"], 123 * 10 ** 6)
-        self.failUnless(isinstance(resp["mpris:length"], dbus.Int64))
+        self.assertEqual(resp["mpris:length"], 123 * 10 ** 6)
+        self.assertTrue(isinstance(resp["mpris:length"], dbus.Int64))
 
         # list text values
-        self.failUnlessEqual(resp["xesam:artist"], ["fooman", "go"])
-        self.failUnlessEqual(resp["xesam:albumArtist"], ["aa", "bb"])
+        self.assertEqual(resp["xesam:artist"], ["fooman", "go"])
+        self.assertEqual(resp["xesam:albumArtist"], ["aa", "bb"])
 
         # single text values
-        self.failUnlessEqual(resp["xesam:album"], "greatness")
-        self.failUnlessEqual(resp["xesam:title"], "excellent")
-        self.failUnlessEqual(resp["xesam:url"], "file:///foo%20a/b")
+        self.assertEqual(resp["xesam:album"], "greatness")
+        self.assertEqual(resp["xesam:title"], "excellent")
+        self.assertEqual(resp["xesam:url"], "file:///foo%20a/b")
 
         # integers
-        self.failUnlessEqual(resp["xesam:audioBPM"], 123)
-        self.failUnless(isinstance(resp["xesam:audioBPM"], dbus.Int32))
+        self.assertEqual(resp["xesam:audioBPM"], 123)
+        self.assertTrue(isinstance(resp["xesam:audioBPM"], dbus.Int32))
 
-        self.failUnlessEqual(resp["xesam:trackNumber"], 6)
-        self.failUnless(isinstance(resp["xesam:trackNumber"], dbus.Int32))
+        self.assertEqual(resp["xesam:trackNumber"], 6)
+        self.assertTrue(isinstance(resp["xesam:trackNumber"], dbus.Int32))
 
         # rating
-        self.failUnlessAlmostEqual(resp["xesam:userRating"], 0.75)
-        self.failUnless(isinstance(resp["xesam:userRating"], dbus.Double))
+        self.assertAlmostEqual(resp["xesam:userRating"], 0.75)
+        self.assertTrue(isinstance(resp["xesam:userRating"], dbus.Double))
 
         # time
         from time import strptime
         from calendar import timegm
         seconds = timegm(strptime(resp["xesam:lastUsed"], "%Y-%m-%dT%H:%M:%S"))
-        self.failUnlessEqual(seconds, 1234)
+        self.assertEqual(seconds, 1234)
 
         # go to next song with invalid utf-8
         self._player_iface().Next(**args)
@@ -248,7 +248,7 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.failUnlessEqual(resp["xesam:album"], u'greatness2\ufffd')
-        self.failUnlessEqual(resp["xesam:artist"], [u'fooman\ufffd'])
+        self.assertEqual(resp["xesam:album"], "greatness2\ufffd")
+        self.assertEqual(resp["xesam:artist"], ["fooman\ufffd"])
         # overflow
         assert resp["xesam:discNumber"] == 0

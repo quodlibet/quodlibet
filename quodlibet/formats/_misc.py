@@ -31,7 +31,7 @@ class AudioFileError(Exception):
     """Base error for AudioFile, mostly IO/parsing related operations"""
 
 
-class MutagenBug(AudioFileError):
+class MutagenBug(AudioFileError):  # noqa
     """Raised in is caused by a mutagen bug, so we can highlight it"""
 
 
@@ -105,7 +105,7 @@ def get_loader(filename):
     return loaders.get(ext.lower())
 
 
-def MusicFile(filename):
+def MusicFile(filename):  # noqa
     """Returns a AudioFile instance or None"""
 
     loader = get_loader(filename)
@@ -115,7 +115,7 @@ def MusicFile(filename):
         except AudioFileError:
             print_w("Error loading %r" % filename)
             util.print_exc()
-        except:
+        except Exception:
             print_w("Error loading %r" % filename)
             raise
 

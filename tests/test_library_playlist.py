@@ -45,8 +45,8 @@ class TPlaylistLibrary(TestCase):
         self.removed = []
 
         self._sigs = [
-            connect_obj(self.underlying, 'changed', list.extend, self.changed),
-            connect_obj(self.underlying, 'removed', list.extend, self.removed),
+            connect_obj(self.underlying, "changed", list.extend, self.changed),
+            connect_obj(self.underlying, "removed", list.extend, self.removed),
         ]
 
         for song in self.underlying:
@@ -64,13 +64,13 @@ class TPlaylistLibrary(TestCase):
         # Won't exist, we haven't started the library yet
         temp_path = Path(_TEMP_DIR).absolute()
         parents = {path.absolute() for path in pl_dir.parents}
-        assert temp_path in parents or os.environ.get('CI', False), "Dangerous test!"
+        assert temp_path in parents or os.environ.get("CI", False), "Dangerous test!"
         shutil.rmtree(pl_dir, ignore_errors=True)
         os.makedirs(pl_dir)
         fn = FileBackedPlaylist.filename_for(PL_NAME)
         # No PL library given - rely on import
         self.pl = pl = FileBackedPlaylist(str(pl_dir), fn, self.underlying, None)
-        pl.extend(list(sorted(self.underlying))[-3:])
+        pl.extend(sorted(self.underlying)[-3:])
         assert len(pl) == 3, "Should have only the three songs just added"
         diff = set(self.underlying) - set(pl)
         assert all(song in self.underlying for song in pl), f"Missing from lib: {diff}"
@@ -140,7 +140,7 @@ class TPlaylistLibrary(TestCase):
         assert self.library.has_key(PL_NAME)
 
     def test_misc_collection(self):
-        self.failUnless(self.library.values())
+        self.assertTrue(self.library.values())
 
     def test_items(self):
         assert self.library.items() == [(PL_NAME, self.pl)]
@@ -155,7 +155,7 @@ class TPlaylistLibrary(TestCase):
 
     def test_misc(self):
         # It shouldn't implement FileLibrary etc
-        self.failIf(getattr(self.library, "filename", None))
+        self.assertFalse(getattr(self.library, "filename", None))
 
 
 class TPlaylistLibrarySignals(TestCase):
@@ -167,16 +167,16 @@ class TPlaylistLibrarySignals(TestCase):
             self.received.append(name)
 
         self._sigs = [
-            connect_obj(lib, 'added', listen, 'added'),
-            connect_obj(lib, 'changed', listen, 'changed'),
-            connect_obj(lib, 'removed', listen, 'removed'),
+            connect_obj(lib, "added", listen, "added"),
+            connect_obj(lib, "changed", listen, "changed"),
+            connect_obj(lib, "removed", listen, "removed"),
         ]
 
         self.playlists = lib.playlists
         self._asigs = [
-            connect_obj(self.playlists, 'added', listen, 'pl_added'),
-            connect_obj(self.playlists, 'changed', listen, 'pl_changed'),
-            connect_obj(self.playlists, 'removed', listen, 'pl_removed'),
+            connect_obj(self.playlists, "added", listen, "pl_added"),
+            connect_obj(self.playlists, "changed", listen, "pl_changed"),
+            connect_obj(self.playlists, "removed", listen, "pl_removed"),
         ]
         songs = AFrange(3)
         self.lib.add(songs)

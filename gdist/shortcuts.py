@@ -27,7 +27,7 @@ from .util import Command
 from .gettextutil import merge_file
 
 
-class build_shortcuts(Command):
+class BuildShortcuts(Command):
     """Build .desktop files
 
     Move .desktop files to the appropriate location in the build tree.
@@ -44,14 +44,14 @@ class build_shortcuts(Command):
 
     def finalize_options(self):
         self.shortcuts = self.distribution.shortcuts
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'build_po', ('po_build_dir', 'po_build_dir'))
+            "build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
 
-        basepath = os.path.join(self.build_base, 'share', 'applications')
+        basepath = os.path.join(self.build_base, "share", "applications")
         self.mkpath(basepath)
         for shortcut in self.shortcuts:
             if os.path.exists(shortcut + ".in"):
@@ -63,7 +63,7 @@ class build_shortcuts(Command):
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 
 
-class install_shortcuts(Command):
+class InstallShortcuts(Command):
     """Install .desktop files
 
     Install any .desktop files from the build tree to their final
@@ -81,23 +81,23 @@ class install_shortcuts(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'install',
-            ('install_data', 'install_dir'),
-            ('skip_build', 'skip_build'))
+            "install",
+            ("install_data", "install_dir"),
+            ("skip_build", "skip_build"))
 
         self.set_undefined_options(
-            'build_shortcuts', ('shortcuts', 'shortcuts'))
+            "build_shortcuts", ("shortcuts", "shortcuts"))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         if not self.skip_build:
-            self.run_command('build_shortcuts')
-        basepath = os.path.join(self.install_dir, 'share', 'applications')
-        srcpath = os.path.join(self.build_base, 'share', 'applications')
+            self.run_command("build_shortcuts")
+        basepath = os.path.join(self.install_dir, "share", "applications")
+        srcpath = os.path.join(self.build_base, "share", "applications")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for shortcut in self.shortcuts:
@@ -107,4 +107,4 @@ class install_shortcuts(Command):
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
 
-__all__ = ["build_shortcuts", "install_shortcuts"]
+__all__ = ["BuildShortcuts", "InstallShortcuts"]

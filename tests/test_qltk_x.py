@@ -17,7 +17,7 @@ class Notebook(TestCase):
         n = x.Notebook()
         c = Gtk.VBox()
         n.append_page(c, "A Test")
-        self.failUnlessEqual(n.get_tab_label(c).get_text(), "A Test")
+        self.assertEqual(n.get_tab_label(c).get_text(), "A Test")
         n.destroy()
 
     def test_widget_label(self):
@@ -25,31 +25,31 @@ class Notebook(TestCase):
         n = x.Notebook()
         c = Gtk.VBox()
         n.append_page(c, l)
-        self.failUnless(l is n.get_tab_label(c))
+        self.assertTrue(l is n.get_tab_label(c))
         c.destroy()
 
     def test_widget_error(self):
         n = x.Notebook()
         w = Gtk.VBox()
-        self.failUnlessRaises(TypeError, n.append_page, w)
+        self.assertRaises(TypeError, n.append_page, w)
         w.destroy()
         n.destroy()
 
 
 class Frame(TestCase):
     def test_label(self):
-        self.failUnlessEqual(
+        self.assertEqual(
             x.Frame("foo").get_label_widget().get_text(), "foo")
 
 
 class MenuItem(TestCase):
     def test_ctr(self):
-        self.failUnless(x.MenuItem("foo", Icons.EDIT_FIND))
+        self.assertTrue(x.MenuItem("foo", Icons.EDIT_FIND))
 
 
 class Button(TestCase):
     def test_ctr(self):
-        self.failUnless(x.Button("foo", Icons.EDIT_FIND))
+        self.assertTrue(x.Button("foo", Icons.EDIT_FIND))
 
 
 class TAlign(TestCase):
@@ -60,7 +60,7 @@ class TAlign(TestCase):
         self.assertEqual(a.get_margin_bottom(), 0)
         self.assertEqual(a.get_margin_left(), 4)
         self.assertEqual(a.get_margin_right(), 6)
-        self.failUnless(a.get_child() is button)
+        self.assertTrue(a.get_child() is button)
         a.destroy()
 
 

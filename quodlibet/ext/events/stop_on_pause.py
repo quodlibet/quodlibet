@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright 2018 David Morris
 #
 # This program is free software; you can redistribute it and/or modify
@@ -32,7 +31,7 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
                     "Otherwise, playback is left stopped and must be restarted "
                     "from the beginning.")
 
-    _CFG_SEEKABLE_ONLY = 'seekable_only'
+    _CFG_SEEKABLE_ONLY = "seekable_only"
 
     __enabled = False
     __restarting = False
@@ -46,24 +45,24 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
     def plugin_on_paused(self):
         if self.__enabled:
             if not self.__restarting:
-                onlySeekable = self.config_get_bool(self._CFG_SEEKABLE_ONLY)
+                only_seekable = self.config_get_bool(self._CFG_SEEKABLE_ONLY)
 
-                if (onlySeekable and app.player.seekable):
+                if only_seekable and app.player.seekable:
                     self.__restarting = True
                     position = app.player.get_position()
                     app.player.stop()
                     app.player.seek(position)
                     self.__restarting = False
-                elif not onlySeekable:
+                elif not only_seekable:
                     self.__restarting = True
 
                     # Check if the stream is seekable before stopping!
-                    isSeekable = app.player.seekable
+                    is_seekable = app.player.seekable
                     position = app.player.get_position()
 
                     app.player.stop()
 
-                    if isSeekable:
+                    if is_seekable:
                         app.player.seek(position)
 
                     self.__restarting = False
@@ -79,7 +78,7 @@ class StopOnPause(EventPlugin, PluginConfigMixin):
         vb.set_border_width(0)
         vb2 = Gtk.VBox(spacing=6)
         for key, label in toggles:
-            ccb = ConfigCheckButton(label, 'plugins', cls._config_key(key))
+            ccb = ConfigCheckButton(label, "plugins", cls._config_key(key))
             ccb.set_active(cls.config_get_bool(key))
             vb2.pack_start(ccb, True, True, 0)
 

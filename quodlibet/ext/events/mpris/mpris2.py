@@ -302,16 +302,16 @@ value="false"/>
             dbus.Double, song("~#rating"))
 
         # Dates
-        ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
+        iso_8601_format = "%Y-%m-%dT%H:%M:%S"
         tuple_time = time.gmtime(song("~#lastplayed"))
-        iso_time = time.strftime(ISO_8601_format, tuple_time)
+        iso_time = time.strftime(iso_8601_format, tuple_time)
         metadata["xesam:lastUsed"] = iso_time
 
         year = song("~year")
         if year:
             try:
                 tuple_time = time.strptime(year, "%Y")
-                iso_time = time.strftime(ISO_8601_format, tuple_time)
+                iso_time = time.strftime(iso_8601_format, tuple_time)
             except ValueError:
                 pass
             else:
@@ -360,7 +360,8 @@ value="false"/>
                 return "io.github.quodlibet.QuodLibet"
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
-                can = lambda s: False
+                def can(s):
+                    return False
                 #can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)

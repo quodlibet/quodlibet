@@ -86,7 +86,7 @@ class ListEntry:
         self.matches = {}
 
     def get_match(self, key):
-        return self.matches.get(key, u"")
+        return self.matches.get(key, "")
 
     def replace_match(self, key, value):
         self.matches[key] = value
@@ -113,14 +113,14 @@ class TagsFromPath(Gtk.VBox):
         cbes_defaults = TBP_EXAMPLES.split("\n")
         self.combo = ComboBoxEntrySave(TBP, cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_(u"Edit saved patterns…"))
+            edit_title=_("Edit saved patterns…"))
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
         self.preview.show()
         hbox.pack_start(self.preview, False, True, 0)
         self.pack_start(hbox, False, True, 0)
-        self.combo.get_child().connect('changed', self._changed)
+        self.combo.get_child().connect("changed", self._changed)
 
         model = ObjectStore()
         self.view = Gtk.TreeView(model=model)
@@ -137,7 +137,7 @@ class TagsFromPath(Gtk.VBox):
         addreplace.append_text(_("Tags replace existing ones"))
         addreplace.append_text(_("Tags are added to existing ones"))
         addreplace.set_active(config.getboolean("tagsfrompath", "add"))
-        addreplace.connect('changed', self.__add_changed)
+        addreplace.connect("changed", self.__add_changed)
         vbox.pack_start(addreplace, True, True, 0)
         addreplace.show()
         self.pack_start(vbox, False, True, 0)
@@ -156,11 +156,11 @@ class TagsFromPath(Gtk.VBox):
         bbox.pack_start(self.save, True, True, 0)
         self.pack_start(bbox, False, True, 0)
 
-        connect_obj(self.preview, 'clicked', self.__preview, None)
-        connect_obj(parent, 'changed', self.__class__.__preview, self)
+        connect_obj(self.preview, "clicked", self.__preview, None)
+        connect_obj(parent, "changed", self.__class__.__preview, self)
 
         # Save changes
-        connect_obj(self.save, 'clicked', self.__save, addreplace, library)
+        connect_obj(self.save, "clicked", self.__save, addreplace, library)
 
         for child in self.get_children():
             child.show()
@@ -223,7 +223,7 @@ class TagsFromPath(Gtk.VBox):
             self.view.remove_column(col)
 
         render = Gtk.CellRendererText()
-        col = TreeViewColumn(title=_('File'))
+        col = TreeViewColumn(title=_("File"))
         col.pack_start(render, True)
         col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
@@ -238,10 +238,10 @@ class TagsFromPath(Gtk.VBox):
             cell.set_property("text", entry.get_match(header))
 
         self.view.append_column(col)
-        for i, header in enumerate(pattern.headers):
+        for _i, header in enumerate(pattern.headers):
             render = Gtk.CellRendererText()
-            render.set_property('editable', True)
-            render.connect('edited', self.__row_edited, model, header)
+            render.set_property("editable", True)
+            render.connect("edited", self.__row_edited, model, header)
             escaped_title = header.replace("_", "__")
             col = Gtk.TreeViewColumn(escaped_title, render)
             col.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -252,12 +252,12 @@ class TagsFromPath(Gtk.VBox):
             entry = ListEntry(song)
             match = pattern.match(song)
             for h in pattern.headers:
-                text = match.get(h, '')
+                text = match.get(h, "")
                 for f in self.filter_box.filters:
                     if f.active:
                         text = f.filter(h, text)
                 if not song.can_multiple_values(h):
-                    text = u", ".join(text.split("\n"))
+                    text = ", ".join(text.split("\n"))
                 entry.matches[h] = text
             model.append([entry])
 
@@ -289,7 +289,7 @@ class TagsFromPath(Gtk.VBox):
                 if resp != OverwriteWarning.RESPONSE_SAVE:
                     break
 
-            for i, h in enumerate(pattern.headers):
+            for _i, h in enumerate(pattern.headers):
                 text = entry.get_match(h)
                 if text:
                     can_multiple = song.can_multiple_values(h)

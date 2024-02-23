@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Any, Optional
+from typing import Any
 
 from quodlibet import _, print_d, print_w
 from quodlibet.formats import AudioFile
@@ -15,7 +15,7 @@ class UniqueQuery(QueryPlugin):
     PLUGIN_ID = "unique_query"
     PLUGIN_NAME = _("Unique Query")
     PLUGIN_DESC = _("Filter search results by unique tags.")
-    key = 'unique'
+    key = "unique"
     query_syntax = _("@(unique: tag)")
     query_description = "<tt>tag</tt> can be album, artist, title or any other tag. " \
         "Use multiple <tt>@(unique: tag)</tt> to filter by multiple tags."
@@ -28,7 +28,7 @@ class UniqueQuery(QueryPlugin):
         self._reported = set()
         """Unique errors to counter error log spam"""
 
-    def search(self, song: AudioFile, body: Optional[Any]) -> bool:
+    def search(self, song: AudioFile, body: Any | None) -> bool:
         return_value = False
         try:
             field_value = song[body]

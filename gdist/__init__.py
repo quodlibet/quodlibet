@@ -35,28 +35,27 @@ import sys
 
 from distutils.core import setup
 
-from .shortcuts import build_shortcuts, install_shortcuts
-from .man import install_man
-from .po import build_mo, install_mo, po_stats, update_po, \
-    create_po, create_pot, build_po
-from .icons import install_icons
-from .search_provider import install_search_provider
-from .dbus_services import build_dbus_services, install_dbus_services
-from .appdata import build_appdata, install_appdata
-from .coverage import coverage_cmd
-from .docs import build_sphinx
-from .scripts import build_scripts
-from .tests import quality_cmd, distcheck_cmd, test_cmd
-from .clean import clean
-from .bash_completions import install_bash_completions
-from .zsh_completions import install_zsh_completions
+from .shortcuts import BuildShortcuts, InstallShortcuts
+from .man import InstallMan
+from .po import BuildMo, InstallMo, PoStats, UpdatePo, CreatePo, CreatePot, BuildPo
+from .icons import InstallIcons
+from .search_provider import InstallSearchProvider
+from .dbus_services import BuildDbusServices, InstallDbusServices
+from .appdata import BuildAppdata, InstallAppdata
+from .coverage import CoverageCmd
+from .docs import BuildSphinx
+from .scripts import BuildScripts
+from .tests import QualityCmd, DistcheckCmd, TestCmd
+from .clean import Clean
+from .bash_completions import InstallBashCompletions
+from .zsh_completions import InstallZshCompletions
 from .util import get_dist_class, Distribution
 
 
 distutils_build = get_dist_class("build")
 
 
-class build(distutils_build):
+class Build(distutils_build):
     """Override the default build with new subcommands."""
 
     sub_commands = distutils_build.sub_commands + [
@@ -76,7 +75,7 @@ class build(distutils_build):
 distutils_install = get_dist_class("install")
 
 
-class install(distutils_install):
+class Install(distutils_install):
     """Override the default install with new subcommands."""
 
     user_options = distutils_install.user_options + [
@@ -145,38 +144,34 @@ class GDistribution(Distribution):
 
     def __init__(self, *args, **kwargs):
         Distribution.__init__(self, *args, **kwargs)
-        self.cmdclass.setdefault("build_po", build_po)
-        self.cmdclass.setdefault("build_mo", build_mo)
-        self.cmdclass.setdefault("build_shortcuts", build_shortcuts)
-        self.cmdclass.setdefault("build_dbus_services", build_dbus_services)
-        self.cmdclass.setdefault("build_appdata", build_appdata)
-        self.cmdclass.setdefault("build_scripts", build_scripts)
-        self.cmdclass.setdefault("install_icons", install_icons)
-        self.cmdclass.setdefault("install_shortcuts", install_shortcuts)
-        self.cmdclass.setdefault("install_dbus_services",
-                                 install_dbus_services)
-        self.cmdclass.setdefault("install_man", install_man)
-        self.cmdclass.setdefault("install_mo", install_mo)
-        self.cmdclass.setdefault("install_search_provider",
-                                 install_search_provider)
-        self.cmdclass.setdefault("install_appdata", install_appdata)
-        self.cmdclass.setdefault(
-            "install_bash_completions", install_bash_completions)
-        self.cmdclass.setdefault(
-            "install_zsh_completions", install_zsh_completions)
-        self.cmdclass.setdefault("build", build)
-        self.cmdclass.setdefault("install", install)
-        self.cmdclass.setdefault("po_stats", po_stats)
-        self.cmdclass.setdefault("update_po", update_po)
-        self.cmdclass.setdefault("create_po", create_po)
-        self.cmdclass.setdefault("create_pot", create_pot)
-        self.cmdclass.setdefault("coverage", coverage_cmd)
-        self.cmdclass.setdefault("build_sphinx", build_sphinx)
-        self.cmdclass.setdefault("quality", quality_cmd)
-        self.cmdclass.setdefault("distcheck", distcheck_cmd)
-        self.cmdclass.setdefault("test", test_cmd)
-        self.cmdclass.setdefault("quality", quality_cmd)
-        self.cmdclass.setdefault("clean", clean)
+        self.cmdclass.setdefault("build_po", BuildPo)
+        self.cmdclass.setdefault("build_mo", BuildMo)
+        self.cmdclass.setdefault("build_shortcuts", BuildShortcuts)
+        self.cmdclass.setdefault("build_dbus_services", BuildDbusServices)
+        self.cmdclass.setdefault("build_appdata", BuildAppdata)
+        self.cmdclass.setdefault("build_scripts", BuildScripts)
+        self.cmdclass.setdefault("install_icons", InstallIcons)
+        self.cmdclass.setdefault("install_shortcuts", InstallShortcuts)
+        self.cmdclass.setdefault("install_dbus_services", InstallDbusServices)
+        self.cmdclass.setdefault("install_man", InstallMan)
+        self.cmdclass.setdefault("install_mo", InstallMo)
+        self.cmdclass.setdefault("install_search_provider", InstallSearchProvider)
+        self.cmdclass.setdefault("install_appdata", InstallAppdata)
+        self.cmdclass.setdefault("install_bash_completions", InstallBashCompletions)
+        self.cmdclass.setdefault("install_zsh_completions", InstallZshCompletions)
+        self.cmdclass.setdefault("build", Build)
+        self.cmdclass.setdefault("install", Install)
+        self.cmdclass.setdefault("po_stats", PoStats)
+        self.cmdclass.setdefault("update_po", UpdatePo)
+        self.cmdclass.setdefault("create_po", CreatePo)
+        self.cmdclass.setdefault("create_pot", CreatePot)
+        self.cmdclass.setdefault("coverage", CoverageCmd)
+        self.cmdclass.setdefault("build_sphinx", BuildSphinx)
+        self.cmdclass.setdefault("quality", QualityCmd)
+        self.cmdclass.setdefault("distcheck", DistcheckCmd)
+        self.cmdclass.setdefault("test", TestCmd)
+        self.cmdclass.setdefault("quality", QualityCmd)
+        self.cmdclass.setdefault("clean", Clean)
 
     def has_po(self):
         return bool(self.po_directory)

@@ -100,12 +100,12 @@ function install_deps {
         "${MINGW_PACKAGE_PREFIX}"-gst-libav \
         "${MINGW_PACKAGE_PREFIX}"-python-certifi \
         "${MINGW_PACKAGE_PREFIX}"-python-pytest \
-        "${MINGW_PACKAGE_PREFIX}"-python-coverage
+        "${MINGW_PACKAGE_PREFIX}"-python-coverage \
+        "${MINGW_PACKAGE_PREFIX}"-python-mutagen
 
     PIP_REQUIREMENTS="\
 feedparser
 musicbrainzngs
-mutagen
 "
 
     # shellcheck disable=SC2046

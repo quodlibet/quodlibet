@@ -49,6 +49,7 @@ jobs:
             mingw-w64-x86_64-pkgconf
             mingw-w64-x86_64-python-poetry
             mingw-w64-x86_64-gobject-introspection
+            mingw-w64-x86_64-appstream
 
       - name: Install additional dependencies
         shell: msys2 {0}
@@ -100,14 +101,14 @@ jobs:
       run: |
         sudo apt update -qq
         sudo apt install -qqy \
-          appstream-util \
+          appstream \
           dbus-x11 \
           gettext \
           gir1.2-appindicator3-0.1 \
           gir1.2-gst-plugins-base-1.0 \
           gir1.2-gstreamer-1.0 \
           gir1.2-gtk-3.0 \
-          gir1.2-gtksource-3.0 \
+          gir1.2-gtksource-4 \
           gir1.2-keybinder-3.0 \
           gir1.2-soup-3.0 \
           gir1.2-webkit2-4.0 \
@@ -131,7 +132,7 @@ jobs:
         python3 -m pip install --user --upgrade \
           PyVirtualDisplay \
           pytest-faulthandler \
-          flake8==6.1.0 \
+          "ruff==0.1.6" \
           flaky
 
     - name: Run tests
@@ -159,7 +160,7 @@ jobs:
           pkg-config \
           pipx \
           xvfb
-        pipx install poetry
+        pipx install "poetry==1.4.2"
         pipx ensurepath
 
     - name: Check Poetry project

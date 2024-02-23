@@ -24,7 +24,7 @@ import os
 from .util import Command
 
 
-class install_search_provider(Command):
+class InstallSearchProvider(Command):
 
     user_options = []
 
@@ -34,8 +34,8 @@ class install_search_provider(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('install',
-                                   ('install_data', 'install_dir'))
+        self.set_undefined_options("install",
+                                   ("install_data", "install_dir"))
 
         self.search_provider = self.distribution.search_provider
 
@@ -44,7 +44,7 @@ class install_search_provider(Command):
 
     def run(self):
         basepath = os.path.join(
-            self.install_dir, 'share', 'gnome-shell', 'search-providers')
+            self.install_dir, "share", "gnome-shell", "search-providers")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         (out, _) = self.copy_file(self.search_provider, basepath)

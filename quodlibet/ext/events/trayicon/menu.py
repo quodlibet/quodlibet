@@ -24,9 +24,8 @@ from quodlibet.qltk.util import GSignals
 
 
 class IndicatorMenu(Gtk.Menu):
-
     __gsignals__: GSignals = {
-        'action-item-changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "action-item-changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, app, add_show_item=False):
@@ -66,10 +65,10 @@ class IndicatorMenu(Gtk.Menu):
         self._action_item = None
 
         previous = MenuItem(_("Pre_vious"), Icons.MEDIA_SKIP_BACKWARD)
-        previous.connect('activate', lambda *args: player.previous(force=True))
+        previous.connect("activate", lambda *args: player.previous(force=True))
 
         next = MenuItem(_("_Next"), Icons.MEDIA_SKIP_FORWARD)
-        next.connect('activate', lambda *args: player.next())
+        next.connect("activate", lambda *args: player.next())
 
         player_options = app.player_options
 
@@ -92,10 +91,10 @@ class IndicatorMenu(Gtk.Menu):
         browse = qltk.MenuItem(_("Open _Browser"), Icons.EDIT_FIND)
         browse_sub = Gtk.Menu()
 
-        for Kind in browsers.browsers:
-            i = Gtk.MenuItem(label=Kind.accelerated_name, use_underline=True)
-            connect_obj(i,
-                'activate', LibraryBrowser.open, Kind, app.library, app.player)
+        for browser_cls in browsers.browsers:
+            i = Gtk.MenuItem(label=browser_cls.accelerated_name, use_underline=True)
+            connect_obj(i, "activate", LibraryBrowser.open,
+                        browser_cls, app.library, app.player)
             browse_sub.append(i)
 
         browse.set_submenu(browse_sub)
@@ -107,7 +106,7 @@ class IndicatorMenu(Gtk.Menu):
             window = SongProperties(app.librarian, [song])
             window.show()
 
-        self._props.connect('activate', on_properties)
+        self._props.connect("activate", on_properties)
 
         self._info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
 
@@ -120,7 +119,7 @@ class IndicatorMenu(Gtk.Menu):
             window = Information(app.librarian, [song])
             window.show()
 
-        self._info.connect('activate', on_information)
+        self._info.connect("activate", on_information)
 
         def set_rating(value):
             song = player.song
@@ -130,7 +129,7 @@ class IndicatorMenu(Gtk.Menu):
         self._rating_item = rating = RatingsMenuItem([], app.library)
 
         quit = MenuItem(_("_Quit"), Icons.APPLICATION_EXIT)
-        quit.connect('activate', lambda *x: app.quit())
+        quit.connect("activate", lambda *x: app.quit())
 
         if not show_item_bottom and show_item:
             self.append(show_item)

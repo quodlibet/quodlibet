@@ -26,7 +26,7 @@ def _fill_view(view):
     column.pack_start(title, True)
     column.add_attribute(title, "text", 0)
     view.append_column(column)
-    for x in range(100):
+    for _x in range(100):
         model.append(row=["foo"])
     view.set_model(model)
     return model
@@ -38,7 +38,7 @@ class THintedTreeView(TestCase):
         self.c = AllTreeView()
 
     def test_exists(self):
-        self.failUnless(self.c)
+        self.assertTrue(self.c)
 
     def tearDown(self):
         self.c.destroy()
@@ -66,14 +66,14 @@ class TBaseView(TestCase):
     def test_remove(self):
         self.m.append(row=["foo"])
         self.c.remove_iters([self.m[0].iter])
-        self.failIf(len(self.m))
+        self.assertFalse(len(self.m))
 
         self.m.append(row=["foo"])
         self.c.remove_iters([])
-        self.failUnless(len(self.m))
+        self.assertTrue(len(self.m))
 
         self.c.remove_paths([self.m[0].path])
-        self.failIf(len(self.m))
+        self.assertFalse(len(self.m))
 
     def test_key_events(self):
         with visible(self.c):
@@ -83,8 +83,8 @@ class TBaseView(TestCase):
     def test_select_func(self):
         self.m.append(row=["foo"])
         self.m.append(row=["bar"])
-        self.failUnless(self.c.select_by_func(lambda r: True))
-        self.failIf(self.c.select_by_func(lambda r: False))
+        self.assertTrue(self.c.select_by_func(lambda r: True))
+        self.assertFalse(self.c.select_by_func(lambda r: False))
         self.c.select_by_func(lambda r: False, scroll=False, one=True)
 
     def test_iter_select_func(self):

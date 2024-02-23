@@ -10,10 +10,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import os
-from typing import Optional
 
 import cairo
 from gi.repository import Gtk, Pango, Gdk, GLib, Gio
@@ -49,7 +47,7 @@ from .prefs import Preferences, DEFAULT_PATTERN_TEXT
 
 
 def get_cover_size():
-    return AlbumItem(None).COVER_SIZE
+    return AlbumItem(None).cover_size
 
 
 class AlbumTagCompletion(EntryWordCompletion):
@@ -70,7 +68,7 @@ class AlbumTagCompletion(EntryWordCompletion):
             self.__model.append(row=["#(" + tag])
         for tag in ["rating", "playcount", "skipcount"]:
             for suffix in ["avg", "max", "min", "sum"]:
-                self.__model.append(row=["#(%s:%s" % (tag, suffix)])
+                self.__model.append(row=[f"#({tag}:{suffix}"])
 
 
 def cmpa(a, b):
@@ -232,10 +230,10 @@ class PreferencesButton(Gtk.HBox):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(label=_(u"Sort _by…"), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
-        active = config.getint('browsers', 'album_sort', 1)
+        active = config.getint("browsers", "album_sort", 1)
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
@@ -310,7 +308,7 @@ class VisibleUpdate:
     PRELOAD_COUNT = 35
 
     def enable_row_update(self, view, sw, column):
-        connect_obj(view, 'draw', self.__update_visibility, view)
+        connect_obj(view, "draw", self.__update_visibility, view)
 
         connect_destroy(
             sw.get_vadjustment(), "value-changed", self.__stop_update, view)
@@ -323,7 +321,7 @@ class VisibleUpdate:
 
     def disable_row_update(self):
         if self.__update_deferred:
-            self.__update_deferred.abort
+            self.__update_deferred.abort()
             self.__update_deferred = None
 
         if self.__pending_paths:
@@ -356,7 +354,7 @@ class VisibleUpdate:
         if self.__first_expose:
             self.__first_expose = False
             self.__update_visible_rows(view, 0)
-            for i in self.__scan_paths():
+            for _i in self.__scan_paths():
                 pass
 
         self.__update_deferred(view, self.PRELOAD_COUNT)
@@ -395,7 +393,7 @@ class VisibleUpdate:
         top.reverse()
 
         vlist_new = []
-        for i in vlist:
+        for _i in vlist:
             if top:
                 vlist_new.append(top.pop())
             if bottom:
@@ -443,22 +441,22 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         container.remove(self)
 
     @classmethod
-    def init(klass, library):
-        super(AlbumList, klass).load_pattern()
+    def init(cls, library):
+        super().load_pattern()
 
     def finalize(self, restored):
         if not restored:
             self.view.set_cursor((0,))
 
     @classmethod
-    def _destroy_model(klass):
-        klass.__model.destroy()
-        klass.__model = None
+    def _destroy_model(cls):
+        cls.__model.destroy()
+        cls.__model = None
 
     @classmethod
-    def toggle_covers(klass):
+    def toggle_covers(cls):
         on = config.getboolean("browsers", "album_covers")
-        for albumlist in klass.instances():
+        for albumlist in cls.instances():
             albumlist.__cover_column.set_visible(on)
             for column in albumlist.view.get_columns():
                 column.queue_resize()
@@ -467,19 +465,19 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.__model.refresh_all()
 
     @classmethod
-    def _init_model(klass, library):
-        klass.__model = AlbumModel(library)
-        klass.__library = library
+    def _init_model(cls, library):
+        cls.__model = AlbumModel(library)
+        cls.__library = library
 
     @util.cached_property
-    def _no_cover(self) -> Optional[cairo.Surface]:
+    def _no_cover(self) -> cairo.Surface | None:
         """Returns a cairo surface representing a missing cover"""
 
         cover_size = get_cover_size()
         scale_factor = self.get_scale_factor()
         pb = get_no_cover_pixbuf(cover_size, cover_size, scale_factor)
         if not pb:
-            raise IOError("Can't find / scale missing art image")
+            raise OSError("Can't find / scale missing art image")
         return get_surface_for_pixbuf(self, pb)
 
     def __init__(self, library):
@@ -508,8 +506,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         column.set_visible(config.getboolean("browsers", "album_covers"))
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         column.set_fixed_width(get_cover_size() + 12)
-        render.set_property('height', get_cover_size() + 8)
-        render.set_property('width', get_cover_size() + 8)
+        render.set_property("height", get_cover_size() + 8)
+        render.set_property("width", get_cover_size() + 8)
 
         def cell_data_pb(column, cell, model, iter_, no_cover):
             item = model.get_value(iter_)
@@ -537,7 +535,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         column = Gtk.TreeViewColumn("albums", render)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
         if view.supports_hints():
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
 
         def cell_data(column, cell, model, iter_, data):
             album = model.get_album(iter_)
@@ -553,7 +551,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 return
             self.__last_render = markup
             cell.markup = markup
-            cell.set_property('markup', markup)
+            cell.set_property("markup", markup)
 
         column.set_cell_data_func(render, cell_data)
         view.append_column(column)
@@ -566,8 +564,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         sw.add(view)
 
-        view.connect('row-activated', self.__play_selection)
-        self.__sig = view.connect('selection-changed',
+        view.connect("row-activated", self.__play_selection)
+        self.__sig = view.connect("selection-changed",
             util.DeferredSignal(self.__update_songs, owner=view))
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
@@ -577,13 +575,13 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         view.drag_source_set(
             Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
         view.connect("drag-data-get", self.__drag_data_get)
-        connect_obj(view, 'popup-menu', self.__popup, view, library)
+        connect_obj(view, "popup-menu", self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-        search.connect('query-changed', self.__update_filter)
-        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
+        search.connect("query-changed", self.__update_filter)
+        connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
         prefs = PreferencesButton(self, model_sort)
@@ -597,7 +595,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         self.enable_row_update(view, sw, self.__cover_column)
 
-        self.connect('key-press-event', self.__key_pressed, library.librarian)
+        self.connect("key-press-event", self.__key_pressed, library.librarian)
 
         if app.cover_manager:
             connect_destroy(
@@ -729,7 +727,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
                 Icons.VIEW_REFRESH)
-            button.connect('activate', self.__refresh_album, view)
+            button.connect("activate", self.__refresh_album, view)
             items.append(button)
 
         menu = SongsMenu(library, songs, items=[items])
@@ -831,7 +829,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.view.set_cursor((0,))
 
     def activate(self):
-        self.view.get_selection().emit('changed')
+        self.view.get_selection().emit("changed")
 
     def __inhibit(self):
         self.view.handler_block(self.__sig)
@@ -868,7 +866,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
     def scroll(self, song):
         album_key = song.album_key
-        select = lambda r: r[0].album and r[0].album.key == album_key
+        def select(r):
+            return r[0].album and r[0].album.key == album_key
         self.view.select_by_func(select, one=True)
 
     def __get_config_string(self):
@@ -882,7 +881,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         # All selected albums
         albums = model.get_albums(paths)
 
-        confval = "\n".join((a.str_key for a in albums))
+        confval = "\n".join(a.str_key for a in albums)
         # ConfigParser strips a trailing \n - so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]

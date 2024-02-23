@@ -8,14 +8,13 @@
 """Some helper function for loading and converting image data."""
 
 import math
-from typing import Optional
 
 from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_surface_for_pixbuf(widget: Gtk.Widget, pixbuf: Optional[GdkPixbuf.Pixbuf])\
-        -> Optional[cairo.Surface]:
+def get_surface_for_pixbuf(widget: Gtk.Widget, pixbuf: GdkPixbuf.Pixbuf | None)\
+        -> cairo.Surface | None:
     """:returns: a cairo surface, if possible"""
     if not pixbuf:
         return None
@@ -39,11 +38,11 @@ def get_surface_extents(surface):
     return (x1, y1, x2, y2)
 
 
-def get_border_radius(_widgets=[]):
+def get_border_radius(_widgets=None):
     """Returns the border radius commonly used in the current theme.
     If there are no rounded corners 0 will be returned.
     """
-
+    _widgets = _widgets or []
     if not _widgets:
         b = Gtk.Button()
         b.show()
@@ -189,7 +188,7 @@ def pixbuf_from_file(fileobj, boundary, scale_factor=1):
             loader.close()
             fileobj.seek(0, 0)
             pixbuf = loader.get_pixbuf()
-        except EnvironmentError:
+        except OSError:
             return
 
     w, h = boundary

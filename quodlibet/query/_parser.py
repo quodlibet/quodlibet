@@ -9,39 +9,39 @@
 
 import codecs
 import re
+from collections.abc import Iterable
 
 from . import _match as match
 from ._match import ParseError, Units
 from quodlibet.util import re_escape
 
-
 # Precompiled regexes
-TAG = re.compile(r'[~\w\s:]+')
-UNARY_OPERATOR = re.compile(r'-')
-BINARY_OPERATOR = re.compile(r'[+\-\*/]')
-RELATIONAL_OPERATOR = re.compile(r'>=|<=|==|!=|>|<|=')
-DIGITS = re.compile(r'\d+(\.\d+)?')
-WORD = re.compile(r'[ \w]+')
-REGEXP = re.compile(r'([^/\\]|\\.)*')
+TAG = re.compile(r"[~\w\s:]+")
+UNARY_OPERATOR = re.compile(r"-")
+BINARY_OPERATOR = re.compile(r"[+\-\*/]")
+RELATIONAL_OPERATOR = re.compile(r">=|<=|==|!=|>|<|=")
+DIGITS = re.compile(r"\d+(\.\d+)?")
+WORD = re.compile(r"[ \w]+")
+REGEXP = re.compile(r"([^/\\]|\\.)*")
 SINGLE_STRING = re.compile(r"([^'\\]|\\.)*")
 DOUBLE_STRING = re.compile(r'([^"\\]|\\.)*')
-MODIFIERS = re.compile(r'[cisld]*')
-TEXT = re.compile(r'[^,)]+')
-DATE = re.compile(r'\d{4}(?!\d)(-\d{1,2}(-\d{1,2})?)?')
+MODIFIERS = re.compile(r"[cisld]*")
+TEXT = re.compile(r"[^,)]+")
+DATE = re.compile(r"\d{4}(?!\d)(-\d{1,2}(-\d{1,2})?)?")
 
 
 class QueryParser:
     """Parse the input. One lookahead token, start symbol is Query."""
 
-    def __init__(self, tokens, star=[]):
+    def __init__(self, tokens, star: Iterable[str] | None = None):
         self.tokens = tokens
         self.index = 0
         self.last_match = None
-        self.star = star
+        self.star = star or []
 
     def space(self):
         """Advance to the first non-space token"""
-        while not self.eof() and self.tokens[self.index] == ' ':
+        while not self.eof() and self.tokens[self.index] == " ":
             self.index += 1
 
     def accept(self, token):
@@ -70,14 +70,14 @@ class QueryParser:
     def expect(self, token):
         """Raise an error if the next token doesn't match the provided token"""
         if not self.accept(token):
-            raise ParseError("'{0}' expected at index {1}, but not found"
-                             .format(token, self.index))
+            raise ParseError(f"'{token}' expected at index {self.index}, but not found"
+                             )
 
     def expect_re(self, regexp):
         """Same as expect, but with a regexp instead of a single token"""
         if self.accept_re(regexp) is None:
-            raise ParseError("RE match expected at index {0}, but not found"
-                             .format(self.index))
+            raise ParseError(f"RE match expected at index {self.index}, but not found"
+                             )
         return self.last_match
 
     def eof(self):
@@ -87,7 +87,7 @@ class QueryParser:
     def match_list(self, rule):
         """Match a comma-separated list of rules"""
         m = [rule()]
-        while self.accept(','):
+        while self.accept(","):
             m.append(rule())
         return m
 
@@ -95,7 +95,7 @@ class QueryParser:
         """Match a query that extends until the end of the input"""
         s = self.Query(outer=True)
         if not self.eof():
-            raise ParseError('Query ended before end of input')
+            raise ParseError("Query ended before end of input")
         return s
 
     def Query(self, outer=False):
@@ -104,15 +104,15 @@ class QueryParser:
         self.space()
         if self.eof():
             return match.True_()
-        elif self.accept('!'):
+        elif self.accept("!"):
             return self.Negation(self.Query)
-        elif self.accept('&'):
+        elif self.accept("&"):
             return self.Intersection(self.Query)
-        elif self.accept('|'):
+        elif self.accept("|"):
             return self.Union(self.Query)
-        elif self.accept('#'):
+        elif self.accept("#"):
             return self.Intersection(self.Numcmp)
-        elif self.accept('@'):
+        elif self.accept("@"):
             return self.Extension()
         index = self.index
         try:
@@ -133,16 +133,16 @@ class QueryParser:
 
     def Intersection(self, rule):
         """Rule for '&(query, query)'. '&' token is consumed in Query"""
-        self.expect('(')
+        self.expect("(")
         inter = match.Inter(self.match_list(rule))
-        self.expect(')')
+        self.expect(")")
         return inter
 
     def Union(self, rule):
         """Rule for '|(query, query)'. '|' token is consumed in Query"""
-        self.expect('(')
+        self.expect("(")
         union = match.Union(self.match_list(rule))
-        self.expect(')')
+        self.expect(")")
         return union
 
     def Numcmp(self):
@@ -155,7 +155,7 @@ class QueryParser:
             expr2 = self.Numexpr(allow_date=True)
             cmps.append(match.Numcmp(expr, relop, expr2))
         if not cmps:
-            raise ParseError('No relational operator in numerical comparison')
+            raise ParseError("No relational operator in numerical comparison")
         if len(cmps) > 1:
             return match.Inter(cmps)
         else:
@@ -163,9 +163,9 @@ class QueryParser:
 
     def Numexpr(self, allow_date=False):
         """Rule for numerical expression like 'playcount + 4'"""
-        if self.accept('('):
+        if self.accept("("):
             expr = match.NumexprGroup(self.Numexpr(allow_date=True))
-            self.expect(')')
+            self.expect(")")
         elif self.accept_re(UNARY_OPERATOR):
             expr = match.NumexprUnary(self.last_match, self.Numexpr())
         elif allow_date and self.accept_re(DATE):
@@ -180,7 +180,7 @@ class QueryParser:
                 expr = self.Numexpr(allow_date=False)
         elif self.accept_re(DIGITS):
             number = float(self.last_match)
-            if self.accept(':'):
+            if self.accept(":"):
                 # time like 4:15
                 number2 = float(self.expect_re(DIGITS))
                 expr = match.NumexprNumber(60 * number + number2, units=Units.SECONDS)
@@ -202,13 +202,13 @@ class QueryParser:
 
     def Extension(self):
         """Rule for plugin use like @(plugin: arguments)"""
-        self.expect('(')
+        self.expect("(")
         name = self.expect_re(WORD)
-        if self.accept(':'):
+        if self.accept(":"):
             body = self.ExtBody()
         else:
             body = None
-        self.expect(')')
+        self.expect(")")
         return match.Extension(name, body)
 
     def ExtBody(self):
@@ -218,19 +218,19 @@ class QueryParser:
         try:
             while True:
                 current = self.tokens[index]
-                if current == '(':
+                if current == "(":
                     depth += 1
-                elif current == ')':
+                elif current == ")":
                     if depth == 0:
                         break
                     depth -= 1
-                elif current == '\\':
+                elif current == "\\":
                     index += 1
                 index += 1
-        except IndexError:
+        except IndexError as e:
             if depth != 0:
-                raise ParseError('Unexpected end of string while parsing '
-                                 'extension body')
+                raise ParseError("Unexpected end of string while parsing "
+                                 "extension body") from e
         result = self.tokens[self.index:index]
         self.index = index
         return result
@@ -239,7 +239,7 @@ class QueryParser:
         """Rule for 'tag=value' queries"""
         tags = self.match_list(lambda: self.expect_re(TAG))
         tags = [tag.strip() for tag in tags]
-        self.expect('=')
+        self.expect("=")
         value = self.Value()
         return match.Tag(tags, value)
 
@@ -247,17 +247,17 @@ class QueryParser:
         """Rule for 'tag!=value' queries"""
         tags = self.match_list(lambda: self.expect_re(TAG))
         tags = [tag.strip() for tag in tags]
-        self.expect('!')
-        self.expect('=')
+        self.expect("!")
+        self.expect("=")
         value = self.Value()
         return match.Neg(match.Tag(tags, value))
 
     def Value(self, outer=False):
         """Rule for value. Either a regexp, quoted string, boolean combination
         of values, or free text string"""
-        if self.accept('/'):
+        if self.accept("/"):
             regex = self.expect_re(REGEXP)
-            self.expect('/')
+            self.expect("/")
             return self.RegexpMods(regex)
         elif self.accept('"'):
             regex = self.str_to_re(self.expect_re(DOUBLE_STRING))
@@ -267,18 +267,18 @@ class QueryParser:
             regex = self.str_to_re(self.expect_re(SINGLE_STRING))
             self.expect("'")
             return self.RegexpMods(regex)
-        elif self.accept('!'):
+        elif self.accept("!"):
             return self.Negation(self.Value)
-        elif self.accept('|'):
+        elif self.accept("|"):
             return self.Union(self.Value)
-        elif self.accept('&'):
+        elif self.accept("&"):
             return self.Intersection(self.Value)
         else:
             if outer:
                 # Hack to force plain text parsing for top level free text
-                raise ParseError('Free text not allowed at top level of query')
+                raise ParseError("Free text not allowed at top level of query")
 
-            return match.Regex(re_escape(self.expect_re(TEXT)), u"d")
+            return match.Regex(re_escape(self.expect_re(TEXT)), "d")
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp
@@ -295,7 +295,7 @@ class QueryParser:
     def str_to_re(self, string):
         """Convert plain string to escaped regexp that can be compiled"""
         if isinstance(string, str):
-            string = string.encode('utf-8')
+            string = string.encode("utf-8")
         string = codecs.escape_decode(string)[0]
-        string = string.decode('utf-8')
+        string = string.decode("utf-8")
         return "^%s$" % re_escape(string)

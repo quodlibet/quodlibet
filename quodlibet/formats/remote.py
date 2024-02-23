@@ -5,14 +5,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
 
 from senf import fsnative, path2fsn
 
 from ._audio import AudioFile
 
 
-extensions: List[str] = []
+extensions: list[str] = []
 
 
 class RemoteFile(AudioFile):

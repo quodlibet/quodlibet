@@ -60,7 +60,7 @@ class HeadphoneMonitor(GObject.Object):
     """
 
     __gsignals__ = {
-        'action': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "action": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self):
@@ -96,10 +96,10 @@ class HeadphoneMonitor(GObject.Object):
         Once this gets called the "changed" signal will be emitted.
         """
 
-        NULL = open(os.devnull, 'wb')
+        null = open(os.devnull, "wb")
         try:
             self._process = subprocess.Popen(
-                ["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=NULL)
+                ["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=null)
         except OSError:
             self._status = False
             return

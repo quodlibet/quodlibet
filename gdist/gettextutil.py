@@ -30,11 +30,11 @@ import functools
 import warnings
 
 from pathlib import Path
-from typing import List, Optional, Tuple, Iterable, Dict
+from collections.abc import Iterable
 
 QL_SRC_DIR = "quodlibet"
 
-XGETTEXT_CONFIG: Dict[str, Tuple[str, List[str]]] = {
+XGETTEXT_CONFIG: dict[str, tuple[str, list[str]]] = {
     "*.py": ("Python", [
         "", "_", "N_", "C_:1c,2", "NC_:1c,2", "Q_", "pgettext:1c,2",
         "npgettext:1c,2,3", "numeric_phrase:1,2", "dgettext:2",
@@ -55,11 +55,11 @@ class GettextWarning(Warning):
     pass
 
 
-def _read_potfiles(src_root: Path, potfiles: Path) -> List[Path]:
+def _read_potfiles(src_root: Path, potfiles: Path) -> list[Path]:
     """Returns a list of paths for a POTFILES.in file"""
 
     paths = []
-    with open(potfiles, "r", encoding="utf-8") as h:
+    with open(potfiles, encoding="utf-8") as h:
         for line in h:
             line = line.strip()
             if not line or line.startswith("#"):
@@ -82,7 +82,7 @@ def _src_root(po_dir: Path) -> Path:
     return po_dir.parent.resolve()
 
 
-def get_pot_dependencies(po_dir: Path) -> List[Path]:
+def get_pot_dependencies(po_dir: Path) -> list[Path]:
     """Returns a list of paths that are used as input for the .pot file"""
 
     src_root = _src_root(po_dir)
@@ -90,7 +90,7 @@ def get_pot_dependencies(po_dir: Path) -> List[Path]:
     return _read_potfiles(src_root, potfiles_path)
 
 
-def _get_pattern(path: Path) -> Optional[str]:
+def _get_pattern(path: Path) -> str | None:
     for pattern in XGETTEXT_CONFIG:
         match_part = path.name
         if match_part.endswith(".in"):
@@ -161,7 +161,7 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
                     msg += stderr or ("Got error: %d" % p.returncode)
                     raise GettextError(msg)
                 if stderr:
-                    warnings.warn(stderr, GettextWarning)
+                    warnings.warn(stderr, GettextWarning, stacklevel=2)
             finally:
                 potfiles_in.unlink()
     except Exception:
@@ -192,7 +192,7 @@ def update_linguas(po_path: Path) -> None:
             h.write(l + "\n")
 
 
-def list_languages(po_path: Path) -> List[str]:
+def list_languages(po_path: Path) -> list[str]:
     """Returns a list of available language codes"""
 
     po_files = po_path.glob("*.po")
@@ -207,7 +207,7 @@ def compile_po(po_path: Path, target_file: Path):
             ["msgfmt", "-o", str(target_file), str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def po_stats(po_path: Path):
@@ -218,7 +218,7 @@ def po_stats(po_path: Path):
             ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
             universal_newlines=True, stderr=subprocess.STDOUT).strip()
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def merge_file(po_dir, file_type, source_file, target_file):
@@ -230,7 +230,7 @@ def merge_file(po_dir, file_type, source_file, target_file):
 
     linguas = os.path.join(po_dir, "LINGUAS")
     if not os.path.exists(linguas):
-        raise GettextError("{!r} doesn't exist".format(linguas))
+        raise GettextError(f"{linguas!r} doesn't exist")
 
     try:
         subprocess.check_output(
@@ -238,7 +238,7 @@ def merge_file(po_dir, file_type, source_file, target_file):
              "-o", target_file],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def get_po_path(po_path: Path, lang_code: str) -> Path:
@@ -247,7 +247,7 @@ def get_po_path(po_path: Path, lang_code: str) -> Path:
     return po_path / (lang_code + ".po")
 
 
-def update_po(pot_path: Path, po_path: Path, out_path: Optional[Path] = None) -> None:
+def update_po(pot_path: Path, po_path: Path, out_path: Path | None = None) -> None:
     """Update .po at po_path based on .pot at po_path.
 
     If out_path is given will not touch po_path and write to out_path instead.
@@ -263,7 +263,7 @@ def update_po(pot_path: Path, po_path: Path, out_path: Optional[Path] = None) ->
             ["msgmerge", "-o", str(out_path), str(po_path), str(pot_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def check_po(po_path: Path, ignore_header=False):
@@ -278,7 +278,7 @@ def check_po(po_path: Path, ignore_header=False):
             ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
             stderr=subprocess.STDOUT, universal_newlines=True)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
 
 def check_pot(pot_path: Path) -> None:
@@ -293,7 +293,7 @@ def check_pot(pot_path: Path) -> None:
     po_path = Path(po_path)
     os.close(fd)
     po_path.unlink()
-    create_po(pot_path, po_path)
+    create_po(pot_path, po_path, "C")
 
     try:
         check_po(po_path, ignore_header=True)
@@ -301,7 +301,7 @@ def check_pot(pot_path: Path) -> None:
         os.remove(po_path)
 
 
-def create_po(pot_path: Path, po_path: Path) -> None:
+def create_po(pot_path: Path, po_path: Path, lang_code: str) -> None:
     """Create a new <po_path> file based on <pot_path>
 
     :raises GettextError: in case something went wrong or the file already exists.
@@ -315,10 +315,11 @@ def create_po(pot_path: Path, po_path: Path) -> None:
 
     try:
         subprocess.check_output(
-            ["msginit", "--no-translator", "-i", str(pot_path), "-o", str(po_path)],
+            ["msginit", "--no-translator", "--locale", lang_code,
+             "-i", str(pot_path), "-o", str(po_path)],
             universal_newlines=True, stderr=subprocess.STDOUT)
     except subprocess.CalledProcessError as e:
-        raise GettextError(e.output)
+        raise GettextError(e.output) from e
 
     if not po_path.exists():
         raise GettextError(f"something went wrong; {po_path!s} didn't get created")
@@ -371,7 +372,7 @@ def get_missing(po_dir: Path) -> Iterable[str]:
         pot_path = _create_pot(temp_path, src_root)
         try:
             infos = set()
-            with open(pot_path, "r", encoding="utf-8") as h:
+            with open(pot_path, encoding="utf-8") as h:
                 for line in h.readlines():
                     if not line.startswith("#:"):
                         continue
@@ -383,18 +384,18 @@ def get_missing(po_dir: Path) -> Iterable[str]:
         temp_path.unlink()
 
 
-def _get_xgettext_version() -> Tuple:
+def _get_xgettext_version() -> tuple:
     """:returns: a version tuple e.g. (0, 19, 3) or GettextError"""
 
     try:
         result = subprocess.check_output(["xgettext", "--version"])
     except subprocess.CalledProcessError as e:
-        raise GettextError(e)
+        raise GettextError(e) from e
 
     try:
         return tuple(map(int, result.splitlines()[0].split()[-1].split(b".")))
     except (IndexError, ValueError) as e:
-        raise GettextError(e)
+        raise GettextError(e) from e
 
 
 @functools.lru_cache(None)
@@ -407,7 +408,7 @@ def check_version() -> None:
     required_programs = ["xgettext", "msgmerge", "msgfmt"]
     for prog in required_programs:
         if shutil.which(prog) is None:
-            raise GettextError("{} missing".format(prog))
+            raise GettextError(f"{prog} missing")
 
     if _get_xgettext_version() < (0, 19, 8):
         raise GettextError("xgettext too old, need 0.19.8+")

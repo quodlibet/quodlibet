@@ -9,7 +9,6 @@
 import os
 import hashlib
 from tempfile import gettempdir
-from typing import Optional
 
 from gi.repository import GdkPixbuf, GLib
 
@@ -32,7 +31,7 @@ def get_thumbnail_folder():
         thumb_folder = os.path.join(quodlibet.get_cache_dir(), "thumbnails")
     else:
         cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
-        thumb_folder = os.path.expanduser('~/.thumbnails')
+        thumb_folder = os.path.expanduser("~/.thumbnails")
         if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
             thumb_folder = cache_folder
 
@@ -74,7 +73,7 @@ def get_cache_info(path, boundary):
     return (thumb_path, thumb_size)
 
 
-def get_thumbnail_from_file(fileobj, boundary) -> Optional[GdkPixbuf.Pixbuf]:
+def get_thumbnail_from_file(fileobj, boundary) -> GdkPixbuf.Pixbuf | None:
     """Like get_thumbnail() but works with files that can't be reopened.
 
     This is needed on Windows where NamedTemporaryFile can't be reopened.
@@ -97,7 +96,7 @@ def get_thumbnail_from_file(fileobj, boundary) -> Optional[GdkPixbuf.Pixbuf]:
             fileobj.seek(0, 0)
             # can return None in case of partial data
             return loader.get_pixbuf()
-        except (GLib.GError, EnvironmentError) as e:
+        except (OSError, GLib.GError) as e:
             print_w(f"Couldn't load thumbnail with PixbufLoader either: {e}")
     return None
 

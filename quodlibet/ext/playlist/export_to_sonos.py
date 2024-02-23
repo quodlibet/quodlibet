@@ -13,10 +13,10 @@ DEVICE_CACHE_SEC = 600
 try:
     from soco import SoCo, SoCoException
     from soco.data_structures import DidlMusicTrack, DidlPlaylistContainer, DidlItem
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
-from typing import Text, Optional, Dict, Tuple, Collection
+from collections.abc import Collection
 from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
@@ -31,17 +31,17 @@ from quodlibet.util.string.filter import remove_punctuation
 
 try:
     import soco
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
-PlaylistID = Text
-ID = Text
-Name = Text
-SonosPlaylistDict = Dict[PlaylistID, Name]
+PlaylistID = str
+ID = str
+Name = str
+SonosPlaylistDict = dict[PlaylistID, Name]
 
 
 class ComboBoxEntry(Gtk.ComboBox):
-    def __init__(self, choices: Dict[Text, Text], tooltip_markup=None):
+    def __init__(self, choices: dict[str, str], tooltip_markup=None):
         super().__init__(
             model=Gtk.ListStore(str, str),
             entry_text_column=1,
@@ -50,11 +50,11 @@ class ComboBoxEntry(Gtk.ComboBox):
         if tooltip_markup:
             self.get_child().set_tooltip_markup(tooltip_markup)
 
-    def _fill_model(self, choices: Dict[Text, Text]):
+    def _fill_model(self, choices: dict[str, str]):
         self.clear()
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
-        self.add_attribute(render, 'text', 1)
+        self.add_attribute(render, "text", 1)
 
         model = self.get_model()
         for id_, name in choices.items():
@@ -66,7 +66,7 @@ class ComboBoxEntry(Gtk.ComboBox):
         comp.set_text_column(1)
         self.get_child().set_completion(comp)
 
-    def get_chosen(self) -> Tuple[Optional[ID], Name]:
+    def get_chosen(self) -> tuple[ID | None, Name]:
         tree_iter = self.get_active_iter()
         if tree_iter is not None:
             model = self.get_model()
@@ -75,7 +75,7 @@ class ComboBoxEntry(Gtk.ComboBox):
         entry = self.get_child()
         return None, entry.get_text()
 
-    def set_text(self, text: Text):
+    def set_text(self, text: str):
         model = self.get_model()
         for i, (id_, value) in enumerate(model):
             if value == text:
@@ -114,7 +114,7 @@ class GetSonosPlaylistDialog(Dialog):
         self.vbox.pack_start(box, True, True, 0)
         self.get_child().show_all()
 
-    def run(self, text: Optional[Text] = None) -> Optional[Tuple[Optional[Name], Text]]:
+    def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
         self.show()
         if text:
             self._combo.set_text(text)
@@ -149,7 +149,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
         print_d(f"Using Sonos device: {self.device}")
 
     @property
-    def device(self) -> Optional[SoCo]:
+    def device(self) -> SoCo | None:
         now = time.time()
         if not self.devices or now - self._last_discovery > DEVICE_CACHE_SEC:
             devices = soco.discover()
@@ -179,7 +179,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                  + int(bool(person) and person in d.values())
                  + int(bool(album) and album in d.get("album", "")))
         if cls.DEBUG:
-            print_d("%.1f for %s (%s)" % (score, t.title, d))
+            print_d(f"{score:.1f} for {t.title} ({d})")
         return score
 
     def __add_songs(self, task: Task, songs: Collection[AudioFile],
@@ -213,7 +213,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 print_d(f"From {len(results)} choice(s) for {desc!r}, "
                         f"chose {self.uri_for(track)}")
             else:
-                print_w("No results for \"%s\"" % search_term)
+                print_w('No results for "%s"' % search_term)
                 failures.append(search_term)
                 track = None
             if track:
@@ -233,7 +233,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
         print_d(f"Finished export to {spl.title!r}, {successes} tracks in total")
 
     @staticmethod
-    def uri_for(track: DidlItem) -> Text:
+    def uri_for(track: DidlItem) -> str:
         """More usable elsewhere (on Linux at least)"""
         return track.get_uri().replace("x-file-cifs", "smb")
 

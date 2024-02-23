@@ -77,10 +77,11 @@ class TEditTags(TestCase):
 
 class GroupSong(AudioFile):
 
-    def __init__(self, can_multiple=True, can_change=True, cant_change=[]):
+    def __init__(self, can_multiple: bool = True,
+                 can_change: bool = True, cant_change: list[str] | None = None):
         self._can_multiple = can_multiple
         self._can_change = can_change
-        self._cant_change = cant_change
+        self._cant_change = cant_change or []
 
     def can_multiple_values(self, key=None):
         if key is None:

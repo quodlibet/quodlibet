@@ -1,4 +1,4 @@
-# Copyright 2016-22 Nick Boultbee
+# Copyright 2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,6 @@ from quodlibet.query import Query, QueryType
 from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
     Numexpr, True_, False_
 
-
 INVERSE_OPS = {operator.le: operator.gt,
                operator.gt: operator.le,
                operator.lt: operator.ge,
@@ -27,19 +26,19 @@ _CLOCK = time.time
 
 
 def convert_time(t):
-    return datetime.strftime(datetime.fromtimestamp(int(t)), '%Y-%m-%d %H:%S')
+    return datetime.strftime(datetime.fromtimestamp(int(t)), "%Y-%m-%d %H:%S")
 
 
 _QL_TO_SC = {
-    'genre': ('genres', None),
-    'length': ('duration', lambda x: int((x or 0) * 1000)),
-    'date': ('created_at', convert_time),
-    'tags': ('tags', None),
-    'bpm': ('bpm', None),
-    'artist': ('q', None),
-    'title': ('q', None),
-    'comments': ('q', None),
-    'soundcloud_user_id': ('user_id', None)
+    "genre": ("genres", None),
+    "length": ("duration", lambda x: int((x or 0) * 1000)),
+    "date": ("created_at", convert_time),
+    "tags": ("tags", None),
+    "bpm": ("bpm", None),
+    "artist": ("q", None),
+    "title": ("q", None),
+    "comments": ("q", None),
+    "soundcloud_user_id": ("user_id", None)
 }
 """ Convert QL to Soundcloud tags with optional value mapper"""
 
@@ -78,11 +77,11 @@ class SoundcloudQuery(Query):
     def _extract_terms_set(self, node, tag=None):
         def to_api(tag, raw_value):
             try:
-                api_tag, converter = _QL_TO_SC[tag] if tag else ('q', None)
-            except KeyError:
+                api_tag, converter = _QL_TO_SC[tag] if tag else ("q", None)
+            except KeyError as e:
                 if tag not in SUPPORTED:
-                    raise self.Error("Unsupported '%s' tag. Try: %s"
-                                     % (tag, ", ". join(SUPPORTED)))
+                    raise self.Error(f"Unsupported {tag!r} tag. "
+                                     f"Try: {', '.join(SUPPORTED)}") from e
                 return None, None
             else:
                 value = str(converter(raw_value) if converter else raw_value)
@@ -90,15 +89,15 @@ class SoundcloudQuery(Query):
 
         def terms_from_re(pattern, t):
             """Best efforts to de-regex"""
-            pat = pattern.lstrip('^').rstrip('$')
+            pat = pattern.lstrip("^").rstrip("$")
             api_tag, pat = to_api(t, pat)
-            return {(api_tag, p) for p in pat.split('|')} if api_tag else set()
+            return {(api_tag, p) for p in pat.split("|")} if api_tag else set()
 
         if isinstance(node, Tag) and set(node._names) & SUPPORTED:
             if len(node._names) == 1:
                 return self._extract_terms_set(node.res, tag=node._names[0])
             return self._extract_terms_set(node.res)
-        elif isinstance(node, (Inter, Union)):
+        elif isinstance(node, Inter | Union):
             # Treat identically as the text-based query will perform
             # relevance ranking itself, meaning that any term is still useful
             terms = set()
@@ -127,10 +126,10 @@ class SoundcloudQuery(Query):
                 # We can reduce the logic by flipping the expression
                 return from_relative(INVERSE_OPS[node._op], right, left)
             raise self.Error("Unsupported numeric: %s" % node)
-        elif hasattr(node, 'pattern'):
+        elif hasattr(node, "pattern"):
             return terms_from_re(node.pattern, tag)
         elif isinstance(node, True_):
             return set()
         elif isinstance(node, False_):
             raise self.Error("False can never be queried")
-        raise self.Error("Unhandled node: %r" % (node,))
+        raise self.Error(f"Unhandled node: {node!r}")

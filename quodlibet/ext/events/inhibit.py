@@ -88,7 +88,7 @@ class SessionInhibit(EventPlugin):
 
         try:
             dbus_proxy = self.__get_dbus_proxy()
-            self.__cookie = dbus_proxy.Inhibit('(susu)',
+            self.__cookie = dbus_proxy.Inhibit("(susu)",
                                                self.APPLICATION_ID, xid,
                                                self.INHIBIT_REASON, flags)
         except GLib.Error:
@@ -100,7 +100,7 @@ class SessionInhibit(EventPlugin):
 
         try:
             dbus_proxy = self.__get_dbus_proxy()
-            dbus_proxy.Uninhibit('(u)', self.__cookie)
+            dbus_proxy.Uninhibit("(u)", self.__cookie)
             self.__cookie = None
         except GLib.Error:
             pass
@@ -125,6 +125,6 @@ class SessionInhibit(EventPlugin):
         combo.append_text(_("Inhibit Screensaver"))
         combo.append_text(_("Inhibit Suspend"))
         combo.set_active(1 if mode == InhibitStrings.SUSPEND else 0)
-        combo.connect('changed', changed)
+        combo.connect("changed", changed)
         hb.pack_start(combo, True, True, 0)
         return hb

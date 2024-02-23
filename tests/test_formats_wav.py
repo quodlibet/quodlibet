@@ -14,14 +14,14 @@ from quodlibet.formats.wav import WAVEFile
 class TWAVEFile(TestCase):
 
     def setUp(self):
-        self.song = WAVEFile(get_data_path('test.wav'))
+        self.song = WAVEFile(get_data_path("test.wav"))
 
     def test_title_tag(self):
         self.assertEqual(self.song["title"], "test")
         self.assertTrue(isinstance(self.song["title"], str))
 
     def test_length(self):
-        self.failUnlessAlmostEqual(self.song("~#length"), 0.227, 2)
+        self.assertAlmostEqual(self.song("~#length"), 0.227, 2)
 
     def test_channels(self):
         assert self.song("~#channels") == 1
@@ -36,12 +36,12 @@ class TWAVEFile(TestCase):
         self.song.write()
 
     def test_can_change(self):
-        self.failUnless(self.song.can_change("artist"))
+        self.assertTrue(self.song.can_change("artist"))
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
-        self.failUnless(os.path.exists(path))
-        self.failUnlessRaises(Exception, WAVEFile, path)
+        path = get_data_path("empty.xm")
+        self.assertTrue(os.path.exists(path))
+        self.assertRaises(Exception, WAVEFile, path)
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "WAVE")

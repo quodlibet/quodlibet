@@ -31,81 +31,80 @@ class TSongsMenuPlugins(TestCase):
         self.handler = SongsMenuPluginHandler(self._confirmer, self._confirmer)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
-        self.assertEquals(self.pm.plugins, [])
-        self.library = SongLibrary('foo')
+        self.assertEqual(self.pm.plugins, [])
+        self.library = SongLibrary("foo")
 
     def tearDown(self):
         self.library.destroy()
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, id='', name='', desc='', icon='',
+    def create_plugin(self, id="", name="", desc="", icon="",
                       funcs=None, mod=False):
-        fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)
-        file = os.fdopen(fd, 'w')
+        fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
+        file = os.fdopen(fd, "w")
 
         if mod:
-            indent = ''
+            indent = ""
         else:
             file.write(
                 "from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
             file.write("class %s(SongsMenuPlugin):\n" % name)
-            indent = '    '
+            indent = "    "
             file.write("%spass\n" % indent)
 
         if name:
-            file.write("%sPLUGIN_ID = %r\n" % (indent, name))
+            file.write(f"{indent}PLUGIN_ID = {name!r}\n")
         if name:
-            file.write("%sPLUGIN_NAME = %r\n" % (indent, name))
+            file.write(f"{indent}PLUGIN_NAME = {name!r}\n")
         if desc:
-            file.write("%sPLUGIN_DESC = %r\n" % (indent, desc))
+            file.write(f"{indent}PLUGIN_DESC = {desc!r}\n")
         if icon:
-            file.write("%sPLUGIN_ICON = %r\n" % (indent, icon))
+            file.write(f"{indent}PLUGIN_ICON = {icon!r}\n")
         for f in (funcs or []):
             if f in ["__init__"]:
-                file.write("%sdef %s(self, *args): super().__init__("
-                           "*args); raise Exception(\"as expected\")\n"
-                           % (indent, f))
+                file.write(f"{indent}def {f}(self, *args): super().__init__("
+                           '*args); raise Exception("as expected")\n')
             else:
-                file.write("%sdef %s(*args): return args\n" % (indent, f))
+                file.write(f"{indent}def {f}(*args): return args\n")
         file.flush()
         file.close()
 
     def test_empty_has_no_plugins(self):
         self.pm.rescan()
-        self.assertEquals(self.pm.plugins, [])
+        self.assertEqual(self.pm.plugins, [])
 
     def test_name_and_desc_plus_func_is_one(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
 
     def test_additional_functions_still_only_one(self):
-        self.create_plugin(name='Name', desc='Desc',
-                funcs=['plugin_song', 'plugin_songs'])
+        self.create_plugin(name="Name", desc="Desc",
+                funcs=["plugin_song", "plugin_songs"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
 
     def test_two_plugins_are_two(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
-        self.create_plugin(name='Name2', desc='Desc2',
-                funcs=['plugin_albums'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
+        self.create_plugin(name="Name2", desc="Desc2",
+                funcs=["plugin_albums"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 2)
+        self.assertEqual(len(self.pm.plugins), 2)
 
     def test_disables_plugin(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
         self.pm.rescan()
-        self.failIf(self.pm.enabled(self.pm.plugins[0]))
+        self.assertFalse(self.pm.enabled(self.pm.plugins[0]))
 
     def test_enabledisable_plugin(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        self.failUnless(self.pm.enabled(plug))
+        self.assertTrue(self.pm.enabled(plug))
         self.pm.enable(plug, False)
-        self.failIf(self.pm.enabled(plug))
+        self.assertFalse(self.pm.enabled(plug))
 
     def test_ignores_broken_plugin(self):
         self.create_plugin(name="Broken", desc="Desc",
@@ -114,31 +113,31 @@ class TSongsMenuPlugins(TestCase):
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
         with capture_output():
-            menu = self.handler.Menu(None, [AudioFile()])
-        self.failIf(menu and menu.get_children())
+            menu = self.handler.menu(None, [AudioFile()])
+        self.assertFalse(menu and menu.get_children())
 
     def test_Menu(self):
-        self.create_plugin(name='Name', desc='Desc', funcs=['plugin_song'])
-        self.handler.Menu(None, [AudioFile()])
+        self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
+        self.handler.menu(None, [AudioFile()])
 
     def test_handling_songs_without_confirmation(self):
         plugin = Plugin(FakeSongsMenuPlugin)
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
-        songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
+        songs = [AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"})
                  for x in range(MAX)]
         self.handler.handle(plugin.id, self.library, None, songs)
-        self.failIf(self.confirmed, ("Wasn't expecting a confirmation for %d"
+        self.assertFalse(self.confirmed, ("Wasn't expecting a confirmation for %d"
                                      " invocations" % len(songs)))
 
     def test_handling_lots_of_songs_with_confirmation(self):
         plugin = Plugin(FakeSongsMenuPlugin)
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
-        songs = [AudioFile({'~filename': "/tmp/%s" % x, 'artist': 'foo'})
+        songs = [AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"})
                  for x in range(MAX + 1)]
         self.handler.handle(plugin.id, self.library, None, songs)
-        self.failUnless(self.confirmed,
+        self.assertTrue(self.confirmed,
                         ("Should have confirmed %d invocations (Max=%d)."
                          % (len(songs), MAX)))
 
@@ -157,26 +156,26 @@ class Tsongsmenu(TestCase):
     def test_any_song(self):
         FakeSongsMenuPlugin.plugin_handles = any_song(even)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.failUnless(p.plugin_handles(self.songs))
-        self.failIf(p.plugin_handles(self.songs[:1]))
+        self.assertTrue(p.plugin_handles(self.songs))
+        self.assertFalse(p.plugin_handles(self.songs[:1]))
 
     def test_any_song_multiple(self):
         FakeSongsMenuPlugin.plugin_handles = any_song(even, never)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.failIf(p.plugin_handles(self.songs))
-        self.failIf(p.plugin_handles(self.songs[:1]))
+        self.assertFalse(p.plugin_handles(self.songs))
+        self.assertFalse(p.plugin_handles(self.songs[:1]))
 
     def test_each_song(self):
         FakeSongsMenuPlugin.plugin_handles = each_song(even)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.failIf(p.plugin_handles(self.songs))
-        self.failUnless(p.plugin_handles(self.songs[1:]))
+        self.assertFalse(p.plugin_handles(self.songs))
+        self.assertTrue(p.plugin_handles(self.songs[1:]))
 
     def test_each_song_multiple(self):
         FakeSongsMenuPlugin.plugin_handles = each_song(even, never)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.failIf(p.plugin_handles(self.songs))
-        self.failIf(p.plugin_handles(self.songs[:1]))
+        self.assertFalse(p.plugin_handles(self.songs))
+        self.assertFalse(p.plugin_handles(self.songs[:1]))
 
 
 class FakeSongsMenuPlugin(SongsMenuPlugin):

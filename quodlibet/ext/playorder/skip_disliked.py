@@ -42,7 +42,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         def on_changed(button):
             pconfig.set("threshold", button.get_value())
 
-        fb_spin.connect('changed', on_changed)
+        fb_spin.connect("changed", on_changed)
 
         vb.add(fb_spin)
         vb.show_all()
@@ -77,6 +77,6 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         threshold = pconfig.getfloat("threshold")
 
         if rating <= threshold:
-            print_d("Rating is %f <= %f; skipping..." % (rating, threshold))
+            print_d(f"Rating is {rating:f} <= {threshold:f}; skipping...")
             return True
         return False

@@ -46,7 +46,7 @@ def get_active_account_paths():
     bus_iface = Gio.DBusProxy.new_for_bus_sync(
         Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
         AM_NAME, AM_PATH, PROPS_IFACE, None)
-    return bus_iface.Get('(ss)', AM_IFACE, "ValidAccounts")
+    return bus_iface.Get("(ss)", AM_IFACE, "ValidAccounts")
 
 
 def set_accounts_requested_presence(paths, message):
@@ -56,11 +56,11 @@ def set_accounts_requested_presence(paths, message):
             bus, Gio.DBusProxyFlags.NONE, None,
             AM_NAME, path, PROPS_IFACE, None)
         presence_type, status = bus_iface.Get(
-            '(ss)', AC_IFACE, "CurrentPresence")[:2]
+            "(ss)", AC_IFACE, "CurrentPresence")[:2]
         if not is_valid_presence_type(presence_type):
             presence_type = CONN_PRESENCE_TYPE_AVAILABLE
-        value = GLib.Variant('(uss)', (presence_type, status, message))
-        bus_iface.Set('(ssv)', AC_IFACE, "RequestedPresence", value)
+        value = GLib.Variant("(uss)", (presence_type, status, message))
+        bus_iface.Set("(ssv)", AC_IFACE, "RequestedPresence", value)
 
 
 class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
@@ -73,13 +73,13 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
     DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
-    CFG_STATUS_SONGLESS = 'no_song_text'
+    CFG_STATUS_SONGLESS = "no_song_text"
     CFG_LEAVE_STATUS = "leave_status"
     CFG_PAT_PLAYING = "playing_pattern"
     CFG_PAT_PAUSED = "paused_pattern"
 
     def _set_status(self, text):
-        print_d("Setting status to \"%s\"..." % text)
+        print_d('Setting status to "%s"...' % text)
         self.status = text
         try:
             accounts = get_active_account_paths()
@@ -123,7 +123,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PLAYING,
                                        self.DEFAULT_PAT))
-        entry.connect('changed', self.config_entry_changed,
+        entry.connect("changed", self.config_entry_changed,
                       self.CFG_PAT_PLAYING)
         lbl = Gtk.Label(label=_("Playing:"))
         entry.set_tooltip_markup(_("Status text when a song is started. "
@@ -139,7 +139,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_PAT_PAUSED,
                                     self.DEFAULT_PAT_PAUSED))
-        entry.connect('changed', self.config_entry_changed,
+        entry.connect("changed", self.config_entry_changed,
                       self.CFG_PAT_PAUSED)
         lbl = Gtk.Label(label=_("Paused:"))
         entry.set_tooltip_markup(_("Status text when a song is paused. "
@@ -154,7 +154,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_STATUS_SONGLESS, ""))
-        entry.connect('changed', self.config_entry_changed,
+        entry.connect("changed", self.config_entry_changed,
                       self.CFG_STATUS_SONGLESS)
         entry.set_tooltip_text(
                 _("Plain text for status when there is no current song"))

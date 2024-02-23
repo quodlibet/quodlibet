@@ -34,7 +34,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     def __init__(self):
         super().__init__(
             _("Romanize _Japanese text"), use_underline=True)
-        connect_obj(self, 'toggled', self.emit, 'preview')
+        connect_obj(self, "toggled", self.emit, "preview")
 
     @property
     def active(self):
@@ -45,7 +45,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     def filter_list(self, originals, values):
         value = "\n".join(values)
         try:
-            data = value.encode('shift-jis', 'replace')
+            data = value.encode("shift-jis", "replace")
         except UnicodeEncodeError:
             return values
 
@@ -57,12 +57,12 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
         result = proc.communicate(data)[0]
 
         try:
-            return result.decode('shift-jis').strip().split("\n")
-        except:
+            return result.decode("shift-jis").strip().split("\n")
+        except Exception:
             return values
 
 
 if not iscommand("kakasi"):
     from quodlibet import plugins
-    raise plugins.PluginImportException(
+    raise plugins.PluginImportError(
         _("Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."))

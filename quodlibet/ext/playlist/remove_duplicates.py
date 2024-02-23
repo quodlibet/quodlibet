@@ -28,7 +28,7 @@ class RemoveDuplicates(PlaylistPlugin):
         songs = filter(lambda s: isinstance(s, AudioFile), playlist.songs)
 
         unique = set()
-        dupes = list()
+        dupes = []
         for s in songs:
             if s in unique:
                 dupes.append(s)

@@ -37,9 +37,9 @@ class LyricsPane(Gtk.VBox):
 
         buffer = view.get_buffer()
 
-        save.connect('clicked', self.__save, song, buffer, delete)
-        delete.connect('clicked', self.__delete, song, save)
-        view_online.connect('clicked', self.__view_online, song)
+        save.connect("clicked", self.__save, song, buffer, delete)
+        delete.connect("clicked", self.__delete, song, save)
+        view_online.connect("clicked", self.__view_online, song)
 
         sw.set_shadow_type(Gtk.ShadowType.IN)
         self.pack_start(sw, True, True, 0)
@@ -59,7 +59,7 @@ class LyricsPane(Gtk.VBox):
             buffer.set_text(lyrics)
         else:
             buffer.set_text(_("No lyrics found for this song."))
-        connect_obj(buffer, 'changed', save.set_sensitive, True)
+        connect_obj(buffer, "changed", save.set_sensitive, True)
 
     def __view_online(self, add, song):
         # TODO: make this modular and plugin-friendly (#54, #3642 etc)
@@ -70,10 +70,10 @@ class LyricsPane(Gtk.VBox):
                          .replace('"', "")
                          .replace(",", "-")
                          .lower()
-                         .encode('utf-8'))
+                         .encode("utf-8"))
 
-        artist = sanitise(song.list('artist')[0])
-        title = sanitise(song.comma('title'))
+        artist = sanitise(song.list("artist")[0])
+        title = sanitise(song.comma("title"))
         util.website(f"https://genius.com/{artist}-{title}-lyrics")
 
     def __save(self, save, song, buffer, delete):
@@ -97,7 +97,7 @@ class LyricsPane(Gtk.VBox):
             self._save_to_file(song, text)
         else:
             print_d(f"Wrote embedded lyrics into {song('~filename')}")
-            app.librarian.emit('changed', [song])
+            app.librarian.emit("changed", [song])
             fn = song.lyric_filename
             if fn:
                 self._delete_file(fn)
@@ -109,13 +109,13 @@ class LyricsPane(Gtk.VBox):
             return
         try:
             os.makedirs(os.path.dirname(lyric_fn), exist_ok=True)
-        except EnvironmentError:
+        except OSError:
             errorhook()
         try:
             with open(lyric_fn, "wb") as f:
                 f.write(text.encode("utf-8"))
             print_d(f"Saved lyrics to file {lyric_fn!r}")
-        except EnvironmentError:
+        except OSError:
             errorhook()
 
     def __delete(self, delete, song, save):
@@ -136,11 +136,11 @@ class LyricsPane(Gtk.VBox):
         try:
             os.unlink(filename)
             print_d(f"Removed lyrics file {filename!r}")
-        except EnvironmentError:
+        except OSError:
             pass
         lyric_dir = os.path.dirname(filename)
         try:
             os.rmdir(lyric_dir)
             print_d(f"Removed lyrics directory {lyric_dir}")
-        except EnvironmentError:
+        except OSError:
             pass

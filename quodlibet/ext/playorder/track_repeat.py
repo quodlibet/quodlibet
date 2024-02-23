@@ -65,7 +65,7 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         print_d("Resetting play count")
 
     def next(self, playlist, iter):
-        play_each = int(self.config_get('play_each', self.PLAY_EACH_DEFAULT))
+        play_each = int(self.config_get("play_each", self.PLAY_EACH_DEFAULT))
         self.play_count += 1
         if self.play_count <= play_each and iter is not None:
             print_d("Play count now at %d/%d" % (self.play_count, play_each))

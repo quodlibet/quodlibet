@@ -18,7 +18,7 @@ from quodlibet.query import QueryType
 from quodlibet.util.dprint import print_d
 from tests.test_browsers__base import TBrowserBase
 
-NONE = set([])
+NONE = set()
 
 
 class TestExtract(TestCase):
@@ -35,7 +35,7 @@ class TestExtract(TestCase):
         self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
-        self.failUnlessEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
+        self.assertEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
                              QueryType.INVALID)
 
     def test_extract_composite_text(self):
@@ -43,43 +43,42 @@ class TestExtract(TestCase):
         self.verify("|(either, or)", {"either", "or"})
 
     def test_numeric_simple(self):
-        self.verify("#(length=180)", {'180000'}, term='duration')
+        self.verify("#(length=180)", {"180000"}, term="duration")
 
     def test_extract_date(self):
         now = int(time.time())
         terms = SoundcloudQuery("#(date>today)", clock=lambda: now).terms
-        self.failUnlessEqual(terms['created_at[from]'].pop(),
+        self.assertEqual(terms["created_at[from]"].pop(),
                              convert_time(now - 86400))
 
     def test_numeric_relative(self):
-        self.verify("#(length>180)", {'180000'}, term='duration[from]')
-        self.verify("#(180<=length)", {'180000'}, term='duration[from]')
-        self.verify("#(length<360)", {'360000'}, term='duration[to]')
-        self.verify("#(360>=length)", {'360000'}, term='duration[to]')
+        self.verify("#(length>180)", {"180000"}, term="duration[from]")
+        self.verify("#(180<=length)", {"180000"}, term="duration[from]")
+        self.verify("#(length<360)", {"360000"}, term="duration[to]")
+        self.verify("#(360>=length)", {"360000"}, term="duration[to]")
 
     def test_extract_tag_inter(self):
-        self.verify("genre=&(jazz, funk)", {'jazz', 'funk'})
+        self.verify("genre=&(jazz, funk)", {"jazz", "funk"})
 
     def test_extract_tag_union(self):
-        self.verify("genre=|(jazz, funk)", {'jazz', 'funk'})
+        self.verify("genre=|(jazz, funk)", {"jazz", "funk"})
 
     def test_extract_complex(self):
         self.verify("&(artist='foo', genre=|(rock, metal))",
-                    {'foo', 'rock', 'metal'})
+                    {"foo", "rock", "metal"})
 
-    def verify(self, text, expected, term='q'):
+    def verify(self, text, expected, term="q"):
         print_d("Trying '%s'..." % text)
         terms = SoundcloudQuery(text).terms
-        self.failUnlessEqual(terms[term], expected,
-                             msg="terms[%s] wasn't %r. Full terms: %r"
-                                 % (term, expected, terms))
+        msg = f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}"
+        assert terms[term] == expected, msg
 
 
 class TestMenu(TBrowserBase):
     Kind = SoundcloudBrowser
 
     def test_songsmenu_has_information_but_no_edit(self):
-        menu = self.b.Menu([], self.library, [])
+        menu = self.b.menu([], self.library, [])
         assert menu
         items = [item.get_label() for item in menu.get_children()
                  if type(item) is not Gtk.SeparatorMenuItem]
@@ -97,5 +96,5 @@ class TestHttpsDefault(TestCase):
         config.quit()
 
     def test_setup_default(self):
-        self.failUnless(SoundcloudApiClient().root.startswith('https://'),
+        self.assertTrue(SoundcloudApiClient().root.startswith("https://"),
                         msg="API client should use HTTPS")

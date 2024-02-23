@@ -4,8 +4,8 @@
 # (at your option) any later version.
 
 from ._pattern import (Pattern, FileFromPattern, XMLFromPattern,
-    XMLFromMarkupPattern, error,
-    ArbitraryExtensionFileFromPattern, URLFromPattern)
+                       XMLFromMarkupPattern, Error,
+                       ArbitraryExtensionFileFromPattern, URLFromPattern)
 
 
 URLFromPattern
@@ -14,4 +14,4 @@ FileFromPattern
 Pattern
 XMLFromMarkupPattern
 XMLFromPattern
-error
+Error

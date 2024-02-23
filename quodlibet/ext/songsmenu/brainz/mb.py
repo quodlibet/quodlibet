@@ -7,16 +7,16 @@
 
 try:
     import musicbrainzngs
-except ImportError:
+except ImportError as e:
     from quodlibet import plugins
-    raise plugins.MissingModulePluginException("musicbrainzngs")
+    raise plugins.MissingModulePluginError("musicbrainzngs") from e
 
 from quodlibet import app
 from quodlibet import const
 from quodlibet import util
 
 
-VARIOUS_ARTISTS_ARTISTID = '89ad4ac3-39f7-470e-963a-56509c546377'
+VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
 
 
 def is_mbid(id_):
@@ -107,8 +107,8 @@ class Release:
     def labelid(self):
         label_list = self._mbrelease.get("label-info-list", [])
         if not label_list:
-            return u""
-        return label_list[0].get("catalog-number", u"")
+            return ""
+        return label_list[0].get("catalog-number", "")
 
     @property
     def id(self):
@@ -118,21 +118,21 @@ class Release:
 
     @property
     def date(self):
-        return self._mbrelease.get("date", u"")
+        return self._mbrelease.get("date", "")
 
     @property
     def medium_format(self):
         formats = []
         for medium in self._mbrelease["medium-list"]:
-            format_ = medium.get("format", u"")
+            format_ = medium.get("format", "")
             if format_:
                 formats.append(format_)
         formats = util.list_unique(formats)
-        return u"/".join(formats)
+        return "/".join(formats)
 
     @property
     def country(self):
-        return self._mbrelease.get("country", u"")
+        return self._mbrelease.get("country", "")
 
     @property
     def disc_count(self):
@@ -155,7 +155,7 @@ class Release:
         tracks = []
         for medium in self._mbrelease["medium-list"]:
             disc = medium["position"]
-            title = medium.get("title", u"")
+            title = medium.get("title", "")
             track_count = medium["track-count"]
             if "pregap" in medium:
                 track_count += 1

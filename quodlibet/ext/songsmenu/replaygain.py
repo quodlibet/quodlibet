@@ -27,7 +27,7 @@ from quodlibet.plugins.songshelpers import is_writable, is_finite, each_song
 from quodlibet.util import cached_property, print_w, print_e, format_int_locale
 from quodlibet.util.path import uri2gsturi
 
-__all__ = ['ReplayGain']
+__all__ = ["ReplayGain"]
 
 
 def get_num_threads():
@@ -84,7 +84,7 @@ class RGAlbum:
         # It's ok - any() + generator is short-cut-logic-friendly
         if not any(rgs.song("album") for rgs in self.songs):
             return "(%s)" % EMPTY
-        return self.songs[0].song.comma('~artist~album')
+        return self.songs[0].song.comma("~artist~album")
 
     @property
     def error(self):
@@ -112,9 +112,9 @@ class RGAlbum:
         if mode == UpdateMode.ALWAYS:
             return True
         elif mode == UpdateMode.ANY_MISSING:
-            return not all([s.has_all_rg_tags for s in self.songs])
+            return not all(s.has_all_rg_tags for s in self.songs)
         elif mode == UpdateMode.ALBUM_MISSING:
-            return not all([s.album_gain for s in self.songs])
+            return not all(s.album_gain for s in self.songs)
         else:
             print_w("Invalid setting for update mode: " + mode)
             # Safest to re-process probably.
@@ -143,15 +143,15 @@ class RGSong:
                 return
             existing = song(tag, None)
             if existing and not self.overwrite_existing:
-                print_d("Not overwriting existing tag %s (=%s) for %s"
-                        % (tag, existing, self.song("~filename")))
+                fn = self.song("~filename")
+                print_d(f"Not overwriting existing tag {tag} (={existing}) for {fn}")
                 return
             song[tag] = pattern % value
 
-        write_to_song('replaygain_track_gain', '%.2f dB', self.gain)
-        write_to_song('replaygain_track_peak', '%.4f', self.peak)
-        write_to_song('replaygain_album_gain', '%.2f dB', album_gain)
-        write_to_song('replaygain_album_peak', '%.4f', album_peak)
+        write_to_song("replaygain_track_gain", "%.2f dB", self.gain)
+        write_to_song("replaygain_track_peak", "%.4f", self.peak)
+        write_to_song("replaygain_album_gain", "%.2f dB", album_gain)
+        write_to_song("replaygain_album_peak", "%.4f", album_peak)
 
         # bs1770gain writes those and since we still do old replaygain
         # just delete them so players use the defaults.
@@ -162,7 +162,7 @@ class RGSong:
 
     @property
     def title(self):
-        return self.song('~tracknumber~title~version')
+        return self.song("~tracknumber~title~version")
 
     @property
     def filename(self):
@@ -190,11 +190,11 @@ class RGSong:
 
     @property
     def track_peak(self):
-        return self._get_rg_tag('track_peak')
+        return self._get_rg_tag("track_peak")
 
     @property
     def album_peak(self):
-        return self._get_rg_tag('album_peak')
+        return self._get_rg_tag("album_peak")
 
     @property
     def has_track_tags(self):
@@ -210,16 +210,16 @@ class RGSong:
 
     def __str__(self):
         vals = {k: self._get_rg_tag(k)
-                for k in 'track_gain album_gain album_peak track_peak'.split()}
-        return "<Song=%s RG data=%s>" % (self.song, vals)
+                for k in "track_gain album_gain album_peak track_peak".split()}
+        return f"<Song={self.song} RG data={vals}>"
 
 
 class ReplayGainPipeline(GObject.Object):
     __gsignals__ = {
         # done(self, album)
-        'done': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "done": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         # update(self, album, song)
-        'update': (GObject.SignalFlags.RUN_LAST, None,
+        "update": (GObject.SignalFlags.RUN_LAST, None,
                    (object, object,)),
     }
 
@@ -348,7 +348,7 @@ class RGDialog(Dialog):
 
     def __init__(self, albums, parent, process_mode):
         super().__init__(
-            title=_('ReplayGain Analyzer'), parent=parent)
+            title=_("ReplayGain Analyzer"), parent=parent)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
@@ -374,9 +374,9 @@ class RGDialog(Dialog):
         def icon_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.error:
-                cell.set_property('icon-name', Icons.DIALOG_ERROR)
+                cell.set_property("icon-name", Icons.DIALOG_ERROR)
             else:
-                cell.set_property('icon-name', Icons.NONE)
+                cell.set_property("icon-name", Icons.NONE)
 
         column = Gtk.TreeViewColumn()
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
@@ -387,7 +387,7 @@ class RGDialog(Dialog):
 
         def track_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            cell.set_property('text', item.title)
+            cell.set_property("text", item.title)
             cell.set_sensitive(model[iter_][1])
 
         # Translators: Combined track number/title column heading
@@ -395,14 +395,14 @@ class RGDialog(Dialog):
         column.set_expand(True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         track_render = Gtk.CellRendererText()
-        track_render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        track_render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(track_render, True)
         column.set_cell_data_func(track_render, track_cdf)
         view.append_column(column)
 
         def progress_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
-            cell.set_property('value', int(item.progress * 100))
+            cell.set_property("value", int(item.progress * 100))
             cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Progress"))
@@ -415,9 +415,9 @@ class RGDialog(Dialog):
         def gain_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.gain is None or not item.done:
-                cell.set_property('text', "-")
+                cell.set_property("text", "-")
             else:
-                cell.set_property('text', "%.2f db" % item.gain)
+                cell.set_property("text", "%.2f db" % item.gain)
             cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Gain"))
@@ -430,9 +430,9 @@ class RGDialog(Dialog):
         def peak_cdf(column, cell, model, iter_, *args):
             item = model[iter_][0]
             if item.gain is None or not item.done:
-                cell.set_property('text', "-")
+                cell.set_property("text", "-")
             else:
-                cell.set_property('text', "%.2f" % item.peak)
+                cell.set_property("text", "%.2f" % item.peak)
             cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Peak"))
@@ -458,7 +458,7 @@ class RGDialog(Dialog):
             "all": util.bold(format_int_locale(len(self._todo))),
         })
         self.connect("destroy", self.__destroy)
-        self.connect('response', self.__response)
+        self.connect("response", self.__response)
 
     def create_pipelines(self):
         # create as many pipelines as threads
@@ -565,14 +565,14 @@ class RGDialog(Dialog):
 
 
 class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
-    PLUGIN_ID = 'ReplayGain'
-    PLUGIN_NAME = _('Replay Gain')
+    PLUGIN_ID = "ReplayGain"
+    PLUGIN_NAME = _("Replay Gain")
     PLUGIN_DESC_MARKUP = (
         _('Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, '
           'using GStreamer. Results are grouped by album.')
         % {"rg_link": _("https://en.wikipedia.org/wiki/ReplayGain")})
     PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
-    CONFIG_SECTION = 'replaygain'
+    CONFIG_SECTION = "replaygain"
 
     plugin_handles = each_song(is_finite, is_writable)
 
@@ -623,7 +623,7 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         combo = Gtk.ComboBox(model=model)
         set_active(cls.config_get("process_if", UpdateMode.ALWAYS))
         renderer = Gtk.CellRendererText()
-        combo.connect('changed', process_option_changed)
+        combo.connect("changed", process_option_changed)
         combo.pack_start(renderer, True)
         combo.add_attribute(renderer, "markup", 0)
 

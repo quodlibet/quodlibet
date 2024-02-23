@@ -7,7 +7,6 @@
 # (at your option) any later version.
 
 import os
-from typing import Optional, Tuple
 
 from gi.repository import Gtk, GLib, Pango, Gdk
 
@@ -56,13 +55,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     _PATTERN_FN = os.path.join(quodlibet.get_user_dir(), "playlist_pattern")
     _DEFAULT_PATTERN_TEXT = DEFAULT_PATTERN_TEXT
 
-    def __init__(self, songs_lib: SongFileLibrary, Confirmer=ConfirmationPrompt):
+    def __init__(self, songs_lib: SongFileLibrary, confirmer_cls=ConfirmationPrompt):
         super().__init__(spacing=3)
         self.songs_lib = songs_lib
         try:
             self.pl_lib: PlaylistLibrary = songs_lib.playlists
-        except (AttributeError, TypeError):
-            raise BrowserError(f"No playlist library available in {songs_lib!r}")
+        except (AttributeError, TypeError) as e:
+            raise BrowserError(f"No playlist library available in {songs_lib!r}") from e
 
         self._lists = ObjectModelSort(model=ObjectStore())
         self._lists.set_default_sort_func(ObjectStore._sort_on_value)
@@ -73,7 +72,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         # this is instanced with the necessary gtkdialog-settings, and afterwards
         # its run-method is called to get a to-be-compared Gtk.ResponseType
-        self.Confirmer = Confirmer
+        self.Confirmer = confirmer_cls
         self.set_orientation(Gtk.Orientation.VERTICAL)
         self.__render = self.__create_cell_renderer()
         self.__view = view = self.__create_playlists_view(self.__render)
@@ -90,9 +89,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             child.show_all()
 
         self._ids = [
-            self.pl_lib.connect('removed', self.__removed),
-            self.pl_lib.connect('added', self.__added),
-            self.pl_lib.connect('changed', self.__changed),
+            self.pl_lib.connect("removed", self.__removed),
+            self.pl_lib.connect("added", self.__added),
+            self.pl_lib.connect("changed", self.__changed),
         ]
         print_d(f"Connected signals: {self._ids} from {self.pl_lib!r} for {self}")
         self.connect("destroy", self._destroy)
@@ -119,8 +118,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         container.remove(self)
 
     @classmethod
-    def init(klass, library):
-        klass.load_pattern()
+    def init(cls, library):
+        cls.load_pattern()
 
     def playlists(self):
         return [row[0] for row in self._lists]
@@ -161,17 +160,17 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             return
         self.__last_render = markup
         cell.markup = markup
-        cell.set_property('markup', markup)
+        cell.set_property("markup", markup)
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items):
         model, iters = self.__get_selected_songs()
         remove = qltk.MenuItem(_("_Remove from Playlist"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")
-        connect_obj(remove, 'activate', self.__remove_songs, iters, model)
+        connect_obj(remove, "activate", self.__remove_songs, iters, model)
         playlist_iter = self.__selected_playlists()[1]
         remove.set_sensitive(bool(playlist_iter))
         items.append([remove])
-        menu = super().Menu(songs, library, items)
+        menu = super().menu(songs, library, items)
         return menu
 
     def __get_selected_songs(self):
@@ -197,8 +196,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         completion = LibraryTagCompletion(library.librarian)
         sbb = SearchBarBox(completion=completion,
                            accel_group=self.accelerators)
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
+        sbb.connect("query-changed", self.__text_parse)
+        sbb.connect("focus-out", self.__focus)
         return sbb
 
     def __embed_in_scrolledwin(self, view):
@@ -210,9 +209,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __configure_buttons(self, library):
         new_pl = qltk.Button(_("_New"), Icons.DOCUMENT_NEW, Gtk.IconSize.MENU)
-        new_pl.connect('clicked', self.__new_playlist, library)
+        new_pl.connect("clicked", self.__new_playlist, library)
         import_pl = qltk.Button(_("_Import…"), Icons.DOCUMENT_OPEN, Gtk.IconSize.MENU)
-        import_pl.connect('clicked', self.__import, library)
+        import_pl.connect("clicked", self.__import, library)
 
         fb = Gtk.FlowBox()
         fb.set_selection_mode(Gtk.SelectionMode.NONE)
@@ -258,23 +257,23 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         view.enable_model_drag_source(
             Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY)
-        view.connect('drag-data-received', self.__drag_data_received)
-        view.connect('drag-data-get', self._drag_data_get)
-        view.connect('drag-motion', self.__drag_motion)
-        view.connect('drag-leave', self.__drag_leave)
+        view.connect("drag-data-received", self.__drag_data_received)
+        view.connect("drag-data-get", self._drag_data_get)
+        view.connect("drag-motion", self.__drag_motion)
+        view.connect("drag-leave", self.__drag_leave)
 
     def __connect_signals(self, view):
-        view.connect('row-activated', lambda *x: self.songs_activated())
-        view.connect('popup-menu', self.__popup_menu, self.songs_lib)
-        view.get_selection().connect('changed', self.activate)
-        self.connect('key-press-event', self.__key_pressed)
+        view.connect("row-activated", lambda *x: self.songs_activated())
+        view.connect("popup-menu", self.__popup_menu, self.songs_lib)
+        view.get_selection().connect("changed", self.activate)
+        self.connect("key-press-event", self.__key_pressed)
 
     def __create_cell_renderer(self):
         render = Gtk.CellRendererText()
         render.set_padding(3, 3)
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        render.connect('editing-started', self.__start_editing)
-        render.connect('edited', self.__edited)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        render.connect("editing-started", self.__start_editing)
+        render.connect("edited", self.__edited)
         return render
 
     def key_pressed(self, event):
@@ -360,7 +359,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 remove_from_model(removals.keys(), smodel)
                 self.__rebuild_playlist_from_songs_model(playlist, smodel)
                 # Emit manually
-                self.songs_lib.emit('changed', removals.values())
+                self.songs_lib.emit("changed", removals.values())
             else:
                 playlist.remove_songs(removals.values(), True)
                 remove_from_model(removals.keys(), smodel)
@@ -369,7 +368,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __rebuild_playlist_from_songs_model(self, playlist, smodel):
         self.pl_lib.recreate(playlist, [row[0] for row in smodel])
 
-    def _selected_playlist(self) -> Optional[Playlist]:
+    def _selected_playlist(self) -> Playlist | None:
         """The currently selected playlist's, or None if none selected"""
         model, iter = self.__selected_playlists()
         if not iter:
@@ -398,7 +397,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
         # TreeModelSort doesn't support GtkTreeDragDestDrop.
-        view.emit_stop_by_name('drag-data-received')
+        view.emit_stop_by_name("drag-data-received")
         model = view.get_model()
         if tid == DND_QL:
             filenames = qltk.selection_get_filenames(sel)
@@ -444,7 +443,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 name = os.path.basename(uri)
             elif tid == DND_MOZ_URL:
                 data = sel.get_data()
-                uri, name = data.decode('utf16', 'replace').split('\n')
+                uri, name = data.decode("utf16", "replace").split("\n")
             else:
                 Gtk.drag_finish(ctx, False, False, etime)
                 return
@@ -452,19 +451,19 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             try:
                 sock = urlopen(uri)
                 uri = uri.lower()
-                if uri.endswith('.pls'):
+                if uri.endswith(".pls"):
                     playlist = parse_pls(sock, name,
                                          songs_lib=self.songs_lib, pl_lib=self.pl_lib)
-                elif uri.endswith('.m3u') or uri.endswith('.m3u8'):
+                elif uri.endswith(".m3u") or uri.endswith(".m3u8"):
                     playlist = parse_m3u(sock, name,
                                          songs_lib=self.songs_lib, pl_lib=self.pl_lib)
                 else:
-                    raise IOError
+                    raise OSError
                 self.songs_lib.add(playlist.songs)
                 # TODO: change to use playlist library too?
                 # self.changed(playlist)
                 Gtk.drag_finish(ctx, True, False, etime)
-            except IOError:
+            except OSError:
                 Gtk.drag_finish(ctx, False, False, etime)
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
@@ -512,7 +511,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 print_d("Playlist removal cancelled through prompt")
 
         rem = MenuItem(_("_Delete"), Icons.EDIT_DELETE)
-        connect_obj(rem, 'activate', _remove, model, itr)
+        connect_obj(rem, "activate", _remove, model, itr)
         menu.prepend(rem)
 
         def _rename(path):
@@ -520,7 +519,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
         ren = qltk.MenuItem(_("_Rename"), Icons.EDIT)
         qltk.add_fake_accel(ren, "F2")
-        connect_obj(ren, 'activate', _rename, model.get_path(itr))
+        connect_obj(ren, "activate", _rename, model.get_path(itr))
         menu.prepend(ren)
 
         playlist = model[itr][0]
@@ -530,7 +529,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
 
     def _start_rename(self, path):
         view = self.__view
-        self.__render.set_property('editable', True)
+        self.__render.set_property("editable", True)
         view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
     def __focus(self, widget, *args):
@@ -552,7 +551,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def refresh_all(self):
         print_d("Refreshing all items...")
         model = self._lists.get_model()
-        for iter_, value in model.iterrows():
+        for iter_, _value in model.iterrows():
             print_d(f"Refreshing row {iter_}")
             model.row_changed(model.get_path(iter_), iter_)
 
@@ -635,7 +634,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         fns = choose_files(self, _("Import Playlist"), _("_Import"), cf)
         self._import_playlists(fns)
 
-    def _import_playlists(self, fns) -> Tuple[int, int]:
+    def _import_playlists(self, fns) -> tuple[int, int]:
         """ Import m3u / pls playlists into QL
         Returns the (total playlists, total songs) added
         TODO: move this to Playlists library and watch here for new playlists

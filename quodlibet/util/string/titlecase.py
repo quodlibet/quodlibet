@@ -11,12 +11,12 @@ import unicodedata
 
 # Cheat list for human title-casing in English. See Issue 424.
 ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
-    [u"The", u"An", u"A", u"'N'", u"'N", u"N'", u"Tha", u"De", u"Da",
-     u"In", u"To", u"For", u"Up", u"With", u"As", u"At", u"From",
-     u"Into", u"On", u"Out",
+    ["The", "An", "A", "'N'", "'N", "N'", "Tha", "De", "Da",
+     "In", "To", "For", "Up", "With", "As", "At", "From",
+     "Into", "On", "Out",
      #, u"Over",
-     u"Of", u"By", u"'Til", u"Til",
-     u"And", u"Or", u"Nor",
+     "Of", "By", "'Til", "Til",
+     "And", "Or", "Nor",
 #    u"Is", u"Are", u"Am"
     ]
 
@@ -28,7 +28,7 @@ def iswbound(char):
     """Returns whether the given character is a word boundary."""
     category = unicodedata.category(char)
     # If it's a space separator or punctuation
-    return 'Zs' == category or 'Sk' == category or 'P' == category[0]
+    return "Zs" == category or "Sk" == category or "P" == category[0]
 
 
 def utitle(string):
@@ -41,10 +41,10 @@ def utitle(string):
         prev = string[i - 1]
         # Special case apostrophe in the middle of a word.
         # Also, extra case to deal with Irish-style names (eg O'Conner)
-        if u"'" == s \
+        if "'" == s \
             and string[i - 1].isalpha() \
             and not (i > 1 and string[i - 2].isspace() and
-                     prev.lower() == u"o"):
+                     prev.lower() == "o"):
             cap = False
         elif iswbound(s):
             cap = True
@@ -61,7 +61,7 @@ def utitle(string):
 def title(string, locale="utf-8"):
     """Title-case a string using a less destructive method than str.title."""
     if not string:
-        return u""
+        return ""
     # if the string is all uppercase, lowercase it - Erich/Javier
     #   Lots of Japanese songs use entirely upper-case English titles,
     #   so I don't like this change... - JoeW
@@ -89,10 +89,10 @@ def _humanise(text):
         if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
             prev = previous_real_word(words, i)
             # Add an exception for would-be ellipses...
-            if (prev and (not prev[-1] in ENGLISH_SENTENCE_ENDS
-                          or prev[-3:] == '...')):
+            if (prev and (prev[-1] not in ENGLISH_SENTENCE_ENDS
+                          or prev[-3:] == "...")):
                 words[i] = word.lower()
-    return u" ".join(words)
+    return " ".join(words)
 
 
 def human_title(text):

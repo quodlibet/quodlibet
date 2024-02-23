@@ -43,11 +43,11 @@ class QueryThread:
                 callback, func, args, kwargs = self.queue.pop(0)
                 try:
                     res = func(*args, **kwargs)
-                except:
+                except Exception:
                     time.sleep(2)
                     try:
                         res = func(*args, **kwargs)
-                    except:
+                    except Exception:
                         print_exc()
                         res = None
 

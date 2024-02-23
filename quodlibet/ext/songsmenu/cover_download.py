@@ -9,7 +9,7 @@ import operator
 import os
 import shutil
 from functools import reduce
-from typing import Iterable, List
+from collections.abc import Iterable
 
 from gi.repository import GObject, Gtk, Gdk, Gio, GLib, Soup, GdkPixbuf
 
@@ -40,19 +40,19 @@ SAVE_PATTERNS = [
 ]
 
 IMAGE_EXTENSIONS = {
-    'image/jpeg': 'jpg',
-    'image/png': 'png',
-    'image/gif': 'gif',
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/gif": "gif",
 }
 
 
 class DownloadCoverArt(SongsMenuPlugin):
     """Download and save album (cover) art from a variety of sources"""
 
-    PLUGIN_ID = 'Download Cover Art'
-    PLUGIN_NAME = _('Download Cover Art')
-    PLUGIN_DESC = _('Downloads high-quality album covers '
-                    'using Quod Libet cover plugins.')
+    PLUGIN_ID = "Download Cover Art"
+    PLUGIN_NAME = _("Download Cover Art")
+    PLUGIN_DESC = _("Downloads high-quality album covers "
+                    "using Quod Libet cover plugins.")
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
 
@@ -84,8 +84,8 @@ class ResizeWebImage(Gtk.Image):
     __gsignals__ = {
         # The content-type, size (in bytes) and properties of a cover
         # once discovered
-        'info-known': (GObject.SignalFlags.RUN_LAST, None, (str, int, object)),
-        'failed': (GObject.SignalFlags.RUN_LAST, None, (str,))
+        "info-known": (GObject.SignalFlags.RUN_LAST, None, (str, int, object)),
+        "failed": (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     def __init__(self, url, config: Config, cancellable=None):
@@ -93,7 +93,7 @@ class ResizeWebImage(Gtk.Image):
         self.config = config
         self.url = url
         self.cancellable = cancellable
-        self.message = msg = Soup.Message.new('GET', self.url)
+        self.message = msg = Soup.Message.new("GET", self.url)
         self._content_type = None
         self._original = None
         download(msg, cancellable, self._sent, None,
@@ -146,7 +146,7 @@ class ResizeWebImage(Gtk.Image):
             print_d(f"Converting image to JPEG @ {quality}%")
             ret = self._pixbuf.savev(fsn, "jpeg", ["quality"], [quality])
             if not ret:
-                raise IOError("Couldn't save to %s" % fsn)
+                raise OSError("Couldn't save to %s" % fsn)
         else:
             print_d("Saving original image to %s" % fsn)
             with open(fsn, "wb") as f:
@@ -231,7 +231,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         img = ResizeWebImage(item.url, config=self.config)
         text = (_("Loading %(source)s - %(dimensions)s…")
-                % {'source': item.source, 'dimensions': item.dimensions})
+                % {"source": item.source, "dimensions": item.dimensions})
         frame = Gtk.Frame.new(text)
         img.set_padding(12, 12)
         frame.set_shadow_type(Gtk.ShadowType.NONE)
@@ -258,11 +258,11 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             self.__save(None)
             self.destroy()
 
-    def _filenames(self, pat_text, ext, full_path=False) -> List[str]:
+    def _filenames(self, pat_text, ext, full_path=False) -> list[str]:
         def fn_for(song):
             pat = ArbitraryExtensionFileFromPattern(f"{pat_text}.{ext}")
             fn = pat.format(song)
-            return os.path.join(song('~dirname'), fn) if full_path else fn
+            return os.path.join(song("~dirname"), fn) if full_path else fn
 
         return sorted({fn_for(song) for song in self.songs})
 
@@ -292,7 +292,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
                  reduce(operator.concat, group_songs, [])}
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
-        data = {'albums': util.italic(albums), 'providers': util.monospace(providers)}
+        data = {"albums": util.italic(albums), "providers": util.monospace(providers)}
         markup = _("Nothing found for albums:\n%(albums)s.\n\n"
                    "Providers used:\n%(providers)s") % data
         dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,

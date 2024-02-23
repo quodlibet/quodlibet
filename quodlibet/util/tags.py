@@ -1,6 +1,6 @@
 # Copyright 2007-2008 Joe Wreschnig
 #           2014 Christoph Reiter
-#      2014-2020 Nick Boultbee
+#      2014-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ class TagName:
             assert self.user + self.internal == 1
 
     def __repr__(self):
-        return "%s(%r)" % (type(self).__name__, vars(self))
+        return f"{type(self).__name__}({vars(self)!r})"
 
 
 def _get_role_map(tags):
@@ -79,7 +79,7 @@ def _get_role_map(tags):
 
 
 T = TagName
-_TAGS = dict((t.name, t) for t in [
+_TAGS = {t.name: t for t in [
     T("album", "us", _("album"), _("albums")),
     T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
     T("artist", "us", _("artist"), _("artists")),
@@ -93,7 +93,6 @@ _TAGS = dict((t.name, t) for t in [
     T("date", "u", _("date")),
     T("description", "u", _("description")),
     T("genre", "u", _("genre"), _("genres")),
-    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
     T("grouping", "u", _("grouping")),
     T("language", "ui", _("language")),
     T("license", "u", _("license")),
@@ -101,6 +100,8 @@ _TAGS = dict((t.name, t) for t in [
     T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
     # Translators: Also e.g. "record label", "publisher"
     T("organization", "u", _("organization")),
+    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
+    T("producer", "u", _("producer"), _("producers"), _("production")),
     T("title", "u", _("title")),
     T("version", "u", _("version")),
     T("website", "u", _("website")),
@@ -177,7 +178,7 @@ _TAGS = dict((t.name, t) for t in [
     T("playlists", "i", _("playlists")),
     T("samplerate", "n", _("sample rate")),
     T("channels", "n", _("channel count")),
-])
+]}
 
 
 def _get_sort_map(tags):
@@ -252,8 +253,8 @@ def readable(tag, plural=False):
 
     if tag in _TAGS:
         return desc(tag)
-    elif tag == 'people:real':
-        return desc('people')
+    elif tag == "people:real":
+        return desc("people")
     else:
         roles = False
         if tag.endswith(":roles"):

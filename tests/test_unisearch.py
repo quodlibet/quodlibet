@@ -24,75 +24,75 @@ class TUniSearch(TestCase):
 
     def test_normalize_input(self):
         assert re.match(
-            re_add_variants(unicodedata.normalize("NFD", u"ö")), u"ö")
+            re_add_variants(unicodedata.normalize("NFD", "ö")), "ö")
 
     def test_re_replace(self):
-        r = re_add_variants(u"aa")
-        self.assertTrue(u"[" in r and u"]" in r and r.count(u"ä") == 2)
+        r = re_add_variants("aa")
+        self.assertTrue("[" in r and "]" in r and r.count("ä") == 2)
 
     def test_re_replace_multi(self):
-        r = re_add_variants(u"ae")
-        self.assertEqual(r, u"(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
-                            u"[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
+        r = re_add_variants("ae")
+        self.assertEqual(r, "(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
+                            "[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
 
-        r = re_add_variants(u"SS")
-        self.assertEqual(r, u"(?:[SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
+        r = re_add_variants("SS")
+        self.assertEqual(r, "(?:[SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
 
-        r = re_add_variants(u"ss")
-        self.assertEqual(r, u"(?:[sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
+        r = re_add_variants("ss")
+        self.assertEqual(r, "(?:[sśŝşšșṡṣṥṧṩꞅ][sśŝşšșṡṣṥṧṩꞅ]|ß)")
 
     def test_punct(self):
-        r = re_add_variants(u"'")
+        r = re_add_variants("'")
         assert "`" in r
         assert "'" in r
-        r = re_add_variants(u"''")
-        assert "\"" in r
-        r = re_add_variants(u'"')
+        r = re_add_variants("''")
+        assert '"' in r
+        r = re_add_variants('"')
         assert "”" in r
         assert "“" in r
-        r = re_add_variants(u'\\*')
+        r = re_add_variants("\\*")
         assert re.match(r, "*")
 
     def test_re_replace_multi_fixme(self):
         # we don't handler overlapping sequences, so this doesn't match "LỺ"
-        r = re_add_variants(u"LLL")
-        self.assertEqual(r, u"(?:[LĹĻĽḶḸḺḼŁ][LĹĻĽḶḸḺḼŁ]|Ỻ)[LĹĻĽḶḸḺḼŁ]")
+        r = re_add_variants("LLL")
+        self.assertEqual(r, "(?:[LĹĻĽḶḸḺḼŁ][LĹĻĽḶḸḺḼŁ]|Ỻ)[LĹĻĽḶḸḺḼŁ]")
 
     def test_re_replace_multi_nested(self):
-        r = re_add_variants(u"(եւ)")
-        self.assertEqual(r, u"((?:եւ|և))")
-        r = re_add_variants(u"(եւ)+")
-        self.assertEqual(r, u"((?:եւ|և))+")
+        r = re_add_variants("(եւ)")
+        self.assertEqual(r, "((?:եւ|և))")
+        r = re_add_variants("(եւ)+")
+        self.assertEqual(r, "((?:եւ|և))+")
 
     def test_re_replace_escape(self):
-        r = re_add_variants(u"n\\n")
-        self.assertEqual(r, u"[nñńņňǹṅṇṉṋŉ]\n")
+        r = re_add_variants("n\\n")
+        self.assertEqual(r, "[nñńņňǹṅṇṉṋŉ]\n")
 
     def test_construct_regexp(self):
         res = [
-            (u"\\.", None),
-            (u"..", None),
-            (u"\\.", None),
-            (u"^a\aa[ha-z]k{1,3}h*h+h?(x|yy)(a+b|cd)$", None),
-            (u"(?=Asimov)", None),
-            (u"(?!Asimov)", None),
-            (u"(?<=abc)def", None),
-            (u"(?<!foo)", None),
-            (u"(?#foo)", u""),
-            (u"(.+) \1", None),
-            (u"\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
-             u"\\A\\b\\B[\\d][\\D][\\s][\\S][\\w][\\W]\\Z\a"),
-            (u"a{3,5}?a+?a*?a??", None),
-            (u"^foo$", None),
-            (u"[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
-             u"[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?"),
-            (u"(\\$\\d*)", u"(\\$[\\d]*)"),
-            (u"\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
-            (u"[^a][^ab]", None),
-            (u"[ab][abc]", None),
-            (u"[.]", u"\\."),
-            (u"[^a-z]", None),
-            (u"[^a-z\\w]", None),
+            ("\\.", None),
+            ("..", None),
+            ("\\.", None),
+            ("^a\aa[ha-z]k{1,3}h*h+h?(x|yy)(a+b|cd)$", None),
+            ("(?=Asimov)", None),
+            ("(?!Asimov)", None),
+            ("(?<=abc)def", None),
+            ("(?<!foo)", None),
+            ("(?#foo)", ""),
+            ("(.+) \1", None),
+            ("\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
+             "\\A\\b\\B[\\d][\\D][\\s][\\S][\\w][\\W]\\Z\a"),
+            ("a{3,5}?a+?a*?a??", None),
+            ("^foo$", None),
+            ("[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
+             "[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?"),
+            ("(\\$\\d*)", "(\\$[\\d]*)"),
+            ("\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
+            ("[^a][^ab]", None),
+            ("[ab][abc]", None),
+            ("[.]", "\\."),
+            ("[^a-z]", None),
+            ("[^a-z\\w]", None),
             ("(x|yy)", None),
         ]
 
@@ -105,11 +105,11 @@ class TUniSearch(TestCase):
         # Starting with 3.7 the parser throws out some subpattern
         # nodes. We try to recover them or test against the old and new result.
         res = [
-            (u"(?:foo)", ("(?:foo)", "foo")),
-            (u"(?:foo)x", ("(?:foo)x", "foox")),
-            (u"(?:foo)(?:bar)", ("(?:foo)(?:bar)", "foobar")),
-            (u"(?:foo|bla)", None),
-            (u"(?:foo|bla)x", None),
+            ("(?:foo)", ("(?:foo)", "foo")),
+            ("(?:foo)x", ("(?:foo)x", "foox")),
+            ("(?:foo)(?:bar)", ("(?:foo)(?:bar)", "foobar")),
+            ("(?:foo|bla)", None),
+            ("(?:foo|bla)x", None),
         ]
 
         for r, o in res:
@@ -122,65 +122,65 @@ class TUniSearch(TestCase):
                 assert out == o
 
     def test_construct_regexp_broken(self):
-        self.assertRaises(re.error, re_replace_literals, u"[", {})
+        self.assertRaises(re.error, re_replace_literals, "[", {})
         self.assertRaises(NotImplementedError,
                           re_replace_literals,
-                          u"(?P<quote>['\"]).*?(?P=quote)", {})
+                          "(?P<quote>['\"]).*?(?P=quote)", {})
 
     def test_seq(self):
-        assert re_add_variants(u"[x-y]") == u"[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
-        assert re_add_variants(u"[f-gm]") == u"[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]"
-        assert re_add_variants(u"[^m]") == u"[^mḿṁṃ]"
-        assert re_add_variants(u"[^m-m\\w]") == u"[^ḿṁṃm-m\\w]"
-        assert re_add_variants(u"[^m-m]") == "[^ḿṁṃm-m]"
-        assert re_add_variants(u"[^ö]") == u"[^ö]"
-        assert re_add_variants(u"[LLL]") == u"[LĹĻĽḶḸḺḼŁ]"
+        assert re_add_variants("[x-y]") == "[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
+        assert re_add_variants("[f-gm]") == "[ḟꝼĝğġģǧǵḡᵹf-gmḿṁṃ]"
+        assert re_add_variants("[^m]") == "[^mḿṁṃ]"
+        assert re_add_variants("[^m-m\\w]") == "[^ḿṁṃm-m\\w]"
+        assert re_add_variants("[^m-m]") == "[^ḿṁṃm-m]"
+        assert re_add_variants("[^ö]") == "[^ö]"
+        assert re_add_variants("[LLL]") == "[LĹĻĽḶḸḺḼŁ]"
 
     def test_literal(self):
-        assert re_add_variants(u"f") == u"[fḟꝼ]"
-        assert u"ø" in re_add_variants(u"o")
-        assert u"Ø" in re_add_variants(u"O")
-        assert re_add_variants(u"[^f]") == u"[^fḟꝼ]"
+        assert re_add_variants("f") == "[fḟꝼ]"
+        assert "ø" in re_add_variants("o")
+        assert "Ø" in re_add_variants("O")
+        assert re_add_variants("[^f]") == "[^fḟꝼ]"
 
 
 class TCompileMatch(TestCase):
 
     def test_basics_default(self):
-        assert compile(u"foo")(u"foo")
-        assert compile(u"foo")(u"fooo")
-        assert not compile(u"foo")(u"fo")
+        assert compile("foo")("foo")
+        assert compile("foo")("fooo")
+        assert not compile("foo")("fo")
 
     def test_ignore_case(self):
-        assert compile(u"foo", ignore_case=True)(u"Foo")
-        assert not compile(u"foo", ignore_case=False)(u"Foo")
+        assert compile("foo", ignore_case=True)("Foo")
+        assert not compile("foo", ignore_case=False)("Foo")
 
     def test_assert_dot_all(self):
-        assert compile(u"a.b", dot_all=True)(u"a\nb")
-        assert not compile(u"a.b", dot_all=False)(u"a\nb")
-        assert compile(u"a.b", dot_all=False)(u"a b")
+        assert compile("a.b", dot_all=True)("a\nb")
+        assert not compile("a.b", dot_all=False)("a\nb")
+        assert compile("a.b", dot_all=False)("a b")
 
     def test_unicode_equivalence(self):
-        assert compile(u"\u212B")(u"\u00C5")
-        assert compile(u"\u00C5")(u"\u212B")
-        assert compile(u"A\u030a")(u"\u00C5")
-        assert compile(u"A\u030a")(u"\u212B")
-        assert compile(u"o\u0308")(u"o\u0308")
-        assert compile(u"o\u0308")(u"\xf6")
-        assert compile(u"\xf6")(u"o\u0308")
+        assert compile("\u212B")("\u00C5")
+        assert compile("\u00C5")("\u212B")
+        assert compile("A\u030a")("\u00C5")
+        assert compile("A\u030a")("\u212B")
+        assert compile("o\u0308")("o\u0308")
+        assert compile("o\u0308")("\xf6")
+        assert compile("\xf6")("o\u0308")
 
     def test_assert_asym(self):
-        assert compile(u"o", asym=True)(u"ö")
-        assert not compile(u"o", asym=False)(u"ö")
+        assert compile("o", asym=True)("ö")
+        assert not compile("o", asym=False)("ö")
 
     def test_assert_asym_unicode_equivalence(self):
-        assert compile(u"A", asym=True)(u"\u00C5")
-        assert compile(u"A\u030a", asym=True)(u"\u212B")
-        assert compile(u"\u00C5", asym=True)(u"\u212B")
-        assert compile(u"\u212B", asym=True)(u"\u00C5")
+        assert compile("A", asym=True)("\u00C5")
+        assert compile("A\u030a", asym=True)("\u212B")
+        assert compile("\u00C5", asym=True)("\u212B")
+        assert compile("\u212B", asym=True)("\u00C5")
 
     def test_invalid(self):
         with self.assertRaises(ValueError):
-            compile(u"(F", asym=False)
+            compile("(F", asym=False)
 
         with self.assertRaises(ValueError):
-            compile(u"(F", asym=True)
+            compile("(F", asym=True)

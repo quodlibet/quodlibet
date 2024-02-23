@@ -19,7 +19,7 @@ from quodlibet.util.misc import total_ordering, hashable
 @hashable
 @total_ordering
 class SongWrapper:
-    __slots__ = ['_song', '_updated', '_needs_write']
+    __slots__ = ["_song", "_updated", "_needs_write"]
 
     def __init__(self, song):
         self._song = song
@@ -61,12 +61,12 @@ class SongWrapper:
         return hash(self._song)
 
     def __eq__(self, other):
-        if hasattr(other, '_song'):
+        if hasattr(other, "_song"):
             other = other._song
         return self._song == other
 
     def __lt__(self, other):
-        if hasattr(other, '_song'):
+        if hasattr(other, "_song"):
             other = other._song
         return self._song < other
 
@@ -94,7 +94,7 @@ class SongWrapper:
         return self._song.rename(newname)
 
 
-def ListWrapper(songs):
+def list_wrapper(songs):
     def wrap(song):
         if song is None:
             return None
@@ -122,9 +122,9 @@ def check_wrapper_changed(library, songs):
                             _("Saving %s failed. "
                               "The file may be read-only, corrupted, or you "
                               "do not have permission to edit it.") %
-                            util.bold(song('~basename')), escape_desc=False)
+                            util.bold(song("~basename")), escape_desc=False)
                         dialog.run()
-                        print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+                        print_w(f"Couldn't save song {song('~filename')} ({e!r})")
                     else:
                         task.update((i + 1) / total)
                         yield
@@ -143,7 +143,7 @@ def background_check_wrapper_changed(library, songs):
         try:
             song._song.write()
         except AudioFileError as e:
-            print_w("Couldn't save song %s (%s)" % (song("~filename"), e))
+            print_w("Couldn't save song {} ({})".format(song("~filename"), e))
 
     _inform_library_of_changed(library, songs)
 

@@ -232,7 +232,7 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
     def append_many(self, objects):
         """Append a list of python objects"""
 
-        for i in self.iter_append_many(objects):
+        for _i in self.iter_append_many(objects):
             pass
 
     def insert_many(self, position, objects):

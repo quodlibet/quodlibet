@@ -1,0 +1,59 @@
+diff -Nur tdb-1.4.9/build_install_makefile tdb-1.4.9-mod/build_install_makefile
+--- tdb-1.4.9/build_install_makefile	1969-12-31 18:00:00
++++ tdb-1.4.9-mod/build_install_makefile	2023-11-07 11:09:56
+@@ -0,0 +1,9 @@
++SRCPATH=$(PWD)/../../../../jhbuild_checkoutroot/tdb-1.4.9/
++WAF=$(SRCPATH)/buildtools/bin/waf
++
++all :
++	cd $(SRCPATH) && PYTHONHASHSEED=1 ${PYTHON} $(WAF) build || exit 1
++
++install :
++	cd $(SRCPATH) && PYTHONHASHSEED=1 ${PYTHON} $(WAF) install DESTDIR=$(DESTDIR) || exit 1
++
+Bdiff -Nur tdb-1.4.9/configure tdb-1.4.9-mod/configure
+--- tdb-1.4.9/configure	2022-04-12 05:29:16
++++ tdb-1.4.9-mod/configure	2023-11-07 11:13:17
+@@ -1,28 +1,22 @@
+ #!/bin/sh
+
+-PREVPATH=$(dirname $0)
++#
++#  As distributed, libtdb doesn't build successfully out-of-tree.
++#  JHBuild claims to support in-tree builds ("supports-non-srcdir-builds" attribute), but
++#  doesn't as of 3.38.0.  As a workaround, do all building in the source
++#  directory.
++#
++set -e
++SRCPATH=$(dirname $0)
++BLDPATH=`pwd`
+
+-if [ -f $PREVPATH/../../buildtools/bin/waf ]; then
+-	WAF=../../buildtools/bin/waf
+-elif [ -f $PREVPATH/buildtools/bin/waf ]; then
+-	WAF=./buildtools/bin/waf
+-else
+-	echo "replace: Unable to find waf"
+-	exit 1
+-fi
++WAF=$SRCPATH/buildtools/bin/waf
+
+-# using JOBS=1 gives maximum compatibility with
+-# systems like AIX which have broken threading in python
+-JOBS=1
+-export JOBS
+-
+-# Make sure we don't have any library preloaded.
+-unset LD_PRELOAD
+-
+ # Make sure we get stable hashes
+ PYTHONHASHSEED=1
+ export PYTHONHASHSEED
+
+-cd . || exit 1
+-$PYTHON $WAF configure "$@" || exit 1
+-cd $PREVPATH
++cd $SRCPATH
++$PYTHON $WAF configure
++
++cp build_install_makefile $BLDPATH/Makefile

@@ -134,7 +134,7 @@ def get_image_dir():
 def get_cache_dir():
     """The directory to store things into which can be deleted at any time"""
 
-    if os.name == "nt" and build.BUILD_TYPE == u"windows-portable":
+    if os.name == "nt" and build.BUILD_TYPE == "windows-portable":
         # avoid writing things to the host system for the portable build
         path = os.path.join(get_user_dir(), "cache")
     else:
@@ -149,29 +149,29 @@ def get_user_dir():
     """Place where QL saves its state, database, config etc."""
 
     if os.name == "nt":
-        USERDIR = os.path.join(windows.get_appdata_dir(), "Quod Libet")
+        user_dir = os.path.join(windows.get_appdata_dir(), "Quod Libet")
     elif is_osx():
-        USERDIR = os.path.join(os.path.expanduser("~"), ".quodlibet")
+        user_dir = os.path.join(os.path.expanduser("~"), ".quodlibet")
     else:
-        USERDIR = os.path.join(xdg_get_config_home(), "quodlibet")
+        user_dir = os.path.join(xdg_get_config_home(), "quodlibet")
 
-        if not os.path.exists(USERDIR):
+        if not os.path.exists(user_dir):
             tmp = os.path.join(os.path.expanduser("~"), ".quodlibet")
             if os.path.exists(tmp):
-                USERDIR = tmp
+                user_dir = tmp
 
-    if 'QUODLIBET_USERDIR' in os.environ:
-        USERDIR = os.environ['QUODLIBET_USERDIR']
+    if "QUODLIBET_USERDIR" in os.environ:
+        user_dir = os.environ["QUODLIBET_USERDIR"]
 
-    if build.BUILD_TYPE == u"windows-portable":
-        USERDIR = os.path.normpath(os.path.join(
+    if build.BUILD_TYPE == "windows-portable":
+        user_dir = os.path.normpath(os.path.join(
             os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
-    mkdir(USERDIR, 0o750)
+    mkdir(user_dir, 0o750)
 
-    return USERDIR
+    return user_dir
 
 
 def is_release():
@@ -202,13 +202,13 @@ def get_build_description():
     notes = []
     if not is_release():
         version = version[:-1]
-        notes.append(u"development")
+        notes.append("development")
 
         if build.BUILD_INFO:
             notes.append(build.BUILD_INFO)
-
-    version_string = u".".join(map(str, version))
-    note = u" (%s)" % u", ".join(notes) if notes else u""
+    
+    version_string = ".".join(map(str, version))
+    note = " (%s)" % ", ".join(notes) if notes else ""
 
     return version_string + note
 
@@ -268,7 +268,7 @@ def _main_setup_osx(window):
 
     try:
         import gi
-        gi.require_version('GtkosxApplication', '1.0')
+        gi.require_version("GtkosxApplication", "1.0")
         from gi.repository import GtkosxApplication
     except (ValueError, ImportError):
         print_d("importing GtkosxApplication failed, no native menus")
@@ -285,24 +285,23 @@ def _main_setup_osx(window):
     # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
     class Delegate(NSObject):
 
-        @objc.signature(b'B@:#B')
-        def applicationShouldHandleReopen_hasVisibleWindows_(
-                self, ns_app, flag):
+        @objc.signature(b"B@:#B")
+        def applicationShouldHandleReopen_hasVisibleWindows_(self, ns_app, flag): # noqa
             print_d("osx: handle reopen")
             app.present()
             return True
 
-        def applicationShouldTerminate_(self, sender):
+        def applicationShouldTerminate_(self, sender):  # noqa
             print_d("osx: block termination")
             # FIXME: figure out why idle_add is needed here
             from gi.repository import GLib
             GLib.idle_add(app.quit)
             return False
 
-        def applicationDockMenu_(self, sender):
+        def applicationDockMenu_(self, sender):  # noqa
             return gtk_delegate.applicationDockMenu_(sender)
 
-        def application_openFile_(self, sender, filename):
+        def application_openFile_(self, sender, filename):  # noqa
             return app.window.open_file(filename.encode("utf-8"))
 
     delegate = Delegate.alloc().init()
@@ -355,7 +354,7 @@ def run(window, before_quit=None):
 
         print_d("Quit GTK: done.")
 
-    window.connect('destroy', quit_gtk)
+    window.connect("destroy", quit_gtk)
 
     if sys.platform == "darwin":
         _main_setup_osx(window)
@@ -370,7 +369,7 @@ def run(window, before_quit=None):
     if not is_osx():
         try:
             faulthandling.enable(os.path.join(get_user_dir(), "faultdump"))
-        except IOError:
+        except OSError:
             util.print_exc()
         else:
             GLib.idle_add(faulthandling.raise_and_clear_error)

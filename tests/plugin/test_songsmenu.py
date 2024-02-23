@@ -20,17 +20,17 @@ SONGS = [
     AudioFile({
         "title": "one",
         "artist": "piman",
-        "~filename": fsnative(u"/dev/null"),
+        "~filename": fsnative("/dev/null"),
     }),
     AudioFile({
         "title": "two",
         "artist": "mu",
-        "~filename": fsnative(u"/dev/zero"),
+        "~filename": fsnative("/dev/zero"),
     }),
     AudioFile({
         "title": "three",
         "artist": "boris",
-        "~filename": fsnative(u"/bin/ls"),
+        "~filename": fsnative("/bin/ls"),
     }),
 ]
 SONGS.sort()
@@ -72,9 +72,9 @@ class TPluginsSongsMenu(PluginTestCase):
                 self.h.plugin_disable(plugin)
 
     def test_handles_albums(self):
-        for id_, plugin in self.plugins.items():
+        for plugin in self.plugins.values():
             if isinstance(plugin, SongsMenuPlugin):
                 ha = plugin.handles_albums
-                self.failIf(hasattr(plugin, "plugin_single_album") and not ha)
-                self.failIf(hasattr(plugin, "plugin_plugin_album") and not ha)
-                self.failIf(hasattr(plugin, "plugin_albums") and not ha)
+                self.assertFalse(hasattr(plugin, "plugin_single_album") and not ha)
+                self.assertFalse(hasattr(plugin, "plugin_plugin_album") and not ha)
+                self.assertFalse(hasattr(plugin, "plugin_albums") and not ha)

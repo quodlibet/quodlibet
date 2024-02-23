@@ -61,7 +61,7 @@ def atomic_save(filename, mode):
     basename = os.path.basename(filename)
     fileobj = NamedTemporaryFile(
         mode=mode, dir=dir_,
-        prefix=basename + fsnative(u"_"), suffix=fsnative(u".tmp"),
+        prefix=basename + fsnative("_"), suffix=fsnative(".tmp"),
         delete=False)
 
     try:
@@ -86,7 +86,7 @@ def atomic_save(filename, mode):
             _windows_rename(fileobj.name, filename)
         else:
             os.rename(fileobj.name, filename)
-    except:
+    except Exception:
         try:
             os.unlink(fileobj.name)
         except OSError:

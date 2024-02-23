@@ -36,9 +36,9 @@ class SearchBarBox(Gtk.Box):
     """
 
     __gsignals__ = {
-        'query-changed': (
+        "query-changed": (
             GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'focus-out': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "focus-out": (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
     DEFAULT_TIMEOUT = 400
@@ -56,7 +56,7 @@ class SearchBarBox(Gtk.Box):
 
         combo = ComboBoxEntrySave(
             filename, count=historic_entries_count, validator=validator,
-            title=_("Saved Searches"), edit_title=_(u"Edit saved searches…"))
+            title=_("Saved Searches"), edit_title=_("Edit saved searches…"))
 
         self.__deferred_changed = DeferredSignal(
             self._filter_changed, timeout=timeout, owner=self)
@@ -69,15 +69,15 @@ class SearchBarBox(Gtk.Box):
 
         self._star = star
         self._query = None
-        self.__sig = combo.connect('text-changed', self.__text_changed)
+        self.__sig = combo.connect("text-changed", self.__text_changed)
 
-        entry.connect('clear', self._filter_changed)
-        entry.connect('backspace', self.__text_changed)
-        entry.connect('populate-popup', self.__menu)
-        entry.connect('activate', self._filter_changed)
-        entry.connect('activate', self.__save_search)
-        entry.connect('focus-out-event', self.__save_search)
-        entry.connect('key-press-event', self.__key_pressed)
+        entry.connect("clear", self._filter_changed)
+        entry.connect("backspace", self.__text_changed)
+        entry.connect("populate-popup", self.__menu)
+        entry.connect("activate", self._filter_changed)
+        entry.connect("activate", self.__save_search)
+        entry.connect("focus-out-event", self.__save_search)
+        entry.connect("key-press-event", self.__key_pressed)
 
         entry.set_placeholder_text(_("Search"))
         entry.set_tooltip_text(_("Search your library, "
@@ -142,7 +142,7 @@ class SearchBarBox(Gtk.Box):
         menu.prepend(sep)
 
         cb = ConfigCheckMenuItem(
-            _("Search after _typing"), 'settings', 'eager_search',
+            _("Search after _typing"), "settings", "eager_search",
             populate=True)
         cb.set_tooltip_text(
             _("Show search results after the user stops typing"))
@@ -152,14 +152,14 @@ class SearchBarBox(Gtk.Box):
     def __mnemonic_activate(self, label, group_cycling):
         widget = label.get_mnemonic_widget()
         if widget.is_focus():
-            self.emit('focus-out')
+            self.emit("focus-out")
             return True
 
     def __save_search(self, entry, *args):
         # only save the query on focus-out if eager_search is turned on
         if (len(args) > 0
                 and args[0]
-                and not config.getboolean('settings', 'eager_search')):
+                and not config.getboolean("settings", "eager_search")):
             return
 
         text = self.get_text().strip()
@@ -172,8 +172,8 @@ class SearchBarBox(Gtk.Box):
             self.__uninhibit()
 
     def __key_pressed(self, entry, event):
-        if (is_accel(event, '<Primary>Return') or
-                is_accel(event, '<Primary>KP_Enter')):
+        if (is_accel(event, "<Primary>Return") or
+                is_accel(event, "<Primary>KP_Enter")):
             # Save query on Primary+Return accel, even though the focus is kept
             self.__save_search(entry)
         return False
@@ -183,7 +183,7 @@ class SearchBarBox(Gtk.Box):
         text = self.get_text()
         self._update_query_from(text)
         if self._query.is_parsable:
-            GLib.idle_add(self.emit, 'query-changed', text)
+            GLib.idle_add(self.emit, "query-changed", text)
 
     def __text_changed(self, *args):
         if not self._entry.is_sensitive():
@@ -195,7 +195,7 @@ class SearchBarBox(Gtk.Box):
             self._filter_changed()
             return
 
-        if not config.getboolean('settings', 'eager_search'):
+        if not config.getboolean("settings", "eager_search"):
             return
 
         self.__deferred_changed()
@@ -207,7 +207,7 @@ class LimitSearchBarBox(SearchBarBox):
 
     class Limit(Gtk.HBox):
         __gsignals__ = {
-            'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
+            "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
         }
 
         def __init__(self):
@@ -291,8 +291,8 @@ class MultiSearchBarBox(LimitSearchBarBox):
                                                          Gtk.IconSize.BUTTON)
         self._add_button.set_no_show_all(True)
         self.pack_start(self._add_button, False, True, 0)
-        self._add_button.connect('clicked', self.activated)
-        self._entry.connect('activate', self.activated)
+        self._add_button.connect("clicked", self.activated)
+        self._entry.connect("activate", self.activated)
 
         self.flow_box = Gtk.FlowBox(no_show_all=True,
                                     max_children_per_line=99,
@@ -381,7 +381,7 @@ class QueryItem(Gtk.FlowBoxChild):
         btn = Gtk.Button.new_from_icon_name("window-close",
                                             Gtk.IconSize.BUTTON)
         btn.set_relief(Gtk.ReliefStyle.NONE)
-        btn.connect('clicked', self.remove)
+        btn.connect("clicked", self.remove)
         hbox.pack_start(btn, False, True, 0)
         frame = Gtk.Frame()
         frame.add(hbox)

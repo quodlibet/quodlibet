@@ -7,7 +7,7 @@
 # (at your option) any later version.
 
 import sys
-from typing import Optional, Type, Sequence
+from collections.abc import Sequence
 
 from gi.repository import Gtk, Pango, Gdk
 
@@ -59,19 +59,19 @@ class Comment:
 
     def _paren(self):
         if self.shared:
-            return numeric_phrase('missing from %d song',
-                                  'missing from %d songs',
+            return numeric_phrase("missing from %d song",
+                                  "missing from %d songs",
                                   self.missing)
         elif self.complete:
-            return numeric_phrase('different across %d song',
-                                  'different across %d songs',
+            return numeric_phrase("different across %d song",
+                                  "different across %d songs",
                                   self.total)
         else:
-            d = numeric_phrase('different across %d song',
-                               'different across %d songs',
+            d = numeric_phrase("different across %d song",
+                               "different across %d songs",
                                self.have)
-            m = numeric_phrase('missing from %d song',
-                               'missing from %d songs',
+            m = numeric_phrase("missing from %d song",
+                               "missing from %d songs",
                                self.missing)
             return ", ".join([d, m])
 
@@ -84,7 +84,7 @@ class Comment:
     def get_shared_text(self):
         if self.shared:
             return util.escape(self.text)
-        return ''
+        return ""
 
     def get_markup(self):
         """Returns pango markup for displaying"""
@@ -201,7 +201,7 @@ class SplitValues(TagSplitter):
         spls = config.gettext("editing", "split_on").split()
         vals = [val if len(val) <= 64 else val[:64] + "…"
                 for val in split_value(value, spls)]
-        string = ", ".join(["{}={}".format(tag, val) for val in vals])
+        string = ", ".join([f"{tag}={val}" for val in vals])
         self.set_label(string)
         self.set_sensitive(len(vals) > 1)
 
@@ -224,8 +224,7 @@ class SplitDisc(TagSplitter):
         album, disc = split_album(value)
         if disc is not None:
             album = album if len(album) <= 64 else album[:64] + "…"
-            self.set_label("{}={}, {}={}".format(tag, album,
-                                                 self.needs[0], disc))
+            self.set_label(f"{tag}={album}, {self.needs[0]}={disc}")
 
         self.set_sensitive(disc is not None)
 
@@ -252,8 +251,8 @@ class SplitTitle(TagSplitter):
             title = title if len(title) <= 64 else title[:64] + "…"
             versions = [ver if len(ver) <= 64 else ver[:64] + "…"
                         for ver in versions]
-            string = (", ".join(["{}={}".format(tag, title)] +
-                                ["{}={}".format(self.needs[0], ver) for ver in
+            string = (", ".join([f"{tag}={title}"] +
+                                [f"{self.needs[0]}={ver}" for ver in
                                  versions]))
             self.set_label(string)
 
@@ -282,8 +281,8 @@ class SplitPerson(TagSplitter):
             artist = artist if len(artist) <= 64 else artist[:64] + "…"
             others = [other if len(other) <= 64 else other[:64] + "…"
                       for other in others]
-            string = (", ".join(["{}={}".format(tag, artist)] +
-                                ["{}={}".format(self.needs[0], o) for o in
+            string = (", ".join([f"{tag}={artist}"] +
+                                [f"{self.needs[0]}={o}" for o in
                                  others]))
             self.set_label(string)
 
@@ -371,13 +370,13 @@ class AddTagDialog(Dialog):
 
         for entry in [self.__tag, self.__val]:
             entry.connect(
-                'changed', self.__validate, add, invalid, valuebox)
-        self.__tag.connect('changed', self.__set_value_completion, library)
+                "changed", self.__validate, add, invalid, valuebox)
+        self.__tag.connect("changed", self.__set_value_completion, library)
         self.__set_value_completion(self.__tag, library)
 
         if can_change is True:
             connect_obj(self.__tag.get_child(),
-                'activate', Gtk.Entry.grab_focus, self.__val)
+                "activate", Gtk.Entry.grab_focus, self.__val)
 
     def __set_value_completion(self, tag, library):
         completion = self.__val.get_completion()
@@ -437,7 +436,7 @@ class ListEntry:
 class EditTags(Gtk.VBox):
     handler = EditTagsPluginHandler()
 
-    _SPLITTERS: Sequence[Type[TagSplitter]] = sorted(
+    _SPLITTERS: Sequence[type[TagSplitter]] = sorted(
         [SplitDisc, SplitTitle, SplitPerformer, SplitArranger, SplitValues,
          SplitPerformerFromTitle, SplitOriginalArtistFromTitle],
         key=lambda item: (item._order, item.__name__))
@@ -464,20 +463,20 @@ class EditTags(Gtk.VBox):
 
         def cdf_write(col, rend, model, iter_, *args):
             entry = model.get_value(iter_)
-            rend.set_property('sensitive', entry.edited or entry.deleted)
+            rend.set_property("sensitive", entry.edited or entry.deleted)
             if entry.canedit or entry.deleted:
                 if entry.deleted:
-                    rend.set_property('icon-name', Icons.EDIT_DELETE)
+                    rend.set_property("icon-name", Icons.EDIT_DELETE)
                 else:
-                    rend.set_property('icon-name', Icons.EDIT)
+                    rend.set_property("icon-name", Icons.EDIT)
             else:
-                rend.set_property('icon-name', Icons.CHANGES_PREVENT)
+                rend.set_property("icon-name", Icons.CHANGES_PREVENT)
 
         column.set_cell_data_func(render, cdf_write)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(title=_('Tag'))
+        column = TreeViewColumn(title=_("Tag"))
         column.pack_start(render, True)
 
         def cell_data_tag(column, cell, model, iter_, data):
@@ -488,19 +487,19 @@ class EditTags(Gtk.VBox):
         column.set_cell_data_func(render, cell_data_tag)
 
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
-        render.set_property('editable', True)
-        render.connect('edited', self.__edit_tag_name, model)
+        render.set_property("editable", True)
+        render.connect("edited", self.__edit_tag_name, model)
         render.connect(
-            'editing-started', self.__tag_editing_started, model, library)
+            "editing-started", self.__tag_editing_started, model, library)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
-        render.set_property('editable', True)
-        render.connect('edited', self.__edit_tag, model)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
+        render.set_property("editable", True)
+        render.connect("edited", self.__edit_tag, model)
         render.connect(
-            'editing-started', self.__value_editing_started, model, library)
-        column = TreeViewColumn(title=_('Value'))
+            "editing-started", self.__value_editing_started, model, library)
+        column = TreeViewColumn(title=_("Value"))
         column.pack_start(render, True)
 
         def cell_data_value(column, cell, model, iter_, data):
@@ -523,10 +522,10 @@ class EditTags(Gtk.VBox):
         self.pack_start(sw, True, True, 0)
 
         cb = ConfigCheckButton(
-            _("Show _programmatic tags"), 'editing', 'alltags', populate=True,
+            _("Show _programmatic tags"), "editing", "alltags", populate=True,
             tooltip=_("Access all tags, including machine-generated "
                       "ones e.g. MusicBrainz or Replay Gain tags"))
-        cb.connect('toggled', self.__checkbox_toggled)
+        cb.connect("toggled", self.__checkbox_toggled)
         hb = Gtk.HBox()
         hb.pack_start(cb, False, True, 0)
 
@@ -536,7 +535,7 @@ class EditTags(Gtk.VBox):
             "show_multi_line_tags",
             populate=True,
             tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"))
-        cb.connect('toggled', self.__checkbox_toggled)
+        cb.connect("toggled", self.__checkbox_toggled)
         hb.pack_start(cb, False, True, 12)
         self.pack_start(hb, False, True, 0)
 
@@ -548,12 +547,12 @@ class EditTags(Gtk.VBox):
         add = qltk.Button(_("_Add…"), Icons.LIST_ADD)
         add.set_focus_on_click(False)
         self._add = add
-        add.connect('clicked', self.__add_tag, model, library)
+        add.connect("clicked", self.__add_tag, model, library)
         bbox1.pack_start(add, True, True, 0)
         # Remove button
         remove = qltk.Button(_("_Remove"), Icons.LIST_REMOVE)
         remove.set_focus_on_click(False)
-        remove.connect('clicked', self.__remove_tag, view)
+        remove.connect("clicked", self.__remove_tag, view)
         remove.set_sensitive(False)
         self._remove = remove
 
@@ -581,20 +580,20 @@ class EditTags(Gtk.VBox):
         self.pack_start(buttonbox, False, True, 0)
         self._buttonbox = buttonbox
 
-        parent.connect('changed', self.__parent_changed)
-        revert.connect('clicked', lambda *x: self._update())
-        connect_obj(revert, 'clicked', parent.set_pending, None)
+        parent.connect("changed", self.__parent_changed)
+        revert.connect("clicked", lambda *x: self._update())
+        connect_obj(revert, "clicked", parent.set_pending, None)
 
-        save.connect('clicked', self.__save_files, revert, model, library)
-        connect_obj(save, 'clicked', parent.set_pending, None)
-        for sig in ['row-inserted', 'row-deleted', 'row-changed']:
+        save.connect("clicked", self.__save_files, revert, model, library)
+        connect_obj(save, "clicked", parent.set_pending, None)
+        for sig in ["row-inserted", "row-deleted", "row-changed"]:
             model.connect(sig, self.__enable_save, [save, revert])
             connect_obj(model, sig, parent.set_pending, save)
 
-        view.connect('popup-menu', self._popup_menu, parent)
-        view.connect('button-press-event', self.__button_press)
-        view.connect('key-press-event', self.__view_key_press_event)
-        selection.connect('changed', self.__tag_select, remove)
+        view.connect("popup-menu", self._popup_menu, parent)
+        view.connect("button-press-event", self.__button_press)
+        view.connect("key-press-event", self.__view_key_press_event)
+        selection.connect("changed", self.__tag_select, remove)
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
 
         self._parent = parent
@@ -611,7 +610,7 @@ class EditTags(Gtk.VBox):
             return Gdk.EVENT_STOP
         elif qltk.is_accel(event, "<Primary>s"):
             # Issue 697: allow Ctrl-s to save.
-            self._save.emit('clicked')
+            self._save.emit("clicked")
             return Gdk.EVENT_STOP
         elif qltk.is_accel(event, "<Primary>c"):
             self.__copy_tag_value(event, view)
@@ -626,7 +625,7 @@ class EditTags(Gtk.VBox):
     def __paste(self, clip, text, args):
         rend, path = args
         if text:
-            rend.emit('edited', path, text.strip())
+            rend.emit("edited", path, text.strip())
 
     def __menu_activate(self, activator, view):
         model, (path,) = view.get_selection().get_selected_rows()
@@ -654,16 +653,16 @@ class EditTags(Gtk.VBox):
             model.path_changed(path)
 
     def __item_for(self, view: BaseView,
-                   Item: Type[EditTagsPlugin],
+                   item_cls: type[EditTagsPlugin],
                    tag: str,
-                   text: str) -> Optional[EditTagsPlugin]:
+                   text: str) -> EditTagsPlugin | None:
         try:
-            item = Item(tag, text)
+            item = item_cls(tag, text)
         except Exception as e:
-            print_e(f"Couldn't create menu item from {Item} ({e})")
+            print_e(f"Couldn't create menu item from {item_cls} ({e})")
             return None
         else:
-            item.connect('activate', self.__menu_activate, view)
+            item.connect("activate", self.__menu_activate, view)
             return item
 
     def _popup_menu(self, view: BaseView, _parent):
@@ -735,12 +734,12 @@ class EditTags(Gtk.VBox):
             menu.append(split_item)
 
         copy_b = MenuItem(_("_Copy Value(s)"), Icons.EDIT_COPY)
-        copy_b.connect('activate', self.__copy_tag_value, view)
+        copy_b.connect("activate", self.__copy_tag_value, view)
         qltk.add_fake_accel(copy_b, "<Primary>c")
         menu.append(copy_b)
 
         remove_b = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        remove_b.connect('activate', self.__remove_tag, view)
+        remove_b.connect("activate", self.__remove_tag, view)
         qltk.add_fake_accel(remove_b, "Delete")
         menu.append(remove_b)
 
@@ -748,10 +747,10 @@ class EditTags(Gtk.VBox):
         # Setting the menu itself to be insensitive causes it to not
         # be dismissed; see #473.
         for c in menu.get_children():
-            c.set_sensitive(can_change and c.get_property('sensitive'))
+            c.set_sensitive(can_change and c.get_property("sensitive"))
         copy_b.set_sensitive(True)
         remove_b.set_sensitive(True)
-        menu.connect('selection-done', lambda m: m.destroy())
+        menu.connect("selection-done", lambda m: m.destroy())
 
         # XXX: Keep reference
         self.__menu = menu
@@ -829,7 +828,7 @@ class EditTags(Gtk.VBox):
             entry_text = row[0].value.get_shared_text()
             if entry_text:
                 values.append(entry_text)
-        text = '\n'.join(values)
+        text = "\n".join(values)
         if len(text) > 0:
             clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
             clipboard.set_text(text, -1)
@@ -971,7 +970,7 @@ class EditTags(Gtk.VBox):
             model.path_changed(path)
 
     def __edit_tag_name(self, renderer, path, new_tag, model):
-        new_tag = ' '.join(new_tag.splitlines()).lower()
+        new_tag = " ".join(new_tag.splitlines()).lower()
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
         if new_tag == entry.tag:
@@ -1037,7 +1036,7 @@ class EditTags(Gtk.VBox):
 
             clipboard = Gtk.Clipboard.get_for_display(display, selection)
             for rend in col.get_cells():
-                if rend.get_property('editable'):
+                if rend.get_property("editable"):
                     clipboard.request_text(self.__paste,
                                            (rend, path.get_indices()[0]))
                     return Gdk.EVENT_STOP
@@ -1082,7 +1081,7 @@ class EditTags(Gtk.VBox):
 
                 # default tags
                 if tag not in info:
-                    entry = ListEntry(tag, Comment(u""))
+                    entry = ListEntry(tag, Comment(""))
                     entry.canedit = canedit
                     model.append(row=[entry])
                     continue
@@ -1118,7 +1117,7 @@ class EditTags(Gtk.VBox):
             if comment.shared:
                 editable.set_text(comment.text)
             else:
-                editable.set_text(u"")
+                editable.set_text("")
 
     def __tag_editing_started(self, render, editable, path, model, library):
         if not editable.get_completion():

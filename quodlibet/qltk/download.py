@@ -9,7 +9,8 @@
 from os.path import splitext
 from pathlib import Path
 from time import sleep
-from typing import Tuple, Collection, Any, Set
+from typing import Any
+from collections.abc import Collection
 from urllib.parse import urlparse
 
 from gi.repository import Soup, GObject
@@ -25,14 +26,14 @@ class DownloadProgress(GObject.Object):
     """Downloads songs asynchronously, updating a Task"""
 
     __gsignals__ = {
-        'finished': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "finished": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     def __init__(self, songs: Collection[AudioFile], task=None) -> None:
         super().__init__()
         self.songs = songs
-        self.successful: Set[AudioFile] = set()
-        self.failed: Set[AudioFile] = set()
+        self.successful: set[AudioFile] = set()
+        self.failed: set[AudioFile] = set()
         self.task = task or Task(_("Browser"), _("Downloading files"))
 
     def success(self, song: AudioFile) -> None:
@@ -53,12 +54,12 @@ class DownloadProgress(GObject.Object):
         frac = (len(self.successful) + len(self.failed)) / len(self.songs)
         return frac
 
-    def _downloaded(self, msg: Soup.Message, result: Any, data: Tuple) -> None:
+    def _downloaded(self, msg: Soup.Message, result: Any, data: tuple) -> None:
         path, song = data
         try:
-            headers = msg.get_property('response-headers')
-            size = int(headers.get('content-length'))
-            content_type = headers.get('content-type')
+            headers = msg.get_property("response-headers")
+            size = int(headers.get("content-length"))
+            content_type = headers.get("content-type")
             print_d(
                 f"Downloaded {format_size(size)} of {content_type}: {song('title')}")
             _, ext = splitext(urlparse(song("~uri")).path)
@@ -78,13 +79,13 @@ class DownloadProgress(GObject.Object):
             print_e(f"Failed download ({e})")
             self.failure(song)
 
-    def _failed(self, _req: Any, _exc: Exception, data: Tuple) -> None:
+    def _failed(self, _req: Any, _exc: Exception, data: tuple) -> None:
         path, song = data
         self.failure(song)
 
     def download_songs(self, path: Path):
         for s in self.songs:
-            msg = Soup.Message.new('GET', s("~uri"))
+            msg = Soup.Message.new("GET", s("~uri"))
             http.download(msg, cancellable=None, callback=self._downloaded,
                           failure_callback=self._failed, data=(path, s))
             yield

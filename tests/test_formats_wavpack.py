@@ -12,7 +12,7 @@ from quodlibet.formats.wavpack import WavpackFile
 class TWavpackFile(TestCase):
 
     def setUp(self):
-        self.song = WavpackFile(get_data_path('silence-44-s.wv'))
+        self.song = WavpackFile(get_data_path("silence-44-s.wv"))
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.68471, 3)
@@ -24,7 +24,7 @@ class TWavpackFile(TestCase):
         assert self.song("~#samplerate") == 44100
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.song("~#bitrate"), 76)
+        self.assertEqual(self.song("~#bitrate"), 76)
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "WavPack")

@@ -1,5 +1,5 @@
 # Copyright 2012,2013 Christoph Reiter
-#
+#                2023 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -36,13 +36,13 @@ def filter_table(rows, nicks, order):
     for o in order:
         try:
             index = lower.index(o.lower())
-        except ValueError:
+        except ValueError as e:
             raise CommandError(
                 _("'%(column-id)s' is not a valid column "
                   "name (%(all-column-ids)s).") % {
                     "column-id": o,
                     "all-column-ids": ", ".join(nicks),
-                  })
+                  }) from e
         else:
             mapping.append(index)
 
@@ -65,7 +65,7 @@ def print_table(rows, headers, nicks, order):
 
     widths = []
     for c in range(len(rows[0])):
-        widths.append(max(map(lambda r: len(r[c]), rows)))
+        widths.append(max(len(r[c]) for r in rows))
 
     seperator = " %s " % Colorise.gray("|")
     format_string = seperator.join(["%%-%ds" % w for w in widths])

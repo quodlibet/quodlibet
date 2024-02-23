@@ -20,11 +20,11 @@ class MonoDownmix(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        element = Gst.ElementFactory.make('capsfilter', cls.PLUGIN_ID)
+        element = Gst.ElementFactory.make("capsfilter", cls.PLUGIN_ID)
         if not element:
             return
 
-        caps = Gst.Caps.from_string('audio/x-raw,channels=1')
+        caps = Gst.Caps.from_string("audio/x-raw,channels=1")
 
-        element.set_property('caps', caps)
+        element.set_property("caps", caps)
         return element

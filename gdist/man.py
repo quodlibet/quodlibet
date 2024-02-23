@@ -30,7 +30,7 @@ import os
 from .util import Command
 
 
-class install_man(Command):
+class InstallMan(Command):
     """install man pages
 
     Install man pages into $prefix/share/man/manN
@@ -48,13 +48,13 @@ class install_man(Command):
 
     def finalize_options(self):
         self.set_undefined_options(
-            'install',
-            ('install_data', 'install_dir'),
-            ('mandir', 'mandir'),
+            "install",
+            ("install_data", "install_dir"),
+            ("mandir", "mandir"),
         )
 
         if self.mandir is None:
-            self.mandir = os.path.join(self.install_dir, 'share', 'man')
+            self.mandir = os.path.join(self.install_dir, "share", "man")
 
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
@@ -77,4 +77,4 @@ class install_man(Command):
             (out, _) = self.copy_file(man_page, fullpath)
             self.outfiles.append(out)
 
-__all__ = ["install_man"]
+__all__ = ["InstallMan"]

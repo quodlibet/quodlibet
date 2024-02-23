@@ -9,7 +9,7 @@
 
 import os
 import time
-from typing import Collection
+from collections.abc import Collection
 
 from gi.repository import GObject, GLib
 
@@ -27,7 +27,7 @@ class TimeTracker(GObject.GObject):
     """
 
     __gsignals__ = {
-        'tick': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "tick": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, player):
@@ -98,8 +98,8 @@ class SongTracker:
 
     def __init__(self, librarian, player, pl):
         self.__player_ids = [
-            player.connect('song-ended', self.__end, librarian, pl),
-            player.connect('song-started', self.__start, librarian),
+            player.connect("song-ended", self.__end, librarian, pl),
+            player.connect("song-started", self.__start, librarian),
         ]
         self.__player = player
         timer = TimeTracker(player)
@@ -179,10 +179,10 @@ class FSInterface:
         self.path = path
         self._player = player
         self._pids = [
-            player.connect('song-started', self.__started),
-            player.connect('song-ended', self.__ended),
+            player.connect("song-started", self.__started),
+            player.connect("song-ended", self.__ended),
         ]
-        self._lids = [library.connect('changed', self.__changed)]
+        self._lids = [library.connect("changed", self.__changed)]
         self._library = library
 
     def destroy(self):
@@ -193,7 +193,7 @@ class FSInterface:
             self._library.disconnect(id_)
         try:
             os.unlink(self.path)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def __started(self, player, song):
@@ -202,13 +202,13 @@ class FSInterface:
             try:
                 with open(self.path, "wb") as f:
                     f.write(song.to_dump())
-            except EnvironmentError:
+            except OSError:
                 pass
 
     def __ended(self, player, song, stopped):
         try:
             os.unlink(self.path)
-        except EnvironmentError:
+        except OSError:
             pass
 
     def __changed(self, _lib: Library, songs: Collection[AudioFile]):

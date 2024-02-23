@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 try:
     from collections import abc
@@ -60,7 +59,7 @@ class DictMixin:
         return iter(self.values())
 
     def items(self):
-        return list(zip(self.keys(), self.values()))
+        return list(zip(self.keys(), self.values(), strict=False))
 
     def iteritems(self):
         return iter(self.items())
@@ -86,8 +85,8 @@ class DictMixin:
         try:
             key = list(self.keys())[0]
             return key, self.pop(key)
-        except IndexError:
-            raise KeyError("dictionary is empty")
+        except IndexError as e:
+            raise KeyError("dictionary is empty") from e
 
     def update(self, other=None, **kwargs):
         if other is None:
@@ -207,8 +206,7 @@ class HashedList(abc.MutableSequence):
         return item in self._map
 
     def __iter__(self):
-        for item in self._data:
-            yield item
+        yield from self._data
 
     def has_duplicates(self):
         """Returns True if any item is contained more than once"""

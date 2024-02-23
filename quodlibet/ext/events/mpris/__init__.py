@@ -38,7 +38,7 @@ class MPRIS(EventPlugin):
     PLUGIN_NAME = _("MPRIS D-Bus Support")
     PLUGIN_DESC_MARKUP = _(
         "Allows control of Quod Libet using the "
-        "<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> "
+        '<a href="https://mpris2.readthedocs.io/en/latest/">MPRIS 2</a> '
         "D-Bus Interface Specification. "
         "This allows various Linux desktop integrations (e.g. multimedia keys).")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
@@ -46,13 +46,13 @@ class MPRIS(EventPlugin):
     def PluginPreferences(self, parent):
         box = Gtk.HBox()
         ccb = ConfigCheckButton(_("Hide main window on close"),
-                                'plugins', 'mpris_window_hide')
+                                "plugins", "mpris_window_hide")
         ccb.set_active(self.__do_hide())
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
     def __do_hide(self):
-        return config.getboolean('plugins', 'mpris_window_hide', False)
+        return config.getboolean("plugins", "mpris_window_hide", False)
 
     def __window_delete(self, win, event):
         if self.__do_hide():
@@ -60,7 +60,7 @@ class MPRIS(EventPlugin):
             return True
 
     def enabled(self):
-        self.__sig = app.window.connect('delete-event', self.__window_delete)
+        self.__sig = app.window.connect("delete-event", self.__window_delete)
 
         self.objects = []
         for service in [MPRIS2]:

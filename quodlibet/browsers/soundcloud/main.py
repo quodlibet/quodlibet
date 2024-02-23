@@ -1,4 +1,4 @@
-# Copyright 2016-2022 Nick Boultbee
+# Copyright 2016-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,7 +32,6 @@ from .util import State, FilterType, PROCESS_QL_URLS, EnterAuthCodeDialog, \
 
 
 class SoundcloudBrowser(Browser, util.InstanceTracker):
-
     background = False
     __librarian = None
     __filter = None
@@ -55,9 +54,9 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     STAR = [tag for tag in headers if not tag.startswith("~#")]
 
     @classmethod
-    def _init(klass, library):
-        klass.__librarian = library.librarian
-        klass.filters = [
+    def _init(cls, library):
+        cls.__librarian = library.librarian
+        cls.filters = [
             (_("Search"), (FilterType.SEARCH,
                            Icons.EDIT_FIND,
                            "",
@@ -73,19 +72,19 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                               False)),
         ]
         try:
-            if klass.library:
+            if cls.library:
                 return
         except AttributeError:
             pass
-        klass.api_client = SoundcloudApiClient()
-        klass.library = SoundcloudLibrary(klass.api_client, app.player)
+        cls.api_client = SoundcloudApiClient()
+        cls.library = SoundcloudLibrary(cls.api_client, app.player)
 
     @classmethod
-    def _destroy(klass):
-        klass.__librarian = None
-        klass.filters = {}
-        klass.library.destroy()
-        klass.library = None
+    def _destroy(cls):
+        cls.__librarian = None
+        cls.filters = {}
+        cls.library.destroy()
+        cls.library = None
 
     def __inhibit(self):
         self.view.get_selection().handler_block(self.__changed_sig)
@@ -107,10 +106,10 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             self._init(library)
         self._register_instance()
 
-        self.connect('destroy', self.__destroy)
-        self.connect('uri-received', self.__handle_incoming_uri)
-        connect_destroy(self.api_client, 'authenticated', self.__on_authenticated)
-        connect_destroy(self.library, 'changed', self.__changed)
+        self.connect("destroy", self.__destroy)
+        self.connect("uri-received", self.__handle_incoming_uri)
+        connect_destroy(self.api_client, "authenticated", self.__on_authenticated)
+        connect_destroy(self.library, "changed", self.__changed)
         self.login_state = (State.LOGGED_IN if self.online
                             else State.LOGGED_OUT)
         self._create_searchbar(self.library)
@@ -129,7 +128,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.pack_start(pane, True, True, 0)
         self.show()
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items):
         return SongsMenu(library, songs, edit=False, download=True, items=items)
 
     @property
@@ -139,7 +138,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
     def _create_header(self):
         hbox = Gtk.HBox()
         button = Gtk.Button(always_show_image=True, relief=Gtk.ReliefStyle.NONE)
-        button.connect('clicked', lambda _: website(SITE_URL))
+        button.connect("clicked", lambda _: website(SITE_URL))
         button.set_tooltip_text(_("Go to %s") % SITE_URL)
         button.add(self._logo_image)
         hbox.pack_start(button, True, True, 6)
@@ -154,11 +153,12 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                               accel_group=self.accelerators,
                               timeout=3000)
         self.__searchbar = search
-        search.connect('query-changed', self.__query_changed)
+        search.connect("query-changed", self.__query_changed)
 
         def focus(widget, *args):
             qltk.get_top_parent(widget).songlist.grab_focus()
-        search.connect('focus-out', focus)
+
+        search.connect("focus-out", focus)
 
         self._searchbox = Align(search, left=0, right=6, top=0)
         self._searchbox.show_all()
@@ -208,7 +208,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         self.login_button = login = Gtk.Button(always_show_image=True,
                                                relief=Gtk.ReliefStyle.NONE)
         self.update_connect_button()
-        login.connect('clicked', clicked_login)
+        login.connect("clicked", clicked_login)
         hbox.pack_start(login, True, False, 0)
         hbox.show_all()
         return hbox
@@ -225,7 +225,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         scrolled_window.add(view)
         model = Gtk.ListStore(int, str, str, str, bool)
         filters = self.filters
-        for (i, (name, data)) in enumerate(filters):
+        for (_i, (name, data)) in enumerate(filters):
             filter_type, icon, query, always = data
             enabled = always
             model.append(row=[filter_type, icon, name, query, enabled])
@@ -244,12 +244,13 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         column.pack_start(renderpb, False)
         column.add_attribute(renderpb, "icon-name", self.ModelIndex.ICON_NAME)
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
 
         def cdf(column, cell, model, iter_, user_data):
             on = (self.login_state == State.LOGGED_IN or
                   model[iter_][self.ModelIndex.ALWAYS_ENABLE])
             cell.set_sensitive(on)
+
         column.set_cell_data_func(render, cdf)
         column.set_cell_data_func(renderpb, cdf)
 
@@ -267,7 +268,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         selection.set_select_function(select_func)
         selection.select_iter(model.get_iter_first())
         self._refresh_online_filters()
-        self.__changed_sig = connect_destroy(selection, 'changed',
+        self.__changed_sig = connect_destroy(selection, "changed",
                                              DeferredSignal(self._on_select))
         return scrolled_window
 
@@ -315,7 +316,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         except SoundcloudQuery.Error as e:
             print_d("Couldn't parse query: %s" % e)
         else:
-            print_d("Got terms from query: %s" % (self.__filter.terms,))
+            print_d(f"Got terms from query: {self.__filter.terms}")
             if not restore:
                 self.activate()
 
@@ -362,8 +363,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             if typ == FilterType.SEARCH:
                 search_it = it
             elif ((typ == FilterType.FAVORITES and text == "#(rating = 1.0)")
-                    or (typ == FilterType.MINE and
-                        text == f"soundcloud_user_id={self.api_client.user_id}")):
+                  or (typ == FilterType.MINE and
+                      text == f"soundcloud_user_id={self.api_client.user_id}")):
                 self.view.get_selection().select_iter(it)
                 selected = True
                 break
@@ -389,7 +390,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         return self.__searchbar.get_text()
 
     def activate(self):
-        print_d("Refreshing browser for query \"%r\"" % self.__filter)
+        print_d('Refreshing browser for query "%r"' % self.__filter)
         songs = self.library.query(self.get_filter_text())
         self.songs_selected(songs)
 
@@ -424,17 +425,17 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             print_w("Processing of quodlibet:// URLs is disabled. (%s)" % uri)
             return
         uri = urlparse(uri)
-        if (uri.scheme == 'quodlibet' and uri.netloc == 'callbacks' and
-                uri.path == '/soundcloud'):
+        if (uri.scheme == "quodlibet" and uri.netloc == "callbacks" and
+            uri.path == "/soundcloud"):
             try:
                 code = parse_qs(uri.query)["code"][0]
             except IndexError:
                 print_w("Malformed response in callback URI: %s" % uri)
                 return
-            print_d("Processing Soundcloud callback (%s)" % (uri,))
+            print_d(f"Processing Soundcloud callback ({uri})")
             self.api_client.get_tokens(code)
         else:
-            print_w("Unknown URL format (%s)" % (uri,))
+            print_w(f"Unknown URL format ({uri})")
 
     def __on_authenticated(self, obj, data):
         name = data.username
@@ -455,8 +456,8 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
         """Login-state-based data for configuring actions (e.g. the button)"""
         return {
             State.LOGGED_IN: (_("Log out of %s") % SOUNDCLOUD_NAME,
-                              sc_btn_image('disconnect-l', 140, 29)),
+                              sc_btn_image("disconnect-l", 140, 29)),
             State.LOGGING_IN: (_("Enter code…"), None),
             State.LOGGED_OUT: (_("Log in to %s") % SOUNDCLOUD_NAME,
-                               sc_btn_image('connect-l', 124, 29)),
+                               sc_btn_image("connect-l", 124, 29)),
         }

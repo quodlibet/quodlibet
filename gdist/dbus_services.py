@@ -24,7 +24,7 @@ import os
 from .util import Command
 
 
-class build_dbus_services(Command):
+class BuildDbusServices(Command):
     """Build .service files"""
 
     description = "build .service files"
@@ -36,10 +36,10 @@ class build_dbus_services(Command):
 
     def finalize_options(self):
         self.dbus_services = self.distribution.dbus_services
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
 
     def run(self):
-        basepath = os.path.join(self.build_base, 'share', 'dbus-1', 'services')
+        basepath = os.path.join(self.build_base, "share", "dbus-1", "services")
         self.mkpath(basepath)
         for service in self.dbus_services:
             in_variant = service + ".in"
@@ -59,7 +59,7 @@ def _replace(path, pattern, subst):
             ho.write(data.replace(pattern, subst))
 
 
-class install_dbus_services(Command):
+class InstallDbusServices(Command):
     """Install .service files"""
 
     description = "install .service files"
@@ -75,32 +75,32 @@ class install_dbus_services(Command):
 
     def finalize_options(self):
         self.set_undefined_options(
-            'build',
-            ('build_base', 'build_base'))
+            "build",
+            ("build_base", "build_base"))
 
         self.set_undefined_options(
-            'install',
-            ('install_data', 'install_dir'),
-            ('exec_prefix', 'exec_prefix'),
-            ('skip_build', 'skip_build'))
+            "install",
+            ("install_data", "install_dir"),
+            ("exec_prefix", "exec_prefix"),
+            ("skip_build", "skip_build"))
 
         self.set_undefined_options(
-            'build_dbus_services',
-            ('dbus_services', 'dbus_services'))
+            "build_dbus_services",
+            ("dbus_services", "dbus_services"))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         if not self.skip_build:
-            self.run_command('build_dbus_services')
+            self.run_command("build_dbus_services")
 
         basepath = os.path.join(
-            self.install_dir, 'share', 'dbus-1', 'services')
+            self.install_dir, "share", "dbus-1", "services")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 
-        srcpath = os.path.join(self.build_base, 'share', 'dbus-1', 'services')
+        srcpath = os.path.join(self.build_base, "share", "dbus-1", "services")
         for service in self.dbus_services:
             service_name = os.path.basename(service)
             fullsrc = os.path.join(srcpath, service_name)
@@ -113,4 +113,4 @@ class install_dbus_services(Command):
             _replace(fullpath, b"@PREFIX@", prefix)
 
 
-__all__ = ["build_dbus_services", "install_dbus_services"]
+__all__ = ["BuildDbusServices", "InstallDbusServices"]

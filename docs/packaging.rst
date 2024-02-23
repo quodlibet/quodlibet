@@ -34,6 +34,7 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **mutagen** (>= 1.34)
 * **GTK+** (>= 3.18)
 * **libsoup** (>= 3.0)
+* **gir1.2-soup-3.0**
 * On OS X only: **PyObjC**
 * **feedparser**
 
@@ -71,7 +72,7 @@ Optional Runtime Dependencies
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
-**libgtksourceview-3** + **typelib**:
+**libgtksourceview-4** + **typelib**:
     * Undo/Redo support for multiline text fields
 
 **libmodplug1**:
@@ -145,5 +146,5 @@ Testing Dependencies
 
 * The build dependencies
 * **pytest**
-* **flake8**
+* **ruff**
 * **polib**

@@ -5,7 +5,7 @@
 
 import os
 import re
-from typing import Iterable, Generator, Optional
+from collections.abc import Iterable, Generator
 
 import quodlibet
 from quodlibet import print_d, print_w, print_e, ngettext, _
@@ -18,7 +18,7 @@ from senf import text2fsn, _fsnative, fsn2text
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
 """Directory for playlist files"""
 
-HIDDEN_RE = re.compile(r'^\.\w[^.]*')
+HIDDEN_RE = re.compile(r"^\.\w[^.]*")
 """Hidden-like files, to ignored"""
 
 _MIN_NON_EMPTY_PL_BYTES = 4
@@ -43,8 +43,8 @@ class PlaylistLibrary(Library[str, Playlist]):
         self._library = library
         self._read_playlists(library)
 
-        self._rsig = library.connect('removed', self.__songs_removed)
-        self._csig = library.connect('changed', self.__songs_changed)
+        self._rsig = library.connect("removed", self.__songs_removed)
+        self._csig = library.connect("changed", self.__songs_changed)
 
     def _read_playlists(self, library) -> None:
         print_d(f"Reading playlist directory {self.pl_dir} (library: {library})")
@@ -89,7 +89,7 @@ class PlaylistLibrary(Library[str, Playlist]):
                         failed.append(fn)
                 print_w(f"Converting {fn!r} to XSPF format ({e})")
                 XSPFBackedPlaylist.from_playlist(legacy, songs_lib=library, pl_lib=self)
-            except EnvironmentError:
+            except OSError:
                 print_w(f"Invalid Playlist {fn!r}")
                 failed.append(fn)
         if failed:
@@ -97,7 +97,7 @@ class PlaylistLibrary(Library[str, Playlist]):
             print_e(ngettext("%d playlist failed to convert",
                              "%d playlists failed to convert", total) % len(failed))
 
-    def create(self, name_base: Optional[str] = None) -> Playlist:
+    def create(self, name_base: str | None = None) -> Playlist:
         if name_base:
             return XSPFBackedPlaylist.new(self.pl_dir, name_base,
                                           songs_lib=self._library, pl_lib=self)

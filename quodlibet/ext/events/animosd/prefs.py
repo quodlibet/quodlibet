@@ -121,7 +121,7 @@ class AnimOsdPrefs(Gtk.VBox):
             w = PatternEdit(button, self.Conf.string)
             w.set_default_size(520, 260)
             w.text = self.Conf.string
-            connect_obj(w.apply, 'clicked', set_string, w)
+            connect_obj(w.apply, "clicked", set_string, w)
             w.show()
 
         def set_string(window):
@@ -139,7 +139,7 @@ class AnimOsdPrefs(Gtk.VBox):
                                      upper=monitor_cnt - 1, step_increment=1)
                 monitor = Gtk.SpinButton(adjustment=adj)
                 monitor.set_numeric(True)
-                monitor.connect('value-changed', change_monitor)
+                monitor.connect("value-changed", change_monitor)
                 l2 = ConfigLabel("_Monitor:", monitor)
                 hb.pack_start(l2, False, True, 0)
                 hb.pack_start(monitor, False, True, 0)
@@ -153,9 +153,9 @@ class AnimOsdPrefs(Gtk.VBox):
                             row_homogeneous=True,
                             row_spacing=4,
                             column_spacing=4)
-            arrows = [['↖', '↑', '↗'],
-                      ['←', '○', '→'],
-                      ['↙', '↓', '↘ ']]
+            arrows = [["↖", "↑", "↗"],
+                      ["←", "○", "→"],
+                      ["↙", "↓", "↘ "]]
 
             group = None
             for x in range(3):
@@ -172,7 +172,7 @@ class AnimOsdPrefs(Gtk.VBox):
             for x in range(3):
                 for y in range(3):
                     rb = grid.get_child_at(x, y)
-                    rb.connect('toggled', change_position, x, y)
+                    rb.connect("toggled", change_position, x, y)
 
             lbl = ConfigLabel(_("_Position:"), grid)
             hb.pack_start(lbl, False, True, 0)
@@ -185,7 +185,7 @@ class AnimOsdPrefs(Gtk.VBox):
                     self.Conf.coversize, 1, 600, 1, 10, 0),
                 climb_rate=1, digits=0)
             coversize.set_numeric(True)
-            coversize.connect('value-changed', change_coversize)
+            coversize.connect("value-changed", change_coversize)
             l1 = ConfigLabel(_("_Cover size:"), coversize)
             hb.pack_start(l1, False, True, 0)
             hb.pack_start(coversize, False, True, 0)
@@ -204,7 +204,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
             font = Gtk.FontButton(show_style=True)
             font.set_font_name(self.Conf.font)
-            font.connect('font-set', set_font)
+            font.connect("font-set", set_font)
             lbl = ConfigLabel(_("_Font:"), font)
             t.attach(lbl, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(font, 1, 2, 0, 1)
@@ -214,7 +214,7 @@ class AnimOsdPrefs(Gtk.VBox):
             align.append_text(_("Center"))
             align.append_text(_("Right"))
             align.set_active(self.Conf.align)
-            align.connect('changed', change_align)
+            align.connect("changed", change_align)
             lbl = ConfigLabel(_("_Align text:"), align)
 
             t.attach(lbl, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
@@ -236,12 +236,12 @@ class AnimOsdPrefs(Gtk.VBox):
 
             t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(b, 1, 2, 0, 1)
-            b.connect('color-set', set_text)
+            b.connect("color-set", set_text)
             b = Gtk.ColorButton(color=Gdk.Color(*map(__floattocol,
                                 self.Conf.fill[0:3])))
             b.set_use_alpha(True)
             b.set_alpha(__floattocol(self.Conf.fill[3]))
-            b.connect('color-set', set_fill)
+            b.connect("color-set", set_fill)
             l = ConfigLabel(_("_Fill:"), b)
             t.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
             t.attach(b, 1, 2, 1, 2)
@@ -272,7 +272,7 @@ class AnimOsdPrefs(Gtk.VBox):
                     self.Conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
                 climb_rate=0.1, digits=1)
             timeout.set_numeric(True)
-            timeout.connect('value-changed', change_delay)
+            timeout.connect("value-changed", change_delay)
             l1 = ConfigLabel(_("_Delay:"), timeout)
             hb.pack_start(l1, False, True, 0)
             hb.pack_start(timeout, False, True, 0)
@@ -285,9 +285,9 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
-            edit_button = qltk.Button(_(u"Ed_it Display Pattern…"),
+            edit_button = qltk.Button(_("Ed_it Display Pattern…"),
                                       Icons.EDIT)
-            edit_button.connect('clicked', edit_pattern)
+            edit_button.connect("clicked", edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
             preview_button = Gtk.Button(label=_("Preview"), use_underline=True)
             preview_button.connect("button-press-event", on_button_pressed)

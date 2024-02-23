@@ -29,7 +29,7 @@ from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.query import Query
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportError
 from quodlibet.util.path import xdg_get_system_data_dirs
 from quodlibet.qltk import Icons
 
@@ -46,7 +46,7 @@ def get_gs_provider_files():
             for entry in os.listdir(path):
                 if entry.endswith(".ini"):
                     ini_files.append(os.path.join(path, entry))
-        except EnvironmentError:
+        except OSError:
             pass
     return ini_files
 
@@ -62,14 +62,14 @@ def check_ini_installed():
                 if SearchProvider.BUS_NAME in data:
                     provider_installed = True
                     break
-        except EnvironmentError:
+        except OSError:
             pass
 
     if not provider_installed:
         path = DEFAULT_SEARCH_PROVIDER_DIR
         msg = (_("No GNOME Shell search provider for Quod Libet installed.") + " \n" +
                _("Have you copied the ini file to %s (or similar)?") % path)
-        raise PluginImportException(msg)
+        raise PluginImportError(msg)
 
 
 class GnomeSearchProvider(EventPlugin):
@@ -163,8 +163,8 @@ class SearchProvider:
         info = Gio.DBusNodeInfo.new_for_xml(self.__doc__)
         for interface in info.interfaces:
             for method in interface.methods:
-                self._method_outargs[method.name] = '({})'.format(
-                    ''.join([arg.signature for arg in method.out_args]))
+                self._method_outargs[method.name] = "({})".format(
+                    "".join([arg.signature for arg in method.out_args]))
 
             _id = connection.register_object(
                 object_path=self.PATH,
@@ -189,7 +189,7 @@ class SearchProvider:
             result = (result,)
 
         out_args = self._method_outargs[method_name]
-        if out_args != '()':
+        if out_args != "()":
             variant = GLib.Variant(out_args, result)
             invocation.return_value(variant)
         else:
@@ -226,11 +226,11 @@ class SearchProvider:
             description = song("~artist~title")
             song_id = get_song_id(song)
             meta = {
-                "name": GLib.Variant('s', dbus_unicode_validate(name)),
-                "id": GLib.Variant('s', song_id),
+                "name": GLib.Variant("s", dbus_unicode_validate(name)),
+                "id": GLib.Variant("s", song_id),
                 "description": GLib.Variant(
-                    's', dbus_unicode_validate(description)),
-                "gicon": GLib.Variant('s', ENTRY_ICON)
+                    "s", dbus_unicode_validate(description)),
+                "gicon": GLib.Variant("s", ENTRY_ICON)
             }
             metas.append(meta)
 

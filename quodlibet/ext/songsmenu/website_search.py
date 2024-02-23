@@ -57,7 +57,7 @@ class WebsiteSearch(SongsMenuPlugin):
         ("Go to ~website", "<website>"),
     ]
     PATTERNS_FILE = os.path.join(
-        quodlibet.get_user_dir(), 'lists', 'searchsites')
+        quodlibet.get_user_dir(), "lists", "searchsites")
 
     _no_launch = False
 
@@ -110,13 +110,13 @@ class WebsiteSearch(SongsMenuPlugin):
         self._url_pats = []
         submenu = Gtk.Menu()
         self._get_saved_searches()
-        for name, url_pat in self._url_pats:
+        for name, _url_pat in self._url_pats:
             item = Gtk.MenuItem(label=name)
-            connect_obj(item, 'activate', self.__set_site, name)
+            connect_obj(item, "activate", self.__set_site, name)
             submenu.append(item)
         # Add link to editor
-        configure = Gtk.MenuItem(label=_(u"Configure Searches…"))
-        connect_obj(configure, 'activate', self.edit_patterns, configure)
+        configure = Gtk.MenuItem(label=_("Configure Searches…"))
+        connect_obj(configure, "activate", self.edit_patterns, configure)
         submenu.append(SeparatorMenuItem())
         submenu.append(configure)
         if submenu.get_children():
@@ -148,15 +148,15 @@ def website_for(pat, song):
     # Generate a sanitised AudioFile; allow through most tags
     subs = AudioFile()
     # See issue 2762
-    for k in (USER_TAGS + MACHINE_TAGS + ['~filename']):
+    for k in (USER_TAGS + MACHINE_TAGS + ["~filename"]):
         vals = song.comma(k)
         if vals:
             try:
                 # Escaping ~filename stops ~dirname ~basename etc working
                 # But not escaping means ? % & will cause problems.
                 # Who knows what user wants to do with /, seems better raw.
-                subs[k] = (vals if k in ['website', '~filename']
+                subs[k] = (vals if k in ["website", "~filename"]
                            else quote_plus(vals))
             except KeyError:
-                print_d("Problem with %s tag values: %r" % (k, vals))
+                print_d(f"Problem with {k} tag values: {vals!r}")
     return pat.format(subs) or None

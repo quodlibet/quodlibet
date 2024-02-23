@@ -25,7 +25,7 @@ class Ttrash(TestCase):
     def test_use_trash_is_false_on_non_posix(self):
         old_os_name = os.name
         try:
-            os.name = 'not posix'
+            os.name = "not posix"
             self.assertFalse(use_trash())
         finally:
             os.name = old_os_name
@@ -34,8 +34,8 @@ class Ttrash(TestCase):
         old_os_name = os.name
         old_sys_platform = sys.platform
         try:
-            os.name = 'posix'
-            sys.platform = 'darwin'
+            os.name = "posix"
+            sys.platform = "darwin"
             self.assertFalse(use_trash())
         finally:
             os.name = old_os_name
@@ -45,8 +45,8 @@ class Ttrash(TestCase):
         old_os_name = os.name
         old_sys_platform = sys.platform
         try:
-            os.name = 'posix'
-            sys.platform = 'linux'
+            os.name = "posix"
+            sys.platform = "linux"
             if not is_flatpak():
                 self.assertTrue(use_trash())
         finally:
@@ -57,9 +57,9 @@ class Ttrash(TestCase):
         old_os_name = os.name
         old_sys_platform = sys.platform
         try:
-            config.set('settings', 'bypass_trash', "true")
-            os.name = 'posix'
-            sys.platform = 'linux'
+            config.set("settings", "bypass_trash", "true")
+            os.name = "posix"
+            sys.platform = "linux"
             self.assertFalse(use_trash())
         finally:
             os.name = old_os_name
@@ -70,6 +70,6 @@ class Ttrash(TestCase):
         filename = mkstemp()[1]
         with open(filename, "w") as f:
             f.write("\n")
-        self.failUnless(os.path.exists(filename))
+        self.assertTrue(os.path.exists(filename))
         trash(filename)
-        self.failIf(os.path.exists(filename))
+        self.assertFalse(os.path.exists(filename))

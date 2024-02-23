@@ -34,7 +34,7 @@ class Preferences(Gtk.VBox):
         self.set_border_width(6)
 
         ccb = pconfig.ConfigCheckButton(_("Hide main window on close"),
-                                        'window_hide', populate=True)
+                                        "window_hide", populate=True)
         self.pack_start(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
 
         def on_scroll_changed(button, new_state):
@@ -93,7 +93,7 @@ class Preferences(Gtk.VBox):
         tt_frame.get_label_widget().set_mnemonic_widget(entry)
         self.pack_start(tt_frame, True, True, 0)
 
-        entry.connect('changed', self.__changed_entry, preview, preview_frame)
+        entry.connect("changed", self.__changed_entry, preview, preview_frame)
         entry.set_text(pconfig.gettext("tooltip"))
 
         for child in self.get_children():

@@ -41,7 +41,7 @@ def matches_flatpak_runtime(pattern: str) -> bool:
 
     config = configparser.ConfigParser()
     try:
-        with open("/.flatpak-info", "r", encoding="utf-8") as f:
+        with open("/.flatpak-info", encoding="utf-8") as f:
             config.read_file(f)
         runtime = config.get("Application", "runtime")
     except (OSError, configparser.Error):
@@ -87,7 +87,7 @@ def is_wine():
         return False
 
     try:
-        ctypes.cdll.ntdll.wine_get_version
+        ctypes.cdll.ntdll.wine_get_version  # noqa
     except AttributeError:
         return False
     else:
@@ -103,14 +103,14 @@ def is_osx():
 def dbus_name_owned(name):
     """Returns True if the dbus name has an owner"""
 
-    BUS_DAEMON_NAME = 'org.freedesktop.DBus'
-    BUS_DAEMON_PATH = '/org/freedesktop/DBus'
-    BUS_DAEMON_IFACE = 'org.freedesktop.DBus'
+    BUS_DAEMON_NAME = "org.freedesktop.DBus"  # noqa
+    BUS_DAEMON_PATH = "/org/freedesktop/DBus"  # noqa
+    BUS_DAEMON_IFACE = "org.freedesktop.DBus"  # noqa
 
     try:
         bus = Gio.DBusProxy.new_for_bus_sync(
             Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
             BUS_DAEMON_NAME, BUS_DAEMON_PATH, BUS_DAEMON_IFACE, None)
-        return bus.NameHasOwner('(s)', name)
+        return bus.NameHasOwner("(s)", name)
     except GLib.Error:
         return False

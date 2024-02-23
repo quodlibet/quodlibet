@@ -83,7 +83,7 @@ class TEmbeddedImages(TestCase):
         self.assertFalse(image)
 
     def test_not_an_image(self):
-        path = get_data_path('test-2.wma')
+        path = get_data_path("test-2.wma")
         image = EmbeddedImage.from_path(path)
         self.assertFalse(image)
 

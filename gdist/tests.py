@@ -19,7 +19,6 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from __future__ import absolute_import
 
 import os
 import sys
@@ -31,7 +30,7 @@ from distutils import dir_util
 from .util import Command, get_dist_class
 
 
-class test_cmd(Command):
+class TestCmd(Command):
     description = "run automated tests"
     user_options = [
         ("to-run=", None, "list of tests to run (default all)"),
@@ -77,8 +76,8 @@ class test_cmd(Command):
             raise SystemExit(status)
 
 
-class quality_cmd(Command):
-    description = "Run flake8/mypy tests"
+class QualityCmd(Command):
+    description = "Run linting / mypy tests"
     user_options = []
 
     def initialize_options(self):
@@ -98,7 +97,7 @@ class quality_cmd(Command):
 sdist = get_dist_class("sdist")
 
 
-class distcheck_cmd(sdist):
+class DistcheckCmd(sdist):
     description = "run tests on a fresh sdist"
 
     def _check_manifest(self):

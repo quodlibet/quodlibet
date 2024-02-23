@@ -37,7 +37,7 @@ def pipe_exists(pipe_name):
     try:
         if winapi.WaitNamedPipeW(filename, timeout_ms) == 0:
             raise ctypes.WinError()
-    except WindowsError:
+    except OSError:
         return False
     return True
 
@@ -74,7 +74,7 @@ class NamedPipeServer(threading.Thread):
 
     @classmethod
     def _get_filename(cls, name):
-        return u"\\\\.\\pipe\\%s" % name
+        return "\\\\.\\pipe\\%s" % name
 
     def _process(self, data):
         def idle_process(data):
@@ -111,7 +111,7 @@ class NamedPipeServer(threading.Thread):
             if handle == winapi.INVALID_HANDLE_VALUE:
                 raise ctypes.WinError()
 
-        except WindowsError:
+        except OSError:
             # due to FILE_FLAG_FIRST_PIPE_INSTANCE and not the first instance
             self._stopped = True
             self._event.set()
@@ -133,7 +133,7 @@ class NamedPipeServer(threading.Thread):
                                 handle, readbuf, buffer_size,
                                 ctypes.byref(bytesread), None) == 0:
                             raise ctypes.WinError()
-                    except WindowsError:
+                    except OSError:
                         break
                     else:
                         message = readbuf[:bytesread.value]
@@ -142,12 +142,12 @@ class NamedPipeServer(threading.Thread):
 
                 if winapi.DisconnectNamedPipe(handle) == 0:
                     raise ctypes.WinError()
-            except WindowsError:
+            except OSError:
                 # better not loop forever..
                 break
             finally:
                 if self._stopped:
-                    break
+                    break  # noqa
                 if data:
                     self._process(bytes(data))
 
@@ -167,7 +167,7 @@ class NamedPipeServer(threading.Thread):
         try:
             with open(self._filename, "wb") as h:
                 h.write(b"stop!")
-        except EnvironmentError:
+        except OSError:
             pass
 
         self._callback = None

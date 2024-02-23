@@ -4,7 +4,7 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Iterable
+from collections.abc import Iterable
 
 from gi.repository import Gtk
 from gi.repository import Pango
@@ -31,14 +31,14 @@ class JSONBasedEditor(qltk.UniqueWindow):
     _WIDTH = 800
     _HEIGHT = 400
 
-    def __init__(self, Prototype, values, filename, title):
+    def __init__(self, proto_cls, values, filename, title):
         if self.is_not_unique():
             return
         super().__init__()
-        self.Prototype = Prototype
+        self.proto_cls = proto_cls
         self.current = None
         self.filename = filename
-        self.name = Prototype.NAME or Prototype.__name__
+        self.name = proto_cls.NAME or proto_cls.__name__
         self.input_entries = {}
         self.set_border_width(12)
         self.set_title(title)
@@ -79,23 +79,23 @@ class JSONBasedEditor(qltk.UniqueWindow):
         rem = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         keyval, mod = Gtk.accelerator_parse("Delete")
         rem.add_accelerator(
-            'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
-        connect_obj(rem, 'activate', self.__remove, view)
+            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
+        connect_obj(rem, "activate", self.__remove, view)
         menu.append(rem)
         menu.show_all()
-        view.connect('popup-menu', self.__popup, menu)
-        view.connect('key-press-event', self.__view_key_press)
-        connect_obj(self, 'destroy', Gtk.Menu.destroy, menu)
+        view.connect("popup-menu", self.__popup, menu)
+        view.connect("key-press-event", self.__view_key_press)
+        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
 
         # New and Close buttons
         bbox = Gtk.HButtonBox()
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         self.new_but = Button(_("_New"), Icons.DOCUMENT_NEW)
-        self.new_but.connect('clicked', self._new_item)
+        self.new_but.connect("clicked", self._new_item)
         bbox.pack_start(self.new_but, True, True, 0)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        connect_obj(close, 'clicked', qltk.Window.destroy, self)
+        connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.pack_start(close, True, True, 0)
         vbox.pack_end(bbox, False, True, 0)
 
@@ -103,8 +103,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
         # Initialise
         self.selection = view.get_selection()
 
-        self.selection.connect('changed', self.__select)
-        self.connect('destroy', self.__finish)
+        self.selection.connect("changed", self.__select)
+        self.connect("destroy", self.__finish)
         self.get_child().show_all()
 
     def _find(self, name):
@@ -122,7 +122,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
                 n += 1
                 continue
             break
-        self.model.append(row=(self.Prototype(name=current_name),))
+        self.model.append(row=(self.proto_cls(name=current_name),))
 
     def _new_widget(self, key, val):
         """
@@ -185,7 +185,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         t.set_col_spacing(0, 3)
         t.set_col_spacing(1, 12)
 
-        empty = self.Prototype("empty")
+        empty = self.proto_cls("empty")
         for i, (key, val) in enumerate(empty.data):
             field = empty.field(key)
             field_name = self.get_field_name(field, key)
@@ -199,7 +199,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             l.set_mnemonic_widget(entry)
             l.set_use_underline(True)
             l.set_alignment(0.0, 0.5)
-            if isinstance(val, (int, bool)):
+            if isinstance(val, int | bool):
                 align = Align(entry, halign=Gtk.Align.START)
                 t.attach(align, 1, 2, i, i + 1)
             else:
@@ -218,7 +218,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
     def _fill_values(self, data):
         if not data:
             return
-        for (name, obj) in data.items():
+        for (_name, obj) in data.items():
             self.model.append(row=[obj])
 
     def _update_current(self, new_selection=None):
@@ -251,7 +251,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         obj_description = util.escape(str(obj))
         markup = f"{util.bold(obj_name)}\n{obj_description}"
         cell.markup = markup
-        cell.set_property('markup', markup)
+        cell.set_property("markup", markup)
 
     def __finish(self, widget):
         # TODO: Warn about impending deletion of nameless items, or something
@@ -280,7 +280,7 @@ class TagListEditor(qltk.Window):
         self.__fill_values(values or [])
 
         def on_row_activated(view, path, column):
-            self._renderer.set_property('editable', True)
+            self._renderer.set_property("editable", True)
             view.set_cursor(path, view.get_columns()[0], start_editing=True)
 
         # Main view
@@ -303,8 +303,8 @@ class TagListEditor(qltk.Window):
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
-        view.connect('popup-menu', self.__popup, menu)
-        connect_obj(remove_item, 'activate', self.__remove, view)
+        view.connect("popup-menu", self.__popup, menu)
+        connect_obj(remove_item, "activate", self.__remove, view)
 
         # Add and Remove buttons
         vbbox = Gtk.VButtonBox()
@@ -327,7 +327,7 @@ class TagListEditor(qltk.Window):
         self.remove_but = Button(_("_Remove"), Icons.LIST_REMOVE)
         self.remove_but.set_sensitive(False)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        connect_obj(close, 'clicked', qltk.Window.destroy, self)
+        connect_obj(close, "clicked", qltk.Window.destroy, self)
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         if not self.has_close_button():
             bbox.pack_start(close, True, True, 0)
@@ -348,17 +348,17 @@ class TagListEditor(qltk.Window):
         def tag_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                cell.set_property('text', row[0])
+                cell.set_property("text", row[0])
 
         def desc_cdf(column, cell, model, iter, data):
             row = model[iter]
             if row:
-                cell.set_property('markup', util.italic(util.tag(row[0])))
+                cell.set_property("markup", util.italic(util.tag(row[0])))
 
         def __create_cell_renderer():
             r = Gtk.CellRendererText()
-            r.connect('editing-started', self.__start_editing)
-            r.connect('edited', self.__edited)
+            r.connect("editing-started", self.__start_editing)
+            r.connect("edited", self.__edited)
             return r
 
         self._renderer = renderer = __create_cell_renderer()
@@ -369,8 +369,8 @@ class TagListEditor(qltk.Window):
         view.append_column(column)
 
         renderer = Gtk.CellRendererText()
-        renderer.set_property('ellipsize', Pango.EllipsizeMode.END)
-        renderer.set_property('sensitive', False)
+        renderer.set_property("ellipsize", Pango.EllipsizeMode.END)
+        renderer.set_property("sensitive", False)
         column = Gtk.TreeViewColumn(_("Description"), renderer)
         column.set_cell_data_func(renderer, desc_cdf)
         column.set_sizing(Gtk.TreeViewColumnSizing.FIXED)
@@ -392,7 +392,7 @@ class TagListEditor(qltk.Window):
         self.view.remove_selection()
 
     def __add(self, *args):
-        tooltip = _('Tag expression e.g. people:real or ~album~year')
+        tooltip = _("Tag expression e.g. people:real or ~album~year")
         dialog = GetStringDialog(self, _("Enter new tag"), "",
                                  button_icon=None,
                                  tooltip=tooltip)
@@ -402,7 +402,7 @@ class TagListEditor(qltk.Window):
 
     def __edit(self, *args):
         path, col = self.view.get_cursor()
-        tooltip = _('Tag expression e.g. people:real or ~album~year')
+        tooltip = _("Tag expression e.g. people:real or ~album~year")
         dialog = GetStringDialog(self, _("Edit tag expression"), "",
                                  button_icon=None,
                                  tooltip=tooltip)

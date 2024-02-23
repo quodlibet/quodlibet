@@ -10,16 +10,16 @@ from quodlibet.util.thread import call_async_background, Cancellable
 
 try:
     import musicbrainzngs
-except ImportError:
-    raise plugins.MissingModulePluginException("musicbrainzngs")
+except ImportError as e:
+    raise plugins.MissingModulePluginError("musicbrainzngs") from e
 
 from gi.repository import Gtk
 from quodlibet import _
 from quodlibet.plugins import PluginConfig
 from quodlibet.plugins.events import EventPlugin
 
-ATTR_BRAINZ = 'musicbrainz_trackid'
-ATTR_RATING = '~#rating'
+ATTR_BRAINZ = "musicbrainz_trackid"
+ATTR_RATING = "~#rating"
 
 BRAINZ_APP = "quodlibetMusicBrainzSync"
 VERSION = "0.1"
@@ -58,14 +58,14 @@ class MusicBrainzSyncPlugin(EventPlugin):
                 musicbrainzngs.submit_ratings,
                 Cancellable(),
                 callback=lambda *args: (),
-                kwargs=dict(
-                    recording_ratings=ratings_dict,
-                ),
+                kwargs={
+                    "recording_ratings": ratings_dict,
+                },
             )
 
     def PluginPreferences(self, parent):
         def changed(entry, key):
-            if entry.get_property('sensitive'):
+            if entry.get_property("sensitive"):
                 plugin_config.set(key, entry.get_text())
                 musicbrainzngs.auth(
                     plugin_config.get("username"),
@@ -95,17 +95,17 @@ class MusicBrainzSyncPlugin(EventPlugin):
 
         # username
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('username'))
-        entry.connect('changed', changed, 'username')
+        entry.set_text(plugin_config.get("username"))
+        entry.connect("changed", changed, "username")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
         # password
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('password'))
+        entry.set_text(plugin_config.get("password"))
         entry.set_visibility(False)
-        entry.connect('changed', changed, 'password')
+        entry.connect("changed", changed, "password")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1

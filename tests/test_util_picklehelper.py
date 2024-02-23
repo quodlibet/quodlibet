@@ -23,9 +23,9 @@ class B(dict):
 class Tpickle_load(TestCase):
 
     def test_pickle_load(self):
-        data = {b"foo": u"bar", u"quux": b"baz"}
+        data = {b"foo": "bar", "quux": b"baz"}
 
-        for protocol in [0, 1, 2]:
+        for _protocol in [0, 1, 2]:
             assert pickle_loads(pickle_dumps(data)) == data
             assert pickle_load(BytesIO(pickle_dumps(data))) == data
 
@@ -47,8 +47,8 @@ class Tpickle_load(TestCase):
         assert isinstance(value, B)
 
     def test_pickle_dumps(self):
-        v = [u"foo", b"bar", 42]
-        for protocol in [0, 1, 2]:
+        v = ["foo", b"bar", 42]
+        for _protocol in [0, 1, 2]:
             assert pickle_loads(pickle_dumps(v)) == v
 
     def test_pickle_dumps_fail(self):

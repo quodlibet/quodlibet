@@ -47,21 +47,20 @@ class CoverPluginHandler(PluginHandler):
         """Yields all active CoverSourcePlugin classes sorted by priority"""
 
         sources = chain((p.cls for p in self.providers), self.built_in)
-        for p in sorted(sources, reverse=True, key=lambda x: x.priority()):
-            yield p
+        yield from sorted(sources, reverse=True, key=lambda x: x.priority())
 
 
 class CoverManager(GObject.Object):
 
     __gsignals__ = {
         # ([AudioFile]), emitted if the cover for any songs might have changed
-        'cover-changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "cover-changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
 
         # Covers were found for the songs
-        'covers-found': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "covers-found": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
 
         # All searches were submitted, and success by provider is sent
-        'searches-complete': (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "searches-complete": (GObject.SignalFlags.RUN_LAST, None, (object,))
     }
 
     plugin_handler = None
@@ -131,8 +130,8 @@ class CoverManager(GObject.Object):
                 print_d(f"Found local cover from {name}: {cover}")
                 callback(True, cover)
             else:
-                provider.connect('fetch-success', success)
-                provider.connect('fetch-failure', failure)
+                provider.connect("fetch-success", success)
+                provider.connect("fetch-failure", failure)
                 provider.fetch_cover()
         if not cancellable or not cancellable.is_cancelled():
             run()
@@ -158,12 +157,12 @@ class CoverManager(GObject.Object):
 
             groups = {}
             for song in songs:
-                group = plugin.group_by(song) or ''
+                group = plugin.group_by(song) or ""
                 groups.setdefault(group, []).append(song)
 
             # sort both groups and songs by key, so we always get
             # the same result for the same set of songs
-            for key, group in sorted(groups.items()):
+            for _key, group in sorted(groups.items()):
                 song = sorted(group, key=lambda s: s.key)[0]
                 cover = plugin(song).cover
                 if cover:
@@ -239,7 +238,7 @@ class CoverManager(GObject.Object):
             task.update(frac)
             if frac >= 1:
                 task.finish()
-                self.emit('searches-complete', processed)
+                self.emit("searches-complete", processed)
 
         def search_complete(provider, results):
             name = provider.name
@@ -249,10 +248,10 @@ class CoverManager(GObject.Object):
                 return
             finished(provider, True)
             if not (cancellable and cancellable.is_cancelled()):
-                covers = {CoverData(url=res['cover'], source=name,
-                                    dimensions=res.get('dimensions', None))
+                covers = {CoverData(url=res["cover"], source=name,
+                                    dimensions=res.get("dimensions", None))
                           for res in results}
-                self.emit('covers-found', provider, covers)
+                self.emit("covers-found", provider, covers)
             provider.disconnect_by_func(search_complete)
 
         def failure(provider, result):
@@ -266,7 +265,7 @@ class CoverManager(GObject.Object):
             for plugin in sources:
                 groups = {}
                 for song in songs:
-                    group = plugin.group_by(song) or ''
+                    group = plugin.group_by(song) or ""
                     groups.setdefault(group, []).append(song)
                 all_groups[plugin] = groups
             return all_groups
@@ -277,20 +276,20 @@ class CoverManager(GObject.Object):
         for plugin_cls, groups in all_groups.items():
             for key, group in sorted(groups.items()):
                 song = sorted(group, key=lambda s: s.key)[0]
-                artists = {s.comma('artist') for s in group}
+                artists = {s.comma("artist") for s in group}
                 if len(artists) > 1:
                     print_d(f"{len(artists)} artist groups in {key} "
                             "- probably a compilation. "
                             "Using provider to search for compilation")
                     song = AudioFile(song)
                     try:
-                        del song['artist']
+                        del song["artist"]
                     except KeyError:
                         # Artist(s) from other grouped songs, never mind.
                         pass
                 provider = plugin_cls(song)
-                provider.connect('search-complete', search_complete)
-                provider.connect('fetch-failure', failure)
+                provider.connect("search-complete", search_complete)
+                provider.connect("fetch-failure", failure)
                 provider.search()
         return all_groups
 

@@ -9,7 +9,8 @@
 
 import os
 import time
-from typing import Any, Optional, Sequence
+from typing import Any
+from collections.abc import Sequence
 
 from gi.repository import Gtk, Gdk, Pango, GLib
 
@@ -140,7 +141,7 @@ class QueueExpander(Gtk.Expander):
         disabled = config.getboolean("memory", "queue_disable", False)
         toggle.props.active = disabled
         self.__queue_disable(disabled)
-        toggle.connect('toggled',
+        toggle.connect("toggled",
                        lambda b: self.__queue_disable(b.props.active))
         outer.pack_start(toggle, False, False, 3)
 
@@ -170,7 +171,7 @@ class QueueExpander(Gtk.Expander):
 
         rand_checkbox = ConfigCheckMenuItem(
                 _("_Random"), "memory", "shufflequeue", populate=True)
-        rand_checkbox.connect('toggled', self.__queue_shuffle)
+        rand_checkbox.connect("toggled", self.__queue_shuffle)
         self.set_shuffled(rand_checkbox.get_active())
         menu.append(rand_checkbox)
 
@@ -201,8 +202,8 @@ class QueueExpander(Gtk.Expander):
 
         self.set_label_widget(outer)
         self.add(sw)
-        self.connect('notify::expanded', self.__expand, button)
-        self.connect('notify::expanded', self.__expand, button)
+        self.connect("notify::expanded", self.__expand, button)
+        self.connect("notify::expanded", self.__expand, button)
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
@@ -211,29 +212,29 @@ class QueueExpander(Gtk.Expander):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect('drag-motion', self.__motion)
-        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect("drag-motion", self.__motion)
+        self.connect("drag-data-received", self.__drag_data_received)
 
-        self.queue.model.connect_after('row-inserted',
+        self.queue.model.connect_after("row-inserted",
                                        DeferredSignal(self.__check_expand), count_label)
-        self.queue.model.connect_after('row-deleted',
+        self.queue.model.connect_after("row-deleted",
                                        DeferredSignal(self.__update_count), count_label)
 
         self.__update_count(self.model, None, count_label)
 
         connect_destroy(
-            player, 'song-started', self.__update_state_icon, state_icon)
+            player, "song-started", self.__update_state_icon, state_icon)
         connect_destroy(
-            player, 'paused', self.__update_state_icon_pause,
+            player, "paused", self.__update_state_icon_pause,
             state_icon, True)
         connect_destroy(
-            player, 'unpaused', self.__update_state_icon_pause,
+            player, "unpaused", self.__update_state_icon_pause,
             state_icon, False)
 
         connect_destroy(
-            player, 'song-started', self.__song_started, self.queue.model)
+            player, "song-started", self.__song_started, self.queue.model)
         connect_destroy(
-            player, 'song-ended', self.__update_queue_stop, self.queue.model)
+            player, "song-ended", self.__update_queue_stop, self.queue.model)
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -306,7 +307,7 @@ class QueueExpander(Gtk.Expander):
         self.show()
 
     def __drag_data_received(self, expander, *args):
-        self.queue.emit('drag-data-received', *args)
+        self.queue.emit("drag-data-received", *args)
 
     def __queue_shuffle(self, button):
         self.set_shuffled(button.get_active())
@@ -336,7 +337,7 @@ class QueueExpander(Gtk.Expander):
         else:
             style_context.remove_class("ql-expanded")
 
-        menu_button.set_property('visible', expanded)
+        menu_button.set_property("visible", expanded)
         config.set("memory", "queue_expanded", str(expanded))
 
     def __queue_disable(self, disabled):
@@ -383,7 +384,7 @@ class PlayQueue(SongList):
     """Maximum number of queue items to leave unpersisted (batching)"""
 
     def __init__(self, library: Library, player: BasePlayer,
-                 autosave_interval_secs: Optional[int] = None):
+                 autosave_interval_secs: int | None = None):
         super().__init__(library, player, model_cls=QueueModel, sortable=False)
         self._updated_time = time.time()
         self.autosave_interval = autosave_interval_secs
@@ -392,20 +393,20 @@ class PlayQueue(SongList):
         if keep_song:
             self.set_first_column_type(CurrentColumn)
         self.set_size_request(-1, 120)
-        self.connect('row-activated', self.__go_to, player)
+        self.connect("row-activated", self.__go_to, player)
 
         def reset_activated(*args):
             self._activated = False
-        connect_after_destroy(player, 'song-started', reset_activated)
+        connect_after_destroy(player, "song-started", reset_activated)
 
-        self.connect('popup-menu', self.__popup, library)
+        self.connect("popup-menu", self.__popup, library)
         self.enable_drop()
 
         def write(*args, **kwargs):
             self._write(self, self.model)
             return True
 
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
         if self.autosave_interval:
             self._tid = GLib.timeout_add(self.autosave_interval * 1000, write)
         else:
@@ -414,7 +415,7 @@ class PlayQueue(SongList):
         connect_after_destroy(self.model, "row-deleted", write)
         self.__fill(library)
 
-        self.connect('key-press-event', self.__delete_key_pressed)
+        self.connect("key-press-event", self.__delete_key_pressed)
 
     def __destroy(self, widget):
         self._write(widget, self.model, force=True)
@@ -439,7 +440,7 @@ class PlayQueue(SongList):
         try:
             with open(QUEUE, "rb") as f:
                 lines = f.readlines()
-        except EnvironmentError:
+        except OSError:
             return
 
         filenames = []
@@ -476,7 +477,7 @@ class PlayQueue(SongList):
                         print_w(f"Ignoring queue save error ({e})")
                         continue
                     f.write(line + b"\n")
-        except EnvironmentError as e:
+        except OSError as e:
             print_e(f"Error saving queue ({e})")
         self._updated_time = time.time()
         self._pending = 0
@@ -505,7 +506,7 @@ class PlayQueue(SongList):
         menu.preseparate()
         remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")
-        remove.connect('activate', self.__remove)
+        remove.connect("activate", self.__remove)
         menu.prepend(remove)
         menu.show_all()
         return self.popup_menu(menu, 0, Gtk.get_current_event_time())

@@ -14,8 +14,8 @@ from ._audio import AudioFile, translate_errors
 
 
 extensions = [
-    '.669', '.amf', '.ams', '.dsm', '.far', '.it', '.med', '.mod', '.mt2',
-    '.mtm', '.okt', '.s3m', '.stm', '.ult', '.gdm', '.xm']
+    ".669", ".amf", ".ams", ".dsm", ".far", ".it", ".med", ".mod", ".mt2",
+    ".mtm", ".okt", ".s3m", ".stm", ".ult", ".gdm", ".xm"]
 
 try:
     _modplug = load_library(
@@ -45,11 +45,11 @@ class ModFile(AudioFile):
             data = open(filename, "rb").read()
             f = _modplug.ModPlug_Load(data, len(data))
             if not f:
-                raise IOError("%r not a valid MOD file" % filename)
+                raise OSError("%r not a valid MOD file" % filename)
             self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
             title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
             try:
-                self["title"] = title.decode('utf-8')
+                self["title"] = title.decode("utf-8")
             except UnicodeError:
                 self["title"] = title.decode("iso-8859-1")
             _modplug.ModPlug_Unload(f)

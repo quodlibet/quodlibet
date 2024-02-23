@@ -1,12 +1,12 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2017 Fredrik Strupe
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Type, Optional
 
 from gi.repository import Gtk
 
@@ -43,16 +43,6 @@ class Paned(Gtk.Paned):
                 }
             """)
             return
-
-        # gtk 3.14
-        add_css(self, """
-            GtkPaned {
-                -GtkPaned-handle-size: 6;
-                background-image: none;
-                margin: 0;
-                border-width: 0;
-            }
-        """)
 
 
 class RPaned(Paned):
@@ -125,10 +115,10 @@ class ConfigRPaned(RPaned):
     def __init__(self, section, option, default, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.set_relative(config.getfloat(section, option, default))
-        self.connect('notify::position', self.__changed, section, option)
+        self.connect("notify::position", self.__changed, section, option)
 
     def __changed(self, widget, event, section, option):
-        if self.get_property('position-set'):
+        if self.get_property("position-set"):
             config.set(section, option, str(self.get_relative()))
 
 
@@ -144,7 +134,7 @@ class MultiRPaned:
     """A Paned that supports an unlimited number of panes."""
 
     # The Paned type (horizontal or vertical)
-    PANED: Optional[Type[RPaned]] = None
+    PANED: type[RPaned] | None = None
 
     def __init__(self):
         self._root_paned = None
@@ -251,7 +241,7 @@ class ConfigMultiRPaned(MultiRPaned):
 
         # Connect all paneds
         for paned in paneds:
-            paned.connect('notify::position', self.__changed)
+            paned.connect("notify::position", self.__changed)
 
         self._restore_widths()
 

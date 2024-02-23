@@ -14,8 +14,8 @@ from quodlibet.formats.mpc import MPCFile
 class TMPCFile(TestCase):
 
     def setUp(self):
-        self.song = MPCFile(get_data_path('silence-44-s.mpc'))
-        self.song2 = MPCFile(get_data_path('silence-44-s.sv8.mpc'))
+        self.song = MPCFile(get_data_path("silence-44-s.mpc"))
+        self.song2 = MPCFile(get_data_path("silence-44-s.sv8.mpc"))
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 0.065306, 3)
@@ -30,13 +30,13 @@ class TMPCFile(TestCase):
         assert self.song2("~#samplerate") == 44100
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.song("~#bitrate"), 239)
-        self.failUnlessEqual(self.song2("~#bitrate"), 1)
+        self.assertEqual(self.song("~#bitrate"), 239)
+        self.assertEqual(self.song2("~#bitrate"), 1)
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
-        self.failUnless(os.path.exists(path))
-        self.failUnlessRaises(Exception, MPCFile, path)
+        path = get_data_path("empty.xm")
+        self.assertTrue(os.path.exists(path))
+        self.assertRaises(Exception, MPCFile, path)
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "Musepack")

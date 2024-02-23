@@ -5,7 +5,6 @@
 import shutil
 from pathlib import Path
 from time import sleep, time
-from typing import Optional, Set
 
 from _pytest.fixtures import fixture
 from gi.repository import Gio
@@ -38,7 +37,7 @@ class BasicMonitor:
         print_d(f"Monitoring {path!s}")
 
     def _file_changed(self, _monitor, main_file: Gio.File,
-                      other_file: Optional[Gio.File],
+                      other_file: Gio.File | None,
                       event_type: Gio.FileMonitorEvent) -> None:
         file_path = main_file.get_path()
         other_path = (Path(normalize_path(other_file.get_path(), True))
@@ -47,7 +46,7 @@ class BasicMonitor:
         self.changed.append((event_type, file_path))
 
     @property
-    def event_types(self) -> Set[Event]:
+    def event_types(self) -> set[Event]:
         return {changed[0] for changed in self.changed}
 
 

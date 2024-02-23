@@ -5,14 +5,13 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import sys
 import os
 import ctypes
 
 
-if sys.platform == 'win32':
+if sys.platform == "win32":
     from . import winapi
     from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
         SHGetFolderPathW, S_OK, MAX_PATH, \
@@ -100,7 +99,7 @@ def _get_path(folder, default=False, create=False):
     buffer_ = ctypes.create_unicode_buffer(MAX_PATH)
     try:
         result = SHGetFolderPathW(0, folder, 0, flags, buffer_)
-    except WindowsError:
+    except OSError:
         return None
     if result != S_OK:
         return None
@@ -128,7 +127,7 @@ def _get_known_path(folder, default=False, create=False):
     try:
         result = SHGetKnownFolderPath(
             ctypes.byref(guid), flags, None, ctypes.byref(ptr))
-    except WindowsError:
+    except OSError:
         return None
     if result != S_OK:
         return None

@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Dict, List
 import random
 
 from gi.repository import Gtk, GObject, GLib, Pango
@@ -142,10 +141,10 @@ class Browser(Gtk.Box, Filter):
     """
 
     __gsignals__ = {
-        'songs-selected':
+        "songs-selected":
         (GObject.SignalFlags.RUN_LAST, None, (object, object)),
-        'songs-activated': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'uri-received': (GObject.SignalFlags.RUN_LAST, None, (str,))
+        "songs-activated": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "uri-received": (GObject.SignalFlags.RUN_LAST, None, (str,))
     }
 
     name = _("Library Browser")
@@ -199,11 +198,11 @@ class Browser(Gtk.Box, Filter):
     the songs returned.
     """
 
-    headers: Optional[List[str]] = None
+    headers: list[str] | None = None
     """A list of column headers to display; None means all are okay."""
 
     @classmethod
-    def init(klass, library):
+    def init(cls, library):
         """Called after library and MainWindow initialization, before the
         GTK main loop starts.
         """
@@ -267,18 +266,18 @@ class Browser(Gtk.Box, Filter):
     the browser is.
     """
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items) -> Gtk.Menu:
         """This method returns a Gtk.Menu, probably a SongsMenu. After this
         menu is returned the SongList may modify it further.
         """
 
         return SongsMenu(library, songs, delete=True, items=items)
 
-    def status_text(self, count: int, time: Optional[str] = None) -> str:
+    def status_text(self, count: int, time: str | None = None) -> str:
         tmpl = numeric_phrase("%d song", "%d songs", count)
         return f"{tmpl} ({time})" if time else tmpl
 
-    replaygain_profiles: Optional[List[str]] = None
+    replaygain_profiles: list[str] | None = None
     """Replay Gain profiles for this browser."""
 
     def __str__(self):
@@ -302,11 +301,10 @@ class DisplayPatternMixin:
         """Load the pattern as defined in `_PATTERN_FN`"""
         print_d("Loading pattern from %s" % cls._PATTERN_FN)
         try:
-            with open(cls._PATTERN_FN, "r", encoding="utf-8") as f:
+            with open(cls._PATTERN_FN, encoding="utf-8") as f:
                 pattern_text = f.read().rstrip()
-        except EnvironmentError as e:
-            print_d("Couldn't load pattern for %s (%s), using default." %
-                    (cls.__name__, e))
+        except OSError as e:
+            print_d(f"Couldn't load pattern for {cls.__name__} ({e}), using default.")
             pattern_text = cls._DEFAULT_PATTERN_TEXT
         cls.__refresh_pattern(pattern_text)
 
@@ -347,12 +345,12 @@ class FakeDisplayItem(dict):
     See also `util.pattern`"""
 
     def get(self, key, default="", connector=" - "):
-        if key[:1] == "~" and '~' in key[1:]:
+        if key[:1] == "~" and "~" in key[1:]:
             return connector.join(map(self.get, util.tagsplit(key)))
         elif key[:1] == "~" and key[-4:-3] == ":":
             func = key[-3:]
             key = key[:-4]
-            return "%s<%s>" % (util.tag(key), func)
+            return f"{util.tag(key)}<{func}>"
         elif key in self:
             return self[key]
         return util.tag(key)
@@ -361,7 +359,7 @@ class FakeDisplayItem(dict):
 
     def comma(self, key):
         value = self.get(key)
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             return value
         return value.replace("\n", ", ")
 
@@ -369,10 +367,10 @@ class FakeDisplayItem(dict):
 class EditDisplayPatternMixin:
     """Provides a display Pattern in an editable frame"""
 
-    _PREVIEW_ITEM: Optional[Dict[str, str]] = None
+    _PREVIEW_ITEM: dict[str, str] | None = None
     """The `FakeItem` (or similar) to use to interpolate into the pattern"""
 
-    _DEFAULT_PATTERN: Optional[str] = None
+    _DEFAULT_PATTERN: str | None = None
     """The display pattern to use when none is saved"""
 
     def edit_display_pane(self, browser, frame_title=None):
@@ -388,9 +386,9 @@ class EditDisplayPatternMixin:
         eb.add(label)
         edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
-        edit.apply.connect('clicked', self._set_pattern, edit, browser)
+        edit.apply.connect("clicked", self._set_pattern, edit, browser)
         connect_obj(
-                edit.buffer, 'changed', self._preview_pattern, edit, label)
+                edit.buffer, "changed", self._preview_pattern, edit, label)
         vbox.pack_start(eb, False, True, 3)
         vbox.pack_start(edit, True, True, 0)
         self._preview_pattern(edit, label)
@@ -402,11 +400,11 @@ class EditDisplayPatternMixin:
     def _preview_pattern(self, edit, label):
         try:
             text = XMLFromMarkupPattern(edit.text) % self._PREVIEW_ITEM
-        except:
+        except Exception:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)
         try:
-            Pango.parse_markup(text, -1, u"\u0000")
+            Pango.parse_markup(text, -1, "\u0000")
         except GLib.GError:
             text = _("Invalid pattern")
             edit.apply.set_sensitive(False)

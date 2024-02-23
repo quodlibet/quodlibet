@@ -35,21 +35,21 @@ class Thttps(TestCase):
         for url in self.GOOD:
             urlopen(url, cafile=get_ca_file()).close()
         for url in self.BAD:
-            with self.assertRaises(Exception):
+            with pytest.raises(OSError):
                 urlopen(url, cafile=get_ca_file()).close()
 
     def test_urllib_default(self):
         for url in self.GOOD:
             urlopen(url).close()
         for url in self.BAD:
-            with self.assertRaises(Exception):
+            with pytest.raises(OSError):
                 urlopen(url).close()
 
     def test_urllib_build_opener(self):
         for url in self.GOOD:
             build_opener().open(url).close()
         for url in self.BAD:
-            with self.assertRaises(Exception):
+            with pytest.raises(OSError):
                 build_opener().open(url).close()
 
     def test_gio(self):
@@ -59,7 +59,7 @@ class Thttps(TestCase):
             client.connect_to_uri(url, 443, None).close()
 
         for url in self.BAD:
-            with self.assertRaises(GLib.GError):
+            with pytest.raises(GLib.GError):
                 client = Gio.SocketClient()
                 client.set_tls(True)
                 client.connect_to_uri(url, 443, None).close()
@@ -71,7 +71,7 @@ class Thttps(TestCase):
             session.send_and_read(msg)
 
         for url in self.BAD:
-            with self.assertRaises(GLib.GError):
+            with pytest.raises(GLib.GError):
                 session = Soup.Session()
                 msg = Soup.Message.new("GET", url)
                 session.send_and_read(msg)

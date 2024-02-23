@@ -5,16 +5,15 @@
 
 from datetime import datetime
 from time import localtime, strftime
-from typing import Text, Optional
 
 
-def format_date(seconds: float, format_setting: Optional[Text] = None) -> Text:
+def format_date(seconds: float, format_setting: str | None = None) -> str:
     """Formats a date either with the default format,
      or the passed strftime-compatible format string"""
     try:
         date = datetime.fromtimestamp(seconds).date()
     except (OverflowError, ValueError, OSError):
-        text = u""
+        text = ""
     else:
         if format_setting:
             format_ = format_setting

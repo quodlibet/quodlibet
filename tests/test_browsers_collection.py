@@ -39,7 +39,7 @@ class TCollectionPreferences(TestCase):
     def test_headers(self):
         value = [("foobar", 0), ("~people", 1)]
         save_headers(value)
-        self.failUnlessEqual(get_headers(), value)
+        self.assertEqual(get_headers(), value)
 
     def test_pref_dialog(self):
         d = PatternEditor()
@@ -59,29 +59,29 @@ class TCollectionAlbums(TestCase):
     def test_build_tree(self):
         tags = [("~people", 0)]
         tree = build_tree(tags, self.albums)
-        self.failUnless("mu" in tree)
-        self.failUnless("boris" in tree)
-        self.failUnless("piman" in tree)
-        self.failUnless(UnknownNode in tree)
-        self.failUnlessEqual(len(tree), 4)
+        self.assertTrue("mu" in tree)
+        self.assertTrue("boris" in tree)
+        self.assertTrue("piman" in tree)
+        self.assertTrue(UnknownNode in tree)
+        self.assertEqual(len(tree), 4)
 
     def test_build_tree_merge(self):
         tags = [("~people", 1)]
         tree = build_tree(tags, self.albums)
-        self.failUnless(MultiNode in tree)
-        self.failUnless(UnknownNode in tree)
-        self.failUnless("boris" in tree)
-        self.failUnless("piman" in tree)
-        self.failUnlessEqual(len(tree), 4)
+        self.assertTrue(MultiNode in tree)
+        self.assertTrue(UnknownNode in tree)
+        self.assertTrue("boris" in tree)
+        self.assertTrue("piman" in tree)
+        self.assertEqual(len(tree), 4)
 
     def test_model(self):
         model = CollectionTreeStore()
         model.set_albums([("~people", 0)], self.albums)
-        self.failUnlessEqual(len(model), 4)
+        self.assertEqual(len(model), 4)
         model.change_albums(self.albums)
-        self.failUnlessEqual(len(model), 4)
+        self.assertEqual(len(model), 4)
         model.remove_albums(self.albums)
-        self.failUnlessEqual(len(model), 0)
+        self.assertEqual(len(model), 0)
 
     def test_utils(self):
         model = CollectionTreeStore()
@@ -91,18 +91,18 @@ class TCollectionAlbums(TestCase):
 
         path = model.get_path_for_album(a[0])
         albums = model.get_albums_for_path(path)
-        self.failUnless(a[0] in albums)
+        self.assertTrue(a[0] in albums)
 
         albums = model.get_albums_for_iter(model.get_iter(path))
-        self.failUnless(a[0] in albums)
+        self.assertTrue(a[0] in albums)
 
         x = model.get_album(model.get_iter_first())
-        self.failIf(x)
+        self.assertFalse(x)
         x = model.get_album(model.get_iter(path))
-        self.failUnlessEqual(x, a[0])
+        self.assertEqual(x, a[0])
 
         for r in model:
-            self.failUnless(model.get_markup(model.tags, r.iter))
+            self.assertTrue(model.get_markup(model.tags, r.iter))
 
         x = list(model.iter_albums(None))
         self.assertEqual(set(x), set(a))

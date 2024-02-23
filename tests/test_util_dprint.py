@@ -17,13 +17,13 @@ class Tdprint(TestCase):
 
     def test_basics(self):
         with capture_output() as (stdout, stderr):
-            print_e(u"foo")
-        assert u"foo" in stderr.getvalue()
+            print_e("foo")
+        assert "foo" in stderr.getvalue()
 
     def test_any_object(self):
         with capture_output() as (stdout, stderr):
             print_e(42)
-        assert u"42" in stderr.getvalue()
+        assert "42" in stderr.getvalue()
 
     def test_format_exception_only(self):
         try:

@@ -15,7 +15,7 @@ import sys
 import unicodedata
 import threading
 import locale
-from typing import Dict, List, Callable
+from collections.abc import Callable
 from functools import reduce
 
 # Windows doesn't have fcntl, just don't lock for now
@@ -50,18 +50,18 @@ class InstanceTracker:
     of a given type. Note that it must be used with a GObject or
     something with a connect method and destroy signal."""
 
-    __kinds: Dict[type, List[object]] = {}
+    __kinds: dict[type, list[object]] = {}
 
     def _register_instance(self, klass=None):
         """Register this object to be returned in the active instance list."""
         if klass is None:
             klass = type(self)
         self.__kinds.setdefault(klass, []).append(self)
-        self.connect('destroy', self.__kinds[klass].remove)
+        self.connect("destroy", self.__kinds[klass].remove)
 
     @classmethod
-    def instances(klass):
-        return klass.__kinds.get(klass, [])
+    def instances(cls):
+        return cls.__kinds.get(cls, [])
 
 
 class OptionParser:
@@ -80,7 +80,8 @@ class OptionParser:
             "version", shorts="v", help=_("Display version and copyright"))
         self.add("debug", shorts="d", help=_("Print debugging information"))
 
-    def add(self, canon, help=None, arg="", shorts="", longs=[]):
+    def add(self, canon, help=None, arg="", shorts="", longs=None):
+        longs = longs or []
         self.__args[canon] = arg
         for s in shorts:
             self.__translate_short[s] = canon
@@ -107,8 +108,8 @@ class OptionParser:
         if opt in self.__help:
             help = self.__help[opt]
             if self.__args[opt]:
-                opt = "%s=%s" % (opt, self.__args[opt])
-            return "  --%s %s\n" % (opt.ljust(space), help)
+                opt = f"{opt}={self.__args[opt]}"
+            return f"  --{opt.ljust(space)} {help}\n"
         else:
             return ""
 
@@ -123,7 +124,7 @@ class OptionParser:
         }
         s += "\n"
         if self.__description:
-            s += "%s - %s\n" % (self.__name, self.__description)
+            s += f"{self.__name} - {self.__description}\n"
         s += "\n"
         keys = sorted(self.__help.keys())
         try:
@@ -146,12 +147,11 @@ class OptionParser:
         self.__help = newhelp
 
     def version(self):
-        return ("""\
-{title} {version}
-<{email}>
-{copyright}\
-""").format(title=self.__name, version=self.__version,
-            email=SUPPORT_EMAIL, copyright=COPYRIGHT)
+        return (f"""\
+{self.__name} {self.__version}
+<{SUPPORT_EMAIL}>
+{COPYRIGHT}\
+""")
 
     def parse(self, args=None):
         if args is None:
@@ -159,23 +159,20 @@ class OptionParser:
         from getopt import getopt, GetoptError
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
-        except GetoptError as s:
-            s = str(s)
+        except GetoptError as e:
+            s = str(e)
             text = []
             if "not recognized" in s:
-                text.append(
-                    _("Option %r not recognized.") % s.split()[1])
+                text.append(_("Option %r not recognized.") % s.split()[1])
             elif "requires argument" in s:
-                text.append(
-                    _("Option %r requires an argument.") % s.split()[1])
+                text.append(_("Option %r requires an argument.") % s.split()[1])
             elif "unique prefix" in s:
-                text.append(
-                    _("%r is not a unique prefix.") % s.split()[1])
+                text.append(_("%r is not a unique prefix.") % s.split()[1])
             if "help" in self.__args:
                 text.append(_("Try %s --help.") % sys.argv[0])
 
             print_e("\n".join(text))
-            raise SystemExit(True)
+            raise SystemExit(True) from e
         else:
             transopts = {}
             for o, a in opts:
@@ -226,20 +223,20 @@ def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
     return "<b><i>%s</i></b>" % escaper(string)
 
 
-def parse_time(timestr, err=object()):
+def parse_time(time_str: str, suppress_errors: bool = True):
     """Parse a time string in hh:mm:ss, mm:ss, or ss format."""
 
-    if timestr[0:1] == "-":
+    if time_str[0:1] == "-":
         m = -1
-        timestr = timestr[1:]
+        time_str = time_str[1:]
     else:
         m = 1
 
     try:
         return m * reduce(lambda s, a: s * 60 + int(a),
-                          re.split(r":|\.", timestr), 0)
+                          re.split(r":|\.", time_str), 0)
     except (ValueError, re.error):
-        if err is None:
+        if not suppress_errors:
             raise
         return 0
 
@@ -294,7 +291,7 @@ def date_key(datestr):
     parts += default[len(parts):]
 
     value = 0
-    for d, p, m in zip(default, parts, (10000, 100, 1)):
+    for d, p, m in zip(default, parts, (10000, 100, 1), strict=False):
         try:
             value += int(p) * m
         except ValueError:
@@ -313,13 +310,13 @@ def parse_date(datestr):
 
     try:
         frmt = ["%Y", "%Y-%m", "%Y-%m-%d"][datestr.count("-")]
-    except IndexError:
-        raise ValueError
+    except IndexError as e:
+        raise ValueError from e
 
     try:
         return time.mktime(time.strptime(datestr, frmt))
     except OverflowError as e:
-        raise ValueError(e)
+        raise ValueError(e) from e
 
 
 def format_int_locale(value):
@@ -363,19 +360,19 @@ def format_size(size):
     """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024 ** 3:
-        return u"%.1f GB" % (float(size) / (1024 ** 3))
+        return "%.1f GB" % (float(size) / (1024 ** 3))
     elif size >= 1024 ** 2 * 100:
-        return u"%.0f MB" % (float(size) / (1024 ** 2))
+        return "%.0f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2 * 10:
-        return u"%.1f MB" % (float(size) / (1024 ** 2))
+        return "%.1f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 ** 2:
-        return u"%.2f MB" % (float(size) / (1024 ** 2))
+        return "%.2f MB" % (float(size) / (1024 ** 2))
     elif size >= 1024 * 10:
-        return u"%d KB" % int(size / 1024)
+        return "%d KB" % int(size / 1024)
     elif size >= 1024:
-        return u"%.2f KB" % (float(size) / 1024)
+        return "%.2f KB" % (float(size) / 1024)
     else:
-        return u"%d B" % size
+        return "%d B" % size
 
 
 def format_time(time):
@@ -398,7 +395,7 @@ def format_time(time):
 def format_time_display(time):
     """Like format_time, but will use RATIO instead of a colon to separate"""
 
-    return format_time(time).replace(":", u"\u2236")
+    return format_time(time).replace(":", "\u2236")
 
 
 def format_time_seconds(time):
@@ -468,13 +465,13 @@ def capitalize(str):
 
 def _split_numeric_sortkey(s, limit=10,
                            reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-                           join=u" ".join):
+                           join=" ".join):
     """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
     if not result or not limit:
         text = join(s.split())
-        return (text,) if text else tuple()
+        return (text,) if text else ()
     else:
         start, end = result.span()
         return (
@@ -503,7 +500,7 @@ def website(site):
         print_exc()
 
 
-def tag(name, cap=True):
+def tag(name: str, cap: bool =True) -> str:
     # Return a 'natural' version of the tag for human-readable bits.
     # Strips ~ and ~# from the start and runs it through a map (which
     # the user can configure).
@@ -524,7 +521,7 @@ def tag(name, cap=True):
         return " / ".join(parts)
 
 
-def tagsplit(tag):
+def tagsplit(tag: str) -> list[str]:
     """Split a (potentially) tied tag into a list of atomic tags. Two ~~s
     make the next tag prefixed with a ~, so ~foo~~bar => [foo, ~bar]."""
     if "~" in tag[1:]:
@@ -564,9 +561,9 @@ def pattern(pat, cap=True, esc=False, markup=False):
         def __call__(self, tag, *args):
             if tag in FILESYSTEM_TAGS:
                 return fsnative(str(tag))
-            return 0 if '~#' in tag[:2] else self.comma(tag)
+            return 0 if "~#" in tag[:2] else self.comma(tag)
 
-    fakesong = Fakesong({'filename': tag('filename', cap)})
+    fakesong = Fakesong({"filename": tag("filename", cap)})
     fakesong.cap = cap
     try:
         if markup:
@@ -607,7 +604,7 @@ def fver(tup):
 
 
 def make_case_insensitive(filename):
-    return "".join(["[%s%s]" % (c.lower(), c.upper()) for c in filename])
+    return "".join([f"[{c.lower()}{c.upper()}]" for c in filename])
 
 
 class DeferredSignal:
@@ -745,7 +742,7 @@ def _connect_destroy(sender, func, detailed_signal, handler, *args, **kwargs):
     def disconnect_cb(*args):
         sender.disconnect(handler_id)
 
-    obj.connect('destroy', disconnect_cb)
+    obj.connect("destroy", disconnect_cb)
     return handler_id
 
 
@@ -757,7 +754,7 @@ def connect_after_destroy(sender, *args, **kwargs):
     return _connect_destroy(sender, sender.connect_after, *args, **kwargs)
 
 
-class cached_property:
+class cached_property:  # noqa
     """A read-only @property that is only evaluated once.
     TODO: work out some typing for this, see test_query.py"""
 
@@ -793,14 +790,14 @@ def sanitize_tags(tags, stream=False):
 
             if key == "channel-mode":
                 if "stereo" in lower or "dual" in lower:
-                    value = u"stereo"
+                    value = "stereo"
             elif key == "audio-codec":
                 if "mp3" in lower:
-                    value = u"MP3"
+                    value = "MP3"
                 elif "aac" in lower or "advanced" in lower:
-                    value = u"MPEG-4 AAC"
+                    value = "MPEG-4 AAC"
                 elif "vorbis" in lower:
-                    value = u"Ogg Vorbis"
+                    value = "Ogg Vorbis"
 
             if lower in ("http://www.shoutcast.com", "http://localhost/",
                          "default genre", "none", "http://", "unnamed server",
@@ -842,7 +839,7 @@ def sanitize_tags(tags, stream=False):
         if not stream and key in ("title", "album", "artist", "date"):
             continue
 
-        if isinstance(value, (int, float)):
+        if isinstance(value, int | float):
             if not key.startswith("~#"):
                 key = "~#" + key
             san[key] = value
@@ -873,12 +870,12 @@ def build_filter_query(key, values):
     """
 
     if not values:
-        return u""
+        return ""
     if key.startswith("~#"):
         nheader = key[2:]
-        queries = ["#(%s = %s)" % (nheader, i) for i in values]
+        queries = [f"#({nheader} = {i})" for i in values]
         if len(queries) > 1:
-            return u"|(%s)" % ", ".join(queries)
+            return "|(%s)" % ", ".join(queries)
         else:
             return queries[0]
     else:
@@ -886,9 +883,9 @@ def build_filter_query(key, values):
             ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
              for v in values])
         if len(values) == 1:
-            return u"%s = %s" % (key, text)
+            return f"{key} = {text}"
         else:
-            return u"%s = |(%s)" % (key, text)
+            return f"{key} = |({text})"
 
 
 def limit_songs(songs, max, weight_by_ratings=False):
@@ -945,7 +942,8 @@ def load_library(names, shared=True):
         raise ValueError
 
     if shared:
-        load_func = lambda n: getattr(ctypes.cdll, n)
+        def load_func(n):
+            return getattr(ctypes.cdll, n)
     else:
         load_func = ctypes.cdll.LoadLibrary
 
@@ -1021,7 +1019,7 @@ class MainRunner:
             finally:
                 self._source_id = None
                 self._cond.notify()
-                return False
+            return False
 
     def abort(self):
         """After this call returns no function will be executed anymore
@@ -1094,12 +1092,15 @@ class MainRunner:
             return self._return
 
 
-def re_escape(string, BAD="/.^$*+-?{,\\[]|()<>#=!:"):
+def re_escape(string, bad="/.^$*+-?{,\\[]|()<>#=!:"):
     """A `re.escape` which also works with unicode"""
 
-    needs_escape = lambda c: (c in BAD and "\\" + c) or c
+    def needs_escape(c):
+        return c in bad and "\\" + c or c
     return type(string)().join(map(needs_escape, string))
 
+
+PR_SET_NAME = 15
 
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc
@@ -1121,8 +1122,6 @@ def set_process_title(title):
             ctypes.c_ulong, ctypes.c_ulong,
         ]
         prctl.restype = ctypes.c_int
-
-        PR_SET_NAME = 15
         data = ctypes.create_string_buffer(title.encode("utf-8"))
         res = prctl(PR_SET_NAME, ctypes.addressof(data), 0, 0, 0)
         if res != 0:

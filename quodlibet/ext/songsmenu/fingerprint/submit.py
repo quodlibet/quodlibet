@@ -86,23 +86,23 @@ class FingerprintDialog(Window):
         bbox.set_spacing(6)
         self.__submit = submit = Button(_("_Submit"))
         submit.set_sensitive(False)
-        submit.connect('clicked', self.__submit_cb)
+        submit.connect("clicked", self.__submit_cb)
         cancel = Button(_("_Cancel"))
-        connect_obj(cancel, 'clicked', self.__cancel_cb, pool)
+        connect_obj(cancel, "clicked", self.__cancel_cb, pool)
         bbox.pack_start(cancel, True, True, 0)
         bbox.pack_start(submit, True, True, 0)
 
         outer_box.pack_start(box, True, True, 0)
         outer_box.pack_start(bbox, False, True, 0)
 
-        pool.connect('fingerprint-done', self.__fp_done_cb)
-        pool.connect('fingerprint-error', self.__fp_error_cb)
-        pool.connect('fingerprint-started', self.__fp_started_cb)
+        pool.connect("fingerprint-done", self.__fp_done_cb)
+        pool.connect("fingerprint-error", self.__fp_error_cb)
+        pool.connect("fingerprint-started", self.__fp_started_cb)
 
         for song in songs:
             pool.push(song)
 
-        connect_obj(self, 'delete-event', self.__cancel_cb, pool)
+        connect_obj(self, "delete-event", self.__cancel_cb, pool)
 
         self.add(outer_box)
         self.show_all()

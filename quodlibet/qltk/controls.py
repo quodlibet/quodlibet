@@ -33,9 +33,9 @@ class Volume(Gtk.VolumeButton):
         if hasattr(Gtk, "Popover") and isinstance(popup, Gtk.Popover):
             popup.set_position(Gtk.PositionType.BOTTOM)
 
-        self._id = self.connect('value-changed', self.__volume_changed, player)
-        self._id2 = player.connect('notify::volume', self.__volume_notify)
-        self._id3 = player.connect('notify::mute', self.__mute_notify)
+        self._id = self.connect("value-changed", self.__volume_changed, player)
+        self._id2 = player.connect("notify::volume", self.__volume_notify)
+        self._id3 = player.connect("notify::mute", self.__mute_notify)
         self._orig_icon_list = self.props.icons
         player.notify("volume")
         player.notify("mute")
@@ -43,8 +43,8 @@ class Volume(Gtk.VolumeButton):
         self.connect("event", self._on_button_event, player)
 
         replaygain_menu = VolumeMenu(player)
-        self.connect('popup-menu', self.__popup, replaygain_menu)
-        connect_obj(self, 'button-press-event', self.__volume_button_press,
+        self.connect("popup-menu", self.__popup, replaygain_menu)
+        connect_obj(self, "button-press-event", self.__volume_button_press,
                     replaygain_menu, player)
 
     def __popup(self, widget, menu):
@@ -138,7 +138,7 @@ class VolumeMenu(Gtk.Menu):
         rg.show()
         item.set_submenu(rg)
         item = None
-        for mode, title, profile in self.__modes:
+        for mode, title, _profile in self.__modes:
             item = RadioMenuItem(group=item, label=title,
                                  use_underline=True)
             rg.append(item)
@@ -172,7 +172,7 @@ class VolumeMenu(Gtk.Menu):
 class PlayPauseButton(Gtk.Button):
 
     __gsignals__: GSignals = {
-        'toggled': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "toggled": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -255,17 +255,17 @@ class PlayControls(Gtk.VBox):
         self.pack_start(upper, False, True, 0)
         self.pack_start(lower, False, True, 0)
 
-        connect_obj(prev, 'clicked', self.__previous, player)
-        self._toggle_id = play.connect('toggled', self.__playpause, player)
+        connect_obj(prev, "clicked", self.__previous, player)
+        self._toggle_id = play.connect("toggled", self.__playpause, player)
         play.add_events(Gdk.EventMask.SCROLL_MASK)
-        connect_obj(play, 'scroll-event', self.__scroll, player)
-        connect_obj(next_, 'clicked', self.__next, player)
+        connect_obj(play, "scroll-event", self.__scroll, player)
+        connect_obj(next_, "clicked", self.__next, player)
         connect_destroy(
-            player, 'song-started', self.__song_started, next_, play)
+            player, "song-started", self.__song_started, next_, play)
         connect_destroy(
-            player, 'paused', self.__on_set_paused_unpaused, play, False)
+            player, "paused", self.__on_set_paused_unpaused, play, False)
         connect_destroy(
-            player, 'unpaused', self.__on_set_paused_unpaused, play, True)
+            player, "unpaused", self.__on_set_paused_unpaused, play, True)
 
     def __on_set_paused_unpaused(self, player, button, state):
         # block to prevent a signal cycle in case the paused signal and state

@@ -30,7 +30,7 @@ from .util import Command
 from .gettextutil import merge_file
 
 
-class build_appdata(Command):
+class BuildAppdata(Command):
     """Build .appdata.xml files
 
     Move .appdata.xml files to the appropriate location in the build tree.
@@ -47,14 +47,14 @@ class build_appdata(Command):
 
     def finalize_options(self):
         self.appdata = self.distribution.appdata
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'build_po', ('po_build_dir', 'po_build_dir'))
+            "build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
 
-        basepath = os.path.join(self.build_base, 'share', 'appdata')
+        basepath = os.path.join(self.build_base, "share", "metainfo")
         self.mkpath(basepath)
         for appdata in self.appdata:
             if os.path.exists(appdata + ".in"):
@@ -66,11 +66,11 @@ class build_appdata(Command):
                 self.copy_file(appdata, os.path.join(basepath, appdata))
 
 
-class install_appdata(Command):
+class InstallAppdata(Command):
     """Install .appdata.xml files
 
     Install any .appdata.xml files from the build tree to their final
-    location, under $prefix/share/appdata.
+    location, under $prefix/share/metainfo.
     """
 
     description = "install .appdata.xml files"
@@ -84,24 +84,24 @@ class install_appdata(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('build', ('build_base', 'build_base'))
+        self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            'install',
-            ('install_data', 'install_dir'),
-            ('skip_build', 'skip_build'))
+            "install",
+            ("install_data", "install_dir"),
+            ("skip_build", "skip_build"))
 
         self.set_undefined_options(
-            'build_appdata', ('appdata', 'appdata'))
+            "build_appdata", ("appdata", "appdata"))
 
     def get_outputs(self):
         return self.outfiles
 
     def run(self):
         if not self.skip_build:
-            self.run_command('build_appdata')
+            self.run_command("build_appdata")
 
-        basepath = os.path.join(self.install_dir, 'share', 'appdata')
-        srcpath = os.path.join(self.build_base, 'share', 'appdata')
+        basepath = os.path.join(self.install_dir, "share", "metainfo")
+        srcpath = os.path.join(self.build_base, "share", "metainfo")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for appdata in self.appdata:
@@ -112,4 +112,4 @@ class install_appdata(Command):
             self.outfiles.append(out)
 
 
-__all__ = ["build_appdata", "install_appdata"]
+__all__ = ["BuildAppdata", "InstallAppdata"]

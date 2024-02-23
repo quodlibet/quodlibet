@@ -21,9 +21,9 @@ _TOTAL_MQTT_ITEMS = 5
 
 try:
     import paho.mqtt.client as mqtt
-except ImportError:
-    from quodlibet.plugins import MissingModulePluginException
-    raise MissingModulePluginException('paho-mqtt')
+except ImportError as e:
+    from quodlibet.plugins import MissingModulePluginError
+    raise MissingModulePluginError("paho-mqtt") from e
 
 from gi.repository import Gtk
 
@@ -42,19 +42,19 @@ FILL = Gtk.AttachOptions.FILL
 
 
 class Config:
-    STATUS_SONGLESS = 'no_song_text', ""
-    PAT_PLAYING = 'playing_pattern', "♫ <~artist~title> ♫"
-    PAT_PAUSED = 'paused_pattern', "<~artist~title> [%s]" % _("paused")
-    HOST = 'host', "localhost"
-    PORT = 'port', 1883
-    USERNAME = 'username', ""
-    PASSWORD = 'password', ""
-    TOPIC = 'topic', 'quodlibet/now-playing'
+    STATUS_SONGLESS = "no_song_text", ""
+    PAT_PLAYING = "playing_pattern", "♫ <~artist~title> ♫"
+    PAT_PAUSED = "paused_pattern", "<~artist~title> [%s]" % _("paused")
+    HOST = "host", "localhost"
+    PORT = "port", 1883
+    USERNAME = "username", ""
+    PASSWORD = "password", ""
+    TOPIC = "topic", "quodlibet/now-playing"
     EMPTY_STATUS = ""
 
 
 _ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s") %
-                     monospace('<~artist~title>'))
+                     monospace("<~artist~title>"))
 
 
 class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
@@ -77,7 +77,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
     def on_message(self, client, userdata, msg):
         """The callback for messages received from the server."""
-        print_d("%s: %s" % (msg.topic, msg.payload))
+        print_d(f"{msg.topic}: {msg.payload}")
 
     def _set_up_mqtt_client(self):
         self.client = client = mqtt.Client()
@@ -92,7 +92,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         self.client.loop_start()
 
     def _set_status(self, text):
-        print_d("Setting status to \"%s\"..." % text)
+        print_d('Setting status to "%s"...' % text)
         result, mid = self.client.publish(self.topic, text, retain=True)
         if result != mqtt.MQTT_ERR_SUCCESS:
             print_w("Couldn't publish to %s at %s:%d (%s)"
@@ -126,7 +126,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         self.client.disconnect()
 
     def enabled(self):
-        self.host = self.config_get(*Config.HOST) or 'localhost'
+        self.host = self.config_get(*Config.HOST) or "localhost"
         self.port = int(self.config_get(*Config.PORT)) or 1883
         self.username = self.config_get(*Config.USERNAME)
         self.password = self.config_get(*Config.PASSWORD)
@@ -147,11 +147,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
 
         (_("Playing Pattern"),
          Config.PAT_PLAYING,
-         _("Status text when a song is started.") + ' ' + _ACCEPTS_PATTERNS),
+         _("Status text when a song is started.") + " " + _ACCEPTS_PATTERNS),
 
         (_("Paused Pattern"),
          Config.PAT_PAUSED,
-         _("Text when a song is paused.") + ' ' + _ACCEPTS_PATTERNS),
+         _("Text when a song is paused.") + " " + _ACCEPTS_PATTERNS),
 
         (_("No-song Text"),
          Config.STATUS_SONGLESS,
@@ -183,7 +183,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
             entry = (ValidatingEntry(validator=validator)
                      if self._is_pattern(cfg) else UndoEntry())
             entry.set_text(str(self.config_get(*cfg)))
-            entry.connect('changed', self._on_changed, cfg)
+            entry.connect("changed", self._on_changed, cfg)
             lbl = Gtk.Label(label=label + ":")
             lbl.set_size_request(140, -1)
             lbl.set_alignment(xalign=0.0, yalign=0.5)
@@ -204,11 +204,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         try:
             self.enabled()
             msg = (_("Connected to broker at %(host)s:%(port)d")
-                   % {'host': self.host, 'port': self.port})
+                   % {"host": self.host, "port": self.port})
             Message(Gtk.MessageType.INFO, app.window, "Success", msg).run()
-        except IOError as e:
+        except OSError as e:
             template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s)")
-            msg = template % {'host': self.host, 'port': self.port, 'msg': e}
+            msg = template % {"host": self.host, "port": self.port, "msg": e}
             print_w(msg)
             ErrorMessage(app.window, _("Connection error"), msg).run()
         yield
@@ -237,14 +237,14 @@ class FakeAudioFile(AudioFile):
         return super().get(key, default)
 
     def fake_value(self, key):
-        if key.replace('~', '').replace('#', '') in _TAGS:
-            if key.startswith('~#'):
+        if key.replace("~", "").replace("#", "") in _TAGS:
+            if key.startswith("~#"):
                 return 0
-            elif key.startswith('~'):
+            elif key.startswith("~"):
                 return "The %s" % key
-        if key.startswith('~'):
+        if key.startswith("~"):
             raise ValueError("Unknown tag %s" % key)
         return "The %s" % key
 
 
-DUMMY_AF = FakeAudioFile({'~filename': '/dev/null'})
+DUMMY_AF = FakeAudioFile({"~filename": "/dev/null"})

@@ -16,12 +16,12 @@ class MissingQuery(QueryPlugin, PluginConfigMixin):
     PLUGIN_ID = "missing_query"
     PLUGIN_NAME = _("Missing Query")
     PLUGIN_DESC = _("Matches songs without the given tag.")
-    key = 'missing'
+    key = "missing"
     query_syntax = "@(missing: artist)"
     usage = markup_for_syntax(query_syntax)
 
     def search(self, data, body):
-        val = data.get(body.strip() if body else '', None)
+        val = data.get(body.strip() if body else "", None)
         return (val is None
                 or (self.config_get_bool("include_empty", True)
                     and val == ""))

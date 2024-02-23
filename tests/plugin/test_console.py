@@ -12,7 +12,7 @@ from quodlibet.formats import AudioFile
 from quodlibet.util.songwrapper import SongWrapper
 from tests.plugin import PluginTestCase
 
-AUDIO_FILE = SongWrapper(AudioFile({'~filename': "/tmp/foobar"}))
+AUDIO_FILE = SongWrapper(AudioFile({"~filename": "/tmp/foobar"}))
 
 
 class Dummy:
@@ -23,10 +23,10 @@ class Dummy:
 
 
 DUMMY_COMPLETIONS = [
-    ('dummy_meth', ' (arg, varg=101)'),
-    ('dummy_val', ''),
+    ("dummy_meth", " (arg, varg=101)"),
+    ("dummy_val", ""),
 ]
-NAMESPACE_COMPLETIONS = ('dummy', '')
+NAMESPACE_COMPLETIONS = ("dummy", "")
 
 
 class TConsole(PluginTestCase):
@@ -39,9 +39,9 @@ class TConsole(PluginTestCase):
     def test_sidebar_plugin(self):
         plugin = self.mod.PyConsoleSidebar()
         plugin.enabled()
-        self.failUnless(isinstance(plugin.create_sidebar(), Gtk.Widget), True)
+        self.assertTrue(isinstance(plugin.create_sidebar(), Gtk.Widget), True)
         plugin.plugin_on_songs_selected([AUDIO_FILE])
-        self.failUnlessEqual(plugin.console.namespace.get('songs'),
+        self.assertEqual(plugin.console.namespace.get("songs"),
                              [AUDIO_FILE])
         plugin.disabled()
 
@@ -49,12 +49,12 @@ class TConsole(PluginTestCase):
         plugin = self.mod.PyConsoleSidebar()
         plugin.enabled()
 
-        plugin.console.namespace['dummy'] = Dummy()
+        plugin.console.namespace["dummy"] = Dummy()
 
-        comp = plugin.console.get_completion_items('dummy.')
-        self.failUnlessEqual(comp, DUMMY_COMPLETIONS)
+        comp = plugin.console.get_completion_items("dummy.")
+        self.assertEqual(comp, DUMMY_COMPLETIONS)
 
-        comp = plugin.console.get_completion_items('')
+        comp = plugin.console.get_completion_items("")
         assert NAMESPACE_COMPLETIONS in comp
 
         plugin.disabled()

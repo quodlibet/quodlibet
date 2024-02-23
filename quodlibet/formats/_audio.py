@@ -1,5 +1,5 @@
 # Copyright 2004-2005 Joe Wreschnig, Michael Urman
-#           2012-2022 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #                2022 Jej@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@ import os
 import re
 import shutil
 import time
-from typing import Any, List, Tuple, Generic, TypeVar, Optional
+from typing import Any, Generic, TypeVar
 from collections import OrderedDict
 from itertools import zip_longest
 
@@ -40,9 +40,9 @@ from ._image import ImageContainer
 from ._misc import AudioFileError, translate_errors
 
 
-translate_errors
+translate_errors  # noqa
 
-AlbumKey = Tuple[str, str, str]
+AlbumKey = tuple[str, str, str]
 """An album key is (currently) a tuple"""
 
 MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
@@ -50,7 +50,7 @@ MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
 """These get migrated if a song gets reloaded"""
 
 PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
-          "originalartist", "lyricist", "arranger", "conductor"]
+          "originalartist", "producer", "lyricist", "arranger", "conductor"]
 """Sources of the ~people tag, most important first"""
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
@@ -73,13 +73,13 @@ NUMERIC_ZERO_DEFAULT.update(SIZE_TAGS)
 FILESYSTEM_TAGS = {"~filename", "~basename", "~dirname", "~mountpoint"}
 """Values are bytes in Linux instead of unicode"""
 
-SORT_TO_TAG = dict((v, k) for (k, v) in TAG_TO_SORT.items())
+SORT_TO_TAG = {v: k for (k, v) in TAG_TO_SORT.items()}
 """Reverse map, so sort tags can fall back to the normal ones"""
 
 PEOPLE_SORT = [TAG_TO_SORT.get(k, k) for k in PEOPLE]
 """Sources for ~peoplesort, most important first"""
 
-VARIOUS_ARTISTS_VALUES = 'V.A.', 'various artists', 'Various Artists'
+VARIOUS_ARTISTS_VALUES = "V.A.", "various artists", "Various Artists"
 """Values for ~people representing lots of people, most important last"""
 
 
@@ -94,7 +94,7 @@ def decode_value(tag, value):
         return fsn2text(value)
     elif tag[:2] == "~#":
         if isinstance(value, float):
-            return u"%.2f" % value
+            return "%.2f" % value
         else:
             return str(value)
     return str(value)
@@ -149,14 +149,14 @@ class AudioFile(dict, ImageContainer, HasKey):
     supports_rating_and_play_count_in_file = False
     """Does this format support storing ratings and play counts in the file"""
 
-    mimes: List[str] = []
+    mimes: list[str] = []
     """MIME types this class can represent"""
 
     @cached_property
     def _date_format(self) -> str:
         return config.gettext("settings", "datecolumn_timestamp_format")
 
-    def __init__(self, default=tuple(), **kwargs):
+    def __init__(self, default=(), **kwargs):
         for key, value in dict(default).items():
             self[key] = value
         for key, value in kwargs.items():
@@ -212,7 +212,7 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         # validate value
         if key.startswith("~#"):
-            if not isinstance(value, (int, float)):
+            if not isinstance(value, int | float):
                 raise TypeError
         elif key in FILESYSTEM_TAGS:
             if not isinstance(value, fsnative):
@@ -318,7 +318,7 @@ class AudioFile(dict, ImageContainer, HasKey):
     def iterrealitems(self):
         return ((k, v) for (k, v) in self.items() if k[:1] != "~")
 
-    def __call__(self, key, default: Any = u"", connector=" - ", joiner=', '):
+    def __call__(self, key, default: Any = "", connector=" - ", joiner=", "):
         """Return the value(s) for a key, synthesizing if necessary.
         Multiple values for a key are delimited by newlines.
 
@@ -431,7 +431,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 codes = self.list("language")
                 if not codes:
                     return default
-                return u"\n".join(iso639.translate(c) or c for c in codes)
+                return "\n".join(iso639.translate(c) or c for c in codes)
             elif key == "bitrate":
                 return util.format_bitrate(self("~#bitrate"))
             elif key == "#date":
@@ -488,7 +488,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                         if "\0" in text:
                             return default
                         return text
-                except (EnvironmentError, UnicodeDecodeError):
+                except (OSError, UnicodeDecodeError):
                     return default
             elif key == "filesize":
                 return util.format_size(self("~#filesize", 0))
@@ -589,20 +589,19 @@ class AudioFile(dict, ImageContainer, HasKey):
                 descs.append(name)
             else:
                 roles = sorted(map(capitalize, roles))
-                descs.append("%s (%s)" % (name, ", ".join(roles)))
+                descs.append(f"{name} ({', '.join(roles)})")
 
         return "\n".join(descs)
 
     @property
-    def lyric_filename(self) -> Optional[str]:
+    def lyric_filename(self) -> str | None:
         """Returns the validated, or default, lyrics filename for this
         file. User defined '[memory] lyric_rootpaths' and
         '[memory] lyric_filenames' matches take precedence"""
 
-        from quodlibet.pattern \
-            import ArbitraryExtensionFileFromPattern as expand_patterns
+        from quodlibet.pattern import ArbitraryExtensionFileFromPattern
 
-        rx_params = re.compile(r'[^\\]<[^' + re.escape(os.sep) + r']*[^\\]>')
+        rx_params = re.compile(r"[^\\]<[^" + re.escape(os.sep) + r"]*[^\\]>")
 
         def expand_pathfile(rpf):
             """Return the expanded RootPathFile"""
@@ -610,8 +609,8 @@ class AudioFile(dict, ImageContainer, HasKey):
             root = os.path.expanduser(rpf.root)
             pathfile = os.path.expanduser(rpf.pathfile)
             if rx_params.search(pathfile):
-                root = expand_patterns(root).format(self)
-                pathfile = expand_patterns(pathfile).format(self)
+                root = ArbitraryExtensionFileFromPattern(root).format(self)
+                pathfile = ArbitraryExtensionFileFromPattern(pathfile).format(self)
             rpf = RootPathFile(root, pathfile)
             expanded.append(rpf)
             if not os.path.exists(pathfile) and is_windows():
@@ -630,25 +629,25 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         def sanitise(sep, parts):
             """Return a sanitised version of a path's parts"""
-            return sep.join(part.replace(os.path.sep, u'')[:128] for part in parts)
+            return sep.join(part.replace(os.path.sep, "")[:128] for part in parts)
 
         # setup defaults (user-defined take precedence)
         # root search paths
         lyric_paths = config.getstringlist("memory", "lyric_rootpaths", [])
         # ensure default paths
         lyric_paths.append(os.path.join(get_home_dir(), ".lyrics"))
-        lyric_paths.append(os.path.join(os.path.dirname(self.comma('~filename'))))
+        lyric_paths.append(os.path.join(os.path.dirname(self.comma("~filename"))))
         # search pathfile names
         lyric_filenames = config.getstringlist("memory", "lyric_filenames", [])
         # ensure some default pathfile names
         lyric_filenames.append(
             sanitise(os.sep, [(self.comma("lyricist") or
                               self.comma("artist")),
-                              self.comma("title")]) + u'.lyric')
+                              self.comma("title")]) + ".lyric")
         lyric_filenames.append(
-            sanitise(' - ', [(self.comma("lyricist") or
+            sanitise(" - ", [(self.comma("lyricist") or
                              self.comma("artist")),
-                             self.comma("title")]) + u'.lyric')
+                             self.comma("title")]) + ".lyric")
 
         # generate all potential paths (unresolved/unexpanded)
         pathfiles = OrderedDict()
@@ -657,7 +656,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 pathfile = os.path.join(r, os.path.dirname(f),
                                         fsnative(os.path.basename(f)))
                 rpf = RootPathFile(r, pathfile)
-                if not pathfile in pathfiles:
+                if pathfile not in pathfiles:
                     pathfiles[pathfile] = rpf
 
         #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
@@ -665,8 +664,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         # expand each raw pathfile in turn and test for existence
         match_ = None
         pathfiles_expanded = OrderedDict()
-        for pf, rpf in pathfiles.items():
-            for rpf in expand_pathfile(rpf):  # resolved as late as possible
+        for _pf, rpf in pathfiles.items():
+            for rpf in expand_pathfile(rpf):  # resolved as late as possible  # noqa
                 pathfile = rpf.pathfile
                 pathfiles_expanded[pathfile] = rpf
                 if os.path.exists(pathfile):
@@ -677,20 +676,20 @@ class AudioFile(dict, ImageContainer, HasKey):
 
         if not match_:
             # search even harder!
-            lyric_extensions = ['lyric', 'lyrics', '', 'txt']
+            lyric_extensions = ["lyric", "lyrics", "", "txt"]
             #print_d("extending search to extensions: %s" % lyric_extensions)
 
             def generate_mod_ext_paths(pathfile):
                 # separate pathfile's extension (if any)
                 ext = os.path.splitext(pathfile)[1][1:]
-                path = pathfile[:-1 * len(ext)].strip('.') if ext else pathfile
+                path = pathfile[:-1 * len(ext)].strip(".") if ext else pathfile
                 # skip the proposed lyric extension if it is the same as
                 # the original for a given search pathfile stub - it has
                 # already been tested without success!
                 extra_extensions = [x for x in lyric_extensions if x != ext]
 
                 # join valid new extensions to pathfile stub and return
-                return ['.'.join([path, ext]) if ext else path
+                return [".".join([path, ext]) if ext else path
                            for ext in extra_extensions]
 
             # look for a match by modifying the extension for each of the
@@ -742,11 +741,11 @@ class AudioFile(dict, ImageContainer, HasKey):
             if key in FILESYSTEM_TAGS:
                 v = fsn2text(self(key, fsnative()))
             else:
-                v = self(key, u"")
+                v = self(key, "")
         else:
-            v = self.get(key, u"")
+            v = self.get(key, "")
 
-        if isinstance(v, (int, float)):
+        if isinstance(v, int | float):
             return v
         else:
             return re.sub("\n+", ", ", v.strip())
@@ -905,11 +904,11 @@ class AudioFile(dict, ImageContainer, HasKey):
         if os.path.isabs(newname):
             mkdir(os.path.dirname(newname))
         else:
-            newname = os.path.join(self('~dirname'), newname)
+            newname = os.path.join(self("~dirname"), newname)
 
         if not os.path.exists(newname):
-            shutil.move(self['~filename'], newname)
-        elif normalize_path(newname, canonicalise=True) != self['~filename']:
+            shutil.move(self["~filename"], newname)
+        elif normalize_path(newname, canonicalise=True) != self["~filename"]:
             raise ValueError
 
         self.sanitize(newname)
@@ -924,8 +923,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         # Replace nulls with newlines, trimming zero-length segments
         for key, val in list(self.items()):
             self[key] = val
-            if isinstance(val, str) and '\0' in val:
-                self[key] = '\n'.join(filter(lambda s: s, val.split('\0')))
+            if isinstance(val, str) and "\0" in val:
+                self[key] = "\n".join(filter(lambda s: s, val.split("\0")))
             # Remove unnecessary defaults
             if key in NUMERIC_ZERO_DEFAULT and val == 0:
                 del self[key]
@@ -946,18 +945,18 @@ class AudioFile(dict, ImageContainer, HasKey):
                 head, tail = os.path.split(head)
                 # Prevent infinite loop without a fully-qualified filename
                 # (the unit tests use these).
-                head = head or fsnative(u"/")
+                head = head or fsnative("/")
                 if ismount(head):
                     self["~mountpoint"] = head
         else:
-            self["~mountpoint"] = fsnative(u"/")
+            self["~mountpoint"] = fsnative("/")
 
         # Fill in necessary values.
         self.setdefault("~#added", int(time.time()))
 
         # For efficiency, do a single stat here. See Issue 504
         try:
-            stat = os.stat(self['~filename'])
+            stat = os.stat(self["~filename"])
             self["~#mtime"] = stat.st_mtime
             self["~#filesize"] = stat.st_size
 
@@ -1073,7 +1072,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             try:
                 parts = self.list(key)
                 parts.remove(value)
-                self[key] = u"\n".join(parts)
+                self[key] = "\n".join(parts)
             except ValueError:
                 pass
 
@@ -1138,12 +1137,12 @@ class AudioFile(dict, ImageContainer, HasKey):
         for line in self.list("~bookmark"):
             try:
                 time, mark = line.split(" ", 1)
-            except:
+            except Exception:
                 invalid.append((-1, line))
             else:
                 try:
-                    time = util.parse_time(time, None)
-                except:
+                    time = util.parse_time(time, False)
+                except Exception:
                     invalid.append((-1, line))
                 else:
                     if time >= 0:
@@ -1160,8 +1159,8 @@ class AudioFile(dict, ImageContainer, HasKey):
         for time_, mark in marks:
             if time_ < 0:
                 raise ValueError("mark times must be positive")
-            result.append(u"%s %s" % (util.format_time(time_), mark))
-        result = u"\n".join(result)
+            result.append(f"{util.format_time(time_)} {mark}")
+        result = "\n".join(result)
         if result:
             self["~bookmark"] = result
         elif "~bookmark" in self:
@@ -1170,8 +1169,8 @@ class AudioFile(dict, ImageContainer, HasKey):
 
 # Looks like the real thing.
 DUMMY_SONG = AudioFile({
-    '~#length': 234, '~filename': os.devnull,
-    'artist': 'The Artist', 'album': 'An Example Album',
-    'title': 'First Track', 'tracknumber': 1,
-    'date': '2010-12-31',
+    "~#length": 234, "~filename": os.devnull,
+    "artist": "The Artist", "album": "An Example Album",
+    "title": "First Track", "tracknumber": 1,
+    "date": "2010-12-31",
 })

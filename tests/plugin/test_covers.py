@@ -10,12 +10,14 @@ import gi
 
 from tests import run_gtk_loop
 
-gi.require_version('Soup', '3.0')
+FORMAT_HEADERS = (b"\x89PNG", b"\xFF\xD8\xFF", b"GIF")
+
+gi.require_version("Soup", "3.0")
 from gi.repository import Gtk
 
 from dataclasses import dataclass, field
 from time import time, sleep
-from typing import Any, Optional, List
+from typing import Any
 
 import pytest as pytest
 
@@ -59,8 +61,8 @@ class TCovers(PluginTestCase):
 
 @dataclass
 class Results:
-    covers: List[Any] = field(default_factory=list)
-    success: Optional[bool] = None
+    covers: list[Any] = field(default_factory=list)
+    success: bool | None = None
 
 
 @pytest.mark.network
@@ -79,7 +81,8 @@ def test_live_cover_download(plugin_class_name):
         results.success = True
         header = data.read(4)
         data.close()
-        assert header.startswith(b"\x89PNG") or header.startswith(b"\xFF\xD8")
+        assert any(header.startswith(f)
+                   for f in FORMAT_HEADERS), f"Unknown format: {header}"
 
     def bad(source, error, results):
         # For debugging

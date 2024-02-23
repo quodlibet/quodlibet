@@ -7,7 +7,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import List
 
 from gi.repository import GObject
 
@@ -17,7 +16,7 @@ from quodlibet import config
 
 
 class Equalizer:
-    _eq_values: List[int] = []
+    _eq_values: list[int] = []
 
     @property
     def eq_bands(self):
@@ -75,25 +74,25 @@ class BasePlayer(GObject.GObject, Equalizer):
     _source = None
 
     __gsignals__ = {
-        'song-started':
+        "song-started":
         (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        'song-ended':
+        "song-ended":
         (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
-        'seek':
+        "seek":
         (GObject.SignalFlags.RUN_LAST, None, (object, int)),
-        'paused': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'unpaused': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "paused": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
         # (song, PlayerError)
-        'error': (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     __gproperties__ = {
-        'volume': (float, 'player volume', 'the volume of the player',
+        "volume": (float, "player volume", "the volume of the player",
                    0.0, 1.0, 1.0,
                    GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
-        'seekable': (bool, 'seekable', 'if the stream is seekable', True,
+        "seekable": (bool, "seekable", "if the stream is seekable", True,
                      GObject.ParamFlags.READABLE),
-        'mute': (bool, 'mute', 'if the stream is muted', False,
+        "mute": (bool, "mute", "if the stream is muted", False,
                  GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
     }
 
