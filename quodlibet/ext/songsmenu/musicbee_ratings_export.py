@@ -15,7 +15,8 @@ class MusicBeeRatingsExport(SongsMenuPlugin):
     PLUGIN_ID = "MusicBee Ratings Export"
     PLUGIN_NAME = _("MusicBee Ratings Export")
     PLUGIN_DESC = _("This plugin exports ratings in MusicBee tags. "
-                    "New tags are written in each selected file. The original rating tags remain unchanged. ")
+                    "New tags are written in each selected file. "
+                    "The original rating tags remain unchanged.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     plugin_handles = any_song(is_writable)
@@ -24,5 +25,5 @@ class MusicBeeRatingsExport(SongsMenuPlugin):
         try:
             song["rating"] = int(song["~#rating"]*100)
             song._needs_write = True
-        except:
+        except Exception as e:
             return

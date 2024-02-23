@@ -21,12 +21,12 @@ class MusicBeeRatingsImport(SongsMenuPlugin):
     plugin_handles = any_song(is_writable)
 
     def plugin_song(self, song):
-        audio = song.MutagenType(song['~filename'])
+        audio = song.MutagenType(song["~filename"])
         tags = audio.tags
 
         try:
             song["~#rating"] = int(tags["rating"][0])/100
             song._needs_write = True
-        except:
+        except Exception as e:
             return
 
