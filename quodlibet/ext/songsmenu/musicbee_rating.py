@@ -11,10 +11,27 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.plugins.songshelpers import any_song, is_writable
 
 
-class MusicBeeRatingsImport(SongsMenuPlugin):
-    PLUGIN_ID = "MusicBee Ratings Import"
-    PLUGIN_NAME = _("MusicBee Ratings Import")
-    PLUGIN_DESC = _("This plugin imports ratings from MusicBee tags. "
+class MusicBeeRatingExport(SongsMenuPlugin):
+    PLUGIN_ID = "MusicBee Rating Export"
+    PLUGIN_NAME = _("MusicBee Rating Export")
+    PLUGIN_DESC = _("This plugin exports rating in MusicBee tags. "
+                    "New tags are written in each selected file. "
+                    "The original rating tags remain unchanged.")
+    PLUGIN_ICON = Icons.DOCUMENT_SAVE
+
+    plugin_handles = any_song(is_writable)
+
+    def plugin_song(self, song):
+        try:
+            song["rating"] = int(song["~#rating"]*100)
+            song._needs_write = True
+        except Exception as e:
+            return
+
+class MusicBeeRatingImport(SongsMenuPlugin):
+    PLUGIN_ID = "MusicBee Rating Import"
+    PLUGIN_NAME = _("MusicBee Rating Import")
+    PLUGIN_DESC = _("This plugin imports rating from MusicBee tags. "
                     "Rating tags will be updated in each selected file.")
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
@@ -29,4 +46,4 @@ class MusicBeeRatingsImport(SongsMenuPlugin):
             song._needs_write = True
         except Exception as e:
             return
-
+        
