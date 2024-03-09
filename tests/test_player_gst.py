@@ -23,7 +23,7 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags, is_flatpak, matches_flatpak_runtime
+from quodlibet.util import sanitize_tags, is_flatpak
 from quodlibet.formats import MusicFile
 from quodlibet import config
 
@@ -250,6 +250,7 @@ class TGStreamerCodecs(TestCase):
             # "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             # "test.mid",
+            "silence-44-s.spx"
             "test.spc",
             "test.vgm",
             "test.wma",
@@ -257,10 +258,6 @@ class TGStreamerCodecs(TestCase):
             "h264_aac.mp4",
             "h265_aac.mp4"
         ]
-
-        if not matches_flatpak_runtime("*org.gnome.*/3.32"):
-            # https://gitlab.com/freedesktop-sdk/freedesktop-sdk/issues/809
-            files.append("silence-44-s.spx")
 
         errors = []
         for file_ in files:
