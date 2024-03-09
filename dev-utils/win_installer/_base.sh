@@ -141,7 +141,7 @@ function install_quodlibet {
 
     (cd "${REPO_CLONE}" && git checkout "$1") || exit 1
 
-    build_python "${REPO_CLONE}"/setup.py install
+    build_python "${REPO_CLONE}"/setup.py install --old-and-unmanageable
 
     QL_VERSION=$(MSYSTEM="" build_python -c \
         "import quodlibet.const; import sys; sys.stdout.write(quodlibet.const.VERSION)")
