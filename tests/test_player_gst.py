@@ -23,7 +23,7 @@ except ImportError:
     pass
 
 from quodlibet.player import PlayerError
-from quodlibet.util import sanitize_tags, is_flatpak, matches_flatpak_runtime, is_osx
+from quodlibet.util import sanitize_tags, is_flatpak, matches_flatpak_runtime
 from quodlibet.formats import MusicFile
 from quodlibet import config
 
@@ -246,6 +246,8 @@ class TGStreamerCodecs(TestCase):
             "empty.ogg",
             "empty.opus",
             "silence-44-s.mpc",
+            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3369
+            # "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             # "test.mid",
             "test.spc",
@@ -259,10 +261,6 @@ class TGStreamerCodecs(TestCase):
         if not matches_flatpak_runtime("*org.gnome.*/3.32"):
             # https://gitlab.com/freedesktop-sdk/freedesktop-sdk/issues/809
             files.append("silence-44-s.spx")
-
-        if not is_osx() and not is_flatpak():
-            # gstlibav gets stuck decoding this.. not sure
-            files.append("silence-44-s.sv8.mpc")
 
         errors = []
         for file_ in files:
