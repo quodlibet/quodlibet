@@ -16,6 +16,7 @@ import subprocess
 import os
 import sys
 from multiprocessing import Process, Queue
+from functools import cache
 
 import gi
 gi.require_version("GIRepository", "2.0")
@@ -29,6 +30,7 @@ def _get_shared_libraries(q, namespace, version):
     q.put(lib)
 
 
+@cache
 def get_shared_libraries(namespace, version):
     # we have to start a new process because multiple versions can't be loaded
     # in the same process
@@ -55,6 +57,7 @@ def get_required_by_typelibs():
     return deps
 
 
+@cache
 def get_dependencies(filename):
     deps = []
     try:
