@@ -81,6 +81,8 @@ def find_lib(root, name):
         return True
     elif name.startswith("msvcr"):
         return True
+    elif name.startswith("api-ms-win-crt-"):
+        return True
     return False
 
 
