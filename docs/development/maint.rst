@@ -8,7 +8,7 @@ Downstream Bug Trackers
 
 Some bug reports never make it to us so check these once in a while.
 
-* `Fedora <https://apps.fedoraproject.org/packages/quodlibet/bugs>`_
+* `Fedora <https://bugzilla.redhat.com/buglist.cgi?component=quodlibet&query_format=advanced&product=Fedora&bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED>`_
 * `Debian <https://bugs.debian.org/cgi-bin/pkgreport.cgi?pkg=quodlibet>`_
 * `Arch Linux <https://bugs.archlinux.org/?project=1&string=quodlibet>`_
 * `Ubuntu <https://launchpad.net/ubuntu/+source/quodlibet/+bugs>`_
