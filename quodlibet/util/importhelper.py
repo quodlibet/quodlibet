@@ -98,8 +98,8 @@ def load_module(name, package, path):
 
     # modules need a parent package
     if package not in sys.modules:
-        spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
-        sys.modules[package] = importlib.util.module_from_spec(spec)
+        parent_spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
+        sys.modules[package] = importlib.util.module_from_spec(parent_spec)
 
     mod = spec.loader.load_module(fullname)
 
