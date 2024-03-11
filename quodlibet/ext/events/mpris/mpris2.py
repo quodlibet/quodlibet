@@ -281,10 +281,10 @@ value="false"/>
 
         # All single values
         columns = get_columns()
-        title_tag = "~title~version" if "~title~version" in columns \
-                    else "title"
-        album_tag = "~album~discsubtitle" if "~album~discsubtitle" in columns \
-                    else "album"
+        title_tag = ("~title~version" if "~title~version" in columns 
+                     else "title")
+        album_tag = ("~album~discsubtitle" if "~album~discsubtitle" in columns
+                     else "album")
 
         sing_val = {"album": album_tag, "title": title_tag, "asText": "~lyrics"}
         for xesam, tag in sing_val.items():
