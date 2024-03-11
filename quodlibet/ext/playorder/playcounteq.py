@@ -56,7 +56,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
         weights_sum = sum(weights.values())
         choice = int(max(1, math.ceil(weights_sum * random.random())))
 
-        print_d("Weighted random: %s for weights sum:%s" % (choice, weights_sum))
+        print_d(f"Weighted random: {choice} for the weights sum: {weights_sum}")
 
         # Search for a track.
         for i, weight in weights.items():
@@ -78,7 +78,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
         hbox.pack_start(lbl, False, True, 0)
 
         val = cls.config_get("magnitude", cls._MAGNITUDE_DEFAULT)
-        
+
         spin = Gtk.SpinButton(
             adjustment=Gtk.Adjustment.new(int(val), 1, 100, 1, 10, 0))
         spin.connect("value-changed", magnitude_changed)
