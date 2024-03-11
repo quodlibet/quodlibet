@@ -14,6 +14,7 @@ from senf import fsn2uri
 
 from quodlibet import app
 from quodlibet.order.repeat import RepeatListForever, RepeatSongForever
+from quodlibet.qltk.songlist import get_columns
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 
@@ -279,7 +280,13 @@ value="false"/>
                 metadata["xesam:" + xesam] = list(map(unival, vals))
 
         # All single values
-        sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
+        columns = get_columns()
+        title_tag = ("~title~version" if "~title~version" in columns 
+                     else "title")
+        album_tag = ("~album~discsubtitle" if "~album~discsubtitle" in columns
+                     else "album")
+
+        sing_val = {"album": album_tag, "title": title_tag, "asText": "~lyrics"}
         for xesam, tag in sing_val.items():
             vals = song.comma(tag)
             if vals:
