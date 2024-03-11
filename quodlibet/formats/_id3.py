@@ -478,7 +478,7 @@ class ID3File(AudioFile):
             return images
 
         for frame in tag.getall("APIC"):
-            f = get_temp_cover_file(frame.data)
+            f = get_temp_cover_file(frame.data, frame.mime)
             images.append(EmbeddedImage(f, frame.mime, type_=frame.type))
 
         images.sort(key=lambda c: c.sort_key)
@@ -506,7 +506,7 @@ class ID3File(AudioFile):
                 break
 
         if cover:
-            f = get_temp_cover_file(cover.data)
+            f = get_temp_cover_file(cover.data, cover.mime)
             return EmbeddedImage(f, cover.mime, type_=cover.type)
 
     def set_image(self, image):

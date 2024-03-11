@@ -173,7 +173,7 @@ class MP4File(AudioFile):
             else:
                 mime = "image/"
 
-            f = get_temp_cover_file(cover)
+            f = get_temp_cover_file(cover, mime)
             images.append(EmbeddedImage(f, mime))
 
         return images
@@ -193,7 +193,7 @@ class MP4File(AudioFile):
             else:
                 mime = "image/"
 
-            f = get_temp_cover_file(cover)
+            f = get_temp_cover_file(cover, mime)
             return EmbeddedImage(f, mime)
 
     can_change_images = True

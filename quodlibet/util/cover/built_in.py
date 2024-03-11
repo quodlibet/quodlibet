@@ -16,7 +16,7 @@ from senf import fsn2text
 
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin
-from quodlibet.util.dprint import print_w
+from quodlibet.util.dprint import print_w, print_d
 from quodlibet import config
 
 
@@ -95,7 +95,7 @@ class FilesystemCover(CoverSourcePlugin):
         # TODO: Deserves some refactoring
         if not self.song.is_file:
             return None
-
+        print_d(f"Searching for local cover for {self.song('~filename')}")
         base = self.song("~dirname")
         images = []
 
