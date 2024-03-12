@@ -207,7 +207,7 @@ class MutagenVCFile(AudioFile):
             audio.pop("metadata_block_picture", None)
             audio.pop("coverart", None)
             audio.pop("coverartmime", None)
-            audio.save()
+            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
 
         self.has_images = False
 
@@ -236,7 +236,7 @@ class MutagenVCFile(AudioFile):
             pic.write()).decode("ascii")
 
         with translate_errors():
-            audio.save()
+            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
 
         self.has_images = True
 
@@ -318,7 +318,7 @@ class MutagenVCFile(AudioFile):
         self.__prep_write_total(audio.tags, "disctotal", "totaldiscs", "discnumber")
 
         with translate_errors():
-            audio.save()
+            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
         self.sanitize()
 
 extensions = []

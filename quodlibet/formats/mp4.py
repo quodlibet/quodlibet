@@ -141,7 +141,7 @@ class MP4File(AudioFile):
         if disc:
             audio["disk"] = [(disc, discs)]
         with translate_errors():
-            audio.save()
+            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
         self.sanitize()
 
     def can_multiple_values(self, key=None):
