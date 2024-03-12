@@ -539,7 +539,6 @@ class EditTags(Gtk.VBox):
         hb.pack_start(cb, False, True, 12)
         self.pack_start(hb, False, True, 0)
 
-        config.set("editing", "retain_mtime", str(bool(False)).lower())
         cb = ConfigCheckButton(
             _("_Retain mtime"), "editing", "retain_mtime", populate=True,
             tooltip=_("Do not overwrite file modified time on save"))

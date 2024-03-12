@@ -442,7 +442,7 @@ class FLACFile(MutagenVCFile):
         with translate_errors():
             tag = FLAC(self["~filename"])
             tag.clear_pictures()
-            tag.save()
+            tag.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
 
         # clear vcomment tags
         super().clear_images()
@@ -471,7 +471,7 @@ class FLACFile(MutagenVCFile):
         tag.add_picture(pic)
 
         with translate_errors():
-            tag.save()
+            tag.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
 
         # clear vcomment tags
         super().clear_images()
