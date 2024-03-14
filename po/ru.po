@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-01-01 09:08+0000\n"
+"PO-Revision-Date: 2024-02-06 12:01+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -5556,12 +5556,13 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Не удалось найти модуль '{module}'. Возможно, вам нужно установить пакет?"
+"Не удалось найти модуль «{module}». Возможно, вам нужно установить "
+"пакет?{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
