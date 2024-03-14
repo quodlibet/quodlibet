@@ -8,8 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2023-12-30 01:08+0000\n"
-"Last-Translator: Eric <zxmegaxqug@hldrive.com>\n"
+"PO-Revision-Date: 2024-02-06 12:01+0000\n"
+"Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
+"org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -5369,11 +5370,11 @@ msgid ""
 msgstr "找不到音频设备 %r。检查 ~/.quodlibet/config 中的 Xine 设置。"
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
-msgstr "找不到模块 '{module}'。也许您需要安装此软件包？"
+msgstr "找不到模块 '{module}'。也许您需要安装此软件包？{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
