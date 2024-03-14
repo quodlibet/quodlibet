@@ -3957,16 +3957,16 @@ msgstr "Squeezebox-Server"
 msgid "Debug"
 msgstr "Debug"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:25
+#: quodlibet/ext/_shared/squeezebox/server.py:31
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Squeezebox-Server unter {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:27
+#: quodlibet/ext/_shared/squeezebox/server.py:33
 msgid "unidentified Squeezebox server"
 msgstr "Unidentifizierter Squeezebox-Server"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:36
+#: quodlibet/ext/_shared/squeezebox/server.py:42
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "Unidentifizierter Squeezebox-Player: %r"
@@ -5632,13 +5632,14 @@ msgstr ""
 "Das Audiogerät %r wurde nicht gefunden. Überprüfen Sie die Xine-"
 "Einstellungen in ~/.quodlibet/config."
 
-#: quodlibet/plugins/__init__.py:65
-#, python-brace-format
+#: quodlibet/plugins/__init__.py:66
+#, fuzzy, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
+"{extra}"
 msgstr "Das Modul »{module}« wurde nicht gefunden. Ist das Paket installiert?"
 
-#: quodlibet/plugins/__init__.py:74
+#: quodlibet/plugins/__init__.py:77
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Das GStreamer-Element »{element}« wurde nicht gefunden."
@@ -7454,39 +7455,39 @@ msgstr "Alle Titel in allen Leisten auswählen"
 msgid "_Filter on %s"
 msgstr "Nach %s _filtern"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1202
 msgid "All _Headers"
 msgstr "_Alle Listenspalten"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Track Headers"
 msgstr "Listenspalten zu _Titeln"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1204
 msgid "_Album Headers"
 msgstr "Listenspalten zu _Alben"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1205
 msgid "_People Headers"
 msgstr "Listenspalten zu _Mitwirkenden"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Date Headers"
 msgstr "Listenspalten zum _Datum"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1207
 msgid "_File Headers"
 msgstr "Listenspalten zu _Dateien"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Production Headers"
 msgstr "Listenspalten zur _Produktion"
 
-#: quodlibet/qltk/songlist.py:1215
+#: quodlibet/qltk/songlist.py:1223
 msgid "_Customize Headers…"
 msgstr "Listenspalten _anpassen …"
 
-#: quodlibet/qltk/songlist.py:1220
+#: quodlibet/qltk/songlist.py:1228
 msgid "_Expand Column"
 msgstr "Listenspalte ausd_ehnen"
 

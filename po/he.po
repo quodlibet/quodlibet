@@ -3850,16 +3850,16 @@ msgstr "שרת סקוויזבוקס"
 msgid "Debug"
 msgstr "ניפוי תקלים"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:25
+#: quodlibet/ext/_shared/squeezebox/server.py:31
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "שרת סקוויזבוקס ב {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:27
+#: quodlibet/ext/_shared/squeezebox/server.py:33
 msgid "unidentified Squeezebox server"
 msgstr "שרת סקוויזבוקס לא מוגדר"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:36
+#: quodlibet/ext/_shared/squeezebox/server.py:42
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "נגן סקוויזבוקס לא מוגדר: %r"
@@ -5484,13 +5484,14 @@ msgid ""
 "config."
 msgstr "התקן השמע %r לא נמצא. נא לבדוק את תצורת Xine ב- ~/.quodlibet/config."
 
-#: quodlibet/plugins/__init__.py:65
-#, python-brace-format
+#: quodlibet/plugins/__init__.py:66
+#, fuzzy, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
+"{extra}"
 msgstr "לא נמצאה פִּרְקָן '{module}'. אולי צריך להתקין את החבילה?"
 
-#: quodlibet/plugins/__init__.py:74
+#: quodlibet/plugins/__init__.py:77
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "לא ניתן למצוא רכיב ג'סטרימר '{element}'."
@@ -7257,39 +7258,39 @@ msgstr "בחירת כל השירים בכל החלוניות"
 msgid "_Filter on %s"
 msgstr "_מיין לפי %s"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1202
 msgid "All _Headers"
 msgstr "כל _הכותרות"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Track Headers"
 msgstr "_כותרות רצועות"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1204
 msgid "_Album Headers"
 msgstr "כ_ותרות אלבומים"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1205
 msgid "_People Headers"
 msgstr "כותרות _מבצעים"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Date Headers"
 msgstr "כותרות ת_אריך"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1207
 msgid "_File Headers"
 msgstr "_כותרות קבצים"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Production Headers"
 msgstr "כות_רות הפקה"
 
-#: quodlibet/qltk/songlist.py:1215
+#: quodlibet/qltk/songlist.py:1223
 msgid "_Customize Headers…"
 msgstr "_כותרות מותאמת אישית…"
 
-#: quodlibet/qltk/songlist.py:1220
+#: quodlibet/qltk/songlist.py:1228
 msgid "_Expand Column"
 msgstr "_הרחבת עמודה"
 

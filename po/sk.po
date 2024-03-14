@@ -3913,16 +3913,16 @@ msgstr "Server Squeezebox"
 msgid "Debug"
 msgstr "Ladiť"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:25
+#: quodlibet/ext/_shared/squeezebox/server.py:31
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Server Squeezebox na {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:27
+#: quodlibet/ext/_shared/squeezebox/server.py:33
 msgid "unidentified Squeezebox server"
 msgstr "nestotožnený server Squeezebox"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:36
+#: quodlibet/ext/_shared/squeezebox/server.py:42
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "nestotožnený prehrávač Squeezebox: %r"
@@ -5572,14 +5572,15 @@ msgstr ""
 "Zvukové zariadenie %r sa nenašlo. Preverte vaše nastavenie Xine v ~/."
 "quodlibet/config."
 
-#: quodlibet/plugins/__init__.py:65
-#, python-brace-format
+#: quodlibet/plugins/__init__.py:66
+#, fuzzy, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
+"{extra}"
 msgstr ""
 "Nepodarilo sa nájsť modul „{module}“. Treba nainštalovať príslušný balík?"
 
-#: quodlibet/plugins/__init__.py:74
+#: quodlibet/plugins/__init__.py:77
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "Nepodarilo sa nájsť prvok GStreamera „{element}“."
@@ -7375,39 +7376,39 @@ msgstr "Vybrať všetky skladby vo všetkých paneloch"
 msgid "_Filter on %s"
 msgstr "_Filter na %s"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1202
 msgid "All _Headers"
 msgstr "Všetky _hlavičky"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Track Headers"
 msgstr "_Hlavičky skladby"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1204
 msgid "_Album Headers"
 msgstr "_Hlavičky albumu"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1205
 msgid "_People Headers"
 msgstr "_Hlavičky ľudí"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Date Headers"
 msgstr "_Hlavičky dátumu"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1207
 msgid "_File Headers"
 msgstr "_Hlavičky súboru"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Production Headers"
 msgstr "_Hlavičky produkcie"
 
-#: quodlibet/qltk/songlist.py:1215
+#: quodlibet/qltk/songlist.py:1223
 msgid "_Customize Headers…"
 msgstr "_Prispôsobiť hlavičky…"
 
-#: quodlibet/qltk/songlist.py:1220
+#: quodlibet/qltk/songlist.py:1228
 msgid "_Expand Column"
 msgstr "_Rozšíriť stĺpec"
 
