@@ -3882,16 +3882,16 @@ msgstr "Servidor Squeezebox"
 msgid "Debug"
 msgstr "Depuración"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:25
+#: quodlibet/ext/_shared/squeezebox/server.py:31
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Servidor Squeezebox en {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:27
+#: quodlibet/ext/_shared/squeezebox/server.py:33
 msgid "unidentified Squeezebox server"
 msgstr "servidor Squeezebox no identificado"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:36
+#: quodlibet/ext/_shared/squeezebox/server.py:42
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "reproductor Squeezebox no identificado: %r"
@@ -5501,15 +5501,16 @@ msgstr ""
 "No se encontró el dispositivo de audio %r. Compruebe la configuración de "
 "Xine en ~/.quodlibet/config."
 
-#: quodlibet/plugins/__init__.py:65
-#, python-brace-format
+#: quodlibet/plugins/__init__.py:66
+#, fuzzy, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
+"{extra}"
 msgstr ""
 "No se pudo encontrar el módulo «{module}». Quizá necesita instalar el "
 "paquete correspondiente."
 
-#: quodlibet/plugins/__init__.py:74
+#: quodlibet/plugins/__init__.py:77
 #, python-brace-format
 msgid "Couldn't find GStreamer element '{element}'."
 msgstr "No se pudo encontrar el elemento «{element}» de GStreamer."
@@ -7316,39 +7317,39 @@ msgstr "Seleccionar todas las canciones en todos los paneles"
 msgid "_Filter on %s"
 msgstr "_Filtrar por %s"
 
-#: quodlibet/qltk/songlist.py:1194
+#: quodlibet/qltk/songlist.py:1202
 msgid "All _Headers"
 msgstr "_Todas las cabeceras"
 
-#: quodlibet/qltk/songlist.py:1195
+#: quodlibet/qltk/songlist.py:1203
 msgid "_Track Headers"
 msgstr "Cabeceras de p_ista"
 
-#: quodlibet/qltk/songlist.py:1196
+#: quodlibet/qltk/songlist.py:1204
 msgid "_Album Headers"
 msgstr "Cabeceras de _álbumes"
 
-#: quodlibet/qltk/songlist.py:1197
+#: quodlibet/qltk/songlist.py:1205
 msgid "_People Headers"
 msgstr "Cabeceras de _personas"
 
-#: quodlibet/qltk/songlist.py:1198
+#: quodlibet/qltk/songlist.py:1206
 msgid "_Date Headers"
 msgstr "Cabeceras de la _fecha"
 
-#: quodlibet/qltk/songlist.py:1199
+#: quodlibet/qltk/songlist.py:1207
 msgid "_File Headers"
 msgstr "Cabeceras de _archivo"
 
-#: quodlibet/qltk/songlist.py:1200
+#: quodlibet/qltk/songlist.py:1208
 msgid "_Production Headers"
 msgstr "Cabeceras de la _producción"
 
-#: quodlibet/qltk/songlist.py:1215
+#: quodlibet/qltk/songlist.py:1223
 msgid "_Customize Headers…"
 msgstr "_Personalizar cabeceras…"
 
-#: quodlibet/qltk/songlist.py:1220
+#: quodlibet/qltk/songlist.py:1228
 msgid "_Expand Column"
 msgstr "_Expandir columna"
 
