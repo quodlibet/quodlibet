@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-01-16 19:06+0000\n"
-"Last-Translator: Loïc Guégant <loic.guegant@freesbee.fr>\n"
+"PO-Revision-Date: 2024-03-12 23:02+0000\n"
+"Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.5-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -5619,13 +5619,13 @@ msgstr ""
 "dans ~/.quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
 "Impossible de trouver le module '{module}'. Peut-être avez-vous besoin "
-"d'installer le paquet ?"
+"d'installer le paquet ? {extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
