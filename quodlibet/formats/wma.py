@@ -166,7 +166,7 @@ class WMAFile(AudioFile):
                 (mime, desc, data, type_) = unpack_image(image.value)
             except ValueError:
                 continue
-            f = get_temp_cover_file(data)
+            f = get_temp_cover_file(data, mime)
             images.append(EmbeddedImage(f, mime, type_=type_))
 
         images.sort(key=lambda c: c.sort_key)
@@ -186,7 +186,7 @@ class WMAFile(AudioFile):
             except ValueError:
                 continue
             if type_ == APICType.COVER_FRONT:  # Only cover images
-                f = get_temp_cover_file(data)
+                f = get_temp_cover_file(data, mime)
                 return EmbeddedImage(f, mime, type_=type_)
 
     can_change_images = True

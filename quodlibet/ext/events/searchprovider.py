@@ -1,5 +1,5 @@
 # Copyright 2013 Christoph Reiter <reiter.christoph@gmail.com>
-#           2023 Nick Boultbee
+#           2024 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -16,6 +16,10 @@ A copy of this file can be found in ../../../data/
 
 import os
 import sys
+from pathlib import Path
+from typing import Collection
+
+from quodlibet.util.thumbnails import get_thumbnail, get_cache_info
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
@@ -24,7 +28,7 @@ if os.name == "nt" or sys.platform == "darwin":
 from gi.repository import GLib
 from gi.repository import Gio
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
@@ -34,18 +38,19 @@ from quodlibet.util.path import xdg_get_system_data_dirs
 from quodlibet.qltk import Icons
 
 DEFAULT_SEARCH_PROVIDER_DIR = "/usr/share/gnome-shell/search-providers"
+THUMBNAIL_SIZE = (256, 256)
 
 
-def get_gs_provider_files():
+def get_gs_provider_files() -> Collection[Path]:
     """Return all installed search provider files for GNOME Shell"""
 
     ini_files = []
     for d in xdg_get_system_data_dirs():
-        path = os.path.join(d, "gnome-shell", "search-providers")
+        path = Path(d) / "gnome-shell" / "search-providers"
         try:
             for entry in os.listdir(path):
                 if entry.endswith(".ini"):
-                    ini_files.append(os.path.join(path, entry))
+                    ini_files.append(path / entry)
         except OSError:
             pass
     return ini_files
@@ -106,6 +111,7 @@ def get_songs_for_ids(library, ids):
             ids.discard(song_id)
             if not ids:
                 break
+    print_d(f"Got {len(songs)} songs matching {ids}")
     return songs
 
 
@@ -199,6 +205,7 @@ class SearchProvider:
         return self.__doc__
 
     def GetInitialResultSet(self, terms):
+        print_d(f"Getting initial result set for {terms}")
         if terms:
             query = Query("")
             for term in terms:
@@ -211,26 +218,30 @@ class SearchProvider:
         return ids
 
     def GetSubsearchResultSet(self, previous_results, terms):
-        query = Query("")
-        for term in terms:
-            query &= Query(term)
-
-        songs = get_songs_for_ids(app.library, previous_results)
-        ids = [get_song_id(s) for s in songs if query.search(s)]
-        return ids
+        # Eager searching-as-you-type in Gnome makes this useless it seems,
+        # so just use the full terms each time.
+        return self.GetInitialResultSet(terms)
 
     def GetResultMetas(self, identifiers):
+        print_d(f"Getting result metas for {identifiers}")
         metas = []
         for song in get_songs_for_ids(app.library, identifiers):
             name = song("title")
-            description = song("~artist~title")
+            description = song.comma("~people")
             song_id = get_song_id(song)
+            cover = app.cover_manager.get_cover(song)
+            if cover:
+                # We need a permanent-ish copy of this for DBus clients
+                get_thumbnail(cover.name, THUMBNAIL_SIZE, ignore_temp=False)
+                p = get_cache_info(Path(cover.name), THUMBNAIL_SIZE)[0]
+                gicon = str(p)
+            else:
+                gicon = ENTRY_ICON
             meta = {
                 "name": GLib.Variant("s", dbus_unicode_validate(name)),
                 "id": GLib.Variant("s", song_id),
-                "description": GLib.Variant(
-                    "s", dbus_unicode_validate(description)),
-                "gicon": GLib.Variant("s", ENTRY_ICON)
+                "description": GLib.Variant("s", dbus_unicode_validate(description)),
+                "gicon": GLib.Variant("s", gicon)
             }
             metas.append(meta)
 
