@@ -288,7 +288,7 @@ INITIAL: dict[str, dict[str, str]] = {
 
     "plugins": {
         # newline-separated plugin IDs
-        "active_plugins": "\n".join(AUTO_ENABLED_PLUGINS),
+        "active_plugins": "\n".join(sorted(AUTO_ENABLED_PLUGINS)),
 
         # Issue 1231: Maximum number of SongsMenu plugins to run at once
         "default_max_plugin_invocations": "30",
