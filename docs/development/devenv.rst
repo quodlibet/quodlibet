@@ -13,7 +13,7 @@ install all the software which Quod Libet uses and depends on.
 Nix Flake
 ---------
 
-To help with consistent tooling across machines and platforms,
+🆕 To help with consistent tooling across machines and platforms,
 we now include a basic `Nix Flake <https://nixos.wiki/wiki/Flakes>`__
 which currently provides suitable versions for Python and Poetry (see below)
 as well as some linter tooling.
@@ -25,8 +25,11 @@ then run::
 
 You can also run Flake apps directly, e.g.::
 
-    $ nix run .#poetry -- --version
+    $ nix run .#poetry -- lock --no-update
 
+⚠️ However, currently it is only recommended to use this for basic tooling.
+Running GTK+ apps is complex in Nix and Flakes even more so.
+See some `Gnome Nix notes here <https://ryantm.github.io/nixpkgs/languages-frameworks/gnome/>`__.
 
 
 Poetry

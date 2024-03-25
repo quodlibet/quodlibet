@@ -18,11 +18,45 @@
       # A shell for `nix develop`
       devShells.default = pkgs.mkShell {
         packages = [
-          qlPoetry
           qlPython
+          qlPoetry
+
+          # See https://github.com/NixOS/nixpkgs/blob/nixos-23.05/pkgs/applications/audio/quodlibet/default.nix
+
+          # build time
+          pkgs.gettext
+          pkgs.gobject-introspection-unwrapped
+          pkgs.wrapGAppsHook
+
+          ## runtime
+          pkgs.gnome.adwaita-icon-theme  # Note new name
+          pkgs.gdk-pixbuf
+          pkgs.glib
+          pkgs.glib-networking
+          pkgs.gtk3
+          pkgs.gtksourceview
+          pkgs.kakasi
+          pkgs.keybinder3
+          pkgs.libappindicator-gtk3
+          pkgs.libmodplug
+          pkgs.librsvg
+          pkgs.libsoup_3
+          pkgs.webkitgtk
+
+          # tests
+          pkgs.dbus
+          pkgs.glibcLocales
+          pkgs.hicolor-icon-theme
+          pkgs.xvfb-run
+
+          # Linters etc
           pkgs.shellcheck
           pkgs.alejandra
         ];
+        shellHook = ''
+          export XDG_DATA_DIRS="${pkgs.gtk3}/share/gsettings-schemas/${pkgs.gtk3.name}:$XDG_ICON_DIRS:$XDG_DATA_DIRS"
+          export GDK_PIXBUF_MODULE_FILE=${pkgs.librsvg}/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
+        '';
       };
 
       # Allow `nix fmt` to "just work"
