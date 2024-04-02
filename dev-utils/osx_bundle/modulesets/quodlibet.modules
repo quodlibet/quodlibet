@@ -128,7 +128,10 @@
             hash="sha256:31747ae633213f1eda3842686f83c2aa1412e0f5691d1c14dbbcc67fe7400cea"/>
   </cmake>
 
-  <autotools id="pkg-config" autogen-sh="configure"
+  <!-- Disable integer conversion warnings (which are fatal in XCode 15.3 and later)
+        to work around issues in pkg-config's internal glib implementation.  
+        https://gitlab.freedesktop.org/pkg-config/pkg-config/-/issues/81 -->
+  <autotools id="pkg-config" autogen-sh="configure" makeargs="CFLAGS='-Wno-int-conversion'"
              autogenargs="--with-internal-glib --with-libiconv_prefix=$JHBUILD_PREFIX">
     <branch repo="pkgconfig"
             module="pkg-config-${version}.tar.gz" version="0.29.2"
