@@ -207,7 +207,7 @@ class MutagenVCFile(AudioFile):
             audio.pop("metadata_block_picture", None)
             audio.pop("coverart", None)
             audio.pop("coverartmime", None)
-            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            audio.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         self.has_images = False
 
@@ -236,7 +236,7 @@ class MutagenVCFile(AudioFile):
             pic.write()).decode("ascii")
 
         with translate_errors():
-            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            audio.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         self.has_images = True
 
@@ -318,7 +318,7 @@ class MutagenVCFile(AudioFile):
         self.__prep_write_total(audio.tags, "disctotal", "totaldiscs", "discnumber")
 
         with translate_errors():
-            audio.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            audio.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
         self.sanitize()
 
 extensions = []
@@ -442,7 +442,7 @@ class FLACFile(MutagenVCFile):
         with translate_errors():
             tag = FLAC(self["~filename"])
             tag.clear_pictures()
-            tag.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            tag.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         # clear vcomment tags
         super().clear_images()
@@ -471,7 +471,7 @@ class FLACFile(MutagenVCFile):
         tag.add_picture(pic)
 
         with translate_errors():
-            tag.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            tag.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         # clear vcomment tags
         super().clear_images()

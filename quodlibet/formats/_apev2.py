@@ -201,7 +201,7 @@ class APEv2File(AudioFile):
                 if cover_type is not None:
                     del tag[key]
 
-            tag.save(preserve_mtime=config.getboolean("editing", "retain_mtime"))
+            tag.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         self.has_images = False
 

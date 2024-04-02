@@ -1016,7 +1016,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         ag.add_action_with_accel(act, "<Primary>R")
 
         def check_mtime_handler(*args):
-            config.set("editing", "retain_mtime", str(args[0].get_active()))
+            config.set("editing", "preserve_mtime", str(args[0].get_active()))
 
         act = ToggleAction(
             name="PreserveMTime", label=_("_Preserve modified time")
