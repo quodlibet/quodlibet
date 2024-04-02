@@ -539,14 +539,6 @@ class EditTags(Gtk.VBox):
         hb.pack_start(cb, False, True, 12)
         self.pack_start(hb, False, True, 0)
 
-        cb = ConfigCheckButton(
-            _("_Retain mtime"), "editing", "retain_mtime", populate=True,
-            tooltip=_("Do not overwrite file modified time on save"))
-        cb.connect("toggled", self.__checkbox_toggled)
-
-        hb.pack_start(cb, False, True, 20)
-        self.pack_start(hb, False, True, 0)
-
         # Add and Remove [tags] buttons
         buttonbox = Gtk.HBox(spacing=18)
         bbox1 = Gtk.HButtonBox()
