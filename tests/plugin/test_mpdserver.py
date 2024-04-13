@@ -123,6 +123,11 @@ class TMPDCommands(PluginTestCase):
         for cmd in cmds:
             self._cmd(cmd.encode("ascii") + b"\n")
 
+    def test_seekcur(self):
+        # Ensure we can handle both integer and float arguments.
+        for cmd in ["seekcur 1", "seekcur 1.5"]:
+            self._cmd(cmd.encode("ascii") + b"\n")
+
     def test_idle_close(self):
         for cmd in ["idle", "noidle", "close"]:
             self._cmd(cmd.encode("ascii") + b"\n")
