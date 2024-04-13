@@ -815,7 +815,7 @@ def _cmd_seekcur(conn, service, args):
         relative = True
 
     try:
-        time_ = int(time_)
+        time_ = float(time_)
     except ValueError as e:
         raise MPDRequestError("arg not a number") from e
 
