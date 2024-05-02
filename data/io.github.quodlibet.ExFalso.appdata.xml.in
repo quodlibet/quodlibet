@@ -6,7 +6,7 @@
     <summary>Edit tags in your audio files</summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0-or-later</project_license>
-    <developer_name>The Quod Libet Development Team</developer_name>
+    <developer_name translatable="no">The Quod Libet Development Team</developer_name>
     <translation type="gettext">quodlibet</translation>
     <launchable type="desktop-id">io.github.quodlibet.ExFalso.desktop</launchable>
     <provides>
