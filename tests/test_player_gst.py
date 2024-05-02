@@ -250,7 +250,7 @@ class TGStreamerCodecs(TestCase):
             # "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             # "test.mid",
-            "silence-44-s.spx"
+            "silence-44-s.spx",
             "test.spc",
             "test.vgm",
             "test.wma",
