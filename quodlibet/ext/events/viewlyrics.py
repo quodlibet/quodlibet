@@ -79,6 +79,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             line = line.strip()
 
             if not line:
+                new_lines.append("")
                 continue
 
             match = re.fullmatch(
