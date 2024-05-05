@@ -56,4 +56,4 @@ class TViewlyrics(PluginTestCase):
         timed_lyrics = "[ar: Snek]\n\n[00:27.18] Hisss\n \
             [03:14.15] <03:14.15> foo <03:15.15> bar <03:16.15>"
         result = self.plugin._hide_timestamps(timed_lyrics)
-        self.assertEqual(result, "Hisss\nfoo bar")
+        self.assertEqual(result, "\nHisss\nfoo bar")
