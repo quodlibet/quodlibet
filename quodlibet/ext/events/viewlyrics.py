@@ -73,16 +73,17 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         self.scrolled_window.destroy()
 
     def _hide_timestamps(self, lyrics: str):
-        """Remove timestamps from the lyrics if they are formatted as an .lrc or .elrc file."""
+        """Remove timestamps from the lyrics if they are formatted as an .lrc file."""
         new_lines = []
         for line in lyrics.splitlines():
             line = line.strip()
-            
+
             if not line:
                 continue
-            
-            match = re.fullmatch(r"\[(\d\d:\d\d\.\d\d\]\s?(.*)|[^\]]+:[^\]]*\])", line)
-        
+
+            match = re.fullmatch(
+                r"\[(\d\d:\d\d\.\d\d\]\s?(.*)|[^\]]+:[^\]]*\])", line)
+
             if match is None:
                 # at least one line isn't formatted as .lrc - keep original text
                 return lyrics
@@ -90,11 +91,12 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             # lines containing ID tags are ignored
             if match.groups()[1] is not None:
                 # remove word timestamps in enhanced format
-                sentence = ''.join(re.split(r"<\d\d:\d\d\.\d\d>\s*", match.groups()[1])).strip()
+                sentence = "".join(
+                    re.split(r"<\d\d:\d\d\.\d\d>\s*", match.groups()[1])).strip()
                 if sentence:
                     new_lines.append(sentence)
-            
-        return '\n'.join(new_lines)
+
+        return "\n".join(new_lines)
 
     def plugin_on_song_started(self, song):
         """Called when a song is started. Loads the lyrics.
@@ -168,9 +170,13 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()
-        ccb = ConfigCheckButton(_("Hide timestamps of .lrc or .elrc formatted lyrics"),
-                                "plugins", "view_lyrics_hide_timestamps")
-        hide_timestamps = config.getboolean("plugins", "view_lyrics_hide_timestamps", True)
+        ccb = ConfigCheckButton(
+            _("Hide timestamps of .lrc or .elrc formatted lyrics"),
+            "plugins",
+            "view_lyrics_hide_timestamps"
+        )
+        hide_timestamps = config.getboolean(
+            "plugins", "view_lyrics_hide_timestamps", True)
         ccb.set_active(hide_timestamps)
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
