@@ -51,3 +51,8 @@ class TViewlyrics(PluginTestCase):
         app.player.info = AUDIO_FILE
         self.plugin.enabled()
         self.plugin._edit_button.emit("clicked")
+
+    def test_timestamp_hiding(self):
+        timed_lyrics = "[ar: Snek]\n\n[00:27.18] Hisss\n[03:14.15] <03:14.15> foo <03:15.15> bar <03:16.15>"
+        result = self.plugin._hide_timestamps(timed_lyrics)
+        self.assertEqual(result, "Hisss\nfoo bar")
