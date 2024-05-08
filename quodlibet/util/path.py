@@ -13,6 +13,7 @@ import sys
 import errno
 import codecs
 import shlex
+from typing import Any
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -314,7 +315,7 @@ def xdg_get_user_dirs():
 
 
 def get_temp_cover_file(data: bytes,
-                        mime: str | None = None) -> NamedTemporaryFile | None:
+                        mime: str | None = None) -> Any:
     """Returns a file object or None"""
 
     try:
