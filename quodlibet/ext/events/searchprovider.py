@@ -17,7 +17,7 @@ A copy of this file can be found in ../../../data/
 import os
 import sys
 from pathlib import Path
-from typing import Collection
+from collections.abc import Collection
 
 from quodlibet.util.thumbnails import get_thumbnail, get_cache_info
 

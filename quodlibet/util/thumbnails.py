@@ -142,7 +142,7 @@ def get_thumbnail(path: fsnative, boundary, ignore_temp=True) -> GdkPixbuf:
 
     try:
         pb = new_from_file_at_size(str(thumb_path), width, height)
-    except GLib.GError as e:
+    except GLib.GError:
         # in case it fails to load, we recreate it
         print_w(f"Couldn't find thumbnail at {str(thumb_path)!r}, so recreating.")
     else:
