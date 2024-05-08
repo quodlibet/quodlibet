@@ -97,9 +97,6 @@ plugin from loading.
 **rygel**:
     * The uPnP media server
 
-**webkit2gtk** (== 4.0) + **typelibs**:
-    * For the Lyrics Window plugin
-
 **libappindicator-gtk3** + **typelibs**:
     * For the Tray Icon plugin under Ubuntu Unity and KDE Plasma
 

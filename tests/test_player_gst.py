@@ -240,7 +240,8 @@ class TGStreamerCodecs(TestCase):
         """
 
         files = [
-            "coverart.wv",
+            # maybe https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6498
+            # "coverart.wv",
             "empty.aac",
             "empty.flac",
             "empty.ogg",
@@ -250,7 +251,7 @@ class TGStreamerCodecs(TestCase):
             # "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             # "test.mid",
-            "silence-44-s.spx"
+            "silence-44-s.spx",
             "test.spc",
             "test.vgm",
             "test.wma",

@@ -6,6 +6,7 @@
     <summary>Listen to, browse, or edit your audio collection</summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0-or-later</project_license>
+    <developer_name translatable="no">The Quod Libet Development Team</developer_name>
     <translation type="gettext">quodlibet</translation>
     <launchable type="desktop-id">io.github.quodlibet.QuodLibet.desktop</launchable>
     <provides>
