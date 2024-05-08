@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2022 Nick Boultbee
+#           2011-2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@ import sys
 import errno
 import codecs
 import shlex
+from typing import Any
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -313,17 +314,25 @@ def xdg_get_user_dirs():
         return {}
 
 
-def get_temp_cover_file(data):
+def get_temp_cover_file(data: bytes,
+                        mime: str | None = None) -> Any:
     """Returns a file object or None"""
 
     try:
+        suffix = None
+        if mime:
+            mime = mime.lower()
+            if "png" in mime:
+                suffix = fsnative(".png")
+            elif "jpg" in mime or "jpeg" in mime:
+                suffix = fsnative(".jpg")
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = NamedTemporaryFile(prefix=fsnative("tmp"))
+        fn = NamedTemporaryFile(prefix=fsnative("cover-"), suffix=suffix)
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
     except OSError:
-        return
+        return None
     else:
         return fn
 

@@ -41,7 +41,7 @@ class TThumb(TestCase):
 
     def test_get_thumbnail_folder(self):
         path = thumbnails.get_thumbnail_folder()
-        assert isinstance(path, fsnative)
+        assert isinstance(str(path), fsnative)
 
     def test_thumb_from_file(self):
         with open(self.filename, "rb") as h:
@@ -73,11 +73,11 @@ class TThumb(TestCase):
     def test_get_cache_info(self):
         p, s = thumbnails.get_cache_info(self.filename, (20, 20))
         assert s == 128
-        assert (os.sep + "normal" + os.sep) in p
+        assert "normal" in {p.name for p in p.parents}
 
         p, s = thumbnails.get_cache_info(self.filename, (20, 300))
         assert s == 256
-        assert (os.sep + "large" + os.sep) in p
+        assert "large" in {p.name for p in p.parents}
 
     def test_recreate_broken_cache_file(self):
         thumb = thumbnails.get_thumbnail(self.filename, (50, 60), ignore_temp=False)
