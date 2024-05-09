@@ -1508,6 +1508,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2340,20 +2341,20 @@ msgstr ""
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr ""
 
@@ -3024,23 +3025,27 @@ msgstr ""
 msgid "Tooltip Display"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
+msgstr ""
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
