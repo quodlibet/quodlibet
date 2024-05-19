@@ -3424,20 +3424,24 @@ msgstr ""
 msgid "_Follow cursor"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 msgid "Prefer _less played"
+msgstr ""
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+msgid "Priority for less played tracks"
 msgstr ""
 
 #: quodlibet/ext/playorder/queue.py:23
