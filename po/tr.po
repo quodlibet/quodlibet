@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-02-20 09:04+0000\n"
-"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"PO-Revision-Date: 2024-05-25 10:09+0000\n"
+"Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
 "Language: tr\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3611,9 +3611,8 @@ msgid "Prefer _less played"
 msgstr "Daha az ça_lınanı tercih et"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "Daha az çalınanı tercih et"
+msgstr "Daha az çalınan parça önceliği"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -8121,9 +8120,8 @@ msgstr "Müzik koleksiyonunuzu gezin, dinleyin, düzenleyin"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libet Ayarları"
+msgstr "Quod Libet Geliştirme Takımı"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
