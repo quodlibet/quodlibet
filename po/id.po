@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2023-10-30 17:12+0000\n"
-"Last-Translator: Christian Elbrianno <crse@protonmail.ch>\n"
+"PO-Revision-Date: 2024-05-02 04:20+0000\n"
+"Last-Translator: Reza Almanda <rezaalmanda27@gmail.com>\n"
 "Language-Team: Indonesian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/id/>\n"
 "Language: id\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.2-dev\n"
+"X-Generator: Weblate 5.5.3-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -26,7 +26,7 @@ msgstr "_Judul"
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:58
 msgid "_People"
-msgstr ""
+msgstr "_Orang"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:60
@@ -56,9 +56,8 @@ msgstr "_Peringkat"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:64
-#, fuzzy
 msgid "Play_count"
-msgstr "_Jumlah Pemutaran"
+msgstr "Jumlah_pemutaran"
 
 #: quodlibet/browsers/albums/main.py:233
 #: quodlibet/browsers/covergrid/main.py:70
@@ -339,6 +338,9 @@ msgid ""
 "lists or playlists. The following locations cannot be loaded:\n"
 "%s"
 msgstr ""
+"Daftar stasiun hanya dapat memuat lokasi stasiun, bukan daftar stasiun atau "
+"daftar putar lainnya. Lokasi-lokasi berikut ini tidak dapat dimuat:\n"
+"%s"
 
 #: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
 #: quodlibet/browsers/iradio.py:497
@@ -346,9 +348,8 @@ msgid "Internet Radio"
 msgstr "Radio Internet"
 
 #: quodlibet/browsers/iradio.py:224
-#, fuzzy
 msgid "Add stations"
-msgstr "Tambahkan stasiun"
+msgstr "Tambah stasiun"
 
 #: quodlibet/browsers/iradio.py:265
 msgid "Downloading station list"
@@ -371,7 +372,6 @@ msgid "Hip Hop / Rap"
 msgstr "Hip Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:389
-#, fuzzy
 msgid "Oldies"
 msgstr "Jadul"
 
@@ -393,7 +393,7 @@ msgstr "Religi"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Charts"
-msgstr ""
+msgstr "Urutan"
 
 #: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
@@ -417,7 +417,7 @@ msgstr "Percakapan/Berita"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
-msgstr ""
+msgstr "Sekitar"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Jazz"
@@ -432,7 +432,6 @@ msgid "Pop"
 msgstr "Pop"
 
 #: quodlibet/browsers/iradio.py:406
-#, fuzzy
 msgid "Alternative"
 msgstr "Alternatif"
 
@@ -442,7 +441,7 @@ msgstr "Metal"
 
 #: quodlibet/browsers/iradio.py:408
 msgid "Country"
-msgstr ""
+msgstr "Negara"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "News"
@@ -450,11 +449,11 @@ msgstr "Berita"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
-msgstr ""
+msgstr "Schlager"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr ""
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
