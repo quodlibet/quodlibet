@@ -1516,6 +1516,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2350,20 +2351,20 @@ msgstr ""
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr ""
 
@@ -3044,23 +3045,27 @@ msgstr ""
 msgid "Tooltip Display"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
+msgstr ""
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
@@ -3440,20 +3445,24 @@ msgstr ""
 msgid "_Follow cursor"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr "Playcount Equaliser"
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 msgid "Prefer _less played"
+msgstr ""
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+msgid "Priority for less played tracks"
 msgstr ""
 
 #: quodlibet/ext/playorder/queue.py:23
@@ -7785,21 +7794,26 @@ msgstr ""
 msgid "Listen to, browse, or edit your audio collection"
 msgstr ""
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+msgid "The Quod Libet Development Team"
+msgstr ""
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
