@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2024-02-06 12:01+0000\n"
+"PO-Revision-Date: 2024-05-20 23:01+0000\n"
 "Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
 "org>\n"
 "Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3103,7 +3103,7 @@ msgstr "没有正在播放的曲目"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "隐藏 .lrc 或 .elrc 格式歌词文件的时间戳"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3503,9 +3503,8 @@ msgid "Prefer _less played"
 msgstr "播放更少优先(_L)"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "播放更少优先"
+msgstr "较少播放曲目的优先级"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -7879,9 +7878,8 @@ msgstr "收听、浏览或者编辑您的音频收藏"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libet 首选项"
+msgstr "Quod Libet 开发团队"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
