@@ -1570,6 +1570,7 @@ msgstr "_Päivitystapa:"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2448,20 +2449,20 @@ msgstr "Näytönsäästäjä-keskeytys"
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "Keskeyttää toiston GNOME-näytönsäästäjän ollessa aktiivisena."
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "Ei asennettua GNOME Shell -hakupalveluntarjoajaa Quod Libetille."
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr "Onko ini-tiedosto kopioitu polkuun %s (tai vastaavaan)?"
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr "GNOME-hakupalveluntarjoaja"
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr "Sallii GNOME Shellin hakea kirjastosta."
 
@@ -3194,16 +3195,16 @@ msgstr "_Vieritysrulla"
 msgid "Tooltip Display"
 msgstr "Työkaluvihjenäyttö"
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr "Näytä sanat"
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 "Näyttää tunnisteesta tai tiedostosta haetut kappaleen sanat sivupaneelissa."
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3212,9 +3213,13 @@ msgstr ""
 "Seuraavalle kappaleelle ei löydy sanoja:\n"
 "%s"
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
 msgstr "Ei aktiivista kappaletta"
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
+msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3609,21 +3614,26 @@ msgstr "Seuraa kursoria"
 msgid "_Follow cursor"
 msgstr "_Seuraa kursoria"
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr "Toistokertojen tasaaja"
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr "Lisää sekoitustilan, joka suosii vähemmän toistettuja kappaleita."
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr "Suosi vähemmän toistettuja"
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 msgid "Prefer _less played"
 msgstr "Suosi _vähemmän toistettuja"
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+#, fuzzy
+msgid "Priority for less played tracks"
+msgstr "Suosi vähemmän toistettuja"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -8156,7 +8166,13 @@ msgstr "Musiikkitoistin"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+#, fuzzy
+msgid "The Quod Libet Development Team"
+msgstr "Quod Libetin asetukset"
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
@@ -8166,8 +8182,8 @@ msgstr ""
 "muokkausnäkymällä. Sen avulla voi katsella ja muokata kaikkien tuettujen "
 "tiedostomuotojen tunnisteita."
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -8175,7 +8191,7 @@ msgstr ""
 "Tuettuihin tiedostomuotoihin kuuluvat Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, "
 "MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
@@ -8948,9 +8964,6 @@ msgstr ""
 
 #~ msgid "Separators for splitting tags"
 #~ msgstr "Erottimet tunnisteiden katkaisemiseen"
-
-#~ msgid "Quod Libet Preferences"
-#~ msgstr "Quod Libetin asetukset"
 
 #~ msgid "Not Played To_day"
 #~ msgstr "Ei soitettu _tänään"

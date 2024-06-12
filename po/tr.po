@@ -1566,6 +1566,7 @@ msgstr "_Stratejiyi güncelle:"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2439,20 +2440,20 @@ msgstr "Ekran Koruyucu Duraklatması"
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "GNOME ekran koruyucu etkinken çalmayı duraklatır."
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "Quod Libet için hiçbir GNOME Kabuğu arama sağlayıcısı yüklü değil."
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr "ini dosyasını %s (veya benzer) kopyaladınız mı?"
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr "GNOME Arama Sağlayıcısı"
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr "GNOME Kabuğu'nun kitaplığı aramasına izin verir."
 
@@ -3178,17 +3179,17 @@ msgstr "Fare _Tekeri Hareketi"
 msgid "Tooltip Display"
 msgstr "Araç İpucunu Göster"
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr "Sözleri Göster"
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 "Etiketi veya dosya tabanlı şarkı sözlerini otomatik olarak kenar çubuğunda "
 "gösterir."
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3197,9 +3198,13 @@ msgstr ""
 "%s için \n"
 "şarkı sözü bulunamadı"
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
 msgstr "Etkin şarkı yok"
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
+msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3589,21 +3594,26 @@ msgstr "İmleci takip et"
 msgid "_Follow cursor"
 msgstr "_İmleci takip et"
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr "Çalma Sayısı Dengeleyici"
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr "Daha az çalınmış şarkıları tercih eden bir karıştırma kipi ekler."
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr "Daha az çalınanı tercih et"
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 msgid "Prefer _less played"
 msgstr "Daha az ça_lınanı tercih et"
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+#, fuzzy
+msgid "Priority for less played tracks"
+msgstr "Daha az çalınanı tercih et"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -5540,8 +5550,8 @@ msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"'{module}' modülü bulunamadı. Acaba paket yüklemeniz gerekiyor olabilir "
-"mi?{extra}"
+"'{module}' modülü bulunamadı. Acaba paket yüklemeniz gerekiyor olabilir mi?"
+"{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -8109,7 +8119,13 @@ msgstr "Müzik Çalar"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Müzik koleksiyonunuzu gezin, dinleyin, düzenleyin"
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+#, fuzzy
+msgid "The Quod Libet Development Team"
+msgstr "Quod Libet Ayarları"
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
@@ -8119,8 +8135,8 @@ msgstr ""
 "düzenleyicidir. Desteklediği bütün dosya biçimleri için, dosyada istediğiniz "
 "bütün etiketleri görüntüleyip düzenlemenize izin verir."
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -8128,7 +8144,7 @@ msgstr ""
 "Desteklenen dosya biçimleri; Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC ve MIDI içerir."
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
@@ -8806,9 +8822,6 @@ msgstr ""
 
 #~ msgid "Separators for splitting tags"
 #~ msgstr "etiketler ayırıcıları"
-
-#~ msgid "Quod Libet Preferences"
-#~ msgstr "Quod Libet Ayarları"
 
 #~ msgid "Not Played To_day"
 #~ msgstr "_Bugün çalınmadı"
