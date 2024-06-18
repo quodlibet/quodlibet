@@ -8,6 +8,7 @@
 from gi.repository import GdkPixbuf, Gdk
 
 from tests import TestCase, get_data_path
+from quodlibet.util import is_flatpak
 
 
 class Timage_support(TestCase):
@@ -17,11 +18,15 @@ class Timage_support(TestCase):
 
     IMAGES = [
         "image.svg",
-        "image.bmp",
         "image.png",
         "image.gif",
         "image.jpg",
     ]
+
+    # gdk-pixbuf dropped bmp by default and the GNOME flatpak
+    # runtime doesn't include it
+    if not is_flatpak():
+        IMAGES.append("image.bmp")
 
     def test_create_pixbuf(self):
         for name in self.IMAGES:
