@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-02-11 19:01+0000\n"
+"PO-Revision-Date: 2024-06-20 06:09+0000\n"
 "Last-Translator: Milan Šalka <salka.milan@googlemail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.6-rc\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3231,7 +3231,7 @@ msgstr "Žiadna aktívna skladba"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "Skryť častampy .lrc alebo .elrc formátované texty"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3641,9 +3641,8 @@ msgid "Prefer _less played"
 msgstr "Uprednostňovať _menej prehrávané"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "Uprednostňovať menej prehrávané"
+msgstr "Priorita pre menej hraných stôp"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -8188,9 +8187,8 @@ msgstr "Počúvajte, prehliadajte, alebo upravujte svoju hudobnú kolekciu"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Nastavenie Quod Libet"
+msgstr "Tím rozvoja Quod Libet"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
