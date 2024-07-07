@@ -1,4 +1,4 @@
-# Copyright 2013,2015 Christoph Reiter
+# Copyright 2013,2015 Christoph Reiter, Dino Miniutti
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@ import os
 import contextlib
 
 from senf import fsnative
+from pathlib import Path
 
 if os.name == "nt":
     from . import winapi
@@ -82,10 +83,13 @@ def atomic_save(filename, mode):
 
         fileobj.close()
 
+        # dereference symbolic links
+        target = filename if not os.path.islink(filename) else Path(filename).resolve()
+
         if os.name == "nt":
-            _windows_rename(fileobj.name, filename)
+            _windows_rename(fileobj.name, target)
         else:
-            os.rename(fileobj.name, filename)
+            os.rename(fileobj.name, target)
     except Exception:
         try:
             os.unlink(fileobj.name)

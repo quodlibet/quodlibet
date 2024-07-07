@@ -1,4 +1,4 @@
-# Copyright 2013 Christoph Reiter
+# Copyright 2013 Christoph Reiter, Dino Miniutti
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -78,3 +78,23 @@ class Tatomic_save(TestCase):
             self.assertEqual(fobj.read(), b"nope")
 
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])
+
+    def test_symbolic_link(self):
+        filename = os.path.join(self.dir, "foo.txt")
+        symlink = os.path.join(self.dir, "foo.link")
+
+        os.symlink(filename, symlink)
+
+        with open(filename, "wb") as fobj:
+            fobj.write(b"nope")
+
+        with atomic_save(symlink, "wb") as fobj:
+            fobj.write(b"foo")
+            temp_name = fobj.name
+
+        with open(filename, "rb") as fobj:
+            self.assertEqual(fobj.read(), b"foo")
+
+        self.assertFalse(os.path.exists(temp_name))
+        self.assertEqual(sorted(os.listdir(self.dir)), sorted([os.path.basename(filename), os.path.basename(symlink)]))
+        self.assertTrue(os.path.islink(symlink))
