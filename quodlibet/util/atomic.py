@@ -87,7 +87,7 @@ def atomic_save(filename, mode):
         target = filename if not os.path.islink(filename) else Path(filename).resolve()
 
         if os.name == "nt":
-            _windows_rename(fileobj.name, target.name)
+            _windows_rename(fileobj.name, str(target))
         else:
             os.rename(fileobj.name, target)
     except Exception:
