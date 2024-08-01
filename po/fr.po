@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-06-12 02:02+0000\n"
-"Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2024-08-01 18:09+0000\n"
+"Last-Translator: ckmanoth <Shamash59950@gmail.com>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -7491,7 +7491,7 @@ msgstr "Retirer la piste : \"%(title)s\" de la bibliothèque ?"
 #: quodlibet/qltk/songsmenu.py:47
 #, python-format
 msgid "Remove %(count)d tracks from the library?"
-msgstr "Retirer les pistes %(count)d de la bibliothèque ?"
+msgstr "Retirer les %(count)d pistes de la bibliothèque ?"
 
 #: quodlibet/qltk/songsmenu.py:50
 msgid "Remove from Library"
