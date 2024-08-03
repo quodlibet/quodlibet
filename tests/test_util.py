@@ -354,6 +354,14 @@ class Tparse_date(TestCase):
             util.parse_date("2004-01-01") < util.parse_date("2004-01-02"))
 
 
+class Tparse_year(TestCase):
+
+    def test_common_date_formats(self):
+        self.assertEqual(util.parse_year("2022"), "2022")
+        self.assertEqual(util.parse_year("2022-02-28"), "2022")
+        self.assertEqual(util.parse_year("02/28/2022"), "2022")
+
+
 class Tdate_key(TestCase):
 
     def test_compare(self):

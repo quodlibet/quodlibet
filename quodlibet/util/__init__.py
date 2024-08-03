@@ -319,6 +319,12 @@ def parse_date(datestr):
         raise ValueError(e) from e
 
 
+def parse_year(yearstr):
+    """Parses dates of various formats and returns the year."""
+    if "/" in yearstr:
+        return yearstr[-4:]
+    return yearstr[:4]
+
 def format_int_locale(value):
     """Turn an integer into a grouped, locale-dependent string
     e.g. 12345 -> "12,345" or "12.345" etc

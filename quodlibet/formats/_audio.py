@@ -440,17 +440,17 @@ class AudioFile(dict, ImageContainer, HasKey):
                     return default
                 return util.date_key(date)
             elif key == "year":
-                return self.get("date", default)[:4]
+                return util.parse_year(self.get("date", default))
             elif key == "#year":
                 try:
-                    return int(self.get("date", default)[:4])
+                    return int(util.parse_year(self.get("date", default)))
                 except (ValueError, TypeError, KeyError):
                     return default
             elif key == "originalyear":
-                return self.get("originaldate", default)[:4]
+                return util.parse_year(self.get("originaldate", default))
             elif key == "#originalyear":
                 try:
-                    return int(self.get("originaldate", default)[:4])
+                    return int(util.parse_year(self.get("originaldate", default)))
                 except (ValueError, TypeError, KeyError):
                     return default
             elif key == "#tracks":
