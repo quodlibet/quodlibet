@@ -125,9 +125,7 @@ musicbrainzngs
         "${MINGW_PACKAGE_PREFIX}"-frei0r-plugins \
         "${MINGW_PACKAGE_PREFIX}"-openexr \
         "${MINGW_PACKAGE_PREFIX}"-openh264 \
-        "${MINGW_PACKAGE_PREFIX}"-zbar \
-        "${MINGW_PACKAGE_PREFIX}"-gsl \
-        "${MINGW_PACKAGE_PREFIX}"-vulkan-headers
+        "${MINGW_PACKAGE_PREFIX}"-zbar
 
     build_pacman --noconfirm -S \
         "${MINGW_PACKAGE_PREFIX}"-python-setuptools
