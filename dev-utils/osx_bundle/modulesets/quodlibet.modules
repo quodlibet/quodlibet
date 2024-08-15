@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<!DOCTYPE moduleset SYSTEM "moduleset.dftd">
+<!DOCTYPE moduleset SYSTEM "moduleset.dtd">
 <!-- :mode=xml:tabSize=4:indentSize=4:folding=explicit: -->
 <moduleset>
   <repository type="git" name="git.gnome.org"
