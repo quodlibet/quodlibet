@@ -41,7 +41,7 @@ class TrackNumbers(Gtk.VBox):
         label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)
         spin_start = Gtk.SpinButton()
-        spin_start.set_range(0, 999)
+        spin_start.set_range(0, 9999)
         spin_start.set_increments(1, 10)
         spin_start.set_value(1)
         label_start.set_mnemonic_widget(spin_start)
@@ -50,7 +50,7 @@ class TrackNumbers(Gtk.VBox):
             label=_("_Total tracks:"), halign=Gtk.Align.END)
         label_total.set_use_underline(True)
         spin_total = Gtk.SpinButton()
-        spin_total.set_range(0, 999)
+        spin_total.set_range(0, 9999)
         spin_total.set_increments(1, 10)
         label_total.set_mnemonic_widget(spin_total)
 
