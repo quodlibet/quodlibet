@@ -246,10 +246,11 @@ class TGStreamerCodecs(TestCase):
             "empty.flac",
             "empty.ogg",
             "empty.opus",
-            "silence-44-s.mpc",
             # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3369
             # "silence-44-s.sv8.mpc",
-            "silence-44-s.tta",
+            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3369#note_2534391
+            # "silence-44-s.mpc",
+            # "silence-44-s.tta",
             # "test.mid",
             "silence-44-s.spx",
             "test.spc",
