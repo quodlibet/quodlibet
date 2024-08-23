@@ -8,7 +8,6 @@
 from gi.repository import GdkPixbuf, Gdk
 
 from tests import TestCase, get_data_path
-from quodlibet.util import is_flatpak
 
 
 class Timage_support(TestCase):
@@ -18,23 +17,24 @@ class Timage_support(TestCase):
 
     IMAGES = [
         "image.svg",
+        "image.bmp",
         "image.png",
         "image.gif",
         "image.jpg",
     ]
 
-    # gdk-pixbuf dropped bmp by default and the GNOME flatpak
-    # runtime doesn't include it
-    if not is_flatpak():
-        IMAGES.append("image.bmp")
-
     def test_create_pixbuf(self):
+        supported_formats = GdkPixbuf.Pixbuf.get_formats()
+
         for name in self.IMAGES:
-            file_path = get_data_path(name)
-            pb = GdkPixbuf.Pixbuf.new_from_file(file_path)
-            assert pb
-            assert pb.get_width() == 16
-            assert pb.get_height() == 16
+            extension = name.split(".")[-1]
+
+            if any(extension in x.extensions for x in supported_formats):
+                file_path = get_data_path(name)
+                pb = GdkPixbuf.Pixbuf.new_from_file(file_path)
+                assert pb
+                assert pb.get_width() == 16
+                assert pb.get_height() == 16
 
     def test_cursors(self):
         # make sure cursor images are packaged right
