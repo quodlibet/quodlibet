@@ -13,7 +13,6 @@
 # (at your option) any later version.
 
 from math import ceil, floor
-from typing import List
 
 from gi.repository import Gtk, Gdk, Gst
 import cairo
@@ -55,23 +54,23 @@ class WaveformSeekBar(Gtk.Box):
             child.show_all()
         self.set_time_label_visibility(CONFIG.show_time_labels)
 
-        self._waveform_scale.connect('size-allocate', self._update_redraw_interval)
-        self._waveform_scale.connect('motion-notify-event', self._on_mouse_hover)
-        self._waveform_scale.connect('leave-notify-event', self._on_mouse_leave)
+        self._waveform_scale.connect("size-allocate", self._update_redraw_interval)
+        self._waveform_scale.connect("motion-notify-event", self._on_mouse_hover)
+        self._waveform_scale.connect("leave-notify-event", self._on_mouse_leave)
 
         self._label_tracker = TimeTracker(player)
-        self._label_tracker.connect('tick', self._on_tick_label, player)
+        self._label_tracker.connect("tick", self._on_tick_label, player)
 
         self._redraw_tracker = TimeTracker(player)
-        self._redraw_tracker.connect('tick', self._on_tick_waveform, player)
+        self._redraw_tracker.connect("tick", self._on_tick_waveform, player)
 
-        connect_destroy(player, 'seek', self._on_player_seek)
-        connect_destroy(player, 'song-started', self._on_song_started)
-        connect_destroy(player, 'song-ended', self._on_song_ended)
-        connect_destroy(player, 'notify::seekable', self._on_seekable_changed)
-        connect_destroy(library, 'changed', self._on_song_changed, player)
+        connect_destroy(player, "seek", self._on_player_seek)
+        connect_destroy(player, "song-started", self._on_song_started)
+        connect_destroy(player, "song-ended", self._on_song_ended)
+        connect_destroy(player, "notify::seekable", self._on_seekable_changed)
+        connect_destroy(library, "changed", self._on_song_changed, player)
 
-        self.connect('destroy', self._on_destroy)
+        self.connect("destroy", self._on_destroy)
         self._update(player)
 
         if player.info:
@@ -120,9 +119,8 @@ class WaveformSeekBar(Gtk.Box):
         force_stop = False
         if message.type == Gst.MessageType.ERROR:
             error, debug = message.parse_error()
-            print_d("Error received from element {name}: {error}".format(
-                name=message.src.get_name(), error=error))
-            print_d("Debugging information: {}".format(debug))
+            print_d(f"Error received from element {message.src.get_name()}: {error}")
+            print_d(f"Debugging information: {debug}")
         elif message.type == Gst.MessageType.ELEMENT:
             structure = message.get_structure()
             if structure.get_name() == "level":
@@ -139,8 +137,7 @@ class WaveformSeekBar(Gtk.Box):
                         # short interval set.
                         force_stop = True
             else:
-                print_w("Got unexpected message of type {}"
-                        .format(message.type))
+                print_w(f"Got unexpected message of type {message.type}")
 
         if message.type == Gst.MessageType.EOS or force_stop:
             self._clean_pipeline()
@@ -308,13 +305,13 @@ class WaveformSeekBar(Gtk.Box):
 class WaveformScale(Gtk.EventBox):
     """The waveform widget."""
 
-    _rms_vals: List[int] = []
+    _rms_vals: list[int] = []
     _player = None
 
     def __init__(self, player):
         super().__init__()
         self._player = player
-        self.set_size_request(40, 40)
+        self.set_size_request(40, CONFIG.height_px)
         self.position = 0
         self._last_drawn_position = 0
         self.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
@@ -403,7 +400,7 @@ class WaveformScale(Gtk.EventBox):
         data = self._rms_vals
 
         # Use the clip rectangles to redraw only what is necessary
-        for (cx, cy, cw, ch) in cr.copy_clip_rectangle_list():
+        for (cx, _cy, cw, _ch) in cr.copy_clip_rectangle_list():
             for x in range(int(floor(cx * pixel_ratio)),
                            int(ceil((cx + cw) * pixel_ratio)), 1):
 
@@ -590,6 +587,7 @@ class Config:
     seek_amount = IntConfProp(_config, "seek_amount", 5000)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
     show_time_labels = BoolConfProp(_config, "show_time_labels", True)
+    height_px = IntConfProp(_config, "height_px", 40)
 
 
 CONFIG = Config()
@@ -659,6 +657,12 @@ class WaveformSeekBarPlugin(EventPlugin):
             if self._bar is not None:
                 self._bar.set_time_label_visibility(CONFIG.show_time_labels)
 
+        def on_height_px_changed(spinbox):
+            CONFIG.height_px = spinbox.get_value_as_int()
+            if self._bar is not None and self._bar._waveform_scale is not None:
+                self._bar._waveform_scale.set_size_request(40, CONFIG.height_px)
+
+
         def create_color(label_text, color, callback):
             hbox = Gtk.HBox(spacing=6)
             hbox.set_border_width(6)
@@ -667,7 +671,7 @@ class WaveformSeekBarPlugin(EventPlugin):
             entry = Gtk.Entry()
             if color:
                 entry.set_text(color)
-            entry.connect('changed', callback)
+            entry.connect("changed", callback)
             hbox.pack_start(entry, True, True, 0)
             return hbox
 
@@ -703,6 +707,19 @@ class WaveformSeekBarPlugin(EventPlugin):
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
         hbox.pack_start(seek_amount, True, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
+
+
+        hbox = Gtk.HBox(spacing=6)
+        hbox.set_border_width(6)
+        label = Gtk.Label(label=_("Waveform height (pixels):"))
+        hbox.pack_start(label, False, True, 0)
+        height_px = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
+        )
+        height_px.set_numeric(True)
+        height_px.connect("changed", on_height_px_changed)
+        hbox.pack_start(height_px, True, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
         return vbox

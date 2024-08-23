@@ -41,7 +41,7 @@ class TrackNumbers(Gtk.VBox):
         label_start = Gtk.Label(label=_("Start fro_m:"), halign=Gtk.Align.END)
         label_start.set_use_underline(True)
         spin_start = Gtk.SpinButton()
-        spin_start.set_range(0, 999)
+        spin_start.set_range(0, 9999)
         spin_start.set_increments(1, 10)
         spin_start.set_value(1)
         label_start.set_mnemonic_widget(spin_start)
@@ -50,7 +50,7 @@ class TrackNumbers(Gtk.VBox):
             label=_("_Total tracks:"), halign=Gtk.Align.END)
         label_total.set_use_underline(True)
         spin_total = Gtk.SpinButton()
-        spin_total.set_range(0, 999)
+        spin_total.set_range(0, 9999)
         spin_total.set_increments(1, 10)
         label_total.set_mnemonic_widget(spin_total)
 
@@ -75,7 +75,7 @@ class TrackNumbers(Gtk.VBox):
         self.pack_start(grid, False, True, 0)
 
         render = Gtk.CellRendererText()
-        column = TreeViewColumn(title=_('File'))
+        column = TreeViewColumn(title=_("File"))
         column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
@@ -87,8 +87,8 @@ class TrackNumbers(Gtk.VBox):
 
         view.append_column(column)
         render = Gtk.CellRendererText()
-        render.set_property('editable', True)
-        column = TreeViewColumn(title=_('Track'))
+        render.set_property("editable", True)
+        column = TreeViewColumn(title=_("Track"))
         column.pack_start(render, True)
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
 
@@ -112,7 +112,7 @@ class TrackNumbers(Gtk.VBox):
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save = save
         connect_obj(save,
-            'clicked', self.__save_files, prop, model, library)
+            "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
         bbox.pack_start(revert, True, True, 0)
@@ -120,20 +120,20 @@ class TrackNumbers(Gtk.VBox):
         self.pack_start(bbox, False, True, 0)
 
         preview_args = [spin_start, spin_total, model, save, revert]
-        preview.connect('clicked', self.__preview_tracks, *preview_args)
-        connect_obj(revert, 'clicked',
+        preview.connect("clicked", self.__preview_tracks, *preview_args)
+        connect_obj(revert, "clicked",
                               self.__update, None, *preview_args[1:])
         spin_total.connect(
-            'value-changed', self.__preview_tracks, *preview_args)
+            "value-changed", self.__preview_tracks, *preview_args)
         spin_start.connect(
-            'value-changed', self.__preview_tracks, *preview_args)
+            "value-changed", self.__preview_tracks, *preview_args)
         connect_obj(view,
-            'drag-end', self.__class__.__preview_tracks, self,
+            "drag-end", self.__class__.__preview_tracks, self,
             *preview_args)
-        render.connect('edited', self.__row_edited, model, preview, save)
+        render.connect("edited", self.__row_edited, model, preview, save)
 
         connect_obj(prop,
-            'changed', self.__class__.__update, self,
+            "changed", self.__class__.__update, self,
             spin_total, model, save, revert)
 
         for child in self.get_children():
@@ -189,7 +189,7 @@ class TrackNumbers(Gtk.VBox):
         total = total.get_value_as_int()
         for row in model:
             if total:
-                s = u"%d/%d" % (row.path.get_indices()[0] + start, total)
+                s = "%d/%d" % (row.path.get_indices()[0] + start, total)
             else:
                 s = str(row.path.get_indices()[0] + start)
             entry = row[0]

@@ -1,45 +1,47 @@
-# Copyright 2020 Nick Boultbee
+# Copyright 2020-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+import time
 
 import quodlibet
 
+DEVICE_CACHE_SEC = 600
+
 try:
     from soco import SoCo, SoCoException
-    from soco.data_structures import (DidlMusicTrack, DidlPlaylistContainer,
-                                      DidlItem)
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+    from soco.data_structures import DidlMusicTrack, DidlPlaylistContainer, DidlItem
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
-from typing import Text, Optional, Dict, Tuple, Collection
+from collections.abc import Collection
 from gi.repository import Gtk
 from quodlibet import _
 from quodlibet import app
 from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.playlist import PlaylistPlugin
-from quodlibet.qltk import Icons, Dialog
+from quodlibet.qltk import Icons, Dialog, WarningMessage
 from quodlibet.qltk.notif import Task
-from quodlibet.util import copool
+from quodlibet.util import copool, escape
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.string.filter import remove_punctuation
 
 try:
     import soco
-except ImportError:
-    raise quodlibet.plugins.MissingModulePluginException("soco")
+except ImportError as e:
+    raise quodlibet.plugins.MissingModulePluginError("soco") from e
 
-PlaylistID = Text
-ID = Text
-Name = Text
-SonosPlaylistDict = Dict[PlaylistID, Name]
+PlaylistID = str
+ID = str
+Name = str
+SonosPlaylistDict = dict[PlaylistID, Name]
 
 
 class ComboBoxEntry(Gtk.ComboBox):
-    def __init__(self, choices: Dict[Text, Text], tooltip_markup=None):
+    def __init__(self, choices: dict[str, str], tooltip_markup=None):
         super().__init__(
             model=Gtk.ListStore(str, str),
             entry_text_column=1,
@@ -48,11 +50,11 @@ class ComboBoxEntry(Gtk.ComboBox):
         if tooltip_markup:
             self.get_child().set_tooltip_markup(tooltip_markup)
 
-    def _fill_model(self, choices: Dict[Text, Text]):
+    def _fill_model(self, choices: dict[str, str]):
         self.clear()
         render = Gtk.CellRendererText()
         self.pack_start(render, True)
-        self.add_attribute(render, 'text', 1)
+        self.add_attribute(render, "text", 1)
 
         model = self.get_model()
         for id_, name in choices.items():
@@ -64,7 +66,7 @@ class ComboBoxEntry(Gtk.ComboBox):
         comp.set_text_column(1)
         self.get_child().set_completion(comp)
 
-    def get_chosen(self) -> Tuple[Optional[ID], Name]:
+    def get_chosen(self) -> tuple[ID | None, Name]:
         tree_iter = self.get_active_iter()
         if tree_iter is not None:
             model = self.get_model()
@@ -73,7 +75,7 @@ class ComboBoxEntry(Gtk.ComboBox):
         entry = self.get_child()
         return None, entry.get_text()
 
-    def set_text(self, text: Text):
+    def set_text(self, text: str):
         model = self.get_model()
         for i, (id_, value) in enumerate(model):
             if value == text:
@@ -112,8 +114,7 @@ class GetSonosPlaylistDialog(Dialog):
         self.vbox.pack_start(box, True, True, 0)
         self.get_child().show_all()
 
-    def run(self, text: Optional[Text] = None) \
-            -> Optional[Tuple[Optional[Name], Text]]:
+    def run(self, text: str | None = None) -> tuple[Name | None, str] | None:
         self.show()
         if text:
             self._combo.set_text(text)
@@ -128,9 +129,8 @@ class GetSonosPlaylistDialog(Dialog):
 
 class SonosPlaylistPlugin(PlaylistPlugin):
     PLUGIN_ID = "Export to Sonos Playlist"
-    PLUGIN_NAME = _(u"Export to Sonos Playlist")
-    PLUGIN_DESC = _("Exports a playlist to Sonos playlist, "
-                    "provided both share a directory structure.")
+    PLUGIN_NAME = _("Export to Sonos Playlist")
+    PLUGIN_DESC = _("Exports a playlist to Sonos by matching tracks.")
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
     REQUIRES_ACTION = True
 
@@ -142,7 +142,25 @@ class SonosPlaylistPlugin(PlaylistPlugin):
     def __init__(self, playlists=None, library=None):
         super().__init__(playlists, library)
         self.__cancel = False
-        self.device: Optional[SoCo] = None
+        self.devices = []
+        self._last_discovery = 0
+
+    def enabled(self):
+        print_d(f"Using Sonos device: {self.device}")
+
+    @property
+    def device(self) -> SoCo | None:
+        now = time.time()
+        if not self.devices or now - self._last_discovery > DEVICE_CACHE_SEC:
+            devices = soco.discover()
+            print_d(f"Found {len(devices)} Sonos devices")
+            coords = [d for d in devices if d.is_coordinator]
+            if not coords:
+                raise Exception(f"No Sonos coordinators found in {devices}")
+            print_d(f"Found {len(coords)} Sonos coordinators")
+            self.devices = coords
+            self._last_discovery = now
+        return self.devices[0]
 
     def __cancel_add(self):
         """Tell the copool to stop (adding songs)"""
@@ -161,7 +179,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                  + int(bool(person) and person in d.values())
                  + int(bool(album) and album in d.get("album", "")))
         if cls.DEBUG:
-            print_d("%.1f for %s (%s)" % (score, t.title, d))
+            print_d(f"{score:.1f} for {t.title} ({d})")
         return score
 
     def __add_songs(self, task: Task, songs: Collection[AudioFile],
@@ -171,6 +189,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
         task_total = float(len(songs))
         print_d("Adding %d song(s) to Sonos playlist. "
                 "This might take a while..." % task_total)
+        failures = []
         for i, song in enumerate(songs):
             if self.__cancel:
                 print_d("Cancelled Sonos export")
@@ -194,28 +213,32 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 print_d(f"From {len(results)} choice(s) for {desc!r}, "
                         f"chose {self.uri_for(track)}")
             else:
-                print_w("No results for \"%s\"" % search_term)
+                print_w('No results for "%s"' % search_term)
+                failures.append(search_term)
                 track = None
             if track:
                 try:
                     self.device.add_item_to_sonos_playlist(track, spl)
                 except SoCoException as e:
+                    failures.append(track)
                     print_w(f"Couldn't add {track} ({e}, skipping")
             task.update(float(i) / task_total)
             yield
         task.update((task_total - 2) / task_total)
         yield
         task.finish()
-        print_d(f"Finished export to {spl.title!r}")
+        if failures:
+            print_w(f"Got {len(failures)} failure(s), of {int(task_total)}: {failures}")
+        successes = int(task_total) - len(failures)
+        print_d(f"Finished export to {spl.title!r}, {successes} tracks in total")
 
     @staticmethod
-    def uri_for(track: DidlItem) -> Text:
+    def uri_for(track: DidlItem) -> str:
         """More usable elsewhere (on Linux at least)"""
         return track.get_uri().replace("x-file-cifs", "smb")
 
     def plugin_playlist(self, playlist):
-        # TODO - only get coordinator nodes, somehow
-        self.device: SoCo = soco.discovery.any_soco()
+        print_d(f"Using Sonos device: {self.device!r}")
         device = self.device
         if not device:
             qltk.ErrorMessage(
@@ -233,12 +256,24 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 if spl_id:
                     spl: DidlPlaylistContainer = next(s for s in sonos_pls
                                                       if s.item_id == spl_id)
-                    print_w(f"Replacing existing Sonos playlist {spl!r}")
-                    device.remove_sonos_playlist(spl)
+                    print_w(f"Replacing existing Sonos playlist {spl_id} ({spl.title})")
+                    try:
+                        device.remove_sonos_playlist(spl)
+                        print_d("Removed existing playlist OK")
+                    except SoCoException as e:
+                        tmpl = _("Failed to delete existing Sonos playlist %s:")
+                        err_str = f" \n<tt>{escape(e)!r}</tt>"
+                        dialog = WarningMessage(None,
+                                                tmpl % escape(spl.title) + err_str,
+                                                escape_desc=False)
+                        dialog.run()
+                        return
 
                 print_d(f"Creating new playlist {name!r}")
                 spl = device.create_sonos_playlist(name)
-                task = Task("Sonos", _("Export to Sonos playlist"),
+                data = {"playlist": name[:30], "total": len(playlist)}
+                task = Task("Sonos", _("Export to playlist %(playlist)r "
+                                       "(%(total)d tracks)") % data,
                             stop=self.__cancel_add)
                 copool.add(self.__add_songs, task, playlist.songs, spl,
                            funcid="sonos-playlist-save")

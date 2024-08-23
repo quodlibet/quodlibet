@@ -41,7 +41,7 @@ class TPlaylistExport(PluginTestCase):
             plugin.save_playlist(
                 [song1, song2], playlist_file_path, self.mod.FORMAT_M3U, relative=False
             )
-            with open(playlist_file_path, "r") as f:
+            with open(playlist_file_path) as f:
                 result = f.read()
 
         assert result == dedent(
@@ -94,7 +94,7 @@ class TPlaylistExport(PluginTestCase):
             plugin.save_playlist(
                 [song1, song2], playlist_file_path, self.mod.FORMAT_PLS, relative=False
             )
-            with open(playlist_file_path, "r") as f:
+            with open(playlist_file_path) as f:
                 result = f.read()
 
         assert result == dedent(

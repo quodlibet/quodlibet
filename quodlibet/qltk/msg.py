@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Type
 
 from gi.repository import Gtk
 
@@ -23,7 +22,7 @@ class Message(Gtk.MessageDialog, Dialog):
     """A message dialog that destroys itself after it is run, uses
     markup, and defaults to an 'OK' button."""
 
-    def __init__(self, kind: Type, parent: Gtk.Widget, title: str, description: str,
+    def __init__(self, kind: type, parent: Gtk.Widget, title: str, description: str,
                  buttons: Gtk.ButtonsType = Gtk.ButtonsType.OK,
                  escape_desc: bool = True):
         parent = get_top_parent(parent)
@@ -46,8 +45,7 @@ class CancelRevertSave(Gtk.MessageDialog, Dialog):
         title = _("Discard tag changes?")
         description = _("Tags have been changed but not saved. Save these "
                         "files, or revert and discard changes?")
-        text = ("<span weight='bold' size='larger'>%s</span>\n\n%s"
-                % (title, description))
+        text = (f"<span weight='bold' size='larger'>{title}</span>\n\n{description}")
         parent = get_top_parent(parent)
         super().__init__(
             transient_for=parent, flags=0,
@@ -78,7 +76,7 @@ class ErrorMessage(Message):
 
 
 class WarningMessage(Message):
-    """Like Message, but uses an warning-indicating picture."""
+    """Like Message, but uses a warning-indicating picture."""
 
     def __init__(self, *args, **kwargs):
         super().__init__(

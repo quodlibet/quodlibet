@@ -19,7 +19,6 @@
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 # WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from typing import Optional
 import json
 import logging
 import os
@@ -27,9 +26,9 @@ import ssl
 import time
 from http.client import HTTPConnection, HTTPSConnection
 
-HOST_NAME: Optional[str] = "api.listenbrainz.org"
+HOST_NAME: str | None = "api.listenbrainz.org"
 PATH_SUBMIT = "/1/submit-listens"
-SSL_CONTEXT: Optional[ssl.SSLContext] = ssl.create_default_context()
+SSL_CONTEXT: ssl.SSLContext | None = ssl.create_default_context()
 
 # to run against a local dev server
 if os.getenv("QL_LISTENBRAINZ_DEV_SERVER") is not None:
@@ -44,7 +43,7 @@ class Track:
     See https://listenbrainz.readthedocs.io/en/latest/dev/json.html
     """
     def __init__(self, artist_name, track_name,
-                 release_name=None, additional_info={}):
+                 release_name=None, additional_info=None):
         """
         Create a new Track instance
         @param artist_name as str
@@ -55,7 +54,7 @@ class Track:
         self.artist_name = artist_name
         self.track_name = track_name
         self.release_name = release_name
-        self.additional_info = additional_info
+        self.additional_info = additional_info or {}
 
     @staticmethod
     def from_dict(data):
@@ -75,7 +74,7 @@ class Track:
         }
 
     def __repr__(self):
-        return "Track(%s, %s)" % (self.artist_name, self.track_name)
+        return f"Track({self.artist_name}, {self.track_name})"
 
 
 class ListenBrainzClient:
@@ -85,7 +84,8 @@ class ListenBrainzClient:
     See https://listenbrainz.readthedocs.io/en/latest/dev/api.html
     """
 
-    def __init__(self, logger=logging.getLogger(__name__)):
+    def __init__(self, logger=None):
+        logger = logger or logging.getLogger(__name__)
         self.__next_request_time = 0
         self.user_token = None
         self.logger = logger
@@ -148,7 +148,7 @@ class ListenBrainzClient:
             response_data = response_text
 
         self._handle_ratelimit(response)
-        log_msg = "Response %s: %r" % (response.status, response_data)
+        log_msg = f"Response {response.status}: {response_data!r}"
         if response.status == 429 and retry < 5:  # Too Many Requests
             self.logger.warning(log_msg)
             return self._submit(listen_type, payload, retry + 1)

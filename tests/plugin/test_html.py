@@ -17,16 +17,16 @@ SONGS = [
     AudioFile({
         "title": "one",
         "artist": "piman",
-        "~filename": fsnative(u"/dev/null"),
+        "~filename": fsnative("/dev/null"),
     }),
     AudioFile({
-        "title": u"\xf6\xe4\xfc",
-        "~filename": fsnative(u"/dev/zero"),
+        "title": "\xf6\xe4\xfc",
+        "~filename": fsnative("/dev/zero"),
     }),
     AudioFile({
         "title": "three",
         "artist": "boris",
-        "~filename": fsnative(u"/bin/ls"),
+        "~filename": fsnative("/bin/ls"),
     }),
 ]
 
@@ -42,11 +42,11 @@ class THTMLExport(PluginTestCase):
 
     def test_empty_export(self):
         text = self.to_html([])
-        self.failUnless("<html" in text)
+        self.assertTrue("<html" in text)
 
     def test_export(self):
         text = self.to_html(SONGS)
-        self.failUnless(u"\xf6\xe4\xfc" in text)
+        self.assertTrue("\xf6\xe4\xfc" in text)
 
     def tearDown(self):
         config.quit()

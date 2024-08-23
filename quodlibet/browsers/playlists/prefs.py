@@ -1,4 +1,4 @@
-# Copyright 2016 Nick Boultbee
+# Copyright 2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,7 +7,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet.util import format_time_display, format_time_long,\
+from quodlibet.util import format_time_display, format_time_long, \
     format_size, tag
 from quodlibet import _
 from quodlibet import qltk
@@ -16,9 +16,9 @@ from quodlibet.qltk import Button, Icons
 from quodlibet.util.i18n import numeric_phrase
 
 _FOOTER = "<~tracks> (<~filesize> / <~length>)"
+_EMPTY =_("empty")
 DEFAULT_PATTERN_TEXT = ("[b]<~name>[/b]\n"
-                        "[small]<~tracks|%s|[i](%s)[/i]>[/small]"
-                        % (_FOOTER, (_("empty"))))
+                        f"[small]<~tracks|{_FOOTER}|[i]({_EMPTY})[/i]>[/small]")
 
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
@@ -54,7 +54,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         main_box = Gtk.VBox(spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)

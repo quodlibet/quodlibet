@@ -40,30 +40,30 @@ class TWaitLoadWindow(TestCase):
     def test_plurals(self):
         with locale_numeric_conv():
             wlw = WaitLoadWindow(None, 1234, "At %(current)d of %(total)d")
-            self.failUnlessEqual(wlw._label.get_text(), "At 0 of 1,234")
+            self.assertEqual(wlw._label.get_text(), "At 0 of 1,234")
             while wlw.current < 1000:
                 wlw.step()
-            self.failUnlessEqual(wlw._label.get_text(), "At 1,000 of 1,234")
+            self.assertEqual(wlw._label.get_text(), "At 1,000 of 1,234")
 
     def test_connect(self):
-        self.failUnlessEqual(self.parent.count, 2)
+        self.assertEqual(self.parent.count, 2)
         self.wlw.destroy()
-        self.failUnlessEqual(self.parent.count, 0)
+        self.assertEqual(self.parent.count, 0)
 
     def test_start(self):
-        self.failUnlessEqual(self.wlw.current, 0)
-        self.failUnlessEqual(self.wlw.count, 5)
+        self.assertEqual(self.wlw.current, 0)
+        self.assertEqual(self.wlw.count, 5)
 
     def test_step(self):
-        self.failIf(self.wlw.step())
-        self.failUnlessEqual(self.wlw.current, 1)
-        self.failIf(self.wlw.step())
-        self.failIf(self.wlw.step())
-        self.failUnlessEqual(self.wlw.current, 3)
+        self.assertFalse(self.wlw.step())
+        self.assertEqual(self.wlw.current, 1)
+        self.assertFalse(self.wlw.step())
+        self.assertFalse(self.wlw.step())
+        self.assertEqual(self.wlw.current, 3)
 
     def test_destroy(self):
         self.wlw.destroy()
-        self.failUnlessEqual(self.parent.count, 0)
+        self.assertEqual(self.parent.count, 0)
 
     def tearDown(self):
         self.wlw.destroy()

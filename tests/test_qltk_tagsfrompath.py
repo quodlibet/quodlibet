@@ -24,21 +24,21 @@ class TTitleCase(FilterTestCase):
     Kind = TitleCase
 
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("title", "foo bar"), "Foo Bar")
+        self.assertEqual(self.c.filter("title", "foo bar"), "Foo Bar")
 
     def test_apostrophe(self):
-        self.failUnlessEqual(self.c.filter("title", "IT's"), "IT's")
+        self.assertEqual(self.c.filter("title", "IT's"), "IT's")
 
 
 class TSplitTag(FilterTestCase):
     Kind = SplitTag
 
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("title", "foo & bar"), "foo\nbar")
+        self.assertEqual(self.c.filter("title", "foo & bar"), "foo\nbar")
 
 
 class TUnderscoresToSpaces(FilterTestCase):
     Kind = UnderscoresToSpaces
 
     def test_simple(self):
-        self.failUnlessEqual(self.c.filter("titke", "foo_bar"), "foo bar")
+        self.assertEqual(self.c.filter("titke", "foo_bar"), "foo bar")

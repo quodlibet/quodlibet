@@ -41,34 +41,34 @@ class TSongTracker(TestCase):
         self.p.paused = False
         time.sleep(2)
         run_gtk_loop()
-        self.p.emit('song-ended', self.s1, False)
+        self.p.emit("song-ended", self.s1, False)
         run_gtk_loop()
         t = time.time()
-        self.assertEquals(self.s1["~#playcount"], 1)
-        self.assertEquals(self.s1["~#skipcount"], 0)
-        self.failUnless(t - self.s1["~#lastplayed"] <= 1)
+        self.assertEqual(self.s1["~#playcount"], 1)
+        self.assertEqual(self.s1["~#skipcount"], 0)
+        self.assertTrue(t - self.s1["~#lastplayed"] <= 1)
 
     def test_skip(self):
-        self.p.emit('song-ended', self.s1, True)
+        self.p.emit("song-ended", self.s1, True)
         run_gtk_loop()
-        self.assertEquals(self.s1["~#playcount"], 0)
-        self.assertEquals(self.s1["~#skipcount"], 1)
-        self.failUnless(self.s1["~#lastplayed"], 10)
+        self.assertEqual(self.s1["~#playcount"], 0)
+        self.assertEqual(self.s1["~#skipcount"], 1)
+        self.assertTrue(self.s1["~#lastplayed"], 10)
 
     def test_error(self):
         self.current = self.p.song = self.s1
-        self.p._error('Test error')
+        self.p._error("Test error")
         run_gtk_loop()
-        self.assertEquals(self.s1["~#playcount"], 0)
-        self.assertEquals(self.s1["~#skipcount"], 0)
-        self.failUnless(self.s1["~#lastplayed"], 10)
+        self.assertEqual(self.s1["~#playcount"], 0)
+        self.assertEqual(self.s1["~#skipcount"], 0)
+        self.assertTrue(self.s1["~#lastplayed"], 10)
 
     def test_restart(self):
         self.current = self.s1
-        self.p.emit('song-ended', self.s1, True)
+        self.p.emit("song-ended", self.s1, True)
         run_gtk_loop()
-        self.assertEquals(self.s1["~#playcount"], 0)
-        self.assertEquals(self.s1["~#skipcount"], 0)
+        self.assertEqual(self.s1["~#playcount"], 0)
+        self.assertEqual(self.s1["~#skipcount"], 0)
 
     def tearDown(self):
         self.w.destroy()
@@ -92,24 +92,24 @@ class TFSInterface(TestCase):
 
     def test_init(self):
         run_gtk_loop()
-        self.failIf(os.path.exists(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
 
     def test_start(self):
-        self.p.emit('song_started', self.song)
+        self.p.emit("song_started", self.song)
         run_gtk_loop()
         with open(self.filename, "rb") as h:
-            self.failUnless(b"title=bar\n" in h.read())
+            self.assertTrue(b"title=bar\n" in h.read())
 
     def test_song_ended(self):
-        self.p.emit('song-started', self.song)
+        self.p.emit("song-started", self.song)
         run_gtk_loop()
-        self.p.emit('song-ended', {}, False)
+        self.p.emit("song-ended", {}, False)
         run_gtk_loop()
-        self.failIf(os.path.exists(self.filename))
+        self.assertFalse(os.path.exists(self.filename))
 
     def test_elapsed(self):
         self.p.seek(123456)
-        self.p.emit('song-started', AudioFile({"~#length": 10}))
+        self.p.emit("song-started", AudioFile({"~#length": 10}))
         run_gtk_loop()
         with open(self.filename, "rb") as h:
             contents = h.read()

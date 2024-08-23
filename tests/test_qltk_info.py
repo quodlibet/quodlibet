@@ -34,9 +34,9 @@ class TSongInfo(TestCase):
     def test_save(self):
         fake_edit = FakePatternEdit()
         self.info._on_set_pattern(None, fake_edit, app.player)
-        with open(self.filename, "r") as f:
+        with open(self.filename) as f:
             contents = f.read()
-            self.failUnlessEqual(contents, SOME_PATTERN + "\n")
+            self.assertEqual(contents, SOME_PATTERN + "\n")
 
     def tearDown(self):
         destroy_fake_app()

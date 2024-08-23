@@ -10,8 +10,9 @@
 import sys
 import base64
 
+
 import mutagen
-from mutagen.flac import Picture, error as FLACError
+from mutagen.flac import Picture, error as FLACError  # noqa
 from mutagen.id3 import ID3
 
 from quodlibet import config
@@ -29,7 +30,7 @@ sys.modules["formats.oggvorbis"] = sys.modules[__name__]
 
 class MutagenVCFile(AudioFile):
     format = "Unknown Mutagen + vorbiscomment"
-    MutagenType = None
+    MutagenType: type[mutagen.FileType] | None = None
 
     supports_rating_and_play_count_in_file = True
 
@@ -148,7 +149,7 @@ class MutagenVCFile(AudioFile):
         if cover:
             mime = audio.get("coverartmime")
             mime = (mime and mime[0]) or "image/"
-            f = get_temp_cover_file(cover)
+            f = get_temp_cover_file(cover, mime)
             images.append(EmbeddedImage(f, mime))
 
         images.sort(key=lambda c: c.sort_key)
@@ -178,7 +179,7 @@ class MutagenVCFile(AudioFile):
             cover = cover or pic
 
         if cover:
-            f = get_temp_cover_file(cover.data)
+            f = get_temp_cover_file(cover.data, cover.mime)
             return EmbeddedImage(
                 f, cover.mime, cover.width, cover.height, cover.depth,
                 cover.type)
@@ -195,7 +196,7 @@ class MutagenVCFile(AudioFile):
 
         mime = audio.get("coverartmime")
         mime = (mime and mime[0]) or "image/"
-        f = get_temp_cover_file(cover)
+        f = get_temp_cover_file(cover, mime)
         return EmbeddedImage(f, mime)
 
     def clear_images(self):
@@ -218,8 +219,8 @@ class MutagenVCFile(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
-            raise AudioFileError(e)
+        except OSError as e:
+            raise AudioFileError(e) from e
 
         pic = Picture()
         pic.data = data
@@ -295,7 +296,7 @@ class MutagenVCFile(AudioFile):
 
     def has_rating_and_playcount_in_file(self, email):
         with translate_errors():
-            audio = self.MutagenType(self['~filename'])
+            audio = self.MutagenType(self["~filename"])
         tags = audio.tags
         if tags is None:
             return False
@@ -321,7 +322,7 @@ class MutagenVCFile(AudioFile):
         self.sanitize()
 
 extensions = []
-ogg_formats = []
+ogg_formats: list[type[mutagen.FileType]] = []
 
 from mutagen.oggvorbis import OggVorbis
 extensions.append(".ogg")
@@ -406,7 +407,7 @@ class FLACFile(MutagenVCFile):
             return images
 
         for cover in tag.pictures:
-            fileobj = get_temp_cover_file(cover.data)
+            fileobj = get_temp_cover_file(cover.data, cover.mime)
             images.append(EmbeddedImage(
                 fileobj, cover.mime, cover.width, cover.height, cover.depth,
                 cover.type))
@@ -430,7 +431,7 @@ class FLACFile(MutagenVCFile):
         covers.sort(key=lambda c: APICType.sort_key(c.type))
         cover = covers[0]
 
-        fileobj = get_temp_cover_file(cover.data)
+        fileobj = get_temp_cover_file(cover.data, cover.mime)
         return EmbeddedImage(
             fileobj, cover.mime, cover.width, cover.height, cover.depth,
             cover.type)
@@ -456,8 +457,8 @@ class FLACFile(MutagenVCFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
-            raise AudioFileError(e)
+        except OSError as e:
+            raise AudioFileError(e) from e
 
         pic = Picture()
         pic.data = data
@@ -485,7 +486,7 @@ class FLACFile(MutagenVCFile):
 
 types = []
 for var in list(globals().values()):
-    if getattr(var, 'MutagenType', None):
+    if getattr(var, "MutagenType", None):
         types.append(var)
 
 
@@ -507,8 +508,8 @@ def loader(filename):
                 pass
         if audio is None:
             raise AudioFileError("file type could not be determined")
-        Kind = type(audio)
+        audio_cls = type(audio)
         for klass in globals().values():
-            if Kind is getattr(klass, 'MutagenType', None):
+            if audio_cls is getattr(klass, "MutagenType", None):
                 return klass(filename, audio)
         raise AudioFileError("file type could not be determined")

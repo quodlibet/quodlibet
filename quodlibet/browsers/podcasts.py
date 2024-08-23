@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#      2017-2022 Nick Boultbee
+#      2017-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,7 +10,6 @@ import os
 import sys
 import threading
 import time
-from typing import Optional
 from urllib.request import urlopen, Request
 
 from gi.repository import Gtk, GLib, Pango, Gdk
@@ -46,7 +45,7 @@ DND_URI_LIST, DND_MOZ_URL = range(2)
 sys.modules["browsers.audiofeeds"] = sys.modules[__name__]
 
 
-class InvalidFeed(ValueError):
+class InvalidFeedError(ValueError):
     pass
 
 
@@ -100,7 +99,7 @@ class Feed(list):
                 pass
             else:
                 if author and author not in af.list("artist"):
-                    af.add('artist', author)
+                    af.add("artist", author)
         else:
             try:
                 if author.email and author.email not in af.list("contact"):
@@ -158,7 +157,7 @@ class Feed(list):
             # Don't pass feedparser URLs
             # see https://github.com/kurtmckee/feedparser/pull/80#issuecomment-449543486
             content = urlopen(self.uri, timeout=15).read()
-        except IOError as e:
+        except OSError as e:
             print_w(f"Couldn't fetch content from {self.uri} ({e})")
             return False
         try:
@@ -182,7 +181,7 @@ class Feed(list):
         try:
             self.__fill_af(doc.channel, defaults)
         except Exception as e:
-            print_w("Error creating feed data: %s (%s)" % (self.uri, e))
+            print_w(f"Error creating feed data: {self.uri} ({e})")
             return False
 
         entries = []
@@ -197,7 +196,7 @@ class Feed(list):
                                 formats.filter(enclosure.url)):
                             uri = enclosure.url
                             if not isinstance(uri, str):
-                                uri = uri.decode('utf-8')
+                                uri = uri.decode("utf-8")
                             try:
                                 size = float(enclosure.length)
                             except (AttributeError, ValueError):
@@ -227,7 +226,7 @@ class Feed(list):
                 try:
                     self.__fill_af(entry, song)
                 except Exception as e:
-                    print_d("Couldn't convert %s to AudioFile (%s)" % (uri, e))
+                    print_d(f"Couldn't convert {uri} to AudioFile ({e})")
                 else:
                     self.insert(0, song)
         self.__lastgot = time.time()
@@ -241,11 +240,11 @@ class AddFeedDialog(GetStringDialog):
             _("Enter the podcast / audio feed location:"),
             button_label=_("_Add"), button_icon=Icons.LIST_ADD)
 
-    def run(self, text='', clipboard=True, test=False):
+    def run(self, text="", clipboard=True, test=False):
         uri = super().run(text=text, clipboard=clipboard, test=test)
         if uri:
             if not isinstance(uri, str):
-                uri = uri.decode('utf-8')
+                uri = uri.decode("utf-8")
             return Feed(uri)
         return None
 
@@ -329,31 +328,31 @@ class Podcasts(Browser):
             render.markup = util.bold(model[iter][0].name)
         else:
             render.markup = util.escape(model[iter][0].name)
-        render.set_property('markup', render.markup)
+        render.set_property("markup", render.markup)
 
     @classmethod
-    def changed(klass, feeds):
-        for row in klass.__feeds:
+    def changed(cls, feeds):
+        for row in cls.__feeds:
             if row[0] in feeds:
                 row[0].changed = True
                 row[0] = row[0]
         Podcasts.write()
 
     @classmethod
-    def write(klass):
-        feeds = [row[0] for row in klass.__feeds]
+    def write(cls):
+        feeds = [row[0] for row in cls.__feeds]
         with open(FEEDS, "wb") as f:
             pickle_dump(feeds, f, 2)
 
     @classmethod
-    def init(klass, library):
+    def init(cls, library):
         uris = set()
         feeds = []
 
         try:
             with open(FEEDS, "rb") as fileobj:
                 feeds = pickle_load(fileobj)
-        except (PickleError, EnvironmentError):
+        except (OSError, PickleError):
             try:
                 with open(FEEDS, "rb") as fileobj:
                     feeds = hacky_py2_unpickle_recover(fileobj)
@@ -363,32 +362,32 @@ class Podcasts(Browser):
         for feed in feeds:
             if feed.uri in uris:
                 continue
-            klass.__feeds.append(row=[feed])
+            cls.__feeds.append(row=[feed])
             uris.add(feed.uri)
 
-        GLib.idle_add(klass.__do_check)
+        GLib.idle_add(cls.__do_check)
 
     @classmethod
-    def reload(klass, library):
-        klass.__feeds = Gtk.ListStore(object)  # unread
-        klass.init(library)
+    def reload(cls, library):
+        cls.__feeds = Gtk.ListStore(object)  # unread
+        cls.init(library)
 
     @classmethod
-    def __do_check(klass):
-        thread = threading.Thread(target=klass.__check, args=(), daemon=True)
+    def __do_check(cls):
+        thread = threading.Thread(target=cls.__check, args=(), daemon=True)
         thread.start()
 
     @classmethod
-    def __check(klass):
-        for row in klass.__feeds:
+    def __check(cls):
+        for row in cls.__feeds:
             feed = row[0]
             if feed.get_age() < 2 * 60 * 60:
                 continue
             elif feed.parse():
                 feed.changed = True
                 row[0] = feed
-        klass.write()
-        GLib.timeout_add(60 * 60 * 1000, klass.__do_check)
+        cls.write()
+        GLib.timeout_add(60 * 60 * 1000, cls.__do_check)
 
     def __init__(self, library):
         super().__init__(spacing=6)
@@ -396,7 +395,7 @@ class Podcasts(Browser):
 
         self._view = view = AllTreeView()
         self.__render = render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn("Audio Feeds", render)
         col.set_cell_data_func(render, Podcasts.cell_data)
         view.append_column(col)
@@ -410,10 +409,10 @@ class Podcasts(Browser):
         self.pack_start(swin, True, True, 0)
 
         new = Button(_("_Add Feed…"), Icons.LIST_ADD, Gtk.IconSize.MENU)
-        new.connect('clicked', self.__new_feed)
-        view.get_selection().connect('changed', self.__changed)
+        new.connect("clicked", self.__new_feed)
+        view.get_selection().connect("changed", self.__changed)
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        view.connect('popup-menu', self._popup_menu)
+        view.connect("popup-menu", self._popup_menu)
 
         targets = [
             ("text/uri-list", 0, DND_URI_LIST),
@@ -422,18 +421,18 @@ class Podcasts(Browser):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        view.connect('drag-data-received', self.__drag_data_received)
-        view.connect('drag-motion', self.__drag_motion)
-        view.connect('drag-leave', self.__drag_leave)
+        view.connect("drag-data-received", self.__drag_data_received)
+        view.connect("drag-motion", self.__drag_motion)
+        view.connect("drag-leave", self.__drag_leave)
 
-        connect_obj(self, 'destroy', self.__save, view)
+        connect_obj(self, "destroy", self.__save, view)
 
         self.pack_start(Align(new, left=3, bottom=3), False, True, 0)
 
         for child in self.get_children():
             child.show_all()
 
-    def Menu(self, songs, library, items):
+    def menu(self, songs, library, items):
         return SongsMenu(library, songs, download=True, items=items)
 
     def __drag_motion(self, view, ctx, x, y, time):
@@ -447,7 +446,7 @@ class Podcasts(Browser):
         view.get_parent().drag_unhighlight()
 
     def __drag_data_received(self, view, ctx, x, y, sel, tid, etime):
-        view.emit_stop_by_name('drag-data-received')
+        view.emit_stop_by_name("drag-data-received")
         targets = [
             ("text/uri-list", 0, DND_URI_LIST),
             ("text/x-moz-url", 0, DND_MOZ_URL)
@@ -458,7 +457,7 @@ class Podcasts(Browser):
         if tid == DND_URI_LIST:
             uri = sel.get_uris()[0]
         elif tid == DND_MOZ_URL:
-            uri = sel.data.decode('utf16', 'replace').split('\n')[0]
+            uri = sel.data.decode("utf16", "replace").split("\n")[0]
         else:
             ctx.finish(False, False, etime)
             return
@@ -473,7 +472,7 @@ class Podcasts(Browser):
         else:
             self.feed_error(feed).run()
 
-    def _popup_menu(self, view: Gtk.Widget) -> Optional[Gtk.Menu]:
+    def _popup_menu(self, view: Gtk.Widget) -> Gtk.Menu | None:
         model, paths = self._view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
         refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,
@@ -485,15 +484,15 @@ class Podcasts(Browser):
         delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE,
                           tooltip=_("Remove this podcast and its episodes"))
 
-        connect_obj(refresh, 'activate', self.__refresh, [model[p][0] for p in paths])
-        connect_obj(rebuild, 'activate', self.__rebuild, [model[p][0] for p in paths])
-        connect_obj(delete, 'activate', self.__remove_paths, model, paths)
+        connect_obj(refresh, "activate", self.__refresh, [model[p][0] for p in paths])
+        connect_obj(rebuild, "activate", self.__rebuild, [model[p][0] for p in paths])
+        connect_obj(delete, "activate", self.__remove_paths, model, paths)
 
         menu.append(refresh)
         menu.append(rebuild)
         menu.append(delete)
         menu.show_all()
-        menu.connect('selection-done', lambda m: m.destroy())
+        menu.connect("selection-done", lambda m: m.destroy())
 
         if self._view.popup_menu(menu, 0, Gtk.get_current_event_time()):
             return menu

@@ -5,7 +5,6 @@
 
 import os
 import glob
-from typing import Text
 
 from gi.repository import Gtk, GObject
 
@@ -32,22 +31,22 @@ class TFilter(TestCase):
 class TFilterMixin:
 
     def test_mix_empty(self):
-        empty = fsnative(u"")
-        v = self.c.filter(empty, u"")
-        self.failUnlessEqual(v, u"")
-        self.failUnless(isinstance(v, str))
+        empty = fsnative("")
+        v = self.c.filter(empty, "")
+        self.assertEqual(v, "")
+        self.assertTrue(isinstance(v, str))
 
     def test_mix_safe(self):
-        empty = fsnative(u"")
-        safe = u"safe"
-        self.failUnlessEqual(self.c.filter(empty, safe), safe)
+        empty = fsnative("")
+        safe = "safe"
+        self.assertEqual(self.c.filter(empty, safe), safe)
 
 
 class TSpacesToUnderscores(TFilter, TFilterMixin):
     Kind = SpacesToUnderscores
 
     def test_conv(self):
-        self.failUnlessEqual(self.c.filter("", "foo bar "), "foo_bar_")
+        self.assertEqual(self.c.filter("", "foo bar "), "foo_bar_")
 
 
 class TStripWindowsIncompat(TFilter, TFilterMixin):
@@ -55,28 +54,28 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
 
     def test_conv(self):
         if os.name == "nt":
-            self.failUnlessEqual(
-                self.c.filter(u"", u'foo\\:*?;"<>|/'), u"foo\\_________")
+            self.assertEqual(
+                self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
         else:
-            self.failUnlessEqual(
+            self.assertEqual(
                 self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
 
     def test_type(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
         self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
 
     def test_ends_with_dots_or_spaces(self):
-        empty = fsnative(u"")
-        v = self.c.filter(empty, fsnative(u'foo. . '))
-        self.failUnlessEqual(v, fsnative(u"foo. ._"))
+        empty = fsnative("")
+        v = self.c.filter(empty, fsnative("foo. . "))
+        self.assertEqual(v, fsnative("foo. ._"))
         self.assertTrue(isinstance(v, fsnative))
 
         if os.name == "nt":
-            self.failUnlessEqual(
-                self.c.filter(empty, u'foo. \\bar .'), u"foo._\\bar _")
+            self.assertEqual(
+                self.c.filter(empty, "foo. \\bar ."), "foo._\\bar _")
         else:
-            self.failUnlessEqual(
-                self.c.filter(empty, u'foo. /bar .'), "foo._/bar _")
+            self.assertEqual(
+                self.c.filter(empty, "foo. /bar ."), "foo._/bar _")
 
 
 class TReplaceColons(TFilter, TFilterMixin):
@@ -102,13 +101,13 @@ class TReplaceColons(TFilter, TFilterMixin):
                 == self.conv('No. 1 "Minute" - Molto vivace'))
 
     def test_type(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
         self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
 
-    def conv(self, s: Text):
+    def conv(self, s: str):
         return self.c.filter(fsnative(""), s)
 
-    def unaffected(self, s: Text) -> bool:
+    def unaffected(self, s: str) -> bool:
         return self.conv(s) == s
 
 
@@ -116,44 +115,44 @@ class TStripDiacriticals(TFilter, TFilterMixin):
     Kind = StripDiacriticals
 
     def test_conv(self):
-        empty = fsnative(u"")
-        test = u"\u00c1 test"
-        out = u"A test"
+        empty = fsnative("")
+        test = "\u00c1 test"
+        out = "A test"
         v = self.c.filter(empty, test)
-        self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, str))
+        self.assertEqual(v, out)
+        self.assertTrue(isinstance(v, str))
 
 
 class TStripNonASCII(TFilter, TFilterMixin):
     Kind = StripNonASCII
 
     def test_conv(self):
-        empty = fsnative(u"")
-        in_ = u"foo \u00c1 \u1234"
-        out = u"foo _ _"
+        empty = fsnative("")
+        in_ = "foo \u00c1 \u1234"
+        out = "foo _ _"
         v = self.c.filter(empty, in_)
-        self.failUnlessEqual(v, out)
-        self.failUnless(isinstance(v, str))
+        self.assertEqual(v, out)
+        self.assertTrue(isinstance(v, str))
 
 
 class TLowercase(TFilter, TFilterMixin):
     Kind = Lowercase
 
     def test_conv(self):
-        empty = fsnative(u"")
+        empty = fsnative("")
 
-        v = self.c.filter(empty, fsnative(u"foobar baz"))
-        self.failUnlessEqual(v, fsnative(u"foobar baz"))
-        self.failUnless(isinstance(v, fsnative))
+        v = self.c.filter(empty, fsnative("foobar baz"))
+        self.assertEqual(v, fsnative("foobar baz"))
+        self.assertTrue(isinstance(v, fsnative))
 
-        v = self.c.filter(empty, fsnative(u"Foobar.BAZ"))
-        self.failUnlessEqual(v, fsnative(u"foobar.baz"))
-        self.failUnless(isinstance(v, fsnative))
+        v = self.c.filter(empty, fsnative("Foobar.BAZ"))
+        self.assertEqual(v, fsnative("foobar.baz"))
+        self.assertTrue(isinstance(v, fsnative))
 
 
 class Renamer(Gtk.EventBox):
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -205,7 +204,7 @@ class TMoveArt(TestCase):
         config.init()
         self.root_path = mkdtemp()
         self.filenames = \
-            ['cover.jpg', 'info.jpg', 'title.jpg', 'title2.jpg']
+            ["cover.jpg", "info.jpg", "title.jpg", "title2.jpg"]
 
     def generate_songs(self, path, quantity):
         return [Song(path, num) for num in range(quantity)]
@@ -227,7 +226,7 @@ class TMoveArt(TestCase):
 
     def song_set(self, path):
         songs = self.generate_songs(path, 1)
-        files = self.generate_files(path, [os.path.basename(song['~filename'])
+        files = self.generate_files(path, [os.path.basename(song["~filename"])
                                            for song in songs])
         return files, songs
 
@@ -235,7 +234,7 @@ class TMoveArt(TestCase):
         return (os.path.join(root_path, album, artist),
                 os.path.join(root_path + "_2", album, artist))
 
-    def moveart_set(self, artist='artist', album='album',
+    def moveart_set(self, artist="artist", album="album",
                     source=None, target=None, file_pattern="<title>"):
         source2, target2 = \
             self.source_target(self.root_path, artist, album)
@@ -256,9 +255,9 @@ class TMoveArt(TestCase):
         # move art not set, no art files should move
         count_expected = 0
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_defaults(self):
         self.reset_environment()
@@ -268,9 +267,9 @@ class TMoveArt(TestCase):
         # "cover.jpg,folder.jpg,.folder.jpg"
         count_expected = 1
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_all_wildcard(self):
         self.reset_environment()
@@ -280,22 +279,22 @@ class TMoveArt(TestCase):
         # wildcard added to search_filenames for catchall"
         count_expected = 4
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_move_escape_glob_characters(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
-        self.filenames = ['artist_[x].jpg']
+        self.filenames = ["artist_[x].jpg"]
 
         # test whether we cope with non-escaped special glob characters"
         count_expected = 1
         source, target = self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_relative_pattern(self):
         self.reset_environment()
@@ -304,29 +303,29 @@ class TMoveArt(TestCase):
 
         # should be a no-op"
         count_expected = 4
-        source, target = self.moveart_set(target='')
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        source, target = self.moveart_set(target="")
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_selective_pattern(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "<artist>.jpg")
-        self.filenames = ['cover.jpg', 'artist.jpg']
+        self.filenames = ["cover.jpg", "artist.jpg"]
 
         # should be a no-op
         count_expected = 1
-        source, target = self.moveart_set(target='')
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        source, target = self.moveart_set(target="")
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_overwrite(self):
         self.reset_environment()
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
-        self.filenames = ['art.jpg']
+        self.filenames = ["art.jpg"]
 
         # move set
         source, target = self.moveart_set()
@@ -334,26 +333,26 @@ class TMoveArt(TestCase):
         self.assertRaises(Exception, self.moveart_set())
 
         # remove audio
-        os.remove(os.path.join(target, 'title_1.mp3'))
+        os.remove(os.path.join(target, "title_1.mp3"))
 
         # move exising target art to .orig suffix
         count_expected = 2
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*jpg*'))
+        target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
         # remove audio
-        os.remove(os.path.join(target, 'title_1.mp3'))
-        os.remove(os.path.join(target, 'art.jpg.orig'))
+        os.remove(os.path.join(target, "title_1.mp3"))
+        os.remove(os.path.join(target, "art.jpg.orig"))
         config.set("rename", "move_art_overwrite", True)
 
         # overwrite existing target arg
         count_expected = 1
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*jpg*'))
+        target_files = glob.glob(os.path.join(target, "*jpg*"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)
 
     def test_multi_source(self):
         self.reset_environment()
@@ -361,13 +360,13 @@ class TMoveArt(TestCase):
         config.set("albumart", "search_filenames", "*.jpg")
 
         source, target = \
-            self.source_target(self.root_path, 'artist', 'album')
+            self.source_target(self.root_path, "artist", "album")
         source2, target2 = \
-            self.source_target(self.root_path, 'artist', 'album2')
+            self.source_target(self.root_path, "artist", "album2")
 
-        self.filenames = ['art.jpg']
+        self.filenames = ["art.jpg"]
         self.art_set(source)
-        self.filenames = ['art2.jpg']
+        self.filenames = ["art2.jpg"]
         self.art_set(source2)
 
         song_files, songs = self.song_set(source)
@@ -376,12 +375,12 @@ class TMoveArt(TestCase):
         self.renamer.add_songs(songs + songs2)
 
         # avoid audio file clashes
-        pattern = os.path.join(target, '[<album>] artist - <title>')
+        pattern = os.path.join(target, "[<album>] artist - <title>")
         self.renamer.rename(pattern, songs + songs2)
 
         # album art sets merged
         count_expected = 2
         self.moveart_set()
-        target_files = glob.glob(os.path.join(target, '*.jpg'))
+        target_files = glob.glob(os.path.join(target, "*.jpg"))
         count_target = len(target_files)
-        self.failUnlessEqual(count_target, count_expected)
+        self.assertEqual(count_target, count_expected)

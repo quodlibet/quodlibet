@@ -40,11 +40,11 @@ class Tfaulthandling(TestCase):
             faulthandling.disable()
 
     def test_stacktrace_grouping(self):
-        stack1 = 'File "%s", line 486 in string_at' % (
+        stack1 = 'File "{}", line 486 in string_at'.format(
             os.path.join("foo", "bar", "quux.py"),)
-        stack2 = 'File "%s", line 350 in string_at' % (
+        stack2 = 'File "{}", line 350 in string_at'.format(
             os.path.join("baz", "bar", "quux.py"),)
-        stack3 = 'File "%s", line 350 in other' % (
+        stack3 = 'File "{}", line 350 in other'.format(
             os.path.join("baz", "bar", "quux.py"),)
 
         key1 = FaultHandlerCrash(stack1).get_grouping_key()
@@ -76,9 +76,9 @@ class Terrorui(TestCase):
 
     def test_main(self):
         w = Gtk.Window()
-        ErrorDialog(w, u"foo").destroy()
-        ErrorDialog(w, u"foo").destroy()
-        SubmitErrorDialog(w, u"foo").destroy()
+        ErrorDialog(w, "foo").destroy()
+        ErrorDialog(w, "foo").destroy()
+        SubmitErrorDialog(w, "foo").destroy()
 
 
 class Terrorreport(TestCase):
@@ -109,5 +109,5 @@ class Tsentrywrapper(TestCase):
         assert isinstance(err, CapturedException)
         assert isinstance(err.get_report(), str)
 
-        err.set_comment(u"foo")
-        err.set_comment(u"bar")
+        err.set_comment("foo")
+        err.set_comment("bar")

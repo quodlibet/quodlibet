@@ -11,7 +11,7 @@ import gi
 try:
     gi.require_version("AppIndicator3", "0.1")
 except ValueError as e:
-    raise ImportError(f"Can't load ({e}). Perhaps install gir*-appindicator3* package?")
+    raise ImportError(f"Can't load ({e}). Install gir*-appindicator3* package?") from e
 
 from gi.repository import AppIndicator3, Gdk
 
@@ -25,7 +25,7 @@ from .util import pconfig
 from .menu import IndicatorMenu
 
 
-def get_next_app_id(state=[0]):
+def get_next_app_id(state=[0]):  # noqa
     """Returns an ever-increasing app id variant... I can't find a way
     to remove an indicator, so just hide old ones and add new different ones
     this way.
@@ -61,7 +61,7 @@ class AppIndicator(BaseIndicator):
         self.__scroll_id = self.indicator.connect(
             "scroll_event", self.__on_scroll)
 
-        self.__w_sig_del = app.window.connect('delete-event',
+        self.__w_sig_del = app.window.connect("delete-event",
                                               self.__window_delete)
 
     def set_info_song(self, song):
@@ -69,7 +69,7 @@ class AppIndicator(BaseIndicator):
             try:
                 pattern = Pattern(pconfig.get("tooltip"))
             except ValueError:
-                tooltip = u""
+                tooltip = ""
             else:
                 tooltip = pattern % song
         else:
@@ -98,7 +98,7 @@ class AppIndicator(BaseIndicator):
         # If direction here is always UP you're hitting
         # https://bugs.launchpad.net/indicator-application/+bug/1075152
         modifier_swap = pconfig.getboolean("modifier_swap")
-        for step in range(steps):
+        for _step in range(steps):
             if direction == Gdk.ScrollDirection.UP:
                 if modifier_swap:
                     app.player.previous()

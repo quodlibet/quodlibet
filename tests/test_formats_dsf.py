@@ -25,10 +25,10 @@ class TDSFFile(TestCase):
         self.assertAlmostEqual(self.song4("~#length"), 0.01, 2)
 
     def test_bitrate(self):
-        self.failUnlessEqual(self.song1("~#bitrate"), 2822)
-        self.failUnlessEqual(self.song2("~#bitrate"), 2822)
-        self.failUnlessEqual(self.song3("~#bitrate"), 2822)
-        self.failUnlessEqual(self.song4("~#bitrate"), 11289)
+        self.assertEqual(self.song1("~#bitrate"), 2822)
+        self.assertEqual(self.song2("~#bitrate"), 2822)
+        self.assertEqual(self.song3("~#bitrate"), 2822)
+        self.assertEqual(self.song4("~#bitrate"), 11289)
 
     def test_format(self):
         self.assertEqual(self.song1("~format"), "DSF")

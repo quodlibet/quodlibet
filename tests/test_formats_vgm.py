@@ -11,15 +11,15 @@ from quodlibet.formats.vgm import VgmFile
 
 class TVgmFile(TestCase):
     def setUp(self):
-        self.song = VgmFile(get_data_path('test.vgm'))
+        self.song = VgmFile(get_data_path("test.vgm"))
 
     def test_length(self):
-        self.failUnlessAlmostEqual(2.81, self.song("~#length", 0), 1)
+        self.assertAlmostEqual(2.81, self.song("~#length", 0), 1)
 
     def test_reload(self):
         self.song["title"] = "foobar"
         self.song.reload()
-        self.failUnlessEqual(self.song("title"), "Chaos Emerald")
+        self.assertEqual(self.song("title"), "Chaos Emerald")
 
     def test_gd3_tags(self):
         expected_tags = {
@@ -31,19 +31,19 @@ class TVgmFile(TestCase):
         }
 
         for k, v in expected_tags.items():
-            self.failUnlessEqual(self.song[k], v)
+            self.assertEqual(self.song[k], v)
 
     def test_write(self):
         self.song.write()
 
     def test_can_change(self):
-        self.failUnlessEqual(self.song.can_change(), ["title"])
-        self.failUnless(self.song.can_change("title"))
-        self.failIf(self.song.can_change("album"))
+        self.assertEqual(self.song.can_change(), ["title"])
+        self.assertTrue(self.song.can_change("title"))
+        self.assertFalse(self.song.can_change("album"))
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
-        self.failUnlessRaises(Exception, VgmFile, path)
+        path = get_data_path("empty.xm")
+        self.assertRaises(Exception, VgmFile, path)
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "VGM")

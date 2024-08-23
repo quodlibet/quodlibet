@@ -34,8 +34,8 @@ The ``~people`` Internal Tag
 
 The internal ``~people`` tag combines the following tags to one: 
 ``artist``, ``albumartist``, ``author``, ``composer``, ``~performers``, 
-``originalartist``, ``lyricist``, ``arranger``, ``conductor`` in this exact 
-order.
+``originalartist``, ``producer``, ``lyricist``, ``arranger``, ``conductor``
+in this exact order.
 
 For sorting, this means that all album artists come first followed by
 all artists and so on. For song collections / albums, the values of

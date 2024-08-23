@@ -232,7 +232,7 @@ class EmbeddedImage:
                         loader.write(data)
                     else:
                         break
-        except (EnvironmentError, GLib.GError):
+        except (OSError, GLib.GError):
             return
         finally:
             try:
@@ -255,5 +255,5 @@ class EmbeddedImage:
 
         try:
             return cls(open(path, "rb"), mime_type, width, height, color_depth)
-        except EnvironmentError:
+        except OSError:
             return

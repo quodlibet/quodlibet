@@ -58,14 +58,14 @@ class ReactiveCoverImage(CoverImage):
 
     def __init__(self, resize=False, size=125, song=None, tooltip=None):
         super().__init__(resize, size, song)
-        self.set_property('no-show-all', True)
+        self.set_property("no-show-all", True)
 
         def show_cover(cover, success):
             if success:
                 cover.show()
             cover.disconnect(signal_id)
 
-        signal_id = self.connect('cover-visible', show_cover)
+        signal_id = self.connect("cover-visible", show_cover)
         self.set_song(song)
         if tooltip:
             self.get_child().set_tooltip_text(tooltip)
@@ -75,7 +75,7 @@ def Frame(name, widget):
     def hx(value):
         return hex(int(value * 255))[2:]
     f = Gtk.Frame()
-    qltk.add_css(f, '* {opacity: 0.9}')
+    qltk.add_css(f, "* {opacity: 0.9}")
     l = Gtk.Label()
     l.set_markup(util.escape(name))
     qltk.add_css(l, " * {opacity: 0.6; padding: 0px 2px;}")
@@ -133,7 +133,7 @@ class OneSong(qltk.Notebook):
             bookmarks.set_border_width(12)
             self.append_page(bookmarks)
 
-        connect_destroy(library, 'changed', self.__check_changed, vbox, song)
+        connect_destroy(library, "changed", self.__check_changed, vbox, song)
 
     def _switch_to_lyrics(self):
         self.set_current_page(1)
@@ -212,11 +212,11 @@ class OneSong(qltk.Notebook):
         for tag_ in song:
             if "performer:" in tag_:
                 for person in song.list(tag_):
-                    role = util.title(tag_.split(':', 1)[1])
+                    role = util.title(tag_.split(":", 1)[1])
                     performers[role].append(person)
 
         if performers:
-            text = '\n'.join("%s (%s)" % (', '.join(names), part)
+            text = "\n".join("{} ({})".format(", ".join(names), part)
                              for part, names in performers.items())
 
             name = (tag("performer") if len(performers) == 1
@@ -317,9 +317,7 @@ class OneSong(qltk.Notebook):
             markup_data.append(("comment", markups))
 
         if "website" in song:
-            markups = ["<a href=\"%(url)s\">%(text)s</a>" %
-                       {"text": util.escape(website),
-                        "url": util.escape(website)}
+            markups = [f'<a href="{util.escape(website)}">{util.escape(website)}</a>'
                        for website in song.list("website")]
             markup_data.append(("website", markups))
 
@@ -452,7 +450,7 @@ class OneAlbum(qltk.Notebook):
                 ts = "    " * bool(disc)
                 cur_part = part
                 if part:
-                    text.append("%s%s" % (ts, util.escape(part)))
+                    text.append(f"{ts}{util.escape(part)}")
             cur_track += 1
             ts = "    " * (bool(disc) + bool(part))
             while cur_track < track:
@@ -488,7 +486,7 @@ class OneArtist(qltk.Notebook):
         def format(args):
             date, song, album = args
             markup = f"<big>{util.italic(album)}</big>"
-            return "%s (%s)" % (markup, date[:4]) if date else markup
+            return f"{markup} ({date[:4]})" if date else markup
 
         get_cover = app.cover_manager.get_cover
         covers = [(a, get_cover(s), s) for d, s, a in albums]
@@ -591,7 +589,7 @@ class ManySongs(qltk.Notebook):
 
         label = Label()
         label.set_markup(markup)
-        albums = util.capitalize(_('albums'))
+        albums = util.capitalize(_("albums"))
         box.pack_start(Frame(f"{albums} ({num_albums})", label), False, False, 0)
 
     def _file(self, songs, box):
@@ -601,7 +599,7 @@ class ManySongs(qltk.Notebook):
             length += song.get("~#length", 0)
             try:
                 size += filesize(song["~filename"])
-            except EnvironmentError:
+            except OSError:
                 pass
         table = Table(2)
         table.attach(Label(_("Total length:")), 0, 1, 0, 1,
@@ -621,9 +619,9 @@ class Information(Window, PersistentWindowMixin):
         self.set_transient_for(qltk.get_top_parent(parent))
         self.enable_window_tracking("quodlibet_information")
         if len(songs) > 1:
-            connect_destroy(library, 'changed', self.__check_changed)
+            connect_destroy(library, "changed", self.__check_changed)
         if len(songs) > 0:
-            connect_destroy(library, 'removed', self.__check_removed)
+            connect_destroy(library, "removed", self.__check_removed)
         self.__songs = songs
         self.__update(library)
         self.get_child().show_all()
@@ -653,7 +651,7 @@ class Information(Window, PersistentWindowMixin):
             self.add(OneSong(library, songs[0]))
         else:
             tags = [(s.get("artist", ""), s.get("album", "")) for s in songs]
-            artists, albums = zip(*tags)
+            artists, albums = zip(*tags, strict=False)
             if min(albums) == max(albums) and albums[0]:
                 self.add(OneAlbum(songs))
             elif min(artists) == max(artists) and artists[0]:

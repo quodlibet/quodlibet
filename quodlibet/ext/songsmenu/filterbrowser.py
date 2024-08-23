@@ -15,8 +15,8 @@ from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 
 class FilterBrowser(SongsMenuPlugin):
-    PLUGIN_ID = 'filterbrowser'
-    PLUGIN_NAME = _('Filter on Directory')
+    PLUGIN_ID = "filterbrowser"
+    PLUGIN_NAME = _("Filter on Directory")
     PLUGIN_DESC = _("Filters on directory in a new browser window.")
     PLUGIN_ICON = Icons.EDIT_SELECT_ALL
 

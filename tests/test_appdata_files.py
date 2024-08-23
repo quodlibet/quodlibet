@@ -7,6 +7,7 @@
 
 import os
 import subprocess
+import functools
 
 from quodlibet import util
 
@@ -16,10 +17,11 @@ from tests import TestCase, skipIf
 QLDATA_DIR = os.path.join(os.path.dirname(util.get_module_dir()), "data")
 
 
-def get_appstream_util_version():
+@functools.lru_cache
+def get_appstream_cli_version():
     try:
         result = subprocess.run(
-            ["appstream-util", "--version"],
+            ["appstreamcli", "--version"],
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT)
         data = result.stdout
@@ -30,8 +32,8 @@ def get_appstream_util_version():
     return tuple([int(p) for p in text.rsplit()[-1].split(".")])
 
 
-def is_too_old_appstream_util_version():
-    return get_appstream_util_version() < (0, 7, 0)
+def is_too_old_appstream_cli_version():
+    return get_appstream_cli_version() < (0, 12, 0)
 
 
 class _TAppDataFileMixin:
@@ -43,20 +45,20 @@ class _TAppDataFileMixin:
     def test_validate(self):
         try:
             subprocess.check_output(
-                ["appstream-util", "validate", "--nonet", self.PATH],
+                ["appstreamcli", "validate", "--no-net", self.PATH],
                 stderr=subprocess.STDOUT)
         except subprocess.CalledProcessError as e:
-            raise Exception(e.output)
+            raise Exception(e.output) from e
 
 
-@skipIf(is_too_old_appstream_util_version(), "appstream-util is too old")
+@skipIf(is_too_old_appstream_cli_version(), "appstreamcli is too old")
 class TQLAppDataFile(TestCase, _TAppDataFileMixin):
     PATH = os.path.join(
         QLDATA_DIR,
         "io.github.quodlibet.QuodLibet.appdata.xml.in")
 
 
-@skipIf(is_too_old_appstream_util_version(), "appstream-util is too old")
+@skipIf(is_too_old_appstream_cli_version(), "appstreamcli is too old")
 class TEFAppDataFile(TestCase, _TAppDataFileMixin):
     PATH = os.path.join(
         QLDATA_DIR,

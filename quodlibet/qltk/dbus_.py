@@ -65,8 +65,8 @@ class DBusHandler:
     </node>
     """
 
-    BUS_NAME = 'net.sacredchao.QuodLibet'
-    PATH = '/net/sacredchao/QuodLibet'
+    BUS_NAME = "net.sacredchao.QuodLibet"
+    PATH = "/net/sacredchao/QuodLibet"
 
     def __init__(self, player, library):
         try:
@@ -81,10 +81,10 @@ class DBusHandler:
         except GLib.Error:
             pass
         else:
-            player.connect('song-started', self.__song_started)
-            player.connect('song-ended', self.__song_ended)
-            player.connect('paused', lambda player: self.Paused())
-            player.connect('unpaused', lambda player: self.Unpaused())
+            player.connect("song-started", self.__song_started)
+            player.connect("song-ended", self.__song_ended)
+            player.connect("paused", lambda player: self.Paused())
+            player.connect("unpaused", lambda player: self.Unpaused())
             self._player = player
 
     def __on_name_lost(self, connection, name):
@@ -95,8 +95,8 @@ class DBusHandler:
         info = Gio.DBusNodeInfo.new_for_xml(self.__doc__)
         for interface in info.interfaces:
             for method in interface.methods:
-                self._method_outargs[method.name] = '({})'.format(
-                    ''.join([arg.signature for arg in method.out_args]))
+                self._method_outargs[method.name] = "({})".format(
+                    "".join([arg.signature for arg in method.out_args]))
 
             _id = self.conn.register_object(
                 object_path=self.PATH,
@@ -112,7 +112,7 @@ class DBusHandler:
             result = (result,)
 
         out_args = self._method_outargs[method_name]
-        if out_args != '()':
+        if out_args != "()":
             variant = GLib.Variant(out_args, result)
             invocation.return_value(variant)
         else:
@@ -142,21 +142,21 @@ class DBusHandler:
         return self.__doc__
 
     def SongStarted(self, song):
-        self.conn.emit_signal(None, self.PATH, 'net.sacredchao.QuodLibet',
-                              'SongStarted', GLib.Variant('(a{ss})', (song,)))
+        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
+                              "SongStarted", GLib.Variant("(a{ss})", (song,)))
 
     def SongEnded(self, song, skipped):
-        self.conn.emit_signal(None, self.PATH, 'net.sacredchao.QuodLibet',
-                              'SongEnded', GLib.Variant('(a{ss}b)',
+        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
+                              "SongEnded", GLib.Variant("(a{ss}b)",
                                                         (song, skipped)))
 
     def Paused(self):
-        self.conn.emit_signal(None, self.PATH, 'net.sacredchao.QuodLibet',
-                              'Paused', None)
+        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
+                              "Paused", None)
 
     def Unpaused(self):
-        self.conn.emit_signal(None, self.PATH, 'net.sacredchao.QuodLibet',
-                              'Unpaused', None)
+        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
+                              "Unpaused", None)
 
     def GetPosition(self):
         return self._player.get_position()

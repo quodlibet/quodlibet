@@ -1,5 +1,5 @@
 # Copyright (C) 2006 - Steve Frécinaux
-#            2016-17 - Nick Boultbee
+#            2016-23 - Nick Boultbee
 #               2021 - halfbrained@github
 #
 # This program is free software; you can redistribute it and/or modify
@@ -37,9 +37,9 @@ from quodlibet.util import print_
 
 
 class PyConsole(SongsMenuPlugin):
-    PLUGIN_ID = 'Python Console'
-    PLUGIN_NAME = _('Python Console')
-    PLUGIN_DESC = _('Interactive Python console. Opens a new window.')
+    PLUGIN_ID = "Python Console"
+    PLUGIN_NAME = _("Python Console")
+    PLUGIN_DESC = _("Interactive Python console. Opens a new window.")
     PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def plugin_songs(self, songs):
@@ -53,10 +53,10 @@ class PyConsole(SongsMenuPlugin):
 
 
 class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
-    PLUGIN_ID = 'Python Console Sidebar'
-    PLUGIN_NAME = _('Python Console Sidebar')
-    PLUGIN_DESC = _('Interactive Python console sidebar, '
-                    'that follows the selected songs in the main window.')
+    PLUGIN_ID = "Python Console Sidebar"
+    PLUGIN_NAME = _("Python Console Sidebar")
+    PLUGIN_DESC = _("Interactive Python console sidebar, "
+                    "that follows the selected songs in the main window.")
     PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def enabled(self):
@@ -87,25 +87,25 @@ def create_console(songs=None):
 
     console.eval("import mutagen", False)
     console.eval("import os", False)
-    console.eval(
-        "print(\"Python: %s / Quod Libet: %s\")" %
-        (sys.version.split()[0], const.VERSION), False)
-    console.eval("print(\"%s\")" % access_string, False)
-    console.eval("print(\"%s \"+ os.getcwd())" % dir_string, False)
+    python_major_ver = sys.version.split()[0]
+    console.eval(f'print("Python: {python_major_ver} / Quod Libet: {const.VERSION}")',
+                 False)
+    console.eval('print("%s")' % access_string, False)
+    console.eval('print("%s "+ os.getcwd())' % dir_string, False)
     return console
 
 
 def namespace_for(song_wrappers):
-    files = [song('~filename') for song in song_wrappers]
+    files = [song("~filename") for song in song_wrappers]
     song_dicts = [song._song for song in song_wrappers]
     collection = Collection()
     collection.songs = song_dicts
     return {
-        'songs': song_wrappers,
-        'files': files,
-        'sdict': song_dicts,
-        'col': collection,
-        'app': app
+        "songs": song_wrappers,
+        "files": files,
+        "sdict": song_dicts,
+        "col": collection,
+        "app": app
     }
 
 
@@ -129,7 +129,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.view = Gtk.TextView()
         add_css(self, "scrolledwindow { padding: 6px; "
                 "background-color: white; background-color: @content_view_bg;}")
-        self.view.modify_font(Pango.font_description_from_string('Monospace'))
+        self.view.modify_font(Pango.font_description_from_string("Monospace"))
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
         self.add(self.view)
@@ -142,7 +142,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.command = buffer.create_tag("command")
         self.command.set_property("foreground", "blue")
 
-        self.__spaces_pattern = re.compile(r'^\s+')
+        self.__spaces_pattern = re.compile(r"^\s+")
         self.namespace = namespace or {}
 
         self.block_command = False
@@ -153,10 +153,10 @@ class PythonConsole(Gtk.ScrolledWindow):
         buffer.create_mark("input", buffer.get_end_iter(), True)
 
         # Init history
-        self.history = ['']
+        self.history = [""]
         self.history_pos = 0
-        self.current_command = ''
-        self.namespace['__history__'] = self.history
+        self.current_command = ""
+        self.namespace["__history__"] = self.history
 
         # Set up hooks for standard output.
         self.stdout = OutFile(self, self.normal)
@@ -234,7 +234,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 # Eval the command
                 self.history_add(cur_strip)
                 self.__run(self.current_command)
-                self.current_command = ''
+                self.current_command = ""
                 self.block_command = False
                 com_mark = ">>> "
 
@@ -333,7 +333,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 
             # get identifiers chain string, e.g. `a.b.c`, or a single identifier
             _identifiers_chars = takewhile(
-                lambda x: x.isalnum() or x in {'_', '.'}, reversed(cmd_start))
+                lambda x: x.isalnum() or x in {"_", "."}, reversed(cmd_start))
             _idcs_len = len(
                 list(_identifiers_chars))  # lengt of identifiers chain string
             ids_str = cmd_start[-_idcs_len:]
@@ -349,7 +349,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 # sort completions: case-insensitive,
                 # items starting with '_' - at the end
                 comp_items.sort(
-                    key=lambda x: (x[0].startswith('_'), x[0].lower()))
+                    key=lambda x: (x[0].startswith("_"), x[0].lower()))
 
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
@@ -357,22 +357,22 @@ class PythonConsole(Gtk.ScrolledWindow):
             elif len(comp_items) == 1:
                 # if current text is only suggestion, add a '.' if object
                 # has properties visible to autosuggestion
-                last = ids_str.split('.')[-1]
+                last = ids_str.split(".")[-1]
                 if last == comp_items[0][0]:
                     next_comp_items = self.get_completion_items(
-                        ids_str + '.',
+                        ids_str + ".",
                         include_private=is_shift
                     )
                     if next_comp_items:
-                        buffer.insert(ins, '.')
+                        buffer.insert(ins, ".")
                 else:
                     choice = 0
-            elif '\n' in self.current_command:
+            elif "\n" in self.current_command:
                 # if we're doing multi-line editing, tab should add 4 spaces
                 buffer.insert(ins, "    ")
 
             if isinstance(choice, int) and choice >= 0:
-                last = ids_str.split('.')[-1]
+                last = ids_str.split(".")[-1]
                 insert_text = comp_items[choice][0]
                 if last:  # cut off prefix, already present
                     insert_text = insert_text[len(last):]
@@ -404,10 +404,10 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.view.grab_focus()
 
     def history_add(self, line):
-        if line.strip() != '':
+        if line.strip() != "":
             self.history_pos = len(self.history)
             self.history[self.history_pos - 1] = line
-            self.history.append('')
+            self.history.append("")
 
     def history_up(self):
         if self.history_pos > 0:
@@ -440,7 +440,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         lin = buffer.get_mark("input-line")
         buffer.delete(buffer.get_iter_at_mark(lin), buffer.get_end_iter())
 
-        if isinstance(command, (list, tuple)):
+        if isinstance(command, list | tuple):
             for c in command:
                 if display_command:
                     self.write(">>> " + c + "\n", self.command)
@@ -468,8 +468,8 @@ class PythonConsole(Gtk.ScrolledWindow):
                     print_(repr(r))
             except SyntaxError:
                 exec(command, self.namespace)
-        except:
-            if hasattr(sys, 'last_type') and sys.last_type == SystemExit:
+        except Exception:
+            if hasattr(sys, "last_type") and sys.last_type == SystemExit:
                 self.destroy()
             else:
                 traceback.print_exc()
@@ -492,19 +492,19 @@ class PythonConsole(Gtk.ScrolledWindow):
             comp = []  # result: (completion-name, details)
             for name in dir_result:
                 if (pre and not name.startswith(pre)) \
-                        or (not include_private and name.startswith('__')):
+                        or (not include_private and name.startswith("__")):
                     continue
 
                 if obj is not None:
                     try:
                         f = getattr(obj, name)
-                    except:
+                    except Exception:
                         continue
                 else:
                     f = self.namespace.get(name)
 
                 if not callable(f):
-                    comp.append((name, ''))
+                    comp.append((name, ""))
                 else:
                     try:
                         spec = inspect.getfullargspec(f)
@@ -517,14 +517,14 @@ class PythonConsole(Gtk.ScrolledWindow):
                         deflen = len(spec.defaults) if spec.defaults else 0
                         noargs = arglen - deflen
                         for i in range(arglen):
-                            if i == 0 and spec.args[i] == 'self':
+                            if i == 0 and spec.args[i] == "self":
                                 continue
 
                             if i < noargs:
                                 sargs.append(spec.args[i])
                             else:
                                 default_arg = repr(spec.defaults[i - noargs])
-                                sargs.append(spec.args[i] + '=' + default_arg)
+                                sargs.append(spec.args[i] + "=" + default_arg)
 
                         details = " ({})".format(", ".join(sargs))
                         comp.append((name, details))
@@ -538,8 +538,8 @@ class PythonConsole(Gtk.ScrolledWindow):
 
         comp = None
         # method, field
-        if '.' in ids_str:
-            spl = ids_str.split('.')
+        if "." in ids_str:
+            spl = ids_str.split(".")
 
             # search for target object
             var = None
@@ -549,7 +549,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 else:
                     try:
                         var = getattr(var, fname, None)
-                    except:
+                    except Exception:
                         pass
 
                 if var is None:
@@ -579,16 +579,16 @@ class OutFile:
         pass
 
     def fileno(self):
-        raise IOError
+        raise OSError
 
     def isatty(self):
         return 0
 
     def read(self, a):
-        return ''
+        return ""
 
     def readline(self):
-        return ''
+        return ""
 
     def readlines(self):
         return []
@@ -600,10 +600,10 @@ class OutFile:
         self.console.write(l, self.tag)
 
     def seek(self, a):
-        raise IOError(29, 'Illegal seek')
+        raise OSError(29, "Illegal seek")
 
     def tell(self):
-        raise IOError(29, 'Illegal seek')
+        raise OSError(29, "Illegal seek")
 
     truncate = tell
 
@@ -634,7 +634,7 @@ class ListChoiceDialog(Gtk.Dialog):
 
             # dim the details-label
             style = lbl2.get_style_context()
-            style.add_class('dim-label')
+            style.add_class("dim-label")
             add_css(lbl2, ".dim-label { opacity: 0.5; } ")
 
             listbox.add(row)
@@ -642,7 +642,7 @@ class ListChoiceDialog(Gtk.Dialog):
             if i == 0:
                 listbox.set_focus_child(row)
 
-        listbox.connect('row-activated', self.on_row_click)
+        listbox.connect("row-activated", self.on_row_click)
 
         scroll = Gtk.ScrolledWindow()
         scroll.add(listbox)

@@ -29,56 +29,56 @@ class TFileLibrary(TLibrary):
     def test_mask_invalid_mount_point(self):
         new = self.Fake(1)
         self.library.add([new])
-        self.failIf(self.library.masked_mount_points)
-        self.failUnless(len(self.library))
+        self.assertFalse(self.library.masked_mount_points)
+        self.assertTrue(len(self.library))
         self.library.mask("/adsadsafaf")
-        self.failIf(self.library.masked_mount_points)
+        self.assertFalse(self.library.masked_mount_points)
         self.library.unmask("/adsadsafaf")
-        self.failIf(self.library.masked_mount_points)
-        self.failUnless(len(self.library))
+        self.assertFalse(self.library.masked_mount_points)
+        self.assertTrue(len(self.library))
 
     def test_mask_basic(self):
         new = self.Fake(1)
         self.library.add([new])
-        self.failIf(self.library.masked_mount_points)
+        self.assertFalse(self.library.masked_mount_points)
         self.library.mask(new.mountpoint)
-        self.failUnlessEqual(self.library.masked_mount_points,
+        self.assertEqual(self.library.masked_mount_points,
                              [new.mountpoint])
-        self.failIf(len(self.library))
-        self.failUnlessEqual(self.library.get_masked(new.mountpoint), [new])
-        self.failUnless(self.library.masked(new))
+        self.assertFalse(len(self.library))
+        self.assertEqual(self.library.get_masked(new.mountpoint), [new])
+        self.assertTrue(self.library.masked(new))
         self.library.unmask(new.mountpoint)
-        self.failUnless(len(self.library))
-        self.failUnlessEqual(self.library.get_masked(new.mountpoint), [])
+        self.assertTrue(len(self.library))
+        self.assertEqual(self.library.get_masked(new.mountpoint), [])
 
     def test_remove_masked(self):
         new = self.Fake(1)
         self.library.add([new])
         self.library.mask(new.mountpoint)
-        self.failUnless(self.library.masked_mount_points)
+        self.assertTrue(self.library.masked_mount_points)
         self.library.remove_masked(new.mountpoint)
-        self.failIf(self.library.masked_mount_points)
+        self.assertFalse(self.library.masked_mount_points)
 
     def test_content_masked(self):
         new = self.Fake(100)
         new._mounted = False
-        self.failIf(self.library.get_content())
+        self.assertFalse(self.library.get_content())
         self.library._load_init([new])
-        self.failUnless(self.library.masked(new))
-        self.failUnless(self.library.get_content())
+        self.assertTrue(self.library.masked(new))
+        self.assertTrue(self.library.get_content())
 
     def test_init_masked(self):
         new = self.Fake(100)
         new._mounted = False
         self.library._load_init([new])
-        self.failIf(self.library.items())
-        self.failUnless(self.library.masked(new))
+        self.assertFalse(self.library.items())
+        self.assertTrue(self.library.masked(new))
 
     def test_load_init_nonmasked(self):
         new = self.Fake(200)
         new._mounted = True
         self.library._load_init([new])
-        self.failUnlessEqual(list(self.library.values()), [new])
+        self.assertEqual(list(self.library.values()), [new])
 
     def test_reload(self):
         new = self.Fake(200)

@@ -26,14 +26,14 @@ class MPCFile(APEv2File):
         self["~#samplerate"] = audio.info.sample_rate
 
         version = audio.info.version
-        self["~codec"] = u"%s SV%d" % (self.format, version)
+        self["~codec"] = f"{self.format} SV{version:d}"
 
         try:
             if audio.info.title_gain:
-                track_g = u"%+0.2f dB" % audio.info.title_gain
+                track_g = f"{audio.info.title_gain:+0.2f} dB"
                 self.setdefault("replaygain_track_gain", track_g)
             if audio.info.album_gain:
-                album_g = u"%+0.2f dB" % audio.info.album_gain
+                album_g = f"{audio.info.album_gain:+0.2f} dB"
                 self.setdefault("replaygain_album_gain", album_g)
             if audio.info.title_peak:
                 track_p = str(audio.info.title_peak * 2)

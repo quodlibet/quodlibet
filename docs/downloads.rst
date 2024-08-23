@@ -69,7 +69,7 @@ For old releases see the `full file listing <https://github.com/quodlibet/quodli
 * `Fedora Stable Repo <https://software.opensuse.org/download.html?project=home%3Alazka0%3Aql-stable&package=quodlibet>`__
 
 Check out the `official
-repos <https://apps.fedoraproject.org/packages/quodlibet/overview/>`__ first -
+repos <https://packages.fedoraproject.org/pkgs/quodlibet/>`__ first -
 they usually contain the latest release.
 
 

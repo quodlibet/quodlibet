@@ -15,14 +15,14 @@ class TTagListEditor(TestCase):
 
     def test_no_strings(self):
         mse = TagListEditor("title")
-        self.failUnlessEqual(mse.tags, [])
-        self.failUnlessEqual(mse.get_title(), "title")
+        self.assertEqual(mse.tags, [])
+        self.assertEqual(mse.get_title(), "title")
         mse.destroy()
 
     def test_defaulting(self):
         defaults = ["one", "two three"]
         mse = TagListEditor("title", defaults)
-        self.failUnlessEqual(mse.tags, defaults)
+        self.assertEqual(mse.tags, defaults)
         mse.destroy()
 
     def tearDown(self):

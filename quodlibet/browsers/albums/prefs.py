@@ -21,7 +21,7 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
 
-PEOPLE
+PEOPLE  # noqa
 _SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
                          util.tag("composer"), util.tag("arranger"), ])
 
@@ -60,7 +60,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
         cb = ConfigCheckButton(
             _("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
-        cb.connect('toggled', lambda s: browser.toggle_covers())
+        cb.connect("toggled", lambda s: browser.toggle_covers())
         vbox.pack_start(cb, False, True, 0)
 
         cb = ConfigCheckButton(
@@ -76,7 +76,7 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         main_box = Gtk.VBox(spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)

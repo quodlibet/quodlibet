@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#          2016-22 Nick Boultbee
+#        2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,7 +10,6 @@
 import os
 import signal
 import socket
-from typing import Union
 from urllib.parse import urlparse
 
 import gi
@@ -71,7 +70,7 @@ def show_uri(label, uri):
 def __show_quodlibet_uri(uri):
     if uri.path.startswith("/prefs/plugins/"):
         from .pluginwin import PluginWindow
-        print_d("Showing plugin prefs resulting from URI (%s)" % (uri, ))
+        print_d(f"Showing plugin prefs resulting from URI ({uri})")
         return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
     else:
         return False
@@ -297,7 +296,7 @@ def add_fake_accel(widget, accel):
     assert key is not None
     assert val is not None
     widget.add_accelerator(
-        'activate', group, key, val, Gtk.AccelFlags.VISIBLE)
+        "activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
 def is_accel(event, *accels):
@@ -337,8 +336,8 @@ def is_accel(event, *accels):
         # never work and since no one should use them, complain
         non_default = accel_mod & ~default_mod
         if non_default:
-            print_w("Accelerator '%s' contains a non default modifier '%s'." %
-                (accel, Gtk.accelerator_name(0, non_default) or ""))
+            mod = Gtk.accelerator_name(0, non_default) or ""
+            print_w(f"Accelerator {accel!r} contains a non default modifier {mod!r}")
 
         # event.state contains the real mod mask + the virtual one, while
         # we usually pass only virtual one as text.
@@ -352,7 +351,7 @@ def is_accel(event, *accels):
     return False
 
 
-def add_css(widget: Gtk.Widget, css: Union[bytes, str]):
+def add_css(widget: Gtk.Widget, css: bytes | str):
     """Add css for the widget, overriding the theme.
 
     Can raise GLib.GError in case the css is invalid
@@ -404,7 +403,7 @@ def get_backend_name():
         if name.endswith("Display"):
             name = name[:-7]
         return name
-    return u"Unknown"
+    return "Unknown"
 
 
 def get_font_backend_name() -> str:
@@ -440,7 +439,7 @@ def io_add_watch(fd, prio, condition, func, *args, **kwargs):
         return GLib.io_add_watch(fd, condition, func, *args, **kwargs)
 
 
-def add_signal_watch(signal_action, _sockets=[]):
+def add_signal_watch(signal_action, _sockets=[]):  # noqa
     """Catches signals which should exit the program and calls `signal_action`
     after the main loop has started, even if the signal occurred before the
     main loop has started.
@@ -479,7 +478,7 @@ def add_signal_watch(signal_action, _sockets=[]):
         if condition & GLib.IOCondition.IN:
             try:
                 return bool(read_socket.recv(1))
-            except EnvironmentError:
+            except OSError:
                 return False
         else:
             return False

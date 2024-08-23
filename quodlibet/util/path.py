@@ -1,5 +1,5 @@
 # Copyright 2004-2009 Joe Wreschnig, Michael Urman, Steven Robertson
-#           2011-2022 Nick Boultbee
+#           2011-2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -7,13 +7,13 @@
 # (at your option) any later version.
 
 import os
-import io
 import re
 import stat
 import sys
 import errno
 import codecs
 import shlex
+from typing import Any
 from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
@@ -60,7 +60,7 @@ def iscommand(s):
         return os.path.isfile(s) and os.access(s, os.X_OK)
     else:
         s = s.split()[0]
-        path = os.environ.get('PATH', '') or os.defpath
+        path = os.environ.get("PATH", "") or os.defpath
         for p in path.split(os.path.pathsep):
             p2 = os.path.join(p, s)
             if os.path.isfile(p2) and os.access(p2, os.X_OK):
@@ -80,7 +80,8 @@ def listdir(path, hidden=False):
     if hidden:
         filt = None
     else:
-        filt = lambda base: not base.startswith(".")
+        def filt(base):
+            return not base.startswith(".")
     if path.endswith(os.sep):
         join = "".join
     else:
@@ -106,7 +107,7 @@ def filesize(filename):
         return 0
 
 
-def escape_filename(s: str, safe: bytes = b''):
+def escape_filename(s: str, safe: bytes = b""):
     """Escape a string in a manner suitable for a filename.
 
     Args:
@@ -117,7 +118,7 @@ def escape_filename(s: str, safe: bytes = b''):
     """
 
     s = str(s)
-    quoted = quote(s, safe=safe, encoding='utf-8')
+    quoted = quote(s, safe=safe, encoding="utf-8")
     if isinstance(quoted, bytes):
         return bytes2fsn(quoted, "utf-8")
     return bytes2fsn(quoted.encode("ascii"), "utf-8")
@@ -141,7 +142,7 @@ def join_path_with_escaped_name_of_legal_length(path: str, stem: str, ext: str) 
     Stem is trimmed until the filename fits into the filesystems maximum file length"""
 
     # returns the maximum possible filename length at path (subtract one for dot)
-    max_stem_length = os.pathconf(path, 'PC_NAME_MAX') - 1 - len(ext)
+    max_stem_length = os.pathconf(path, "PC_NAME_MAX") - 1 - len(ext)
 
     escaped_stem = escape_filename(stem)
     while len(escaped_stem) > max_stem_length:
@@ -150,7 +151,7 @@ def join_path_with_escaped_name_of_legal_length(path: str, stem: str, ext: str) 
         max_stem_length -= 1
         escaped_stem = escape_filename(stem)
 
-    return os.path.join(path, f'{escaped_stem}.{ext}')
+    return os.path.join(path, f"{escaped_stem}.{ext}")
 
 
 def stem_of_file_name(file_name: str) -> str:
@@ -189,7 +190,7 @@ def unexpand(filename):
         fsnative: The path with the home directory replaced
     """
 
-    sub = (os.name == "nt" and fsnative(u"%USERPROFILE%")) or fsnative(u"~")
+    sub = (os.name == "nt" and fsnative("%USERPROFILE%")) or fsnative("~")
     home = os.path.normcase(get_home_dir()).rstrip(os.path.sep)
     norm = os.path.normcase(filename)
     if norm == home:
@@ -309,40 +310,48 @@ def xdg_get_user_dirs():
     try:
         with open(os.path.join(config_home, "user-dirs.dirs"), "rb") as h:
             return parse_xdg_user_dirs(h.read())
-    except EnvironmentError:
+    except OSError:
         return {}
 
 
-def get_temp_cover_file(data):
+def get_temp_cover_file(data: bytes,
+                        mime: str | None = None) -> Any:
     """Returns a file object or None"""
 
     try:
+        suffix = None
+        if mime:
+            mime = mime.lower()
+            if "png" in mime:
+                suffix = fsnative(".png")
+            elif "jpg" in mime or "jpeg" in mime:
+                suffix = fsnative(".jpg")
         # pass fsnative so that mkstemp() uses unicode on Windows
-        fn = NamedTemporaryFile(prefix=fsnative(u"tmp"))
+        fn = NamedTemporaryFile(prefix=fsnative("cover-"), suffix=suffix)
         fn.write(data)
         fn.flush()
         fn.seek(0, 0)
-    except EnvironmentError:
-        return
+    except OSError:
+        return None
     else:
         return fn
 
 
-def _strip_win32_incompat(string, BAD=r'\:*?;"<>|'):
+def _strip_win32_incompat(string, bad=r'\:*?;"<>|'):
     """Strip Win32-incompatible characters from a Windows or Unix path."""
 
     if os.name == "nt":
-        BAD += "/"
+        bad += "/"
 
     if not string:
         return string
 
-    new = "".join((s in BAD and "_") or s
+    new = "".join((s in bad and "_") or s
                   for s in string)
     parts = new.split(os.sep)
 
     def fix_end(string):
-        return re.sub(r'[\. ]$', "_", string)
+        return re.sub(r"[\. ]$", "_", string)
     return os.sep.join(fix_end(p)
                        for p in parts)
 
@@ -391,7 +400,7 @@ if sys.platform == "darwin":
 
     def _osx_path_decode_error_handler(error):
         bytes_ = bytearray(error.object[error.start:error.end])
-        return u"".join("%%%X".__mod__(b) for b in bytes_), error.end
+        return "".join("%%%X".__mod__(b) for b in bytes_), error.end
 
     codecs.register_error(
         "quodlibet-osx-path-decode", _osx_path_decode_error_handler)
@@ -426,7 +435,7 @@ def limit_path(path, ellipsis=True):
 
         if len(p) > limit:
             if ellipsis:
-                p = p[:limit - 2] + fsnative(u"..")
+                p = p[:limit - 2] + fsnative("..")
             else:
                 p = p[:limit]
         parts[i] = p
@@ -495,8 +504,8 @@ class RootPathFile:
     and 'end' part. The variable depth of a pathfile's 'end' part renders
     os.path built-ins (basename etc.) useless for this purpose"""
 
-    _root = ''  # 'root' of full file path
-    _pathfile = ''  # full file path
+    _root = ""  # 'root' of full file path
+    _pathfile = ""  # full file path
 
     def __init__(self, root, pathfile):
         self._root = root
@@ -531,7 +540,7 @@ class RootPathFile:
             return valid
         else:
             try:
-                with io.open(self.pathfile, "w", encoding='utf-8') as f:
+                with open(self.pathfile, "w", encoding="utf-8") as f:
                     f.close()  # do nothing
             except OSError:
                 valid = False

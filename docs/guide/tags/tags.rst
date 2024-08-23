@@ -34,10 +34,10 @@ Programmatic Tags
 -----------------
 
 A programmatic tag is one typically added by either Quod Libet / Ex Falso or
- another program and not designed for human consumption. Examples are
- ``replaygain_track_gain`` or ``musicbrainz_albumid``. Note that to see
- these, you must turn on "Show programmatic tags" in the relevant
- preferences window.
+another program and not designed for human consumption. Examples are
+``replaygain_track_gain`` or ``musicbrainz_albumid``. Note that to see
+these, you must turn on "Show programmatic tags" in the relevant
+preferences window.
 
 
 Internal Tags

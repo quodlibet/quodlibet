@@ -25,6 +25,7 @@ Playlists are stored as files on disk, typically under
 Format
 ~~~~~~
 :new: Playlists are now stored in `XSPF format <http://xspf.org/>`_.
+
 The names are partially URL-encoded - that is, they can and should be URL-unencoded,
 but efforts are taken to make them human-friendly names where reasonable.
 

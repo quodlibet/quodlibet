@@ -9,19 +9,20 @@
 # RenameCommand
 # FillTracknumberCommand
 
+import ast
 import os
 import re
 import shutil
 import subprocess
 import tempfile
 
-from senf import fsn2text
+from senf import fsn2text, text2fsn
 
 from quodlibet import _
 from quodlibet import util
 from quodlibet.formats import EmbeddedImage, AudioFileError
 from quodlibet.util.path import mtime
-from quodlibet.pattern import Pattern, error as PatternError
+from quodlibet.pattern import Pattern, Error as PatternError
 from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
 
@@ -155,9 +156,7 @@ class CopyCommand(Command):
 class EditCommand(Command):
     NAME = "edit"
     DESCRIPTION = _("Edit tags in a text editor")
-    USAGE = "[--dry-run] <file>"
-
-    # TODO: support editing multiple files
+    USAGE = "[--dry-run] <file> [<files>]"
 
     def _add_options(self, p):
         p.add_option("--dry-run", action="store_true",
@@ -165,19 +164,23 @@ class EditCommand(Command):
 
     def _song_to_text(self, song):
         # to text
-        lines = []
+        lines = [
+            "File: %r" % fsn2text(song("~filename")),
+            "",
+        ]
         for key in sorted(song.realkeys(), key=sortkey):
             for value in song.list(key):
-                lines.append(u"%s=%s" % (key, value))
+                lines.append(f"  {key}={value}")
 
-        lines += [
-            u"",
-            u"#" * 80,
-            u"# Lines that are empty or start with '#' will be ignored",
-            u"# File: %r" % fsn2text(song("~filename")),
+        return "\n".join(lines + [""])
+
+    def _songs_to_text(self, songs):
+        header = [
+            "# Lines before the first 'File:' statement, or"
+            " lines that are empty or start with '#' will be ignored.",
+            "",
         ]
-
-        return u"\n".join(lines)
+        return "\n".join(header + [self._song_to_text(song) for song in songs])
 
     def _text_to_song(self, text, song):
         assert isinstance(text, str)
@@ -185,10 +188,10 @@ class EditCommand(Command):
         # parse
         tags = {}
         for line in text.splitlines():
-            if not line.strip() or line.startswith(u"#"):
+            if not line.strip() or line.startswith("#"):
                 continue
             try:
-                key, value = line.split(u"=", 1)
+                key, value = line.strip().split("=", 1)
             except ValueError:
                 continue
 
@@ -200,11 +203,11 @@ class EditCommand(Command):
             old = song.list(key)
             for value in old:
                 if value not in new:
-                    self.log("Remove %s=%s" % (key, value))
+                    self.log(f"Remove {key}={value}")
                     song.remove(key, value)
             for value in new:
                 if value not in old:
-                    self.log("Add %s=%s" % (key, value))
+                    self.log(f"Add {key}={value}")
                     song.add(key, value)
 
         for key, values in tags.items():
@@ -212,17 +215,34 @@ class EditCommand(Command):
                 raise CommandError(
                     "Can't change key '%(key-name)s'." % {"key-name": key})
             for value in values:
-                self.log("Add %s=%s" % (key, value))
+                self.log(f"Add {key}={value}")
                 song.add(key, value)
+
+    def _text_to_songs(self, text, songs):
+        # remove comments
+        text = re.sub(r"^#.*", "", text, count=0, flags=re.MULTILINE)
+        # remove empty lines
+        text = re.sub(r"(\r?\n){2,}", "\n", text.strip())
+        _, *texts = re.split(r"^File:\s+", text, maxsplit=0, flags=re.MULTILINE)
+
+        for text in texts:
+            filename, *lines = text.splitlines()
+            filename = text2fsn(ast.literal_eval(filename))
+            text = "\n".join(lines)
+
+            song = next((song for song in songs if song("~filename") == filename), None)
+            if not song:
+                raise CommandError("No match for %r." % (filename))
+
+            self.log("Update song: %r" % (filename))
+            self._text_to_song(text, song)
 
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
-            raise CommandError(_("Too many arguments"))
 
-        song = self.load_song(args[0])
-        dump = self._song_to_text(song).encode("utf-8")
+        songs = [self.load_song(path) for path in args]
+        dump = self._songs_to_text(songs).encode("utf-8")
 
         # write to tmp file
         fd, path = tempfile.mkstemp(suffix=".txt")
@@ -248,12 +268,12 @@ class EditCommand(Command):
                 subprocess.check_call(editor_args + [path])
             except subprocess.CalledProcessError as e:
                 self.log(str(e))
-                raise CommandError(_("Editing aborted"))
+                raise CommandError(_("Editing aborted")) from e
             except OSError as e:
                 self.log(str(e))
                 raise CommandError(
                     _("Starting text editor '%(editor-name)s' failed.") % {
-                        "editor-name": editor_args[0]})
+                        "editor-name": editor_args[0]}) from e
 
             was_changed = mtime(path) != old_mtime
             if not was_changed:
@@ -268,14 +288,14 @@ class EditCommand(Command):
         try:
             text = data.decode("utf-8")
         except ValueError as e:
-            raise CommandError("Invalid data: %r" % e)
+            raise CommandError(f"Invalid data: {e!r}") from e
 
         if options.dry_run:
             self.verbose = True
-        self._text_to_song(text, song)
+        self._text_to_songs(text, songs)
 
         if not options.dry_run:
-            self.save_songs([song])
+            self.save_songs(songs)
 
 
 @Command.register
@@ -301,11 +321,12 @@ class SetCommand(Command):
             song = self.load_song(path)
 
             if not song.can_change(tag):
-                vars = dict(tag=tag, format=type(song).format, file=song("~filename"))
+                vars = {"tag": tag, "format": type(song).format,
+                        "file": song("~filename")}
                 raise CommandError(
                     _("Can not set %(tag)r for %(format)s file %(file)r") % vars)
 
-            self.log("Set %r to %r" % (value, tag))
+            self.log(f"Set {value!r} to {tag!r}")
             if tag in song:
                 del song[tag]
             song.add(tag, value)
@@ -406,7 +427,8 @@ class RemoveCommand(Command):
         else:
             value = args[1]
             paths = args[2:]
-            match = lambda v: v == value
+            def match(v):
+                return v == value
 
         songs = []
         for path in paths:
@@ -417,7 +439,7 @@ class RemoveCommand(Command):
 
             for v in song.list(tag):
                 if match(v):
-                    self.log("Remove %r from %r" % (v, tag))
+                    self.log(f"Remove {v!r} from {tag!r}")
                     song.remove(tag, v)
             songs.append(song)
 
@@ -446,7 +468,7 @@ class AddCommand(Command):
             if not song.can_change(tag):
                 raise CommandError(_("Can not set %r") % tag)
 
-            self.log("Add %r to %r" % (value, tag))
+            self.log(f"Add {value!r} to {tag!r}")
             song.add(tag, value)
             songs.append(song)
 
@@ -532,7 +554,7 @@ class ImageSetCommand(Command):
             try:
                 song.set_image(image)
             except AudioFileError as e:
-                raise CommandError(e)
+                raise CommandError(e) from e
 
 
 @Command.register
@@ -561,7 +583,7 @@ class ImageClearCommand(Command):
             try:
                 song.clear_images()
             except AudioFileError as e:
-                raise CommandError(e)
+                raise CommandError(e) from e
 
 
 @Command.register
@@ -602,7 +624,7 @@ class ImageExtractCommand(Command):
             else:
                 images = song.get_images()
 
-            self.log("Images for %r: %r" % (path, images))
+            self.log(f"Images for {path!r}: {images!r}")
 
             if not images:
                 continue
@@ -621,7 +643,7 @@ class ImageExtractCommand(Command):
 
                 if options.primary:
                     # mysong.mp3 -> mysong.jpeg
-                    filename = "%s.%s" % (name, ext)
+                    filename = f"{name}.{ext}"
                 else:
                     # mysong.mp3 -> mysong-00.jpeg
                     pattern = "%s-" + number_pattern + ".%s"
@@ -687,7 +709,7 @@ class FillCommand(Command):
     def __apply(self, pattern, songs):
         for song in songs:
             match = pattern.match(song)
-            self.log("%r: %r" % (song("~basename"), match))
+            self.log("{!r}: {!r}".format(song("~basename"), match))
             for header in pattern.headers:
                 if header in match:
                     value = match[header]
@@ -701,7 +723,7 @@ class FillCommand(Command):
             match = pattern.match(song)
             row = [fsn2text(song("~basename"))]
             for header in pattern.headers:
-                row.append(match.get(header, u""))
+                row.append(match.get(header, ""))
             rows.append(row)
 
         headers = [_("File")] + pattern.headers
@@ -750,8 +772,8 @@ class PrintCommand(Command):
 
         try:
             pattern = Pattern(pattern)
-        except PatternError:
-            raise CommandError("Invalid pattern: %r" % pattern)
+        except PatternError as e:
+            raise CommandError(f"Invalid pattern: {pattern!r}") from e
 
         paths = args
         error = False

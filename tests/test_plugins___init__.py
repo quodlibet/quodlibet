@@ -9,7 +9,7 @@ import os
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.util.songwrapper import SongWrapper, list_wrapper
 from quodlibet.plugins import PluginConfig
 
 
@@ -37,112 +37,112 @@ class TSongWrapper(TestCase):
     def test_slots(self):
         def breakme():
             self.wrap.woo = 1
-        self.failUnlessRaises(AttributeError, breakme)
+        self.assertRaises(AttributeError, breakme)
 
     def test_cmp(self):
         songs = [SongWrapper(AudioFile({"tracknumber": str(i)}))
                  for i in range(10)]
         songs.reverse()
         songs.sort()
-        self.failUnlessEqual([s("~#track") for s in songs], list(range(10)))
+        self.assertEqual([s("~#track") for s in songs], list(range(10)))
 
     def test_needs_write_yes(self):
-        self.failIf(self.wrap._needs_write)
+        self.assertFalse(self.wrap._needs_write)
         self.wrap["woo"] = "bar"
-        self.failUnless(self.wrap._needs_write)
+        self.assertTrue(self.wrap._needs_write)
 
     def test_needs_write_no(self):
-        self.failIf(self.wrap._needs_write)
+        self.assertFalse(self.wrap._needs_write)
         self.wrap["~woo"] = "bar"
-        self.failIf(self.wrap._needs_write)
+        self.assertFalse(self.wrap._needs_write)
 
     def test_pop(self):
-        self.failIf(self.wrap._needs_write)
+        self.assertFalse(self.wrap._needs_write)
         self.wrap.pop("artist", None)
-        self.failUnless(self.wrap._needs_write)
+        self.assertTrue(self.wrap._needs_write)
 
     def test_getitem(self):
-        self.failUnlessEqual(self.wrap["title"], "woo")
+        self.assertEqual(self.wrap["title"], "woo")
 
     def test_get(self):
-        self.failUnlessEqual(self.wrap.get("title"), "woo")
-        self.failUnlessEqual(self.wrap.get("dne"), None)
-        self.failUnlessEqual(self.wrap.get("dne", "huh"), "huh")
+        self.assertEqual(self.wrap.get("title"), "woo")
+        self.assertEqual(self.wrap.get("dne"), None)
+        self.assertEqual(self.wrap.get("dne", "huh"), "huh")
 
     def test_delitem(self):
-        self.failUnless("title" in self.wrap)
+        self.assertTrue("title" in self.wrap)
         del(self.wrap["title"])
-        self.failIf("title" in self.wrap)
-        self.failUnless(self.wrap._needs_write)
+        self.assertFalse("title" in self.wrap)
+        self.assertTrue(self.wrap._needs_write)
 
     def test_realkeys(self):
-        self.failUnlessEqual(self.pwrap.realkeys(), self.psong.realkeys())
+        self.assertEqual(self.pwrap.realkeys(), self.psong.realkeys())
 
     def test_can_change(self):
         for key in ["~foo", "title", "whee", "a test", "foo=bar", ""]:
-            self.failUnlessEqual(
+            self.assertEqual(
                 self.pwrap.can_change(key), self.psong.can_change(key))
 
     def test_comma(self):
         for key in ["title", "artist", "album", "notexist", "~length"]:
-            self.failUnlessEqual(self.pwrap.comma(key), self.psong.comma(key))
+            self.assertEqual(self.pwrap.comma(key), self.psong.comma(key))
 
     def test_list(self):
         for key in ["title", "artist", "album", "notexist", "~length"]:
-            self.failUnlessEqual(self.pwrap.list(key), self.psong.list(key))
+            self.assertEqual(self.pwrap.list(key), self.psong.list(key))
 
     def test_dicty(self):
-        self.failUnlessEqual(self.pwrap.keys(), self.psong.keys())
-        self.failUnlessEqual(
+        self.assertEqual(self.pwrap.keys(), self.psong.keys())
+        self.assertEqual(
             list(self.pwrap.values()), list(self.psong.values()))
-        self.failUnlessEqual(self.pwrap.items(), self.psong.items())
+        self.assertEqual(self.pwrap.items(), self.psong.items())
 
     def test_mtime(self):
         self.wrap._song.sanitize()
-        self.failUnless(self.wrap.valid())
+        self.assertTrue(self.wrap.valid())
         self.wrap["~#mtime"] = os.path.getmtime(self.filename) - 2
         self.wrap._updated = False
-        self.failIf(self.wrap.valid())
+        self.assertFalse(self.wrap.valid())
 
     def test_setitem(self):
-        self.failIf(self.wrap._was_updated())
+        self.assertFalse(self.wrap._was_updated())
         self.wrap["title"] = "bar"
-        self.failUnless(self.wrap._was_updated())
-        self.failUnlessEqual(self.wrap["title"], "bar")
+        self.assertTrue(self.wrap._was_updated())
+        self.assertEqual(self.wrap["title"], "bar")
 
     def test_not_really_updated(self):
-        self.failIf(self.wrap._was_updated())
+        self.assertFalse(self.wrap._was_updated())
         self.wrap["title"] = "woo"
-        self.failIf(self.wrap._was_updated())
+        self.assertFalse(self.wrap._was_updated())
         self.wrap["title"] = "quux"
-        self.failUnless(self.wrap._was_updated())
+        self.assertTrue(self.wrap._was_updated())
 
     def test_new_tag(self):
-        self.failIf(self.wrap._was_updated())
+        self.assertFalse(self.wrap._was_updated())
         self.wrap["version"] = "bar"
-        self.failUnless(self.wrap._was_updated())
+        self.assertTrue(self.wrap._was_updated())
 
     def test_bookmark(self):
-        self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
+        self.assertEqual(self.psong.bookmarks, self.pwrap.bookmarks)
         self.pwrap.bookmarks = [(43, "another mark")]
-        self.failUnlessEqual(self.psong["~bookmark"], "0:43 another mark")
-        self.failUnlessEqual(self.psong.bookmarks, self.pwrap.bookmarks)
+        self.assertEqual(self.psong["~bookmark"], "0:43 another mark")
+        self.assertEqual(self.psong.bookmarks, self.pwrap.bookmarks)
 
 
 class TListWrapper(TestCase):
     def test_empty(self):
-        wrapped = ListWrapper([])
-        self.failUnlessEqual(wrapped, [])
+        wrapped = list_wrapper([])
+        self.assertEqual(wrapped, [])
 
     def test_empty_song(self):
-        wrapped = ListWrapper([{}])
-        self.failUnless(len(wrapped) == 1)
-        self.failIf(isinstance(wrapped[0], dict))
+        wrapped = list_wrapper([{}])
+        self.assertTrue(len(wrapped) == 1)
+        self.assertFalse(isinstance(wrapped[0], dict))
 
     def test_none(self):
-        wrapped = ListWrapper([None, None])
-        self.failUnless(len(wrapped) == 2)
-        self.failUnlessEqual(wrapped, [None, None])
+        wrapped = list_wrapper([None, None])
+        self.assertTrue(len(wrapped) == 2)
+        self.assertEqual(wrapped, [None, None])
 
 
 class TPluginConfig(TestCase):

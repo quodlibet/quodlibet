@@ -6,7 +6,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
 
 from gi.repository import Gtk
 
@@ -20,7 +19,7 @@ from quodlibet.util import format_rating
 
 
 class ConfirmRateMultipleDialog(qltk.Message):
-    def __init__(self, parent, count: int, value: Optional[float]):
+    def __init__(self, parent, count: int, value: float | None):
         assert count > 1
 
         title = (_("Are you sure you want to change the "
@@ -42,7 +41,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
 
 class RatingsMenuItem(Gtk.ImageMenuItem):
 
-    def __init__(self, songs, library, label=_("_Rating")):
+    def __init__(self, songs, library, label=_("_Rating")):  # noqa
         super().__init__(label=label, use_underline=True)
         self._songs = songs
         image = Gtk.Image.new_from_icon_name(Icons.FAVORITE, Gtk.IconSize.MENU)
@@ -53,15 +52,15 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         self.set_submenu(submenu)
         self._rating_menu_items = []
         for i in RATINGS.all:
-            text = "%0.2f\t%s" % (i, format_rating(i))
+            text = f"{i:0.2f}\t{format_rating(i)}"
             itm = Gtk.CheckMenuItem(label=text)
             itm.rating = i
             submenu.append(itm)
             handler = itm.connect(
-                'toggled', self._on_rating_change, i, library)
+                "toggled", self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
-        reset.connect('activate', self._on_rating_remove, library)
+        reset.connect("activate", self._on_rating_remove, library)
         self._select_ratings()
 
         submenu.append(SeparatorMenuItem())

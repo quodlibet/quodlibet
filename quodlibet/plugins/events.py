@@ -12,7 +12,7 @@ from quodlibet.util.dprint import print_e
 
 from quodlibet.plugins import PluginHandler
 
-from quodlibet.util.songwrapper import SongWrapper, ListWrapper
+from quodlibet.util.songwrapper import SongWrapper, list_wrapper
 from quodlibet.util.songwrapper import check_wrapper_changed
 from quodlibet.util import connect_obj
 from quodlibet.errorreport import errorhook
@@ -90,7 +90,7 @@ def _map_signals(obj, prefix="plugin_on_", blacklist=None):
     if blacklist is None:
         blacklist = []
     sigs = [s for s in sigs if s not in blacklist]
-    sigs = [(s, prefix + s.replace('-', '_')) for s in sigs]
+    sigs = [(s, prefix + s.replace("-", "_")) for s in sigs]
     return sigs
 
 
@@ -99,14 +99,14 @@ class EventPluginHandler(PluginHandler):
     def __init__(self, librarian=None, player=None, songlist=None):
         if librarian:
             sigs = _map_signals(librarian, blacklist=("notify",))
-            for event, handle in sigs:
+            for event, _handle in sigs:
                 def handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
                 librarian.connect(event, handler, event)
 
         if librarian and player:
             sigs = _map_signals(player, blacklist=("notify",))
-            for event, handle in sigs:
+            for event, _handle in sigs:
                 def cb_handler(librarian, *args):
                     self.__invoke(librarian, args[-1], *args[:-1])
                 connect_obj(player, event, cb_handler, librarian, event)
@@ -126,10 +126,10 @@ class EventPluginHandler(PluginHandler):
         if args and args[0]:
             if isinstance(args[0], dict):
                 args[0] = SongWrapper(args[0])
-            elif isinstance(args[0], (set, list)):
-                args[0] = ListWrapper(args[0])
+            elif isinstance(args[0], set | list):
+                args[0] = list_wrapper(args[0])
         for plugin in list(self.__plugins.values()):
-            method_name = 'plugin_on_' + event.replace('-', '_')
+            method_name = "plugin_on_" + event.replace("-", "_")
             handler = getattr(plugin, method_name, None)
 
             def overridden(obj, name):
@@ -139,13 +139,12 @@ class EventPluginHandler(PluginHandler):
                 try:
                     handler(*args)
                 except Exception:
-                    print_e("Error during %s on %s" %
-                            (method_name, type(plugin)))
+                    print_e(f"Error during {method_name} on {type(plugin)}")
                     errorhook()
 
         if event not in ["removed", "changed"] and args:
             songs = args[0]
-            if not isinstance(songs, (set, list)):
+            if not isinstance(songs, set | list):
                 songs = [songs]
             songs = filter(None, songs)
             check_wrapper_changed(librarian, songs)

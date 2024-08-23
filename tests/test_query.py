@@ -19,12 +19,12 @@ from tests import TestCase, skip
 
 class TestQuery_is_valid:
     def test_re(self):
-        assert Query('t = /an re/').valid
-        assert Query('t = /an re/c').valid
-        assert Query('t = /an\\/re/').valid
-        assert not Query('t = /an/re/').valid
-        assert Query('t = /aaa/lsic').valid
-        assert not Query('t = /aaa/icslx').valid
+        assert Query("t = /an re/").valid
+        assert Query("t = /an re/c").valid
+        assert Query("t = /an\\/re/").valid
+        assert not Query("t = /an/re/").valid
+        assert Query("t = /aaa/lsic").valid
+        assert not Query("t = /aaa/icslx").valid
 
     def test_str(self):
         assert Query('t = "a str"').valid
@@ -34,17 +34,17 @@ class TestQuery_is_valid:
         # read as a set of modifiers
 
     def test_tag(self):
-        assert Query('t = tag').valid
-        assert Query('t = !tag').valid
-        assert Query('t = |(tag, bar)').valid
+        assert Query("t = tag").valid
+        assert Query("t = !tag").valid
+        assert Query("t = |(tag, bar)").valid
         assert Query('t = a"tag"').valid
-        assert not Query('t = a, tag').valid
-        assert Query('tag with spaces = tag').valid
+        assert not Query("t = a, tag").valid
+        assert Query("tag with spaces = tag").valid
 
     def test_empty(self):
-        assert Query('').valid
-        assert Query('').is_parsable
-        assert Query('')
+        assert Query("").valid
+        assert Query("").is_parsable
+        assert Query("")
 
     def test_emptylist(self):
         assert not Query("a = &()").valid
@@ -53,39 +53,39 @@ class TestQuery_is_valid:
         assert not Query("&()").valid
 
     def test_nonsense(self):
-        assert not Query('a string').valid
-        assert not Query('t = #(a > b)').valid
+        assert not Query("a string").valid
+        assert not Query("t = #(a > b)").valid
         assert not Query("=a= = /b/").valid
         assert not Query("a = &(/b//").valid
         assert not Query("(a = &(/b//)").valid
 
     def test_trailing(self):
-        assert not Query('t = /an re/)').valid
-        assert not Query('|(a, b = /a/, c, d = /q/) woo').valid
+        assert not Query("t = /an re/)").valid
+        assert not Query("|(a, b = /a/, c, d = /q/) woo").valid
 
     def test_not(self):
-        assert Query('t = !/a/').valid
-        assert Query('t = !!/a/').valid
+        assert Query("t = !/a/").valid
+        assert Query("t = !!/a/").valid
         assert Query('!t = "a"').valid
         assert Query('!!t = "a"').valid
         assert Query('t = !|(/a/, !"b")').valid
         assert Query('t = !!|(/a/, !"b")').valid
-        assert Query('!|(t = /a/)').valid
+        assert Query("!|(t = /a/)").valid
 
     def test_taglist(self):
-        assert Query('a, b = /a/').valid
-        assert Query('a, b, c = |(/a/)').valid
-        assert Query('|(a, b = /a/, c, d = /q/)').valid
-        assert not Query('a = /a/, b').valid
+        assert Query("a, b = /a/").valid
+        assert Query("a, b, c = |(/a/)").valid
+        assert Query("|(a, b = /a/, c, d = /q/)").valid
+        assert not Query("a = /a/, b").valid
 
     def test_andor(self):
-        assert Query('a = |(/a/, /b/)').valid
-        assert Query('a = |(/b/)').valid
-        assert Query('|(a = /b/, c = /d/)').valid
+        assert Query("a = |(/a/, /b/)").valid
+        assert Query("a = |(/b/)").valid
+        assert Query("|(a = /b/, c = /d/)").valid
 
-        assert Query('a = &(/a/, /b/)').valid
-        assert Query('a = &(/b/)').valid
-        assert Query('&(a = /b/, c = /d/)').valid
+        assert Query("a = &(/a/, /b/)").valid
+        assert Query("a = &(/b/)").valid
+        assert Query("&(a = /b/, c = /d/)").valid
 
     def test_numcmp(self):
         assert Query("#(t < 3)").valid
@@ -190,23 +190,23 @@ class TQuery(TestCase):
     def setUp(self):
         config.init()
         self.s1 = AudioFile(
-            {"album": u"I Hate: Tests", "artist": u"piman", "title": u"Quuxly",
-             "version": u"cake mix",
-             "~filename": fsnative(u"/dir1/foobar.ogg"),
+            {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
+             "version": "cake mix",
+             "~filename": fsnative("/dir1/foobar.ogg"),
              "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
-             "date": u"2007-05-24", "~#samplerate": 44100})
+             "date": "2007-05-24", "~#samplerate": 44100})
         self.s2 = AudioFile(
-            {"album": u"Foo the Bar", "artist": u"mu", "title": u"Rockin' Out",
-             "~filename": fsnative(u"/dir2/something.mp3"),
-             "tracknumber": u"12/15"})
+            {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
+             "~filename": fsnative("/dir2/something.mp3"),
+             "tracknumber": "12/15"})
 
         self.s3 = AudioFile({
-            "artist": u"piman\nmu",
-            "~filename": fsnative(u"/test/\xf6\xe4\xfc/fo\xfc.ogg"),
-            "~mountpoint": fsnative(u"/bla/\xf6\xe4\xfc/fo\xfc"),
+            "artist": "piman\nmu",
+            "~filename": fsnative("/test/\xf6\xe4\xfc/fo\xfc.ogg"),
+            "~mountpoint": fsnative("/bla/\xf6\xe4\xfc/fo\xfc"),
         })
-        self.s4 = AudioFile({"title": u"Ångström", "utf8": u"Ångström"})
-        self.s5 = AudioFile({"title": u"oh&blahhh", "artist": u"!ohno"})
+        self.s4 = AudioFile({"title": "Ångström", "utf8": "Ångström"})
+        self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
 
     def tearDown(self):
         config.quit()
@@ -223,24 +223,25 @@ class TQuery(TestCase):
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_performance(self):
         t = time.time()
-        for i in range(500):
+        total = 500
+        for _i in range(total):
             # Native assert is a bit lighter...
             assert Query("album!=foo the bar").search(self.s1)
             assert Query("album=foo the bar").search(self.s2)
             assert Query("foo the bar").search(self.s2)
             assert not Query("foo the bar").search(self.s1)
-        us = (time.time() - t) * 1000000 / ((i + 1) * 4)
+        us = (time.time() - t) * 1000000 / ((total + 1) * 4)
         print("Blended Query searches average %.0f μs" % us)
 
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_equalish_performance(self):
         t0 = time.time()
         repeats = 2000
-        for i in range(repeats):
+        for _i in range(repeats):
             assert Query("album!=foo the bar").search(self.s1)
         ineq_time = (time.time() - t0)
         t1 = time.time()
-        for i in range(repeats):
+        for _i in range(repeats):
             assert Query("album=!foo the bar").search(self.s1)
         not_val_time = (time.time() - t1)
         assert ineq_time == pytest.approx(not_val_time, abs=0.1)
@@ -255,9 +256,9 @@ class TQuery(TestCase):
         assert r == "<Query string='&(/bar/d)' type=TEXT star=['foo']>"
 
     def test_2007_07_27_synth_search(self):
-        song = AudioFile({"~filename": fsnative(u"foo/64K/bar.ogg")})
+        song = AudioFile({"~filename": fsnative("foo/64K/bar.ogg")})
         query = Query("~dirname = !64K")
-        assert not query.search(song), "%r, %r" % (query, song)
+        assert not query.search(song), f"{query!r}, {song!r}"
 
     def test_empty(self):
         assert not Query("foobar = /./").search(self.s1)
@@ -274,10 +275,10 @@ class TQuery(TestCase):
         assert f(self.s2)
 
     def test_re_escape(self):
-        af = AudioFile({"foo": "\""})
+        af = AudioFile({"foo": '"'})
         assert Query('foo="\\""').search(af)
         af = AudioFile({"foo": "/"})
-        assert Query('foo=/\\//').search(af)
+        assert Query("foo=/\\//").search(af)
 
     def test_not(self):
         for s in ["album = !hate", "artist = !pi"]:
@@ -292,8 +293,8 @@ class TQuery(TestCase):
     def test_str(self):
         for k in self.s2.keys():
             v = self.s2[k]
-            assert Query('%s = "%s"' % (k, v)).search(self.s2)
-            assert not Query('%s = !"%s"' % (k, v)).search(self.s2)
+            assert Query(f'{k} = "{v}"').search(self.s2)
+            assert not Query(f'{k} = !"{v}"').search(self.s2)
 
     def test_numcmp(self):
         assert not Query("#(track = 0)").search(self.s1)
@@ -318,9 +319,9 @@ class TQuery(TestCase):
         assert Query("album = /I Hate/").search(self.s1)
         assert Query("album = /i Hate/").search(self.s1)
         assert Query("album = /i Hate/i").search(self.s1)
-        assert Query(u"title = /ångström/").search(self.s4)
+        assert Query("title = /ångström/").search(self.s4)
         assert not Query("album = /i hate/c").search(self.s1)
-        assert not Query(u"title = /ångström/c").search(self.s4)
+        assert not Query("title = /ångström/c").search(self.s4)
 
     def test_re_and(self):
         assert Query("album = &(/ate/,/est/)").search(self.s1)
@@ -389,9 +390,9 @@ class TQuery(TestCase):
 
     def test_unslashed_search(self):
         assert Query("artist=piman").search(self.s1)
-        assert Query(u"title=ång").search(self.s4)
+        assert Query("title=ång").search(self.s4)
         assert not Query("artist=mu").search(self.s1)
-        assert not Query(u"title=äng").search(self.s4)
+        assert not Query("title=äng").search(self.s4)
 
     def test_synth_search(self):
         assert Query("~dirname=/dir1/").search(self.s1)
@@ -448,53 +449,53 @@ class TQuery(TestCase):
 
     def test_utf8(self):
         # also handle undecoded values
-        assert Query(u"utf8=Ångström").search(self.s4)
+        assert Query("utf8=Ångström").search(self.s4)
 
     def test_fs_utf8(self):
-        assert Query(u"~filename=foü.ogg").search(self.s3)
-        assert Query(u"~filename=öä").search(self.s3)
-        assert Query(u"~dirname=öäü").search(self.s3)
-        assert Query(u"~basename=ü.ogg").search(self.s3)
+        assert Query("~filename=foü.ogg").search(self.s3)
+        assert Query("~filename=öä").search(self.s3)
+        assert Query("~dirname=öäü").search(self.s3)
+        assert Query("~basename=ü.ogg").search(self.s3)
 
     def test_filename_utf8_fallback(self):
-        assert Query(u"filename=foü.ogg").search(self.s3)
-        assert Query(u"filename=öä").search(self.s3)
+        assert Query("filename=foü.ogg").search(self.s3)
+        assert Query("filename=öä").search(self.s3)
 
     def test_mountpoint_utf8_fallback(self):
-        assert Query(u"mountpoint=foü").search(self.s3)
-        assert Query(u"mountpoint=öä").search(self.s3)
+        assert Query("mountpoint=foü").search(self.s3)
+        assert Query("mountpoint=öä").search(self.s3)
 
     def test_mountpoint_no_value(self):
-        af = AudioFile({"~filename": fsnative(u"foo")})
-        assert not Query(u"~mountpoint=bla").search(af)
+        af = AudioFile({"~filename": fsnative("foo")})
+        assert not Query("~mountpoint=bla").search(af)
 
     def test_star_numeric(self):
         with pytest.raises(ValueError):
-            Query(u"foobar", star=["~#mtime"])
+            Query("foobar", star=["~#mtime"])
 
     def test_match_diacriticals_explcit(self):
-        assert Query(u'title=angstrom').search(self.s4)
-        assert not Query(u'title="Ångstrom"').search(self.s4)
-        assert Query(u'title="Ångstrom"d').search(self.s4)
-        assert Query(u'title=Ångström').search(self.s4)
-        assert Query(u'title="Ångström"').search(self.s4)
-        assert Query(u'title=/Ångström/').search(self.s4)
-        assert Query(u'title="Ångstrom"d').search(self.s4)
-        assert Query(u'title=/Angstrom/d').search(self.s4)
-        assert Query(u'""d').search(self.s4)
+        assert Query("title=angstrom").search(self.s4)
+        assert not Query('title="Ångstrom"').search(self.s4)
+        assert Query('title="Ångstrom"d').search(self.s4)
+        assert Query("title=Ångström").search(self.s4)
+        assert Query('title="Ångström"').search(self.s4)
+        assert Query("title=/Ångström/").search(self.s4)
+        assert Query('title="Ångstrom"d').search(self.s4)
+        assert Query("title=/Angstrom/d").search(self.s4)
+        assert Query('""d').search(self.s4)
 
     def test_match_diacriticals_dumb(self):
-        assert Query(u'Angstrom').search(self.s4)
-        assert Query(u'Ångström').search(self.s4)
-        assert Query(u'Ångstrom').search(self.s4)
-        assert not Query(u'Ängström').search(self.s4)
+        assert Query("Angstrom").search(self.s4)
+        assert Query("Ångström").search(self.s4)
+        assert Query("Ångstrom").search(self.s4)
+        assert not Query("Ängström").search(self.s4)
 
     def test_match_diacriticals_invalid_or_unsupported(self):
         # these fall back to test dumb searches:
         # invalid regex
-        Query(u'/Sigur [r-zos/d')
+        Query("/Sigur [r-zos/d")
         # group refs unsupported for diacritic matching
-        Query(u'/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d')
+        Query("/(<)?(\\w+@\\w+(?:\\.\\w+)+)(?(1)>)/d")
 
     def test_numexpr(self):
         assert Query("#(length = 224)").search(self.s1)

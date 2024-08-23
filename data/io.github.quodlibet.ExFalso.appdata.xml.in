@@ -6,6 +6,7 @@
     <summary>Edit tags in your audio files</summary>
     <metadata_license>CC0</metadata_license>
     <project_license>GPL-2.0-or-later</project_license>
+    <developer_name translatable="no">The Quod Libet Development Team</developer_name>
     <translation type="gettext">quodlibet</translation>
     <launchable type="desktop-id">io.github.quodlibet.ExFalso.desktop</launchable>
     <provides>
@@ -33,6 +34,8 @@
     </screenshots>
 
     <releases>
+        <release version="4.6.0" date="2023-08-22"/>
+        <release version="4.5.0" date="2022-03-29"/>
         <release version="4.4.0" date="2021-02-28"/>
         <release version="4.3.0" date="2020-02-22"/>
         <release version="4.2.1" date="2018-12-26"/>
@@ -48,7 +51,7 @@
     <url type="homepage">https://quodlibet.readthedocs.org</url>
     <url type="bugtracker">https://quodlibet.readthedocs.io/en/latest/bugs_repo.html</url>
     <url type="help">https://quodlibet.readthedocs.io/en/latest/guide/index.html</url>
-    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/howto.html</url>
+    <url type="translate">https://quodlibet.readthedocs.io/en/latest/translation/index.html</url>
     <update_contact>quod-libet-development@googlegroups.com</update_contact>
 
     <content_rating type="oars-1.1">

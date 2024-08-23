@@ -25,78 +25,78 @@ from quodlibet.qltk import Frame, Icons
 from quodlibet import config
 
 # Translators: statuses relating to Instant Messenger apps
-_STATUSES = {'online': _('online'),
-             'offline': _('offline'),
-             'chat': _('chat'),
-             'away': _('away'),
-             'xa': _('xa'),
-             'invisible': _('invisible')}
+_STATUSES = {"online": _("online"),
+             "offline": _("offline"),
+             "chat": _("chat"),
+             "away": _("away"),
+             "xa": _("xa"),
+             "invisible": _("invisible")}
 
 
 class GajimStatusMessage(EventPlugin):
-    PLUGIN_ID = 'Gajim status message'
-    PLUGIN_NAME = _('Gajim Status Message')
+    PLUGIN_ID = "Gajim status message"
+    PLUGIN_NAME = _("Gajim Status Message")
     PLUGIN_DESC = _("Changes Gajim status message according to what "
                     "you are currently listening to.")
     PLUGIN_ICON = Icons.FACE_SMILE
 
-    c_accounts = __name__ + '_accounts'
-    c_paused = __name__ + '_paused'
-    c_statuses = __name__ + '_statuses'
-    c_pattern = __name__ + '_pattern'
+    c_accounts = __name__ + "_accounts"
+    c_paused = __name__ + "_paused"
+    c_statuses = __name__ + "_statuses"
+    c_pattern = __name__ + "_pattern"
 
     def __init__(self):
         try:
-            self.accounts = config.get('plugins', self.c_accounts).split()
-        except:
+            self.accounts = config.get("plugins", self.c_accounts).split()
+        except Exception:
             self.accounts = []
-            config.set('plugins', self.c_accounts, '')
+            config.set("plugins", self.c_accounts, "")
 
         try:
-            self.paused = config.getboolean('plugins', self.c_paused)
-        except:
+            self.paused = config.getboolean("plugins", self.c_paused)
+        except Exception:
             self.paused = True
-            config.set('plugins', self.c_paused, 'True')
+            config.set("plugins", self.c_paused, "True")
 
         try:
-            self.statuses = config.get('plugins', self.c_statuses).split()
-        except:
-            self.statuses = ['online', 'chat']
-            config.set('plugins', self.c_statuses, " ".join(self.statuses))
+            self.statuses = config.get("plugins", self.c_statuses).split()
+        except Exception:
+            self.statuses = ["online", "chat"]
+            config.set("plugins", self.c_statuses, " ".join(self.statuses))
 
         try:
-            self.pattern = config.get('plugins', self.c_pattern)
-        except:
-            self.pattern = '<artist> - <title>'
-            config.set('plugins', self.c_pattern, self.pattern)
+            self.pattern = config.get("plugins", self.c_pattern)
+        except Exception:
+            self.pattern = "<artist> - <title>"
+            config.set("plugins", self.c_pattern, self.pattern)
 
     def enabled(self):
         self.interface = None
-        self.current = ''
+        self.current = ""
 
     def disabled(self):
-        if self.current != '':
-            self.change_status(self.accounts, '')
+        if self.current != "":
+            self.change_status(self.accounts, "")
 
     def change_status(self, enabled_accounts, status_message):
         if not self.interface:
             try:
                 self.interface = Gio.DBusProxy.new_for_bus_sync(
                     Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                    'org.gajim.dbus', '/org/gajim/dbus/RemoteObject',
-                    'org.gajim.dbus.RemoteInterface', None)
+                    "org.gajim.dbus", "/org/gajim/dbus/RemoteObject",
+                    "org.gajim.dbus.RemoteInterface", None)
             except GLib.Error:
                 self.interface = None
 
         if self.interface:
             try:
                 for account in self.interface.list_accounts():
-                    status = self.interface.get_status('(s)', account)
+                    status = self.interface.get_status("(s)", account)
                     if enabled_accounts != [] and \
                             account not in enabled_accounts:
                         continue
                     if status in self.statuses:
-                        self.interface.change_status('(sss)',
+                        self.interface.change_status("(sss)",
                             status, status_message, account)
             except GLib.Error:
                 self.interface = None
@@ -105,34 +105,34 @@ class GajimStatusMessage(EventPlugin):
         if song:
             self.current = Pattern(self.pattern) % song
         else:
-            self.current = ''
+            self.current = ""
         self.change_status(self.accounts, self.current)
 
     def plugin_on_paused(self):
-        if self.paused and self.current != '':
-            self.change_status(self.accounts,
-                               "%s [%s]" % (self.current, _("paused")))
+        if self.paused and self.current != "":
+            paused = _("paused")
+            self.change_status(self.accounts, f"{self.current} [{paused}]")
 
     def plugin_on_unpaused(self):
         self.change_status(self.accounts, self.current)
 
     def accounts_changed(self, entry):
         self.accounts = entry.get_text().split()
-        config.set('plugins', self.c_accounts, entry.get_text())
+        config.set("plugins", self.c_accounts, entry.get_text())
 
     def pattern_changed(self, entry):
         self.pattern = entry.get_text()
-        config.set('plugins', self.c_pattern, self.pattern)
+        config.set("plugins", self.c_pattern, self.pattern)
 
     def paused_changed(self, c):
-        config.set('plugins', self.c_paused, str(c.get_active()))
+        config.set("plugins", self.c_paused, str(c.get_active()))
 
     def statuses_changed(self, b):
         if b.get_active() and b.get_name() not in self.statuses:
             self.statuses.append(b.get_name())
         elif b.get_active() is False and b.get_name() in self.statuses:
             self.statuses.remove(b.get_name())
-        config.set('plugins', self.c_statuses, " ".join(self.statuses))
+        config.set("plugins", self.c_statuses, " ".join(self.statuses))
 
     def PluginPreferences(self, parent):
         vb = Gtk.VBox(spacing=6)
@@ -141,7 +141,7 @@ class GajimStatusMessage(EventPlugin):
         pattern_box.set_border_width(3)
         pattern = Gtk.Entry()
         pattern.set_text(self.pattern)
-        pattern.connect('changed', self.pattern_changed)
+        pattern.connect("changed", self.pattern_changed)
         pattern_box.pack_start(Gtk.Label(label=_("Pattern:")), False, True, 0)
         pattern_box.pack_start(pattern, True, True, 0)
 
@@ -149,7 +149,7 @@ class GajimStatusMessage(EventPlugin):
         accounts_box.set_border_width(3)
         accounts = Gtk.Entry()
         accounts.set_text(" ".join(self.accounts))
-        accounts.connect('changed', self.accounts_changed)
+        accounts.connect("changed", self.accounts_changed)
         accounts.set_tooltip_text(
             _("List accounts, separated by spaces, for "
               "changing status message. If none are specified, "
@@ -160,7 +160,7 @@ class GajimStatusMessage(EventPlugin):
 
         c = Gtk.CheckButton(label=_("Add '[paused]'"))
         c.set_active(self.paused)
-        c.connect('toggled', self.paused_changed)
+        c.connect("toggled", self.paused_changed)
         c.set_tooltip_text(_("If checked, '[paused]' will be added to "
                              "status message on pause"))
 
@@ -173,7 +173,7 @@ class GajimStatusMessage(EventPlugin):
             button.set_name(status)
             if status in self.statuses:
                 button.set_active(True)
-            button.connect('toggled', self.statuses_changed)
+            button.connect("toggled", self.statuses_changed)
             self.list.append(button)
             table.attach(button, i, i + 1, j, j + 1)
             if i == 2:

@@ -60,7 +60,7 @@ def main():
 
     package_path = "quodlibet"
     packages = []
-    for root, dirnames, filenames in os.walk(package_path):
+    for root, _dirnames, filenames in os.walk(package_path):
         if "__init__.py" in filenames:
             relpath = os.path.relpath(root, os.path.dirname(package_path))
             package_name = relpath.replace(os.sep, ".")
@@ -68,44 +68,44 @@ def main():
     assert packages
 
     setup_kwargs = {
-        'distclass': GDistribution,
-        'name': "quodlibet",
-        'version': version_string,
-        'url': "https://quodlibet.readthedocs.org",
-        'description': "a music library, tagger, and player",
-        'author': "Joe Wreschnig, Michael Urman, & others",
-        'author_email': "quod-libet-development@googlegroups.com",
-        'maintainer': "Steven Robertson and Christoph Reiter",
-        'license': "GPL-2.0-or-later",
-        'packages': packages,
-        'package_data': {
+        "distclass": GDistribution,
+        "name": "quodlibet",
+        "version": version_string,
+        "url": "https://quodlibet.readthedocs.org",
+        "description": "a music library, tagger, and player",
+        "author": "Joe Wreschnig, Michael Urman, & others",
+        "author_email": "quod-libet-development@googlegroups.com",
+        "maintainer": "Steven Robertson and Christoph Reiter",
+        "license": "GPL-2.0-or-later",
+        "packages": packages,
+        "package_data": {
             "quodlibet": [
                 "images/hicolor/*/*/*.png",
                 "images/hicolor/*/*/*.svg",
             ],
         },
-        'scripts': [
+        "scripts": [
             "quodlibet.py",
             "exfalso.py",
             "operon.py",
         ],
-        'po_directory': "po",
-        'po_package': "quodlibet",
-        'shortcuts': [
+        "po_directory": "po",
+        "po_package": "quodlibet",
+        "shortcuts": [
             "data/io.github.quodlibet.QuodLibet.desktop",
             "data/io.github.quodlibet.ExFalso.desktop"
         ],
-        'dbus_services': [
+        "dbus_services": [
             "data/net.sacredchao.QuodLibet.service",
             # https://github.com/quodlibet/quodlibet/issues/1268
             # "data/org.mpris.MediaPlayer2.quodlibet.service",
             # "data/org.mpris.quodlibet.service",
         ],
-        'appdata': [
+        "appdata": [
             "data/io.github.quodlibet.QuodLibet.appdata.xml",
             "data/io.github.quodlibet.ExFalso.appdata.xml",
         ],
-        'man_pages': [
+        "man_pages": [
             "data/quodlibet.1",
             "data/exfalso.1",
             "data/operon.1",

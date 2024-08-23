@@ -1,13 +1,12 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2022 Nick Boultbee
+#           2011-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 from __future__ import annotations
 
 import os
@@ -114,7 +113,7 @@ class Collection:
         self.__default.clear()
         self.__used = []
 
-    def get(self, key, default=u"", connector=u" - "):
+    def get(self, key, default="", connector=" - "):
         if not self.songs:
             return default
         if key[:1] == "~" and "~" in key[1:]:
@@ -129,9 +128,8 @@ class Collection:
                 return x
 
             v = map(default_funct, v)
-            v = map(lambda x: (isinstance(x, float) and "%.2f" % x) or x, v)
-            v = map(
-                lambda x: isinstance(x, str) and x or str(x), v)
+            v = ((isinstance(x, float) and "%.2f" % x) or x for x in v)
+            v = (isinstance(x, str) and x or str(x) for x in v)
             return connector.join(filter(None, v)) or default
         else:
             value = self.__get_cached_value(key)
@@ -143,11 +141,11 @@ class Collection:
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, (int, float))
+        return (value if isinstance(value, int | float)
                 else value.replace("\n", ", "))
 
     def list(self, key):
-        v = self.get(key, connector=u"\n") if "~" in key[1:] else self.get(key)
+        v = self.get(key, connector="\n") if "~" in key[1:] else self.get(key)
         if isinstance(v, float):
             # Ignore insignificant differences in numeric tags caused
             # by floating point imprecision when converting them to strings
@@ -195,7 +193,10 @@ class Collection:
                 length = self.__get_value("~#length")
                 if not length:
                     return 0
-                w = lambda s: s("~#bitrate", 0) * s("~#length", 0)
+
+                def w(s):
+                    return s("~#bitrate", 0) * s("~#length", 0)
+
                 return sum(w(song) for song in self.songs) / length
             else:
                 # Standard or unknown numeric key.
@@ -288,8 +289,7 @@ class Collection:
             for value in song.list(key):
                 result[value] = result.get(value, 0) - 1
 
-        values = list(map(lambda x: x[0],
-                          sorted(result.items(), key=lambda x: (x[1], x[0]))))
+        values = [x[0] for x in sorted(result.items(), key=lambda x: (x[1], x[0]))]
         return "\n".join(values) if values else None
 
 
@@ -378,7 +378,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
     def key(self) -> str:  # type: ignore  # (Note: we want no setter)
         return self.name
 
-    def get(self, key, default=u"", connector=u" - "):
+    def get(self, key, default="", connector=" - "):
         if key == "~name":
             return self.name
         return super().get(key, default, connector)
@@ -505,11 +505,11 @@ class Playlist(Collection, abc.Iterable, HasKey):
             print_d(f"Changed playlist {self!r} ({msg})")
             self.inhibit = True
             # Awkward, but we don't want to make Collection a GObject really
-            self.pl_lib.emit('changed', [self])
+            self.pl_lib.emit("changed", [self])
             self.inhibit = False
         if self.songs_lib and not self.inhibit and songs:
             # See above re: emitting
-            self.songs_lib.emit('changed', songs)
+            self.songs_lib.emit("changed", songs)
 
     def has_songs(self, songs):
         # TODO(rm): consider the "library.masked" business
@@ -559,7 +559,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
     def __str__(self):
         songs_text = (ngettext("%d song", "%d songs", len(self.songs))
                       % len(self.songs))
-        return u"\"%s\" (%s)" % (self.name, songs_text)
+        return f'"{self.name}" ({songs_text})'
 
 
 class FileBackedPlaylist(Playlist):
@@ -578,7 +578,7 @@ class FileBackedPlaylist(Playlist):
         self._last_fn = os.path.join(dir_, filename)
         try:
             self._populate_from_file()
-        except IOError:
+        except OSError:
             if self.name:
                 print_d("Playlist '%s' not found, creating new." % self.name)
                 self.write()
@@ -608,11 +608,12 @@ class FileBackedPlaylist(Playlist):
                     self._list.append(line)
 
     @classmethod
-    def new(cls, dir_, base=_("New Playlist"), songs_lib=None, pl_lib=None):
+    def new(cls, dir_: _fsnative, base: str | None = None, songs_lib=None, pl_lib=None):
+        base = base or _("New Playlist")
         assert isinstance(dir_, fsnative)
 
         if not (dir_ and os.path.realpath(dir_)):
-            raise ValueError("Invalid playlist directory %r" % (dir_,))
+            raise ValueError(f"Invalid playlist directory {dir_!r}")
 
         last_error = None
         for i in range(1000):
@@ -622,8 +623,8 @@ class FileBackedPlaylist(Playlist):
                 return cls(dir_, fn, songs_lib=songs_lib, pl_lib=pl_lib, validate=True)
             except ValueError as e:
                 last_error = e
-        raise ValueError("Couldn't create playlist of name '%s' (e.g. %s)"
-                         % (base, last_error))
+        raise ValueError(
+            f"Couldn't create playlist of name '{base}' (e.g. {last_error})")
 
     @classmethod
     def from_songs(cls, dir_, songs, title=None, songs_lib=None, pl_lib=None):
@@ -685,7 +686,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
     _SAFER = {c: quote(c, safe="")
-              for c in ("\\/:*?\"<>|" if is_windows() else "\0/")}
+              for c in ('\\/:*?"<>|' if is_windows() else "\0/")}
 
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, songs_lib, pl_lib):
@@ -745,20 +746,19 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 else:
                     # TODO: handle missing playlist items (#3105, #729, #3131)
                     node_dump = ET.tostring(node, method="xml").decode("utf-8")
-                    print_w("Couldn't find %r in playlist at %r. "
-                            "Perhaps its metadata will help: %r"
-                            % (path, self.path, node_dump))
+                    print_w(f"Couldn't find {path!r} in playlist at {self.path!r}. "
+                            f"Perhaps its metadata will help: {node_dump!r}")
                     self._list.append(path)
                     library.mask(path)
         except (ET.ParseError, ValueError) as e:
-            print_w("Couldn't load %r (%s)" % (self.path, e))
+            print_w(f"Couldn't load {self.path!r} ({e})")
 
     @classmethod
     def filename_for(cls, name: str):
         # Manually do *minimal* escaping, to allow near-readable filenames
         for bad, good in cls._SAFER.items():
             name = name.replace(bad, good)
-        return path2fsn("%s.%s" % (limit_path(name), cls.EXT))
+        return path2fsn(f"{limit_path(name)}.{cls.EXT}")
 
     @classmethod
     def name_for(cls, file_path: _fsnative) -> str:

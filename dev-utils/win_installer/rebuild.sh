@@ -7,6 +7,7 @@
 # (at your option) any later version.
 
 DIR="$( cd "$( dirname "$0" )" && pwd )"
+# shellcheck source-path=SCRIPTDIR
 source "$DIR"/_base.sh
 
 set_build_root "${DIR}/_rebuild_root"
@@ -16,12 +17,6 @@ function main {
     local GIT_TAG=${2:-"main"}
 
     [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
-
-    # started from the wrong env -> switch
-    if [ "$(echo "$MSYSTEM" | tr 'A-Z' 'a-z')" != "$MINGW" ]; then
-        "/${MINGW}.exe" "$0"
-        exit $?
-    fi
 
     install_pre_deps
     create_root

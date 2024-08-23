@@ -16,8 +16,8 @@ import cairo
 
 from quodlibet import _, print_e, util
 from quodlibet import config
-from quodlibet.qltk import get_top_parent, is_accel, is_wayland, gtk_version, \
-    menu_popup, get_primary_accel_mod
+from quodlibet.qltk import (get_top_parent, is_accel, is_wayland, menu_popup,
+                            get_primary_accel_mod)
 from quodlibet.qltk.image import get_surface_extents
 
 from .util import GSignals
@@ -36,10 +36,10 @@ class TreeViewHints(Gtk.Window):
     # to pass all events to the treeview. In case it does work, this handlers
     # will never be called.
     __gsignals__: GSignals = dict.fromkeys(
-        ['button-press-event', 'button-release-event',
-         'motion-notify-event', 'scroll-event',
-         'enter-notify-event', 'leave-notify-event'],
-        'override')
+        ["button-press-event", "button-release-event",
+         "motion-notify-event", "scroll-event",
+         "enter-notify-event", "leave-notify-event"],
+        "override")
 
     __empty_region = cairo.Region(cairo.RectangleInt())
 
@@ -88,10 +88,8 @@ class TreeViewHints(Gtk.Window):
         self.set_accept_focus(False)
         self.set_resizable(False)
         self.set_name("gtk-tooltip")
-        if gtk_version < (3, 13):
-            self.set_border_width(1)
 
-        self.connect('leave-notify-event', self.__undisplay)
+        self.connect("leave-notify-event", self.__undisplay)
 
         self.__handlers = {}
         self.__current_path = self.__current_col = None
@@ -123,12 +121,12 @@ class TreeViewHints(Gtk.Window):
         )
 
         self.__handlers[view] = [
-            view.connect('motion-notify-event', self.__motion),
-            view.connect('leave-notify-event', self.__motion),
-            view.connect('scroll-event', self.__undisplay),
-            view.connect('key-press-event', self.__undisplay),
-            view.connect('unmap', self.__undisplay),
-            view.connect('destroy', self.disconnect_view),
+            view.connect("motion-notify-event", self.__motion),
+            view.connect("leave-notify-event", self.__motion),
+            view.connect("scroll-event", self.__undisplay),
+            view.connect("key-press-event", self.__undisplay),
+            view.connect("unmap", self.__undisplay),
+            view.connect("destroy", self.disconnect_view),
         ]
 
     def disconnect_view(self, view):
@@ -208,8 +206,8 @@ class TreeViewHints(Gtk.Window):
 
         # get the renderer at the mouse position and get the xpos/width
         renderers = col.get_cells()
-        pos = sorted(zip(map(col.cell_get_position, renderers), renderers))
-        pos = [p for p in pos if p[0][0] < cellx]
+        pos = zip(map(col.cell_get_position, renderers), renderers, strict=False)
+        pos = [p for p in sorted(pos) if p[0][0] < cellx]
         if not pos:
             self.__undisplay()
             return False
@@ -223,7 +221,7 @@ class TreeViewHints(Gtk.Window):
             self.__undisplay()
             return False
 
-        ellipsize = renderer.get_property('ellipsize')
+        ellipsize = renderer.get_property("ellipsize")
         if ellipsize == Pango.EllipsizeMode.END:
             expand_left = False
         elif ellipsize == Pango.EllipsizeMode.MIDDLE:
@@ -248,13 +246,15 @@ class TreeViewHints(Gtk.Window):
         # to be saved on the python side, so we can copy it to the label
         markup = getattr(renderer, "markup", None)
         if markup is None:
-            text = renderer.get_property('text')
-            set_text = lambda l: l.set_text(text)
+            text = renderer.get_property("text")
+            def set_text(l):
+                return l.set_text(text)
         else:
             # markup can also be column index
             if isinstance(markup, int):
                 markup = model[path][markup]
-            set_text = lambda l: l.set_markup(markup)
+            def set_text(l):
+                return l.set_markup(markup)
 
         # Use the renderer padding as label padding so the text offset matches
         render_xpad = renderer.get_property("xpad")
@@ -343,7 +343,7 @@ class TreeViewHints(Gtk.Window):
 
         self.__view = view
         self.__current_renderer = renderer
-        self.__edit_id = renderer.connect('editing-started', self.__undisplay)
+        self.__edit_id = renderer.connect("editing-started", self.__undisplay)
         self.__current_path = path
         self.__current_col = col
 
@@ -412,16 +412,9 @@ class TreeViewHints(Gtk.Window):
             self.hide()
             return False
 
-        if gtk_version < (3, 13):
-            # https://bugzilla.gnome.org/show_bug.cgi?id=731055
-            # Work around Gnome Shell redraw bugs: it doesn't like
-            # multiple hide()/show(), so we try to reduce calls to hide
-            # by aborting it if the pointer is on a new cell shortly after.
-            self.__hide_id = GLib.timeout_add(20, hide, fake_event)
-        else:
-            # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
-            # to assume we have a fixed mutter release..
-            hide(fake_event)
+        # mutter3.12 and gtk3.14 are a bit broken together, so it's safe
+        # to assume we have a fixed mutter release..
+        hide(fake_event)
 
     def __event(self, event):
         if not self.__view:
@@ -629,7 +622,7 @@ class BaseView(Gtk.TreeView):
     __gsignals__: GSignals = {
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated
-        'selection-changed': (GObject.SignalFlags.RUN_LAST, None, (object, )),
+        "selection-changed": (GObject.SignalFlags.RUN_LAST, None, (object, )),
     }
 
     def __init__(self, *args, **kwargs):
@@ -652,12 +645,12 @@ class BaseView(Gtk.TreeView):
                 self.emit("selection-changed", selection)
             self._sel_ignore_time = -1
 
-        id_ = self.get_selection().connect('changed', on_selection_changed)
+        id_ = self.get_selection().connect("changed", on_selection_changed)
 
         def on_destroy(self):
             self.get_selection().disconnect(id_)
 
-        self.connect('destroy', on_destroy)
+        self.connect("destroy", on_destroy)
 
         def on_row_activated(*args):
             self._sel_ignore_next = True
@@ -880,7 +873,7 @@ class BaseView(Gtk.TreeView):
 
         self.set_model(old_model)
         self.set_search_column(search_column)
-        for column, value in zip(self.get_columns(), sorts):
+        for column, value in zip(self.get_columns(), sorts, strict=False):
             column.set_sort_indicator(value)
 
 
@@ -892,7 +885,7 @@ class DragIconTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect('drag-begin', self.__begin)
+        self.connect("drag-begin", self.__begin)
 
     def __begin(self, view, drag_ctx):
         model, paths = view.get_selection().get_selected_rows()
@@ -932,7 +925,7 @@ class DragIconTreeView(BaseView):
 
         layout = None
         if len(paths) > max_rows:
-            more = _(u"and %d more…") % (len(paths) - max_rows)
+            more = _("and %d more…") % (len(paths) - max_rows)
             more = util.italic(more)
             layout = self.create_pango_layout("")
             layout.set_markup(more)
@@ -952,7 +945,7 @@ class DragIconTreeView(BaseView):
 
         # render rows
         count_y = 0
-        for icon, (x, y, icon_width, icon_height) in zip(icons, sizes):
+        for icon, (x, y, icon_width, icon_height) in zip(icons, sizes, strict=False):
             ctx.save()
             ctx.set_source_surface(icon, -x, count_y + -y)
             ctx.rectangle(bw, count_y + bw,
@@ -987,8 +980,8 @@ class MultiDragTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect('button-press-event', self.__button_press)
-        self.connect('button-release-event', self.__button_release)
+        self.connect("button-press-event", self.__button_press)
+        self.connect("button-release-event", self.__button_release)
         self.__pending_action = None
 
     def __button_press(self, view, event):
@@ -1030,7 +1023,7 @@ class RCMTreeView(BaseView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.connect('button-press-event', self.__button_press)
+        self.connect("button-press-event", self.__button_press)
 
     def __button_press(self, view, event):
         if event.button == Gdk.BUTTON_SECONDARY:
@@ -1049,12 +1042,12 @@ class RCMTreeView(BaseView):
         else:
             col.focus_cell(col.get_cells()[0])
         self.__position_at_mouse = True
-        self.emit('popup-menu')
+        self.emit("popup-menu")
         return True
 
     def ensure_popup_selection(self):
         try:
-            self.__position_at_mouse
+            self.__position_at_mouse  # noqa
         except AttributeError:
             path, col = self.get_cursor()
             if path is None:
@@ -1157,7 +1150,7 @@ class HintedTreeView(BaseView):
         if "QUODLIBET_NO_HINTS" in os.environ:
             return False
 
-        return not config.state('disable_hints')
+        return not config.state("disable_hints")
 
 
 class _TreeViewColumnLabel(Gtk.Label):
@@ -1240,12 +1233,12 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         # tree-view-changed(old_tree_view, new_tree_view)
         # Triggers when the columns gets added/removed from a tree view.
         # The passed values are either a TreeView or None
-        'tree-view-changed': (
+        "tree-view-changed": (
             GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     def __init__(self, **kwargs):
-        title = kwargs.pop("title", u"")
+        title = kwargs.pop("title", "")
         # skip overrides which don't allow to set properties
         GObject.Object.__init__(self, **kwargs)
 
@@ -1257,7 +1250,7 @@ class TreeViewColumn(Gtk.TreeViewColumn):
         # the button gets created once the widget gets realized
         self._button = None
         self._tooltip_text = None
-        label.__realize = label.connect('realize', self.__realized)
+        label.__realize = label.connect("realize", self.__realized)
 
     def __realized(self, widget):
         widget.disconnect(widget.__realize)
@@ -1290,28 +1283,28 @@ class TreeViewColumnButton(TreeViewColumn):
         button-press-event and popup-menu"""
 
     __gsignals__: GSignals = {
-        'button-press-event': (GObject.SignalFlags.RUN_LAST, bool, (object,)),
-        'popup-menu': (GObject.SignalFlags.RUN_LAST, bool, tuple()),
+        "button-press-event": (GObject.SignalFlags.RUN_LAST, bool, (object,)),
+        "popup-menu": (GObject.SignalFlags.RUN_LAST, bool, ()),
     }
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         label = self.get_widget()
-        label.__realize = label.connect('realize', self.__connect_menu_event)
+        label.__realize = label.connect("realize", self.__connect_menu_event)
 
     def __connect_menu_event(self, widget):
         widget.disconnect(widget.__realize)
         del widget.__realize
         button = widget.get_ancestor(Gtk.Button)
         if button:
-            button.connect('button-press-event', self.button_press_event)
-            button.connect('popup-menu', self.popup_menu)
+            button.connect("button-press-event", self.button_press_event)
+            button.connect("popup-menu", self.popup_menu)
 
     def button_press_event(self, widget, event):
-        return self.emit('button-press-event', event)
+        return self.emit("button-press-event", event)
 
     def popup_menu(self, widget):
-        return self.emit('popup-menu')
+        return self.emit("popup-menu")
 
 
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):

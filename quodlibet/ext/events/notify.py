@@ -182,7 +182,7 @@ class PreferencesWidget(Gtk.VBox):
         display_box.pack_start(focus_check, True, True, 0)
 
         show_next = Gtk.CheckButton(
-            label=_("Show \"_Next\" button"),
+            label=_('Show "_Next" button'),
             use_underline=True)
         show_next.set_active(pconfig.getboolean("show_next_button"))
         show_next.connect("toggled", self.on_checkbutton_toggled,
@@ -315,7 +315,7 @@ class Notify(EventPlugin):
             interface = Gio.DBusProxy.new_for_bus_sync(
                 Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
-            interface.CloseNotification('(u)', self.__last_id)
+            interface.CloseNotification("(u)", self.__last_id)
         except GLib.Error:
             pass
         else:
@@ -334,7 +334,7 @@ class Notify(EventPlugin):
         self._set_image_fileobj(fileobj)
         if fileobj:
             return fsn2uri(fileobj.name)
-        return u""
+        return ""
 
     def show_notification(self, song):
         """Returns True if showing the notification was successful"""
@@ -353,7 +353,7 @@ class Notify(EventPlugin):
                     self.__spec_version = spec
                     if "actions" in caps:
                         self.__action_sig = iface.connect(
-                            'g-signal', self._on_signal)
+                            "g-signal", self._on_signal)
                 else:
                     iface = self.__interface
                     caps = self.__caps
@@ -369,9 +369,12 @@ class Notify(EventPlugin):
             self.__disconnect()
             return False
 
-        strip_markup = lambda t: re.subn(r"\</?[iub]\>", "", t)[0]
-        strip_links = lambda t: re.subn(r"\</?a.*?\>", "", t)[0]
-        strip_images = lambda t: re.subn(r"\<img.*?\>", "", t)[0]
+        def strip_markup(t):
+            return re.subn("\\</?[iub]\\>", "", t)[0]
+        def strip_links(t):
+            return re.subn("\\</?a.*?\\>", "", t)[0]
+        def strip_images(t):
+            return re.subn("\\<img.*?\\>", "", t)[0]
 
         title = XMLFromPattern(pconfig.gettext("titlepattern")) % song
         title = unescape(strip_markup(strip_links(strip_images(title))))
@@ -393,16 +396,16 @@ class Notify(EventPlugin):
 
         hints = {
             "desktop-entry": GLib.Variant(
-                's', "io.github.quodlibet.QuodLibet"),
+                "s", "io.github.quodlibet.QuodLibet"),
         }
 
         image_uri = self._get_image_uri(song)
         if image_uri:
-            hints["image_path"] = GLib.Variant('s', image_uri)
-            hints["image-path"] = GLib.Variant('s', image_uri)
+            hints["image_path"] = GLib.Variant("s", image_uri)
+            hints["image-path"] = GLib.Variant("s", image_uri)
 
         try:
-            self.__last_id = iface.Notify('(susssasa{sv}i)',
+            self.__last_id = iface.Notify("(susssasa{sv}i)",
                 "Quod Libet", self.__last_id, image_uri, title, body,
                 actions, hints, pconfig.getint("timeout"))
         except GLib.Error:
@@ -418,7 +421,7 @@ class Notify(EventPlugin):
         return True
 
     def _on_signal(self, proxy, sender, signal, args):
-        if signal == 'ActionInvoked':
+        if signal == "ActionInvoked":
             notify_id = args[0]
             key = args[1]
             self.on_dbus_action(notify_id, key)

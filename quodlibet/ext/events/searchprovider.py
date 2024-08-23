@@ -1,5 +1,5 @@
 # Copyright 2013 Christoph Reiter <reiter.christoph@gmail.com>
-#
+#           2024 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -9,18 +9,17 @@
 For this plugin to work GNOME Shell needs this file:
 
 /usr/share/gnome-shell/search-providers/io.github.quodlibet.QuodLibet-search-provider.ini
+(or in a similar XDG directory)
 
-with the following content:
-
-[Shell Search Provider]
-DesktopId=quodlibet.desktop
-BusName=io.github.quodlibet.QuodLibet.SearchProvider
-ObjectPath=/io/github/quodlibet/QuodLibet/SearchProvider
-Version=2
+A copy of this file can be found in ../../../data/
 """
 
 import os
 import sys
+from pathlib import Path
+from collections.abc import Collection
+
+from quodlibet.util.thumbnails import get_thumbnail, get_cache_info
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
@@ -29,27 +28,30 @@ if os.name == "nt" or sys.platform == "darwin":
 from gi.repository import GLib
 from gi.repository import Gio
 
-from quodlibet import _
+from quodlibet import _, print_d
 from quodlibet import app
 from quodlibet.util.dbusutils import dbus_unicode_validate
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.query import Query
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportError
 from quodlibet.util.path import xdg_get_system_data_dirs
 from quodlibet.qltk import Icons
 
+DEFAULT_SEARCH_PROVIDER_DIR = "/usr/share/gnome-shell/search-providers"
+THUMBNAIL_SIZE = (256, 256)
 
-def get_gs_provider_files():
+
+def get_gs_provider_files() -> Collection[Path]:
     """Return all installed search provider files for GNOME Shell"""
 
     ini_files = []
     for d in xdg_get_system_data_dirs():
-        path = os.path.join(d, "gnome-shell", "search-providers")
+        path = Path(d) / "gnome-shell" / "search-providers"
         try:
             for entry in os.listdir(path):
                 if entry.endswith(".ini"):
-                    ini_files.append(os.path.join(path, entry))
-        except EnvironmentError:
+                    ini_files.append(path / entry)
+        except OSError:
             pass
     return ini_files
 
@@ -57,21 +59,22 @@ def get_gs_provider_files():
 def check_ini_installed():
     """Raise if no GNOME Shell ini file for Quod Libet is found"""
 
-    quodlibet_installed = False
+    provider_installed = False
     for path in get_gs_provider_files():
         try:
             with open(path, "rb") as handle:
                 data = handle.read().decode("utf-8", "replace")
                 if SearchProvider.BUS_NAME in data:
-                    quodlibet_installed = True
+                    provider_installed = True
                     break
-        except EnvironmentError:
+        except OSError:
             pass
 
-    if not quodlibet_installed:
-        raise PluginImportException(
-            _("No GNOME Shell search provider for "
-              "Quod Libet installed."))
+    if not provider_installed:
+        path = DEFAULT_SEARCH_PROVIDER_DIR
+        msg = (_("No GNOME Shell search provider for Quod Libet installed.") + " \n" +
+               _("Have you copied the ini file to %s (or similar)?") % path)
+        raise PluginImportError(msg)
 
 
 class GnomeSearchProvider(EventPlugin):
@@ -91,8 +94,7 @@ class GnomeSearchProvider(EventPlugin):
         gc.collect()
 
 
-ENTRY_ICON = (". GThemedIcon audio-mpeg gnome-mime-audio-mpeg "
-              "audio-x-generic")
+ENTRY_ICON = ". GThemedIcon audio-mpeg gnome-mime-audio-mpeg audio-x-generic"
 
 
 def get_song_id(song):
@@ -109,6 +111,7 @@ def get_songs_for_ids(library, ids):
             ids.discard(song_id)
             if not ids:
                 break
+    print_d(f"Got {len(songs)} songs matching {ids}")
     return songs
 
 
@@ -126,16 +129,16 @@ class SearchProvider:
       <interface name="org.gnome.Shell.SearchProvider2">
         <method name="GetInitialResultSet">
           <arg direction="in"  type="as" name="terms" />
-          <arg direction="out" type="as" />
+          <arg direction="out" type="as" name="results" />
         </method>
         <method name="GetSubsearchResultSet">
           <arg direction="in"  type="as" name="previous_results" />
           <arg direction="in"  type="as" name="terms" />
-          <arg direction="out" type="as" />
+          <arg direction="out" type="as" name="results" />
         </method>
         <method name="GetResultMetas">
           <arg direction="in"  type="as" name="identifiers" />
-          <arg direction="out" type="aa{sv}" />
+          <arg direction="out" type="aa{sv}" name="metas" />
         </method>
         <method name="ActivateResult">
           <arg direction="in"  type="s" name="identifier" />
@@ -166,8 +169,8 @@ class SearchProvider:
         info = Gio.DBusNodeInfo.new_for_xml(self.__doc__)
         for interface in info.interfaces:
             for method in interface.methods:
-                self._method_outargs[method.name] = '({})'.format(
-                    ''.join([arg.signature for arg in method.out_args]))
+                self._method_outargs[method.name] = "({})".format(
+                    "".join([arg.signature for arg in method.out_args]))
 
             _id = connection.register_object(
                 object_path=self.PATH,
@@ -192,7 +195,7 @@ class SearchProvider:
             result = (result,)
 
         out_args = self._method_outargs[method_name]
-        if out_args != '()':
+        if out_args != "()":
             variant = GLib.Variant(out_args, result)
             invocation.return_value(variant)
         else:
@@ -202,6 +205,7 @@ class SearchProvider:
         return self.__doc__
 
     def GetInitialResultSet(self, terms):
+        print_d(f"Getting initial result set for {terms}")
         if terms:
             query = Query("")
             for term in terms:
@@ -214,26 +218,30 @@ class SearchProvider:
         return ids
 
     def GetSubsearchResultSet(self, previous_results, terms):
-        query = Query("")
-        for term in terms:
-            query &= Query(term)
-
-        songs = get_songs_for_ids(app.library, previous_results)
-        ids = [get_song_id(s) for s in songs if query.search(s)]
-        return ids
+        # Eager searching-as-you-type in Gnome makes this useless it seems,
+        # so just use the full terms each time.
+        return self.GetInitialResultSet(terms)
 
     def GetResultMetas(self, identifiers):
+        print_d(f"Getting result metas for {identifiers}")
         metas = []
         for song in get_songs_for_ids(app.library, identifiers):
             name = song("title")
-            description = song("~artist~title")
+            description = song.comma("~people")
             song_id = get_song_id(song)
+            cover = app.cover_manager.get_cover(song)
+            if cover:
+                # We need a permanent-ish copy of this for DBus clients
+                get_thumbnail(cover.name, THUMBNAIL_SIZE, ignore_temp=False)
+                p = get_cache_info(Path(cover.name), THUMBNAIL_SIZE)[0]
+                gicon = str(p)
+            else:
+                gicon = ENTRY_ICON
             meta = {
-                "name": GLib.Variant('s', dbus_unicode_validate(name)),
-                "id": GLib.Variant('s', song_id),
-                "description": GLib.Variant(
-                    's', dbus_unicode_validate(description)),
-                "gicon": GLib.Variant('s', ENTRY_ICON)
+                "name": GLib.Variant("s", dbus_unicode_validate(name)),
+                "id": GLib.Variant("s", song_id),
+                "description": GLib.Variant("s", dbus_unicode_validate(description)),
+                "gicon": GLib.Variant("s", gicon)
             }
             metas.append(meta)
 

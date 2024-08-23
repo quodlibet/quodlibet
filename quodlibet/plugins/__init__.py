@@ -5,7 +5,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Iterable
+from typing import Optional
+from collections.abc import Iterable
 
 from quodlibet import _
 from quodlibet import config
@@ -34,7 +35,7 @@ def quit():
     PluginManager.instance = None
 
 
-class PluginImportException(Exception):
+class PluginImportError(Exception):
     desc = ""
 
     def __init__(self, desc, *args, **kwargs):
@@ -47,7 +48,7 @@ class PluginImportException(Exception):
         return True
 
 
-class PluginNotSupportedError(PluginImportException):
+class PluginNotSupportedError(PluginImportError):
     """To hide the plugin (e.g. on Windows)"""
 
     def __init__(self, msg=None):
@@ -58,15 +59,18 @@ class PluginNotSupportedError(PluginImportException):
         return False
 
 
-class MissingModulePluginException(PluginImportException):
+class MissingModulePluginError(PluginImportError):
     """Consistent Exception for reporting missing modules for plugins"""
-    def __init__(self, module_name):
-        msg = (_("Couldn't find module '{module}'. Perhaps you need to "
-                 "install the package?").format(module=module_name))
+
+    def __init__(self, module_name: str, extra: str|None = None):
+        tmpl = _("Couldn't find module '{module}'. "
+                 "Perhaps you need to install the package?{extra}")
+        msg = tmpl.format(module=module_name,
+                          extra="" if extra is None else " " + extra)
         super().__init__(msg)
 
 
-class MissingGstreamerElementPluginException(PluginImportException):
+class MissingGstreamerElementPluginError(PluginImportError):
     """Consistent Exception for reporting missing Gstreamer elements for
     plugins"""
     def __init__(self, element_name):
@@ -89,7 +93,7 @@ def migrate_old_config():
             config._config.remove_option("plugins", key)
 
     if active:
-        config.set("plugins", "active_plugins", "\n".join(active))
+        config.set("plugins", "active_plugins", "\n".join(sorted(active)))
 
 
 def list_plugins(module):
@@ -131,7 +135,7 @@ class Plugin:
         self.instance = None
 
     def __repr__(self):
-        return "<%s id=%r name=%r>" % (type(self).__name__, self.id, self.name)
+        return f"<{type(self).__name__} id={self.id!r} name={self.name!r}>"
 
     @property
     def can_enable(self):
@@ -152,7 +156,7 @@ class Plugin:
     @property
     def description_markup(self):
         try:
-            return getattr(self.cls, "PLUGIN_DESC_MARKUP")
+            return self.cls.PLUGIN_DESC_MARKUP
         except AttributeError:
             return escape(self.description)
 
@@ -176,7 +180,7 @@ class Plugin:
         if self.instance is None:
             try:
                 obj = self.cls()
-            except:
+            except Exception:
                 util.print_exc()
                 return
             self.instance = obj
@@ -329,7 +333,7 @@ class PluginManager:
         print_d("Saving plugins: %d active" % len(self.__enabled))
         config.set(self.CONFIG_SECTION,
                    self.CONFIG_OPTION,
-                   "\n".join(self.__enabled))
+                   "\n".join(sorted(self.__enabled)))
 
     def enabled(self, plugin):
         """Returns if the plugin is enabled."""
@@ -377,7 +381,7 @@ class PluginManager:
         errors = {}
         for name, error in self.__scanner.failures.items():
             exception = error.exception
-            if isinstance(exception, PluginImportException):
+            if isinstance(exception, PluginImportError):
                 if not exception.should_show():
                     continue
                 errors[name] = [exception.desc]
@@ -453,9 +457,9 @@ class PluginConfig(ConfigProxy):
         return PluginConfig(self._prefix, real_default_config, False)
 
     def _option(self, name):
-        return "%s_%s" % (self._prefix, name)
+        return f"{self._prefix}_{name}"
 
-    def ConfigCheckButton(self, label, option, **kwargs):
+    def ConfigCheckButton(self, label, option, **kwargs):  # noqa
         return ConfigCheckButton(label, PM.CONFIG_SECTION,
                                  self._option(option), **kwargs)
 
@@ -479,7 +483,7 @@ class PluginConfigMixin:
         if not prefix:
             prefix = cls.PLUGIN_ID.lower().replace(" ", "_")
 
-        return "%s_%s" % (prefix, option)
+        return f"{prefix}_{option}"
 
     @classmethod
     def config_get(cls, name, default=""):
@@ -492,7 +496,7 @@ class PluginConfigMixin:
         try:
             config.set(PM.CONFIG_SECTION, cls._config_key(name), value)
         except config.Error:
-            print_d("Couldn't set config item '%s' to %r" % (name, value))
+            print_d(f"Couldn't set config item '{name}' to {value!r}")
 
     @classmethod
     def config_get_bool(cls, name, default=False):
@@ -508,11 +512,11 @@ class PluginConfigMixin:
 
     def config_entry_changed(self, entry, key):
         """React to a change in a gtk.Entry (by saving it to config)"""
-        if entry.get_property('sensitive'):
+        if entry.get_property("sensitive"):
             self.config_set(key, entry.get_text())
 
     @classmethod
-    def ConfigCheckButton(cls, label, name, default=False):
+    def ConfigCheckButton(cls, label, name, default=False):  # noqa
         """
         Create a new `ConfigCheckButton` for `name`, pre-populated correctly
         """
@@ -521,8 +525,7 @@ class PluginConfigMixin:
             config.getboolean(PM.CONFIG_SECTION, option)
         except config.Error:
             cls.config_set(name, default)
-        return ConfigCheckButton(label, PM.CONFIG_SECTION,
-                                 option, populate=True)
+        return ConfigCheckButton(label, PM.CONFIG_SECTION, option, populate=True)
 
 
 class ConfProp:

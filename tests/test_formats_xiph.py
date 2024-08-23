@@ -39,14 +39,14 @@ class TXiphPickle(TestCase):
     # so unpickling old libraries works.
 
     def test_modules_flac(self):
-        self.failUnless("formats.flac" in sys.modules)
+        self.assertTrue("formats.flac" in sys.modules)
         mod = sys.modules["formats.flac"]
-        self.failUnless(mod.FLACFile is FLACFile)
+        self.assertTrue(mod.FLACFile is FLACFile)
 
     def test_modules_vorbis(self):
-        self.failUnless("formats.oggvorbis" in sys.modules)
+        self.assertTrue("formats.oggvorbis" in sys.modules)
         mod = sys.modules["formats.oggvorbis"]
-        self.failUnless(mod.OggFile is OggFile)
+        self.assertTrue(mod.OggFile is OggFile)
 
 
 class TVCFile(TestCase):
@@ -64,7 +64,7 @@ class TVCFileMixin:
         self.song["~#rating"] = 0.2
         self.song.write()
         song = type(self.song)(self.filename)
-        self.failUnlessEqual(song["~#rating"], 0.2)
+        self.assertEqual(song["~#rating"], 0.2)
 
     def test_channels(self):
         assert self.song("~#channels") == 2
@@ -77,7 +77,7 @@ class TVCFileMixin:
         self.song.write()
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", const.EMAIL)
-        self.failUnlessEqual(song("~#rating"), RATINGS.default)
+        self.assertEqual(song("~#rating"), RATINGS.default)
 
     def test_new_email_rating(self):
         config.set("editing", "save_email", "foo@Bar.org")
@@ -85,7 +85,7 @@ class TVCFileMixin:
         self.song.write()
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", const.EMAIL)
-        self.failUnlessEqual(song["~#rating"], 0.2)
+        self.assertEqual(song["~#rating"], 0.2)
 
     def test_default_email_rating(self):
         self.song["~#rating"] = 0.2
@@ -93,7 +93,7 @@ class TVCFileMixin:
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", "foo@Bar.org")
         config.set("editing", "save_email", const.EMAIL)
-        self.failUnlessEqual(song["~#rating"], 0.2)
+        self.assertEqual(song["~#rating"], 0.2)
 
     def test_different_email_rating(self):
         config.set("editing", "save_email", "foo@Bar.org")
@@ -101,41 +101,41 @@ class TVCFileMixin:
         self.song.write()
         config.set("editing", "save_email", const.EMAIL)
         song = type(self.song)(self.filename)
-        self.failUnlessEqual(song("~#rating"), RATINGS.default)
+        self.assertEqual(song("~#rating"), RATINGS.default)
 
         song.write()
         config.set("editing", "save_email", "foo@Bar.org")
         song = type(self.song)(self.filename)
         config.set("editing", "save_email", const.EMAIL)
-        self.failUnlessEqual(song["~#rating"], 0.2)
+        self.assertEqual(song["~#rating"], 0.2)
 
     def test_huge_playcount(self):
         count = 1000000000000000
         self.song["~#playcount"] = count
         self.song.write()
         song = type(self.song)(self.filename)
-        self.failUnlessEqual(song["~#playcount"], count)
+        self.assertEqual(song["~#playcount"], count)
 
     def test_parameter(self):
         for bad in ["rating", "playcount", "rating:foo", "playcount:bar"]:
-            self.failIf(self.song.can_change(bad))
+            self.assertFalse(self.song.can_change(bad))
 
     def test_parameter_ci(self):
         for bad in ["ratinG", "plaYcount", "raTing:foo", "playCount:bar"]:
-            self.failIf(self.song.can_change(bad))
+            self.assertFalse(self.song.can_change(bad))
 
     def test_case_insensitive(self):
         self.song["foo"] = "1"
         self.song["FOO"] = "1"
         self.song.write()
         self.song.reload()
-        self.failUnlessEqual(self.song.list("foo"), ["1", "1"])
+        self.assertEqual(self.song.list("foo"), ["1", "1"])
 
     def test_case_insensitive_total(self):
         self.song["TRacKNUMBER"] = "1/10"
         self.song.write()
         self.song.reload()
-        self.failUnlessEqual(self.song["tracknumber"], "1/10")
+        self.assertEqual(self.song["tracknumber"], "1/10")
 
     def test_dont_save(self):
         config.set("editing", "save_to_songs", "false")
@@ -143,10 +143,10 @@ class TVCFileMixin:
         self.song.write()
         song = type(self.song)(self.filename)
         config.set("editing", "save_to_songs", "true")
-        self.failUnlessEqual(song("~#rating"), RATINGS.default)
+        self.assertEqual(song("~#rating"), RATINGS.default)
 
     def test_can_change(self):
-        self.failUnless(self.song.can_change())
+        self.assertTrue(self.song.can_change())
 
 
 class TTotalTagsBase(TestCase):
@@ -161,7 +161,7 @@ class TTotalTagsBase(TestCase):
 
     def setUp(self):
         config.init()
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
 
     def tearDown(self):
         os.unlink(self.filename)
@@ -177,13 +177,13 @@ class TTotalTagsMixin:
         m.save()
         song = OggFile(self.filename)
         for key, value in expected.items():
-            self.failUnlessEqual(song(key), value)
+            self.assertEqual(song(key), value)
         if self.MAIN not in expected:
-            self.failIf(self.MAIN in song)
+            self.assertFalse(self.MAIN in song)
         if self.SINGLE not in expected:
-            self.failIf(self.SINGLE in song)
+            self.assertFalse(self.SINGLE in song)
         if self.FALLBACK not in expected:
-            self.failIf(self.FALLBACK in song)
+            self.assertFalse(self.FALLBACK in song)
 
     def test_load_old_single(self):
         self.__load_tags(
@@ -229,16 +229,16 @@ class TTotalTagsMixin:
         m = OggVorbis(self.filename)
         # test if all values ended up where we wanted
         for key, value in expected.items():
-            self.failUnless(key in m.tags)
-            self.failUnlessEqual(m.tags[key], [value])
+            self.assertTrue(key in m.tags)
+            self.assertEqual(m.tags[key], [value])
 
         # test if not specified are not there
         if self.MAIN not in expected:
-            self.failIf(self.MAIN in m.tags)
+            self.assertFalse(self.MAIN in m.tags)
         if self.FALLBACK not in expected:
-            self.failIf(self.FALLBACK in m.tags)
+            self.assertFalse(self.FALLBACK in m.tags)
         if self.SINGLE not in expected:
-            self.failIf(self.SINGLE in m.tags)
+            self.assertFalse(self.SINGLE in m.tags)
 
     def test_save_single(self):
         self.__save_tags(
@@ -289,7 +289,7 @@ class TFLACFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
         self.song = FLACFile(self.filename)
 
     def test_format_codec(self):
@@ -303,23 +303,23 @@ class TFLACFile(TVCFile, TVCFileMixin):
         assert self.song("~#bitdepth") == 16
 
     def test_mime(self):
-        self.failUnless(self.song.mimes)
+        self.assertTrue(self.song.mimes)
 
     def test_save_empty(self):
         self.song.write()
         flac = FLAC(self.filename)
-        self.failIf(flac.tags)
-        self.failIf(flac.tags is None)
+        self.assertFalse(flac.tags)
+        self.assertFalse(flac.tags is None)
 
     def test_strip_id3(self):
         self.song["title"] = "Test"
         self.song.write()
         id3 = ID3()
-        id3.add(TIT2(encoding=2, text=u"Test but differently"))
+        id3.add(TIT2(encoding=2, text="Test but differently"))
         id3.save(filename=self.filename)
         song2 = formats.MusicFile(self.filename)
-        self.failUnlessEqual(type(self.song), type(song2))
-        self.failUnlessEqual(self.song["title"], song2["title"])
+        self.assertEqual(type(self.song), type(song2))
+        self.assertEqual(self.song["title"], song2["title"])
         song2.write()
         self.assertRaises(ID3NoHeaderError, ID3, self.filename)
 
@@ -345,15 +345,15 @@ class TVCCoverMixin:
 
     def test_no_cover(self):
         song = self.QLType(self.filename)
-        self.failIf(song("~picture"))
-        self.failIf(song.get_primary_image())
+        self.assertFalse(song("~picture"))
+        self.assertFalse(song.get_primary_image())
 
     def test_get_images(self):
         # coverart + coverartmime
         data = _get_jpeg()
         song = self.MutagenType(self.filename)
         song["coverart"] = base64.b64encode(data).decode("ascii")
-        song["coverartmime"] = u"image/jpeg"
+        song["coverartmime"] = "image/jpeg"
         song.save()
 
         song = self.QLType(self.filename)
@@ -382,35 +382,35 @@ class TVCCoverMixin:
         song.save()
 
         song = self.QLType(self.filename)
-        self.failUnlessEqual(song("~picture"), "y")
-        self.failIf(song("coverart"))
-        self.failIf(song("coverartmime"))
+        self.assertEqual(song("~picture"), "y")
+        self.assertFalse(song("coverart"))
+        self.assertFalse(song("coverartmime"))
         song.write()
 
         self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
         fn = song.get_primary_image().file
         cov_data = fn.read()
-        self.failUnlessEqual(data, cov_data)
+        self.assertEqual(data, cov_data)
 
         song = self.MutagenType(self.filename)
-        self.failUnlessEqual(base64.b64decode(song["coverart"][0]), data)
-        self.failUnlessEqual(song["coverartmime"][0], "image/jpeg")
+        self.assertEqual(base64.b64decode(song["coverart"][0]), data)
+        self.assertEqual(song["coverartmime"][0], "image/jpeg")
 
     def test_handle_invalid_coverart(self):
-        crap = u".-a,a.f,afa-,.-"
+        crap = ".-a,a.f,afa-,.-"
         song = self.MutagenType(self.filename)
         song["coverart"] = crap
         song.save()
 
         song = self.QLType(self.filename)
-        self.failUnlessEqual(song("~picture"), "y")
-        self.failIf(song("coverart"))
-        self.failIf(song.get_primary_image())
-        self.failIf(song("~picture"))
+        self.assertEqual(song("~picture"), "y")
+        self.assertFalse(song("coverart"))
+        self.assertFalse(song.get_primary_image())
+        self.assertFalse(song("~picture"))
         song.write()
 
         song = self.MutagenType(self.filename)
-        self.failUnlessEqual(song["coverart"][0], crap)
+        self.assertEqual(song["coverart"][0], crap)
 
     def test_handle_picture_block(self):
         pic = Picture()
@@ -428,21 +428,21 @@ class TVCCoverMixin:
         song.save()
 
         song = self.QLType(self.filename)
-        self.failUnlessEqual(song("~picture"), "y")
+        self.assertEqual(song("~picture"), "y")
 
         fn = song.get_primary_image().file
-        self.failUnlessEqual(pic.data, fn.read())
+        self.assertEqual(pic.data, fn.read())
         song.write()
 
         song = self.MutagenType(self.filename)
-        self.failUnless(b64pic_other in song["metadata_block_picture"])
-        self.failUnless(b64pic_cover in song["metadata_block_picture"])
+        self.assertTrue(b64pic_other in song["metadata_block_picture"])
+        self.assertTrue(b64pic_cover in song["metadata_block_picture"])
         song["metadata_block_picture"] = [b64pic_other]
         song.save()
 
         song = self.QLType(self.filename)
         fn = song.get_primary_image().file
-        self.failUnlessEqual(pic2.data, fn.read())
+        self.assertEqual(pic2.data, fn.read())
 
     def test_handle_invalid_picture_block(self):
         crap = ".-a,a.f,afa-,.-"
@@ -451,14 +451,14 @@ class TVCCoverMixin:
         song.save()
 
         song = self.QLType(self.filename)
-        self.failUnlessEqual(song("~picture"), "y")
-        self.failIf(song("metadata_block_picture"))
-        self.failIf(song.get_primary_image())
-        self.failIf(song("~picture"))
+        self.assertEqual(song("~picture"), "y")
+        self.assertFalse(song("metadata_block_picture"))
+        self.assertFalse(song.get_primary_image())
+        self.assertFalse(song("~picture"))
         song.write()
 
         song = self.MutagenType(self.filename)
-        self.failUnlessEqual(song["metadata_block_picture"][0], crap)
+        self.assertEqual(song["metadata_block_picture"][0], crap)
 
     def test_handle_invalid_flac_picture(self):
         crap = b".-a,a.f,afa-,.-"
@@ -466,8 +466,8 @@ class TVCCoverMixin:
         song["metadata_block_picture"] = base64.b64encode(crap).decode("ascii")
         song.save()
         song = self.QLType(self.filename)
-        self.failIf(song.get_primary_image())
-        self.failIf(song.get_images())
+        self.assertFalse(song.get_primary_image())
+        self.assertFalse(song.get_images())
 
     def test_set_image(self):
         data = _get_jpeg()
@@ -495,7 +495,7 @@ class TVCCoverMixin:
 class TVCCoverOgg(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
         self.MutagenType = OggVorbis
         self.QLType = OggFile
 
@@ -503,7 +503,7 @@ class TVCCoverOgg(TVCCover, TVCCoverMixin):
 class TVCCoverFlac(TVCCover, TVCCoverMixin):
     def setUp(self):
         TVCCover.setUp(self)
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
         self.MutagenType = FLAC
         self.QLType = FLACFile
 
@@ -511,7 +511,7 @@ class TVCCoverFlac(TVCCover, TVCCoverMixin):
 class TFlacPicture(TestCase):
     def setUp(self):
         config.init()
-        self.filename = get_temp_copy(get_data_path('empty.flac'))
+        self.filename = get_temp_copy(get_data_path("empty.flac"))
 
     def test_get_images(self):
         pic = Picture()
@@ -549,9 +549,9 @@ class TFlacPicture(TestCase):
         song.save()
 
         song = FLACFile(self.filename)
-        self.failUnless(song("~picture"))
+        self.assertTrue(song("~picture"))
         fn = song.get_primary_image().file
-        self.failUnlessEqual(fn.read(), pic.data)
+        self.assertEqual(fn.read(), pic.data)
 
     def test_clear_images(self):
         data = b"abc"
@@ -586,7 +586,7 @@ class TOggFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.ogg'))
+        self.filename = get_temp_copy(get_data_path("empty.ogg"))
         self.song = OggFile(self.filename)
 
     def tearDown(self):
@@ -607,12 +607,12 @@ class TOggOpusFile(TVCFile, TVCFileMixin):
     def setUp(self):
         TVCFile.setUp(self)
 
-        self.filename = get_temp_copy(get_data_path('empty.opus'))
+        self.filename = get_temp_copy(get_data_path("empty.opus"))
         self.song = OggOpusFile(self.filename)
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 3.6847, 3)
-        self.failUnless("opusenc" in self.song("encoder"))
+        self.assertTrue("opusenc" in self.song("encoder"))
 
     def test_channels(self):
         assert self.song("~#channels") == 2

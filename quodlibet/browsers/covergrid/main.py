@@ -1,6 +1,6 @@
 # Copyright 2004-2007 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009-2010 Steven Robertson
-#           2012-2022 Nick Boultbee
+#           2012-2023 Nick Boultbee
 #           2009-2014 Christoph Reiter
 #           2022 Thomas Leberbauer
 #
@@ -9,7 +9,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
 
 import os
 
@@ -68,7 +67,7 @@ class PreferencesButton(AlbumPreferencesButton):
         menu = Gtk.Menu()
 
         sort_item = Gtk.MenuItem(
-            label=_(u"Sort _by…"), use_underline=True)
+            label=_("Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint("browsers", "album_sort", 1)
@@ -185,45 +184,45 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         container.remove(self)
 
     @classmethod
-    def init(klass, library):
-        super(CoverGrid, klass).load_pattern()
+    def init(cls, library):
+        super().load_pattern()
 
     @classmethod
-    def _init_model(klass, library):
-        if klass.__model is None:
-            klass.__model = AlbumListModel(library)
-            klass.__library = library
+    def _init_model(cls, library):
+        if cls.__model is None:
+            cls.__model = AlbumListModel(library)
+            cls.__library = library
 
     @classmethod
-    def _destroy_model(klass):
-        klass.__model.destroy()
-        klass.__model = None
+    def _destroy_model(cls):
+        cls.__model.destroy()
+        cls.__model = None
 
     @classmethod
-    def toggle_text(klass):
+    def toggle_text(cls):
         text_visible = config.getboolean("browsers", "album_text", True)
-        for covergrid in klass.instances():
+        for covergrid in cls.instances():
             for child in covergrid.view:
                 child.props.text_visible = text_visible
 
     @classmethod
-    def toggle_item_all(klass):
+    def toggle_item_all(cls):
         show = config.getboolean("browsers", "covergrid_all", True)
-        for covergrid in klass.instances():
+        for covergrid in cls.instances():
             covergrid.__model_filter.props.include_item_all = show
 
     @classmethod
-    def toggle_wide(klass):
+    def toggle_wide(cls):
         wide = config.getboolean("browsers", "covergrid_wide", False)
-        for covergrid in klass.instances():
+        for covergrid in cls.instances():
             covergrid.songcontainer.set_orientation(
                 Gtk.Orientation.HORIZONTAL if wide
                 else Gtk.Orientation.VERTICAL)
 
     @classmethod
-    def update_mag(klass):
+    def update_mag(cls):
         cover_size = _get_cover_size()
-        for covergrid in klass.instances():
+        for covergrid in cls.instances():
             for child in covergrid.view:
                 child.cover_size = cover_size
             covergrid.view.queue_resize()
@@ -547,7 +546,7 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         if not albums:
             return ""
 
-        confval = "\n".join((a.str_key for a in albums))
+        confval = "\n".join(a.str_key for a in albums)
         # ConfigParser strips a trailing \n so we move it to the front
         if confval and confval[-1] == "\n":
             confval = "\n" + confval[:-1]

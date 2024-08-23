@@ -33,16 +33,16 @@ class TMPDServer(PluginTestCase):
         self.assertEqual(parse(b"foo\t bar"), ("foo", ["bar"]))
         self.assertEqual(parse(b"foo\t bar quux"), ("foo", ["bar", "quux"]))
         self.assertEqual(
-            parse(b"foo\t bar \"q 2\" x"), ("foo", ["bar", "q 2", "x"]))
+            parse(b'foo\t bar "q 2" x'), ("foo", ["bar", "q 2", "x"]))
         self.assertEqual(parse(b"foo 'bar  quux'"), ("foo", ["'bar", "quux'"]))
         self.assertEqual(
-            parse(b"foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", [u"\xf6\xe4\xfc"]))
+            parse(b"foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", ["\xf6\xe4\xfc"]))
 
     def test_format_tags(self):
         format_tags = self.mod.main.format_tags
 
         def getline(key, value):
-            song = AudioFile({"~filename": fsnative(u"/dev/null")})
+            song = AudioFile({"~filename": fsnative("/dev/null")})
             song.sanitize()
             song[key] = value
             lines = format_tags(song).splitlines()
@@ -121,6 +121,11 @@ class TMPDCommands(PluginTestCase):
         skip = ["close", "idle", "noidle"]
         cmds = [c for c in self.conn.list_commands() if c not in skip]
         for cmd in cmds:
+            self._cmd(cmd.encode("ascii") + b"\n")
+
+    def test_seekcur(self):
+        # Ensure we can handle both integer and float arguments.
+        for cmd in ["seekcur 1", "seekcur 1.5"]:
             self._cmd(cmd.encode("ascii") + b"\n")
 
     def test_idle_close(self):

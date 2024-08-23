@@ -85,7 +85,7 @@ def _get_win_favorites():
                 try:
                     target = windows.get_link_target(
                         os.path.join(links, entry))
-                except WindowsError:
+                except OSError:
                     pass
                 else:
                     if target:
@@ -174,7 +174,7 @@ def get_gtk_bookmarks():
     try:
         with open(path, "rb") as f:
             folders = parse_gtk_bookmarks(f.read())
-    except (EnvironmentError, ValueError):
+    except (OSError, ValueError):
         pass
 
     return folders
@@ -199,19 +199,19 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         column = TreeViewColumn(title=_("Folders"))
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render = Gtk.CellRendererPixbuf()
-        render.set_property('icon-name', Icons.FOLDER)
+        render.set_property("icon-name", Icons.FOLDER)
         render.props.xpad = 3
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if self.supports_hints():
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if value is not None:
                 text = fsn2text(os.path.basename(value) or value)
-                cell.set_property('text', text)
+                cell.set_property("text", text)
 
         column.set_cell_data_func(render, cell_data)
 
@@ -226,11 +226,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             niter = model.append(None, [path])
             if path is not None:
                 assert isinstance(path, fsnative)
-                model.append(niter, [fsnative(u"dummy")])
+                model.append(niter, [fsnative("dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.connect(
-            'test-expand-row', DirectoryTree.__expanded, model)
+            "test-expand-row", DirectoryTree.__expanded, model)
 
         self.set_row_separator_func(
             lambda model, iter_, data: model.get_value(iter_) is None, None)
@@ -239,7 +239,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             self.go_to(initial)
 
         menu = self._create_menu()
-        connect_obj(self, 'popup-menu', self._popup_menu, menu)
+        connect_obj(self, "popup-menu", self._popup_menu, menu)
 
         # Allow to drag and drop files from outside
         targets = [
@@ -247,21 +247,21 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
-        self.connect('drag-data-received', self.__drag_data_received)
+        self.connect("drag-data-received", self.__drag_data_received)
 
     def _create_menu(self):
         menu = Gtk.Menu()
-        m = qltk.MenuItem(_(u"_New Folder…"), Icons.DOCUMENT_NEW)
-        m.connect('activate', self.__mkdir)
+        m = qltk.MenuItem(_("_New Folder…"), Icons.DOCUMENT_NEW)
+        m.connect("activate", self.__mkdir)
         menu.append(m)
         m = qltk.MenuItem(_("_Delete"), Icons.EDIT_DELETE)
-        m.connect('activate', self.__rmdir)
+        m.connect("activate", self.__rmdir)
         menu.append(m)
         m = qltk.MenuItem(_("_Refresh"), Icons.VIEW_REFRESH)
-        m.connect('activate', self.__refresh)
+        m.connect("activate", self.__refresh)
         menu.append(m)
         m = qltk.MenuItem(_("_Select all Sub-Folders"), Icons.FOLDER)
-        m.connect('activate', self.__expand)
+        m.connect("activate", self.__expand)
         menu.append(m)
         menu.show_all()
         return menu
@@ -285,8 +285,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         # Find the top level row which has the largest common
         # path with the path we want to go to
-        roots = dict((p, i) for (i, p) in model.iterrows(None))
-        head, tail = path_to_go, fsnative(u"")
+        roots = {p: i for (i, p) in model.iterrows(None)}
+        head, tail = path_to_go, fsnative("")
         to_find = []
         while head and head not in roots:
             new_head, tail = os.path.split(head)
@@ -379,13 +379,13 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         try:
             os.makedirs(fullpath)
-        except EnvironmentError as err:
+        except OSError as err:
             error = f"{util.bold(err.filename)}: {util.escape(err.strerror)}"
             qltk.ErrorMessage(
                 None, _("Unable to create folder"), error, escape_desc=False).run()
             return
 
-        self.emit('test-expand-row', model.get_iter(path), path)
+        self.emit("test-expand-row", model.get_iter(path), path)
         self.expand_row(path, False)
 
     def __rmdir(self, button):
@@ -396,7 +396,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         for directory in directories:
             try:
                 os.rmdir(directory)
-            except EnvironmentError as err:
+            except OSError as err:
                 error = f"{util.bold(err.filename)}: {err.strerror}"
                 qltk.ErrorMessage(
                     None, _("Unable to delete folder"), error, escape_desc=False).run()
@@ -404,7 +404,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
 
         ppath = Gtk.TreePath(paths[0][:-1])
         expanded = self.row_expanded(ppath)
-        self.emit('test-expand-row', model.get_iter(ppath), ppath)
+        self.emit("test-expand-row", model.get_iter(ppath), ppath)
         if expanded:
             self.expand_row(ppath, False)
 
@@ -436,7 +436,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         needs_expanding = []
         for row in rows:
             if self.row_expanded(row):
-                self.emit('test-expand-row', model.get_iter(row), row)
+                self.emit("test-expand-row", model.get_iter(row), row)
                 self.expand_row(row, False)
                 needs_expanding.append(row)
         while len(needs_expanding) > 0:
@@ -444,7 +444,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             while child is not None:
                 if model[child][0] in expanded:
                     path = model.get_path(child)
-                    self.emit('test-expand-row', child, path)
+                    self.emit("test-expand-row", child, path)
                     self.expand_row(path, False)
                     needs_expanding.append(path)
                 child = model.iter_next(child)
@@ -489,7 +489,7 @@ class FileSelector(Paned):
     """
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None,
+        "changed": (GObject.SignalFlags.RUN_LAST, None,
                     (Gtk.TreeSelection,))
     }
 
@@ -523,21 +523,21 @@ class FileSelector(Paned):
         def cell_icon(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
             if is_image(value):
-                cell.set_property('icon-name', Icons.IMAGE_X_GENERIC)
+                cell.set_property("icon-name", Icons.IMAGE_X_GENERIC)
             else:
-                cell.set_property('icon-name', Icons.AUDIO_X_GENERIC)
+                cell.set_property("icon-name", Icons.AUDIO_X_GENERIC)
 
         column.set_cell_data_func(render, cell_icon)
 
         column.pack_start(render, False)
         render = Gtk.CellRendererText()
         if filelist.supports_hints():
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(render, True)
 
         def cell_data(column, cell, model, iter_, userdata):
             value = model.get_value(iter_)
-            cell.set_property('text', fsn2text(os.path.basename(value)))
+            cell.set_property("text", fsn2text(os.path.basename(value)))
 
         column.set_cell_data_func(render, cell_data)
 
@@ -548,16 +548,16 @@ class FileSelector(Paned):
         filelist.set_search_column(0)
 
         self.__sig = filelist.get_selection().connect(
-            'changed', self.__changed)
+            "changed", self.__changed)
 
         dirlist.get_selection().connect(
-            'changed', self.__dir_selection_changed, filelist)
-        dirlist.get_selection().emit('changed')
+            "changed", self.__dir_selection_changed, filelist)
+        dirlist.get_selection().emit("changed")
 
         def select_all_files(view, path, col, fileselection):
             view.expand_row(path, False)
             fileselection.select_all()
-        dirlist.connect('row-activated', select_all_files,
+        dirlist.connect("row-activated", select_all_files,
             filelist.get_selection())
 
         sw = ScrolledWindow()
@@ -595,7 +595,7 @@ class FileSelector(Paned):
 
     def __changed(self, selection):
         # forward file list selection changed signals
-        self.emit('changed', selection)
+        self.emit("changed", selection)
 
     def __dir_selection_changed(self, selection, filelist):
         # dir selection changed, refill the file list
@@ -625,7 +625,7 @@ class FileSelector(Paned):
                 fselect.select_iter(iter_)
 
         fselect.handler_unblock(self.__sig)
-        fselect.emit('changed')
+        fselect.emit("changed")
         self._saved_scroll_pos = filelist.get_vadjustment().get_value()
 
     def __restore_scroll_pos_on_draw(self, treeview, context):

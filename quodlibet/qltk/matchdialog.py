@@ -7,7 +7,8 @@
 from dataclasses import dataclass
 
 from gi.repository import Gtk, Pango
-from typing import List, Optional, Generic, TypeVar, Callable
+from typing import Generic, TypeVar
+from collections.abc import Callable
 
 from quodlibet.qltk.models import ObjectStore
 
@@ -42,11 +43,11 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
     pressed cancel.
     """
 
-    def __init__(self, a_items: List[T], b_items: List[T], b_order: List[Optional[int]],
-                 columns: List[ColumnSpec[T]], title: str, ok_button_text: str,
+    def __init__(self, a_items: list[T], b_items: list[T], b_order: list[int | None],
+                 columns: list[ColumnSpec[T]], title: str, ok_button_text: str,
                  ok_button_icon: str = Icons.DOCUMENT_SAVE,
                  description: str = MATCH_DESC, parent=app.window,
-                 id_for_window_tracking: Optional[str] = None):
+                 id_for_window_tracking: str | None = None):
         super().__init__(title=title, transient_for=parent, modal=True,
                          destroy_with_parent=True)
 
@@ -63,7 +64,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         vb.set_spacing(24)
         self.set_border_width(5)
 
-        desc_lbl = Gtk.Label(f'\n{description}\n', wrap=True)
+        desc_lbl = Gtk.Label(f"\n{description}\n", wrap=True)
         vb.pack_start(desc_lbl, False, False, 0)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
@@ -89,17 +90,17 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         sw.add(tree)
         tree.b_order = b_order
 
-        default_order_text = ', '.join(
-            ('_' if i is None else str(i + 1)) for i in b_order)
+        default_order_text = ", ".join(
+            ("_" if i is None else str(i + 1)) for i in b_order)
         self.order_entry.set_text(default_order_text)
         legal_characters = set(default_order_text)
-        legal_characters.add('_')
+        legal_characters.add("_")
 
         def changed_order_entry(widget):
             text = widget.get_text()
 
             # remove illegal characters
-            new_text = ''.join(c for c in text if c in legal_characters)
+            new_text = "".join(c for c in text if c in legal_characters)
             widget.set_text(new_text)
 
             num_tracks = len(b_items)
@@ -109,7 +110,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
 
         self.order_entry.connect("changed", changed_order_entry)
 
-    def run(self, destroy=True) -> List[Optional[int]]:
+    def run(self, destroy=True) -> list[int | None]:
         self.show_all()
         resp = super().run()
         if destroy:
@@ -121,7 +122,7 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         return self._tree.b_order
 
 
-def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matching='_',
+def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matching="_",
                                       require_target_length_elements=False):
     """
     :return: List of indices from the comma separated list of one-indexed numbers.
@@ -132,7 +133,7 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
     """
 
     # remove trailing commas, then split
-    nums = text.strip(', ').split(',')
+    nums = text.strip(", ").split(",")
     if require_target_length_elements and len(nums) != target_length:
         return []
 
@@ -158,10 +159,10 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
 
 
 class MatchListsTreeView(HintedTreeView, Generic[T]):
-    _b_order: List[Optional[int]]
+    _b_order: list[int | None]
 
-    def __init__(self, a_items: List[T], b_items: List[T],
-                 columns: List[ColumnSpec[T]]):
+    def __init__(self, a_items: list[T], b_items: list[T],
+                 columns: list[ColumnSpec[T]]):
         self.model = ObjectStore()
         self.model.append_many(a_items)
         self._b_items = b_items
@@ -175,16 +176,16 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
         def show_id(col, cell, model, itr, data):
             idx = model.get_path(itr)[0]
             imp_idx = self._b_order[idx]
-            num = '_' if imp_idx is None else imp_idx + 1
-            cell.set_property('markup', f'<span weight="bold">{num}</span>')
+            num = "_" if imp_idx is None else imp_idx + 1
+            cell.set_property("markup", f'<span weight="bold">{num}</span>')
 
         def df_for_a_items(a_attr_getter):
             def data_func(col, cell, model, itr, data):
                 a_item = model[itr][0]
-                text = ''
+                text = ""
                 if a_item is not None:
                     text = a_attr_getter(a_item)
-                cell.set_property('text', text)
+                cell.set_property("text", text)
 
             return data_func
 
@@ -197,7 +198,7 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
         for c in columns:
             self._add_col(c.title, df_for_a_items(c.cell_text_getter), c.is_resizable)
 
-        self._add_col('#', show_id, False)
+        self._add_col("#", show_id, False)
 
         for c in columns:
             self._add_col(c.title, df_for_b_items(c.cell_text_getter), c.is_resizable)
@@ -209,7 +210,7 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
 
     def _add_col(self, title, func, resize):
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn(title, render)
         col.set_cell_data_func(render, func)
         col.set_resizable(resize)
@@ -218,24 +219,24 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
 
     def _set_text(self, model, itr, cell, get_attr):
         idx = model.get_path(itr)[0]
-        text = ''
+        text = ""
         if idx < len(self._b_order):
             it_idx = self._b_order[idx]
             if it_idx is not None:
                 text = get_attr(self._b_items[it_idx])
-        cell.set_property('text', text)
+        cell.set_property("text", text)
 
-    def update_b_items(self, b_items: List[T]):
+    def update_b_items(self, b_items: list[T]):
         """
         Updates the TreeView, handling results with a different number of b_items than
         there are a_items.
         """
         self._b_items = b_items
 
-        for i in range(len(self.model), len(b_items)):
+        for _i in range(len(self.model), len(b_items)):
             self.model.append((None,))
 
-        for i in range(len(self.model), len(b_items), -1):
+        for _i in range(len(self.model), len(b_items), -1):
             if self.model[-1][0] is not None:
                 break
             itr = self.model.get_iter_from_string(str(len(self.model) - 1))
@@ -249,11 +250,11 @@ class MatchListsTreeView(HintedTreeView, Generic[T]):
             self.model.row_changed(row.path, row.iter)
 
     @property
-    def b_order(self) -> List[Optional[int]]:
+    def b_order(self) -> list[int | None]:
         return list(self._b_order)
 
     @b_order.setter
-    def b_order(self, order: List[Optional[int]]):
+    def b_order(self, order: list[int | None]):
         """
         Supports a partial order list. For example, if there are 5 elements in the
         b_items list, you could supply [4, 1, 2]. This will result in an ascending order

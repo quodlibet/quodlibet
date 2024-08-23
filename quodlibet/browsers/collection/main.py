@@ -1,6 +1,6 @@
 # Copyright 2010, 2012-2014 Christoph Reiter
 #                      2017 Uriel Zajaczkovski
-#                 2017-2022 Nick Boultbee
+#                 2017-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,7 +54,7 @@ class CollectionView(AllTreeView):
         path_idx = path
         if isinstance(path_idx, Gtk.TreePath):
             path_idx = path_idx.get_indices()
-        for i, x in enumerate(path_idx[:-1]):
+        for i, _x in enumerate(path_idx[:-1]):
             self.expand_row(Gtk.TreePath(tuple(path_idx[:i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
         selection = self.get_selection()
@@ -95,46 +95,46 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         container.remove(self)
 
     @classmethod
-    def _init_model(klass, library):
-        klass.__model = model = CollectionTreeStore()
-        klass.__albums = albums = library.albums
+    def _init_model(cls, library):
+        cls.__model = model = CollectionTreeStore()
+        cls.__albums = albums = library.albums
 
         albums.load()
-        klass.__sigs = [
-            albums.connect("added", klass._add_albums, model),
-            albums.connect("removed", klass._remove_albums, model),
-            albums.connect("changed", klass._change_albums, model),
+        cls.__sigs = [
+            albums.connect("added", cls._add_albums, model),
+            albums.connect("removed", cls._remove_albums, model),
+            albums.connect("changed", cls._change_albums, model),
         ]
 
-        klass.set_hierarchy()
+        cls.set_hierarchy()
 
     @classmethod
-    def _destroy_model(klass):
-        for sig in klass.__sigs:
-            klass.__albums.disconnect(sig)
-        klass.__model = None
-        del klass.__sigs
+    def _destroy_model(cls):
+        for sig in cls.__sigs:
+            cls.__albums.disconnect(sig)
+        cls.__model = None
+        del cls.__sigs
 
     def _refilter(self):
         if hasattr(self, "view"):
             self.view.get_model().refilter()
 
     @classmethod
-    def set_hierarchy(klass):
-        klass.__model.set_albums(get_headers(), klass.__albums.values())
-        for inst in klass.instances():
+    def set_hierarchy(cls):
+        cls.__model.set_albums(get_headers(), cls.__albums.values())
+        for inst in cls.instances():
             inst._refilter()
 
     @classmethod
-    def _add_albums(klass, library, added, model):
+    def _add_albums(cls, library, added, model):
         model.add_albums(added)
 
     @classmethod
-    def _remove_albums(klass, library, removed, model):
+    def _remove_albums(cls, library, removed, model):
         model.remove_albums(removed)
 
     @classmethod
-    def _change_albums(klass, library, changed, model):
+    def _change_albums(cls, library, changed, model):
         model.change_albums(changed)
 
     def __init__(self, library):
@@ -188,7 +188,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         def cell_data(column, cell, model, iter_, data):
             markup = model.get_markup(self.__model.tags, iter_)
             cell.markup = markup
-            cell.set_property('markup', markup)
+            cell.set_property("markup", markup)
 
         def get_scaled_cover(item):
             if item.scanned:
@@ -201,7 +201,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         def cell_data_pb(column, cell, model, iter_, data):
             album = model.get_album(iter_)
             if album is None:
-                cell.set_property('icon-name', Icons.FOLDER)
+                cell.set_property("icon-name", Icons.FOLDER)
             else:
                 item = model.get_value(iter_)
                 cover = get_scaled_cover(item)
@@ -210,12 +210,12 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                     surface = get_surface_for_pixbuf(self, cover)
                     cell.set_property("surface", surface)
                 else:
-                    cell.set_property('icon-name', Icons.MEDIA_OPTICAL)
+                    cell.set_property("icon-name", Icons.MEDIA_OPTICAL)
 
         imgrender = Gtk.CellRendererPixbuf()
         render = Gtk.CellRendererText()
         if view.supports_hints():
-            render.set_property('ellipsize', Pango.EllipsizeMode.END)
+            render.set_property("ellipsize", Pango.EllipsizeMode.END)
         column.pack_start(imgrender, False)
         column.pack_start(render, True)
         column.set_cell_data_func(render, cell_data)
@@ -229,13 +229,13 @@ class CollectionBrowser(Browser, util.InstanceTracker):
 
         prefs = Gtk.Button()
         prefs.add(SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU))
-        prefs.connect('clicked', lambda *x: Preferences(self))
+        prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
         search = SearchBarBox(completion=AlbumTagCompletion(),
                               accel_group=self.accelerators)
-        search.connect('query-changed', self.__update_filter)
-        connect_obj(search, 'focus-out', lambda w: w.grab_focus(), view)
+        search.connect("query-changed", self.__update_filter)
+        connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
 
         hbox.pack_start(search, True, True, 0)
@@ -245,10 +245,10 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         self.pack_start(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__sig = view.get_selection().connect('changed',
+        self.__sig = view.get_selection().connect("changed",
             self.__selection_changed)
-        view.connect('row-activated', self.__play)
-        connect_obj(view, 'popup-menu', self.__popup, view, library)
+        view.connect("row-activated", self.__play)
+        connect_obj(view, "popup-menu", self.__popup, view, library)
 
         targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
                    ("text/uri-list", 0, 2)]
@@ -259,7 +259,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
-        self.connect('key-press-event', self.__key_pressed, library.librarian)
+        self.connect("key-press-event", self.__key_pressed, library.librarian)
 
         self.show_all()
 
@@ -390,7 +390,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         self.filter_text("")
 
     def activate(self):
-        self.view.get_selection().emit('changed')
+        self.view.get_selection().emit("changed")
 
     def restore(self):
         paths = config.get("browsers", "collection", "").split("\t")

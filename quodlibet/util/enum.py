@@ -39,16 +39,16 @@ def enum(cls):
                 return v
         if default is not None:
             return default
-        raise ValueError("Can't find %s (try %s)" % (s, cls.values))
+        raise ValueError(f"Can't find {s} (try {cls.values})")
     new_type.value_of = classmethod(value_of)
 
     def repr_(self):
         name = type(self).__name__
         try:
-            return "%s.%s" % (name, map_[self])
+            return f"{name}.{map_[self]}"
         except KeyError:
-            return "%s(%s)" % (name, self)
+            return f"{name}({self})"
 
-    setattr(new_type, "__repr__", repr_)
+    new_type.__repr__ = repr_
 
     return new_type

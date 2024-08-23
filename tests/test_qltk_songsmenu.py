@@ -42,72 +42,72 @@ class TSongsMenu(TestCase):
 
     def test_empty(self):
         self.menu = self.empty_menu_with()
-        self.failIf(len(self.menu))
+        self.assertFalse(len(self.menu))
 
     def test_simple(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False)
 
     def test_playlists(self):
         self.menu = self.empty_menu_with(playlists=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failUnless(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertTrue(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].can_add = False
         self.menu = self.empty_menu_with(playlists=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failIf(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertFalse(self.menu.get_children()[0].props.sensitive)
 
     def test_queue(self):
         self.menu = self.empty_menu_with(queue=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failUnless(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertTrue(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].can_add = False
         self.menu = self.empty_menu_with(queue=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failIf(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertFalse(self.menu.get_children()[0].props.sensitive)
 
     def test_remove(self):
         self.menu = self.empty_menu_with(remove=True,
                                          removal_confirmer=self._confirmer)
-        self.failUnlessEqual(len(self.menu), 1)
+        self.assertEqual(len(self.menu), 1)
         item = self.menu.get_children()[0]
-        self.failIf(item.props.sensitive)
+        self.assertFalse(item.props.sensitive)
         item.activate()
-        self.failUnless(self.confirmed, "Should have confirmed song removal")
+        self.assertTrue(self.confirmed, "Should have confirmed song removal")
 
     def test_remove_sensitive(self):
         self.library.add(self.songs)
         self.menu = self.empty_menu_with(remove=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failUnless(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertTrue(self.menu.get_children()[0].props.sensitive)
 
     def test_delete(self):
         self.menu = self.empty_menu_with(delete=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failUnless(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertTrue(self.menu.get_children()[0].props.sensitive)
 
         self.songs[0].is_file = False
         self.menu = self.empty_menu_with(delete=True)
-        self.failIf(self.menu.get_children()[0].props.sensitive)
+        self.assertFalse(self.menu.get_children()[0].props.sensitive)
 
     def test_show_files(self):
         self.menu = self.empty_menu_with(show_files=True)
-        self.failUnlessEqual(len(self.menu), 1)
-        self.failUnless(self.menu.get_children()[0].props.sensitive)
+        self.assertEqual(len(self.menu), 1)
+        self.assertTrue(self.menu.get_children()[0].props.sensitive)
         item = self.menu.get_children()[0]
-        self.failUnless(item.props.sensitive)
+        self.assertTrue(item.props.sensitive)
 
     def test_show_files_remote_songs(self):
         self.songs = self.library.songs = [an_rf(1)]
         self.menu = self.empty_menu_with(show_files=True)
-        self.failIf(len(self.menu))
+        self.assertFalse(len(self.menu))
 
     def test_show_files_too_many_songs(self):
         self.songs = self.library.songs = [an_af(i) for i in range(50)]
         self.menu = self.empty_menu_with(show_files=True)
         item = self.menu.get_children()[0]
-        self.failIf(item.props.sensitive,
+        self.assertFalse(item.props.sensitive,
                     msg="Should have disabled show files for 50 files")
 
     def test_download(self):

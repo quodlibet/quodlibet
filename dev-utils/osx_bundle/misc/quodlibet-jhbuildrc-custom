@@ -5,9 +5,20 @@ import os
 
 checkoutroot = os.path.expanduser("~/jhbuild_checkoutroot")
 prefix = os.path.expanduser("~/jhbuild_prefix")
+use_local_modulesets = True
 modulesets_dir = os.environ["QL_OSXBUNDLE_MODULESETS_DIR"]
 moduleset = ["quodlibet"]
 modules = []
+
+# Override JHBuild's default for extra_prefixes, which includes /usr/local on MacOS.
+# Overriding this prevents us from picking up libraries etc. that the user may have
+# installed with a package manager like Homebrew.
+extra_prefixes = []
+
+# Meson calls ld to determine built-in library search paths, which it then passes
+# to pkg-config.  These include /usr/local/, again resulting in the wrong libraries
+# being picked up.  We define PKG_CONFIG_PATH ourselves to prevent this.
+os.environ["PKG_CONFIG_PATH"] = prefix + ":/usr/lib"
 
 setup_sdk(target="10.13", sdk_version="native")
 

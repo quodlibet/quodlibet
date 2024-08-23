@@ -18,8 +18,8 @@ class TEntryWordCompletion(TestCase):
         w = EntryWordCompletion()
         e = Gtk.Entry()
         e.set_completion(w)
-        self.failUnlessEqual(w.get_entry(), e)
-        self.failUnlessEqual(e.get_completion(), w)
+        self.assertEqual(w.get_entry(), e)
+        self.assertEqual(e.get_completion(), w)
         e.destroy()
 
 
@@ -28,8 +28,8 @@ class TLibraryTagCompletion(TestCase):
         w = LibraryTagCompletion(SongLibrary())
         e = Gtk.Entry()
         e.set_completion(w)
-        self.failUnlessEqual(w.get_entry(), e)
-        self.failUnlessEqual(e.get_completion(), w)
+        self.assertEqual(w.get_entry(), e)
+        self.assertEqual(e.get_completion(), w)
         e.destroy()
 
 
@@ -44,6 +44,6 @@ class TLibraryValueCompletion(TestCase):
         w = LibraryValueCompletion("artist", SongLibrary())
         e = Gtk.Entry()
         e.set_completion(w)
-        self.failUnlessEqual(w.get_entry(), e)
-        self.failUnlessEqual(e.get_completion(), w)
+        self.assertEqual(w.get_entry(), e)
+        self.assertEqual(e.get_completion(), w)
         e.destroy()

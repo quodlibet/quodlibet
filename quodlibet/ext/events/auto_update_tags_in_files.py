@@ -153,7 +153,7 @@ class AutoUpdateTagsInFiles(EventPlugin):
         req_play_counts_above_zero = CONFIG.ensure_play_counts_above_zero
         for song in songs:
             if req_play_counts_above_zero and not song.get("~#playcount", 0):
-                song['~#playcount'] = 1
+                song["~#playcount"] = 1
 
             wrapper = SongWrapper(song)
             wrapper._needs_write = True
@@ -210,7 +210,7 @@ class AutoUpdateTagsPrefs(Gtk.Box):
             update_combobox.append_text(STRATEGY_TEXTS[strategy].name)
 
         update_combobox.set_active(CONFIG.update_strategy)
-        update_combobox.connect('changed', change_strategy)
+        update_combobox.connect("changed", change_strategy)
 
         update_lbl = ConfigLabel(_("_Update strategy:"), update_combobox)
 

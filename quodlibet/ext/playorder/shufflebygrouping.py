@@ -145,13 +145,13 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
 
         grouping_label = make_label(_("Grouping tag:"))
         grouping_entry = Gtk.Entry()
-        grouping_entry.connect('changed', on_change, "grouping")
+        grouping_entry.connect("changed", on_change, "grouping")
         grouping_entry.set_text(pconfig.gettext("grouping"))
         grouping_entry.set_tooltip_text(_("Tag to group songs by"))
 
         grouping_filter_label = make_label(_("Filter tag:"))
         grouping_filter_entry = Gtk.Entry()
-        grouping_filter_entry.connect('changed', on_change, "grouping_filter")
+        grouping_filter_entry.connect("changed", on_change, "grouping_filter")
         grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
         grouping_filter_entry.set_tooltip_text(_(
             "Grouping is applied only if the filter tag is defined.\n"
@@ -163,7 +163,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         adj = Gtk.Adjustment.new(pconfig.getint("delay"), 0, 3600, 1, 5, 0)
         delay_spin = Gtk.SpinButton(adjustment=adj, climb_rate=0.1, digits=0)
         delay_spin.set_numeric(True)
-        delay_spin.connect('value-changed', on_spin, "delay")
+        delay_spin.connect("value-changed", on_spin, "delay")
         delay_spin.set_tooltip_text(_(
             "Time delay in seconds before starting next group"))
 
@@ -182,7 +182,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         vbox.add(table)
 
         defaults = Gtk.Button(_("Reset to defaults"))
-        defaults.connect('clicked', default_on_click)
+        defaults.connect("clicked", default_on_click)
         vbox.add(defaults)
 
         return vbox

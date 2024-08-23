@@ -8,7 +8,7 @@
 from gi.repository import Gst, Gtk, GObject
 
 from quodlibet import _
-from quodlibet.plugins import PluginImportException
+from quodlibet.plugins import PluginImportError
 from quodlibet.plugins.gstelement import GStreamerPlugin
 from quodlibet.qltk.util import GSignals
 from quodlibet import qltk
@@ -25,7 +25,7 @@ _SETTINGS = {
 
 
 def get_cfg(option):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
     default = _SETTINGS[option][2]
 
     if option == "threshold":
@@ -35,14 +35,14 @@ def get_cfg(option):
 
 
 def set_cfg(option, value):
-    cfg_option = "%s_%s" % (_PLUGIN_ID, option)
+    cfg_option = f"{_PLUGIN_ID}_{option}"
     if get_cfg(option) != value:
         config.set("plugins", cfg_option, value)
 
 
 class Preferences(Gtk.VBox):
     __gsignals__: GSignals = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, tuple()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
@@ -73,14 +73,14 @@ class Preferences(Gtk.VBox):
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
-        threshold_scale.connect('format-value', format_perc)
+        threshold_scale.connect("format-value", format_perc)
         table.attach(threshold_scale, 1, 2, 0, 1)
 
         def threshold_changed(scale):
             value = scale.get_value()
             set_cfg("threshold", value)
             self.emit("changed")
-        threshold_scale.connect('value-changed', threshold_changed)
+        threshold_scale.connect("value-changed", threshold_changed)
         threshold_scale.set_value(get_cfg("threshold"))
 
         ratio_scale = Gtk.HScale(
@@ -94,7 +94,7 @@ class Preferences(Gtk.VBox):
             value = scale.get_value()
             set_cfg("ratio", value)
             self.emit("changed")
-        ratio_scale.connect('value-changed', ratio_changed)
+        ratio_scale.connect("value-changed", ratio_changed)
         ratio_scale.set_value(get_cfg("ratio"))
 
         self.pack_start(qltk.Frame(_("Preferences"), child=table),
@@ -109,7 +109,7 @@ class Compressor(GStreamerPlugin):
 
     @classmethod
     def setup_element(cls):
-        return Gst.ElementFactory.make('audiodynamic', cls.PLUGIN_ID)
+        return Gst.ElementFactory.make("audiodynamic", cls.PLUGIN_ID)
 
     @classmethod
     def update_element(cls, element):
@@ -126,5 +126,5 @@ class Compressor(GStreamerPlugin):
 
 
 if not Compressor.setup_element():
-    raise PluginImportException(
+    raise PluginImportError(
         "GStreamer element 'audiodynamic' missing (gst-plugins-good)")

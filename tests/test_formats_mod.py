@@ -11,13 +11,13 @@ from quodlibet.formats.mod import ModFile, extensions
 @skipUnless(extensions, "ModPlug missing")
 class TModFile(TestCase):
     def setUp(self):
-        self.song = ModFile(get_data_path('empty.xm'))
+        self.song = ModFile(get_data_path("empty.xm"))
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length", 0), 0)
+        self.assertEqual(self.song("~#length", 0), 0)
 
     def test_title(self):
-        self.failUnlessEqual(self.song["title"], "test song")
+        self.assertEqual(self.song["title"], "test song")
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "MOD/XM/IT")

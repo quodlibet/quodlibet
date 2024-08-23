@@ -4,7 +4,6 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from typing import Optional
 
 from gi.repository import Gtk, Pango
 
@@ -21,8 +20,8 @@ class PlaylistMenu(Gtk.Menu):
     def __init__(self, songs, pl_lib: PlaylistLibrary):
         super().__init__()
         self.pl_lib = pl_lib
-        i = Gtk.MenuItem(label=_(u"_New Playlist…"), use_underline=True)
-        i.connect('activate', self._on_new_playlist_activate, songs)
+        i = Gtk.MenuItem(label=_("_New Playlist…"), use_underline=True)
+        i.connect("activate", self._on_new_playlist_activate, songs)
         self.append(i)
         self.append(SeparatorMenuItem())
         self.set_size_request(int(i.size_request().width * 2), -1)
@@ -35,10 +34,10 @@ class PlaylistMenu(Gtk.Menu):
             i.set_inconsistent(some and not all)
             i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
             i.connect(
-                'activate', self._on_toggle_playlist_activate, playlist, songs)
+                "activate", self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 
-    def _on_new_playlist_activate(self, item, songs) -> Optional[Playlist]:
+    def _on_new_playlist_activate(self, item, songs) -> Playlist | None:
         parent = get_menu_item_top_parent(item)
         title = Playlist.suggested_name_for(songs)
         title = self._get_new_name(parent, title)
@@ -79,7 +78,7 @@ class ConfirmMultipleSongsAction(qltk.Message):
                         "What do you want to do with those %d songs?",
                         len(songs)) % len(songs)
 
-        title = _("Confirm action for playlist \"%s\"") % playlist.name
+        title = _('Confirm action for playlist "%s"') % playlist.name
         super().__init__(
             Gtk.MessageType.QUESTION, parent, title, desc,
             Gtk.ButtonsType.NONE)

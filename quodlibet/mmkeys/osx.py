@@ -31,8 +31,8 @@ from ._base import MMKeysBackend, MMKeysAction, MMKeysImportError
 try:
     from AppKit import NSKeyUp, NSSystemDefined, NSEvent
     import Quartz
-except ImportError:
-    raise MMKeysImportError
+except ImportError as e:
+    raise MMKeysImportError from e
 
 
 class OSXBackend(MMKeysBackend):

@@ -1,5 +1,5 @@
 # Copyright 2017 Christoph Reiter
-#
+#           2023 Nick Boultbee
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
@@ -26,6 +26,9 @@ from .ui import ErrorDialog, find_active_window, SubmitErrorDialog
 from .faulthandling import FaultHandlerCrash
 from .logdump import dump_to_disk
 
+SENTRY_DSN = ("514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
+              "0d15f73b978d143b5e84030a1ddf9a73//:sptth")[::-1]
+
 
 @cached_func
 def get_sentry():
@@ -36,9 +39,6 @@ def get_sentry():
     """
 
     # reverse, so it isn't so easy to search for at least
-    SENTRY_DSN = (
-        "514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
-        "0d15f73b978d143b5e84030a1ddf9a73//:sptth")[::-1]
 
     sentry = Sentry(SENTRY_DSN)
     sentry.add_tag("release", quodlibet.get_build_description())
@@ -80,11 +80,10 @@ def enable_errorhook(value):
 def run_error_dialogs(exc_info, sentry_error):
     assert sentry_error is not None
 
-    error_text = u"%s: %s" % (
-        exc_info[0].__name__,
-        (str(exc_info[1]).strip() or u"\n").splitlines()[0])
-    error_text += u"\n------\n"
-    error_text += u"\n".join(format_exception(*exc_info))
+    first = (str(exc_info[1]).strip() or "\n").splitlines()[0]
+    error_text = f"{exc_info[0].__name__}: {first}"
+    error_text += "\n------\n"
+    error_text += "\n".join(format_exception(*exc_info))
 
     # Don't reshow the error dialog in case the user wanted to quit the app
     # but due to the error state more errors pile up..

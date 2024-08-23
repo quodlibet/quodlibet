@@ -22,8 +22,8 @@ def split_value(s, splitters=DEFAULT_TAG_SPLITTERS):
     """
 
     def regex_for(sp):
-        return r'{start}\s*{split}\s*{end}'.format(
-            start=r'(?:\b|(?<=\W))', split=re_escape(sp), end=r'(?:\b|(?=\W))')
+        return r"{start}\s*{split}\s*{end}".format(
+            start=r"(?:\b|(?<=\W))", split=re_escape(sp), end=r"(?:\b|(?=\W))")
 
     if not splitters:
         return [s.strip()]
@@ -37,7 +37,7 @@ def split_value(s, splitters=DEFAULT_TAG_SPLITTERS):
 
 def find_subtitle(title, delimiters=DEFAULT_SUB_SPLITTERS):
     if isinstance(title, bytes):
-        title = title.decode('utf-8', 'replace')
+        title = title.decode("utf-8", "replace")
     for pair in delimiters:
         if (len(pair) == 2 and pair[0] in title[:-1]
                 and title.endswith(pair[1])):
@@ -83,7 +83,7 @@ def split_people(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
         old = subtitle
         # TODO: allow multiple substitutions across types, maybe
         for regex in (__FEAT_REGEX + __ORIG_REGEX):
-            subtitle = re.sub(regex, "", subtitle, 1)
+            subtitle = re.sub(regex, "", subtitle, count=1)
             if old != subtitle:
                 # Only change once
                 break

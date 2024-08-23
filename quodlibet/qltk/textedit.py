@@ -15,13 +15,12 @@ from quodlibet import util
 
 from quodlibet.qltk import Button, Icons
 from quodlibet.formats import AudioFile
-from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, \
-    error as PatternError
+from quodlibet.pattern import XMLFromPattern, XMLFromMarkupPattern, Error
 from quodlibet.util import connect_obj
 
 try:
     import gi
-    gi.require_version("GtkSource", "3.0")
+    gi.require_version("GtkSource", "4")
     from gi.repository import GtkSource
 except (ValueError, ImportError):
     TextView = Gtk.TextView
@@ -65,7 +64,7 @@ class TextEditBox(Gtk.HBox):
         box.pack_start(rev, False, True, 0)
         box.pack_start(app, False, True, 0)
         self.pack_start(box, False, True, 0)
-        connect_obj(rev, 'clicked', self.buffer.set_text, default)
+        connect_obj(rev, "clicked", self.buffer.set_text, default)
         self.revert = rev
         self.apply = app
 
@@ -93,7 +92,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
 
     assert isinstance(text, str)
 
-    f = AudioFile({"~filename": fsnative(u"dummy")})
+    f = AudioFile({"~filename": fsnative("dummy")})
 
     try:
         if alternative_markup:
@@ -101,14 +100,14 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
         else:
             pattern = XMLFromPattern(text)
         text = pattern % f
-    except PatternError as e:
+    except Error as e:
         return ValueError(e)
 
     try:
-        Pango.parse_markup(text, -1, u"\u0000")
+        Pango.parse_markup(text, -1, "\u0000")
     except GLib.GError as e:
         if not links:
-            raise ValueError(e)
+            raise ValueError(e) from e
         # Gtk.Label supports links on top of pango markup but doesn't
         # provide a way to verify them. We can check if the markup
         # was accepted by seeing if get_text() returns something.
@@ -117,7 +116,7 @@ def validate_markup_pattern(text, alternative_markup=True, links=False):
         # this might print a warning to stderr.. no idea how to prevent that..
         l.set_markup(text + " ")
         if not l.get_text():
-            raise ValueError(e)
+            raise ValueError(e) from e
 
 
 class PatternEditBox(TextEditBox):
@@ -129,7 +128,7 @@ class PatternEditBox(TextEditBox):
         super().__init__(default)
         self._alternative_markup = alternative_markup
         self._links = links
-        self.apply.connect('clicked', self.__check_markup)
+        self.apply.connect("clicked", self.__check_markup)
 
     def __check_markup(self, apply):
         try:
@@ -141,7 +140,7 @@ class PatternEditBox(TextEditBox):
                 _("The pattern you entered was invalid. Make sure you enter "
                   "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
                   "balanced.\n\n%s") % util.escape(str(e))).run()
-            apply.stop_emission('clicked')
+            apply.stop_emission("clicked")
         return False
 
 
@@ -161,7 +160,7 @@ class TextEdit(qltk.UniqueWindow):
 
         vbox = Gtk.VBox(spacing=12)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         b = Gtk.HButtonBox()
         b.set_layout(Gtk.ButtonBoxStyle.END)
         b.pack_start(close, True, True, 0)

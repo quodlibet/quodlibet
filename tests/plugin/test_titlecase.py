@@ -19,21 +19,21 @@ class TTitlecase(PluginTestCase):
     def test_all_caps(self):
         self.plugin.config_set("allow_all_caps", True)
         p = self.plugin("", "")
-        self.failUnlessEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
-        self.failUnlessEqual(p.activated("", "FOO BAR")[0][1], "FOO BAR")
+        self.assertEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
+        self.assertEqual(p.activated("", "FOO BAR")[0][1], "FOO BAR")
 
     def test_no_all_caps(self):
         self.plugin.config_set("allow_all_caps", False)
         p = self.plugin("", "")
-        self.failUnlessEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
-        self.failUnlessEqual(p.activated("", "FOO BAR")[0][1], "Foo Bar")
+        self.assertEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
+        self.assertEqual(p.activated("", "FOO BAR")[0][1], "Foo Bar")
 
     def test_humanise(self):
         self.plugin.config_set("human_title_case", True)
         self.plugin.config_set("allow_all_caps", False)
         p = self.plugin("", "")
-        self.failUnlessEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
-        self.failUnlessEqual(p.activated("", "FOO the bAR")[0][1],
+        self.assertEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
+        self.assertEqual(p.activated("", "FOO the bAR")[0][1],
                              "Foo the Bar")
 
     def tearDown(self):

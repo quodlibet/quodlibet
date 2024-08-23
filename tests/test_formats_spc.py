@@ -13,7 +13,7 @@ from quodlibet.formats.spc import SPCFile
 
 class TSPCFile(TestCase):
     def setUp(self):
-        self.song = SPCFile(get_data_path('test.spc'))
+        self.song = SPCFile(get_data_path("test.spc"))
 
     def test_tags(self):
         tags = {
@@ -24,21 +24,21 @@ class TSPCFile(TestCase):
         }
 
         for k, v in tags.items():
-            self.failUnlessEqual(self.song[k], v)
+            self.assertEqual(self.song[k], v)
 
     def test_length(self):
-        self.failUnlessEqual(self.song("~#length"), 25)
+        self.assertEqual(self.song("~#length"), 25)
 
     def test_write(self):
         self.song.write()
 
     def test_can_change(self):
-        self.failUnless(self.song.can_change("title"))
+        self.assertTrue(self.song.can_change("title"))
 
     def test_invalid(self):
-        path = get_data_path('empty.xm')
-        self.failUnless(os.path.exists(path))
-        self.failUnlessRaises(Exception, SPCFile, path)
+        path = get_data_path("empty.xm")
+        self.assertTrue(os.path.exists(path))
+        self.assertRaises(Exception, SPCFile, path)
 
     def test_format_codec(self):
         self.assertEqual(self.song("~format"), "SPC700")

@@ -31,7 +31,7 @@ from .util import get_dist_class
 distutils_clean = get_dist_class("clean")
 
 
-class clean(distutils_clean):
+class Clean(distutils_clean):
     """clean up output of 'build' commands
 
     GDistribution commands generate files that the normal distutils
@@ -74,11 +74,11 @@ class clean(distutils_clean):
             else:
                 return False
 
-        for pathname, dirs, files in os.walk("."):
+        for pathname, _dirs, files in os.walk("."):
             for filename in filter(should_remove, files):
                 try:
                     os.unlink(os.path.join(pathname, filename))
-                except EnvironmentError as err:
+                except OSError as err:
                     print(str(err))
 
         # setup.py byproducts
@@ -94,7 +94,7 @@ class clean(distutils_clean):
 
         try:
             os.remove("MANIFEST")
-        except EnvironmentError:
+        except OSError:
             pass
 
-__all__ = ["clean"]
+__all__ = ["Clean"]

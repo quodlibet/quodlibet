@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Callable, Optional
+from collections.abc import Callable
 from gi.repository import GObject, Gio
 
 from quodlibet import _, app, util
@@ -23,20 +23,20 @@ class AlbumListItem(GObject.Object):
     It will load the album cover and generate the album label on demand.
     """
 
-    def __init__(self, album: Optional[Album] = None):
+    def __init__(self, album: Album | None = None):
         super().__init__()
         self._album = album
         self._cover = None
         self._label = None
 
-        self.connect('notify::album', self._album_changed)
+        self.connect("notify::album", self._album_changed)
 
     def load_cover(self,
             size: int,
-            cancelable: Optional[Gio.Cancellable] = None):
+            cancelable: Gio.Cancellable | None = None):
         def callback(cover):
             self._cover = cover
-            self.notify('cover')
+            self.notify("cover")
 
         manager = app.cover_manager
         # Skip this during testing
@@ -46,7 +46,7 @@ class AlbumListItem(GObject.Object):
 
     def format_label(self, pattern):
         self._label = pattern % self._album
-        self.notify('label')
+        self.notify("label")
 
     def _album_changed(self, model, prop):
         self._label = None
@@ -71,14 +71,14 @@ class AlbumListCountItem(AlbumListItem):
     """
 
     def load_cover(self, *args, **kwargs):
-        self.notify('cover')
+        self.notify("cover")
 
     def format_label(self, pattern=None):
         n = self.__n_albums
-        title = util.bold(_('All Albums'))
-        number_phrase = numeric_phrase('%d album', '%d albums', n)
+        title = util.bold(_("All Albums"))
+        number_phrase = numeric_phrase("%d album", "%d albums", n)
         self._label = f"{title}\n{number_phrase}"
-        self.notify('label')
+        self.notify("label")
 
     @GObject.Property
     def n_albums(self):
@@ -102,9 +102,9 @@ class AlbumListModel(ObjectStore):
 
         albums = library.albums
         self.__sigs = [
-            albums.connect('added', self._add_albums),
-            albums.connect('removed', self._remove_albums),
-            albums.connect('changed', self._change_albums)
+            albums.connect("added", self._add_albums),
+            albums.connect("removed", self._remove_albums),
+            albums.connect("changed", self._change_albums)
         ]
 
         self.append(row=[AlbumListCountItem()])
@@ -157,7 +157,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
     __item_all: AlbumListItem
     __include_item_all: bool
-    __filter: Optional[Callable[[AlbumListItem], bool]] = None
+    __filter: Callable[[AlbumListItem], bool] | None = None
 
     def __init__(self, child_model=None, include_item_all=True, **kwargs):
         super().__init__(**kwargs)
@@ -175,10 +175,10 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
         model.set_visible_func(self._apply_filter)
         self.__sigs = [
-            model.connect('row-changed', self._row_changed),
-            model.connect('row-inserted', self._row_inserted),
-            model.connect('row-deleted', self._row_deleted),
-            model.connect('rows-reordered', self._rows_reordered)
+            model.connect("row-changed", self._row_changed),
+            model.connect("row-inserted", self._row_inserted),
+            model.connect("row-deleted", self._row_deleted),
+            model.connect("rows-reordered", self._rows_reordered)
         ]
 
     def destroy(self):
@@ -209,9 +209,11 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
         if b is None and value is None:
             f = None
         elif b is None:
-            f = lambda item: value(item.album)
+            def f(item):
+                return value(item.album)
         else:
-            f = lambda item: b(item.album) and value(item.album)
+            def f(item):
+                return b(item.album) and value(item.album)
         if f or self.__filter:
             self.__filter = f
             self._model.refilter()
@@ -236,7 +238,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
             index += 1
         return self._get_item(index)
 
-    def _get_item(self, index: int) -> Optional[AlbumListItem]:
+    def _get_item(self, index: int) -> AlbumListItem | None:
         model = self._model
         iter = model.iter_nth_child(None, index)
         return model.get_value(iter) if iter else None
@@ -255,7 +257,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
     def _row_changed(self, model, path, iter):
         item = model.get_value(iter)
-        item.notify('album')
+        item.notify("album")
 
     def _row_inserted(self, model, path, iter):
         # Ensure that the tree model will emit the "row-changed" signal

@@ -29,7 +29,7 @@ class Orders(GObject.Object):
     """
 
     __gsignals__ = {
-        'updated': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "updated": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, initial=None):
@@ -52,17 +52,17 @@ class Orders(GObject.Object):
 
     def append(self, x):
         self.items.append(x)
-        self.emit('updated')
+        self.emit("updated")
 
     def remove(self, x):
         self.items.remove(x)
-        self.emit('updated')
+        self.emit("updated")
 
     def __contains__(self, y):
         return self.items.__contains__(y)
 
     def __str__(self):
-        return "<%s of %s>" % (type(self).__name__, self.items)
+        return f"<{type(self).__name__} of {self.items}>"
 
 
 class PluggableOrders(Orders, PluginManager):
@@ -104,8 +104,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
     """
 
     __gsignals__ = {
-        'toggled': (GObject.SignalFlags.RUN_LAST, None, ()),
-        'changed': (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "toggled": (GObject.SignalFlags.RUN_LAST, None, ()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self, icon_name, orders, current_order, enabled=False,
@@ -113,8 +113,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         """arrow_down -- the direction of the menu and arrow icon"""
         assert issubclass(current_order, Order)
         if current_order not in orders:
-            raise ValueError("%s is not supported by %s"
-                             % (current_order.__name__, orders))
+            raise ValueError(f"{current_order.__name__} is not supported by {orders}")
 
         super().__init__()
         self.__inhibit = True
@@ -185,13 +184,12 @@ class ToggledPlayOrderMenu(Gtk.Box):
     @current.setter
     def current(self, value):
         if value not in self.orders:
-            raise ValueError(
-                "Unknown order %s. Try: %s"
-                % (value, ", ".join([o.__name__ for o in self.__orders])))
+            orders = ", ".join(o.__name__ for o in self.__orders)
+            raise ValueError(f"Unknown order {value}. Try: {orders}")
 
         self.__current = value
         if not self.__inhibit:
-            self.emit('changed', self.__current)
+            self.emit("changed", self.__current)
         self.__rebuild_menu()
 
     def set_active_by_name(self, name):
@@ -199,8 +197,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if cls.name == name:
                 self.current = cls
                 return
-        raise ValueError("Unknown order named \"%s\". Try: %s"
-                         % (name, [o.name for o in self.__orders]))
+        raise ValueError(f'Unknown order named "{name}". '
+                         f'Try: {[o.name for o in self.__orders]}')
 
     def set_orders(self, orders):
         self.orders = orders
@@ -239,7 +237,7 @@ class PlayOrderWidget(Gtk.HBox):
     """
 
     __gsignals__ = {
-        'changed': (GObject.SignalFlags.RUN_LAST, None, ()),
+        "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self, model, player):
@@ -256,13 +254,13 @@ class PlayOrderWidget(Gtk.HBox):
                 current_order=self.__get_shuffle_class(),
                 enabled=(config.getboolean("memory", "shuffle", False)),
                 tooltip=_("Toggle shuffle mode"))
-            shuffle.connect('changed', self.__shuffle_updated)
-            shuffle.connect('toggled', self.__shuffle_toggled)
+            shuffle.connect("changed", self.__shuffle_updated)
+            shuffle.connect("toggled", self.__shuffle_toggled)
             return shuffle
 
         self._shuffle_orders = PluggableOrders(DEFAULT_SHUFFLE_ORDERS, Reorder)
         self.__shuffle_widget = create_shuffle(self._shuffle_orders)
-        self._shuffle_orders.connect('updated',
+        self._shuffle_orders.connect("updated",
                                      self.__shuffle_widget.set_orders)
 
         def create_repeat(orders):
@@ -272,12 +270,12 @@ class PlayOrderWidget(Gtk.HBox):
                 current_order=self.__get_repeat_class(),
                 enabled=config.getboolean("memory", "repeat", False),
                 tooltip=_("Toggle repeat mode"))
-            repeat.connect('changed', self.__repeat_updated)
-            repeat.connect('toggled', self.__repeat_toggled)
+            repeat.connect("changed", self.__repeat_updated)
+            repeat.connect("toggled", self.__repeat_toggled)
             return repeat
         self._repeat_orders = PluggableOrders(DEFAULT_REPEAT_ORDERS, Repeat)
         self.__repeat_widget = create_repeat(self._repeat_orders)
-        self._repeat_orders.connect('updated', self.__repeat_widget.set_orders)
+        self._repeat_orders.connect("updated", self.__repeat_widget.set_orders)
 
         self.__compose_order()
         self.pack_start(self.__shuffle_widget, False, True, 0)
@@ -350,13 +348,12 @@ class PlayOrderWidget(Gtk.HBox):
         shuffle_cls = self.__get_shuffle_class()
         shuffler = (shuffle_cls() if self.shuffled else OrderInOrder())
         self.order = repeat_cls(shuffler) if self.repeated else shuffler
-        print_d("Updating %s order to %s"
-                % (type(self.__playlist).__name__, self.order))
+        print_d(f"Updating {type(self.__playlist).__name__} order to {self.order}")
         self.__playlist.order = self.order
         self.__player.replaygain_profiles[2] = shuffler.replaygain_profiles
         self.__player.reset_replaygain()
         if self.order != old_order:
-            self.emit('changed')
+            self.emit("changed")
 
     def __get_shuffle_class(self):
         name = config.get("memory", "shuffle_mode", None)

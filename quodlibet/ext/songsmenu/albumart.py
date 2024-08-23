@@ -19,7 +19,7 @@ import re
 import threading
 import time
 from io import BytesIO
-from typing import List, Dict, Any
+from typing import Any
 from urllib.parse import urlencode
 
 from gi.repository import Gtk, Pango, GLib, Gdk, GdkPixbuf
@@ -46,11 +46,11 @@ from quodlibet.util.urllib import urlopen, Request
 USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
              "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
 
-PLUGIN_CONFIG_SECTION = 'cover'
-CONFIG_ENG_PREFIX = 'engine_'
+PLUGIN_CONFIG_SECTION = "cover"
+CONFIG_ENG_PREFIX = "engine_"
 
 SEARCH_PATTERN = Pattern(
-    '<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>')
+    "<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>")
 
 REQUEST_LIMIT_MAX = 15
 
@@ -68,18 +68,18 @@ def get_url(url, post=None, get=None):
     post_params = urlencode(post or {})
     get_params = urlencode(get or {})
     if get:
-        get_params = '?' + get_params
+        get_params = "?" + get_params
 
     # add post, get data and headers
-    url = '%s%s' % (url, get_params)
+    url = f"{url}{get_params}"
     if post_params:
         request = Request(url, post_params)
     else:
         request = Request(url)
 
     # for discogs
-    request.add_header('Accept-Encoding', 'gzip')
-    request.add_header('User-Agent', USER_AGENT)
+    request.add_header("Accept-Encoding", "gzip")
+    request.add_header("User-Agent", USER_AGENT)
 
     url_sock = urlopen(request)
     enc = get_encoding_from_socket(url_sock)
@@ -89,23 +89,23 @@ def get_url(url, post=None, get=None):
     if url_sock.headers.get("content-encoding", "") == "gzip":
         data = gzip.GzipFile(fileobj=BytesIO(data)).read()
     url_sock.close()
-    content_type = url_sock.headers.get('Content-Type', '').split(';', 1)[0]
-    domain = re.compile(r'\w+://([^/]+)/').search(url).groups(0)[0]
-    print_d("Got %s data from %s" % (content_type, domain))
-    return (data if content_type.startswith('image')
+    content_type = url_sock.headers.get("Content-Type", "").split(";", 1)[0]
+    domain = re.compile(r"\w+://([^/]+)/").search(url).groups(0)[0]
+    print_d(f"Got {content_type} data from {domain}")
+    return (data if content_type.startswith("image")
             else data.decode(enc))
 
 
 def get_encoding(url):
     request = Request(url)
-    request.add_header('Accept-Encoding', 'gzip')
-    request.add_header('User-Agent', USER_AGENT)
+    request.add_header("Accept-Encoding", "gzip")
+    request.add_header("User-Agent", USER_AGENT)
     url_sock = urlopen(request)
     return get_encoding_from_socket(url_sock)
 
 
 class CoverSearcher:
-    def start(self, query, limit=5) -> List[Dict[str, Any]]:
+    def start(self, query, limit=5) -> list[dict[str, Any]]:
         """Start the search and return the covers"""
         raise NotImplementedError()
 
@@ -117,20 +117,20 @@ class DiscogsSearcher(CoverSearcher):
         self.page_count = 0
         self.covers = []
         self.limit = 0
-        self.creds = {'key': 'aWfZGjHQvkMcreUECGAp',
-                      'secret': 'VlORkklpdvAwJMwxUjNNSgqicjuizJAl'}
+        self.creds = {"key": "aWfZGjHQvkMcreUECGAp",
+                      "secret": "VlORkklpdvAwJMwxUjNNSgqicjuizJAl"}
 
     def __parse_page(self, page, query):
         """Gets all item tags and calls the item parsing function for each"""
 
-        url = 'https://api.discogs.com/database/search'
+        url = "https://api.discogs.com/database/search"
 
         parameters = {
-            'type': 'release',
-            'q': query,
-            'page': page,
+            "type": "release",
+            "q": query,
+            "page": page,
             # Assume that not all results are useful
-            'per_page': self.limit * 2,
+            "per_page": self.limit * 2,
         }
 
         parameters.update(self.creds)
@@ -139,12 +139,12 @@ class DiscogsSearcher(CoverSearcher):
 
         # TODO: rate limiting
 
-        pages = json_dict.get('pagination', {}).get('pages', 0)
+        pages = json_dict.get("pagination", {}).get("pages", 0)
         if not pages:
             return
         self.page_count = int(pages)
 
-        items = json_dict.get('results', {})
+        items = json_dict.get("results", {})
         print_d("Discogs: got %d search result(s)" % len(items))
         for item in items:
             self.__parse_item(item)
@@ -154,33 +154,33 @@ class DiscogsSearcher(CoverSearcher):
     def __parse_item(self, item):
         """Extract all information and add the covers to the list."""
 
-        thumbnail = item.get('thumb', '')
+        thumbnail = item.get("thumb", "")
         if thumbnail is None:
             print_d("Release doesn't have a cover")
             return
 
-        res_url = item.get('resource_url', '')
+        res_url = item.get("resource_url", "")
         data = get_url(res_url, get=self.creds)
         json_dict = json.loads(data)
 
-        images = json_dict.get('images', [])
+        images = json_dict.get("images", [])
 
-        for i, image in enumerate(images):
+        for _i, image in enumerate(images):
 
-            type = image.get('type', '')
-            if type != 'primary':
+            type = image.get("type", "")
+            if type != "primary":
                 continue
 
-            uri = image.get('uri', '')
-            cover = {'source': 'https://www.discogs.com',
-                     'name': item.get('title', ''),
-                     'thumbnail': image.get('uri150', thumbnail),
-                     'cover': uri,
-                     'size': get_size_of_url(uri)}
+            uri = image.get("uri", "")
+            cover = {"source": "https://www.discogs.com",
+                     "name": item.get("title", ""),
+                     "thumbnail": image.get("uri150", thumbnail),
+                     "cover": uri,
+                     "size": get_size_of_url(uri)}
 
-            width = image.get('width', 0)
-            height = image.get('height', 0)
-            cover['resolution'] = '%s x %s px' % (width, height)
+            width = image.get("width", 0)
+            height = image.get("height", 0)
+            cover["resolution"] = f"{width} x {height} px"
 
             self.covers.append(cover)
             if len(self.covers) >= self.limit:
@@ -219,14 +219,14 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.image = Gtk.Image()
         self.button = Button(_("_Save"), Icons.DOCUMENT_SAVE_AS)
         self.button.set_sensitive(False)
-        self.button.connect('clicked', self.__save)
+        self.button.connect("clicked", self.__save)
 
         close_button = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close_button.connect('clicked', lambda x: self.main_win.destroy())
+        close_button.connect("clicked", lambda x: self.main_win.destroy())
 
-        self.window_fit = self.ConfigCheckButton(_('Fit image to _window'),
-                                                 'fit', True)
-        self.window_fit.connect('toggled', self.__scale_pixbuf)
+        self.window_fit = self.ConfigCheckButton(_("Fit image to _window"),
+                                                 "fit", True)
+        self.window_fit.connect("toggled", self.__scale_pixbuf)
 
         self.name_combo = Gtk.ComboBoxText()
         self.name_combo.set_tooltip_text(
@@ -236,22 +236,22 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.cmd = ValidatingEntry(iscommand)
 
         # Both labels
-        label_open = Gtk.Label(label=_('_Program:'))
+        label_open = Gtk.Label(label=_("_Program:"))
         label_open.set_use_underline(True)
         label_open.set_mnemonic_widget(self.cmd)
         label_open.set_justify(Gtk.Justification.LEFT)
 
-        self.open_check = self.ConfigCheckButton(_('_Edit image after saving'),
-                                                 'edit', False)
-        label_name = Gtk.Label(label=_('File_name:'), use_underline=True)
+        self.open_check = self.ConfigCheckButton(_("_Edit image after saving"),
+                                                 "edit", False)
+        label_name = Gtk.Label(label=_("File_name:"), use_underline=True)
         label_name.set_use_underline(True)
         label_name.set_mnemonic_widget(self.name_combo)
         label_name.set_justify(Gtk.Justification.LEFT)
 
-        self.cmd.set_text(self.config_get('edit_cmd', 'gimp'))
+        self.cmd.set_text(self.config_get("edit_cmd", "gimp"))
 
         # populate the filename combo box
-        fn_list = self.config_get_stringlist('filenames',
+        fn_list = self.config_get_stringlist("filenames",
                                              ["cover.jpg", "folder.jpg", ".folder.jpg"])
         # Issue 374 - add dynamic file names
         fn_dynlist = []
@@ -266,8 +266,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             else:
                 fn_dynlist.append("<artist> - <album>.jpg")
         else:
-            print_w(u"No album for \"%s\". Could be difficult "
-                    u"finding art…" % song("~filename"))
+            print_w(f"No album for {song('~filename')}. "
+                    f"Could be difficult finding art…")
             title = song("title")
             if title and artist:
                 fn_dynlist.append("<artist> - <title>.jpg")
@@ -276,7 +276,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # merge unique
         fn_list.extend(s for s in fn_dynlist if s not in fn_list)
 
-        set_fn = self.config_get('filename', fn_list[0])
+        set_fn = self.config_get("filename", fn_list[0])
 
         for i, fn in enumerate(fn_list):
             self.name_combo.append_text(fn)
@@ -285,7 +285,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         if self.name_combo.get_active() < 0:
             self.name_combo.set_active(0)
-        self.config_set('filename', self.name_combo.get_active_text())
+        self.config_set("filename", self.name_combo.get_active_text())
 
         table = Gtk.Table(n_rows=2, n_columns=2, homogeneous=False)
         table.props.expand = False
@@ -337,7 +337,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.loading = False
         self.current_job = 0
 
-        self.connect('destroy', self.__save_config)
+        self.connect("destroy", self.__save_config)
 
     def __save(self, *data):
         """Save the cover and spawn the program to edit it if selected"""
@@ -346,7 +346,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         # Allow use of patterns in creating cover filenames
         pattern = ArbitraryExtensionFileFromPattern(save_format)
         filename = pattern.format(self.song)
-        print_d("Using '%s' as filename based on %s" % (filename, save_format))
+        print_d(f"Using {filename!r} as filename based on {save_format}")
         file_path = os.path.join(self.dirname, filename)
 
         if os.path.exists(file_path):
@@ -355,17 +355,17 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 return
 
         try:
-            f = open(file_path, 'wb')
+            f = open(file_path, "wb")
             f.write(self.current_data)
             f.close()
-        except IOError:
-            qltk.ErrorMessage(None, _('Saving failed'),
+        except OSError:
+            qltk.ErrorMessage(None, _("Saving failed"),
                               _('Unable to save "%s".') % file_path).run()
         else:
             if self.open_check.get_active():
                 try:
                     util.spawn([self.cmd.get_text(), file_path])
-                except:
+                except Exception:
                     pass
 
             app.cover_manager.cover_changed([self.song._song])
@@ -373,8 +373,8 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.main_win.destroy()
 
     def __save_config(self, widget):
-        self.config_set('edit_cmd', self.cmd.get_text())
-        self.config_set('filename', self.name_combo.get_active_text())
+        self.config_set("edit_cmd", self.cmd.get_text())
+        self.config_set("filename", self.name_combo.get_active_text())
 
     def __update(self, loader, *data):
         """Update the picture while it's loading"""
@@ -441,7 +441,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.current_pixbuf = None
 
         pbloader = GdkPixbuf.PixbufLoader()
-        pbloader.connect('closed', self.__close)
+        pbloader.connect("closed", self.__close)
 
         # Look for cached images
         raw_data = None
@@ -451,15 +451,15 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 break
 
         if not raw_data:
-            pbloader.connect('area-updated', self.__update)
+            pbloader.connect("area-updated", self.__update)
 
             data_store = BytesIO()
 
             try:
                 request = Request(url)
-                request.add_header('User-Agent', USER_AGENT)
+                request.add_header("User-Agent", USER_AGENT)
                 url_sock = urlopen(request)
-            except EnvironmentError:
+            except OSError:
                 print_w(_("[albumart] HTTP Error: %s") % url)
             else:
                 while not self.stop_loading:
@@ -518,7 +518,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.image_cache_size = 10
         self.search_lock = False
 
-        self.set_title(_('Album Art Downloader'))
+        self.set_title(_("Album Art Downloader"))
         self.set_icon_name(Icons.EDIT_FIND)
         self.set_default_size(800, 550)
 
@@ -537,13 +537,13 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         treeselection = self.treeview.get_selection()
         treeselection.set_mode(Gtk.SelectionMode.SINGLE)
-        treeselection.connect('changed', self.__select_callback, image)
+        treeselection.connect("changed", self.__select_callback, image)
 
         self.treeview.connect("drag-data-get",
                               self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
-        img_col = Gtk.TreeViewColumn('Thumb')
+        img_col = Gtk.TreeViewColumn("Thumb")
         img_col.pack_start(rend_pix, False)
 
         def cell_data_pb(column, cell, model, iter_, *args):
@@ -553,38 +553,38 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         img_col.set_cell_data_func(rend_pix, cell_data_pb, None)
         treeview.append_column(img_col)
 
-        rend_pix.set_property('xpad', 2)
-        rend_pix.set_property('ypad', 2)
+        rend_pix.set_property("xpad", 2)
+        rend_pix.set_property("ypad", 2)
         border_width = self.get_scale_factor() * 2
-        rend_pix.set_property('width', self.THUMB_SIZE + 6 + border_width)
-        rend_pix.set_property('height', self.THUMB_SIZE + 6 + border_width)
+        rend_pix.set_property("width", self.THUMB_SIZE + 6 + border_width)
+        rend_pix.set_property("height", self.THUMB_SIZE + 6 + border_width)
 
         def escape_data(data):
-            for rep in ('\n', '\t', '\r', '\v'):
-                data = data.replace(rep, ' ')
-            return util.escape(' '.join(data.split()))
+            for rep in ("\n", "\t", "\r", "\v"):
+                data = data.replace(rep, " ")
+            return util.escape(" ".join(data.split()))
 
         def cell_data(column, cell, model, iter, data):
             cover = model[iter][1]
 
             esc = escape_data
 
-            txt = util.bold_italic(cover['name'], escaper=esc)
+            txt = util.bold_italic(cover["name"], escaper=esc)
             txt += "\n<small>%s</small>" % (
-                _('from %(source)s') % {
-                    "source": util.italic(cover['source'], escaper=esc)})
-            if 'resolution' in cover:
-                txt += "\n" + _('Resolution: %s') % util.italic(
-                    cover['resolution'], escaper=esc)
-            if 'size' in cover:
-                txt += "\n" + _('Size: %s') % util.italic(cover['size'], escaper=esc)
+                _("from %(source)s") % {
+                    "source": util.italic(cover["source"], escaper=esc)})
+            if "resolution" in cover:
+                txt += "\n" + _("Resolution: %s") % util.italic(
+                    cover["resolution"], escaper=esc)
+            if "size" in cover:
+                txt += "\n" + _("Size: %s") % util.italic(cover["size"], escaper=esc)
 
             cell.markup = txt
-            cell.set_property('markup', cell.markup)
+            cell.set_property("markup", cell.markup)
 
         rend = Gtk.CellRendererText()
-        rend.set_property('ellipsize', Pango.EllipsizeMode.END)
-        info_col = Gtk.TreeViewColumn('Info', rend)
+        rend.set_property("ellipsize", Pango.EllipsizeMode.END)
+        info_col = Gtk.TreeViewColumn("Info", rend)
         info_col.set_cell_data_func(rend, cell_data)
 
         treeview.append_column(info_col)
@@ -594,12 +594,12 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         sw_list.set_shadow_type(Gtk.ShadowType.IN)
         sw_list.add(treeview)
 
-        search_labelraw = Gtk.Label('raw')
+        search_labelraw = Gtk.Label("raw")
         search_labelraw.set_alignment(xalign=1.0, yalign=0.5)
         self.search_fieldraw = Gtk.Entry()
-        self.search_fieldraw.connect('activate', self.start_search)
-        self.search_fieldraw.connect('changed', self.__searchfieldchanged)
-        search_labelclean = Gtk.Label('clean')
+        self.search_fieldraw.connect("activate", self.start_search)
+        self.search_fieldraw.connect("changed", self.__searchfieldchanged)
+        search_labelclean = Gtk.Label("clean")
         search_labelclean.set_alignment(xalign=1.0, yalign=0.5)
         self.search_fieldclean = Gtk.Label()
         self.search_fieldclean.set_can_focus(False)
@@ -615,12 +615,12 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         # note: set_active(False) appears to have no effect
         # self.search_radioraw.set_active(
         #    self.config_get_bool('searchraw', False))
-        if self.config_get_bool('searchraw', False):
+        if self.config_get_bool("searchraw", False):
             self.search_radioraw.set_active(True)
         else:
             self.search_radioclean.set_active(True)
 
-        search_labelresultsmax = Gtk.Label('limit')
+        search_labelresultsmax = Gtk.Label("limit")
         search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
         search_labelresultsmax.set_tooltip_text(
             _("Per engine 'at best' results limit"))
@@ -634,7 +634,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search_spinresultsmax.set_can_focus(False)
 
         self.search_button = Button(_("_Search"), Icons.EDIT_FIND)
-        self.search_button.connect('clicked', self.start_search)
+        self.search_button.connect("clicked", self.start_search)
         search_button_box = Gtk.Alignment()
         search_button_box.set(1, 0, 0, 0)
         search_button_box.add(self.search_button)
@@ -678,7 +678,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         left_vbox.pack_start(self.progress, False, True, 0)
 
-        self.connect('destroy', self.__save_config)
+        self.connect("destroy", self.__save_config)
 
         song = songs[0]
         text = SEARCH_PATTERN.format(song)
@@ -686,8 +686,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.start_search()
 
     def __save_config(self, widget):
-        self.config_set('searchraw', self.search_radioraw.get_active())
-        self.config_set('resultsmax',
+        self.config_set("searchraw", self.search_radioraw.get_active())
+        self.config_set("resultsmax",
                         self.search_spinresultsmax.get_value_as_int())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
@@ -695,16 +695,16 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         if not iter:
             return
         cover = model.get_value(iter, 1)
-        sel.set_uris([cover['cover']])
+        sel.set_uris([cover["cover"]])
 
     def __searchfieldchanged(self, *data):
         search = data[0].get_text()
-        clean = cleanup_query(search, ' ')
+        clean = cleanup_query(search, " ")
         self.search_fieldclean.set_text(util.italic(clean))
         self.search_fieldclean.set_use_markup(True)
 
     def __searchtypetoggled(self, *data):
-        self.config_set('searchraw', self.search_radioraw.get_active())
+        self.config_set("searchraw", self.search_radioraw.get_active())
 
     def start_search(self, *data):
         """Start the search using the text from the text entry"""
@@ -717,7 +717,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search_button.set_sensitive(False)
 
         self.progress.set_fraction(0)
-        self.progress.set_text(_(u'Searching…'))
+        self.progress.set_text(_("Searching…"))
         self.progress.show()
 
         self.liststore.clear()
@@ -726,8 +726,8 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         for eng in ENGINES:
             if self.config_get_bool(
-                    CONFIG_ENG_PREFIX + eng['config_id'], True):
-                search.add_engine(eng['class'], eng['replace'])
+                    CONFIG_ENG_PREFIX + eng["config_id"], True):
+                search.add_engine(eng["class"], eng["replace"])
 
         raw = self.search_radioraw.get_active()
         limit = self.search_spinresultsmax.get_value_as_int()
@@ -745,7 +745,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         """set the text and move the cursor to the end"""
 
         self.search_fieldraw.set_text(text)
-        self.search_fieldraw.emit('move-cursor', Gtk.MovementStep.BUFFER_ENDS,
+        self.search_fieldraw.emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS,
             0, False)
 
     def __select_callback(self, selection, image):
@@ -753,12 +753,12 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         if not iter:
             return
         cover = model.get_value(iter, 1)
-        image.set_cover(cover['cover'])
+        image.set_cover(cover["cover"])
 
     def __add_cover_to_list(self, cover):
         try:
             pbloader = GdkPixbuf.PixbufLoader()
-            pbloader.write(get_url(cover['thumbnail']))
+            pbloader.write(get_url(cover["thumbnail"]))
             pbloader.close()
 
             scale_factor = self.get_scale_factor()
@@ -769,7 +769,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
             if not pixbuf:
                 return
             surface = get_surface_for_pixbuf(self, pixbuf)
-        except (GLib.GError, IOError):
+        except (OSError, GLib.GError):
             pass
         else:
             def append(data):
@@ -784,7 +784,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
             self.progress.set_fraction(progress)
 
         if progress >= 1:
-            self.progress.set_text(_('Done'))
+            self.progress.set_text(_("Done"))
             GLib.timeout_add(700, self.progress.hide)
             self.search_button.set_sensitive(True)
             self.search_lock = False
@@ -835,8 +835,7 @@ class CoverSearch:
 
         search = query if raw else cleanup_query(query, replace)
 
-        print_d("[AlbumArt] running search %r on engine %s" %
-                (search, engine.__name__))
+        print_d(f"[AlbumArt] running search {search!r} on engine {engine.__name__}")
         result = []
         try:
             result = engine().start(search, limit)
@@ -858,10 +857,10 @@ def cleanup_query(query, replace):
     if query.startswith("the "):
         query = query[4:]
 
-    split = query.split('-')
-    replace_str = ('+', '&', ',', '.', '!', '´',
-                   '\'', ':', ' and ', '(', ')')
-    new_query = ''
+    split = query.split("-")
+    replace_str = ("+", "&", ",", ".", "!", "´",
+                   "\'", ":", " and ", "(", ")")
+    new_query = ""
     for part in split:
         for stri in replace_str:
             part = part.replace(stri, replace)
@@ -871,27 +870,27 @@ def cleanup_query(query, replace):
         end = max(int(len(p_split) / 4), max(4 - len(p_split), 2))
         p_split = p_split[:end]
 
-        new_query += ' '.join(p_split) + ' '
+        new_query += " ".join(p_split) + " "
 
     return new_query.rstrip()
 
 
 def get_size_of_url(url):
     request = Request(url)
-    request.add_header('Accept-Encoding', 'gzip')
-    request.add_header('User-Agent', USER_AGENT)
+    request.add_header("Accept-Encoding", "gzip")
+    request.add_header("User-Agent", USER_AGENT)
     url_sock = urlopen(request)
-    size = url_sock.headers.get('content-length')
+    size = url_sock.headers.get("content-length")
     url_sock.close()
-    return format_size(int(size)) if size else ''
+    return format_size(int(size)) if size else ""
 
 
 ENGINES = [
     {
-        'class': DiscogsSearcher,
-        'url': 'https://www.discogs.com/',
-        'replace': ' ',
-        'config_id': 'discogs',
+        "class": DiscogsSearcher,
+        "url": "https://www.discogs.com/",
+        "replace": " ",
+        "config_id": "discogs",
     },
 ]
 
@@ -899,9 +898,9 @@ ENGINES = [
 class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
     """Download and save album (cover) art from a variety of sources"""
 
-    PLUGIN_ID = 'Download Album Art'
-    PLUGIN_NAME = _('Download Album Art')
-    PLUGIN_DESC = _('Downloads album covers from various websites.')
+    PLUGIN_ID = "Download Album Art"
+    PLUGIN_NAME = _("Download Album Art")
+    PLUGIN_DESC = _("Downloads album covers from various websites.")
     PLUGIN_ICON = Icons.INSERT_IMAGE
     CONFIG_SECTION = PLUGIN_CONFIG_SECTION
     REQUIRES_ACTION = True
@@ -918,13 +917,13 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
         for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
-                eng['config_id'].title(),
-                CONFIG_ENG_PREFIX + eng['config_id'],
+                eng["config_id"].title(),
+                CONFIG_ENG_PREFIX + eng["config_id"],
                 True)
             table.attach(check, 0, 1, i, i + 1)
 
-            button = Gtk.Button(label=eng['url'])
-            button.connect('clicked', lambda s: util.website(s.get_label()))
+            button = Gtk.Button(label=eng["url"])
+            button.connect("clicked", lambda s: util.website(s.get_label()))
             table.attach(button, 1, 2, i, i + 1,
                          xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
         return frame

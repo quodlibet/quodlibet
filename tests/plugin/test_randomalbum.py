@@ -12,30 +12,30 @@ from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
 A1S1 = AudioFile(
-        {'album': 'greatness', 'title': 'excellent', 'artist': 'fooman',
-         '~#lastplayed': 1234, '~#rating': 0.75})
+        {"album": "greatness", "title": "excellent", "artist": "fooman",
+         "~#lastplayed": 1234, "~#rating": 0.75})
 A1S2 = AudioFile(
-        {'album': 'greatness', 'title': 'superlative', 'artist': 'fooman',
-         '~#lastplayed': 1234, '~#rating': 1.0})
+        {"album": "greatness", "title": "superlative", "artist": "fooman",
+         "~#lastplayed": 1234, "~#rating": 1.0})
 A1 = Album(A1S1)
 A1.songs = {A1S1, A1S2}
 
-A2S1 = AudioFile({'album': 'mediocrity', 'title': 'blah', 'artist': 'fooman',
-                  '~#lastplayed': 1234})
-A2S2 = AudioFile({'album': 'mediocrity', 'title': 'meh', 'artist': 'fooman',
-                  '~#lastplayed': 1234})
+A2S1 = AudioFile({"album": "mediocrity", "title": "blah", "artist": "fooman",
+                  "~#lastplayed": 1234})
+A2S2 = AudioFile({"album": "mediocrity", "title": "meh", "artist": "fooman",
+                  "~#lastplayed": 1234})
 A2 = Album(A2S1)
 A2.songs = {A2S1, A2S2}
 
 A3S1 = AudioFile(
-        {'album': 'disappointment', 'title': 'shameful', 'artist': 'poorman',
-         '~#lastplayed': 2345, '~#rating': 0.25})
+        {"album": "disappointment", "title": "shameful", "artist": "poorman",
+         "~#lastplayed": 2345, "~#rating": 0.25})
 A3S2 = AudioFile(
-        {'album': 'disappointment', 'title': 'zero', 'artist': 'poorman',
-         '~#lastplayed': 2345, '~#rating': 0.0})
+        {"album": "disappointment", "title": "zero", "artist": "poorman",
+         "~#lastplayed": 2345, "~#rating": 0.0})
 A3S3 = AudioFile(
-        {'album': 'disappointment', 'title': 'lame', 'artist': 'poorman',
-         '~#lastplayed': 0, '~#rating': 0.25})
+        {"album": "disappointment", "title": "lame", "artist": "poorman",
+         "~#lastplayed": 0, "~#rating": 0.25})
 
 A3 = Album(A3S1)
 A3.songs = {A3S1, A3S2, A3S3}
@@ -46,8 +46,8 @@ for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]:
 
 class TRandomAlbum(PluginTestCase):
     """Some basic tests for the random album plugin algorithm"""
-    WEIGHTS = {'rating': 0, 'added': 0, 'laststarted': 0, 'lastplayed': 0,
-               'length': 0, 'skipcount': 0, 'playcount': 0}
+    WEIGHTS = {"rating": 0, "added": 0, "laststarted": 0, "lastplayed": 0,
+               "length": 0, "skipcount": 0, "playcount": 0}
 
     def setUp(self):
         config.init()
@@ -75,45 +75,45 @@ class TRandomAlbum(PluginTestCase):
     def test_empty_integration_weighted(self):
         # See issue #2756
         self.plugin.use_weights = True
-        self.failIf(self.plugin.plugin_on_song_started(None))
+        self.assertFalse(self.plugin.plugin_on_song_started(None))
 
     def test_empty_integration(self):
         # See issue #2756
         self.plugin.use_weights = False
-        self.failIf(self.plugin.plugin_on_song_started(None))
+        self.assertFalse(self.plugin.plugin_on_song_started(None))
 
     def test_score_rating(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
-        weights['rating'] = 1
-        self.failUnlessEqual(A1, self.get_winner(self.albums))
+        weights["rating"] = 1
+        self.assertEqual(A1, self.get_winner(self.albums))
 
     def test_score_length(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
-        weights['length'] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        weights["length"] = 1
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_lastplayed(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
-        weights['lastplayed'] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        weights["lastplayed"] = 1
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_lastplayed_added(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()
-        weights['lastplayed'] = 1
+        weights["lastplayed"] = 1
         # No data here
-        weights['added'] = 1
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
+        weights["added"] = 1
+        self.assertEqual(A3, self.get_winner(self.albums))
 
     def test_score_mixed(self):
         print_d("Starting.")
         weights = self.plugin.weights = self.WEIGHTS.copy()
-        weights['length'] = 1
-        weights['lastplayed'] = 2
-        weights['rating'] = 1
+        weights["length"] = 1
+        weights["lastplayed"] = 2
+        weights["rating"] = 1
         # A3 is #3 rating, #1 in lastplayed, #1 in length
-        self.failUnlessEqual(A3, self.get_winner(self.albums))
-        weights['lastplayed'] = 1
-        weights['rating'] = 2
-        weights['length'] = 0.5
+        self.assertEqual(A3, self.get_winner(self.albums))
+        weights["lastplayed"] = 1
+        weights["rating"] = 2
+        weights["length"] = 0.5
         # A1 is #1 for Rating, #2 for lastplayed, #2 or 3 length
-        self.failUnlessEqual(A1, self.get_winner(self.albums))
+        self.assertEqual(A1, self.get_winner(self.albums))

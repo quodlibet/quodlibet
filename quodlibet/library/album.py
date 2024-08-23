@@ -25,9 +25,9 @@ class AlbumLibrary(Library[AlbumKey, Album]):
             "AlbumLibrary for %s" % library._name)
 
         self._library = library
-        self._asig = library.connect('added', self.__added)
-        self._rsig = library.connect('removed', self.__removed)
-        self._csig = library.connect('changed', self.__changed)
+        self._asig = library.connect("added", self.__added)
+        self._rsig = library.connect("removed", self.__removed)
+        self._csig = library.connect("changed", self.__changed)
         self.__added(library, library.values(), signal=False)
 
     def load(self):
@@ -65,9 +65,9 @@ class AlbumLibrary(Library[AlbumKey, Album]):
 
         if signal:
             if new:
-                self.emit('added', new)
+                self.emit("added", new)
             if changed:
-                self.emit('changed', changed)
+                self.emit("changed", changed)
 
     def __removed(self, library, items):
         changed = set()
@@ -87,9 +87,9 @@ class AlbumLibrary(Library[AlbumKey, Album]):
             album.finalize()
 
         if removed:
-            self.emit('removed', removed)
+            self.emit("removed", removed)
         if changed:
-            self.emit('changed', changed)
+            self.emit("changed", changed)
 
     def __changed(self, library, items):
         """Album keys could change between already existing ones... so we
@@ -105,7 +105,7 @@ class AlbumLibrary(Library[AlbumKey, Album]):
                 changed.add(self._contents[key])
             else:  # key changed... look for it in each album
                 to_add.append(song)
-                for key, album in self._contents.items():
+                for album in self._contents.values():
                     if song in album.songs:
                         album.songs.remove(song)
                         if not album.songs:

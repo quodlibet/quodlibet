@@ -6,6 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+
 import mutagen.id3
 
 from quodlibet import config, const, print_w
@@ -70,32 +71,32 @@ class ID3File(AudioFile):
            # TLAN requires an ISO 639-2 language code, check manually
            #"TLAN": "language"
     }
-    SDI = dict((v, k) for k, v in IDS.items())
+    SDI = {v: k for k, v in IDS.items()}
 
     # At various times, information for this came from
     # http://musicbrainz.org/docs/specs/metadata_tags.html
     # http://bugs.musicbrainz.org/ticket/1383
     # http://musicbrainz.org/doc/MusicBrainzTag
     TXXX_MAP = {
-        u"MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
-        u"MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
-        u"MusicBrainz Artist Id": "musicbrainz_artistid",
-        u"MusicBrainz Album Id": "musicbrainz_albumid",
-        u"MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
-        u"MusicBrainz TRM Id": "musicbrainz_trmid",
-        u"MusicIP PUID": "musicip_puid",
-        u"MusicMagic Fingerprint": "musicip_fingerprint",
-        u"MusicBrainz Album Status": "musicbrainz_albumstatus",
-        u"MusicBrainz Album Type": "musicbrainz_albumtype",
-        u"MusicBrainz Album Release Country": "releasecountry",
-        u"MusicBrainz Disc Id": "musicbrainz_discid",
-        u"ASIN": "asin",
-        u"ALBUMARTISTSORT": "albumartistsort",
-        u"BARCODE": "barcode",
+        "MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
+        "MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
+        "MusicBrainz Artist Id": "musicbrainz_artistid",
+        "MusicBrainz Album Id": "musicbrainz_albumid",
+        "MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
+        "MusicBrainz TRM Id": "musicbrainz_trmid",
+        "MusicIP PUID": "musicip_puid",
+        "MusicMagic Fingerprint": "musicip_fingerprint",
+        "MusicBrainz Album Status": "musicbrainz_albumstatus",
+        "MusicBrainz Album Type": "musicbrainz_albumtype",
+        "MusicBrainz Album Release Country": "releasecountry",
+        "MusicBrainz Disc Id": "musicbrainz_discid",
+        "ASIN": "asin",
+        "ALBUMARTISTSORT": "albumartistsort",
+        "BARCODE": "barcode",
         }
-    PAM_XXXT = dict((v, k) for k, v in TXXX_MAP.items())
+    PAM_XXXT = {v: k for k, v in TXXX_MAP.items()}
 
-    Kind = None
+    Kind: type[mutagen.FileType] | None = None
 
     def __init__(self, filename):
         with translate_errors():
@@ -198,14 +199,14 @@ class ID3File(AudioFile):
         # tag out. Read the TXXX DATE, but only if the TDRC tag doesn't exist
         # to avoid reverting or duplicating tags in existing libraries.
         if audio.tags and "date" not in self:
-            for frame in tag.getall('TXXX:DATE'):
+            for frame in tag.getall("TXXX:DATE"):
                 self["date"] = "\n".join(map(str, frame.text))
 
         # Read TXXX replaygain and replace previously read values from RVA2
         for frame in tag.getall("TXXX"):
             k = frame.desc.lower()
             if k in RG_KEYS:
-                self[str(k)] = u"\n".join(map(str, frame.text))
+                self[str(k)] = "\n".join(map(str, frame.text))
 
         self.sanitize(filename)
 
@@ -240,7 +241,7 @@ class ID3File(AudioFile):
             self["replaygain_%s_peak" % k] = str(frame.peak)
 
     @util.cached_property
-    def CODECS(self):
+    def CODECS(self):  # noqa
         codecs = ["utf-8"]
         codecs_conf = config.get("editing", "id3encoding")
         codecs.extend(codecs_conf.strip().split())
@@ -251,7 +252,7 @@ class ID3File(AudioFile):
         assert isinstance(text, str)
         if encoding == 0:
             try:
-                text = text.encode('iso-8859-1')
+                text = text.encode("iso-8859-1")
             except UnicodeEncodeError:
                 # mutagen might give us text not matching the encoding
                 # https://github.com/quodlibet/mutagen/issues/307
@@ -269,14 +270,14 @@ class ID3File(AudioFile):
 
     def has_rating_and_playcount_in_file(self, email):
         with translate_errors():
-            audio = self.Kind(self['~filename'])
+            audio = self.Kind(self["~filename"])
         if audio.tags is None:
             return False
         return ("POPM:" + email) in audio.tags
 
     def write(self):
         with translate_errors():
-            audio = self.Kind(self['~filename'])
+            audio = self.Kind(self["~filename"])
 
         if audio.tags is None:
             audio.add_tags()
@@ -305,13 +306,13 @@ class ID3File(AudioFile):
             if key not in self:
                 continue
             enc = encoding_for(self[key])
-            Kind = mutagen.id3.Frames[id3name]
+            frame_cls = mutagen.id3.Frames[id3name]
             text = self[key].split("\n")
             if id3name == "WOAR":
                 for t in text:
-                    tag.add(Kind(url=t))
+                    tag.add(frame_cls(url=t))
             else:
-                tag.add(Kind(encoding=enc, text=text))
+                tag.add(frame_cls(encoding=enc, text=text))
 
         dont_write = (RG_KEYS
                       | set(self.TXXX_MAP.values())
@@ -327,7 +328,7 @@ class ID3File(AudioFile):
         tag.delall("TLAN")
         if "language" in self:
             langs = self["language"].split("\n")
-            if all([lang in ISO_639_2 for lang in langs]):
+            if all(lang in ISO_639_2 for lang in langs):
                 # Save value(s) to TLAN tag. Guaranteed to be ASCII here
                 tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
                 dont_write.add("language")
@@ -347,7 +348,7 @@ class ID3File(AudioFile):
 
             f = mutagen.id3.TXXX(
                 encoding=enc, text=self[key].split("\n"),
-                desc=u"QuodLibet::%s" % key)
+                desc="QuodLibet::%s" % key)
             tag.add(f)
 
         if mcl.people:
@@ -367,7 +368,7 @@ class ID3File(AudioFile):
         if "comment" in self:
             enc = encoding_for(self["comment"])
             t = self["comment"].split("\n")
-            tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc=u"",
+            tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc="",
                                      lang="\x00\x00\x00"))
 
         tag.delall("USLT")
@@ -403,7 +404,7 @@ class ID3File(AudioFile):
                 del tag[t.HashKey]
 
         for k in ["track", "album"]:
-            if ('replaygain_%s_gain' % k) in self:
+            if ("replaygain_%s_gain" % k) in self:
                 try:
                     gain = float(self["replaygain_%s_gain" % k].split()[0])
                 except (ValueError, IndexError):
@@ -477,7 +478,7 @@ class ID3File(AudioFile):
             return images
 
         for frame in tag.getall("APIC"):
-            f = get_temp_cover_file(frame.data)
+            f = get_temp_cover_file(frame.data, frame.mime)
             images.append(EmbeddedImage(f, frame.mime, type_=frame.type))
 
         images.sort(key=lambda c: c.sort_key)
@@ -505,7 +506,7 @@ class ID3File(AudioFile):
                 break
 
         if cover:
-            f = get_temp_cover_file(cover.data)
+            f = get_temp_cover_file(cover.data, cover.mime)
             return EmbeddedImage(f, cover.mime, type_=cover.type)
 
     def set_image(self, image):
@@ -521,13 +522,13 @@ class ID3File(AudioFile):
 
         try:
             data = image.read()
-        except EnvironmentError as e:
-            raise AudioFileError(e)
+        except OSError as e:
+            raise AudioFileError(e) from e
 
         tag.delall("APIC")
         frame = mutagen.id3.APIC(
             encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
-            desc=u"", data=data)
+            desc="", data=data)
         tag.add(frame)
 
         with translate_errors():

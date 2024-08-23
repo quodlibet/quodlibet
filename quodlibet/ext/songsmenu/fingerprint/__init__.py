@@ -10,7 +10,7 @@ from gi.repository import Gtk, Gst
 
 if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
-    raise plugins.MissingGstreamerElementPluginException("chromaprint")
+    raise plugins.MissingGstreamerElementPluginError("chromaprint")
 
 from .submit import FingerprintDialog
 from .util import get_api_key
@@ -64,7 +64,7 @@ class AcoustidSubmit(SongsMenuPlugin):
             FingerprintDialog(songs)
 
     @classmethod
-    def PluginPreferences(self, win):
+    def PluginPreferences(cls, win):
         box = Gtk.VBox(spacing=12)
 
         # api key section

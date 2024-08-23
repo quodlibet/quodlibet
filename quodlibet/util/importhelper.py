@@ -72,7 +72,7 @@ def get_importables(folder):
             if d.startswith("_") or d.startswith("."):
                 print_d("Ignoring %r" % os.path.join(root, d))
                 dirs.remove(d)
-        if not first and any((is_init(n) for n in names)):
+        if not first and any(is_init(n) for n in names):
             yield (basename(root), root,
                    [d for d in (join(root, name) for name in names) if is_ok(d)])
         else:
@@ -92,16 +92,16 @@ def load_module(name, package, path):
     except KeyError:
         pass
 
-    loader = importlib.find_loader(fullname, [path])
-    if loader is None:
+    spec = importlib.machinery.PathFinder.find_spec(fullname, [path])
+    if spec is None:
         return
 
     # modules need a parent package
     if package not in sys.modules:
-        spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
-        sys.modules[package] = importlib.util.module_from_spec(spec)
+        parent_spec = importlib.machinery.ModuleSpec(package, None, is_package=True)
+        sys.modules[package] = importlib.util.module_from_spec(parent_spec)
 
-    mod = loader.load_module(fullname)
+    mod = spec.loader.load_module(fullname)
 
     # make it accessible from the parent, like __import__ does
     vars(sys.modules[package])[name] = mod

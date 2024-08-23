@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional, Any
+from typing import Any
 
 from gi.repository import Gtk
 
@@ -43,7 +43,7 @@ class QueryPlugin:
     called.
     """
 
-    def search(self, song: AudioFile, body: Optional[Any]) -> bool:
+    def search(self, song: AudioFile, body: Any | None) -> bool:
         """Whether to match the given song
            :param song: the song in question
            :param body: the query body
@@ -51,19 +51,19 @@ class QueryPlugin:
         """
         raise NotImplementedError
 
-    key: Optional[str] = None
+    key: str | None = None
     """The name used for query syntax, if not the name of the plugin"""
 
     PLUGIN_ICON = Icons.EDIT_FIND
 
-    usage: Optional[str] = None
+    usage: str | None = None
     """Override this markup to show example usage for users"""
 
     def parse_body(self, body: str) -> str:
         return body
 
     @classmethod
-    def PluginPreferences(cls, window):
+    def PluginPreferences(cls, window):  # noqa
         if not cls.usage:
             return Gtk.VBox()
         label = Gtk.Label(label=cls.usage, use_markup=True,

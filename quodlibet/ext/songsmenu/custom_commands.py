@@ -1,4 +1,4 @@
-# Copyright 2012-2017 Nick Boultbee
+# Copyright 2012-2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -116,7 +116,7 @@ class Command(JSONObject):
                 args.append(arg)
             elif arg not in args:
                 args.append(arg)
-        max = int((self.max_args or 10000))
+        max = int(self.max_args or 10000)
         com_words = actual_command.split(" ")
 
         if self.reverse:
@@ -165,7 +165,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                     " -i "
                         "/usr/share/icons/hicolor/scalable/apps/"
                         "io.github.quodlibet.QuodLibet.svg",
-                pattern="<~rating> \"<title><version| (<version>)>\""
+                pattern='<~rating> "<title><version| (<version>)>"'
                         "<~people| by <~people>>"
                     "<album|, from <album><discnumber| : disk <discnumber>>"
                     "<~length| (<~length>)>",
@@ -188,7 +188,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     ]
 
     COMS_FILE = os.path.join(
-        quodlibet.get_user_dir(), 'lists', 'customcommands.json')
+        quodlibet.get_user_dir(), "lists", "customcommands.json")
 
     _commands = None
     """Commands known to the class"""
@@ -236,9 +236,9 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         print_d("Loading saved commands from '%s'..." % filename)
         coms = None
         try:
-            with open(filename, "r", encoding="utf-8") as f:
+            with open(filename, encoding="utf-8") as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
-        except (IOError, ValueError) as e:
+        except (OSError, ValueError) as e:
             print_w("Couldn't parse saved commands (%s)" % e)
 
         # Failing all else...
@@ -250,13 +250,13 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
-        pl_mode = hasattr(self, '_playlists') and bool(len(self._playlists))
+        pl_mode = hasattr(self, "_playlists") and bool(len(self._playlists))
         self.com_index = None
         self.unique_only = False
         submenu = Gtk.Menu()
         for name, c in self.all_commands().items():
             item = Gtk.MenuItem(label=name)
-            connect_obj(item, 'activate', self.__set_pat, name)
+            connect_obj(item, "activate", self.__set_pat, name)
             if pl_mode and not c.playlists_only:
                 continue
             item.set_sensitive(c.playlists_only == pl_mode)
@@ -271,7 +271,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def add_edit_item(cls, submenu):
         config = Gtk.MenuItem(label=_("Edit Custom Commands") + "…")
-        connect_obj(config, 'activate', cls.edit_patterns, config)
+        connect_obj(config, "activate", cls.edit_patterns, config)
         config.set_sensitive(not JSONBasedEditor.is_not_unique())
         submenu.append(SeparatorMenuItem())
         submenu.append(config)
@@ -296,8 +296,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
             try:
                 com.run(songs, playlist and playlist.name)
             except Exception as err:
-                print_e("Couldn't run command %s: %s %s at:"
-                        % (com.name, type(err), err, ))
+                print_e(f"Couldn't run command {com.name}: {type(err)} {err} at:")
                 print_exc()
                 ErrorMessage(
                     self.plugin_window,

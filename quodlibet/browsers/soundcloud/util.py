@@ -1,4 +1,4 @@
-# Copyright 2016-21 Nick Boultbee
+# Copyright 2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -6,7 +6,7 @@
 # (at your option) any later version.
 
 from datetime import datetime
-from typing import Dict, Any
+from typing import Any
 
 from quodlibet import print_d, _
 from quodlibet.qltk import WebImage
@@ -24,13 +24,13 @@ SITE_URL = "https://soundcloud.com"
 class Wrapper:
     """Object-like wrapper for read-only dictionaries"""
 
-    def __init__(self, data: Dict[str, Any]):
+    def __init__(self, data: dict[str, Any]):
         self._raw = data
         assert isinstance(data, dict)
 
-        self.data: Dict = {}
+        self.data: dict = {}
         for k, v in data.items():
-            if isinstance(v, Dict):
+            if isinstance(v, dict):
                 self.data[k] = Wrapper(v)
             else:
                 self.data[k] = v
@@ -38,7 +38,7 @@ class Wrapper:
     def __getattr__(self, name):
         if name in self.data:
             return self.data.get(name)
-        raise AttributeError("'%s' not found" % (name,))
+        raise AttributeError(f"{name!r} not found")
 
     def __getitem__(self, item):
         return self.data[item]
@@ -61,12 +61,12 @@ def json_callback(wrapped):
             print_d(f"[HTTP {message.status_code}] Invalid / empty JSON. "
                     f"Body: {message.response_body.data!r} (request: {data})")
             return
-        if 'errors' in json:
+        if "errors" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json['errors']))
-        if 'error' in json:
+                                                   json["errors"]))
+        if "error" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json['error']))
+                                                   json["error"]))
         return wrapped(self, json, data)
 
     return _callback
@@ -104,8 +104,8 @@ def sanitise_tag(value):
     """QL doesn't want newlines in tags, but they Soundcloud ones
      are not always best represented as multi-value tags (comments, etc)
     """
-    return (value or '').replace('\n', '\t').replace('\r', '')
+    return (value or "").replace("\n", "\t").replace("\r", "")
 
 
 def sc_btn_image(path, w, h):
-    return WebImage('https://connect.soundcloud.com/2/btn-%s.png' % path, w, h)
+    return WebImage("https://connect.soundcloud.com/2/btn-%s.png" % path, w, h)

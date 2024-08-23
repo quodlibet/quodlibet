@@ -1,5 +1,5 @@
 # Copyright 2012 Christoph Reiter
-#           2016 Nick Boultbee
+#        2016-23 Nick Boultbee
 #      2018-2019 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -7,8 +7,12 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from typing import Any
+from collections.abc import Iterable, Sequence
+
 from gi.repository import Gtk
 
+from quodlibet.order import Order
 from quodlibet.qltk.playorder import OrderInOrder
 from quodlibet.qltk.models import ObjectStore
 from quodlibet.util import print_d
@@ -25,7 +29,7 @@ class PlaylistMux:
     def __init__(self, player, q, pl):
         self.q = q
         self.pl = pl
-        self._id = player.connect('song-started', self.__song_started)
+        self._id = player.connect("song-started", self.__song_started)
         self._player = player
 
     def destroy(self):
@@ -151,10 +155,10 @@ class TrackCurrentModel(ObjectStore):
         super().__init__(*args, **kwargs)
         self.__iter = None
 
-    last_current = None
+    last_current: Any | None = None
     """The last valid current song"""
 
-    def set(self, songs):
+    def set(self, songs: Sequence[Any]):
         """Clear the model and add the passed songs"""
 
         print_d("Filling view model with %d songs." % len(songs))
@@ -162,17 +166,17 @@ class TrackCurrentModel(ObjectStore):
         self.__iter = None
 
         oldsong = self.last_current
-        for iter_, song in zip(self.iter_append_many(songs), songs):
+        for iter_, song in zip(self.iter_append_many(songs), songs, strict=False):
             if song is oldsong:
                 self.__iter = iter_
 
-    def get(self):
+    def get(self) -> list[Any]:
         """A list of all contained songs"""
 
         return list(self.itervalues())
 
     @property
-    def current(self):
+    def current(self) -> Any | None:
         """The current song or None"""
 
         return self.__iter and self.get_value(self.__iter, 0)
@@ -200,7 +204,7 @@ class TrackCurrentModel(ObjectStore):
         self.__iter = iter_
         self.last_current = self.current
 
-    def find(self, song):
+    def find(self, song: Any):
         """Returns the iter to the first occurrence of song in the model
         or None if it wasn't found.
         """
@@ -215,18 +219,13 @@ class TrackCurrentModel(ObjectStore):
                 return iter_
         return
 
-    def find_all(self, songs):
+    def find_all(self, songs: Iterable[Any]):
         """Returns a list of iters for all occurrences of all songs.
         (since a song can be in the model multiple times)
         """
 
         songs = set(songs)
-        found = []
-        append = found.append
-        for iter_, value in self.iterrows():
-            if value in songs:
-                append(iter_)
-        return found
+        return [iter_ for iter_, value in self.iterrows() if value in songs]
 
     def remove(self, iter_):
         if self.__iter and self[iter_].path == self[self.__iter].path:
@@ -244,22 +243,15 @@ class TrackCurrentModel(ObjectStore):
 class PlaylistModel(TrackCurrentModel):
     """A play list model for song lists"""
 
-    order = None
-    """The active `PlayOrder`"""
+    order: Order
+    """The active play order"""
 
     sourced = False
     """True in case this model is the source of the currently playing song"""
 
-    def __init__(self, order_cls=OrderInOrder):
+    def __init__(self, order_cls: type[Order] = OrderInOrder):
         super().__init__(object)
         self.order = order_cls()
-
-        # The playorder plugins use paths atm to remember songs so
-        # we need to reset them if the paths change somehow.
-        self.__sigs = []
-        for sig in ['row-deleted', 'row-inserted', 'rows-reordered']:
-            s = self.connect(sig, lambda pl, *x: self.order.reset(pl))
-            self.__sigs.append(s)
 
     def next(self):
         """Switch to the next song"""
@@ -311,15 +303,19 @@ class PlaylistModel(TrackCurrentModel):
 
         return self.current_iter
 
-    def set(self, songs):
+    def set(self, songs: Sequence[Any]):
         """Clear the model and add the passed songs"""
 
         self.order.reset(self)
-        for signal_id in self.__sigs:
-            self.handler_block(signal_id)
         super().set(songs)
-        for signal_id in self.__sigs:
-            self.handler_unblock(signal_id)
+
+    def remove(self, iter_):
+        self.order.reset(self)
+        super().remove(iter_)
+
+    def clear(self):
+        self.order.reset(self)
+        super().clear()
 
     def reset(self):
         """Switch to the first song"""

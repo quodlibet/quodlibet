@@ -38,7 +38,7 @@ class ScreensaverPause(EventPlugin):
     __watch = None
 
     def __on_signal(self, proxy, sender, signal, args):
-        if signal == 'ActiveChanged':
+        if signal == "ActiveChanged":
             # Gnome-Shell fires ActiveChanged even if it doesn't change
             # (aborted transition to lock screen), so handle that
             active = args[0]
@@ -71,7 +71,7 @@ class ScreensaverPause(EventPlugin):
             iface = Gio.DBusProxy.new_for_bus_sync(
                 Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
-            self.__sig = iface.connect('g-signal', self.__on_signal)
+            self.__sig = iface.connect("g-signal", self.__on_signal)
             self.__active = iface.GetActive()
             self.__interface = iface
 

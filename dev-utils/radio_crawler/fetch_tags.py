@@ -80,7 +80,7 @@ def get_tags(uri):
 
     try:
         ml.run()
-    except:
+    except Exception:
         pass
 
     bus.remove_signal_watch()
@@ -107,7 +107,7 @@ def get_all_tags(uris):
             else:
                 print("FAILED")
                 failed.append(uri)
-    except:
+    except Exception:
         pass
     finally:
         pool.terminate()

@@ -1,7 +1,7 @@
 # Copyright 2004-2008 Joe Wreschnig, Michael Urman, Iñigo Serna
 #           2009,2010 Steven Robertson
 #           2009-2013 Christoph Reiter
-#           2011-2022 Nick Boultbee
+#           2011-2023 Nick Boultbee
 #                2017 Fredrik Strupe
 #
 # This program is free software; you can redistribute it and/or modify
@@ -55,13 +55,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
         container.remove(self)
 
     @classmethod
-    def set_all_column_mode(klass, value):
-        for browser in klass.instances():
+    def set_all_column_mode(cls, value):
+        for browser in cls.instances():
             browser.set_column_mode(value)
 
     @classmethod
-    def set_all_panes(klass):
-        for browser in klass.instances():
+    def set_all_panes(cls):
+        for browser in cls.instances():
             browser.refresh_panes()
             browser.fill_panes()
 
@@ -79,9 +79,9 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.accelerators = Gtk.AccelGroup()
         sbb = SearchBarBox(completion=completion,
                            accel_group=self.accelerators)
-        sbb.connect('query-changed', self.__text_parse)
-        sbb.connect('focus-out', self.__focus)
-        sbb.connect('key-press-event', self.__sb_key_pressed)
+        sbb.connect("query-changed", self.__text_parse)
+        sbb.connect("focus-out", self.__focus)
+        sbb.connect("key-press-event", self.__sb_key_pressed)
         self._sb_box = sbb
 
         align = Align(sbb, left=6, right=6, top=0)
@@ -90,17 +90,17 @@ class PanedBrowser(Browser, util.InstanceTracker):
         keyval, mod = Gtk.accelerator_parse("<Primary>Home")
         self.accelerators.connect(keyval, mod, 0, self.__select_all)
         select = Gtk.Button(label=_("Select _All"), use_underline=True)
-        select.connect('clicked', self.__select_all)
+        select.connect("clicked", self.__select_all)
         sbb.pack_start(select, False, True, 0)
 
         prefs = PreferencesButton(self)
         sbb.pack_start(prefs, False, True, 0)
 
-        connect_destroy(library, 'changed', self.__changed)
-        connect_destroy(library, 'added', self.__added)
-        connect_destroy(library, 'removed', self.__removed)
+        connect_destroy(library, "changed", self.__changed)
+        connect_destroy(library, "added", self.__added)
+        connect_destroy(library, "removed", self.__removed)
 
-        self.connect('destroy', self.__destroy)
+        self.connect("destroy", self.__destroy)
 
         # contains the panes and the song list
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
@@ -163,7 +163,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             pane.set_selected(None, True)
         self._panes[-1].uninhibit()
-        self._panes[-1].get_selection().emit('changed')
+        self._panes[-1].get_selection().emit("changed")
 
     def __added(self, library, songs):
         songs = list(filter(self._filter, songs))
@@ -216,7 +216,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._panes = [self]
         for header in reversed(get_headers()):
             pane = Pane(self._library, header, self._panes[0])
-            pane.connect('row-activated',
+            pane.connect("row-activated",
                          lambda *x: self.songs_activated())
             self._panes.insert(0, pane)
         self._panes.pop()  # remove self
@@ -304,7 +304,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         for pane in self._panes:
             selected.append(pane.get_restore_string())
 
-        to_save = u"\n".join(selected)
+        to_save = "\n".join(selected)
         config.settext("browsers", "pane_selection", to_save)
 
     def restore(self):
@@ -319,11 +319,11 @@ class PanedBrowser(Browser, util.InstanceTracker):
         if not selected:
             return
 
-        for pane, string in zip(self._panes, selected.split(u"\n")):
+        for pane, string in zip(self._panes, selected.split("\n"), strict=False):
             pane.parse_restore_string(string)
 
     def finalize(self, restored):
-        config.settext("browsers", "query_text", u"")
+        config.settext("browsers", "query_text", "")
 
     def fill(self, songs):
         GLib.idle_add(self.songs_selected, list(songs))

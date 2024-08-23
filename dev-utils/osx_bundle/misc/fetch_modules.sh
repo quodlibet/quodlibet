@@ -2,6 +2,7 @@
 
 set -e
 
+# shellcheck source=SCRIPTDIR/../env.sh
 source ../env.sh
 
 git clone git://git.gnome.org/gtk-osx _gtk-osx

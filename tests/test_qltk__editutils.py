@@ -43,16 +43,16 @@ class TFilterCheckButton(TestCase):
         self.fcb5 = FCB5()
 
     def test_filter(self):
-        self.failUnlessRaises(NotImplementedError, self.fcb1.filter, "", "")
+        self.assertRaises(NotImplementedError, self.fcb1.filter, "", "")
 
     def test_filter_list(self):
-        self.failUnlessRaises(
+        self.assertRaises(
             NotImplementedError, self.fcb1.filter_list, [""], [""])
 
     def test_cmp(self):
         l = [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]
         l.sort()
-        self.failUnlessEqual(
+        self.assertEqual(
             l, [self.fcb2, self.fcb3, self.fcb4, self.fcb5, self.fcb1])
 
     def tearDown(self):

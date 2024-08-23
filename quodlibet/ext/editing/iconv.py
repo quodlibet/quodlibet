@@ -30,7 +30,7 @@ class Iconv(EditTagsPlugin):
 
     def __init__(self, tag, value):
         super().__init__(
-            _(u"_Convert Encoding…"), use_underline=True)
+            _("_Convert Encoding…"), use_underline=True)
 
         submenu = Gtk.Menu()
 
@@ -40,13 +40,13 @@ class Iconv(EditTagsPlugin):
 
         for enc in ENCODINGS:
             try:
-                new = value.encode('latin1').decode(enc)
+                new = value.encode("latin1").decode(enc)
             except (UnicodeEncodeError, UnicodeDecodeError, LookupError):
                 continue
             else:
                 if new == value:
                     continue
-                if not new in items:
+                if new not in items:
                     items.append(new)
 
         if not items:
@@ -58,7 +58,7 @@ class Iconv(EditTagsPlugin):
             item_label = Gtk.Label(label=i)
             item_label.set_alignment(0.0, 0.5)
             item.add(item_label)
-            item.connect('activate', self.__convert)
+            item.connect("activate", self.__convert)
             submenu.append(item)
         self.set_submenu(submenu)
 

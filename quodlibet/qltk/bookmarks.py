@@ -30,7 +30,7 @@ def MenuItems(marks, player, seekable):
         # older pygobject (~3.2) added a child on creation
         if i.get_child():
             i.remove(i.get_child())
-        connect_obj(i, 'activate', player.seek, time * 1000)
+        connect_obj(i, "activate", player.seek, time * 1000)
         i.set_sensitive(time >= 0 and seekable)
         hbox = Gtk.HBox(spacing=12)
         i.add(hbox)
@@ -75,20 +75,20 @@ class EditBookmarksPane(Gtk.VBox):
 
         def cdf(column, cell, model, iter, data):
             if model[iter][0] < 0:
-                cell.set_property('text', _("N/A"))
+                cell.set_property("text", _("N/A"))
             else:
-                cell.set_property('text', util.format_time(model[iter][0]))
-        render.set_property('editable', True)
-        render.connect('edited', self.__edit_time, model)
+                cell.set_property("text", util.format_time(model[iter][0]))
+        render.set_property("editable", True)
+        render.connect("edited", self.__edit_time, model)
         col = Gtk.TreeViewColumn(_("Time"), render)
         col.set_cell_data_func(render, cdf, None)
         sw.get_child().append_column(col)
 
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
         col = Gtk.TreeViewColumn(_("Bookmark Name"), render, text=1)
-        render.set_property('editable', True)
-        render.connect('edited', self.__edit_name, model)
+        render.set_property("editable", True)
+        render.connect("edited", self.__edit_name, model)
         sw.get_child().append_column(col)
         self.pack_start(sw, True, True, 0)
         self.accels = Gtk.AccelGroup()
@@ -104,37 +104,37 @@ class EditBookmarksPane(Gtk.VBox):
             hbox.set_layout(Gtk.ButtonBoxStyle.END)
         self.pack_start(hbox, False, True, 0)
 
-        connect_obj(add, 'clicked', self.__add, model, time, name)
+        connect_obj(add, "clicked", self.__add, model, time, name)
 
         model.set_sort_column_id(0, Gtk.SortType.ASCENDING)
-        model.connect('row-changed', self._set_bookmarks, library, song)
-        model.connect('row-inserted', self._set_bookmarks, library, song)
+        model.connect("row-changed", self._set_bookmarks, library, song)
+        model.connect("row-inserted", self._set_bookmarks, library, song)
 
         selection = sw.get_child().get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        selection.connect('changed', self.__check_selection, remove)
-        remove.connect('clicked', self.__remove, selection, library, song)
+        selection.connect("changed", self.__check_selection, remove)
+        remove.connect("clicked", self.__remove, selection, library, song)
 
-        connect_obj(time, 'changed', self.__check_entry, add, time, name)
-        connect_obj(name, 'changed', self.__check_entry, add, time, name)
-        connect_obj(name, 'activate', Gtk.Button.clicked, add)
+        connect_obj(time, "changed", self.__check_entry, add, time, name)
+        connect_obj(name, "changed", self.__check_entry, add, time, name)
+        connect_obj(name, "activate", Gtk.Button.clicked, add)
 
         time.set_text(_("MM:SS"))
-        connect_obj(time, 'activate', Gtk.Entry.grab_focus, name)
+        connect_obj(time, "activate", Gtk.Entry.grab_focus, name)
         name.set_text(_("Bookmark Name"))
 
         menu = Gtk.Menu()
         remove = qltk.MenuItem(_("_Remove"), Icons.LIST_REMOVE)
-        remove.connect('activate', self.__remove, selection, library, song)
+        remove.connect("activate", self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            'activate', self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
+            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
         menu.append(remove)
         menu.show_all()
-        sw.get_child().connect('popup-menu', self.__popup, menu)
-        sw.get_child().connect('key-press-event',
+        sw.get_child().connect("popup-menu", self.__popup, menu)
+        sw.get_child().connect("key-press-event",
                                 self.__view_key_press, remove)
-        connect_obj(self, 'destroy', Gtk.Menu.destroy, menu)
+        connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
 
         self.__fill(model, song)
 
@@ -151,24 +151,24 @@ class EditBookmarksPane(Gtk.VBox):
 
     def __edit_time(self, render, path, new, model):
         try:
-            time = util.parse_time(new, None)
-        except:
+            time = util.parse_time(new, False)
+        except Exception:
             pass
         else:
             model[path][0] = time
 
     def __check_entry(self, add, time, name):
         try:
-            util.parse_time(time.get_text(), None)
-        except:
+            util.parse_time(time.get_text(), False)
+        except Exception:
             add.set_sensitive(False)
         else:
             add.set_sensitive(bool(name.get_text()))
 
     def __add(self, model, time, name):
         try:
-            time = util.parse_time(time.get_text(), None)
-        except:
+            time = util.parse_time(time.get_text(), False)
+        except Exception:
             pass
         else:
             model.append([time, name.get_text()])
@@ -185,12 +185,11 @@ class EditBookmarksPane(Gtk.VBox):
 
     def _set_bookmarks(self, model, a, b, library, song):
         def stringify(s):
-            return s.decode('utf-8') if isinstance(s, bytes) else s
+            return s.decode("utf-8") if isinstance(s, bytes) else s
         try:
             song.bookmarks = [(t, stringify(l)) for t, l in model]
         except (AttributeError, ValueError) as e:
-            print_w("Couldn't save bookmark for %s (%s)"
-                    % (song("~filename"), e))
+            print_w(f"Couldn't save bookmark for {song('~filename')} ({e})")
         else:
             if library is not None:
                 library.changed([song])
@@ -212,13 +211,13 @@ class EditBookmarks(qltk.Window):
         pane = EditBookmarksPane(library, player.song, close=True)
         self.add(pane)
 
-        s = library.connect('removed', self.__check_lock, player.song)
-        connect_obj(self, 'destroy', library.disconnect, s)
+        s = library.connect("removed", self.__check_lock, player.song)
+        connect_obj(self, "destroy", library.disconnect, s)
 
         position = player.get_position() // 1000
         pane.time.set_text(util.format_time(position))
         pane.markname.grab_focus()
-        pane.close.connect('clicked', lambda *x: self.destroy())
+        pane.close.connect("clicked", lambda *x: self.destroy())
 
         self.get_child().show_all()
 

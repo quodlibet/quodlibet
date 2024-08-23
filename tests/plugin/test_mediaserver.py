@@ -36,10 +36,10 @@ class TMediaServer(PluginTestCase):
 
     def tearDown(self):
         bus = dbus.SessionBus()
-        self.failUnless(
+        self.assertTrue(
             bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
         self.m.disabled()
-        self.failIf(
+        self.assertFalse(
             bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
         del self.m
 
@@ -50,7 +50,7 @@ class TMediaServer(PluginTestCase):
         self._replies.append(args)
 
     def _error(self, *args):
-        self.failIf(args)
+        self.assertFalse(args)
 
     def _wait(self):
         while not self._replies:
@@ -67,9 +67,9 @@ class TMediaServer(PluginTestCase):
     def test_entry_name(self):
         iface = self._entry_props_iface()
         iface.Get("org.gnome.UPnP.MediaObject2", "DisplayName", **self._args)
-        self.failUnless("Quod Libet" in self._wait()[0])
+        self.assertTrue("Quod Libet" in self._wait()[0])
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
-        self.failUnless(
+        self.assertTrue(
             bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))

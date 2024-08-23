@@ -46,7 +46,7 @@ class SelectionWindow(Window):
         buttons.set_spacing(6)
         buttons.set_layout(Gtk.ButtonBoxStyle.END)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
-        close.connect('clicked', lambda *x: self.destroy())
+        close.connect("clicked", lambda *x: self.destroy())
         buttons.pack_start(close, True, True, 0)
 
         box = Gtk.VBox(spacing=12)

@@ -14,6 +14,10 @@
   <binary>${prefix}/lib/gio/modules/*.so</binary>
   <binary>${prefix}/lib/gstreamer-1.0/*.so</binary>
   <binary>${prefix}/lib/libgst*.dylib</binary>
+  <binary>${prefix}/lib/libsoup*.dylib</binary>
+  <binary>${prefix}/lib/libpango*.dylib</binary>
+  <binary>${prefix}/lib/libgdk*.dylib</binary>
+  <binary>${prefix}/lib/libcairo-gobject*.dylib</binary>
   <binary>${prefix}/lib/libgtk-${gtkversion}.dylib</binary>
   <binary>${prefix}/lib/libgtkmacintegration-gtk3.dylib</binary>
   <binary>${prefix}/lib/${env:QL_PYTHONID}/lib-dynload/*.so</binary>

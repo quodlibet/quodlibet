@@ -14,7 +14,7 @@ The following distributions package Quod Libet:
 
 * Arch Linux: https://www.archlinux.org/packages/extra/any/quodlibet/
 * Debian: https://packages.debian.org/source/sid/quodlibet
-* Fedora: https://admin.fedoraproject.org/pkgdb/package/rpms/quodlibet/
+* Fedora: https://packages.fedoraproject.org/pkgs/quodlibet
 
 The Ubuntu PPA / unstable repo builds are automated by the following scripts:
 
@@ -33,7 +33,8 @@ The following software is needed to start Ex Falso or Quod Libet.
 * **pycairo** (>= 1.8)
 * **mutagen** (>= 1.34)
 * **GTK+** (>= 3.18)
-* **libsoup** (>= 2.52)
+* **libsoup** (>= 3.0)
+* **gir1.2-soup-3.0**
 * On OS X only: **PyObjC**
 * **feedparser**
 
@@ -71,7 +72,7 @@ Optional Runtime Dependencies
 **libkeybinder-3.0** + **typelib**:
     * Multimedia key support under non Gnome setups
 
-**libgtksourceview-3** + **typelib**:
+**libgtksourceview-4** + **typelib**:
     * Undo/Redo support for multiline text fields
 
 **libmodplug1**:
@@ -93,20 +94,8 @@ plugin from loading.
 **GStreamer Plugins Bad**:
     * For the acoustid plugin
 
-**python-dbus**:
-    * "Browse Folders"
-    * Screensaver plugins
-    * uPnP server
-    * Gnome search provider
-    * gajim status updater
-    * MPRIS
-    * ...
-
 **rygel**:
     * The uPnP media server
-
-**webkit2gtk** (== 4.0) + **typelibs**:
-    * For the Lyrics Window plugin
 
 **libappindicator-gtk3** + **typelibs**:
     * For the Tray Icon plugin under Ubuntu Unity and KDE Plasma
@@ -115,15 +104,26 @@ Python libraries
 ^^^^^^^^^^^^^^^^
 These can be installed with pip (as well as OS-level packages in some places).
 
+**dbus-python**:
+    * "Browse Folders"
+    * Screensaver plugins
+    * uPnP server
+    * Gnome search provider
+    * gajim status updater
+    * MPRIS
+    * ...
+
 **paho-mqtt**
     * For the MQTT plugin
-
-**pyinotify**:
-    * For the auto library update plugin
 
 **musicbrainzngs** (>= 0.6):
     * For the Musicbrainz plugin
 
+**soco** (>0.27):
+    * For the Sonos plugins
+
+**pypresence**:
+    * For the Discord plugin
 
 Build Dependencies
 ------------------
@@ -143,5 +143,5 @@ Testing Dependencies
 
 * The build dependencies
 * **pytest**
-* **flake8**
+* **ruff**
 * **polib**

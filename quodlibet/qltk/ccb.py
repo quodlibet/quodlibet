@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#        2012-22 Nick Boultbee
+#        2012-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ class ConfigCheckButton(Gtk.CheckButton):
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
             self.set_tooltip_text(tooltip)
-        self.connect('toggled', ConfigCheckButton.__toggled, section, option)
+        self.connect("toggled", ConfigCheckButton.__toggled, section, option)
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())
@@ -43,10 +43,13 @@ class ConfigSwitch(Gtk.Box):
     def __init__(self, label, section, option, populate=False, tooltip=None,
                  default=None):
         super().__init__()
-        self.label = Gtk.Label(label, use_underline=True)
         self.switch = Gtk.Switch()
-        self.label.set_mnemonic_widget(self.switch)
-        self.pack_start(self.label, False, True, 0)
+        eb = Gtk.EventBox()
+        if label is not None:
+            self.label = Gtk.Label(label, use_underline=True)
+            self.label.set_mnemonic_widget(self.switch)
+            eb.add(self.label)
+        self.pack_start(eb, False, True, 0)
         self.pack_end(self.switch, False, True, 0)
         if default is None:
             default = config._config.defaults.getboolean(section, option, True)
@@ -55,7 +58,9 @@ class ConfigSwitch(Gtk.Box):
             self.set_active(config.getboolean(section, option, default))
         if tooltip:
             self.switch.set_tooltip_text(tooltip)
-        self.switch.connect('notify::active', self.__activated, section, option)
+        self.switch.connect("notify::active", self.__activated, section, option)
+        eb.connect("button_press_event",
+                   lambda *_: self.switch.set_state(not self.switch.get_state()))
 
     def set_active(self, value: bool):
         self.switch.set_active(value)
@@ -81,7 +86,7 @@ class ConfigCheckMenuItem(Gtk.CheckMenuItem):
             label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option, default))
-        self.connect('toggled', ConfigCheckMenuItem.__toggled, section, option)
+        self.connect("toggled", ConfigCheckMenuItem.__toggled, section, option)
 
     def __toggled(self, section, option):
         config.set(section, option, str(bool(self.get_active())).lower())

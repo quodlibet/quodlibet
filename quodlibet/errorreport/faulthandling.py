@@ -24,7 +24,7 @@ from quodlibet.util.dprint import print_exc
 _fileobj = None
 
 
-class FaultHandlerCrash(Exception):
+class FaultHandlerCrash(Exception):  # noqa
     """The exception type used for raising errors with a faulthandler
     stacktrace. Needed so we can add special handling in the error reporting
     code paths.
@@ -56,7 +56,7 @@ class FaultHandlerCrash(Exception):
                 path, func = m.groups()
                 path = os.path.basename(path)
                 values.extend([path, func])
-        return u"|".join(values)
+        return "|".join(values)
 
 
 def enable(path):
@@ -76,7 +76,7 @@ def enable(path):
     # we open as reading so raise_and_clear_error() can extract the old error
     try:
         _fileobj = open(path, "rb+")
-    except IOError as e:
+    except OSError as e:
         if e.errno == errno.ENOENT:
             _fileobj = open(path, "wb+")
         else:
@@ -101,7 +101,7 @@ def disable():
     try:
         _fileobj.close()
         os.unlink(_fileobj.name)
-    except (OSError, IOError):
+    except OSError:
         pass
     _fileobj = None
 
@@ -131,7 +131,7 @@ def raise_and_clear_error():
         text = _fileobj.read().decode("utf-8", "replace").strip()
         _fileobj.seek(0)
         _fileobj.truncate()
-    except IOError:
+    except OSError:
         print_exc()
     else:
         if text:
@@ -142,11 +142,11 @@ def crash():
     """Makes the process segfault. For testing purposes"""
 
     if os.name == "nt":
-        i = ctypes.c_char(b'a')
+        i = ctypes.c_char(b"a")
         j = ctypes.pointer(i)
         c = 0
         while True:
-            j[c] = b'a'
+            j[c] = b"a"
             c += 1
     else:
         ctypes.string_at(0)

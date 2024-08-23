@@ -174,12 +174,12 @@ class TextColumn(SongListColumn):
         assert widget is not None
         layout = widget.create_pango_layout(text)
         text_width = layout.get_pixel_size()[0]
-        cell_pad = self._render.get_property('xpad')
+        cell_pad = self._render.get_property("xpad")
 
         return text_width + 8 + cell_pad
 
     def _check_width_update(self):
-        width = self._cell_width(u"abc 123")
+        width = self._cell_width("abc 123")
         if self._last_width == width:
             self._force_update = False
             return
@@ -241,7 +241,7 @@ class RatingColumn(TextColumn):
         rating, default = value
         cell.set_sensitive(rating is not None)
         value = rating if rating is not None else default
-        cell.set_property('text', util.format_rating(value))
+        cell.set_property("text", util.format_rating(value))
 
 
 class WideTextColumn(TextColumn):
@@ -251,7 +251,7 @@ class WideTextColumn(TextColumn):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        self._render.set_property("ellipsize", Pango.EllipsizeMode.END)
         self.set_resizable(True)
 
     def _get_min_width(self):
@@ -261,7 +261,7 @@ class WideTextColumn(TextColumn):
         return model.get_value(iter_).comma(self.header_name)
 
     def _apply_value(self, model, iter_, cell, value):
-        cell.set_property('text', value)
+        cell.set_property("text", value)
 
 
 class DateColumn(WideTextColumn):
@@ -272,11 +272,11 @@ class DateColumn(WideTextColumn):
 
     def _apply_value(self, model, iter_, cell, stamp):
         if not stamp:
-            cell.set_property('text', _("Never"))
+            cell.set_property("text", _("Never"))
         else:
             fmt = config.gettext("settings", "datecolumn_timestamp_format")
             text = format_date(stamp, fmt)
-            cell.set_property('text', text)
+            cell.set_property("text", text)
 
 
 class NonSynthTextColumn(WideTextColumn):
@@ -298,7 +298,7 @@ class NonSynthTextColumn(WideTextColumn):
         return model.get_value(iter_).get(self.header_name, "")
 
     def _apply_value(self, model, iter_, cell, value):
-        cell.set_property('text', value.replace("\n", ", "))
+        cell.set_property("text", value.replace("\n", ", "))
 
 
 class FSColumn(WideTextColumn):
@@ -308,14 +308,14 @@ class FSColumn(WideTextColumn):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._render.set_property('ellipsize', Pango.EllipsizeMode.MIDDLE)
+        self._render.set_property("ellipsize", Pango.EllipsizeMode.MIDDLE)
 
     def _fetch_value(self, model, iter_):
         values = model.get_value(iter_).list(self.header_name)
-        return values[0] if values else fsnative(u"")
+        return values[0] if values else fsnative("")
 
     def _apply_value(self, model, iter_, cell, value):
-        cell.set_property('text', fsn2text(unexpand(value)))
+        cell.set_property("text", fsn2text(unexpand(value)))
 
 
 class PatternColumn(WideTextColumn):
@@ -335,10 +335,10 @@ class PatternColumn(WideTextColumn):
         song = model.get_value(iter_)
         if self._pattern is not None:
             return self._pattern % song
-        return u""
+        return ""
 
     def _apply_value(self, model, iter_, cell, value):
-        cell.set_property('text', value)
+        cell.set_property("text", value)
 
 
 class NumericColumn(TextColumn):
@@ -346,7 +346,7 @@ class NumericColumn(TextColumn):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self._render.set_property('xalign', 1.0)
+        self._render.set_property("xalign", 1.0)
         self.set_alignment(1.0)
         self.set_expand(False)
         self.set_resizable(False)
@@ -373,11 +373,11 @@ class NumericColumn(TextColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         if isinstance(value, float):
-            text = u"%.2f" % round(value, 2)
+            text = "%.2f" % round(value, 2)
         else:
             text = str(value)
 
-        cell.set_property('text', text)
+        cell.set_property("text", text)
         self._recalc_width(model.get_path(iter_), text)
 
     def _delayed_recalc(self):
@@ -443,7 +443,7 @@ class LengthColumn(NumericColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         text = util.format_time_display(value)
-        cell.set_property('text', text)
+        cell.set_property("text", text)
         self._recalc_width(model.get_path(iter_), text)
 
 
@@ -461,7 +461,7 @@ class FilesizeColumn(NumericColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         text = util.format_size(value)
-        cell.set_property('text', text)
+        cell.set_property("text", text)
         self._recalc_width(model.get_path(iter_), text)
 
 
@@ -472,14 +472,14 @@ class CurrentColumn(SongListColumn):
         super().__init__("~current")
         self._render = CellRendererPixbuf()
         self.pack_start(self._render, True)
-        self._render.set_property('xalign', 0.5)
+        self._render.set_property("xalign", 0.5)
 
         self.set_fixed_width(24)
         self.set_expand(False)
         self.set_cell_data_func(self._render, self._cdf)
 
     def _format_title(self, tag):
-        return u""
+        return ""
 
     def _cdf(self, column, cell, model, iter_, user_data):
         PLAY = "media-playback-start"
@@ -509,4 +509,4 @@ class CurrentColumn(SongListColumn):
         else:
             gicon = None
 
-        cell.set_property('gicon', gicon)
+        cell.set_property("gicon", gicon)

@@ -13,25 +13,18 @@ cd "${DIR}"
 
 # CONFIG START
 
-ARCH="x86_64"
 BUILD_VERSION="0"
 
 # CONFIG END
 
 MISC="${DIR}"/misc
-if [ "${ARCH}" = "x86_64" ]; then
-    MINGW="mingw64"
-else
-    MINGW="mingw32"
-fi
-
 QL_VERSION="0.0.0"
 QL_VERSION_DESC="UNKNOWN"
 
 function set_build_root {
     BUILD_ROOT="$1"
     REPO_CLONE="${BUILD_ROOT}"/quodlibet
-    MINGW_ROOT="${BUILD_ROOT}/${MINGW}"
+    MINGW_ROOT="${BUILD_ROOT}${MINGW_PREFIX}"
     export PATH="${MINGW_ROOT}/bin:${PATH}"
 }
 
@@ -42,11 +35,11 @@ function build_pacman {
 }
 
 function build_pip {
-    "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe -m pip "$@"
+    "${MINGW_ROOT}"/bin/python3.exe -m pip "$@"
 }
 
 function build_python {
-    "${BUILD_ROOT}"/"${MINGW}"/bin/python3.exe "$@"
+    "${MINGW_ROOT}"/bin/python3.exe "$@"
 }
 
 function build_compileall_pyconly {
@@ -58,8 +51,14 @@ function build_compileall {
 }
 
 function install_pre_deps {
-    pacman -S --needed --noconfirm p7zip git dos2unix \
-        mingw-w64-"${ARCH}"-nsis wget mingw-w64-"${ARCH}"-toolchain
+    pacman -S --needed --noconfirm \
+        git \
+        dos2unix \
+        "${MINGW_PACKAGE_PREFIX}"-7zip \
+        "${MINGW_PACKAGE_PREFIX}"-nsis \
+        "${MINGW_PACKAGE_PREFIX}"-curl \
+        "${MINGW_PACKAGE_PREFIX}"-python \
+        "${MINGW_PACKAGE_PREFIX}"-cc
 }
 
 function create_root {
@@ -78,59 +77,60 @@ function extract_installer {
     [ -z "$1" ] && (echo "Missing arg"; exit 1)
 
     mkdir -p "$BUILD_ROOT"
-    7z x -o"$BUILD_ROOT"/"$MINGW" "$1"
+    7z x -o"$MINGW_ROOT" "$1"
     rm -rf "${MINGW_ROOT:?}/$PLUGINSDIR" "$MINGW_ROOT"/*.txt "$MINGW_ROOT"/*.nsi
 }
 
 function install_deps {
     build_pacman --noconfirm -S \
-        mingw-w64-"${ARCH}"-gettext \
-        mingw-w64-"${ARCH}"-gdk-pixbuf2 \
-        mingw-w64-"${ARCH}"-librsvg \
-        mingw-w64-"${ARCH}"-gtk3 \
-        mingw-w64-"${ARCH}"-python3 \
-        mingw-w64-"${ARCH}"-python3-gobject \
-        mingw-w64-"${ARCH}"-python3-cairo \
-        mingw-w64-"${ARCH}"-python3-pip \
-        mingw-w64-"${ARCH}"-libsoup \
-        mingw-w64-"${ARCH}"-gstreamer \
-        mingw-w64-"${ARCH}"-gst-plugins-base \
-        mingw-w64-"${ARCH}"-gst-plugins-good \
-        mingw-w64-"${ARCH}"-gst-plugins-bad \
-        mingw-w64-"${ARCH}"-gst-plugins-ugly \
-        mingw-w64-"${ARCH}"-gst-libav \
-        mingw-w64-"${ARCH}"-python3-pytest \
-        mingw-w64-"${ARCH}"-python3-certifi \
-        mingw-w64-"${ARCH}"-python3-coverage \
-        mingw-w64-"${ARCH}"-python3-toml
+        "${MINGW_PACKAGE_PREFIX}"-gettext \
+        "${MINGW_PACKAGE_PREFIX}"-gdk-pixbuf2 \
+        "${MINGW_PACKAGE_PREFIX}"-librsvg \
+        "${MINGW_PACKAGE_PREFIX}"-gtk3 \
+        "${MINGW_PACKAGE_PREFIX}"-python \
+        "${MINGW_PACKAGE_PREFIX}"-python-gobject \
+        "${MINGW_PACKAGE_PREFIX}"-python-cairo \
+        "${MINGW_PACKAGE_PREFIX}"-python-pip \
+        "${MINGW_PACKAGE_PREFIX}"-libsoup3 \
+        "${MINGW_PACKAGE_PREFIX}"-gstreamer \
+        "${MINGW_PACKAGE_PREFIX}"-gst-plugins-base \
+        "${MINGW_PACKAGE_PREFIX}"-gst-plugins-good \
+        "${MINGW_PACKAGE_PREFIX}"-gst-plugins-bad \
+        "${MINGW_PACKAGE_PREFIX}"-gst-plugins-ugly \
+        "${MINGW_PACKAGE_PREFIX}"-gst-libav \
+        "${MINGW_PACKAGE_PREFIX}"-python-certifi \
+        "${MINGW_PACKAGE_PREFIX}"-python-pytest \
+        "${MINGW_PACKAGE_PREFIX}"-python-coverage \
+        "${MINGW_PACKAGE_PREFIX}"-python-mutagen
 
     PIP_REQUIREMENTS="\
 feedparser
 musicbrainzngs
-mutagen
-flake8==5.0.4
 "
 
+    # shellcheck disable=SC2046
     build_pip install --no-binary ":all:" \
         --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr "\\n" " ")
 
+    # transitive dependencies which we don't need
     build_pacman --noconfirm -Rdds \
-        mingw-w64-"${ARCH}"-shared-mime-info \
-        mingw-w64-"${ARCH}"-python-pip \
-        mingw-w64-"${ARCH}"-ncurses \
-        mingw-w64-"${ARCH}"-tk \
-        mingw-w64-"${ARCH}"-tcl \
-        mingw-w64-"${ARCH}"-opencv \
-        mingw-w64-"${ARCH}"-libdvdcss \
-        mingw-w64-"${ARCH}"-libdvdnav \
-        mingw-w64-"${ARCH}"-libdvdread \
-        mingw-w64-"${ARCH}"-frei0r-plugins \
-        mingw-w64-"${ARCH}"-openexr \
-        mingw-w64-"${ARCH}"-openh264 \
-        mingw-w64-"${ARCH}"-zbar \
-        mingw-w64-"${ARCH}"-gsl
+        "${MINGW_PACKAGE_PREFIX}"-shared-mime-info \
+        "${MINGW_PACKAGE_PREFIX}"-python-pip \
+        "${MINGW_PACKAGE_PREFIX}"-ncurses \
+        "${MINGW_PACKAGE_PREFIX}"-tk \
+        "${MINGW_PACKAGE_PREFIX}"-tcl \
+        "${MINGW_PACKAGE_PREFIX}"-libdvdcss \
+        "${MINGW_PACKAGE_PREFIX}"-libdvdnav \
+        "${MINGW_PACKAGE_PREFIX}"-libdvdread \
+        "${MINGW_PACKAGE_PREFIX}"-frei0r-plugins \
+        "${MINGW_PACKAGE_PREFIX}"-openexr \
+        "${MINGW_PACKAGE_PREFIX}"-openh264 \
+        "${MINGW_PACKAGE_PREFIX}"-zbar \
+        "${MINGW_PACKAGE_PREFIX}"-gsl \
+        "${MINGW_PACKAGE_PREFIX}"-vulkan-headers
 
-    build_pacman -S --noconfirm mingw-w64-"${ARCH}"-python3-setuptools
+    build_pacman --noconfirm -S \
+        "${MINGW_PACKAGE_PREFIX}"-python-setuptools
 }
 
 function install_quodlibet {
@@ -141,14 +141,15 @@ function install_quodlibet {
 
     (cd "${REPO_CLONE}" && git checkout "$1") || exit 1
 
-    build_python "${REPO_CLONE}"/setup.py install
-
-    # Create launchers
-    python3 "${MISC}"/create-launcher.py \
-        "${QL_VERSION}" "${MINGW_ROOT}"/bin
+    build_python "${REPO_CLONE}"/setup.py install --old-and-unmanageable
 
     QL_VERSION=$(MSYSTEM="" build_python -c \
         "import quodlibet.const; import sys; sys.stdout.write(quodlibet.const.VERSION)")
+
+    # Create launchers
+    python "${MISC}"/create-launcher.py \
+        "${QL_VERSION}" "${MINGW_ROOT}"/bin
+
     QL_VERSION_DESC="$QL_VERSION"
     if [ "$1" = "main" ]
     then
@@ -362,10 +363,11 @@ function build_portable_installer {
     mkdir "$PORTABLE"/config
     cp -RT "${MINGW_ROOT}" "$PORTABLE"/data
 
-    rm -Rf 7zout 7z1604.exe
+    local SEVENZINST="7z2301-x64.exe"
+    rm -Rf 7zout "$SEVENZINST"
     7z a payload.7z "$PORTABLE"
-    wget -P "$DIR" -c http://www.7-zip.org/a/7z1604.exe
-    7z x -o7zout 7z1604.exe
+    curl -L "http://www.7-zip.org/a/$SEVENZINST" -o "$DIR/$SEVENZINST"
+    7z x -o7zout "$SEVENZINST"
     cat 7zout/7z.sfx payload.7z > "$PORTABLE".exe
-    rm -Rf 7zout 7z1604.exe payload.7z "$PORTABLE"
+    rm -Rf 7zout "$SEVENZINST" payload.7z "$PORTABLE"
 }

@@ -88,10 +88,10 @@ def main(argv=None):
     in_all = ("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
               "~#added ~#bitrate ~current ~#laststarted ~basename "
               "~dirname").split()
-    for Kind in browsers.browsers:
-        if Kind.headers is not None:
-            Kind.headers.extend(in_all)
-        Kind.init(library)
+    for browser_cls in browsers.browsers:
+        if browser_cls.headers is not None:
+            browser_cls.headers.extend(in_all)
+        browser_cls.init(library)
 
     pm = quodlibet.init_plugins("no-plugins" in startup_actions)
 
@@ -153,7 +153,7 @@ def main(argv=None):
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
     except ImportError:
-        DBusHandler = None
+        DBusHandler = None  # noqa
 
     mmkeys_handler = MMKeysHandler(app)
     mmkeys_handler.start()

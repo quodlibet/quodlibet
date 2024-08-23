@@ -165,7 +165,7 @@ def parse_icecast(url, timeout=5):
             raise ParseError
         stream = root + mount_point
 
-        bitrate = current = peak = "0"
+        current = peak = "0"
         table = c.findAll("table")[-1]
         for row in table.findAll("tr"):
             to_text = lambda tag: "".join(tag.findAll(text=True))

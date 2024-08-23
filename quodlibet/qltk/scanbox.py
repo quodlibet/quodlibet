@@ -38,8 +38,8 @@ class ScanBox(Gtk.HBox):
         remove_item = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         menu.append(remove_item)
         menu.show_all()
-        view.connect('popup-menu', self.__popup, menu)
-        connect_obj(remove_item, 'activate', self.__remove, view)
+        view.connect("popup-menu", self.__popup, menu)
+        connect_obj(remove_item, "activate", self.__remove, view)
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
@@ -49,11 +49,11 @@ class ScanBox(Gtk.HBox):
         sw.set_tooltip_text(_("Songs in the listed folders will be added "
                               "to the library during a library refresh"))
         render = Gtk.CellRendererText()
-        render.set_property('ellipsize', Pango.EllipsizeMode.END)
+        render.set_property("ellipsize", Pango.EllipsizeMode.END)
 
         def cdf(column, cell, model, iter_, data):
             path = model.get_value(iter_)
-            cell.set_property('text', fsn2text(unexpand(path)))
+            cell.set_property("text", fsn2text(unexpand(path)))
 
         column = Gtk.TreeViewColumn(None, render)
         column.set_cell_data_func(render, cdf)

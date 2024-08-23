@@ -34,4 +34,4 @@ def init(app):
             print_d(str(e))
         else:
             return client
-    assert False
+    raise AssertionError()

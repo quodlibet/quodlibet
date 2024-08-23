@@ -36,13 +36,13 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
         self.pack_start(self._to, True, True, 0)
         self.pack_start(Gtk.Label("/"), True, True, 0)
 
-        connect_obj(self._from, 'changed', self.emit, 'changed')
-        connect_obj(self._to, 'changed', self.emit, 'changed')
+        connect_obj(self._from, "changed", self.emit, "changed")
+        connect_obj(self._to, "changed", self.emit, "changed")
 
     def filter(self, orig_or_tag, value):
         fr = self._from.get_text()
         to = self._to.get_text()
         try:
             return re.sub(fr, to, value)
-        except:
+        except Exception:
             return value

@@ -77,8 +77,8 @@ class EditPlaycount(SongsMenuPlugin):
         if len(songs) == 1:
             play.set_adjustment(Gtk.Adjustment(0, 0, 9999, 1, 1))
             skip.set_adjustment(Gtk.Adjustment(0, 0, 9999, 1, 1))
-            play.set_value(songs[0].get('~#playcount', 0))
-            skip.set_value(songs[0].get('~#skipcount', 0))
+            play.set_value(songs[0].get("~#playcount", 0))
+            skip.set_value(songs[0].get("~#skipcount", 0))
         else:
             note = Gtk.Label()
             note.set_justify(Gtk.Justification.CENTER)
@@ -93,24 +93,24 @@ class EditPlaycount(SongsMenuPlugin):
             for song in songs:
                 # Increment when not in single mode.
                 if len(songs) == 1:
-                    song['~#playcount'] = play.get_value_as_int()
-                    song['~#skipcount'] = skip.get_value_as_int()
+                    song["~#playcount"] = play.get_value_as_int()
+                    song["~#skipcount"] = skip.get_value_as_int()
                 else:  # Can't use += here because these tags might not exist.
-                    song['~#playcount'] = max(0, (song.get('~#playcount', 0) +
+                    song["~#playcount"] = max(0, (song.get("~#playcount", 0) +
                                                   play.get_value_as_int()))
-                    song['~#skipcount'] = max(0, (song.get('~#skipcount', 0) +
+                    song["~#skipcount"] = max(0, (song.get("~#skipcount", 0) +
                                                   skip.get_value_as_int()))
 
                 # When the playcount is set to 0, delete the playcount
                 # itself and the last played/started time. We don't
                 # want unused or impossible data floating around.
-                if song.get('~#playcount', 0) == 0:
-                    for tag in ['~#playcount', '~#lastplayed', '~#laststarted']:
+                if song.get("~#playcount", 0) == 0:
+                    for tag in ["~#playcount", "~#lastplayed", "~#laststarted"]:
                         song.pop(tag, None)
 
                 # Also delete the skip count if it's zero.
-                if song.get('~#skipcount', 0) == 0:
-                    song.pop('~#skipcount', None)
+                if song.get("~#skipcount", 0) == 0:
+                    song.pop("~#skipcount", None)
 
         dlg.destroy()
         return

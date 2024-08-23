@@ -12,6 +12,7 @@ import os
 from gi.repository import Gtk, Gdk, Pango
 
 from quodlibet import _
+
 from quodlibet import print_w
 from quodlibet import qltk
 from quodlibet.player._base import BasePlayer
@@ -31,19 +32,21 @@ class SongInfo(Gtk.EventBox):
     song information and a song context menu.
     """
 
-    _pattern = (u"""\
-[span weight='bold' size='large']<title>[/span]\
-<~length| (<~length>)><version|
-[small][b]<version>[/b][/small]><~people|
-%(people)s><album|
-[b]<album>[/b]<discnumber| - %(disc)s>\
-<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - %(track)s>>"""
-        % {
+    _FORMAT_VARS = {
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
         "track": _("Track %s") % "<tracknumber>"
-        })
+    }
+
+    _pattern = ("""\
+[span weight='bold' size='large']<title>[/span]\
+<~length| (<~length>)><version|
+[small][b]<version>[/b][/small]><~people|
+{people}><album|
+[b]<album>[/b]<discnumber| - {disc}>\
+<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - {track}>>"""
+                .format(**_FORMAT_VARS))
 
     _not_playing = "<span size='xx-large'>%s</span>" % _("Not playing")
 
@@ -59,18 +62,18 @@ class SongInfo(Gtk.EventBox):
         align.add(label)
         label.set_alignment(0.0, 0.0)
         self._label = label
-        connect_destroy(library, 'changed', self._on_library_changed, player)
-        connect_destroy(player, 'song-started', self._on_song_started)
+        connect_destroy(library, "changed", self._on_library_changed, player)
+        connect_destroy(player, "song-started", self._on_song_started)
 
-        label.connect('populate-popup', self._on_label_popup, player, library)
-        self.connect('key-press-event', self._on_key_press_event, player)
-        self.connect('button-press-event', self._on_button_press_event,
+        label.connect("populate-popup", self._on_label_popup, player, library)
+        self.connect("key-press-event", self._on_key_press_event, player)
+        self.connect("button-press-event", self._on_button_press_event,
                      player, library)
 
         try:
             with open(self._pattern_filename, "rb") as h:
                 self._pattern = h.read().strip().decode("utf-8")
-        except (EnvironmentError, UnicodeDecodeError):
+        except (OSError, UnicodeDecodeError):
             pass
 
         self._compiled = XMLFromMarkupPattern(self._pattern)
@@ -111,8 +114,8 @@ class SongInfo(Gtk.EventBox):
             menu.append(sub)
 
     def _get_menu(self, player, library):
-        item = qltk.MenuItem(_(u"_Edit Display…"), Icons.EDIT)
-        item.connect('activate', self._on_edit_display, player)
+        item = qltk.MenuItem(_("_Edit Display…"), Icons.EDIT)
+        item.connect("activate", self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
         song_menu = SongsMenu(library, songs, remove=False, delete=True,
@@ -125,7 +128,7 @@ class SongInfo(Gtk.EventBox):
         editor = PatternEdit(
             self, SongInfo._pattern, alternative_markup=True, links=True)
         editor.text = self._pattern
-        editor.apply.connect('clicked', self._on_set_pattern, editor, player)
+        editor.apply.connect("clicked", self._on_set_pattern, editor, player)
         editor.show()
 
     def _on_set_pattern(self, button, edit, player):
@@ -139,9 +142,8 @@ class SongInfo(Gtk.EventBox):
             try:
                 with open(self._pattern_filename, "wb") as h:
                     h.write(self._pattern.encode("utf-8") + b"\n")
-            except EnvironmentError as e:
-                print_w("Couldn't save display pattern '%s' (%s)"
-                        % (self._pattern, e))
+            except OSError as e:
+                print_w(f"Couldn't save display pattern '{self._pattern}' ({e})")
         self._compiled = XMLFromMarkupPattern(self._pattern)
         self._update_info(player)
 
@@ -152,7 +154,7 @@ class SongInfo(Gtk.EventBox):
     def _on_song_started(self, player, song):
         self._update_info(player)
 
-    def _update_info(self, player, _last={}):
+    def _update_info(self, player, _last={}):  # noqa
         text = (self._not_playing if player.info is None
                 else self._compiled % player.info)
 

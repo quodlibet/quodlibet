@@ -12,17 +12,17 @@ browsers.init()
 
 class TBrowsers(TestCase):
     def test_presence(self):
-        self.failUnless(browsers.tracks)
-        self.failUnless(browsers.paned)
-        self.failUnless(browsers.iradio)
-        self.failUnless(browsers.podcasts)
-        self.failUnless(browsers.albums)
-        self.failUnless(browsers.playlists)
-        self.failUnless(browsers.filesystem)
+        self.assertTrue(browsers.tracks)
+        self.assertTrue(browsers.paned)
+        self.assertTrue(browsers.iradio)
+        self.assertTrue(browsers.podcasts)
+        self.assertTrue(browsers.albums)
+        self.assertTrue(browsers.playlists)
+        self.assertTrue(browsers.filesystem)
 
     def test_get(self):
-        self.failUnless(browsers.get("SearchBar") is browsers.tracks.TrackList)
-        self.failUnless(
+        self.assertTrue(browsers.get("SearchBar") is browsers.tracks.TrackList)
+        self.assertTrue(
             browsers.get("FileSystem") is browsers.filesystem.FileSystem)
         self.assertEqual(browsers.get("Paned"), browsers.paned.PanedBrowser)
         self.assertEqual(browsers.get("paned"), browsers.paned.PanedBrowser)
@@ -55,9 +55,9 @@ class TBrowsers(TestCase):
         self.assertRaises(ValueError, browsers.index, "DoesNotExist")
 
     def test_migrate(self):
-        self.failUnless(
+        self.assertTrue(
             sys.modules["browsers.audiofeeds"] is browsers.podcasts)
-        self.failUnless(
+        self.assertTrue(
             sys.modules["browsers.iradio"] is browsers.iradio)
 
     def test_old_names(self):

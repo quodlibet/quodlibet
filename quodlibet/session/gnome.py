@@ -13,10 +13,10 @@ from ._base import SessionClient, SessionError
 
 class GnomeSessionClient(SessionClient):
 
-    DBUS_NAME = 'org.gnome.SessionManager'
-    DBUS_OBJECT_PATH = '/org/gnome/SessionManager'
-    DBUS_MAIN_INTERFACE = 'org.gnome.SessionManager'
-    DBUS_CLIENT_INTERFACE = 'org.gnome.SessionManager.ClientPrivate'
+    DBUS_NAME = "org.gnome.SessionManager"
+    DBUS_OBJECT_PATH = "/org/gnome/SessionManager"
+    DBUS_MAIN_INTERFACE = "org.gnome.SessionManager"
+    DBUS_CLIENT_INTERFACE = "org.gnome.SessionManager.ClientPrivate"
 
     def __init__(self):
         super().__init__()
@@ -34,7 +34,7 @@ class GnomeSessionClient(SessionClient):
                 self.DBUS_MAIN_INTERFACE, None)
             if session_mgr.get_name_owner() is None:
                 raise SessionError("%s unowned" % self.DBUS_NAME)
-            client_path = session_mgr.RegisterClient('(ss)', app.id, "")
+            client_path = session_mgr.RegisterClient("(ss)", app.id, "")
             if client_path is None:
                 # https://github.com/quodlibet/quodlibet/issues/2435
                 raise SessionError(
@@ -46,23 +46,23 @@ class GnomeSessionClient(SessionClient):
                 self.DBUS_CLIENT_INTERFACE, None)
 
             def g_signal_cb(proxy, sender, signal, args):
-                if signal == 'EndSession':
+                if signal == "EndSession":
                     print_d("GSM sent EndSession: going down")
-                    proxy.EndSessionResponse('(bs)', True, "")
+                    proxy.EndSessionResponse("(bs)", True, "")
                     app.quit()
-                elif signal == 'Stop':
+                elif signal == "Stop":
                     print_d("GSM sent Stop: going down")
                     app.quit()
-                elif signal == 'QueryEndSession':
+                elif signal == "QueryEndSession":
                     print_d("GSM sent QueryEndSession")
-                    proxy.EndSessionResponse('(bs)', True, "")
+                    proxy.EndSessionResponse("(bs)", True, "")
 
-            self._sig_id = client_priv.connect('g-signal', g_signal_cb)
+            self._sig_id = client_priv.connect("g-signal", g_signal_cb)
             self._client_priv = client_priv
             self._client_path = client_path
             print_d("Connected with gnome session manager: %s" % client_path)
         except GLib.Error as e:
-            raise SessionError(e)
+            raise SessionError(e) from e
 
     def close(self):
         if self._client_priv is None:
@@ -77,7 +77,7 @@ class GnomeSessionClient(SessionClient):
                 bus, Gio.DBusProxyFlags.NONE, None,
                 self.DBUS_NAME, self.DBUS_OBJECT_PATH,
                 self.DBUS_MAIN_INTERFACE, None)
-            session_mgr.UnregisterClient('(o)', self._client_path)
+            session_mgr.UnregisterClient("(o)", self._client_path)
         except GLib.Error as e:
             print_w(str(e))
 

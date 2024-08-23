@@ -19,14 +19,14 @@ class XSMPSessionClient(SessionClient):
         try:
             from ._xsmp import XSMPClient, XSMPError
         except ImportError as e:
-            raise SessionError(e)
+            raise SessionError(e) from e
 
         print_d("Connecting with XSMP")
         client = XSMPClient()
         try:
             client.open()
         except XSMPError as e:
-            raise SessionError(e)
+            raise SessionError(e) from e
 
         try:
             from gi.repository import GdkX11
@@ -38,7 +38,7 @@ class XSMPSessionClient(SessionClient):
         print_d("Connected. Client ID: %s" % client.client_id)
 
         def save_yourself(client, *args):
-            print_d("xsmp: save_yourself %r" % (args,))
+            print_d(f"xsmp: save_yourself {args!r}")
             client.save_yourself_done(True)
 
         def die(client, *args):

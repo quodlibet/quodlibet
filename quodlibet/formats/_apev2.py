@@ -62,8 +62,8 @@ def write_cover(image):
 
     try:
         data = image.read()
-    except EnvironmentError as e:
-        raise AudioFileError(e)
+    except OSError as e:
+        raise AudioFileError(e) from e
 
     ext = (image.extensions and image.extensions[0]) or "jpg"
     data = ("hello.%s\x00" % (ext)).encode("ascii") + data
@@ -89,7 +89,7 @@ class APEv2File(AudioFile):
              "original artist": "originalartist",
              "mixartist": "remixer",
     }
-    SNART = dict((v, k) for k, v in TRANS.items())
+    SNART = {v: k for k, v in TRANS.items()}
 
     can_change_images = True
 
@@ -133,7 +133,7 @@ class APEv2File(AudioFile):
     def write(self):
         with translate_errors():
             try:
-                tag = mutagen.apev2.APEv2(self['~filename'])
+                tag = mutagen.apev2.APEv2(self["~filename"])
             except mutagen.apev2.APENoHeaderError:
                 tag = mutagen.apev2.APEv2()
 
@@ -159,7 +159,7 @@ class APEv2File(AudioFile):
 
     def get_primary_image(self):
         try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
+            tag = mutagen.apev2.APEv2(self["~filename"])
         except Exception:
             return
 
@@ -175,7 +175,7 @@ class APEv2File(AudioFile):
 
     def get_images(self):
         try:
-            tag = mutagen.apev2.APEv2(self['~filename'])
+            tag = mutagen.apev2.APEv2(self["~filename"])
         except Exception:
             return []
 
@@ -191,7 +191,7 @@ class APEv2File(AudioFile):
     def clear_images(self):
         with translate_errors():
             try:
-                tag = mutagen.apev2.APEv2(self['~filename'])
+                tag = mutagen.apev2.APEv2(self["~filename"])
             except mutagen.apev2.APENoHeaderError:
                 return
 
@@ -207,7 +207,7 @@ class APEv2File(AudioFile):
     def set_image(self, image):
         with translate_errors():
             try:
-                tag = mutagen.apev2.APEv2(self['~filename'])
+                tag = mutagen.apev2.APEv2(self["~filename"])
             except mutagen.apev2.APENoHeaderError:
                 tag = mutagen.apev2.APEv2()
 
@@ -219,6 +219,6 @@ class APEv2File(AudioFile):
         key, value = write_cover(image)
         tag[key] = value
         with translate_errors():
-            tag.save(self['~filename'])
+            tag.save(self["~filename"])
 
         self.has_images = True

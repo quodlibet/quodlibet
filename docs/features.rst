@@ -84,7 +84,7 @@ Quod Libet has over 80 plugins contributed by devs and users, including:
   * Automatic tagging via `MusicBrainz <http://musicbrainz.org/>`_ and CDDB
   * Configurable on-screen display notifications when songs change
   * Last.fm / AudioScrobbler submission
-  * Plugins for web lyrics and synchronised (``.lrc`) lyrics viewing
+  * Plugins for web lyrics and synchronised (``.lrc``) lyrics viewing
   * A selection of audio-processing (pitch adjust, stereo downmix, EQ)
   * Custom Commands to run shell (think ``xargs`` for Quod Libet)
   * Find and remove duplicate / similar tracks across your entire library

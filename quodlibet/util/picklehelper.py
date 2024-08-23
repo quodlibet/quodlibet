@@ -13,7 +13,7 @@ import pickle
 from pickle import PicklingError, UnpicklingError, PickleError
 
 
-PickleError
+PickleError  # noqa
 
 
 def pickle_dumps(obj, protocol=0):
@@ -34,7 +34,7 @@ def pickle_dumps(obj, protocol=0):
     except PicklingError:
         raise
     except Exception as e:
-        raise PicklingError(e)
+        raise PicklingError(e) from e
 
 
 def pickle_dump(obj, file, protocol=0):
@@ -52,7 +52,7 @@ def pickle_dump(obj, file, protocol=0):
     except PicklingError:
         raise
     except Exception as e:
-        raise PicklingError(e)
+        raise PicklingError(e) from e
 
 
 def pickle_load(file, lookup_func=None):
@@ -100,7 +100,7 @@ def pickle_load(file, lookup_func=None):
         raise
     except Exception as e:
         # unpickle can fail in many ways
-        raise UnpicklingError(e)
+        raise UnpicklingError(e) from e
 
 
 def pickle_loads(data, lookup_func=None):

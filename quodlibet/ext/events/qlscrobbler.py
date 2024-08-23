@@ -5,7 +5,7 @@
 #                  Franz Pletyz <fpletz@franz-pletz.org>,
 #                  Nicholas J. Michalek <djphazer@gmail.com>,
 #                  Steven Robertson <steven@strobe.cc>
-#     2012-2022    Nick Boultbee
+#     2012-2024    Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +15,6 @@
 import os
 import threading
 import time
-from typing import Dict, List
 from hashlib import md5
 from urllib.parse import urlencode
 
@@ -37,13 +36,13 @@ from quodlibet.util.urllib import urlopen, UrllibError
 from quodlibet.errorreport import errorhook
 
 SERVICES = {
-    'Last.fm': 'http://post.audioscrobbler.com/',
-    'Libre.fm': 'http://turtle.libre.fm/'
+    "Last.fm": "https://post.audioscrobbler.com/",
+    "Libre.fm": "https://turtle.libre.fm/"
 }
 
-DEFAULT_SERVICE = 'Last.fm'
-DEFAULT_TITLEPAT = '<title><version| (<version>)>'
-DEFAULT_ARTISTPAT = '<artist|<artist>|<composer|<composer>|<performer>>>'
+DEFAULT_SERVICE = "Last.fm"
+DEFAULT_TITLEPAT = "<title><version| (<version>)>"
+DEFAULT_ARTISTPAT = "<artist|<artist>|<composer|<composer>|<performer>>>"
 
 plugin_config = PluginConfig("scrobbler")
 defaults = plugin_config.defaults
@@ -63,19 +62,19 @@ def config_get_url():
     """
 
     # TODO: share this between the classes better
-    service = plugin_config.get('service')
+    service = plugin_config.get("service")
     if service in SERVICES:
         return SERVICES[service]
     else:
-        return plugin_config.get('url')
+        return plugin_config.get("url")
 
 
 def config_get_title_pattern():
-    return plugin_config.get('titlepat') or DEFAULT_TITLEPAT
+    return plugin_config.get("titlepat") or DEFAULT_TITLEPAT
 
 
 def config_get_artist_pattern():
-    return plugin_config.get('artistpat') or DEFAULT_ARTISTPAT
+    return plugin_config.get("artistpat") or DEFAULT_ARTISTPAT
 
 
 class QLSubmitQueue:
@@ -91,7 +90,7 @@ class QLSubmitQueue:
 
     # These objects are shared across instances, to allow other plugins to
     # queue scrobbles in future versions of QL
-    queue: List[Dict[str, str]] = []
+    queue: list[dict[str, str]] = []
     changed_event = threading.Event()
 
     def set_nowplaying(self, song):
@@ -110,9 +109,9 @@ class QLSubmitQueue:
         if formatted is None:
             return
         if timestamp > 0:
-            formatted['i'] = str(timestamp)
+            formatted["i"] = str(timestamp)
         elif timestamp == 0:
-            formatted['i'] = str(int(time.time()))
+            formatted["i"] = str(int(time.time()))
         else:
             # TODO: Forging timestamps for submission from PMPs
             return
@@ -147,7 +146,7 @@ class QLSubmitQueue:
 
         self.broken = False
 
-        self.username, self.password, self.base_url = ('', '', '')
+        self.username, self.password, self.base_url = ("", "", "")
 
         # These need to be set early for _format_song to work
         self.titlepat = Pattern(config_get_title_pattern())
@@ -157,26 +156,26 @@ class QLSubmitQueue:
 
     def _load_queue(self):
         try:
-            with open(self.SCROBBLER_CACHE_FILE, 'rb') as disk_queue_file:
+            with open(self.SCROBBLER_CACHE_FILE, "rb") as disk_queue_file:
                 disk_queue = pickle_load(disk_queue_file)
             os.unlink(self.SCROBBLER_CACHE_FILE)
             self.queue += disk_queue
-        except (EnvironmentError, PickleError):
+        except (OSError, PickleError):
             pass
 
     @classmethod
-    def dump_queue(klass):
-        if klass.queue:
-            print_d(f"Saving scrobble queue to {klass.SCROBBLER_CACHE_FILE}")
+    def dump_queue(cls):
+        if cls.queue:
+            print_d(f"Saving scrobble queue to {cls.SCROBBLER_CACHE_FILE}")
             try:
-                with open(klass.SCROBBLER_CACHE_FILE, 'wb') as disk_queue_file:
-                    pickle_dump(klass.queue, disk_queue_file)
-            except (EnvironmentError, PickleError) as e:
+                with open(cls.SCROBBLER_CACHE_FILE, "wb") as disk_queue_file:
+                    pickle_dump(cls.queue, disk_queue_file)
+            except (OSError, PickleError) as e:
                 print_w(f"Couldn't persist scrobble queue ({e})")
 
     def _check_config(self):
-        user = plugin_config.get('username')
-        passw = md5(plugin_config.getbytes('password')).hexdigest()
+        user = plugin_config.get("username")
+        passw = md5(plugin_config.getbytes("password")).hexdigest()
         url = config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
@@ -188,7 +187,7 @@ class QLSubmitQueue:
             self.username, self.password, self.base_url = (user, passw, url)
             self.broken = False
             self.handshake_sent = False
-        self.offline = plugin_config.getboolean('offline')
+        self.offline = plugin_config.getboolean("offline")
         self.titlepat = Pattern(config_get_title_pattern())
         self.artpat = Pattern(config_get_artist_pattern())
 
@@ -246,8 +245,8 @@ class QLSubmitQueue:
         stamp = int(time.time())
         auth = md5(self.password.encode("utf-8") +
                    str(stamp).encode("utf-8")).hexdigest()
-        qp = dict(hs="true", p=self.PROTOCOL_VERSION, c=self.CLIENT,
-                  v=self.CLIENT_VERSION, u=self.username, a=auth, t=int(stamp))
+        qp = {"hs": "true", "p": self.PROTOCOL_VERSION, "c": self.CLIENT,
+              "v": self.CLIENT_VERSION, "u": self.username, "a": auth, "t": int(stamp)}
         qs = urlencode(qp)
         url = f"{self.base_url}/?{qs}"
         print_d(f"Sending handshake to service at {self.base_url}.")
@@ -275,8 +274,9 @@ class QLSubmitQueue:
         if status == "OK":
             self.session_id, self.nowplaying_url, self.submit_url = lines
             self.handshake_sent = True
-            print_d("Session ID: %s, NP URL: %s, Submit URL: %s" % (
-                self.session_id, self.nowplaying_url, self.submit_url))
+            print_d(f"Session ID: {self.session_id}, "
+                    f"NP URL: {self.nowplaying_url}, "
+                    f"Submit URL: {self.submit_url}")
             return True
         print_w(f"Bad handshake status: {status}")
         if status == "BADAUTH":
@@ -300,7 +300,7 @@ class QLSubmitQueue:
         data_str = urlencode(data).encode("ascii")
         try:
             resp = urlopen(url, data_str)
-        except EnvironmentError:
+        except OSError:
             print_d("Audioscrobbler server not responding, will try later.")
             return False
 
@@ -316,15 +316,15 @@ class QLSubmitQueue:
             return False
 
     def send_submission(self):
-        data = {'s': self.session_id}
+        data = {"s": self.session_id}
         to_submit = self.queue[:min(len(self.queue), 50)]
         for idx, song in enumerate(to_submit):
             for key, val in song.items():
-                data['%s[%d]' % (key, idx)] = val.encode('utf-8')
-            data['o[%d]' % idx] = 'P'
-            data['r[%d]' % idx] = ''
+                data["%s[%d]" % (key, idx)] = val.encode("utf-8")
+            data["o[%d]" % idx] = "P"
+            data["r[%d]" % idx] = ""
 
-        song_info = '\n\t'.join(f"{s['a']} - {s['t']}" for s in to_submit)
+        song_info = "\n\t".join(f"{s['a']} - {s['t']}" for s in to_submit)
         print_d(f"Submitting song(s): {song_info}")
 
         if self._check_submit(self.submit_url, data):
@@ -334,17 +334,17 @@ class QLSubmitQueue:
             return False
 
     def send_nowplaying(self):
-        data = {'s': self.session_id}
+        data = {"s": self.session_id}
         for key, val in self.nowplaying_song.items():
-            data[key] = val.encode('utf-8')
-        print_d('Now playing song: %s - %s' %
-                (self.nowplaying_song['a'], self.nowplaying_song['t']))
+            data[key] = val.encode("utf-8")
+        print_d("Now playing song: "
+                f"{self.nowplaying_song['a']} - {self.nowplaying_song['t']}")
 
         return self._check_submit(self.nowplaying_url, data)
 
     def quick_dialog_helper(self, dialog_type, msg):
         dialog = Message(dialog_type, app.window, "QLScrobbler", msg)
-        dialog.connect('response', lambda dia, resp: dia.destroy())
+        dialog.connect("response", lambda dia, resp: dia.destroy())
         dialog.show()
 
     def quick_dialog(self, msg, dialog_type):
@@ -382,7 +382,7 @@ class QLScrobbler(EventPlugin):
         self.elapsed = 0
         self.nowplaying = None
 
-        self.exclude = plugin_config.get('exclude')
+        self.exclude = plugin_config.get("exclude")
 
     def plugin_on_song_ended(self, song, stopped):
         if song is None or not self.__enabled:
@@ -405,8 +405,7 @@ class QLScrobbler(EventPlugin):
 
     def song_excluded(self, song):
         if self.exclude and Query(self.exclude).search(song):
-            print_d("%s is excluded by %s" %
-                    (song("~artist~title"), self.exclude))
+            print_d("{} is excluded by {}".format(song("~artist~title"), self.exclude))
             return True
         return False
 
@@ -458,13 +457,13 @@ class QLScrobbler(EventPlugin):
 
     def PluginPreferences(self, parent):
         def changed(entry, key):
-            if entry.get_property('sensitive'):
+            if entry.get_property("sensitive"):
                 plugin_config.set(key, entry.get_text())
 
         def combo_changed(widget, urlent):
             service = widget.get_active_text()
             plugin_config.set("service", service)
-            urlent.set_sensitive((service not in SERVICES))
+            urlent.set_sensitive(service not in SERVICES)
             urlent.set_text(config_get_url())
 
         def check_login(*args):
@@ -497,10 +496,10 @@ class QLScrobbler(EventPlugin):
         row = 0
         service_combo = Gtk.ComboBoxText()
         table.attach(service_combo, 1, 2, row, row + 1)
-        cur_service = plugin_config.get('service')
+        cur_service = plugin_config.get("service")
 
         # Translators: Other service
-        other_label = _(u"Other…")
+        other_label = _("Other…")
         for idx, serv in enumerate(sorted(SERVICES.keys()) + [other_label]):
             service_combo.append_text(serv)
             if cur_service == serv:
@@ -512,27 +511,27 @@ class QLScrobbler(EventPlugin):
 
         # url
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('url'))
-        entry.connect('changed', changed, 'url')
-        service_combo.connect('changed', combo_changed, entry)
-        service_combo.emit('changed')
+        entry.set_text(plugin_config.get("url"))
+        entry.connect("changed", changed, "url")
+        service_combo.connect("changed", combo_changed, entry)
+        service_combo.emit("changed")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
         # username
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('username'))
-        entry.connect('changed', changed, 'username')
+        entry.set_text(plugin_config.get("username"))
+        entry.connect("changed", changed, "username")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
         # password
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('password'))
+        entry.set_text(plugin_config.get("password"))
         entry.set_visibility(False)
-        entry.connect('changed', changed, 'password')
+        entry.connect("changed", changed, "password")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
@@ -540,7 +539,7 @@ class QLScrobbler(EventPlugin):
         # verify data
         button = qltk.Button(_("_Verify account data"),
                              Icons.DIALOG_INFORMATION)
-        button.connect('clicked', check_login)
+        button.connect("clicked", check_login)
         table.attach(button, 0, 2, 4, 5)
 
         box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
@@ -567,8 +566,8 @@ class QLScrobbler(EventPlugin):
         row = 0
         # artist pattern
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('artistpat'))
-        entry.connect('changed', changed, 'artistpat')
+        entry.set_text(plugin_config.get("artistpat"))
+        entry.connect("changed", changed, "artistpat")
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
                                  "the artist name for submission. Leave blank for "
@@ -578,8 +577,8 @@ class QLScrobbler(EventPlugin):
 
         # title pattern
         entry = UndoEntry()
-        entry.set_text(plugin_config.get('titlepat'))
-        entry.connect('changed', changed, 'titlepat')
+        entry.set_text(plugin_config.get("titlepat"))
+        entry.connect("changed", changed, "titlepat")
         table.attach(entry, 1, 2, row, row + 1)
         entry.set_tooltip_text(_("The pattern used to format "
                                  "the title for submission. Leave blank for default."))
@@ -588,10 +587,10 @@ class QLScrobbler(EventPlugin):
 
         # exclude filter
         entry = ValidatingEntry(Query.validator)
-        entry.set_text(plugin_config.get('exclude'))
+        entry.set_text(plugin_config.get("exclude"))
         entry.set_tooltip_text(
             _("Songs matching this filter will not be submitted"))
-        entry.connect('changed', changed, 'exclude')
+        entry.connect("changed", changed, "exclude")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
         row += 1
@@ -599,7 +598,7 @@ class QLScrobbler(EventPlugin):
         # offline mode
         offline = plugin_config.ConfigCheckButton(
             _("_Offline mode (don't submit anything)"),
-            'offline', populate=True)
+            "offline", populate=True)
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)

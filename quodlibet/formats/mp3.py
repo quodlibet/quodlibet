@@ -21,15 +21,15 @@ class MP3File(ID3File):
     def _parse_info(self, info):
         self["~#length"] = info.length
         self["~#bitrate"] = int(info.bitrate / 1000)
-        self["~format"] = u"MP%d" % info.layer
+        self["~format"] = "MP%d" % info.layer
         self["~#channels"] = info.channels
         self["~#samplerate"] = info.sample_rate
 
         encoder, brm = info.encoder_info, info.bitrate_mode
-        brm = {1: u"CBR", 2: u"VBR", 3: u"ABR"}.get(brm, u"")
+        brm = {1: "CBR", 2: "VBR", 3: "ABR"}.get(brm, "")
         # encoder_settings is 1.37+
-        settings = getattr(info, "encoder_settings", u"")
-        encoding = u"\n".join(filter(None, [encoder, brm, settings]))
+        settings = getattr(info, "encoder_settings", "")
+        encoding = "\n".join(filter(None, [encoder, brm, settings]))
         if encoding:
             self["~encoding"] = encoding
 

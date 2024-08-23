@@ -5,6 +5,8 @@ CORE_DEPENDS := \
 PLUGINS_DEPENDS := \
 	musicbrainzngs \
 	dbus-python \
+	pypresence \
+	soco \
 	paho-mqtt
 
 QL_ID := io.github.quodlibet.QuodLibet

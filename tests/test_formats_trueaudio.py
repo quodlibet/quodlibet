@@ -12,7 +12,7 @@ from quodlibet.formats.trueaudio import TrueAudioFile
 class TTrueAudioFile(TestCase):
 
     def setUp(self):
-        self.song = TrueAudioFile(get_data_path('silence-44-s.tta'))
+        self.song = TrueAudioFile(get_data_path("silence-44-s.tta"))
 
     def test_length(self):
         assert self.song("~#length") == pytest.approx(3.684, abs=1e-3)

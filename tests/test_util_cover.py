@@ -25,7 +25,7 @@ from tests import TestCase, mkdtemp
 
 
 bar_2_1 = AudioFile({
-    "~filename": fsnative(u"does not/exist"),
+    "~filename": fsnative("does not/exist"),
     "title": "more songs",
     "discnumber": "2/2", "tracknumber": "1",
     "artist": "Foo\nI have two artists", "album": "Bar",
@@ -43,7 +43,7 @@ class TCoverManager(TestCase):
         self.song = self.an_album_song()
 
         # Safety check
-        self.failIf(glob.glob(os.path.join(self.dir + "*.jpg")))
+        self.assertFalse(glob.glob(os.path.join(self.dir + "*.jpg")))
         files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
         for f in files:
             open(f, "w").close()
@@ -51,8 +51,8 @@ class TCoverManager(TestCase):
     def an_album_song(self, fn="asong.ogg"):
         return AudioFile({
             "~filename": os.path.join(self.dir, fn),
-            "album": u"Quuxly",
-            "artist": u"Some One",
+            "album": "Quuxly",
+            "artist": "Some One",
         })
 
     def tearDown(self):
@@ -66,10 +66,10 @@ class TCoverManager(TestCase):
         return os.path.join(self.dir, path)
 
     def test_dir_not_exist(self):
-        self.failIf(self._find_cover(bar_2_1))
+        self.assertFalse(self._find_cover(bar_2_1))
 
     def test_nothing(self):
-        self.failIf(self._find_cover(self.song))
+        self.assertFalse(self._find_cover(self.song))
 
     def test_labelid(self):
         self.song["labelid"] = "12345"
@@ -87,7 +87,7 @@ class TCoverManager(TestCase):
         self.test_labelid() # labelid must work with other files present
 
     def test_file_encoding(self):
-        f = self.add_file(fsnative(u"öäü - Quuxly - cover.jpg"))
+        f = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
         self.assertTrue(isinstance(self.song("album"), str))
         h = self._find_cover(self.song)
         assert h, "Nothing found"
@@ -119,17 +119,17 @@ class TCoverManager(TestCase):
         f = self.add_file(path)
 
         # Change the song's path to contain the invalid glob
-        old_song_path = self.song['~filename']
+        old_song_path = self.song["~filename"]
         new_song_path = os.path.join(os.path.dirname(path),
                                      os.path.basename(old_song_path))
-        self.song['~filename'] = new_song_path
+        self.song["~filename"] = new_song_path
 
         # The glob in the dirname should be ignored, while the
         # glob in the filename/basename is honored
         assert path_equal(
             os.path.abspath(self._find_cover(self.song).name), f)
 
-        self.song['~filename'] = old_song_path
+        self.song["~filename"] = old_song_path
 
     def test_multiple_entries(self):
         config.set("albumart", "force_filename", str(True))
@@ -165,19 +165,19 @@ class TCoverManager(TestCase):
         See Issue 818"""
 
         song = AudioFile({
-            "~filename": fsnative(os.path.join(self.dir, u"asong.ogg")),
+            "~filename": fsnative(os.path.join(self.dir, "asong.ogg")),
             "album": "foobar",
             "title": "Ode to Baz",
             "artist": "Q-Man",
         })
-        data = [('back.jpg', False),
-                ('discovery.jpg', False),
+        data = [("back.jpg", False),
+                ("discovery.jpg", False),
                 ("Pharell - frontin'.jpg", False),
-                ('nickelback - Curb.jpg', False),
-                ('foobar.jpg', True),
-                ('folder.jpg', True),  # Though this order is debatable
-                ('Q-Man - foobar.jpg', True),
-                ('Q-man - foobar (cover).jpg', True)]
+                ("nickelback - Curb.jpg", False),
+                ("foobar.jpg", True),
+                ("folder.jpg", True),  # Though this order is debatable
+                ("Q-Man - foobar.jpg", True),
+                ("Q-man - foobar (cover).jpg", True)]
         for fn, should_find in data:
             f = self.add_file(fn)
             cover = self._find_cover(song)
@@ -186,8 +186,7 @@ class TCoverManager(TestCase):
                 assert path_equal(actual, f), \
                     f"{basename(f)!r} should trump {basename(actual)!r}"
             else:
-                self.failIf(should_find, msg="Couldn't find %s for %s" %
-                                             (f, song("~filename")))
+                assert not should_find, f"Couldn't find {f} for {song('~filename')}"
 
     def add_file(self, fn):
         f = self.full_path(fn)
@@ -209,11 +208,11 @@ class TCoverManager(TestCase):
                    "The Composer - The Conductor, The Performer - foobar.jpg"]:
             f = self.add_file(fn)
             cover = self._find_cover(song)
-            self.failUnless(cover)
+            self.assertTrue(cover)
             actual = os.path.abspath(cover.name)
             cover.close()
             assert path_equal(
-                actual, f, "\"%s\" should trump \"%s\"" % (f, actual))
+                actual, f, f'"{f}" should trump "{actual}"')
 
     def test_get_thumbnail(self):
         self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
@@ -226,14 +225,14 @@ class TCoverManager(TestCase):
                  self.an_album_song()]
         plugin = Plugin(ArtworkUrlCover)
         self.manager.plugin_handler.plugin_enable(plugin)
-        self.add_file('cover.jpg')
+        self.add_file("cover.jpg")
         cover = self.manager.get_cover_many(songs)
         assert cover
 
     def test_search_missing_artist(self):
-        titled_album_song = self.an_album_song('z.ogg')
+        titled_album_song = self.an_album_song("z.ogg")
         titled_album_song["artist"] = "foo"
-        album_songs = [self.an_album_song('x.ogg'), titled_album_song,
+        album_songs = [self.an_album_song("x.ogg"), titled_album_song,
                        self.an_album_song()]
         self.manager.search_cover(Gio.Cancellable(), album_songs)
 
@@ -244,3 +243,4 @@ class THttp(TestCase):
         assert escape_query_value("foo bar") == "foo%20bar"
         assert escape_query_value("foo?") == "foo%3F"
         assert escape_query_value("foo&bar") == "foo%26bar"
+        assert escape_query_value("¿fübàr?") == "¿fübàr%3F"

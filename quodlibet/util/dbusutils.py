@@ -31,7 +31,7 @@ def dbus_unicode_validate(text):
             cps.append(c)
         else:
             cps.append(0xFFFD)
-    return u"".join(map(chr, cps))
+    return "".join(map(chr, cps))
 
 
 def list_spec_properties(spec):
@@ -60,7 +60,7 @@ def list_spec_properties(spec):
     root = ET.fromstring(
         b'<?xml version="1.0" encoding="UTF-8"?><props>' +
         spec.encode("utf-8") +
-        b'</props>')
+        b"</props>")
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -88,11 +88,13 @@ def filter_property_spec(spec, wl=None, bl=None):
     root = ET.fromstring(
         b'<?xml version="1.0" encoding="UTF-8"?><props>' +
         spec.encode("utf-8") +
-        b'</props>')
+        b"</props>")
     if wl:
-        to_rm = lambda e: e.attrib["name"] not in wl
+        def to_rm(e):
+            return e.attrib["name"] not in wl
     elif bl:
-        to_rm = lambda e: e.attrib["name"] in bl
+        def to_rm(e):
+            return e.attrib["name"] in bl
     strs = []
     for element in root:
         if element.tag != "property" or not to_rm(element):
@@ -175,7 +177,7 @@ class DBusIntrospectable:
         parts = []
         parts.append("<node>")
         for iface, intros in self.__ispec.items():
-            parts.append("<interface name=\"%s\">" % iface)
+            parts.append('<interface name="%s">' % iface)
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")

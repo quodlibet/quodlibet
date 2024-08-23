@@ -8,6 +8,7 @@
 
 import sys
 import importlib
+import importlib.util
 
 
 class RedirectImportHook:
@@ -30,6 +31,11 @@ class RedirectImportHook:
 
         self._name = name
         self._packages = packages
+
+    def find_spec(self, fullname, path, target=None):
+        loader = self.find_module(fullname, path)
+        if loader is not None:
+            return importlib.util.spec_from_loader(fullname, loader)
 
     def find_module(self, fullname, path=None):
         package = fullname.split(".")[0]

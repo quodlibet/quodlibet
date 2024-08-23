@@ -38,14 +38,14 @@ class ToggleMenuBarPlugin(EventPlugin):
                     self._menubar.deselect()
 
         self._key_release_handler = \
-            window.connect('key_release_event', toggle_menubar)
+            window.connect("key_release_event", toggle_menubar)
 
         # Menu bar hide after deactivation
         def hide_menubar(widget):
             self._menubar.set_visible(False)
 
         self._deactivate_handler = \
-            self._menubar.connect('deactivate', hide_menubar)
+            self._menubar.connect("deactivate", hide_menubar)
 
     def disabled(self):
         window = app.window

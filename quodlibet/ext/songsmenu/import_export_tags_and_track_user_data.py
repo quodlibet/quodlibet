@@ -1,4 +1,5 @@
 # Copyright 2021 Joschua Gandert
+#           2023 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,7 +16,8 @@ from gi.repository import Gtk
 
 from senf import path2fsn
 
-from typing import NamedTuple, List, Callable, Any, MutableMapping, Set, Union
+from typing import NamedTuple, Any
+from collections.abc import Callable, MutableMapping
 
 from quodlibet.plugins import PluginConfig, BoolConfProp, FloatConfProp
 from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
@@ -28,27 +30,26 @@ from quodlibet.formats._audio import MIGRATE, AudioFile
 from quodlibet.util import connect_obj, print_exc
 
 import quodlibet
-from quodlibet.util.path import join_path_with_escaped_name_of_legal_length, \
-    stem_of_file_name, extension_of_file_name
+from quodlibet.util.path import (join_path_with_escaped_name_of_legal_length,
+                                 stem_of_file_name, extension_of_file_name)
 
 from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
 
-from quodlibet import _, app, print_e, print_d, qltk, util
+from quodlibet import _, app, print_e, qltk, util, print_d
 
 from quodlibet.plugins.songshelpers import each_song, is_writable, is_finite
 from quodlibet.qltk.msg import ErrorMessage, WarningMessage
 from quodlibet.qltk import Icons, SeparatorMenuItem
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
-
-__all__ = ['ImportExportTagsAndTrackUserDataPlugin']
+__all__ = ["ImportExportTagsAndTrackUserDataPlugin"]
 
 _PLUGIN_ID = "ImportExportTagsAndTrackUserData"
 
 # We use this instead of ~playlists, since we want to store playlists in a list
-PLAYLISTS_KEY = '//playlists'
-IDENTIFIER_KEY = '//identifier'
-FILE_STEM_KEY = '//file_stem'
+PLAYLISTS_KEY = "//playlists"
+IDENTIFIER_KEY = "//identifier"
+FILE_STEM_KEY = "//file_stem"
 
 USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 
@@ -64,15 +65,15 @@ EXPORT_OPTIONS = [(_("Export User Data"), USER_DATA_KEYS),
                   (_("Export File Stems and Tags"), f"* {USER_DATA_KEYS}"),
                   (_("Export File Stems, Tags and User Data"), "*")]
 
-EXPORT_DIR_PATH = Path(quodlibet.get_cache_dir(), 'tags_and_track_user_data')
+EXPORT_DIR_PATH = Path(quodlibet.get_cache_dir(), "tags_and_track_user_data")
 os.makedirs(EXPORT_DIR_PATH, exist_ok=True)
 
-EXPORT_EXTENSION = 'json'
-TAGS_AND_USERDATA_INDEX_FILE_PATH = EXPORT_DIR_PATH / f'index.{EXPORT_EXTENSION}'
+EXPORT_EXTENSION = "json"
+TAGS_AND_USERDATA_INDEX_FILE_PATH = EXPORT_DIR_PATH / f"index.{EXPORT_EXTENSION}"
 
 
 def move_export_to_used(export_path: Path):
-    used_path = EXPORT_DIR_PATH / 'used'
+    used_path = EXPORT_DIR_PATH / "used"
     used_path.mkdir(exist_ok=True)
 
     export_path.rename(used_path / export_path.name)
@@ -90,11 +91,11 @@ class AlbumId(NamedTuple):
     def of_song(cls, s: SongWrapper):
         # We're using the last two parts, since sometimes albums have disc folders
         # below the folder that's named after the album
-        parts = s('~dirname').rsplit(os.path.sep, maxsplit=2)[-2:]
+        parts = s("~dirname").rsplit(os.path.sep, maxsplit=2)[-2:]
 
-        return AlbumId(s.album_key[0], s('albumsort', '') or s('album'),
-                       s('albumartistsort', '') or s('albumartist') or s('artist'),
-                       s('~#discs', 1), s('~#tracks', 1), os.path.join(*parts))
+        return AlbumId(s.album_key[0], s("albumsort", "") or s("album"),
+                       s("albumartistsort", "") or s("albumartist") or s("artist"),
+                       s("~#discs", 1), s("~#tracks", 1), os.path.join(*parts))
 
 
 class TrackId(NamedTuple):
@@ -112,9 +113,9 @@ class TrackId(NamedTuple):
     file_name: str
 
     @classmethod
-    def of_song(cls, s: Union[SongWrapper, AudioFile]):
-        return TrackId(s('artist'), s('title'), s('~#disc', 1), s('~#discs', 1),
-                       s('~#track', 1), s('~#tracks', 1), s('~basename'))
+    def of_song(cls, s: SongWrapper | AudioFile):
+        return TrackId(s("artist"), s("title"), s("~#disc", 1), s("~#discs", 1),
+                       s("~#track", 1), s("~#tracks", 1), s("~basename"))
 
     @property
     def file_stem(self):
@@ -124,31 +125,31 @@ class TrackId(NamedTuple):
     def track_text(self):
         if self.tracks <= 1:
             return str(self.track)
-        return f'{self.track}/{self.tracks}'
+        return f"{self.track}/{self.tracks}"
 
     @property
     def disc_text(self):
         if self.discs <= 1:
             return str(self.disc)
-        return f'{self.disc}/{self.discs}'
+        return f"{self.disc}/{self.discs}"
 
 
 class Config:
     _config = PluginConfig(_PLUGIN_ID)
 
-    need_user_check_if_number_of_albums_differs = BoolConfProp(  #
+    need_user_check_if_number_of_albums_differs = BoolConfProp(
         _config, "need_user_check_if_number_of_albums_differs", True)
 
-    need_user_check_if_number_of_tracks_differs = BoolConfProp(  #
+    need_user_check_if_number_of_tracks_differs = BoolConfProp(
         _config, "need_user_check_if_number_of_tracks_differs", True)
 
-    max_track_similarity_to_need_user_check = FloatConfProp(  #
+    max_track_similarity_to_need_user_check = FloatConfProp(
         _config, "max_track_similarity_to_need_user_check", 0.76)
 
-    max_album_similarity_to_need_user_check = FloatConfProp(  #
+    max_album_similarity_to_need_user_check = FloatConfProp(
         _config, "max_album_similarity_to_need_user_check", 0.80)
 
-    delete_exports_after_importing = BoolConfProp(  #
+    delete_exports_after_importing = BoolConfProp(
         _config, "delete_exports_after_importing", True)
 
     pretty_print_json = BoolConfProp(_config, "pretty_print_json", False)
@@ -241,8 +242,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             scale.set_tooltip_text(tooltip_text)
             scale.set_value_pos(Gtk.PositionType.RIGHT)
             scale.set_value(ratio)
-            scale.connect('format-value', format_perc)
-            scale.connect('value-changed', on_change)
+            scale.connect("format-value", format_perc)
+            scale.connect("value-changed", on_change)
 
             label = Gtk.Label(label=lbl_text)
             label.set_alignment(0.0, 0.5)
@@ -314,7 +315,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
     def _init_collectors_and_menu(self, submenu):
         import_item = Gtk.MenuItem(label=_("Import"))
-        connect_obj(import_item, 'activate', self.__set_import_export_option_index, -1)
+        connect_obj(import_item, "activate", self.__set_import_export_option_index, -1)
 
         submenu.append(import_item)
         submenu.append(SeparatorMenuItem())
@@ -324,7 +325,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             self._export_collectors.append(collector)
 
             item = Gtk.MenuItem(label=name)
-            connect_obj(item, 'activate', self.__set_import_export_option_index, idx)
+            connect_obj(item, "activate", self.__set_import_export_option_index, idx)
             submenu.append(item)
 
         submenu.append(SeparatorMenuItem())
@@ -334,7 +335,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             show_files(path2fsn(EXPORT_DIR_PATH),
                        [path2fsn(TAGS_AND_USERDATA_INDEX_FILE_PATH.name)])
 
-        connect_obj(open_dir_item, 'activate', open_export_dir, None)
+        connect_obj(open_dir_item, "activate", open_export_dir, None)
         submenu.append(open_dir_item)
 
     def __set_import_export_option_index(self, index):
@@ -381,18 +382,18 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         if need_check:
             columns = [  #
-                ColumnSpec(_('Discs'), lambda a: str(a.discs), False),
-                ColumnSpec(_('Tracks'), lambda a: str(a.tracks), False),
-                ColumnSpec(_('Title'), lambda a: a.title, True),
-                ColumnSpec(_('Artist(s)'), lambda a: a.artist, True),
-                ColumnSpec(_('End of path'), lambda a: a.last_directory_parts, True),  #
+                ColumnSpec(_("Discs"), lambda a: str(a.discs), False),
+                ColumnSpec(_("Tracks"), lambda a: str(a.tracks), False),
+                ColumnSpec(_("Title"), lambda a: a.title, True),
+                ColumnSpec(_("Artist(s)"), lambda a: a.artist, True),
+                ColumnSpec(_("End of path"), lambda a: a.last_directory_parts, True),  #
             ]
             prompt = MatchListsDialog(album_ids, exp_album_ids, exp_indices, columns,
                                       _("Match Albums"), _("Continue"),
                                       id_for_window_tracking=self.PLUGIN_ID)
             exp_indices = prompt.run()
 
-        for exp_idx, songs in zip(exp_indices, albums):
+        for exp_idx, songs in zip(exp_indices, albums, strict=False):
             if exp_idx is not None:
                 yield exp_album_ids[exp_idx], songs
 
@@ -406,7 +407,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             return False
 
         try:
-            with index_path.open(encoding='utf-8') as f:
+            with index_path.open(encoding="utf-8") as f:
                 album_json_key_to_export_file_name = json.load(f)
         except ValueError:
             self._handle_broken_index()
@@ -441,12 +442,12 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         index_path = TAGS_AND_USERDATA_INDEX_FILE_PATH
 
         now = cur_datetime_as_str()
-        new_path = index_path.with_name(f'index-broken-{now}.{EXPORT_EXTENSION}')
+        new_path = index_path.with_name(f"index-broken-{now}.{EXPORT_EXTENSION}")
         index_path.rename(new_path)
 
         self._error_msg(_("The index was corrupt."))
 
-    def import_data(self, export_album_id: AlbumId, songs: List[SongWrapper]):
+    def import_data(self, export_album_id: AlbumId, songs: list[SongWrapper]):
         songs = [s for s in songs if is_writable(s)]
         if not songs:
             return
@@ -467,8 +468,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             else:
                 move_export_to_used(export_path)
 
-    def import_data_and_get_changed(self, songs: List[SongWrapper],
-                                    source_path: Path) -> List[SongWrapper]:
+    def import_data_and_get_changed(self, songs: list[SongWrapper],
+                                    source_path: Path) -> list[SongWrapper]:
         """:return: List of changed songs"""
 
         exported = self._try_read_source_json(source_path)
@@ -481,7 +482,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             return []
 
         changed_songs = []
-        for song, exp_idx in zip(songs, exported_indices):
+        for song, exp_idx in zip(songs, exported_indices, strict=False):
             if exp_idx is None:
                 continue
 
@@ -494,6 +495,7 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
     def _try_read_source_json(self, path: Path):
         try:
+            print_d(f"Loading from {str(path)!r}")
             with path.open(encoding="utf-8") as f:
                 return json.load(f)
         except ValueError:
@@ -509,14 +511,14 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         file_stem = exported_data.pop(FILE_STEM_KEY, None)
 
         if file_stem is not None:
-            file_ext = extension_of_file_name(song('~basename'))
+            file_ext = extension_of_file_name(song("~basename"))
 
-            new_name = f'{file_stem}{file_ext}'
-            new_song_path = os.path.join(song('~dirname'), new_name)
+            new_name = f"{file_stem}{file_ext}"
+            new_song_path = os.path.join(song("~dirname"), new_name)
             try:
                 app.library.rename(song._song, new_song_path)
             except ValueError:
-                print_e(f'Could not rename {song._song} to {new_song_path}.')
+                print_e(f"Could not rename {song._song} to {new_song_path}.")
 
         for pl_name in exported_data.pop(PLAYLISTS_KEY, []):
             add_song_to_playlist(pl_name, song)
@@ -535,7 +537,8 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
     def _rewrite_json(self, obj, path):
         try:
-            with path.open('w+', encoding='utf-8') as f:
+            print_d(f"Writing to {str(path)!r}")
+            with path.open("w+", encoding="utf-8") as f:
                 json.dump(obj, f, indent=self._get_json_indent())
         except (ValueError, OSError):
             self._error_msg(_("Couldn't write '%s'") % path)
@@ -557,11 +560,11 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
 
         if need_check:
             columns = [  #
-                ColumnSpec(_('Disc'), lambda t: t.disc_text, False),
-                ColumnSpec(_('Track'), lambda t: t.track_text, False),
-                ColumnSpec(_('Title'), lambda t: t.title, True),
-                ColumnSpec(_('Artist(s)'), lambda t: t.artist, True),
-                ColumnSpec(_('File name'), lambda t: t.file_name, True),  #
+                ColumnSpec(_("Disc"), lambda t: t.disc_text, False),
+                ColumnSpec(_("Track"), lambda t: t.track_text, False),
+                ColumnSpec(_("Title"), lambda t: t.title, True),
+                ColumnSpec(_("Artist(s)"), lambda t: t.artist, True),
+                ColumnSpec(_("File name"), lambda t: t.file_name, True),  #
             ]
             prompt = MatchListsDialog(songs_ids, export_ids, export_ids_indices,
                                       columns, _("Match Tracks"), _("Import"),
@@ -603,7 +606,6 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         album_id = AlbumId.of_song(songs[0])
 
         prev_path = self._album_id_to_export_path.get(album_id)
-        print_d(prev_path)
 
         # this overrides export data with the same album key by design, so a user
         # can simply rerun the export on an album they've modified
@@ -618,7 +620,7 @@ def cur_datetime_as_str():
 
 
 def sort_key_for_song(s: SongWrapper):
-    return s('~#disc', 0), s('~#track', 0), s('~basename'), s
+    return s("~#disc", 0), s("~#track", 0), s("~basename"), s
 
 
 def add_song_to_playlist(pl_name, song):
@@ -630,7 +632,7 @@ def add_song_to_playlist(pl_name, song):
             pl = pl_lib.create(pl_name)
             pl.append(song)
         except ValueError:
-            print_e(f'tried to add {song} to playlist {pl_name} but could not due to:')
+            print_e(f"tried to add {song} to playlist {pl_name} but could not due to:")
             print_exc()
 
 
@@ -644,7 +646,7 @@ def track_data_collector_for(query: str) -> TrackDataCollector:
     """Creates a callable that returns the track data selected by the query."""
     keys = query.strip().split()
 
-    if keys[0] == '*':
+    if keys[0] == "*":
         func = excluding_track_data_collector(set(keys[1:]))
     else:
         func = including_track_data_collector(keys)
@@ -652,7 +654,7 @@ def track_data_collector_for(query: str) -> TrackDataCollector:
     return func
 
 
-def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollector:
+def excluding_track_data_collector(excluded_keys: set[str]) -> TrackDataCollector:
     include_playlist = PLAYLISTS_KEY not in excluded_keys
     include_file_stem = FILE_STEM_KEY not in excluded_keys
 
@@ -667,7 +669,7 @@ def excluding_track_data_collector(excluded_keys: Set[str]) -> TrackDataCollecto
     return func
 
 
-def including_track_data_collector(keys: List[str]) -> TrackDataCollector:
+def including_track_data_collector(keys: list[str]) -> TrackDataCollector:
     include_playlist = was_removed(keys, PLAYLISTS_KEY)
     include_file_stem = was_removed(keys, FILE_STEM_KEY)
 
@@ -703,18 +705,18 @@ def basic_track_data(track: AudioFile, include_playlist: bool,
             md[PLAYLISTS_KEY] = playlist_names
 
     if include_file_stem:
-        md[FILE_STEM_KEY] = stem_of_file_name(track('~basename'))
+        md[FILE_STEM_KEY] = stem_of_file_name(track("~basename"))
     return md
 
 
 def new_export_path_for_album(album_id: AlbumId) -> Path:
-    stem = f'{album_id.title} - {album_id.artist}'
+    stem = f"{album_id.title} - {album_id.artist}"
     path = Path(join_path_with_escaped_name_of_legal_length(str(EXPORT_DIR_PATH), stem,
                                                             EXPORT_EXTENSION))
     trim_count = 1
     while path.exists():
         new_stem = path.stem[:-trim_count] + uuid.uuid4().hex[:trim_count]
         trim_count += 1
-        path = path.with_name(f'{new_stem}.{EXPORT_EXTENSION}')
+        path = path.with_name(f"{new_stem}.{EXPORT_EXTENSION}")
 
     return path

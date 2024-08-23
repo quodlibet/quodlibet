@@ -1,5 +1,5 @@
 # Copyright 2009-2014 Christoph Reiter
-#                2021 Nick Boultbee
+#             2021-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -8,12 +8,12 @@
 
 import os
 import hashlib
+from pathlib import Path
 from tempfile import gettempdir
-from typing import Optional
 
 from gi.repository import GdkPixbuf, GLib
 
-from quodlibet import print_w
+from quodlibet import print_w, print_d
 from senf import fsn2uri, fsnative
 
 import quodlibet
@@ -22,18 +22,18 @@ from quodlibet.util import enum
 from quodlibet.qltk.image import scale
 
 
-def get_thumbnail_folder():
+def get_thumbnail_folder() -> Path:
     """Returns a path to the thumbnail folder.
 
     The returned path might not exist.
     """
 
     if os.name == "nt":
-        thumb_folder = os.path.join(quodlibet.get_cache_dir(), "thumbnails")
+        thumb_folder = Path(quodlibet.get_cache_dir()) /  "thumbnails"
     else:
-        cache_folder = os.path.join(xdg_get_cache_home(), "thumbnails")
-        thumb_folder = os.path.expanduser('~/.thumbnails')
-        if os.path.exists(cache_folder) or not os.path.exists(thumb_folder):
+        cache_folder = Path(xdg_get_cache_home()) / "thumbnails"
+        thumb_folder = Path("~/.thumbnails").expanduser()
+        if cache_folder.exists() or not thumb_folder.exists():
             thumb_folder = cache_folder
 
     return thumb_folder
@@ -46,14 +46,12 @@ class ThumbSize(int):
     LARGEST = LARGE
 
 
-def get_cache_info(path, boundary):
+def get_cache_info(path: Path, boundary: tuple[int, int]) -> tuple[Path, int]:
     """For an image at `path` return (cache_path, thumb_size)
 
     cache_path points to a potential cache file
     thumb size is either 128 or 256
     """
-
-    assert isinstance(path, fsnative)
 
     width, height = boundary
 
@@ -65,16 +63,16 @@ def get_cache_info(path, boundary):
         thumb_size = ThumbSize.LARGE
 
     thumb_folder = get_thumbnail_folder()
-    cache_dir = os.path.join(thumb_folder, size_name)
+    cache_dir = thumb_folder / size_name
 
-    uri = fsn2uri(path)
+    uri = fsn2uri(str(path))
     thumb_name = hashlib.md5(uri.encode("ascii")).hexdigest() + ".png"
-    thumb_path = os.path.join(cache_dir, thumb_name)
+    thumb_path = cache_dir / thumb_name
 
-    return (thumb_path, thumb_size)
+    return thumb_path, thumb_size
 
 
-def get_thumbnail_from_file(fileobj, boundary) -> Optional[GdkPixbuf.Pixbuf]:
+def get_thumbnail_from_file(fileobj, boundary) -> GdkPixbuf.Pixbuf | None:
     """Like get_thumbnail() but works with files that can't be reopened.
 
     This is needed on Windows where NamedTemporaryFile can't be reopened.
@@ -97,12 +95,12 @@ def get_thumbnail_from_file(fileobj, boundary) -> Optional[GdkPixbuf.Pixbuf]:
             fileobj.seek(0, 0)
             # can return None in case of partial data
             return loader.get_pixbuf()
-        except (GLib.GError, EnvironmentError) as e:
+        except (OSError, GLib.GError) as e:
             print_w(f"Couldn't load thumbnail with PixbufLoader either: {e}")
     return None
 
 
-def get_thumbnail(path, boundary, ignore_temp=True):
+def get_thumbnail(path: fsnative, boundary, ignore_temp=True) -> GdkPixbuf:
     """Get a thumbnail pixbuf of an image at `path`.
 
     Will create/use a thumbnail in the user's thumbnail directory if possible.
@@ -116,7 +114,7 @@ def get_thumbnail(path, boundary, ignore_temp=True):
     Can raise GLib.GError. Thread-safe.
     """
 
-    assert isinstance(path, fsnative)
+    assert isinstance(path, fsnative), type(path)
 
     width, height = boundary
     new_from_file_at_size = GdkPixbuf.Pixbuf.new_from_file_at_size
@@ -134,8 +132,8 @@ def get_thumbnail(path, boundary, ignore_temp=True):
     if ignore_temp and path.startswith(gettempdir()):
         return new_from_file_at_size(path, width, height)
 
-    thumb_path, thumb_size = get_cache_info(path, boundary)
-    cache_dir = os.path.dirname(thumb_path)
+    thumb_path, thumb_size = get_cache_info(Path(path), boundary)
+    cache_dir = thumb_path.parent
     try:
         mkdir(cache_dir, 0o700)
     except OSError as e:
@@ -143,10 +141,10 @@ def get_thumbnail(path, boundary, ignore_temp=True):
         return new_from_file_at_size(path, width, height)
 
     try:
-        pb = new_from_file_at_size(thumb_path, width, height)
-    except GLib.GError as e:
+        pb = new_from_file_at_size(str(thumb_path), width, height)
+    except GLib.GError:
         # in case it fails to load, we recreate it
-        print_w(f"Couldn't load from {thumb_path!r} ({e}), recreating.")
+        print_w(f"Couldn't find thumbnail at {str(thumb_path)!r}, so recreating.")
     else:
         meta_mtime = pb.get_option("tEXt::Thumb::MTime")
         if meta_mtime is not None:
@@ -178,9 +176,10 @@ def get_thumbnail(path, boundary, ignore_temp=True):
         "tEXt::Software": "QuodLibet"
     }
 
-    thumb_pb.savev(thumb_path, "png", list(options.keys()), list(options.values()))
+    print_d(f"Saving thumbnail to {str(thumb_path)}")
+    thumb_pb.savev(str(thumb_path), "png", list(options.keys()), list(options.values()))
     try:
-        os.chmod(thumb_path, 0o600)
+        thumb_path.chmod(0o600)
     except OSError:
         pass
 

@@ -14,7 +14,7 @@ class ConditionalQuery(QueryPlugin):
     PLUGIN_ID = "conditional_query"
     PLUGIN_NAME = _("Conditional Query")
     PLUGIN_DESC = _("Chooses the query to match based on a condition query.")
-    key = 'if'
+    key = "if"
     query_syntax = _("@(if: condition-query, then-query, else-query)")
     usage = markup_for_syntax(query_syntax)
 

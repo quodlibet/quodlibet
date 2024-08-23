@@ -24,7 +24,7 @@ import os
 from .util import Command
 
 
-class install_zsh_completions(Command):
+class InstallZshCompletions(Command):
 
     user_options = []
 
@@ -34,8 +34,8 @@ class install_zsh_completions(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options('install',
-                                   ('install_data', 'install_dir'))
+        self.set_undefined_options("install",
+                                   ("install_data", "install_dir"))
 
         self.zsh_completions = self.distribution.zsh_completions
 
@@ -44,7 +44,7 @@ class install_zsh_completions(Command):
 
     def run(self):
         basepath = os.path.join(
-            self.install_dir, 'share', 'zsh', 'site-functions')
+            self.install_dir, "share", "zsh", "site-functions")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for src, dest in self.zsh_completions:

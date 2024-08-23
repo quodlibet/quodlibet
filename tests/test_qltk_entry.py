@@ -45,7 +45,7 @@ class TValidatingEntry(TestCase):
 
         entry = ValidatingEntry(valid)
         entry.set_text("foo")
-        self.assertEqual(x, [u"foo"])
+        self.assertEqual(x, ["foo"])
         self.assertTrue(isinstance(x[0], str))
 
     def tearDown(self):
@@ -59,7 +59,7 @@ class TUndoEntry(TestCase):
 
     def __equal(self, value):
         entry_val = self.entry.get_text()
-        self.failUnlessEqual(value, entry_val)
+        self.assertEqual(value, entry_val)
 
     def __insert(self, text, pos):
         self.entry.insert_text(text, position=pos)

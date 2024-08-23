@@ -30,29 +30,28 @@ class TEventPlugins(TestCase):
             librarian=self.lib, player=self.player, songlist=self.songlist)
         self.pm.register_handler(self.handler)
         self.pm.rescan()
-        self.assertEquals(self.pm.plugins, [])
+        self.assertEqual(self.pm.plugins, [])
 
     def tearDown(self):
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, name='', funcs=None):
-        fd, fn = mkstemp(suffix='.py', text=True, dir=self.tempdir)
-        file = os.fdopen(fd, 'w')
+    def create_plugin(self, name="", funcs=None):
+        fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
+        file = os.fdopen(fd, "w")
 
         file.write("from quodlibet.plugins.events import EventPlugin\n")
         file.write("log = []\n")
         file.write("class %s(EventPlugin):\n" % name)
-        indent = '    '
+        indent = "    "
         file.write("%spass\n" % indent)
 
         if name:
-            file.write("%sPLUGIN_ID = %r\n" % (indent, name))
-            file.write("%sPLUGIN_NAME = %r\n" % (indent, name))
+            file.write(f"{indent}PLUGIN_ID = {name!r}\n")
+            file.write(f"{indent}PLUGIN_NAME = {name!r}\n")
 
         for f in (funcs or []):
-            file.write("%sdef %s(s, *args): log.append((%r, args))\n" %
-                       (indent, f, f))
+            file.write(f"{indent}def {f}(s, *args): log.append(({f!r}, args))\n")
         file.flush()
         file.close()
 
@@ -61,36 +60,36 @@ class TEventPlugins(TestCase):
         return mod.log
 
     def test_found(self):
-        self.create_plugin(name='Name')
+        self.create_plugin(name="Name")
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
 
     def test_player_paused(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_paused"])
+        self.create_plugin(name="Name", funcs=["plugin_on_paused"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]
         self.pm.enable(plugin, True)
         self.player.emit("paused")
-        self.failUnlessEqual([("plugin_on_paused", tuple())],
+        self.assertEqual([("plugin_on_paused", ())],
                              self._get_calls(plugin))
 
     def test_lib_changed(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_changed"])
+        self.create_plugin(name="Name", funcs=["plugin_on_changed"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]
         self.pm.enable(plugin, True)
         self.lib.emit("changed", [None])
-        self.failUnlessEqual([("plugin_on_changed", ([None],))],
+        self.assertEqual([("plugin_on_changed", ([None],))],
                              self._get_calls(plugin))
 
     def test_songs_selected(self):
-        self.create_plugin(name='Name', funcs=["plugin_on_songs_selected"])
+        self.create_plugin(name="Name", funcs=["plugin_on_songs_selected"])
         self.pm.rescan()
-        self.assertEquals(len(self.pm.plugins), 1)
+        self.assertEqual(len(self.pm.plugins), 1)
         plugin = self.pm.plugins[0]
         self.pm.enable(plugin, True)
         self.songlist.emit("selection-changed", self.songlist.get_selection())
-        self.failUnlessEqual(self._get_calls(plugin),
+        self.assertEqual(self._get_calls(plugin),
                              [("plugin_on_songs_selected", ([], ))])

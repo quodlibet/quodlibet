@@ -3,7 +3,8 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 from pathlib import Path
-from typing import Optional, Set, Iterable, TypeVar, Union
+from typing import TypeVar
+from collections.abc import Iterable
 
 from quodlibet import util, print_d
 from quodlibet.formats import MusicFile, AudioFile
@@ -50,7 +51,7 @@ class SongLibrary(Library[K, V], PicklingMixin):
         return {value for song in self.values()
                 for value in song.list(tag)}
 
-    def rename(self, song, new_name, changed: Optional[Set] = None):
+    def rename(self, song, new_name, changed: set | None = None):
         """Rename a song.
 
         This requires a special method because it can change the
@@ -77,7 +78,7 @@ class SongLibrary(Library[K, V], PicklingMixin):
     def query(self, text, sort=None, star=Query.STAR):
         """Query the library and return matching songs."""
         if isinstance(text, bytes):
-            text = text.decode('utf-8')
+            text = text.decode("utf-8")
 
         songs = self.values()
         if text != "":
@@ -90,7 +91,7 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     """A library containing song files.
     Pickles contents to disk as `FileLibrary`"""
 
-    def __init__(self, name=None, watch_dirs: Optional[Iterable[fsnative]] = None):
+    def __init__(self, name=None, watch_dirs: Iterable[fsnative] | None = None):
         print_d(f"Initializing {type(self)}: {name!r}")
         super().__init__(name)
         if watch_dirs:
@@ -101,8 +102,8 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
         return self._contents.get(key)
 
     def add_filename(self,
-                     filename: Union[str, Path],
-                     add: bool = True) -> Optional[AudioFile]:
+                     filename: str | Path,
+                     add: bool = True) -> AudioFile | None:
         """Add a song to the library based on filename.
 
         If 'add' is true, the song will be added and the 'added' signal

@@ -11,26 +11,25 @@ import glob
 import os.path
 import re
 import sre_constants
-from typing import Text
 
 from senf import fsn2text
 
 from quodlibet import _
 from quodlibet.plugins.cover import CoverSourcePlugin
-from quodlibet.util.dprint import print_w
+from quodlibet.util.dprint import print_w, print_d
 from quodlibet import config
 
 
 def get_ext(s):
-    return os.path.splitext(s)[1].lstrip('.')
+    return os.path.splitext(s)[1].lstrip(".")
 
 
 def prefer_embedded():
     return config.getboolean("albumart", "prefer_embedded", False)
 
 
-def word_regex(s: Text) -> re.Pattern:
-    return re.compile(r'(\b|_)' + s + r'(\b|_)')
+def word_regex(s: str) -> re.Pattern:
+    return re.compile(r"(\b|_)" + s + r"(\b|_)")
 
 
 class EmbeddedCover(CoverSourcePlugin):
@@ -78,7 +77,7 @@ class FilesystemCover(CoverSourcePlugin):
     @classmethod
     def group_by(cls, song):
         # in the common case this means we only search once per album
-        return song('~dirname'), song.album_key
+        return song("~dirname"), song.album_key
 
     @property
     def name(self):
@@ -96,8 +95,8 @@ class FilesystemCover(CoverSourcePlugin):
         # TODO: Deserves some refactoring
         if not self.song.is_file:
             return None
-
-        base = self.song('~dirname')
+        print_d(f"Searching for local cover for {self.song('~filename')}")
+        base = self.song("~dirname")
         images = []
 
         def safe_glob(*args, **kwargs):
@@ -126,7 +125,7 @@ class FilesystemCover(CoverSourcePlugin):
             entries = []
             try:
                 entries = os.listdir(base)
-            except EnvironmentError:
+            except OSError:
                 print_w("Can't list album art directory %s" % base)
 
             fns = []
@@ -139,7 +138,7 @@ class FilesystemCover(CoverSourcePlugin):
                     sub_entries = []
                     try:
                         sub_entries = os.listdir(subdir)
-                    except EnvironmentError:
+                    except OSError:
                         pass
                     for sub_entry in sub_entries:
                         lsub_entry = sub_entry.lower()
@@ -195,13 +194,13 @@ class FilesystemCover(CoverSourcePlugin):
                     images.append((score, os.path.join(base, fn)))
 
         images.sort(reverse=True)
-        for score, path in images:
+        for _score, path in images:
             # could be a directory
             if not os.path.isfile(path):
                 continue
             try:
                 return open(path, "rb")
-            except IOError:
-                print_w("Failed reading album art \"%s\"" % path)
+            except OSError:
+                print_w('Failed reading album art "%s"' % path)
 
         return None

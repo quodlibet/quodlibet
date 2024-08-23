@@ -54,7 +54,7 @@ class ColumnModeSelection(Gtk.VBox):
         # Connect to signal after the correct radio button has been
         # selected
         for button in self.buttons:
-            button.connect('toggled', self.toggled)
+            button.connect("toggled", self.toggled)
 
     def toggled(self, button):
         selected_mode = ColumnMode.SMALL
@@ -102,7 +102,7 @@ class PatternEditor(Gtk.VBox):
         radio_box = Gtk.VBox(spacing=6)
         for button in buttons:
             radio_box.pack_start(button, False, True, 0)
-            button.connect('toggled', self.__toggled, button_box, model)
+            button.connect("toggled", self.__toggled, button_box, model)
 
         self.pack_start(radio_box, False, True, 0)
 
@@ -118,15 +118,15 @@ class PatternEditor(Gtk.VBox):
 
         add = Button(_("_Add"), Icons.LIST_ADD)
         ctrl_box.pack_start(add, False, True, 0)
-        add.connect('clicked', self.__add, model, cb)
+        add.connect("clicked", self.__add, model, cb)
 
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
         ctrl_box.pack_start(remove, False, True, 0)
-        remove.connect('clicked', self.__remove, view)
+        remove.connect("clicked", self.__remove, view)
 
         selection = view.get_selection()
-        selection.connect('changed', self.__selection_changed, remove)
-        selection.emit('changed')
+        selection.connect("changed", self.__selection_changed, remove)
+        selection.emit("changed")
 
         sw = Gtk.ScrolledWindow()
         sw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)

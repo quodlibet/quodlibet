@@ -14,6 +14,7 @@ from senf import fsn2uri
 
 from quodlibet import app
 from quodlibet.order.repeat import RepeatListForever, RepeatSongForever
+from quodlibet.qltk.songlist import get_columns
 from quodlibet.util.dbusutils import DBusIntrospectable, DBusProperty
 from quodlibet.util.dbusutils import dbus_unicode_validate as unival
 
@@ -279,7 +280,13 @@ value="false"/>
                 metadata["xesam:" + xesam] = list(map(unival, vals))
 
         # All single values
-        sing_val = {"album": "album", "title": "title", "asText": "~lyrics"}
+        columns = get_columns()
+        title_tag = ("~title~version" if "~title~version" in columns 
+                     else "title")
+        album_tag = ("~album~discsubtitle" if "~album~discsubtitle" in columns
+                     else "album")
+
+        sing_val = {"album": album_tag, "title": title_tag, "asText": "~lyrics"}
         for xesam, tag in sing_val.items():
             vals = song.comma(tag)
             if vals:
@@ -302,16 +309,16 @@ value="false"/>
             dbus.Double, song("~#rating"))
 
         # Dates
-        ISO_8601_format = "%Y-%m-%dT%H:%M:%S"
+        iso_8601_format = "%Y-%m-%dT%H:%M:%S"
         tuple_time = time.gmtime(song("~#lastplayed"))
-        iso_time = time.strftime(ISO_8601_format, tuple_time)
+        iso_time = time.strftime(iso_8601_format, tuple_time)
         metadata["xesam:lastUsed"] = iso_time
 
         year = song("~year")
         if year:
             try:
                 tuple_time = time.strptime(year, "%Y")
-                iso_time = time.strftime(ISO_8601_format, tuple_time)
+                iso_time = time.strftime(iso_8601_format, tuple_time)
             except ValueError:
                 pass
             else:
@@ -360,7 +367,8 @@ value="false"/>
                 return "io.github.quodlibet.QuodLibet"
             elif name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
-                can = lambda s: False
+                def can(s):
+                    return False
                 #can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)

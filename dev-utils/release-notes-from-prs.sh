@@ -1,9 +1,12 @@
 #!/usr/bin/env bash
+# We use lots of embedded quotes here that worry Shellcheck, so disable rule
+# shellcheck disable=SC2016
+
 set -e
 
 usage() {
     echo "FATAL: $*"
-    echo "Usage: $(basename $0) SINCE_RELEASE"
+    echo "Usage: $(basename "$0") SINCE_RELEASE"
     exit 1
 }
 GIT_REGEX='^.* #([0-9]+) from ([^/]+)\/.+\|(.*)$'
@@ -18,7 +21,7 @@ git log \
     --since="$from_date" \
     --grep "pull request" \
     | sed -nre "s/$GIT_REGEX"'/ * \3 :pr:`\1` (:user:`\2`)/p'
-echo -e "\n\nMaster:"
+echo -e "\n\nMain:"
 git log \
     --pretty=format:"%aN|%s" \
     --no-merges \
@@ -29,6 +32,7 @@ git log \
     --grep "Update quodlibet.pot" \
     --first-parent main \
     --since="$from_date" \
+    | sed -nre 's/\(#([0-9]+)\)$/:pr:`\1`/p' \
     | sed -nre 's/(.+)+\|(.*)/ * \2 (:user:`\1`)/p' \
     | sed -r \
           -e 's/`Nick B`|`Nick Boultbee`/`Nick Boultbee <declension>`/g' \

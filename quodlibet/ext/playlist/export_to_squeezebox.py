@@ -19,11 +19,11 @@ from quodlibet.ext._shared.squeezebox.base import SqueezeboxPluginMixin
 
 class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
-    PLUGIN_NAME = _(u"Export to Squeezebox")
+    PLUGIN_NAME = _("Export to Squeezebox")
     PLUGIN_DESC_MARKUP = (
         _("Dynamically exports a playlist to Logitech Squeezebox "
           "playlist, provided both share a directory structure.") + "\n" +
-        _("Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox "
+        _('Shares configuration with <a href="%(plugin_link)s">Squeezebox '
           "Sync plugin</a>.")
         % {"plugin_link": "quodlibet:///prefs/plugins/Squeezebox Output"}
     )
@@ -60,7 +60,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
             self.server.playlist_add(self.get_sb_path(song))
             task.update(float(i) / task_total)
             yield True
-        print_d("Saving Squeezebox playlist \"%s\"" % name)
+        print_d('Saving Squeezebox playlist "%s"' % name)
         self.server.playlist_save(name)
         task.update((task_total - 2) / task_total)
         yield True

@@ -11,16 +11,17 @@ import shutil
 import atexit
 import subprocess
 import locale
+from pathlib import Path
 
 try:
     import pytest
-except ImportError:
-    raise SystemExit("pytest missing: sudo apt-get install python3-pytest")
+except ImportError as e:
+    raise SystemExit("pytest missing: sudo apt-get install python3-pytest") from e
 
 try:
-    import xvfbwrapper
+    import pyvirtualdisplay
 except ImportError:
-    xvfbwrapper = None
+    pyvirtualdisplay = None
 
 import quodlibet
 from quodlibet.util.path import xdg_get_cache_home
@@ -28,6 +29,10 @@ from quodlibet import util
 
 from senf import fsnative, path2fsn
 from unittest import TestCase as OrigTestCase
+
+
+# Don't use get_module_dir(), as venvs can arrange things differently
+QL_BASE_PATH = Path(__file__).parent.parent
 
 
 class TestCase(OrigTestCase):
@@ -70,7 +75,7 @@ def is_ci():
     """Guesses if this is being run in (Travis, maybe other) CI.
        See https://docs.travis-ci.com/user/environment-variables
     """
-    return os.environ.get('CI', "").lower() == 'true'
+    return os.environ.get("CI", "").lower() == "true"
 
 _DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert isinstance(_DATA_DIR, fsnative)
@@ -105,7 +110,7 @@ def mkstemp(*args, **kwargs):
     return (fd, filename)
 
 
-def init_fake_app():
+def init_fake_app() -> None:
     from quodlibet import app
 
     from quodlibet import browsers
@@ -126,7 +131,7 @@ def init_fake_app():
     app.player_options = PlayerOptions(app.window)
 
 
-def destroy_fake_app():
+def destroy_fake_app() -> None:
     from quodlibet import app
 
     app.window.destroy()
@@ -180,12 +185,7 @@ def init_test_environ():
     global _TEMP_DIR, _BUS_INFO, _VDISPLAY
 
     # create a user dir in /tmp and set env vars
-    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative(u"QL-TEST-"))
-
-    # needed for dbus/dconf
-    runtime_dir = tempfile.mkdtemp(prefix=fsnative(u"RUNTIME-"), dir=_TEMP_DIR)
-    os.chmod(runtime_dir, 0o700)
-    os.environ["XDG_RUNTIME_DIR"] = runtime_dir
+    _TEMP_DIR = tempfile.mkdtemp(prefix=fsnative("QL-TEST-"))
 
     # force the old cache dir so that GStreamer can re-use the GstRegistry
     # cache file
@@ -194,7 +194,7 @@ def init_test_environ():
     # (in Gst.init()). Since it takes 0.5s here and doesn't add much,
     # disable it. If the registry cache is missing it will be created
     # despite this setting.
-    os.environ["GST_REGISTRY_UPDATE"] = fsnative(u"no")
+    os.environ["GST_REGISTRY_UPDATE"] = fsnative("no")
 
     # In flatpak we might get a registry from a different/old flatpak build
     # when testing new versions etc. Better always update in that case.
@@ -202,7 +202,7 @@ def init_test_environ():
         del os.environ["GST_REGISTRY_UPDATE"]
 
     # set HOME and remove all XDG vars that default to it if not set
-    home_dir = tempfile.mkdtemp(prefix=fsnative(u"HOME-"), dir=_TEMP_DIR)
+    home_dir = tempfile.mkdtemp(prefix=fsnative("HOME-"), dir=_TEMP_DIR)
     os.environ["HOME"] = home_dir
 
     # set to new default
@@ -218,8 +218,8 @@ def init_test_environ():
     # Force the default theme so broken themes don't affect the tests
     os.environ["GTK_THEME"] = "Adwaita"
 
-    if xvfbwrapper is not None:
-        _VDISPLAY = xvfbwrapper.Xvfb()
+    if pyvirtualdisplay is not None:
+        _VDISPLAY = pyvirtualdisplay.Display()
         _VDISPLAY.start()
 
     _BUS_INFO = None
@@ -250,7 +250,7 @@ def exit_test_environ():
 
     try:
         shutil.rmtree(_TEMP_DIR)
-    except EnvironmentError:
+    except OSError:
         pass
 
     dbus_kill_user(_BUS_INFO)
@@ -266,10 +266,10 @@ init_test_environ()
 atexit.register(exit_test_environ)
 
 
-def unit(run=[], suite=None, strict=False, exitfirst=False, network=True,
+def unit(run=None, suite=None, strict=False, exitfirst=False, network=True,
          quality=True):
     """Returns 0 if everything passed"""
-
+    run = run or []
     # make glib warnings fatal
     if strict:
         from gi.repository import GLib

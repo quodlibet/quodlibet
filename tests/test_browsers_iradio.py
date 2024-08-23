@@ -7,7 +7,7 @@ import io
 from bz2 import BZ2Compressor
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from threading import Thread
-from typing import Generator
+from collections.abc import Generator
 
 import pytest
 
@@ -94,9 +94,10 @@ class TInternetRadio(TestCase):
         self.assertEqual(self.bar.status_text(1), "1 station")
         self.assertEqual(self.bar.status_text(101, 123), "101 stations")
 
+    @pytest.mark.network
     @skipIf(is_windows() or is_osx(), "Don't need to test downloads all the time")
     def test_click_add_station(self):
-        self.bar._update_button.emit('clicked')
+        self.bar._update_button.emit("clicked")
         assert not self.bar.has_stations
         # Run the actual download from real URL
         run_gtk_loop()
@@ -149,9 +150,9 @@ class TIRFile(TestCase):
         self.assertEqual(self.s("~~people~foo"), "artist")
 
     def testcan_write(self):
-        self.failUnless(self.s.can_change("title"))
+        self.assertTrue(self.s.can_change("title"))
         self.s.streamsong = True
-        self.failIf(self.s.can_change("title"))
+        self.assertFalse(self.s.can_change("title"))
 
     def test_dump_to_file(self):
         self.s["title"] = "artist - title"

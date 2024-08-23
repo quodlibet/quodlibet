@@ -17,10 +17,10 @@ from quodlibet.formats import AudioFile
 
 
 class FakeQueryPlugin(QueryPlugin):
-    PLUGIN_ID = 'fake_query_plugin'
-    PLUGIN_NAME = 'fake_query'
+    PLUGIN_ID = "fake_query_plugin"
+    PLUGIN_NAME = "fake_query"
 
-    key = 'fake'
+    key = "fake"
 
     def search(self, data, body):
         return True
@@ -31,98 +31,98 @@ fake_plugin = Plugin(FakeQueryPlugin)
 class TQueryPlugins(PluginTestCase):
 
     def test_handler(self):
-        self.failUnlessRaises(KeyError, QUERY_HANDLER.get_plugin, 'fake')
+        self.assertRaises(KeyError, QUERY_HANDLER.get_plugin, "fake")
         QUERY_HANDLER.plugin_enable(fake_plugin)
-        self.failUnless(
-            isinstance(QUERY_HANDLER.get_plugin('fake'), FakeQueryPlugin))
+        self.assertTrue(
+            isinstance(QUERY_HANDLER.get_plugin("fake"), FakeQueryPlugin))
         QUERY_HANDLER.plugin_disable(fake_plugin)
-        self.failUnlessRaises(KeyError, QUERY_HANDLER.get_plugin, 'fake')
+        self.assertRaises(KeyError, QUERY_HANDLER.get_plugin, "fake")
 
     def test_conditional(self):
-        if 'conditional_query' not in self.plugins:
+        if "conditional_query" not in self.plugins:
             return
 
-        plugin = self.plugins['conditional_query'].cls()
+        plugin = self.plugins["conditional_query"].cls()
 
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, None)
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, '')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body,
-                              'single=query')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body,
-                              'a=first,b=second')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body,
-                              'invalid/query')
+        self.assertRaises(QueryPluginError, plugin.parse_body, None)
+        self.assertRaises(QueryPluginError, plugin.parse_body, "")
+        self.assertRaises(QueryPluginError, plugin.parse_body,
+                              "single=query")
+        self.assertRaises(QueryPluginError, plugin.parse_body,
+                              "a=first,b=second")
+        self.assertRaises(QueryPluginError, plugin.parse_body,
+                              "invalid/query")
 
-        self.failUnless(plugin.parse_body('a=first,b=second,c=third'))
-        self.failUnless(plugin.parse_body('@(ext),#(numcmp > 0),!negation'))
+        self.assertTrue(plugin.parse_body("a=first,b=second,c=third"))
+        self.assertTrue(plugin.parse_body("@(ext),#(numcmp > 0),!negation"))
 
-        body = plugin.parse_body('artist=a, genre=rock, genre=classical')
+        body = plugin.parse_body("artist=a, genre=rock, genre=classical")
 
-        self.failUnless(plugin.search(
-            AudioFile({'artist': u'a', 'genre': u'rock'}), body))
-        self.failIf(plugin.search(
-            AudioFile({'artist': u'a', 'genre': u'classical'}), body))
-        self.failIf(plugin.search(
-            AudioFile({'artist': u'b', 'genre': u'rock'}), body))
-        self.failUnless(plugin.search(
-            AudioFile({'artist': u'b', 'genre': u'classical'}), body))
+        self.assertTrue(plugin.search(
+            AudioFile({"artist": "a", "genre": "rock"}), body))
+        self.assertFalse(plugin.search(
+            AudioFile({"artist": "a", "genre": "classical"}), body))
+        self.assertFalse(plugin.search(
+            AudioFile({"artist": "b", "genre": "rock"}), body))
+        self.assertTrue(plugin.search(
+            AudioFile({"artist": "b", "genre": "classical"}), body))
 
     def test_savedsearch(self):
-        if 'include_saved' not in self.plugins:
+        if "include_saved" not in self.plugins:
             return
 
-        plugin = self.plugins['include_saved'].cls()
+        plugin = self.plugins["include_saved"].cls()
 
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, None)
+        self.assertRaises(QueryPluginError, plugin.parse_body, None)
 
         try:
             fd, filename = mkstemp(text=True)
-            file = os.fdopen(fd, 'w')
+            file = os.fdopen(fd, "w")
             file.write("artist=a\nQuery 1\ngenre=classical\nAnother query")
             file.close()
 
-            self.failUnlessRaises(QueryPluginError, plugin.parse_body,
-                                  'missing query')
-            self.failUnlessRaises(QueryPluginError, plugin.parse_body,
-                                  'artist=a')
+            self.assertRaises(QueryPluginError, plugin.parse_body,
+                                  "missing query")
+            self.assertRaises(QueryPluginError, plugin.parse_body,
+                                  "artist=a")
 
-            self.failUnless(plugin.parse_body('  quEry 1',
+            self.assertTrue(plugin.parse_body("  quEry 1",
                             query_path_=filename))
 
-            query1 = plugin.parse_body('Query 1', query_path_=filename)
-            query2 = plugin.parse_body('another query', query_path_=filename)
-            song = AudioFile({'artist': u'a', 'genre': u'dance'})
-            self.failUnless(plugin.search(song, query1))
-            self.failIf(plugin.search(song, query2))
+            query1 = plugin.parse_body("Query 1", query_path_=filename)
+            query2 = plugin.parse_body("another query", query_path_=filename)
+            song = AudioFile({"artist": "a", "genre": "dance"})
+            self.assertTrue(plugin.search(song, query1))
+            self.assertFalse(plugin.search(song, query2))
         finally:
             os.remove(filename)
 
     def test_python_expression(self):
-        if 'python_query' not in self.plugins:
+        if "python_query" not in self.plugins:
             return
 
-        plugin = self.plugins['python_query'].cls()
+        plugin = self.plugins["python_query"].cls()
 
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, None)
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, '')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, '\\')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, 'unclosed[')
-        self.failUnlessRaises(QueryPluginError, plugin.parse_body, 'return s')
-        self.failUnless(plugin.parse_body('3'))
-        self.failUnless(plugin.parse_body('s'))
+        self.assertRaises(QueryPluginError, plugin.parse_body, None)
+        self.assertRaises(QueryPluginError, plugin.parse_body, "")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "\\")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "unclosed[")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "return s")
+        self.assertTrue(plugin.parse_body("3"))
+        self.assertTrue(plugin.parse_body("s"))
 
         body1 = plugin.parse_body("s('~#rating') > 0.5")
         body2 = plugin.parse_body(
             "s('genre').lower()[2:] in ('rock', 'pop')")
         body3 = plugin.parse_body("len(s('title')) < 6")
 
-        song1 = AudioFile({'title': 'foobar', '~#rating': 0.8,
-                           'genre': 'jazz'})
-        song2 = AudioFile({'title': 'baz', '~#rating': 0.4, 'genre': 'aapop'})
+        song1 = AudioFile({"title": "foobar", "~#rating": 0.8,
+                           "genre": "jazz"})
+        song2 = AudioFile({"title": "baz", "~#rating": 0.4, "genre": "aapop"})
 
-        self.failUnless(plugin.search(song1, body1))
-        self.failIf(plugin.search(song1, body2))
-        self.failIf(plugin.search(song1, body3))
-        self.failIf(plugin.search(song2, body1))
-        self.failUnless(plugin.search(song2, body2))
-        self.failUnless(plugin.search(song2, body3))
+        self.assertTrue(plugin.search(song1, body1))
+        self.assertFalse(plugin.search(song1, body2))
+        self.assertFalse(plugin.search(song1, body3))
+        self.assertFalse(plugin.search(song2, body1))
+        self.assertTrue(plugin.search(song2, body2))
+        self.assertTrue(plugin.search(song2, body3))

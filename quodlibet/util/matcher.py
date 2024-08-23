@@ -7,12 +7,12 @@
 
 from difflib import SequenceMatcher
 from operator import itemgetter
-from typing import Generic, TypeVar, Mapping, Callable, Any, Union, List, Sequence, \
-    Optional, Tuple
+from typing import Generic, TypeVar
+from collections.abc import Mapping, Sequence
 
 
-T = TypeVar('T')
-Real = Union[int, float]
+T = TypeVar("T")
+Real = int | float
 AttributeGetter = itemgetter
 AttributeGetterToWeight = Mapping[AttributeGetter, Real]
 
@@ -21,8 +21,8 @@ SUPPORTED_NUMBER_TYPES = (int, float)
 
 class _MatchData(Generic[T]):
     a_value: T
-    best_b_idx: Optional[int]
-    second_best_b_idx: Optional[int]
+    best_b_idx: int | None
+    second_best_b_idx: int | None
 
     def __init__(self, a_idx: int, a_value: T, b_size: int):
         self.a_idx = a_idx
@@ -30,9 +30,9 @@ class _MatchData(Generic[T]):
         self.b_idx_to_similarity = [0.0 for _ in range(b_size)]
 
         self.best_b_idx = None
-        self.best_b_similarity = float('-inf')
+        self.best_b_similarity = float("-inf")
         self.second_best_b_idx = None
-        self.second_best_b_similarity = float('-inf')
+        self.second_best_b_similarity = float("-inf")
 
         self.continue_attr_index = 0
 
@@ -74,7 +74,7 @@ class _MatchData(Generic[T]):
             # None left, which means all others a's have better values
             # than this one. As a result, this a will stay alone :(
             self.best_b_idx = None
-            self.best_b_similarity = float('-inf')
+            self.best_b_similarity = float("-inf")
             return
 
         sim, idx = self._sorted_b_similarity_with_idx_pairs[-1]
@@ -110,12 +110,12 @@ class ObjectListMatcher(Generic[T]):
     However, whenever there's a conflict (two elements match to one), the full
     similarity scores of the affected elements will always be calculated."""
 
-    similarity_matrix: List[List[float]]
+    similarity_matrix: list[list[float]]
     minimum_similarity_ratio: float
 
     _matcher: SequenceMatcher
-    _attr_with_weight: List[Tuple[Callable[[T], Any], float]]
-    _b_idx_to_a_match_data: List[Optional[_MatchData]]
+    _attr_with_weight: list[tuple[itemgetter, float]]
+    _b_idx_to_a_match_data: list[_MatchData | None]
 
     def __init__(self, attr_to_weight: AttributeGetterToWeight):
         self.update_attr_to_weight(attr_to_weight)
@@ -193,7 +193,7 @@ class ObjectListMatcher(Generic[T]):
             self._weight_left.append(weight_left)
             weight_left -= weight
 
-    def get_indices(self, a_items: List[T], b_items: List[T]) -> List[Optional[int]]:
+    def get_indices(self, a_items: list[T], b_items: list[T]) -> list[int | None]:
         """
         :return: the indices of b ordered so that they match elements in a.
 

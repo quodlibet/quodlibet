@@ -90,7 +90,7 @@ def main():
                         if k == "href":
                             try:
                                 v = str(v)
-                            except:
+                            except Exception:
                                 continue
                             if not v.startswith("http"):
                                 continue

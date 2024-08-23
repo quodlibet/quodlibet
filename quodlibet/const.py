@@ -11,7 +11,7 @@ import os
 # MSYS2 defines MSYSTEM which changes os.sep/os.path.sep for the mingw
 # Python build. Unset here and restart.. (does not work for py.test etc.)
 # XXX: do this here since it gets executed by all scripts
-if os.name == "nt" and "MSYSTEM" in os.environ:
+if os.name == "nt" and os.environ.get("MSYSTEM"):
     import subprocess
 
     del os.environ["MSYSTEM"]
@@ -54,8 +54,8 @@ class Version(tuple):
 class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
-    PYTHON3 = Version("Python3", 3, 8)
-    MUTAGEN = Version("Mutagen", 1, 34,
+    PYTHON3 = Version("Python3", 3, 10)
+    MUTAGEN = Version("Mutagen", 1, 37,
                       message="Use the Quod Libet unstable PPAs/repos to get a newer "
                               "mutagen version.")
     GTK = Version("GTK+", 3, 18)
@@ -63,7 +63,7 @@ class MinVersions:
     GSTREAMER = Version("GStreamer", 1, 8)
 
 
-VERSION_TUPLE = Version("", 4, 6, -1)
+VERSION_TUPLE = Version("", 4, 7, -1)
 VERSION = str(VERSION_TUPLE)
 
 QL_NAMESPACE = "https://quodlibet.github.io"
@@ -83,9 +83,9 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 
 # about dialog, --version etc.
 WEBSITE = "https://quodlibet.readthedocs.org/"
-COPYRIGHT = u"Copyright 2004-2022"
+COPYRIGHT = "Copyright 2004-2023"
 
-AUTHORS = sorted(u"""\
+AUTHORS = sorted("""\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
@@ -203,7 +203,7 @@ a-vrma@github
 Phidica@github
 """.strip().split("\n"))
 
-TRANSLATORS = sorted(u"""
+TRANSLATORS = sorted("""
 Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
@@ -269,7 +269,7 @@ Kirill Romanov (ru)
 wvxwxvw@github (ru)
 """.strip().splitlines())
 
-ARTISTS = sorted(u"""\
+ARTISTS = sorted("""\
 Tobias
 Jakub Steiner
 Fabien Devaux

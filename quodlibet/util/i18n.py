@@ -29,7 +29,8 @@ def bcp47_to_language(code):
         return "zh_TW"
 
     parts = code.split("-")
-    is_iso = lambda s: len(s) == 2 and s.isalpha()
+    def is_iso(s):
+        return len(s) == 2 and s.isalpha()
 
     # we only support ISO 639-1
     if not is_iso(parts[0]):
@@ -43,20 +44,20 @@ def bcp47_to_language(code):
         region = parts[2]
 
     if region:
-        return "%s_%s" % (lang_subtag, region)
+        return f"{lang_subtag}_{region}"
     return lang_subtag
 
 
 def osx_locale_id_to_lang(id_):
     """Converts a NSLocale identifier to something suitable for LANG"""
 
-    if not "_" in id_:
+    if "_" not in id_:
         return id_
     # id_ can be "zh-Hans_TW"
     parts = id_.rsplit("_", 1)
     ll = parts[0]
     ll = bcp47_to_language(ll).split("_")[0]
-    return "%s_%s" % (ll, parts[1])
+    return f"{ll}_{parts[1]}"
 
 
 def set_i18n_envvars():
@@ -72,18 +73,18 @@ def set_i18n_envvars():
                                       [GetUserDefaultUILanguage(),
                                        GetSystemDefaultUILanguage()])))
         if langs:
-            os.environ.setdefault('LANG', langs[0])
-            os.environ.setdefault('LANGUAGE', ":".join(langs))
+            os.environ.setdefault("LANG", langs[0])
+            os.environ.setdefault("LANGUAGE", ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
         locale_id = NSLocale.currentLocale().localeIdentifier()
         lang = osx_locale_id_to_lang(locale_id)
-        os.environ.setdefault('LANG', lang)
+        os.environ.setdefault("LANG", lang)
 
         preferred_langs = NSLocale.preferredLanguages()
         if preferred_langs:
             languages = map(bcp47_to_language, preferred_langs)
-            os.environ.setdefault('LANGUAGE', ":".join(languages))
+            os.environ.setdefault("LANGUAGE", ":".join(languages))
     else:
         return
 
@@ -152,8 +153,8 @@ class GlibTranslations(gettext.GNUTranslations):
         context = str(context)
         msgid = str(msgid)
         msgidplural = str(msgidplural)
-        real_msgid = u"%s\x04%s" % (context, msgid)
-        real_msgidplural = u"%s\x04%s" % (context, msgidplural)
+        real_msgid = f"{context}\x04{msgid}"
+        real_msgidplural = f"{context}\x04{msgidplural}"
         result = self.ngettext(real_msgid, real_msgidplural, n)
         if result == real_msgid:
             return msgid
@@ -164,7 +165,7 @@ class GlibTranslations(gettext.GNUTranslations):
     def upgettext(self, context, msgid):
         context = str(context)
         msgid = str(msgid)
-        real_msgid = u"%s\x04%s" % (context, msgid)
+        real_msgid = f"{context}\x04{msgid}"
         result = self.ugettext(real_msgid)
         if result == real_msgid:
             return msgid
@@ -236,7 +237,8 @@ def register_translation(domain, localedir=None):
     if localedir is None:
         iterdirs = iter_locale_dirs
     else:
-        iterdirs = lambda: (yield localedir)
+        def iterdirs():
+            return (yield localedir)
 
     for dir_ in iterdirs():
         try:
@@ -273,7 +275,7 @@ def init(language=None):
     print_d("LANG: %r" % os.environ.get("LANG"))
 
     try:
-        locale.setlocale(locale.LC_ALL, '')
+        locale.setlocale(locale.LC_ALL, "")
     except locale.Error:
         pass
 
@@ -395,15 +397,15 @@ def numeric_phrase(singular, plural, n, template_var=None):
     `"Add 12,345 songs"`
     (in `en_US` locale at least)
     """
-    num_text = locale.format_string('%d', n, grouping=True)
+    num_text = locale.format_string("%d", n, grouping=True)
     if not template_var:
-        template_var = '%d'
-        replacement = '%s'
+        template_var = "%d"
+        replacement = "%s"
         params = num_text
     else:
-        template_var = '%(' + template_var + ')d'
-        replacement = '%(' + template_var + ')s'
-        params = dict()
+        template_var = "%(" + template_var + ")d"
+        replacement = "%(" + template_var + ")s"
+        params = {}
         params[template_var] = num_text
     return (ngettext(singular, plural, n).replace(template_var, replacement) %
             params)

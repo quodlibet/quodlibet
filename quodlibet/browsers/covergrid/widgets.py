@@ -5,8 +5,6 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from __future__ import absolute_import
-from typing import Optional
 
 from gi.repository import GObject, Gio, GdkPixbuf, Gtk, Pango, Gdk
 from cairo import Surface
@@ -17,12 +15,12 @@ from quodlibet.qltk.image import add_border_widget, get_surface_for_pixbuf
 from quodlibet.util import DeferredSignal
 
 
-def _no_cover(size, widget) -> Optional[Surface]:
-    old_size, surface = getattr(_no_cover, 'cache', (None, None))
+def _no_cover(size, widget) -> Surface | None:
+    old_size, surface = getattr(_no_cover, "cache", (None, None))
     if old_size != size or surface is None:
         surface = get_surface_for_pixbuf(
             widget, get_no_cover_pixbuf(size, size))
-        setattr(_no_cover, 'cache', (size, surface))
+        _no_cover.cache = size, surface  # type: ignore
     return surface
 
 
@@ -34,7 +32,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
     """
 
     __gsignals__ = {
-        'songs-menu': (GObject.SignalFlags.RUN_LAST, None, ())
+        "songs-menu": (GObject.SignalFlags.RUN_LAST, None, ())
     }
 
     padding = GObject.Property(type=int, default=0)
@@ -44,7 +42,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
 
     def __init__(self,
             model: AlbumListItem,
-            cancelable: Optional[Gio.Cancellable] = None,
+            cancelable: Gio.Cancellable | None = None,
             **kwargs):
         super().__init__(has_tooltip=True, **kwargs)
 
@@ -68,8 +66,8 @@ class AlbumWidget(Gtk.FlowBoxChild):
         box.pack_start(self._label, True, True, 0)
 
         eb = Gtk.EventBox()
-        eb.connect('popup-menu', lambda _: self.emit('songs-menu'))
-        eb.connect('button-press-event', self.__rightclick)
+        eb.connect("popup-menu", lambda _: self.emit("songs-menu"))
+        eb.connect("button-press-event", self.__rightclick)
         eb.add(box)
 
         self.add(eb)
@@ -79,19 +77,19 @@ class AlbumWidget(Gtk.FlowBoxChild):
         self.show_all()
 
         self.bind_property(
-            'padding', box, 'margin', GObject.BindingFlags.SYNC_CREATE)
+            "padding", box, "margin", GObject.BindingFlags.SYNC_CREATE)
         self.bind_property(
-            'padding', box, 'spacing', GObject.BindingFlags.SYNC_CREATE)
+            "padding", box, "spacing", GObject.BindingFlags.SYNC_CREATE)
         self.bind_property(
-            'text-visible', label, 'visible', GObject.BindingFlags.SYNC_CREATE)
+            "text-visible", label, "visible", GObject.BindingFlags.SYNC_CREATE)
 
-        model.connect('notify::album', lambda *a: self._populate())
-        model.connect('notify::label', lambda *a: self._set_text(model.label))
-        model.connect('notify::cover', lambda *a: self._set_cover(model.cover))
+        model.connect("notify::album", lambda *a: self._populate())
+        model.connect("notify::label", lambda *a: self._set_text(model.label))
+        model.connect("notify::cover", lambda *a: self._set_cover(model.cover))
 
-        self.connect('query-tooltip', self.__tooltip)
-        self.connect('notify::cover-size', self.__cover_size)
-        self.connect('notify::display-pattern', self.__display_pattern)
+        self.connect("query-tooltip", self.__tooltip)
+        self.connect("notify::cover-size", self.__cover_size)
+        self.connect("notify::display-pattern", self.__display_pattern)
 
         self._set_cover(self.model.cover)
         self._set_text(self.model.label)
@@ -110,7 +108,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
 
     def _populate_on_draw(self):
         self.__draw_handler_id = self._image.connect(
-            'draw', DeferredSignal(self.__draw, timeout=10))
+            "draw", DeferredSignal(self.__draw, timeout=10))
 
     def __draw(self, widget, cr):
         if self.__draw_handler_id is None:
@@ -124,7 +122,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
         self.model.load_cover(size, self._cancelable)
         self.model.format_label(self.props.display_pattern)
 
-    def _set_cover(self, cover: Optional[GdkPixbuf.Pixbuf] = None):
+    def _set_cover(self, cover: GdkPixbuf.Pixbuf | None = None):
         if cover:
             pb = add_border_widget(cover, self)
             surface = get_surface_for_pixbuf(self, pb)
@@ -133,7 +131,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
             surface = _no_cover(size, self)
         self._image.props.surface = surface
 
-    def _set_text(self, label: Optional[str] = None):
+    def _set_text(self, label: str | None = None):
         if label:
             self._label.set_markup(label)
 
@@ -149,7 +147,7 @@ class AlbumWidget(Gtk.FlowBoxChild):
 
     def __rightclick(self, widget, event):
         if event.button == Gdk.BUTTON_SECONDARY:
-            self.emit('songs-menu')
+            self.emit("songs-menu")
 
     def __tooltip(self, widget, x, y, keyboard_tip, tooltip):
         label = self.model.label

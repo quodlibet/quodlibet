@@ -1,12 +1,14 @@
 # Copyright 2006 Joe Wreschnig
-#        2016-17 Nick Boultbee
+#        2016-23 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
+from typing import Any
+
+from gi.repository import Gtk
 
 from quodlibet import _, print_d
 
@@ -23,7 +25,7 @@ class Order:
                    If the song is not in the list, this iter will be `None`.
     """
 
-    name: Optional[str] = "unknown_order"
+    name: str | None = "unknown_order"
     """The name by which this order is known"""
 
     display_name = _("Unknown")
@@ -103,44 +105,48 @@ class OrderRemembered(Order):
     """Shared class for all the shuffle modes that keep a memory
     of their previously played songs."""
 
+    _played: list[Gtk.TreeIter]
+
     def __init__(self):
         super().__init__()
         self._played = []
 
     def next(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter).get_indices()[0])
+            self._played.append(iter)
 
     def previous(self, playlist, iter):
-        try:
-            path = self._played.pop()
-        except IndexError:
-            return None
-        else:
-            return playlist.get_iter(path)
+        if self._played:
+            return self._played.pop()
+        return None
 
     def set(self, playlist, iter):
         if iter is not None:
-            self._played.append(playlist.get_path(iter).get_indices()[0])
+            self._played.append(iter)
         return iter
 
     def reset(self, playlist):
         del(self._played[:])
 
-    def remaining(self, playlist):
+    def remaining(self, playlist) -> dict[int, Any]:
         """Gets a map of all song indices to their song from the `playlist`
         that haven't yet been played"""
-        all_indices = set(range(len(playlist)))
-        played = set(self._played)
+
+        def get_index(iter) -> int:
+            path = playlist.get_path(iter)
+            return path.get_indices()[0]
+
+        played = set(map(get_index, self._played))
         print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
-        remaining = list(all_indices.difference(played))
-        all_songs = playlist.get()
-        return {i: all_songs[i] for i in remaining}
+        remaining = (
+            (get_index(iter), value) for iter, value in playlist.iterrows())
+        return {
+            index: song for (index, song) in remaining if index not in played}
 
 
 class OrderInOrder(Order):
     """Keep to the order of the supplied playlist"""
-    name: Optional[str] = "in_order"
+    name: str | None = "in_order"
     display_name = _("In Order")
     accelerated_name = _("_In Order")
     replaygain_profiles = ["album", "track"]

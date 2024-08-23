@@ -50,7 +50,7 @@ class DummyCoverSource2(CoverSourcePlugin):
 
     def fetch_cover(self):
         DummyCoverSource2.fetch_call = True
-        return self.emit('fetch-success', self.cover)
+        return self.emit("fetch-success", self.cover)
 
 
 class DummyCoverSource3(ApiCoverSourcePlugin):
@@ -64,11 +64,11 @@ class DummyCoverSource3(ApiCoverSourcePlugin):
         return None
 
     def search(self):
-        return self.emit('search-complete', [{'cover': DUMMY_COVER}])
+        return self.emit("search-complete", [{"cover": DUMMY_COVER}])
 
     def fetch_cover(self):
         DummyCoverSource3.fetch_call = True
-        return self.emit('fetch-success', DUMMY_COVER)
+        return self.emit("fetch-success", DUMMY_COVER)
 
 
 dummy_sources = [Plugin(s) for s in
@@ -216,18 +216,18 @@ class TCoverManager(TestCase):
         results = []
 
         def done(manager, provider, result):
-            self.failUnless(result, msg="Shouldn't succeed with no results")
+            self.assertTrue(result, msg="Shouldn't succeed with no results")
             results.append(result)
 
         def finished(manager, songs):
             print("Finished!")
 
-        manager.connect('covers-found', done)
+        manager.connect("covers-found", done)
         manager.search_cover(Cancellable(), songs)
-        manager.connect('searches-complete', finished)
+        manager.connect("searches-complete", finished)
         run_gtk_loop()
 
-        self.failUnlessEqual(len(results), 1)
+        self.assertEqual(len(results), 1)
 
     def tearDown(self):
         pass
@@ -253,8 +253,8 @@ class TCoverManagerBuiltin(TestCase):
         pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 20, 20)
         pb.savev(self.cover2, "png", [], [])
 
-        self.file1 = get_temp_copy(get_data_path('silence-44-s.mp3'))
-        self.file2 = get_temp_copy(get_data_path('silence-44-s.mp3'))
+        self.file1 = get_temp_copy(get_data_path("silence-44-s.mp3"))
+        self.file2 = get_temp_copy(get_data_path("silence-44-s.mp3"))
 
         self.manager = CoverManager()
 
@@ -299,18 +299,18 @@ class TCoverManagerBuiltin(TestCase):
         song2 = MP3File(self.file2)
 
         # each should find a cover
-        self.failUnless(self.is_embedded(self.manager.get_cover(song1)))
-        self.failIf(self.is_embedded(self.manager.get_cover(song2)))
+        self.assertTrue(self.is_embedded(self.manager.get_cover(song1)))
+        self.assertFalse(self.is_embedded(self.manager.get_cover(song2)))
 
         cover_for = self.manager.get_cover_many
         # both settings should search both songs before giving up
         config.set("albumart", "prefer_embedded", True)
-        self.failUnless(self.is_embedded(cover_for([song1, song2])))
-        self.failUnless(self.is_embedded(cover_for([song2, song1])))
+        self.assertTrue(self.is_embedded(cover_for([song1, song2])))
+        self.assertTrue(self.is_embedded(cover_for([song2, song1])))
 
         config.set("albumart", "prefer_embedded", False)
-        self.failIf(self.is_embedded(cover_for([song1, song2])))
-        self.failIf(self.is_embedded(cover_for([song2, song1])))
+        self.assertFalse(self.is_embedded(cover_for([song1, song2])))
+        self.assertFalse(self.is_embedded(cover_for([song2, song1])))
 
     def is_embedded(self, fileobj):
         return not path_equal(fileobj.name, self.external_cover, True)
@@ -340,10 +340,10 @@ class TCoverManagerBuiltin(TestCase):
 
         config.set("albumart", "prefer_embedded", True)
         acquire(both_song)
-        self.failUnless(result_was_embedded(),
+        self.assertTrue(result_was_embedded(),
                         "Embedded image expected due to prefs")
 
         config.set("albumart", "prefer_embedded", False)
         acquire(both_song)
-        self.failIf(result_was_embedded(),
+        self.assertFalse(result_was_embedded(),
                     "Got an embedded image despite prefs")
