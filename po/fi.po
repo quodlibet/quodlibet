@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-07-06 12:50+0000\n"
+"PO-Revision-Date: 2024-07-07 16:09+0000\n"
 "Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.0-dev\n"
+"X-Generator: Weblate 5.7-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3219,7 +3219,7 @@ msgstr "Ei aktiivista kappaletta"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "Piilota .lrc- ja .elrc-muotoisten laulun sanojen aikaleimat"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3631,9 +3631,8 @@ msgid "Prefer _less played"
 msgstr "Suosi _vähemmän toistettuja"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "Suosi vähemmän toistettuja"
+msgstr "Vähemmän toistettujen kappaleiden suosimisen taso"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -5580,11 +5579,12 @@ msgstr ""
 "quodlibet/config."
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
-msgstr "Moduulia {module} ei löytynyt. Onko tarvittava paketti asennettu?"
+msgstr ""
+"Moduulia {module} ei löytynyt. Onko tarvittava paketti asennettu?{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -5655,12 +5655,10 @@ msgid "Usage"
 msgstr "Käyttö"
 
 #: quodlibet/qltk/advanced_prefs.py:69
-#, fuzzy
 msgid "Revert to default"
-msgstr "Palauta oletukset"
+msgstr "Palauta oletusarvo"
 
 #: quodlibet/qltk/advanced_prefs.py:251
-#, fuzzy
 msgid "I know what I'm doing!"
 msgstr "Tiedän, mitä olen tekemässä"
 
@@ -6827,9 +6825,8 @@ msgid "Scan Directories"
 msgstr "Luettavat kansiot"
 
 #: quodlibet/qltk/prefs.py:753
-#, fuzzy
 msgid "Advanced"
-msgstr "Dance"
+msgstr "Lisäasetukset"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
@@ -7100,11 +7097,11 @@ msgid "_Move album art"
 msgstr "_Siirrä kansikuvat"
 
 #: quodlibet/qltk/renamefiles.py:214
-#, fuzzy
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
 msgstr ""
-"Katso asetus ”[albumart] filenames”, jossa määritetään kuvien hakulausekkeet"
+"Katso asetus ”[albumart] search_filenames”, jolla määritetään, mitkä kuvat "
+"siirretään"
 
 #: quodlibet/qltk/renamefiles.py:219
 msgid "_Overwrite album art at target"
@@ -7933,17 +7930,15 @@ msgstr "esitys"
 
 #: quodlibet/util/tags.py:104
 msgid "producer"
-msgstr ""
+msgstr "tuottaja"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "producers"
-msgstr "Tuottanut %s"
+msgstr "tuottajat"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "production"
-msgstr "orkesterinjohto"
+msgstr "tuotanto"
 
 #: quodlibet/util/tags.py:105
 msgid "title"
@@ -8168,9 +8163,8 @@ msgstr "Kuuntele, selaa tai muokkaa äänikokoelmaasi"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libetin asetukset"
+msgstr "Quod Libetin kehitystiimi"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
