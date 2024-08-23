@@ -1548,6 +1548,7 @@ msgstr "업데이트 방법(_U):"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2413,20 +2414,20 @@ msgstr "화면보호기 멈춤"
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "그놈 화면보호기가 활성화될 때 재생을 멈춥니다."
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "Quod Libet를 위한 GNOME Shell의 검색 제공자가 설치되어 있지 않습니다."
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr "그놈 검색 제공"
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr "그놈 쉘에서 라이브러리를 검색하는 것을 허용합니다."
 
@@ -3132,16 +3133,16 @@ msgstr ""
 msgid "Tooltip Display"
 msgstr "Edit Display"
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 #, fuzzy
 msgid "View Lyrics"
 msgstr "가사"
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3150,10 +3151,14 @@ msgstr ""
 "이 노래에 해당하는 가사가 없습니다\n"
 "%s"
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 #, fuzzy
 msgid "No active song"
 msgstr "노래를 저장할 수 없습니다"
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
+msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3538,22 +3543,27 @@ msgstr ""
 msgid "_Follow cursor"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr ""
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 #, fuzzy
 msgid "Prefer less played"
 msgstr "마지막 재생"
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 #, fuzzy
 msgid "Prefer _less played"
+msgstr "마지막 재생"
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+#, fuzzy
+msgid "Priority for less played tracks"
 msgstr "마지막 재생"
 
 #: quodlibet/ext/playorder/queue.py:23
@@ -8055,21 +8065,27 @@ msgstr "음악 재생기"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "듣기, 검색 및 오디오 모음 편집"
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+#, fuzzy
+msgid "The Quod Libet Development Team"
+msgstr "Quod Libet 설정"
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
 "formats it supports."
 msgstr ""
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 msgstr ""
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
@@ -8609,9 +8625,6 @@ msgstr ""
 
 #~ msgid "Separators for splitting tags"
 #~ msgstr "Separators for splitting tags"
-
-#~ msgid "Quod Libet Preferences"
-#~ msgstr "Quod Libet 설정"
 
 #~ msgid "Not Played To_day"
 #~ msgstr "Not Played To_day"

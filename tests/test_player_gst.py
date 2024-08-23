@@ -240,15 +240,11 @@ class TGStreamerCodecs(TestCase):
         """
 
         files = [
-            # maybe https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6498
-            # "coverart.wv",
             "empty.aac",
             "empty.flac",
             "empty.ogg",
             "empty.opus",
             "silence-44-s.mpc",
-            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3369
-            # "silence-44-s.sv8.mpc",
             "silence-44-s.tta",
             # "test.mid",
             "silence-44-s.spx",
@@ -259,6 +255,14 @@ class TGStreamerCodecs(TestCase):
             "h264_aac.mp4",
             "h265_aac.mp4"
         ]
+
+        gst_version = Gst.version()
+        if gst_version >= (1, 24, 7):
+            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/issues/3369
+            files.append("silence-44-s.sv8.mpc")
+        if gst_version >= (1, 24, 2):
+            # https://gitlab.freedesktop.org/gstreamer/gstreamer/-/merge_requests/6498
+            files.append("coverart.wv")
 
         errors = []
         for file_ in files:

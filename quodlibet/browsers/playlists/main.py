@@ -125,15 +125,14 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         return [row[0] for row in self._lists]
 
     def changed(self, playlist, refresh=True):
-        current = self._selected_playlist()
         for row in self._lists:
             if row[0] is playlist:
                 if refresh:
                     # Changes affect aggregate caches etc
                     print_d(f"Refreshing view in {self} for {playlist}")
                     self._lists.row_changed(row.path, row.iter)
-                    if playlist is current:
-                        self.activate()
+                    # TODO: fix #4072, but not with playlist.activate()
+                    # see #4179 for reasoning
                 break
 
     def __removed(self, lib, playlists):

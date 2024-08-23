@@ -1546,6 +1546,7 @@ msgstr "_עדכון תחנות"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/themeswitcher.py:84
+#: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
@@ -2410,20 +2411,20 @@ msgstr "השהיית שומר צג"
 msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "השהיית השמעה כאשר שומר צג של גנום פעיל."
 
-#: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "לא מותקנת מעטפת ספק חיפוש גנום עבור קְווֹדְלִיבֵּט."
 
-#: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr ""
 
-#: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr "ספק חיפוש גנום"
 
-#: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr "מתן אפשרות למעטפת גנום לבצע חיפוש בספריה."
 
@@ -3137,15 +3138,15 @@ msgstr "גלגל _הגלילה"
 msgid "Tooltip Display"
 msgstr "מַצָּג בלון"
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr "מצג תַּמְלִיל"
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "תצוגת תג או תַּמְלִיל מבוסס קובץ אוטומטית בחלון צד."
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3154,9 +3155,13 @@ msgstr ""
 "לא נמצא תַּמְלִיל עבור\n"
 " %s"
 
-#: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
 msgstr "אין שיר פעיל"
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
+msgstr ""
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3548,22 +3553,27 @@ msgstr "עקיבה אחר הסמן"
 msgid "_Follow cursor"
 msgstr "עקיבה אחר הסמן"
 
-#: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr "שוין מספר השמעות"
 
-#: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 #, fuzzy
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr "אקראי, העדפת שירים בעלי סך כל השמעות מעטות יותר."
 
-#: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr "העדפת שירים שהושמעו פחות"
 
-#: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 #, fuzzy
 msgid "Prefer _less played"
+msgstr "העדפת שירים שהושמעו פחות"
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+#, fuzzy
+msgid "Priority for less played tracks"
 msgstr "העדפת שירים שהושמעו פחות"
 
 #: quodlibet/ext/playorder/queue.py:23
@@ -8049,7 +8059,12 @@ msgstr "נגן מוזיקה"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "האזנה, עיון ועריכה של אוסף השמע"
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+msgid "The Quod Libet Development Team"
+msgstr ""
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
@@ -8058,8 +8073,8 @@ msgstr ""
 "אקס פאלסו הוא עורך תגים עם ממשק עריכת תגים זהה לקְווֹדְלִיבֵּט. דבר המאפשר הצגת "
 "ועריכת כל התגים בקובץ, בכל תבניות הקבצים הנתמכות."
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -8067,7 +8082,7 @@ msgstr ""
 "תבניות קבצים נתמכים כוללים OG Vorbis / Opus / Speex / FLAC, MP3, FLAC, MOD / "
 "XM / IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "

@@ -311,7 +311,7 @@ class WaveformScale(Gtk.EventBox):
     def __init__(self, player):
         super().__init__()
         self._player = player
-        self.set_size_request(40, 40)
+        self.set_size_request(40, CONFIG.height_px)
         self.position = 0
         self._last_drawn_position = 0
         self.override_background_color(Gtk.StateFlags.NORMAL, Gdk.RGBA(alpha=0))
@@ -587,6 +587,7 @@ class Config:
     seek_amount = IntConfProp(_config, "seek_amount", 5000)
     max_data_points = IntConfProp(_config, "max_data_points", 3000)
     show_time_labels = BoolConfProp(_config, "show_time_labels", True)
+    height_px = IntConfProp(_config, "height_px", 40)
 
 
 CONFIG = Config()
@@ -656,6 +657,12 @@ class WaveformSeekBarPlugin(EventPlugin):
             if self._bar is not None:
                 self._bar.set_time_label_visibility(CONFIG.show_time_labels)
 
+        def on_height_px_changed(spinbox):
+            CONFIG.height_px = spinbox.get_value_as_int()
+            if self._bar is not None and self._bar._waveform_scale is not None:
+                self._bar._waveform_scale.set_size_request(40, CONFIG.height_px)
+
+
         def create_color(label_text, color, callback):
             hbox = Gtk.HBox(spacing=6)
             hbox.set_border_width(6)
@@ -700,6 +707,19 @@ class WaveformSeekBarPlugin(EventPlugin):
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
         hbox.pack_start(seek_amount, True, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
+
+
+        hbox = Gtk.HBox(spacing=6)
+        hbox.set_border_width(6)
+        label = Gtk.Label(label=_("Waveform height (pixels):"))
+        hbox.pack_start(label, False, True, 0)
+        height_px = Gtk.SpinButton(
+            adjustment=Gtk.Adjustment(CONFIG.height_px, 40, 400, 10, 10, 0)
+        )
+        height_px.set_numeric(True)
+        height_px.connect("changed", on_height_px_changed)
+        hbox.pack_start(height_px, True, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
         return vbox

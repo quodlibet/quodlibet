@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-02-06 12:01+0000\n"
+"PO-Revision-Date: 2024-05-23 10:09+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.4-dev\n"
+"X-Generator: Weblate 5.6-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:221
@@ -200,7 +200,7 @@ msgstr[2] "%d треков"
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
 #: quodlibet/util/__init__.py:576
 msgid "Invalid pattern"
-msgstr "Некорректный шаблон"
+msgstr "Недопустимый шаблон"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
@@ -318,7 +318,7 @@ msgstr "Показывать текст _альбомов"
 
 #: quodlibet/browsers/covergrid/prefs.py:70
 msgid "Show \"All Albums\" Item"
-msgstr "Показывать пункт \"Все альбомы\""
+msgstr "Показывать пункт «Все альбомы»"
 
 #: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
@@ -1300,7 +1300,7 @@ msgstr "Латинизировать _японский текст"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "Не удалось найти 'Kanji Kana Simple Inverter' (kakasi)."
+msgstr "Не удалось найти «Kanji Kana Simple Inverter» (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1585,7 +1585,7 @@ msgstr "_Стратегия обновления:"
 #: quodlibet/ext/gstreamer/crossfeed.py:137
 #: quodlibet/ext/gstreamer/karaoke.py:100 quodlibet/ext/gstreamer/pitch.py:90
 #: quodlibet/ext/playorder/queue.py:39 quodlibet/ext/query/missing.py:39
-#: quodlibet/qltk/prefs.py:764
+#: quodlibet/qltk/prefs.py:764 quodlibet/ext/events/viewlyrics.py:182
 msgid "Preferences"
 msgstr "Параметры"
 
@@ -2249,12 +2249,12 @@ msgstr "Не удалось связаться со службой «%s»."
 
 #: quodlibet/ext/events/qlscrobbler.py:265
 msgid "Authentication failed: invalid URL."
-msgstr "Авторизация не удалась: неверно указан URL."
+msgstr "Авторизация не удалась: допустимый URL-адрес."
 
 #: quodlibet/ext/events/qlscrobbler.py:283
 #, python-format
 msgid "Authentication failed: Invalid username '%s' or bad password."
-msgstr "Авторизация не удалась: неверное имя пользователя '%s' или пароль."
+msgstr "Авторизация не удалась: неверное имя пользователя «%s» или пароль."
 
 #: quodlibet/ext/events/qlscrobbler.py:288
 msgid "Client is banned. Contact the author."
@@ -2448,19 +2448,23 @@ msgid "Pauses playback while the GNOME screensaver is active."
 msgstr "Приостанавливает воспроизведение, пока хранитель экрана GNOME активен."
 
 #: quodlibet/ext/events/searchprovider.py:70
+#: quodlibet/ext/events/searchprovider.py:75
 msgid "No GNOME Shell search provider for Quod Libet installed."
 msgstr "Поставщик поиска GNOME Shell для Quod Libet не установлен."
 
 #: quodlibet/ext/events/searchprovider.py:71
+#: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
 msgstr "Скопировали ли вы файл ini в %s (или похожее)?"
 
 #: quodlibet/ext/events/searchprovider.py:77
+#: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
 msgstr "Поставщик поиска GNOME"
 
 #: quodlibet/ext/events/searchprovider.py:78
+#: quodlibet/ext/events/searchprovider.py:83
 msgid "Allows GNOME Shell to search the library."
 msgstr "Позволяет GNOME Shell искать в фонотеке."
 
@@ -2528,8 +2532,8 @@ msgid ""
 "Makes Logitech Squeezebox mirror Quod Libet output, provided both read from "
 "an identical library."
 msgstr ""
-"Делает Logitech Squeezebox зеркалом Quod Libet, при условии, что оба читают "
-"идентичные фонотеки."
+"Делает Logitech Squeezebox зеркалом Quod Libet при условии, что оба "
+"считывают идентичные фонотеки."
 
 #: quodlibet/ext/events/squeezebox_sync.py:32
 #, python-format
@@ -2925,7 +2929,7 @@ msgstr "Было выбрано другое расширение — остан
 #: quodlibet/ext/events/synchronize_to_device.py:1019
 #, python-brace-format
 msgid "{tag} - \"{filename}\""
-msgstr "{tag} - \"{filename}\""
+msgstr "{tag} - «{filename}»"
 
 #: quodlibet/ext/events/synchronize_to_device.py:1089
 msgid "Removing \"{}\""
@@ -3194,15 +3198,15 @@ msgstr "_Колесо мыши"
 msgid "Tooltip Display"
 msgstr "Показывать подсказки"
 
-#: quodlibet/ext/events/viewlyrics.py:25
+#: quodlibet/ext/events/viewlyrics.py:25 quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
 msgstr "Текст песни"
 
-#: quodlibet/ext/events/viewlyrics.py:26
+#: quodlibet/ext/events/viewlyrics.py:26 quodlibet/ext/events/viewlyrics.py:29
 msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr "Отображение тегов или файлов лирики в боковой панели."
 
-#: quodlibet/ext/events/viewlyrics.py:87
+#: quodlibet/ext/events/viewlyrics.py:87 quodlibet/ext/events/viewlyrics.py:119
 #, python-format
 msgid ""
 "No lyrics found for\n"
@@ -3212,6 +3216,7 @@ msgstr ""
 " %s"
 
 #: quodlibet/ext/events/viewlyrics.py:117
+#: quodlibet/ext/events/viewlyrics.py:149
 msgid "No active song"
 msgstr "Нет активного трека"
 
@@ -3603,18 +3608,22 @@ msgid "_Follow cursor"
 msgstr "Следов_ать за курсором"
 
 #: quodlibet/ext/playorder/playcounteq.py:21
+#: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
 msgstr "Уравнитель прослушиваний"
 
 #: quodlibet/ext/playorder/playcounteq.py:22
+#: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
 msgstr "Перемешать, предпочитая треки с меньшим числом прослушиваний."
 
 #: quodlibet/ext/playorder/playcounteq.py:25
+#: quodlibet/ext/playorder/playcounteq.py:28
 msgid "Prefer less played"
 msgstr "Меньше воспроизведений"
 
 #: quodlibet/ext/playorder/playcounteq.py:26
+#: quodlibet/ext/playorder/playcounteq.py:29
 msgid "Prefer _less played"
 msgstr "Пре_дпочитать наименее прослушиваемые"
 
@@ -3932,7 +3941,7 @@ msgstr "_Масштаб по размеру окна"
 #: quodlibet/ext/songsmenu/albumart.py:233
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
 msgstr ""
-"Смотрите конфигурационную запись '[plugins] cover_filenames' для имени файла "
+"Смотрите конфигурационную запись «[plugins] cover_filenames» для имени файла "
 "изображения"
 
 #. Both labels
@@ -3983,7 +3992,7 @@ msgstr "Размер: %s"
 
 #: quodlibet/ext/songsmenu/albumart.py:626
 msgid "Per engine 'at best' results limit"
-msgstr "Лимит для каждого поиска"
+msgstr "Предел результатов для каждого поиска"
 
 #: quodlibet/ext/songsmenu/albumart.py:636
 msgid "_Search"
@@ -4293,7 +4302,7 @@ msgid ""
 "For playlists, this also supports virtual tags <~playlistname> and "
 "<~#playlistindex>."
 msgstr ""
-"QL шаблон, например <~filename>, используется для вычисления значения "
+"Шаблон QL, например <~filename>, используется для вычисления значения "
 "команды. Для плейлистов это также поддерживает виртуальные теги "
 "<~playlistname> и <~#playlistindex>."
 
@@ -5135,7 +5144,7 @@ msgstr "Поиск не удался"
 #: quodlibet/ext/songsmenu/wikipedia.py:111
 #, python-format
 msgid "Tag \"%s\" not found."
-msgstr "Тег \"%s\" отсутствует."
+msgstr "Тег «%s» отсутствует."
 
 #. then (try to) load all new files
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
@@ -5318,7 +5327,7 @@ msgstr "Не удается объединить '--all' с '--regexp'"
 #: quodlibet/operon/commands.py:389
 #, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
-msgstr "Не удается удалить {tagname} из {filename}"
+msgstr "Не удаётся удалить {tagname} из {filename}"
 
 #: quodlibet/operon/commands.py:403
 msgid "Remove a tag value"
@@ -5399,7 +5408,7 @@ msgstr "Вывести справку"
 #: quodlibet/operon/util.py:41
 #, python-format
 msgid "'%(column-id)s' is not a valid column name (%(all-column-ids)s)."
-msgstr "'%(column-id)s' недопустимое имя столбца (%(all-column-ids)s)."
+msgstr "«%(column-id)s» — недопустимое имя столбца (%(all-column-ids)s)."
 
 #: quodlibet/order/__init__.py:34
 msgid "_Unknown"
@@ -5561,8 +5570,8 @@ msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Не удалось найти модуль «{module}». Возможно, вам нужно установить "
-"пакет?{extra}"
+"Не удалось найти модуль «{module}». Возможно, вам нужно установить пакет?"
+"{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -7536,8 +7545,8 @@ msgid ""
 "\n"
 "%s"
 msgstr ""
-"Введённый шаблон некорректен. Убедитесь, что вы ввели '&lt;' и '&gt;' как "
-"'\\&lt;' и '\\&gt;', и закрыли все открытые теги.\n"
+"Введённый шаблон некорректен. Убедитесь, что вы ввели «&lt;» и «&gt;» как "
+"«\\&lt;» и «\\&gt;», и закрыли все открытые теги.\n"
 "\n"
 "%s"
 
@@ -7705,7 +7714,7 @@ msgstr[2] "%s секунд"
 
 #: quodlibet/util/__init__.py:418
 msgid "No time information"
-msgstr "Нет информации о времени"
+msgstr "Нет сведений о времени"
 
 #: quodlibet/util/__init__.py:421
 #, python-format
@@ -8165,7 +8174,12 @@ msgstr "Музыкальный проигрыватель"
 msgid "Listen to, browse, or edit your audio collection"
 msgstr "Слушайте, просматривайте или изменяйте свою фонотеку"
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:17
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
+msgid "The Quod Libet Development Team"
+msgstr "Команда разработчиков Quod Libet"
+
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
 "Ex Falso is a tag editor with the same tag editing interface as Quod Libet. "
 "It lets you display and edit any tags you want in the file, for all the file "
@@ -8174,8 +8188,8 @@ msgstr ""
 "Ex Falso — это редактор тегов с интерфейсом как в Quod Libet. Он позволяет "
 "отображать и редактировать любые теги в файлах поддерживаемых форматов."
 
-#: data/io.github.quodlibet.ExFalso.appdata.xml.in:22
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:24
+#: data/io.github.quodlibet.ExFalso.appdata.xml.in:23
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:25
 msgid ""
 "Supported file formats include Ogg Vorbis/Opus/Speex/FLAC, MP3, FLAC, MOD/XM/"
 "IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, MIDI."
@@ -8184,7 +8198,7 @@ msgstr ""
 "FLAC, MOD/XM/IT, Musepack, Wavpack, MPEG-4 AAC, Monkeys Audio, WMA, SPC, "
 "MIDI."
 
-#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:18
+#: data/io.github.quodlibet.QuodLibet.appdata.xml.in:19
 msgid ""
 "Quod Libet is a music management program. It provides several different ways "
 "to view your audio library, as well as support for Internet radio and audio "
@@ -8195,6 +8209,14 @@ msgstr ""
 "различных способов просмотра вашей фонотеки, а также поддержку интернет-"
 "радио и аудиопотоков. Содержит крайне гибкие возможности правки и поиска "
 "тегов метаданных."
+
+#: quodlibet/ext/events/viewlyrics.py:175
+msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
+msgstr "Скрыть метки текстов песен в формате .lrc или .elrc"
+
+#: quodlibet/ext/playorder/playcounteq.py:77
+msgid "Priority for less played tracks"
+msgstr "Приоритет наименее прослушиваемых дорожек"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Настройка дополнительных параметров."
