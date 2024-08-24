@@ -21,18 +21,12 @@ from functools import cache
 import gi
 gi.require_version("GIRepository", "2.0")
 from gi.repository import GIRepository
-from gi.repository.GLib import GError
 
 
 def _get_shared_libraries(q, namespace, version):
     repo = GIRepository.Repository()
-    
-    try:
-        repo.require(namespace, version, 0)
-        lib = repo.get_shared_library(namespace)
-    except GError:
-        lib = None
-    
+    repo.require(namespace, version, 0)
+    lib = repo.get_shared_library(namespace)
     q.put(lib)
 
 
