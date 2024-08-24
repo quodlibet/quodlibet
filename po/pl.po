@@ -71,7 +71,7 @@ msgstr "Porządkowanie _według…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Preferencje"
@@ -643,7 +643,7 @@ msgid "Equal pane width"
 msgstr "Równa szerokość paneli"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listy odtwarzania"
 
@@ -651,28 +651,28 @@ msgstr "Listy odtwarzania"
 msgid "_Playlists"
 msgstr "_Listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "_Usuń z listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Nowe"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 #, fuzzy
 msgid "_Import…"
 msgstr "Za_importuj"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "Nie można zaimportować listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Można importować tylko listy odtwarzania w formatach M3U/M3U8 i PLS."
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -680,19 +680,19 @@ msgstr "Można importować tylko listy odtwarzania w formatach M3U/M3U8 i PLS.
 msgid "_Delete"
 msgstr "_Usuń"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "_Zmień nazwę"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "Nie można zmienić nazwy listy odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "Import Playlist"
 msgstr "Zaimportuj listę odtwarzania"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "_Import"
 msgstr "Za_importuj"
 
@@ -3255,38 +3255,42 @@ msgstr "Plik wykonywalny wizualizacji:"
 msgid "Reload"
 msgstr "Wczytaj ponownie"
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:600
 msgid "Waveform Seek Bar"
 msgstr "Pasek przewijania w kształcie fali"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:603
 #, fuzzy
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "Pasek przewijania w kształcie fali obecnego utworu."
 
-#: quodlibet/ext/events/waveformseekbar.py:671
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override foreground color:"
 msgstr "Zastąpienie koloru czcionki:"
 
-#: quodlibet/ext/events/waveformseekbar.py:675
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override hover color:"
 msgstr "Zastąpienie koloru najechania:"
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Override remaining color:"
 msgstr "Zastąpienie koloru pozostałych:"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:690
 msgid "Show current position"
 msgstr "Obecne położenie"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:695
 msgid "Show time labels"
 msgstr "Etykiety czasu"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:702
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "O ile przewijać podczas przewijania myszą (w milisekundach):"
+
+#: quodlibet/ext/events/waveformseekbar.py:715
+msgid "Waveform height (pixels):"
+msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
