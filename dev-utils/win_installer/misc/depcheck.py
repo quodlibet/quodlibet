@@ -51,6 +51,9 @@ def get_required_by_typelibs():
     repo = GIRepository.Repository()
     for tl in os.listdir(repo.get_search_path()[0]):
         namespace, version = os.path.splitext(tl)[0].split("-", 1)
+        # g-i fails to load itself with a different version
+        if namespace == "GIRepository" and version != "2.0":
+            continue
         lib, error = get_shared_libraries(namespace, version)
         if error:
             raise error
