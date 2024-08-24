@@ -74,7 +74,7 @@ msgstr "Rikiuoti _pagal..."
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Nuostatos"
@@ -656,7 +656,7 @@ msgid "Equal pane width"
 msgstr ""
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
@@ -664,29 +664,29 @@ msgstr "Grojaraščiai"
 msgid "_Playlists"
 msgstr "_Grojaraščiai"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "_Pašalinti iš grojaraščio"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr ""
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 #, fuzzy
 msgid "_Import…"
 msgstr "_Importuoti"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "Negalima importuoti grojaraščio"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 #, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet gali importuoti tik M3U ir PLS formato grojaraščius."
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -695,19 +695,19 @@ msgstr "Quod Libet gali importuoti tik M3U ir PLS formato grojaraščius."
 msgid "_Delete"
 msgstr "Ištrinti failus"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "Per_vadinti"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "Negalima pervadinti grojaraščio"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "Import Playlist"
 msgstr "Importuoti grojaraštį"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "_Import"
 msgstr "_Importuoti"
 
@@ -3282,37 +3282,41 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:600
 #, fuzzy
 msgid "Waveform Seek Bar"
 msgstr "Alternatyvioji"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:603
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:671
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override foreground color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:675
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override hover color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Override remaining color:"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:690
 msgid "Show current position"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:695
 msgid "Show time labels"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:702
 msgid "Seek amount when scrolling (milliseconds):"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:715
+msgid "Waveform height (pixels):"
 msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33

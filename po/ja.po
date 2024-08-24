@@ -68,7 +68,7 @@ msgstr "ソート(_B)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "設定(_P)"
@@ -626,7 +626,7 @@ msgid "Equal pane width"
 msgstr "ペインの幅を揃える"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "プレイリスト"
 
@@ -634,28 +634,28 @@ msgstr "プレイリスト"
 msgid "_Playlists"
 msgstr "プレイリスト(_P)"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "プレイリストから削除(_R)"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "新規(_N)"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
 msgstr "インポート(_I)…"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "プレイリストをインポートできません"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr ""
 "Quod Libet は M3U/M3U8 と PLS 形式のプレイリストのみインポートできます。"
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -663,19 +663,19 @@ msgstr ""
 msgid "_Delete"
 msgstr "削除(_D)"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "名前の変更(_R)"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "プレイリストの名前を変更できません"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "Import Playlist"
 msgstr "プレイリストのインポート"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:633
 msgid "_Import"
 msgstr "インポート(_I)"
 
@@ -3203,37 +3203,41 @@ msgstr "ビジュアライザーの実行ファイル:"
 msgid "Reload"
 msgstr "再実行"
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:600
 msgid "Waveform Seek Bar"
 msgstr "波形シークバー"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:603
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 再生中の曲の波形の形をしたシークバーです。"
 
-#: quodlibet/ext/events/waveformseekbar.py:671
+#: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override foreground color:"
 msgstr "前景色を上書きする:"
 
-#: quodlibet/ext/events/waveformseekbar.py:675
+#: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override hover color:"
 msgstr "マウスホバー時の色を上書きする:"
 
-#: quodlibet/ext/events/waveformseekbar.py:679
+#: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Override remaining color:"
 msgstr "残り時間の色を上書きする:"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:690
 msgid "Show current position"
 msgstr "現在位置を表示する"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:695
 msgid "Show time labels"
 msgstr "時間ラベルを表示する"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:702
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "スクロール時のシーク量(ミリ秒):"
+
+#: quodlibet/ext/events/waveformseekbar.py:715
+msgid "Waveform height (pixels):"
+msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
