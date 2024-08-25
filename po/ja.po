@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-05-27 17:09+0000\n"
+"PO-Revision-Date: 2024-08-25 13:09+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3237,7 +3237,7 @@ msgstr "スクロール時のシーク量(ミリ秒):"
 
 #: quodlibet/ext/events/waveformseekbar.py:715
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "波形の高さ (ピクセル):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
