@@ -14,7 +14,8 @@ Instead we recommend running Quod Libet directly from the git checkout for
 development/experiments and use one of our unstable repositories for everyday
 use.
 
-See :ref:`DevEnv` on how to proceed.
+See :ref:`DevEnv` on how to proceed, then run ``./exfalso.py`` or
+``./quodlibet.py`` 
 
 
 Testing Changes
