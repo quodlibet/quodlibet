@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-01 18:09+0000\n"
-"Last-Translator: ckmanoth <Shamash59950@gmail.com>\n"
+"PO-Revision-Date: 2024-08-29 05:09+0000\n"
+"Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.7.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3313,7 +3313,7 @@ msgstr "Cherchez la quantité lors du défilement (millisecondes) :"
 
 #: quodlibet/ext/events/waveformseekbar.py:715
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "Hauteur de la forme d'onde (en pixels) :"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
