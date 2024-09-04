@@ -7,6 +7,8 @@
 
 from quodlibet.formats import AudioFile
 
+import pytest
+
 from tests import skipUnless
 from . import PluginTestCase, modules
 
@@ -154,6 +156,7 @@ TEST_PREGAP = \
 "track_or_recording_length": "202106"}]}]}
 
 
+@pytest.mark.network
 @skipUnless(brainz, "brainz plugin not loaded")
 class TBrainz(PluginTestCase):
     """Test CustomCommands plugin and associated classes"""
