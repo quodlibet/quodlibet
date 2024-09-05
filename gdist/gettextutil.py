@@ -348,7 +348,7 @@ def get_missing(po_dir: Path) -> Iterable[str]:
     not_translatable = set()
     for root, dirs, files in os.walk(src_root):
         root = Path(root)
-        for dirname in dirs:
+        for dirname in list(dirs):
             dirpath = (root / dirname).relative_to(src_root)
             if dirpath in skip_files or dirname.startswith("."):
                 dirs.remove(dirname)
