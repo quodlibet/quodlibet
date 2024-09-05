@@ -137,4 +137,5 @@ omit = ["quodlibet/packages/*"]
 include = ["quodlibet/*"]
 
 [build-system]
-requires = ["setuptools", "wheel"]
+requires = ["poetry-core>=1.0.0", "setuptools", "wheel"]
+build-backend = "poetry.core.masonry.api"
