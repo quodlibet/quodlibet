@@ -1,5 +1,4 @@
 include COPYING
-include HACKING
 include NEWS.rst
 include README.rst
 include po/*.po
@@ -17,7 +16,6 @@ include data/*.ini
 include data/*.service.in
 include data/*.appdata.xml.in
 include data/*.1
-include data/*.sh
 include data/*.zsh
 include data/*.bash
 include data/README.rst
