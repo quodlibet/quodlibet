@@ -4,14 +4,8 @@
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
-from quodlibet.plugins import MissingModulePluginError
 
-try:
-    # TODO: port Telnet code to raw socket
-    from telnetlib import Telnet
-except ImportError as e:
-    raise MissingModulePluginError("telnetlib", "Not supported in Python 3.13+") from e
-
+import socket
 import time
 from urllib.parse import quote, unquote
 
@@ -67,7 +61,9 @@ class SqueezeboxServer:
             try:
                 if self._debug:
                     print_d("Trying %s..." % self.config)
-                self.telnet = Telnet(hostname, port, self._TIMEOUT)
+                self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.socket.settimeout(self._TIMEOUT)
+                self.socket.connect((socket.gethostbyname(hostname), port))
             except OSError as e:
                 print_d(f"Couldn't talk to {self.config} ({e})")
             else:
@@ -99,11 +95,14 @@ class SqueezeboxServer:
         if self._debug:
             print_(f'>>>> "{line}"')
         try:
-            self.telnet.write((line + "\n").encode("utf-8"))
+            self.socket.send((line + "\n").encode("utf-8"))
             if not want_reply:
                 return None
-            raw_response = self.telnet.read_until(b"\n", 5).decode("utf-8")
-        except OSError as e:
+            raw_response = b""
+            while not raw_response.endswith(b"\n"):
+                raw_response += self.socket.recv(1)
+            raw_response = raw_response.decode("utf-8")
+        except (OSError, socket.timeout) as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
