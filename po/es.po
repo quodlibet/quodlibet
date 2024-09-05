@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-03-14 22:01+0000\n"
+"PO-Revision-Date: 2024-08-31 16:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.8-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -611,13 +611,13 @@ msgid "Columnar"
 msgstr "En columnas"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
-"Pauta de etiquetas con marcado opcional, p. ej., <tt>composer</tt> o\n"
-"<tt>%s</tt>"
+"Patrón de etiqueta con marcado opcional, por ejemplo <tt>compositor</tt> o\n"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -737,13 +737,12 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "¿Ampliar \"{pl_name}\" con {num} pista adicional?"
+msgstr[1] "¿Ampliar \"{pl_name}\" con {num} pistas adicionales?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Pistas"
+msgstr "_Añadir pistas"
 
 #: quodlibet/browsers/playlists/util.py:71
 #: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
@@ -1143,7 +1142,7 @@ msgstr "ubicación"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Establecer plantilla para comandos --print-*"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1340,7 +1339,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "Animación en pantalla"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -1461,6 +1460,9 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
+"Siempre que una canción se reproduzca pero no se salte, el complemento "
+"escribirá las etiquetas en el archivo. Los recuentos de saltos no se "
+"almacenan en los archivos, por lo que se evitan escrituras innecesarias."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
@@ -1473,10 +1475,14 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
+"Cada vez que una canción sea reproducida o saltada, el plugin escribirá las "
+"etiquetas en el archivo. Puede ser útil si quieres asegurarte de que las "
+"calificaciones de las canciones que no te gustan y por lo tanto omitidas se "
+"escriben en los archivos."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "Una vez, cuando el álbum esté totalmente valorado"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
@@ -1509,6 +1515,11 @@ msgid ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 msgstr ""
+"Cuando el plugin escribe las etiquetas de un álbum, primero pone a uno el "
+"recuento de reproducciones de las canciones que están a cero.\n"
+"A veces ya sabes que una canción no te gusta, así que ponerla a uno al "
+"guardar puede ser útil más adelante, cuando busques álbumes que hayas "
+"escuchado completamente (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
@@ -1525,6 +1536,9 @@ msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
+"Cuando se reproduzcan las canciones, actualiza las etiquetas de sus "
+"archivos. Esto garantizará que los recuentos de reproducciones y las "
+"clasificaciones estén actualizados."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1540,9 +1554,8 @@ msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:587
-#, fuzzy
 msgid "Save ratings and play _counts in tags"
-msgstr "Guardar puntuaciones y co_ntadores"
+msgstr "Guardar valoraciones y reproducir _cuentas en etiquetas"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
 msgid "Settings updated"
@@ -1557,6 +1570,7 @@ msgstr "Error en %s"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
+"Asegúrate de que el recuento de reproduciones es superior a cero al guardar"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
@@ -1590,14 +1604,14 @@ msgid "Automatic Rating"
 msgstr "Puntuación automática"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Puntúa las canciones automáticamente al reproducirlas o al saltarlas. "
-"Utiliza el algoritmo «acelerado» de Vux, de Brian Nelson."
+"Valora las canciones automáticamente cuando se reproducen o se saltan. "
+"Utiliza el algoritmo \"acelerado\" de vux (Vacillating Utilitarian "
+"eXtemporizer), de Brian Nelson."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1951,9 +1965,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr "Crea un archivo User Tunes de Jabber en <tt>~/.quodlibet/jabber</tt>."
+msgstr "Imprime un archivo Jabber User Tunes en %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2032,6 +2046,10 @@ msgid ""
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
 "various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"Permite controlar Quod Libet utilizando la especificación de interfaz D-Bus "
+"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Esto "
+"permite varias integraciones en el escritorio Linux (por ejemplo: teclas "
+"multimedia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -2181,7 +2199,7 @@ msgstr "Mostrar notificaciones"
 
 #: quodlibet/ext/events/notify.py:146
 msgid "Only on <i>_manual</i> song changes"
-msgstr ""
+msgstr "Sólo en los cambios de canción <i>_manual</i>"
 
 #: quodlibet/ext/events/notify.py:154
 msgid "Only on <i>_automatic</i> song changes"
@@ -2221,15 +2239,16 @@ msgid "Next"
 msgstr "Siguiente"
 
 #: quodlibet/ext/events/notify_bookmarks.py:33
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Notificaciones de canciones"
+msgstr "Notificaciones de favoritos"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Utiliza notificaciones para mostrar marcadores / comentarios en tiempo real. "
+"Funciona bien para el navegador Soundcloud."
 
 #: quodlibet/ext/events/qlscrobbler.py:182
 msgid ""
@@ -2456,7 +2475,7 @@ msgstr ""
 #: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "¿Has copiado el archivo ini en %s (o similar)?"
 
 #: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
@@ -2479,9 +2498,8 @@ msgstr ""
 "entera de la ventana."
 
 #: quodlibet/ext/events/seekpoints.py:20
-#, fuzzy
 msgid "Seekpoint Bookmarks"
-msgstr "Puntos de mira de marcadores"
+msgstr "Marcadores Seekpoint"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
@@ -2492,6 +2510,12 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
+"Almacena los Seekpoints A y/o B para las pistas. Salta al tiempo A y se "
+"detiene después del tiempo B cuando se reproduce la pista.\n"
+"\n"
+"ℹ Ten en cuenta que el cambio de los nombres de los puntos inferiores no "
+"actualiza los nombres de los marcadores reales, solo cambia los nombres de "
+"los marcadores que el plugin busca al decidir si buscar."
 
 #: quodlibet/ext/events/seekpoints.py:108
 msgid "Bookmark name for point A"
@@ -2502,6 +2526,8 @@ msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
 msgstr ""
+"Nombre del marcador para buscar al iniciar la reproducción de una canción. "
+"Si se encuentra esto, el reproductor saltará a esta posición"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid "Bookmark name for point B"
@@ -2512,6 +2538,9 @@ msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
+"Nombre del marcador que se utilizará para comprobar si existe en algún "
+"momento durante la reproducción de una pista. Si la posición actual excede "
+"la marca de tiempo, el reproductor salta al final de la pista."
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2547,7 +2576,7 @@ msgstr "Error al buscar %s. Compruebe la configuración"
 
 #: quodlibet/ext/events/stop_on_pause.py:21
 msgid "Stop on Pause"
-msgstr ""
+msgstr "Detener en pausa"
 
 #: quodlibet/ext/events/stop_on_pause.py:23
 msgid ""
@@ -2560,10 +2589,21 @@ msgid ""
 "Seekable Sources' is off. Otherwise, playback is left stopped and must be "
 "restarted from the beginning."
 msgstr ""
+"Este complemento cambia la función de pausa para detener/reproducir/cambiar "
+"la posición de la pista.\n"
+"\n"
+"Este comportamiento es útil cuando Quod Libet no puede cambiar el "
+"dispositivo de audio al agregar uno nuevo al sistema (altavoz Bluetooth, DAC "
+"USB, etc.).\n"
+"\n"
+"Mantiene la posición del título en la fuente actual siempre que no esté "
+"seleccionada la opción \"Solo fuentes que permiten el ajuste de la posición "
+"del título\". De lo contrario, la reproducción se detendrá y tendrá que "
+"empezar de nuevo."
 
 #: quodlibet/ext/events/stop_on_pause.py:74
 msgid "Only Seekable Sources"
-msgstr ""
+msgstr "Solo fuentes que se puedan buscar"
 
 #: quodlibet/ext/events/stop_on_pause.py:85
 msgid "Plugin Options"
@@ -2703,11 +2743,12 @@ msgstr ""
 "de comenzar la sincronización."
 
 #: quodlibet/ext/events/synchronize_to_device.py:256
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "Se eliminará cualquier archivo que exista en la ruta de destino."
+msgstr ""
+"¡Los archivos existentes en la ruta de destino se eliminarán (excepto los "
+"archivos con el nombre \"cover.jpg\")!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:272
@@ -2741,7 +2782,7 @@ msgstr "Empezando previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
-msgstr ""
+msgstr "Previsualización de la sincronización en curso."
 
 #: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
@@ -2765,7 +2806,7 @@ msgstr "Se detuvo la previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
-msgstr ""
+msgstr "Se ha seleccionado un plugin diferente - Detener vista previa"
 
 #: quodlibet/ext/events/synchronize_to_device.py:758
 msgid "Synchronization will:"
@@ -2813,7 +2854,6 @@ msgid "Export path is not absolute"
 msgstr "La ruta de exportación no es absoluta"
 
 #: quodlibet/ext/events/synchronize_to_device.py:851
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2822,12 +2862,12 @@ msgid ""
 "contains \"/\" but does not start from root. Please provide an absolute "
 "destination path by making sure it starts with / or ~/."
 msgstr ""
-"La pauta\n"
+"El patrón\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
-"contiene «/» pero no inicia desde la raíz. Proporcione una ruta de destino "
-"absoluta cerciorándose de que comience por / o ~/."
+"contiene \"/\" pero no empieza desde la raíz. Proporciona una ruta de "
+"destino absoluta asegurándote de que comienza por / o ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "No saved searches selected"
