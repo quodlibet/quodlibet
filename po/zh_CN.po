@@ -3781,16 +3781,16 @@ msgstr "Squeezebox 服务器"
 msgid "Debug"
 msgstr "调试"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Squeezebox 服务器在 {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "未知的 Squeezebox 服务器"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "未知的 Squeezebox 播放器：%r"

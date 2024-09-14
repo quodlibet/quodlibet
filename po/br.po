@@ -3708,16 +3708,16 @@ msgstr ""
 msgid "Debug"
 msgstr ""
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr ""
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr ""
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr ""
