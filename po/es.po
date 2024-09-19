@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-31 16:09+0000\n"
+"PO-Revision-Date: 2024-09-14 20:09+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -3107,6 +3107,9 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
+"Agrega un sistema de puntuación de pulgar hacia arriba / pulgar hacia abajo "
+"que se convierte en un valor de calificación. Útil para mantener los votos "
+"totales actualizados y ordenarlos por <b><tt>~#score</tt></b>."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3239,7 +3242,7 @@ msgstr "Ninguna canción activa"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "Ocultar marcas de tiempo en textos con formato .lrc o .elrc"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3279,7 +3282,7 @@ msgstr ""
 
 #: quodlibet/ext/events/waveformseekbar.py:678
 msgid "Override foreground color:"
-msgstr ""
+msgstr "Anular el color en primer plano:"
 
 #: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override hover color:"
@@ -3935,16 +3938,16 @@ msgstr "Servidor Squeezebox"
 msgid "Debug"
 msgstr "Depuración"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Servidor Squeezebox en {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "servidor Squeezebox no identificado"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "reproductor Squeezebox no identificado: %r"

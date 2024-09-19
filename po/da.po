@@ -3911,16 +3911,16 @@ msgstr "Squeezebox-server"
 msgid "Debug"
 msgstr "Fejlret"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Squeezebox-server hos {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "uidentificeret Squeezebox-server"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "uidentificeret Squeezebox-afspiller: %r"
