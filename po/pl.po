@@ -193,7 +193,7 @@ msgstr[2] "%d utworów"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "Nieprawidłowy wzorzec"
 
@@ -6052,7 +6052,7 @@ msgstr "Zaznaczone pliki nie obsługują wielu wartości dla <b>%s</b>."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 #, fuzzy
 msgid "Invalid tag"
@@ -7768,12 +7768,12 @@ msgstr "Opcja %r wymaga parametru."
 msgid "%r is not a unique prefix."
 msgstr "%r nie jest unikalnym przedrostkiem."
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kb/s"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
@@ -7781,11 +7781,11 @@ msgstr[0] "%s sekunda"
 msgstr[1] "%s sekundy"
 msgstr[2] "%s sekund"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "Brak informacji o czasie"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
@@ -7793,7 +7793,7 @@ msgstr[0] "%d sekunda"
 msgstr[1] "%d sekundy"
 msgstr[2] "%d sekund"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
@@ -7801,7 +7801,7 @@ msgstr[0] "%d minuta"
 msgstr[1] "%d minuty"
 msgstr[2] "%d minut"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
@@ -7809,7 +7809,7 @@ msgstr[0] "%d godzina"
 msgstr[1] "%d godziny"
 msgstr[2] "%d godzin"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -7817,7 +7817,7 @@ msgstr[0] "%d dzień"
 msgstr[1] "%d dni"
 msgstr[2] "%d dni"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7829,7 +7829,7 @@ msgstr[2] "%d lat"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr "no_capitalize"

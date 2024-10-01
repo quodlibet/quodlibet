@@ -189,7 +189,7 @@ msgstr[1] "%d músicas"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "Padrão inválido"
 
@@ -6082,7 +6082,7 @@ msgstr ""
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 #, fuzzy
 msgid "Invalid tag"
@@ -7788,51 +7788,51 @@ msgstr "A opção %r requer um parâmetro."
 msgid "%r is not a unique prefix."
 msgstr "%r não é um prefixo único."
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s segundo"
 msgstr[1] "%s segundos"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "Informação de tempo ausente"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d dia"
 msgstr[1] "%d dias"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7843,7 +7843,7 @@ msgstr[1] "%d anos"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr ""
