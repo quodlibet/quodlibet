@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-09-14 20:09+0000\n"
+"PO-Revision-Date: 2024-10-01 10:35+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -3286,11 +3286,11 @@ msgstr "Anular el color en primer plano:"
 
 #: quodlibet/ext/events/waveformseekbar.py:682
 msgid "Override hover color:"
-msgstr ""
+msgstr "Anular el color al pasar el ratón:"
 
 #: quodlibet/ext/events/waveformseekbar.py:686
 msgid "Override remaining color:"
-msgstr ""
+msgstr "Anula los colores restantes:"
 
 #: quodlibet/ext/events/waveformseekbar.py:690
 msgid "Show current position"
