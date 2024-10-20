@@ -9,7 +9,7 @@ on:
 
 jobs:
   fedora:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
           MSYSTEM= poetry run python setup.py test --no-quality
 
   flatpak:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -137,8 +137,8 @@ jobs:
         PYTEST_ADDOPTS=-rxXs python3 setup.py test
 
   ubuntu-poetry:
-    runs-on: ubuntu-22.04
-    name: ubuntu-poetry
+    runs-on: ubuntu-24.04
+    name: ubuntu-24.04-poetry
     steps:
     - uses: actions/checkout@v4
 
@@ -157,7 +157,7 @@ jobs:
           pkg-config \
           pipx \
           xvfb
-        pipx install "poetry==1.4.2"
+        pipx install "poetry==1.8.4"
         pipx ensurepath
 
     - name: Check Poetry project
