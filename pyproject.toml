@@ -51,7 +51,7 @@ types-docutils = "^0.19.0"
 types-certifi = "^2021.10.8.3"
 types-requests = "^2.28.11.15"
 pyvirtualdisplay = { version = "^3.0", platform = "linux" }
-setuptools = "^68.1.2"
+setuptools = "^75.2.0"
 ruff = { version = "^0.1.1", platform = "linux" }
 
 [tool.ruff]
