@@ -29,7 +29,7 @@ class TQltk(TestCase):
 
     def test_get_fg_highlight_color(self):
         widget = Gtk.Button()
-        color = qltk.get_fg_highlight_color(widget)
+        color = qltk.get_fg_highlight_color(widget.get_style_context())
         assert color is not None
         assert isinstance(color, Gdk.RGBA)
 
