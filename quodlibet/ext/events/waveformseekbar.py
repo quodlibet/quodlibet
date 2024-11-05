@@ -534,16 +534,16 @@ class WaveformScale(Gtk.EventBox):
                 width,
                 height,
                 self.elapsed_color(context),
-                self.hover_color(),
+                self.hover_color(context),
                 self.remaining_color(context),
                 CONFIG.show_current_pos,
             )
         else:
             self.draw_placeholder(cr, width, height, self.remaining_color(context))
 
-    @staticmethod
+    @classmethod
     @lru_cache
-    def elapsed_color(context: Gtk.StyleContext) -> Gdk.RGBA:
+    def elapsed_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         # Check if the user set a different elapsed color in the config
         return (
             parse_color(text)
@@ -551,14 +551,14 @@ class WaveformScale(Gtk.EventBox):
             else get_fg_highlight_color(context)
         )
 
-    @staticmethod
+    @classmethod
     @lru_cache
-    def hover_color() -> Gdk.RGBA:
+    def hover_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         if CONFIG.hover_color:
             return parse_color(CONFIG.hover_color)
         opacity = 0.4
-        elapsed = CONFIG.elapsed_color
-        remaining = CONFIG.remaining_color
+        elapsed = cls.elapsed_color(context)
+        remaining = cls.remaining_color(context)
         r = (
             opacity * elapsed.alpha * elapsed.red
             + (1 - opacity) * remaining.alpha * remaining.red
@@ -574,9 +574,9 @@ class WaveformScale(Gtk.EventBox):
         a = opacity * elapsed.alpha + (1 - opacity) * remaining.alpha
         return Gdk.RGBA(r, g, b, a)
 
-    @staticmethod
+    @classmethod
     @lru_cache
-    def remaining_color(context: Gtk.StyleContext) -> Gdk.RGBA:
+    def remaining_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         if CONFIG.remaining_color:
             return parse_color(CONFIG.remaining_color)
         default = context.get_color(context.get_state())
