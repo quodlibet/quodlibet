@@ -480,7 +480,7 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
-    def draw_placeholder(self, cr, width, height, color):
+    def draw_placeholder(self, cr, width, height, color: Gdk.RGBA):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -543,7 +543,7 @@ class WaveformScale(Gtk.EventBox):
 
     @staticmethod
     @lru_cache
-    def elapsed_color(context: Gtk.StyleContext):
+    def elapsed_color(context: Gtk.StyleContext) -> Gdk.RGBA:
         # Check if the user set a different elapsed color in the config
         return (
             parse_color(text)
@@ -553,7 +553,7 @@ class WaveformScale(Gtk.EventBox):
 
     @staticmethod
     @lru_cache
-    def hover_color():
+    def hover_color() -> Gdk.RGBA:
         if CONFIG.hover_color:
             return parse_color(CONFIG.hover_color)
         opacity = 0.4
@@ -576,11 +576,12 @@ class WaveformScale(Gtk.EventBox):
 
     @staticmethod
     @lru_cache
-    def remaining_color(context: Gtk.StyleContext):
+    def remaining_color(context: Gtk.StyleContext) -> Gdk.RGBA:
         if CONFIG.remaining_color:
             return parse_color(CONFIG.remaining_color)
-        remaining_color = context.get_color(context.get_state())
-        remaining_color.alpha = 0.35
+        default = context.get_color(context.get_state())
+        default.alpha = 0.35
+        return default
 
 
     def do_button_press_event(self, event):
