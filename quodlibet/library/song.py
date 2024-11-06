@@ -92,7 +92,7 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
     Pickles contents to disk as `FileLibrary`"""
 
     def __init__(self, name=None, watch_dirs: Iterable[fsnative] | None = None):
-        print_d(f"Initializing {type(self)}: {name!r}")
+        print_d(f"Initializing {type(self).__name__}: {name!r}")
         super().__init__(name)
         if watch_dirs:
             self.start_watching(watch_dirs)

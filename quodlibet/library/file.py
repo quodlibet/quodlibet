@@ -436,7 +436,6 @@ class WatchedFileLibraryMixin(FileLibrary):
     def __init__(self, name=None):
         super().__init__(name)
         self._monitors: dict[Path, tuple[GObject.GObject, int]] = {}
-        print_d(f"Initialised {self!r}")
 
     def monitor_dir(self, path: Path) -> None:
         """Monitors a single directory"""

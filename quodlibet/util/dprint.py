@@ -20,6 +20,7 @@ from senf import print_, path2fsn, fsn2text, fsnative, \
 from quodlibet import const
 from . import logging as ql_logging
 
+START_TIME = time.time()
 
 class Color:
 
@@ -171,9 +172,8 @@ def _supports_ansi_escape_codes(file_):
 
 
 def _print_message(string, custom_context, debug_only, prefix,
-                   color, logging_category, start_time=None):
+                   color, logging_category, start_time=START_TIME):
 
-    start_time = start_time or time.time()
     if not isinstance(string, str | fsnative):
         string = str(string)
 
