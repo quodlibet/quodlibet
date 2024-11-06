@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 2.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-05-25 10:09+0000\n"
+"PO-Revision-Date: 2024-11-03 13:00+0000\n"
 "Last-Translator: Sabri Ünal <yakushabb@gmail.com>\n"
 "Language-Team: Turkish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/tr/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.6-dev\n"
+"X-Generator: Weblate 5.8.2\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3205,6 +3205,7 @@ msgstr "Etkin şarkı yok"
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
 msgstr ""
+".lrc ya da .elrc biçimlendirilmiş şarkı sözlerinin zaman damgalarını gizle"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3266,7 +3267,7 @@ msgstr "Kaydırırken ileri/geri sarma miktarı (milisaniye):"
 
 #: quodlibet/ext/events/waveformseekbar.py:715
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "Dalga biçimi yüksekliği (piksel):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"

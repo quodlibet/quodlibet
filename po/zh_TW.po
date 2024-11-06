@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-11 16:59+0000\n"
+"PO-Revision-Date: 2024-10-26 11:15+0000\n"
 "Last-Translator: 麋悟BigELK176 <bigelk176@gmail.com>\n"
-"Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
-"quodlibet/quodlibet/zh_Hant/>\n"
+"Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
+"projects/quodlibet/quodlibet/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 5.8.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1211,9 +1211,8 @@ msgstr "藝術設計 URL 封面來源"
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
-msgstr ""
-"Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud and Podcasts browsers."
+msgstr "下載封面來自 <tt>artwork_url</tt> 標籤的連結。 這適用於 Soundcloud 及 "
+"Podcasts 瀏覽器。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1245,7 +1244,7 @@ msgstr "轉換編碼"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
-msgstr "Fixes misinterpreted tag value encodings in the tag editor."
+msgstr "修正標籤編輯器中的誤差標籤值編碼。"
 
 #: quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
@@ -1257,7 +1256,7 @@ msgstr "假名/漢字簡單反轉"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr "Converts kana/kanji to romaji before renaming."
+msgstr "轉換 kana/kanji (日文假名/漢字)成 romaji (羅馬拚音)，在重新命名之前。"
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
@@ -1265,7 +1264,7 @@ msgstr "羅馬字母化日文字 (_J)"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
+msgstr "找不到 '漢字假名簡易轉換器' (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1275,9 +1274,7 @@ msgstr "表達式替換"
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
-msgstr ""
-"Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
-"renaming files."
+msgstr "允許任意正則式替換 (<tt>s/from/to/</tt>) 當要標籤或重新命名檔案時。"
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1302,8 +1299,7 @@ msgstr "人類寫法標題大小寫"
 #: quodlibet/ext/editing/titlecase.py:53
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
-msgstr ""
-"Uses common English rules for title casing, as in \"Dark Night of the Soul\""
+msgstr "按照常用英英文規則處理標題大小寫法，如同 \"Dark Night of the Soul\""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1311,7 +1307,7 @@ msgstr "動畫式呈現螢幕顯示"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr "Displays song information on your screen when it changes."
+msgstr "顯示歌曲資訊於螢幕，當有所變更時。"
 
 #: quodlibet/ext/events/animosd/prefs.py:177
 msgid "_Position:"
@@ -1441,10 +1437,8 @@ msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
-msgstr ""
-"Whenever a song was played or skipped, the plugin will write the tags to the "
-"file. Can be useful if you want to make sure that ratings of songs you "
-"dislike and thus skipped are written to the files."
+msgstr "每當一首歌曲播放過或是跳過時，外掛會將標籤寫入檔案。 "
+"如果你想確保那些評分不喜歡的歌曲，就會忽略跳過寫入檔案，非常有用。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
@@ -2415,7 +2409,7 @@ msgstr "No GNOME Shell search provider for Quod Libet installed."
 #: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "您已經複製 ini 檔案至 %s (或類似檔案)？"
 
 #: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
@@ -3160,7 +3154,7 @@ msgstr "無法作用此曲"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "隱藏 .lrc 或 .elrc 格式歌詞的時間戳記"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3222,7 +3216,7 @@ msgstr "滾輪定位值量(毫秒):"
 
 #: quodlibet/ext/events/waveformseekbar.py:715
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "波形高度(像素)："
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
@@ -3452,9 +3446,8 @@ msgid "Export to Sonos Playlist"
 msgstr "匯出至 Sonos 播放清單"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "匯出播放清單是複製檔案至資料夾。"
+msgstr "匯出播放清單至 Sons 依照符合的曲目。"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3467,12 +3460,12 @@ msgstr "Error finding Sonos. Please check settings"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "無法刪除現存存的 Sonos 播放清單 %s："
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "匯出撥放清單 %(playlist)r (%(total)d 曲目)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3571,9 +3564,8 @@ msgid "Prefer _less played"
 msgstr "偏好較少播放的 (_l)"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "偏好較少播放的"
+msgstr "優先等級用於較少播放的曲目"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -5489,12 +5481,11 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
-msgstr ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+msgstr "找不到模組  '{module}'。或許您需要安裝此套件？{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -5564,14 +5555,12 @@ msgid "Usage"
 msgstr "用途"
 
 #: quodlibet/qltk/advanced_prefs.py:69
-#, fuzzy
 msgid "Revert to default"
-msgstr "重設至預設"
+msgstr "重設還原成預設"
 
 #: quodlibet/qltk/advanced_prefs.py:251
-#, fuzzy
 msgid "I know what I'm doing!"
-msgstr "我明白現在所作所為"
+msgstr "我明白現在我在做什麼了！"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -6690,9 +6679,8 @@ msgid "Scan Directories"
 msgstr "掃瞄目錄"
 
 #: quodlibet/qltk/prefs.py:753
-#, fuzzy
 msgid "Advanced"
-msgstr "舞曲"
+msgstr "進階"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
@@ -6828,9 +6816,8 @@ msgid "Edit Bookmarks…"
 msgstr "編輯書籤…"
 
 #: quodlibet/qltk/quodlibetwindow.py:962
-#, fuzzy
 msgid "Stop"
-msgstr "停止 (_S)"
+msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:967
 msgid "Stop After This Song"
@@ -6961,10 +6948,9 @@ msgid "_Move album art"
 msgstr "移動專輯演藝 (_M)"
 
 #: quodlibet/qltk/renamefiles.py:214
-#, fuzzy
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
-msgstr "See '[albumart] filenames' config entry for image search strings"
+msgstr "查看 '[albumart] search_filenames' 的調設輸入，用於其圖片將被移動"
 
 #: quodlibet/qltk/renamefiles.py:219
 msgid "_Overwrite album art at target"
@@ -7768,17 +7754,15 @@ msgstr "演出者"
 
 #: quodlibet/util/tags.py:104
 msgid "producer"
-msgstr ""
+msgstr "製作人"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "producers"
-msgstr "由 %s 製作"
+msgstr "製作人"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "production"
-msgstr "指揮"
+msgstr "出品"
 
 #: quodlibet/util/tags.py:105
 msgid "title"
@@ -8003,9 +7987,8 @@ msgstr "收聽、瀏覽，或編輯您的音訊收藏"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libet 偏好設定"
+msgstr "Quod Libet 開發團隊"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
