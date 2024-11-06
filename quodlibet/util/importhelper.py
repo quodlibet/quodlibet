@@ -11,7 +11,7 @@ import importlib
 
 from os.path import join, splitext, basename
 
-from quodlibet import util, print_d
+from quodlibet import util
 
 
 def load_dir_modules(path, package):
