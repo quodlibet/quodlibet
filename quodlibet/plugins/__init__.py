@@ -1,11 +1,11 @@
-# Copyright 2012 - 2020 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2024 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing import Optional
+from typing_extensions import Self
 from collections.abc import Iterable
 
 from quodlibet import _
@@ -238,7 +238,7 @@ class PluginManager:
     CONFIG_SECTION = "plugins"
     CONFIG_OPTION = "active_plugins"
 
-    instance: Optional["PluginManager"] = None
+    instance: Self | None = None
     """Default instance"""
 
     def __init__(self, folders=None):
@@ -419,10 +419,10 @@ class PluginManager:
     def __restore(self):
         migrate_old_config()
         active = config.get(self.CONFIG_SECTION,
-                            self.CONFIG_OPTION, "").splitlines()
+                            self.CONFIG_OPTION).splitlines()
 
         self.__enabled.update(active)
-        print_d("Restoring plugins: %d" % len(self.__enabled))
+        print_d(f"Restoring {len(self.__enabled)} plugin(s)")
 
         for plugin in self._plugins:
             if self.enabled(plugin):
