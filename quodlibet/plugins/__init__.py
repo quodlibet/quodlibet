@@ -5,7 +5,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from typing_extensions import Self
+from typing import Optional
 from collections.abc import Iterable
 
 from quodlibet import _
@@ -238,7 +238,7 @@ class PluginManager:
     CONFIG_SECTION = "plugins"
     CONFIG_OPTION = "active_plugins"
 
-    instance: Self | None = None
+    instance: Optional["PluginManager"] = None
     """Default instance"""
 
     def __init__(self, folders=None):
