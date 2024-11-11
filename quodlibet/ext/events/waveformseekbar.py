@@ -1,5 +1,5 @@
 # Copyright 2016 0x1777
-#        2016-22 Nick Boultbee
+#        2016-24 Nick Boultbee
 #           2017 Didier Villevalois
 #           2017 Muges
 #           2017 Eyenseo
@@ -12,6 +12,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
+from functools import lru_cache
 from math import ceil, floor
 
 from gi.repository import Gtk, Gdk, Gst
@@ -20,16 +21,43 @@ import cairo
 from quodlibet import _, app
 from quodlibet import print_w
 from quodlibet import util
-from quodlibet.plugins import PluginConfig, IntConfProp, \
-    ConfProp, BoolConfProp
+from quodlibet.plugins import PluginConfig, IntConfProp, ConfProp, BoolConfProp
 from quodlibet.plugins.events import EventPlugin
-from quodlibet.qltk import Align
+from quodlibet.qltk import Align, add_css
 from quodlibet.qltk import Icons
 from quodlibet.qltk.seekbutton import TimeLabel
 from quodlibet.qltk.tracker import TimeTracker
 from quodlibet.qltk import get_fg_highlight_color
+from quodlibet.qltk.x import SymbolicIconImage
 from quodlibet.util import connect_destroy, print_d
 from quodlibet.util.path import uri2gsturi
+
+
+@lru_cache
+def parse_color(value: str | Gdk.RGBA) -> Gdk.RGBA:
+    col = Gdk.RGBA()
+    if isinstance(value, Gdk.RGBA):
+        return value
+    if not col.parse(value):
+        print_w(f"Invalid Gdk color: {value}")
+    print_d(f"Using {col} for {value}")
+    return col
+
+
+class Config:
+    _config = PluginConfig(__name__)
+
+    elapsed_color = ConfProp(_config, "elapsed_color", "")
+    hover_color = ConfProp(_config, "hover_color", "")
+    remaining_color = ConfProp(_config, "remaining_color", "")
+    show_current_pos = BoolConfProp(_config, "show_current_pos", False)
+    seek_amount = IntConfProp(_config, "seek_amount", 5000)
+    max_data_points = IntConfProp(_config, "max_data_points", 3000)
+    show_time_labels = BoolConfProp(_config, "show_time_labels", True)
+    height_px = IntConfProp(_config, "height_px", 40)
+
+
+CONFIG = Config()
 
 
 class WaveformSeekBar(Gtk.Box):
@@ -330,6 +358,12 @@ class WaveformScale(Gtk.EventBox):
         self._seeking = False
         self.queue_draw()
 
+    @classmethod
+    def reset_config(cls):
+        cls.hover_color.cache_clear()
+        cls.remaining_color.cache_clear()
+        cls.elapsed_color.cache_clear()
+
     def compute_redraw_interval(self):
         allocation = self.get_allocation()
         width = allocation.width
@@ -344,8 +378,10 @@ class WaveformScale(Gtk.EventBox):
             # Internet radio. If 0 is passed forward as the update interval,
             # UI will freeze as it will try to update continuously.
             # The update interval is usually 1 second so use that instead.
-            print_d(f"Length is zero for {self._player.info}, "
-                    "using redraw interval of 1000 ms")
+            print_d(
+                f"Length is zero for {self._player.info}, "
+                "using redraw interval of 1000 ms"
+            )
             return 1000
         return length * 1000 / max(width * pixel_ratio, 1)
 
@@ -444,7 +480,7 @@ class WaveformScale(Gtk.EventBox):
         self._last_drawn_position = self.position
         self._last_mouse_position = self.mouse_position
 
-    def draw_placeholder(self, cr, width, height, color):
+    def draw_placeholder(self, cr, width, height, color: Gdk.RGBA):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -458,7 +494,7 @@ class WaveformScale(Gtk.EventBox):
         cr.set_line_width(line_width)
         cr.set_line_cap(cairo.LINE_CAP_ROUND)
         cr.set_line_join(cairo.LINE_JOIN_ROUND)
-        cr.set_source_rgba(*self.elapsed_color)
+        cr.set_source_rgba(*self.elapsed_color(self.get_style_context()))
         cr.move_to(hw, half_height)
         cr.rectangle(hw, half_height - line_width, position_width - hw, line_width * 2)
         cr.fill()
@@ -482,38 +518,7 @@ class WaveformScale(Gtk.EventBox):
         context.save()
         context.set_state(Gtk.StateFlags.NORMAL)
         bg_color = context.get_background_color(context.get_state())
-        remaining_color = context.get_color(context.get_state())
-        remaining_color.alpha = 0.35
         context.restore()
-        elapsed_color = self.elapsed_color
-
-        # Check if the user set a different remaining color in the config
-        remaining_color_config = CONFIG.remaining_color
-        if remaining_color_config and Gdk.RGBA().parse(remaining_color_config):
-            remaining_color = Gdk.RGBA()
-            remaining_color.parse(remaining_color_config)
-
-        # Check if the user set a hover color in the config
-        hover_color_config = CONFIG.hover_color
-        if hover_color_config and Gdk.RGBA().parse(hover_color_config):
-            hover_color = Gdk.RGBA()
-            hover_color.parse(hover_color_config)
-        else:
-            # Generate default hover_color by blending elapsed_color and
-            # remaining_color
-            opacity = 0.4
-            r = (opacity * elapsed_color.alpha * elapsed_color.red +
-                 (1 - opacity) * remaining_color.alpha * remaining_color.red)
-            g = (opacity * elapsed_color.alpha * elapsed_color.green +
-                 (1 - opacity) * remaining_color.alpha * remaining_color.green)
-            b = (opacity * elapsed_color.alpha * elapsed_color.blue +
-                 (1 - opacity) * remaining_color.alpha * remaining_color.blue)
-            a = (opacity * elapsed_color.alpha +
-                 (1 - opacity) * remaining_color.alpha)
-            hover_color = Gdk.RGBA(r, g, b, a)
-
-        # Check if the user turned on showing current position
-        show_current_pos_config = CONFIG.show_current_pos
 
         # Paint the background
         cr.set_source_rgba(*list(bg_color))
@@ -524,20 +529,60 @@ class WaveformScale(Gtk.EventBox):
         height = allocation.height
 
         if self._rms_vals:
-            self.draw_waveform(cr, width, height, elapsed_color,
-                               hover_color, remaining_color, show_current_pos_config)
+            self.draw_waveform(
+                cr,
+                width,
+                height,
+                self.elapsed_color(context),
+                self.hover_color(context),
+                self.remaining_color(context),
+                CONFIG.show_current_pos,
+            )
         else:
-            self.draw_placeholder(cr, width, height, remaining_color)
+            self.draw_placeholder(cr, width, height, self.remaining_color(context))
 
-    @property
-    def elapsed_color(self):
+    @classmethod
+    @lru_cache
+    def elapsed_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
         # Check if the user set a different elapsed color in the config
-        elapsed_color_config = CONFIG.elapsed_color
-        if elapsed_color_config and Gdk.RGBA().parse(elapsed_color_config):
-            col = Gdk.RGBA()
-            col.parse(elapsed_color_config)
-            return col
-        return get_fg_highlight_color(self)
+        return (
+            parse_color(text)
+            if (text := CONFIG.elapsed_color)
+            else get_fg_highlight_color(context)
+        )
+
+    @classmethod
+    @lru_cache
+    def hover_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
+        if CONFIG.hover_color:
+            return parse_color(CONFIG.hover_color)
+        opacity = 0.4
+        elapsed = cls.elapsed_color(context)
+        remaining = cls.remaining_color(context)
+        r = (
+            opacity * elapsed.alpha * elapsed.red
+            + (1 - opacity) * remaining.alpha * remaining.red
+        )
+        g = (
+            opacity * elapsed.alpha * elapsed.green
+            + (1 - opacity) * remaining.alpha * remaining.green
+        )
+        b = (
+            opacity * elapsed.alpha * elapsed.blue
+            + (1 - opacity) * remaining.alpha * remaining.blue
+        )
+        a = opacity * elapsed.alpha + (1 - opacity) * remaining.alpha
+        return Gdk.RGBA(r, g, b, a)
+
+    @classmethod
+    @lru_cache
+    def remaining_color(cls, context: Gtk.StyleContext) -> Gdk.RGBA:
+        if CONFIG.remaining_color:
+            return parse_color(CONFIG.remaining_color)
+        default = context.get_color(context.get_state())
+        default.alpha = 0.35
+        return default
+
 
     def do_button_press_event(self, event):
         # Left mouse button
@@ -577,22 +622,6 @@ class WaveformScale(Gtk.EventBox):
         return ratio * length
 
 
-class Config:
-    _config = PluginConfig(__name__)
-
-    elapsed_color = ConfProp(_config, "elapsed_color", "")
-    hover_color = ConfProp(_config, "hover_color", "")
-    remaining_color = ConfProp(_config, "remaining_color", "")
-    show_current_pos = BoolConfProp(_config, "show_current_pos", False)
-    seek_amount = IntConfProp(_config, "seek_amount", 5000)
-    max_data_points = IntConfProp(_config, "max_data_points", 3000)
-    show_time_labels = BoolConfProp(_config, "show_time_labels", True)
-    height_px = IntConfProp(_config, "height_px", 40)
-
-
-CONFIG = Config()
-
-
 class WaveformSeekBarPlugin(EventPlugin):
     """The plugin class."""
 
@@ -616,41 +645,20 @@ class WaveformSeekBarPlugin(EventPlugin):
         self._bar = None
 
     def PluginPreferences(self, parent):
-        red = Gdk.RGBA()
-        red.parse("#ff0000")
-
-        def validate_color(entry):
-            text = entry.get_text()
-
-            if not Gdk.RGBA().parse(text):
-                # Invalid color, make text red
-                entry.override_color(Gtk.StateFlags.NORMAL, red)
-            else:
-                # Reset text color
-                entry.override_color(Gtk.StateFlags.NORMAL, None)
-
-        def elapsed_color_changed(entry):
-            validate_color(entry)
-
-            CONFIG.elapsed_color = entry.get_text()
-
-        def hover_color_changed(entry):
-            validate_color(entry)
-
-            CONFIG.hover_color = entry.get_text()
-
-        def remaining_color_changed(entry):
-            validate_color(entry)
-
-            CONFIG.remaining_color = entry.get_text()
+        def colour_changed(c: Gdk.RGBA, config_key: str):
+            # This can get parsed back, so we're OK writing it
+            string = c.to_string()
+            print_d(f"Saving {string} for {config_key}")
+            setattr(CONFIG, config_key, string)
+            WaveformScale.reset_config()
+            # It's nice to refresh the running one
+            self._bar._waveform_scale.queue_draw()
 
         def on_show_pos_toggled(button, *args):
             CONFIG.show_current_pos = button.get_active()
 
         def seek_amount_changed(spinbox):
             CONFIG.seek_amount = spinbox.get_value_as_int()
-
-        vbox = Gtk.VBox(spacing=6)
 
         def on_show_time_labels_toggled(button, *args):
             CONFIG.show_time_labels = button.get_active()
@@ -662,43 +670,81 @@ class WaveformSeekBarPlugin(EventPlugin):
             if self._bar is not None and self._bar._waveform_scale is not None:
                 self._bar._waveform_scale.set_size_request(40, CONFIG.height_px)
 
-
-        def create_color(label_text, color, callback):
+        def create_color(label_text, config_item):
             hbox = Gtk.HBox(spacing=6)
-            hbox.set_border_width(6)
             label = Gtk.Label(label=label_text)
+            label.set_alignment(0.0, 0.5)
             hbox.pack_start(label, False, True, 0)
-            entry = Gtk.Entry()
-            if color:
-                entry.set_text(color)
-            entry.connect("changed", callback)
-            hbox.pack_start(entry, True, True, 0)
+            colour = getattr(CONFIG, config_item)
+            colour_label = Gtk.Label()
+            colour_label.set_alignment(0.0, 0.5)
+            colour_label.set_size_request(160, -1)
+
+            def colour_updated(_widget, c: Gdk.RGBA):
+                colour_changed(c, config_item)
+                colour = c.to_string()
+                add_css(
+                    colour_label,
+                    f"* {{ background-color: {colour}; border:1px solid #666; }}",
+                )
+
+            def on_clicked(*args):
+                chooser = Gtk.ColorChooserDialog()
+                chooser.set_property("use-alpha", True)
+                chooser.set_rgba(parse_color(colour))
+                chooser.connect("color-activated", colour_updated)
+                chooser.connect("response", on_exited)
+                chooser.run()
+
+            def on_exited(dialog: Gtk.ColorChooserDialog, code):
+                colour_updated(dialog, dialog.get_rgba())
+                dialog.destroy()
+
+            button = Gtk.Button()
+            button.connect("clicked", on_clicked)
+            button.add(SymbolicIconImage(Icons.EDIT, Gtk.IconSize.MENU))
+            if colour:
+                add_css(
+                    colour_label,
+                    f"""* {{
+                   background-color: {colour};
+                   border-radius: 3px;
+                   border: 1px solid rgba(128,128,128,0.5);
+                }}""",
+                )
+            hbox.pack_end(button, False, False, 0)
+            hbox.pack_end(colour_label, False, True, 0)
             return hbox
 
-        box = create_color(_("Override foreground color:"),
-                           CONFIG.elapsed_color, elapsed_color_changed)
+        vbox = Gtk.VBox(spacing=9)
+        box = create_color(_("Foreground color"), "elapsed_color")
         vbox.pack_start(box, True, True, 0)
 
-        box = create_color(_("Override hover color:"), CONFIG.hover_color,
-                           hover_color_changed)
+        box = create_color(_("Hover color"), "hover_color")
         vbox.pack_start(box, True, True, 0)
 
-        box = create_color(_("Override remaining color:"),
-                           CONFIG.remaining_color, remaining_color_changed)
+        box = create_color(_("Remaining color"), "remaining_color")
         vbox.pack_start(box, True, True, 0)
 
-        show_current_pos = Gtk.CheckButton(label=_("Show current position"))
-        show_current_pos.set_active(CONFIG.show_current_pos)
-        show_current_pos.connect("toggled", on_show_pos_toggled)
-        vbox.pack_start(show_current_pos, True, True, 0)
+        sw = Gtk.Switch()
+        label = Gtk.Label(_("Show current position whilst hovering"))
+        sw.set_active(CONFIG.show_current_pos)
+        sw.connect("notify::active", on_show_pos_toggled)
+        hbox = Gtk.HBox(spacing=6)
+        hbox.pack_start(label, False, True, 0)
+        hbox.pack_end(sw, False, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
 
-        show_time_labels = Gtk.CheckButton(label=_("Show time labels"))
-        show_time_labels.set_active(CONFIG.show_time_labels)
-        show_time_labels.connect("toggled", on_show_time_labels_toggled)
-        vbox.pack_start(show_time_labels, True, True, 0)
+        sw = Gtk.Switch()
+        label = Gtk.Label(_("Show time labels"))
+        sw.set_active(CONFIG.show_time_labels)
+        sw.connect("notify::active", on_show_time_labels_toggled)
+        hbox = Gtk.HBox(spacing=6)
+        hbox.pack_start(label, False, True, 0)
+        hbox.pack_end(sw, False, True, 0)
+        vbox.pack_start(hbox, True, True, 0)
 
         hbox = Gtk.HBox(spacing=6)
-        hbox.set_border_width(6)
         label = Gtk.Label(label=_("Seek amount when scrolling (milliseconds):"))
         hbox.pack_start(label, False, True, 0)
         seek_amount = Gtk.SpinButton(
@@ -706,12 +752,10 @@ class WaveformSeekBarPlugin(EventPlugin):
         )
         seek_amount.set_numeric(True)
         seek_amount.connect("changed", seek_amount_changed)
-        hbox.pack_start(seek_amount, True, True, 0)
+        hbox.pack_end(seek_amount, False, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
-
         hbox = Gtk.HBox(spacing=6)
-        hbox.set_border_width(6)
         label = Gtk.Label(label=_("Waveform height (pixels):"))
         hbox.pack_start(label, False, True, 0)
         height_px = Gtk.SpinButton(
@@ -719,7 +763,7 @@ class WaveformSeekBarPlugin(EventPlugin):
         )
         height_px.set_numeric(True)
         height_px.connect("changed", on_height_px_changed)
-        hbox.pack_start(height_px, True, True, 0)
+        hbox.pack_end(height_px, False, True, 0)
         vbox.pack_start(hbox, True, True, 0)
 
         return vbox

@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#        2016-23 Nick Boultbee
+#        2016-24 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -76,17 +76,11 @@ def __show_quodlibet_uri(uri):
         return False
 
 
-def get_fg_highlight_color(widget):
+def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     """Returns a color useable for highlighting things on top of the standard
     background color.
-
-    Args:
-        widget (Gtk.Widget)
-    Returns:
-        Gdk.RGBA
     """
 
-    context = widget.get_style_context()
     if hasattr(Gtk.StateFlags, "LINK"):
         # gtk+ >=3.12
         context.save()
