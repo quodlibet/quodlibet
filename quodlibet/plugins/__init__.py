@@ -1,4 +1,4 @@
-# Copyright 2012 - 2020 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2024 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -419,10 +419,10 @@ class PluginManager:
     def __restore(self):
         migrate_old_config()
         active = config.get(self.CONFIG_SECTION,
-                            self.CONFIG_OPTION, "").splitlines()
+                            self.CONFIG_OPTION).splitlines()
 
         self.__enabled.update(active)
-        print_d("Restoring plugins: %d" % len(self.__enabled))
+        print_d(f"Restoring {len(self.__enabled)} plugin(s)")
 
         for plugin in self._plugins:
             if self.enabled(plugin):

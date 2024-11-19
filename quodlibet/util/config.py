@@ -1,5 +1,5 @@
 # Copyright 2004-2008 Joe Wreschnig
-#           2009-2020 Nick Boultbee
+#           2009-2024 Nick Boultbee
 #           2011-2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -26,6 +26,7 @@ from io import StringIO
 
 from configparser import RawConfigParser as ConfigParser, Error, NoSectionError
 
+from quodlibet import print_w
 from senf import fsnative
 
 from quodlibet.util import list_unique, print_d
@@ -146,7 +147,7 @@ class Config:
 
         try:
             return self._config.get(section, option)
-        except Error:
+        except Error as e:
             if default is _DEFAULT:
                 if self.defaults is not None:
                     try:
@@ -154,6 +155,8 @@ class Config:
                     except Error:
                         pass
                 raise
+            if "No section:" in str(e):
+                print_w(f"Config problem: {e}")
             return default
 
     def gettext(self, *args, **kwargs):
@@ -378,6 +381,7 @@ class Config:
                     fileobj.read().decode("utf-8", "surrogateescape"))
                 self._config.read_file(fileobj, filename)
         except OSError:
+            print_d(f"No config file found at {filename} – using defaults")
             return
 
         # don't upgrade if we just created a new config
