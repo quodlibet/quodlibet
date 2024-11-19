@@ -382,6 +382,7 @@ class Config:
                 self._config.read_file(fileobj, filename)
         except OSError:
             print_d(f"No config file found at {filename} – using defaults")
+            return
 
         # don't upgrade if we just created a new config
         if self._version is not None:
