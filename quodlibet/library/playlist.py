@@ -125,6 +125,15 @@ class PlaylistLibrary(Library[str, Playlist]):
                 pl.write()
             self.changed(changed)
 
+    def rename(self, playlist: Playlist, old_key: str):
+        """Handle the renaming (and thus re-keying) of contained items"""
+        if playlist not in self and old_key in self.keys():
+            del self._contents[old_key]
+            self._contents[playlist.key] = playlist
+            self.emit("changed", [playlist])
+        else:
+            print_w(f"Can't rename {old_key} -> {playlist.key}")
+
     def __songs_changed(self, library, songs) -> None:
         # Q: what if the changes are entirely due to changes *from* this library?
         # A: seems safest to still emit 'changed' as collections can cache metadata etc

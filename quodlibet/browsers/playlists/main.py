@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig
-#      2011-2022 Nick Boultbee
+#      2011-2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -624,6 +624,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             child_model.remove(
                 self._lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
+            if playlist not in self.playlists():
+                print_w(f"{playlist} is not in playlists")
             self._select_playlist(playlist, scroll=True)
             return True
 
