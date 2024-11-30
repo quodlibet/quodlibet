@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-29 05:09+0000\n"
+"PO-Revision-Date: 2024-11-28 02:00+0000\n"
 "Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2045,18 +2045,17 @@ msgstr "Clients testés"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Intégration du Bureau Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Permet le contrôle de Quod Libet en utilisant la spécification d'interface D-"
-"Bus <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Cela "
-"permet diverses intégrations au bureau Linux (par exemple, des touches "
+"⏯️ Permet le contrôle de Quod Libet en utilisant l'interface D-Bus <a href="
+"\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"Cela permet diverses intégrations au bureau Linux (par exemple, des touches "
 "multimédia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3289,24 +3288,20 @@ msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Une barre de recherche sous la forme d'onde du morceau en cours."
 
 #: quodlibet/ext/events/waveformseekbar.py:720
-#, fuzzy
 msgid "Foreground color"
-msgstr "Remplacer la couleur d'avant-plan :"
+msgstr "Couleur d'avant-plan"
 
 #: quodlibet/ext/events/waveformseekbar.py:723
-#, fuzzy
 msgid "Hover color"
-msgstr "Remplacer la couleur du survol :"
+msgstr "Couleur du survol"
 
 #: quodlibet/ext/events/waveformseekbar.py:726
-#, fuzzy
 msgid "Remaining color"
-msgstr "Remplacer la couleur restante :"
+msgstr "Couleur restante"
 
 #: quodlibet/ext/events/waveformseekbar.py:730
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "Afficher la position actuelle"
+msgstr "Afficher la position actuelle lors du survol"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
