@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-25 13:09+0000\n"
+"PO-Revision-Date: 2024-11-28 02:00+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2002,18 +2002,18 @@ msgstr "テスト済みのクライアント"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Linux デスクトップ統合 (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
-"ターフェース仕様を使用した Quod Libet の制御を可能にします。これにより様々な "
-"Linux デスクトップ統合 (マルチメディアキーなど) が可能になります。"
+"⏯️ <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus "
+"インターフェースを使用して Quod Libet を制御できます。\n"
+"これにより様々な Linux デスクトップ統合 (マルチメディアキーなど) "
+"が可能になります。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3213,24 +3213,20 @@ msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 再生中の曲の波形の形をしたシークバーです。"
 
 #: quodlibet/ext/events/waveformseekbar.py:720
-#, fuzzy
 msgid "Foreground color"
-msgstr "前景色を上書きする:"
+msgstr "前景色"
 
 #: quodlibet/ext/events/waveformseekbar.py:723
-#, fuzzy
 msgid "Hover color"
-msgstr "マウスホバー時の色を上書きする:"
+msgstr "マウスホバー時の色"
 
 #: quodlibet/ext/events/waveformseekbar.py:726
-#, fuzzy
 msgid "Remaining color"
-msgstr "残り時間の色を上書きする:"
+msgstr "残り時間の色"
 
 #: quodlibet/ext/events/waveformseekbar.py:730
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "現在位置を表示する"
+msgstr "マウスホバー中に現在位置を表示する"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
