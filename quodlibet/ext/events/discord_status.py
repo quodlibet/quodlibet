@@ -7,7 +7,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet import _, app
+from quodlibet import _, app, print_e
 from quodlibet.plugins import PluginConfig, ConfProp
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.pattern import Pattern
@@ -56,7 +56,8 @@ class DiscordStatusMessage(EventPlugin):
             try:
                 self.discordrp = Presence(QL_DISCORD_RP_ID, pipe=0)
                 self.discordrp.connect()
-            except (DiscordNotFound, ConnectionRefusedError):
+            except (DiscordNotFound, ConnectionRefusedError) as e:
+                print_e(f"Got error connecting to Discord ({e!r})")
                 self.discordrp = None
 
         if self.discordrp:
