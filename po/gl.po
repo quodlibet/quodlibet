@@ -1616,7 +1616,7 @@ msgid "_Update strategy:"
 msgstr "_Nova Emisora"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -2072,14 +2072,14 @@ msgid "Tested Clients"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3285,41 +3285,42 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 #, fuzzy
 msgid "Waveform Seek Bar"
 msgstr "Alternativa"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:690
+#: quodlibet/ext/events/waveformseekbar.py:723
 #, fuzzy
-msgid "Show current position"
+msgid "Hover color"
+msgstr "Tamanho total:"
+
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Nom há novas emisoras"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr ""
 
@@ -5196,7 +5197,7 @@ msgstr ""
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Colección"
@@ -5228,7 +5229,7 @@ msgstr "A analisar a colecçom"
 msgid "Removing library files"
 msgstr "Eliminar os filtros de navegaçom activos"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
