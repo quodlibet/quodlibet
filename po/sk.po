@@ -1575,7 +1575,7 @@ msgid "_Update strategy:"
 msgstr "_Spôsob aktualizácie:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -2026,14 +2026,15 @@ msgid "Tested Clients"
 msgstr "Otestovaní klienti"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Podpora MPRIS D-Bus"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "Povoľuje ovládanie Quod Libet použitím <a href=\"https://mpris2.readthedocs."
 "io/en/latest/\">MPRIS 2</a> špecifikácie D-Bus rozhrania. Toto povoľuje "
@@ -3259,39 +3260,43 @@ msgstr "Spustiteľný súbor vizualizéra:"
 msgid "Reload"
 msgstr "Opätovne načítať"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Panel posunu vo vlnovej krivke skladby"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Panel posunu v tvare vlnovej krivky prehrávanej skladby."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
 msgstr "Nahradiť farbu popredia:"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
 msgstr "Nahradiť farbu pri prechode myšou:"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
 msgstr "Nahradiť zvyšnú farbu:"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Zobraziť súčasnú polohu"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Zobraziť časové značky"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Dĺžka posunu kolieskom myši (v milisekundách):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "Výška vlny (pixels):"
 
@@ -5171,7 +5176,7 @@ msgstr "Značka „%s“ sa nenašla."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Knižnica"
@@ -5201,7 +5206,7 @@ msgstr "Presúvajú sa súbory knižnice"
 msgid "Removing library files"
 msgstr "Odstraňujú sa súbory knižnice"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Pridanie sledovania pre %s"
@@ -8224,6 +8229,9 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Podpora MPRIS D-Bus"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Povoliť úpravu pokročilých nastavení."

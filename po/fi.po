@@ -1568,7 +1568,7 @@ msgid "_Update strategy:"
 msgstr "_Päivitystapa:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -2022,14 +2022,15 @@ msgid "Tested Clients"
 msgstr "Testatut asiakasohjelmat"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "MPRIS D-Bus -tuki"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "Hallitse Quod Libetiä käyttäen <a href=\"https://mpris2.readthedocs.io/en/"
 "latest/\">MPRIS 2</a> -D-Bus-rajapintaa. Mahdollistaa erilaisia "
@@ -3247,40 +3248,44 @@ msgstr "Visualisointiohjelma:"
 msgid "Reload"
 msgstr "Lataa uudelleen"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Aaltomuoto-aikasiirtymäpalkki"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 "∿ Aikasiirtymäpalkki, joka on toistettavan kappaleen aaltomuodon muotoinen."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
 msgstr "Edustaväri:"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
 msgstr "Väri osoitettaessa:"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
 msgstr "Jäljellä olevan osan väri:"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Näytä nykyinen sijainti"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Näytä aikatiedot"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Aikasiirtymä vieritettäessä (millisekunteina):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr ""
 
@@ -5166,7 +5171,7 @@ msgstr "Tunnistetta ”%s” ei löytynyt."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Kirjasto"
@@ -5196,7 +5201,7 @@ msgstr "Siirretään kirjaston tiedostoja"
 msgid "Removing library files"
 msgstr "Poistetaan kirjaston tiedostoja"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Lisätään seuranta polulle %s"
@@ -8199,6 +8204,9 @@ msgstr ""
 "Quod Libet on musiikinhallintaohjelma. Se tarjoaa useita eri tapoja selata "
 "musiikkikirjastoasi ja tukee myös Internet-radioita ja äänisyötteitä. Siinä "
 "on hyvin joustavat metatietotunnisteiden muokkaus- ja hakuominaisuudet."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "MPRIS D-Bus -tuki"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Muokkaa lisäasetuksia."

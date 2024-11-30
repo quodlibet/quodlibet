@@ -1211,7 +1211,8 @@ msgstr "藝術設計 URL 封面來源"
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
-msgstr "下載封面來自 <tt>artwork_url</tt> 標籤的連結。 這適用於 Soundcloud 及 "
+msgstr ""
+"下載封面來自 <tt>artwork_url</tt> 標籤的連結。 這適用於 Soundcloud 及 "
 "Podcasts 瀏覽器。"
 
 #: quodlibet/ext/covers/discogs.py:28
@@ -1437,8 +1438,9 @@ msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
-msgstr "每當一首歌曲播放過或是跳過時，外掛會將標籤寫入檔案。 "
-"如果你想確保那些評分不喜歡的歌曲，就會忽略跳過寫入檔案，非常有用。"
+msgstr ""
+"每當一首歌曲播放過或是跳過時，外掛會將標籤寫入檔案。 如果你想確保那些評分不喜"
+"歡的歌曲，就會忽略跳過寫入檔案，非常有用。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
@@ -1533,7 +1535,7 @@ msgid "_Update strategy:"
 msgstr "更新策略 (_U):"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1979,14 +1981,15 @@ msgid "Tested Clients"
 msgstr "測試用戶端"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "MPRIS D-Bus 支援"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
 "io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
@@ -3182,39 +3185,43 @@ msgstr "視覺化可執行:"
 msgid "Reload"
 msgstr "重新載入"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "定位列波形狀"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ A seekbar in the shape of the waveform of the current song."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
 msgstr "改寫前景顏色:"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
 msgstr "改寫浮標顏色:"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
 msgstr "改寫其他顏色:"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "顯示目前位置"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "顯示時間"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "滾輪定位值量(毫秒):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "波形高度(像素)："
 
@@ -5071,7 +5078,7 @@ msgstr "標籤\"%s\" 未找到。"
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "音樂庫"
@@ -5101,7 +5108,7 @@ msgstr "正在移動音樂庫檔案"
 msgid "Removing library files"
 msgstr "正在移除音樂庫檔案"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "加入監視用於 %s"
@@ -8017,6 +8024,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一套音樂管理工具程式，提供多種不同方式來呈現音樂庫，以及支援網路"
 "廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "MPRIS D-Bus 支援"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "允許進階設定編輯。"

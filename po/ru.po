@@ -1579,7 +1579,7 @@ msgid "_Update strategy:"
 msgstr "_Стратегия обновления:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -2022,14 +2022,15 @@ msgid "Tested Clients"
 msgstr "Проверенные клиенты"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Поддержка MPRIS D-Bus"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "Предоставляет управление Quod Libet посредством спецификации интерфейса D-"
 "Bus <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>, что "
@@ -3246,39 +3247,43 @@ msgstr "Исполняемый файл визуализатора:"
 msgid "Reload"
 msgstr "Обновить"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Панель перемотки Waveform"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Панель поиска в виде формы волны текущей песни."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
 msgstr "Цвет пройденного :"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
 msgstr "Цвет наведения:"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
 msgstr "Цвет оставшегося:"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Показать текущую позицию"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Показать метки времени"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Шаг при прокрутке (миллисекунды):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "Высота волноформы (пиксели):"
 
@@ -5154,7 +5159,7 @@ msgstr "Тег «%s» отсутствует."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Фонотека"
@@ -5184,7 +5189,7 @@ msgstr "Перемещение файлов фонотеки"
 msgid "Removing library files"
 msgstr "Удаление файлов фонотеки"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Добавление наблюдения за %s"
@@ -8213,6 +8218,9 @@ msgstr ""
 "различных способов просмотра вашей фонотеки, а также поддержку интернет-"
 "радио и аудиопотоков. Содержит крайне гибкие возможности правки и поиска "
 "тегов метаданных."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Поддержка MPRIS D-Bus"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Настройка дополнительных параметров."
