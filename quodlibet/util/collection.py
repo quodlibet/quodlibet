@@ -1,6 +1,6 @@
 # Copyright 2004-2013 Joe Wreschnig, Michael Urman, Iñigo Serna,
 #                     Christoph Reiter, Steven Robertson
-#           2011-2023 Nick Boultbee
+#           2011-2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -369,7 +369,7 @@ class Playlist(Collection, abc.Iterable, HasKey):
         self.pl_lib = pl_lib
         # Libraries are dict-like so falsey if empty
         if self.pl_lib is None:
-            print_d(f"Playlist {name!r} initialised without library")
+            print_w(f"Playlist {name!r} initialised without library")
         else:
             self.pl_lib.add([self])
         self.__inhibit_library_signals = False
@@ -430,10 +430,13 @@ class Playlist(Collection, abc.Iterable, HasKey):
     def rename(self, new_name):
         """Changes this playlist's name and re-saves, or raises an `ValueError`
         if the name is not allowed"""
-        if new_name == self.name:
+        old_name = self.key
+        if new_name == old_name:
             return
         self.name = self._validated_name(new_name)
         self.write()
+        if self.pl_lib:
+            self.pl_lib.rename(self, old_name)
 
     def _validated_name(self, new_name):
         """Returns a transformed (or not) name, or raises a `ValueError`

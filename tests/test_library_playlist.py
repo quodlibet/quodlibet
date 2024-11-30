@@ -13,7 +13,7 @@ from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist, FileBackedPlaylist
 from tests import TestCase, _TEMP_DIR
 from tests.test_library_libraries import FakeSong
-from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR
+from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 
 
 def AFrange(*args):
@@ -172,17 +172,17 @@ class TPlaylistLibrarySignals(TestCase):
             connect_obj(lib, "removed", listen, "removed"),
         ]
 
-        self.playlists = lib.playlists
+        self.pl_lib: PlaylistLibrary = lib.playlists
         self._asigs = [
-            connect_obj(self.playlists, "added", listen, "pl_added"),
-            connect_obj(self.playlists, "changed", listen, "pl_changed"),
-            connect_obj(self.playlists, "removed", listen, "pl_removed"),
+            connect_obj(self.pl_lib, "added", listen, "pl_added"),
+            connect_obj(self.pl_lib, "changed", listen, "pl_changed"),
+            connect_obj(self.pl_lib, "removed", listen, "pl_removed"),
         ]
         songs = AFrange(3)
         self.lib.add(songs)
 
     def test_add_remove(self):
-        pl = Playlist("only", self.lib, self.playlists)
+        pl = Playlist("only", self.lib, self.pl_lib)
         assert self.received == ["added", "pl_added"]
         self.received.clear()
 
@@ -207,9 +207,20 @@ class TPlaylistLibrarySignals(TestCase):
         self.lib.changed(list(self.lib)[0:1])
         assert self.received == ["changed"]
 
+    def test_rename_playlist_emits_changed(self):
+        self.received.clear()
+        old_name = "New Playlist (1)"
+        pl = Playlist(old_name, self.lib, self.pl_lib)
+        new_name = "✨ Nice new name!"
+        pl.rename(new_name)
+        assert pl.name == new_name
+        assert pl in self.pl_lib
+        assert old_name not in self.pl_lib._contents.keys(), "Old key still there"
+        assert self.received == ["pl_added", "pl_changed"]
+
     def tearDown(self):
         for s in self._asigs:
-            self.playlists.disconnect(s)
+            self.pl_lib.disconnect(s)
         for s in self._sigs:
             self.lib.disconnect(s)
         self.lib.destroy()

@@ -1,5 +1,5 @@
 # Copyright 2006 Joe Wreschnig
-#           2011-2022 Nick Boultbee
+#           2011-2024 Nick Boultbee
 #           2013,2014 Christoph Reiter
 #
 # This program is free software; you can redistribute it and/or modify
@@ -194,17 +194,17 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         Return the sequence of items actually removed.
         """
 
-        items = {item for item in items if item in self}
-        if not items:
-            return items
+        removals = {item for item in items if item in self}
+        if not removals:
+            return removals
 
-        print_d(f"Removing {len(items)} item(s).", self._name)
-        for item in items:
+        print_d(f"Removing {len(removals)} item(s).", self._name)
+        for item in removals:
             del self._contents[item.key]
 
         self.dirty = True
-        self.emit("removed", items)
-        return items
+        self.emit("removed", removals)
+        return removals
 
 
 def _load_items(filename) -> Iterable[V]:
