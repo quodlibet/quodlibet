@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-29 05:09+0000\n"
+"PO-Revision-Date: 2024-11-29 11:00+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:221
@@ -2023,19 +2023,18 @@ msgstr "Проверенные клиенты"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Интеграция с рабочим столом Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Предоставляет управление Quod Libet посредством спецификации интерфейса D-"
-"Bus <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>, что "
-"позволяет использовать различные интеграции с настольными компьютерами Linux "
-"(например, мультимедийные клавиши)."
+"⏯️ Позволяет управлять Quod Libet с помощью интерфейса D-Bus <a href=\"https"
+"://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> .\n"
+"Это позволяет интегрировать в рабочий стол Linux различные функции ("
+"например, мультимедийные клавиши)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3027,7 +3026,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:128
 msgid "Playing:"
-msgstr "Воспроизведение:"
+msgstr "Играет:"
 
 #: quodlibet/ext/events/telepathy_status.py:129
 #, python-format
@@ -3256,24 +3255,20 @@ msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Панель поиска в виде формы волны текущей песни."
 
 #: quodlibet/ext/events/waveformseekbar.py:720
-#, fuzzy
 msgid "Foreground color"
-msgstr "Цвет пройденного :"
+msgstr "Цвет переднего плана"
 
 #: quodlibet/ext/events/waveformseekbar.py:723
-#, fuzzy
 msgid "Hover color"
-msgstr "Цвет наведения:"
+msgstr "Цвет при наведении курсора"
 
 #: quodlibet/ext/events/waveformseekbar.py:726
-#, fuzzy
 msgid "Remaining color"
-msgstr "Цвет оставшегося:"
+msgstr "Остаточный цвет"
 
 #: quodlibet/ext/events/waveformseekbar.py:730
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "Показать текущую позицию"
+msgstr "Показывать текущее положение при наведении курсора"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
@@ -5558,7 +5553,7 @@ msgstr "Не найдено устройство аудиовывода GStreame
 
 #: quodlibet/player/gstbe/util.py:167
 msgid "Invalid GStreamer output pipeline"
-msgstr "Некорректный конвейер вывода GStreamer"
+msgstr "Недопустимый конвейер вывода GStreamer"
 
 #: quodlibet/player/xinebe/player.py:91
 msgid "Unable to create audio output"
@@ -6665,7 +6660,7 @@ msgstr "Обложки альбома"
 
 #: quodlibet/qltk/prefs.py:395
 msgid "Playback"
-msgstr "Воспроизведение"
+msgstr "Проигрывание"
 
 #: quodlibet/qltk/prefs.py:402
 msgid "Output Configuration"
