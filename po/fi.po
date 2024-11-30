@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-07-07 16:09+0000\n"
-"Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
+"PO-Revision-Date: 2024-11-30 10:37+0000\n"
+"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
 "Language: fi\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2023,19 +2023,18 @@ msgstr "Testatut asiakasohjelmat"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Linux-työpöytäintegrointi (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Hallitse Quod Libetiä käyttäen <a href=\"https://mpris2.readthedocs.io/en/"
-"latest/\">MPRIS 2</a> -D-Bus-rajapintaa. Mahdollistaa erilaisia "
-"integraatioita Linux-työpöytäympäristön kanssa, mm. multimedianäppäinten "
-"käytön."
+"⏯️ Mahdollistaa Quod Libetin hallinnan <a href=\"https://mpris2.readthedocs."
+"io/en/latest/\">MPRIS 2</a> D-Bus -liittymän avulla.\n"
+"Tämä mahdollistaa erilaiset Linux-työpöytäintegraatiot (esim. "
+"multimedianäppäimet)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3258,24 +3257,20 @@ msgstr ""
 "∿ Aikasiirtymäpalkki, joka on toistettavan kappaleen aaltomuodon muotoinen."
 
 #: quodlibet/ext/events/waveformseekbar.py:720
-#, fuzzy
 msgid "Foreground color"
-msgstr "Edustaväri:"
+msgstr "Etualan väri"
 
 #: quodlibet/ext/events/waveformseekbar.py:723
-#, fuzzy
 msgid "Hover color"
-msgstr "Väri osoitettaessa:"
+msgstr "Väri osoitettaessa"
 
 #: quodlibet/ext/events/waveformseekbar.py:726
-#, fuzzy
 msgid "Remaining color"
-msgstr "Jäljellä olevan osan väri:"
+msgstr "Jäljellä oleva väri"
 
 #: quodlibet/ext/events/waveformseekbar.py:730
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "Näytä nykyinen sijainti"
+msgstr "Näytä nykyinen sijainti pitämällä hiiri"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
@@ -3287,7 +3282,7 @@ msgstr "Aikasiirtymä vieritettäessä (millisekunteina):"
 
 #: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
-msgstr ""
+msgstr "Aaltomuodon korkeus (pikseliä):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
