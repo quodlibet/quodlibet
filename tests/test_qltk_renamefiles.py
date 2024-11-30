@@ -34,7 +34,7 @@ class TFilterMixin:
         empty = fsnative("")
         v = self.c.filter(empty, "")
         self.assertEqual(v, "")
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
     def test_mix_safe(self):
         empty = fsnative("")
@@ -62,13 +62,13 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
 
     def test_type(self):
         empty = fsnative("")
-        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
+        assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def test_ends_with_dots_or_spaces(self):
         empty = fsnative("")
         v = self.c.filter(empty, fsnative("foo. . "))
         self.assertEqual(v, fsnative("foo. ._"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         if os.name == "nt":
             self.assertEqual(
@@ -102,7 +102,7 @@ class TReplaceColons(TFilter, TFilterMixin):
 
     def test_type(self):
         empty = fsnative("")
-        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
+        assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def conv(self, s: str):
         return self.c.filter(fsnative(""), s)
@@ -120,7 +120,7 @@ class TStripDiacriticals(TFilter, TFilterMixin):
         out = "A test"
         v = self.c.filter(empty, test)
         self.assertEqual(v, out)
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
 
 class TStripNonASCII(TFilter, TFilterMixin):
@@ -132,7 +132,7 @@ class TStripNonASCII(TFilter, TFilterMixin):
         out = "foo _ _"
         v = self.c.filter(empty, in_)
         self.assertEqual(v, out)
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
 
 class TLowercase(TFilter, TFilterMixin):
@@ -143,11 +143,11 @@ class TLowercase(TFilter, TFilterMixin):
 
         v = self.c.filter(empty, fsnative("foobar baz"))
         self.assertEqual(v, fsnative("foobar baz"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         v = self.c.filter(empty, fsnative("Foobar.BAZ"))
         self.assertEqual(v, fsnative("foobar.baz"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
 
 class Renamer(Gtk.EventBox):

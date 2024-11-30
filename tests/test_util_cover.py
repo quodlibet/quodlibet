@@ -43,7 +43,7 @@ class TCoverManager(TestCase):
         self.song = self.an_album_song()
 
         # Safety check
-        self.assertFalse(glob.glob(os.path.join(self.dir + "*.jpg")))
+        assert not glob.glob(os.path.join(self.dir + "*.jpg"))
         files = [self.full_path("12345.jpg"), self.full_path("nothing.jpg")]
         for f in files:
             open(f, "w").close()
@@ -66,10 +66,10 @@ class TCoverManager(TestCase):
         return os.path.join(self.dir, path)
 
     def test_dir_not_exist(self):
-        self.assertFalse(self._find_cover(bar_2_1))
+        assert not self._find_cover(bar_2_1)
 
     def test_nothing(self):
-        self.assertFalse(self._find_cover(self.song))
+        assert not self._find_cover(self.song)
 
     def test_labelid(self):
         self.song["labelid"] = "12345"
@@ -88,7 +88,7 @@ class TCoverManager(TestCase):
 
     def test_file_encoding(self):
         f = self.add_file(fsnative("öäü - Quuxly - cover.jpg"))
-        self.assertTrue(isinstance(self.song("album"), str))
+        assert isinstance(self.song("album"), str)
         h = self._find_cover(self.song)
         assert h, "Nothing found"
         self.assertEqual(normalize_path(h.name), normalize_path(f))
@@ -208,14 +208,14 @@ class TCoverManager(TestCase):
                    "The Composer - The Conductor, The Performer - foobar.jpg"]:
             f = self.add_file(fn)
             cover = self._find_cover(song)
-            self.assertTrue(cover)
+            assert cover
             actual = os.path.abspath(cover.name)
             cover.close()
             assert path_equal(
                 actual, f, f'"{f}" should trump "{actual}"')
 
     def test_get_thumbnail(self):
-        self.assertTrue(self.manager.get_pixbuf(self.song, 10, 10) is None)
+        assert self.manager.get_pixbuf(self.song, 10, 10) is None
         self.assertTrue(
             self.manager.get_pixbuf_many([self.song], 10, 10) is None)
 

@@ -51,7 +51,7 @@ class TRatingsMenuItem(TestCase):
 
     def test_set_remove_rating(self):
         self.rmi.set_rating(0.5, [self.af], self.library)
-        self.assertTrue(self.af.has_rating)
+        assert self.af.has_rating
         self.assertEqual(self.af("~#rating"), 0.5)
         self.rmi.remove_rating([self.af], self.library)
-        self.assertFalse(self.af.has_rating)
+        assert not self.af.has_rating

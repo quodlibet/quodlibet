@@ -27,7 +27,7 @@ class TImageUtils(TestCase):
         rgb = GdkPixbuf.Colorspace.RGB
         newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10, 10)
         surface = get_surface_for_pixbuf(w, newpb)
-        self.assertTrue(isinstance(surface, cairo.Surface))
+        assert isinstance(surface, cairo.Surface)
 
     def test_scale(self):
         nw = scale(self.wide, (50, 30))

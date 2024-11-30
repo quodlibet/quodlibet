@@ -53,8 +53,8 @@ class TQueryPlugins(PluginTestCase):
         self.assertRaises(QueryPluginError, plugin.parse_body,
                               "invalid/query")
 
-        self.assertTrue(plugin.parse_body("a=first,b=second,c=third"))
-        self.assertTrue(plugin.parse_body("@(ext),#(numcmp > 0),!negation"))
+        assert plugin.parse_body("a=first,b=second,c=third")
+        assert plugin.parse_body("@(ext),#(numcmp > 0),!negation")
 
         body = plugin.parse_body("artist=a, genre=rock, genre=classical")
 
@@ -92,8 +92,8 @@ class TQueryPlugins(PluginTestCase):
             query1 = plugin.parse_body("Query 1", query_path_=filename)
             query2 = plugin.parse_body("another query", query_path_=filename)
             song = AudioFile({"artist": "a", "genre": "dance"})
-            self.assertTrue(plugin.search(song, query1))
-            self.assertFalse(plugin.search(song, query2))
+            assert plugin.search(song, query1)
+            assert not plugin.search(song, query2)
         finally:
             os.remove(filename)
 
@@ -108,8 +108,8 @@ class TQueryPlugins(PluginTestCase):
         self.assertRaises(QueryPluginError, plugin.parse_body, "\\")
         self.assertRaises(QueryPluginError, plugin.parse_body, "unclosed[")
         self.assertRaises(QueryPluginError, plugin.parse_body, "return s")
-        self.assertTrue(plugin.parse_body("3"))
-        self.assertTrue(plugin.parse_body("s"))
+        assert plugin.parse_body("3")
+        assert plugin.parse_body("s")
 
         body1 = plugin.parse_body("s('~#rating') > 0.5")
         body2 = plugin.parse_body(
@@ -120,9 +120,9 @@ class TQueryPlugins(PluginTestCase):
                            "genre": "jazz"})
         song2 = AudioFile({"title": "baz", "~#rating": 0.4, "genre": "aapop"})
 
-        self.assertTrue(plugin.search(song1, body1))
-        self.assertFalse(plugin.search(song1, body2))
-        self.assertFalse(plugin.search(song1, body3))
-        self.assertFalse(plugin.search(song2, body1))
-        self.assertTrue(plugin.search(song2, body2))
-        self.assertTrue(plugin.search(song2, body3))
+        assert plugin.search(song1, body1)
+        assert not plugin.search(song1, body2)
+        assert not plugin.search(song1, body3)
+        assert not plugin.search(song2, body1)
+        assert plugin.search(song2, body2)
+        assert plugin.search(song2, body3)

@@ -102,32 +102,32 @@ class TAudioFileGroup(TestCase):
 
     def test_multiple_values(self):
         group = AudioFileGroup([GroupSong(True), GroupSong(True)])
-        self.assertTrue(group.can_multiple_values() is True)
-        self.assertTrue(group.can_multiple_values("foo") is True)
+        assert group.can_multiple_values() is True
+        assert group.can_multiple_values("foo") is True
 
         group = AudioFileGroup([GroupSong(["ha"]), GroupSong(True)])
         self.assertEqual(group.can_multiple_values(), {"ha"})
-        self.assertFalse(group.can_multiple_values("foo"))
-        self.assertTrue(group.can_multiple_values("ha"))
+        assert not group.can_multiple_values("foo")
+        assert group.can_multiple_values("ha")
 
         group = AudioFileGroup([GroupSong(["foo", "ha"]), GroupSong(["ha"])])
         self.assertEqual(group.can_multiple_values(), {"ha"})
-        self.assertFalse(group.can_multiple_values("foo"))
-        self.assertTrue(group.can_multiple_values("ha"))
+        assert not group.can_multiple_values("foo")
+        assert group.can_multiple_values("ha")
 
     def test_can_change(self):
         group = AudioFileGroup(
             [GroupSong(can_change=True), GroupSong(can_change=True)])
-        self.assertTrue(group.can_change() is True)
-        self.assertTrue(group.can_change("foo") is True)
+        assert group.can_change() is True
+        assert group.can_change("foo") is True
 
         group = AudioFileGroup(
             [GroupSong(can_change=["foo", "ha"]),
              GroupSong(can_change=["ha"])])
         self.assertEqual(group.can_change(), {"ha"})
-        self.assertFalse(group.can_change("foo"))
-        self.assertTrue(group.can_change("ha"))
+        assert not group.can_change("foo")
+        assert group.can_change("ha")
 
         group = AudioFileGroup([GroupSong(), GroupSong(cant_change=["baz"])])
-        self.assertTrue(group.can_change())
-        self.assertFalse(group.can_change("baz"))
+        assert group.can_change()
+        assert not group.can_change("baz")

@@ -278,13 +278,13 @@ class _TFileFromPattern(_TPattern):
 
     def test_escape_slash(self):
         fpat = self._create("<~filename>")
-        self.assertTrue(fpat.format(self.a).endswith("_path_to_a.mp3"))
+        assert fpat.format(self.a).endswith("_path_to_a.mp3")
 
         pat = Pattern("<~filename>")
         if os.name != "nt":
-            self.assertTrue(pat.format(self.a).startswith("/path/to/a"))
+            assert pat.format(self.a).startswith("/path/to/a")
         else:
-            self.assertTrue(pat.format(self.a).startswith("C:\\path\\to\\a"))
+            assert pat.format(self.a).startswith("C:\\path\\to\\a")
 
         if os.name != "nt":
             wpat = self._create(r'\\<artist>\\ "<title>')
@@ -308,30 +308,30 @@ class _TFileFromPattern(_TPattern):
     def test_backslash_conversion_win32(self):
         if os.name == "nt":
             pat = self._create(r"Z:\<artist>\<title>")
-            self.assertTrue(pat.format(self.a).startswith(r"Z:\Artist\Title5"))
+            assert pat.format(self.a).startswith(r"Z:\Artist\Title5")
 
     def test_raw_slash_preservation(self):
         if os.name == "nt":
             pat = self._create("C:\\a\\b\\<genre>")
-            self.assertTrue(pat.format(self.a).startswith("C:\\a\\b\\"))
-            self.assertTrue(pat.format(self.b).startswith("C:\\a\\b\\"))
-            self.assertTrue(pat.format(self.c).startswith("C:\\a\\b\\_, _"))
+            assert pat.format(self.a).startswith("C:\\a\\b\\")
+            assert pat.format(self.b).startswith("C:\\a\\b\\")
+            assert pat.format(self.c).startswith("C:\\a\\b\\_, _")
 
         else:
             pat = self._create("/a/b/<genre>")
-            self.assertTrue(pat.format(self.a).startswith("/a/b/"))
-            self.assertTrue(pat.format(self.b).startswith("/a/b/"))
-            self.assertTrue(pat.format(self.c).startswith("/a/b/_, _"))
+            assert pat.format(self.a).startswith("/a/b/")
+            assert pat.format(self.b).startswith("/a/b/")
+            assert pat.format(self.c).startswith("/a/b/_, _")
 
     def test_specialcase_anti_ext(self):
         p1 = self._create("<~filename>")
         p2 = self._create("<~dirname>_<~basename>")
         self.assertEqual(p1.format(self.a), p2.format(self.a))
-        self.assertTrue(p1.format(self.a).endswith("_path_to_a.mp3"))
+        assert p1.format(self.a).endswith("_path_to_a.mp3")
         self.assertEqual(p1.format(self.b), p2.format(self.b))
-        self.assertTrue(p1.format(self.b).endswith("_path_to_b.ogg"))
+        assert p1.format(self.b).endswith("_path_to_b.ogg")
         self.assertEqual(p1.format(self.c), p2.format(self.c))
-        self.assertTrue(p1.format(self.c).endswith("_one_more_a.flac"))
+        assert p1.format(self.c).endswith("_one_more_a.flac")
 
     def test_long_filename(self):
         if os.name == "nt":
@@ -358,9 +358,9 @@ class TFileFromPattern(_TFileFromPattern):
 
     def test_type(self):
         pat = self._create("")
-        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+        assert isinstance(pat.format(self.a), fsnative)
         pat = self._create("<title>")
-        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+        assert isinstance(pat.format(self.a), fsnative)
 
     def test_number_dot_title_dot(self):
         pat = self._create("<tracknumber>. <title>.")

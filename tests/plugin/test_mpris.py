@@ -67,7 +67,7 @@ class TMPRIS(PluginTestCase):
         self.assertTrue(
             bus.name_has_owner(self.BUS_NAME))
         self.m.disabled()
-        self.assertFalse(bus.name_has_owner(self.BUS_NAME))
+        assert not bus.name_has_owner(self.BUS_NAME)
 
         destroy_fake_app()
         config.quit()
@@ -75,7 +75,7 @@ class TMPRIS(PluginTestCase):
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
-        self.assertTrue(bus.name_has_owner(self.BUS_NAME))
+        assert bus.name_has_owner(self.BUS_NAME)
 
     def _main_iface(self):
         bus = dbus.SessionBus()
@@ -105,7 +105,7 @@ class TMPRIS(PluginTestCase):
         self._replies.append(args)
 
     def _error(self, *args):
-        self.assertFalse(args)
+        assert not args
 
     def _wait(self, msg=""):
         start = time.time()
@@ -120,10 +120,10 @@ class TMPRIS(PluginTestCase):
         piface = "org.mpris.MediaPlayer2"
 
         app.window.hide()
-        self.assertFalse(app.window.get_visible())
+        assert not app.window.get_visible()
         self._main_iface().Raise(**args)
-        self.assertFalse(self._wait())
-        self.assertTrue(app.window.get_visible())
+        assert not self._wait()
+        assert app.window.get_visible()
         app.window.hide()
 
         props = {
@@ -140,10 +140,10 @@ class TMPRIS(PluginTestCase):
             self._prop().Get(piface, key, **args)
             resp = self._wait()[0]
             self.assertEqual(resp, value)
-            self.assertTrue(isinstance(resp, type(value)))
+            assert isinstance(resp, type(value))
 
         self._prop().Get(piface, "SupportedMimeTypes", **args)
-        self.assertTrue("audio/vorbis" in self._wait()[0])
+        assert "audio/vorbis" in self._wait()[0]
 
         self._introspect_iface().Introspect(**args)
         assert self._wait()
@@ -173,7 +173,7 @@ class TMPRIS(PluginTestCase):
             self._prop().Get(piface, key, **args)
             resp = self._wait(msg="for key '%s'" % key)[0]
             self.assertEqual(resp, value)
-            self.assertTrue(isinstance(resp, type(value)))
+            assert isinstance(resp, type(value))
 
     def test_volume_property(self):
         args = {"reply_handler": self._reply, "error_handler": self._error}
@@ -199,7 +199,7 @@ class TMPRIS(PluginTestCase):
         resp = self._wait()[0]
         self.assertEqual(resp["mpris:trackid"],
                              "/net/sacredchao/QuodLibet/NoTrack")
-        self.assertTrue(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+        assert isinstance(resp["mpris:trackid"], dbus.ObjectPath)
 
         # go to next song
         self._player_iface().Next(**args)
@@ -212,11 +212,11 @@ class TMPRIS(PluginTestCase):
                          "/net/sacredchao/QuodLibet/NoTrack")
 
         # mpris stuff
-        self.assertFalse(resp["mpris:trackid"].startswith("/org/mpris/"))
-        self.assertTrue(isinstance(resp["mpris:trackid"], dbus.ObjectPath))
+        assert not resp["mpris:trackid"].startswith("/org/mpris/")
+        assert isinstance(resp["mpris:trackid"], dbus.ObjectPath)
 
         self.assertEqual(resp["mpris:length"], 123 * 10 ** 6)
-        self.assertTrue(isinstance(resp["mpris:length"], dbus.Int64))
+        assert isinstance(resp["mpris:length"], dbus.Int64)
 
         # list text values
         self.assertEqual(resp["xesam:artist"], ["fooman", "go"])
@@ -229,14 +229,14 @@ class TMPRIS(PluginTestCase):
 
         # integers
         self.assertEqual(resp["xesam:audioBPM"], 123)
-        self.assertTrue(isinstance(resp["xesam:audioBPM"], dbus.Int32))
+        assert isinstance(resp["xesam:audioBPM"], dbus.Int32)
 
         self.assertEqual(resp["xesam:trackNumber"], 6)
-        self.assertTrue(isinstance(resp["xesam:trackNumber"], dbus.Int32))
+        assert isinstance(resp["xesam:trackNumber"], dbus.Int32)
 
         # rating
         self.assertAlmostEqual(resp["xesam:userRating"], 0.75)
-        self.assertTrue(isinstance(resp["xesam:userRating"], dbus.Double))
+        assert isinstance(resp["xesam:userRating"], dbus.Double)
 
         # time
         from time import strptime

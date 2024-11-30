@@ -30,8 +30,8 @@ class TLibraryBrowser(TestCase):
     def test_open(self):
         self.library.librarian = SongLibrarian()
         widget = LibraryBrowser.open(TrackList, self.library, NullPlayer())
-        self.assertTrue(widget)
-        self.assertTrue(widget.get_visible())
+        assert widget
+        assert widget.get_visible()
         widget.destroy()
 
     def test_popup_menu(self):

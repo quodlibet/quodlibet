@@ -76,7 +76,7 @@ class TConfigRPaned(TestCase):
         config.quit()
 
     def test_basic(self):
-        self.assertTrue(config.get("memory", "foobar", None) is None)
+        assert config.get("memory", "foobar", None) is None
 
         p = ConfigRVPaned("memory", "foobar", 0.75)
         p.pack1(Gtk.Button())
@@ -176,7 +176,7 @@ class TConfigMultiRPaned:
         config.quit()
 
     def test_basic(self):
-        self.assertTrue(config.get("memory", "pane_widths", None) is None)
+        assert config.get("memory", "pane_widths", None) is None
 
         p = self.Kind("memory", "pane_widths")
         sws = [Gtk.ScrolledWindow() for _ in range(3)]

@@ -33,11 +33,11 @@ class TSPCFile(TestCase):
         self.song.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("title"))
+        assert self.song.can_change("title")
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, SPCFile, path)
 
     def test_format_codec(self):

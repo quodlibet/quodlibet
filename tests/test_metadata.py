@@ -45,16 +45,16 @@ class _TestMetaDataMixin:
         self.assertEqual(self.song["title"], "Silence")
 
     def test_mutability(self):
-        self.assertFalse(self.song.can_change("=foo"))
-        self.assertFalse(self.song.can_change("foo~bar"))
-        self.assertTrue(self.song.can_change("artist"))
-        self.assertTrue(self.song.can_change("title"))
-        self.assertTrue(self.song.can_change("tracknumber"))
-        self.assertTrue(self.song.can_change("somebadtag"))
-        self.assertTrue(self.song.can_change("some%punctuated:tag."))
+        assert not self.song.can_change("=foo")
+        assert not self.song.can_change("foo~bar")
+        assert self.song.can_change("artist")
+        assert self.song.can_change("title")
+        assert self.song.can_change("tracknumber")
+        assert self.song.can_change("somebadtag")
+        assert self.song.can_change("some%punctuated:tag.")
 
     def _test_tag(self, tag, values, remove=True):
-        self.assertTrue(self.song.can_change(tag))
+        assert self.song.can_change(tag)
         for value in values:
             self.song[tag] = value
             self.song.write()
@@ -64,7 +64,7 @@ class _TestMetaDataMixin:
                 del self.song[tag]
                 self.song.write()
                 deleted = formats.MusicFile(self.filename)
-                self.assertFalse(tag in deleted)
+                assert tag not in deleted
 
     def test_artist(self): # a normalish tag
         self._test_tag("artist", ["me", "you\nme",

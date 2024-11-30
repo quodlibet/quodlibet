@@ -107,7 +107,7 @@ class TStandaloneEditor(TestCase):
         self.sae = StandaloneEditor(self.fname, "test", None, None)
 
     def test_constructor(self):
-        self.assertTrue(self.sae.model)
+        assert self.sae.model
         data = [(row[1], row[0]) for row in self.sae.model]
         self.assertEqual(data, self.TEST_KV_DATA)
 

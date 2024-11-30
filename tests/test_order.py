@@ -31,9 +31,9 @@ class TOrderWeighted(TestCase):
             for j in range(3, -1, -1):
                 cur = order.next_explicit(pl, cur)
                 scores[pl[cur][0]] += j
-        self.assertTrue(scores[r1] > scores[r0])
-        self.assertTrue(scores[r2] > scores[r1])
-        self.assertTrue(scores[r3] > scores[r2])
+        assert scores[r1] > scores[r0]
+        assert scores[r2] > scores[r1]
+        assert scores[r3] > scores[r2]
 
 
 class TOrderShuffle(TestCase):

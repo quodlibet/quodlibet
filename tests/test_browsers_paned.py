@@ -81,9 +81,9 @@ class TPanedBrowser(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.assertFalse(self.bar.can_filter_tag(key))
-        self.assertTrue(self.bar.can_filter("artist"))
-        self.assertTrue(self.bar.can_filter_text())
+            assert not self.bar.can_filter_tag(key)
+        assert self.bar.can_filter("artist")
+        assert self.bar.can_filter_text()
 
     def test_filter_text(self):
         self.bar.activate()
@@ -141,7 +141,7 @@ class TPanedBrowser(TestCase):
         self.bar.activate()
         run_gtk_loop()
         for song in self.last:
-            self.assertTrue("piman" in song.list("artist"))
+            assert "piman" in song.list("artist")
 
     def test_set_all_panes(self):
         self.bar.activate()
@@ -183,8 +183,8 @@ class TPaneConfig(TestCase):
         self.assertEqual(p.tags, {"title"})
 
         self.assertEqual(p.format(SONGS[0]), [("three", "three")])
-        self.assertTrue(str(len(ALBUM.songs)) in p.format_display(ALBUM))
-        self.assertFalse(p.has_markup)
+        assert str(len(ALBUM.songs)) in p.format_display(ALBUM)
+        assert not p.has_markup
 
     def test_numeric(self):
         a_date_format = "%Y-%m-%d"
@@ -195,7 +195,7 @@ class TPaneConfig(TestCase):
 
         zero_date = format_date(0, a_date_format)
         self.assertEqual(p.format(SONGS[0]), [(zero_date, zero_date)])
-        self.assertFalse(p.has_markup)
+        assert not p.has_markup
 
     def test_tied(self):
         p = PaneConfig("~title~artist")
@@ -209,13 +209,13 @@ class TPaneConfig(TestCase):
         p = PaneConfig("<foo>")
         self.assertEqual(p.title, "Foo")
         self.assertEqual(p.tags, {"foo"})
-        self.assertTrue(p.has_markup)
+        assert p.has_markup
 
     def test_condition(self):
         p = PaneConfig("<foo|a <bar>|quux>")
         self.assertEqual(p.title, "a Bar")
         self.assertEqual(p.tags, {"bar"})
-        self.assertTrue(p.has_markup)
+        assert p.has_markup
 
     def test_group(self):
         p = PaneConfig(r"a\:b:<title>")
@@ -235,9 +235,9 @@ class TPaneEntry(TestCase):
 
     def test_all_have(self):
         sel = SongsEntry("foo", "foo", SONGS)
-        self.assertFalse(sel.all_have("artist", "one"))
-        self.assertFalse(sel.all_have("~#mtime", 4))
-        self.assertTrue(sel.all_have("foo", "bar"))
+        assert not sel.all_have("artist", "one")
+        assert not sel.all_have("~#mtime", 4)
+        assert sel.all_have("foo", "bar")
 
     def test_all(self):
         entry = AllEntry()
@@ -245,7 +245,7 @@ class TPaneEntry(TestCase):
         assert not entry.get_count_markup(conf)
         entry.get_markup(conf)
         self.assertEqual(list(entry.songs), [])
-        self.assertFalse(entry.contains_text(""))
+        assert not entry.contains_text("")
         repr(entry)
 
     def test_unknown(self):
@@ -253,7 +253,7 @@ class TPaneEntry(TestCase):
         conf = PaneConfig("title:artist")
         self.assertEqual(entry.songs, set(SONGS))
         self.assertEqual(entry.key, "")
-        self.assertFalse(entry.contains_text(""))
+        assert not entry.contains_text("")
         assert util.escape(SONGS[0]("artist")) in entry.get_count_markup(conf)
         entry.get_markup(conf)
         repr(entry)
@@ -295,15 +295,15 @@ class TPane(TestCase):
             self.pane.add(SONGS)
         with realized(self.pane):
             self.pane.remove(SONGS)
-        self.assertFalse(self.pane.list("arist"))
+        assert not self.pane.list("arist")
 
     def test_matches(self):
-        self.assertTrue(self.pane.matches(SONGS[0]))
+        assert self.pane.matches(SONGS[0])
         self.pane.fill(SONGS)
         selection = self.pane.get_selection()
         selection.unselect_all()
         selection.select_path(Gtk.TreePath(3))
-        self.assertFalse(self.pane.matches(SONGS[1]))
+        assert not self.pane.matches(SONGS[1])
 
     def test_fill(self):
         self.pane.fill(SONGS)
@@ -371,9 +371,9 @@ class TMultiPane(TestCase):
         VALUE = "J-Pop"
         self.p1.fill(SONGS)
         keys = self.p1.list("genre")
-        self.assertTrue(VALUE in keys)
+        assert VALUE in keys
         self.p1.set_selected([VALUE], force_any=False)
-        self.assertTrue(self.last)
+        assert self.last
         for song in self.last:
             self.assertEqual(song("genre"), VALUE)
         self.assertEqual(self.count, 2)
@@ -390,12 +390,12 @@ class TPaneModel(TestCase):
 
     def _verify_model(self, model):
         if len(model) == 1:
-            self.assertFalse(isinstance(model[0][0], AllEntry))
+            assert not isinstance(model[0][0], AllEntry)
         elif len(model) > 1:
-            self.assertTrue(isinstance(model[0][0], AllEntry))
+            assert isinstance(model[0][0], AllEntry)
 
             for row in list(model)[1:-1]:
-                self.assertTrue(isinstance(row[0], SongsEntry))
+                assert isinstance(row[0], SongsEntry)
 
             self.assertTrue(
                 isinstance(model[-1][0], SongsEntry | UnknownEntry))
@@ -404,8 +404,8 @@ class TPaneModel(TestCase):
         conf = PaneConfig("artist")
         m = PaneModel(conf)
         m.add_songs(SONGS)
-        self.assertTrue(isinstance(m[0][0], AllEntry))
-        self.assertTrue(isinstance(m[-1][0], UnknownEntry))
+        assert isinstance(m[0][0], AllEntry)
+        assert isinstance(m[-1][0], UnknownEntry)
         self.assertEqual(len(m), len(SONGS) + 1 - 1)
 
         m.add_songs([])
@@ -500,7 +500,7 @@ class TPaneModel(TestCase):
         m.remove_songs(SONGS, False)
         self._verify_model(m)
         self.assertEqual(length, len(m))
-        self.assertFalse(m.get_songs([r.path for r in m]))
+        assert not m.get_songs([r.path for r in m])
 
     def test_remove_songs_remove_rows(self):
         conf = PaneConfig("artist")
@@ -524,14 +524,14 @@ class TPaneModel(TestCase):
         conf = PaneConfig("artist")
         m = PaneModel(conf)
         m.add_songs(SONGS)
-        self.assertFalse(m.matches([], SONGS[0]))
-        self.assertTrue(m.matches([0], SONGS[0]))
-        self.assertTrue(m.matches([1], SONGS[0]))
-        self.assertFalse(m.matches([2], SONGS[0]))
+        assert not m.matches([], SONGS[0])
+        assert m.matches([0], SONGS[0])
+        assert m.matches([1], SONGS[0])
+        assert not m.matches([2], SONGS[0])
 
         m.add_songs([UNKNOWN_ARTIST])
         self._verify_model(m)
-        self.assertTrue(m.matches([len(m) - 1], UNKNOWN_ARTIST))
+        assert m.matches([len(m) - 1], UNKNOWN_ARTIST)
 
 
 class TPanedPreferences(TestCase):

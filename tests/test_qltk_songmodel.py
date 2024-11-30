@@ -26,16 +26,16 @@ class TPlaylistModel(TestCase):
         self.pl = PlaylistModel()
         self.pl.set(range(10))
         do_events()
-        self.assertTrue(self.pl.current is None)
+        assert self.pl.current is None
 
     def test_current_recover(self):
         self.pl.set(range(10))
         self.pl.next()
         self.assertEqual(self.pl.current, 0)
         self.pl.set(range(20, 30))
-        self.assertTrue(self.pl.current is None)
+        assert self.pl.current is None
         self.pl.current_iter = self.pl.current_iter
-        self.assertTrue(self.pl.current is None)
+        assert self.pl.current is None
         self.pl.set(range(10))
         self.assertEqual(self.pl.current, 0)
 
@@ -48,9 +48,9 @@ class TPlaylistModel(TestCase):
         self.assertEqual(self.pl.current, 4)
 
     def test_isempty(self):
-        self.assertFalse(self.pl.is_empty())
+        assert not self.pl.is_empty()
         self.pl.clear()
-        self.assertTrue(self.pl.is_empty())
+        assert self.pl.is_empty()
 
     def test_get(self):
         self.assertEqual(self.pl.get(), list(range(10)))
@@ -66,13 +66,13 @@ class TPlaylistModel(TestCase):
         self.pl.go_to(9)
         self.assertEqual(self.pl.current, 9)
         self.pl.next()
-        self.assertTrue(self.pl.current is None)
+        assert self.pl.current is None
 
     def test_find(self):
         self.assertEqual(self.pl[self.pl.find(8)][0], 8)
 
     def test_find_not_there(self):
-        self.assertTrue(self.pl.find(22) is None)
+        assert self.pl.find(22) is None
 
     def test_find_all(self):
         to_find = [1, 4, 5, 8, 9]
@@ -82,10 +82,10 @@ class TPlaylistModel(TestCase):
 
     def test_find_all_duplicates(self):
         # ignore duplicates in parameters
-        self.assertTrue(len(self.pl.find_all([1, 1])), 1)
+        assert len(self.pl.find_all([1, 1])), 1
         # but find duplicates
         self.pl.set([1, 1])
-        self.assertTrue(len(self.pl.find_all([1])), 2)
+        assert len(self.pl.find_all([1])), 2
 
     def test_find_all_some_missing(self):
         to_find = [1, 4, 18, 5, 8, 9, -1]
@@ -101,9 +101,9 @@ class TPlaylistModel(TestCase):
         self.assertEqual(iters, [])
 
     def test_contains(self):
-        self.assertTrue(1 in self.pl)
-        self.assertTrue(8 in self.pl)
-        self.assertFalse(22 in self.pl)
+        assert 1 in self.pl
+        assert 8 in self.pl
+        assert 22 not in self.pl
 
     def test_removal(self):
         self.pl.go_to(8)
@@ -284,7 +284,7 @@ class TPlaylistMux(TestCase):
         self.p = NullPlayer()
         self.mux = PlaylistMux(self.p, self.q, self.pl)
         self.p.setup(self.mux, None, 0)
-        self.assertTrue(self.pl.current is None)
+        assert self.pl.current is None
         quodlibet.config.init()
 
     def test_destroy(self):
@@ -293,35 +293,35 @@ class TPlaylistMux(TestCase):
     def test_only_pl(self):
         self.pl.set(range(10))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         songs = [self.next() for i in range(10)]
         self.assertEqual(songs, list(range(10)))
         self.next()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
 
     def test_only_q(self):
         self.q.set(range(10))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         songs = [self.next() for i in range(10)]
         self.assertEqual(songs, list(range(10)))
         self.next()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
 
     def test_mixed(self):
         self.q.set(range(5))
         self.pl.set(range(5, 10))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         songs = [self.next() for i in range(10)]
         self.assertEqual(songs, list(range(10)))
         self.next()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
 
     def test_newplaylist(self):
         self.pl.set(range(5, 10))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         self.mux.go_to(7)
         self.assertEqual(self.mux.current, 7)
         self.pl.set([3, 5, 12, 11])
@@ -338,7 +338,7 @@ class TPlaylistMux(TestCase):
     def test_halfway(self):
         self.pl.set(range(10))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         songs = [self.next() for i in range(5)]
         self.q.set(range(100, 105))
         do_events()
@@ -346,7 +346,7 @@ class TPlaylistMux(TestCase):
         self.assertEqual(
             songs, [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 5, 6, 7, 8, 9])
         self.next()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
 
     def test_removal(self):
         self.pl.set(range(0, 5))
@@ -391,7 +391,7 @@ class TPlaylistMux(TestCase):
         self.pl.set(range(10))
         self.q.set(range(10, 20))
         do_events()
-        self.assertTrue(self.mux.current is None)
+        assert self.mux.current is None
         self.mux.go_to(5)
         self.assertEqual(self.mux.current, 5)
         self.mux.go_to(2)
@@ -406,9 +406,9 @@ class TPlaylistMux(TestCase):
             self.mux.go_to(None)
             self.pl.set([1])
             do_events()
-            self.assertTrue(self.mux.current is None)
+            assert self.mux.current is None
             self.q.order = OrderShuffle()
-            self.assertTrue(self.next() == 1)
+            assert self.next() == 1
             self.q.set([10, 11])
             do_events()
             value = self.next()
@@ -424,15 +424,15 @@ class TPlaylistMux(TestCase):
         self.pl.set(range(10))
         self.q.set(range(10))
         self.mux.go_to(None)
-        self.assertTrue(self.pl.sourced)
+        assert self.pl.sourced
         self.q.go_to(1)
         self.p.next()
-        self.assertFalse(self.pl.sourced)
+        assert not self.pl.sourced
 
     def test_unqueue(self):
         self.q.set(range(100))
         self.mux.unqueue(range(100))
-        self.assertFalse(len(self.q))
+        assert not len(self.q)
 
     def test_queue(self):
         self.mux.enqueue(range(40))
@@ -450,7 +450,7 @@ class TPlaylistMux(TestCase):
         self.pl.set(range(20, 30))
         self.q.set(range(10))
         self.mux.go_to(self.q[-1].iter, source=self.q)
-        self.assertTrue(self.q.sourced)
+        assert self.q.sourced
         self.assertEqual(self.mux.current, self.q[-1][0])
 
     def test_queue_disable(self):
@@ -461,13 +461,13 @@ class TPlaylistMux(TestCase):
         self.next()
         self.assertEqual(len(self.pl.get()), len(range(10)))
         self.assertEqual(len(self.q.get()), len(range(10)))
-        self.assertTrue(self.pl.sourced)
+        assert self.pl.sourced
 
         quodlibet.config.set("memory", "queue_disable", False)
         self.next()
         self.assertEqual(len(self.pl.get()), len(range(10)))
         self.assertEqual(len(self.q.get()), len(range(10)) - 1)
-        self.assertTrue(self.q.sourced)
+        assert self.q.sourced
 
     def test_queue_disable_next(self):
         self.pl.set(range(10))
@@ -476,7 +476,7 @@ class TPlaylistMux(TestCase):
         self.mux.go_to(self.q[0].iter, source=self.q)
         quodlibet.config.set("memory", "queue_disable", True)
         self.next()
-        self.assertTrue(self.pl.sourced)
+        assert self.pl.sourced
 
     def test_queue_disable_prev(self):
         self.pl.set(range(10))
@@ -485,7 +485,7 @@ class TPlaylistMux(TestCase):
         self.mux.go_to(self.q[0].iter, source=self.q)
         quodlibet.config.set("memory", "queue_disable", True)
         self.previous()
-        self.assertTrue(self.pl.sourced)
+        assert self.pl.sourced
 
     def test_queue_keep_songs(self):
         self.q.set(range(10))
@@ -503,7 +503,7 @@ class TPlaylistMux(TestCase):
         quodlibet.config.set("memory", "queue_keep_songs", False)
         self.next()
         self.assertEqual(len(self.q.get()), len(range(10)) - 1)
-        self.assertTrue(self.q.current is None)
+        assert self.q.current is None
 
     def test_queue_disable_and_keep_songs(self):
         self.pl.set(range(10))
@@ -514,7 +514,7 @@ class TPlaylistMux(TestCase):
         quodlibet.config.set("memory", "queue_keep_songs", True)
 
         self.next()
-        self.assertTrue(self.pl.sourced)
+        assert self.pl.sourced
 
     def test_queue_preserved_when_setexplicit_rejected(self):
         class TestOrder(Order):
@@ -525,9 +525,9 @@ class TPlaylistMux(TestCase):
         self.pl.order = TestOrder()
         self.q.set(range(10))
         self.mux.go_to(self.q[0].iter, source=self.q)
-        self.assertTrue(self.q.sourced)
+        assert self.q.sourced
         self.mux.go_to(self.pl[0].iter, explicit=True, source=self.pl)
-        self.assertTrue(self.q.sourced)
+        assert self.q.sourced
         self.assertEqual(self.mux.current, self.q[0][0])
 
     def tearDown(self):

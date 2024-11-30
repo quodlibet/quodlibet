@@ -26,8 +26,8 @@ class TMidiFile(TestCase):
 
     def test_can_change(self):
         self.assertEqual(self.song.can_change(), ["title"])
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("album"))
+        assert self.song.can_change("title")
+        assert not self.song.can_change("album")
 
     def test_invalid(self):
         path = get_data_path("empty.xm")

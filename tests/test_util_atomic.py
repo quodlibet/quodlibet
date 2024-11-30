@@ -35,7 +35,7 @@ class Tatomic_save(TestCase):
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), b"foo")
 
-        self.assertFalse(os.path.exists(temp_name))
+        assert not os.path.exists(temp_name)
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])
 
     def test_non_exist(self):
@@ -48,7 +48,7 @@ class Tatomic_save(TestCase):
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), b"foo")
 
-        self.assertFalse(os.path.exists(temp_name))
+        assert not os.path.exists(temp_name)
         self.assertEqual(os.listdir(self.dir), [os.path.basename(filename)])
 
     def test_readonly(self):
@@ -95,8 +95,8 @@ class Tatomic_save(TestCase):
         with open(filename, "rb") as fobj:
             self.assertEqual(fobj.read(), b"foo")
 
-        self.assertFalse(os.path.exists(temp_name))
+        assert not os.path.exists(temp_name)
         self.assertEqual(
             sorted(os.listdir(self.dir)),
             sorted([os.path.basename(filename), os.path.basename(symlink)]))
-        self.assertTrue(os.path.islink(symlink))
+        assert os.path.islink(symlink)

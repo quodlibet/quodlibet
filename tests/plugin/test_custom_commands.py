@@ -55,13 +55,13 @@ class TCustomCommands(PluginTestCase):
         plugin._handle_songs = proxy
         # Test that as a Playlist plugin it delegates correctly
         plugin.plugin_playlist(pl)
-        self.assertTrue(self.called_songs)
+        assert self.called_songs
         self.assertEqual(self.called_pl, pl)
         self.assertEqual(self.called_songs, pl.songs)
 
     def test_plugin_loads_json_once(self):
         plugin = self.plugin()
-        self.assertTrue(plugin._commands)
+        assert plugin._commands
         # Hack the commands without the plugin noticing
         fake = {"songs": Command(name="bar")}
         self.plugin._commands = fake

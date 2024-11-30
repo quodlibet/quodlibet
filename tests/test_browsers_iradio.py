@@ -78,7 +78,7 @@ class TQuestionBar(TestCase):
 
     def test_main(self):
         b = QuestionBar()
-        self.assertFalse(b.get_visible())
+        assert not b.get_visible()
 
 
 class TInternetRadio(TestCase):
@@ -87,8 +87,8 @@ class TInternetRadio(TestCase):
         self.bar = InternetRadio(SongLibrary())
 
     def test_can_filter(self):
-        self.assertTrue(self.bar.can_filter("foo"))
-        self.assertTrue(self.bar.can_filter_text())
+        assert self.bar.can_filter("foo")
+        assert self.bar.can_filter_text()
 
     def test_status_bar_text(self):
         self.assertEqual(self.bar.status_text(1), "1 station")
@@ -124,7 +124,7 @@ class TIRFile(TestCase):
         self.assertEqual(self.s.get("title"), "foo")
 
     def test_title_split_stream(self):
-        self.assertFalse(self.s("artist"))
+        assert not self.s("artist")
         self.s["title"] = "artist - title"
         self.s.multisong = False
         self.assertEqual(self.s("title"), "title")
@@ -133,15 +133,15 @@ class TIRFile(TestCase):
         self.assertEqual(self.s.get("artist"), "artist")
 
     def test_title_split(self):
-        self.assertTrue(self.s.multisong)
+        assert self.s.multisong
         self.s["title"] = "artist - title"
         self.assertEqual(self.s("title"), self.s["title"])
 
     def test_format(self):
         self.assertEqual(self.s("~format"), self.s.format)
         self.s["audio-codec"] = "SomeCodec"
-        self.assertTrue("SomeCodec" in self.s("~format"))
-        self.assertTrue(self.s.format in self.s("~format"))
+        assert "SomeCodec" in self.s("~format")
+        assert self.s.format in self.s("~format")
 
     def test_people(self):
         self.s["title"] = "artist - title"
@@ -150,9 +150,9 @@ class TIRFile(TestCase):
         self.assertEqual(self.s("~~people~foo"), "artist")
 
     def testcan_write(self):
-        self.assertTrue(self.s.can_change("title"))
+        assert self.s.can_change("title")
         self.s.streamsong = True
-        self.assertFalse(self.s.can_change("title"))
+        assert not self.s.can_change("title")
 
     def test_dump_to_file(self):
         self.s["title"] = "artist - title"
@@ -167,8 +167,8 @@ class TIRFile(TestCase):
         dump = self.s.to_dump()
         new = AudioFile()
         new.from_dump(dump)
-        self.assertTrue("title" not in new)
-        self.assertTrue("artist" not in new)
+        assert "title" not in new
+        assert "artist" not in new
 
 
 class Bzip2GetHandler(BaseHTTPRequestHandler):

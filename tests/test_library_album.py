@@ -56,14 +56,14 @@ class TAlbumLibrary(TestCase):
         self.assertEqual(self.library[key].key, key)
 
     def test_keys(self):
-        self.assertTrue(len(self.library.keys()), 3)
+        assert len(self.library.keys()), 3
 
     def test_has_key(self):
         key = self.underlying.get("file_1.mp3").album_key
-        self.assertTrue(self.library.has_key(key))
+        assert self.library.has_key(key)
 
     def test_misc_collection(self):
-        self.assertTrue(self.library.values())
+        assert self.library.values()
 
     def test_items(self):
         self.assertEqual(len(self.library.items()), 3)
@@ -96,7 +96,7 @@ class TAlbumLibrary(TestCase):
 
     def test_misc(self):
         # It shouldn't implement FileLibrary etc
-        self.assertFalse(getattr(self.library, "filename", None))
+        assert not getattr(self.library, "filename", None)
 
 
 class TAlbumLibrarySignals(TestCase):

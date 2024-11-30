@@ -96,5 +96,5 @@ class TestHttpsDefault(TestCase):
         config.quit()
 
     def test_setup_default(self):
-        self.assertTrue(SoundcloudApiClient().root.startswith("https://"),
-                        msg="API client should use HTTPS")
+        msg = "API client should use HTTPS"
+        assert SoundcloudApiClient().root.startswith("https://"), msg

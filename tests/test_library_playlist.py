@@ -140,7 +140,7 @@ class TPlaylistLibrary(TestCase):
         assert self.library.has_key(PL_NAME)
 
     def test_misc_collection(self):
-        self.assertTrue(self.library.values())
+        assert self.library.values()
 
     def test_items(self):
         assert self.library.items() == [(PL_NAME, self.pl)]
@@ -155,7 +155,7 @@ class TPlaylistLibrary(TestCase):
 
     def test_misc(self):
         # It shouldn't implement FileLibrary etc
-        self.assertFalse(getattr(self.library, "filename", None))
+        assert not getattr(self.library, "filename", None)
 
 
 class TPlaylistLibrarySignals(TestCase):

@@ -23,7 +23,7 @@ class TAudioFeeds(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.assertFalse(self.bar.can_filter(key))
+            assert not self.bar.can_filter(key)
 
     def tearDown(self):
         self.bar.destroy()
@@ -56,7 +56,7 @@ class TFeed(TestCase):
         # Assume en_US / en_GB locale here in tests
         self.assertNotEqual(feed.name, "Unknown", msg="Didn't find feed name")
         # Do this after the above, as many exceptions can be swallowed
-        self.assertTrue(result)
+        assert result
         self.assertEqual(len(feed), 2)
         self.assertEqual(feed[0]("title"),
                              "Full Episode: Tuesday, November 28, 2017")

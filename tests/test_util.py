@@ -47,12 +47,12 @@ class Tmkdir(TestCase):
         self.assertRaises(OSError, mkdir, __file__)
 
     def test_manydeep(self):
-        self.assertTrue(not os.path.isdir("nonext"))
+        assert not os.path.isdir("nonext")
         t = tempfile.mkdtemp()
         path = os.path.join(t, "nonext", "test", "test2", "test3")
         mkdir(path)
         try:
-            self.assertTrue(os.path.isdir(path))
+            assert os.path.isdir(path)
         finally:
             os.rmdir(path)
             path = os.path.dirname(path)
@@ -67,7 +67,7 @@ class Tmkdir(TestCase):
 class Tgetcwd(TestCase):
 
     def test_getcwd(self):
-        self.assertTrue(isinstance(os.getcwd(), fsnative))
+        assert isinstance(os.getcwd(), fsnative)
 
 
 class Tmtime(TestCase):
@@ -75,7 +75,7 @@ class Tmtime(TestCase):
         self.assertEqual(mtime("."), os.path.getmtime("."))
 
     def test_bad(self):
-        self.assertFalse(os.path.exists("/dev/doesnotexist"))
+        assert not os.path.exists("/dev/doesnotexist")
         self.assertEqual(mtime("/dev/doesnotexist"), 0)
 
 
@@ -209,11 +209,11 @@ class Tpango(TestCase):
 class Tre_esc(TestCase):
     def test_empty(self):
         self.assertEqual(re_escape(b""), b"")
-        self.assertTrue(isinstance(re_escape(b""), bytes))
+        assert isinstance(re_escape(b""), bytes)
 
     def test_empty_unicode(self):
         self.assertEqual(re_escape(""), "")
-        self.assertTrue(isinstance(re_escape(""), str))
+        assert isinstance(re_escape(""), str)
 
     def test_safe(self):
         self.assertEqual(re_escape("fo o"), "fo o")
@@ -278,22 +278,22 @@ class Thuman_sort(TestCase):
 
         self.assertEqual(self.smaller("bbb", "zzz3"), True)
 
-        self.assertTrue(self.equal(" foo", "foo"))
-        self.assertTrue(self.equal(" ", ""))
-        self.assertTrue(self.smaller("", "."))
-        self.assertTrue(self.smaller("a", "b"))
-        self.assertTrue(self.smaller("A", "b"))
+        assert self.equal(" foo", "foo")
+        assert self.equal(" ", "")
+        assert self.smaller("", ".")
+        assert self.smaller("a", "b")
+        assert self.smaller("A", "b")
 
     def test_false(self):
         # album browser needs that to sort albums without artist/title
         # to the bottom
-        self.assertFalse(util.human_sort_key(""))
+        assert not util.human_sort_key("")
 
     def test_white(self):
         self.assertEqual(
             util.human_sort_key("  3foo    bar6 42.8"),
             util.human_sort_key("3 foo bar6  42.8  "))
-        self.assertTrue(64.0 in util.human_sort_key("64. 8"))
+        assert 64.0 in util.human_sort_key("64. 8")
 
 
 class Tformat_time(TestCase):
@@ -366,22 +366,22 @@ class Tdate_key(TestCase):
 
     def test_compare(self):
         date_key = util.date_key
-        self.assertTrue(date_key("2004") == date_key("2004-01-01"))
-        self.assertTrue(date_key("2004") == date_key("2004-01"))
-        self.assertTrue(date_key("2004") < date_key("2004-01-02"))
-        self.assertTrue(date_key("2099-02-02") < date_key("2099-03-30"))
+        assert date_key("2004") == date_key("2004-01-01")
+        assert date_key("2004") == date_key("2004-01")
+        assert date_key("2004") < date_key("2004-01-02")
+        assert date_key("2099-02-02") < date_key("2099-03-30")
 
-        self.assertTrue(date_key("2004-01-foo") == date_key("2004-01"))
+        assert date_key("2004-01-foo") == date_key("2004-01")
 
     def test_validate(self):
         validate = util.validate_query_date
 
         for valid in ["2004", "2005-01", "3000-3-4"]:
-            self.assertTrue(validate(valid))
+            assert validate(valid)
 
         for invalid in ["", "-", "3000-", "9-0", "8-1-0", "1-13-1", "1-1-32",
                         "1-1-1-1-1", "a", "1-a", "1-1-a"]:
-            self.assertFalse(validate(invalid))
+            assert not validate(invalid)
 
 
 class Tformat_size(TestCase):
@@ -607,7 +607,7 @@ class Tspawn(TestCase):
     def test_simple(self):
         if is_win:
             return
-        self.assertTrue(util.spawn(["ls", "."], stdout=True))
+        assert util.spawn(["ls", "."], stdout=True)
 
     def test_invalid(self):
         from gi.repository import GLib
@@ -649,24 +649,24 @@ class Txdg_dirs(TestCase):
     def test_parse_xdg_user_dirs(self):
         data = b'# foo\nBLA="$HOME/blah"\n'
         vars_ = parse_xdg_user_dirs(data)
-        self.assertTrue(b"BLA" in vars_)
+        assert b"BLA" in vars_
         expected = os.path.join(os.environ.get("HOME", ""), "blah")
         self.assertEqual(vars_[b"BLA"], expected)
 
         vars_ = parse_xdg_user_dirs(b'BLA="$HOME/"')
-        self.assertTrue(b"BLA" in vars_)
+        assert b"BLA" in vars_
         self.assertEqual(vars_[b"BLA"], os.environ.get("HOME", ""))
 
         # some invalid
-        self.assertFalse(parse_xdg_user_dirs(b"foo"))
-        self.assertFalse(parse_xdg_user_dirs(b"foo=foo bar"))
-        self.assertFalse(parse_xdg_user_dirs(b"foo='foo"))
+        assert not parse_xdg_user_dirs(b"foo")
+        assert not parse_xdg_user_dirs(b"foo=foo bar")
+        assert not parse_xdg_user_dirs(b"foo='foo")
 
     def test_on_windows(self):
-        self.assertTrue(xdg_get_system_data_dirs())
-        self.assertTrue(xdg_get_cache_home())
-        self.assertTrue(xdg_get_data_home())
-        self.assertTrue(xdg_get_config_home())
+        assert xdg_get_system_data_dirs()
+        assert xdg_get_cache_home()
+        assert xdg_get_data_home()
+        assert xdg_get_config_home()
 
 
 class Tlibrary(TestCase):
@@ -677,7 +677,7 @@ class Tlibrary(TestCase):
         config.quit()
 
     def test_basic(self):
-        self.assertFalse(get_scan_dirs())
+        assert not get_scan_dirs()
         if os.name == "nt":
             set_scan_dirs(["C:\\foo", "D:\\bar", ""])
             self.assertEqual(get_scan_dirs(), ["C:\\foo", "D:\\bar"])
@@ -752,17 +752,17 @@ class Tescape_filename(TestCase):
     def test_str(self):
         result = escape_filename("\x00\x01")
         self.assertEqual(result, "%00%01")
-        self.assertTrue(isinstance(result, fsnative))
+        assert isinstance(result, fsnative)
 
     def test_unicode(self):
         result = escape_filename("abc\xe4")
         self.assertEqual(result, "abc%C3%A4")
-        self.assertTrue(isinstance(result, fsnative))
+        assert isinstance(result, fsnative)
 
     def test_safe_chars(self):
         result = escape_filename("1, 2, and -3", safe=" -")
         self.assertEqual(result, "1%2C 2%2C and -3")
-        self.assertTrue(isinstance(result, fsnative))
+        assert isinstance(result, fsnative)
 
 
 @skipIf(is_win, "not on Windows")
@@ -777,10 +777,10 @@ class Tload_library(TestCase):
         self.assertEqual(name, "c")
 
         lib2, name = util.load_library(["c"])
-        self.assertTrue(lib is lib2)
+        assert lib is lib2
 
         lib3, name = util.load_library(["c"], shared=False)
-        self.assertTrue(lib2 is not lib3)
+        assert lib2 is not lib3
 
     def test_glib(self):
         if sys.platform == "darwin":
@@ -789,21 +789,21 @@ class Tload_library(TestCase):
             fn = "libglib-2.0.so.0"
         lib, name = util.load_library([fn])
         self.assertEqual(name, fn)
-        self.assertTrue(lib)
+        assert lib
 
 
 class Tstrip_win32_incompat_from_path(TestCase):
 
     def test_types(self):
         v = strip_win32_incompat_from_path(fsnative(""))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
         v = strip_win32_incompat_from_path(fsnative("foo"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         v = strip_win32_incompat_from_path("")
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
         v = strip_win32_incompat_from_path("foo")
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
     def test_basic(self):
         if is_win:
@@ -818,10 +818,10 @@ class TPathHandling(TestCase):
 
     def test_main(self):
         v = fsnative("foo")
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         v3 = bytes2fsn(fsn2bytes(v, "utf-8"), "utf-8")
-        self.assertTrue(isinstance(v3, fsnative))
+        assert isinstance(v3, fsnative)
         self.assertEqual(v, v3)
 
 
@@ -830,7 +830,7 @@ class Tget_temp_cover_file(TestCase):
     def test_main(self):
         fobj = get_temp_cover_file(b"foobar")
         try:
-            self.assertTrue(isinstance(fobj.name, fsnative))
+            assert isinstance(fobj.name, fsnative)
         finally:
             fobj.close()
 
@@ -862,24 +862,24 @@ class Tsplit_escape(TestCase):
     def test_types(self):
         parts = split_escape(b"\xff:\xff", b":")
         self.assertEqual(parts, [b"\xff", b"\xff"])
-        self.assertTrue(isinstance(parts[0], bytes))
+        assert isinstance(parts[0], bytes)
 
         parts = split_escape("a:b", ":")
         self.assertEqual(parts, ["a", "b"])
-        self.assertTrue(all(isinstance(p, str) for p in parts))
+        assert all(isinstance(p, str) for p in parts)
 
         parts = split_escape("", ":")
         self.assertEqual(parts, [""])
-        self.assertTrue(all(isinstance(p, str) for p in parts))
+        assert all(isinstance(p, str) for p in parts)
 
         parts = split_escape(":", ":")
         self.assertEqual(parts, ["", ""])
-        self.assertTrue(all(isinstance(p, str) for p in parts))
+        assert all(isinstance(p, str) for p in parts)
 
     def test_join_escape_types(self):
         self.assertEqual(join_escape([], b":"), b"")
-        self.assertTrue(isinstance(join_escape([], b":"), bytes))
-        self.assertTrue(isinstance(join_escape([], ":"), str))
+        assert isinstance(join_escape([], b":"), bytes)
+        assert isinstance(join_escape([], ":"), str)
         self.assertEqual(join_escape([b"\xff", b"\xff"], b":"), b"\xff:\xff")
         self.assertEqual(join_escape(["\xe4", "\xe4"], ":"), "\xe4:\xe4")
 
@@ -968,7 +968,7 @@ class TMainRunner(TestCase):
         loop = GLib.MainLoop()
 
         def func(i):
-            self.assertTrue(util.is_main_thread())
+            assert util.is_main_thread()
             return i + 1
 
         def worker():
@@ -1028,9 +1028,9 @@ class Tcached_property(TestCase):
 
         a = A()
         first = a.foo
-        self.assertTrue(first is a.foo)
+        assert first is a.foo
         del a.__dict__["foo"]
-        self.assertFalse(first is a.foo)
+        assert first is not a.foo
 
     def test_dunder(self):
 
@@ -1060,15 +1060,15 @@ class Tenum(TestCase):
             FOO = 0
             BAR = 1
 
-        self.assertTrue(issubclass(IntFoo, int))
-        self.assertTrue(isinstance(IntFoo.BAR, IntFoo))
-        self.assertTrue(isinstance(IntFoo.FOO, IntFoo))
+        assert issubclass(IntFoo, int)
+        assert isinstance(IntFoo.BAR, IntFoo)
+        assert isinstance(IntFoo.FOO, IntFoo)
         self.assertEqual(IntFoo.FOO, 0)
         self.assertEqual(IntFoo.BAR, 1)
 
     def test_str(self):
-        self.assertTrue(issubclass(Foo, str))
-        self.assertTrue(isinstance(Foo.BAR, Foo))
+        assert issubclass(Foo, str)
+        assert isinstance(Foo.BAR, Foo)
         self.assertEqual(Foo.FOO, "blah")
         self.assertEqual(repr(Foo.BAR), "Foo.BAR")
 
@@ -1105,10 +1105,10 @@ class Treraise(TestCase):
             except Exception as e:
                 util.reraise(TypeError, e)
         except Exception as e:
-            self.assertTrue(isinstance(e, TypeError))
-            self.assertTrue("ValueError" in traceback.format_exc())
+            assert isinstance(e, TypeError)
+            assert "ValueError" in traceback.format_exc()
         else:
-            self.assertTrue(False)
+            raise AssertionError()
 
 
 class Tenviron(TestCase):
@@ -1116,22 +1116,22 @@ class Tenviron(TestCase):
     def test_main(self):
         for v in os.environ.values():
             if os.name == "nt":
-                self.assertTrue(isinstance(v, str))
+                assert isinstance(v, str)
             else:
-                self.assertTrue(isinstance(v, str))
+                assert isinstance(v, str)
 
 
 class Tget_module_dir(TestCase):
 
     def test_self(self):
         path = util.get_module_dir()
-        self.assertTrue(isinstance(path, fsnative))
-        self.assertTrue(os.path.exists(path))
+        assert isinstance(path, fsnative)
+        assert os.path.exists(path)
 
     def test_other(self):
         path = util.get_module_dir(util)
-        self.assertTrue(isinstance(path, fsnative))
-        self.assertTrue(os.path.exists(path))
+        assert isinstance(path, fsnative)
+        assert os.path.exists(path)
 
 
 class Tget_ca_file(TestCase):
@@ -1139,8 +1139,8 @@ class Tget_ca_file(TestCase):
     def test_main(self):
         path = util.get_ca_file()
         if path is not None:
-            self.assertTrue(isinstance(path, fsnative))
-            self.assertTrue(os.path.exists(path))
+            assert isinstance(path, fsnative)
+            assert os.path.exists(path)
 
 
 class Tprint_exc(TestCase):
@@ -1189,12 +1189,12 @@ class Textract_tb(TestCase):
             1 / 0  # noqa
         except Exception:
             result = extract_tb(sys.exc_info()[2])
-            self.assertTrue(isinstance(result, list))
+            assert isinstance(result, list)
             for fn, l, fu, text in result:
-                self.assertTrue(isinstance(fn, fsnative))
-                self.assertTrue(isinstance(l, int))
-                self.assertTrue(isinstance(fu, str))
-                self.assertTrue(isinstance(text, str))
+                assert isinstance(fn, fsnative)
+                assert isinstance(l, int)
+                assert isinstance(fu, str)
+                assert isinstance(text, str)
 
 
 def test_capture_output():

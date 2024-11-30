@@ -56,7 +56,7 @@ class TGStreamerSink(TestCase):
         sinks = ["gconfaudiosink", "alsasink"]
         for n in filter(Gst.ElementFactory.find, sinks):
             obj, name = gstreamer_sink(n)
-            self.assertTrue(obj)
+            assert obj
             self.assertEqual(name, n)
 
     def test_invalid(self):
@@ -65,7 +65,7 @@ class TGStreamerSink(TestCase):
 
     def test_fallback(self):
         obj, name = gstreamer_sink("")
-        self.assertTrue(obj)
+        assert obj
         if os.name == "nt":
             self.assertEqual(name, "directsoundsink")
         else:
@@ -73,7 +73,7 @@ class TGStreamerSink(TestCase):
 
     def test_append_sink(self):
         obj, name = gstreamer_sink("volume")
-        self.assertTrue(obj)
+        assert obj
         self.assertEqual(name.split("!")[-1].strip(), gstreamer_sink("")[1])
 
 
@@ -84,11 +84,11 @@ class TGstreamerTagList(TestCase):
 
         l = {}
         l["extended-comment"] = "foo=bar"
-        self.assertTrue("foo" in parse_gstreamer_taglist(l))
+        assert "foo" in parse_gstreamer_taglist(l)
 
         l["extended-comment"] = ["foo=bar", "bar=foo", "bar=foo2"]
-        self.assertTrue("foo" in parse_gstreamer_taglist(l))
-        self.assertTrue("bar" in parse_gstreamer_taglist(l))
+        assert "foo" in parse_gstreamer_taglist(l)
+        assert "bar" in parse_gstreamer_taglist(l)
         self.assertEqual(parse_gstreamer_taglist(l)["bar"], "foo\nfoo2")
 
         # date is abstract, so define our own
@@ -104,13 +104,13 @@ class TGstreamerTagList(TestCase):
 
         l["foo"] = "äöü"
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], str))
-        self.assertTrue("äöü" in parsed["foo"].split("\n"))
+        assert isinstance(parsed["foo"], str)
+        assert "äöü" in parsed["foo"].split("\n")
 
         l["foo"] = "äöü".encode()
         parsed = parse_gstreamer_taglist(l)
-        self.assertTrue(isinstance(parsed["foo"], str))
-        self.assertTrue("äöü" in parsed["foo"].split("\n"))
+        assert isinstance(parsed["foo"], str)
+        assert "äöü" in parsed["foo"].split("\n")
 
         l["bar"] = 1.2
         self.assertEqual(parse_gstreamer_taglist(l)["bar"], 1.2)
@@ -121,11 +121,11 @@ class TGstreamerTagList(TestCase):
         l["bar"] = Gst.TagList() # some random gst instance
         self.assertTrue(
             isinstance(parse_gstreamer_taglist(l)["bar"], str))
-        self.assertTrue("GstTagList" in parse_gstreamer_taglist(l)["bar"])
+        assert "GstTagList" in parse_gstreamer_taglist(l)["bar"]
 
     def test_sanitize(self):
         l = sanitize_tags({"location": "http://foo"})
-        self.assertTrue("website" in l)
+        assert "website" in l
 
         l = sanitize_tags({"channel-mode": "joint-stereo"})
         self.assertEqual(l["channel-mode"], "stereo")
@@ -144,12 +144,12 @@ class TGstreamerTagList(TestCase):
 
         l = {"a": "http://www.shoutcast.com", "b": "default genre"}
         l = sanitize_tags(l)
-        self.assertFalse(l)
+        assert not l
 
         l = sanitize_tags({"duration": 1000 * 42}, stream=True)
         self.assertEqual(l["~#length"], 42)
         l = sanitize_tags({"duration": 1000 * 42})
-        self.assertFalse(l)
+        assert not l
 
         l = sanitize_tags({"duration": "bla"}, stream=True)
         self.assertEqual(l["duration"], "bla")
@@ -157,7 +157,7 @@ class TGstreamerTagList(TestCase):
         l = sanitize_tags({"bitrate": 1000 * 42}, stream=True)
         self.assertEqual(l["~#bitrate"], 42)
         l = sanitize_tags({"bitrate": 1000 * 42})
-        self.assertFalse(l)
+        assert not l
 
         l = sanitize_tags({"bitrate": "bla"})
         self.assertEqual(l["bitrate"], "bla")
@@ -165,35 +165,35 @@ class TGstreamerTagList(TestCase):
         l = sanitize_tags({"nominal-bitrate": 1000 * 42})
         self.assertEqual(l["~#bitrate"], 42)
         l = sanitize_tags({"nominal-bitrate": 1000 * 42}, stream=True)
-        self.assertFalse(l)
+        assert not l
 
         l = sanitize_tags({"nominal-bitrate": "bla"})
         self.assertEqual(l["nominal-bitrate"], "bla")
 
         l = {"emphasis": "something"}
-        self.assertFalse(sanitize_tags(l))
-        self.assertFalse(sanitize_tags(l))
+        assert not sanitize_tags(l)
+        assert not sanitize_tags(l)
 
         l = {"title": "something"}
-        self.assertFalse(sanitize_tags(l))
-        self.assertTrue(sanitize_tags(l, stream=True))
+        assert not sanitize_tags(l)
+        assert sanitize_tags(l, stream=True)
 
         l = {"artist": "something"}
-        self.assertFalse(sanitize_tags(l))
-        self.assertTrue(sanitize_tags(l, stream=True))
+        assert not sanitize_tags(l)
+        assert sanitize_tags(l, stream=True)
 
         l = {"~#foo": 42, "bar": 42, "~#bla": "42"}
-        self.assertTrue("~#foo" in sanitize_tags(l))
-        self.assertTrue("~#bar" in sanitize_tags(l))
-        self.assertTrue("bla" in sanitize_tags(l))
+        assert "~#foo" in sanitize_tags(l)
+        assert "~#bar" in sanitize_tags(l)
+        assert "bla" in sanitize_tags(l)
 
         l = {}
         l["extended-comment"] = ["location=1", "website=2", "website=3"]
         l = parse_gstreamer_taglist(l)
         l = sanitize_tags(l)["website"].split("\n")
-        self.assertTrue("1" in l)
-        self.assertTrue("2" in l)
-        self.assertTrue("3" in l)
+        assert "1" in l
+        assert "2" in l
+        assert "3" in l
 
 
 @skipUnless(Gst, "GStreamer missing")

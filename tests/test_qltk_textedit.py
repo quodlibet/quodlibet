@@ -38,7 +38,7 @@ class TTextEditBox2(TestCase):
 
     def test_revert(self):
         self.foobar.revert.clicked()
-        self.assertTrue(self.foobar.text, "foobar")
+        assert self.foobar.text, "foobar"
 
     def tearDown(self):
         self.foobar.destroy()

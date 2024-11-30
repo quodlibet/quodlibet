@@ -41,33 +41,33 @@ class TDbusUtils(TestCase):
 
     def test_prop_sig(self):
         value = apply_signature(2, "u")
-        self.assertTrue(isinstance(value, dbus.UInt32))
+        assert isinstance(value, dbus.UInt32)
 
         value = apply_signature({"a": "b"}, "a{ss}")
         self.assertEqual(value.signature, "ss")
-        self.assertTrue(isinstance(value, dbus.Dictionary))
+        assert isinstance(value, dbus.Dictionary)
 
         value = apply_signature(("a",), "a(s)")
         self.assertEqual(value.signature, "s")
-        self.assertTrue(isinstance(value, dbus.Struct))
+        assert isinstance(value, dbus.Struct)
 
         value = apply_signature(("a", "b"), "as")
         self.assertEqual(value.signature, "s")
-        self.assertTrue(isinstance(value, dbus.Array))
+        assert isinstance(value, dbus.Array)
 
         self.assertRaises(TypeError, apply_signature, 2, "a(s)")
 
         text = b"\xc3\xb6\xc3\xa4\xc3\xbc"
         value = apply_signature(text, "s", utf8_strings=True)
-        self.assertTrue(isinstance(value, str))
+        assert isinstance(value, str)
         value = apply_signature(text, "s")
-        self.assertTrue(isinstance(value, str))
+        assert isinstance(value, str)
 
         text = "öäü"
         value = apply_signature(text, "s", utf8_strings=True)
-        self.assertTrue(isinstance(value, str))
+        assert isinstance(value, str)
         value = apply_signature(text, "s")
-        self.assertTrue(isinstance(value, str))
+        assert isinstance(value, str)
 
     def test_list_props(self):
         props = list_spec_properties(ANN1)
@@ -120,10 +120,10 @@ class TDbusUtils(TestCase):
         x.implement_interface("a1", "a2")
 
         props = x.get_properties("a1")
-        self.assertTrue(("a1", "Position") in props)
-        self.assertTrue(("a2", "XXX") in props)
+        assert ("a1", "Position") in props
+        assert ("a2", "XXX") in props
         props = x.get_properties("a2")
-        self.assertFalse(("a1", "Position") in props)
+        assert ("a1", "Position") not in props
 
         self.assertEqual(x.get_interface("a2", "XXX"), "a2")
         self.assertEqual(x.get_interface("a1", "XXX"), "a2")

@@ -141,17 +141,17 @@ class TCoverManager(TestCase):
             result.append(_result)
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
-        self.assertFalse(found[0])
+        assert not found[0]
         handler.plugin_enable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
-        self.assertTrue(found[1])
+        assert found[1]
         self.assertIs(result[1], DUMMY_COVER)
         handler.plugin_disable(dummy_sources[1])
         handler.plugin_enable(dummy_sources[2])
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
-        self.assertTrue(found[2])
+        assert found[2]
         self.assertIs(result[2], DUMMY_COVER)
 
     def test_acquire_cover_calls(self):
@@ -175,28 +175,28 @@ class TCoverManager(TestCase):
             result.append(_result)
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
-        self.assertTrue(found[0])
+        assert found[0]
         self.assertIs(result[0], DUMMY_COVER)
-        self.assertTrue(dummy_sources[0].cls.cover_call)
-        self.assertTrue(dummy_sources[1].cls.cover_call)
-        self.assertFalse(dummy_sources[2].cls.cover_call)
-        self.assertFalse(dummy_sources[0].cls.fetch_call)
-        self.assertFalse(dummy_sources[1].cls.fetch_call)
-        self.assertFalse(dummy_sources[2].cls.fetch_call)
+        assert dummy_sources[0].cls.cover_call
+        assert dummy_sources[1].cls.cover_call
+        assert not dummy_sources[2].cls.cover_call
+        assert not dummy_sources[0].cls.fetch_call
+        assert not dummy_sources[1].cls.fetch_call
+        assert not dummy_sources[2].cls.fetch_call
         for source in dummy_sources:
             source.cls.cover_call = False
             source.cls.fetch_call = False
         handler.plugin_disable(dummy_sources[1])
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
-        self.assertTrue(found[1])
+        assert found[1]
         self.assertIs(result[1], DUMMY_COVER)
-        self.assertTrue(dummy_sources[0].cls.cover_call)
-        self.assertFalse(dummy_sources[1].cls.cover_call)
-        self.assertTrue(dummy_sources[2].cls.cover_call)
-        self.assertFalse(dummy_sources[0].cls.fetch_call)
-        self.assertFalse(dummy_sources[1].cls.fetch_call)
-        self.assertTrue(dummy_sources[2].cls.fetch_call)
+        assert dummy_sources[0].cls.cover_call
+        assert not dummy_sources[1].cls.cover_call
+        assert dummy_sources[2].cls.cover_call
+        assert not dummy_sources[0].cls.fetch_call
+        assert not dummy_sources[1].cls.fetch_call
+        assert dummy_sources[2].cls.fetch_call
 
     def test_search(self):
         manager = CoverManager(use_built_in=False)
@@ -216,7 +216,7 @@ class TCoverManager(TestCase):
         results = []
 
         def done(manager, provider, result):
-            self.assertTrue(result, msg="Shouldn't succeed with no results")
+            assert result, "Shouldn't succeed with no results"
             results.append(result)
 
         def finished(manager, songs):
@@ -276,8 +276,8 @@ class TCoverManagerBuiltin(TestCase):
         self.assertEqual(called_with, [self.manager, [obj]])
 
     def test_get_primary_image(self):
-        self.assertFalse(MP3File(self.file1).has_images)
-        self.assertFalse(MP3File(self.file1).has_images)
+        assert not MP3File(self.file1).has_images
+        assert not MP3File(self.file1).has_images
 
     def test_manager(self):
         self.assertEqual(len(list(self.manager.sources)), 2)
@@ -299,18 +299,18 @@ class TCoverManagerBuiltin(TestCase):
         song2 = MP3File(self.file2)
 
         # each should find a cover
-        self.assertTrue(self.is_embedded(self.manager.get_cover(song1)))
-        self.assertFalse(self.is_embedded(self.manager.get_cover(song2)))
+        assert self.is_embedded(self.manager.get_cover(song1))
+        assert not self.is_embedded(self.manager.get_cover(song2))
 
         cover_for = self.manager.get_cover_many
         # both settings should search both songs before giving up
         config.set("albumart", "prefer_embedded", True)
-        self.assertTrue(self.is_embedded(cover_for([song1, song2])))
-        self.assertTrue(self.is_embedded(cover_for([song2, song1])))
+        assert self.is_embedded(cover_for([song1, song2]))
+        assert self.is_embedded(cover_for([song2, song1]))
 
         config.set("albumart", "prefer_embedded", False)
-        self.assertFalse(self.is_embedded(cover_for([song1, song2])))
-        self.assertFalse(self.is_embedded(cover_for([song2, song1])))
+        assert not self.is_embedded(cover_for([song1, song2]))
+        assert not self.is_embedded(cover_for([song2, song1]))
 
     def is_embedded(self, fileobj):
         return not path_equal(fileobj.name, self.external_cover, True)
@@ -340,10 +340,8 @@ class TCoverManagerBuiltin(TestCase):
 
         config.set("albumart", "prefer_embedded", True)
         acquire(both_song)
-        self.assertTrue(result_was_embedded(),
-                        "Embedded image expected due to prefs")
+        assert result_was_embedded(), "Embedded image expected due to prefs"
 
         config.set("albumart", "prefer_embedded", False)
         acquire(both_song)
-        self.assertFalse(result_was_embedded(),
-                    "Got an embedded image despite prefs")
+        assert not result_was_embedded(), "Got an embedded image despite prefs"

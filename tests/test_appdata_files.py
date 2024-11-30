@@ -40,7 +40,7 @@ class _TAppDataFileMixin:
     PATH = None
 
     def test_filename(self):
-        self.assertTrue(self.PATH.endswith(".appdata.xml.in"))
+        assert self.PATH.endswith(".appdata.xml.in")
 
     def test_validate(self):
         try:

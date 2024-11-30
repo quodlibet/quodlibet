@@ -52,12 +52,12 @@ class TBrowser(TestCase):
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.assertFalse(self.browser.can_filter(key))
+            assert not self.browser.can_filter(key)
 
     def test_defaults(self):
-        self.assertTrue(self.browser.background)
-        self.assertFalse(self.browser.can_reorder)
-        self.assertFalse(self.browser.headers)
+        assert self.browser.background
+        assert not self.browser.can_reorder
+        assert not self.browser.headers
 
     def test_status_bar(self):
         self.assertEqual(self.browser.status_text(1, "21s"),
@@ -97,7 +97,7 @@ class TBrowserMixin:
         if self.b.name == "Playlists":
             return
         menu = self.b.menu([], self.library, [])
-        self.assertTrue(isinstance(menu, Gtk.Menu))
+        assert isinstance(menu, Gtk.Menu)
 
     def test_key(self):
         self.assertEqual(browsers.get(browsers.name(self.Kind)), self.Kind)
@@ -111,13 +111,13 @@ class TBrowserMixin:
         to_pack = Gtk.Button()
         to_pack.hide()
         container = self.b.pack(to_pack)
-        self.assertFalse(to_pack.get_visible())
+        assert not to_pack.get_visible()
         self.b.unpack(container, to_pack)
-        self.assertFalse(to_pack.get_visible())
+        assert not to_pack.get_visible()
 
     def test_name(self):
-        self.assertFalse("_" in self.b.name)
-        self.assertTrue("_" in self.b.accelerated_name)
+        assert "_" not in self.b.name
+        assert "_" in self.b.accelerated_name
 
     def test_init(self):
         self.Kind.init(self.library)
@@ -146,9 +146,9 @@ class TBrowserMixin:
 
     def test_filters_caps(self):
         with realized(self.b):
-            self.assertTrue(isinstance(self.b.can_filter_tag("foo"), bool))
-            self.assertTrue(isinstance(self.b.can_filter_text(), bool))
-            self.assertTrue(isinstance(self.b.can_filter("foo"), bool))
+            assert isinstance(self.b.can_filter_tag("foo"), bool)
+            assert isinstance(self.b.can_filter_text(), bool)
+            assert isinstance(self.b.can_filter("foo"), bool)
 
     def test_filter_text(self):
         with realized(self.b):

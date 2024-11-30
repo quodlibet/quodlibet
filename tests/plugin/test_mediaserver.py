@@ -50,7 +50,7 @@ class TMediaServer(PluginTestCase):
         self._replies.append(args)
 
     def _error(self, *args):
-        self.assertFalse(args)
+        assert not args
 
     def _wait(self):
         while not self._replies:
@@ -67,7 +67,7 @@ class TMediaServer(PluginTestCase):
     def test_entry_name(self):
         iface = self._entry_props_iface()
         iface.Get("org.gnome.UPnP.MediaObject2", "DisplayName", **self._args)
-        self.assertTrue("Quod Libet" in self._wait()[0])
+        assert "Quod Libet" in self._wait()[0]
 
     def test_name_owner(self):
         bus = dbus.SessionBus()

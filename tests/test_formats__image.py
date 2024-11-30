@@ -39,17 +39,17 @@ class TImageContainer(TestCase):
         self.a = AudioFile()
 
     def test_default_get(self):
-        self.assertFalse(self.a.get_primary_image())
+        assert not self.a.get_primary_image()
 
     def test_has_image(self):
-        self.assertFalse(self.a.has_images)
+        assert not self.a.has_images
         self.a["~picture"] = "y"
-        self.assertTrue(self.a.has_images)
+        assert self.a.has_images
         self.a.has_images = False
-        self.assertFalse(self.a.has_images)
+        assert not self.a.has_images
 
     def test_default_can_change(self):
-        self.assertFalse(self.a.can_change_images)
+        assert not self.a.can_change_images
 
 
 class TEmbeddedImages(TestCase):
@@ -71,7 +71,7 @@ class TEmbeddedImages(TestCase):
 
     def test_from_path(self):
         image = EmbeddedImage.from_path(self.filename)
-        self.assertTrue(image)
+        assert image
         self.assertEqual(image.file.name, self.filename)
         self.assertEqual(image.mime_type, "image/png")
         self.assertEqual(image.width, 150)
@@ -80,22 +80,22 @@ class TEmbeddedImages(TestCase):
 
     def test_from_path_bogus(self):
         image = EmbeddedImage.from_path(self.filename + "nope")
-        self.assertFalse(image)
+        assert not image
 
     def test_not_an_image(self):
         path = get_data_path("test-2.wma")
         image = EmbeddedImage.from_path(path)
-        self.assertFalse(image)
+        assert not image
 
     def test_get_extensions(self):
         image = EmbeddedImage.from_path(self.filename)
-        self.assertTrue("png" in image.extensions)
+        assert "png" in image.extensions
 
     def test_from_path_empty(self):
         h, empty = mkstemp()
         os.close(h)
         try:
             image = EmbeddedImage.from_path(empty)
-            self.assertFalse(image)
+            assert not image
         finally:
             os.remove(empty)

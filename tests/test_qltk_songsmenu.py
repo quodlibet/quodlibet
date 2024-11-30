@@ -42,7 +42,7 @@ class TSongsMenu(TestCase):
 
     def test_empty(self):
         self.menu = self.empty_menu_with()
-        self.assertFalse(len(self.menu))
+        assert not len(self.menu)
 
     def test_simple(self):
         self.menu = SongsMenu(self.library, self.songs, plugins=False)
@@ -50,58 +50,58 @@ class TSongsMenu(TestCase):
     def test_playlists(self):
         self.menu = self.empty_menu_with(playlists=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertTrue(self.menu.get_children()[0].props.sensitive)
+        assert self.menu.get_children()[0].props.sensitive
 
         self.songs[0].can_add = False
         self.menu = self.empty_menu_with(playlists=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertFalse(self.menu.get_children()[0].props.sensitive)
+        assert not self.menu.get_children()[0].props.sensitive
 
     def test_queue(self):
         self.menu = self.empty_menu_with(queue=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertTrue(self.menu.get_children()[0].props.sensitive)
+        assert self.menu.get_children()[0].props.sensitive
 
         self.songs[0].can_add = False
         self.menu = self.empty_menu_with(queue=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertFalse(self.menu.get_children()[0].props.sensitive)
+        assert not self.menu.get_children()[0].props.sensitive
 
     def test_remove(self):
         self.menu = self.empty_menu_with(remove=True,
                                          removal_confirmer=self._confirmer)
         self.assertEqual(len(self.menu), 1)
         item = self.menu.get_children()[0]
-        self.assertFalse(item.props.sensitive)
+        assert not item.props.sensitive
         item.activate()
-        self.assertTrue(self.confirmed, "Should have confirmed song removal")
+        assert self.confirmed, "Should have confirmed song removal"
 
     def test_remove_sensitive(self):
         self.library.add(self.songs)
         self.menu = self.empty_menu_with(remove=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertTrue(self.menu.get_children()[0].props.sensitive)
+        assert self.menu.get_children()[0].props.sensitive
 
     def test_delete(self):
         self.menu = self.empty_menu_with(delete=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertTrue(self.menu.get_children()[0].props.sensitive)
+        assert self.menu.get_children()[0].props.sensitive
 
         self.songs[0].is_file = False
         self.menu = self.empty_menu_with(delete=True)
-        self.assertFalse(self.menu.get_children()[0].props.sensitive)
+        assert not self.menu.get_children()[0].props.sensitive
 
     def test_show_files(self):
         self.menu = self.empty_menu_with(show_files=True)
         self.assertEqual(len(self.menu), 1)
-        self.assertTrue(self.menu.get_children()[0].props.sensitive)
+        assert self.menu.get_children()[0].props.sensitive
         item = self.menu.get_children()[0]
-        self.assertTrue(item.props.sensitive)
+        assert item.props.sensitive
 
     def test_show_files_remote_songs(self):
         self.songs = self.library.songs = [an_rf(1)]
         self.menu = self.empty_menu_with(show_files=True)
-        self.assertFalse(len(self.menu))
+        assert not len(self.menu)
 
     def test_show_files_too_many_songs(self):
         self.songs = self.library.songs = [an_af(i) for i in range(50)]

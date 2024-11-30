@@ -75,12 +75,12 @@ class TRandomAlbum(PluginTestCase):
     def test_empty_integration_weighted(self):
         # See issue #2756
         self.plugin.use_weights = True
-        self.assertFalse(self.plugin.plugin_on_song_started(None))
+        assert not self.plugin.plugin_on_song_started(None)
 
     def test_empty_integration(self):
         # See issue #2756
         self.plugin.use_weights = False
-        self.assertFalse(self.plugin.plugin_on_song_started(None))
+        assert not self.plugin.plugin_on_song_started(None)
 
     def test_score_rating(self):
         weights = self.plugin.weights = self.WEIGHTS.copy()

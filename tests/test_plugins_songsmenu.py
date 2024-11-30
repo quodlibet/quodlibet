@@ -95,16 +95,16 @@ class TSongsMenuPlugins(TestCase):
     def test_disables_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
         self.pm.rescan()
-        self.assertFalse(self.pm.enabled(self.pm.plugins[0]))
+        assert not self.pm.enabled(self.pm.plugins[0])
 
     def test_enabledisable_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        self.assertTrue(self.pm.enabled(plug))
+        assert self.pm.enabled(plug)
         self.pm.enable(plug, False)
-        self.assertFalse(self.pm.enabled(plug))
+        assert not self.pm.enabled(plug)
 
     def test_ignores_broken_plugin(self):
         self.create_plugin(name="Broken", desc="Desc",
@@ -114,7 +114,7 @@ class TSongsMenuPlugins(TestCase):
         self.pm.enable(plug, True)
         with capture_output():
             menu = self.handler.menu(None, [AudioFile()])
-        self.assertFalse(menu and menu.get_children())
+        assert not (menu and menu.get_children())
 
     def test_Menu(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
@@ -156,26 +156,26 @@ class Tsongsmenu(TestCase):
     def test_any_song(self):
         FakeSongsMenuPlugin.plugin_handles = any_song(even)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.assertTrue(p.plugin_handles(self.songs))
-        self.assertFalse(p.plugin_handles(self.songs[:1]))
+        assert p.plugin_handles(self.songs)
+        assert not p.plugin_handles(self.songs[:1])
 
     def test_any_song_multiple(self):
         FakeSongsMenuPlugin.plugin_handles = any_song(even, never)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.assertFalse(p.plugin_handles(self.songs))
-        self.assertFalse(p.plugin_handles(self.songs[:1]))
+        assert not p.plugin_handles(self.songs)
+        assert not p.plugin_handles(self.songs[:1])
 
     def test_each_song(self):
         FakeSongsMenuPlugin.plugin_handles = each_song(even)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.assertFalse(p.plugin_handles(self.songs))
-        self.assertTrue(p.plugin_handles(self.songs[1:]))
+        assert not p.plugin_handles(self.songs)
+        assert p.plugin_handles(self.songs[1:])
 
     def test_each_song_multiple(self):
         FakeSongsMenuPlugin.plugin_handles = each_song(even, never)
         p = FakeSongsMenuPlugin(self.songs, None)
-        self.assertFalse(p.plugin_handles(self.songs))
-        self.assertFalse(p.plugin_handles(self.songs[:1]))
+        assert not p.plugin_handles(self.songs)
+        assert not p.plugin_handles(self.songs[:1])
 
 
 class FakeSongsMenuPlugin(SongsMenuPlugin):

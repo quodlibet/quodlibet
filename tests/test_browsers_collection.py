@@ -59,19 +59,19 @@ class TCollectionAlbums(TestCase):
     def test_build_tree(self):
         tags = [("~people", 0)]
         tree = build_tree(tags, self.albums)
-        self.assertTrue("mu" in tree)
-        self.assertTrue("boris" in tree)
-        self.assertTrue("piman" in tree)
-        self.assertTrue(UnknownNode in tree)
+        assert "mu" in tree
+        assert "boris" in tree
+        assert "piman" in tree
+        assert UnknownNode in tree
         self.assertEqual(len(tree), 4)
 
     def test_build_tree_merge(self):
         tags = [("~people", 1)]
         tree = build_tree(tags, self.albums)
-        self.assertTrue(MultiNode in tree)
-        self.assertTrue(UnknownNode in tree)
-        self.assertTrue("boris" in tree)
-        self.assertTrue("piman" in tree)
+        assert MultiNode in tree
+        assert UnknownNode in tree
+        assert "boris" in tree
+        assert "piman" in tree
         self.assertEqual(len(tree), 4)
 
     def test_model(self):
@@ -91,18 +91,18 @@ class TCollectionAlbums(TestCase):
 
         path = model.get_path_for_album(a[0])
         albums = model.get_albums_for_path(path)
-        self.assertTrue(a[0] in albums)
+        assert a[0] in albums
 
         albums = model.get_albums_for_iter(model.get_iter(path))
-        self.assertTrue(a[0] in albums)
+        assert a[0] in albums
 
         x = model.get_album(model.get_iter_first())
-        self.assertFalse(x)
+        assert not x
         x = model.get_album(model.get_iter(path))
         self.assertEqual(x, a[0])
 
         for r in model:
-            self.assertTrue(model.get_markup(model.tags, r.iter))
+            assert model.get_markup(model.tags, r.iter)
 
         x = list(model.iter_albums(None))
         self.assertEqual(set(x), set(a))
