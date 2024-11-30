@@ -8,17 +8,17 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2024-08-25 13:09+0000\n"
+"PO-Revision-Date: 2024-11-28 02:00+0000\n"
 "Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
 "org>\n"
-"Language-Team: Chinese (Simplified) <https://hosted.weblate.org/projects/"
-"quodlibet/quodlibet/zh_Hans/>\n"
+"Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
+"projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=n<0;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -1965,17 +1965,17 @@ msgstr "经测试的客户端"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Linux 桌面集成（MPRIS D-BUS）"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-"
-"Bus 规范控制Quod Libet。 这允许各种Linux桌面集成(如多媒体键)。"
+"⏯️允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> "
+"D-Bus 接口控制Quod Libet。 \n"
+"这允许各种Linux桌面集成(如多媒体键)。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3141,24 +3141,20 @@ msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 当前歌曲波形形状的搜索栏。"
 
 #: quodlibet/ext/events/waveformseekbar.py:720
-#, fuzzy
 msgid "Foreground color"
-msgstr "覆盖前景颜色："
+msgstr "前景色"
 
 #: quodlibet/ext/events/waveformseekbar.py:723
-#, fuzzy
 msgid "Hover color"
-msgstr "覆盖悬停时的颜色："
+msgstr "覆盖悬停时的颜色"
 
 #: quodlibet/ext/events/waveformseekbar.py:726
-#, fuzzy
 msgid "Remaining color"
-msgstr "覆盖其余颜色："
+msgstr "其余颜色"
 
 #: quodlibet/ext/events/waveformseekbar.py:730
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "显示当前位置"
+msgstr "悬停时显示当前位置"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
