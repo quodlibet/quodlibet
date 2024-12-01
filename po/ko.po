@@ -68,7 +68,7 @@ msgstr "정렬 기준(_B)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "환경설정(_P)"
@@ -172,7 +172,7 @@ msgstr "라이브러리 탐색기"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -625,7 +625,7 @@ msgid "Equal pane width"
 msgstr "창 너비를 같게"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "재생 목록"
 
@@ -669,11 +669,11 @@ msgstr "_이름 바꾸기"
 msgid "Unable to rename playlist"
 msgstr "재생 목록 이름을 바꿀 수 없습니다"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "재생 목록 가져오기"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_가져오기"
 
@@ -730,7 +730,7 @@ msgid "_Add Tracks"
 msgstr "트랙 추가하기(_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "새 재생목록"
 
@@ -1643,17 +1643,17 @@ msgid ""
 "listening to."
 msgstr "Gajim 상태 메시지를 최근 들은 곡에 따라 변경합니다."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "멈춤"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "양식"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "양식"
@@ -7517,11 +7517,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "재생목록 가져오기"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "이름이 %(name)s인 재생 목록이 %(path)s에 이미 있습니다"

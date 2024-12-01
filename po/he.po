@@ -72,7 +72,7 @@ msgstr "מיון _לפי…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_העדפות"
@@ -180,7 +180,7 @@ msgstr "דפדפן ספריה"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -636,7 +636,7 @@ msgid "Equal pane width"
 msgstr "רוחב חלונית שווה"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "רשימות השמעה"
 
@@ -681,11 +681,11 @@ msgstr "_שנוי שם"
 msgid "Unable to rename playlist"
 msgstr "לא ניתן לשנות שם רשימת ההשמעה"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "ייבא רשימת השמעה"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_יבוא"
 
@@ -745,7 +745,7 @@ msgid "_Add Tracks"
 msgstr "רצועה"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "רשימת השמעה חדשה"
 
@@ -1644,17 +1644,17 @@ msgid ""
 "listening to."
 msgstr "שינוי מצב הודעות Gajim בהתאם למוזיקה המושמעת."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "מושהה:"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "מלל מצב"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "מלל מצב"
@@ -7529,11 +7529,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "ייבא רשימת השמעה"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "רשימת ההשמעה חייבת שם"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "רשימת השמעה בשם %s קיימת כבר."

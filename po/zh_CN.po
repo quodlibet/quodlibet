@@ -69,7 +69,7 @@ msgstr "排序依据(_B) …"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "首选项(_P)"
@@ -173,7 +173,7 @@ msgstr "曲库浏览器"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -626,7 +626,7 @@ msgid "Equal pane width"
 msgstr "面板分栏等宽"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "播放列表"
 
@@ -670,11 +670,11 @@ msgstr "重命名(_R)"
 msgid "Unable to rename playlist"
 msgstr "无法重命名播放列表"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "导入播放列表"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "导入(_I)"
 
@@ -731,7 +731,7 @@ msgid "_Add Tracks"
 msgstr "添加曲目(_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "新播放列表"
 
@@ -1625,15 +1625,15 @@ msgid ""
 "listening to."
 msgstr "根据您当前正在收听的内容更改 Discord 状态消息。"
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "暂停"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "状态行 #1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "状态行 #2"
 
@@ -1973,8 +1973,8 @@ msgid ""
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> "
-"D-Bus 接口控制Quod Libet。 \n"
+"⏯️允许使用 <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-"
+"Bus 接口控制Quod Libet。 \n"
 "这允许各种Linux桌面集成(如多媒体键)。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -7355,11 +7355,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "空播放列表"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "播放列表必须有名称"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "名为 %(name)s 的播放列表存在于 %(path)s"
