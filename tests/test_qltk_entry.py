@@ -19,7 +19,7 @@ class TEntry(TestCase):
             nat1 = e.get_preferred_width()[1]
             e.set_max_width_chars(40)
             nat2 = e.get_preferred_width()[1]
-            self.assertTrue(nat1 < nat2)
+            assert nat1 < nat2
 
 
 class TValidatingEntry(TestCase):
@@ -46,7 +46,7 @@ class TValidatingEntry(TestCase):
         entry = ValidatingEntry(valid)
         entry.set_text("foo")
         self.assertEqual(x, ["foo"])
-        self.assertTrue(isinstance(x[0], str))
+        assert isinstance(x[0], str)
 
     def tearDown(self):
         self.entry.destroy()

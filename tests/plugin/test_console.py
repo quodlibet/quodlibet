@@ -39,7 +39,7 @@ class TConsole(PluginTestCase):
     def test_sidebar_plugin(self):
         plugin = self.mod.PyConsoleSidebar()
         plugin.enabled()
-        self.assertTrue(isinstance(plugin.create_sidebar(), Gtk.Widget), True)
+        assert isinstance(plugin.create_sidebar(), Gtk.Widget), True
         plugin.plugin_on_songs_selected([AUDIO_FILE])
         self.assertEqual(plugin.console.namespace.get("songs"),
                              [AUDIO_FILE])

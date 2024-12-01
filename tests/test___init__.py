@@ -23,25 +23,25 @@ class TQuodlibet(TestCase):
         config.quit()
 
     def test_first_session(self):
-        self.assertTrue(quodlibet.is_first_session("quodlibet"))
-        self.assertTrue(quodlibet.is_first_session("quodlibet"))
+        assert quodlibet.is_first_session("quodlibet")
+        assert quodlibet.is_first_session("quodlibet")
         quodlibet.finish_first_session("exfalso")
-        self.assertTrue(quodlibet.is_first_session("quodlibet"))
+        assert quodlibet.is_first_session("quodlibet")
         quodlibet.finish_first_session("quodlibet")
-        self.assertFalse(quodlibet.is_first_session("quodlibet"))
+        assert not quodlibet.is_first_session("quodlibet")
 
     def test_dirs(self):
-        self.assertTrue(isinstance(quodlibet.get_base_dir(), fsnative))
-        self.assertTrue(isinstance(quodlibet.get_image_dir(), fsnative))
-        self.assertTrue(isinstance(quodlibet.get_user_dir(), fsnative))
-        self.assertTrue(isinstance(quodlibet.get_cache_dir(), fsnative))
+        assert isinstance(quodlibet.get_base_dir(), fsnative)
+        assert isinstance(quodlibet.get_image_dir(), fsnative)
+        assert isinstance(quodlibet.get_user_dir(), fsnative)
+        assert isinstance(quodlibet.get_cache_dir(), fsnative)
 
     def test_get_build_description(self):
         quodlibet.get_build_description()
 
     def test_get_build_version(self):
         ver = quodlibet.get_build_version()
-        self.assertTrue(isinstance(ver, tuple))
+        assert isinstance(ver, tuple)
 
 
 class TVersion(TestCase):
@@ -52,4 +52,4 @@ class TVersion(TestCase):
         try:
             v.check((1, 1))
         except ImportError as e:
-            self.assertTrue("bla" in str(e))
+            assert "bla" in str(e)

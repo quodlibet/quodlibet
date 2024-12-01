@@ -43,15 +43,15 @@ class TReplayGain(PluginTestCase):
 
     def test_RGSong_properties(self):
         rgs = self.mod.RGSong(self.song)
-        self.assertFalse(rgs.has_album_tags)
-        self.assertFalse(rgs.has_track_tags)
-        self.assertFalse(rgs.has_all_rg_tags)
+        assert not rgs.has_album_tags
+        assert not rgs.has_track_tags
+        assert not rgs.has_all_rg_tags
 
         rgs.done = True
         rgs._write(-1.23, 0.99)
-        self.assertTrue(rgs.has_album_tags, msg="Didn't write album tags")
-        self.assertFalse(rgs.has_track_tags)
-        self.assertFalse(rgs.has_all_rg_tags)
+        assert rgs.has_album_tags, "Didn't write album tags"
+        assert not rgs.has_track_tags
+        assert not rgs.has_all_rg_tags
 
     def test_RGSong_zero(self):
         rgs = self.mod.RGSong(self.song)
@@ -62,7 +62,7 @@ class TReplayGain(PluginTestCase):
 
     def test_RGAlbum_properties(self):
         rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
-        self.assertFalse(rga.done)
+        assert not rga.done
         self.assertEqual(rga.title, "foo - the album")
 
     def test_delete_bs1770gain(self):
@@ -77,7 +77,7 @@ class TReplayGain(PluginTestCase):
         rgs._write(0.0, 0.0)
 
         for tag in tags:
-            self.assertFalse(self.song(tag))
+            assert not self.song(tag)
 
     def _analyse_song(self, song):
         mode = self.mod.UpdateMode.ALWAYS
@@ -101,12 +101,12 @@ class TReplayGain(PluginTestCase):
             pipeline.disconnect(sig)
 
         _run_main_loop()
-        self.assertTrue(self.analysed, "Timed out")
+        assert self.analysed, "Timed out"
 
     def test_analyze_sinewave(self):
         song = MusicFile(get_data_path("sine-110hz.flac"))
         self.assertEqual(song("~#length"), 2)
-        self.assertFalse(song("~replaygain_track_gain"))
+        assert not song("~replaygain_track_gain")
 
         self._analyse_song(song)
 
@@ -114,15 +114,15 @@ class TReplayGain(PluginTestCase):
                                    msg="Track peak should be 1.0")
 
         track_gain = song("~#replaygain_track_gain")
-        self.assertTrue(track_gain, msg="No Track Gain added")
-        self.assertTrue(re.match(r"\-[0-9]\.[0-9]{1,2}", str(track_gain)))
+        assert track_gain, "No Track Gain added"
+        assert re.match(r"\-[0-9]\.[0-9]{1,2}", str(track_gain))
 
         # For one-song album, track == album
         self.assertEqual(track_gain, song("~#replaygain_album_gain"))
 
     def test_analyze_silence(self):
         song = MusicFile(get_data_path("silence-44-s.ogg"))
-        self.assertFalse(song("~replaygain_track_gain"))
+        assert not song("~replaygain_track_gain")
 
         self._analyse_song(song)
 
@@ -130,7 +130,7 @@ class TReplayGain(PluginTestCase):
                                    msg="Track peak should be 0.0")
 
         track_gain = song("~#replaygain_track_gain")
-        self.assertTrue(track_gain, msg="No Track Gain added")
+        assert track_gain, "No Track Gain added"
 
         # For one-song album, track == album
         self.assertEqual(track_gain, song("~#replaygain_album_gain"))

@@ -69,11 +69,11 @@ class _TObjectStoreMixin:
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.assertTrue(m.insert(0))
-        self.assertTrue(m.prepend())
-        self.assertTrue(m.append())
-        self.assertTrue(m.insert_before(None))
-        self.assertTrue(m.insert_after(None))
+        assert m.insert(0)
+        assert m.prepend()
+        assert m.append()
+        assert m.insert_before(None)
+        assert m.insert_after(None)
 
 
 class TOrigObjectStore(TestCase, _TObjectStoreMixin):
@@ -184,11 +184,11 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test_is_empty(self):
         m = ObjectStore()
-        self.assertTrue(m.is_empty())
+        assert m.is_empty()
         iter_ = m.append(row=[1])
-        self.assertFalse(m.is_empty())
+        assert not m.is_empty()
         m.remove(iter_)
-        self.assertTrue(m.is_empty())
+        assert m.is_empty()
 
     def test_nonatomic(self):
         m = ObjectStore()
@@ -300,11 +300,11 @@ class _TObjectTreeStoreMixin:
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.assertTrue(m.insert(None, 0))
-        self.assertTrue(m.prepend(None))
-        self.assertTrue(m.append(None))
-        self.assertTrue(m.insert_before(None, None))
-        self.assertTrue(m.insert_after(None, None))
+        assert m.insert(None, 0)
+        assert m.prepend(None)
+        assert m.append(None)
+        assert m.insert_before(None, None)
+        assert m.insert_after(None, None)
 
 
 class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):

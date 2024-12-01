@@ -117,16 +117,16 @@ class TPlaylistPlugins(TestCase):
     def test_disables_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
-        self.assertFalse(self.pm.enabled(self.pm.plugins[0]))
+        assert not self.pm.enabled(self.pm.plugins[0])
 
     def test_enabledisable_plugin(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
-        self.assertTrue(self.pm.enabled(plug))
+        assert self.pm.enabled(plug)
         self.pm.enable(plug, False)
-        self.assertFalse(self.pm.enabled(plug))
+        assert not self.pm.enabled(plug)
 
     def test_ignores_broken_plugin(self):
         self.create_plugin(name="Broken", desc="Desc",

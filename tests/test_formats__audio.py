@@ -111,9 +111,9 @@ class TAudioFile(TestCase):
         self.assertNotEqual(bar_2_1, bar_1_2)
 
     def test_realkeys(self):
-        self.assertFalse("artist" in self.quux.realkeys())
-        self.assertFalse("~filename" in self.quux.realkeys())
-        self.assertTrue("album" in self.quux.realkeys())
+        assert "artist" not in self.quux.realkeys()
+        assert "~filename" not in self.quux.realkeys()
+        assert "album" in self.quux.realkeys()
 
     def test_iterrealitems(self):
         af = AudioFile({
@@ -133,8 +133,8 @@ class TAudioFile(TestCase):
         self.assertEqual(bar_1_1("~#disc"), 1)
         self.assertEqual(bar_1_1("~#tracks"), 3)
         self.assertEqual(bar_1_1("~#discs"), 2)
-        self.assertFalse(bar_1_2("~#discs"))
-        self.assertFalse(bar_2_1("~#tracks"))
+        assert not bar_1_2("~#discs")
+        assert not bar_2_1("~#tracks")
 
     def test_setitem_keys(self):
         af = AudioFile()
@@ -159,7 +159,7 @@ class TAudioFile(TestCase):
 
         # fake/generated key checks
         af = AudioFile()
-        self.assertFalse(af("not a key"))
+        assert not af("not a key")
         self.assertEqual(af("not a key", "foo"), "foo")
         self.assertEqual(af("artist"), "")
 
@@ -317,10 +317,10 @@ class TAudioFile(TestCase):
     def test_comma(self):
         for key in bar_1_1.realkeys():
             self.assertEqual(bar_1_1.comma(key), bar_1_1(key))
-        self.assertTrue(", " in bar_2_1.comma("artist"))
+        assert ", " in bar_2_1.comma("artist")
 
     def test_comma_filename(self):
-        self.assertTrue(isinstance(bar_1_1.comma("~filename"), str))
+        assert isinstance(bar_1_1.comma("~filename"), str)
 
     def test_comma_mountpoint(self):
         assert not bar_1_1("~mountpoint")
@@ -328,33 +328,33 @@ class TAudioFile(TestCase):
         assert bar_1_1.comma("~mountpoint") == ""
 
     def test_exist(self):
-        self.assertFalse(bar_2_1.exists())
-        self.assertTrue(self.quux.exists())
+        assert not bar_2_1.exists()
+        assert self.quux.exists()
 
     def test_valid(self):
-        self.assertFalse(bar_2_1.valid())
+        assert not bar_2_1.valid()
 
         quux = self.quux
         quux["~#mtime"] = 0
-        self.assertFalse(quux.valid())
+        assert not quux.valid()
         quux["~#mtime"] = os.path.getmtime(quux["~filename"])
-        self.assertTrue(quux.valid())
+        assert quux.valid()
         os.utime(quux["~filename"], (quux["~#mtime"], quux["~#mtime"] - 1))
-        self.assertFalse(quux.valid())
+        assert not quux.valid()
         quux["~#mtime"] = os.path.getmtime(quux["~filename"])
-        self.assertTrue(quux.valid())
+        assert quux.valid()
 
         os.utime(quux["~filename"], (quux["~#mtime"], quux["~#mtime"] - 1))
         quux.sanitize()
-        self.assertTrue(quux.valid())
+        assert quux.valid()
 
     def test_can_change(self):
         af = AudioFile()
-        self.assertFalse(af.can_change("~foobar"))
-        self.assertFalse(af.can_change("=foobar"))
-        self.assertFalse(af.can_change("foo=bar"))
-        self.assertFalse(af.can_change(""))
-        self.assertTrue(af.can_change("foo bar"))
+        assert not af.can_change("~foobar")
+        assert not af.can_change("=foobar")
+        assert not af.can_change("foo=bar")
+        assert not af.can_change("")
+        assert af.can_change("foo bar")
 
     def test_is_writable(self):
         fn = self.quux["~filename"]
@@ -366,7 +366,7 @@ class TAudioFile(TestCase):
     def test_can_multiple_values(self):
         af = AudioFile()
         self.assertEqual(af.can_multiple_values(), True)
-        self.assertTrue(af.can_multiple_values("artist"))
+        assert af.can_multiple_values("artist")
 
     def test_rename(self):
         old_fn = self.quux["~filename"]
@@ -418,12 +418,12 @@ class TAudioFile(TestCase):
     def test_lyric_filename(self):
         song = AudioFile()
         song["~filename"] = fsnative("filename")
-        self.assertTrue(isinstance(song.lyric_filename, fsnative))
+        assert isinstance(song.lyric_filename, fsnative)
         song["title"] = "Title"
         song["artist"] = "Artist"
-        self.assertTrue(isinstance(song.lyric_filename, fsnative))
+        assert isinstance(song.lyric_filename, fsnative)
         song["lyricist"] = "Lyricist"
-        self.assertTrue(isinstance(song.lyric_filename, fsnative))
+        assert isinstance(song.lyric_filename, fsnative)
 
     def lyric_filename_search_test_song(self, pathfile):
         s = AudioFile()
@@ -577,8 +577,8 @@ class TAudioFile(TestCase):
                 rootp = os.path.sep.join([ts.root, p])
                 if not RootPathFile(ts.root, rootp).valid:
                     rootp = os.path.sep.join([ts.root, escape_filename(p)])
-                self.assertTrue(RootPathFile(ts.root, rootp).valid,
-                                "even escaped target dir part is not valid!")
+                msg = "even escaped target dir part is not valid!"
+                assert RootPathFile(ts.root, rootp).valid, msg
                 if not os.path.exists(rootp):
                     mkdir(rootp)
                     rmdirs.append(rootp)
@@ -773,10 +773,10 @@ class TAudioFile(TestCase):
         num = len(set(bar_1_1.keys()) | NUMERIC_ZERO_DEFAULT)
         self.assertEqual(dump.count(b"\n"), num + 2)
         for key, value in bar_1_1.items():
-            self.assertTrue(key.encode("utf-8") in dump)
-            self.assertTrue(value.encode("utf-8") in dump)
+            assert key.encode("utf-8") in dump
+            assert value.encode("utf-8") in dump
         for key in NUMERIC_ZERO_DEFAULT:
-            self.assertTrue(key.encode("utf-8") in dump)
+            assert key.encode("utf-8") in dump
 
         n = AudioFile()
         n.from_dump(dump)
@@ -793,7 +793,7 @@ class TAudioFile(TestCase):
 
     def test_add(self):
         song = AudioFile()
-        self.assertFalse("foo" in song)
+        assert "foo" not in song
         song.add("foo", "bar")
         self.assertEqual(song["foo"], "bar")
         song.add("foo", "another")
@@ -809,7 +809,7 @@ class TAudioFile(TestCase):
         song.remove("foo", "bar")
         self.assertEqual(song.list("foo"), ["one more"])
         song.remove("foo", "one more")
-        self.assertFalse("foo" in song)
+        assert "foo" not in song
 
     def test_remove_unknown(self):
         song = AudioFile()
@@ -824,13 +824,13 @@ class TAudioFile(TestCase):
         song.add("foo", "another")
         song.add("foo", "one more")
         song.remove("foo")
-        self.assertFalse("foo" in song)
+        assert "foo" not in song
 
     def test_remove_empty(self):
         song = AudioFile()
         song.add("foo", "")
         song.remove("foo", "")
-        self.assertFalse("foo" in song)
+        assert "foo" not in song
 
     def test_change(self):
         song = AudioFile()
@@ -865,7 +865,7 @@ class TAudioFile(TestCase):
         af = AudioFile({"bookmark": "foo"})
         af.bookmarks = []
         self.assertEqual([], AudioFile().bookmarks)
-        self.assertFalse("~bookmark" in af)
+        assert "~bookmark" not in af
 
     def test_set_bookmarks_simple(self):
         af = AudioFile()
@@ -886,21 +886,21 @@ class TAudioFile(TestCase):
 
     def test_has_rating(self):
         song = AudioFile()
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
         song["~#rating"] = 0.5
-        self.assertTrue(song.has_rating)
+        assert song.has_rating
         song.remove_rating()
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
 
     def test_remove_rating(self):
         song = AudioFile()
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
         song.remove_rating()
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
         song["~#rating"] = 0.5
-        self.assertTrue(song.has_rating)
+        assert song.has_rating
         song.remove_rating()
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
 
     def test_album_key(self):
         album_key_tests = [
@@ -919,8 +919,8 @@ class TAudioFile(TestCase):
             self.assertEqual(afile.album_key, expected)
 
     def test_eq_ne(self):
-        self.assertFalse(AudioFile({"a": "b"}) == AudioFile({"a": "b"}))
-        self.assertTrue(AudioFile({"a": "b"}) != AudioFile({"a": "b"}))
+        assert not AudioFile({"a": "b"}) == AudioFile({"a": "b"})
+        assert AudioFile({"a": "b"}) != AudioFile({"a": "b"})
 
     def test_invalid_fs_encoding(self):
         # issue 798
@@ -1071,7 +1071,7 @@ class Tdecode_value(TestCase):
         self.assertEqual(decode_value("~#foo", 0.25), "0.25")
         self.assertEqual(decode_value("~#foo", 4), "4")
         self.assertEqual(decode_value("~#foo", "bar"), "bar")
-        self.assertTrue(isinstance(decode_value("~#foo", "bar"), str))
+        assert isinstance(decode_value("~#foo", "bar"), str)
         path = fsnative("/foobar")
         self.assertEqual(decode_value("~filename", path), fsn2text(path))
 
@@ -1144,10 +1144,10 @@ class Treplay_gain(TestCase):
             self.song.replay_gain(["track"], 12.0, 0), 1.0 / 0.9)
 
     def test_trackgain(self):
-        self.assertTrue(self.song.replay_gain(["track"]) > 1)
+        assert self.song.replay_gain(["track"]) > 1
 
     def test_albumgain(self):
-        self.assertTrue(self.song.replay_gain(["album"]) < 1)
+        assert self.song.replay_gain(["album"]) < 1
 
     def test_invalid(self):
         self.song["replaygain_album_gain"] = "fdsodgbdf"
@@ -1163,7 +1163,7 @@ class Treplay_gain(TestCase):
 
     def test_numeric_rg_tags(self):
         """Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
-        self.assertTrue(self.song("replaygain_album_gain"), "-1.00 db")
+        assert self.song("replaygain_album_gain"), "-1.00 db"
         for key, exp in self.rg_data.items():
             # Hack the nasties off and produce the "real" expected value
             exp = float(exp.split(" ")[0])

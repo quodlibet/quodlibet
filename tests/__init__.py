@@ -54,17 +54,6 @@ class TestCase(OrigTestCase):
                              delta=None):
         super().assertNotAlmostEqual(second, first, places, msg, delta)
 
-    # silence deprec warnings about useless renames
-    failUnless = OrigTestCase.assertTrue
-    failIf = OrigTestCase.assertFalse
-    failUnlessRaises = OrigTestCase.assertRaises
-
-    assertEquals = assertEqual
-    failUnlessEqual = assertEqual
-    failIfEqual = assertNotEqual
-    failUnlessAlmostEqual = assertAlmostEqual
-    failIfAlmostEqual = assertNotAlmostEqual
-
 
 skip = unittest.skip
 skipUnless = unittest.skipUnless

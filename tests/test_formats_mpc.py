@@ -35,7 +35,7 @@ class TMPCFile(TestCase):
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, MPCFile, path)
 
     def test_format(self):

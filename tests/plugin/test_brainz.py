@@ -224,9 +224,9 @@ class TBrainz(PluginTestCase):
         self.assertEqual(release.track_count, 2)
         self.assertEqual(len(release.tracks), 2)
         self.assertEqual(release.title, "\xe6\xb3o & h\xb3\xe6")
-        self.assertTrue(release.is_single_artist)
-        self.assertFalse(release.is_various_artists)
-        self.assertTrue(release.artists)
+        assert release.is_single_artist
+        assert not release.is_various_artists
+        assert release.artists
 
     def test_release_tracks(self):
         Release = brainz.mb.Release
@@ -259,7 +259,7 @@ class TBrainz(PluginTestCase):
         self.assertEqual(artist.id, "410c9baf-5469-44f6-9852-826524b80c61")
         self.assertEqual(artist.name, "Autechre")
         self.assertEqual(artist.sort_name, "Autechre")
-        self.assertFalse(artist.is_various)
+        assert not artist.is_various
 
     def test_build_metadata(self):
         Release = brainz.mb.Release

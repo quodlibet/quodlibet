@@ -42,11 +42,11 @@ class THTMLExport(PluginTestCase):
 
     def test_empty_export(self):
         text = self.to_html([])
-        self.assertTrue("<html" in text)
+        assert "<html" in text
 
     def test_export(self):
         text = self.to_html(SONGS)
-        self.assertTrue("\xf6\xe4\xfc" in text)
+        assert "\xf6\xe4\xfc" in text
 
     def tearDown(self):
         config.quit()

@@ -80,7 +80,7 @@ class TInformation(TestCase):
         self.library.remove([f])
 
     def assert_child_is(self, cls):
-        self.assertTrue(isinstance(self.inf.get_child(), cls))
+        assert isinstance(self.inf.get_child(), cls)
 
 
 class TUtils(TestCase):

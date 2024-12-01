@@ -28,7 +28,7 @@ class TUniSearch(TestCase):
 
     def test_re_replace(self):
         r = re_add_variants("aa")
-        self.assertTrue("[" in r and "]" in r and r.count("ä") == 2)
+        assert "[" in r and "]" in r and r.count("ä") == 2
 
     def test_re_replace_multi(self):
         r = re_add_variants("ae")

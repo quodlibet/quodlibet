@@ -104,7 +104,7 @@ class TCommands(TCommandBase):
                  for fn in ["one", "two, please", "slash\\.mp3", "four"]]
         app.library.add(songs)
 
-        self.assertFalse(app.window.playlist.q.get())
+        assert not app.window.playlist.q.get()
         self._send("enqueue-files "
                     "one,two\\, please,slash\\\\.mp3,four")
         self.assertEqual(app.window.playlist.q.get(), songs)
@@ -129,7 +129,7 @@ class TCommandWithPattern(TCommandBase):
                  for fn in ["one", "two, please", "slash\\.mp3", "4.0-four"]]
         app.library.add(songs)
 
-        self.assertFalse(app.window.playlist.q.get())
+        assert not app.window.playlist.q.get()
         self._send("enqueue-files "
                     "one,two\\, please,slash\\\\.mp3,4.0-four")
 

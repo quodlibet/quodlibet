@@ -60,10 +60,10 @@ class TLyricsPane(TestCase):
         os.makedirs(os.path.dirname(lf_name))
         with open(lf_name, "wb") as f:
             f.write(LYRICS.encode("utf-8"))
-        self.assertTrue(os.path.exists(lf_name))
+        assert os.path.exists(lf_name)
         self.pane = LyricsPane(af)
         self.pane._save_lyrics(af, LYRICS)
-        self.assertFalse(os.path.exists(lf_name))
+        assert not os.path.exists(lf_name)
 
     def temp_mp3(self):
         name = get_temp_copy(get_data_path("silence-44-s.mp3"))

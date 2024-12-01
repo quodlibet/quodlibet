@@ -86,11 +86,11 @@ class TQueueExpander(TestCase):
         widget.pause()
 
     def test_random_at_startup(self):
-        self.assertFalse(isinstance(self.queue.model.order, OrderShuffle))
+        assert not isinstance(self.queue.model.order, OrderShuffle)
         quodlibet.config.set("memory", "shufflequeue", True)
         self.queue = self.queue = QueueExpander(SongLibrary(), NullPlayer())
         # See issue #2411
-        self.assertTrue(isinstance(self.queue.model.order, OrderShuffle))
+        assert isinstance(self.queue.model.order, OrderShuffle)
 
     def tearDown(self):
         self.queue.destroy()

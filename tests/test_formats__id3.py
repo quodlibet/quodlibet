@@ -33,10 +33,10 @@ class TID3ImagesBase(TestCase):
 class TID3ImagesMixin:
 
     def test_can_change_images(self):
-        self.assertTrue(self.KIND(self.filename).can_change_images)
+        assert self.KIND(self.filename).can_change_images
 
     def test_get_primary_image(self):
-        self.assertFalse(self.KIND(self.filename).has_images)
+        assert not self.KIND(self.filename).has_images
 
         f = mutagen.File(self.filename)
         apic = mutagen.id3.APIC(encoding=3, mime="image/jpeg", type=4,
@@ -45,7 +45,7 @@ class TID3ImagesMixin:
         f.save()
 
         song = self.KIND(self.filename)
-        self.assertTrue(song.has_images)
+        assert song.has_images
         image = song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
         fn = image.file
@@ -57,13 +57,13 @@ class TID3ImagesMixin:
         f.save()
 
         song = self.KIND(self.filename)
-        self.assertTrue(song.has_images)
+        assert song.has_images
         image = song.get_primary_image()
         self.assertEqual(image.read(), b"bar2")
 
         # get_images()
         images = song.get_images()
-        self.assertTrue(images and len(images) == 2)
+        assert images and len(images) == 2
         self.assertEqual(images[0].type, 3)
         self.assertEqual(images[1].type, 4)
 
@@ -75,23 +75,23 @@ class TID3ImagesMixin:
         f.save()
 
         song = self.KIND(self.filename)
-        self.assertTrue(song.has_images)
+        assert song.has_images
         song.clear_images()
 
         song = self.KIND(self.filename)
-        self.assertFalse(song.has_images)
+        assert not song.has_images
 
     def test_set_image(self):
         fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
 
         song = self.KIND(self.filename)
-        self.assertFalse(song.has_images)
+        assert not song.has_images
         song.set_image(image)
-        self.assertTrue(song.has_images)
+        assert song.has_images
 
         song = self.KIND(self.filename)
-        self.assertTrue(song.has_images)
+        assert song.has_images
         self.assertEqual(song.get_primary_image().mime_type, "image/jpeg")
 
     def test_set_image_no_tag(self):
@@ -103,7 +103,7 @@ class TID3ImagesMixin:
         song.set_image(image)
 
         song = self.KIND(self.filename)
-        self.assertTrue(song.has_images)
+        assert song.has_images
 
 
 class TID3ImagesMP3(TID3ImagesBase, TID3ImagesMixin):
@@ -271,7 +271,7 @@ class TID3FileMixin:
             af.write()
             tags = mutagen.File(self.filename).tags
             self.assertEqual(tags["TXXX:QuodLibet::language"], val)
-            self.assertFalse("TLAN" in tags)
+            assert "TLAN" not in tags
 
     def test_write_lang_iso(self):
         """Tests that if you use an ISO 639-2 code, TLAN gets populated"""
@@ -335,7 +335,7 @@ class TID3FileMixin:
         del song["musicbrainz_trackid"]
         song.write()
         f = mutagen.File(self.filename)
-        self.assertFalse(f.tags.get("UFID:http://musicbrainz.org"))
+        assert not f.tags.get("UFID:http://musicbrainz.org")
 
     def test_mb_release_track_id(self):
         f = mutagen.File(self.filename)
@@ -349,7 +349,7 @@ class TID3FileMixin:
         song.write()
         f = mutagen.File(self.filename)
         frames = f.tags.getall("TXXX:MusicBrainz Release Track Id")
-        self.assertTrue(frames)
+        assert frames
         self.assertEqual(frames[0].text, ["foo"])
 
     def test_load_comment(self):
@@ -372,7 +372,7 @@ class TID3FileMixin:
 
         # check if all keys are str
         for k in self.KIND(self.filename).keys():
-            self.assertTrue(isinstance(k, str))
+            assert isinstance(k, str)
 
         # remove value, save, reload and check if still gone
         del song["replaygain_track_gain"]
@@ -421,7 +421,7 @@ class TID3FileMixin:
 
         f = mutagen.File(self.filename)
         for k in ["track_peak", "track_gain", "album_peak", "album_gain"]:
-            self.assertTrue(f[f"TXXX:REPLAYGAIN_{k.upper()}"])
+            assert f[f"TXXX:REPLAYGAIN_{k.upper()}"]
 
     def test_foobar2k_rg_caseinsensitive(self):
         f = mutagen.File(self.filename)
@@ -433,12 +433,12 @@ class TID3FileMixin:
         song.write()
         f = mutagen.File(self.filename)
         frames = f.tags.getall("TXXX:REPLAYGAIN_TRACK_GAIN")
-        self.assertTrue(frames)
+        assert frames
         self.assertEqual(frames[0].desc, "REPLAYGAIN_TRACK_GAIN")
         del song["replaygain_track_gain"]
         song.write()
         f = mutagen.File(self.filename)
-        self.assertFalse(f.tags.getall("TXXX:REPLAYGAIN_TRACK_GAIN"))
+        assert not f.tags.getall("TXXX:REPLAYGAIN_TRACK_GAIN")
 
     def test_quodlibet_txxx_inval(self):
         # This shouldn't happen in our namespace, but check anyway since
@@ -459,19 +459,19 @@ class TID3FileMixin:
 
         # check if all keys are valid
         for k in self.KIND(self.filename).keys():
-            self.assertTrue(isinstance(k, str))
+            assert isinstance(k, str)
 
         song = self.KIND(self.filename)
-        self.assertFalse("foo=" in song)
-        self.assertFalse("öäü" in song)
+        assert "foo=" not in song
+        assert "öäü" not in song
         self.assertEqual(set(song.list("comment")), {"a", "b"})
         self.assertEqual(song("valid"), "quux")
         del song["valid"]
         song.write()
 
         f = mutagen.File(self.filename)
-        self.assertTrue(f.tags.getall("TXXX:QuodLibet::foo="))
-        self.assertFalse(f.tags.getall("TXXX:QuodLibet::valid"))
+        assert f.tags.getall("TXXX:QuodLibet::foo=")
+        assert not f.tags.getall("TXXX:QuodLibet::valid")
         self.assertEqual(len(f.tags.getall("COMM")), 2)
         self.assertEqual(len(f.tags.getall("COMM:")), 1)
 
@@ -498,13 +498,13 @@ class TID3FileMixin:
         f.save()
 
         song = self.KIND(self.filename)
-        self.assertFalse("invalid" in song)
-        self.assertFalse("öäü" in song)
+        assert "invalid" not in song
+        assert "öäü" not in song
         song.write()
 
         f = mutagen.File(self.filename)
-        self.assertTrue(f[t1.HashKey])
-        self.assertTrue(f[t2.HashKey])
+        assert f[t1.HashKey]
+        assert f[t2.HashKey]
 
     def test_woar(self):
         f = mutagen.File(self.filename)
@@ -555,7 +555,7 @@ class TID3FileMixin:
         f.save()
 
         song = self.KIND(self.filename)
-        self.assertTrue("performer:foo" in song)
+        assert "performer:foo" in song
         self.assertEqual(song("performer:foo"), "bar")
 
     def test_nonascii_unsup_tcon(self):

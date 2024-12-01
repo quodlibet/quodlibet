@@ -56,9 +56,9 @@ class TFIFO(TestCase):
 
         with temp_filename() as fn:
             fifo = FIFO(fn, cb)
-            self.assertFalse(fifo_exists(fifo._path))
+            assert not fifo_exists(fifo._path)
             fifo.open()
-            self.assertTrue(fifo_exists(fifo._path))
+            assert fifo_exists(fifo._path)
         # Should *not* error if file is gone
         fifo.destroy()
 

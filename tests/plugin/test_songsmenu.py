@@ -75,6 +75,6 @@ class TPluginsSongsMenu(PluginTestCase):
         for plugin in self.plugins.values():
             if isinstance(plugin, SongsMenuPlugin):
                 ha = plugin.handles_albums
-                self.assertFalse(hasattr(plugin, "plugin_single_album") and not ha)
-                self.assertFalse(hasattr(plugin, "plugin_plugin_album") and not ha)
-                self.assertFalse(hasattr(plugin, "plugin_albums") and not ha)
+                assert not hasattr(plugin, "plugin_single_album") and not ha
+                assert not hasattr(plugin, "plugin_plugin_album") and not ha
+                assert not hasattr(plugin, "plugin_albums") and not ha

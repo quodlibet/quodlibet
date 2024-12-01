@@ -13,13 +13,13 @@ class TMassagers(TestCase):
     def validate(self, key, values):
         massager = Massager.for_tag(key)
         for val in values:
-            self.assertTrue(massager.is_valid(val))
+            assert massager.is_valid(val)
             self.assertTrue(
                 isinstance(massager.validate(str(val)), str))
 
     def invalidate(self, key, values):
         for val in values:
-            self.assertFalse(Massager.for_tag(key).is_valid(val))
+            assert not Massager.for_tag(key).is_valid(val)
 
     def equivs(self, key, equivs):
         massager = Massager.for_tag(key)
@@ -34,17 +34,17 @@ class TMassagers(TestCase):
         self.assertEqual(validate("date", "2000"), "2000")
 
     def test_is_valid_helper(self):
-        self.assertTrue(is_valid("foo", "bar"))
-        self.assertFalse(is_valid("date", "bar"))
-        self.assertTrue(is_valid("date", "2000"))
+        assert is_valid("foo", "bar")
+        assert not is_valid("date", "bar")
+        assert is_valid("date", "2000")
 
     def test_error_message_helper(self):
-        self.assertFalse(error_message("foo", "bar"))
-        self.assertTrue(error_message("date", "2000"))
+        assert not error_message("foo", "bar")
+        assert error_message("date", "2000")
 
     def test_get_options_helper(self):
-        self.assertFalse(get_options("foo"))
-        self.assertTrue(get_options("language"))
+        assert not get_options("foo")
+        assert get_options("language")
 
     def test_date_valid(self):
         self.validate("date", ["2002-10-12", "2000", "1200-10", "0000-00-00",
@@ -118,4 +118,4 @@ class TMassagers(TestCase):
         for code in ["eng", "fra", "fre", "deu", "zho"]:
             self.assertTrue(code in mas.options,
                 "'%s' should be in languages options" % code)
-        self.assertFalse("" in mas.options)
+        assert "" not in mas.options

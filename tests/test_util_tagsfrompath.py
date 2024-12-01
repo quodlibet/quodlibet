@@ -54,8 +54,8 @@ class TTagsFromPattern(TestCase):
         song = pat.match({"~filename": self.f1})
         self.assertEqual(song.get("path"), "path")
         self.assertEqual(song.get("title"), "Title")
-        self.assertFalse(song.get("album"))
-        self.assertFalse(song.get("artist"))
+        assert not song.get("album")
+        assert not song.get("artist")
 
     def test_dict(self):
         tracktitle = {"tracknumber": "01", "title": "Title"}

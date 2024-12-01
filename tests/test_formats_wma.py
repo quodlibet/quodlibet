@@ -73,9 +73,9 @@ class TWMAFile(TestCase):
         self.song3.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("foobar"))
-        self.assertTrue("albumartist" in self.song.can_change())
+        assert self.song.can_change("title")
+        assert not self.song.can_change("foobar")
+        assert "albumartist" in self.song.can_change()
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "ASF")
@@ -114,7 +114,7 @@ class TWMAFile(TestCase):
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, WMAFile, path)
 
     def test_get_images(self):
@@ -124,27 +124,27 @@ class TWMAFile(TestCase):
         self.song2.reload()
 
         images = self.song2.get_images()
-        self.assertTrue(images and len(images) == 2)
+        assert images and len(images) == 2
 
     def test_get_image(self):
-        self.assertFalse(self.song.get_primary_image())
+        assert not self.song.get_primary_image()
 
         image = self.song2.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertTrue(image.read())
+        assert image.read()
 
     def test_get_image_invalid_data(self):
         tag = asf.ASF(self.f)
         tag["WM/Picture"] = [asf.ASFValue(b"nope", asf.BYTEARRAY)]
         tag.save()
 
-        self.assertFalse(self.song.has_images)
+        assert not self.song.has_images
         self.song.reload()
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
 
         image = self.song.get_primary_image()
-        self.assertFalse(image)
+        assert not image
 
     def test_unpack_image_min(self):
         data = b"\x03" + b"\x00" * 4 + b"\x00" * 4
@@ -172,12 +172,12 @@ class TWMAFile(TestCase):
     def test_clear_images(self):
         # cover case
         image = self.song2.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.song2.clear_images()
-        self.assertFalse(self.song2.has_images)
+        assert not self.song2.has_images
         self.song2.reload()
         image = self.song2.get_primary_image()
-        self.assertFalse(image)
+        assert not image
 
         # no cover case
         self.song.clear_images()
@@ -185,17 +185,17 @@ class TWMAFile(TestCase):
     def test_set_image(self):
         fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
-        self.assertFalse(self.song.has_images)
+        assert not self.song.has_images
         self.song.set_image(image)
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
 
         image = self.song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
         self.assertEqual(image.read(), b"foo")
 
     def test_can_change_images(self):
-        self.assertTrue(self.song.can_change_images)
+        assert self.song.can_change_images
 
     def test_can_multiple_values(self):
-        self.assertTrue("artist" in self.song.can_multiple_values())
-        self.assertTrue(self.song.can_multiple_values("genre"))
+        assert "artist" in self.song.can_multiple_values()
+        assert self.song.can_multiple_values("genre")

@@ -19,7 +19,7 @@ class _TDesktopFileMixin:
     PATH = None
 
     def test_filename(self):
-        self.assertTrue(self.PATH.endswith(".desktop.in"))
+        assert self.PATH.endswith(".desktop.in")
 
     def test_validate(self):
         with open(self.PATH, "rb") as template:

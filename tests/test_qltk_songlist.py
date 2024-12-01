@@ -97,9 +97,9 @@ class TSongList(TestCase):
         s = self.songlist
         s.set_column_headers(["foo"])
         s.toggle_column_sort(s.get_columns()[0], replace=True)
-        self.assertTrue(s.get_sort_orders())
+        assert s.get_sort_orders()
         s.clear_sort()
-        self.assertFalse(s.get_sort_orders())
+        assert not s.get_sort_orders()
 
     def test_not_sortable(self):
         config.set("song_list", "always_allow_sorting", False)
@@ -123,13 +123,13 @@ class TSongList(TestCase):
 
     def test_find_default_sort_column(self):
         s = self.songlist
-        self.assertTrue(s.find_default_sort_column() is None)
+        assert s.find_default_sort_column() is None
         s.set_column_headers(["~#track"])
-        self.assertTrue(s.find_default_sort_column())
+        assert s.find_default_sort_column()
 
     def test_inline_search_state(self):
         self.assertEqual(self.songlist.get_search_column(), 0)
-        self.assertTrue(self.songlist.get_enable_search())
+        assert self.songlist.get_enable_search()
 
     def test_set_songs(self):
         self.songlist.set_songs([], sorted=True)
@@ -216,31 +216,31 @@ class TSongList(TestCase):
 
         self.songlist.set_column_headers(["foo"])
 
-        self.assertFalse(self.songlist.menu("foo", browser, library))
+        assert not self.songlist.menu("foo", browser, library)
         sel = self.songlist.get_selection()
         sel.select_all()
-        self.assertTrue(self.songlist.menu("foo", browser, library))
+        assert self.songlist.menu("foo", browser, library)
         librarian.destroy()
         self.lib.librarian = None
 
     def test_get_columns_migrated(self):
-        self.assertFalse(config.get("settings", "headers", None))
+        assert not config.get("settings", "headers", None)
         columns = "~album,~#replaygain_track_gain,foobar"
         config.set("settings", "columns", columns)
         self.assertEqual(get_columns(),
                              ["~album", "~#replaygain_track_gain", "foobar"])
-        self.assertFalse(config.get("settings", "headers", None))
+        assert not config.get("settings", "headers", None)
 
     def test_get_set_columns(self):
-        self.assertFalse(config.get("settings", "headers", None))
-        self.assertFalse(config.get("settings", "columns", None))
+        assert not config.get("settings", "headers", None)
+        assert not config.get("settings", "columns", None)
         columns = ["first", "won't", "two words", "4"]
         set_columns(columns)
         self.assertEqual(columns, get_columns())
         columns += ["~~another~one"]
         set_columns(columns)
         self.assertEqual(columns, get_columns())
-        self.assertFalse(config.get("settings", "headers", None))
+        assert not config.get("settings", "headers", None)
 
     def test_header_tag_split(self):
         self.assertEqual(header_tag_split("foo"), ["foo"])

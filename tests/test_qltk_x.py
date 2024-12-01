@@ -25,7 +25,7 @@ class Notebook(TestCase):
         n = x.Notebook()
         c = Gtk.VBox()
         n.append_page(c, l)
-        self.assertTrue(l is n.get_tab_label(c))
+        assert l is n.get_tab_label(c)
         c.destroy()
 
     def test_widget_error(self):
@@ -44,12 +44,12 @@ class Frame(TestCase):
 
 class MenuItem(TestCase):
     def test_ctr(self):
-        self.assertTrue(x.MenuItem("foo", Icons.EDIT_FIND))
+        assert x.MenuItem("foo", Icons.EDIT_FIND)
 
 
 class Button(TestCase):
     def test_ctr(self):
-        self.assertTrue(x.Button("foo", Icons.EDIT_FIND))
+        assert x.Button("foo", Icons.EDIT_FIND)
 
 
 class TAlign(TestCase):
@@ -60,7 +60,7 @@ class TAlign(TestCase):
         self.assertEqual(a.get_margin_bottom(), 0)
         self.assertEqual(a.get_margin_left(), 4)
         self.assertEqual(a.get_margin_right(), 6)
-        self.assertTrue(a.get_child() is button)
+        assert a.get_child() is button
         a.destroy()
 
 

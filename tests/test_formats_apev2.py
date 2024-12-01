@@ -69,18 +69,18 @@ class TAPEv2FileMixin:
         self.assertEqual(self.s.get("foo"), None)
         self.s.write()
         m = mutagen.apev2.APEv2(self.f)
-        self.assertTrue("foo" in m)
+        assert "foo" in m
 
     def test_titlecase(self):
         self.s["isRc"] = "1234"
         self.s["fOoBaR"] = "5678"
         self.s.write()
         self.s.reload()
-        self.assertTrue("isrc" in self.s)
-        self.assertTrue("foobar" in self.s)
+        assert "isrc" in self.s
+        assert "foobar" in self.s
         m = mutagen.apev2.APEv2(self.f)
-        self.assertTrue("ISRC" in m)
-        self.assertTrue("Foobar" in m)
+        assert "ISRC" in m
+        assert "Foobar" in m
 
     def test_disc_mapping(self):
         m = mutagen.apev2.APEv2(self.f)
@@ -179,7 +179,7 @@ class TWvCoverArt(TestCase):
 
     def test_get_primary_image(self):
         cover = self.s.get_primary_image()
-        self.assertTrue(cover)
+        assert cover
         self.assertEqual(cover.type, APICType.COVER_FRONT)
 
     def test_get_images(self):
@@ -189,17 +189,17 @@ class TWvCoverArt(TestCase):
         self.assertEqual(types, [APICType.COVER_FRONT, APICType.COVER_BACK])
 
     def test_can_change_images(self):
-        self.assertTrue(self.s.can_change_images)
+        assert self.s.can_change_images
 
     def test_clear_images(self):
         # cover case
         image = self.s.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.s.clear_images()
-        self.assertFalse(self.s.has_images)
+        assert not self.s.has_images
         self.s.reload()
         image = self.s.get_primary_image()
-        self.assertFalse(image)
+        assert not image
 
         # no cover case
         self.s.clear_images()
@@ -208,7 +208,7 @@ class TWvCoverArt(TestCase):
         fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.s.set_image(image)
-        self.assertTrue(self.s.has_images)
+        assert self.s.has_images
 
         images = self.s.get_images()
         self.assertEqual(len(images), 1)

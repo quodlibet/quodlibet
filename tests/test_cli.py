@@ -15,8 +15,8 @@ class Tcli(TestCase):
     def test_process_no_arguments_works(self):
         with capture_output() as (out, err):
             cli.process_arguments(["myprog"])
-            self.assertFalse(out.getvalue())
-            self.assertFalse(err.getvalue())
+            assert not out.getvalue()
+            assert not err.getvalue()
 
     def test_process_arguments_errors_on_invalid_opt(self):
         with self.assertRaises(SystemExit):

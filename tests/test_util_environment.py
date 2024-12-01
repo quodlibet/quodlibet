@@ -13,13 +13,13 @@ from quodlibet.util import is_unity, is_windows, is_osx
 class TUtilEnvironment(TestCase):
 
     def test_all(self):
-        self.assertTrue(isinstance(is_unity(), bool))
-        self.assertTrue(isinstance(is_windows(), bool))
-        self.assertTrue(isinstance(is_osx(), bool))
+        assert isinstance(is_unity(), bool)
+        assert isinstance(is_windows(), bool)
+        assert isinstance(is_osx(), bool)
 
     def test_constrains(self):
         if is_windows():
-            self.assertFalse(is_osx())
+            assert not is_osx()
 
         if is_osx():
-            self.assertFalse(is_windows())
+            assert not is_windows()

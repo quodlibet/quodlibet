@@ -18,7 +18,7 @@ class TWAVEFile(TestCase):
 
     def test_title_tag(self):
         self.assertEqual(self.song["title"], "test")
-        self.assertTrue(isinstance(self.song["title"], str))
+        assert isinstance(self.song["title"], str)
 
     def test_length(self):
         self.assertAlmostEqual(self.song("~#length"), 0.227, 2)
@@ -36,11 +36,11 @@ class TWAVEFile(TestCase):
         self.song.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("artist"))
+        assert self.song.can_change("artist")
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, WAVEFile, path)
 
     def test_format_codec(self):

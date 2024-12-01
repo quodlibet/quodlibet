@@ -12,16 +12,16 @@ browsers.init()
 
 class TBrowsers(TestCase):
     def test_presence(self):
-        self.assertTrue(browsers.tracks)
-        self.assertTrue(browsers.paned)
-        self.assertTrue(browsers.iradio)
-        self.assertTrue(browsers.podcasts)
-        self.assertTrue(browsers.albums)
-        self.assertTrue(browsers.playlists)
-        self.assertTrue(browsers.filesystem)
+        assert browsers.tracks
+        assert browsers.paned
+        assert browsers.iradio
+        assert browsers.podcasts
+        assert browsers.albums
+        assert browsers.playlists
+        assert browsers.filesystem
 
     def test_get(self):
-        self.assertTrue(browsers.get("SearchBar") is browsers.tracks.TrackList)
+        assert browsers.get("SearchBar") is browsers.tracks.TrackList
         self.assertTrue(
             browsers.get("FileSystem") is browsers.filesystem.FileSystem)
         self.assertEqual(browsers.get("Paned"), browsers.paned.PanedBrowser)

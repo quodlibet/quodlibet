@@ -50,12 +50,12 @@ class TFingerprint(PluginTestCase):
         t = time.time()
         while not done and time.time() - t < self.TIMEOUT:
             Gtk.main_iteration_do(False)
-        self.assertTrue(done)
+        assert done
         s, result, error = done
         # silence doesn't produce a fingerprint
-        self.assertTrue(error)
-        self.assertFalse(result)
-        self.assertTrue(song is s)
+        assert error
+        assert not result
+        assert song is s
 
     def test_analyze_pool(self):
         pool = self.mod.analyze.FingerPrintPool()
@@ -104,7 +104,7 @@ class TAcoustidLookup(PluginTestCase):
         self.assertEqual(tags["date"], "2002-01")
         self.assertEqual(tags["tracknumber"], "7/15")
         self.assertEqual(tags["discnumber"], "")
-        self.assertTrue("musicbrainz_albumid" in tags)
+        assert "musicbrainz_albumid" in tags
 
     def test_parse_response_2(self):
         parse = self.mod.acoustid.parse_acoustid_response
@@ -114,13 +114,13 @@ class TAcoustidLookup(PluginTestCase):
         tags = release.tags
         self.assertEqual(tags["albumartist"], "Kinderzimmer Productions")
         self.assertEqual(tags["album"], "Wir sind da wo oben ist")
-        self.assertTrue("musicbrainz_albumid" in tags)
+        assert "musicbrainz_albumid" in tags
 
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
         release = parse(ACOUSTID_RESPONSE)[1]
-        self.assertTrue("musicbrainz_albumid" in release.tags)
+        assert "musicbrainz_albumid" in release.tags
         self.assertEqual(release.sources, 6)
         self.assertEqual(
             release.tags["musicbrainz_trackid"],

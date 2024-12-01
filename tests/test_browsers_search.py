@@ -62,11 +62,11 @@ class TSearchBar(TestCase):
 
     def _do(self):
         run_gtk_loop()
-        self.assertTrue(self.success or self.expected is None)
+        assert self.success or self.expected is None
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.assertTrue(self.bar.can_filter(key))
+            assert self.bar.can_filter(key)
 
     def test_empty_is_all(self):
         self.bar.filter_text("")
@@ -74,10 +74,10 @@ class TSearchBar(TestCase):
         self._do()
 
     def test_active_filter(self):
-        self.assertTrue(self.bar.active_filter(SONGS[0]))
+        assert self.bar.active_filter(SONGS[0])
         self.bar.filter_text("this does not match any song")
         self.expected = []
-        self.assertFalse(self.bar.active_filter(SONGS[0]))
+        assert not self.bar.active_filter(SONGS[0])
         self._do()
 
     def test_filter(self):

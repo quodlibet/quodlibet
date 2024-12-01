@@ -11,9 +11,9 @@ from quodlibet.util.string import isascii
 class Tisascii(TestCase):
 
     def test_main(self):
-        self.assertTrue(isascii(""))
-        self.assertTrue(isascii(""))
-        self.assertTrue(isascii("abc"))
-        self.assertTrue(isascii("abc"))
-        self.assertFalse(isascii("\xffbc"))
-        self.assertFalse(isascii("übc"))
+        assert isascii("")
+        assert isascii("")
+        assert isascii("abc")
+        assert isascii("abc")
+        assert not isascii("\xffbc")
+        assert not isascii("übc")

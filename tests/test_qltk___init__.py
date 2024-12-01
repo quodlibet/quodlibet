@@ -25,7 +25,7 @@ def test_is_instance_of_gtype_name():
 
 class TQltk(TestCase):
     def test_none(self):
-        self.assertTrue(qltk.get_top_parent(None) is None)
+        assert qltk.get_top_parent(None) is None
 
     def test_get_fg_highlight_color(self):
         widget = Gtk.Button()
@@ -52,19 +52,19 @@ class TQltk(TestCase):
 
     def test_is_accel(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_RELEASE)
-        self.assertFalse(qltk.is_accel(e, "a"))
+        assert not qltk.is_accel(e, "a")
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
-        self.assertTrue(qltk.is_accel(e, "<ctrl>Return"))
+        assert qltk.is_accel(e, "<ctrl>Return")
 
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
         e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
-        self.assertTrue(qltk.is_accel(e, "a", "<ctrl>Return"))
-        self.assertTrue(qltk.is_accel(e, "<ctrl>Return", "b"))
-        self.assertFalse(qltk.is_accel(e, "a", "b"))
+        assert qltk.is_accel(e, "a", "<ctrl>Return")
+        assert qltk.is_accel(e, "<ctrl>Return", "b")
+        assert not qltk.is_accel(e, "a", "b")
 
     def test_is_accel_invalid(self):
         e = Gdk.Event.new(Gdk.EventType.KEY_PRESS)
@@ -76,7 +76,7 @@ class TQltk(TestCase):
         e.keyval = Gdk.KEY_Return
         e.state = Gdk.ModifierType.CONTROL_MASK
         if not util.is_osx():
-            self.assertTrue(qltk.is_accel(e, "<Primary>Return"))
+            assert qltk.is_accel(e, "<Primary>Return")
 
     def test_popup_menu_under_widget(self):
         w = Gtk.Window()
@@ -116,7 +116,7 @@ class TQltk(TestCase):
         item = Gtk.MenuItem()
         menu = Gtk.Menu()
         menu.append(item)
-        self.assertTrue(qltk.get_menu_item_top_parent(item) is None)
+        assert qltk.get_menu_item_top_parent(item) is None
 
     def test_show_uri_with_existing_window(self):
         PluginManager.instance = PluginManager()

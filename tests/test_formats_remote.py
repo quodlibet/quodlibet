@@ -16,12 +16,12 @@ class TRemoteFile(TestCase):
 
     def test_path_types(self):
         f = RemoteFile("http://example.com")
-        self.assertTrue(isinstance(f["~mountpoint"], fsnative))
-        self.assertTrue(isinstance(f["~filename"], fsnative))
+        assert isinstance(f["~mountpoint"], fsnative)
+        assert isinstance(f["~filename"], fsnative)
 
     def test_fix_old_types(self):
         f = RemoteFile("http://example.com")
         dict.__setitem__(f, "~filename", b"foo")
-        self.assertTrue(isinstance(f["~filename"], fsnative))
+        assert isinstance(f["~filename"], fsnative)
         dict.__setitem__(f, "~filename", "foo")
-        self.assertTrue(isinstance(f["~filename"], fsnative))
+        assert isinstance(f["~filename"], fsnative)

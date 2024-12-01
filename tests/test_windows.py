@@ -19,34 +19,34 @@ class TWindows(TestCase):
 
     def test_dir_funcs(self):
         d = windows.get_personal_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
         d = windows.get_appdata_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
         d = windows.get_desktop_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
         d = windows.get_music_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
         d = windows.get_profile_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
         d = windows.get_links_dir()
-        self.assertTrue(d is None or isinstance(d, str))
+        assert d is None or isinstance(d, str)
 
     def test_get_link_target(self):
         path = get_data_path("test.lnk")
         d = windows.get_link_target(path)
-        self.assertTrue(isinstance(d, str))
+        assert isinstance(d, str)
         self.assertEqual(
             normalize_path(d), normalize_path("C:\\Windows\\explorer.exe"))
 
     def test_get_link_target_unicode(self):
         path = get_data_path("test2.lnk")
         d = windows.get_link_target(path)
-        self.assertTrue(isinstance(d, str))
+        assert isinstance(d, str)
         if is_wine():
             # wine doesn't support unicode paths here..
             self.assertEqual(os.path.basename(d), "\xe1??.txt")

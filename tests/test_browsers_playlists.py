@@ -48,7 +48,7 @@ class TParsePlaylistMixin:
         with temp_filename() as name:
             with open(name) as f:
                 pl = self.Parse(f, name, pl_lib=self.pl_lib)
-        self.assertFalse(pl)
+        assert not pl
         pl.delete()
 
     def test_parse_onesong(self):
@@ -165,9 +165,9 @@ class TPlaylistIntegration(TestCase):
     def test_remove_no_lib(self):
         pl = FileBackedPlaylist.new(self._dir, "Foobar")
         pl.extend(self.SONGS)
-        self.assertTrue(len(pl))
+        assert len(pl)
         pl.remove_songs(self.SONGS, False)
-        self.assertFalse(len(pl))
+        assert not len(pl)
 
 
 class TPlaylistsBrowser(TestCase):
@@ -247,7 +247,7 @@ class TPlaylistsBrowser(TestCase):
 
     def _do(self):
         run_gtk_loop()
-        self.assertTrue(self.success or self.expected is None)
+        assert self.success or self.expected is None
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
@@ -271,22 +271,21 @@ class TPlaylistsBrowser(TestCase):
         self.bar._select_playlist(self.bar.playlists()[1])
 
         # Second playlist should not have any of `SONGS`
-        self.assertFalse(self.bar.active_filter(SONGS[0]))
+        assert not self.bar.active_filter(SONGS[0])
 
         # But it should have `ANOTHER_SONG`
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
-                        msg="Couldn't find song from second playlist")
+        msg = "Couldn't find song from second playlist"
+        assert self.bar.active_filter(self.ANOTHER_SONG), msg
 
         # ... and setting a reasonable filter on that song should match still
         self.bar.filter_text("lonely")
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
-                        msg="Couldn't find song from second playlist with "
-                            "filter of 'lonely'")
+        msg = "Couldn't find song from second playlist with filter of 'lonely'"
+        assert self.bar.active_filter(self.ANOTHER_SONG), msg
 
         # ...unless it doesn't match that song
         self.bar.filter_text("piman")
-        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG),
-                         msg="Shouldn't have matched 'piman' on second list")
+        msg = "Shouldn't have matched 'piman' on second list"
+        assert not self.bar.active_filter(self.ANOTHER_SONG), msg
 
     def test_rename(self):
         self.assertEqual(self.bar.playlists()[1], self.small)
@@ -300,7 +299,7 @@ class TPlaylistsBrowser(TestCase):
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
         self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
-        self.assertTrue("<~name>" in pattern_text)
+        assert "<~name>" in pattern_text
 
     def test_drag_data_get(self):
         b = self.bar
@@ -357,7 +356,7 @@ class TPlaylistsBrowser(TestCase):
                                            scroll=False, one=True)
         original_length = len(first_pl)
         ret = b.key_pressed(event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
 
     def test_playlist_deletion_ACCEPT(self):
@@ -369,7 +368,7 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length - 1)
         self.assertEqual(b.playlists()[0], second_pl)
 
@@ -382,7 +381,7 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length)
         self.assertEqual(b.playlists()[0], first_pl)
         self.assertEqual(b.playlists()[1], second_pl)

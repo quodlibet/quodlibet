@@ -70,7 +70,7 @@ class TDirectoryTree(TestCase):
             dirlist.destroy()
             # select the last valid parent directory
             self.assertEqual(len(selected), 1)
-            self.assertTrue(selected[0].startswith(path))
+            assert selected[0].startswith(path)
 
     def test_bad_go_to(self):
         newpath = fsnative("/woooooo/bar/fun/broken")
@@ -83,14 +83,14 @@ class TDirectoryTree(TestCase):
         if os.name == "nt":
             folders = ["C:\\"]
         main = MainDirectoryTree(folders=folders)
-        self.assertTrue(len(main.get_model()))
+        assert len(main.get_model())
 
         main = MainDirectoryTree()
-        self.assertTrue(len(main.get_model()))
+        assert len(main.get_model())
 
     def test_get_drives(self):
         for path in get_drives():
-            self.assertTrue(isinstance(path, fsnative))
+            assert isinstance(path, fsnative)
 
     def test_popup(self):
         dt = DirectoryTree(None, folders=self.ROOTS)
@@ -100,7 +100,7 @@ class TDirectoryTree(TestCase):
         self.assertEqual(len(children), 4)
         delete = children[1]
         self.assertEqual(delete.get_label(), __("_Delete"))
-        self.assertTrue(delete.get_sensitive())
+        assert delete.get_sensitive()
 
     def test_multiple_selections(self):
         dt = DirectoryTree(None, folders=self.ROOTS)
@@ -108,18 +108,16 @@ class TDirectoryTree(TestCase):
         dt._popup_menu(menu)
         children = menu.get_children()
         select_sub = children[3]
-        self.assertTrue("sub-folders" in select_sub.get_label().lower())
-        self.assertTrue(select_sub.get_sensitive())
+        assert "sub-folders" in select_sub.get_label().lower()
+        assert select_sub.get_sensitive()
         sel = dt.get_selection()
         model = dt.get_model()
         for it, _pth in model.iterrows(None):
             sel.select_iter(it)
-        self.assertTrue(select_sub.get_sensitive(),
-                        msg="Select All should work for multiple")
-        self.assertFalse(children[0].get_sensitive(),
-                    msg="New Folder should be disabled for multiple")
-        self.assertTrue(children[3].get_sensitive(),
-                        msg="Refresh should be enabled for multiple")
+        assert select_sub.get_sensitive(), "Select All should work for multiple"
+        msg = "New Folder should be disabled for multiple"
+        assert not children[0].get_sensitive(), msg
+        assert children[3].get_sensitive(), "Refresh should be enabled for multiple"
 
 
 class TFileSelector(TestCase):
