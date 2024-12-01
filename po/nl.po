@@ -72,7 +72,7 @@ msgstr "Sorteren o_p…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Voorkeuren"
@@ -180,7 +180,7 @@ msgstr "Verzameling verkennen"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -639,7 +639,7 @@ msgid "Equal pane width"
 msgstr "Vaste paneelbreedte"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Afspeellijsten"
 
@@ -684,11 +684,11 @@ msgstr "_Naam wijzigen"
 msgid "Unable to rename playlist"
 msgstr "Kan afspeellijstnaam niet wijzigen"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Afspeellijst importeren"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Importeren"
 
@@ -750,7 +750,7 @@ msgid "_Add Tracks"
 msgstr "Nummers"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Nieuwe afspeellijst"
 
@@ -1677,17 +1677,17 @@ msgid ""
 "listening to."
 msgstr "Past je Gajim-statusbericht aan naar waar je naar luistert."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "Gepauzeerd:"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Statustekst"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Statustekst"
@@ -7656,11 +7656,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Lege afspeellijst"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "Afspeellijsten moeten een naam hebben"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Er is al een afspeellijst met deze naam (\"%(name)s\") in %(path)s"

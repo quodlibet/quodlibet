@@ -74,7 +74,7 @@ msgstr "Ordenar _por:"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 #, fuzzy
 msgid "_Preferences"
@@ -186,7 +186,7 @@ msgstr "Navegador da colección"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -660,7 +660,7 @@ msgid "Equal pane width"
 msgstr ""
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listas"
 
@@ -707,11 +707,11 @@ msgstr "Muda_r o nome"
 msgid "Unable to rename playlist"
 msgstr "Non se puido mudar o nome da lista"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Importar lista"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Importar"
 
@@ -781,7 +781,7 @@ msgid "_Add Tracks"
 msgstr "Pista"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Nova lista"
 
@@ -1718,17 +1718,17 @@ msgid ""
 "listening to."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "_Parar"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "padrom"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "padrom"
@@ -7785,11 +7785,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Importar lista"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Xá existe umha lista co nome  %s ."
