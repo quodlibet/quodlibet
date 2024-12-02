@@ -22,6 +22,13 @@
           qlPython
           pkgs.shellcheck
           pkgs.alejandra
+          pkgs.cairo
+          pkgs.ninja
+          pkgs.pkg-config
+          pkgs.gobject-introspection
+          pkgs.gdk-pixbuf
+          pkgs.gtk3
+          pkgs.libsoup_3
         ];
       };
 
