@@ -9,7 +9,7 @@
 from quodlibet import _
 from quodlibet.plugins.songshelpers import any_song
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
-from quodlibet.util.string.splitters import split_title, split_album
+from quodlibet.util.string.splitters import split_title, split_album, split_genre
 from quodlibet.qltk import Icons
 
 
@@ -25,6 +25,9 @@ def has_title_splittable(song):
             song.can_change("title") and
             song.can_change("version"))
 
+def has_genre_splittable(song):
+    return ("genre" in song and
+            song.can_change("genre"))
 
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
@@ -66,3 +69,18 @@ class SplitAlbum(SongsMenuPlugin):
                 song["album"] = album
             if disc:
                 song["discnumber"] = disc
+
+
+class SplitGenre(SongsMenuPlugin):
+    PLUGIN_ID = "Split Genre"
+    PLUGIN_NAME = _("Split Genre")
+    PLUGIN_DESC = _("Split a single genre tag into multiple tags.")
+    PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
+
+    plugin_handles = any_song(has_genre_splittable)
+
+    def plugin_song(self, song):
+        if has_genre_splittable(song):
+            genre = split_genre(song["genre"])
+            if genre:
+                song["genre"] = genre
