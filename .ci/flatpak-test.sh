@@ -2,7 +2,7 @@
 
 set -e
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+DIR="$(cd "$(dirname "$0")" && pwd)"
 
 if [[ $1 == "inflatpak" ]]; then
     tmp="$(mktemp -d)"

@@ -13,41 +13,41 @@ jobs:
     runs-on: ubuntu-22.04
     name: update-pot
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update -qq
-        sudo apt install -qqy \
-          gettext \
-          libcairo2-dev \
-          libgirepository1.0-dev \
-          libdbus-glib-1-dev \
-          pkg-config \
-          python3-dev \
-          pipx
-        pipx install "poetry==1.4.2"
-        pipx ensurepath
+      - name: Install Dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qqy \
+            gettext \
+            libcairo2-dev \
+            libgirepository1.0-dev \
+            libdbus-glib-1-dev \
+            pkg-config \
+            python3-dev \
+            pipx
+          pipx install "poetry==1.8.4"
+          pipx ensurepath
 
-    - name: Install project virtualenv
-      run: poetry install
+      - name: Install project virtualenv
+        run: poetry install
 
-    - name: Update .pot
-      run: |
-        poetry run python setup.py create_pot
+      - name: Update .pot
+        run: |
+          poetry run python setup.py create_pot
 
-    - name: Show diff
-      run: |
-        git diff
+      - name: Show diff
+        run: |
+          git diff
 
-    - name: Push Updates
-      run: |
-        if ! git diff --exit-code --quiet; then
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git add po/quodlibet.pot
-          git commit -m "Update quodlibet.pot"
-          git push
-        else
-          echo "No changes"
-        fi
+      - name: Push Updates
+        run: |
+          if ! git diff --exit-code --quiet; then
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git config --global user.name "github-actions[bot]"
+            git add po/quodlibet.pot
+            git commit -m "Update quodlibet.pot"
+            git push
+          else
+            echo "No changes"
+          fi
