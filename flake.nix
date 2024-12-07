@@ -48,6 +48,11 @@
             settings = {
               global.excludes = [
                 "*.lock"
+                "*.rst"
+                "*.md"
+                "*.png"
+                "*.po"
+                "*.mp3"
                 # Handled within Python venv tooling
                 "*.py"
               ];

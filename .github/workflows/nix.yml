@@ -15,4 +15,4 @@ jobs:
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
       - run: nix develop --command poetry --version
-      - run: nix flake check --keep-going
+      - run: nix flake check --keep-going -L
