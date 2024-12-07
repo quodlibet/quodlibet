@@ -93,91 +93,91 @@ jobs:
     name: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update -qq
-        sudo apt install -qqy \
-          appstream \
-          dbus-x11 \
-          gettext \
-          gir1.2-appindicator3-0.1 \
-          gir1.2-gst-plugins-base-1.0 \
-          gir1.2-gstreamer-1.0 \
-          gir1.2-gtk-3.0 \
-          gir1.2-gtksource-4 \
-          gir1.2-keybinder-3.0 \
-          gir1.2-soup-3.0 \
-          gstreamer1.0-plugins-bad \
-          gstreamer1.0-plugins-base \
-          gstreamer1.0-plugins-good \
-          gstreamer1.0-plugins-ugly \
-          gstreamer1.0-pulseaudio \
-          libxine2 \
-          python3-feedparser \
-          python3-gi \
-          python3-gi-cairo \
-          python3-musicbrainzngs \
-          python3-mutagen \
-          python3-pip \
-          python3-polib \
-          python3-pytest \
-          python3-setuptools \
-          xvfb
+      - name: Install Dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qqy \
+            appstream \
+            dbus-x11 \
+            gettext \
+            gir1.2-appindicator3-0.1 \
+            gir1.2-gst-plugins-base-1.0 \
+            gir1.2-gstreamer-1.0 \
+            gir1.2-gtk-3.0 \
+            gir1.2-gtksource-4 \
+            gir1.2-keybinder-3.0 \
+            gir1.2-soup-3.0 \
+            gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-ugly \
+            gstreamer1.0-pulseaudio \
+            libxine2 \
+            python3-feedparser \
+            python3-gi \
+            python3-gi-cairo \
+            python3-musicbrainzngs \
+            python3-mutagen \
+            python3-pip \
+            python3-polib \
+            python3-pytest \
+            python3-setuptools \
+            xvfb
 
-        python3 -m pip install --user --upgrade \
-          PyVirtualDisplay \
-          pytest-faulthandler \
-          "ruff==0.1.6" \
-          flaky
+          python3 -m pip install --user --upgrade \
+            PyVirtualDisplay \
+            pytest-faulthandler \
+            "ruff==0.1.6" \
+            flaky
 
-    - name: Run tests
-      run: |
-        PYTEST_ADDOPTS=-rxXs python3 setup.py test
+      - name: Run tests
+        run: |
+          PYTEST_ADDOPTS=-rxXs python3 setup.py test
 
   ubuntu-poetry:
     runs-on: ubuntu-24.04
     name: ubuntu-24.04-poetry
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update -qq
-        sudo apt install -qqy \
-          libdbus-glib-1-dev \
-          gettext \
-          gir1.2-gst-plugins-base-1.0 \
-          gir1.2-gtk-3.0 \
-          gir1.2-soup-3.0 \
-          gstreamer1.0-plugins-good \
-          libcairo2-dev \
-          libgirepository1.0-dev \
-          pkg-config \
-          pipx \
-          xvfb
-        pipx install "poetry==1.8.4"
-        pipx ensurepath
+      - name: Install Dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qqy \
+            libdbus-glib-1-dev \
+            gettext \
+            gir1.2-gst-plugins-base-1.0 \
+            gir1.2-gtk-3.0 \
+            gir1.2-soup-3.0 \
+            gstreamer1.0-plugins-good \
+            libcairo2-dev \
+            libgirepository1.0-dev \
+            pkg-config \
+            pipx \
+            xvfb
+          pipx install "poetry==1.8.4"
+          pipx ensurepath
 
-    - name: Check Poetry project
-      run: |
-        poetry check
-        poetry lock --check
+      - name: Check Poetry project
+        run: |
+          poetry check
+          poetry lock --check
 
-    - name: Install project virtualenv
-      run: poetry install -E plugins
+      - name: Install project virtualenv
+        run: poetry install -E plugins
 
-    - name: Run tests
-      run: |
-        PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
-        poetry run coverage xml -i
+      - name: Run tests
+        run: |
+          PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
+          poetry run coverage xml -i
 
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        fail_ci_if_error: false
-        verbose: true # optional (default = false)
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
+        with:
+          fail_ci_if_error: false
+          verbose: true # optional (default = false)
 
   shellcheck:
     name: Shellcheck
@@ -188,5 +188,5 @@ jobs:
         uses: ludeeus/action-shellcheck@master
         with:
           version: v0.8.0
-          check_together: 'yes'
+          check_together: "yes"
           ignore_paths: ./data/**

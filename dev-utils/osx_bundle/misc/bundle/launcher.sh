@@ -1,6 +1,9 @@
 #!/bin/bash
 
-bundle=$(cd "$(dirname "$(dirname "$(dirname "$0")")")" || exit; pwd)
+bundle=$(
+    cd "$(dirname "$(dirname "$(dirname "$0")")")" || exit
+    pwd
+)
 bundle_contents="$bundle"/Contents
 bundle_res="$bundle_contents"/Resources
 bundle_lib="$bundle_res"/lib
@@ -31,7 +34,7 @@ export GST_PLUGIN_SYSTEM_PATH="$bundle_lib/gstreamer-1.0"
 export GST_PLUGIN_SCANNER="$bundle_contents/MacOS/gst-plugin-scanner"
 
 # Strip out the argument added by the OS.
-if /bin/expr "x$1" : '^x-psn_' > /dev/null; then
+if /bin/expr "x$1" : '^x-psn_' >/dev/null; then
     shift 1
 fi
 
@@ -56,14 +59,14 @@ export QUODLIBET_NO_HINTS=yes
 # Beginning in MacOS 14.0, if the executable pointed to by an app's Info.plist
 # is a symbolic link to a script, Finder passes the path of the script as
 # $0, not the path of the symbolic link.  As a workaround, hardwire "quodlibet"
-# as the app name.  
+# as the app name.
 APP=$(basename "$0")
 if [ "$APP" = "_launcher" ]; then
     APP="quodlibet"
 fi
 if [ "$APP" = "run" ]; then
     "$PYTHON" "$@"
-elif  [ "$APP" = "gst-plugin-scanner" ]; then
+elif [ "$APP" = "gst-plugin-scanner" ]; then
     # Starting with 10.11 OSX will no longer pass DYLD_LIBRARY_PATH
     # to child processes. To work around use this launcher for the
     # GStreamer plugin scanner helper
