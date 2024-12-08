@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-29 05:09+0000\n"
+"PO-Revision-Date: 2024-11-28 02:00+0000\n"
 "Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -70,7 +70,7 @@ msgstr "_Trier par…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Préférences"
@@ -178,7 +178,7 @@ msgstr "Navigateur de bibliothèque"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -637,7 +637,7 @@ msgid "Equal pane width"
 msgstr "Largeur de volet égal"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listes de lecture"
 
@@ -683,11 +683,11 @@ msgstr "Re_nommer"
 msgid "Unable to rename playlist"
 msgstr "Impossible de renommer la liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Importer une liste de lecture"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Importer"
 
@@ -748,7 +748,7 @@ msgid "_Add Tracks"
 msgstr "_Ajouter des pistes"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Nouvelle liste de lecture"
 
@@ -1583,7 +1583,7 @@ msgid "_Update strategy:"
 msgstr "_Stratégie de mise à jour :"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1690,15 +1690,15 @@ msgstr ""
 "Modifiez votre message de statut Discord en fonction de ce que vous écoutez "
 "actuellement."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "En pause"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "Ligne d'état #1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "Ligne d'état #2"
 
@@ -2044,18 +2044,18 @@ msgid "Tested Clients"
 msgstr "Clients testés"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Support D-Bus MPRIS"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr "Intégration du Bureau Linux (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Permet le contrôle de Quod Libet en utilisant la spécification d'interface D-"
-"Bus <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Cela "
-"permet diverses intégrations au bureau Linux (par exemple, des touches "
+"⏯️ Permet le contrôle de Quod Libet en utilisant l'interface D-Bus <a "
+"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"Cela permet diverses intégrations au bureau Linux (par exemple, des touches "
 "multimédia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3279,39 +3279,39 @@ msgstr "Exécutable de visualisation :"
 msgid "Reload"
 msgstr "Recharger"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Barre de recherche Waveform"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Une barre de recherche sous la forme d'onde du morceau en cours."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
-msgstr "Remplacer la couleur d'avant-plan :"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
+msgstr "Couleur d'avant-plan"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
-msgstr "Remplacer la couleur du survol :"
+#: quodlibet/ext/events/waveformseekbar.py:723
+msgid "Hover color"
+msgstr "Couleur du survol"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
-msgstr "Remplacer la couleur restante :"
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr "Couleur restante"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
-msgstr "Afficher la position actuelle"
+#: quodlibet/ext/events/waveformseekbar.py:730
+msgid "Show current position whilst hovering"
+msgstr "Afficher la position actuelle lors du survol"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Afficher les vignettes de temps"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Cherchez la quantité lors du défilement (millisecondes) :"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "Hauteur de la forme d'onde (en pixels) :"
 
@@ -5212,7 +5212,7 @@ msgstr "Étiquette \"%s\" introuvable."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Bibliothèque"
@@ -5242,7 +5242,7 @@ msgstr "Déplacement des fichiers de la bibliothèque"
 msgid "Removing library files"
 msgstr "Suppression de fichiers de la bibliothèque"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Ajout de surveillances pour %s"
@@ -7702,11 +7702,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Liste de lecture vide"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "Les listes de lecture doivent avoir un nom"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Une liste de lecture nommée %(name)s existe déjà à %(path)s"
@@ -8277,6 +8277,9 @@ msgstr ""
 "différentes de visualiser votre bibliothèque audio, ainsi que la prise en "
 "charge de la radio Internet et des flux audio. Il dispose de capacités "
 "extrêmement souples d'édition et de recherche des étiquettes de métadonnées."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Support D-Bus MPRIS"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Permet d'éditer les paramètres de configurations avancées."
