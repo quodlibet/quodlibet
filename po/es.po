@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-10-01 10:35+0000\n"
+"PO-Revision-Date: 2024-12-12 17:00+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2038,7 +2038,7 @@ msgstr "Clientes puestos a prueba"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Integración de escritorio Linux (MPRIS D-BUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 #, fuzzy
