@@ -12,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
 "PO-Revision-Date: 2024-12-16 05:58+0000\n"
-"Last-Translator: btbt_bt <belegdal@yahoo.ca>\n"
+"Last-Translator: Distant Prince <distantprinceca@gmail.com>\n"
 "Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
 "quodlibet/quodlibet/en_CA/>\n"
 "Language: en_CA\n"
@@ -797,9 +797,8 @@ msgid "_Podcasts"
 msgstr ""
 
 #: quodlibet/browsers/podcasts.py:411
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "_Add a File..."
+msgstr "_Add a File…"
 
 #: quodlibet/browsers/podcasts.py:478 quodlibet/qltk/filesel.py:260
 #: quodlibet/qltk/pluginwin.py:426
@@ -895,9 +894,9 @@ msgid "Connected"
 msgstr "location"
 
 #: quodlibet/browsers/soundcloud/main.py:446
-#, fuzzy, python-format
+#, python-format
 msgid "Quod Libet is now connected, %s!"
-msgstr "<b>%s</b> is not connected."
+msgstr "Quod Libet is now connected, %s!"
 
 #: quodlibet/browsers/soundcloud/main.py:458
 #, python-format
@@ -922,9 +921,8 @@ msgid "Enter Soundcloud auth code:"
 msgstr ""
 
 #: quodlibet/cli.py:51
-#, fuzzy
 msgid "Quod Libet is not running (add '--run' to start it)"
-msgstr "Quod Libet is not running."
+msgstr "Quod Libet is not running (add '--run' to start it)"
 
 #: quodlibet/cli.py:87
 msgid "a music library and player"
@@ -1044,9 +1042,8 @@ msgid "Start without plugins"
 msgstr ""
 
 #: quodlibet/cli.py:119
-#, fuzzy
 msgid "Start Quod Libet if it isn't running"
-msgstr "Quod Libet is not running."
+msgstr "Start Quod Libet if it's not running"
 
 #: quodlibet/cli.py:120
 msgid "Exit Quod Libet"
@@ -1336,9 +1333,8 @@ msgid "Title Case"
 msgstr "Title"
 
 #: quodlibet/ext/editing/titlecase.py:21
-#, fuzzy
 msgid "Title-cases tag values in the tag editor."
-msgstr "Audio tag editor"
+msgstr "Title-cases tag values in the tag editor."
 
 #: quodlibet/ext/editing/titlecase.py:40
 #, fuzzy
@@ -1534,9 +1530,9 @@ msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't write '%s'"
-msgstr "Could not play %s."
+msgstr "Couldn't write '%s'"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:80
 #, fuzzy
@@ -2136,9 +2132,9 @@ msgid "Connected to broker at %(host)s:%(port)d"
 msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:210
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
-msgstr "Could not play %s."
+msgstr "Couldn't connect to %(host)s:%(port)d (%(msg)s)"
 
 #: quodlibet/ext/events/mqtt.py:213
 #, fuzzy
@@ -2611,9 +2607,8 @@ msgid "Synchronizing"
 msgstr "Lyrics"
 
 #: quodlibet/ext/events/synchronize_to_device.py:57
-#, fuzzy
 msgid "Deleting"
-msgstr "Deleting %d/%d."
+msgstr "Deleting"
 
 #: quodlibet/ext/events/synchronize_to_device.py:58
 msgid "Success"
@@ -2676,9 +2671,8 @@ msgstr "Invalid Pattern"
 
 #: quodlibet/ext/events/synchronize_to_device.py:184
 #: quodlibet/qltk/renamefiles.py:171 quodlibet/qltk/tagsfrompath.py:116
-#, fuzzy
 msgid "Edit saved patterns…"
-msgstr "Edit saved values..."
+msgstr "Edit saved patterns…"
 
 #: quodlibet/ext/events/synchronize_to_device.py:189
 msgid "The structure of the exported filenames, based on their tags"
@@ -2845,16 +2839,15 @@ msgstr ""
 #: quodlibet/ext/events/synchronize_to_device.py:873
 #, fuzzy
 msgid "No saved searches selected"
-msgstr "No songs are selected."
+msgstr "No saved searches selected"
 
 #: quodlibet/ext/events/synchronize_to_device.py:874
 msgid "Please select at least one saved search."
 msgstr ""
 
 #: quodlibet/ext/events/synchronize_to_device.py:883
-#, fuzzy
 msgid "No songs in the selected saved searches"
-msgstr "No songs are selected."
+msgstr "No songs in the selected saved searches"
 
 #: quodlibet/ext/events/synchronize_to_device.py:884
 msgid "All selected saved searches are empty."
@@ -3206,11 +3199,13 @@ msgid "Automatically displays tag or file-based lyrics in a sidebar."
 msgstr ""
 
 #: quodlibet/ext/events/viewlyrics.py:119
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "No lyrics found for\n"
 " %s"
-msgstr "No lyrics found for this song."
+msgstr ""
+"No lyrics found for\n"
+" %s"
 
 #: quodlibet/ext/events/viewlyrics.py:149
 #, fuzzy
@@ -3463,9 +3458,8 @@ msgid "Audio Pitch / Speed"
 msgstr "Audio Feeds"
 
 #: quodlibet/ext/gstreamer/pitch.py:97
-#, fuzzy
 msgid "Controls the pitch of an audio stream."
-msgstr "Enter the location of an audio feed:"
+msgstr "Controls the pitch of an audio stream."
 
 #: quodlibet/ext/playlist/export_to_folder.py:30
 #: quodlibet/ext/playlist/export_to_folder.py:98
@@ -3867,9 +3861,9 @@ msgid "Squeezebox OK. Using the only player (%s)."
 msgstr ""
 
 #: quodlibet/ext/_shared/squeezebox/base.py:86
-#, fuzzy, python-format
+#, python-format
 msgid "Couldn't connect to %s"
-msgstr "Could not play %s."
+msgstr "Could not connect to %s"
 
 #: quodlibet/ext/_shared/squeezebox/base.py:110
 msgid "Hostname:"
@@ -3963,9 +3957,9 @@ msgid "Saving failed"
 msgstr ""
 
 #: quodlibet/ext/songsmenu/albumart.py:363
-#, fuzzy, python-format
+#, python-format
 msgid "Unable to save \"%s\"."
-msgstr "Unable to save song"
+msgstr "Unable to save \"%s\"."
 
 #: quodlibet/ext/songsmenu/albumart.py:463
 #, python-format
@@ -4036,18 +4030,16 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:23
-#, fuzzy
 msgid "Go to Bookmark"
-msgstr "_Edit Bookmarks..."
+msgstr "Go to Bookmark"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:24
 msgid "Manages bookmarks in the selected files."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/bookmarks.py:63 quodlibet/qltk/seekbutton.py:244
-#, fuzzy
 msgid "_Edit Bookmarks…"
-msgstr "_Edit Bookmarks..."
+msgstr "_Edit Bookmarks…"
 
 #: quodlibet/ext/songsmenu/bookmarks.py:73
 #, fuzzy
@@ -4240,9 +4232,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/ext/songsmenu/cover_download.py:299
-#, fuzzy
 msgid "No covers found"
-msgstr "No plugins found."
+msgstr "No covers found"
 
 #: quodlibet/ext/songsmenu/cover_download.py:322
 #, python-brace-format
@@ -4461,9 +4452,8 @@ msgid "Skip Count"
 msgstr "skip count"
 
 #: quodlibet/ext/songsmenu/editplaycount.py:85
-#, fuzzy
 msgid "Multiple files selected."
-msgstr "Split into _Multiple Values"
+msgstr "Multiple files selected."
 
 #: quodlibet/ext/songsmenu/editplaycount.py:86
 msgid "Counts will be incremented."
