@@ -11,27 +11,26 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.18\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2013-07-20 22:32+0100\n"
-"Last-Translator: Joe Wreschnig <piman@sacredchao.net>\n"
-"Language-Team: Joe Wreschnig <piman@sacredchao.net>\n"
+"PO-Revision-Date: 2024-12-16 05:58+0000\n"
+"Last-Translator: btbt_bt <belegdal@yahoo.ca>\n"
+"Language-Team: English (Canada) <https://hosted.weblate.org/projects/"
+"quodlibet/quodlibet/en_CA/>\n"
 "Language: en_CA\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 5.9-rc\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_Title"
-msgstr "Title"
+msgstr "_Title"
 
 #: quodlibet/browsers/albums/main.py:222
 #: quodlibet/browsers/covergrid/main.py:58
-#, fuzzy
 msgid "_People"
-msgstr "people"
+msgstr "_People"
 
 #: quodlibet/browsers/albums/main.py:223
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:60
@@ -40,19 +39,16 @@ msgstr "_Date"
 
 #: quodlibet/browsers/albums/main.py:224
 #: quodlibet/browsers/covergrid/main.py:60
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Date Headers"
+msgstr "_Date Added"
 
 #: quodlibet/browsers/albums/main.py:225
 #: quodlibet/browsers/covergrid/main.py:61
-#, fuzzy
 msgid "_Original Date"
-msgstr "original artist"
+msgstr "_Original Date"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:59
-#, fuzzy
 msgid "_Genre"
 msgstr "_Genre"
 
@@ -64,24 +60,21 @@ msgstr "_Rating"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:64
-#, fuzzy
 msgid "Play_count"
-msgstr "Edit Display"
+msgstr "Play_count"
 
 #: quodlibet/browsers/albums/main.py:233
 #: quodlibet/browsers/covergrid/main.py:70
-#, fuzzy
 msgid "Sort _by…"
-msgstr "Sort by date"
+msgstr "Sort _by…"
 
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
-#, fuzzy
 msgid "_Preferences"
-msgstr "Preferences"
+msgstr "_Preferences"
 
 #: quodlibet/browsers/albums/main.py:428
 msgid "Album List"
@@ -106,11 +99,10 @@ msgstr[1] "%d albums"
 
 #: quodlibet/browsers/albums/main.py:728
 #: quodlibet/browsers/covergrid/main.py:387
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "Show album _covers"
-msgstr[1] "Show album _covers"
+msgstr[0] "Reload album _cover"
+msgstr[1] "Reload album _covers"
 
 #: quodlibet/browsers/albums/prefs.py:28
 #: quodlibet/browsers/collection/models.py:17
@@ -141,9 +133,8 @@ msgstr[1] "%d discs"
 
 #: quodlibet/browsers/albums/prefs.py:44
 #: quodlibet/browsers/covergrid/prefs.py:46
-#, fuzzy
 msgid "An Example Album"
-msgstr "All Albums"
+msgstr "An Example Album"
 
 #: quodlibet/browsers/albums/prefs.py:52
 msgid "Album List Preferences"
@@ -155,14 +146,13 @@ msgstr "Show album _covers"
 
 #: quodlibet/browsers/albums/prefs.py:67
 msgid "Inline _search includes people"
-msgstr ""
+msgstr "Inline _search includes people"
 
 #: quodlibet/browsers/albums/prefs.py:71
 #: quodlibet/browsers/covergrid/prefs.py:101
 #: quodlibet/ext/songsmenu/cover_download.py:310
-#, fuzzy
 msgid "Options"
-msgstr "[options]"
+msgstr "Options"
 
 #: quodlibet/browsers/albums/prefs.py:74
 #: quodlibet/browsers/covergrid/prefs.py:104
@@ -180,7 +170,7 @@ msgstr "Album Display"
 #: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
-msgstr ""
+msgstr "_Close"
 
 #: quodlibet/browsers/_base.py:150 quodlibet/browsers/_base.py:153
 msgid "Library Browser"
@@ -204,21 +194,21 @@ msgstr "Invalid pattern"
 
 #: quodlibet/browsers/collection/main.py:79
 msgid "Album Collection"
-msgstr ""
+msgstr "Album Collection"
 
 #: quodlibet/browsers/collection/main.py:80
 msgid "Album _Collection"
-msgstr ""
+msgstr "Album _Collection"
 
 #: quodlibet/browsers/collection/models.py:24
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "Unknown"
+msgstr "Unknown %s"
 
 #: quodlibet/browsers/collection/models.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Split into _Multiple Values"
+msgstr "Multiple %s Values"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:93
@@ -232,7 +222,7 @@ msgstr "_Custom"
 #: quodlibet/qltk/edittags.py:329 quodlibet/qltk/quodlibetwindow.py:1303
 #: quodlibet/qltk/scanbox.py:63
 msgid "_Add"
-msgstr ""
+msgstr "_Add"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:93
@@ -247,9 +237,8 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:741 quodlibet/qltk/maskedbox.py:48
 #: quodlibet/qltk/maskedbox.py:88 quodlibet/qltk/queue.py:507
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:66
-#, fuzzy
 msgid "_Remove"
-msgstr "_Remove Station"
+msgstr "_Remove"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:56
@@ -259,12 +248,11 @@ msgstr "Tag"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "Merge"
 
 #: quodlibet/browsers/collection/prefs.py:187
-#, fuzzy
 msgid "Album Collection Preferences"
-msgstr "Album List Preferences"
+msgstr "Album Collection Preferences"
 
 #: quodlibet/browsers/collection/prefs.py:194
 #: quodlibet/browsers/paned/prefs.py:246
@@ -272,7 +260,7 @@ msgstr "Album List Preferences"
 #: quodlibet/ext/songsmenu/exact_rating.py:38
 #: quodlibet/player/gstbe/prefs.py:42 quodlibet/qltk/textedit.py:63
 msgid "_Apply"
-msgstr ""
+msgstr "_Apply"
 
 #: quodlibet/browsers/collection/prefs.py:197
 #: quodlibet/browsers/paned/prefs.py:250
@@ -300,42 +288,36 @@ msgstr ""
 #: quodlibet/qltk/quodlibetwindow.py:1429 quodlibet/qltk/ratingsmenu.py:38
 #: quodlibet/qltk/scanbox.py:139 quodlibet/update.py:95
 msgid "_Cancel"
-msgstr ""
+msgstr "_Cancel"
 
 #: quodlibet/browsers/covergrid/main.py:171
-#, fuzzy
 msgid "Cover Grid"
-msgstr "Total size:"
+msgstr "Cover Grid"
 
 #: quodlibet/browsers/covergrid/main.py:172
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "Total size:"
+msgstr "_Cover Grid"
 
 #: quodlibet/browsers/covergrid/prefs.py:54
-#, fuzzy
 msgid "Cover Grid Preferences"
-msgstr "Paned Browser Preferences"
+msgstr "Cover Grid Preferences"
 
 #: quodlibet/browsers/covergrid/prefs.py:64
-#, fuzzy
 msgid "Show album _text"
-msgstr "Show album _covers"
+msgstr "Show album _text"
 
 #: quodlibet/browsers/covergrid/prefs.py:70
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "All Albums"
+msgstr "Show \"All Albums\" Item"
 
 #: quodlibet/browsers/covergrid/prefs.py:75
 msgid "Wide Mode"
-msgstr ""
+msgstr "Wide Mode"
 
 #: quodlibet/browsers/covergrid/prefs.py:93
 #: quodlibet/browsers/covergrid/prefs.py:94
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "No new stations"
+msgstr "Cover Magnification"
 
 #: quodlibet/browsers/filesystem.py:42
 msgid "File System"
@@ -374,14 +356,12 @@ msgid "Internet Radio"
 msgstr "Internet Radio"
 
 #: quodlibet/browsers/iradio.py:224
-#, fuzzy
 msgid "Add stations"
-msgstr "New Station"
+msgstr "Add stations"
 
 #: quodlibet/browsers/iradio.py:265
-#, fuzzy
 msgid "Downloading station list"
-msgstr "Download Files"
+msgstr "Downloading station list"
 
 #: quodlibet/browsers/iradio.py:366
 msgid "New Station"
@@ -393,112 +373,112 @@ msgstr "Enter the location of an Internet radio station:"
 
 #: quodlibet/browsers/iradio.py:385
 msgid "Electronic"
-msgstr ""
+msgstr "Electronic"
 
 #: quodlibet/browsers/iradio.py:388
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hip Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:389
 msgid "Oldies"
-msgstr ""
+msgstr "Oldies"
 
 #: quodlibet/browsers/iradio.py:390
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:391
 msgid "Japanese"
-msgstr ""
+msgstr "Japanese"
 
 #: quodlibet/browsers/iradio.py:392
 msgid "Indian"
-msgstr ""
+msgstr "Indian"
 
 #: quodlibet/browsers/iradio.py:394
 msgid "Religious"
-msgstr ""
+msgstr "Religious"
 
 #: quodlibet/browsers/iradio.py:396
 msgid "Charts"
-msgstr ""
+msgstr "Charts"
 
 #: quodlibet/browsers/iradio.py:397
 msgid "Turkish"
-msgstr ""
+msgstr "Turkish"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
-msgstr ""
+msgstr "Reggae / Dancehall"
 
 #: quodlibet/browsers/iradio.py:399
-#, fuzzy
 msgid "Latin"
-msgstr "rating"
+msgstr "Latin"
 
 #: quodlibet/browsers/iradio.py:400
 msgid "College Radio"
-msgstr ""
+msgstr "College Radio"
 
 #: quodlibet/browsers/iradio.py:401
 msgid "Talk / News"
-msgstr ""
+msgstr "Talk / News"
 
 #: quodlibet/browsers/iradio.py:402
 msgid "Ambient"
-msgstr ""
+msgstr "Ambient"
 
 #: quodlibet/browsers/iradio.py:403
+#, fuzzy
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: quodlibet/browsers/iradio.py:404 quodlibet/ext/events/equalizer.py:45
 msgid "Classical"
-msgstr ""
+msgstr "Classical"
 
 #: quodlibet/browsers/iradio.py:405 quodlibet/ext/events/equalizer.py:60
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: quodlibet/browsers/iradio.py:406
 msgid "Alternative"
-msgstr ""
+msgstr "Alternative"
 
 #: quodlibet/browsers/iradio.py:407
 msgid "Metal"
-msgstr ""
+msgstr "Metal"
 
 #: quodlibet/browsers/iradio.py:408
 msgid "Country"
-msgstr ""
+msgstr "Country"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "News"
-msgstr ""
+msgstr "News"
 
 #: quodlibet/browsers/iradio.py:410
 msgid "Schlager"
-msgstr ""
+msgstr "Schlager"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr ""
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
-msgstr ""
+msgstr "Indie"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Blues"
-msgstr ""
+msgstr "Blues"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Soul"
-msgstr ""
+msgstr "Soul"
 
 #: quodlibet/browsers/iradio.py:415
 msgid "Lounge"
-msgstr ""
+msgstr "Lounge"
 
 #: quodlibet/browsers/iradio.py:416
 msgid "Punk"
