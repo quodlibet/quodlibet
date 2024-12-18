@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-08-25 13:09+0000\n"
+"PO-Revision-Date: 2024-11-28 02:00+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.7.1-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -68,7 +68,7 @@ msgstr "ソート(_B)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "設定(_P)"
@@ -172,7 +172,7 @@ msgstr "ライブラリブラウザ"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -626,7 +626,7 @@ msgid "Equal pane width"
 msgstr "ペインの幅を揃える"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "プレイリスト"
 
@@ -671,11 +671,11 @@ msgstr "名前の変更(_R)"
 msgid "Unable to rename playlist"
 msgstr "プレイリストの名前を変更できません"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "プレイリストのインポート"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "インポート(_I)"
 
@@ -733,7 +733,7 @@ msgid "_Add Tracks"
 msgstr "トラックの追加(_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "新規プレイリスト"
 
@@ -1549,7 +1549,7 @@ msgid "_Update strategy:"
 msgstr "更新方法(_U):"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1647,15 +1647,15 @@ msgid ""
 "listening to."
 msgstr "現在聴いている曲に従って、Discord のステータスメッセージを変更します。"
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "一時停止"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "ステータスライン#1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "ステータスライン#2"
 
@@ -2001,18 +2001,19 @@ msgid "Tested Clients"
 msgstr "テスト済みのクライアント"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "MPRIS D-Busサポート"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr "Linux デスクトップ統合 (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
-"ターフェース仕様を使用した Quod Libet の制御を可能にします。これにより様々な "
-"Linux デスクトップ統合 (マルチメディアキーなど) が可能になります。"
+"⏯️ <a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus イン"
+"ターフェースを使用して Quod Libet を制御できます。\n"
+"これにより様々な Linux デスクトップ統合 (マルチメディアキーなど) が可能になり"
+"ます。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3203,39 +3204,39 @@ msgstr "ビジュアライザーの実行ファイル:"
 msgid "Reload"
 msgstr "再実行"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "波形シークバー"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ 再生中の曲の波形の形をしたシークバーです。"
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
-msgstr "前景色を上書きする:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
+msgstr "前景色"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
-msgstr "マウスホバー時の色を上書きする:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+msgid "Hover color"
+msgstr "マウスホバー時の色"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
-msgstr "残り時間の色を上書きする:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr "残り時間の色"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
-msgstr "現在位置を表示する"
+#: quodlibet/ext/events/waveformseekbar.py:730
+msgid "Show current position whilst hovering"
+msgstr "マウスホバー中に現在位置を表示する"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "時間ラベルを表示する"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "スクロール時のシーク量(ミリ秒):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "波形の高さ (ピクセル):"
 
@@ -5088,7 +5089,7 @@ msgstr "タグ「%s」が見つかりません。"
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "ライブラリ"
@@ -5118,7 +5119,7 @@ msgstr "ライブラリ移動中"
 msgid "Removing library files"
 msgstr "ライブラリ削除中"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "%s の監視を追加"
@@ -7510,11 +7511,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "空のプレイリスト"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "プレイリストには名前が必要です"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "「%(name)s」という名前のプレイリストは既に「%(path)s」に存在します"
@@ -8077,6 +8078,9 @@ msgstr ""
 "な方法を提供するのみならず、インターネットラジオやオーディオフィードにも対応"
 "しています。また、非常に柔軟なメタデータタグの編集および検索機能を備えていま"
 "す。"
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "MPRIS D-Busサポート"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "高度な設定の編集を可能にします。"

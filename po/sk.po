@@ -65,7 +65,7 @@ msgstr "Zoradiť _podľa…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Nastavenia"
@@ -177,7 +177,7 @@ msgstr "Prehliadač knižnice"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -636,7 +636,7 @@ msgid "Equal pane width"
 msgstr "Rovnomerná šírka panelov"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Zoznamy prehrávania"
 
@@ -682,11 +682,11 @@ msgstr "_Premenovať"
 msgid "Unable to rename playlist"
 msgstr "Neporadilo sa premenovať zoznam prehrávania"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Načítať zoznam prehrávania"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Načítať"
 
@@ -749,7 +749,7 @@ msgid "_Add Tracks"
 msgstr "_Pridať Stopy"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Nový zoznam prehrávania"
 
@@ -1575,7 +1575,7 @@ msgid "_Update strategy:"
 msgstr "_Spôsob aktualizácie:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1673,15 +1673,15 @@ msgid ""
 "listening to."
 msgstr "Zmení stavovú správu Discord podľa toho, čo práve počúvate."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "Pozastavené"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "Stavová Línia #1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "Stavová Línia #2"
 
@@ -2026,14 +2026,15 @@ msgid "Tested Clients"
 msgstr "Otestovaní klienti"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Podpora MPRIS D-Bus"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 "Povoľuje ovládanie Quod Libet použitím <a href=\"https://mpris2.readthedocs."
 "io/en/latest/\">MPRIS 2</a> špecifikácie D-Bus rozhrania. Toto povoľuje "
@@ -3259,39 +3260,43 @@ msgstr "Spustiteľný súbor vizualizéra:"
 msgid "Reload"
 msgstr "Opätovne načítať"
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Panel posunu vo vlnovej krivke skladby"
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Panel posunu v tvare vlnovej krivky prehrávanej skladby."
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
 msgstr "Nahradiť farbu popredia:"
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
 msgstr "Nahradiť farbu pri prechode myšou:"
 
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
 msgstr "Nahradiť zvyšnú farbu:"
 
-#: quodlibet/ext/events/waveformseekbar.py:690
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Zobraziť súčasnú polohu"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Zobraziť časové značky"
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Dĺžka posunu kolieskom myši (v milisekundách):"
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr "Výška vlny (pixels):"
 
@@ -5171,7 +5176,7 @@ msgstr "Značka „%s“ sa nenašla."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Knižnica"
@@ -5201,7 +5206,7 @@ msgstr "Presúvajú sa súbory knižnice"
 msgid "Removing library files"
 msgstr "Odstraňujú sa súbory knižnice"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Pridanie sledovania pre %s"
@@ -7644,11 +7649,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Prázdny zoznam prehrávania"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "Zoznamy prehrávania musia mať názov"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Zoznam prehrávania s názvom %(name)s už jestvuje v %(path)s"
@@ -8224,6 +8229,9 @@ msgstr ""
 "spôsobov zobrazenia vašej hudobnej knižnice ako aj podporu internetového "
 "rozhlasu a zvukových prúdov. Je mimoriadne dobre vybavený na prehľadávanie "
 "ako aj správu údajov a značiek skladieb."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Podpora MPRIS D-Bus"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Povoliť úpravu pokročilých nastavení."

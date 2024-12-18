@@ -8,14 +8,16 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2006-07-05 15:56-0500\n"
-"Last-Translator: Rostislav \"zbrox\" Raykov <zbrox@i-space.org>\n"
-"Language-Team: Bulgarian <dict@fsa-bg.org>\n"
+"PO-Revision-Date: 2024-12-17 06:00+0000\n"
+"Last-Translator: Distant Prince <distantprinceca@gmail.com>\n"
+"Language-Team: Bulgarian <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/bg/>\n"
 "Language: bg\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.9\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -73,7 +75,7 @@ msgstr "Сортиране по дата"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:702 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 #, fuzzy
 msgid "_Preferences"
@@ -186,7 +188,7 @@ msgstr "Разглеждане на фонотеката"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -663,7 +665,7 @@ msgid "Equal pane width"
 msgstr ""
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:632 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 #, fuzzy
 msgid "Playlists"
 msgstr "Сп_исъци с песни"
@@ -711,11 +713,11 @@ msgstr "_Преименуване"
 msgid "Unable to rename playlist"
 msgstr "Неуспех при преименуване на списъка."
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Внасяне на списък с песни"
 
-#: quodlibet/browsers/playlists/main.py:633
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Внасяне"
 
@@ -779,7 +781,7 @@ msgid "_Add Tracks"
 msgstr "Песен"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Нов списък с песни"
 
@@ -1609,7 +1611,7 @@ msgid "_Update strategy:"
 msgstr "_Нова станция"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1709,17 +1711,17 @@ msgid ""
 "listening to."
 msgstr ""
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "Преслушване"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "шаблон"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "шаблон"
@@ -2056,14 +2058,14 @@ msgid "Tested Clients"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3264,40 +3266,41 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:600
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:603
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:678
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:682
-msgid "Override hover color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:686
-msgid "Override remaining color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:690
+#: quodlibet/ext/events/waveformseekbar.py:723
 #, fuzzy
-msgid "Show current position"
+msgid "Hover color"
+msgstr "Общ размер:"
+
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Няма нови станции"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:702
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:715
+#: quodlibet/ext/events/waveformseekbar.py:759
 msgid "Waveform height (pixels):"
 msgstr ""
 
@@ -5030,7 +5033,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:610
 msgid "always"
@@ -5165,7 +5168,7 @@ msgstr ""
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Фонотека"
@@ -5198,7 +5201,7 @@ msgstr "Запазване на фонотеката"
 msgid "Removing library files"
 msgstr ""
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
@@ -7707,11 +7710,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Внасяне на списък с песни"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Списък с песни с името %s, вече съществува."
