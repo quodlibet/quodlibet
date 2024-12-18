@@ -6,13 +6,13 @@ on:
       - main
 
 jobs:
-  test-nix-shell:
+  lint-with-nix-shell:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Install Nix
-        uses: cachix/install-nix-action@v22
+        uses: cachix/install-nix-action@v27
         with:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
-      - run: nix run .#poetry -- --version
-      - run: nix flake check
+      - run: nix develop --command poetry --version
+      - run: nix flake check --keep-going -L

@@ -8,7 +8,7 @@
 # (at your option) any later version.
 
 set -e
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "${DIR}"
 
 # CONFIG START
@@ -74,7 +74,10 @@ function create_root {
 }
 
 function extract_installer {
-    [ -z "$1" ] && (echo "Missing arg"; exit 1)
+    [ -z "$1" ] && (
+        echo "Missing arg"
+        exit 1
+    )
 
     mkdir -p "$BUILD_ROOT"
     7z x -o"$MINGW_ROOT" "$1"
@@ -110,7 +113,7 @@ musicbrainzngs
 
     # shellcheck disable=SC2046
     build_pip install --no-binary ":all:" \
-        --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr "\\n" " ")
+        --force-reinstall $(echo "$PIP_REQUIREMENTS" | tr '\n' " ")
 
     # transitive dependencies which we don't need
     build_pacman --noconfirm -Rdds \
@@ -132,7 +135,10 @@ musicbrainzngs
 }
 
 function install_quodlibet {
-    [ -z "$1" ] && (echo "Missing arg"; exit 1)
+    [ -z "$1" ] && (
+        echo "Missing arg"
+        exit 1
+    )
 
     rm -Rf "${REPO_CLONE}"
     git clone "${DIR}"/../.. "${REPO_CLONE}"
@@ -149,8 +155,7 @@ function install_quodlibet {
         "${QL_VERSION}" "${MINGW_ROOT}"/bin
 
     QL_VERSION_DESC="$QL_VERSION"
-    if [ "$1" = "main" ]
-    then
+    if [ "$1" = "main" ]; then
         local GIT_REV
         local GIT_HASH
         GIT_REV=$(git rev-list --count HEAD)
@@ -199,7 +204,7 @@ function cleanup_after {
     done
 
     find "${MINGW_ROOT}" -regextype "posix-extended" -name "*.exe" -a ! \
-        -iregex ".*/(quodlibet|exfalso|operon|python|gspawn-)[^/]*\\.exe" \
+        -iregex '.*/(quodlibet|exfalso|operon|python|gspawn-)[^/]*\.exe' \
         -exec rm -f {} \;
 
     rm -Rf "${MINGW_ROOT}"/libexec
@@ -309,7 +314,7 @@ function cleanup_after {
     find "${MINGW_ROOT}"/bin -name "*-config" -exec rm -f {} \;
     find "${MINGW_ROOT}"/bin -name "easy_install*" -exec rm -f {} \;
     find "${MINGW_ROOT}" -regex ".*/bin/[^.]+" -exec rm -f {} \;
-    find "${MINGW_ROOT}" -regex ".*/bin/[^.]+\\.[0-9]+" -exec rm -f {} \;
+    find "${MINGW_ROOT}" -regex '.*/bin/[^.]+\.[0-9]+' -exec rm -f {} \;
 
     find "${MINGW_ROOT}" -name "gtk30-properties.mo" -exec rm -rf {} \;
     find "${MINGW_ROOT}" -name "gettext-tools.mo" -exec rm -rf {} \;
@@ -331,9 +336,9 @@ function cleanup_after {
 function build_installer {
     BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
     cp "${REPO_CLONE}"/quodlibet/build.py "$BUILDPY"
-    echo 'BUILD_TYPE = u"windows"' >> "$BUILDPY"
-    echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
-    (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
+    echo 'BUILD_TYPE = u"windows"' >>"$BUILDPY"
+    echo "BUILD_VERSION = $BUILD_VERSION" >>"$BUILDPY"
+    (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >>"$BUILDPY")
     build_compileall -d "" -q -f "$BUILDPY"
 
     cp misc/quodlibet.ico "${BUILD_ROOT}"
@@ -345,9 +350,9 @@ function build_installer {
 function build_portable_installer {
     BUILDPY=$(echo "${MINGW_ROOT}"/lib/python3.*/site-packages/quodlibet)/build.py
     cp "${REPO_CLONE}"/quodlibet/build.py "$BUILDPY"
-    echo 'BUILD_TYPE = u"windows-portable"' >> "$BUILDPY"
-    echo "BUILD_VERSION = $BUILD_VERSION" >> "$BUILDPY"
-    (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >> "$BUILDPY")
+    echo 'BUILD_TYPE = u"windows-portable"' >>"$BUILDPY"
+    echo "BUILD_VERSION = $BUILD_VERSION" >>"$BUILDPY"
+    (cd "$REPO_CLONE" && echo "BUILD_INFO = u\"$(git rev-parse --short HEAD)\"" >>"$BUILDPY")
     build_compileall -d "" -q -f "$BUILDPY"
 
     local PORTABLE="$DIR/quodlibet-$QL_VERSION_DESC-portable"
@@ -366,6 +371,6 @@ function build_portable_installer {
     7z a payload.7z "$PORTABLE"
     curl -L "http://www.7-zip.org/a/$SEVENZINST" -o "$DIR/$SEVENZINST"
     7z x -o7zout "$SEVENZINST"
-    cat 7zout/7z.sfx payload.7z > "$PORTABLE".exe
+    cat 7zout/7z.sfx payload.7z >"$PORTABLE".exe
     rm -Rf 7zout "$SEVENZINST" payload.7z "$PORTABLE"
 }

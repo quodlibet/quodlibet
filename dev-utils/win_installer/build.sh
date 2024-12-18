@@ -6,7 +6,7 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-DIR="$( cd "$( dirname "$0" )" && pwd )"
+DIR="$(cd "$(dirname "$0")" && pwd)"
 # shellcheck source-path=SCRIPTDIR
 source "$DIR"/_base.sh
 
@@ -17,7 +17,10 @@ function main {
     GIT_TAG=${1:-"$CURRENT_BRANCH"}
     echo "Building: $GIT_TAG"
 
-    [[ -d "${BUILD_ROOT}" ]] && (echo "${BUILD_ROOT} already exists"; exit 1)
+    [[ -d ${BUILD_ROOT} ]] && (
+        echo "${BUILD_ROOT} already exists"
+        exit 1
+    )
 
     install_pre_deps
     create_root
@@ -29,4 +32,4 @@ function main {
     build_portable_installer
 }
 
-main "$@";
+main "$@"

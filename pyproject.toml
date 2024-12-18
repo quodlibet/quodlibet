@@ -2,8 +2,14 @@
 name = "quodlibet"
 version = "4.7.0-pre"
 description = "A music library, tagger, and player"
-authors = ["Joe Wreschnig", "Michael Urman", "Steven Robertson",
-    "Christoph Reiter", "Nick Boultbee", "(many others)"]
+authors = [
+  "Joe Wreschnig",
+  "Michael Urman",
+  "Steven Robertson",
+  "Christoph Reiter",
+  "Nick Boultbee",
+  "(many others)",
+]
 maintainers = ["Christoph Reiter"]
 homepage = "https://quodlibet.readthedocs.io/"
 documentation = "https://quodlibet.readthedocs.io/"
@@ -11,9 +17,7 @@ repository = "https://github.com/quodlibet/quodlibet"
 keywords = ["audio", "music", "player", "tags", "gtk"]
 license = "GPL-2.0-or-later"
 
-packages = [
-    { include = "quodlibet", from = "." }
-]
+packages = [{ include = "quodlibet", from = "." }]
 
 [tool.poetry.scripts]
 # Convenience: `poetry run quodlibet` just runs the app (with no CLI args)
@@ -58,74 +62,77 @@ ruff = { version = "^0.1.1", platform = "linux" }
 target-version = "py310"
 select = ["E", "F", "B", "Q", "C", "N", "UP"]
 ignore = [
-    "E741", # Allow single-letter variables
-    "E402", # Allow imports not at top
-    "N817", # allow shorter imports (FakeDisplayItem as FDI)
+  "E741", # Allow single-letter variables
+  "E402", # Allow imports not at top
+  "N817", # allow shorter imports (FakeDisplayItem as FDI)
 ]
 
 
 line-length = 88
-extend-exclude = [
-    "dev-utils/*",
-    "quodlibet/packages/"
-]
+extend-exclude = ["dev-utils/*", "quodlibet/packages/"]
 
 [tool.ruff.per-file-ignores]
 "tests/**/*" = [
-    "N801", # allow Tformat_rating etc
-    "N802", # allow functions that look like classes e.g. `def PluginPreferences()`
-    "N806", # allow class-like variables in tests
-    "N816", # as above really
+  "N801", # allow Tformat_rating etc
+  "N802", # allow functions that look like classes e.g. `def PluginPreferences()`
+  "N806", # allow class-like variables in tests
+  "N816", # as above really
 ]
 "quodlibet/**/__init__.py" = [
-    "B018", # allow importing "without effect"
+  "B018", # allow importing "without effect"
 ]
 "quodlibet/**/cdefs.py" = [
-    "N801", # Allow classes with lowercase names
+  "N801", # Allow classes with lowercase names
 ]
 "quodlibet/query/*" = [
-    "N801", "N802", # non-standard caps everywhere
+  "N801",
+  "N802", # non-standard caps everywhere
 ]
 "quodlibet/pattern/*" = [
-    "N801", "N802", # non-standard caps everywhere
+  "N801",
+  "N802", # non-standard caps everywhere
 ]
 "quodlibet/qltk/**/*" = [
-    "N806", # allow vars that look like constants e.g. XFCE_NAME, FDO_PATH
-    "N802",
+  "N806", # allow vars that look like constants e.g. XFCE_NAME, FDO_PATH
+  "N802",
 ]
 "quodlibet/ext/**/*" = [
-    "N802", # allow plugins to have methods like PluginPreferences etc
+  "N802", # allow plugins to have methods like PluginPreferences etc
 ]
 
 "quodlibet/cli.py" = [
-    "C901", # TODO: refactor process_arguments to simplify (46)
+  "C901", # TODO: refactor process_arguments to simplify (46)
 ]
 "quodlibet/formats/_audio.py" = [
-    "C901", # TODO: refactor __call__ to simplify (72!)
+  "C901", # TODO: refactor __call__ to simplify (72!)
 ]
 "tests/__init__.py" = [
-    "N815", # allow failUnless etc
+  "N815", # allow failUnless etc
 ]
 "quodlibet/mmkeys/*" = [
-    "N803", "N806", # allow non-standard naming
+  "N803",
+  "N806", # allow non-standard naming
 ]
 "quodlibet/session/*" = [
-    "N801", # allow lowercase classes
+  "N801", # allow lowercase classes
 ]
 "quodlibet/util/winapi.py" = [
-    "N801", "N802", "N803", # allow non-standard naming
+  "N801",
+  "N802",
+  "N803", # allow non-standard naming
 ]
 "quodlibet/util/dbusutils.py" = [
-    "N802", "N806", # allow non-standard naming
+  "N802",
+  "N806", # allow non-standard naming
 ]
 "quodlibet/util/windows.py" = [
-    "N806", # allow non-standard naming
+  "N806", # allow non-standard naming
 ]
 "quodlibet/util/iso639.py" = [
-    "N806", # allow non-standard naming
+  "N806", # allow non-standard naming
 ]
 "quodlibet/util/i18n.py" = [
-    "N802",  # strange naming for gettext
+  "N802", # strange naming for gettext
 ]
 
 [tool.ruff.mccabe]
