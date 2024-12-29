@@ -766,7 +766,6 @@ class PreferencesWindow(UniqueWindow):
         self.set_transient_for(qltk.get_top_parent(parent))
 
         self.__notebook = notebook = qltk.Notebook()
-        add_css(notebook, "tab { padding: 6px 24px } ")
         pages = [self.Tagging]
         if all_pages:
             pages = [self.SongList, self.Browsers, self.Player,
@@ -775,6 +774,10 @@ class PreferencesWindow(UniqueWindow):
             page = Page()
             page.show()
             notebook.append_page(page)
+        if len(pages) > 1:
+            add_css(notebook, "tab { padding: 6px 24px } ")
+        else:
+            notebook.set_show_tabs(False)
 
         if open_page in [page.name for page in pages]:
             self.set_page(open_page)
