@@ -33,6 +33,7 @@ from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
     SymbolicIconImage, MenuItem
 from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
+from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
 from quodlibet.qltk import Icons
 from quodlibet.util.i18n import numeric_phrase
@@ -116,6 +117,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
                 arrow=True, down=False)
         menu_button.set_menu(menu)
         bbox.pack_start(menu_button, False, True, 0)
+
+        statusbox = StatusBarBox()
+        self.statusbar = statusbox.statusbar
+
+        bbox.pack_start(statusbox, False, True, 0)
 
         l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
@@ -282,3 +288,12 @@ class PreferencesWindow(QLPreferencesWindow):
 
     def __destroy(self):
         config.save()
+
+
+class StatusBarBox(Gtk.HBox):
+
+    def __init__(self):
+        super().__init__(spacing=6)
+        self.statusbar = StatusBar(TaskController.default_instance)
+        self.pack_start(self.statusbar, True, True, 0)
+
