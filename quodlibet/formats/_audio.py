@@ -750,7 +750,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         else:
             return re.sub("\n+", ", ", v.strip())
 
-    def list(self, key):
+    def list(self, key) -> list[Any]:
         """Get all values of a tag, as a list. Synthetic tags are supported,
         but will be slower. Numeric tags will give their one value.
 

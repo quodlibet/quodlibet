@@ -1,15 +1,17 @@
 # Copyright 2008 Joe Wreschnig
-#           2016 Nick Boultbee
+#     2016, 2024 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
+from typing import cast
 
 from quodlibet import _
 from quodlibet.plugins.songshelpers import any_song, is_finite, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
+from quodlibet.util.collection import PEOPLE
 
 
 def artist_to_sort(artist):
@@ -40,12 +42,8 @@ class MakeSortTags(SongsMenuPlugin):
     plugin_handles = any_song(is_writable, is_finite)
 
     def plugin_song(self, song):
-        for tag in ["album"]:
-            values = filter(None, map(album_to_sort, song.list(tag)))
-            if values and (tag + "sort") not in song:
-                song[tag + "sort"] = "\n".join(values)
-
-        for tag in ["artist", "albumartist", "performer"]:
-            values = filter(None, map(artist_to_sort, song.list(tag)))
+        for tag in ["album", "artist", "albumartist", "performer"]:
+            func = artist_to_sort if tag in PEOPLE else album_to_sort
+            values = cast(list[str], [v for tag in song.list(tag) if (v:=func(tag))])
             if values and (tag + "sort") not in song:
                 song[tag + "sort"] = "\n".join(values)
