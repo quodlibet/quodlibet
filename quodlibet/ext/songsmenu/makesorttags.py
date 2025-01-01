@@ -67,7 +67,7 @@ class MakeSortTags(SongsMenuPlugin):
         "  <tt>composer</tt>: <i>Irving Berlin</i> → <i>Berlin, Irving</i>\n"
         "  <tt>artist</tt>: <i>Franz Liszt</i> → <i>Liszt, Franz</i>\n"
         "  <tt>artist</tt>: <i>The Beach Boys</i> → <i>Beach Boys, The</i>\n"
-       "\nApplies to tags: <tt>%s</tt>") % ", ".join(SUPPORTED_TAGS)
+       "\nApplies to tags: <tt>%s</tt>.") % ", ".join(SUPPORTED_TAGS)
     PLUGIN_ICON = Icons.EDIT
 
     plugin_handles = any_song(is_writable, is_finite)
