@@ -333,7 +333,7 @@ class PluginPreferencesContainer(Gtk.VBox):
             text = (f"<big><b>{name}</b> "
                     f"<span alpha='40%'> – {category}</span>"
                     f"</big>")
-            markup = plugin.description_markup
+            markup = plugin.description_markup or _("(undocumented)")
             if markup:
                 text += f"<span font='4'>\n\n</span>{markup}"
             label.set_markup(text)
