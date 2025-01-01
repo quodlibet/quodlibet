@@ -4656,11 +4656,11 @@ msgstr ""
 msgid "_Username:"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:38
 msgid "Create Sort Tags"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
+#: quodlibet/ext/songsmenu/makesorttags.py:39
 msgid "Converts album and artist names to sort names, poorly."
 msgstr ""
 
