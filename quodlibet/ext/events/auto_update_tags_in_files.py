@@ -32,33 +32,36 @@ class StrategyText:
 
 STRATEGY_TEXTS = {  #
     UpdateStrategy.AFTER_PLAY_NOT_SKIP: StrategyText(
-            _("After every play (default)"),  #
-            _("Whenever a song was played but not skipped, the plugin will "
-              "write the tags to the file. Skip counts aren't stored in "
-              "files at all, so this avoids unnecessary writes.")),  #
+            _("After every play (default)"),
+            _("Whenever a song was played but not skipped, "
+              "the plugin will write the tags to the file. "
+              "Skip counts aren't stored in files at all, "
+              "so this avoids unnecessary writes.")),
     UpdateStrategy.AFTER_PLAY_OR_SKIP: StrategyText(
-            _("After every play or skip"),  #
-            _("Whenever a song was played or skipped, the plugin will write "
-              "the tags to the file. Can be useful if you want to make sure "
-              "that ratings of songs you dislike and thus skipped are written "
-              "to the files.")),  #
+            _("After every play or skip"),
+            _("Whenever a song was played or skipped, "
+              "the plugin will write the tags to the file. "
+              "Can be useful if you want to make sure that ratings of songs "
+              "you dislike and thus skipped are written to the files.")),
     UpdateStrategy.ONCE_ALBUM_RATED: StrategyText(
-            _("Once, when album fully rated"),  #
+            _("Once, when album fully rated"),
             _("When a song was played or skipped, the album of that song will "
               "be checked. If every song in the album has been rated and at "
               "least one has no ratings or play counts stored in its file, "
-              "the plugin will write the tags to the songs' files.\n\nUse "
-              "this to avoid constant file updates, but be aware that once an "
-              "album was updated, you'll have to use the 'Update Tags in "
-              "Files' plugin whenever you want modified ratings and play "
-              "counts to be written to the files."))}
+              "the plugin will write the tags to the songs' files.\n\n"
+              
+              "Use this to avoid constant file updates, "
+              "but be aware that once an album was updated, "
+              "you'll have to use the 'Update Tags in Files' plugin "
+              "whenever you want modified ratings and play counts "
+              "to be written to the files."))}
 
 PLAY_COUNT_ABOVE_ZERO_TOOLTIP = _(
-        "When the plugin writes the tags of an album, it will "
-        "first set the play count of the songs which are zero to one.\n"
-        "Sometimes you already know that you don't like a song, so "
-        "setting it to one when saving can be useful later on, when "
-        "searching for albums you have fully listened to (%s).")
+        "When the plugin writes the tags of an album, "
+        "it will first set the play count of the songs which are zero to one.\n"
+        "Sometimes you already know that you don't like a song, "
+        "so setting it to one when saving can be useful later on, "
+        "when searching for albums you have fully listened to (%s).")
 
 WRITE_ERROR_FMT = _("Couldn't write '%s'")
 
