@@ -11,6 +11,7 @@ from mutagen.mp4 import MP4, MP4Cover
 
 from quodlibet.util.path import get_temp_cover_file
 from quodlibet.util.string import decode
+from quodlibet import config
 
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
@@ -141,7 +142,7 @@ class MP4File(AudioFile):
         if disc:
             audio["disk"] = [(disc, discs)]
         with translate_errors():
-            audio.save()
+            audio.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
         self.sanitize()
 
     def can_multiple_values(self, key=None):
@@ -204,7 +205,7 @@ class MP4File(AudioFile):
         with translate_errors():
             tag = MP4(self["~filename"])
             tag.pop("covr", None)
-            tag.save()
+            tag.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         self.has_images = False
 
@@ -231,7 +232,7 @@ class MP4File(AudioFile):
         tag["covr"] = [cover]
 
         with translate_errors():
-            tag.save()
+            tag.save(preserve_mtime=config.getboolean("editing", "preserve_mtime"))
 
         self.has_images = True
 
