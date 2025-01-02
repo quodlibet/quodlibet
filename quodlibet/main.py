@@ -53,9 +53,7 @@ def main(argv=None):
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
-    print_d(
-        "Initializing main library (%s)" % (quodlibet.util.path.unexpand(library_path))
-    )
+    print_d(f"Initializing main library ({quodlibet.util.path.unexpand(library_path)})")
 
     library = quodlibet.library.init(library_path)
     app.library = library
@@ -212,7 +210,7 @@ def main(argv=None):
         except NotImplementedError:
             pass
 
-        print_d("Shutting down player device %r." % player.version_info)
+        print_d(f"Shutting down player device {player.version_info!r}.")
         player.destroy()
 
     quodlibet.run(window, before_quit=before_quit)

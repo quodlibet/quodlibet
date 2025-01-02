@@ -117,7 +117,7 @@ def decode_value(tag, value):
         return fsn2text(value)
     elif tag[:2] == "~#":
         if isinstance(value, float):
-            return "%.2f" % value
+            return f"{value:.2f}"
         else:
             return str(value)
     return str(value)
@@ -1036,7 +1036,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 l = enc_key + encode("=%d" % self[k])
                 s.append(l)
             elif isinstance(self[k], float):
-                l = enc_key + encode("=%f" % self[k])
+                l = enc_key + encode(f"={self[k]:f}")
                 s.append(l)
             else:
                 for v2 in self.list(k):
@@ -1048,8 +1048,8 @@ class AudioFile(dict, ImageContainer, HasKey):
             l = enc_key + encode("=%d" % self.get(k, 0))
             s.append(l)
         if "~#rating" not in self:
-            s.append(encode("~#rating=%f" % self("~#rating")))
-        s.append(encode("~format=%s" % self.format))
+            s.append(encode("~#rating={:f}".format(self("~#rating"))))
+        s.append(encode(f"~format={self.format}"))
         s.append(b"")
         return b"\n".join(s)
 
@@ -1134,8 +1134,8 @@ class AudioFile(dict, ImageContainer, HasKey):
             if profile == "none":
                 return 1.0
             try:
-                db = float(self["replaygain_%s_gain" % profile].split()[0])
-                peak = float(self.get("replaygain_%s_peak" % profile, 1))
+                db = float(self[f"replaygain_{profile}_gain"].split()[0])
+                peak = float(self.get(f"replaygain_{profile}_peak", 1))
             except (KeyError, ValueError, IndexError):
                 continue
             else:

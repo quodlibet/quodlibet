@@ -414,7 +414,7 @@ class TPlaylistMux(TestCase):
             self.q.set([10, 11])
             do_events()
             value = self.next()
-            self.assertTrue(value in [10, 11], "got %r, expected 10 or 11" % value)
+            self.assertTrue(value in [10, 11], f"got {value!r}, expected 10 or 11")
             if value == 10:
                 next = 11
             else:

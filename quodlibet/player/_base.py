@@ -311,7 +311,7 @@ class BasePlayer(GObject.GObject, Equalizer):
         Returns True if there is an active song after the call returns.
         """
 
-        print_d("Going to %r" % getattr(song_or_iter, "key", song_or_iter))
+        print_d("Going to {!r}".format(getattr(song_or_iter, "key", song_or_iter)))
 
         if self._source.go_to(song_or_iter, explicit, source):
             self._end(True)

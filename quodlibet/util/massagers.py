@@ -144,7 +144,7 @@ class GainMassager(Massager):
                 except (IndexError, TypeError, ValueError) as e:
                     raise ValidationError from e
             else:
-                return ("%+f" % f).rstrip("0") + " dB"
+                return (f"{f:+f}").rstrip("0") + " dB"
 
 
 @Massager._register

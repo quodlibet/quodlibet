@@ -32,7 +32,10 @@ def main(argv=None):
     add_signal_watch(app.quit)
 
     opts = util.OptionParser(
-        "Ex Falso", const.VERSION, _("an audio tag editor"), "[%s]" % _("directory")
+        "Ex Falso",
+        const.VERSION,
+        _("an audio tag editor"),
+        "[{}]".format(_("directory")),
     )
 
     argv.append(os.path.abspath(fsnative(".")))

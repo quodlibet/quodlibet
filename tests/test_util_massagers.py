@@ -112,8 +112,8 @@ class TMassagers(TestCase):
         self.equivs(
             "musicbrainz_trackid",
             {
-                "cafebabe-ffff-eeee-0101-deadbeafffff": "cafebabe-ffff-eeee-0101-deadbeafffff",
-                "Fef1F0f4-dead-a5da-d0D0-86753099ffff": "fef1f0f4-dead-a5da-d0d0-86753099ffff",
+                "cafebabe-ffff-eeee-0101-deadbeafffff": "cafebabe-ffff-eeee-0101-deadbeafffff",  # noqa: E501
+                "Fef1F0f4-dead-a5da-d0D0-86753099ffff": "fef1f0f4-dead-a5da-d0d0-86753099ffff",  # noqa: E501
             },
         )
 
@@ -132,6 +132,6 @@ class TMassagers(TestCase):
         # Check completion help too
         for code in ["eng", "fra", "fre", "deu", "zho"]:
             self.assertTrue(
-                code in mas.options, "'%s' should be in languages options" % code
+                code in mas.options, f"'{code}' should be in languages options"
             )
         assert "" not in mas.options

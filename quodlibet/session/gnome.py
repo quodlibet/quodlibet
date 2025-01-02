@@ -37,7 +37,7 @@ class GnomeSessionClient(SessionClient):
                 None,
             )
             if session_mgr.get_name_owner() is None:
-                raise SessionError("%s unowned" % self.DBUS_NAME)
+                raise SessionError(f"{self.DBUS_NAME} unowned")
             client_path = session_mgr.RegisterClient("(ss)", app.id, "")
             if client_path is None:
                 # https://github.com/quodlibet/quodlibet/issues/2435
@@ -68,7 +68,7 @@ class GnomeSessionClient(SessionClient):
             self._sig_id = client_priv.connect("g-signal", g_signal_cb)
             self._client_priv = client_priv
             self._client_path = client_path
-            print_d("Connected with gnome session manager: %s" % client_path)
+            print_d(f"Connected with gnome session manager: {client_path}")
         except GLib.Error as e:
             raise SessionError(e) from e
 
@@ -94,5 +94,5 @@ class GnomeSessionClient(SessionClient):
         except GLib.Error as e:
             print_w(str(e))
 
-        print_d("Disconnected from gnome session manager: %s" % self._client_path)
+        print_d(f"Disconnected from gnome session manager: {self._client_path}")
         self._client_path = None

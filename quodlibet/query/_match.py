@@ -72,7 +72,7 @@ class Regex(Node):
             self.search = re  # type: ignore
         except ValueError as e:
             raise ParseError(
-                "The regular expression /%s/ is invalid." % self.pattern
+                f"The regular expression /{self.pattern}/ is invalid."
             ) from e
 
     def __repr__(self):
@@ -132,7 +132,7 @@ class Union(Node):
         return False
 
     def __repr__(self):
-        return "<Union %r>" % self.res
+        return f"<Union {self.res!r}>"
 
     def __or__(self, other):
         other = other._unpack()
@@ -174,7 +174,7 @@ class Inter(Node):
         return current
 
     def __repr__(self):
-        return "<Inter %r>" % self.res
+        return f"<Inter {self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -204,7 +204,7 @@ class Neg(Node):
         return not self.res.search(data)
 
     def __repr__(self):
-        return "<Neg %r>" % self.res
+        return f"<Neg {self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -254,7 +254,9 @@ class Numcmp(Node):
         return False
 
     def __repr__(self):
-        return f"<Numcmp expr={self._expr!r}, op={self._op.__name__!r}, expr2={self._expr2!r}>"
+        return (f"<Numcmp expr={self._expr!r}, "
+                f"op={self._op.__name__!r}, "
+                f"expr2={self._expr2!r}>")
 
     def __and__(self, other):
         other = other._unpack()
@@ -326,7 +328,7 @@ class NumexprTag(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprTag tag=%r>" % self._tag
+        return f"<NumexprTag tag={self._tag!r}>"
 
     def use_date(self):
         return self._tag == "date"
@@ -398,7 +400,10 @@ class NumexprBinary(Numexpr):
         return None
 
     def __repr__(self):
-        return f"<NumexprBinary op={self.__op!r} expr={self.__expr!r} expr2={self.__expr2!r}>"
+        return (f"<NumexprBinary "
+                f"op={self.__op!r} "
+                f"expr={self.__expr!r} "
+                f"expr2={self.__expr2!r}>")
 
     def use_date(self):
         return self.__expr.use_date() or self.__expr2.use_date()
@@ -414,7 +419,7 @@ class NumexprGroup(Numexpr):
         return self.__expr.evaluate(data, time, use_date)
 
     def __repr__(self):
-        return "<NumexprGroup expr=%r>" % (self.__expr)
+        return f"<NumexprGroup expr={self.__expr!r}>"
 
     def use_date(self):
         return self.__expr.use_date()
@@ -434,7 +439,7 @@ class NumexprNumber(Numexpr):
         return self._units
 
     def __repr__(self):
-        return "<NumexprNumber value=%.2f>" % (self._value)
+        return f"<NumexprNumber value={self._value:.2f}>"
 
 
 class NumexprNow(Numexpr):
@@ -447,7 +452,7 @@ class NumexprNow(Numexpr):
         return time - self.__offset
 
     def __repr__(self):
-        return "<NumexprNow offset=%r>" % (self.__offset)
+        return f"<NumexprNow offset={self.__offset!r}>"
 
 
 class NumexprNumberOrDate(Numexpr):
@@ -514,7 +519,7 @@ def numexprUnit(value, unit):
     elif unit.startswith("b"):
         converted = Units.SECONDS
     elif unit:
-        raise ParseError("No such unit: %r" % unit)
+        raise ParseError(f"No such unit: {unit!r}")
     return NumexprNumber(value, converted)
 
 

@@ -38,7 +38,7 @@ class JSONObject:
 
     def __init__(self, name):
         if not name:
-            raise ValueError("%s objects must be named" % type(self).__name__)
+            raise ValueError(f"{type(self).__name__} objects must be named")
         self.name = str(name)
 
     @property
@@ -50,7 +50,7 @@ class JSONObject:
                 for k in self.FIELDS
             ]
         else:
-            print_d("No order specified for class %s" % type(self).__name__)
+            print_d(f"No order specified for class {type(self).__name__}")
             return {k: v for k, v in self.__dict__.items() if self._should_store(k)}
 
     def field(self, name):
@@ -91,7 +91,7 @@ class JSONObjectDict(dict):
         try:
             data = json.loads(json_str)
         except ValueError:
-            print_w("Broken JSON: %s" % json_str)
+            print_w(f"Broken JSON: {json_str}")
         else:
             for name, blob in data.items():
                 try:
@@ -107,8 +107,7 @@ class JSONObjectDict(dict):
         for j in json_objects:
             if not isinstance(j, JSONObject):
                 msg = (
-                    "Incorrect type (%s) found in list of objects"
-                    % j.__class__.__name__
+                    f"Incorrect type ({j.__class__.__name__}) found in list of objects"
                 )
                 if raise_errors:
                     raise TypeError(msg)

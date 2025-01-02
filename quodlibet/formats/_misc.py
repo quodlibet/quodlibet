@@ -114,10 +114,10 @@ def MusicFile(filename):  # noqa
         try:
             return loader(filename)
         except AudioFileError:
-            print_w("Error loading %r" % filename)
+            print_w(f"Error loading {filename!r}")
             util.print_exc()
         except Exception:
-            print_w("Error loading %r" % filename)
+            print_w(f"Error loading {filename!r}")
             raise
 
 

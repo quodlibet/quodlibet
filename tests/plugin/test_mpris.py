@@ -121,7 +121,7 @@ class TMPRIS(PluginTestCase):
         while not self._replies:
             Gtk.main_iteration_do(False)
             if time.time() - start > MAX_TIME:
-                self.fail("Timed out waiting for replies (%s)" % msg)
+                self.fail(f"Timed out waiting for replies ({msg})")
         return self._replies.pop(0)
 
     def test_main(self):
@@ -180,7 +180,7 @@ class TMPRIS(PluginTestCase):
 
         for key, value in props.items():
             self._prop().Get(piface, key, **args)
-            resp = self._wait(msg="for key '%s'" % key)[0]
+            resp = self._wait(msg=f"for key '{key}'")[0]
             self.assertEqual(resp, value)
             assert isinstance(resp, type(value))
 

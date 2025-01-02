@@ -45,7 +45,7 @@ class TDuplicates(PluginTestCase):
             "CASE_INSENSITIVE",
         ]:
             # Get the actual values, don't hard-code here (kinda)
-            cfg_name = getattr(self.mod.Duplicates, "_CFG_%s" % name)
+            cfg_name = getattr(self.mod.Duplicates, f"_CFG_{name}")
             config.set(PM.CONFIG_SECTION, self.kind._get_config_option(cfg_name), True)
 
     # TODO: proper logic tests...

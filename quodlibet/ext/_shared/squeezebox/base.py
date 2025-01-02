@@ -186,4 +186,4 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
                     % (ver, cur, cls.server.get_players()[cur]["name"])
                 )
         except (IndexError, KeyError, SqueezeboxError) as e:
-            print_d("Couldn't get player info (%s)." % e)
+            print_d(f"Couldn't get player info ({e}).")

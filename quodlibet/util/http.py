@@ -68,20 +68,23 @@ class HTTPRequest(GObject.Object):
         session.send_async(self.message, 1, self.cancellable, self._sent, None)
 
     def _sent(self, session, task, data):
+        m = self.message
         try:
-            status = int(self.message.get_property("status-code"))
+            status = int(m.get_property("status-code"))
             if status >= 400:
-                msg = f"HTTP {status} error in {self.message.get_method()} request to {self._uri}"
+                msg = f"HTTP {status} error in {m.get_method()} request to {self._uri}"
                 print_w(msg)
                 return self.emit("send-failure", Exception(msg))
             self.istream = session.send_finish(task)
             print_d(
-                f"Got HTTP {status} on {self.message.get_method()} request to {self._uri}."
+                f"Got HTTP {status} on {m.get_method()} request "
+                f"to {self._uri}."
             )
-            self.emit("sent", self.message)
+            self.emit("sent", m)
         except GLib.GError as e:
             print_w(
-                f"Failed sending {self.message.get_method()} request to {self._uri} ({e})"
+                f"Failed sending {m.get_method()} request "
+                f"to {self._uri} ({e})"
             )
             self.emit("send-failure", e)
 

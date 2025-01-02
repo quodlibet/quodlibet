@@ -66,7 +66,7 @@ def write_cover(image):
         raise AudioFileError(e) from e
 
     ext = (image.extensions and image.extensions[0]) or "jpg"
-    data = ("hello.%s\x00" % (ext)).encode("ascii") + data
+    data = f"hello.{ext}\x00".encode("ascii") + data
 
     value = mutagen.apev2.APEValue(data, mutagen.apev2.BINARY)
 

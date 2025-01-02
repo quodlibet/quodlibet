@@ -38,15 +38,12 @@ class FilterMenu:
         <menuitem action='AddedRecently' always-show-image='true'/>
         <menuitem action='TopRated' always-show-image='true'/>
     </menu>"""
-    __OUTER_MENU = (
-        """
+    __OUTER_MENU = f"""
     <ui>
         <menubar name='Menu'>
-            %s
+            {MENU}
         </menubar>
     </ui>"""
-        % MENU
-    )
 
     def __init__(self, library, player, ui=None):
         self._browser = None
@@ -83,7 +80,7 @@ class FilterMenu:
             ("album", _("On Current Al_bum")),
         ]:
             act = Action(
-                name="Filter%s" % util.capitalize(tag_),
+                name=f"Filter{util.capitalize(tag_)}",
                 label=lab,
                 icon_name=Icons.EDIT_SELECT_ALL,
             )
@@ -96,7 +93,7 @@ class FilterMenu:
             ("album", "M", _("Random Al_bum")),
         ]:
             act = Action(
-                name="Random%s" % util.capitalize(tag_),
+                name=f"Random{util.capitalize(tag_)}",
                 label=label,
                 icon_name=Icons.DIALOG_QUESTION,
             )
@@ -216,7 +213,7 @@ class FilterMenu:
 
         if song:
             for h in ["genre", "artist", "album"]:
-                widget = self._get_child_widget("Filter%s" % h.capitalize())
+                widget = self._get_child_widget(f"Filter{h.capitalize()}")
                 widget.set_sensitive(h in song)
 
     def _get_child_widget(self, name=None):

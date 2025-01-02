@@ -183,7 +183,7 @@ class DBusIntrospectable:
         parts = []
         parts.append("<node>")
         for iface, intros in self.__ispec.items():
-            parts.append('<interface name="%s">' % iface)
+            parts.append(f'<interface name="{iface}">')
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
@@ -290,7 +290,7 @@ class DBusProperty:
         for prop in properties:
             iface = self.get_interface(interface, prop)
             if iface is None:
-                raise ValueError("Property %s not registered" % prop)
+                raise ValueError(f"Property {prop} not registered")
             combos.setdefault(iface, []).append(prop)
 
         for iface, props in combos.items():
@@ -299,7 +299,7 @@ class DBusProperty:
             for prop in props:
                 emit = self.__props[iface][prop]["emit"]
                 if emit == "false":
-                    raise ValueError("Can't emit changed signal for %s" % prop)
+                    raise ValueError(f"Can't emit changed signal for {prop}")
                 elif emit == "true":
                     values[prop] = self.get_value(iface, prop, path)
                 elif emit == "invalidates":

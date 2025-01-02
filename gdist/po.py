@@ -246,7 +246,7 @@ class BuildMo(Command):
         langs = gettextutil.list_languages(po_build_path)
         if self.lang is not None:
             if self.lang not in langs:
-                raise SystemExit("Error: %r not found" % self.lang)
+                raise SystemExit(f"Error: {self.lang!r} not found")
             else:
                 langs = [self.lang]
 

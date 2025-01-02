@@ -145,7 +145,7 @@ class QuodLibetUnixRemote(RemoteBase):
         try:
             messages = list(fifo.split_message(data))
         except ValueError:
-            print_w("invalid message: %r" % data)
+            print_w(f"invalid message: {data!r}")
             return
 
         for command, path in messages:

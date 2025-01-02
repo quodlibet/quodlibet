@@ -73,7 +73,7 @@ class TPluginWindow(TestCase):
     def test_type_filter_combo(self):
         combo = PluginTypeFilterCombo()
         # The ALL item should be first.
-        assert combo.get_active_type() == object
+        assert combo.get_active_type() is object
         # Check we have a few types (including separator)
         combo.set_active(5)
         assert combo.get_active_type()

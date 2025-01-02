@@ -40,7 +40,7 @@ class TPlaylistMenu(TestCase):
         # Testing locally is VERY dangerous without this...
         self.assertTrue(
             _TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
-            msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR,
+            msg=f"Failing, don't want to delete {_DEFAULT_PLAYLIST_DIR}",
         )
         try:
             os.mkdir(_DEFAULT_PLAYLIST_DIR)

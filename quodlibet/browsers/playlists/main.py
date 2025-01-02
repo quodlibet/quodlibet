@@ -665,7 +665,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                         f, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
                     )
                 else:
-                    print_w("Unsupported playlist type for '%s'" % filename)
+                    print_w(f"Unsupported playlist type for '{filename}'")
                     continue
             # Import all the songs in the playlist to the *songs* library
             total_songs += len(self.songs_lib.add(playlist))
@@ -676,13 +676,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         try:
             name = config.get("browsers", "playlist")
         except config.Error as e:
-            print_d("Couldn't get last playlist from config: %s" % e)
+            print_d(f"Couldn't get last playlist from config: {e}")
         else:
             self.__view.select_by_func(lambda r: r[0].name == name, one=True)
         try:
             text = config.get("browsers", "query_text")
         except config.Error as e:
-            print_d("Couldn't get last search string from config: %s" % e)
+            print_d(f"Couldn't get last search string from config: {e}")
         else:
             self._set_text(text)
 

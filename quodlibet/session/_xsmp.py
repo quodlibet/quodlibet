@@ -322,7 +322,9 @@ class XSMPClient(GObject.Object):
             self._conn = None
             self._source.close()
             self._source = None
-            raise XSMPError("open failed: %r" % error_string.value.decode("utf-8"))
+            raise XSMPError(
+                "open failed: {!r}".format(error_string.value.decode("utf-8"))
+            )
 
         # FIXME: id_ should be freed with free()
         self._id = id_.value.decode("utf-8")

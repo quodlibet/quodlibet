@@ -261,9 +261,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         count=5,
         id=None,
         validator=None,
-        title=_("Saved Values"),  # noqa
-        edit_title=_("Edit saved values…"),
-    ):  # noqa
+        title=None,
+        edit_title=None,
+    ):
+        title = title or _("Saved Values")
+        edit_title = edit_title or _("Edit saved values…")
         initial = initial if initial is not None else []
         self.count = count
         self.filename = filename

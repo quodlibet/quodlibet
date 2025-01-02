@@ -97,7 +97,7 @@ class CoPool:
     def _get(self, funcid):
         if funcid in self.__routines:
             return self.__routines[funcid]
-        raise ValueError("no pooled routine %r" % funcid)
+        raise ValueError(f"no pooled routine {funcid!r}")
 
     def remove(self, funcid):
         """Stop a registered routine."""

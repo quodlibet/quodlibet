@@ -201,7 +201,7 @@ class XinePlaylistPlayer(BasePlayer):
                 if msg.explanation:
                     message = string_at(addressof(msg) + msg.explanation)
                 else:
-                    message = "xine error %s" % msg.type
+                    message = f"xine error {msg.type}"
                 message = message.decode("utf-8", errors="replace")
                 GLib.idle_add(self._error, PlayerError(message))
         return True

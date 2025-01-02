@@ -27,7 +27,7 @@ class RedirectImportHook:
 
         for package in packages:
             if package in sys.modules:
-                raise Exception("%r already loaded, can't redirect" % package)
+                raise Exception(f"{package!r} already loaded, can't redirect")
 
         self._name = name
         self._packages = packages

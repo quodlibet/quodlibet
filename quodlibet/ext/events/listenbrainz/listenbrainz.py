@@ -122,11 +122,11 @@ class ListenBrainzClient:
         self.logger.debug("ListenBrainz %s: %r", listen_type, payload)
         data = {"listen_type": listen_type, "payload": payload}
         headers = {
-            "Authorization": "Token %s" % self.user_token,
+            "Authorization": f"Token {self.user_token}",
             "Content-Type": "application/json",
         }
         body = json.dumps(data)
-        print("submit: %s" % body)
+        print(f"submit: {body}")
         if SSL_CONTEXT is not None:
             conn = HTTPSConnection(HOST_NAME, context=SSL_CONTEXT)
         else:

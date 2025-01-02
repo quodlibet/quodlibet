@@ -208,7 +208,7 @@ class EditBookmarks(qltk.Window):
         self.set_transient_for(qltk.get_top_parent(parent))
         self.set_border_width(12)
         self.set_default_size(350, 250)
-        self.set_title(_("Bookmarks") + " - %s" % player.song.comma("title"))
+        self.set_title(_("Bookmarks") + " - {}".format(player.song.comma("title")))
 
         pane = EditBookmarksPane(library, player.song, close=True)
         self.add(pane)

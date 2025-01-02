@@ -12,7 +12,7 @@ from multiprocessing import cpu_count
 try:
     from concurrent.futures import ThreadPoolExecutor
 except ImportError as e:
-    raise ImportError("python-futures is missing: %r" % e) from e
+    raise ImportError(f"python-futures is missing: {e!r}") from e
 
 from gi.repository import GLib
 

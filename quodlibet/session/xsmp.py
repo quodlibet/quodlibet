@@ -34,7 +34,7 @@ class XSMPSessionClient(SessionClient):
         else:
             GdkX11.x11_set_sm_client_id(client.client_id)
 
-        print_d("Connected. Client ID: %s" % client.client_id)
+        print_d(f"Connected. Client ID: {client.client_id}")
 
         def save_yourself(client, *args):
             print_d(f"xsmp: save_yourself {args!r}")

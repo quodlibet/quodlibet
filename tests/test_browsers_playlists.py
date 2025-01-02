@@ -193,7 +193,7 @@ class TPlaylistsBrowser(TestCase):
         # Testing locally is VERY dangerous without this...
         self.assertTrue(
             _TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
-            msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR,
+            msg=f"Failing, don't want to delete {_DEFAULT_PLAYLIST_DIR}",
         )
         try:
             shutil.rmtree(_DEFAULT_PLAYLIST_DIR)
@@ -266,7 +266,7 @@ class TPlaylistsBrowser(TestCase):
         self.expected = None
         self._do()
         self.expected = [SONGS[0]]
-        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = {}".format(SONGS[0]["title"]))
         self.bar._select_playlist(self.bar.playlists()[0])
         self.expected = [SONGS[0]]
         self._do()

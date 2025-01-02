@@ -269,7 +269,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         if len(files) == 0:
             self.set_title("Ex Falso")
         elif len(files) == 1:
-            self.set_title("%s - Ex Falso" % files[0].comma("title"))
+            self.set_title("{} - Ex Falso".format(files[0].comma("title")))
         else:
             params = {
                 "title": files[0].comma("title"),

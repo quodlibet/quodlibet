@@ -126,7 +126,7 @@ class Collection:
                 return x
 
             v = map(default_funct, v)
-            v = ((isinstance(x, float) and "%.2f" % x) or x for x in v)
+            v = ((isinstance(x, float) and f"{x:.2f}") or x for x in v)
             v = (isinstance(x, str) and x or str(x) for x in v)
             return connector.join(filter(None, v)) or default
         else:
@@ -330,7 +330,7 @@ class Album(Collection, HasKey):
         self.__dict__.pop("genre", None)
 
     def __repr__(self):
-        return "Album(%s)" % repr(self.key)
+        return f"Album({repr(self.key)})"
 
 
 @hashable
@@ -587,7 +587,7 @@ class FileBackedPlaylist(Playlist):
             self._populate_from_file()
         except OSError:
             if self.name:
-                print_d("Playlist '%s' not found, creating new." % self.name)
+                print_d(f"Playlist '{self.name}' not found, creating new.")
                 self.write()
 
     @classmethod
@@ -703,7 +703,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         def backup_for(path: str) -> str:
             base = os.path.join(dirname(path), ".backup")
             if not exists(base):
-                print_d("Creating playlist backup directory %s" % base)
+                print_d(f"Creating playlist backup directory {base}")
                 os.mkdir(base)
             return os.path.join(base, basename(path))
 

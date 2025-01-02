@@ -166,7 +166,7 @@ def _do_trash_songs(parent, songs, librarian):
         try:
             trash.trash(filename)
         except trash.TrashError as e:
-            print_w("Couldn't trash file (%s)" % e)
+            print_w(f"Couldn't trash file ({e})")
             failed.append(song)
         else:
             ok.append(song)

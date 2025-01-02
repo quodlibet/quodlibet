@@ -108,7 +108,7 @@ def _init_python():
         # In the MSYS2 console MSYSTEM is set, which breaks os.sep/os.path.sep
         # If you hit this, do a "setup.py clean -all" to get rid of the
         # bytecode cache then start things with "MSYSTEM= ..."
-        raise AssertionError("MSYSTEM is set (%r)" % os.environ.get("MSYSTEM"))
+        raise AssertionError("MSYSTEM is set ({!r})".format(os.environ.get("MSYSTEM")))
 
     logging.getLogger().addHandler(PrintHandler())
 

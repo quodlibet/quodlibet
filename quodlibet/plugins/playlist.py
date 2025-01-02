@@ -114,7 +114,7 @@ class PlaylistPluginHandler(PluginHandler):
                 try:
                     items.append(kind(playlists=playlists, library=library))
                 except Exception:
-                    print_e("Couldn't initialise playlist plugin %s: " % kind)
+                    print_e(f"Couldn't initialise playlist plugin {kind}: ")
                     print_exc()
         items = [i for i in items if i.initialized]
 
@@ -163,7 +163,7 @@ class PlaylistPluginHandler(PluginHandler):
                 print_exc()
             else:
                 if ret:
-                    print_d("Updating %s" % pl)
+                    print_d(f"Updating {pl}")
                     browser.changed(pl)
                     browser.activate()
                     return
@@ -178,7 +178,7 @@ class PlaylistPluginHandler(PluginHandler):
                 if ret:
                     for update, pl in zip(ret, playlists, strict=False):
                         if update:
-                            print_d("Updating %s" % pl)
+                            print_d(f"Updating {pl}")
                             browser.changed(pl)
                     browser.activate()
             except Exception:

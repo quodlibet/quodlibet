@@ -41,7 +41,7 @@ def show_uri(label, uri):
     parsed = urlparse(uri)
     if parsed.scheme == "quodlibet":
         if parsed.netloc != "":
-            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            print_w(f"Unknown QuodLibet URL format ({uri})")
             return False
         else:
             return __show_quodlibet_uri(parsed)
@@ -327,7 +327,7 @@ def is_accel(event, *accels):
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
         if accel_keyval == 0 and accel_mod == 0:
-            raise ValueError("Invalid accel: %s" % accel)
+            raise ValueError(f"Invalid accel: {accel}")
 
         # If the accel contains non default modifiers matching will
         # never work and since no one should use them, complain
@@ -462,10 +462,10 @@ def add_signal_watch(signal_action, _sockets=[]):  # noqa
         # Before the mainloop starts we catch signals in python
         # directly and idle_add the app.quit
         def idle_handler(signum, frame):
-            print_d("Python signal handler activated: %s" % signals[signum])
+            print_d(f"Python signal handler activated: {signals[signum]}")
             GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
 
-        print_d("Register Python signal handler: %r" % name)
+        print_d(f"Register Python signal handler: {name!r}")
         signal.signal(signum, idle_handler)
 
     read_socket, write_socket = socket.socketpair()

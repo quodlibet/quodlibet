@@ -184,7 +184,7 @@ class PlayerOptions(GObject.Object):
 
     @repeat.setter
     def repeat(self, value):
-        print_d("setting repeated to %s" % value)
+        print_d(f"setting repeated to {value}")
         self._order_widget.repeated = value
 
     @property
@@ -1141,7 +1141,7 @@ class QuodLibetWindow(Window, PersistentWindowMixin, AppWindow):
         except ValueError:
             return False
 
-        action_name = "View%s" % Browser.__name__
+        action_name = f"View{Browser.__name__}"
         for action in self._browser_action.get_group():
             if action.get_name() == action_name:
                 action.set_active(True)

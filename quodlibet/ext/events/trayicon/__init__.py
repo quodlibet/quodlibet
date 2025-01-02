@@ -32,7 +32,7 @@ def get_indicator_impl():
 
     use_app_indicator = is_linux() and dbus_name_owned("org.kde.StatusNotifierWatcher")
 
-    print_d("use app indicator: %s" % use_app_indicator)
+    print_d(f"use app indicator: {use_app_indicator}")
     if not use_app_indicator:
         return SystemTray
     else:

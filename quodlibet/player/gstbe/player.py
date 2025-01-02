@@ -348,7 +348,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
         self._librarian = librarian
 
-        self.version_info = "GStreamer: %s" % fver(Gst.version())
+        self.version_info = f"GStreamer: {fver(Gst.version())}"
         self._pipeline_desc = None
 
         self._volume = 1.0
@@ -386,7 +386,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
     def name(self):
         name = "GStreamer"
         if self._pipeline_desc:
-            name += " (%s)" % self._pipeline_desc
+            name += f" ({self._pipeline_desc})"
         return name
 
     @property
@@ -482,7 +482,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             except OSError as e:
                 print_w("Linking the GStreamer pipeline failed")
                 self._error(
-                    PlayerError(_("Could not create GStreamer pipeline (%s)" % e))
+                    PlayerError(_(f"Could not create GStreamer pipeline ({e})"))
                 )
                 return False
 
@@ -663,7 +663,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self.bin.recalculate_latency()
         elif message.type == Gst.MessageType.REQUEST_STATE:
             state = message.parse_request_state()
-            print_d("State requested: %s" % Gst.Element.state_get_name(state))
+            print_d(f"State requested: {Gst.Element.state_get_name(state)}")
             self.bin.set_state(state)
         elif message.type == Gst.MessageType.DURATION_CHANGED:
             if self.song.fill_length:
@@ -690,7 +690,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         }
 
         def install_done_cb(plugins_return, *args):
-            print_d("Gstreamer plugin install return: %r" % plugins_return)
+            print_d(f"Gstreamer plugin install return: {plugins_return!r}")
             Gst.update_registry()
 
         context = GstPbutils.InstallPluginsContext.new()
@@ -718,7 +718,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         res = GstPbutils.install_plugins_async(
             [details], context, install_done_cb, None
         )
-        print_d("Gstreamer plugin install result: %r" % res)
+        print_d(f"Gstreamer plugin install result: {res!r}")
 
         if res in (
             GstPbutils.InstallPluginsReturn.HELPER_MISSING,
@@ -775,10 +775,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # in the mainloop before our function gets scheduled.
             # In this case abort and do nothing, which results
             # in a non-gapless transition.
-            print_e("About to finish (async): %s" % e)
+            print_e(f"About to finish (async): {e}")
             return
         except MainRunnerAbortedError as e:
-            print_e("About to finish (async): %s" % e)
+            print_e(f"About to finish (async): {e}")
             return
         except MainRunnerError:
             util.print_exc()

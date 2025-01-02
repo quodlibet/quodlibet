@@ -105,9 +105,9 @@ class TRandomAlbum(PluginTestCase):
         config.quit()
 
     def get_winner(self, albums):
-        print_d("Weights: %s " % self.plugin.weights)
+        print_d(f"Weights: {self.plugin.weights} ")
         scores = self.plugin._score(albums)
-        print_d("Scores: %s" % scores)
+        print_d(f"Scores: {scores}")
         if not scores:
             return None
         return max(scores)[1]

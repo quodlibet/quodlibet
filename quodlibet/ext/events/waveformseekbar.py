@@ -274,7 +274,7 @@ class WaveformSeekBar(Gtk.Box):
             if length != 0:
                 self._waveform_scale.set_position(position / length)
             else:
-                print_d("Length reported as zero for %s" % player.info)
+                print_d(f"Length reported as zero for {player.info}")
                 self._waveform_scale.set_position(0)
 
             if position == 0 or full_redraw:

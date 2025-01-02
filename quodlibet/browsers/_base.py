@@ -295,7 +295,7 @@ class DisplayPatternMixin:
     @classmethod
     def load_pattern(cls):
         """Load the pattern as defined in `_PATTERN_FN`"""
-        print_d("Loading pattern from %s" % cls._PATTERN_FN)
+        print_d(f"Loading pattern from {cls._PATTERN_FN}")
         try:
             with open(cls._PATTERN_FN, encoding="utf-8") as f:
                 pattern_text = f.read().rstrip()

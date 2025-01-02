@@ -118,7 +118,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     items.append(Kind(songs, library))
                 except Exception:
-                    print_e("Couldn't initialise song plugin %s. Stack trace:" % Kind)
+                    print_e(f"Couldn't initialise song plugin {Kind}. Stack trace:")
                     errorhook()
         items = [i for i in items if i.initialized]
 
@@ -516,7 +516,7 @@ class SongsMenu(Gtk.Menu):
 
             submenu = PlaylistMenu(songs, library.playlists)
         except AttributeError as e:
-            print_w("Couldn't get Playlists menu: %s" % e)
+            print_w(f"Couldn't get Playlists menu: {e}")
         else:
             b = qltk.MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
             b.set_sensitive(can_add and bool(songs))

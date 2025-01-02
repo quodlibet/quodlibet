@@ -48,7 +48,7 @@ class TitleLabel(Gtk.Label):
         super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
         markup = text if is_markup else (util.italic(text))
-        markup = "<span size='xx-large'>%s</span>" % markup
+        markup = f"<span size='xx-large'>{markup}</span>"
         self.set_markup(markup)
         self.set_selectable(True)
 
@@ -367,7 +367,7 @@ class OneAlbum(qltk.Notebook):
         self.title = text = song["album"]
         markup = util.italic(text)
         if "date" in song:
-            markup += " <small>(%s)</small>" % util.escape(song("~year"))
+            markup += " <small>({})</small>".format(util.escape(song("~year")))
         box.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
 
     def _album(self, songs, box):
@@ -398,7 +398,7 @@ class OneAlbum(qltk.Notebook):
             )
 
         text.append(", ".join(parts))
-        text.append("(%s)" % util.format_time_preferred(length))
+        text.append(f"({util.format_time_preferred(length)})")
 
         if "location" in song:
             text.append(util.escape(song["location"]))

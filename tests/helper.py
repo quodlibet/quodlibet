@@ -332,7 +332,7 @@ class ListWithUnused:
         if self.unused:
             from quodlibet import print_w
 
-            print_w("ListWithUnused has unused items: %s" % self.unused)
+            print_w(f"ListWithUnused has unused items: {self.unused}")
 
 
 def __(message):  # noqa

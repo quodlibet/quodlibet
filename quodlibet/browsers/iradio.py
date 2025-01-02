@@ -241,7 +241,7 @@ def _get_stations_from(
             if not re.match("^([^/:]+)://", uri):
                 # Assume HTTP if no protocol given. See #2731
                 uri = "http://" + uri
-                print_d("Assuming http: %s" % uri)
+                print_d(f"Assuming http: {uri}")
 
             # Error handling outside
             sock = None
@@ -263,7 +263,7 @@ def _get_stations_from(
             try:
                 irfs = [IRFile(uri)]
             except ValueError as e:
-                print_e("Can't add URI %s" % uri, e)
+                print_e(f"Can't add URI {uri}", e)
     on_done(irfs, uri)
 
 

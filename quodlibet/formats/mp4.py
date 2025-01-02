@@ -1,6 +1,6 @@
 # Copyright 2005 Alexey Bobyakov <claymore.ws@gmail.com>, Joe Wreschnig
 # Copyright 2006 Lukas Lalinsky
-#           2020 Nick Boultbee
+#      2020,2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,6 +15,8 @@ from quodlibet.util.string import decode
 from ._audio import AudioFile
 from ._misc import AudioFileError, translate_errors
 from ._image import EmbeddedImage
+
+ITUNES: str = "----:com.apple.iTunes"
 
 
 class MP4File(AudioFile):
@@ -40,25 +42,26 @@ class MP4File(AudioFile):
         "soar": "artistsort",
         "sonm": "titlesort",
         "soco": "composersort",
-        "----:com.apple.iTunes:CONDUCTOR": "conductor",
-        "----:com.apple.iTunes:DISCSUBTITLE": "discsubtitle",
-        "----:com.apple.iTunes:LANGUAGE": "language",
-        "----:com.apple.iTunes:MOOD": "mood",
-        "----:com.apple.iTunes:MusicBrainz Artist Id": "musicbrainz_artistid",
-        "----:com.apple.iTunes:MusicBrainz Track Id": "musicbrainz_trackid",
-        "----:com.apple.iTunes:MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
-        "----:com.apple.iTunes:MusicBrainz Album Id": "musicbrainz_albumid",
-        "----:com.apple.iTunes:MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
-        "----:com.apple.iTunes:MusicIP PUID": "musicip_puid",
-        "----:com.apple.iTunes:MusicBrainz Album Status": "musicbrainz_albumstatus",
-        "----:com.apple.iTunes:MusicBrainz Album Type": "musicbrainz_albumtype",
-        "----:com.apple.iTunes:MusicBrainz Album Release Country": "releasecountry",
-        "----:com.apple.iTunes:MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
-        "----:com.apple.iTunes:replaygain_album_gain": "replaygain_album_gain",
-        "----:com.apple.iTunes:replaygain_album_peak": "replaygain_album_peak",
-        "----:com.apple.iTunes:replaygain_track_gain": "replaygain_track_gain",
-        "----:com.apple.iTunes:replaygain_track_peak": "replaygain_track_peak",
-        "----:com.apple.iTunes:replaygain_reference_loudness": "replaygain_reference_loudness",
+        f"{ITUNES}:CONDUCTOR": "conductor",
+        f"{ITUNES}:DISCSUBTITLE": "discsubtitle",
+        f"{ITUNES}:LANGUAGE": "language",
+        f"{ITUNES}:MOOD": "mood",
+        f"{ITUNES}:MusicBrainz Artist Id": "musicbrainz_artistid",
+        f"{ITUNES}:MusicBrainz Track Id": "musicbrainz_trackid",
+        f"{ITUNES}:MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
+        f"{ITUNES}:MusicBrainz Album Id": "musicbrainz_albumid",
+        f"{ITUNES}:MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
+        f"{ITUNES}:MusicIP PUID": "musicip_puid",
+        f"{ITUNES}:MusicBrainz Album Status": "musicbrainz_albumstatus",
+        f"{ITUNES}:MusicBrainz Album Type": "musicbrainz_albumtype",
+        f"{ITUNES}:MusicBrainz Album Release Country": "releasecountry",
+        f"{ITUNES}:MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
+        f"{ITUNES}:replaygain_album_gain": "replaygain_album_gain",
+        f"{ITUNES}:replaygain_album_peak": "replaygain_album_peak",
+        f"{ITUNES}:replaygain_track_gain": "replaygain_track_gain",
+        f"{ITUNES}:replaygain_track_peak": "replaygain_track_peak",
+        f"{ITUNES}:replaygain_reference_loudness": "replaygain_reference_loudness",
+
     }
     __rtranslate = {v: k for k, v in __translate.items()}
 
@@ -201,7 +204,7 @@ class MP4File(AudioFile):
         elif image.mime_type == "image/png":
             image_format = MP4Cover.FORMAT_PNG
         else:
-            raise AudioFileError("mp4: Unsupported image format %r" % image.mime_type)
+            raise AudioFileError(f"mp4: Unsupported image format {image.mime_type!r}")
 
         with translate_errors():
             tag = MP4(self["~filename"])

@@ -66,7 +66,7 @@ def build_query(album):
     if not album:
         return ""
 
-    alb = '"%s"' % album[0].comma("album").replace('"', "")
+    alb = '"{}"'.format(album[0].comma("album").replace('"', ""))
     art = get_artist(album)
     if art:
         art_safe = art.replace('"', "")

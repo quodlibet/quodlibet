@@ -87,7 +87,7 @@ class Query(Node):
         if not set("#=").intersection(string):
             for c in config.get("browsers", "ignored_characters"):
                 string = string.replace(c, "")
-            parts = ["/%s/d" % re_escape(s) for s in string.split()]
+            parts = [f"/{re_escape(s)}/d" for s in string.split()]
             string = "&(" + ",".join(parts) + ")"
             self.string = string
 
@@ -98,7 +98,7 @@ class Query(Node):
             except self.Error:
                 pass
 
-        print_d("Query '%s' is invalid" % string)
+        print_d(f"Query '{string}' is invalid")
         self.type = QueryType.INVALID
         self._match = False_()
 

@@ -209,7 +209,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
                 value = dialog.run(clipboard=True)
                 if value:
                     self.login_state = State.LOGGED_IN
-                    print_d("Got a user token value of '%s'" % value)
+                    print_d(f"Got a user token value of '{value}'")
                     self.api_client.get_tokens(value)
             elif state == State.LOGGED_OUT:
                 self.api_client.authenticate_user()
@@ -331,7 +331,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             self.__filter = SoundcloudQuery(text, self.STAR)
             self.library.query_with_refresh(self.__filter)
         except SoundcloudQuery.Error as e:
-            print_d("Couldn't parse query: %s" % e)
+            print_d(f"Couldn't parse query: {e}")
         else:
             print_d(f"Got terms from query: {self.__filter.terms}")
             if not restore:
@@ -402,13 +402,13 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             if SoundcloudQuery(text).is_parsable:
                 self.activate()
             else:
-                print_d("Not parsable: %s" % text)
+                print_d(f"Not parsable: {text}")
 
     def get_filter_text(self):
         return self.__searchbar.get_text()
 
     def activate(self):
-        print_d('Refreshing browser for query "%r"' % self.__filter)
+        print_d(f'Refreshing browser for query "{self.__filter!r}"')
         songs = self.library.query(self.get_filter_text())
         self.songs_selected(songs)
 
@@ -440,7 +440,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
 
     def __handle_incoming_uri(self, obj, uri):
         if not PROCESS_QL_URLS:
-            print_w("Processing of quodlibet:// URLs is disabled. (%s)" % uri)
+            print_w(f"Processing of quodlibet:// URLs is disabled. ({uri})")
             return
         uri = urlparse(uri)
         if (
@@ -451,7 +451,7 @@ class SoundcloudBrowser(Browser, util.InstanceTracker):
             try:
                 code = parse_qs(uri.query)["code"][0]
             except IndexError:
-                print_w("Malformed response in callback URI: %s" % uri)
+                print_w(f"Malformed response in callback URI: {uri}")
                 return
             print_d(f"Processing Soundcloud callback ({uri})")
             self.api_client.get_tokens(code)

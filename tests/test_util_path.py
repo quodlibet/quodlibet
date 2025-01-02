@@ -161,6 +161,6 @@ class Tiscommand(TestCase):
                 for file_path in sorted(os.listdir(d)):
                     p = os.path.join(d, file_path)
                     if os.path.isfile(p) and os.access(p, os.X_OK):
-                        print_d("Testing %s" % p)
+                        print_d(f"Testing {p}")
                         assert iscommand(p), p
                         return

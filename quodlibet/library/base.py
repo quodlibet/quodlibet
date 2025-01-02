@@ -224,7 +224,7 @@ def _load_items(filename) -> Iterable[V]:
         with open(filename, "rb") as fp:
             data = fp.read()
     except OSError:
-        print_w("Couldn't load library file from: %r" % filename)
+        print_w(f"Couldn't load library file from: {filename!r}")
         return []
 
     try:
@@ -256,7 +256,7 @@ class PicklingMixin:
         """
 
         self.filename = filename
-        print_d("Loading contents of %r." % filename, self)
+        print_d(f"Loading contents of {filename!r}.", self)
 
         items = _load_items(filename)
 

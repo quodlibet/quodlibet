@@ -85,7 +85,7 @@ class RGAlbum:
             return ""
         # It's ok - any() + generator is short-cut-logic-friendly
         if not any(rgs.song("album") for rgs in self.songs):
-            return "(%s)" % EMPTY
+            return f"({EMPTY})"
         return self.songs[0].song.comma("~artist~album")
 
     @property
@@ -179,7 +179,7 @@ class RGSong:
         return self.song("~#length")
 
     def _get_rg_tag(self, suffix):
-        ret = self.song("~#replaygain_%s" % suffix)
+        ret = self.song(f"~#replaygain_{suffix}")
         return None if ret == "" else ret
 
     @property
@@ -424,7 +424,7 @@ class RGDialog(Dialog):
             if item.gain is None or not item.done:
                 cell.set_property("text", "-")
             else:
-                cell.set_property("text", "%.2f db" % item.gain)
+                cell.set_property("text", f"{item.gain:.2f} db")
             cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Gain"))
@@ -439,7 +439,7 @@ class RGDialog(Dialog):
             if item.gain is None or not item.done:
                 cell.set_property("text", "-")
             else:
-                cell.set_property("text", "%.2f" % item.peak)
+                cell.set_property("text", f"{item.peak:.2f}")
             cell.set_sensitive(model[iter_][1])
 
         column = Gtk.TreeViewColumn(_("Peak"))
@@ -514,7 +514,7 @@ class RGDialog(Dialog):
                 return None
             next_album = self._todo.pop(0)
             if not next_album.should_process:
-                print_d("%s needs no processing" % next_album.title)
+                print_d(f"{next_album.title} needs no processing")
                 self._done.append(next_album)
                 self.__update_view_for(next_album)
                 next_album = None

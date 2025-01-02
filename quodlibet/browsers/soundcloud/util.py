@@ -50,7 +50,7 @@ class Wrapper:
         return self.data.get(name, default)
 
     def __str__(self):
-        return "<Wrapped: %s>" % self.data
+        return f"<Wrapped: {self.data}>"
 
 
 def json_callback(wrapped):
@@ -109,4 +109,4 @@ def sanitise_tag(value):
 
 
 def sc_btn_image(path, w, h):
-    return WebImage("https://connect.soundcloud.com/2/btn-%s.png" % path, w, h)
+    return WebImage(f"https://connect.soundcloud.com/2/btn-{path}.png", w, h)

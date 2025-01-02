@@ -289,7 +289,7 @@ def unit(
 
     if skip_markers:
         args.append("-m")
-        args.append(" and ".join(["not %s" % m for m in skip_markers]))
+        args.append(" and ".join([f"not {m}" for m in skip_markers]))
 
     if exitfirst:
         args.append("-x")

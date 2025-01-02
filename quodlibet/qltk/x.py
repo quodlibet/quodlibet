@@ -481,11 +481,11 @@ class WebImage(Gtk.Image):
         try:
             loader = GdkPixbuf.PixbufLoader()
         except GLib.GError as e:
-            print_w("Couldn't create GdkPixbuf (%s)" % e)
+            print_w(f"Couldn't create GdkPixbuf ({e})")
         else:
             loader.write(data)
             loader.close()
-            print_d("Got web image from %s" % url)
+            print_d(f"Got web image from {url}")
             return loader.get_pixbuf()
 
     def _finished(self, pixbuf):
@@ -545,7 +545,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
                 style_context.remove_provider(self._provider)
 
             provider = Gtk.CssProvider()
-            provider.load_from_data(("* {color: %s}" % self._color).encode("ascii"))
+            provider.load_from_data((f"* {{color: {self._color}}}").encode("ascii"))
             style_context.add_provider(
                 provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
             )

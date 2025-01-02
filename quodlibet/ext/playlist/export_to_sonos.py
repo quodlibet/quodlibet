@@ -223,7 +223,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                     f"chose {self.uri_for(track)}"
                 )
             else:
-                print_w('No results for "%s"' % search_term)
+                print_w(f'No results for "{search_term}"')
                 failures.append(search_term)
                 track = None
             if track:
@@ -259,7 +259,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
         else:
             sonos_pls = device.get_sonos_playlists()
             pl_id_to_name = {pl.item_id: pl.title for pl in sonos_pls}
-            print_d("Sonos playlists: %s" % pl_id_to_name)
+            print_d(f"Sonos playlists: {pl_id_to_name}")
             ret = GetSonosPlaylistDialog(pl_id_to_name).run(playlist.name)
             if ret:
                 spl_id, name = ret

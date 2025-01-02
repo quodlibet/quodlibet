@@ -181,7 +181,7 @@ class TLibrary(TestCase):
             # 0, 1, 2, 6, 9: all added by self.Frange
             # 100: key for new
             # new: is itself present
-            assert value in self.library, "didn't find %s" % value
+            assert value in self.library, f"didn't find {value}"
 
         for value in [-1, 10, 12, 101]:
             # -1, 10, 101: boundary values

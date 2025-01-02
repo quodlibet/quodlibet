@@ -19,9 +19,9 @@ class AlbumLibrary(Library[AlbumKey, Album]):
 
     def __init__(self, library):
         self.librarian = None
-        print_d("Initializing Album Library to watch %r" % library._name)
+        print_d(f"Initializing Album Library to watch {library._name!r}")
 
-        super().__init__("AlbumLibrary for %s" % library._name)
+        super().__init__(f"AlbumLibrary for {library._name}")
 
         self._library = library
         self._asig = library.connect("added", self.__added)

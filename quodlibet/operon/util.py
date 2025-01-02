@@ -68,7 +68,7 @@ def print_table(rows, headers, nicks, order):
     for c in range(len(rows[0])):
         widths.append(max(len(r[c]) for r in rows))
 
-    seperator = " %s " % Colorise.gray("|")
+    seperator = " {} ".format(Colorise.gray("|"))
     format_string = seperator.join(["%%-%ds" % w for w in widths])
 
     header = []
@@ -76,7 +76,7 @@ def print_table(rows, headers, nicks, order):
         header.append(h.ljust(widths[i], " "))
     line_width = len("   ".join(header)) + 2
     header = [Colorise.bold(h) for h in header]
-    header_line = " " + (" %s " % Colorise.gray("|")).join(header)
+    header_line = " " + (" {} ".format(Colorise.gray("|"))).join(header)
 
     print_(header_line.rstrip())
     print_(Colorise.gray("-" * line_width))

@@ -232,19 +232,19 @@ def unescape(string: str) -> str:
 
 
 def bold(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<b>%s</b>" % escaper(string)
+    return f"<b>{escaper(string)}</b>"
 
 
 def monospace(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<tt>%s</tt>" % escaper(string)
+    return f"<tt>{escaper(string)}</tt>"
 
 
 def italic(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<i>%s</i>" % escaper(string)
+    return f"<i>{escaper(string)}</i>"
 
 
 def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<b><i>%s</i></b>" % escaper(string)
+    return f"<b><i>{escaper(string)}</i></b>"
 
 
 def parse_time(time_str: str, suppress_errors: bool = True):
@@ -622,7 +622,7 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    print_d("Running %r" % argv)
+    print_d(f"Running {argv!r}")
     args = GLib.spawn_async(
         argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH, standard_output=stdout
     )
@@ -926,12 +926,15 @@ def build_filter_query(key, values):
         nheader = key[2:]
         queries = [f"#({nheader} = {i})" for i in values]
         if len(queries) > 1:
-            return "|(%s)" % ", ".join(queries)
+            return "|({})".format(", ".join(queries))
         else:
             return queries[0]
     else:
         text = ", ".join(
-            ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'") for v in values]
+            [
+                "'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'"))
+                for v in values
+            ]
         )
         if len(values) == 1:
             return f"{key} = {text}"
@@ -1139,7 +1142,7 @@ class MainRunner:
                 if self._source_id is not None:
                     GLib.source_remove(self._source_id)
                     self._source_id = None
-                    raise MainRunnerTimeoutError("timeout: %r" % timeout)
+                    raise MainRunnerTimeoutError(f"timeout: {timeout!r}")
             if self._error is not None:
                 raise self._error
             return self._return

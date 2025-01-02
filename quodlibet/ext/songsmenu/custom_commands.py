@@ -111,11 +111,11 @@ class Command(JSONObject):
             ).run()
             template_vars[self.parameter] = value
         if playlist_name:
-            print_d("Playlist command for %s" % playlist_name)
+            print_d(f"Playlist command for {playlist_name}")
             template_vars["PLAYLIST"] = playlist_name
 
         actual_command = self.command.format(**template_vars)
-        print_d("Actual command=%s" % actual_command)
+        print_d(f"Actual command={actual_command}")
         for i, song in enumerate(songs):
             wrapped = SongWrapper(song)
             if playlist_name:
@@ -125,8 +125,8 @@ class Command(JSONObject):
             arg = str(self.__pat.format(wrapped))
             if not arg:
                 print_w(
-                    'Couldn\'t build shell command using "%s".'
-                    "Check your pattern?" % self.pattern
+                    f'Couldn\'t build shell command using "{self.pattern}".'
+                    "Check your pattern?"
                 )
                 break
             if not self.unique:
@@ -225,7 +225,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         try:
             return self.all_commands()[key]
         except (KeyError, TypeError):
-            print_d("Invalid key %s" % key)
+            print_d(f"Invalid key {key}")
             return None
 
     @classmethod
@@ -260,19 +260,19 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def _get_saved_commands(cls):
         filename = cls.COMS_FILE
-        print_d("Loading saved commands from '%s'..." % filename)
+        print_d(f"Loading saved commands from '{filename}'...")
         coms = None
         try:
             with open(filename, encoding="utf-8") as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
         except (OSError, ValueError) as e:
-            print_w("Couldn't parse saved commands (%s)" % e)
+            print_w(f"Couldn't parse saved commands ({e})")
 
         # Failing all else...
         if not coms:
-            print_d("No commands found in %s. Using defaults." % filename)
+            print_d(f"No commands found in {filename}. Using defaults.")
             coms = {c.name: c for c in cls.DEFAULT_COMS}
-        print_d("Loaded commands: %s" % coms.keys())
+        print_d(f"Loaded commands: {coms.keys()}")
         return coms
 
     def __init__(self, *args, **kwargs):
@@ -307,7 +307,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         self._handle_songs(songs)
 
     def plugin_playlist(self, playlist):
-        print_d("Running playlist plugin for %s" % playlist)
+        print_d(f"Running playlist plugin for {playlist}")
         return self._handle_songs(playlist.songs, playlist)
 
     def _handle_songs(self, songs, playlist=None):

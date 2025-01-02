@@ -35,7 +35,7 @@ class SqueezeboxPlayerSettings(dict):
         try:
             return "{name} [{playerid}]".format(**self)
         except KeyError:
-            return _("unidentified Squeezebox player: %r" % self)
+            return _(f"unidentified Squeezebox player: {self!r}")
 
 
 class SqueezeboxServer:
@@ -70,7 +70,7 @@ class SqueezeboxServer:
             self.current_player = int(current_player) or 0
             try:
                 if self._debug:
-                    print_d("Trying %s..." % self.config)
+                    print_d(f"Trying {self.config}...")
                 self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.socket.settimeout(self._TIMEOUT)
                 self.socket.connect((socket.gethostbyname(hostname), port))
@@ -80,11 +80,11 @@ class SqueezeboxServer:
                 result = self.__request(f"login {user} {password}")
                 if result != (6 * "*"):
                     raise SqueezeboxError(
-                        "Couldn't log in to squeezebox: response was '%s'" % result
+                        f"Couldn't log in to squeezebox: response was '{result}'"
                     )
                 self.is_connected = True
                 self.failures = 0
-                print_d("Connected to Squeezebox Server! %s" % self)
+                print_d(f"Connected to Squeezebox Server! {self}")
                 # Reset players (forces reload)
                 self.players = []
                 self.get_players()
@@ -99,7 +99,7 @@ class SqueezeboxServer:
         line = line.strip()
 
         if not (self.is_connected or line.split()[0] == "login"):
-            print_d("Can't do '%s' - not connected" % line.split()[0], self)
+            print_d(f"Can't do '{line.split()[0]}' - not connected", self)
             return None
 
         if self._debug:
@@ -113,7 +113,7 @@ class SqueezeboxServer:
                 raw_response += self.socket.recv(1)
             raw_response = raw_response.decode("utf-8")
         except (TimeoutError, OSError) as e:
-            print_w("Couldn't communicate with squeezebox (%s)" % e)
+            print_w(f"Couldn't communicate with squeezebox ({e})")
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
                 print_w("Too many Squeezebox failures. Disconnecting")
@@ -185,13 +185,13 @@ class SqueezeboxServer:
 
     def playlist_play(self, path):
         """Play song immediately"""
-        self.player_request("playlist play %s" % (quote(path)))
+        self.player_request(f"playlist play {quote(path)}")
 
     def playlist_add(self, path):
-        self.player_request("playlist add %s" % (quote(path)), False)
+        self.player_request(f"playlist add {quote(path)}", False)
 
     def playlist_save(self, name):
-        self.player_request("playlist save %s" % (quote(name)), False)
+        self.player_request(f"playlist save {quote(name)}", False)
 
     def playlist_clear(self):
         self.player_request("playlist clear", False)
@@ -207,7 +207,7 @@ class SqueezeboxServer:
     def change_song(self, path):
         """Queue up a song"""
         self.player_request("playlist clear")
-        self.player_request("playlist insert %s" % (quote(path)))
+        self.player_request(f"playlist insert {quote(path)}")
 
     def seek_to(self, ms):
         """Seeks the current song to `ms` milliseconds from start"""

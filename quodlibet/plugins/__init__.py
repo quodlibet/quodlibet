@@ -321,7 +321,7 @@ class PluginManager:
 
         `handler` should probably be a `PluginHandler`
         """
-        print_d("Registering handler: %r" % type(handler).__name__)
+        print_d(f"Registering handler: {type(handler).__name__!r}")
 
         self.__handlers.append(handler)
 
@@ -358,7 +358,7 @@ class PluginManager:
             return
 
         if not status:
-            print_d("Disable %r" % plugin.id)
+            print_d(f"Disable {plugin.id!r}")
             for handler in plugin.handlers:
                 handler.plugin_disable(plugin)
 
@@ -371,7 +371,7 @@ class PluginManager:
                 except Exception:
                     util.print_exc()
         else:
-            print_d("Enable %r" % plugin.id)
+            print_d(f"Enable {plugin.id!r}")
             obj = plugin.get_instance()
             if obj and hasattr(obj, "enabled"):
                 try:

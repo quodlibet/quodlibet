@@ -407,7 +407,7 @@ class Notify(EventPlugin):
                 iface, caps, spec = self.__get_interface()
 
         except GLib.Error:
-            print_w("[notify] %s" % _("Couldn't connect to notification daemon."))
+            print_w("[notify] {}".format(_("Couldn't connect to notification daemon.")))
             self.__disconnect()
             return False
 
@@ -460,7 +460,7 @@ class Notify(EventPlugin):
                 pconfig.getint("timeout"),
             )
         except GLib.Error:
-            print_w("[notify] %s" % _("Couldn't connect to notification daemon."))
+            print_w("[notify] {}".format(_("Couldn't connect to notification daemon.")))
             self.__disconnect()
             return False
 

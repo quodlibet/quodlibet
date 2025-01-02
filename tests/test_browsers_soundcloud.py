@@ -66,7 +66,7 @@ class TestExtract(TestCase):
         self.verify("&(artist='foo', genre=|(rock, metal))", {"foo", "rock", "metal"})
 
     def verify(self, text, expected, term="q"):
-        print_d("Trying '%s'..." % text)
+        print_d(f"Trying '{text}'...")
         terms = SoundcloudQuery(text).terms
         msg = f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}"
         assert terms[term] == expected, msg

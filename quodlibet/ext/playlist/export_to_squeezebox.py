@@ -69,7 +69,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
             self.server.playlist_add(self.get_sb_path(song))
             task.update(float(i) / task_total)
             yield True
-        print_d('Saving Squeezebox playlist "%s"' % name)
+        print_d(f'Saving Squeezebox playlist "{name}"')
         self.server.playlist_save(name)
         task.update((task_total - 2) / task_total)
         yield True

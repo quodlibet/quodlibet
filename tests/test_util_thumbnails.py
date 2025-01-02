@@ -20,11 +20,11 @@ from quodlibet.util import thumbnails
 
 
 class TThumb(TestCase):
-    def setUp(s):
-        s.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
-        s.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
-        s.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
-        s.filename = get_data_path("test.png")
+    def setUp(self):
+        self.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        self.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
+        self.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
+        self.filename = get_data_path("test.png")
 
     def tearDown(self):
         p1 = thumbnails.get_cache_info(self.filename, (10, 10))[0]

@@ -56,7 +56,7 @@ class TapBpmPanel(Gtk.VBox):
         self.reset_btn.set_sensitive(has_new_bpm)
 
         if self.clicks > 1:
-            self.bpm_label.set_text("%.1f" % self.floating_bpm)
+            self.bpm_label.set_text(f"{self.floating_bpm:.1f}")
         elif self.clicks == 1:
             self.bpm_label.set_text(_("n/a"))
         else:
@@ -82,7 +82,7 @@ class TapBpmPanel(Gtk.VBox):
         self.update()
 
     def save(self):
-        self.song["bpm"] = "%.0f" % self.floating_bpm
+        self.song["bpm"] = f"{self.floating_bpm:.0f}"
         self.song.write()
 
     def init_tap(self):

@@ -86,7 +86,7 @@ class SoundcloudApiClient(RestApi):
     PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
     COUNT_TAGS = {
-        "%s_count" % t
+        f"{t}_count"
         for t in (
             "playback",
             "download",
@@ -210,7 +210,7 @@ class SoundcloudApiClient(RestApi):
         for k, v in params.items():
             delim = " " if k == "q" else ","
             merged[k] = delim.join(list(v))
-        print_d("Getting tracks: params=%s" % merged)
+        print_d(f"Getting tracks: params={merged}")
         self._get("/tracks", self._on_track_data, **merged)
 
     def get_stream_url(self, song):
@@ -244,7 +244,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _receive_comments(self, json, _data):
-        print_d("Got comments: %s..." % str(json)[:255])
+        print_d(f"Got comments: {str(json)[:255]}...")
         if json and len(json):
             # Should all be the same track...
             track_id = json[0]["track_id"]
@@ -256,12 +256,12 @@ class SoundcloudApiClient(RestApi):
         config.set("browsers", "soundcloud_user_id", self.user_id or "")
 
     def save_favorite(self, track_id):
-        print_d("Saving track %s as favorite" % track_id)
+        print_d(f"Saving track {track_id} as favorite")
         url = f"/likes/tracks/{track_id}"
         self._post(url, self._on_favorited)
 
     def remove_favorite(self, track_id):
-        print_d("Deleting favorite for %s" % track_id)
+        print_d(f"Deleting favorite for {track_id}")
         url = f"/likes/tracks/{track_id}"
         self._delete(url, self._on_favorited)
 
@@ -311,7 +311,7 @@ class SoundcloudApiClient(RestApi):
         def put_counts(tags):
             for tag in tags:
                 try:
-                    song["~#%s" % tag] = int(r[tag])
+                    song[f"~#{tag}"] = int(r[tag])
                 except (KeyError, TypeError):
                     # Nothing we can do really.
                     pass

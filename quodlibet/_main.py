@@ -77,7 +77,7 @@ class Application:
 
     @property
     def symbolic_icon_name(self):
-        return "%s-symbolic" % self.icon_name
+        return f"{self.icon_name}-symbolic"
 
     @property
     def librarian(self):
@@ -223,7 +223,7 @@ def get_build_description():
             notes.append(build.BUILD_INFO)
 
     version_string = ".".join(map(str, version))
-    note = " (%s)" % ", ".join(notes) if notes else ""
+    note = " ({})".format(", ".join(notes)) if notes else ""
 
     return version_string + note
 
@@ -235,7 +235,7 @@ def init_plugins(no_plugins=False):
 
     folders = [os.path.join(get_base_dir(), "ext", kind) for kind in PLUGIN_DIRS]
     folders.append(os.path.join(get_user_dir(), "plugins"))
-    print_d("Scanning folders: %s" % folders)
+    print_d(f"Scanning folders: {folders}")
     pm = plugins.init(folders, no_plugins)
     pm.rescan()
 
@@ -443,7 +443,7 @@ def is_first_session(app_name):
     from quodlibet import config
     from quodlibet import const
 
-    value = config.get("memory", "%s_last_active_version" % app_name, "")
+    value = config.get("memory", f"{app_name}_last_active_version", "")
 
     if value != const.VERSION:
         return True
@@ -457,4 +457,4 @@ def finish_first_session(app_name):
     from quodlibet import config
     from quodlibet import const
 
-    config.set("memory", "%s_last_active_version" % app_name, const.VERSION)
+    config.set("memory", f"{app_name}_last_active_version", const.VERSION)

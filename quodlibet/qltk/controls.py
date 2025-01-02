@@ -155,9 +155,9 @@ class VolumeMenu(Gtk.Menu):
     def __set_mode(self, player, mode):
         selected_mode = next((m for m in self.__modes if m[0] == mode), None)
         if selected_mode is None:
-            print_e("Invalid selected replaygain mode: %r" % mode)
+            print_e(f"Invalid selected replaygain mode: {mode!r}")
             selected_mode = self.__modes[0]
-            print_e("Falling back to replaygain mode: %r" % selected_mode[0])
+            print_e(f"Falling back to replaygain mode: {selected_mode[0]!r}")
 
         player.replaygain_profiles[0] = selected_mode[2]
         player.reset_replaygain()

@@ -192,8 +192,8 @@ class TAudioFile(TestCase):
 
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
-        assert self.quux("title") == "%s [untitled Unknown Audio File]" % fsn2text(
-            self.quux("~basename")
+        assert self.quux("title") == "{} [untitled Unknown Audio File]".format(
+            fsn2text(self.quux("~basename"))
         )
 
         self.assertEqual(bar_1_1("~#disc"), 1)
@@ -1233,7 +1233,7 @@ class Treplay_gain(TestCase):
             # Hack the nasties off and produce the "real" expected value
             exp = float(exp.split(" ")[0])
             # Compare as floats. Seems fairer.
-            album_rg = self.song("~#%s" % key)
+            album_rg = self.song(f"~#{key}")
             try:
                 val = float(album_rg)
             except ValueError:

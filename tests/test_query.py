@@ -245,7 +245,7 @@ class TQuery(TestCase):
             assert Query("foo the bar").search(self.s2)
             assert not Query("foo the bar").search(self.s1)
         us = (time.time() - t) * 1000000 / ((total + 1) * 4)
-        print("Blended Query searches average %.0f μs" % us)
+        print(f"Blended Query searches average {us:.0f} μs")
 
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_equalish_performance(self):

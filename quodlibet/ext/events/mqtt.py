@@ -46,7 +46,7 @@ FILL = Gtk.AttachOptions.FILL
 class Config:
     STATUS_SONGLESS = "no_song_text", ""
     PAT_PLAYING = "playing_pattern", "♫ <~artist~title> ♫"
-    PAT_PAUSED = "paused_pattern", "<~artist~title> [%s]" % _("paused")
+    PAT_PAUSED = "paused_pattern", "<~artist~title> [{}]".format(_("paused"))
     HOST = "host", "localhost"
     PORT = "port", 1883
     USERNAME = "username", ""
@@ -95,7 +95,7 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         self.client.loop_start()
 
     def _set_status(self, text):
-        print_d('Setting status to "%s"...' % text)
+        print_d(f'Setting status to "{text}"...')
         result, mid = self.client.publish(self.topic, text, retain=True)
         if result != mqtt.MQTT_ERR_SUCCESS:
             print_w(
@@ -229,7 +229,7 @@ def validator(pat):
     try:
         return bool(Pattern(pat).format(DUMMY_AF))
     except Exception as e:
-        print_d("Problem with pattern (%s)" % e)
+        print_d(f"Problem with pattern ({e})")
         return False
 
 
@@ -249,10 +249,10 @@ class FakeAudioFile(AudioFile):
             if key.startswith("~#"):
                 return 0
             elif key.startswith("~"):
-                return "The %s" % key
+                return f"The {key}"
         if key.startswith("~"):
-            raise ValueError("Unknown tag %s" % key)
-        return "The %s" % key
+            raise ValueError(f"Unknown tag {key}")
+        return f"The {key}"
 
 
 DUMMY_AF = FakeAudioFile({"~filename": "/dev/null"})

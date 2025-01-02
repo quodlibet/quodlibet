@@ -133,7 +133,7 @@ class TSearchBar(TestCase):
             SongList.star = old
 
     def test_saverestore(self):
-        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = {}".format(SONGS[0]["title"]))
         self.expected = [SONGS[0]]
         self._do()
         self.bar.save()

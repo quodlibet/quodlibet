@@ -139,7 +139,7 @@ class ExportToFolder(PlaylistPlugin):
 
     def _copy_file(self, song, directory, index, pattern):
         filename = song["~filename"]
-        print_d("Copying %s." % filename)
+        print_d(f"Copying {filename}.")
         new_name = pattern.format(song)
         copyfile(filename, "%s/%04d - %s" % (directory, index, new_name))
 

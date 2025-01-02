@@ -56,7 +56,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
         cls.plugin_on_seek(player.info, player.get_position())
 
     def enabled(self):
-        print_d("Debug is set to %s" % self._debug)
+        print_d(f"Debug is set to {self._debug}")
         self.active = True
         self.init_server()
         self.server.pause()
@@ -81,7 +81,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             print_d("Paused" if app.player.paused else "Not paused")
         if song and cls.server and cls.server.is_connected:
             path = cls.get_sb_path(song)
-            print_d("Requesting to play %s..." % path)
+            print_d(f"Requesting to play {path}...")
             if app.player.paused:
                 cls.server.change_song(path)
             else:

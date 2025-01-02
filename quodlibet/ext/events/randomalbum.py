@@ -46,7 +46,7 @@ class RandomAlbum(EventPlugin):
 
     def __init__(self):
         for key, _text, _func in self.keys:
-            val = config.getfloat("plugins", "randomalbum_%s" % key, 0.0)
+            val = config.getfloat("plugins", f"randomalbum_{key}", 0.0)
             self.weights[key] = val
 
         use = config.getint("plugins", "randomalbum_use_weights", 0)
@@ -58,7 +58,7 @@ class RandomAlbum(EventPlugin):
         def changed_cb(hscale, key):
             val = hscale.get_value()
             self.weights[key] = val
-            config.set("plugins", "randomalbum_%s" % key, val)
+            config.set("plugins", f"randomalbum_{key}", val)
 
         def delay_changed_cb(spin):
             self.delay = int(spin.get_value())
@@ -166,7 +166,7 @@ class RandomAlbum(EventPlugin):
             browser = app.window.browser
 
             if self.disabled_for_browser(browser):
-                print_d("%s doesn't support album filtering" % browser.name)
+                print_d(f"{browser.name} doesn't support album filtering")
                 return
 
             albumlib = app.library.albums
@@ -191,12 +191,12 @@ class RandomAlbum(EventPlugin):
                 album_scores = self._score(chosen_albums)
                 # Find highest score value
                 max_score = max(album_scores, key=lambda t: t[0])[0]
-                print_d("Maximum score found: %0.1f" % max_score)
+                print_d(f"Maximum score found: {max_score:0.1f}")
                 # Filter albums by highest score value
                 albums = [(sc, al) for sc, al in album_scores if sc == max_score]
                 print_d("Albums with maximum score:")
                 for _score, album in albums:
-                    print_d("  %s" % album("album"))
+                    print_d("  {}".format(album("album")))
 
                 # Pick random album from list of highest scored albums
                 album = random.choice(albums)[1]
@@ -204,7 +204,7 @@ class RandomAlbum(EventPlugin):
                 album = random.choice(values)
 
             if album is not None:
-                print_d("Chosen album: %s" % album("album"))
+                print_d("Chosen album: {}".format(album("album")))
                 self.schedule_change(album)
 
     def schedule_change(self, album):

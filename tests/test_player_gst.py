@@ -210,7 +210,9 @@ class TGStreamerCodecs(TestCase):
         old_threshold = Gst.debug_get_default_threshold()
         Gst.debug_set_default_threshold(Gst.DebugLevel.NONE)
 
-        pipeline = Gst.parse_launch("uridecodebin uri=%s ! fakesink" % song("~uri"))
+        pipeline = Gst.parse_launch(
+            "uridecodebin uri={} ! fakesink".format(song("~uri"))
+        )
         bus = pipeline.get_bus()
         pipeline.set_state(Gst.State.PLAYING)
         error = None
@@ -272,4 +274,4 @@ class TGStreamerCodecs(TestCase):
                     errors.append((song("~format"), error))
 
         if errors:
-            raise Exception("Decoding failed %r" % errors)
+            raise Exception(f"Decoding failed {errors!r}")

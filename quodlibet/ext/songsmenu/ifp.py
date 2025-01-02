@@ -58,7 +58,7 @@ class IFPUpload(SongsMenuPlugin):
         # Avoid spurious calls to ifp mkdir; this can take a long time
         # on a noisy USB line.
         if dirname not in self.__madedir:
-            os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
+            os.system(f"ifp mkdir {dirname!r}> /dev/null 2>/dev/null")
             self.__madedir.append(dirname)
         if os.system(f"ifp upload {filename!r} {target!r} > /dev/null"):
             tmpl = _(

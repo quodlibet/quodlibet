@@ -186,9 +186,9 @@ def _get_sort_map(tags):
     for name, tag in tags.items():
         if tag.has_sort:
             if tag.user:
-                tts[name] = "%ssort" % name
+                tts[name] = f"{name}sort"
             if tag.internal:
-                tts["~%s" % name] = "~%ssort" % name
+                tts[f"~{name}"] = f"~{name}sort"
     return tts
 
 
@@ -198,7 +198,7 @@ def _get_standard_tags(tags, machine=False):
         if tag.user and tag.machine == machine:
             stags.append(name)
             if tag.has_sort:
-                stags.append("%ssort" % name)
+                stags.append(f"{name}sort")
     return stags
 
 
@@ -278,7 +278,7 @@ def readable(tag, plural=False):
         if tag in _TAGS:
             desc = desc(tag)
             if parts:
-                desc += " (%s)" % ", ".join(parts)
+                desc += " ({})".format(", ".join(parts))
             return desc
 
     return tag

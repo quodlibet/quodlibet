@@ -192,7 +192,8 @@ def _print_message(
 
     timestr = ("%08.3f" % (time.time() - start_time))[-9:]
 
-    info = f"{getattr(Colorise, color)(prefix)}: [{Colorise.magenta(timestr)}] {Colorise.blue(context)}:"
+    color_prefix = getattr(Colorise, color)(prefix)
+    info = f"{color_prefix}: [{Colorise.magenta(timestr)}] {Colorise.blue(context)}:"
 
     lines = string.splitlines()
     if len(lines) > 1:
@@ -273,7 +274,8 @@ def print_exc(exc_info=None, context=None):
             # no stack
             string = text
         else:
-            string = f"{fsn2text(path2fsn(os.path.basename(filename)))}:{lineno}:{name}: {text}"
+            path = fsn2text(path2fsn(os.path.basename(filename)))
+            string = f"{path}:{lineno}:{name}: {text}"
 
     _print_message(string, context, False, "E", "red", "errors")
 

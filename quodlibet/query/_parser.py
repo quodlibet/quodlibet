@@ -297,4 +297,4 @@ class QueryParser:
             string = string.encode("utf-8")
         string = codecs.escape_decode(string)[0]
         string = string.decode("utf-8")
-        return "^%s$" % re_escape(string)
+        return f"^{re_escape(string)}$"

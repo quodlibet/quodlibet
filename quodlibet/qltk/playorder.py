@@ -334,14 +334,14 @@ class PlayOrderWidget(Gtk.HBox):
     def __repeat_updated(self, widget, repeat_cls):
         if self.__inhibit:
             return
-        print_d("New repeat mode: %s" % repeat_cls.name)
+        print_d(f"New repeat mode: {repeat_cls.name}")
         config.set("memory", "repeat_mode", repeat_cls.name)
         self.__compose_order()
 
     def __shuffle_updated(self, widget, shuffle_cls):
         if self.__inhibit:
             return
-        print_d("New shuffle mode: %s" % shuffle_cls.name)
+        print_d(f"New shuffle mode: {shuffle_cls.name}")
         config.set("memory", "shuffle_mode", shuffle_cls.name)
         self.__compose_order()
 

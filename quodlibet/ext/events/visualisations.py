@@ -45,7 +45,7 @@ class ProjectM(EventPlugin):
     def enabled(self):
         from gi.repository import GLib
 
-        print_d("Starting %s" % self.PLUGIN_NAME)
+        print_d(f"Starting {self.PLUGIN_NAME}")
         try:
             self._pid, fdin, fdout, fderr = GLib.spawn_async(
                 argv=self.executable.split(),
@@ -61,17 +61,17 @@ class ProjectM(EventPlugin):
             ErrorMessage(title=_("Error"), description=msg, parent=app.window).run()
         else:
             # self._stdin = os.fdopen(fdin, mode='w')
-            print_d("Launched with PID: %s" % self._pid)
+            print_d(f"Launched with PID: {self._pid}")
 
     def disabled(self):
         if not self._pid:
             return
-        print_d("Shutting down %s" % self.PLUGIN_NAME)
+        print_d(f"Shutting down {self.PLUGIN_NAME}")
         try:
             os.kill(self._pid, signal.SIGTERM)
             os.kill(self._pid, signal.SIGKILL)
         except Exception as e:
-            print_w("Couldn't shut down cleanly (%s)" % e)
+            print_w(f"Couldn't shut down cleanly ({e})")
 
     def PluginPreferences(self, *args):
         vbox = Gtk.VBox(spacing=12)

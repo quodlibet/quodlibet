@@ -113,6 +113,6 @@ class DiscogsCover(ApiCoverSourcePlugin):
         if dimensions:
             dims = map(int, dimensions.split("x"))
             if min(dims) < self.MIN_DIMENSION:
-                print_d("%s is too small to use" % dimensions)
+                print_d(f"{dimensions} is too small to use")
                 return None
         return {"cover": url, "dimensions": dimensions}

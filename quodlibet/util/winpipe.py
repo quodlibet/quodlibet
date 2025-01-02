@@ -74,7 +74,7 @@ class NamedPipeServer(threading.Thread):
 
     @classmethod
     def _get_filename(cls, name):
-        return "\\\\.\\pipe\\%s" % name
+        return f"\\\\.\\pipe\\{name}"
 
     def _process(self, data):
         def idle_process(data):

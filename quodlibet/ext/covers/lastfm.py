@@ -71,7 +71,7 @@ class LastFMCover(ApiCoverSourcePlugin):
                 if not url:
                     # Yes sometimes it's there but blank
                     continue
-                print_d("Got last.fm image: %s" % img)
+                print_d(f"Got last.fm image: {img}")
                 results.append(
                     {
                         "artist": album["artist"],

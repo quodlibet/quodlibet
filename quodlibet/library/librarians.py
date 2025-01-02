@@ -52,7 +52,7 @@ class Librarian(GObject.GObject):
     def register(self, library: Library, name: str) -> None:
         """Register a library with this librarian."""
         if name in self.libraries or name in self.__signals:
-            raise ValueError("library %r is already active" % name)
+            raise ValueError(f"library {name!r} is already active")
 
         added_sig = library.connect("added", self.__added)
         removed_sig = library.connect("removed", self.__removed)

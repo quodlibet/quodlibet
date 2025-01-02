@@ -215,7 +215,7 @@ class MPDService:
             # send out the response and remove the idle status for affected
             # connections
             for subsystem in to_send:
-                conn.write_line("changed: %s" % subsystem)
+                conn.write_line(f"changed: {subsystem}")
             if to_send:
                 flushed.append(conn)
                 conn.ok()
@@ -569,7 +569,7 @@ class MPDConnection(BaseTCPConnection):
         self._command = command
 
         if command not in self._commands:
-            print_w("Unhandled command %r, sending OK." % command)
+            print_w(f"Unhandled command {command!r}, sending OK.")
             command = "ping"
 
             # Unhandled command, default to OK for now..

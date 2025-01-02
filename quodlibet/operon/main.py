@@ -32,8 +32,7 @@ def _print_help(main_cmd, parser, file=None):
         cl.append("   %-17s %s" % (command.NAME, command.DESCRIPTION))
     cl.append("")
     cl.append(
-        "See '%s help <command>' for more information "
-        "on a specific command." % main_cmd
+        f"See '{main_cmd} help <command>' for more information on a specific command."
     )
 
     print_("\n".join(cl), file=file)
@@ -48,7 +47,7 @@ def main(argv=None):
     main_cmd = os.path.basename(argv[0])
 
     # the main optparser
-    usage = "%s [--version] [--help] [--verbose] <command> [<args>]" % main_cmd
+    usage = f"{main_cmd} [--version] [--help] [--verbose] <command> [<args>]"
     parser = OptionParser(usage=usage)
 
     parser.remove_option("--help")

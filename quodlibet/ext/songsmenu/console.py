@@ -97,8 +97,8 @@ def create_console(songs=None):
     console.eval(
         f'print("Python: {python_major_ver} / Quod Libet: {const.VERSION}")', False
     )
-    console.eval('print("%s")' % access_string, False)
-    console.eval('print("%s "+ os.getcwd())' % dir_string, False)
+    console.eval(f'print("{access_string}")', False)
+    console.eval(f'print("{dir_string} "+ os.getcwd())', False)
     return console
 
 
@@ -478,7 +478,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             except SyntaxError:
                 exec(command, self.namespace)
         except Exception:
-            if hasattr(sys, "last_type") and sys.last_type == SystemExit:
+            if hasattr(sys, "last_type") and sys.last_type is SystemExit:
                 self.destroy()
             else:
                 traceback.print_exc()

@@ -375,7 +375,7 @@ class NumericColumn(TextColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         if isinstance(value, float):
-            text = "%.2f" % round(value, 2)
+            text = f"{round(value, 2):.2f}"
         else:
             text = str(value)
 

@@ -97,13 +97,13 @@ class CommandRegistry:
         """
 
         if name not in self._commands:
-            raise CommandError("Unknown command %r" % name)
+            raise CommandError(f"Unknown command {name!r}")
 
         cmd, argcount, optcount = self._commands[name]
         if len(args) < argcount:
-            raise CommandError("Not enough arguments for %r" % name)
+            raise CommandError(f"Not enough arguments for {name!r}")
         if len(args) > argcount + optcount:
-            raise CommandError("Too many arguments for %r" % name)
+            raise CommandError(f"Too many arguments for {name!r}")
 
         print_d(f"Running {cmd.__name__!r} with params {args} ")
 
@@ -209,7 +209,7 @@ def _stop_after(app, value):
     elif value == "t":
         po.stop_after = not po.stop_after
     else:
-        raise CommandError("Invalid value %r" % value)
+        raise CommandError(f"Invalid value {value!r}")
 
 
 @registry.register("shuffle", args=1)
@@ -349,7 +349,7 @@ def _dump_browsers(app):
 @registry.register("set-browser", args=1)
 def _set_browser(app, value):
     if not app.window.select_browser(value, app.library, app.player):
-        raise CommandError("Unknown browser %r" % value)
+        raise CommandError(f"Unknown browser {value!r}")
 
 
 @registry.register("open-browser", args=1)
@@ -359,7 +359,7 @@ def _open_browser(app, value):
     try:
         browser_cls = browsers.get(value)
     except ValueError as e:
-        raise CommandError("Unknown browser %r" % value) from e
+        raise CommandError(f"Unknown browser {value!r}") from e
     LibraryBrowser.open(browser_cls, app.library, app.player)
 
 
@@ -480,7 +480,7 @@ def _status(app):
         strings = ["playing"]
     strings.append(type(app.browser).__name__)
     po = app.player_options
-    strings.append("%0.3f" % player.volume)
+    strings.append(f"{player.volume:0.3f}")
     strings.append("shuffle" if po.shuffle else "inorder")
     strings.append("on" if po.repeat else "off")
     progress = 0
@@ -488,7 +488,7 @@ def _status(app):
         length = player.info.get("~#length", 0)
         if length:
             progress = player.get_position() / (length * 1000.0)
-    strings.append("%0.3f" % progress)
+    strings.append(f"{progress:0.3f}")
     status = " ".join(strings) + "\n"
 
     return text2fsn(status)

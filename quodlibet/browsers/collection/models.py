@@ -15,12 +15,9 @@ from quodlibet.qltk.models import ObjectModelSort
 
 
 EMPTY = _("Songs not in an album")
-ALBUM_PATTERN = (
-    r"""
-\<b\><album|<album>|%s>\</b\><date| \<small\>(<date>)\</small\>>
+ALBUM_PATTERN = rf"""
+\<b\><album|<album>|{EMPTY}>\</b\><date| \<small\>(<date>)\</small\>>
 \<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>"""
-    % EMPTY
-)
 ALBUM_PATTERN = ALBUM_PATTERN.lstrip()
 PAT = XMLFromPattern(ALBUM_PATTERN)
 

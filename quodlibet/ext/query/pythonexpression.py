@@ -63,5 +63,5 @@ class PythonQuery(QueryPlugin):
             self._globals.update(_ts=time.time())
             return compile(body.strip(), "query", "eval")
         except SyntaxError as e:
-            print_w("Couldn't compile query (%s)" % e)
+            print_w(f"Couldn't compile query ({e})")
             raise QueryPluginError from e

@@ -42,9 +42,9 @@ class TEventPlugins(TestCase):
 
         file.write("from quodlibet.plugins.events import EventPlugin\n")
         file.write("log = []\n")
-        file.write("class %s(EventPlugin):\n" % name)
+        file.write(f"class {name}(EventPlugin):\n")
         indent = "    "
-        file.write("%spass\n" % indent)
+        file.write(f"{indent}pass\n")
 
         if name:
             file.write(f"{indent}PLUGIN_ID = {name!r}\n")

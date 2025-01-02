@@ -294,7 +294,7 @@ def init(filename=None):
         try:
             _config.read(filename)
         except (OSError, Error):
-            print_w("Reading config file %r failed." % filename)
+            print_w(f"Reading config file {filename!r} failed.")
 
             # move the broken file out of the way
             try:
@@ -403,7 +403,7 @@ class RatingsPrefs:
 
     @staticmethod
     def __get_symbol(variant="full"):
-        return gettext("settings", "rating_symbol_%s" % variant)
+        return gettext("settings", f"rating_symbol_{variant}")
 
 
 class HardCodedRatingsPrefs(RatingsPrefs):

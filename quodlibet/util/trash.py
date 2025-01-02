@@ -94,7 +94,7 @@ def trash_free_desktop(path):
     path = abspath(path)
 
     if not exists(path):
-        raise TrashError("Path %s does not exist." % path)
+        raise TrashError(f"Path {path} does not exist.")
 
     trash_dir, files, info = _get_fd_trash_dirs(path)
 

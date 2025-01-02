@@ -291,7 +291,7 @@ class TID3FileMixin:
             tags = mutagen.File(self.filename).tags
             self.assertFalse(
                 "TXXX:QuodLibet::language" in tags,
-                "Should have used TLAN tag for '%s'" % iso_lang,
+                f"Should have used TLAN tag for '{iso_lang}'",
             )
             self.assertEqual(tags["TLAN"], iso_lang)
             af.clear()
@@ -307,9 +307,9 @@ class TID3FileMixin:
         tags = mutagen.File(self.filename).tags
         self.assertFalse(
             "TXXX:QuodLibet::language" in tags,
-            "Should have used TLAN for %s" % iso_langs,
+            f"Should have used TLAN for {iso_langs}",
         )
-        self.assertEqual(tags["TLAN"], iso_langs, msg="Wrong tags: %s" % tags)
+        self.assertEqual(tags["TLAN"], iso_langs, msg=f"Wrong tags: {tags}")
         af.clear()
 
     def test_ignore_tlen(self):

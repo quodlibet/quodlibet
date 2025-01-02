@@ -159,7 +159,7 @@ class TPot(TestCase):
         for entry in self.pot:
             self.assertFalse(
                 "..." in entry.msgid,
-                msg="%s should use '…' (ELLIPSIS) instead of '...'" % entry,
+                msg=f"{entry} should use '…' (ELLIPSIS) instead of '...'",
             )
 
     def test_markup(self):

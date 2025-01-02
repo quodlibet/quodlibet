@@ -45,7 +45,7 @@ def to_html(songs):
 
     cols_s = ""
     for col in cols:
-        cols_s += "<th>%s</th>" % tag(col)
+        cols_s += f"<th>{tag(col)}</th>"
 
     songs_s = ""
     for song in songs:

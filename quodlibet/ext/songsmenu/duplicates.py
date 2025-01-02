@@ -77,11 +77,11 @@ class DuplicateSongsView(RCMHintedTreeView):
             row = model.find_row(song)
             if row:
                 group_row = model.iter_parent(row.iter)
-                print_d("Found parent group = %s" % group_row)
+                print_d(f"Found parent group = {group_row}")
                 model.remove(row.iter)
                 num_kids = model.iter_n_children(group_row)
                 if num_kids < Duplicates.MIN_GROUP_SIZE:
-                    print_d("Removing group %s" % group_row)
+                    print_d(f"Removing group {group_row}")
                     model.remove(group_row)
             else:
                 pass
@@ -134,7 +134,7 @@ class DuplicateSongsView(RCMHintedTreeView):
             "changed": self._changed,
         }
         for sig, callback in signal_map.items():
-            print_d("Listening to library.%s signals" % sig)
+            print_d(f"Listening to library.{sig} signals")
             connect_destroy(app.library, sig, callback)
 
 
@@ -455,7 +455,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         for song in songs:
             key = self.get_key(song)
             if key and key in groups:
-                print_d("Found duplicate based on '%s'" % key)
+                print_d(f"Found duplicate based on '{key}'")
                 groups[key].add(song._song)
             elif key:
                 groups[key] = {song._song}

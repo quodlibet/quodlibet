@@ -241,7 +241,7 @@ class Window(Gtk.Window):
 
         if parent is None or not is_toplevel:
             if parent:
-                print_w("Not a toplevel window set for: %r" % self)
+                print_w(f"Not a toplevel window set for: {self!r}")
             from quodlibet import app
 
             parent = app.window

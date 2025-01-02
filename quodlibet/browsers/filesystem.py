@@ -145,7 +145,7 @@ class FileSystem(Browser, Gtk.HBox):
         else:
             # External target (app) is delivered a list of URIS of songs
             uris = list({fsn2uri(dir) for dir in dirs})
-            print_d("Directories to drop: %s" % dirs)
+            print_d(f"Directories to drop: {dirs}")
             sel.set_uris(uris)
 
     def can_filter_tag(self, key):

@@ -172,7 +172,7 @@ class Feed(list):
         try:
             album = doc.channel.title
         except AttributeError:
-            print_w("No channel title in %s" % doc)
+            print_w(f"No channel title in {doc}")
             return False
 
         if album:
@@ -212,7 +212,7 @@ class Feed(list):
                     except AttributeError:
                         pass
             except AttributeError:
-                print_d("No enclosures found in %s" % entry)
+                print_d(f"No enclosures found in {entry}")
 
         for entry in list(self):
             if entry["~uri"] not in uris:

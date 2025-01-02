@@ -86,7 +86,7 @@ class FilesystemCover(CoverSourcePlugin):
         return "Filesystem"
 
     def __str__(self):
-        return "Filesystem in %s" % (self.group_by(self.song)[0])
+        return f"Filesystem in {self.group_by(self.song)[0]}"
 
     @staticmethod
     def priority():
@@ -128,7 +128,7 @@ class FilesystemCover(CoverSourcePlugin):
             try:
                 entries = os.listdir(base)
             except OSError:
-                print_w("Can't list album art directory %s" % base)
+                print_w(f"Can't list album art directory {base}")
 
             fns = []
             for entry in entries:
@@ -207,6 +207,6 @@ class FilesystemCover(CoverSourcePlugin):
             try:
                 return open(path, "rb")
             except OSError:
-                print_w('Failed reading album art "%s"' % path)
+                print_w(f'Failed reading album art "{path}"')
 
         return None

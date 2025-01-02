@@ -104,9 +104,9 @@ class PatternEditor(Gtk.VBox):
 
         self.pack_start(radio_box, False, True, 0)
 
+        example = util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
         tooltip = _(
-            "Tag pattern with optional markup e.g. <tt>composer</tt> or\n%s"
-            % util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
+            f"Tag pattern with optional markup e.g. <tt>composer</tt> or\n{example}"
         )
         cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 

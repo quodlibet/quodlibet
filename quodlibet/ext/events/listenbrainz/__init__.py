@@ -98,7 +98,7 @@ class ListenBrainzSubmitQueue:
         track = self._track(song)
         if not track or self.nowplaying_track == track:
             return
-        print_d("Set now playing: %s" % track)
+        print_d(f"Set now playing: {track}")
         self.condition.acquire()
         self.nowplaying_track = track
         self.nowplaying_sent = False
@@ -115,7 +115,7 @@ class ListenBrainzSubmitQueue:
         self.condition.acquire()
         if timestamp == 0:
             timestamp = int(time.time())
-        print_d("Queueing: %s" % track)
+        print_d(f"Queueing: {track}")
         self.queue.append((timestamp, track))
         self.changed()
         self.condition.release()
@@ -239,7 +239,7 @@ class ListenBrainzSubmitQueue:
         elif self.lb.user_token != user_token:
             # print_d("Setting %s, %s" % (endpoint, user_token))
             # self.lb.host_name, self.lb.user_token = (endpoint, user_token)
-            print_d("Setting user_token %s" % user_token)
+            print_d(f"Setting user_token {user_token}")
             self.lb.user_token = user_token
             self.broken = False
         self.offline = plugin_config.getboolean("offline")
@@ -298,7 +298,7 @@ class ListenBrainzSubmitQueue:
                     rsp = f()
                 except Exception as e:
                     rsp = None
-                    print_d("Error: %s" % e)
+                    print_d(f"Error: {e}")
 
                 if rsp and rsp.status == 200:
                     self.retries = 0
@@ -331,7 +331,7 @@ class ListenBrainzSubmitQueue:
 
             if submit:
                 (listened_at, track) = submit
-                print_d("Submitting: %s" % track)
+                print_d(f"Submitting: {track}")
 
                 if not with_backoff(lambda: self.lb.listen(listened_at, track)):  # noqa
                     continue
@@ -345,7 +345,7 @@ class ListenBrainzSubmitQueue:
                 self.condition.release()
 
             if nowplaying:
-                print_d("Now playing: %s" % nowplaying)
+                print_d(f"Now playing: {nowplaying}")
 
                 if not with_backoff(lambda: self.lb.playing_now(nowplaying)):  # noqa
                     continue
@@ -403,9 +403,9 @@ class ListenbrainzSubmission(EventPlugin):
         # we check 'elapsed' rather than 'length' to work around wrong ~#length
         if self.elapsed < (4 * 60) and self.elapsed <= 0.5 * song.get("~#length", 0):
             return
-        print_d("Checking against filter %s" % self.exclude)
+        print_d(f"Checking against filter {self.exclude}")
         if self.exclude and Query(self.exclude).search(song):
-            print_d("Not submitting: %s" % song("~artist~title"))
+            print_d("Not submitting: {}".format(song("~artist~title")))
             return
         self.queue.submit(song, self.start_time)
 

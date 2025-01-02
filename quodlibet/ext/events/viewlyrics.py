@@ -108,7 +108,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         """
         lyrics = None
         if song is not None:
-            print_d("Looking for lyrics for %s" % song("~filename"))
+            print_d("Looking for lyrics for {}".format(song("~filename")))
             lyrics = song("~lyrics")
             if lyrics:
                 if config.getboolean("plugins", "view_lyrics_hide_timestamps", True):
@@ -121,7 +121,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 self._set_italicised(title)
 
             def edit(widget):
-                print_d("Launching lyrics editor for %s" % song("~filename"))
+                print_d("Launching lyrics editor for {}".format(song("~filename")))
                 assert isinstance(song, SongWrapper)
                 information = Information(app.librarian, [song._song])
                 information.get_child()._switch_to_lyrics()

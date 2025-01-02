@@ -24,7 +24,7 @@ def _fixup_literal(literal, in_seq, mapping):
     need_seq = len(u) > 1
     u = re_escape(u)
     if need_seq and not in_seq:
-        u = "[%s]" % u
+        u = f"[{u}]"
     return u
 
 
@@ -33,8 +33,8 @@ def _fixup_literal_list(literals, mapping):
 
     # longest matches first, we will handle contained ones in the replacement
     # function
-    reg = "(%s)" % "|".join(
-        map(re_escape, sorted(mapping.keys(), key=len, reverse=True))
+    reg = "({})".format(
+        "|".join(map(re_escape, sorted(mapping.keys(), key=len, reverse=True)))
     )
 
     def replace_func(match):
@@ -45,7 +45,7 @@ def _fixup_literal_list(literals, mapping):
         if len(text) > 1:
             multi = "".join(mapping[text])
             if len(multi) > 1:
-                multi = "[%s]" % re_escape(multi)
+                multi = f"[{re_escape(multi)}]"
             else:
                 multi = re_escape(multi)
             return f"(?:{all_}|{multi})"
@@ -64,7 +64,7 @@ def _fixup_literal_list(literals, mapping):
 
 def _fixup_not_literal(literal, mapping):
     u = chr(literal)
-    return "[^%s]" % "".join(re_escape(u + "".join(mapping.get(u, []))))
+    return "[^{}]".format("".join(re_escape(u + "".join(mapping.get(u, [])))))
 
 
 def _fixup_range(start, end, mapping):
@@ -174,11 +174,11 @@ def _construct_regexp(
             min_, max_, pad = av
             pad = _construct_regexp(pad, mapping)
             if min_ == 1 and max_ == sre_constants.MAXREPEAT:
-                parts.append("%s+" % pad)
+                parts.append(f"{pad}+")
             elif min_ == 0 and max_ == sre_constants.MAXREPEAT:
-                parts.append("%s*" % pad)
+                parts.append(f"{pad}*")
             elif min_ == 0 and max_ == 1:
-                parts.append("%s?" % pad)
+                parts.append(f"{pad}?")
             else:
                 parts.append("%s{%d,%d}" % (pad, min_, max_))
             if op == "min_repeat":
@@ -208,25 +208,25 @@ def _construct_regexp(
             group, pad = av
             pad = _construct_regexp(pad, mapping, parent=op)
             if group is None:
-                parts.append("(?:%s)" % pad)
+                parts.append(f"(?:{pad})")
             else:
-                parts.append("(%s)" % pad)
+                parts.append(f"({pad})")
         elif op == "assert":
             direction, pad = av
             pad = _construct_regexp(pad, mapping)
             if direction == 1:
-                parts.append("(?=%s)" % pad)
+                parts.append(f"(?={pad})")
             elif direction == -1:
-                parts.append("(?<=%s)" % pad)
+                parts.append(f"(?<={pad})")
             else:
                 raise NotImplementedError(direction)
         elif op == "assert_not":
             direction, pad = av
             pad = _construct_regexp(pad, mapping)
             if direction == 1:
-                parts.append("(?!%s)" % pad)
+                parts.append(f"(?!{pad})")
             elif direction == -1:
-                parts.append("(?<!%s)" % pad)
+                parts.append(f"(?<!{pad})")
             else:
                 raise NotImplementedError(direction)
         elif op == "branch":
@@ -234,7 +234,7 @@ def _construct_regexp(
             branches = (_construct_regexp(b, mapping) for b in branches)
             pad = "|".join(branches)
             if parent != "subpattern":
-                parts.append("(?:%s)" % pad)
+                parts.append(f"(?:{pad})")
             else:
                 parts.append(pad)
         else:
@@ -296,7 +296,7 @@ def compile(
             pattern = re_add_variants(pattern)
         except NotImplementedError:
             # too complex, just skip this step
-            print_d("regex not supported: %s" % pattern)
+            print_d(f"regex not supported: {pattern}")
         except re.error as e:
             raise ValueError(e) from e
 

@@ -34,12 +34,9 @@ _SOME_PEOPLE = "\n".join(
 )
 
 _EMPTY = _("Songs not in an album")
-DEFAULT_PATTERN_TEXT = (
-    """[b]<album|<album>|%s>[/b]<date| (<date>)>
+DEFAULT_PATTERN_TEXT = f"""[b]<album|<album>|{_EMPTY}>[/b]<date| (<date>)>
 [small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
 <~people>"""
-    % _EMPTY
-)
 
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):

@@ -98,7 +98,7 @@ class Order:
 
     def __str__(self):
         """By default there is no interesting state"""
-        return "<%s>" % self.display_name
+        return f"<{self.display_name}>"
 
 
 class OrderRemembered(Order):

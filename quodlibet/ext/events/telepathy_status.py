@@ -80,14 +80,14 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ICON = Icons.FACE_SMILE
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
-    DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
+    DEFAULT_PAT_PAUSED = "<~artist~title> [{}]".format(_("paused"))
     CFG_STATUS_SONGLESS = "no_song_text"
     CFG_LEAVE_STATUS = "leave_status"
     CFG_PAT_PLAYING = "playing_pattern"
     CFG_PAT_PAUSED = "paused_pattern"
 
     def _set_status(self, text):
-        print_d('Setting status to "%s"...' % text)
+        print_d(f'Setting status to "{text}"...')
         self.status = text
         try:
             accounts = get_active_account_paths()

@@ -29,7 +29,7 @@ def init(app):
     """Returns an active SessionClient instance or None"""
 
     for backend in iter_backends():
-        print_d("Trying %s" % backend.__name__)
+        print_d(f"Trying {backend.__name__}")
         client = backend()
         try:
             client.open(app)

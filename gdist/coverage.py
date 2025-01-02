@@ -82,4 +82,4 @@ class CoverageCmd(Command):
         index = os.path.join(dest, "index.html")
         index_url = pathname2url(index)
 
-        print("Coverage summary: file://%s" % index_url)
+        print(f"Coverage summary: file://{index_url}")

@@ -99,7 +99,7 @@ class PatternNode:
         self.children = []
 
     def __repr__(self):
-        return "Pattern(%s)" % (", ".join(map(repr, self.children)))
+        return "Pattern({})".format(", ".join(map(repr, self.children)))
 
 
 class TextNode:
@@ -107,7 +107,7 @@ class TextNode:
         self.text = text
 
     def __repr__(self):
-        return 'Text("%s")' % self.text
+        return f'Text("{self.text}")'
 
 
 class ConditionNode:
@@ -127,7 +127,7 @@ class DisjunctionNode:
 
     def __repr__(self):
         nlrepr = repr([repr(node) for node in self.nodelist])
-        return "Disjunction(%s)" % nlrepr
+        return f"Disjunction({nlrepr})"
 
 
 class TagNode:
@@ -135,7 +135,7 @@ class TagNode:
         self.tag = tag
 
     def __repr__(self):
-        return 'Tag("%s")' % self.tag
+        return f'Tag("{self.tag}")'
 
 
 class PatternParser:
@@ -220,7 +220,7 @@ class PatternParser:
                 self.lookahead = next(self.tokens)
             else:
                 raise ParseError(
-                    "The token '%s' is not the type expected." % (self.lookahead.lexeme)
+                    f"The token '{self.lookahead.lexeme}' is not the type expected."
                 )
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
@@ -366,9 +366,9 @@ class PatternCompiler:
         text = []
         if isinstance(node, TextNode):
             if text_formatter:
-                text.append("a(_format(%r))" % node.text)
+                text.append(f"a(_format({node.text!r}))")
             else:
-                text.append("a(%r)" % node.text)
+                text.append(f"a({node.text!r})")
         elif isinstance(node, ConditionNode):
             var = self.__get_query(text, scope, qscope, node.expr, queries)
             ic = self.__tag(
@@ -380,13 +380,13 @@ class PatternCompiler:
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append("if %s:" % var)
+                text.append(f"if {var}:")
                 text.extend(ic)
                 if ec:
                     text.append("else:")
                     text.extend(ec)
             else:
-                text.append("if not %s:" % var)
+                text.append(f"if not {var}:")
                 text.extend(ec)
         elif isinstance(node, DisjunctionNode):
             text.append("while True:")
@@ -407,7 +407,7 @@ class PatternCompiler:
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
             var = self.__get_value(text, scope, node.tag)
-            text.append("a(%s)" % var)
+            text.append(f"a({var})")
         elif isinstance(node, PatternNode):
             for child in node.children:
                 for line in self.__tag(
@@ -417,9 +417,9 @@ class PatternCompiler:
         return text
 
 
-def Pattern(
-    string, formatter_cls=PatternFormatter, max_cache_size=100, cache=OrderedDict()
-):  # noqa
+def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100, cache=None):  # noqa
+    if cache is None:
+        cache = OrderedDict()
     if (formatter_cls, string) not in cache:
         while len(cache) >= max_cache_size:
             cache.popitem(last=False)
@@ -525,7 +525,7 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
     @classmethod
     def _text(cls, string):
         tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span", "a"]
-        pat = "(?:%s)" % "|".join(tags)
+        pat = "(?:{})".format("|".join(tags))
 
         def repl_func(match):
             orig, pre, body = match.group(0, 1, 2)
@@ -533,7 +533,7 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
                 return orig[1:]
             return rf"{pre}<{body}>"
 
-        string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
+        string = re.sub(rf"(\\*)\[(/?{pat}\s*)\]", repl_func, string)
         string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)
         return string
 

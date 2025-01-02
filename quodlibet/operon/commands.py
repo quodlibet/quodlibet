@@ -152,7 +152,7 @@ class CopyCommand(Command):
         dest = self.load_song(dest_path)
 
         for key in source.realkeys():
-            self.log("Copy %r" % key)
+            self.log(f"Copy {key!r}")
             if not options.ignore_errors and not dest.can_change(key):
                 raise CommandError(
                     _("Can't copy tag {tagname} to file: {filename}").format(
@@ -180,7 +180,7 @@ class EditCommand(Command):
     def _song_to_text(self, song):
         # to text
         lines = [
-            "File: %r" % fsn2text(song("~filename")),
+            "File: {!r}".format(fsn2text(song("~filename"))),
             "",
         ]
         for key in sorted(song.realkeys(), key=sortkey):
@@ -248,9 +248,9 @@ class EditCommand(Command):
 
             song = next((song for song in songs if song("~filename") == filename), None)
             if not song:
-                raise CommandError("No match for %r." % (filename))
+                raise CommandError(f"No match for {filename!r}.")
 
-            self.log("Update song: %r" % (filename))
+            self.log(f"Update song: {filename!r}")
             self._text_to_song(text, song)
 
     def _execute(self, options, args):
@@ -278,7 +278,7 @@ class EditCommand(Command):
             old_mtime = mtime(path)
 
             editor_args = get_editor_args()
-            self.log("Using editor: %r" % editor_args)
+            self.log(f"Using editor: {editor_args!r}")
 
             try:
                 subprocess.check_call(editor_args + [path])
@@ -410,7 +410,7 @@ class ClearCommand(Command):
                     tags.append(tag)
 
             for tag in tags:
-                self.log("Remove tag %r" % tag)
+                self.log(f"Remove tag {tag!r}")
                 if not song.can_change(tag):
                     raise CommandError(
                         _("Can't remove {tagname} from {filename}").format(
@@ -712,7 +712,7 @@ class ImageExtractCommand(Command):
                 if options.destination is not None:
                     filename = os.path.join(options.destination, filename)
 
-                self.log("Saving image %r" % filename)
+                self.log(f"Saving image {filename!r}")
                 if not options.dry_run:
                     with open(filename, "wb") as h:
                         shutil.copyfileobj(image.file, h)
@@ -750,7 +750,7 @@ class FillCommand(Command):
             raise CommandError("Not enough arguments")
 
         pattern_text = args[0]
-        self.log("Using pattern: %r" % pattern_text)
+        self.log(f"Using pattern: {pattern_text!r}")
         paths = args[1:]
 
         pattern = TagsFromPattern(pattern_text)
@@ -834,7 +834,7 @@ class PrintCommand(Command):
         if pattern is None:
             pattern = "<artist~album~tracknumber~title>"
 
-        self.log("Using pattern: %r" % pattern)
+        self.log(f"Using pattern: {pattern!r}")
 
         try:
             pattern = Pattern(pattern)

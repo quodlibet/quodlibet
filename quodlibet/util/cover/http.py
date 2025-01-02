@@ -68,7 +68,7 @@ class HTTPDownloadMixin:
         try:
             self.fail(exception.message or " ".join(exception.args))
         except AttributeError:
-            self.fail("Download error (%s)" % exception)
+            self.fail(f"Download error ({exception})")
 
 
 class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):

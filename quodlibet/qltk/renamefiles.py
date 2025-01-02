@@ -393,7 +393,7 @@ class RenameFiles(Gtk.VBox):
                 if not os.listdir(path_old):
                     try:
                         os.rmdir(path_old)
-                        print_d("Removed empty directory: %r" % path_old, self)
+                        print_d(f"Removed empty directory: {path_old!r}", self)
                     except Exception:
                         util.print_exc()
 

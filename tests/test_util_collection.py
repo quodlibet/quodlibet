@@ -529,8 +529,9 @@ class TPlaylist(TestCase):
             self.assertTrue(
                 pl.has_duplicates,
                 (
-                    "Playlist has un-detected duplicates: %s "
-                    % "\n".join([str(self) for s in pl._list])
+                    "Playlist has un-detected duplicates: {} ".format(
+                        "\n".join([str(self) for s in pl._list])
+                    )
                 ),
             )
 

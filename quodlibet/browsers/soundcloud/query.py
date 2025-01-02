@@ -62,7 +62,7 @@ class SoundcloudQuery(Query):
         try:
             self.terms = self._extract_terms(self._match)
         except self.Error as e:
-            print_d("Couldn't use query: %s" % e)
+            print_d(f"Couldn't use query: {e}")
             self.type = QueryType.INVALID
             self.terms = {}
 
@@ -127,7 +127,7 @@ class SoundcloudQuery(Query):
                     return {(tag + "[to]", value)}
                 elif op in (operator.ge, operator.gt):
                     return {(tag + "[from]", value)}
-                raise self.Error("Unsupported operator: %s" % op)
+                raise self.Error(f"Unsupported operator: {op}")
 
             left = node._expr
             right = node._expr2
@@ -136,7 +136,7 @@ class SoundcloudQuery(Query):
             elif isinstance(right, NumexprTag) and isinstance(left, Numexpr):
                 # We can reduce the logic by flipping the expression
                 return from_relative(INVERSE_OPS[node._op], right, left)
-            raise self.Error("Unsupported numeric: %s" % node)
+            raise self.Error(f"Unsupported numeric: {node}")
         elif hasattr(node, "pattern"):
             return terms_from_re(node.pattern, tag)
         elif isinstance(node, True_):

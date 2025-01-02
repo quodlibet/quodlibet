@@ -7,43 +7,34 @@
 # (at your option) any later version.
 
 import datetime
-import os.path
 import json
+import os.path
 import uuid
+from collections.abc import Callable, MutableMapping
 from pathlib import Path
+from typing import Any, NamedTuple
 
 from gi.repository import Gtk
-
 from senf import path2fsn
 
-from typing import NamedTuple, Any
-from collections.abc import Callable, MutableMapping
-
-from quodlibet.plugins import PluginConfig, BoolConfProp, FloatConfProp
-from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
-from quodlibet.qltk.showfiles import show_files
-
-from quodlibet.util.matcher import ObjectListMatcher
-
-from quodlibet.formats._audio import MIGRATE, AudioFile
-
-from quodlibet.util import connect_obj, print_exc
-
 import quodlibet
+from quodlibet import _, app, print_d, print_e, qltk, util
+from quodlibet.formats._audio import MIGRATE, AudioFile
+from quodlibet.plugins import BoolConfProp, FloatConfProp, PluginConfig
+from quodlibet.plugins.songshelpers import each_song, is_finite, is_writable
+from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons, SeparatorMenuItem
+from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
+from quodlibet.qltk.msg import ErrorMessage, WarningMessage
+from quodlibet.qltk.showfiles import show_files
+from quodlibet.util import connect_obj, print_exc
+from quodlibet.util.matcher import ObjectListMatcher
 from quodlibet.util.path import (
+    extension_of_file_name,
     join_path_with_escaped_name_of_legal_length,
     stem_of_file_name,
-    extension_of_file_name,
 )
-
 from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
-
-from quodlibet import _, app, print_e, qltk, util, print_d
-
-from quodlibet.plugins.songshelpers import each_song, is_writable, is_finite
-from quodlibet.qltk.msg import ErrorMessage, WarningMessage
-from quodlibet.qltk import Icons, SeparatorMenuItem
-from quodlibet.plugins.songsmenu import SongsMenuPlugin
 
 __all__ = ["ImportExportTagsAndTrackUserDataPlugin"]
 
@@ -323,13 +314,17 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         self._import_or_export_option_index = None
 
         self._album_id_matcher: ObjectListMatcher[AlbumId] = ObjectListMatcher(
-            {  #
-                lambda a: a.title: 9,  # title is the most reliable
-                lambda a: a.artist: 4.5,  #
-                lambda a: a.tracks: 1.2,  #
-                lambda a: a.last_directory_parts: 1,  # needed in case the album has no tags
-                lambda a: a.discs: 0.8,  # multi disc albums sometimes become single disc
-                lambda a: a.id_value: 0.5,  # is likely to change unless exact same album
+            {
+                # title is the most reliable
+                lambda a: a.title: 9,
+                lambda a: a.artist: 4.5,
+                lambda a: a.tracks: 1.2,
+                # needed in case the album has no tags
+                lambda a: a.last_directory_parts: 1,
+                # needed in case the album has no tags
+                lambda a: a.discs: 0.8,
+                # is likely to change unless exact same album
+                lambda a: a.id_value: 0.5,
             }
         )
         # We want check similarity afterwards, so it needs be as accurate as possible
@@ -337,12 +332,13 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         self._album_id_matcher.should_go_through_every_attribute = True
 
         self._track_id_matcher: ObjectListMatcher[TrackId] = ObjectListMatcher(
-            {  #
-                lambda t: t.title: 8,  #
-                lambda t: t.artist: 3.5,  #
-                lambda t: t.track: 1.2,  #
-                lambda t: t.file_stem: 1,  # needed in case the track has no tags
-                lambda t: t.disc: 0.8,  #
+            {
+                lambda t: t.title: 8,
+                lambda t: t.artist: 3.5,
+                lambda t: t.track: 1.2,
+                # needed in case the track has no tags
+                lambda t: t.file_stem: 1,
+                lambda t: t.disc: 0.8,
             }
         )
         self._track_id_matcher.should_store_similarity_matrix = True

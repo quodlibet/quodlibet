@@ -49,7 +49,7 @@ class SongInfo(Gtk.EventBox):
         **_FORMAT_VARS
     )
 
-    _not_playing = "<span size='xx-large'>%s</span>" % _("Not playing")
+    _not_playing = "<span size='xx-large'>{}</span>".format(_("Not playing"))
 
     def __init__(self, library, player, pattern_filename):
         super().__init__()

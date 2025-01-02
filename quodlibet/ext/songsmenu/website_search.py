@@ -107,7 +107,7 @@ class WebsiteSearch(SongsMenuPlugin):
         self._url_pats = StandaloneEditor.load_values(filename)
         # Failing all else...
         if not len(self._url_pats):
-            print_d("No saved searches found in %s. Using defaults." % filename)
+            print_d(f"No saved searches found in {filename}. Using defaults.")
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):
@@ -139,7 +139,7 @@ class WebsiteSearch(SongsMenuPlugin):
             urls = set(filter(None, (website_for(pat, s) for s in songs)))
             if not urls:
                 print_w(
-                    'Couldn\'t build URLs using "%s".' "Check your pattern?" % url_pat
+                    f'Couldn\'t build URLs using "{url_pat}".' "Check your pattern?"
                 )
                 return False
             print_d("Got %d websites from %d songs" % (len(urls), len(songs)))

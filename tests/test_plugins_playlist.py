@@ -68,9 +68,9 @@ class TPlaylistPlugins(TestCase):
             indent = ""
         else:
             file.write("from quodlibet.plugins.playlist import PlaylistPlugin\n")
-            file.write("class %s(PlaylistPlugin):\n" % name)
+            file.write(f"class {name}(PlaylistPlugin):\n")
             indent = "    "
-            file.write("%spass\n" % indent)
+            file.write(f"{indent}pass\n")
 
         if name:
             file.write(f"{indent}PLUGIN_ID = {name!r}\n")

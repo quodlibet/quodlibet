@@ -36,7 +36,7 @@ class TAlbumArt(PluginTestCase):
         config.add_section(PluginManager.CONFIG_SECTION)
         config.set(
             PluginManager.CONFIG_SECTION,
-            "%s_preview_size" % DownloadCoverArt.PLUGIN_ID,
+            f"{DownloadCoverArt.PLUGIN_ID}_preview_size",
             200,
         )
 

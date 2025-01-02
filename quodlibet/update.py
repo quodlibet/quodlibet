@@ -60,7 +60,7 @@ def fetch_versions(build_type, timeout=5.0):
 
     try:
         content = urlopen(
-            "https://quodlibet.github.io/appcast/%s.rss" % build_type, timeout=timeout
+            f"https://quodlibet.github.io/appcast/{build_type}.rss", timeout=timeout
         ).read()
     except Exception as error:
         raise UpdateError(error) from error

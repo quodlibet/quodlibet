@@ -256,7 +256,7 @@ def register_translation(domain, localedir=None):
         except OSError:
             continue
         else:
-            print_d("Translations loaded: %r" % unexpand(t.path))
+            print_d(f"Translations loaded: {unexpand(t.path)!r}")
             break
     else:
         print_d(f"No translation found for domain {domain!r} in {localedir!r}")
@@ -281,8 +281,8 @@ def init(language=None):
     set_i18n_envvars()
     fixup_i18n_envvars()
 
-    print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
-    print_d("LANG: %r" % os.environ.get("LANG"))
+    print_d("LANGUAGE: {!r}".format(os.environ.get("LANGUAGE")))
+    print_d("LANG: {!r}".format(os.environ.get("LANG")))
 
     try:
         locale.setlocale(locale.LC_ALL, "")
@@ -296,7 +296,7 @@ def init(language=None):
 
     if language is not None:
         os.environ["LANGUAGE"] = text2fsn(language)
-        print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
+        print_d("LANGUAGE: {!r}".format(os.environ.get("LANGUAGE")))
 
     _initialized = True
 
@@ -319,7 +319,7 @@ def get_available_languages(domain):
             continue
 
         for lang in entries:
-            mo_path = os.path.join(locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
+            mo_path = os.path.join(locale_dir, lang, "LC_MESSAGES", f"{domain}.mo")
             if os.path.exists(mo_path):
                 langs.add(fsn2text(path2fsn(lang)))
 

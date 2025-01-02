@@ -243,8 +243,8 @@ class ID3File(AudioFile):
                 k = "track"  # fallback
             else:
                 return
-            self["replaygain_%s_gain" % k] = "%+f dB" % frame.gain
-            self["replaygain_%s_peak" % k] = str(frame.peak)
+            self[f"replaygain_{k}_gain"] = f"{frame.gain:+f} dB"
+            self[f"replaygain_{k}_peak"] = str(frame.peak)
 
     @util.cached_property
     def CODECS(self):  # noqa
@@ -302,8 +302,8 @@ class ID3File(AudioFile):
         for key in [
             "UFID:http://musicbrainz.org",
             "TMCL",
-            "POPM:%s" % const.EMAIL,
-            "POPM:%s" % config.get("editing", "save_email"),
+            f"POPM:{const.EMAIL}",
+            "POPM:{}".format(config.get("editing", "save_email")),
         ]:
             if key in tag:
                 del tag[key]
@@ -355,7 +355,7 @@ class ID3File(AudioFile):
                 continue
 
             f = mutagen.id3.TXXX(
-                encoding=enc, text=self[key].split("\n"), desc="QuodLibet::%s" % key
+                encoding=enc, text=self[key].split("\n"), desc=f"QuodLibet::{key}"
             )
             tag.add(f)
 
@@ -425,13 +425,13 @@ class ID3File(AudioFile):
                 del tag[t.HashKey]
 
         for k in ["track", "album"]:
-            if ("replaygain_%s_gain" % k) in self:
+            if f"replaygain_{k}_gain" in self:
                 try:
-                    gain = float(self["replaygain_%s_gain" % k].split()[0])
+                    gain = float(self[f"replaygain_{k}_gain"].split()[0])
                 except (ValueError, IndexError):
                     gain = 0
                 try:
-                    peak = float(self["replaygain_%s_peak" % k])
+                    peak = float(self[f"replaygain_{k}_peak"])
                 except (ValueError, KeyError):
                     peak = 0
                 # https://github.com/quodlibet/quodlibet/issues/1027

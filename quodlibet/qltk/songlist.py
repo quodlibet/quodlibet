@@ -165,7 +165,7 @@ def get_sort_tag(tag):
                 value = f"<{value}>"
             tag = tag.replace(f"<{key}>", value)
         for key, value in TAG_TO_SORT.items():
-            tag = tag.replace("<%s>" % key, f"<{value}|<{value}>|<{key}>>")
+            tag = tag.replace(f"<{key}>", f"<{value}|<{value}>|<{key}>>")
         tag = Pattern(tag).format
     else:
         tags = util.tagsplit(tag)

@@ -66,7 +66,7 @@ class SelectionWindow(Window):
 
         joined = ", ".join(sorted(selected.values()))
         if len(selected) >= 2:
-            joined = "&(%s)" % joined
+            joined = f"&({joined})"
 
         browser.filter_text(joined)
 

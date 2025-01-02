@@ -122,7 +122,7 @@ class ResizeWebImage(Gtk.Image):
         try:
             loader = GdkPixbuf.PixbufLoader()
         except GLib.GError as e:
-            print_w("Couldn't create GdkPixbuf (%s)" % e)
+            print_w(f"Couldn't create GdkPixbuf ({e})")
         else:
             loader.write(result)
             loader.close()
@@ -154,9 +154,9 @@ class ResizeWebImage(Gtk.Image):
             print_d(f"Converting image to JPEG @ {quality}%")
             ret = self._pixbuf.savev(fsn, "jpeg", ["quality"], [quality])
             if not ret:
-                raise OSError("Couldn't save to %s" % fsn)
+                raise OSError(f"Couldn't save to {fsn}")
         else:
-            print_d("Saving original image to %s" % fsn)
+            print_d(f"Saving original image to {fsn}")
             with open(fsn, "wb") as f:
                 f.write(self._original)
 

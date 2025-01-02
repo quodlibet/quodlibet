@@ -329,7 +329,7 @@ class QLSubmitQueue:
 
         resp_save = resp.read().decode("utf-8", "ignore")
         status = resp_save.rstrip().split("\n")[0]
-        print_d("Submission status: %s" % status)
+        print_d(f"Submission status: {status}")
         if status == "OK":
             return True
         elif status == "BADSESSION":
@@ -424,9 +424,9 @@ class QLScrobbler(EventPlugin):
             return
         if self.elapsed < 240 and self.elapsed <= 0.5 * song.get("~#length", 0):
             return
-        print_d("Checking against filter %s" % self.exclude)
+        print_d(f"Checking against filter {self.exclude}")
         if self.exclude and Query(self.exclude).search(song):
-            print_d("Not submitting: %s" % song("~artist~title"))
+            print_d("Not submitting: {}".format(song("~artist~title")))
             return
         self.queue.submit(song, self.start_time)
 

@@ -46,9 +46,9 @@ class TSongsMenuPlugins(TestCase):
             indent = ""
         else:
             file.write("from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
-            file.write("class %s(SongsMenuPlugin):\n" % name)
+            file.write(f"class {name}(SongsMenuPlugin):\n")
             indent = "    "
-            file.write("%spass\n" % indent)
+            file.write(f"{indent}pass\n")
 
         if name:
             file.write(f"{indent}PLUGIN_ID = {name!r}\n")
@@ -125,7 +125,7 @@ class TSongsMenuPlugins(TestCase):
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
         songs = [
-            AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"}) for x in range(MAX)
+            AudioFile({"~filename": f"/tmp/{x}", "artist": "foo"}) for x in range(MAX)
         ]
         self.handler.handle(plugin.id, self.library, None, songs)
         self.assertFalse(
@@ -138,7 +138,7 @@ class TSongsMenuPlugins(TestCase):
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
         songs = [
-            AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"})
+            AudioFile({"~filename": f"/tmp/{x}", "artist": "foo"})
             for x in range(MAX + 1)
         ]
         self.handler.handle(plugin.id, self.library, None, songs)
