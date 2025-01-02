@@ -61,13 +61,14 @@ def album_to_sort(album: str) -> str | None:
 class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
-    PLUGIN_DESC_MARKUP = _(
-        "Guesses sort tags for albums and people.\n\ne.g.\n\n"
-        "  <tt>album</tt>: <i>The Greatest Hits</i> → <i>Greatest Hits, The</i>\n"
-        "  <tt>composer</tt>: <i>Irving Berlin</i> → <i>Berlin, Irving</i>\n"
-        "  <tt>artist</tt>: <i>Franz Liszt</i> → <i>Liszt, Franz</i>\n"
-        "  <tt>artist</tt>: <i>The Beach Boys</i> → <i>Beach Boys, The</i>\n"
-       "\nApplies to tags: <tt>%s</tt>.") % ", ".join(SUPPORTED_TAGS)
+    PLUGIN_DESC_MARKUP = (_("Guesses sort tags for albums and people.") +
+        "\n\n" + _("e.g.") + "\n\n "
+        "<tt>album</tt>: <i>The Greatest Hits</i> → <i>Greatest Hits, The</i>"
+        "<tt>composer</tt>: <i>Irving Berlin</i> → <i>Berlin, Irving</i>\n"
+        "<tt>artist</tt>: <i>Franz Liszt</i> → <i>Liszt, Franz</i>\n"
+        "<tt>artist</tt>: <i>The Beach Boys</i> → <i>Beach Boys, The</i>\n\n"
+       + _("Applies to tags: <tt>%s</tt>.") % ", ".join(SUPPORTED_TAGS)
+    )
     PLUGIN_ICON = Icons.EDIT
 
     plugin_handles = any_song(is_writable, is_finite)
