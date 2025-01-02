@@ -6,14 +6,19 @@
 import quodlibet.config
 import quodlibet.plugins
 from quodlibet.qltk import Icons
-from quodlibet.qltk.playorder import OrderShuffle, OrderWeighted, \
-    ToggledPlayOrderMenu, Orders, Order, OrderInOrder
+from quodlibet.qltk.playorder import (
+    OrderShuffle,
+    OrderWeighted,
+    ToggledPlayOrderMenu,
+    Orders,
+    Order,
+    OrderInOrder,
+)
 from quodlibet.qltk.playorder import PlayOrderWidget
 from tests import TestCase
 
 
 class TPlayOrderWidget(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
 
@@ -68,13 +73,14 @@ class FakeOrder(Order):
 
 
 class TToggledPlayOrderMenu(TestCase):
-
     def setUp(self):
         self.orders = Orders([OrderShuffle, OrderWeighted, FakeOrder])
-        self.tpom = ToggledPlayOrderMenu(Icons.AUDIO_X_GENERIC,
-                                         orders=self.orders,
-                                         current_order=OrderShuffle,
-                                         enabled=True)
+        self.tpom = ToggledPlayOrderMenu(
+            Icons.AUDIO_X_GENERIC,
+            orders=self.orders,
+            current_order=OrderShuffle,
+            enabled=True,
+        )
 
     def tearDown(self):
         self.tpom.destroy()

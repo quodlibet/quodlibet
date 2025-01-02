@@ -12,6 +12,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import GLib
@@ -25,19 +26,23 @@ from quodlibet.qltk import Frame, Icons
 from quodlibet import config
 
 # Translators: statuses relating to Instant Messenger apps
-_STATUSES = {"online": _("online"),
-             "offline": _("offline"),
-             "chat": _("chat"),
-             "away": _("away"),
-             "xa": _("xa"),
-             "invisible": _("invisible")}
+_STATUSES = {
+    "online": _("online"),
+    "offline": _("offline"),
+    "chat": _("chat"),
+    "away": _("away"),
+    "xa": _("xa"),
+    "invisible": _("invisible"),
+}
 
 
 class GajimStatusMessage(EventPlugin):
     PLUGIN_ID = "Gajim status message"
     PLUGIN_NAME = _("Gajim Status Message")
-    PLUGIN_DESC = _("Changes Gajim status message according to what "
-                    "you are currently listening to.")
+    PLUGIN_DESC = _(
+        "Changes Gajim status message according to what "
+        "you are currently listening to."
+    )
     PLUGIN_ICON = Icons.FACE_SMILE
 
     c_accounts = __name__ + "_accounts"
@@ -82,9 +87,14 @@ class GajimStatusMessage(EventPlugin):
         if not self.interface:
             try:
                 self.interface = Gio.DBusProxy.new_for_bus_sync(
-                    Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                    "org.gajim.dbus", "/org/gajim/dbus/RemoteObject",
-                    "org.gajim.dbus.RemoteInterface", None)
+                    Gio.BusType.SESSION,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    "org.gajim.dbus",
+                    "/org/gajim/dbus/RemoteObject",
+                    "org.gajim.dbus.RemoteInterface",
+                    None,
+                )
             except GLib.Error:
                 self.interface = None
 
@@ -92,12 +102,12 @@ class GajimStatusMessage(EventPlugin):
             try:
                 for account in self.interface.list_accounts():
                     status = self.interface.get_status("(s)", account)
-                    if enabled_accounts != [] and \
-                            account not in enabled_accounts:
+                    if enabled_accounts != [] and account not in enabled_accounts:
                         continue
                     if status in self.statuses:
-                        self.interface.change_status("(sss)",
-                            status, status_message, account)
+                        self.interface.change_status(
+                            "(sss)", status, status_message, account
+                        )
             except GLib.Error:
                 self.interface = None
 
@@ -151,18 +161,21 @@ class GajimStatusMessage(EventPlugin):
         accounts.set_text(" ".join(self.accounts))
         accounts.connect("changed", self.accounts_changed)
         accounts.set_tooltip_text(
-            _("List accounts, separated by spaces, for "
-              "changing status message. If none are specified, "
-              "status message of all accounts will be changed."))
-        accounts_box.pack_start(Gtk.Label(label=_("Accounts:")),
-                                False, True, 0)
+            _(
+                "List accounts, separated by spaces, for "
+                "changing status message. If none are specified, "
+                "status message of all accounts will be changed."
+            )
+        )
+        accounts_box.pack_start(Gtk.Label(label=_("Accounts:")), False, True, 0)
         accounts_box.pack_start(accounts, True, True, 0)
 
         c = Gtk.CheckButton(label=_("Add '[paused]'"))
         c.set_active(self.paused)
         c.connect("toggled", self.paused_changed)
-        c.set_tooltip_text(_("If checked, '[paused]' will be added to "
-                             "status message on pause"))
+        c.set_tooltip_text(
+            _("If checked, '[paused]' will be added to " "status message on pause")
+        )
 
         table = Gtk.Table()
         self.list = []
@@ -185,7 +198,8 @@ class GajimStatusMessage(EventPlugin):
         vb.pack_start(pattern_box, True, True, 0)
         vb.pack_start(accounts_box, True, True, 0)
         vb.pack_start(c, True, True, 0)
-        frame = Frame(label=_("Statuses for which message will be changed"),
-                      child=table)
+        frame = Frame(
+            label=_("Statuses for which message will be changed"), child=table
+        )
         vb.pack_start(frame, True, True, 6)
         return vb

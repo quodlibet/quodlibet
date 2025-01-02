@@ -51,7 +51,7 @@ class Alarm(EventPlugin):
         except Exception:
             return False
         else:
-            return (hour < 24 and minute < 60)
+            return hour < 24 and minute < 60
 
     def plugin_on_song_started(self, song):
         pass
@@ -101,8 +101,7 @@ class Alarm(EventPlugin):
             e.set_text(self._times[i])
             e.set_max_length(5)
             e.set_width_chars(6)
-            day = Gtk.Label(
-                label=time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
+            day = Gtk.Label(label=time.strftime("_%A:", (2000, 1, 1, 0, 0, 0, i, 1, 0)))
             day.set_mnemonic_widget(e)
             day.set_use_underline(True)
             day.set_alignment(0.0, 0.5)

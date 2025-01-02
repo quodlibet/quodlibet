@@ -13,22 +13,57 @@ if sys.platform == "win32":
     # with the ones we ship.
     # https://github.com/quodlibet/quodlibet/issues/2817
     from ctypes import windll
+
     windll.kernel32.SetDllDirectoryW(os.path.dirname(sys.executable))
 
 from ._import import install_redirect_import_hook
+
 install_redirect_import_hook()
 
 from .util.i18n import _, C_, N_, ngettext, npgettext
 from .util.dprint import print_d, print_e, print_w
 from ._init import init_cli, init
-from ._main import get_base_dir, is_release, get_user_dir, app, \
-    set_application_info, init_plugins, enable_periodic_save, run, \
-    finish_first_session, get_image_dir, is_first_session, \
-    get_build_description, get_build_version, get_cache_dir
+from ._main import (
+    get_base_dir,
+    is_release,
+    get_user_dir,
+    app,
+    set_application_info,
+    init_plugins,
+    enable_periodic_save,
+    run,
+    finish_first_session,
+    get_image_dir,
+    is_first_session,
+    get_build_description,
+    get_build_version,
+    get_cache_dir,
+)
 
 
-_, C_, N_, ngettext, npgettext, is_release, init, init_cli, print_e, \
-    get_base_dir, print_w, print_d, get_user_dir, app, set_application_info, \
-    init_plugins, enable_periodic_save, run, finish_first_session, \
-    get_image_dir, is_first_session, get_build_description, \
-    get_build_version, get_cache_dir
+(
+    _,
+    C_,
+    N_,
+    ngettext,
+    npgettext,
+    is_release,
+    init,
+    init_cli,
+    print_e,
+    get_base_dir,
+    print_w,
+    print_d,
+    get_user_dir,
+    app,
+    set_application_info,
+    init_plugins,
+    enable_periodic_save,
+    run,
+    finish_first_session,
+    get_image_dir,
+    is_first_session,
+    get_build_description,
+    get_build_version,
+    get_cache_dir,
+)

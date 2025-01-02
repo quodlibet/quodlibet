@@ -16,8 +16,13 @@ import cairo
 
 from quodlibet import _, print_e, util
 from quodlibet import config
-from quodlibet.qltk import (get_top_parent, is_accel, is_wayland, menu_popup,
-                            get_primary_accel_mod)
+from quodlibet.qltk import (
+    get_top_parent,
+    is_accel,
+    is_wayland,
+    menu_popup,
+    get_primary_accel_mod,
+)
 from quodlibet.qltk.image import get_surface_extents
 
 from .util import GSignals
@@ -28,7 +33,6 @@ class TreeViewHints(Gtk.Window):
     columns, and in the future, tooltips."""
 
     class _MinLabel(Gtk.Label):
-
         def do_get_preferred_width(*args):
             return (0, Gtk.Label.do_get_preferred_width(*args)[0])
 
@@ -36,10 +40,16 @@ class TreeViewHints(Gtk.Window):
     # to pass all events to the treeview. In case it does work, this handlers
     # will never be called.
     __gsignals__: GSignals = dict.fromkeys(
-        ["button-press-event", "button-release-event",
-         "motion-notify-event", "scroll-event",
-         "enter-notify-event", "leave-notify-event"],
-        "override")
+        [
+            "button-press-event",
+            "button-release-event",
+            "motion-notify-event",
+            "scroll-event",
+            "enter-notify-event",
+            "leave-notify-event",
+        ],
+        "override",
+    )
 
     __empty_region = cairo.Region(cairo.RectangleInt())
 
@@ -71,15 +81,16 @@ class TreeViewHints(Gtk.Window):
         self.add(label)
 
         self.add_events(
-            Gdk.EventMask.BUTTON_MOTION_MASK |
-            Gdk.EventMask.BUTTON_PRESS_MASK |
-            Gdk.EventMask.BUTTON_RELEASE_MASK |
-            Gdk.EventMask.KEY_PRESS_MASK |
-            Gdk.EventMask.KEY_RELEASE_MASK |
-            Gdk.EventMask.ENTER_NOTIFY_MASK |
-            Gdk.EventMask.LEAVE_NOTIFY_MASK |
-            Gdk.EventMask.SCROLL_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK)
+            Gdk.EventMask.BUTTON_MOTION_MASK
+            | Gdk.EventMask.BUTTON_PRESS_MASK
+            | Gdk.EventMask.BUTTON_RELEASE_MASK
+            | Gdk.EventMask.KEY_PRESS_MASK
+            | Gdk.EventMask.KEY_RELEASE_MASK
+            | Gdk.EventMask.ENTER_NOTIFY_MASK
+            | Gdk.EventMask.LEAVE_NOTIFY_MASK
+            | Gdk.EventMask.SCROLL_MASK
+            | Gdk.EventMask.POINTER_MOTION_MASK
+        )
 
         context = self.get_style_context()
         context.add_class("tooltip")
@@ -98,7 +109,6 @@ class TreeViewHints(Gtk.Window):
         self.__hide_id = None
 
     def connect_view(self, view):
-
         # don't depend on padding set by theme, we need the text coordinates
         # to match in all cases
         self._style_provider = style_provider = Gtk.CssProvider()
@@ -117,7 +127,7 @@ class TreeViewHints(Gtk.Window):
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
 
         self.__handlers[view] = [
@@ -147,7 +157,8 @@ class TreeViewHints(Gtk.Window):
             self.hide()
 
         Gtk.StyleContext.remove_provider_for_screen(
-            Gdk.Screen.get_default(), self._style_provider)
+            Gdk.Screen.get_default(), self._style_provider
+        )
 
     def __motion(self, view, event):
         label = self.__label
@@ -247,12 +258,14 @@ class TreeViewHints(Gtk.Window):
         markup = getattr(renderer, "markup", None)
         if markup is None:
             text = renderer.get_property("text")
+
             def set_text(l):
                 return l.set_text(text)
         else:
             # markup can also be column index
             if isinstance(markup, int):
                 markup = model[path][markup]
+
             def set_text(l):
                 return l.set_markup(markup)
 
@@ -296,7 +309,7 @@ class TreeViewHints(Gtk.Window):
             # shift to the left
             # FIXME: ellipsize start produces a space at the end depending
             # on the text. I don't know how to compute it..
-            self.__dx -= (label_width - render_width)
+            self.__dx -= label_width - render_width
 
         # final window coordinates/size
         x = ox + self.__dx
@@ -434,8 +447,16 @@ class TreeViewHints(Gtk.Window):
             # view window.. ?
             new_event = Gdk.Event.new(Gdk.EventType.MOTION_NOTIFY)
             struct = new_event.motion
-            for attr in ["x", "y", "x_root", "y_root", "time", "window",
-                         "state", "send_event"]:
+            for attr in [
+                "x",
+                "y",
+                "x_root",
+                "y_root",
+                "time",
+                "window",
+                "state",
+                "send_event",
+            ]:
                 setattr(struct, attr, getattr(event.crossing, attr))
             device = Gtk.get_current_event_device()
             if device is not None:
@@ -510,8 +531,7 @@ class DragScroll:
 
     def __enable_scroll(self):
         """Start scrolling if it hasn't already"""
-        if self.__scroll_periodic is not None or \
-                self.__scroll_delay is not None:
+        if self.__scroll_periodic is not None or self.__scroll_delay is not None:
             return
 
         def periodic_scroll():
@@ -563,7 +583,7 @@ class DragScroll:
 
     def scroll_motion(self, x, y):
         """Call with current widget coords during a dnd action to update
-           scrolling speed"""
+        scrolling speed"""
 
         visible_rect = self.get_visible_rect()
         if visible_rect is None:
@@ -580,8 +600,8 @@ class DragScroll:
 
         # If the drag is in the scroll area, adjust the speed
         scroll_offset = int(reference * 3)
-        in_upper_scroll = (start < y < start + scroll_offset)
-        in_lower_scroll = (y > end - scroll_offset)
+        in_upper_scroll = start < y < start + scroll_offset
+        in_lower_scroll = y > end - scroll_offset
 
         # thanks TI200
         def accel(x):
@@ -593,15 +613,15 @@ class DragScroll:
         if in_lower_scroll:
             diff = accel(y - end + scroll_offset)
         elif in_upper_scroll:
-            diff = - accel(start + scroll_offset - y)
+            diff = -accel(start + scroll_offset - y)
         else:
             self.scroll_disable()
             return
 
         # The area where we can go to full speed
         full_offset = int(reference * 0.8)
-        in_upper_full = (start < y < start + full_offset)
-        in_lower_full = (y > end - full_offset)
+        in_upper_full = start < y < start + full_offset
+        in_lower_full = y > end - full_offset
         if not in_upper_full and not in_lower_full:
             self.__scroll_length = 0
 
@@ -610,19 +630,18 @@ class DragScroll:
 
         # The area to trigger a scroll is a bit smaller
         trigger_offset = int(reference * 2.5)
-        in_upper_trigger = (start < y < start + trigger_offset)
-        in_lower_trigger = (y > end - trigger_offset)
+        in_upper_trigger = start < y < start + trigger_offset
+        in_lower_trigger = y > end - trigger_offset
 
         if in_upper_trigger or in_lower_trigger:
             self.__enable_scroll()
 
 
 class BaseView(Gtk.TreeView):
-
     __gsignals__: GSignals = {
         # like the tree selection changed signal but doesn't emit twice in case
         # a row is activated
-        "selection-changed": (GObject.SignalFlags.RUN_LAST, None, (object, )),
+        "selection-changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     def __init__(self, *args, **kwargs):
@@ -670,7 +689,6 @@ class BaseView(Gtk.TreeView):
         return Gtk.TreeView.do_key_press_event(self, event)
 
     def __key_pressed(self, view, event):
-
         def get_first_selected():
             selection = self.get_selection()
             model, paths = selection.get_selected_rows()
@@ -739,8 +757,7 @@ class BaseView(Gtk.TreeView):
                     continue
                 self.set_cursor(row.path)
                 if scroll:
-                    self.scroll_to_cell(row.path, use_align=True,
-                                        row_align=0.5)
+                    self.scroll_to_cell(row.path, use_align=True, row_align=0.5)
                 first = False
                 if one:
                     break
@@ -788,8 +805,7 @@ class BaseView(Gtk.TreeView):
                 continue
             self.set_cursor(row.path)
             if scroll:
-                self.scroll_to_cell(row.path, use_align=True,
-                                    row_align=0.5)
+                self.scroll_to_cell(row.path, use_align=True, row_align=0.5)
             return True
 
         last_path = model.get_path(last_iter)
@@ -800,8 +816,7 @@ class BaseView(Gtk.TreeView):
                 continue
             self.set_cursor(row.path)
             if scroll:
-                self.scroll_to_cell(row.path, use_align=True,
-                                    row_align=0.5)
+                self.scroll_to_cell(row.path, use_align=True, row_align=0.5)
             return True
 
         return False
@@ -819,8 +834,9 @@ class BaseView(Gtk.TreeView):
             if not rows:
                 (self.get_parent() or self).drag_highlight()
             else:
-                self.set_drag_dest_row(Gtk.TreePath(rows - 1),
-                                       Gtk.TreeViewDropPosition.AFTER)
+                self.set_drag_dest_row(
+                    Gtk.TreePath(rows - 1), Gtk.TreeViewDropPosition.AFTER
+                )
         else:
             path, pos = dest_row
             if into_only:
@@ -935,8 +951,7 @@ class DragIconTreeView(BaseView):
             height += lh
             height += 6  # padding
 
-        surface = icons[0].create_similar(
-            cairo.CONTENT_COLOR_ALPHA, width, height)
+        surface = icons[0].create_similar(cairo.CONTENT_COLOR_ALPHA, width, height)
         ctx = cairo.Context(surface)
 
         # render background
@@ -948,9 +963,7 @@ class DragIconTreeView(BaseView):
         for icon, (x, y, icon_width, icon_height) in zip(icons, sizes, strict=False):
             ctx.save()
             ctx.set_source_surface(icon, -x, count_y + -y)
-            ctx.rectangle(bw, count_y + bw,
-                          icon_width - 2 * bw,
-                          icon_height - 2 * bw)
+            ctx.rectangle(bw, count_y + bw, icon_width - 2 * bw, icon_height - 2 * bw)
             ctx.clip()
             ctx.paint()
             ctx.restore()
@@ -997,7 +1010,8 @@ class MultiDragTreeView(BaseView):
         selection = self.get_selection()
         is_selected = selection.path_is_selected(path)
         mod_active = event.get_state() & (
-            get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK)
+            get_primary_accel_mod() | Gdk.ModifierType.SHIFT_MASK
+        )
 
         if is_selected:
             self.__pending_action = (path, col, mod_active)
@@ -1105,7 +1119,6 @@ class RCMTreeView(BaseView):
 
         # on X11/win32 we can use the screen size
         if not is_wayland():
-
             # fit menu to screen, aligned per text direction
             screen = self.get_screen()
             screen_width = screen.get_width()
@@ -1138,8 +1151,10 @@ class HintedTreeView(BaseView):
             tvh.connect_view(self)
 
     def set_tooltip_text(self, *args, **kwargs):
-        print_e("Setting a tooltip on the view breaks tv hints. Set it"
-                " on the parent scrolled window instead")
+        print_e(
+            "Setting a tooltip on the view breaks tv hints. Set it"
+            " on the parent scrolled window instead"
+        )
         return super().set_tooltip_text(*args, **kwargs)
 
     def supports_hints(self):
@@ -1175,8 +1190,9 @@ class _TreeViewColumnLabel(Gtk.Label):
         # remove the space needed by the arrow and add the space
         # added by the padding so we only start drawing when we clip
         # the text directly
-        available_width = p2_alloc.width - \
-            abs(p2_alloc.x - alloc.x) + (p2_alloc.x - p3_alloc.x)
+        available_width = (
+            p2_alloc.width - abs(p2_alloc.x - alloc.x) + (p2_alloc.x - p3_alloc.x)
+        )
 
         if alloc.width <= available_width:
             return Gtk.Label.do_draw(self, ctx)
@@ -1202,10 +1218,10 @@ class _TreeViewColumnLabel(Gtk.Label):
         gradient_width = min(req_height * 0.8, aw)
 
         if self.get_direction() == Gtk.TextDirection.RTL:
-            start = (w - aw)
+            start = w - aw
             end = start + gradient_width
         else:
-            end = (aw - gradient_width)
+            end = aw - gradient_width
             start = end + gradient_width
 
         pat = cairo.LinearGradient(start, 0, end, 0)
@@ -1228,13 +1244,11 @@ class _TreeViewColumnLabel(Gtk.Label):
 
 
 class TreeViewColumn(Gtk.TreeViewColumn):
-
     __gsignals__: GSignals = {
         # tree-view-changed(old_tree_view, new_tree_view)
         # Triggers when the columns gets added/removed from a tree view.
         # The passed values are either a TreeView or None
-        "tree-view-changed": (
-            GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "tree-view-changed": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
     }
 
     def __init__(self, **kwargs):
@@ -1280,7 +1294,7 @@ class TreeViewColumn(Gtk.TreeViewColumn):
 
 class TreeViewColumnButton(TreeViewColumn):
     """A TreeViewColumn that forwards its header events:
-        button-press-event and popup-menu"""
+    button-press-event and popup-menu"""
 
     __gsignals__: GSignals = {
         "button-press-event": (GObject.SignalFlags.RUN_LAST, bool, (object,)),
@@ -1309,11 +1323,12 @@ class TreeViewColumnButton(TreeViewColumn):
 
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
+
     pass
 
 
-class AllTreeView(HintedTreeView, RCMTreeView, DragIconTreeView,
-                  MultiDragTreeView):
+class AllTreeView(HintedTreeView, RCMTreeView, DragIconTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""
+
     pass

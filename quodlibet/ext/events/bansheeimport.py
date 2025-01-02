@@ -23,9 +23,7 @@ from quodlibet.plugins.events import EventPlugin
 
 
 class BansheeDBImporter:
-
     def __init__(self, library):
-
         self._library = library
         self._changed_songs = []
 
@@ -114,12 +112,15 @@ def do_import(parent, library):
         ErrorMessage(parent, BansheeImport.PLUGIN_NAME, msg).run()
     else:
         count = importer.finish()
-        msg = ngettext(
-            "Successfully imported ratings and statistics for %d song",
-            "Successfully imported ratings and statistics for %d songs",
-            count) % count
-        Message(Gtk.MessageType.INFO, parent, BansheeImport.PLUGIN_NAME,
-                msg).run()
+        msg = (
+            ngettext(
+                "Successfully imported ratings and statistics for %d song",
+                "Successfully imported ratings and statistics for %d songs",
+                count,
+            )
+            % count
+        )
+        Message(Gtk.MessageType.INFO, parent, BansheeImport.PLUGIN_NAME, msg).run()
 
 
 class BansheeImport(EventPlugin):
@@ -152,8 +153,9 @@ class BansheeImport(EventPlugin):
         grid.attach_next_to(entry, label, Gtk.PositionType.RIGHT, 1, 1)
 
         path_revert = Gtk.Button()
-        path_revert.add(Gtk.Image.new_from_icon_name(
-                        Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+        path_revert.add(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+        )
 
         def path_revert_cb(button, entry):
             entry.set_text(BansheeImport.DEF_PATH)

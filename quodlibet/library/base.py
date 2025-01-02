@@ -11,20 +11,25 @@
 import os
 import shutil
 from typing import TypeVar, Optional, Generic
-from collections.abc import Collection, Sequence, Iterable, Iterator, MutableMapping, \
-    Generator
+from collections.abc import (
+    Collection,
+    Sequence,
+    Iterable,
+    Iterator,
+    MutableMapping,
+    Generator,
+)
 
 from gi.repository import GObject
 
 import quodlibet
 from quodlibet import util
-from quodlibet.formats import (load_audio_files,
-                               dump_audio_files, SerializationError)
+from quodlibet.formats import load_audio_files, dump_audio_files, SerializationError
 from quodlibet.formats._audio import HasKey
 from quodlibet.util.atomic import atomic_save
 from quodlibet.util.collections import DictMixin
 from quodlibet.util.dprint import print_d, print_w
-from quodlibet.util.path import (mkdir, is_hidden)
+from quodlibet.util.path import mkdir, is_hidden
 from senf import fsnative, path2fsn
 
 K = TypeVar("K", covariant=True)
@@ -105,8 +110,11 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
 
         if not items:
             return
-        print_d(f"Emitting changed for {len(items)} item(s) "
-                f"(e.g. {list(items)[0].key!r}...)", self._name)
+        print_d(
+            f"Emitting changed for {len(items)} item(s) "
+            f"(e.g. {list(items)[0].key!r}...)",
+            self._name,
+        )
         self.dirty = True
         self.emit("changed", items)
 
@@ -140,7 +148,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
 
     def get_content(self) -> Sequence[V]:
         """All items including hidden ones for saving the library
-           (see FileLibrary with masked items)
+        (see FileLibrary with masked items)
         """
         return list(self.values())
 
@@ -173,8 +181,7 @@ class Library(GObject.GObject, DictMixin, Generic[K, V]):
         already in the library.
         """
 
-        items = {item for item in items
-                 if item is not None and item not in self}
+        items = {item for item in items if item is not None and item not in self}
         if not items:
             return items
         if len(items) == 1:
@@ -283,9 +290,9 @@ class PicklingMixin:
             self.dirty = False
 
 
-def iter_paths(root: fsnative,
-               exclude: Iterable[fsnative] | None = None,
-               skip_hidden: bool = True) -> Generator[fsnative, None, None]:
+def iter_paths(
+    root: fsnative, exclude: Iterable[fsnative] | None = None, skip_hidden: bool = True
+) -> Generator[fsnative, None, None]:
     """Yields paths contained in root (symlinks dereferenced)
 
     Any path starting with any of the path parts included in exclude
@@ -318,8 +325,9 @@ def iter_paths(root: fsnative,
 
     for path, dnames, fnames in os.walk(root):
         if skip_hidden:
-            dnames[:] = [d for d in dnames
-                         if not is_hidden(path2fsn(os.path.join(path, d)))]
+            dnames[:] = [
+                d for d in dnames if not is_hidden(path2fsn(os.path.join(path, d)))
+            ]
         for filename in fnames:
             full_filename = path2fsn(os.path.join(path, filename))
             if skip(full_filename):

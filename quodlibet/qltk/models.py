@@ -33,7 +33,6 @@ def _gets_marshaled_to_pyobject(obj, _types=tuple(_auto_types)):
 
 
 class _ModelMixin:
-
     ATOMIC = True
     """Guard against unintentional non-atomic row inserts.
 

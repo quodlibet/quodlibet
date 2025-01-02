@@ -42,8 +42,10 @@ class Pane(AllTreeView):
 
         def on_column_header_clicked(column, event):
             # In case the column header gets clicked select the "All" entry
-            if event.button != Gdk.BUTTON_PRIMARY or \
-                    event.type != Gdk.EventType.BUTTON_PRESS:
+            if (
+                event.button != Gdk.BUTTON_PRIMARY
+                or event.type != Gdk.EventType.BUTTON_PRESS
+            ):
                 return Gdk.EVENT_PROPAGATE
             self.set_selected([])
             return Gdk.EVENT_STOP
@@ -90,20 +92,19 @@ class Pane(AllTreeView):
 
         selection = self.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__sig = self.connect(
-            "selection-changed", self.__selection_changed)
+        self.__sig = self.connect("selection-changed", self.__selection_changed)
         s = self.connect("popup-menu", self.__popup_menu, library)
         connect_obj(self, "destroy", self.disconnect, s)
 
         targets = [
-            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
-             self.TARGET_INFO_QL),
-            ("text/uri-list", 0, self.TARGET_INFO_URI_LIST)
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_INFO_QL),
+            ("text/uri-list", 0, self.TARGET_INFO_URI_LIST),
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
-        self.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets,
-                             Gdk.DragAction.COPY)
+        self.drag_source_set(
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        )
         self.connect("drag-data-get", self.__drag_data_get)
         self.connect("destroy", self.__destroy)
 

@@ -31,8 +31,8 @@ def _windows_rename(source, dest):
 
     # not atomic, but better than removing the original first...
     status = winapi.MoveFileExW(
-        source, dest,
-        winapi.MOVEFILE_WRITE_THROUGH | winapi.MOVEFILE_REPLACE_EXISTING)
+        source, dest, winapi.MOVEFILE_WRITE_THROUGH | winapi.MOVEFILE_REPLACE_EXISTING
+    )
 
     if status == 0:
         raise winapi.WinError()
@@ -61,9 +61,12 @@ def atomic_save(filename, mode):
     dir_ = os.path.dirname(filename)
     basename = os.path.basename(filename)
     fileobj = NamedTemporaryFile(
-        mode=mode, dir=dir_,
-        prefix=basename + fsnative("_"), suffix=fsnative(".tmp"),
-        delete=False)
+        mode=mode,
+        dir=dir_,
+        prefix=basename + fsnative("_"),
+        suffix=fsnative(".tmp"),
+        delete=False,
+    )
 
     try:
         yield fileobj

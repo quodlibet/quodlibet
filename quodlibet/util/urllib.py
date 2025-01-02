@@ -38,13 +38,12 @@ def install_urllib2_ca_file():
     base = request_module.HTTPSHandler
 
     class MyHandler(base):
-
         def __init__(self, debuglevel=0, context=None):
             ca_file = get_ca_file()
             if context is None and ca_file is not None:
                 context = ssl.create_default_context(
-                    purpose=ssl.Purpose.SERVER_AUTH,
-                    cafile=ca_file)
+                    purpose=ssl.Purpose.SERVER_AUTH, cafile=ca_file
+                )
             base.__init__(self, debuglevel, context)
 
     request_module.HTTPSHandler = MyHandler

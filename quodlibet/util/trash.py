@@ -125,7 +125,7 @@ def trash_free_desktop(path):
 
     parent = dirname(trash_dir)
     if path.startswith(join(parent, "")):
-        norm_path = path[len(join(parent, "")):]
+        norm_path = path[len(join(parent, "")) :]
     else:
         norm_path = path
 
@@ -151,8 +151,10 @@ def use_trash():
         return False
 
     return (
-        os.name == "posix" and sys.platform != "darwin" and
-        not config.getboolean("settings", "bypass_trash"))
+        os.name == "posix"
+        and sys.platform != "darwin"
+        and not config.getboolean("settings", "bypass_trash")
+    )
 
 
 def trash(path):

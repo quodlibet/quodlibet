@@ -17,7 +17,6 @@ SONG.sanitize()
 
 
 class TDeleteDialog(TestCase):
-
     def setUp(self):
         config.init()
 

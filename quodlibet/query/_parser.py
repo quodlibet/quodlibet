@@ -70,14 +70,12 @@ class QueryParser:
     def expect(self, token):
         """Raise an error if the next token doesn't match the provided token"""
         if not self.accept(token):
-            raise ParseError(f"'{token}' expected at index {self.index}, but not found"
-                             )
+            raise ParseError(f"'{token}' expected at index {self.index}, but not found")
 
     def expect_re(self, regexp):
         """Same as expect, but with a regexp instead of a single token"""
         if self.accept_re(regexp) is None:
-            raise ParseError(f"RE match expected at index {self.index}, but not found"
-                             )
+            raise ParseError(f"RE match expected at index {self.index}, but not found")
         return self.last_match
 
     def eof(self):
@@ -229,9 +227,10 @@ class QueryParser:
                 index += 1
         except IndexError as e:
             if depth != 0:
-                raise ParseError("Unexpected end of string while parsing "
-                                 "extension body") from e
-        result = self.tokens[self.index:index]
+                raise ParseError(
+                    "Unexpected end of string while parsing " "extension body"
+                ) from e
+        result = self.tokens[self.index : index]
         self.index = index
         return result
 

@@ -45,6 +45,7 @@ class VgmFile(AudioFile):
 
                 def samples_to_sec(s):
                     return s / 44100.0
+
                 samples = struct.unpack("<i", header[24:28])[0]
                 loop_offset = struct.unpack("<i", header[28:32])[0]
                 loop_samples = struct.unpack("<i", header[32:36])[0]
@@ -59,15 +60,13 @@ class VgmFile(AudioFile):
 
                 self["~#length"] = length
 
-                gd3_position = struct.unpack("<i",
-                                             header[GD3_TAG_PTR_POS:
-                                                    GD3_TAG_PTR_POS
-                                                    + GD3_TAG_PTR_SIZE])[0]
+                gd3_position = struct.unpack(
+                    "<i", header[GD3_TAG_PTR_POS : GD3_TAG_PTR_POS + GD3_TAG_PTR_SIZE]
+                )[0]
                 h.seek(GD3_TAG_PTR_POS + gd3_position)
                 self.update(parse_gd3(h.read()))
 
-        self.setdefault(
-            "title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
+        self.setdefault("title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
         self.sanitize(filename)
 
     def write(self):
@@ -94,29 +93,33 @@ def parse_gd3(data):
     # Length of gd3 footer. This means we can actually add more tags to the end
     # with APETAG at some point. (Or at least consider...)
 
-    entries = data[12:12 + gd3_length].decode("utf-16-le").split("\0")
+    entries = data[12 : 12 + gd3_length].decode("utf-16-le").split("\0")
 
     if len(entries) > GD3_JAPANESE_TITLE:
-        titles = gd3_filter_entries([entries[GD3_ENGLISH_TITLE],
-                                     entries[GD3_JAPANESE_TITLE]])
+        titles = gd3_filter_entries(
+            [entries[GD3_ENGLISH_TITLE], entries[GD3_JAPANESE_TITLE]]
+        )
         if len(titles) > 0:
             tags["title"] = "\n".join(titles)
 
     if len(entries) > GD3_JAPANESE_ARTIST:
-        artists = gd3_filter_entries([entries[GD3_ENGLISH_ARTIST],
-                                      entries[GD3_JAPANESE_ARTIST]])
+        artists = gd3_filter_entries(
+            [entries[GD3_ENGLISH_ARTIST], entries[GD3_JAPANESE_ARTIST]]
+        )
         if len(artists) > 0:
             tags["artist"] = "\n".join(artists)
 
     if len(entries) > GD3_JAPANESE_SYSTEM:
-        consoles = gd3_filter_entries([entries[GD3_ENGLISH_SYSTEM],
-                                       entries[GD3_JAPANESE_SYSTEM]])
+        consoles = gd3_filter_entries(
+            [entries[GD3_ENGLISH_SYSTEM], entries[GD3_JAPANESE_SYSTEM]]
+        )
         if len(consoles) > 0:
             tags["console"] = "\n".join(consoles)
 
     if len(entries) > GD3_JAPANESE_GAME:
-        games = gd3_filter_entries([entries[GD3_ENGLISH_GAME],
-                                    entries[GD3_JAPANESE_GAME]])
+        games = gd3_filter_entries(
+            [entries[GD3_ENGLISH_GAME], entries[GD3_JAPANESE_GAME]]
+        )
         if len(games) > 0:
             tags["album"] = "\n".join(games)
 

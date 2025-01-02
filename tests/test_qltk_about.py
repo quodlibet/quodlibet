@@ -9,7 +9,6 @@ from tests import TestCase, init_fake_app, destroy_fake_app
 
 
 class TAboutDialog(TestCase):
-
     def setUp(self):
         init_fake_app()
 

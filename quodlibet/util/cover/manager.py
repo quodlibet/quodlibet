@@ -51,16 +51,13 @@ class CoverPluginHandler(PluginHandler):
 
 
 class CoverManager(GObject.Object):
-
     __gsignals__ = {
         # ([AudioFile]), emitted if the cover for any songs might have changed
         "cover-changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
-
         # Covers were found for the songs
         "covers-found": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
-
         # All searches were submitted, and success by provider is sent
-        "searches-complete": (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "searches-complete": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
     plugin_handler = None
@@ -133,6 +130,7 @@ class CoverManager(GObject.Object):
                 provider.connect("fetch-success", success)
                 provider.connect("fetch-failure", failure)
                 provider.fetch_cover()
+
         if not cancellable or not cancellable.is_cancelled():
             run()
 
@@ -215,8 +213,9 @@ class CoverManager(GObject.Object):
         if fileobj is None:
             return
 
-        call_async(get_thumbnail_from_file, cancel, callback,
-                   args=(fileobj, (width, height)))
+        call_async(
+            get_thumbnail_from_file, cancel, callback, args=(fileobj, (width, height))
+        )
 
     def search_cover(self, cancellable, songs):
         """Search for all the covers applicable to `songs` across all providers
@@ -226,8 +225,9 @@ class CoverManager(GObject.Object):
         sources = [source for source in self.sources if not source.embedded]
         processed = {}
         all_groups = {}
-        task = Task(_("Cover Art"), _("Querying album art providers"),
-                    stop=cancellable.cancel)
+        task = Task(
+            _("Cover Art"), _("Querying album art providers"), stop=cancellable.cancel
+        )
 
         def finished(provider, success):
             processed[provider] = success
@@ -248,9 +248,14 @@ class CoverManager(GObject.Object):
                 return
             finished(provider, True)
             if not (cancellable and cancellable.is_cancelled()):
-                covers = {CoverData(url=res["cover"], source=name,
-                                    dimensions=res.get("dimensions", None))
-                          for res in results}
+                covers = {
+                    CoverData(
+                        url=res["cover"],
+                        source=name,
+                        dimensions=res.get("dimensions", None),
+                    )
+                    for res in results
+                }
                 self.emit("covers-found", provider, covers)
             provider.disconnect_by_func(search_complete)
 
@@ -278,9 +283,11 @@ class CoverManager(GObject.Object):
                 song = sorted(group, key=lambda s: s.key)[0]
                 artists = {s.comma("artist") for s in group}
                 if len(artists) > 1:
-                    print_d(f"{len(artists)} artist groups in {key} "
-                            "- probably a compilation. "
-                            "Using provider to search for compilation")
+                    print_d(
+                        f"{len(artists)} artist groups in {key} "
+                        "- probably a compilation. "
+                        "Using provider to search for compilation"
+                    )
                     song = AudioFile(song)
                     try:
                         del song["artist"]
@@ -299,6 +306,7 @@ class CoverManager(GObject.Object):
 
 class CoverData(GObject.GObject):
     """Structured data for results from cover searching"""
+
     def __init__(self, url, source=None, dimensions=None):
         super().__init__()
         self.url = url

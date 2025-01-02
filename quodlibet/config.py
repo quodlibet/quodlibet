@@ -24,9 +24,7 @@ AUTO_ENABLED_PLUGINS = ["Shuffle Playlist", "Remove Playlist Duplicates"]
 # this defines the initial and default values
 INITIAL: dict[str, dict[str, str]] = {
     # User-defined tag name -> human name mappings
-    "header_maps": {
-    },
-
+    "header_maps": {},
     "player": {
         "time_remaining": "false",
         "replaygain": "on",
@@ -34,22 +32,16 @@ INITIAL: dict[str, dict[str, str]] = {
         "pre_amp_gain": "0.0",
         "backend": "gstbe",
         "gst_pipeline": "",
-
         # stream buffer duration in seconds
         "gst_buffer": "3",
-
         "gst_device": "",
         "gst_disable_gapless": "false",
-
         # Use Jack sink (via Gstreamer) if available
         "gst_use_jack": "false",
-
         # Usually true is good here, but if you have patchbay configured maybe not...
         "gst_jack_auto_connect": "true",
-
         "is_playing": "false",
         "restore_playing": "false",
-
         # Consider a track as played after listening to
         # this proportion of its overall length
         "playcount_minimum_length_proportion": "0.5",
@@ -57,219 +49,151 @@ INITIAL: dict[str, dict[str, str]] = {
     "library": {
         "exclude": "",
         "refresh_on_start": "true",
-
         # Watch all library files / directories for changes
-        "watch": "false"
+        "watch": "false",
     },
-
     # State about the player, to restore on startup
     "memory": {
-
         # filename of last song
         "song": "",
-
         # last song position, in milliseconds
         "seek": "0",
-
         # internal volume, [0.0, 1.0]
         "volume": "1.0",
-
         # browser name
         "browser": "PanedBrowser",
-
         "queue": "false",
         "queue_expanded": "false",
         "shufflequeue": "false",
         "queue_stop_at_end": "false",
         "queue_keep_songs": "false",
         "queue_disable": "false",
-
         # <reversed?>tagname, song list sort
         "sortby": "0album",
-
         # Repeat on or off
         "repeat": "false",
-
         # The Repeat (Order) to use
         "repeat_mode": "repeat_song",
-
         # Shuffle on or off
         "shuffle": "false",
-
         # The Shuffle (Order) to use
         "shuffle_mode": "random",
-
         # selected plugin in manager
         "plugin_selection": "",
-
         # column widths in c1,w1,c2,w2... format
         "column_widths": "",
-
         "column_expands": "",
     },
-
     "song_list": {
         # Automatically re-sort song list when tags are modified
         "auto_sort": "true",
-
         # Make all browsers sortable even
-        "always_allow_sorting": "true"
+        "always_allow_sorting": "true",
     },
-
     "browsers": {
-
         # search bar text
         "query_text": "",
-
         # number of history entries in the search bar
         "searchbar_historic_entries": "8",
-
         # confirmation limit on enqueuing songs from the search bar
         "searchbar_enqueue_limit": "50",
-
         # panes in paned browser
-        "panes":
-            "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",
-
+        "panes": "~people\t<~year|[b][i]<~year>[/i][/b] - ><album>",
         # selected pane values
         "pane_selection": "",
-
         # equal pane width in paned browser
         "equal_pane_width": "true",
-
         # "global" filter for SearchBar
         "background": "",
-
         # characters ignored in queries
         "ignored_characters": "",
-
         # album list
         "albums": "",
-
         # album sorting mode, default is title
         "album_sort": "0",
-
         # album cover display, on/off
         "album_covers": "1",
-
         # include substrings in inline search
         "album_substrings": "1",
-
         # Collections browser: tag to collect, merge or not (0 = no)
         "collection_headers": "~people 0",
-
         # radio filter selection
         "radio": "",
-
         # click to rate song, on/off
         "rating_click": "true",
-
         # confirm rating multiple songs
         "rating_confirm_multiple": "false",
-
         # max cover height/width, <= 0 is default
         "cover_size": "-1",
-
         # Show the limit widgets for SearchBar
         "search_limit": "false",
-
         # Allow multiple queries in SearchBar
         "multiple_queries": "false",
-
         # show text in covergrid view
         "album_text": "1",
-
         # Cover magnifcation factor in covergrid view
         "covergrid_magnification": "3.0",
-
         # show "all albums" in covergrid view
         "covergrid_all": "1",
-
         # Template to build the track title when title tag is missing
         "missing_title_template": "<~basename> [untitled <~format>]",
     },
-
     # Kind of a dumping ground right now, should probably be
     # cleaned out later.
     "settings": {
-
         # scan directories, :-separated
         "scan": "",
-
         # scroll song list on current song change
         "jump": "true",
-
         # Unrated songs are given this value
         "default_rating": "0.5",
-
         # Rating scale i.e. maximum number of symbols
         "ratings": "4",
-
         # (0 = disabled i.e. arithmetic mean)
         "bayesian_rating_factor": "0.0",
-
         # rating symbol (black star)
         "rating_symbol_full": "\u2605",
-
         # rating symbol (hollow star)
         "rating_symbol_blank": "\u2606",
-
         # Comma-separated columns to display in the song list
         "columns": ",".join(const.DEFAULT_COLUMNS),
-
         # hack to disable hints, see bug #526
         "disable_hints": "false",
-
         # search as soon as text is typed into search box
         "eager_search": "true",
-
         # tags which get searched in addition to the ones present in the
         # song list, separate with ","
         "search_tags": "",
-
         # If set to "true" allow directly deleting files, even on systems that
         # support sending them to the trash.
         "bypass_trash": "false",
-
         # osx implementation might be buggy so let users disable it
         "disable_mmkeys": "false",
-
         # the UI language to use, empty means system default
         "language": "",
-
         # the pattern for the main window title
         "window_title_pattern": "~title~version~~people",
-
         # the format of the timestamps in DateColumn
         "datecolumn_timestamp_format": "",
-
         # scrollbar does not fade out when inactive
-        "scrollbar_always_visible":
-            "true" if (is_osx() or is_windows()) else "false",
-
+        "scrollbar_always_visible": "true" if (is_osx() or is_windows()) else "false",
         # Force fontconfig as PangoCairo backend
         "pangocairo_force_fontconfig": "false",
-
         # Whether the plugin window appears on top of others
         "plugins_window_on_top": "false",
-
         # search bar font style (#3647)
         "monospace_query": "false",
-
         # size to apply to query box, in any Pango CSS units (e.g. '100%', '1rem')
         "query_font_size": "100%",
-
         # Amount of colour to apply to validating text entries
         # (0.0 = no colour, 1.0 = full colour)
-        "validator_colorise": "0.4"
+        "validator_colorise": "0.4",
     },
-
     "autosave": {
         # Maximum time, in seconds, before saving the play queue to disk.
         # Zero to disable periodic saving (batched instead)
         "queue_interval": "60"
     },
-
     "rename": {
         "spaces": "false",
         "windows": "true",
@@ -278,61 +202,46 @@ INITIAL: dict[str, dict[str, str]] = {
         "move_art_overwrite": "false",
         "remove_empty_dirs": "false",
     },
-
     "tagsfrompath": {
         "underscores": "false",
         "titlecase": "false",
         "split": "false",
         "add": "false",
     },
-
     "plugins": {
         # newline-separated plugin IDs
         "active_plugins": "\n".join(sorted(AUTO_ENABLED_PLUGINS)),
-
         # Issue 1231: Maximum number of SongsMenu plugins to run at once
         "default_max_plugin_invocations": "30",
     },
-
     "editing": {
         # characters to split tags on
         "split_on": "/ & ,",
-
         # characters used when extracting subtitles/subtags
         "sub_split_on": "\u301c\u301c \uff08\uff09 [] () ~~ --",
-
         # ID3 encodings to try
         "id3encoding": "",
-
         "human_title_case": "true",
         "save_to_songs": "true",
         "save_email": const.EMAIL,
-
         # show all tags, or just "human-readable" ones
         "alltags": "true",
-
         # Show multi-line tags
         "show_multi_line_tags": "true",
         # Which tags can be multi-line (comma-separated)
         "multi_line_tags": "lyrics,comment",
-
         # Skip dialog to save or revert changes
         "auto_save_changes": "false",
-
         # e.g. "title,artist"
         "default_tags": "",
     },
-
     "albumart": {
         "prefer_embedded": "false",
         "force_filename": "false",
         "filename": "folder.jpg",
         "search_filenames": "cover.jpg,folder.jpg,.folder.jpg",
     },
-
-    "display": {
-        "duration_format": "standard"
-    }
+    "display": {"duration_format": "standard"},
 }
 
 # global instance

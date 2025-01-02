@@ -11,7 +11,6 @@ from quodlibet import config
 
 
 class TPreferencesWindow(TestCase):
-
     def setUp(self):
         config.init()
         init_fake_app()

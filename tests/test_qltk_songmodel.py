@@ -11,8 +11,13 @@ from gi.repository import Gtk
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.qltk.songmodel import PlaylistModel, PlaylistMux
-from quodlibet.qltk.playorder import Order, OrderShuffle, OrderInOrder, \
-    RepeatSongForever, RepeatListForever
+from quodlibet.qltk.playorder import (
+    Order,
+    OrderShuffle,
+    OrderInOrder,
+    RepeatSongForever,
+    RepeatListForever,
+)
 import quodlibet.config
 
 
@@ -120,8 +125,7 @@ class TPlaylistModel(TestCase):
     def test_shuffle(self):
         self.pl.order = OrderShuffle()
         for _i in range(5):
-            history = [self.pl.current for _ in range(10)
-                       if self.pl.next() or True]
+            history = [self.pl.current for _ in range(10) if self.pl.next() or True]
             self.assertNotEqual(history, list(range(10)))
             self.assertEqual(sorted(history), list(range(10)))
             self.pl.next()
@@ -138,8 +142,9 @@ class TPlaylistModel(TestCase):
             rand.shuffle(order)
             self.pl.reorder(order)
             assert values != list(self.pl.itervalues())
-            assert self.pl.current == history[i], (
-                f"expected different item at index {i}")
+            assert (
+                self.pl.current == history[i]
+            ), f"expected different item at index {i}"
             self.pl.previous()
 
     def test_shuffle_next_after_remove(self):
@@ -163,8 +168,7 @@ class TPlaylistModel(TestCase):
 
     def test_shuffle_repeat(self):
         self.pl.order = RepeatListForever(OrderShuffle())
-        numbers = [self.pl.current for _ in range(30)
-                   if self.pl.next_ended() or True]
+        numbers = [self.pl.current for _ in range(30) if self.pl.next_ended() or True]
         allnums = sorted(list(range(10)) * 3)
         self.assertNotEqual(numbers, allnums)
         numbers.sort()
@@ -220,7 +224,6 @@ class TPlaylistModel(TestCase):
             self.assertEqual(self.pl.current, 1)
 
     def test_go_to(self):
-
         class SetOrder(Order):
             # most orders don't change iter here,
             # so make sure this gets handled right
@@ -343,8 +346,7 @@ class TPlaylistMux(TestCase):
         self.q.set(range(100, 105))
         do_events()
         songs.extend([self.next() for i in range(10)])
-        self.assertEqual(
-            songs, [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 5, 6, 7, 8, 9])
+        self.assertEqual(songs, [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 5, 6, 7, 8, 9])
         self.next()
         assert self.mux.current is None
 
@@ -412,8 +414,7 @@ class TPlaylistMux(TestCase):
             self.q.set([10, 11])
             do_events()
             value = self.next()
-            self.assertTrue(
-                value in [10, 11], "got %r, expected 10 or 11" % value)
+            self.assertTrue(value in [10, 11], "got %r, expected 10 or 11" % value)
             if value == 10:
                 next = 11
             else:

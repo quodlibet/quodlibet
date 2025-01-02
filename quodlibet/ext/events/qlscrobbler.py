@@ -37,7 +37,7 @@ from quodlibet.errorreport import errorhook
 
 SERVICES = {
     "Last.fm": "https://post.audioscrobbler.com/",
-    "Libre.fm": "https://turtle.libre.fm/"
+    "Libre.fm": "https://turtle.libre.fm/",
 }
 
 DEFAULT_SERVICE = "Last.fm"
@@ -179,9 +179,14 @@ class QLSubmitQueue:
         url = config_get_url()
         if not user or not passw or not url:
             if self.queue and not self.broken:
-                self.quick_dialog(_("Please visit the Plugins window to set "
-                                    "QLScrobbler up. Until then, songs will not be "
-                                    "submitted."), Gtk.MessageType.INFO)
+                self.quick_dialog(
+                    _(
+                        "Please visit the Plugins window to set "
+                        "QLScrobbler up. Until then, songs will not be "
+                        "submitted."
+                    ),
+                    Gtk.MessageType.INFO,
+                )
                 self.broken = True
         elif (self.username, self.password, self.base_url) != (user, passw, url):
             self.username, self.password, self.base_url = (user, passw, url)
@@ -222,8 +227,9 @@ class QLSubmitQueue:
                 else:
                     self.handshake_event.clear()
                     self.handshake_delay = min(self.handshake_delay * 2, 120)
-                    GLib.timeout_add(self.handshake_delay * 60 * 1000,
-                                     self.handshake_event.set)
+                    GLib.timeout_add(
+                        self.handshake_delay * 60 * 1000, self.handshake_event.set
+                    )
                     continue
             self.changed_event.wait()
             if self.queue:
@@ -243,10 +249,18 @@ class QLSubmitQueue:
     def send_handshake(self, show_dialog=False):
         # construct url
         stamp = int(time.time())
-        auth = md5(self.password.encode("utf-8") +
-                   str(stamp).encode("utf-8")).hexdigest()
-        qp = {"hs": "true", "p": self.PROTOCOL_VERSION, "c": self.CLIENT,
-              "v": self.CLIENT_VERSION, "u": self.username, "a": auth, "t": int(stamp)}
+        auth = md5(
+            self.password.encode("utf-8") + str(stamp).encode("utf-8")
+        ).hexdigest()
+        qp = {
+            "hs": "true",
+            "p": self.PROTOCOL_VERSION,
+            "c": self.CLIENT,
+            "v": self.CLIENT_VERSION,
+            "u": self.username,
+            "a": auth,
+            "t": int(stamp),
+        }
         qs = urlencode(qp)
         url = f"{self.base_url}/?{qs}"
         print_d(f"Sending handshake to service at {self.base_url}.")
@@ -256,14 +270,16 @@ class QLSubmitQueue:
         except UrllibError:
             if show_dialog:
                 self.quick_dialog(
-                    _("Could not contact service '%s'.") %
-                    util.escape(self.base_url), Gtk.MessageType.ERROR)
+                    _("Could not contact service '%s'.") % util.escape(self.base_url),
+                    Gtk.MessageType.ERROR,
+                )
             else:
                 print_d("Could not contact service. Queueing submissions.")
             return False
         except ValueError:
-            self.quick_dialog(_("Authentication failed: invalid URL."),
-                              Gtk.MessageType.ERROR)
+            self.quick_dialog(
+                _("Authentication failed: invalid URL."), Gtk.MessageType.ERROR
+            )
             self.broken = True
             return False
 
@@ -274,23 +290,30 @@ class QLSubmitQueue:
         if status == "OK":
             self.session_id, self.nowplaying_url, self.submit_url = lines
             self.handshake_sent = True
-            print_d(f"Session ID: {self.session_id}, "
-                    f"NP URL: {self.nowplaying_url}, "
-                    f"Submit URL: {self.submit_url}")
+            print_d(
+                f"Session ID: {self.session_id}, "
+                f"NP URL: {self.nowplaying_url}, "
+                f"Submit URL: {self.submit_url}"
+            )
             return True
         print_w(f"Bad handshake status: {status}")
         if status == "BADAUTH":
-            self.quick_dialog(_("Authentication failed: Invalid username '%s' "
-                                "or bad password.") % util.escape(self.username),
-                              Gtk.MessageType.ERROR)
+            self.quick_dialog(
+                _("Authentication failed: Invalid username '%s' " "or bad password.")
+                % util.escape(self.username),
+                Gtk.MessageType.ERROR,
+            )
             self.broken = True
         elif status == "BANNED":
-            self.quick_dialog(_("Client is banned. Contact the author."),
-                              Gtk.MessageType.ERROR)
+            self.quick_dialog(
+                _("Client is banned. Contact the author."), Gtk.MessageType.ERROR
+            )
             self.broken = True
         elif status == "BADTIME":
-            self.quick_dialog(_("Wrong system time. Submissions may fail "
-                                "until it is corrected."), Gtk.MessageType.ERROR)
+            self.quick_dialog(
+                _("Wrong system time. Submissions may fail " "until it is corrected."),
+                Gtk.MessageType.ERROR,
+            )
         else:  # "FAILED"
             self.quick_dialog(util.escape(status), Gtk.MessageType.ERROR)
         self.changed()
@@ -317,7 +340,7 @@ class QLSubmitQueue:
 
     def send_submission(self):
         data = {"s": self.session_id}
-        to_submit = self.queue[:min(len(self.queue), 50)]
+        to_submit = self.queue[: min(len(self.queue), 50)]
         for idx, song in enumerate(to_submit):
             for key, val in song.items():
                 data["%s[%d]" % (key, idx)] = val.encode("utf-8")
@@ -328,7 +351,7 @@ class QLSubmitQueue:
         print_d(f"Submitting song(s): {song_info}")
 
         if self._check_submit(self.submit_url, data):
-            del self.queue[:len(to_submit)]
+            del self.queue[: len(to_submit)]
             return True
         else:
             return False
@@ -337,8 +360,10 @@ class QLSubmitQueue:
         data = {"s": self.session_id}
         for key, val in self.nowplaying_song.items():
             data[key] = val.encode("utf-8")
-        print_d("Now playing song: "
-                f"{self.nowplaying_song['a']} - {self.nowplaying_song['t']}")
+        print_d(
+            "Now playing song: "
+            f"{self.nowplaying_song['a']} - {self.nowplaying_song['t']}"
+        )
 
         return self._check_submit(self.nowplaying_url, data)
 
@@ -354,8 +379,10 @@ class QLSubmitQueue:
 class QLScrobbler(EventPlugin):
     PLUGIN_ID = "QLScrobbler"
     PLUGIN_NAME = _("AudioScrobbler Submission")
-    PLUGIN_DESC = _("Audioscrobbler client for Last.fm, Libre.fm and other "
-                    "Audioscrobbler services.")
+    PLUGIN_DESC = _(
+        "Audioscrobbler client for Last.fm, Libre.fm and other "
+        "Audioscrobbler services."
+    )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     AUTOSAVE_INTERVAL = 30
@@ -395,7 +422,7 @@ class QLScrobbler(EventPlugin):
         # we check 'elapsed' rather than 'length' to work around wrong ~#length
         if self.elapsed < 30:
             return
-        if self.elapsed < 240 and self.elapsed <= .5 * song.get("~#length", 0):
+        if self.elapsed < 240 and self.elapsed <= 0.5 * song.get("~#length", 0):
             return
         print_d("Checking against filter %s" % self.exclude)
         if self.exclude and Query(self.exclude).search(song):
@@ -444,7 +471,8 @@ class QLScrobbler(EventPlugin):
         if not self._tid:
             print_d("Starting scrobble autosaver")
             self._tid = GLib.timeout_add_seconds(
-                self.AUTOSAVE_INTERVAL, lambda: QLSubmitQueue.dump_queue() or True)
+                self.AUTOSAVE_INTERVAL, lambda: QLSubmitQueue.dump_queue() or True
+            )
 
     def disabled(self):
         self.__enabled = False
@@ -471,8 +499,9 @@ class QLScrobbler(EventPlugin):
             queue.changed()
             status = queue.send_handshake(show_dialog=True)
             if status:
-                queue.quick_dialog(_("Authentication successful."),
-                                   Gtk.MessageType.INFO)
+                queue.quick_dialog(
+                    _("Authentication successful."), Gtk.MessageType.INFO
+                )
 
         box = Gtk.VBox(spacing=12)
 
@@ -488,9 +517,14 @@ class QLScrobbler(EventPlugin):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                                  Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             labels.append(label)
 
         row = 0
@@ -537,8 +571,7 @@ class QLScrobbler(EventPlugin):
         row += 1
 
         # verify data
-        button = qltk.Button(_("_Verify account data"),
-                             Icons.DIALOG_INFORMATION)
+        button = qltk.Button(_("_Verify account data"), Icons.DIALOG_INFORMATION)
         button.connect("clicked", check_login)
         table.attach(button, 0, 2, 4, 5)
 
@@ -550,17 +583,25 @@ class QLScrobbler(EventPlugin):
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
-        label_names = [_("_Artist pattern:"), _("_Title pattern:"),
-                       _("Exclude _filter:")]
+        label_names = [
+            _("_Artist pattern:"),
+            _("_Title pattern:"),
+            _("Exclude _filter:"),
+        ]
 
         labels = []
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                                  Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             labels.append(label)
 
         row = 0
@@ -569,9 +610,13 @@ class QLScrobbler(EventPlugin):
         entry.set_text(plugin_config.get("artistpat"))
         entry.connect("changed", changed, "artistpat")
         table.attach(entry, 1, 2, row, row + 1)
-        entry.set_tooltip_text(_("The pattern used to format "
-                                 "the artist name for submission. Leave blank for "
-                                 "default."))
+        entry.set_tooltip_text(
+            _(
+                "The pattern used to format "
+                "the artist name for submission. Leave blank for "
+                "default."
+            )
+        )
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
@@ -580,16 +625,19 @@ class QLScrobbler(EventPlugin):
         entry.set_text(plugin_config.get("titlepat"))
         entry.connect("changed", changed, "titlepat")
         table.attach(entry, 1, 2, row, row + 1)
-        entry.set_tooltip_text(_("The pattern used to format "
-                                 "the title for submission. Leave blank for default."))
+        entry.set_tooltip_text(
+            _(
+                "The pattern used to format "
+                "the title for submission. Leave blank for default."
+            )
+        )
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
         # exclude filter
         entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get("exclude"))
-        entry.set_tooltip_text(
-            _("Songs matching this filter will not be submitted"))
+        entry.set_tooltip_text(_("Songs matching this filter will not be submitted"))
         entry.connect("changed", changed, "exclude")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
@@ -597,8 +645,8 @@ class QLScrobbler(EventPlugin):
 
         # offline mode
         offline = plugin_config.ConfigCheckButton(
-            _("_Offline mode (don't submit anything)"),
-            "offline", populate=True)
+            _("_Offline mode (don't submit anything)"), "offline", populate=True
+        )
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)

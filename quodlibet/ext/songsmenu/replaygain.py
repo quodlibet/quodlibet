@@ -36,6 +36,7 @@ def get_num_threads():
     # or multiprocessing isn't available
     try:
         import multiprocessing
+
         threads = multiprocessing.cpu_count()
     except (ImportError, NotImplementedError):
         threads = 2
@@ -44,6 +45,7 @@ def get_num_threads():
 
 class UpdateMode:
     """Enum-like class for update strategies"""
+
     ALWAYS = "always"
     ALBUM_MISSING = "album_tags_missing"
     ANY_MISSING = "any_tags_missing"
@@ -209,8 +211,10 @@ class RGSong:
         return self.has_track_tags and self.has_album_tags
 
     def __str__(self):
-        vals = {k: self._get_rg_tag(k)
-                for k in "track_gain album_gain album_peak track_peak".split()}
+        vals = {
+            k: self._get_rg_tag(k)
+            for k in "track_gain album_gain album_peak track_peak".split()
+        }
         return f"<Song={self.song} RG data={vals}>"
 
 
@@ -219,8 +223,14 @@ class ReplayGainPipeline(GObject.Object):
         # done(self, album)
         "done": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         # update(self, album, song)
-        "update": (GObject.SignalFlags.RUN_LAST, None,
-                   (object, object,)),
+        "update": (
+            GObject.SignalFlags.RUN_LAST,
+            None,
+            (
+                object,
+                object,
+            ),
+        ),
     }
 
     def __init__(self):
@@ -345,14 +355,11 @@ class ReplayGainPipeline(GObject.Object):
 
 
 class RGDialog(Dialog):
-
     def __init__(self, albums, parent, process_mode):
-        super().__init__(
-            title=_("ReplayGain Analyzer"), parent=parent)
+        super().__init__(title=_("ReplayGain Analyzer"), parent=parent)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             Gtk.ResponseType.OK)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.OK)
 
         self.process_mode = process_mode
         self.set_default_size(600, 400)
@@ -452,11 +459,15 @@ class RGDialog(Dialog):
         template = ngettext(
             "There is %(to-process)s album to update (of %(all)s)",
             "There are %(to-process)s albums to update (of %(all)s)",
-            num_to_process)
-        info.set_markup(template % {
-            "to-process": util.bold(format_int_locale(num_to_process)),
-            "all": util.bold(format_int_locale(len(self._todo))),
-        })
+            num_to_process,
+        )
+        info.set_markup(
+            template
+            % {
+                "to-process": util.bold(format_int_locale(num_to_process)),
+                "all": util.bold(format_int_locale(len(self._todo))),
+            }
+        )
         self.connect("destroy", self.__destroy)
         self.connect("response", self.__response)
 
@@ -567,10 +578,10 @@ class RGDialog(Dialog):
 class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
     PLUGIN_ID = "ReplayGain"
     PLUGIN_NAME = _("Replay Gain")
-    PLUGIN_DESC_MARKUP = (
-        _('Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, '
-          'using GStreamer. Results are grouped by album.')
-        % {"rg_link": _("https://en.wikipedia.org/wiki/ReplayGain")})
+    PLUGIN_DESC_MARKUP = _(
+        'Analyzes and updates <a href="%(rg_link)s">ReplayGain</a> information, '
+        "using GStreamer. Results are grouped by album."
+    ) % {"rg_link": _("https://en.wikipedia.org/wiki/ReplayGain")}
     PLUGIN_ICON = Icons.MULTIMEDIA_VOLUME_CONTROL
     CONFIG_SECTION = "replaygain"
 
@@ -608,10 +619,12 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
         def create_model():
             model = Gtk.ListStore(str, str)
             model.append([util.bold(_("always")), UpdateMode.ALWAYS])
-            model.append([_("if <b>any</b> RG tags are missing"),
-                          UpdateMode.ANY_MISSING])
-            model.append([_("if <b>album</b> RG tags are missing"),
-                          UpdateMode.ALBUM_MISSING])
+            model.append(
+                [_("if <b>any</b> RG tags are missing"), UpdateMode.ANY_MISSING]
+            )
+            model.append(
+                [_("if <b>album</b> RG tags are missing"), UpdateMode.ALBUM_MISSING]
+            )
             return model
 
         def set_active(value):
@@ -629,13 +642,12 @@ class ReplayGain(SongsMenuPlugin, PluginConfigMixin):
 
         rows.append((_("_Process albums:"), combo))
 
-        for (row, (label_text, entry)) in enumerate(rows):
+        for row, (label_text, entry) in enumerate(rows):
             label = Gtk.Label(label=label_text)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
             label.set_mnemonic_widget(entry)
-            table.attach(label, 0, 1, row, row + 1,
-                         xoptions=Gtk.AttachOptions.FILL)
+            table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
         # Server settings Frame

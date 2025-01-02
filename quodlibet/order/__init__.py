@@ -48,7 +48,7 @@ class Order:
 
     def next(self, playlist, iter):
         """Not called directly, but the default implementation of
-        `next_explicit` and `next_implicit` both just call this. """
+        `next_explicit` and `next_implicit` both just call this."""
         raise NotImplementedError
 
     def previous(self, playlist, iter):
@@ -59,12 +59,12 @@ class Order:
 
     def set(self, playlist, iter):
         """Not called directly, but the default implementations of
-        `set_explicit` and `set_implicit` call this. """
+        `set_explicit` and `set_implicit` call this."""
         return iter
 
     def next_explicit(self, playlist, iter):
         """Not called directly, but the default implementations of
-       `set_explicit` and `set_implicit` call this."""
+        `set_explicit` and `set_implicit` call this."""
         return self.next(playlist, iter)
 
     def next_implicit(self, playlist, iter):
@@ -126,7 +126,7 @@ class OrderRemembered(Order):
         return iter
 
     def reset(self, playlist):
-        del(self._played[:])
+        del self._played[:]
 
     def remaining(self, playlist) -> dict[int, Any]:
         """Gets a map of all song indices to their song from the `playlist`
@@ -138,14 +138,13 @@ class OrderRemembered(Order):
 
         played = set(map(get_index, self._played))
         print_d("Played %d of %d song(s)" % (len(self._played), len(playlist)))
-        remaining = (
-            (get_index(iter), value) for iter, value in playlist.iterrows())
-        return {
-            index: song for (index, song) in remaining if index not in played}
+        remaining = ((get_index(iter), value) for iter, value in playlist.iterrows())
+        return {index: song for (index, song) in remaining if index not in played}
 
 
 class OrderInOrder(Order):
     """Keep to the order of the supplied playlist"""
+
     name: str | None = "in_order"
     display_name = _("In Order")
     accelerated_name = _("_In Order")

@@ -20,6 +20,7 @@ class SqueezeboxError(Exception):
 
 class SqueezeboxServerSettings(dict):
     """Encapsulates Server settings"""
+
     def __str__(self):
         try:
             return _("Squeezebox server at {hostname}:{port}").format(**self)
@@ -29,6 +30,7 @@ class SqueezeboxServerSettings(dict):
 
 class SqueezeboxPlayerSettings(dict):
     """Encapsulates player settings"""
+
     def __str__(self):
         try:
             return "{name} [{playerid}]".format(**self)
@@ -48,11 +50,19 @@ class SqueezeboxServer:
     config = SqueezeboxServerSettings()
     _debug = False
 
-    def __init__(self, hostname="localhost", port=9090, user="", password="",
-                 library_dir="", current_player=0, debug=False):
+    def __init__(
+        self,
+        hostname="localhost",
+        port=9090,
+        user="",
+        password="",
+        library_dir="",
+        current_player=0,
+        debug=False,
+    ):
         self._debug = debug
         self.failures = 0
-        self.delta = 600    # Default in ms
+        self.delta = 600  # Default in ms
         self.config = SqueezeboxServerSettings(locals())
         if hostname:
             del self.config["self"]
@@ -70,8 +80,8 @@ class SqueezeboxServer:
                 result = self.__request(f"login {user} {password}")
                 if result != (6 * "*"):
                     raise SqueezeboxError(
-                        "Couldn't log in to squeezebox: response was '%s'"
-                        % result)
+                        "Couldn't log in to squeezebox: response was '%s'" % result
+                    )
                 self.is_connected = True
                 self.failures = 0
                 print_d("Connected to Squeezebox Server! %s" % self)
@@ -102,7 +112,7 @@ class SqueezeboxServer:
             while not raw_response.endswith(b"\n"):
                 raw_response += self.socket.recv(1)
             raw_response = raw_response.decode("utf-8")
-        except (OSError, socket.timeout) as e:
+        except (TimeoutError, OSError) as e:
             print_w("Couldn't communicate with squeezebox (%s)" % e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
@@ -112,11 +122,14 @@ class SqueezeboxServer:
         response = (raw_response if raw else unquote(raw_response)).strip()
         if self._debug:
             print_(f'<<<< "{response}"')
-        return (response[len(line) - 1:] if line.endswith("?")
-                else response[len(line) + 1:])
+        return (
+            response[len(line) - 1 :]
+            if line.endswith("?")
+            else response[len(line) + 1 :]
+        )
 
     def get_players(self):
-        """ Returns (and caches) a list of the Squeezebox players available"""
+        """Returns (and caches) a list of the Squeezebox players available"""
         if self.players:
             return self.players
         pairs = self.__request("players 0 99", True).split(" ")
@@ -124,7 +137,7 @@ class SqueezeboxServer:
         def demunge(string):
             s = unquote(string)
             cpos = s.index(":")
-            return s[0:cpos], s[cpos + 1:]
+            return s[0:cpos], s[cpos + 1 :]
 
         # Do a meaningful URL-unescaping and tuplification for all values
         pairs = [demunge(p) for p in pairs]
@@ -140,9 +153,8 @@ class SqueezeboxServer:
                 # Don't worry playerindex is always the first entry...
                 self.players[playerindex][pair[0]] = pair[1]
         if self._debug:
-            print_d("Found %d player(s): %s" %
-                    (len(self.players), self.players))
-        assert (count == len(self.players))
+            print_d("Found %d player(s): %s" % (len(self.players), self.players))
+        assert count == len(self.players)
         return self.players
 
     def player_request(self, line, want_reply=True):
@@ -151,7 +163,8 @@ class SqueezeboxServer:
         try:
             return self.__request(
                 f"{self.players[self.current_player]['playerid']} {line}",
-                want_reply=want_reply)
+                want_reply=want_reply,
+            )
         except IndexError:
             return None
 
@@ -184,8 +197,11 @@ class SqueezeboxServer:
         self.player_request("playlist clear", False)
 
     def playlist_resume(self, name, resume, wipe=False):
-        cmd = ("playlist resume %s noplay:%d wipePlaylist:%d"
-               % (quote(name), int(not resume), int(wipe)))
+        cmd = "playlist resume %s noplay:%d wipePlaylist:%d" % (
+            quote(name),
+            int(not resume),
+            int(wipe),
+        )
         self.player_request(cmd, want_reply=False)
 
     def change_song(self, path):
@@ -198,8 +214,10 @@ class SqueezeboxServer:
         if not self.is_connected:
             return
         if self._debug:
-            print_d("Requested %0.2f s, adding drift of %d ms..."
-                    % (ms / 1000.0, self.delta))
+            print_d(
+                "Requested %0.2f s, adding drift of %d ms..."
+                % (ms / 1000.0, self.delta)
+            )
         ms += self.delta
         start = time.time()
         self.player_request("time %d" % round(int(ms) / 1000))
@@ -212,9 +230,11 @@ class SqueezeboxServer:
         new_delta = ql_pos - reported_time
         self.delta = (self.delta + new_delta) / 2
         if self._debug:
-            print_d(f"Player at {reported_time / 1000.0:0.0f} "
-                    f"but QL at {ql_pos / 1000.0:0.2f}."
-                    f"(Took {took:0.0f} ms). Drift was {new_delta:+0.0f} ms")
+            print_d(
+                f"Player at {reported_time / 1000.0:0.0f} "
+                f"but QL at {ql_pos / 1000.0:0.2f}."
+                f"(Took {took:0.0f} ms). Drift was {new_delta:+0.0f} ms"
+            )
 
     def get_milliseconds(self):
         secs = self.player_request("time ?") or 0
@@ -228,7 +248,7 @@ class SqueezeboxServer:
             self.play()
         ms = app.player.get_position()
         self.seek_to(ms)
-        #self.player_request("pause 0")
+        # self.player_request("pause 0")
 
     def stop(self):
         self.player_request("stop")

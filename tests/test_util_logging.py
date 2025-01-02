@@ -11,7 +11,6 @@ from quodlibet.util.logging import Logs
 
 
 class TLogging(TestCase):
-
     def test_logging(self):
         l = Logs()
         self.assertEqual(l.get_content(), [])

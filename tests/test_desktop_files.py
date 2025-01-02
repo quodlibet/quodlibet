@@ -39,7 +39,8 @@ class _TDesktopFileMixin:
         # pass to desktop-file-validate
         try:
             output = subprocess.check_output(
-                ["desktop-file-validate", name], stderr=subprocess.STDOUT)
+                ["desktop-file-validate", name], stderr=subprocess.STDOUT
+            )
         except OSError:
             # desktop-file-validate not available
             return

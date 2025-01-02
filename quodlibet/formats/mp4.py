@@ -40,36 +40,25 @@ class MP4File(AudioFile):
         "soar": "artistsort",
         "sonm": "titlesort",
         "soco": "composersort",
-
         "----:com.apple.iTunes:CONDUCTOR": "conductor",
         "----:com.apple.iTunes:DISCSUBTITLE": "discsubtitle",
         "----:com.apple.iTunes:LANGUAGE": "language",
         "----:com.apple.iTunes:MOOD": "mood",
-
-        "----:com.apple.iTunes:MusicBrainz Artist Id":
-            "musicbrainz_artistid",
+        "----:com.apple.iTunes:MusicBrainz Artist Id": "musicbrainz_artistid",
         "----:com.apple.iTunes:MusicBrainz Track Id": "musicbrainz_trackid",
-        "----:com.apple.iTunes:MusicBrainz Release Track Id":
-            "musicbrainz_releasetrackid",
+        "----:com.apple.iTunes:MusicBrainz Release Track Id": "musicbrainz_releasetrackid",
         "----:com.apple.iTunes:MusicBrainz Album Id": "musicbrainz_albumid",
-        "----:com.apple.iTunes:MusicBrainz Album Artist Id":
-            "musicbrainz_albumartistid",
+        "----:com.apple.iTunes:MusicBrainz Album Artist Id": "musicbrainz_albumartistid",
         "----:com.apple.iTunes:MusicIP PUID": "musicip_puid",
-        "----:com.apple.iTunes:MusicBrainz Album Status":
-            "musicbrainz_albumstatus",
-        "----:com.apple.iTunes:MusicBrainz Album Type":
-            "musicbrainz_albumtype",
-        "----:com.apple.iTunes:MusicBrainz Album Release Country":
-            "releasecountry",
-        "----:com.apple.iTunes:MusicBrainz Release Group Id":
-            "musicbrainz_releasegroupid",
-
+        "----:com.apple.iTunes:MusicBrainz Album Status": "musicbrainz_albumstatus",
+        "----:com.apple.iTunes:MusicBrainz Album Type": "musicbrainz_albumtype",
+        "----:com.apple.iTunes:MusicBrainz Album Release Country": "releasecountry",
+        "----:com.apple.iTunes:MusicBrainz Release Group Id": "musicbrainz_releasegroupid",
         "----:com.apple.iTunes:replaygain_album_gain": "replaygain_album_gain",
         "----:com.apple.iTunes:replaygain_album_peak": "replaygain_album_peak",
         "----:com.apple.iTunes:replaygain_track_gain": "replaygain_track_gain",
         "----:com.apple.iTunes:replaygain_track_peak": "replaygain_track_peak",
-        "----:com.apple.iTunes:replaygain_reference_loudness":
-            "replaygain_reference_loudness",
+        "----:com.apple.iTunes:replaygain_reference_loudness": "replaygain_reference_loudness",
     }
     __rtranslate = {v: k for k, v in __translate.items()}
 
@@ -104,8 +93,7 @@ class MP4File(AudioFile):
                 if key == "tmpo":
                     self[name] = "\n".join(map(str, values))
                 elif key.startswith("----"):
-                    self[name] = "\n".join(
-                        decode(v).strip("\x00") for v in values)
+                    self[name] = "\n".join(decode(v).strip("\x00") for v in values)
                 else:
                     self[name] = "\n".join(values)
             elif key == "covr":
@@ -116,10 +104,9 @@ class MP4File(AudioFile):
         with translate_errors():
             audio = MP4(self["~filename"])
 
-        for key in (list(self.__translate.keys()) +
-                    list(self.__tupletranslate.keys())):
+        for key in list(self.__translate.keys()) + list(self.__tupletranslate.keys()):
             try:
-                del (audio[key])
+                del audio[key]
             except KeyError:
                 pass
 
@@ -165,7 +152,6 @@ class MP4File(AudioFile):
             return []
 
         for cover in tag.get("covr", []):
-
             if cover.imageformat == MP4Cover.FORMAT_JPEG:
                 mime = "image/jpeg"
             elif cover.imageformat == MP4Cover.FORMAT_PNG:
@@ -185,7 +171,6 @@ class MP4File(AudioFile):
             return
 
         for cover in tag.get("covr", []):
-
             if cover.imageformat == MP4Cover.FORMAT_JPEG:
                 mime = "image/jpeg"
             elif cover.imageformat == MP4Cover.FORMAT_PNG:
@@ -216,8 +201,7 @@ class MP4File(AudioFile):
         elif image.mime_type == "image/png":
             image_format = MP4Cover.FORMAT_PNG
         else:
-            raise AudioFileError(
-                "mp4: Unsupported image format %r" % image.mime_type)
+            raise AudioFileError("mp4: Unsupported image format %r" % image.mime_type)
 
         with translate_errors():
             tag = MP4(self["~filename"])

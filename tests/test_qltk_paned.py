@@ -5,8 +5,15 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.paned import RVPaned, RHPaned, ConfigRVPaned, \
-        MultiRVPaned, MultiRHPaned, ConfigMultiRVPaned, ConfigMultiRHPaned
+from quodlibet.qltk.paned import (
+    RVPaned,
+    RHPaned,
+    ConfigRVPaned,
+    MultiRVPaned,
+    MultiRHPaned,
+    ConfigMultiRVPaned,
+    ConfigMultiRHPaned,
+)
 from quodlibet import config
 
 from . import TestCase
@@ -68,7 +75,6 @@ class RVPaned(TestCase, TRPaned):
 
 
 class TConfigRPaned(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -168,7 +174,6 @@ class TMultiRVPaned(TestCase, TMultiRPaned):
 
 
 class TConfigMultiRPaned:
-
     def setUp(self):
         config.init()
 

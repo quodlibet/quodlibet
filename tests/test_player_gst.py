@@ -38,7 +38,6 @@ def ignore_gst_errors():
 
 @skipUnless(Gst, "GStreamer missing")
 class TGstPlayerPrefs(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -96,6 +95,7 @@ class TGstreamerTagList(TestCase):
         class Foo:
             def to_iso8601_string(self):
                 return "3000-10-2"
+
         l["date"] = Foo()
         date = Gst.DateTime
         Gst.DateTime = Foo
@@ -118,9 +118,8 @@ class TGstreamerTagList(TestCase):
         l["bar"] = 9
         self.assertEqual(parse_gstreamer_taglist(l)["bar"], 9)
 
-        l["bar"] = Gst.TagList() # some random gst instance
-        self.assertTrue(
-            isinstance(parse_gstreamer_taglist(l)["bar"], str))
+        l["bar"] = Gst.TagList()  # some random gst instance
+        self.assertTrue(isinstance(parse_gstreamer_taglist(l)["bar"], str))
         assert "GstTagList" in parse_gstreamer_taglist(l)["bar"]
 
     def test_sanitize(self):
@@ -197,10 +196,10 @@ class TGstreamerTagList(TestCase):
 
 
 @skipUnless(Gst, "GStreamer missing")
-@skipUnless(sys.platform == "darwin" or os.name == "nt" or is_flatpak(),
-            "no control over gst")
+@skipUnless(
+    sys.platform == "darwin" or os.name == "nt" or is_flatpak(), "no control over gst"
+)
 class TGStreamerCodecs(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -211,8 +210,7 @@ class TGStreamerCodecs(TestCase):
         old_threshold = Gst.debug_get_default_threshold()
         Gst.debug_set_default_threshold(Gst.DebugLevel.NONE)
 
-        pipeline = Gst.parse_launch(
-            "uridecodebin uri=%s ! fakesink" % song("~uri"))
+        pipeline = Gst.parse_launch("uridecodebin uri=%s ! fakesink" % song("~uri"))
         bus = pipeline.get_bus()
         pipeline.set_state(Gst.State.PLAYING)
         error = None
@@ -253,7 +251,7 @@ class TGStreamerCodecs(TestCase):
             "test.wma",
             "empty.xm",
             "h264_aac.mp4",
-            "h265_aac.mp4"
+            "h265_aac.mp4",
         ]
 
         gst_version = Gst.version()

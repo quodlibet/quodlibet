@@ -23,6 +23,7 @@ from quodlibet.util.thumbnails import get_thumbnail, get_cache_info
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import GLib
@@ -72,8 +73,11 @@ def check_ini_installed():
 
     if not provider_installed:
         path = DEFAULT_SEARCH_PROVIDER_DIR
-        msg = (_("No GNOME Shell search provider for Quod Libet installed.") + " \n" +
-               _("Have you copied the ini file to %s (or similar)?") % path)
+        msg = (
+            _("No GNOME Shell search provider for Quod Libet installed.")
+            + " \n"
+            + _("Have you copied the ini file to %s (or similar)?") % path
+        )
         raise PluginImportError(msg)
 
 
@@ -91,6 +95,7 @@ class GnomeSearchProvider(EventPlugin):
         del self.obj
 
         import gc
+
         gc.collect()
 
 
@@ -158,10 +163,14 @@ class SearchProvider:
     IFACE = "org.gnome.Shell.SearchProvider2"
 
     def __init__(self):
-        self._own_id = Gio.bus_own_name(Gio.BusType.SESSION, self.BUS_NAME,
-                                        Gio.BusNameOwnerFlags.NONE,
-                                        self.on_bus_acquired, None,
-                                        self.on_name_lost)
+        self._own_id = Gio.bus_own_name(
+            Gio.BusType.SESSION,
+            self.BUS_NAME,
+            Gio.BusNameOwnerFlags.NONE,
+            self.on_bus_acquired,
+            None,
+            self.on_name_lost,
+        )
         self._registered_ids = []
         self._method_outargs = {}
 
@@ -170,12 +179,14 @@ class SearchProvider:
         for interface in info.interfaces:
             for method in interface.methods:
                 self._method_outargs[method.name] = "({})".format(
-                    "".join([arg.signature for arg in method.out_args]))
+                    "".join([arg.signature for arg in method.out_args])
+                )
 
             _id = connection.register_object(
                 object_path=self.PATH,
                 interface_info=interface,
-                method_call_closure=self.on_method_call)
+                method_call_closure=self.on_method_call,
+            )
             self._registered_ids.append(_id)
 
     def on_name_lost(self, connection, name):
@@ -187,8 +198,16 @@ class SearchProvider:
             Gio.bus_unown_name(self._own_id)
             self._own_id = None
 
-    def on_method_call(self, connection, sender, object_path, interface_name,
-                       method_name, parameters, invocation):
+    def on_method_call(
+        self,
+        connection,
+        sender,
+        object_path,
+        interface_name,
+        method_name,
+        parameters,
+        invocation,
+    ):
         args = list(parameters.unpack())
         result = getattr(self, method_name)(*args)
         if not isinstance(result, tuple):
@@ -241,7 +260,7 @@ class SearchProvider:
                 "name": GLib.Variant("s", dbus_unicode_validate(name)),
                 "id": GLib.Variant("s", song_id),
                 "description": GLib.Variant("s", dbus_unicode_validate(description)),
-                "gicon": GLib.Variant("s", gicon)
+                "gicon": GLib.Variant("s", gicon),
             }
             metas.append(meta)
 

@@ -12,8 +12,7 @@ from quodlibet.util import re_escape
 
 
 DEFAULT_TAG_SPLITTERS = ["/", "&", ","]
-DEFAULT_SUB_SPLITTERS = ["\u301c\u301c", "\uff08\uff09",
-                         "[]", "()", "~~", "--"]
+DEFAULT_SUB_SPLITTERS = ["\u301c\u301c", "\uff08\uff09", "[]", "()", "~~", "--"]
 
 
 def split_value(s, splitters=DEFAULT_TAG_SPLITTERS):
@@ -23,7 +22,8 @@ def split_value(s, splitters=DEFAULT_TAG_SPLITTERS):
 
     def regex_for(sp):
         return r"{start}\s*{split}\s*{end}".format(
-            start=r"(?:\b|(?<=\W))", split=re_escape(sp), end=r"(?:\b|(?=\W))")
+            start=r"(?:\b|(?<=\W))", split=re_escape(sp), end=r"(?:\b|(?=\W))"
+        )
 
     if not splitters:
         return [s.strip()]
@@ -39,22 +39,23 @@ def find_subtitle(title, delimiters=DEFAULT_SUB_SPLITTERS):
     if isinstance(title, bytes):
         title = title.decode("utf-8", "replace")
     for pair in delimiters:
-        if (len(pair) == 2 and pair[0] in title[:-1]
-                and title.endswith(pair[1])):
+        if len(pair) == 2 and pair[0] in title[:-1] and title.endswith(pair[1]):
             r = len(pair[1])
             l = title[0:-r].rindex(pair[0])
             if l:
-                subtitle = title[l + len(pair[0]):-r]
+                subtitle = title[l + len(pair[0]) : -r]
                 return title[:l].rstrip(), subtitle
     else:
         return title, None
 
 
-def split_title(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
-                sub_splitters=DEFAULT_SUB_SPLITTERS):
+def split_title(
+    s, tag_splitters=DEFAULT_TAG_SPLITTERS, sub_splitters=DEFAULT_SUB_SPLITTERS
+):
     title, subtitle = find_subtitle(s, sub_splitters)
-    return ((title.strip(), split_value(subtitle, tag_splitters))
-            if subtitle else (s, []))
+    return (
+        (title.strip(), split_value(subtitle, tag_splitters)) if subtitle else (s, [])
+    )
 
 
 __FEATURING = ["feat.", "featuring", "feat", "ft", "ft.", "with", "w/"]
@@ -64,8 +65,9 @@ __FEAT_REGEX = [re.compile(re_escape(s + " "), re.I) for s in __FEATURING]
 __ORIG_REGEX = [re.compile(re_escape(s), re.I) for s in __ORIGINALLY]
 
 
-def split_people(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
-                 sub_splitters=DEFAULT_SUB_SPLITTERS):
+def split_people(
+    s, tag_splitters=DEFAULT_TAG_SPLITTERS, sub_splitters=DEFAULT_SUB_SPLITTERS
+):
     title, subtitle = find_subtitle(s, sub_splitters)
     if not subtitle:
         parts = s.split(" ")
@@ -74,7 +76,7 @@ def split_people(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
                 try:
                     i = [p.lower() for p in parts].index(feat)
                     orig = " ".join(parts[:i])
-                    others = " ".join(parts[i + 1:])
+                    others = " ".join(parts[i + 1 :])
                     return orig, split_value(others, tag_splitters)
                 except (ValueError, IndexError):
                     pass
@@ -82,7 +84,7 @@ def split_people(s, tag_splitters=DEFAULT_TAG_SPLITTERS,
     else:
         old = subtitle
         # TODO: allow multiple substitutions across types, maybe
-        for regex in (__FEAT_REGEX + __ORIG_REGEX):
+        for regex in __FEAT_REGEX + __ORIG_REGEX:
             subtitle = re.sub(regex, "", subtitle, count=1)
             if old != subtitle:
                 # Only change once
@@ -102,8 +104,13 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
         return s, None
     else:
         parts = disc.split()
-        if (len(parts) == 2 and
-                parts[0].lower() in ["disc", "disk", "cd", "vol", "vol."]):
+        if len(parts) == 2 and parts[0].lower() in [
+            "disc",
+            "disk",
+            "cd",
+            "vol",
+            "vol.",
+        ]:
             try:
                 return name, parts[1]
             except IndexError:

@@ -40,8 +40,7 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
     def get_sb_path(cls, song):
         """Gets a SB path to `song` by simple substitution"""
         path = song("~filename")
-        return path.replace(
-            cls._get_ql_base_dir(), cls.server.get_library_dir())
+        return path.replace(cls._get_ql_base_dir(), cls.server.get_library_dir())
 
     @classmethod
     def post_reconnect(cls):
@@ -69,13 +68,15 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         if cls.server.is_connected:
             ret = 0
             if len(cls.server.players) > 1:
-                dialog = GetPlayerDialog(app.window, cls.server.players,
-                                         cls.server.current_player)
+                dialog = GetPlayerDialog(
+                    app.window, cls.server.players, cls.server.current_player
+                )
                 ret = dialog.run() or 0
             else:
                 cls.quick_dialog(
                     _("Squeezebox OK. Using the only player (%s).")
-                    % cls.server.players[0])
+                    % cls.server.players[0]
+                )
             cls.set_player(ret)
             # TODO: verify sanity of SB library path
 
@@ -83,8 +84,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             cls.post_reconnect()
 
         else:
-            cls.quick_dialog(_("Couldn't connect to %s") % (cls.server,),
-                             Gtk.MessageType.ERROR)
+            cls.quick_dialog(
+                _("Couldn't connect to %s") % (cls.server,), Gtk.MessageType.ERROR
+            )
 
     @classmethod
     def PluginPreferences(cls, parent):
@@ -141,10 +143,9 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
         lbl.set_mnemonic_widget(ve)
         rows.append((lbl, ve))
 
-        for (row, (label, entry)) in enumerate(rows):
+        for row, (label, entry) in enumerate(rows):
             label.set_alignment(0.0, 0.5)
-            table.attach(label, 0, 1, row, row + 1,
-                         xoptions=Gtk.AttachOptions.FILL)
+            table.attach(label, 0, 1, row, row + 1, xoptions=Gtk.AttachOptions.FILL)
             table.attach(entry, 1, 2, row, row + 1)
 
         # Add verify button
@@ -173,15 +174,16 @@ class SqueezeboxPluginMixin(PluginConfigMixin):
             port=cls.config_get("server_port", 9090),
             user=cls.config_get("server_user", ""),
             password=cls.config_get("server_password", ""),
-            library_dir=cls.config_get(
-                "server_library_dir", cls._get_ql_base_dir()),
+            library_dir=cls.config_get("server_library_dir", cls._get_ql_base_dir()),
             current_player=cur,
-            debug=cls.config_get_bool("debug", False))
+            debug=cls.config_get_bool("debug", False),
+        )
         try:
             ver = cls.server.get_version()
             if cls.server.is_connected:
                 print_d(
                     "Squeezebox server version: %s. Current player: #%d (%s)."
-                    % (ver, cur, cls.server.get_players()[cur]["name"]))
+                    % (ver, cur, cls.server.get_players()[cur]["name"])
+                )
         except (IndexError, KeyError, SqueezeboxError) as e:
             print_d("Couldn't get player info (%s)." % e)

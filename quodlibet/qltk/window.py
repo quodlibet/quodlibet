@@ -129,14 +129,16 @@ class Window(Gtk.Window):
         self.connect("key-press-event", self._on_key_press)
 
     def _on_key_press(self, widget, event):
-        is_dialog = (self.get_type_hint() == Gdk.WindowTypeHint.DIALOG)
+        is_dialog = self.get_type_hint() == Gdk.WindowTypeHint.DIALOG
 
         if (is_dialog and is_accel(event, "Escape")) or (
-                not is_dialog and is_accel(event, "<Primary>w")):
+            not is_dialog and is_accel(event, "<Primary>w")
+        ):
             # Do not close the window if we edit a Gtk.CellRendererText.
             # Focus the treeview instead.
-            if isinstance(self.get_focus(), Gtk.Entry) and \
-                isinstance(self.get_focus().get_parent(), Gtk.TreeView):
+            if isinstance(self.get_focus(), Gtk.Entry) and isinstance(
+                self.get_focus().get_parent(), Gtk.TreeView
+            ):
                 self.get_focus().get_parent().grab_focus()
                 return Gdk.EVENT_PROPAGATE
             self.close()
@@ -241,6 +243,7 @@ class Window(Gtk.Window):
             if parent:
                 print_w("Not a toplevel window set for: %r" % self)
             from quodlibet import app
+
             parent = app.window
         super().set_transient_for(parent)
 
@@ -281,14 +284,14 @@ class PersistentWindowMixin:
         self.__name = config_prefix
         self.__size_suffix = size_suffix
         self.__save_size_pos_deferred = DeferredSignal(
-            self.__do_save_size_pos, timeout=50, owner=self)
+            self.__do_save_size_pos, timeout=50, owner=self
+        )
         self.connect("configure-event", self.__configure_event)
         self.connect("window-state-event", self.__window_state_changed)
         self.connect("notify::visible", self.__visible_changed)
         parent = self.get_transient_for()
         if parent:
-            connect_destroy(
-                parent, "configure-event", self.__parent_configure_event)
+            connect_destroy(parent, "configure-event", self.__parent_configure_event)
         self.__restore_window_state()
 
     def __visible_changed(self, *args):
@@ -409,7 +412,7 @@ class PersistentWindowMixin:
 
 
 class _Unique:
-    """A mixin for window-like classes to ensure one instance per class. """
+    """A mixin for window-like classes to ensure one instance per class."""
 
     __window = None
 

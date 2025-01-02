@@ -77,7 +77,8 @@ def _init_gettext(no_translations=False):
 
     # Use the locale dir in ../build/share/locale if there is one
     localedir = os.path.join(
-        os.path.dirname(get_base_dir()), "build", "share", "locale")
+        os.path.dirname(get_base_dir()), "build", "share", "locale"
+    )
     if os.path.isdir(localedir):
         print_d(f"Using local locale dir {localedir}")
     else:
@@ -114,6 +115,7 @@ def _init_python():
 
 def _init_formats():
     from quodlibet.formats import init
+
     init()
 
 
@@ -153,6 +155,7 @@ def _init_dbus():
     except ImportError:
         try:
             import dbus.glib
+
             dbus.glib  # noqa
         except ImportError:
             return
@@ -181,6 +184,7 @@ def _fix_gst_leaks():
             result = func(self, obj)
             obj.unref()
             return result
+
         return wrap
 
     parent = Gst.Bin()
@@ -211,8 +215,8 @@ def _init_g():
     # even with stable releases.
     if is_release():
         warnings.filterwarnings(
-            "ignore", ".* It will be removed in a future version.",
-            Warning)
+            "ignore", ".* It will be removed in a future version.", Warning
+        )
 
     # blacklist some modules, simply loading can cause segfaults
     sys.modules["glib"] = None
@@ -224,8 +228,10 @@ def _init_gtk():
 
     import gi
 
-    if config.getboolean("settings", "pangocairo_force_fontconfig") and \
-            "PANGOCAIRO_BACKEND" not in os.environ:
+    if (
+        config.getboolean("settings", "pangocairo_force_fontconfig")
+        and "PANGOCAIRO_BACKEND" not in os.environ
+    ):
         os.environ["PANGOCAIRO_BACKEND"] = "fontconfig"
 
     # disable for consistency and trigger events seem a bit flaky here
@@ -236,6 +242,7 @@ def _init_gtk():
         # not sure if this is available under Windows
         gi.require_version("GdkX11", "3.0")
         from gi.repository import GdkX11
+
         GdkX11  # noqa
     except (ValueError, ImportError):
         pass
@@ -267,13 +274,11 @@ def _init_gtk():
     warnings.filterwarnings("ignore", ".*g_value_get_int.*", Warning)
 
     # some day... but not now
+    warnings.filterwarnings("ignore", ".*Stock items are deprecated.*", Warning)
+    warnings.filterwarnings("ignore", ".*:use-stock.*", Warning)
     warnings.filterwarnings(
-        "ignore", ".*Stock items are deprecated.*", Warning)
-    warnings.filterwarnings(
-        "ignore", ".*:use-stock.*", Warning)
-    warnings.filterwarnings(
-        "ignore", r".*The property GtkAlignment:[^\s]+ is deprecated.*",
-        Warning)
+        "ignore", r".*The property GtkAlignment:[^\s]+ is deprecated.*", Warning
+    )
 
     settings = Gtk.Settings.get_default()
     with warnings.catch_warnings():

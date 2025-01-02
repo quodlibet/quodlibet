@@ -11,6 +11,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gtk
@@ -40,13 +41,18 @@ class MPRIS(EventPlugin):
         "⏯️ Allows control of Quod Libet using the "
         '<a href="https://mpris2.readthedocs.io/en/latest/">MPRIS 2</a> '
         "D-Bus Interface.\n"
-        "This allows various Linux desktop integrations (e.g. multimedia keys).")
+        "This allows various Linux desktop integrations (e.g. multimedia keys)."
+    )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()
-        ccb = ConfigSwitch(_("Hide main window on close"),
-                           "plugins", "mpris_window_hide", populate=True)
+        ccb = ConfigSwitch(
+            _("Hide main window on close"),
+            "plugins",
+            "mpris_window_hide",
+            populate=True,
+        )
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
@@ -86,6 +92,7 @@ class MPRIS(EventPlugin):
         self.objects = []
 
         import gc
+
         gc.collect()
 
         app.window.disconnect(self.__sig)

@@ -19,8 +19,16 @@ from quodlibet.util.dprint import print_d
 from quodlibet.util.path import mkdir, xdg_get_config_home, xdg_get_cache_home
 
 
-PLUGIN_DIRS = ["editing", "events", "playorder", "songsmenu", "playlist",
-               "gstreamer", "covers", "query"]
+PLUGIN_DIRS = [
+    "editing",
+    "events",
+    "playorder",
+    "songsmenu",
+    "playlist",
+    "gstreamer",
+    "covers",
+    "query",
+]
 
 
 class Application:
@@ -98,20 +106,24 @@ class Application:
 
     def show(self):
         from quodlibet.qltk import Window
+
         for window in Window.windows:
             window.show()
 
     def present(self):
         # deiconify is needed if the window is on another workspace
         from quodlibet.qltk import Window
+
         for window in Window.windows:
             window.deiconify()
             window.present()
 
     def hide(self):
         from quodlibet.qltk import Window
+
         for window in Window.windows:
             window.hide()
+
 
 app = Application()
 
@@ -164,8 +176,11 @@ def get_user_dir():
         user_dir = os.environ["QUODLIBET_USERDIR"]
 
     if build.BUILD_TYPE == "windows-portable":
-        user_dir = os.path.normpath(os.path.join(
-            os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"))
+        user_dir = os.path.normpath(
+            os.path.join(
+                os.path.dirname(path2fsn(sys.executable)), "..", "..", "config"
+            )
+        )
 
     # XXX: users shouldn't assume the dir is there, but we currently do in
     # some places
@@ -206,7 +221,7 @@ def get_build_description():
 
         if build.BUILD_INFO:
             notes.append(build.BUILD_INFO)
-    
+
     version_string = ".".join(map(str, version))
     note = " (%s)" % ", ".join(notes) if notes else ""
 
@@ -217,8 +232,8 @@ def init_plugins(no_plugins=False):
     print_d("Starting plugin manager")
 
     from quodlibet import plugins
-    folders = [os.path.join(get_base_dir(), "ext", kind)
-               for kind in PLUGIN_DIRS]
+
+    folders = [os.path.join(get_base_dir(), "ext", kind) for kind in PLUGIN_DIRS]
     folders.append(os.path.join(get_user_dir(), "plugins"))
     print_d("Scanning folders: %s" % folders)
     pm = plugins.init(folders, no_plugins)
@@ -227,6 +242,7 @@ def init_plugins(no_plugins=False):
     from quodlibet.qltk.edittags import EditTags
     from quodlibet.qltk.renamefiles import RenameFiles
     from quodlibet.qltk.tagsfrompath import TagsFromPath
+
     EditTags.init_plugins()
     RenameFiles.init_plugins()
     TagsFromPath.init_plugins()
@@ -268,6 +284,7 @@ def _main_setup_osx(window):
 
     try:
         import gi
+
         gi.require_version("GtkosxApplication", "1.0")
         from gi.repository import GtkosxApplication
     except (ValueError, ImportError):
@@ -284,9 +301,8 @@ def _main_setup_osx(window):
     # If the dock icon gets clicked we get
     # applicationShouldHandleReopen_hasVisibleWindows_ and show everything.
     class Delegate(NSObject):
-
         @objc.signature(b"B@:#B")
-        def applicationShouldHandleReopen_hasVisibleWindows_(self, ns_app, flag): # noqa
+        def applicationShouldHandleReopen_hasVisibleWindows_(self, ns_app, flag):  # noqa
             print_d("osx: handle reopen")
             app.present()
             return True
@@ -295,6 +311,7 @@ def _main_setup_osx(window):
             print_d("osx: block termination")
             # FIXME: figure out why idle_add is needed here
             from gi.repository import GLib
+
             GLib.idle_add(app.quit)
             return False
 
@@ -310,8 +327,7 @@ def _main_setup_osx(window):
 
     # QL shouldn't exit on window close, EF should
     if window.get_is_persistent():
-        window.connect(
-            "delete-event", lambda window, event: window.hide() or True)
+        window.connect("delete-event", lambda window, event: window.hide() or True)
 
 
 def run(window, before_quit=None):
@@ -322,21 +338,23 @@ def run(window, before_quit=None):
     assert is_init()
 
     def quit_gtk(window):
-
         if before_quit is not None:
             before_quit()
 
         # disable plugins
         import quodlibet.plugins
+
         quodlibet.plugins.quit()
 
         # for debug: this will list active copools
         from quodlibet.util import copool
+
         copool.pause_all()
 
         # See which browser windows are open and save their names
         # so that we can restore them on start
         from quodlibet.qltk.browser import LibraryBrowser
+
         LibraryBrowser.save()
 
         # destroy all open windows so they hide immediately on close:
@@ -344,6 +362,7 @@ def run(window, before_quit=None):
         # so we hide them all and only destroy our tracked instances
         # (browser windows, tag editors, pref window etc.)
         from quodlibet.qltk import Window
+
         for toplevel in Gtk.Window.list_toplevels():
             toplevel.hide()
 

@@ -48,8 +48,7 @@ class SongLibrary(Library[K, V], PicklingMixin):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for song in self.values()
-                for value in song.list(tag)}
+        return {value for song in self.values() for value in song.list(tag)}
 
     def rename(self, song, new_name, changed: set | None = None):
         """Rename a song.
@@ -101,9 +100,7 @@ class SongFileLibrary(SongLibrary, WatchedFileLibraryMixin):
         key = normalize_path(filename, True)
         return self._contents.get(key)
 
-    def add_filename(self,
-                     filename: str | Path,
-                     add: bool = True) -> AudioFile | None:
+    def add_filename(self, filename: str | Path, add: bool = True) -> AudioFile | None:
         """Add a song to the library based on filename.
 
         If 'add' is true, the song will be added and the 'added' signal

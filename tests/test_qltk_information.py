@@ -9,8 +9,15 @@ from tests import TestCase, init_fake_app, destroy_fake_app
 
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
-from quodlibet.qltk.information import Information, OneArtist, OneAlbum, \
-    ManySongs, OneSong, TitleLabel, _sort_albums
+from quodlibet.qltk.information import (
+    Information,
+    OneArtist,
+    OneAlbum,
+    ManySongs,
+    OneSong,
+    TitleLabel,
+    _sort_albums,
+)
 import quodlibet.config
 
 
@@ -21,7 +28,6 @@ def AF(*args, **kwargs):
 
 
 class TInformation(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
         init_fake_app()

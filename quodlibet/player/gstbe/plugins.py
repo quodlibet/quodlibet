@@ -22,7 +22,7 @@ class GStreamerPluginHandler(PluginHandler):
 
     def __get_plugin_element(self, plugin):
         """Setup element and cache it, so we can pass the linked/active
-           one to the plugin for live updates"""
+        one to the plugin for live updates"""
         if plugin not in self.__elements:
             element = None
             # make sure the plugin doesn't take us down
@@ -33,7 +33,8 @@ class GStreamerPluginHandler(PluginHandler):
             if not element:
                 util.print_w(
                     _("GStreamer plugin '%(name)s' could not be initialized")
-                    % {"name": plugin.PLUGIN_ID})
+                    % {"name": plugin.PLUGIN_ID}
+                )
                 return
             plugin.update_element(element)
             self.__elements[plugin] = element
@@ -67,9 +68,9 @@ class GStreamerPluginHandler(PluginHandler):
         for plugin in self.__plugins:
             self.__get_plugin_element(plugin)
 
-        items = sorted(self.__elements.items(),
-                       key=lambda x: x[0].priority,
-                       reverse=True)
+        items = sorted(
+            self.__elements.items(), key=lambda x: x[0].priority, reverse=True
+        )
         return [p[1] for p in items]
 
     def _queue_update(self, plugin):

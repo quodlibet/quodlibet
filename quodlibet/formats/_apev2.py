@@ -77,17 +77,18 @@ class APEv2File(AudioFile):
     # Map APE names to QL names. APE tags are also usually capitalized.
     # Also blacklist a number of tags.
     IGNORE = ["file", "index", "introplay", "dummy"]
-    TRANS = {"subtitle": "version",
-             "track": "tracknumber",
-             "disc": "discnumber",
-             "catalog": "labelid",
-             "year": "date",
-             "record location": "location",
-             "album artist": "albumartist",
-             "debut album": "originalalbum",
-             "record date": "recordingdate",
-             "original artist": "originalartist",
-             "mixartist": "remixer",
+    TRANS = {
+        "subtitle": "version",
+        "track": "tracknumber",
+        "disc": "discnumber",
+        "catalog": "labelid",
+        "year": "date",
+        "record location": "location",
+        "album artist": "albumartist",
+        "debut album": "originalalbum",
+        "record date": "recordingdate",
+        "original artist": "originalartist",
+        "mixartist": "remixer",
     }
     SNART = {v: k for k, v in TRANS.items()}
 
@@ -108,8 +109,7 @@ class APEv2File(AudioFile):
                 self.has_images = True
 
             key = self.TRANS.get(key.lower(), key.lower())
-            if (value.kind == mutagen.apev2.TEXT and
-                key not in self.IGNORE):
+            if value.kind == mutagen.apev2.TEXT and key not in self.IGNORE:
                 self[key] = "\n".join(list(value))
 
         self.sanitize(filename)
@@ -125,10 +125,12 @@ class APEv2File(AudioFile):
         if key is None:
             return True
         else:
-            return (super().can_change(key) and
-                    key.lower() not in self.IGNORE and
-                    key.lower() not in self.TRANS and
-                    mutagen.apev2.is_valid_apev2_key(self.__titlecase(key)))
+            return (
+                super().can_change(key)
+                and key.lower() not in self.IGNORE
+                and key.lower() not in self.TRANS
+                and mutagen.apev2.is_valid_apev2_key(self.__titlecase(key))
+            )
 
     def write(self):
         with translate_errors():
@@ -140,9 +142,8 @@ class APEv2File(AudioFile):
         # Remove any text keys we read in
         for key in list(tag.keys()):
             value = tag[key]
-            if (value.kind == mutagen.apev2.TEXT and
-                key.lower() not in self.IGNORE):
-                del(tag[key])
+            if value.kind == mutagen.apev2.TEXT and key.lower() not in self.IGNORE:
+                del tag[key]
 
         # Write all tags we have
         lower = self.as_lowercased()

@@ -23,10 +23,14 @@ class GstPlayerPreferences(Gtk.VBox):
         super().__init__(spacing=12)
 
         e = UndoEntry()
-        e.set_tooltip_text(_("The GStreamer output pipeline used for "
-                             "playback. Leave blank for the default pipeline. "
-                             "If the pipeline contains a sink, "
-                             "it will be used instead of the default one."))
+        e.set_tooltip_text(
+            _(
+                "The GStreamer output pipeline used for "
+                "playback. Leave blank for the default pipeline. "
+                "If the pipeline contains a sink, "
+                "it will be used instead of the default one."
+            )
+        )
 
         e.set_text(config.get("player", "gst_pipeline"))
 
@@ -67,17 +71,28 @@ class GstPlayerPreferences(Gtk.VBox):
 
         gapless_button = ConfigSwitch(
             _("Disable _gapless playback"),
-            "player", "gst_disable_gapless", populate=True,
-            tooltip=_("Disabling gapless playback can avoid track changing problems "
-                      "with some GStreamer versions"))
+            "player",
+            "gst_disable_gapless",
+            populate=True,
+            tooltip=_(
+                "Disabling gapless playback can avoid track changing problems "
+                "with some GStreamer versions"
+            ),
+        )
         jack_button = ConfigSwitch(
             _("Use JACK for playback if available"),
-            "player", "gst_use_jack", populate=True,
-            tooltip=_("Uses `jackaudiosink` for playbin sink if it can be detected"))
+            "player",
+            "gst_use_jack",
+            populate=True,
+            tooltip=_("Uses `jackaudiosink` for playbin sink if it can be detected"),
+        )
         jack_connect = ConfigSwitch(
             _("Auto-connect to JACK output devices"),
-            "player", "gst_jack_auto_connect",
-            populate=True, tooltip=_("Tells `jackaudiosink` to auto-connect"))
+            "player",
+            "gst_jack_auto_connect",
+            populate=True,
+            tooltip=_("Tells `jackaudiosink` to auto-connect"),
+        )
 
         def _jack_activated(widget: ConfigCheckButton, *args) -> None:
             jack_connect.set_sensitive(widget.get_active())
@@ -97,6 +112,7 @@ class GstPlayerPreferences(Gtk.VBox):
         self.pack_start(jack_connect, False, False, 0)
 
         if debug:
+
             def print_bin(player):
                 player._print_pipeline()
 
@@ -112,8 +128,9 @@ class GstPlayerPreferences(Gtk.VBox):
         hb.pack_end(scale, True, True, 0)
         return hb
 
-    def _create_pipeline_box(self, pipe_label: Gtk.Label, e: Gtk.Widget,
-                             apply_button: Gtk.Button):
+    def _create_pipeline_box(
+        self, pipe_label: Gtk.Label, e: Gtk.Widget, apply_button: Gtk.Button
+    ):
         hb = Gtk.Box(spacing=12)
         hb.pack_start(pipe_label, False, False, 0)
         hb.pack_start(e, True, True, 0)

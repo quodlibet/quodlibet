@@ -25,7 +25,6 @@ class MMKeysAction:
 
 
 class MMKeysBackend:
-
     def __init_(self, name, callback):
         """Callback will be called in the main thread and gets
         passed an MMKeysAction. `name` should be the application name.

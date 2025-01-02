@@ -47,8 +47,7 @@ class WaitLoadBase:
             # Add stop/pause buttons. count = 0 means an indefinite
             # number of steps.
             self._cancel_button = Button(_("_Stop"), Icons.PROCESS_STOP)
-            self._pause_button = ToggleButton(_("P_ause"),
-                                              Icons.MEDIA_PLAYBACK_PAUSE)
+            self._pause_button = ToggleButton(_("P_ause"), Icons.MEDIA_PLAYBACK_PAUSE)
             self._cancel_button.connect("clicked", self.__cancel_clicked)
             self._pause_button.connect("clicked", self.__pause_clicked)
         else:
@@ -97,7 +96,8 @@ class WaitLoadBase:
         if self.count:
             self.current += 1
             self._progress.set_fraction(
-                max(0, min(1, self.current / float(self.count))))
+                max(0, min(1, self.current / float(self.count)))
+            )
         else:
             self._progress.pulse()
         values.setdefault("total", format_int_locale(self.count))
@@ -136,8 +136,7 @@ class WaitLoadWindow(WaitLoadBase, Gtk.Window):
             sig = parent.connect("configure-event", self.__recenter)
             self.connect("destroy", self.__reset_cursor, parent)
             self.connect("destroy", self.__disconnect, sig, parent)
-            sig_vis = parent.connect(
-                "visibility-notify-event", self.__update_visible)
+            sig_vis = parent.connect("visibility-notify-event", self.__update_visible)
             self.connect("destroy", self.__disconnect, sig_vis, parent)
             self.set_transient_for(parent)
             window = parent.get_window()
@@ -196,10 +195,14 @@ class WritingWindow(WaitLoadWindow):
 
     def __init__(self, parent, count):
         super().__init__(
-            parent, count,
-            (_("Saving the songs you changed.") + "\n\n" +
-             _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")
-            ))
+            parent,
+            count,
+            (
+                _("Saving the songs you changed.")
+                + "\n\n"
+                + _("%(current)d/%(total)d songs saved\n(%(remaining)s remaining)")
+            ),
+        )
 
     def step(self):
         return super().step()
@@ -213,11 +216,13 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
         self._label.set_ellipsize(Pango.EllipsizeMode.END)
 
         self._cancel_button.remove(self._cancel_button.get_child())
-        self._cancel_button.add(Gtk.Image.new_from_icon_name(
-            Icons.PROCESS_STOP, Gtk.IconSize.MENU))
+        self._cancel_button.add(
+            Gtk.Image.new_from_icon_name(Icons.PROCESS_STOP, Gtk.IconSize.MENU)
+        )
         self._pause_button.remove(self._pause_button.get_child())
-        self._pause_button.add(Gtk.Image.new_from_icon_name(
-            Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
+        self._pause_button.add(
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU)
+        )
 
         self.pack_start(self._label, True, True, 0)
         self.pack_start(self._progress, False, True, 6)
@@ -229,7 +234,9 @@ class WaitLoadBar(WaitLoadBase, Gtk.HBox):
 
     def step(self, **values):
         ret = super().step(**values)
-        params = {"current": format_int_locale(self.current),
-                  "all": format_int_locale(self.count)}
+        params = {
+            "current": format_int_locale(self.current),
+            "all": format_int_locale(self.count),
+        }
         self._progress.set_text(_("%(current)s of %(all)s") % params)
         return ret

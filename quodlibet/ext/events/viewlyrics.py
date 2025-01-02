@@ -26,20 +26,21 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     PLUGIN_ID = "View Lyrics"
     PLUGIN_NAME = _("View Lyrics")
-    PLUGIN_DESC = _("Automatically displays tag or file-based lyrics "
-                    "in a sidebar.")
+    PLUGIN_DESC = _("Automatically displays tag or file-based lyrics " "in a sidebar.")
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):
         self.scrolled_window = Gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                        Gtk.PolicyType.AUTOMATIC)
+        self.scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+        )
         self.adjustment = self.scrolled_window.get_vadjustment()
 
         self.textview = Gtk.TextView()
         self.textbuffer = self.textview.get_buffer()
-        self._italics = self.textbuffer.create_tag("italic", style="italic",
-                                                   foreground="grey")
+        self._italics = self.textbuffer.create_tag(
+            "italic", style="italic", foreground="grey"
+        )
         self.textview.set_editable(False)
         self.textview.set_cursor_visible(False)
         self.textview.set_wrap_mode(Gtk.WrapMode.WORD)
@@ -82,8 +83,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 new_lines.append("")
                 continue
 
-            match = re.fullmatch(
-                r"\[(\d\d:\d\d\.\d\d\]\s?(.*)|[^\]]+:[^\]]*\])", line)
+            match = re.fullmatch(r"\[(\d\d:\d\d\.\d\d\]\s?(.*)|[^\]]+:[^\]]*\])", line)
 
             if match is None:
                 # at least one line isn't formatted as .lrc - keep original text
@@ -93,7 +93,8 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
             if match.groups()[1] is not None:
                 # remove word timestamps in enhanced format
                 sentence = "".join(
-                    re.split(r"<\d\d:\d\d\.\d\d>\s*", match.groups()[1])).strip()
+                    re.split(r"<\d\d:\d\d\.\d\d>\s*", match.groups()[1])
+                ).strip()
                 if sentence:
                     new_lines.append(sentence)
 
@@ -113,7 +114,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
                 if config.getboolean("plugins", "view_lyrics_hide_timestamps", True):
                     lyrics = self._hide_timestamps(lyrics)
                 self.textbuffer.set_text(lyrics)
-                self.adjustment.set_value(0)    # Scroll to the top.
+                self.adjustment.set_value(0)  # Scroll to the top.
                 self.textview.show()
             else:
                 title = _("No lyrics found for\n %s") % song("~basename")
@@ -154,13 +155,11 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         if event.keyval == Gdk.KEY_Up:
             adj.value = max(adj.value - adj.step_increment, adj.lower)
         elif event.keyval == Gdk.KEY_Down:
-            adj.value = min(adj.value + adj.step_increment,
-                            adj.upper - adj.page_size)
+            adj.value = min(adj.value + adj.step_increment, adj.upper - adj.page_size)
         elif event.keyval == Gdk.KEY_Page_Up:
             adj.value = max(adj.value - adj.page_increment, adj.lower)
         elif event.keyval == Gdk.KEY_Page_Down:
-            adj.value = min(adj.value + adj.page_increment,
-                            adj.upper - adj.page_size)
+            adj.value = min(adj.value + adj.page_increment, adj.upper - adj.page_size)
         elif event.keyval == Gdk.KEY_Home:
             adj.value = adj.lower
         elif event.keyval == Gdk.KEY_End:
@@ -174,10 +173,11 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
         ccb = ConfigCheckButton(
             _("Hide timestamps of .lrc or .elrc formatted lyrics"),
             "plugins",
-            "view_lyrics_hide_timestamps"
+            "view_lyrics_hide_timestamps",
         )
         hide_timestamps = config.getboolean(
-            "plugins", "view_lyrics_hide_timestamps", True)
+            "plugins", "view_lyrics_hide_timestamps", True
+        )
         ccb.set_active(hide_timestamps)
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box

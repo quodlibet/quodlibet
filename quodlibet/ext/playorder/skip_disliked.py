@@ -23,9 +23,11 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "skip_songs"
     PLUGIN_NAME = _("Skip Disliked Tracks")
     PLUGIN_ICON = Icons.GO_JUMP
-    PLUGIN_DESC = _("Adds a play order (shuffle) mode that plays in order, "
-                    "but skips tracks with a rating "
-                    "below (or equal to) a given threshold.")
+    PLUGIN_DESC = _(
+        "Adds a play order (shuffle) mode that plays in order, "
+        "but skips tracks with a rating "
+        "below (or equal to) a given threshold."
+    )
     display_name = _("Skip disliked tracks")
     accelerated_name = _("Skip _disliked tracks")
 
@@ -34,8 +36,7 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         vb = Gtk.VBox(spacing=10)
         vb.set_border_width(0)
 
-        adj = Gtk.Adjustment.new(
-            pconfig.getfloat("threshold"), 0, 1.0, 0.01, 0.01, 0.0)
+        adj = Gtk.Adjustment.new(pconfig.getfloat("threshold"), 0, 1.0, 0.01, 0.01, 0.0)
         fb_spin = Gtk.SpinButton(adjustment=adj)
         fb_spin.set_digits(2)
 
@@ -60,8 +61,11 @@ class SkipDisliked(ShufflePlugin, OrderInOrder):
         previous = super().previous(playlist, current)
         is_first = False
 
-        while not is_first and previous is not None and \
-                self._should_skip(playlist, previous):
+        while (
+            not is_first
+            and previous is not None
+            and self._should_skip(playlist, previous)
+        ):
             previous = super().previous(playlist, previous)
             is_first = playlist.get_path(previous).get_indices()[0] == 0
 

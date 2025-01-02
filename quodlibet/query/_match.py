@@ -36,7 +36,6 @@ class ParseError(Error):
 
 
 class Node:
-
     def search(self, data: T) -> bool:
         raise NotImplementedError
 
@@ -61,7 +60,6 @@ class Node:
 
 
 class Regex(Node):
-
     def __init__(self, pattern: str, mod_string: str):
         self.pattern = str(pattern)
         self.mod_string = str(mod_string)
@@ -74,7 +72,8 @@ class Regex(Node):
             self.search = re  # type: ignore
         except ValueError as e:
             raise ParseError(
-                "The regular expression /%s/ is invalid." % self.pattern) from e
+                "The regular expression /%s/ is invalid." % self.pattern
+            ) from e
 
     def __repr__(self):
         return f"<Regex pattern={self.pattern} mod={self.mod_string}>"
@@ -255,8 +254,7 @@ class Numcmp(Node):
         return False
 
     def __repr__(self):
-        return "<Numcmp expr={!r}, op={!r}, expr2={!r}>".format(
-            self._expr, self._op.__name__, self._expr2)
+        return f"<Numcmp expr={self._expr!r}, op={self._op.__name__!r}, expr2={self._expr2!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -337,9 +335,7 @@ class NumexprTag(Numexpr):
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
 
-    operators = {
-        "-": operator.neg
-    }
+    operators = {"-": operator.neg}
 
     def __init__(self, op: str, expr: Numexpr):
         self.__op = self.operators[op]
@@ -380,8 +376,10 @@ class NumexprBinary(Numexpr):
         self.__expr = expr
         self.__expr2 = expr2
         # Rearrange expressions for operator precedence
-        if (isinstance(expr, NumexprBinary)
-            and self.precedence[expr.__op] < self.precedence[self.__op]):
+        if (
+            isinstance(expr, NumexprBinary)
+            and self.precedence[expr.__op] < self.precedence[self.__op]
+        ):
             self.__expr = expr.__expr
             self.__op = expr.__op
             expr.__expr = expr.__expr2
@@ -400,8 +398,7 @@ class NumexprBinary(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprBinary op={!r} expr={!r} expr2={!r}>".format(
-            self.__op, self.__expr, self.__expr2)
+        return f"<NumexprBinary op={self.__op!r} expr={self.__expr!r} expr2={self.__expr2!r}>"
 
     def use_date(self):
         return self.__expr.use_date() or self.__expr2.use_date()
@@ -473,7 +470,7 @@ class NumexprNumberOrDate(Numexpr):
             return self.number
 
     def __repr__(self):
-        return (f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>")
+        return f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>"
 
 
 class Units(Enum):
@@ -506,10 +503,10 @@ def numexprUnit(value, unit):
         value *= 365 * 24 * 60 * 60
     # Size units
     elif unit.startswith("g"):
-        value *= 1024 ** 3
+        value *= 1024**3
         converted = Units.BYTES
     elif unit.startswith("m"):
-        value *= 1024 ** 2
+        value *= 1024**2
         converted = Units.BYTES
     elif unit.startswith("k"):
         value *= 1024
@@ -536,13 +533,14 @@ class Tag(Node):
     """See if a property of the object matches its RE."""
 
     # Shorthand for common tags.
-    ABBRS = {"a": "artist",
-             "b": "album",
-             "v": "version",
-             "t": "title",
-             "n": "tracknumber",
-             "d": "date",
-             }
+    ABBRS = {
+        "a": "artist",
+        "b": "album",
+        "v": "version",
+        "t": "title",
+        "n": "tracknumber",
+        "d": "date",
+    }
 
     def __init__(self, names: Iterable[str], res):
         self.res = res
@@ -589,7 +587,7 @@ class Tag(Node):
 
     def __repr__(self):
         names = self._names + self.__intern
-        return (f"<Tag names={names!r}, res={self.res!r}>")
+        return f"<Tag names={names!r}, res={self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -640,8 +638,10 @@ class Extension(Node):
         return self.__valid
 
     def __repr__(self):
-        return (f"<Extension "
-                f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>")
+        return (
+            f"<Extension "
+            f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>"
+        )
 
     def __and__(self, other):
         other = other._unpack()

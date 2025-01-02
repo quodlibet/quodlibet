@@ -38,15 +38,14 @@ class ColumnModeSelection(Gtk.VBox):
 
         group = None
         mode_label = {
-                ColumnMode.SMALL: _("Small"),
-                ColumnMode.WIDE: _("Wide"),
-                ColumnMode.COLUMNAR: _("Columnar"),
+            ColumnMode.SMALL: _("Small"),
+            ColumnMode.WIDE: _("Wide"),
+            ColumnMode.COLUMNAR: _("Columnar"),
         }
         for mode in ColumnMode.values:
             lbl = mode_label[ColumnMode.value_of(mode)]
             group = Gtk.RadioButton(group=group, label=lbl)
-            if mode == config.getint("browsers", "pane_mode",
-                                     ColumnMode.SMALL):
+            if mode == config.getint("browsers", "pane_mode", ColumnMode.SMALL):
                 group.set_active(True)
             self.pack_start(group, False, True, 0)
             self.buttons.append(group)
@@ -71,8 +70,7 @@ class PatternEditor(Gtk.VBox):
         ["genre", "~people", "album"],
         ["~people", "album"],
     ]
-    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year",
-                  "~rating"]
+    COMPLETION = ["genre", "grouping", "~people", "artist", "album", "~year", "~rating"]
 
     _COMPLEX_PATTERN_EXAMPLE = "<~year|[b]<~year>[/b]|[i]unknown year[/i]>"
 
@@ -85,13 +83,13 @@ class PatternEditor(Gtk.VBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join(tags)
-            group = Gtk.RadioButton(group=group, label="_" + util.tag(tied),
-                                    use_underline=True)
+            group = Gtk.RadioButton(
+                group=group, label="_" + util.tag(tied), use_underline=True
+            )
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton(group=group, label=_("_Custom"),
-                                use_underline=True)
+        group = Gtk.RadioButton(group=group, label=_("_Custom"), use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
@@ -106,8 +104,10 @@ class PatternEditor(Gtk.VBox):
 
         self.pack_start(radio_box, False, True, 0)
 
-        tooltip = _("Tag pattern with optional markup e.g. <tt>composer</tt> or\n%s"
-                    % util.monospace(self._COMPLEX_PATTERN_EXAMPLE))
+        tooltip = _(
+            "Tag pattern with optional markup e.g. <tt>composer</tt> or\n%s"
+            % util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
+        )
         cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 
         view = BaseView(model=model)
@@ -146,6 +146,7 @@ class PatternEditor(Gtk.VBox):
 
         def edited_cb(render, path, text, model):
             model[path][0] = text
+
         render.connect("edited", edited_cb, model)
 
         column = Gtk.TreeViewColumn(None, render, text=0)
@@ -189,8 +190,7 @@ class PatternEditor(Gtk.VBox):
             for h in tags:
                 model.append(row=[h])
 
-        edit_widget.set_sensitive(
-            button.get_active() and button is self.__custom)
+        edit_widget.set_sensitive(button.get_active() and button is self.__custom)
 
 
 class PreferencesButton(Gtk.HBox):
@@ -204,14 +204,15 @@ class PreferencesButton(Gtk.HBox):
         def preferences_cb(menu_item):
             window = Preferences(browser)
             window.show()
+
         pref_item.connect("activate", preferences_cb)
         menu.append(pref_item)
 
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-                arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_menu(menu)
         button.show()
         self.pack_start(button, True, True, 0)
@@ -238,14 +239,14 @@ class Preferences(qltk.UniqueWindow):
         editor.headers = get_headers()
         editor_frame = qltk.Frame(_("Column content"), child=editor)
 
-        equal_width = ConfigCheckButton(_("Equal pane width"),
-                                        "browsers",
-                                        "equal_pane_width",
-                                        populate=True)
+        equal_width = ConfigCheckButton(
+            _("Equal pane width"), "browsers", "equal_pane_width", populate=True
+        )
 
         apply_ = Button(_("_Apply"))
-        connect_obj(apply_, "clicked", self.__apply, editor,
-                    browser, False, equal_width)
+        connect_obj(
+            apply_, "clicked", self.__apply, editor, browser, False, equal_width
+        )
 
         cancel = Button(_("_Cancel"))
         cancel.connect("clicked", lambda x: self.destroy())

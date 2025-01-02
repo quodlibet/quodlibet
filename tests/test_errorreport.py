@@ -23,7 +23,6 @@ from .helper import temp_filename
 
 
 class Tfaulthandling(TestCase):
-
     def test_basic(self):
         with temp_filename() as filename:
             faulthandling.enable(filename)
@@ -41,11 +40,14 @@ class Tfaulthandling(TestCase):
 
     def test_stacktrace_grouping(self):
         stack1 = 'File "{}", line 486 in string_at'.format(
-            os.path.join("foo", "bar", "quux.py"),)
+            os.path.join("foo", "bar", "quux.py"),
+        )
         stack2 = 'File "{}", line 350 in string_at'.format(
-            os.path.join("baz", "bar", "quux.py"),)
+            os.path.join("baz", "bar", "quux.py"),
+        )
         stack3 = 'File "{}", line 350 in other'.format(
-            os.path.join("baz", "bar", "quux.py"),)
+            os.path.join("baz", "bar", "quux.py"),
+        )
 
         key1 = FaultHandlerCrash(stack1).get_grouping_key()
         key2 = FaultHandlerCrash(stack2).get_grouping_key()
@@ -56,7 +58,6 @@ class Tfaulthandling(TestCase):
 
 
 class Tlogdump(TestCase):
-
     def test_main(self):
         temp_dir = mkdtemp()
         try:
@@ -73,7 +74,6 @@ class Tlogdump(TestCase):
 
 
 class Terrorui(TestCase):
-
     def test_main(self):
         w = Gtk.Window()
         ErrorDialog(w, "foo").destroy()
@@ -82,7 +82,6 @@ class Terrorui(TestCase):
 
 
 class Terrorreport(TestCase):
-
     def test_enable(self):
         enable_errorhook(True)
         enable_errorhook(False)
@@ -93,7 +92,6 @@ class Terrorreport(TestCase):
 
 
 class Tsentrywrapper(TestCase):
-
     def test_main(self):
         sentry = get_sentry()
         try:

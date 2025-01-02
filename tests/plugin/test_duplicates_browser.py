@@ -15,17 +15,16 @@ from tests.plugin import PluginTestCase
 
 
 class TDuplicates(PluginTestCase):
-
     @classmethod
     def setUpClass(cls):
         cls.mod = cls.modules["Duplicates"]
         cls.kind = cls.plugins["Duplicates"].cls
-        cls.song = AudioFile({"~filename": "/dev/null",
-                              "artist": "foo BAR",
-                              "title": "no!"})
-        cls.song2 = AudioFile({"~filename": "/dev/null",
-                               "artist": "föo bár",
-                               "title": "no?..."})
+        cls.song = AudioFile(
+            {"~filename": "/dev/null", "artist": "foo BAR", "title": "no!"}
+        )
+        cls.song2 = AudioFile(
+            {"~filename": "/dev/null", "artist": "föo bár", "title": "no?..."}
+        )
 
     @classmethod
     def tearDownClass(cls):
@@ -39,13 +38,15 @@ class TDuplicates(PluginTestCase):
         self.plugin = self.kind([self.song], None)
 
     def _turn_all_options_on(self):
-        for name in ["REMOVE_WHITESPACE", "REMOVE_DIACRITICS",
-                     "REMOVE_PUNCTUATION", "CASE_INSENSITIVE"]:
+        for name in [
+            "REMOVE_WHITESPACE",
+            "REMOVE_DIACRITICS",
+            "REMOVE_PUNCTUATION",
+            "CASE_INSENSITIVE",
+        ]:
             # Get the actual values, don't hard-code here (kinda)
             cfg_name = getattr(self.mod.Duplicates, "_CFG_%s" % name)
-            config.set(PM.CONFIG_SECTION,
-                       self.kind._get_config_option(cfg_name),
-                       True)
+            config.set(PM.CONFIG_SECTION, self.kind._get_config_option(cfg_name), True)
 
     # TODO: proper logic tests...
 

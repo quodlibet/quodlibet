@@ -10,9 +10,16 @@ from tests import TestCase
 from .helper import preserve_environ, locale_numeric_conv
 
 from quodlibet.util import i18n
-from quodlibet.util.i18n import GlibTranslations, bcp47_to_language, \
-    set_i18n_envvars, fixup_i18n_envvars, osx_locale_id_to_lang, \
-    numeric_phrase, get_available_languages, iter_locale_dirs
+from quodlibet.util.i18n import (
+    GlibTranslations,
+    bcp47_to_language,
+    set_i18n_envvars,
+    fixup_i18n_envvars,
+    osx_locale_id_to_lang,
+    numeric_phrase,
+    get_available_languages,
+    iter_locale_dirs,
+)
 
 
 @contextlib.contextmanager
@@ -24,13 +31,14 @@ def use_dummy_ngettext(exp_singular, exp_plural, ret_singular, ret_plural):
 
     original_ngettext = i18n.ngettext
     try:
+
         def dummy_ngettext(singular, plural, n):
             if n == 1 and singular == exp_singular:
                 return ret_singular
             elif n != 1 and plural == exp_plural:
                 return ret_plural
             else:
-                return (singular if n == 1 else plural)
+                return singular if n == 1 else plural
 
         i18n.ngettext = dummy_ngettext
         yield
@@ -39,7 +47,6 @@ def use_dummy_ngettext(exp_singular, exp_plural, ret_singular, ret_plural):
 
 
 class TGlibTranslations(TestCase):
-
     def setUp(self):
         self.t = GlibTranslations()
 
@@ -73,7 +80,6 @@ class TGlibTranslations(TestCase):
 
 
 class Tgettext(TestCase):
-
     def test_iter_locale_dirs(self):
         for dir_ in iter_locale_dirs():
             assert isinstance(dir_, str)
@@ -116,34 +122,35 @@ class Tgettext(TestCase):
         self.assertEqual(actual, "1 green bottle")
 
         with locale_numeric_conv():
-            actual = numeric_phrase(
-                "%d green bottle", "%d green bottles", 1234)
+            actual = numeric_phrase("%d green bottle", "%d green bottles", 1234)
             self.assertEqual(actual, "1,234 green bottles")
 
     def test_numeric_phrase_locales(self):
         with locale_numeric_conv(thousands_sep=" "):
-            actual = numeric_phrase("%(bottles)d green bottle",
-                                    "%(bottles)d green bottles",
-                                    1234, "bottles")
+            actual = numeric_phrase(
+                "%(bottles)d green bottle", "%(bottles)d green bottles", 1234, "bottles"
+            )
             self.assertEqual(actual, "1 234 green bottles")
 
     def test_numeric_phrase_templated(self):
-        actual = numeric_phrase("%(bottles)d green bottle",
-                                "%(bottles)d green bottles", 1, "bottles")
+        actual = numeric_phrase(
+            "%(bottles)d green bottle", "%(bottles)d green bottles", 1, "bottles"
+        )
         self.assertEqual(actual, "1 green bottle")
 
         with locale_numeric_conv():
-            actual = numeric_phrase("%(bottles)d green bottle",
-                                    "%(bottles)d green bottles",
-                                    1234, "bottles")
+            actual = numeric_phrase(
+                "%(bottles)d green bottle", "%(bottles)d green bottles", 1234, "bottles"
+            )
 
             self.assertEqual(actual, "1,234 green bottles")
 
     def test_numeric_phrase_translation(self):
         # See issue 2166
 
-        with use_dummy_ngettext("%d text", "%d texts",
-                                "%d translation", "%d translations"):
+        with use_dummy_ngettext(
+            "%d text", "%d texts", "%d translation", "%d translations"
+        ):
             actual = numeric_phrase("%d text", "%d texts", 1)
             self.assertEqual(actual, "1 translation")
 
@@ -153,8 +160,9 @@ class Tgettext(TestCase):
     def test_numeric_phrase_translation_templated(self):
         # See issue 2166
 
-        with use_dummy_ngettext("%(n)d text", "%(n)d texts",
-                                "%(n)d translation", "%(n)d translations"):
+        with use_dummy_ngettext(
+            "%(n)d text", "%(n)d texts", "%(n)d translation", "%(n)d translations"
+        ):
             actual = numeric_phrase("%(n)d text", "%(n)d texts", 1, "n")
             self.assertEqual(actual, "1 translation")
 

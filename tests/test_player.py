@@ -60,6 +60,7 @@ class TPlayer(TestCase):
 
         def handler(type_, *args):
             self.signals.append(type_)
+
         connect_obj(self.player, "unpaused", handler, "unpaused")
         connect_obj(self.player, "paused", handler, "paused")
 
@@ -84,7 +85,6 @@ class TPlayer(TestCase):
 
 
 class TPlayerMixin:
-
     def _can_sync(self):
         # TODO: make this work with xinebe
         return not isinstance(self, TXinePlayer)
@@ -237,8 +237,7 @@ class TPlayerMixin:
         config.set("player", "replaygain", True)
         self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
         config.set("player", "fallback_gain", -5.0)
-        self.assertAlmostEqual(
-            self.player.calc_replaygain_volume(1.0), 0.562, 3)
+        self.assertAlmostEqual(self.player.calc_replaygain_volume(1.0), 0.562, 3)
         config.set("player", "pre_amp_gain", 10.0)
         self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
 

@@ -59,6 +59,5 @@ class RedirectImportHook:
 def install_redirect_import_hook():
     """Install the import hook, does not import anything"""
 
-    import_hook = RedirectImportHook(
-        "quodlibet.packages", ["senf", "raven"])
+    import_hook = RedirectImportHook("quodlibet.packages", ["senf", "raven"])
     sys.meta_path.insert(0, import_hook)

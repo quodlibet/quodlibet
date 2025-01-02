@@ -28,12 +28,10 @@ from .util import Command
 def update_icon_cache(*args):
     args = list(args)
     try:
-        subprocess.check_call(
-            ["gtk-update-icon-cache-3.0"] + args)
+        subprocess.check_call(["gtk-update-icon-cache-3.0"] + args)
     except OSError:
         try:
-            subprocess.check_call(
-                ["gtk-update-icon-cache"] + args)
+            subprocess.check_call(["gtk-update-icon-cache"] + args)
         except OSError:
             return False
         except subprocess.CalledProcessError:
@@ -53,8 +51,7 @@ class InstallIcons(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options("install",
-                                   ("install_data", "install_dir"))
+        self.set_undefined_options("install", ("install_data", "install_dir"))
 
     def get_outputs(self):
         return self.outfiles

@@ -11,9 +11,15 @@ from quodlibet import config
 
 from quodlibet.plugins import Plugin
 from quodlibet.qltk.models import ObjectStore
-from quodlibet.qltk.pluginwin import PluginWindow, PluginErrorWindow, \
-    PluginListView, PluginEnabledFilterCombo, PluginPreferencesContainer, \
-    EnabledType, PluginTypeFilterCombo
+from quodlibet.qltk.pluginwin import (
+    PluginWindow,
+    PluginErrorWindow,
+    PluginListView,
+    PluginEnabledFilterCombo,
+    PluginPreferencesContainer,
+    EnabledType,
+    PluginTypeFilterCombo,
+)
 
 
 class FakePlugin:
@@ -27,7 +33,6 @@ class FakePlugin:
 
 
 class FakePlugin2(FakePlugin):
-
     @classmethod
     def PluginPreferences(cls, parent):
         return PluginWindow()

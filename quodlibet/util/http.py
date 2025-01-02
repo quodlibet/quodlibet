@@ -16,8 +16,9 @@ from gi.repository.GObject import ParamFlags, SignalFlags
 from quodlibet.const import VERSION, WEBSITE
 from quodlibet.util import print_d, print_w
 
-PARAM_READWRITECONSTRUCT = \
+PARAM_READWRITECONSTRUCT = (
     ParamFlags.CONSTRUCT_ONLY | ParamFlags.READABLE | ParamFlags.WRITABLE
+)
 
 
 class HTTPRequest(GObject.Object):
@@ -38,10 +39,8 @@ class HTTPRequest(GObject.Object):
         "failure": (SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    message = GObject.Property(type=Soup.Message,
-                               flags=PARAM_READWRITECONSTRUCT)
-    cancellable = GObject.Property(type=Gio.Cancellable,
-                                   flags=PARAM_READWRITECONSTRUCT)
+    message = GObject.Property(type=Soup.Message, flags=PARAM_READWRITECONSTRUCT)
+    cancellable = GObject.Property(type=Gio.Cancellable, flags=PARAM_READWRITECONSTRUCT)
     istream = GObject.Property(type=Gio.InputStream, default=None)
     ostream = GObject.Property(type=Gio.OutputStream, default=None)
 
@@ -50,8 +49,7 @@ class HTTPRequest(GObject.Object):
             raise ValueError("Message may not be None")
 
         inner_cancellable = Gio.Cancellable()
-        super().__init__(message=message,
-                         cancellable=inner_cancellable)
+        super().__init__(message=message, cancellable=inner_cancellable)
         if cancellable is not None:
             cancellable.connect(lambda *x: self.cancel(), None)
 
@@ -73,17 +71,18 @@ class HTTPRequest(GObject.Object):
         try:
             status = int(self.message.get_property("status-code"))
             if status >= 400:
-                msg = "HTTP {} error in {} request to {}".format(
-                    status, self.message.get_method(), self._uri)
+                msg = f"HTTP {status} error in {self.message.get_method()} request to {self._uri}"
                 print_w(msg)
                 return self.emit("send-failure", Exception(msg))
             self.istream = session.send_finish(task)
-            print_d("Got HTTP {code} on {method} request to {uri}.".format(
-                uri=self._uri, code=status, method=self.message.get_method()))
+            print_d(
+                f"Got HTTP {status} on {self.message.get_method()} request to {self._uri}."
+            )
             self.emit("sent", self.message)
         except GLib.GError as e:
-            print_w("Failed sending {method} request to {uri} ({err})".format(
-                method=self.message.get_method(), uri=self._uri, err=e))
+            print_w(
+                f"Failed sending {self.message.get_method()} request to {self._uri} ({e})"
+            )
             self.emit("send-failure", e)
 
     def provide_target(self, stream):
@@ -151,16 +150,22 @@ class HTTPRequest(GObject.Object):
         # doesn't close connections
         # https://bugzilla.gnome.org/show_bug.cgi?id=711260
         flags = Gio.OutputStreamSpliceFlags.NONE
-        self.ostream.splice_async(self.istream, flags, GLib.PRIORITY_DEFAULT,
-                                  self.cancellable, spliced, None)
+        self.ostream.splice_async(
+            self.istream, flags, GLib.PRIORITY_DEFAULT, self.cancellable, spliced, None
+        )
 
 
 FailureCallback = Callable[[HTTPRequest, Exception, Any], None]
 
 
-def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Callable,
-             data: Any, try_decode: bool = False,
-             failure_callback: FailureCallback | None = None):
+def download(
+    message: Soup.Message,
+    cancellable: Gio.Cancellable,
+    callback: Callable,
+    data: Any,
+    try_decode: bool = False,
+    failure_callback: FailureCallback | None = None,
+):
     def received(request, ostream):
         ostream.close(None)
         bs = ostream.steal_as_bytes().get_data()
@@ -188,9 +193,13 @@ def download(message: Soup.Message, cancellable: Gio.Cancellable, callback: Call
     request.send()
 
 
-def download_json(message: Soup.Message, cancellable: Gio.Cancellable,
-                  callback: Callable, data: Any,
-                  failure_callback: FailureCallback | None = None):
+def download_json(
+    message: Soup.Message,
+    cancellable: Gio.Cancellable,
+    callback: Callable,
+    data: Any,
+    failure_callback: FailureCallback | None = None,
+):
     def cb(message, result, d):
         try:
             callback(message, json.loads(result), data)

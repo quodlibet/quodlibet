@@ -98,15 +98,19 @@ class NamedPipeServer(threading.Thread):
         try:
             handle = winapi.CreateNamedPipeW(
                 self._filename,
-                (winapi.PIPE_ACCESS_INBOUND |
-                 winapi.FILE_FLAG_FIRST_PIPE_INSTANCE),
-                (winapi.PIPE_TYPE_BYTE | winapi.PIPE_READMODE_BYTE |
-                 winapi.PIPE_WAIT | winapi.PIPE_REJECT_REMOTE_CLIENTS),
+                (winapi.PIPE_ACCESS_INBOUND | winapi.FILE_FLAG_FIRST_PIPE_INSTANCE),
+                (
+                    winapi.PIPE_TYPE_BYTE
+                    | winapi.PIPE_READMODE_BYTE
+                    | winapi.PIPE_WAIT
+                    | winapi.PIPE_REJECT_REMOTE_CLIENTS
+                ),
                 winapi.PIPE_UNLIMITED_INSTANCES,
                 buffer_size,
                 buffer_size,
                 winapi.NMPWAIT_USE_DEFAULT_WAIT,
-                None)
+                None,
+            )
 
             if handle == winapi.INVALID_HANDLE_VALUE:
                 raise ctypes.WinError()
@@ -129,14 +133,21 @@ class NamedPipeServer(threading.Thread):
                     readbuf = ctypes.create_string_buffer(buffer_size)
                     bytesread = winapi.DWORD()
                     try:
-                        if winapi.ReadFile(
-                                handle, readbuf, buffer_size,
-                                ctypes.byref(bytesread), None) == 0:
+                        if (
+                            winapi.ReadFile(
+                                handle,
+                                readbuf,
+                                buffer_size,
+                                ctypes.byref(bytesread),
+                                None,
+                            )
+                            == 0
+                        ):
                             raise ctypes.WinError()
                     except OSError:
                         break
                     else:
-                        message = readbuf[:bytesread.value]
+                        message = readbuf[: bytesread.value]
 
                     data += message
 

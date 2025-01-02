@@ -39,9 +39,11 @@ class LastFMCover(ApiCoverSourcePlugin):
 
     @property
     def url(self):
-        _url = "https://ws.audioscrobbler.com/2.0?method=album.getinfo&" + \
-               "api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&" + \
-               "artist={artist}&album={album}&mbid={mbid}"
+        _url = (
+            "https://ws.audioscrobbler.com/2.0?method=album.getinfo&"
+            + "api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&"
+            + "artist={artist}&album={album}&mbid={mbid}"
+        )
         song = self.song
         # This can work well for albums in Last.FM
         artists = self._album_artists_for(song) or "Various Artists"
@@ -70,17 +72,23 @@ class LastFMCover(ApiCoverSourcePlugin):
                     # Yes sometimes it's there but blank
                     continue
                 print_d("Got last.fm image: %s" % img)
-                results.append({"artist": album["artist"],
-                                "album": album["name"],
-                                "cover": url.replace("/300x300", "/500x500"),
-                                "dimensions": "500x500"
-                                })
+                results.append(
+                    {
+                        "artist": album["artist"],
+                        "album": album["name"],
+                        "cover": url.replace("/300x300", "/500x500"),
+                        "dimensions": "500x500",
+                    }
+                )
                 # This one can be massive, and slow
-                results.append({"artist": album["artist"],
-                                "album": album["name"],
-                                "cover": url.replace("/300x300", ""),
-                                "dimensions": "(original)"
-                                })
+                results.append(
+                    {
+                        "artist": album["artist"],
+                        "album": album["name"],
+                        "cover": url.replace("/300x300", ""),
+                        "dimensions": "(original)",
+                    }
+                )
                 # Prefer the bigger ones
                 break
         self.emit("search-complete", results)

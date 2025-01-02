@@ -27,10 +27,15 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Squeezebox Output"
     PLUGIN_NAME = _("Squeezebox Sync")
     PLUGIN_DESC_MARKUP = (
-        _("Makes Logitech Squeezebox mirror Quod Libet output, "
-          "provided both read from an identical library.") + "\n" +
-        _('Shares configuration with <a href="%(plugin_link)s">Export to '
-          "Squeezebox plugin</a>.")
+        _(
+            "Makes Logitech Squeezebox mirror Quod Libet output, "
+            "provided both read from an identical library."
+        )
+        + "\n"
+        + _(
+            'Shares configuration with <a href="%(plugin_link)s">Export to '
+            "Squeezebox plugin</a>."
+        )
         % {"plugin_link": "quodlibet:///prefs/plugins/Export to Squeezebox Playlist"}
     )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
@@ -59,8 +64,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             qltk.ErrorMessage(
                 None,
                 _("Error finding Squeezebox server"),
-                _("Error finding %s. Please check settings") %
-                self.server.config
+                _("Error finding %s. Please check settings") % self.server.config,
             ).run()
 
     def disabled(self):

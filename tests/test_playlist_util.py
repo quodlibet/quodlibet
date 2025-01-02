@@ -19,7 +19,6 @@ import pytest
 
 
 class TPlaylistUtil(TestCase):
-
     PLAYLIST_FILE_PATH = get_data_path("test.m3u8")
     sf_lib: SongFileLibrary = None
     pf_lib: PlaylistLibrary = None
@@ -44,15 +43,17 @@ class TPlaylistUtil(TestCase):
                 os.path.realpath(os.path.dirname(self.PLAYLIST_FILE_PATH)),
                 os.path.realpath(dir_of_url_based_file),
                 "determining the directory of url based files"
-                " should result in a correct path"
+                " should result in a correct path",
             )
 
             dir_of_reader_based_file: str = _dir_for(reader_based_file)
             self.assertEqual(
                 os.path.realpath(os.path.dirname(self.PLAYLIST_FILE_PATH)),
-                os.path.realpath(dir_of_reader_based_file,),
+                os.path.realpath(
+                    dir_of_reader_based_file,
+                ),
                 "determining the directory of reader based files"
-                " should result in a correct path"
+                " should result in a correct path",
             )
 
         finally:
@@ -67,11 +68,18 @@ class TPlaylistUtil(TestCase):
             try:
                 playlist = parse_m3u(file, fileName, self.sf_lib, self.pf_lib)
             except Exception:
-                pytest.fail("parsing m3u8 playlists in correct format"
-                            " should not cause errors")
+                pytest.fail(
+                    "parsing m3u8 playlists in correct format"
+                    " should not cause errors"
+                )
 
-        self.assertIsNotNone(playlist, ("parsing an m3u8 playlist in the correct format"
-                                        " should result in a playlist"))
+        self.assertIsNotNone(
+            playlist,
+            (
+                "parsing an m3u8 playlist in the correct format"
+                " should result in a playlist"
+            ),
+        )
         # the test.m3u8 contains:
         #   - 3 existing and supported audio files from the tests/data folder:
         #     lame.mp3, test.wav, sine-110hz.flac
@@ -79,7 +87,5 @@ class TPlaylistUtil(TestCase):
         #   - 1 not supported file: test.jpg
         # parsing the file correctly should result in a playlist with 3 entries
         self.assertEqual(
-            3,
-            len(playlist),
-            "only existing files should be added to the playlist"
+            3, len(playlist), "only existing files should be added to the playlist"
         )

@@ -111,10 +111,13 @@ def get_options(tag):
 @Massager._register
 class DateMassager(Massager):
     tags = ["date"]
-    error = _("The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
-              "'YYYY-MM-DD HH:MM:SS' format.")
-    __match = re.compile(r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}"
-                         r"([:.]\d{2}([:.]\d{2})?)?)?)?)?$").match
+    error = _(
+        "The date must be entered in 'YYYY', 'YYYY-MM-DD' or "
+        "'YYYY-MM-DD HH:MM:SS' format."
+    )
+    __match = re.compile(
+        r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}" r"([:.]\d{2}([:.]\d{2})?)?)?)?)?$"
+    ).match
 
     def validate(self, value):
         value = value.strip().replace(".", "-").replace("/", "-")
@@ -166,9 +169,14 @@ class PeakMassager(Massager):
 
 @Massager._register
 class MBIDMassager(Massager):
-    tags = ["musicbrainz_trackid", "musicbrainz_albumid",
-            "musicbrainz_artistid", "musicbrainz_albumartistid",
-            "musicbrainz_trmid", "musicip_puid"]
+    tags = [
+        "musicbrainz_trackid",
+        "musicbrainz_albumid",
+        "musicbrainz_artistid",
+        "musicbrainz_albumartistid",
+        "musicbrainz_trmid",
+        "musicip_puid",
+    ]
     error = _("MusicBrainz IDs must be in UUID format.")
 
     def validate(self, value):
@@ -182,8 +190,9 @@ class MBIDMassager(Massager):
             if len(value) != 32:
                 raise ValidationError
             else:
-                return "-".join([value[:8], value[8:12], value[12:16],
-                                  value[16:20], value[20:]])
+                return "-".join(
+                    [value[:8], value[8:12], value[12:16], value[16:20], value[20:]]
+                )
 
 
 @Massager._register
@@ -191,8 +200,9 @@ class MBAlbumStatus(Massager):
     tags = ["musicbrainz_albumstatus"]
     # Translators: Leave "official", "promotional", and "bootleg"
     # untranslated. They are the three possible literal values.
-    error = _("MusicBrainz release status must be 'official', "
-              "'promotional', or 'bootleg'.")
+    error = _(
+        "MusicBrainz release status must be 'official', " "'promotional', or 'bootleg'."
+    )
     options = ["official", "promotional", "bootleg"]
 
     def validate(self, value):

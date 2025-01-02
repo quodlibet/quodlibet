@@ -19,7 +19,6 @@ NUM_RATINGS = 4
 
 
 class TRatingsMenuItem(TestCase):
-
     def setUp(self):
         config.RATINGS = config.HardCodedRatingsPrefs()
         self.assertEqual(config.RATINGS.number, NUM_RATINGS)
@@ -35,8 +34,11 @@ class TRatingsMenuItem(TestCase):
         self.library.librarian.destroy()
 
     def test_menuitem_children(self):
-        children = [mi for mi in self.rmi.get_submenu().get_children()
-                    if isinstance(mi, Gtk.CheckMenuItem)]
+        children = [
+            mi
+            for mi in self.rmi.get_submenu().get_children()
+            if isinstance(mi, Gtk.CheckMenuItem)
+        ]
         self.assertEqual(len(children), NUM_RATINGS + 1)
         highest = children[-1]
         self.assertEqual(highest.get_active(), True)
@@ -45,8 +47,11 @@ class TRatingsMenuItem(TestCase):
     def test_no_rating(self):
         af = AudioFile({"~filename": fsnative("/foobar"), "artist": "foo"})
         rmi = RatingsMenuItem([af], self.library)
-        children = [mi for mi in rmi.get_submenu().get_children()
-                    if isinstance(mi, Gtk.CheckMenuItem)]
+        children = [
+            mi
+            for mi in rmi.get_submenu().get_children()
+            if isinstance(mi, Gtk.CheckMenuItem)
+        ]
         assert not any(c.get_active() for c in children)
 
     def test_set_remove_rating(self):

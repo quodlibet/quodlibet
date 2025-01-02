@@ -34,30 +34,35 @@ class WebsiteSearch(SongsMenuPlugin):
     PLUGIN_ICON = Icons.APPLICATION_INTERNET
     PLUGIN_ID = "Website Search"
     PLUGIN_NAME = _("Website Search")
-    PLUGIN_DESC_MARKUP = (_(
+    PLUGIN_DESC_MARKUP = _(
         "Searches your choice of website using any song tags.\n"
-        "Supports patterns e.g. %(pattern)s.")
-         % {"pattern": util.monospace("https://duckduckgo.com?q=&lt;~artist~title&gt;")}
-    )
+        "Supports patterns e.g. %(pattern)s."
+    ) % {"pattern": util.monospace("https://duckduckgo.com?q=&lt;~artist~title&gt;")}
 
     # Here are some starters...
     DEFAULT_URL_PATS = [
-        ("Google song search",
-            "https://google.com/search?q=<artist~title>"),
-        ("Wikipedia (en) artist entry",
-            "https://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>"),
-        ("Musicbrainz album listing",
+        ("Google song search", "https://google.com/search?q=<artist~title>"),
+        (
+            "Wikipedia (en) artist entry",
+            "https://wikipedia.org/wiki/<albumartist|<albumartist>|<artist>>",
+        ),
+        (
+            "Musicbrainz album listing",
             "https://musicbrainz.org/<musicbrainz_albumid|release/"
-            "<musicbrainz_albumid>|search?query=<album>&type=release>"),
-        ("Discogs album search",
+            "<musicbrainz_albumid>|search?query=<album>&type=release>",
+        ),
+        (
+            "Discogs album search",
             "https://www.discogs.com/search?type=release&artist="
-            "<albumartist|<albumartist>|<artist>>&title=<album>"),
-        ("Youtube video search",
-         "https://www.youtube.com/results?search_query=<artist~title>"),
+            "<albumartist|<albumartist>|<artist>>&title=<album>",
+        ),
+        (
+            "Youtube video search",
+            "https://www.youtube.com/results?search_query=<artist~title>",
+        ),
         ("Go to ~website", "<website>"),
     ]
-    PATTERNS_FILE = os.path.join(
-        quodlibet.get_user_dir(), "lists", "searchsites")
+    PATTERNS_FILE = os.path.join(quodlibet.get_user_dir(), "lists", "searchsites")
 
     _no_launch = False
 
@@ -74,14 +79,16 @@ class WebsiteSearch(SongsMenuPlugin):
             # TODO: some pattern validation too (that isn't slow)
             try:
                 p = Pattern(s)
-                return (p and uri_is_valid(s))
+                return p and uri_is_valid(s)
             except ValueError:
                 return False
 
-        win = StandaloneEditor(filename=cls.PATTERNS_FILE,
-                               title=_("Search URL patterns"),
-                               initial=cls.DEFAULT_URL_PATS,
-                               validator=valid_uri)
+        win = StandaloneEditor(
+            filename=cls.PATTERNS_FILE,
+            title=_("Search URL patterns"),
+            initial=cls.DEFAULT_URL_PATS,
+            validator=valid_uri,
+        )
         win.show()
 
     @classmethod
@@ -100,8 +107,7 @@ class WebsiteSearch(SongsMenuPlugin):
         self._url_pats = StandaloneEditor.load_values(filename)
         # Failing all else...
         if not len(self._url_pats):
-            print_d("No saved searches found in %s. Using defaults." %
-                    filename)
+            print_d("No saved searches found in %s. Using defaults." % filename)
             self._url_pats = self.DEFAULT_URL_PATS
 
     def __init__(self, *args, **kwargs):
@@ -132,8 +138,9 @@ class WebsiteSearch(SongsMenuPlugin):
             # Remove Nones, and de-duplicate collection
             urls = set(filter(None, (website_for(pat, s) for s in songs)))
             if not urls:
-                print_w("Couldn't build URLs using \"%s\"."
-                        "Check your pattern?" % url_pat)
+                print_w(
+                    'Couldn\'t build URLs using "%s".' "Check your pattern?" % url_pat
+                )
                 return False
             print_d("Got %d websites from %d songs" % (len(urls), len(songs)))
             if not self._no_launch:
@@ -148,15 +155,14 @@ def website_for(pat, song):
     # Generate a sanitised AudioFile; allow through most tags
     subs = AudioFile()
     # See issue 2762
-    for k in (USER_TAGS + MACHINE_TAGS + ["~filename"]):
+    for k in USER_TAGS + MACHINE_TAGS + ["~filename"]:
         vals = song.comma(k)
         if vals:
             try:
                 # Escaping ~filename stops ~dirname ~basename etc working
                 # But not escaping means ? % & will cause problems.
                 # Who knows what user wants to do with /, seems better raw.
-                subs[k] = (vals if k in ["website", "~filename"]
-                           else quote_plus(vals))
+                subs[k] = vals if k in ["website", "~filename"] else quote_plus(vals)
             except KeyError:
                 print_d(f"Problem with {k} tag values: {vals!r}")
     return pat.format(subs) or None

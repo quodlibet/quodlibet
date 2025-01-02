@@ -55,9 +55,11 @@ class CoverageCmd(Command):
         try:
             from coverage import coverage, CoverageException
         except ImportError:
-            print("Missing 'coverage' module. See "
-                  "https://pypi.python.org/pypi/coverage or try "
-                  "`apt-get install python-coverage`")
+            print(
+                "Missing 'coverage' module. See "
+                "https://pypi.python.org/pypi/coverage or try "
+                "`apt-get install python-coverage`"
+            )
             return
 
         cov = coverage()

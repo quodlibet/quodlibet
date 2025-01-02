@@ -8,8 +8,7 @@
 from gi.repository import Gtk, GLib
 import re
 import time
-from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, \
-    ReplayGainPipeline
+from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, ReplayGainPipeline
 from quodlibet.formats import MusicFile
 from quodlibet.formats import AudioFile
 
@@ -18,7 +17,6 @@ from tests import get_data_path, TestCase
 
 
 class TReplayGain(PluginTestCase):
-
     # Give up analysis after some time, in case GStreamer dies.
     TIMEOUT = 20
 
@@ -57,8 +55,7 @@ class TReplayGain(PluginTestCase):
         rgs = self.mod.RGSong(self.song)
         rgs.done = True
         rgs._write(0.0, 0.0)
-        self.assertTrue(rgs.has_album_tags,
-                        msg="Failed with 0.0 album tags (%s)" % rgs)
+        self.assertTrue(rgs.has_album_tags, msg="Failed with 0.0 album tags (%s)" % rgs)
 
     def test_RGAlbum_properties(self):
         rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
@@ -66,8 +63,12 @@ class TReplayGain(PluginTestCase):
         self.assertEqual(rga.title, "foo - the album")
 
     def test_delete_bs1770gain(self):
-        tags = ["replaygain_reference_loudness", "replaygain_algorithm",
-                "replaygain_album_range", "replaygain_track_range"]
+        tags = [
+            "replaygain_reference_loudness",
+            "replaygain_algorithm",
+            "replaygain_album_range",
+            "replaygain_track_range",
+        ]
 
         for tag in tags:
             self.song[tag] = "foo"
@@ -94,8 +95,7 @@ class TReplayGain(PluginTestCase):
 
             pipeline.start(album)
             start = time.time()
-            while not self.analysed and \
-                    abs(time.time() - start) < self.TIMEOUT:
+            while not self.analysed and abs(time.time() - start) < self.TIMEOUT:
                 Gtk.main_iteration_do(False)
             pipeline.quit()
             pipeline.disconnect(sig)
@@ -110,8 +110,9 @@ class TReplayGain(PluginTestCase):
 
         self._analyse_song(song)
 
-        self.assertAlmostEqual(song("~#replaygain_track_peak"), 1.0,
-                                   msg="Track peak should be 1.0")
+        self.assertAlmostEqual(
+            song("~#replaygain_track_peak"), 1.0, msg="Track peak should be 1.0"
+        )
 
         track_gain = song("~#replaygain_track_gain")
         assert track_gain, "No Track Gain added"
@@ -126,8 +127,9 @@ class TReplayGain(PluginTestCase):
 
         self._analyse_song(song)
 
-        self.assertAlmostEqual(song("~#replaygain_track_peak"), 0.0,
-                                   msg="Track peak should be 0.0")
+        self.assertAlmostEqual(
+            song("~#replaygain_track_peak"), 0.0, msg="Track peak should be 0.0"
+        )
 
         track_gain = song("~#replaygain_track_gain")
         assert track_gain, "No Track Gain added"
@@ -137,7 +139,6 @@ class TReplayGain(PluginTestCase):
 
 
 class FakePipeline(ReplayGainPipeline):
-
     def __init__(self):
         super().__init__()
         self.started = []
@@ -172,11 +173,9 @@ class TRGDialog(TestCase):
         self.run_main_loop()
         d.destroy()
         # One should have got half of the albums needing update (and no more)
-        self.assertEqual(self.track_nums_from(d.pipes[0].started),
-                             [0, 4])
+        self.assertEqual(self.track_nums_from(d.pipes[0].started), [0, 4])
         # And the other processor should get the other half
-        self.assertEqual(self.track_nums_from(d.pipes[1].started),
-                             [2, 6])
+        self.assertEqual(self.track_nums_from(d.pipes[1].started), [2, 6])
 
     def run_main_loop(self, timeout=0.25):
         start = time.time()

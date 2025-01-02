@@ -20,7 +20,6 @@ class ServerError(Exception):
 
 
 class BaseTCPServer:
-
     def __init__(self, port, connection_class, debug=False):
         """port -- IP port
         connection_class -- BaseTCPConnection subclass
@@ -106,8 +105,7 @@ class BaseTCPServer:
         sock = socket.fromfd(fd, socket.AF_INET, socket.SOCK_STREAM)
         sock.setblocking(0)
 
-        msg = "New connection from %s at socket %d" % (
-            addr_string, sock.fileno())
+        msg = "New connection from %s at socket %d" % (addr_string, sock.fileno())
         if self._debug:
             self.log(msg)
 
@@ -177,9 +175,11 @@ class BaseTCPConnection:
             return True
 
         self._in_id = io_add_watch(
-            self._sock, GLib.PRIORITY_DEFAULT,
+            self._sock,
+            GLib.PRIORITY_DEFAULT,
             GLib.IOCondition.IN | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
-            can_read_cb)
+            can_read_cb,
+        )
 
     def start_write(self):
         """Trigger at least one call to handle_write() if can_write is True.
@@ -222,10 +222,11 @@ class BaseTCPConnection:
 
         if self._out_id is None:
             self._out_id = io_add_watch(
-                self._sock, GLib.PRIORITY_DEFAULT,
-                GLib.IOCondition.OUT | GLib.IOCondition.ERR |
-                GLib.IOCondition.HUP,
-                can_write_cb)
+                self._sock,
+                GLib.PRIORITY_DEFAULT,
+                GLib.IOCondition.OUT | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
+                can_write_cb,
+            )
 
     def close(self):
         """Close this connection. Can be called multiple times.

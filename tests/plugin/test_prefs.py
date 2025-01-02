@@ -12,10 +12,9 @@ from pytest import fixture
 from quodlibet import config, app
 from quodlibet.ext._shared.squeezebox.server import SqueezeboxError
 from quodlibet.plugins import Plugin
-from tests.plugin import (init_fake_app, destroy_fake_app, plugins)
+from tests.plugin import init_fake_app, destroy_fake_app, plugins
 
-PREFS_PLUGINS = [p for p in plugins.values()
-                 if hasattr(p.cls, "PluginPreferences")]
+PREFS_PLUGINS = [p for p in plugins.values() if hasattr(p.cls, "PluginPreferences")]
 
 
 @fixture

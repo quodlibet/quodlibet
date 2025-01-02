@@ -15,9 +15,12 @@ from quodlibet.qltk.models import ObjectModelSort
 
 
 EMPTY = _("Songs not in an album")
-ALBUM_PATTERN = r"""
+ALBUM_PATTERN = (
+    r"""
 \<b\><album|<album>|%s>\</b\><date| \<small\>(<date>)\</small\>>
-\<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>""" % EMPTY
+\<small\><~discs|<~discs> - ><~tracks> - <~long-length>\</small\>"""
+    % EMPTY
+)
 ALBUM_PATTERN = ALBUM_PATTERN.lstrip()
 PAT = XMLFromPattern(ALBUM_PATTERN)
 
@@ -27,7 +30,6 @@ COUNT_PATTERN = " <span size='small' color='#777'>(%s)</span>"
 
 
 class AlbumNode:
-
     def __init__(self, album):
         self.album = album
         self.scanned = False
@@ -45,6 +47,7 @@ class AlbumNode:
         self.scanned = True
 
         from quodlibet import app
+
         s = self.cover_size * scale_factor * 0.5
         self.cover = app.cover_manager.get_pixbuf_many(self.album.songs, s, s)
 
@@ -76,7 +79,6 @@ def build_tree(tags, albums, cache=None):
 
 
 class CollectionModelMixin:
-
     def get_path_for_album(self, album):
         """Returns the path for an album or None"""
 
@@ -254,6 +256,7 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                 for v in sub.values():
                     _get_all(v, found)
                 return found
+
             not_found.update(_get_all(tree))
 
             return not_found

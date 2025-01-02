@@ -30,7 +30,7 @@ class Tconfig(TestCase):
         invalid_filename = filename + ".not-valid"
         assert os.path.exists(invalid_filename)
         with open(invalid_filename, "rb") as f:
-             assert f.read() == garbage
+            assert f.read() == garbage
 
         os.remove(filename)
         os.remove(invalid_filename)

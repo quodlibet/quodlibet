@@ -43,8 +43,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
             BRAINZ_APP, VERSION, "quodlibet@lists.sacredchao.net"
         )
         musicbrainzngs.auth(
-            plugin_config.get("username"),
-            plugin_config.get("password")
+            plugin_config.get("username"), plugin_config.get("password")
         )
 
     def plugin_on_changed(self, songs):
@@ -68,8 +67,7 @@ class MusicBrainzSyncPlugin(EventPlugin):
             if entry.get_property("sensitive"):
                 plugin_config.set(key, entry.get_text())
                 musicbrainzngs.auth(
-                    plugin_config.get("username"),
-                    plugin_config.get("password")
+                    plugin_config.get("username"), plugin_config.get("password")
                 )
 
         box = Gtk.VBox(spacing=12)
@@ -86,9 +84,14 @@ class MusicBrainzSyncPlugin(EventPlugin):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                                  Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             labels.append(label)
 
         row = 0

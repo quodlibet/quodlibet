@@ -21,28 +21,27 @@ FIXED_NAME = "_foobar"
 
 
 class StubbedPlaylistMenu(PlaylistMenu):
-
     def _get_new_name(self, parent, title):
         return FIXED_NAME
 
 
 class TPlaylistMenu(TestCase):
-    SONG = AudioFile({
-        "title": "two",
-        "artist": "mu",
-        "~filename": dummy_path("/dev/zero")})
+    SONG = AudioFile(
+        {"title": "two", "artist": "mu", "~filename": dummy_path("/dev/zero")}
+    )
     SONGS = [
-        AudioFile({
-            "title": "one",
-            "artist": "piman",
-            "~filename": dummy_path("/dev/null")}),
+        AudioFile(
+            {"title": "one", "artist": "piman", "~filename": dummy_path("/dev/null")}
+        ),
         SONG,
     ]
 
     def setUp(self):
         # Testing locally is VERY dangerous without this...
-        self.assertTrue(_TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
-                        msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR)
+        self.assertTrue(
+            _TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
+            msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR,
+        )
         try:
             os.mkdir(_DEFAULT_PLAYLIST_DIR)
         except OSError:

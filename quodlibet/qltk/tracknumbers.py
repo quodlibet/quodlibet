@@ -22,7 +22,6 @@ from quodlibet.util import connect_obj
 
 
 class Entry:
-
     def __init__(self, song):
         self.song = song
         self.tracknumber = song("tracknumber")
@@ -46,8 +45,7 @@ class TrackNumbers(Gtk.VBox):
         spin_start.set_value(1)
         label_start.set_mnemonic_widget(spin_start)
 
-        label_total = Gtk.Label(
-            label=_("_Total tracks:"), halign=Gtk.Align.END)
+        label_total = Gtk.Label(label=_("_Total tracks:"), halign=Gtk.Align.END)
         label_total.set_use_underline(True)
         spin_total = Gtk.SpinButton()
         spin_total.set_range(0, 9999)
@@ -58,15 +56,16 @@ class TrackNumbers(Gtk.VBox):
 
         grid = Gtk.Grid(row_spacing=4, column_spacing=4)
         grid.add(label_start)
-        grid.attach_next_to(
-            spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
-        grid.attach_next_to(
-            label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
-        grid.attach_next_to(
-            spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(spin_start, label_start, Gtk.PositionType.RIGHT, 1, 1)
+        grid.attach_next_to(label_total, label_start, Gtk.PositionType.BOTTOM, 1, 1)
+        grid.attach_next_to(spin_total, label_total, Gtk.PositionType.RIGHT, 1, 1)
         grid.attach_next_to(
             Align(preview, halign=Gtk.Align.END),
-            spin_start, Gtk.PositionType.RIGHT, 1, 1)
+            spin_start,
+            Gtk.PositionType.RIGHT,
+            1,
+            1,
+        )
         preview.props.hexpand = True
 
         model = ObjectStore()
@@ -111,8 +110,7 @@ class TrackNumbers(Gtk.VBox):
         bbox.set_layout(Gtk.ButtonBoxStyle.END)
         save = Button(_("_Save"), Icons.DOCUMENT_SAVE)
         self.save = save
-        connect_obj(save,
-            "clicked", self.__save_files, prop, model, library)
+        connect_obj(save, "clicked", self.__save_files, prop, model, library)
         revert = Button(_("_Revert"), Icons.DOCUMENT_REVERT)
         self.revert = revert
         bbox.pack_start(revert, True, True, 0)
@@ -121,20 +119,24 @@ class TrackNumbers(Gtk.VBox):
 
         preview_args = [spin_start, spin_total, model, save, revert]
         preview.connect("clicked", self.__preview_tracks, *preview_args)
-        connect_obj(revert, "clicked",
-                              self.__update, None, *preview_args[1:])
-        spin_total.connect(
-            "value-changed", self.__preview_tracks, *preview_args)
-        spin_start.connect(
-            "value-changed", self.__preview_tracks, *preview_args)
-        connect_obj(view,
-            "drag-end", self.__class__.__preview_tracks, self,
-            *preview_args)
+        connect_obj(revert, "clicked", self.__update, None, *preview_args[1:])
+        spin_total.connect("value-changed", self.__preview_tracks, *preview_args)
+        spin_start.connect("value-changed", self.__preview_tracks, *preview_args)
+        connect_obj(
+            view, "drag-end", self.__class__.__preview_tracks, self, *preview_args
+        )
         render.connect("edited", self.__row_edited, model, preview, save)
 
-        connect_obj(prop,
-            "changed", self.__class__.__update, self,
-            spin_total, model, save, revert)
+        connect_obj(
+            prop,
+            "changed",
+            self.__class__.__update,
+            self,
+            spin_total,
+            model,
+            save,
+            revert,
+        )
 
         for child in self.get_children():
             child.show_all()
@@ -207,6 +209,7 @@ class TrackNumbers(Gtk.VBox):
 
         def sort_key(song):
             return song("~#track", 0), song("~basename"), song
+
         songs.sort(key=sort_key)
 
         model.clear()

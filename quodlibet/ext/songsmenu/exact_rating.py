@@ -33,10 +33,9 @@ class ExactRating(SongsMenuPlugin):
             input_string = GetStringDialog(
                 self.plugin_window,
                 self.PLUGIN_NAME,
-                _("Please give your desired rating on a scale "
-                  "from 0.0 to 1.0"),
+                _("Please give your desired rating on a scale " "from 0.0 to 1.0"),
                 _("_Apply"),
-                Icons.NONE
+                Icons.NONE,
             ).run()
 
             if input_string is None:
@@ -48,10 +47,8 @@ class ExactRating(SongsMenuPlugin):
                 continue
 
         count = len(songs)
-        if (count > 1 and config.getboolean("browsers",
-                                            "rating_confirm_multiple")):
-            confirm_dialog = ConfirmRateMultipleDialog(self.plugin_window,
-                                                       count, value)
+        if count > 1 and config.getboolean("browsers", "rating_confirm_multiple"):
+            confirm_dialog = ConfirmRateMultipleDialog(self.plugin_window, count, value)
             if confirm_dialog.run() != Gtk.ResponseType.YES:
                 return
 

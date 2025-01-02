@@ -70,7 +70,7 @@ class TagName:
 
 def _get_role_map(tags):
     roles = {}
-    for (name, tag) in tags.items():
+    for name, tag in tags.items():
         if tag.role:
             roles[name] = tag.role
             if tag.has_sort:
@@ -79,106 +79,104 @@ def _get_role_map(tags):
 
 
 T = TagName
-_TAGS = {t.name: t for t in [
-    T("album", "us", _("album"), _("albums")),
-    T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
-    T("artist", "us", _("artist"), _("artists")),
-    T("author", "u", _("author"), _("authors")),
-    T("comment", "u", _("comment")),
-    T("composer", "us", _("composer"), _("composers"), _("composition")),
-    # Translators: conducting as in conducting a musical performance
-    T("conductor", "u", _("conductor"), _("conductors"), _("conducting")),
-    T("contact", "u", _("contact")),
-    T("copyright", "u", _("copyright")),
-    T("date", "u", _("date")),
-    T("description", "u", _("description")),
-    T("genre", "u", _("genre"), _("genres")),
-    T("grouping", "u", _("grouping")),
-    T("language", "ui", _("language")),
-    T("license", "u", _("license")),
-    T("location", "u", _("location")),
-    T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
-    # Translators: Also e.g. "record label", "publisher"
-    T("organization", "u", _("organization")),
-    T("performer", "uisr", _("performer"), _("performers"), _("performance")),
-    T("producer", "u", _("producer"), _("producers"), _("production")),
-    T("title", "u", _("title")),
-    T("version", "u", _("version")),
-    T("website", "u", _("website")),
-
-    T("albumartist", "us", _("album artist")),
-    T("bpm", "u", _("BPM")),
-    T("isrc", "u", "ISRC"),
-    # Translators: This used to be called "part".
-    T("discsubtitle", "u", _("disc subtitle")),
-    T("part", "u", _("disc subtitle")),
-    T("discnumber", "uh", _("disc")),
-    T("tracknumber", "uh", _("track")),
-    T("labelid", "u", _("label ID")),
-    T("originaldate", "u", _("original release date")),
-    T("originalalbum", "u", _("original album")),
-    T("originalartist", "us", _("original artist")),
-    T("recordingdate", "u", _("recording date")),
-    T("releasecountry", "u", _("release country")),
-    T("initialkey", "u", _("initial key")),
-
-    # for backwards compat
-    T("performers", "ishr", _("performers")),
-
-    # http://musicbrainz.org/doc/MusicBrainzTag
-    # Note: picard has changed musicbrainz_trackid to mean release track.
-    # We can't do that because of existing libraries, so use a new
-    # musicbrainz_releastrackid instead.
-    T("musicbrainz_trackid", "um", _("MusicBrainz recording ID")),
-    T("musicbrainz_releasetrackid", "um", _("MusicBrainz release track ID")),
-    T("musicbrainz_albumid", "um", _("MusicBrainz release ID")),
-    T("musicbrainz_artistid", "um", _("MusicBrainz artist ID")),
-    T("musicbrainz_albumartistid", "um", _("MusicBrainz release artist ID")),
-    T("musicbrainz_trmid", "um", _("MusicBrainz TRM ID")),
-    T("musicip_puid", "um", _("MusicIP PUID")),
-    T("musicbrainz_albumstatus", "um", _("MusicBrainz album status")),
-    T("musicbrainz_albumtype", "um", _("MusicBrainz album type")),
-    T("musicbrainz_releasegroupid", "um", _("MusicBrainz release group ID")),
-
-    # Translators: "gain" means a volume adjustment, not "to acquire".
-    T("replaygain_track_gain", "umn", _("track gain")),
-    T("replaygain_track_peak", "umn", _("track peak")),
-    # Translators: "gain" means a volume adjustment, not "to acquire".
-    T("replaygain_album_gain", "umn", _("album gain")),
-    T("replaygain_album_peak", "umn", _("album peak")),
-    T("replaygain_reference_loudness", "umn", _("reference loudness")),
-
-    T("added", "n", _("added")),
-    T("lastplayed", "n", _("last played")),
-    T("disc", "n", _("disc")),
-    T("discs", "n", _("discs")),
-    T("track", "n", _("track")),
-    T("tracks", "n", _("tracks")),
-    T("laststarted", "n", _("last started")),
-    T("filename", "i", _("full name")),
-    T("basename", "i", _("filename")),
-    T("dirname", "i", _("directory")),
-    T("mtime", "n", _("modified")),
-    T("playcount", "n", _("plays")),
-    T("skipcount", "n", _("skips")),
-    T("uri", "i", "URI"),
-    T("mountpoint", "i", _("mount point")),
-    T("length", "n", _("length")),
-    T("people", "isr", _("people")),
-    T("rating", "in", _("rating")),
-    T("year", "in", _("year")),
-    T("originalyear", "in", _("original release year")),
-    T("bookmark", "i", _("bookmark")),
-    T("bitdepth", "n", _("bitdepth")),
-    T("bitrate", "in", _("bitrate")),
-    T("filesize", "n", _("file size")),
-    T("format", "i", _("file format")),
-    T("codec", "i", _("codec")),
-    T("encoding", "i", _("encoding")),
-    T("playlists", "i", _("playlists")),
-    T("samplerate", "n", _("sample rate")),
-    T("channels", "n", _("channel count")),
-]}
+_TAGS = {
+    t.name: t
+    for t in [
+        T("album", "us", _("album"), _("albums")),
+        T("arranger", "u", _("arranger"), _("arrangers"), _("arrangement")),
+        T("artist", "us", _("artist"), _("artists")),
+        T("author", "u", _("author"), _("authors")),
+        T("comment", "u", _("comment")),
+        T("composer", "us", _("composer"), _("composers"), _("composition")),
+        # Translators: conducting as in conducting a musical performance
+        T("conductor", "u", _("conductor"), _("conductors"), _("conducting")),
+        T("contact", "u", _("contact")),
+        T("copyright", "u", _("copyright")),
+        T("date", "u", _("date")),
+        T("description", "u", _("description")),
+        T("genre", "u", _("genre"), _("genres")),
+        T("grouping", "u", _("grouping")),
+        T("language", "ui", _("language")),
+        T("license", "u", _("license")),
+        T("location", "u", _("location")),
+        T("lyricist", "u", _("lyricist"), _("lyricists"), _("lyrics")),
+        # Translators: Also e.g. "record label", "publisher"
+        T("organization", "u", _("organization")),
+        T("performer", "uisr", _("performer"), _("performers"), _("performance")),
+        T("producer", "u", _("producer"), _("producers"), _("production")),
+        T("title", "u", _("title")),
+        T("version", "u", _("version")),
+        T("website", "u", _("website")),
+        T("albumartist", "us", _("album artist")),
+        T("bpm", "u", _("BPM")),
+        T("isrc", "u", "ISRC"),
+        # Translators: This used to be called "part".
+        T("discsubtitle", "u", _("disc subtitle")),
+        T("part", "u", _("disc subtitle")),
+        T("discnumber", "uh", _("disc")),
+        T("tracknumber", "uh", _("track")),
+        T("labelid", "u", _("label ID")),
+        T("originaldate", "u", _("original release date")),
+        T("originalalbum", "u", _("original album")),
+        T("originalartist", "us", _("original artist")),
+        T("recordingdate", "u", _("recording date")),
+        T("releasecountry", "u", _("release country")),
+        T("initialkey", "u", _("initial key")),
+        # for backwards compat
+        T("performers", "ishr", _("performers")),
+        # http://musicbrainz.org/doc/MusicBrainzTag
+        # Note: picard has changed musicbrainz_trackid to mean release track.
+        # We can't do that because of existing libraries, so use a new
+        # musicbrainz_releastrackid instead.
+        T("musicbrainz_trackid", "um", _("MusicBrainz recording ID")),
+        T("musicbrainz_releasetrackid", "um", _("MusicBrainz release track ID")),
+        T("musicbrainz_albumid", "um", _("MusicBrainz release ID")),
+        T("musicbrainz_artistid", "um", _("MusicBrainz artist ID")),
+        T("musicbrainz_albumartistid", "um", _("MusicBrainz release artist ID")),
+        T("musicbrainz_trmid", "um", _("MusicBrainz TRM ID")),
+        T("musicip_puid", "um", _("MusicIP PUID")),
+        T("musicbrainz_albumstatus", "um", _("MusicBrainz album status")),
+        T("musicbrainz_albumtype", "um", _("MusicBrainz album type")),
+        T("musicbrainz_releasegroupid", "um", _("MusicBrainz release group ID")),
+        # Translators: "gain" means a volume adjustment, not "to acquire".
+        T("replaygain_track_gain", "umn", _("track gain")),
+        T("replaygain_track_peak", "umn", _("track peak")),
+        # Translators: "gain" means a volume adjustment, not "to acquire".
+        T("replaygain_album_gain", "umn", _("album gain")),
+        T("replaygain_album_peak", "umn", _("album peak")),
+        T("replaygain_reference_loudness", "umn", _("reference loudness")),
+        T("added", "n", _("added")),
+        T("lastplayed", "n", _("last played")),
+        T("disc", "n", _("disc")),
+        T("discs", "n", _("discs")),
+        T("track", "n", _("track")),
+        T("tracks", "n", _("tracks")),
+        T("laststarted", "n", _("last started")),
+        T("filename", "i", _("full name")),
+        T("basename", "i", _("filename")),
+        T("dirname", "i", _("directory")),
+        T("mtime", "n", _("modified")),
+        T("playcount", "n", _("plays")),
+        T("skipcount", "n", _("skips")),
+        T("uri", "i", "URI"),
+        T("mountpoint", "i", _("mount point")),
+        T("length", "n", _("length")),
+        T("people", "isr", _("people")),
+        T("rating", "in", _("rating")),
+        T("year", "in", _("year")),
+        T("originalyear", "in", _("original release year")),
+        T("bookmark", "i", _("bookmark")),
+        T("bitdepth", "n", _("bitdepth")),
+        T("bitrate", "in", _("bitrate")),
+        T("filesize", "n", _("file size")),
+        T("format", "i", _("file format")),
+        T("codec", "i", _("codec")),
+        T("encoding", "i", _("encoding")),
+        T("playlists", "i", _("playlists")),
+        T("samplerate", "n", _("sample rate")),
+        T("channels", "n", _("channel count")),
+    ]
+}
 
 
 def _get_sort_map(tags):

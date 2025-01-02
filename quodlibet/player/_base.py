@@ -74,12 +74,9 @@ class BasePlayer(GObject.GObject, Equalizer):
     _source = None
 
     __gsignals__ = {
-        "song-started":
-        (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        "song-ended":
-        (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
-        "seek":
-        (GObject.SignalFlags.RUN_LAST, None, (object, int)),
+        "song-started": (GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "song-ended": (GObject.SignalFlags.RUN_LAST, None, (object, bool)),
+        "seek": (GObject.SignalFlags.RUN_LAST, None, (object, int)),
         "paused": (GObject.SignalFlags.RUN_LAST, None, ()),
         "unpaused": (GObject.SignalFlags.RUN_LAST, None, ()),
         # (song, PlayerError)
@@ -87,13 +84,29 @@ class BasePlayer(GObject.GObject, Equalizer):
     }
 
     __gproperties__ = {
-        "volume": (float, "player volume", "the volume of the player",
-                   0.0, 1.0, 1.0,
-                   GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
-        "seekable": (bool, "seekable", "if the stream is seekable", True,
-                     GObject.ParamFlags.READABLE),
-        "mute": (bool, "mute", "if the stream is muted", False,
-                 GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE),
+        "volume": (
+            float,
+            "player volume",
+            "the volume of the player",
+            0.0,
+            1.0,
+            1.0,
+            GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE,
+        ),
+        "seekable": (
+            bool,
+            "seekable",
+            "if the stream is seekable",
+            True,
+            GObject.ParamFlags.READABLE,
+        ),
+        "mute": (
+            bool,
+            "mute",
+            "if the stream is muted",
+            False,
+            GObject.ParamFlags.READABLE | GObject.ParamFlags.WRITABLE,
+        ),
     }
 
     def __init__(self, *args, **kwargs):
@@ -156,7 +169,7 @@ class BasePlayer(GObject.GObject, Equalizer):
 
     @volume.setter
     def volume(self, v):
-        self.props.volume = min(1.0, max(0.0, v ** 3.0))
+        self.props.volume = min(1.0, max(0.0, v**3.0))
 
     @property
     def mute(self):

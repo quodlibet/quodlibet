@@ -24,7 +24,6 @@ def AF(*args, **kwargs):
 
 
 class TLyricsPane(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
         init_fake_app()

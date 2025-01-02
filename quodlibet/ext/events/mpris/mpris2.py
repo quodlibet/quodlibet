@@ -26,7 +26,6 @@ from .util import MPRISObject
 
 # http://www.mpris.org/2.0/spec/
 class MPRIS2(DBusProperty, DBusIntrospectable, MPRISObject):
-
     BUS_NAME = "org.mpris.MediaPlayer2.quodlibet"
     PATH = "/org/mpris/MediaPlayer2"
 
@@ -110,15 +109,17 @@ value="false"/>
         self.__cover = None
         player_options = app.player_options
         self.__repeat_id = player_options.connect(
-            "notify::repeat", self.__repeat_changed)
+            "notify::repeat", self.__repeat_changed
+        )
         self.__random_id = player_options.connect(
-            "notify::shuffle", self.__shuffle_changed)
+            "notify::shuffle", self.__shuffle_changed
+        )
         self.__single_id = player_options.connect(
-            "notify::single", self.__single_changed)
+            "notify::single", self.__single_changed
+        )
 
         self.__lsig = app.librarian.connect("changed", self.__library_changed)
-        self.__vsig = app.player.connect("notify::volume",
-                                         self.__volume_changed)
+        self.__vsig = app.player.connect("notify::volume", self.__volume_changed)
         self.__seek_sig = app.player.connect("seek", self.__seeked)
 
     def remove_from_connection(self, *arg, **kwargs):
@@ -212,6 +213,7 @@ value="false"/>
 
     def paused(self):
         self.emit_properties_changed(self.PLAYER_IFACE, ["PlaybackStatus"])
+
     unpaused = paused
 
     def song_started(self, song):
@@ -220,8 +222,7 @@ value="false"/>
         # so the position in clients gets updated faster
         self.Seeked(0)
 
-        self.emit_properties_changed(self.PLAYER_IFACE,
-                                    ["PlaybackStatus", "Metadata"])
+        self.emit_properties_changed(self.PLAYER_IFACE, ["PlaybackStatus", "Metadata"])
 
     def __get_current_track_id(self):
         path = "/net/sacredchao/QuodLibet"
@@ -256,8 +257,7 @@ value="false"/>
         if not song:
             return metadata
 
-        metadata["mpris:length"] = ignore_overflow(
-            dbus.Int64, song("~#length") * 10 ** 6)
+        metadata["mpris:length"] = ignore_overflow(dbus.Int64, song("~#length") * 10**6)
 
         if self.__cover is not None:
             self.__cover.close()
@@ -271,9 +271,14 @@ value="false"/>
             metadata["mpris:artUrl"] = fsn2uri(cover.name)
 
         # All list values
-        list_val = {"artist": "artist", "albumArtist": "albumartist",
-            "comment": "comment", "composer": "composer", "genre": "genre",
-            "lyricist": "lyricist"}
+        list_val = {
+            "artist": "artist",
+            "albumArtist": "albumartist",
+            "comment": "comment",
+            "composer": "composer",
+            "genre": "genre",
+            "lyricist": "lyricist",
+        }
         for xesam, tag in list_val.items():
             vals = song.list(tag)
             if vals:
@@ -281,10 +286,10 @@ value="false"/>
 
         # All single values
         columns = get_columns()
-        title_tag = ("~title~version" if "~title~version" in columns 
-                     else "title")
-        album_tag = ("~album~discsubtitle" if "~album~discsubtitle" in columns
-                     else "album")
+        title_tag = "~title~version" if "~title~version" in columns else "title"
+        album_tag = (
+            "~album~discsubtitle" if "~album~discsubtitle" in columns else "album"
+        )
 
         sing_val = {"album": album_tag, "title": title_tag, "asText": "~lyrics"}
         for xesam, tag in sing_val.items():
@@ -296,8 +301,12 @@ value="false"/>
         metadata["xesam:url"] = song("~uri")
 
         # Integers
-        num_val = {"audioBPM": "bpm", "discNumber": "disc",
-                   "trackNumber": "track", "useCount": "playcount"}
+        num_val = {
+            "audioBPM": "bpm",
+            "discNumber": "disc",
+            "trackNumber": "track",
+            "useCount": "playcount",
+        }
 
         for xesam, tag in num_val.items():
             val = song("~#" + tag, None)
@@ -305,8 +314,7 @@ value="false"/>
                 metadata["xesam:" + xesam] = ignore_overflow(dbus.Int32, val)
 
         # Rating
-        metadata["xesam:userRating"] = ignore_overflow(
-            dbus.Double, song("~#rating"))
+        metadata["xesam:userRating"] = ignore_overflow(dbus.Double, song("~#rating"))
 
         # Dates
         iso_8601_format = "%Y-%m-%dT%H:%M:%S"
@@ -369,11 +377,13 @@ value="false"/>
                 # TODO: enable once OpenUri is done
                 def can(s):
                     return False
-                #can = lambda s: app.player.can_play_uri("%s://fake" % s)
+
+                # can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)
             elif name == "SupportedMimeTypes":
                 from quodlibet import formats
+
                 return formats.mimes
         elif interface == self.PLAYER_IFACE:
             if name == "PlaybackStatus":

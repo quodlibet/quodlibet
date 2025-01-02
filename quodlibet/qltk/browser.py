@@ -38,12 +38,15 @@ class FilterMenu:
         <menuitem action='AddedRecently' always-show-image='true'/>
         <menuitem action='TopRated' always-show-image='true'/>
     </menu>"""
-    __OUTER_MENU = """
+    __OUTER_MENU = (
+        """
     <ui>
         <menubar name='Menu'>
             %s
         </menubar>
-    </ui>""" % MENU
+    </ui>"""
+        % MENU
+    )
 
     def __init__(self, library, player, ui=None):
         self._browser = None
@@ -53,15 +56,22 @@ class FilterMenu:
 
         ag = Gtk.ActionGroup.new("QuodLibetFilterActions")
         for name, icon_name, label, cb in [
-                ("Filters", "", _("_Filters"), None),
-                ("PlayedRecently", Icons.EDIT_FIND, _("Recently _Played"),
-                 self.__filter_menu_actions),
-                ("AddedRecently", Icons.EDIT_FIND, _("Recently _Added"),
-                 self.__filter_menu_actions),
-                ("TopRated", Icons.EDIT_FIND, _("_Top 40"),
-                 self.__filter_menu_actions),
-                ("All", Icons.EDIT_FIND, _("All _Songs"),
-                 self.__filter_menu_actions)]:
+            ("Filters", "", _("_Filters"), None),
+            (
+                "PlayedRecently",
+                Icons.EDIT_FIND,
+                _("Recently _Played"),
+                self.__filter_menu_actions,
+            ),
+            (
+                "AddedRecently",
+                Icons.EDIT_FIND,
+                _("Recently _Added"),
+                self.__filter_menu_actions,
+            ),
+            ("TopRated", Icons.EDIT_FIND, _("_Top 40"), self.__filter_menu_actions),
+            ("All", Icons.EDIT_FIND, _("All _Songs"), self.__filter_menu_actions),
+        ]:
             action = Action(name=name, icon_name=icon_name, label=label)
             if cb:
                 action.connect("activate", cb)
@@ -70,19 +80,26 @@ class FilterMenu:
         for tag_, lab in [
             ("genre", _("On Current _Genre(s)")),
             ("artist", _("On Current _Artist(s)")),
-            ("album", _("On Current Al_bum"))]:
+            ("album", _("On Current Al_bum")),
+        ]:
             act = Action(
-                name="Filter%s" % util.capitalize(tag_), label=lab,
-                icon_name=Icons.EDIT_SELECT_ALL)
+                name="Filter%s" % util.capitalize(tag_),
+                label=lab,
+                icon_name=Icons.EDIT_SELECT_ALL,
+            )
             act.connect("activate", self.__filter_on, tag_, None, player)
             ag.add_action(act)
 
-        for (tag_, accel, label) in [
+        for tag_, accel, label in [
             ("genre", "G", _("Random _Genre")),
             ("artist", "T", _("Random _Artist")),
-            ("album", "M", _("Random Al_bum"))]:
-            act = Action(name="Random%s" % util.capitalize(tag_),
-                         label=label, icon_name=Icons.DIALOG_QUESTION)
+            ("album", "M", _("Random Al_bum")),
+        ]:
+            act = Action(
+                name="Random%s" % util.capitalize(tag_),
+                label=label,
+                icon_name=Icons.DIALOG_QUESTION,
+            )
             act.connect("activate", self.__random, tag_)
             ag.add_action_with_accel(act, "<Primary>" + accel)
 
@@ -93,8 +110,11 @@ class FilterMenu:
         self._ui = ui
 
         self._get_child_widget("TopRated").set_tooltip_text(
-                _("The 40 songs you've played most (more than 40 may "
-                  "be chosen if there are ties)"))
+            _(
+                "The 40 songs you've played most (more than 40 may "
+                "be chosen if there are ties)"
+            )
+        )
 
         # https://git.gnome.org/browse/gtk+/commit/?id=b44df22895c79
         menu_item = self._get_child_widget("/Menu/Filters")
@@ -184,8 +204,7 @@ class FilterMenu:
             else:
                 can_filter = False
             for name in widget_names:
-                self._get_child_widget(name).set_property("visible",
-                                                          can_filter)
+                self._get_child_widget(name).set_property("visible", can_filter)
 
     def set_browser(self, browser):
         self._browser = browser
@@ -215,7 +234,6 @@ class FilterMenu:
 
 
 class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
-
     @classmethod
     def open(cls, browser_cls, library, player):
         """Creates and shows a new browser instance"""
@@ -230,8 +248,11 @@ class LibraryBrowser(Window, util.InstanceTracker, PersistentWindowMixin):
         so we can restore them on start.
         """
 
-        config.set("memory", "open_browsers",
-                   "\n".join(browser.name for browser in cls.instances()))
+        config.set(
+            "memory",
+            "open_browsers",
+            "\n".join(browser.name for browser in cls.instances()),
+        )
 
     @classmethod
     def restore(cls, library, player):

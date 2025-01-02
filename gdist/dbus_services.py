@@ -74,19 +74,18 @@ class InstallDbusServices(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options(
-            "build",
-            ("build_base", "build_base"))
+        self.set_undefined_options("build", ("build_base", "build_base"))
 
         self.set_undefined_options(
             "install",
             ("install_data", "install_dir"),
             ("exec_prefix", "exec_prefix"),
-            ("skip_build", "skip_build"))
+            ("skip_build", "skip_build"),
+        )
 
         self.set_undefined_options(
-            "build_dbus_services",
-            ("dbus_services", "dbus_services"))
+            "build_dbus_services", ("dbus_services", "dbus_services")
+        )
 
     def get_outputs(self):
         return self.outfiles
@@ -95,8 +94,7 @@ class InstallDbusServices(Command):
         if not self.skip_build:
             self.run_command("build_dbus_services")
 
-        basepath = os.path.join(
-            self.install_dir, "share", "dbus-1", "services")
+        basepath = os.path.join(self.install_dir, "share", "dbus-1", "services")
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
 

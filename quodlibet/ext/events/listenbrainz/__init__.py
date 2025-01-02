@@ -50,7 +50,7 @@ DEFAULT_ARTISTPAT = "<artist|<artist>|<composer|<composer>|<performer>>>"
 
 plugin_config = PluginConfig("listenbrainz")
 defaults = plugin_config.defaults
-#defaults.set("endpoint", "https://api.listenbrainz.org")
+# defaults.set("endpoint", "https://api.listenbrainz.org")
 defaults.set("user_token", "")
 
 defaults.set("titlepat", "")
@@ -85,6 +85,7 @@ class ListenBrainzSubmitQueue:
     plugin being enabled; other plugins may use submit() to queue songs for
     submission.
     """
+
     DUMP = os.path.join(quodlibet.get_user_dir(), "listenbrainz_cache")
 
     # These objects are shared across instances, to allow other plugins to
@@ -168,7 +169,7 @@ class ListenBrainzSubmitQueue:
         # tags			N/A
         additional_info = {}
 
-        for (k, v) in [
+        for k, v in [
             ("artist_mbids", song.list("musicbrainz_artistid")),
             ("release_group_mbid", song.get("musicbrainz_releasegroupid", None)),
             ("release_mbid", song.get("musicbrainz_albumid", None)),
@@ -177,7 +178,8 @@ class ListenBrainzSubmitQueue:
             ("work_mbids", song.list("musicbrainz_workid")),
             ("tracknumber", song.get("tracknumber", None)),
             ("isrc", song.get("isrc", None)),
-            ("tags", self.tags)]:
+            ("tags", self.tags),
+        ]:
             if v is not None and v != []:
                 additional_info[k] = v
 
@@ -193,7 +195,7 @@ class ListenBrainzSubmitQueue:
         self.offline = False
         self.retries = 0
 
-        self.lb = listenbrainz.ListenBrainzClient() # XXX logger=xxx
+        self.lb = listenbrainz.ListenBrainzClient()  # XXX logger=xxx
 
         # These need to be set early for _format_song to work
         self.titlepat = Pattern(config_get_title_pattern())
@@ -219,19 +221,24 @@ class ListenBrainzSubmitQueue:
 
     # Must be called with self.condition acquired
     def _check_config(self):
-        #endpoint = plugin_config.get('endpoint')
+        # endpoint = plugin_config.get('endpoint')
         user_token = plugin_config.get("user_token")
-        #if not endpoint or not user_token:
+        # if not endpoint or not user_token:
         if not user_token:
             if self.queue and not self.broken:
-                self.quick_dialog(_("Please visit the Plugins window to set "
-                              "ListenBrainz up. Until then, listens will not be "
-                              "submitted."), Gtk.MessageType.INFO)
+                self.quick_dialog(
+                    _(
+                        "Please visit the Plugins window to set "
+                        "ListenBrainz up. Until then, listens will not be "
+                        "submitted."
+                    ),
+                    Gtk.MessageType.INFO,
+                )
                 self.broken = True
-        #elif (self.lb.host_name, self.lb.user_token) != (endpoint, user_token):
+        # elif (self.lb.host_name, self.lb.user_token) != (endpoint, user_token):
         elif self.lb.user_token != user_token:
-            #print_d("Setting %s, %s" % (endpoint, user_token))
-            #self.lb.host_name, self.lb.user_token = (endpoint, user_token)
+            # print_d("Setting %s, %s" % (endpoint, user_token))
+            # self.lb.host_name, self.lb.user_token = (endpoint, user_token)
             print_d("Setting user_token %s" % user_token)
             self.lb.user_token = user_token
             self.broken = False
@@ -244,8 +251,11 @@ class ListenBrainzSubmitQueue:
     def changed(self):
         """Signal that settings or queue contents were changed."""
         self._check_config()
-        if not self.broken and not self.offline and (self.queue or
-                (self.nowplaying_track and not self.nowplaying_sent)):
+        if (
+            not self.broken
+            and not self.offline
+            and (self.queue or (self.nowplaying_track and not self.nowplaying_sent))
+        ):
             self.condition.notify()
 
     def run(self):
@@ -257,10 +267,14 @@ class ListenBrainzSubmitQueue:
             print_d("Top of queue loop")
             self.condition.acquire()
 
-            while self.broken or \
-                  self.offline or \
-                  (not self.queue and
-                   (not self.nowplaying_track or self.nowplaying_sent)):
+            while (
+                self.broken
+                or self.offline
+                or (
+                    not self.queue
+                    and (not self.nowplaying_track or self.nowplaying_sent)
+                )
+            ):
                 print_d("Nothing to do, waiting")
                 self.condition.wait()
                 print_d("Awoke")
@@ -295,12 +309,16 @@ class ListenBrainzSubmitQueue:
                     self.offline = True
                     plugin_config.set("offline", True)
 
-                    self.quick_dialog(_(
-                        "Too many consecutive submission failures (%d). "
-                        "Setting to offline mode. "
-                        "Please visit the Plugins window to reset "
-                        "ListenBrainz. Until then, listens will not be "
-                        "submitted." % self.retries), Gtk.MessageType.INFO)
+                    self.quick_dialog(
+                        _(
+                            "Too many consecutive submission failures (%d). "
+                            "Setting to offline mode. "
+                            "Please visit the Plugins window to reset "
+                            "ListenBrainz. Until then, listens will not be "
+                            "submitted." % self.retries
+                        ),
+                        Gtk.MessageType.INFO,
+                    )
                     return False
                 else:
                     delay = 10
@@ -383,7 +401,7 @@ class ListenbrainzSubmission(EventPlugin):
         # should not be submitted.
         #
         # we check 'elapsed' rather than 'length' to work around wrong ~#length
-        if self.elapsed < (4 * 60) and self.elapsed <= .5 * song.get("~#length", 0):
+        if self.elapsed < (4 * 60) and self.elapsed <= 0.5 * song.get("~#length", 0):
             return
         print_d("Checking against filter %s" % self.exclude)
         if self.exclude and Query(self.exclude).search(song):
@@ -433,7 +451,7 @@ class ListenbrainzSubmission(EventPlugin):
     def disabled(self):
         self.__enabled = False
         print_d("Plugin disabled - not accepting any new songs.")
-        #ListenBrainzSubmitQueue.dump_queue()
+        # ListenBrainzSubmitQueue.dump_queue()
 
     def PluginPreferences(self, parent):
         def changed(entry, key):
@@ -454,20 +472,25 @@ class ListenbrainzSubmission(EventPlugin):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             labels.append(label)
 
         row = 0
 
         # endpoint url / hostname
-        #entry = UndoEntry()
-        #entry.set_text(plugin_config.get('endpoint'))
-        #entry.connect('changed', changed, 'endpoint')
-        #table.attach(entry, 1, 2, row, row + 1)
-        #labels[row].set_mnemonic_widget(entry)
-        #row += 1
+        # entry = UndoEntry()
+        # entry.set_text(plugin_config.get('endpoint'))
+        # entry.connect('changed', changed, 'endpoint')
+        # table.attach(entry, 1, 2, row, row + 1)
+        # labels[row].set_mnemonic_widget(entry)
+        # row += 1
 
         # token
         entry = UndoEntry()
@@ -478,10 +501,10 @@ class ListenbrainzSubmission(EventPlugin):
         row += 1
 
         # verify data
-        #button = qltk.Button(_("_Verify account data"),
+        # button = qltk.Button(_("_Verify account data"),
         #                     Icons.DIALOG_INFORMATION)
-        #button.connect('clicked', check_login)
-        #table.attach(button, 0, 2, 4, 5)
+        # button.connect('clicked', check_login)
+        # table.attach(button, 0, 2, 4, 5)
 
         box.pack_start(qltk.Frame(_("Account"), child=table), True, True, 0)
 
@@ -491,17 +514,26 @@ class ListenbrainzSubmission(EventPlugin):
         table.set_col_spacings(6)
         table.set_row_spacings(6)
 
-        label_names = [_("_Artist pattern:"), _("_Title pattern:"),
-            _("T_ags:"), _("Exclude _filter:")]
+        label_names = [
+            _("_Artist pattern:"),
+            _("_Title pattern:"),
+            _("T_ags:"),
+            _("Exclude _filter:"),
+        ]
 
         labels = []
         for idx, name in enumerate(label_names):
             label = Gtk.Label(label=name)
             label.set_alignment(0.0, 0.5)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             labels.append(label)
 
         row = 0
@@ -510,8 +542,12 @@ class ListenbrainzSubmission(EventPlugin):
         entry.set_text(plugin_config.get("artistpat"))
         entry.connect("changed", changed, "artistpat")
         table.attach(entry, 1, 2, row, row + 1)
-        entry.set_tooltip_text(_("The pattern used to format "
-            "the artist name for submission. Leave blank for default."))
+        entry.set_tooltip_text(
+            _(
+                "The pattern used to format "
+                "the artist name for submission. Leave blank for default."
+            )
+        )
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
@@ -520,8 +556,12 @@ class ListenbrainzSubmission(EventPlugin):
         entry.set_text(plugin_config.get("titlepat"))
         entry.connect("changed", changed, "titlepat")
         table.attach(entry, 1, 2, row, row + 1)
-        entry.set_tooltip_text(_("The pattern used to format "
-            "the title for submission. Leave blank for default."))
+        entry.set_tooltip_text(
+            _(
+                "The pattern used to format "
+                "the title for submission. Leave blank for default."
+            )
+        )
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
@@ -530,16 +570,19 @@ class ListenbrainzSubmission(EventPlugin):
         entry.set_text(plugin_config.get("tags"))
         entry.connect("changed", changed, "tags")
         table.attach(entry, 1, 2, row, row + 1)
-        entry.set_tooltip_text(_("List of tags to include in the submission. "
-                                 "Comma-separated, use double-quotes if necessary."))
+        entry.set_tooltip_text(
+            _(
+                "List of tags to include in the submission. "
+                "Comma-separated, use double-quotes if necessary."
+            )
+        )
         labels[row].set_mnemonic_widget(entry)
         row += 1
 
         # exclude filter
         entry = ValidatingEntry(Query.validator)
         entry.set_text(plugin_config.get("exclude"))
-        entry.set_tooltip_text(
-                _("Songs matching this filter will not be submitted."))
+        entry.set_tooltip_text(_("Songs matching this filter will not be submitted."))
         entry.connect("changed", changed, "exclude")
         table.attach(entry, 1, 2, row, row + 1)
         labels[row].set_mnemonic_widget(entry)
@@ -547,8 +590,8 @@ class ListenbrainzSubmission(EventPlugin):
 
         # offline mode
         offline = plugin_config.ConfigCheckButton(
-                _("_Offline mode (don't submit anything)"),
-                "offline", populate=True)
+            _("_Offline mode (don't submit anything)"), "offline", populate=True
+        )
         table.attach(offline, 0, 2, row, row + 1)
 
         box.pack_start(qltk.Frame(_("Submission"), child=table), True, True, 0)

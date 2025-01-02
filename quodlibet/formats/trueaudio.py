@@ -19,6 +19,7 @@ class TrueAudioFile(ID3File):
         self["~#length"] = info.length
         self["~#samplerate"] = info.sample_rate
 
+
 loader = TrueAudioFile
 types = [TrueAudioFile]
 extensions = [".tta"]

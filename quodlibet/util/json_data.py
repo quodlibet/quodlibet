@@ -45,12 +45,13 @@ class JSONObject:
     def data(self):
         """A list of tuples of the persisted key:values in this class"""
         if self.FIELDS:
-            return [(k, self.__getattribute__(k) if hasattr(self, k) else None)
-                    for k in self.FIELDS]
+            return [
+                (k, self.__getattribute__(k) if hasattr(self, k) else None)
+                for k in self.FIELDS
+            ]
         else:
             print_d("No order specified for class %s" % type(self).__name__)
-            return {k: v for k, v in self.__dict__.items()
-                    if self._should_store(k)}
+            return {k: v for k, v in self.__dict__.items() if self._should_store(k)}
 
     def field(self, name):
         """Returns the Field metadata of field `name` if available,
@@ -105,8 +106,10 @@ class JSONObjectDict(dict):
         new = cls()
         for j in json_objects:
             if not isinstance(j, JSONObject):
-                msg = ("Incorrect type (%s) found in list of objects"
-                       % j.__class__.__name__)
+                msg = (
+                    "Incorrect type (%s) found in list of objects"
+                    % j.__class__.__name__
+                )
                 if raise_errors:
                     raise TypeError(msg)
                 else:
@@ -137,6 +140,7 @@ class JSONObjectDict(dict):
                 with open(filename, "wb") as f:
                     f.write(json_str)
             except OSError as e:
-                print_w("Couldn't write JSON for "
-                        f"{type(self).__name__} object(s) ({e})")
+                print_w(
+                    "Couldn't write JSON for " f"{type(self).__name__} object(s) ({e})"
+                )
         return json_str

@@ -32,7 +32,6 @@ class UserInterfacePlugin:
 
 class UserInterfacePluginHandler(PluginHandler):
     def __init__(self):
-
         self.__plugins = {}
         self.__sidebars = {}
 
@@ -45,8 +44,7 @@ class UserInterfacePluginHandler(PluginHandler):
         app.window.hide_side_book()
         if sidebar:
             print_d("Enabling sidebar for %s" % plugin.cls)
-            self.__sidebars[plugin] = app.window.add_sidebar(
-                sidebar, name=plugin.name)
+            self.__sidebars[plugin] = app.window.add_sidebar(sidebar, name=plugin.name)
             sidebar.show_all()
 
     def plugin_disable(self, plugin):

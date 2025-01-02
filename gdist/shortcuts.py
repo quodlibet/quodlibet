@@ -45,8 +45,7 @@ class BuildShortcuts(Command):
     def finalize_options(self):
         self.shortcuts = self.distribution.shortcuts
         self.set_undefined_options("build", ("build_base", "build_base"))
-        self.set_undefined_options(
-            "build_po", ("po_build_dir", "po_build_dir"))
+        self.set_undefined_options("build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
@@ -57,8 +56,7 @@ class BuildShortcuts(Command):
             if os.path.exists(shortcut + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(shortcut))
                 if newer(shortcut + ".in", fullpath):
-                    merge_file(self.po_build_dir, "desktop",
-                               shortcut + ".in", fullpath)
+                    merge_file(self.po_build_dir, "desktop", shortcut + ".in", fullpath)
             else:
                 self.copy_file(shortcut, os.path.join(basepath, shortcut))
 
@@ -83,12 +81,10 @@ class InstallShortcuts(Command):
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            "install",
-            ("install_data", "install_dir"),
-            ("skip_build", "skip_build"))
+            "install", ("install_data", "install_dir"), ("skip_build", "skip_build")
+        )
 
-        self.set_undefined_options(
-            "build_shortcuts", ("shortcuts", "shortcuts"))
+        self.set_undefined_options("build_shortcuts", ("shortcuts", "shortcuts"))
 
     def get_outputs(self):
         return self.outfiles
@@ -106,5 +102,6 @@ class InstallShortcuts(Command):
             fullpath = os.path.join(basepath, shortcut)
             (out, _) = self.copy_file(fullsrc, fullpath)
             self.outfiles.append(out)
+
 
 __all__ = ["BuildShortcuts", "InstallShortcuts"]

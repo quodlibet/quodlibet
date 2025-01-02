@@ -78,6 +78,7 @@ class EditBookmarksPane(Gtk.VBox):
                 cell.set_property("text", _("N/A"))
             else:
                 cell.set_property("text", util.format_time(model[iter][0]))
+
         render.set_property("editable", True)
         render.connect("edited", self.__edit_time, model)
         col = Gtk.TreeViewColumn(_("Time"), render)
@@ -128,12 +129,12 @@ class EditBookmarksPane(Gtk.VBox):
         remove.connect("activate", self.__remove, selection, library, song)
         keyval, mod = Gtk.accelerator_parse("Delete")
         remove.add_accelerator(
-            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
+            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
+        )
         menu.append(remove)
         menu.show_all()
         sw.get_child().connect("popup-menu", self.__popup, menu)
-        sw.get_child().connect("key-press-event",
-                                self.__view_key_press, remove)
+        sw.get_child().connect("key-press-event", self.__view_key_press, remove)
         connect_obj(self, "destroy", Gtk.Menu.destroy, menu)
 
         self.__fill(model, song)
@@ -186,6 +187,7 @@ class EditBookmarksPane(Gtk.VBox):
     def _set_bookmarks(self, model, a, b, library, song):
         def stringify(s):
             return s.decode("utf-8") if isinstance(s, bytes) else s
+
         try:
             song.bookmarks = [(t, stringify(l)) for t, l in model]
         except (AttributeError, ValueError) as e:

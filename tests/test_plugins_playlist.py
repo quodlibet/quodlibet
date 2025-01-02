@@ -27,7 +27,6 @@ def generate_playlists(n):
 
 
 class TPlaylistPlugins(TestCase):
-
     class MockBrowser(Browser):
         def __init__(self):
             super().__init__()
@@ -61,16 +60,14 @@ class TPlaylistPlugins(TestCase):
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, id="", name="", desc="", icon="",
-                      funcs=None, mod=False):
+    def create_plugin(self, id="", name="", desc="", icon="", funcs=None, mod=False):
         fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
         file = os.fdopen(fd, "w")
 
         if mod:
             indent = ""
         else:
-            file.write(
-                "from quodlibet.plugins.playlist import PlaylistPlugin\n")
+            file.write("from quodlibet.plugins.playlist import PlaylistPlugin\n")
             file.write("class %s(PlaylistPlugin):\n" % name)
             indent = "    "
             file.write("%spass\n" % indent)
@@ -83,10 +80,12 @@ class TPlaylistPlugins(TestCase):
             file.write(f"{indent}PLUGIN_DESC = {desc!r}\n")
         if icon:
             file.write(f"{indent}PLUGIN_ICON = {icon!r}\n")
-        for f in (funcs or []):
+        for f in funcs or []:
             if f in ["__init__"]:
-                file.write(f"{indent}def {f}(self, *args): super().__init__("
-                           '*args); raise Exception("as expected.")\n')
+                file.write(
+                    f"{indent}def {f}(self, *args): super().__init__("
+                    '*args); raise Exception("as expected.")\n'
+                )
             else:
                 file.write(f"{indent}def {f}(*args): return args\n")
         file.flush()
@@ -102,15 +101,15 @@ class TPlaylistPlugins(TestCase):
         self.assertEqual(len(self.pm.plugins), 1)
 
     def test_additional_functions_still_only_one(self):
-        self.create_plugin(name="Name", desc="Desc",
-                           funcs=["plugin_playlist", "plugin_playlists"])
+        self.create_plugin(
+            name="Name", desc="Desc", funcs=["plugin_playlist", "plugin_playlists"]
+        )
         self.pm.rescan()
         self.assertEqual(len(self.pm.plugins), 1)
 
     def test_two_plugins_are_two(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_playlist"])
-        self.create_plugin(name="Name2", desc="Desc2",
-                           funcs=["plugin_albums"])
+        self.create_plugin(name="Name2", desc="Desc2", funcs=["plugin_albums"])
         self.pm.rescan()
         self.assertEqual(len(self.pm.plugins), 2)
 
@@ -129,25 +128,25 @@ class TPlaylistPlugins(TestCase):
         assert not self.pm.enabled(plug)
 
     def test_ignores_broken_plugin(self):
-        self.create_plugin(name="Broken", desc="Desc",
-                           funcs=["__init__", "plugin_playlist"])
+        self.create_plugin(
+            name="Broken", desc="Desc", funcs=["__init__", "plugin_playlist"]
+        )
 
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
         menu = Gtk.Menu()
         with capture_output():
-            self.handler.populate_menu(menu, None, self.mock_browser,
-                                       [TEST_PLAYLIST])
-        self.assertEqual(len(menu.get_children()), 0,
-                             msg="Shouldn't have enabled a broken plugin")
+            self.handler.populate_menu(menu, None, self.mock_browser, [TEST_PLAYLIST])
+        self.assertEqual(
+            len(menu.get_children()), 0, msg="Shouldn't have enabled a broken plugin"
+        )
 
     def test_populate_menu(self):
         plugin = Plugin(FakePlaylistPlugin)
         self.handler.plugin_enable(plugin)
         menu = Gtk.Menu()
-        self.handler.populate_menu(menu, None, self.mock_browser,
-                                   [TEST_PLAYLIST])
+        self.handler.populate_menu(menu, None, self.mock_browser, [TEST_PLAYLIST])
         # Don't forget the separator
         num = len(menu.get_children()) - 1
         self.assertEqual(num, 1, msg="Need 1 plugin not %d" % num)
@@ -156,22 +155,25 @@ class TPlaylistPlugins(TestCase):
         plugin = Plugin(FakePlaylistPlugin)
         self.handler.plugin_enable(plugin)
         playlists = generate_playlists(MAX_PLAYLISTS)
-        self.handler.handle(plugin.id, self.library, self.mock_browser,
-                            playlists)
-        self.assertTrue("Didn't execute plugin",
-                        FakePlaylistPlugin.total > 0)
-        self.assertFalse(self.confirmed, ("Wasn't expecting a confirmation for %d"
-                                     " invocations" % len(playlists)))
+        self.handler.handle(plugin.id, self.library, self.mock_browser, playlists)
+        self.assertTrue("Didn't execute plugin", FakePlaylistPlugin.total > 0)
+        self.assertFalse(
+            self.confirmed,
+            ("Wasn't expecting a confirmation for %d" " invocations" % len(playlists)),
+        )
 
     def test_handling_lots_of_songs_with_confirmation(self):
         plugin = Plugin(FakePlaylistPlugin)
         self.handler.plugin_enable(plugin)
         playlists = generate_playlists(MAX_PLAYLISTS + 1)
-        self.handler.handle(plugin.id, self.library, self.mock_browser,
-                            playlists)
-        self.assertTrue(self.confirmed,
-                        ("Should have confirmed %d invocations (Max=%d)."
-                         % (len(playlists), MAX_PLAYLISTS)))
+        self.handler.handle(plugin.id, self.library, self.mock_browser, playlists)
+        self.assertTrue(
+            self.confirmed,
+            (
+                "Should have confirmed %d invocations (Max=%d)."
+                % (len(playlists), MAX_PLAYLISTS)
+            ),
+        )
 
 
 class FakePlaylistPlugin(PlaylistPlugin):
@@ -187,5 +189,7 @@ class FakePlaylistPlugin(PlaylistPlugin):
     def plugin_playlist(self, _):
         self.total += 1
         if self.total > self.MAX_INVOCATIONS:
-            raise ValueError("Shouldn't have called me on this many songs"
-                             " (%d > %d)" % (self.total, self.MAX_INVOCATIONS))
+            raise ValueError(
+                "Shouldn't have called me on this many songs"
+                " (%d > %d)" % (self.total, self.MAX_INVOCATIONS)
+            )

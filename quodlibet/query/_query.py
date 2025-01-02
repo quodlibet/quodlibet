@@ -105,7 +105,7 @@ class Query(Node):
     @classmethod
     def StrictQueryMatcher(cls, string):
         """Returns a Matcher for a strict, valid (non-freetext) Query,
-           or `None` if this fails.
+        or `None` if this fails.
         """
         try:
             return QueryParser(string).StartQuery()
@@ -153,8 +153,11 @@ class Query(Node):
         return self._match.__neg__()
 
     def __eq__(self, other) -> bool:
-        return (self.string == other.string and self.star == other.star and
-                self.type == other.type)
+        return (
+            self.string == other.string
+            and self.star == other.star
+            and self.type == other.type
+        )
 
     @classmethod
     def validator(cls, string: str) -> bool | None:

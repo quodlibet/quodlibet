@@ -13,8 +13,13 @@ from senf import fsnative
 from quodlibet import qltk
 from quodlibet import app
 from quodlibet.util import thumbnails, print_w
-from quodlibet.qltk.image import pixbuf_from_file, \
-    calc_scale_size, scale, add_border_widget, get_surface_for_pixbuf
+from quodlibet.qltk.image import (
+    pixbuf_from_file,
+    calc_scale_size,
+    scale,
+    add_border_widget,
+    get_surface_for_pixbuf,
+)
 
 
 # TODO: neater way of managing dependency on this particular plugin
@@ -22,8 +27,7 @@ ALBUM_ART_PLUGIN_ID = "Download Album Art"
 
 
 class BigCenteredImage(qltk.Window):
-    """Load an image and display it, scaling it down to the parent window size.
-    """
+    """Load an image and display it, scaling it down to the parent window size."""
 
     def __init__(self, title, fileobj, parent, scale=0.5):
         super().__init__(type=Gtk.WindowType.POPUP)
@@ -35,7 +39,7 @@ class BigCenteredImage(qltk.Window):
 
         self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
 
-        #If image fails to set, abort construction.
+        # If image fails to set, abort construction.
         if not self.set_image(fileobj, parent, scale):
             self.destroy()
             return
@@ -143,7 +147,8 @@ class ResizeImage(Gtk.Bin):
         self._pixbuf = None
         if self._file:
             self._pixbuf = thumbnails.get_thumbnail_from_file(
-                self._file, (max_size, max_size))
+                self._file, (max_size, max_size)
+            )
 
         if not self._pixbuf:
             self._pixbuf = get_no_cover_pixbuf(max_size, max_size)
@@ -201,7 +206,8 @@ class ResizeImage(Gtk.Bin):
             if width < (2 * scale_factor) or height < (2 * scale_factor):
                 return
             pixbuf = scale(
-                pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor))
+                pixbuf, (width - 2 * scale_factor, height - 2 * scale_factor)
+            )
             pixbuf = add_border_widget(pixbuf, self)
         else:
             pixbuf = scale(pixbuf, (width, height))
@@ -251,6 +257,7 @@ class CoverImage(Gtk.EventBox):
         cancellable = self.__cancellable = Gio.Cancellable()
 
         if song:
+
             def cb(success, result):
                 if success:
                     try:
@@ -263,6 +270,7 @@ class CoverImage(Gtk.EventBox):
                         pass
                 else:
                     self.update_bci(None)
+
             app.cover_manager.acquire_cover(cb, cancellable, song)
 
     def refresh(self):
@@ -289,8 +297,10 @@ class CoverImage(Gtk.EventBox):
         if not song:
             return
 
-        if (event.type != Gdk.EventType.BUTTON_PRESS or
-                event.button == Gdk.BUTTON_MIDDLE):
+        if (
+            event.type != Gdk.EventType.BUTTON_PRESS
+            or event.button == Gdk.BUTTON_MIDDLE
+        ):
             return False
 
         return self.__show_cover(song, scale=self._scale)
@@ -304,8 +314,9 @@ class CoverImage(Gtk.EventBox):
             from quodlibet.qltk.songsmenu import SongsMenu
             from quodlibet import app
 
-            SongsMenu.plugins.handle(ALBUM_ART_PLUGIN_ID, app.library,
-                                     qltk.get_top_parent(self), [song])
+            SongsMenu.plugins.handle(
+                ALBUM_ART_PLUGIN_ID, app.library, qltk.get_top_parent(self), [song]
+            )
 
             return True
 
@@ -319,8 +330,9 @@ class CoverImage(Gtk.EventBox):
 
         try:
             self.__current_bci = BigCenteredImage(
-                song.comma("album"), self.__file, parent=self, scale=scale)
-        except GLib.GError: # reload in case the image file is gone
+                song.comma("album"), self.__file, parent=self, scale=scale
+            )
+        except GLib.GError:  # reload in case the image file is gone
             self.refresh()
         else:
             self.__current_bci.show()

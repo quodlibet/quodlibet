@@ -26,8 +26,8 @@ from quodlibet.util import escape
 class ProjectM(EventPlugin):
     """Launch external visualisations, e.g. via projectM
 
-       Try this first (Ubuntu/Debian):
-       sudo apt-get install projectm-pulseaudio
+    Try this first (Ubuntu/Debian):
+    sudo apt-get install projectm-pulseaudio
     """
 
     _config = PluginConfig(__name__)
@@ -44,18 +44,21 @@ class ProjectM(EventPlugin):
 
     def enabled(self):
         from gi.repository import GLib
+
         print_d("Starting %s" % self.PLUGIN_NAME)
         try:
             self._pid, fdin, fdout, fderr = GLib.spawn_async(
                 argv=self.executable.split(),
                 flags=GLib.SpawnFlags.SEARCH_PATH,
                 standard_output=True,
-                standard_input=True)
+                standard_input=True,
+            )
         except GLib.Error as e:
-            msg = ((_("Couldn't run visualisations using '%s'") + " (%s)") %
-                   (escape(self.executable), escape(e.message)))
-            ErrorMessage(title=_("Error"), description=msg,
-                         parent=app.window).run()
+            msg = (_("Couldn't run visualisations using '%s'") + " (%s)") % (
+                escape(self.executable),
+                escape(e.message),
+            )
+            ErrorMessage(title=_("Error"), description=msg, parent=app.window).run()
         else:
             # self._stdin = os.fdopen(fdin, mode='w')
             print_d("Launched with PID: %s" % self._pid)
@@ -77,6 +80,7 @@ class ProjectM(EventPlugin):
 
         def edited(widget):
             self.executable = widget.get_text()
+
         entry = UndoEntry()
         entry.connect("changed", edited)
         entry.set_text(self.executable)
@@ -88,6 +92,7 @@ class ProjectM(EventPlugin):
         def refresh_clicked(widget):
             self.disabled()
             self.enabled()
+
         refresh_button = Button(_("Reload"), Icons.VIEW_REFRESH)
         refresh_button.connect("clicked", refresh_clicked)
         vbox.pack_start(refresh_button, False, False, 0)

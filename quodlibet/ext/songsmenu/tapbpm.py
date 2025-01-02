@@ -70,8 +70,7 @@ class TapBpmPanel(Gtk.VBox):
         self.update()
 
     def key_tap(self, widget, event):
-        if event.keyval != Gdk.KEY_space \
-                and event.keyval != Gdk.KEY_Return:
+        if event.keyval != Gdk.KEY_space and event.keyval != Gdk.KEY_Return:
             return False
 
         self.count_tap(event.time)
@@ -110,7 +109,7 @@ class TapBpmPanel(Gtk.VBox):
         self.min_weight = 0.01
 
     def count_tap(self, now):
-        now = now / 1000.
+        now = now / 1000.0
         # reset?
         if now - self.last > self.pause:
             self.clicks = 0
@@ -140,15 +139,13 @@ class TapBpmPanel(Gtk.VBox):
             self.bpm = sum(bpms) / len(bpms)
 
             # Exponentially weighted floating average
-            weight = (1.0 / self.clicks) ** .5
+            weight = (1.0 / self.clicks) ** 0.5
             if weight < self.min_weight:
                 weight = self.min_weight
-            self.floating_bpm = \
-                self.floating_bpm * (1.0 - weight) \
-                + self.bpm * weight
-            self.floating_square = \
-                self.floating_square * (1.0 - weight) \
-                + self.bpm * self.bpm * weight
+            self.floating_bpm = self.floating_bpm * (1.0 - weight) + self.bpm * weight
+            self.floating_square = (
+                self.floating_square * (1.0 - weight) + self.bpm * self.bpm * weight
+            )
 
             if self.bpm < self.min or self.average_count == 0:
                 self.min = self.bpm
@@ -159,14 +156,14 @@ class TapBpmPanel(Gtk.VBox):
             self.average_count += 1
 
             # Update history
-            self.last_times = self.last_times[-(self.keep - 1):] + [self.last]
-            self.last_bpms = self.last_bpms[-(self.keep - 1):] + [self.bpm]
-            self.last_floating_bpms = \
-                self.last_floating_bpms[-(self.keep - 1):] \
-                + [self.floating_bpm]
-            self.last_floating_squares = \
-                self.last_floating_squares[-(self.keep - 1):] \
-                + [self.floating_square]
+            self.last_times = self.last_times[-(self.keep - 1) :] + [self.last]
+            self.last_bpms = self.last_bpms[-(self.keep - 1) :] + [self.bpm]
+            self.last_floating_bpms = self.last_floating_bpms[-(self.keep - 1) :] + [
+                self.floating_bpm
+            ]
+            self.last_floating_squares = self.last_floating_squares[
+                -(self.keep - 1) :
+            ] + [self.floating_square]
 
         self.last = now
         self.clicks += 1
@@ -180,12 +177,10 @@ class TapBpm(SongsMenuPlugin):
     PLUGIN_VERSION = "0.1"
 
     def plugin_song(self, song):
-        self._window = window = \
-            Dialog(title=_("Tap BPM"), parent=self.plugin_window)
+        self._window = window = Dialog(title=_("Tap BPM"), parent=self.plugin_window)
 
         window.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        window.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             Gtk.ResponseType.OK)
+        window.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.OK)
 
         window.set_default_size(300, 100)
         window.set_border_width(6)

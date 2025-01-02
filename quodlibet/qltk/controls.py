@@ -44,8 +44,13 @@ class Volume(Gtk.VolumeButton):
 
         replaygain_menu = VolumeMenu(player)
         self.connect("popup-menu", self.__popup, replaygain_menu)
-        connect_obj(self, "button-press-event", self.__volume_button_press,
-                    replaygain_menu, player)
+        connect_obj(
+            self,
+            "button-press-event",
+            self.__volume_button_press,
+            replaygain_menu,
+            player,
+        )
 
     def __popup(self, widget, menu):
         time = Gtk.get_current_event_time()
@@ -111,7 +116,7 @@ class VolumeMenu(Gtk.Menu):
     __modes = (
         ("auto", _("Auto_matic"), None),
         ("track", _("_Track Mode"), ["track"]),
-        ("album", _("_Album Mode"), ["album", "track"])
+        ("album", _("_Album Mode"), ["album", "track"]),
     )
 
     def __init__(self, player):
@@ -121,8 +126,9 @@ class VolumeMenu(Gtk.Menu):
         if hasattr(player, "bind_property"):
             # Translators: player state, no action
             item = Gtk.CheckMenuItem(label=_("_Mute"), use_underline=True)
-            player.bind_property("mute", item, "active",
-                                 GObject.BindingFlags.BIDIRECTIONAL)
+            player.bind_property(
+                "mute", item, "active", GObject.BindingFlags.BIDIRECTIONAL
+            )
             self.append(item)
             item.show()
 
@@ -139,8 +145,7 @@ class VolumeMenu(Gtk.Menu):
         item.set_submenu(rg)
         item = None
         for mode, title, _profile in self.__modes:
-            item = RadioMenuItem(group=item, label=title,
-                                 use_underline=True)
+            item = RadioMenuItem(group=item, label=title, use_underline=True)
             rg.append(item)
             item.connect("toggled", self.__changed, player, mode)
             if replaygain_mode == mode:
@@ -170,17 +175,18 @@ class VolumeMenu(Gtk.Menu):
 
 
 class PlayPauseButton(Gtk.Button):
-
     __gsignals__: GSignals = {
         "toggled": (GObject.SignalFlags.RUN_LAST, None, ()),
     }
 
     def __init__(self):
         super().__init__(relief=Gtk.ReliefStyle.NONE)
-        self._pause_image = SymbolicIconImage("media-playback-pause",
-                                               Gtk.IconSize.LARGE_TOOLBAR)
-        self._play_image = SymbolicIconImage("media-playback-start",
-                                             Gtk.IconSize.LARGE_TOOLBAR)
+        self._pause_image = SymbolicIconImage(
+            "media-playback-pause", Gtk.IconSize.LARGE_TOOLBAR
+        )
+        self._play_image = SymbolicIconImage(
+            "media-playback-start", Gtk.IconSize.LARGE_TOOLBAR
+        )
         self._set_active(False)
         self.connect("clicked", self._on_clicked)
 
@@ -210,7 +216,6 @@ class PlayPauseButton(Gtk.Button):
 
 
 class PlayControls(Gtk.VBox):
-
     def __init__(self, player, library):
         super().__init__(spacing=3)
 
@@ -219,16 +224,14 @@ class PlayControls(Gtk.VBox):
         upper.set_col_spacings(3)
 
         prev = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
-        prev.add(SymbolicIconImage("media-skip-backward",
-                                   Gtk.IconSize.LARGE_TOOLBAR))
+        prev.add(SymbolicIconImage("media-skip-backward", Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(prev, 0, 1, 0, 1)
 
         play = PlayPauseButton()
         upper.attach(play, 1, 2, 0, 1)
 
         next_ = Gtk.Button(relief=Gtk.ReliefStyle.NONE)
-        next_.add(SymbolicIconImage("media-skip-forward",
-                                    Gtk.IconSize.LARGE_TOOLBAR))
+        next_.add(SymbolicIconImage("media-skip-forward", Gtk.IconSize.LARGE_TOOLBAR))
         upper.attach(next_, 2, 3, 0, 1)
 
         lower = Gtk.Table(n_rows=1, n_columns=3, homogeneous=True)
@@ -242,11 +245,14 @@ class PlayControls(Gtk.VBox):
         # XXX: Adwaita defines a different padding for GtkVolumeButton
         # We force it to 0 here, which works because the other (normal) buttons
         # in the grid set the width/height
-        qltk.add_css(self.volume, """
+        qltk.add_css(
+            self.volume,
+            """
             .button {
                 padding: 0px;
             }
-        """)
+        """,
+        )
 
         seekbutton = SeekButton(player, library)
         seekbutton.set_relief(Gtk.ReliefStyle.NONE)
@@ -260,12 +266,9 @@ class PlayControls(Gtk.VBox):
         play.add_events(Gdk.EventMask.SCROLL_MASK)
         connect_obj(play, "scroll-event", self.__scroll, player)
         connect_obj(next_, "clicked", self.__next, player)
-        connect_destroy(
-            player, "song-started", self.__song_started, next_, play)
-        connect_destroy(
-            player, "paused", self.__on_set_paused_unpaused, play, False)
-        connect_destroy(
-            player, "unpaused", self.__on_set_paused_unpaused, play, True)
+        connect_destroy(player, "song-started", self.__song_started, next_, play)
+        connect_destroy(player, "paused", self.__on_set_paused_unpaused, play, False)
+        connect_destroy(player, "unpaused", self.__on_set_paused_unpaused, play, True)
 
     def __on_set_paused_unpaused(self, player, button, state):
         # block to prevent a signal cycle in case the paused signal and state
@@ -275,11 +278,9 @@ class PlayControls(Gtk.VBox):
         button.handler_unblock(self._toggle_id)
 
     def __scroll(self, player, event):
-        if event.direction in [Gdk.ScrollDirection.UP,
-                               Gdk.ScrollDirection.LEFT]:
+        if event.direction in [Gdk.ScrollDirection.UP, Gdk.ScrollDirection.LEFT]:
             player.previous()
-        elif event.direction in [Gdk.ScrollDirection.DOWN,
-                                 Gdk.ScrollDirection.RIGHT]:
+        elif event.direction in [Gdk.ScrollDirection.DOWN, Gdk.ScrollDirection.RIGHT]:
             player.next()
 
     def __song_started(self, player, song, next, play):

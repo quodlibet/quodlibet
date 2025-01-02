@@ -36,17 +36,18 @@ class SongInfo(Gtk.EventBox):
         # Translators: As in "by Artist Name"
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
-        "track": _("Track %s") % "<tracknumber>"
+        "track": _("Track %s") % "<tracknumber>",
     }
 
-    _pattern = ("""\
+    _pattern = """\
 [span weight='bold' size='large']<title>[/span]\
 <~length| (<~length>)><version|
 [small][b]<version>[/b][/small]><~people|
 {people}><album|
 [b]<album>[/b]<discnumber| - {disc}>\
-<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - {track}>>"""
-                .format(**_FORMAT_VARS))
+<discsubtitle| - [b]<discsubtitle>[/b]><tracknumber| - {track}>>""".format(
+        **_FORMAT_VARS
+    )
 
     _not_playing = "<span size='xx-large'>%s</span>" % _("Not playing")
 
@@ -67,8 +68,7 @@ class SongInfo(Gtk.EventBox):
 
         label.connect("populate-popup", self._on_label_popup, player, library)
         self.connect("key-press-event", self._on_key_press_event, player)
-        self.connect("button-press-event", self._on_button_press_event,
-                     player, library)
+        self.connect("button-press-event", self._on_button_press_event, player, library)
 
         try:
             with open(self._pattern_filename, "rb") as h:
@@ -118,15 +118,17 @@ class SongInfo(Gtk.EventBox):
         item.connect("activate", self._on_edit_display, player)
 
         songs = [player.song] if player.song else []
-        song_menu = SongsMenu(library, songs, remove=False, delete=True,
-                              accels=False, items=[[item]])
+        song_menu = SongsMenu(
+            library, songs, remove=False, delete=True, accels=False, items=[[item]]
+        )
 
         song_menu.show_all()
         return song_menu
 
     def _on_edit_display(self, menu_item, player):
         editor = PatternEdit(
-            self, SongInfo._pattern, alternative_markup=True, links=True)
+            self, SongInfo._pattern, alternative_markup=True, links=True
+        )
         editor.text = self._pattern
         editor.apply.connect("clicked", self._on_set_pattern, editor, player)
         editor.show()
@@ -155,8 +157,9 @@ class SongInfo(Gtk.EventBox):
         self._update_info(player)
 
     def _update_info(self, player, _last={}):  # noqa
-        text = (self._not_playing if player.info is None
-                else self._compiled % player.info)
+        text = (
+            self._not_playing if player.info is None else self._compiled % player.info
+        )
 
         # some radio streams update way too often and updating the label
         # destroys the text selection

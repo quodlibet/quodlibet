@@ -85,12 +85,13 @@ def init():
             sys.modules[name.split(".", 1)[1]] = format
 
     # This can be used for the quodlibet.desktop file
-    desktop_mime_types = "MimeType=" + \
-        ";".join(sorted({m.split(";")[0] for m in mimes})) + ";"
+    desktop_mime_types = (
+        "MimeType=" + ";".join(sorted({m.split(";")[0] for m in mimes})) + ";"
+    )
     print_d(desktop_mime_types)
 
     s = ", ".join(sorted(module_names))
-    print_d("Supported formats: %s" % s)
+    print_d(f"Supported formats: {s}")
 
     if not loaders:
         raise SystemExit("No formats found!")

@@ -74,8 +74,11 @@ def get_importables(folder):
                 # print_d("Ignoring %r" % os.path.join(root, d))
                 dirs.remove(d)
         if not first and any(is_init(n) for n in names):
-            yield (basename(root), root,
-                   [d for d in (join(root, name) for name in names) if is_ok(d)])
+            yield (
+                basename(root),
+                root,
+                [d for d in (join(root, name) for name in names) if is_ok(d)],
+            )
         else:
             for name in filter(is_ok, names):
                 yield (splitext(name)[0], join(root, name), [join(root, name)])
@@ -84,7 +87,7 @@ def get_importables(folder):
 
 def load_module(name, package, path):
     """Load a module/package. Returns the module or None.
-       Doesn't catch any exceptions during the actual import.
+    Doesn't catch any exceptions during the actual import.
     """
 
     fullname = package + "." + name

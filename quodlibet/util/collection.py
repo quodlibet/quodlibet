@@ -19,8 +19,12 @@ from senf import fsnative, fsn2bytes, bytes2fsn, path2fsn, _fsnative, uri2fsn, f
 from quodlibet import ngettext, _
 from quodlibet import util
 from quodlibet import config
-from quodlibet.formats._audio import (TAG_TO_SORT, NUMERIC_ZERO_DEFAULT,
-                                      AudioFile, HasKey)
+from quodlibet.formats._audio import (
+    TAG_TO_SORT,
+    NUMERIC_ZERO_DEFAULT,
+    AudioFile,
+    HasKey,
+)
 from quodlibet.formats._audio import PEOPLE as _PEOPLE
 from quodlibet.pattern import Pattern
 from quodlibet.const import QL_NAMESPACE
@@ -48,7 +52,7 @@ PEOPLE.remove("albumartist")
 PEOPLE.insert(0, "albumartist")
 
 ELPOEP = list(reversed(PEOPLE))
-PEOPLE_SCORE = [100 ** i for i in range(len(PEOPLE))]
+PEOPLE_SCORE = [100**i for i in range(len(PEOPLE))]
 
 
 def avg(nums):
@@ -76,16 +80,10 @@ NUM_DEFAULT_FUNCS = {
     "skipcount": "sum",
     "year": "min",
     "originalyear": "min",
-    "filesize": "sum"
+    "filesize": "sum",
 }
 
-NUM_FUNCS = {
-    "max": max,
-    "min": min,
-    "sum": sum,
-    "avg": avg,
-    "bav": bayesian_average
-}
+NUM_FUNCS = {"max": max, "min": min, "sum": sum, "avg": avg, "bav": bayesian_average}
 
 
 class Collection:
@@ -141,8 +139,7 @@ class Collection:
 
     def comma(self, key):
         value = self.get(key)
-        return (value if isinstance(value, int | float)
-                else value.replace("\n", ", "))
+        return value if isinstance(value, int | float) else value.replace("\n", ", ")
 
     def list(self, key):
         v = self.get(key, connector="\n") if "~" in key[1:] else self.get(key)
@@ -228,18 +225,18 @@ class Collection:
                     for w, k in enumerate(ELPOEP):
                         persons = song.list(k)
                         for person in persons:
-                            people[person] = (people.get(person, 0) -
-                                              PEOPLE_SCORE[w])
+                            people[person] = people.get(person, 0) - PEOPLE_SCORE[w]
                         if k in TAG_TO_SORT:
                             persons = song.list(TAG_TO_SORT[k]) or persons
                         for person in persons:
-                            peoplesort[person] = (peoplesort.get(person, 0) -
-                                                  PEOPLE_SCORE[w])
+                            peoplesort[person] = (
+                                peoplesort.get(person, 0) - PEOPLE_SCORE[w]
+                            )
                 # It's cheaper to get people and peoplesort in one go
-                keys["people"] = sorted(people.keys(),
-                                        key=people.__getitem__)[:100]
-                keys["peoplesort"] = sorted(peoplesort.keys(),
-                                            key=peoplesort.__getitem__)[:100]
+                keys["people"] = sorted(people.keys(), key=people.__getitem__)[:100]
+                keys["peoplesort"] = sorted(
+                    peoplesort.keys(), key=peoplesort.__getitem__
+                )[:100]
 
                 ret = keys.pop(key)
                 ret = (ret and "\n".join(ret)) or None
@@ -259,12 +256,14 @@ class Collection:
                 return None if length is None else util.format_time(length)
             elif numkey == "long-length":
                 length = self.__get_value("~#" + key[5:])
-                return (None if length is None
-                        else util.format_time_long(length))
+                return None if length is None else util.format_time_long(length)
             elif numkey == "tracks":
                 tracks = self.__get_value("~#" + key)
-                return (None if tracks is None else
-                        ngettext("%d track", "%d tracks", tracks) % tracks)
+                return (
+                    None
+                    if tracks is None
+                    else ngettext("%d track", "%d tracks", tracks) % tracks
+                )
             elif numkey == "discs":
                 discs = self.__get_value("~#" + key)
                 if discs > 1:
@@ -351,8 +350,8 @@ class Playlist(Collection, abc.Iterable, HasKey):
             return ngettext(
                 "%(title)s and %(count)d more",
                 "%(title)s and %(count)d more",
-                len(songs) - 1) % ({"title": songs[0].comma("title"),
-                                    "count": len(songs) - 1})
+                len(songs) - 1,
+            ) % ({"title": songs[0].comma("title"), "count": len(songs) - 1})
 
     def __init__(self, name: str, songs_lib=None, pl_lib=None):
         super().__init__()
@@ -460,12 +459,12 @@ class Playlist(Collection, abc.Iterable, HasKey):
             self._emit_changed(changed, msg="add")
         return bool(changed)
 
-    def remove_songs(self,
-                     songs: abc.Iterable[AudioFile],
-                     leave_dupes: bool = False) -> bool:
+    def remove_songs(
+        self, songs: abc.Iterable[AudioFile], leave_dupes: bool = False
+    ) -> bool:
         """Removes `songs` from this playlist if they are there,
-         removing only the first reference if `leave_dupes` is True
-         :returns True if anything was removed
+        removing only the first reference if `leave_dupes` is True
+        :returns True if anything was removed
         """
         changed = False
         for song in songs:
@@ -560,16 +559,21 @@ class Playlist(Collection, abc.Iterable, HasKey):
         return id(self)
 
     def __str__(self):
-        songs_text = (ngettext("%d song", "%d songs", len(self.songs))
-                      % len(self.songs))
+        songs_text = ngettext("%d song", "%d songs", len(self.songs)) % len(self.songs)
         return f'"{self.name}" ({songs_text})'
 
 
 class FileBackedPlaylist(Playlist):
     """A `Playlist` that is stored as a UTF-8 text file of paths"""
 
-    def __init__(self, dir_: _fsnative, filename: _fsnative,
-                 songs_lib=None, pl_lib=None, validate: bool = False):
+    def __init__(
+        self,
+        dir_: _fsnative,
+        filename: _fsnative,
+        songs_lib=None,
+        pl_lib=None,
+        validate: bool = False,
+    ):
         assert isinstance(dir_, fsnative)
         self.dir = dir_
         name = self.name_for(filename)
@@ -627,7 +631,8 @@ class FileBackedPlaylist(Playlist):
             except ValueError as e:
                 last_error = e
         raise ValueError(
-            f"Couldn't create playlist of name '{base}' (e.g. {last_error})")
+            f"Couldn't create playlist of name '{base}' (e.g. {last_error})"
+        )
 
     @classmethod
     def from_songs(cls, dir_, songs, title=None, songs_lib=None, pl_lib=None):
@@ -651,7 +656,8 @@ class FileBackedPlaylist(Playlist):
         if os.path.exists(path):
             raise ValueError(
                 _("A playlist named %(name)s already exists at %(path)s")
-                % {"name": new_name, "path": path})
+                % {"name": new_name, "path": path}
+            )
         return new_name
 
     def delete(self):
@@ -688,8 +694,7 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
 
     EXT = "xspf"
     CREATOR_PATTERN = Pattern("<artist|<artist>|<~people>>")
-    _SAFER = {c: quote(c, safe="")
-              for c in ('\\/:*?"<>|' if is_windows() else "\0/")}
+    _SAFER = {c: quote(c, safe="") for c in ('\\/:*?"<>|' if is_windows() else "\0/")}
 
     @classmethod
     def from_playlist(cls, old_pl: FileBackedPlaylist, songs_lib, pl_lib):
@@ -703,8 +708,9 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
             return os.path.join(base, basename(path))
 
         name = old_pl.name
-        new = XSPFBackedPlaylist.new(old_pl.dir, name,
-                                     songs_lib=songs_lib, pl_lib=pl_lib)
+        new = XSPFBackedPlaylist.new(
+            old_pl.dir, name, songs_lib=songs_lib, pl_lib=pl_lib
+        )
         new.extend(old_pl)
         new.write()
         os.rename(old_pl.path, backup_for(old_pl.path))
@@ -728,11 +734,15 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 raise ValueError(f"Unknown playlist root of {root.tag}")
             node = root.find("title", namespaces=ns_mapping)
             if node is None:
-                print_w(f"No <title> found in {self.path} "
-                        f"(Got nodes: {[el.tag for el in root.iter()]})")
+                print_w(
+                    f"No <title> found in {self.path} "
+                    f"(Got nodes: {[el.tag for el in root.iter()]})"
+                )
             elif self.name != node.text:
-                print_w(f"Playlist was named {node.text!r} in XML "
-                        f"instead of {self.name!r} at {self.path!r}")
+                print_w(
+                    f"Playlist was named {node.text!r} in XML "
+                    f"instead of {self.name!r} at {self.path!r}"
+                )
 
             for node in tree.iterfind(".//track", namespaces=ns_mapping):
                 location = node.findtext("location", namespaces=ns_mapping).strip()
@@ -749,8 +759,10 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 else:
                     # TODO: handle missing playlist items (#3105, #729, #3131)
                     node_dump = ET.tostring(node, method="xml").decode("utf-8")
-                    print_w(f"Couldn't find {path!r} in playlist at {self.path!r}. "
-                            f"Perhaps its metadata will help: {node_dump!r}")
+                    print_w(
+                        f"Couldn't find {path!r} in playlist at {self.path!r}. "
+                        f"Perhaps its metadata will help: {node_dump!r}"
+                    )
                     self._list.append(path)
                     library.mask(path)
         except (ET.ParseError, ValueError) as e:
@@ -782,13 +794,14 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
                 mbid = song("musicbrainz_trackid")
                 track = {
                     "location": song("~uri"),
-                    "identifier": (f"https://musicbrainz.org/recording/{mbid}"
-                                   if mbid else None),
+                    "identifier": (
+                        f"https://musicbrainz.org/recording/{mbid}" if mbid else None
+                    ),
                     "title": song("title"),
                     "creator": creator,
                     "album": song("album"),
                     "trackNum": song("~#track"),
-                    "duration": int(song("~#length") * 1000.)
+                    "duration": int(song("~#length") * 1000.0),
                 }
             track_list.append(self._element_from("track", track, True))
         playlist = Element("playlist", attrib={"version": "1", "xmlns": XSPF_NS})
@@ -827,9 +840,11 @@ class XSPFBackedPlaylist(FileBackedPlaylist):
         out = Element(name)
         for k, v in d.items():
             if k and v:
-                element = (cls._element_from(k, v)
-                           if isinstance(v, dict)
-                           else cls._text_element(k, v))
+                element = (
+                    cls._element_from(k, v)
+                    if isinstance(v, dict)
+                    else cls._text_element(k, v)
+                )
                 out.append(element)
         if with_newline:
             out.tail = "\n"

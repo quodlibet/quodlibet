@@ -23,7 +23,6 @@ from quodlibet.util.library import background_filter
 
 
 class Filter:
-
     active_filter = None
     """A callable that returns True if the passed song should be in the
     song list, False if not and None if no filter is active.
@@ -77,9 +76,7 @@ class Filter:
         bg = background_filter()
         if bg:
             songs = filter(bg, library.values())
-            return list({value
-                         for song in songs
-                         for value in song.list(tag)})
+            return list({value for song in songs for value in song.list(tag)})
         return list(library.tag_values(tag))
 
     def unfilter(self):
@@ -141,10 +138,9 @@ class Browser(Gtk.Box, Filter):
     """
 
     __gsignals__ = {
-        "songs-selected":
-        (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+        "songs-selected": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
         "songs-activated": (GObject.SignalFlags.RUN_LAST, None, ()),
-        "uri-received": (GObject.SignalFlags.RUN_LAST, None, (str,))
+        "uri-received": (GObject.SignalFlags.RUN_LAST, None, (str,)),
     }
 
     name = _("Library Browser")
@@ -375,7 +371,7 @@ class EditDisplayPatternMixin:
 
     def edit_display_pane(self, browser, frame_title=None):
         """Returns a Pattern edit widget, with preview,
-         optionally wrapped in a named Frame"""
+        optionally wrapped in a named Frame"""
 
         vbox = Gtk.VBox(spacing=6)
         label = Gtk.Label()
@@ -387,8 +383,7 @@ class EditDisplayPatternMixin:
         edit = PatternEditBox(self._DEFAULT_PATTERN)
         edit.text = browser.display_pattern_text
         edit.apply.connect("clicked", self._set_pattern, edit, browser)
-        connect_obj(
-                edit.buffer, "changed", self._preview_pattern, edit, label)
+        connect_obj(edit.buffer, "changed", self._preview_pattern, edit, label)
         vbox.pack_start(eb, False, True, 3)
         vbox.pack_start(edit, True, True, 0)
         self._preview_pattern(edit, label)

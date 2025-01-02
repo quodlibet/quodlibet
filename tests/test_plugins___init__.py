@@ -14,21 +14,24 @@ from quodlibet.plugins import PluginConfig
 
 
 class TSongWrapper(TestCase):
-
-    psong = AudioFile({
-        "~filename": "does not/exist",
-        "title": "more songs",
-        "discnumber": "2/2", "tracknumber": "1",
-        "artist": "Foo\nI have two artists", "album": "Bar",
-        "~bookmark": "2:10 A bookmark"})
+    psong = AudioFile(
+        {
+            "~filename": "does not/exist",
+            "title": "more songs",
+            "discnumber": "2/2",
+            "tracknumber": "1",
+            "artist": "Foo\nI have two artists",
+            "album": "Bar",
+            "~bookmark": "2:10 A bookmark",
+        }
+    )
     pwrap = SongWrapper(psong)
 
     def setUp(self):
         fd, self.filename = mkstemp()
         os.close(fd)
         config.init()
-        self.wrap = SongWrapper(AudioFile(
-            {"title": "woo", "~filename": self.filename}))
+        self.wrap = SongWrapper(AudioFile({"title": "woo", "~filename": self.filename}))
 
     def tearDown(self):
         os.unlink(self.filename)
@@ -37,11 +40,11 @@ class TSongWrapper(TestCase):
     def test_slots(self):
         def breakme():
             self.wrap.woo = 1
+
         self.assertRaises(AttributeError, breakme)
 
     def test_cmp(self):
-        songs = [SongWrapper(AudioFile({"tracknumber": str(i)}))
-                 for i in range(10)]
+        songs = [SongWrapper(AudioFile({"tracknumber": str(i)})) for i in range(10)]
         songs.reverse()
         songs.sort()
         self.assertEqual([s("~#track") for s in songs], list(range(10)))
@@ -71,7 +74,7 @@ class TSongWrapper(TestCase):
 
     def test_delitem(self):
         assert "title" in self.wrap
-        del(self.wrap["title"])
+        del self.wrap["title"]
         assert "title" not in self.wrap
         assert self.wrap._needs_write
 
@@ -80,8 +83,7 @@ class TSongWrapper(TestCase):
 
     def test_can_change(self):
         for key in ["~foo", "title", "whee", "a test", "foo=bar", ""]:
-            self.assertEqual(
-                self.pwrap.can_change(key), self.psong.can_change(key))
+            self.assertEqual(self.pwrap.can_change(key), self.psong.can_change(key))
 
     def test_comma(self):
         for key in ["title", "artist", "album", "notexist", "~length"]:
@@ -93,8 +95,7 @@ class TSongWrapper(TestCase):
 
     def test_dicty(self):
         self.assertEqual(self.pwrap.keys(), self.psong.keys())
-        self.assertEqual(
-            list(self.pwrap.values()), list(self.psong.values()))
+        self.assertEqual(list(self.pwrap.values()), list(self.psong.values()))
         self.assertEqual(self.pwrap.items(), self.psong.items())
 
     def test_mtime(self):
@@ -146,7 +147,6 @@ class TListWrapper(TestCase):
 
 
 class TPluginConfig(TestCase):
-
     def setUp(self):
         config.init()
 

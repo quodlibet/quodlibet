@@ -20,10 +20,12 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_NAME = _("MusicBrainz Cover Source")
     PLUGIN_DESC = _("Downloads covers from MusicBrainz's cover art archive.")
 
-    _SIZES = {"original": "front",
-              "500x500": "front-500",
-              "500x500 (back)": "back-500",
-              "original (back)": "back"}
+    _SIZES = {
+        "original": "front",
+        "500x500": "front-500",
+        "500x500 (back)": "back-500",
+        "original (back)": "back",
+    }
 
     @classmethod
     def group_by(cls, song):
@@ -50,17 +52,20 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
         # and relies on 404s being filtered out later
         if not self.urls:
             return self.fail("No Musicbrainz tag found")
-        self.emit("search-complete",
-                  [{"cover": url, "dimensions": dims}
-                   for dims, url in self.urls.items()])
+        self.emit(
+            "search-complete",
+            [{"cover": url, "dimensions": dims} for dims, url in self.urls.items()],
+        )
 
     @property
     def urls(self) -> dict[str, str]:
         if not self.mbid:
             return {}
         mbid = escape_query_value(self.mbid)
-        return {dim: f"https://coverartarchive.org/release/{mbid}/{extra}"
-                for dim, extra in self._SIZES.items()}
+        return {
+            dim: f"https://coverartarchive.org/release/{mbid}/{extra}"
+            for dim, extra in self._SIZES.items()
+        }
 
     def fetch_cover(self):
         if not self.mbid:

@@ -15,44 +15,71 @@ from quodlibet.formats import AudioFile, types as format_types, AudioFileError
 from quodlibet.formats import decode_value, MusicFile, FILESYSTEM_TAGS
 from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, TIME_TAGS
 from quodlibet.util.environment import is_windows
-from quodlibet.util.path import (normalize_path, mkdir, get_home_dir, unquote,
-                                 escape_filename, RootPathFile)
+from quodlibet.util.path import (
+    normalize_path,
+    mkdir,
+    get_home_dir,
+    unquote,
+    escape_filename,
+    RootPathFile,
+)
 from quodlibet.util.string.date import format_date
 from quodlibet.util.tags import _TAGS as TAGS
 from senf import fsnative, fsn2text, bytes2fsn
 from tests import TestCase, get_data_path, init_fake_app, destroy_fake_app
 from .helper import temp_filename
 
-bar_1_1 = AudioFile({
-    "~filename": fsnative("/fakepath/1"),
-    "title": "A song",
-    "discnumber": "1/2", "tracknumber": "1/3",
-    "artist": "Foo", "album": "Bar"})
-bar_1_2 = AudioFile({
-    "~filename": fsnative("/fakepath/2"),
-    "title": "Perhaps another",
-    "titlesort": "Titles don't sort",
-    "discnumber": "1", "tracknumber": "2/3",
-    "artist": "Lali-ho!", "album": "Bar",
-    "date": "2004-12-12", "originaldate": "2005-01-01",
-    "~#filesize": 1024 ** 2, "~#bitrate": 128})
-bar_2_1 = AudioFile({
-    "~filename": fsnative("/does not/exist"),
-    "title": "more songs",
-    "discnumber": "2/2", "tracknumber": "1",
-    "artist": "Foo\nI have two artists",
-    "artistsort": "Foosort\n\nThird artist",
-    "album": "Bar",
-    "lyricist": "Foo", "composer": "Foo", "performer": "I have two artists"})
-bar_va = AudioFile({
-    "~filename": "/fakepath/3",
-    "title": "latest",
-    "artist": "Foo\nI have two artists",
-    "album": "Bar",
-    "language": "de\neng",
-    "albumartist": "Various Artists",
-    "performer": "Jay-Z",
-    "producer": "Kanye West"})
+bar_1_1 = AudioFile(
+    {
+        "~filename": fsnative("/fakepath/1"),
+        "title": "A song",
+        "discnumber": "1/2",
+        "tracknumber": "1/3",
+        "artist": "Foo",
+        "album": "Bar",
+    }
+)
+bar_1_2 = AudioFile(
+    {
+        "~filename": fsnative("/fakepath/2"),
+        "title": "Perhaps another",
+        "titlesort": "Titles don't sort",
+        "discnumber": "1",
+        "tracknumber": "2/3",
+        "artist": "Lali-ho!",
+        "album": "Bar",
+        "date": "2004-12-12",
+        "originaldate": "2005-01-01",
+        "~#filesize": 1024**2,
+        "~#bitrate": 128,
+    }
+)
+bar_2_1 = AudioFile(
+    {
+        "~filename": fsnative("/does not/exist"),
+        "title": "more songs",
+        "discnumber": "2/2",
+        "tracknumber": "1",
+        "artist": "Foo\nI have two artists",
+        "artistsort": "Foosort\n\nThird artist",
+        "album": "Bar",
+        "lyricist": "Foo",
+        "composer": "Foo",
+        "performer": "I have two artists",
+    }
+)
+bar_va = AudioFile(
+    {
+        "~filename": "/fakepath/3",
+        "title": "latest",
+        "artist": "Foo\nI have two artists",
+        "album": "Bar",
+        "language": "de\neng",
+        "albumartist": "Various Artists",
+        "performer": "Jay-Z",
+        "producer": "Kanye West",
+    }
+)
 
 num_call = AudioFile({"custom": "0.3"})
 ANOTHER_RATING = 0.2
@@ -60,17 +87,15 @@ SOME_RATING = 0.8
 
 
 class TAudioFile(TestCase):
-
     def setUp(self):
         # Need the playlists library now
         init_fake_app()
         config.RATINGS = config.HardCodedRatingsPrefs()
         fd, filename = mkstemp()
         os.close(fd)
-        self.quux = AudioFile({
-            "~filename": normalize_path(filename, True),
-            "album": "Quuxly"
-        })
+        self.quux = AudioFile(
+            {"~filename": normalize_path(filename, True), "album": "Quuxly"}
+        )
 
     def tearDown(self):
         destroy_fake_app()
@@ -92,9 +117,14 @@ class TAudioFile(TestCase):
                 name = tag.name
                 # brute force
                 variants = [
-                    name, "~" + name, name + "sort", "~" + name + "sort",
-                    name + ":role", "~" + name + ":role",
-                    "~" + name + "sort:role", name + "sort:role",
+                    name,
+                    "~" + name,
+                    name + "sort",
+                    "~" + name + "sort",
+                    name + ":role",
+                    "~" + name + ":role",
+                    "~" + name + "sort:role",
+                    name + "sort:role",
                 ]
                 for name in variants:
                     if name in FILESYSTEM_TAGS:
@@ -116,10 +146,7 @@ class TAudioFile(TestCase):
         assert "album" in self.quux.realkeys()
 
     def test_iterrealitems(self):
-        af = AudioFile({
-            "~filename": fsnative("foo"),
-            "album": "Quuxly"
-        })
+        af = AudioFile({"~filename": fsnative("foo"), "album": "Quuxly"})
         assert list(af.iterrealitems()) == [("album", "Quuxly")]
 
     def test_language(self):
@@ -165,8 +192,9 @@ class TAudioFile(TestCase):
 
         assert self.quux("~basename")
         assert self.quux("~dirname") == os.path.dirname(self.quux("~filename"))
-        assert self.quux("title") == \
-            "%s [untitled Unknown Audio File]" % fsn2text(self.quux("~basename"))
+        assert self.quux("title") == "%s [untitled Unknown Audio File]" % fsn2text(
+            self.quux("~basename")
+        )
 
         self.assertEqual(bar_1_1("~#disc"), 1)
         self.assertEqual(bar_1_2("~#disc"), 1)
@@ -182,7 +210,7 @@ class TAudioFile(TestCase):
 
     def test_filesize(self):
         self.assertEqual(bar_1_2("~filesize"), "1.00 MB")
-        self.assertEqual(bar_1_2("~#filesize"), 1024 ** 2)
+        self.assertEqual(bar_1_2("~#filesize"), 1024**2)
         assert isinstance(bar_1_2("~filesize"), str)
 
     def test_bitrate(self):
@@ -208,12 +236,10 @@ class TAudioFile(TestCase):
         for song in [self.quux, bar_1_1, bar_2_1]:
             self.assertEqual(song("~~people"), song("~people"))
             self.assertEqual(song("~title~people"), song("title"))
-            self.assertEqual(
-                song("~title~~people"), song("~title~artist"))
+            self.assertEqual(song("~title~~people"), song("~title~artist"))
 
     def test_tied_filename_numeric(self):
-        self.assertEqual(
-            bar_1_2("~~filename~~#originalyear"), "/fakepath/2 - 2005")
+        self.assertEqual(bar_1_2("~~filename~~#originalyear"), "/fakepath/2 - 2005")
 
     def test_call_numeric(self):
         self.assertAlmostEqual(num_call("~#custom"), 0.3)
@@ -229,8 +255,7 @@ class TAudioFile(TestCase):
         self.assertEqual(af.list("not a key"), [])
 
         self.assertEqual(len(bar_2_1.list("artist")), 2)
-        self.assertEqual(bar_2_1.list("artist"),
-                             bar_2_1["artist"].split("\n"))
+        self.assertEqual(bar_2_1.list("artist"), bar_2_1["artist"].split("\n"))
 
     def test_list_tied_tags(self):
         expected = ["{} - {}".format(bar_1_1("artist"), bar_1_1("title"))]
@@ -241,31 +266,28 @@ class TAudioFile(TestCase):
         self.assertEqual(bar_2_1.list("~artist~title"), expected)
 
     def test_list_sort(self):
-        self.assertEqual(bar_1_1.list_sort("title"),
-                             [("A song", "A song")])
-        self.assertEqual(bar_1_1.list_sort("artist"),
-                             [("Foo", "Foo")])
+        self.assertEqual(bar_1_1.list_sort("title"), [("A song", "A song")])
+        self.assertEqual(bar_1_1.list_sort("artist"), [("Foo", "Foo")])
 
         af = AudioFile({"~filename": fsnative("foo")})
         self.assertEqual(af.list_sort("artist"), [])
-        self.assertEqual(af.list_sort("title"),
-                             [(af("title"), af("title"))])
+        self.assertEqual(af.list_sort("title"), [(af("title"), af("title"))])
         self.assertEqual(af.list_sort("not a key"), [])
 
-        self.assertEqual(bar_1_2.list_sort("title"),
-                             [("Perhaps another", "Perhaps another")])
-        self.assertEqual(bar_2_1.list_sort("artist"),
-                             [("Foo", "Foosort"),
-                              ("I have two artists", "I have two artists")])
-        self.assertEqual(bar_2_1.list_sort("~#track"),
-                             [("1", "1")])
+        self.assertEqual(
+            bar_1_2.list_sort("title"), [("Perhaps another", "Perhaps another")]
+        )
+        self.assertEqual(
+            bar_2_1.list_sort("artist"),
+            [("Foo", "Foosort"), ("I have two artists", "I have two artists")],
+        )
+        self.assertEqual(bar_2_1.list_sort("~#track"), [("1", "1")])
 
     def test_list_sort_empty_sort(self):
         # we don't want to care about empty sort values, make sure we ignore
         # them
         s = AudioFile({"artist": "x\ny\nz", "artistsort": "c\n\nd"})
-        self.assertEqual(
-            s.list_sort("artist"), [("x", "c"), ("y", "y"), ("z", "d")])
+        self.assertEqual(s.list_sort("artist"), [("x", "c"), ("y", "y"), ("z", "d")])
 
     def test_list_sort_noexist(self):
         self.assertEqual(bar_1_1.list_sort("nopenopenope"), [])
@@ -290,26 +312,38 @@ class TAudioFile(TestCase):
         self.assertEqual(s.list_sort("artist"), [])
 
     def test_list_separate(self):
-        self.assertEqual(bar_1_1.list_separate("title"),
-                             [("A song", "A song")])
-        self.assertEqual(bar_1_1.list_separate("artist"),
-                             [("Foo", "Foo")])
+        self.assertEqual(bar_1_1.list_separate("title"), [("A song", "A song")])
+        self.assertEqual(bar_1_1.list_separate("artist"), [("Foo", "Foo")])
 
-        self.assertEqual(bar_2_1.list_separate("~artist~album"),
-                             [("Foo", "Foosort"),
-                              ("I have two artists", "I have two artists"),
-                              ("Bar", "Bar")])
+        self.assertEqual(
+            bar_2_1.list_separate("~artist~album"),
+            [
+                ("Foo", "Foosort"),
+                ("I have two artists", "I have two artists"),
+                ("Bar", "Bar"),
+            ],
+        )
 
-        self.assertEqual(bar_2_1.list_separate("~artist~~#track"),
-                             [("Foo", "Foosort"),
-                              ("I have two artists", "I have two artists"),
-                              ("1", "1")])
+        self.assertEqual(
+            bar_2_1.list_separate("~artist~~#track"),
+            [
+                ("Foo", "Foosort"),
+                ("I have two artists", "I have two artists"),
+                ("1", "1"),
+            ],
+        )
 
     def test_list_list_separate_types(self):
         res = bar_2_1.list_separate("~~#track~artist~~filename")
-        self.assertEqual(res, [("1", "1"), ("Foo", "Foosort"),
-                               ("I have two artists", "I have two artists"),
-                               ("/does not/exist", "/does not/exist")])
+        self.assertEqual(
+            res,
+            [
+                ("1", "1"),
+                ("Foo", "Foosort"),
+                ("I have two artists", "I have two artists"),
+                ("/does not/exist", "/does not/exist"),
+            ],
+        )
 
     def test_list_numeric(self):
         self.assertEqual(bar_1_2.list("~#bitrate"), [128])
@@ -396,8 +430,7 @@ class TAudioFile(TestCase):
     def test_rename_to_existing(self):
         self.quux.rename(self.quux("~filename"))
         if os.name != "nt":
-            self.assertRaises(
-                ValueError, self.quux.rename, fsnative("/dev/null"))
+            self.assertRaises(ValueError, self.quux.rename, fsnative("/dev/null"))
 
         with temp_filename() as new_file:
             with self.assertRaises(ValueError):
@@ -434,14 +467,16 @@ class TAudioFile(TestCase):
 
     @contextmanager
     def lyric_filename_test_setup(self, no_config=False):
-
         with temp_filename() as filename:
             s = self.lyric_filename_search_test_song(filename)
             root = os.path.dirname(filename)
 
             if not no_config:
-                config.set("memory", "lyric_filenames",
-                           "<artist>.-.<title>,<artist> - <title>.lyrics_mod")
+                config.set(
+                    "memory",
+                    "lyric_filenames",
+                    "<artist>.-.<title>,<artist> - <title>.lyrics_mod",
+                )
             config.set("memory", "lyric_rootpaths", root)
 
             s.root = root
@@ -471,8 +506,7 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_builtin_default_local_path(self):
         """test built-in default local path"""
         with self.lyric_filename_test_setup(no_config=True) as ts:
-            fp = os.path.join(ts.root, ts["artist"] + " - " +
-                              ts["title"] + ".lyric")
+            fp = os.path.join(ts.root, ts["artist"] + " - " + ts["title"] + ".lyric")
             with open(fp, "w", encoding="utf-8") as f:
                 f.write("")
             search = ts.lyric_filename
@@ -492,8 +526,7 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_custom_path(self):
         """test custom lyrics file location / naming"""
         with self.lyric_filename_test_setup() as ts:
-            fp = os.path.join(ts.root, ts["artist"] + " - " +
-                              ts["title"] + ".lyric")
+            fp = os.path.join(ts.root, ts["artist"] + " - " + ts["title"] + ".lyric")
             with open(fp, "w", encoding="utf-8") as f:
                 f.write("")
             search = ts.lyric_filename
@@ -503,15 +536,13 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_order_priority(self):
         """test custom lyrics order priority"""
         with self.lyric_filename_test_setup() as ts:
-            root2 = os.path.join(get_home_dir(), ".lyrics") # built-in default
-            fp2 = os.path.join(root2, ts["artist"] + " - " +
-                                      ts["title"] + ".lyric")
+            root2 = os.path.join(get_home_dir(), ".lyrics")  # built-in default
+            fp2 = os.path.join(root2, ts["artist"] + " - " + ts["title"] + ".lyric")
             p2 = os.path.dirname(fp2)
             mkdir(p2)
             with open(fp2, "w", encoding="utf-8") as f:
                 f.write("")
-            fp = os.path.join(ts.root, ts["artist"] + " - " +
-                                       ts["title"] + ".lyric")
+            fp = os.path.join(ts.root, ts["artist"] + " - " + ts["title"] + ".lyric")
             with open(fp, "w", encoding="utf-8") as f:
                 f.write("")
             mkdir(p2)
@@ -524,8 +555,7 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_modified_extension_fallback(self):
         """test modified extension fallback search"""
         with self.lyric_filename_test_setup() as ts:
-            fp = os.path.join(ts.root,
-                              ts["artist"] + " - " + ts["title"] + ".txt")
+            fp = os.path.join(ts.root, ts["artist"] + " - " + ts["title"] + ".txt")
             with open(fp, "w", encoding="utf-8") as f:
                 f.write("")
             search = ts.lyric_filename
@@ -535,20 +565,19 @@ class TAudioFile(TestCase):
     def test_lyric_filename_search_special_characters(self):
         """test '<' and/or '>' in name (not parsed (transparent to test))"""
         with self.lyric_filename_test_setup(no_config=True) as ts:
-
-            path_variants = ["<oldskool>"] \
-                if is_windows() else [r"\<artist\>", r"\<artist>",
-                                      r"<artist\>"]
+            path_variants = (
+                ["<oldskool>"]
+                if is_windows()
+                else [r"\<artist\>", r"\<artist>", r"<artist\>"]
+            )
 
             for path_variant in path_variants:
                 ts["artist"] = path_variant + " SpongeBob SquarePants"
-                parts = [ts.root,
-                         ts["artist"] + " - " + ts["title"] + ".lyric"]
+                parts = [ts.root, ts["artist"] + " - " + ts["title"] + ".lyric"]
                 rpf = RootPathFile(ts.root, os.path.sep.join(parts))
                 if not rpf.valid:
                     rpf = RootPathFile(rpf.root, rpf.pathfile_escaped)
-                self.assertTrue(rpf.valid,
-                                "even escaped target file is not valid")
+                self.assertTrue(rpf.valid, "even escaped target file is not valid")
                 with open(rpf.pathfile, "w", encoding="utf-8") as f:
                     f.write("")
                 search = ts.lyric_filename
@@ -557,7 +586,7 @@ class TAudioFile(TestCase):
                 if is_windows():
                     # account for 'os.path.normcase' santisatation
                     fp = fp.lower()
-                    search = search.lower() # compensate for the above
+                    search = search.lower()  # compensate for the above
                 self.assertEqual(search, fp)
 
     def test_lyric_filename_search_special_characters_across_path(self):
@@ -610,8 +639,7 @@ class TAudioFile(TestCase):
             mkdir(lyrics_dir)
             with open(af.lyric_filename, "w", encoding="utf-8") as lf:
                 lf.write(str(lyrics))
-            self.assertEqual(af("~lyrics").splitlines(),
-                                 lyrics.splitlines())
+            self.assertEqual(af("~lyrics").splitlines(), lyrics.splitlines())
             os.remove(af.lyric_filename)
             os.rmdir(lyrics_dir)
 
@@ -651,121 +679,142 @@ class TAudioFile(TestCase):
         q.sanitize()
         b.pop("~filename")
         self.assertRaises(ValueError, b.sanitize)
-        n = AudioFile({"artist": "foo\0bar", "title": "baz\0",
-                       "~filename": fsnative("whatever")})
+        n = AudioFile(
+            {"artist": "foo\0bar", "title": "baz\0", "~filename": fsnative("whatever")}
+        )
         n.sanitize()
         self.assertEqual(n["artist"], "foo\nbar")
         self.assertEqual(n["title"], "baz")
 
     def test_performers(self):
-        q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
-                       ("performer", "C")])
+        q = AudioFile(
+            [("performer:vocals", "A"), ("performer:guitar", "B"), ("performer", "C")]
+        )
         self.assertEqual(set(q.list("~performers")), {"A", "B", "C"})
-        self.assertEqual(set(q.list("~performers:roles")),
-                             {"A (Vocals)", "B (Guitar)", "C"})
+        self.assertEqual(
+            set(q.list("~performers:roles")), {"A (Vocals)", "B (Guitar)", "C"}
+        )
 
     def test_performers_multi_value(self):
-        q = AudioFile([
-            ("performer:vocals", "X\nA\nY"),
-            ("performer:guitar", "Y\nB\nA"),
-            ("performer", "C\nB\nA"),
-        ])
+        q = AudioFile(
+            [
+                ("performer:vocals", "X\nA\nY"),
+                ("performer:guitar", "Y\nB\nA"),
+                ("performer", "C\nB\nA"),
+            ]
+        )
+
+        self.assertEqual(set(q.list("~performer")), {"A", "B", "C", "X", "Y"})
 
         self.assertEqual(
-            set(q.list("~performer")), {"A", "B", "C", "X", "Y"})
-
-        self.assertEqual(
-            set(q.list("~performer:roles")), {
-                    "A (Guitar, Vocals)",
-                    "C",
-                    "B (Guitar)",
-                    "X (Vocals)",
-                    "Y (Guitar, Vocals)",
-                })
-
+            set(q.list("~performer:roles")),
+            {
+                "A (Guitar, Vocals)",
+                "C",
+                "B (Guitar)",
+                "X (Vocals)",
+                "Y (Guitar, Vocals)",
+            },
+        )
 
     def test_producer(self):
         s = AudioFile({"producer": "Kanye West"})
         assert s("producer") == "Kanye West"
         assert set(s.list("~people")) == {"Kanye West"}
 
-
     def test_people(self):
-        q = AudioFile([("performer:vocals", "A"), ("performer:guitar", "B"),
-                       ("performer", "C"), ("arranger", "A"),
-                       ("albumartist", "B"), ("artist", "C")])
+        q = AudioFile(
+            [
+                ("performer:vocals", "A"),
+                ("performer:guitar", "B"),
+                ("performer", "C"),
+                ("arranger", "A"),
+                ("albumartist", "B"),
+                ("artist", "C"),
+            ]
+        )
         self.assertEqual(q.list("~people"), ["C", "B", "A"])
-        self.assertEqual(q.list("~people:roles"),
-            ["C (Performance)", "B (Guitar)", "A (Arrangement, Vocals)"])
+        self.assertEqual(
+            q.list("~people:roles"),
+            ["C (Performance)", "B (Guitar)", "A (Arrangement, Vocals)"],
+        )
 
     def test_people_mix(self):
-        q = AudioFile([
-            ("performer:arrangement", "A"),
-            ("arranger", "A"),
-            ("performer", "A"),
-            ("performer:foo", "A"),
-        ])
+        q = AudioFile(
+            [
+                ("performer:arrangement", "A"),
+                ("arranger", "A"),
+                ("performer", "A"),
+                ("performer:foo", "A"),
+            ]
+        )
         self.assertEqual(q.list("~people"), ["A"])
-        self.assertEqual(q.list("~people:roles"),
-            ["A (Arrangement, Arrangement, Foo, Performance)"])
+        self.assertEqual(
+            q.list("~people:roles"), ["A (Arrangement, Arrangement, Foo, Performance)"]
+        )
 
     def test_people_multi_value(self):
-        q = AudioFile([
-            ("arranger", "A\nX"),
-            ("performer", "A\nY"),
-            ("performer:foo", "A\nX"),
-        ])
+        q = AudioFile(
+            [
+                ("arranger", "A\nX"),
+                ("performer", "A\nY"),
+                ("performer:foo", "A\nX"),
+            ]
+        )
 
         self.assertEqual(q.list("~people"), ["A", "Y", "X"])
-        self.assertEqual(q.list("~people:roles"),
-            ["A (Arrangement, Foo, Performance)", "Y (Performance)",
-             "X (Arrangement, Foo)"])
+        self.assertEqual(
+            q.list("~people:roles"),
+            [
+                "A (Arrangement, Foo, Performance)",
+                "Y (Performance)",
+                "X (Arrangement, Foo)",
+            ],
+        )
 
     def test_people_individuals(self):
         q = AudioFile({"artist": "A\nX", "albumartist": "Various Artists"})
         self.assertEqual(q.list("~people:real"), ["A", "X"])
 
         lonely = AudioFile({"artist": "various artists", "title": "blah"})
-        self.assertEqual(lonely.list("~people:real"),
-                             ["various artists"])
+        self.assertEqual(lonely.list("~people:real"), ["various artists"])
 
         lots = AudioFile({"artist": "Various Artists", "albumartist": "V.A."})
-        self.assertEqual(lots.list("~people:real"),
-                             ["Various Artists"])
+        self.assertEqual(lots.list("~people:real"), ["Various Artists"])
 
     def test_peoplesort(self):
-        q = AudioFile([("performer:vocals", "The A"),
-                       ("performersort:vocals", "A, The"),
-                       ("performer:guitar", "The B"),
-                       ("performersort:guitar", "B, The"),
-                       ("performer", "The C"),
-                       ("performersort", "C, The"),
-                       ("albumartist", "The B"),
-                       ("albumartistsort", "B, The")])
-        self.assertEqual(q.list("~peoplesort"),
-                             ["B, The", "C, The", "A, The"])
-        self.assertEqual(q.list("~peoplesort:roles"),
-            ["B, The (Guitar)", "C, The (Performance)", "A, The (Vocals)"])
+        q = AudioFile(
+            [
+                ("performer:vocals", "The A"),
+                ("performersort:vocals", "A, The"),
+                ("performer:guitar", "The B"),
+                ("performersort:guitar", "B, The"),
+                ("performer", "The C"),
+                ("performersort", "C, The"),
+                ("albumartist", "The B"),
+                ("albumartistsort", "B, The"),
+            ]
+        )
+        self.assertEqual(q.list("~peoplesort"), ["B, The", "C, The", "A, The"])
+        self.assertEqual(
+            q.list("~peoplesort:roles"),
+            ["B, The (Guitar)", "C, The (Performance)", "A, The (Vocals)"],
+        )
 
     def test_blank_tag_handling_comma(self):
-        q = AudioFile([("title", "A\n"),
-                       ("artists", "A\n\nB\n")])
+        q = AudioFile([("title", "A\n"), ("artists", "A\n\nB\n")])
         self.assertEqual(q.comma("artists"), "A, B")
         self.assertEqual(q.comma("~title~version"), "A")
 
     def test_blank_tag_handling_list(self):
-        q = AudioFile([("artist", "A\n\nB\n"),
-                       ("performer", ""),
-                       ("albumartist", "C")])
+        q = AudioFile([("artist", "A\n\nB\n"), ("performer", ""), ("albumartist", "C")])
         self.assertEqual(q.list("performer"), [])
         self.assertEqual(q.list("~people"), ["A", "B", "C"])
 
     def test_blank_tag_handling_list_sort(self):
-        q = AudioFile([("artist", "A\n\nB"),
-                       ("artistsort", "\n\nY")])
+        q = AudioFile([("artist", "A\n\nB"), ("artistsort", "\n\nY")])
         self.assertEqual(q.list_sort("artist"), [("A", "A"), ("B", "Y")])
-        q = AudioFile([("artist", "A\n\nB"),
-                       ("artistsort", "X\nY")])
+        q = AudioFile([("artist", "A\n\nB"), ("artistsort", "X\nY")])
         self.assertEqual(q.list_sort("artist"), [("A", "X"), ("B", "B")])
 
     def test_to_dump(self):
@@ -780,8 +829,7 @@ class TAudioFile(TestCase):
 
         n = AudioFile()
         n.from_dump(dump)
-        self.assertTrue(
-            set(dump.split(b"\n")) == set(n.to_dump().split(b"\n")))
+        self.assertTrue(set(dump.split(b"\n")) == set(n.to_dump().split(b"\n")))
 
     def test_to_dump_unicode(self):
         b = AudioFile(bar_1_1)
@@ -855,11 +903,18 @@ class TAudioFile(TestCase):
         self.assertEqual([(80, "Mark 1"), (100, "Mark 2")], af.bookmarks)
 
     def test_bookmark_invalid(self):
-        af = AudioFile({"~bookmark": ("Not Valid\n1:40 Mark 2\n"
-                                      "-20 Not Valid 2\n1:20 Mark 1")})
+        af = AudioFile(
+            {"~bookmark": ("Not Valid\n1:40 Mark 2\n" "-20 Not Valid 2\n1:20 Mark 1")}
+        )
         self.assertEqual(
-            [(80, "Mark 1"), (100, "Mark 2"), (-1, "Not Valid"),
-             (-1, "-20 Not Valid 2")], af.bookmarks)
+            [
+                (80, "Mark 1"),
+                (100, "Mark 2"),
+                (-1, "Not Valid"),
+                (-1, "-20 Not Valid 2"),
+            ],
+            af.bookmarks,
+        )
 
     def test_set_bookmarks_none(self):
         af = AudioFile({"bookmark": "foo"})
@@ -873,16 +928,15 @@ class TAudioFile(TestCase):
         self.assertEqual(af["~bookmark"], "2:00 A mark\n2:20 Mark twain")
 
     def test_set_bookmarks_invalid_value(self):
-        self.assertRaises(
-            ValueError, setattr, AudioFile(), "bookmarks", "huh?")
+        self.assertRaises(ValueError, setattr, AudioFile(), "bookmarks", "huh?")
 
     def test_set_bookmarks_invalid_time(self):
         self.assertRaises(
-            TypeError, setattr, AudioFile(), "bookmarks", [("notint", "!")])
+            TypeError, setattr, AudioFile(), "bookmarks", [("notint", "!")]
+        )
 
     def test_set_bookmarks_unrealistic_time(self):
-        self.assertRaises(
-            ValueError, setattr, AudioFile(), "bookmarks", [(-1, "!")])
+        self.assertRaises(ValueError, setattr, AudioFile(), "bookmarks", [(-1, "!")])
 
     def test_has_rating(self):
         song = AudioFile()
@@ -909,10 +963,12 @@ class TAudioFile(TestCase):
             ({"labelid": "foo"}, ("foo", (), ())),
             ({"musicbrainz_albumid": "foo"}, ("foo", (), ())),
             ({"album": "foo", "labelid": "bar"}, ("bar", ("foo",), ())),
-            ({"album": "foo", "labelid": "bar", "musicbrainz_albumid": "quux"},
-                ("bar", ("foo",), ())),
+            (
+                {"album": "foo", "labelid": "bar", "musicbrainz_albumid": "quux"},
+                ("bar", ("foo",), ()),
+            ),
             ({"albumartist": "a"}, ("", (), ("a",))),
-            ]
+        ]
         for tags, expected in album_key_tests:
             afile = AudioFile(**tags)
             afile.sanitize(fsnative("/dir/fn"))
@@ -926,13 +982,12 @@ class TAudioFile(TestCase):
         # issue 798
         a = AudioFile()
         if os.name != "nt":
-            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg" # latin 1 encoded
+            a["~filename"] = "/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg"  # latin 1 encoded
             a.sort_by_func("~filename")(a)
             a.sort_by_func("~basename")(a)
         else:
             # windows
-            a["~filename"] = \
-                b"/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
+            a["~filename"] = b"/\xf6\xe4\xfc/\xf6\xe4\xfc.ogg".decode("latin-1")
             a.sort_by_func("~filename")(a)
             a.sort_by_func("~basename")(a)
             a.sort_by_func("~dirname")(a)
@@ -966,13 +1021,20 @@ class TAudioFile(TestCase):
     def test_cache_attributes(self):
         x = AudioFile()
         x.multisong = not x.multisong
-        x["a"] = "b" # clears cache
+        x["a"] = "b"  # clears cache
         # attribute should be unchanged
         self.assertNotEqual(AudioFile().multisong, x.multisong)
 
     def test_sort_func(self):
-        tags = [lambda s: s("foo"), "artistsort", "albumsort",
-                "~filename", "~format", "discnumber", "~#track"]
+        tags = [
+            lambda s: s("foo"),
+            "artistsort",
+            "albumsort",
+            "~filename",
+            "~format",
+            "discnumber",
+            "~#track",
+        ]
 
         for tag in tags:
             f = AudioFile.sort_by_func(tag)
@@ -996,10 +1058,12 @@ class TAudioFile(TestCase):
             f = AudioFile({"~filename": "/\xf6\xe4.mp3", "title": "win"})
             self.assertEqual(f("~uri"), "file:///%C3%B6%C3%A4.mp3")
         else:
-            f = AudioFile({
-                "~filename": bytes2fsn(b"/\x87\x12.mp3", None),
-                "title": "linux",
-            })
+            f = AudioFile(
+                {
+                    "~filename": bytes2fsn(b"/\x87\x12.mp3", None),
+                    "title": "linux",
+                }
+            )
             self.assertEqual(f("~uri"), "file:///%87%12.mp3")
 
     def test_reload(self):
@@ -1018,7 +1082,7 @@ class TAudioFile(TestCase):
         copy["~#rating"] = ANOTHER_RATING
         orig.write()
         orig.reload()
-        copy.reload() # should pick up the change to the file
+        copy.reload()  # should pick up the change to the file
         assert orig("~#rating") == SOME_RATING, "reloading failed"
         assert copy("~#rating") == SOME_RATING, "should have picked up external change"
 
@@ -1031,7 +1095,6 @@ class TAudioFile(TestCase):
 
 
 class TAudioFormats(TestCase):
-
     def setUp(self):
         with temp_filename() as filename:
             self.filename = filename
@@ -1066,7 +1129,6 @@ class TAudioFormats(TestCase):
 
 
 class Tdecode_value(TestCase):
-
     def test_main(self):
         self.assertEqual(decode_value("~#foo", 0.25), "0.25")
         self.assertEqual(decode_value("~#foo", 4), "4")
@@ -1085,15 +1147,16 @@ class Tdecode_value(TestCase):
 
 
 class Treplay_gain(TestCase):
-
     # -6dB is approximately equal to half magnitude
     minus_6db = 0.501187234
 
     def setUp(self):
-        self.rg_data = {"replaygain_album_gain": "-1.00 dB",
-                        "replaygain_album_peak": "1.1",
-                        "replaygain_track_gain": "+1.0000001 dB",
-                        "replaygain_track_peak": "0.9"}
+        self.rg_data = {
+            "replaygain_album_gain": "-1.00 dB",
+            "replaygain_album_peak": "1.1",
+            "replaygain_track_gain": "+1.0000001 dB",
+            "replaygain_track_peak": "0.9",
+        }
         self.song = AudioFile(self.rg_data)
         self.no_rg_song = AudioFile()
 
@@ -1117,31 +1180,34 @@ class Treplay_gain(TestCase):
         self.assertEqual(self.song.replay_gain(["none", "track"]), 1)
 
     def test_fallback_track(self):
-        del(self.song["replaygain_track_gain"])
+        del self.song["replaygain_track_gain"]
         self.assertAlmostEqual(
-            self.song.replay_gain(["track"], 0, -6.0), self.minus_6db)
+            self.song.replay_gain(["track"], 0, -6.0), self.minus_6db
+        )
 
     def test_fallback_album(self):
-        del(self.song["replaygain_album_gain"])
+        del self.song["replaygain_album_gain"]
         self.assertAlmostEqual(
-            self.song.replay_gain(["album"], 0, -6.0), self.minus_6db)
+            self.song.replay_gain(["album"], 0, -6.0), self.minus_6db
+        )
 
     def test_fallback_and_preamp(self):
-        del(self.song["replaygain_track_gain"])
+        del self.song["replaygain_track_gain"]
         self.assertEqual(self.song.replay_gain(["track"], 9, -9), 1)
 
     def test_preamp_track(self):
         self.assertAlmostEqual(
-            self.song.replay_gain(["track"], -7.0, 0), self.minus_6db)
+            self.song.replay_gain(["track"], -7.0, 0), self.minus_6db
+        )
 
     def test_preamp_album(self):
         self.assertAlmostEqual(
-            self.song.replay_gain(["album"], -5.0, 0), self.minus_6db)
+            self.song.replay_gain(["album"], -5.0, 0), self.minus_6db
+        )
 
     def test_preamp_clip(self):
         # Make sure excess pre-amp won't clip a track (with peak data)
-        self.assertAlmostEqual(
-            self.song.replay_gain(["track"], 12.0, 0), 1.0 / 0.9)
+        self.assertAlmostEqual(self.song.replay_gain(["track"], 12.0, 0), 1.0 / 0.9)
 
     def test_trackgain(self):
         assert self.song.replay_gain(["track"]) > 1
@@ -1155,11 +1221,10 @@ class Treplay_gain(TestCase):
 
     def test_track_fallback(self):
         radio_rg = self.song.replay_gain(["track"])
-        del(self.song["replaygain_album_gain"])
-        del(self.song["replaygain_album_peak"])
+        del self.song["replaygain_album_gain"]
+        del self.song["replaygain_album_peak"]
         # verify defaulting to track when album is present
-        self.assertAlmostEqual(
-            self.song.replay_gain(["album", "track"]), radio_rg)
+        self.assertAlmostEqual(self.song.replay_gain(["album", "track"]), radio_rg)
 
     def test_numeric_rg_tags(self):
         """Tests fully-numeric (ie no "db") RG tags.  See Issue 865"""
@@ -1174,8 +1239,8 @@ class Treplay_gain(TestCase):
             except ValueError:
                 self.fail(f"Invalid {key} returned: {album_rg}")
             self.assertAlmostEqual(
-                val, exp, places=5,
-                msg=f"{key} should be {exp} not {val}")
+                val, exp, places=5, msg=f"{key} should be {exp} not {val}"
+            )
 
     def test_human_time_tags(self):
         now = int(time.time())

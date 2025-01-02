@@ -11,7 +11,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet.plugins.events import EventPlugin
 from quodlibet.qltk import Icons
-from quodlibet.util import (is_linux, is_osx, print_w, print_d)
+from quodlibet.util import is_linux, is_osx, print_w, print_d
 from quodlibet.util.environment import dbus_name_owned
 
 from .prefs import Preferences
@@ -23,14 +23,14 @@ if is_osx():
     # https://github.com/quodlibet/quodlibet/issues/1870
     # The dock menu is more useful so disable.
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 
 def get_indicator_impl():
     """Returns a BaseIndicator implementation depending on the environ"""
 
-    use_app_indicator = (
-        is_linux() and dbus_name_owned("org.kde.StatusNotifierWatcher"))
+    use_app_indicator = is_linux() and dbus_name_owned("org.kde.StatusNotifierWatcher")
 
     print_d("use app indicator: %s" % use_app_indicator)
     if not use_app_indicator:
@@ -47,7 +47,6 @@ def get_indicator_impl():
 
 
 class TrayIconPlugin(EventPlugin):
-
     PLUGIN_ID = "Tray Icon"
     PLUGIN_NAME = _("Tray Icon")
     PLUGIN_DESC = _("Controls Quod Libet from the system tray.")

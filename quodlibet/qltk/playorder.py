@@ -13,11 +13,14 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet.order import Order, OrderInOrder
 from quodlibet.order.reorder import OrderShuffle, OrderWeighted, Reorder
-from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, \
-    Repeat, OneSong
+from quodlibet.order.repeat import RepeatListForever, RepeatSongForever, Repeat, OneSong
 from quodlibet.qltk import Icons
-from quodlibet.qltk.x import SymbolicIconImage, RadioMenuItem, \
-    SeparatorMenuItem, HighlightToggleButton
+from quodlibet.qltk.x import (
+    SymbolicIconImage,
+    RadioMenuItem,
+    SeparatorMenuItem,
+    HighlightToggleButton,
+)
 from quodlibet.plugins import PluginManager
 from quodlibet.util.dprint import print_w, print_d
 
@@ -67,6 +70,7 @@ class Orders(GObject.Object):
 
 class PluggableOrders(Orders, PluginManager):
     """Registers as a Plugin Handler for various types of `Order` plugins"""
+
     def __init__(self, orders, base_cls):
         assert issubclass(base_cls, Order)
         super().__init__(orders)
@@ -92,6 +96,7 @@ class PluggableOrders(Orders, PluginManager):
     def plugin_disable(self, plugin):
         self.remove(plugin.cls)
 
+
 DEFAULT_SHUFFLE_ORDERS = [OrderShuffle, OrderWeighted]
 DEFAULT_REPEAT_ORDERS = [RepeatSongForever, RepeatListForever, OneSong]
 
@@ -108,8 +113,15 @@ class ToggledPlayOrderMenu(Gtk.Box):
         "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
-    def __init__(self, icon_name, orders, current_order, enabled=False,
-                 tooltip=None, arrow_down=False):
+    def __init__(
+        self,
+        icon_name,
+        orders,
+        current_order,
+        enabled=False,
+        tooltip=None,
+        arrow_down=False,
+    ):
         """arrow_down -- the direction of the menu and arrow icon"""
         assert issubclass(current_order, Order)
         if current_order not in orders:
@@ -122,7 +134,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
         context.add_class(Gtk.STYLE_CLASS_LINKED)
 
         self._toggle_button = toggle = HighlightToggleButton(
-            image=SymbolicIconImage(icon_name, Gtk.IconSize.SMALL_TOOLBAR))
+            image=SymbolicIconImage(icon_name, Gtk.IconSize.SMALL_TOOLBAR)
+        )
 
         if tooltip:
             toggle.set_tooltip_text(tooltip)
@@ -140,6 +153,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
         self._toggle_button = toggle
 
         from quodlibet.qltk.menubutton import MenuButton
+
         arrow = MenuButton(arrow=True, down=arrow_down)
         arrow.show_all()
         arrow.set_size_request(20, 26)
@@ -197,14 +211,14 @@ class ToggledPlayOrderMenu(Gtk.Box):
             if cls.name == name:
                 self.current = cls
                 return
-        raise ValueError(f'Unknown order named "{name}". '
-                         f'Try: {[o.name for o in self.__orders]}')
+        raise ValueError(
+            f'Unknown order named "{name}". ' f"Try: {[o.name for o in self.__orders]}"
+        )
 
     def set_orders(self, orders):
         self.orders = orders
 
     def __rebuild_menu(self):
-
         def toggled_cb(item, order):
             if item.get_active():
                 self.current = order
@@ -221,9 +235,8 @@ class ToggledPlayOrderMenu(Gtk.Box):
                 menu.append(SeparatorMenuItem())
             prev_priority = order.priority
             group = RadioMenuItem(
-                label=order.accelerated_name,
-                use_underline=True,
-                group=group)
+                label=order.accelerated_name, use_underline=True, group=group
+            )
             group.set_active(order == self.__current)
             group.connect("toggled", toggled_cb, order)
             menu.append(group)
@@ -253,15 +266,15 @@ class PlayOrderWidget(Gtk.HBox):
                 orders=orders,
                 current_order=self.__get_shuffle_class(),
                 enabled=(config.getboolean("memory", "shuffle", False)),
-                tooltip=_("Toggle shuffle mode"))
+                tooltip=_("Toggle shuffle mode"),
+            )
             shuffle.connect("changed", self.__shuffle_updated)
             shuffle.connect("toggled", self.__shuffle_toggled)
             return shuffle
 
         self._shuffle_orders = PluggableOrders(DEFAULT_SHUFFLE_ORDERS, Reorder)
         self.__shuffle_widget = create_shuffle(self._shuffle_orders)
-        self._shuffle_orders.connect("updated",
-                                     self.__shuffle_widget.set_orders)
+        self._shuffle_orders.connect("updated", self.__shuffle_widget.set_orders)
 
         def create_repeat(orders):
             repeat = ToggledPlayOrderMenu(
@@ -269,10 +282,12 @@ class PlayOrderWidget(Gtk.HBox):
                 orders=orders,
                 current_order=self.__get_repeat_class(),
                 enabled=config.getboolean("memory", "repeat", False),
-                tooltip=_("Toggle repeat mode"))
+                tooltip=_("Toggle repeat mode"),
+            )
             repeat.connect("changed", self.__repeat_updated)
             repeat.connect("toggled", self.__repeat_toggled)
             return repeat
+
         self._repeat_orders = PluggableOrders(DEFAULT_REPEAT_ORDERS, Repeat)
         self.__repeat_widget = create_repeat(self._repeat_orders)
         self._repeat_orders.connect("updated", self.__repeat_widget.set_orders)
@@ -346,7 +361,7 @@ class PlayOrderWidget(Gtk.HBox):
         old_order = self.order
         repeat_cls = self.__get_repeat_class()
         shuffle_cls = self.__get_shuffle_class()
-        shuffler = (shuffle_cls() if self.shuffled else OrderInOrder())
+        shuffler = shuffle_cls() if self.shuffled else OrderInOrder()
         self.order = repeat_cls(shuffler) if self.repeated else shuffler
         print_d(f"Updating {type(self.__playlist).__name__} order to {self.order}")
         self.__playlist.order = self.order

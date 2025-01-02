@@ -9,7 +9,6 @@ from quodlibet.util.string import isascii
 
 
 class Tisascii(TestCase):
-
     def test_main(self):
         assert isascii("")
         assert isascii("")

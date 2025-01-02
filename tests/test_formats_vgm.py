@@ -27,7 +27,7 @@ class TVgmFile(TestCase):
             "album": "Sonic the Hedgehog\nソニック・ザ・ヘッジホッグ",
             "console": "Sega Mega Drive\nセガメガドライブ",
             "artist": "Masato Nakamura\n中村正人",
-            "date": "1991"
+            "date": "1991",
         }
 
         for k, v in expected_tags.items():

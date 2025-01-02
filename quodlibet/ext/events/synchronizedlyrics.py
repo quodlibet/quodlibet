@@ -26,8 +26,10 @@ from quodlibet.util.dprint import print_d
 class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "SynchronizedLyrics"
     PLUGIN_NAME = _("Synchronized Lyrics")
-    PLUGIN_DESC = _("Shows synchronized lyrics from an .lrc file "
-                    "with same name as the track (or similar).")
+    PLUGIN_DESC = _(
+        "Shows synchronized lyrics from an .lrc file "
+        "with same name as the track (or similar)."
+    )
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     SYNC_PERIOD = 10000
@@ -114,8 +116,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     @classmethod
     def _get_font_size(cls):
-        return int(cls.config_get(cls.CFG_FONTSIZE_KEY,
-                                  cls.DEFAULT_FONTSIZE))
+        return int(cls.config_get(cls.CFG_FONTSIZE_KEY, cls.DEFAULT_FONTSIZE))
 
     def _set_text_color(self, button):
         self.config_set(self.CFG_TXTCOLOR_KEY, button.get_color().to_string())
@@ -131,8 +132,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
 
     def enabled(self):
         self.scrolled_window = Gtk.ScrolledWindow()
-        self.scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                        Gtk.PolicyType.AUTOMATIC)
+        self.scrolled_window.set_policy(
+            Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC
+        )
         self.scrolled_window.get_vadjustment().set_value(0)
 
         self.textview = Gtk.TextView()
@@ -167,7 +169,9 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         if self.scrolled_window is None:
             return
         self.scrolled_window.set_size_request(-1, 1.5 * self._get_font_size())
-        qltk.add_css(self.textview, f"""
+        qltk.add_css(
+            self.textview,
+            f"""
             * {{
                 background-color: {self._get_background_color()};
                 color: {self._get_text_color()};
@@ -175,7 +179,8 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
                 padding: 0.25rem;
                 border-radius: 6px;
             }}
-        """)
+        """,
+        )
 
     def _cur_position(self):
         return app.player.get_position()
@@ -189,16 +194,17 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
             track_name = splitext(song("~basename") or "")[0]
             dir_ = song("~dirname")
             print_d(f"Looking for .lrc files in {dir_}")
-            for filename in [f"{s}.lrc"
-                             for s in {
-                                 track_name,
-                                 track_name.lower(),
-                                 track_name.upper(),
-                                 song("~artist~title"),
-                                 song("~artist~tracknumber~title"),
-                                 song("~tracknumber~title")
-                             }
-                             ]:
+            for filename in [
+                f"{s}.lrc"
+                for s in {
+                    track_name,
+                    track_name.lower(),
+                    track_name.upper(),
+                    song("~artist~title"),
+                    song("~artist~tracknumber~title"),
+                    song("~tracknumber~title"),
+                }
+            ]:
                 print_d(f"Looking for {filename!r}")
                 try:
                     with open(os.path.join(dir_, filename), encoding="utf-8") as f:
@@ -228,9 +234,10 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
             cur_time = self._cur_position()
             cur_idx = self._greater(self._lines, cur_time)
             if cur_idx != -1:
-                while (cur_idx < len(self._lines) and
-                       self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD):
-
+                while (
+                    cur_idx < len(self._lines)
+                    and self._lines[cur_idx][0] < cur_time + self.SYNC_PERIOD
+                ):
                     timestamp = self._lines[cur_idx][0]
                     line = self._lines[cur_idx][1]
                     tid = GLib.timeout_add(timestamp - cur_time, self._show, line)
@@ -251,7 +258,7 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         return False
 
     def _clear_timers(self):
-        for _ts, tid in self._timers[self._start_clearing_from:]:
+        for _ts, tid in self._timers[self._start_clearing_from :]:
             GLib.source_remove(tid)
         self._timers = []
         self._start_clearing_from = 0

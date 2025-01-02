@@ -8,6 +8,7 @@
 """Utils for executing things in a thread controlled from the main loop"""
 
 from multiprocessing import cpu_count
+
 try:
     from concurrent.futures import ThreadPoolExecutor
 except ImportError as e:
@@ -63,7 +64,6 @@ def _get_pool(priority):
 
 
 def _wrap_function(function, cancellable, args, kwargs):
-
     def wrap():
         # check once we are scheduled
         if not cancellable.is_cancelled():
@@ -79,7 +79,6 @@ def _wrap_function(function, cancellable, args, kwargs):
 
 
 def _wrap_callback(priority, cancellable, callback):
-
     def callback_main(cancellable, callback, result):
         if not cancellable.is_cancelled():
             callback(result)
@@ -92,8 +91,9 @@ def _wrap_callback(priority, cancellable, callback):
 
         if not cancellable.is_cancelled():
             glib_priority = _prio_mapping[priority]
-            GLib.idle_add(callback_main, cancellable, callback, result,
-                          priority=glib_priority)
+            GLib.idle_add(
+                callback_main, cancellable, callback, result, priority=glib_priority
+            )
 
     return callback_thread
 
@@ -141,9 +141,7 @@ def call_async(function, cancellable, callback, args=None, kwargs=None):
     _call_async(Priority.HIGH, function, cancellable, callback, args, kwargs)
 
 
-def call_async_background(function, cancellable, callback, args=None,
-                          kwargs=None):
+def call_async_background(function, cancellable, callback, args=None, kwargs=None):
     """Same as call_async but for background tasks (network etc.)"""
 
-    _call_async(Priority.BACKGROUND, function, cancellable, callback,
-                args, kwargs)
+    _call_async(Priority.BACKGROUND, function, cancellable, callback, args, kwargs)

@@ -13,7 +13,6 @@ from quodlibet.formats.remote import RemoteFile
 
 
 class TRemoteFile(TestCase):
-
     def test_path_types(self):
         f = RemoteFile("http://example.com")
         assert isinstance(f["~mountpoint"], fsnative)

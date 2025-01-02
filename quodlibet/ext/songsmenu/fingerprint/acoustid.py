@@ -54,11 +54,13 @@ class AcoustidSubmissionThread(threading.Thread):
 
         self.__done += len(urldata)
 
-        basedata = urlencode({
-            "format": "xml",
-            "client": APP_KEY,
-            "user": get_api_key(),
-        })
+        basedata = urlencode(
+            {
+                "format": "xml",
+                "client": APP_KEY,
+                "user": get_api_key(),
+            }
+        )
 
         urldata = "&".join([basedata] + list(map(urlencode, urldata)))
         obj = BytesIO()
@@ -67,7 +69,7 @@ class AcoustidSubmissionThread(threading.Thread):
 
         headers = {
             "Content-Encoding": "gzip",
-            "Content-type": "application/x-www-form-urlencoded"
+            "Content-type": "application/x-www-form-urlencoded",
         }
         req = Request(self.URL, urldata, headers)
 
@@ -84,16 +86,18 @@ class AcoustidSubmissionThread(threading.Thread):
                 error = "xml error"
             else:
                 status = dom.getElementsByTagName("status")
-                if not status or not status[0].childNodes or not \
-                    status[0].childNodes[0].nodeValue == "ok":
+                if (
+                    not status
+                    or not status[0].childNodes
+                    or not status[0].childNodes[0].nodeValue == "ok"
+                ):
                     error = "response status error"
 
         if error:
             print_w("[fingerprint] Submission failed: " + error)
 
         # emit progress
-        self.__idle(self.__progress_cb,
-                    float(self.__done) / len(self.__results))
+        self.__idle(self.__progress_cb, float(self.__done) / len(self.__results))
 
     def run(self):
         urldata = []
@@ -147,7 +151,6 @@ class AcoustidSubmissionThread(threading.Thread):
 
 
 class LookupResult:
-
     def __init__(self, fresult, releases, error):
         self.fresult = fresult
         self.releases = releases
@@ -159,8 +162,8 @@ class LookupResult:
 
 
 Release = collections.namedtuple(
-    "Release", ["id", "score", "sources", "all_sources",
-                "medium_count", "tags"])
+    "Release", ["id", "score", "sources", "all_sources", "medium_count", "tags"]
+)
 
 VARIOUS_ARTISTS_ARTISTID = "89ad4ac3-39f7-470e-963a-56509c546377"
 
@@ -283,18 +286,26 @@ class AcoustidLookupThread(threading.Thread):
 
     def __process(self, results):
         req_data = []
-        req_data.append(urlencode({
-            "format": "json",
-            "client": APP_KEY,
-            "batch": "1",
-        }))
+        req_data.append(
+            urlencode(
+                {
+                    "format": "json",
+                    "client": APP_KEY,
+                    "batch": "1",
+                }
+            )
+        )
 
         for i, result in enumerate(results):
             postfix = ".%d" % i
-            req_data.append(urlencode({
-                "duration" + postfix: str(int(round(result.length))),
-                "fingerprint" + postfix: result.chromaprint,
-            }))
+            req_data.append(
+                urlencode(
+                    {
+                        "duration" + postfix: str(int(round(result.length))),
+                        "fingerprint" + postfix: result.chromaprint,
+                    }
+                )
+            )
 
         req_data.append("meta=releases+recordings+tracks+sources")
 
@@ -305,7 +316,7 @@ class AcoustidLookupThread(threading.Thread):
 
         headers = {
             "Content-Encoding": "gzip",
-            "Content-type": "application/x-www-form-urlencoded"
+            "Content-type": "application/x-www-form-urlencoded",
         }
         req = Request(self.URL, urldata, headers)
 

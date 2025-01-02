@@ -28,8 +28,9 @@ class DiscogsCover(ApiCoverSourcePlugin):
     PLUGIN_NAME = _("Discogs Cover Source")
     PLUGIN_DESC = _("Downloads covers from Discogs.")
 
-    credentials = ("key=aWfZGjHQvkMcreUECGAp" +
-                   "&secret=VlORkklpdvAwJMwxUjNNSgqicjuizJAl")
+    credentials = (
+        "key=aWfZGjHQvkMcreUECGAp" + "&secret=VlORkklpdvAwJMwxUjNNSgqicjuizJAl"
+    )
     use_secondary = True
 
     @classmethod
@@ -50,12 +51,12 @@ class DiscogsCover(ApiCoverSourcePlugin):
 
     @property
     def url(self):
-        _url = ("https://api.discogs.com/database/search?" +
-                self.credentials +
-                "&format=CD&per_page=5"
-                "&type=release" +
-                "&artist={artist}" +
-                "&release_title={album}")
+        _url = (
+            "https://api.discogs.com/database/search?"
+            + self.credentials
+            + "&format=CD&per_page=5"
+            "&type=release" + "&artist={artist}" + "&release_title={album}"
+        )
         # Discogs seems to use 'Various' almost exclusively for compilations
         artists = self._album_artists_for(self.song) or "Various"
         if "various artists" in artists.lower():
@@ -65,7 +66,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
         if artist and album:
             return _url.format(artist=artist, album=album)
         else:
-            return None   # Not enough data
+            return None  # Not enough data
 
     def _handle_search_response(self, message, json_dict, data=None):
         if not json_dict:
@@ -73,20 +74,19 @@ class DiscogsCover(ApiCoverSourcePlugin):
             return self.emit("search-complete", [])
         try:
             results = json_dict.get("results", [])
-            covers = filter(None, (self.result_for(r.get("cover_image", None))
-                                   for r in results))
+            covers = filter(
+                None, (self.result_for(r.get("cover_image", None)) for r in results)
+            )
             if covers:
                 return self.emit("search-complete", list(covers))
             res_url = results[0].get("resource_url", "")
         except IndexError:
             return self.emit("search-complete", [])
         else:
-            msg = Soup.Message.new("GET",
-                                   f"{res_url}?{self.credentials}")
+            msg = Soup.Message.new("GET", f"{res_url}?{self.credentials}")
             download_json(msg, self.cancellable, self._handle_album_data, None)
 
     def _handle_album_data(self, message, json_dict, data=None):
-
         images = json_dict.get("images", None)
 
         if not images:

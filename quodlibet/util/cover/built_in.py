@@ -58,21 +58,23 @@ class EmbeddedCover(CoverSourcePlugin):
 class FilesystemCover(CoverSourcePlugin):
     PLUGIN_ID = "filesystem-cover"
     PLUGIN_NAME = _("Filesystem cover")
-    PLUGIN_DESC = _("Uses commonly named images found in common directories " +
-                    "alongside the song.")
+    PLUGIN_DESC = _(
+        "Uses commonly named images found in common directories "
+        + "alongside the song."
+    )
     DEBUG = False
 
     cover_subdirs = {"scan", "scans", "images", "covers", "artwork"}
     cover_exts = {"jpg", "jpeg", "png", "gif"}
 
-    cover_name_regexes = {word_regex(s)
-                          for s in ("^folder$", "^cover$", "^front$")}
-    cover_positive_regexes = {word_regex(s)
-                              for s in
-                              [".+front", "frontcover", "jacket", "albumart",
-                               "edited", ".+cover"]}
-    cover_negative_regexes = {word_regex(s)
-                              for s in ["back", "inlay", "inset", "inside"]}
+    cover_name_regexes = {word_regex(s) for s in ("^folder$", "^cover$", "^front$")}
+    cover_positive_regexes = {
+        word_regex(s)
+        for s in [".+front", "frontcover", "jacket", "albumart", "edited", ".+cover"]
+    }
+    cover_negative_regexes = {
+        word_regex(s) for s in ["back", "inlay", "inset", "inside"]
+    }
 
     @classmethod
     def group_by(cls, song):
@@ -156,34 +158,38 @@ class FilesystemCover(CoverSourcePlugin):
 
                 # Track-related keywords
                 values = set(self.song.list("~people")) | {self.song("album")}
-                lowers = [value.lower().strip() for value in values
-                          if len(value) > 1]
+                lowers = [value.lower().strip() for value in values if len(value) > 1]
                 total_terms = sum(len(s.split()) for s in lowers)
-                total_words = len([word for word in dec_lfn.split()
-                                   if len(word) > 1])
+                total_words = len([word for word in dec_lfn.split() if len(word) > 1])
                 # Penalise for many extra words in filename (wrong file?)
-                length_penalty = (- int((total_words - 1) / total_terms)
-                                  if total_terms else 0)
+                length_penalty = (
+                    -int((total_words - 1) / total_terms) if total_terms else 0
+                )
 
                 # Matching tag values are very good
                 score += 3 * sum([value in dec_lfn for value in lowers])
 
                 # Well known names matching exactly (folder.jpg)
-                score += 4 * sum(r.search(dec_lfn) is not None
-                                 for r in self.cover_name_regexes)
+                score += 4 * sum(
+                    r.search(dec_lfn) is not None for r in self.cover_name_regexes
+                )
 
                 # Generic keywords
-                score += 2 * sum(r.search(dec_lfn) is not None
-                                 for r in self.cover_positive_regexes)
+                score += 2 * sum(
+                    r.search(dec_lfn) is not None for r in self.cover_positive_regexes
+                )
 
-                score -= 3 * sum(r.search(dec_lfn) is not None
-                                 for r in self.cover_negative_regexes)
+                score -= 3 * sum(
+                    r.search(dec_lfn) is not None for r in self.cover_negative_regexes
+                )
 
                 sub_text = f" (in {sub!r})" if sub else ""
                 if self.DEBUG:
-                    print(f"[{self.song('~~people~title')}]: "
-                          f"Album art {fn!r}{sub_text} "
-                          f"scores {score} ({length_penalty})")
+                    print(
+                        f"[{self.song('~~people~title')}]: "
+                        f"Album art {fn!r}{sub_text} "
+                        f"scores {score} ({length_penalty})"
+                    )
                 score += length_penalty
 
                 # Let's only match if we're quite sure.

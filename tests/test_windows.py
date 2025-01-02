@@ -16,7 +16,6 @@ from quodlibet.util import windows
 
 @skipUnless(os.name == "nt", "Wrong platform")
 class TWindows(TestCase):
-
     def test_dir_funcs(self):
         d = windows.get_personal_dir()
         assert d is None or isinstance(d, str)

@@ -18,7 +18,6 @@ from .helper import get_temp_copy
 
 
 class TWMAFile(TestCase):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("test.wma"))
         self.song = WMAFile(self.f)
@@ -83,23 +82,25 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song3("~format"), "ASF")
 
     def test_codec(self):
-        self.assertEqual(self.song("~codec"),
-                         "Windows Media Audio 9 Standard")
-        self.assertEqual(self.song2("~codec"),
-                         "Windows Media Audio 9 Professional")
-        self.assertEqual(self.song3("~codec"),
-                         "Intel G.723")
+        self.assertEqual(self.song("~codec"), "Windows Media Audio 9 Standard")
+        self.assertEqual(self.song2("~codec"), "Windows Media Audio 9 Professional")
+        self.assertEqual(self.song3("~codec"), "Intel G.723")
 
     def test_encoding(self):
         self.assertEqual(
             self.song("~encoding"),
-            "Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
+            "Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR",
+        )
         self.assertEqual(
             self.song2("~encoding"),
-            ("Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
-             "2 channel 24 bit 2-pass VBR"))
-        self.assertEqual(self.song3("~encoding"),
-                         "Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
+            (
+                "Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
+                "2 channel 24 bit 2-pass VBR"
+            ),
+        )
+        self.assertEqual(
+            self.song3("~encoding"), "Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s"
+        )
 
     def test_mb_release_track_id(self):
         tag = asf.ASF(self.f)
@@ -161,8 +162,7 @@ class TWMAFile(TestCase):
         self.assertRaises(ValueError, unpack_image, b"\x00" * 100)
 
     def test_pack_image(self):
-        d = pack_image(
-            "image/jpeg", "Description", b"foo", APICType.COVER_FRONT)
+        d = pack_image("image/jpeg", "Description", b"foo", APICType.COVER_FRONT)
         mime, desc, data, type_ = unpack_image(d)
         self.assertEqual(mime, "image/jpeg")
         self.assertEqual(desc, "Description")

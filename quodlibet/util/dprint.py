@@ -14,16 +14,15 @@ import re
 import logging
 import errno
 
-from senf import print_, path2fsn, fsn2text, fsnative, \
-    supports_ansi_escape_codes
+from senf import print_, path2fsn, fsn2text, fsnative, supports_ansi_escape_codes
 
 from quodlibet import const
 from . import logging as ql_logging
 
 START_TIME = time.time()
 
-class Color:
 
+class Color:
     NO_COLOR = "\033[0m"
     MAGENTA = "\033[95m"
     BLUE = "\033[94m"
@@ -37,7 +36,6 @@ class Color:
 
 
 class Colorise:
-
     @classmethod
     def __reset(cls, text):
         return text + Color.NO_COLOR
@@ -171,9 +169,15 @@ def _supports_ansi_escape_codes(file_):
         return False
 
 
-def _print_message(string, custom_context, debug_only, prefix,
-                   color, logging_category, start_time=START_TIME):
-
+def _print_message(
+    string,
+    custom_context,
+    debug_only,
+    prefix,
+    color,
+    logging_category,
+    start_time=START_TIME,
+):
     if not isinstance(string, str | fsnative):
         string = str(string)
 
@@ -188,10 +192,7 @@ def _print_message(string, custom_context, debug_only, prefix,
 
     timestr = ("%08.3f" % (time.time() - start_time))[-9:]
 
-    info = "{}: [{}] {}:".format(
-        getattr(Colorise, color)(prefix),
-        Colorise.magenta(timestr),
-        Colorise.blue(context))
+    info = f"{getattr(Colorise, color)(prefix)}: [{Colorise.magenta(timestr)}] {Colorise.blue(context)}:"
 
     lines = string.splitlines()
     if len(lines) > 1:
@@ -272,9 +273,7 @@ def print_exc(exc_info=None, context=None):
             # no stack
             string = text
         else:
-            string = "{}:{}:{}: {}".format(
-                fsn2text(path2fsn(os.path.basename(filename))),
-                lineno, name, text)
+            string = f"{fsn2text(path2fsn(os.path.basename(filename)))}:{lineno}:{name}: {text}"
 
     _print_message(string, context, False, "E", "red", "errors")
 
@@ -302,8 +301,11 @@ class PrintHandler(logging.Handler):
 
     def emit(self, record):
         print_func = {
-            "DEBUG": print_d, "INFO": print_d, "WARNING": print_w,
-            "ERROR": print_e, "CRITICAL": print_e,
+            "DEBUG": print_d,
+            "INFO": print_d,
+            "WARNING": print_w,
+            "ERROR": print_e,
+            "CRITICAL": print_e,
         }.get(record.levelname, print_d)
 
         exc_info = record.exc_info

@@ -42,21 +42,24 @@ def confirm_song_removal_invoke(parent, songs):
     song = next(iter(songs))
     if count == 1:
         title = _('Remove track: "%(title)s" from the library?') % {
-                    "title": song("title") or song("~basename")}
+            "title": song("title") or song("~basename")
+        }
     else:
-        title = _("Remove %(count)d tracks from the library?") % {
-                    "count": count}
+        title = _("Remove %(count)d tracks from the library?") % {"count": count}
 
-    prompt = ConfirmationPrompt(parent, title, "", _("Remove from Library"),
-                                ok_button_icon=Icons.LIST_REMOVE)
+    prompt = ConfirmationPrompt(
+        parent, title, "", _("Remove from Library"), ok_button_icon=Icons.LIST_REMOVE
+    )
     return prompt.run() == ConfirmationPrompt.RESPONSE_INVOKE
 
 
 def confirm_multi_song_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X songs in case X is high"""
-    title = ngettext('Run the plugin "%(name)s" on %(count)d song?',
-                     'Run the plugin "%(name)s" on %(count)d songs?',
-                     count) % {"name": plugin_name, "count": count}
+    title = ngettext(
+        'Run the plugin "%(name)s" on %(count)d song?',
+        'Run the plugin "%(name)s" on %(count)d songs?',
+        count,
+    ) % {"name": plugin_name, "count": count}
     description = ""
     ok_text = _("_Run Plugin")
     prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
@@ -65,9 +68,11 @@ def confirm_multi_song_invoke(parent, plugin_name, count):
 
 def confirm_multi_album_invoke(parent, plugin_name, count):
     """Dialog to confirm invoking a plugin with X albums in case X is high"""
-    title = ngettext('Run the plugin "%(name)s" on %(count)d album?',
-                     'Run the plugin "%(name)s" on %(count)d albums?',
-                     count) % {"name": plugin_name, "count": count}
+    title = ngettext(
+        'Run the plugin "%(name)s" on %(count)d album?',
+        'Run the plugin "%(name)s" on %(count)d albums?',
+        count,
+    ) % {"name": plugin_name, "count": count}
     description = ""
     ok_text = _("_Run Plugin")
     prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
@@ -75,7 +80,6 @@ def confirm_multi_album_invoke(parent, plugin_name, count):
 
 
 class SongsMenuPluginHandler(PluginHandler):
-
     def __init__(self, song_confirmer=None, album_confirmer=None):
         """custom confirmers for testing"""
 
@@ -92,8 +96,7 @@ class SongsMenuPluginHandler(PluginHandler):
     def menu(self, library, songs):
         songs = list_wrapper(songs)
 
-        attrs = ["plugin_song", "plugin_songs",
-                 "plugin_album", "plugin_albums"]
+        attrs = ["plugin_song", "plugin_songs", "plugin_album", "plugin_albums"]
 
         if len(songs) == 1:
             attrs.append("plugin_single_song")
@@ -115,8 +118,7 @@ class SongsMenuPluginHandler(PluginHandler):
                 try:
                     items.append(Kind(songs, library))
                 except Exception:
-                    print_e("Couldn't initialise song plugin %s. Stack trace:"
-                            % Kind)
+                    print_e("Couldn't initialise song plugin %s. Stack trace:" % Kind)
                     errorhook()
         items = [i for i in items if i.initialized]
 
@@ -128,11 +130,9 @@ class SongsMenuPluginHandler(PluginHandler):
                     args = (library, songs)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            subitem.connect(
-                                "activate", self.__on_activate, item, *args)
+                            subitem.connect("activate", self.__on_activate, item, *args)
                     else:
-                        item.connect(
-                            "activate", self.__on_activate, item, *args)
+                        item.connect("activate", self.__on_activate, item, *args)
                 except Exception:
                     errorhook()
                     item.destroy()
@@ -195,7 +195,8 @@ class SongsMenuPluginHandler(PluginHandler):
                 total = len(songs)
                 if total > plugin.MAX_INVOCATIONS:
                     if not self._confirm_multiple_songs(
-                            parent, plugin.PLUGIN_NAME, total):
+                        parent, plugin.PLUGIN_NAME, total
+                    ):
                         return
 
                 try:
@@ -219,7 +220,8 @@ class SongsMenuPluginHandler(PluginHandler):
                 total = len(albums)
                 if total > plugin.MAX_INVOCATIONS:
                     if not self._confirm_multiple_albums(
-                            parent, plugin.PLUGIN_NAME, total):
+                        parent, plugin.PLUGIN_NAME, total
+                    ):
                         return
 
             if callable(plugin.plugin_single_album) and len(albums) == 1:
@@ -267,10 +269,25 @@ class SongsMenu(Gtk.Menu):
     def init_plugins(cls):
         PluginManager.instance.register_handler(cls.plugins)
 
-    def __init__(self, library, songs, plugins=True, playlists=True, queue=True,
-                 remove=True, delete=False, edit=True, info=True, ratings=True,
-                 show_files=True, download=False, items=None, accels=True,
-                 removal_confirmer=None, folder_chooser=None):
+    def __init__(
+        self,
+        library,
+        songs,
+        plugins=True,
+        playlists=True,
+        queue=True,
+        remove=True,
+        delete=False,
+        edit=True,
+        info=True,
+        ratings=True,
+        show_files=True,
+        download=False,
+        items=None,
+        accels=True,
+        removal_confirmer=None,
+        folder_chooser=None,
+    ):
         super().__init__()
         # The library may actually be a librarian; if it is, use it,
         # otherwise find the real librarian.
@@ -347,29 +364,36 @@ class SongsMenu(Gtk.Menu):
         self.separate()
         relevant = [s for s in songs if is_downloadable(s)]
         total = len(relevant)
-        text = ngettext(
-            "_Download file…",
-            "_Download %(total)d files…", total) % {"total": total}
+        text = ngettext("_Download file…", "_Download %(total)d files…", total) % {
+            "total": total
+        }
         b = qltk.MenuItem(text, Icons.EMBLEM_DOWNLOADS)
-        b.set_sensitive(relevant
-                        and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
+        b.set_sensitive(relevant and len(relevant) < MenuItemPlugin.MAX_INVOCATIONS)
 
         def _finished(p, successes, failures):
-            msg = (f"{util.bold(successes)} " + _("successful") +
-                   f"\n{util.bold(failures)} " + _("failed"))
+            msg = (
+                f"{util.bold(successes)} "
+                + _("successful")
+                + f"\n{util.bold(failures)} "
+                + _("failed")
+            )
             print_d(msg.replace("\n", "; "))
-            warning = Message(Gtk.MessageType.INFO, app.window,
-                              _("Downloads complete"), msg, escape_desc=False)
+            warning = Message(
+                Gtk.MessageType.INFO,
+                app.window,
+                _("Downloads complete"),
+                msg,
+                escape_desc=False,
+            )
             warning.run()
 
         def download_cb(menu_item):
             songs = relevant
             total = len(songs)
-            msg = ngettext("Download {name!r} to",
-                           "Download {total} files to",
-                           total)
-            msg = msg.format(name=next(iter(songs))("title")[:99] if total else "?",
-                             total=total)
+            msg = ngettext("Download {name!r} to", "Download {total} files to", total)
+            msg = msg.format(
+                name=next(iter(songs))("title")[:99] if total else "?", total=total
+            )
             chooser = folder_chooser or choose_folders
             paths = chooser(None, msg, _("Download here"), allow_multiple=False)
             if not paths:
@@ -389,20 +413,20 @@ class SongsMenu(Gtk.Menu):
             print_d("Trying to show files...")
             if not show_songs(songs):
                 parent = get_menu_item_top_parent(menu_item)
-                msg = ErrorMessage(parent,
-                                   _("Unable to show files"),
-                                   _("Error showing files, "
-                                     "or no program available to show them."))
+                msg = ErrorMessage(
+                    parent,
+                    _("Unable to show files"),
+                    _("Error showing files, " "or no program available to show them."),
+                )
                 msg.run()
 
         self.separate()
         total = len([s for s in songs if is_a_file(s)])
         text = ngettext(
-            "_Show in File Manager",
-            "_Show %(total)d Files in File Manager", total) % {"total": total}
+            "_Show in File Manager", "_Show %(total)d Files in File Manager", total
+        ) % {"total": total}
         b = qltk.MenuItem(text, Icons.DOCUMENT_OPEN)
-        b.set_sensitive(bool(songs)
-                        and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
+        b.set_sensitive(bool(songs) and len(songs) < MenuItemPlugin.MAX_INVOCATIONS)
         b.connect("activate", show_files_cb)
         self.append(b)
 
@@ -455,12 +479,12 @@ class SongsMenu(Gtk.Menu):
         self.append(b)
 
     def init_remove(self, in_lib, library, removal_confirmer, remove, songs):
-        self._confirm_song_removal = (removal_confirmer or
-                                      confirm_song_removal_invoke)
+        self._confirm_song_removal = removal_confirmer or confirm_song_removal_invoke
         b = qltk.MenuItem(_("_Remove from Library…"), Icons.LIST_REMOVE)
         if callable(remove):
             b.connect("activate", lambda item: remove(songs))
         else:
+
             def remove_cb(item, songs, library):
                 parent = get_menu_item_top_parent(item)
                 if self._confirm_song_removal(parent, songs):
@@ -477,6 +501,7 @@ class SongsMenu(Gtk.Menu):
             songs = [s for s in songs if s.can_add]
             if songs:
                 from quodlibet import app
+
                 app.window.playlist.enqueue(songs)
 
         b.connect("activate", enqueue_cb, songs)
@@ -488,6 +513,7 @@ class SongsMenu(Gtk.Menu):
     def init_playlists(self, can_add, library, songs):
         try:
             from quodlibet.browsers.playlists.menu import PlaylistMenu
+
             submenu = PlaylistMenu(songs, library.playlists)
         except AttributeError as e:
             print_w("Couldn't get Playlists menu: %s" % e)

@@ -27,7 +27,6 @@ from quodlibet.util import connect_destroy, cmp
 
 
 class _ListEntry:
-
     def __init__(self, song):
         self.song = song
 
@@ -37,9 +36,7 @@ class _ListEntry:
 
 
 class SongProperties(qltk.Window, PersistentWindowMixin):
-    __gsignals__ = {
-        "changed": (GObject.SignalFlags.RUN_LAST, None, (object,))
-    }
+    __gsignals__ = {"changed": (GObject.SignalFlags.RUN_LAST, None, (object,))}
 
     def __init__(self, library, songs, parent=None):
         super().__init__(dialog=False)
@@ -52,18 +49,19 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             config_suffix += "single"
         self.set_default_size(default_width, 400)
 
-        self.enable_window_tracking("quodlibet_properties",
-                                    size_suffix=config_suffix)
+        self.enable_window_tracking("quodlibet_properties", size_suffix=config_suffix)
 
         self.auto_save_on_change = config.getboolean(
-                "editing", "auto_save_changes", False)
+            "editing", "auto_save_changes", False
+        )
 
         paned = ConfigRPaned("memory", "quodlibet_properties_pos", 0.4)
         notebook = qltk.Notebook()
         notebook.props.scrollable = True
         pages = []
-        pages.extend([Ctr(self, library) for Ctr in
-                      [EditTags, TagsFromPath, RenameFiles]])
+        pages.extend(
+            [Ctr(self, library) for Ctr in [EditTags, TagsFromPath, RenameFiles]]
+        )
         if len(songs) > 1:
             pages.append(TrackNumbers(self, library))
         for page in pages:
@@ -120,10 +118,12 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         paned.pack2(notebook, shrink=False, resize=True)
 
         csig = selection.connect("changed", self.__selection_changed)
-        connect_destroy(library,
-            "changed", self.__on_library_changed, fbasemodel, fview)
-        connect_destroy(library,
-            "removed", self.__on_library_removed, fbasemodel, selection, csig)
+        connect_destroy(
+            library, "changed", self.__on_library_changed, fbasemodel, fview
+        )
+        connect_destroy(
+            library, "removed", self.__on_library_removed, fbasemodel, selection, csig
+        )
 
         self.emit("changed", songs)
         self.add(paned)
@@ -156,8 +156,8 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                 title = ngettext(
                     "%(title)s and %(count)d more",
                     "%(title)s and %(count)d more",
-                    len(songs) - 1) % {"title": songs[0].comma("title"),
-                                       "count": len(songs) - 1}
+                    len(songs) - 1,
+                ) % {"title": songs[0].comma("title"), "count": len(songs) - 1}
             self.set_title("{} - {}".format(title, _("Properties")))
         else:
             self.set_title(_("Properties"))
@@ -194,7 +194,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
             elif resp == Gtk.ResponseType.NO:
                 return False
             else:
-                return True # cancel or closed
+                return True  # cancel or closed
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()

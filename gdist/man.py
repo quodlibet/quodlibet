@@ -77,4 +77,5 @@ class InstallMan(Command):
             (out, _) = self.copy_file(man_page, fullpath)
             self.outfiles.append(out)
 
+
 __all__ = ["InstallMan"]

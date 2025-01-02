@@ -17,12 +17,11 @@ from quodlibet.util.collection import Collection
 
 
 class BaseEntry(Collection):
-
     def __init__(self, key=None, songs=None):
         super().__init__()
 
         self.songs = set(songs or [])
-        self.key = key # not used for sorting!
+        self.key = key  # not used for sorting!
         self.sort = ()
 
     def all_have(self, tag, value):
@@ -51,11 +50,10 @@ class BaseEntry(Collection):
 
 
 class SongsEntry(BaseEntry):
-
     def __init__(self, key, sort, songs=None):
         super().__init__(key, songs)
 
-        self.sort = sort # value used for sorting
+        self.sort = sort  # value used for sorting
 
     def get_count_markup(self, config: PaneConfig) -> str:
         return config.format_display(self)
@@ -74,7 +72,6 @@ class SongsEntry(BaseEntry):
 
 
 class UnknownEntry(SongsEntry):
-
     def __init__(self, songs=None):
         super().__init__("", (), songs)
 
@@ -89,7 +86,6 @@ class UnknownEntry(SongsEntry):
 
 
 class AllEntry(BaseEntry):
-
     def __init__(self):
         super().__init__()
 
@@ -110,11 +106,10 @@ class AllEntry(BaseEntry):
 
 
 class PaneModel(ObjectStore):
-
     def __init__(self, pattern_config):
         super().__init__()
-        self.__sort_cache = {} # text to sort text cache
-        self.__key_cache = {} # song to key cache
+        self.__sort_cache = {}  # text to sort text cache
+        self.__key_cache = {}  # song to key cache
         self.config = pattern_config
 
     def get_format_keys(self, song):
@@ -186,7 +181,7 @@ class PaneModel(ObjectStore):
         for iter_ in to_remove:
             try:
                 key = self.get_value(iter_).key
-                del(self.__sort_cache[key])
+                del self.__sort_cache[key]
             except KeyError:
                 pass
             self.remove(iter_)
@@ -210,20 +205,18 @@ class PaneModel(ObjectStore):
                 unknown.songs.add(song)
             for key, sort in items:
                 if key in collection:
-                    if sort and not collection[key][2]: # first actual sort key
+                    if sort and not collection[key][2]:  # first actual sort key
                         hsort = human_sort(sort)
                         collection[key][0].sort = hsort
                         collection[key] = (collection[key][0], hsort, True)
                     collection[key][0].songs.add(song)
-                else: # first key sets up sorting
+                else:  # first key sets up sorting
                     hsort = human_sort(sort)
                     entry = SongsEntry(key, hsort)
                     collection[key] = (entry, hsort, bool(sort))
                     entry.songs.add(song)
 
-        items = sorted(collection.items(),
-                       key=lambda s: s[1][1],
-                       reverse=True)
+        items = sorted(collection.items(), key=lambda s: s[1][1], reverse=True)
 
         # fast path
         if not len(self):
@@ -251,7 +244,7 @@ class PaneModel(ObjectStore):
                     break
                 key, (val, sort_key, srtp) = items.pop(-1)
 
-            if key == entry.key: # Display strings the same
+            if key == entry.key:  # Display strings the same
                 entry.songs |= val.songs
                 entry.finalize()
                 self.row_changed(self.get_path(iter_), iter_)
@@ -322,8 +315,7 @@ class PaneModel(ObjectStore):
         # fast path, use the keys since they are unique and only depend
         # on the tag in question.
         if tag in tags and len(tags) == 1:
-            return {r.key for r in self.itervalues()
-                    if not isinstance(r, AllEntry)}
+            return {r.key for r in self.itervalues() if not isinstance(r, AllEntry)}
 
         # For patterns/tied tags we have to make sure that filtering for
         # that key will return only songs that all have the specified value

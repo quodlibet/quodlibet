@@ -13,10 +13,13 @@ from ._base import SessionClient, SessionError
 def iter_backends():
     if is_linux():
         from .gnome import GnomeSessionClient
+
         yield GnomeSessionClient
         from .xfce import XfceSessionClient
+
         yield XfceSessionClient
         from .xsmp import XSMPSessionClient
+
         yield XSMPSessionClient
     # dummy one last
     yield SessionClient

@@ -10,6 +10,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from quodlibet import _
@@ -23,6 +24,7 @@ try:
     import paho.mqtt.client as mqtt
 except ImportError as e:
     from quodlibet.plugins import MissingModulePluginError
+
     raise MissingModulePluginError("paho-mqtt") from e
 
 from gi.repository import Gtk
@@ -53,8 +55,7 @@ class Config:
     EMPTY_STATUS = ""
 
 
-_ACCEPTS_PATTERNS = (_("Accepts QL Patterns e.g. %s") %
-                     monospace("<~artist~title>"))
+_ACCEPTS_PATTERNS = _("Accepts QL Patterns e.g. %s") % monospace("<~artist~title>")
 
 
 class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
@@ -72,8 +73,10 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     def on_connect(self, client, userdata, flags, rc):
         """Callback for when the client receives a
         CONNACK response from the server."""
-        print_d("Connected to %s at %s:%d with result code %s"
-                % (self.topic, self.host, self.port, rc))
+        print_d(
+            "Connected to %s at %s:%d with result code %s"
+            % (self.topic, self.host, self.port, rc)
+        )
 
     def on_message(self, client, userdata, msg):
         """The callback for messages received from the server."""
@@ -95,24 +98,27 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         print_d('Setting status to "%s"...' % text)
         result, mid = self.client.publish(self.topic, text, retain=True)
         if result != mqtt.MQTT_ERR_SUCCESS:
-            print_w("Couldn't publish to %s at %s:%d (%s)"
-                    % (self.topic, self.host, self.port,
-                       mqtt.error_string(result)))
+            print_w(
+                "Couldn't publish to %s at %s:%d (%s)"
+                % (self.topic, self.host, self.port, mqtt.error_string(result))
+            )
         self.status = text
 
     def plugin_on_song_started(self, song):
         self.song = song
         pat_str = self.config_get(*Config.PAT_PLAYING)
         pattern = Pattern(pat_str)
-        status = (pattern.format(song) if song
-                  else self.config_get(Config.STATUS_SONGLESS, ""))
+        status = (
+            pattern.format(song)
+            if song
+            else self.config_get(Config.STATUS_SONGLESS, "")
+        )
         self._set_status(status)
 
     def plugin_on_paused(self):
         pat_str = self.config_get(*Config.PAT_PAUSED)
         pattern = Pattern(pat_str)
-        self.status = (pattern.format(self.song) if self.song
-                       else Config.EMPTY_STATUS)
+        self.status = pattern.format(self.song) if self.song else Config.EMPTY_STATUS
         self._set_status(self.status)
 
     def plugin_on_unpaused(self):
@@ -134,28 +140,26 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         self._set_up_mqtt_client()
 
     _CONFIG = [
-        (_("Broker hostname / IP"), Config.HOST,
-         _("Defaults to localhost")),
-
+        (_("Broker hostname / IP"), Config.HOST, _("Defaults to localhost")),
         (_("Broker port"), Config.PORT, _("Defaults to 1883")),
-
         (_("Broker username"), Config.USERNAME, None),
-
         (_("Broker password"), Config.PASSWORD, None),
-
         (_("Topic"), Config.TOPIC, None),
-
-        (_("Playing Pattern"),
-         Config.PAT_PLAYING,
-         _("Status text when a song is started.") + " " + _ACCEPTS_PATTERNS),
-
-        (_("Paused Pattern"),
-         Config.PAT_PAUSED,
-         _("Text when a song is paused.") + " " + _ACCEPTS_PATTERNS),
-
-        (_("No-song Text"),
-         Config.STATUS_SONGLESS,
-         _("Plain text for when there is no current song"))
+        (
+            _("Playing Pattern"),
+            Config.PAT_PLAYING,
+            _("Status text when a song is started.") + " " + _ACCEPTS_PATTERNS,
+        ),
+        (
+            _("Paused Pattern"),
+            Config.PAT_PAUSED,
+            _("Text when a song is paused.") + " " + _ACCEPTS_PATTERNS,
+        ),
+        (
+            _("No-song Text"),
+            Config.STATUS_SONGLESS,
+            _("Plain text for when there is no current song"),
+        ),
     ]
 
     @staticmethod
@@ -180,8 +184,11 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
         t.set_col_spacings(6)
         t.set_row_spacings(6)
         for i, (label, cfg, tooltip) in enumerate(config_data):
-            entry = (ValidatingEntry(validator=validator)
-                     if self._is_pattern(cfg) else UndoEntry())
+            entry = (
+                ValidatingEntry(validator=validator)
+                if self._is_pattern(cfg)
+                else UndoEntry()
+            )
             entry.set_text(str(self.config_get(*cfg)))
             entry.connect("changed", self._on_changed, cfg)
             lbl = Gtk.Label(label=label + ":")
@@ -203,8 +210,10 @@ class MqttPublisherPlugin(EventPlugin, PluginConfigMixin):
     def try_connecting(self):
         try:
             self.enabled()
-            msg = (_("Connected to broker at %(host)s:%(port)d")
-                   % {"host": self.host, "port": self.port})
+            msg = _("Connected to broker at %(host)s:%(port)d") % {
+                "host": self.host,
+                "port": self.port,
+            }
             Message(Gtk.MessageType.INFO, app.window, "Success", msg).run()
         except OSError as e:
             template = _("Couldn't connect to %(host)s:%(port)d (%(msg)s)")
@@ -225,7 +234,6 @@ def validator(pat):
 
 
 class FakeAudioFile(AudioFile):
-
     def __call__(self, *args, **kwargs):
         real = super().__call__(*args, **kwargs)
         tag = args[0]

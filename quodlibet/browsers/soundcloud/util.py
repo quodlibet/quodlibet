@@ -58,15 +58,15 @@ def json_callback(wrapped):
 
     def _callback(self, message, json, data):
         if json is None:
-            print_d(f"[HTTP {message.status_code}] Invalid / empty JSON. "
-                    f"Body: {message.response_body.data!r} (request: {data})")
+            print_d(
+                f"[HTTP {message.status_code}] Invalid / empty JSON. "
+                f"Body: {message.response_body.data!r} (request: {data})"
+            )
             return
         if "errors" in json:
-            raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json["errors"]))
+            raise ValueError("Got HTTP %d (%s)" % (message.status_code, json["errors"]))
         if "error" in json:
-            raise ValueError("Got HTTP %d (%s)" % (message.status_code,
-                                                   json["error"]))
+            raise ValueError("Got HTTP %d (%s)" % (message.status_code, json["error"]))
         return wrapped(self, json, data)
 
     return _callback
@@ -93,7 +93,8 @@ class EnterAuthCodeDialog(GetStringDialog):
             parent,
             _("Soundcloud authorisation"),
             _("Enter Soundcloud auth code:"),
-            button_icon=None)
+            button_icon=None,
+        )
 
     def _verify_clipboard(self, text):
         if len(text) > 10:
@@ -102,7 +103,7 @@ class EnterAuthCodeDialog(GetStringDialog):
 
 def sanitise_tag(value):
     """QL doesn't want newlines in tags, but they Soundcloud ones
-     are not always best represented as multi-value tags (comments, etc)
+    are not always best represented as multi-value tags (comments, etc)
     """
     return (value or "").replace("\n", "\t").replace("\r", "")
 

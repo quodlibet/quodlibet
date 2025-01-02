@@ -20,7 +20,6 @@ from .helper import get_temp_copy
 
 
 class TMP4File(TestCase):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("test.m4a"))
         self.song = MP4File(self.f)
@@ -53,8 +52,8 @@ class TMP4File(TestCase):
         song.write()
         tag = mutagen.mp4.MP4(self.f)
         self.assertEqual(
-            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"],
-            [b"bla"])
+            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"], [b"bla"]
+        )
 
     def test_basic(self):
         self._assert_tag_supported("title")

@@ -132,7 +132,6 @@ class TQltk(TestCase):
 
 
 class Tselection_data(TestCase):
-
     def test_selection_set_songs(self):
         song = AudioFile()
         song["~filename"] = fsnative("foo")

@@ -12,7 +12,6 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 
 
 class TWaitLoadWindow(TestCase):
-
     class DummyConnector(Gtk.Window):
         count = 0
 

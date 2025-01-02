@@ -39,8 +39,10 @@ class HTTPDownloadMixin:
             except GLib.GError:
                 request.cancel()
                 return self.fail("Cannot open cover file")
-        target.replace_async(None, True, flags, GLib.PRIORITY_DEFAULT,
-                             self.cancellable, replaced, None)
+
+        target.replace_async(
+            None, True, flags, GLib.PRIORITY_DEFAULT, self.cancellable, replaced, None
+        )
 
     def _download_received(self, request, ostream):
         try:
@@ -55,6 +57,7 @@ class HTTPDownloadMixin:
                 gfile.delete_finish(task)
             except GLib.GError:
                 print_w("Could not clean up cover which failed to download")
+
         try:
             request.ostream.close(None)
         except GLib.GError as e:
@@ -103,9 +106,10 @@ class ApiCoverSourcePlugin(CoverSourcePlugin, HTTPDownloadMixin):
     def _album_artists_for(self, song):
         """Returns a comma-separated list of artists indicating the
         "main" artists from the song's album"""
-        people = [song.comma(key)
-                  for key in ["albumartist", "artist", "composer", "conductor",
-                              "performer"]]
+        people = [
+            song.comma(key)
+            for key in ["albumartist", "artist", "composer", "conductor", "performer"]
+        ]
         people = list(filter(None, people))
         return people[0] if people else None
 

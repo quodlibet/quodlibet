@@ -23,9 +23,11 @@ from quodlibet.qltk import notif, Icons
 class RandomAlbum(EventPlugin):
     PLUGIN_ID = "Random Album Playback"
     PLUGIN_NAME = _("Random Album Playback")
-    PLUGIN_DESC = _("Starts a random album when your playlist reaches its "
-                    "end. It requires that your active browser supports "
-                    "filtering by album.")
+    PLUGIN_DESC = _(
+        "Starts a random album when your playlist reaches its "
+        "end. It requires that your active browser supports "
+        "filtering by album."
+    )
     PLUGIN_ICON = Icons.MEDIA_SKIP_FORWARD
 
     weights: dict[str, float] = {}
@@ -33,17 +35,17 @@ class RandomAlbum(EventPlugin):
     # Not a dict because we want to impose a particular order
     # Third item is to specify a non-default aggregation function
     keys = [
-                ("rating", _("Rated higher"), None),
-                ("playcount", _("Played more often"), "avg"),
-                ("skipcount", _("Skipped more often"), "avg"),
-                ("lastplayed", _("Played more recently"), None),
-                ("laststarted", _("Started more recently"), None),
-                ("added", _("Added more recently"), None),
-                ("length", _("Longer albums"), None),
-            ]
+        ("rating", _("Rated higher"), None),
+        ("playcount", _("Played more often"), "avg"),
+        ("skipcount", _("Skipped more often"), "avg"),
+        ("lastplayed", _("Played more recently"), None),
+        ("laststarted", _("Started more recently"), None),
+        ("added", _("Added more recently"), None),
+        ("length", _("Longer albums"), None),
+    ]
 
     def __init__(self):
-        for (key, _text, _func) in self.keys:
+        for key, _text, _func in self.keys:
             val = config.getfloat("plugins", "randomalbum_%s" % key, 0.0)
             self.weights[key] = val
 
@@ -74,7 +76,8 @@ class RandomAlbum(EventPlugin):
 
         hbox = Gtk.HBox(spacing=6)
         spin = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment.new(self.delay, 0, 3600, 1, 10, 0))
+            adjustment=Gtk.Adjustment.new(self.delay, 0, 3600, 1, 10, 0)
+        )
         spin.connect("value-changed", delay_changed_cb)
         hbox.pack_start(spin, False, True, 0)
         lbl = Gtk.Label(label=_("seconds before starting next album"))
@@ -95,33 +98,36 @@ class RandomAlbum(EventPlugin):
 
         # Less label
         less_lbl = Gtk.Label()
-        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT,
-                        shadow_type=Gtk.ShadowType.OUT)
+        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.LEFT, shadow_type=Gtk.ShadowType.OUT)
         less_lbl.set_markup(util.italic(_("avoid")))
         less_lbl.set_alignment(0, 0)
         hb = Gtk.HBox(spacing=0)
         hb.pack_start(arr, False, True, 0)
         hb.pack_start(less_lbl, True, True, 0)
-        table.attach(hb, 1, 2, 0, 1, xpadding=3,
-                     xoptions=Gtk.AttachOptions.FILL)
+        table.attach(hb, 1, 2, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
         # More label
         more_lbl = Gtk.Label()
-        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT,
-                        shadow_type=Gtk.ShadowType.OUT)
+        arr = Gtk.Arrow(arrow_type=Gtk.ArrowType.RIGHT, shadow_type=Gtk.ShadowType.OUT)
         more_lbl.set_markup(util.italic(_("prefer")))
         more_lbl.set_alignment(1, 0)
         hb = Gtk.HBox(spacing=0)
         hb.pack_end(arr, False, True, 0)
         hb.pack_end(more_lbl, True, True, 0)
-        table.attach(hb, 2, 3, 0, 1, xpadding=3,
-                     xoptions=Gtk.AttachOptions.FILL)
+        table.attach(hb, 2, 3, 0, 1, xpadding=3, xoptions=Gtk.AttachOptions.FILL)
 
-        for (idx, (key, text, _func)) in enumerate(self.keys):
+        for idx, (key, text, _func) in enumerate(self.keys):
             lbl = Gtk.Label(label=text)
             lbl.set_alignment(0, 0)
-            table.attach(lbl, 0, 1, idx + 1, idx + 2,
-                         xoptions=Gtk.AttachOptions.FILL,
-                         xpadding=3, ypadding=3)
+            table.attach(
+                lbl,
+                0,
+                1,
+                idx + 1,
+                idx + 2,
+                xoptions=Gtk.AttachOptions.FILL,
+                xpadding=3,
+                ypadding=3,
+            )
             adj = Gtk.Adjustment(lower=-1.0, upper=1.0, step_increment=0.1)
             hscale = Gtk.HScale(adjustment=adj)
             hscale.set_value(self.weights[key])
@@ -141,14 +147,14 @@ class RandomAlbum(EventPlugin):
         # based on normalized means, and also normalizes the scale of each
         # weight slider in the prefs pane.
         ranked = {}
-        for (tag, _text, func) in self.keys:
+        for tag, _text, func in self.keys:
             tag_key = f"~#{tag}:{func}" if func else f"~#{tag}"
             ranked[tag] = sorted(albums, key=lambda al: al.get(tag_key))
 
         scores = {}
         for album in albums:
             scores[album] = 0
-            for (tag, _text, _func) in self.keys:
+            for tag, _text, _func in self.keys:
                 rank = ranked[tag].index(album)
                 scores[album] += rank * self.weights[tag]
 
@@ -187,9 +193,7 @@ class RandomAlbum(EventPlugin):
                 max_score = max(album_scores, key=lambda t: t[0])[0]
                 print_d("Maximum score found: %0.1f" % max_score)
                 # Filter albums by highest score value
-                albums = [(sc, al)
-                          for sc, al in album_scores
-                          if sc == max_score]
+                albums = [(sc, al) for sc, al in album_scores if sc == max_score]
                 print_d("Albums with maximum score:")
                 for _score, album in albums:
                     print_d("  %s" % album("album"))
@@ -205,18 +209,20 @@ class RandomAlbum(EventPlugin):
 
     def schedule_change(self, album):
         if self.delay:
-            srcid = GLib.timeout_add(1000 * self.delay,
-                                     self.change_album, album)
-            task = notif.Task(_("Random Album"),
-                              _("Waiting to start %s") % util.bold(album("album")),
-                              stop=lambda: GLib.source_remove(srcid))
+            srcid = GLib.timeout_add(1000 * self.delay, self.change_album, album)
+            task = notif.Task(
+                _("Random Album"),
+                _("Waiting to start %s") % util.bold(album("album")),
+                stop=lambda: GLib.source_remove(srcid),
+            )
 
             def countdown():
                 for i in range(10 * self.delay):
-                    task.update(i / (10. * self.delay))
+                    task.update(i / (10.0 * self.delay))
                     yield True
                 task.finish()
                 yield False
+
             GLib.timeout_add(100, next, countdown())
         else:
             self.change_album(album)
@@ -243,5 +249,4 @@ class RandomAlbum(EventPlugin):
             app.player.paused = True
 
     def disabled_for_browser(self, browser):
-        return (not browser.can_filter("album") or
-                isinstance(browser, PlaylistsBrowser))
+        return not browser.can_filter("album") or isinstance(browser, PlaylistsBrowser)

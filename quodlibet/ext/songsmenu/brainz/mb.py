@@ -9,6 +9,7 @@ try:
     import musicbrainzngs
 except ImportError as e:
     from quodlibet import plugins
+
     raise plugins.MissingModulePluginError("musicbrainzngs") from e
 
 from quodlibet import app
@@ -27,8 +28,7 @@ def search_releases(query):
     """Returns a list of ReleaseResult or raises MusicBrainzError"""
 
     musicbrainzngs.set_useragent(app.name, const.VERSION)
-    return [Release(r) for r in
-            musicbrainzngs.search_releases(query)["release-list"]]
+    return [Release(r) for r in musicbrainzngs.search_releases(query)["release-list"]]
 
 
 def _get_release(release_id):
@@ -39,13 +39,11 @@ def _get_release(release_id):
     assert is_mbid(release_id)
 
     return musicbrainzngs.get_release_by_id(
-        release_id,
-        includes=["recordings", "artists", "artist-credits", "labels"]
+        release_id, includes=["recordings", "artists", "artist-credits", "labels"]
     )["release"]
 
 
 class Artist:
-
     def __init__(self, name, sort_name, id_):
         self.name = name
         self.sort_name = sort_name
@@ -66,7 +64,8 @@ class Artist:
                 pass
             else:
                 artists.append(
-                    Artist(artist["name"], artist["sort-name"], artist["id"]))
+                    Artist(artist["name"], artist["sort-name"], artist["id"])
+                )
         return artists
 
 
@@ -99,7 +98,6 @@ class ReleaseTrack:
 
 
 class Release:
-
     def __init__(self, mbrelease):
         self._mbrelease = mbrelease
 
@@ -159,8 +157,7 @@ class Release:
             track_count = medium["track-count"]
             if "pregap" in medium:
                 track_count += 1
-                tracks.append(
-                    ReleaseTrack(medium["pregap"], disc, track_count, title))
+                tracks.append(ReleaseTrack(medium["pregap"], disc, track_count, title))
             for track in medium["track-list"]:
                 tracks.append(ReleaseTrack(track, disc, track_count, title))
         return tracks

@@ -45,9 +45,9 @@ class QueryPlugin:
 
     def search(self, song: AudioFile, body: Any | None) -> bool:
         """Whether to match the given song
-           :param song: the song in question
-           :param body: the query body
-           :returns:  whether the song matches the query for the given body.
+        :param song: the song in question
+        :param body: the query body
+        :returns:  whether the song matches the query for the given body.
         """
         raise NotImplementedError
 
@@ -66,13 +66,21 @@ class QueryPlugin:
     def PluginPreferences(cls, window):  # noqa
         if not cls.usage:
             return Gtk.VBox()
-        label = Gtk.Label(label=cls.usage, use_markup=True,
-                          xalign=0.0, yalign=0.5,
-                          wrap=True, width_chars=30,
-                          selectable=True)
-        return Frame(_("Usage"), child=Align(label, border=9,
-                                             halign=Gtk.Align.START,
-                                             valign=Gtk.Align.START))
+        label = Gtk.Label(
+            label=cls.usage,
+            use_markup=True,
+            xalign=0.0,
+            yalign=0.5,
+            wrap=True,
+            width_chars=30,
+            selectable=True,
+        )
+        return Frame(
+            _("Usage"),
+            child=Align(
+                label, border=9, halign=Gtk.Align.START, valign=Gtk.Align.START
+            ),
+        )
 
 
 class QueryPluginError(Exception):

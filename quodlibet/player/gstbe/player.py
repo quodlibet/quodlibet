@@ -23,17 +23,33 @@ from quodlibet import util
 from quodlibet import app
 from quodlibet import _
 
-from quodlibet.util import fver, sanitize_tags, MainRunner, MainRunnerError, \
-    MainRunnerAbortedError, MainRunnerTimeoutError, print_w, print_d, \
-    print_e, print_
+from quodlibet.util import (
+    fver,
+    sanitize_tags,
+    MainRunner,
+    MainRunnerError,
+    MainRunnerAbortedError,
+    MainRunnerTimeoutError,
+    print_w,
+    print_d,
+    print_e,
+    print_,
+)
 from quodlibet.util.path import uri2gsturi
 from quodlibet.player import PlayerError
 from quodlibet.player._base import BasePlayer
 from quodlibet.qltk.notif import Task
 from quodlibet.formats.mod import ModFile
 
-from .util import (parse_gstreamer_taglist, TagListWrapper, iter_to_list,
-                   gstreamer_sink, link_many, bin_debug, AudioSinks)
+from .util import (
+    parse_gstreamer_taglist,
+    TagListWrapper,
+    iter_to_list,
+    gstreamer_sink,
+    link_many,
+    bin_debug,
+    AudioSinks,
+)
 from .plugins import GStreamerPluginHandler
 from .prefs import GstPlayerPreferences
 
@@ -96,6 +112,7 @@ class BufferingWrapper:
         # task management
         if inhibit:
             if not self._task:
+
                 def stop_buf(*args):
                     self._player.paused = True
 
@@ -107,10 +124,8 @@ class BufferingWrapper:
         # state management
         if inhibit:
             # save the current state
-            status, state, pending = self.bin.get_state(
-                timeout=STATE_CHANGE_TIMEOUT)
-            if status == Gst.StateChangeReturn.SUCCESS and \
-                state == Gst.State.PLAYING:
+            status, state, pending = self.bin.get_state(timeout=STATE_CHANGE_TIMEOUT)
+            if status == Gst.StateChangeReturn.SUCCESS and state == Gst.State.PLAYING:
                 self._wanted_state = state
             else:
                 # no idea, at least don't play
@@ -140,8 +155,11 @@ class BufferingWrapper:
         # so call every time but ignore the result in the inhibit case
         res = self.bin.get_state(*args, **kwargs)
         if self._inhibit_play:
-            return (Gst.StateChangeReturn.SUCCESS,
-                    self._wanted_state, Gst.State.VOID_PENDING)
+            return (
+                Gst.StateChangeReturn.SUCCESS,
+                self._wanted_state,
+                Gst.State.VOID_PENDING,
+            )
         return res
 
     def destroy(self):
@@ -305,8 +323,14 @@ class Seeker:
 
     def _set_position(self, song, pos):
         event = Gst.Event.new_seek(
-            1.0, Gst.Format.TIME, Gst.SeekFlags.FLUSH,
-            Gst.SeekType.SET, pos * Gst.MSECOND, Gst.SeekType.NONE, 0)
+            1.0,
+            Gst.Format.TIME,
+            Gst.SeekFlags.FLUSH,
+            Gst.SeekType.SET,
+            pos * Gst.MSECOND,
+            Gst.SeekType.NONE,
+            0,
+        )
 
         if self._playbin.send_event(event):
             self._active_seeks.append((song, pos))
@@ -315,7 +339,6 @@ class Seeker:
 
 
 class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
-
     def PlayerPreferences(self):  # noqa
         return GstPlayerPreferences(self, const.DEBUG)
 
@@ -424,8 +447,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             # rest of the chain.
             print_d("Setting up Gstreamer equalizer")
             filt = self._make("capsfilter", None)
-            filt.set_property("caps",
-                              Gst.Caps.from_string("audio/x-raw,format=F32LE"))
+            filt.set_property("caps", Gst.Caps.from_string("audio/x-raw,format=F32LE"))
             eq = self._make("equalizer-10bands", None)
             self._eq_element = eq
             self.update_eq_values()
@@ -444,10 +466,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         plugin_pipeline = []
         for plugin in self._get_plugin_elements():
             plugin_pipeline.append(plugin)
-            plugin_pipeline.append(
-                self._make("audioconvert", None))
-            plugin_pipeline.append(
-                self._make("audioresample", None))
+            plugin_pipeline.append(self._make("audioconvert", None))
+            plugin_pipeline.append(self._make("audioresample", None))
         print_d(f"GStreamer plugin pipeline: {plugin_pipeline}")
         pipeline = plugin_pipeline + pipeline
 
@@ -462,7 +482,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             except OSError as e:
                 print_w("Linking the GStreamer pipeline failed")
                 self._error(
-                    PlayerError(_("Could not create GStreamer pipeline (%s)" % e)))
+                    PlayerError(_("Could not create GStreamer pipeline (%s)" % e))
+                )
                 return False
 
         # see if the sink provides a volume property, if yes, use it
@@ -487,8 +508,10 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
             self._ext_vol_element.connect("notify::volume", ext_volume_notify)
 
         self._ext_mute_element = None
-        if hasattr(sink_element.props, "mute") and \
-            sink_element.get_factory().get_name() != "directsoundsink":
+        if (
+            hasattr(sink_element.props, "mute")
+            and sink_element.get_factory().get_name() != "directsoundsink"
+        ):
             # directsoundsink has a mute property but it doesn't work
             # https://bugzilla.gnome.org/show_bug.cgi?id=755106
             self._ext_mute_element = sink_element
@@ -513,8 +536,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         bus.add_signal_watch()
         self.__bus_id = bus.connect("message", self.__message, self._librarian)
 
-        self.__atf_id = self.bin.connect("about-to-finish",
-                                         self.__about_to_finish)
+        self.__atf_id = self.bin.connect("about-to-finish", self.__about_to_finish)
 
         # set buffer duration
         duration = config.getfloat("player", "gst_buffer")
@@ -652,8 +674,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                     librarian.changed([self.song])
 
     def __handle_missing_plugin(self, message):
-        get_installer_detail = \
-            GstPbutils.missing_plugin_message_get_installer_detail
+        get_installer_detail = GstPbutils.missing_plugin_message_get_installer_detail
         get_description = GstPbutils.missing_plugin_message_get_description
 
         details = get_installer_detail(message)
@@ -665,7 +686,8 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         format_desc = get_description(message)
         title = _("No GStreamer element found to handle media format")
         error_details = _("Media format: %(format-description)s") % {
-            "format-description": format_desc}
+            "format-description": format_desc
+        }
 
         def install_done_cb(plugins_return, *args):
             print_d("Gstreamer plugin install return: %r" % plugins_return)
@@ -676,6 +698,7 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         # new in 1.6
         if hasattr(context, "set_desktop_id"):
             from gi.repository import Gtk
+
             context.set_desktop_id(app.id)
 
         # new in 1.6
@@ -693,11 +716,14 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
                 context.set_xid(xid)
 
         res = GstPbutils.install_plugins_async(
-            [details], context, install_done_cb, None)
+            [details], context, install_done_cb, None
+        )
         print_d("Gstreamer plugin install result: %r" % res)
 
-        if res in (GstPbutils.InstallPluginsReturn.HELPER_MISSING,
-                   GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE):
+        if res in (
+            GstPbutils.InstallPluginsReturn.HELPER_MISSING,
+            GstPbutils.InstallPluginsReturn.INTERNAL_FAILURE,
+        ):
             self._error(PlayerError(title, error_details))
 
     def __about_to_finish_sync(self):
@@ -740,9 +766,9 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
         print_d("About to finish (async)")
 
         try:
-            uri = self._runner.call(self.__about_to_finish_sync,
-                                    priority=GLib.PRIORITY_HIGH,
-                                    timeout=0.5)
+            uri = self._runner.call(
+                self.__about_to_finish_sync, priority=GLib.PRIORITY_HIGH, timeout=0.5
+            )
         except MainRunnerTimeoutError as e:
             # Due to some locks being held during this signal we can get
             # into a deadlock when a seek or state change event happens
@@ -770,18 +796,22 @@ class GStreamerPlayer(BasePlayer, GStreamerPluginHandler):
 
     def do_get_property(self, property):
         if property.name == "volume":
-            if self._ext_vol_element is not None and \
-                sink_has_external_state(self._ext_vol_element) and \
-                sink_state_is_valid(self._ext_vol_element):
+            if (
+                self._ext_vol_element is not None
+                and sink_has_external_state(self._ext_vol_element)
+                and sink_state_is_valid(self._ext_vol_element)
+            ):
                 # never read back the volume if we don't have to, e.g.
                 # directsoundsink maps volume to an int which makes UI
                 # sliders jump if we read the value back
                 self._volume = self._ext_vol_element.get_property("volume")
             return self._volume
         elif property.name == "mute":
-            if self._ext_mute_element is not None and \
-                sink_has_external_state(self._ext_mute_element) and \
-                sink_state_is_valid(self._ext_mute_element):
+            if (
+                self._ext_mute_element is not None
+                and sink_has_external_state(self._ext_mute_element)
+                and sink_state_is_valid(self._ext_mute_element)
+            ):
                 self._mute = self._ext_mute_element.get_property("mute")
             return self._mute
         elif property.name == "seekable":

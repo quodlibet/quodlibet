@@ -18,8 +18,7 @@ from quodlibet import qltk
 from quodlibet.formats import AudioFile
 from senf import path2fsn
 from quodlibet.pattern import ArbitraryExtensionFileFromPattern, Pattern
-from quodlibet.plugins import (PluginConfig, ConfProp, IntConfProp,
-                               BoolConfProp)
+from quodlibet.plugins import PluginConfig, ConfProp, IntConfProp, BoolConfProp
 from quodlibet.plugins.songshelpers import any_song, is_a_file
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
 from quodlibet.qltk import Icons
@@ -36,7 +35,7 @@ SAVE_PATTERNS = [
     "cover",
     _FULL_PAT,
     f"{_FULL_PAT} - front",
-    f"{_FULL_PAT} - back"
+    f"{_FULL_PAT} - back",
 ]
 
 IMAGE_EXTENSIONS = {
@@ -51,8 +50,9 @@ class DownloadCoverArt(SongsMenuPlugin):
 
     PLUGIN_ID = "Download Cover Art"
     PLUGIN_NAME = _("Download Cover Art")
-    PLUGIN_DESC = _("Downloads high-quality album covers "
-                    "using Quod Libet cover plugins.")
+    PLUGIN_DESC = _(
+        "Downloads high-quality album covers " "using Quod Libet cover plugins."
+    )
     PLUGIN_ICON = Icons.INSERT_IMAGE
     REQUIRES_ACTION = True
 
@@ -85,7 +85,7 @@ class ResizeWebImage(Gtk.Image):
         # The content-type, size (in bytes) and properties of a cover
         # once discovered
         "info-known": (GObject.SignalFlags.RUN_LAST, None, (str, int, object)),
-        "failed": (GObject.SignalFlags.RUN_LAST, None, (str,))
+        "failed": (GObject.SignalFlags.RUN_LAST, None, (str,)),
     }
 
     def __init__(self, url, config: Config, cancellable=None):
@@ -96,15 +96,23 @@ class ResizeWebImage(Gtk.Image):
         self.message = msg = Soup.Message.new("GET", self.url)
         self._content_type = None
         self._original = None
-        download(msg, cancellable, self._sent, None,
-                 failure_callback=lambda *args: self.emit("failed", self.url))
+        download(
+            msg,
+            cancellable,
+            self._sent,
+            None,
+            failure_callback=lambda *args: self.emit("failed", self.url),
+        )
         self.set_size_request(config.preview_size, config.preview_size)
         self._pixbuf = None
 
     @property
     def extension(self):
-        return ("jpg" if self.config.re_encode else
-                IMAGE_EXTENSIONS.get(self._content_type, "jpg"))
+        return (
+            "jpg"
+            if self.config.re_encode
+            else IMAGE_EXTENSIONS.get(self._content_type, "jpg")
+        )
 
     def _sent(self, msg, result, data):
         headers = self.message.get_response_headers()
@@ -119,8 +127,7 @@ class ResizeWebImage(Gtk.Image):
             loader.write(result)
             loader.close()
             self._pixbuf = loader.get_pixbuf()
-            self.emit("info-known", self._content_type, self.size,
-                      self._pixbuf.props)
+            self.emit("info-known", self._content_type, self.size, self._pixbuf.props)
             self.resize()
             self.queue_draw()
 
@@ -134,8 +141,9 @@ class ResizeWebImage(Gtk.Image):
         props = self._pixbuf.props
         if not self.config.over_scale:
             new_size = min(props.width, props.height, new_size)
-        resized = self._pixbuf.scale_simple(new_size, new_size,
-                                            GdkPixbuf.InterpType.BILINEAR)
+        resized = self._pixbuf.scale_simple(
+            new_size, new_size, GdkPixbuf.InterpType.BILINEAR
+        )
         self.set_from_pixbuf(resized)
         self.set_size_request(new_size, new_size)
 
@@ -161,14 +169,19 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         720: _("HD"),
         1080: _("Full HD"),
         1600: _("WQXGA"),
-        2160: _("4K UHD")
+        2160: _("4K UHD"),
     }
     DEFAULT_SIZE = list(SIZES.keys())[0]
 
-    def __init__(self, songs: Iterable[AudioFile], manager: CoverManager,
-                 config: Config, headless: bool = False, **kwargs):
-        super().__init__(title=_("Cover Art Download"), use_header_bar=True,
-                         **kwargs)
+    def __init__(
+        self,
+        songs: Iterable[AudioFile],
+        manager: CoverManager,
+        config: Config,
+        headless: bool = False,
+        **kwargs,
+    ):
+        super().__init__(title=_("Cover Art Download"), use_header_bar=True, **kwargs)
         self.set_default_size(1400, 720)
         id_ = DownloadCoverArt.PLUGIN_ID.lower().replace(" ", "_")
         self.enable_window_tracking(id_)
@@ -223,15 +236,19 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         def update(img, content_type, size, props, item, frame):
             format = IMAGE_EXTENSIONS.get(content_type, content_type).upper()
             source = escape(item.source)
-            text = (f"{source} - {format}, "
-                    f"{props.width} x {props.height}, "
-                    f"{util.bold(format_size(size))}")
+            text = (
+                f"{source} - {format}, "
+                f"{props.width} x {props.height}, "
+                f"{util.bold(format_size(size))}"
+            )
             frame.get_label_widget().set_markup(text)
             frame.get_child().set_reveal_child(True)
 
         img = ResizeWebImage(item.url, config=self.config)
-        text = (_("Loading %(source)s - %(dimensions)s…")
-                % {"source": item.source, "dimensions": item.dimensions})
+        text = _("Loading %(source)s - %(dimensions)s…") % {
+            "source": item.source,
+            "dimensions": item.dimensions,
+        }
         frame = Gtk.Frame.new(text)
         img.set_padding(12, 12)
         frame.set_shadow_type(Gtk.ShadowType.NONE)
@@ -253,8 +270,10 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
     def _on_click(self, view, event):
         # TODO: less hacky way to detect double-click
-        if (event.button == Gdk.BUTTON_PRIMARY and
-                event.type != Gdk.EventType.BUTTON_PRESS):
+        if (
+            event.button == Gdk.BUTTON_PRIMARY
+            and event.type != Gdk.EventType.BUTTON_PRESS
+        ):
             self.__save(None)
             self.destroy()
 
@@ -285,19 +304,27 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
     def _quit(self, results):
         pat = Pattern("<albumartist|<albumartist>|<artist>> - <album>")
-        group_songs = [songs
-                       for group in self._groups.values()
-                       for songs in group.values()]
-        texts = {pat.format(s) for s in
-                 reduce(operator.concat, group_songs, [])}
+        group_songs = [
+            songs for group in self._groups.values() for songs in group.values()
+        ]
+        texts = {pat.format(s) for s in reduce(operator.concat, group_songs, [])}
         albums = "\n".join(texts)
         providers = ", ".join({manager.name for manager in results.keys()})
         data = {"albums": util.italic(albums), "providers": util.monospace(providers)}
-        markup = _("Nothing found for albums:\n%(albums)s.\n\n"
-                   "Providers used:\n%(providers)s") % data
-        dialog = qltk.Message(Gtk.MessageType.INFO, parent=self,
-                              title=_("No covers found"), description=markup,
-                              escape_desc=False)
+        markup = (
+            _(
+                "Nothing found for albums:\n%(albums)s.\n\n"
+                "Providers used:\n%(providers)s"
+            )
+            % data
+        )
+        dialog = qltk.Message(
+            Gtk.MessageType.INFO,
+            parent=self,
+            title=_("No covers found"),
+            description=markup,
+            escape_desc=False,
+        )
         dialog.run()
         self.destroy()
 
@@ -310,8 +337,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         frame = Gtk.Frame(label=_("Options"))
         hbox = Gtk.HBox()
         sizes = self.SIZES.keys()
-        slider = Gtk.Scale.new_with_range(Gtk.Orientation.HORIZONTAL,
-                                          min(sizes), max(sizes), 100)
+        slider = Gtk.Scale.new_with_range(
+            Gtk.Orientation.HORIZONTAL, min(sizes), max(sizes), 100
+        )
         for size, name in self.SIZES.items():
             slider.add_mark(size, Gtk.PositionType.BOTTOM, name)
         slider.set_show_fill_level(False)
@@ -372,10 +400,13 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
             select_value(save_filename, self.config.save_pattern)
             hbox.pack_start(save_filename, False, False, 6)
             create_ccb = self.config.plugin_config.ConfigCheckButton
-            tooltip = _("If not already a JPEG, convert the image to "
-                        "a high-quality JPEG of the same size")
-            re_encode = create_ccb(_("Save as JPEG"), "re_encode",
-                                   tooltip=tooltip, populate=True)
+            tooltip = _(
+                "If not already a JPEG, convert the image to "
+                "a high-quality JPEG of the same size"
+            )
+            re_encode = create_ccb(
+                _("Save as JPEG"), "re_encode", tooltip=tooltip, populate=True
+            )
             re_encode.connect("toggled", lambda _: hbox.queue_draw())
             hbox.pack_start(re_encode, False, False, 6)
             return hbox
@@ -383,8 +414,9 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         vbox.pack_start(create_save_box(), False, False, 6)
         frame.add(vbox)
 
-        self.button = self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                                           Gtk.ResponseType.APPLY)
+        self.button = self.add_icon_button(
+            _("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.APPLY
+        )
         self.button.set_sensitive(False)
         self.button.connect("clicked", self.__save)
         return frame
@@ -396,8 +428,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
         self._save_images(data, img)
 
     def _save_images(self, data: CoverData, img: Gtk.Image):
-        paths = self._filenames(self.config.save_pattern, img.extension,
-                                full_path=True)
+        paths = self._filenames(self.config.save_pattern, img.extension, full_path=True)
         try:
             first_path = paths.pop()
         except IndexError:

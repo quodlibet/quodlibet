@@ -21,7 +21,6 @@ from tests import skipIf, run_gtk_loop
 
 @skipIf(os.name == "nt", "mpd server not supported under Windows")
 class TMPDServer(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["mpd_server"]
 
@@ -32,11 +31,11 @@ class TMPDServer(PluginTestCase):
         self.assertEqual(parse(b"foo\tbar"), ("foo", ["bar"]))
         self.assertEqual(parse(b"foo\t bar"), ("foo", ["bar"]))
         self.assertEqual(parse(b"foo\t bar quux"), ("foo", ["bar", "quux"]))
-        self.assertEqual(
-            parse(b'foo\t bar "q 2" x'), ("foo", ["bar", "q 2", "x"]))
+        self.assertEqual(parse(b'foo\t bar "q 2" x'), ("foo", ["bar", "q 2", "x"]))
         self.assertEqual(parse(b"foo 'bar  quux'"), ("foo", ["'bar", "quux'"]))
         self.assertEqual(
-            parse(b"foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", ["\xf6\xe4\xfc"]))
+            parse(b"foo \xc3\xb6\xc3\xa4\xc3\xbc"), ("foo", ["\xf6\xe4\xfc"])
+        )
 
     def test_format_tags(self):
         format_tags = self.mod.main.format_tags
@@ -65,7 +64,6 @@ class TMPDServer(PluginTestCase):
 
 @skipIf(os.name == "nt", "mpd server not supported under Windows")
 class TMPDCommands(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["mpd_server"]
         config.init()
@@ -105,10 +103,14 @@ class TMPDCommands(PluginTestCase):
         config.quit()
 
     def test_currentsong_length(self):
-        app.player.go_to(AudioFile({
-            "~filename": fsnative(),
-            "~#length": 12.25,
-        }))
+        app.player.go_to(
+            AudioFile(
+                {
+                    "~filename": fsnative(),
+                    "~#length": 12.25,
+                }
+            )
+        )
 
         response = self._cmd(b"currentsong\n")
         assert b"Time: 12\n" in response

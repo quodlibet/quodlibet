@@ -34,7 +34,8 @@ def _fixup_literal_list(literals, mapping):
     # longest matches first, we will handle contained ones in the replacement
     # function
     reg = "(%s)" % "|".join(
-        map(re_escape, sorted(mapping.keys(), key=len, reverse=True)))
+        map(re_escape, sorted(mapping.keys(), key=len, reverse=True))
+    )
 
     def replace_func(match):
         text = match.group(1)
@@ -53,7 +54,7 @@ def _fixup_literal_list(literals, mapping):
     new = ""
     pos = 0
     for match in re.finditer(reg, u):
-        new += re_escape(u[pos:match.start()])
+        new += re_escape(u[pos : match.start()])
         new += replace_func(match)
         pos = match.end()
     new += re_escape(u[pos:])
@@ -136,8 +137,8 @@ def _construct_in(pattern, mapping):
 
 
 def _construct_regexp(
-        pattern: sre_parse.SubPattern, mapping: dict[str, list[str]],
-        parent="") -> str:
+    pattern: sre_parse.SubPattern, mapping: dict[str, list[str]], parent=""
+) -> str:
     """Raises NotImplementedError"""
 
     parts = []
@@ -270,8 +271,9 @@ def re_add_variants(text: str) -> str:
     return re_replace_literals(text, get_replacement_mapping())
 
 
-def compile(pattern: str, ignore_case: bool = True, dot_all: bool = False,
-            asym: bool = False) -> Callable[[str], bool]:
+def compile(
+    pattern: str, ignore_case: bool = True, dot_all: bool = False, asym: bool = False
+) -> Callable[[str], bool]:
     """
     Args:
         pattern (str): a unicode regex

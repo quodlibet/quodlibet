@@ -47,6 +47,7 @@ class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):
         def next(self, playlist, iter): ...
 
     """
+
     pass
 
 
@@ -59,4 +60,5 @@ class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
         def previous(self, playlist, iter): ...
 
     """
+
     pass
