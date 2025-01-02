@@ -1096,4 +1096,4 @@ plugins = ["dbus-python", "musicbrainzngs", "paho-mqtt", "pypresence", "soco"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "401561ea044745df452a26f96bb9e3e30bf5b31dd4d0d627312a5709f29f898d"
+content-hash = "cf0803c91f369186703456dd03a349c27fab3e43e78494b583265958ad157f41"
