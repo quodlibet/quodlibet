@@ -72,7 +72,6 @@ ignore = [
 ]
 
 
-
 [tool.ruff.lint.per-file-ignores]
 "tests/**/*" = [
   "N801", # allow Tformat_rating etc
