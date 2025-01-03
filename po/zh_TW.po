@@ -68,7 +68,7 @@ msgstr "排序依照 (_b)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "偏好設定 (_P)"
@@ -160,7 +160,7 @@ msgstr "專輯顯示"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:793
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "關閉 (_C)"
@@ -170,7 +170,7 @@ msgid "Library Browser"
 msgstr "音樂庫瀏覽窗"
 
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
-#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
+#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:246
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:563
 #, python-format
@@ -1418,7 +1418,6 @@ msgstr "音檔後端"
 msgid "After every play (default)"
 msgstr "每次播放之後(預設)"
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1428,12 +1427,11 @@ msgstr ""
 "每當一首歌曲播放過了但未跳過時，外掛會將標籤寫入檔案。 跳過計數並未存入檔案"
 "中，如此可以避免不必要的寫入。"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr "每次播放或跳過之後"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
@@ -1442,12 +1440,11 @@ msgstr ""
 "每當一首歌曲播放過或是跳過時，外掛會將標籤寫入檔案。 如果你想確保那些評分不喜"
 "歡的歌曲，就會忽略跳過寫入檔案，非常有用。"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr "整張轉輯一次評分"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1467,7 +1464,7 @@ msgstr ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1482,17 +1479,17 @@ msgstr ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "無法寫上 '%s'"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 msgid "Auto Update Tags in Files"
 msgstr "自動更新檔案中的標籤"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
@@ -1500,7 +1497,7 @@ msgstr ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1511,30 +1508,30 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr "儲存評分及播放次數於標籤 (_c)"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 msgid "Settings updated"
 msgstr "設定已更新"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr "錯誤於 %s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr "儲存時確使播放計次大於零"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr "更新策略 (_U):"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -4858,13 +4855,22 @@ msgstr "從您的 Last.fm 檔案來更新您的音樂庫統計。"
 msgid "_Username:"
 msgstr "使用者名稱 (_U):"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr "建立排序標籤"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
-msgid "Converts album and artist names to sort names, poorly."
-msgstr "Converts album and artist names to sort names, poorly."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
+msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -5970,26 +5976,26 @@ msgstr "還原動作 (_U)"
 msgid "_Redo"
 msgstr "重複動作 (_R)"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
+#: quodlibet/qltk/exfalsowindow.py:95 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "關於 (_A)"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
+#: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "檢查更新 (_C)…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
+#: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "外掛 (_P)"
 
-#: quodlibet/qltk/exfalsowindow.py:266
+#: quodlibet/qltk/exfalsowindow.py:272
 #, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s 及還有 %(count)s 更多"
 
-#: quodlibet/qltk/exfalsowindow.py:280
+#: quodlibet/qltk/exfalsowindow.py:286
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso 偏好設定"
 
@@ -6328,6 +6334,10 @@ msgstr "任何分類"
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "找不到外掛。"
+
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
@@ -8019,6 +8029,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一套音樂管理工具程式，提供多種不同方式來呈現音樂庫，以及支援網路"
 "廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
+
+#~ msgid "Converts album and artist names to sort names, poorly."
+#~ msgstr "Converts album and artist names to sort names, poorly."
 
 #~ msgid "MPRIS D-Bus Support"
 #~ msgstr "MPRIS D-Bus 支援"

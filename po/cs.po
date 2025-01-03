@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-12-08 10:29+0000\n"
+"PO-Revision-Date: 2024-12-19 17:08+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -69,7 +69,7 @@ msgstr "Seřadit podle…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Nastavení"
@@ -169,7 +169,7 @@ msgstr "Zobrazení alba"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:793
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Zavřít"
@@ -179,7 +179,7 @@ msgid "Library Browser"
 msgstr "Prohlížeč knihovny"
 
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
-#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
+#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:246
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:563
 #, python-format
@@ -351,8 +351,8 @@ msgid ""
 "%s"
 msgstr ""
 "Seznamy stanic mohou obsahovat pouze adresy stanic, nemohou obsahovat jiné "
-"seznamy stanic ani seznamy skladeb. Nepodařilo se načíst následující adresy:"
-"\n"
+"seznamy stanic ani seznamy skladeb. Nepodařilo se načíst následující "
+"adresy:\n"
 "%s"
 
 #: quodlibet/browsers/iradio.py:224 quodlibet/browsers/iradio.py:265
@@ -414,7 +414,7 @@ msgstr "Turecká"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
-msgstr "Reggae / Taneční"
+msgstr "Reggae / Dancehall"
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Latin"
@@ -466,7 +466,7 @@ msgstr "Šlágry"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr "Funky"
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
@@ -832,7 +832,8 @@ msgstr ""
 #: quodlibet/browsers/podcasts.py:563
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
-msgstr "Použitý zvukový backend nepodporuje adresy URL, Podcasty jsou zakázány."
+msgstr ""
+"Použitý zvukový backend nepodporuje adresy URL, Podcasty jsou zakázány."
 
 #: quodlibet/browsers/tracks.py:34
 msgid "_Limit Results"
@@ -844,7 +845,7 @@ msgstr "Povolit více dot_azů"
 
 #: quodlibet/browsers/tracks.py:53 quodlibet/qltk/information.py:463
 msgid "Track List"
-msgstr "Skladby"
+msgstr "Seznam skladeb"
 
 #: quodlibet/browsers/tracks.py:54
 msgid "_Track List"
@@ -1303,8 +1304,8 @@ msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
 msgstr ""
-"Umožňuje libovolné náhrady regulárními výrazy (<tt>s/původní_výraz/nový_vý"
-"raz/</tt>) při úpravách tagů nebo přejmenovávání souborů."
+"Umožňuje libovolné náhrady regulárními výrazy (<tt>s/původní_výraz/"
+"nový_výraz/</tt>) při úpravách tagů nebo přejmenovávání souborů."
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1449,7 +1450,6 @@ msgstr "Zvukový bakend"
 msgid "After every play (default)"
 msgstr "Po přehrání (výchozí)"
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1459,12 +1459,11 @@ msgstr ""
 "Zapíše do souboru tagy po každém přehrání skladby. Pokud je skladba "
 "přeskočena, tagy zapsány nejsou."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr "Po přehrání nebo přeskočení"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
@@ -1474,12 +1473,11 @@ msgstr ""
 "hodit pokud chcete mít jistotu, že hodnocení skladeb, které nemáte rádi, je "
 "zapsáno do souborů."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr "Jednou, pokud je ohodnoceno celé album"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1500,7 +1498,7 @@ msgstr ""
 "další ukládání hodnocení a počtu přehrání použít zásuvný modul ‚Aktualizovat "
 "tagy v souborech‘."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1515,17 +1513,17 @@ msgstr ""
 "přehrání na jedna tak může být užitečné pro umožnění hledání alb, která jste "
 "již slyšeli celá (%s)."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "‚%s‘ se nepodařilo zapsat"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 msgid "Auto Update Tags in Files"
 msgstr "Automatická aktualizace tagů v souborech"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
@@ -1533,7 +1531,7 @@ msgstr ""
 "Po přehrání skladby aktualizuje tagy v souborech. Tím se zajistí aktuálnost "
 "hodnot počtu přehrání a hodnocení."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1545,30 +1543,30 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr "Uložit do tagů hodno_cení a počet přehrání"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 msgid "Settings updated"
 msgstr "Aktualizováno nastavení"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr "Chyba v %s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr "Při uložení zajistit aby byl počet přehrání vyšší než nula"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr "Strategie akt_ualizace:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -1988,7 +1986,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
-msgstr "MPD Server"
+msgstr "MPD server"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid ""
@@ -2028,8 +2026,8 @@ msgid ""
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Umožní kontrolu Quod Libet prostřednictvím D-Bus rozhraní <a href=\"https"
-"://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
+"⏯️ Umožní kontrolu Quod Libet prostřednictvím D-Bus rozhraní <a "
+"href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>.\n"
 "To umožní integraci s linuxovým prostředím (nap. multimediální klávesy)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -2330,7 +2328,8 @@ msgstr ""
 
 #: quodlibet/ext/events/qlscrobbler.py:592
 msgid "Songs matching this filter will not be submitted"
-msgstr "U skladeb, které odpovídají zadanému filtru nebudou informace odesílány"
+msgstr ""
+"U skladeb, které odpovídají zadanému filtru nebudou informace odesílány"
 
 #: quodlibet/ext/events/qlscrobbler.py:600
 #: quodlibet/ext/events/listenbrainz/__init__.py:550
@@ -2470,7 +2469,8 @@ msgstr "Alternativní panel posunu"
 msgid ""
 "Alternative seek bar which is always visible and spans the whole window "
 "width."
-msgstr "Alternativní panel posunu. Vždy viditelný a zabírající celou šíři okna."
+msgstr ""
+"Alternativní panel posunu. Vždy viditelný a zabírající celou šíři okna."
 
 #: quodlibet/ext/events/seekpoints.py:20
 msgid "Seekpoint Bookmarks"
@@ -2565,8 +2565,8 @@ msgid ""
 msgstr ""
 "Tento zásuvný modul změní Pauzu na Stop/Přehrát/Posunout\n"
 "\n"
-"Užitečné pokud Quod Libet nemůže přepnout na nově přidané zařízení ("
-"Bluetooth reproduktor, USB DAC, apod.).\n"
+"Užitečné pokud Quod Libet nemůže přepnout na nově přidané zařízení "
+"(Bluetooth reproduktor, USB DAC, apod.).\n"
 "\n"
 "Pokud není zaškrtnuto ‚Pouze přetočitelné zdroje‘, zajistí zachování "
 "aktuální pozice. Jinak musí být po zastavení přehrávání spuštěno od začátku."
@@ -2631,7 +2631,8 @@ msgstr "Synchronizovat se zařízením"
 msgid ""
 "Synchronizes all songs from the selected saved searches with the specified "
 "folder."
-msgstr "Synchronizuje skladby z vybraných uložených hledání se zadanou složkou."
+msgstr ""
+"Synchronizuje skladby z vybraných uložených hledání se zadanou složkou."
 
 #: quodlibet/ext/events/synchronize_to_device.py:140
 msgid "Synchronize the following saved searches:"
@@ -3546,8 +3547,8 @@ msgid ""
 "Shares configuration with <a href=\"%(plugin_link)s\">Squeezebox Sync "
 "plugin</a>."
 msgstr ""
-"Sdílí nastavení se zásuvným modulem <a href=\"%(plugin_link)s\""
-">Synchronizovat se Squeezeboxem</a>."
+"Sdílí nastavení se zásuvným modulem <a "
+"href=\"%(plugin_link)s\">Synchronizovat se Squeezeboxem</a>."
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:78
 msgid "Export playlist to Squeezebox"
@@ -3841,7 +3842,8 @@ msgstr "Použít uložené hledání"
 
 #: quodlibet/ext/query/savedsearch.py:21
 msgid "💾 Include the results of a saved search as part of another query."
-msgstr "💾 Umožní použít výsledky uloženého hledání jako součást jiného dotazu."
+msgstr ""
+"💾 Umožní použít výsledky uloženého hledání jako součást jiného dotazu."
 
 #: quodlibet/ext/query/savedsearch.py:24
 msgid "@(saved: search-name)"
@@ -4311,7 +4313,7 @@ msgstr "Pokud nastaveno, duplicitní vypočtené hodnoty vzoru budou odstraněny
 
 #: quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
-msgstr "max args"
+msgstr "max argumentů"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid ""
@@ -4625,8 +4627,8 @@ msgid ""
 "i> / <i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
 msgstr ""
 "Aby bylo možné skladby publikovat, musí obsahovat tagy "
-"<i><b>musicbrainz_trackid</b></i>, nebo <i><b>artist</b></i> / "
-"<i><b>title</b></i> / <i><b>album</b></i>."
+"<i><b>musicbrainz_trackid</b></i>, nebo <i><b>artist</b></i> / <i><b>title</"
+"b></i> / <i><b>album</b></i>."
 
 #: quodlibet/ext/songsmenu/fingerprint/submit.py:120
 msgid "Fingerprints:"
@@ -4928,15 +4930,22 @@ msgstr "Aktualizuje statistiky sbírky z profilu na Last.fm."
 msgid "_Username:"
 msgstr "_Uživatel:"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr "Vytvořit tagy pro třídění"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
-msgid "Converts album and artist names to sort names, poorly."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
 msgstr ""
-"Převede názvy alba a umělce na názvy pro třídění (pozor, pochybná kvalita "
-"výsledku)."
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
+msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -5013,8 +5022,8 @@ msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
-"Prostřednictvím GStreameru analyzuje a aktualizuje metadata <a href=\""
-"%(rg_link)s\">ReplayGain</a>. Výsledky jsou seskupeny podle alba."
+"Prostřednictvím GStreameru analyzuje a aktualizuje metadata <a "
+"href=\"%(rg_link)s\">ReplayGain</a>. Výsledky jsou seskupeny podle alba."
 
 #: quodlibet/ext/songsmenu/replaygain.py:573
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
@@ -5870,7 +5879,7 @@ msgstr "Jeden nebo více souborů se nepodařilo smazat."
 
 #: quodlibet/qltk/download.py:37
 msgid "Browser"
-msgstr "Prohlížeče"
+msgstr "Prohlížeč"
 
 #: quodlibet/qltk/download.py:37
 msgid "Downloading files"
@@ -6073,20 +6082,20 @@ msgstr "_Zpět"
 msgid "_Redo"
 msgstr "_Opakovat"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
+#: quodlibet/qltk/exfalsowindow.py:95 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "_O Quod Libet"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
+#: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "_Vyhledat aktualizace…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
+#: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Zásuvné moduly"
 
-#: quodlibet/qltk/exfalsowindow.py:266
+#: quodlibet/qltk/exfalsowindow.py:272
 #, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
@@ -6094,7 +6103,7 @@ msgstr[0] "%(title)s a %(count)s další"
 msgstr[1] "%(title)s a %(count)s další"
 msgstr[2] "%(title)s a %(count)s dalších"
 
-#: quodlibet/qltk/exfalsowindow.py:280
+#: quodlibet/qltk/exfalsowindow.py:286
 msgid "Ex Falso Preferences"
 msgstr "Nastavení Ex Falso"
 
@@ -6445,6 +6454,10 @@ msgstr "Libovolná kategorie"
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "Nebyly nalezeny žádné zásuvné moduly."
+
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
@@ -7519,8 +7532,8 @@ msgid ""
 msgstr ""
 "Vzor\n"
 "\t%s\n"
-"není platný. Možná obsahuje duplicitní tag, nebo má neuzavřené závorky (&lt; "
-"/ &gt;)."
+"není platný. Možná obsahuje duplicitní tag, nebo má neuzavřené závorky "
+"(&lt; / &gt;)."
 
 #: quodlibet/qltk/textedit.py:140
 #, python-format
@@ -7756,8 +7769,8 @@ msgid ""
 "The date must be entered in 'YYYY', 'YYYY-MM-DD' or 'YYYY-MM-DD HH:MM:SS' "
 "format."
 msgstr ""
-"Datum musí být vloženo ve formátu ‚YYYY‘, ‚YYYY-MM-DD‘ nebo ‚YYYY-MM-DD "
-"HH:MM:SS‘."
+"Datum musí být vloženo ve formátu ‚YYYY‘, ‚YYYY-MM-DD‘ nebo ‚YYYY-MM-DD HH:"
+"MM:SS‘."
 
 #: quodlibet/util/massagers.py:129
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
@@ -8194,6 +8207,11 @@ msgstr ""
 "Quod Libet je program pro správu hudby. Nabízí několik způsobů zobrazení "
 "hudební sbírky, stejně jako podporu internetových rádií a audio streamů. "
 "Zároveň je skvěle vybaven pro úpravy metadat a jejich prohledávání."
+
+#~ msgid "Converts album and artist names to sort names, poorly."
+#~ msgstr ""
+#~ "Převede názvy alba a umělce na názvy pro třídění (pozor, pochybná kvalita "
+#~ "výsledku)."
 
 #~ msgid "MPRIS D-Bus Support"
 #~ msgstr "MPRIS D-Bus podpora"
