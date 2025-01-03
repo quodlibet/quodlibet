@@ -1411,7 +1411,6 @@ msgstr ""
 msgid "After every play (default)"
 msgstr ""
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1419,24 +1418,22 @@ msgid ""
 "unnecessary writes."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr ""
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr ""
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1448,7 +1445,7 @@ msgid ""
 "want modified ratings and play counts to be written to the files."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1458,23 +1455,23 @@ msgid ""
 "listened to (%s)."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 msgid "Auto Update Tags in Files"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1482,30 +1479,30 @@ msgid ""
 "%s"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 msgid "Settings updated"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -4656,12 +4653,21 @@ msgstr ""
 msgid "_Username:"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/makesorttags.py:38
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/makesorttags.py:39
-msgid "Converts album and artist names to sort names, poorly."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
@@ -6103,6 +6109,10 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
+msgstr ""
+
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
 msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:376
