@@ -19,7 +19,6 @@ r3 = AudioFile({"~#rating": 1.0})
 
 
 class TOrderWeighted(TestCase):
-
     def test_weighted(self):
         pl = PlaylistModel()
         pl.set([r3, r1, r2, r0])
@@ -37,7 +36,6 @@ class TOrderWeighted(TestCase):
 
 
 class TOrderShuffle(TestCase):
-
     def test_remaining(self):
         order = OrderShuffle()
         pl = PlaylistModel()
@@ -53,7 +51,6 @@ class TOrderShuffle(TestCase):
 
 
 class TOrderOneSong(TestCase):
-
     def test_remaining(self):
         order = OneSong(OrderInOrder())
         pl = PlaylistModel(OrderInOrder)

@@ -35,14 +35,14 @@ class Mock:
 
 @skipIf(is_windows(), "unix only")
 class TUnixRemote(TestCase):
-
     def test_fifo(self):
         mock = Mock()
         remote = QuodLibetUnixRemote(None, mock)
         remote._callback(b"foo\n")
         remote._callback(b"bar\nbaz")
         self.assertEqual(
-            mock.lines, [bytes2fsn(b, None) for b in [b"foo", b"bar", b"baz"]])
+            mock.lines, [bytes2fsn(b, None) for b in [b"foo", b"bar", b"baz"]]
+        )
 
     def test_response(self):
         with temp_filename() as fn:

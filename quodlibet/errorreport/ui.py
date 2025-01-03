@@ -23,7 +23,6 @@ def find_active_window():
 
 
 class TextExpander(Gtk.Expander):
-
     def __init__(self, title, text):
         super().__init__(label=title)
         self.set_resize_toplevel(True)
@@ -49,7 +48,6 @@ class TextExpander(Gtk.Expander):
 
 
 class ErrorDialog(Gtk.MessageDialog):
-
     RESPONSE_RESTART = 1
     RESPONSE_SUBMIT = 2
     RESPONSE_BUGREPORT = 3
@@ -59,10 +57,10 @@ class ErrorDialog(Gtk.MessageDialog):
         secondary_text = _(
             "You can ignore this error, but the application might be unstable "
             "until it is restarted. Submitting an error report will only "
-            "take a few seconds and would help us a lot.")
+            "take a few seconds and would help us a lot."
+        )
 
-        super().__init__(
-            text=main_text, secondary_text=secondary_text)
+        super().__init__(text=main_text, secondary_text=secondary_text)
 
         self.set_transient_for(parent)
         self.set_modal(True)
@@ -78,7 +76,6 @@ class ErrorDialog(Gtk.MessageDialog):
 
 
 class SubmitErrorDialog(Gtk.MessageDialog):
-
     RESPONSE_SUBMIT = 1
 
     def __init__(self, parent, error_text):
@@ -87,17 +84,22 @@ class SubmitErrorDialog(Gtk.MessageDialog):
             "Various details regarding the error and your system will be send "
             "to a third party online service "
             "(<a href='https://www.sentry.io'>www.sentry.io</a>). You can "
-            "review the data before sending it below.")
+            "review the data before sending it below."
+        )
 
         secondary_text += "\n\n"
 
         secondary_text += _(
             "(optional) Please provide a short description of what happened "
-            "when the error occurred:")
+            "when the error occurred:"
+        )
 
         super().__init__(
-            modal=True, text=main_text, secondary_text=secondary_text,
-            secondary_use_markup=True)
+            modal=True,
+            text=main_text,
+            secondary_text=secondary_text,
+            secondary_use_markup=True,
+        )
 
         self.set_transient_for(parent)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)

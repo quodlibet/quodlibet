@@ -9,7 +9,6 @@ from .gnome import GnomeSessionClient
 
 
 class XfceSessionClient(GnomeSessionClient):
-
     DBUS_NAME = "org.xfce.SessionManager"
     DBUS_OBJECT_PATH = "/org/xfce/SessionManager"
     DBUS_MAIN_INTERFACE = "org.xfce.Session.Manager"

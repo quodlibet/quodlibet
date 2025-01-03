@@ -81,8 +81,10 @@ def link_many(elements: Iterable[Gst.Element]) -> None:
     """Links all elements together
     :raises OSError: if they can't all be linked"""
     last = None
-    print_d(f"Attempting to link Gstreamer element(s): "
-            f"{[type(e).__name__ for e in elements]}")
+    print_d(
+        f"Attempting to link Gstreamer element(s): "
+        f"{[type(e).__name__ for e in elements]}"
+    )
     for element in elements:
         if last:
             if not Gst.Element.link(last, element):
@@ -118,6 +120,7 @@ def find_audio_sink() -> tuple[Gst.Element, str]:
 
     Returns (element, description) or raises PlayerError.
     """
+
     def sink_options():
         # People with Jack running probably want it more than any other options
         if config.getboolean("player", "gst_use_jack") and jack_is_running():
@@ -137,8 +140,9 @@ def find_audio_sink() -> tuple[Gst.Element, str]:
     options = sink_options()
     for sink in options:
         element = Gst.ElementFactory.make(sink.value, "player")
-        if (sink == AudioSinks.JACK
-                and not config.getboolean("player", "gst_jack_auto_connect")):
+        if sink == AudioSinks.JACK and not config.getboolean(
+            "player", "gst_jack_auto_connect"
+        ):
             # Disable the auto-connection to outputs (e.g. maybe there's scripting)
             element.set_property("connect", "none")
         if element is not None:

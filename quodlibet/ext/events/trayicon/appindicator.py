@@ -8,6 +8,7 @@
 # (at your option) any later version.
 
 import gi
+
 try:
     gi.require_version("AppIndicator3", "0.1")
 except ValueError as e:
@@ -36,13 +37,14 @@ def get_next_app_id(state=[0]):  # noqa
 
 
 class AppIndicator(BaseIndicator):
-
     def __init__(self):
         # KDE doesn't support symbolic icons afaics
         icon_name = app.icon_name if is_plasma() else app.symbolic_icon_name
         self.indicator = AppIndicator3.Indicator.new(
-            get_next_app_id(), icon_name,
-            AppIndicator3.IndicatorCategory.APPLICATION_STATUS)
+            get_next_app_id(),
+            icon_name,
+            AppIndicator3.IndicatorCategory.APPLICATION_STATUS,
+        )
 
         self.indicator.set_icon_theme_path(quodlibet.get_image_dir())
         self.indicator.set_title(app.name)
@@ -52,17 +54,13 @@ class AppIndicator(BaseIndicator):
         def on_action_item_changed(menu, indicator):
             indicator.set_secondary_activate_target(menu.get_action_item())
 
-        self.menu.connect("action-item-changed",
-                          on_action_item_changed,
-                          self.indicator)
+        self.menu.connect("action-item-changed", on_action_item_changed, self.indicator)
         action_item = self.menu.get_action_item()
         self.indicator.set_secondary_activate_target(action_item)
         self.indicator.set_menu(self.menu)
-        self.__scroll_id = self.indicator.connect(
-            "scroll_event", self.__on_scroll)
+        self.__scroll_id = self.indicator.connect("scroll_event", self.__on_scroll)
 
-        self.__w_sig_del = app.window.connect("delete-event",
-                                              self.__window_delete)
+        self.__w_sig_del = app.window.connect("delete-event", self.__window_delete)
 
     def set_info_song(self, song):
         if song:

@@ -38,7 +38,6 @@ def save_headers(headers):
 
 
 class PatternEditor(Gtk.HBox):
-
     PRESETS = [
         [("~people", False)],
         [("~year", False)],
@@ -57,13 +56,13 @@ class PatternEditor(Gtk.HBox):
         group = None
         for tags in self.PRESETS:
             tied = "~" + "~".join([t[0] for t in tags])
-            group = Gtk.RadioButton(group=group, label="_" + util.tag(tied),
-                                    use_underline=True)
+            group = Gtk.RadioButton(
+                group=group, label="_" + util.tag(tied), use_underline=True
+            )
             headers[group] = tags
             buttons.append(group)
 
-        group = Gtk.RadioButton(group=group, label=_("_Custom"),
-                                use_underline=True)
+        group = Gtk.RadioButton(group=group, label=_("_Custom"), use_underline=True)
         self.__custom = group
         headers[group] = []
         buttons.append(group)
@@ -116,6 +115,7 @@ class PatternEditor(Gtk.HBox):
 
         def edited_cb(render, path, text, model):
             model[path][0] = text
+
         render.connect("edited", edited_cb, model)
 
         column = Gtk.TreeViewColumn(_("Tag"), render, text=0)
@@ -168,8 +168,7 @@ class PatternEditor(Gtk.HBox):
             for tag, merge in tags:
                 model.append(row=[tag, merge])
 
-        edit_widget.set_sensitive(
-            button.get_active() and button is self.__custom)
+        edit_widget.set_sensitive(button.get_active() and button is self.__custom)
 
 
 class Preferences(qltk.UniqueWindow):

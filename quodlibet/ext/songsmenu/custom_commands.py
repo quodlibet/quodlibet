@@ -42,37 +42,51 @@ class Command(JSONObject):
 
     FIELDS = {
         "name": Field(_("name"), _("The name of this command")),
-
         "command": Field(_("command"), _("The shell command syntax to run")),
-
-        "parameter": Field(_("parameter"),
-                           _("If specified, a parameter whose occurrences in "
-                             "the command will be substituted with a "
-                             "user-supplied value, e.g. by using 'PARAM' "
-                             "all instances of '{PARAM}' in your command will "
-                             "have the value prompted for when run")),
-
-        "pattern": Field(_("pattern"),
-                         _("The QL pattern, e.g. <~filename>, to use to "
-                           "compute a value for the command. For playlists, "
-                           "this also supports virtual tags <~playlistname> "
-                           "and <~#playlistindex>.")),
-
-        "unique": Field(_("unique"),
-                        _("If set, this will remove duplicate computed values "
-                          "of the pattern")),
-
-        "max_args": Field(_("max args"),
-                          _("The maximum number of argument to pass to the "
-                            "command at one time (like xargs)")),
-
-        "reverse": Field(_("reverse"),
-                          _("If set, the argument list will be reversed")),
+        "parameter": Field(
+            _("parameter"),
+            _(
+                "If specified, a parameter whose occurrences in "
+                "the command will be substituted with a "
+                "user-supplied value, e.g. by using 'PARAM' "
+                "all instances of '{PARAM}' in your command will "
+                "have the value prompted for when run"
+            ),
+        ),
+        "pattern": Field(
+            _("pattern"),
+            _(
+                "The QL pattern, e.g. <~filename>, to use to "
+                "compute a value for the command. For playlists, "
+                "this also supports virtual tags <~playlistname> "
+                "and <~#playlistindex>."
+            ),
+        ),
+        "unique": Field(
+            _("unique"),
+            _("If set, this will remove duplicate computed values " "of the pattern"),
+        ),
+        "max_args": Field(
+            _("max args"),
+            _(
+                "The maximum number of argument to pass to the "
+                "command at one time (like xargs)"
+            ),
+        ),
+        "reverse": Field(_("reverse"), _("If set, the argument list will be reversed")),
     }
 
-    def __init__(self, name=None, command=None, pattern="<~filename>",
-                 unique=False, parameter=None, max_args=10000, reverse=False,
-                 warn_threshold=50):
+    def __init__(
+        self,
+        name=None,
+        command=None,
+        pattern="<~filename>",
+        unique=False,
+        parameter=None,
+        max_args=10000,
+        reverse=False,
+        warn_threshold=50,
+    ):
         JSONObject.__init__(self, name)
         self.command = str(command or "")
         self.pattern = str(pattern)
@@ -92,15 +106,16 @@ class Command(JSONObject):
         args = []
         template_vars = {}
         if self.parameter:
-            value = GetStringDialog(None, _("Input value"),
-                                    _("Value for %s?") % self.parameter).run()
+            value = GetStringDialog(
+                None, _("Input value"), _("Value for %s?") % self.parameter
+            ).run()
             template_vars[self.parameter] = value
         if playlist_name:
-            print_d("Playlist command for %s" % playlist_name)
+            print_d(f"Playlist command for {playlist_name}")
             template_vars["PLAYLIST"] = playlist_name
 
         actual_command = self.command.format(**template_vars)
-        print_d("Actual command=%s" % actual_command)
+        print_d(f"Actual command={actual_command}")
         for i, song in enumerate(songs):
             wrapped = SongWrapper(song)
             if playlist_name:
@@ -109,8 +124,10 @@ class Command(JSONObject):
                 wrapped["~#playlistindex"] = i + 1
             arg = str(self.__pat.format(wrapped))
             if not arg:
-                print_w("Couldn't build shell command using \"%s\"."
-                        "Check your pattern?" % self.pattern)
+                print_w(
+                    f'Couldn\'t build shell command using "{self.pattern}".'
+                    "Check your pattern?"
+                )
                 break
             if not self.unique:
                 args.append(arg)
@@ -123,72 +140,79 @@ class Command(JSONObject):
             args.reverse()
 
         while args:
-            print_d("Running %s with %d substituted arg(s) (of %d%s total)..."
-                    % (actual_command, min(max, len(args)), len(args),
-                       " unique" if self.unique else ""))
+            print_d(
+                "Running %s with %d substituted arg(s) (of %d%s total)..."
+                % (
+                    actual_command,
+                    min(max, len(args)),
+                    len(args),
+                    " unique" if self.unique else "",
+                )
+            )
             util.spawn(com_words + args[:max])
             args = args[max:]
 
     @property
     def playlists_only(self):
-        return ("~playlistname" in self.pattern
-                or "playlistindex" in self.pattern)
+        return "~playlistname" in self.pattern or "playlistindex" in self.pattern
 
     def __str__(self):
         return "{command} {pattern}".format(**dict(self.data))
 
 
 class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
-
     PLUGIN_ICON = Icons.APPLICATION_UTILITIES
     PLUGIN_ID = "CustomCommands"
     PLUGIN_NAME = _("Custom Commands")
-    PLUGIN_DESC = _("Runs custom commands (in batches if required) on songs "
-                    "using any of their tags.")
+    PLUGIN_DESC = _(
+        "Runs custom commands (in batches if required) on songs "
+        "using any of their tags."
+    )
 
     # Here are some starters...
     DEFAULT_COMS = [
         Command("Compress files", "file-roller -d"),
-
-        Command("Browse folders (Thunar)", "thunar", "<~dirname>", unique=True,
-                max_args=50, warn_threshold=20),
-
+        Command(
+            "Browse folders (Thunar)",
+            "thunar",
+            "<~dirname>",
+            unique=True,
+            max_args=50,
+            warn_threshold=20,
+        ),
         Command("Burn using K3b", "k3b --audiocd"),
-
         Command("Burn using Brasero", "brasero --audio"),
-
         Command("Burn using Xfburn", "xfburn --audio-composition", reverse=True),
-
-        Command("Flash notification",
-                command="notify-send"
-                    " -t 2000"
-                    " -i "
-                        "/usr/share/icons/hicolor/scalable/apps/"
-                        "io.github.quodlibet.QuodLibet.svg",
-                pattern='<~rating> "<title><version| (<version>)>"'
-                        "<~people| by <~people>>"
-                    "<album|, from <album><discnumber| : disk <discnumber>>"
-                    "<~length| (<~length>)>",
-                max_args=1,
-                warn_threshold=10),
-
-        Command("Output playlist to stdout",
-                command="echo -e",
-                pattern="<~playlistname>: <~playlistindex>. "
-                        " <~artist~title>\\\\n",
-                warn_threshold=20),
-
-        Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True,
-                max_args=1),
-
-        Command("Record Stream",
-                command="x-terminal-emulator -e wget -P $HOME",
-                pattern="<~filename>",
-                max_args=1)
+        Command(
+            "Flash notification",
+            command="notify-send"
+            " -t 2000"
+            " -i "
+            "/usr/share/icons/hicolor/scalable/apps/"
+            "io.github.quodlibet.QuodLibet.svg",
+            pattern='<~rating> "<title><version| (<version>)>"'
+            "<~people| by <~people>>"
+            "<album|, from <album><discnumber| : disk <discnumber>>"
+            "<~length| (<~length>)>",
+            max_args=1,
+            warn_threshold=10,
+        ),
+        Command(
+            "Output playlist to stdout",
+            command="echo -e",
+            pattern="<~playlistname>: <~playlistindex>. " " <~artist~title>\\\\n",
+            warn_threshold=20,
+        ),
+        Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True, max_args=1),
+        Command(
+            "Record Stream",
+            command="x-terminal-emulator -e wget -P $HOME",
+            pattern="<~filename>",
+            max_args=1,
+        ),
     ]
 
-    COMS_FILE = os.path.join(
-        quodlibet.get_user_dir(), "lists", "customcommands.json")
+    COMS_FILE = os.path.join(quodlibet.get_user_dir(), "lists", "customcommands.json")
 
     _commands = None
     """Commands known to the class"""
@@ -201,14 +225,17 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         try:
             return self.all_commands()[key]
         except (KeyError, TypeError):
-            print_d("Invalid key %s" % key)
+            print_d(f"Invalid key {key}")
             return None
 
     @classmethod
     def edit_patterns(cls, button):
-        win = JSONBasedEditor(Command, cls.all_commands(),
-                              filename=cls.COMS_FILE,
-                              title=_("Edit Custom Commands"))
+        win = JSONBasedEditor(
+            Command,
+            cls.all_commands(),
+            filename=cls.COMS_FILE,
+            title=_("Edit Custom Commands"),
+        )
         # Cache busting
         cls._commands = None
         win.show()
@@ -233,19 +260,19 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def _get_saved_commands(cls):
         filename = cls.COMS_FILE
-        print_d("Loading saved commands from '%s'..." % filename)
+        print_d(f"Loading saved commands from '{filename}'...")
         coms = None
         try:
             with open(filename, encoding="utf-8") as f:
                 coms = JSONObjectDict.from_json(Command, f.read())
         except (OSError, ValueError) as e:
-            print_w("Couldn't parse saved commands (%s)" % e)
+            print_w(f"Couldn't parse saved commands ({e})")
 
         # Failing all else...
         if not coms:
-            print_d("No commands found in %s. Using defaults." % filename)
+            print_d(f"No commands found in {filename}. Using defaults.")
             coms = {c.name: c for c in cls.DEFAULT_COMS}
-        print_d("Loaded commands: %s" % coms.keys())
+        print_d(f"Loaded commands: {coms.keys()}")
         return coms
 
     def __init__(self, *args, **kwargs):
@@ -280,7 +307,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         self._handle_songs(songs)
 
     def plugin_playlist(self, playlist):
-        print_d("Running playlist plugin for %s" % playlist)
+        print_d(f"Running playlist plugin for {playlist}")
         return self._handle_songs(playlist.songs, playlist)
 
     def _handle_songs(self, songs, playlist=None):
@@ -288,8 +315,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         if self.com_index:
             com = self.get_data(self.com_index)
             if len(songs) > com.warn_threshold:
-                if not confirm_multi_song_invoke(
-                        self, com.name, len(songs)):
+                if not confirm_multi_song_invoke(self, com.name, len(songs)):
                     print_d("User decided not to run on %d songs" % len(songs))
                     return
             print_d("Running %s on %d song(s)" % (com, len(songs)))
@@ -300,6 +326,6 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
                 print_exc()
                 ErrorMessage(
                     self.plugin_window,
-                    _("Unable to run custom command %s") %
-                    util.escape(self.com_index),
-                    util.escape(str(err))).run()
+                    _("Unable to run custom command %s") % util.escape(self.com_index),
+                    util.escape(str(err)),
+                ).run()

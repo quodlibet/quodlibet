@@ -37,8 +37,8 @@ class IndicatorMenu(Gtk.Menu):
         show_item_bottom = is_plasma()
         if add_show_item:
             show_item = Gtk.CheckMenuItem.new_with_mnemonic(
-                _("_Show %(application-name)s") % {
-                    "application-name": app.name})
+                _("_Show %(application-name)s") % {"application-name": app.name}
+            )
 
             def on_toggled(menuitem):
                 if menuitem.get_active():
@@ -73,19 +73,21 @@ class IndicatorMenu(Gtk.Menu):
         player_options = app.player_options
 
         shuffle = Gtk.CheckMenuItem(label=_("_Shuffle"), use_underline=True)
-        player_options.bind_property("shuffle", shuffle, "active",
-                                     GObject.BindingFlags.BIDIRECTIONAL)
+        player_options.bind_property(
+            "shuffle", shuffle, "active", GObject.BindingFlags.BIDIRECTIONAL
+        )
         player_options.notify("shuffle")
 
         repeat = Gtk.CheckMenuItem(label=_("_Repeat"), use_underline=True)
-        player_options.bind_property("repeat", repeat, "active",
-                                     GObject.BindingFlags.BIDIRECTIONAL)
+        player_options.bind_property(
+            "repeat", repeat, "active", GObject.BindingFlags.BIDIRECTIONAL
+        )
         player_options.notify("repeat")
 
-        safter = Gtk.CheckMenuItem(label=_("Stop _After This Song"),
-                                   use_underline=True)
-        player_options.bind_property("stop-after", safter, "active",
-                                     GObject.BindingFlags.BIDIRECTIONAL)
+        safter = Gtk.CheckMenuItem(label=_("Stop _After This Song"), use_underline=True)
+        player_options.bind_property(
+            "stop-after", safter, "active", GObject.BindingFlags.BIDIRECTIONAL
+        )
         player_options.notify("stop-after")
 
         browse = qltk.MenuItem(_("Open _Browser"), Icons.EDIT_FIND)
@@ -93,8 +95,9 @@ class IndicatorMenu(Gtk.Menu):
 
         for browser_cls in browsers.browsers:
             i = Gtk.MenuItem(label=browser_cls.accelerated_name, use_underline=True)
-            connect_obj(i, "activate", LibraryBrowser.open,
-                        browser_cls, app.library, app.player)
+            connect_obj(
+                i, "activate", LibraryBrowser.open, browser_cls, app.library, app.player
+            )
             browse_sub.append(i)
 
         browse.set_submenu(browse_sub)
@@ -110,8 +113,7 @@ class IndicatorMenu(Gtk.Menu):
 
         self._info = MenuItem(_("_Information"), Icons.DIALOG_INFORMATION)
 
-        self._playlists_item = MenuItem(_("Play_lists"),
-                                        Icons.FOLDER_DRAG_ACCEPT)
+        self._playlists_item = MenuItem(_("Play_lists"), Icons.FOLDER_DRAG_ACCEPT)
         self._new_playlist_submenu_for(player.song)
 
         def on_information(*args):

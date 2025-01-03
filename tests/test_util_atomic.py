@@ -15,7 +15,6 @@ from quodlibet.util.atomic import atomic_save
 
 
 class Tatomic_save(TestCase):
-
     def setUp(self):
         self.dir = mkdtemp()
 
@@ -98,5 +97,6 @@ class Tatomic_save(TestCase):
         assert not os.path.exists(temp_name)
         self.assertEqual(
             sorted(os.listdir(self.dir)),
-            sorted([os.path.basename(filename), os.path.basename(symlink)]))
+            sorted([os.path.basename(filename), os.path.basename(symlink)]),
+        )
         assert os.path.islink(symlink)

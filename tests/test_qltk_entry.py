@@ -12,7 +12,6 @@ import quodlibet.config
 
 
 class TEntry(TestCase):
-
     def test_set_max_width_chars(self):
         with visible(Entry()) as e:
             e.set_max_width_chars(4)

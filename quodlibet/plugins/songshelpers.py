@@ -35,6 +35,7 @@ def has_bookmark(song):
 
 # Higher order functions
 
+
 def any_song(*song_funcs):
     return __handles_factory(any, song_funcs)
 
@@ -45,6 +46,6 @@ def each_song(*song_funcs):
 
 def __handles_factory(reducer, song_funcs):
     def handles(_, songs):
-        return reducer(all(f(s) for f in song_funcs)
-                       for s in songs)
+        return reducer(all(f(s) for f in song_funcs) for s in songs)
+
     return handles

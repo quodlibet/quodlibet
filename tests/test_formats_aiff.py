@@ -10,7 +10,6 @@ from quodlibet.formats.aiff import AIFFFile
 
 
 class TAIFFFile(TestCase):
-
     def setUp(self):
         self.song = AIFFFile(get_data_path("test.aiff"))
 

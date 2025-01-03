@@ -33,8 +33,7 @@ class TTitlecase(PluginTestCase):
         self.plugin.config_set("allow_all_caps", False)
         p = self.plugin("", "")
         self.assertEqual(p.activated("", "foo bar")[0][1], "Foo Bar")
-        self.assertEqual(p.activated("", "FOO the bAR")[0][1],
-                             "Foo the Bar")
+        self.assertEqual(p.activated("", "FOO the bAR")[0][1], "Foo the Bar")
 
     def tearDown(self):
         config.quit()

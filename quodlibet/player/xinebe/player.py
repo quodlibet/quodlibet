@@ -15,19 +15,50 @@ from quodlibet.player._base import BasePlayer
 from quodlibet.util.string import decode
 
 from . import cdefs
-from .cdefs import XINE_PARAM_SPEED, XINE_PARAM_GAPLESS_SWITCH, xine_dispose, \
-    XINE_SPEED_PAUSE, xine_play, xine_close, xine_set_param, xine_get_param, \
-    xine_get_status, xine_open, xine_stop, XINE_PARAM_EARLY_FINISHED_EVENT, \
-    XINE_META_INFO_ARTIST, xine_ui_message_data_t, XINE_EVENT_UI_SET_TITLE, \
-    XINE_PARAM_AUDIO_AMP_MUTE, XINE_PARAM_AUDIO_AMP_LEVEL, xine_new, \
-    XINE_EVENT_UI_PLAYBACK_FINISHED, xine_event_dispose_queue, xine_init, \
-    XINE_PARAM_IGNORE_VIDEO, XINE_PARAM_IGNORE_SPU, xine_config_load, \
-    xine_check_version, xine_get_homedir, xine_list_input_plugins, xine_exit, \
-    xine_open_audio_driver, xine_close_audio_driver, XINE_STATUS_PLAY, \
-    XINE_SPEED_NORMAL, xine_get_pos_length, XINE_MSG_NO_ERROR, \
-    XINE_EVENT_UI_MESSAGE, xine_get_meta_info, XINE_META_INFO_ALBUM, \
-    XINE_META_INFO_TITLE, xine_stream_new, xine_get_version_string, \
-    xine_event_new_queue, xine_event_create_listener_thread
+from .cdefs import (
+    XINE_PARAM_SPEED,
+    XINE_PARAM_GAPLESS_SWITCH,
+    xine_dispose,
+    XINE_SPEED_PAUSE,
+    xine_play,
+    xine_close,
+    xine_set_param,
+    xine_get_param,
+    xine_get_status,
+    xine_open,
+    xine_stop,
+    XINE_PARAM_EARLY_FINISHED_EVENT,
+    XINE_META_INFO_ARTIST,
+    xine_ui_message_data_t,
+    XINE_EVENT_UI_SET_TITLE,
+    XINE_PARAM_AUDIO_AMP_MUTE,
+    XINE_PARAM_AUDIO_AMP_LEVEL,
+    xine_new,
+    XINE_EVENT_UI_PLAYBACK_FINISHED,
+    xine_event_dispose_queue,
+    xine_init,
+    XINE_PARAM_IGNORE_VIDEO,
+    XINE_PARAM_IGNORE_SPU,
+    xine_config_load,
+    xine_check_version,
+    xine_get_homedir,
+    xine_list_input_plugins,
+    xine_exit,
+    xine_open_audio_driver,
+    xine_close_audio_driver,
+    XINE_STATUS_PLAY,
+    XINE_SPEED_NORMAL,
+    xine_get_pos_length,
+    XINE_MSG_NO_ERROR,
+    XINE_EVENT_UI_MESSAGE,
+    xine_get_meta_info,
+    XINE_META_INFO_ALBUM,
+    XINE_META_INFO_TITLE,
+    xine_stream_new,
+    xine_get_version_string,
+    xine_event_new_queue,
+    xine_event_create_listener_thread,
+)
 
 
 class XineHandle:
@@ -89,8 +120,12 @@ class XinePlaylistPlayer(BasePlayer):
         if not self._audio_port:
             raise PlayerError(
                 _("Unable to create audio output"),
-                _("The audio device %r was not found. Check your Xine "
-                  "settings in ~/.quodlibet/config.") % driver)
+                _(
+                    "The audio device %r was not found. Check your Xine "
+                    "settings in ~/.quodlibet/config."
+                )
+                % driver,
+            )
         self._stream = self._handle.stream_new(self._audio_port, None)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_VIDEO, 1)
         xine_set_param(self._stream, XINE_PARAM_IGNORE_SPU, 1)
@@ -100,8 +135,7 @@ class XinePlaylistPlayer(BasePlayer):
         if self._event_queue:
             xine_event_dispose_queue(self._event_queue)
         self._event_queue = xine_event_new_queue(self._stream)
-        xine_event_create_listener_thread(self._event_queue,
-            self._event_listener, None)
+        xine_event_create_listener_thread(self._event_queue, self._event_listener, None)
 
     def _destroy(self):
         self._destroyed = True
@@ -156,19 +190,18 @@ class XinePlaylistPlayer(BasePlayer):
     def _event_listener(self, user_data, event):
         event = event.contents
         if event.type == XINE_EVENT_UI_PLAYBACK_FINISHED:
-            GLib.idle_add(self._playback_finished,
-                priority=GLib.PRIORITY_HIGH)
+            GLib.idle_add(self._playback_finished, priority=GLib.PRIORITY_HIGH)
         elif event.type == XINE_EVENT_UI_SET_TITLE:
-            GLib.idle_add(self._update_metadata,
-                priority=GLib.PRIORITY_HIGH)
+            GLib.idle_add(self._update_metadata, priority=GLib.PRIORITY_HIGH)
         elif event.type == XINE_EVENT_UI_MESSAGE:
             from ctypes import POINTER, cast, string_at, addressof
+
             msg = cast(event.data, POINTER(xine_ui_message_data_t)).contents
             if msg.type != XINE_MSG_NO_ERROR:
                 if msg.explanation:
                     message = string_at(addressof(msg) + msg.explanation)
                 else:
-                    message = "xine error %s" % msg.type
+                    message = f"xine error {msg.type}"
                 message = message.decode("utf-8", errors="replace")
                 GLib.idle_add(self._error, PlayerError(message))
         return True
@@ -213,8 +246,7 @@ class XinePlaylistPlayer(BasePlayer):
         xine_set_param(self._stream, XINE_PARAM_SPEED, XINE_SPEED_PAUSE)
 
     def _play(self):
-        if (xine_get_param(self._stream, XINE_PARAM_SPEED) !=
-            XINE_SPEED_NORMAL):
+        if xine_get_param(self._stream, XINE_PARAM_SPEED) != XINE_SPEED_NORMAL:
             xine_set_param(self._stream, XINE_PARAM_SPEED, XINE_SPEED_NORMAL)
         if xine_get_status(self._stream) != XINE_STATUS_PLAY:
             xine_play(self._stream, 0, 0)

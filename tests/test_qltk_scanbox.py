@@ -9,6 +9,5 @@ from . import TestCase
 
 
 class TScanBox(TestCase):
-
     def test_main(self):
         ScanBox().destroy()

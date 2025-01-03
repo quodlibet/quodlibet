@@ -11,10 +11,18 @@ import quodlibet.config
 from quodlibet import app
 from quodlibet.formats import AudioFile
 from quodlibet.plugins.editing import EditTagsPlugin
-from quodlibet.qltk.edittags import (SplitValues, SplitDisc, SplitTitle,
-                                     SplitArranger, AddTagDialog,
-                                     AudioFileGroup, EditTags, ListEntry,
-                                     Comment, EditTagsPluginHandler)
+from quodlibet.qltk.edittags import (
+    SplitValues,
+    SplitDisc,
+    SplitTitle,
+    SplitArranger,
+    AddTagDialog,
+    AudioFileGroup,
+    EditTags,
+    ListEntry,
+    Comment,
+    EditTagsPluginHandler,
+)
 from quodlibet.qltk.properties import SongProperties
 from tests import TestCase, init_fake_app, destroy_fake_app
 
@@ -50,8 +58,9 @@ class TEditTags(TestCase):
         EditTags(props, app.library)
 
     def test_edit_tags_popup_menu(self):
-        song = AudioFile({"~filename": "/dev/null", "artist": "Person",
-                          "album": "Dj Bars of FOO"})
+        song = AudioFile(
+            {"~filename": "/dev/null", "artist": "Person", "album": "Dj Bars of FOO"}
+        )
         props = SongProperties(app.library, [song], app.window)
         box = EditTags(props, app.library)
 
@@ -76,9 +85,12 @@ class TEditTags(TestCase):
 
 
 class GroupSong(AudioFile):
-
-    def __init__(self, can_multiple: bool = True,
-                 can_change: bool = True, cant_change: list[str] | None = None):
+    def __init__(
+        self,
+        can_multiple: bool = True,
+        can_change: bool = True,
+        cant_change: list[str] | None = None,
+    ):
         self._can_multiple = can_multiple
         self._can_change = can_change
         self._cant_change = cant_change or []
@@ -99,7 +111,6 @@ class GroupSong(AudioFile):
 
 
 class TAudioFileGroup(TestCase):
-
     def test_multiple_values(self):
         group = AudioFileGroup([GroupSong(True), GroupSong(True)])
         assert group.can_multiple_values() is True
@@ -116,14 +127,13 @@ class TAudioFileGroup(TestCase):
         assert group.can_multiple_values("ha")
 
     def test_can_change(self):
-        group = AudioFileGroup(
-            [GroupSong(can_change=True), GroupSong(can_change=True)])
+        group = AudioFileGroup([GroupSong(can_change=True), GroupSong(can_change=True)])
         assert group.can_change() is True
         assert group.can_change("foo") is True
 
         group = AudioFileGroup(
-            [GroupSong(can_change=["foo", "ha"]),
-             GroupSong(can_change=["ha"])])
+            [GroupSong(can_change=["foo", "ha"]), GroupSong(can_change=["ha"])]
+        )
         self.assertEqual(group.can_change(), {"ha"})
         assert not group.can_change("foo")
         assert group.can_change("ha")

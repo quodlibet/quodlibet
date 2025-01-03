@@ -25,20 +25,43 @@ from quodlibet.util.string.date import format_date
 from quodlibet.library import SongLibrary, SongLibrarian
 
 SONGS = [
-    AudioFile({
-        "title": "three", "artist": "<boris>", "genre": "Rock",
-        "~filename": fsnative("/bin/ls"), "foo": "bar"}),
-    AudioFile({
-        "title": "two", "artist": "mu", "genre": "Rock",
-        "~filename": fsnative("/dev/zero"), "foo": "bar"}),
-    AudioFile({
-        "title": "four", "artist": "piman", "genre": "J-Pop",
-        "~filename": fsnative("/dev/null"), "foo": "bar\nquux"}),
-    AudioFile({
-        "title": "one", "artist": "piman", "genre": "J-Pop",
-        "~filename": fsnative("/bin/foo"), "foo": "bar\nnope"}),
-    AudioFile({
-        "title": "xxx", "~filename": fsnative("/bin/bar"), "foo": "bar"}),
+    AudioFile(
+        {
+            "title": "three",
+            "artist": "<boris>",
+            "genre": "Rock",
+            "~filename": fsnative("/bin/ls"),
+            "foo": "bar",
+        }
+    ),
+    AudioFile(
+        {
+            "title": "two",
+            "artist": "mu",
+            "genre": "Rock",
+            "~filename": fsnative("/dev/zero"),
+            "foo": "bar",
+        }
+    ),
+    AudioFile(
+        {
+            "title": "four",
+            "artist": "piman",
+            "genre": "J-Pop",
+            "~filename": fsnative("/dev/null"),
+            "foo": "bar\nquux",
+        }
+    ),
+    AudioFile(
+        {
+            "title": "one",
+            "artist": "piman",
+            "genre": "J-Pop",
+            "~filename": fsnative("/bin/foo"),
+            "foo": "bar\nnope",
+        }
+    ),
+    AudioFile({"title": "xxx", "~filename": fsnative("/bin/bar"), "foo": "bar"}),
 ]
 
 UNKNOWN_ARTIST = AudioFile(dict(SONGS[0]))
@@ -68,6 +91,7 @@ class TPanedBrowser(TestCase):
         def selected_cb(browser, songs, *args):
             self.last = list(songs)
             self.emit_count += 1
+
         self.bar.connect("songs-selected", selected_cb)
 
     def test_get_set_headers(self):
@@ -220,19 +244,22 @@ class TPaneConfig(TestCase):
     def test_group(self):
         p = PaneConfig(r"a\:b:<title>")
         self.assertEqual(p.title, "A:B")
-        self.assertEqual(set(p.format_display(ALBUM).split(", ")),
-                             {"one", "two", "three", "four", "xxx"})
+        self.assertEqual(
+            set(p.format_display(ALBUM).split(", ")),
+            {"one", "two", "three", "four", "xxx"},
+        )
 
         p = PaneConfig("foo:~#lastplayed")
         self.assertEqual(p.format_display(ALBUM), "0")
 
         p = PaneConfig("foo:title")
-        self.assertEqual(set(p.format_display(ALBUM).split(", ")),
-                             {"one", "two", "three", "four", "xxx"})
+        self.assertEqual(
+            set(p.format_display(ALBUM).split(", ")),
+            {"one", "two", "three", "four", "xxx"},
+        )
 
 
 class TPaneEntry(TestCase):
-
     def test_all_have(self):
         sel = SongsEntry("foo", "foo", SONGS)
         assert not sel.all_have("artist", "one")
@@ -274,7 +301,6 @@ class TPaneEntry(TestCase):
 
 
 class TPane(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -341,7 +367,6 @@ class TPane(TestCase):
 
 
 class TMultiPane(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -387,7 +412,6 @@ class TMultiPane(TestCase):
 
 
 class TPaneModel(TestCase):
-
     def _verify_model(self, model):
         if len(model) == 1:
             assert not isinstance(model[0][0], AllEntry)
@@ -397,8 +421,7 @@ class TPaneModel(TestCase):
             for row in list(model)[1:-1]:
                 assert isinstance(row[0], SongsEntry)
 
-            self.assertTrue(
-                isinstance(model[-1][0], SongsEntry | UnknownEntry))
+            self.assertTrue(isinstance(model[-1][0], SongsEntry | UnknownEntry))
 
     def test_add_songs(self):
         conf = PaneConfig("artist")
@@ -466,7 +489,7 @@ class TPaneModel(TestCase):
         m = PaneModel(conf)
         m.add_songs(SONGS)
 
-        assert m.get_keys_by_tag("title", ["three"]) ==  ["<boris>"]
+        assert m.get_keys_by_tag("title", ["three"]) == ["<boris>"]
         assert m.get_keys_by_tag("nope", ["foo", ""]) == [""]
 
         assert m.get_keys_by_tag("artist", ["piman", "foo"]) == ["piman"]
@@ -535,7 +558,6 @@ class TPaneModel(TestCase):
 
 
 class TPanedPreferences(TestCase):
-
     def setUp(self):
         config.init()
 

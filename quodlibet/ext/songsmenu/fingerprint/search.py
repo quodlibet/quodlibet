@@ -47,7 +47,6 @@ class Status:
 
 
 class SearchEntry:
-
     def __init__(self, song):
         self.song = song
         self.status = Status.QUEUED
@@ -70,7 +69,7 @@ class SearchEntry:
             "artist",
             "title",
             "musicbrainz_trackid",
-            "musicbrainz_artistid"
+            "musicbrainz_artistid",
         ]
 
         if not self.can_write:
@@ -106,7 +105,6 @@ class SearchEntry:
 
 
 class ResultView(AllTreeView):
-
     def __init__(self):
         super().__init__()
 
@@ -213,9 +211,11 @@ class ResultView(AllTreeView):
         if event.window is not view.get_bin_window():
             return False
 
-        if event.button == Gdk.BUTTON_PRIMARY and \
-                event.type == Gdk.EventType.BUTTON_PRESS and \
-                col == edit_column:
+        if (
+            event.button == Gdk.BUTTON_PRIMARY
+            and event.type == Gdk.EventType.BUTTON_PRESS
+            and col == edit_column
+        ):
             model = view.get_model()
             row = model[path]
             entry = row[0]
@@ -230,8 +230,7 @@ class ResultView(AllTreeView):
         self._track_column.set_visible(value)
 
     def get_release_id(self, release):
-        return self._release_ids.setdefault(
-            release.id, len(self._release_ids) + 1)
+        return self._release_ids.setdefault(release.id, len(self._release_ids) + 1)
 
 
 def score_release(release):
@@ -239,11 +238,10 @@ def score_release(release):
 
 
 class SearchWindow(Window):
-
     def __init__(self, songs, title=None):
         super().__init__(
-            default_width=800, default_height=400, border_width=12,
-            title=title)
+            default_width=800, default_height=400, border_width=12, title=title
+        )
 
         self._thread = AcoustidLookupThread(self.__lookup_cb)
 
@@ -287,14 +285,14 @@ class SearchWindow(Window):
         inner_box.pack_start(sw, True, True, 0)
 
         ccb = ConfigCheckButton(
-            _("Write MusicBrainz tags"),
-            "plugins", "fingerprint_write_mb_tags")
+            _("Write MusicBrainz tags"), "plugins", "fingerprint_write_mb_tags"
+        )
         ccb.set_active(get_write_mb_tags())
         inner_box.pack_start(ccb, False, True, 0)
 
         ccb = ConfigCheckButton(
-            _("Group by directory"),
-            "plugins", "fingerprint_group_by_dir")
+            _("Group by directory"), "plugins", "fingerprint_group_by_dir"
+        )
         ccb.set_active(get_group_by_dir())
         ccb.connect("toggled", self.__group_toggled)
         self._group_ccb = ccb
@@ -304,8 +302,11 @@ class SearchWindow(Window):
         bottom_box = Gtk.HBox(spacing=12)
         mode_button = Gtk.ToggleButton(label=_("Album Mode"))
         mode_button.set_tooltip_text(
-            _("Write album related tags and try to "
-              "reduce the number of different album releases"))
+            _(
+                "Write album related tags and try to "
+                "reduce the number of different album releases"
+            )
+        )
         mode_button.set_active(True)
         mode_button.connect("toggled", self.__mode_toggle)
         bottom_box.pack_start(mode_button, False, True, 0)
@@ -384,8 +385,7 @@ class SearchWindow(Window):
             if not entry.releases:
                 continue
             active_release = entry.active_release
-            best_release = sorted(
-                entry.releases, key=lambda r: sort_key(entry, r))[-1]
+            best_release = sorted(entry.releases, key=lambda r: sort_key(entry, r))[-1]
             entry.active_release = entry.releases.index(best_release)
             if entry.active_release != active_release:
                 self.model.row_changed(row.path, row.iter)

@@ -73,11 +73,16 @@ class EditEmbedded(SongsMenuPlugin):
         self.plugin_finish()
 
     def __choose_image(self, menu_item, songs):
-
         dialog = _get_chooser(_("_Embed"), _("_Cancel"))
         total = len(songs)
-        msg = ngettext("Choose image to embed in the %d track",
-                       "Choose image to embed in %d tracks", total) % total
+        msg = (
+            ngettext(
+                "Choose image to embed in the %d track",
+                "Choose image to embed in %d tracks",
+                total,
+            )
+            % total
+        )
         dialog.set_title(msg)
         response = dialog.run()
         path = dialog.get_filename()

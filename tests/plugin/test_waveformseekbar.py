@@ -24,7 +24,6 @@ class FakeRMSMessage:
 
     def get_structure(self):
         class FakeStructure:
-
             def __init__(self, rms_values):
                 self.rms_values = rms_values
 
@@ -38,7 +37,6 @@ class FakeRMSMessage:
 
 
 class TWaveformSeekBar(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["WaveformSeekBar"]
 

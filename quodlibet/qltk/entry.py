@@ -55,7 +55,7 @@ class EditableUndo:
             self.connect("delete-text", self.__delete_before),
             self.connect("populate-popup", self.__popup),
             self.connect("key-press-event", self.__key_press),
-            ]
+        ]
 
     def __key_press(self, entry, event):
         if is_accel(event, "<Primary>z"):
@@ -107,10 +107,9 @@ class EditableUndo:
     def __insert_before(self, entry, text, length, position):
         self.__del_pos = -1
         pos = self.get_position()
-        if pos != self.__in_pos or (self.__last_space and text != " ") \
-            or length > 1:
+        if pos != self.__in_pos or (self.__last_space and text != " ") or length > 1:
             self.__add()
-        self.__last_space = (text == " ")
+        self.__last_space = text == " "
         self.__in_pos = pos + 1
 
     def __delete_before(self, entry, start, end):
@@ -118,10 +117,9 @@ class EditableUndo:
         text = self.get_chars(start, end)
         length = end - start
         pos = self.get_position()
-        if pos != self.__del_pos or (self.__last_space and text != " ") \
-            or length > 1:
+        if pos != self.__del_pos or (self.__last_space and text != " ") or length > 1:
             self.__add()
-        self.__last_space = (text == " ")
+        self.__last_space = text == " "
         self.__del_pos = end - 1
 
     def __inhibit(self):
@@ -152,7 +150,6 @@ class EditableUndo:
 
 
 class Entry(Gtk.Entry):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._max_width_chars = -1
@@ -180,13 +177,14 @@ class Entry(Gtk.Entry):
             pango_context = self.get_pango_context()
 
             metrics = pango_context.get_metrics(
-                pango_context.get_font_description(),
-                pango_context.get_language())
+                pango_context.get_font_description(), pango_context.get_language()
+            )
 
             char_width = metrics.get_approximate_char_width()
             digit_width = metrics.get_approximate_digit_width()
-            char_pixels = int(math.ceil(
-                float(max(char_width, digit_width)) / Pango.SCALE))
+            char_pixels = int(
+                math.ceil(float(max(char_width, digit_width)) / Pango.SCALE)
+            )
 
             space = border.left + border.right + padding.left + padding.right
             nat_width = self._max_width_chars * char_pixels + space
@@ -211,15 +209,13 @@ class ClearEntryMixin:
     """
 
     __gsignals__ = {
-        "clear": (GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION,
-                  None, ())
+        "clear": (GObject.SignalFlags.RUN_LAST | GObject.SignalFlags.ACTION, None, ())
     }
 
     def enable_clear_button(self):
         """Enables the clear icon in the entry"""
 
-        gicon = Gio.ThemedIcon.new_from_names(
-            ["edit-clear-symbolic", "edit-clear"])
+        gicon = Gio.ThemedIcon.new_from_names(["edit-clear-symbolic", "edit-clear"])
         self.set_icon_from_gicon(Gtk.EntryIconPosition.SECONDARY, gicon)
         self.connect("icon-release", self.__clear)
 

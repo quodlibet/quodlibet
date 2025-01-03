@@ -11,12 +11,12 @@ from quodlibet.util.songwrapper import SongWrapper
 from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
-AUDIO_FILE = AudioFile({"~filename": "/tmp/foobar",
-                        "lyrics": "Never gonna give you up"})
+AUDIO_FILE = AudioFile(
+    {"~filename": "/tmp/foobar", "lyrics": "Never gonna give you up"}
+)
 
 
 class TViewlyrics(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["View Lyrics"]
         init_fake_app()

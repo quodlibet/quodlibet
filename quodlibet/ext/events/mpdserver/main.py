@@ -37,11 +37,13 @@ class Permissions:
     PERMISSION_ADD = 2
     PERMISSION_CONTROL = 4
     PERMISSION_ADMIN = 8
-    PERMISSION_ALL = PERMISSION_NONE | \
-                     PERMISSION_READ | \
-                     PERMISSION_ADD | \
-                     PERMISSION_CONTROL | \
-                     PERMISSION_ADMIN
+    PERMISSION_ALL = (
+        PERMISSION_NONE
+        | PERMISSION_READ
+        | PERMISSION_ADD
+        | PERMISSION_CONTROL
+        | PERMISSION_ADMIN
+    )
 
 
 TAG_MAPPING = [
@@ -213,7 +215,7 @@ class MPDService:
             # send out the response and remove the idle status for affected
             # connections
             for subsystem in to_send:
-                conn.write_line("changed: %s" % subsystem)
+                conn.write_line(f"changed: {subsystem}")
             if to_send:
                 flushed.append(conn)
                 conn.ok()
@@ -321,24 +323,35 @@ class MPDService:
         ]
 
         if info:
-            status.append(("audio", "%d:%d:%d" % (
-                info("~#samplerate") or 0,
-                info("~#bitdepth") or 0,
-                info("~#channels") or 0)))
+            status.append(
+                (
+                    "audio",
+                    "%d:%d:%d"
+                    % (
+                        info("~#samplerate") or 0,
+                        info("~#bitdepth") or 0,
+                        info("~#channels") or 0,
+                    ),
+                )
+            )
             total_time = int(info("~#length"))
             elapsed_time = int(app.player.get_position() / 1000)
             elapsed_exact = "%1.3f" % (app.player.get_position() / 1000.0)
-            status.extend([
-                ("song", 0),
-                ("songid", self._get_id(info)),
-            ])
+            status.extend(
+                [
+                    ("song", 0),
+                    ("songid", self._get_id(info)),
+                ]
+            )
 
             if state != "stop":
-                status.extend([
-                    ("time", "%d:%d" % (elapsed_time, total_time)),
-                    ("elapsed", elapsed_exact),
-                    ("bitrate", info("~#bitrate")),
-                ])
+                status.extend(
+                    [
+                        ("time", "%d:%d" % (elapsed_time, total_time)),
+                        ("elapsed", elapsed_exact),
+                        ("bitrate", info("~#bitrate")),
+                    ]
+                )
 
         return status
 
@@ -380,7 +393,6 @@ class MPDService:
 
 
 class MPDServer(BaseTCPServer):
-
     def __init__(self, app, config, port):
         self._app = app
         self._config = config
@@ -400,7 +412,6 @@ class MPDServer(BaseTCPServer):
 
 
 class MPDRequestError(Exception):
-
     def __init__(self, msg, code=AckError.UNKNOWN, index=None):
         self.msg = msg
         self.code = code
@@ -408,7 +419,6 @@ class MPDRequestError(Exception):
 
 
 class MPDConnection(BaseTCPConnection):
-
     #  ------------ connection interface  ------------
 
     def handle_init(self, server):
@@ -496,7 +506,7 @@ class MPDConnection(BaseTCPConnection):
             return None
 
         line = bytes(self._read_buf[:index])
-        del self._read_buf[:index + 1]
+        del self._read_buf[: index + 1]
         return line
 
     def write_line(self, line):
@@ -559,7 +569,7 @@ class MPDConnection(BaseTCPConnection):
         self._command = command
 
         if command not in self._commands:
-            print_w("Unhandled command %r, sending OK." % command)
+            print_w(f"Unhandled command {command!r}, sending OK.")
             command = "ping"
 
             # Unhandled command, default to OK for now..
@@ -571,8 +581,7 @@ class MPDConnection(BaseTCPConnection):
 
         cmd, do_ack, permission = self._commands[command]
         if permission != (self.permission & permission):
-            raise MPDRequestError("Insufficient permission",
-                    AckError.PERMISSION)
+            raise MPDRequestError("Insufficient permission", AckError.PERMISSION)
 
         cmd(self, self.service, args)
 
@@ -586,7 +595,6 @@ class MPDConnection(BaseTCPConnection):
 
     @classmethod
     def Command(cls, name, ack=True, permission=Permissions.PERMISSION_ADMIN):
-
         def wrap(func):
             assert name not in cls._commands, name
             cls._commands[name] = (func, ack, permission)
@@ -659,8 +667,7 @@ def _cmd_noidle(conn, service, args):
     service.unregister_idle(conn)
 
 
-@MPDConnection.Command("close", ack=False,
-        permission=Permissions.PERMISSION_NONE)
+@MPDConnection.Command("close", ack=False, permission=Permissions.PERMISSION_NONE)
 def _cmd_close(conn, service, args):
     conn.close()
 

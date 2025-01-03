@@ -3,7 +3,6 @@ from docutils.nodes import paragraph
 
 
 class ContributorsDirective(Directive):
-
     required_arguments = 1
     has_content = True
 

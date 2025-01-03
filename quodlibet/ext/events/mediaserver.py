@@ -10,6 +10,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gtk, GdkPixbuf
@@ -34,19 +35,25 @@ BUS_NAME = "org.gnome.UPnP.MediaServer2.QuodLibet"
 class MediaServer(EventPlugin):
     PLUGIN_ID = "mediaserver"
     PLUGIN_NAME = _("UPnP AV Media Server")
-    PLUGIN_DESC = _("Exposes all albums to the Rygel UPnP Media Server "
-                    "through the MediaServer2 D-Bus interface.")
+    PLUGIN_DESC = _(
+        "Exposes all albums to the Rygel UPnP Media Server "
+        "through the MediaServer2 D-Bus interface."
+    )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     def PluginPreferences(self, parent):
         vbox = Gtk.VBox(spacing=12)
 
-        conf_exp = _("Ensure the following is in your rygel config file "
-                      "(~/.config/rygel.conf):")
-        conf_cont = ("[External]\n"
-                     "enabled=true\n\n"
-                     "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
-                     "enabled=true")
+        conf_exp = _(
+            "Ensure the following is in your rygel config file "
+            "(~/.config/rygel.conf):"
+        )
+        conf_cont = (
+            "[External]\n"
+            "enabled=true\n\n"
+            "[org.gnome.UPnP.MediaServer2.QuodLibet]\n"
+            "enabled=true"
+        )
 
         exp_lbl = Gtk.Label(label=conf_exp)
         exp_lbl.set_selectable(True)
@@ -86,6 +93,7 @@ class MediaServer(EventPlugin):
         del self.objects
 
         import gc
+
         gc.collect()
 
 
@@ -149,37 +157,40 @@ class MediaContainer:
 
         props = ["ChildCount", "ItemCount", "ContainerCount", "Searchable"]
         props += list(optional)
-        self.set_properties(MediaContainer.IFACE, MediaContainer.ISPEC_PROP,
-                            wl=props)
+        self.set_properties(MediaContainer.IFACE, MediaContainer.ISPEC_PROP, wl=props)
 
         self.implement_interface(MediaContainer.IFACE, MediaObject.IFACE)
 
     def emit_updated(self, path="/"):
         self.Updated(rel=path)
 
-    @dbus.service.method(IFACE, in_signature="uuas", out_signature="aa{sv}",
-                         rel_path_keyword="path")
+    @dbus.service.method(
+        IFACE, in_signature="uuas", out_signature="aa{sv}", rel_path_keyword="path"
+    )
     def ListChildren(self, offset, max_, filter_, path):
         if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
             return self.list_children(offset, max_, filter_, path)
         return self.list_children(offset, max_, filter_)
 
-    @dbus.service.method(IFACE, in_signature="uuas", out_signature="aa{sv}",
-                         rel_path_keyword="path")
+    @dbus.service.method(
+        IFACE, in_signature="uuas", out_signature="aa{sv}", rel_path_keyword="path"
+    )
     def ListContainers(self, offset, max_, filter_, path):
         if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
             return self.list_containers(offset, max_, filter_, path)
         return self.list_containers(offset, max_, filter_)
 
-    @dbus.service.method(IFACE, in_signature="uuas", out_signature="aa{sv}",
-                         rel_path_keyword="path")
+    @dbus.service.method(
+        IFACE, in_signature="uuas", out_signature="aa{sv}", rel_path_keyword="path"
+    )
     def ListItems(self, offset, max_, filter_, path):
         if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
             return self.list_items(offset, max_, filter_, path)
         return self.list_items(offset, max_, filter_)
 
-    @dbus.service.method(IFACE, in_signature="suuas", out_signature="aa{sv}",
-                         rel_path_keyword="path")
+    @dbus.service.method(
+        IFACE, in_signature="suuas", out_signature="aa{sv}", rel_path_keyword="path"
+    )
     def SearchObjects(self, query, offset, max_, filter_, path):
         return []
 
@@ -239,8 +250,13 @@ class MediaItem:
         self.implement_interface(MediaItem.IFACE, MediaObject.IFACE)
 
 
-class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
-                  DBusIntrospectable, dbus.service.Object):
+class EntryObject(
+    MediaContainer,
+    MediaObject,
+    DBusPropertyFilter,
+    DBusIntrospectable,
+    dbus.service.Object,
+):
     PATH = BASE_PATH + "/QuodLibet"
     DISPLAY_NAME = "@REALNAME@'s Quod Libet on @HOSTNAME@"
 
@@ -285,8 +301,9 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
 
     def register_child(self, child):
         self.__sub.append(child)
-        self.emit_properties_changed(MediaContainer.IFACE,
-                                     ["ChildCount", "ContainerCount"])
+        self.emit_properties_changed(
+            MediaContainer.IFACE, ["ChildCount", "ContainerCount"]
+        )
 
     def list_containers(self, offset, max_, filter_):
         props = self.get_properties_for_filter(MediaContainer.IFACE, filter_)
@@ -302,13 +319,20 @@ class EntryObject(MediaContainer, MediaObject, DBusPropertyFilter,
     def list_items(self, offset, max_, filter_):
         return []
 
-SUPPORTED_SONG_PROPERTIES = ("Size", "Artist", "Album", "Date", "Genre",
-                             "Duration", "TrackNumber")
+
+SUPPORTED_SONG_PROPERTIES = (
+    "Size",
+    "Artist",
+    "Album",
+    "Date",
+    "Genre",
+    "Duration",
+    "TrackNumber",
+)
 
 
-class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
-                      DBusIntrospectable):
-    """ A dummy song object that is not exported on the bus, but supports
+class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter, DBusIntrospectable):
+    """A dummy song object that is not exported on the bus, but supports
     the usual interfaces.
 
     You need to assign a real song before using it, and have to pass
@@ -322,8 +346,7 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
     """
 
     SUPPORTS_MULTIPLE_OBJECT_PATHS = False
-    __pattern = Pattern(
-        "<discnumber|<discnumber>.><tracknumber>. <title>")
+    __pattern = Pattern("<discnumber|<discnumber>.><tracknumber>. <title>")
 
     def __init__(self, parent):
         DBusIntrospectable.__init__(self)
@@ -369,9 +392,9 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter,
                 return self.__song("~#track", 0)
 
 
-class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
-                       DBusIntrospectable):
-
+class DummyAlbumObject(
+    MediaContainer, MediaObject, DBusPropertyFilter, DBusIntrospectable
+):
     SUPPORTS_MULTIPLE_OBJECT_PATHS = False
     __pattern = Pattern("<albumartist|<~albumartist~album>|<~artist~album>>")
 
@@ -425,8 +448,13 @@ class DummyAlbumObject(MediaContainer, MediaObject, DBusPropertyFilter,
     list_children = list_items
 
 
-class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
-                 dbus.service.FallbackObject):
+class SongObject(
+    MediaItem,
+    MediaObject,
+    DBusProperty,
+    DBusIntrospectable,
+    dbus.service.FallbackObject,
+):
     PATH = BASE_PATH + "/Song"
 
     def __init__(self, library, users):
@@ -497,8 +525,13 @@ class SongObject(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         return self.get_dummy(song, prefix).get_property(interface, name)
 
 
-class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
-                   DBusIntrospectable, dbus.service.FallbackObject):
+class AlbumsObject(
+    MediaContainer,
+    MediaObject,
+    DBusPropertyFilter,
+    DBusIntrospectable,
+    dbus.service.FallbackObject,
+):
     PATH = BASE_PATH + "/Albums"
     DISPLAY_NAME = "Albums"
 
@@ -543,7 +576,8 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
             self.emit_properties_changed(
                 MediaContainer.IFACE,
                 ["ChildCount", "ItemCount", "DisplayName"],
-                rel_path)
+                rel_path,
+            )
 
     def __albums_added(self, lib, albums):
         for album in albums:
@@ -551,16 +585,18 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
             self.__map[new_id] = album
             self.__reverse[album] = new_id
         self.emit_updated()
-        self.emit_properties_changed(MediaContainer.IFACE,
-                                     ["ChildCount", "ContainerCount"])
+        self.emit_properties_changed(
+            MediaContainer.IFACE, ["ChildCount", "ContainerCount"]
+        )
 
     def __albums_removed(self, lib, albums):
         for album in albums:
             del self.__map[self.__reverse[album]]
             del self.__reverse[album]
         self.emit_updated()
-        self.emit_properties_changed(MediaContainer.IFACE,
-                                     ["ChildCount", "ContainerCount"])
+        self.emit_properties_changed(
+            MediaContainer.IFACE, ["ChildCount", "ContainerCount"]
+        )
 
     def get_prefix(self, song):
         album = self.__library[song.album_key]
@@ -622,8 +658,9 @@ class AlbumsObject(MediaContainer, MediaObject, DBusPropertyFilter,
         return self.get_path_dummy(path).list_children(offset, max_, filter_)
 
 
-class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
-                 dbus.service.Object):
+class Icon(
+    MediaItem, MediaObject, DBusProperty, DBusIntrospectable, dbus.service.Object
+):
     PATH = BASE_PATH + "/Icon"
 
     SIZE = 160
@@ -646,8 +683,9 @@ class Icon(MediaItem, MediaObject, DBusProperty, DBusIntrospectable,
         pixbuf = theme.load_icon(Icons.QUODLIBET, Icon.SIZE, 0)
 
         # make sure the size is right
-        pixbuf = pixbuf.scale_simple(Icon.SIZE, Icon.SIZE,
-                                     GdkPixbuf.InterpType.BILINEAR)
+        pixbuf = pixbuf.scale_simple(
+            Icon.SIZE, Icon.SIZE, GdkPixbuf.InterpType.BILINEAR
+        )
         self.__depth = pixbuf.get_bits_per_sample()
 
         # save and keep reference

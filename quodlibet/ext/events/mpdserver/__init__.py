@@ -9,6 +9,7 @@ import os
 
 if os.name == "nt":
     from quodlibet.plugins import PluginNotSupportedError
+
     # we are missing socket.fromfd on Windows
     raise PluginNotSupportedError
 
@@ -59,9 +60,11 @@ def set_port_num(value):
 class MPDServerPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "mpd_server"
     PLUGIN_NAME = _("MPD Server")
-    PLUGIN_DESC = _("Allows remote control of Quod Libet using an MPD Client. "
-                    "Streaming, playlist and library management "
-                    "are not supported.")
+    PLUGIN_DESC = _(
+        "Allows remote control of Quod Libet using an MPD Client. "
+        "Streaming, playlist and library management "
+        "are not supported."
+    )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     CONFIG_SECTION = "mpdserver"
@@ -75,9 +78,14 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
 
         label = Gtk.Label(label=_("_Port:"), use_underline=True)
         label.set_alignment(0.0, 0.5)
-        table.attach(label, 0, 1, 1, 2,
-                     xoptions=Gtk.AttachOptions.FILL |
-                     Gtk.AttachOptions.SHRINK)
+        table.attach(
+            label,
+            0,
+            1,
+            1,
+            2,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         entry = UndoEntry()
         entry.set_text(str(get_port_num()))
@@ -87,6 +95,7 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
                 int(text)
             except ValueError:
                 entry.stop_emission("insert-text")
+
         entry.connect("insert-text", validate_port)
 
         def port_activate(entry, *args):
@@ -105,28 +114,38 @@ class MPDServerPlugin(EventPlugin, PluginConfigMixin):
         table.attach(entry, 1, 2, 1, 2)
 
         port_revert = Gtk.Button()
-        port_revert.add(Gtk.Image.new_from_icon_name(
-            Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+        port_revert.add(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+        )
 
         def port_revert_cb(button, entry):
             entry.set_text(str(DEFAULT_PORT))
             entry.emit("activate")
 
         port_revert.connect("clicked", port_revert_cb, entry)
-        table.attach(
-            port_revert, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
+        table.attach(port_revert, 2, 3, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         label = Gtk.Label(label=_("Local _IP:"), use_underline=True)
         label.set_alignment(0.0, 0.5)
-        table.attach(label, 0, 1, 0, 1,
-                     xoptions=Gtk.AttachOptions.FILL |
-                     Gtk.AttachOptions.SHRINK)
+        table.attach(
+            label,
+            0,
+            1,
+            0,
+            1,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         label = Gtk.Label(label=_("P_assword:"), use_underline=True)
         label.set_alignment(0.0, 0.5)
-        table.attach(label, 0, 1, 2, 3,
-                     xoptions=Gtk.AttachOptions.FILL |
-                     Gtk.AttachOptions.SHRINK)
+        table.attach(
+            label,
+            0,
+            1,
+            2,
+            3,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         entry = UndoEntry()
         entry.set_text(self.config_get("password"))
@@ -157,10 +176,8 @@ gateshipone.malp">M.A.L.P.</a> (Android)
 """)
         clients.set_alignment(0, 0)
 
-        box.pack_start(
-            qltk.Frame(_("Connection"), child=table), False, True, 0)
-        box.pack_start(
-            qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
+        box.pack_start(qltk.Frame(_("Connection"), child=table), False, True, 0)
+        box.pack_start(qltk.Frame(_("Tested Clients"), child=clients), True, True, 0)
         return box
 
     def _refresh(self):

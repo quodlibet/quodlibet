@@ -71,8 +71,9 @@ class DummyCoverSource3(ApiCoverSourcePlugin):
         return self.emit("fetch-success", DUMMY_COVER)
 
 
-dummy_sources = [Plugin(s) for s in
-                 (DummyCoverSource1, DummyCoverSource2, DummyCoverSource3)]
+dummy_sources = [
+    Plugin(s) for s in (DummyCoverSource1, DummyCoverSource2, DummyCoverSource3)
+]
 
 
 class TCoverManager(TestCase):
@@ -92,12 +93,15 @@ class TCoverManager(TestCase):
         self.assertEqual(len(list(self.manager.sources)), self.built_in_count)
         for source in dummy_sources:
             self.manager.plugin_handler.plugin_enable(source)
-        self.assertEqual(len(list(self.manager.sources)),
-                         self.built_in_count + len(dummy_sources))
+        self.assertEqual(
+            len(list(self.manager.sources)), self.built_in_count + len(dummy_sources)
+        )
         for k, source in enumerate(dummy_sources):
             self.manager.plugin_handler.plugin_disable(source)
-            self.assertEqual(len(list(self.manager.sources)),
-                             self.built_in_count + len(dummy_sources) - k - 1)
+            self.assertEqual(
+                len(list(self.manager.sources)),
+                self.built_in_count + len(dummy_sources) - k - 1,
+            )
 
     def test_sources_sorted(self):
         for source in dummy_sources:
@@ -139,6 +143,7 @@ class TCoverManager(TestCase):
         def done(_found, _result):
             found.append(_found)
             result.append(_result)
+
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
         assert not found[0]
@@ -173,6 +178,7 @@ class TCoverManager(TestCase):
         def done(_found, _result):
             found.append(_found)
             result.append(_result)
+
         manager.acquire_cover(done, None, None)
         run_gtk_loop()
         assert found[0]
@@ -207,11 +213,13 @@ class TCoverManager(TestCase):
             source.cls.cover_call = False
             source.cls.fetch_call = False
 
-        song = AudioFile({
-            "~filename": os.path.join("/tmp/asong.ogg"),
-            "album": "Abbey Road",
-            "artist": "The Beatles"
-        })
+        song = AudioFile(
+            {
+                "~filename": os.path.join("/tmp/asong.ogg"),
+                "album": "Abbey Road",
+                "artist": "The Beatles",
+            }
+        )
         songs = [song]
         results = []
 
@@ -234,7 +242,6 @@ class TCoverManager(TestCase):
 
 
 class TCoverManagerBuiltin(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -263,7 +270,6 @@ class TCoverManagerBuiltin(TestCase):
         config.quit()
 
     def test_connect_cover_changed(self):
-
         called_with = []
 
         def sig_handler(*args):

@@ -74,8 +74,7 @@ if sys.platform == "win32":
     WM_SYSKEYUP = 0x0105
 
     CallNextHookEx = windll.user32.CallNextHookEx
-    CallNextHookEx.argtypes = [
-        HHOOK, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM]
+    CallNextHookEx.argtypes = [HHOOK, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM]
     CallNextHookEx.restype = LRESULT
 
     class KBDLLHOOKSTRUCT(ctypes.Structure):
@@ -90,11 +89,16 @@ if sys.platform == "win32":
     LPKBDLLHOOKSTRUCT = PKBDLLHOOKSTRUCT = ctypes.POINTER(KBDLLHOOKSTRUCT)
 
     LowLevelKeyboardProc = ctypes.WINFUNCTYPE(
-        LRESULT, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM)
+        LRESULT, ctypes.c_int, wintypes.WPARAM, wintypes.LPARAM
+    )
 
     _SetWindowsHookExW = windll.user32.SetWindowsHookExW
     _SetWindowsHookExW.argtypes = [
-        ctypes.c_int, ctypes.c_void_p, ctypes.c_void_p, wintypes.DWORD]
+        ctypes.c_int,
+        ctypes.c_void_p,
+        ctypes.c_void_p,
+        wintypes.DWORD,
+    ]
     _SetWindowsHookExW.restype = HHOOK
 
     def SetWindowsHookExW(idHook, lpfn, hMod, dwThreadId):
@@ -141,14 +145,21 @@ if sys.platform == "win32":
 
     SHGetFolderPathW = ctypes.windll.shell32.SHGetFolderPathW
     SHGetFolderPathW.argtypes = [
-        wintypes.HWND, ctypes.c_int, wintypes.HANDLE, wintypes.DWORD,
-        wintypes.LPWSTR]
+        wintypes.HWND,
+        ctypes.c_int,
+        wintypes.HANDLE,
+        wintypes.DWORD,
+        wintypes.LPWSTR,
+    ]
     SHGetFolderPathW.restype = HRESULT
 
     SHGetKnownFolderPath = windll.shell32.SHGetKnownFolderPath
     SHGetKnownFolderPath.argtypes = [
-        REFKNOWNFOLDERID, wintypes.DWORD, wintypes.HANDLE,
-        ctypes.POINTER(ctypes.c_wchar_p)]
+        REFKNOWNFOLDERID,
+        wintypes.DWORD,
+        wintypes.HANDLE,
+        ctypes.POINTER(ctypes.c_wchar_p),
+    ]
     SHGetKnownFolderPath.restype = HRESULT
 
     CoTaskMemFree = windll.ole32.CoTaskMemFree
@@ -160,8 +171,7 @@ if sys.platform == "win32":
     GetCommandLineW.restype = wintypes.LPCWSTR
 
     CommandLineToArgvW = windll.shell32.CommandLineToArgvW
-    CommandLineToArgvW.argtypes = [
-        wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
+    CommandLineToArgvW.argtypes = [wintypes.LPCWSTR, ctypes.POINTER(ctypes.c_int)]
     CommandLineToArgvW.restype = ctypes.POINTER(wintypes.LPWSTR)
 
     LocalFree = windll.kernel32.LocalFree
@@ -183,7 +193,6 @@ if sys.platform == "win32":
     GetSystemDefaultUILanguage.restype = LANGID
 
     class SECURITY_ATTRIBUTES(ctypes.Structure):
-
         _fields_ = [
             ("nLength", wintypes.DWORD),
             ("lpSecurityDescriptor", wintypes.LPVOID),
@@ -195,8 +204,15 @@ if sys.platform == "win32":
 
     CreateNamedPipeW = windll.kernel32.CreateNamedPipeW
     CreateNamedPipeW.argtypes = [
-        wintypes.LPCWSTR, wintypes.DWORD, wintypes.DWORD, wintypes.DWORD,
-        wintypes.DWORD, wintypes.DWORD, wintypes.DWORD, LPSECURITY_ATTRIBUTES]
+        wintypes.LPCWSTR,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        wintypes.DWORD,
+        LPSECURITY_ATTRIBUTES,
+    ]
     CreateNamedPipeW.restype = wintypes.HANDLE
 
     LPOVERLAPPED = ctypes.c_void_p
@@ -224,7 +240,7 @@ if sys.platform == "win32":
     PIPE_UNLIMITED_INSTANCES = 255
 
     NMPWAIT_USE_DEFAULT_WAIT = 0x00000000
-    NMPWAIT_WAIT_FOREVER = 0xffffffff
+    NMPWAIT_WAIT_FOREVER = 0xFFFFFFFF
 
     ConnectNamedPipe = windll.kernel32.ConnectNamedPipe
     ConnectNamedPipe.argtypes = [wintypes.HANDLE, LPOVERLAPPED]
@@ -235,8 +251,13 @@ if sys.platform == "win32":
     DisconnectNamedPipe.restype = wintypes.BOOL
 
     ReadFile = windll.kernel32.ReadFile
-    ReadFile.argtypes = [wintypes.HANDLE, wintypes.LPVOID, wintypes.DWORD,
-                        LPDWORD, LPOVERLAPPED]
+    ReadFile.argtypes = [
+        wintypes.HANDLE,
+        wintypes.LPVOID,
+        wintypes.DWORD,
+        LPDWORD,
+        LPOVERLAPPED,
+    ]
     ReadFile.restype = wintypes.BOOL
 
     CloseHandle = windll.kernel32.CloseHandle
@@ -276,14 +297,12 @@ if sys.platform == "win32":
     STD_ERROR_HANDLE = DWORD(-12)
 
     class COORD(ctypes.Structure):
-
         _fields_ = [
             ("X", SHORT),
             ("Y", SHORT),
         ]
 
     class SMALL_RECT(ctypes.Structure):
-
         _fields_ = [
             ("Left", SHORT),
             ("Top", SHORT),
@@ -292,7 +311,6 @@ if sys.platform == "win32":
         ]
 
     class PCONSOLE_SCREEN_BUFFER_INFO(ctypes.Structure):
-
         _fields_ = [
             ("dwSize", COORD),
             ("dwCursorPosition", COORD),
@@ -303,7 +321,9 @@ if sys.platform == "win32":
 
     GetConsoleScreenBufferInfo = windll.kernel32.GetConsoleScreenBufferInfo
     GetConsoleScreenBufferInfo.argtypes = [
-        wintypes.HANDLE, ctypes.POINTER(PCONSOLE_SCREEN_BUFFER_INFO)]
+        wintypes.HANDLE,
+        ctypes.POINTER(PCONSOLE_SCREEN_BUFFER_INFO),
+    ]
     GetConsoleScreenBufferInfo.restype = wintypes.BOOL
 
     FOREGROUND_BLUE = 0x0001
@@ -316,7 +336,6 @@ if sys.platform == "win32":
     BACKGROUND_RED = 0x0040
 
     class COMMethod:
-
         def __init__(self, name, offset, restype, argtypes):
             self._name = name
             self._restype = restype
@@ -324,8 +343,9 @@ if sys.platform == "win32":
             self._argtypes = argtypes
 
         def __get__(self, instance, owner):
-            func = ctypes.WINFUNCTYPE(
-                self._restype, *self._argtypes)(self._offset, self._name)
+            func = ctypes.WINFUNCTYPE(self._restype, *self._argtypes)(
+                self._offset, self._name
+            )
 
             def wrapper(self, *args, **kwargs):
                 return func(self, *args, **kwargs)
@@ -334,9 +354,7 @@ if sys.platform == "win32":
             return getattr(instance or owner, self._name)
 
     class COMInterface(type(ctypes.c_void_p)):
-
         def __new__(cls, cls_name, bases, d):
-
             offset = 0
             for base in bases:
                 for realbase in base.__mro__:
@@ -354,33 +372,41 @@ if sys.platform == "win32":
             return type(ctypes.c_void_p).__new__(cls, cls_name, bases, dict(d))
 
     class IUnknown(ctypes.c_void_p, metaclass=COMInterface):
-
         IID = GUID("{00000001-0000-0000-c000-000000000046}")
 
         _methods_ = [
-        ("QueryInterface", HRESULT, LPGUID, wintypes.LPVOID),
-        ("AddRef", wintypes.DWORD),
-        ("Release", wintypes.DWORD),
+            ("QueryInterface", HRESULT, LPGUID, wintypes.LPVOID),
+            ("AddRef", wintypes.DWORD),
+            ("Release", wintypes.DWORD),
         ]
 
     LPUNKNOWN = ctypes.POINTER(IUnknown)
 
     CoCreateInstance = windll.ole32.CoCreateInstance
-    CoCreateInstance.argtypes = [REFCLSID, LPUNKNOWN, wintypes.DWORD, REFIID,
-                                wintypes.LPVOID]
+    CoCreateInstance.argtypes = [
+        REFCLSID,
+        LPUNKNOWN,
+        wintypes.DWORD,
+        REFIID,
+        wintypes.LPVOID,
+    ]
     CoCreateInstance.restype = HRESULT
 
     class IShellLinkW(IUnknown):
-
         IID = GUID("{000214F9-0000-0000-C000-000000000046}")
 
         _methods_ = [
-            ("GetPath", HRESULT, wintypes.LPWSTR, wintypes.INT,
-            LPWIN32_FIND_DATAW, wintypes.DWORD),
+            (
+                "GetPath",
+                HRESULT,
+                wintypes.LPWSTR,
+                wintypes.INT,
+                LPWIN32_FIND_DATAW,
+                wintypes.DWORD,
+            ),
         ]
 
     class IPersist(IUnknown):
-
         IID = GUID("{0000010c-0000-0000-C000-000000000046}")
 
         _methods_ = [
@@ -388,7 +414,6 @@ if sys.platform == "win32":
         ]
 
     class IPersistFile(IPersist):
-
         IID = GUID("{0000010b-0000-0000-c000-000000000046}")
 
         _methods_ = [
@@ -411,17 +436,28 @@ if sys.platform == "win32":
     PCUITEMID_CHILD_ARRAY = ctypes.POINTER(PCUITEMID_CHILD)
 
     class IShellFolder(IUnknown):
-
         IID = GUID("{000214E6-0000-0000-C000-000000000046}")
 
         _methods_ = [
-            ("ParseDisplayName", HRESULT, wintypes.HWND,
-            ctypes.POINTER(IBindCtx), wintypes.LPWSTR,
-            ctypes.POINTER(wintypes.ULONG), ctypes.POINTER(PIDLIST_RELATIVE),
-            ctypes.POINTER(wintypes.ULONG)),
+            (
+                "ParseDisplayName",
+                HRESULT,
+                wintypes.HWND,
+                ctypes.POINTER(IBindCtx),
+                wintypes.LPWSTR,
+                ctypes.POINTER(wintypes.ULONG),
+                ctypes.POINTER(PIDLIST_RELATIVE),
+                ctypes.POINTER(wintypes.ULONG),
+            ),
             ("EnumObjects", None),
-            ("BindToObject", HRESULT, PCUIDLIST_RELATIVE,
-            ctypes.POINTER(IBindCtx), REFIID, ctypes.c_void_p),
+            (
+                "BindToObject",
+                HRESULT,
+                PCUIDLIST_RELATIVE,
+                ctypes.POINTER(IBindCtx),
+                REFIID,
+                ctypes.c_void_p,
+            ),
         ]
 
     CLSID_ShellLink = GUID("{00021401-0000-0000-C000-000000000046}")
@@ -444,15 +480,23 @@ if sys.platform == "win32":
 
     SHOpenFolderAndSelectItems = windll.shell32.SHOpenFolderAndSelectItems
     SHOpenFolderAndSelectItems.argtypes = [
-        PCIDLIST_ABSOLUTE, wintypes.UINT, PCUITEMID_CHILD_ARRAY, DWORD]
+        PCIDLIST_ABSOLUTE,
+        wintypes.UINT,
+        PCUITEMID_CHILD_ARRAY,
+        DWORD,
+    ]
     SHOpenFolderAndSelectItems.restype = HRESULT
 
     SFGAOF = wintypes.ULONG
 
     SHParseDisplayName = windll.shell32.SHParseDisplayName
     SHParseDisplayName.argtypes = [
-        wintypes.LPCWSTR, ctypes.POINTER(IBindCtx),
-        ctypes.POINTER(PIDLIST_ABSOLUTE), SFGAOF, ctypes.POINTER(SFGAOF)]
+        wintypes.LPCWSTR,
+        ctypes.POINTER(IBindCtx),
+        ctypes.POINTER(PIDLIST_ABSOLUTE),
+        SFGAOF,
+        ctypes.POINTER(SFGAOF),
+    ]
     SHParseDisplayName.restype = HRESULT
 
     @enum
@@ -469,7 +513,7 @@ if sys.platform == "win32":
         DESKTOP = 0x0000
         PERSONAL = 0x0005
         APPDATA = 0x001A
-        MYMUSIC = 0x000d
+        MYMUSIC = 0x000D
         PROFILE = 0x0028
 
     @enum

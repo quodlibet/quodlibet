@@ -21,9 +21,11 @@ from quodlibet import _, app
 from quodlibet.qltk.window import PersistentWindowMixin, Dialog
 
 
-MATCH_DESC = _("Check if the columns on the left side approximately match the ones on "
-               "the right side. If they don't, you can change the order here (use _ "
-               "for rows that shouldn't be matched):")
+MATCH_DESC = _(
+    "Check if the columns on the left side approximately match the ones on "
+    "the right side. If they don't, you can change the order here (use _ "
+    "for rows that shouldn't be matched):"
+)
 
 T = TypeVar("T")
 
@@ -31,6 +33,7 @@ T = TypeVar("T")
 @dataclass
 class ColumnSpec(Generic[T]):
     """Simple data class for specifying the behavior and content of a column"""
+
     title: str
     cell_text_getter: Callable[[T], str]
     is_resizable: bool = True
@@ -43,13 +46,22 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
     pressed cancel.
     """
 
-    def __init__(self, a_items: list[T], b_items: list[T], b_order: list[int | None],
-                 columns: list[ColumnSpec[T]], title: str, ok_button_text: str,
-                 ok_button_icon: str = Icons.DOCUMENT_SAVE,
-                 description: str = MATCH_DESC, parent=app.window,
-                 id_for_window_tracking: str | None = None):
-        super().__init__(title=title, transient_for=parent, modal=True,
-                         destroy_with_parent=True)
+    def __init__(
+        self,
+        a_items: list[T],
+        b_items: list[T],
+        b_order: list[int | None],
+        columns: list[ColumnSpec[T]],
+        title: str,
+        ok_button_text: str,
+        ok_button_icon: str = Icons.DOCUMENT_SAVE,
+        description: str = MATCH_DESC,
+        parent=app.window,
+        id_for_window_tracking: str | None = None,
+    ):
+        super().__init__(
+            title=title, transient_for=parent, modal=True, destroy_with_parent=True
+        )
 
         # A lot of information to display, so make resizable and maximize
         self.set_resizable(True)
@@ -91,7 +103,8 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         tree.b_order = b_order
 
         default_order_text = ", ".join(
-            ("_" if i is None else str(i + 1)) for i in b_order)
+            ("_" if i is None else str(i + 1)) for i in b_order
+        )
         self.order_entry.set_text(default_order_text)
         legal_characters = set(default_order_text)
         legal_characters.add("_")
@@ -122,8 +135,12 @@ class MatchListsDialog(Dialog, PersistentWindowMixin, Generic[T]):
         return self._tree.b_order
 
 
-def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matching="_",
-                                      require_target_length_elements=False):
+def one_indexed_csv_to_unique_indices(
+    text,
+    target_length,
+    char_for_none_matching="_",
+    require_target_length_elements=False,
+):
     """
     :return: List of indices from the comma separated list of one-indexed numbers.
              List will be empty if any index is repeated or out of bounds.
@@ -161,8 +178,9 @@ def one_indexed_csv_to_unique_indices(text, target_length, char_for_none_matchin
 class MatchListsTreeView(HintedTreeView, Generic[T]):
     _b_order: list[int | None]
 
-    def __init__(self, a_items: list[T], b_items: list[T],
-                 columns: list[ColumnSpec[T]]):
+    def __init__(
+        self, a_items: list[T], b_items: list[T], columns: list[ColumnSpec[T]]
+    ):
         self.model = ObjectStore()
         self.model.append_many(a_items)
         self._b_items = b_items

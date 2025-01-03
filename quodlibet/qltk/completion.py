@@ -34,13 +34,13 @@ class EntryWordCompletion(Gtk.EntryCompletion):
         if entry is None:
             return False
         cursor = entry.get_position()
-        if (cursor != len(entrytext) and not
-            max([entrytext[cursor:].startswith(s) for s in self.rightsep])):
+        if cursor != len(entrytext) and not max(
+            [entrytext[cursor:].startswith(s) for s in self.rightsep]
+        ):
             return False
 
         # find the border to the left
-        left, f = max(
-            [(entrytext.rfind(c, 0, cursor), c) for c in self.leftsep])
+        left, f = max([(entrytext.rfind(c, 0, cursor), c) for c in self.leftsep])
         if left < 0:
             left += 1
         else:
@@ -59,8 +59,7 @@ class EntryWordCompletion(Gtk.EntryCompletion):
         cursor = entry.get_position()
 
         text = entry.get_text()
-        left, f = max(
-            [(text.rfind(c, 0, cursor), c) for c in self.leftsep])
+        left, f = max([(text.rfind(c, 0, cursor), c) for c in self.leftsep])
         if left == -1:
             left += 1
         else:
@@ -97,8 +96,7 @@ class LibraryTagCompletion(EntryWordCompletion):
         tags = cls.__tags
         for song in songs:
             for tag in song.keys():
-                if not (tag.startswith("~#") or tag in MACHINE_TAGS
-                        or tag in tags):
+                if not (tag.startswith("~#") or tag in MACHINE_TAGS or tag in tags):
                     cls.__tags.add(tag)
                     model.append([tag])
         print_d("Updated tag model for %d songs" % len(songs))
@@ -125,8 +123,17 @@ class LibraryTagCompletion(EntryWordCompletion):
                 yield True
 
         tags.update(["~dirname", "~basename", "~people", "~format"])
-        for tag in ["track", "disc", "playcount", "skipcount", "lastplayed",
-                    "mtime", "added", "rating", "length"]:
+        for tag in [
+            "track",
+            "disc",
+            "playcount",
+            "skipcount",
+            "lastplayed",
+            "mtime",
+            "added",
+            "rating",
+            "length",
+        ]:
             tags.add("#(" + tag)
         for tag in ["date", "bpm"]:
             if tag in all_tags:
@@ -155,8 +162,14 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
             return
         elif tag is None:
             return
-        elif tag in ("bpm date discnumber isrc originaldate recordingdate "
-                     "tracknumber title").split() + MACHINE_TAGS:
+        elif (
+            tag
+            in (
+                "bpm date discnumber isrc originaldate recordingdate "
+                "tracknumber title"
+            ).split()
+            + MACHINE_TAGS
+        ):
             return
         elif tag in formats.PEOPLE:
             tag = "~people"

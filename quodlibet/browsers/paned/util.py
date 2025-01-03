@@ -29,21 +29,25 @@ class PaneConfig:
     """
 
     def __init__(self, row_pattern):
-        parts = [p.replace(r"\:", ":")
-                 for p in (re.split(r"(?<!\\):", row_pattern))]
+        parts = [p.replace(r"\:", ":") for p in (re.split(r"(?<!\\):", row_pattern))]
 
         def is_numeric(s):
             return s[:2] == "~#" and "~" not in s[2:]
+
         def is_pattern(s):
             return "<" in s
+
         def f_round(s):
-            return isinstance(s, float) and "%.2f" % s or s
+            return isinstance(s, float) and f"{s:.2f}" or s
 
         def is_date(s):
             return s in TIME_TAGS
 
-        disp = (parts[1] if len(parts) >= 2
-                else "[i][span alpha='40%']<~#tracks>[/span][/i]")
+        disp = (
+            parts[1]
+            if len(parts) >= 2
+            else "[i][span alpha='40%']<~#tracks>[/span][/i]"
+        )
         cat = parts[0]
 
         if is_pattern(cat):
@@ -60,16 +64,18 @@ class PaneConfig:
             tags = util.tagsplit(cat)
             has_markup = False
             if is_date(cat):
+
                 def format(song: AudioFile) -> list[tuple[str, str]]:
-                    fmt = config.gettext("settings",
-                                         "datecolumn_timestamp_format")
+                    fmt = config.gettext("settings", "datecolumn_timestamp_format")
                     date_str = format_date(song(cat), fmt)
                     return [(date_str, date_str)]
             elif is_numeric(cat):
+
                 def format(song: AudioFile) -> list[tuple[str, str]]:
                     v = str(f_round(song(cat)))
                     return [(v, v)]
             else:
+
                 def format(song: AudioFile) -> list[tuple[str, str]]:
                     return song.list_separate(cat)
 
@@ -81,9 +87,11 @@ class PaneConfig:
             format_display = pd.format
         else:
             if is_numeric(disp):
+
                 def format_display(coll):
                     return str(f_round(coll(disp)))
             else:
+
                 def format_display(coll):
                     return util.escape(coll.comma(disp))
 

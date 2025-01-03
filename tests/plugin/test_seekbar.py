@@ -12,7 +12,6 @@ from quodlibet.library import SongLibrary
 
 
 class TSeekBar(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["SeekBar"]
 

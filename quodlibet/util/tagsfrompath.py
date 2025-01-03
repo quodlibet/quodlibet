@@ -14,7 +14,6 @@ from quodlibet.util import re_escape
 
 
 class TagsFromPattern:
-
     def __init__(self, pattern):
         self.headers = []
         self.slashes = len(pattern) - len(pattern.replace(os.path.sep, "")) + 1
@@ -27,7 +26,7 @@ class TagsFromPattern:
             if not piece:
                 continue
             if piece[0] + piece[-1] == "<>":
-                piece = piece.lower()   # canonicalize to lowercase tag names
+                piece = piece.lower()  # canonicalize to lowercase tag names
                 if "~" in piece:
                     dummies_found += 1
                     piece = "<QUOD_LIBET_DUMMY_%d>" % dummies_found
@@ -42,11 +41,17 @@ class TagsFromPattern:
         # if it ends with a <tag>, anchor with .xxx$
         # but if it's a <tagnumber>, don't bother as \d+ is sufficient
         # and if it's not a tag, trust the user
-        if pattern.startswith("<") and not pattern.startswith("<tracknumber>")\
-                and not pattern.startswith("<discnumber>"):
+        if (
+            pattern.startswith("<")
+            and not pattern.startswith("<tracknumber>")
+            and not pattern.startswith("<discnumber>")
+        ):
             pieces.insert(0, re_escape(os.path.sep))
-        if pattern.endswith(">") and not pattern.endswith("<tracknumber>")\
-                and not pattern.endswith("<discnumber>"):
+        if (
+            pattern.endswith(">")
+            and not pattern.endswith("<tracknumber>")
+            and not pattern.endswith("<discnumber>")
+        ):
             pieces.append(r"(?:\.[A-Za-z0-9_+]+)$")
 
         self.pattern = re.compile("".join(pieces))
@@ -62,7 +67,7 @@ class TagsFromPattern:
         # only match on the last n pieces of a filename, dictated by pattern
         # this means no pattern may effectively cross a /, despite .* doing so
         sep = os.path.sep
-        matchon = sep + sep.join(tail.split(sep)[-self.slashes:])
+        matchon = sep + sep.join(tail.split(sep)[-self.slashes :])
         # work on unicode
         matchon = fsn2text(matchon)
         match = self.pattern.search(matchon)

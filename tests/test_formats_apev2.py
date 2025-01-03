@@ -21,7 +21,6 @@ from .helper import get_temp_copy
 
 
 class TAPEv2FileMixin:
-
     def test_can_change(self):
         self.assertEqual(self.s.can_change(), True)
         self.assertEqual(self.s.can_change("~"), False)
@@ -154,7 +153,6 @@ def test_ma_file_old():
 
 
 class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("silence-44-s.wv"))
         self.s = WavpackFile(self.f)
@@ -169,7 +167,6 @@ class TWavpackFileAPEv2(TestCase, TAPEv2FileMixin):
 
 
 class TWvCoverArt(TestCase):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("coverart.wv"))
         self.s = WavpackFile(self.f)

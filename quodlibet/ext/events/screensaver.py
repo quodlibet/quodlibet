@@ -10,6 +10,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gio
@@ -69,8 +70,14 @@ class ScreensaverPause(EventPlugin):
     def __owner_appeared(self, bus, name, owner):
         if not self.__interface:
             iface = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_INTERFACE, None)
+                Gio.BusType.SESSION,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                self.DBUS_PATH,
+                self.DBUS_INTERFACE,
+                None,
+            )
             self.__sig = iface.connect("g-signal", self.__on_signal)
             self.__active = iface.GetActive()
             self.__interface = iface
@@ -82,8 +89,12 @@ class ScreensaverPause(EventPlugin):
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             self.__watch = Gio.bus_watch_name_on_connection(
-                bus, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
-                self.__owner_appeared, self.__owner_vanished)
+                bus,
+                self.DBUS_NAME,
+                Gio.BusNameWatcherFlags.NONE,
+                self.__owner_appeared,
+                self.__owner_vanished,
+            )
         except GLib.Error:
             pass
 

@@ -20,6 +20,7 @@ from quodlibet.util import connect_obj
 
 try:
     import gi
+
     gi.require_version("GtkSource", "4")
     from gi.repository import GtkSource
 except (ValueError, ImportError):
@@ -132,14 +133,18 @@ class PatternEditBox(TextEditBox):
 
     def __check_markup(self, apply):
         try:
-            validate_markup_pattern(
-                self.text, self._alternative_markup, self._links)
+            validate_markup_pattern(self.text, self._alternative_markup, self._links)
         except ValueError as e:
             qltk.ErrorMessage(
-                self, _("Invalid pattern"),
-                _("The pattern you entered was invalid. Make sure you enter "
-                  "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
-                  "balanced.\n\n%s") % util.escape(str(e))).run()
+                self,
+                _("Invalid pattern"),
+                _(
+                    "The pattern you entered was invalid. Make sure you enter "
+                    "&lt; and &gt; as \\&lt; and \\&gt; and that your tags are "
+                    "balanced.\n\n%s"
+                )
+                % util.escape(str(e)),
+            ).run()
             apply.stop_emission("clicked")
         return False
 
@@ -189,4 +194,5 @@ class TextEdit(qltk.UniqueWindow):
 
 class PatternEdit(TextEdit):
     """A window with a pattern editing box in it."""
+
     Box = PatternEditBox

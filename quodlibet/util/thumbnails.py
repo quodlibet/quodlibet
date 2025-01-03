@@ -29,7 +29,7 @@ def get_thumbnail_folder() -> Path:
     """
 
     if os.name == "nt":
-        thumb_folder = Path(quodlibet.get_cache_dir()) /  "thumbnails"
+        thumb_folder = Path(quodlibet.get_cache_dir()) / "thumbnails"
     else:
         cache_folder = Path(xdg_get_cache_home()) / "thumbnails"
         thumb_folder = Path("~/.thumbnails").expanduser()
@@ -173,7 +173,7 @@ def get_thumbnail(path: fsnative, boundary, ignore_temp=True) -> GdkPixbuf:
         "tEXt::Thumb::MTime": str(int(path_mtime)),
         "tEXt::Thumb::Size": str(os.path.getsize(path)),
         "tEXt::Thumb::Mimetype": mime,
-        "tEXt::Software": "QuodLibet"
+        "tEXt::Software": "QuodLibet",
     }
 
     print_d(f"Saving thumbnail to {str(thumb_path)}")

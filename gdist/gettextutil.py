@@ -35,14 +35,25 @@ from collections.abc import Iterable
 QL_SRC_DIR = "quodlibet"
 
 XGETTEXT_CONFIG: dict[str, tuple[str, list[str]]] = {
-    "*.py": ("Python", [
-        "", "_", "N_", "C_:1c,2", "NC_:1c,2", "Q_", "pgettext:1c,2",
-        "npgettext:1c,2,3", "numeric_phrase:1,2", "dgettext:2",
-        "ngettext:1,2", "dngettext:2,3",
-    ]),
+    "*.py": (
+        "Python",
+        [
+            "",
+            "_",
+            "N_",
+            "C_:1c,2",
+            "NC_:1c,2",
+            "Q_",
+            "pgettext:1c,2",
+            "npgettext:1c,2,3",
+            "numeric_phrase:1,2",
+            "dgettext:2",
+            "ngettext:1,2",
+            "dngettext:2,3",
+        ],
+    ),
     "*.appdata.xml": ("", []),
-    "*.desktop": ("Desktop", [
-        "", "Name", "GenericName", "Comment", "Keywords"]),
+    "*.desktop": ("Desktop", ["", "Name", "GenericName", "Comment", "Keywords"]),
 }
 """Dict of pattern -> (language, [keywords])"""
 
@@ -103,7 +114,7 @@ def _get_pattern(path: Path) -> str | None:
 def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
     """Create a POT file for the specified POs and source code
 
-        :returns: the output path
+    :returns: the output path
     """
     potfiles = _read_potfiles(src_root, potfiles_path)
 
@@ -143,17 +154,23 @@ def _create_pot(potfiles_path: Path, src_root: Path) -> Path:
                 os.close(fd)
                 _write_potfiles(src_root, potfiles_in, paths)
 
-                args = ["xgettext", "--from-code=utf-8", "--add-comments",
-                        "--files-from=" + str(potfiles_in),
-                        "--directory=" + str(src_root),
-                        "--output=" + str(out_path),
-                        "--force-po",
-                        "--join-existing"] + args
+                args = [
+                    "xgettext",
+                    "--from-code=utf-8",
+                    "--add-comments",
+                    "--files-from=" + str(potfiles_in),
+                    "--directory=" + str(src_root),
+                    "--output=" + str(out_path),
+                    "--force-po",
+                    "--join-existing",
+                ] + args
 
                 p = subprocess.Popen(
                     args,
-                    stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                    universal_newlines=True)
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    universal_newlines=True,
+                )
                 stdout, stderr = p.communicate()
                 if p.returncode != 0:
                     path_strs = ", ".join(str(p) for p in paths)
@@ -205,7 +222,9 @@ def compile_po(po_path: Path, target_file: Path):
     try:
         subprocess.check_output(
             ["msgfmt", "-o", str(target_file), str(po_path)],
-            universal_newlines=True, stderr=subprocess.STDOUT)
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        )
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -216,7 +235,9 @@ def po_stats(po_path: Path):
     try:
         return subprocess.check_output(
             ["msgfmt", "--statistics", str(po_path), "-o", os.devnull],
-            universal_newlines=True, stderr=subprocess.STDOUT).strip()
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        ).strip()
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -234,9 +255,19 @@ def merge_file(po_dir, file_type, source_file, target_file):
 
     try:
         subprocess.check_output(
-            ["msgfmt", style, "--template", source_file, "-d", po_dir,
-             "-o", target_file],
-            universal_newlines=True, stderr=subprocess.STDOUT)
+            [
+                "msgfmt",
+                style,
+                "--template",
+                source_file,
+                "-d",
+                po_dir,
+                "-o",
+                target_file,
+            ],
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        )
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -261,7 +292,9 @@ def update_po(pot_path: Path, po_path: Path, out_path: Path | None = None) -> No
     try:
         subprocess.check_output(
             ["msgmerge", "-o", str(out_path), str(po_path), str(pot_path)],
-            universal_newlines=True, stderr=subprocess.STDOUT)
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        )
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -276,7 +309,9 @@ def check_po(po_path: Path, ignore_header=False):
     try:
         subprocess.check_output(
             ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
-            stderr=subprocess.STDOUT, universal_newlines=True)
+            stderr=subprocess.STDOUT,
+            universal_newlines=True,
+        )
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -315,9 +350,19 @@ def create_po(pot_path: Path, po_path: Path, lang_code: str) -> None:
 
     try:
         subprocess.check_output(
-            ["msginit", "--no-translator", "--locale", lang_code,
-             "-i", str(pot_path), "-o", str(po_path)],
-            universal_newlines=True, stderr=subprocess.STDOUT)
+            [
+                "msginit",
+                "--no-translator",
+                "--locale",
+                lang_code,
+                "-i",
+                str(pot_path),
+                "-o",
+                str(po_path),
+            ],
+            universal_newlines=True,
+            stderr=subprocess.STDOUT,
+        )
     except subprocess.CalledProcessError as e:
         raise GettextError(e.output) from e
 
@@ -330,9 +375,9 @@ def create_po(pot_path: Path, po_path: Path, lang_code: str) -> None:
 def get_missing(po_dir: Path) -> Iterable[str]:
     """Gets missing strings
 
-       :returns: a list of file information for translatable strings
-                 found in files not listed in POTFILES.in
-                 and not skipped in POTFILES.skip.
+    :returns: a list of file information for translatable strings
+              found in files not listed in POTFILES.in
+              and not skipped in POTFILES.skip.
     """
 
     src_root = _src_root(po_dir)
@@ -341,10 +386,10 @@ def get_missing(po_dir: Path) -> Iterable[str]:
 
     # Generate a set of paths of files which are not marked translatable
     # and not skipped
-    pot_files = {p.relative_to(src_root)
-                 for p in _read_potfiles(src_root, potfiles_path)}
-    skip_files = {p.relative_to(src_root)
-                  for p in _read_potfiles(src_root, skip_path)}
+    pot_files = {
+        p.relative_to(src_root) for p in _read_potfiles(src_root, potfiles_path)
+    }
+    skip_files = {p.relative_to(src_root) for p in _read_potfiles(src_root, skip_path)}
     not_translatable = set()
     for root, dirs, files in os.walk(src_root):
         root = Path(root)

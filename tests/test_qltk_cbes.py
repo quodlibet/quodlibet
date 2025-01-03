@@ -94,16 +94,14 @@ class TComboBoxEntrySave(TestCase):
 
 
 class TStandaloneEditor(TestCase):
-    TEST_KV_DATA = [
-        ("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
+    TEST_KV_DATA = [("Search Foo", "https://foo.com/search?q=<artist>-<title>")]
 
     def setUp(self):
         quodlibet.config.init()
         h, self.fname = mkstemp()
         os.close(h)
         with open(self.fname + ".saved", "w") as f:
-            f.write(
-                f"{self.TEST_KV_DATA[0][1]}\n{self.TEST_KV_DATA[0][0]}\n")
+            f.write(f"{self.TEST_KV_DATA[0][1]}\n{self.TEST_KV_DATA[0][0]}\n")
         self.sae = StandaloneEditor(self.fname, "test", None, None)
 
     def test_constructor(self):

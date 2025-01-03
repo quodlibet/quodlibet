@@ -33,8 +33,7 @@ _ISO_639 = [
     ("Angika", "", "anp", ""),
     ("Apache languages", "", "apa", ""),
     ("Arabic", "ar", "ara", ""),
-    ("Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)",
-     "", "arc", ""),
+    ("Official Aramaic (700-300 BCE); Imperial Aramaic (700-300 BCE)", "", "arc", ""),
     ("Aragonese", "an", "arg", ""),
     ("Armenian", "hy", "arm", "hye"),
     ("Mapudungun; Mapuche", "", "arn", ""),
@@ -98,8 +97,13 @@ _ISO_639 = [
     ("Choctaw", "", "cho", ""),
     ("Chipewyan; Dene Suline", "", "chp", ""),
     ("Cherokee", "", "chr", ""),
-    ("Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; "
-        "Old Church Slavonic", "cu", "chu", ""),
+    (
+        "Church Slavic; Old Slavonic; Church Slavonic; Old Bulgarian; "
+        "Old Church Slavonic",
+        "cu",
+        "chu",
+        "",
+    ),
     ("Chuvash", "cv", "chv", ""),
     ("Cheyenne", "", "chy", ""),
     ("Chamic languages", "", "cmc", ""),
@@ -207,8 +211,7 @@ _ISO_639 = [
     ("Inuktitut", "iu", "iku", ""),
     ("Interlingue; Occidental", "ie", "ile", ""),
     ("Iloko", "", "ilo", ""),
-    ("Interlingua (International Auxiliary Language Association)",
-     "ia", "ina", ""),
+    ("Interlingua (International Auxiliary Language Association)", "ia", "ina", ""),
     ("Indic languages", "", "inc", ""),
     ("Indonesian", "id", "ind", ""),
     ("Indo-European languages", "", "ine", ""),
@@ -519,6 +522,7 @@ def _fill_mappings():
         if _2T:
             _ISO_639_2[_2T] = entry
 
+
 _fill_mappings()
 
 
@@ -590,8 +594,7 @@ def _print_iso_639():
                 if iso_639_2B_code == iso_639_2T_code:
                     iso_639_2T_code = ""
                 name = elm.attrib["name"]
-                entries.append(
-                    (name, iso_639_1_code, iso_639_2B_code, iso_639_2T_code))
+                entries.append((name, iso_639_1_code, iso_639_2B_code, iso_639_2T_code))
             break
     else:
         raise Exception("iso_639.xml not found")

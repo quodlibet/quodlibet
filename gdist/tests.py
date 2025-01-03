@@ -68,10 +68,14 @@ class TestCmd(Command):
         if self.all:
             suite = None
 
-        status = tests.unit(run=self.to_run, suite=suite,
-                            strict=self.strict, exitfirst=self.exitfirst,
-                            network=(not self.no_network or self.all),
-                            quality=(not self.no_quality or self.all))
+        status = tests.unit(
+            run=self.to_run,
+            suite=suite,
+            strict=self.strict,
+            exitfirst=self.exitfirst,
+            network=(not self.no_network or self.all),
+            quality=(not self.no_quality or self.all),
+        )
         if status != 0:
             raise SystemExit(status)
 
@@ -104,16 +108,21 @@ class DistcheckCmd(sdist):
         assert self.get_archive_files()
 
         # make sure MANIFEST.in includes all tracked files
-        if subprocess.call(["git", "status"],
-                           stdout=subprocess.PIPE,
-                           stderr=subprocess.PIPE) == 0:
+        if (
+            subprocess.call(
+                ["git", "status"], stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            )
+            == 0
+        ):
             # contains the packaged files after run() is finished
             included_files = self.filelist.files
             assert included_files
 
             process = subprocess.Popen(
                 ["git", "ls-tree", "-r", "HEAD", "--name-only"],
-                stdout=subprocess.PIPE, universal_newlines=True)
+                stdout=subprocess.PIPE,
+                universal_newlines=True,
+            )
             out, err = process.communicate()
             assert process.returncode == 0
 
@@ -127,13 +136,16 @@ class DistcheckCmd(sdist):
                 ".git*",
             ]
             tracked_files = [
-                p for p in tracked_files if not
-                any(fnmatch.fnmatch(p, i) for i in ignore_tracked)]
+                p
+                for p in tracked_files
+                if not any(fnmatch.fnmatch(p, i) for i in ignore_tracked)
+            ]
 
             diff = set(tracked_files) - set(included_files)
             assert not diff, (
                 "Not all tracked files included in tarball, check MANIFEST.in",
-                diff)
+                diff,
+            )
 
     def _check_dist(self):
         assert self.get_archive_files()
@@ -156,8 +168,17 @@ class DistcheckCmd(sdist):
         self.spawn([sys.executable, "setup.py", "test"])
         self.spawn([sys.executable, "setup.py", "build"])
         self.spawn([sys.executable, "setup.py", "build_sphinx"])
-        self.spawn([sys.executable, "setup.py", "install",
-                    "--root", "../prefix", "--record", "../log.txt"])
+        self.spawn(
+            [
+                sys.executable,
+                "setup.py",
+                "install",
+                "--root",
+                "../prefix",
+                "--record",
+                "../log.txt",
+            ]
+        )
         os.chdir(old_pwd)
 
     def run(self):

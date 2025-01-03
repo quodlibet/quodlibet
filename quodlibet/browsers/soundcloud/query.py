@@ -13,13 +13,23 @@ from datetime import datetime
 from quodlibet import print_d
 from quodlibet.formats import AudioFile
 from quodlibet.query import Query, QueryType
-from quodlibet.query._match import Tag, Inter, Union, Numcmp, NumexprTag, \
-    Numexpr, True_, False_
+from quodlibet.query._match import (
+    Tag,
+    Inter,
+    Union,
+    Numcmp,
+    NumexprTag,
+    Numexpr,
+    True_,
+    False_,
+)
 
-INVERSE_OPS = {operator.le: operator.gt,
-               operator.gt: operator.le,
-               operator.lt: operator.ge,
-               operator.ge: operator.lt}
+INVERSE_OPS = {
+    operator.le: operator.gt,
+    operator.gt: operator.le,
+    operator.lt: operator.ge,
+    operator.ge: operator.lt,
+}
 
 _DUMMY_AF = AudioFile()
 _CLOCK = time.time
@@ -38,7 +48,7 @@ _QL_TO_SC = {
     "artist": ("q", None),
     "title": ("q", None),
     "comments": ("q", None),
-    "soundcloud_user_id": ("user_id", None)
+    "soundcloud_user_id": ("user_id", None),
 }
 """ Convert QL to Soundcloud tags with optional value mapper"""
 
@@ -46,31 +56,30 @@ SUPPORTED = set(_QL_TO_SC.keys()) | {"rating"}
 
 
 class SoundcloudQuery(Query):
-
     def __init__(self, string, star=None, clock=time.time):
         super().__init__(string, star)
         self._clock = clock
         try:
             self.terms = self._extract_terms(self._match)
         except self.Error as e:
-            print_d("Couldn't use query: %s" % e)
+            print_d(f"Couldn't use query: {e}")
             self.type = QueryType.INVALID
             self.terms = {}
 
     def _extract_terms(self, node):
-        """ Return a dict of sets keyed on API search term,
-            with values for these that could be used to query the API
-            and might return results useful for populating the songlist.
+        """Return a dict of sets keyed on API search term,
+        with values for these that could be used to query the API
+        and might return results useful for populating the songlist.
 
-            Note this is not a *translation* of the query in any sense,
-            and that (currently) the browser filters ingested API results
-            so that the QL results are still valid based on
-            the query given, even if some more could have been returned.
+        Note this is not a *translation* of the query in any sense,
+        and that (currently) the browser filters ingested API results
+        so that the QL results are still valid based on
+        the query given, even if some more could have been returned.
 
-            ...so if in doubt, *less* restrictive is better here."""
+        ...so if in doubt, *less* restrictive is better here."""
         tuples = self._extract_terms_set(node)
         terms = defaultdict(set)
-        for (k, v) in tuples:
+        for k, v in tuples:
             terms[k].add(v)
         return terms
 
@@ -80,8 +89,9 @@ class SoundcloudQuery(Query):
                 api_tag, converter = _QL_TO_SC[tag] if tag else ("q", None)
             except KeyError as e:
                 if tag not in SUPPORTED:
-                    raise self.Error(f"Unsupported {tag!r} tag. "
-                                     f"Try: {', '.join(SUPPORTED)}") from e
+                    raise self.Error(
+                        f"Unsupported {tag!r} tag. " f"Try: {', '.join(SUPPORTED)}"
+                    ) from e
                 return None, None
             else:
                 value = str(converter(raw_value) if converter else raw_value)
@@ -105,6 +115,7 @@ class SoundcloudQuery(Query):
                 terms |= self._extract_terms_set(n)
             return terms
         elif isinstance(node, Numcmp):
+
             def from_relative(op, l, r):
                 raw_value = r.evaluate(_DUMMY_AF, self._clock(), True)
                 tag, value = to_api(l._tag, raw_value)
@@ -116,7 +127,7 @@ class SoundcloudQuery(Query):
                     return {(tag + "[to]", value)}
                 elif op in (operator.ge, operator.gt):
                     return {(tag + "[from]", value)}
-                raise self.Error("Unsupported operator: %s" % op)
+                raise self.Error(f"Unsupported operator: {op}")
 
             left = node._expr
             right = node._expr2
@@ -125,7 +136,7 @@ class SoundcloudQuery(Query):
             elif isinstance(right, NumexprTag) and isinstance(left, Numexpr):
                 # We can reduce the logic by flipping the expression
                 return from_relative(INVERSE_OPS[node._op], right, left)
-            raise self.Error("Unsupported numeric: %s" % node)
+            raise self.Error(f"Unsupported numeric: {node}")
         elif hasattr(node, "pattern"):
             return terms_from_re(node.pattern, tag)
         elif isinstance(node, True_):

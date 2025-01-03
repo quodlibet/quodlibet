@@ -25,8 +25,7 @@ from .prefs import AnimOsdPrefs
 class AnimOsd(EventPlugin):
     PLUGIN_ID = "Animated On-Screen Display"
     PLUGIN_NAME = _("Animated On-Screen Display")
-    PLUGIN_DESC = _("Displays song information on your screen when it "
-                    "changes.")
+    PLUGIN_DESC = _("Displays song information on your screen when it " "changes.")
     PLUGIN_ICON = Icons.DIALOG_INFORMATION
 
     __current_window = None

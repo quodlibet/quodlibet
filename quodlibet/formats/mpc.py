@@ -46,6 +46,7 @@ class MPCFile(APEv2File):
 
         self.sanitize(filename)
 
+
 loader = MPCFile
 types = [MPCFile]
 extensions = [".mpc", ".mp+"]

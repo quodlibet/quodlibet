@@ -30,11 +30,13 @@ pconfig.defaults.set("delay", 0)
 class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
     PLUGIN_ID = "Shuffle by Grouping"
     PLUGIN_NAME = _("Shuffle by Grouping")
-    PLUGIN_DESC = _("Adds a shuffle mode that groups songs with a common tag "
-                    "– similar to album shuffles.\n\n"
-                    "This is useful for shuffling multi-movement classical "
-                    "pieces, making sure all movements play in order "
-                    "before shuffling to the next piece.")
+    PLUGIN_DESC = _(
+        "Adds a shuffle mode that groups songs with a common tag "
+        "– similar to album shuffles.\n\n"
+        "This is useful for shuffling multi-movement classical "
+        "pieces, making sure all movements play in order "
+        "before shuffling to the next piece."
+    )
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Shuffle by grouping")
     accelerated_name = _("Shuffle by _grouping")
@@ -81,8 +83,9 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         while True:
             song_location = random.choice(list(remaining.keys()))
             new_song = playlist.get_iter(song_location)
-            new_song_prev = (playlist.get_iter(song_location - 1)
-                             if song_location >= 1 else None)
+            new_song_prev = (
+                playlist.get_iter(song_location - 1) if song_location >= 1 else None
+            )
             if not same_group(new_song, new_song_prev):
                 return new_song
 
@@ -92,9 +95,11 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
             return
         app.player.paused = True
         delay_timer = GLib.timeout_add(1000 * delay, app.player.play)
-        task = Task(_("Shuffle by Grouping"),
-                    _("Waiting to start new group…"),
-                    stop=lambda: GLib.source_remove(delay_timer))
+        task = Task(
+            _("Shuffle by Grouping"),
+            _("Waiting to start new group…"),
+            stop=lambda: GLib.source_remove(delay_timer),
+        )
 
         def countdown():
             for i in range(int(refresh_rate * delay)):
@@ -102,6 +107,7 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
                 yield True
             task.finish()
             yield False
+
         GLib.timeout_add(1000 / refresh_rate, next, countdown())
 
     @staticmethod
@@ -153,19 +159,23 @@ class ShuffleByGrouping(ShufflePlugin, OrderRemembered):
         grouping_filter_entry = Gtk.Entry()
         grouping_filter_entry.connect("changed", on_change, "grouping_filter")
         grouping_filter_entry.set_text(pconfig.gettext("grouping_filter"))
-        grouping_filter_entry.set_tooltip_text(_(
-            "Grouping is applied only if the filter tag is defined.\n"
-            "A song with an undefined filter tag will be treated as\n"
-            "a group consisting only of itself. Typically the filter\n"
-            "tag should match or partially match the grouping tag."))
+        grouping_filter_entry.set_tooltip_text(
+            _(
+                "Grouping is applied only if the filter tag is defined.\n"
+                "A song with an undefined filter tag will be treated as\n"
+                "a group consisting only of itself. Typically the filter\n"
+                "tag should match or partially match the grouping tag."
+            )
+        )
 
         delay_label = make_label(_("Delay:"))
         adj = Gtk.Adjustment.new(pconfig.getint("delay"), 0, 3600, 1, 5, 0)
         delay_spin = Gtk.SpinButton(adjustment=adj, climb_rate=0.1, digits=0)
         delay_spin.set_numeric(True)
         delay_spin.connect("value-changed", on_spin, "delay")
-        delay_spin.set_tooltip_text(_(
-            "Time delay in seconds before starting next group"))
+        delay_spin.set_tooltip_text(
+            _("Time delay in seconds before starting next group")
+        )
 
         table = Gtk.Table(3, 2)
         table.set_col_spacings(6)

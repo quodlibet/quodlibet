@@ -77,8 +77,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         completion = LibraryTagCompletion(library.librarian)
         self.accelerators = Gtk.AccelGroup()
-        sbb = SearchBarBox(completion=completion,
-                           accel_group=self.accelerators)
+        sbb = SearchBarBox(completion=completion, accel_group=self.accelerators)
         sbb.connect("query-changed", self.__text_parse)
         sbb.connect("focus-out", self.__focus)
         sbb.connect("key-press-event", self.__sb_key_pressed)
@@ -106,8 +105,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.main_box = qltk.ConfigRPaned("browsers", "panedbrowser_pos", 0.4)
         self.pack_start(self.main_box, True, True, 0)
 
-        self.multi_paned = ConfigMultiRHPaned("browsers",
-                                              "panedbrowser_pane_widths")
+        self.multi_paned = ConfigMultiRHPaned("browsers", "panedbrowser_pane_widths")
         self.refresh_panes()
 
         for child in self.get_children():
@@ -143,8 +141,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self.activate()
 
     def __sb_key_pressed(self, entry, event):
-        if (is_accel(event, "<Primary>Return") or
-                is_accel(event, "<Primary>KP_Enter")):
+        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)
@@ -216,8 +213,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
         self._panes = [self]
         for header in reversed(get_headers()):
             pane = Pane(self._library, header, self._panes[0])
-            pane.connect("row-activated",
-                         lambda *x: self.songs_activated())
+            pane.connect("row-activated", lambda *x: self.songs_activated())
             self._panes.insert(0, pane)
         self._panes.pop()  # remove self
 
@@ -239,8 +235,7 @@ class PanedBrowser(Browser, util.InstanceTracker):
             tags = [t for t in p.tags if not t.startswith("~#")]
             self.__star.update(dict.fromkeys(tags))
 
-        self.set_column_mode(config.getint("browsers", "pane_mode",
-                                           ColumnMode.SMALL))
+        self.set_column_mode(config.getint("browsers", "pane_mode", ColumnMode.SMALL))
 
     def fill_panes(self):
         self._panes[-1].inhibit()
@@ -255,14 +250,13 @@ class PanedBrowser(Browser, util.InstanceTracker):
 
         candidates = []
         for pane in self._panes:
-            if (key in pane.tags or
-                    (key in PEOPLE and "~people" in pane.tags)):
+            if key in pane.tags or (key in PEOPLE and "~people" in pane.tags):
                 candidates.append((len(pane.tags), pane))
         candidates.sort()
         return (candidates and candidates[0][1]) or None
 
     def can_filter_tag(self, tag):
-        return (self.__get_filter_pane(tag) is not None)
+        return self.__get_filter_pane(tag) is not None
 
     def can_filter_text(self):
         return True

@@ -31,9 +31,7 @@ class AlbumListItem(GObject.Object):
 
         self.connect("notify::album", self._album_changed)
 
-    def load_cover(self,
-            size: int,
-            cancelable: Gio.Cancellable | None = None):
+    def load_cover(self, size: int, cancelable: Gio.Cancellable | None = None):
         def callback(cover):
             self._cover = cover
             self.notify("cover")
@@ -42,7 +40,8 @@ class AlbumListItem(GObject.Object):
         # Skip this during testing
         if manager:
             manager.get_pixbuf_many_async(
-                self._album.songs, size, size, cancelable, callback)
+                self._album.songs, size, size, cancelable, callback
+            )
 
     def format_label(self, pattern):
         self._label = pattern % self._album
@@ -84,7 +83,7 @@ class AlbumListCountItem(AlbumListItem):
     def n_albums(self):
         return self.__n_albums
 
-    @n_albums.setter # type: ignore
+    @n_albums.setter  # type: ignore
     def n_albums(self, value):
         self.__n_albums = value
         self.format_label()
@@ -104,7 +103,7 @@ class AlbumListModel(ObjectStore):
         self.__sigs = [
             albums.connect("added", self._add_albums),
             albums.connect("removed", self._remove_albums),
-            albums.connect("changed", self._change_albums)
+            albums.connect("changed", self._change_albums),
         ]
 
         self.append(row=[AlbumListCountItem()])
@@ -178,7 +177,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
             model.connect("row-changed", self._row_changed),
             model.connect("row-inserted", self._row_inserted),
             model.connect("row-deleted", self._row_deleted),
-            model.connect("rows-reordered", self._rows_reordered)
+            model.connect("rows-reordered", self._rows_reordered),
         ]
 
     def destroy(self):
@@ -191,7 +190,7 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
     def include_item_all(self):
         return self.__include_item_all
 
-    @include_item_all.setter # type: ignore
+    @include_item_all.setter  # type: ignore
     def include_item_all(self, value):
         if self.__include_item_all == value:
             return
@@ -203,17 +202,20 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
     def filter(self):
         return self.__filter
 
-    @filter.setter # type: ignore
+    @filter.setter  # type: ignore
     def filter(self, value):
         b = background_filter()
         if b is None and value is None:
             f = None
         elif b is None:
+
             def f(item):
                 return value(item.album)
         else:
+
             def f(item):
                 return b(item.album) and value(item.album)
+
         if f or self.__filter:
             self.__filter = f
             self._model.refilter()
@@ -285,4 +287,5 @@ class AlbumListFilterModel(GObject.Object, Gio.ListModel):
 
 class AlbumListSortModel(ObjectModelSort):
     """This model sorts entries of a child model"""
+
     pass

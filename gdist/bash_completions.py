@@ -25,7 +25,6 @@ from .util import Command
 
 
 class InstallBashCompletions(Command):
-
     user_options = []
 
     def initialize_options(self):
@@ -34,8 +33,7 @@ class InstallBashCompletions(Command):
         self.outfiles = []
 
     def finalize_options(self):
-        self.set_undefined_options("install",
-                                   ("install_data", "install_dir"))
+        self.set_undefined_options("install", ("install_data", "install_dir"))
         self.bash_completions = self.distribution.bash_completions
 
     def get_outputs(self):
@@ -45,7 +43,8 @@ class InstallBashCompletions(Command):
         # note that the basepath can also be obtained with pkgconfig:
         # $ pkg-config bash-completion --variable=completionsdir
         basepath = os.path.join(
-            self.install_dir, "share", "bash-completion", "completions")
+            self.install_dir, "share", "bash-completion", "completions"
+        )
         out = self.mkpath(basepath)
         self.outfiles.extend(out or [])
         for src, dest in self.bash_completions:

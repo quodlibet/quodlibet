@@ -23,11 +23,23 @@ class TSongTracker(TestCase):
         self.p = NullPlayer()
         self.w = SongLibrary()
         self.s1 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo", "~#length": 1.5})
+            {
+                "~#playcount": 0,
+                "~#skipcount": 0,
+                "~#lastplayed": 10,
+                "~filename": "foo",
+                "~#length": 1.5,
+            }
+        )
         self.s2 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo", "~#length": 1.5})
+            {
+                "~#playcount": 0,
+                "~#skipcount": 0,
+                "~#lastplayed": 10,
+                "~filename": "foo",
+                "~#length": 1.5,
+            }
+        )
         self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 
@@ -36,6 +48,7 @@ class TSongTracker(TestCase):
 
     def test_play(self):
         import time
+
         # Allow at least 2 second to elapse to simulate playing
         self.p.song = self.s1
         self.p.paused = False

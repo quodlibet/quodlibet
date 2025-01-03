@@ -39,7 +39,6 @@ from . import gettextutil
 
 
 class PoStats(Command):
-
     description = "Show translation statistics"
     user_options = []
 
@@ -78,12 +77,10 @@ class PoStats(Command):
         print("#" * 30)
         for po, trans, fuzzy, untrans in stats:
             all_ = float(trans + fuzzy + untrans) / 100
-            print("%5s: %3d%% (+%2d%% fuzzy)" %
-                  (po, trans / all_, fuzzy / all_))
+            print("%5s: %3d%% (+%2d%% fuzzy)" % (po, trans / all_, fuzzy / all_))
 
 
 class UpdatePo(Command):
-
     description = "update po files"
     user_options = [
         ("lang=", None, "force update <lang>.po"),
@@ -117,7 +114,6 @@ class UpdatePo(Command):
 
 
 class CreatePo(Command):
-
     description = "create a new po file"
     user_options = [
         ("lang=", None, "create <lang>.po"),
@@ -144,7 +140,6 @@ class CreatePo(Command):
 
 
 class CreatePot(Command):
-
     description = "create a new pot file"
     user_options = []
 
@@ -185,7 +180,6 @@ def strip_pot_date(path):
 
 
 class BuildPo(Command):
-
     description = "update and copy .po files to the build dir"
     user_options = []
 
@@ -241,8 +235,7 @@ class BuildMo(Command):
 
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))
-        self.set_undefined_options(
-            "build_po", ("po_build_dir", "po_build_dir"))
+        self.set_undefined_options("build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
@@ -253,7 +246,7 @@ class BuildMo(Command):
         langs = gettextutil.list_languages(po_build_path)
         if self.lang is not None:
             if self.lang not in langs:
-                raise SystemExit("Error: %r not found" % self.lang)
+                raise SystemExit(f"Error: {self.lang!r} not found")
             else:
                 langs = [self.lang]
 
@@ -288,9 +281,8 @@ class InstallMo(Command):
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            "install",
-            ("install_data", "install_dir"),
-            ("skip_build", "skip_build"))
+            "install", ("install_data", "install_dir"), ("skip_build", "skip_build")
+        )
 
     def get_outputs(self):
         return self.outfiles
@@ -302,5 +294,6 @@ class InstallMo(Command):
         dest = os.path.join(self.install_dir, "share", "locale")
         out = self.copy_tree(src, dest)
         self.outfiles.extend(out)
+
 
 __all__ = ["BuildMo", "InstallMo", "PoStats", "UpdatePo"]

@@ -25,8 +25,16 @@ import pytest
 from _pytest.fixtures import fixture
 
 import quodlibet
-from gdist import (CreatePo, GDistribution, CreatePot, UpdatePo, PoStats, BuildPo,
-                   BuildMo, InstallMo)
+from gdist import (
+    CreatePo,
+    GDistribution,
+    CreatePot,
+    UpdatePo,
+    PoStats,
+    BuildPo,
+    BuildMo,
+    InstallMo,
+)
 from quodlibet.util import get_module_dir
 from tests.test_po import has_gettext_util
 

@@ -48,15 +48,19 @@ class PyConsole(SongsMenuPlugin):
         win.set_icon_name(self.PLUGIN_ICON)
         win.set_title(
             _("{plugin_name} for {songs} ({app})").format(
-                plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name))
+                plugin_name=self.PLUGIN_NAME, songs=desc, app=app.name
+            )
+        )
         win.show_all()
 
 
 class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
     PLUGIN_ID = "Python Console Sidebar"
     PLUGIN_NAME = _("Python Console Sidebar")
-    PLUGIN_DESC = _("Interactive Python console sidebar, "
-                    "that follows the selected songs in the main window.")
+    PLUGIN_DESC = _(
+        "Interactive Python console sidebar, "
+        "that follows the selected songs in the main window."
+    )
     PLUGIN_ICON = Icons.UTILITIES_TERMINAL
 
     def enabled(self):
@@ -75,23 +79,26 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
 def create_console(songs=None):
     console = PythonConsole(namespace_for(songs)) if songs else PythonConsole()
     access_string = _("You can access the following objects by default:")
-    access_string += "\\n".join([
-                    "",
-                    "  %5s: SongWrapper objects",
-                    "  %5s: Song dictionaries",
-                    "  %5s: Filename list",
-                    "  %5s: Songs Collection",
-                    "  %5s: Application instance"]) % (
-                       "songs", "sdict", "files", "col", "app")
+    access_string += "\\n".join(
+        [
+            "",
+            "  %5s: SongWrapper objects",
+            "  %5s: Song dictionaries",
+            "  %5s: Filename list",
+            "  %5s: Songs Collection",
+            "  %5s: Application instance",
+        ]
+    ) % ("songs", "sdict", "files", "col", "app")
     dir_string = _("Your current working directory is:")
 
     console.eval("import mutagen", False)
     console.eval("import os", False)
     python_major_ver = sys.version.split()[0]
-    console.eval(f'print("Python: {python_major_ver} / Quod Libet: {const.VERSION}")',
-                 False)
-    console.eval('print("%s")' % access_string, False)
-    console.eval('print("%s "+ os.getcwd())' % dir_string, False)
+    console.eval(
+        f'print("Python: {python_major_ver} / Quod Libet: {const.VERSION}")', False
+    )
+    console.eval(f'print("{access_string}")', False)
+    console.eval(f'print("{dir_string} "+ os.getcwd())', False)
     return console
 
 
@@ -105,7 +112,7 @@ def namespace_for(song_wrappers):
         "files": files,
         "sdict": song_dicts,
         "col": collection,
-        "app": app
+        "app": app,
     }
 
 
@@ -127,8 +134,11 @@ class PythonConsole(Gtk.ScrolledWindow):
         self.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
         self.set_shadow_type(Gtk.ShadowType.NONE)
         self.view = Gtk.TextView()
-        add_css(self, "scrolledwindow { padding: 6px; "
-                "background-color: white; background-color: @content_view_bg;}")
+        add_css(
+            self,
+            "scrolledwindow { padding: 6px; "
+            "background-color: white; background-color: @content_view_bg;}",
+        )
         self.view.modify_font(Pango.font_description_from_string("Monospace"))
         self.view.set_editable(True)
         self.view.set_wrap_mode(Gtk.WrapMode.CHAR)
@@ -170,13 +180,12 @@ class PythonConsole(Gtk.ScrolledWindow):
         modifier_mask = Gtk.accelerator_get_default_mod_mask()
         event_state = event.state & modifier_mask
 
-        if event.keyval == Gdk.KEY_d and \
-                        event_state == Gdk.ModifierType.CONTROL_MASK:
+        if event.keyval == Gdk.KEY_d and event_state == Gdk.ModifierType.CONTROL_MASK:
             self.destroy()
 
         elif event.keyval == Gdk.KEY_Return and (
-            event_state & (Gdk.ModifierType.CONTROL_MASK |
-                           Gdk.ModifierType.SHIFT_MASK)):
+            event_state & (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
+        ):
             # Get the command
             buffer = view.get_buffer()
             inp_mark = buffer.get_mark("input")
@@ -195,7 +204,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             # Keep indentation of preceding line
             spaces = re.match(self.__spaces_pattern, line)
             if spaces is not None:
-                buffer.insert(cur, line[spaces.start():spaces.end()])
+                buffer.insert(cur, line[spaces.start() : spaces.end()])
             else:
                 buffer.insert(cur, "    ")
             cur = buffer.get_end_iter()
@@ -223,8 +232,9 @@ class PythonConsole(Gtk.ScrolledWindow):
 
             cur_strip = self.current_command.rstrip()
 
-            if (cur_strip.endswith(":") or
-                (self.current_command[-2:].strip() != "" and self.block_command)):
+            if cur_strip.endswith(":") or (
+                self.current_command[-2:].strip() != "" and self.block_command
+            ):
                 # Unfinished block command
                 self.block_command = True
                 com_mark = "... "
@@ -249,18 +259,17 @@ class PythonConsole(Gtk.ScrolledWindow):
             if com_mark == "... ":
                 spaces = re.match(self.__spaces_pattern, line)
                 if spaces is not None:
-                    #cur = buffer.get_end_iter()
-                    buffer.insert(cur, line[spaces.start():spaces.end()])
+                    # cur = buffer.get_end_iter()
+                    buffer.insert(cur, line[spaces.start() : spaces.end()])
                 if cur_strip.endswith(":"):
-                    #cur = buffer.get_end_iter()
+                    # cur = buffer.get_end_iter()
                     buffer.insert(cur, "    ")
 
             buffer.place_cursor(cur)
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif (event.keyval == Gdk.KEY_c and
-              event_state == Gdk.ModifierType.CONTROL_MASK):
+        elif event.keyval == Gdk.KEY_c and event_state == Gdk.ModifierType.CONTROL_MASK:
             # Get the marks
             buffer = view.get_buffer()
             lin_mark = buffer.get_mark("input-line")
@@ -295,9 +304,11 @@ class PythonConsole(Gtk.ScrolledWindow):
             GLib.idle_add(self.scroll_to_end)
             return True
 
-        elif event.keyval == Gdk.KEY_KP_Left or \
-                        event.keyval == Gdk.KEY_Left or \
-                        event.keyval == Gdk.KEY_BackSpace:
+        elif (
+            event.keyval == Gdk.KEY_KP_Left
+            or event.keyval == Gdk.KEY_Left
+            or event.keyval == Gdk.KEY_BackSpace
+        ):
             buffer = view.get_buffer()
             inp = buffer.get_iter_at_mark(buffer.get_mark("input"))
             cur = buffer.get_iter_at_mark(buffer.get_insert())
@@ -317,8 +328,8 @@ class PythonConsole(Gtk.ScrolledWindow):
         elif (event.keyval == Gdk.KEY_Tab or event.keyval == Gdk.KEY_ISO_Left_Tab) or (
             event.keyval == Gdk.KEY_space
             and (
-                event_state == (Gdk.ModifierType.CONTROL_MASK |
-                                Gdk.ModifierType.SHIFT_MASK)
+                event_state
+                == (Gdk.ModifierType.CONTROL_MASK | Gdk.ModifierType.SHIFT_MASK)
                 or event_state == (Gdk.ModifierType.CONTROL_MASK)
             )
         ):
@@ -333,23 +344,23 @@ class PythonConsole(Gtk.ScrolledWindow):
 
             # get identifiers chain string, e.g. `a.b.c`, or a single identifier
             _identifiers_chars = takewhile(
-                lambda x: x.isalnum() or x in {"_", "."}, reversed(cmd_start))
+                lambda x: x.isalnum() or x in {"_", "."}, reversed(cmd_start)
+            )
             _idcs_len = len(
-                list(_identifiers_chars))  # lengt of identifiers chain string
+                list(_identifiers_chars)
+            )  # lengt of identifiers chain string
             ids_str = cmd_start[-_idcs_len:]
 
             # Ctrl+Shift+Space: has Shift: include identifiers starting with '__'
             is_shift = bool(event_state & Gdk.ModifierType.SHIFT_MASK)
 
-            comp_items = self.get_completion_items(ids_str,
-                                                   include_private=is_shift)
+            comp_items = self.get_completion_items(ids_str, include_private=is_shift)
 
             choice = None
             if len(comp_items) > 1:
                 # sort completions: case-insensitive,
                 # items starting with '_' - at the end
-                comp_items.sort(
-                    key=lambda x: (x[0].startswith("_"), x[0].lower()))
+                comp_items.sort(key=lambda x: (x[0].startswith("_"), x[0].lower()))
 
                 dialog = ListChoiceDialog(self.get_parent(), comp_items)
                 choice = dialog.run()
@@ -360,8 +371,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 last = ids_str.split(".")[-1]
                 if last == comp_items[0][0]:
                     next_comp_items = self.get_completion_items(
-                        ids_str + ".",
-                        include_private=is_shift
+                        ids_str + ".", include_private=is_shift
                     )
                     if next_comp_items:
                         buffer.insert(ins, ".")
@@ -375,7 +385,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 last = ids_str.split(".")[-1]
                 insert_text = comp_items[choice][0]
                 if last:  # cut off prefix, already present
-                    insert_text = insert_text[len(last):]
+                    insert_text = insert_text[len(last) :]
 
                 buffer.insert(ins, insert_text)
 
@@ -399,8 +409,7 @@ class PythonConsole(Gtk.ScrolledWindow):
         cur = buffer.get_end_iter()
         buffer.delete(inp, cur)
         buffer.insert(inp, command)
-        buffer.select_range(buffer.get_iter_at_mark(mark),
-                            buffer.get_end_iter())
+        buffer.select_range(buffer.get_iter_at_mark(mark), buffer.get_end_iter())
         self.view.grab_focus()
 
     def history_add(self, line):
@@ -469,7 +478,7 @@ class PythonConsole(Gtk.ScrolledWindow):
             except SyntaxError:
                 exec(command, self.namespace)
         except Exception:
-            if hasattr(sys, "last_type") and sys.last_type == SystemExit:
+            if hasattr(sys, "last_type") and sys.last_type is SystemExit:
                 self.destroy()
             else:
                 traceback.print_exc()
@@ -478,21 +487,22 @@ class PythonConsole(Gtk.ScrolledWindow):
         sys.stderr, self.stderr = self.stderr, sys.stderr
 
     def get_completion_items(self, ids_str, include_private=False):
-        """ get completion suggestions
-            ids_str - identifiers chain string, e.g. `a.b.c`, or a single identifier
+        """get completion suggestions
+        ids_str - identifiers chain string, e.g. `a.b.c`, or a single identifier
         """
         import inspect
 
         def get_comp(obj, pre):
-            """ get completion item names from `obj`-object or `self.namespace`
+            """get completion item names from `obj`-object or `self.namespace`
             with prefix `pre`
             """
             dir_result = dir(obj) if obj is not None else self.namespace
 
             comp = []  # result: (completion-name, details)
             for name in dir_result:
-                if (pre and not name.startswith(pre)) \
-                        or (not include_private and name.startswith("__")):
+                if (pre and not name.startswith(pre)) or (
+                    not include_private and name.startswith("__")
+                ):
                     continue
 
                 if obj is not None:
@@ -530,11 +540,11 @@ class PythonConsole(Gtk.ScrolledWindow):
                         comp.append((name, details))
                     else:
                         comp.append((name, " ()"))
-            #end for
+            # end for
 
             return comp
 
-        #end get_comp()
+        # end get_comp()
 
         comp = None
         # method, field
@@ -568,6 +578,7 @@ class PythonConsole(Gtk.ScrolledWindow):
 class OutFile:
     """A fake output file object. It sends output to a TK test widget,
     and if asked for a file number, returns one set on instance creation"""
+
     def __init__(self, console, tag):
         self.console = console
         self.tag = tag
@@ -609,14 +620,12 @@ class OutFile:
 
 
 class ListChoiceDialog(Gtk.Dialog):
-    """ display listbox to choose an item from `rows` list,
-        returns index if the chosen item, if positive
+    """display listbox to choose an item from `rows` list,
+    returns index if the chosen item, if positive
     """
+
     def __init__(self, parent, rows):
-        Gtk.Dialog.__init__(self,
-                            title=_("Completion"),
-                            transient_for=parent,
-                            flags=0)
+        Gtk.Dialog.__init__(self, title=_("Completion"), transient_for=parent, flags=0)
         self.set_default_size(400, 250)
 
         listbox = Gtk.ListBox()

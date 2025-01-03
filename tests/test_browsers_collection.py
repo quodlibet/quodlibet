@@ -10,22 +10,24 @@ from tests import TestCase
 from quodlibet import config
 
 from quodlibet.browsers.collection import CollectionBrowser
-from quodlibet.browsers.collection.models import UnknownNode, \
-    CollectionTreeStore, build_tree, MultiNode
-from quodlibet.browsers.collection.prefs import save_headers, get_headers, \
-    PatternEditor
+from quodlibet.browsers.collection.models import (
+    UnknownNode,
+    CollectionTreeStore,
+    build_tree,
+    MultiNode,
+)
+from quodlibet.browsers.collection.prefs import save_headers, get_headers, PatternEditor
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 
 
 SONGS = [
     AudioFile({"album": "one", "artist": "piman", "~filename": "/dev/null"}),
-    AudioFile({"album": "two", "artist": "mu\nboris",
-               "~filename": "/dev/zero"}),
+    AudioFile({"album": "two", "artist": "mu\nboris", "~filename": "/dev/zero"}),
     AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls"}),
     AudioFile({"album": "three", "artist": "boris", "~filename": "/bin/ls2"}),
     AudioFile({"album": "four", "~filename": "/bin/ls3"}),
-    ]
+]
 SONGS.sort()
 
 
@@ -109,7 +111,6 @@ class TCollectionAlbums(TestCase):
 
 
 class TCollectionBrowser(TestCase):
-
     def setUp(self):
         config.init()
 

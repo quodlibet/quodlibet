@@ -30,7 +30,6 @@ class ConfigLabel(Gtk.Label):
 
 
 class AnimOsdPrefs(Gtk.VBox):
-
     def __init__(self, plugin):
         super().__init__(spacing=6)
 
@@ -44,7 +43,7 @@ class AnimOsdPrefs(Gtk.VBox):
             return int(x * 65535)
 
         def show_preview():
-            preview_song = (app.player.song if app.player.song else DUMMY_SONG)
+            preview_song = app.player.song if app.player.song else DUMMY_SONG
             self.plugin.plugin_on_song_started(preview_song)
 
         def on_button_pressed(x=None, y=None):
@@ -52,15 +51,15 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def set_text(button):
             color = button.get_color()
-            color = map(__coltofloat,
-                        (color.red, color.green, color.blue, 0.0))
+            color = map(__coltofloat, (color.red, color.green, color.blue, 0.0))
             self.Conf.text = tuple(color)
             show_preview()
 
         def set_fill(button):
             color = button.get_color()
-            color = map(__coltofloat, (color.red, color.green, color.blue,
-                button.get_alpha()))
+            color = map(
+                __coltofloat, (color.red, color.green, color.blue, button.get_alpha())
+            )
             self.Conf.fill = tuple(color)
             show_preview()
 
@@ -99,7 +98,7 @@ class AnimOsdPrefs(Gtk.VBox):
         def change_outline(button):
             if button.get_active():
                 # Vary with fill alpha to create a smoother outline edge
-                alpha = (min(1.0, self.Conf.fill[3] * 1.25))
+                alpha = min(1.0, self.Conf.fill[3] * 1.25)
                 self.Conf.outline = (0.1, 0.1, 0.1, alpha)
             else:
                 self.Conf.outline = (-1.0, 0.0, 0.0)
@@ -135,8 +134,12 @@ class AnimOsdPrefs(Gtk.VBox):
             # Set monitor to display OSD on if there's more than one
             monitor_cnt = Gdk.Screen.get_default().get_n_monitors()
             if monitor_cnt > 1:
-                adj = Gtk.Adjustment(value=self.Conf.monitor, lower=0,
-                                     upper=monitor_cnt - 1, step_increment=1)
+                adj = Gtk.Adjustment(
+                    value=self.Conf.monitor,
+                    lower=0,
+                    upper=monitor_cnt - 1,
+                    step_increment=1,
+                )
                 monitor = Gtk.SpinButton(adjustment=adj)
                 monitor.set_numeric(True)
                 monitor.connect("value-changed", change_monitor)
@@ -149,20 +152,22 @@ class AnimOsdPrefs(Gtk.VBox):
                 self.Conf.monitor = 0
 
             hb = Gtk.HBox(spacing=6)
-            grid = Gtk.Grid(column_homogeneous=True,
-                            row_homogeneous=True,
-                            row_spacing=4,
-                            column_spacing=4)
-            arrows = [["↖", "↑", "↗"],
-                      ["←", "○", "→"],
-                      ["↙", "↓", "↘ "]]
+            grid = Gtk.Grid(
+                column_homogeneous=True,
+                row_homogeneous=True,
+                row_spacing=4,
+                column_spacing=4,
+            )
+            arrows = [["↖", "↑", "↗"], ["←", "○", "→"], ["↙", "↓", "↘ "]]
 
             group = None
             for x in range(3):
                 for y in range(3):
                     rb = Gtk.RadioButton(group=group, label=arrows[y][x])
-                    if (int(self.Conf.pos_x * 2.0) == x and
-                            int(self.Conf.pos_y * 2.0) == y):
+                    if (
+                        int(self.Conf.pos_x * 2.0) == x
+                        and int(self.Conf.pos_y * 2.0) == y
+                    ):
                         rb.set_active(True)
                     grid.attach(rb, x, y, 1, 1)
                     group = rb
@@ -181,9 +186,10 @@ class AnimOsdPrefs(Gtk.VBox):
 
             hb = Gtk.HBox(spacing=6)
             coversize = Gtk.SpinButton(
-                adjustment=Gtk.Adjustment.new(
-                    self.Conf.coversize, 1, 600, 1, 10, 0),
-                climb_rate=1, digits=0)
+                adjustment=Gtk.Adjustment.new(self.Conf.coversize, 1, 600, 1, 10, 0),
+                climb_rate=1,
+                digits=0,
+            )
             coversize.set_numeric(True)
             coversize.connect("value-changed", change_coversize)
             l1 = ConfigLabel(_("_Cover size:"), coversize)
@@ -230,15 +236,15 @@ class AnimOsdPrefs(Gtk.VBox):
             t.props.expand = False
             t.set_col_spacings(6)
             t.set_row_spacings(3)
-            b = Gtk.ColorButton(
-                rgba=Gdk.RGBA(*map(__floattocol, self.Conf.text)))
+            b = Gtk.ColorButton(rgba=Gdk.RGBA(*map(__floattocol, self.Conf.text)))
             l = ConfigLabel(_("_Text:"), b)
 
             t.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(b, 1, 2, 0, 1)
             b.connect("color-set", set_text)
-            b = Gtk.ColorButton(color=Gdk.Color(*map(__floattocol,
-                                self.Conf.fill[0:3])))
+            b = Gtk.ColorButton(
+                color=Gdk.Color(*map(__floattocol, self.Conf.fill[0:3]))
+            )
             b.set_use_alpha(True)
             b.set_alpha(__floattocol(self.Conf.fill[3]))
             b.connect("color-set", set_fill)
@@ -257,9 +263,10 @@ class AnimOsdPrefs(Gtk.VBox):
             toggles = [
                 (_("_Shadows"), self.Conf.shadow[0], change_shadow),
                 (_("_Outline"), self.Conf.outline[0], change_outline),
-                (_("Rou_nded Corners"), self.Conf.corners - 1, change_rounded)]
+                (_("Rou_nded Corners"), self.Conf.corners - 1, change_rounded),
+            ]
 
-            for (label, current, callback) in toggles:
+            for label, current, callback in toggles:
                 checkb = Gtk.CheckButton(label=label, use_underline=True)
                 checkb.set_active(current != -1)
                 checkb.connect("toggled", callback)
@@ -269,8 +276,11 @@ class AnimOsdPrefs(Gtk.VBox):
             hb = Gtk.HBox(spacing=6)
             timeout = Gtk.SpinButton(
                 adjustment=Gtk.Adjustment.new(
-                    self.Conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0),
-                climb_rate=0.1, digits=1)
+                    self.Conf.delay / 1000.0, 0, 60, 0.1, 1.0, 0
+                ),
+                climb_rate=0.1,
+                digits=1,
+            )
             timeout.set_numeric(True)
             timeout.connect("value-changed", change_delay)
             l1 = ConfigLabel(_("_Delay:"), timeout)
@@ -285,8 +295,7 @@ class AnimOsdPrefs(Gtk.VBox):
 
         def build_buttons_widget():
             hb = Gtk.HBox(spacing=6)
-            edit_button = qltk.Button(_("Ed_it Display Pattern…"),
-                                      Icons.EDIT)
+            edit_button = qltk.Button(_("Ed_it Display Pattern…"), Icons.EDIT)
             edit_button.connect("clicked", edit_pattern)
             hb.pack_start(edit_button, False, True, 0)
             preview_button = Gtk.Button(label=_("Preview"), use_underline=True)

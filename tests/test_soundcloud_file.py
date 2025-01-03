@@ -17,7 +17,6 @@ TRACK_ID = 1234
 
 class TSoundcloudFile(TestCase):
     class FakeClient(SoundcloudApiClient):
-
         def __init__(self):
             super().__init__()
             self.access_token = "abc"

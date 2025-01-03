@@ -54,7 +54,8 @@ class TMatchIdentity(TestCase):
 
         matcher.minimum_similarity_ratio = 0.6
         assert matcher.get_indices(a, b) == [None, None, None], formatted_matrix(
-            matcher)
+            matcher
+        )
 
 
 class TMatchListOfSequences(TestCase):
@@ -211,23 +212,36 @@ class TMatchClassFields(TestCase):
     def test_matching_works(self):
         a, b = self._get_car_lists()
 
-        attr_to_weight = {(lambda c: c.seats): 4, (lambda c: c.name): 1,
-                          (lambda c: c.features): 5}
+        attr_to_weight = {
+            (lambda c: c.seats): 4,
+            (lambda c: c.name): 1,
+            (lambda c: c.features): 5,
+        }
         matcher = ObjectListMatcher(attr_to_weight)
 
         assert matcher.get_indices(a, b) == [2, None, 1, 0]
 
     def _get_car_lists(self):
-        a = [Car(1, "Speedy", ["gps", "heater"]), Car(2, "Cheaporghiny", []),
-             Car(16, "Half-a-Bus", ["buttons"]), Car(5, "Normal Model 1", ["music"])]
-        b = [Car(3, "Mödel V5", ["gps"]), Car(19, "Cyberbus", ["buttons"]),
-             Car(2, "Sheeporghiny", ["gps", "heater", "sheep sound button"])]
+        a = [
+            Car(1, "Speedy", ["gps", "heater"]),
+            Car(2, "Cheaporghiny", []),
+            Car(16, "Half-a-Bus", ["buttons"]),
+            Car(5, "Normal Model 1", ["music"]),
+        ]
+        b = [
+            Car(3, "Mödel V5", ["gps"]),
+            Car(19, "Cyberbus", ["buttons"]),
+            Car(2, "Sheeporghiny", ["gps", "heater", "sheep sound button"]),
+        ]
         return a, b
 
     def test_dominating_name_weights(self):
         a, b = self._get_car_lists()
-        attr_to_weight = {(lambda c: c.seats): 0.5, (lambda c: c.name): 9,
-                          (lambda c: c.features): 1.2}
+        attr_to_weight = {
+            (lambda c: c.seats): 0.5,
+            (lambda c: c.name): 9,
+            (lambda c: c.features): 1.2,
+        }
 
         matcher = ObjectListMatcher(attr_to_weight)
 
@@ -244,11 +258,13 @@ class TMatchClassFields(TestCase):
 
         matcher.minimum_similarity_ratio = 0.71
         assert matcher.get_indices(a, b) == [2, None, 1, None], formatted_matrix(
-            matcher)
+            matcher
+        )
 
         matcher.minimum_similarity_ratio = 0.9
         assert matcher.get_indices(a, b) == [None, None, 1, None], formatted_matrix(
-            matcher)
+            matcher
+        )
 
 
 @dataclass

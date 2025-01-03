@@ -51,37 +51,53 @@ class PreferencesWindow(UniqueWindow):
             ("~#disc", _("_Disc")),
             ("~#track", _("_Track")),
             ("grouping", _("Grou_ping")),
-
             ("artist", _("_Artist")),
             ("album", _("Al_bum")),
             ("title", util.tag("title")),
-
             ("genre", _("_Genre")),
             ("date", _("_Date")),
             ("~basename", _("_Filename")),
-
             ("~#length", _("_Length")),
             ("~rating", _("_Rating")),
-            ("~#filesize", util.tag("~#filesize"))]
+            ("~#filesize", util.tag("~#filesize")),
+        ]
 
         def __init__(self):
             def create_behavior_frame():
                 vbox = Gtk.VBox(spacing=12)
-                jump_button = CS(_("_Jump to playing song automatically"),
-                                 "settings", "jump", populate=True,
-                                 tooltip=_("When the playing song changes, "
-                                           "scroll to it in the song list"))
-                autosort_button = CS(_("_Sort songs when tags are modified"),
-                                     "song_list", "auto_sort", populate=True,
-                                     tooltip=_("Automatically re-sort songs in "
-                                               "the song list when tags are modified"))
-                always_sortable = CS(_("Always allow sorting"),
-                                     "song_list", "always_allow_sorting", populate=True,
-                                     tooltip=_("Allow sorting by column headers, "
-                                               "even for playlists etc"))
+                jump_button = CS(
+                    _("_Jump to playing song automatically"),
+                    "settings",
+                    "jump",
+                    populate=True,
+                    tooltip=_(
+                        "When the playing song changes, "
+                        "scroll to it in the song list"
+                    ),
+                )
+                autosort_button = CS(
+                    _("_Sort songs when tags are modified"),
+                    "song_list",
+                    "auto_sort",
+                    populate=True,
+                    tooltip=_(
+                        "Automatically re-sort songs in "
+                        "the song list when tags are modified"
+                    ),
+                )
+                always_sortable = CS(
+                    _("Always allow sorting"),
+                    "song_list",
+                    "always_allow_sorting",
+                    populate=True,
+                    tooltip=_(
+                        "Allow sorting by column headers, " "even for playlists etc"
+                    ),
+                )
 
                 def refresh_browser(*args):
                     app.window.set_sortability()
+
                 always_sortable.connect("notify::active", refresh_browser)
                 vbox.pack_start(jump_button, False, True, 0)
                 vbox.pack_start(always_sortable, False, True, 0)
@@ -106,7 +122,8 @@ class PreferencesWindow(UniqueWindow):
                 edit_button = Button(_("_Edit…"), Icons.EDIT)
                 edit_button.connect("clicked", self.__config_cols, buttons)
                 edit_button.set_tooltip_text(
-                    _("Add or remove additional column headers"))
+                    _("Add or remove additional column headers")
+                )
                 l.set_mnemonic_widget(edit_button)
                 l.set_use_underline(True)
                 hbox.pack_start(others, True, True, 0)
@@ -126,7 +143,7 @@ class PreferencesWindow(UniqueWindow):
                     (tiv, "title", "~title~version"),
                     (aip, "album", "~album~discsubtitle"),
                     (fip, "~basename", "~filename"),
-                    (aio, "artist", "~people")
+                    (aio, "artist", "~people"),
                 ]
 
                 def pack_with_label(vb: Gtk.Box, widget: Gtk.Widget, text: str):
@@ -146,8 +163,11 @@ class PreferencesWindow(UniqueWindow):
             def create_update_columns_button():
                 apply = Button(_("_Update Columns"), Icons.VIEW_REFRESH)
                 apply.set_tooltip_text(
-                    _("Apply current configuration to song list, "
-                      "adding new columns to the end"))
+                    _(
+                        "Apply current configuration to song list, "
+                        "adding new columns to the end"
+                    )
+                )
                 apply.connect("clicked", self.__apply, buttons)
                 # Apply on destroy, else config gets mangled
                 self.connect("destroy", self.__apply, buttons)
@@ -183,7 +203,7 @@ class PreferencesWindow(UniqueWindow):
                 if key in columns:
                     columns.remove(key)
 
-            for (check, off, on) in toggle_data:
+            for check, off, on in toggle_data:
                 if on in columns:
                     buttons[off].set_active(True)
                     check.set_active(True)
@@ -227,7 +247,7 @@ class PreferencesWindow(UniqueWindow):
                 result.insert(idx, new)
 
             # After this, do the substitutions
-            for (check, off, on) in self._toggle_data:
+            for check, off, on in self._toggle_data:
                 if check.get_active():
                     try:
                         result[result.index(off)] = on
@@ -282,8 +302,7 @@ class PreferencesWindow(UniqueWindow):
                 duration.set_active(index)
                 duration.connect("changed", on_changed)
                 hbox = Gtk.HBox(spacing=MARGIN)
-                label = Gtk.Label(label=_("Duration totals") + ":",
-                                  use_underline=True)
+                label = Gtk.Label(label=_("Duration totals") + ":", use_underline=True)
                 label.set_mnemonic_widget(duration)
                 hbox.pack_start(label, False, True, 0)
                 hbox.pack_start(duration, False, True, 0)
@@ -311,15 +330,26 @@ class PreferencesWindow(UniqueWindow):
             self.pack_start(create_display_frame(), False, True, MARGIN)
 
             # Ratings
-            c1 = CS(_("Confirm _multiple ratings"),
-                    "browsers", "rating_confirm_multiple", populate=True,
-                    tooltip=_("Ask for confirmation before changing the "
-                              "rating of multiple songs at once"))
+            c1 = CS(
+                _("Confirm _multiple ratings"),
+                "browsers",
+                "rating_confirm_multiple",
+                populate=True,
+                tooltip=_(
+                    "Ask for confirmation before changing the "
+                    "rating of multiple songs at once"
+                ),
+            )
 
-            c2 = CS(_("Enable _one-click ratings"),
-                    "browsers", "rating_click", populate=True,
-                    tooltip=_("Enable rating by clicking on the rating "
-                              "column in the song list"))
+            c2 = CS(
+                _("Enable _one-click ratings"),
+                "browsers",
+                "rating_click",
+                populate=True,
+                tooltip=_(
+                    "Enable rating by clicking on the rating " "column in the song list"
+                ),
+            )
 
             vbox = Gtk.VBox(spacing=MARGIN)
             vbox.pack_start(c1, False, True, 0)
@@ -330,20 +360,31 @@ class PreferencesWindow(UniqueWindow):
             vb = Gtk.VBox(spacing=MARGIN)
 
             # Filename choice algorithm config
-            sw = CS(_("Prefer _embedded art"),
-                    "albumart", "prefer_embedded", populate=True,
-                    tooltip=_("Choose to use artwork embedded in the audio "
-                              "(where available) over other sources"))
+            sw = CS(
+                _("Prefer _embedded art"),
+                "albumart",
+                "prefer_embedded",
+                populate=True,
+                tooltip=_(
+                    "Choose to use artwork embedded in the audio "
+                    "(where available) over other sources"
+                ),
+            )
             vb.pack_start(sw, False, True, 0)
 
             preferred_image_filename_tooltip = _(
                 "The album art image file(s) to use when available "
                 "(supports wildcards). If you want to supply more "
-                "than one, separate them with commas.")
+                "than one, separate them with commas."
+            )
 
-            sw = CS(_("_Preferred fixed image filename(s)"),
-                    "albumart", "force_filename", populate=True,
-                    tooltip=preferred_image_filename_tooltip)
+            sw = CS(
+                _("_Preferred fixed image filename(s)"),
+                "albumart",
+                "force_filename",
+                populate=True,
+                tooltip=preferred_image_filename_tooltip,
+            )
             vb.pack_start(sw, False, True, 0)
 
             entry = UndoEntry()
@@ -406,8 +447,12 @@ class PreferencesWindow(UniqueWindow):
             adj = Gtk.Adjustment.new(fallback_gain, -12.0, 6.0, 0.5, 1, 0.0)
             adj.connect("value-changed", self.__changed, "player", "fallback_gain")
             fb_scale = self._gain_scale_for(adj)
-            fb_scale.set_tooltip_text(_("If no Replay Gain information is available "
-                                        "for a song, scale the volume by this value"))
+            fb_scale.set_tooltip_text(
+                _(
+                    "If no Replay Gain information is available "
+                    "for a song, scale the volume by this value"
+                )
+            )
 
             fb_label = Gtk.Label(label=_("_Fall-back gain:"))
             fb_label.set_use_underline(True)
@@ -418,8 +463,12 @@ class PreferencesWindow(UniqueWindow):
             adj = Gtk.Adjustment.new(pre_amp_gain, -12, 12, 0.5, 1, 0)
             adj.connect("value-changed", self.__changed, "player", "pre_amp_gain")
             pre_scale = self._gain_scale_for(adj)
-            pre_scale.set_tooltip_text(_("Scale volume for all songs by this value, "
-                                         "as long as the result will not clip"))
+            pre_scale.set_tooltip_text(
+                _(
+                    "Scale volume for all songs by this value, "
+                    "as long as the result will not clip"
+                )
+            )
 
             pre_label = Gtk.Label(label=_("_Pre-amp gain:"))
             pre_label.set_use_underline(True)
@@ -427,8 +476,12 @@ class PreferencesWindow(UniqueWindow):
             pre_label.set_mnemonic_widget(pre_scale)
 
             widgets = [pre_label, pre_scale, fb_label, fb_scale]
-            enable_rg = CS(_("_Enable Replay Gain volume adjustment"),
-                           "player", "replaygain", populate=True)
+            enable_rg = CS(
+                _("_Enable Replay Gain volume adjustment"),
+                "player",
+                "replaygain",
+                populate=True,
+            )
             enable_rg.connect("notify::active", self.__activated_gain, widgets)
             self.__activated_gain(enable_rg, None, widgets)
 
@@ -452,11 +505,16 @@ class PreferencesWindow(UniqueWindow):
 
         def create_behavior_frame(self):
             vbox = Gtk.VBox()
-            continue_play = CS(_("_Continue playback on startup"),
-                               "player", "restore_playing", populate=True,
-                               tooltip=_(
-                                   "If music is playing on shutdown, automatically "
-                                   "start playing on next startup"))
+            continue_play = CS(
+                _("_Continue playback on startup"),
+                "player",
+                "restore_playing",
+                populate=True,
+                tooltip=_(
+                    "If music is playing on shutdown, automatically "
+                    "start playing on next startup"
+                ),
+            )
             vbox.pack_start(continue_play, False, False, 0)
             return qltk.Frame(_("Behavior"), child=vbox)
 
@@ -508,8 +566,10 @@ class PreferencesWindow(UniqueWindow):
                     model.append(row=[r])
                     deltas.append((abs(default - r), i))
                 active = sorted(deltas)[0][1]
-                print_d("Choosing #%d (%.2f), closest to current %.2f"
-                        % (active, precision * active, default))
+                print_d(
+                    "Choosing #%d (%.2f), closest to current %.2f"
+                    % (active, precision * active, default)
+                )
                 combo.set_active(active)
 
             cell = Gtk.CellRendererText()
@@ -565,27 +625,37 @@ class PreferencesWindow(UniqueWindow):
             vb.pack_start(grid, False, False, 12)
 
             # Bayesian Factor
-            bayesian_factor = config.getfloat("settings",
-                                              "bayesian_rating_factor", 0.0)
+            bayesian_factor = config.getfloat("settings", "bayesian_rating_factor", 0.0)
             adj = Gtk.Adjustment.new(bayesian_factor, 0.0, 10.0, 0.5, 0.5, 0.0)
             bayes_spin = Gtk.SpinButton(adjustment=adj, numeric=True)
             bayes_spin.set_digits(1)
-            bayes_spin.connect("changed", self.__changed_and_signal_library,
-                               "settings", "bayesian_rating_factor")
+            bayes_spin.connect(
+                "changed",
+                self.__changed_and_signal_library,
+                "settings",
+                "bayesian_rating_factor",
+            )
             bayes_spin.set_tooltip_text(
-                _("Bayesian Average factor (C) for aggregated ratings.\n"
-                  "0 means a conventional average, higher values mean that "
-                  "albums with few tracks will have less extreme ratings. "
-                  "Changing this value triggers a re-calculation for all "
-                  "albums."))
+                _(
+                    "Bayesian Average factor (C) for aggregated ratings.\n"
+                    "0 means a conventional average, higher values mean that "
+                    "albums with few tracks will have less extreme ratings. "
+                    "Changing this value triggers a re-calculation for all "
+                    "albums."
+                )
+            )
             bayes_label = Gtk.Label(label=_("_Bayesian averaging amount:"))
             bayes_label.set_use_underline(True)
             bayes_label.set_mnemonic_widget(bayes_spin)
 
             # Save Ratings
             vb.pack_start(hbox_for(bayes_label, bayes_spin, False), True, True, 0)
-            sw = CS(_("Save ratings and play _counts in tags"),
-                    "editing", "save_to_songs", populate=True)
+            sw = CS(
+                _("Save ratings and play _counts in tags"),
+                "editing",
+                "save_to_songs",
+                populate=True,
+            )
 
             def update_entry(widget, state, email_entry):
                 email_entry.set_sensitive(widget.get_active())
@@ -593,8 +663,12 @@ class PreferencesWindow(UniqueWindow):
             vb.pack_start(sw, True, True, 0)
             lab = Gtk.Label(label=_("_Email:"))
             entry = UndoEntry()
-            entry.set_tooltip_text(_("Ratings and play counts will be saved "
-                                     "in tags for this email address"))
+            entry.set_tooltip_text(
+                _(
+                    "Ratings and play counts will be saved "
+                    "in tags for this email address"
+                )
+            )
             entry.set_text(config.get("editing", "save_email"))
             entry.connect("changed", self.__changed, "editing", "save_email")
 
@@ -611,10 +685,16 @@ class PreferencesWindow(UniqueWindow):
         def tag_editing_vbox(self):
             """Returns a new VBox containing all tag editing widgets"""
             vbox = Gtk.VBox(spacing=12)
-            sw = CS(_("_Auto-save tag changes"), "editing",
-                    "auto_save_changes", populate=True,
-                    tooltip=_("Save changes to tags without confirmation "
-                              "when editing multiple files"))
+            sw = CS(
+                _("_Auto-save tag changes"),
+                "editing",
+                "auto_save_changes",
+                populate=True,
+                tooltip=_(
+                    "Save changes to tags without confirmation "
+                    "when editing multiple files"
+                ),
+            )
             vbox.pack_start(sw, False, False, 0)
 
             def revert_split(entry, button, _, section, option):
@@ -628,9 +708,12 @@ class PreferencesWindow(UniqueWindow):
             split_entry.set_text(config.get("editing", "split_on"))
             split_entry.connect("changed", self.__changed, "editing", "split_on")
             split_entry.set_tooltip_text(
-                _("A set of separators to use when splitting tag values "
-                  "in the tag editor. "
-                  "The list is space-separated."))
+                _(
+                    "A set of separators to use when splitting tag values "
+                    "in the tag editor. "
+                    "The list is space-separated."
+                )
+            )
             split_label = Gtk.Label(label=_("Split _tag on:"))
             split_label.set_use_underline(True)
             split_label.set_mnemonic_widget(split_entry)
@@ -644,10 +727,13 @@ class PreferencesWindow(UniqueWindow):
             sub_entry.connect("icon-release", revert_split, "editing", "sub_split_on")
 
             sub_entry.set_tooltip_text(
-                _("A set of separators to use when extracting subtags from "
-                  "tags in the tag editor. "
-                  "The list is space-separated, and each entry must only "
-                  "contain two characters."))
+                _(
+                    "A set of separators to use when extracting subtags from "
+                    "tags in the tag editor. "
+                    "The list is space-separated, and each entry must only "
+                    "contain two characters."
+                )
+            )
 
             sub_label = Gtk.Label(label=_("Split _subtag on:"))
             sub_label.set_use_underline(True)
@@ -679,8 +765,12 @@ class PreferencesWindow(UniqueWindow):
             print_d('Signalling "changed" to entire library. Hold tight...')
             # Cache over clicks
             self._songs = self._songs or list(app.library.values())
-            copool.add(emit_signal, self._songs, funcid="library changed",
-                       name=_("Updating for new ratings"))
+            copool.add(
+                emit_signal,
+                self._songs,
+                funcid="library changed",
+                name=_("Updating for new ratings"),
+            )
 
     class Library(Gtk.VBox):
         name = "library"
@@ -703,8 +793,8 @@ class PreferencesWindow(UniqueWindow):
             reload_ = qltk.Button(_("Re_build Library"), Icons.DOCUMENT_NEW)
             reload_.connect("clicked", reload_cb)
             reload_.set_tooltip_text(
-                _("Reload all songs in your library. "
-                  "This can take a long time."))
+                _("Reload all songs in your library. " "This can take a long time.")
+            )
 
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
             hbox = Gtk.Box()
@@ -726,13 +816,25 @@ class PreferencesWindow(UniqueWindow):
 
         def create_behavior_frame(self):
             vb = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=12)
-            scan_at_start_sw = CS(_("Scan library _on start"),
-                                  "library", "refresh_on_start", populate=True)
+            scan_at_start_sw = CS(
+                _("Scan library _on start"),
+                "library",
+                "refresh_on_start",
+                populate=True,
+            )
             req_restart = _("A restart is required for any changes to take effect")
             watch_lib_sw = CS(
-                _("_Watch directories for changes"), "library", "watch", populate=True,
-                tooltip=_("Watch library directories for external file additions, "
-                          "deletions and renames.") + "\n" + req_restart)
+                _("_Watch directories for changes"),
+                "library",
+                "watch",
+                populate=True,
+                tooltip=_(
+                    "Watch library directories for external file additions, "
+                    "deletions and renames."
+                )
+                + "\n"
+                + req_restart,
+            )
             vb.pack_start(watch_lib_sw, False, True, 0)
             vb.pack_start(scan_at_start_sw, False, True, 0)
             return qltk.Frame(_("Behavior"), child=vb)
@@ -768,8 +870,11 @@ class PreferencesWindow(UniqueWindow):
         self.__notebook = notebook = qltk.Notebook()
         pages = [self.Tagging]
         if all_pages:
-            pages = [self.SongList, self.Browsers, self.Player,
-                        self.Library] + pages + [self.Advanced]
+            pages = (
+                [self.SongList, self.Browsers, self.Player, self.Library]
+                + pages
+                + [self.Advanced]
+            )
         for Page in pages:
             page = Page()
             page.show()

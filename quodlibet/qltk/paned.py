@@ -15,7 +15,6 @@ from . import add_css, gtk_version
 
 
 class Paned(Gtk.Paned):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.ensure_wide_handle()
@@ -23,25 +22,31 @@ class Paned(Gtk.Paned):
     def ensure_wide_handle(self):
         if gtk_version >= (3, 19):
             self.props.wide_handle = True
-            add_css(self, """
+            add_css(
+                self,
+                """
                 paned separator {
                     border-width: 0;
                     min-height: 5px;
                     min-width: 5px;
                     background-image: none;
                 }
-            """)
+            """,
+            )
             return
 
         if hasattr(self.props, "wide_handle"):
             # gtk 3.16
             self.props.wide_handle = True
-            add_css(self, """
+            add_css(
+                self,
+                """
                 GtkPaned {
                     border-width: 0;
                     background: none;
                 }
-            """)
+            """,
+            )
             return
 
 
@@ -140,9 +145,11 @@ class MultiRPaned:
         self._root_paned = None
 
         if self.PANED is None:
-            explanation = ("PANED is None. Do not directly"
-                           "instantiate MultiRPaned, use"
-                           "one of its subclasses.")
+            explanation = (
+                "PANED is None. Do not directly"
+                "instantiate MultiRPaned, use"
+                "one of its subclasses."
+            )
             raise AttributeError(explanation)
 
     def set_widgets(self, widgets):
@@ -229,7 +236,6 @@ class MultiRVPaned(MultiRPaned):
 
 
 class ConfigMultiRPaned(MultiRPaned):
-
     def __init__(self, section, option):
         super().__init__()
         self.section = section

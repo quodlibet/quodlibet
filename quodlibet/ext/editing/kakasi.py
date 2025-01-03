@@ -11,6 +11,7 @@ from quodlibet.qltk import Icons
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gtk, GObject
@@ -27,13 +28,10 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
     PLUGIN_DESC = _("Converts kana/kanji to romaji before renaming.")
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
-    __gsignals__ = {
-        "preview": (GObject.SignalFlags.RUN_LAST, None, ())
-    }
+    __gsignals__ = {"preview": (GObject.SignalFlags.RUN_LAST, None, ())}
 
     def __init__(self):
-        super().__init__(
-            _("Romanize _Japanese text"), use_underline=True)
+        super().__init__(_("Romanize _Japanese text"), use_underline=True)
         connect_obj(self, "toggled", self.emit, "preview")
 
     @property
@@ -50,10 +48,10 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
             return values
 
         proc = subprocess.Popen(
-            ["kakasi", "-isjis", "-osjis", "-Ha", "-Ka", "-Ja",
-             "-Ea", "-ka", "-s"],
+            ["kakasi", "-isjis", "-osjis", "-Ha", "-Ka", "-Ja", "-Ea", "-ka", "-s"],
             stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE)
+            stdout=subprocess.PIPE,
+        )
         result = proc.communicate(data)[0]
 
         try:
@@ -64,5 +62,7 @@ class Kakasi(RenameFilesPlugin, Gtk.CheckButton):
 
 if not iscommand("kakasi"):
     from quodlibet import plugins
+
     raise plugins.PluginImportError(
-        _("Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."))
+        _("Couldn't find the 'Kanji Kana Simple Inverter' (kakasi).")
+    )

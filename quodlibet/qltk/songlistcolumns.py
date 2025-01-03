@@ -60,9 +60,11 @@ def _highlight_current_cell(cr, background_area, cell_area, flags):
     state = Gtk.StateFlags.INSENSITIVE | Gtk.StateFlags.BACKDROP
     style_context.set_state(state)
     color = style_context.get_border_color(state)
-    add_css(dummy_widget,
-            "* { border-color: rgba(%d, %d, %d, 0.3); }" % (
-                    color.red * 255, color.green * 255, color.blue * 255))
+    add_css(
+        dummy_widget,
+        "* { border-color: rgba(%d, %d, %d, 0.3); }"
+        % (color.red * 255, color.green * 255, color.blue * 255),
+    )
     ba = background_area
     ca = cell_area
     # Draw over the left and right border so we don't see the rounded corners
@@ -71,8 +73,7 @@ def _highlight_current_cell(cr, background_area, cell_area, flags):
     # Ideally we would draw over the whole background but the cell area only
     # redraws the cell_area so we get leftover artifacts if we draw
     # above/below.
-    draw_area = (ba.x - ca.height, ca.y,
-                 ba.width + ca.height * 2, ca.height)
+    draw_area = (ba.x - ca.height, ca.y, ba.width + ca.height * 2, ca.height)
     cr.save()
     cr.new_path()
     cr.rectangle(ba.x, ca.y, ba.width, ca.height)
@@ -86,18 +87,20 @@ def _highlight_current_cell(cr, background_area, cell_area, flags):
 class SongListCellAreaBox(Gtk.CellAreaBox):
     highlight = False
 
-    def do_render(self, context, widget, cr, background_area, cell_area,
-                  flags, paint_focus):
+    def do_render(
+        self, context, widget, cr, background_area, cell_area, flags, paint_focus
+    ):
         if self.highlight and not flags & Gtk.CellRendererState.SELECTED:
             _highlight_current_cell(cr, background_area, cell_area, flags)
         return Gtk.CellAreaBox.do_render(
-            self, context, widget, cr, background_area, cell_area,
-            flags, paint_focus)
+            self, context, widget, cr, background_area, cell_area, flags, paint_focus
+        )
 
     def do_apply_attributes(self, tree_model, iter_, is_expander, is_expanded):
         self.highlight = tree_model.get_path(iter_) == tree_model.current_path
         return Gtk.CellAreaBox.do_apply_attributes(
-            self, tree_model, iter_, is_expander, is_expanded)
+            self, tree_model, iter_, is_expander, is_expanded
+        )
 
 
 class SongListColumn(TreeViewColumnButton):
@@ -108,8 +111,7 @@ class SongListColumn(TreeViewColumnButton):
         """tag e.g. 'artist'"""
 
         title = self._format_title(tag)
-        super().__init__(
-            title=title, cell_area=SongListCellAreaBox())
+        super().__init__(title=title, cell_area=SongListCellAreaBox())
         self.set_tooltip_text(title)
         self.header_name = tag
 
@@ -154,7 +156,8 @@ class TextColumn(SongListColumn):
         self._last_width = None
         self._force_update = False
         self._deferred_width_check = util.DeferredSignal(
-            self._check_width_update, timeout=500)
+            self._check_width_update, timeout=500
+        )
 
         def on_tv_changed(column, old, new):
             if new is None:
@@ -188,8 +191,7 @@ class TextColumn(SongListColumn):
         self.queue_resize()
 
     def _needs_update(self, value):
-        return self._force_update or \
-            super()._needs_update(value)
+        return self._force_update or super()._needs_update(value)
 
     def _cdf(self, column, cell, model, iter_, user_data):
         self._deferred_width_check()
@@ -283,6 +285,7 @@ class NonSynthTextColumn(WideTextColumn):
     """Optimize for non-synthesized keys by grabbing them directly.
     Used for any tag without a '~' except 'title'.
     """
+
     can_edit = True
 
     def __row_edited(self, render, path, new: str, model: Gtk.TreeModel) -> None:
@@ -319,7 +322,6 @@ class FSColumn(WideTextColumn):
 
 
 class PatternColumn(WideTextColumn):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -373,7 +375,7 @@ class NumericColumn(TextColumn):
 
     def _apply_value(self, model, iter_, cell, value):
         if isinstance(value, float):
-            text = "%.2f" % round(value, 2)
+            text = f"{round(value, 2):.2f}"
         else:
             text = str(value)
 
@@ -402,8 +404,7 @@ class NumericColumn(TextColumn):
 
         # resize if too small or way too big and above the minimum
         width = self.get_width()
-        needed_width = max(
-            [self._get_min_width()] + list(self._texts.values()))
+        needed_width = max([self._get_min_width()] + list(self._texts.values()))
         if width < needed_width:
             self._resize(needed_width)
         elif width - needed_width >= self._cell_width("0"):
@@ -425,12 +426,10 @@ class NumericColumn(TextColumn):
         if self._timeout is not None:
             GLib.source_remove(self._timeout)
             self._timeout = None
-        self._timeout = GLib.idle_add(self._delayed_recalc,
-            priority=GLib.PRIORITY_LOW)
+        self._timeout = GLib.idle_add(self._delayed_recalc, priority=GLib.PRIORITY_LOW)
 
 
 class LengthColumn(NumericColumn):
-
     def __init__(self):
         super().__init__("~#length")
 
@@ -448,13 +447,12 @@ class LengthColumn(NumericColumn):
 
 
 class FilesizeColumn(NumericColumn):
-
     def __init__(self):
         super().__init__("~#filesize")
 
     def _get_min_width(self):
         # e.g "2.22 MB"
-        return self._cell_width(util.format_size(2.22 * (1024 ** 2)))
+        return self._cell_width(util.format_size(2.22 * (1024**2)))
 
     def _fetch_value(self, model, iter_):
         return model.get_value(iter_).get("~#filesize", 0)
@@ -504,8 +502,7 @@ class CurrentColumn(SongListColumn):
             return
 
         if name is not None:
-            gicon = Gio.ThemedIcon.new_from_names(
-                [name + "-symbolic", name])
+            gicon = Gio.ThemedIcon.new_from_names([name + "-symbolic", name])
         else:
             gicon = None
 

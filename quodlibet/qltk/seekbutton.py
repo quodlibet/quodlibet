@@ -18,8 +18,11 @@ from quodlibet.qltk import bookmarks
 from quodlibet.qltk.x import Align
 from quodlibet.qltk import Icons
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
-from quodlibet.qltk.util import window_grab_and_map, window_ungrab_and_unmap, \
-    position_window_beside_widget
+from quodlibet.qltk.util import (
+    window_grab_and_map,
+    window_ungrab_and_unmap,
+    position_window_beside_widget,
+)
 from quodlibet.qltk.x import SeparatorMenuItem
 from quodlibet.util import connect_obj, connect_destroy
 
@@ -71,7 +74,6 @@ class TimeLabel(Gtk.Label):
 
 
 class HSlider(Gtk.Button):
-
     def __init__(self, child=None):
         super().__init__()
         if child:
@@ -107,6 +109,7 @@ class HSlider(Gtk.Button):
         # forward scroll event to the button
         def foward_scroll(scale, event):
             self.emit("scroll-event", event.copy())
+
         window.connect("scroll-event", foward_scroll)
 
         # ignore scroll events on the scale, the window handles it instead
@@ -116,12 +119,14 @@ class HSlider(Gtk.Button):
         # so only events not on the scale hide the window
         def handle_all(scale, event):
             return True
+
         self.scale.connect_after("button-press-event", handle_all)
         self.scale.connect_after("button-release-event", handle_all)
 
         # forward release event to the scale
         def foward_release(scale, event):
             self.scale.emit("button-release-event", event.copy())
+
         window.connect("button-release-event", foward_release)
 
         self.set_slider_length(200)
@@ -149,8 +154,7 @@ class HSlider(Gtk.Button):
         self.__window.resize(1, 1)
 
     def set_slider_widget(self, widget):
-        self._box.pack_start(
-            Align(widget, border=6, left=-3), False, True, 0)
+        self._box.pack_start(Align(widget, border=6, left=-3), False, True, 0)
 
     def __clicked(self, button):
         if self.__window.get_property("visible"):
@@ -174,11 +178,12 @@ class HSlider(Gtk.Button):
 
         self.__grabbed = window_grab_and_map(
             window,
-            Gdk.EventMask.BUTTON_PRESS_MASK |
-            Gdk.EventMask.BUTTON_RELEASE_MASK |
-            Gdk.EventMask.BUTTON_MOTION_MASK |
-            Gdk.EventMask.POINTER_MOTION_MASK |
-            Gdk.EventMask.SCROLL_MASK)
+            Gdk.EventMask.BUTTON_PRESS_MASK
+            | Gdk.EventMask.BUTTON_RELEASE_MASK
+            | Gdk.EventMask.BUTTON_MOTION_MASK
+            | Gdk.EventMask.POINTER_MOTION_MASK
+            | Gdk.EventMask.SCROLL_MASK,
+        )
 
     def __scroll(self, widget, event, hscale):
         adj = self.__adj
@@ -234,8 +239,7 @@ class SeekButton(HSlider):
         self.scale.connect("value-changed", self.__update_time, l)
 
         m = Gtk.Menu()
-        c = ConfigCheckMenuItem(
-            _("Display remaining time"), "player", "time_remaining")
+        c = ConfigCheckMenuItem(_("Display remaining time"), "player", "time_remaining")
         c.set_active(config.getboolean("player", "time_remaining"))
         connect_obj(c, "toggled", self.scale.emit, "value-changed")
         self.__remaining = c
@@ -251,15 +255,13 @@ class SeekButton(HSlider):
         m.append(i)
         m.show_all()
 
-        connect_obj(self,
-            "button-press-event", self.__check_menu, m, player, c)
+        connect_obj(self, "button-press-event", self.__check_menu, m, player, c)
         connect_obj(self, "popup-menu", self.__popup_menu, m, player)
 
         timer = TimeTracker(player)
         connect_obj(timer, "tick", self.__check_time, player)
 
-        connect_destroy(
-            library, "changed", self.__songs_changed, player, m)
+        connect_destroy(library, "changed", self.__songs_changed, player, m)
 
         connect_destroy(player, "song-started", self.__song_started, m)
         connect_destroy(player, "seek", self.__seeked)
@@ -302,7 +304,7 @@ class SeekButton(HSlider):
         return True
 
     def __seeked(self, player, song, ms):
-        self.scale.set_value(ms / 1000.)
+        self.scale.set_value(ms / 1000.0)
 
     def __scroll(self, widget, event, player):
         self.__lock = True
@@ -328,9 +330,11 @@ class SeekButton(HSlider):
         # When the song is paused GStreamer returns < 1 for position
         # queries, so if it's paused just ignore it.
         if not (player.paused or self.__lock):
-            position = player.get_position() / 1000.
-            if (not self.__seekable and
-                position > self.scale.get_adjustment().get_upper()):
+            position = player.get_position() / 1000.0
+            if (
+                not self.__seekable
+                and position > self.scale.get_adjustment().get_upper()
+            ):
                 self.scale.set_range(0, position)
             self.scale.set_value(position)
         return True

@@ -7,40 +7,34 @@
 # (at your option) any later version.
 
 import datetime
-import os.path
 import json
+import os.path
 import uuid
+from collections.abc import Callable, MutableMapping
 from pathlib import Path
+from typing import Any, NamedTuple
 
 from gi.repository import Gtk
-
 from senf import path2fsn
 
-from typing import NamedTuple, Any
-from collections.abc import Callable, MutableMapping
-
-from quodlibet.plugins import PluginConfig, BoolConfProp, FloatConfProp
-from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
-from quodlibet.qltk.showfiles import show_files
-
-from quodlibet.util.matcher import ObjectListMatcher
-
-from quodlibet.formats._audio import MIGRATE, AudioFile
-
-from quodlibet.util import connect_obj, print_exc
-
 import quodlibet
-from quodlibet.util.path import (join_path_with_escaped_name_of_legal_length,
-                                 stem_of_file_name, extension_of_file_name)
-
-from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
-
-from quodlibet import _, app, print_e, qltk, util, print_d
-
-from quodlibet.plugins.songshelpers import each_song, is_writable, is_finite
-from quodlibet.qltk.msg import ErrorMessage, WarningMessage
-from quodlibet.qltk import Icons, SeparatorMenuItem
+from quodlibet import _, app, print_d, print_e, qltk, util
+from quodlibet.formats._audio import MIGRATE, AudioFile
+from quodlibet.plugins import BoolConfProp, FloatConfProp, PluginConfig
+from quodlibet.plugins.songshelpers import each_song, is_finite, is_writable
 from quodlibet.plugins.songsmenu import SongsMenuPlugin
+from quodlibet.qltk import Icons, SeparatorMenuItem
+from quodlibet.qltk.matchdialog import ColumnSpec, MatchListsDialog
+from quodlibet.qltk.msg import ErrorMessage, WarningMessage
+from quodlibet.qltk.showfiles import show_files
+from quodlibet.util import connect_obj, print_exc
+from quodlibet.util.matcher import ObjectListMatcher
+from quodlibet.util.path import (
+    extension_of_file_name,
+    join_path_with_escaped_name_of_legal_length,
+    stem_of_file_name,
+)
+from quodlibet.util.songwrapper import SongWrapper, check_wrapper_changed
 
 __all__ = ["ImportExportTagsAndTrackUserDataPlugin"]
 
@@ -57,13 +51,14 @@ USER_DATA_KEYS = " ".join(MIGRATE | {PLAYLISTS_KEY})
 # "tag1 tag2" will result in only tag1 and tag2 being exported
 # * means all tags (so tags like 'title' and internal (user data) "tags" like ~#added)
 # * tag1 tag2 means all except tag1 and tag2
-EXPORT_OPTIONS = [(_("Export User Data"), USER_DATA_KEYS),
-                  (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_STEM_KEY}"),
-                  (_("Export Tags and User Data"), f"* {FILE_STEM_KEY}"),
-                  (_("Export File Stems and User Data"), f"{USER_DATA_KEYS} "
-                                                         f"{FILE_STEM_KEY}"),
-                  (_("Export File Stems and Tags"), f"* {USER_DATA_KEYS}"),
-                  (_("Export File Stems, Tags and User Data"), "*")]
+EXPORT_OPTIONS = [
+    (_("Export User Data"), USER_DATA_KEYS),
+    (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_STEM_KEY}"),
+    (_("Export Tags and User Data"), f"* {FILE_STEM_KEY}"),
+    (_("Export File Stems and User Data"), f"{USER_DATA_KEYS} " f"{FILE_STEM_KEY}"),
+    (_("Export File Stems and Tags"), f"* {USER_DATA_KEYS}"),
+    (_("Export File Stems, Tags and User Data"), "*"),
+]
 
 EXPORT_DIR_PATH = Path(quodlibet.get_cache_dir(), "tags_and_track_user_data")
 os.makedirs(EXPORT_DIR_PATH, exist_ok=True)
@@ -93,9 +88,14 @@ class AlbumId(NamedTuple):
         # below the folder that's named after the album
         parts = s("~dirname").rsplit(os.path.sep, maxsplit=2)[-2:]
 
-        return AlbumId(s.album_key[0], s("albumsort", "") or s("album"),
-                       s("albumartistsort", "") or s("albumartist") or s("artist"),
-                       s("~#discs", 1), s("~#tracks", 1), os.path.join(*parts))
+        return AlbumId(
+            s.album_key[0],
+            s("albumsort", "") or s("album"),
+            s("albumartistsort", "") or s("albumartist") or s("artist"),
+            s("~#discs", 1),
+            s("~#tracks", 1),
+            os.path.join(*parts),
+        )
 
 
 class TrackId(NamedTuple):
@@ -104,6 +104,7 @@ class TrackId(NamedTuple):
     all metadata could be useful for that, but some things are far more relevant than
     others (title vs bpm), and for performance reasons we have to limit it anyway.
     """
+
     artist: str
     title: str
     disc: int
@@ -114,8 +115,15 @@ class TrackId(NamedTuple):
 
     @classmethod
     def of_song(cls, s: SongWrapper | AudioFile):
-        return TrackId(s("artist"), s("title"), s("~#disc", 1), s("~#discs", 1),
-                       s("~#track", 1), s("~#tracks", 1), s("~basename"))
+        return TrackId(
+            s("artist"),
+            s("title"),
+            s("~#disc", 1),
+            s("~#discs", 1),
+            s("~#track", 1),
+            s("~#tracks", 1),
+            s("~basename"),
+        )
 
     @property
     def file_stem(self):
@@ -138,19 +146,24 @@ class Config:
     _config = PluginConfig(_PLUGIN_ID)
 
     need_user_check_if_number_of_albums_differs = BoolConfProp(
-        _config, "need_user_check_if_number_of_albums_differs", True)
+        _config, "need_user_check_if_number_of_albums_differs", True
+    )
 
     need_user_check_if_number_of_tracks_differs = BoolConfProp(
-        _config, "need_user_check_if_number_of_tracks_differs", True)
+        _config, "need_user_check_if_number_of_tracks_differs", True
+    )
 
     max_track_similarity_to_need_user_check = FloatConfProp(
-        _config, "max_track_similarity_to_need_user_check", 0.76)
+        _config, "max_track_similarity_to_need_user_check", 0.76
+    )
 
     max_album_similarity_to_need_user_check = FloatConfProp(
-        _config, "max_album_similarity_to_need_user_check", 0.80)
+        _config, "max_album_similarity_to_need_user_check", 0.80
+    )
 
     delete_exports_after_importing = BoolConfProp(
-        _config, "delete_exports_after_importing", True)
+        _config, "delete_exports_after_importing", True
+    )
 
     pretty_print_json = BoolConfProp(_config, "pretty_print_json", False)
 
@@ -194,17 +207,22 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         vbox.pack_start(info_frame, False, True, 0)
 
         meta_markup = util.monospace(", ".join(MIGRATE))
-        info_text = _("The term 'track user data' includes the playlists in which the "
-                      "selected tracks are and the following metadata:\n\n%s\n"
-                      "\nBe aware that whatever you chose to export will be imported. "
-                      "If you exported the file stems (file names without extension), "
-                      "then, on import, the selected files will be renamed.\n\nAfter "
-                      "exporting an album you can import the data into another version "
-                      "of the album. Order and number of tracks can be different. "
-                      "The plugin matches the exported data to the new tracks, even if "
-                      "the names of the tracks are slightly different. The automatic "
-                      "matching is not always correct, so it is better to not reduce "
-                      "the following similarity values too much.") % meta_markup
+        info_text = (
+            _(
+                "The term 'track user data' includes the playlists in which the "
+                "selected tracks are and the following metadata:\n\n%s\n"
+                "\nBe aware that whatever you chose to export will be imported. "
+                "If you exported the file stems (file names without extension), "
+                "then, on import, the selected files will be renamed.\n\nAfter "
+                "exporting an album you can import the data into another version "
+                "of the album. Order and number of tracks can be different. "
+                "The plugin matches the exported data to the new tracks, even if "
+                "the names of the tracks are slightly different. The automatic "
+                "matching is not always correct, so it is better to not reduce "
+                "the following similarity values too much."
+            )
+            % meta_markup
+        )
 
         info_lbl = Gtk.Label(label=info_text, use_markup=True, wrap=True)
         info_box.pack_start(info_lbl, True, True, 0)
@@ -214,19 +232,23 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         vbox.pack_start(manual_frame, False, True, 0)
 
         tsd = Gtk.CheckButton(
-            label=_("Require confirmation if number of tracks differs"))
+            label=_("Require confirmation if number of tracks differs")
+        )
         tsd.set_active(CONFIG.need_user_check_if_number_of_tracks_differs)
         tsd.connect("toggled", tsd_toggled)
         manual_box.pack_start(tsd, True, True, 0)
 
         asd = Gtk.CheckButton(
-            label=_("Require confirmation if number of albums differs"))
+            label=_("Require confirmation if number of albums differs")
+        )
         asd.set_active(CONFIG.need_user_check_if_number_of_albums_differs)
         asd.connect("toggled", asd_toggled)
         manual_box.pack_start(asd, True, True, 0)
 
-        desc = _("Percentage below which the user will have to manually check and "
-                 "optionally change which track is matched with which.")
+        desc = _(
+            "Percentage below which the user will have to manually check and "
+            "optionally change which track is matched with which."
+        )
 
         perc_table = Gtk.Table(n_rows=2, n_columns=2)
         perc_table.set_col_spacings(6)
@@ -254,11 +276,21 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             perc_table.attach(label, 0, 1, col, col + 1, xoptions=xoptions)
             perc_table.attach(scale, 1, 2, col, col + 1)
 
-        add_perc_scale_with_label(CONFIG.max_track_similarity_to_need_user_check, 0,
-                                  _("Track similarity:"), desc, mt_scale_changed)
+        add_perc_scale_with_label(
+            CONFIG.max_track_similarity_to_need_user_check,
+            0,
+            _("Track similarity:"),
+            desc,
+            mt_scale_changed,
+        )
 
-        add_perc_scale_with_label(CONFIG.max_album_similarity_to_need_user_check, 1,
-                                  _("Album similarity:"), desc, ma_scale_changed)
+        add_perc_scale_with_label(
+            CONFIG.max_album_similarity_to_need_user_check,
+            1,
+            _("Album similarity:"),
+            desc,
+            ma_scale_changed,
+        )
 
         export_box = Gtk.VBox(spacing=6)
         export_frame = qltk.Frame(_("Export files"), child=export_box)
@@ -281,25 +313,34 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         self._export_collectors = []
         self._import_or_export_option_index = None
 
-        self._album_id_matcher: ObjectListMatcher[AlbumId] = ObjectListMatcher({  #
-            lambda a: a.title: 9,  # title is the most reliable
-            lambda a: a.artist: 4.5,  #
-            lambda a: a.tracks: 1.2,  #
-            lambda a: a.last_directory_parts: 1,  # needed in case the album has no tags
-            lambda a: a.discs: 0.8,  # multi disc albums sometimes become single disc
-            lambda a: a.id_value: 0.5,  # is likely to change unless exact same album
-        })
+        self._album_id_matcher: ObjectListMatcher[AlbumId] = ObjectListMatcher(
+            {
+                # title is the most reliable
+                lambda a: a.title: 9,
+                lambda a: a.artist: 4.5,
+                lambda a: a.tracks: 1.2,
+                # needed in case the album has no tags
+                lambda a: a.last_directory_parts: 1,
+                # needed in case the album has no tags
+                lambda a: a.discs: 0.8,
+                # is likely to change unless exact same album
+                lambda a: a.id_value: 0.5,
+            }
+        )
         # We want check similarity afterwards, so it needs be as accurate as possible
         self._album_id_matcher.should_store_similarity_matrix = True
         self._album_id_matcher.should_go_through_every_attribute = True
 
-        self._track_id_matcher: ObjectListMatcher[TrackId] = ObjectListMatcher({  #
-            lambda t: t.title: 8,  #
-            lambda t: t.artist: 3.5,  #
-            lambda t: t.track: 1.2,  #
-            lambda t: t.file_stem: 1,  # needed in case the track has no tags
-            lambda t: t.disc: 0.8,  #
-        })
+        self._track_id_matcher: ObjectListMatcher[TrackId] = ObjectListMatcher(
+            {
+                lambda t: t.title: 8,
+                lambda t: t.artist: 3.5,
+                lambda t: t.track: 1.2,
+                # needed in case the track has no tags
+                lambda t: t.file_stem: 1,
+                lambda t: t.disc: 0.8,
+            }
+        )
         self._track_id_matcher.should_store_similarity_matrix = True
         self._album_id_matcher.should_go_through_every_attribute = True
 
@@ -332,8 +373,10 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         open_dir_item = Gtk.MenuItem(label=_("Open Export Directory"))
 
         def open_export_dir(_):
-            show_files(path2fsn(EXPORT_DIR_PATH),
-                       [path2fsn(TAGS_AND_USERDATA_INDEX_FILE_PATH.name)])
+            show_files(
+                path2fsn(EXPORT_DIR_PATH),
+                [path2fsn(TAGS_AND_USERDATA_INDEX_FILE_PATH.name)],
+            )
 
         connect_obj(open_dir_item, "activate", open_export_dir, None)
         submenu.append(open_dir_item)
@@ -377,8 +420,10 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         need_check = CONFIG.need_user_check_if_number_of_albums_differs and size_differs
 
         need_check = need_check or self._does_match_need_manual_check(
-            self._album_id_matcher, exp_indices,
-            CONFIG.max_album_similarity_to_need_user_check)
+            self._album_id_matcher,
+            exp_indices,
+            CONFIG.max_album_similarity_to_need_user_check,
+        )
 
         if need_check:
             columns = [  #
@@ -388,9 +433,15 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
                 ColumnSpec(_("Artist(s)"), lambda a: a.artist, True),
                 ColumnSpec(_("End of path"), lambda a: a.last_directory_parts, True),  #
             ]
-            prompt = MatchListsDialog(album_ids, exp_album_ids, exp_indices, columns,
-                                      _("Match Albums"), _("Continue"),
-                                      id_for_window_tracking=self.PLUGIN_ID)
+            prompt = MatchListsDialog(
+                album_ids,
+                exp_album_ids,
+                exp_indices,
+                columns,
+                _("Match Albums"),
+                _("Continue"),
+                id_for_window_tracking=self.PLUGIN_ID,
+            )
             exp_indices = prompt.run()
 
         for exp_idx, songs in zip(exp_indices, albums, strict=False):
@@ -421,8 +472,11 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         return True
 
     def _warning_nothing_to_import(self):
-        WarningMessage(app.window, _("Nothing to import"),
-                       _("You have to export something before you can import."))
+        WarningMessage(
+            app.window,
+            _("Nothing to import"),
+            _("You have to export something before you can import."),
+        )
 
     def _load_exports_in_index(self, album_json_key_to_export_file_name):
         for key, file_name in album_json_key_to_export_file_name.items():
@@ -468,8 +522,9 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
             else:
                 move_export_to_used(export_path)
 
-    def import_data_and_get_changed(self, songs: list[SongWrapper],
-                                    source_path: Path) -> list[SongWrapper]:
+    def import_data_and_get_changed(
+        self, songs: list[SongWrapper], source_path: Path
+    ) -> list[SongWrapper]:
         """:return: List of changed songs"""
 
         exported = self._try_read_source_json(source_path)
@@ -555,8 +610,10 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
         need_check = CONFIG.need_user_check_if_number_of_tracks_differs and size_differs
 
         need_check = need_check or self._does_match_need_manual_check(
-            self._track_id_matcher, export_ids_indices,
-            CONFIG.max_track_similarity_to_need_user_check)
+            self._track_id_matcher,
+            export_ids_indices,
+            CONFIG.max_track_similarity_to_need_user_check,
+        )
 
         if need_check:
             columns = [  #
@@ -566,15 +623,22 @@ class ImportExportTagsAndTrackUserDataPlugin(SongsMenuPlugin):
                 ColumnSpec(_("Artist(s)"), lambda t: t.artist, True),
                 ColumnSpec(_("File name"), lambda t: t.file_name, True),  #
             ]
-            prompt = MatchListsDialog(songs_ids, export_ids, export_ids_indices,
-                                      columns, _("Match Tracks"), _("Import"),
-                                      id_for_window_tracking=self.PLUGIN_ID)
+            prompt = MatchListsDialog(
+                songs_ids,
+                export_ids,
+                export_ids_indices,
+                columns,
+                _("Match Tracks"),
+                _("Import"),
+                id_for_window_tracking=self.PLUGIN_ID,
+            )
             return prompt.run()
 
         return export_ids_indices
 
-    def _does_match_need_manual_check(self, matcher, b_indices,
-                                      max_similarity_to_need_manual_check):
+    def _does_match_need_manual_check(
+        self, matcher, b_indices, max_similarity_to_need_manual_check
+    ):
         if max_similarity_to_need_manual_check <= 0.0:
             return False
         if max_similarity_to_need_manual_check >= 1.0:
@@ -692,8 +756,9 @@ def was_removed(elements: list, o: Any) -> bool:
     return False
 
 
-def basic_track_data(track: AudioFile, include_playlist: bool,
-                     include_file_stem: bool) -> TrackData:
+def basic_track_data(
+    track: AudioFile, include_playlist: bool, include_file_stem: bool
+) -> TrackData:
     md = {IDENTIFIER_KEY: TrackId.of_song(track)}
     if include_playlist:
         if app.library is None:
@@ -711,8 +776,11 @@ def basic_track_data(track: AudioFile, include_playlist: bool,
 
 def new_export_path_for_album(album_id: AlbumId) -> Path:
     stem = f"{album_id.title} - {album_id.artist}"
-    path = Path(join_path_with_escaped_name_of_legal_length(str(EXPORT_DIR_PATH), stem,
-                                                            EXPORT_EXTENSION))
+    path = Path(
+        join_path_with_escaped_name_of_legal_length(
+            str(EXPORT_DIR_PATH), stem, EXPORT_EXTENSION
+        )
+    )
     trim_count = 1
     while path.exists():
         new_stem = path.stem[:-trim_count] + uuid.uuid4().hex[:trim_count]

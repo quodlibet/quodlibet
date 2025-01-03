@@ -38,7 +38,6 @@ value="invalidates"/>
 
 @skipUnless(dbus, "dbus missing")
 class TDbusUtils(TestCase):
-
     def test_prop_sig(self):
         value = apply_signature(2, "u")
         assert isinstance(value, dbus.UInt32)
@@ -83,25 +82,21 @@ class TDbusUtils(TestCase):
 
     def test_filter_props(self):
         spec = filter_property_spec(ANN1, wl=["Position"])
-        self.assertEqual(
-            list(list_spec_properties(spec).keys()), ["Position"])
+        self.assertEqual(list(list_spec_properties(spec).keys()), ["Position"])
         props = list_spec_properties(spec)
         self.assertEqual(props["Position"]["emit"], "false")
 
         spec = filter_property_spec(ANN1, bl=["Position"])
-        self.assertEqual(list(list_spec_properties(spec).keys()),
-                             ["MinimumRate"])
+        self.assertEqual(list(list_spec_properties(spec).keys()), ["MinimumRate"])
 
         spec = filter_property_spec(ANN1)
         self.assertEqual(len(list_spec_properties(spec).keys()), 2)
 
     def test_validate_utf8(self):
         self.assertEqual(dbus_unicode_validate("X\ufffeX"), "X\ufffdX")
-        self.assertEqual(dbus_unicode_validate(b"X\xef\xbf\xbeX"),
-                             "X\ufffdX")
+        self.assertEqual(dbus_unicode_validate(b"X\xef\xbf\xbeX"), "X\ufffdX")
 
     def test_property_mixin(self):
-
         class X(DBusProperty):
             SUPPORTS_MULTIPLE_OBJECT_PATHS = False
 

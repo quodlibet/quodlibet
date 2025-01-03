@@ -43,24 +43,25 @@ from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.path import iscommand
 from quodlibet.util.urllib import urlopen, Request
 
-USER_AGENT = "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) " \
-             "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
+USER_AGENT = (
+    "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.9.2.13) "
+    "Gecko/20101210 Iceweasel/3.6.13 (like Firefox/3.6.13)"
+)
 
 PLUGIN_CONFIG_SECTION = "cover"
 CONFIG_ENG_PREFIX = "engine_"
 
 SEARCH_PATTERN = Pattern(
-    "<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>")
+    "<albumartist|<albumartist>|<artist>> - <album|<album>|<title>>"
+)
 
 REQUEST_LIMIT_MAX = 15
 
 
 def get_encoding_from_socket(socket):
     content_type = socket.headers.get("Content-Type", "")
-    p = [s.lower().strip()
-         for s in content_type.split(";")]
-    enc = [t.split("=")[-1].strip()
-           for t in p if t.startswith("charset")]
+    p = [s.lower().strip() for s in content_type.split(";")]
+    enc = [t.split("=")[-1].strip() for t in p if t.startswith("charset")]
     return (enc and enc[0]) or "utf-8"
 
 
@@ -92,8 +93,7 @@ def get_url(url, post=None, get=None):
     content_type = url_sock.headers.get("Content-Type", "").split(";", 1)[0]
     domain = re.compile(r"\w+://([^/]+)/").search(url).groups(0)[0]
     print_d(f"Got {content_type} data from {domain}")
-    return (data if content_type.startswith("image")
-            else data.decode(enc))
+    return data if content_type.startswith("image") else data.decode(enc)
 
 
 def get_encoding(url):
@@ -117,8 +117,10 @@ class DiscogsSearcher(CoverSearcher):
         self.page_count = 0
         self.covers = []
         self.limit = 0
-        self.creds = {"key": "aWfZGjHQvkMcreUECGAp",
-                      "secret": "VlORkklpdvAwJMwxUjNNSgqicjuizJAl"}
+        self.creds = {
+            "key": "aWfZGjHQvkMcreUECGAp",
+            "secret": "VlORkklpdvAwJMwxUjNNSgqicjuizJAl",
+        }
 
     def __parse_page(self, page, query):
         """Gets all item tags and calls the item parsing function for each"""
@@ -166,17 +168,18 @@ class DiscogsSearcher(CoverSearcher):
         images = json_dict.get("images", [])
 
         for _i, image in enumerate(images):
-
             type = image.get("type", "")
             if type != "primary":
                 continue
 
             uri = image.get("uri", "")
-            cover = {"source": "https://www.discogs.com",
-                     "name": item.get("title", ""),
-                     "thumbnail": image.get("uri150", thumbnail),
-                     "cover": uri,
-                     "size": get_size_of_url(uri)}
+            cover = {
+                "source": "https://www.discogs.com",
+                "name": item.get("title", ""),
+                "thumbnail": image.get("uri150", thumbnail),
+                "cover": uri,
+                "size": get_size_of_url(uri),
+            }
 
             width = image.get("width", 0)
             height = image.get("height", 0)
@@ -224,14 +227,16 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         close_button = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close_button.connect("clicked", lambda x: self.main_win.destroy())
 
-        self.window_fit = self.ConfigCheckButton(_("Fit image to _window"),
-                                                 "fit", True)
+        self.window_fit = self.ConfigCheckButton(_("Fit image to _window"), "fit", True)
         self.window_fit.connect("toggled", self.__scale_pixbuf)
 
         self.name_combo = Gtk.ComboBoxText()
         self.name_combo.set_tooltip_text(
-            _("See '[plugins] cover_filenames' config entry " +
-              "for image filename strings"))
+            _(
+                "See '[plugins] cover_filenames' config entry "
+                + "for image filename strings"
+            )
+        )
 
         self.cmd = ValidatingEntry(iscommand)
 
@@ -241,8 +246,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         label_open.set_mnemonic_widget(self.cmd)
         label_open.set_justify(Gtk.Justification.LEFT)
 
-        self.open_check = self.ConfigCheckButton(_("_Edit image after saving"),
-                                                 "edit", False)
+        self.open_check = self.ConfigCheckButton(
+            _("_Edit image after saving"), "edit", False
+        )
         label_name = Gtk.Label(label=_("File_name:"), use_underline=True)
         label_name.set_use_underline(True)
         label_name.set_mnemonic_widget(self.name_combo)
@@ -251,8 +257,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.cmd.set_text(self.config_get("edit_cmd", "gimp"))
 
         # populate the filename combo box
-        fn_list = self.config_get_stringlist("filenames",
-                                             ["cover.jpg", "folder.jpg", ".folder.jpg"])
+        fn_list = self.config_get_stringlist(
+            "filenames", ["cover.jpg", "folder.jpg", ".folder.jpg"]
+        )
         # Issue 374 - add dynamic file names
         fn_dynlist = []
         artist = song("artist")
@@ -266,8 +273,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             else:
                 fn_dynlist.append("<artist> - <album>.jpg")
         else:
-            print_w(f"No album for {song('~filename')}. "
-                    f"Could be difficult finding art…")
+            print_w(
+                f"No album for {song('~filename')}. " f"Could be difficult finding art…"
+            )
             title = song("title")
             if title and artist:
                 fn_dynlist.append("<artist> - <title>.jpg")
@@ -302,8 +310,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
 
         self.scrolled = Gtk.ScrolledWindow()
         self.scrolled.add_with_viewport(self.image)
-        self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                 Gtk.PolicyType.AUTOMATIC)
+        self.scrolled.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
 
         bbox = Gtk.HButtonBox()
         bbox.set_spacing(6)
@@ -359,8 +366,9 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
             f.write(self.current_data)
             f.close()
         except OSError:
-            qltk.ErrorMessage(None, _("Saving failed"),
-                              _('Unable to save "%s".') % file_path).run()
+            qltk.ErrorMessage(
+                None, _("Saving failed"), _('Unable to save "%s".') % file_path
+            ).run()
         else:
             if self.open_check.get_active():
                 try:
@@ -477,8 +485,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                     self.data_cache.insert(0, (url, raw_data))
 
                     while 1:
-                        cache_sizes = [len(data[1]) for data in
-                                       self.data_cache]
+                        cache_sizes = [len(data[1]) for data in self.data_cache]
                         if sum(cache_sizes) > self.max_cache_size:
                             del self.data_cache[-1]
                         else:
@@ -533,14 +540,14 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         treeview.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        )
 
         treeselection = self.treeview.get_selection()
         treeselection.set_mode(Gtk.SelectionMode.SINGLE)
         treeselection.connect("changed", self.__select_callback, image)
 
-        self.treeview.connect("drag-data-get",
-                              self.__drag_data_get, treeselection)
+        self.treeview.connect("drag-data-get", self.__drag_data_get, treeselection)
 
         rend_pix = Gtk.CellRendererPixbuf()
         img_col = Gtk.TreeViewColumn("Thumb")
@@ -571,11 +578,13 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
             txt = util.bold_italic(cover["name"], escaper=esc)
             txt += "\n<small>%s</small>" % (
-                _("from %(source)s") % {
-                    "source": util.italic(cover["source"], escaper=esc)})
+                _("from %(source)s")
+                % {"source": util.italic(cover["source"], escaper=esc)}
+            )
             if "resolution" in cover:
                 txt += "\n" + _("Resolution: %s") % util.italic(
-                    cover["resolution"], escaper=esc)
+                    cover["resolution"], escaper=esc
+                )
             if "size" in cover:
                 txt += "\n" + _("Size: %s") % util.italic(cover["size"], escaper=esc)
 
@@ -606,12 +615,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search_fieldclean.set_alignment(xalign=0.0, yalign=0.5)
 
         self.search_radioraw = Gtk.RadioButton(group=None, label=None)
-        self.search_radioraw.connect("toggled", self.__searchtypetoggled,
-                                     "raw")
-        self.search_radioclean = Gtk.RadioButton(group=self.search_radioraw,
-                                                 label=None)
-        self.search_radioclean.connect("toggled", self.__searchtypetoggled,
-                                       "clean")
+        self.search_radioraw.connect("toggled", self.__searchtypetoggled, "raw")
+        self.search_radioclean = Gtk.RadioButton(group=self.search_radioraw, label=None)
+        self.search_radioclean.connect("toggled", self.__searchtypetoggled, "clean")
         # note: set_active(False) appears to have no effect
         # self.search_radioraw.set_active(
         #    self.config_get_bool('searchraw', False))
@@ -622,14 +628,18 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
         search_labelresultsmax = Gtk.Label("limit")
         search_labelresultsmax.set_alignment(xalign=1.0, yalign=0.5)
-        search_labelresultsmax.set_tooltip_text(
-            _("Per engine 'at best' results limit"))
+        search_labelresultsmax.set_tooltip_text(_("Per engine 'at best' results limit"))
         search_adjresultsmax = Gtk.Adjustment(
-            value=int(self.config_get("resultsmax", 3)), lower=1,
-            upper=REQUEST_LIMIT_MAX, step_incr=1,
-            page_incr=0, page_size=0)
+            value=int(self.config_get("resultsmax", 3)),
+            lower=1,
+            upper=REQUEST_LIMIT_MAX,
+            step_incr=1,
+            page_incr=0,
+            page_size=0,
+        )
         self.search_spinresultsmax = Gtk.SpinButton(
-            adjustment=search_adjresultsmax, climb_rate=0.2, digits=0)
+            adjustment=search_adjresultsmax, climb_rate=0.2, digits=0
+        )
         self.search_spinresultsmax.set_alignment(xalign=0.5)
         self.search_spinresultsmax.set_can_focus(False)
 
@@ -642,20 +652,34 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         search_table = Gtk.Table(rows=3, columns=4, homogeneous=False)
         search_table.set_col_spacings(6)
         search_table.set_row_spacings(6)
-        search_table.attach(search_labelraw, 0, 1, 0, 1,
-                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
-        search_table.attach(self.search_radioraw, 1, 2, 0, 1,
-                            xoptions=0, xpadding=0)
+        search_table.attach(
+            search_labelraw, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL, xpadding=6
+        )
+        search_table.attach(self.search_radioraw, 1, 2, 0, 1, xoptions=0, xpadding=0)
         search_table.attach(self.search_fieldraw, 2, 4, 0, 1)
-        search_table.attach(search_labelclean, 0, 1, 1, 2,
-                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
-        search_table.attach(self.search_radioclean, 1, 2, 1, 2,
-                            xoptions=0, xpadding=0)
+        search_table.attach(
+            search_labelclean, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL, xpadding=6
+        )
+        search_table.attach(self.search_radioclean, 1, 2, 1, 2, xoptions=0, xpadding=0)
         search_table.attach(self.search_fieldclean, 2, 4, 1, 2, xpadding=4)
-        search_table.attach(search_labelresultsmax, 0, 2, 2, 3,
-                            xoptions=Gtk.AttachOptions.FILL, xpadding=6)
-        search_table.attach(self.search_spinresultsmax, 2, 3, 2, 3,
-                            xoptions=Gtk.AttachOptions.FILL, xpadding=0)
+        search_table.attach(
+            search_labelresultsmax,
+            0,
+            2,
+            2,
+            3,
+            xoptions=Gtk.AttachOptions.FILL,
+            xpadding=6,
+        )
+        search_table.attach(
+            self.search_spinresultsmax,
+            2,
+            3,
+            2,
+            3,
+            xoptions=Gtk.AttachOptions.FILL,
+            xpadding=0,
+        )
         search_table.attach(search_button_box, 3, 4, 2, 3)
 
         widget_space = 5
@@ -666,8 +690,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         left_vbox.pack_start(search_table, False, True, 0)
         left_vbox.pack_start(sw_list, True, True, 0)
 
-        hpaned = ConfigRHPaned(section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos",
-                               default=0.3)
+        hpaned = ConfigRHPaned(
+            section="plugins", option=f"{PLUGIN_CONFIG_SECTION}_pos", default=0.3
+        )
         hpaned.set_border_width(widget_space)
         hpaned.pack1(left_vbox, shrink=False)
         hpaned.pack2(image, shrink=False)
@@ -687,8 +712,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
     def __save_config(self, widget):
         self.config_set("searchraw", self.search_radioraw.get_active())
-        self.config_set("resultsmax",
-                        self.search_spinresultsmax.get_value_as_int())
+        self.config_set("resultsmax", self.search_spinresultsmax.get_value_as_int())
 
     def __drag_data_get(self, view, ctx, sel, tid, etime, treeselection):
         model, iter = treeselection.get_selected()
@@ -725,8 +749,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         self.search = search = CoverSearch(self.__search_callback)
 
         for eng in ENGINES:
-            if self.config_get_bool(
-                    CONFIG_ENG_PREFIX + eng["config_id"], True):
+            if self.config_get_bool(CONFIG_ENG_PREFIX + eng["config_id"], True):
                 search.add_engine(eng["class"], eng["replace"])
 
         raw = self.search_radioraw.get_active()
@@ -745,8 +768,7 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         """set the text and move the cursor to the end"""
 
         self.search_fieldraw.set_text(text)
-        self.search_fieldraw.emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS,
-            0, False)
+        self.search_fieldraw.emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS, 0, False)
 
     def __select_callback(self, selection, image):
         model, iter = selection.get_selected()
@@ -763,8 +785,9 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
 
             scale_factor = self.get_scale_factor()
             size = self.THUMB_SIZE * scale_factor - scale_factor * 2
-            pixbuf = pbloader.get_pixbuf().scale_simple(size, size,
-                GdkPixbuf.InterpType.BILINEAR)
+            pixbuf = pbloader.get_pixbuf().scale_simple(
+                size, size, GdkPixbuf.InterpType.BILINEAR
+            )
             pixbuf = add_border_widget(pixbuf, self)
             if not pixbuf:
                 return
@@ -772,8 +795,10 @@ class AlbumArtWindow(qltk.Window, PersistentWindowMixin, PluginConfigMixin):
         except (OSError, GLib.GError):
             pass
         else:
+
             def append(data):
                 self.liststore.append(data)
+
             GLib.idle_add(append, [surface, cover])
 
     def __search_callback(self, covers, progress):
@@ -820,8 +845,9 @@ class CoverSearch:
         the search engines has finished."""
 
         for engine, replace in self.engine_list:
-            thr = threading.Thread(target=self.__search_thread,
-                                   args=(engine, query, replace, raw, limit))
+            thr = threading.Thread(
+                target=self.__search_thread, args=(engine, query, replace, raw, limit)
+            )
             thr.daemon = True
             thr.start()
 
@@ -858,8 +884,7 @@ def cleanup_query(query, replace):
         query = query[4:]
 
     split = query.split("-")
-    replace_str = ("+", "&", ",", ".", "!", "´",
-                   "\'", ":", " and ", "(", ")")
+    replace_str = ("+", "&", ",", ".", "!", "´", "'", ":", " and ", "(", ")")
     new_query = ""
     for part in split:
         for stri in replace_str:
@@ -917,15 +942,20 @@ class DownloadAlbumArt(SongsMenuPlugin, PluginConfigMixin):
 
         for i, eng in enumerate(sorted(ENGINES, key=lambda x: x["url"])):
             check = cls.ConfigCheckButton(
-                eng["config_id"].title(),
-                CONFIG_ENG_PREFIX + eng["config_id"],
-                True)
+                eng["config_id"].title(), CONFIG_ENG_PREFIX + eng["config_id"], True
+            )
             table.attach(check, 0, 1, i, i + 1)
 
             button = Gtk.Button(label=eng["url"])
             button.connect("clicked", lambda s: util.website(s.get_label()))
-            table.attach(button, 1, 2, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            table.attach(
+                button,
+                1,
+                2,
+                i,
+                i + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
         return frame
 
     def plugin_album(self, songs):

@@ -6,8 +6,13 @@
 from tests import TestCase
 
 from quodlibet.formats import DUMMY_SONG
-from quodlibet.qltk._editutils import FilterCheckButton, \
-    OverwriteWarning, WriteFailedError, FilterPluginBox, EditingPluginHandler
+from quodlibet.qltk._editutils import (
+    FilterCheckButton,
+    OverwriteWarning,
+    WriteFailedError,
+    FilterPluginBox,
+    EditingPluginHandler,
+)
 
 
 class FCB(FilterCheckButton):
@@ -46,14 +51,12 @@ class TFilterCheckButton(TestCase):
         self.assertRaises(NotImplementedError, self.fcb1.filter, "", "")
 
     def test_filter_list(self):
-        self.assertRaises(
-            NotImplementedError, self.fcb1.filter_list, [""], [""])
+        self.assertRaises(NotImplementedError, self.fcb1.filter_list, [""], [""])
 
     def test_cmp(self):
         l = [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]
         l.sort()
-        self.assertEqual(
-            l, [self.fcb2, self.fcb3, self.fcb4, self.fcb5, self.fcb1])
+        self.assertEqual(l, [self.fcb2, self.fcb3, self.fcb4, self.fcb5, self.fcb1])
 
     def tearDown(self):
         for cb in [self.fcb1, self.fcb2, self.fcb3, self.fcb4, self.fcb5]:
@@ -61,7 +64,6 @@ class TFilterCheckButton(TestCase):
 
 
 class TEditDialogs(TestCase):
-
     def test_overwrite(self):
         OverwriteWarning(None, DUMMY_SONG).destroy()
 
@@ -70,7 +72,6 @@ class TEditDialogs(TestCase):
 
 
 class TFilterPluginBox(TestCase):
-
     def test_main(self):
         handler = EditingPluginHandler()
         x = FilterPluginBox(handler)

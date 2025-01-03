@@ -11,7 +11,6 @@ from quodlibet.util import is_unity, is_windows, is_osx
 
 
 class TUtilEnvironment(TestCase):
-
     def test_all(self):
         assert isinstance(is_unity(), bool)
         assert isinstance(is_windows(), bool)

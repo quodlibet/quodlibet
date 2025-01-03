@@ -20,9 +20,14 @@ def confirm_multi_playlist_invoke(parent, plugin_name, count):
     in case X is high
     """
     params = {"name": plugin_name, "count": format_int_locale(count)}
-    title = ngettext('Run the plugin "%(name)s" on %(count)s playlist?',
-                     'Run the plugin "%(name)s" on %(count)s playlists?',
-                     count) % params
+    title = (
+        ngettext(
+            'Run the plugin "%(name)s" on %(count)s playlist?',
+            'Run the plugin "%(name)s" on %(count)s playlists?',
+            count,
+        )
+        % params
+    )
     description = ""
     ok_text = _("_Run Plugin")
     prompt = ConfirmationPrompt(parent, title, description, ok_text).run()
@@ -63,6 +68,7 @@ class PlaylistPlugin(MenuItemPlugin):
     Note: If inheriting both `PlaylistPlugin` and `SongsMenuPlugin`,
           it (currently) needs to be done in that order.
     """
+
     plugin_single_playlist = None
     plugin_playlist = None
     plugin_playlists = None
@@ -87,12 +93,11 @@ class PlaylistPluginHandler(PluginHandler):
         """Takes an optional `confirmer`, mainly for testing"""
 
         self.__plugins = []
-        self._confirm_multiple = (confirmer or
-                                  confirm_multi_playlist_invoke)
+        self._confirm_multiple = confirmer or confirm_multi_playlist_invoke
 
     def populate_menu(self, menu, library, browser, playlists):
         """Appends items onto `menu` for each enabled playlist plugin,
-        separated as necessary. """
+        separated as necessary."""
 
         attrs = ["plugin_playlist", "plugin_playlists"]
 
@@ -109,7 +114,7 @@ class PlaylistPluginHandler(PluginHandler):
                 try:
                     items.append(kind(playlists=playlists, library=library))
                 except Exception:
-                    print_e("Couldn't initialise playlist plugin %s: " % kind)
+                    print_e(f"Couldn't initialise playlist plugin {kind}: ")
                     print_exc()
         items = [i for i in items if i.initialized]
 
@@ -121,11 +126,9 @@ class PlaylistPluginHandler(PluginHandler):
                     args = (library, browser, playlists)
                     if item.get_submenu():
                         for subitem in item.get_submenu().get_children():
-                            subitem.connect(
-                                "activate", self.__on_activate, item, *args)
+                            subitem.connect("activate", self.__on_activate, item, *args)
                     else:
-                        item.connect(
-                            "activate", self.__on_activate, item, *args)
+                        item.connect("activate", self.__on_activate, item, *args)
                 except Exception:
                     print_exc()
                     item.destroy()
@@ -152,8 +155,7 @@ class PlaylistPluginHandler(PluginHandler):
         if len(playlists) == 0:
             return
 
-        if (len(playlists) == 1
-                and callable(plugin.plugin_single_playlist)):
+        if len(playlists) == 1 and callable(plugin.plugin_single_playlist):
             pl = playlists[0]
             try:
                 ret = plugin.plugin_single_playlist(pl)
@@ -161,15 +163,14 @@ class PlaylistPluginHandler(PluginHandler):
                 print_exc()
             else:
                 if ret:
-                    print_d("Updating %s" % pl)
+                    print_d(f"Updating {pl}")
                     browser.changed(pl)
                     browser.activate()
                     return
         if callable(plugin.plugin_playlist):
             total = len(playlists)
             if total > plugin.MAX_INVOCATIONS:
-                if not self._confirm_multiple(
-                        parent, plugin.PLUGIN_NAME, total):
+                if not self._confirm_multiple(parent, plugin.PLUGIN_NAME, total):
                     return
 
             try:
@@ -177,7 +178,7 @@ class PlaylistPluginHandler(PluginHandler):
                 if ret:
                     for update, pl in zip(ret, playlists, strict=False):
                         if update:
-                            print_d("Updating %s" % pl)
+                            print_d(f"Updating {pl}")
                             browser.changed(pl)
                     browser.activate()
             except Exception:

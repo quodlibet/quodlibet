@@ -23,42 +23,40 @@ from quodlibet.errorreport import errorhook
 
 
 class OverwriteWarning(WarningMessage):
-
     RESPONSE_SAVE = 1
 
     def __init__(self, parent, song):
         title = _("Tag may not be accurate")
 
         fn_format = util.bold(fsn2text(song("~basename")))
-        description = _("%(file-name)s changed while the program was running. "
+        description = _(
+            "%(file-name)s changed while the program was running. "
             "Saving without refreshing your library may "
-            "overwrite other changes to the song.") % {"file-name": fn_format}
+            "overwrite other changes to the song."
+        ) % {"file-name": fn_format}
 
-        super().__init__(
-            parent, title, description, buttons=Gtk.ButtonsType.NONE)
+        super().__init__(parent, title, description, buttons=Gtk.ButtonsType.NONE)
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             self.RESPONSE_SAVE)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, self.RESPONSE_SAVE)
         self.set_default_response(Gtk.ResponseType.CANCEL)
 
 
 class WriteFailedError(ErrorMessage):
-
     def __init__(self, parent, song):
         title = _("Unable to save song")
 
         fn_format = util.bold(fsn2text(song("~basename")))
-        description = _("Saving %(file-name)s failed."
-                        "The file may be read-only, corrupted, or you do not have "
-                        "permission to edit it.") % {"file-name": fn_format}
+        description = _(
+            "Saving %(file-name)s failed."
+            "The file may be read-only, corrupted, or you do not have "
+            "permission to edit it."
+        ) % {"file-name": fn_format}
         super().__init__(parent, title, description, escape_desc=False)
 
 
 class EditingPluginHandler(GObject.GObject, PluginHandler):
-    __gsignals__ = {
-        "changed": (GObject.SignalFlags.RUN_LAST, None, ())
-    }
+    __gsignals__ = {"changed": (GObject.SignalFlags.RUN_LAST, None, ())}
 
     Kind: type | None = None
 
@@ -86,14 +84,11 @@ class EditingPluginHandler(GObject.GObject, PluginHandler):
 
 
 class FilterCheckButton(ConfigCheckButton):
-    __gsignals__ = {
-        "preview": (GObject.SignalFlags.RUN_LAST, None, ())
-        }
+    __gsignals__ = {"preview": (GObject.SignalFlags.RUN_LAST, None, ())}
     _tooltip = None
 
     def __init__(self):
-        super().__init__(
-            self._label, self._section, self._key, tooltip=self._tooltip)
+        super().__init__(self._label, self._section, self._key, tooltip=self._tooltip)
         try:
             self.set_active(config.getboolean(self._section, self._key))
         except Exception:
@@ -111,12 +106,10 @@ class FilterCheckButton(ConfigCheckButton):
         return list(map(self.filter, origs, names))
 
     def __lt__(self, other):
-        return (self._order, type(self).__name__) < \
-            (other._order, type(other).__name__)
+        return (self._order, type(self).__name__) < (other._order, type(other).__name__)
 
 
 class FilterPluginBox(Gtk.VBox):
-
     __gsignals__ = {
         # the list should be updated
         "changed": (GObject.SignalFlags.RUN_LAST, None, ()),
@@ -152,8 +145,9 @@ class FilterPluginBox(Gtk.VBox):
         vbox = Gtk.VBox()
         expander.add(vbox)
 
-        connect_destroy(plugin_handler,
-            "changed", self.__refresh_plugins, vbox, expander)
+        connect_destroy(
+            plugin_handler, "changed", self.__refresh_plugins, vbox, expander
+        )
 
         expander.connect("notify::expanded", self.__notify_expanded, vbox)
         expander.set_expanded(False)

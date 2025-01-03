@@ -13,14 +13,16 @@ from gi.repository import GdkPixbuf, Gtk, Gdk, GLib
 import cairo
 
 
-def get_surface_for_pixbuf(widget: Gtk.Widget, pixbuf: GdkPixbuf.Pixbuf | None)\
-        -> cairo.Surface | None:
+def get_surface_for_pixbuf(
+    widget: Gtk.Widget, pixbuf: GdkPixbuf.Pixbuf | None
+) -> cairo.Surface | None:
     """:returns: a cairo surface, if possible"""
     if not pixbuf:
         return None
     scale_factor = widget.get_scale_factor()
     return Gdk.cairo_surface_create_from_pixbuf(
-            pixbuf, scale_factor, widget.get_window())
+        pixbuf, scale_factor, widget.get_window()
+    )
 
 
 def get_surface_extents(surface):
@@ -53,8 +55,11 @@ def get_border_radius(_widgets=None):
     radii = []
     for widget in _widgets:
         style_context = widget.get_style_context()
-        radii.append(style_context.get_property(
-            Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()))
+        radii.append(
+            style_context.get_property(
+                Gtk.STYLE_PROPERTY_BORDER_RADIUS, style_context.get_state()
+            )
+        )
     radius = max(radii)
 
     # Doesn't work on the default Ubuntu theme.

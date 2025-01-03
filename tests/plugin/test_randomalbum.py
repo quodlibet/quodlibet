@@ -12,30 +12,62 @@ from tests import init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
 A1S1 = AudioFile(
-        {"album": "greatness", "title": "excellent", "artist": "fooman",
-         "~#lastplayed": 1234, "~#rating": 0.75})
+    {
+        "album": "greatness",
+        "title": "excellent",
+        "artist": "fooman",
+        "~#lastplayed": 1234,
+        "~#rating": 0.75,
+    }
+)
 A1S2 = AudioFile(
-        {"album": "greatness", "title": "superlative", "artist": "fooman",
-         "~#lastplayed": 1234, "~#rating": 1.0})
+    {
+        "album": "greatness",
+        "title": "superlative",
+        "artist": "fooman",
+        "~#lastplayed": 1234,
+        "~#rating": 1.0,
+    }
+)
 A1 = Album(A1S1)
 A1.songs = {A1S1, A1S2}
 
-A2S1 = AudioFile({"album": "mediocrity", "title": "blah", "artist": "fooman",
-                  "~#lastplayed": 1234})
-A2S2 = AudioFile({"album": "mediocrity", "title": "meh", "artist": "fooman",
-                  "~#lastplayed": 1234})
+A2S1 = AudioFile(
+    {"album": "mediocrity", "title": "blah", "artist": "fooman", "~#lastplayed": 1234}
+)
+A2S2 = AudioFile(
+    {"album": "mediocrity", "title": "meh", "artist": "fooman", "~#lastplayed": 1234}
+)
 A2 = Album(A2S1)
 A2.songs = {A2S1, A2S2}
 
 A3S1 = AudioFile(
-        {"album": "disappointment", "title": "shameful", "artist": "poorman",
-         "~#lastplayed": 2345, "~#rating": 0.25})
+    {
+        "album": "disappointment",
+        "title": "shameful",
+        "artist": "poorman",
+        "~#lastplayed": 2345,
+        "~#rating": 0.25,
+    }
+)
 A3S2 = AudioFile(
-        {"album": "disappointment", "title": "zero", "artist": "poorman",
-         "~#lastplayed": 2345, "~#rating": 0.0})
+    {
+        "album": "disappointment",
+        "title": "zero",
+        "artist": "poorman",
+        "~#lastplayed": 2345,
+        "~#rating": 0.0,
+    }
+)
 A3S3 = AudioFile(
-        {"album": "disappointment", "title": "lame", "artist": "poorman",
-         "~#lastplayed": 0, "~#rating": 0.25})
+    {
+        "album": "disappointment",
+        "title": "lame",
+        "artist": "poorman",
+        "~#lastplayed": 0,
+        "~#rating": 0.25,
+    }
+)
 
 A3 = Album(A3S1)
 A3.songs = {A3S1, A3S2, A3S3}
@@ -46,8 +78,16 @@ for song in [A1S1, A1S2, A2S1, A2S2, A3S1, A3S2, A3S3]:
 
 class TRandomAlbum(PluginTestCase):
     """Some basic tests for the random album plugin algorithm"""
-    WEIGHTS = {"rating": 0, "added": 0, "laststarted": 0, "lastplayed": 0,
-               "length": 0, "skipcount": 0, "playcount": 0}
+
+    WEIGHTS = {
+        "rating": 0,
+        "added": 0,
+        "laststarted": 0,
+        "lastplayed": 0,
+        "length": 0,
+        "skipcount": 0,
+        "playcount": 0,
+    }
 
     def setUp(self):
         config.init()
@@ -65,9 +105,9 @@ class TRandomAlbum(PluginTestCase):
         config.quit()
 
     def get_winner(self, albums):
-        print_d("Weights: %s " % self.plugin.weights)
+        print_d(f"Weights: {self.plugin.weights} ")
         scores = self.plugin._score(albums)
-        print_d("Scores: %s" % scores)
+        print_d(f"Scores: {scores}")
         if not scores:
             return None
         return max(scores)[1]

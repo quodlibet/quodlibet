@@ -9,8 +9,13 @@ from quodlibet.formats import AudioFileError
 from quodlibet.library import SongLibrary, SongFileLibrary
 from tests import get_data_path, run_gtk_loop
 from tests.helper import get_temp_copy, capture_output
-from tests.test_library_libraries import (TLibrary, FakeSong, FSrange, FakeSongFile,
-                                          FSFrange)
+from tests.test_library_libraries import (
+    TLibrary,
+    FakeSong,
+    FSrange,
+    FakeSongFile,
+    FSFrange,
+)
 from tests.test_util_collection import NUMERIC_SONGS
 
 
@@ -49,8 +54,7 @@ class TSongLibrary(TLibrary):
     def test_tag_values(self):
         self.library.add(self.Frange(30))
         del self.added[:]
-        self.assertEqual(
-            sorted(self.library.tag_values(10)), list(range(10)))
+        self.assertEqual(sorted(self.library.tag_values(10)), list(range(10)))
         self.assertEqual(sorted(self.library.tag_values(0)), [])
         assert not self.changed or self.added or self.removed
 
@@ -82,6 +86,7 @@ class TSongFileLibrary(TSongLibrary):
     def test__load_error_during_reload(self):
         try:
             from quodlibet import util
+
             print_exc = util.print_exc
             util.print_exc = lambda *args, **kwargs: None
             new = self.Fake(100)

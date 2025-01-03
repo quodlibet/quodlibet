@@ -31,8 +31,9 @@ def _print_help(main_cmd, parser, file=None):
     for command in Command.COMMANDS:
         cl.append("   %-17s %s" % (command.NAME, command.DESCRIPTION))
     cl.append("")
-    cl.append("See '%s help <command>' for more information "
-              "on a specific command." % main_cmd)
+    cl.append(
+        f"See '{main_cmd} help <command>' for more information on a specific command."
+    )
 
     print_("\n".join(cl), file=file)
 
@@ -46,15 +47,13 @@ def main(argv=None):
     main_cmd = os.path.basename(argv[0])
 
     # the main optparser
-    usage = "%s [--version] [--help] [--verbose] <command> [<args>]" % main_cmd
+    usage = f"{main_cmd} [--version] [--help] [--verbose] <command> [<args>]"
     parser = OptionParser(usage=usage)
 
     parser.remove_option("--help")
     parser.add_option("-h", "--help", action="store_true")
-    parser.add_option("--version", action="store_true",
-                      help="print version")
-    parser.add_option("-v", "--verbose", action="store_true",
-                      help="verbose output")
+    parser.add_option("--version", action="store_true", help="print version")
+    parser.add_option("-v", "--verbose", action="store_true", help="verbose output")
 
     # no args, print help (might change in the future)
     if len(argv) <= 1:
@@ -104,14 +103,13 @@ def main(argv=None):
         if command.NAME == arg:
             cmd = command(main_cmd, options)
             try:
-                cmd.execute(argv[offset + 1:])
+                cmd.execute(argv[offset + 1 :])
             except CommandError as e:
                 print_(f"{command.NAME}: {e}", file=sys.stderr)
                 return 1
             break
     else:
-        print_(f"Unknown command '{arg}'. See '{main_cmd} help'.",
-               file=sys.stderr)
+        print_(f"Unknown command '{arg}'. See '{main_cmd} help'.", file=sys.stderr)
         return 1
 
     return 0

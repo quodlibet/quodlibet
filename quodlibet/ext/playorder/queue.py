@@ -22,18 +22,22 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     PLUGIN_ID = "queue"
     PLUGIN_NAME = _("Queue Only")
     PLUGIN_ICON = Icons.VIEW_LIST
-    PLUGIN_DESC = _("Limits playing of songs to the queue.\n\n"
-                    "Select this play order in the main window, "
-                    "then double-clicking any song will enqueue it "
-                    "instead of playing.")
+    PLUGIN_DESC = _(
+        "Limits playing of songs to the queue.\n\n"
+        "Select this play order in the main window, "
+        "then double-clicking any song will enqueue it "
+        "instead of playing."
+    )
     display_name = _("Queue only")
     accelerated_name = _("_Queue only")
 
     def PluginPreferences(self):
         box = Gtk.HBox()
-        ccb = ConfigCheckButton(_("Automatically start playing "
-                                  "double-clicked songs"),
-                                "plugins", "queue_only_autoplay")
+        ccb = ConfigCheckButton(
+            _("Automatically start playing " "double-clicked songs"),
+            "plugins",
+            "queue_only_autoplay",
+        )
         autoplay = config.getboolean("plugins", "queue_only_autoplay", False)
         ccb.set_active(autoplay)
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)

@@ -19,7 +19,8 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
     PLUGIN_NAME = _("Artwork URL Cover Source")
     PLUGIN_DESC_MARKUP = _(
         "Downloads covers linked to by the <tt>artwork_url</tt> tag. "
-        "This works with the Soundcloud and Podcasts browsers.")
+        "This works with the Soundcloud and Podcasts browsers."
+    )
 
     @classmethod
     def group_by(cls, song):

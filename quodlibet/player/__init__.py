@@ -24,15 +24,14 @@ class PlayerError(Exception):
         self.long_desc = long_desc
 
     def __str__(self):
-        return self.short_desc + (
-            "\n" + self.long_desc if self.long_desc else "")
+        return self.short_desc + ("\n" + self.long_desc if self.long_desc else "")
 
     def __bytes__(self):
         return str(self).encode("utf-8")
 
     def __repr__(self):
-        return "{}({!r}, {!r})".format(
-            type(self).__name__, repr(self.short_desc), repr(self.long_desc))
+        return (f"{type(self).__name__}"
+                f"({repr(self.short_desc)!r}, {repr(self.long_desc)!r})")
 
 
 def init_player(backend_name, librarian):

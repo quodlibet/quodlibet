@@ -22,25 +22,27 @@ class ConfirmRateMultipleDialog(qltk.Message):
     def __init__(self, parent, count: int, value: float | None):
         assert count > 1
 
-        title = (_("Are you sure you want to change the "
-                   "rating of all %d songs?") % count)
+        title = (
+            _("Are you sure you want to change the " "rating of all %d songs?") % count
+        )
         if value is None:
             desc = _("The saved ratings will be removed")
             action_title = _("_Remove Rating")
         else:
-            desc = (_("The rating of all selected songs will be changed to %s")
-                    % format_rating(value))
+            desc = _(
+                "The rating of all selected songs will be changed to %s"
+            ) % format_rating(value)
             action_title = _("Change _Rating")
 
         super().__init__(
-            Gtk.MessageType.WARNING, parent, title, desc, Gtk.ButtonsType.NONE)
+            Gtk.MessageType.WARNING, parent, title, desc, Gtk.ButtonsType.NONE
+        )
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_button(action_title, Gtk.ResponseType.YES)
 
 
 class RatingsMenuItem(Gtk.ImageMenuItem):
-
     def __init__(self, songs, library, label=_("_Rating")):  # noqa
         super().__init__(label=label, use_underline=True)
         self._songs = songs
@@ -56,8 +58,7 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
             itm = Gtk.CheckMenuItem(label=text)
             itm.rating = i
             submenu.append(itm)
-            handler = itm.connect(
-                "toggled", self._on_rating_change, i, library)
+            handler = itm.connect("toggled", self._on_rating_change, i, library)
             self._rating_menu_items.append((itm, handler))
         reset = Gtk.MenuItem(label=_("_Remove Rating"), use_underline=True)
         reset.connect("activate", self._on_rating_remove, library)
@@ -73,10 +74,9 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
         self._select_ratings()
 
     def _select_ratings(self):
-        ratings = [song("~#rating") for song in self._songs
-                   if song and song.has_rating]
+        ratings = [song("~#rating") for song in self._songs if song and song.has_rating]
         song_count = len(self._songs)
-        for (menu_item, handler) in self._rating_menu_items:
+        for menu_item, handler in self._rating_menu_items:
             rating_val = menu_item.rating
             rated_count = ratings.count(rating_val)
             menu_item.handler_block(handler)
@@ -96,8 +96,7 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
 
     def set_rating(self, value, songs, librarian):
         count = len(songs)
-        if (count > 1 and
-                config.getboolean("browsers", "rating_confirm_multiple")):
+        if count > 1 and config.getboolean("browsers", "rating_confirm_multiple"):
             parent = qltk.get_menu_item_top_parent(self)
             dialog = ConfirmRateMultipleDialog(parent, count, value)
             if dialog.run() != Gtk.ResponseType.YES:
@@ -108,8 +107,7 @@ class RatingsMenuItem(Gtk.ImageMenuItem):
 
     def remove_rating(self, songs, librarian):
         count = len(songs)
-        if (count > 1 and
-                config.getboolean("browsers", "rating_confirm_multiple")):
+        if count > 1 and config.getboolean("browsers", "rating_confirm_multiple"):
             parent = qltk.get_menu_item_top_parent(self)
             dialog = ConfirmRateMultipleDialog(parent, count, None)
             if dialog.run() != Gtk.ResponseType.YES:

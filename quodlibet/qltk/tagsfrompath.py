@@ -80,7 +80,6 @@ class TagsFromPathPluginHandler(EditingPluginHandler):
 
 
 class ListEntry:
-
     def __init__(self, song):
         self.song = song
         self.matches = {}
@@ -111,9 +110,12 @@ class TagsFromPath(Gtk.VBox):
         self.set_border_width(12)
         hbox = Gtk.HBox(spacing=6)
         cbes_defaults = TBP_EXAMPLES.split("\n")
-        self.combo = ComboBoxEntrySave(TBP, cbes_defaults,
+        self.combo = ComboBoxEntrySave(
+            TBP,
+            cbes_defaults,
             title=_("Path Patterns"),
-            edit_title=_("Edit saved patterns…"))
+            edit_title=_("Edit saved patterns…"),
+        )
         self.combo.show_all()
         hbox.pack_start(self.combo, True, True, 0)
         self.preview = qltk.Button(_("_Preview"), Icons.VIEW_REFRESH)
@@ -190,11 +192,16 @@ class TagsFromPath(Gtk.VBox):
             pattern = TagsFromPattern(pattern_text)
         except re.error:
             qltk.ErrorMessage(
-                self, _("Invalid pattern"),
-                _("The pattern\n\t%s\nis invalid. "
-                  "Possibly it contains the same tag twice or "
-                  "it has unbalanced brackets (&lt; / &gt;).") % (
-                util.bold(pattern_text)), escape_desc=False).run()
+                self,
+                _("Invalid pattern"),
+                _(
+                    "The pattern\n\t%s\nis invalid. "
+                    "Possibly it contains the same tag twice or "
+                    "it has unbalanced brackets (&lt; / &gt;)."
+                )
+                % (util.bold(pattern_text)),
+                escape_desc=False,
+            ).run()
             return
         else:
             if pattern_text:
@@ -209,10 +216,13 @@ class TagsFromPath(Gtk.VBox):
         total = len(invalid)
         if total and songs:
             title = ngettext("Invalid tag", "Invalid tags", total)
-            msg = ngettext("Invalid tag %s\n\nThe files currently "
-                           "selected do not support editing this tag.",
-                           "Invalid tags %s\n\nThe files currently "
-                           "selected do not support editing these tags.", total)
+            msg = ngettext(
+                "Invalid tag %s\n\nThe files currently "
+                "selected do not support editing this tag.",
+                "Invalid tags %s\n\nThe files currently "
+                "selected do not support editing these tags.",
+                total,
+            )
             tags_str = util.bold(", ".join(invalid))
             qltk.ErrorMessage(self, title, msg % tags_str, escape_desc=False).run()
             pattern = TagsFromPattern("")
@@ -278,7 +288,7 @@ class TagsFromPath(Gtk.VBox):
         was_changed = set()
 
         all_done = False
-        for entry in ((model and model.values()) or []):
+        for entry in (model and model.values()) or []:
             song = entry.song
             changed = False
             if not song.valid():

@@ -15,7 +15,6 @@ from quodlibet.player.nullbe import NullPlayer
 
 
 class TSlider(TestCase):
-
     def test_basics(self):
         s = HSlider()
         s.set_slider_disabled(True)
@@ -26,7 +25,6 @@ class TSlider(TestCase):
 
 
 class TTimeLabel(TestCase):
-
     def test_time_label(self):
         l = TimeLabel()
         l.set_time(42)
@@ -39,7 +37,6 @@ class TTimeLabel(TestCase):
 
 
 class TSeekButton(TestCase):
-
     def test_seekbutton(self):
         w = SeekButton(NullPlayer(), SongLibrary())
         w.destroy()

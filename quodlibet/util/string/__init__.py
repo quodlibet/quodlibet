@@ -29,6 +29,7 @@ def decode(s, charset="utf-8"):
         return s.decode(charset)
     except UnicodeError:
         from quodlibet import _
+
         return s.decode(charset, "replace") + " " + _("[Invalid Encoding]")
 
 
@@ -39,6 +40,7 @@ def encode(s, charset="utf-8"):
         return s.encode(charset)
     except UnicodeError:
         from quodlibet import _
+
         return (s + " " + _("[Invalid Encoding]")).encode(charset, "replace")
 
 
@@ -54,6 +56,7 @@ def split_escape(string, sep, maxsplit=None, escape_char="\\"):
     if isinstance(string, bytes):
         if isinstance(escape_char, str):
             escape_char = escape_char.encode("ascii")
+
         def iter_(b):
             return (bytes([v]) for v in b)
     else:

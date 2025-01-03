@@ -3,6 +3,8 @@ name: test
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
@@ -129,7 +131,7 @@ jobs:
           python3 -m pip install --user --upgrade \
             PyVirtualDisplay \
             pytest-faulthandler \
-            "ruff==0.1.6" \
+            "ruff==0.7.3" \
             flaky
 
       - name: Run tests

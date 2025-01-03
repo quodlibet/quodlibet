@@ -12,7 +12,6 @@ from quodlibet import config
 
 
 class TClock(PluginTestCase):
-
     def setUp(self):
         config.init()
         self.mod = self.modules["Alarm Clock"]
@@ -26,12 +25,14 @@ class TClock(PluginTestCase):
             e = ValidatingEntry()
             e.set_text(str(s))
             return e
+
         plugin = self.mod.Alarm()
         plugin.enabled()
         entries = [fake_entry(s) for s in ["1", "3", "5"] + ["HH:MM"] * 4]
         plugin._entry_changed(entries)
         plugin._ready()
 
-        self.assertEqual(config.get("plugins", "alarm_times"),
-                             "1 3 5 HH:MM HH:MM HH:MM HH:MM")
+        self.assertEqual(
+            config.get("plugins", "alarm_times"), "1 3 5 HH:MM HH:MM HH:MM HH:MM"
+        )
         plugin.disabled()

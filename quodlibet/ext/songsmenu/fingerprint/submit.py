@@ -22,8 +22,7 @@ def get_stats(results):
     for result in results:
         song = result.song
         got_mbid += bool(song("musicbrainz_trackid"))
-        got_meta += bool(
-            song("artist") and song.get("title") and song("album"))
+        got_meta += bool(song("artist") and song.get("title") and song("album"))
 
     return got_mbid, got_meta
 
@@ -67,6 +66,7 @@ class FingerprintDialog(Window):
 
         def expand_cb(expand, *args):
             self.resize(self.get_size()[0], 1)
+
         stats.connect("unmap", expand_cb)
 
         box.pack_start(expand, False, False, 0)
@@ -114,9 +114,11 @@ class FingerprintDialog(Window):
         valid_fp = len(results)
         got_mbid, got_meta = get_stats(results)
 
-        text = _("Songs either need a <i><b>musicbrainz_trackid</b></i>, "
-                 "or <i><b>artist</b></i> / "
-                 "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted.")
+        text = _(
+            "Songs either need a <i><b>musicbrainz_trackid</b></i>, "
+            "or <i><b>artist</b></i> / "
+            "<i><b>title</b></i> / <i><b>album</b></i> tags to get submitted."
+        )
         text += "\n\n" + util.italic(_("Fingerprints:"))
         text += " %d/%d" % (valid_fp, all_)
         text += "\n" + util.italic(_("Songs with MBIDs:"))
@@ -142,8 +144,7 @@ class FingerprintDialog(Window):
     def __fp_started_cb(self, pool, song):
         # increase by an amount smaller than one song, so that the user can
         # see some progress from the beginning.
-        self.__set_fraction(0.5 / len(self.__songs) +
-            self.__bar.get_fraction())
+        self.__set_fraction(0.5 / len(self.__songs) + self.__bar.get_fraction())
         self.__label_song.set_text(song("~filename"))
 
     def __fp_done_cb(self, pool, result):
@@ -161,8 +162,9 @@ class FingerprintDialog(Window):
         results = self.__fp_results.values()
         to_send = len(list(filter(can_submit, results)))
         self.__label_song.set_text(
-            _("Done. %(to-send)d/%(all)d songs to submit.") % {
-                "to-send": to_send, "all": all_})
+            _("Done. %(to-send)d/%(all)d songs to submit.")
+            % {"to-send": to_send, "all": all_}
+        )
 
     def __cancel_cb(self, pool, *args):
         self.destroy()
@@ -171,6 +173,7 @@ class FingerprintDialog(Window):
             pool.stop()
             if self.__acoustid_thread:
                 self.__acoustid_thread.stop()
+
         # pool.stop can block a short time because the CV might be locked
         # during starting the pipeline -> idle_add -> no GUI blocking
         GLib.idle_add(idle_cancel)
@@ -181,7 +184,9 @@ class FingerprintDialog(Window):
         self.__set_fraction(0)
         self.__acoustid_thread = AcoustidSubmissionThread(
             list(filter(can_submit, self.__fp_results.values())),
-            self.__acoustid_update, self.__acoustid_done)
+            self.__acoustid_update,
+            self.__acoustid_done,
+        )
 
     def __acoustid_update(self, progress):
         self.__set_fraction(progress)

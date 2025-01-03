@@ -9,7 +9,7 @@ from time import localtime, strftime
 
 def format_date(seconds: float, format_setting: str | None = None) -> str:
     """Formats a date either with the default format,
-     or the passed strftime-compatible format string"""
+    or the passed strftime-compatible format string"""
     try:
         date = datetime.fromtimestamp(seconds).date()
     except (OverflowError, ValueError, OSError):

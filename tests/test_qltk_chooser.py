@@ -10,9 +10,16 @@ import os
 from gi.repository import Gtk
 from senf import fsnative
 
-from quodlibet.qltk.chooser import choose_files, get_current_dir, \
-    set_current_dir, choose_folders, create_chooser_filter, \
-    choose_target_file, choose_target_folder, with_response
+from quodlibet.qltk.chooser import (
+    choose_files,
+    get_current_dir,
+    set_current_dir,
+    choose_folders,
+    create_chooser_filter,
+    choose_target_file,
+    choose_target_folder,
+    with_response,
+)
 from quodlibet.util import is_osx, is_wine
 
 from . import TestCase, skipIf
@@ -21,7 +28,6 @@ from . import TestCase, skipIf
 @skipIf(is_wine(), "hangs under wine")
 @skipIf(is_osx(), "crashy on macOS")
 class Tchooser(TestCase):
-
     def test_choose_files(self):
         w = Gtk.Window()
         with with_response(Gtk.ResponseType.CANCEL):
@@ -46,16 +52,14 @@ class Tchooser(TestCase):
         with with_response(Gtk.ResponseType.CANCEL):
             assert choose_target_file(w, "title", "action") is None
         with with_response(Gtk.ResponseType.CANCEL):
-            assert choose_target_file(
-                w, "title", "action", "example") is None
+            assert choose_target_file(w, "title", "action", "example") is None
 
     def test_choose_target_folder(self):
         w = Gtk.Window()
         with with_response(Gtk.ResponseType.CANCEL):
             assert choose_target_folder(w, "title", "action") is None
         with with_response(Gtk.ResponseType.CANCEL):
-            assert choose_target_folder(
-                w, "title", "action", "example") is None
+            assert choose_target_folder(w, "title", "action", "example") is None
 
     def test_get_current_dir(self):
         path = get_current_dir()

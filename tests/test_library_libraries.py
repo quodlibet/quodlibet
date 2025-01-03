@@ -6,7 +6,7 @@ import os
 import shutil
 
 from quodlibet.formats import AudioFile
-from quodlibet.library.base import (Library, iter_paths, PicklingMixin)
+from quodlibet.library.base import Library, iter_paths, PicklingMixin
 from quodlibet.util import connect_obj, is_windows
 from senf import fsnative
 from tests import TestCase, mkstemp, mkdtemp, skipIf, run_gtk_loop
@@ -181,7 +181,7 @@ class TLibrary(TestCase):
             # 0, 1, 2, 6, 9: all added by self.Frange
             # 100: key for new
             # new: is itself present
-            assert value in self.library, "didn't find %s" % value
+            assert value in self.library, f"didn't find {value}"
 
         for value in [-1, 10, 12, 101]:
             # -1, 10, 101: boundary values
@@ -203,8 +203,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.assertEqual(
-            sorted(self.library.keys()), list(range(100, 120)))
+        self.assertEqual(sorted(self.library.keys()), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -236,7 +235,6 @@ class TLibrary(TestCase):
 
 
 class FakeAudioFile(AudioFile):
-
     def __init__(self, key):
         self._written = []
         self["~filename"] = fsnative(str(key))
@@ -298,8 +296,9 @@ class TPicklingMixin(TestCase):
 
             library = self.Library()
             library.load(filename)
-            zipped = zip(sorted(self.library.items()),
-                         sorted(library.items()), strict=False)
+            zipped = zip(
+                sorted(self.library.items()), sorted(library.items()), strict=False
+            )
             for (k, v), (k2, v2) in zipped:
                 assert k == k2
                 assert v.key == v2.key
@@ -308,7 +307,6 @@ class TPicklingMixin(TestCase):
 
 
 class Titer_paths(TestCase):
-
     def setUp(self):
         # on osx the temp folder returned is a symlink
         self.root = os.path.realpath(mkdtemp())
@@ -328,8 +326,7 @@ class Titer_paths(TestCase):
         fd, name = mkstemp(dir=self.root)
         os.close(fd)
         assert list(iter_paths(self.root, exclude=[self.root])) == []
-        assert list(iter_paths(self.root,
-                               exclude=[os.path.dirname(self.root)])) == []
+        assert list(iter_paths(self.root, exclude=[os.path.dirname(self.root)])) == []
         assert list(iter_paths(self.root, exclude=[name])) == []
         assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
 

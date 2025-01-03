@@ -33,8 +33,9 @@ class Preferences(Gtk.VBox):
 
         self.set_border_width(6)
 
-        ccb = pconfig.ConfigCheckButton(_("Hide main window on close"),
-                                        "window_hide", populate=True)
+        ccb = pconfig.ConfigCheckButton(
+            _("Hide main window on close"), "window_hide", populate=True
+        )
         self.pack_start(qltk.Frame(_("Behavior"), child=ccb), False, True, 0)
 
         def on_scroll_changed(button, new_state):
@@ -45,22 +46,22 @@ class Preferences(Gtk.VBox):
 
         scrollwheel_box = Gtk.VBox(spacing=0)
         group = Gtk.RadioButton(
-            group=None, label=_("Scroll wheel adjusts volume"),
-            use_underline=True)
+            group=None, label=_("Scroll wheel adjusts volume"), use_underline=True
+        )
         group.connect("toggled", on_scroll_changed, False)
         group.set_active(not modifier_swap)
         scrollwheel_box.pack_start(group, False, True, 0)
         group = Gtk.RadioButton(
-            group=group, label=_("Scroll wheel changes song"),
-            use_underline=True)
+            group=group, label=_("Scroll wheel changes song"), use_underline=True
+        )
         group.connect("toggled", on_scroll_changed, True)
         group.set_active(modifier_swap)
         scrollwheel_box.pack_start(group, False, True, 0)
 
         if supports_scrolling():
             self.pack_start(
-                qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box),
-                True, True, 0)
+                qltk.Frame(_("Scroll _Wheel"), child=scrollwheel_box), True, True, 0
+            )
 
         box = Gtk.VBox(spacing=6)
 
@@ -74,8 +75,9 @@ class Preferences(Gtk.VBox):
             entry.set_text(pconfig.gettext("tooltip"))
 
         revert = Gtk.Button()
-        revert.add(Gtk.Image.new_from_icon_name(
-            Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON))
+        revert.add(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.BUTTON)
+        )
         revert.connect("clicked", on_reverted)
         entry_box.pack_start(revert, False, True, 0)
 

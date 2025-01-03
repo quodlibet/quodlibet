@@ -34,8 +34,10 @@ def set_lang(value):
 class WikiSearch(SongsMenuPlugin):
     PLUGIN_ID = "Search Tag in Wikipedia"
     PLUGIN_NAME = _("Search Tag in Wikipedia")
-    PLUGIN_DESC = _("Opens a browser window with the Wikipedia article "
-                    "on the selected song's corresponding tag.")
+    PLUGIN_DESC = _(
+        "Opens a browser window with the Wikipedia article "
+        "on the selected song's corresponding tag."
+    )
     PLUGIN_ICON = Icons.APPLICATION_INTERNET
 
     DEFAULT_TAGS = ["album", "artist", "composer"]
@@ -54,9 +56,11 @@ class WikiSearch(SongsMenuPlugin):
         e.set_text(get_lang())
         e.connect("changed", cls.changed)
         hb.pack_start(
-            Gtk.Label(label=_("Search at %(website)s") % {
-                "website": "https://"}),
-            False, True, 0)
+            Gtk.Label(label=_("Search at %(website)s") % {"website": "https://"}),
+            False,
+            True,
+            0,
+        )
         hb.pack_start(e, False, True, 0)
         hb.pack_start(Gtk.Label(label=".wikipedia.org"), False, True, 0)
         vb = Gtk.VBox(spacing=6)
@@ -107,9 +111,11 @@ class WikiSearch(SongsMenuPlugin):
         l = dict.fromkeys([song(self.selected_tag) for song in songs]).keys()
         # If no tags values were found, show an error dialog
         if list(l) == [""]:
-            ErrorMessage(app.window, _("Search failed"),
-                _('Tag "%s" not found.') %
-                    self.selected_tag).run()
+            ErrorMessage(
+                app.window,
+                _("Search failed"),
+                _('Tag "%s" not found.') % self.selected_tag,
+            ).run()
             return
         for a in l:
             # Only search for non-empty tags

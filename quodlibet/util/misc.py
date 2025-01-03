@@ -32,6 +32,7 @@ def cached_func(f):
         if not res:
             res.append(f())
         return res[0]
+
     return wrapper
 
 

@@ -15,8 +15,10 @@ from quodlibet.plugins.songshelpers import any_song, is_writable
 class ForceWrite(SongsMenuPlugin):
     PLUGIN_ID = "Force Write"
     PLUGIN_NAME = _("Update Tags in Files")
-    PLUGIN_DESC = _("Update modified tags in files. "
-                    "This will ensure play counts and ratings are up to date.")
+    PLUGIN_DESC = _(
+        "Update modified tags in files. "
+        "This will ensure play counts and ratings are up to date."
+    )
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     plugin_handles = any_song(is_writable)

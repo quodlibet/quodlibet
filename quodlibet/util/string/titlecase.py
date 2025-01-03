@@ -10,15 +10,37 @@ import unicodedata
 
 
 # Cheat list for human title-casing in English. See Issue 424.
-ENGLISH_INCORRECTLY_CAPITALISED_WORDS = \
-    ["The", "An", "A", "'N'", "'N", "N'", "Tha", "De", "Da",
-     "In", "To", "For", "Up", "With", "As", "At", "From",
-     "Into", "On", "Out",
-     #, u"Over",
-     "Of", "By", "'Til", "Til",
-     "And", "Or", "Nor",
-#    u"Is", u"Are", u"Am"
-    ]
+ENGLISH_INCORRECTLY_CAPITALISED_WORDS = [
+    "The",
+    "An",
+    "A",
+    "'N'",
+    "'N",
+    "N'",
+    "Tha",
+    "De",
+    "Da",
+    "In",
+    "To",
+    "For",
+    "Up",
+    "With",
+    "As",
+    "At",
+    "From",
+    "Into",
+    "On",
+    "Out",
+    # , u"Over",
+    "Of",
+    "By",
+    "'Til",
+    "Til",
+    "And",
+    "Or",
+    "Nor",
+    #    u"Is", u"Are", u"Am"
+]
 
 # Allow basic sentence-like concepts eg "Artist: The Greatest Hits"
 ENGLISH_SENTENCE_ENDS = [".", ":", "-"]
@@ -41,10 +63,11 @@ def utitle(string):
         prev = string[i - 1]
         # Special case apostrophe in the middle of a word.
         # Also, extra case to deal with Irish-style names (eg O'Conner)
-        if "'" == s \
-            and string[i - 1].isalpha() \
-            and not (i > 1 and string[i - 2].isspace() and
-                     prev.lower() == "o"):
+        if (
+            "'" == s
+            and string[i - 1].isalpha()
+            and not (i > 1 and string[i - 2].isspace() and prev.lower() == "o")
+        ):
             cap = False
         elif iswbound(s):
             cap = True
@@ -65,7 +88,7 @@ def title(string, locale="utf-8"):
     # if the string is all uppercase, lowercase it - Erich/Javier
     #   Lots of Japanese songs use entirely upper-case English titles,
     #   so I don't like this change... - JoeW
-    #if string == string.upper(): string = string.lower()
+    # if string == string.upper(): string = string.lower()
     if not isinstance(string, str):
         string = string.decode(locale)
     return utitle(string)
@@ -83,14 +106,13 @@ def _humanise(text):
                 break
         return ws[idx]
 
-    words = text.split(" ")   # Yes: to preserve double spacing (!)
+    words = text.split(" ")  # Yes: to preserve double spacing (!)
     for i in range(1, len(words) - 1):
         word = words[i]
         if word in ENGLISH_INCORRECTLY_CAPITALISED_WORDS:
             prev = previous_real_word(words, i)
             # Add an exception for would-be ellipses...
-            if (prev and (prev[-1] not in ENGLISH_SENTENCE_ENDS
-                          or prev[-3:] == "...")):
+            if prev and (prev[-1] not in ENGLISH_SENTENCE_ENDS or prev[-3:] == "..."):
                 words[i] = word.lower()
     return " ".join(words)
 

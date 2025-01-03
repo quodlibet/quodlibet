@@ -7,8 +7,7 @@
 
 from gi.repository import Gtk
 
-from quodlibet.util import format_time_display, format_time_long, \
-    format_size, tag
+from quodlibet.util import format_time_display, format_time_long, format_size, tag
 from quodlibet import _
 from quodlibet import qltk
 from quodlibet.browsers._base import EditDisplayPatternMixin, FakeDisplayItem
@@ -16,28 +15,33 @@ from quodlibet.qltk import Button, Icons
 from quodlibet.util.i18n import numeric_phrase
 
 _FOOTER = "<~tracks> (<~filesize> / <~length>)"
-_EMPTY =_("empty")
-DEFAULT_PATTERN_TEXT = ("[b]<~name>[/b]\n"
-                        f"[small]<~tracks|{_FOOTER}|[i]({_EMPTY})[/i]>[/small]")
+_EMPTY = _("empty")
+DEFAULT_PATTERN_TEXT = (
+    "[b]<~name>[/b]\n" f"[small]<~tracks|{_FOOTER}|[i]({_EMPTY})[/i]>[/small]"
+)
 
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
     _A_SIZE = 127 * 1024 * 1024
     _SOME_PEOPLE = "\n".join(
-            tag(t) for t in ["artist", "performer", "composer", "arranger"])
+        tag(t) for t in ["artist", "performer", "composer", "arranger"]
+    )
 
     _DEFAULT_PATTERN = DEFAULT_PATTERN_TEXT
 
-    _PREVIEW_ITEM = FakeDisplayItem({
-        "date": "2015-11-31",
-        "~length": format_time_display(6319),
-        "~long-length": format_time_long(6319),
-        "~tracks": numeric_phrase("%d track", "%d tracks", 27),
-        "~#filesize": _A_SIZE,
-        "~filesize": format_size(_A_SIZE),
-        "~#rating": 0.75,
-        "~name": _("Example Playlist"),
-        "~people": _SOME_PEOPLE + "..."})
+    _PREVIEW_ITEM = FakeDisplayItem(
+        {
+            "date": "2015-11-31",
+            "~length": format_time_display(6319),
+            "~long-length": format_time_long(6319),
+            "~tracks": numeric_phrase("%d track", "%d tracks", 27),
+            "~#filesize": _A_SIZE,
+            "~filesize": format_size(_A_SIZE),
+            "~#rating": 0.75,
+            "~name": _("Example Playlist"),
+            "~people": _SOME_PEOPLE + "...",
+        }
+    )
 
     def __init__(self, browser):
         if self.is_not_unique():

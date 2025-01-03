@@ -14,20 +14,26 @@ from quodlibet.formats import AudioFile
 
 
 SONGS = [
-    AudioFile({
-        "title": "one",
-        "artist": "piman",
-        "~filename": fsnative("/dev/null"),
-    }),
-    AudioFile({
-        "title": "\xf6\xe4\xfc",
-        "~filename": fsnative("/dev/zero"),
-    }),
-    AudioFile({
-        "title": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls"),
-    }),
+    AudioFile(
+        {
+            "title": "one",
+            "artist": "piman",
+            "~filename": fsnative("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "\xf6\xe4\xfc",
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls"),
+        }
+    ),
 ]
 
 for song in SONGS:

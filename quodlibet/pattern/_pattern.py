@@ -41,34 +41,50 @@ class LexerError(Error):
 
 
 class PatternLexeme:
-    _reverse = {OPEN: "OPEN", CLOSE: "CLOSE", TEXT: "TEXT", COND: "COND",
-                EOF: "EOF", DISJ: "DISJ"}
+    _reverse = {
+        OPEN: "OPEN",
+        CLOSE: "CLOSE",
+        TEXT: "TEXT",
+        COND: "COND",
+        EOF: "EOF",
+        DISJ: "DISJ",
+    }
 
     def __init__(self, typ, lexeme):
         self.type = typ
         self.lexeme = lexeme
 
     def __repr__(self):
-        return (super().__repr__().split()[0] +
-                " type=" + repr(self.type) + " (" +
-                str(self._reverse[self.type]) +
-                "), lexeme=" + repr(self.lexeme) + ">")
+        return (
+            super().__repr__().split()[0]
+            + " type="
+            + repr(self.type)
+            + " ("
+            + str(self._reverse[self.type])
+            + "), lexeme="
+            + repr(self.lexeme)
+            + ">"
+        )
 
 
 class PatternLexer(Scanner):
     def __init__(self, s):
         self.string = s
-        Scanner.__init__(self,
-                         [(r"([^<>|\\]|\\.)+", self.text),
-                          (r"\|\||[<>|]", self.table),
-                          ])
+        Scanner.__init__(
+            self,
+            [
+                (r"([^<>|\\]|\\.)+", self.text),
+                (r"\|\||[<>|]", self.table),
+            ],
+        )
 
     def text(self, scanner, string):
         return PatternLexeme(TEXT, re.sub(r"\\([|<>\\])", r"\1", string))
 
     def table(self, scanner, string):
         return PatternLexeme(
-            {"||": DISJ, "|": COND, "<": OPEN, ">": CLOSE}[string], string)
+            {"||": DISJ, "|": COND, "<": OPEN, ">": CLOSE}[string], string
+        )
 
     def __iter__(self):
         s = self.scan(self.string)
@@ -83,7 +99,7 @@ class PatternNode:
         self.children = []
 
     def __repr__(self):
-        return "Pattern(%s)" % (", ".join(map(repr, self.children)))
+        return "Pattern({})".format(", ".join(map(repr, self.children)))
 
 
 class TextNode:
@@ -91,7 +107,7 @@ class TextNode:
         self.text = text
 
     def __repr__(self):
-        return 'Text("%s")' % self.text
+        return f'Text("{self.text}")'
 
 
 class ConditionNode:
@@ -111,7 +127,7 @@ class DisjunctionNode:
 
     def __repr__(self):
         nlrepr = repr([repr(node) for node in self.nodelist])
-        return "Disjunction(%s)" % nlrepr
+        return f"Disjunction({nlrepr})"
 
 
 class TagNode:
@@ -119,7 +135,7 @@ class TagNode:
         self.tag = tag
 
     def __repr__(self):
-        return 'Tag("%s")' % self.tag
+        return f'Tag("{self.tag}")'
 
 
 class PatternParser:
@@ -196,14 +212,16 @@ class PatternParser:
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
-            raise ParseError("The search string ended, but more "
-                             "tokens were expected.")
+            raise ParseError(
+                "The search string ended, but more " "tokens were expected."
+            )
         try:
             if self.lookahead.type in tokens:
                 self.lookahead = next(self.tokens)
             else:
-                raise ParseError("The token '%s' is not the type expected." % (
-                    self.lookahead.lexeme))
+                raise ParseError(
+                    f"The token '{self.lookahead.lexeme}' is not the type expected."
+                )
         except StopIteration:
             self.lookahead = PatternLexeme(EOF, "")
 
@@ -220,7 +238,6 @@ class PatternFormatter:
         self.format(self.Dummy())  # Validate string
 
     class Dummy(dict):
-
         def __call__(self, key, *args):
             if key in FILESYSTEM_TAGS:
                 return fsnative("_")
@@ -263,8 +280,10 @@ class PatternFormatter:
             else:
                 values = self.__song.list_separate(key)
                 if self.__formatter:
-                    return [(self.__formatter(key, v[0]),
-                             self.__formatter(key, v[1])) for v in values]
+                    return [
+                        (self.__formatter(key, v[0]), self.__formatter(key, v[1]))
+                        for v in values
+                    ]
 
             return values
 
@@ -283,15 +302,13 @@ class PatternFormatter:
         for val in self.__list_func(self.SongProxy(song, self._format)):
             if not val:
                 continue
-            if isinstance(val, list): # list of strings or pairs
-                vals = [(r[0] + part[0], r[1] + part[1])
-                        for part in val for r in vals]
-            else: # just a display string to concatenate
+            if isinstance(val, list):  # list of strings or pairs
+                vals = [(r[0] + part[0], r[1] + part[1]) for part in val for r in vals]
+            else:  # just a display string to concatenate
                 vals = [(r[0] + val, r[1] + val) for r in vals]
 
         if self._post:
-            vals = ((self._post(v[0], song), self._post(v[1], song))
-                    for v in vals)
+            vals = ((self._post(v[0], song), self._post(v[1], song)) for v in vals)
         return set(vals)
 
     __mod__ = format
@@ -304,13 +321,8 @@ class PatternCompiler:
     def compile(self, song_func, text_formatter=None):
         tags = []
         queries = {}
-        content = [
-            "def f(s):",
-            "  x = s." + song_func,
-            "  r = []",
-            "  a = r.append"]
-        content.extend(
-            self.__tag(self.__root, {}, {}, tags, queries, text_formatter))
+        content = ["def f(s):", "  x = s." + song_func, "  r = []", "  a = r.append"]
+        content.extend(self.__tag(self.__root, {}, {}, tags, queries, text_formatter))
         content.append("  return r")
         code = "\n".join(content)
 
@@ -354,27 +366,27 @@ class PatternCompiler:
         text = []
         if isinstance(node, TextNode):
             if text_formatter:
-                text.append("a(_format(%r))" % node.text)
+                text.append(f"a(_format({node.text!r}))")
             else:
-                text.append("a(%r)" % node.text)
+                text.append(f"a({node.text!r})")
         elif isinstance(node, ConditionNode):
             var = self.__get_query(text, scope, qscope, node.expr, queries)
             ic = self.__tag(
-                node.ifcase, dict(scope), dict(qscope), tags, queries,
-                text_formatter)
+                node.ifcase, dict(scope), dict(qscope), tags, queries, text_formatter
+            )
             ec = self.__tag(
-                node.elsecase, dict(scope), dict(qscope), tags, queries,
-                text_formatter)
+                node.elsecase, dict(scope), dict(qscope), tags, queries, text_formatter
+            )
             if not ic and not ec:
                 text.pop(-1)
             elif ic:
-                text.append("if %s:" % var)
+                text.append(f"if {var}:")
                 text.extend(ic)
                 if ec:
                     text.append("else:")
                     text.extend(ec)
             else:
-                text.append("if not %s:" % var)
+                text.append(f"if not {var}:")
                 text.extend(ec)
         elif isinstance(node, DisjunctionNode):
             text.append("while True:")
@@ -388,24 +400,26 @@ class PatternCompiler:
                     "  if len(r) > r_len:",
                     "    if r[-1]:",
                     "       break",
-                    "    r.pop()"
+                    "    r.pop()",
                 ]
                 text.extend(non_empty_or_pop)
             text.append("  break")
         elif isinstance(node, TagNode):
             tags.extend(util.tagsplit(node.tag))
             var = self.__get_value(text, scope, node.tag)
-            text.append("a(%s)" % var)
+            text.append(f"a({var})")
         elif isinstance(node, PatternNode):
             for child in node.children:
-                for line in self.__tag(child, scope, qscope, tags, queries,
-                                       text_formatter):
+                for line in self.__tag(
+                    child, scope, qscope, tags, queries, text_formatter
+                ):
                     text.append("  " + line)
         return text
 
 
-def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100,
-            cache=OrderedDict()):  # noqa
+def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100, cache=None):  # noqa
+    if cache is None:
+        cache = OrderedDict()
     if (formatter_cls, string) not in cache:
         while len(cache) >= max_cache_size:
             cache.popitem(last=False)
@@ -441,7 +455,6 @@ def _number(key, value):
 
 
 class _FileFromPattern(PatternFormatter):
-
     def _format(self, key, value):
         value = _number(key, value)
         value = value.replace(os.sep, "_")
@@ -456,8 +469,8 @@ class _FileFromPattern(PatternFormatter):
 
             if keep_extension:
                 fn = song.get("~filename", ".")
-                ext = fn[fn.rfind("."):].lower()
-                val_ext = value[-len(ext):].lower()
+                ext = fn[fn.rfind(".") :].lower()
+                val_ext = value[-len(ext) :].lower()
                 if not ext == val_ext:
                     value += ext.lower()
 
@@ -489,8 +502,8 @@ class _XMLFromPattern(PatternFormatter):
 
 def replace_nt_seps(string):
     """On Windows, users may use backslashes in patterns as path separators.
-       Since Windows filenames can't use '<>|' anyway, preserving backslash
-       escapes is unnecessary, so we just replace them blindly."""
+    Since Windows filenames can't use '<>|' anyway, preserving backslash
+    escapes is unnecessary, so we just replace them blindly."""
     return string.replace("\\", r"\\") if os.name == "nt" else string
 
 
@@ -509,20 +522,18 @@ def XMLFromPattern(string):
 
 
 class _XMLFromMarkupPattern(_XMLFromPattern):
-
     @classmethod
     def _text(cls, string):
-        tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span",
-                "a"]
-        pat = "(?:%s)" % "|".join(tags)
+        tags = ["b", "big", "i", "s", "sub", "sup", "small", "tt", "u", "span", "a"]
+        pat = "(?:{})".format("|".join(tags))
 
         def repl_func(match):
             orig, pre, body = match.group(0, 1, 2)
             if len(pre) % 2:
                 return orig[1:]
-            return fr"{pre}<{body}>"
+            return rf"{pre}<{body}>"
 
-        string = re.sub(r"(\\*)\[(/?%s\s*)\]" % pat, repl_func, string)
+        string = re.sub(rf"(\\*)\[(/?{pat}\s*)\]", repl_func, string)
         string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)
         return string
 
@@ -538,7 +549,6 @@ def XMLFromMarkupPattern(string):
 
 
 class _URLFromPattern(PatternFormatter):
-
     def _format(self, key, value):
         return quote_plus(value.encode("utf8"))
 

@@ -18,8 +18,9 @@ from quodlibet.plugins.events import EventPlugin
 class RadioAdMute(EventPlugin):
     PLUGIN_ID = "radio_ad_mute"
     PLUGIN_NAME = _("Mute Radio Ads")
-    PLUGIN_DESC = _("Mutes output while radio advertisements are playing.\n"
-                    "Stations: di.fm.")
+    PLUGIN_DESC = _(
+        "Mutes output while radio advertisements are playing.\n" "Stations: di.fm."
+    )
     PLUGIN_ICON = Icons.AUDIO_VOLUME_MUTED
 
     TEXT_SPAM = [

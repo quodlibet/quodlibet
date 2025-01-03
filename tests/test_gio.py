@@ -27,7 +27,6 @@ def temp_dir() -> Path:
 
 
 class BasicMonitor:
-
     def __init__(self, path: Path):
         self.changed = []
         f = Gio.File.new_for_path(str(path))
@@ -36,12 +35,17 @@ class BasicMonitor:
         self._monitors = {path: (monitor, handler_id)}
         print_d(f"Monitoring {path!s}")
 
-    def _file_changed(self, _monitor, main_file: Gio.File,
-                      other_file: Gio.File | None,
-                      event_type: Gio.FileMonitorEvent) -> None:
+    def _file_changed(
+        self,
+        _monitor,
+        main_file: Gio.File,
+        other_file: Gio.File | None,
+        event_type: Gio.FileMonitorEvent,
+    ) -> None:
         file_path = main_file.get_path()
-        other_path = (Path(normalize_path(other_file.get_path(), True))
-                      if other_file else None)
+        other_path = (
+            Path(normalize_path(other_file.get_path(), True)) if other_file else None
+        )
         print_d(f"Got event {event_type} on {file_path}->{other_path}")
         self.changed.append((event_type, file_path))
 
@@ -54,7 +58,7 @@ class TestFileMonitor:
     def test_create_delete(self, temp_dir: Path):
         path = temp_dir
         monitor = BasicMonitor(path)
-        some_file = (path / "foo.txt")
+        some_file = path / "foo.txt"
         some_file.write_text("test")
         sleep(SLEEP_SECS)
         run_gtk_loop()

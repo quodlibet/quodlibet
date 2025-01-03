@@ -22,32 +22,39 @@ from quodlibet.library import SongLibrary, SongLibrarian
 
 
 SONGS = [
-    AudioFile({
-        "album": "one",
-        "artist": "piman",
-        "~filename": fsnative("/dev/null"),
-    }),
-    AudioFile({
-        "album": "two",
-        "artist": "mu",
-        "~filename": fsnative("/dev/zero"),
-    }),
-    AudioFile({
-        "album": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls"),
-    }),
-    AudioFile({
-        "album": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls2"),
-    }),
+    AudioFile(
+        {
+            "album": "one",
+            "artist": "piman",
+            "~filename": fsnative("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "two",
+            "artist": "mu",
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls2"),
+        }
+    ),
 ]
 SONGS.sort()
 
 
 class TCoverGridBrowser(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -136,8 +143,7 @@ class TCoverGridBrowser(TestCase):
         self.assertEqual(set(albums), {s.album_key for s in SONGS})
         self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        self.assertEqual({s.album_key for s in self.songs},
-                             {SONGS[0].album_key})
+        self.assertEqual({s.album_key for s in self.songs}, {SONGS[0].album_key})
 
     def test_active_filter(self):
         with realized(self.bar):

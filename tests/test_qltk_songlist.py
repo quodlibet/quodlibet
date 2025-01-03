@@ -9,16 +9,28 @@ from quodlibet import config
 from quodlibet.browsers.tracks import TrackList
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongFileLibrary, SongLibrarian
-from quodlibet.qltk.songlist import (SongList, set_columns, get_columns,
-                                     header_tag_split, get_sort_tag)
+from quodlibet.qltk.songlist import (
+    SongList,
+    set_columns,
+    get_columns,
+    header_tag_split,
+    get_sort_tag,
+)
 from quodlibet.qltk.songlistcolumns import SongListColumn
 from senf import fsnative
 from tests import TestCase, run_gtk_loop
 
 
 class TSongList(TestCase):
-    HEADERS = ["acolumn", "~#lastplayed", "~foo~bar", "~#rating",
-               "~#length", "~dirname", "~#track"]
+    HEADERS = [
+        "acolumn",
+        "~#lastplayed",
+        "~foo~bar",
+        "~#rating",
+        "~#length",
+        "~dirname",
+        "~#track",
+    ]
 
     def setUp(self):
         config.init()
@@ -37,7 +49,7 @@ class TSongList(TestCase):
 
         self.__sigs = [
             self.songlist.connect("orders-changed", orders_changed_cb),
-            self.songlist.connect("songs-removed", orders_removed_cb)
+            self.songlist.connect("songs-removed", orders_removed_cb),
         ]
 
     def test_set_all_column_headers(self):
@@ -56,16 +68,12 @@ class TSongList(TestCase):
 
     def test_sort_by(self):
         self.songlist.set_column_headers(["one", "two", "three"])
-        for key, order in [("one", True),
-                           ("two", False),
-                           ("three", False)]:
+        for key, order in [("one", True), ("two", False), ("three", False)]:
             self.songlist.set_sort_orders([(key, order)])
-            self.assertEqual(
-                self.songlist.get_sort_orders(), [(key, order)])
+            self.assertEqual(self.songlist.get_sort_orders(), [(key, order)])
 
         self.songlist.toggle_column_sort(self.songlist.get_columns()[-1])
-        self.assertEqual(
-            self.songlist.get_sort_orders(), [("three", True)])
+        self.assertEqual(self.songlist.get_sort_orders(), [("three", True)])
 
     def test_sort_orders(self):
         s = self.songlist
@@ -110,7 +118,6 @@ class TSongList(TestCase):
         s.toggle_column_sort(s.get_columns()[0])
         assert self.orders_changed == 0
         assert not s.get_sort_orders()
-
 
     def test_sortable_if_config_overrides(self):
         config.set("song_list", "always_allow_sorting", True)
@@ -227,8 +234,7 @@ class TSongList(TestCase):
         assert not config.get("settings", "headers", None)
         columns = "~album,~#replaygain_track_gain,foobar"
         config.set("settings", "columns", columns)
-        self.assertEqual(get_columns(),
-                             ["~album", "~#replaygain_track_gain", "foobar"])
+        self.assertEqual(get_columns(), ["~album", "~#replaygain_track_gain", "foobar"])
         assert not config.get("settings", "headers", None)
 
     def test_get_set_columns(self):
@@ -247,8 +253,7 @@ class TSongList(TestCase):
         self.assertEqual(header_tag_split("~foo~bar"), ["foo", "bar"])
         self.assertEqual(header_tag_split("<foo>"), ["foo"])
         self.assertEqual(header_tag_split("<~foo~bar>"), ["foo", "bar"])
-        self.assertEqual(header_tag_split("pattern <~foo~bar>"),
-                         ["foo", "bar"])
+        self.assertEqual(header_tag_split("pattern <~foo~bar>"), ["foo", "bar"])
 
     def test_get_sort_tag(self):
         self.assertEqual(get_sort_tag("~#track"), "")
@@ -263,12 +268,13 @@ class TSongList(TestCase):
         col = SongListColumn("title")
 
         menu = self.songlist._menu(col)
-        submenus = [item.get_submenu()
-                    for item in menu.get_children()]
-        names = {item.get_label()
-                 for child in submenus
-                 if child and not isinstance(child, Gtk.SeparatorMenuItem)
-                 for item in child.get_children()}
+        submenus = [item.get_submenu() for item in menu.get_children()]
+        names = {
+            item.get_label()
+            for child in submenus
+            if child and not isinstance(child, Gtk.SeparatorMenuItem)
+            for item in child.get_children()
+        }
         assert {"Title", "Genre", "Comment", "Artist"} < names
 
     def tearDown(self):

@@ -11,7 +11,6 @@ from quodlibet.util.tags import sortkey, readable
 
 
 class TTags(TestCase):
-
     def test_basic(self):
         t = ["album", "title", "artist", "part", "musicbrainz_trackid"]
         t.sort(key=sortkey)

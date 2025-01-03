@@ -22,7 +22,6 @@ def bar() -> Generator[FileSystem, None, None]:
 
 
 class TestFileSystem:
-
     def test_can_filter(self, bar):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
             assert not bar.can_filter(key)

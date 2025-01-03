@@ -52,7 +52,7 @@ class Librarian(GObject.GObject):
     def register(self, library: Library, name: str) -> None:
         """Register a library with this librarian."""
         if name in self.libraries or name in self.__signals:
-            raise ValueError("library %r is already active" % name)
+            raise ValueError(f"library {name!r} is already active")
 
         added_sig = library.connect("added", self.__added)
         removed_sig = library.connect("removed", self.__removed)
@@ -64,10 +64,10 @@ class Librarian(GObject.GObject):
         # This function, unlike register, should be private.
         # Libraries get unregistered at the discretion of the
         # librarian, not the libraries.
-        del(self.libraries[name])
+        del self.libraries[name]
         for signal_id in self.__signals[library]:
             library.disconnect(signal_id)
-        del(self.__signals[library])
+        del self.__signals[library]
 
     # FIXME: We can be smarter about this -- queue a list of items
     # and fire the signal after a short wait, to take advantage of
@@ -161,8 +161,9 @@ class SongLibrarian(Librarian):
 
     def tag_values(self, tag):
         """Return a set of all values for the given tag."""
-        return {value for lib in self.libraries.values()
-                for value in lib.tag_values(tag)}
+        return {
+            value for lib in self.libraries.values() for value in lib.tag_values(tag)
+        }
 
     def rename(self, song, newname, changed=None):
         """Rename the song in all libraries it belongs to.

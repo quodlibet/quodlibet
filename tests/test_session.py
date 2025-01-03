@@ -13,7 +13,6 @@ from quodlibet.session import SessionError, iter_backends
 
 
 class TSession(TestCase):
-
     def setUp(self):
         init_fake_app()
 

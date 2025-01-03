@@ -48,8 +48,7 @@ def init(desktop_id, player):
     main = Dbusmenu.Menuitem()
 
     play_pause = Dbusmenu.Menuitem()
-    play_pause.property_set(Dbusmenu.MENUITEM_PROP_LABEL,
-                            _("Play/Pause"))
+    play_pause.property_set(Dbusmenu.MENUITEM_PROP_LABEL, _("Play/Pause"))
     play_pause.property_set_bool(Dbusmenu.MENUITEM_PROP_VISIBLE, True)
     main.child_append(play_pause)
 

@@ -38,8 +38,7 @@ class Notebook(TestCase):
 
 class Frame(TestCase):
     def test_label(self):
-        self.assertEqual(
-            x.Frame("foo").get_label_widget().get_text(), "foo")
+        self.assertEqual(x.Frame("foo").get_label_widget().get_text(), "foo")
 
 
 class MenuItem(TestCase):
@@ -71,7 +70,6 @@ class TScrolledWindow(TestCase):
 
 
 class THighlightToggleButton(TestCase):
-
     def test_main(self):
         w = x.HighlightToggleButton()
         w.set_active(True)

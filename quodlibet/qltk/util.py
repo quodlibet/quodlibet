@@ -12,8 +12,7 @@ from gi.repository import Gtk, Gdk, GObject
 from quodlibet.qltk import is_wayland
 
 
-GSignals = dict[
-    str, tuple[GObject.SignalFlags, type | None, Sequence[type]] | str]
+GSignals = dict[str, tuple[GObject.SignalFlags, type | None, Sequence[type]] | str]
 
 
 def window_grab_and_map(window, mask):
@@ -38,8 +37,8 @@ def window_grab_and_map(window, mask):
     Gtk.device_grab_add(window, device, True)
 
     status = device.grab(
-        window.get_window(), Gdk.GrabOwnership.WINDOW, True,
-        mask, None, event_time)
+        window.get_window(), Gdk.GrabOwnership.WINDOW, True, mask, None, event_time
+    )
 
     if status != Gdk.GrabStatus.SUCCESS:
         Gtk.device_grab_remove(window, device)
@@ -55,8 +54,8 @@ def window_grab_and_map(window, mask):
     Gtk.device_grab_add(window, associated_device, True)
 
     status = associated_device.grab(
-        window.get_window(), Gdk.GrabOwnership.WINDOW, True,
-        mask, None, event_time)
+        window.get_window(), Gdk.GrabOwnership.WINDOW, True, mask, None, event_time
+    )
 
     if status != Gdk.GrabStatus.SUCCESS:
         Gtk.device_grab_remove(window, associated_device)
@@ -79,7 +78,7 @@ def window_ungrab_and_unmap(window, devices):
         Gtk.device_grab_remove(window, device)
         device.ungrab(event_time)
     window.hide()
-    #gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
+    # gtk3.8 bug: https://bugzilla.gnome.org/show_bug.cgi?id=700185
     window.unrealize()
 
 

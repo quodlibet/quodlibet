@@ -59,16 +59,11 @@ class Build(distutils_build):
     """Override the default build with new subcommands."""
 
     sub_commands = distutils_build.sub_commands + [
-        ("build_mo",
-         lambda self: self.distribution.has_po()),
-        ("build_po",
-         lambda self: self.distribution.has_po()),
-        ("build_shortcuts",
-         lambda self: self.distribution.has_shortcuts()),
-        ("build_dbus_services",
-         lambda self: self.distribution.has_dbus_services()),
-        ("build_appdata",
-         lambda self: self.distribution.has_appdata()),
+        ("build_mo", lambda self: self.distribution.has_po()),
+        ("build_po", lambda self: self.distribution.has_po()),
+        ("build_shortcuts", lambda self: self.distribution.has_shortcuts()),
+        ("build_dbus_services", lambda self: self.distribution.has_dbus_services()),
+        ("build_appdata", lambda self: self.distribution.has_appdata()),
     ]
 
 
@@ -79,8 +74,11 @@ class Install(distutils_install):
     """Override the default install with new subcommands."""
 
     user_options = distutils_install.user_options + [
-        ("mandir=", None, "destination directory for man pages. "
-                          "Defaults to $PREFIX/share/man"),
+        (
+            "mandir=",
+            None,
+            "destination directory for man pages. " "Defaults to $PREFIX/share/man",
+        ),
     ]
 
     sub_commands = distutils_install.sub_commands + [
@@ -88,16 +86,20 @@ class Install(distutils_install):
         ("install_man", lambda self: self.distribution.has_man_pages()),
         ("install_mo", lambda self: self.distribution.has_po()),
         ("install_icons", lambda self: self.distribution.need_icon_install()),
-        ("install_search_provider",
-         lambda self: self.distribution.need_search_provider()),
-        ("install_dbus_services",
-         lambda self: self.distribution.has_dbus_services()),
-        ("install_appdata",
-         lambda self: self.distribution.has_appdata()),
-        ("install_bash_completions",
-         lambda self: self.distribution.has_bash_completions()),
-        ("install_zsh_completions",
-         lambda self: self.distribution.has_zsh_completions()),
+        (
+            "install_search_provider",
+            lambda self: self.distribution.need_search_provider(),
+        ),
+        ("install_dbus_services", lambda self: self.distribution.has_dbus_services()),
+        ("install_appdata", lambda self: self.distribution.has_appdata()),
+        (
+            "install_bash_completions",
+            lambda self: self.distribution.has_bash_completions(),
+        ),
+        (
+            "install_zsh_completions",
+            lambda self: self.distribution.has_zsh_completions(),
+        ),
     ]
 
     def initialize_options(self):
@@ -105,7 +107,7 @@ class Install(distutils_install):
         self.mandir = None
 
 
-is_osx = (sys.platform == "darwin")
+is_osx = sys.platform == "darwin"
 
 
 class GDistribution(Distribution):
@@ -129,7 +131,7 @@ class GDistribution(Distribution):
       from gdist import GDistribution
 
       setup(distclass=GDistribution, ...)
-      """
+    """
 
     shortcuts = []
     appdata = []

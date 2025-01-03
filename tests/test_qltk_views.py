@@ -4,8 +4,15 @@
 # (at your option) any later version.
 
 from tests import TestCase
-from quodlibet.qltk.views import AllTreeView, BaseView, TreeViewColumn, \
-    DragScroll, MultiDragTreeView, RCMTreeView, DragIconTreeView
+from quodlibet.qltk.views import (
+    AllTreeView,
+    BaseView,
+    TreeViewColumn,
+    DragScroll,
+    MultiDragTreeView,
+    RCMTreeView,
+    DragIconTreeView,
+)
 import quodlibet.config
 from quodlibet.util import is_windows
 from gi.repository import Gtk, Gdk
@@ -200,7 +207,6 @@ class TBaseView(TestCase):
 
 
 class TMultiDragTreeView(TestCase):
-
     def setUp(self):
         self.c = MultiDragTreeView()
         _fill_view(self.c)
@@ -212,7 +218,6 @@ class TMultiDragTreeView(TestCase):
 
 
 class TRCMTreeView(TestCase):
-
     def setUp(self):
         self.c = RCMTreeView()
         _fill_view(self.c)
@@ -235,7 +240,6 @@ class TRCMTreeView(TestCase):
 
 
 class TDragIconTreeView(TestCase):
-
     def setUp(self):
         self.c = DragIconTreeView()
         _fill_view(self.c)
@@ -248,15 +252,14 @@ class TDragIconTreeView(TestCase):
         with visible(self.c):
             assert self.c.create_multi_row_drag_icon(all_paths, 1)
             assert not self.c.create_multi_row_drag_icon([], 1)
-            self.assertTrue(
-                self.c.create_multi_row_drag_icon([all_paths[0]], 10))
+            self.assertTrue(self.c.create_multi_row_drag_icon([all_paths[0]], 10))
 
 
 class TDragScroll(TestCase):
-
     def setUp(self):
         class ScrollClass(BaseView, DragScroll):
             pass
+
         self.c = ScrollClass()
         _fill_view(self.c)
 
@@ -269,7 +272,6 @@ class TDragScroll(TestCase):
 
 
 class TTreeViewColumn(TestCase):
-
     def test_main(self):
         TreeViewColumn(title="foo")
         area = Gtk.CellAreaBox()

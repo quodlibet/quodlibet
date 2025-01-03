@@ -10,7 +10,6 @@ from . import TestCase
 
 
 class TSearchBarBox(TestCase):
-
     def test_get_query(self):
         sbb = SearchBarBox()
         assert not sbb.get_query(None)
@@ -25,5 +24,6 @@ class TSearchBarBox(TestCase):
         sbb.set_text(text)
         self.assertEqual(sbb.get_query(), Query(text, star=["initial"]))
         another_star = ["another", "star"]
-        self.assertEqual(sbb.get_query(star=another_star),
-                             Query(text, star=another_star))
+        self.assertEqual(
+            sbb.get_query(star=another_star), Query(text, star=another_star)
+        )

@@ -13,7 +13,6 @@ from gi.repository import GLib
 
 
 class _Routine:
-
     def __init__(self, pool, func, funcid, priority, timeout, args, kwargs):
         self.priority = priority
         self.timeout = timeout
@@ -47,10 +46,10 @@ class _Routine:
 
         if self.timeout:
             self._source_id = GLib.timeout_add(
-                self.timeout, self.source_func, priority=self.priority)
+                self.timeout, self.source_func, priority=self.priority
+            )
         else:
-            self._source_id = GLib.idle_add(
-                self.source_func, priority=self.priority)
+            self._source_id = GLib.idle_add(self.source_func, priority=self.priority)
 
     def pause(self):
         """Pause, if already paused, do nothing"""
@@ -63,7 +62,6 @@ class _Routine:
 
 
 class CoPool:
-
     def __init__(self):
         self.__routines = {}
 
@@ -99,7 +97,7 @@ class CoPool:
     def _get(self, funcid):
         if funcid in self.__routines:
             return self.__routines[funcid]
-        raise ValueError("no pooled routine %r" % funcid)
+        raise ValueError(f"no pooled routine {funcid!r}")
 
     def remove(self, funcid):
         """Stop a registered routine."""

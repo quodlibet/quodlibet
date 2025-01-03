@@ -12,7 +12,6 @@ from .helper import realized
 
 
 class TWindow(TestCase):
-
     def test_on_first_map(self):
         w = Window()
 
@@ -32,7 +31,6 @@ class TWindow(TestCase):
         Window().destroy()
 
     def test_instance_tracking(self):
-
         class SomeWindow(Window, InstanceTracker):
             def __init__(self):
                 super().__init__()
@@ -81,7 +79,6 @@ class TWindow(TestCase):
 
 
 class TDialog(TestCase):
-
     def test_add_icon_button(self):
         d = Dialog()
         w = d.add_icon_button("foo", "bar", 100)

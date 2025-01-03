@@ -23,12 +23,21 @@ _SETTINGS = {
 }
 
 _PRESETS = [
-    ["default", _("Default"),
-     _("Closest to virtual speaker placement (30°, 3 meter)"), 700, 45],
-    ["cmoy", _("Chu Moy"),
-     _("Close to Chu Moy's crossfeeder (popular)"), 700, 60],
-    ["jmeier", _("Jan Meier"),
-     _("Close to Jan Meier's CORDA amplifiers (little change)"), 650, 90],
+    [
+        "default",
+        _("Default"),
+        _("Closest to virtual speaker placement (30°, 3 meter)"),
+        700,
+        45,
+    ],
+    ["cmoy", _("Chu Moy"), _("Close to Chu Moy's crossfeeder (popular)"), 700, 60],
+    [
+        "jmeier",
+        _("Jan Meier"),
+        _("Close to Jan Meier's CORDA amplifiers (little change)"),
+        650,
+        90,
+    ],
     ["custom", _("Custom"), _("Custom settings"), -1, -1],
 ]
 
@@ -72,9 +81,14 @@ class Preferences(Gtk.VBox):
             label.set_alignment(0.0, 0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
 
         preset_combo = Gtk.ComboBoxText()
         self.__combo = preset_combo
@@ -85,13 +99,15 @@ class Preferences(Gtk.VBox):
         table.attach(preset_combo, 1, 2, 0, 1)
 
         fcut_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment.new(700, 300, 2000, 10, 100, 0))
+            adjustment=Gtk.Adjustment.new(700, 300, 2000, 10, 100, 0)
+        )
         fcut_scale.set_tooltip_text(_SETTINGS["fcut"][1])
         labels["fcut"].set_mnemonic_widget(fcut_scale)
         fcut_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_hz(scale, value):
             return _("%d Hz") % value
+
         fcut_scale.connect("format-value", format_hz)
         table.attach(fcut_scale, 1, 2, 1, 2)
 
@@ -100,17 +116,18 @@ class Preferences(Gtk.VBox):
             set_cfg("fcut", value)
             self.__update_combo()
             self.emit("changed")
+
         fcut_scale.connect("value-changed", fcut_changed)
         fcut_scale.set_value(get_cfg("fcut"))
 
-        level_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment.new(45, 10, 150, 1, 5, 0))
+        level_scale = Gtk.HScale(adjustment=Gtk.Adjustment.new(45, 10, 150, 1, 5, 0))
         level_scale.set_tooltip_text(_SETTINGS["feed"][1])
         labels["feed"].set_mnemonic_widget(level_scale)
         level_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_db(scale, value):
             return _("%.1f dB") % (value / 10.0)
+
         level_scale.connect("format-value", format_db)
         table.attach(level_scale, 1, 2, 2, 3)
 
@@ -119,6 +136,7 @@ class Preferences(Gtk.VBox):
             set_cfg("feed", value)
             self.__update_combo()
             self.emit("changed")
+
         level_scale.connect("value-changed", level_changed)
         level_scale.set_value(get_cfg("feed"))
 
@@ -131,11 +149,11 @@ class Preferences(Gtk.VBox):
             combo.set_tooltip_text(tooltip)
             level_scale.set_value(feed)
             fcut_scale.set_value(fcut)
+
         preset_combo.connect("changed", combo_change, level_scale, fcut_scale)
         self.__update_combo()
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table),
-                        True, True, 0)
+        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
     def __update_combo(self):
         feed = get_cfg("feed")
@@ -151,9 +169,11 @@ class Preferences(Gtk.VBox):
 class Crossfeed(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Crossfeed")
-    PLUGIN_DESC = _("Mixes the left and right channel in a way that simulates"
-                    " a speaker setup while using headphones, or to adjust "
-                    "for early Stereo recordings.")
+    PLUGIN_DESC = _(
+        "Mixes the left and right channel in a way that simulates"
+        " a speaker setup while using headphones, or to adjust "
+        "for early Stereo recordings."
+    )
     PLUGIN_ICON = "audio-volume-high"
 
     @classmethod

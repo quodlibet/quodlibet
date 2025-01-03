@@ -33,8 +33,9 @@ class WAVEFile(AudioFile):
 
     def sanitize(self, filename=None):
         super().sanitize(filename)
-        self["title"] = fsn2text(os.path.splitext(
-            os.path.basename(self["~filename"]))[0])
+        self["title"] = fsn2text(
+            os.path.splitext(os.path.basename(self["~filename"]))[0]
+        )
 
     def write(self):
         pass
@@ -44,6 +45,7 @@ class WAVEFile(AudioFile):
             return ["artist"]
         else:
             return k == "artist"
+
 
 loader = WAVEFile
 types = [WAVEFile]

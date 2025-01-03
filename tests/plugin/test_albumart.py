@@ -12,8 +12,9 @@ from tests.plugin import PluginTestCase
 from quodlibet import library, config
 from quodlibet import app
 
-A_SONG = AudioFile({"~filename": "/dev/null", "artist": "Mr Man",
-                    "album": "Bars of Foo"})
+A_SONG = AudioFile(
+    {"~filename": "/dev/null", "artist": "Mr Man", "album": "Bars of Foo"}
+)
 
 # Keep IDEs happy
 DownloadAlbumArt = AlbumArtWindow = CoverArea = None
@@ -21,7 +22,6 @@ DownloadAlbumArt = AlbumArtWindow = CoverArea = None
 
 # TODO: Some real tests.
 class TAlbumArt(PluginTestCase):
-
     @classmethod
     def setUpClass(cls):
         app.library = library.init()

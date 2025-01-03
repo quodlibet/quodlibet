@@ -22,7 +22,6 @@ from quodlibet.util.enum import enum
 
 @enum
 class Icons(str):
-
     NONE = ""
 
     # these we have in our fallback icon theme
@@ -107,9 +106,9 @@ class Icons(str):
     SYSTEM_SEARCH = "system-search"
     TEXT_HTML = "text-html"
     TOOLS_CHECK_SPELLING = "tools-check-spelling"  # "_Spell Check"
-    USER_BOOKMARKS = "user-bookmarks" # Looks like a rating
+    USER_BOOKMARKS = "user-bookmarks"  # Looks like a rating
     USER_DESKTOP = "user-desktop"
-    USER_TRASH = "user-trash" # "Trash"
+    USER_TRASH = "user-trash"  # "Trash"
     UTILITIES_TERMINAL = "utilities-terminal"
     VIEW_LIST = "view-list"  #
     VIEW_REFRESH = "view-refresh"  # "_Refresh"

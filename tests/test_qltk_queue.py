@@ -12,8 +12,7 @@ from tests import TestCase, run_gtk_loop
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import DUMMY_SONG
-from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon, \
-    PlayQueue, QUEUE
+from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon, PlayQueue, QUEUE
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
@@ -69,7 +68,6 @@ class TPlayQueue(TestCase):
 
 
 class TQueueExpander(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()

@@ -46,12 +46,10 @@ class TestCase(OrigTestCase):
     def assertNotEqual(self, first, second, msg=None):
         super().assertNotEqual(second, first, msg)
 
-    def assertAlmostEqual(self, first, second, places=None, msg=None,
-                          delta=None):
+    def assertAlmostEqual(self, first, second, places=None, msg=None, delta=None):
         super().assertAlmostEqual(second, first, places, msg, delta)
 
-    def assertNotAlmostEqual(self, first, second, places=None, msg=None,
-                             delta=None):
+    def assertNotAlmostEqual(self, first, second, places=None, msg=None, delta=None):
         super().assertNotAlmostEqual(second, first, places, msg, delta)
 
 
@@ -62,9 +60,10 @@ skipIf = unittest.skipIf
 
 def is_ci():
     """Guesses if this is being run in (Travis, maybe other) CI.
-       See https://docs.travis-ci.com/user/environment-variables
+    See https://docs.travis-ci.com/user/environment-variables
     """
     return os.environ.get("CI", "").lower() == "true"
+
 
 _DATA_DIR = os.path.join(util.get_module_dir(), "data")
 assert isinstance(_DATA_DIR, fsnative)
@@ -81,6 +80,7 @@ def _wrap_tempfile(func):
             assert isinstance(_TEMP_DIR, fsnative)
             kwargs["dir"] = _TEMP_DIR
         return func(*args, **kwargs)
+
     return wrap
 
 
@@ -136,9 +136,9 @@ def dbus_launch_user():
     """Returns a dict with env vars, or an empty dict"""
 
     try:
-        out = subprocess.check_output([
-            "dbus-daemon", "--session", "--fork", "--print-address=1",
-            "--print-pid=1"])
+        out = subprocess.check_output(
+            ["dbus-daemon", "--session", "--fork", "--print-address=1", "--print-pid=1"]
+        )
     except (subprocess.CalledProcessError, OSError):
         return {}
     else:
@@ -154,8 +154,7 @@ def dbus_kill_user(info):
         return
 
     try:
-        subprocess.check_call(
-            ["kill", "-9", info["DBUS_SESSION_BUS_PID"]])
+        subprocess.check_call(["kill", "-9", info["DBUS_SESSION_BUS_PID"]])
     except (subprocess.CalledProcessError, OSError):
         pass
 
@@ -255,17 +254,20 @@ init_test_environ()
 atexit.register(exit_test_environ)
 
 
-def unit(run=None, suite=None, strict=False, exitfirst=False, network=True,
-         quality=True):
+def unit(
+    run=None, suite=None, strict=False, exitfirst=False, network=True, quality=True
+):
     """Returns 0 if everything passed"""
     run = run or []
     # make glib warnings fatal
     if strict:
         from gi.repository import GLib
+
         GLib.log_set_always_fatal(
-            GLib.LogLevelFlags.LEVEL_CRITICAL |
-            GLib.LogLevelFlags.LEVEL_ERROR |
-            GLib.LogLevelFlags.LEVEL_WARNING)
+            GLib.LogLevelFlags.LEVEL_CRITICAL
+            | GLib.LogLevelFlags.LEVEL_ERROR
+            | GLib.LogLevelFlags.LEVEL_WARNING
+        )
 
     args = []
 
@@ -287,7 +289,7 @@ def unit(run=None, suite=None, strict=False, exitfirst=False, network=True,
 
     if skip_markers:
         args.append("-m")
-        args.append(" and ".join(["not %s" % m for m in skip_markers]))
+        args.append(" and ".join([f"not {m}" for m in skip_markers]))
 
     if exitfirst:
         args.append("-x")
@@ -305,5 +307,6 @@ def run_gtk_loop():
 
     # Import late as various version / init checks fail otherwise
     from gi.repository import Gtk
+
     while Gtk.events_pending():
         Gtk.main_iteration()

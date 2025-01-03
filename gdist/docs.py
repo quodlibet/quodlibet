@@ -46,6 +46,21 @@ class BuildSphinx(Command):
         target = os.path.join(self.build_dir, "sphinx")
 
         src_dir = guide_root if not self.all else docs_root
-        self.spawn([sys.executable, "-m", "sphinx",
-                    "-j", "auto", "-b", "html", "-c", docs_root,
-                    "-n", "-E", "-W", src_dir, target])
+        self.spawn(
+            [
+                sys.executable,
+                "-m",
+                "sphinx",
+                "-j",
+                "auto",
+                "-b",
+                "html",
+                "-c",
+                docs_root,
+                "-n",
+                "-E",
+                "-W",
+                src_dir,
+                target,
+            ]
+        )

@@ -97,13 +97,13 @@ class CommandRegistry:
         """
 
         if name not in self._commands:
-            raise CommandError("Unknown command %r" % name)
+            raise CommandError(f"Unknown command {name!r}")
 
         cmd, argcount, optcount = self._commands[name]
         if len(args) < argcount:
-            raise CommandError("Not enough arguments for %r" % name)
+            raise CommandError(f"Not enough arguments for {name!r}")
         if len(args) > argcount + optcount:
-            raise CommandError("Too many arguments for %r" % name)
+            raise CommandError(f"Too many arguments for {name!r}")
 
         print_d(f"Running {cmd.__name__!r} with params {args} ")
 
@@ -113,8 +113,7 @@ class CommandRegistry:
             raise CommandError(f"{name}: {str(e)}") from e
         else:
             if result is not None and not isinstance(result, fsnative):
-                raise CommandError(
-                    f"{name}: returned {result!r} which is not fsnative")
+                raise CommandError(f"{name}: returned {result!r} which is not fsnative")
             return result
 
 
@@ -184,7 +183,7 @@ def _volume(app, value):
     if value[0] in ("+", "-"):
         if len(value) > 1:
             try:
-                change = (float(value[1:]) / 100.0)
+                change = float(value[1:]) / 100.0
             except ValueError:
                 return
         else:
@@ -194,7 +193,7 @@ def _volume(app, value):
         volume = app.player.volume + change
     else:
         try:
-            volume = (float(value) / 100.0)
+            volume = float(value) / 100.0
         except ValueError:
             return
     app.player.volume = min(1.0, max(0.0, volume))
@@ -210,7 +209,7 @@ def _stop_after(app, value):
     elif value == "t":
         po.stop_after = not po.stop_after
     else:
-        raise CommandError("Invalid value %r" % value)
+        raise CommandError(f"Invalid value {value!r}")
 
 
 @registry.register("shuffle", args=1)
@@ -274,8 +273,7 @@ def _seek(app, time):
         seek_to -= util.parse_time(time[1:]) * 1000
     else:
         seek_to = util.parse_time(time) * 1000
-    seek_to = min(player.song.get("~#length", 0) * 1000 - 1,
-                  max(0, seek_to))
+    seek_to = min(player.song.get("~#length", 0) * 1000 - 1, max(0, seek_to))
     player.seek(seek_to)
 
 
@@ -291,8 +289,7 @@ def _add_location(app, value):
         if not ret:
             print_e("Couldn't add file to library")
     elif os.path.isdir(value):
-        copool.add(app.library.scan, [value], cofuncid="library",
-                   funcid="library")
+        copool.add(app.library.scan, [value], cofuncid="library", funcid="library")
     else:
         print_e("Invalid location")
 
@@ -328,7 +325,7 @@ def _rating(app, value):
             except ValueError:
                 return
         else:
-            change = (1 / RATINGS.number)
+            change = 1 / RATINGS.number
         if value[0] == "-":
             change = -change
         rating = song("~#rating") + change
@@ -352,7 +349,7 @@ def _dump_browsers(app):
 @registry.register("set-browser", args=1)
 def _set_browser(app, value):
     if not app.window.select_browser(value, app.library, app.player):
-        raise CommandError("Unknown browser %r" % value)
+        raise CommandError(f"Unknown browser {value!r}")
 
 
 @registry.register("open-browser", args=1)
@@ -362,7 +359,7 @@ def _open_browser(app, value):
     try:
         browser_cls = browsers.get(value)
     except ValueError as e:
-        raise CommandError("Unknown browser %r" % value) from e
+        raise CommandError(f"Unknown browser {value!r}") from e
     LibraryBrowser.open(browser_cls, app.library, app.player)
 
 
@@ -483,7 +480,7 @@ def _status(app):
         strings = ["playing"]
     strings.append(type(app.browser).__name__)
     po = app.player_options
-    strings.append("%0.3f" % player.volume)
+    strings.append(f"{player.volume:0.3f}")
     strings.append("shuffle" if po.shuffle else "inorder")
     strings.append("on" if po.repeat else "off")
     progress = 0
@@ -491,7 +488,7 @@ def _status(app):
         length = player.info.get("~#length", 0)
         if length:
             progress = player.get_position() / (length * 1000.0)
-    strings.append("%0.3f" % progress)
+    strings.append(f"{progress:0.3f}")
     status = " ".join(strings) + "\n"
 
     return text2fsn(status)
@@ -548,8 +545,9 @@ def _print_query(app, json_encoded_args):
         # backward compatibility
         query = arg2text(json_encoded_args)
         fstring = None
-    if (not isinstance(query, str)
-        or (fstring is not None and not isinstance(fstring, str))):
+    if not isinstance(query, str) or (
+        fstring is not None and not isinstance(fstring, str)
+    ):
         # This should not happen
         return "\n"
     pattern = make_pattern(fstring, "<~filename>")

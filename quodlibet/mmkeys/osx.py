@@ -36,7 +36,6 @@ except ImportError as e:
 
 
 class OSXBackend(MMKeysBackend):
-
     def __init__(self, name, callback):
         self.__eventsapp = MacKeyEventsTap(callback)
         self.__eventsapp.start()
@@ -75,22 +74,24 @@ class MacKeyEventsTap(threading.Thread):
 
     def _event_tap(self, proxy, type_, event, refcon):
         # evenTrap disabled by timeout or user input, re-enable
-        if type_ == Quartz.kCGEventTapDisabledByUserInput or \
-                type_ == Quartz.kCGEventTapDisabledByTimeout:
+        if (
+            type_ == Quartz.kCGEventTapDisabledByUserInput
+            or type_ == Quartz.kCGEventTapDisabledByTimeout
+        ):
             assert self._tap is not None
             Quartz.CGEventTapEnable(self._tap, True)
             return event
 
         # Convert the Quartz CGEvent into something more useful
         keyEvent = NSEvent.eventWithCGEvent_(event)
-        if keyEvent.subtype() == 8: # subtype 8 is media keys
+        if keyEvent.subtype() == 8:  # subtype 8 is media keys
             data = keyEvent.data1()
             keyCode = (data & 0xFFFF0000) >> 16
             keyState = (data & 0xFF00) >> 8
             if keyCode in self._EVENTS:
                 if keyState == NSKeyUp:
                     self._push_callback(self._EVENTS[keyCode])
-                return None # swallow the event, so iTunes doesn't launch
+                return None  # swallow the event, so iTunes doesn't launch
         return event
 
     def _loop_start(self, observer, activiti, info):
@@ -98,14 +99,14 @@ class MacKeyEventsTap(threading.Thread):
 
     def run(self):
         self._tap = Quartz.CGEventTapCreate(
-            Quartz.kCGSessionEventTap, # Session level is enough for our needs
-            Quartz.kCGHeadInsertEventTap, # Insert wherever, we do not filter
+            Quartz.kCGSessionEventTap,  # Session level is enough for our needs
+            Quartz.kCGHeadInsertEventTap,  # Insert wherever, we do not filter
             # Active, to swallow the play/pause event is enough
             Quartz.kCGEventTapOptionDefault,
             # NSSystemDefined for media keys
             Quartz.CGEventMaskBit(NSSystemDefined),
             self._event_tap,
-            None
+            None,
         )
 
         # the above can fail
@@ -118,18 +119,17 @@ class MacKeyEventsTap(threading.Thread):
         # add an observer so we know when we can stop it
         # without a race condition
         self._observ = Quartz.CFRunLoopObserverCreate(
-            None, Quartz.kCFRunLoopEntry, False, 0, self._loop_start, None)
+            None, Quartz.kCFRunLoopEntry, False, 0, self._loop_start, None
+        )
         Quartz.CFRunLoopAddObserver(
-            self._loop, self._observ, Quartz.kCFRunLoopCommonModes)
+            self._loop, self._observ, Quartz.kCFRunLoopCommonModes
+        )
 
         # Create a runloop source and add it to the current loop
-        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(
-            None, self._tap, 0)
+        self._runLoopSource = Quartz.CFMachPortCreateRunLoopSource(None, self._tap, 0)
 
         Quartz.CFRunLoopAddSource(
-            self._loop,
-            self._runLoopSource,
-            Quartz.kCFRunLoopDefaultMode
+            self._loop, self._runLoopSource, Quartz.kCFRunLoopDefaultMode
         )
 
         # Enable the tap
@@ -152,15 +152,14 @@ class MacKeyEventsTap(threading.Thread):
 
         # remove the runloop source
         Quartz.CFRunLoopRemoveSource(
-            self._loop,
-            self._runLoopSource,
-            Quartz.kCFRunLoopDefaultMode
+            self._loop, self._runLoopSource, Quartz.kCFRunLoopDefaultMode
         )
         self._runLoopSource = None
 
         # remove observer
         Quartz.CFRunLoopRemoveObserver(
-            self._loop, self._observ, Quartz.kCFRunLoopCommonModes)
+            self._loop, self._observ, Quartz.kCFRunLoopCommonModes
+        )
         self._observ = None
 
         # stop the loop

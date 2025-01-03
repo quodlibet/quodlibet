@@ -37,8 +37,7 @@ def show_files(dirname, entries: Iterable[fsnative] | None = None):
     """
     entries = entries or []
     assert isinstance(dirname, fsnative)
-    assert all(isinstance(e, fsnative) and os.path.basename(e) == e
-               for e in entries)
+    assert all(isinstance(e, fsnative) and os.path.basename(e) == e for e in entries)
 
     dirname = os.path.abspath(dirname)
 
@@ -85,14 +84,16 @@ class BrowseError(Exception):
 
 def _get_startup_id():
     from quodlibet import app
+
     app_name = type(app.window).__name__
     return "%s_TIME%d" % (app_name, Gtk.get_current_event_time())
 
 
 def _get_dbus_proxy(name, path, iface):
     bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-    return Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                  name, path, iface, None)
+    return Gio.DBusProxy.new_sync(
+        bus, Gio.DBusProxyFlags.NONE, None, name, path, iface, None
+    )
 
 
 def _show_files_fdo(dirname, entries):
@@ -105,8 +106,7 @@ def _show_files_fdo(dirname, entries):
         dbus_proxy = _get_dbus_proxy(FDO_NAME, FDO_PATH, FDO_IFACE)
 
         if not entries:
-            dbus_proxy.ShowFolders("(ass)",
-                                   [fsn2uri(dirname)], _get_startup_id())
+            dbus_proxy.ShowFolders("(ass)", [fsn2uri(dirname)], _get_startup_id())
         else:
             item_uri = fsn2uri(os.path.join(dirname, entries[0]))
             dbus_proxy.ShowItems("(ass)", [item_uri], _get_startup_id())
@@ -124,11 +124,11 @@ def _show_files_thunar(dirname, entries):
         dbus_proxy = _get_dbus_proxy(XFCE_NAME, XFCE_PATH, XFCE_IFACE)
 
         if not entries:
-            dbus_proxy.DisplayFolder("(sss)",
-                                     fsn2uri(dirname), "", _get_startup_id())
+            dbus_proxy.DisplayFolder("(sss)", fsn2uri(dirname), "", _get_startup_id())
         else:
             dbus_proxy.DisplayFolderAndSelect(
-                "(ssss)", fsn2uri(dirname), entries[0], "", _get_startup_id())
+                "(ssss)", fsn2uri(dirname), entries[0], "", _get_startup_id()
+            )
     except GLib.Error as e:
         raise BrowseError(e) from e
 

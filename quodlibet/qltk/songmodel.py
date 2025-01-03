@@ -67,9 +67,7 @@ class PlaylistMux:
         keep_songs = config.getboolean("memory", "queue_keep_songs", False)
         q_disable = config.getboolean("memory", "queue_disable", False)
 
-        if (self.q.is_empty()
-                or q_disable
-                or (keep_songs and not self.q.sourced)):
+        if self.q.is_empty() or q_disable or (keep_songs and not self.q.sourced):
             self.pl.next()
             if q_disable and self.q.sourced:
                 # The go_to is to make sure the playlist begins playing
@@ -85,9 +83,7 @@ class PlaylistMux:
         keep_songs = config.getboolean("memory", "queue_keep_songs", False)
         q_disable = config.getboolean("memory", "queue_disable", False)
 
-        if (self.q.is_empty()
-                or q_disable
-                or (keep_songs and not self.q.sourced)):
+        if self.q.is_empty() or q_disable or (keep_songs and not self.q.sourced):
             self.pl.next_ended()
             if q_disable and self.q.sourced:
                 self.go_to(self.pl.current)
@@ -117,7 +113,7 @@ class PlaylistMux:
         source should be the right PlaylistModel in case song is an iter.
         """
 
-        print_d("Told to go to %r" % getattr(song, "key", song))
+        print_d("Told to go to {!r}".format(getattr(song, "key", song)))
         main, other = self.pl, self.q
         if source is not None:
             assert source in (self.pl, self.q)
@@ -150,7 +146,6 @@ class PlaylistMux:
 
 
 class TrackCurrentModel(ObjectStore):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.__iter = None
@@ -257,14 +252,14 @@ class PlaylistModel(TrackCurrentModel):
         """Switch to the next song"""
 
         iter_ = self.current_iter
-        print_d("Using %s.next_explicit() to get next song" % self.order)
+        print_d(f"Using {self.order}.next_explicit() to get next song")
         self.current_iter = self.order.next_explicit(self, iter_)
 
     def next_ended(self):
         """Switch to the next song (action comes from the user)"""
 
         iter_ = self.current_iter
-        print_d("Using %s.next_implicit() to get next song" % self.order)
+        print_d(f"Using {self.order}.next_implicit() to get next song")
         self.current_iter = self.order.next_implicit(self, iter_)
 
     def previous(self):
@@ -283,8 +278,7 @@ class PlaylistModel(TrackCurrentModel):
 
         assert source is None or source is self
 
-        print_d("Told to go to %r" % getattr(song_or_iter, "key",
-                                             song_or_iter))
+        print_d("Told to go to {!r}".format(getattr(song_or_iter, "key", song_or_iter)))
 
         iter_ = None
         if isinstance(song_or_iter, Gtk.TreeIter):

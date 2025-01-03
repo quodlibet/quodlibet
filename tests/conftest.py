@@ -45,8 +45,9 @@ def pytest_report_teststatus(report: TestReport, config: Config):
     """Spits out relevant logs only if a test fails."""
     yield
     if report.failed:
-        msg = (f"\nERROR: failed {report.nodeid}:{LOG_JOINER}"
-               + LOG_JOINER.join(_logs.get_content()))
+        msg = f"\nERROR: failed {report.nodeid}:{LOG_JOINER}" + LOG_JOINER.join(
+            _logs.get_content()
+        )
         print(msg)
         return report.outcome, ".", msg
     # Each test should clear the logs. This won't work well if parallelised

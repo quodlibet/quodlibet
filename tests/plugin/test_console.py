@@ -41,8 +41,7 @@ class TConsole(PluginTestCase):
         plugin.enabled()
         assert isinstance(plugin.create_sidebar(), Gtk.Widget), True
         plugin.plugin_on_songs_selected([AUDIO_FILE])
-        self.assertEqual(plugin.console.namespace.get("songs"),
-                             [AUDIO_FILE])
+        self.assertEqual(plugin.console.namespace.get("songs"), [AUDIO_FILE])
         plugin.disabled()
 
     def test_console_completion(self):

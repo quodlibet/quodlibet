@@ -23,9 +23,7 @@ class MenuButton(Gtk.MenuButton):
             bbox.pack_start(widget, True, True, 0)
         if arrow:
             arrow_type = Gtk.ArrowType.DOWN if down else Gtk.ArrowType.UP
-            bbox.pack_start(
-                Gtk.Arrow.new(arrow_type, Gtk.ShadowType.IN),
-                True, True, 0)
+            bbox.pack_start(Gtk.Arrow.new(arrow_type, Gtk.ShadowType.IN), True, True, 0)
 
         self.add(bbox)
         self.set_direction(Gtk.ArrowType.DOWN if down else Gtk.ArrowType.UP)
@@ -38,13 +36,15 @@ class MenuButton(Gtk.MenuButton):
 
 
 class SmallMenuButton(MenuButton):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         self.set_size_request(26, 26)
-        add_css(self, """
+        add_css(
+            self,
+            """
             * {
                 padding: 0px 4px;
             }
-        """)
+        """,
+        )

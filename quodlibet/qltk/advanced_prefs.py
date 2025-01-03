@@ -77,8 +77,16 @@ def int_config(section, option, label, tooltip):
     return _config(section, option, label, tooltip, getter)
 
 
-def slider_config(section, option, label, tooltip, lower=0, upper=1,
-                  on_change_callback=None, label_value_callback=None):
+def slider_config(
+    section,
+    option,
+    label,
+    tooltip,
+    lower=0,
+    upper=1,
+    on_change_callback=None,
+    label_value_callback=None,
+):
     def on_reverted(*args):
         config.reset(section, option)
         scale.set_value(config.getfloat(section, option))
@@ -119,106 +127,168 @@ class AdvancedPreferencesPane(Gtk.VBox):
         # TODO: rethink translation here? (#3494)
         rows = [
             text_config(
-                "editing", "id3encoding",
+                "editing",
+                "id3encoding",
                 "ID3 encodings",
-                ("ID3 encodings separated by spaces. "
-                 "UTF-8 is always tried first, and Latin-1 is always tried last.")),
+                (
+                    "ID3 encodings separated by spaces. "
+                    "UTF-8 is always tried first, and Latin-1 is always tried last."
+                ),
+            ),
             text_config(
-                "settings", "search_tags",
+                "settings",
+                "search_tags",
                 "Extra search tags",
-                ("Tags that get searched in addition to "
-                 'the ones present in the song list. Separate with ","')),
-            text_config("editing", "multi_line_tags",
-                        "Multi-line tags",
-                        ("Tags to consider as multi-line (delimited by \\n) "
-                         "rather than multi-valued (comma-separated)")),
+                (
+                    "Tags that get searched in addition to "
+                    'the ones present in the song list. Separate with ","'
+                ),
+            ),
+            text_config(
+                "editing",
+                "multi_line_tags",
+                "Multi-line tags",
+                (
+                    "Tags to consider as multi-line (delimited by \\n) "
+                    "rather than multi-valued (comma-separated)"
+                ),
+            ),
             text_config("settings", "rating_symbol_full", "Rating symbol (full)"),
             text_config("settings", "rating_symbol_blank", "Rating symbol (blank)"),
             text_config(
-                "player", "backend",
+                "player",
+                "backend",
                 "Backend",
-                "Identifier of the playback backend to use"),
+                "Identifier of the playback backend to use",
+            ),
             boolean_config(
-                "settings", "disable_hints",
+                "settings",
+                "disable_hints",
                 "Disable hints",
-                "Disable popup windows (treeview hints)"),
+                "Disable popup windows (treeview hints)",
+            ),
             int_config(
-                "browsers", "cover_size",
+                "browsers",
+                "cover_size",
                 "Album cover size",
-                ("Size of the album cover images in the album list browser "
-                 "(restart required)")),
+                (
+                    "Size of the album cover images in the album list browser "
+                    "(restart required)"
+                ),
+            ),
             text_config(
-                "albumart", "search_filenames",
+                "albumart",
+                "search_filenames",
                 "Album art search filenames",
-                "Which specific files are (also) tried for album art"),
+                "Which specific files are (also) tried for album art",
+            ),
             boolean_config(
-                "settings", "disable_mmkeys",
+                "settings",
+                "disable_mmkeys",
                 "Disable multimedia keys",
-                "(restart required)"),
+                "(restart required)",
+            ),
             text_config(
-                "settings", "window_title_pattern",
+                "settings",
+                "window_title_pattern",
                 "Main window title",
-                ("A (tied) tag for the main window title, e.g. ~title~~people "
-                 "(restart required)")),
+                (
+                    "A (tied) tag for the main window title, e.g. ~title~~people "
+                    "(restart required)"
+                ),
+            ),
             text_config(
-                "settings", "datecolumn_timestamp_format",
+                "settings",
+                "datecolumn_timestamp_format",
                 "Timestamp date format",
-                "A timestamp format for dates, e.g. %Y%m%d %X (restart required)"),
+                "A timestamp format for dates, e.g. %Y%m%d %X (restart required)",
+            ),
             boolean_config(
-                "settings", "scrollbar_always_visible",
+                "settings",
+                "scrollbar_always_visible",
                 "Scrollbars always visible",
-                ("Toggles whether the scrollbars on the bottom and side of "
-                 "the window always are visible or get hidden when not in use "
-                 "(restart required)")),
+                (
+                    "Toggles whether the scrollbars on the bottom and side of "
+                    "the window always are visible or get hidden when not in use "
+                    "(restart required)"
+                ),
+            ),
             boolean_config(
-                "settings", "monospace_query",
+                "settings",
+                "monospace_query",
                 "Use monospace font for search input",
                 "Helps readability of code-like queries, but looks less consistent "
-                "(restart required)"),
+                "(restart required)",
+            ),
             text_config(
-                "settings", "query_font_size",
+                "settings",
+                "query_font_size",
                 "Search input font size",
                 "Size to apply to the search query entry, "
-                "in any Pango CSS units, e.g. '100%', '1rem'. (restart required)"),
+                "in any Pango CSS units, e.g. '100%', '1rem'. (restart required)",
+            ),
             boolean_config(
-                "settings", "pangocairo_force_fontconfig",
+                "settings",
+                "pangocairo_force_fontconfig",
                 "Force Use Fontconfig Backend",
-                "It's not the default on win/macOS (restart required)"),
+                "It's not the default on win/macOS (restart required)",
+            ),
             text_config(
-                "browsers", "ignored_characters",
+                "browsers",
+                "ignored_characters",
                 "Ignored characters",
-                "Characters to ignore in queries"),
+                "Characters to ignore in queries",
+            ),
             boolean_config(
-                "settings", "plugins_window_on_top",
+                "settings",
+                "plugins_window_on_top",
                 "Plugin window on top",
-                "Toggles whether the plugin window appears on top of others"),
+                "Toggles whether the plugin window appears on top of others",
+            ),
             int_config(
-                "autosave", "queue_interval",
+                "autosave",
+                "queue_interval",
                 "Queue autosave interval",
-                ("Longest time between play queue auto-saves, or 0 for disabled. "
-                 "(restart required)")),
+                (
+                    "Longest time between play queue auto-saves, or 0 for disabled. "
+                    "(restart required)"
+                ),
+            ),
             int_config(
-                "browsers", "searchbar_historic_entries",
+                "browsers",
+                "searchbar_historic_entries",
                 "Number of history entries in the search bar",
-                "8 by default (restart advised)"),
+                "8 by default (restart advised)",
+            ),
             int_config(
-                "browsers", "searchbar_enqueue_limit",
+                "browsers",
+                "searchbar_enqueue_limit",
                 "Search bar confirmation limit for enqueue",
-                ("Maximal size of the song list that can be enqueued from "
-                 "the search bar without confirmation.")),
+                (
+                    "Maximal size of the song list that can be enqueued from "
+                    "the search bar without confirmation."
+                ),
+            ),
             slider_config(
-                "player", "playcount_minimum_length_proportion",
+                "player",
+                "playcount_minimum_length_proportion",
                 "Minimum length to consider a track as played",
-                ("Consider a track played after listening to this proportion of "
-                 "its total duration"),
-                label_value_callback=lambda value: f"{int(value * 100)}%"),
+                (
+                    "Consider a track played after listening to this proportion of "
+                    "its total duration"
+                ),
+                label_value_callback=lambda value: f"{int(value * 100)}%",
+            ),
             text_config(
-                "browsers", "missing_title_template",
+                "browsers",
+                "missing_title_template",
                 "Missing title template string",
-                ("Template for building title of tracks when title tag is missing. "
-                 "Tags are allowed, like <~basename> <~dirname> <~format> <~length> "
-                 "<~#bitrate>, etc. See tags documentation for details.")
-            )
+                (
+                    "Template for building title of tracks when title tag is missing. "
+                    "Tags are allowed, like <~basename> <~dirname> <~format> <~length> "
+                    "<~#bitrate>, etc. See tags documentation for details."
+                ),
+            ),
         ]
 
         # Tabulate all settings for neatness
@@ -233,15 +303,16 @@ class AdvancedPreferencesPane(Gtk.VBox):
             if isinstance(widget, Gtk.VBox):
                 # This stops checkbox from expanding too big, or shrinking text entries
                 blank = Gtk.Label()
-                table.attach(blank, 1, 2, row, row + 1,
-                             xoptions=Gtk.AttachOptions.EXPAND)
-                table.attach(widget, 2, 3, row, row + 1,
-                             xoptions=Gtk.AttachOptions.SHRINK)
+                table.attach(
+                    blank, 1, 2, row, row + 1, xoptions=Gtk.AttachOptions.EXPAND
+                )
+                table.attach(
+                    widget, 2, 3, row, row + 1, xoptions=Gtk.AttachOptions.SHRINK
+                )
             else:
                 xoptions = Gtk.AttachOptions.FILL
                 table.attach(widget, 1, 3, row, row + 1, xoptions=xoptions)
-            table.attach(button, 3, 4, row, row + 1,
-                         xoptions=Gtk.AttachOptions.SHRINK)
+            table.attach(button, 3, 4, row, row + 1, xoptions=Gtk.AttachOptions.SHRINK)
 
         def on_click(button):
             button.hide()

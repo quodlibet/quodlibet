@@ -139,9 +139,8 @@ class TSongLibrarian(TLibrarian):
     def test_tag_values(self):
         self.lib1.add(self.Frange(0, 30, 2))
         self.lib2.add(self.Frange(1, 30, 2))
-        del(self.added[:])
-        self.assertEqual(
-            sorted(self.librarian.tag_values(20)), list(range(20)))
+        del self.added[:]
+        self.assertEqual(sorted(self.librarian.tag_values(20)), list(range(20)))
         self.assertEqual(sorted(self.librarian.tag_values(0)), [])
         assert not self.changed or self.added or self.removed
 

@@ -18,8 +18,7 @@ from quodlibet import config
 _PLUGIN_ID = "compressor"
 
 _SETTINGS = {
-    "threshold": [_("_Threshold:"),
-                  _("Threshold until the filter is activated"), 1.0],
+    "threshold": [_("_Threshold:"), _("Threshold until the filter is activated"), 1.0],
     "ratio": [_("R_atio:"), _("Compression ratio"), 1.0],
 }
 
@@ -61,18 +60,25 @@ class Preferences(Gtk.VBox):
             label.set_alignment(0.0, 0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
 
         threshold_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0))
+            adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0)
+        )
         threshold_scale.set_digits(2)
         labels["threshold"].set_mnemonic_widget(threshold_scale)
         threshold_scale.set_value_pos(Gtk.PositionType.RIGHT)
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
+
         threshold_scale.connect("format-value", format_perc)
         table.attach(threshold_scale, 1, 2, 0, 1)
 
@@ -80,11 +86,11 @@ class Preferences(Gtk.VBox):
             value = scale.get_value()
             set_cfg("threshold", value)
             self.emit("changed")
+
         threshold_scale.connect("value-changed", threshold_changed)
         threshold_scale.set_value(get_cfg("threshold"))
 
-        ratio_scale = Gtk.HScale(
-            adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0))
+        ratio_scale = Gtk.HScale(adjustment=Gtk.Adjustment.new(0, 0, 1, 0.01, 0.1, 0))
         ratio_scale.set_digits(2)
         labels["ratio"].set_mnemonic_widget(ratio_scale)
         ratio_scale.set_value_pos(Gtk.PositionType.RIGHT)
@@ -94,18 +100,20 @@ class Preferences(Gtk.VBox):
             value = scale.get_value()
             set_cfg("ratio", value)
             self.emit("changed")
+
         ratio_scale.connect("value-changed", ratio_changed)
         ratio_scale.set_value(get_cfg("ratio"))
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table),
-                        True, True, 0)
+        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
 
 class Compressor(GStreamerPlugin):
     PLUGIN_ID = _PLUGIN_ID
     PLUGIN_NAME = _("Audio Compressor")
-    PLUGIN_DESC = _("Changes the amplitude of all samples above a specific "
-                    "threshold with a specific ratio.")
+    PLUGIN_DESC = _(
+        "Changes the amplitude of all samples above a specific "
+        "threshold with a specific ratio."
+    )
 
     @classmethod
     def setup_element(cls):
@@ -127,4 +135,5 @@ class Compressor(GStreamerPlugin):
 
 if not Compressor.setup_element():
     raise PluginImportError(
-        "GStreamer element 'audiodynamic' missing (gst-plugins-good)")
+        "GStreamer element 'audiodynamic' missing (gst-plugins-good)"
+    )

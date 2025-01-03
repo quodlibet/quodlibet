@@ -25,19 +25,34 @@ from quodlibet import app
 
 
 A1 = AudioFile(
-        {"album": "greatness", "discsubtitle": "unplugged",
-         "title": "excellent", "version": "remix",
-         "artist": "fooman\ngo",
-         "~#lastplayed": 1234, "~#rating": 0.75,
-         "~filename": fsnative("/foo a/b"),
-         "~#length": 123, "albumartist": "aa\nbb", "bpm": "123.5",
-         "tracknumber": "6/7"})
+    {
+        "album": "greatness",
+        "discsubtitle": "unplugged",
+        "title": "excellent",
+        "version": "remix",
+        "artist": "fooman\ngo",
+        "~#lastplayed": 1234,
+        "~#rating": 0.75,
+        "~filename": fsnative("/foo a/b"),
+        "~#length": 123,
+        "albumartist": "aa\nbb",
+        "bpm": "123.5",
+        "tracknumber": "6/7",
+    }
+)
 A1.sanitize()
 
 A2 = AudioFile(
-        {"album": "greatness2\ufffe", "title": "superlative",
-         "artist": "fooman\ufffe", "~#lastplayed": 1234, "~#rating": 1.0,
-         "~filename": fsnative("/foo"), "discnumber": "4294967296"})
+    {
+        "album": "greatness2\ufffe",
+        "title": "superlative",
+        "artist": "fooman\ufffe",
+        "~#lastplayed": 1234,
+        "~#rating": 1.0,
+        "~filename": fsnative("/foo"),
+        "discnumber": "4294967296",
+    }
+)
 A2.sanitize()
 
 MAX_TIME = 3
@@ -45,7 +60,6 @@ MAX_TIME = 3
 
 @skipUnless(dbus, "no dbus")
 class TMPRIS(PluginTestCase):
-
     BUS_NAME = "org.mpris.MediaPlayer2.quodlibet"
 
     def setUp(self):
@@ -64,8 +78,7 @@ class TMPRIS(PluginTestCase):
 
     def tearDown(self):
         bus = dbus.SessionBus()
-        self.assertTrue(
-            bus.name_has_owner(self.BUS_NAME))
+        self.assertTrue(bus.name_has_owner(self.BUS_NAME))
         self.m.disabled()
         assert not bus.name_has_owner(self.BUS_NAME)
 
@@ -80,26 +93,22 @@ class TMPRIS(PluginTestCase):
     def _main_iface(self):
         bus = dbus.SessionBus()
         obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
-        return dbus.Interface(obj,
-                              dbus_interface="org.mpris.MediaPlayer2")
+        return dbus.Interface(obj, dbus_interface="org.mpris.MediaPlayer2")
 
     def _prop(self):
         bus = dbus.SessionBus()
         obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
-        return dbus.Interface(obj,
-                              dbus_interface="org.freedesktop.DBus.Properties")
+        return dbus.Interface(obj, dbus_interface="org.freedesktop.DBus.Properties")
 
     def _player_iface(self):
         bus = dbus.SessionBus()
         obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
-        return dbus.Interface(obj,
-                              dbus_interface="org.mpris.MediaPlayer2.Player")
+        return dbus.Interface(obj, dbus_interface="org.mpris.MediaPlayer2.Player")
 
     def _introspect_iface(self):
         bus = dbus.SessionBus()
         obj = bus.get_object(self.BUS_NAME, "/org/mpris/MediaPlayer2")
-        return dbus.Interface(
-            obj, dbus_interface="org.freedesktop.DBus.Introspectable")
+        return dbus.Interface(obj, dbus_interface="org.freedesktop.DBus.Introspectable")
 
     def _reply(self, *args):
         self._replies.append(args)
@@ -112,7 +121,7 @@ class TMPRIS(PluginTestCase):
         while not self._replies:
             Gtk.main_iteration_do(False)
             if time.time() - start > MAX_TIME:
-                self.fail("Timed out waiting for replies (%s)" % msg)
+                self.fail(f"Timed out waiting for replies ({msg})")
         return self._replies.pop(0)
 
     def test_main(self):
@@ -171,7 +180,7 @@ class TMPRIS(PluginTestCase):
 
         for key, value in props.items():
             self._prop().Get(piface, key, **args)
-            resp = self._wait(msg="for key '%s'" % key)[0]
+            resp = self._wait(msg=f"for key '{key}'")[0]
             self.assertEqual(resp, value)
             assert isinstance(resp, type(value))
 
@@ -197,8 +206,7 @@ class TMPRIS(PluginTestCase):
         # No song case
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.assertEqual(resp["mpris:trackid"],
-                             "/net/sacredchao/QuodLibet/NoTrack")
+        self.assertEqual(resp["mpris:trackid"], "/net/sacredchao/QuodLibet/NoTrack")
         assert isinstance(resp["mpris:trackid"], dbus.ObjectPath)
 
         # go to next song
@@ -208,14 +216,13 @@ class TMPRIS(PluginTestCase):
 
         self._prop().Get(piface, "Metadata", **args)
         resp = self._wait()[0]
-        self.assertNotEqual(resp["mpris:trackid"],
-                         "/net/sacredchao/QuodLibet/NoTrack")
+        self.assertNotEqual(resp["mpris:trackid"], "/net/sacredchao/QuodLibet/NoTrack")
 
         # mpris stuff
         assert not resp["mpris:trackid"].startswith("/org/mpris/")
         assert isinstance(resp["mpris:trackid"], dbus.ObjectPath)
 
-        self.assertEqual(resp["mpris:length"], 123 * 10 ** 6)
+        self.assertEqual(resp["mpris:length"], 123 * 10**6)
         assert isinstance(resp["mpris:length"], dbus.Int64)
 
         # list text values
@@ -241,6 +248,7 @@ class TMPRIS(PluginTestCase):
         # time
         from time import strptime
         from calendar import timegm
+
         seconds = timegm(strptime(resp["xesam:lastUsed"], "%Y-%m-%dT%H:%M:%S"))
         self.assertEqual(seconds, 1234)
 
@@ -258,9 +266,9 @@ class TMPRIS(PluginTestCase):
 
     def test_metadata_without_version_and_discsubtitle(self):
         # configure columns
-        columns = list(set(const.DEFAULT_COLUMNS) -
-                       {"~album~discsubtitle", "~title~version"}) + \
-                       ["album", "title"]
+        columns = list(
+            set(const.DEFAULT_COLUMNS) - {"~album~discsubtitle", "~title~version"}
+        ) + ["album", "title"]
         config.setstringlist("settings", "columns", columns)
 
         args = {"reply_handler": self._reply, "error_handler": self._error}

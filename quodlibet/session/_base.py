@@ -11,7 +11,6 @@ class SessionError(Exception):
 
 
 class SessionClient:
-
     def open(self, app):
         """Raises SessionError"""
 

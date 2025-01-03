@@ -10,6 +10,7 @@ from gi.repository import Gtk, Gst
 
 if not Gst.ElementFactory.find("chromaprint"):
     from quodlibet import plugins
+
     raise plugins.MissingGstreamerElementPluginError("chromaprint")
 
 from .submit import FingerprintDialog
@@ -49,17 +50,24 @@ class AcoustidSearch(SongsMenuPlugin):
 class AcoustidSubmit(SongsMenuPlugin):
     PLUGIN_ID = "AcoustidSubmit"
     PLUGIN_NAME = _("Submit Acoustic Fingerprints")
-    PLUGIN_DESC = _("Generates acoustic fingerprints using chromaprint "
-                    "and submits them to acoustid.org.")
+    PLUGIN_DESC = _(
+        "Generates acoustic fingerprints using chromaprint "
+        "and submits them to acoustid.org."
+    )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
 
     plugin_handles = each_song(is_finite, is_writable)
 
     def plugin_songs(self, songs):
         if not get_api_key():
-            ErrorMessage(self, _("API Key Missing"),
-                _("You have to specify an acoustid.org API key in the plugin "
-                "preferences before you can submit fingerprints.")).run()
+            ErrorMessage(
+                self,
+                _("API Key Missing"),
+                _(
+                    "You have to specify an acoustid.org API key in the plugin "
+                    "preferences before you can submit fingerprints."
+                ),
+            ).run()
         else:
             FingerprintDialog(songs)
 
@@ -69,12 +77,12 @@ class AcoustidSubmit(SongsMenuPlugin):
 
         # api key section
         def key_changed(entry, *args):
-            config.set("plugins", "fingerprint_acoustid_api_key",
-                entry.get_text())
+            config.set("plugins", "fingerprint_acoustid_api_key", entry.get_text())
 
         button = Button(_("Request API key"), Icons.NETWORK_WORKGROUP)
-        button.connect("clicked",
-            lambda s: util.website("https://acoustid.org/api-key"))
+        button.connect(
+            "clicked", lambda s: util.website("https://acoustid.org/api-key")
+        )
         key_box = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(get_api_key())
@@ -86,7 +94,6 @@ class AcoustidSubmit(SongsMenuPlugin):
         key_box.pack_start(entry, True, True, 0)
         key_box.pack_start(button, False, True, 0)
 
-        box.pack_start(Frame(_("AcoustID Web Service"),
-                       child=key_box), True, True, 0)
+        box.pack_start(Frame(_("AcoustID Web Service"), child=key_box), True, True, 0)
 
         return box

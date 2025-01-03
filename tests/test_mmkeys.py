@@ -10,7 +10,6 @@ from quodlibet.mmkeys import MMKeysHandler, iter_backends
 
 
 class TMmKeys(TestCase):
-
     def setUp(self):
         init_fake_app()
 

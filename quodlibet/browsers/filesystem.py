@@ -86,9 +86,10 @@ class FileSystem(Browser, Gtk.HBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
 
         dt = MainDirectoryTree(folders=get_scan_dirs())
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP,
-                    self.TARGET_QL),
-                   ("text/uri-list", 0, self.TARGET_EXT)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, self.TARGET_QL),
+            ("text/uri-list", 0, self.TARGET_EXT),
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         dt.drag_source_set(Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
@@ -128,9 +129,13 @@ class FileSystem(Browser, Gtk.HBox):
             cant_add = [s for s in songs if not s.can_add]
             if cant_add:
                 qltk.ErrorMessage(
-                    qltk.get_top_parent(self), _("Unable to copy songs"),
-                    _("The files selected cannot be copied to other "
-                      "song lists or the queue.")).run()
+                    qltk.get_top_parent(self),
+                    _("Unable to copy songs"),
+                    _(
+                        "The files selected cannot be copied to other "
+                        "song lists or the queue."
+                    ),
+                ).run()
                 ctx.drag_abort(etime)
                 return
             to_add = self._only_known(songs)
@@ -140,7 +145,7 @@ class FileSystem(Browser, Gtk.HBox):
         else:
             # External target (app) is delivered a list of URIS of songs
             uris = list({fsn2uri(dir) for dir in dirs})
-            print_d("Directories to drop: %s" % dirs)
+            print_d(f"Directories to drop: {dirs}")
             sel.set_uris(uris)
 
     def can_filter_tag(self, key):
@@ -200,7 +205,6 @@ class FileSystem(Browser, Gtk.HBox):
         copool.add(self.__songs_selected, self.get_child())
 
     def menu(self, songs, library, items):
-
         i = qltk.MenuItem(_("_Add to Library"), Icons.LIST_ADD)
         i.set_sensitive(False)
         i.connect("activate", self.__add_songs, songs)
@@ -210,8 +214,14 @@ class FileSystem(Browser, Gtk.HBox):
                 break
 
         items.append([i])
-        menu = SongsMenu(library, songs, remove=self.__remove_songs,
-                         delete=True, queue=True, items=items)
+        menu = SongsMenu(
+            library,
+            songs,
+            remove=self.__remove_songs,
+            delete=True,
+            queue=True,
+            items=items,
+        )
         return menu
 
     def __add_songs(self, item, songs):

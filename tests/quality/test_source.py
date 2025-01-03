@@ -24,15 +24,13 @@ def iter_py_paths() -> Iterable[Path]:
     """Iterates over all Python source files that are part of Quod Libet"""
 
     import quodlibet
+
     root = Path(get_module_dir(quodlibet)).parent
 
-    skip = [root / d for d in
-            ("build",
-             "dist",
-             "docs",
-             "dev-utils",
-             Path("quodlibet") / "packages")
-            ]
+    skip = [
+        root / d
+        for d in ("build", "dist", "docs", "dev-utils", Path("quodlibet") / "packages")
+    ]
     # Path.glob() not efficient on big trees :(
     for dirpath, dirnames, filenames in os.walk(root):
         root = Path(dirpath)
@@ -57,12 +55,14 @@ def py_path(request) -> Path:
 
 @pytest.mark.quality
 class TestLicense:
-    ALLOWED_RAW = ["""
+    ALLOWED_RAW = [
+        """
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
-""", """
+""",
+        """
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
 "Software"), to deal in the Software without restriction, including
@@ -81,7 +81,8 @@ IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
 CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-"""]
+""",
+    ]
     ALLOWED = ["".join(license.split()) for license in ALLOWED_RAW]
 
     def test_license_is_compliant(self, py_path: Path):
@@ -102,19 +103,20 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 class TestStockIcons:
     @fixture
     def res(self) -> Iterable[Pattern]:
-        return [re.compile(r)
-                for r in ("(Gtk\\.STOCK_[_A-Z]*)",
-                          "[\"\'](gtk-[\\-a-z]*)")]
+        return [
+            re.compile(r) for r in ("(Gtk\\.STOCK_[_A-Z]*)", "[\"'](gtk-[\\-a-z]*)")
+        ]
 
     @fixture
     def white(self) -> list[str]:
         # gtk setting keys start like stock icons, so white list them
-        white = [x.replace("_", "-") for x in
-                 dir(Gtk.Settings.get_default().props)
-                 if x.startswith("gtk_")]
+        white = [
+            x.replace("_", "-")
+            for x in dir(Gtk.Settings.get_default().props)
+            if x.startswith("gtk_")
+        ]
         # older gtk doesn't have those, but we still have them in the source
-        white += ["gtk-dialogs-use-header",
-                  "gtk-primary-button-warps-slider"]
+        white += ["gtk-dialogs-use-header", "gtk-primary-button-warps-slider"]
         # some more..
         white += ["gtk-tooltip", "gtk-", "gtk-update-icon-cache-"]
         return white

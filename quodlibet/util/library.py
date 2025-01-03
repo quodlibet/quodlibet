@@ -56,8 +56,7 @@ def split_scan_dirs(joined_paths):
 
     if is_windows():
         # we used to separate this config with ":", so this is tricky
-        return list(
-            filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths)))
+        return list(filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths)))
     else:
         return list(filter(None, split_escape(joined_paths, ":")))
 
@@ -92,8 +91,7 @@ def set_scan_dirs(dirs):
 def get_exclude_dirs() -> Iterable[fsnative]:
     """:return: a list of paths which should be ignored during scanning"""
 
-    paths = split_scan_dirs(
-        bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
+    paths = split_scan_dirs(bytes2fsn(config.getbytes("library", "exclude"), "utf-8"))
     return [os.path.expanduser(p) for p in paths]  # type: ignore
 
 
@@ -108,12 +106,12 @@ def scan_library(library, force):
 
     paths = get_scan_dirs()
     exclude = get_exclude_dirs()
-    copool.add(library.rebuild, paths, force, exclude,
-               cofuncid="library", funcid="library")
+    copool.add(
+        library.rebuild, paths, force, exclude, cofuncid="library", funcid="library"
+    )
 
 
-def emit_signal(songs, signal="changed", block_size=50, name=None,
-                cofuncid=None):
+def emit_signal(songs, signal="changed", block_size=50, name=None, cofuncid=None):
     """
     A generator that signals `signal` on the library
     in blocks of `block_size`. Useful for copools.
@@ -124,12 +122,11 @@ def emit_signal(songs, signal="changed", block_size=50, name=None,
             task.copool(cofuncid)
         total = len(songs)
         while i < total:
-            more = songs[i:i + block_size]
+            more = songs[i : i + block_size]
             if not more:
                 return
             if 0 == ((i / block_size) % 10):
-                print_d("Signalling '%s' (%d/%d songs)"
-                        % (signal, i, total))
+                print_d("Signalling '%s' (%d/%d songs)" % (signal, i, total))
             task.update(float(i) / total)
             app.library.emit(signal, more)
             i += block_size

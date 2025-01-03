@@ -58,7 +58,7 @@ def save(save_period=None):
 
 
 def destroy() -> None:
-    """Destroy all registered libraries """
+    """Destroy all registered libraries"""
 
     print_d("Destroying all libraries...")
 

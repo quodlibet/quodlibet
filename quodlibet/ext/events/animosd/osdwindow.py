@@ -14,6 +14,7 @@ from collections import namedtuple
 from math import pi
 
 import gi
+
 gi.require_version("PangoCairo", "1.0")
 
 from gi.repository import Gtk, GObject, GLib
@@ -28,7 +29,6 @@ from quodlibet import pattern
 
 
 class OSDWindow(Gtk.Window):
-
     __gsignals__ = {
         "fade-finished": (GObject.SignalFlags.RUN_LAST, None, (bool,)),
     }
@@ -64,7 +64,8 @@ class OSDWindow(Gtk.Window):
 
         scale_factor = self.get_scale_factor()
         cover_pixbuf = app.cover_manager.get_pixbuf(
-            song, conf.coversize * scale_factor, conf.coversize * scale_factor)
+            song, conf.coversize * scale_factor, conf.coversize * scale_factor
+        )
         coverheight = 0
         coverwidth = 0
         if cover_pixbuf:
@@ -76,8 +77,11 @@ class OSDWindow(Gtk.Window):
             self.cover_surface = None
 
         layout = self.create_pango_layout("")
-        layout.set_alignment((Pango.Alignment.LEFT, Pango.Alignment.CENTER,
-                              Pango.Alignment.RIGHT)[conf.align])
+        layout.set_alignment(
+            (Pango.Alignment.LEFT, Pango.Alignment.CENTER, Pango.Alignment.RIGHT)[
+                conf.align
+            ]
+        )
         layout.set_spacing(Pango.SCALE * 7)
         layout.set_font_description(Pango.FontDescription(conf.font))
         try:
@@ -122,10 +126,12 @@ class OSDWindow(Gtk.Window):
             if not getattr(self, "_bg_sf", None):
                 # copy the root surface into a temp image surface
                 root_win = self.get_root_window()
-                bg_sf = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                           walloc.width, walloc.height)
+                bg_sf = cairo.ImageSurface(
+                    cairo.FORMAT_ARGB32, walloc.width, walloc.height
+                )
                 pb = Gdk.pixbuf_get_from_window(
-                    root_win, wpos[0], wpos[1], walloc.width, walloc.height)
+                    root_win, wpos[0], wpos[1], walloc.width, walloc.height
+                )
                 bg_cr = cairo.Context(bg_sf)
                 Gdk.cairo_set_source_pixbuf(bg_cr, pb, 0, 0)
                 bg_cr.paint()
@@ -133,8 +139,9 @@ class OSDWindow(Gtk.Window):
 
             if not getattr(self, "_fg_sf", None):
                 # draw the window content in another temp surface
-                fg_sf = cairo.ImageSurface(cairo.FORMAT_ARGB32,
-                                           walloc.width, walloc.height)
+                fg_sf = cairo.ImageSurface(
+                    cairo.FORMAT_ARGB32, walloc.width, walloc.height
+                )
                 fg_cr = cairo.Context(fg_sf)
                 fg_cr.set_source_surface(fg_sf)
                 self.draw_title_info(fg_cr)
@@ -154,17 +161,27 @@ class OSDWindow(Gtk.Window):
     def rounded_rectangle(cr, x, y, radius, width, height):
         cr.move_to(x + radius, y)
         cr.line_to(x + width - radius, y)
-        cr.arc(x + width - radius, y + radius, radius,
-               - 90.0 * pi / 180.0, 0.0 * pi / 180.0)
+        cr.arc(
+            x + width - radius, y + radius, radius, -90.0 * pi / 180.0, 0.0 * pi / 180.0
+        )
         cr.line_to(x + width, y + height - radius)
-        cr.arc(x + width - radius, y + height - radius, radius,
-               0.0 * pi / 180.0, 90.0 * pi / 180.0)
+        cr.arc(
+            x + width - radius,
+            y + height - radius,
+            radius,
+            0.0 * pi / 180.0,
+            90.0 * pi / 180.0,
+        )
         cr.line_to(x + radius, y + height)
-        cr.arc(x + radius, y + height - radius, radius,
-               90.0 * pi / 180.0, 180.0 * pi / 180.0)
+        cr.arc(
+            x + radius,
+            y + height - radius,
+            radius,
+            90.0 * pi / 180.0,
+            180.0 * pi / 180.0,
+        )
         cr.line_to(x, y + radius)
-        cr.arc(x + radius, y + radius, radius,
-               180.0 * pi / 180.0, 270.0 * pi / 180.0)
+        cr.arc(x + radius, y + radius, radius, 180.0 * pi / 180.0, 270.0 * pi / 180.0)
         cr.close_path()
 
     @property
@@ -181,21 +198,23 @@ class OSDWindow(Gtk.Window):
 
     def draw_title_info(self, cr):
         cr.save()
-        do_shadow = (self.conf.shadow[0] != -1.0)
-        do_outline = (self.conf.outline[0] != -1.0)
+        do_shadow = self.conf.shadow[0] != -1.0
+        do_outline = self.conf.outline[0] != -1.0
 
         self.set_name("osd_bubble")
-        qltk.add_css(self, """
+        qltk.add_css(
+            self,
+            """
             #osd_bubble {
                 background-color:rgba(0,0,0,0);
             }
-        """)
+        """,
+        )
 
         cr.set_operator(cairo.OPERATOR_OVER)
         cr.set_source_rgba(*self.conf.fill)
         radius = min(25, self.corners_factor * min(*self.get_size()))
-        self.draw_conf_rect(cr, 0, 0, self.get_size()[0],
-                            self.get_size()[1], radius)
+        self.draw_conf_rect(cr, 0, 0, self.get_size()[0], self.get_size()[1], radius)
         cr.fill()
 
         # draw border
@@ -204,10 +223,9 @@ class OSDWindow(Gtk.Window):
             f = self.conf.fill
             rgba = (f[0] / 1.25, f[1] / 1.25, f[2] / 1.25, f[3] / 2.0)
             cr.set_source_rgba(*rgba)
-            self.draw_conf_rect(cr,
-                                1, 1,
-                                self.get_size()[0] - 2, self.get_size()[1] - 2,
-                                radius)
+            self.draw_conf_rect(
+                cr, 1, 1, self.get_size()[0] - 2, self.get_size()[1] - 2, radius
+            )
             cr.set_line_width(2.0)
             cr.stroke()
 
@@ -221,31 +239,42 @@ class OSDWindow(Gtk.Window):
 
             if do_shadow:
                 cr.set_source_rgba(*self.conf.shadow)
-                self.draw_conf_rect(cr,
-                                    rect.x + 2, rect.y + 2,
-                                    rect.width, rect.height,
-                                    0.6 * self.corners_factor * rect.width)
+                self.draw_conf_rect(
+                    cr,
+                    rect.x + 2,
+                    rect.y + 2,
+                    rect.width,
+                    rect.height,
+                    0.6 * self.corners_factor * rect.width,
+                )
                 cr.fill()
 
             if do_outline:
                 cr.set_source_rgba(*self.conf.outline)
-                self.draw_conf_rect(cr,
-                                    rect.x, rect.y,
-                                    rect.width, rect.height,
-                                    0.6 * self.corners_factor * rect.width)
+                self.draw_conf_rect(
+                    cr,
+                    rect.x,
+                    rect.y,
+                    rect.width,
+                    rect.height,
+                    0.6 * self.corners_factor * rect.width,
+                )
                 cr.stroke()
 
             cr.set_source_surface(surface, 0, 0)
             width, height = get_surface_extents(surface)[2:]
 
-            transmat.scale(width / float(rect.width),
-                           height / float(rect.height))
+            transmat.scale(width / float(rect.width), height / float(rect.height))
             transmat.translate(-rect.x, -rect.y)
             cr.get_source().set_matrix(transmat)
-            self.draw_conf_rect(cr,
-                                rect.x, rect.y,
-                                rect.width, rect.height,
-                                0.6 * self.corners_factor * rect.width)
+            self.draw_conf_rect(
+                cr,
+                rect.x,
+                rect.y,
+                rect.width,
+                rect.height,
+                0.6 * self.corners_factor * rect.width,
+            )
             cr.fill()
 
         PangoCairo.update_layout(cr, self.title_layout)
@@ -283,8 +312,9 @@ class OSDWindow(Gtk.Window):
         self.fade_start_time = now - fraction * self.FADETIME
 
         if self.iteration_source is None:
-            self.iteration_source = GLib.timeout_add(self.MS,
-                    self.fade_iteration_callback)
+            self.iteration_source = GLib.timeout_add(
+                self.MS, self.fade_iteration_callback
+            )
 
     def fade_iteration_callback(self):
         delta = GLib.get_real_time() - self.fade_start_time

@@ -11,6 +11,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 import re
@@ -36,9 +37,12 @@ pconfig.defaults.set("show_notifications", "all")
 pconfig.defaults.set("show_only_when_unfocused", True)
 pconfig.defaults.set("show_next_button", True)
 pconfig.defaults.set("titlepattern", "<artist|<artist> - ><title>")
-pconfig.defaults.set("bodypattern", """<~length>
+pconfig.defaults.set(
+    "bodypattern",
+    """<~length>
 <album|<album><discsubtitle| - <discsubtitle>>
-><~year|<~year>>""")
+><~year|<~year>>""",
+)
 
 
 class PreferencesWidget(Gtk.VBox):
@@ -66,19 +70,25 @@ class PreferencesWidget(Gtk.VBox):
         title_label.set_use_underline(True)
         title_label.set_alignment(0, 0.5)
         title_label.set_mnemonic_widget(title_entry)
-        table.attach(title_label, 0, 1, 0, 1,
-                     xoptions=Gtk.AttachOptions.FILL |
-                     Gtk.AttachOptions.SHRINK)
+        table.attach(
+            title_label,
+            0,
+            1,
+            0,
+            1,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         title_revert = Gtk.Button()
-        title_revert.add(Gtk.Image.new_from_icon_name(
-            Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+        title_revert.add(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+        )
         title_revert.set_tooltip_text(_("Revert to default pattern"))
         title_revert.connect(
-            "clicked", lambda *x: title_entry.set_text(
-                pconfig.defaults.gettext("titlepattern")))
-        table.attach(title_revert, 2, 3, 0, 1,
-                     xoptions=Gtk.AttachOptions.SHRINK)
+            "clicked",
+            lambda *x: title_entry.set_text(pconfig.defaults.gettext("titlepattern")),
+        )
+        table.attach(title_revert, 2, 3, 0, 1, xoptions=Gtk.AttachOptions.SHRINK)
 
         body_textbuffer = TextBuffer()
         body_textview = TextView(buffer=body_textbuffer)
@@ -90,11 +100,9 @@ class PreferencesWidget(Gtk.VBox):
             text = text_buffer.get_text(start, end, True)
             pconfig.settext(cfgname, text)
 
-        body_textbuffer.connect("changed", on_textbuffer_changed,
-                                "bodypattern")
+        body_textbuffer.connect("changed", on_textbuffer_changed, "bodypattern")
         body_scrollarea = Gtk.ScrolledWindow()
-        body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC,
-                                   Gtk.PolicyType.AUTOMATIC)
+        body_scrollarea.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         body_scrollarea.set_shadow_type(Gtk.ShadowType.ETCHED_OUT)
         body_scrollarea.add(body_textview)
         table.attach(body_scrollarea, 1, 2, 1, 2)
@@ -107,31 +115,45 @@ class PreferencesWidget(Gtk.VBox):
         table.attach(body_label, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.SHRINK)
 
         body_revert = Gtk.Button()
-        body_revert.add(Gtk.Image.new_from_icon_name(
-                        Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU))
+        body_revert.add(
+            Gtk.Image.new_from_icon_name(Icons.DOCUMENT_REVERT, Gtk.IconSize.MENU)
+        )
         body_revert.set_tooltip_text(_("Revert to default pattern"))
-        body_revert.connect("clicked", lambda *x:
-            body_textbuffer.set_text(pconfig.defaults.gettext("bodypattern")))
+        body_revert.connect(
+            "clicked",
+            lambda *x: body_textbuffer.set_text(
+                pconfig.defaults.gettext("bodypattern")
+            ),
+        )
         table.attach(
-            body_revert, 2, 3, 1, 2,
+            body_revert,
+            2,
+            3,
+            1,
+            2,
             xoptions=Gtk.AttachOptions.SHRINK,
-            yoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            yoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         # preview button
-        preview_button = qltk.Button(
-            _("_Show notification"), Icons.SYSTEM_RUN)
+        preview_button = qltk.Button(_("_Show notification"), Icons.SYSTEM_RUN)
         preview_button.set_sensitive(app.player.info is not None)
         preview_button.connect("clicked", self.on_preview_button_clicked)
         self.qlplayer_connected_signals = [
-            app.player.connect("paused", self.on_player_state_changed,
-                             preview_button),
-            app.player.connect("unpaused", self.on_player_state_changed,
-                             preview_button),
+            app.player.connect("paused", self.on_player_state_changed, preview_button),
+            app.player.connect(
+                "unpaused", self.on_player_state_changed, preview_button
+            ),
         ]
 
         table.attach(
-            preview_button, 0, 3, 2, 3,
-            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK)
+            preview_button,
+            0,
+            3,
+            2,
+            3,
+            xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+        )
 
         self.pack_start(text_frame, True, True, 0)
 
@@ -142,51 +164,53 @@ class PreferencesWidget(Gtk.VBox):
         radio_box = Gtk.VBox(spacing=6)
         display_box.pack_start(radio_box, True, True, 0)
 
-        only_user_radio = Gtk.RadioButton(label=_(
-            "Only on <i>_manual</i> song changes"
-        ), use_underline=True)
+        only_user_radio = Gtk.RadioButton(
+            label=_("Only on <i>_manual</i> song changes"), use_underline=True
+        )
         only_user_radio.get_child().set_use_markup(True)
-        only_user_radio.connect("toggled", self.on_radiobutton_toggled,
-                                "show_notifications", "user")
+        only_user_radio.connect(
+            "toggled", self.on_radiobutton_toggled, "show_notifications", "user"
+        )
         radio_box.pack_start(only_user_radio, True, True, 0)
 
-        only_auto_radio = Gtk.RadioButton(group=only_user_radio, label=_(
-            "Only on <i>_automatic</i> song changes"
-        ), use_underline=True)
+        only_auto_radio = Gtk.RadioButton(
+            group=only_user_radio,
+            label=_("Only on <i>_automatic</i> song changes"),
+            use_underline=True,
+        )
         only_auto_radio.get_child().set_use_markup(True)
-        only_auto_radio.connect("toggled", self.on_radiobutton_toggled,
-                                "show_notifications", "auto")
+        only_auto_radio.connect(
+            "toggled", self.on_radiobutton_toggled, "show_notifications", "auto"
+        )
         radio_box.pack_start(only_auto_radio, True, True, 0)
 
-        all_radio = Gtk.RadioButton(group=only_user_radio, label=_(
-            "On <i>a_ll</i> song changes"
-        ), use_underline=True)
+        all_radio = Gtk.RadioButton(
+            group=only_user_radio,
+            label=_("On <i>a_ll</i> song changes"),
+            use_underline=True,
+        )
         all_radio.get_child().set_use_markup(True)
-        all_radio.connect("toggled", self.on_radiobutton_toggled,
-                          "show_notifications", "all")
+        all_radio.connect(
+            "toggled", self.on_radiobutton_toggled, "show_notifications", "all"
+        )
         radio_box.pack_start(all_radio, True, True, 0)
 
-        {
-            "user": only_user_radio,
-            "auto": only_auto_radio,
-            "all": all_radio
-        }.get(pconfig.gettext("show_notifications"),
-              all_radio).set_active(True)
+        {"user": only_user_radio, "auto": only_auto_radio, "all": all_radio}.get(
+            pconfig.gettext("show_notifications"), all_radio
+        ).set_active(True)
 
         focus_check = Gtk.CheckButton(
-            label=_("Only when the main window is not _focused"),
-            use_underline=True)
+            label=_("Only when the main window is not _focused"), use_underline=True
+        )
         focus_check.set_active(pconfig.getboolean("show_only_when_unfocused"))
-        focus_check.connect("toggled", self.on_checkbutton_toggled,
-                            "show_only_when_unfocused")
+        focus_check.connect(
+            "toggled", self.on_checkbutton_toggled, "show_only_when_unfocused"
+        )
         display_box.pack_start(focus_check, True, True, 0)
 
-        show_next = Gtk.CheckButton(
-            label=_('Show "_Next" button'),
-            use_underline=True)
+        show_next = Gtk.CheckButton(label=_('Show "_Next" button'), use_underline=True)
         show_next.set_active(pconfig.getboolean("show_next_button"))
-        show_next.connect("toggled", self.on_checkbutton_toggled,
-                            "show_next_button")
+        show_next.connect("toggled", self.on_checkbutton_toggled, "show_next_button")
         display_box.pack_start(show_next, True, True, 0)
 
         self.pack_start(display_frame, True, True, 0)
@@ -204,8 +228,11 @@ class PreferencesWidget(Gtk.VBox):
     def on_preview_button_clicked(self, button):
         if app.player.info is not None:
             if not self.plugin_instance.show_notification(app.player.info):
-                ErrorMessage(self, _("Connection Error"),
-                    _("Couldn't connect to notification daemon.")).run()
+                ErrorMessage(
+                    self,
+                    _("Connection Error"),
+                    _("Couldn't connect to notification daemon."),
+                ).run()
 
     def on_player_state_changed(self, player, preview_button):
         preview_button.set_sensitive(player.info is not None)
@@ -263,8 +290,12 @@ class Notify(EventPlugin):
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             # This also triggers for existing name owners
             self.__watch = Gio.bus_watch_name_on_connection(
-                    bus, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
-                    None, self.__owner_vanished)
+                bus,
+                self.DBUS_NAME,
+                Gio.BusNameWatcherFlags.NONE,
+                None,
+                self.__owner_vanished,
+            )
         except GLib.Error:
             pass
 
@@ -295,11 +326,18 @@ class Notify(EventPlugin):
         """Returns a fresh proxy + info about the server"""
 
         interface = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+            Gio.BusType.SESSION,
+            Gio.DBusProxyFlags.NONE,
+            None,
+            self.DBUS_NAME,
+            self.DBUS_PATH,
+            self.DBUS_IFACE,
+            None,
+        )
 
-        name, vendor, version, spec_version = \
-            list(map(str, interface.GetServerInformation()))
+        name, vendor, version, spec_version = list(
+            map(str, interface.GetServerInformation())
+        )
         spec_version = list(map(int, spec_version.split(".")))
         caps = list(map(str, interface.GetCapabilities()))
 
@@ -313,8 +351,14 @@ class Notify(EventPlugin):
 
         try:
             interface = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+                Gio.BusType.SESSION,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                self.DBUS_PATH,
+                self.DBUS_IFACE,
+                None,
+            )
             interface.CloseNotification("(u)", self.__last_id)
         except GLib.Error:
             pass
@@ -352,8 +396,7 @@ class Notify(EventPlugin):
                     self.__caps = caps
                     self.__spec_version = spec
                     if "actions" in caps:
-                        self.__action_sig = iface.connect(
-                            "g-signal", self._on_signal)
+                        self.__action_sig = iface.connect("g-signal", self._on_signal)
                 else:
                     iface = self.__interface
                     caps = self.__caps
@@ -364,15 +407,16 @@ class Notify(EventPlugin):
                 iface, caps, spec = self.__get_interface()
 
         except GLib.Error:
-            print_w("[notify] %s" %
-                    _("Couldn't connect to notification daemon."))
+            print_w("[notify] {}".format(_("Couldn't connect to notification daemon.")))
             self.__disconnect()
             return False
 
         def strip_markup(t):
             return re.subn("\\</?[iub]\\>", "", t)[0]
+
         def strip_links(t):
             return re.subn("\\</?a.*?\\>", "", t)[0]
+
         def strip_images(t):
             return re.subn("\\<img.*?\\>", "", t)[0]
 
@@ -395,8 +439,7 @@ class Notify(EventPlugin):
             actions = ["next", _("Next")]
 
         hints = {
-            "desktop-entry": GLib.Variant(
-                "s", "io.github.quodlibet.QuodLibet"),
+            "desktop-entry": GLib.Variant("s", "io.github.quodlibet.QuodLibet"),
         }
 
         image_uri = self._get_image_uri(song)
@@ -405,12 +448,19 @@ class Notify(EventPlugin):
             hints["image-path"] = GLib.Variant("s", image_uri)
 
         try:
-            self.__last_id = iface.Notify("(susssasa{sv}i)",
-                "Quod Libet", self.__last_id, image_uri, title, body,
-                actions, hints, pconfig.getint("timeout"))
+            self.__last_id = iface.Notify(
+                "(susssasa{sv}i)",
+                "Quod Libet",
+                self.__last_id,
+                image_uri,
+                title,
+                body,
+                actions,
+                hints,
+                pconfig.getint("timeout"),
+            )
         except GLib.Error:
-            print_w("[notify] %s" %
-                    _("Couldn't connect to notification daemon."))
+            print_w("[notify] {}".format(_("Couldn't connect to notification daemon.")))
             self.__disconnect()
             return False
 
@@ -435,12 +485,18 @@ class Notify(EventPlugin):
     def on_song_change(self, song, typ):
         if not song:
             self.close_notification()
-        if pconfig.gettext("show_notifications") in [typ, "all"] \
-                and not (pconfig.getboolean("show_only_when_unfocused")
-                         and app.window.has_toplevel_focus()) \
-                or self.__force_notification:
+        if (
+            pconfig.gettext("show_notifications") in [typ, "all"]
+            and not (
+                pconfig.getboolean("show_only_when_unfocused")
+                and app.window.has_toplevel_focus()
+            )
+            or self.__force_notification
+        ):
+
             def idle_show(song):
                 self.show_notification(song)
+
             GLib.idle_add(idle_show, song)
             self.__force_notification = False
 

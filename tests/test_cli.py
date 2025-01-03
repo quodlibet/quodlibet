@@ -11,7 +11,6 @@ from tests import TestCase
 
 
 class Tcli(TestCase):
-
     def test_process_no_arguments_works(self):
         with capture_output() as (out, err):
             cli.process_arguments(["myprog"])

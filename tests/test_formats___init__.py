@@ -13,8 +13,12 @@ from tests import TestCase, get_data_path
 from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
-    SerializationError
+from quodlibet.formats import (
+    AudioFile,
+    load_audio_files,
+    dump_audio_files,
+    SerializationError,
+)
 from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
@@ -77,7 +81,6 @@ class TFormats(TestCase):
 
 
 class TPickle(TestCase):
-
     def setUp(self):
         types = formats.types
         instances = []
@@ -86,8 +89,8 @@ class TPickle(TestCase):
             # we want to pickle/unpickle everything, since historically
             # these things ended up in the file
             dict.__init__(
-                i, {b"foo": "bar", "quux": b"baz", "a": "b",
-                    "b": 42, "c": 0.25})
+                i, {b"foo": "bar", "quux": b"baz", "a": "b", "b": 42, "c": 0.25}
+            )
             instances.append(i)
         self.instances = instances
 
@@ -101,14 +104,17 @@ class TPickle(TestCase):
     def test_sanitized_py3(self):
         i = AudioFile.__new__(list(formats.types)[0])
         # this is something that old py2 versions could pickle
-        dict.__init__(i, {
-            b"bytes": b"bytes",
-            "unicode": "unicode",
-            b"~filename": b"somefile",
-            "~mountpoint": "somemount",
-            "int": 42,
-            b"float": 1.25,
-        })
+        dict.__init__(
+            i,
+            {
+                b"bytes": b"bytes",
+                "unicode": "unicode",
+                b"~filename": b"somefile",
+                "~mountpoint": "somemount",
+                "int": 42,
+                b"float": 1.25,
+            },
+        )
         data = pickle_dumps([i], 1)
         items = load_audio_files(data, process=True)
         i = items[0]

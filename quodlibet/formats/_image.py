@@ -142,10 +142,7 @@ class APICType:
         """
 
         # index value -> important
-        important = [
-            cls.LEAFLET_PAGE, cls.MEDIA,
-            cls.COVER_BACK, cls.COVER_FRONT
-        ]
+        important = [cls.LEAFLET_PAGE, cls.MEDIA, cls.COVER_BACK, cls.COVER_FRONT]
 
         try:
             return -important.index(value)
@@ -161,8 +158,15 @@ class EmbeddedImage:
     for FLAC and ID3 images.
     """
 
-    def __init__(self, fileobj, mime_type, width=-1, height=-1, color_depth=-1,
-                 type_=APICType.OTHER):
+    def __init__(
+        self,
+        fileobj,
+        mime_type,
+        width=-1,
+        height=-1,
+        color_depth=-1,
+        type_=APICType.OTHER,
+    ):
         self.mime_type = mime_type
         self.width = width
         self.height = height
@@ -172,8 +176,13 @@ class EmbeddedImage:
 
     def __repr__(self):
         return "<%s mime_type=%r width=%d height=%d type=%s file=%r>" % (
-            type(self).__name__, self.mime_type, self.width, self.height,
-            APICType.to_string(self.type), self.file)
+            type(self).__name__,
+            self.mime_type,
+            self.width,
+            self.height,
+            APICType.to_string(self.type),
+            self.file,
+        )
 
     def read(self):
         """Read the raw image data

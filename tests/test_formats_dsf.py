@@ -11,7 +11,6 @@ from quodlibet.formats.dsf import DSFFile, extensions
 
 @skipUnless(extensions, "too old mutagen")
 class TDSFFile(TestCase):
-
     def setUp(self):
         self.song1 = DSFFile(get_data_path("with-id3.dsf"))
         self.song2 = DSFFile(get_data_path("without-id3.dsf"))

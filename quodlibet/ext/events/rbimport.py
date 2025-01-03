@@ -22,7 +22,6 @@ from quodlibet.plugins.events import EventPlugin
 
 
 class RBDBContentHandler(ContentHandler):
-
     def __init__(self, library):
         ContentHandler.__init__(self)
 
@@ -117,8 +116,7 @@ def do_import(parent, library):
         ErrorMessage(parent, RBImport.PLUGIN_NAME, msg).run()
     else:
         count = handler.finish()
-        msg = _("Successfully imported ratings and statistics "
-                "for %d songs") % count
+        msg = _("Successfully imported ratings and statistics " "for %d songs") % count
         # FIXME: this is just a warning so it works with older QL
         WarningMessage(parent, RBImport.PLUGIN_NAME, msg).run()
 

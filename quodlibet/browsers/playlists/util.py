@@ -21,34 +21,39 @@ from senf import uri2fsn, fsn2text, path2fsn, bytes2fsn, text2fsn
 
 
 def confirm_remove_playlist_dialog_invoke(
-    parent, playlist, confirmer_cls=ConfirmationPrompt):
+    parent, playlist, confirmer_cls=ConfirmationPrompt
+):
     """Creates and invokes a confirmation dialog that asks the user whether or not
-       to go forth with the deletion of the selected playlist.
+    to go forth with the deletion of the selected playlist.
 
-       Confirmer needs to accept the arguments for constructing a dialog,
-       have a run-method returning a response, and have a RESPONSE_INVOKE
-       attribute.
+    Confirmer needs to accept the arguments for constructing a dialog,
+    have a run-method returning a response, and have a RESPONSE_INVOKE
+    attribute.
 
-       returns the result of comparing the result of run to RESPONSE_INVOKE
+    returns the result of comparing the result of run to RESPONSE_INVOKE
     """
-    title = (_("Are you sure you want to delete the playlist '%s'?")
-             % escape(playlist.name))
-    description = (_("All information about the selected playlist "
-                     "will be deleted and can not be restored."))
+    title = _("Are you sure you want to delete the playlist '%s'?") % escape(
+        playlist.name
+    )
+    description = _(
+        "All information about the selected playlist "
+        "will be deleted and can not be restored."
+    )
     ok_text = _("_Delete")
     ok_icon = Icons.EDIT_DELETE
 
     dialog = confirmer_cls(parent, title, description, ok_text, ok_icon)
     prompt = dialog.run()
-    response = (prompt == confirmer_cls.RESPONSE_INVOKE)
+    response = prompt == confirmer_cls.RESPONSE_INVOKE
     return response
 
 
 def confirm_dnd_playlist_dialog_invoke(
-    parent, songs, target_playlist_name, confirmer_cls=ConfirmationPrompt):
+    parent, songs, target_playlist_name, confirmer_cls=ConfirmationPrompt
+):
     """see confirm_remove_playlist_dialog_invoke above, except for
-       the action of attempting to extend a playlist with a second
-       dragged and dropped playlist.
+    the action of attempting to extend a playlist with a second
+    dragged and dropped playlist.
     """
     title = ngettext(
         'Extend "{pl_name}" with {num} additional track?',
@@ -61,16 +66,19 @@ def confirm_dnd_playlist_dialog_invoke(
 
     dialog = confirmer_cls(parent, title, description, ok_text)
     prompt = dialog.run()
-    response = (prompt == confirmer_cls.RESPONSE_INVOKE)
+    response = prompt == confirmer_cls.RESPONSE_INVOKE
     return response
 
 
 class GetPlaylistName(GetStringDialog):
     def __init__(self, parent):
         super().__init__(
-            parent, _("New Playlist"),
+            parent,
+            _("New Playlist"),
             _("Enter a name for the new playlist:"),
-            button_label=_("_Create"), button_icon=Icons.DOCUMENT_NEW)
+            button_label=_("_Create"),
+            button_icon=Icons.DOCUMENT_NEW,
+        )
 
 
 def parse_m3u(filelike, pl_name, songs_lib=None, pl_lib=None):
@@ -89,7 +97,7 @@ def parse_pls(filelike, pl_name, songs_lib=None, pl_lib=None):
         line = line.strip()
         if not line.lower().startswith(b"file"):
             continue
-        fn = line[line.index(b"=") + 1:].strip()
+        fn = line[line.index(b"=") + 1 :].strip()
         __attempt_add(fn, filenames)
     return __create_playlist(pl_name, _dir_for(filelike), filenames, songs_lib, pl_lib)
 
@@ -104,8 +112,8 @@ def __attempt_add(filename, filenames):
 def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
     songs = []
     win = WaitLoadWindow(
-        None, len(files),
-        _("Importing playlist.\n\n%(current)d/%(total)d songs added."))
+        None, len(files), _("Importing playlist.\n\n%(current)d/%(total)d songs added.")
+    )
     win.show()
     for _i, filename in enumerate(files):
         song = None
@@ -127,10 +135,12 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
         # to update the displayed track infos.
         if song is not None:
             songs.append(song)
-        elif (os.path.exists(filename)
-                or os.path.exists(os.path.join(source_dir, filename))):
-            print_w("Can't add file to playlist:"
-                    f" Unsupported file format. '{filename}'")
+        elif os.path.exists(filename) or os.path.exists(
+            os.path.join(source_dir, filename)
+        ):
+            print_w(
+                "Can't add file to playlist:" f" Unsupported file format. '{filename}'"
+            )
         else:
             print_w(f"Can't add file to playlist: File not found. '{filename}'")
 

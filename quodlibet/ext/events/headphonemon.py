@@ -13,6 +13,7 @@ from quodlibet.qltk import Icons
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 import fcntl
@@ -78,9 +79,10 @@ class HeadphoneMonitor(GObject.Object):
         return self._status
 
     def _emit(self):
-        self.emit("action",
-                  HeadphoneAction.CONNECTED if self._status else
-                    HeadphoneAction.DISCONNECTED)
+        self.emit(
+            "action",
+            HeadphoneAction.CONNECTED if self._status else HeadphoneAction.DISCONNECTED,
+        )
 
     def _update_status(self):
         assert self._status is not None
@@ -99,7 +101,8 @@ class HeadphoneMonitor(GObject.Object):
         null = open(os.devnull, "wb")
         try:
             self._process = subprocess.Popen(
-                ["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=null)
+                ["pactl", "subscribe"], stdout=subprocess.PIPE, stderr=null
+            )
         except OSError:
             self._status = False
             return
@@ -128,9 +131,11 @@ class HeadphoneMonitor(GObject.Object):
 
         self._status = get_headphone_status()
         self._subscribe_id = GLib.io_add_watch(
-            f, GLib.PRIORITY_HIGH,
+            f,
+            GLib.PRIORITY_HIGH,
             GLib.IOCondition.IN | GLib.IOCondition.ERR | GLib.IOCondition.HUP,
-            can_read_cb)
+            can_read_cb,
+        )
 
     def stop(self):
         """Stop the monitoring process.
@@ -155,8 +160,10 @@ class HeadphoneMonitor(GObject.Object):
 class HeadphoneMonitorPlugin(EventPlugin):
     PLUGIN_ID = "HeadphoneMonitor"
     PLUGIN_NAME = _("Pause on Headphone Unplug")
-    PLUGIN_DESC = _("Pauses in case headphones get unplugged and unpauses in "
-                    "case they get plugged in again.")
+    PLUGIN_DESC = _(
+        "Pauses in case headphones get unplugged and unpauses in "
+        "case they get plugged in again."
+    )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
 
     def enabled(self):

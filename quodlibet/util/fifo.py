@@ -160,7 +160,7 @@ def fifo_exists(fifo_path):
     # Remove non-FIFOs here for now.
     try:
         if not stat.S_ISFIFO(os.stat(fifo_path).st_mode):
-            print_d("%r not a FIFO. Removing it." % fifo_path)
+            print_d(f"{fifo_path!r} not a FIFO. Removing it.")
             os.remove(fifo_path)
     except OSError:
         pass

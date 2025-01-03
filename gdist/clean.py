@@ -67,9 +67,11 @@ class Clean(distutils_clean):
 
         # Python byproducts
         def should_remove(filename):
-            if (filename.lower()[-4:] in [".pyc", ".pyo"] or
-                    filename.endswith("~") or
-                    (filename.startswith("#") and filename.endswith("#"))):
+            if (
+                filename.lower()[-4:] in [".pyc", ".pyo"]
+                or filename.endswith("~")
+                or (filename.startswith("#") and filename.endswith("#"))
+            ):
                 return True
             else:
                 return False
@@ -96,5 +98,6 @@ class Clean(distutils_clean):
             os.remove("MANIFEST")
         except OSError:
             pass
+
 
 __all__ = ["Clean"]

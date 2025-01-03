@@ -13,7 +13,6 @@ from tests import TestCase
 
 
 class TQueryInter(TestCase):
-
     def test_main(self):
         q = Inter([])
         assert q.filter([1]) == [1]
@@ -30,13 +29,12 @@ class TQueryInter(TestCase):
 
 
 class TQueryMatch(TestCase):
-
     def test_numexpr_unit(self):
         assert numexprUnit(10, "seconds").evaluate(None, 0, True) == 10
         assert numexprUnit(10, "minutes").evaluate(None, 0, True) == 10 * 60
         assert numexprUnit(1, "year").evaluate(None, 0, True) == 365 * 24 * 60 * 60
         assert numexprUnit(3, "k").evaluate(None, 0, True) == 3 * 1024
-        assert numexprUnit(3, "megabytes").evaluate(None, 0, True) == 3 * 1024 ** 2
+        assert numexprUnit(3, "megabytes").evaluate(None, 0, True) == 3 * 1024**2
 
     def test_numexpr_raises_for_invalid_units(self):
         with pytest.raises(ParseError):
@@ -63,8 +61,10 @@ class TQueryMatch(TestCase):
     def test_numexpr_func(self):
         time = 424242
         col = Collection()
-        col.songs = (AudioFile({"~#added": 400000, "~#length": 315}),
-                     AudioFile({"~#added": 405000, "~#length": 225}))
+        col.songs = (
+            AudioFile({"~#added": 400000, "~#length": 315}),
+            AudioFile({"~#added": 405000, "~#length": 225}),
+        )
         assert NumexprTag("length:avg").evaluate(col, time, True) == 270
         assert NumexprTag("added:max").evaluate(col, time, True) == 19242
 

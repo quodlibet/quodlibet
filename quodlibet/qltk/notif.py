@@ -42,23 +42,26 @@ class ParentProperty:
     reparenting: you must first 'unparent' an instance by setting this
     property to 'None' before you can set a new parent.
     """
+
     def __get__(self, inst, owner):
         return getattr(inst, "_parent", None)
 
     def __set__(self, inst, value):
         if getattr(inst, "_parent", None) is not None and value is not None:
-            raise ValueError("Cannot set parent property without first "
-                    "setting it to 'None'.")
+            raise ValueError(
+                "Cannot set parent property without first " "setting it to 'None'."
+            )
         inst._parent = value
 
 
 class Task:
-    def __init__(self, source, desc, known_length=True, controller=None,
-                 pause=None, stop=None):
+    def __init__(
+        self, source, desc, known_length=True, controller=None, pause=None, stop=None
+    ):
         self.source = source
         self.desc = desc
         if known_length:
-            self.frac = 0.
+            self.frac = 0.0
         else:
             self.frac = None
         if controller:
@@ -136,12 +139,14 @@ class Task:
         act upon the copool with the given funcid.
         """
         if pause:
+
             def pause_func(state):
                 if state != self._paused:
                     if state:
                         copool.pause(funcid)
                     else:
                         copool.resume(funcid)
+
             self._pause = pause_func
             self.pausable = True
         if stop:
@@ -164,6 +169,7 @@ class TaskController:
     implements the full Task interface to act as a pass-through or summary of
     all tasks in flight on this controller.
     """
+
     parent = ParentProperty()
     default_instance: "TaskController"
 
@@ -227,6 +233,7 @@ class TaskController:
         self.active_tasks = [t for t in self.active_tasks if t is not finished_task]
         self.update()
 
+
 # Oh so deliciously hacky.
 TaskController.default_instance = TaskController()
 
@@ -235,6 +242,7 @@ class TaskWidget(Gtk.HBox):
     """
     Displays a task.
     """
+
     def __init__(self, task):
         super().__init__(spacing=3)
         self.task = task
@@ -250,12 +258,14 @@ class TaskWidget(Gtk.HBox):
         self.pack_start(vb, True, True, 3)
         self.pause = SmallImageToggleButton()
         self.pause.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_PAUSE, Gtk.IconSize.MENU)
+        )
         self.pause.connect("toggled", self.__pause_toggled)
         self.pack_start(self.pause, False, True, 3)
         self.stop = SmallImageButton()
         self.stop.add(
-            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.MENU))
+            Gtk.Image.new_from_icon_name(Icons.MEDIA_PLAYBACK_STOP, Gtk.IconSize.MENU)
+        )
         self.stop.connect("clicked", self.__stop_clicked)
         self.pack_start(self.stop, False, True, 0)
 
@@ -276,7 +286,7 @@ class TaskWidget(Gtk.HBox):
             self.progress.pulse()
         if self.pause.props.sensitive != self.task.pausable:
             self.pause.props.sensitive = self.task.pausable
-        show_as_active = (self.task.pausable and self.task.paused)
+        show_as_active = self.task.pausable and self.task.paused
         if self.pause.props.active != show_as_active:
             self.pause.props.active = show_as_active
         if self.stop.props.sensitive != self.task.stoppable:
@@ -293,9 +303,7 @@ class StatusBar(Gtk.HBox):
 
         self.default_label = Gtk.Label(selectable=True)
         self.default_label.set_ellipsize(Pango.EllipsizeMode.END)
-        self.pack_start(
-            Align(self.default_label, halign=Gtk.Align.END),
-            True, True, 0)
+        self.pack_start(Align(self.default_label, halign=Gtk.Align.END), True, True, 0)
         self.task_widget = TaskWidget(task_controller)
         self.pack_start(self.task_widget, False, False, 0)
 

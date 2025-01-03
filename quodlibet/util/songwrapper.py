@@ -33,13 +33,13 @@ class SongWrapper:
         if key in self and self[key] == value:
             return
         self._updated = True
-        self._needs_write = (self._needs_write or not key.startswith("~"))
+        self._needs_write = self._needs_write or not key.startswith("~")
         return self._song.__setitem__(key, value)
 
     def __delitem__(self, key):
         retval = self._song.__delitem__(key)
         self._updated = True
-        self._needs_write = (self._needs_write or not key.startswith("~"))
+        self._needs_write = self._needs_write or not key.startswith("~")
         return retval
 
     def __getattr__(self, attr):
@@ -100,6 +100,7 @@ def list_wrapper(songs):
             return None
         else:
             return SongWrapper(song)
+
     return [wrap(s) for s in songs]
 
 
@@ -119,10 +120,14 @@ def check_wrapper_changed(library, songs):
                         dialog = qltk.ErrorMessage(
                             None,
                             _("Unable to edit song"),
-                            _("Saving %s failed. "
-                              "The file may be read-only, corrupted, or you "
-                              "do not have permission to edit it.") %
-                            util.bold(song("~basename")), escape_desc=False)
+                            _(
+                                "Saving %s failed. "
+                                "The file may be read-only, corrupted, or you "
+                                "do not have permission to edit it."
+                            )
+                            % util.bold(song("~basename")),
+                            escape_desc=False,
+                        )
                         dialog.run()
                         print_w(f"Couldn't save song {song('~filename')} ({e!r})")
                     else:

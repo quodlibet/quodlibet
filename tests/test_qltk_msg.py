@@ -5,18 +5,20 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.msg import WarningMessage, ErrorMessage, \
-    CancelRevertSave, ConfirmFileReplace
+from quodlibet.qltk.msg import (
+    WarningMessage,
+    ErrorMessage,
+    CancelRevertSave,
+    ConfirmFileReplace,
+)
 
 
 class TWarningMessage(TestCase):
-
     def test_ctr(self):
         WarningMessage(None, "title", "description").destroy()
 
 
 class TErrorMessage(TestCase):
-
     def test_ctr(self):
         ErrorMessage(None, "title", "description").destroy()
 
@@ -33,7 +35,6 @@ class TCancelRevertSave(TestCase):
 
 
 class TFileReplace(TestCase):
-
     def setUp(self):
         self.win = ConfirmFileReplace(None, "")
 

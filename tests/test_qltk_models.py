@@ -15,7 +15,6 @@ from quodlibet.util import cmp
 
 
 class _TObjectStoreMixin:
-
     Store = None
 
     def test_append(self):
@@ -77,13 +76,11 @@ class _TObjectStoreMixin:
 
 
 class TOrigObjectStore(TestCase, _TObjectStoreMixin):
-
     def Store(*x):
         return Gtk.ListStore(object)
 
 
 class TObjectStore(TestCase, _TObjectStoreMixin):
-
     Store = ObjectStore
 
     def test_validate(self):
@@ -232,7 +229,6 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
 
 class _TObjectTreeStoreMixin:
-
     Store = None
 
     def test_column_count(self):
@@ -308,13 +304,11 @@ class _TObjectTreeStoreMixin:
 
 
 class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
-
     def Store(*x):
         return Gtk.TreeStore(object)
 
 
 class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
-
     Store = ObjectTreeStore
 
     def test_validate(self):
@@ -429,7 +423,6 @@ class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
 
 
 class TObjectModelFilter(TestCase):
-
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelFilter(child_model=m)
@@ -452,7 +445,6 @@ class TObjectModelFilter(TestCase):
 
 
 class TObjectModelSort(TestCase):
-
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelSort(model=m)
@@ -471,5 +463,4 @@ class TObjectModelSort(TestCase):
 
         f.set_default_sort_func(sort_func)
 
-        self.assertEqual(sorted(range(10), reverse=True),
-                             list(f.itervalues()))
+        self.assertEqual(sorted(range(10), reverse=True), list(f.itervalues()))

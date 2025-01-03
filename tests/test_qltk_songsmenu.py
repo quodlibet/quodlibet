@@ -14,8 +14,7 @@ from tests import TestCase, mkdtemp
 
 
 def an_af(i: int) -> AudioFile:
-    return AudioFile({"~filename": "/dev/null",
-                      "title": "http://example.com/%0d" % i})
+    return AudioFile({"~filename": "/dev/null", "title": "http://example.com/%0d" % i})
 
 
 def an_rf(i: int) -> AudioFile:
@@ -23,7 +22,6 @@ def an_rf(i: int) -> AudioFile:
 
 
 class TSongsMenu(TestCase):
-
     def _confirmer(self, *args):
         self.confirmed = True
         return False
@@ -34,8 +32,7 @@ class TSongsMenu(TestCase):
         backend = quodlibet.player.init_backend("nullbe")
         self.device = backend.init(self.library)
 
-        self.songs = [AudioFile({"title": x}) for x in
-                      ["song1", "song2", "song3"]]
+        self.songs = [AudioFile({"title": x}) for x in ["song1", "song2", "song3"]]
         for song in self.songs:
             song.sanitize(fsnative(str(song["title"])))
         self.confirmed = False
@@ -68,8 +65,7 @@ class TSongsMenu(TestCase):
         assert not self.menu.get_children()[0].props.sensitive
 
     def test_remove(self):
-        self.menu = self.empty_menu_with(remove=True,
-                                         removal_confirmer=self._confirmer)
+        self.menu = self.empty_menu_with(remove=True, removal_confirmer=self._confirmer)
         self.assertEqual(len(self.menu), 1)
         item = self.menu.get_children()[0]
         assert not item.props.sensitive
@@ -107,27 +103,51 @@ class TSongsMenu(TestCase):
         self.songs = self.library.songs = [an_af(i) for i in range(50)]
         self.menu = self.empty_menu_with(show_files=True)
         item = self.menu.get_children()[0]
-        self.assertFalse(item.props.sensitive,
-                    msg="Should have disabled show files for 50 files")
+        self.assertFalse(
+            item.props.sensitive, msg="Should have disabled show files for 50 files"
+        )
 
     def test_download(self):
         def choose(*args, **kwargs):
             return [mkdtemp()]
+
         self.songs = self.library.songs = [an_rf(i) for i in range(3)]
         self.menu = self.empty_menu_with(download=True, folder_chooser=choose)
         last = self.menu.get_children()[-1]
         assert last.props.sensitive, "should have enabled download for remotes"
         # TODO: some useful assertions, without needing a UI
 
-    def empty_menu_with(self, plugins=False, playlists=False, queue=False,
-                        remove=False, delete=False, edit=False, info=False,
-                        ratings=False, show_files=False, download=False,
-                        removal_confirmer=None, folder_chooser=None):
-        return SongsMenu(self.library, self.songs, plugins=plugins, playlists=playlists,
-                         queue=queue, remove=remove, delete=delete, edit=edit,
-                         info=info, ratings=ratings, show_files=show_files,
-                         removal_confirmer=removal_confirmer,
-                         download=download, folder_chooser=folder_chooser)
+    def empty_menu_with(
+        self,
+        plugins=False,
+        playlists=False,
+        queue=False,
+        remove=False,
+        delete=False,
+        edit=False,
+        info=False,
+        ratings=False,
+        show_files=False,
+        download=False,
+        removal_confirmer=None,
+        folder_chooser=None,
+    ):
+        return SongsMenu(
+            self.library,
+            self.songs,
+            plugins=plugins,
+            playlists=playlists,
+            queue=queue,
+            remove=remove,
+            delete=delete,
+            edit=edit,
+            info=info,
+            ratings=ratings,
+            show_files=show_files,
+            removal_confirmer=removal_confirmer,
+            download=download,
+            folder_chooser=folder_chooser,
+        )
 
     def tearDown(self):
         self.device.destroy()
@@ -137,5 +157,5 @@ class TSongsMenu(TestCase):
         except AttributeError:
             pass
         else:
-            del(self.menu)
+            del self.menu
         config.quit()

@@ -19,17 +19,29 @@ from quodlibet import _
 from quodlibet.config import HardCodedRatingsPrefs, DurationFormat
 from quodlibet import config
 from quodlibet import util
-from quodlibet.util.dprint import print_exc, format_exception, extract_tb, \
-    PrintHandler
-from quodlibet.util import format_time_long as f_t_l, format_time_preferred, \
-    format_time_display, format_time_seconds
+from quodlibet.util.dprint import print_exc, format_exception, extract_tb, PrintHandler
+from quodlibet.util import (
+    format_time_long as f_t_l,
+    format_time_preferred,
+    format_time_display,
+    format_time_seconds,
+)
 from quodlibet.util import re_escape
 from quodlibet.util.library import set_scan_dirs, get_scan_dirs
-from quodlibet.util.path import \
-    parse_xdg_user_dirs, xdg_get_system_data_dirs, escape_filename, \
-    strip_win32_incompat_from_path, xdg_get_cache_home, \
-    xdg_get_data_home, unexpand, xdg_get_user_dirs, \
-    xdg_get_config_home, get_temp_cover_file, mkdir, mtime
+from quodlibet.util.path import (
+    parse_xdg_user_dirs,
+    xdg_get_system_data_dirs,
+    escape_filename,
+    strip_win32_incompat_from_path,
+    xdg_get_cache_home,
+    xdg_get_data_home,
+    unexpand,
+    xdg_get_user_dirs,
+    xdg_get_config_home,
+    get_temp_cover_file,
+    mkdir,
+    mtime,
+)
 from quodlibet.util.string import decode, encode, split_escape, join_escape
 from quodlibet.util.environment import is_osx
 
@@ -65,7 +77,6 @@ class Tmkdir(TestCase):
 
 
 class Tgetcwd(TestCase):
-
     def test_getcwd(self):
         assert isinstance(os.getcwd(), fsnative)
 
@@ -80,7 +91,6 @@ class Tmtime(TestCase):
 
 
 class Tformat_locale(TestCase):
-
     def test_format_int_locale(self):
         assert isinstance(util.format_int_locale(1024), str)
 
@@ -136,19 +146,19 @@ class Tformat_rating(TestCase):
 
     def test_full(self):
         self.assertEqual(
-            len(util.format_rating(1, blank=False)),
-            int(1 / self.r.precision))
+            len(util.format_rating(1, blank=False)), int(1 / self.r.precision)
+        )
 
     def test_rating_length(self):
         config.RATINGS.number = 4
         for i in range(0, int(1 / self.r.precision + 1)):
             self.assertEqual(
-                i, len(util.format_rating(i * self.r.precision, blank=False)))
+                i, len(util.format_rating(i * self.r.precision, blank=False))
+            )
 
     def test_bogus(self):
         max_length = int(1 / self.r.precision)
-        self.assertEqual(len(util.format_rating(2 ** 32 - 1, blank=False)),
-                             max_length)
+        self.assertEqual(len(util.format_rating(2**32 - 1, blank=False)), max_length)
         self.assertEqual(len(util.format_rating(-4.2, blank=False)), 0)
 
     def test_blank_lengths(self):
@@ -222,8 +232,7 @@ class Tre_esc(TestCase):
         self.assertEqual(re_escape("!bar"), r"\!bar")
 
     def test_many_unsafe(self):
-        self.assertEqual(
-            re_escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
+        self.assertEqual(re_escape("*quux#argh?woo"), r"\*quux\#argh\?woo")
 
 
 class Tdecode(TestCase):
@@ -234,8 +243,7 @@ class Tdecode(TestCase):
         self.assertEqual(decode(b"foo!"), "foo!")
 
     def test_invalid(self):
-        self.assertEqual(
-            decode(b"fo\xde"), "fo\ufffd [Invalid Encoding]")
+        self.assertEqual(decode(b"fo\xde"), "fo\ufffd [Invalid Encoding]")
 
 
 class Tencode(TestCase):
@@ -292,7 +300,8 @@ class Thuman_sort(TestCase):
     def test_white(self):
         self.assertEqual(
             util.human_sort_key("  3foo    bar6 42.8"),
-            util.human_sort_key("3 foo bar6  42.8  "))
+            util.human_sort_key("3 foo bar6  42.8  "),
+        )
         assert 64.0 in util.human_sort_key("64. 8")
 
 
@@ -307,8 +316,7 @@ class Tformat_time(TestCase):
 
     def test_hourss(self):
         self.assertEqual(util.format_time(60 * 60), "1:00:00")
-        self.assertEqual(
-            util.format_time(60 * 60 + 60 * 59 + 59), "1:59:59")
+        self.assertEqual(util.format_time(60 * 60 + 60 * 59 + 59), "1:59:59")
 
     def test_negative(self):
         self.assertEqual(util.format_time(-124), "-2:04")
@@ -336,7 +344,6 @@ class Tparse_time(TestCase):
 
 
 class Tparse_date(TestCase):
-
     def test_invalid(self):
         self.assertRaises(ValueError, util.parse_date, "not a date")
         self.assertRaises(ValueError, util.parse_date, "0")
@@ -350,12 +357,10 @@ class Tparse_date(TestCase):
         self.assertEqual(util.parse_date("2004"), ref)
         self.assertEqual(util.parse_date("2004-01-01"), ref)
         self.assertEqual(util.parse_date("2004-1-1"), ref)
-        self.assertTrue(
-            util.parse_date("2004-01-01") < util.parse_date("2004-01-02"))
+        self.assertTrue(util.parse_date("2004-01-01") < util.parse_date("2004-01-02"))
 
 
 class Tparse_year(TestCase):
-
     def test_common_date_formats(self):
         self.assertEqual(util.parse_year("2022"), "2022")
         self.assertEqual(util.parse_year("2022-02-28"), "2022")
@@ -363,7 +368,6 @@ class Tparse_year(TestCase):
 
 
 class Tdate_key(TestCase):
-
     def test_compare(self):
         date_key = util.date_key
         assert date_key("2004") == date_key("2004-01-01")
@@ -379,8 +383,19 @@ class Tdate_key(TestCase):
         for valid in ["2004", "2005-01", "3000-3-4"]:
             assert validate(valid)
 
-        for invalid in ["", "-", "3000-", "9-0", "8-1-0", "1-13-1", "1-1-32",
-                        "1-1-1-1-1", "a", "1-a", "1-1-a"]:
+        for invalid in [
+            "",
+            "-",
+            "3000-",
+            "9-0",
+            "8-1-0",
+            "1-13-1",
+            "1-1-32",
+            "1-1-1-1-1",
+            "a",
+            "1-a",
+            "1-1-a",
+        ]:
             assert not validate(invalid)
 
 
@@ -395,29 +410,29 @@ class Tformat_size(TestCase):
         self.t_dict({0: "0 B", 1: "1 B", 1023: "1023 B"})
 
     def test_kbytes(self):
-        self.t_dict({
-            1024: "1.00 KB",
-            1536: "1.50 KB",
-            10240: "10 KB",
-            15360: "15 KB"
-        })
+        self.t_dict({1024: "1.00 KB", 1536: "1.50 KB", 10240: "10 KB", 15360: "15 KB"})
 
     def test_mbytes(self):
-        self.t_dict({
-            1024 * 1024: "1.00 MB",
-            1024 * 1536: "1.50 MB",
-            1024 * 10240: "10.0 MB",
-            1024 * 15360: "15.0 MB",
-            123456 * 1024: "121 MB",
-            765432 * 1024: "747 MB"})
+        self.t_dict(
+            {
+                1024 * 1024: "1.00 MB",
+                1024 * 1536: "1.50 MB",
+                1024 * 10240: "10.0 MB",
+                1024 * 15360: "15.0 MB",
+                123456 * 1024: "121 MB",
+                765432 * 1024: "747 MB",
+            }
+        )
 
     def test_gbytes(self):
-        self.t_dict({
-            1024 * 1024 * 1024: "1.0 GB",
-            1024 * 1024 * 1536: "1.5 GB",
-            1024 * 1024 * 10240: "10.0 GB",
-            1024 * 1024 * 15360: "15.0 GB"
-        })
+        self.t_dict(
+            {
+                1024 * 1024 * 1024: "1.0 GB",
+                1024 * 1024 * 1536: "1.5 GB",
+                1024 * 1024 * 10240: "10.0 GB",
+                1024 * 1024 * 15360: "15.0 GB",
+            }
+        )
 
 
 class Ttag(TestCase):
@@ -440,8 +455,7 @@ class Ttag(TestCase):
         self.assertEqual(util.tag("title~version"), "Title / Version")
 
     def test_two_nocap(self):
-        self.assertEqual(
-            util.tag("title~version", False), "title / version")
+        self.assertEqual(util.tag("title~version", False), "title / version")
 
     def test_precap_handling(self):
         self.assertEqual(util.tag("labelid"), "Label ID")
@@ -449,7 +463,6 @@ class Ttag(TestCase):
 
 
 class Ttagsplit(TestCase):
-
     def test_single_tag(self):
         self.assertEqual(util.tagsplit("foo"), ["foo"])
 
@@ -472,12 +485,10 @@ class Ttagsplit(TestCase):
         self.assertEqual(util.tagsplit("~#foo~~#bar"), ["~#foo", "~#bar"])
 
     def test_two_synth_start(self):
-        self.assertEqual(
-            util.tagsplit("~~people~album"), ["~people", "album"])
+        self.assertEqual(util.tagsplit("~~people~album"), ["~people", "album"])
 
 
 class Tpattern(TestCase):
-
     def test_empty(self):
         self.assertEqual(util.pattern(""), "")
 
@@ -497,12 +508,12 @@ class Tpattern(TestCase):
         self.assertEqual(util.pattern("<foobarbaz>"), "Foobarbaz")
 
     def test_condition(self):
-        self.assertEqual(util.pattern("<~year|<~year> - <album>|<album>>"),
-                             "Year - Album")
+        self.assertEqual(
+            util.pattern("<~year|<~year> - <album>|<album>>"), "Year - Album"
+        )
 
     def test_escape(self):
-        self.assertEqual(util.pattern(r"\<i\><&>\</i\>", esc=True),
-                            "<i>&amp;</i>")
+        self.assertEqual(util.pattern(r"\<i\><&>\</i\>", esc=True), "<i>&amp;</i>")
 
     def test_invalid(self):
         self.assertEqual(util.pattern("<date"), "")
@@ -512,12 +523,10 @@ class Tpattern(TestCase):
         self.assertEqual(util.pattern(r"<#(bitrate \> 150)|HQ|LQ>"), "LQ")
 
     def test_escape_condition(self):
-        self.assertEqual(
-            util.pattern(r"<~filename=/\/adsad\/sadads/|BLA|BLU>"), "BLU")
+        self.assertEqual(util.pattern(r"<~filename=/\/adsad\/sadads/|BLA|BLU>"), "BLU")
 
 
 class Tformat_time_long(TestCase):
-
     def test_second(self):
         self.assertEqual(f_t_l(1).split(", ")[0], _("1 second"))
 
@@ -570,17 +579,17 @@ class Tformat_time_long(TestCase):
         self.assertEqual(f_t_l(1, limit=0), _("1 second"))
 
     def test_limit(self):
-        self.assertEqual(len(f_t_l(2 ** 31).split(", ")), 2)
+        self.assertEqual(len(f_t_l(2**31).split(", ")), 2)
 
 
 class TFormatTimePreferred(TestCase):
-
     def test_default_setting_is_standard(self):
         self.assertEqual(config.DURATION.format, DurationFormat.STANDARD)
 
     def test_raw_config_is_standard(self):
-        self.assertEqual(config.get("display", "duration_format"),
-                       DurationFormat.STANDARD)
+        self.assertEqual(
+            config.get("display", "duration_format"), DurationFormat.STANDARD
+        )
 
     def test_acts_like_long(self):
         self._fuzz_loop(format_time_preferred, f_t_l)
@@ -594,16 +603,17 @@ class TFormatTimePreferred(TestCase):
     def test_acts_like_display(self):
         def fmt_numeric(x):
             return format_time_preferred(x, DurationFormat.NUMERIC)
+
         self._fuzz_loop(fmt_numeric, format_time_display)
 
     def test_seconds(self):
         def fmt_seconds(x):
             return format_time_preferred(x, DurationFormat.SECONDS)
+
         self._fuzz_loop(fmt_seconds, format_time_seconds)
 
 
 class Tspawn(TestCase):
-
     def test_simple(self):
         if is_win:
             return
@@ -611,6 +621,7 @@ class Tspawn(TestCase):
 
     def test_invalid(self):
         from gi.repository import GLib
+
         self.assertRaises(GLib.GError, util.spawn, ["not a command"])
 
     def test_get_output(self):
@@ -621,7 +632,6 @@ class Tspawn(TestCase):
 
 
 class Txdg_dirs(TestCase):
-
     def test_system_data_dirs_posix(self):
         if is_win:
             return
@@ -687,7 +697,6 @@ class Tlibrary(TestCase):
 
 
 class TNormalizePath(TestCase):
-
     def test_default(self):
         from quodlibet.util.path import normalize_path as norm
 
@@ -722,8 +731,7 @@ class TNormalizePath(TestCase):
 
         try:
             self.assertEqual(norm(path, canonicalise=True), path)
-            self.assertEqual(norm(os.path.join(path, "foo", ".."), True),
-                                 path)
+            self.assertEqual(norm(os.path.join(path, "foo", ".."), True), path)
             if link:
                 self.assertEqual(norm(link, True), path)
                 # A symlink shouldn't be resolved unless asked for
@@ -739,6 +747,7 @@ class TNormalizePath(TestCase):
 
     def test_pathlib_is_equivalent(self):
         from quodlibet.util.path import normalize_path
+
         with temp_filename() as fn:
             assert normalize_path(Path(fn)) == normalize_path(fn)
         with temp_filename() as fn:
@@ -748,7 +757,6 @@ class TNormalizePath(TestCase):
 
 
 class Tescape_filename(TestCase):
-
     def test_str(self):
         result = escape_filename("\x00\x01")
         self.assertEqual(result, "%00%01")
@@ -767,7 +775,6 @@ class Tescape_filename(TestCase):
 
 @skipIf(is_win, "not on Windows")
 class Tload_library(TestCase):
-
     # This started breaking on newer osx in CI
     # I suspect it is https://bugs.python.org/issue44689
     # so could be re-tried with newer Python
@@ -793,7 +800,6 @@ class Tload_library(TestCase):
 
 
 class Tstrip_win32_incompat_from_path(TestCase):
-
     def test_types(self):
         v = strip_win32_incompat_from_path(fsnative(""))
         assert isinstance(v, fsnative)
@@ -815,7 +821,6 @@ class Tstrip_win32_incompat_from_path(TestCase):
 
 
 class TPathHandling(TestCase):
-
     def test_main(self):
         v = fsnative("foo")
         assert isinstance(v, fsnative)
@@ -826,7 +831,6 @@ class TPathHandling(TestCase):
 
 
 class Tget_temp_cover_file(TestCase):
-
     def test_main(self):
         fobj = get_temp_cover_file(b"foobar")
         try:
@@ -836,7 +840,6 @@ class Tget_temp_cover_file(TestCase):
 
 
 class Tsplit_escape(TestCase):
-
     def test_split_escape(self):
         # from mutagen
 
@@ -894,13 +897,11 @@ class Tsplit_escape(TestCase):
 
 
 class TMainRunner(TestCase):
-
     def test_abort_before_call(self):
         runner = util.MainRunner()
 
         def worker():
-            self.assertRaises(
-                util.MainRunnerAbortedError, runner.call, lambda: None)
+            self.assertRaises(util.MainRunnerAbortedError, runner.call, lambda: None)
 
         thread = threading.Thread(target=worker)
         runner.abort()
@@ -912,8 +913,8 @@ class TMainRunner(TestCase):
 
         def worker():
             self.assertRaises(
-                util.MainRunnerTimeoutError, runner.call, lambda: None,
-                timeout=0.00001)
+                util.MainRunnerTimeoutError, runner.call, lambda: None, timeout=0.00001
+            )
 
         for _i in range(3):
             thread = threading.Thread(target=worker)
@@ -951,9 +952,9 @@ class TMainRunner(TestCase):
         def in_main_loop():
             try:
                 self.assertRaises(
-                    util.MainRunnerError, runner.call, lambda: None, foo=0)
-                self.assertEqual(
-                    runner.call(lambda i: i + 1, 42, priority=0), 43)
+                    util.MainRunnerError, runner.call, lambda: None, foo=0
+                )
+                self.assertEqual(runner.call(lambda i: i + 1, 42, priority=0), 43)
                 self.assertEqual(runner.call(lambda i: i - 1, 42), 41)
             finally:
                 loop.quit()
@@ -998,14 +999,12 @@ class TMainRunner(TestCase):
 
 
 class Tconnect_destroy(TestCase):
-
     def test_main(self):
         from gi.repository import Gtk
 
         b = Gtk.Button()
 
         class A(Gtk.Button):
-
             def foo(self):
                 pass
 
@@ -1018,9 +1017,7 @@ class Tconnect_destroy(TestCase):
 
 
 class Tcached_property(TestCase):
-
     def test_main(self):
-
         class A:
             @util.cached_property
             def foo(self):
@@ -1033,9 +1030,7 @@ class Tcached_property(TestCase):
         assert first is not a.foo
 
     def test_dunder(self):
-
         def define_class():
-
             class A:
                 @util.cached_property
                 def __foo_(self):
@@ -1052,9 +1047,7 @@ class Foo(str):
 
 
 class Tenum(TestCase):
-
     def test_main(self):
-
         @util.enum
         class IntFoo(int):
             FOO = 0
@@ -1087,7 +1080,6 @@ class Tenum(TestCase):
 
 
 class Tlist_unique(TestCase):
-
     def test_main(self):
         self.assertEqual(util.list_unique([]), [])
         self.assertEqual(util.list_unique(iter([])), [])
@@ -1097,7 +1089,6 @@ class Tlist_unique(TestCase):
 
 
 class Treraise(TestCase):
-
     def test_reraise(self):
         try:
             try:
@@ -1112,7 +1103,6 @@ class Treraise(TestCase):
 
 
 class Tenviron(TestCase):
-
     def test_main(self):
         for v in os.environ.values():
             if os.name == "nt":
@@ -1122,7 +1112,6 @@ class Tenviron(TestCase):
 
 
 class Tget_module_dir(TestCase):
-
     def test_self(self):
         path = util.get_module_dir()
         assert isinstance(path, fsnative)
@@ -1135,7 +1124,6 @@ class Tget_module_dir(TestCase):
 
 
 class Tget_ca_file(TestCase):
-
     def test_main(self):
         path = util.get_ca_file()
         if path is not None:
@@ -1144,7 +1132,6 @@ class Tget_ca_file(TestCase):
 
 
 class Tprint_exc(TestCase):
-
     def test_main(self):
         try:
             1 / 0  # noqa
@@ -1161,18 +1148,15 @@ class Tprint_exc(TestCase):
 
 
 class TPrintHandler(TestCase):
-
     def test_main(self):
         handler = PrintHandler()
         for level in range(0, 70, 10):
-            record = logging.LogRecord(
-                "foo", level, "a.py", 45, "bar", None, None)
+            record = logging.LogRecord("foo", level, "a.py", 45, "bar", None, None)
             with capture_output():
                 handler.handle(record)
 
 
 class Tformat_exception(TestCase):
-
     def test_main(self):
         try:
             1 / 0  # noqa
@@ -1183,7 +1167,6 @@ class Tformat_exception(TestCase):
 
 
 class Textract_tb(TestCase):
-
     def test_main(self):
         try:
             1 / 0  # noqa

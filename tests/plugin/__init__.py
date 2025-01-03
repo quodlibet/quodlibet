@@ -37,8 +37,10 @@ ms.rescan()
 # make sure plugins only raise expected errors
 for name, err in ms.failures.items():
     exc = err.exception
-    msg = (f"{name!r} plugin shouldn't have raised {type(exc).__name__} but did "
-           f"({exc!r}).")
+    msg = (
+        f"{name!r} plugin shouldn't have raised {type(exc).__name__} but did "
+        f"({exc!r})."
+    )
     assert isinstance(exc, PluginImportError | ImportError), msg
 
 

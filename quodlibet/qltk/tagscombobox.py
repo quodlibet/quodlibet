@@ -63,9 +63,8 @@ class TagsComboBoxEntry(Gtk.ComboBox, _TagsCombo):
 
     def __init__(self, can_change=None, tooltip_markup=None):
         super().__init__(
-            model=Gtk.ListStore(str, str),
-            entry_text_column=0,
-            has_entry=True)
+            model=Gtk.ListStore(str, str), entry_text_column=0, has_entry=True
+        )
         self._fill_model(can_change)
         if tooltip_markup:
             self.get_child().set_tooltip_markup(tooltip_markup)

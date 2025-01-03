@@ -18,8 +18,7 @@ from urllib.parse import urlparse, quote, unquote
 
 from gi.repository import GLib
 
-from senf import (fsnative, bytes2fsn, fsn2bytes,
-                  fsn2text, path2fsn, uri2fsn, _fsnative)
+from senf import fsnative, bytes2fsn, fsn2bytes, fsn2text, path2fsn, uri2fsn, _fsnative
 
 from . import windows
 from .environment import is_windows
@@ -80,15 +79,19 @@ def listdir(path, hidden=False):
     if hidden:
         filt = None
     else:
+
         def filt(base):
             return not base.startswith(".")
+
     if path.endswith(os.sep):
         join = "".join
     else:
         join = os.sep.join
-    return [join([path, basename])
-            for basename in sorted(os.listdir(path))
-            if filt(basename)]
+    return [
+        join([path, basename])
+        for basename in sorted(os.listdir(path))
+        if filt(basename)
+    ]
 
 
 def mtime(filename):
@@ -196,11 +199,12 @@ def unexpand(filename):
     if norm == home:
         return sub
     elif norm.startswith(home + os.path.sep):
-        filename = sub + filename[len(home):]
+        filename = sub + filename[len(home) :]
     return filename
 
 
 if is_windows():
+
     def ismount(path):
         # this can raise on py3+win, but we don't care
         try:
@@ -222,6 +226,7 @@ def xdg_get_system_data_dirs():
 
     if os.name == "nt":
         from gi.repository import GLib
+
         dirs = []
         for dir_ in GLib.get_system_data_dirs():
             dirs.append(dir_)
@@ -229,8 +234,7 @@ def xdg_get_system_data_dirs():
 
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
-        return [os.path.abspath(d)
-                for d in data_dirs.split(":")]
+        return [os.path.abspath(d) for d in data_dirs.split(":")]
     else:
         return ("/usr/local/share/", "/usr/share/")
 
@@ -238,6 +242,7 @@ def xdg_get_system_data_dirs():
 def xdg_get_cache_home():
     if os.name == "nt":
         from gi.repository import GLib
+
         return GLib.get_user_cache_dir()
 
     data_home = os.getenv("XDG_CACHE_HOME")
@@ -250,6 +255,7 @@ def xdg_get_cache_home():
 def xdg_get_data_home():
     if os.name == "nt":
         from gi.repository import GLib
+
         return GLib.get_user_data_dir()
 
     data_home = os.getenv("XDG_DATA_HOME")
@@ -262,6 +268,7 @@ def xdg_get_data_home():
 def xdg_get_config_home():
     if os.name == "nt":
         from gi.repository import GLib
+
         return GLib.get_user_config_dir()
 
     data_home = os.getenv("XDG_CONFIG_HOME")
@@ -314,8 +321,7 @@ def xdg_get_user_dirs():
         return {}
 
 
-def get_temp_cover_file(data: bytes,
-                        mime: str | None = None) -> Any:
+def get_temp_cover_file(data: bytes, mime: str | None = None) -> Any:
     """Returns a file object or None"""
 
     try:
@@ -346,14 +352,13 @@ def _strip_win32_incompat(string, bad=r'\:*?;"<>|'):
     if not string:
         return string
 
-    new = "".join((s in bad and "_") or s
-                  for s in string)
+    new = "".join((s in bad and "_") or s for s in string)
     parts = new.split(os.sep)
 
     def fix_end(string):
         return re.sub(r"[\. ]$", "_", string)
-    return os.sep.join(fix_end(p)
-                       for p in parts)
+
+    return os.sep.join(fix_end(p) for p in parts)
 
 
 def strip_win32_incompat_from_path(string):
@@ -361,13 +366,11 @@ def strip_win32_incompat_from_path(string):
     and the drive part"""
 
     drive, tail = os.path.splitdrive(string)
-    tail = os.sep.join(_strip_win32_incompat(s)
-                       for s in tail.split(os.sep))
+    tail = os.sep.join(_strip_win32_incompat(s) for s in tail.split(os.sep))
     return drive + tail
 
 
 def _normalize_darwin_path(filename, canonicalise=False):
-
     filename = path2fsn(filename)
 
     if canonicalise:
@@ -378,8 +381,7 @@ def _normalize_darwin_path(filename, canonicalise=False):
     decoded = data.decode("utf-8", "quodlibet-osx-path-decode")
 
     try:
-        return bytes2fsn(
-            NSString.fileSystemRepresentation(decoded), "utf-8")
+        return bytes2fsn(NSString.fileSystemRepresentation(decoded), "utf-8")
     except ValueError:
         return filename
 
@@ -399,11 +401,10 @@ def _normalize_path(filename, canonicalise=False):
 if sys.platform == "darwin":
 
     def _osx_path_decode_error_handler(error):
-        bytes_ = bytearray(error.object[error.start:error.end])
+        bytes_ = bytearray(error.object[error.start : error.end])
         return "".join("%%%X".__mod__(b) for b in bytes_), error.end
 
-    codecs.register_error(
-        "quodlibet-osx-path-decode", _osx_path_decode_error_handler)
+    codecs.register_error("quodlibet-osx-path-decode", _osx_path_decode_error_handler)
 
     normalize_path = _normalize_darwin_path
 else:
@@ -435,7 +436,7 @@ def limit_path(path, ellipsis=True):
 
         if len(p) > limit:
             if ellipsis:
-                p = p[:limit - 2] + fsnative("..")
+                p = p[: limit - 2] + fsnative("..")
             else:
                 p = p[:limit]
         parts[i] = p
@@ -517,7 +518,7 @@ class RootPathFile:
 
     @property
     def end(self):
-        return self._pathfile[len(self._root) + len(os.sep):]
+        return self._pathfile[len(self._root) + len(os.sep) :]
 
     @property
     def pathfile(self):
@@ -525,8 +526,7 @@ class RootPathFile:
 
     @property
     def end_escaped(self):
-        escaped = [escape_filename(part)
-                   for part in self.end.split(os.path.sep)]
+        escaped = [escape_filename(part) for part in self.end.split(os.path.sep)]
         return os.path.sep.join(escaped)
 
     @property

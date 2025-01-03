@@ -23,6 +23,7 @@ class DSFFile(ID3File):
         self["~#samplerate"] = info.sample_rate
         self["~#bitdepth"] = info.bits_per_sample
 
+
 loader = DSFFile
 types = [DSFFile]
 extensions = [".dsf"]

@@ -46,8 +46,12 @@ class ScanBox(Gtk.HBox):
         sw.set_shadow_type(Gtk.ShadowType.IN)
         sw.add(view)
         sw.set_size_request(-1, max(sw.size_request().height, 80))
-        sw.set_tooltip_text(_("Songs in the listed folders will be added "
-                              "to the library during a library refresh"))
+        sw.set_tooltip_text(
+            _(
+                "Songs in the listed folders will be added "
+                "to the library during a library refresh"
+            )
+        )
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
 
@@ -64,13 +68,21 @@ class ScanBox(Gtk.HBox):
         add.set_tooltip_text(_("The new directory will be scanned after adding"))
         add.connect("clicked", self.__add)
         remove = Button(_("_Remove"), Icons.LIST_REMOVE)
-        remove.set_tooltip_text(_("All songs in the selected directories "
-                                  "will also be removed from the library"))
+        remove.set_tooltip_text(
+            _(
+                "All songs in the selected directories "
+                "will also be removed from the library"
+            )
+        )
 
         move = Button(_("_Move"), Icons.EDIT_REDO)
         move.connect("clicked", self.__move)
-        move.set_tooltip_text(_("Move a scan root (but not the files), "
-                                "migrating metadata for all included tracks."))
+        move.set_tooltip_text(
+            _(
+                "Move a scan root (but not the files), "
+                "migrating metadata for all included tracks."
+            )
+        )
 
         selection = view.get_selection()
         selection.set_mode(Gtk.SelectionMode.MULTIPLE)
@@ -110,12 +122,15 @@ class ScanBox(Gtk.HBox):
         total = len(gone_dirs)
         if not total:
             return
-        msg = (_("Remove {dir!r} and all its tracks?").format(dir=gone_dirs[0])
-               if total == 1
-               else _("Remove {n} library paths and their tracks?").format(n=total))
+        msg = (
+            _("Remove {dir!r} and all its tracks?").format(dir=gone_dirs[0])
+            if total == 1
+            else _("Remove {n} library paths and their tracks?").format(n=total)
+        )
         title = ngettext("Remove library path?", "Remove library paths?", total)
-        prompt = ConfirmationPrompt(self, title, msg, _("Remove"),
-                                    ok_button_icon=Icons.LIST_REMOVE)
+        prompt = ConfirmationPrompt(
+            self, title, msg, _("Remove"), ok_button_icon=Icons.LIST_REMOVE
+        )
         if prompt.run() == ConfirmationPrompt.RESPONSE_INVOKE:
             view.remove_selection()
             self.__save()
@@ -138,7 +153,8 @@ class ScanBox(Gtk.HBox):
         base_dir = rows[0][0]
         chooser = _get_chooser(_("Select This Directory"), _("_Cancel"))
         chooser.set_title(
-            _("Select Actual / New Directory for {dir!r}").format(dir=base_dir))
+            _("Select Actual / New Directory for {dir!r}").format(dir=base_dir)
+        )
         chooser.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         chooser.set_local_only(True)
         chooser.set_select_multiple(False)
@@ -146,15 +162,17 @@ class ScanBox(Gtk.HBox):
         if not results:
             return
         new_dir = results[0]
-        desc = (_("This will move QL metadata:\n\n"
-                  "{old!r} → {new!r}\n\n"
-                  "The audio files themselves are not moved by this.\n"
-                  "Nonetheless, a backup is recommended "
-                  "(including the Quod Libet 'songs' file).")
-                .format(old=base_dir, new=new_dir))
+        desc = _(
+            "This will move QL metadata:\n\n"
+            "{old!r} → {new!r}\n\n"
+            "The audio files themselves are not moved by this.\n"
+            "Nonetheless, a backup is recommended "
+            "(including the Quod Libet 'songs' file)."
+        ).format(old=base_dir, new=new_dir)
         title = _("Move scan root {dir!r}?").format(dir=base_dir)
-        value = ConfirmationPrompt(self, title=title, description=desc,
-                                   ok_button_text=_("OK, move it!")).run()
+        value = ConfirmationPrompt(
+            self, title=title, description=desc, ok_button_text=_("OK, move it!")
+        ).run()
         if value != ConfirmationPrompt.RESPONSE_INVOKE:
             print_d("User aborted")
             return

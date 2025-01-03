@@ -65,7 +65,7 @@ class TSongProperties(TestCase):
         except AttributeError:
             pass
         else:
-            del(self.window)
+            del self.window
         self.library.destroy()
-        del(SongProperties.plugins)
+        del SongProperties.plugins
         config.quit()

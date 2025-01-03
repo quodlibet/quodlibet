@@ -13,7 +13,6 @@ from quodlibet.qltk.models import ObjectModelSort
 
 
 class AlbumItem:
-
     cover = None
     scanned = False
 
@@ -27,10 +26,8 @@ class AlbumItem:
             size = 48
         return size
 
-    def scan_cover(self, force=False, scale_factor=1,
-            callback=None, cancel=None):
-        if (self.scanned and not force) or not self.album or \
-                not self.album.songs:
+    def scan_cover(self, force=False, scale_factor=1, callback=None, cancel=None):
+        if (self.scanned and not force) or not self.album or not self.album.songs:
             return
         self.scanned = True
 
@@ -40,14 +37,14 @@ class AlbumItem:
 
         s = self.cover_size * scale_factor
         app.cover_manager.get_pixbuf_many_async(
-            self.album.songs, s, s, cancel, set_cover_cb)
+            self.album.songs, s, s, cancel, set_cover_cb
+        )
 
     def __repr__(self):
         return repr(self.album)
 
 
 class AlbumModelMixin:
-
     def get_items(self, paths):
         items = []
         for path in paths:
@@ -65,7 +62,6 @@ class AlbumModelMixin:
 
 
 class AlbumModel(ObjectStore, AlbumModelMixin):
-
     def __init__(self, library):
         super().__init__()
         self.__library = library
@@ -74,7 +70,7 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
         self.__sigs = [
             albums.connect("added", self._add_albums),
             albums.connect("removed", self._remove_albums),
-            albums.connect("changed", self._change_albums)
+            albums.connect("changed", self._change_albums),
         ]
 
         self.append(row=[AlbumItem(None)])
@@ -132,7 +128,6 @@ class AlbumModel(ObjectStore, AlbumModelMixin):
 
 
 class AlbumFilterModel(ObjectModelFilter, AlbumModelMixin):
-
     def contains_all(self, paths):
         values = (self.get_value(self.get_iter(p), 0).album for p in paths)
         return None in values

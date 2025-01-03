@@ -28,7 +28,9 @@ class ExportToFolderDialog(Dialog):
     def __init__(self, parent, pattern):
         super().__init__(
             title=_("Export Playlist to Folder"),
-            transient_for=parent, use_header_bar=True)
+            transient_for=parent,
+            use_header_bar=True,
+        )
 
         self.set_default_size(400, -1)
         self.set_resizable(True)
@@ -48,7 +50,8 @@ class ExportToFolderDialog(Dialog):
 
         frame = Gtk.Frame()
         self.directory_chooser = Gtk.FileChooserWidget(
-            action=Gtk.FileChooserAction.SELECT_FOLDER)
+            action=Gtk.FileChooserAction.SELECT_FOLDER
+        )
         self.directory_chooser.set_select_multiple(False)
         self.directory_chooser.set_border_width(1)
         frame.add(self.directory_chooser)
@@ -90,6 +93,7 @@ class Config:
 
     default_pattern = ConfProp(_config, "default_pattern", DEFAULT_PATTERN)
 
+
 CONFIG = Config()
 
 
@@ -104,8 +108,10 @@ class ExportToFolder(PlaylistPlugin):
         """Generator for copool to copy songs to the folder"""
         self.__cancel = False
         total = len(songs)
-        print_d("Copying %d song(s) to directory %s. "
-                "This might take a while..." % (total, directory))
+        print_d(
+            "Copying %d song(s) to directory %s. "
+            "This might take a while..." % (total, directory)
+        )
         for i, song in enumerate(songs):
             if self.__cancel:
                 print_d("Cancelled export to directory.")
@@ -116,10 +122,11 @@ class ExportToFolder(PlaylistPlugin):
                 self._copy_file(song, directory, i + 1, pattern)
             except OSError as e:
                 print_d(f"Unable to copy file: {e}")
-                ErrorMessage(parent,
-                        _("Unable to export playlist"),
-                        _("Ensure you have write access to the destination.")
-                    ).run()
+                ErrorMessage(
+                    parent,
+                    _("Unable to export playlist"),
+                    _("Ensure you have write access to the destination."),
+                ).run()
                 break
             task.update(float(i) / total)
             yield True
@@ -132,7 +139,7 @@ class ExportToFolder(PlaylistPlugin):
 
     def _copy_file(self, song, directory, index, pattern):
         filename = song["~filename"]
-        print_d("Copying %s." % filename)
+        print_d(f"Copying {filename}.")
         new_name = pattern.format(song)
         copyfile(filename, "%s/%04d - %s" % (directory, index, new_name))
 
@@ -143,11 +150,18 @@ class ExportToFolder(PlaylistPlugin):
             directory = dialog.directory_chooser.get_filename()
             pattern = FileFromPattern(dialog.pattern_entry.get_text())
 
-            task = Task("Export", _("Export Playlist to Folder"),
-                        stop=self.__cancel_copy)
-            copool.add(self.__copy_songs, task,
-                       playlist.songs, directory, pattern, self.plugin_window,
-                       funcid="export-playlist-folder")
+            task = Task(
+                "Export", _("Export Playlist to Folder"), stop=self.__cancel_copy
+            )
+            copool.add(
+                self.__copy_songs,
+                task,
+                playlist.songs,
+                directory,
+                pattern,
+                self.plugin_window,
+                funcid="export-playlist-folder",
+            )
 
         dialog.destroy()
 

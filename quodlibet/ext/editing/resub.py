@@ -18,12 +18,11 @@ class RegExpSub(Gtk.HBox, RenameFilesPlugin, TagsFromPathPlugin):
     PLUGIN_NAME = _("Regex Substitution")
     PLUGIN_DESC_MARKUP = _(
         "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) "
-        "when tagging or renaming files.")
+        "when tagging or renaming files."
+    )
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
-    __gsignals__ = {
-        "changed": (GObject.SignalFlags.RUN_LAST, None, ())
-    }
+    __gsignals__ = {"changed": (GObject.SignalFlags.RUN_LAST, None, ())}
     active = True
 
     def __init__(self):

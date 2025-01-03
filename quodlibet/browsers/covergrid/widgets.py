@@ -18,8 +18,7 @@ from quodlibet.util import DeferredSignal
 def _no_cover(size, widget) -> Surface | None:
     old_size, surface = getattr(_no_cover, "cache", (None, None))
     if old_size != size or surface is None:
-        surface = get_surface_for_pixbuf(
-            widget, get_no_cover_pixbuf(size, size))
+        surface = get_surface_for_pixbuf(widget, get_no_cover_pixbuf(size, size))
         _no_cover.cache = size, surface  # type: ignore
     return surface
 
@@ -31,36 +30,29 @@ class AlbumWidget(Gtk.FlowBoxChild):
     cover loads and the label is shown.
     """
 
-    __gsignals__ = {
-        "songs-menu": (GObject.SignalFlags.RUN_LAST, None, ())
-    }
+    __gsignals__ = {"songs-menu": (GObject.SignalFlags.RUN_LAST, None, ())}
 
     padding = GObject.Property(type=int, default=0)
     cover_size = GObject.Property(type=int, default=48)
     text_visible = GObject.Property(type=bool, default=True)
     display_pattern = GObject.Property()
 
-    def __init__(self,
-            model: AlbumListItem,
-            cancelable: Gio.Cancellable | None = None,
-            **kwargs):
+    def __init__(
+        self, model: AlbumListItem, cancelable: Gio.Cancellable | None = None, **kwargs
+    ):
         super().__init__(has_tooltip=True, **kwargs)
 
         self.model = model
         self._cancelable = cancelable
         self.__draw_handler_id = None
 
-        self._box = box = Gtk.Box(
-            vexpand=False,
-            orientation=Gtk.Orientation.VERTICAL)
+        self._box = box = Gtk.Box(vexpand=False, orientation=Gtk.Orientation.VERTICAL)
 
         image_size = self.__get_image_size()
-        self._image = Gtk.Image(
-            width_request=image_size,
-            height_request=image_size)
+        self._image = Gtk.Image(width_request=image_size, height_request=image_size)
         self._label = label = Gtk.Label(
-            ellipsize=Pango.EllipsizeMode.END,
-            justify=Gtk.Justification.CENTER)
+            ellipsize=Pango.EllipsizeMode.END, justify=Gtk.Justification.CENTER
+        )
 
         box.pack_start(self._image, True, True, 0)
         box.pack_start(self._label, True, True, 0)
@@ -76,12 +68,11 @@ class AlbumWidget(Gtk.FlowBoxChild):
         # configured by the "text_visible" property.
         self.show_all()
 
+        self.bind_property("padding", box, "margin", GObject.BindingFlags.SYNC_CREATE)
+        self.bind_property("padding", box, "spacing", GObject.BindingFlags.SYNC_CREATE)
         self.bind_property(
-            "padding", box, "margin", GObject.BindingFlags.SYNC_CREATE)
-        self.bind_property(
-            "padding", box, "spacing", GObject.BindingFlags.SYNC_CREATE)
-        self.bind_property(
-            "text-visible", label, "visible", GObject.BindingFlags.SYNC_CREATE)
+            "text-visible", label, "visible", GObject.BindingFlags.SYNC_CREATE
+        )
 
         model.connect("notify::album", lambda *a: self._populate())
         model.connect("notify::label", lambda *a: self._set_text(model.label))
@@ -108,7 +99,8 @@ class AlbumWidget(Gtk.FlowBoxChild):
 
     def _populate_on_draw(self):
         self.__draw_handler_id = self._image.connect(
-            "draw", DeferredSignal(self.__draw, timeout=10))
+            "draw", DeferredSignal(self.__draw, timeout=10)
+        )
 
     def __draw(self, widget, cr):
         if self.__draw_handler_id is None:

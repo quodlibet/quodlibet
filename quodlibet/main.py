@@ -36,6 +36,7 @@ def main(argv=None):
 
     from quodlibet import app
     from quodlibet.qltk import add_signal_watch
+
     add_signal_watch(app.quit)
 
     import quodlibet.player
@@ -52,16 +53,17 @@ def main(argv=None):
 
     library_path = os.path.join(quodlibet.get_user_dir(), "songs")
 
-    print_d("Initializing main library (%s)" % (
-            quodlibet.util.path.unexpand(library_path)))
+    print_d(f"Initializing main library ({quodlibet.util.path.unexpand(library_path)})")
 
     library = quodlibet.library.init(library_path)
     app.library = library
 
     # this assumes that nullbe will always succeed
     from quodlibet.player import PlayerError
+
     wanted_backend = os.environ.get(
-        "QUODLIBET_BACKEND", config.get("player", "backend"))
+        "QUODLIBET_BACKEND", config.get("player", "backend")
+    )
 
     try:
         player = quodlibet.player.init_player(wanted_backend, app.librarian)
@@ -85,9 +87,11 @@ def main(argv=None):
         val = config.get("header_maps", opt)
         util.tags.add(opt, val)
 
-    in_all = ("~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
-              "~#added ~#bitrate ~current ~#laststarted ~basename "
-              "~dirname").split()
+    in_all = (
+        "~filename ~uri ~#lastplayed ~#rating ~#playcount ~#skipcount "
+        "~#added ~#bitrate ~current ~#laststarted ~basename "
+        "~dirname"
+    ).split()
     for browser_cls in browsers.browsers:
         if browser_cls.headers is not None:
             browser_cls.headers.extend(in_all)
@@ -99,19 +103,24 @@ def main(argv=None):
         player.init_plugins()
 
     from quodlibet.qltk import unity
+
     unity.init("io.github.quodlibet.QuodLibet.desktop", player)
 
     from quodlibet.qltk.songsmenu import SongsMenu
+
     SongsMenu.init_plugins()
 
     from quodlibet.util.cover import CoverManager
+
     app.cover_manager = CoverManager()
     app.cover_manager.init_plugins()
 
     from quodlibet.plugins.playlist import PLAYLIST_HANDLER
+
     PLAYLIST_HANDLER.init_plugins()
 
     from quodlibet.plugins.query import QUERY_HANDLER
+
     QUERY_HANDLER.init_plugins()
 
     from gi.repository import GLib
@@ -133,9 +142,10 @@ def main(argv=None):
     # it's after the mainloop has started so everything is set up.
 
     app.window = window = QuodLibetWindow(
-        library, player,
-        restore_cb=lambda:
-            GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH))
+        library,
+        player,
+        restore_cb=lambda: GLib.idle_add(exec_commands, priority=GLib.PRIORITY_HIGH),
+    )
 
     app.player_options = PlayerOptions(window)
 
@@ -143,13 +153,16 @@ def main(argv=None):
 
     from quodlibet.plugins.events import EventPluginHandler
     from quodlibet.plugins.gui import UserInterfacePluginHandler
-    pm.register_handler(EventPluginHandler(library.librarian, player,
-                                           app.window.songlist))
+
+    pm.register_handler(
+        EventPluginHandler(library.librarian, player, app.window.songlist)
+    )
     pm.register_handler(UserInterfacePluginHandler())
 
     from quodlibet.mmkeys import MMKeysHandler
     from quodlibet.remote import Remote, RemoteError
     from quodlibet.qltk.tracker import SongTracker, FSInterface
+
     try:
         from quodlibet.qltk.dbus_ import DBusHandler
     except ImportError:
@@ -171,13 +184,15 @@ def main(argv=None):
     tracker = SongTracker(library.librarian, player, window.playlist)
 
     from quodlibet import session
+
     session_client = session.init(app)
 
     quodlibet.enable_periodic_save(save_library=True)
 
-    if ("start-playing" in startup_actions or
-            (config.getboolean("player", "restore_playing", False) and
-                config.getboolean("player", "is_playing", False))):
+    if "start-playing" in startup_actions or (
+        config.getboolean("player", "restore_playing", False)
+        and config.getboolean("player", "is_playing", False)
+    ):
         player.paused = False
 
     if "start-hidden" in startup_actions:
@@ -185,8 +200,8 @@ def main(argv=None):
 
     # restore browser windows
     from quodlibet.qltk.browser import LibraryBrowser
-    GLib.idle_add(LibraryBrowser.restore, library, player,
-                  priority=GLib.PRIORITY_HIGH)
+
+    GLib.idle_add(LibraryBrowser.restore, library, player, priority=GLib.PRIORITY_HIGH)
 
     def before_quit():
         print_d("Saving active browser state")
@@ -195,7 +210,7 @@ def main(argv=None):
         except NotImplementedError:
             pass
 
-        print_d("Shutting down player device %r." % player.version_info)
+        print_d(f"Shutting down player device {player.version_info!r}.")
         player.destroy()
 
     quodlibet.run(window, before_quit=before_quit)

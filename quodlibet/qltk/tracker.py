@@ -89,13 +89,14 @@ class TimeTracker(GObject.GObject):
                 # The application is already woke up every seconds
                 # so synchronize to it by calling timeout_add_seconds(...)
                 # if the requested tracker interval is exactly 1 second.
-                self.__id = GLib.timeout_add_seconds(1, self.__update) \
-                    if self.__interval == 1000 \
+                self.__id = (
+                    GLib.timeout_add_seconds(1, self.__update)
+                    if self.__interval == 1000
                     else GLib.timeout_add(self.__interval, self.__update)
+                )
 
 
 class SongTracker:
-
     def __init__(self, librarian, player, pl):
         self.__player_ids = [
             player.connect("song-ended", self.__end, librarian, pl),
@@ -130,8 +131,7 @@ class SongTracker:
             self.__to_change.clear()
             self.__change_id = None
 
-        self.__change_id = GLib.idle_add(idle_change,
-                                         priority=GLib.PRIORITY_LOW)
+        self.__change_id = GLib.idle_add(idle_change, priority=GLib.PRIORITY_LOW)
 
     def __start(self, player, song, librarian):
         self.elapsed = 0
@@ -154,8 +154,8 @@ class SongTracker:
                 config.set("memory", "seek", 0)
 
             playcount_minimum_length = config.getfloat(
-                "player", "playcount_minimum_length_proportion") * int(song.get(
-                "~#length", 1))
+                "player", "playcount_minimum_length_proportion"
+            ) * int(song.get("~#length", 1))
 
             if self.elapsed >= playcount_minimum_length:
                 song["~#lastplayed"] = int(time.time())

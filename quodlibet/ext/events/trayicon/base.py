@@ -9,7 +9,6 @@
 
 
 class BaseIndicator:
-
     def remove(self):
         """Remove the indicator"""
 

@@ -11,6 +11,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gio
@@ -48,9 +49,11 @@ class InhibitStrings:
 class SessionInhibit(EventPlugin):
     PLUGIN_ID = "screensaver_inhibit"
     PLUGIN_NAME = _("Inhibit Screensaver/Suspend")
-    PLUGIN_DESC = _("On a GNOME desktop, when a song is playing, prevents"
-                    " either the screensaver from activating, or prevents the"
-                    " computer from suspending.")
+    PLUGIN_DESC = _(
+        "On a GNOME desktop, when a song is playing, prevents"
+        " either the screensaver from activating, or prevents the"
+        " computer from suspending."
+    )
     PLUGIN_ICON = Icons.PREFERENCES_DESKTOP_SCREENSAVER
 
     CONFIG_MODE = PLUGIN_ID + "_mode"
@@ -66,11 +69,15 @@ class SessionInhibit(EventPlugin):
 
     def __get_dbus_proxy(self):
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        return Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                                      self.DBUS_NAME,
-                                      self.DBUS_PATH,
-                                      self.DBUS_INTERFACE,
-                                      None)
+        return Gio.DBusProxy.new_sync(
+            bus,
+            Gio.DBusProxyFlags.NONE,
+            None,
+            self.DBUS_NAME,
+            self.DBUS_PATH,
+            self.DBUS_INTERFACE,
+            None,
+        )
 
     def enabled(self):
         if not app.player.paused:
@@ -83,14 +90,17 @@ class SessionInhibit(EventPlugin):
     def plugin_on_unpaused(self):
         xid = get_toplevel_xid()
         mode = config.get("plugins", self.CONFIG_MODE, InhibitStrings.IDLE)
-        flags = InhibitFlags.SUSPEND if mode == InhibitStrings.SUSPEND \
-                                     else InhibitFlags.IDLE
+        flags = (
+            InhibitFlags.SUSPEND
+            if mode == InhibitStrings.SUSPEND
+            else InhibitFlags.IDLE
+        )
 
         try:
             dbus_proxy = self.__get_dbus_proxy()
-            self.__cookie = dbus_proxy.Inhibit("(susu)",
-                                               self.APPLICATION_ID, xid,
-                                               self.INHIBIT_REASON, flags)
+            self.__cookie = dbus_proxy.Inhibit(
+                "(susu)", self.APPLICATION_ID, xid, self.INHIBIT_REASON, flags
+            )
         except GLib.Error:
             pass
 
@@ -108,8 +118,7 @@ class SessionInhibit(EventPlugin):
     def PluginPreferences(self, parent):
         def changed(combo):
             index = combo.get_active()
-            mode = InhibitStrings.SUSPEND if index == 1 \
-                                          else InhibitStrings.IDLE
+            mode = InhibitStrings.SUSPEND if index == 1 else InhibitStrings.IDLE
             config.set("plugins", self.CONFIG_MODE, mode)
             if not app.player.paused:
                 self.plugin_on_paused()

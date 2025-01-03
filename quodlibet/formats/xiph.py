@@ -104,18 +104,18 @@ class MutagenVCFile(AudioFile):
                         self[f"~#{keyed_key}"] = func(self[key])
                     except ValueError:
                         pass
-                    del(self[key])
+                    del self[key]
 
         if "metadata_block_picture" in self:
             self.has_images = True
-            del(self["metadata_block_picture"])
+            del self["metadata_block_picture"]
 
         if "coverart" in self:
             self.has_images = True
-            del(self["coverart"])
+            del self["coverart"]
 
         if "coverartmime" in self:
-            del(self["coverartmime"])
+            del self["coverartmime"]
 
         self.__post_read_total("tracktotal", "totaltracks", "tracknumber")
         self.__post_read_total("disctotal", "totaldiscs", "discnumber")
@@ -135,9 +135,11 @@ class MutagenVCFile(AudioFile):
                 continue
 
             f = get_temp_cover_file(cover.data)
-            images.append(EmbeddedImage(
-                f, cover.mime, cover.width, cover.height, cover.depth,
-                cover.type))
+            images.append(
+                EmbeddedImage(
+                    f, cover.mime, cover.width, cover.height, cover.depth, cover.type
+                )
+            )
 
         # coverart + coverartmime
         cover = audio.get("coverart")
@@ -181,8 +183,8 @@ class MutagenVCFile(AudioFile):
         if cover:
             f = get_temp_cover_file(cover.data, cover.mime)
             return EmbeddedImage(
-                f, cover.mime, cover.width, cover.height, cover.depth,
-                cover.type)
+                f, cover.mime, cover.width, cover.height, cover.depth, cover.type
+            )
 
         cover = audio.get("coverart")
         try:
@@ -232,8 +234,7 @@ class MutagenVCFile(AudioFile):
 
         audio.pop("coverart", None)
         audio.pop("coverartmime", None)
-        audio["metadata_block_picture"] = base64.b64encode(
-            pic.write()).decode("ascii")
+        audio["metadata_block_picture"] = base64.b64encode(pic.write()).decode("ascii")
 
         with translate_errors():
             audio.save()
@@ -245,21 +246,28 @@ class MutagenVCFile(AudioFile):
             return super().can_change(None)
         else:
             l = k.lower()
-            return (super().can_change(k) and
-                    l not in ["rating", "playcount",
-                              "metadata_block_picture",
-                              "coverart", "coverartmime"] and
-                    not l.startswith("rating:") and
-                    not l.startswith("playcount:"))
+            return (
+                super().can_change(k)
+                and l
+                not in [
+                    "rating",
+                    "playcount",
+                    "metadata_block_picture",
+                    "coverart",
+                    "coverartmime",
+                ]
+                and not l.startswith("rating:")
+                and not l.startswith("playcount:")
+            )
 
     def __prep_write(self, comments):
         email = config.get("editing", "save_email").strip()
         for key in comments.keys():
             if key.startswith("rating:") or key.startswith("playcount:"):
                 if key.split(":", 1)[1] in [const.EMAIL, email]:
-                    del(comments[key])
+                    del comments[key]
             elif key not in ["metadata_block_picture", "coverart", "coverartmime"]:
-                del(comments[key])
+                del comments[key]
 
         if config.getboolean("editing", "save_to_songs"):
             email = email or const.EMAIL
@@ -321,31 +329,38 @@ class MutagenVCFile(AudioFile):
             audio.save()
         self.sanitize()
 
+
 extensions = []
 ogg_formats: list[type[mutagen.FileType]] = []
 
 from mutagen.oggvorbis import OggVorbis
+
 extensions.append(".ogg")
 extensions.append(".oga")
 ogg_formats.append(OggVorbis)
 
 from mutagen.flac import FLAC, FLACNoHeaderError
+
 extensions.append(".flac")
 ogg_formats.append(FLAC)
 
 from mutagen.oggflac import OggFLAC
+
 extensions.append(".oggflac")
 ogg_formats.append(OggFLAC)
 
 from mutagen.oggspeex import OggSpeex
+
 extensions.append(".spx")
 ogg_formats.append(OggSpeex)
 
 from mutagen.oggtheora import OggTheora
+
 extensions.append(".ogv")
 ogg_formats.append(OggTheora)
 
 from mutagen.oggopus import OggOpus
+
 extensions.append(".opus")
 ogg_formats.append(OggOpus)
 
@@ -408,9 +423,16 @@ class FLACFile(MutagenVCFile):
 
         for cover in tag.pictures:
             fileobj = get_temp_cover_file(cover.data, cover.mime)
-            images.append(EmbeddedImage(
-                fileobj, cover.mime, cover.width, cover.height, cover.depth,
-                cover.type))
+            images.append(
+                EmbeddedImage(
+                    fileobj,
+                    cover.mime,
+                    cover.width,
+                    cover.height,
+                    cover.depth,
+                    cover.type,
+                )
+            )
 
         images.sort(key=lambda c: c.sort_key)
 
@@ -433,8 +455,8 @@ class FLACFile(MutagenVCFile):
 
         fileobj = get_temp_cover_file(cover.data, cover.mime)
         return EmbeddedImage(
-            fileobj, cover.mime, cover.width, cover.height, cover.depth,
-            cover.type)
+            fileobj, cover.mime, cover.width, cover.height, cover.depth, cover.type
+        )
 
     def clear_images(self):
         """Delete all embedded images"""
@@ -483,6 +505,7 @@ class FLACFile(MutagenVCFile):
             with translate_errors():
                 ID3().delete(filename=self["~filename"])
         super().write()
+
 
 types = []
 for var in list(globals().values()):

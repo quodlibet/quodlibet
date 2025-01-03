@@ -13,28 +13,32 @@ from quodlibet.formats import AudioFile, EmbeddedImage, APICType
 
 
 class TAPICType(TestCase):
-
     def test_basic(self):
         self.assertEqual(APICType.COVER_FRONT, 3)
 
     def test_sort_key(self):
         values = [
-            APICType.OTHER, APICType.COVER_FRONT, APICType.FILE_ICON,
-            APICType.ARTIST, APICType.PUBLISHER_LOGOTYPE
+            APICType.OTHER,
+            APICType.COVER_FRONT,
+            APICType.FILE_ICON,
+            APICType.ARTIST,
+            APICType.PUBLISHER_LOGOTYPE,
         ]
 
         values.sort(key=APICType.sort_key, reverse=True)
 
         wanted = [
-            APICType.OTHER, APICType.FILE_ICON, APICType.PUBLISHER_LOGOTYPE,
-            APICType.ARTIST, APICType.COVER_FRONT
+            APICType.OTHER,
+            APICType.FILE_ICON,
+            APICType.PUBLISHER_LOGOTYPE,
+            APICType.ARTIST,
+            APICType.COVER_FRONT,
         ]
 
         self.assertEqual(values, wanted)
 
 
 class TImageContainer(TestCase):
-
     def setUp(self):
         self.a = AudioFile()
 
@@ -53,7 +57,6 @@ class TImageContainer(TestCase):
 
 
 class TEmbeddedImages(TestCase):
-
     def setUp(self):
         from gi.repository import GdkPixbuf
 

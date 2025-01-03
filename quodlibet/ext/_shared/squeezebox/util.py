@@ -22,8 +22,7 @@ class GetPlayerDialog(Gtk.Dialog):
         self.set_default_response(Gtk.ResponseType.OK)
 
         box = Gtk.VBox(spacing=6)
-        label = Gtk.Label(
-            label=_("Found Squeezebox server.\nPlease choose the player"))
+        label = Gtk.Label(label=_("Found Squeezebox server.\nPlease choose the player"))
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)

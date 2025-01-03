@@ -27,7 +27,8 @@ class EditPlaycount(SongsMenuPlugin):
         "the <tt>~#lastplayed</tt> and <tt>~#laststarted</tt> "
         "entries will be cleared. "
         "However, when setting a 0-play song to a positive play "
-        "count, no play times will be created.")
+        "count, no play times will be created."
+    )
     PLUGIN_ICON = Icons.EDIT
     REQUIRES_ACTION = True
 
@@ -40,9 +41,10 @@ class EditPlaycount(SongsMenuPlugin):
             return
 
         # Create a dialog.
-        dlg = Gtk.Dialog(title=_("Edit Playcount"),
-                         flags=(Gtk.DialogFlags.MODAL |
-                                Gtk.DialogFlags.DESTROY_WITH_PARENT))
+        dlg = Gtk.Dialog(
+            title=_("Edit Playcount"),
+            flags=(Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT),
+        )
         dlg.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
         dlg.add_button(_("_Apply"), Gtk.ResponseType.APPLY)
         dlg.set_default_response(Gtk.ResponseType.APPLY)
@@ -82,8 +84,11 @@ class EditPlaycount(SongsMenuPlugin):
         else:
             note = Gtk.Label()
             note.set_justify(Gtk.Justification.CENTER)
-            note.set_markup(util.bold(_("Multiple files selected."))
-                            + "\n" + _("Counts will be incremented."))
+            note.set_markup(
+                util.bold(_("Multiple files selected."))
+                + "\n"
+                + _("Counts will be incremented.")
+            )
             dlg.vbox.add(note)
 
         dlg.show_all()
@@ -96,10 +101,12 @@ class EditPlaycount(SongsMenuPlugin):
                     song["~#playcount"] = play.get_value_as_int()
                     song["~#skipcount"] = skip.get_value_as_int()
                 else:  # Can't use += here because these tags might not exist.
-                    song["~#playcount"] = max(0, (song.get("~#playcount", 0) +
-                                                  play.get_value_as_int()))
-                    song["~#skipcount"] = max(0, (song.get("~#skipcount", 0) +
-                                                  skip.get_value_as_int()))
+                    song["~#playcount"] = max(
+                        0, (song.get("~#playcount", 0) + play.get_value_as_int())
+                    )
+                    song["~#skipcount"] = max(
+                        0, (song.get("~#skipcount", 0) + skip.get_value_as_int())
+                    )
 
                 # When the playcount is set to 0, delete the playcount
                 # itself and the last played/started time. We don't

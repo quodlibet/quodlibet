@@ -39,8 +39,7 @@ class ThemeSwitcher(EventPlugin):
 
         settings = Gtk.Settings.get_default()
         self.__default_theme = settings.get_property("gtk-theme-name")
-        self.__default_dark = settings.get_property(
-            "gtk-application-prefer-dark-theme")
+        self.__default_dark = settings.get_property("gtk-application-prefer-dark-theme")
 
     def PluginPreferences(self, *args):
         self.__init_defaults()
@@ -64,8 +63,11 @@ class ThemeSwitcher(EventPlugin):
 
         dark_button = ConfigCheckButton(
             _("Prefer dark theme version"),
-            "plugins", self.CONFIG_DARK,
-            populate=True, default=self.__get_dark())
+            "plugins",
+            self.CONFIG_DARK,
+            populate=True,
+            default=self.__get_dark(),
+        )
 
         def dark_cb(button):
             self.__set_dark(button.get_active())
@@ -96,8 +98,7 @@ class ThemeSwitcher(EventPlugin):
             theme_dir = Gtk.rc_get_theme_dir()
 
         theme_dirs = [theme_dir, os.path.join(get_home_dir(), ".themes")]
-        theme_dirs += [
-            os.path.join(d, "themes") for d in xdg_get_system_data_dirs()]
+        theme_dirs += [os.path.join(d, "themes") for d in xdg_get_system_data_dirs()]
 
         def is_valid_teme_dir(path):
             """If the path contains a theme for the running gtk version"""
@@ -122,7 +123,8 @@ class ThemeSwitcher(EventPlugin):
 
         try:
             resource_themes = Gio.resources_enumerate_children(
-                "/org/gtk/libgtk/theme", 0)
+                "/org/gtk/libgtk/theme", 0
+            )
         except GLib.GError:
             pass
         else:
@@ -149,8 +151,7 @@ class ThemeSwitcher(EventPlugin):
         settings.set_property("gtk-application-prefer-dark-theme", value)
 
     def __get_dark(self):
-        return config.getboolean(
-            "plugins", self.CONFIG_DARK, self.__default_dark)
+        return config.getboolean("plugins", self.CONFIG_DARK, self.__default_dark)
 
     def enabled(self):
         self.__enabled = True

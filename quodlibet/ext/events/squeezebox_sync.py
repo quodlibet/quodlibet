@@ -27,10 +27,15 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Squeezebox Output"
     PLUGIN_NAME = _("Squeezebox Sync")
     PLUGIN_DESC_MARKUP = (
-        _("Makes Logitech Squeezebox mirror Quod Libet output, "
-          "provided both read from an identical library.") + "\n" +
-        _('Shares configuration with <a href="%(plugin_link)s">Export to '
-          "Squeezebox plugin</a>.")
+        _(
+            "Makes Logitech Squeezebox mirror Quod Libet output, "
+            "provided both read from an identical library."
+        )
+        + "\n"
+        + _(
+            'Shares configuration with <a href="%(plugin_link)s">Export to '
+            "Squeezebox plugin</a>."
+        )
         % {"plugin_link": "quodlibet:///prefs/plugins/Export to Squeezebox Playlist"}
     )
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
@@ -51,7 +56,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
         cls.plugin_on_seek(player.info, player.get_position())
 
     def enabled(self):
-        print_d("Debug is set to %s" % self._debug)
+        print_d(f"Debug is set to {self._debug}")
         self.active = True
         self.init_server()
         self.server.pause()
@@ -59,8 +64,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             qltk.ErrorMessage(
                 None,
                 _("Error finding Squeezebox server"),
-                _("Error finding %s. Please check settings") %
-                self.server.config
+                _("Error finding %s. Please check settings") % self.server.config,
             ).run()
 
     def disabled(self):
@@ -77,7 +81,7 @@ class SqueezeboxSyncPlugin(EventPlugin, SqueezeboxPluginMixin):
             print_d("Paused" if app.player.paused else "Not paused")
         if song and cls.server and cls.server.is_connected:
             path = cls.get_sb_path(song)
-            print_d("Requesting to play %s..." % path)
+            print_d(f"Requesting to play {path}...")
             if app.player.paused:
                 cls.server.change_song(path)
             else:

@@ -36,7 +36,7 @@ class TSynchronizedlyrics(PluginTestCase):
         assert self.plugin._parse_lrc(self.AN_LRC) == [
             (1000 * 61, "Starting here?"),
             (1000 * (60 + 23.45), "This is some text"),
-            (1000 * 61.0 * 60, "Past the hour mark now!")
+            (1000 * 61.0 * 60, "Past the hour mark now!"),
         ]
 
     def test_build_data_for_no_song(self):
@@ -44,8 +44,13 @@ class TSynchronizedlyrics(PluginTestCase):
 
     def test_build_data_for_munged_name(self):
         with TemporaryDirectory() as dir_:
-            song = AudioFile({"~filename": f"{dir_}/ARTIST - TITLE.mp3",
-                              "artist": "ARTIST", "title": "TITLE"})
+            song = AudioFile(
+                {
+                    "~filename": f"{dir_}/ARTIST - TITLE.mp3",
+                    "artist": "ARTIST",
+                    "title": "TITLE",
+                }
+            )
             path = Path(dir_) / f"{song('artist')} - {song('title')}.lrc"
             with open(path, "w") as f:
                 f.write(self.AN_LRC)

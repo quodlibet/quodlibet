@@ -48,8 +48,7 @@ class BuildAppdata(Command):
     def finalize_options(self):
         self.appdata = self.distribution.appdata
         self.set_undefined_options("build", ("build_base", "build_base"))
-        self.set_undefined_options(
-            "build_po", ("po_build_dir", "po_build_dir"))
+        self.set_undefined_options("build_po", ("po_build_dir", "po_build_dir"))
 
     def run(self):
         self.run_command("build_po")
@@ -60,8 +59,7 @@ class BuildAppdata(Command):
             if os.path.exists(appdata + ".in"):
                 fullpath = os.path.join(basepath, os.path.basename(appdata))
                 if newer(appdata + ".in", fullpath):
-                    merge_file(self.po_build_dir, "xml",
-                               appdata + ".in", fullpath)
+                    merge_file(self.po_build_dir, "xml", appdata + ".in", fullpath)
             else:
                 self.copy_file(appdata, os.path.join(basepath, appdata))
 
@@ -86,12 +84,10 @@ class InstallAppdata(Command):
     def finalize_options(self):
         self.set_undefined_options("build", ("build_base", "build_base"))
         self.set_undefined_options(
-            "install",
-            ("install_data", "install_dir"),
-            ("skip_build", "skip_build"))
+            "install", ("install_data", "install_dir"), ("skip_build", "skip_build")
+        )
 
-        self.set_undefined_options(
-            "build_appdata", ("appdata", "appdata"))
+        self.set_undefined_options("build_appdata", ("appdata", "appdata"))
 
     def get_outputs(self):
         return self.outfiles

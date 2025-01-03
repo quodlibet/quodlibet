@@ -18,6 +18,7 @@ try:
     from pypresence import Presence, InvalidID, DiscordNotFound
 except ImportError as e:
     from quodlibet.plugins import MissingModulePluginError
+
     raise MissingModulePluginError("pypresence") from e
 
 # The below resources are from/uploaded-to the Discord Application portal.
@@ -37,14 +38,17 @@ class DiscordStatusConfig:
     rp_line1 = ConfProp(_config, "rp_line1", CONFIG_DEFAULT_RP_LINE1)
     rp_line2 = ConfProp(_config, "rp_line2", CONFIG_DEFAULT_RP_LINE2)
 
+
 discord_status_config = DiscordStatusConfig()
 
 
 class DiscordStatusMessage(EventPlugin):
     PLUGIN_ID = _("Discord status message")
     PLUGIN_NAME = _("Discord Status Message")
-    PLUGIN_DESC = _("Change your Discord status message according to what "
-                    "you're currently listening to.")
+    PLUGIN_DESC = _(
+        "Change your Discord status message according to what "
+        "you're currently listening to."
+    )
     VERSION = VERSION
 
     def __init__(self):
@@ -62,8 +66,9 @@ class DiscordStatusMessage(EventPlugin):
 
         if self.discordrp:
             try:
-                self.discordrp.update(details=details, state=state,
-                                large_image=QL_LARGE_IMAGE)
+                self.discordrp.update(
+                    details=details, state=state, large_image=QL_LARGE_IMAGE
+                )
             except InvalidID:
                 # XXX Discord was closed?
                 self.discordrp = None
@@ -134,8 +139,9 @@ class DiscordStatusMessage(EventPlugin):
         status_line1.set_text(discord_status_config.rp_line1)
         status_line1.connect("changed", rp_line1_changed)
 
-        status_line1_box.pack_start(Gtk.Label(label=_("Status Line #1")),
-                                        False, True, 0)
+        status_line1_box.pack_start(
+            Gtk.Label(label=_("Status Line #1")), False, True, 0
+        )
         status_line1_box.pack_start(status_line1, True, True, 0)
 
         status_line2_box = Gtk.HBox(spacing=3)
@@ -145,8 +151,9 @@ class DiscordStatusMessage(EventPlugin):
         status_line2.set_text(discord_status_config.rp_line2)
         status_line2.connect("changed", rp_line2_changed)
 
-        status_line2_box.pack_start(Gtk.Label(label=_("Status Line #2")),
-                                        False, True, 0)
+        status_line2_box.pack_start(
+            Gtk.Label(label=_("Status Line #2")), False, True, 0
+        )
         status_line2_box.pack_start(status_line2, True, True, 0)
 
         vb.pack_start(status_line1_box, True, True, 0)

@@ -9,7 +9,6 @@ from quodlibet.qltk.data_editors import TagListEditor
 
 
 class TTagListEditor(TestCase):
-
     def setUp(self):
         config.init()
 

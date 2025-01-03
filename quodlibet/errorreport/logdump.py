@@ -28,8 +28,7 @@ def format_dump_header(exc_info):
     """
 
     lines = [
-        "=== SYSTEM INFORMATION:"
-        "",
+        "=== SYSTEM INFORMATION:" "",
         f"Quod Libet {quodlibet.get_build_description()}",
         f"Mutagen {mutagen.version_string}",
         f"Python {sys.version} {sys.platform}",
@@ -72,8 +71,7 @@ def dump_to_disk(dump_dir, exc_info):
         return
 
     time_ = time.localtime()
-    dump_path = os.path.join(
-        dump_dir, time.strftime("Dump_%Y%m%d_%H%M%S.txt", time_))
+    dump_path = os.path.join(dump_dir, time.strftime("Dump_%Y%m%d_%H%M%S.txt", time_))
 
     header = format_dump_header(exc_info).encode("utf-8")
     log = format_dump_log().encode("utf-8")

@@ -72,12 +72,13 @@ class Feed(list):
             pass
 
         for songkey, feedkey in [
-                ("website", "link"),
-                ("description", "tagline"),
-                ("language", "language"),
-                ("copyright", "copyright"),
-                ("organization", "publisher"),
-                ("license", "license")]:
+            ("website", "link"),
+            ("description", "tagline"),
+            ("language", "language"),
+            ("copyright", "copyright"),
+            ("organization", "publisher"),
+            ("license", "license"),
+        ]:
             try:
                 value = getattr(feed, feedkey)
             except AttributeError:
@@ -146,9 +147,11 @@ class Feed(list):
             with urlopen(req, timeout=5) as head:
                 # Some requests don't support status, e.g. file://
                 if hasattr(head, "status"):
-                    print_d(f"Feed URL {self.uri!r} ({head.url}) "
-                            f"returned HTTP {head.status}, "
-                            f"with content {head.headers.get('Content-Type')}")
+                    print_d(
+                        f"Feed URL {self.uri!r} ({head.url}) "
+                        f"returned HTTP {head.status}, "
+                        f"with content {head.headers.get('Content-Type')}"
+                    )
                     if head.status and head.status >= 400:
                         return False
                 if head.headers.get("Content-Type").lower().startswith("audio"):
@@ -169,7 +172,7 @@ class Feed(list):
         try:
             album = doc.channel.title
         except AttributeError:
-            print_w("No channel title in %s" % doc)
+            print_w(f"No channel title in {doc}")
             return False
 
         if album:
@@ -191,9 +194,11 @@ class Feed(list):
             try:
                 for enclosure in entry.enclosures:
                     try:
-                        if ("audio" in enclosure.type or
-                                "ogg" in enclosure.type or
-                                formats.filter(enclosure.url)):
+                        if (
+                            "audio" in enclosure.type
+                            or "ogg" in enclosure.type
+                            or formats.filter(enclosure.url)
+                        ):
                             uri = enclosure.url
                             if not isinstance(uri, str):
                                 uri = uri.decode("utf-8")
@@ -207,7 +212,7 @@ class Feed(list):
                     except AttributeError:
                         pass
             except AttributeError:
-                print_d("No enclosures found in %s" % entry)
+                print_d(f"No enclosures found in {entry}")
 
         for entry in list(self):
             if entry["~uri"] not in uris:
@@ -236,9 +241,12 @@ class Feed(list):
 class AddFeedDialog(GetStringDialog):
     def __init__(self, parent):
         super().__init__(
-            qltk.get_top_parent(parent), _("New Feed"),
+            qltk.get_top_parent(parent),
+            _("New Feed"),
             _("Enter the podcast / audio feed location:"),
-            button_label=_("_Add"), button_icon=Icons.LIST_ADD)
+            button_label=_("_Add"),
+            button_icon=Icons.LIST_ADD,
+        )
 
     def run(self, text="", clipboard=True, test=False):
         uri = super().run(text=text, clipboard=clipboard, test=test)
@@ -263,7 +271,6 @@ def hacky_py2_unpickle_recover(fileobj):
     # We just recover the uri and let it refresh the feed later
 
     def lookup_func(func, mod, name):
-
         class Feed(list):
             pass
 
@@ -300,10 +307,13 @@ class Podcasts(Browser):
     and their episodes (or other forms of audio feeds)
     Formerly known as the AudioFeeds browser.
     """
+
     __feeds = Gtk.ListStore(object)  # unread
 
-    headers = ("title artist performer ~people album date website language "
-               "copyright organization license contact").split()
+    headers = (
+        "title artist performer ~people album date website language "
+        "copyright organization license contact"
+    ).split()
 
     name = _("Podcasts")
     accelerated_name = _("_Podcasts")
@@ -416,7 +426,7 @@ class Podcasts(Browser):
 
         targets = [
             ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL)
+            ("text/x-moz-url", 0, DND_MOZ_URL),
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
@@ -449,7 +459,7 @@ class Podcasts(Browser):
         view.emit_stop_by_name("drag-data-received")
         targets = [
             ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL)
+            ("text/x-moz-url", 0, DND_MOZ_URL),
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
@@ -475,14 +485,21 @@ class Podcasts(Browser):
     def _popup_menu(self, view: Gtk.Widget) -> Gtk.Menu | None:
         model, paths = self._view.get_selection().get_selected_rows()
         menu = Gtk.Menu()
-        refresh = MenuItem(_("_Refresh"), Icons.VIEW_REFRESH,
-                           tooltip=_("Search source for new episodes"))
+        refresh = MenuItem(
+            _("_Refresh"),
+            Icons.VIEW_REFRESH,
+            tooltip=_("Search source for new episodes"),
+        )
         rebuild = MenuItem(
             _("_Rebuild"),
             Icons.EDIT_FIND_REPLACE,
-            tooltip=_("Remove all existing episodes then reload from source"))
-        delete = MenuItem(_("_Delete"), Icons.EDIT_DELETE,
-                          tooltip=_("Remove this podcast and its episodes"))
+            tooltip=_("Remove all existing episodes then reload from source"),
+        )
+        delete = MenuItem(
+            _("_Delete"),
+            Icons.EDIT_DELETE,
+            tooltip=_("Remove this podcast and its episodes"),
+        )
 
         connect_obj(refresh, "activate", self.__refresh, [model[p][0] for p in paths])
         connect_obj(rebuild, "activate", self.__rebuild, [model[p][0] for p in paths])
@@ -526,8 +543,11 @@ class Podcasts(Browser):
                 model[path][0].changed = False
                 songs.extend(model[path][0])
             self.songs_selected(songs, True)
-            config.set("browsers", "audiofeeds",
-                       "\t".join([model[path][0].name for path in paths]))
+            config.set(
+                "browsers",
+                "audiofeeds",
+                "\t".join([model[path][0].name for path in paths]),
+            )
 
     def __new_feed(self, activator):
         feed = AddFeedDialog(self).run()
@@ -543,9 +563,13 @@ class Podcasts(Browser):
         return ErrorMessage(
             self,
             _("Unable to add feed"),
-            _("%s could not be added. The server may be down, "
-              "or the location may not be a podcast / audio feed.") %
-            util.bold(util.escape(feed.uri)), escape_desc=False)
+            _(
+                "%s could not be added. The server may be down, "
+                "or the location may not be a podcast / audio feed."
+            )
+            % util.bold(util.escape(feed.uri)),
+            escape_desc=False,
+        )
 
     def restore(self):
         try:
@@ -560,5 +584,9 @@ browsers = []
 if not app.player or app.player.can_play_uri("http://"):
     browsers = [Podcasts]
 else:
-    print_w(_("The current audio backend does not support URLs, "
-              "Podcast browser disabled."))
+    print_w(
+        _(
+            "The current audio backend does not support URLs, "
+            "Podcast browser disabled."
+        )
+    )

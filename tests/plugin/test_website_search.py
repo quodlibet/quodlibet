@@ -10,9 +10,14 @@ from quodlibet.pattern import Pattern
 from tests.plugin import PluginTestCase
 from quodlibet import config
 
-A_SONG = AudioFile({"title": "foo", "artist": "barman",
-                    "~filename": "/tmp/dir/barman - foo.mp3",
-                    "website": "https://example.com"})
+A_SONG = AudioFile(
+    {
+        "title": "foo",
+        "artist": "barman",
+        "~filename": "/tmp/dir/barman - foo.mp3",
+        "website": "https://example.com",
+    }
+)
 
 
 class TWebsiteSearch(PluginTestCase):

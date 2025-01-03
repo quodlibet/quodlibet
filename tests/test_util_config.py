@@ -11,7 +11,6 @@ from quodlibet.util.config import Config, Error, ConfigProxy
 
 
 class TConfig(TestCase):
-
     def test_set_default_only(self):
         conf = Config()
         self.assertRaises(Error, conf.set, "foo", "bar", 1)
@@ -190,8 +189,7 @@ class TConfig(TestCase):
         conf.add_section("foo")
 
         assert not conf.get("foo", "bar", None)
-        vals = ["foo's gold", "bar, \"best\" 'ever'",
-                "le goût d'œufs à Noël"]
+        vals = ["foo's gold", "bar, \"best\" 'ever'", "le goût d'œufs à Noël"]
         conf.setstringlist("foo", "bar", vals)
         self.assertEqual(conf.getstringlist("foo", "bar"), vals)
 
@@ -214,8 +212,7 @@ class TConfig(TestCase):
         self.assertEqual(conf.getlist("foo", "bar", ["arg"]), ["arg"])
         conf.set("foo", "bar", "abc,fo:o\\,bar")
         self.assertEqual(conf.getlist("foo", "bar"), ["abc", "fo:o,bar"])
-        self.assertEqual(conf.getlist("foo", "bar", sep=":"),
-                         ["abc,fo", "o\\,bar"])
+        self.assertEqual(conf.getlist("foo", "bar", sep=":"), ["abc,fo", "o\\,bar"])
 
         conf.set("foo", "bar", "")
         self.assertEqual(conf.getlist("foo", "bar"), [""])
@@ -266,6 +263,7 @@ class TConfig(TestCase):
             def func(config, old, new):
                 if old < 42:
                     config.set("foo", "bar", "nope")
+
             conf = Config(version=42)
             conf.register_upgrade_function(func)
             conf.read(filename)
@@ -289,12 +287,12 @@ class TConfig(TestCase):
 
         def func(*args):
             raise AssertionError()
+
         conf.register_upgrade_function(func)
         conf.read(filename)
 
 
 class TConfigProxy(TestCase):
-
     def setUp(self):
         conf = Config()
         conf.defaults.add_section("somesection")

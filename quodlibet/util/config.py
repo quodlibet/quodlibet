@@ -18,7 +18,6 @@ to unicode with utf-8/surrogateescape.
 The final representation on disk should then in both cases be the same.
 """
 
-
 import os
 import csv
 import collections
@@ -75,8 +74,7 @@ class Config:
         old_version = self._loaded_version
         new_version = self._version
         if old_version != new_version:
-            print_d("Config upgrade: %d->%d (%r)" % (
-                old_version, new_version, func))
+            print_d("Config upgrade: %d->%d (%r)" % (old_version, new_version, func))
             func(self, old_version, new_version)
 
     def get_version(self):
@@ -244,8 +242,7 @@ class Config:
         try:
             value = self._config.get(section, option)
 
-            parser = csv.reader(
-                [value], lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
+            parser = csv.reader([value], lineterminator="\n", quoting=csv.QUOTE_MINIMAL)
             try:
                 vals = next(parser)
             except (csv.Error, ValueError) as e:
@@ -377,8 +374,7 @@ class Config:
 
         try:
             with open(filename, "rb") as fileobj:
-                fileobj = StringIO(
-                    fileobj.read().decode("utf-8", "surrogateescape"))
+                fileobj = StringIO(fileobj.read().decode("utf-8", "surrogateescape"))
                 self._config.read_file(fileobj, filename)
         except OSError:
             print_d(f"No config file found at {filename} – using defaults")
@@ -394,13 +390,15 @@ class Config:
         """If the given section exists, and contains the given option"""
 
         return self._config.has_option(section, option) or (
-            self.defaults and self.defaults.has_option(section, option))
+            self.defaults and self.defaults.has_option(section, option)
+        )
 
     def has_section(self, section):
         """If the given section exists"""
 
         return self._config.has_section(section) or (
-            self.defaults and self.defaults.has_section(section))
+            self.defaults and self.defaults.has_section(section)
+        )
 
     def remove_option(self, section, option):
         """Remove the specified option from the specified section
@@ -443,17 +441,29 @@ class ConfigProxy:
 
     @classmethod
     def _init_wrappers(cls):
-
         def get_func(name):
             def method(self, option, *args, **kwargs):
                 config_getter = getattr(self._real_config, name)
                 return config_getter(
-                    self._section_name, self._option(option), *args, **kwargs)
+                    self._section_name, self._option(option), *args, **kwargs
+                )
+
             return method
 
         # methods starting with a section arg
-        for name in ["get", "set", "getboolean", "getint", "getfloat",
-                     "reset", "settext", "gettext", "getbytes", "setbytes"]:
+        for name in [
+            "get",
+            "set",
+            "getboolean",
+            "getint",
+            "getfloat",
+            "reset",
+            "settext",
+            "gettext",
+            "getbytes",
+            "setbytes",
+        ]:
             setattr(cls, name, get_func(name))
+
 
 ConfigProxy._init_wrappers()

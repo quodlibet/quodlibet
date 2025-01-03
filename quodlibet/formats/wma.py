@@ -17,8 +17,13 @@ from ._misc import AudioFileError, translate_errors
 
 
 class WMAFile(AudioFile):
-    mimes = ["audio/x-ms-wma", "audio/x-ms-wmv", "video/x-ms-asf",
-             "audio/x-wma", "video/x-wmv"]
+    mimes = [
+        "audio/x-ms-wma",
+        "audio/x-ms-wmv",
+        "video/x-ms-asf",
+        "audio/x-wma",
+        "video/x-wmv",
+    ]
     format = "ASF"
 
     # http://msdn.microsoft.com/en-us/library/dd743066%28VS.85%29.aspx
@@ -60,7 +65,7 @@ class WMAFile(AudioFile):
         "WM/Genre": "genre",
         "WM/Publisher": "publisher",
         "WM/AuthorURL": "website",
-        "Description": "comment"
+        "Description": "comment",
     }
     __rtranslate = {v: k for k, v in __translate.items()}
 
@@ -103,8 +108,7 @@ class WMAFile(AudioFile):
             self["~#channels"] = info.channels
         self["~#samplerate"] = info.sample_rate
 
-        type_, name, desc = info.codec_type, info.codec_name, \
-            info.codec_description
+        type_, name, desc = info.codec_type, info.codec_name, info.codec_description
 
         if type_:
             self["~codec"] = type_
@@ -127,7 +131,7 @@ class WMAFile(AudioFile):
             audio = mutagen.asf.ASF(self["~filename"])
         for key in self.__translate.keys():
             try:
-                del (audio[key])
+                del audio[key]
             except KeyError:
                 pass
 
@@ -213,8 +217,7 @@ class WMAFile(AudioFile):
             raise AudioFileError(e) from e
 
         # thumbnail gets used in WMP..
-        data = pack_image(image.mime_type, "thumbnail",
-                          imagedata, APICType.COVER_FRONT)
+        data = pack_image(image.mime_type, "thumbnail", imagedata, APICType.COVER_FRONT)
 
         value = mutagen.asf.ASFValue(data, mutagen.asf.BYTEARRAY)
         tag["WM/Picture"] = [value]

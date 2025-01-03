@@ -37,12 +37,10 @@ class TDictMixin(TestCase):
         self.assertEqual(list(self.fdict.keys()), list(self.rdict.keys()))
 
     def test_values(self):
-        self.assertEqual(
-            list(self.fdict.values()), list(self.rdict.values()))
+        self.assertEqual(list(self.fdict.values()), list(self.rdict.values()))
 
     def test_items(self):
-        self.assertEqual(
-            list(self.fdict.items()), list(self.rdict.items()))
+        self.assertEqual(list(self.fdict.items()), list(self.rdict.items()))
 
     def test_pop(self):
         self.assertEqual(self.fdict.pop("foo"), self.rdict.pop("foo"))
@@ -78,8 +76,7 @@ class TDictMixin(TestCase):
 
     def test_get(self):
         self.assertEqual(self.rdict.get("a"), self.fdict.get("a"))
-        self.assertEqual(
-            self.rdict.get("a", "b"), self.fdict.get("a", "b"))
+        self.assertEqual(self.rdict.get("a", "b"), self.fdict.get("a", "b"))
         self.assertEqual(self.rdict.get("foo"), self.fdict.get("foo"))
 
     def test_repr(self):

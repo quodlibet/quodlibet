@@ -10,7 +10,6 @@ from quodlibet.formats.mp3 import MP3File
 
 
 class TMP3File(TestCase):
-
     def setUp(self):
         self.song = MP3File(get_data_path("silence-44-s.mp3"))
         self.song2 = MP3File(get_data_path("test.mp2"))
@@ -51,4 +50,6 @@ class TMP3File(TestCase):
         self.assertEqual(self.song("~encoding"), "")
         self.assertEqual(self.song2("~encoding"), "")
         assert self.song3("~encoding") in [
-            "LAME 3.99.1+\nVBR", "LAME 3.99.1+\nVBR\n-V 2"]
+            "LAME 3.99.1+\nVBR",
+            "LAME 3.99.1+\nVBR\n-V 2",
+        ]

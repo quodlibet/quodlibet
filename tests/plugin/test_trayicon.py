@@ -47,16 +47,16 @@ class TTrayIcon(PluginTestCase):
             self.plugin.disabled()
 
     def test_get_paused_pixbuf(self):
-        get_paused_pixbuf = \
-            self.modules["Tray Icon"].systemtray.get_paused_pixbuf
+        get_paused_pixbuf = self.modules["Tray Icon"].systemtray.get_paused_pixbuf
 
         assert get_paused_pixbuf((1, 1), 0)
         self.assertRaises(ValueError, get_paused_pixbuf, (0, 0), 0)
         self.assertRaises(ValueError, get_paused_pixbuf, (1, 1), -1)
 
     def test_new_with_paused_emblem(self):
-        new_with_paused_emblem = \
-            self.modules["Tray Icon"].systemtray.new_with_paused_emblem
+        new_with_paused_emblem = self.modules[
+            "Tray Icon"
+        ].systemtray.new_with_paused_emblem
 
         # too small source pixbuf
         for w, h in [(150, 1), (1, 150), (1, 1)]:
@@ -85,12 +85,15 @@ class TIndicatorMenu(TestCase):
 
     def test_icons(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+
         menu = IndicatorMenu(app)
         # Slightly lame way to assert here,
         # but it does the job and is not *too* brittle
-        icons = [item.get_image().get_icon_name()[0]
-                 for item in menu.get_children()
-                 if isinstance(item, Gtk.ImageMenuItem)]
+        icons = [
+            item.get_image().get_icon_name()[0]
+            for item in menu.get_children()
+            if isinstance(item, Gtk.ImageMenuItem)
+        ]
         assert Icons.EDIT in icons
         assert Icons.FOLDER_DRAG_ACCEPT in icons
         assert Icons.MEDIA_PLAYBACK_START in icons
@@ -101,6 +104,7 @@ class TIndicatorMenu(TestCase):
 
     def test_playlist_menu_populates(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+
         menu = IndicatorMenu(app)
         song = AudioFile({"~filename": "/dev/null"})
         menu._new_playlist_submenu_for(song)

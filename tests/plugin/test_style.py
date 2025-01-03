@@ -33,8 +33,8 @@ class TPluginStyle(PluginTestCase):
         reason_case = "PLUGIN_NAME should be in Title Case"
 
         ok_names = ListWithUnused(
-            "Last.fm Cover Source", "Last.fm Sync", "Send to iFP",
-            "This is a test")
+            "Last.fm Cover Source", "Last.fm Sync", "Send to iFP", "This is a test"
+        )
         fails = []
 
         for _pid, plugin in self.plugins.items():
@@ -51,8 +51,10 @@ class TPluginStyle(PluginTestCase):
 
     def test_plugin_desc(self):
         reason_absent = "plugin should have PLUGIN_DESC or PLUGIN_DESC_MARKUP"
-        reason_dot = ("PLUGIN_DESC / PLUGIN_DESC_MARKUP "
-                      "should be a full sentence and end with a '.'")
+        reason_dot = (
+            "PLUGIN_DESC / PLUGIN_DESC_MARKUP "
+            "should be a full sentence and end with a '.'"
+        )
 
         skip_plugins = ListWithUnused("pickle_plugin")
         fails = []

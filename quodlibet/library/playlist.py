@@ -11,8 +11,7 @@ import quodlibet
 from quodlibet import print_d, print_w, print_e, ngettext, _
 from quodlibet.formats import AudioFile
 from quodlibet.library.base import Library
-from quodlibet.util.collection import (Playlist, XSPFBackedPlaylist,
-                                       FileBackedPlaylist)
+from quodlibet.util.collection import Playlist, XSPFBackedPlaylist, FileBackedPlaylist
 from senf import text2fsn, _fsnative, fsn2text
 
 _DEFAULT_PLAYLIST_DIR = text2fsn(os.path.join(quodlibet.get_user_dir(), "playlists"))
@@ -69,18 +68,26 @@ class PlaylistLibrary(Library[str, Playlist]):
                 XSPFBackedPlaylist(self.pl_dir, fn, songs_lib=library, pl_lib=self)
             except TypeError as e:
                 # Don't add to library - it's temporary
-                legacy = FileBackedPlaylist(self.pl_dir, fn,
-                                            songs_lib=library, pl_lib=None)
+                legacy = FileBackedPlaylist(
+                    self.pl_dir, fn, songs_lib=library, pl_lib=None
+                )
                 if not len(legacy):
                     try:
                         size = os.stat(legacy._last_fn).st_size
                         if size >= _MIN_NON_EMPTY_PL_BYTES:
                             data = {"filename": fn, "size": size / 1024}
-                            print_w(_("No library songs found in legacy playlist "
-                                      "%(filename)r (of size %(size).1f kB).") % data +
-                                    " " +
-                                    _("Have you changed library root dir(s), "
-                                      "but not this playlist?"))
+                            print_w(
+                                _(
+                                    "No library songs found in legacy playlist "
+                                    "%(filename)r (of size %(size).1f kB)."
+                                )
+                                % data
+                                + " "
+                                + _(
+                                    "Have you changed library root dir(s), "
+                                    "but not this playlist?"
+                                )
+                            )
                             continue
                     except OSError:
                         print_e(f"Problem reading {legacy._last_fn!r}")
@@ -94,19 +101,27 @@ class PlaylistLibrary(Library[str, Playlist]):
                 failed.append(fn)
         if failed:
             total = len(failed)
-            print_e(ngettext("%d playlist failed to convert",
-                             "%d playlists failed to convert", total) % len(failed))
+            print_e(
+                ngettext(
+                    "%d playlist failed to convert",
+                    "%d playlists failed to convert",
+                    total,
+                )
+                % len(failed)
+            )
 
     def create(self, name_base: str | None = None) -> Playlist:
         if name_base:
-            return XSPFBackedPlaylist.new(self.pl_dir, name_base,
-                                          songs_lib=self._library, pl_lib=self)
+            return XSPFBackedPlaylist.new(
+                self.pl_dir, name_base, songs_lib=self._library, pl_lib=self
+            )
         return XSPFBackedPlaylist.new(self.pl_dir, songs_lib=self._library, pl_lib=self)
 
     def create_from_songs(self, songs: Iterable[AudioFile], title=None) -> Playlist:
         """Creates a playlist visible to this library"""
         return XSPFBackedPlaylist.from_songs(
-            self.pl_dir, songs, title=title, songs_lib=self._library, pl_lib=self)
+            self.pl_dir, songs, title=title, songs_lib=self._library, pl_lib=self
+        )
 
     def destroy(self):
         for sig in [self._rsig, self._csig]:
@@ -117,8 +132,10 @@ class PlaylistLibrary(Library[str, Playlist]):
         return (pl for pl in self if song in pl._list)
 
     def __songs_removed(self, library, songs):
-        print_d(f"Removing {len(songs)} song(s) "
-                f"across {len(self)} playlist(s) in {self}")
+        print_d(
+            f"Removing {len(songs)} song(s) "
+            f"across {len(self)} playlist(s) in {self}"
+        )
         changed = {pl for pl in self if pl.remove_songs(songs)}
         if changed:
             for pl in changed:

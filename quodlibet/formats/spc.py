@@ -23,24 +23,21 @@ class SPCFile(AudioFile):
         with translate_errors():
             with open(filename, "rb") as h:
                 head = h.read(46)
-                if len(head) != 46 or \
-                        head[:27] != b"SNES-SPC700 Sound File Data":
+                if len(head) != 46 or head[:27] != b"SNES-SPC700 Sound File Data":
                     raise OSError("Not a valid SNES-SPC700 file")
 
-                if head[35:35 + 1] == b"\x1a":
+                if head[35 : 35 + 1] == b"\x1a":
                     data = h.read(210)
                     if len(data) == 210:
                         self.update(parse_id666(data))
 
-        self.setdefault(
-            "title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
+        self.setdefault("title", fsn2text(path2fsn(os.path.basename(filename)[:-4])))
         self.sanitize(filename)
 
     def write(self):
         pass
 
     def can_change(self, k=None):
-
         if k is None:
             return self.TAGS
         else:
@@ -48,7 +45,7 @@ class SPCFile(AudioFile):
 
 
 def parse_id666(data):
-    #http://snesmusic.org/files/spc_file_format.txt
+    # http://snesmusic.org/files/spc_file_format.txt
 
     tags = {}
 
@@ -61,7 +58,7 @@ def parse_id666(data):
     # Instead of detecting "perfectly", we'll just detect enough for
     # the "artist" field. This fails for artist names that begin with
     # numbers or symbols less than ascii value A.
-    if data[130:130 + 1] < b"A":
+    if data[130 : 130 + 1] < b"A":
         try:
             tags["~#length"] = int(data[123:126].strip(b"\x00"))
         except ValueError:

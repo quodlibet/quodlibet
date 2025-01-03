@@ -55,9 +55,13 @@ class MinVersions:
     """Dependency requirements for Quod Libet / Ex Falso"""
 
     PYTHON3 = Version("Python3", 3, 10)
-    MUTAGEN = Version("Mutagen", 1, 37,
-                      message="Use the Quod Libet unstable PPAs/repos to get a newer "
-                              "mutagen version.")
+    MUTAGEN = Version(
+        "Mutagen",
+        1,
+        37,
+        message="Use the Quod Libet unstable PPAs/repos to get a newer "
+        "mutagen version.",
+    )
     GTK = Version("GTK+", 3, 18)
     PYGOBJECT = Version("PyGObject", 3, 18)
     GSTREAMER = Version("GStreamer", 1, 8)
@@ -85,7 +89,8 @@ SUPPORT_EMAIL = "quod-libet-development@googlegroups.com"
 WEBSITE = "https://quodlibet.readthedocs.org/"
 COPYRIGHT = "Copyright 2004-2023"
 
-AUTHORS = sorted("""\
+AUTHORS = sorted(
+    """\
 Alexandre Passos
 Alexey Bobyakov
 Alex Geoffrey Smith
@@ -201,9 +206,11 @@ luk1337@github
 luzpaz@github
 a-vrma@github
 Phidica@github
-""".strip().split("\n"))
+""".strip().split("\n")
+)
 
-TRANSLATORS = sorted("""
+TRANSLATORS = sorted(
+    """
 Åka Sikrom (nb)
 Alexandre Passos (pt)
 Andreas Bertheussen (nb)
@@ -267,16 +274,20 @@ Jean-Michel Pouré (fr)
 Kristian Laakkonen (fi)
 Kirill Romanov (ru)
 wvxwxvw@github (ru)
-""".strip().splitlines())
+""".strip().splitlines()
+)
 
-ARTISTS = sorted("""\
+ARTISTS = sorted(
+    """\
 Tobias
 Jakub Steiner
 Fabien Devaux
-""".strip().split("\n"))
+""".strip().split("\n")
+)
 
 # Default songlist column headers
-DEFAULT_COLUMNS = "~#track ~people ~title~version ~album~discsubtitle " \
-                  "~#length".split()
+DEFAULT_COLUMNS = (
+    "~#track ~people ~title~version ~album~discsubtitle " "~#length".split()
+)
 
-DEBUG = ("--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ)
+DEBUG = "--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ

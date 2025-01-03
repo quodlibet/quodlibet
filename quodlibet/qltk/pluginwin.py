@@ -41,14 +41,15 @@ PLUGIN_CATEGORIES = {
     _("Renaming"): RenameFilesPlugin,
     _("Querying"): QueryPlugin,
     _("Effects"): GStreamerPlugin,
-    _("Covers"): CoverSourcePlugin
+    _("Covers"): CoverSourcePlugin,
 }
 
 
 def category_of(plugin: Plugin) -> str:
     try:
-        return next(cat for cat, cls in PLUGIN_CATEGORIES.items()
-                    if issubclass(plugin.cls, cls))
+        return next(
+            cat for cat, cls in PLUGIN_CATEGORIES.items() if issubclass(plugin.cls, cls)
+        )
     except StopIteration:
         return _("Unknown")
 
@@ -71,8 +72,7 @@ class PluginErrorWindow(UniqueWindow):
         scrolledwin = Gtk.ScrolledWindow()
         vbox = Gtk.VBox(spacing=6)
         vbox.set_border_width(6)
-        scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC,
-                               Gtk.PolicyType.AUTOMATIC)
+        scrolledwin.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scrolledwin.add_with_viewport(vbox)
 
         keys = failures.keys()
@@ -118,7 +118,6 @@ class EnabledType:
 
 
 class PluginEnabledFilterCombo(Gtk.ComboBox):
-
     def __init__(self):
         combo_store = Gtk.ListStore(str, int)
         super().__init__(model=combo_store)
@@ -161,7 +160,6 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
 
 
 class PluginTypeFilterCombo(Gtk.ComboBox):
-
     def __init__(self):
         combo_store = Gtk.ListStore(str, object)
         super().__init__(model=combo_store)
@@ -200,8 +198,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
 class PluginListView(HintedTreeView):
     __gsignals__ = {
         # model, iter, enabled
-        "plugin-toggled": (GObject.SignalFlags.RUN_LAST, None,
-                           (object, object, bool))
+        "plugin-toggled": (GObject.SignalFlags.RUN_LAST, None, (object, object, bool))
     }
 
     def __init__(self):
@@ -258,8 +255,7 @@ class PluginListView(HintedTreeView):
             fmodel, fiter = selection.get_selected()
             plugin = fmodel.get_value(fiter)
             if plugin.can_enable:
-                self._emit_toggled(fmodel.get_path(fiter),
-                                   not plugin_enabled(plugin))
+                self._emit_toggled(fmodel.get_path(fiter), not plugin_enabled(plugin))
             self.get_model().iter_changed(fiter)
         else:
             Gtk.TreeView.do_key_press_event(self, event)
@@ -274,7 +270,6 @@ class PluginListView(HintedTreeView):
         self.emit("plugin-toggled", model, iter_, value)
 
     def select_by_plugin_id(self, plugin_id):
-
         def restore_sel(row):
             return row[0].id == plugin_id
 
@@ -330,9 +325,11 @@ class PluginPreferencesContainer(Gtk.VBox):
         else:
             name = util.escape(plugin.name)
             category = category_of(plugin).lower()
-            text = (f"<big><b>{name}</b> "
-                    f"<span alpha='40%'> – {category}</span>"
-                    f"</big>")
+            text = (
+                f"<big><b>{name}</b> "
+                f"<span alpha='40%'> – {category}</span>"
+                f"</big>"
+            )
             markup = plugin.description_markup or _("(undocumented)")
             if markup:
                 text += f"<span font='4'>\n\n</span>{markup}"
@@ -425,8 +422,9 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         if const.DEBUG:
             refresh = qltk.Button(_("_Refresh"), Icons.VIEW_REFRESH)
             refresh.set_focus_on_click(False)
-            refresh.connect("clicked", self.__refresh, plv, pref_box, errors,
-                            enabled_combo)
+            refresh.connect(
+                "clicked", self.__refresh, plv, pref_box, errors, enabled_combo
+            )
             bbox.pack_start(refresh, True, True, 0)
 
         filter_box = Gtk.VBox(spacing=6)
@@ -466,8 +464,7 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
         self.__refill(plv, pref_box, errors, enabled_combo)
 
         self.connect("destroy", self.__destroy)
-        filter_model.set_visible_func(
-            self.__filter, (fe, enabled_combo, type_combo))
+        filter_model.set_visible_func(self.__filter, (fe, enabled_combo, type_combo))
 
         self.get_child().show_all()
         fe.grab_focus()
@@ -492,20 +489,29 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
             plugin_tags = plugin.tags
             tag, flag = tag_row
             enabled = plugin_enabled(plugin)
-            if (flag == EnabledType.NO and plugin_tags or
-                    flag == EnabledType.TAG and tag not in plugin_tags or
-                    flag == EnabledType.EN and not enabled or
-                    flag == EnabledType.DIS and enabled):
+            if (
+                flag == EnabledType.NO
+                and plugin_tags
+                or flag == EnabledType.TAG
+                and tag not in plugin_tags
+                or flag == EnabledType.EN
+                and not enabled
+                or flag == EnabledType.DIS
+                and enabled
+            ):
                 return False
 
         def matches(text, filter_):
-            return all(p in remove_diacritics(text.lower())
-                       for p in filter_.lower().split())
+            return all(
+                p in remove_diacritics(text.lower()) for p in filter_.lower().split()
+            )
 
         filter_ = remove_diacritics(entry.get_text())
-        return (matches(plugin.name, filter_) or
-                matches(plugin.id, filter_) or
-                matches((plugin.description or ""), filter_))
+        return (
+            matches(plugin.name, filter_)
+            or matches(plugin.id, filter_)
+            or matches((plugin.description or ""), filter_)
+        )
 
     def __destroy(self, *args):
         config.save()

@@ -17,8 +17,7 @@ import quodlibet.config
 import datetime
 import time
 
-A_DATETIME = datetime.datetime(year=1999, month=5, day=1, hour=23, minute=11,
-                               second=59)
+A_DATETIME = datetime.datetime(year=1999, month=5, day=1, hour=23, minute=11, second=59)
 
 
 class TSongListColumns(TestCase):
@@ -107,8 +106,7 @@ class TSongListColumns(TestCase):
 
     def test_custom_datecol_format(self):
         format = "%Y%m%d %H:%M:%S PLAINTEXT"
-        quodlibet.config.settext("settings", "datecolumn_timestamp_format",
-                                 format)
+        quodlibet.config.settext("settings", "datecolumn_timestamp_format", format)
 
         stamp = int(time.mktime(A_DATETIME.timetuple()))
         column = self._create_col("~#added")
@@ -117,8 +115,7 @@ class TSongListColumns(TestCase):
 
     def test_nonconfigured_datecol_format(self):
         # make sure config option is unset by default
-        text = quodlibet.config.gettext("settings",
-                                        "datecolumn_timestamp_format")
+        text = quodlibet.config.gettext("settings", "datecolumn_timestamp_format")
         self.assertEqual(text, "")
 
         # make sure unset config option does not result in the

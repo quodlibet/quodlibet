@@ -27,10 +27,9 @@ format = """\
 class JEP118(EventPlugin):
     PLUGIN_ID = "JEP-118"
     PLUGIN_NAME = _("JEP-118")
-    PLUGIN_DESC_MARKUP = (
-        _("Outputs a Jabber User Tunes file to %(path)s.")
-        % {"path": util.monospace("~/.quodlibet/jabber")}
-    )
+    PLUGIN_DESC_MARKUP = _("Outputs a Jabber User Tunes file to %(path)s.") % {
+        "path": util.monospace("~/.quodlibet/jabber")
+    }
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def plugin_on_song_started(self, song):
@@ -43,10 +42,15 @@ class JEP118(EventPlugin):
         else:
             try:
                 with open(outfile, "w", encoding="utf-8") as f:
-                    f.write(format % (
-                        util.escape(song.comma("artist")),
-                        util.escape(song.comma("title")),
-                        util.escape(song.comma("album")),
-                        song("~#track", 0), song.get("~#length", 0)))
+                    f.write(
+                        format
+                        % (
+                            util.escape(song.comma("artist")),
+                            util.escape(song.comma("title")),
+                            util.escape(song.comma("album")),
+                            song("~#track", 0),
+                            song.get("~#length", 0),
+                        )
+                    )
             except OSError:
                 pass

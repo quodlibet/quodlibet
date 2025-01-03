@@ -13,37 +13,60 @@ from quodlibet import _
 
 
 SHORTCUTS = [
-    (_("Main Window"), [
-        ("<Alt>Left", _("Seek backwards by 10 seconds")),
-        ("<Alt>Right", _("Seek forward by 10 seconds")),
-        ("<Primary>L", _("Focus the search entry")),
-    ]),
-    (_("Browsers"), [
-        ("<Primary><Shift>J", _("Reset filters and jump to the playing song")),
-    ]),
-    (_("Song List"), [
-        ("<Primary>I",
-         _("Open the information window for the selected songs")),
-        ("<Alt>Return", _("Open the tag editor for the selected songs")),
-        ("<Primary>Return", _("Queue the selected songs")),
-        ("<Primary>Delete", _("Delete the selected songs")),
-        ("<Primary>F", _("Show the inline search entry")),
-        ("<Ctrl>", "+ " + _("Left click on a column header") + ":\n"
-         + _("Add the column to the list of columns to sort by")),
-    ]),
-    (_("Tree View"), [
-        ("Left <Primary>Left",
-         _("Collapses the element or select the parent element")),
-        ("Right <Primary>Right", _("Expands the element")),
-    ]),
-    (_("Text Entries"), [
-        ("<Primary>Z",
-         _("Undo the last change")),
-        ("<Primary><Shift>Z", _("Redo the last undone change")),
-    ]),
-    (_("Paned Browser"), [
-        ("<Primary>Home", _("Select all songs in all panes")),
-    ]),
+    (
+        _("Main Window"),
+        [
+            ("<Alt>Left", _("Seek backwards by 10 seconds")),
+            ("<Alt>Right", _("Seek forward by 10 seconds")),
+            ("<Primary>L", _("Focus the search entry")),
+        ],
+    ),
+    (
+        _("Browsers"),
+        [
+            ("<Primary><Shift>J", _("Reset filters and jump to the playing song")),
+        ],
+    ),
+    (
+        _("Song List"),
+        [
+            ("<Primary>I", _("Open the information window for the selected songs")),
+            ("<Alt>Return", _("Open the tag editor for the selected songs")),
+            ("<Primary>Return", _("Queue the selected songs")),
+            ("<Primary>Delete", _("Delete the selected songs")),
+            ("<Primary>F", _("Show the inline search entry")),
+            (
+                "<Ctrl>",
+                "+ "
+                + _("Left click on a column header")
+                + ":\n"
+                + _("Add the column to the list of columns to sort by"),
+            ),
+        ],
+    ),
+    (
+        _("Tree View"),
+        [
+            (
+                "Left <Primary>Left",
+                _("Collapses the element or select the parent element"),
+            ),
+            ("Right <Primary>Right", _("Expands the element")),
+        ],
+    ),
+    (
+        _("Text Entries"),
+        [
+            ("<Primary>Z", _("Undo the last change")),
+            ("<Primary><Shift>Z", _("Redo the last undone change")),
+        ],
+    ),
+    (
+        _("Paned Browser"),
+        [
+            ("<Primary>Home", _("Select all songs in all panes")),
+        ],
+    ),
 ]
 
 
@@ -62,8 +85,7 @@ def build_shortcut_window(data):
         group = Gtk.ShortcutsGroup(title=group_title)
         group.show()
         for accel, shortcut_title in shortcuts:
-            short = Gtk.ShortcutsShortcut(
-                title=shortcut_title, accelerator=accel)
+            short = Gtk.ShortcutsShortcut(title=shortcut_title, accelerator=accel)
             short.show()
             group.add(short)
         section.add(group)

@@ -16,8 +16,14 @@ from quodlibet.library.file import FileLibrary
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
 from senf import text2fsn
-from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
-                   init_fake_app, destroy_fake_app)
+from tests import (
+    mkdtemp,
+    get_data_path,
+    run_gtk_loop,
+    _TEMP_DIR,
+    init_fake_app,
+    destroy_fake_app,
+)
 from tests.helper import temp_filename
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
@@ -42,8 +48,7 @@ class TFileLibrary(TLibrary):
         self.library.add([new])
         assert not self.library.masked_mount_points
         self.library.mask(new.mountpoint)
-        self.assertEqual(self.library.masked_mount_points,
-                             [new.mountpoint])
+        self.assertEqual(self.library.masked_mount_points, [new.mountpoint])
         assert not len(self.library)
         self.assertEqual(self.library.get_masked(new.mountpoint), [new])
         assert self.library.masked(new)
@@ -211,8 +216,9 @@ class TWatchedFileLibrary(TLibrary):
             assert path.parent in watch_dirs, "Not monitoring directory of new file"
             run_gtk_loop()
             assert self.library, f"Nothing in library despite watches on {watch_dirs}"
-            assert str(path) in self.library, (f"{path!s} should have been added to "
-                                               f"library [{self.fns}]")
+            assert str(path) in self.library, (
+                f"{path!s} should have been added to " f"library [{self.fns}]"
+            )
             assert str(path) in {af("~filename") for af in self.added}
 
     def test_watched_moving_song(self):

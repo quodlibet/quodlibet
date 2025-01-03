@@ -20,7 +20,6 @@ from tests.test_library_libraries import FakeSong
 
 
 class TSongsMenuPlugins(TestCase):
-
     def _confirmer(self, *args):
         self.confirmed = True
 
@@ -39,19 +38,17 @@ class TSongsMenuPlugins(TestCase):
         self.pm.quit()
         shutil.rmtree(self.tempdir)
 
-    def create_plugin(self, id="", name="", desc="", icon="",
-                      funcs=None, mod=False):
+    def create_plugin(self, id="", name="", desc="", icon="", funcs=None, mod=False):
         fd, fn = mkstemp(suffix=".py", text=True, dir=self.tempdir)
         file = os.fdopen(fd, "w")
 
         if mod:
             indent = ""
         else:
-            file.write(
-                "from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
-            file.write("class %s(SongsMenuPlugin):\n" % name)
+            file.write("from quodlibet.plugins.songsmenu import SongsMenuPlugin\n")
+            file.write(f"class {name}(SongsMenuPlugin):\n")
             indent = "    "
-            file.write("%spass\n" % indent)
+            file.write(f"{indent}pass\n")
 
         if name:
             file.write(f"{indent}PLUGIN_ID = {name!r}\n")
@@ -61,10 +58,12 @@ class TSongsMenuPlugins(TestCase):
             file.write(f"{indent}PLUGIN_DESC = {desc!r}\n")
         if icon:
             file.write(f"{indent}PLUGIN_ICON = {icon!r}\n")
-        for f in (funcs or []):
+        for f in funcs or []:
             if f in ["__init__"]:
-                file.write(f"{indent}def {f}(self, *args): super().__init__("
-                           '*args); raise Exception("as expected")\n')
+                file.write(
+                    f"{indent}def {f}(self, *args): super().__init__("
+                    '*args); raise Exception("as expected")\n'
+                )
             else:
                 file.write(f"{indent}def {f}(*args): return args\n")
         file.flush()
@@ -80,15 +79,15 @@ class TSongsMenuPlugins(TestCase):
         self.assertEqual(len(self.pm.plugins), 1)
 
     def test_additional_functions_still_only_one(self):
-        self.create_plugin(name="Name", desc="Desc",
-                funcs=["plugin_song", "plugin_songs"])
+        self.create_plugin(
+            name="Name", desc="Desc", funcs=["plugin_song", "plugin_songs"]
+        )
         self.pm.rescan()
         self.assertEqual(len(self.pm.plugins), 1)
 
     def test_two_plugins_are_two(self):
         self.create_plugin(name="Name", desc="Desc", funcs=["plugin_song"])
-        self.create_plugin(name="Name2", desc="Desc2",
-                funcs=["plugin_albums"])
+        self.create_plugin(name="Name2", desc="Desc2", funcs=["plugin_albums"])
         self.pm.rescan()
         self.assertEqual(len(self.pm.plugins), 2)
 
@@ -107,8 +106,9 @@ class TSongsMenuPlugins(TestCase):
         assert not self.pm.enabled(plug)
 
     def test_ignores_broken_plugin(self):
-        self.create_plugin(name="Broken", desc="Desc",
-                           funcs=["__init__", "plugin_song"])
+        self.create_plugin(
+            name="Broken", desc="Desc", funcs=["__init__", "plugin_song"]
+        )
         self.pm.rescan()
         plug = self.pm.plugins[0]
         self.pm.enable(plug, True)
@@ -124,22 +124,28 @@ class TSongsMenuPlugins(TestCase):
         plugin = Plugin(FakeSongsMenuPlugin)
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
-        songs = [AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"})
-                 for x in range(MAX)]
+        songs = [
+            AudioFile({"~filename": f"/tmp/{x}", "artist": "foo"}) for x in range(MAX)
+        ]
         self.handler.handle(plugin.id, self.library, None, songs)
-        self.assertFalse(self.confirmed, ("Wasn't expecting a confirmation for %d"
-                                     " invocations" % len(songs)))
+        self.assertFalse(
+            self.confirmed,
+            ("Wasn't expecting a confirmation for %d" " invocations" % len(songs)),
+        )
 
     def test_handling_lots_of_songs_with_confirmation(self):
         plugin = Plugin(FakeSongsMenuPlugin)
         self.handler.plugin_enable(plugin)
         MAX = FakeSongsMenuPlugin.MAX_INVOCATIONS
-        songs = [AudioFile({"~filename": "/tmp/%s" % x, "artist": "foo"})
-                 for x in range(MAX + 1)]
+        songs = [
+            AudioFile({"~filename": f"/tmp/{x}", "artist": "foo"})
+            for x in range(MAX + 1)
+        ]
         self.handler.handle(plugin.id, self.library, None, songs)
-        self.assertTrue(self.confirmed,
-                        ("Should have confirmed %d invocations (Max=%d)."
-                         % (len(songs), MAX)))
+        self.assertTrue(
+            self.confirmed,
+            ("Should have confirmed %d invocations (Max=%d)." % (len(songs), MAX)),
+        )
 
 
 def even(i):
@@ -190,6 +196,7 @@ class FakeSongsMenuPlugin(SongsMenuPlugin):
     def plugin_song(self, song):
         self.total += 1
         if self.total > self.MAX_INVOCATIONS:
-            raise ValueError("Shouldn't have called me on this many songs"
-                             " (%d > %d)" % (self.total,
-                                             self.MAX_INVOCATIONS))
+            raise ValueError(
+                "Shouldn't have called me on this many songs"
+                " (%d > %d)" % (self.total, self.MAX_INVOCATIONS)
+            )

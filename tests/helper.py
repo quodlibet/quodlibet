@@ -33,8 +33,7 @@ def dummy_path(path):
 
 
 @contextlib.contextmanager
-def locale_numeric_conv(
-        decimal_point=".", grouping=None, thousands_sep=","):
+def locale_numeric_conv(decimal_point=".", grouping=None, thousands_sep=","):
     """Temporarily change number formatting conventions.
 
     By default this uses en_US conventions.
@@ -124,8 +123,7 @@ def _send_button_click_event(widget, **kwargs):
     return handled
 
 
-def send_button_click(widget, button, primary=False, shift=False,
-                      recursive=False):
+def send_button_click(widget, button, primary=False, shift=False, recursive=False):
     """See send_key_click_event"""
 
     state = Gdk.ModifierType(0)
@@ -140,8 +138,7 @@ def send_button_click(widget, button, primary=False, shift=False,
     if recursive:
         if isinstance(widget, Gtk.Container):
             for child in widget.get_children():
-                handled += send_button_click(
-                    child, button, primary, shift, recursive)
+                handled += send_button_click(child, button, primary, shift, recursive)
 
     return handled
 
@@ -244,10 +241,12 @@ def capture_output():
     """
 
     err = io.TextIOWrapper(
-        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n")
+        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n"
+    )
     err.getvalue = lambda: err.buffer.getvalue().decode()
     out = io.TextIOWrapper(
-        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n")
+        io.BytesIO(), encoding="utf-8", write_through=True, newline="\n"
+    )
     out.getvalue = lambda: out.buffer.getvalue().decode()
     old_err = sys.stderr
     old_out = sys.stdout
@@ -274,6 +273,7 @@ def temp_filename(*args, as_path=False, **kwargs):
     """
 
     from tests import mkstemp
+
     try:
         del kwargs["as_path"]
     except KeyError:
@@ -303,22 +303,23 @@ def get_temp_copy(path):
 
 
 class ListWithUnused:
-    """ This class stores a set of elements and provides the interface to check
-        if it contains an arbitrary element, and then to know if some of the
-        elements stored were never accessed.
+    """This class stores a set of elements and provides the interface to check
+    if it contains an arbitrary element, and then to know if some of the
+    elements stored were never accessed.
 
-        Some tests use this class to store whitelisted/blacklisted things that
-        are deemed acceptable, but would trigger those tests if they weren't
-        made special cases (e.g.  UI messages that conform to a particular
-        writing style, but can't be tested automatically). Since such
-        whitelists reside in tests and not in the code that produces those
-        special cases, it's easy to change (fix) the code and then forget to
-        remove the special case from tests, leaving it there to never be used
-        again.
+    Some tests use this class to store whitelisted/blacklisted things that
+    are deemed acceptable, but would trigger those tests if they weren't
+    made special cases (e.g.  UI messages that conform to a particular
+    writing style, but can't be tested automatically). Since such
+    whitelists reside in tests and not in the code that produces those
+    special cases, it's easy to change (fix) the code and then forget to
+    remove the special case from tests, leaving it there to never be used
+    again.
 
-        This class then provides a way to see if such particular element
-        doesn't actually need to be in the whitelist anymore.
+    This class then provides a way to see if such particular element
+    doesn't actually need to be in the whitelist anymore.
     """
+
     def __init__(self, *args):
         self.store = set(args)
         self.unused = set(args)
@@ -330,7 +331,8 @@ class ListWithUnused:
     def check_unused(self):
         if self.unused:
             from quodlibet import print_w
-            print_w("ListWithUnused has unused items: %s" % self.unused)
+
+            print_w(f"ListWithUnused has unused items: {self.unused}")
 
 
 def __(message):  # noqa

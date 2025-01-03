@@ -15,7 +15,6 @@ from quodlibet.const import Version
 
 
 class TQuodlibet(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -45,7 +44,6 @@ class TQuodlibet(TestCase):
 
 
 class TVersion(TestCase):
-
     def test_message(self):
         v = Version("foo", 1, 2, message="bla")
         self.assertRaises(ImportError, v.check, (1, 1))

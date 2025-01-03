@@ -17,8 +17,10 @@ class UniqueQuery(QueryPlugin):
     PLUGIN_DESC = _("Filter search results by unique tags.")
     key = "unique"
     query_syntax = _("@(unique: tag)")
-    query_description = "<tt>tag</tt> can be album, artist, title or any other tag. " \
+    query_description = (
+        "<tt>tag</tt> can be album, artist, title or any other tag. "
         "Use multiple <tt>@(unique: tag)</tt> to filter by multiple tags."
+    )
 
     usage = f"{query_syntax}\n\n{query_description}"
 
@@ -41,8 +43,10 @@ class UniqueQuery(QueryPlugin):
             err_str = str(e)
             if err_str not in self._reported:
                 self._reported.add(err_str)
-                print_w(f"{type(e).__name__} while filtering unique values for "
-                        f"'{body}': {err_str}")
+                print_w(
+                    f"{type(e).__name__} while filtering unique values for "
+                    f"'{body}': {err_str}"
+                )
         return return_value
 
     def parse_body(self, body: str) -> str:

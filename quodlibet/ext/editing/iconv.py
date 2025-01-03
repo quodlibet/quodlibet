@@ -24,13 +24,11 @@ koi8_r koi8_u ptcp154 shift_jis utf_16_be utf_16_le""".split()
 class Iconv(EditTagsPlugin):
     PLUGIN_ID = "Convert Encodings"
     PLUGIN_NAME = _("Convert Encodings")
-    PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the "
-                    "tag editor.")
+    PLUGIN_DESC = _("Fixes misinterpreted tag value encodings in the " "tag editor.")
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     def __init__(self, tag, value):
-        super().__init__(
-            _("_Convert Encoding…"), use_underline=True)
+        super().__init__(_("_Convert Encoding…"), use_underline=True)
 
         submenu = Gtk.Menu()
 

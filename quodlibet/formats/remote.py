@@ -28,8 +28,7 @@ class RemoteFile(AudioFile):
     def __getitem__(self, key):
         # we used to save them with the wrong type
         value = super().__getitem__(key)
-        if key in ("~filename", "~mountpoint") and \
-                not isinstance(value, fsnative):
+        if key in ("~filename", "~mountpoint") and not isinstance(value, fsnative):
             value = path2fsn(value)
 
         return value
@@ -61,6 +60,7 @@ class RemoteFile(AudioFile):
     @property
     def key(self):
         return self["~uri"]
+
 
 loader = RemoteFile
 types = [RemoteFile]

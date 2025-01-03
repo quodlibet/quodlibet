@@ -32,7 +32,7 @@ class KeybinderBackend(MMKeysBackend):
         "XF86AudioForward": MMKeysAction.FORWARD,
         "XF86AudioRewind": MMKeysAction.REWIND,
         "XF86AudioRepeat": MMKeysAction.REPEAT,
-        "XF86AudioRandomPlay": MMKeysAction.SHUFFLE
+        "XF86AudioRandomPlay": MMKeysAction.SHUFFLE,
     }
 
     def __init__(self, name, callback):

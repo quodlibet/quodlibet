@@ -18,6 +18,7 @@ try:
     from gi.repository import GLib, Notify
 except (ValueError, ImportError) as e:
     from quodlibet import plugins
+
     raise plugins.PluginNotSupportedError(f"Can't load GI Notify module ({e!r})") from e
 
 
@@ -31,8 +32,10 @@ from quodlibet.util.dprint import print_d
 class BookmarkNotify(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "BookmarkNotify"
     PLUGIN_NAME = _("Bookmark Notifications")
-    PLUGIN_DESC = _("Uses notifications to display bookmarks / comments in real-time. "
-                    "Works well for the Soundcloud browser.")
+    PLUGIN_DESC = _(
+        "Uses notifications to display bookmarks / comments in real-time. "
+        "Works well for the Soundcloud browser."
+    )
     PLUGIN_ICON = Icons.DIALOG_INFORMATION
 
     def __init__(self, *args, **kwargs):
@@ -87,9 +90,11 @@ class BookmarkNotify(EventPlugin, PluginConfigMixin):
         msg = f"♪ {format_time(ts)}: <b>{line.strip()}</b> ♪"
         print_d(msg)
         line = GLib.markup_escape_text(line)
-        notif = Notify.Notification.new(f"Quodlibet – {self.song('title')}",
-                                        f"<b>{line}</b> @ {format_time(ts)}",
-                                        "user-idle")
+        notif = Notify.Notification.new(
+            f"Quodlibet – {self.song('title')}",
+            f"<b>{line}</b> @ {format_time(ts)}",
+            "user-idle",
+        )
         # notif.category = "im"
         notif.show()
 
@@ -120,7 +125,9 @@ class BookmarkNotify(EventPlugin, PluginConfigMixin):
                 self.bookmarks.popleft()
             else:
                 time_str = format_time(msec / 1000)
-                print_d(f"Next bookmark at {format_time(t)}s "
-                        f"(at {time_str}) - {len(self.bookmarks)} left")
+                print_d(
+                    f"Next bookmark at {format_time(t)}s "
+                    f"(at {time_str}) - {len(self.bookmarks)} left"
+                )
                 return
         print_d("Finished bookmarks")

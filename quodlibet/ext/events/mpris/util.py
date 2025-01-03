@@ -9,7 +9,6 @@ import dbus
 
 
 class MPRISObject(dbus.service.Object):
-
     def paused(self):
         pass
 

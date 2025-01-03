@@ -26,13 +26,13 @@ class PythonQuery(QueryPlugin):
         "<tt>_ts</tt> is a (real number) timestamp at start of query."
         "\n\n"
         "Modules <tt>time</tt> and <tt>random</tt> are also available, and the "
-        "class <tt>Random</tt> (==<tt>random.Random</tt>) too.")
+        "class <tt>Random</tt> (==<tt>random.Random</tt>) too."
+    )
     usage = markup_for_syntax(query_syntax) + "\n\n" + query_description
 
     def __init__(self):
         print_d("Initialising")
-        self._globals = {"random": random, "Random": random.Random,
-                         "time": time}
+        self._globals = {"random": random, "Random": random.Random, "time": time}
         self._reported = set()
         self._raw_body = None
 
@@ -48,8 +48,10 @@ class PythonQuery(QueryPlugin):
             key = str(e)
             if key not in self._reported:
                 self._reported.add(key)
-                print_w(f"{type(e).__name__}({key}) in expression {self._raw_body!r}. "
-                        f"Example failing data: {self._globals}")
+                print_w(
+                    f"{type(e).__name__}({key}) in expression {self._raw_body!r}. "
+                    f"Example failing data: {self._globals}"
+                )
             return False
 
     def parse_body(self, body):
@@ -61,5 +63,5 @@ class PythonQuery(QueryPlugin):
             self._globals.update(_ts=time.time())
             return compile(body.strip(), "query", "eval")
         except SyntaxError as e:
-            print_w("Couldn't compile query (%s)" % e)
+            print_w(f"Couldn't compile query ({e})")
             raise QueryPluginError from e

@@ -19,10 +19,11 @@ class TJsonData(TestCase):
     class WibbleData(JSONObject):
         """Test subclass"""
 
-        FIELDS = {"name": Field("h name", "name"),
-                  "pattern": Field("h pattern", "pattern for stuff"),
-                  "wibble": Field("h wibble", "wobble"),
-                  }
+        FIELDS = {
+            "name": Field("h name", "name"),
+            "pattern": Field("h pattern", "pattern for stuff"),
+            "wibble": Field("h wibble", "wobble"),
+        }
 
         def __init__(self, name=None, pattern=None, wibble=False):
             JSONObject.__init__(self, name)
@@ -64,9 +65,9 @@ class TJsonData(TestCase):
             jd = JSONObjectDict.from_json(JSONObject, '{"foo":{}')
             assert not jd
             # Valid but unexpected Command field
-            assert not JSONObjectDict.from_json(JSONObject,
-                                                '{"bar":{"name":"bar", '
-                                                '"invalid":"foo"}')
+            assert not JSONObjectDict.from_json(
+                JSONObject, '{"bar":{"name":"bar", ' '"invalid":"foo"}'
+            )
 
         def test_subclass_from_json(self):
             coms = JSONObjectDict.from_json(self.WibbleData, self.WIBBLE_JSON_STR)

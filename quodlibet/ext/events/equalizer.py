@@ -20,51 +20,273 @@ from quodlibet.util import print_e, print_w
 import ast
 
 # Presets (roughly) taken from Pulseaudio equalizer
-PRESET_BANDS = [50, 100, 156, 220, 311, 440, 622, 880, 1250, 1750, 2500,
-                3500, 5000, 10000, 20000]
+PRESET_BANDS = [
+    50,
+    100,
+    156,
+    220,
+    311,
+    440,
+    622,
+    880,
+    1250,
+    1750,
+    2500,
+    3500,
+    5000,
+    10000,
+    20000,
+]
 PRESETS = {
     "flat": (_("Flat"), [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
-    "live": (_("Live"), [-9.0, -5.5, 0.0, 1.5, 2.0, 3.5, 3.5, 3.5, 3.5,
-                         3.5, 3.5, 3.5, 3.0, 1.5, 2.0]),
-    "full_bass_treble": (_("Full Bass & Treble"),
-                         [5.0, 5.0, 3.5, 2.5, 0.0, -7.0, -14.0, -10.0, -10.0,
-                          -8.0, 1.0, 1.0, 5.0, 7.5, 9.5]),
-    "club": (_("Club"), [0.0, 0.0, 0.0, 0.0, 3.5, 3.5, 3.5, 3.5, 3.5,
-                         3.5, 3.5, 2.5, 2.5, 0.0, 0.0]),
-    "large_hall": (_("Large Hall"), [7.0, 7.0, 7.0, 3.5, 3.0, 3.0, 3.0, 1.5,
-                                     0.0, -2.0, -3.5, -6.0, -9.0, -1.0, 0.0]),
-    "party": (_("Party"), [5.0, 5.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                           0.0, 0.0, 0.0, 2.5, 5.0]),
-    "rock": (_("Rock"), [5.5, 2.5, 2.5, -8.5, -10.5, -11.0, -16.0, -14.5,
-                         -6.5, -5.5, -3.0, 3.0, 6.5, 7.0, 7.0]),
-    "soft": (_("Soft"), [3.0, 3.0, 1.0, 1.0, 0.0, -2.5, -5.0, 1.5, 0.0, 1.0,
-                         3.0, 3.0, 6.0, 8.0, 8.0]),
-    "full_bass": (_("Full Bass"),
-                  [-16.0, -16.0, 6.5, 6.5, 6.0, 5.5, 4.5, 1.0, 1.0, 1.0, -8.0,
-                   -10.0, -16.0, -16.0, -20.5]),
-    "classical": (_("Classical"),
-                  [0, 0, 0, 0, 0, 0, 0, 0, 0,
-                   0, 0, 0, -21.0, -21.0, -27.0]),
-    "reggae": (_("Reggae"), [0.0, 0.0, 0.0, 0.0, 0.0, -4.5, -10.0, -6.0, 0.5,
-                             1.0, 2.0, 4.0, 4.0, 0.0, 0.0]),
-    "headphones": (_("Headphones"),
-                   [3.0, 3.0, 7.0, 7.0, 3.0, -1.0, -6.5, -6.0, -4.5, -4.0,
-                    1.0, 1.0, 6.0, 8.0, 9.0]),
-    "soft_rock": (_("Soft Rock"), [3.0, 3.0, 3.0, 1.5, 1.5, 1.5, 0.0, -3.5,
-                                   -8.0, -7.0, -10, -9.0, -6.5, 1.5, 6.0]),
-    "full_treble": (_("Full Treble"),
-                    [5.0, -18.5, -18.5, -18.5, -18.5, -10.0, -8.0, -6.5, 1.5,
-                     1.5, 1.5, 8.5, 10.5, 10.5, 10.5]),
-    "dance": (_("Dance"), [6.0, 4.0, 4.0, 1.5, 1.5, 1.5, 0.0, 0.0, 0.0,
-                           1.0, -10.5, -14.0, -15.0, -7.0, 0.0]),
-    "pop": (_("Pop"), [-3.5, 1.0, 2.0, 3.0, 5.0, 5.5, 6.5, 5.0, 3.0, 1.5, 0.0,
-                       -2.5, -5.0, -5.0, -3.0]),
-    "techno": (_("Techno"), [5.0, 4.0, 4.0, 3.0, 0.0, -4.5, -10.0, -9.0, -8.0,
-                             -5.5, -1.5, 3.0, 6.0, 6.0, 6.0]),
-    "ska": (_("Ska"), [-4.5, -8.0, -9.0, -8.5, -8.0, -6.0, 0.0, 1.5, 2.5, 2.5,
-                       3.0, 3.0, 6.0, 6.0, 6.0]),
-    "laptop": (_("Laptop"), [-1, -1, -1, -1, -5, -10, -18, -15, -10, -5, -5,
-                             -5, -5, 0, 0]),
+    "live": (
+        _("Live"),
+        [-9.0, -5.5, 0.0, 1.5, 2.0, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.0, 1.5, 2.0],
+    ),
+    "full_bass_treble": (
+        _("Full Bass & Treble"),
+        [
+            5.0,
+            5.0,
+            3.5,
+            2.5,
+            0.0,
+            -7.0,
+            -14.0,
+            -10.0,
+            -10.0,
+            -8.0,
+            1.0,
+            1.0,
+            5.0,
+            7.5,
+            9.5,
+        ],
+    ),
+    "club": (
+        _("Club"),
+        [0.0, 0.0, 0.0, 0.0, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 3.5, 2.5, 2.5, 0.0, 0.0],
+    ),
+    "large_hall": (
+        _("Large Hall"),
+        [
+            7.0,
+            7.0,
+            7.0,
+            3.5,
+            3.0,
+            3.0,
+            3.0,
+            1.5,
+            0.0,
+            -2.0,
+            -3.5,
+            -6.0,
+            -9.0,
+            -1.0,
+            0.0,
+        ],
+    ),
+    "party": (
+        _("Party"),
+        [5.0, 5.0, 5.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 2.5, 5.0],
+    ),
+    "rock": (
+        _("Rock"),
+        [
+            5.5,
+            2.5,
+            2.5,
+            -8.5,
+            -10.5,
+            -11.0,
+            -16.0,
+            -14.5,
+            -6.5,
+            -5.5,
+            -3.0,
+            3.0,
+            6.5,
+            7.0,
+            7.0,
+        ],
+    ),
+    "soft": (
+        _("Soft"),
+        [3.0, 3.0, 1.0, 1.0, 0.0, -2.5, -5.0, 1.5, 0.0, 1.0, 3.0, 3.0, 6.0, 8.0, 8.0],
+    ),
+    "full_bass": (
+        _("Full Bass"),
+        [
+            -16.0,
+            -16.0,
+            6.5,
+            6.5,
+            6.0,
+            5.5,
+            4.5,
+            1.0,
+            1.0,
+            1.0,
+            -8.0,
+            -10.0,
+            -16.0,
+            -16.0,
+            -20.5,
+        ],
+    ),
+    "classical": (
+        _("Classical"),
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -21.0, -21.0, -27.0],
+    ),
+    "reggae": (
+        _("Reggae"),
+        [0.0, 0.0, 0.0, 0.0, 0.0, -4.5, -10.0, -6.0, 0.5, 1.0, 2.0, 4.0, 4.0, 0.0, 0.0],
+    ),
+    "headphones": (
+        _("Headphones"),
+        [
+            3.0,
+            3.0,
+            7.0,
+            7.0,
+            3.0,
+            -1.0,
+            -6.5,
+            -6.0,
+            -4.5,
+            -4.0,
+            1.0,
+            1.0,
+            6.0,
+            8.0,
+            9.0,
+        ],
+    ),
+    "soft_rock": (
+        _("Soft Rock"),
+        [
+            3.0,
+            3.0,
+            3.0,
+            1.5,
+            1.5,
+            1.5,
+            0.0,
+            -3.5,
+            -8.0,
+            -7.0,
+            -10,
+            -9.0,
+            -6.5,
+            1.5,
+            6.0,
+        ],
+    ),
+    "full_treble": (
+        _("Full Treble"),
+        [
+            5.0,
+            -18.5,
+            -18.5,
+            -18.5,
+            -18.5,
+            -10.0,
+            -8.0,
+            -6.5,
+            1.5,
+            1.5,
+            1.5,
+            8.5,
+            10.5,
+            10.5,
+            10.5,
+        ],
+    ),
+    "dance": (
+        _("Dance"),
+        [
+            6.0,
+            4.0,
+            4.0,
+            1.5,
+            1.5,
+            1.5,
+            0.0,
+            0.0,
+            0.0,
+            1.0,
+            -10.5,
+            -14.0,
+            -15.0,
+            -7.0,
+            0.0,
+        ],
+    ),
+    "pop": (
+        _("Pop"),
+        [
+            -3.5,
+            1.0,
+            2.0,
+            3.0,
+            5.0,
+            5.5,
+            6.5,
+            5.0,
+            3.0,
+            1.5,
+            0.0,
+            -2.5,
+            -5.0,
+            -5.0,
+            -3.0,
+        ],
+    ),
+    "techno": (
+        _("Techno"),
+        [
+            5.0,
+            4.0,
+            4.0,
+            3.0,
+            0.0,
+            -4.5,
+            -10.0,
+            -9.0,
+            -8.0,
+            -5.5,
+            -1.5,
+            3.0,
+            6.0,
+            6.0,
+            6.0,
+        ],
+    ),
+    "ska": (
+        _("Ska"),
+        [
+            -4.5,
+            -8.0,
+            -9.0,
+            -8.5,
+            -8.0,
+            -6.0,
+            0.0,
+            1.5,
+            2.5,
+            2.5,
+            3.0,
+            3.0,
+            6.0,
+            6.0,
+            6.0,
+        ],
+    ),
+    "laptop": (
+        _("Laptop"),
+        [-1, -1, -1, -1, -5, -10, -18, -15, -10, -5, -5, -5, -5, 0, 0],
+    ),
 }
 
 
@@ -77,8 +299,8 @@ def interp_bands(src_band, target_band, src_gain):
             continue
         idx = sorted(src_band + [b]).index(b)
         idx = min(max(idx, 1), len(src_band) - 1)
-        x1, x2 = src_band[idx - 1:idx + 1]
-        y1, y2 = src_gain[idx - 1:idx + 1]
+        x1, x2 = src_band[idx - 1 : idx + 1]
+        y1, y2 = src_gain[idx - 1 : idx + 1]
         g = y1 + ((y2 - y1) * (b - x1)) / float(x2 - x1)
         gain.append(min(12.0, g))
     return gain
@@ -110,9 +332,11 @@ def get_config():
 class Equalizer(EventPlugin):
     PLUGIN_ID = "Equalizer"
     PLUGIN_NAME = _("Equalizer")
-    PLUGIN_DESC = _("Controls the tone of your music with an equalizer.\n"
-                    "Click or use keys to customise levels "
-                    "(right-click resets the band).")
+    PLUGIN_DESC = _(
+        "Controls the tone of your music with an equalizer.\n"
+        "Click or use keys to customise levels "
+        "(right-click resets the band)."
+    )
     PLUGIN_ICON = Icons.AUDIO_CARD
 
     @property
@@ -131,7 +355,7 @@ class Equalizer(EventPlugin):
         lbands = len(app.player.eq_bands)
         if len(levels) != lbands:
             print_w("Number of bands didn't match current. Using flat EQ.")
-            levels = [0.] * lbands
+            levels = [0.0] * lbands
         app.player.eq_values = levels
 
     def enabled(self):
@@ -146,14 +370,13 @@ class Equalizer(EventPlugin):
         main_vbox = Gtk.VBox(spacing=12)
         if not self.player_has_eq:
             l = Gtk.Label()
-            l.set_markup(
-                _("The current backend does not support equalization."))
+            l.set_markup(_("The current backend does not support equalization."))
             main_vbox.pack_start(l, False, True, 0)
             return main_vbox
 
         def format_hertz(band):
             if band >= 1000:
-                return _("%.1f kHz") % (band / 1000.)
+                return _("%.1f kHz") % (band / 1000.0)
             return _("%d Hz") % band
 
         bands = [format_hertz(band) for band in app.player.eq_bands]
@@ -163,7 +386,7 @@ class Equalizer(EventPlugin):
         # This fixes possible old corrupt config files with extra level values.
         if len(levels) != len(bands):
             print_w("Number of bands didn't match current. Using flat EQ.")
-            levels = [0.] * len(bands)
+            levels = [0.0] * len(bands)
 
         table = Gtk.Table(rows=len(bands), columns=3)
         table.set_col_spacings(6)
@@ -188,7 +411,7 @@ class Equalizer(EventPlugin):
             lbl = Gtk.Label(label=band.split()[1])
             lbl.set_alignment(1, 0.5)
             table.attach(lbl, 1, 2, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
-            adj = Gtk.Adjustment.new(levels[i], -24., 12., 0.5, 3, 0)
+            adj = Gtk.Adjustment.new(levels[i], -24.0, 12.0, 0.5, 3, 0)
             adj.connect("value-changed", set_band, i)
             adjustments.append(adj)
             hs = Gtk.HScale(adjustment=adj)
@@ -209,7 +432,7 @@ class Equalizer(EventPlugin):
         def clicked_db(button):
             selected_index = self._combo_custom.get_active()
             if selected_index < 1:
-                return # Select…
+                return  # Select…
             selected = self._combo_custom.get_active_text()
             self._combo_custom.set_active(0)
             self._combo_custom.remove(selected_index)
@@ -231,7 +454,7 @@ class Equalizer(EventPlugin):
 
             def find_iter(list_store, text):
                 i = list_store.get_iter_first()
-                while (i is not None):
+                while i is not None:
                     if list_store.get_value(i, 0) == text:
                         return i
                     i = list_store.iter_next(i)
@@ -244,11 +467,11 @@ class Equalizer(EventPlugin):
 
         def default_combo_changed(combo):
             if combo.get_active() < 1:
-                return # Select…
+                return  # Select…
             self._combo_custom.set_active(0)
             gain = sorted_presets[combo.get_active() - 1][1][1]
             gain = interp_bands(PRESET_BANDS, app.player.eq_bands, gain)
-            for (g, a) in zip(gain, adjustments, strict=False):
+            for g, a in zip(gain, adjustments, strict=False):
                 a.set_value(g)
 
         def custom_combo_changed(combo):
@@ -259,7 +482,7 @@ class Equalizer(EventPlugin):
             self._combo_default.set_active(0)
             self._delete_button.set_sensitive(True)
             gain = self._config[combo.get_active_text()]
-            for (g, a) in zip(gain, adjustments, strict=False):
+            for g, a in zip(gain, adjustments, strict=False):
                 a.set_value(g)
 
         def save_name_changed(entry):

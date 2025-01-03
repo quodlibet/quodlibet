@@ -8,19 +8,26 @@ from tests.helper import __
 
 import os
 import sys
-sys.modules["dircache"] = os # cheat the dircache effects
+
+sys.modules["dircache"] = os  # cheat the dircache effects
 
 from senf import fsnative
 
-from quodlibet.qltk.filesel import DirectoryTree, FileSelector, get_drives, \
-    MainDirectoryTree, MainFileSelector, get_gtk_bookmarks, parse_gtk_bookmarks
+from quodlibet.qltk.filesel import (
+    DirectoryTree,
+    FileSelector,
+    get_drives,
+    MainDirectoryTree,
+    MainFileSelector,
+    get_gtk_bookmarks,
+    parse_gtk_bookmarks,
+)
 from quodlibet.util.path import get_home_dir
 import quodlibet.config
 from quodlibet.util import is_windows
 
 
 class Tget_gtk_bookmarks(TestCase):
-
     def test_main(self):
         paths = get_gtk_bookmarks()
         assert all(isinstance(p, fsnative) for p in paths)
@@ -29,14 +36,15 @@ class Tget_gtk_bookmarks(TestCase):
         if is_windows():
             return
 
-        data = (b"file:///foo/bar\nfile:///home/user\n"
-                b"file:///home/user/Downloads Downloads\n")
+        data = (
+            b"file:///foo/bar\nfile:///home/user\n"
+            b"file:///home/user/Downloads Downloads\n"
+        )
         paths = parse_gtk_bookmarks(data)
         assert all(isinstance(p, fsnative) for p in paths)
 
 
 class TDirectoryTree(TestCase):
-
     if os.name == "nt":
         ROOTS = [get_home_dir(), "C:\\"]
     else:
@@ -121,7 +129,6 @@ class TDirectoryTree(TestCase):
 
 
 class TFileSelector(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
         self.ROOTS = [mkdtemp(), mkdtemp()]
@@ -135,8 +142,8 @@ class TFileSelector(TestCase):
             open(path, "wb").close()
 
         self.fs = FileSelector(
-            initial=self.INITIAL, filter=(lambda s: s in self.PATHS),
-            folders=self.ROOTS)
+            initial=self.INITIAL, filter=(lambda s: s in self.PATHS), folders=self.ROOTS
+        )
         self.fs.connect("changed", self._changed)
         self.files = None
         self.fs.rescan()

@@ -10,8 +10,7 @@ from senf import fsnative
 
 from tests import TestCase
 
-from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems, \
-    EditBookmarksPane
+from quodlibet.qltk.bookmarks import EditBookmarks, MenuItems, EditBookmarksPane
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.library import SongLibrary
 from quodlibet.formats import AudioFile
@@ -42,8 +41,7 @@ class TBookmarks(TestCase):
     def test_add_bookmark_directly(self):
         song = self.player.song
         pane = EditBookmarksPane(self.library, song, close=True)
-        model = [(31, "thirty-one seconds"),
-                 (180, b"three minutes")]
+        model = [(31, "thirty-one seconds"), (180, b"three minutes")]
         pane._set_bookmarks(model, None, None, self.library, song)
         self.assertEqual(len(song.bookmarks), 2)
         self.assertEqual(song.bookmarks[1], (180, "three minutes"))

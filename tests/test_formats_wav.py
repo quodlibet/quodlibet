@@ -12,7 +12,6 @@ from quodlibet.formats.wav import WAVEFile
 
 
 class TWAVEFile(TestCase):
-
     def setUp(self):
         self.song = WAVEFile(get_data_path("test.wav"))
 

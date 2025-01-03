@@ -74,9 +74,13 @@ class DBusHandler:
             self._method_outargs = {}
             self.library = library
             self.conn = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            Gio.bus_own_name_on_connection(self.conn, self.BUS_NAME,
-                                           Gio.BusNameOwnerFlags.NONE,
-                                           None, self.__on_name_lost)
+            Gio.bus_own_name_on_connection(
+                self.conn,
+                self.BUS_NAME,
+                Gio.BusNameOwnerFlags.NONE,
+                None,
+                self.__on_name_lost,
+            )
             self.__register_ifaces()
         except GLib.Error:
             pass
@@ -96,16 +100,26 @@ class DBusHandler:
         for interface in info.interfaces:
             for method in interface.methods:
                 self._method_outargs[method.name] = "({})".format(
-                    "".join([arg.signature for arg in method.out_args]))
+                    "".join([arg.signature for arg in method.out_args])
+                )
 
             _id = self.conn.register_object(
                 object_path=self.PATH,
                 interface_info=interface,
-                method_call_closure=self.__on_method_call)
+                method_call_closure=self.__on_method_call,
+            )
             self._registered_ids.append(_id)
 
-    def __on_method_call(self, connection, sender, object_path, interface_name,
-                         method_name, parameters, invocation):
+    def __on_method_call(
+        self,
+        connection,
+        sender,
+        object_path,
+        interface_name,
+        method_name,
+        parameters,
+        invocation,
+    ):
         args = list(parameters.unpack())
         result = getattr(self, method_name)(*args)
         if not isinstance(result, tuple):
@@ -142,21 +156,32 @@ class DBusHandler:
         return self.__doc__
 
     def SongStarted(self, song):
-        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
-                              "SongStarted", GLib.Variant("(a{ss})", (song,)))
+        self.conn.emit_signal(
+            None,
+            self.PATH,
+            "net.sacredchao.QuodLibet",
+            "SongStarted",
+            GLib.Variant("(a{ss})", (song,)),
+        )
 
     def SongEnded(self, song, skipped):
-        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
-                              "SongEnded", GLib.Variant("(a{ss}b)",
-                                                        (song, skipped)))
+        self.conn.emit_signal(
+            None,
+            self.PATH,
+            "net.sacredchao.QuodLibet",
+            "SongEnded",
+            GLib.Variant("(a{ss}b)", (song, skipped)),
+        )
 
     def Paused(self):
-        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
-                              "Paused", None)
+        self.conn.emit_signal(
+            None, self.PATH, "net.sacredchao.QuodLibet", "Paused", None
+        )
 
     def Unpaused(self):
-        self.conn.emit_signal(None, self.PATH, "net.sacredchao.QuodLibet",
-                              "Unpaused", None)
+        self.conn.emit_signal(
+            None, self.PATH, "net.sacredchao.QuodLibet", "Unpaused", None
+        )
 
     def GetPosition(self):
         return self._player.get_position()
@@ -196,6 +221,7 @@ class DBusHandler:
         if text is not None:
             query = Query(text, star=SongList.star)
             if query.is_parsable:
-                return [self.__dict(s) for s in self.library.values()
-                        if query.search(s)]
+                return [
+                    self.__dict(s) for s in self.library.values() if query.search(s)
+                ]
         return None

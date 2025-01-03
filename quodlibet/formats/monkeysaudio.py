@@ -25,6 +25,7 @@ class MonkeysAudioFile(APEv2File):
             self["~#bitdepth"] = audio.info.bits_per_sample
         self.sanitize(filename)
 
+
 loader = MonkeysAudioFile
 types = [MonkeysAudioFile]
 extensions = [".ape"]

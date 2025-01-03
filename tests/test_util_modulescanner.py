@@ -15,7 +15,6 @@ from tests import TestCase, mkdtemp
 
 
 class TModuleScanner(TestCase):
-
     def setUp(self):
         self.d = mkdtemp("ql-mod")
         spec = importlib.machinery.ModuleSpec("qlfake", None)
@@ -41,20 +40,20 @@ class TModuleScanner(TestCase):
         self.assertEqual(list(get_importables(self.d)), [])
         h = self._create_mod("foo.py")
         h.close()
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foo", h.name, [h.name]))
+        self.assertEqual(list(get_importables(self.d))[0], ("foo", h.name, [h.name]))
 
     def test_importables_ignore_init(self):
         h = self._create_mod("foo7.py")
         h.close()
         self._create_mod("__init__.py").close()
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foo7", h.name, [h.name]))
+        self.assertEqual(list(get_importables(self.d))[0], ("foo7", h.name, [h.name]))
 
     def test_importables_package(self):
         h = self._create_pkg("foobar")
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foobar", os.path.dirname(h.name), [h.name]))
+        self.assertEqual(
+            list(get_importables(self.d))[0],
+            ("foobar", os.path.dirname(h.name), [h.name]),
+        )
         h.close()
 
     def test_importables_package_deps(self):

@@ -42,8 +42,10 @@ class Track:
 
     See https://listenbrainz.readthedocs.io/en/latest/dev/json.html
     """
-    def __init__(self, artist_name, track_name,
-                 release_name=None, additional_info=None):
+
+    def __init__(
+        self, artist_name, track_name, release_name=None, additional_info=None
+    ):
         """
         Create a new Track instance
         @param artist_name as str
@@ -62,7 +64,7 @@ class Track:
             data["artist_name"],
             data["track_name"],
             data.get("release_name", None),
-            data.get("additional_info", {})
+            data.get("additional_info", {}),
         )
 
     def to_dict(self):
@@ -70,7 +72,7 @@ class Track:
             "artist_name": self.artist_name,
             "track_name": self.track_name,
             "release_name": self.release_name,
-            "additional_info": self.additional_info
+            "additional_info": self.additional_info,
         }
 
     def __repr__(self):
@@ -118,16 +120,13 @@ class ListenBrainzClient:
     def _submit(self, listen_type, payload, retry=0):
         self._wait_for_ratelimit()
         self.logger.debug("ListenBrainz %s: %r", listen_type, payload)
-        data = {
-            "listen_type": listen_type,
-            "payload": payload
-        }
+        data = {"listen_type": listen_type, "payload": payload}
         headers = {
-            "Authorization": "Token %s" % self.user_token,
-            "Content-Type": "application/json"
+            "Authorization": f"Token {self.user_token}",
+            "Content-Type": "application/json",
         }
         body = json.dumps(data)
-        print("submit: %s" % body)
+        print(f"submit: {body}")
         if SSL_CONTEXT is not None:
             conn = HTTPSConnection(HOST_NAME, context=SSL_CONTEXT)
         else:
@@ -138,10 +137,10 @@ class ListenBrainzClient:
         response_text = response.read()
         try:
             response_data = json.loads(response_text)
-        #Python3
-        #except json.JSONDecodeError:
+        # Python3
+        # except json.JSONDecodeError:
         #    response_data = response_text
-        #Python2
+        # Python2
         except ValueError as e:
             if str(e) != "No JSON object could be decoded":
                 raise e
@@ -176,16 +175,14 @@ class ListenBrainzClient:
 
 def _get_payload_many(tracks):
     payload = []
-    for (listened_at, track) in tracks:
+    for listened_at, track in tracks:
         data = _get_payload(track, listened_at)
         payload.append(data)
     return payload
 
 
 def _get_payload(track, listened_at=None):
-    data = {
-        "track_metadata": track.to_dict()
-    }
+    data = {"track_metadata": track.to_dict()}
     if listened_at is not None:
         data["listened_at"] = listened_at
     return data

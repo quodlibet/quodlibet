@@ -14,31 +14,36 @@ from senf import fsnative
 from tests import TestCase, run_gtk_loop
 
 # Don't sort yet, album_key makes it complicated...
-SONGS = [AudioFile({
-                "title": "one",
-                "artist": "piman",
-                "~filename": fsnative("/dev/null")}),
-         AudioFile({
-                "title": "two",
-                "artist": "mu",
-                "~#length": 234,
-                "~filename": fsnative("/dev/zero")}),
-         AudioFile({
-                "title": "three",
-                "artist": "boris",
-                "~filename": fsnative("/bin/ls")}),
-         AudioFile({
-                "title": "four",
-                "artist": "random",
-                "album": "don't stop",
-                "labelid": "65432-1",
-                "~filename": fsnative("/dev/random")}),
-         AudioFile({
-                "title": "five € and a £",
-                "artist": "shell",
-                "album": "don't stop",
-                "labelid": "12345-6",
-                "~filename": fsnative("/tmp/five € and £!")})]
+SONGS = [
+    AudioFile({"title": "one", "artist": "piman", "~filename": fsnative("/dev/null")}),
+    AudioFile(
+        {
+            "title": "two",
+            "artist": "mu",
+            "~#length": 234,
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile({"title": "three", "artist": "boris", "~filename": fsnative("/bin/ls")}),
+    AudioFile(
+        {
+            "title": "four",
+            "artist": "random",
+            "album": "don't stop",
+            "labelid": "65432-1",
+            "~filename": fsnative("/dev/random"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "five € and a £",
+            "artist": "shell",
+            "album": "don't stop",
+            "labelid": "12345-6",
+            "~filename": fsnative("/tmp/five € and £!"),
+        }
+    ),
+]
 
 
 class TSearchBar(TestCase):
@@ -128,7 +133,7 @@ class TSearchBar(TestCase):
             SongList.star = old
 
     def test_saverestore(self):
-        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = {}".format(SONGS[0]["title"]))
         self.expected = [SONGS[0]]
         self._do()
         self.bar.save()

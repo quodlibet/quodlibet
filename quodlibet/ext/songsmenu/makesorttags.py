@@ -18,11 +18,27 @@ SUPPORTED_TAGS = ["album", "artist", "albumartist", "composer", "performer"]
 
 # Pretty arbitrary, but helps a lot IMO
 FAMOUS_COMPOSERS = {
-    "bach", "mozart", "beethoven", "chopin", "brahms", "faure",
-    "rachmaninov", "rachmaninoff", "puccini"
-    "mendelssohn", "liszt", "elgar", "mahler", "debussy", "bartok", "schumann",
-    "dvorak", "holst", "britten", "straus"
-    "williams", "zimmer"}
+    "bach",
+    "mozart",
+    "beethoven",
+    "chopin",
+    "brahms",
+    "faure",
+    "rachmaninov",
+    "rachmaninoff",
+    "puccini" "mendelssohn",
+    "liszt",
+    "elgar",
+    "mahler",
+    "debussy",
+    "bartok",
+    "schumann",
+    "dvorak",
+    "holst",
+    "britten",
+    "straus" "williams",
+    "zimmer",
+}
 
 
 def artist_to_sort(tag: str, artist: str) -> str | None:
@@ -61,13 +77,14 @@ def album_to_sort(album: str) -> str | None:
 class MakeSortTags(SongsMenuPlugin):
     PLUGIN_ID = "SortTags"
     PLUGIN_NAME = _("Create Sort Tags")
-    PLUGIN_DESC_MARKUP = (_("Guesses sort tags for albums and people.") +
-        "\n\n" + _("e.g.") + "\n\n "
+    PLUGIN_DESC_MARKUP = (
+        _("Guesses sort tags for albums and people.") + "\n\n" + _("e.g.") + "\n\n "
         "<tt>album</tt>: <i>The Greatest Hits</i> → <i>Greatest Hits, The</i>"
         "<tt>composer</tt>: <i>Irving Berlin</i> → <i>Berlin, Irving</i>\n"
         "<tt>artist</tt>: <i>Franz Liszt</i> → <i>Liszt, Franz</i>\n"
         "<tt>artist</tt>: <i>The Beach Boys</i> → <i>Beach Boys, The</i>\n\n"
-       + _("Applies to tags: <tt>%s</tt>.") % ", ".join(SUPPORTED_TAGS)
+        + _("Applies to tags: <tt>%s</tt>.")
+        % ", ".join(SUPPORTED_TAGS)
     )
     PLUGIN_ICON = Icons.EDIT
 
@@ -75,8 +92,11 @@ class MakeSortTags(SongsMenuPlugin):
 
     def plugin_song(self, song):
         for tag in SUPPORTED_TAGS:
-            func = (functools.partial(artist_to_sort, tag)
-                    if tag in PEOPLE else album_to_sort)
-            values = [v for tag in song.list(tag) if (v:=func(tag))]
+            func = (
+                functools.partial(artist_to_sort, tag)
+                if tag in PEOPLE
+                else album_to_sort
+            )
+            values = [v for tag in song.list(tag) if (v := func(tag))]
             if values and (tag + "sort") not in song:
                 song[tag + "sort"] = "\n".join(values)
