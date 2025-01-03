@@ -68,7 +68,7 @@ msgstr "정렬 기준(_B)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "환경설정(_P)"
@@ -160,7 +160,7 @@ msgstr "앨범 표시"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:793
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "닫기(_C)"
@@ -170,7 +170,7 @@ msgid "Library Browser"
 msgstr "라이브러리 탐색기"
 
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
-#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
+#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:246
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:563
 #, python-format
@@ -1438,7 +1438,6 @@ msgstr "오디오 백엔드"
 msgid "After every play (default)"
 msgstr ""
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1446,12 +1445,11 @@ msgid ""
 "unnecessary writes."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr ""
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
@@ -1460,12 +1458,11 @@ msgstr ""
 "곡이 재생되거나 건너뛸 때마다 플러그인이 파일에 태그를 씁니다. 싫어해서 건너"
 "뛴 노래의 별점이 파일에 기록되도록 하려는 경우에 유용할 수 있습니다."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr ""
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1484,7 +1481,7 @@ msgstr ""
 "정된 별점 및 재생 횟수를 파일에 기록할 때마다 '파일의 태그 업데이트' 플러그인"
 "을 사용해야 합니다."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1494,18 +1491,18 @@ msgid ""
 "listened to (%s)."
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 #, fuzzy
 msgid "Auto Update Tags in Files"
 msgstr "새 방송국"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
@@ -1513,7 +1510,7 @@ msgstr ""
 "곡이 재생되면 파일의 태그를 업데이트합니다. 이렇게 하면 재생 횟수와 별점이 최"
 "신 상태로 유지됩니다."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1521,31 +1518,31 @@ msgid ""
 "%s"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr "태그에 별점 및 재생 횟수 저장하기(_C)"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 #, fuzzy
 msgid "Settings updated"
 msgstr "녹음 날짜"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr "%s의 오류"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr "업데이트 방법(_U):"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -4845,12 +4842,21 @@ msgstr ""
 msgid "_Username:"
 msgstr "사용자이름(_U):"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr ""
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
-msgid "Converts album and artist names to sort names, poorly."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
 msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
@@ -5976,26 +5982,26 @@ msgstr ""
 msgid "_Redo"
 msgstr ""
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
+#: quodlibet/qltk/exfalsowindow.py:95 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "정보(_A)"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
+#: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "업데이트 확인하기(_C)…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
+#: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "플러그인"
 
-#: quodlibet/qltk/exfalsowindow.py:266
+#: quodlibet/qltk/exfalsowindow.py:272
 #, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s 및 %(count)s회 이상"
 
-#: quodlibet/qltk/exfalsowindow.py:280
+#: quodlibet/qltk/exfalsowindow.py:286
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso 설정"
 
@@ -6348,6 +6354,10 @@ msgstr "카테고리 없음"
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "플러그인을 찾을 수 없습니다."
+
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:376
 #, fuzzy
