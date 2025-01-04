@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-11-28 02:00+0000\n"
+"PO-Revision-Date: 2025-01-04 05:00+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -4879,16 +4879,16 @@ msgstr "ソートタグの生成"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:64
 msgid "Guesses sort tags for albums and people."
-msgstr ""
+msgstr "アルバムや人物のソートタグを推測します。"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:65
 msgid "e.g."
-msgstr ""
+msgstr "例"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:70
 #, python-format
 msgid "Applies to tags: <tt>%s</tt>."
-msgstr ""
+msgstr "適用されるタグ: <tt>%s</tt>."
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -6370,7 +6370,7 @@ msgstr "プラグインが見つかりません。"
 
 #: quodlibet/qltk/pluginwin.py:336
 msgid "(undocumented)"
-msgstr ""
+msgstr "(ドキュメントなし)"
 
 #: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
