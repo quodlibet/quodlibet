@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-12-08 10:29+0000\n"
+"PO-Revision-Date: 2024-12-19 17:08+0000\n"
 "Last-Translator: Jindřich Šesták <khronos@seznam.cz>\n"
 "Language-Team: Czech <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/cs/>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.9.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -414,7 +414,7 @@ msgstr "Turecká"
 
 #: quodlibet/browsers/iradio.py:398
 msgid "Reggae / Dancehall"
-msgstr "Reggae / Taneční"
+msgstr "Reggae / Dancehall"
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Latin"
@@ -466,7 +466,7 @@ msgstr "Šlágry"
 
 #: quodlibet/browsers/iradio.py:411
 msgid "Funk"
-msgstr "Funky"
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Indie"
@@ -844,7 +844,7 @@ msgstr "Povolit více dot_azů"
 
 #: quodlibet/browsers/tracks.py:53 quodlibet/qltk/information.py:463
 msgid "Track List"
-msgstr "Skladby"
+msgstr "Seznam skladeb"
 
 #: quodlibet/browsers/tracks.py:54
 msgid "_Track List"
@@ -1988,7 +1988,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mpdserver/__init__.py:61
 msgid "MPD Server"
-msgstr "MPD Server"
+msgstr "MPD server"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:62
 msgid ""
@@ -4311,7 +4311,7 @@ msgstr "Pokud nastaveno, duplicitní vypočtené hodnoty vzoru budou odstraněny
 
 #: quodlibet/ext/songsmenu/custom_commands.py:65
 msgid "max args"
-msgstr "max args"
+msgstr "max argumentů"
 
 #: quodlibet/ext/songsmenu/custom_commands.py:66
 msgid ""
@@ -5870,7 +5870,7 @@ msgstr "Jeden nebo více souborů se nepodařilo smazat."
 
 #: quodlibet/qltk/download.py:37
 msgid "Browser"
-msgstr "Prohlížeče"
+msgstr "Prohlížeč"
 
 #: quodlibet/qltk/download.py:37
 msgid "Downloading files"
