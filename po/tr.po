@@ -68,7 +68,7 @@ msgstr "_Sırala…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Tercihler"
@@ -164,7 +164,7 @@ msgstr "Albüm Görünümü"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:793
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Kapat"
@@ -174,7 +174,7 @@ msgid "Library Browser"
 msgstr "Kitaplık Tarayıcı"
 
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
-#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
+#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:246
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:563
 #, python-format
@@ -1444,7 +1444,6 @@ msgstr "Ses Arka Ucu"
 msgid "After every play (default)"
 msgstr "Her çalmadan sonra (varsayılan)"
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1455,12 +1454,11 @@ msgstr ""
 "yazacaktır. Atlama sayısı dosyalarda hiçbir zaman depolanmaz ve böylece "
 "gereksiz yazmaların önüne geçer."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr "Her çalmadan veya atlamadan sonra"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
@@ -1470,12 +1468,11 @@ msgstr ""
 "yazacaktır. Beğenmediğiniz şarkıların puanlarından emin olmak isterseniz bu "
 "kullanışlı olabilir ve böylece atlananlar dosyalara yazılır."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr "Bir kez, albüm tamamen puanlandığında"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1496,7 +1493,7 @@ msgstr ""
 "sayılarının dosyalara yazılmasını her istediğinizde 'Dosyalardaki Etiketleri "
 "Güncelle' eklentisini kullanmanız gerekecektir."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1511,17 +1508,17 @@ msgstr ""
 "dinlediğiniz albümleri aradığınızda, kayıt ederken değerin bire ayarlanması "
 "ileride kullanışlı olabilir (%s)."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "'%s' yazılamadı"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 msgid "Auto Update Tags in Files"
 msgstr "Dosyalardaki Etiketleri Otomatik Güncelle"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
@@ -1529,7 +1526,7 @@ msgstr ""
 "Şarkılar çalındığında dosyalarındaki etiketleri güncelle. Bu, çalma "
 "sayılarını ve puanları güncel tutacaktır."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1540,30 +1537,30 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr "Puan ve _çalma sayılarını etiketlerde kaydet"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 msgid "Settings updated"
 msgstr "Ayarlar güncellendi"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr "%s te hata"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr "Kayıt ederken, çalma sayılarını sıfırın üzerinde tutar"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr "_Stratejiyi güncelle:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -4921,13 +4918,22 @@ msgstr "Kitaplık istatistiklerinizi Last.fm profilinizden günceller."
 msgid "_Username:"
 msgstr "K_ullanıcı adı:"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr "Sıralama Etiketleri Oluştur"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
-msgid "Converts album and artist names to sort names, poorly."
-msgstr "Albüm ve sanatçı adlarını kısa adlara dönüştür, kabaca."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
+msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -6057,27 +6063,27 @@ msgstr "_Geri al"
 msgid "_Redo"
 msgstr "_Yinele"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
+#: quodlibet/qltk/exfalsowindow.py:95 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "H_akkında"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
+#: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "Gün_cellemeleri Denetle…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
+#: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Eklentiler"
 
-#: quodlibet/qltk/exfalsowindow.py:266
+#: quodlibet/qltk/exfalsowindow.py:272
 #, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s ve %(count)s tane daha"
 msgstr[1] "%(title)s ve %(count)s tane daha"
 
-#: quodlibet/qltk/exfalsowindow.py:280
+#: quodlibet/qltk/exfalsowindow.py:286
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso Ayarları"
 
@@ -6424,6 +6430,10 @@ msgstr "Herhangi kategori"
 #: quodlibet/qltk/pluginwin.py:323
 msgid "No plugins found."
 msgstr "Eklenti bulunamadı."
+
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
+msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
@@ -8163,6 +8173,9 @@ msgstr ""
 "birçok farklı yol sağlar, ayrıca İnternet radyosu ve ses beslemelerini de "
 "destekler. Son derece esnek üstveri etiket düzenleme ve arama yeteneklerine "
 "sahiptir."
+
+#~ msgid "Converts album and artist names to sort names, poorly."
+#~ msgstr "Albüm ve sanatçı adlarını kısa adlara dönüştür, kabaca."
 
 #~ msgid "MPRIS D-Bus Support"
 #~ msgstr "MPRIS D-Bus Desteği"
