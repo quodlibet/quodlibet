@@ -61,7 +61,6 @@ class MP4File(AudioFile):
         f"{ITUNES}:replaygain_track_gain": "replaygain_track_gain",
         f"{ITUNES}:replaygain_track_peak": "replaygain_track_peak",
         f"{ITUNES}:replaygain_reference_loudness": "replaygain_reference_loudness",
-
     }
     __rtranslate = {v: k for k, v in __translate.items()}
 

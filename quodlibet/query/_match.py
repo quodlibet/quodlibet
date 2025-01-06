@@ -254,9 +254,11 @@ class Numcmp(Node):
         return False
 
     def __repr__(self):
-        return (f"<Numcmp expr={self._expr!r}, "
-                f"op={self._op.__name__!r}, "
-                f"expr2={self._expr2!r}>")
+        return (
+            f"<Numcmp expr={self._expr!r}, "
+            f"op={self._op.__name__!r}, "
+            f"expr2={self._expr2!r}>"
+        )
 
     def __and__(self, other):
         other = other._unpack()
@@ -400,10 +402,12 @@ class NumexprBinary(Numexpr):
         return None
 
     def __repr__(self):
-        return (f"<NumexprBinary "
-                f"op={self.__op!r} "
-                f"expr={self.__expr!r} "
-                f"expr2={self.__expr2!r}>")
+        return (
+            f"<NumexprBinary "
+            f"op={self.__op!r} "
+            f"expr={self.__expr!r} "
+            f"expr2={self.__expr2!r}>"
+        )
 
     def use_date(self):
         return self.__expr.use_date() or self.__expr2.use_date()
