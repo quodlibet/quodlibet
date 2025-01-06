@@ -141,36 +141,28 @@ class Tsplit_people(TestCase):
     def test_custom_splitter(self):
         self.assertEqual(split_people("foo |With bar|", " ", ["||"]), ("foo", ["bar"]))
 
+
 class Tsplit_genre(TestCase):
-#  DEFAULT_TAG_SPLITTERS = ["/", "&", ","]
+    def test_single(self):
+        assert split_genre("New Age") == ["New Age"]
+
     def test_genre_semicolon(self):
-        self.assertEqual(
-            split_genre("rock ; rap; country;pop ;techno;metal",
-                        tag_splitters=";"),
-            ["rock", "rap", "country", "pop", "techno", "metal"]
-            )
+        genres = split_genre("rock ; rap; country;pop ;techno;metal", tag_splitters=";")
+        assert genres == ["rock", "rap", "country", "pop", "techno", "metal"]
 
     def test_genre_comma(self):
-        self.assertEqual(
-            split_genre("rock , rap, country,pop ,techno,metal"),
-            ["rock", "rap", "country", "pop", "techno", "metal"]
-            )
+        genres = split_genre("rock , rap, country,pop ,techno,metal")
+        assert genres == ["rock", "rap", "country", "pop", "techno", "metal"]
 
     def test_genre_ampersand(self):
-        self.assertEqual(
-            split_genre("rock & rap& country&pop & techno &metal"),
-            ["rock", "rap", "country", "pop", "techno", "metal"]
-            )
+        genres = split_genre("rock & rap& country&pop & techno &metal")
+        assert genres == ["rock", "rap", "country", "pop", "techno", "metal"]
 
     def test_genre_slash(self):
-        self.assertEqual(
-            split_genre(" rock / rap/ country/pop /techno/metal"),
-            ["rock", "rap", "country", "pop", "techno", "metal"]
-            )
+        genres = split_genre(" rock / rap/ country/pop /techno/metal")
+        assert genres == ["rock", "rap", "country", "pop", "techno", "metal"]
 
     def test_genre_slash_before_comma(self):
         # slash should be interpreted AFTER a comma
-        self.assertEqual(
-            split_genre(" Indie/Rock, Country, Alt/Country "),
-            ["Indie/Rock", "Country", "Alt/Country"]
-            )
+        genres = split_genre(" Indie/Rock, Country, Alt/Country ")
+        assert genres == ["Indie/Rock", "Country", "Alt/Country"]

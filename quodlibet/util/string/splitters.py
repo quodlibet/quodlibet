@@ -127,7 +127,7 @@ def split_genre(s: str, tag_splitters: Iterable[str] = DEFAULT_TAG_SPLITTERS) ->
         if char in s:
             valid_split_chars.append(char)
     if not valid_split_chars:
-        return s
+        return [s]
     splitchar = valid_split_chars[-1]
     # Reverses the order of DEFAULT_TAG_SPLITTERS
     # Because Genre0/Genre1, Genre2 should be split on ,
