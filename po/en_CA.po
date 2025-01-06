@@ -71,7 +71,7 @@ msgstr "Sort _by…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:109
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Preferences"
@@ -167,7 +167,7 @@ msgstr "Album Display"
 #: quodlibet/ext/songsmenu/filterall.py:48 quodlibet/qltk/bookmarks.py:101
 #: quodlibet/qltk/cbes.py:95 quodlibet/qltk/data_editors.py:97
 #: quodlibet/qltk/data_editors.py:329 quodlibet/qltk/pluginwin.py:101
-#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:790
+#: quodlibet/qltk/pluginwin.py:443 quodlibet/qltk/prefs.py:793
 #: quodlibet/qltk/textedit.py:162 quodlibet/update.py:149
 msgid "_Close"
 msgstr "_Close"
@@ -177,7 +177,7 @@ msgid "Library Browser"
 msgstr "Library Browser"
 
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
-#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
+#: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:246
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
 #: quodlibet/util/collection.py:563
 #, python-format
@@ -1442,7 +1442,6 @@ msgstr "Audio Backend"
 msgid "After every play (default)"
 msgstr "After every play (default)"
 
-#.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:36
 msgid ""
 "Whenever a song was played but not skipped, the plugin will write the tags "
@@ -1453,12 +1452,11 @@ msgstr ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:40
+#: quodlibet/ext/events/auto_update_tags_in_files.py:41
 msgid "After every play or skip"
 msgstr "After every play or skip"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:41
+#: quodlibet/ext/events/auto_update_tags_in_files.py:42
 msgid ""
 "Whenever a song was played or skipped, the plugin will write the tags to the "
 "file. Can be useful if you want to make sure that ratings of songs you "
@@ -1468,12 +1466,11 @@ msgstr ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:46
+#: quodlibet/ext/events/auto_update_tags_in_files.py:47
 msgid "Once, when album fully rated"
 msgstr "Once, when album fully rated"
 
-#.
-#: quodlibet/ext/events/auto_update_tags_in_files.py:47
+#: quodlibet/ext/events/auto_update_tags_in_files.py:48
 msgid ""
 "When a song was played or skipped, the album of that song will be checked. "
 "If every song in the album has been rated and at least one has no ratings or "
@@ -1493,7 +1490,7 @@ msgstr ""
 "updated, you'll have to use the 'Update Tags in Files' plugin whenever you "
 "want modified ratings and play counts to be written to the files."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:57
+#: quodlibet/ext/events/auto_update_tags_in_files.py:60
 #, python-format
 msgid ""
 "When the plugin writes the tags of an album, it will first set the play "
@@ -1508,17 +1505,17 @@ msgstr ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:63
+#: quodlibet/ext/events/auto_update_tags_in_files.py:66
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
 #, python-format
 msgid "Couldn't write '%s'"
 msgstr "Couldn't write '%s'"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:80
+#: quodlibet/ext/events/auto_update_tags_in_files.py:83
 msgid "Auto Update Tags in Files"
 msgstr "Auto Update Tags in Files"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:81
+#: quodlibet/ext/events/auto_update_tags_in_files.py:84
 msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
@@ -1526,7 +1523,7 @@ msgstr ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:92
+#: quodlibet/ext/events/auto_update_tags_in_files.py:95
 #, python-format
 msgid ""
 "The following setting was enabled as it's required for this plugin to work:\n"
@@ -1537,30 +1534,30 @@ msgstr ""
 "\n"
 "%s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:94
+#: quodlibet/ext/events/auto_update_tags_in_files.py:97
 #: quodlibet/qltk/prefs.py:587
 msgid "Save ratings and play _counts in tags"
 msgstr "Save ratings and play _counts in tags"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:96
+#: quodlibet/ext/events/auto_update_tags_in_files.py:99
 msgid "Settings updated"
 msgstr "Settings updated"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:122
+#: quodlibet/ext/events/auto_update_tags_in_files.py:125
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:345
 #, python-format
 msgid "Error in %s"
 msgstr "Error in %s"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:181
+#: quodlibet/ext/events/auto_update_tags_in_files.py:184
 msgid "Ensure play counts are above zero when saving"
 msgstr "Ensure play counts are above zero when saving"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:215
+#: quodlibet/ext/events/auto_update_tags_in_files.py:218
 msgid "_Update strategy:"
 msgstr "_Update strategy:"
 
-#: quodlibet/ext/events/auto_update_tags_in_files.py:229
+#: quodlibet/ext/events/auto_update_tags_in_files.py:232
 #: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
@@ -2021,8 +2018,8 @@ msgid ""
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs"
-".io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3064,8 +3061,8 @@ msgid ""
 "tt></b>."
 msgstr ""
 "Adds a thumb-up / thumb-down scoring system which is converted to a rating "
-"value. Useful for keeping running vote totals and sorting by "
-"<b><tt>~#score</tt></b>."
+"value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
+"tt></b>."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3917,7 +3914,8 @@ msgstr "Fit image to _window"
 
 #: quodlibet/ext/songsmenu/albumart.py:233
 msgid "See '[plugins] cover_filenames' config entry for image filename strings"
-msgstr "See '[plugins] cover_filenames' config entry for image filename strings"
+msgstr ""
+"See '[plugins] cover_filenames' config entry for image filename strings"
 
 #. Both labels
 #: quodlibet/ext/songsmenu/albumart.py:239
@@ -4902,13 +4900,22 @@ msgstr "Updates your library's statistics from your Last.fm profile."
 msgid "_Username:"
 msgstr "_Username:"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:36
+#: quodlibet/ext/songsmenu/makesorttags.py:63
 msgid "Create Sort Tags"
 msgstr "Create Sort Tags"
 
-#: quodlibet/ext/songsmenu/makesorttags.py:37
-msgid "Converts album and artist names to sort names, poorly."
-msgstr "Converts album and artist names to sort names, poorly."
+#: quodlibet/ext/songsmenu/makesorttags.py:64
+msgid "Guesses sort tags for albums and people."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:65
+msgid "e.g."
+msgstr ""
+
+#: quodlibet/ext/songsmenu/makesorttags.py:70
+#, python-format
+msgid "Applies to tags: <tt>%s</tt>."
+msgstr ""
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -5536,8 +5543,8 @@ msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
 msgstr ""
-"Couldn't find module '{module}'. Perhaps you need to install the "
-"package?{extra}"
+"Couldn't find module '{module}'. Perhaps you need to install the package?"
+"{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -6038,27 +6045,27 @@ msgstr "_Undo"
 msgid "_Redo"
 msgstr "_Redo"
 
-#: quodlibet/qltk/exfalsowindow.py:94 quodlibet/qltk/quodlibetwindow.py:977
+#: quodlibet/qltk/exfalsowindow.py:95 quodlibet/qltk/quodlibetwindow.py:977
 msgid "_About"
 msgstr "_About"
 
-#: quodlibet/qltk/exfalsowindow.py:98 quodlibet/qltk/quodlibetwindow.py:999
+#: quodlibet/qltk/exfalsowindow.py:99 quodlibet/qltk/quodlibetwindow.py:999
 msgid "_Check for Updates…"
 msgstr "_Check for Updates…"
 
-#: quodlibet/qltk/exfalsowindow.py:104 quodlibet/qltk/quodlibetwindow.py:927
+#: quodlibet/qltk/exfalsowindow.py:105 quodlibet/qltk/quodlibetwindow.py:927
 #: quodlibet/qltk/songsmenu.py:295
 msgid "_Plugins"
 msgstr "_Plugins"
 
-#: quodlibet/qltk/exfalsowindow.py:266
+#: quodlibet/qltk/exfalsowindow.py:272
 #, python-format
 msgid "%(title)s and %(count)s more"
 msgid_plural "%(title)s and %(count)s more"
 msgstr[0] "%(title)s and %(count)s more"
 msgstr[1] "%(title)s and %(count)s more"
 
-#: quodlibet/qltk/exfalsowindow.py:280
+#: quodlibet/qltk/exfalsowindow.py:286
 msgid "Ex Falso Preferences"
 msgstr "Ex Falso Preferences"
 
@@ -6406,6 +6413,10 @@ msgstr "Any category"
 msgid "No plugins found."
 msgstr "No plugins found."
 
+#: quodlibet/qltk/pluginwin.py:336
+msgid "(undocumented)"
+msgstr ""
+
 #: quodlibet/qltk/pluginwin.py:376
 msgid "Plugins"
 msgstr "Plugins"
@@ -6521,7 +6532,8 @@ msgstr "_Update Columns"
 
 #: quodlibet/qltk/prefs.py:149
 msgid "Apply current configuration to song list, adding new columns to the end"
-msgstr "Apply current configuration to song list, adding new columns to the end"
+msgstr ""
+"Apply current configuration to song list, adding new columns to the end"
 
 #: quodlibet/qltk/prefs.py:163 quodlibet/qltk/shortcuts.py:24
 msgid "Song List"
@@ -6845,7 +6857,8 @@ msgstr "Set up library directories?"
 
 #: quodlibet/qltk/quodlibetwindow.py:387
 msgid "You don't have any music library set up. Would you like to do that now?"
-msgstr "You don't have any music library set up. Would you like to do that now?"
+msgstr ""
+"You don't have any music library set up. Would you like to do that now?"
 
 #: quodlibet/qltk/quodlibetwindow.py:393
 msgid "_Not Now"
@@ -8137,6 +8150,9 @@ msgstr ""
 "to view your audio library, as well as support for Internet radio and audio "
 "feeds. It has extremely flexible metadata tag editing and searching "
 "capabilities."
+
+#~ msgid "Converts album and artist names to sort names, poorly."
+#~ msgstr "Converts album and artist names to sort names, poorly."
 
 #, fuzzy
 #~ msgid "Advanced Preferences"
