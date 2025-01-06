@@ -45,7 +45,7 @@ def init() -> None:
         try:
             browsers.extend(browser.browsers)
         except AttributeError:
-            util.print_w("%r doesn't contain any browsers." % browser.__name__)
+            util.print_w(f"{browser.__name__!r} doesn't contain any browsers.")
 
     def is_browser(klass):
         return isinstance(klass, type) and issubclass(klass, Browser)
@@ -99,5 +99,4 @@ def index(name: BrowserName) -> int:
             return j
 
     all_keys = (k.lower() for b in browsers for k in b.keys)
-    raise ValueError(f"{name!r} browser not found. "
-                     f"Try: {' | '.join(all_keys)}")
+    raise ValueError(f"{name!r} browser not found. " f"Try: {' | '.join(all_keys)}")

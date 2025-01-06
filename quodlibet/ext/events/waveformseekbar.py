@@ -125,10 +125,10 @@ class WaveformSeekBar(Gtk.Box):
         ! audioconvert
         ! level name=audiolevel interval={} post-messages=true
         ! fakesink sync=false"""
-        interval = int(song("~#length") * 1E9 / points)
+        interval = int(song("~#length") * 1e9 / points)
         if not interval:
             return
-        print_d("Computing data for each %.3f seconds" % (interval / 1E9))
+        print_d("Computing data for each %.3f seconds" % (interval / 1e9))
 
         command = command_template.format(interval)
         pipeline = Gst.parse_launch(command)
@@ -274,7 +274,7 @@ class WaveformSeekBar(Gtk.Box):
             if length != 0:
                 self._waveform_scale.set_position(position / length)
             else:
-                print_d("Length reported as zero for %s" % player.info)
+                print_d(f"Length reported as zero for {player.info}")
                 self._waveform_scale.set_position(0)
 
             if position == 0 or full_redraw:
@@ -392,8 +392,9 @@ class WaveformScale(Gtk.EventBox):
         return self._compute_redraw_area_between(last_position_x, position_x)
 
     def compute_hover_redraw_area(self):
-        return self._compute_redraw_area_between(self._last_mouse_position,
-                                                 self.mouse_position)
+        return self._compute_redraw_area_between(
+            self._last_mouse_position, self.mouse_position
+        )
 
     def _compute_redraw_area_between(self, x1, x2):
         allocation = self.get_allocation()
@@ -409,8 +410,16 @@ class WaveformScale(Gtk.EventBox):
         w = min(width, abs(x2 - x1) + line_width * 10)
         return x, 0.0, w, height
 
-    def draw_waveform(self, cr, width, height, elapsed_color, hover_color,
-                      remaining_color, show_current_pos_config):
+    def draw_waveform(
+        self,
+        cr,
+        width,
+        height,
+        elapsed_color,
+        hover_color,
+        remaining_color,
+        show_current_pos_config,
+    ):
         if width == 0 or height == 0:
             return
         scale_factor = self.get_scale_factor()
@@ -436,15 +445,16 @@ class WaveformScale(Gtk.EventBox):
         data = self._rms_vals
 
         # Use the clip rectangles to redraw only what is necessary
-        for (cx, _cy, cw, _ch) in cr.copy_clip_rectangle_list():
-            for x in range(int(floor(cx * pixel_ratio)),
-                           int(ceil((cx + cw) * pixel_ratio)), 1):
-
+        for cx, _cy, cw, _ch in cr.copy_clip_rectangle_list():
+            for x in range(
+                int(floor(cx * pixel_ratio)), int(ceil((cx + cw) * pixel_ratio)), 1
+            ):
                 if mouse_position >= 0:
                     if self._seeking:
                         # The user is seeking (holding mousebutton down)
-                        fg_color = (elapsed_color if x < mouse_position
-                                    else remaining_color)
+                        fg_color = (
+                            elapsed_color if x < mouse_position else remaining_color
+                        )
                     elif show_current_pos_config:
                         # Use hover color and elapsed color to display the
                         # current playing position while hovering
@@ -459,8 +469,9 @@ class WaveformScale(Gtk.EventBox):
                             fg_color = remaining_color
                     else:
                         # The mouse is hovering the seekbar
-                        fg_color = (hover_color if x < mouse_position
-                                    else remaining_color)
+                        fg_color = (
+                            hover_color if x < mouse_position else remaining_color
+                        )
                 else:
                     fg_color = elapsed_color if x < position_width else remaining_color
 
@@ -469,8 +480,7 @@ class WaveformScale(Gtk.EventBox):
                 # Basic anti-aliasing / oversampling
                 u1 = max(0, int(floor((x - hw) * ratio_width)))
                 u2 = min(int(ceil((x + hw) * ratio_width)), len(data))
-                val = (sum(data[u1:u2]) / (ratio_height * (u2 - u1))
-                       if u1 != u2 else 0.0)
+                val = sum(data[u1:u2]) / (ratio_height * (u2 - u1)) if u1 != u2 else 0.0
 
                 hx = x / pixel_ratio + hw
                 cr.move_to(hx, half_height - val)
@@ -582,7 +592,6 @@ class WaveformScale(Gtk.EventBox):
         default = context.get_color(context.get_state())
         default.alpha = 0.35
         return default
-
 
     def do_button_press_event(self, event):
         # Left mouse button

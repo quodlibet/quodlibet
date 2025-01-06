@@ -19,6 +19,6 @@ class TIconTheme(TestCase):
         for i in [
             "io.github.quodlibet.QuodLibet",
             "io.github.quodlibet.ExFalso",
-            "quodlibet-missing-cover"
+            "quodlibet-missing-cover",
         ]:
             assert theme.has_icon(i)

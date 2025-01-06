@@ -27,39 +27,48 @@ from quodlibet.util import limit_songs, DeferredSignal
 
 class SearchBarBox(Gtk.Box):
     """
-        A search bar widget for inputting queries.
+    A search bar widget for inputting queries.
 
-        signals:
-            query-changed - a parsable query string
-            focus-out - If the widget gets focused while being focused
-                (usually for focusing the songlist)
+    signals:
+        query-changed - a parsable query string
+        focus-out - If the widget gets focused while being focused
+            (usually for focusing the songlist)
     """
 
     __gsignals__ = {
-        "query-changed": (
-            GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "query-changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "focus-out": (GObject.SignalFlags.RUN_LAST, None, ()),
-        }
+    }
 
     DEFAULT_TIMEOUT = 400
 
-    def __init__(self, filename=None, completion=None, accel_group=None,
-                 timeout=DEFAULT_TIMEOUT, validator=Query.validator,
-                 star=None):
+    def __init__(
+        self,
+        filename=None,
+        completion=None,
+        accel_group=None,
+        timeout=DEFAULT_TIMEOUT,
+        validator=Query.validator,
+        star=None,
+    ):
         super().__init__(orientation=Gtk.Orientation.HORIZONTAL, spacing=6)
 
         if filename is None:
-            filename = os.path.join(
-                quodlibet.get_user_dir(), "lists", "queries")
+            filename = os.path.join(quodlibet.get_user_dir(), "lists", "queries")
 
         historic_entries_count = config.getint("browsers", "searchbar_historic_entries")
 
         combo = ComboBoxEntrySave(
-            filename, count=historic_entries_count, validator=validator,
-            title=_("Saved Searches"), edit_title=_("Edit saved searches…"))
+            filename,
+            count=historic_entries_count,
+            validator=validator,
+            title=_("Saved Searches"),
+            edit_title=_("Edit saved searches…"),
+        )
 
         self.__deferred_changed = DeferredSignal(
-            self._filter_changed, timeout=timeout, owner=self)
+            self._filter_changed, timeout=timeout, owner=self
+        )
 
         self.__combo = combo
         entry = combo.get_child()
@@ -80,16 +89,16 @@ class SearchBarBox(Gtk.Box):
         entry.connect("key-press-event", self.__key_pressed)
 
         entry.set_placeholder_text(_("Search"))
-        entry.set_tooltip_text(_("Search your library, "
-                                 "using free text or QL queries"))
+        entry.set_tooltip_text(
+            _("Search your library, " "using free text or QL queries")
+        )
 
         combo.enable_clear_button()
         self.pack_start(combo, True, True, 0)
 
         if accel_group:
             key, mod = Gtk.accelerator_parse("<Primary>L")
-            accel_group.connect(key, mod, 0,
-                    lambda *x: entry.mnemonic_activate(True))
+            accel_group.connect(key, mod, 0, lambda *x: entry.mnemonic_activate(True))
 
         for child in self.get_children():
             child.show_all()
@@ -142,10 +151,9 @@ class SearchBarBox(Gtk.Box):
         menu.prepend(sep)
 
         cb = ConfigCheckMenuItem(
-            _("Search after _typing"), "settings", "eager_search",
-            populate=True)
-        cb.set_tooltip_text(
-            _("Show search results after the user stops typing"))
+            _("Search after _typing"), "settings", "eager_search", populate=True
+        )
+        cb.set_tooltip_text(_("Show search results after the user stops typing"))
         cb.show()
         menu.prepend(cb)
 
@@ -157,9 +165,11 @@ class SearchBarBox(Gtk.Box):
 
     def __save_search(self, entry, *args):
         # only save the query on focus-out if eager_search is turned on
-        if (len(args) > 0
-                and args[0]
-                and not config.getboolean("settings", "eager_search")):
+        if (
+            len(args) > 0
+            and args[0]
+            and not config.getboolean("settings", "eager_search")
+        ):
             return
 
         text = self.get_text().strip()
@@ -172,8 +182,7 @@ class SearchBarBox(Gtk.Box):
             self.__uninhibit()
 
     def __key_pressed(self, entry, event):
-        if (is_accel(event, "<Primary>Return") or
-                is_accel(event, "<Primary>KP_Enter")):
+        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
             # Save query on Primary+Return accel, even though the focus is kept
             self.__save_search(entry)
         return False
@@ -211,8 +220,7 @@ class LimitSearchBarBox(SearchBarBox):
         }
 
         def __init__(self):
-            super().__init__(spacing=3,
-                                                          no_show_all=True)
+            super().__init__(spacing=3, no_show_all=True)
             label = Gtk.Label(label=_("_Limit:"))
             self.pack_start(label, True, True, 0)
 
@@ -225,8 +233,7 @@ class LimitSearchBarBox(SearchBarBox):
             label.set_use_underline(True)
             self.pack_start(limit, True, True, 0)
 
-            self.__weight = Gtk.CheckButton(
-                label=_("_Weight"), use_underline=True)
+            self.__weight = Gtk.CheckButton(label=_("_Weight"), use_underline=True)
             self.__weight.connect("toggled", self.__changed)
             self.pack_start(self.__weight, True, True, 0)
 
@@ -256,8 +263,7 @@ class LimitSearchBarBox(SearchBarBox):
 
     def limit(self, songs):
         if self.__limit.get_visible():
-            return limit_songs(songs, self.__limit.value,
-                               self.__limit.weighted)
+            return limit_songs(songs, self.__limit.value, self.__limit.weighted)
         else:
             return songs
 
@@ -280,23 +286,28 @@ class MultiSearchBarBox(LimitSearchBarBox):
     def __init__(self, *args, show_multi=False, multi_filename=None, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.multi_filename = os.path.join(
-            quodlibet.get_user_dir(), "lists", "multiqueries"
-        ) if multi_filename is None else multi_filename
+        self.multi_filename = (
+            os.path.join(quodlibet.get_user_dir(), "lists", "multiqueries")
+            if multi_filename is None
+            else multi_filename
+        )
 
         self._old_placeholder = self._entry.get_placeholder_text()
         self._old_tooltip = self._entry.get_tooltip_text()
 
-        self._add_button = Gtk.Button.new_from_icon_name("list-add",
-                                                         Gtk.IconSize.BUTTON)
+        self._add_button = Gtk.Button.new_from_icon_name(
+            "list-add", Gtk.IconSize.BUTTON
+        )
         self._add_button.set_no_show_all(True)
         self.pack_start(self._add_button, False, True, 0)
         self._add_button.connect("clicked", self.activated)
         self._entry.connect("activate", self.activated)
 
-        self.flow_box = Gtk.FlowBox(no_show_all=True,
-                                    max_children_per_line=99,
-                                    selection_mode=Gtk.SelectionMode.NONE)
+        self.flow_box = Gtk.FlowBox(
+            no_show_all=True,
+            max_children_per_line=99,
+            selection_mode=Gtk.SelectionMode.NONE,
+        )
 
         self.toggle_multi_bool(show_multi)
 
@@ -327,17 +338,14 @@ class MultiSearchBarBox(LimitSearchBarBox):
             os.makedirs(os.path.dirname(self.multi_filename))
 
         with open(self.multi_filename, "w") as f:
-            f.writelines(lq.string + "\n"
-                         for lq in self.flow_box.get_children())
+            f.writelines(lq.string + "\n" for lq in self.flow_box.get_children())
 
     def _update_query_from(self, text):
         if self.flow_box.get_visible():
-            matches = [lq.query._unpack()
-                       for lq in self.flow_box.get_children()]
+            matches = [lq.query._unpack() for lq in self.flow_box.get_children()]
 
             self._query = Query(text, star=self._star)
-            self._query._match = reduce(operator.and_, matches,
-                                        self._query._match)
+            self._query._match = reduce(operator.and_, matches, self._query._match)
         else:
             super()._update_query_from(text)
 
@@ -354,8 +362,9 @@ class MultiSearchBarBox(LimitSearchBarBox):
             self._old_placeholder = self._entry.get_placeholder_text()
             self._old_tooltip = self._entry.get_tooltip_text()
             self._entry.set_placeholder_text(_("Add query"))
-            self._entry.set_tooltip_text(_("Add a QL query or free text "
-                                           "to be &ed together"))
+            self._entry.set_tooltip_text(
+                _("Add a QL query or free text " "to be &ed together")
+            )
         else:
             self._add_button.hide()
             self.flow_box.hide()
@@ -376,10 +385,10 @@ class QueryItem(Gtk.FlowBoxChild):
         self.query = Query(string)
 
         hbox = Gtk.HBox()
-        hbox.pack_start(Gtk.Label(string, halign=Gtk.Align.START, margin=6),
-                        True, True, 0)
-        btn = Gtk.Button.new_from_icon_name("window-close",
-                                            Gtk.IconSize.BUTTON)
+        hbox.pack_start(
+            Gtk.Label(string, halign=Gtk.Align.START, margin=6), True, True, 0
+        )
+        btn = Gtk.Button.new_from_icon_name("window-close", Gtk.IconSize.BUTTON)
         btn.set_relief(Gtk.ReliefStyle.NONE)
         btn.connect("clicked", self.remove)
         hbox.pack_start(btn, False, True, 0)

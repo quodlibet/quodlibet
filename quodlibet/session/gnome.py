@@ -12,7 +12,6 @@ from ._base import SessionClient, SessionError
 
 
 class GnomeSessionClient(SessionClient):
-
     DBUS_NAME = "org.gnome.SessionManager"
     DBUS_OBJECT_PATH = "/org/gnome/SessionManager"
     DBUS_MAIN_INTERFACE = "org.gnome.SessionManager"
@@ -29,21 +28,30 @@ class GnomeSessionClient(SessionClient):
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             session_mgr = Gio.DBusProxy.new_sync(
-                bus, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_OBJECT_PATH,
-                self.DBUS_MAIN_INTERFACE, None)
+                bus,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                self.DBUS_OBJECT_PATH,
+                self.DBUS_MAIN_INTERFACE,
+                None,
+            )
             if session_mgr.get_name_owner() is None:
-                raise SessionError("%s unowned" % self.DBUS_NAME)
+                raise SessionError(f"{self.DBUS_NAME} unowned")
             client_path = session_mgr.RegisterClient("(ss)", app.id, "")
             if client_path is None:
                 # https://github.com/quodlibet/quodlibet/issues/2435
-                raise SessionError(
-                    "Broken session manager implementation, likely LXDE")
+                raise SessionError("Broken session manager implementation, likely LXDE")
 
             client_priv = Gio.DBusProxy.new_sync(
-                bus, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, client_path,
-                self.DBUS_CLIENT_INTERFACE, None)
+                bus,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                client_path,
+                self.DBUS_CLIENT_INTERFACE,
+                None,
+            )
 
             def g_signal_cb(proxy, sender, signal, args):
                 if signal == "EndSession":
@@ -60,7 +68,7 @@ class GnomeSessionClient(SessionClient):
             self._sig_id = client_priv.connect("g-signal", g_signal_cb)
             self._client_priv = client_priv
             self._client_path = client_path
-            print_d("Connected with gnome session manager: %s" % client_path)
+            print_d(f"Connected with gnome session manager: {client_path}")
         except GLib.Error as e:
             raise SessionError(e) from e
 
@@ -74,13 +82,17 @@ class GnomeSessionClient(SessionClient):
         try:
             bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             session_mgr = Gio.DBusProxy.new_sync(
-                bus, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_OBJECT_PATH,
-                self.DBUS_MAIN_INTERFACE, None)
+                bus,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                self.DBUS_OBJECT_PATH,
+                self.DBUS_MAIN_INTERFACE,
+                None,
+            )
             session_mgr.UnregisterClient("(o)", self._client_path)
         except GLib.Error as e:
             print_w(str(e))
 
-        print_d("Disconnected from gnome session manager: %s" %
-                self._client_path)
+        print_d(f"Disconnected from gnome session manager: {self._client_path}")
         self._client_path = None

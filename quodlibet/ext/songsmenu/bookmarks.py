@@ -63,9 +63,9 @@ class Bookmarks(SongsMenuPlugin):
                 i = qltk.MenuItem(_("_Edit Bookmarks…"), Icons.EDIT)
 
                 def edit_bookmarks_cb(menu_item):
-                    window = EditBookmarks(self.plugin_window, app.library,
-                                           fake_player)  # noqa
+                    window = EditBookmarks(self.plugin_window, app.library, fake_player)  # noqa
                     window.show()
+
                 i.connect("activate", edit_bookmarks_cb)
                 song_menu.append(i)
 

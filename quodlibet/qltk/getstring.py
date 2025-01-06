@@ -1,5 +1,5 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
-#           2013, 2015 Nick Boultbee
+#           2013, 2015, 2025 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,16 +17,21 @@ from quodlibet.qltk.entry import UndoEntry
 class GetStringDialog(Dialog):
     """Simple dialog to return a string from the user"""
 
-    def __init__(self, parent, title, text,
-                 button_label=_("_OK"), button_icon=Icons.DOCUMENT_OPEN,  # noqa
-                 tooltip=None):
-        super().__init__(
-            title=title, transient_for=parent, use_header_bar=True)
+    def __init__(
+        self,
+        parent,
+        title,
+        text,
+        button_label=None,
+        button_icon=Icons.DOCUMENT_OPEN,  # noqa
+        tooltip=None,
+    ):
+        super().__init__(title=title, transient_for=parent, use_header_bar=True)
 
         self.set_border_width(6)
         self.set_resizable(True)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(button_label, button_icon, Gtk.ResponseType.OK)
+        self.add_icon_button(button_label or _("_OK"), button_icon, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
 

@@ -61,11 +61,14 @@ class DownloadProgress(GObject.Object):
             size = int(headers.get("content-length"))
             content_type = headers.get("content-type")
             print_d(
-                f"Downloaded {format_size(size)} of {content_type}: {song('title')}")
+                f"Downloaded {format_size(size)} of {content_type}: {song('title')}"
+            )
             _, ext = splitext(urlparse(song("~uri")).path)
-            fn = (escape_filename(song("~artist~title")[:100], safe=b" ,';")
-                  or song("~basename")
-                  or f"download-{hash(song('~filename'))}")
+            fn = (
+                escape_filename(song("~artist~title")[:100], safe=b" ,';")
+                or song("~basename")
+                or f"download-{hash(song('~filename'))}"
+            )
             path = path / Path(fn + ext)
             if path.is_file() and path.stat():
                 print_w(f"{path!s} already exists. Skipping download")
@@ -86,8 +89,13 @@ class DownloadProgress(GObject.Object):
     def download_songs(self, path: Path):
         for s in self.songs:
             msg = Soup.Message.new("GET", s("~uri"))
-            http.download(msg, cancellable=None, callback=self._downloaded,
-                          failure_callback=self._failed, data=(path, s))
+            http.download(
+                msg,
+                cancellable=None,
+                callback=self._downloaded,
+                failure_callback=self._failed,
+                data=(path, s),
+            )
             yield
         while self.frac < 1 and self.task:
             sleep(0.1)

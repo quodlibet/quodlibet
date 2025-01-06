@@ -33,8 +33,12 @@ from quodlibet.qltk.x import SeparatorMenuItem, Button, MenuItem
 from quodlibet.util import connect_obj
 from quodlibet.util import massagers
 from quodlibet.util.i18n import numeric_phrase
-from quodlibet.util.string.splitters import (split_value, split_title,
-                                             split_people, split_album)
+from quodlibet.util.string.splitters import (
+    split_value,
+    split_title,
+    split_people,
+    split_album,
+)
 from quodlibet.util.tags import USER_TAGS, MACHINE_TAGS, sortkey as tagsortkey
 
 
@@ -59,20 +63,20 @@ class Comment:
 
     def _paren(self):
         if self.shared:
-            return numeric_phrase("missing from %d song",
-                                  "missing from %d songs",
-                                  self.missing)
+            return numeric_phrase(
+                "missing from %d song", "missing from %d songs", self.missing
+            )
         elif self.complete:
-            return numeric_phrase("different across %d song",
-                                  "different across %d songs",
-                                  self.total)
+            return numeric_phrase(
+                "different across %d song", "different across %d songs", self.total
+            )
         else:
-            d = numeric_phrase("different across %d song",
-                               "different across %d songs",
-                               self.have)
-            m = numeric_phrase("missing from %d song",
-                               "missing from %d songs",
-                               self.missing)
+            d = numeric_phrase(
+                "different across %d song", "different across %d songs", self.have
+            )
+            m = numeric_phrase(
+                "missing from %d song", "missing from %d songs", self.missing
+            )
             return ", ".join([d, m])
 
     def is_special(self):
@@ -93,8 +97,11 @@ class Comment:
             return util.escape(self.text)
         elif self.shared:
             return "\n".join(
-                [f"{util.escape(s)}{util.italic(' ' + self._paren())}"
-                 for s in self.text.split("\n")])
+                [
+                    f"{util.escape(s)}{util.italic(' ' + self._paren())}"
+                    for s in self.text.split("\n")
+                ]
+            )
         else:
             return util.italic(self._paren())
 
@@ -165,8 +172,7 @@ class AudioFileGroup(dict):
             else:
                 values = [first_value]
             for v in values:
-                self.setdefault(tag, []).append(
-                    Comment(v, count, total, shared))
+                self.setdefault(tag, []).append(Comment(v, count, total, shared))
 
     def can_multiple_values(self, key=None):
         """If no arguments passed returns a set of tags that have multi
@@ -188,19 +194,21 @@ class AudioFileGroup(dict):
 
 class TagSplitter(EditTagsPlugin):
     """Splits tag values into other tags"""
+
     pass
 
 
 class SplitValues(TagSplitter):
-
     def __init__(self, tag, value):
-        super().__init__(
-            label=_("Split into _Multiple Values"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_icon_name(
-            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        super().__init__(label=_("Split into _Multiple Values"), use_underline=True)
+        self.set_image(
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+        )
         spls = config.gettext("editing", "split_on").split()
-        vals = [val if len(val) <= 64 else val[:64] + "…"
-                for val in split_value(value, spls)]
+        vals = [
+            val if len(val) <= 64 else val[:64] + "…"
+            for val in split_value(value, spls)
+        ]
         string = ", ".join([f"{tag}={val}" for val in vals])
         self.set_label(string)
         self.set_sensitive(len(vals) > 1)
@@ -216,10 +224,10 @@ class SplitDisc(TagSplitter):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super().__init__(
-            label=_("Split Disc out of _Album"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_icon_name(
-            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        super().__init__(label=_("Split Disc out of _Album"), use_underline=True)
+        self.set_image(
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+        )
 
         album, disc = split_album(value)
         if disc is not None:
@@ -239,21 +247,20 @@ class SplitTitle(TagSplitter):
     _order = 0.5
 
     def __init__(self, tag, value):
-        super().__init__(
-            label=_("Split _Version out of Title"), use_underline=True)
-        self.set_image(Gtk.Image.new_from_icon_name(
-            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        super().__init__(label=_("Split _Version out of Title"), use_underline=True)
+        self.set_image(
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+        )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
 
         title, versions = split_title(value, tag_spls, sub_spls)
         if versions:
             title = title if len(title) <= 64 else title[:64] + "…"
-            versions = [ver if len(ver) <= 64 else ver[:64] + "…"
-                        for ver in versions]
-            string = (", ".join([f"{tag}={title}"] +
-                                [f"{self.needs[0]}={ver}" for ver in
-                                 versions]))
+            versions = [ver if len(ver) <= 64 else ver[:64] + "…" for ver in versions]
+            string = ", ".join(
+                [f"{tag}={title}"] + [f"{self.needs[0]}={ver}" for ver in versions]
+            )
             self.set_label(string)
 
         self.set_sensitive(bool(versions))
@@ -271,19 +278,21 @@ class SplitPerson(TagSplitter):
 
     def __init__(self, tag, value):
         super().__init__(label=self.title, use_underline=True)
-        self.set_image(Gtk.Image.new_from_icon_name(
-            Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU))
+        self.set_image(
+            Gtk.Image.new_from_icon_name(Icons.EDIT_FIND_REPLACE, Gtk.IconSize.MENU)
+        )
         tag_spls = config.gettext("editing", "split_on").split()
         sub_spls = config.gettext("editing", "sub_split_on").split()
 
         artist, others = split_people(value, tag_spls, sub_spls)
         if others:
             artist = artist if len(artist) <= 64 else artist[:64] + "…"
-            others = [other if len(other) <= 64 else other[:64] + "…"
-                      for other in others]
-            string = (", ".join([f"{tag}={artist}"] +
-                                [f"{self.needs[0]}={o}" for o in
-                                 others]))
+            others = [
+                other if len(other) <= 64 else other[:64] + "…" for other in others
+            ]
+            string = ", ".join(
+                [f"{tag}={artist}"] + [f"{self.needs[0]}={o}" for o in others]
+            )
             self.set_label(string)
 
         self.set_sensitive(bool(others))
@@ -318,16 +327,16 @@ class SplitOriginalArtistFromTitle(SplitPerson):
 
 
 class AddTagDialog(Dialog):
-
     def __init__(self, parent, can_change, library):
         super().__init__(
-            title=_("Add a Tag"), transient_for=qltk.get_top_parent(parent),
-            use_header_bar=True)
+            title=_("Add a Tag"),
+            transient_for=qltk.get_top_parent(parent),
+            use_header_bar=True,
+        )
         self.set_border_width(6)
         self.set_resizable(False)
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        add = self.add_icon_button(_("_Add"), Icons.LIST_ADD,
-                                   Gtk.ResponseType.OK)
+        add = self.add_icon_button(_("_Add"), Icons.LIST_ADD, Gtk.ResponseType.OK)
         self.vbox.set_spacing(6)
         self.set_default_response(Gtk.ResponseType.OK)
         table = Gtk.Table(n_rows=2, n_columns=2)
@@ -335,8 +344,9 @@ class AddTagDialog(Dialog):
         table.set_col_spacings(6)
         table.set_border_width(6)
 
-        self.__tag = (TagsComboBoxEntry() if can_change is True
-                      else TagsComboBox(can_change))
+        self.__tag = (
+            TagsComboBoxEntry() if can_change is True else TagsComboBox(can_change)
+        )
 
         label = Gtk.Label()
         label.set_alignment(0.0, 0.5)
@@ -361,7 +371,8 @@ class AddTagDialog(Dialog):
         hbox.pack_start(self.__val, True, True, 0)
         hbox.set_spacing(6)
         invalid = Gtk.Image.new_from_icon_name(
-            Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR)
+            Icons.DIALOG_WARNING, Gtk.IconSize.SMALL_TOOLBAR
+        )
         hbox.pack_start(invalid, True, True, 0)
 
         self.vbox.pack_start(table, True, True, 0)
@@ -369,14 +380,14 @@ class AddTagDialog(Dialog):
         invalid.hide()
 
         for entry in [self.__tag, self.__val]:
-            entry.connect(
-                "changed", self.__validate, add, invalid, valuebox)
+            entry.connect("changed", self.__validate, add, invalid, valuebox)
         self.__tag.connect("changed", self.__set_value_completion, library)
         self.__set_value_completion(self.__tag, library)
 
         if can_change is True:
-            connect_obj(self.__tag.get_child(),
-                "activate", Gtk.Entry.grab_focus, self.__val)
+            connect_obj(
+                self.__tag.get_child(), "activate", Gtk.Entry.grab_focus, self.__val
+            )
 
     def __set_value_completion(self, tag, library):
         completion = self.__val.get_completion()
@@ -413,6 +424,7 @@ class AddTagDialog(Dialog):
 
 class EditTagsPluginHandler(EditingPluginHandler):
     from quodlibet.plugins.editing import EditTagsPlugin
+
     Kind = EditTagsPlugin
 
 
@@ -437,9 +449,17 @@ class EditTags(Gtk.VBox):
     handler = EditTagsPluginHandler()
 
     _SPLITTERS: Sequence[type[TagSplitter]] = sorted(
-        [SplitDisc, SplitTitle, SplitPerformer, SplitArranger, SplitValues,
-         SplitPerformerFromTitle, SplitOriginalArtistFromTitle],
-        key=lambda item: (item._order, item.__name__))
+        [
+            SplitDisc,
+            SplitTitle,
+            SplitPerformer,
+            SplitArranger,
+            SplitValues,
+            SplitPerformerFromTitle,
+            SplitOriginalArtistFromTitle,
+        ],
+        key=lambda item: (item._order, item.__name__),
+    )
 
     @classmethod
     def init_plugins(cls):
@@ -489,16 +509,14 @@ class EditTags(Gtk.VBox):
         column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
         render.set_property("editable", True)
         render.connect("edited", self.__edit_tag_name, model)
-        render.connect(
-            "editing-started", self.__tag_editing_started, model, library)
+        render.connect("editing-started", self.__tag_editing_started, model, library)
         view.append_column(column)
 
         render = Gtk.CellRendererText()
         render.set_property("ellipsize", Pango.EllipsizeMode.END)
         render.set_property("editable", True)
         render.connect("edited", self.__edit_tag, model)
-        render.connect(
-            "editing-started", self.__value_editing_started, model, library)
+        render.connect("editing-started", self.__value_editing_started, model, library)
         column = TreeViewColumn(title=_("Value"))
         column.pack_start(render, True)
 
@@ -522,9 +540,15 @@ class EditTags(Gtk.VBox):
         self.pack_start(sw, True, True, 0)
 
         cb = ConfigCheckButton(
-            _("Show _programmatic tags"), "editing", "alltags", populate=True,
-            tooltip=_("Access all tags, including machine-generated "
-                      "ones e.g. MusicBrainz or Replay Gain tags"))
+            _("Show _programmatic tags"),
+            "editing",
+            "alltags",
+            populate=True,
+            tooltip=_(
+                "Access all tags, including machine-generated "
+                "ones e.g. MusicBrainz or Replay Gain tags"
+            ),
+        )
         cb.connect("toggled", self.__checkbox_toggled)
         hb = Gtk.HBox()
         hb.pack_start(cb, False, True, 0)
@@ -534,7 +558,8 @@ class EditTags(Gtk.VBox):
             "editing",
             "show_multi_line_tags",
             populate=True,
-            tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"))
+            tooltip=_("Show potentially multi-line tags (e.g 'lyrics') here too"),
+        )
         cb.connect("toggled", self.__checkbox_toggled)
         hb.pack_start(cb, False, True, 12)
         self.pack_start(hb, False, True, 0)
@@ -652,10 +677,9 @@ class EditTags(Gtk.VBox):
             entry.edited = entry.deleted = True
             model.path_changed(path)
 
-    def __item_for(self, view: BaseView,
-                   item_cls: type[EditTagsPlugin],
-                   tag: str,
-                   text: str) -> EditTagsPlugin | None:
+    def __item_for(
+        self, view: BaseView, item_cls: type[EditTagsPlugin], tag: str, text: str
+    ) -> EditTagsPlugin | None:
         try:
             item = item_cls(tag, text)
         except Exception as e:
@@ -688,8 +712,7 @@ class EditTags(Gtk.VBox):
                 if not item:
                     continue
                 vals = item.activated(entry.tag, text)
-                changeable = any(not self._group_info.can_change(k)
-                                 for k in item.needs)
+                changeable = any(not self._group_info.can_change(k) for k in item.needs)
                 fixed = changeable or comment.is_special()
                 if fixed:
                     item.set_sensitive(False)
@@ -699,8 +722,10 @@ class EditTags(Gtk.VBox):
                 split_menu.append(SeparatorMenuItem())
 
             plugins = self.handler.plugins
-            print_d(f"Adding {len(plugins)} plugin(s) to menu: "
-                    f"{', '.join(p.__name__ for p in plugins)}")
+            print_d(
+                f"Adding {len(plugins)} plugin(s) to menu: "
+                f"{', '.join(p.__name__ for p in plugins)}"
+            )
             for p_cls in plugins:
                 item = self.__item_for(view, p_cls, entry.tag, text)
                 if not item:
@@ -714,11 +739,14 @@ class EditTags(Gtk.VBox):
 
             def show_prefs(parent):
                 from quodlibet.qltk.exfalsowindow import ExFalsoWindow
+
                 if isinstance(app.window, ExFalsoWindow):
                     from quodlibet.qltk.exfalsowindow import PreferencesWindow
+
                     window = PreferencesWindow(parent)
                 else:
                     from quodlibet.qltk.prefs import PreferencesWindow
+
                     window = PreferencesWindow(parent, open_page="tagging")
                 window.show()
 
@@ -767,9 +795,9 @@ class EditTags(Gtk.VBox):
             title = _("Unable to add tag")
             msg = _("Unable to add %s") % util.bold(tag)
             msg += "\n\n"
-            msg += _("The files currently"
-                     " selected do not support multiple values for %s."
-                     ) % util.bold(tag)
+            msg += _(
+                "The files currently" " selected do not support multiple values for %s."
+            ) % util.bold(tag)
             qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
             return
 
@@ -795,11 +823,13 @@ class EditTags(Gtk.VBox):
             assert isinstance(value, str)
             if not self._group_info.can_change(tag):
                 title = ngettext("Invalid tag", "Invalid tags", 1)
-                msg = ngettext("Invalid tag %s\n\nThe files currently "
-                        "selected do not support editing this tag.",
-                        "Invalid tags %s\n\nThe files currently "
-                        "selected do not support editing these tags.", 1
-                        ) % util.bold(tag)
+                msg = ngettext(
+                    "Invalid tag %s\n\nThe files currently "
+                    "selected do not support editing this tag.",
+                    "Invalid tags %s\n\nThe files currently "
+                    "selected do not support editing these tags.",
+                    1,
+                ) % util.bold(tag)
                 qltk.ErrorMessage(self, title, msg).run()
             else:
                 self.__add_new_tag(model, tag, value)
@@ -873,7 +903,7 @@ class EditTags(Gtk.VBox):
 
             changed = False
             for key, values in updated.items():
-                for (new_value, old_value) in values:
+                for new_value, old_value in values:
                     if song.can_change(key):
                         if old_value is None:
                             song.add(key, new_value.text)
@@ -903,7 +933,7 @@ class EditTags(Gtk.VBox):
             save_rename = []
             for new_tag, values in renamed.items():
                 for old_tag, new_value, old_value in values:
-                    if (song.can_change(new_tag) and old_tag in song):
+                    if song.can_change(new_tag) and old_tag in song:
                         if not new_value.is_special():
                             song.remove(old_tag, old_value.text)
                             save_rename.append((new_tag, new_value))
@@ -911,8 +941,7 @@ class EditTags(Gtk.VBox):
                             song.remove(old_tag, old_value)
                             save_rename.append((new_tag, new_value))
                         else:
-                            save_rename.append(
-                                (new_tag, Comment(song[old_tag])))
+                            save_rename.append((new_tag, Comment(song[old_tag])))
                             song.remove(old_tag, None)
                         changed = True
 
@@ -940,7 +969,7 @@ class EditTags(Gtk.VBox):
             b.set_sensitive(not all_done)
 
     def __edit_tag(self, renderer, path, new_value, model):
-        #pfps leaving the newline should be OK
+        # pfps leaving the newline should be OK
         #        new_value = ', '.join(new_value.splitlines())
         path = Gtk.TreePath.new_from_string(path)
         entry = model[path][0]
@@ -948,18 +977,21 @@ class EditTags(Gtk.VBox):
 
         if not massagers.is_valid(entry.tag, new_value):
             error_dialog = qltk.WarningMessage(
-                self, _("Invalid value"),
-                _("Invalid value: %(value)s\n\n%(error)s") % {
-                "value": util.bold(new_value),
-                "error": massagers.error_message(entry.tag, new_value)})
+                self,
+                _("Invalid value"),
+                _("Invalid value: %(value)s\n\n%(error)s")
+                % {
+                    "value": util.bold(new_value),
+                    "error": massagers.error_message(entry.tag, new_value),
+                },
+            )
         else:
             new_value = massagers.validate(entry.tag, new_value)
 
         comment = entry.value
         changed = comment.text != new_value
         identical = comment.shared and comment.complete
-        if (changed and (identical or new_value)) \
-                or (new_value and not identical):
+        if (changed and (identical or new_value)) or (new_value and not identical):
             # only give an error if we would have applied the value
             if error_dialog is not None:
                 error_dialog.run()
@@ -978,11 +1010,13 @@ class EditTags(Gtk.VBox):
         elif not self._group_info.can_change(new_tag):
             # Can't add the new tag.
             title = ngettext("Invalid tag", "Invalid tags", 1)
-            msg = ngettext("Invalid tag %s\n\nThe files currently "
-                    "selected do not support editing this tag.",
-                    "Invalid tags %s\n\nThe files currently "
-                    "selected do not support editing these tags.", 1
-                    ) % util.bold(new_tag)
+            msg = ngettext(
+                "Invalid tag %s\n\nThe files currently "
+                "selected do not support editing this tag.",
+                "Invalid tags %s\n\nThe files currently "
+                "selected do not support editing these tags.",
+                1,
+            ) % util.bold(new_tag)
             qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
         else:
             # FIXME: In case this is a special one we only
@@ -991,10 +1025,14 @@ class EditTags(Gtk.VBox):
             text = entry.value.text
             if not massagers.is_valid(new_tag, text):
                 qltk.WarningMessage(
-                    self, _("Invalid value"),
-                    _("Invalid value: %(value)s\n\n%(error)s") % {
-                      "value": util.bold(text),
-                      "error": massagers.error_message(new_tag, text)}).run()
+                    self,
+                    _("Invalid value"),
+                    _("Invalid value: %(value)s\n\n%(error)s")
+                    % {
+                        "value": util.bold(text),
+                        "error": massagers.error_message(new_tag, text),
+                    },
+                ).run()
                 return
             text = massagers.validate(new_tag, text)
 
@@ -1027,8 +1065,7 @@ class EditTags(Gtk.VBox):
         except TypeError:
             return Gdk.EVENT_PROPAGATE
 
-        if event.button == Gdk.BUTTON_MIDDLE and \
-                col == view.get_columns()[2]:
+        if event.button == Gdk.BUTTON_MIDDLE and col == view.get_columns()[2]:
             display = Gdk.DisplayManager.get().get_default_display()
             selection = Gdk.SELECTION_PRIMARY
             if sys.platform == "win32":
@@ -1037,8 +1074,7 @@ class EditTags(Gtk.VBox):
             clipboard = Gtk.Clipboard.get_for_display(display, selection)
             for rend in col.get_cells():
                 if rend.get_property("editable"):
-                    clipboard.request_text(self.__paste,
-                                           (rend, path.get_indices()[0]))
+                    clipboard.request_text(self.__paste, (rend, path.get_indices()[0]))
                     return Gdk.EVENT_STOP
             else:
                 return Gdk.EVENT_PROPAGATE

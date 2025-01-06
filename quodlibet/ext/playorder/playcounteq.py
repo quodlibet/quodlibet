@@ -22,8 +22,7 @@ from quodlibet.qltk import Icons
 class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
     PLUGIN_ID = "playcounteq"
     PLUGIN_NAME = _("Playcount Equalizer")
-    PLUGIN_DESC = _("Adds a shuffle mode "
-                    "that prefers songs with fewer total plays.")
+    PLUGIN_DESC = _("Adds a shuffle mode " "that prefers songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Prefer less played")
     accelerated_name = _("Prefer _less played")
@@ -50,8 +49,10 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
         # Set-up the search information.
         max_count = max([song("~#playcount") for song in remaining.values()])
 
-        weights = {i: math.ceil(math.pow(max_count - song("~#playcount") + 1, magn))
-                   for i, song in remaining.items()}
+        weights = {
+            i: math.ceil(math.pow(max_count - song("~#playcount") + 1, magn))
+            for i, song in remaining.items()
+        }
 
         weights_sum = sum(weights.values())
         choice = int(max(1, math.ceil(weights_sum * random.random())))
@@ -79,8 +80,7 @@ class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
 
         val = cls.config_get("magnitude", cls._MAGNITUDE_DEFAULT)
 
-        spin = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment.new(int(val), 1, 100, 1, 10, 0))
+        spin = Gtk.SpinButton(adjustment=Gtk.Adjustment.new(int(val), 1, 100, 1, 10, 0))
         spin.connect("value-changed", magnitude_changed)
         hbox.pack_start(spin, False, True, 0)
         vb.pack_start(hbox, True, True, 0)

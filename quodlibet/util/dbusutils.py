@@ -20,10 +20,12 @@ def dbus_unicode_validate(text):
 
     # https://bugs.freedesktop.org/show_bug.cgi?id=40817
     def valid(c):
-        return (c < 0x110000 and
-                (c & 0xFFFFF800) != 0xD800 and
-                (c < 0xFDD0 or c > 0xFDEF) and
-                (c & 0xFFFE) != 0xFFFE)
+        return (
+            c < 0x110000
+            and (c & 0xFFFFF800) != 0xD800
+            and (c < 0xFDD0 or c > 0xFDEF)
+            and (c & 0xFFFE) != 0xFFFE
+        )
 
     cps = []
     for c in map(ord, text):
@@ -58,9 +60,10 @@ def list_spec_properties(spec):
         return emit
 
     root = ET.fromstring(
-        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
-        spec.encode("utf-8") +
-        b"</props>")
+        b'<?xml version="1.0" encoding="UTF-8"?><props>'
+        + spec.encode("utf-8")
+        + b"</props>"
+    )
     props = {}
     root_emit = get_emit(root, "true")
     for element in root:
@@ -86,15 +89,19 @@ def filter_property_spec(spec, wl=None, bl=None):
         return spec
 
     root = ET.fromstring(
-        b'<?xml version="1.0" encoding="UTF-8"?><props>' +
-        spec.encode("utf-8") +
-        b"</props>")
+        b'<?xml version="1.0" encoding="UTF-8"?><props>'
+        + spec.encode("utf-8")
+        + b"</props>"
+    )
     if wl:
+
         def to_rm(e):
             return e.attrib["name"] not in wl
     elif bl:
+
         def to_rm(e):
             return e.attrib["name"] in bl
+
     strs = []
     for element in root:
         if element.tag != "property" or not to_rm(element):
@@ -166,8 +173,7 @@ class DBusIntrospectable:
 
     def __init__(self):
         self.__ispec = {}
-        self.set_introspection(DBusIntrospectable.IFACE,
-                               DBusIntrospectable.ISPEC)
+        self.set_introspection(DBusIntrospectable.IFACE, DBusIntrospectable.ISPEC)
 
     def set_introspection(self, interface, introspection):
         self.__ispec.setdefault(interface, []).append(introspection)
@@ -177,7 +183,7 @@ class DBusIntrospectable:
         parts = []
         parts.append("<node>")
         for iface, intros in self.__ispec.items():
-            parts.append('<interface name="%s">' % iface)
+            parts.append(f'<interface name="{iface}">')
             parts.extend(intros)
             parts.append("</interface>")
         parts.append("</node>")
@@ -284,7 +290,7 @@ class DBusProperty:
         for prop in properties:
             iface = self.get_interface(interface, prop)
             if iface is None:
-                raise ValueError("Property %s not registered" % prop)
+                raise ValueError(f"Property {prop} not registered")
             combos.setdefault(iface, []).append(prop)
 
         for iface, props in combos.items():
@@ -293,7 +299,7 @@ class DBusProperty:
             for prop in props:
                 emit = self.__props[iface][prop]["emit"]
                 if emit == "false":
-                    raise ValueError("Can't emit changed signal for %s" % prop)
+                    raise ValueError(f"Can't emit changed signal for {prop}")
                 elif emit == "true":
                     values[prop] = self.get_value(iface, prop, path)
                 elif emit == "invalidates":
@@ -304,13 +310,21 @@ class DBusProperty:
             else:
                 self.PropertiesChanged(iface, values, inval)
 
-    @dbus.service.method(dbus_interface=IFACE, in_signature="ss",
-                         out_signature="v", rel_path_keyword="path")
+    @dbus.service.method(
+        dbus_interface=IFACE,
+        in_signature="ss",
+        out_signature="v",
+        rel_path_keyword="path",
+    )
     def Get(self, interface, prop, path):
         return self.get_value(interface, prop, path)
 
-    @dbus.service.method(dbus_interface=IFACE, in_signature="ssv",
-                         out_signature="", rel_path_keyword="path")
+    @dbus.service.method(
+        dbus_interface=IFACE,
+        in_signature="ssv",
+        out_signature="",
+        rel_path_keyword="path",
+    )
     def Set(self, interface, prop, value, path):
         interface = self.get_interface(interface, prop)
         if self.SUPPORTS_MULTIPLE_OBJECT_PATHS:
@@ -318,8 +332,12 @@ class DBusProperty:
         else:
             self.set_property(interface, prop, value)
 
-    @dbus.service.method(dbus_interface=IFACE, in_signature="s",
-                         out_signature="a{sv}", rel_path_keyword="path")
+    @dbus.service.method(
+        dbus_interface=IFACE,
+        in_signature="s",
+        out_signature="a{sv}",
+        rel_path_keyword="path",
+    )
     def GetAll(self, interface, path):
         values = {}
         for iface, prop in self.get_properties(interface):

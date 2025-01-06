@@ -16,7 +16,6 @@ from .helper import get_temp_copy
 
 
 class _TAACFile(TestCase):
-
     NAME = None
 
     def setUp(self):
@@ -28,7 +27,6 @@ class _TAACFile(TestCase):
 
 
 class _TAACFileMixin:
-
     def test_basic(self):
         self.song["title"] = "SomeTestValue"
         self.song.write()
@@ -63,7 +61,6 @@ class _TAACFileMixin:
 
 @skipUnless(AAC, "too old mutagen")
 class TADTSFile(_TAACFile, _TAACFileMixin):
-
     NAME = "empty.aac"
 
     def test_length(self):
@@ -78,7 +75,6 @@ class TADTSFile(_TAACFile, _TAACFileMixin):
 
 @skipUnless(AAC, "too old mutagen")
 class TADIFFile(_TAACFile, _TAACFileMixin):
-
     NAME = "adif.aac"
 
     def test_length(self):

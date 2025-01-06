@@ -24,8 +24,8 @@ from .helper import get_temp_copy
 
 def _get_jpeg(size=5):
     from gi.repository import GdkPixbuf
-    pb = GdkPixbuf.Pixbuf.new(
-        GdkPixbuf.Colorspace.RGB, False, 8, size, size)
+
+    pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, size, size)
     fd, fn = mkstemp()
     pb.savev(fn, "jpeg", [], [])
     with os.fdopen(fd, "rb") as h:
@@ -59,7 +59,6 @@ class TVCFile(TestCase):
 
 
 class TVCFileMixin:
-
     def test_rating(self):
         self.song["~#rating"] = 0.2
         self.song.write()
@@ -169,7 +168,6 @@ class TTotalTagsBase(TestCase):
 
 
 class TTotalTagsMixin:
-
     def __load_tags(self, tags, expected):
         m = OggVorbis(self.filename)
         for key, value in tags.items():
@@ -186,42 +184,34 @@ class TTotalTagsMixin:
             assert self.FALLBACK not in song
 
     def test_load_old_single(self):
-        self.__load_tags(
-            {self.SINGLE: "1/42"},
-            {self.SINGLE: "1/42"})
+        self.__load_tags({self.SINGLE: "1/42"}, {self.SINGLE: "1/42"})
 
     def test_load_main(self):
-        self.__load_tags(
-            {self.SINGLE: "3", self.MAIN: "10"},
-            {self.SINGLE: "3/10"})
+        self.__load_tags({self.SINGLE: "3", self.MAIN: "10"}, {self.SINGLE: "3/10"})
 
     def test_load_fallback(self):
-        self.__load_tags(
-            {self.SINGLE: "3", self.FALLBACK: "10"},
-            {self.SINGLE: "3/10"})
+        self.__load_tags({self.SINGLE: "3", self.FALLBACK: "10"}, {self.SINGLE: "3/10"})
 
     def test_load_all(self):
         self.__load_tags(
             {self.SINGLE: "3", self.FALLBACK: "10", self.MAIN: "5"},
-            {self.SINGLE: "3/5", self.FALLBACK: "10"})
+            {self.SINGLE: "3/5", self.FALLBACK: "10"},
+        )
 
     def test_load_main_no_single(self):
-        self.__load_tags(
-            {self.MAIN: "5"},
-            {self.SINGLE: "/5"})
+        self.__load_tags({self.MAIN: "5"}, {self.SINGLE: "/5"})
 
     def test_load_fallback_no_single(self):
-        self.__load_tags(
-            {self.FALLBACK: "6"},
-            {self.SINGLE: "/6"})
+        self.__load_tags({self.FALLBACK: "6"}, {self.SINGLE: "/6"})
 
     def test_load_both_no_single(self):
         self.__load_tags(
             {self.FALLBACK: "6", self.MAIN: "5"},
-            {self.FALLBACK: "6", self.SINGLE: "/5"})
+            {self.FALLBACK: "6", self.SINGLE: "/5"},
+        )
 
     def __save_tags(self, tags, expected):
-        #return
+        # return
         song = OggFile(self.filename)
         for key, value in tags.items():
             song[key] = value
@@ -241,36 +231,32 @@ class TTotalTagsMixin:
             assert self.SINGLE not in m.tags
 
     def test_save_single(self):
-        self.__save_tags(
-            {self.SINGLE: "1/2"},
-            {self.SINGLE: "1", self.MAIN: "2"})
+        self.__save_tags({self.SINGLE: "1/2"}, {self.SINGLE: "1", self.MAIN: "2"})
 
     def test_save_main(self):
-        self.__save_tags(
-            {self.MAIN: "3"},
-            {self.MAIN: "3"})
+        self.__save_tags({self.MAIN: "3"}, {self.MAIN: "3"})
 
     def test_save_fallback(self):
-        self.__save_tags(
-            {self.FALLBACK: "3"},
-            {self.MAIN: "3"})
+        self.__save_tags({self.FALLBACK: "3"}, {self.MAIN: "3"})
 
     def test_save_single_and_main(self):
         # not clear what to do here...
         self.__save_tags(
-            {self.SINGLE: "1/2", self.MAIN: "3"},
-            {self.SINGLE: "1", self.MAIN: "3"})
+            {self.SINGLE: "1/2", self.MAIN: "3"}, {self.SINGLE: "1", self.MAIN: "3"}
+        )
 
     def test_save_single_and_fallback(self):
         self.__save_tags(
             {self.SINGLE: "1/2", self.FALLBACK: "3"},
-            {self.SINGLE: "1", self.MAIN: "2", self.FALLBACK: "3"})
+            {self.SINGLE: "1", self.MAIN: "2", self.FALLBACK: "3"},
+        )
 
     def test_save_all(self):
         # not clear what to do here...
         self.__save_tags(
             {self.SINGLE: "1/2", self.MAIN: "4", self.FALLBACK: "3"},
-            {self.SINGLE: "1", self.MAIN: "4", self.FALLBACK: "3"})
+            {self.SINGLE: "1", self.MAIN: "4", self.FALLBACK: "3"},
+        )
 
 
 class TTrackTotal(TTotalTagsBase, TTotalTagsMixin):
@@ -338,7 +324,6 @@ class TVCCover(TestCase):
 
 
 class TVCCoverMixin:
-
     def test_can_change_images(self):
         song = self.QLType(self.filename)
         assert song.can_change_images

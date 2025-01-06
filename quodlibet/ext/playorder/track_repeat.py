@@ -19,16 +19,18 @@ START_COUNT = 1
 
 
 class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
-    """ Repeats a given track a configurable number of times
-        Useful for musicians practising / working out songs...
-        or maybe you just REALLY like your playlist.
+    """Repeats a given track a configurable number of times
+    Useful for musicians practising / working out songs...
+    or maybe you just REALLY like your playlist.
     """
 
     PLUGIN_ID = "track_repeat"
     PLUGIN_NAME = _("Repeat Each Track")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_REPEAT
-    PLUGIN_DESC = _("Adds a shuffle mode that plays tracks in order, "
-                    "but repeating every track a set number of times.")
+    PLUGIN_DESC = _(
+        "Adds a shuffle mode that plays tracks in order, "
+        "but repeating every track a set number of times."
+    )
     display_name = _("Repeat each track")
     accelerated_name = _("Repeat _each track")
 
@@ -53,7 +55,8 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         hbox.pack_start(lbl, False, True, 0)
         val = cls.config_get("play_each", cls.PLAY_EACH_DEFAULT)
         spin = Gtk.SpinButton(
-            adjustment=Gtk.Adjustment.new(float(val), 2, 20, 1, 10, 0))
+            adjustment=Gtk.Adjustment.new(float(val), 2, 20, 1, 10, 0)
+        )
         spin.connect("value-changed", plays_changed)
         hbox.pack_start(spin, False, True, 0)
         vb.pack_start(hbox, True, True, 0)

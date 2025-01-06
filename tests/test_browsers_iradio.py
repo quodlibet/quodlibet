@@ -12,9 +12,15 @@ from collections.abc import Generator
 import pytest
 
 import quodlibet.config
-from quodlibet.browsers.iradio import (InternetRadio, IRFile, QuestionBar,
-                                       parse_taglist, parse_pls, parse_m3u,
-                                       download_taglist)
+from quodlibet.browsers.iradio import (
+    InternetRadio,
+    IRFile,
+    QuestionBar,
+    parse_taglist,
+    parse_pls,
+    parse_m3u,
+    download_taglist,
+)
 from quodlibet.formats import AudioFile
 from quodlibet.library import SongLibrary
 from quodlibet.util import is_windows, is_osx
@@ -75,7 +81,6 @@ http://stream2.streamq.net:8020/
 
 
 class TQuestionBar(TestCase):
-
     def test_main(self):
         b = QuestionBar()
         assert not b.get_visible()
@@ -172,7 +177,6 @@ class TIRFile(TestCase):
 
 
 class Bzip2GetHandler(BaseHTTPRequestHandler):
-
     # Not thread-safe, but won't be an issue here
     compressor = BZ2Compressor()
 

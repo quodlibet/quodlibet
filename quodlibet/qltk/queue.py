@@ -24,8 +24,13 @@ from quodlibet import config
 from quodlibet import qltk
 from quodlibet import app
 
-from quodlibet.util import (connect_destroy, connect_after_destroy,
-                            format_time_preferred, print_exc, DeferredSignal)
+from quodlibet.util import (
+    connect_destroy,
+    connect_after_destroy,
+    format_time_preferred,
+    print_exc,
+    DeferredSignal,
+)
 from quodlibet.qltk import Icons, gtk_version, add_css
 from quodlibet.qltk.ccb import ConfigCheckMenuItem
 from quodlibet.qltk.songlist import SongList, DND_QL, DND_URI_LIST
@@ -33,8 +38,14 @@ from quodlibet.qltk.songsmenu import SongsMenu
 from quodlibet.qltk.menubutton import SmallMenuButton
 from quodlibet.qltk.songmodel import PlaylistModel
 from quodlibet.qltk.playorder import OrderInOrder, OrderShuffle
-from quodlibet.qltk.x import ScrolledWindow, SymbolicIconImage, \
-    SmallImageButton, SmallImageToggleButton, MenuItem, RadioMenuItem
+from quodlibet.qltk.x import (
+    ScrolledWindow,
+    SymbolicIconImage,
+    SmallImageButton,
+    SmallImageToggleButton,
+    MenuItem,
+    RadioMenuItem,
+)
 from quodlibet.qltk.songlistcolumns import CurrentColumn
 
 QUEUE = os.path.join(quodlibet.get_user_dir(), "queue")
@@ -71,7 +82,6 @@ class PlaybackStatusIcon(Gtk.Box):
 
 
 class ExpandBoxHack(Gtk.HBox):
-
     def do_get_preferred_width(self):
         # Workaround for https://bugzilla.gnome.org/show_bug.cgi?id=765602
         # set_label_fill() no longer works since 3.20. Fake a natural size
@@ -80,12 +90,11 @@ class ExpandBoxHack(Gtk.HBox):
         min_, nat = Gtk.HBox.do_get_preferred_width(self)
         if gtk_version > (3, 19):
             # if we get too large gtk calcs will overflow..
-            nat = max(nat, 2 ** 16)
+            nat = max(nat, 2**16)
         return (min_, nat)
 
 
 class QueueExpander(Gtk.Expander):
-
     def __init__(self, library, player):
         super().__init__(spacing=3)
         sw = ScrolledWindow()
@@ -125,24 +134,22 @@ class QueueExpander(Gtk.Expander):
         self.set_label_fill(True)
 
         clear_item = SmallImageButton(
-            image=SymbolicIconImage(Icons.USER_TRASH,
-                                    Gtk.IconSize.MENU),
+            image=SymbolicIconImage(Icons.USER_TRASH, Gtk.IconSize.MENU),
             relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_("Clear Queue"))
+            tooltip_text=_("Clear Queue"),
+        )
         clear_item.connect("clicked", self.__clear_queue)
         outer.pack_start(clear_item, False, False, 3)
 
         toggle = SmallImageToggleButton(
-            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN,
-                                    Gtk.IconSize.MENU),
+            image=SymbolicIconImage(Icons.SYSTEM_LOCK_SCREEN, Gtk.IconSize.MENU),
             relief=Gtk.ReliefStyle.NONE,
-            tooltip_text=_(
-                "Disable queue - the queue will be ignored when playing"))
+            tooltip_text=_("Disable queue - the queue will be ignored when playing"),
+        )
         disabled = config.getboolean("memory", "queue_disable", False)
         toggle.props.active = disabled
         self.__queue_disable(disabled)
-        toggle.connect("toggled",
-                       lambda b: self.__queue_disable(b.props.active))
+        toggle.connect("toggled", lambda b: self.__queue_disable(b.props.active))
         outer.pack_start(toggle, False, False, 3)
 
         mode_menu = Gtk.Menu()
@@ -150,7 +157,8 @@ class QueueExpander(Gtk.Expander):
         norm_mode_item = RadioMenuItem(
             label=_("Ephemeral"),
             tooltip_text=_("Remove songs from the queue after playing them"),
-            group=None)
+            group=None,
+        )
         mode_menu.append(norm_mode_item)
         norm_mode_item.set_active(True)
         norm_mode_item.connect("toggled", lambda _: self.__keep_songs_enable(False))
@@ -158,31 +166,33 @@ class QueueExpander(Gtk.Expander):
         keep_mode_item = RadioMenuItem(
             label=_("Persistent"),
             tooltip_text=_("Keep songs in the queue after playing them"),
-            group=norm_mode_item)
+            group=norm_mode_item,
+        )
         mode_menu.append(keep_mode_item)
-        keep_mode_item.connect("toggled",
-                               lambda b: self.__keep_songs_enable(True))
+        keep_mode_item.connect("toggled", lambda b: self.__keep_songs_enable(True))
         keep_mode_item.set_active(
-                config.getboolean("memory", "queue_keep_songs", False))
+            config.getboolean("memory", "queue_keep_songs", False)
+        )
 
         mode_item = MenuItem(_("Mode"), Icons.SYSTEM_RUN)
         mode_item.set_submenu(mode_menu)
         menu.append(mode_item)
 
         rand_checkbox = ConfigCheckMenuItem(
-                _("_Random"), "memory", "shufflequeue", populate=True)
+            _("_Random"), "memory", "shufflequeue", populate=True
+        )
         rand_checkbox.connect("toggled", self.__queue_shuffle)
         self.set_shuffled(rand_checkbox.get_active())
         menu.append(rand_checkbox)
 
         stop_checkbox = ConfigCheckMenuItem(
-            _("Stop at End"), "memory", "queue_stop_at_end",
-            populate=True)
+            _("Stop at End"), "memory", "queue_stop_at_end", populate=True
+        )
         menu.append(stop_checkbox)
 
         button = SmallMenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-            arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_relief(Gtk.ReliefStyle.NORMAL)
         button.show_all()
         button.hide()
@@ -194,7 +204,8 @@ class QueueExpander(Gtk.Expander):
 
         close_button = SmallImageButton(
             image=SymbolicIconImage("window-close", Gtk.IconSize.MENU),
-            relief=Gtk.ReliefStyle.NONE)
+            relief=Gtk.ReliefStyle.NONE,
+        )
 
         close_button.connect("clicked", lambda *x: self.hide())
 
@@ -207,7 +218,7 @@ class QueueExpander(Gtk.Expander):
 
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
-            ("text/uri-list", 0, DND_URI_LIST)
+            ("text/uri-list", 0, DND_URI_LIST),
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
@@ -215,26 +226,27 @@ class QueueExpander(Gtk.Expander):
         self.connect("drag-motion", self.__motion)
         self.connect("drag-data-received", self.__drag_data_received)
 
-        self.queue.model.connect_after("row-inserted",
-                                       DeferredSignal(self.__check_expand), count_label)
-        self.queue.model.connect_after("row-deleted",
-                                       DeferredSignal(self.__update_count), count_label)
+        self.queue.model.connect_after(
+            "row-inserted", DeferredSignal(self.__check_expand), count_label
+        )
+        self.queue.model.connect_after(
+            "row-deleted", DeferredSignal(self.__update_count), count_label
+        )
 
         self.__update_count(self.model, None, count_label)
 
+        connect_destroy(player, "song-started", self.__update_state_icon, state_icon)
         connect_destroy(
-            player, "song-started", self.__update_state_icon, state_icon)
+            player, "paused", self.__update_state_icon_pause, state_icon, True
+        )
         connect_destroy(
-            player, "paused", self.__update_state_icon_pause,
-            state_icon, True)
-        connect_destroy(
-            player, "unpaused", self.__update_state_icon_pause,
-            state_icon, False)
+            player, "unpaused", self.__update_state_icon_pause, state_icon, False
+        )
 
+        connect_destroy(player, "song-started", self.__song_started, self.queue.model)
         connect_destroy(
-            player, "song-started", self.__song_started, self.queue.model)
-        connect_destroy(
-            player, "song-ended", self.__update_queue_stop, self.queue.model)
+            player, "song-ended", self.__update_queue_stop, self.queue.model
+        )
 
         # to make the children clickable if mapped
         # ....no idea why, but works
@@ -243,6 +255,7 @@ class QueueExpander(Gtk.Expander):
             if label:
                 label.unmap()
                 label.map()
+
         self.connect("map", hack)
 
         self.set_expanded(config.getboolean("memory", "queue_expanded"))
@@ -296,10 +309,9 @@ class QueueExpander(Gtk.Expander):
             text = ""
         else:
             time = sum([row[0].get("~#length", 0) for row in model])
-            text = ngettext("%(count)d song (%(time)s)",
-                            "%(count)d songs (%(time)s)",
-                            len(model)) % {
-                "count": len(model), "time": format_time_preferred(time)}
+            text = ngettext(
+                "%(count)d song (%(time)s)", "%(count)d songs (%(time)s)", len(model)
+            ) % {"count": len(model), "time": format_time_preferred(time)}
         lab.set_text(text)
 
     def __check_expand(self, model, path, iter, lab):
@@ -313,16 +325,12 @@ class QueueExpander(Gtk.Expander):
         self.set_shuffled(button.get_active())
 
     def set_shuffled(self, is_shuffled):
-        self.queue.model.order = (OrderShuffle() if is_shuffled
-                                  else OrderInOrder())
+        self.queue.model.order = OrderShuffle() if is_shuffled else OrderInOrder()
 
     def __update_queue_stop(self, player, song, stopped, model):
         enabled = config.getboolean("memory", "queue_stop_at_end", False)
         songs_left = len(model.get())
-        if (enabled
-                and not stopped
-                and songs_left == 0
-                and self._queue_sourced):
+        if enabled and not stopped and songs_left == 0 and self._queue_sourced:
             app.player.stop()
 
     def __song_started(self, player, song, model):
@@ -378,13 +386,16 @@ class QueueModel(PlaylistModel):
 
 
 class PlayQueue(SongList):
-
     _activated = False
     _MAX_PENDING = 5
     """Maximum number of queue items to leave unpersisted (batching)"""
 
-    def __init__(self, library: Library, player: BasePlayer,
-                 autosave_interval_secs: int | None = None):
+    def __init__(
+        self,
+        library: Library,
+        player: BasePlayer,
+        autosave_interval_secs: int | None = None,
+    ):
         super().__init__(library, player, model_cls=QueueModel, sortable=False)
         self._updated_time = time.time()
         self.autosave_interval = autosave_interval_secs
@@ -397,6 +408,7 @@ class PlayQueue(SongList):
 
         def reset_activated(*args):
             self._activated = False
+
         connect_after_destroy(player, "song-started", reset_activated)
 
         self.connect("popup-menu", self.__popup, library)
@@ -432,8 +444,7 @@ class PlayQueue(SongList):
 
     def __go_to(self, view, path, column, player):
         self._activated = True
-        if player.go_to(self.model.get_iter(path), explicit=True,
-                        source=self.model):
+        if player.go_to(self.model.get_iter(path), explicit=True, source=self.model):
             player.paused = False
 
     def __fill(self, library):
@@ -492,8 +503,9 @@ class PlayQueue(SongList):
         if self.autosave_interval:
             # Generally only save if there are *known* pending updates,
             # but these don´t catch everything, so save regardless every now and again.
-            return ((diff > self.autosave_interval and self._pending)
-                    or diff > self.autosave_interval * 5)
+            return (
+                diff > self.autosave_interval and self._pending
+            ) or diff > self.autosave_interval * 5
         return self._pending >= self._MAX_PENDING
 
     def __popup(self, widget, library):
@@ -502,7 +514,8 @@ class PlayQueue(SongList):
             return
 
         menu = SongsMenu(
-            library, songs, queue=False, remove=False, delete=False, ratings=False)
+            library, songs, queue=False, remove=False, delete=False, ratings=False
+        )
         menu.preseparate()
         remove = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         qltk.add_fake_accel(remove, "Delete")

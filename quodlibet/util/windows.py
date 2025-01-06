@@ -13,11 +13,25 @@ import ctypes
 
 if sys.platform == "win32":
     from . import winapi
-    from .winapi import SHGFPType, CSIDLFlag, CSIDL, GUID, \
-        SHGetFolderPathW, S_OK, MAX_PATH, \
-        KnownFolderFlag, FOLDERID, SHGetKnownFolderPath, CoTaskMemFree, \
-        CoInitialize, IShellLinkW, CoCreateInstance, CLSID_ShellLink, \
-        CLSCTX_INPROC_SERVER, IPersistFile
+    from .winapi import (
+        SHGFPType,
+        CSIDLFlag,
+        CSIDL,
+        GUID,
+        SHGetFolderPathW,
+        S_OK,
+        MAX_PATH,
+        KnownFolderFlag,
+        FOLDERID,
+        SHGetKnownFolderPath,
+        CoTaskMemFree,
+        CoInitialize,
+        IShellLinkW,
+        CoCreateInstance,
+        CLSID_ShellLink,
+        CLSCTX_INPROC_SERVER,
+        IPersistFile,
+    )
 
 
 def open_folder_and_select_items(folder, items=None):
@@ -50,23 +64,23 @@ def open_folder_and_select_items(folder, items=None):
     try:
         winapi.CoInitialize(None)
 
-        winapi.SHParseDisplayName(
-            folder, None, ctypes.byref(parent_id), 0, None)
+        winapi.SHParseDisplayName(folder, None, ctypes.byref(parent_id), 0, None)
 
         winapi.SHGetDesktopFolder(ctypes.byref(desktop))
 
         desktop.BindToObject(
-            parent_id, None, winapi.IShellFolder.IID, ctypes.byref(parent))
+            parent_id, None, winapi.IShellFolder.IID, ctypes.byref(parent)
+        )
 
         for i, item in enumerate(items):
             attrs = winapi.ULONG(0)
             parent.ParseDisplayName(
-                None, None, item, None,
-                ctypes.byref(child_ids[i]), ctypes.byref(attrs))
+                None, None, item, None, ctypes.byref(child_ids[i]), ctypes.byref(attrs)
+            )
 
         winapi.SHOpenFolderAndSelectItems(
-            parent_id, len(child_ids),
-            winapi.PCUITEMID_CHILD_ARRAY(child_ids), 0)
+            parent_id, len(child_ids), winapi.PCUITEMID_CHILD_ARRAY(child_ids), 0
+        )
     finally:
         for child_id in child_ids:
             if child_id:
@@ -126,7 +140,8 @@ def _get_known_path(folder, default=False, create=False):
     guid = GUID(folder)
     try:
         result = SHGetKnownFolderPath(
-            ctypes.byref(guid), flags, None, ctypes.byref(ptr))
+            ctypes.byref(guid), flags, None, ctypes.byref(ptr)
+        )
     except OSError:
         return None
     if result != S_OK:
@@ -185,12 +200,17 @@ def get_link_target(path):
 
     pShellLinkW = IShellLinkW()
     CoCreateInstance(
-        ctypes.byref(CLSID_ShellLink), None, CLSCTX_INPROC_SERVER,
-        ctypes.byref(IShellLinkW.IID), ctypes.byref(pShellLinkW))
+        ctypes.byref(CLSID_ShellLink),
+        None,
+        CLSCTX_INPROC_SERVER,
+        ctypes.byref(IShellLinkW.IID),
+        ctypes.byref(pShellLinkW),
+    )
     try:
         pPersistFile = IPersistFile()
-        pShellLinkW.QueryInterface(ctypes.byref(IPersistFile.IID),
-                                   ctypes.byref(pPersistFile))
+        pShellLinkW.QueryInterface(
+            ctypes.byref(IPersistFile.IID), ctypes.byref(pPersistFile)
+        )
         try:
             buffer_ = ctypes.create_unicode_buffer(path, MAX_PATH)
             pPersistFile.Load(buffer_, 0)

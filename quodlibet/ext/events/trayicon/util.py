@@ -11,8 +11,10 @@ from quodlibet import config
 from quodlibet.plugins import PluginConfig
 
 
-DEFAULT_PATTERN = ("<album|<album~discnumber~part~tracknumber~title~version>|"
-                   "<artist~title~version>>")
+DEFAULT_PATTERN = (
+    "<album|<album~discnumber~part~tracknumber~title~version>|"
+    "<artist~title~version>>"
+)
 
 
 def _get_plugin_config():

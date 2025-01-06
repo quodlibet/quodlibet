@@ -14,8 +14,7 @@ from quodlibet.util.trash import use_trash, trash
 from tests import TestCase, mkstemp, skipUnless
 
 
-class Ttrash(TestCase):
-
+class TTrash(TestCase):
     def setUp(self):
         config.init()
 

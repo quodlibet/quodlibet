@@ -19,7 +19,6 @@ from quodlibet.util import get_module_dir
 
 @pytest.mark.quality
 class TestMypy:
-
     def test_project(self):
         root = Path(get_module_dir(quodlibet))
         orig_cwd = Path.cwd()

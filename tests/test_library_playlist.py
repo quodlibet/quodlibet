@@ -18,10 +18,11 @@ from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 
 def AFrange(*args):
     songs = [
-        AudioFile({"~filename": f"/tmp/{i}.mp3",
-                   "artist": "Foo",
-                   "title": f"track-{i}"})
-        for i in range(*args)]
+        AudioFile(
+            {"~filename": f"/tmp/{i}.mp3", "artist": "Foo", "title": f"track-{i}"}
+        )
+        for i in range(*args)
+    ]
     # Need a mountpoint, or everything goes wrong...
     for song in songs:
         song.sanitize()
@@ -112,7 +113,7 @@ class TPlaylistLibrary(TestCase):
     def test_backup(self):
         pl_path = Path(self.library.pl_dir)
         fn = FileBackedPlaylist.filename_for(PL_NAME)
-        backup = (pl_path / ".backup" / fn)
+        backup = pl_path / ".backup" / fn
         assert backup.exists(), "Didn't backup"
         with open(backup) as f:
             lines = f.readlines()

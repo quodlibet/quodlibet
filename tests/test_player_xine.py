@@ -19,7 +19,6 @@ from . import TestCase, skipUnless
 
 @skipUnless(XinePlaylistPlayer is not None, "no xinebe")
 class TXinePlaylistPlayer(TestCase):
-
     def test_init(self):
         try:
             player = XinePlaylistPlayer(None, SongLibrarian())

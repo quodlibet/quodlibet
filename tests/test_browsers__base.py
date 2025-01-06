@@ -10,8 +10,11 @@
 import os
 from gi.repository import Gtk
 
-from quodlibet.browsers._base import FakeDisplayItem as FDI, \
-    DisplayPatternMixin, FakeDisplayItem
+from quodlibet.browsers._base import (
+    FakeDisplayItem as FDI,
+    DisplayPatternMixin,
+    FakeDisplayItem,
+)
 from quodlibet.util.cover import CoverManager
 from tests import TestCase, init_fake_app, destroy_fake_app, mkstemp, run_gtk_loop
 from .helper import realized, dummy_path
@@ -24,21 +27,27 @@ from quodlibet.library import SongFileLibrary, SongLibrarian
 
 
 SONGS = [
-    AudioFile({
-        "title": "one",
-        "artist": "piman",
-        "~filename": dummy_path("/dev/null"),
-    }),
-    AudioFile({
-        "title": "two",
-        "artist": "mu",
-        "~filename": dummy_path("/dev/zero"),
-    }),
-    AudioFile({
-        "title": "three",
-        "artist": "boris",
-        "~filename": dummy_path("/bin/ls"),
-    })
+    AudioFile(
+        {
+            "title": "one",
+            "artist": "piman",
+            "~filename": dummy_path("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "two",
+            "artist": "mu",
+            "~filename": dummy_path("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "three",
+            "artist": "boris",
+            "~filename": dummy_path("/bin/ls"),
+        }
+    ),
 ]
 SONGS.sort()
 
@@ -60,10 +69,8 @@ class TBrowser(TestCase):
         assert not self.browser.headers
 
     def test_status_bar(self):
-        self.assertEqual(self.browser.status_text(1, "21s"),
-                         "1 song (21s)")
-        self.assertEqual(self.browser.status_text(101, "2:03"),
-                         "101 songs (2:03)")
+        self.assertEqual(self.browser.status_text(1, "21s"), "1 song (21s)")
+        self.assertEqual(self.browser.status_text(101, "2:03"), "101 songs (2:03)")
 
     def tearDown(self):
         self.browser = None
@@ -91,7 +98,6 @@ class TBrowserBase(TestCase):
 
 
 class TBrowserMixin:
-
     def test_menu(self):
         # FIXME: the playlist browser accesses the song list directly
         if self.b.name == "Playlists":
@@ -164,12 +170,10 @@ class TBrowserMixin:
         with realized(self.b):
             if self.b.can_filter_text():
                 self.assertEqual(self.b.get_filter_text(), "")
-                self.assertTrue(
-                    isinstance(self.b.get_filter_text(), str))
+                self.assertTrue(isinstance(self.b.get_filter_text(), str))
                 self.b.filter_text("foo")
                 self.assertEqual(self.b.get_filter_text(), "foo")
-                self.assertTrue(
-                    isinstance(self.b.get_filter_text(), str))
+                self.assertTrue(isinstance(self.b.get_filter_text(), str))
 
     def test_filter_albums(self):
         with realized(self.b):
@@ -190,7 +194,6 @@ class TBrowserMixin:
 
 
 class TFakeDisplayItem(TestCase):
-
     def test_call(self):
         self.assertEqual(FDI()("title"), "Title")
         self.assertEqual(FDI()("~title~artist"), "Title - Artist")
@@ -234,16 +237,13 @@ class TDisplayPatternMixin(TestCase):
         dpm = DummyDPM()
         dpm.load_pattern()
         dpm.update_pattern("static")
-        self.assertEqual(
-            dpm.display_pattern % FakeDisplayItem(),
-            "static")
+        self.assertEqual(dpm.display_pattern % FakeDisplayItem(), "static")
 
     def test_markup(self):
         dpm = DummyDPM()
         dpm.load_pattern()
         item = FakeDisplayItem({"~length": "2:34"})
-        self.assertEqual(dpm.display_pattern % item,
-                             "Name: Artist <b>2:34</b>")
+        self.assertEqual(dpm.display_pattern % item, "Name: Artist <b>2:34</b>")
 
 
 browsers.init()

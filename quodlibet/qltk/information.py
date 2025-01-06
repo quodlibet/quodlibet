@@ -44,18 +44,16 @@ def Label(label=None, markup=None, ellipsize=False):
 
 
 class TitleLabel(Gtk.Label):
-
     def __init__(self, text, is_markup=False):
         super().__init__()
         self.set_ellipsize(Pango.EllipsizeMode.END)
         markup = text if is_markup else (util.italic(text))
-        markup = "<span size='xx-large'>%s</span>" % markup
+        markup = f"<span size='xx-large'>{markup}</span>"
         self.set_markup(markup)
         self.set_selectable(True)
 
 
 class ReactiveCoverImage(CoverImage):
-
     def __init__(self, resize=False, size=125, song=None, tooltip=None):
         super().__init__(resize, size, song)
         self.set_property("no-show-all", True)
@@ -74,6 +72,7 @@ class ReactiveCoverImage(CoverImage):
 def Frame(name, widget):
     def hx(value):
         return hex(int(value * 255))[2:]
+
     f = Gtk.Frame()
     qltk.add_css(f, "* {opacity: 0.9}")
     l = Gtk.Label()
@@ -183,8 +182,7 @@ class OneSong(qltk.Notebook):
             text.append(t)
 
         if "producer" in song:
-            text.append(_("Produced by %s") % (
-                util.escape(song.comma("producer"))))
+            text.append(_("Produced by %s") % (util.escape(song.comma("producer"))))
 
         w = Label(markup="\n".join(text), ellipsize=True)
         hb = Gtk.HBox(spacing=12)
@@ -198,15 +196,23 @@ class OneSong(qltk.Notebook):
     def _people(self, song, box):
         data = []
         if "artist" in song:
-            title = (_("artist") if len(song.list("artist")) == 1
-                     else _("artists"))
+            title = _("artist") if len(song.list("artist")) == 1 else _("artists")
             title = util.capitalize(title)
             data.append((title, song["artist"]))
-        for tag_ in ["performer", "lyricist", "arranger", "composer",
-                     "conductor", "author"]:
+        for tag_ in [
+            "performer",
+            "lyricist",
+            "arranger",
+            "composer",
+            "conductor",
+            "author",
+        ]:
             if tag_ in song:
-                name = (tag(tag_) if len(song.list(tag_)) == 1
-                        else readable(tag_, plural=True))
+                name = (
+                    tag(tag_)
+                    if len(song.list(tag_)) == 1
+                    else readable(tag_, plural=True)
+                )
                 data.append((name, song[tag_]))
         performers = defaultdict(list)
         for tag_ in song:
@@ -216,26 +222,31 @@ class OneSong(qltk.Notebook):
                     performers[role].append(person)
 
         if performers:
-            text = "\n".join("{} ({})".format(", ".join(names), part)
-                             for part, names in performers.items())
+            text = "\n".join(
+                "{} ({})".format(", ".join(names), part)
+                for part, names in performers.items()
+            )
 
-            name = (tag("performer") if len(performers) == 1
-                    else _("performers"))
+            name = tag("performer") if len(performers) == 1 else _("performers")
             data.append((name, text))
 
         table = Table(len(data))
         for i, (key, text) in enumerate(data):
             key = util.capitalize(util.escape(key) + ":")
-            table.attach(Label(markup=key), 0, 1, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL)
+            table.attach(
+                Label(markup=key), 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL
+            )
             label = Label(text, ellipsize=True)
             table.attach(label, 1, 2, i, i + 1)
         box.pack_start(Frame(tag("~people"), table), False, False, 0)
 
     def _library(self, song, box):
         def counter(i):
-            return _("Never") if i == 0 \
+            return (
+                _("Never")
+                if i == 0
                 else numeric_phrase("%(n)d time", "%(n)d times", i, "n")
+            )
 
         def ftime(t):
             if t == 0:
@@ -253,11 +264,13 @@ class OneSong(qltk.Notebook):
         has_rating = "~#rating" in song
 
         t = Table(5)
-        table = [(_("added"), added, True),
-                 (_("last played"), lastplayed, True),
-                 (_("plays"), playcount, True),
-                 (_("skips"), skipcount, True),
-                 (_("rating"), rating, has_rating)]
+        table = [
+            (_("added"), added, True),
+            (_("last played"), lastplayed, True),
+            (_("plays"), playcount, True),
+            (_("skips"), skipcount, True),
+            (_("rating"), rating, has_rating),
+        ]
 
         for i, (l, r, s) in enumerate(table):
             l = util.capitalize(l + ":")
@@ -278,30 +291,30 @@ class OneSong(qltk.Notebook):
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))
-        size = util.format_size(
-            song.get("~#filesize") or filesize(song["~filename"]))
+        size = util.format_size(song.get("~#filesize") or filesize(song["~filename"]))
         mtime = ftime(util.path.mtime(song["~filename"]))
         format_ = song("~format")
         codec = song("~codec")
         encoding = song.comma("~encoding")
         bitrate = song("~bitrate")
 
-        table = [(_("path"), fn),
-                 (_("length"), length),
-                 (_("format"), format_),
-                 (_("codec"), codec),
-                 (_("encoding"), encoding),
-                 (_("bitrate"), bitrate),
-                 (_("file size"), size),
-                 (_("modified"), mtime)]
+        table = [
+            (_("path"), fn),
+            (_("length"), length),
+            (_("format"), format_),
+            (_("codec"), codec),
+            (_("encoding"), encoding),
+            (_("bitrate"), bitrate),
+            (_("file size"), size),
+            (_("modified"), mtime),
+        ]
         t = Table(len(table))
 
         for i, (tag_, text) in enumerate(table):
             tag_ = util.capitalize(util.escape(tag_) + ":")
             lab = Label(text)
             lab.set_ellipsize(Pango.EllipsizeMode.MIDDLE)
-            t.attach(Label(tag_), 0, 1, i, i + 1,
-                     xoptions=Gtk.AttachOptions.FILL)
+            t.attach(Label(tag_), 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL)
             t.attach(lab, 1, 2, i, i + 1)
 
         box.pack_start(Frame(_("File"), t), False, False, 0)
@@ -317,8 +330,10 @@ class OneSong(qltk.Notebook):
             markup_data.append(("comment", markups))
 
         if "website" in song:
-            markups = [f'<a href="{util.escape(website)}">{util.escape(website)}</a>'
-                       for website in song.list("website")]
+            markups = [
+                f'<a href="{util.escape(website)}">{util.escape(website)}</a>'
+                for website in song.list("website")
+            ]
             markup_data.append(("website", markups))
 
         table = Table(1)
@@ -352,7 +367,7 @@ class OneAlbum(qltk.Notebook):
         self.title = text = song["album"]
         markup = util.italic(text)
         if "date" in song:
-            markup += " <small>(%s)</small>" % util.escape(song("~year"))
+            markup += " <small>({})</small>".format(util.escape(song("~year")))
         box.pack_start(TitleLabel(markup, is_markup=True), False, False, 0)
 
     def _album(self, songs, box):
@@ -361,11 +376,11 @@ class OneAlbum(qltk.Notebook):
         discs = {}
         for song in songs:
             try:
-                discs[song("~#disc")] = int(
-                    song["tracknumber"].split("/")[1])
+                discs[song("~#disc")] = int(song["tracknumber"].split("/")[1])
             except (AttributeError, ValueError, IndexError, KeyError):
-                discs[song("~#disc")] = max([
-                    song("~#track", discs.get(song("~#disc"), 0))])
+                discs[song("~#disc")] = max(
+                    [song("~#track", discs.get(song("~#disc"), 0))]
+                )
         tracks = sum(discs.values())
         discs = len(discs)
         length = sum([song.get("~#length", 0) for song in songs])
@@ -375,16 +390,15 @@ class OneAlbum(qltk.Notebook):
 
         parts = []
         if discs > 1:
-            parts.append(
-                ngettext("%d disc", "%d discs", discs) % discs)
-        parts.append(
-                ngettext("%d track", "%d tracks", tracks) % tracks)
+            parts.append(ngettext("%d disc", "%d discs", discs) % discs)
+        parts.append(ngettext("%d track", "%d tracks", tracks) % tracks)
         if tracks != len(songs):
-            parts.append(ngettext("%d selected", "%d selected",
-                len(songs)) % len(songs))
+            parts.append(
+                ngettext("%d selected", "%d selected", len(songs)) % len(songs)
+            )
 
         text.append(", ".join(parts))
-        text.append("(%s)" % util.format_time_preferred(length))
+        text.append(f"({util.format_time_preferred(length)})")
 
         if "location" in song:
             text.append(util.escape(song["location"]))
@@ -393,8 +407,7 @@ class OneAlbum(qltk.Notebook):
             text.append(t)
 
         if "producer" in song:
-            text.append(_("Produced by %s") % (
-                util.escape(song.comma("producer"))))
+            text.append(_("Produced by %s") % (util.escape(song.comma("producer"))))
 
         w = Label(markup="\n".join(text), ellipsize=True)
         hb = Gtk.HBox(spacing=12)
@@ -423,8 +436,9 @@ class OneAlbum(qltk.Notebook):
         table = Table(len(data))
         for i, (key, text) in enumerate(data):
             key = util.capitalize(util.escape(key) + ":")
-            table.attach(Label(markup=key), 0, 1, i, i + 1,
-                         xoptions=Gtk.AttachOptions.FILL)
+            table.attach(
+                Label(markup=key), 0, 1, i, i + 1, xoptions=Gtk.AttachOptions.FILL
+            )
             label = Label(text, ellipsize=True)
             table.attach(label, 1, 2, i, i + 1)
         box.pack_start(Frame(tag("~people"), table), False, False, 0)
@@ -454,8 +468,11 @@ class OneAlbum(qltk.Notebook):
             cur_track += 1
             ts = "    " * (bool(disc) + bool(part))
             while cur_track < track:
-                text.append("{ts}{cur: >2}. {text}".format(
-                    ts=ts, cur=cur_track, text=_("Track unavailable")))
+                text.append(
+                    "{ts}{cur: >2}. {text}".format(
+                        ts=ts, cur=cur_track, text=_("Track unavailable")
+                    )
+                )
                 cur_track += 1
             title = util.italic(song.comma("~title~version"))
             text.append(f"{ts}{track: >2}. {title}")
@@ -492,8 +509,10 @@ class OneArtist(qltk.Notebook):
         covers = [(a, get_cover(s), s) for d, s, a in albums]
         albums = [format(a) for a in albums]
         if noalbum:
-            albums.append(ngettext("%d song with no album",
-                                   "%d songs with no album", noalbum) % noalbum)
+            albums.append(
+                ngettext("%d song with no album", "%d songs with no album", noalbum)
+                % noalbum
+            )
         l = Label(markup="\n".join(albums), ellipsize=True)
         box.pack_start(Frame(_("Selected Discography"), l), False, False, 0)
 
@@ -508,16 +527,17 @@ class OneArtist(qltk.Notebook):
             cov = ReactiveCoverImage(song=song, tooltip=album)
             c = i % 4
             r = i // 4
-            t.attach(cov, c, c + 1, r, r + 1,
-                     xoptions=Gtk.AttachOptions.EXPAND, yoptions=0)
+            t.attach(
+                cov, c, c + 1, r, r + 1, xoptions=Gtk.AttachOptions.EXPAND, yoptions=0
+            )
             added.add(cover.name)
         box.pack_start(t, True, True, 0)
 
 
 def _sort_albums(songs):
     """:return: a tuple of (albums, count) where
-        count is the number of album-less songs and
-        albums is a list of (date, song, album), sorted"""
+    count is the number of album-less songs and
+    albums is a list of (date, song, album), sorted"""
     no_album_count = 0
     albums = {}
     for song in songs:
@@ -525,8 +545,7 @@ def _sort_albums(songs):
             albums[song.list("album")[0]] = song
         else:
             no_album_count += 1
-    albums = [(song.get("date", ""), song, album) for
-              album, song in albums.items()]
+    albums = [(song.get("date", ""), song, album) for album, song in albums.items()]
     albums.sort()
     return albums, no_album_count
 
@@ -562,11 +581,12 @@ class ManySongs(qltk.Notebook):
         num_artists = len(artists)
 
         if none:
-            artists.append(ngettext("%d song with no artist",
-                                    "%d songs with no artist", none) % none)
+            artists.append(
+                ngettext("%d song with no artist", "%d songs with no artist", none)
+                % none
+            )
         label = Label(markup=util.escape("\n".join(artists)), ellipsize=True)
-        frame = Frame("%s (%d)" % (util.capitalize(_("artists")), num_artists),
-                      label)
+        frame = Frame("%s (%d)" % (util.capitalize(_("artists")), num_artists), label)
         box.pack_start(frame, False, False, 0)
 
     def _album(self, songs, box):
@@ -582,9 +602,9 @@ class ManySongs(qltk.Notebook):
 
         markup = "\n".join(util.italic(a) for a in albums)
         if none:
-            text = ngettext("%d song with no album",
-                            "%d songs with no album",
-                            none) % none
+            text = (
+                ngettext("%d song with no album", "%d songs with no album", none) % none
+            )
             markup += f"\n{util.escape(text)}"
 
         label = Label()
@@ -602,12 +622,13 @@ class ManySongs(qltk.Notebook):
             except OSError:
                 pass
         table = Table(2)
-        table.attach(Label(_("Total length:")), 0, 1, 0, 1,
-                     xoptions=Gtk.AttachOptions.FILL)
         table.attach(
-            Label(util.format_time_preferred(length)), 1, 2, 0, 1)
-        table.attach(Label(_("Total size:")), 0, 1, 1, 2,
-                     xoptions=Gtk.AttachOptions.FILL)
+            Label(_("Total length:")), 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL
+        )
+        table.attach(Label(util.format_time_preferred(length)), 1, 2, 0, 1)
+        table.attach(
+            Label(_("Total size:")), 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL
+        )
         table.attach(Label(util.format_size(size)), 1, 2, 1, 2)
         box.pack_start(Frame(_("Files"), table), False, False, 0)
 

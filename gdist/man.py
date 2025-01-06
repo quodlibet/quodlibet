@@ -59,7 +59,7 @@ class InstallMan(Command):
         self.man_pages = self.distribution.man_pages
         for man_page in self.man_pages:
             if not man_page[-1].isdigit():
-                raise SystemExit("%r has no section" % man_page)
+                raise SystemExit(f"{man_page!r} has no section")
 
     def get_outputs(self):
         return self.outfiles
@@ -76,5 +76,6 @@ class InstallMan(Command):
             fullpath = os.path.join(manpath, os.path.basename(man_page))
             (out, _) = self.copy_file(man_page, fullpath)
             self.outfiles.append(out)
+
 
 __all__ = ["InstallMan"]

@@ -8,8 +8,14 @@
 from tests import TestCase
 from io import BytesIO
 
-from quodlibet.util.picklehelper import pickle_load, pickle_loads, \
-    pickle_dumps, pickle_dump, PicklingError, UnpicklingError
+from quodlibet.util.picklehelper import (
+    pickle_load,
+    pickle_loads,
+    pickle_dumps,
+    pickle_dump,
+    PicklingError,
+    UnpicklingError,
+)
 
 
 class A(dict):
@@ -21,7 +27,6 @@ class B(dict):
 
 
 class Tpickle_load(TestCase):
-
     def test_pickle_load(self):
         data = {b"foo": "bar", "quux": b"baz"}
 
@@ -37,7 +42,6 @@ class Tpickle_load(TestCase):
             pickle_load(BytesIO(b""))
 
     def test_switch_class(self):
-
         def lookup_func(base, module, name):
             if name == "A":
                 return B
@@ -52,7 +56,6 @@ class Tpickle_load(TestCase):
             assert pickle_loads(pickle_dumps(v)) == v
 
     def test_pickle_dumps_fail(self):
-
         class A:
             def __getstate__(self):
                 raise Exception

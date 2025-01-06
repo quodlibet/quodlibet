@@ -20,7 +20,6 @@ class TagsCombo(TestCase):
 
 
 class TagsComboMixin:
-
     def test_none(self):
         self.assertRaises(ValueError, self.Kind, [])
 
@@ -39,12 +38,14 @@ class TagsComboMixin:
 @skipIf(is_wayland(), "crashes..")
 class TTagsComboBox(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBox as Kind
+
     Kind  # noqa
 
 
 @skipIf(is_wayland(), "crashes..")
 class TTagsComboBoxEntry(TagsCombo, TagsComboMixin):
     from quodlibet.qltk.tagscombobox import TagsComboBoxEntry as Kind
+
     Kind  # noqa
 
     def test_custom(self):

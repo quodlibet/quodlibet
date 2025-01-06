@@ -32,36 +32,46 @@ class StrategyText:
 
 STRATEGY_TEXTS = {  #
     UpdateStrategy.AFTER_PLAY_NOT_SKIP: StrategyText(
-            _("After every play (default)"),
-            _("Whenever a song was played but not skipped, "
-              "the plugin will write the tags to the file. "
-              "Skip counts aren't stored in files at all, "
-              "so this avoids unnecessary writes.")),
+        _("After every play (default)"),
+        _(
+            "Whenever a song was played but not skipped, "
+            "the plugin will write the tags to the file. "
+            "Skip counts aren't stored in files at all, "
+            "so this avoids unnecessary writes."
+        ),
+    ),
     UpdateStrategy.AFTER_PLAY_OR_SKIP: StrategyText(
-            _("After every play or skip"),
-            _("Whenever a song was played or skipped, "
-              "the plugin will write the tags to the file. "
-              "Can be useful if you want to make sure that ratings of songs "
-              "you dislike and thus skipped are written to the files.")),
+        _("After every play or skip"),
+        _(
+            "Whenever a song was played or skipped, "
+            "the plugin will write the tags to the file. "
+            "Can be useful if you want to make sure that ratings of songs "
+            "you dislike and thus skipped are written to the files."
+        ),
+    ),
     UpdateStrategy.ONCE_ALBUM_RATED: StrategyText(
-            _("Once, when album fully rated"),
-            _("When a song was played or skipped, the album of that song will "
-              "be checked. If every song in the album has been rated and at "
-              "least one has no ratings or play counts stored in its file, "
-              "the plugin will write the tags to the songs' files.\n\n"
-              
-              "Use this to avoid constant file updates, "
-              "but be aware that once an album was updated, "
-              "you'll have to use the 'Update Tags in Files' plugin "
-              "whenever you want modified ratings and play counts "
-              "to be written to the files."))}
+        _("Once, when album fully rated"),
+        _(
+            "When a song was played or skipped, the album of that song will "
+            "be checked. If every song in the album has been rated and at "
+            "least one has no ratings or play counts stored in its file, "
+            "the plugin will write the tags to the songs' files.\n\n"
+            "Use this to avoid constant file updates, "
+            "but be aware that once an album was updated, "
+            "you'll have to use the 'Update Tags in Files' plugin "
+            "whenever you want modified ratings and play counts "
+            "to be written to the files."
+        ),
+    ),
+}
 
 PLAY_COUNT_ABOVE_ZERO_TOOLTIP = _(
-        "When the plugin writes the tags of an album, "
-        "it will first set the play count of the songs which are zero to one.\n"
-        "Sometimes you already know that you don't like a song, "
-        "so setting it to one when saving can be useful later on, "
-        "when searching for albums you have fully listened to (%s).")
+    "When the plugin writes the tags of an album, "
+    "it will first set the play count of the songs which are zero to one.\n"
+    "Sometimes you already know that you don't like a song, "
+    "so setting it to one when saving can be useful later on, "
+    "when searching for albums you have fully listened to (%s)."
+)
 
 WRITE_ERROR_FMT = _("Couldn't write '%s'")
 
@@ -69,10 +79,12 @@ WRITE_ERROR_FMT = _("Couldn't write '%s'")
 class Config:
     _config = PluginConfig("autoupdatetagsinfiles")
 
-    update_strategy = IntConfProp(_config, "update_strategy",
-                                  UpdateStrategy.AFTER_PLAY_NOT_SKIP.value)
+    update_strategy = IntConfProp(
+        _config, "update_strategy", UpdateStrategy.AFTER_PLAY_NOT_SKIP.value
+    )
     ensure_play_counts_above_zero = BoolConfProp(  # useful for searching
-            _config, "ensure_play_counts_above_zero", False)
+        _config, "ensure_play_counts_above_zero", False
+    )
 
 
 CONFIG = Config()
@@ -81,8 +93,10 @@ CONFIG = Config()
 class AutoUpdateTagsInFiles(EventPlugin):
     PLUGIN_ID = "AutoUpdateTagsInFiles"
     PLUGIN_NAME = _("Auto Update Tags in Files")
-    PLUGIN_DESC = _("When songs were played, update the tags in their files. "
-                    "This will ensure play counts and ratings are up to date.")
+    PLUGIN_DESC = _(
+        "When songs were played, update the tags in their files. "
+        "This will ensure play counts and ratings are up to date."
+    )
     PLUGIN_ICON = Icons.DOCUMENT_SAVE
 
     def PluginPreferences(self, _):
@@ -92,12 +106,18 @@ class AutoUpdateTagsInFiles(EventPlugin):
         if not config.getboolean("editing", "save_to_songs"):
             config.set("editing", "save_to_songs", True)
 
-            warning_text = _("The following setting was enabled as it's "
-                             "required for this plugin to work:\n\n%s")
+            warning_text = _(
+                "The following setting was enabled as it's "
+                "required for this plugin to work:\n\n%s"
+            )
             setting_name = _("Save ratings and play _counts in tags")
 
-            Message(Gtk.MessageType.INFO, app.window, _("Settings updated"),
-                    warning_text % setting_name.replace("_", "")).run()
+            Message(
+                Gtk.MessageType.INFO,
+                app.window,
+                _("Settings updated"),
+                warning_text % setting_name.replace("_", ""),
+            ).run()
 
     def plugin_on_song_ended(self, song, skipped):
         if song is None or not is_writable(song):
@@ -181,14 +201,14 @@ class AutoUpdateTagsPrefs(Gtk.Box):
             CONFIG.ensure_play_counts_above_zero = button.get_active()
 
         ensure_play_count_checkbutton = Gtk.CheckButton(
-                label=_("Ensure play counts are above zero when saving"),
-                valign=Gtk.Align.START)
+            label=_("Ensure play counts are above zero when saving"),
+            valign=Gtk.Align.START,
+        )
         ensure_play_count_checkbutton.set_tooltip_text(
-                PLAY_COUNT_ABOVE_ZERO_TOOLTIP % "#(playcount:min = 1)")
-        ensure_play_count_checkbutton.set_active(
-                CONFIG.ensure_play_counts_above_zero)
-        ensure_play_count_checkbutton.connect("toggled",
-                                              ensure_play_count_toggled)
+            PLAY_COUNT_ABOVE_ZERO_TOOLTIP % "#(playcount:min = 1)"
+        )
+        ensure_play_count_checkbutton.set_active(CONFIG.ensure_play_counts_above_zero)
+        ensure_play_count_checkbutton.connect("toggled", ensure_play_count_toggled)
 
         album_box = strategy_boxes[UpdateStrategy.ONCE_ALBUM_RATED]
         album_box.pack_start(ensure_play_count_checkbutton, False, False, 0)

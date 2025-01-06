@@ -9,6 +9,5 @@ from quodlibet.update import UpdateDialog
 
 
 class TUpdateDialog(TestCase):
-
     def test_main(self):
         UpdateDialog(None).destroy()

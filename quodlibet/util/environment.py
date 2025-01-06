@@ -109,8 +109,14 @@ def dbus_name_owned(name):
 
     try:
         bus = Gio.DBusProxy.new_for_bus_sync(
-            Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-            BUS_DAEMON_NAME, BUS_DAEMON_PATH, BUS_DAEMON_IFACE, None)
+            Gio.BusType.SESSION,
+            Gio.DBusProxyFlags.NONE,
+            None,
+            BUS_DAEMON_NAME,
+            BUS_DAEMON_PATH,
+            BUS_DAEMON_IFACE,
+            None,
+        )
         return bus.NameHasOwner("(s)", name)
     except GLib.Error:
         return False

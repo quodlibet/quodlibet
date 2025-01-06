@@ -12,6 +12,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import GLib
@@ -44,8 +45,14 @@ def is_valid_presence_type(x):
 
 def get_active_account_paths():
     bus_iface = Gio.DBusProxy.new_for_bus_sync(
-        Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-        AM_NAME, AM_PATH, PROPS_IFACE, None)
+        Gio.BusType.SESSION,
+        Gio.DBusProxyFlags.NONE,
+        None,
+        AM_NAME,
+        AM_PATH,
+        PROPS_IFACE,
+        None,
+    )
     return bus_iface.Get("(ss)", AM_IFACE, "ValidAccounts")
 
 
@@ -53,10 +60,9 @@ def set_accounts_requested_presence(paths, message):
     bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
     for path in paths:
         bus_iface = Gio.DBusProxy.new_sync(
-            bus, Gio.DBusProxyFlags.NONE, None,
-            AM_NAME, path, PROPS_IFACE, None)
-        presence_type, status = bus_iface.Get(
-            "(ss)", AC_IFACE, "CurrentPresence")[:2]
+            bus, Gio.DBusProxyFlags.NONE, None, AM_NAME, path, PROPS_IFACE, None
+        )
+        presence_type, status = bus_iface.Get("(ss)", AC_IFACE, "CurrentPresence")[:2]
         if not is_valid_presence_type(presence_type):
             presence_type = CONN_PRESENCE_TYPE_AVAILABLE
         value = GLib.Variant("(uss)", (presence_type, status, message))
@@ -66,20 +72,22 @@ def set_accounts_requested_presence(paths, message):
 class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
     PLUGIN_ID = "Telepathy Status"
     PLUGIN_NAME = _("Telepathy Status Messages")
-    PLUGIN_DESC = _("Updates all Telepathy-based IM accounts (as configured "
-                    "in Empathy etc) with a status message based on current "
-                    "song.")
+    PLUGIN_DESC = _(
+        "Updates all Telepathy-based IM accounts (as configured "
+        "in Empathy etc) with a status message based on current "
+        "song."
+    )
     PLUGIN_ICON = Icons.FACE_SMILE
 
     DEFAULT_PAT = "♫ <~artist~title> ♫"
-    DEFAULT_PAT_PAUSED = "<~artist~title> [%s]" % _("paused")
+    DEFAULT_PAT_PAUSED = "<~artist~title> [{}]".format(_("paused"))
     CFG_STATUS_SONGLESS = "no_song_text"
     CFG_LEAVE_STATUS = "leave_status"
     CFG_PAT_PLAYING = "playing_pattern"
     CFG_PAT_PAUSED = "paused_pattern"
 
     def _set_status(self, text):
-        print_d('Setting status to "%s"...' % text)
+        print_d(f'Setting status to "{text}"...')
         self.status = text
         try:
             accounts = get_active_account_paths()
@@ -93,8 +101,11 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         self.song = song
         pat_str = self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT)
         pattern = Pattern(pat_str)
-        status = (pattern.format(song) if song
-                       else self.config_get(self.CFG_STATUS_SONGLESS, ""))
+        status = (
+            pattern.format(song)
+            if song
+            else self.config_get(self.CFG_STATUS_SONGLESS, "")
+        )
         self._set_status(status)
 
     def plugin_on_paused(self):
@@ -121,14 +132,13 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         # Playing
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.config_get(self.CFG_PAT_PLAYING,
-                                       self.DEFAULT_PAT))
-        entry.connect("changed", self.config_entry_changed,
-                      self.CFG_PAT_PLAYING)
+        entry.set_text(self.config_get(self.CFG_PAT_PLAYING, self.DEFAULT_PAT))
+        entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PLAYING)
         lbl = Gtk.Label(label=_("Playing:"))
-        entry.set_tooltip_markup(_("Status text when a song is started. "
-                                 "Accepts QL Patterns e.g. %s")
-                                 % util.monospace("<~artist~title>"))
+        entry.set_tooltip_markup(
+            _("Status text when a song is started. " "Accepts QL Patterns e.g. %s")
+            % util.monospace("<~artist~title>")
+        )
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
@@ -137,14 +147,13 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         # Paused
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.config_get(self.CFG_PAT_PAUSED,
-                                    self.DEFAULT_PAT_PAUSED))
-        entry.connect("changed", self.config_entry_changed,
-                      self.CFG_PAT_PAUSED)
+        entry.set_text(self.config_get(self.CFG_PAT_PAUSED, self.DEFAULT_PAT_PAUSED))
+        entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PAUSED)
         lbl = Gtk.Label(label=_("Paused:"))
-        entry.set_tooltip_markup(_("Status text when a song is paused. "
-                                   "Accepts QL Patterns e.g. %s")
-                                   % util.monospace("<~artist~title>"))
+        entry.set_tooltip_markup(
+            _("Status text when a song is paused. " "Accepts QL Patterns e.g. %s")
+            % util.monospace("<~artist~title>")
+        )
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
@@ -154,10 +163,8 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
         entry.set_text(self.config_get(self.CFG_STATUS_SONGLESS, ""))
-        entry.connect("changed", self.config_entry_changed,
-                      self.CFG_STATUS_SONGLESS)
-        entry.set_tooltip_text(
-                _("Plain text for status when there is no current song"))
+        entry.connect("changed", self.config_entry_changed, self.CFG_STATUS_SONGLESS)
+        entry.set_tooltip_text(_("Plain text for status when there is no current song"))
         lbl = Gtk.Label(label=_("No song:"))
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)

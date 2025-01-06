@@ -79,7 +79,6 @@ def pickle_load(file, lookup_func=None):
     if lookup_func is not None:
 
         class CustomUnpickler(pickle.Unpickler):
-
             def find_class(self, module, name):
                 func = super().find_class
                 return lookup_func(func, module, name)

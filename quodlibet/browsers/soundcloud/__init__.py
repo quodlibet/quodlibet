@@ -8,6 +8,6 @@
 from quodlibet import app
 from .main import SoundcloudBrowser
 
-browsers = ([SoundcloudBrowser]
-            if not app.player or app.player.can_play_uri("http://")
-            else [])
+browsers = (
+    [SoundcloudBrowser] if not app.player or app.player.can_play_uri("http://") else []
+)

@@ -27,16 +27,19 @@ class IFPUpload(SongsMenuPlugin):
     def plugin_songs(self, songs):
         if os.system("ifp typestring"):
             qltk.ErrorMessage(
-                None, _("No iFP device found"),
-                _("Unable to contact your iFP device. Check "
-                  "that the device is powered on and plugged "
-                  "in, and that you have ifp-line "
-                  "(http://ifp-driver.sf.net) installed.")).run()
+                None,
+                _("No iFP device found"),
+                _(
+                    "Unable to contact your iFP device. Check "
+                    "that the device is powered on and plugged "
+                    "in, and that you have ifp-line "
+                    "(http://ifp-driver.sf.net) installed."
+                ),
+            ).run()
             return True
         self.__madedir = []
 
-        w = WaitLoadWindow(
-            None, len(songs), _("Uploading %(current)d/%(total)d"))
+        w = WaitLoadWindow(None, len(songs), _("Uploading %(current)d/%(total)d"))
         w.show()
 
         for _i, song in enumerate(songs):
@@ -55,11 +58,16 @@ class IFPUpload(SongsMenuPlugin):
         # Avoid spurious calls to ifp mkdir; this can take a long time
         # on a noisy USB line.
         if dirname not in self.__madedir:
-            os.system("ifp mkdir %r> /dev/null 2>/dev/null" % dirname)
+            os.system(f"ifp mkdir {dirname!r}> /dev/null 2>/dev/null")
             self.__madedir.append(dirname)
         if os.system(f"ifp upload {filename!r} {target!r} > /dev/null"):
-            tmpl = _("Unable to upload %s."
-                     "The device may be out of space, or turned off.")
-            qltk.ErrorMessage(None, _("Error uploading"), tmpl % util.bold(filename),
-                              escape_desc=False).run()
+            tmpl = _(
+                "Unable to upload %s." "The device may be out of space, or turned off."
+            )
+            qltk.ErrorMessage(
+                None,
+                _("Error uploading"),
+                tmpl % util.bold(filename),
+                escape_desc=False,
+            ).run()
             return True

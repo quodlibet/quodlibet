@@ -20,12 +20,12 @@ class RefreshSongs(SongsMenuPlugin):
     PLUGIN_ID = "refresh-songs"
     # Translators: Plugin name
     PLUGIN_NAME = _("Rescan Songs")
-    PLUGIN_DESC = _("Checks for file changes and reloads / removes "
-                    "the songs if needed.")
+    PLUGIN_DESC = _(
+        "Checks for file changes and reloads / removes " "the songs if needed."
+    )
     PLUGIN_ICON = Icons.VIEW_REFRESH
 
     def plugin_songs(self, songs):
-
         def check_songs():
             desc = numeric_phrase("%d song", "%d songs", len(songs))
             with Task(_("Rescan songs"), desc) as task:

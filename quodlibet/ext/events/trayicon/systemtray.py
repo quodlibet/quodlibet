@@ -88,9 +88,19 @@ def new_with_paused_emblem(icon_pixbuf):
     # we expect below that the icon fits into the icon including padding
     wo = min(w - wpad, wo)
     ho = min(h - hpad, ho)
-    overlay.composite(base, w - wo - wpad, h - ho - hpad,
-                      wo, ho, w - wo - wpad, h - ho - hpad,
-                      1.0, 1.0, GdkPixbuf.InterpType.BILINEAR, 255)
+    overlay.composite(
+        base,
+        w - wo - wpad,
+        h - ho - hpad,
+        wo,
+        ho,
+        w - wo - wpad,
+        h - ho - hpad,
+        1.0,
+        1.0,
+        GdkPixbuf.InterpType.BILINEAR,
+        255,
+    )
 
     return True, base
 
@@ -108,8 +118,7 @@ class SystemTray(BaseIndicator):
 
         self._icon = Gtk.StatusIcon()
         self.__icon_theme = Gtk.IconTheme.get_default()
-        self.__theme_sig = self.__icon_theme.connect("changed",
-            self.__theme_changed)
+        self.__theme_sig = self.__icon_theme.connect("changed", self.__theme_changed)
 
         self._icon.connect("size-changed", self.__size_changed)
         self._icon.connect("notify::embedded", self.__embedded_changed)
@@ -120,8 +129,7 @@ class SystemTray(BaseIndicator):
         self._icon.connect("scroll-event", self.__scroll)
         self._icon.connect("button-press-event", self.__button_middle)
 
-        self.__w_sig_del = app.window.connect("delete-event",
-                                              self.__window_delete)
+        self.__w_sig_del = app.window.connect("delete-event", self.__window_delete)
 
         # If after the main loop is idle and 3 seconds have passed
         # the tray icon isn't embedded, assume it won't be and unhide
@@ -193,7 +201,8 @@ class SystemTray(BaseIndicator):
             return
 
         self.__popup_menu(
-            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
+            self._icon, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
+        )
 
     def __embedded_changed(self, icon, *args):
         if icon.get_property("embedded"):
@@ -219,7 +228,8 @@ class SystemTray(BaseIndicator):
                 flags = Gtk.IconLookupFlags.FORCE_SIZE
             try:
                 self.__pixbuf = self.__icon_theme.load_icon(
-                    Icons.QUODLIBET, self.__size, flags)
+                    Icons.QUODLIBET, self.__size, flags
+                )
             except GLib.GError:
                 util.print_exc()
                 return
@@ -228,8 +238,7 @@ class SystemTray(BaseIndicator):
         # the KDE panel will emit size-changed until we reach 0
         w, h = self.__pixbuf.get_width(), self.__pixbuf.get_height()
         if h < self.__size:
-            bg = GdkPixbuf.Pixbuf.new(
-                GdkPixbuf.Colorspace.RGB, True, 8, w, self.__size)
+            bg = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, w, self.__size)
             bg.fill(0)
             self.__pixbuf.copy_area(0, 0, w, h, bg, 0, (self.__size - h) / 2)
             self.__pixbuf = bg
@@ -285,8 +294,10 @@ class SystemTray(BaseIndicator):
             self.__show_window()
 
     def __button_middle(self, widget, event, _last_timestamp=[0]):  # noqa
-        if event.type == Gdk.EventType.BUTTON_PRESS and \
-                event.button == Gdk.BUTTON_MIDDLE:
+        if (
+            event.type == Gdk.EventType.BUTTON_PRESS
+            and event.button == Gdk.BUTTON_MIDDLE
+        ):
             if self.__destroy_win32_menu():
                 return
             # work around gnome shell (3.14) bug, it sends middle clicks twice

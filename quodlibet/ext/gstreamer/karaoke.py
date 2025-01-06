@@ -18,10 +18,8 @@ from quodlibet.qltk.util import GSignals
 _PLUGIN_ID = "karaoke"
 
 _SETTINGS = {
-    "band": [_("Filter _band:"),
-             _("The Frequency band of the filter"), 220.0],
-    "width": [_("Filter _width:"),
-              _("The Frequency width of the filter"), 100.0],
+    "band": [_("Filter _band:"), _("The Frequency band of the filter"), 220.0],
+    "width": [_("Filter _width:"), _("The Frequency width of the filter"), 100.0],
     "level": [_("_Level:"), _("Level of the effect"), 1.0],
 }
 
@@ -58,9 +56,14 @@ class Preferences(Gtk.VBox):
             label.set_padding(0, 6)
             label.set_tooltip_text(_SETTINGS[key][1])
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
 
         def scale_changed(scale, option):
             value = scale.get_value()
@@ -77,7 +80,8 @@ class Preferences(Gtk.VBox):
             step = steps[idx]
             page = pages[idx]
             scale = Gtk.HScale(
-                adjustment=Gtk.Adjustment.new(0, 0, max_value, step, page, 0))
+                adjustment=Gtk.Adjustment.new(0, 0, max_value, step, page, 0)
+            )
             scales[key] = scale
             if step < 0.1:
                 scale.set_digits(2)
@@ -90,15 +94,16 @@ class Preferences(Gtk.VBox):
 
         def format_perc(scale, value):
             return _("%d %%") % (value * 100)
+
         scales["level"].connect("format-value", format_perc)
 
         def format_hertz(scale, value):
             return _("%d Hz") % value
+
         scales["band"].connect("format-value", format_hertz)
         scales["width"].connect("format-value", format_hertz)
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table),
-                        True, True, 0)
+        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
 
 class Karaoke(GStreamerPlugin):
@@ -126,4 +131,5 @@ class Karaoke(GStreamerPlugin):
 
 if not Karaoke.setup_element():
     raise PluginImportError(
-        "GStreamer element 'audiokaraoke' missing (gst-plugins-good)")
+        "GStreamer element 'audiokaraoke' missing (gst-plugins-good)"
+    )

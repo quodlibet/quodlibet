@@ -24,6 +24,7 @@ class WavpackFile(APEv2File):
         self["~#samplerate"] = audio.info.sample_rate
         self.sanitize(filename)
 
+
 loader = WavpackFile
 types = [WavpackFile]
 extensions = [".wv"]

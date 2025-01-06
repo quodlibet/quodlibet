@@ -14,8 +14,7 @@ extensions = [".mp3", ".mp2", ".mp1", ".mpg", ".mpeg"]
 
 class MP3File(ID3File):
     format = "MPEG-1/2"
-    mimes = ["audio/mp3", "audio/x-mp3", "audio/mpeg", "audio/mpg",
-             "audio/x-mpeg"]
+    mimes = ["audio/mp3", "audio/x-mp3", "audio/mpeg", "audio/mpg", "audio/x-mpeg"]
     Kind = MP3
 
     def _parse_info(self, info):

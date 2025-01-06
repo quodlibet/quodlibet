@@ -10,7 +10,6 @@ from quodlibet.formats.trueaudio import TrueAudioFile
 
 
 class TTrueAudioFile(TestCase):
-
     def setUp(self):
         self.song = TrueAudioFile(get_data_path("silence-44-s.tta"))
 

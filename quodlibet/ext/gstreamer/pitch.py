@@ -62,9 +62,14 @@ class Preferences(Gtk.VBox):
             label.set_alignment(0.0, 0.5)
             label.set_padding(0, 6)
             label.set_use_underline(True)
-            table.attach(label, 0, 1, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                label,
+                0,
+                1,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
 
         def scale_changed(scale, option):
             value = scale.get_value()
@@ -81,14 +86,18 @@ class Preferences(Gtk.VBox):
             table.attach(scale, 1, 2, idx, idx + 1)
             spin = Gtk.SpinButton(adjustment=adjustment)
             spin.set_digits(2)
-            table.attach(spin, 2, 3, idx, idx + 1,
-                         xoptions=Gtk.AttachOptions.FILL |
-                         Gtk.AttachOptions.SHRINK)
+            table.attach(
+                spin,
+                2,
+                3,
+                idx,
+                idx + 1,
+                xoptions=Gtk.AttachOptions.FILL | Gtk.AttachOptions.SHRINK,
+            )
             scale.connect("value-changed", scale_changed, key)
             scale.set_value(get_cfg(key))
 
-        self.pack_start(qltk.Frame(_("Preferences"), child=table),
-                        True, True, 0)
+        self.pack_start(qltk.Frame(_("Preferences"), child=table), True, True, 0)
 
 
 class Pitch(GStreamerPlugin):
@@ -113,5 +122,4 @@ class Pitch(GStreamerPlugin):
 
 
 if not Pitch.setup_element():
-    raise PluginImportError(
-        "GStreamer element 'pitch' missing (gst-plugins-bad)")
+    raise PluginImportError("GStreamer element 'pitch' missing (gst-plugins-bad)")

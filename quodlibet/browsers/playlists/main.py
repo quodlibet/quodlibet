@@ -38,9 +38,13 @@ from quodlibet.util import connect_obj
 from quodlibet.util.collection import Playlist
 from quodlibet.util.dprint import print_d, print_w
 from quodlibet.util.urllib import urlopen
-from .util import parse_m3u, parse_pls, _name_for, \
-    confirm_remove_playlist_dialog_invoke, \
-    confirm_dnd_playlist_dialog_invoke
+from .util import (
+    parse_m3u,
+    parse_pls,
+    _name_for,
+    confirm_remove_playlist_dialog_invoke,
+    confirm_dnd_playlist_dialog_invoke,
+)
 
 DND_QL, DND_URI_LIST, DND_MOZ_URL = range(3)
 
@@ -193,8 +197,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __create_searchbar(self, library):
         self.accelerators = Gtk.AccelGroup()
         completion = LibraryTagCompletion(library.librarian)
-        sbb = SearchBarBox(completion=completion,
-                           accel_group=self.accelerators)
+        sbb = SearchBarBox(completion=completion, accel_group=self.accelerators)
         sbb.connect("query-changed", self.__text_parse)
         sbb.connect("focus-out", self.__focus)
         return sbb
@@ -236,8 +239,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         view.set_enable_search(True)
         view.set_search_column(0)
         view.set_search_equal_func(
-            lambda model, col, key, iter, data:
-            not model[iter][col].name.lower().startswith(key.lower()), None)
+            lambda model, col, key, iter, data: not model[iter][col]
+            .name.lower()
+            .startswith(key.lower()),
+            None,
+        )
         col = Gtk.TreeViewColumn("Playlists", render)
         col.set_cell_data_func(render, self.cell_data)
         view.append_column(col)
@@ -250,12 +256,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         targets = [
             ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, DND_QL),
             ("text/uri-list", 0, DND_URI_LIST),
-            ("text/x-moz-url", 0, DND_MOZ_URL)
+            ("text/x-moz-url", 0, DND_MOZ_URL),
         ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         view.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         view.enable_model_drag_source(
-            Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets[:2], Gdk.DragAction.COPY
+        )
         view.connect("drag-data-received", self.__drag_data_received)
         view.connect("drag-data-get", self._drag_data_get)
         view.connect("drag-motion", self.__drag_motion)
@@ -347,8 +354,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         if iter:
             playlist = model[iter][0]
             # Build a {iter: song} dict, exhausting `iters` once.
-            removals = {iter_remove: song_at(iter_remove)
-                        for iter_remove in iters}
+            removals = {iter_remove: song_at(iter_remove) for iter_remove in iters}
             if not removals:
                 print_w("No songs selected to remove")
                 return
@@ -383,7 +389,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         # See issue #2367
         playlist_name = target_playlist.name
         response = confirm_dnd_playlist_dialog_invoke(
-            self, songs, playlist_name, self.Confirmer)
+            self, songs, playlist_name, self.Confirmer
+        )
         if response:
             target_playlist.extend(songs)
             self.changed(target_playlist)
@@ -424,9 +431,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 playlist = model[path][0]
                 # Call a helper-function that adds the tracks to the playlist if the
                 # user accepts the prompt.
-                was_modified = self._add_drag_data_tracks_to_playlist(
-                    playlist, songs
-                )
+                was_modified = self._add_drag_data_tracks_to_playlist(playlist, songs)
 
             # self.changed(playlist)
             Gtk.drag_finish(ctx, True, False, etime)
@@ -451,11 +456,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 sock = urlopen(uri)
                 uri = uri.lower()
                 if uri.endswith(".pls"):
-                    playlist = parse_pls(sock, name,
-                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
+                    playlist = parse_pls(
+                        sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+                    )
                 elif uri.endswith(".m3u") or uri.endswith(".m3u8"):
-                    playlist = parse_m3u(sock, name,
-                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
+                    playlist = parse_m3u(
+                        sock, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+                    )
                 else:
                     raise OSError
                 self.songs_lib.add(playlist.songs)
@@ -467,8 +474,11 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
                 qltk.ErrorMessage(
                     qltk.get_top_parent(self),
                     _("Unable to import playlist"),
-                    _("Quod Libet can only import playlists in the M3U/M3U8 "
-                      "and PLS formats.")).run()
+                    _(
+                        "Quod Libet can only import playlists in the M3U/M3U8 "
+                        "and PLS formats."
+                    ),
+                ).run()
 
     def _drag_data_get(self, view, ctx, sel, tid, etime):
         model, iters = self.__view.get_selection().get_selected_rows()
@@ -488,8 +498,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             if row[0] is playlist:
                 view.get_selection().select_iter(row.iter)
                 if scroll:
-                    view.scroll_to_cell(row.path, use_align=True,
-                                        row_align=0.5)
+                    view.scroll_to_cell(row.path, use_align=True, row_align=0.5)
 
     def __popup_menu(self, view, library):
         model, itr = view.get_selection().get_selected()
@@ -503,7 +512,8 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         def _remove(model, itr):
             playlist = model[itr][0]
             response = confirm_remove_playlist_dialog_invoke(
-                self, playlist, self.Confirmer)
+                self, playlist, self.Confirmer
+            )
             if response:
                 playlist.delete()
             else:
@@ -584,8 +594,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self.filter_text("")
 
     def active_filter(self, song):
-        return (song in self._get_playlist_songs()
-                and (self._query is None or self._query.search(song)))
+        return song in self._get_playlist_songs() and (
+            self._query is None or self._query.search(song)
+        )
 
     def save(self):
         model, iter = self.__selected_playlists()
@@ -608,8 +619,9 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
     def __edited(self, render, path, newname):
         return self._rename(path, newname)
 
-    def _rename(self, path: Gtk.TreePath,
-                new_name: str, show_error: bool = True) -> bool:
+    def _rename(
+        self, path: Gtk.TreePath, new_name: str, show_error: bool = True
+    ) -> bool:
         playlist = self._lists[path][0]
         try:
             playlist.rename(new_name)
@@ -621,8 +633,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         else:
             row = self._lists[path]
             child_model = self.model
-            child_model.remove(
-                self._lists.convert_iter_to_child_iter(row.iter))
+            child_model.remove(self._lists.convert_iter_to_child_iter(row.iter))
             child_model.append(row=[playlist])
             if playlist not in self.playlists():
                 print_w(f"{playlist} is not in playlists")
@@ -636,7 +647,7 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         self._import_playlists(fns)
 
     def _import_playlists(self, fns) -> tuple[int, int]:
-        """ Import m3u / pls playlists into QL
+        """Import m3u / pls playlists into QL
         Returns the (total playlists, total songs) added
         TODO: move this to Playlists library and watch here for new playlists
         """
@@ -646,13 +657,15 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
             name = _name_for(filename)
             with open(filename, "rb") as f:
                 if filename.endswith(".m3u") or filename.endswith(".m3u8"):
-                    playlist = parse_m3u(f, name,
-                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
+                    playlist = parse_m3u(
+                        f, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+                    )
                 elif filename.endswith(".pls"):
-                    playlist = parse_pls(f, name,
-                                         songs_lib=self.songs_lib, pl_lib=self.pl_lib)
+                    playlist = parse_pls(
+                        f, name, songs_lib=self.songs_lib, pl_lib=self.pl_lib
+                    )
                 else:
-                    print_w("Unsupported playlist type for '%s'" % filename)
+                    print_w(f"Unsupported playlist type for '{filename}'")
                     continue
             # Import all the songs in the playlist to the *songs* library
             total_songs += len(self.songs_lib.add(playlist))
@@ -663,13 +676,13 @@ class PlaylistsBrowser(Browser, DisplayPatternMixin):
         try:
             name = config.get("browsers", "playlist")
         except config.Error as e:
-            print_d("Couldn't get last playlist from config: %s" % e)
+            print_d(f"Couldn't get last playlist from config: {e}")
         else:
             self.__view.select_by_func(lambda r: r[0].name == name, one=True)
         try:
             text = config.get("browsers", "query_text")
         except config.Error as e:
-            print_d("Couldn't get last search string from config: %s" % e)
+            print_d(f"Couldn't get last search string from config: {e}")
         else:
             self._set_text(text)
 
@@ -708,7 +721,7 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-            arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)

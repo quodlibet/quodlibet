@@ -13,7 +13,6 @@ from quodlibet.util.tagsfrompath import TagsFromPattern
 
 
 class TTagsFromPattern(TestCase):
-
     def setUp(self):
         if os.name == "nt":
             self.f1 = "C:\\path\\Artist\\Album\\01 - Title.mp3"
@@ -32,6 +31,7 @@ class TTagsFromPattern(TestCase):
 
     def test_songtypes(self):
         from quodlibet import formats
+
         pat = TagsFromPattern("<tracknumber>. <title>")
         tracktitle = {"tracknumber": "01", "title": "Title"}
         for ext, kind in formats.loaders.items():
@@ -65,7 +65,8 @@ class TTagsFromPattern(TestCase):
     def test_nongreedy(self):
         pat = TagsFromPattern("<artist> - <title>")
         dic = pat.match_path(
-            fsnative("Prefuse 73 - The End of Biters - International.ogg"))
+            fsnative("Prefuse 73 - The End of Biters - International.ogg")
+        )
         self.assertEqual(dic["artist"], "Prefuse 73")
         self.assertEqual(dic["title"], "The End of Biters - International")
 
@@ -88,10 +89,12 @@ class TTagsFromPattern(TestCase):
         self.assertEqual(pat.match_path(self.b2), self.nomatch)
 
     def test_path(self):
-        albumtracktitle = {"tracknumber": "01", "title": "Title",
-                           "album": "Album"}
-        balbumtracktitle = {"tracknumber": "01", "title": "Artist - Title",
-                            "album": "path"}
+        albumtracktitle = {"tracknumber": "01", "title": "Title", "album": "Album"}
+        balbumtracktitle = {
+            "tracknumber": "01",
+            "title": "Artist - Title",
+            "album": "path",
+        }
         if os.name == "nt":
             pat = TagsFromPattern("<album>\\<tracknumber> - <title>")
         else:
@@ -103,8 +106,12 @@ class TTagsFromPattern(TestCase):
         self.assertEqual(pat.match_path(self.b2), self.nomatch)
 
     def test_all(self):
-        all = {"tracknumber": "01", "title": "Title",
-               "album": "Album", "artist": "Artist"}
+        all = {
+            "tracknumber": "01",
+            "title": "Title",
+            "album": "Album",
+            "artist": "Artist",
+        }
         if os.name == "nt":
             pat = TagsFromPattern("<artist>\\<album>\\<tracknumber> - <title>")
         else:
@@ -135,9 +142,15 @@ class TTagsFromPattern(TestCase):
 
     def test_disctrack(self):
         pat = TagsFromPattern("<discnumber><tracknumber>. <title>")
-        self.assertEqual(pat.match_path(fsnative("101. T1.ogg")),
-                          {"discnumber": "1", "tracknumber": "01", "title": "T1"})
-        self.assertEqual(pat.match_path(fsnative("1318. T18.ogg")),
-                          {"discnumber": "13", "tracknumber": "18", "title": "T18"})
-        self.assertEqual(pat.match_path(fsnative("24. T4.ogg")),
-                          {"discnumber": "2", "tracknumber": "4", "title": "T4"})
+        self.assertEqual(
+            pat.match_path(fsnative("101. T1.ogg")),
+            {"discnumber": "1", "tracknumber": "01", "title": "T1"},
+        )
+        self.assertEqual(
+            pat.match_path(fsnative("1318. T18.ogg")),
+            {"discnumber": "13", "tracknumber": "18", "title": "T18"},
+        )
+        self.assertEqual(
+            pat.match_path(fsnative("24. T4.ogg")),
+            {"discnumber": "2", "tracknumber": "4", "title": "T4"},
+        )

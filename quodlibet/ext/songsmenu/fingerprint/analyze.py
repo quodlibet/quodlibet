@@ -13,7 +13,6 @@ from quodlibet.util import connect_obj
 
 
 class FingerPrintResult:
-
     def __init__(self, song, chromaprint, length):
         self.song = song
         self.chromaprint = chromaprint
@@ -22,7 +21,6 @@ class FingerPrintResult:
 
 
 class FingerPrintPipeline:
-
     def __init__(self):
         super().__init__()
         self._song = None
@@ -58,8 +56,7 @@ class FingerPrintPipeline:
 
         # decodebin creates pad, we link it
         self._dec = decode
-        self._dec_id = connect_obj(decode,
-            "pad-added", new_decoded_pad, convert)
+        self._dec_id = connect_obj(decode, "pad-added", new_decoded_pad, convert)
 
         chroma = Gst.ElementFactory.make("chromaprint", None)
         fake = Gst.ElementFactory.make("fakesink", None)
@@ -145,18 +142,14 @@ class FingerPrintPipeline:
 
 
 class FingerPrintPool(GObject.GObject):
-
     __gsignals__ = {
         # FingerPrintResult
-        "fingerprint-done": (
-            GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fingerprint-done": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         # AudioFile
-        "fingerprint-started": (
-            GObject.SignalFlags.RUN_LAST, None, (object,)),
+        "fingerprint-started": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         # AudioFile, str
-        "fingerprint-error": (
-            GObject.SignalFlags.RUN_LAST, None, (object, object)),
-        }
+        "fingerprint-error": (GObject.SignalFlags.RUN_LAST, None, (object, object)),
+    }
 
     def __init__(self, max_workers=None):
         super().__init__()

@@ -21,6 +21,7 @@ from functools import reduce
 # Windows doesn't have fcntl, just don't lock for now
 try:
     import fcntl
+
     fcntl
 except ImportError:
     fcntl = None  # type: ignore
@@ -31,17 +32,40 @@ from quodlibet.util.string.titlecase import title
 
 from quodlibet.const import SUPPORT_EMAIL, COPYRIGHT
 from quodlibet.util.dprint import print_d, print_, print_e, print_w, print_exc
-from .misc import cached_func, get_module_dir, get_ca_file, \
-    NamedTemporaryFile, cmp
-from .environment import is_plasma, is_unity, is_enlightenment, \
-    is_linux, is_windows, is_wine, is_osx, is_flatpak, matches_flatpak_runtime
+from .misc import cached_func, get_module_dir, get_ca_file, NamedTemporaryFile, cmp
+from .environment import (
+    is_plasma,
+    is_unity,
+    is_enlightenment,
+    is_linux,
+    is_windows,
+    is_wine,
+    is_osx,
+    is_flatpak,
+    matches_flatpak_runtime,
+)
 from .enum import enum
 from .i18n import _, ngettext, C_
 
 
 # flake8
-cached_func, enum, print_w, print_exc, is_plasma, is_unity, is_enlightenment,
-is_linux, is_windows, is_wine, is_osx, get_module_dir, get_ca_file,
+(
+    cached_func,
+    enum,
+    print_w,
+    print_exc,
+    is_plasma,
+    is_unity,
+    is_enlightenment,
+)
+(
+    is_linux,
+    is_windows,
+    is_wine,
+    is_osx,
+    get_module_dir,
+    get_ca_file,
+)
 NamedTemporaryFile, is_flatpak, cmp, matches_flatpak_runtime
 
 
@@ -74,10 +98,8 @@ class OptionParser:
         self.__help = {}
         self.__usage = usage
         self.__description = description
-        self.add(
-            "help", shorts="h", help=_("Display brief usage information"))
-        self.add(
-            "version", shorts="v", help=_("Display version and copyright"))
+        self.add("help", shorts="h", help=_("Display brief usage information"))
+        self.add("version", shorts="v", help=_("Display version and copyright"))
         self.add("debug", shorts="d", help=_("Print debugging information"))
 
     def add(self, canon, help=None, arg="", shorts="", longs=None):
@@ -147,16 +169,17 @@ class OptionParser:
         self.__help = newhelp
 
     def version(self):
-        return (f"""\
+        return f"""\
 {self.__name} {self.__version}
 <{SUPPORT_EMAIL}>
 {COPYRIGHT}\
-""")
+"""
 
     def parse(self, args=None):
         if args is None:
             args = sys.argv[1:]
         from getopt import getopt, GetoptError
+
         try:
             opts, args = getopt(args, self.__shorts(), self.__longs())
         except GetoptError as e:
@@ -188,6 +211,7 @@ class OptionParser:
                     raise SystemExit
                 elif o == "debug":
                     from quodlibet import const
+
                     const.DEBUG = True
                 if self.__args[o]:
                     transopts[o] = a
@@ -208,19 +232,19 @@ def unescape(string: str) -> str:
 
 
 def bold(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<b>%s</b>" % escaper(string)
+    return f"<b>{escaper(string)}</b>"
 
 
 def monospace(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<tt>%s</tt>" % escaper(string)
+    return f"<tt>{escaper(string)}</tt>"
 
 
 def italic(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<i>%s</i>" % escaper(string)
+    return f"<i>{escaper(string)}</i>"
 
 
 def bold_italic(string: str, escaper: Callable[[str], str] = escape) -> str:
-    return "<b><i>%s</i></b>" % escaper(string)
+    return f"<b><i>{escaper(string)}</i></b>"
 
 
 def parse_time(time_str: str, suppress_errors: bool = True):
@@ -233,8 +257,7 @@ def parse_time(time_str: str, suppress_errors: bool = True):
         m = 1
 
     try:
-        return m * reduce(lambda s, a: s * 60 + int(a),
-                          re.split(r":|\.", time_str), 0)
+        return m * reduce(lambda s, a: s * 60 + int(a), re.split(r":|\.", time_str), 0)
     except (ValueError, re.error):
         if not suppress_errors:
             raise
@@ -288,7 +311,7 @@ def date_key(datestr):
 
     default = [0, 1, 1]
     parts = datestr.split("-")
-    parts += default[len(parts):]
+    parts += default[len(parts) :]
 
     value = 0
     for d, p, m in zip(default, parts, (10000, 100, 1), strict=False):
@@ -324,6 +347,7 @@ def parse_year(yearstr):
     if "/" in yearstr:
         return yearstr[-4:]
     return yearstr[:4]
+
 
 def format_int_locale(value):
     """Turn an integer into a grouped, locale-dependent string
@@ -365,14 +389,14 @@ def format_size(size):
         str
     """
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
-    if size >= 1024 ** 3:
-        return "%.1f GB" % (float(size) / (1024 ** 3))
-    elif size >= 1024 ** 2 * 100:
-        return "%.0f MB" % (float(size) / (1024 ** 2))
-    elif size >= 1024 ** 2 * 10:
-        return "%.1f MB" % (float(size) / (1024 ** 2))
-    elif size >= 1024 ** 2:
-        return "%.2f MB" % (float(size) / (1024 ** 2))
+    if size >= 1024**3:
+        return "%.1f GB" % (float(size) / (1024**3))
+    elif size >= 1024**2 * 100:
+        return "%.0f MB" % (float(size) / (1024**2))
+    elif size >= 1024**2 * 10:
+        return "%.1f MB" % (float(size) / (1024**2))
+    elif size >= 1024**2:
+        return "%.2f MB" % (float(size) / (1024**2))
     elif size >= 1024 * 10:
         return "%d KB" % int(size / 1024)
     elif size >= 1024:
@@ -391,8 +415,7 @@ def format_time(time):
         prefix = ""
     if time >= 3600:  # 1 hour
         # time, in hours:minutes:seconds
-        return "%s%d:%02d:%02d" % (prefix, time // 3600,
-                                   (time % 3600) // 60, time % 60)
+        return "%s%d:%02d:%02d" % (prefix, time // 3600, (time % 3600) // 60, time % 60)
     else:
         # time, in minutes:seconds
         return "%s%d:%02d" % (prefix, time // 60, time % 60)
@@ -452,6 +475,7 @@ def format_time_long(time, limit=2):
 def format_time_preferred(t, fmt=None):
     """Returns duration formatted to user's preference"""
     from quodlibet.config import DurationFormat, DURATION
+
     fmt = fmt or DURATION.format
 
     if fmt == DurationFormat.STANDARD:
@@ -469,9 +493,9 @@ def capitalize(str):
     return str[:1].upper() + str[1:]
 
 
-def _split_numeric_sortkey(s, limit=10,
-                           reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search,
-                           join=" ".join):
+def _split_numeric_sortkey(
+    s, limit=10, reg=re.compile(r"[0-9][0-9]*\.?[0-9]*").search, join=" ".join
+):
     """Separate numeric values from the string and convert to float, so
     it can be used for human sorting. Also removes all extra whitespace."""
     result = reg(s)
@@ -483,7 +507,8 @@ def _split_numeric_sortkey(s, limit=10,
         return (
             join(s[:start].split()),
             float(result.group()),
-            _split_numeric_sortkey(s[end:], limit - 1))
+            _split_numeric_sortkey(s[end:], limit - 1),
+        )
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
@@ -506,7 +531,7 @@ def website(site):
         print_exc()
 
 
-def tag(name: str, cap: bool =True) -> str:
+def tag(name: str, cap: bool = True) -> str:
     # Return a 'natural' version of the tag for human-readable bits.
     # Strips ~ and ~# from the start and runs it through a map (which
     # the user can configure).
@@ -514,6 +539,7 @@ def tag(name: str, cap: bool =True) -> str:
         return ngettext("Invalid tag", "Invalid tags", 1)
     else:
         from quodlibet.util.tags import readable
+
         parts = map(readable, tagsplit(name))
         if cap:
             # Translators: If tag names, when capitalized, should not
@@ -562,6 +588,7 @@ def pattern(pat, cap=True, esc=False, markup=False):
 
         def list(self, key):
             return [tag(k, self.cap) for k in tagsplit(key)]
+
         list_separate = list
 
         def __call__(self, tag, *args):
@@ -595,9 +622,10 @@ def spawn(argv, stdout=False):
 
     from gi.repository import GLib
 
-    print_d("Running %r" % argv)
-    args = GLib.spawn_async(argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH,
-                            standard_output=stdout)
+    print_d(f"Running {argv!r}")
+    args = GLib.spawn_async(
+        argv=argv, flags=GLib.SpawnFlags.SEARCH_PATH, standard_output=stdout
+    )
 
     if stdout:
         return os.fdopen(args[2])
@@ -644,8 +672,10 @@ class DeferredSignal:
         self.args = None
 
         if owner:
+
             def destroy_cb(owner):
                 self.abort()
+
             owner.connect("destroy", destroy_cb)
 
         from gi.repository import GLib
@@ -656,8 +686,7 @@ class DeferredSignal:
         if timeout is None:
             self.do_idle_add = lambda f: GLib.idle_add(f, priority=priority)
         else:
-            self.do_idle_add = lambda f: GLib.timeout_add(
-                timeout, f, priority=priority)
+            self.do_idle_add = lambda f: GLib.timeout_add(timeout, f, priority=priority)
 
     @property
     def __self__(self):
@@ -686,6 +715,7 @@ class DeferredSignal:
 
         if self.dirty:
             from gi.repository import GLib
+
             GLib.source_remove(self._id)
             self.dirty = False
             self.args = None
@@ -770,8 +800,9 @@ class cached_property:  # noqa
         self.__name__ = name = fget.__name__
         # these get name mangled, so caching won't work unless
         # we mangle too
-        assert not (name.startswith("__") and not name.endswith("__")), \
-            "can't cache a dunder method"
+        assert not (
+            name.startswith("__") and not name.endswith("__")
+        ), "can't cache a dunder method"
 
     def __get__(self, obj, cls):
         if obj is None:
@@ -805,9 +836,16 @@ def sanitize_tags(tags, stream=False):
                 elif "vorbis" in lower:
                     value = "Ogg Vorbis"
 
-            if lower in ("http://www.shoutcast.com", "http://localhost/",
-                         "default genre", "none", "http://", "unnamed server",
-                         "unspecified", "n/a"):
+            if lower in (
+                "http://www.shoutcast.com",
+                "http://localhost/",
+                "default genre",
+                "none",
+                "http://",
+                "unnamed server",
+                "unspecified",
+                "n/a",
+            ):
                 continue
 
         if key == "duration":
@@ -838,8 +876,15 @@ def sanitize_tags(tags, stream=False):
                     continue
                 key = "~#bitrate"
 
-        if key in ("emphasis", "mode", "layer", "maximum-bitrate",
-                   "minimum-bitrate", "has-crc", "homepage"):
+        if key in (
+            "emphasis",
+            "mode",
+            "layer",
+            "maximum-bitrate",
+            "minimum-bitrate",
+            "has-crc",
+            "homepage",
+        ):
             continue
 
         if not stream and key in ("title", "album", "artist", "date"):
@@ -881,13 +926,16 @@ def build_filter_query(key, values):
         nheader = key[2:]
         queries = [f"#({nheader} = {i})" for i in values]
         if len(queries) > 1:
-            return "|(%s)" % ", ".join(queries)
+            return "|({})".format(", ".join(queries))
         else:
             return queries[0]
     else:
         text = ", ".join(
-            ["'%s'c" % v.replace("\\", "\\\\").replace("'", "\\'")
-             for v in values])
+            [
+                "'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'"))
+                for v in values
+            ]
+        )
         if len(values) == 1:
             return f"{key} = {text}"
         else:
@@ -902,9 +950,11 @@ def limit_songs(songs, max, weight_by_ratings=False):
         return songs
     else:
         if weight_by_ratings:
+
             def rating_weighted_random(song):
                 # Apply even (random : higher rating) weighting
                 return (1 - song("~#rating")) * (1 + random.random())
+
             songs.sort(key=rating_weighted_random)
         else:
             random.shuffle(songs)
@@ -948,6 +998,7 @@ def load_library(names, shared=True):
         raise ValueError
 
     if shared:
+
         def load_func(n):
             return getattr(ctypes.cdll, n)
     else:
@@ -956,8 +1007,7 @@ def load_library(names, shared=True):
     errors = []
     for name in names:
         dlopen_name = name
-        if ".so" not in name and ".dll" not in name and \
-                ".dylib" not in name:
+        if ".so" not in name and ".dll" not in name and ".dylib" not in name:
             dlopen_name = ctypes.util.find_library(name) or name
 
         if is_osx() and not os.path.isabs(dlopen_name):
@@ -1083,8 +1133,8 @@ class MainRunner:
                 call_event = threading.Event()
                 self._call_id = object()
                 self._source_id = GLib.idle_add(
-                    self._idle_run, self._call_id, call_event,
-                    func, *args, **kwargs)
+                    self._idle_run, self._call_id, call_event, func, *args, **kwargs
+                )
                 # only wait for the result if we are sure it got scheduled
                 if call_event.wait(timeout):
                     self._cond.wait()
@@ -1092,7 +1142,7 @@ class MainRunner:
                 if self._source_id is not None:
                     GLib.source_remove(self._source_id)
                     self._source_id = None
-                    raise MainRunnerTimeoutError("timeout: %r" % timeout)
+                    raise MainRunnerTimeoutError(f"timeout: {timeout!r}")
             if self._error is not None:
                 raise self._error
             return self._return
@@ -1103,10 +1153,12 @@ def re_escape(string, bad="/.^$*+-?{,\\[]|()<>#=!:"):
 
     def needs_escape(c):
         return c in bad and "\\" + c or c
+
     return type(string)().join(map(needs_escape, string))
 
 
 PR_SET_NAME = 15
+
 
 def set_process_title(title):
     """Sets process name as visible in ps or top. Requires ctypes libc
@@ -1120,12 +1172,16 @@ def set_process_title(title):
         libc = load_library(["libc.so.6", "c"])[0]
         prctl = libc.prctl
     except (OSError, AttributeError):
-        print_d("Couldn't find module libc.so.6 (ctypes). "
-                "Not setting process title.")
+        print_d(
+            "Couldn't find module libc.so.6 (ctypes). " "Not setting process title."
+        )
     else:
         prctl.argtypes = [
-            ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong,
-            ctypes.c_ulong, ctypes.c_ulong,
+            ctypes.c_int,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
+            ctypes.c_ulong,
         ]
         prctl.restype = ctypes.c_int
         data = ctypes.create_string_buffer(title.encode("utf-8"))

@@ -13,10 +13,12 @@ from quodlibet.qltk import Icons
 class AutoRating(EventPlugin):
     PLUGIN_ID = "Automatic Rating"
     PLUGIN_NAME = _("Automatic Rating")
-    PLUGIN_DESC = _("Rates songs automatically when they are played or "
-                    "skipped. This uses the 'accelerated' algorithm from "
-                    "vux (Vacillating Utilitarian eXtemporizer) "
-                    "by Brian Nelson.")
+    PLUGIN_DESC = _(
+        "Rates songs automatically when they are played or "
+        "skipped. This uses the 'accelerated' algorithm from "
+        "vux (Vacillating Utilitarian eXtemporizer) "
+        "by Brian Nelson."
+    )
     PLUGIN_ICON = Icons.USER_BOOKMARKS
 
     def plugin_on_song_ended(self, song, skipped):

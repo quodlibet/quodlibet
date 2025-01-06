@@ -64,13 +64,15 @@ class LyricsPane(Gtk.VBox):
     def __view_online(self, add, song):
         # TODO: make this modular and plugin-friendly (#54, #3642 etc)
         def sanitise(s: str) -> str:
-            return quote(s.replace(" ", "-")
-                         .replace(".", "")
-                         .replace("'", "")
-                         .replace('"', "")
-                         .replace(",", "-")
-                         .lower()
-                         .encode("utf-8"))
+            return quote(
+                s.replace(" ", "-")
+                .replace(".", "")
+                .replace("'", "")
+                .replace('"', "")
+                .replace(",", "-")
+                .lower()
+                .encode("utf-8")
+            )
 
         artist = sanitise(song.list("artist")[0])
         title = sanitise(song.comma("title"))

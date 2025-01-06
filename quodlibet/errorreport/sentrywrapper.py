@@ -47,8 +47,7 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
     email = str(email).encode("utf-8")
     comment = str(comment).encode("utf-8")
 
-    data = urlencode(
-        [("name", name), ("email", email), ("comments", comment)])
+    data = urlencode([("name", name), ("email", email), ("comments", comment)])
     if not isinstance(data, bytes):
         # py3
         data = data.encode("utf-8")
@@ -59,7 +58,9 @@ def send_feedback(dsn, event_id, name, email, comment, timeout):
     try:
         req = Request(
             "https://sentry.io/api/embed/error-page/?" + params,
-            data=data, headers=headers)
+            data=data,
+            headers=headers,
+        )
 
         urlopen(req, timeout=timeout).close()
     except OSError as e:
@@ -142,9 +143,12 @@ class CapturedException:
             raise Exception
         except Exception as e:
             client = Client(
-                self._dsn + "?timeout=%d" % timeout, install_sys_hook=False,
-                install_logging_hook=False, capture_locals=False,
-                transport=HTTPTransport)
+                self._dsn + "?timeout=%d" % timeout,
+                install_sys_hook=False,
+                install_logging_hook=False,
+                capture_locals=False,
+                transport=HTTPTransport,
+            )
 
             # replace the captured data with the one we already have
             old_send = client.send
@@ -164,9 +168,14 @@ class CapturedException:
             client.context.deactivate()
 
             if self._comment:
-                send_feedback(self._dsn, event_id,
-                              "default", "email@example.com", self._comment,
-                              timeout)
+                send_feedback(
+                    self._dsn,
+                    event_id,
+                    "default",
+                    "email@example.com",
+                    self._comment,
+                    timeout,
+                )
 
             return event_id
 
@@ -245,8 +254,14 @@ class Sentry:
 
         # We use a dummy transport and intercept the captured data
         client = Client(
-            self._dsn, install_sys_hook=False, install_logging_hook=False,
-            capture_locals=True, transport=DummyTransport, tags=tags, **kwargs)
+            self._dsn,
+            install_sys_hook=False,
+            install_logging_hook=False,
+            capture_locals=True,
+            transport=DummyTransport,
+            tags=tags,
+            **kwargs,
+        )
 
         data = [None]
 
@@ -269,11 +284,9 @@ class Sentry:
             def filter_stacktrace(self, data, **kwargs):
                 for frame in data.get("frames", []):
                     if frame.get("abs_path"):
-                        frame["abs_path"] = \
-                            frame["abs_path"].replace(os.sep, "/")
+                        frame["abs_path"] = frame["abs_path"].replace(os.sep, "/")
                     if frame.get("filename"):
-                        frame["filename"] = \
-                            frame["filename"].replace(os.sep, "/")
+                        frame["filename"] = frame["filename"].replace(os.sep, "/")
 
         SanitizePaths(client).process(data[0][1])
 

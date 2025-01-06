@@ -26,7 +26,6 @@ def get_group_by_dir():
 
 
 class GateKeeper:
-
     def __init__(self, requests_per_sec):
         self._period = 1 / float(requests_per_sec)
         self._last = 0

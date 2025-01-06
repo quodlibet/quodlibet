@@ -94,7 +94,7 @@ def trash_free_desktop(path):
     path = abspath(path)
 
     if not exists(path):
-        raise TrashError("Path %s does not exist." % path)
+        raise TrashError(f"Path {path} does not exist.")
 
     trash_dir, files, info = _get_fd_trash_dirs(path)
 
@@ -125,7 +125,7 @@ def trash_free_desktop(path):
 
     parent = dirname(trash_dir)
     if path.startswith(join(parent, "")):
-        norm_path = path[len(join(parent, "")):]
+        norm_path = path[len(join(parent, "")) :]
     else:
         norm_path = path
 
@@ -151,8 +151,10 @@ def use_trash():
         return False
 
     return (
-        os.name == "posix" and sys.platform != "darwin" and
-        not config.getboolean("settings", "bypass_trash"))
+        os.name == "posix"
+        and sys.platform != "darwin"
+        and not config.getboolean("settings", "bypass_trash")
+    )
 
 
 def trash(path):

@@ -93,7 +93,7 @@ def main():
         "po_package": "quodlibet",
         "shortcuts": [
             "data/io.github.quodlibet.QuodLibet.desktop",
-            "data/io.github.quodlibet.ExFalso.desktop"
+            "data/io.github.quodlibet.ExFalso.desktop",
         ],
         "dbus_services": [
             "data/net.sacredchao.QuodLibet.service",
@@ -110,8 +110,7 @@ def main():
             "data/exfalso.1",
             "data/operon.1",
         ],
-        "search_provider":
-            "data/io.github.quodlibet.QuodLibet-search-provider.ini",
+        "search_provider": "data/io.github.quodlibet.QuodLibet-search-provider.ini",
         "bash_completions": [
             ("data/quodlibet.bash", "quodlibet"),
             ("data/quodlibet.bash", "operon"),

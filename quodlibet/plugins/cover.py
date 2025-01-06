@@ -34,7 +34,7 @@ class CoverSourcePlugin(GObject.Object):
     __gsignals__ = {
         "fetch-success": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object,)),
-        "search-complete": (GObject.SignalFlags.RUN_LAST, None, (object,))
+        "search-complete": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
     PLUGIN_ICON = Icons.EMBLEM_DOWNLOADS
 

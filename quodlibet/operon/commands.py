@@ -27,8 +27,7 @@ from quodlibet.util.tags import USER_TAGS, sortkey, MACHINE_TAGS
 from quodlibet.util.tagsfrompath import TagsFromPattern
 
 from .base import Command, CommandError
-from .util import print_terse_table, copy_mtime, list_tags, print_table, \
-    get_editor_args
+from .util import print_terse_table, copy_mtime, list_tags, print_table, get_editor_args
 
 
 @Command.register
@@ -38,13 +37,18 @@ class ListCommand(Command):
     USAGE = "[-a] [-t] [-c <c1>,<c2>...] <file>"
 
     def _add_options(self, p):
-        p.add_option("-t", "--terse", action="store_true",
-                     help=_("Print terse output"))
-        p.add_option("-c", "--columns", action="store", type="string",
-                     help=_("Columns to display and order in terse mode (%s)")
-                     % "desc,value,tag")
-        p.add_option("-a", "--all", action="store_true",
-                     help=_("Also list programmatic tags"))
+        p.add_option("-t", "--terse", action="store_true", help=_("Print terse output"))
+        p.add_option(
+            "-c",
+            "--columns",
+            action="store",
+            type="string",
+            help=_("Columns to display and order in terse mode (%s)")
+            % "desc,value,tag",
+        )
+        p.add_option(
+            "-a", "--all", action="store_true", help=_("Also list programmatic tags")
+        )
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -77,13 +81,17 @@ class TagsCommand(Command):
     USAGE = "[-t] [-c <c1>,<c2>...]"
 
     def _add_options(self, p):
-        p.add_option("-t", "--terse", action="store_true",
-                     help=_("Print terse output"))
-        p.add_option("-c", "--columns", action="store", type="string",
-                     help=_("Columns to display and order in terse mode (%s)")
-                     % "tag,desc")
-        p.add_option("-a", "--all", action="store_true",
-                     help=_("Also list programmatic tags"))
+        p.add_option("-t", "--terse", action="store_true", help=_("Print terse output"))
+        p.add_option(
+            "-c",
+            "--columns",
+            action="store",
+            type="string",
+            help=_("Columns to display and order in terse mode (%s)") % "tag,desc",
+        )
+        p.add_option(
+            "-a", "--all", action="store_true", help=_("Also list programmatic tags")
+        )
 
     def _execute(self, options, args):
         if len(args) != 0:
@@ -119,10 +127,14 @@ class CopyCommand(Command):
     USAGE = "[--dry-run] [--ignore-errors] <source> <dest>"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
-        p.add_option("--ignore-errors", action="store_true",
-                     help=_("Skip tags that can't be written"))
+        p.add_option(
+            "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
+        p.add_option(
+            "--ignore-errors",
+            action="store_true",
+            help=_("Skip tags that can't be written"),
+        )
 
     def _execute(self, options, args):
         if len(args) < 2:
@@ -140,11 +152,13 @@ class CopyCommand(Command):
         dest = self.load_song(dest_path)
 
         for key in source.realkeys():
-            self.log("Copy %r" % key)
+            self.log(f"Copy {key!r}")
             if not options.ignore_errors and not dest.can_change(key):
                 raise CommandError(
                     _("Can't copy tag {tagname} to file: {filename}").format(
-                        tagname=repr(key), filename=repr(dest_path)))
+                        tagname=repr(key), filename=repr(dest_path)
+                    )
+                )
             for value in source.list(key):
                 dest.add(key, value)
 
@@ -159,13 +173,14 @@ class EditCommand(Command):
     USAGE = "[--dry-run] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
+        p.add_option(
+            "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
 
     def _song_to_text(self, song):
         # to text
         lines = [
-            "File: %r" % fsn2text(song("~filename")),
+            "File: {!r}".format(fsn2text(song("~filename"))),
             "",
         ]
         for key in sorted(song.realkeys(), key=sortkey):
@@ -213,7 +228,8 @@ class EditCommand(Command):
         for key, values in tags.items():
             if not song.can_change(key):
                 raise CommandError(
-                    "Can't change key '%(key-name)s'." % {"key-name": key})
+                    "Can't change key '%(key-name)s'." % {"key-name": key}
+                )
             for value in values:
                 self.log(f"Add {key}={value}")
                 song.add(key, value)
@@ -232,9 +248,9 @@ class EditCommand(Command):
 
             song = next((song for song in songs if song("~filename") == filename), None)
             if not song:
-                raise CommandError("No match for %r." % (filename))
+                raise CommandError(f"No match for {filename!r}.")
 
-            self.log("Update song: %r" % (filename))
+            self.log(f"Update song: {filename!r}")
             self._text_to_song(text, song)
 
     def _execute(self, options, args):
@@ -262,7 +278,7 @@ class EditCommand(Command):
             old_mtime = mtime(path)
 
             editor_args = get_editor_args()
-            self.log("Using editor: %r" % editor_args)
+            self.log(f"Using editor: {editor_args!r}")
 
             try:
                 subprocess.check_call(editor_args + [path])
@@ -272,8 +288,9 @@ class EditCommand(Command):
             except OSError as e:
                 self.log(str(e))
                 raise CommandError(
-                    _("Starting text editor '%(editor-name)s' failed.") % {
-                        "editor-name": editor_args[0]}) from e
+                    _("Starting text editor '%(editor-name)s' failed.")
+                    % {"editor-name": editor_args[0]}
+                ) from e
 
             was_changed = mtime(path) != old_mtime
             if not was_changed:
@@ -305,8 +322,9 @@ class SetCommand(Command):
     USAGE = "[--dry-run] <tag> <value> <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
+        p.add_option(
+            "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
 
     def _execute(self, options, args):
         if len(args) < 3:
@@ -321,10 +339,14 @@ class SetCommand(Command):
             song = self.load_song(path)
 
             if not song.can_change(tag):
-                vars = {"tag": tag, "format": type(song).format,
-                        "file": song("~filename")}
+                vars = {
+                    "tag": tag,
+                    "format": type(song).format,
+                    "file": song("~filename"),
+                }
                 raise CommandError(
-                    _("Can not set %(tag)r for %(format)s file %(file)r") % vars)
+                    _("Can not set %(tag)r for %(format)s file %(file)r") % vars
+                )
 
             self.log(f"Set {value!r} to {tag!r}")
             if tag in song:
@@ -343,12 +365,17 @@ class ClearCommand(Command):
     USAGE = "[--dry-run] [-a | -e <pattern> | <tag>] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
-        p.add_option("-e", "--regexp", action="store", type="string",
-                     help=_("Value is a regular expression"))
-        p.add_option("-a", "--all", action="store_true",
-                     help=_("Remove all tags"))
+        p.add_option(
+            "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
+        p.add_option(
+            "-e",
+            "--regexp",
+            action="store",
+            type="string",
+            help=_("Value is a regular expression"),
+        )
+        p.add_option("-a", "--all", action="store_true", help=_("Remove all tags"))
 
     def _execute(self, options, args):
         if options.all and options.regexp is not None:
@@ -383,11 +410,13 @@ class ClearCommand(Command):
                     tags.append(tag)
 
             for tag in tags:
-                self.log("Remove tag %r" % tag)
+                self.log(f"Remove tag {tag!r}")
                 if not song.can_change(tag):
                     raise CommandError(
                         _("Can't remove {tagname} from {filename}").format(
-                            tagname=repr(tag), filename=repr(path)))
+                            tagname=repr(tag), filename=repr(path)
+                        )
+                    )
                 del song[tag]
 
             if tags:
@@ -404,10 +433,16 @@ class RemoveCommand(Command):
     USAGE = "[--dry-run] <tag> [-e <pattern> | <value>] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help=_("Show changes, don't apply them"))
-        p.add_option("-e", "--regexp", action="store", type="string",
-                     help=_("Value is a regular expression"))
+        p.add_option(
+            "--dry-run", action="store_true", help=_("Show changes, don't apply them")
+        )
+        p.add_option(
+            "-e",
+            "--regexp",
+            action="store",
+            type="string",
+            help=_("Value is a regular expression"),
+        )
 
     def _execute(self, options, args):
         if options.regexp is None:
@@ -427,6 +462,7 @@ class RemoveCommand(Command):
         else:
             value = args[1]
             paths = args[2:]
+
             def match(v):
                 return v == value
 
@@ -482,11 +518,14 @@ class InfoCommand(Command):
     USAGE = "[-t] [-c <c1>,<c2>...] <file>"
 
     def _add_options(self, p):
-        p.add_option("-t", "--terse", action="store_true",
-                     help=_("Print terse output"))
-        p.add_option("-c", "--columns", action="store", type="string",
-                     help=_("Columns to display and order in terse mode (%s)")
-                     % "desc,value")
+        p.add_option("-t", "--terse", action="store_true", help=_("Print terse output"))
+        p.add_option(
+            "-c",
+            "--columns",
+            action="store",
+            type="string",
+            help=_("Columns to display and order in terse mode (%s)") % "desc,value",
+        )
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -507,15 +546,27 @@ class InfoCommand(Command):
 
         if not options.terse:
             tags = []
-            for key in ["~format", "~codec", "~encoding", "~length",
-                        "~bitrate", "~filesize"]:
+            for key in [
+                "~format",
+                "~codec",
+                "~encoding",
+                "~length",
+                "~bitrate",
+                "~filesize",
+            ]:
                 tags.append((util.tag(key), str(song.comma(key))))
 
             print_table(tags, headers, nicks, order)
         else:
             tags = []
-            for key in ["~format", "~codec", "~encoding", "~#length",
-                        "~#bitrate", "~#filesize"]:
+            for key in [
+                "~format",
+                "~codec",
+                "~encoding",
+                "~#length",
+                "~#bitrate",
+                "~#filesize",
+            ]:
                 tags.append((key.lstrip("#~"), str(song(key))))
 
             print_terse_table(tags, nicks, order)
@@ -524,8 +575,10 @@ class InfoCommand(Command):
 @Command.register
 class ImageSetCommand(Command):
     NAME = "image-set"
-    DESCRIPTION = _("Set the provided image as primary embedded image and "
-                    "remove all other embedded images")
+    DESCRIPTION = _(
+        "Set the provided image as primary embedded image and "
+        "remove all other embedded images"
+    )
     USAGE = "<image-file> <file> [<files>]"
 
     def _execute(self, options, args):
@@ -544,11 +597,12 @@ class ImageSetCommand(Command):
         for song in songs:
             if not song.can_change_images:
                 raise CommandError(
-                    _("Image editing not supported for %(file_name)s "
-                      "(%(file_format)s)") % {
-                      "file_name": song("~filename"),
-                      "file_format": song("~format")
-                    })
+                    _(
+                        "Image editing not supported for %(file_name)s "
+                        "(%(file_format)s)"
+                    )
+                    % {"file_name": song("~filename"), "file_format": song("~format")}
+                )
 
         for song in songs:
             try:
@@ -573,11 +627,12 @@ class ImageClearCommand(Command):
         for song in songs:
             if not song.can_change_images:
                 raise CommandError(
-                    _("Image editing not supported for %(file_name)s "
-                      "(%(file_format)s)") % {
-                      "file_name": song("~filename"),
-                      "file_format": song("~format")
-                    })
+                    _(
+                        "Image editing not supported for %(file_name)s "
+                        "(%(file_format)s)"
+                    )
+                    % {"file_name": song("~filename"), "file_format": song("~format")}
+                )
 
         for song in songs:
             try:
@@ -589,21 +644,26 @@ class ImageClearCommand(Command):
 @Command.register
 class ImageExtractCommand(Command):
     NAME = "image-extract"
-    DESCRIPTION = (
-        _("Extract embedded images to %(filepath)s") % {
-            "filepath": "<destination>/<filename>-<index>.(jpeg|png|..)"
-        }
-    )
+    DESCRIPTION = _("Extract embedded images to %(filepath)s") % {
+        "filepath": "<destination>/<filename>-<index>.(jpeg|png|..)"
+    }
     USAGE = "[--dry-run] [--primary] [-d <destination>] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help="don't save images")
-        p.add_option("--primary", action="store_true",
-                     help="only extract the primary image")
-        p.add_option("-d", "--destination", action="store", type="string",
-                     help=_("Path to where the images will be saved to "
-                            "(defaults to the working directory)"))
+        p.add_option("--dry-run", action="store_true", help="don't save images")
+        p.add_option(
+            "--primary", action="store_true", help="only extract the primary image"
+        )
+        p.add_option(
+            "-d",
+            "--destination",
+            action="store",
+            type="string",
+            help=_(
+                "Path to where the images will be saved to "
+                "(defaults to the working directory)"
+            ),
+        )
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -652,7 +712,7 @@ class ImageExtractCommand(Command):
                 if options.destination is not None:
                     filename = os.path.join(options.destination, filename)
 
-                self.log("Saving image %r" % filename)
+                self.log(f"Saving image {filename!r}")
                 if not options.dry_run:
                     with open(filename, "wb") as h:
                         shutil.copyfileobj(image.file, h)
@@ -665,8 +725,9 @@ class RenameCommand(Command):
     USAGE = "[--dry-run] <pattern> <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help="show changes, don't apply them")
+        p.add_option(
+            "--dry-run", action="store_true", help="show changes, don't apply them"
+        )
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -680,15 +741,16 @@ class FillCommand(Command):
     USAGE = "[--dry-run] <pattern> <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help="show changes, don't apply them")
+        p.add_option(
+            "--dry-run", action="store_true", help="show changes, don't apply them"
+        )
 
     def _execute(self, options, args):
         if len(args) < 2:
             raise CommandError("Not enough arguments")
 
         pattern_text = args[0]
-        self.log("Using pattern: %r" % pattern_text)
+        self.log(f"Using pattern: {pattern_text!r}")
         paths = args[1:]
 
         pattern = TagsFromPattern(pattern_text)
@@ -738,12 +800,11 @@ class FillTracknumberCommand(Command):
     USAGE = "[--dry-run] [--start] [--total] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("--dry-run", action="store_true",
-                     help="show changes, don't apply them")
-        p.add_option("--start", action="store_true",
-                     help="tracknumber to start with")
-        p.add_option("--total", action="store_true",
-                     help="total number of tracks")
+        p.add_option(
+            "--dry-run", action="store_true", help="show changes, don't apply them"
+        )
+        p.add_option("--start", action="store_true", help="tracknumber to start with")
+        p.add_option("--total", action="store_true", help="total number of tracks")
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -757,8 +818,13 @@ class PrintCommand(Command):
     USAGE = "[-p <pattern>] <file> [<files>]"
 
     def _add_options(self, p):
-        p.add_option("-p", "--pattern", action="store", type="string",
-                     help="use a custom pattern")
+        p.add_option(
+            "-p",
+            "--pattern",
+            action="store",
+            type="string",
+            help="use a custom pattern",
+        )
 
     def _execute(self, options, args):
         if len(args) < 1:
@@ -768,7 +834,7 @@ class PrintCommand(Command):
         if pattern is None:
             pattern = "<artist~album~tracknumber~title>"
 
-        self.log("Using pattern: %r" % pattern)
+        self.log(f"Using pattern: {pattern!r}")
 
         try:
             pattern = Pattern(pattern)

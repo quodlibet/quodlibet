@@ -125,8 +125,7 @@ def load_audio_files(data, process=True):
         items = [i for i in items if not isinstance(i, dummy)]
 
         if not items:
-            raise SerializationError(
-                "all class lookups failed. something is wrong")
+            raise SerializationError("all class lookups failed. something is wrong")
 
     if process:
         items = _py2_to_py3(items)

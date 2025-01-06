@@ -17,9 +17,14 @@ from ._base import MMKeysBackend, MMKeysAction
 def dbus_has_interface(dbus_name, dbus_path, dbus_interface):
     try:
         proxy = Gio.DBusProxy.new_for_bus_sync(
-            Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-            dbus_name, dbus_path,
-            "org.freedesktop.DBus.Introspectable", None)
+            Gio.BusType.SESSION,
+            Gio.DBusProxyFlags.NONE,
+            None,
+            dbus_name,
+            dbus_path,
+            "org.freedesktop.DBus.Introspectable",
+            None,
+        )
         xml = proxy.Introspect()
         node = Gio.DBusNodeInfo.new_for_xml(xml)
         for iface in node.interfaces:
@@ -31,7 +36,6 @@ def dbus_has_interface(dbus_name, dbus_path, dbus_interface):
 
 
 class GnomeBackend(MMKeysBackend):
-
     DBUS_NAME = "org.gnome.SettingsDaemon.MediaKeys"
     DBUS_PATH = "/org/gnome/SettingsDaemon/MediaKeys"
     DBUS_IFACE = "org.gnome.SettingsDaemon.MediaKeys"
@@ -45,7 +49,7 @@ class GnomeBackend(MMKeysBackend):
         "FastForward": MMKeysAction.FORWARD,
         "Rewind": MMKeysAction.REWIND,
         "Repeat": MMKeysAction.REPEAT,
-        "Shuffle": MMKeysAction.SHUFFLE
+        "Shuffle": MMKeysAction.SHUFFLE,
     }
 
     def __init__(self, name, callback):
@@ -98,13 +102,18 @@ class GnomeBackend(MMKeysBackend):
 
         try:
             iface = Gio.DBusProxy.new_for_bus_sync(
-                Gio.BusType.SESSION, Gio.DBusProxyFlags.NONE, None,
-                self.DBUS_NAME, self.DBUS_PATH, self.DBUS_IFACE, None)
+                Gio.BusType.SESSION,
+                Gio.DBusProxyFlags.NONE,
+                None,
+                self.DBUS_NAME,
+                self.DBUS_PATH,
+                self.DBUS_IFACE,
+                None,
+            )
         except GLib.Error:
             print_exc()
         else:
-            self.__key_pressed_sig = iface.connect(
-                "g-signal", self.__on_signal)
+            self.__key_pressed_sig = iface.connect("g-signal", self.__on_signal)
             self.__interface = iface
 
         return self.__interface
@@ -116,8 +125,12 @@ class GnomeBackend(MMKeysBackend):
 
         # This also triggers for existing name owners
         self.__watch = Gio.bus_watch_name(
-            Gio.BusType.SESSION, self.DBUS_NAME, Gio.BusNameWatcherFlags.NONE,
-            self.__owner_appeared, self.__owner_vanished)
+            Gio.BusType.SESSION,
+            self.DBUS_NAME,
+            Gio.BusNameWatcherFlags.NONE,
+            self.__owner_appeared,
+            self.__owner_vanished,
+        )
 
     def __disable_watch(self):
         """Disable name owner change events"""
@@ -177,7 +190,6 @@ class GnomeBackendOldName(GnomeBackend):
 
 
 class MateBackend(GnomeBackend):
-
     DBUS_NAME = "org.mate.SettingsDaemon"
     DBUS_PATH = "/org/mate/SettingsDaemon/MediaKeys"
     DBUS_IFACE = "org.mate.SettingsDaemon.MediaKeys"

@@ -79,7 +79,8 @@ class JSONBasedEditor(qltk.UniqueWindow):
         rem = MenuItem(_("_Remove"), Icons.LIST_REMOVE)
         keyval, mod = Gtk.accelerator_parse("Delete")
         rem.add_accelerator(
-            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE)
+            "activate", self.accels, keyval, mod, Gtk.AccelFlags.VISIBLE
+        )
         connect_obj(rem, "activate", self.__remove, view)
         menu.append(rem)
         menu.show_all()
@@ -143,8 +144,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
             entry = ValidatingEntry(validator=Query.validator)
         else:
             entry = UndoEntry()
-        entry.connect(signal or "changed",
-                      callback or self.__changed_widget, key)
+        entry.connect(signal or "changed", callback or self.__changed_widget, key)
         return entry
 
     def __refresh_view(self):
@@ -211,14 +211,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
     @staticmethod
     def get_field_name(field, key):
-        field_name = (field.human_name
-                      or (key and key.replace("_", " ")))
+        field_name = field.human_name or (key and key.replace("_", " "))
         return field_name and util.capitalize(field_name) or _("(unknown)")
 
     def _fill_values(self, data):
         if not data:
             return
-        for (_name, obj) in data.items():
+        for _name, obj in data.items():
             self.model.append(row=[obj])
 
     def _update_current(self, new_selection=None):
@@ -255,13 +254,13 @@ class JSONBasedEditor(qltk.UniqueWindow):
 
     def __finish(self, widget):
         # TODO: Warn about impending deletion of nameless items, or something
-        all = JSONObjectDict.from_list(
-                [row[0] for row in self.model if row[0].name])
+        all = JSONObjectDict.from_list([row[0] for row in self.model if row[0].name])
         all.save(filename=self.filename)
 
 
 class TagListEditor(qltk.Window):
     """Dialog to edit a list of tag names."""
+
     _WIDTH = 600
     _HEIGHT = 300
 
@@ -393,9 +392,9 @@ class TagListEditor(qltk.Window):
 
     def __add(self, *args):
         tooltip = _("Tag expression e.g. people:real or ~album~year")
-        dialog = GetStringDialog(self, _("Enter new tag"), "",
-                                 button_icon=None,
-                                 tooltip=tooltip)
+        dialog = GetStringDialog(
+            self, _("Enter new tag"), "", button_icon=None, tooltip=tooltip
+        )
         new = dialog.run()
         if new:
             self.model.append(row=[new])
@@ -403,9 +402,9 @@ class TagListEditor(qltk.Window):
     def __edit(self, *args):
         path, col = self.view.get_cursor()
         tooltip = _("Tag expression e.g. people:real or ~album~year")
-        dialog = GetStringDialog(self, _("Edit tag expression"), "",
-                                 button_icon=None,
-                                 tooltip=tooltip)
+        dialog = GetStringDialog(
+            self, _("Edit tag expression"), "", button_icon=None, tooltip=tooltip
+        )
         edited = dialog.run(text=self.model[path][0])
         if edited:
             self.model[path][0] = edited

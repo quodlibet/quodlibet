@@ -64,7 +64,7 @@ class Command:
     def load_song(self, path):
         """Load a song. Raises CommandError in case it fails"""
 
-        self.log("Load file: %r" % path)
+        self.log(f"Load file: {path!r}")
         song = MusicFile(path)
         if not song:
             raise CommandError(_("Failed to load file: %r") % path)

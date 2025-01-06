@@ -54,5 +54,6 @@ class QueryThread:
                 def idle_check(cb, res):
                     if self.running:
                         cb(res)
+
                 GLib.idle_add(idle_check, callback, res)
             time.sleep(1)

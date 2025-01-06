@@ -40,6 +40,7 @@ def enum(cls):
         if default is not None:
             return default
         raise ValueError(f"Can't find {s} (try {cls.values})")
+
     new_type.value_of = classmethod(value_of)
 
     def repr_(self):

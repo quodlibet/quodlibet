@@ -25,7 +25,8 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         "Skip to time A and stop after time B when track is played.\n\n"
         "ℹ Note that changing the names of the points below does not "
         "update the actual bookmark names, it only changes which "
-        "bookmark names the plugin looks for when deciding whether to seek.")
+        "bookmark names the plugin looks for when deciding whether to seek."
+    )
 
     CFG_SEEKPOINT_A_TEXT = "A"
     CFG_SEEKPOINT_B_TEXT = "B"
@@ -42,7 +43,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
 
     def plugin_on_song_started(self, song):
         """Seeks to point A if it exists, and also fetches the bookmarks of the
-           current track that matches the seekpoint names set in config.
+        current track that matches the seekpoint names set in config.
         """
         self._seekpoint_A, self._seekpoint_B = self._get_seekpoints()
         if not self._seekpoint_A:
@@ -51,7 +52,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
 
     def _on_tick(self, tracker):
         """Checks whether the current position is past point B if it exists,
-           and if it is -- seek to the end of the track.
+        and if it is -- seek to the end of the track.
         """
         if not self._seekpoint_B:
             return
@@ -62,7 +63,7 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
 
     def _get_seekpoints(self):
         """Reads seekpoint-names from config, which are compared to the
-           bookmark-names of the current track to get timestamps (if any).
+        bookmark-names of the current track to get timestamps (if any).
         """
         if not app.player.song:
             return None, None
@@ -73,10 +74,12 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
 
         seekpoint_a = None
         seekpoint_b = None
-        seekpoint_a_name = self.config_get(self.CFG_SEEKPOINT_A_TEXT,
-                                           self.DEFAULT_A_TEXT)
-        seekpoint_b_name = self.config_get(self.CFG_SEEKPOINT_B_TEXT,
-                                           self.DEFAULT_B_TEXT)
+        seekpoint_a_name = self.config_get(
+            self.CFG_SEEKPOINT_A_TEXT, self.DEFAULT_A_TEXT
+        )
+        seekpoint_b_name = self.config_get(
+            self.CFG_SEEKPOINT_B_TEXT, self.DEFAULT_B_TEXT
+        )
         for time, mark in marks:
             if mark == seekpoint_a_name:
                 seekpoint_a = time
@@ -101,15 +104,17 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         # Bookmark name to use for point A
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.config_get(self.CFG_SEEKPOINT_A_TEXT,
-                                       self.DEFAULT_A_TEXT))
-        entry.connect("changed", self.config_entry_changed,
-                      self.CFG_SEEKPOINT_A_TEXT)
+        entry.set_text(self.config_get(self.CFG_SEEKPOINT_A_TEXT, self.DEFAULT_A_TEXT))
+        entry.connect("changed", self.config_entry_changed, self.CFG_SEEKPOINT_A_TEXT)
         lbl = Gtk.Label(label=_("Bookmark name for point A"))
-        entry.set_tooltip_markup(_("Bookmark name to check for when "
-                                   "a track is started, and if found the player seeks "
-                                   "to that "
-                                   "timestamp"))
+        entry.set_tooltip_markup(
+            _(
+                "Bookmark name to check for when "
+                "a track is started, and if found the player seeks "
+                "to that "
+                "timestamp"
+            )
+        )
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)
@@ -118,15 +123,17 @@ class SeekPointsPlugin(EventPlugin, PluginConfigMixin):
         # Bookmark name to use for point B
         hb = Gtk.HBox(spacing=6)
         entry = UndoEntry()
-        entry.set_text(self.config_get(self.CFG_SEEKPOINT_B_TEXT,
-                                       self.DEFAULT_B_TEXT))
-        entry.connect("changed", self.config_entry_changed,
-                      self.CFG_SEEKPOINT_B_TEXT)
+        entry.set_text(self.config_get(self.CFG_SEEKPOINT_B_TEXT, self.DEFAULT_B_TEXT))
+        entry.connect("changed", self.config_entry_changed, self.CFG_SEEKPOINT_B_TEXT)
         lbl = Gtk.Label(label=_("Bookmark name for point B"))
-        entry.set_tooltip_markup(_("Bookmark name to use each tick during "
-                                   "play of a track if it exist. If the current "
-                                   "position exceeds "
-                                   "the timestamp, seek to the end of the track."))
+        entry.set_tooltip_markup(
+            _(
+                "Bookmark name to use each tick during "
+                "play of a track if it exist. If the current "
+                "position exceeds "
+                "the timestamp, seek to the end of the track."
+            )
+        )
         lbl.set_mnemonic_widget(entry)
         hb.pack_start(lbl, False, True, 0)
         hb.pack_start(entry, True, True, 0)

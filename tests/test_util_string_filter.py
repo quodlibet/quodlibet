@@ -11,7 +11,6 @@ SOME_FRENCH = "goût d'œufs à Noël"
 
 
 class TRemoveDiacritics(TestCase):
-
     def test_empty(self):
         assert remove_diacritics("") == ""
         assert remove_diacritics(" \t\n") == " \t\n"
@@ -22,7 +21,6 @@ class TRemoveDiacritics(TestCase):
 
 
 class TRemovePunctuation(TestCase):
-
     def test_empty(self):
         assert remove_punctuation("") == ""
         assert remove_punctuation(" \t\n") == " \t\n"

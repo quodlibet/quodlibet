@@ -45,7 +45,6 @@ class TAddFeedDialog(TestCase):
 
 
 class TFeed(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
 
@@ -58,8 +57,7 @@ class TFeed(TestCase):
         # Do this after the above, as many exceptions can be swallowed
         assert result
         self.assertEqual(len(feed), 2)
-        self.assertEqual(feed[0]("title"),
-                             "Full Episode: Tuesday, November 28, 2017")
+        self.assertEqual(feed[0]("title"), "Full Episode: Tuesday, November 28, 2017")
 
     def tearDown(self):
         quodlibet.config.quit()

@@ -28,7 +28,7 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         self._sids = [
             self.client.connect("songs-received", self._on_songs_received),
             self.client.connect("stream-uri-received", self._on_stream_uri_received),
-            self.client.connect("comments-received", self._on_comments_received)
+            self.client.connect("comments-received", self._on_comments_received),
         ]
         self._psid = None
         # Keep track of async-changed songs for bulk signalling
@@ -115,8 +115,10 @@ class SoundcloudLibrary(SongLibrary[K, "SoundcloudFile"]):
         for song in self.values():
             if song.track_id == track_id:
                 return song
-        raise KeyError(f"No track with id {track_id}. "
-                       f"Do have {[s.track_id for s in self.values()]}")
+        raise KeyError(
+            f"No track with id {track_id}. "
+            f"Do have {[s.track_id for s in self.values()]}"
+        )
 
     def _changed(self, items):
         super()._changed(items)

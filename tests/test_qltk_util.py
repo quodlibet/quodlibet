@@ -14,7 +14,6 @@ from quodlibet.qltk.util import position_window_beside_widget
 
 
 class Tposition_window_beside_widget(TestCase):
-
     def test_main(self):
         button = Gtk.Button()
         window = Gtk.Window()

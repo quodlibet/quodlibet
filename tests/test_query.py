@@ -186,25 +186,39 @@ class TestQuery_is_valid:
 
 
 class TQuery(TestCase):
-
     def setUp(self):
         config.init()
         self.s1 = AudioFile(
-            {"album": "I Hate: Tests", "artist": "piman", "title": "Quuxly",
-             "version": "cake mix",
-             "~filename": fsnative("/dir1/foobar.ogg"),
-             "~#length": 224, "~#skipcount": 13, "~#playcount": 24,
-             "date": "2007-05-24", "~#samplerate": 44100})
+            {
+                "album": "I Hate: Tests",
+                "artist": "piman",
+                "title": "Quuxly",
+                "version": "cake mix",
+                "~filename": fsnative("/dir1/foobar.ogg"),
+                "~#length": 224,
+                "~#skipcount": 13,
+                "~#playcount": 24,
+                "date": "2007-05-24",
+                "~#samplerate": 44100,
+            }
+        )
         self.s2 = AudioFile(
-            {"album": "Foo the Bar", "artist": "mu", "title": "Rockin' Out",
-             "~filename": fsnative("/dir2/something.mp3"),
-             "tracknumber": "12/15"})
+            {
+                "album": "Foo the Bar",
+                "artist": "mu",
+                "title": "Rockin' Out",
+                "~filename": fsnative("/dir2/something.mp3"),
+                "tracknumber": "12/15",
+            }
+        )
 
-        self.s3 = AudioFile({
-            "artist": "piman\nmu",
-            "~filename": fsnative("/test/\xf6\xe4\xfc/fo\xfc.ogg"),
-            "~mountpoint": fsnative("/bla/\xf6\xe4\xfc/fo\xfc"),
-        })
+        self.s3 = AudioFile(
+            {
+                "artist": "piman\nmu",
+                "~filename": fsnative("/test/\xf6\xe4\xfc/fo\xfc.ogg"),
+                "~mountpoint": fsnative("/bla/\xf6\xe4\xfc/fo\xfc"),
+            }
+        )
         self.s4 = AudioFile({"title": "Ångström", "utf8": "Ångström"})
         self.s5 = AudioFile({"title": "oh&blahhh", "artist": "!ohno"})
 
@@ -231,7 +245,7 @@ class TQuery(TestCase):
             assert Query("foo the bar").search(self.s2)
             assert not Query("foo the bar").search(self.s1)
         us = (time.time() - t) * 1000000 / ((total + 1) * 4)
-        print("Blended Query searches average %.0f μs" % us)
+        print(f"Blended Query searches average {us:.0f} μs")
 
     @skip("Enable for basic benchmarking of Query")
     def test_inequality_equalish_performance(self):
@@ -239,11 +253,11 @@ class TQuery(TestCase):
         repeats = 2000
         for _i in range(repeats):
             assert Query("album!=foo the bar").search(self.s1)
-        ineq_time = (time.time() - t0)
+        ineq_time = time.time() - t0
         t1 = time.time()
         for _i in range(repeats):
             assert Query("album=!foo the bar").search(self.s1)
-        not_val_time = (time.time() - t1)
+        not_val_time = time.time() - t1
         assert ineq_time == pytest.approx(not_val_time, abs=0.1)
 
     def test_repr(self):
@@ -412,13 +426,31 @@ class TQuery(TestCase):
         numcmp = Query("#(bar = 0)")
         tag = Query("foo=bar")
 
-        tests = [inter | tag, tag | tag, neg | neg, tag | inter, neg | union,
-                 union | union, inter | inter, numcmp | numcmp, numcmp | union]
+        tests = [
+            inter | tag,
+            tag | tag,
+            neg | neg,
+            tag | inter,
+            neg | union,
+            union | union,
+            inter | inter,
+            numcmp | numcmp,
+            numcmp | union,
+        ]
 
         assert not [x for x in tests if not isinstance(x, match.Union)]
 
-        tests = [inter & tag, tag & tag, neg & neg, tag & inter, neg & union,
-                 union & union, inter & inter, numcmp & numcmp, numcmp & inter]
+        tests = [
+            inter & tag,
+            tag & tag,
+            neg & neg,
+            tag & inter,
+            neg & union,
+            union & union,
+            inter & inter,
+            numcmp & numcmp,
+            numcmp & inter,
+        ]
 
         assert not [x for x in tests if not isinstance(x, match.Inter)]
 

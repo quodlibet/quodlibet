@@ -17,7 +17,6 @@ from quodlibet.util import print_d
 
 
 class Module:
-
     def __init__(self, name, module, deps, path):
         self.name = name
         self.module = module
@@ -42,7 +41,6 @@ class Module:
 
 
 class ModuleImportError:
-
     def __init__(self, name, exception, traceback):
         self.name = name
         self.exception = exception
@@ -62,6 +60,7 @@ class ModuleScanner:
     modules - A dict of Name: Module for all successfully loaded modules
 
     """
+
     def __init__(self, folders):
         self.__folders = folders
         self.__modules = {}  # name: module
@@ -121,7 +120,7 @@ class ModuleScanner:
         self.__failures.clear()
 
         # add new ones
-        for (name, (path, deps)) in info.items():
+        for name, (path, deps) in info.items():
             if name in self.__modules:
                 continue
 
@@ -130,8 +129,7 @@ class ModuleScanner:
                 # https://github.com/quodlibet/quodlibet/issues/1093
                 parent = "quodlibet.fake"
                 if parent not in sys.modules:
-                    spec = importlib.machinery.ModuleSpec(
-                        parent, None, is_package=True)
+                    spec = importlib.machinery.ModuleSpec(parent, None, is_package=True)
                     sys.modules[parent] = importlib.util.module_from_spec(spec)
                 vars(sys.modules["quodlibet"])["fake"] = sys.modules[parent]
 
@@ -145,7 +143,9 @@ class ModuleScanner:
                 added.append(name)
                 self.__modules[name] = Module(name, mod, deps, path)
 
-        print_d("Rescanning done: %d added, %d removed, %d error(s)" %
-                (len(added), len(removed), len(self.__failures)))
+        print_d(
+            "Rescanning done: %d added, %d removed, %d error(s)"
+            % (len(added), len(removed), len(self.__failures))
+        )
 
         return removed, added

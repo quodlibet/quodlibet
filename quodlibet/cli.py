@@ -24,8 +24,10 @@ def exit_(status=None, notify_startup=False):
 
     if notify_startup:
         import gi
+
         gi.require_version("Gdk", "3.0")
         from gi.repository import Gdk
+
         Gdk.notify_startup_complete()
     raise SystemExit(status)
 
@@ -48,8 +50,10 @@ def control(command, arg=None, ignore_error=False):
     if not is_running():
         if ignore_error:
             return
-        exit_(_("Quod Libet is not running (add '--run' to start it)"),
-              notify_startup=True)
+        exit_(
+            _("Quod Libet is not running (add '--run' to start it)"),
+            notify_startup=True,
+        )
         return
 
     message = command
@@ -74,18 +78,43 @@ def process_arguments(argv):
     from quodlibet import const
 
     actions = []
-    controls = ["next", "previous", "play", "pause", "play-pause", "stop",
-                "hide-window", "show-window", "toggle-window",
-                "focus", "quit", "unfilter", "refresh", "force-previous"]
-    controls_opt = ["seek", "repeat", "query", "volume", "filter",
-                    "rating", "set-browser", "open-browser", "shuffle",
-                    "queue", "stop-after", "random", "repeat-type",
-                    "shuffle-type", "add-location"]
+    controls = [
+        "next",
+        "previous",
+        "play",
+        "pause",
+        "play-pause",
+        "stop",
+        "hide-window",
+        "show-window",
+        "toggle-window",
+        "focus",
+        "quit",
+        "unfilter",
+        "refresh",
+        "force-previous",
+    ]
+    controls_opt = [
+        "seek",
+        "repeat",
+        "query",
+        "volume",
+        "filter",
+        "rating",
+        "set-browser",
+        "open-browser",
+        "shuffle",
+        "queue",
+        "stop-after",
+        "random",
+        "repeat-type",
+        "shuffle-type",
+        "add-location",
+    ]
 
     options = util.OptionParser(
-        "Quod Libet", const.VERSION,
-        _("a music library and player"),
-        _("[option]"))
+        "Quod Libet", const.VERSION, _("a music library and player"), _("[option]")
+    )
 
     options.add("print-playing", help=_("Print the playing song and exit"))
     options.add("start-playing", help=_("Begin playing immediately"))
@@ -93,8 +122,7 @@ def process_arguments(argv):
 
     for opt, help in [
         ("next", _("Jump to next song")),
-        ("previous",
-            _("Jump to previous song or restart if near the beginning")),
+        ("previous", _("Jump to previous song or restart if near the beginning")),
         ("force-previous", _("Jump to previous song")),
         ("play", _("Start playback")),
         ("pause", _("Pause playback")),
@@ -118,7 +146,7 @@ def process_arguments(argv):
         ("no-plugins", _("Start without plugins")),
         ("run", _("Start Quod Libet if it isn't running")),
         ("quit", _("Exit Quod Libet")),
-            ]:
+    ]:
         options.add(opt, help=help)
 
     for opt, help, arg in [
@@ -137,19 +165,25 @@ def process_arguments(argv):
         ("queue", _("Show or hide the queue"), "on|off|t"),
         ("random", _("Filter on a random value"), C_("command", "tag")),
         ("filter", _("Filter on a tag value"), _("tag=value")),
-        ("enqueue", _("Enqueue a file or query"), "{}|{}".format(
-            C_("command", "filename"), _("query"))),
-        ("enqueue-files", _("Enqueue comma-separated files"), "{}[,{}..]".format(
-            _("filename"), _("filename"))),
-        ("print-query", _("Print filenames of results of query to stdout"),
-            _("query")),
-        ("unqueue", _("Unqueue a file or query"), "{}|{}".format(
-            C_("command", "filename"), _("query"))),
-        ("add-location", _("Add a file or directory to the library"),
-            _("location")),
-        ("with-pattern", _("Set template for --print-* commands"),
-            _("pattern")),
-            ]:
+        (
+            "enqueue",
+            _("Enqueue a file or query"),
+            "{}|{}".format(C_("command", "filename"), _("query")),
+        ),
+        (
+            "enqueue-files",
+            _("Enqueue comma-separated files"),
+            "{}[,{}..]".format(_("filename"), _("filename")),
+        ),
+        ("print-query", _("Print filenames of results of query to stdout"), _("query")),
+        (
+            "unqueue",
+            _("Unqueue a file or query"),
+            "{}|{}".format(C_("command", "filename"), _("query")),
+        ),
+        ("add-location", _("Add a file or directory to the library"), _("location")),
+        ("with-pattern", _("Set template for --print-* commands"), _("pattern")),
+    ]:
         options.add(opt, help=help, arg=arg)
 
     options.add("sm-config-prefix", arg="dummy")
@@ -194,7 +228,7 @@ def process_arguments(argv):
         "seek": is_time,
         "rating": is_rate,
         "stop-after": ["0", "1", "t"].__contains__,
-        }
+    }
 
     cmds_todo = []
 

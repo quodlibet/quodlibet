@@ -24,7 +24,6 @@ TEST_DATA_PATH = Path(__file__).parent.parent / "tests" / "data"
 
 class TSoundcloudLibrary(TestCase):
     class FakeClient(SoundcloudApiClient):
-
         def get_tracks(self, query):
             self._on_track_data(None, [self._track], None)
 

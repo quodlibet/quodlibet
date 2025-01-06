@@ -20,7 +20,6 @@ from quodlibet.util import connect_destroy
 
 
 class SeekBar(Gtk.Box):
-
     def __init__(self, player, library):
         super().__init__()
 
@@ -37,10 +36,8 @@ class SeekBar(Gtk.Box):
         for child in self.get_children():
             child.show_all()
 
-        self._id = self._scale.connect(
-            "value-changed", self._on_user_changed, player)
-        self._scale.connect(
-            "value-changed", self._on_scale_value_changed, player)
+        self._id = self._scale.connect("value-changed", self._on_user_changed, player)
+        self._scale.connect("value-changed", self._on_scale_value_changed, player)
 
         self._tracker = TimeTracker(player)
         self._tracker.connect("tick", self._on_tick, player)
@@ -49,8 +46,7 @@ class SeekBar(Gtk.Box):
         connect_destroy(player, "song-started", self._on_song_started)
         connect_destroy(player, "notify::seekable", self._on_seekable_changed)
 
-        connect_destroy(
-            library, "changed", self._on_song_changed, player)
+        connect_destroy(library, "changed", self._on_song_changed, player)
 
         self.connect("destroy", self._on_destroy)
 
@@ -120,8 +116,10 @@ class SeekBar(Gtk.Box):
 class SeekBarPlugin(EventPlugin):
     PLUGIN_ID = "SeekBar"
     PLUGIN_NAME = _("Alternative Seek Bar")
-    PLUGIN_DESC = _("Alternative seek bar which is always visible and spans "
-                    "the whole window width.")
+    PLUGIN_DESC = _(
+        "Alternative seek bar which is always visible and spans "
+        "the whole window width."
+    )
     PLUGIN_ICON = Icons.GO_JUMP
 
     def enabled(self):

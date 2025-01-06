@@ -101,15 +101,17 @@ class LastFMSyncCache:
                 self.lastupdated = now
             elif not [v for v in self.charts.values() if v]:
                 # No charts to fetch, no update scheduled.
-                prog(_("Already up-to-date."), 1.)
+                prog(_("Already up-to-date."), 1.0)
                 return False
 
             new_charts = [k for k, v in self.charts.items() if v]
 
             for idx, (fro, to) in enumerate(sorted(new_charts)):
                 chart_week = date.fromtimestamp(fro).isoformat()
-                prog(_("Fetching chart for week of %s.") % chart_week,
-                     (idx + 1.) / (len(new_charts) + 2.))
+                prog(
+                    _("Fetching chart for week of %s.") % chart_week,
+                    (idx + 1.0) / (len(new_charts) + 2.0),
+                )
                 args = {"user": self.username, "from": fro, "to": to}
                 try:
                     resp = apicall("user.getweeklytrackchart", **args)
@@ -130,7 +132,7 @@ class LastFMSyncCache:
                 for track in tracks:
                     self._update_stats(track, fro, to)
                 self.charts[(fro, to)] = False
-            prog(_("Sync complete."), 1.)
+            prog(_("Sync complete."), 1.0)
         except ValueError:
             # this is probably from prog()
             pass
@@ -179,10 +181,13 @@ class LastFMSyncCache:
             if "musicbrainz_trackid" in song:
                 keys.append(song["musicbrainz_trackid"].lower())
             if "musiscbrainz_artistid" in song:
-                keys.append((song["musicbrainz_artistid"].lower(),
-                            song.get("title", "").lower()))
-            keys.append((song.get("artist", "").lower(),
-                         song.get("title", "").lower()))
+                keys.append(
+                    (
+                        song["musicbrainz_artistid"].lower(),
+                        song.get("title", "").lower(),
+                    )
+                )
+            keys.append((song.get("artist", "").lower(), song.get("title", "").lower()))
             stats = list(filter(None, map(self.songs.get, keys)))
             if not stats:
                 continue
@@ -229,8 +234,7 @@ class LastFMSyncWindow(qltk.Dialog):
 class LastFMSync(SongsMenuPlugin):
     PLUGIN_ID = "Last.fm Sync"
     PLUGIN_NAME = _("Last.fm Sync")
-    PLUGIN_DESC = _("Updates your library's statistics from your "
-                    "Last.fm profile.")
+    PLUGIN_DESC = _("Updates your library's statistics from your " "Last.fm profile.")
     PLUGIN_ICON = Icons.EMBLEM_SHARED
 
     CACHE_PATH = os.path.join(quodlibet.get_user_dir(), "lastfmsync.db")

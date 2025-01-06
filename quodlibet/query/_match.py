@@ -36,7 +36,6 @@ class ParseError(Error):
 
 
 class Node:
-
     def search(self, data: T) -> bool:
         raise NotImplementedError
 
@@ -61,7 +60,6 @@ class Node:
 
 
 class Regex(Node):
-
     def __init__(self, pattern: str, mod_string: str):
         self.pattern = str(pattern)
         self.mod_string = str(mod_string)
@@ -74,7 +72,8 @@ class Regex(Node):
             self.search = re  # type: ignore
         except ValueError as e:
             raise ParseError(
-                "The regular expression /%s/ is invalid." % self.pattern) from e
+                f"The regular expression /{self.pattern}/ is invalid."
+            ) from e
 
     def __repr__(self):
         return f"<Regex pattern={self.pattern} mod={self.mod_string}>"
@@ -133,7 +132,7 @@ class Union(Node):
         return False
 
     def __repr__(self):
-        return "<Union %r>" % self.res
+        return f"<Union {self.res!r}>"
 
     def __or__(self, other):
         other = other._unpack()
@@ -175,7 +174,7 @@ class Inter(Node):
         return current
 
     def __repr__(self):
-        return "<Inter %r>" % self.res
+        return f"<Inter {self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -205,7 +204,7 @@ class Neg(Node):
         return not self.res.search(data)
 
     def __repr__(self):
-        return "<Neg %r>" % self.res
+        return f"<Neg {self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -255,8 +254,9 @@ class Numcmp(Node):
         return False
 
     def __repr__(self):
-        return "<Numcmp expr={!r}, op={!r}, expr2={!r}>".format(
-            self._expr, self._op.__name__, self._expr2)
+        return (f"<Numcmp expr={self._expr!r}, "
+                f"op={self._op.__name__!r}, "
+                f"expr2={self._expr2!r}>")
 
     def __and__(self, other):
         other = other._unpack()
@@ -328,7 +328,7 @@ class NumexprTag(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprTag tag=%r>" % self._tag
+        return f"<NumexprTag tag={self._tag!r}>"
 
     def use_date(self):
         return self._tag == "date"
@@ -337,9 +337,7 @@ class NumexprTag(Numexpr):
 class NumexprUnary(Numexpr):
     """Unary numeric operation (like -)"""
 
-    operators = {
-        "-": operator.neg
-    }
+    operators = {"-": operator.neg}
 
     def __init__(self, op: str, expr: Numexpr):
         self.__op = self.operators[op]
@@ -380,8 +378,10 @@ class NumexprBinary(Numexpr):
         self.__expr = expr
         self.__expr2 = expr2
         # Rearrange expressions for operator precedence
-        if (isinstance(expr, NumexprBinary)
-            and self.precedence[expr.__op] < self.precedence[self.__op]):
+        if (
+            isinstance(expr, NumexprBinary)
+            and self.precedence[expr.__op] < self.precedence[self.__op]
+        ):
             self.__expr = expr.__expr
             self.__op = expr.__op
             expr.__expr = expr.__expr2
@@ -400,8 +400,10 @@ class NumexprBinary(Numexpr):
         return None
 
     def __repr__(self):
-        return "<NumexprBinary op={!r} expr={!r} expr2={!r}>".format(
-            self.__op, self.__expr, self.__expr2)
+        return (f"<NumexprBinary "
+                f"op={self.__op!r} "
+                f"expr={self.__expr!r} "
+                f"expr2={self.__expr2!r}>")
 
     def use_date(self):
         return self.__expr.use_date() or self.__expr2.use_date()
@@ -417,7 +419,7 @@ class NumexprGroup(Numexpr):
         return self.__expr.evaluate(data, time, use_date)
 
     def __repr__(self):
-        return "<NumexprGroup expr=%r>" % (self.__expr)
+        return f"<NumexprGroup expr={self.__expr!r}>"
 
     def use_date(self):
         return self.__expr.use_date()
@@ -437,7 +439,7 @@ class NumexprNumber(Numexpr):
         return self._units
 
     def __repr__(self):
-        return "<NumexprNumber value=%.2f>" % (self._value)
+        return f"<NumexprNumber value={self._value:.2f}>"
 
 
 class NumexprNow(Numexpr):
@@ -450,7 +452,7 @@ class NumexprNow(Numexpr):
         return time - self.__offset
 
     def __repr__(self):
-        return "<NumexprNow offset=%r>" % (self.__offset)
+        return f"<NumexprNow offset={self.__offset!r}>"
 
 
 class NumexprNumberOrDate(Numexpr):
@@ -473,7 +475,7 @@ class NumexprNumberOrDate(Numexpr):
             return self.number
 
     def __repr__(self):
-        return (f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>")
+        return f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>"
 
 
 class Units(Enum):
@@ -506,10 +508,10 @@ def numexprUnit(value, unit):
         value *= 365 * 24 * 60 * 60
     # Size units
     elif unit.startswith("g"):
-        value *= 1024 ** 3
+        value *= 1024**3
         converted = Units.BYTES
     elif unit.startswith("m"):
-        value *= 1024 ** 2
+        value *= 1024**2
         converted = Units.BYTES
     elif unit.startswith("k"):
         value *= 1024
@@ -517,7 +519,7 @@ def numexprUnit(value, unit):
     elif unit.startswith("b"):
         converted = Units.SECONDS
     elif unit:
-        raise ParseError("No such unit: %r" % unit)
+        raise ParseError(f"No such unit: {unit!r}")
     return NumexprNumber(value, converted)
 
 
@@ -536,13 +538,14 @@ class Tag(Node):
     """See if a property of the object matches its RE."""
 
     # Shorthand for common tags.
-    ABBRS = {"a": "artist",
-             "b": "album",
-             "v": "version",
-             "t": "title",
-             "n": "tracknumber",
-             "d": "date",
-             }
+    ABBRS = {
+        "a": "artist",
+        "b": "album",
+        "v": "version",
+        "t": "title",
+        "n": "tracknumber",
+        "d": "date",
+    }
 
     def __init__(self, names: Iterable[str], res):
         self.res = res
@@ -589,7 +592,7 @@ class Tag(Node):
 
     def __repr__(self):
         names = self._names + self.__intern
-        return (f"<Tag names={names!r}, res={self.res!r}>")
+        return f"<Tag names={names!r}, res={self.res!r}>"
 
     def __and__(self, other):
         other = other._unpack()
@@ -640,8 +643,10 @@ class Extension(Node):
         return self.__valid
 
     def __repr__(self):
-        return (f"<Extension "
-                f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>")
+        return (
+            f"<Extension "
+            f"name={self.__name!r} valid={self.__valid!r} body={self.__body!r}>"
+        )
 
     def __and__(self, other):
         other = other._unpack()

@@ -17,7 +17,6 @@ if sys.platform != "win32":
 
 
 class WinHookBackend(MMKeysBackend):
-
     def __init__(self, name, callback):
         self._callback = callback
         self._hhook = None
@@ -66,8 +65,7 @@ class WinHookBackend(MMKeysBackend):
         """
 
         kb_proc_ptr = winapi.LowLevelKeyboardProc(self._kb_proc)
-        hhook = winapi.SetWindowsHookExW(
-            winapi.WH_KEYBOARD_LL, kb_proc_ptr, None, 0)
+        hhook = winapi.SetWindowsHookExW(winapi.WH_KEYBOARD_LL, kb_proc_ptr, None, 0)
         if not hhook:
             raise winapi.WinError()
         self._kb_proc_ptr = kb_proc_ptr

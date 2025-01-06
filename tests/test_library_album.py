@@ -24,10 +24,8 @@ class TAlbumLibrary(TestCase):
 
         self._sigs = [
             connect_obj(self.underlying, "added", list.extend, self.added),
-            connect_obj(self.underlying,
-                        "changed", list.extend, self.changed),
-            connect_obj(self.underlying,
-                        "removed", list.extend, self.removed),
+            connect_obj(self.underlying, "changed", list.extend, self.changed),
+            connect_obj(self.underlying, "removed", list.extend, self.removed),
         ]
 
         self.library = AlbumLibrary(self.underlying)
@@ -73,8 +71,7 @@ class TAlbumLibrary(TestCase):
         self.assertEqual(len(albums), 3)
         songs = self.underlying._contents.values()
         # Make sure "all the songs' albums" == "all the albums", roughly
-        self.assertEqual({a.key for a in albums},
-                             {s.album_key for s in songs})
+        self.assertEqual({a.key for a in albums}, {s.album_key for s in songs})
 
     def test_remove(self):
         key = self.underlying.get("file_1.mp3").album_key
@@ -131,22 +128,19 @@ class TAlbumLibrarySignals(TestCase):
     def test_add_two_same(self):
         self.lib.add([AlbumSong(1, "a1")])
         self.lib.add([AlbumSong(5, "a1")])
-        self.assertEqual(self.received,
-                             ["added", "a_added", "added", "a_changed"])
+        self.assertEqual(self.received, ["added", "a_added", "added", "a_changed"])
 
     def test_remove(self):
         songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
         self.lib.add(songs)
         self.lib.remove(songs[:2])
-        self.assertEqual(self.received,
-                             ["added", "a_added", "removed", "a_removed"])
+        self.assertEqual(self.received, ["added", "a_added", "removed", "a_removed"])
 
     def test_change(self):
         songs = [AlbumSong(1, "a1"), AlbumSong(2, "a1"), AlbumSong(4, "a2")]
         self.lib.add(songs)
         self.lib.changed(songs)
-        self.assertEqual(self.received,
-                             ["added", "a_added", "changed", "a_changed"])
+        self.assertEqual(self.received, ["added", "a_added", "changed", "a_changed"])
 
     def tearDown(self):
         for s in self._asigs:
