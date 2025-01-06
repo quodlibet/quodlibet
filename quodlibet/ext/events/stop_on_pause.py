@@ -16,20 +16,21 @@ from quodlibet.qltk.ccb import ConfigCheckButton
 
 
 class StopOnPause(EventPlugin, PluginConfigMixin):
-
     PLUGIN_ID = "StopOnPause"
     PLUGIN_NAME = _("Stop on Pause")
     PLUGIN_ICON = Icons.MEDIA_PLAYBACK_PAUSE
-    PLUGIN_DESC = _("This plugin changes Pause to Stop/Play/Seek."
-                    "\n\n"
-                    "Useful if Quod Libet can't switch audio devices "
-                    "when a new one (Bluetooth speaker, USB DAC, etc.) "
-                    "is added to the system."
-                    "\n\n"
-                    "Ensures position in the current source is maintained "
-                    "so long as 'Only Seekable Sources' is off. "
-                    "Otherwise, playback is left stopped and must be restarted "
-                    "from the beginning.")
+    PLUGIN_DESC = _(
+        "This plugin changes Pause to Stop/Play/Seek."
+        "\n\n"
+        "Useful if Quod Libet can't switch audio devices "
+        "when a new one (Bluetooth speaker, USB DAC, etc.) "
+        "is added to the system."
+        "\n\n"
+        "Ensures position in the current source is maintained "
+        "so long as 'Only Seekable Sources' is off. "
+        "Otherwise, playback is left stopped and must be restarted "
+        "from the beginning."
+    )
 
     _CFG_SEEKABLE_ONLY = "seekable_only"
 

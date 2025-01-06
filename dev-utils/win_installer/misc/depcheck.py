@@ -24,10 +24,14 @@ from gi.repository import GIRepository
 
 
 def _get_shared_libraries(q, namespace, version):
-    repo = GIRepository.Repository()
-    repo.require(namespace, version, 0)
-    lib = repo.get_shared_library(namespace)
-    q.put(lib)
+    try:
+        repo = GIRepository.Repository()
+        repo.require(namespace, version, 0)
+        lib = repo.get_shared_library(namespace)
+    except Exception as e:
+        q.put((None, e))
+    else:
+        q.put((lib, None))
 
 
 @cache
@@ -47,7 +51,12 @@ def get_required_by_typelibs():
     repo = GIRepository.Repository()
     for tl in os.listdir(repo.get_search_path()[0]):
         namespace, version = os.path.splitext(tl)[0].split("-", 1)
-        lib = get_shared_libraries(namespace, version)
+        # g-i fails to load itself with a different version
+        if namespace == "GIRepository" and version != "2.0":
+            continue
+        lib, error = get_shared_libraries(namespace, version)
+        if error:
+            raise error
         if lib:
             libs = lib.lower().split(",")
         else:

@@ -16,8 +16,7 @@ from quodlibet import util, config
 from quodlibet.formats import AudioFile
 from quodlibet.util import website
 from quodlibet.util.dprint import print_w, print_d
-from quodlibet.util.http import (download_json, download, HTTPRequest,
-                                 FailureCallback)
+from quodlibet.util.http import download_json, download, HTTPRequest, FailureCallback
 from .library import SoundcloudFile
 from .util import json_callback, Wrapper, sanitise_tag, DEFAULT_BITRATE, EPOCH
 
@@ -44,8 +43,8 @@ class RestApi(GObject.Object):
     def _add_auth_to(self, msg: Soup.Message) -> Soup.Message:
         if self.access_token:
             msg.get_request_headers().append(
-                "Authorization",
-                f"OAuth {self.access_token}")
+                "Authorization", f"OAuth {self.access_token}"
+            )
         return msg
 
     def _post(self, path, callback, **kwargs):
@@ -56,8 +55,8 @@ class RestApi(GObject.Object):
         if not isinstance(post_body, bytes):
             post_body = post_body.encode("ascii")
         msg.set_request_body_from_bytes(
-            "application/x-www-form-urlencoded",
-            GLib.Bytes.new(post_body))
+            "application/x-www-form-urlencoded", GLib.Bytes.new(post_body)
+        )
         download_json(msg, self._cancellable, callback, None, self._on_failure)
 
     def _delete(self, path, callback, **kwargs):
@@ -70,8 +69,8 @@ class RestApi(GObject.Object):
             body = body.encode("ascii")
         msg = self._add_auth_to(Soup.Message.new("DELETE", self._url(path)))
         msg.set_request_body_from_bytes(
-            "application/x-www-form-urlencoded",
-            GLib.Bytes.new(body))
+            "application/x-www-form-urlencoded", GLib.Bytes.new(body)
+        )
         download(msg, self._cancellable, callback, None, try_decode=True)
 
     def _url(self, path, args=None):
@@ -86,16 +85,31 @@ class SoundcloudApiClient(RestApi):
     REDIRECT_URI = "https://quodlibet.github.io/callbacks/soundcloud.html"
     PAGE_SIZE = 100
     MIN_DURATION_SECS = 120
-    COUNT_TAGS = {"%s_count" % t
-                  for t in ("playback", "download", "likes", "favoritings",
-                            "download", "comments")}
+    COUNT_TAGS = {
+        f"{t}_count"
+        for t in (
+            "playback",
+            "download",
+            "likes",
+            "favoritings",
+            "download",
+            "comments",
+        )
+    }
 
     __gsignals__ = {
         "fetch-success": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "fetch-failure": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "songs-received": (GObject.SignalFlags.RUN_LAST, None, (object,)),
         "stream-uri-received": (GObject.SignalFlags.RUN_LAST, None, (object, str)),
-        "comments-received": (GObject.SignalFlags.RUN_LAST, None, (int, object,)),
+        "comments-received": (
+            GObject.SignalFlags.RUN_LAST,
+            None,
+            (
+                int,
+                object,
+            ),
+        ),
         "authenticated": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
 
@@ -196,13 +210,16 @@ class SoundcloudApiClient(RestApi):
         for k, v in params.items():
             delim = " " if k == "q" else ","
             merged[k] = delim.join(list(v))
-        print_d("Getting tracks: params=%s" % merged)
+        print_d(f"Getting tracks: params={merged}")
         self._get("/tracks", self._on_track_data, **merged)
 
     def get_stream_url(self, song):
         try:
-            self._get(f"/tracks/{song['soundcloud_track_id']}/streams",
-                      self._on_track_stream_urls_data, song)
+            self._get(
+                f"/tracks/{song['soundcloud_track_id']}/streams",
+                self._on_track_stream_urls_data,
+                song,
+            )
         except Exception as e:
             print_w(f"Problem getting stream URL for {song} ({e})")
 
@@ -227,7 +244,7 @@ class SoundcloudApiClient(RestApi):
 
     @json_callback
     def _receive_comments(self, json, _data):
-        print_d("Got comments: %s..." % str(json)[:255])
+        print_d(f"Got comments: {str(json)[:255]}...")
         if json and len(json):
             # Should all be the same track...
             track_id = json[0]["track_id"]
@@ -239,12 +256,12 @@ class SoundcloudApiClient(RestApi):
         config.set("browsers", "soundcloud_user_id", self.user_id or "")
 
     def save_favorite(self, track_id):
-        print_d("Saving track %s as favorite" % track_id)
+        print_d(f"Saving track {track_id} as favorite")
         url = f"/likes/tracks/{track_id}"
         self._post(url, self._on_favorited)
 
     def remove_favorite(self, track_id):
-        print_d("Deleting favorite for %s" % track_id)
+        print_d(f"Deleting favorite for {track_id}")
         url = f"/likes/tracks/{track_id}"
         self._delete(url, self._on_favorited)
 
@@ -262,8 +279,12 @@ class SoundcloudApiClient(RestApi):
             if not url:
                 print_d(f"Unusable response (no URI): {d}")
                 return None
-            song = SoundcloudFile(uri=url, track_id=r.id, client=self,
-                                  favorite=d.get("user_favorite", False))
+            song = SoundcloudFile(
+                uri=url,
+                track_id=r.id,
+                client=self,
+                favorite=d.get("user_favorite", False),
+            )
         except Exception as e:
             print_w(f"Track {r.id} no good ({e})")
             return None
@@ -282,8 +303,7 @@ class SoundcloudApiClient(RestApi):
         def put_date(tag, r, attr):
             try:
                 parts = r[attr].split()
-                dt = datetime.strptime(" ".join(parts[:-1]),
-                                       "%Y/%m/%d %H:%M:%S")
+                dt = datetime.strptime(" ".join(parts[:-1]), "%Y/%m/%d %H:%M:%S")
                 song[tag] = dt.strftime("%Y-%m-%d")
             except KeyError:
                 pass
@@ -291,25 +311,26 @@ class SoundcloudApiClient(RestApi):
         def put_counts(tags):
             for tag in tags:
                 try:
-                    song["~#%s" % tag] = int(r[tag])
+                    song[f"~#{tag}"] = int(r[tag])
                 except (KeyError, TypeError):
                     # Nothing we can do really.
                     pass
 
         try:
-            song.update(title=r.title,
-                        artist=r.user["username"],
-                        soundcloud_user_id=str(r.user.id),
-                        website=r.permalink_url,
-                        genre="\n".join(r.genre and r.genre.split(",") or []))
+            song.update(
+                title=r.title,
+                artist=r.user["username"],
+                soundcloud_user_id=str(r.user.id),
+                website=r.permalink_url,
+                genre="\n".join(r.genre and r.genre.split(",") or []),
+            )
             song["~#bitrate"] = DEFAULT_BITRATE
             if r.description:
                 song["comment"] = sanitise_tag(r.description)
             song["~#length"] = int(r.duration) / 1000
             art_url = r.artwork_url
             if art_url:
-                song["artwork_url"] = (
-                    art_url.replace("-large.", "-t500x500."))
+                song["artwork_url"] = art_url.replace("-large.", "-t500x500.")
             put_time("~#mtime", r, "last_modified")
             put_date("date", r, "created_at")
             put_counts(self.COUNT_TAGS)
@@ -327,7 +348,6 @@ class SoundcloudApiClient(RestApi):
             "scope": "",
             "client_id": self.__CLIENT_ID,
             "response_type": "code",
-            "redirect_uri": self.REDIRECT_URI
-
+            "redirect_uri": self.REDIRECT_URI,
         }
         return f"{url}?{urlencode(options)}"

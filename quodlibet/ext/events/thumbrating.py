@@ -61,13 +61,13 @@ class RatingBox(Gtk.VBox):
         if score == existing_score:
             self.score_label.set_markup(util.bold(str(int(score))))
         elif score > existing_score:
-            self.score_label.set_markup('<b><span foreground="green">'
-                                        + str(int(score))
-                                        + "</span></b>")
+            self.score_label.set_markup(
+                '<b><span foreground="green">' + str(int(score)) + "</span></b>"
+            )
         else:
-            self.score_label.set_markup('<b><span foreground="red">'
-                                        + str(int(score))
-                                        + "</span></b>")
+            self.score_label.set_markup(
+                '<b><span foreground="red">' + str(int(score)) + "</span></b>"
+            )
 
     def __thumb_toggled(self, button):
         if button.get_active():
@@ -78,19 +78,22 @@ class RatingBox(Gtk.VBox):
 
         vote = self.poll_vote(False)
         self.__set_pending_score_value(
-            self.thumb_ups + vote[0] - self.thumb_downs - vote[1])
+            self.thumb_ups + vote[0] - self.thumb_downs - vote[1]
+        )
 
 
 class ThumbRating(EventPlugin, UserInterfacePlugin):
-    """ Plugin for more hands off rating system using a
-    thumb up / thumbdown system. """
+    """Plugin for more hands off rating system using a
+    thumb up / thumbdown system."""
 
     PLUGIN_ID = "Thumb Rating"
     PLUGIN_NAME = _("Thumb Rating")
-    PLUGIN_DESC_MARKUP = _("Adds a thumb-up / thumb-down scoring system "
-                           "which is converted to a rating value. Useful "
-                           "for keeping running vote totals and sorting by "
-                           "<b><tt>~#score</tt></b>.")
+    PLUGIN_DESC_MARKUP = _(
+        "Adds a thumb-up / thumb-down scoring system "
+        "which is converted to a rating value. Useful "
+        "for keeping running vote totals and sorting by "
+        "<b><tt>~#score</tt></b>."
+    )
     PLUGIN_ICON = Icons.USER_BOOKMARKS
 
     # Threshold value where points should be recalculated
@@ -134,9 +137,11 @@ class ThumbRating(EventPlugin, UserInterfacePlugin):
                 downs = int((1.0 - percent) * 10.0)
                 song["~#wins"] = ups
                 song["~#losses"] = downs
-            elif song.get("~#rating") and \
-                abs((ups / max((ups + downs), 2)) - song["~#rating"]) > \
-                    self.score_point_threshold:
+            elif (
+                song.get("~#rating")
+                and abs((ups / max((ups + downs), 2)) - song["~#rating"])
+                > self.score_point_threshold
+            ):
                 # Cases where rating and points are not in alignment.
                 total = max(ups + downs, 10)
                 percent = song["~#rating"]

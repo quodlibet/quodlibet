@@ -24,7 +24,6 @@ class FakePatternEdit:
 
 
 class TSongInfo(TestCase):
-
     def setUp(self):
         init_fake_app()
         fd, self.filename = tempfile.mkstemp()

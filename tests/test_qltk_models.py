@@ -15,7 +15,6 @@ from quodlibet.util import cmp
 
 
 class _TObjectStoreMixin:
-
     Store = None
 
     def test_append(self):
@@ -69,21 +68,19 @@ class _TObjectStoreMixin:
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.assertTrue(m.insert(0))
-        self.assertTrue(m.prepend())
-        self.assertTrue(m.append())
-        self.assertTrue(m.insert_before(None))
-        self.assertTrue(m.insert_after(None))
+        assert m.insert(0)
+        assert m.prepend()
+        assert m.append()
+        assert m.insert_before(None)
+        assert m.insert_after(None)
 
 
 class TOrigObjectStore(TestCase, _TObjectStoreMixin):
-
     def Store(*x):
         return Gtk.ListStore(object)
 
 
 class TObjectStore(TestCase, _TObjectStoreMixin):
-
     Store = ObjectStore
 
     def test_validate(self):
@@ -184,11 +181,11 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
     def test_is_empty(self):
         m = ObjectStore()
-        self.assertTrue(m.is_empty())
+        assert m.is_empty()
         iter_ = m.append(row=[1])
-        self.assertFalse(m.is_empty())
+        assert not m.is_empty()
         m.remove(iter_)
-        self.assertTrue(m.is_empty())
+        assert m.is_empty()
 
     def test_nonatomic(self):
         m = ObjectStore()
@@ -232,7 +229,6 @@ class TObjectStore(TestCase, _TObjectStoreMixin):
 
 
 class _TObjectTreeStoreMixin:
-
     Store = None
 
     def test_column_count(self):
@@ -300,21 +296,19 @@ class _TObjectTreeStoreMixin:
     def test_allow_nonatomic(self):
         m = self.Store()
         m.ATOMIC = False
-        self.assertTrue(m.insert(None, 0))
-        self.assertTrue(m.prepend(None))
-        self.assertTrue(m.append(None))
-        self.assertTrue(m.insert_before(None, None))
-        self.assertTrue(m.insert_after(None, None))
+        assert m.insert(None, 0)
+        assert m.prepend(None)
+        assert m.append(None)
+        assert m.insert_before(None, None)
+        assert m.insert_after(None, None)
 
 
 class TOrigTreeStore(TestCase, _TObjectTreeStoreMixin):
-
     def Store(*x):
         return Gtk.TreeStore(object)
 
 
 class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
-
     Store = ObjectTreeStore
 
     def test_validate(self):
@@ -429,7 +423,6 @@ class TObjectTreeStore(TestCase, _TObjectTreeStoreMixin):
 
 
 class TObjectModelFilter(TestCase):
-
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelFilter(child_model=m)
@@ -452,7 +445,6 @@ class TObjectModelFilter(TestCase):
 
 
 class TObjectModelSort(TestCase):
-
     def test_iter_values(self):
         m = ObjectStore()
         f = ObjectModelSort(model=m)
@@ -471,5 +463,4 @@ class TObjectModelSort(TestCase):
 
         f.set_default_sort_func(sort_func)
 
-        self.assertEqual(sorted(range(10), reverse=True),
-                             list(f.itervalues()))
+        self.assertEqual(sorted(range(10), reverse=True), list(f.itervalues()))

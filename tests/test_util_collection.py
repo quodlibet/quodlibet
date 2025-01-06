@@ -18,27 +18,60 @@ from quodlibet.formats._audio import NUMERIC_ZERO_DEFAULT, PEOPLE, AudioFile
 from quodlibet.library.file import FileLibrary
 from quodlibet.library.playlist import PlaylistLibrary
 from quodlibet.util import format_rating
-from quodlibet.util.collection import (Album, Playlist, avg, bayesian_average,
-                                       FileBackedPlaylist, XSPFBackedPlaylist,
-                                       XSPF_NS)
+from quodlibet.util.collection import (
+    Album,
+    Playlist,
+    avg,
+    bayesian_average,
+    FileBackedPlaylist,
+    XSPFBackedPlaylist,
+    XSPF_NS,
+)
 from senf import fsnative, uri2fsn
 from tests import TestCase, mkdtemp
 
 config.RATINGS = config.HardCodedRatingsPrefs()
 
 NUMERIC_SONGS = [
-    Fakesong({"~filename": fsnative("fake1-\xf0.mp3"),
-              "~#length": 4, "~#added": 5, "~#lastplayed": 1,
-              "~#bitrate": 200, "date": "100", "~#rating": 0.1,
-              "originaldate": "2004-01-01", "~#filesize": 101}),
-    Fakesong({"~filename": fsnative("fake2.mp3"),
-              "~#length": 7, "~#added": 7, "~#lastplayed": 88,
-              "~#bitrate": 220, "date": "99", "~#rating": 0.3,
-              "originaldate": "2002-01-01", "~#filesize": 202}),
-    Fakesong({"~filename": fsnative("fake3.mp3"),
-              "~#length": 1, "~#added": 3, "~#lastplayed": 43,
-              "~#bitrate": 60, "date": "33", "~#rating": 0.5,
-              "tracknumber": "4/6", "discnumber": "1/2"})
+    Fakesong(
+        {
+            "~filename": fsnative("fake1-\xf0.mp3"),
+            "~#length": 4,
+            "~#added": 5,
+            "~#lastplayed": 1,
+            "~#bitrate": 200,
+            "date": "100",
+            "~#rating": 0.1,
+            "originaldate": "2004-01-01",
+            "~#filesize": 101,
+        }
+    ),
+    Fakesong(
+        {
+            "~filename": fsnative("fake2.mp3"),
+            "~#length": 7,
+            "~#added": 7,
+            "~#lastplayed": 88,
+            "~#bitrate": 220,
+            "date": "99",
+            "~#rating": 0.3,
+            "originaldate": "2002-01-01",
+            "~#filesize": 202,
+        }
+    ),
+    Fakesong(
+        {
+            "~filename": fsnative("fake3.mp3"),
+            "~#length": 1,
+            "~#added": 3,
+            "~#lastplayed": 43,
+            "~#bitrate": 60,
+            "date": "33",
+            "~#rating": 0.5,
+            "tracknumber": "4/6",
+            "discnumber": "1/2",
+        }
+    ),
 ]
 AMAZING_SONG = Fakesong({"~#length": 123, "~#rating": 1.0})
 
@@ -50,7 +83,7 @@ class TAlbum(TestCase):
     def test_people_sort(self):
         songs = [
             Fakesong({"albumartist": "aa", "artist": "b\na"}),
-            Fakesong({"albumartist": "aa", "artist": "a\na"})
+            Fakesong({"albumartist": "aa", "artist": "a\na"}),
         ]
 
         album = Album(songs[0])
@@ -61,7 +94,7 @@ class TAlbum(TestCase):
     def test_peoplesort_sort(self):
         songs = [
             Fakesong({"albumartistsort": "aa", "artist": "b\na"}),
-            Fakesong({"albumartist": "aa", "artistsort": "a\na"})
+            Fakesong({"albumartist": "aa", "artistsort": "a\na"}),
         ]
 
         album = Album(songs[0])
@@ -72,7 +105,7 @@ class TAlbum(TestCase):
     def test_tied_tags(self):
         songs = [
             Fakesong({"artist": "a", "title": "c"}),
-            Fakesong({"artist": "a", "dummy": "d\ne"})
+            Fakesong({"artist": "a", "dummy": "d\ne"}),
         ]
 
         album = Album(songs[0])
@@ -84,7 +117,7 @@ class TAlbum(TestCase):
         songs = [
             Fakesong({"~#length": 5, "title": "c", "~#rating": 0.4}),
             Fakesong({"~#length": 7, "dummy": "d\ne", "~#rating": 0.6}),
-            Fakesong({"~#length": 0, "dummy2": 5, "~#rating": 0.5})
+            Fakesong({"~#length": 0, "dummy2": 5, "~#rating": 0.5}),
         ]
 
         album = Album(songs[0])
@@ -100,7 +133,7 @@ class TAlbum(TestCase):
     def test_internal_tags(self):
         songs = [
             Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
-            Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
+            Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"}),
         ]
 
         album = Album(songs[0])
@@ -135,12 +168,16 @@ class TAlbum(TestCase):
         assert album.get("~#originalyear") == 2002
 
     def test_numeric_comma(self):
-        songs = [Fakesong({
-            "~#added": 1,
-            "~#rating": 0.5,
-            "~#bitrate": 42,
-            "~#length": 1,
-        })]
+        songs = [
+            Fakesong(
+                {
+                    "~#added": 1,
+                    "~#rating": 0.5,
+                    "~#bitrate": 42,
+                    "~#length": 1,
+                }
+            )
+        ]
 
         album = Album(songs[0])
         album.songs = set(songs)
@@ -246,12 +283,8 @@ class TAlbum(TestCase):
 
     def test_methods(self):
         songs = [
-            Fakesong({"b": "bb4\nbb1\nbb1",
-                      "c": "cc1\ncc3\ncc3",
-                      "#d": 0.1}),
-            Fakesong({"b": "bb1\nbb1\nbb4",
-                      "c": "cc3\ncc1\ncc3",
-                      "#d": 0.2})
+            Fakesong({"b": "bb4\nbb1\nbb1", "c": "cc1\ncc3\ncc3", "#d": 0.1}),
+            Fakesong({"b": "bb1\nbb1\nbb4", "c": "cc3\ncc1\ncc3", "#d": 0.2}),
         ]
 
         album = Album(songs[0])
@@ -282,11 +315,10 @@ class PlaylistResource:
 class TPlaylist(TestCase):
     TWO_SONGS = [
         Fakesong({"~#length": 5, "discnumber": "1", "date": "2038"}),
-        Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"})
+        Fakesong({"~#length": 7, "dummy": "d\ne", "discnumber": "2"}),
     ]
 
     class FakeLib:
-
         def __init__(self):
             self.reset()
 
@@ -401,11 +433,14 @@ class TPlaylist(TestCase):
 
             new_length = pl.get("~#length")
             new_size = pl.get("~#filesize")
-            self.assertTrue(new_length > old_length,
-                            msg="Ooops, %d <= %d" % (new_length, old_length))
+            self.assertTrue(
+                new_length > old_length,
+                msg="Ooops, %d <= %d" % (new_length, old_length),
+            )
 
-            self.assertTrue(new_size > old_size,
-                            msg="Ooops, %d <= %d" % (new_size, old_size))
+            self.assertTrue(
+                new_size > old_size, msg="Ooops, %d <= %d" % (new_size, old_size)
+            )
 
     def test_updating_aggregates_append(self):
         with self.wrap("playlist") as pl:
@@ -415,30 +450,30 @@ class TPlaylist(TestCase):
             pl.append(AMAZING_SONG)
 
             new_rating = pl.get("~#filesize")
-            self.assertTrue(new_rating > old_rating)
+            assert new_rating > old_rating
 
     def test_updating_aggregates_clear(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            self.assertTrue(pl.get("~#length"))
+            assert pl.get("~#length")
 
             pl.clear()
-            self.assertFalse(pl.get("~#length"))
+            assert not pl.get("~#length")
 
     def test_updating_aggregates_remove_songs(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
-            self.assertTrue(pl.get("~#length"))
+            assert pl.get("~#length")
 
             pl.remove_songs(NUMERIC_SONGS)
-            self.assertFalse(pl.get("~#length"))
+            assert not pl.get("~#length")
 
     def test_listlike(self):
         with self.wrap("playlist") as pl:
             pl.extend(NUMERIC_SONGS)
             self.assertEqual(NUMERIC_SONGS[0], pl[0])
             self.assertEqual(NUMERIC_SONGS[1:2], pl[1:2])
-            self.assertTrue(NUMERIC_SONGS[1] in pl)
+            assert NUMERIC_SONGS[1] in pl
 
     def test_extend_signals(self):
         with self.wrap("playlist") as pl:
@@ -459,7 +494,7 @@ class TPlaylist(TestCase):
 
     def test_make(self):
         with self.wrap("Does not exist") as pl:
-            self.assertFalse(len(pl))
+            assert not len(pl)
             self.assertEqual(pl.name, "Does not exist")
 
     def test_rename_working(self):
@@ -468,7 +503,7 @@ class TPlaylist(TestCase):
             pl.rename("Foo Quuxly")
             assert pl.name == "Foo Quuxly"
             # Rename should not fire signals
-            self.assertFalse(self.FAKE_LIB.changed)
+            assert not self.FAKE_LIB.changed
 
     def test_rename_nothing(self):
         with self.wrap("Foobar") as pl:
@@ -482,18 +517,23 @@ class TPlaylist(TestCase):
     def test_duplicates_single_item(self):
         with self.wrap("playlist") as pl:
             pl.append(self.TWO_SONGS[0])
-            self.assertFalse(pl.has_duplicates)
+            assert not pl.has_duplicates
             pl.append(self.TWO_SONGS[0])
-            self.assertTrue(pl.has_duplicates)
+            assert pl.has_duplicates
 
     def test_duplicates(self):
         with self.wrap("playlist") as pl:
             pl.extend(self.TWO_SONGS)
             pl.extend(self.TWO_SONGS)
             self.assertEqual(len(pl), 4)
-            self.assertTrue(pl.has_duplicates,
-                            ("Playlist has un-detected duplicates: %s "
-                             % "\n".join([str(self) for s in pl._list])))
+            self.assertTrue(
+                pl.has_duplicates,
+                (
+                    "Playlist has un-detected duplicates: {} ".format(
+                        "\n".join([str(self) for s in pl._list])
+                    )
+                ),
+            )
 
     def test_remove_leaving_duplicates(self):
         with self.wrap("playlist") as pl:
@@ -503,16 +543,16 @@ class TPlaylist(TestCase):
             self.assertEqual(len(self.FAKE_LIB.changed), 7)
             self.FAKE_LIB.reset()
             pl.remove_songs(self.TWO_SONGS, leave_dupes=True)
-            self.assertTrue(first in pl)
-            self.assertTrue(second in pl)
-            self.assertFalse(len(self.FAKE_LIB.changed))
+            assert first in pl
+            assert second in pl
+            assert not len(self.FAKE_LIB.changed)
 
     def test_remove_fully(self):
         with self.wrap("playlist") as pl:
             pl.extend(self.TWO_SONGS * 2)
             self.FAKE_LIB.reset()
             pl.remove_songs(self.TWO_SONGS, leave_dupes=False)
-            self.assertFalse(len(pl))
+            assert not len(pl)
             self.assertEqual(self.FAKE_LIB.changed, self.TWO_SONGS)
 
 
@@ -555,8 +595,7 @@ class TFileBackedPlaylist(TPlaylist):
             pl.write()
 
             with open(pl.path, "rb") as h:
-                self.assertEqual(len(h.read().splitlines()),
-                                 len(NUMERIC_SONGS) + 1)
+                self.assertEqual(len(h.read().splitlines()), len(NUMERIC_SONGS) + 1)
 
     def test_difficult_names(self):
         lib = FileLibrary("foobar")
@@ -586,7 +625,7 @@ class TFileBackedPlaylist(TPlaylist):
         p1 = self.new_pl("Does not exist")
         p2 = self.new_pl("Does not exist")
         self.assertEqual(p1.name, "Does not exist")
-        self.assertTrue(p2.name.startswith("Does not exist"))
+        assert p2.name.startswith("Does not exist")
         self.assertNotEqual(p1.name, p2.name)
         p1.delete()
         p2.delete()
@@ -594,8 +633,8 @@ class TFileBackedPlaylist(TPlaylist):
     def test_rename_removes(self):
         with self.wrap("foo") as pl:
             pl.rename("bar")
-            self.assertTrue(exists(self.path_for("bar")))
-            self.assertFalse(exists(self.path_for("foo")))
+            assert exists(self.path_for("bar"))
+            assert not exists(self.path_for("foo"))
 
     def path_for(self, name: str):
         return os.path.join(self.temp, self.Playlist.filename_for(name))
@@ -621,7 +660,7 @@ class TFileBackedPlaylist(TPlaylist):
             lib.mask("/")
             pl.append(song)
             pl.remove_songs([song])
-            self.assertTrue("/fake" in pl)
+            assert "/fake" in pl
 
             pl.extend(self.TWO_SONGS)
 
@@ -631,7 +670,7 @@ class TFileBackedPlaylist(TPlaylist):
             # unmask and update
             lib.unmask("/")
             pl.add_songs(["/fake"], lib)
-            self.assertTrue(song in pl)
+            assert song in pl
 
             lib.destroy()
 
@@ -699,9 +738,11 @@ class TXSPFBackedPlaylist(TFileBackedPlaylist):
     def test_v1_load_non_compliant_xspf(self):
         """See #3983"""
         songs_lib = FileLibrary()
-        test_filename = ("/music/Funk & Disco/"
-                         "Average White Band - Pickin' Up The Pieces/"
-                         "Average White Band - Your Love Is a Miracle.flac")
+        test_filename = (
+            "/music/Funk & Disco/"
+            "Average White Band - Pickin' Up The Pieces/"
+            "Average White Band - Your Love Is a Miracle.flac"
+        )
         songs_lib.add([AudioFile({"~filename": test_filename})])
         playlist_fn = "non-compliant.xspf"
         path = str(Path(__file__).parent / "data")

@@ -1,6 +1,6 @@
 # Copyright 2005 Joe Wreschnig, Michael Urman
 #           2012 Christoph Reiter
-#        2016-23 Nick Boultbee
+#        2016-24 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -13,6 +13,7 @@ import socket
 from urllib.parse import urlparse
 
 import gi
+
 gi.require_version("Gtk", "3.0")
 
 from gi.repository import Gtk
@@ -40,7 +41,7 @@ def show_uri(label, uri):
     parsed = urlparse(uri)
     if parsed.scheme == "quodlibet":
         if parsed.netloc != "":
-            print_w("Unknown QuodLibet URL format (%s)" % uri)
+            print_w(f"Unknown QuodLibet URL format ({uri})")
             return False
         else:
             return __show_quodlibet_uri(parsed)
@@ -60,6 +61,7 @@ def show_uri(label, uri):
         try:
             if hasattr(Gtk, "show_uri_on_window"):
                 from quodlibet.qltk import get_top_parent
+
                 return Gtk.show_uri_on_window(get_top_parent(label), uri, 0)
             else:
                 return Gtk.show_uri(None, uri, 0)
@@ -70,23 +72,18 @@ def show_uri(label, uri):
 def __show_quodlibet_uri(uri):
     if uri.path.startswith("/prefs/plugins/"):
         from .pluginwin import PluginWindow
+
         print_d(f"Showing plugin prefs resulting from URI ({uri})")
-        return PluginWindow().move_to(uri.path[len("/prefs/plugins/"):])
+        return PluginWindow().move_to(uri.path[len("/prefs/plugins/") :])
     else:
         return False
 
 
-def get_fg_highlight_color(widget):
+def get_fg_highlight_color(context: Gtk.StyleContext) -> Gdk.RGBA:
     """Returns a color useable for highlighting things on top of the standard
     background color.
-
-    Args:
-        widget (Gtk.Widget)
-    Returns:
-        Gdk.RGBA
     """
 
-    context = widget.get_style_context()
     if hasattr(Gtk.StateFlags, "LINK"):
         # gtk+ >=3.12
         context.save()
@@ -204,6 +201,7 @@ def menu_popup(menu, shell, item, func, *args):
     """
 
     if func is not None:
+
         def wrap_pos_func(menu, *args):
             return func(menu, args[-1])
     else:
@@ -213,7 +211,6 @@ def menu_popup(menu, shell, item, func, *args):
 
 
 def _popup_menu_at_widget(menu, widget, button, time, under):
-
     def pos_func(menu, data, widget=widget):
         screen = widget.get_screen()
         ref = get_top_parent(widget)
@@ -244,7 +241,8 @@ def _popup_menu_at_widget(menu, widget, button, time, under):
         else:
             menu_x = max(0, x + dx - ma.width + wa.width)
 
-        return (menu_x, menu_y, True) # x, y, move_within_screen
+        return (menu_x, menu_y, True)  # x, y, move_within_screen
+
     menu_popup(menu, None, None, pos_func, None, button, time)
 
 
@@ -295,8 +293,7 @@ def add_fake_accel(widget, accel):
     key, val = Gtk.accelerator_parse(accel)
     assert key is not None
     assert val is not None
-    widget.add_accelerator(
-        "activate", group, key, val, Gtk.AccelFlags.VISIBLE)
+    widget.add_accelerator("activate", group, key, val, Gtk.AccelFlags.VISIBLE)
 
 
 def is_accel(event, *accels):
@@ -330,7 +327,7 @@ def is_accel(event, *accels):
     for accel in accels:
         accel_keyval, accel_mod = Gtk.accelerator_parse(accel)
         if accel_keyval == 0 and accel_mod == 0:
-            raise ValueError("Invalid accel: %s" % accel)
+            raise ValueError(f"Invalid accel: {accel}")
 
         # If the accel contains non default modifiers matching will
         # never work and since no one should use them, complain
@@ -417,8 +414,11 @@ def get_font_backend_name() -> str:
     return name
 
 
-gtk_version = (Gtk.get_major_version(), Gtk.get_minor_version(),
-               Gtk.get_micro_version())
+gtk_version = (
+    Gtk.get_major_version(),
+    Gtk.get_minor_version(),
+    Gtk.get_micro_version(),
+)
 
 pygobject_version = gi.version_info
 
@@ -462,10 +462,10 @@ def add_signal_watch(signal_action, _sockets=[]):  # noqa
         # Before the mainloop starts we catch signals in python
         # directly and idle_add the app.quit
         def idle_handler(signum, frame):
-            print_d("Python signal handler activated: %s" % signals[signum])
+            print_d(f"Python signal handler activated: {signals[signum]}")
             GLib.idle_add(signal_action, priority=GLib.PRIORITY_HIGH)
 
-        print_d("Register Python signal handler: %r" % name)
+        print_d(f"Register Python signal handler: {name!r}")
         signal.signal(signum, idle_handler)
 
     read_socket, write_socket = socket.socketpair()
@@ -487,10 +487,17 @@ def add_signal_watch(signal_action, _sockets=[]):  # noqa
         channel = GLib.IOChannel.win32_new_socket(read_socket.fileno())
     else:
         channel = GLib.IOChannel.unix_new(read_socket.fileno())
-    io_add_watch(channel, GLib.PRIORITY_HIGH,
-                 (GLib.IOCondition.IN | GLib.IOCondition.HUP |
-                  GLib.IOCondition.NVAL | GLib.IOCondition.ERR),
-                 signal_notify)
+    io_add_watch(
+        channel,
+        GLib.PRIORITY_HIGH,
+        (
+            GLib.IOCondition.IN
+            | GLib.IOCondition.HUP
+            | GLib.IOCondition.NVAL
+            | GLib.IOCondition.ERR
+        ),
+        signal_notify,
+    )
 
     signal.set_wakeup_fd(write_socket.fileno())
 
@@ -499,6 +506,7 @@ def enqueue(songs):
     songs = [s for s in songs if s.can_add]
     if songs:
         from quodlibet import app
+
         app.window.playlist.enqueue(songs)
 
 
@@ -530,13 +538,15 @@ class ThemeOverrider:
         settings = Gtk.Settings.get_default()
 
         theme_name = settings.get_property("gtk-theme-name")
-        wanted_providers = \
-            self._providers.get(theme_name, []) + self._providers.get("", [])
+        wanted_providers = self._providers.get(theme_name, []) + self._providers.get(
+            "", []
+        )
 
         for provider in list(self._active_providers):
             if provider not in wanted_providers:
                 Gtk.StyleContext.remove_provider_for_screen(
-                    Gdk.Screen.get_default(), provider)
+                    Gdk.Screen.get_default(), provider
+                )
             self._active_providers.remove(provider)
 
         for provider in wanted_providers:
@@ -544,7 +554,7 @@ class ThemeOverrider:
                 Gtk.StyleContext.add_provider_for_screen(
                     Gdk.Screen.get_default(),
                     provider,
-                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
                 )
                 self._active_providers.append(provider)
 
@@ -553,15 +563,33 @@ class ThemeOverrider:
 
 
 from .msg import Message, ErrorMessage, WarningMessage
-from .x import Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
-    WebImage, MenuItem, Frame, EntryCompletion
+from .x import (
+    Align,
+    Button,
+    ToggleButton,
+    Notebook,
+    SeparatorMenuItem,
+    WebImage,
+    MenuItem,
+    Frame,
+    EntryCompletion,
+)
 from .icons import Icons
 from .window import Window, UniqueWindow, Dialog
 from .paned import ConfigRPaned, ConfigRHPaned
 
 Message, ErrorMessage, WarningMessage
-Align, Button, ToggleButton, Notebook, SeparatorMenuItem, \
-    WebImage, MenuItem, Frame, EntryCompletion
+(
+    Align,
+    Button,
+    ToggleButton,
+    Notebook,
+    SeparatorMenuItem,
+    WebImage,
+    MenuItem,
+    Frame,
+    EntryCompletion,
+)
 Icons
 Window, UniqueWindow, Dialog
 ConfigRPaned, ConfigRHPaned

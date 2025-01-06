@@ -20,7 +20,6 @@ from quodlibet import config
 
 @skipUnless(dbus, "no dbus module")
 class TMediaServer(PluginTestCase):
-
     def setUp(self):
         config.init()
         init_fake_app()
@@ -29,18 +28,13 @@ class TMediaServer(PluginTestCase):
         self.m = self.plugin()
         self.m.enabled()
         self._replies = []
-        self._args = {
-            "reply_handler": self._reply,
-            "error_handler": self._error
-        }
+        self._args = {"reply_handler": self._reply, "error_handler": self._error}
 
     def tearDown(self):
         bus = dbus.SessionBus()
-        self.assertTrue(
-            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
+        self.assertTrue(bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
         self.m.disabled()
-        self.assertFalse(
-            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
+        self.assertFalse(bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
         del self.m
 
         destroy_fake_app()
@@ -50,7 +44,7 @@ class TMediaServer(PluginTestCase):
         self._replies.append(args)
 
     def _error(self, *args):
-        self.assertFalse(args)
+        assert not args
 
     def _wait(self):
         while not self._replies:
@@ -59,17 +53,17 @@ class TMediaServer(PluginTestCase):
 
     def _entry_props_iface(self):
         bus = dbus.SessionBus()
-        obj = bus.get_object("org.gnome.UPnP.MediaServer2.QuodLibet",
-                             "/org/gnome/UPnP/MediaServer2/QuodLibet")
-        return dbus.Interface(
-            obj, dbus_interface="org.freedesktop.DBus.Properties")
+        obj = bus.get_object(
+            "org.gnome.UPnP.MediaServer2.QuodLibet",
+            "/org/gnome/UPnP/MediaServer2/QuodLibet",
+        )
+        return dbus.Interface(obj, dbus_interface="org.freedesktop.DBus.Properties")
 
     def test_entry_name(self):
         iface = self._entry_props_iface()
         iface.Get("org.gnome.UPnP.MediaObject2", "DisplayName", **self._args)
-        self.assertTrue("Quod Libet" in self._wait()[0])
+        assert "Quod Libet" in self._wait()[0]
 
     def test_name_owner(self):
         bus = dbus.SessionBus()
-        self.assertTrue(
-            bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))
+        self.assertTrue(bus.name_has_owner("org.gnome.UPnP.MediaServer2.QuodLibet"))

@@ -16,7 +16,6 @@ from quodlibet.util.collection import Playlist
 
 
 class PlaylistMenu(Gtk.Menu):
-
     def __init__(self, songs, pl_lib: PlaylistLibrary):
         super().__init__()
         self.pl_lib = pl_lib
@@ -33,8 +32,7 @@ class PlaylistMenu(Gtk.Menu):
             i.set_active(some)
             i.set_inconsistent(some and not all)
             i.get_child().set_ellipsize(Pango.EllipsizeMode.END)
-            i.connect(
-                "activate", self._on_toggle_playlist_activate, playlist, songs)
+            i.connect("activate", self._on_toggle_playlist_activate, playlist, songs)
             self.append(i)
 
     def _on_new_playlist_activate(self, item, songs) -> Playlist | None:
@@ -68,20 +66,21 @@ class PlaylistMenu(Gtk.Menu):
 
 class ConfirmMultipleSongsAction(qltk.Message):
     """Dialog to ask the user what to do when selecting a playlist
-       for multiple songs with a mix of inclusion"""
+    for multiple songs with a mix of inclusion"""
 
     ADD, REMOVE = range(2)
 
     def __init__(self, parent, playlist, songs):
-
-        desc = ngettext("What do you want to do with that %d song?",
-                        "What do you want to do with those %d songs?",
-                        len(songs)) % len(songs)
+        desc = ngettext(
+            "What do you want to do with that %d song?",
+            "What do you want to do with those %d songs?",
+            len(songs),
+        ) % len(songs)
 
         title = _('Confirm action for playlist "%s"') % playlist.name
         super().__init__(
-            Gtk.MessageType.QUESTION, parent, title, desc,
-            Gtk.ButtonsType.NONE)
+            Gtk.MessageType.QUESTION, parent, title, desc, Gtk.ButtonsType.NONE
+        )
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
         self.add_icon_button(_("_Add"), Icons.LIST_ADD, self.ADD)

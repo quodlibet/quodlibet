@@ -16,8 +16,7 @@ from quodlibet.library import SongFileLibrary
 from . import PluginTestCase
 
 
-def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
-                   dateadded):
+def get_example_db(song_path, rating, playcount, skipcount, lastplayed, dateadded):
     # create a temporary database in memory
     db = sqlite3.connect(":memory:")
 
@@ -38,9 +37,10 @@ def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
 
     # insert song and save
     song_uri = fsn2uri(song_path)
-    csr.execute("INSERT INTO CoreTracks VALUES (?,?,?,?,?,?,?,?,?)",
-                (1, 1, song_uri, "Music", rating, playcount, skipcount,
-                lastplayed, dateadded))
+    csr.execute(
+        "INSERT INTO CoreTracks VALUES (?,?,?,?,?,?,?,?,?)",
+        (1, 1, song_uri, "Music", rating, playcount, skipcount, lastplayed, dateadded),
+    )
     db.commit()
 
     # give the user the in-memory database
@@ -48,7 +48,6 @@ def get_example_db(song_path, rating, playcount, skipcount, lastplayed,
 
 
 class TBansheeImport(PluginTestCase):
-
     def setUp(self):
         self.mod = self.modules["bansheeimport"]
 
@@ -61,13 +60,23 @@ class TBansheeImport(PluginTestCase):
             lib.add([song])
 
             # test recovery of basic song
-            data = {"path": song("~filename"), "rating": 1,
-            "playcount": 1, "skipcount": 2,
-            "lastplayed": 1371802107, "added": 1260691996}
+            data = {
+                "path": song("~filename"),
+                "rating": 1,
+                "playcount": 1,
+                "skipcount": 2,
+                "lastplayed": 1371802107,
+                "added": 1260691996,
+            }
 
-            db = get_example_db(data["path"], data["rating"],
-                                data["playcount"], data["skipcount"],
-                                data["lastplayed"], data["added"])
+            db = get_example_db(
+                data["path"],
+                data["rating"],
+                data["playcount"],
+                data["skipcount"],
+                data["lastplayed"],
+                data["added"],
+            )
 
             importer = self.mod.BansheeDBImporter(lib)
             importer.read(db)
@@ -82,13 +91,23 @@ class TBansheeImport(PluginTestCase):
             self.assertEqual(count, 1)
 
             # test recovery of different version of same song
-            data_mod = {"path": song("~filename"), "rating": 2,
-            "playcount": 4, "skipcount": 1,
-            "lastplayed": data["lastplayed"] - 1, "added": data["added"] + 1}
+            data_mod = {
+                "path": song("~filename"),
+                "rating": 2,
+                "playcount": 4,
+                "skipcount": 1,
+                "lastplayed": data["lastplayed"] - 1,
+                "added": data["added"] + 1,
+            }
 
-            db = get_example_db(data_mod["path"], data_mod["rating"],
-                                data_mod["playcount"], data_mod["skipcount"],
-                                data_mod["lastplayed"], data_mod["added"])
+            db = get_example_db(
+                data_mod["path"],
+                data_mod["rating"],
+                data_mod["playcount"],
+                data_mod["skipcount"],
+                data_mod["lastplayed"],
+                data_mod["added"],
+            )
 
             importer = self.mod.BansheeDBImporter(lib)
             importer.read(db)
@@ -103,9 +122,14 @@ class TBansheeImport(PluginTestCase):
             self.assertEqual(count, 1)
 
             # test that no recovery is performed when data is identical
-            db = get_example_db(data_mod["path"], data_mod["rating"],
-                                data_mod["playcount"], data_mod["skipcount"],
-                                data_mod["lastplayed"], data_mod["added"])
+            db = get_example_db(
+                data_mod["path"],
+                data_mod["rating"],
+                data_mod["playcount"],
+                data_mod["skipcount"],
+                data_mod["lastplayed"],
+                data_mod["added"],
+            )
 
             importer = self.mod.BansheeDBImporter(lib)
             importer.read(db)

@@ -1,11 +1,11 @@
-name: 'wininst'
+name: "wininst"
 
 on:
   workflow_dispatch:
     inputs:
       ref:
-        description: 'The git ref to build. Current ref if empty.'
-        default: ''
+        description: "The git ref to build. Current ref if empty."
+        default: ""
         required: false
         type: string
 

@@ -28,8 +28,13 @@ from quodlibet.qltk.x import ScrolledWindow, Align, SymbolicIconImage
 from quodlibet.util import connect_obj, cmp
 from quodlibet.util.library import background_filter
 
-from .models import (CollectionTreeStore, CollectionSortModel,
-                     CollectionFilterModel, AlbumNode, _ORDERING)
+from .models import (
+    CollectionTreeStore,
+    CollectionSortModel,
+    CollectionFilterModel,
+    AlbumNode,
+    _ORDERING,
+)
 from .prefs import get_headers, Preferences
 
 
@@ -55,7 +60,7 @@ class CollectionView(AllTreeView):
         if isinstance(path_idx, Gtk.TreePath):
             path_idx = path_idx.get_indices()
         for i, _x in enumerate(path_idx[:-1]):
-            self.expand_row(Gtk.TreePath(tuple(path_idx[:i + 1])), False)
+            self.expand_row(Gtk.TreePath(tuple(path_idx[: i + 1])), False)
         self.scroll_to_cell(path, use_align=True, row_align=0.5)
         selection = self.get_selection()
         assert selection
@@ -84,8 +89,7 @@ class CollectionBrowser(Browser, util.InstanceTracker):
     __model = None
 
     def pack(self, songpane):
-        container = qltk.ConfigRHPaned(
-            "browsers", "collectionbrowser_pos", 0.4)
+        container = qltk.ConfigRHPaned("browsers", "collectionbrowser_pos", 0.4)
         container.pack1(self, True, False)
         container.pack2(songpane, True, False)
         return container
@@ -175,10 +179,12 @@ class CollectionBrowser(Browser, util.InstanceTracker):
                 return cmp(util.human_sort_key(t1), util.human_sort_key(t2))
 
             a1, a2 = t1.album, t2.album
-            return (cmpa(a1.peoplesort, a2.peoplesort) or
-                    cmpa(a1.date, a2.date) or
-                    cmpa(a1.sort, a2.sort) or
-                    cmp(a1.key, a2.key))
+            return (
+                cmpa(a1.peoplesort, a2.peoplesort)
+                or cmpa(a1.date, a2.date)
+                or cmpa(a1.sort, a2.sort)
+                or cmp(a1.key, a2.key)
+            )
 
         model_sort.set_sort_func(0, cmp_rows)
         model_sort.set_sort_column_id(0, Gtk.SortType.ASCENDING)
@@ -232,8 +238,9 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         prefs.connect("clicked", lambda *x: Preferences(self))
 
         self.accelerators = Gtk.AccelGroup()
-        search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+        search = SearchBarBox(
+            completion=AlbumTagCompletion(), accel_group=self.accelerators
+        )
         search.connect("query-changed", self.__update_filter)
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
@@ -245,17 +252,19 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         self.pack_start(sw, True, True, 0)
 
         view.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.__sig = view.get_selection().connect("changed",
-            self.__selection_changed)
+        self.__sig = view.get_selection().connect("changed", self.__selection_changed)
         view.connect("row-activated", self.__play)
         connect_obj(view, "popup-menu", self.__popup, view, library)
 
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            ("text/uri-list", 0, 2),
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        )
         view.connect("drag-data-get", self.__drag_data_get)
 
         self.connect("destroy", self.__destroy)
@@ -366,8 +375,9 @@ class CollectionBrowser(Browser, util.InstanceTracker):
         return True
 
     def filter_albums(self, album_keys):
-        albums = [a for a in
-                  [self.__albums.get(k) for k in album_keys] if a is not None]
+        albums = [
+            a for a in [self.__albums.get(k) for k in album_keys] if a is not None
+        ]
         if albums:
             self.view.select_album(albums[0], unselect=True)
             self.view.grab_focus()

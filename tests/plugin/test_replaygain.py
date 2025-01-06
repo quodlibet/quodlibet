@@ -8,8 +8,7 @@
 from gi.repository import Gtk, GLib
 import re
 import time
-from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, \
-    ReplayGainPipeline
+from quodlibet.ext.songsmenu.replaygain import UpdateMode, RGDialog, ReplayGainPipeline
 from quodlibet.formats import MusicFile
 from quodlibet.formats import AudioFile
 
@@ -18,7 +17,6 @@ from tests import get_data_path, TestCase
 
 
 class TReplayGain(PluginTestCase):
-
     # Give up analysis after some time, in case GStreamer dies.
     TIMEOUT = 20
 
@@ -43,31 +41,34 @@ class TReplayGain(PluginTestCase):
 
     def test_RGSong_properties(self):
         rgs = self.mod.RGSong(self.song)
-        self.assertFalse(rgs.has_album_tags)
-        self.assertFalse(rgs.has_track_tags)
-        self.assertFalse(rgs.has_all_rg_tags)
+        assert not rgs.has_album_tags
+        assert not rgs.has_track_tags
+        assert not rgs.has_all_rg_tags
 
         rgs.done = True
         rgs._write(-1.23, 0.99)
-        self.assertTrue(rgs.has_album_tags, msg="Didn't write album tags")
-        self.assertFalse(rgs.has_track_tags)
-        self.assertFalse(rgs.has_all_rg_tags)
+        assert rgs.has_album_tags, "Didn't write album tags"
+        assert not rgs.has_track_tags
+        assert not rgs.has_all_rg_tags
 
     def test_RGSong_zero(self):
         rgs = self.mod.RGSong(self.song)
         rgs.done = True
         rgs._write(0.0, 0.0)
-        self.assertTrue(rgs.has_album_tags,
-                        msg="Failed with 0.0 album tags (%s)" % rgs)
+        self.assertTrue(rgs.has_album_tags, msg=f"Failed with 0.0 album tags ({rgs})")
 
     def test_RGAlbum_properties(self):
         rga = self.mod.RGAlbum([self.mod.RGSong(self.song)], UpdateMode.ALWAYS)
-        self.assertFalse(rga.done)
+        assert not rga.done
         self.assertEqual(rga.title, "foo - the album")
 
     def test_delete_bs1770gain(self):
-        tags = ["replaygain_reference_loudness", "replaygain_algorithm",
-                "replaygain_album_range", "replaygain_track_range"]
+        tags = [
+            "replaygain_reference_loudness",
+            "replaygain_algorithm",
+            "replaygain_album_range",
+            "replaygain_track_range",
+        ]
 
         for tag in tags:
             self.song[tag] = "foo"
@@ -77,7 +78,7 @@ class TReplayGain(PluginTestCase):
         rgs._write(0.0, 0.0)
 
         for tag in tags:
-            self.assertFalse(self.song(tag))
+            assert not self.song(tag)
 
     def _analyse_song(self, song):
         mode = self.mod.UpdateMode.ALWAYS
@@ -94,50 +95,50 @@ class TReplayGain(PluginTestCase):
 
             pipeline.start(album)
             start = time.time()
-            while not self.analysed and \
-                    abs(time.time() - start) < self.TIMEOUT:
+            while not self.analysed and abs(time.time() - start) < self.TIMEOUT:
                 Gtk.main_iteration_do(False)
             pipeline.quit()
             pipeline.disconnect(sig)
 
         _run_main_loop()
-        self.assertTrue(self.analysed, "Timed out")
+        assert self.analysed, "Timed out"
 
     def test_analyze_sinewave(self):
         song = MusicFile(get_data_path("sine-110hz.flac"))
         self.assertEqual(song("~#length"), 2)
-        self.assertFalse(song("~replaygain_track_gain"))
+        assert not song("~replaygain_track_gain")
 
         self._analyse_song(song)
 
-        self.assertAlmostEqual(song("~#replaygain_track_peak"), 1.0,
-                                   msg="Track peak should be 1.0")
+        self.assertAlmostEqual(
+            song("~#replaygain_track_peak"), 1.0, msg="Track peak should be 1.0"
+        )
 
         track_gain = song("~#replaygain_track_gain")
-        self.assertTrue(track_gain, msg="No Track Gain added")
-        self.assertTrue(re.match(r"\-[0-9]\.[0-9]{1,2}", str(track_gain)))
+        assert track_gain, "No Track Gain added"
+        assert re.match(r"\-[0-9]\.[0-9]{1,2}", str(track_gain))
 
         # For one-song album, track == album
         self.assertEqual(track_gain, song("~#replaygain_album_gain"))
 
     def test_analyze_silence(self):
         song = MusicFile(get_data_path("silence-44-s.ogg"))
-        self.assertFalse(song("~replaygain_track_gain"))
+        assert not song("~replaygain_track_gain")
 
         self._analyse_song(song)
 
-        self.assertAlmostEqual(song("~#replaygain_track_peak"), 0.0,
-                                   msg="Track peak should be 0.0")
+        self.assertAlmostEqual(
+            song("~#replaygain_track_peak"), 0.0, msg="Track peak should be 0.0"
+        )
 
         track_gain = song("~#replaygain_track_gain")
-        self.assertTrue(track_gain, msg="No Track Gain added")
+        assert track_gain, "No Track Gain added"
 
         # For one-song album, track == album
         self.assertEqual(track_gain, song("~#replaygain_album_gain"))
 
 
 class FakePipeline(ReplayGainPipeline):
-
     def __init__(self):
         super().__init__()
         self.started = []
@@ -172,11 +173,9 @@ class TRGDialog(TestCase):
         self.run_main_loop()
         d.destroy()
         # One should have got half of the albums needing update (and no more)
-        self.assertEqual(self.track_nums_from(d.pipes[0].started),
-                             [0, 4])
+        self.assertEqual(self.track_nums_from(d.pipes[0].started), [0, 4])
         # And the other processor should get the other half
-        self.assertEqual(self.track_nums_from(d.pipes[1].started),
-                             [2, 6])
+        self.assertEqual(self.track_nums_from(d.pipes[1].started), [2, 6])
 
     def run_main_loop(self, timeout=0.25):
         start = time.time()

@@ -9,8 +9,13 @@ from quodlibet.formats import AudioFileError
 from quodlibet.library import SongLibrary, SongFileLibrary
 from tests import get_data_path, run_gtk_loop
 from tests.helper import get_temp_copy, capture_output
-from tests.test_library_libraries import (TLibrary, FakeSong, FSrange, FakeSongFile,
-                                          FSFrange)
+from tests.test_library_libraries import (
+    TLibrary,
+    FakeSong,
+    FSrange,
+    FakeSongFile,
+    FSFrange,
+)
 from tests.test_util_collection import NUMERIC_SONGS
 
 
@@ -23,19 +28,19 @@ class TSongLibrary(TLibrary):
         self.library.dirty = False
         song = self.Fake(10)
         self.library.add([song])
-        self.assertTrue(self.library.dirty)
+        assert self.library.dirty
         self.library.dirty = False
         self.library.rename(song, 20)
-        self.assertTrue(self.library.dirty)
+        assert self.library.dirty
 
     def test_rename(self):
         song = self.Fake(10)
         self.library.add([song])
         self.library.rename(song, 20)
         run_gtk_loop()
-        self.assertTrue(song in self.changed)
-        self.assertTrue(song in self.library)
-        self.assertTrue(song.key in self.library)
+        assert song in self.changed
+        assert song in self.library
+        assert song.key in self.library
         self.assertEqual(song.key, 20)
 
     def test_rename_changed(self):
@@ -44,15 +49,14 @@ class TSongLibrary(TLibrary):
         changed = set()
         self.library.rename(song, 20, changed=changed)
         self.assertEqual(len(changed), 1)
-        self.assertTrue(song in changed)
+        assert song in changed
 
     def test_tag_values(self):
         self.library.add(self.Frange(30))
         del self.added[:]
-        self.assertEqual(
-            sorted(self.library.tag_values(10)), list(range(10)))
+        self.assertEqual(sorted(self.library.tag_values(10)), list(range(10)))
         self.assertEqual(sorted(self.library.tag_values(0)), [])
-        self.assertFalse(self.changed or self.added or self.removed)
+        assert not self.changed or self.added or self.removed
 
 
 class TSongFileLibrary(TSongLibrary):
@@ -64,24 +68,25 @@ class TSongFileLibrary(TSongLibrary):
         new = self.Fake(100)
         new._valid = False
         changed, removed = self.library._load_item(new)
-        self.assertFalse(removed)
-        self.assertTrue(changed)
-        self.assertTrue(new._valid)
-        self.assertTrue(new in self.library)
+        assert not removed
+        assert changed
+        assert new._valid
+        assert new in self.library
 
     def test__load_not_exists(self):
         new = self.Fake(100)
         new._valid = False
         new._exists = False
         changed, removed = self.library._load_item(new)
-        self.assertFalse(removed)
-        self.assertFalse(changed)
-        self.assertFalse(new._valid)
-        self.assertFalse(new in self.library)
+        assert not removed
+        assert not changed
+        assert not new._valid
+        assert new not in self.library
 
     def test__load_error_during_reload(self):
         try:
             from quodlibet import util
+
             print_exc = util.print_exc
             util.print_exc = lambda *args, **kwargs: None
             new = self.Fake(100)
@@ -92,10 +97,10 @@ class TSongFileLibrary(TSongLibrary):
             new.reload = error
             new._valid = False
             changed, removed = self.library._load_item(new)
-            self.assertTrue(removed)
-            self.assertFalse(changed)
-            self.assertFalse(new._valid)
-            self.assertFalse(new in self.library)
+            assert removed
+            assert not changed
+            assert not new._valid
+            assert new not in self.library
         finally:
             util.print_exc = print_exc
 
@@ -105,11 +110,11 @@ class TSongFileLibrary(TSongLibrary):
         new._exists = False
         new._mounted = False
         changed, removed = self.library._load_item(new)
-        self.assertFalse(removed)
-        self.assertFalse(changed)
-        self.assertFalse(new._valid)
-        self.assertFalse(new in self.library)
-        self.assertTrue(self.library.masked(new))
+        assert not removed
+        assert not changed
+        assert not new._valid
+        assert new not in self.library
+        assert self.library.masked(new)
 
     def __get_file(self):
         return get_temp_copy(get_data_path("empty.flac"))
@@ -119,28 +124,28 @@ class TSongFileLibrary(TSongLibrary):
         try:
             filename = self.__get_file()
             ret = self.library.add_filename(filename)
-            self.assertTrue(ret)
+            assert ret
             self.assertEqual(len(self.library), 1)
             self.assertEqual(len(self.added), 1)
             ret = self.library.add_filename(filename)
-            self.assertTrue(ret)
+            assert ret
             self.assertEqual(len(self.added), 1)
             os.unlink(filename)
 
             filename = self.__get_file()
             ret = self.library.add_filename(filename, add=False)
-            self.assertTrue(ret)
-            self.assertFalse(ret in self.library)
+            assert ret
+            assert ret not in self.library
             self.assertEqual(len(self.added), 1)
             self.library.add([ret])
-            self.assertTrue(ret in self.library)
+            assert ret in self.library
             self.assertEqual(len(self.added), 2)
             self.assertEqual(2, len(self.library))
             os.unlink(filename)
 
             with capture_output():
                 ret = self.library.add_filename("")
-            self.assertFalse(ret)
+            assert not ret
             self.assertEqual(len(self.added), 2)
             self.assertEqual(len(self.library), 2)
 
@@ -173,7 +178,7 @@ class TSongFileLibrary(TSongLibrary):
 
         song = self.library.add_filename(filename)
         other_song = self.library.add_filename(other)
-        self.assertTrue(song is other_song)
+        assert song is other_song
         os.unlink(filename)
         config.quit()
 

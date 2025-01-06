@@ -17,8 +17,9 @@ class ConfigCheckButton(Gtk.CheckButton):
 
     It is initialised to the current config value if `populate` is set True."""
 
-    def __init__(self, label, section, option, populate=False, tooltip=None,
-                 default=None):
+    def __init__(
+        self, label, section, option, populate=False, tooltip=None, default=None
+    ):
         super().__init__(label=label, use_underline=True)
 
         if default is None:
@@ -40,8 +41,9 @@ class ConfigSwitch(Gtk.Box):
 
     It is initialised to the current config value if `populate` is set True."""
 
-    def __init__(self, label, section, option, populate=False, tooltip=None,
-                 default=None):
+    def __init__(
+        self, label, section, option, populate=False, tooltip=None, default=None
+    ):
         super().__init__()
         self.switch = Gtk.Switch()
         eb = Gtk.EventBox()
@@ -59,8 +61,10 @@ class ConfigSwitch(Gtk.Box):
         if tooltip:
             self.switch.set_tooltip_text(tooltip)
         self.switch.connect("notify::active", self.__activated, section, option)
-        eb.connect("button_press_event",
-                   lambda *_: self.switch.set_state(not self.switch.get_state()))
+        eb.connect(
+            "button_press_event",
+            lambda *_: self.switch.set_state(not self.switch.get_state()),
+        )
 
     def set_active(self, value: bool):
         self.switch.set_active(value)
@@ -82,8 +86,7 @@ class ConfigCheckMenuItem(Gtk.CheckMenuItem):
     It is initialised to the current config value if `populate` is set True."""
 
     def __init__(self, label, section, option, populate=False, default=False):
-        super().__init__(
-            label=label, use_underline=True)
+        super().__init__(label=label, use_underline=True)
         if populate:
             self.set_active(config.getboolean(section, option, default))
         self.connect("toggled", ConfigCheckMenuItem.__toggled, section, option)

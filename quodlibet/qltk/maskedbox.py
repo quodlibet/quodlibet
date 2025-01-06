@@ -21,16 +21,14 @@ class ConfirmMaskedRemoval(qltk.Message):
         description = _("The selected songs will be removed from the library.")
 
         super().__init__(
-            Gtk.MessageType.WARNING, parent, title, description,
-            Gtk.ButtonsType.NONE)
+            Gtk.MessageType.WARNING, parent, title, description, Gtk.ButtonsType.NONE
+        )
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.CANCEL)
-        self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE,
-                             Gtk.ResponseType.YES)
+        self.add_icon_button(_("_Delete"), Icons.EDIT_DELETE, Gtk.ResponseType.YES)
 
 
 class MaskedBox(Gtk.HBox):
-
     def __init__(self, library):
         super().__init__(spacing=6)
 

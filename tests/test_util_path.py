@@ -9,8 +9,14 @@ import unittest
 
 from senf import uri2fsn, fsn2uri, fsnative
 
-from quodlibet.util.path import iscommand, limit_path, \
-    get_home_dir, uri_is_valid, is_hidden, uri2gsturi
+from quodlibet.util.path import (
+    iscommand,
+    limit_path,
+    get_home_dir,
+    uri_is_valid,
+    is_hidden,
+    uri2gsturi,
+)
 from quodlibet.util import print_d
 
 from . import TestCase, skipIf
@@ -27,7 +33,6 @@ def test_uri2gsturi():
 
 
 class Tishidden(TestCase):
-
     @skipIf(is_win, "unix-like hidden")
     def test_leading_dot(self):
         assert is_hidden(fsnative("."))
@@ -42,15 +47,14 @@ class Tishidden(TestCase):
 
 
 class Turi(TestCase):
-
     def test_uri2fsn(self):
         if os.name != "nt":
             path = uri2fsn("file:///home/piman/cr%21azy")
-            self.assertTrue(isinstance(path, fsnative))
+            assert isinstance(path, fsnative)
             self.assertEqual(path, fsnative("/home/piman/cr!azy"))
         else:
             path = uri2fsn("file:///C:/foo")
-            self.assertTrue(isinstance(path, fsnative))
+            assert isinstance(path, fsnative)
             self.assertEqual(path, fsnative("C:\\foo"))
 
     def test_uri2fsn_invalid(self):
@@ -68,10 +72,8 @@ class Turi(TestCase):
             self.assertEqual(uri, "file:///%C3%B6%C3%A4%C3%BC.txt")
         else:
             uri = fsn2uri(fsnative("C:\\öäü.txt"))
-            self.assertEqual(
-                uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
-            self.assertEqual(
-                fsn2uri("C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
+            self.assertEqual(uri, "file:///C:/%C3%B6%C3%A4%C3%BC.txt")
+            self.assertEqual(fsn2uri("C:\\SomeDir\xe4"), "file:///C:/SomeDir%C3%A4")
 
     def test_roundtrip(self):
         if os.name == "nt":
@@ -81,37 +83,35 @@ class Turi(TestCase):
 
         for source in paths:
             path = uri2fsn(fsn2uri(fsnative(source)))
-            self.assertTrue(isinstance(path, fsnative))
+            assert isinstance(path, fsnative)
             self.assertEqual(path, fsnative(source))
 
     def test_win_unc_path(self):
         if os.name == "nt":
             self.assertEqual(
-                fsn2uri("\\\\server\\share\\path"),
-                "file://server/share/path")
+                fsn2uri("\\\\server\\share\\path"), "file://server/share/path"
+            )
 
     def test_uri_is_valid(self):
-        self.assertTrue(uri_is_valid("file:///foo"))
-        self.assertTrue(uri_is_valid("file:///C:/foo"))
-        self.assertTrue(uri_is_valid("http://www.example.com"))
+        assert uri_is_valid("file:///foo")
+        assert uri_is_valid("file:///C:/foo")
+        assert uri_is_valid("http://www.example.com")
 
-        self.assertFalse(uri_is_valid("/bla"))
-        self.assertFalse(uri_is_valid("test"))
-        self.assertFalse(uri_is_valid(""))
+        assert not uri_is_valid("/bla")
+        assert not uri_is_valid("test")
+        assert not uri_is_valid("")
 
         assert not uri_is_valid("file:///öäü")
         assert not uri_is_valid("file:///öäü".encode())
 
 
 class Tget_x_dir(TestCase):
-
     def test_get_home_dir(self):
-        self.assertTrue(isinstance(get_home_dir(), fsnative))
-        self.assertTrue(os.path.isabs(get_home_dir()))
+        assert isinstance(get_home_dir(), fsnative)
+        assert os.path.isabs(get_home_dir())
 
 
 class Tlimit_path(TestCase):
-
     def test_main(self):
         if os.name == "nt":
             path = "C:\\foobar\\ä{}\\{}".format("x" * 300, "x" * 300)
@@ -124,33 +124,32 @@ class Tlimit_path(TestCase):
 
         path = fsnative("foo%s.ext" % ("x" * 300))
         new = limit_path(path, ellipsis=False)
-        self.assertTrue(isinstance(new, fsnative))
+        assert isinstance(new, fsnative)
         self.assertEqual(len(new), 255)
-        self.assertTrue(new.endswith(fsnative("xx.ext")))
+        assert new.endswith(fsnative("xx.ext"))
 
         new = limit_path(path)
-        self.assertTrue(isinstance(new, fsnative))
+        assert isinstance(new, fsnative)
         self.assertEqual(len(new), 255)
-        self.assertTrue(new.endswith(fsnative("...ext")))
+        assert new.endswith(fsnative("...ext"))
 
-        self.assertTrue(isinstance(limit_path(fsnative()), fsnative))
+        assert isinstance(limit_path(fsnative()), fsnative)
         self.assertEqual(limit_path(fsnative()), fsnative())
 
 
 class Tiscommand(TestCase):
-
     @unittest.skipIf(is_win, "Unix only")
     def test_unix(self):
-        self.assertTrue(iscommand("ls"))
-        self.assertTrue(iscommand(shutil.which("ls")))
-        self.assertTrue(iscommand("whoami"))
+        assert iscommand("ls")
+        assert iscommand(shutil.which("ls"))
+        assert iscommand("whoami")
 
     def test_both(self):
-        self.assertFalse(iscommand("zzzzzzzzz"))
-        self.assertFalse(iscommand("/bin/zzzzzzzzz"))
-        self.assertFalse(iscommand(""))
-        self.assertFalse(iscommand("/bin"))
-        self.assertFalse(iscommand("X11"))
+        assert not iscommand("zzzzzzzzz")
+        assert not iscommand("/bin/zzzzzzzzz")
+        assert not iscommand("")
+        assert not iscommand("/bin")
+        assert not iscommand("X11")
 
     @unittest.skipUnless(path_set, "Can only test with a valid $PATH")
     @unittest.skipIf(is_win, "needs porting")
@@ -162,6 +161,6 @@ class Tiscommand(TestCase):
                 for file_path in sorted(os.listdir(d)):
                     p = os.path.join(d, file_path)
                     if os.path.isfile(p) and os.access(p, os.X_OK):
-                        print_d("Testing %s" % p)
-                        self.assertTrue(iscommand(p), msg=p)
+                        print_d(f"Testing {p}")
+                        assert iscommand(p), p
                         return

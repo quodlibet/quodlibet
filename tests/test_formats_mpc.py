@@ -12,7 +12,6 @@ from quodlibet.formats.mpc import MPCFile
 
 
 class TMPCFile(TestCase):
-
     def setUp(self):
         self.song = MPCFile(get_data_path("silence-44-s.mpc"))
         self.song2 = MPCFile(get_data_path("silence-44-s.sv8.mpc"))
@@ -35,7 +34,7 @@ class TMPCFile(TestCase):
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, MPCFile, path)
 
     def test_format(self):

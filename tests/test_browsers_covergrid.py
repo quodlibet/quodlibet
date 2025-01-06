@@ -22,32 +22,39 @@ from quodlibet.library import SongLibrary, SongLibrarian
 
 
 SONGS = [
-    AudioFile({
-        "album": "one",
-        "artist": "piman",
-        "~filename": fsnative("/dev/null"),
-    }),
-    AudioFile({
-        "album": "two",
-        "artist": "mu",
-        "~filename": fsnative("/dev/zero"),
-    }),
-    AudioFile({
-        "album": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls"),
-    }),
-    AudioFile({
-        "album": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls2"),
-    }),
+    AudioFile(
+        {
+            "album": "one",
+            "artist": "piman",
+            "~filename": fsnative("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "two",
+            "artist": "mu",
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls"),
+        }
+    ),
+    AudioFile(
+        {
+            "album": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls2"),
+        }
+    ),
 ]
 SONGS.sort()
 
 
 class TCoverGridBrowser(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -91,15 +98,15 @@ class TCoverGridBrowser(TestCase):
             child = view.get_child_at_index(0)
             child.emit("activate")
             self._wait()
-            self.assertTrue(self.activated)
+            assert self.activated
 
     def test_can_filter(self):
         with realized(self.bar):
-            self.assertTrue(self.bar.can_filter(None))
-            self.assertTrue(self.bar.can_filter("album"))
-            self.assertTrue(self.bar.can_filter("foobar"))
-            self.assertFalse(self.bar.can_filter("~#length"))
-            self.assertFalse(self.bar.can_filter("title"))
+            assert self.bar.can_filter(None)
+            assert self.bar.can_filter("album")
+            assert self.bar.can_filter("foobar")
+            assert not self.bar.can_filter("~#length")
+            assert not self.bar.can_filter("title")
 
     def test_set_text(self):
         with realized(self.bar):
@@ -129,26 +136,25 @@ class TCoverGridBrowser(TestCase):
             self.assertEqual(self.songs[0]("artist"), "piman")
 
     def test_header(self):
-        self.assertFalse(self.bar.headers)
+        assert not self.bar.headers
 
     def test_list(self):
         albums = self.bar.list_albums()
         self.assertEqual(set(albums), {s.album_key for s in SONGS})
         self.bar.filter_albums([SONGS[0].album_key])
         self._wait()
-        self.assertEqual({s.album_key for s in self.songs},
-                             {SONGS[0].album_key})
+        self.assertEqual({s.album_key for s in self.songs}, {SONGS[0].album_key})
 
     def test_active_filter(self):
         with realized(self.bar):
             self.bar.filter("artist", ["piman"])
             self._wait()
-            self.assertTrue(self.bar.active_filter(self.songs[0]))
+            assert self.bar.active_filter(self.songs[0])
             for s in SONGS:
                 if s is not self.songs[0]:
-                    self.assertFalse(self.bar.active_filter(s))
+                    assert not self.bar.active_filter(s)
 
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
         self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
-        self.assertTrue("<album>" in pattern_text)
+        assert "<album>" in pattern_text

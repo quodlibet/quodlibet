@@ -33,7 +33,6 @@ FILES = [
 
 
 class TAudioFileAllBase:
-
     FILE = None
 
     def setUp(self):
@@ -57,7 +56,7 @@ class TAudioFileAllBase:
 
     def test_get_primary_image_noent(self):
         os.remove(self.filename)
-        self.assertTrue(self.song.get_primary_image() is None)
+        assert self.song.get_primary_image() is None
 
     def test_get_images_noent(self):
         os.remove(self.filename)
@@ -77,8 +76,7 @@ class TAudioFileAllBase:
     @classmethod
     def create_tests(cls):
         for i, file_ in enumerate(FILES):
-            new_type = type(cls.__name__ + str(i),
-                            (cls, TestCase), {"FILE": file_})
+            new_type = type(cls.__name__ + str(i), (cls, TestCase), {"FILE": file_})
             assert new_type.__name__ not in globals()
             globals()[new_type.__name__] = new_type
 

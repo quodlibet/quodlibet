@@ -17,7 +17,6 @@ from tests.helper import temp_filename
 
 
 class Tsplit_message(TestCase):
-
     def test_main(self):
         def func(d):
             return list(split_message(d))
@@ -28,19 +27,23 @@ class Tsplit_message(TestCase):
         self.assertEqual(func(b"foo\nbar"), [(b"foo", None), (b"bar", None)])
 
         # response format
-        self.assertEqual(func(b"\x00a\x00/dev/null\x00"),
-                         [(b"a", b"/dev/null")])
-        self.assertEqual(func(b"\x00a\x00/dev/null\x00\x00b\x00/dev/foo\x00"),
-                         [(b"a", b"/dev/null"), (b"b", b"/dev/foo")])
+        self.assertEqual(func(b"\x00a\x00/dev/null\x00"), [(b"a", b"/dev/null")])
+        self.assertEqual(
+            func(b"\x00a\x00/dev/null\x00\x00b\x00/dev/foo\x00"),
+            [(b"a", b"/dev/null"), (b"b", b"/dev/foo")],
+        )
 
         # mixed
-        self.assertEqual(func(b"foo\x00a\x00/dev\x00"),
-                         [(b"foo", None), (b"a", b"/dev")])
-        self.assertEqual(func(b"\x00a\x00/dev\x00foo"),
-                         [(b"a", b"/dev"), (b"foo", None)])
-        self.assertEqual(func(b"\x00a\x00/dev\x00foo\x00b\x00/arg\x00bla"),
-                         [(b"a", b"/dev"), (b"foo", None), (b"b", b"/arg"),
-                          (b"bla", None)])
+        self.assertEqual(
+            func(b"foo\x00a\x00/dev\x00"), [(b"foo", None), (b"a", b"/dev")]
+        )
+        self.assertEqual(
+            func(b"\x00a\x00/dev\x00foo"), [(b"a", b"/dev"), (b"foo", None)]
+        )
+        self.assertEqual(
+            func(b"\x00a\x00/dev\x00foo\x00b\x00/arg\x00bla"),
+            [(b"a", b"/dev"), (b"foo", None), (b"b", b"/arg"), (b"bla", None)],
+        )
 
         # inval
         self.assertRaises(ValueError, func, b"foo\x00bar")
@@ -48,17 +51,15 @@ class Tsplit_message(TestCase):
 
 @skipIf(is_windows(), "not on Windows")
 class TFIFO(TestCase):
-
     def test_creation_destruction(self):
-
         def cb(bs, _):
             print_d(bs)
 
         with temp_filename() as fn:
             fifo = FIFO(fn, cb)
-            self.assertFalse(fifo_exists(fifo._path))
+            assert not fifo_exists(fifo._path)
             fifo.open()
-            self.assertTrue(fifo_exists(fifo._path))
+            assert fifo_exists(fifo._path)
         # Should *not* error if file is gone
         fifo.destroy()
 

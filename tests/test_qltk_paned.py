@@ -5,8 +5,15 @@
 
 from gi.repository import Gtk
 
-from quodlibet.qltk.paned import RVPaned, RHPaned, ConfigRVPaned, \
-        MultiRVPaned, MultiRHPaned, ConfigMultiRVPaned, ConfigMultiRHPaned
+from quodlibet.qltk.paned import (
+    RVPaned,
+    RHPaned,
+    ConfigRVPaned,
+    MultiRVPaned,
+    MultiRHPaned,
+    ConfigMultiRVPaned,
+    ConfigMultiRHPaned,
+)
 from quodlibet import config
 
 from . import TestCase
@@ -68,7 +75,6 @@ class RVPaned(TestCase, TRPaned):
 
 
 class TConfigRPaned(TestCase):
-
     def setUp(self):
         config.init()
 
@@ -76,7 +82,7 @@ class TConfigRPaned(TestCase):
         config.quit()
 
     def test_basic(self):
-        self.assertTrue(config.get("memory", "foobar", None) is None)
+        assert config.get("memory", "foobar", None) is None
 
         p = ConfigRVPaned("memory", "foobar", 0.75)
         p.pack1(Gtk.Button())
@@ -168,7 +174,6 @@ class TMultiRVPaned(TestCase, TMultiRPaned):
 
 
 class TConfigMultiRPaned:
-
     def setUp(self):
         config.init()
 
@@ -176,7 +181,7 @@ class TConfigMultiRPaned:
         config.quit()
 
     def test_basic(self):
-        self.assertTrue(config.get("memory", "pane_widths", None) is None)
+        assert config.get("memory", "pane_widths", None) is None
 
         p = self.Kind("memory", "pane_widths")
         sws = [Gtk.ScrolledWindow() for _ in range(3)]

@@ -15,7 +15,6 @@ from tests import TestCase, mkdtemp
 
 
 class TModuleScanner(TestCase):
-
     def setUp(self):
         self.d = mkdtemp("ql-mod")
         spec = importlib.machinery.ModuleSpec("qlfake", None)
@@ -41,20 +40,20 @@ class TModuleScanner(TestCase):
         self.assertEqual(list(get_importables(self.d)), [])
         h = self._create_mod("foo.py")
         h.close()
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foo", h.name, [h.name]))
+        self.assertEqual(list(get_importables(self.d))[0], ("foo", h.name, [h.name]))
 
     def test_importables_ignore_init(self):
         h = self._create_mod("foo7.py")
         h.close()
         self._create_mod("__init__.py").close()
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foo7", h.name, [h.name]))
+        self.assertEqual(list(get_importables(self.d))[0], ("foo7", h.name, [h.name]))
 
     def test_importables_package(self):
         h = self._create_pkg("foobar")
-        self.assertEqual(list(get_importables(self.d))[0],
-                             ("foobar", os.path.dirname(h.name), [h.name]))
+        self.assertEqual(
+            list(get_importables(self.d))[0],
+            ("foobar", os.path.dirname(h.name), [h.name]),
+        )
         h.close()
 
     def test_importables_package_deps(self):
@@ -90,9 +89,9 @@ class TModuleScanner(TestCase):
         self._create_mod("q1.py").close()
         self._create_mod("q2.py").close()
         s = ModuleScanner([self.d])
-        self.assertFalse(s.modules)
+        assert not s.modules
         removed, added = s.rescan()
-        self.assertFalse(removed)
+        assert not removed
         self.assertEqual(set(added), {"q1", "q2"})
         self.assertEqual(len(s.modules), 2)
         self.assertEqual(len(s.failures), 0)
@@ -100,10 +99,10 @@ class TModuleScanner(TestCase):
     def test_unimportable_package(self):
         self._create_pkg("_foobar").close()
         s = ModuleScanner([self.d])
-        self.assertFalse(s.modules)
+        assert not s.modules
         removed, added = s.rescan()
-        self.assertFalse(added)
-        self.assertFalse(removed)
+        assert not added
+        assert not removed
 
     def test_scanner_remove(self):
         h = self._create_mod("q3.py")
@@ -116,7 +115,7 @@ class TModuleScanner(TestCase):
         except OSError:
             pass
         removed, added = s.rescan()
-        self.assertFalse(added)
+        assert not added
         self.assertEqual(removed, ["q3"])
         self.assertEqual(len(s.modules), 0)
         self.assertEqual(len(s.failures), 0)
@@ -127,10 +126,10 @@ class TModuleScanner(TestCase):
         h.close()
         s = ModuleScanner([self.d])
         removed, added = s.rescan()
-        self.assertFalse(added)
-        self.assertFalse(removed)
+        assert not added
+        assert not removed
         self.assertEqual(len(s.failures), 1)
-        self.assertTrue("q4" in s.failures)
+        assert "q4" in s.failures
 
     def test_scanner_add_package(self):
         h = self._create_pkg("somepkg")

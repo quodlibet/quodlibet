@@ -15,7 +15,6 @@ def an_rf(i: int) -> AudioFile:
 
 
 class TDownloadProgress(TestCase):
-
     def setUp(self):
         config.init()
 

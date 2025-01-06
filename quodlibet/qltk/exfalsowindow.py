@@ -29,10 +29,16 @@ from quodlibet.qltk.tracknumbers import TrackNumbers
 from quodlibet.qltk.menubutton import MenuButton
 from quodlibet.qltk.about import AboutDialog
 from quodlibet.qltk.songsmenu import SongsMenuPluginHandler
-from quodlibet.qltk.x import Align, SeparatorMenuItem, ConfigRHPaned, \
-    SymbolicIconImage, MenuItem
+from quodlibet.qltk.x import (
+    Align,
+    SeparatorMenuItem,
+    ConfigRHPaned,
+    SymbolicIconImage,
+    MenuItem,
+)
 from quodlibet.qltk.window import PersistentWindowMixin, Window
 from quodlibet.qltk.msg import CancelRevertSave
+from quodlibet.qltk.notif import StatusBar, TaskController
 from quodlibet.qltk.prefs import PreferencesWindow as QLPreferencesWindow
 from quodlibet.qltk import Icons
 from quodlibet.util.i18n import numeric_phrase
@@ -42,7 +48,6 @@ from quodlibet.update import UpdateDialog
 
 
 class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
-
     __gsignals__ = {
         "changed": (GObject.SignalFlags.RUN_LAST, None, (object,)),
     }
@@ -112,10 +117,17 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         menu.show_all()
 
         menu_button = MenuButton(
-                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.BUTTON),
-                arrow=True, down=False)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.BUTTON),
+            arrow=True,
+            down=False,
+        )
         menu_button.set_menu(menu)
         bbox.pack_start(menu_button, False, True, 0)
+
+        statusbox = StatusBarBox()
+        self.statusbar = statusbox.statusbar
+
+        bbox.pack_start(statusbox, False, True, 0)
 
         l = Gtk.Label()
         l.set_alignment(1.0, 0.5)
@@ -147,12 +159,11 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         self.__save = None
         connect_obj(self, "changed", self.set_pending, None)
         for c in fs.get_children():
-            c.get_child().connect("button-press-event",
-                self.__pre_selection_changed, fs, nb)
-            c.get_child().connect("focus",
-                                  self.__pre_selection_changed, fs, nb)
-        fs.get_children()[1].get_child().connect("popup-menu",
-                                                 self.__popup_menu, fs)
+            c.get_child().connect(
+                "button-press-event", self.__pre_selection_changed, fs, nb
+            )
+            c.get_child().connect("focus", self.__pre_selection_changed, fs, nb)
+        fs.get_children()[1].get_child().connect("popup-menu", self.__popup_menu, fs)
         self.emit("changed", [])
 
         self.get_child().show()
@@ -196,12 +207,13 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
                 fs.rescan()
             else:
                 nb.grab_focus()
-                return True # cancel or closed
+                return True  # cancel or closed
 
     def __popup_menu(self, view, fs):
         # get all songs for the selection
-        filenames = [normalize_path(f, canonicalise=True)
-                     for f in fs.get_selected_paths()]
+        filenames = [
+            normalize_path(f, canonicalise=True) for f in fs.get_selected_paths()
+        ]
         maybe_songs = [self.__library.get(f) for f in filenames]
         songs = [s for s in maybe_songs if s]
 
@@ -245,7 +257,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
                 pass
             elif filename in self.__library:
                 song = self.__library[filename]
-                if song("~#mtime") + 1. < mtime(filename):
+                if song("~#mtime") + 1.0 < mtime(filename):
                     try:
                         song.reload()
                     except AudioFileError:
@@ -257,15 +269,23 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
         if len(files) == 0:
             self.set_title("Ex Falso")
         elif len(files) == 1:
-            self.set_title("%s - Ex Falso" % files[0].comma("title"))
+            self.set_title("{} - Ex Falso".format(files[0].comma("title")))
         else:
-            params = ({"title": files[0].comma("title"),
-                       "count": format_int_locale(len(files) - 1)})
+            params = {
+                "title": files[0].comma("title"),
+                "count": format_int_locale(len(files) - 1),
+            }
             self.set_title(
-                "%s - Ex Falso" %
-                (ngettext("%(title)s and %(count)s more",
-                          "%(title)s and %(count)s more", len(files) - 1)
-                 % params))
+                "%s - Ex Falso"
+                % (
+                    ngettext(
+                        "%(title)s and %(count)s more",
+                        "%(title)s and %(count)s more",
+                        len(files) - 1,
+                    )
+                    % params
+                )
+            )
         self.__library.add(files)
         self.emit("changed", files)
 
@@ -282,3 +302,10 @@ class PreferencesWindow(QLPreferencesWindow):
 
     def __destroy(self):
         config.save()
+
+
+class StatusBarBox(Gtk.HBox):
+    def __init__(self):
+        super().__init__(spacing=6)
+        self.statusbar = StatusBar(TaskController.default_instance)
+        self.pack_start(self.statusbar, True, True, 0)

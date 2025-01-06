@@ -23,7 +23,8 @@ def get_appstream_cli_version():
         result = subprocess.run(
             ["appstreamcli", "--version"],
             stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT)
+            stderr=subprocess.STDOUT,
+        )
         data = result.stdout
     except FileNotFoundError:
         return (0, 0, 0)
@@ -40,26 +41,23 @@ class _TAppDataFileMixin:
     PATH = None
 
     def test_filename(self):
-        self.assertTrue(self.PATH.endswith(".appdata.xml.in"))
+        assert self.PATH.endswith(".appdata.xml.in")
 
     def test_validate(self):
         try:
             subprocess.check_output(
                 ["appstreamcli", "validate", "--no-net", self.PATH],
-                stderr=subprocess.STDOUT)
+                stderr=subprocess.STDOUT,
+            )
         except subprocess.CalledProcessError as e:
             raise Exception(e.output) from e
 
 
 @skipIf(is_too_old_appstream_cli_version(), "appstreamcli is too old")
 class TQLAppDataFile(TestCase, _TAppDataFileMixin):
-    PATH = os.path.join(
-        QLDATA_DIR,
-        "io.github.quodlibet.QuodLibet.appdata.xml.in")
+    PATH = os.path.join(QLDATA_DIR, "io.github.quodlibet.QuodLibet.appdata.xml.in")
 
 
 @skipIf(is_too_old_appstream_cli_version(), "appstreamcli is too old")
 class TEFAppDataFile(TestCase, _TAppDataFileMixin):
-    PATH = os.path.join(
-        QLDATA_DIR,
-        "io.github.quodlibet.ExFalso.appdata.xml.in")
+    PATH = os.path.join(QLDATA_DIR, "io.github.quodlibet.ExFalso.appdata.xml.in")

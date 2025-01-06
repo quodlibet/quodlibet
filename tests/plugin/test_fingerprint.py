@@ -11,6 +11,7 @@ from gi.repository import Gtk
 
 try:
     from gi.repository import Gst
+
     Gst  # noqa
 except ImportError:
     Gst = None
@@ -19,15 +20,14 @@ else:
     vorbisdec = Gst.ElementFactory.find("vorbisdec")
 
 
-from tests.plugin import PluginTestCase
-from tests import skipUnless, get_data_path
 from quodlibet import config
 from quodlibet.formats import MusicFile
+from tests import get_data_path, skipUnless
+from tests.plugin import PluginTestCase
 
 
 @skipUnless(Gst and chromaprint and vorbisdec, "gstreamer plugins missing")
 class TFingerprint(PluginTestCase):
-
     TIMEOUT = 20.0
 
     def setUp(self):
@@ -46,16 +46,17 @@ class TFingerprint(PluginTestCase):
 
         def callback(self, *args):
             done.extend(args)
+
         pipeline.start(song, callback)
         t = time.time()
         while not done and time.time() - t < self.TIMEOUT:
             Gtk.main_iteration_do(False)
-        self.assertTrue(done)
+        assert done
         s, result, error = done
         # silence doesn't produce a fingerprint
-        self.assertTrue(error)
-        self.assertFalse(result)
-        self.assertTrue(song is s)
+        assert error
+        assert not result
+        assert song is s
 
     def test_analyze_pool(self):
         pool = self.mod.analyze.FingerPrintPool()
@@ -82,7 +83,6 @@ class TFingerprint(PluginTestCase):
 
 @skipUnless(Gst and chromaprint, "gstreamer plugins missing")
 class TAcoustidLookup(PluginTestCase):
-
     def setUp(self):
         config.init()
         self.mod = self.modules["AcoustidSearch"]
@@ -104,7 +104,7 @@ class TAcoustidLookup(PluginTestCase):
         self.assertEqual(tags["date"], "2002-01")
         self.assertEqual(tags["tracknumber"], "7/15")
         self.assertEqual(tags["discnumber"], "")
-        self.assertTrue("musicbrainz_albumid" in tags)
+        assert "musicbrainz_albumid" in tags
 
     def test_parse_response_2(self):
         parse = self.mod.acoustid.parse_acoustid_response
@@ -114,49 +114,141 @@ class TAcoustidLookup(PluginTestCase):
         tags = release.tags
         self.assertEqual(tags["albumartist"], "Kinderzimmer Productions")
         self.assertEqual(tags["album"], "Wir sind da wo oben ist")
-        self.assertTrue("musicbrainz_albumid" in tags)
+        assert "musicbrainz_albumid" in tags
 
     def test_parse_response_2_mb(self):
         parse = self.mod.acoustid.parse_acoustid_response
 
         release = parse(ACOUSTID_RESPONSE)[1]
-        self.assertTrue("musicbrainz_albumid" in release.tags)
+        assert "musicbrainz_albumid" in release.tags
         self.assertEqual(release.sources, 6)
         self.assertEqual(
-            release.tags["musicbrainz_trackid"],
-            "bc970841-b7d9-415a-b7e2-645b1d263cc3")
+            release.tags["musicbrainz_trackid"], "bc970841-b7d9-415a-b7e2-645b1d263cc3"
+        )
 
 
+result = {
+    "recordings": [
+        {
+            "releases": [
+                {
+                    "track_count": 15,
+                    "title": "Spex CD #15",
+                    "country": "DE",
+                    "artists": [
+                        {
+                            "id": "89ad4ac3-39f7-470e-963a-56509c546377",
+                            "name": "Various Artists",
+                        }
+                    ],
+                    "date": {"year": 2002, "month": 1},
+                    "releaseevents": [
+                        {"date": {"year": 2002, "month": 1}, "country": "DE"}
+                    ],
+                    "mediums": [
+                        {
+                            "position": 1,
+                            "tracks": [
+                                {
+                                    "position": 7,
+                                    "title": "Merkw\xfcrdig/Unangenehm",
+                                    "id": "7426320b-7646-3d06-bd5a-4762ecc0536b",
+                                    "artists": [
+                                        {
+                                            "id": "ad728059-6823-4f98-a283-0dac3fb79a91",  # noqa: E501
+                                            "name": "Kinderzimmer Productions",
+                                        }
+                                    ],
+                                }
+                            ],
+                            "track_count": 15,
+                            "format": "CD",
+                        }
+                    ],
+                    "medium_count": 1,
+                    "id": "14bb7304-b763-456b-a438-7bab619d41e3",
+                }
+            ],
+            "title": "Merkw\xfcrdig/Unangenehm",
+            "sources": 1,
+            "artists": [
+                {
+                    "id": "ad728059-6823-4f98-a283-0dac3fb79a91",
+                    "name": "Kinderzimmer Productions",
+                }
+            ],
+            "duration": 272,
+            "id": "9104a525-40b2-40dc-83bf-c31c3d6d1861",
+        },
+        {
+            "releases": [
+                {
+                    "track_count": 12,
+                    "title": "Wir sind da wo oben ist",
+                    "country": "DE",
+                    "artists": [
+                        {
+                            "id": "ad728059-6823-4f98-a283-0dac3fb79a91",
+                            "name": "Kinderzimmer Productions",
+                        }
+                    ],
+                    "date": {"year": 2002, "day": 22, "month": 2},
+                    "releaseevents": [
+                        {
+                            "date": {"year": 2002, "day": 22, "month": 2},
+                            "country": "DE",
+                        }
+                    ],
+                    "mediums": [
+                        {
+                            "position": 1,
+                            "tracks": [
+                                {
+                                    "position": 11,
+                                    "title": "Merkw\xfcrdig/unangenehm",
+                                    "id": "2520fe8a-005b-3a18-a8e2-ba9bef6009fb",
+                                    "artists": [
+                                        {
+                                            "joinphrase": " feat. ",
+                                            "name": "Kinderzimmer Productions",
+                                            "id": "ad728059-6823-4f98-a283-0dac3fb79a91",  # noqa: E501
+                                        },
+                                        {
+                                            "id": "bf02bc50-251d-4a47-b5f9-ca462038ae8a",  # noqa: E501
+                                            "name": "Tek Beton",
+                                        },
+                                    ],
+                                }
+                            ],
+                            "track_count": 12,
+                            "format": "CD",
+                        }
+                    ],
+                    "medium_count": 1,
+                    "id": "ed90bff9-ab41-4669-8d44-13c78e678507",
+                }
+            ],
+            "title": "Merkw\xfcrdig/unangenehm",
+            "sources": 6,
+            "artists": [
+                {
+                    "joinphrase": " feat. ",
+                    "name": "Kinderzimmer Productions",
+                    "id": "ad728059-6823-4f98-a283-0dac3fb79a91",
+                },
+                {
+                    "id": "bf02bc50-251d-4a47-b5f9-ca462038ae8a",
+                    "name": "Tek Beton",
+                },
+            ],
+            "duration": 272,
+            "id": "bc970841-b7d9-415a-b7e2-645b1d263cc3",
+        },
+    ],
+    "score": 1.0,
+    "id": "f176baca-a4f7-4f39-906b-43136d9b3815",
+}
 ACOUSTID_RESPONSE = {
-"status": "ok", "results": [{"recordings": [{"releases":
-[{"track_count": 15, "title": "Spex CD #15", "country": "DE", "artists":
-[{"id": "89ad4ac3-39f7-470e-963a-56509c546377", "name": "Various \
-Artists"}], "date": {"year": 2002, "month": 1}, "releaseevents":
-[{"date": {"year": 2002, "month": 1}, "country": "DE"}], "mediums":
-[{"position": 1, "tracks": [{"position": 7, "title":
-"Merkw\xfcrdig/Unangenehm", "id": "7426320b-7646-3d06-bd5a-4762ecc0536b",
-"artists": [{"id": "ad728059-6823-4f98-a283-0dac3fb79a91", "name":
-"Kinderzimmer Productions"}]}], "track_count": 15, "format": "CD"}],
-"medium_count": 1, "id": "14bb7304-b763-456b-a438-7bab619d41e3"}],
-"title": "Merkw\xfcrdig/Unangenehm", "sources": 1, "artists": [{"id":
-"ad728059-6823-4f98-a283-0dac3fb79a91", "name": "Kinderzimmer \
-Productions"}], "duration": 272, "id":
-"9104a525-40b2-40dc-83bf-c31c3d6d1861"}, {"releases": [{"track_count": 12,
-"title": "Wir sind da wo oben ist", "country": "DE", "artists": [{"id":
-"ad728059-6823-4f98-a283-0dac3fb79a91", "name": "Kinderzimmer \
-Productions"}], "date": {"year": 2002, "day": 22, "month": 2},
-"releaseevents": [{"date": {"year": 2002, "day": 22, "month": 2},
-"country": "DE"}], "mediums": [{"position": 1, "tracks": [{"position":
-11, "title": "Merkw\xfcrdig/unangenehm", "id":
-"2520fe8a-005b-3a18-a8e2-ba9bef6009fb", "artists": [{"joinphrase":
-" feat. ", "name": "Kinderzimmer Productions", "id":
-"ad728059-6823-4f98-a283-0dac3fb79a91"}, {"id":
-"bf02bc50-251d-4a47-b5f9-ca462038ae8a", "name": "Tek Beton"}]}],
-"track_count": 12, "format": "CD"}], "medium_count": 1, "id":
-"ed90bff9-ab41-4669-8d44-13c78e678507"}], "title":
-"Merkw\xfcrdig/unangenehm", "sources": 6, "artists": [{"joinphrase": " \
-feat. ", "name": "Kinderzimmer Productions", "id":
-"ad728059-6823-4f98-a283-0dac3fb79a91"}, {"id":
-"bf02bc50-251d-4a47-b5f9-ca462038ae8a", "name": "Tek Beton"}], "duration":
-272, "id": "bc970841-b7d9-415a-b7e2-645b1d263cc3"}], "score": 1.0, "id":
-"f176baca-a4f7-4f39-906b-43136d9b3815"}]}
+    "status": "ok",
+    "results": [result],
+}

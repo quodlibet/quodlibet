@@ -60,8 +60,8 @@ def fetch_versions(build_type, timeout=5.0):
 
     try:
         content = urlopen(
-            "https://quodlibet.github.io/appcast/%s.rss" % build_type,
-            timeout=timeout).read()
+            f"https://quodlibet.github.io/appcast/{build_type}.rss", timeout=timeout
+        ).read()
     except Exception as error:
         raise UpdateError(error) from error
 
@@ -84,11 +84,10 @@ def fetch_versions(build_type, timeout=5.0):
 
 
 class UpdateDialog(Dialog):
-
     def __init__(self, parent):
         super().__init__(
-            title=_("Checking for Updates"), use_header_bar=True,
-            modal=True)
+            title=_("Checking for Updates"), use_header_bar=True, modal=True
+        )
 
         self.set_default_size(380, 110)
         self.set_transient_for(parent)
@@ -131,19 +130,25 @@ class UpdateDialog(Dialog):
                 return util.bold(format_version(v))
 
             if version >= versions[-1]:
-                text = (_("You are already using the newest version "
-                          "%(version)s") % {"version": f(version)})
+                text = _("You are already using the newest version " "%(version)s") % {
+                    "version": f(version)
+                }
             else:
-                text = (_("A new version %(new-version)s is available\n\n"
-                          "You are currently using version %(old-version)s\n\n"
-                          "Visit the <a href='%(url)s'>website</a>") % {
-                            "new-version": f(versions[-1]),
-                            "old-version": f(version),
-                            "url": escape(url)})
+                text = _(
+                    "A new version %(new-version)s is available\n\n"
+                    "You are currently using version %(old-version)s\n\n"
+                    "Visit the <a href='%(url)s'>website</a>"
+                ) % {
+                    "new-version": f(versions[-1]),
+                    "old-version": f(version),
+                    "url": escape(url),
+                }
 
         self._set_widget(
-            Gtk.Label(label=text, use_markup=True, wrap=True,
-                      justify=Gtk.Justification.CENTER))
+            Gtk.Label(
+                label=text, use_markup=True, wrap=True, justify=Gtk.Justification.CENTER
+            )
+        )
 
         button = self.get_widget_for_response(Gtk.ResponseType.CANCEL)
         button.set_label(_("_Close"))

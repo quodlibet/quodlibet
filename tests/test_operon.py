@@ -77,8 +77,18 @@ class TOperonMain(TOperonBase):
 
         # TODO: "image-extract", "rename", "fill", "fill-tracknumber", "edit"
         # "load"
-        for sub in ["help", "copy", "set", "clear",
-                    "remove", "add", "list", "print", "info", "tags"]:
+        for sub in [
+            "help",
+            "copy",
+            "set",
+            "clear",
+            "remove",
+            "add",
+            "list",
+            "print",
+            "info",
+            "tags",
+        ]:
             self.check_true(["help", sub], True, False)
 
         self.check_true(["help", "-h"], True, False)
@@ -117,11 +127,9 @@ class TOperonAdd(TOperonBase):
     def test_permissions(self):
         try:
             os.chmod(self.f, 0o000)
-            self.check_false(["add", "foo", "bar", self.f, self.f],
-                             False, True)
+            self.check_false(["add", "foo", "bar", self.f, self.f], False, True)
             os.chmod(self.f, 0o444)
-            self.check_false(["add", "foo", "bar", self.f, self.f],
-                             False, True)
+            self.check_false(["add", "foo", "bar", self.f, self.f], False, True)
         finally:
             os.chmod(self.f, 0o666)
 
@@ -132,14 +140,14 @@ class TOperonPrint(TOperonBase):
     def test_print(self):
         self.check_false(["print"], False, True)
         o, e = self.check_true(["print", self.f], True, False)
-        self.assertEqual(o.splitlines()[0],
-            "piman, jzig - Quod Libet Test Data - 02/10 - Silence")
+        self.assertEqual(
+            o.splitlines()[0], "piman, jzig - Quod Libet Test Data - 02/10 - Silence"
+        )
 
         o, e = self.check_true(["print", "-p", "<title>", self.f], True, False)
         self.assertEqual(o.splitlines()[0], "Silence")
 
-        o, e = self.check_true(["print", "-p", "<title>", self.f, self.f],
-                               True, False)
+        o, e = self.check_true(["print", "-p", "<title>", self.f, self.f], True, False)
         self.assertEqual(o.splitlines(), ["Silence", "Silence"])
 
     def test_print_invalid(self):
@@ -150,13 +158,12 @@ class TOperonPrint(TOperonBase):
         # the failed ones, the patterns for the working ones and return
         # an error status
         o, e = self.check_false(["print", self.f3, self.f2], True, True)
-        self.assertTrue("Quod Libet Test Data" in o)
+        assert "Quod Libet Test Data" in o
 
     @skipIf(is_windows(), "doesn't prevent reading under wine...")
     def test_permissions(self):
         os.chmod(self.f, 0o000)
-        self.check_false(["print", "-p", "<title>", self.f],
-                         False, True)
+        self.check_false(["print", "-p", "<title>", self.f], False, True)
 
 
 class TOperonRemove(TOperonBase):
@@ -176,8 +183,7 @@ class TOperonRemove(TOperonBase):
         self.s.reload()
         self.assertEqual(self.s["test"], "bar")
 
-        self.check_true(["-v", "remove", "test", "xxx", self.f, self.f],
-                        False, True)
+        self.check_true(["-v", "remove", "test", "xxx", self.f, self.f], False, True)
 
         self.s.reload()
         self.assertEqual(self.s["test"], "bar")
@@ -185,23 +191,20 @@ class TOperonRemove(TOperonBase):
     def test_dry_run(self):
         self.s["test"] = "foo\nbar\nfoo"
         self.s.write()
-        self.check_true(["remove", "--dry-run", "test", "foo", self.f],
-                        False, True)
+        self.check_true(["remove", "--dry-run", "test", "foo", self.f], False, True)
         self.s.reload()
         self.assertEqual(len(self.s.list("test")), 3)
 
     def test_pattern(self):
         self.s["test"] = "fao\nbar\nfoo"
         self.s.write()
-        self.check_true(["remove", "test", "-e", "f[ao]o", self.f],
-                        False, False)
+        self.check_true(["remove", "test", "-e", "f[ao]o", self.f], False, False)
         self.s.reload()
         self.assertEqual(self.s.list("test"), ["bar"])
 
-        self.check_true(["-v", "remove", "test", "-e", ".*", self.f],
-                        False, True)
+        self.check_true(["-v", "remove", "test", "-e", ".*", self.f], False, True)
         self.s.reload()
-        self.assertFalse(self.s.list("test"))
+        assert not self.s.list("test")
 
 
 class TOperonClear(TOperonBase):
@@ -219,12 +222,12 @@ class TOperonClear(TOperonBase):
     def _test_all(self):
         self.check(["clear", "-a", self.f], True, output=False)
         self.s.reload()
-        self.assertFalse(self.s.realkeys())
+        assert not self.s.realkeys()
         self.check(["clear", "-a", self.f, self.f], True, output=False)
 
     def _test_all_dry_run(self):
         old_len = len(self.s.realkeys())
-        self.assertTrue(old_len)
+        assert old_len
         self.check(["clear", "-a", "--dry-run", self.f], True)
         self.s.reload()
         self.assertEqual(len(self.s.realkeys()), old_len)
@@ -259,8 +262,7 @@ class TOperonSet(TOperonBase):
         self.check_false(["set", "tag", "value"], False, True)
         self.check_true(["set", "tag", "value", self.f], False, False)
         self.check_true(["set", "tag", "value", self.f, self.f], False, False)
-        self.check_true(["set", "--dry-run", "tag", "value", self.f],
-                        False, False)
+        self.check_true(["set", "--dry-run", "tag", "value", self.f], False, False)
 
     def test_simple(self):
         self.check_true(["set", "foo", "bar", self.f], False, False)
@@ -293,17 +295,16 @@ class TOperonCopy(TOperonBase):
             del self.s2[key]
         self.s2.write()
         self.s2.reload()
-        self.assertFalse(self.s2.realkeys())
+        assert not self.s2.realkeys()
         self.check_true(["copy", self.f, self.f2], False, False)
         self.s2.reload()
-        self.assertTrue(self.s2.realkeys())
+        assert self.s2.realkeys()
 
     def test_not_changable(self):
         self.s2["rating"] = "foo"
         self.s2.write()
         self.check_false(["copy", self.f2, self.f], False, True)
-        self.check_true(["copy", "--ignore-errors", self.f2, self.f],
-                        False, False)
+        self.check_true(["copy", "--ignore-errors", self.f2, self.f], False, False)
 
     def test_add(self):
         self.assertEqual(len(self.s2.list("genre")), 1)
@@ -318,7 +319,7 @@ class TOperonCopy(TOperonBase):
         self.s2.reload()
         self.check_true(["copy", "--dry-run", self.f, self.f2], False, True)
         self.s2.reload()
-        self.assertFalse(self.s2.realkeys())
+        assert not self.s2.realkeys()
 
 
 class TOperonEdit(TOperonBase):
@@ -333,15 +334,17 @@ class TOperonEdit(TOperonBase):
         editor = fsnative("/this/path/does/not/exist/hopefully")
         os.environ["VISUAL"] = editor
         e = self.check_false(["edit", self.f], False, True)[1]
-        self.assertTrue(editor in e)
+        assert editor in e
 
     def test_no_edit(self):
         if os.name == "nt":
             return
 
         os.environ["VISUAL"] = "touch -t 197001010101"
+
         def realitems(s):
             return [(k, s[k]) for k in s.realkeys()]
+
         old_items = realitems(self.s)
         self.check_true(["edit", self.f], False, False)
         self.s.reload()
@@ -370,7 +373,7 @@ class TOperonEdit(TOperonBase):
 
         # log all removals
         for key in self.s.realkeys():
-            self.assertTrue(key in e)
+            assert key in e
 
         # nothing should have changed
         self.s.reload()
@@ -378,7 +381,6 @@ class TOperonEdit(TOperonBase):
 
     @skipIf(is_windows() or is_osx(), "Linux only, uses truncate")
     def test_remove_all(self):
-
         os.environ["VISUAL"] = "sed -i -n /^File:/p"
         os.utime(self.f, (42, 42))
         self.check_true(["edit", self.f], False, False)
@@ -397,9 +399,9 @@ class TOperonEdit(TOperonBase):
 
         # all should be gone on both files
         self.s.reload()
-        self.assertFalse(self.s.realkeys())
+        assert not self.s.realkeys()
         self.s2.reload()
-        self.assertFalse(self.s2.realkeys())
+        assert not self.s2.realkeys()
 
     def test_multi_edit(self):
         if os.name == "nt" or sys.platform == "darwin":
@@ -470,7 +472,7 @@ class TOperonList(TOperonBase):
         self.s.write()
         d = self.check_true(["list", "-t", "-cvalue", self.f], True, False)[0]
         lines = d.splitlines()
-        self.assertTrue("a\\:bc\\\\\\:" in lines)
+        assert "a\\:bc\\\\\\:" in lines
 
 
 class TOperonTags(TOperonBase):
@@ -528,8 +530,7 @@ class TOperonImageExtract(TOperonBase):
 
     def test_extract_all(self):
         target_dir = os.path.dirname(self.fcover)
-        self.check_true(["image-extract", "-d", target_dir, self.fcover],
-                        False, False)
+        self.check_true(["image-extract", "-d", target_dir, self.fcover], False, False)
 
         self.assertEqual(len(self.cover.get_images()), 1)
         image = self.cover.get_primary_image()
@@ -539,7 +540,7 @@ class TOperonImageExtract(TOperonBase):
         expected = f"{name}-00.{image.extensions[0]}"
         expected_path = os.path.join(target_dir, expected)
 
-        self.assertTrue(os.path.exists(expected_path))
+        assert os.path.exists(expected_path)
 
         with open(expected_path, "rb") as h:
             self.assertEqual(h.read(), image.read())
@@ -547,8 +548,8 @@ class TOperonImageExtract(TOperonBase):
     def test_extract_primary(self):
         target_dir = os.path.dirname(self.fcover)
         self.check_true(
-            ["image-extract", "-d", target_dir, "--primary", self.fcover],
-            False, False)
+            ["image-extract", "-d", target_dir, "--primary", self.fcover], False, False
+        )
 
         self.assertEqual(len(self.cover.get_images()), 1)
         image = self.cover.get_primary_image()
@@ -558,7 +559,7 @@ class TOperonImageExtract(TOperonBase):
         expected = f"{name}.{image.extensions[0]}"
         expected_path = os.path.join(target_dir, expected)
 
-        self.assertTrue(os.path.exists(expected_path))
+        assert os.path.exists(expected_path)
 
         with open(expected_path, "rb") as h:
             self.assertEqual(h.read(), image.read())
@@ -595,15 +596,12 @@ class TOperonImageSet(TOperonBase):
 
     def test_not_supported(self):
         path = get_data_path("test.mid")
-        out, err = self.check_false(
-            ["image-set", self.filename, path], False, True)
-        self.assertTrue("supported" in err)
+        out, err = self.check_false(["image-set", self.filename, path], False, True)
+        assert "supported" in err
 
     def test_set(self):
-        self.check_true(["image-set", self.filename, self.fcover],
-                        False, False)
-        self.check_true(["-v", "image-set", self.filename, self.fcover],
-                        False, True)
+        self.check_true(["image-set", self.filename, self.fcover], False, False)
+        self.check_true(["-v", "image-set", self.filename, self.fcover], False, True)
 
         self.cover.reload()
         images = self.cover.get_images()
@@ -614,8 +612,8 @@ class TOperonImageSet(TOperonBase):
 
     def test_set_two(self):
         self.check_true(
-            ["image-set", self.filename, self.fcover, self.fcover2],
-            False, False)
+            ["image-set", self.filename, self.fcover, self.fcover2], False, False
+        )
 
         with open(self.filename, "rb") as h:
             image_data = h.read()
@@ -646,7 +644,7 @@ class TOperonImageClear(TOperonBase):
     def test_not_supported(self):
         path = get_data_path("test.mid")
         out, err = self.check_false(["image-clear", path], False, True)
-        self.assertTrue("supported" in err)
+        assert "supported" in err
 
     def test_clear(self):
         images = self.cover.get_images()
@@ -676,22 +674,20 @@ class TOperonFill(TOperonBase):
 
     def test_apply_no_match(self):
         old_title = self.s("title")
-        self.check_true(
-            ["fill", "<tracknumber>. <title>", self.f], False, False)
+        self.check_true(["fill", "<tracknumber>. <title>", self.f], False, False)
         self.s.reload()
         self.assertEqual(self.s("title"), old_title)
 
     def test_preview(self):
-        o, e = self.check_true(
-            ["fill", "--dry-run", "<title>", self.f], True, False)
+        o, e = self.check_true(["fill", "--dry-run", "<title>", self.f], True, False)
 
-        self.assertTrue("title" in o)
-        self.assertTrue(self.s("~basename") in o)
+        assert "title" in o
+        assert self.s("~basename") in o
 
     def test_preview_no_match(self):
         o, e = self.check_true(
-            ["fill", "--dry-run", "<tracknumber>. <title>", self.f],
-            True, False)
+            ["fill", "--dry-run", "<tracknumber>. <title>", self.f], True, False
+        )
 
-        self.assertTrue("title" in o)
-        self.assertTrue(self.s("~basename") in o)
+        assert "title" in o
+        assert self.s("~basename") in o

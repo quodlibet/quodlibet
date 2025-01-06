@@ -22,27 +22,36 @@ from quodlibet.util import format_rating
 from quodlibet.util.i18n import numeric_phrase
 
 PEOPLE  # noqa
-_SOME_PEOPLE = "\n".join([util.tag("artist"), util.tag("performer"),
-                         util.tag("composer"), util.tag("arranger"), ])
+_SOME_PEOPLE = "\n".join(
+    [
+        util.tag("artist"),
+        util.tag("performer"),
+        util.tag("composer"),
+        util.tag("arranger"),
+    ]
+)
 
 _EMPTY = _("Songs not in an album")
-DEFAULT_PATTERN_TEXT = """[b]<album|<album>|%s>[/b]<date| (<date>)>
+DEFAULT_PATTERN_TEXT = f"""[b]<album|<album>|{_EMPTY}>[/b]<date| (<date>)>
 [small]<~discs|<~discs> - ><~tracks> - <~long-length>[/small]
-<~people>""" % _EMPTY
+<~people>"""
 
 
 class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
     _DEFAULT_PATTERN = DEFAULT_PATTERN_TEXT
 
-    _PREVIEW_ITEM = FakeDisplayItem({
-        "date": "2010-10-31",
-        "~length": util.format_time_display(6319),
-        "~long-length": util.format_time_long(6319),
-        "~tracks": numeric_phrase("%d track", "%d tracks", 5),
-        "~discs": numeric_phrase("%d disc", "%d discs", 2),
-        "~#rating": 0.75,
-        "album": _("An Example Album"),
-        "~people": _SOME_PEOPLE + "..."})
+    _PREVIEW_ITEM = FakeDisplayItem(
+        {
+            "date": "2010-10-31",
+            "~length": util.format_time_display(6319),
+            "~long-length": util.format_time_long(6319),
+            "~tracks": numeric_phrase("%d track", "%d tracks", 5),
+            "~discs": numeric_phrase("%d disc", "%d discs", 2),
+            "~#rating": 0.75,
+            "album": _("An Example Album"),
+            "~people": _SOME_PEOPLE + "...",
+        }
+    )
 
     def __init__(self, browser):
         if self.is_not_unique():
@@ -57,15 +66,14 @@ class Preferences(qltk.UniqueWindow, EditDisplayPatternMixin):
 
         box = Gtk.VBox(spacing=6)
         vbox = Gtk.VBox(spacing=6)
-        cb = ConfigCheckButton(
-            _("Show album _covers"), "browsers", "album_covers")
+        cb = ConfigCheckButton(_("Show album _covers"), "browsers", "album_covers")
         cb.set_active(config.getboolean("browsers", "album_covers"))
         cb.connect("toggled", lambda s: browser.toggle_covers())
         vbox.pack_start(cb, False, True, 0)
 
         cb = ConfigCheckButton(
-            _("Inline _search includes people"),
-            "browsers", "album_substrings")
+            _("Inline _search includes people"), "browsers", "album_substrings"
+        )
         cb.set_active(config.getboolean("browsers", "album_substrings"))
         vbox.pack_start(cb, False, True, 0)
         f = qltk.Frame(_("Options"), child=vbox)

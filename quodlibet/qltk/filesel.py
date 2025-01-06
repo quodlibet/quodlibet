@@ -18,14 +18,17 @@ from quodlibet import _
 
 from quodlibet.util import windows
 from quodlibet.qltk.getstring import GetStringDialog
-from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, \
-    MultiDragTreeView
+from quodlibet.qltk.views import AllTreeView, RCMHintedTreeView, MultiDragTreeView
 from quodlibet.qltk.views import TreeViewColumn
 from quodlibet.qltk.x import ScrolledWindow, Paned
 from quodlibet.qltk.models import ObjectStore, ObjectTreeStore
 from quodlibet.qltk import Icons
-from quodlibet.util.path import listdir, \
-    xdg_get_user_dirs, get_home_dir, xdg_get_config_home
+from quodlibet.util.path import (
+    listdir,
+    xdg_get_user_dirs,
+    get_home_dir,
+    xdg_get_config_home,
+)
 from quodlibet.util import connect_obj
 
 
@@ -63,8 +66,7 @@ def _get_win_favorites():
 
     folders = []
 
-    funcs = [windows.get_desktop_dir, windows.get_personal_dir,
-             windows.get_music_dir]
+    funcs = [windows.get_desktop_dir, windows.get_personal_dir, windows.get_music_dir]
 
     for func in funcs:
         path = func()
@@ -83,8 +85,7 @@ def _get_win_favorites():
         for entry in link_entries:
             if entry.endswith(".lnk"):
                 try:
-                    target = windows.get_link_target(
-                        os.path.join(links, entry))
+                    target = windows.get_link_target(os.path.join(links, entry))
                 except OSError:
                     pass
                 else:
@@ -229,11 +230,11 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
                 model.append(niter, [fsnative("dummy")])
 
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
-        self.connect(
-            "test-expand-row", DirectoryTree.__expanded, model)
+        self.connect("test-expand-row", DirectoryTree.__expanded, model)
 
         self.set_row_separator_func(
-            lambda model, iter_, data: model.get_value(iter_) is None, None)
+            lambda model, iter_, data: model.get_value(iter_) is None, None
+        )
 
         if initial:
             self.go_to(initial)
@@ -242,9 +243,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         connect_obj(self, "popup-menu", self._popup_menu, menu)
 
         # Allow to drag and drop files from outside
-        targets = [
-            ("text/uri-list", 0, 42)
-        ]
+        targets = [("text/uri-list", 0, 42)]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         self.drag_dest_set(Gtk.DestDefaults.ALL, targets, Gdk.DragAction.COPY)
         self.connect("drag-data-received", self.__drag_data_received)
@@ -370,7 +369,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         directory = model[path][0]
 
         dir_ = GetStringDialog(
-            None, _("New Folder"), _("Enter a name for the new folder:")).run()
+            None, _("New Folder"), _("Enter a name for the new folder:")
+        ).run()
 
         if not dir_:
             return
@@ -382,7 +382,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         except OSError as err:
             error = f"{util.bold(err.filename)}: {util.escape(err.strerror)}"
             qltk.ErrorMessage(
-                None, _("Unable to create folder"), error, escape_desc=False).run()
+                None, _("Unable to create folder"), error, escape_desc=False
+            ).run()
             return
 
         self.emit("test-expand-row", model.get_iter(path), path)
@@ -399,7 +400,8 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
             except OSError as err:
                 error = f"{util.bold(err.filename)}: {err.strerror}"
                 qltk.ErrorMessage(
-                    None, _("Unable to delete folder"), error, escape_desc=False).run()
+                    None, _("Unable to delete folder"), error, escape_desc=False
+                ).run()
                 return
 
         ppath = Gtk.TreePath(paths[0][:-1])
@@ -431,8 +433,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
     def __refresh(self, button):
         model, rows = self.get_selection().get_selected_rows()
         expanded = set()
-        self.map_expanded_rows(
-            lambda s, iter, data: expanded.add(model[iter][0]), None)
+        self.map_expanded_rows(lambda s, iter, data: expanded.add(model[iter][0]), None)
         needs_expanding = []
         for row in rows:
             if self.row_expanded(row):
@@ -489,8 +490,7 @@ class FileSelector(Paned):
     """
 
     __gsignals__ = {
-        "changed": (GObject.SignalFlags.RUN_LAST, None,
-                    (Gtk.TreeSelection,))
+        "changed": (GObject.SignalFlags.RUN_LAST, None, (Gtk.TreeSelection,))
     }
 
     def __init__(self, initial=None, filter=filesel_filter, folders=None):
@@ -500,8 +500,7 @@ class FileSelector(Paned):
         folders -- list of shown folders in the directory tree
         """
 
-        super().__init__(
-            orientation=Gtk.Orientation.VERTICAL)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.__filter = filter
 
         if initial is not None:
@@ -547,18 +546,18 @@ class FileSelector(Paned):
         filelist.set_search_equal_func(search_func, False)
         filelist.set_search_column(0)
 
-        self.__sig = filelist.get_selection().connect(
-            "changed", self.__changed)
+        self.__sig = filelist.get_selection().connect("changed", self.__changed)
 
         dirlist.get_selection().connect(
-            "changed", self.__dir_selection_changed, filelist)
+            "changed", self.__dir_selection_changed, filelist
+        )
         dirlist.get_selection().emit("changed")
 
         def select_all_files(view, path, col, fileselection):
             view.expand_row(path, False)
             fileselection.select_all()
-        dirlist.connect("row-activated", select_all_files,
-            filelist.get_selection())
+
+        dirlist.connect("row-activated", select_all_files, filelist.get_selection())
 
         sw = ScrolledWindow()
         sw.add(dirlist)
@@ -614,8 +613,7 @@ class FileSelector(Paned):
                 files = filter(self.__filter, listdir(dir_))
                 for file_ in sorted(files):
                     filename = os.path.join(dir_, file_)
-                    if (os.access(filename, os.R_OK) and
-                            not os.path.isdir(filename)):
+                    if os.access(filename, os.R_OK) and not os.path.isdir(filename):
                         fmodel.append([filename])
             except OSError:
                 pass
@@ -636,7 +634,6 @@ class FileSelector(Paned):
 
 
 def _get_main_folders():
-
     def filter_exists(paths):
         return [p for p in paths if os.path.isdir(p)]
 
@@ -669,8 +666,7 @@ class MainFileSelector(FileSelector):
 
     def __init__(self, initial=None):
         folders = _get_main_folders()
-        super().__init__(
-            initial, filesel_filter, folders=folders)
+        super().__init__(initial, filesel_filter, folders=folders)
 
 
 class MainDirectoryTree(DirectoryTree):
@@ -689,5 +685,4 @@ class MainDirectoryTree(DirectoryTree):
         if main:
             folders += main
 
-        super().__init__(
-            initial=initial, folders=folders)
+        super().__init__(initial=initial, folders=folders)

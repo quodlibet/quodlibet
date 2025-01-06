@@ -24,53 +24,121 @@ from tests.plugin import PluginTestCase
 
 
 QUERIES = {
-    "Directory": {"query": '~dirname="/dev/null"',
-                  "terms": ("/dev/null",), "results": 5},
-    "2 artists": {"query": 'artist=|("Group1","Group2")',
-                  "terms": ("Group",), "results": 4},
-    "No songs": {"query": "#(length < 0)",
-                 "terms": (), "results": 0},
-    "Symbols": {"query": '~dirname="/tmp/new"',
-                "terms": ("/tmp/new",), "results": 1}
+    "Directory": {
+        "query": '~dirname="/dev/null"',
+        "terms": ("/dev/null",),
+        "results": 5,
+    },
+    "2 artists": {
+        "query": 'artist=|("Group1","Group2")',
+        "terms": ("Group",),
+        "results": 4,
+    },
+    "No songs": {"query": "#(length < 0)", "terms": (), "results": 0},
+    "Symbols": {"query": '~dirname="/tmp/new"', "terms": ("/tmp/new",), "results": 1},
 }
 
 PATTERNS = [
     "<title> - <artist> - <album>",
-    "<title><albumartist| - <albumartist>|<artist| - <artist>>>"
+    "<title><albumartist| - <albumartist>|<artist| - <artist>>>",
 ]
 
 SONGS = [
-    AudioFile({"~filename": "/dev/null/Song1.mp3",
-               "title": "Song1", "artist": "Artist1", "album": "Album1"}),
-    AudioFile({"~filename": "/dev/null/Song2.mp3",
-               "title": "Song2", "artist": "Artist1", "album": "Album1"}),
-    AudioFile({"~filename": "/dev/null/Song3.mp3",
-               "title": "Song3", "artist": "Artist1", "album": "Album2"}),
-    AudioFile({"~filename": "/dev/null/Song4.mp3",
-               "title": "Song4", "artist": "Artist2", "album": "Album2"}),
-    AudioFile({"~filename": "/dev/null/Song5.mp3",
-               "title": "Song5", "artist": "Artist2", "album": "Album2"}),
-    AudioFile({"~filename": "/tmp/music/Song5.mp3",
-               "title": "Song5", "artist": "Artist2", "album": "Album2"}),
-    AudioFile({"~filename": "/tmp/music/Track1.mp3",
-               "title": "Track1", "artist": "Group1", "album": "Album3"}),
-    AudioFile({"~filename": "/tmp/music/Track2-1.mp3",
-               "title": "Track2", "artist": "Group1", "album": "Album3"}),
-    AudioFile({"~filename": "/tmp/music/Track2-2.mp3",
-               "title": "Track2", "artist": "Group2", "album": "Album4"}),
-    AudioFile({"~filename": "/tmp/music/Track3.mp3",
-               "title": "Track3", "artist": "Group2", "album": "Album4"}),
-    AudioFile({"~filename": "/tmp/new/",
-               "title": 'Abc123 (~!@#$%^&*|:\'",.\\/?+=;)',
-               "artist": r"[ÆÁàçÈéöø] <αΔλΛ> Привет こんにちわ مرحبا",
-               "album": r"{‰} → A∩B≥3 ⎈Ⓐ ░ ☔☃☂ ♂♀🤴 😀🎧 🪐👽🖖"})
+    AudioFile(
+        {
+            "~filename": "/dev/null/Song1.mp3",
+            "title": "Song1",
+            "artist": "Artist1",
+            "album": "Album1",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/dev/null/Song2.mp3",
+            "title": "Song2",
+            "artist": "Artist1",
+            "album": "Album1",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/dev/null/Song3.mp3",
+            "title": "Song3",
+            "artist": "Artist1",
+            "album": "Album2",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/dev/null/Song4.mp3",
+            "title": "Song4",
+            "artist": "Artist2",
+            "album": "Album2",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/dev/null/Song5.mp3",
+            "title": "Song5",
+            "artist": "Artist2",
+            "album": "Album2",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/music/Song5.mp3",
+            "title": "Song5",
+            "artist": "Artist2",
+            "album": "Album2",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/music/Track1.mp3",
+            "title": "Track1",
+            "artist": "Group1",
+            "album": "Album3",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/music/Track2-1.mp3",
+            "title": "Track2",
+            "artist": "Group1",
+            "album": "Album3",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/music/Track2-2.mp3",
+            "title": "Track2",
+            "artist": "Group2",
+            "album": "Album4",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/music/Track3.mp3",
+            "title": "Track3",
+            "artist": "Group2",
+            "album": "Album4",
+        }
+    ),
+    AudioFile(
+        {
+            "~filename": "/tmp/new/",
+            "title": "Abc123 (~!@#$%^&*|:'\",.\\/?+=;)",
+            "artist": r"[ÆÁàçÈéöø] <αΔλΛ> Привет こんにちわ مرحبا",
+            "album": r"{‰} → A∩B≥3 ⎈Ⓐ ░ ☔☃☂ ♂♀🤴 😀🎧 🪐👽🖖",
+        }
+    ),
 ]
 
 
 class TSyncToDevice(PluginTestCase):
-
-    QUERIES_SAVED = "\n".join([details["query"] + "\n" + name
-                               for name, details in QUERIES.items()])
+    QUERIES_SAVED = "\n".join(
+        [details["query"] + "\n" + name for name, details in QUERIES.items()]
+    )
     RENAMEPATTERNS = "\n".join(PATTERNS)
 
     @classmethod
@@ -136,9 +204,12 @@ class TSyncToDevice(PluginTestCase):
         return self.plugin.PluginPreferences(self.gtk_window)
 
     def _make_query_config(self, label):
-        return self.module.PLUGIN_CONFIG_SECTION + "_" \
-               + self.plugin.CONFIG_QUERY_PREFIX \
-               + label.lower()
+        return (
+            self.module.PLUGIN_CONFIG_SECTION
+            + "_"
+            + self.plugin.CONFIG_QUERY_PREFIX
+            + label.lower()
+        )
 
     def _select_searches(self, *labels):
         for button in self.plugin.saved_search_vbox.get_children():
@@ -166,7 +237,8 @@ class TSyncToDevice(PluginTestCase):
         tag = model[path][self.plugin._model_col_id("tag")]
         self.assertTrue(
             any(tag.startswith(tag) for tag in data[0]),
-            f'Song status "{tag}" does not start with "{data[0]}"')
+            f'Song status "{tag}" does not start with "{data[0]}"',
+        )
 
         filename = model[path][self.plugin._model_col_id("filename")]
         self.assertIsNotNone(filename, "filename field shouldn't be None")
@@ -175,12 +247,13 @@ class TSyncToDevice(PluginTestCase):
         export = model[path][self.plugin._model_col_id("export")]
         self.assertTrue(
             any(export.startswith(export_path) for export_path in data[1]),
-            f'Export path "{export}" does not start with "{data[1]}"')
+            f'Export path "{export}" does not start with "{data[1]}"',
+        )
 
         song = model[path][self.plugin._model_col_id("entry")]._song
         if song and data[2] and data[3]:
-            self.assertTrue(song[data[2]].startswith(data[3]),
-                f'Data in given field "{song[data[2]]}" does not start with {data[3]}')
+            msg = f'Data in given field "{song[data[2]]}" does not start with {data[3]}'
+            assert song[data[2]].startswith(data[3]), msg
 
         return False
 
@@ -191,14 +264,14 @@ class TSyncToDevice(PluginTestCase):
 
     def _model_get_value(self, cell_id, column):
         iter_ = self.plugin.model.get_iter(cell_id)
-        return self.plugin.model.get_value(
-            iter_, self.plugin._model_col_id(column))
+        return self.plugin.model.get_value(iter_, self.plugin._model_col_id(column))
 
     def _model_remove_by_tag(self, rm_tag):
         iter_ = self.plugin.model.get_iter_first()
         while iter_:
             entry_tag = self.plugin.model.get_value(
-                iter_, self.plugin._model_col_id("tag"))
+                iter_, self.plugin._model_col_id("tag")
+            )
             if entry_tag == rm_tag:
                 self.plugin.model.remove(iter_)
             else:
@@ -207,41 +280,38 @@ class TSyncToDevice(PluginTestCase):
     def _mark_song_unique(self, cell_edit, new_text="updated path", check=True):
         self._model_set_value("export", cell_edit, new_text)
         if check:
-            self.assertEqual(self._model_get_value(cell_edit, "export"),
-                             new_text)
-            self.assertEqual(self._model_get_value(cell_edit, "tag"),
-                             self.Tags.PENDING_COPY)
+            self.assertEqual(self._model_get_value(cell_edit, "export"), new_text)
+            self.assertEqual(
+                self._model_get_value(cell_edit, "tag"), self.Tags.PENDING_COPY
+            )
 
     def _mark_song_duplicate(self, cell_edit, cell_copy, check=True):
         new_text = self._model_get_value(cell_copy, "export")
         self._model_set_value("export", cell_edit, new_text)
         if check:
-            self.assertEqual(self._model_get_value(cell_edit, "export"),
-                             new_text)
-            self.assertEqual(self._model_get_value(cell_edit, "tag"),
-                             self.Tags.SKIP_DUPLICATE)
+            self.assertEqual(self._model_get_value(cell_edit, "export"), new_text)
+            self.assertEqual(
+                self._model_get_value(cell_edit, "tag"), self.Tags.SKIP_DUPLICATE
+            )
 
     def _mark_song_delete(self, cell_edit, check=True):
         new_text = self.Tags.DELETE
         self._model_set_value("export", cell_edit, new_text)
         if check:
             self.assertEqual(self._model_get_value(cell_edit, "export"), "")
-            self.assertEqual(self._model_get_value(cell_edit, "tag"),
-                             self.Tags.SKIP)
+            self.assertEqual(self._model_get_value(cell_edit, "tag"), self.Tags.SKIP)
 
     def _mark_song_empty(self, cell_edit, check=True):
         new_text = ""
         self._model_set_value("export", cell_edit, new_text)
         if check:
-            self.assertEqual(self._model_get_value(cell_edit, "export"),
-                             new_text)
-            self.assertEqual(self._model_get_value(cell_edit, "tag"),
-                             self.Tags.SKIP)
+            self.assertEqual(self._model_get_value(cell_edit, "export"), new_text)
+            self.assertEqual(self._model_get_value(cell_edit, "tag"), self.Tags.SKIP)
 
     def test_pluginpreferences_missing_saved_queries_file(self):
         os.remove(self.plugin.path_query)
         self.main_vbox = self._start_plugin()
-        self.assertFalse(os.path.exists(self.plugin.path_query))
+        assert not os.path.exists(self.plugin.path_query)
         self.assertEqual(type(self.main_vbox), Gtk.Frame)
 
     def test_pluginpreferences_no_saved_queries(self):
@@ -254,49 +324,51 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(type(self.main_vbox), Gtk.VBox)
 
         self.assertEqual(len(self.plugin.queries), len(QUERIES))
-        self.assertTrue(all(isinstance(button, ConfigCheckButton) for button in
-                            self.plugin.saved_search_vbox.get_children()))
-        self.assertFalse(any(button.get_active() for button in
-                             self.plugin.saved_search_vbox.get_children()))
+        assert all(
+            isinstance(button, ConfigCheckButton)
+            for button in self.plugin.saved_search_vbox.get_children()
+        )
+        assert not any(
+            button.get_active()
+            for button in self.plugin.saved_search_vbox.get_children()
+        )
 
-        self.assertNotEqual(
-            self.plugin.destination_entry.get_placeholder_text(), "")
+        self.assertNotEqual(self.plugin.destination_entry.get_placeholder_text(), "")
         self.assertEqual(self.plugin.destination_entry.get_text(), "")
 
-        self.assertNotEqual(
-            self.plugin.export_pattern_entry.get_placeholder_text(), "")
+        self.assertNotEqual(self.plugin.export_pattern_entry.get_placeholder_text(), "")
         self.assertNotEqual(self.plugin.export_pattern_entry.get_text(), "")
 
         n_cols = self.plugin.model.get_n_columns()
         self.assertEqual(n_cols, len(self.plugin.model_cols))
 
-        self.assertTrue(self.plugin.preview_start_button.get_visible())
-        self.assertFalse(self.plugin.preview_stop_button.get_visible())
-        self.assertFalse(self.plugin.status_operation.get_visible())
+        assert self.plugin.preview_start_button.get_visible()
+        assert not self.plugin.preview_stop_button.get_visible()
+        assert not self.plugin.status_operation.get_visible()
         self.assertEqual(self.plugin.status_operation.get_text(), "")
-        self.assertFalse(self.plugin.status_progress.get_visible())
+        assert not self.plugin.status_progress.get_visible()
         self.assertEqual(self.plugin.status_progress.get_text(), "")
-        self.assertFalse(self.plugin.status_duplicates.get_visible())
-        self.assertFalse(self.plugin.status_deletions.get_visible())
+        assert not self.plugin.status_duplicates.get_visible()
+        assert not self.plugin.status_deletions.get_visible()
 
-        self.assertTrue(self.plugin.sync_start_button.get_visible())
-        self.assertFalse(self.plugin.sync_stop_button.get_visible())
+        assert self.plugin.sync_start_button.get_visible()
+        assert not self.plugin.sync_stop_button.get_visible()
 
     def test_select_saved_search(self):
         button = self.plugin.saved_search_vbox.get_children()[0]
 
         button.set_active(True)
-        self.assertTrue(button.get_active())
+        assert button.get_active()
         query_config = self._make_query_config(button.get_label())
-        self.assertTrue(
-            config.getboolean(PM.CONFIG_SECTION, query_config, None))
+        self.assertTrue(config.getboolean(PM.CONFIG_SECTION, query_config, None))
 
     def test_destination_path_changed(self):
         self.dest_entry.set_text(self.path_dest)
         self.assertEqual(self.dest_entry.get_text(), self.path_dest)
         self.assertEqual(
             config.get(PM.CONFIG_SECTION, self.plugin.CONFIG_PATH_KEY, None),
-            self.path_dest)
+            self.path_dest,
+        )
 
     def test_export_pattern_changed(self):
         pattern_new_text = PATTERNS[0]
@@ -304,14 +376,16 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(self.pattern_entry.get_text(), pattern_new_text)
         self.assertEqual(
             config.get(PM.CONFIG_SECTION, self.plugin.CONFIG_PATTERN_KEY, None),
-            pattern_new_text)
+            pattern_new_text,
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_no_searches_selected(self, mock_message):
         self.dest_entry.set_text(self.path_dest)
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_called_once_with(
-            self.main_vbox, "No saved searches selected", ANY)
+            self.main_vbox, "No saved searches selected", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_no_destination_path(self, mock_message):
@@ -319,7 +393,8 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_called_once_with(
-            self.main_vbox, "No destination path provided", ANY)
+            self.main_vbox, "No destination path provided", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_no_export_pattern(self, mock_message):
@@ -329,7 +404,8 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_called_once_with(
-            self.main_vbox, "No export pattern provided", ANY)
+            self.main_vbox, "No export pattern provided", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_export_path_not_absolute(self, mock_message):
@@ -338,7 +414,8 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_called_once_with(
-            self.main_vbox, "Export path is not absolute", ANY)
+            self.main_vbox, "Export path is not absolute", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_no_songs(self, mock_message):
@@ -348,7 +425,8 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_called_once_with(
-            self.main_vbox, "No songs in the selected saved searches", ANY)
+            self.main_vbox, "No songs in the selected saved searches", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_path_pattern_mismatch(self, mock_message):
@@ -357,11 +435,13 @@ class TSyncToDevice(PluginTestCase):
         self._select_searches("Directory")
         self.dest_entry.set_text(self.path_dest)
         self.pattern_entry.set_text(
-            str(Path("/dev/null", self.plugin.default_export_pattern)))
+            str(Path("/dev/null", self.plugin.default_export_pattern))
+        )
 
         self.plugin._start_preview(self.plugin.preview_start_button)
-        mock_message.assert_called_once_with(self.main_vbox,
-            "Mismatch between destination path and export pattern", ANY)
+        mock_message.assert_called_once_with(
+            self.main_vbox, "Mismatch between destination path and export pattern", ANY
+        )
 
     @patch("quodlibet.qltk.ErrorMessage")
     def test_start_preview_destination_in_pattern(self, mock_message):
@@ -371,19 +451,24 @@ class TSyncToDevice(PluginTestCase):
         self._select_searches(query_name)
         self.dest_entry.set_text(self.path_dest)
         self.pattern_entry.set_text(
-            str(Path(self.path_dest, self.plugin.default_export_pattern)))
+            str(Path(self.path_dest, self.plugin.default_export_pattern))
+        )
 
         self.plugin._start_preview(self.plugin.preview_start_button)
         mock_message.assert_not_called()
 
-        self.assertTrue(self.plugin.status_progress.get_visible())
+        assert self.plugin.status_progress.get_visible()
         self.assertNotEqual(self.plugin.status_progress.get_text(), "")
         n_children = self.plugin.model.iter_n_children(None)
         self.assertEqual(n_children, QUERIES[query_name]["results"])
         query_terms = QUERIES[query_name]["terms"]
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.PENDING_COPY], [self.path_dest],
-            "~filename", query_terms)
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.PENDING_COPY],
+            [self.path_dest],
+            "~filename",
+            query_terms,
+        )
 
     def test_start_preview_queries_directory(self):
         self._make_library()
@@ -394,14 +479,18 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
 
-        self.assertTrue(self.plugin.status_progress.get_visible())
+        assert self.plugin.status_progress.get_visible()
         self.assertNotEqual(self.plugin.status_progress.get_text(), "")
         n_children = self.plugin.model.iter_n_children(None)
         self.assertEqual(n_children, QUERIES[query_name]["results"])
         query_terms = QUERIES[query_name]["terms"]
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.PENDING_COPY], [self.path_dest],
-            "~filename", query_terms)
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.PENDING_COPY],
+            [self.path_dest],
+            "~filename",
+            query_terms,
+        )
 
     def test_start_preview_queries_artists(self):
         self._make_library()
@@ -412,14 +501,18 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
 
-        self.assertTrue(self.plugin.status_progress.get_visible())
+        assert self.plugin.status_progress.get_visible()
         self.assertNotEqual(self.plugin.status_progress.get_text(), "")
         n_children = self.plugin.model.iter_n_children(None)
         self.assertEqual(n_children, QUERIES[query_name]["results"])
         query_terms = QUERIES[query_name]["terms"]
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.PENDING_COPY], [self.path_dest],
-            "artist", query_terms)
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.PENDING_COPY],
+            [self.path_dest],
+            "artist",
+            query_terms,
+        )
 
     def test_start_preview_queries_multiple(self):
         self._make_library()
@@ -433,13 +526,13 @@ class TSyncToDevice(PluginTestCase):
 
         self.plugin._start_preview(self.plugin.preview_start_button)
 
-        self.assertTrue(self.plugin.status_progress.get_visible())
+        assert self.plugin.status_progress.get_visible()
         self.assertNotEqual(self.plugin.status_progress.get_text(), "")
         n_children = self.plugin.model.iter_n_children(None)
         self.assertEqual(n_children, n_expected)
 
-        self.assertFalse(self.plugin.status_duplicates.get_visible())
-        self.assertFalse(self.plugin.status_deletions.get_visible())
+        assert not self.plugin.status_duplicates.get_visible()
+        assert not self.plugin.status_deletions.get_visible()
 
     def test_start_preview_export_path_check(self):
         def _verify_path(model, path, iter_, *data):
@@ -465,9 +558,12 @@ class TSyncToDevice(PluginTestCase):
     def test_start_preview_pattern_custom_text(self):
         def _verify_path(model, path, iter_, *data):
             song = model[path][self.plugin._model_col_id("entry")]._song
-            expected_path = os.path.join(data[0], "A " + song["artist"],
-                                         "_" + song["title"] + "_",
-                                         "Unknown" + ".mp3")
+            expected_path = os.path.join(
+                data[0],
+                "A " + song["artist"],
+                "_" + song["title"] + "_",
+                "Unknown" + ".mp3",
+            )
             export_path = model[path][self.plugin._model_col_id("export")]
             self.assertEqual(export_path, expected_path)
             return False
@@ -476,8 +572,9 @@ class TSyncToDevice(PluginTestCase):
 
         self._select_searches("Directory")
         self.dest_entry.set_text(self.path_dest)
-        pattern = str(Path("A <artist>", "_<title>_",
-                           "<albumartist|<albumartist>|Unknown>"))
+        pattern = str(
+            Path("A <artist>", "_<title>_", "<albumartist|<albumartist>|Unknown>")
+        )
         self.pattern_entry.set_text(pattern)
 
         self.plugin._start_preview(self.plugin.preview_start_button)
@@ -496,8 +593,8 @@ class TSyncToDevice(PluginTestCase):
         n_children = self.plugin.model.iter_n_children(None)
         self.assertEqual(n_children, num_files)
 
-        self.assertFalse(self.plugin.status_duplicates.get_visible())
-        self.assertTrue(self.plugin.status_deletions.get_visible())
+        assert not self.plugin.status_duplicates.get_visible()
+        assert self.plugin.status_deletions.get_visible()
 
     def test_start_preview_query_and_file_deletion(self):
         self._make_library()
@@ -636,14 +733,14 @@ class TSyncToDevice(PluginTestCase):
         cell_id_edit = 0
         cell_id_copy = 1
         self._mark_song_duplicate(cell_id_edit, cell_id_copy)
-        self.assertTrue(self.plugin.status_duplicates.get_visible())
+        assert self.plugin.status_duplicates.get_visible()
 
         old_c_songs_copy = self.plugin.c_songs_copy
         old_c_song_dupes = self.plugin.c_song_dupes
         self._mark_song_unique(cell_id_edit)
         self.assertEqual(self.plugin.c_songs_copy, old_c_songs_copy + 1)
         self.assertEqual(self.plugin.c_song_dupes, old_c_song_dupes - 1)
-        self.assertFalse(self.plugin.status_duplicates.get_visible())
+        assert not self.plugin.status_duplicates.get_visible()
 
     def test_row_edited_duplicate_to_duplicate(self):
         self._make_library()
@@ -659,8 +756,8 @@ class TSyncToDevice(PluginTestCase):
         self._mark_song_duplicate(cell_id_edit, cell_id_copy_2)
         self.assertEqual(self.plugin.c_song_dupes, old_c_song_dupes)
 
-        self.assertTrue(self.plugin.status_duplicates.get_visible())
-        self.assertFalse(self.plugin.status_deletions.get_visible())
+        assert self.plugin.status_duplicates.get_visible()
+        assert not self.plugin.status_deletions.get_visible()
 
     def test_row_edited_duplicate_to_delete(self):
         self._make_library()
@@ -800,8 +897,9 @@ class TSyncToDevice(PluginTestCase):
         cell_id_duplicate = 1
         self._mark_song_duplicate(cell_id_duplicate, cell_id_unique)
         self._mark_song_unique(cell_id_unique)
-        self.assertEqual(self._model_get_value(cell_id_duplicate, "tag"),
-                         self.Tags.PENDING_COPY)
+        self.assertEqual(
+            self._model_get_value(cell_id_duplicate, "tag"), self.Tags.PENDING_COPY
+        )
 
     def test_row_edited_others_duplicate_to_unique_multiple(self):
         self._make_library()
@@ -816,14 +914,17 @@ class TSyncToDevice(PluginTestCase):
         self._mark_song_duplicate(cell_id_duplicate_2, cell_id_unique)
 
         self._mark_song_unique(cell_id_unique)
-        self.assertEqual(self._model_get_value(cell_id_duplicate_1, "tag"),
-                         self.Tags.SKIP_DUPLICATE)
-        self.assertEqual(self._model_get_value(cell_id_duplicate_2, "tag"),
-                         self.Tags.SKIP_DUPLICATE)
+        self.assertEqual(
+            self._model_get_value(cell_id_duplicate_1, "tag"), self.Tags.SKIP_DUPLICATE
+        )
+        self.assertEqual(
+            self._model_get_value(cell_id_duplicate_2, "tag"), self.Tags.SKIP_DUPLICATE
+        )
 
         self._mark_song_unique(cell_id_duplicate_1, new_text="new_text")
-        self.assertEqual(self._model_get_value(cell_id_duplicate_2, "tag"),
-                         self.Tags.PENDING_COPY)
+        self.assertEqual(
+            self._model_get_value(cell_id_duplicate_2, "tag"), self.Tags.PENDING_COPY
+        )
 
     @patch("os.remove")
     @patch("shutil.copyfile")
@@ -842,9 +943,13 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(mock_mkdir.call_count, n_songs)
         self.assertEqual(mock_cp.call_count, n_songs)
         self.assertEqual(mock_rm.call_count, 0)
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.RESULT_SUCCESS], [self.path_dest],
-            "~filename", QUERIES[query_name]["terms"])
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.RESULT_SUCCESS],
+            [self.path_dest],
+            "~filename",
+            QUERIES[query_name]["terms"],
+        )
 
     @patch("os.remove")
     @patch("shutil.copyfile")
@@ -859,10 +964,10 @@ class TSyncToDevice(PluginTestCase):
         cell_id_copy = 0
         for cell_id in range(cell_id_copy + 1, n_songs):
             self._mark_song_duplicate(cell_id, cell_id_copy)
-        self.assertTrue(self.plugin.status_duplicates.get_visible())
+        assert self.plugin.status_duplicates.get_visible()
 
         self.plugin._start_sync(self.plugin.sync_start_button)
-        self.assertFalse(self.plugin.status_duplicates.get_visible())
+        assert not self.plugin.status_duplicates.get_visible()
 
         expected_sync = 1
         expected_skip = n_songs - expected_sync
@@ -871,9 +976,13 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(mock_mkdir.call_count, expected_sync)
         self.assertEqual(mock_cp.call_count, expected_sync)
         self.assertEqual(mock_rm.call_count, 0)
-        self.plugin.model.foreach(self._verify_child,
+        self.plugin.model.foreach(
+            self._verify_child,
             [self.Tags.RESULT_SUCCESS, self.Tags.SKIP_DUPLICATE],
-            [self.path_dest], "~filename", QUERIES[query_name]["terms"])
+            [self.path_dest],
+            "~filename",
+            QUERIES[query_name]["terms"],
+        )
 
     @patch("os.remove")
     @patch("shutil.copyfile")
@@ -886,19 +995,23 @@ class TSyncToDevice(PluginTestCase):
         self.dest_entry.set_text(self.path_dest)
         self.plugin._start_preview(self.plugin.preview_start_button)
         n_songs = QUERIES[query_name]["results"]
-        self.assertTrue(self.plugin.status_deletions.get_visible())
+        assert self.plugin.status_deletions.get_visible()
 
         self.plugin._start_sync(self.plugin.sync_start_button)
-        self.assertFalse(self.plugin.status_deletions.get_visible())
+        assert not self.plugin.status_deletions.get_visible()
 
         self.assertEqual(self.plugin.c_files_copy, n_songs)
         self.assertEqual(self.plugin.c_files_delete, n_files)
         self.assertEqual(mock_mkdir.call_count, n_songs)
         self.assertEqual(mock_cp.call_count, n_songs)
         self.assertEqual(mock_rm.call_count, n_files)
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.RESULT_SUCCESS], [""],
-            "~filename", QUERIES[query_name]["terms"])
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.RESULT_SUCCESS],
+            [""],
+            "~filename",
+            QUERIES[query_name]["terms"],
+        )
 
     @patch("os.rmdir")
     @patch("os.remove", side_effect=os.remove)
@@ -906,8 +1019,12 @@ class TSyncToDevice(PluginTestCase):
     @patch("os.makedirs")
     def test_start_sync_deletion_with_dirs(self, mkdir, cp, rm, rmdir):
         self._make_library()
-        n_files = self._make_files_for_deletion("song1.mp3", "song2.mp3",
-            str(Path("other", "file1.txt")), str(Path("other", "file2.txt")))
+        n_files = self._make_files_for_deletion(
+            "song1.mp3",
+            "song2.mp3",
+            str(Path("other", "file1.txt")),
+            str(Path("other", "file2.txt")),
+        )
         n_dirs = 1
         query_name = "Symbols"
         self._select_searches(query_name)
@@ -925,9 +1042,13 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(cp.call_count, n_songs)
         self.assertEqual(rm.call_count, n_files)
         self.assertEqual(rmdir.call_count, n_dirs)
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.RESULT_SUCCESS], [""],
-            "~filename", QUERIES[query_name]["terms"])
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.RESULT_SUCCESS],
+            [""],
+            "~filename",
+            QUERIES[query_name]["terms"],
+        )
 
     @patch("os.remove", side_effect=Exception("Mocked failure on remove file"))
     @patch("shutil.copyfile", side_effect=Exception("Mocked failure on copy"))
@@ -951,21 +1072,30 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(mock_mkdir.call_count, n_songs)
         self.assertEqual(mock_cp.call_count, n_songs)
         self.assertEqual(mock_rm.call_count, n_files)
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.RESULT_FAILURE], [self.path_dest, ""],
-            "~filename", QUERIES[query_name]["terms"])
+        self.plugin.model.foreach(
+            self._verify_child,
+            [self.Tags.RESULT_FAILURE],
+            [self.path_dest, ""],
+            "~filename",
+            QUERIES[query_name]["terms"],
+        )
 
     @patch("os.rmdir")
     @patch("os.remove", side_effect=os.remove)
     @patch("shutil.copyfile")
     @patch("os.makedirs")
     def test_start_sync_complex_success(self, mkdir, cp, rm, rmdir):
-        case_insensitive_filesystem = \
-            os.path.exists(__file__) == os.path.exists(__file__.upper())
+        case_insensitive_filesystem = os.path.exists(__file__) == os.path.exists(
+            __file__.upper()
+        )
 
         self._make_library()
-        n_files = self._make_files_for_deletion("song1.mp3", "file1.mp3",
-            str(Path("other", "file1.txt")), str(Path("other", "file2.txt")))
+        n_files = self._make_files_for_deletion(
+            "song1.mp3",
+            "file1.mp3",
+            str(Path("other", "file1.txt")),
+            str(Path("other", "file2.txt")),
+        )
         n_dirs = 1
         queries = ("Directory", "2 artists")
         self._select_searches(*queries)
@@ -995,10 +1125,17 @@ class TSyncToDevice(PluginTestCase):
         self.assertEqual(cp.call_count, n_expected_songs)
         self.assertEqual(rm.call_count, n_files)
         self.assertEqual(rmdir.call_count, n_dirs)
-        self.plugin.model.foreach(self._verify_child,
-            [self.Tags.RESULT_SUCCESS, self.Tags.SKIP_DUPLICATE,
-             self.Tags.RESULT_SKIP_EXISTING], [self.path_dest, ""],
-            None, None)
+        self.plugin.model.foreach(
+            self._verify_child,
+            [
+                self.Tags.RESULT_SUCCESS,
+                self.Tags.SKIP_DUPLICATE,
+                self.Tags.RESULT_SKIP_EXISTING,
+            ],
+            [self.path_dest, ""],
+            None,
+            None,
+        )
 
     @patch("os.remove")
     @patch("shutil.copyfile")

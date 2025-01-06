@@ -5,8 +5,7 @@
 
 from tests import TestCase
 
-from quodlibet.qltk.tagsfrompath import (TitleCase, SplitTag,
-    UnderscoresToSpaces)
+from quodlibet.qltk.tagsfrompath import TitleCase, SplitTag, UnderscoresToSpaces
 import quodlibet.config
 
 

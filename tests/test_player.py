@@ -60,6 +60,7 @@ class TPlayer(TestCase):
 
         def handler(type_, *args):
             self.signals.append(type_)
+
         connect_obj(self.player, "unpaused", handler, "unpaused")
         connect_obj(self.player, "paused", handler, "paused")
 
@@ -71,8 +72,8 @@ class TPlayer(TestCase):
             if type_ == "started":
                 stack.append(song)
             elif type_ == "ended":
-                self.assertTrue(stack.pop(-1) is song, msg=old)
-        self.assertFalse(stack, msg=old)
+                assert stack.pop(-1) is song, old
+        assert not stack, old
 
     def tearDown(self):
         self.player.destroy()
@@ -84,7 +85,6 @@ class TPlayer(TestCase):
 
 
 class TPlayerMixin:
-
     def _can_sync(self):
         # TODO: make this work with xinebe
         return not isinstance(self, TXinePlayer)
@@ -141,14 +141,14 @@ class TPlayerMixin:
         assert self.player.get_position() == 100
 
     def test_song_start(self):
-        self.assertFalse(self.player.song)
-        self.assertFalse(self.player.info)
+        assert not self.player.song
+        assert not self.player.info
 
     def test_paused(self):
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.paused = False
-        self.assertFalse(self.player.paused)
-        self.assertTrue(self.signals, ["unpaused"])
+        assert not self.player.paused
+        assert self.signals, ["unpaused"]
 
     def test_volume(self):
         self.assertEqual(self.player.volume, 1.0)
@@ -177,13 +177,13 @@ class TPlayerMixin:
         self.assertEqual(self.player.song, FILES[1])
 
     def test_next(self):
-        self.assertFalse(self.player.song)
+        assert not self.player.song
         self.player.next()
         self.assertEqual(self.player.song, FILES[0])
         self.player.next()
         self.assertEqual(self.player.song, FILES[1])
         self.player.next()
-        self.assertFalse(self.player.song)
+        assert not self.player.song
 
     def test_previous(self):
         self.player.next()
@@ -193,18 +193,18 @@ class TPlayerMixin:
         self.assertEqual(self.player.song, FILES[0])
 
     def test_goto(self):
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.go_to(FILES[1])
         self.assertEqual(self.player.song, FILES[1])
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.go_to(FILES[0], explicit=True)
         self.assertEqual(self.player.song, FILES[0])
 
     def test_goto_unknown(self):
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.go_to(UNKNOWN_FILE, True)
         self.assertIs(self.player.song, UNKNOWN_FILE)
-        self.assertTrue(self.player.paused)
+        assert self.player.paused
         self.player.go_to(None)
         self.assertIs(self.player.song, None)
 
@@ -227,9 +227,9 @@ class TPlayerMixin:
         self.player.go_to(None)
         self.player.paused = False
         self.player.next()
-        self.assertTrue(self.signals, ["unpaused"])
+        assert self.signals, ["unpaused"]
         self.player.go_to(None)
-        self.assertTrue(self.signals, ["unpaused", "paused"])
+        assert self.signals, ["unpaused", "paused"]
 
     def test_replaygain(self):
         self.player.replaygain_profiles[0] = "track"
@@ -237,15 +237,14 @@ class TPlayerMixin:
         config.set("player", "replaygain", True)
         self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
         config.set("player", "fallback_gain", -5.0)
-        self.assertAlmostEqual(
-            self.player.calc_replaygain_volume(1.0), 0.562, 3)
+        self.assertAlmostEqual(self.player.calc_replaygain_volume(1.0), 0.562, 3)
         config.set("player", "pre_amp_gain", 10.0)
         self.assertEqual(self.player.calc_replaygain_volume(1.0), 1.0)
 
     def test_seekable(self):
-        self.assertFalse(self.player.seekable)
+        assert not self.player.seekable
         self.player.next()
-        self.assertTrue(self.player.seekable)
+        assert self.player.seekable
 
         calls = []
 
@@ -254,8 +253,8 @@ class TPlayerMixin:
 
         self.player.connect("notify::seekable", on_change)
         self.player.go_to(None)
-        self.assertTrue(calls)
-        self.assertFalse(self.player.seekable)
+        assert calls
+        assert not self.player.seekable
 
     def test_pause_on_goto_none(self):
         # When we got to None, pause after song-started
@@ -274,9 +273,9 @@ class TPlayerMixin:
         assert event[0] == (None, False)
 
     def test_mute(self):
-        self.assertFalse(self.player.mute)
+        assert not self.player.mute
         self.player.next()
-        self.assertFalse(self.player.mute)
+        assert not self.player.mute
         # backend don't have to support it, but shouldn't fail on set/get
         self.player.mute = not self.player.mute
 
@@ -350,9 +349,9 @@ class TNullPlayer(TPlayer, TPlayerMixin):
         self.assertEqual(self.player.get_position(), 0)
 
     def test_can_play_uri_null(self):
-        self.assertTrue(self.player.can_play_uri(""))
-        self.assertTrue(self.player.can_play_uri("file://"))
-        self.assertTrue(self.player.can_play_uri("fake://"))
+        assert self.player.can_play_uri("")
+        assert self.player.can_play_uri("file://")
+        assert self.player.can_play_uri("fake://")
 
 
 has_xine = True
@@ -367,9 +366,9 @@ class TXinePlayer(TPlayer, TPlayerMixin):
     NAME = "xinebe"
 
     def test_can_play_uri_xine(self):
-        self.assertFalse(self.player.can_play_uri(""))
-        self.assertTrue(self.player.can_play_uri("file://"))
-        self.assertFalse(self.player.can_play_uri("fake://"))
+        assert not self.player.can_play_uri("")
+        assert self.player.can_play_uri("file://")
+        assert not self.player.can_play_uri("fake://")
 
 
 has_gstbe = True
@@ -384,9 +383,9 @@ class TGstPlayer(TPlayer, TPlayerMixin):
     NAME = "gstbe"
 
     def test_can_play_uri_gst(self):
-        self.assertFalse(self.player.can_play_uri(""))
-        self.assertTrue(self.player.can_play_uri("file://"))
-        self.assertFalse(self.player.can_play_uri("fake://"))
+        assert not self.player.can_play_uri("")
+        assert self.player.can_play_uri("file://")
+        assert not self.player.can_play_uri("fake://")
 
 
 class TVolume(TestCase):

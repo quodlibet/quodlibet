@@ -38,13 +38,15 @@ class TCommands(TCommandBase):
 
     def test_print_playing_elapsed(self):
         app.player.info = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")})
+            {"album": "foo", "~filename": fsnative("/dev/null")}
+        )
         app.player.seek(123 * 1000)
         assert self._send("print-playing <album~~elapsed>") == "foo - 2:03\n"
 
     def test_print_playing_elapsed_numeric(self):
         app.player.info = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")})
+            {"album": "foo", "~filename": fsnative("/dev/null")}
+        )
         app.player.seek(234.56 * 1000)
         assert self._send("print-playing <~#elapsed>") == "234.56\n"
 
@@ -80,6 +82,7 @@ class TCommands(TCommandBase):
         self._send("dump-browsers")
         self._send("open-browser SearchBar")
         from quodlibet.qltk.browser import LibraryBrowser
+
         for window in Gtk.Window.list_toplevels():
             if isinstance(window, LibraryBrowser):
                 window.destroy()
@@ -100,18 +103,20 @@ class TCommands(TCommandBase):
         self._send("set-browser 1")
 
     def test_enqueue_files(self):
-        songs = [AudioFile({"~filename": fn, "title": fn})
-                 for fn in ["one", "two, please", "slash\\.mp3", "four"]]
+        songs = [
+            AudioFile({"~filename": fn, "title": fn})
+            for fn in ["one", "two, please", "slash\\.mp3", "four"]
+        ]
         app.library.add(songs)
 
-        self.assertFalse(app.window.playlist.q.get())
-        self._send("enqueue-files "
-                    "one,two\\, please,slash\\\\.mp3,four")
+        assert not app.window.playlist.q.get()
+        self._send("enqueue-files " "one,two\\, please,slash\\\\.mp3,four")
         self.assertEqual(app.window.playlist.q.get(), songs)
 
     def test_rating(self):
         app.player.song = AudioFile(
-            {"album": "foo", "~filename": fsnative("/dev/null")})
+            {"album": "foo", "~filename": fsnative("/dev/null")}
+        )
         self._send("rating +")
         self.assertAlmostEqual(app.player.song["~#rating"], 0.75)
         self._send("rating 0.4")
@@ -125,13 +130,14 @@ class TCommands(TCommandBase):
 class TCommandWithPattern(TCommandBase):
     def setUp(self):
         super().setUp()
-        songs = [AudioFile({"~filename": fn, "title": fn.upper()})
-                 for fn in ["one", "two, please", "slash\\.mp3", "4.0-four"]]
+        songs = [
+            AudioFile({"~filename": fn, "title": fn.upper()})
+            for fn in ["one", "two, please", "slash\\.mp3", "4.0-four"]
+        ]
         app.library.add(songs)
 
-        self.assertFalse(app.window.playlist.q.get())
-        self._send("enqueue-files "
-                    "one,two\\, please,slash\\\\.mp3,4.0-four")
+        assert not app.window.playlist.q.get()
+        self._send("enqueue-files " "one,two\\, please,slash\\\\.mp3,4.0-four")
 
     def test_old_syntax(self):
         assert self._send("print-query two ") == "two, please\n"
@@ -142,34 +148,32 @@ class TCommandWithPattern(TCommandBase):
         assert self._send("print-query true") == "\n"
 
     def test_new_syntax(self):
-        assert self._send(
-            'print-query {"query": "two", "pattern": null}'
-        ) == "two, please\n"
-        assert self._send(
-            'print-query {"query": "two", "pattern": "asdf"}'
-        ) == "asdf\n"
-        assert self._send(
-            'print-query {"query": "slash", "pattern": "<title>"}'
-        ) == "SLASH\\.MP3\n"
+        assert (
+            self._send('print-query {"query": "two", "pattern": null}')
+            == "two, please\n"
+        )
+        assert self._send('print-query {"query": "two", "pattern": "asdf"}') == "asdf\n"
+        assert (
+            self._send('print-query {"query": "slash", "pattern": "<title>"}')
+            == "SLASH\\.MP3\n"
+        )
 
     def test_query_is_valid_json(self):
-        assert self._send(
-            'print-query {"query": "\\"one\\"", "pattern": "<title>"}'
-        ) == "ONE\n"
-        assert self._send(
-            'print-query {"query": "4.0", "pattern": "<title>"}'
-        ) == "4.0-FOUR\n"
+        assert (
+            self._send('print-query {"query": "\\"one\\"", "pattern": "<title>"}')
+            == "ONE\n"
+        )
+        assert (
+            self._send('print-query {"query": "4.0", "pattern": "<title>"}')
+            == "4.0-FOUR\n"
+        )
 
     def test_query_is_not_a_string(self):
         # Query is valid json, but not came from the CLI. (It's not a string.)
-        assert self._send(
-            'print-query {"query": 4.0, "pattern": "<title>"}'
-        ) == "\n"
-        assert self._send(
-            'print-query {"query": true, "pattern": "<title>"}'
-        ) == "\n"
+        assert self._send('print-query {"query": 4.0, "pattern": "<title>"}') == "\n"
+        assert self._send('print-query {"query": true, "pattern": "<title>"}') == "\n"
 
     def test_invalid_args(self):
-        assert self._send(
-            'print-query {"query": "slash", "unknown": "<title>"}'
-        ) == "\n"
+        assert (
+            self._send('print-query {"query": "slash", "unknown": "<title>"}') == "\n"
+        )

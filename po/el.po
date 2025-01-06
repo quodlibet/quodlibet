@@ -70,7 +70,7 @@ msgstr "Τα_ξινόμηση κατά…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Προτιμήσεις"
@@ -178,7 +178,7 @@ msgstr "Περιηγητής Μουσικοθήκης"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -187,7 +187,7 @@ msgstr[1] "%d τραγούδια"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "Μη έγκυρη αναζήτηση"
 
@@ -637,7 +637,7 @@ msgid "Equal pane width"
 msgstr "Ισομεγέθη παράθυρα"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Λίστες Αναπαραγωγής"
 
@@ -645,28 +645,28 @@ msgstr "Λίστες Αναπαραγωγής"
 msgid "_Playlists"
 msgstr "_Λίστες Αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "Αφαίρεση από την Λίστα"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Νέο"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 #, fuzzy
 msgid "_Import…"
 msgstr "_Εισαγωγή"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "Αδυναμία εισαγωγής λίστας αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M3U/M3U8 και PLS."
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -674,19 +674,19 @@ msgstr "Ο Quod Libet μπορεί να εισάγει λίστες τύπου M
 msgid "_Delete"
 msgstr "_Διαγραφή Αρχείων"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "_Μετονομασία"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "Αδυναμία μετονομασίας λίστας αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Εισαγωγή"
 
@@ -748,7 +748,7 @@ msgid "_Add Tracks"
 msgstr "Κομμάτι"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Νέα Λίστα Αναπαραγωγής"
 
@@ -1571,7 +1571,7 @@ msgid "_Update strategy:"
 msgstr "_Ανανέωση Σταθμών"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1674,17 +1674,17 @@ msgid ""
 "listening to."
 msgstr "Αλλαγή του μηνύματος κατάστασης του Gajim σύμφωνα με το τι ακούτε."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 #, fuzzy
 msgid "Paused"
 msgstr "Παυμένο:"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 #, fuzzy
 msgid "Status Line #1"
 msgstr "Κατάσταση"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 #, fuzzy
 msgid "Status Line #2"
 msgstr "Κατάσταση"
@@ -2037,14 +2037,14 @@ msgid "Tested Clients"
 msgstr "Δοκιμασμένοι Πελάτες"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Υποστήριξη MPRIS D-Bus"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
 
 #: quodlibet/ext/events/mpris/__init__.py:48
@@ -3253,38 +3253,43 @@ msgstr ""
 msgid "Reload"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:629
 #, fuzzy
 msgid "Waveform Seek Bar"
 msgstr "Εναλακτική"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:671
-msgid "Override foreground color:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:675
-msgid "Override hover color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:679
-msgid "Override remaining color:"
-msgstr ""
-
-#: quodlibet/ext/events/waveformseekbar.py:683
+#: quodlibet/ext/events/waveformseekbar.py:723
 #, fuzzy
-msgid "Show current position"
+msgid "Hover color"
+msgstr "Μέγεθος _Εξώφυλλου:"
+
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "_Εμφάνιση ειδοποίησης"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr ""
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:759
+msgid "Waveform height (pixels):"
 msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
@@ -3924,16 +3929,16 @@ msgstr "Διακομιστής Squeezebox"
 msgid "Debug"
 msgstr "Αποσφαλμάτωση"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Διακομιστής Squeezebox στο {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "άγνωστος διακομιστής Squeezebox"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "άγνωστος αναπαραγωγέας Squeezebox: %r"
@@ -5194,7 +5199,7 @@ msgstr ""
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Μουσικοθήκη"
@@ -5227,7 +5232,7 @@ msgstr "Σάρωση της μουσικοθήκης"
 msgid "Removing library files"
 msgstr "Αφαίρεση ενεργών φίλτρων περιηγητή"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
@@ -6059,7 +6064,7 @@ msgstr "Τα επιλεγμένα αρχεία δεν υποστηρίζουν �
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 #, fuzzy
 msgid "Invalid tag"
@@ -7725,11 +7730,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Εισαγωγή Λίστας Αναπαραγωγής"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr ""
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, fuzzy, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Υπάρχει ήδη λίστα αναπαραγωγής με το όνομα %s."
@@ -7798,51 +7803,51 @@ msgstr "Η επιλογή %r χρειάζεται ένα όρισμα"
 msgid "%r is not a unique prefix."
 msgstr "Το %r δεν είναι μοναδικά ταυτοποιήσιμο πρόθεμα"
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, fuzzy, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%d δευτερόλεπτο"
 msgstr[1] "%d δευτερόλεπτα"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "Χωρίς πληροφορίες χρόνου"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d δευτερόλεπτο"
 msgstr[1] "%d δευτερόλεπτα"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d λεπτό"
 msgstr[1] "%d λεπτά"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d ώρα"
 msgstr[1] "%d ώρες"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d ημέρα"
 msgstr[1] "%d ημέρες"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7853,7 +7858,7 @@ msgstr[1] "%d χρόνια"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr ""
@@ -8310,6 +8315,9 @@ msgstr ""
 "πολλούς διαφορετικούς τρόπους προβολής της μουσικοθήκης σας, καθώς και "
 "υποστήριξη για διαδικτυακό ραδιόφωνο και ροών ήχου. Έχει απίστευτα ευέλικτες "
 "δυνατότητες επεξεργασίας και αναζήτησης μεταδεδομένων ετικετών μουσικής."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Υποστήριξη MPRIS D-Bus"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Επιτρέψτε την επεξεργασία ρυθμίσεων για προχωρημένους."

@@ -3,13 +3,15 @@ name: test
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
   pull_request:
     branches:
       - main
 
 jobs:
   fedora:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,33 +28,34 @@ jobs:
       - name: setup-msys2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: MINGW64
+          msystem: UCRT64
           update: true
           install: >-
             git
-            mingw-w64-x86_64-gettext
-            mingw-w64-x86_64-gdk-pixbuf2
-            mingw-w64-x86_64-librsvg
-            mingw-w64-x86_64-gtk3
-            mingw-w64-x86_64-libsoup3
-            mingw-w64-x86_64-gstreamer
-            mingw-w64-x86_64-gst-plugins-base
-            mingw-w64-x86_64-gst-plugins-good
-            mingw-w64-x86_64-gst-plugins-bad
-            mingw-w64-x86_64-gst-libav
-            mingw-w64-x86_64-gst-plugins-ugly
-            mingw-w64-x86_64-python
-            mingw-w64-x86_64-cc
-            mingw-w64-x86_64-pkgconf
-            mingw-w64-x86_64-python-poetry
-            mingw-w64-x86_64-gobject-introspection
-            mingw-w64-x86_64-appstream
+            mingw-w64-ucrt-x86_64-gettext
+            mingw-w64-ucrt-x86_64-gdk-pixbuf2
+            mingw-w64-ucrt-x86_64-librsvg
+            mingw-w64-ucrt-x86_64-gtk3
+            mingw-w64-ucrt-x86_64-libsoup3
+            mingw-w64-ucrt-x86_64-gstreamer
+            mingw-w64-ucrt-x86_64-gst-plugins-base
+            mingw-w64-ucrt-x86_64-gst-plugins-good
+            mingw-w64-ucrt-x86_64-gst-plugins-bad
+            mingw-w64-ucrt-x86_64-gst-libav
+            mingw-w64-ucrt-x86_64-gst-plugins-ugly
+            mingw-w64-ucrt-x86_64-python
+            mingw-w64-ucrt-x86_64-cc
+            mingw-w64-ucrt-x86_64-pkgconf
+            mingw-w64-ucrt-x86_64-ninja
+            mingw-w64-ucrt-x86_64-meson
+            mingw-w64-ucrt-x86_64-python-poetry
+            mingw-w64-ucrt-x86_64-gobject-introspection
+            mingw-w64-ucrt-x86_64-appstream
 
       - name: Install additional dependencies
         shell: msys2 {0}
         run: |
-          export SETUPTOOLS_USE_DISTUTILS=stdlib
-          MSYSTEM= poetry install -E plugins
+          MSYSTEM= poetry -vv install -E plugins
 
       - name: Run tests
         shell: msys2 {0}
@@ -60,7 +63,7 @@ jobs:
           MSYSTEM= poetry run python setup.py test --no-quality
 
   flatpak:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -92,100 +95,88 @@ jobs:
     name: ubuntu-22.04
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Install Dependencies
-      run: |
-        sudo apt update -qq
-        sudo apt install -qqy \
-          appstream \
-          dbus-x11 \
-          gettext \
-          gir1.2-appindicator3-0.1 \
-          gir1.2-gst-plugins-base-1.0 \
-          gir1.2-gstreamer-1.0 \
-          gir1.2-gtk-3.0 \
-          gir1.2-gtksource-4 \
-          gir1.2-keybinder-3.0 \
-          gir1.2-soup-3.0 \
-          gstreamer1.0-plugins-bad \
-          gstreamer1.0-plugins-base \
-          gstreamer1.0-plugins-good \
-          gstreamer1.0-plugins-ugly \
-          gstreamer1.0-pulseaudio \
-          libxine2 \
-          python3-feedparser \
-          python3-gi \
-          python3-gi-cairo \
-          python3-musicbrainzngs \
-          python3-mutagen \
-          python3-pip \
-          python3-polib \
-          python3-pytest \
-          python3-setuptools \
-          xvfb
+      - name: Install Dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qqy \
+            appstream \
+            dbus-x11 \
+            gettext \
+            gir1.2-appindicator3-0.1 \
+            gir1.2-gst-plugins-base-1.0 \
+            gir1.2-gstreamer-1.0 \
+            gir1.2-gtk-3.0 \
+            gir1.2-gtksource-4 \
+            gir1.2-keybinder-3.0 \
+            gir1.2-soup-3.0 \
+            gstreamer1.0-plugins-bad \
+            gstreamer1.0-plugins-base \
+            gstreamer1.0-plugins-good \
+            gstreamer1.0-plugins-ugly \
+            gstreamer1.0-pulseaudio \
+            libxine2 \
+            python3-feedparser \
+            python3-gi \
+            python3-gi-cairo \
+            python3-musicbrainzngs \
+            python3-mutagen \
+            python3-pip \
+            python3-polib \
+            python3-pytest \
+            python3-setuptools \
+            xvfb
 
-        python3 -m pip install --user --upgrade \
-          PyVirtualDisplay \
-          pytest-faulthandler \
-          "ruff==0.1.6" \
-          flaky
+          python3 -m pip install --user --upgrade \
+            PyVirtualDisplay \
+            pytest-faulthandler \
+            "ruff==0.7.3" \
+            flaky
 
-    - name: Run tests
-      run: |
-        PYTEST_ADDOPTS=-rxXs python3 setup.py test
+      - name: Run tests
+        run: |
+          PYTEST_ADDOPTS=-rxXs python3 setup.py test
 
   ubuntu-poetry:
-    runs-on: ubuntu-22.04
-    name: ubuntu-poetry
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Install Dependencies
-      run: |
-        sudo apt update -qq
-        sudo apt install -qqy \
-          libdbus-glib-1-dev \
-          gettext \
-          gir1.2-gst-plugins-base-1.0 \
-          gir1.2-gtk-3.0 \
-          gir1.2-soup-3.0 \
-          gstreamer1.0-plugins-good \
-          libcairo2-dev \
-          libgirepository1.0-dev \
-          pkg-config \
-          pipx \
-          xvfb
-        pipx install "poetry==1.4.2"
-        pipx ensurepath
-
-    - name: Check Poetry project
-      run: |
-        poetry check
-        poetry lock --check
-
-    - name: Install project virtualenv
-      run: poetry install -E plugins
-
-    - name: Run tests
-      run: |
-        PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
-        poetry run coverage xml -i
-
-    - name: Upload Coverage
-      uses: codecov/codecov-action@v3
-      with:
-        fail_ci_if_error: false
-        verbose: true # optional (default = false)
-
-  shellcheck:
-    name: Shellcheck
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    name: ubuntu-24.04-poetry
     steps:
       - uses: actions/checkout@v4
-      - name: Run ShellCheck
-        uses: ludeeus/action-shellcheck@master
+
+      - name: Install Dependencies
+        run: |
+          sudo apt update -qq
+          sudo apt install -qqy \
+            libdbus-glib-1-dev \
+            gettext \
+            gir1.2-gst-plugins-base-1.0 \
+            gir1.2-gtk-3.0 \
+            gir1.2-soup-3.0 \
+            gstreamer1.0-plugins-good \
+            libcairo2-dev \
+            libgirepository1.0-dev \
+            pkg-config \
+            pipx \
+            xvfb
+          pipx install "poetry==1.8.4"
+          pipx ensurepath
+
+      - name: Check Poetry project
+        run: |
+          poetry check
+          poetry lock --check
+
+      - name: Install project virtualenv
+        run: poetry install -E plugins
+
+      - name: Run tests
+        run: |
+          PYTEST_ADDOPTS=-rxXs poetry run coverage run --branch setup.py test
+          poetry run coverage xml -i
+
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v3
         with:
-          version: v0.8.0
-          check_together: 'yes'
-          ignore_paths: ./data/**
+          fail_ci_if_error: false
+          verbose: true # optional (default = false)

@@ -23,6 +23,7 @@ def exec_module(path):
     module.__dict__.update(globals_)
     return module
 
+
 const = exec_module(os.path.join(dir_, "..", "quodlibet", "const.py"))
 
 needs_sphinx = "1.3"
@@ -47,10 +48,7 @@ extlinks = {
 
 linkcheck_anchors = True
 linkcheck_workers = 20
-linkcheck_ignore = [
-    r".*groups\.google\.com/.*",
-    r".*keyserver\.ubuntu\.com.*"
-]
+linkcheck_ignore = [r".*groups\.google\.com/.*", r".*keyserver\.ubuntu\.com.*"]
 
 html_context = {
     "extra_css_files": [

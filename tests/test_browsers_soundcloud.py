@@ -22,7 +22,6 @@ NONE = set()
 
 
 class TestExtract(TestCase):
-
     @classmethod
     def setUpClass(cls):
         const.DEBUG = True
@@ -35,8 +34,9 @@ class TestExtract(TestCase):
         self.verify("artist=jay z", {"jay z"})
 
     def test_extract_unsupported(self):
-        self.assertEqual(SoundcloudQuery("musicbrainz_discid=12345").type,
-                             QueryType.INVALID)
+        self.assertEqual(
+            SoundcloudQuery("musicbrainz_discid=12345").type, QueryType.INVALID
+        )
 
     def test_extract_composite_text(self):
         self.verify("&(foo, bar)", {"foo", "bar"})
@@ -48,8 +48,7 @@ class TestExtract(TestCase):
     def test_extract_date(self):
         now = int(time.time())
         terms = SoundcloudQuery("#(date>today)", clock=lambda: now).terms
-        self.assertEqual(terms["created_at[from]"].pop(),
-                             convert_time(now - 86400))
+        self.assertEqual(terms["created_at[from]"].pop(), convert_time(now - 86400))
 
     def test_numeric_relative(self):
         self.verify("#(length>180)", {"180000"}, term="duration[from]")
@@ -64,11 +63,10 @@ class TestExtract(TestCase):
         self.verify("genre=|(jazz, funk)", {"jazz", "funk"})
 
     def test_extract_complex(self):
-        self.verify("&(artist='foo', genre=|(rock, metal))",
-                    {"foo", "rock", "metal"})
+        self.verify("&(artist='foo', genre=|(rock, metal))", {"foo", "rock", "metal"})
 
     def verify(self, text, expected, term="q"):
-        print_d("Trying '%s'..." % text)
+        print_d(f"Trying '{text}'...")
         terms = SoundcloudQuery(text).terms
         msg = f"terms[{term}] wasn't {expected!r}. Full terms: {terms!r}"
         assert terms[term] == expected, msg
@@ -80,8 +78,11 @@ class TestMenu(TBrowserBase):
     def test_songsmenu_has_information_but_no_edit(self):
         menu = self.b.menu([], self.library, [])
         assert menu
-        items = [item.get_label() for item in menu.get_children()
-                 if type(item) is not Gtk.SeparatorMenuItem]
+        items = [
+            item.get_label()
+            for item in menu.get_children()
+            if type(item) is not Gtk.SeparatorMenuItem
+        ]
         # We're always in en_US
         assert "_Rating" in items
         assert "_Information" in items, "Should have included Information"
@@ -96,5 +97,5 @@ class TestHttpsDefault(TestCase):
         config.quit()
 
     def test_setup_default(self):
-        self.assertTrue(SoundcloudApiClient().root.startswith("https://"),
-                        msg="API client should use HTTPS")
+        msg = "API client should use HTTPS"
+        assert SoundcloudApiClient().root.startswith("https://"), msg

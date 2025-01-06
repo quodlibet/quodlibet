@@ -25,8 +25,14 @@ from senf import fsn2uri, fsnative, fsn2text, bytes2fsn, path2fsn
 from quodlibet import _, print_d
 from quodlibet import util
 from quodlibet import config
-from quodlibet.util.path import mkdir, mtime, normalize_path, \
-                                ismount, get_home_dir, RootPathFile
+from quodlibet.util.path import (
+    mkdir,
+    mtime,
+    normalize_path,
+    ismount,
+    get_home_dir,
+    RootPathFile,
+)
 from quodlibet.util.string import encode, decode, isascii
 from quodlibet.util.environment import is_windows
 
@@ -45,12 +51,29 @@ translate_errors  # noqa
 AlbumKey = tuple[str, str, str]
 """An album key is (currently) a tuple"""
 
-MIGRATE = {"~#playcount", "~#laststarted", "~#lastplayed", "~#added",
-           "~#skipcount", "~#rating", "~bookmark"}
+MIGRATE = {
+    "~#playcount",
+    "~#laststarted",
+    "~#lastplayed",
+    "~#added",
+    "~#skipcount",
+    "~#rating",
+    "~bookmark",
+}
 """These get migrated if a song gets reloaded"""
 
-PEOPLE = ["artist", "albumartist", "author", "composer", "~performers",
-          "originalartist", "producer", "lyricist", "arranger", "conductor"]
+PEOPLE = [
+    "artist",
+    "albumartist",
+    "author",
+    "composer",
+    "~performers",
+    "originalartist",
+    "producer",
+    "lyricist",
+    "arranger",
+    "conductor",
+]
 """Sources of the ~people tag, most important first"""
 
 TIME_TAGS = {"~#lastplayed", "~#laststarted", "~#added", "~#mtime"}
@@ -94,7 +117,7 @@ def decode_value(tag, value):
         return fsn2text(value)
     elif tag[:2] == "~#":
         if isinstance(value, float):
-            return "%.2f" % value
+            return f"{value:.2f}"
         else:
             return str(value)
     return str(value)
@@ -105,6 +128,7 @@ K = TypeVar("K")
 
 class HasKey(Generic[K]):
     """Many things can be keyed"""
+
     key: K
 
 
@@ -163,17 +187,22 @@ class AudioFile(dict, ImageContainer, HasKey):
             self[key] = value
 
     def __song_key(self):
-        return (self("~#disc", 0), self("~#track", 0),
+        return (
+            self("~#disc", 0),
+            self("~#track", 0),
             human(self("artistsort")),
             self.get("musicbrainz_artistid", ""),
             human(self.get("title", "")),
-            self.get("~filename"))
+            self.get("~filename"),
+        )
 
     @util.cached_property
     def album_key(self) -> AlbumKey:
-        id_val: str = (self.get("album_grouping_key")
-                       or self.get("labelid")
-                       or self.get("musicbrainz_albumid", ""))  # type: ignore
+        id_val: str = (
+            self.get("album_grouping_key")
+            or self.get("labelid")
+            or self.get("musicbrainz_albumid", "")
+        )  # type: ignore
         return id_val, human(self("albumsort", "")), human(self("albumartistsort", ""))
 
     @util.cached_property
@@ -184,6 +213,7 @@ class AudioFile(dict, ImageContainer, HasKey):
     def sort_by_func(tag):
         """Returns a fast sort function for a specific tag (or pattern).
         Some keys are already in the sort cache, so we can use them."""
+
         def artist_sort(song):
             return song.sort_key[1][2]
 
@@ -277,9 +307,11 @@ class AudioFile(dict, ImageContainer, HasKey):
         fn = self["~filename"]
         saved = {}
         persisted = config.getboolean("editing", "save_to_songs")
-        persisted_keys = ({"~#rating", "~#playcount"}
-                          if self.supports_rating_and_play_count_in_file and persisted
-                          else set())
+        persisted_keys = (
+            {"~#rating", "~#playcount"}
+            if self.supports_rating_and_play_count_in_file and persisted
+            else set()
+        )
         for key in self:
             # Only migrate keys that aren't (probably) persisted to file (#3569)
             if key in MIGRATE - persisted_keys:
@@ -382,28 +414,30 @@ class AudioFile(dict, ImageContainer, HasKey):
                         unique.remove(val)
                 return "\n".join(unique) or default
             elif key == "people:roles":
-                return (self._role_call("performer", PEOPLE)
-                        or default)
+                return self._role_call("performer", PEOPLE) or default
             elif key == "peoplesort":
-                return ("\n".join(self.list_unique(PEOPLE_SORT)) or
-                        self("~people", default, connector))
+                return "\n".join(self.list_unique(PEOPLE_SORT)) or self(
+                    "~people", default, connector
+                )
             elif key == "peoplesort:roles":
                 # Ignores non-sort tags if there are any sort tags (e.g. just
                 # returns "B" for {artist=A, performersort=B}).
                 # TODO: figure out the "correct" behavior for mixed sort tags
-                return (self._role_call("performersort", PEOPLE_SORT)
-                        or self("~peoplesort", default, connector))
+                return self._role_call("performersort", PEOPLE_SORT) or self(
+                    "~peoplesort", default, connector
+                )
             elif key in ("performers", "performer"):
                 return self._prefixvalue("performer") or default
             elif key in ("performerssort", "performersort"):
-                return (self._prefixvalue("performersort") or
-                        self(real_key[-4:], default, connector))
+                return self._prefixvalue("performersort") or self(
+                    real_key[-4:], default, connector
+                )
             elif key in ("performers:roles", "performer:roles"):
-                return (self._role_call("performer") or default)
+                return self._role_call("performer") or default
             elif key in ("performerssort:roles", "performersort:roles"):
-                return (self._role_call("performersort")
-                        or self(real_key.replace("sort", ""), default,
-                                connector))
+                return self._role_call("performersort") or self(
+                    real_key.replace("sort", ""), default, connector
+                )
             elif key == "basename":
                 return os.path.basename(self["~filename"]) or self["~filename"]
             elif key == "dirname":
@@ -440,17 +474,17 @@ class AudioFile(dict, ImageContainer, HasKey):
                     return default
                 return util.date_key(date)
             elif key == "year":
-                return self.get("date", default)[:4]
+                return util.parse_year(self.get("date", default))
             elif key == "#year":
                 try:
-                    return int(self.get("date", default)[:4])
+                    return int(util.parse_year(self.get("date", default)))
                 except (ValueError, TypeError, KeyError):
                     return default
             elif key == "originalyear":
-                return self.get("originaldate", default)[:4]
+                return util.parse_year(self.get("originaldate", default))
             elif key == "#originalyear":
                 try:
-                    return int(self.get("originaldate", default)[:4])
+                    return int(util.parse_year(self.get("originaldate", default)))
                 except (ValueError, TypeError, KeyError):
                     return default
             elif key == "#tracks":
@@ -495,6 +529,7 @@ class AudioFile(dict, ImageContainer, HasKey):
             elif key == "playlists":
                 # TODO: avoid static dependency here... somehow
                 from quodlibet import app
+
                 lib = app.library
                 if not lib:
                     return ""
@@ -536,10 +571,12 @@ class AudioFile(dict, ImageContainer, HasKey):
             title = dict.get(self, "title")
             if title is None:
                 # build a title with missing_title_template option
-                unknown_track_template = _(config.gettext(
-                    "browsers", "missing_title_template"))
+                unknown_track_template = _(
+                    config.gettext("browsers", "missing_title_template")
+                )
 
                 from quodlibet.pattern import Pattern
+
                 try:
                     pattern = Pattern(unknown_track_template)
                 except ValueError:
@@ -641,25 +678,32 @@ class AudioFile(dict, ImageContainer, HasKey):
         lyric_filenames = config.getstringlist("memory", "lyric_filenames", [])
         # ensure some default pathfile names
         lyric_filenames.append(
-            sanitise(os.sep, [(self.comma("lyricist") or
-                              self.comma("artist")),
-                              self.comma("title")]) + ".lyric")
+            sanitise(
+                os.sep,
+                [(self.comma("lyricist") or self.comma("artist")), self.comma("title")],
+            )
+            + ".lyric"
+        )
         lyric_filenames.append(
-            sanitise(" - ", [(self.comma("lyricist") or
-                             self.comma("artist")),
-                             self.comma("title")]) + ".lyric")
+            sanitise(
+                " - ",
+                [(self.comma("lyricist") or self.comma("artist")), self.comma("title")],
+            )
+            + ".lyric"
+        )
 
         # generate all potential paths (unresolved/unexpanded)
         pathfiles = OrderedDict()
         for r in lyric_paths:
             for f in lyric_filenames:
-                pathfile = os.path.join(r, os.path.dirname(f),
-                                        fsnative(os.path.basename(f)))
+                pathfile = os.path.join(
+                    r, os.path.dirname(f), fsnative(os.path.basename(f))
+                )
                 rpf = RootPathFile(r, pathfile)
                 if pathfile not in pathfiles:
                     pathfiles[pathfile] = rpf
 
-        #print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
+        # print_d("searching for lyrics in:\n%s" % '\n'.join(pathfiles.keys()))
 
         # expand each raw pathfile in turn and test for existence
         match_ = None
@@ -677,20 +721,21 @@ class AudioFile(dict, ImageContainer, HasKey):
         if not match_:
             # search even harder!
             lyric_extensions = ["lyric", "lyrics", "", "txt"]
-            #print_d("extending search to extensions: %s" % lyric_extensions)
+            # print_d("extending search to extensions: %s" % lyric_extensions)
 
             def generate_mod_ext_paths(pathfile):
                 # separate pathfile's extension (if any)
                 ext = os.path.splitext(pathfile)[1][1:]
-                path = pathfile[:-1 * len(ext)].strip(".") if ext else pathfile
+                path = pathfile[: -1 * len(ext)].strip(".") if ext else pathfile
                 # skip the proposed lyric extension if it is the same as
                 # the original for a given search pathfile stub - it has
                 # already been tested without success!
                 extra_extensions = [x for x in lyric_extensions if x != ext]
 
                 # join valid new extensions to pathfile stub and return
-                return [".".join([path, ext]) if ext else path
-                           for ext in extra_extensions]
+                return [
+                    ".".join([path, ext]) if ext else path for ext in extra_extensions
+                ]
 
             # look for a match by modifying the extension for each of the
             # (now fully resolved) 'pathfiles_expanded' search items
@@ -700,7 +745,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 for path_ext in paths_mod_ext:
                     if os.path.exists(path_ext):
                         # persistence has paid off!
-                        #print_d("extended search match!")
+                        # print_d("extended search match!")
                         match_ = path_ext
                         break
                 if match_:
@@ -750,7 +795,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         else:
             return re.sub("\n+", ", ", v.strip())
 
-    def list(self, key):
+    def list(self, key) -> list[Any]:
         """Get all values of a tag, as a list. Synthetic tags are supported,
         but will be slower. Numeric tags will give their one value.
 
@@ -791,8 +836,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         display = display.split("\n") if display else []
         sort = []
         if key in TAG_TO_SORT:
-            sort = decode_value(TAG_TO_SORT[key],
-                                self(TAG_TO_SORT[key]))
+            sort = decode_value(TAG_TO_SORT[key], self(TAG_TO_SORT[key]))
             # it would be better to use something that doesn't fall back
             # to the key itself, but what?
             sort = sort.split("\n") if sort else []
@@ -805,9 +849,9 @@ class AudioFile(dict, ImageContainer, HasKey):
 
     def list_separate(self, key):
         """For tied tags return the list union of the display,sort values
-           otherwise just do list_sort
+        otherwise just do list_sort
         """
-        if key[:1] == "~" and "~" in key[1:]: # tied tag
+        if key[:1] == "~" and "~" in key[1:]:  # tied tag
             vals = [self.list_sort(tag) for tag in util.tagsplit(key)]
             r = [j for i in vals for j in i]
             return r
@@ -857,8 +901,9 @@ class AudioFile(dict, ImageContainer, HasKey):
     def valid(self):
         """Return true if the file cache is up-to-date (checked via
         mtime), or we can't tell."""
-        return (bool(self.get("~#mtime", 0)) and
-                self["~#mtime"] == mtime(self["~filename"]))
+        return bool(self.get("~#mtime", 0)) and self["~#mtime"] == mtime(
+            self["~filename"]
+        )
 
     def mounted(self):
         """Return true if the disk the file is on is mounted, or
@@ -937,8 +982,7 @@ class AudioFile(dict, ImageContainer, HasKey):
         assert isinstance(self["~filename"], fsnative)
 
         if self.is_file:
-            self["~filename"] = normalize_path(
-                self["~filename"], canonicalise=True)
+            self["~filename"] = normalize_path(self["~filename"], canonicalise=True)
             # Find mount point (terminating at "/" if necessary)
             head = self["~filename"]
             while "~mountpoint" not in self:
@@ -965,8 +1009,9 @@ class AudioFile(dict, ImageContainer, HasKey):
             if "~#bitrate" not in self:
                 try:
                     # kbps = bytes * 8 / seconds / 1000
-                    self["~#bitrate"] = int(stat.st_size /
-                                            (self["~#length"] * (1000 / 8)))
+                    self["~#bitrate"] = int(
+                        stat.st_size / (self["~#length"] * (1000 / 8))
+                    )
                 except (KeyError, ZeroDivisionError):
                     pass
         except OSError:
@@ -991,20 +1036,20 @@ class AudioFile(dict, ImageContainer, HasKey):
                 l = enc_key + encode("=%d" % self[k])
                 s.append(l)
             elif isinstance(self[k], float):
-                l = enc_key + encode("=%f" % self[k])
+                l = enc_key + encode(f"={self[k]:f}")
                 s.append(l)
             else:
                 for v2 in self.list(k):
                     if not isinstance(v2, bytes):
                         v2 = encode(v2)
                     s.append(enc_key + b"=" + v2)
-        for k in (NUMERIC_ZERO_DEFAULT - set(self.keys())):
+        for k in NUMERIC_ZERO_DEFAULT - set(self.keys()):
             enc_key = encode_key(k)
             l = enc_key + encode("=%d" % self.get(k, 0))
             s.append(l)
         if "~#rating" not in self:
-            s.append(encode("~#rating=%f" % self("~#rating")))
-        s.append(encode("~format=%s" % self.format))
+            s.append(encode("~#rating={:f}".format(self("~#rating"))))
+        s.append(encode(f"~format={self.format}"))
         s.append(b"")
         return b"\n".join(s)
 
@@ -1089,14 +1134,14 @@ class AudioFile(dict, ImageContainer, HasKey):
             if profile == "none":
                 return 1.0
             try:
-                db = float(self["replaygain_%s_gain" % profile].split()[0])
-                peak = float(self.get("replaygain_%s_peak" % profile, 1))
+                db = float(self[f"replaygain_{profile}_gain"].split()[0])
+                peak = float(self.get(f"replaygain_{profile}_peak", 1))
             except (KeyError, ValueError, IndexError):
                 continue
             else:
                 db += pre_amp_gain
                 try:
-                    scale = 10. ** (db / 20)
+                    scale = 10.0 ** (db / 20)
                 except OverflowError:
                     scale = 1.0 / peak
                 else:
@@ -1105,7 +1150,7 @@ class AudioFile(dict, ImageContainer, HasKey):
                 return min(15, scale)
         else:
             try:
-                scale = 10. ** ((fallback_gain + pre_amp_gain) / 20)
+                scale = 10.0 ** ((fallback_gain + pre_amp_gain) / 20)
             except OverflowError:
                 scale = 1.0
             else:
@@ -1164,13 +1209,18 @@ class AudioFile(dict, ImageContainer, HasKey):
         if result:
             self["~bookmark"] = result
         elif "~bookmark" in self:
-            del(self["~bookmark"])
+            del self["~bookmark"]
 
 
 # Looks like the real thing.
-DUMMY_SONG = AudioFile({
-    "~#length": 234, "~filename": os.devnull,
-    "artist": "The Artist", "album": "An Example Album",
-    "title": "First Track", "tracknumber": 1,
-    "date": "2010-12-31",
-})
+DUMMY_SONG = AudioFile(
+    {
+        "~#length": 234,
+        "~filename": os.devnull,
+        "artist": "The Artist",
+        "album": "An Example Album",
+        "title": "First Track",
+        "tracknumber": 1,
+        "date": "2010-12-31",
+    }
+)

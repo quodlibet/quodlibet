@@ -12,7 +12,6 @@ from .helper import realized
 
 
 class TWindow(TestCase):
-
     def test_on_first_map(self):
         w = Window()
 
@@ -32,31 +31,30 @@ class TWindow(TestCase):
         Window().destroy()
 
     def test_instance_tracking(self):
-
         class SomeWindow(Window, InstanceTracker):
             def __init__(self):
                 super().__init__()
                 self._register_instance()
 
-        self.assertFalse(SomeWindow.windows)
+        assert not SomeWindow.windows
         other = Window()
         a = SomeWindow()
-        self.assertTrue(a in SomeWindow.windows)
-        self.assertTrue(a in SomeWindow.instances())
+        assert a in SomeWindow.windows
+        assert a in SomeWindow.instances()
         a.destroy()
-        self.assertFalse(SomeWindow.instances())
-        self.assertTrue(SomeWindow.windows)
+        assert not SomeWindow.instances()
+        assert SomeWindow.windows
         other.destroy()
-        self.assertFalse(SomeWindow.windows)
+        assert not SomeWindow.windows
 
     def test_show_maybe(self):
         Window.prevent_inital_show(True)
         w = Window()
         w.show_maybe()
-        self.assertFalse(w.get_visible())
+        assert not w.get_visible()
         Window.prevent_inital_show(False)
         w.show_maybe()
-        self.assertTrue(w.get_visible())
+        assert w.get_visible()
         w.destroy()
 
     def test_use_header_bar(self):
@@ -81,7 +79,6 @@ class TWindow(TestCase):
 
 
 class TDialog(TestCase):
-
     def test_add_icon_button(self):
         d = Dialog()
         w = d.add_icon_button("foo", "bar", 100)

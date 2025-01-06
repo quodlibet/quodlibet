@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-07-07 16:09+0000\n"
-"Last-Translator: Kristian Laakkonen <kristian.laakkonen@gmail.com>\n"
+"PO-Revision-Date: 2024-11-30 10:37+0000\n"
+"Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
 "Language: fi\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.7-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -70,7 +70,7 @@ msgstr "_Järjestä…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Asetukset"
@@ -178,7 +178,7 @@ msgstr "Kirjaston selain"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -187,7 +187,7 @@ msgstr[1] "%d kappaletta"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "Virheellinen hakukaava"
 
@@ -635,7 +635,7 @@ msgid "Equal pane width"
 msgstr "Samanlevyiset paneelit"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Soittolistat"
 
@@ -643,27 +643,27 @@ msgstr "Soittolistat"
 msgid "_Playlists"
 msgstr "_Soittolistat"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "_Poista soittolistalta"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Uusi"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
 msgstr "_Tuo…"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "Soittolistan tuonti ei onnistu"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet voi tuoda vain M3U/M3U8- ja PLS-muotoisia soittolistoja."
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -671,19 +671,19 @@ msgstr "Quod Libet voi tuoda vain M3U/M3U8- ja PLS-muotoisia soittolistoja."
 msgid "_Delete"
 msgstr "_Poista"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "_Nimeä uudelleen"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "Soittolistan uudelleennimeäminen ei onnistu"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Tuo soittolista"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Tuo"
 
@@ -742,7 +742,7 @@ msgid "_Add Tracks"
 msgstr "_Lisää kappaleita"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Uusi soittolista"
 
@@ -1568,7 +1568,7 @@ msgid "_Update strategy:"
 msgstr "_Päivitystapa:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1669,15 +1669,15 @@ msgid ""
 msgstr ""
 "Muuttaa Discordin tilaviestiä kullakin hetkellä soivan kappaleen mukaan."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "Keskeytetty"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "Tilarivi 1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "Tilarivi 2"
 
@@ -2022,19 +2022,19 @@ msgid "Tested Clients"
 msgstr "Testatut asiakasohjelmat"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "MPRIS D-Bus -tuki"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr "Linux-työpöytäintegrointi (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Hallitse Quod Libetiä käyttäen <a href=\"https://mpris2.readthedocs.io/en/"
-"latest/\">MPRIS 2</a> -D-Bus-rajapintaa. Mahdollistaa erilaisia "
-"integraatioita Linux-työpöytäympäristön kanssa, mm. multimedianäppäinten "
-"käytön."
+"⏯️ Mahdollistaa Quod Libetin hallinnan <a href=\"https://mpris2.readthedocs."
+"io/en/latest/\">MPRIS 2</a> D-Bus -liittymän avulla.\n"
+"Tämä mahdollistaa erilaiset Linux-työpöytäintegraatiot (esim. "
+"multimedianäppäimet)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -3247,38 +3247,42 @@ msgstr "Visualisointiohjelma:"
 msgid "Reload"
 msgstr "Lataa uudelleen"
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Aaltomuoto-aikasiirtymäpalkki"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 "∿ Aikasiirtymäpalkki, joka on toistettavan kappaleen aaltomuodon muotoinen."
 
-#: quodlibet/ext/events/waveformseekbar.py:671
-msgid "Override foreground color:"
-msgstr "Edustaväri:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
+msgstr "Etualan väri"
 
-#: quodlibet/ext/events/waveformseekbar.py:675
-msgid "Override hover color:"
-msgstr "Väri osoitettaessa:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+msgid "Hover color"
+msgstr "Väri osoitettaessa"
 
-#: quodlibet/ext/events/waveformseekbar.py:679
-msgid "Override remaining color:"
-msgstr "Jäljellä olevan osan väri:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr "Jäljellä oleva väri"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
-msgid "Show current position"
-msgstr "Näytä nykyinen sijainti"
+#: quodlibet/ext/events/waveformseekbar.py:730
+msgid "Show current position whilst hovering"
+msgstr "Näytä nykyinen sijainti pitämällä hiiri"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Näytä aikatiedot"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "Aikasiirtymä vieritettäessä (millisekunteina):"
+
+#: quodlibet/ext/events/waveformseekbar.py:759
+msgid "Waveform height (pixels):"
+msgstr "Aaltomuodon korkeus (pikseliä):"
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
@@ -3913,16 +3917,16 @@ msgstr "Squeezebox-palvelin"
 msgid "Debug"
 msgstr "Virheenpaikannus"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Squeezebox-palvelin osoitteessa {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "tunnistamaton Squeezebox-palvelin"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "tunnistamaton Squeezebox-palvelin: %r"
@@ -5162,7 +5166,7 @@ msgstr "Tunnistetta ”%s” ei löytynyt."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Kirjasto"
@@ -5192,7 +5196,7 @@ msgstr "Siirretään kirjaston tiedostoja"
 msgid "Removing library files"
 msgstr "Poistetaan kirjaston tiedostoja"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "Lisätään seuranta polulle %s"
@@ -6005,7 +6009,7 @@ msgstr "Valitut tiedostot eivät tue useaa arvoa tunnisteelle %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
@@ -7622,11 +7626,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Tyhjä soittolista"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "Soittolistoilla täytyy olla nimi"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Soittolista nimeltä %(name)s on jo olemassa polussa %(path)s"
@@ -7694,51 +7698,51 @@ msgstr "Valitsin %r vaatii argumentin."
 msgid "%r is not a unique prefix."
 msgstr "%r ei ole yksikäsitteinen etuliite."
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kb/s"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s sekunti"
 msgstr[1] "%s sekuntia"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "Ei aikatietoa"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d sekunti"
 msgstr[1] "%d sekuntia"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuutti"
 msgstr[1] "%d minuuttia"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d tunti"
 msgstr[1] "%d tuntia"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d päivä"
 msgstr[1] "%d päivää"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7749,7 +7753,7 @@ msgstr[1] "%d vuotta"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr "no"
@@ -8195,6 +8199,9 @@ msgstr ""
 "Quod Libet on musiikinhallintaohjelma. Se tarjoaa useita eri tapoja selata "
 "musiikkikirjastoasi ja tukee myös Internet-radioita ja äänisyötteitä. Siinä "
 "on hyvin joustavat metatietotunnisteiden muokkaus- ja hakuominaisuudet."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "MPRIS D-Bus -tuki"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Muokkaa lisäasetuksia."

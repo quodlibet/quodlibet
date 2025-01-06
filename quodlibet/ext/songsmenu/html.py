@@ -45,16 +45,14 @@ def to_html(songs):
 
     cols_s = ""
     for col in cols:
-        cols_s += "<th>%s</th>" % tag(col)
+        cols_s += f"<th>{tag(col)}</th>"
 
     songs_s = ""
     for song in songs:
         s = "<tr>"
         for col in cols:
-            col = {"~#rating": "~rating", "~#length": "~length"}.get(
-                col, col)
-            s += "\n<td>%s</td>" % (
-                escape(str(song.comma(col))) or "&nbsp;")
+            col = {"~#rating": "~rating", "~#length": "~length"}.get(col, col)
+            s += "\n<td>%s</td>" % (escape(str(song.comma(col))) or "&nbsp;")
         s += "</tr>"
         songs_s += s
 
@@ -72,8 +70,7 @@ class ExportToHTML(SongsMenuPlugin):
         if not songs:
             return
 
-        target = choose_target_file(
-            self.plugin_window, _("Export to HTML"), _("_Save"))
+        target = choose_target_file(self.plugin_window, _("Export to HTML"), _("_Save"))
         if target is not None:
             with open(target, "wb") as f:
                 f.write(to_html(songs).encode("utf-8"))

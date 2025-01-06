@@ -27,7 +27,7 @@ class TVgmFile(TestCase):
             "album": "Sonic the Hedgehog\nソニック・ザ・ヘッジホッグ",
             "console": "Sega Mega Drive\nセガメガドライブ",
             "artist": "Masato Nakamura\n中村正人",
-            "date": "1991"
+            "date": "1991",
         }
 
         for k, v in expected_tags.items():
@@ -38,8 +38,8 @@ class TVgmFile(TestCase):
 
     def test_can_change(self):
         self.assertEqual(self.song.can_change(), ["title"])
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("album"))
+        assert self.song.can_change("title")
+        assert not self.song.can_change("album")
 
     def test_invalid(self):
         path = get_data_path("empty.xm")

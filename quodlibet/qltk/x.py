@@ -10,6 +10,7 @@
 Things that are more or less direct wrappers around GTK widgets to
 ease constructors.
 """
+
 from urllib.request import urlopen
 
 from gi.repository import Gtk, GObject, GLib, Gio, GdkPixbuf, Gdk
@@ -21,11 +22,19 @@ from quodlibet.util import print_w
 from quodlibet.util.thread import call_async, Cancellable
 from quodlibet.qltk import add_css, is_accel, gtk_version
 
-from .paned import Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, \
-    ConfigRHPaned, ConfigRVPaned
+from .paned import (
+    Paned,
+    RPaned,
+    RHPaned,
+    RVPaned,
+    ConfigRPaned,
+    ConfigRHPaned,
+    ConfigRVPaned,
+)
 
 
 Paned, RPaned, RHPaned, RVPaned, ConfigRPaned, ConfigRHPaned, ConfigRVPaned  # noqa
+
 
 class ScrolledWindow(Gtk.ScrolledWindow):
     """Draws a border around all edges that don't touch the parent window"""
@@ -146,7 +155,7 @@ class Notebook(Gtk.Notebook):
     label is given, the page's 'title' attribute (either a string or
     a widget) is used."""
 
-    _KEY_MODS = (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD1_MASK | MT.MOD2_MASK)
+    _KEY_MODS = MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD1_MASK | MT.MOD2_MASK
     """Keyboard modifiers of interest"""
 
     def __init__(self, *args, **kwargs):
@@ -246,10 +255,17 @@ class Align(Gtk.Alignment):
     margin properties.
     """
 
-    def __init__(self, child=None,
-                 top=0, right=0, bottom=0, left=0, border=0,
-                 halign=Gtk.Align.FILL, valign=Gtk.Align.FILL):
-
+    def __init__(
+        self,
+        child=None,
+        top=0,
+        right=0,
+        bottom=0,
+        left=0,
+        border=0,
+        halign=Gtk.Align.FILL,
+        valign=Gtk.Align.FILL,
+    ):
         def align_to_xy(a):
             """(xyalign, xyscale)"""
 
@@ -271,10 +287,16 @@ class Align(Gtk.Alignment):
         left_padding = border + left
         right_padding = border + right
 
-        super().__init__(xalign=xalign, xscale=xscale,
-            yalign=yalign, yscale=yscale, bottom_padding=bottom_padding,
-            top_padding=top_padding, left_padding=left_padding,
-            right_padding=right_padding)
+        super().__init__(
+            xalign=xalign,
+            xscale=xscale,
+            yalign=yalign,
+            yscale=yscale,
+            bottom_padding=bottom_padding,
+            top_padding=top_padding,
+            left_padding=left_padding,
+            right_padding=right_padding,
+        )
 
         if child is not None:
             self.add(child)
@@ -349,11 +371,14 @@ class _SmallImageButton:
         super().__init__(**kwargs)
 
         self.set_size_request(26, 26)
-        add_css(self, """
+        add_css(
+            self,
+            """
             * {
                 padding: 0px;
             }
-        """)
+        """,
+        )
 
 
 class SmallImageButton(_SmallImageButton, Gtk.Button):
@@ -402,7 +427,6 @@ def SymbolicIconImage(name, size, fallbacks=None):
 
 
 class CellRendererPixbuf(Gtk.CellRendererPixbuf):
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -457,11 +481,11 @@ class WebImage(Gtk.Image):
         try:
             loader = GdkPixbuf.PixbufLoader()
         except GLib.GError as e:
-            print_w("Couldn't create GdkPixbuf (%s)" % e)
+            print_w(f"Couldn't create GdkPixbuf ({e})")
         else:
             loader.write(data)
             loader.close()
-            print_d("Got web image from %s" % url)
+            print_d(f"Got web image from {url}")
             return loader.get_pixbuf()
 
     def _finished(self, pixbuf):
@@ -498,7 +522,7 @@ class HighlightToggleButton(Gtk.ToggleButton):
         a = style_context.get_color(style_context.get_state())
         style_context.set_state(Gtk.StateFlags.CHECKED)
         b = style_context.get_color(style_context.get_state())
-        same_color = (a.to_string() == b.to_string())
+        same_color = a.to_string() == b.to_string()
         style_context.restore()
         if not same_color:
             style_context = self.get_style_context()
@@ -521,10 +545,10 @@ class HighlightToggleButton(Gtk.ToggleButton):
                 style_context.remove_provider(self._provider)
 
             provider = Gtk.CssProvider()
-            provider.load_from_data(
-                ("* {color: %s}" % self._color).encode("ascii"))
+            provider.load_from_data((f"* {{color: {self._color}}}").encode("ascii"))
             style_context.add_provider(
-                provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
+                provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            )
             self._provider = provider
 
     def do_draw(self, context):

@@ -10,7 +10,6 @@ from quodlibet.formats.wavpack import WavpackFile
 
 
 class TWavpackFile(TestCase):
-
     def setUp(self):
         self.song = WavpackFile(get_data_path("silence-44-s.wv"))
 

@@ -20,7 +20,6 @@ from .helper import get_temp_copy
 
 
 class TMP4File(TestCase):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("test.m4a"))
         self.song = MP4File(self.f)
@@ -53,8 +52,8 @@ class TMP4File(TestCase):
         song.write()
         tag = mutagen.mp4.MP4(self.f)
         self.assertEqual(
-            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"],
-            [b"bla"])
+            tag["----:com.apple.iTunes:MusicBrainz Release Track Id"], [b"bla"]
+        )
 
     def test_basic(self):
         self._assert_tag_supported("title")
@@ -117,23 +116,23 @@ class TMP4File(TestCase):
         self.song.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("foobar"))
-        self.assertTrue("albumartist" in self.song.can_change())
+        assert self.song.can_change("title")
+        assert not self.song.can_change("foobar")
+        assert "albumartist" in self.song.can_change()
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, MP4File, path)
 
     def test_get_image(self):
         image = self.song.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.assertEqual(image.mime_type, "image/png")
 
     def test_get_images(self):
         images = self.song.get_images()
-        self.assertTrue(images and len(images) == 2)
+        assert images and len(images) == 2
 
     def test_get_image_non(self):
         tag = mutagen.mp4.MP4(self.f)
@@ -141,34 +140,34 @@ class TMP4File(TestCase):
         tag.save()
         self.song.reload()
 
-        self.assertFalse(self.song.get_primary_image())
+        assert not self.song.get_primary_image()
 
     def test_clear_images(self):
-        self.assertTrue(self.song.valid())
-        self.assertTrue(self.song.has_images)
+        assert self.song.valid()
+        assert self.song.has_images
         self.song.clear_images()
-        self.assertFalse(self.song.has_images)
-        self.assertFalse(self.song.get_primary_image())
+        assert not self.song.has_images
+        assert not self.song.get_primary_image()
 
         tag = mutagen.mp4.MP4(self.f)
-        self.assertFalse("covr" in tag)
+        assert "covr" not in tag
 
     def test_set_image(self):
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
         fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
         self.song.set_image(image)
         image = self.song.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.assertEqual(image.read(), b"foo")
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
 
     def test_can_change_images(self):
-        self.assertTrue(self.song.can_change_images)
+        assert self.song.can_change_images
 
     def test_can_multiple_values(self):
         self.assertEqual(self.song.can_multiple_values(), [])
-        self.assertFalse(self.song.can_multiple_values("artist"))
+        assert not self.song.can_multiple_values("artist")
 
     def test_m4b_support(self):
         path = get_data_path("test.m4a")

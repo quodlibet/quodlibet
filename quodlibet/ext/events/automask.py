@@ -20,8 +20,9 @@ from quodlibet.plugins.events import EventPlugin
 class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"
     PLUGIN_NAME = _("Automatic Masking")
-    PLUGIN_DESC = _("Automatically masks and unmasks drives when they "
-                    "are unmounted or mounted.")
+    PLUGIN_DESC = _(
+        "Automatically masks and unmasks drives when they " "are unmounted or mounted."
+    )
     PLUGIN_ICON = Icons.DRIVE_REMOVABLE_MEDIA
 
     __sigs = None
@@ -33,7 +34,7 @@ class AutoMasking(EventPlugin):
             self.__sigs = [
                 self.__monitor.connect("mount-added", self.__mounted),
                 self.__monitor.connect("mount-removed", self.__unmounted),
-                ]
+            ]
         else:
             for signal_id in self.__sigs:
                 self.__monitor.handler_unblock(signal_id)

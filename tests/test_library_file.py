@@ -16,8 +16,14 @@ from quodlibet.library.file import FileLibrary
 from quodlibet.util.library import get_exclude_dirs
 from quodlibet.util.path import normalize_path
 from senf import text2fsn
-from tests import (mkdtemp, get_data_path, run_gtk_loop, _TEMP_DIR,
-                   init_fake_app, destroy_fake_app)
+from tests import (
+    mkdtemp,
+    get_data_path,
+    run_gtk_loop,
+    _TEMP_DIR,
+    init_fake_app,
+    destroy_fake_app,
+)
 from tests.helper import temp_filename
 from tests.test_library_libraries import TLibrary, FakeSongFile, FakeAudioFile
 
@@ -29,50 +35,49 @@ class TFileLibrary(TLibrary):
     def test_mask_invalid_mount_point(self):
         new = self.Fake(1)
         self.library.add([new])
-        self.assertFalse(self.library.masked_mount_points)
-        self.assertTrue(len(self.library))
+        assert not self.library.masked_mount_points
+        assert len(self.library)
         self.library.mask("/adsadsafaf")
-        self.assertFalse(self.library.masked_mount_points)
+        assert not self.library.masked_mount_points
         self.library.unmask("/adsadsafaf")
-        self.assertFalse(self.library.masked_mount_points)
-        self.assertTrue(len(self.library))
+        assert not self.library.masked_mount_points
+        assert len(self.library)
 
     def test_mask_basic(self):
         new = self.Fake(1)
         self.library.add([new])
-        self.assertFalse(self.library.masked_mount_points)
+        assert not self.library.masked_mount_points
         self.library.mask(new.mountpoint)
-        self.assertEqual(self.library.masked_mount_points,
-                             [new.mountpoint])
-        self.assertFalse(len(self.library))
+        self.assertEqual(self.library.masked_mount_points, [new.mountpoint])
+        assert not len(self.library)
         self.assertEqual(self.library.get_masked(new.mountpoint), [new])
-        self.assertTrue(self.library.masked(new))
+        assert self.library.masked(new)
         self.library.unmask(new.mountpoint)
-        self.assertTrue(len(self.library))
+        assert len(self.library)
         self.assertEqual(self.library.get_masked(new.mountpoint), [])
 
     def test_remove_masked(self):
         new = self.Fake(1)
         self.library.add([new])
         self.library.mask(new.mountpoint)
-        self.assertTrue(self.library.masked_mount_points)
+        assert self.library.masked_mount_points
         self.library.remove_masked(new.mountpoint)
-        self.assertFalse(self.library.masked_mount_points)
+        assert not self.library.masked_mount_points
 
     def test_content_masked(self):
         new = self.Fake(100)
         new._mounted = False
-        self.assertFalse(self.library.get_content())
+        assert not self.library.get_content()
         self.library._load_init([new])
-        self.assertTrue(self.library.masked(new))
-        self.assertTrue(self.library.get_content())
+        assert self.library.masked(new)
+        assert self.library.get_content()
 
     def test_init_masked(self):
         new = self.Fake(100)
         new._mounted = False
         self.library._load_init([new])
-        self.assertFalse(self.library.items())
-        self.assertTrue(self.library.masked(new))
+        assert not self.library.items()
+        assert self.library.masked(new)
 
     def test_load_init_nonmasked(self):
         new = self.Fake(200)
@@ -86,8 +91,8 @@ class TFileLibrary(TLibrary):
         changed = set()
         removed = set()
         self.library.reload(new, changed=changed, removed=removed)
-        self.assertTrue(new in changed)
-        self.assertFalse(removed)
+        assert new in changed
+        assert not removed
 
     def test_move_root(self):
         # TODO: mountpoint tests too
@@ -211,8 +216,9 @@ class TWatchedFileLibrary(TLibrary):
             assert path.parent in watch_dirs, "Not monitoring directory of new file"
             run_gtk_loop()
             assert self.library, f"Nothing in library despite watches on {watch_dirs}"
-            assert str(path) in self.library, (f"{path!s} should have been added to "
-                                               f"library [{self.fns}]")
+            assert str(path) in self.library, (
+                f"{path!s} should have been added to " f"library [{self.fns}]"
+            )
             assert str(path) in {af("~filename") for af in self.added}
 
     def test_watched_moving_song(self):

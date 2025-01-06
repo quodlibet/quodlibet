@@ -18,7 +18,6 @@ from .helper import get_temp_copy
 
 
 class TWMAFile(TestCase):
-
     def setUp(self):
         self.f = get_temp_copy(get_data_path("test.wma"))
         self.song = WMAFile(self.f)
@@ -73,9 +72,9 @@ class TWMAFile(TestCase):
         self.song3.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("foobar"))
-        self.assertTrue("albumartist" in self.song.can_change())
+        assert self.song.can_change("title")
+        assert not self.song.can_change("foobar")
+        assert "albumartist" in self.song.can_change()
 
     def test_format(self):
         self.assertEqual(self.song("~format"), "ASF")
@@ -83,23 +82,25 @@ class TWMAFile(TestCase):
         self.assertEqual(self.song3("~format"), "ASF")
 
     def test_codec(self):
-        self.assertEqual(self.song("~codec"),
-                         "Windows Media Audio 9 Standard")
-        self.assertEqual(self.song2("~codec"),
-                         "Windows Media Audio 9 Professional")
-        self.assertEqual(self.song3("~codec"),
-                         "Intel G.723")
+        self.assertEqual(self.song("~codec"), "Windows Media Audio 9 Standard")
+        self.assertEqual(self.song2("~codec"), "Windows Media Audio 9 Professional")
+        self.assertEqual(self.song3("~codec"), "Intel G.723")
 
     def test_encoding(self):
         self.assertEqual(
             self.song("~encoding"),
-            "Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR")
+            "Windows Media Audio 9.1\n64 kbps, 48 kHz, stereo 2-pass CBR",
+        )
         self.assertEqual(
             self.song2("~encoding"),
-            ("Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
-             "2 channel 24 bit 2-pass VBR"))
-        self.assertEqual(self.song3("~encoding"),
-                         "Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s")
+            (
+                "Windows Media Audio 9.1 Professional\n192 kbps, 44 kHz, "
+                "2 channel 24 bit 2-pass VBR"
+            ),
+        )
+        self.assertEqual(
+            self.song3("~encoding"), "Microsoft G.723.1\n8 kHz Mono, 5333 Bit/s"
+        )
 
     def test_mb_release_track_id(self):
         tag = asf.ASF(self.f)
@@ -114,7 +115,7 @@ class TWMAFile(TestCase):
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, WMAFile, path)
 
     def test_get_images(self):
@@ -124,27 +125,27 @@ class TWMAFile(TestCase):
         self.song2.reload()
 
         images = self.song2.get_images()
-        self.assertTrue(images and len(images) == 2)
+        assert images and len(images) == 2
 
     def test_get_image(self):
-        self.assertFalse(self.song.get_primary_image())
+        assert not self.song.get_primary_image()
 
         image = self.song2.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.assertEqual(image.mime_type, "image/jpeg")
-        self.assertTrue(image.read())
+        assert image.read()
 
     def test_get_image_invalid_data(self):
         tag = asf.ASF(self.f)
         tag["WM/Picture"] = [asf.ASFValue(b"nope", asf.BYTEARRAY)]
         tag.save()
 
-        self.assertFalse(self.song.has_images)
+        assert not self.song.has_images
         self.song.reload()
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
 
         image = self.song.get_primary_image()
-        self.assertFalse(image)
+        assert not image
 
     def test_unpack_image_min(self):
         data = b"\x03" + b"\x00" * 4 + b"\x00" * 4
@@ -161,8 +162,7 @@ class TWMAFile(TestCase):
         self.assertRaises(ValueError, unpack_image, b"\x00" * 100)
 
     def test_pack_image(self):
-        d = pack_image(
-            "image/jpeg", "Description", b"foo", APICType.COVER_FRONT)
+        d = pack_image("image/jpeg", "Description", b"foo", APICType.COVER_FRONT)
         mime, desc, data, type_ = unpack_image(d)
         self.assertEqual(mime, "image/jpeg")
         self.assertEqual(desc, "Description")
@@ -172,12 +172,12 @@ class TWMAFile(TestCase):
     def test_clear_images(self):
         # cover case
         image = self.song2.get_primary_image()
-        self.assertTrue(image)
+        assert image
         self.song2.clear_images()
-        self.assertFalse(self.song2.has_images)
+        assert not self.song2.has_images
         self.song2.reload()
         image = self.song2.get_primary_image()
-        self.assertFalse(image)
+        assert not image
 
         # no cover case
         self.song.clear_images()
@@ -185,17 +185,17 @@ class TWMAFile(TestCase):
     def test_set_image(self):
         fileobj = BytesIO(b"foo")
         image = EmbeddedImage(fileobj, "image/jpeg", 10, 10, 8)
-        self.assertFalse(self.song.has_images)
+        assert not self.song.has_images
         self.song.set_image(image)
-        self.assertTrue(self.song.has_images)
+        assert self.song.has_images
 
         image = self.song.get_primary_image()
         self.assertEqual(image.mime_type, "image/jpeg")
         self.assertEqual(image.read(), b"foo")
 
     def test_can_change_images(self):
-        self.assertTrue(self.song.can_change_images)
+        assert self.song.can_change_images
 
     def test_can_multiple_values(self):
-        self.assertTrue("artist" in self.song.can_multiple_values())
-        self.assertTrue(self.song.can_multiple_values("genre"))
+        assert "artist" in self.song.can_multiple_values()
+        assert self.song.can_multiple_values("genre")

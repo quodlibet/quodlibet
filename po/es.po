@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: QuodLibet dev\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-03-14 22:01+0000\n"
+"PO-Revision-Date: 2024-12-12 17:00+0000\n"
 "Last-Translator: gallegonovato <fran-carro@hotmail.es>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/es/>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.5-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -71,7 +71,7 @@ msgstr "Or_denar por…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "_Preferencias"
@@ -179,7 +179,7 @@ msgstr "Navegador de fonoteca"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -188,7 +188,7 @@ msgstr[1] "%d canciones"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "La pauta no es válida"
 
@@ -611,13 +611,13 @@ msgid "Columnar"
 msgstr "En columnas"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "%s"
 msgstr ""
-"Pauta de etiquetas con marcado opcional, p. ej., <tt>composer</tt> o\n"
-"<tt>%s</tt>"
+"Patrón de etiqueta con marcado opcional, por ejemplo <tt>compositor</tt> o\n"
+"%s"
 
 #: quodlibet/browsers/paned/prefs.py:230
 msgid "Paned Browser Preferences"
@@ -636,7 +636,7 @@ msgid "Equal pane width"
 msgstr "Misma anchura de paneles"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "Listas"
 
@@ -644,27 +644,27 @@ msgstr "Listas"
 msgid "_Playlists"
 msgstr "_Listas"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "_Quitar de lista"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "_Nuevo"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
 msgstr "_Importar…"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "No se pudo importar la lista"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet solo puede importar listas en los formatos M3U/M3U8 y PLS."
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -672,19 +672,19 @@ msgstr "Quod Libet solo puede importar listas en los formatos M3U/M3U8 y PLS."
 msgid "_Delete"
 msgstr "_Eliminar"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "Cambia_r nombre"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "No se pudo cambiar el nombre de la lista"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "Importar lista"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "_Importar"
 
@@ -737,16 +737,15 @@ msgstr ""
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "¿Ampliar \"{pl_name}\" con {num} pista adicional?"
+msgstr[1] "¿Ampliar \"{pl_name}\" con {num} pistas adicionales?"
 
 #: quodlibet/browsers/playlists/util.py:60
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Pistas"
+msgstr "_Añadir pistas"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "Lista nueva"
 
@@ -1143,7 +1142,7 @@ msgstr "ubicación"
 
 #: quodlibet/cli.py:150
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Establecer plantilla para comandos --print-*"
 
 #: quodlibet/cli.py:151 quodlibet/ext/songsmenu/custom_commands.py:55
 msgid "pattern"
@@ -1340,7 +1339,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "Animación en pantalla"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -1461,6 +1460,9 @@ msgid ""
 "to the file. Skip counts aren't stored in files at all, so this avoids "
 "unnecessary writes."
 msgstr ""
+"Siempre que una canción se reproduzca pero no se salte, el complemento "
+"escribirá las etiquetas en el archivo. Los recuentos de saltos no se "
+"almacenan en los archivos, por lo que se evitan escrituras innecesarias."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:40
 msgid "After every play or skip"
@@ -1473,10 +1475,14 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
+"Cada vez que una canción sea reproducida o saltada, el plugin escribirá las "
+"etiquetas en el archivo. Puede ser útil si quieres asegurarte de que las "
+"calificaciones de las canciones que no te gustan y por lo tanto omitidas se "
+"escriben en los archivos."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
-msgstr ""
+msgstr "Una vez, cuando el álbum esté totalmente valorado"
 
 #.
 #: quodlibet/ext/events/auto_update_tags_in_files.py:47
@@ -1509,6 +1515,11 @@ msgid ""
 "when saving can be useful later on, when searching for albums you have fully "
 "listened to (%s)."
 msgstr ""
+"Cuando el plugin escribe las etiquetas de un álbum, primero pone a uno el "
+"recuento de reproducciones de las canciones que están a cero.\n"
+"A veces ya sabes que una canción no te gusta, así que ponerla a uno al "
+"guardar puede ser útil más adelante, cuando busques álbumes que hayas "
+"escuchado completamente (%s)."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:63
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:544
@@ -1525,6 +1536,9 @@ msgid ""
 "When songs were played, update the tags in their files. This will ensure "
 "play counts and ratings are up to date."
 msgstr ""
+"Cuando se reproduzcan las canciones, actualiza las etiquetas de sus "
+"archivos. Esto garantizará que los recuentos de reproducciones y las "
+"clasificaciones estén actualizados."
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:92
 #, python-format
@@ -1540,9 +1554,8 @@ msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:94
 #: quodlibet/qltk/prefs.py:587
-#, fuzzy
 msgid "Save ratings and play _counts in tags"
-msgstr "Guardar puntuaciones y co_ntadores"
+msgstr "Guardar valoraciones y reproducir _cuentas en etiquetas"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:96
 msgid "Settings updated"
@@ -1557,13 +1570,14 @@ msgstr "Error en %s"
 #: quodlibet/ext/events/auto_update_tags_in_files.py:181
 msgid "Ensure play counts are above zero when saving"
 msgstr ""
+"Asegúrate de que el recuento de reproduciones es superior a cero al guardar"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:215
 msgid "_Update strategy:"
 msgstr "Estrategia de act_ualización:"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1590,14 +1604,14 @@ msgid "Automatic Rating"
 msgstr "Puntuación automática"
 
 #: quodlibet/ext/events/autorating.py:16
-#, fuzzy
 msgid ""
 "Rates songs automatically when they are played or skipped. This uses the "
 "'accelerated' algorithm from vux (Vacillating Utilitarian eXtemporizer) by "
 "Brian Nelson."
 msgstr ""
-"Puntúa las canciones automáticamente al reproducirlas o al saltarlas. "
-"Utiliza el algoritmo «acelerado» de Vux, de Brian Nelson."
+"Valora las canciones automáticamente cuando se reproducen o se saltan. "
+"Utiliza el algoritmo \"acelerado\" de vux (Vacillating Utilitarian "
+"eXtemporizer), de Brian Nelson."
 
 #: quodlibet/ext/events/bansheeimport.py:107
 msgid "Specified Banshee database is malformed or missing"
@@ -1668,15 +1682,15 @@ msgstr ""
 "Cambia el mensaje de estado de Discord según lo que esté escuchando en este "
 "momento."
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "En pausa"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "1.ᵉʳ renglón de estado"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "2.º renglón de estado"
 
@@ -1951,9 +1965,9 @@ msgid "JEP-118"
 msgstr "JEP-118"
 
 #: quodlibet/ext/events/jep118.py:31
-#, fuzzy, python-format
+#, python-format
 msgid "Outputs a Jabber User Tunes file to %(path)s."
-msgstr "Crea un archivo User Tunes de Jabber en <tt>~/.quodlibet/jabber</tt>."
+msgstr "Imprime un archivo Jabber User Tunes en %(path)s."
 
 #: quodlibet/ext/events/language.py:21
 msgid "Change Language"
@@ -2023,15 +2037,20 @@ msgid "Tested Clients"
 msgstr "Clientes puestos a prueba"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "Compatibilidad MPRIS de D-Bus"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr "Integración de escritorio Linux (MPRIS D-BUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
+#, fuzzy
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
+"Permite controlar Quod Libet utilizando la especificación de interfaz D-Bus "
+"<a href=\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a>. Esto "
+"permite varias integraciones en el escritorio Linux (por ejemplo: teclas "
+"multimedia)."
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -2181,7 +2200,7 @@ msgstr "Mostrar notificaciones"
 
 #: quodlibet/ext/events/notify.py:146
 msgid "Only on <i>_manual</i> song changes"
-msgstr ""
+msgstr "Sólo en los cambios de canción <i>_manual</i>"
 
 #: quodlibet/ext/events/notify.py:154
 msgid "Only on <i>_automatic</i> song changes"
@@ -2221,15 +2240,16 @@ msgid "Next"
 msgstr "Siguiente"
 
 #: quodlibet/ext/events/notify_bookmarks.py:33
-#, fuzzy
 msgid "Bookmark Notifications"
-msgstr "Notificaciones de canciones"
+msgstr "Notificaciones de favoritos"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
 msgid ""
 "Uses notifications to display bookmarks / comments in real-time. Works well "
 "for the Soundcloud browser."
 msgstr ""
+"Utiliza notificaciones para mostrar marcadores / comentarios en tiempo real. "
+"Funciona bien para el navegador Soundcloud."
 
 #: quodlibet/ext/events/qlscrobbler.py:182
 msgid ""
@@ -2456,7 +2476,7 @@ msgstr ""
 #: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "¿Has copiado el archivo ini en %s (o similar)?"
 
 #: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
@@ -2479,9 +2499,8 @@ msgstr ""
 "entera de la ventana."
 
 #: quodlibet/ext/events/seekpoints.py:20
-#, fuzzy
 msgid "Seekpoint Bookmarks"
-msgstr "Puntos de mira de marcadores"
+msgstr "Marcadores Seekpoint"
 
 #: quodlibet/ext/events/seekpoints.py:24
 msgid ""
@@ -2492,6 +2511,12 @@ msgid ""
 "actual bookmark names, it only changes which bookmark names the plugin looks "
 "for when deciding whether to seek."
 msgstr ""
+"Almacena los Seekpoints A y/o B para las pistas. Salta al tiempo A y se "
+"detiene después del tiempo B cuando se reproduce la pista.\n"
+"\n"
+"ℹ Ten en cuenta que el cambio de los nombres de los puntos inferiores no "
+"actualiza los nombres de los marcadores reales, solo cambia los nombres de "
+"los marcadores que el plugin busca al decidir si buscar."
 
 #: quodlibet/ext/events/seekpoints.py:108
 msgid "Bookmark name for point A"
@@ -2502,6 +2527,8 @@ msgid ""
 "Bookmark name to check for when a track is started, and if found the player "
 "seeks to that timestamp"
 msgstr ""
+"Nombre del marcador para buscar al iniciar la reproducción de una canción. "
+"Si se encuentra esto, el reproductor saltará a esta posición"
 
 #: quodlibet/ext/events/seekpoints.py:125
 msgid "Bookmark name for point B"
@@ -2512,6 +2539,9 @@ msgid ""
 "Bookmark name to use each tick during play of a track if it exist. If the "
 "current position exceeds the timestamp, seek to the end of the track."
 msgstr ""
+"Nombre del marcador que se utilizará para comprobar si existe en algún "
+"momento durante la reproducción de una pista. Si la posición actual excede "
+"la marca de tiempo, el reproductor salta al final de la pista."
 
 #: quodlibet/ext/events/squeezebox_sync.py:28
 msgid "Squeezebox Sync"
@@ -2547,7 +2577,7 @@ msgstr "Error al buscar %s. Compruebe la configuración"
 
 #: quodlibet/ext/events/stop_on_pause.py:21
 msgid "Stop on Pause"
-msgstr ""
+msgstr "Detener en pausa"
 
 #: quodlibet/ext/events/stop_on_pause.py:23
 msgid ""
@@ -2560,10 +2590,21 @@ msgid ""
 "Seekable Sources' is off. Otherwise, playback is left stopped and must be "
 "restarted from the beginning."
 msgstr ""
+"Este complemento cambia la función de pausa para detener/reproducir/cambiar "
+"la posición de la pista.\n"
+"\n"
+"Este comportamiento es útil cuando Quod Libet no puede cambiar el "
+"dispositivo de audio al agregar uno nuevo al sistema (altavoz Bluetooth, DAC "
+"USB, etc.).\n"
+"\n"
+"Mantiene la posición del título en la fuente actual siempre que no esté "
+"seleccionada la opción \"Solo fuentes que permiten el ajuste de la posición "
+"del título\". De lo contrario, la reproducción se detendrá y tendrá que "
+"empezar de nuevo."
 
 #: quodlibet/ext/events/stop_on_pause.py:74
 msgid "Only Seekable Sources"
-msgstr ""
+msgstr "Solo fuentes que se puedan buscar"
 
 #: quodlibet/ext/events/stop_on_pause.py:85
 msgid "Plugin Options"
@@ -2703,11 +2744,12 @@ msgstr ""
 "de comenzar la sincronización."
 
 #: quodlibet/ext/events/synchronize_to_device.py:256
-#, fuzzy
 msgid ""
 "Existing files in the destination path will be deleted (except files named "
 "'cover.jpg')!"
-msgstr "Se eliminará cualquier archivo que exista en la ruta de destino."
+msgstr ""
+"¡Los archivos existentes en la ruta de destino se eliminarán (excepto los "
+"archivos con el nombre \"cover.jpg\")!"
 
 #. Start sync button
 #: quodlibet/ext/events/synchronize_to_device.py:272
@@ -2741,7 +2783,7 @@ msgstr "Empezando previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:656
 msgid "Synchronization preview in progress."
-msgstr ""
+msgstr "Previsualización de la sincronización en curso."
 
 #: quodlibet/ext/events/synchronize_to_device.py:672
 msgid "Finished synchronization preview"
@@ -2765,7 +2807,7 @@ msgstr "Se detuvo la previsualización de la sincronización"
 
 #: quodlibet/ext/events/synchronize_to_device.py:720
 msgid "A different plugin was selected - stop preview"
-msgstr ""
+msgstr "Se ha seleccionado un plugin diferente - Detener vista previa"
 
 #: quodlibet/ext/events/synchronize_to_device.py:758
 msgid "Synchronization will:"
@@ -2813,7 +2855,6 @@ msgid "Export path is not absolute"
 msgstr "La ruta de exportación no es absoluta"
 
 #: quodlibet/ext/events/synchronize_to_device.py:851
-#, fuzzy
 msgid ""
 "The pattern\n"
 "\n"
@@ -2822,12 +2863,12 @@ msgid ""
 "contains \"/\" but does not start from root. Please provide an absolute "
 "destination path by making sure it starts with / or ~/."
 msgstr ""
-"La pauta\n"
+"El patrón\n"
 "\n"
-"<b>{}</b>\n"
+"{}\n"
 "\n"
-"contiene «/» pero no inicia desde la raíz. Proporcione una ruta de destino "
-"absoluta cerciorándose de que comience por / o ~/."
+"contiene \"/\" pero no empieza desde la raíz. Proporciona una ruta de "
+"destino absoluta asegurándote de que comienza por / o ~/."
 
 #: quodlibet/ext/events/synchronize_to_device.py:873
 msgid "No saved searches selected"
@@ -3067,6 +3108,9 @@ msgid ""
 "value. Useful for keeping running vote totals and sorting by <b><tt>~#score</"
 "tt></b>."
 msgstr ""
+"Agrega un sistema de puntuación de pulgar hacia arriba / pulgar hacia abajo "
+"que se convierte en un valor de calificación. Útil para mantener los votos "
+"totales actualizados y ordenarlos por <b><tt>~#score</tt></b>."
 
 #: quodlibet/ext/events/toggle_menu.py:18
 msgid "Toggle Menu Bar"
@@ -3199,7 +3243,7 @@ msgstr "Ninguna canción activa"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "Ocultar marcas de tiempo en textos con formato .lrc o .elrc"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3227,38 +3271,46 @@ msgstr "Ejecutable de visualizador:"
 msgid "Reload"
 msgstr "Volver a cargar"
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "Barra de posición con onda"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr ""
 "∿ Una barra de posición que adquiere la forma de la onda de la canción "
 "actual."
 
-#: quodlibet/ext/events/waveformseekbar.py:671
-msgid "Override foreground color:"
-msgstr ""
+#: quodlibet/ext/events/waveformseekbar.py:720
+#, fuzzy
+msgid "Foreground color"
+msgstr "Anular el color en primer plano:"
 
-#: quodlibet/ext/events/waveformseekbar.py:675
-msgid "Override hover color:"
-msgstr ""
+#: quodlibet/ext/events/waveformseekbar.py:723
+#, fuzzy
+msgid "Hover color"
+msgstr "Anular el color al pasar el ratón:"
 
-#: quodlibet/ext/events/waveformseekbar.py:679
-msgid "Override remaining color:"
-msgstr ""
+#: quodlibet/ext/events/waveformseekbar.py:726
+#, fuzzy
+msgid "Remaining color"
+msgstr "Anula los colores restantes:"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
-msgid "Show current position"
+#: quodlibet/ext/events/waveformseekbar.py:730
+#, fuzzy
+msgid "Show current position whilst hovering"
 msgstr "Mostrar posición actual"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "Mostrar etiquetas de tiempo"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
+msgstr ""
+
+#: quodlibet/ext/events/waveformseekbar.py:759
+msgid "Waveform height (pixels):"
 msgstr ""
 
 #: quodlibet/ext/events/write_cover.py:33
@@ -3891,16 +3943,16 @@ msgstr "Servidor Squeezebox"
 msgid "Debug"
 msgstr "Depuración"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Servidor Squeezebox en {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "servidor Squeezebox no identificado"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "reproductor Squeezebox no identificado: %r"
@@ -5096,7 +5148,7 @@ msgstr "No se encontró la etiqueta «%s»."
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "Fonoteca"
@@ -5126,7 +5178,7 @@ msgstr "Moviendo archivos de la fonoteca"
 msgid "Removing library files"
 msgstr "Quitando archivos de la fonoteca"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr ""
@@ -5944,7 +5996,7 @@ msgstr ""
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 #, fuzzy
 msgid "Invalid tag"
@@ -7579,11 +7631,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "Lista vacía"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "Las listas deben tener nombre"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "Ya existe una lista denominada %(name)s en %(path)s"
@@ -7651,51 +7703,51 @@ msgstr "La opción %r requiere un argumento."
 msgid "%r is not a unique prefix."
 msgstr "%r no es un prefijo único."
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kb/s"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s segundo"
 msgstr[1] "%s segundos"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "No existe información sobre la duración"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
 msgstr[1] "%d segundos"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
 msgstr[1] "%d minutos"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
 msgstr[1] "%d horas"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d día"
 msgstr[1] "%d días"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7706,7 +7758,7 @@ msgstr[1] "%d años"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr ""
@@ -8163,6 +8215,9 @@ msgstr ""
 "visualizar la fonoteca y admite la reproducción de radios por Internet y "
 "suministros de audio. Brinda una edición muy flexible de etiquetas de "
 "metadatos y posee funciones de búsqueda avanzadas."
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "Compatibilidad MPRIS de D-Bus"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "Permite la edición de las opciones de configuración avanzadas."

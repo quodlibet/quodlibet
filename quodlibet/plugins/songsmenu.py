@@ -67,8 +67,12 @@ class SongsMenuPlugin(MenuItemPlugin):
 
     @property
     def handles_albums(self):
-        return any(map(callable, [self.plugin_single_album,
-                                  self.plugin_album, self.plugin_albums]))
+        return any(
+            map(
+                callable,
+                [self.plugin_single_album, self.plugin_album, self.plugin_albums],
+            )
+        )
 
     def plugin_finish(self):
         check_wrapper_changed(self.__library, self.__songs)

@@ -17,21 +17,27 @@ from quodlibet.library import SongLibrary, SongLibrarian
 
 
 SONGS = [
-    AudioFile({
-        "title": "one",
-        "artist": "piman",
-        "~filename": fsnative("/dev/null"),
-    }),
-    AudioFile({
-        "title": "two",
-        "artist": "mu",
-        "~filename": fsnative("/dev/zero"),
-    }),
-    AudioFile({
-        "title": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls"),
-    }),
+    AudioFile(
+        {
+            "title": "one",
+            "artist": "piman",
+            "~filename": fsnative("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "two",
+            "artist": "mu",
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls"),
+        }
+    ),
 ]
 SONGS.sort()
 
@@ -61,9 +67,11 @@ class TPluginsSongsMenu(PluginTestCase):
                 self.h.plugin_disable(plugin)
 
     def test_handle_single(self):
-        self.skipTest("Pops up windows and needs user input.. so disabled."
-                      "Still worth keeping whilst we don't have unit tests "
-                      "for all plugins.")
+        self.skipTest(
+            "Pops up windows and needs user input.. so disabled."
+            "Still worth keeping whilst we don't have unit tests "
+            "for all plugins."
+        )
         # Ignored...
         for id_, plugin in self.plugins.items():
             if self.h.plugin_handle(plugin):
@@ -75,6 +83,6 @@ class TPluginsSongsMenu(PluginTestCase):
         for plugin in self.plugins.values():
             if isinstance(plugin, SongsMenuPlugin):
                 ha = plugin.handles_albums
-                self.assertFalse(hasattr(plugin, "plugin_single_album") and not ha)
-                self.assertFalse(hasattr(plugin, "plugin_plugin_album") and not ha)
-                self.assertFalse(hasattr(plugin, "plugin_albums") and not ha)
+                assert not hasattr(plugin, "plugin_single_album") and not ha
+                assert not hasattr(plugin, "plugin_plugin_album") and not ha
+                assert not hasattr(plugin, "plugin_albums") and not ha

@@ -65,7 +65,10 @@ function main {
     # clone this repo and install into the bundle
     CLONE="$QL_OSXBUNDLE_BUNDLE_DEST"/_temp_clone
     git clone ../.. "$CLONE"
-    (cd "$CLONE"; git checkout "$GIT_TAG")
+    (
+        cd "$CLONE"
+        git checkout "$GIT_TAG"
+    )
     jhbuild run "$PYTHON" "$CLONE"/setup.py install \
         --prefix="$APP_PREFIX" --root="/" \
         --record="$QL_OSXBUNDLE_BUNDLE_DEST"/_install_log.txt
@@ -110,9 +113,9 @@ function main {
         "$EXFALSO"/Contents/Info.plist
 
     jhbuild run "$PYTHON" ./misc/list_content.py "$HOME/jhbuild_prefix" \
-        "$QUODLIBET" > "$QUODLIBET/Contents/Resources/content.txt"
+        "$QUODLIBET" >"$QUODLIBET/Contents/Resources/content.txt"
     jhbuild run "$PYTHON" ./misc/list_content.py "$HOME/jhbuild_prefix" \
-        "$EXFALSO" > "$EXFALSO/Contents/Resources/content.txt"
+        "$EXFALSO" >"$EXFALSO/Contents/Resources/content.txt"
 
     DMG_SETTINGS="misc/dmg_settings.py"
     jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$QUODLIBET" \
@@ -120,10 +123,10 @@ function main {
     jhbuild run dmgbuild -s "$DMG_SETTINGS" -D app="$EXFALSO" \
         "Ex Falso $VERSION" "$QL_OSXBUNDLE_BUNDLE_DEST/ExFalso-$VERSION.dmg"
 
-    (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && \
-        shasum -a256 "QuodLibet-$VERSION.dmg" > "QuodLibet-$VERSION.dmg.sha256")
-    (cd "$QL_OSXBUNDLE_BUNDLE_DEST" && \
-        shasum -a256 "ExFalso-$VERSION.dmg" > "ExFalso-$VERSION.dmg.sha256")
+    (cd "$QL_OSXBUNDLE_BUNDLE_DEST" &&
+        shasum -a256 "QuodLibet-$VERSION.dmg" >"QuodLibet-$VERSION.dmg.sha256")
+    (cd "$QL_OSXBUNDLE_BUNDLE_DEST" &&
+        shasum -a256 "ExFalso-$VERSION.dmg" >"ExFalso-$VERSION.dmg.sha256")
 }
 
-main "$@";
+main "$@"

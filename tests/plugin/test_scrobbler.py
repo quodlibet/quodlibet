@@ -17,13 +17,12 @@ from senf import fsnative
 from tests import run_gtk_loop, init_fake_app, destroy_fake_app
 from tests.plugin import PluginTestCase
 
-A_SONG = AudioFile({"~filename": fsnative("fake.mp3"),
-                    "artist": "Foo bar",
-                    "title": "The Title"})
+A_SONG = AudioFile(
+    {"~filename": fsnative("fake.mp3"), "artist": "Foo bar", "title": "The Title"}
+)
 
 
 class TScrobbler(PluginTestCase):
-
     @classmethod
     def setUpClass(cls):
         config.init()
@@ -59,9 +58,10 @@ class TScrobbler(PluginTestCase):
         queue.dump_queue()
 
         loaded = self.load_queue()
-        assert all(actual["a"] == expected["artist"]
-                   and actual["t"] == expected["title"]
-                   for actual, expected in zip(loaded, songs, strict=False))
+        assert all(
+            actual["a"] == expected["artist"] and actual["t"] == expected["title"]
+            for actual, expected in zip(loaded, songs, strict=False)
+        )
 
     def load_queue(self) -> list[dict]:
         try:

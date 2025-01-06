@@ -7,34 +7,70 @@
 import os
 
 from quodlibet.formats import AudioFile
-from quodlibet.pattern import (FileFromPattern, XMLFromPattern, Pattern,
-                               XMLFromMarkupPattern, ArbitraryExtensionFileFromPattern)
+from quodlibet.pattern import (
+    FileFromPattern,
+    XMLFromPattern,
+    Pattern,
+    XMLFromMarkupPattern,
+    ArbitraryExtensionFileFromPattern,
+)
 from senf import fsnative
 from tests import TestCase
 
 
 class _TPattern(TestCase):
-
     def setUp(self):
-        s1 = {"tracknumber": "5/6", "artist": "Artist", "title": "Title5",
-              "~filename": "/path/to/a.mp3", "xmltest": "<&>"}
-        s2 = {"tracknumber": "6", "artist": "Artist", "title": "Title6",
-              "~filename": "/path/to/b.ogg", "discnumber": "2",
-              "unislash": "foo\uff0fbar"}
-        s3 = {"title": "test/subdir", "genre": "/\n/",
-              "~filename": "/one/more/a.flac", "version": "Instrumental"}
+        s1 = {
+            "tracknumber": "5/6",
+            "artist": "Artist",
+            "title": "Title5",
+            "~filename": "/path/to/a.mp3",
+            "xmltest": "<&>",
+        }
+        s2 = {
+            "tracknumber": "6",
+            "artist": "Artist",
+            "title": "Title6",
+            "~filename": "/path/to/b.ogg",
+            "discnumber": "2",
+            "unislash": "foo\uff0fbar",
+        }
+        s3 = {
+            "title": "test/subdir",
+            "genre": "/\n/",
+            "~filename": "/one/more/a.flac",
+            "version": "Instrumental",
+        }
         s4 = {"performer": "a\nb", "artist": "foo\nbar"}
-        s5 = {"tracknumber": "7/1234", "artist": "Artist",
-              "title": "Title7", "~filename": "/path/to/e.mp3"}
-        s6 = {"artist": "Foo", "albumartist": "foo.bar", "album": "Best Of",
-              "~filename": "/path/to/f.mp3", "title": "The.Final.Word"}
-        s7 = {"artist": "un élève français", "~filename": "/path/to/g.mp3",
-              "albumartist": 'Lee "Scratch" Perry',
-              "album": "The 'only' way!", "comment": "Trouble|Strife"}
-        s8 = {"tracknumber": "7/8", "artist": "Artist1\n\nArtist3",
-              "artistsort": "SortA1\nSortA2",
-              "album": "Album5", "albumsort": "SortAlbum5",
-              "~filename": "/path/to/g.mp3", "xmltest": "<&>"}
+        s5 = {
+            "tracknumber": "7/1234",
+            "artist": "Artist",
+            "title": "Title7",
+            "~filename": "/path/to/e.mp3",
+        }
+        s6 = {
+            "artist": "Foo",
+            "albumartist": "foo.bar",
+            "album": "Best Of",
+            "~filename": "/path/to/f.mp3",
+            "title": "The.Final.Word",
+        }
+        s7 = {
+            "artist": "un élève français",
+            "~filename": "/path/to/g.mp3",
+            "albumartist": 'Lee "Scratch" Perry',
+            "album": "The 'only' way!",
+            "comment": "Trouble|Strife",
+        }
+        s8 = {
+            "tracknumber": "7/8",
+            "artist": "Artist1\n\nArtist3",
+            "artistsort": "SortA1\nSortA2",
+            "album": "Album5",
+            "albumsort": "SortAlbum5",
+            "~filename": "/path/to/g.mp3",
+            "xmltest": "<&>",
+        }
 
         if os.name == "nt":
             s1["~filename"] = "C:\\path\\to\\a.mp3"
@@ -58,6 +94,7 @@ class _TPattern(TestCase):
 
 class TPattern(_TPattern):
     from quodlibet.formats import AudioFile
+
     AudioFile  # noqa
 
     def test_numeric(self):
@@ -182,12 +219,10 @@ class TPattern(_TPattern):
         if os.name != "nt":
             pat = Pattern("<~filename='/path/to/a.mp3'|matched|not matched>")
             self.assertEqual(pat.format(self.a), "matched")
-            pat = Pattern(
-                "<~filename=/\\/path\\/to\\/a.mp3/|matched|not matched>")
+            pat = Pattern("<~filename=/\\/path\\/to\\/a.mp3/|matched|not matched>")
             self.assertEqual(pat.format(self.a), "matched")
         else:
-            pat = Pattern(
-                r"<~filename='C:\\\path\\\to\\\a.mp3'|matched|not matched>")
+            pat = Pattern(r"<~filename='C:\\\path\\\to\\\a.mp3'|matched|not matched>")
             self.assertEqual(pat.format(self.a), "matched")
 
     def test_tag_query_disallowed_free_text(self):
@@ -235,7 +270,8 @@ class TPattern(_TPattern):
         pat = Pattern("<~basename> <title>")
         res = pat.format(self.a)
         self.assertEqual(
-            res, os.path.basename(self.a["~filename"]) + " " + self.a["title"])
+            res, os.path.basename(self.a["~filename"]) + " " + self.a["title"]
+        )
 
     def test_number_dot_title_dot(self):
         pat = Pattern("<tracknumber>. <title>.")
@@ -250,26 +286,34 @@ class TPattern(_TPattern):
         self.assertEqual(pat.format(self.c), ". /, /")
 
     def test_unicode_with_int(self):
-        song = AudioFile({"tracknumber": "5/6",
-                          "title": b"\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode(
-                              "utf-8")})
+        song = AudioFile(
+            {
+                "tracknumber": "5/6",
+                "title": b"\xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode("utf-8"),
+            }
+        )
         pat = Pattern("<~#track>. <title>")
-        self.assertEqual(pat.format(song),
-                          b"5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode("utf-8"))
+        self.assertEqual(
+            pat.format(song), b"5. \xe3\x81\x99\xe3\x81\xbf\xe3\x82\x8c".decode("utf-8")
+        )
 
     def test_json(self):
         pat = Pattern("<~json>")
         if os.name != "nt":
-            self.assertEqual(pat.format(self.a),
-                              '{"artist": "Artist", "title": "Title5", "tracknumber": '
-                              '"5/6",'
-                              ' "xmltest": "<&>", "~filename": "/path/to/a.mp3"}')
+            self.assertEqual(
+                pat.format(self.a),
+                '{"artist": "Artist", "title": "Title5", "tracknumber": '
+                '"5/6",'
+                ' "xmltest": "<&>", "~filename": "/path/to/a.mp3"}',
+            )
         else:
-            self.assertEqual(pat.format(self.a),
-                              '{"artist": "Artist", "title": "Title5", "tracknumber": '
-                              '"5/6",'
-                              ' "xmltest": "<&>", "~filename": '
-                              '"C:\\\\path\\\\to\\\\a.mp3"}')
+            self.assertEqual(
+                pat.format(self.a),
+                '{"artist": "Artist", "title": "Title5", "tracknumber": '
+                '"5/6",'
+                ' "xmltest": "<&>", "~filename": '
+                '"C:\\\\path\\\\to\\\\a.mp3"}',
+            )
 
 
 class _TFileFromPattern(_TPattern):
@@ -278,18 +322,17 @@ class _TFileFromPattern(_TPattern):
 
     def test_escape_slash(self):
         fpat = self._create("<~filename>")
-        self.assertTrue(fpat.format(self.a).endswith("_path_to_a.mp3"))
+        assert fpat.format(self.a).endswith("_path_to_a.mp3")
 
         pat = Pattern("<~filename>")
         if os.name != "nt":
-            self.assertTrue(pat.format(self.a).startswith("/path/to/a"))
+            assert pat.format(self.a).startswith("/path/to/a")
         else:
-            self.assertTrue(pat.format(self.a).startswith("C:\\path\\to\\a"))
+            assert pat.format(self.a).startswith("C:\\path\\to\\a")
 
         if os.name != "nt":
             wpat = self._create(r'\\<artist>\\ "<title>')
-            self.assertTrue(
-                wpat.format(self.a).startswith(r'\Artist\ "Title5'))
+            self.assertTrue(wpat.format(self.a).startswith(r'\Artist\ "Title5'))
         else:
             # FIXME..
             pass
@@ -308,30 +351,30 @@ class _TFileFromPattern(_TPattern):
     def test_backslash_conversion_win32(self):
         if os.name == "nt":
             pat = self._create(r"Z:\<artist>\<title>")
-            self.assertTrue(pat.format(self.a).startswith(r"Z:\Artist\Title5"))
+            assert pat.format(self.a).startswith(r"Z:\Artist\Title5")
 
     def test_raw_slash_preservation(self):
         if os.name == "nt":
             pat = self._create("C:\\a\\b\\<genre>")
-            self.assertTrue(pat.format(self.a).startswith("C:\\a\\b\\"))
-            self.assertTrue(pat.format(self.b).startswith("C:\\a\\b\\"))
-            self.assertTrue(pat.format(self.c).startswith("C:\\a\\b\\_, _"))
+            assert pat.format(self.a).startswith("C:\\a\\b\\")
+            assert pat.format(self.b).startswith("C:\\a\\b\\")
+            assert pat.format(self.c).startswith("C:\\a\\b\\_, _")
 
         else:
             pat = self._create("/a/b/<genre>")
-            self.assertTrue(pat.format(self.a).startswith("/a/b/"))
-            self.assertTrue(pat.format(self.b).startswith("/a/b/"))
-            self.assertTrue(pat.format(self.c).startswith("/a/b/_, _"))
+            assert pat.format(self.a).startswith("/a/b/")
+            assert pat.format(self.b).startswith("/a/b/")
+            assert pat.format(self.c).startswith("/a/b/_, _")
 
     def test_specialcase_anti_ext(self):
         p1 = self._create("<~filename>")
         p2 = self._create("<~dirname>_<~basename>")
         self.assertEqual(p1.format(self.a), p2.format(self.a))
-        self.assertTrue(p1.format(self.a).endswith("_path_to_a.mp3"))
+        assert p1.format(self.a).endswith("_path_to_a.mp3")
         self.assertEqual(p1.format(self.b), p2.format(self.b))
-        self.assertTrue(p1.format(self.b).endswith("_path_to_b.ogg"))
+        assert p1.format(self.b).endswith("_path_to_b.ogg")
         self.assertEqual(p1.format(self.c), p2.format(self.c))
-        self.assertTrue(p1.format(self.c).endswith("_one_more_a.flac"))
+        assert p1.format(self.c).endswith("_one_more_a.flac")
 
     def test_long_filename(self):
         if os.name == "nt":
@@ -358,9 +401,9 @@ class TFileFromPattern(_TFileFromPattern):
 
     def test_type(self):
         pat = self._create("")
-        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+        assert isinstance(pat.format(self.a), fsnative)
         pat = self._create("<title>")
-        self.assertTrue(isinstance(pat.format(self.a), fsnative))
+        assert isinstance(pat.format(self.a), fsnative)
 
     def test_number_dot_title_dot(self):
         pat = self._create("<tracknumber>. <title>.")
@@ -434,9 +477,9 @@ class TXMLFromPattern(_TPattern):
 
 
 class TXMLFromMarkupPattern(_TPattern):
-
     def _test_markup(self, text):
         from gi.repository import Pango
+
         Pango.parse_markup(text, -1, "\x00")
 
     def test_convenience(self):
@@ -489,7 +532,6 @@ class TRealTags(TestCase):
 
 
 class TPatternFormatList(_TPattern):
-
     def test_numeric(self):
         pat = Pattern("<~#rating>")
         self.assertEqual(pat.format_list(self.a), {("0.50", "0.50")})
@@ -500,19 +542,23 @@ class TPatternFormatList(_TPattern):
 
     def test_same(self):
         pat = Pattern("<~basename> <title>")
-        self.assertEqual(pat.format_list(self.a),
-                             {(pat.format(self.a), pat.format(self.a))})
+        self.assertEqual(
+            pat.format_list(self.a), {(pat.format(self.a), pat.format(self.a))}
+        )
         pat = Pattern("/a<genre|/<genre>>/<title>")
-        self.assertEqual(pat.format_list(self.a),
-                             {(pat.format(self.a), pat.format(self.a))})
+        self.assertEqual(
+            pat.format_list(self.a), {(pat.format(self.a), pat.format(self.a))}
+        )
 
     def test_same2(self):
         fpat = FileFromPattern("<~filename>")
         pat = Pattern("<~filename>")
-        self.assertEqual(fpat.format_list(self.a),
-                          {(fpat.format(self.a), fpat.format(self.a))})
-        self.assertEqual(pat.format_list(self.a),
-                          {(pat.format(self.a), pat.format(self.a))})
+        self.assertEqual(
+            fpat.format_list(self.a), {(fpat.format(self.a), fpat.format(self.a))}
+        )
+        self.assertEqual(
+            pat.format_list(self.a), {(pat.format(self.a), pat.format(self.a))}
+        )
 
     def test_tied(self):
         pat = Pattern("<genre>")
@@ -520,84 +566,113 @@ class TPatternFormatList(_TPattern):
         pat = Pattern("<performer>")
         self.assertEqual(pat.format_list(self.d), {("a", "a"), ("b", "b")})
         pat = Pattern("<performer><performer>")
-        self.assertEqual(set(pat.format_list(self.d)),
-                             {("aa", "aa"), ("ab", "ab"),
-                              ("ba", "ba"), ("bb", "bb")})
+        self.assertEqual(
+            set(pat.format_list(self.d)),
+            {("aa", "aa"), ("ab", "ab"), ("ba", "ba"), ("bb", "bb")},
+        )
         pat = Pattern("<~performer~artist>")
-        self.assertEqual(pat.format_list(self.d),
-                             {("a", "a"), ("b", "b"),
-                              ("bar", "bar"), ("foo", "foo")})
+        self.assertEqual(
+            pat.format_list(self.d),
+            {("a", "a"), ("b", "b"), ("bar", "bar"), ("foo", "foo")},
+        )
         pat = Pattern("<performer~artist>")
-        self.assertEqual(pat.format_list(self.d),
-                             {("a", "a"), ("b", "b"),
-                              ("bar", "bar"), ("foo", "foo")})
+        self.assertEqual(
+            pat.format_list(self.d),
+            {("a", "a"), ("b", "b"), ("bar", "bar"), ("foo", "foo")},
+        )
         pat = Pattern("<artist|<artist>.|<performer>>")
-        self.assertEqual(pat.format_list(self.d),
-                             {("foo.", "foo."), ("bar.", "bar.")})
+        self.assertEqual(pat.format_list(self.d), {("foo.", "foo."), ("bar.", "bar.")})
         pat = Pattern("<artist|<artist|<artist>.|<performer>>>")
-        self.assertEqual(pat.format_list(self.d),
-                             {("foo.", "foo."), ("bar.", "bar.")})
+        self.assertEqual(pat.format_list(self.d), {("foo.", "foo."), ("bar.", "bar.")})
 
     def test_sort(self):
         pat = Pattern("<album>")
-        self.assertEqual(pat.format_list(self.f),
-                             {("Best Of", "Best Of")})
+        self.assertEqual(pat.format_list(self.f), {("Best Of", "Best Of")})
         pat = Pattern("<album>")
         self.assertEqual(pat.format_list(self.h), {("Album5", "SortAlbum5")})
         pat = Pattern("<artist>")
-        self.assertEqual(pat.format_list(self.h), {("Artist1", "SortA1"),
-                                                       ("Artist3", "Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h), {("Artist1", "SortA1"), ("Artist3", "Artist3")}
+        )
         pat = Pattern("<artist> x")
-        self.assertEqual(pat.format_list(self.h), {("Artist1 x", "SortA1 x"),
-                                                       ("Artist3 x", "Artist3 x")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {("Artist1 x", "SortA1 x"), ("Artist3 x", "Artist3 x")},
+        )
 
     def test_sort_tied(self):
         pat = Pattern("<~artist~album>")
-        self.assertEqual(pat.format_list(self.h), {("Artist1", "SortA1"),
-                                                       ("Artist3", "Artist3"),
-                                                       ("Album5", "SortAlbum5")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {("Artist1", "SortA1"), ("Artist3", "Artist3"), ("Album5", "SortAlbum5")},
+        )
         pat = Pattern("<~album~artist>")
-        self.assertEqual(pat.format_list(self.h), {("Artist1", "SortA1"),
-                                                       ("Artist3", "Artist3"),
-                                                       ("Album5", "SortAlbum5")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {("Artist1", "SortA1"), ("Artist3", "Artist3"), ("Album5", "SortAlbum5")},
+        )
         pat = Pattern("<~artist~artist>")
-        self.assertEqual(pat.format_list(self.h), {("Artist1", "SortA1"),
-                                                       ("Artist3", "Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h), {("Artist1", "SortA1"), ("Artist3", "Artist3")}
+        )
 
     def test_sort_combine(self):
         pat = Pattern("<album> <artist>")
-        self.assertEqual(pat.format_list(self.h),
-                             {("Album5 Artist1", "SortAlbum5 SortA1"),
-                              ("Album5 Artist3", "SortAlbum5 Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                ("Album5 Artist1", "SortAlbum5 SortA1"),
+                ("Album5 Artist3", "SortAlbum5 Artist3"),
+            },
+        )
         pat = Pattern("x <artist> <album>")
-        self.assertEqual(pat.format_list(self.h),
-                             {("x Artist1 Album5", "x SortA1 SortAlbum5"),
-                              ("x Artist3 Album5", "x Artist3 SortAlbum5")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                ("x Artist1 Album5", "x SortA1 SortAlbum5"),
+                ("x Artist3 Album5", "x Artist3 SortAlbum5"),
+            },
+        )
         pat = Pattern(" <artist> <album> xx")
-        self.assertEqual(pat.format_list(self.h),
-                             {(" Artist1 Album5 xx", " SortA1 SortAlbum5 xx"),
-                              (" Artist3 Album5 xx", " Artist3 SortAlbum5 xx")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                (" Artist1 Album5 xx", " SortA1 SortAlbum5 xx"),
+                (" Artist3 Album5 xx", " Artist3 SortAlbum5 xx"),
+            },
+        )
         pat = Pattern("<album> <tracknumber> <artist>")
-        self.assertEqual(pat.format_list(self.h),
-                             {("Album5 7/8 Artist1", "SortAlbum5 7/8 SortA1"),
-                              ("Album5 7/8 Artist3", "SortAlbum5 7/8 Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                ("Album5 7/8 Artist1", "SortAlbum5 7/8 SortA1"),
+                ("Album5 7/8 Artist3", "SortAlbum5 7/8 Artist3"),
+            },
+        )
         pat = Pattern("<tracknumber> <album> <artist>")
-        self.assertEqual(pat.format_list(self.h),
-                             {("7/8 Album5 Artist1", "7/8 SortAlbum5 SortA1"),
-                              ("7/8 Album5 Artist3", "7/8 SortAlbum5 Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                ("7/8 Album5 Artist1", "7/8 SortAlbum5 SortA1"),
+                ("7/8 Album5 Artist3", "7/8 SortAlbum5 Artist3"),
+            },
+        )
 
     def test_sort_multiply(self):
         pat = Pattern("<artist> <artist>")
-        self.assertEqual(pat.format_list(self.h),
-                             {("Artist1 Artist1", "SortA1 SortA1"),
-                              ("Artist3 Artist1", "Artist3 SortA1"),
-                              ("Artist1 Artist3", "SortA1 Artist3"),
-                              ("Artist3 Artist3", "Artist3 Artist3")})
+        self.assertEqual(
+            pat.format_list(self.h),
+            {
+                ("Artist1 Artist1", "SortA1 SortA1"),
+                ("Artist3 Artist1", "Artist3 SortA1"),
+                ("Artist1 Artist3", "SortA1 Artist3"),
+                ("Artist3 Artist3", "Artist3 Artist3"),
+            },
+        )
 
     def test_missing_value(self):
         pat = Pattern("<genre> - <artist>")
-        self.assertEqual(pat.format_list(self.a),
-                         {(" - Artist", " - Artist")})
+        self.assertEqual(pat.format_list(self.a), {(" - Artist", " - Artist")})
         pat = Pattern("")
         self.assertEqual(pat.format_list(self.a), {("", "")})
 

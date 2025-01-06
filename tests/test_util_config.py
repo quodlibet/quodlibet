@@ -11,7 +11,6 @@ from quodlibet.util.config import Config, Error, ConfigProxy
 
 
 class TConfig(TestCase):
-
     def test_set_default_only(self):
         conf = Config()
         self.assertRaises(Error, conf.set, "foo", "bar", 1)
@@ -37,14 +36,14 @@ class TConfig(TestCase):
 
     def test_has_section(self):
         conf = Config()
-        self.assertFalse(conf.has_section("foo"))
+        assert not conf.has_section("foo")
         conf.defaults.add_section("foo")
-        self.assertTrue(conf.has_section("foo"))
+        assert conf.has_section("foo")
         conf.add_section("foo")
         conf.defaults.clear()
-        self.assertTrue(conf.has_section("foo"))
+        assert conf.has_section("foo")
         conf.clear()
-        self.assertFalse(conf.has_section("foo"))
+        assert not conf.has_section("foo")
 
     def test_read_garbage_file(self):
         conf = Config()
@@ -148,7 +147,7 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
         conf.set("foo", "bla", "xx;,,;\n\n\naa")
-        self.assertTrue(conf.getboolean("foo", "bla", True))
+        assert conf.getboolean("foo", "bla", True)
         self.assertEqual(conf.getint("foo", "bla", 42), 42)
         self.assertEqual(conf.getfloat("foo", "bla", 1.5), 1.5)
         self.assertEqual(conf.getstringlist("foo", "bla", ["baz"]), ["baz"])
@@ -172,7 +171,7 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
 
-        self.assertFalse(conf.get("foo", "bar", None))
+        assert not conf.get("foo", "bar", None)
         vals = ["one", "two", "three"]
         conf.setstringlist("foo", "bar", vals)
         self.assertEqual(conf.getstringlist("foo", "bar"), vals)
@@ -181,7 +180,7 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
 
-        self.assertFalse(conf.get("foo", "bar", None))
+        assert not conf.get("foo", "bar", None)
         conf.setstringlist("foo", "bar", ["one", 2])
         self.assertEqual(conf.getstringlist("foo", "bar"), ["one", "2"])
 
@@ -189,9 +188,8 @@ class TConfig(TestCase):
         conf = Config()
         conf.add_section("foo")
 
-        self.assertFalse(conf.get("foo", "bar", None))
-        vals = ["foo's gold", "bar, \"best\" 'ever'",
-                "le goût d'œufs à Noël"]
+        assert not conf.get("foo", "bar", None)
+        vals = ["foo's gold", "bar, \"best\" 'ever'", "le goût d'œufs à Noël"]
         conf.setstringlist("foo", "bar", vals)
         self.assertEqual(conf.getstringlist("foo", "bar"), vals)
 
@@ -214,8 +212,7 @@ class TConfig(TestCase):
         self.assertEqual(conf.getlist("foo", "bar", ["arg"]), ["arg"])
         conf.set("foo", "bar", "abc,fo:o\\,bar")
         self.assertEqual(conf.getlist("foo", "bar"), ["abc", "fo:o,bar"])
-        self.assertEqual(conf.getlist("foo", "bar", sep=":"),
-                         ["abc,fo", "o\\,bar"])
+        self.assertEqual(conf.getlist("foo", "bar", sep=":"), ["abc,fo", "o\\,bar"])
 
         conf.set("foo", "bar", "")
         self.assertEqual(conf.getlist("foo", "bar"), [""])
@@ -266,6 +263,7 @@ class TConfig(TestCase):
             def func(config, old, new):
                 if old < 42:
                     config.set("foo", "bar", "nope")
+
             conf = Config(version=42)
             conf.register_upgrade_function(func)
             conf.read(filename)
@@ -288,13 +286,13 @@ class TConfig(TestCase):
         conf = Config(version=41)
 
         def func(*args):
-            self.assertTrue(False)
+            raise AssertionError()
+
         conf.register_upgrade_function(func)
         conf.read(filename)
 
 
 class TConfigProxy(TestCase):
-
     def setUp(self):
         conf = Config()
         conf.defaults.add_section("somesection")

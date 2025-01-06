@@ -29,6 +29,7 @@ def bcp47_to_language(code):
         return "zh_TW"
 
     parts = code.split("-")
+
     def is_iso(s):
         return len(s) == 2 and s.isalpha()
 
@@ -66,17 +67,26 @@ def set_i18n_envvars():
     """
 
     if os.name == "nt":
-        from quodlibet.util.winapi import GetUserDefaultUILanguage, \
-            GetSystemDefaultUILanguage
+        from quodlibet.util.winapi import (
+            GetUserDefaultUILanguage,
+            GetSystemDefaultUILanguage,
+        )
 
-        langs = list(filter(None, map(locale.windows_locale.get,
-                                      [GetUserDefaultUILanguage(),
-                                       GetSystemDefaultUILanguage()])))
+        langs = list(
+            filter(
+                None,
+                map(
+                    locale.windows_locale.get,
+                    [GetUserDefaultUILanguage(), GetSystemDefaultUILanguage()],
+                ),
+            )
+        )
         if langs:
             os.environ.setdefault("LANG", langs[0])
             os.environ.setdefault("LANGUAGE", ":".join(langs))
     elif sys.platform == "darwin":
         from AppKit import NSLocale
+
         locale_id = NSLocale.currentLocale().localeIdentifier()
         lang = osx_locale_id_to_lang(locale_id)
         os.environ.setdefault("LANG", lang)
@@ -146,8 +156,7 @@ class GlibTranslations(gettext.GNUTranslations):
         # see ugettext
         msgid1 = str(msgid1)
         msgid2 = str(msgid2)
-        return str(
-            gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
+        return str(gettext.GNUTranslations.ngettext(self, msgid1, msgid2, n))
 
     def unpgettext(self, context, msgid, msgidplural, n):
         context = str(context)
@@ -237,6 +246,7 @@ def register_translation(domain, localedir=None):
     if localedir is None:
         iterdirs = iter_locale_dirs
     else:
+
         def iterdirs():
             return (yield localedir)
 
@@ -246,7 +256,7 @@ def register_translation(domain, localedir=None):
         except OSError:
             continue
         else:
-            print_d("Translations loaded: %r" % unexpand(t.path))
+            print_d(f"Translations loaded: {unexpand(t.path)!r}")
             break
     else:
         print_d(f"No translation found for domain {domain!r} in {localedir!r}")
@@ -271,8 +281,8 @@ def init(language=None):
     set_i18n_envvars()
     fixup_i18n_envvars()
 
-    print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
-    print_d("LANG: %r" % os.environ.get("LANG"))
+    print_d("LANGUAGE: {!r}".format(os.environ.get("LANGUAGE")))
+    print_d("LANG: {!r}".format(os.environ.get("LANG")))
 
     try:
         locale.setlocale(locale.LC_ALL, "")
@@ -286,7 +296,7 @@ def init(language=None):
 
     if language is not None:
         os.environ["LANGUAGE"] = text2fsn(language)
-        print_d("LANGUAGE: %r" % os.environ.get("LANGUAGE"))
+        print_d("LANGUAGE: {!r}".format(os.environ.get("LANGUAGE")))
 
     _initialized = True
 
@@ -309,8 +319,7 @@ def get_available_languages(domain):
             continue
 
         for lang in entries:
-            mo_path = os.path.join(
-                locale_dir, lang, "LC_MESSAGES", "%s.mo" % domain)
+            mo_path = os.path.join(locale_dir, lang, "LC_MESSAGES", f"{domain}.mo")
             if os.path.exists(mo_path):
                 langs.add(fsn2text(path2fsn(lang)))
 
@@ -407,8 +416,7 @@ def numeric_phrase(singular, plural, n, template_var=None):
         replacement = "%(" + template_var + ")s"
         params = {}
         params[template_var] = num_text
-    return (ngettext(singular, plural, n).replace(template_var, replacement) %
-            params)
+    return ngettext(singular, plural, n).replace(template_var, replacement) % params
 
 
 def npgettext(context, singular, plural, n):

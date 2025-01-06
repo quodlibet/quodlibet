@@ -14,8 +14,7 @@ from quodlibet.util.trash import use_trash, trash
 from tests import TestCase, mkstemp, skipUnless
 
 
-class Ttrash(TestCase):
-
+class TTrash(TestCase):
     def setUp(self):
         config.init()
 
@@ -26,7 +25,7 @@ class Ttrash(TestCase):
         old_os_name = os.name
         try:
             os.name = "not posix"
-            self.assertFalse(use_trash())
+            assert not use_trash()
         finally:
             os.name = old_os_name
 
@@ -36,7 +35,7 @@ class Ttrash(TestCase):
         try:
             os.name = "posix"
             sys.platform = "darwin"
-            self.assertFalse(use_trash())
+            assert not use_trash()
         finally:
             os.name = old_os_name
             sys.platform = old_sys_platform
@@ -48,7 +47,7 @@ class Ttrash(TestCase):
             os.name = "posix"
             sys.platform = "linux"
             if not is_flatpak():
-                self.assertTrue(use_trash())
+                assert use_trash()
         finally:
             os.name = old_os_name
             sys.platform = old_sys_platform
@@ -60,7 +59,7 @@ class Ttrash(TestCase):
             config.set("settings", "bypass_trash", "true")
             os.name = "posix"
             sys.platform = "linux"
-            self.assertFalse(use_trash())
+            assert not use_trash()
         finally:
             os.name = old_os_name
             sys.platform = old_sys_platform
@@ -70,6 +69,6 @@ class Ttrash(TestCase):
         filename = mkstemp()[1]
         with open(filename, "w") as f:
             f.write("\n")
-        self.assertTrue(os.path.exists(filename))
+        assert os.path.exists(filename)
         trash(filename)
-        self.assertFalse(os.path.exists(filename))
+        assert not os.path.exists(filename)

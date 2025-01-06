@@ -77,11 +77,11 @@ class DuplicateSongsView(RCMHintedTreeView):
             row = model.find_row(song)
             if row:
                 group_row = model.iter_parent(row.iter)
-                print_d("Found parent group = %s" % group_row)
+                print_d(f"Found parent group = {group_row}")
                 model.remove(row.iter)
                 num_kids = model.iter_n_children(group_row)
                 if num_kids < Duplicates.MIN_GROUP_SIZE:
-                    print_d("Removing group %s" % group_row)
+                    print_d(f"Removing group {group_row}")
                     model.remove(group_row)
             else:
                 pass
@@ -104,8 +104,9 @@ class DuplicateSongsView(RCMHintedTreeView):
             key = Duplicates.get_key(song)
             row = model.find_row(song)
             if row:
-                print_d(f"Changed duplicated file {song('~artist~title')!r} "
-                        f"(Row={row})")
+                print_d(
+                    f"Changed duplicated file {song('~artist~title')!r} " f"(Row={row})"
+                )
                 parent = model.iter_parent(row.iter)
                 old_key = model[parent][0]
                 if old_key != key:
@@ -121,8 +122,7 @@ class DuplicateSongsView(RCMHintedTreeView):
 
     def __init__(self, model):
         super().__init__(model)
-        connect_obj(self, "row-activated",
-                    self.__select_song, app.player)
+        connect_obj(self, "row-activated", self.__select_song, app.player)
         # Selecting multiple is a nice feature it turns out.
         self.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
 
@@ -131,10 +131,10 @@ class DuplicateSongsView(RCMHintedTreeView):
         signal_map = {
             "removed": self._removed,
             "added": self._added,
-            "changed": self._changed
+            "changed": self._changed,
         }
-        for (sig, callback) in signal_map.items():
-            print_d("Listening to library.%s signals" % sig)
+        for sig, callback in signal_map.items():
+            print_d(f"Listening to library.{sig} signals")
             connect_destroy(app.library, sig, callback)
 
 
@@ -147,10 +147,14 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         return x
 
     TAG_MAP = [
-        ("artist", i), ("title", i), ("album", i),
+        ("artist", i),
+        ("title", i),
+        ("album", i),
         ("~#length", lambda s: util.format_time_display(int(s))),
-        ("~#filesize", lambda s: util.format_size(int(s))), ("~#bitrate", i),
-        ("~filename", i)]
+        ("~#filesize", lambda s: util.format_size(int(s))),
+        ("~#bitrate", i),
+        ("~filename", i),
+    ]
     # Now make a dict. This seems clunky.
     tag_functions = {}
     for t, f in TAG_MAP:
@@ -184,8 +188,7 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         return None
 
     def add_to_existing_group(self, key, song):
-        """Tries to add a song to an existing group. Returns None if not able
-        """
+        """Tries to add a song to an existing group. Returns None if not able"""
         for parent in self:
             if key == parent[0]:
                 print_d("Found group", self)
@@ -196,16 +199,17 @@ class DuplicatesTreeModel(Gtk.TreeStore):
     @classmethod
     def __make_row(cls, song):
         """Construct GTK row for a song, with all columns"""
-        return [song] + [util.escape(str(f(song.comma(tag)))) for
-                         (tag, f) in cls.TAG_MAP]
+        return [song] + [
+            util.escape(str(f(song.comma(tag)))) for (tag, f) in cls.TAG_MAP
+        ]
 
     def add_group(self, key, songs):
         """Adds a new group, returning the row created"""
         group = AudioFileGroup(songs, real_keys_only=False)
         # Add the group first.
-        parent = self.append(None,
-                             [key] +
-                             [self.group_value(group, tag) for tag, f in self.TAG_MAP])
+        parent = self.append(
+            None, [key] + [self.group_value(group, tag) for tag, f in self.TAG_MAP]
+        )
 
         for s in songs:
             self.append(parent, self.__make_row(s))
@@ -258,16 +262,14 @@ class DuplicatesTreeModel(Gtk.TreeStore):
         return not len(self)
 
     def __init__(self):
-        super().__init__(
-            object, str, str, str, str, str, str, str)
+        super().__init__(object, str, str, str, str, str, str, str)
 
 
 class DuplicateDialog(Gtk.Window):
     """Main dialog for browsing duplicate results"""
 
     def __quit(self, widget=None, response=None):
-        if response == Gtk.ResponseType.OK or \
-            response == Gtk.ResponseType.CLOSE:
+        if response == Gtk.ResponseType.OK or response == Gtk.ResponseType.CLOSE:
             print_d("Exiting plugin on user request...")
         self.finished = True
         self.destroy()
@@ -280,9 +282,9 @@ class DuplicateDialog(Gtk.Window):
             return songlist.popup_menu(menu, 0, Gtk.get_current_event_time())
 
     def __init__(self, model):
-        songs_text = numeric_phrase("%d duplicate group",
-                                    "%d duplicate groups",
-                                    len(model))
+        songs_text = numeric_phrase(
+            "%d duplicate group", "%d duplicate groups", len(model)
+        )
         super().__init__()
         self.set_destroy_with_parent(True)
         self.set_title(f"Quod Libet - {Duplicates.PLUGIN_NAME} ({songs_text})")
@@ -302,8 +304,11 @@ class DuplicateDialog(Gtk.Window):
 
         # Set up the columns
         for i, (tag, _f) in enumerate(DuplicatesTreeModel.TAG_MAP):
-            e = (Pango.EllipsizeMode.START if tag == "~filename"
-                 else Pango.EllipsizeMode.END)
+            e = (
+                Pango.EllipsizeMode.START
+                if tag == "~filename"
+                else Pango.EllipsizeMode.END
+            )
             render = Gtk.CellRendererText()
             render.set_property("ellipsize", e)
             col = Gtk.TreeViewColumn(util.tag(tag), render)
@@ -336,8 +341,10 @@ class DuplicateDialog(Gtk.Window):
         connect_obj(expand, "clicked", expand_all, view)
         hbox.pack_start(expand, False, True, 0)
 
-        label = Gtk.Label(label=_("Duplicate key expression is '%s'") %
-                                Duplicates.get_key_expression())
+        label = Gtk.Label(
+            label=_("Duplicate key expression is '%s'")
+            % Duplicates.get_key_expression()
+        )
         hbox.pack_start(label, True, True, 0)
         close = Button(_("_Close"), Icons.WINDOW_CLOSE)
         close.connect("clicked", self.__quit)
@@ -373,8 +380,9 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
     @classmethod
     def get_key_expression(cls):
         if not cls.key_expression:
-            cls.key_expression = (
-                cls.config_get(cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE))
+            cls.key_expression = cls.config_get(
+                cls._CFG_KEY_KEY, cls.__DEFAULT_KEY_VALUE
+            )
         return cls.key_expression
 
     @classmethod
@@ -390,9 +398,13 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         e = UndoEntry()
         e.set_text(cls.get_key_expression())
         e.connect("changed", key_changed)
-        e.set_tooltip_markup(_("Accepts QL tag expressions like "
-                               "<tt>~artist~title</tt> or "
-                               "<tt>musicbrainz_track_id</tt>"))
+        e.set_tooltip_markup(
+            _(
+                "Accepts QL tag expressions like "
+                "<tt>~artist~title</tt> or "
+                "<tt>musicbrainz_track_id</tt>"
+            )
+        )
         lbl = Gtk.Label(label=_("_Group duplicates by:"))
         lbl.set_mnemonic_widget(e)
         lbl.set_use_underline(True)
@@ -443,7 +455,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
         for song in songs:
             key = self.get_key(song)
             if key and key in groups:
-                print_d("Found duplicate based on '%s'" % key)
+                print_d(f"Found duplicate based on '{key}'")
                 groups[key].add(song._song)
             elif key:
                 groups[key] = {song._song}
@@ -454,7 +466,7 @@ class Duplicates(SongsMenuPlugin, PluginConfigMixin):
                 groups[key].add(song)
 
         # Now display the grouped duplicates
-        for (key, children) in groups.items():
+        for key, children in groups.items():
             if len(children) < self.MIN_GROUP_SIZE:
                 continue
             # The parent (group) label

@@ -14,7 +14,6 @@ from quodlibet.util.dprint import print_e, format_exception_only, print_exc
 
 
 class Tdprint(TestCase):
-
     def test_basics(self):
         with capture_output() as (stdout, stderr):
             print_e("foo")

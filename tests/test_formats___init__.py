@@ -13,8 +13,12 @@ from tests import TestCase, get_data_path
 from .helper import capture_output
 
 from quodlibet import formats
-from quodlibet.formats import AudioFile, load_audio_files, dump_audio_files, \
-    SerializationError
+from quodlibet.formats import (
+    AudioFile,
+    load_audio_files,
+    dump_audio_files,
+    SerializationError,
+)
 from quodlibet.util.picklehelper import pickle_dumps
 from quodlibet import config
 
@@ -27,57 +31,56 @@ class TFormats(TestCase):
         config.quit()
 
     def test_presence(self):
-        self.assertTrue(formats.aac)
-        self.assertTrue(formats.aiff)
-        self.assertTrue(formats.midi)
-        self.assertTrue(formats.mod)
-        self.assertTrue(formats.monkeysaudio)
-        self.assertTrue(formats.mp3)
-        self.assertTrue(formats.mp4)
-        self.assertTrue(formats.mpc)
-        self.assertTrue(formats.spc)
-        self.assertTrue(formats.trueaudio)
-        self.assertTrue(formats.vgm)
-        self.assertTrue(formats.wav)
-        self.assertTrue(formats.wavpack)
-        self.assertTrue(formats.wma)
-        self.assertTrue(formats.xiph)
+        assert formats.aac
+        assert formats.aiff
+        assert formats.midi
+        assert formats.mod
+        assert formats.monkeysaudio
+        assert formats.mp3
+        assert formats.mp4
+        assert formats.mpc
+        assert formats.spc
+        assert formats.trueaudio
+        assert formats.vgm
+        assert formats.wav
+        assert formats.wavpack
+        assert formats.wma
+        assert formats.xiph
 
     def test_loaders(self):
-        self.assertTrue(formats.loaders[".mp3"] is formats.mp3.MP3File)
+        assert formats.loaders[".mp3"] is formats.mp3.MP3File
 
     def test_migration(self):
-        self.assertTrue(formats.mp3 is sys.modules["quodlibet.formats.mp3"])
-        self.assertTrue(formats.mp3 is sys.modules["quodlibet/formats/mp3"])
-        self.assertTrue(formats.mp3 is sys.modules["formats.mp3"])
+        assert formats.mp3 is sys.modules["quodlibet.formats.mp3"]
+        assert formats.mp3 is sys.modules["quodlibet/formats/mp3"]
+        assert formats.mp3 is sys.modules["formats.mp3"]
 
-        self.assertTrue(formats.xiph is sys.modules["formats.flac"])
-        self.assertTrue(formats.xiph is sys.modules["formats.oggvorbis"])
+        assert formats.xiph is sys.modules["formats.flac"]
+        assert formats.xiph is sys.modules["formats.oggvorbis"]
 
     def test_filter(self):
-        self.assertTrue(formats.filter("foo.mp3"))
-        self.assertFalse(formats.filter("foo.doc"))
-        self.assertFalse(formats.filter("foomp3"))
+        assert formats.filter("foo.mp3")
+        assert not formats.filter("foo.doc")
+        assert not formats.filter("foomp3")
 
     def test_music_file(self):
         path = get_data_path("silence-44-s.mp3")
-        self.assertTrue(formats.MusicFile(path))
+        assert formats.MusicFile(path)
 
         # non existing
         with capture_output() as (stdout, stderr):
             song = formats.MusicFile(get_data_path("nope.mp3"))
-            self.assertFalse(song)
-            self.assertTrue(stderr.getvalue())
+            assert not song
+            assert stderr.getvalue()
 
         # unknown extension
         with capture_output() as (stdout, stderr):
             song = formats.MusicFile(get_data_path("nope.xxx"))
-            self.assertFalse(song)
-            self.assertFalse(stderr.getvalue())
+            assert not song
+            assert not stderr.getvalue()
 
 
 class TPickle(TestCase):
-
     def setUp(self):
         types = formats.types
         instances = []
@@ -86,8 +89,8 @@ class TPickle(TestCase):
             # we want to pickle/unpickle everything, since historically
             # these things ended up in the file
             dict.__init__(
-                i, {b"foo": "bar", "quux": b"baz", "a": "b",
-                    "b": 42, "c": 0.25})
+                i, {b"foo": "bar", "quux": b"baz", "a": "b", "b": 42, "c": 0.25}
+            )
             instances.append(i)
         self.instances = instances
 
@@ -101,14 +104,17 @@ class TPickle(TestCase):
     def test_sanitized_py3(self):
         i = AudioFile.__new__(list(formats.types)[0])
         # this is something that old py2 versions could pickle
-        dict.__init__(i, {
-            b"bytes": b"bytes",
-            "unicode": "unicode",
-            b"~filename": b"somefile",
-            "~mountpoint": "somemount",
-            "int": 42,
-            b"float": 1.25,
-        })
+        dict.__init__(
+            i,
+            {
+                b"bytes": b"bytes",
+                "unicode": "unicode",
+                b"~filename": b"somefile",
+                "~mountpoint": "somemount",
+                "int": 42,
+                b"float": 1.25,
+            },
+        )
         data = pickle_dumps([i], 1)
         items = load_audio_files(data, process=True)
         i = items[0]

@@ -25,16 +25,15 @@ class FakeQueryPlugin(QueryPlugin):
     def search(self, data, body):
         return True
 
+
 fake_plugin = Plugin(FakeQueryPlugin)
 
 
 class TQueryPlugins(PluginTestCase):
-
     def test_handler(self):
         self.assertRaises(KeyError, QUERY_HANDLER.get_plugin, "fake")
         QUERY_HANDLER.plugin_enable(fake_plugin)
-        self.assertTrue(
-            isinstance(QUERY_HANDLER.get_plugin("fake"), FakeQueryPlugin))
+        self.assertTrue(isinstance(QUERY_HANDLER.get_plugin("fake"), FakeQueryPlugin))
         QUERY_HANDLER.plugin_disable(fake_plugin)
         self.assertRaises(KeyError, QUERY_HANDLER.get_plugin, "fake")
 
@@ -46,26 +45,27 @@ class TQueryPlugins(PluginTestCase):
 
         self.assertRaises(QueryPluginError, plugin.parse_body, None)
         self.assertRaises(QueryPluginError, plugin.parse_body, "")
-        self.assertRaises(QueryPluginError, plugin.parse_body,
-                              "single=query")
-        self.assertRaises(QueryPluginError, plugin.parse_body,
-                              "a=first,b=second")
-        self.assertRaises(QueryPluginError, plugin.parse_body,
-                              "invalid/query")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "single=query")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "a=first,b=second")
+        self.assertRaises(QueryPluginError, plugin.parse_body, "invalid/query")
 
-        self.assertTrue(plugin.parse_body("a=first,b=second,c=third"))
-        self.assertTrue(plugin.parse_body("@(ext),#(numcmp > 0),!negation"))
+        assert plugin.parse_body("a=first,b=second,c=third")
+        assert plugin.parse_body("@(ext),#(numcmp > 0),!negation")
 
         body = plugin.parse_body("artist=a, genre=rock, genre=classical")
 
-        self.assertTrue(plugin.search(
-            AudioFile({"artist": "a", "genre": "rock"}), body))
-        self.assertFalse(plugin.search(
-            AudioFile({"artist": "a", "genre": "classical"}), body))
-        self.assertFalse(plugin.search(
-            AudioFile({"artist": "b", "genre": "rock"}), body))
-        self.assertTrue(plugin.search(
-            AudioFile({"artist": "b", "genre": "classical"}), body))
+        self.assertTrue(
+            plugin.search(AudioFile({"artist": "a", "genre": "rock"}), body)
+        )
+        self.assertFalse(
+            plugin.search(AudioFile({"artist": "a", "genre": "classical"}), body)
+        )
+        self.assertFalse(
+            plugin.search(AudioFile({"artist": "b", "genre": "rock"}), body)
+        )
+        self.assertTrue(
+            plugin.search(AudioFile({"artist": "b", "genre": "classical"}), body)
+        )
 
     def test_savedsearch(self):
         if "include_saved" not in self.plugins:
@@ -81,19 +81,16 @@ class TQueryPlugins(PluginTestCase):
             file.write("artist=a\nQuery 1\ngenre=classical\nAnother query")
             file.close()
 
-            self.assertRaises(QueryPluginError, plugin.parse_body,
-                                  "missing query")
-            self.assertRaises(QueryPluginError, plugin.parse_body,
-                                  "artist=a")
+            self.assertRaises(QueryPluginError, plugin.parse_body, "missing query")
+            self.assertRaises(QueryPluginError, plugin.parse_body, "artist=a")
 
-            self.assertTrue(plugin.parse_body("  quEry 1",
-                            query_path_=filename))
+            self.assertTrue(plugin.parse_body("  quEry 1", query_path_=filename))
 
             query1 = plugin.parse_body("Query 1", query_path_=filename)
             query2 = plugin.parse_body("another query", query_path_=filename)
             song = AudioFile({"artist": "a", "genre": "dance"})
-            self.assertTrue(plugin.search(song, query1))
-            self.assertFalse(plugin.search(song, query2))
+            assert plugin.search(song, query1)
+            assert not plugin.search(song, query2)
         finally:
             os.remove(filename)
 
@@ -108,21 +105,19 @@ class TQueryPlugins(PluginTestCase):
         self.assertRaises(QueryPluginError, plugin.parse_body, "\\")
         self.assertRaises(QueryPluginError, plugin.parse_body, "unclosed[")
         self.assertRaises(QueryPluginError, plugin.parse_body, "return s")
-        self.assertTrue(plugin.parse_body("3"))
-        self.assertTrue(plugin.parse_body("s"))
+        assert plugin.parse_body("3")
+        assert plugin.parse_body("s")
 
         body1 = plugin.parse_body("s('~#rating') > 0.5")
-        body2 = plugin.parse_body(
-            "s('genre').lower()[2:] in ('rock', 'pop')")
+        body2 = plugin.parse_body("s('genre').lower()[2:] in ('rock', 'pop')")
         body3 = plugin.parse_body("len(s('title')) < 6")
 
-        song1 = AudioFile({"title": "foobar", "~#rating": 0.8,
-                           "genre": "jazz"})
+        song1 = AudioFile({"title": "foobar", "~#rating": 0.8, "genre": "jazz"})
         song2 = AudioFile({"title": "baz", "~#rating": 0.4, "genre": "aapop"})
 
-        self.assertTrue(plugin.search(song1, body1))
-        self.assertFalse(plugin.search(song1, body2))
-        self.assertFalse(plugin.search(song1, body3))
-        self.assertFalse(plugin.search(song2, body1))
-        self.assertTrue(plugin.search(song2, body2))
-        self.assertTrue(plugin.search(song2, body3))
+        assert plugin.search(song1, body1)
+        assert not plugin.search(song1, body2)
+        assert not plugin.search(song1, body3)
+        assert not plugin.search(song2, body1)
+        assert plugin.search(song2, body2)
+        assert plugin.search(song2, body3)

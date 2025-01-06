@@ -9,20 +9,26 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from quodlibet.plugins import (PluginConfig, ConfProp, IntConfProp,
-    FloatConfProp, ColorConfProp)
+from quodlibet.plugins import (
+    PluginConfig,
+    ConfProp,
+    IntConfProp,
+    FloatConfProp,
+    ColorConfProp,
+)
 
 
-DEFAULT_PATTERN = (r"<album|[b]<album>[/b]<discnumber| - Disc "
+DEFAULT_PATTERN = (
+    r"<album|[b]<album>[/b]<discnumber| - Disc "
     """<discnumber>><part| - [b]<part>[/b]><tracknumber| - <tracknumber>>
     >[span weight='bold' size='large']<title>[/span] - <~length><version|
     [small][i]<version>[/i][/small]><~people|
-    by <~people>>""")
+    by <~people>>"""
+)
 
 
 def get_config(prefix):
     class AnimOsdConfig:
-
         plugin_conf = PluginConfig(prefix)
 
         font = ConfProp(plugin_conf, "font", "Sans 22")

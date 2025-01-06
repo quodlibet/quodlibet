@@ -1,5 +1,5 @@
 # Copyright 2010,2012 Christoph Reiter <reiter.christoph@gmail.com>
-#           2022 Nick Boultbee
+#           2022-24 Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -11,6 +11,7 @@ import sys
 
 if os.name == "nt" or sys.platform == "darwin":
     from quodlibet.plugins import PluginNotSupportedError
+
     raise PluginNotSupportedError
 
 from gi.repository import Gtk
@@ -26,7 +27,7 @@ from quodlibet import _
 from quodlibet import app
 from quodlibet import config
 from quodlibet import qltk
-from quodlibet.qltk.ccb import ConfigCheckButton
+from quodlibet.qltk.ccb import ConfigSwitch
 from quodlibet.qltk import Icons
 from quodlibet.plugins.events import EventPlugin
 
@@ -35,19 +36,23 @@ from .mpris2 import MPRIS2
 
 class MPRIS(EventPlugin):
     PLUGIN_ID = "mpris"
-    PLUGIN_NAME = _("MPRIS D-Bus Support")
+    PLUGIN_NAME = _("Linux Desktop Integration (MPRIS D-Bus)")
     PLUGIN_DESC_MARKUP = _(
-        "Allows control of Quod Libet using the "
+        "⏯️ Allows control of Quod Libet using the "
         '<a href="https://mpris2.readthedocs.io/en/latest/">MPRIS 2</a> '
-        "D-Bus Interface Specification. "
-        "This allows various Linux desktop integrations (e.g. multimedia keys).")
-    PLUGIN_ICON = Icons.NETWORK_WORKGROUP
+        "D-Bus Interface.\n"
+        "This allows various Linux desktop integrations (e.g. multimedia keys)."
+    )
+    PLUGIN_ICON = Icons.MEDIA_PLAYBACK_START
 
     def PluginPreferences(self, parent):
         box = Gtk.HBox()
-        ccb = ConfigCheckButton(_("Hide main window on close"),
-                                "plugins", "mpris_window_hide")
-        ccb.set_active(self.__do_hide())
+        ccb = ConfigSwitch(
+            _("Hide main window on close"),
+            "plugins",
+            "mpris_window_hide",
+            populate=True,
+        )
         box.pack_start(qltk.Frame(_("Preferences"), child=ccb), True, True, 0)
         return box
 
@@ -87,6 +92,7 @@ class MPRIS(EventPlugin):
         self.objects = []
 
         import gc
+
         gc.collect()
 
         app.window.disconnect(self.__sig)

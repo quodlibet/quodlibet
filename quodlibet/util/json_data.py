@@ -38,19 +38,20 @@ class JSONObject:
 
     def __init__(self, name):
         if not name:
-            raise ValueError("%s objects must be named" % type(self).__name__)
+            raise ValueError(f"{type(self).__name__} objects must be named")
         self.name = str(name)
 
     @property
     def data(self):
         """A list of tuples of the persisted key:values in this class"""
         if self.FIELDS:
-            return [(k, self.__getattribute__(k) if hasattr(self, k) else None)
-                    for k in self.FIELDS]
+            return [
+                (k, self.__getattribute__(k) if hasattr(self, k) else None)
+                for k in self.FIELDS
+            ]
         else:
-            print_d("No order specified for class %s" % type(self).__name__)
-            return {k: v for k, v in self.__dict__.items()
-                    if self._should_store(k)}
+            print_d(f"No order specified for class {type(self).__name__}")
+            return {k: v for k, v in self.__dict__.items() if self._should_store(k)}
 
     def field(self, name):
         """Returns the Field metadata of field `name` if available,
@@ -90,7 +91,7 @@ class JSONObjectDict(dict):
         try:
             data = json.loads(json_str)
         except ValueError:
-            print_w("Broken JSON: %s" % json_str)
+            print_w(f"Broken JSON: {json_str}")
         else:
             for name, blob in data.items():
                 try:
@@ -105,8 +106,9 @@ class JSONObjectDict(dict):
         new = cls()
         for j in json_objects:
             if not isinstance(j, JSONObject):
-                msg = ("Incorrect type (%s) found in list of objects"
-                       % j.__class__.__name__)
+                msg = (
+                    f"Incorrect type ({j.__class__.__name__}) found in list of objects"
+                )
                 if raise_errors:
                     raise TypeError(msg)
                 else:
@@ -137,6 +139,7 @@ class JSONObjectDict(dict):
                 with open(filename, "wb") as f:
                     f.write(json_str)
             except OSError as e:
-                print_w("Couldn't write JSON for "
-                        f"{type(self).__name__} object(s) ({e})")
+                print_w(
+                    "Couldn't write JSON for " f"{type(self).__name__} object(s) ({e})"
+                )
         return json_str

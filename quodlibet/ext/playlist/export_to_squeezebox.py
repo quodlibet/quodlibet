@@ -21,10 +21,15 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
     PLUGIN_ID = "Export to Squeezebox Playlist"
     PLUGIN_NAME = _("Export to Squeezebox")
     PLUGIN_DESC_MARKUP = (
-        _("Dynamically exports a playlist to Logitech Squeezebox "
-          "playlist, provided both share a directory structure.") + "\n" +
-        _('Shares configuration with <a href="%(plugin_link)s">Squeezebox '
-          "Sync plugin</a>.")
+        _(
+            "Dynamically exports a playlist to Logitech Squeezebox "
+            "playlist, provided both share a directory structure."
+        )
+        + "\n"
+        + _(
+            'Shares configuration with <a href="%(plugin_link)s">Squeezebox '
+            "Sync plugin</a>."
+        )
         % {"plugin_link": "quodlibet:///prefs/plugins/Squeezebox Output"}
     )
     PLUGIN_ICON = Icons.NETWORK_WORKGROUP
@@ -35,8 +40,10 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
 
     def __add_songs(self, task, songs, name):
         """Generator for copool to add songs to the temp playlist"""
-        print_d("Backing up current Squeezebox playlist."
-                "This can take a while if your current playlist is big...")
+        print_d(
+            "Backing up current Squeezebox playlist."
+            "This can take a while if your current playlist is big..."
+        )
         self.__cancel = False
         # Arbitrarily assign playlist operations a value of 2 * addition
         task_total = float(len(songs) + 2 * self._PERSIST_FUDGE + 3 * 2)
@@ -49,8 +56,10 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
         # Check if we're currently playing.
         stopped = self.server.is_stopped()
         total = len(songs)
-        print_d("Adding %d song(s) to Squeezebox playlist. "
-                "This might take a while..." % total)
+        print_d(
+            "Adding %d song(s) to Squeezebox playlist. "
+            "This might take a while..." % total
+        )
         for i, song in enumerate(songs):
             if self.__cancel:
                 print_d("Cancelled squeezebox export")
@@ -60,7 +69,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
             self.server.playlist_add(self.get_sb_path(song))
             task.update(float(i) / task_total)
             yield True
-        print_d('Saving Squeezebox playlist "%s"' % name)
+        print_d(f'Saving Squeezebox playlist "{name}"')
         self.server.playlist_save(name)
         task.update((task_total - 2) / task_total)
         yield True
@@ -74,11 +83,13 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
 
     @staticmethod
     def __get_playlist_name(name="Quod Libet playlist"):
-        dialog = GetStringDialog(None,
-                                 _("Export playlist to Squeezebox"),
-                                 _("Playlist name (will overwrite existing)"),
-                                 button_label=_("_Save"),
-                                 button_icon=Icons.DOCUMENT_SAVE)
+        dialog = GetStringDialog(
+            None,
+            _("Export playlist to Squeezebox"),
+            _("Playlist name (will overwrite existing)"),
+            button_label=_("_Save"),
+            button_icon=Icons.DOCUMENT_SAVE,
+        )
         name = dialog.run(text=name)
         return name
 
@@ -88,13 +99,20 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
             qltk.ErrorMessage(
                 app.window,
                 _("Error finding Squeezebox server"),
-                _("Error finding %s. Please check settings") %
-                self.server.config
+                _("Error finding %s. Please check settings") % self.server.config,
             ).run()
         else:
             name = self.__get_playlist_name(name=playlist.name)
             if name:
-                task = Task("Squeezebox", _("Export to Squeezebox playlist"),
-                            stop=self.__cancel_add)
-                copool.add(self.__add_songs, task, playlist.songs, name,
-                           funcid="squeezebox-playlist-save")
+                task = Task(
+                    "Squeezebox",
+                    _("Export to Squeezebox playlist"),
+                    stop=self.__cancel_add,
+                )
+                copool.add(
+                    self.__add_songs,
+                    task,
+                    playlist.songs,
+                    name,
+                    funcid="squeezebox-playlist-save",
+                )

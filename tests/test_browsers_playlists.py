@@ -16,8 +16,7 @@ from quodlibet import qltk
 from quodlibet.browsers._base import BrowserError
 from quodlibet.browsers.playlists import PlaylistsBrowser
 from quodlibet.browsers.playlists.prefs import DEFAULT_PATTERN_TEXT
-from quodlibet.browsers.playlists.util import (parse_m3u,
-                                               parse_pls, _name_for)
+from quodlibet.browsers.playlists.util import parse_m3u, parse_pls, _name_for
 from quodlibet.library.file import FileLibrary
 from quodlibet.library.playlist import _DEFAULT_PLAYLIST_DIR, PlaylistLibrary
 from quodlibet.formats import AudioFile
@@ -27,8 +26,15 @@ from quodlibet.qltk.songlist import DND_QL
 from quodlibet.util.collection import FileBackedPlaylist, XSPFBackedPlaylist
 from quodlibet.util.path import mkdir
 from senf import fsnative, fsn2uri, fsn2bytes
-from tests import (TestCase, get_data_path, mkdtemp, _TEMP_DIR,
-                   init_fake_app, destroy_fake_app, run_gtk_loop)
+from tests import (
+    TestCase,
+    get_data_path,
+    mkdtemp,
+    _TEMP_DIR,
+    init_fake_app,
+    destroy_fake_app,
+    run_gtk_loop,
+)
 from tests.gtk_helpers import MockSelData
 from tests.test_browsers_search import SONGS
 from .helper import dummy_path, __, temp_filename
@@ -43,12 +49,11 @@ class ConfigSetupMixin:
 
 
 class TParsePlaylistMixin:
-
     def test_parse_empty(self):
         with temp_filename() as name:
             with open(name) as f:
                 pl = self.Parse(f, name, pl_lib=self.pl_lib)
-        self.assertFalse(pl)
+        assert not pl
         pl.delete()
 
     def test_parse_onesong(self):
@@ -95,28 +100,28 @@ class TParsePLS(TestCase, ConfigSetupMixin, TParsePlaylistMixin):
 
 class TPlaylistIntegration(TestCase):
     DUPLICATES = 1
-    SONG = AudioFile({
-                "title": "two",
-                "artist": "mu",
-                "~filename": dummy_path("/dev/zero")})
+    SONG = AudioFile(
+        {"title": "two", "artist": "mu", "~filename": dummy_path("/dev/zero")}
+    )
     SONGS = [
-        AudioFile({
-                "title": "one",
-                "artist": "piman",
-                "~filename": dummy_path("/dev/null")}),
+        AudioFile(
+            {"title": "one", "artist": "piman", "~filename": dummy_path("/dev/null")}
+        ),
         SONG,
-        AudioFile({
-                "title": "three",
-                "artist": "boris",
-                "~filename": dummy_path("/bin/ls")}),
-        AudioFile({
+        AudioFile(
+            {"title": "three", "artist": "boris", "~filename": dummy_path("/bin/ls")}
+        ),
+        AudioFile(
+            {
                 "title": "four",
                 "artist": "random",
                 "album": "don't stop",
                 "labelid": "65432-1",
-                "~filename": dummy_path("/dev/random")}),
+                "~filename": dummy_path("/dev/random"),
+            }
+        ),
         SONG,
-        ]
+    ]
 
     def setUp(self):
         quodlibet.config.init()
@@ -126,8 +131,9 @@ class TPlaylistIntegration(TestCase):
             af.sanitize()
         self.lib.add(self.SONGS)
         self._dir = mkdtemp()
-        self.pl = FileBackedPlaylist.new(self._dir, "Foobar",
-                                         self.lib, self.lib.playlists)
+        self.pl = FileBackedPlaylist.new(
+            self._dir, "Foobar", self.lib, self.lib.playlists
+        )
         self.pl.extend(self.SONGS)
 
     def tearDown(self):
@@ -139,8 +145,7 @@ class TPlaylistIntegration(TestCase):
 
     def test_remove_song(self):
         # Check: library should have one song fewer (the duplicate)
-        self.assertEqual(len(self.lib),
-                             len(self.SONGS) - self.DUPLICATES)
+        self.assertEqual(len(self.lib), len(self.SONGS) - self.DUPLICATES)
         self.assertEqual(len(self.pl), len(self.SONGS))
 
         # Remove an unduplicated song
@@ -165,26 +170,31 @@ class TPlaylistIntegration(TestCase):
     def test_remove_no_lib(self):
         pl = FileBackedPlaylist.new(self._dir, "Foobar")
         pl.extend(self.SONGS)
-        self.assertTrue(len(pl))
+        assert len(pl)
         pl.remove_songs(self.SONGS, False)
-        self.assertFalse(len(pl))
+        assert not len(pl)
 
 
 class TPlaylistsBrowser(TestCase):
     Bar = PlaylistsBrowser
 
-    ANOTHER_SONG = AudioFile({
-        "title": "lonely",
-        "artist": "new artist",
-        "~filename": dummy_path("/dev/urandom")})
+    ANOTHER_SONG = AudioFile(
+        {
+            "title": "lonely",
+            "artist": "new artist",
+            "~filename": dummy_path("/dev/urandom"),
+        }
+    )
 
     ALL_SONGS = SONGS + [ANOTHER_SONG]
 
     def setUp(self):
         self.success = False
         # Testing locally is VERY dangerous without this...
-        self.assertTrue(_TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
-                        msg="Failing, don't want to delete %s" % _DEFAULT_PLAYLIST_DIR)
+        self.assertTrue(
+            _TEMP_DIR in _DEFAULT_PLAYLIST_DIR or os.name == "nt",
+            msg=f"Failing, don't want to delete {_DEFAULT_PLAYLIST_DIR}",
+        )
         try:
             shutil.rmtree(_DEFAULT_PLAYLIST_DIR)
         except OSError:
@@ -200,13 +210,15 @@ class TPlaylistsBrowser(TestCase):
             af.sanitize()
         self.lib.add(self.ALL_SONGS)
 
-        self.big = pl = FileBackedPlaylist.new(_DEFAULT_PLAYLIST_DIR, "Big",
-                                               self.lib, self.lib.playlists)
+        self.big = pl = FileBackedPlaylist.new(
+            _DEFAULT_PLAYLIST_DIR, "Big", self.lib, self.lib.playlists
+        )
         pl.extend(SONGS)
         pl.write()
 
-        self.small = pl = XSPFBackedPlaylist.new(_DEFAULT_PLAYLIST_DIR,
-                                                 "Small", self.lib, self.lib.playlists)
+        self.small = pl = XSPFBackedPlaylist.new(
+            _DEFAULT_PLAYLIST_DIR, "Small", self.lib, self.lib.playlists
+        )
         pl.extend([self.ANOTHER_SONG])
         pl.write()
 
@@ -247,14 +259,14 @@ class TPlaylistsBrowser(TestCase):
 
     def _do(self):
         run_gtk_loop()
-        self.assertTrue(self.success or self.expected is None)
+        assert self.success or self.expected is None
 
     def test_saverestore(self):
         # Flush previous signals, etc. Hmm.
         self.expected = None
         self._do()
         self.expected = [SONGS[0]]
-        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = {}".format(SONGS[0]["title"]))
         self.bar._select_playlist(self.bar.playlists()[0])
         self.expected = [SONGS[0]]
         self._do()
@@ -271,22 +283,21 @@ class TPlaylistsBrowser(TestCase):
         self.bar._select_playlist(self.bar.playlists()[1])
 
         # Second playlist should not have any of `SONGS`
-        self.assertFalse(self.bar.active_filter(SONGS[0]))
+        assert not self.bar.active_filter(SONGS[0])
 
         # But it should have `ANOTHER_SONG`
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
-                        msg="Couldn't find song from second playlist")
+        msg = "Couldn't find song from second playlist"
+        assert self.bar.active_filter(self.ANOTHER_SONG), msg
 
         # ... and setting a reasonable filter on that song should match still
         self.bar.filter_text("lonely")
-        self.assertTrue(self.bar.active_filter(self.ANOTHER_SONG),
-                        msg="Couldn't find song from second playlist with "
-                            "filter of 'lonely'")
+        msg = "Couldn't find song from second playlist with filter of 'lonely'"
+        assert self.bar.active_filter(self.ANOTHER_SONG), msg
 
         # ...unless it doesn't match that song
         self.bar.filter_text("piman")
-        self.assertFalse(self.bar.active_filter(self.ANOTHER_SONG),
-                         msg="Shouldn't have matched 'piman' on second list")
+        msg = "Shouldn't have matched 'piman' on second list"
+        assert not self.bar.active_filter(self.ANOTHER_SONG), msg
 
     def test_rename(self):
         self.assertEqual(self.bar.playlists()[1], self.small)
@@ -300,7 +311,7 @@ class TPlaylistsBrowser(TestCase):
     def test_default_display_pattern(self):
         pattern_text = self.bar.display_pattern_text
         self.assertEqual(pattern_text, DEFAULT_PATTERN_TEXT)
-        self.assertTrue("<~name>" in pattern_text)
+        assert "<~name>" in pattern_text
 
     def test_drag_data_get(self):
         b = self.bar
@@ -353,11 +364,10 @@ class TPlaylistsBrowser(TestCase):
         # This is selected in setUp()
         first_pl = b.playlists()[0]
         app.window.songlist.set_songs(first_pl)
-        app.window.songlist.select_by_func(lambda x: True,
-                                           scroll=False, one=True)
+        app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)
         original_length = len(first_pl)
         ret = b.key_pressed(event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(first_pl), original_length - 1)
 
     def test_playlist_deletion_ACCEPT(self):
@@ -369,7 +379,7 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length - 1)
         self.assertEqual(b.playlists()[0], second_pl)
 
@@ -382,7 +392,7 @@ class TPlaylistsBrowser(TestCase):
         b._select_playlist(first_pl)
 
         ret = b._PlaylistsBrowser__key_pressed(b, event)
-        self.assertTrue(ret, msg="Didn't simulate a delete keypress")
+        assert ret, "Didn't simulate a delete keypress"
         self.assertEqual(len(b.playlists()), orig_length)
         self.assertEqual(b.playlists()[0], first_pl)
         self.assertEqual(b.playlists()[1], second_pl)
@@ -390,6 +400,7 @@ class TPlaylistsBrowser(TestCase):
     def test_import(self):
         def fns(songs):
             return [song("~filename") for song in songs]
+
         pl_lib = self.bar.pl_lib
         assert len(self.bar.playlists()) == 2, "Should start with two playlists"
         assert len(pl_lib) == 2, f"Started with {pl_lib.keys()}"
@@ -428,7 +439,6 @@ class TPlaylistsBrowser(TestCase):
         app.window.get_child().pack_start(b, True, True, 0)
 
     class MockConfirmerAccepting:
-
         RESPONSE_INVOKE = Gtk.ResponseType.YES
 
         def __init__(self, *args):
@@ -438,7 +448,6 @@ class TPlaylistsBrowser(TestCase):
             return self.RESPONSE_INVOKE
 
     class MockConfirmerDeclining:
-
         RESPONSE_INVOKE = Gtk.ResponseType.YES
 
         def __init__(self, *args):
@@ -449,7 +458,6 @@ class TPlaylistsBrowser(TestCase):
 
 
 class TPlaylistUtils(TestCase):
-
     def test_naming(self):
         self.assertEqual(_name_for("/foo/bar.m3u"), "bar")
         self.assertEqual(_name_for("/foo/Will.I.Am.m3u"), "Will.I.Am")

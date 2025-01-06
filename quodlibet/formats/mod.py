@@ -14,12 +14,28 @@ from ._audio import AudioFile, translate_errors
 
 
 extensions = [
-    ".669", ".amf", ".ams", ".dsm", ".far", ".it", ".med", ".mod", ".mt2",
-    ".mtm", ".okt", ".s3m", ".stm", ".ult", ".gdm", ".xm"]
+    ".669",
+    ".amf",
+    ".ams",
+    ".dsm",
+    ".far",
+    ".it",
+    ".med",
+    ".mod",
+    ".mt2",
+    ".mtm",
+    ".okt",
+    ".s3m",
+    ".stm",
+    ".ult",
+    ".gdm",
+    ".xm",
+]
 
 try:
-    _modplug = load_library(
-        ["libmodplug.so.1", "libmodplug.so.0", "libmodplug-1.dll"])[0]
+    _modplug = load_library(["libmodplug.so.1", "libmodplug.so.0", "libmodplug-1.dll"])[
+        0
+    ]
 except OSError:
     extensions = []
 else:
@@ -37,7 +53,6 @@ else:
 
 
 class ModFile(AudioFile):
-
     format = "MOD/XM/IT"
 
     def __init__(self, filename):
@@ -45,7 +60,7 @@ class ModFile(AudioFile):
             data = open(filename, "rb").read()
             f = _modplug.ModPlug_Load(data, len(data))
             if not f:
-                raise OSError("%r not a valid MOD file" % filename)
+                raise OSError(f"{filename!r} not a valid MOD file")
             self["~#length"] = _modplug.ModPlug_GetLength(f) // 1000
             title = _modplug.ModPlug_GetName(f) or os.path.basename(filename)
             try:
@@ -70,6 +85,7 @@ class ModFile(AudioFile):
             return ["artist"]
         else:
             return k == "artist"
+
 
 loader = ModFile
 types = [ModFile]

@@ -55,9 +55,11 @@ class CoverageCmd(Command):
         try:
             from coverage import coverage, CoverageException
         except ImportError:
-            print("Missing 'coverage' module. See "
-                  "https://pypi.python.org/pypi/coverage or try "
-                  "`apt-get install python-coverage`")
+            print(
+                "Missing 'coverage' module. See "
+                "https://pypi.python.org/pypi/coverage or try "
+                "`apt-get install python-coverage`"
+            )
             return
 
         cov = coverage()
@@ -80,4 +82,4 @@ class CoverageCmd(Command):
         index = os.path.join(dest, "index.html")
         index_url = pathname2url(index)
 
-        print("Coverage summary: file://%s" % index_url)
+        print(f"Coverage summary: file://{index_url}")

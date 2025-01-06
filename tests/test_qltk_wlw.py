@@ -12,7 +12,6 @@ from quodlibet.qltk.wlw import WaitLoadWindow
 
 
 class TWaitLoadWindow(TestCase):
-
     class DummyConnector(Gtk.Window):
         count = 0
 
@@ -55,10 +54,10 @@ class TWaitLoadWindow(TestCase):
         self.assertEqual(self.wlw.count, 5)
 
     def test_step(self):
-        self.assertFalse(self.wlw.step())
+        assert not self.wlw.step()
         self.assertEqual(self.wlw.current, 1)
-        self.assertFalse(self.wlw.step())
-        self.assertFalse(self.wlw.step())
+        assert not self.wlw.step()
+        assert not self.wlw.step()
         self.assertEqual(self.wlw.current, 3)
 
     def test_destroy(self):

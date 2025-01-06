@@ -14,20 +14,26 @@ from quodlibet.formats import AudioFile
 
 
 SONGS = [
-    AudioFile({
-        "title": "one",
-        "artist": "piman",
-        "~filename": fsnative("/dev/null"),
-    }),
-    AudioFile({
-        "title": "\xf6\xe4\xfc",
-        "~filename": fsnative("/dev/zero"),
-    }),
-    AudioFile({
-        "title": "three",
-        "artist": "boris",
-        "~filename": fsnative("/bin/ls"),
-    }),
+    AudioFile(
+        {
+            "title": "one",
+            "artist": "piman",
+            "~filename": fsnative("/dev/null"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "\xf6\xe4\xfc",
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "three",
+            "artist": "boris",
+            "~filename": fsnative("/bin/ls"),
+        }
+    ),
 ]
 
 for song in SONGS:
@@ -42,11 +48,11 @@ class THTMLExport(PluginTestCase):
 
     def test_empty_export(self):
         text = self.to_html([])
-        self.assertTrue("<html" in text)
+        assert "<html" in text
 
     def test_export(self):
         text = self.to_html(SONGS)
-        self.assertTrue("\xf6\xe4\xfc" in text)
+        assert "\xf6\xe4\xfc" in text
 
     def tearDown(self):
         config.quit()

@@ -1,4 +1,4 @@
-# Copyright 2012 - 2020 Christoph Reiter, Nick Boultbee
+# Copyright 2012 - 2024 Christoph Reiter, Nick Boultbee
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -62,27 +62,36 @@ class PluginNotSupportedError(PluginImportError):
 class MissingModulePluginError(PluginImportError):
     """Consistent Exception for reporting missing modules for plugins"""
 
-    def __init__(self, module_name: str, extra: str|None = None):
-        tmpl = _("Couldn't find module '{module}'. "
-                 "Perhaps you need to install the package?{extra}")
-        msg = tmpl.format(module=module_name,
-                          extra="" if extra is None else " " + extra)
+    def __init__(self, module_name: str, extra: str | None = None):
+        tmpl = _(
+            "Couldn't find module '{module}'. "
+            "Perhaps you need to install the package?{extra}"
+        )
+        msg = tmpl.format(
+            module=module_name, extra="" if extra is None else " " + extra
+        )
         super().__init__(msg)
 
 
 class MissingGstreamerElementPluginError(PluginImportError):
     """Consistent Exception for reporting missing Gstreamer elements for
     plugins"""
+
     def __init__(self, element_name):
-        msg = (_("Couldn't find GStreamer element '{element}'.")
-                 .format(element=element_name))
+        msg = _("Couldn't find GStreamer element '{element}'.").format(
+            element=element_name
+        )
         super().__init__(msg)
 
 
 def migrate_old_config():
     active = []
-    old_keys = ["songsmenuplugins", "eventplugins", "editingplugins",
-                "playorderplugins"]
+    old_keys = [
+        "songsmenuplugins",
+        "eventplugins",
+        "editingplugins",
+        "playorderplugins",
+    ]
     for key in old_keys:
         key = "active_" + key
         try:
@@ -106,8 +115,9 @@ def list_plugins(module):
     try:
         objs = [getattr(module, attr) for attr in module.__all__]
     except AttributeError:
-        objs = [getattr(module, attr) for attr in vars(module)
-                if not attr.startswith("_")]
+        objs = [
+            getattr(module, attr) for attr in vars(module) if not attr.startswith("_")
+        ]
 
     ok = []
     for obj in objs:
@@ -120,7 +130,6 @@ def list_plugins(module):
 
 
 class PluginModule:
-
     def __init__(self, name, module):
         self.name = name
         self.module = module
@@ -128,7 +137,6 @@ class PluginModule:
 
 
 class Plugin:
-
     def __init__(self, plugin_cls):
         self.cls = plugin_cls
         self.handlers = []
@@ -252,8 +260,8 @@ class PluginManager:
             folders = []
 
         self.__scanner = ModuleScanner(folders)
-        self.__modules = {}     # name: PluginModule
-        self.__handlers = []    # handler list
+        self.__modules = {}  # name: PluginModule
+        self.__handlers = []  # handler list
         self.__enabled = set()  # (possibly) enabled plugin IDs
 
         self.__restore()
@@ -296,9 +304,9 @@ class PluginManager:
     @property
     def _plugins(self) -> Iterable[Plugin]:
         """All registered plugins"""
-        return (plugin
-                for module in self.__modules.values()
-                for plugin in module.plugins)
+        return (
+            plugin for module in self.__modules.values() for plugin in module.plugins
+        )
 
     @property
     def plugins(self):
@@ -313,7 +321,7 @@ class PluginManager:
 
         `handler` should probably be a `PluginHandler`
         """
-        print_d("Registering handler: %r" % type(handler).__name__)
+        print_d(f"Registering handler: {type(handler).__name__!r}")
 
         self.__handlers.append(handler)
 
@@ -331,9 +339,9 @@ class PluginManager:
 
     def save(self):
         print_d("Saving plugins: %d active" % len(self.__enabled))
-        config.set(self.CONFIG_SECTION,
-                   self.CONFIG_OPTION,
-                   "\n".join(sorted(self.__enabled)))
+        config.set(
+            self.CONFIG_SECTION, self.CONFIG_OPTION, "\n".join(sorted(self.__enabled))
+        )
 
     def enabled(self, plugin):
         """Returns if the plugin is enabled."""
@@ -350,7 +358,7 @@ class PluginManager:
             return
 
         if not status:
-            print_d("Disable %r" % plugin.id)
+            print_d(f"Disable {plugin.id!r}")
             for handler in plugin.handlers:
                 handler.plugin_disable(plugin)
 
@@ -363,7 +371,7 @@ class PluginManager:
                 except Exception:
                     util.print_exc()
         else:
-            print_d("Enable %r" % plugin.id)
+            print_d(f"Enable {plugin.id!r}")
             obj = plugin.get_instance()
             if obj and hasattr(obj, "enabled"):
                 try:
@@ -418,11 +426,10 @@ class PluginManager:
 
     def __restore(self):
         migrate_old_config()
-        active = config.get(self.CONFIG_SECTION,
-                            self.CONFIG_OPTION, "").splitlines()
+        active = config.get(self.CONFIG_SECTION, self.CONFIG_OPTION).splitlines()
 
         self.__enabled.update(active)
-        print_d("Restoring plugins: %d" % len(self.__enabled))
+        print_d(f"Restoring {len(self.__enabled)} plugin(s)")
 
         for plugin in self._plugins:
             if self.enabled(plugin):
@@ -450,8 +457,7 @@ class PluginConfig(ConfigProxy):
         self._prefix = prefix
         if _config is None:
             _config = config._config
-        super().__init__(
-            _config, PM.CONFIG_SECTION, _defaults)
+        super().__init__(_config, PM.CONFIG_SECTION, _defaults)
 
     def _new_defaults(self, real_default_config):
         return PluginConfig(self._prefix, real_default_config, False)
@@ -460,8 +466,9 @@ class PluginConfig(ConfigProxy):
         return f"{self._prefix}_{name}"
 
     def ConfigCheckButton(self, label, option, **kwargs):  # noqa
-        return ConfigCheckButton(label, PM.CONFIG_SECTION,
-                                 self._option(option), **kwargs)
+        return ConfigCheckButton(
+            label, PM.CONFIG_SECTION, self._option(option), **kwargs
+        )
 
 
 class PluginConfigMixin:
@@ -501,14 +508,12 @@ class PluginConfigMixin:
     @classmethod
     def config_get_bool(cls, name, default=False):
         """Gets a config boolean for this plugin"""
-        return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name),
-                                 default)
+        return config.getboolean(PM.CONFIG_SECTION, cls._config_key(name), default)
 
     @classmethod
     def config_get_stringlist(cls, name, default=False):
         """Gets a config string list for this plugin"""
-        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name),
-                                 default)
+        return config.getstringlist(PM.CONFIG_SECTION, cls._config_key(name), default)
 
     def config_entry_changed(self, entry, key):
         """React to a change in a gtk.Entry (by saving it to config)"""
@@ -529,7 +534,6 @@ class PluginConfigMixin:
 
 
 class ConfProp:
-
     def __init__(self, conf, name, default):
         self._conf = conf
         self._name = name
@@ -544,19 +548,16 @@ class ConfProp:
 
 
 class BoolConfProp(ConfProp):
-
     def __get__(self, *args, **kwargs):
         return self._conf.getboolean(self._name)
 
 
 class IntConfProp(ConfProp):
-
     def __get__(self, *args, **kwargs):
         return self._conf.getint(self._name)
 
 
 class FloatConfProp(ConfProp):
-
     def __get__(self, *args, **kwargs):
         return self._conf.getfloat(self._name)
 
@@ -575,7 +576,6 @@ def color_tuple_to_str(t):
 
 
 class ColorConfProp(ConfProp):
-
     def __init__(self, conf, name, default):
         self._conf = conf
         self._name = name

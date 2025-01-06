@@ -66,7 +66,7 @@ def build_query(album):
     if not album:
         return ""
 
-    alb = '"%s"' % album[0].comma("album").replace('"', "")
+    alb = '"{}"'.format(album[0].comma("album").replace('"', ""))
     art = get_artist(album)
     if art:
         art_safe = art.replace('"', "")
@@ -86,10 +86,16 @@ class ResultComboBox(Gtk.ComboBox):
             release = model.get_value(iter_)
 
             extra_info = ", ".join(
-                filter(None, [util.escape(release.date),
-                util.escape(release.country),
-                util.escape(release.medium_format),
-                util.escape(release.labelid)]))
+                filter(
+                    None,
+                    [
+                        util.escape(release.date),
+                        util.escape(release.country),
+                        util.escape(release.medium_format),
+                        util.escape(release.labelid),
+                    ],
+                )
+            )
 
             artist_names = [a.name for a in release.artists]
             disc_count = release.disc_count
@@ -99,11 +105,12 @@ class ResultComboBox(Gtk.ComboBox):
             tracks_text = numeric_phrase("%d track", "%d tracks", track_count)
 
             markup = "{}\n{} - {}, {} ({})".format(
-                    util.bold(release.title),
-                    util.escape(", ".join(artist_names)),
-                    util.escape(discs_text),
-                    util.escape(tracks_text),
-                    extra_info)
+                util.bold(release.title),
+                util.escape(", ".join(artist_names)),
+                util.escape(discs_text),
+                util.escape(tracks_text),
+                extra_info,
+            )
             cell.set_property("markup", markup)
 
         self.pack_start(render, True)
@@ -127,12 +134,12 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
 
         mode = Pango.EllipsizeMode
         cols = [
-                (_("Filename"), self.__name_datafunc, True, mode.MIDDLE),
-                (_("Disc"), self.__disc_datafunc, False, mode.END),
-                (_("Track"), self.__track_datafunc, False, mode.END),
-                (_("Title"), self.__title_datafunc, True, mode.END),
-                (_("Artist"), self.__artist_datafunc, True, mode.END),
-            ]
+            (_("Filename"), self.__name_datafunc, True, mode.MIDDLE),
+            (_("Disc"), self.__disc_datafunc, False, mode.END),
+            (_("Track"), self.__track_datafunc, False, mode.END),
+            (_("Title"), self.__title_datafunc, True, mode.END),
+            (_("Artist"), self.__artist_datafunc, True, mode.END),
+        ]
 
         for title, func, resize, mode in cols:
             render = Gtk.CellRendererText()
@@ -149,7 +156,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
         """
 
         tracks = self._tracks
-        for idx, (song, ) in enumerate(self.model):
+        for idx, (song,) in enumerate(self.model):
             if song is None:
                 continue
             if idx >= len(tracks):
@@ -170,7 +177,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
             tracks = []
 
         for _i in range(len(self.model), len(tracks)):
-            self.model.append((None, ))
+            self.model.append((None,))
         for _i in range(len(self.model), len(tracks), -1):
             if self.model[-1][0] is not None:
                 break
@@ -189,8 +196,7 @@ class ResultTreeView(HintedTreeView, MultiDragTreeView):
 
         # Only show discs column if we have more than one disc
         col = self.get_column(1)
-        col.set_visible(
-            bool(full_release) and bool(full_release.disc_count > 1))
+        col.set_visible(bool(full_release) and bool(full_release.disc_count > 1))
 
         self.columns_autosize()
 
@@ -295,8 +301,7 @@ def build_song_data(release, track):
     return meta
 
 
-def apply_options(meta, year_only, albumartist, artistsort, musicbrainz,
-                  labelid):
+def apply_options(meta, year_only, albumartist, artistsort, musicbrainz, labelid):
     """Takes the tags extracted from musicbrainz and adjusts them according
     to the user preferences.
     """
@@ -341,7 +346,6 @@ def sort_key(song):
 
 
 class SearchWindow(Dialog):
-
     def __init__(self, parent, album):
         self.album = album
         self.album.sort(key=sort_key)
@@ -354,8 +358,7 @@ class SearchWindow(Dialog):
         super().__init__(_("MusicBrainz lookup"))
 
         self.add_button(_("_Cancel"), Gtk.ResponseType.REJECT)
-        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE,
-                             Gtk.ResponseType.ACCEPT)
+        self.add_icon_button(_("_Save"), Icons.DOCUMENT_SAVE, Gtk.ResponseType.ACCEPT)
 
         self.set_default_size(650, 500)
         self.set_border_width(5)
@@ -436,7 +439,8 @@ class SearchWindow(Dialog):
         for release, track, song in self.result_treeview.iter_tracks():
             meta = build_song_data(release, track)
             apply_options(
-                meta, year_only, albumartist, artistsort, musicbrainz, labelid)
+                meta, year_only, albumartist, artistsort, musicbrainz, labelid
+            )
             apply_to_song(meta, song)
 
         self.destroy()

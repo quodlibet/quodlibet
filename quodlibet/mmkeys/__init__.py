@@ -51,7 +51,7 @@ def find_active_backend():
     print_d("Trying to find a mmkeys backend")
     for backend in iter_backends():
         if backend.is_active():
-            print_d("Found %r" % backend.__name__)
+            print_d(f"Found {backend.__name__!r}")
             return backend
 
 

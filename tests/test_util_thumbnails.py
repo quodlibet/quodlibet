@@ -20,15 +20,11 @@ from quodlibet.util import thumbnails
 
 
 class TThumb(TestCase):
-
-    def setUp(s):
-        s.wide = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
-        s.high = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
-        s.small = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
-        s.filename = get_data_path("test.png")
+    def setUp(self):
+        self.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        self.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
+        self.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
+        self.filename = get_data_path("test.png")
 
     def tearDown(self):
         p1 = thumbnails.get_cache_info(self.filename, (10, 10))[0]
@@ -84,18 +80,17 @@ class TThumb(TestCase):
         assert thumb
         path, size = thumbnails.get_cache_info(self.filename, (50, 60))
         open(path, "wb").close()
-        thumb = thumbnails.get_thumbnail(
-            self.filename, (50, 60), ignore_temp=False)
+        thumb = thumbnails.get_thumbnail(self.filename, (50, 60), ignore_temp=False)
         assert thumb
 
     def test_thumb(self):
         thumb = thumbnails.get_thumbnail(self.filename, (50, 60), ignore_temp=False)
 
-        #check for right scaling
+        # check for right scaling
         assert thumb
         assert thumb.get_width(), thumb.get_height() == (50, 25)
 
-        #test the thumbnail filename
+        # test the thumbnail filename
         uri = fsn2uri(self.filename)
         name = hash.md5(uri.encode("ascii")).hexdigest() + ".png"
 
@@ -104,7 +99,7 @@ class TThumb(TestCase):
 
         assert os.path.isfile(path)
 
-        #check for metadata
+        # check for metadata
         thumb_pb = GdkPixbuf.Pixbuf.new_from_file(path)
         meta_mtime = thumb_pb.get_option("tEXt::Thumb::MTime")
         meta_uri = thumb_pb.get_option("tEXt::Thumb::URI")
@@ -112,6 +107,6 @@ class TThumb(TestCase):
         assert int(meta_mtime) == int(mtime(self.filename))
         assert meta_uri == uri
 
-        #check rights
+        # check rights
         if os.name != "nt":
             assert os.stat(path).st_mode == 33152

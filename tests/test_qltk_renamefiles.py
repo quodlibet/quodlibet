@@ -14,10 +14,15 @@ from senf import fsnative
 
 from quodlibet import config
 from quodlibet.formats import AudioFile
-from quodlibet.qltk.renamefiles import (StripDiacriticals, StripNonASCII,
-                                        Lowercase, SpacesToUnderscores,
-                                        StripWindowsIncompat, RenameFiles,
-                                        ReplaceColons)
+from quodlibet.qltk.renamefiles import (
+    StripDiacriticals,
+    StripNonASCII,
+    Lowercase,
+    SpacesToUnderscores,
+    StripWindowsIncompat,
+    RenameFiles,
+    ReplaceColons,
+)
 
 
 class TFilter(TestCase):
@@ -29,12 +34,11 @@ class TFilter(TestCase):
 
 
 class TFilterMixin:
-
     def test_mix_empty(self):
         empty = fsnative("")
         v = self.c.filter(empty, "")
         self.assertEqual(v, "")
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
     def test_mix_safe(self):
         empty = fsnative("")
@@ -54,28 +58,24 @@ class TStripWindowsIncompat(TFilter, TFilterMixin):
 
     def test_conv(self):
         if os.name == "nt":
-            self.assertEqual(
-                self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
+            self.assertEqual(self.c.filter("", 'foo\\:*?;"<>|/'), "foo\\_________")
         else:
-            self.assertEqual(
-                self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
+            self.assertEqual(self.c.filter("", 'foo\\:*?;"<>|/'), "foo_________/")
 
     def test_type(self):
         empty = fsnative("")
-        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
+        assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def test_ends_with_dots_or_spaces(self):
         empty = fsnative("")
         v = self.c.filter(empty, fsnative("foo. . "))
         self.assertEqual(v, fsnative("foo. ._"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         if os.name == "nt":
-            self.assertEqual(
-                self.c.filter(empty, "foo. \\bar ."), "foo._\\bar _")
+            self.assertEqual(self.c.filter(empty, "foo. \\bar ."), "foo._\\bar _")
         else:
-            self.assertEqual(
-                self.c.filter(empty, "foo. /bar ."), "foo._/bar _")
+            self.assertEqual(self.c.filter(empty, "foo. /bar ."), "foo._/bar _")
 
 
 class TReplaceColons(TFilter, TFilterMixin):
@@ -89,20 +89,21 @@ class TReplaceColons(TFilter, TFilterMixin):
         assert self.conv("ii: allegro") == "ii - allegro"
 
     def test_replaces_semicolons_as_delimiters(self):
-        assert (self.conv("Mozart; Requiem in D minor")
-                == "Mozart - Requiem in D minor")
+        assert self.conv("Mozart; Requiem in D minor") == "Mozart - Requiem in D minor"
 
     def test_replaces_colons_with_lots_of_spaces(self):
-        assert (self.conv("Cello Suite No 1  :  Prelude")
-                == self.conv("Cello Suite No 1 - Prelude"))
+        assert self.conv("Cello Suite No 1  :  Prelude") == self.conv(
+            "Cello Suite No 1 - Prelude"
+        )
 
     def test_replaces_colons_with_non_word(self):
-        assert (self.conv('No. 1 "Minute": Molto vivace')
-                == self.conv('No. 1 "Minute" - Molto vivace'))
+        assert self.conv('No. 1 "Minute": Molto vivace') == self.conv(
+            'No. 1 "Minute" - Molto vivace'
+        )
 
     def test_type(self):
         empty = fsnative("")
-        self.assertTrue(isinstance(self.c.filter(empty, empty), fsnative))
+        assert isinstance(self.c.filter(empty, empty), fsnative)
 
     def conv(self, s: str):
         return self.c.filter(fsnative(""), s)
@@ -120,7 +121,7 @@ class TStripDiacriticals(TFilter, TFilterMixin):
         out = "A test"
         v = self.c.filter(empty, test)
         self.assertEqual(v, out)
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
 
 class TStripNonASCII(TFilter, TFilterMixin):
@@ -132,7 +133,7 @@ class TStripNonASCII(TFilter, TFilterMixin):
         out = "foo _ _"
         v = self.c.filter(empty, in_)
         self.assertEqual(v, out)
-        self.assertTrue(isinstance(v, str))
+        assert isinstance(v, str)
 
 
 class TLowercase(TFilter, TFilterMixin):
@@ -143,11 +144,11 @@ class TLowercase(TFilter, TFilterMixin):
 
         v = self.c.filter(empty, fsnative("foobar baz"))
         self.assertEqual(v, fsnative("foobar baz"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
         v = self.c.filter(empty, fsnative("Foobar.BAZ"))
         self.assertEqual(v, fsnative("foobar.baz"))
-        self.assertTrue(isinstance(v, fsnative))
+        assert isinstance(v, fsnative)
 
 
 class Renamer(Gtk.EventBox):
@@ -187,8 +188,7 @@ class Song(AudioFile):
         self["artist"] = "artist"
         self["album"] = "album"
         self["labelid"] = self["album"]
-        self["~filename"] = \
-            fsnative(os.path.join(target, self["title"] + ".mp3"))
+        self["~filename"] = fsnative(os.path.join(target, self["title"] + ".mp3"))
 
 
 class TMoveArt(TestCase):
@@ -203,8 +203,7 @@ class TMoveArt(TestCase):
     def reset_environment(self):
         config.init()
         self.root_path = mkdtemp()
-        self.filenames = \
-            ["cover.jpg", "info.jpg", "title.jpg", "title2.jpg"]
+        self.filenames = ["cover.jpg", "info.jpg", "title.jpg", "title2.jpg"]
 
     def generate_songs(self, path, quantity):
         return [Song(path, num) for num in range(quantity)]
@@ -226,18 +225,26 @@ class TMoveArt(TestCase):
 
     def song_set(self, path):
         songs = self.generate_songs(path, 1)
-        files = self.generate_files(path, [os.path.basename(song["~filename"])
-                                           for song in songs])
+        files = self.generate_files(
+            path, [os.path.basename(song["~filename"]) for song in songs]
+        )
         return files, songs
 
     def source_target(self, root_path, album, artist):
-        return (os.path.join(root_path, album, artist),
-                os.path.join(root_path + "_2", album, artist))
+        return (
+            os.path.join(root_path, album, artist),
+            os.path.join(root_path + "_2", album, artist),
+        )
 
-    def moveart_set(self, artist="artist", album="album",
-                    source=None, target=None, file_pattern="<title>"):
-        source2, target2 = \
-            self.source_target(self.root_path, artist, album)
+    def moveart_set(
+        self,
+        artist="artist",
+        album="album",
+        source=None,
+        target=None,
+        file_pattern="<title>",
+    ):
+        source2, target2 = self.source_target(self.root_path, artist, album)
         if not source:
             source = source2
         if not target:
@@ -359,10 +366,8 @@ class TMoveArt(TestCase):
         config.set("rename", "move_art", True)
         config.set("albumart", "search_filenames", "*.jpg")
 
-        source, target = \
-            self.source_target(self.root_path, "artist", "album")
-        source2, target2 = \
-            self.source_target(self.root_path, "artist", "album2")
+        source, target = self.source_target(self.root_path, "artist", "album")
+        source2, target2 = self.source_target(self.root_path, "artist", "album2")
 
         self.filenames = ["art.jpg"]
         self.art_set(source)

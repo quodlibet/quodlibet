@@ -3,9 +3,15 @@
 # the Free Software Foundation; either version 2 of the License, or
 # (at your option) any later version.
 
-from ._pattern import (Pattern, FileFromPattern, XMLFromPattern,
-                       XMLFromMarkupPattern, Error,
-                       ArbitraryExtensionFileFromPattern, URLFromPattern)
+from ._pattern import (
+    Pattern,
+    FileFromPattern,
+    XMLFromPattern,
+    XMLFromMarkupPattern,
+    Error,
+    ArbitraryExtensionFileFromPattern,
+    URLFromPattern,
+)
 
 
 URLFromPattern

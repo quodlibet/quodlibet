@@ -66,23 +66,21 @@ class PreferencesButton(AlbumPreferencesButton):
 
         menu = Gtk.Menu()
 
-        sort_item = Gtk.MenuItem(
-            label=_("Sort _by…"), use_underline=True)
+        sort_item = Gtk.MenuItem(label=_("Sort _by…"), use_underline=True)
         sort_menu = Gtk.Menu()
 
         active = config.getint("browsers", "album_sort", 1)
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
-            item = RadioMenuItem(group=item, label=label,
-                                 use_underline=True)
+            item = RadioMenuItem(group=item, label=label, use_underline=True)
             model.set_sort_func(100 + i, func)
             if i == active:
                 model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
                 item.set_active(True)
-            item.connect("toggled",
-                         util.DeferredSignal(self.__sort_toggled_cb),
-                         model, i)
+            item.connect(
+                "toggled", util.DeferredSignal(self.__sort_toggled_cb), model, i
+            )
             sort_menu.append(item)
 
         sort_item.set_submenu(sort_menu)
@@ -95,8 +93,8 @@ class PreferencesButton(AlbumPreferencesButton):
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-                arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
 
@@ -106,7 +104,8 @@ class CoverGridContainer(ScrolledWindow):
         super().__init__(
             hscrollbar_policy=Gtk.PolicyType.NEVER,
             vscrollbar_policy=Gtk.PolicyType.AUTOMATIC,
-            shadow_type=Gtk.ShadowType.IN)
+            shadow_type=Gtk.ShadowType.IN,
+        )
         self._fb = fb
         fb.set_hadjustment(self.props.hadjustment)
         fb.set_vadjustment(self.props.vadjustment)
@@ -136,8 +135,10 @@ class CoverGridContainer(ScrolledWindow):
         GLib.idle_add(scroll, priority=GLib.PRIORITY_LOW)
 
     def do_focus(self, direction):
-        is_tab = (direction == Gtk.DirectionType.TAB_FORWARD
-            or direction == Gtk.DirectionType.TAB_BACKWARD)
+        is_tab = (
+            direction == Gtk.DirectionType.TAB_FORWARD
+            or direction == Gtk.DirectionType.TAB_BACKWARD
+        )
         if not is_tab:
             self._fb.child_focus(direction)
             return True
@@ -155,7 +156,7 @@ class CoverGridContainer(ScrolledWindow):
 
 
 def _get_cover_size():
-    mag = config.getfloat("browsers", "covergrid_magnification", 3.)
+    mag = config.getfloat("browsers", "covergrid_magnification", 3.0)
     size = config.getint("browsers", "cover_size")
     if size <= 0:
         size = 48
@@ -216,8 +217,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         wide = config.getboolean("browsers", "covergrid_wide", False)
         for covergrid in cls.instances():
             covergrid.songcontainer.set_orientation(
-                Gtk.Orientation.HORIZONTAL if wide
-                else Gtk.Orientation.VERTICAL)
+                Gtk.Orientation.HORIZONTAL if wide else Gtk.Orientation.VERTICAL
+            )
 
     @classmethod
     def update_mag(cls):
@@ -228,12 +229,9 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             covergrid.view.queue_resize()
 
     def __init__(self, library):
-        super().__init__(
-            orientation=Gtk.Orientation.VERTICAL,
-            spacing=6)
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=6)
 
-        self.songcontainer = qltk.paned.ConfigRVPaned(
-            "browsers", "covergrid_pos", 0.4)
+        self.songcontainer = qltk.paned.ConfigRVPaned("browsers", "covergrid_pos", 0.4)
         if config.getboolean("browsers", "covergrid_wide", False):
             self.songcontainer.set_orientation(Gtk.Orientation.HORIZONTAL)
 
@@ -245,7 +243,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         model_sort = AlbumListSortModel(model=self.__model)
         self.__model_filter = model_filter = AlbumListFilterModel(
             include_item_all=config.getboolean("browsers", "covergrid_all", True),
-            child_model=model_sort)
+            child_model=model_sort,
+        )
 
         def create_album_widget(model):
             item_padding = config.getint("browsers", "item_padding", 6)
@@ -257,7 +256,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
                 cover_size=cover_size,
                 padding=item_padding,
                 text_visible=text_visible,
-                cancelable=self.__cover_cancel)
+                cancelable=self.__cover_cancel,
+            )
             widget.connect("songs-menu", self.__popup)
             return widget
 
@@ -269,27 +269,34 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
             min_children_per_line=1,
             max_children_per_line=10,
             row_spacing=config.getint("browsers", "row_spacing", 6),
-            column_spacing=config.getint("browsers", "column_spacing", 6))
+            column_spacing=config.getint("browsers", "column_spacing", 6),
+        )
 
         self.scrollwin = sw = CoverGridContainer(view)
 
-        view.connect("selected-children-changed",
+        view.connect(
+            "selected-children-changed",
             util.DeferredSignal(
-                lambda _: self.__update_songs(select_default=False),
-                owner=self))
+                lambda _: self.__update_songs(select_default=False), owner=self
+            ),
+        )
 
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            ("text/uri-list", 0, 2),
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
         view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        )
 
         view.connect("drag-data-get", self.__drag_data_get)
         view.connect("child-activated", self.__child_activated)
 
         self.accelerators = Gtk.AccelGroup()
-        search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+        search = SearchBarBox(
+            completion=AlbumTagCompletion(), accel_group=self.accelerators
+        )
         search.connect("query-changed", lambda *a: self.__update_filter())
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
@@ -300,15 +307,16 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         self.pack_start(sw, True, True, 0)
 
         self.__update_filter()
-        model_filter.connect("notify::filter",
-            util.DeferredSignal(lambda *a: self.__update_songs(), owner=self))
+        model_filter.connect(
+            "notify::filter",
+            util.DeferredSignal(lambda *a: self.__update_songs(), owner=self),
+        )
 
         self.connect("key-press-event", self.__key_pressed, library.librarian)
         self.connect("destroy", self.__destroy)
 
         if app.cover_manager:
-            connect_destroy(
-                app.cover_manager, "cover-changed", self.__cover_changed)
+            connect_destroy(app.cover_manager, "cover-changed", self.__cover_changed)
 
         # show all before binding the model, so a label in a flowbox child will
         # stay hidden if so configured by the "browsers.album_text" property.
@@ -384,14 +392,16 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
         songs = self.__get_songs_from_albums(albums)
 
         button_label = ngettext(
-            "Reload album _cover", "Reload album _covers", len(albums))
+            "Reload album _cover", "Reload album _covers", len(albums)
+        )
         button = MenuItem(button_label, Icons.VIEW_REFRESH)
         button.connect("activate", self.__refresh_cover, widget)
 
         menu = SongsMenu(self.__library, songs, items=[[button]])
         menu.show_all()
         popup_menu_at_widget(
-            menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time())
+            menu, widget, Gdk.BUTTON_SECONDARY, Gtk.get_current_event_time()
+        )
 
     def __refresh_cover(self, menuitem, view):
         for child in self.view.get_selected_children():
@@ -468,7 +478,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
     def filter_albums(self, values):
         changed = self.__select_by_func(
-            lambda album: album is not None and album.key in values)
+            lambda album: album is not None and album.key in values
+        )
         self.view.grab_focus()
         if changed:
             self.__update_songs()
@@ -517,7 +528,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
 
         if keys != [""]:
             self.__select_by_func(
-                lambda album: album is not None and album.str_key in keys)
+                lambda album: album is not None and album.str_key in keys
+            )
         else:
             self.__select_by_func(lambda album: album is None, one=True)
 
@@ -528,8 +540,8 @@ class CoverGrid(Browser, util.InstanceTracker, DisplayPatternMixin):
     def scroll(self, song):
         album_key = song.album_key
         self.__select_by_func(
-            lambda album: album is not None and album.key == album_key,
-            one=True)
+            lambda album: album is not None and album.key == album_key, one=True
+        )
 
     def activate(self):
         self.__update_songs()

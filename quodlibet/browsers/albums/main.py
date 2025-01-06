@@ -92,8 +92,7 @@ def compare_title(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return cmpa(a1.sort, a2.sort) or cmp(a1.key, a2.key)
 
 
 def compare_people(a1, a2):
@@ -106,10 +105,12 @@ def compare_people(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (cmpa(a1.peoplesort, a2.peoplesort) or
-            cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return (
+        cmpa(a1.peoplesort, a2.peoplesort)
+        or cmpa(a1.date, a2.date)
+        or cmpa(a1.sort, a2.sort)
+        or cmp(a1.key, a2.key)
+    )
 
 
 def compare_date(a1, a2):
@@ -122,9 +123,7 @@ def compare_date(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return cmpa(a1.date, a2.date) or cmpa(a1.sort, a2.sort) or cmp(a1.key, a2.key)
 
 
 def compare_date_added(a1, a2):
@@ -137,10 +136,12 @@ def compare_date_added(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (-cmp(a1("~#added"), a2("~#added")) or
-            cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return (
+        -cmp(a1("~#added"), a2("~#added"))
+        or cmpa(a1.date, a2.date)
+        or cmpa(a1.sort, a2.sort)
+        or cmp(a1.key, a2.key)
+    )
 
 
 def compare_original_date(a1, a2):
@@ -159,9 +160,7 @@ def compare_original_date(a1, a2):
     a1_date = a1.get("originaldate", a1.date)
     a2_date = a2.get("originaldate", a2.date)
 
-    return (cmpa(a1_date, a2_date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return cmpa(a1_date, a2_date) or cmpa(a1.sort, a2.sort) or cmp(a1.key, a2.key)
 
 
 def compare_genre(a1, a2):
@@ -174,11 +173,13 @@ def compare_genre(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (cmpa(a1.genre, a2.genre) or
-            cmpa(a1.peoplesort, a2.peoplesort) or
-            cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return (
+        cmpa(a1.genre, a2.genre)
+        or cmpa(a1.peoplesort, a2.peoplesort)
+        or cmpa(a1.date, a2.date)
+        or cmpa(a1.sort, a2.sort)
+        or cmp(a1.key, a2.key)
+    )
 
 
 def compare_rating(a1, a2):
@@ -191,10 +192,12 @@ def compare_rating(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (-cmp(a1("~#rating"), a2("~#rating")) or
-            cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return (
+        -cmp(a1("~#rating"), a2("~#rating"))
+        or cmpa(a1.date, a2.date)
+        or cmpa(a1.sort, a2.sort)
+        or cmp(a1.key, a2.key)
+    )
 
 
 def compare_avgplaycount(a1, a2):
@@ -207,10 +210,12 @@ def compare_avgplaycount(a1, a2):
         return 1
     if not a2.title:
         return -1
-    return (-cmp(a1("~#playcount:avg"), a2("~#playcount:avg")) or
-            cmpa(a1.date, a2.date) or
-            cmpa(a1.sort, a2.sort) or
-            cmp(a1.key, a2.key))
+    return (
+        -cmp(a1("~#playcount:avg"), a2("~#playcount:avg"))
+        or cmpa(a1.date, a2.date)
+        or cmpa(a1.sort, a2.sort)
+        or cmp(a1.key, a2.key)
+    )
 
 
 class PreferencesButton(Gtk.HBox):
@@ -237,15 +242,14 @@ class PreferencesButton(Gtk.HBox):
 
         item = None
         for i, (label, func) in enumerate(sort_orders):
-            item = RadioMenuItem(group=item, label=label,
-                                 use_underline=True)
+            item = RadioMenuItem(group=item, label=label, use_underline=True)
             model.set_sort_func(100 + i, func)
             if i == active:
                 model.set_sort_column_id(100 + i, Gtk.SortType.ASCENDING)
                 item.set_active(True)
-            item.connect("toggled",
-                         util.DeferredSignal(self.__sort_toggled_cb),
-                         model, i)
+            item.connect(
+                "toggled", util.DeferredSignal(self.__sort_toggled_cb), model, i
+            )
             sort_menu.append(item)
 
         sort_item.set_submenu(sort_menu)
@@ -258,8 +262,8 @@ class PreferencesButton(Gtk.HBox):
         menu.show_all()
 
         button = MenuButton(
-                SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-                arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_menu(menu)
         self.pack_start(button, False, False, 0)
 
@@ -302,7 +306,6 @@ class PreferencesButton(Gtk.HBox):
 
 
 class VisibleUpdate:
-
     # how many rows should be updated
     # beyond the visible area in both directions
     PRELOAD_COUNT = 35
@@ -310,12 +313,12 @@ class VisibleUpdate:
     def enable_row_update(self, view, sw, column):
         connect_obj(view, "draw", self.__update_visibility, view)
 
-        connect_destroy(
-            sw.get_vadjustment(), "value-changed", self.__stop_update, view)
+        connect_destroy(sw.get_vadjustment(), "value-changed", self.__stop_update, view)
 
         self.__pending_paths = []
         self.__update_deferred = DeferredSignal(
-            self.__update_visible_rows, timeout=50, priority=GLib.PRIORITY_LOW)
+            self.__update_visible_rows, timeout=50, priority=GLib.PRIORITY_LOW
+        )
         self.__column = column
         self.__first_expose = True
 
@@ -388,8 +391,8 @@ class VisibleUpdate:
         end = end.get_indices()[0] + preload
 
         vlist = list(range(end, start, -1))
-        top = vlist[:len(vlist) // 2]
-        bottom = vlist[len(vlist) // 2:]
+        top = vlist[: len(vlist) // 2]
+        bottom = vlist[len(vlist) // 2 :]
         top.reverse()
 
         vlist_new = []
@@ -416,8 +419,7 @@ class VisibleUpdate:
         self.__pending_paths = visible_paths
 
 
-class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
-                DisplayPatternMixin):
+class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixin):
     __model = None
     __last_render = None
     __last_render_surface = None
@@ -565,21 +567,26 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         sw.add(view)
 
         view.connect("row-activated", self.__play_selection)
-        self.__sig = view.connect("selection-changed",
-            util.DeferredSignal(self.__update_songs, owner=view))
+        self.__sig = view.connect(
+            "selection-changed", util.DeferredSignal(self.__update_songs, owner=view)
+        )
 
-        targets = [("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
-                   ("text/uri-list", 0, 2)]
+        targets = [
+            ("text/x-quodlibet-songs", Gtk.TargetFlags.SAME_APP, 1),
+            ("text/uri-list", 0, 2),
+        ]
         targets = [Gtk.TargetEntry.new(*t) for t in targets]
 
         view.drag_source_set(
-            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY)
+            Gdk.ModifierType.BUTTON1_MASK, targets, Gdk.DragAction.COPY
+        )
         view.connect("drag-data-get", self.__drag_data_get)
         connect_obj(view, "popup-menu", self.__popup, view, library)
 
         self.accelerators = Gtk.AccelGroup()
-        search = SearchBarBox(completion=AlbumTagCompletion(),
-                              accel_group=self.accelerators)
+        search = SearchBarBox(
+            completion=AlbumTagCompletion(), accel_group=self.accelerators
+        )
         search.connect("query-changed", self.__update_filter)
         connect_obj(search, "focus-out", lambda w: w.grab_focus(), view)
         self.__search = search
@@ -598,8 +605,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
         self.connect("key-press-event", self.__key_pressed, library.librarian)
 
         if app.cover_manager:
-            connect_destroy(
-                app.cover_manager, "cover-changed", self._cover_changed)
+            connect_destroy(app.cover_manager, "cover-changed", self._cover_changed)
 
         self.show_all()
 
@@ -648,9 +654,9 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
 
         item = model.get_value(iter_)
         scale_factor = self.get_scale_factor()
-        item.scan_cover(scale_factor=scale_factor,
-                        callback=callback,
-                        cancel=self._cover_cancel)
+        item.scan_cover(
+            scale_factor=scale_factor, callback=callback, cancel=self._cover_cancel
+        )
 
     def __destroy(self, browser):
         self._cover_cancel.cancel()
@@ -726,7 +732,8 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
             num = len(albums)
             button = MenuItem(
                 ngettext("Reload album _cover", "Reload album _covers", num),
-                Icons.VIEW_REFRESH)
+                Icons.VIEW_REFRESH,
+            )
             button.connect("activate", self.__refresh_album, view)
             items.append(button)
 
@@ -817,8 +824,7 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
     def filter_albums(self, values):
         view = self.view
         self.__inhibit()
-        changed = view.select_by_func(
-            lambda r: r[0].album and r[0].album.key in values)
+        changed = view.select_by_func(lambda r: r[0].album and r[0].album.key in values)
         self.view.grab_focus()
         self.__uninhibit()
         if changed:
@@ -861,13 +867,16 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate,
                 if not album:  # all
                     return False
                 return album.str_key in keys
+
             self.view.select_by_func(select_fun)
         self.__uninhibit()
 
     def scroll(self, song):
         album_key = song.album_key
+
         def select(r):
             return r[0].album and r[0].album.key == album_key
+
         self.view.select_by_func(select, one=True)
 
     def __get_config_string(self):

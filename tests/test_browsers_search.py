@@ -14,31 +14,36 @@ from senf import fsnative
 from tests import TestCase, run_gtk_loop
 
 # Don't sort yet, album_key makes it complicated...
-SONGS = [AudioFile({
-                "title": "one",
-                "artist": "piman",
-                "~filename": fsnative("/dev/null")}),
-         AudioFile({
-                "title": "two",
-                "artist": "mu",
-                "~#length": 234,
-                "~filename": fsnative("/dev/zero")}),
-         AudioFile({
-                "title": "three",
-                "artist": "boris",
-                "~filename": fsnative("/bin/ls")}),
-         AudioFile({
-                "title": "four",
-                "artist": "random",
-                "album": "don't stop",
-                "labelid": "65432-1",
-                "~filename": fsnative("/dev/random")}),
-         AudioFile({
-                "title": "five € and a £",
-                "artist": "shell",
-                "album": "don't stop",
-                "labelid": "12345-6",
-                "~filename": fsnative("/tmp/five € and £!")})]
+SONGS = [
+    AudioFile({"title": "one", "artist": "piman", "~filename": fsnative("/dev/null")}),
+    AudioFile(
+        {
+            "title": "two",
+            "artist": "mu",
+            "~#length": 234,
+            "~filename": fsnative("/dev/zero"),
+        }
+    ),
+    AudioFile({"title": "three", "artist": "boris", "~filename": fsnative("/bin/ls")}),
+    AudioFile(
+        {
+            "title": "four",
+            "artist": "random",
+            "album": "don't stop",
+            "labelid": "65432-1",
+            "~filename": fsnative("/dev/random"),
+        }
+    ),
+    AudioFile(
+        {
+            "title": "five € and a £",
+            "artist": "shell",
+            "album": "don't stop",
+            "labelid": "12345-6",
+            "~filename": fsnative("/tmp/five € and £!"),
+        }
+    ),
+]
 
 
 class TSearchBar(TestCase):
@@ -62,11 +67,11 @@ class TSearchBar(TestCase):
 
     def _do(self):
         run_gtk_loop()
-        self.assertTrue(self.success or self.expected is None)
+        assert self.success or self.expected is None
 
     def test_can_filter(self):
         for key in ["foo", "title", "fake~key", "~woobar", "~#huh"]:
-            self.assertTrue(self.bar.can_filter(key))
+            assert self.bar.can_filter(key)
 
     def test_empty_is_all(self):
         self.bar.filter_text("")
@@ -74,10 +79,10 @@ class TSearchBar(TestCase):
         self._do()
 
     def test_active_filter(self):
-        self.assertTrue(self.bar.active_filter(SONGS[0]))
+        assert self.bar.active_filter(SONGS[0])
         self.bar.filter_text("this does not match any song")
         self.expected = []
-        self.assertFalse(self.bar.active_filter(SONGS[0]))
+        assert not self.bar.active_filter(SONGS[0])
         self._do()
 
     def test_filter(self):
@@ -128,7 +133,7 @@ class TSearchBar(TestCase):
             SongList.star = old
 
     def test_saverestore(self):
-        self.bar.filter_text("title = %s" % SONGS[0]["title"])
+        self.bar.filter_text("title = {}".format(SONGS[0]["title"]))
         self.expected = [SONGS[0]]
         self._do()
         self.bar.save()

@@ -8,16 +8,16 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2023-04-11 16:59+0000\n"
-"Last-Translator: 麋悟BigELK176 <bigelk176@gmail.com>\n"
-"Language-Team: Chinese (Traditional) <https://hosted.weblate.org/projects/"
-"quodlibet/quodlibet/zh_Hant/>\n"
+"PO-Revision-Date: 2024-11-30 10:37+0000\n"
+"Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
+"Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
+"projects/quodlibet/quodlibet/zh_Hant/>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.17-dev\n"
+"X-Generator: Weblate 5.9-dev\n"
 
 #: quodlibet/browsers/albums/main.py:221
 #: quodlibet/browsers/covergrid/main.py:57
@@ -68,7 +68,7 @@ msgstr "排序依照 (_b)…"
 #: quodlibet/browsers/albums/main.py:254
 #: quodlibet/browsers/covergrid/main.py:91
 #: quodlibet/browsers/paned/prefs.py:202
-#: quodlibet/browsers/playlists/main.py:703 quodlibet/qltk/exfalsowindow.py:108
+#: quodlibet/browsers/playlists/main.py:704 quodlibet/qltk/exfalsowindow.py:108
 #: quodlibet/qltk/pluginwin.py:360 quodlibet/qltk/quodlibetwindow.py:922
 msgid "_Preferences"
 msgstr "偏好設定 (_P)"
@@ -172,7 +172,7 @@ msgstr "音樂庫瀏覽窗"
 #: quodlibet/browsers/_base.py:277 quodlibet/ext/songsmenu/console.py:46
 #: quodlibet/ext/songsmenu/refresh.py:30 quodlibet/qltk/exfalsowindow.py:240
 #: quodlibet/qltk/information.py:549 quodlibet/qltk/maskedbox.py:68
-#: quodlibet/util/collection.py:560
+#: quodlibet/util/collection.py:563
 #, python-format
 msgid "%d song"
 msgid_plural "%d songs"
@@ -180,7 +180,7 @@ msgstr[0] "%d 曲目"
 
 #: quodlibet/browsers/_base.py:404 quodlibet/browsers/_base.py:409
 #: quodlibet/qltk/tagsfrompath.py:193 quodlibet/qltk/textedit.py:139
-#: quodlibet/util/__init__.py:576
+#: quodlibet/util/__init__.py:582
 msgid "Invalid pattern"
 msgstr "無效的型式"
 
@@ -624,7 +624,7 @@ msgid "Equal pane width"
 msgstr "窗格均等寬度"
 
 #: quodlibet/browsers/playlists/main.py:49
-#: quodlibet/browsers/playlists/main.py:633 quodlibet/qltk/pluginwin.py:37
+#: quodlibet/browsers/playlists/main.py:634 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
 msgstr "播放清單"
 
@@ -632,27 +632,27 @@ msgstr "播放清單"
 msgid "_Playlists"
 msgstr "播放清單 (_P)"
 
-#: quodlibet/browsers/playlists/main.py:167
+#: quodlibet/browsers/playlists/main.py:166
 msgid "_Remove from Playlist"
 msgstr "從播放清單中移除 (_R)"
 
-#: quodlibet/browsers/playlists/main.py:211 quodlibet/qltk/data_editors.py:94
+#: quodlibet/browsers/playlists/main.py:210 quodlibet/qltk/data_editors.py:94
 msgid "_New"
 msgstr "新建 (_N)"
 
-#: quodlibet/browsers/playlists/main.py:213
+#: quodlibet/browsers/playlists/main.py:212
 msgid "_Import…"
 msgstr "匯入 (_I)…"
 
-#: quodlibet/browsers/playlists/main.py:470
+#: quodlibet/browsers/playlists/main.py:469
 msgid "Unable to import playlist"
 msgstr "無法匯入播放清單"
 
-#: quodlibet/browsers/playlists/main.py:471
+#: quodlibet/browsers/playlists/main.py:470
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
 msgstr "Quod Libet 僅能匯入 M3U/M3U8 及 PLS 格式的播放清單。"
 
-#: quodlibet/browsers/playlists/main.py:513
+#: quodlibet/browsers/playlists/main.py:512
 #: quodlibet/browsers/playlists/util.py:38 quodlibet/browsers/podcasts.py:484
 #: quodlibet/qltk/delete.py:143 quodlibet/qltk/filesel.py:257
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
@@ -660,19 +660,19 @@ msgstr "Quod Libet 僅能匯入 M3U/M3U8 及 PLS 格式的播放清單。"
 msgid "_Delete"
 msgstr "刪除 (_D)"
 
-#: quodlibet/browsers/playlists/main.py:520
+#: quodlibet/browsers/playlists/main.py:519
 msgid "_Rename"
 msgstr "重新命名 (_R)"
 
-#: quodlibet/browsers/playlists/main.py:619
+#: quodlibet/browsers/playlists/main.py:618
 msgid "Unable to rename playlist"
 msgstr "無法重新命名播放清單"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "Import Playlist"
 msgstr "匯入播放清單"
 
-#: quodlibet/browsers/playlists/main.py:634
+#: quodlibet/browsers/playlists/main.py:635
 msgid "_Import"
 msgstr "匯入 (_I)"
 
@@ -729,7 +729,7 @@ msgid "_Add Tracks"
 msgstr "增加音軌 (_A)"
 
 #: quodlibet/browsers/playlists/util.py:71
-#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:612
+#: quodlibet/browsers/playlists/util.py:157 quodlibet/util/collection.py:615
 msgid "New Playlist"
 msgstr "新建播放清單"
 
@@ -1212,8 +1212,8 @@ msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
-"Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
-"the Soundcloud and Podcasts browsers."
+"下載封面來自 <tt>artwork_url</tt> 標籤的連結。 這適用於 Soundcloud 及 "
+"Podcasts 瀏覽器。"
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1245,7 +1245,7 @@ msgstr "轉換編碼"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
-msgstr "Fixes misinterpreted tag value encodings in the tag editor."
+msgstr "修正標籤編輯器中的誤差標籤值編碼。"
 
 #: quodlibet/ext/editing/iconv.py:33
 msgid "_Convert Encoding…"
@@ -1257,7 +1257,7 @@ msgstr "假名/漢字簡單反轉"
 
 #: quodlibet/ext/editing/kakasi.py:27
 msgid "Converts kana/kanji to romaji before renaming."
-msgstr "Converts kana/kanji to romaji before renaming."
+msgstr "轉換 kana/kanji (日文假名/漢字)成 romaji (羅馬拚音)，在重新命名之前。"
 
 #: quodlibet/ext/editing/kakasi.py:36
 msgid "Romanize _Japanese text"
@@ -1265,7 +1265,7 @@ msgstr "羅馬字母化日文字 (_J)"
 
 #: quodlibet/ext/editing/kakasi.py:68
 msgid "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
-msgstr "Couldn't find the 'Kanji Kana Simple Inverter' (kakasi)."
+msgstr "找不到 '漢字假名簡易轉換器' (kakasi)."
 
 #: quodlibet/ext/editing/resub.py:18
 msgid "Regex Substitution"
@@ -1275,9 +1275,7 @@ msgstr "表達式替換"
 msgid ""
 "Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
 "renaming files."
-msgstr ""
-"Allows arbitrary regex substitutions (<tt>s/from/to/</tt>) when tagging or "
-"renaming files."
+msgstr "允許任意正則式替換 (<tt>s/from/to/</tt>) 當要標籤或重新命名檔案時。"
 
 #: quodlibet/ext/editing/titlecase.py:20
 msgid "Title Case"
@@ -1302,8 +1300,7 @@ msgstr "人類寫法標題大小寫"
 #: quodlibet/ext/editing/titlecase.py:53
 msgid ""
 "Uses common English rules for title casing, as in \"Dark Night of the Soul\""
-msgstr ""
-"Uses common English rules for title casing, as in \"Dark Night of the Soul\""
+msgstr "按照常用英英文規則處理標題大小寫法，如同 \"Dark Night of the Soul\""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
@@ -1311,7 +1308,7 @@ msgstr "動畫式呈現螢幕顯示"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
-msgstr "Displays song information on your screen when it changes."
+msgstr "顯示歌曲資訊於螢幕，當有所變更時。"
 
 #: quodlibet/ext/events/animosd/prefs.py:177
 msgid "_Position:"
@@ -1442,9 +1439,8 @@ msgid ""
 "file. Can be useful if you want to make sure that ratings of songs you "
 "dislike and thus skipped are written to the files."
 msgstr ""
-"Whenever a song was played or skipped, the plugin will write the tags to the "
-"file. Can be useful if you want to make sure that ratings of songs you "
-"dislike and thus skipped are written to the files."
+"每當一首歌曲播放過或是跳過時，外掛會將標籤寫入檔案。 如果你想確保那些評分不喜"
+"歡的歌曲，就會忽略跳過寫入檔案，非常有用。"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:46
 msgid "Once, when album fully rated"
@@ -1539,7 +1535,7 @@ msgid "_Update strategy:"
 msgstr "更新策略 (_U):"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:229
-#: quodlibet/ext/events/mpris/__init__.py:51
+#: quodlibet/ext/events/mpris/__init__.py:50
 #: quodlibet/ext/events/themeswitcher.py:84
 #: quodlibet/ext/events/viewlyrics.py:182
 #: quodlibet/ext/gstreamer/compressor.py:100
@@ -1636,15 +1632,15 @@ msgid ""
 "listening to."
 msgstr "變更您的放棄狀態訊息，根據您目前所收聽的。"
 
-#: quodlibet/ext/events/discord_status.py:85
+#: quodlibet/ext/events/discord_status.py:86
 msgid "Paused"
 msgstr "暫停"
 
-#: quodlibet/ext/events/discord_status.py:136
+#: quodlibet/ext/events/discord_status.py:137
 msgid "Status Line #1"
 msgstr "狀態線 #1"
 
-#: quodlibet/ext/events/discord_status.py:147
+#: quodlibet/ext/events/discord_status.py:148
 msgid "Status Line #2"
 msgstr "狀態線 #2"
 
@@ -1985,18 +1981,18 @@ msgid "Tested Clients"
 msgstr "測試用戶端"
 
 #: quodlibet/ext/events/mpris/__init__.py:38
-msgid "MPRIS D-Bus Support"
-msgstr "MPRIS D-Bus 支援"
+msgid "Linux Desktop Integration (MPRIS D-Bus)"
+msgstr "Linux 桌面整合 (MPRIS D-BUS)"
 
 #: quodlibet/ext/events/mpris/__init__.py:40
 msgid ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
+"readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
+"This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Allows control of Quod Libet using the <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> D-Bus Interface Specification. This allows "
-"various Linux desktop integrations (e.g. multimedia keys)."
+"⏯️允許 Quod Libet 控制使用 <a href=\"https://mpris2.readthedocs.io/en/latest/"
+"\">MPRIS 2</a> D-Bus 介面規格。 \n"
+"此將允許各樣 Linux 桌面整合(例如 多媒體鍵)。"
 
 #: quodlibet/ext/events/mpris/__init__.py:48
 #: quodlibet/ext/events/trayicon/prefs.py:36
@@ -2415,7 +2411,7 @@ msgstr "No GNOME Shell search provider for Quod Libet installed."
 #: quodlibet/ext/events/searchprovider.py:76
 #, python-format
 msgid "Have you copied the ini file to %s (or similar)?"
-msgstr ""
+msgstr "您已經複製 ini 檔案至 %s (或類似檔案)？"
 
 #: quodlibet/ext/events/searchprovider.py:82
 msgid "GNOME Search Provider"
@@ -3160,7 +3156,7 @@ msgstr "無法作用此曲"
 
 #: quodlibet/ext/events/viewlyrics.py:175
 msgid "Hide timestamps of .lrc or .elrc formatted lyrics"
-msgstr ""
+msgstr "隱藏 .lrc 或 .elrc 格式歌詞的時間戳記"
 
 #: quodlibet/ext/events/visualisations.py:36
 msgid "Launch Visualisations"
@@ -3188,37 +3184,41 @@ msgstr "視覺化可執行:"
 msgid "Reload"
 msgstr "重新載入"
 
-#: quodlibet/ext/events/waveformseekbar.py:599
+#: quodlibet/ext/events/waveformseekbar.py:629
 msgid "Waveform Seek Bar"
 msgstr "定位列波形狀"
 
-#: quodlibet/ext/events/waveformseekbar.py:602
+#: quodlibet/ext/events/waveformseekbar.py:632
 msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ A seekbar in the shape of the waveform of the current song."
 
-#: quodlibet/ext/events/waveformseekbar.py:671
-msgid "Override foreground color:"
-msgstr "改寫前景顏色:"
+#: quodlibet/ext/events/waveformseekbar.py:720
+msgid "Foreground color"
+msgstr "前景顏色"
 
-#: quodlibet/ext/events/waveformseekbar.py:675
-msgid "Override hover color:"
-msgstr "改寫浮標顏色:"
+#: quodlibet/ext/events/waveformseekbar.py:723
+msgid "Hover color"
+msgstr "游標指位顏色"
 
-#: quodlibet/ext/events/waveformseekbar.py:679
-msgid "Override remaining color:"
-msgstr "改寫其他顏色:"
+#: quodlibet/ext/events/waveformseekbar.py:726
+msgid "Remaining color"
+msgstr "其他顏色"
 
-#: quodlibet/ext/events/waveformseekbar.py:683
-msgid "Show current position"
-msgstr "顯示目前位置"
+#: quodlibet/ext/events/waveformseekbar.py:730
+msgid "Show current position whilst hovering"
+msgstr "顯示目前游標所指位置"
 
-#: quodlibet/ext/events/waveformseekbar.py:688
+#: quodlibet/ext/events/waveformseekbar.py:739
 msgid "Show time labels"
 msgstr "顯示時間"
 
-#: quodlibet/ext/events/waveformseekbar.py:695
+#: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Seek amount when scrolling (milliseconds):"
 msgstr "滾輪定位值量(毫秒):"
+
+#: quodlibet/ext/events/waveformseekbar.py:759
+msgid "Waveform height (pixels):"
+msgstr "波形高度(像素)："
 
 #: quodlibet/ext/events/write_cover.py:33
 msgid "Picture Saver"
@@ -3448,9 +3448,8 @@ msgid "Export to Sonos Playlist"
 msgstr "匯出至 Sonos 播放清單"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:133
-#, fuzzy
 msgid "Exports a playlist to Sonos by matching tracks."
-msgstr "匯出播放清單是複製檔案至資料夾。"
+msgstr "匯出播放清單至 Sons 依照符合的曲目。"
 
 #: quodlibet/ext/playlist/export_to_sonos.py:246
 msgid "Error finding Sonos device(s)"
@@ -3463,12 +3462,12 @@ msgstr "Error finding Sonos. Please check settings"
 #: quodlibet/ext/playlist/export_to_sonos.py:264
 #, python-format
 msgid "Failed to delete existing Sonos playlist %s:"
-msgstr ""
+msgstr "無法刪除現存存的 Sonos 播放清單 %s："
 
 #: quodlibet/ext/playlist/export_to_sonos.py:275
 #, python-format
 msgid "Export to playlist %(playlist)r (%(total)d tracks)"
-msgstr ""
+msgstr "匯出撥放清單 %(playlist)r (%(total)d 曲目)"
 
 #: quodlibet/ext/playlist/export_to_squeezebox.py:22
 msgid "Export to Squeezebox"
@@ -3567,9 +3566,8 @@ msgid "Prefer _less played"
 msgstr "偏好較少播放的 (_l)"
 
 #: quodlibet/ext/playorder/playcounteq.py:77
-#, fuzzy
 msgid "Priority for less played tracks"
-msgstr "偏好較少播放的"
+msgstr "優先等級用於較少播放的曲目"
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
@@ -3846,16 +3844,16 @@ msgstr "Squeezebox 伺服器"
 msgid "Debug"
 msgstr "除錯"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:31
+#: quodlibet/ext/_shared/squeezebox/server.py:25
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
 msgstr "Squeezebox server at {hostname}:{port}"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:33
+#: quodlibet/ext/_shared/squeezebox/server.py:27
 msgid "unidentified Squeezebox server"
 msgstr "unidentified Squeezebox server"
 
-#: quodlibet/ext/_shared/squeezebox/server.py:42
+#: quodlibet/ext/_shared/squeezebox/server.py:36
 #, python-format
 msgid "unidentified Squeezebox player: %r"
 msgstr "unidentified Squeezebox player: %r"
@@ -5075,7 +5073,7 @@ msgstr "標籤\"%s\" 未找到。"
 #: quodlibet/library/file.py:156 quodlibet/library/file.py:166
 #: quodlibet/library/file.py:230 quodlibet/library/file.py:249
 #: quodlibet/library/file.py:356 quodlibet/library/file.py:414
-#: quodlibet/library/file.py:569 quodlibet/qltk/information.py:270
+#: quodlibet/library/file.py:568 quodlibet/qltk/information.py:270
 #: quodlibet/qltk/prefs.py:691 quodlibet/util/library.py:122
 msgid "Library"
 msgstr "音樂庫"
@@ -5105,7 +5103,7 @@ msgstr "正在移動音樂庫檔案"
 msgid "Removing library files"
 msgstr "正在移除音樂庫檔案"
 
-#: quodlibet/library/file.py:568
+#: quodlibet/library/file.py:567
 #, python-format
 msgid "Adding watches for %s"
 msgstr "加入監視用於 %s"
@@ -5485,12 +5483,11 @@ msgstr ""
 "config."
 
 #: quodlibet/plugins/__init__.py:66
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Couldn't find module '{module}'. Perhaps you need to install the package?"
 "{extra}"
-msgstr ""
-"Couldn't find module '{module}'. Perhaps you need to install the package?"
+msgstr "找不到模組  '{module}'。或許您需要安裝此套件？{extra}"
 
 #: quodlibet/plugins/__init__.py:77
 #, python-brace-format
@@ -5560,14 +5557,12 @@ msgid "Usage"
 msgstr "用途"
 
 #: quodlibet/qltk/advanced_prefs.py:69
-#, fuzzy
 msgid "Revert to default"
-msgstr "重設至預設"
+msgstr "重設還原成預設"
 
 #: quodlibet/qltk/advanced_prefs.py:251
-#, fuzzy
 msgid "I know what I'm doing!"
-msgstr "我明白現在所作所為"
+msgstr "我明白現在我在做什麼了！"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -5902,7 +5897,7 @@ msgstr "The files currently selected do not support multiple values for %s."
 
 #. Can't add the new tag.
 #: quodlibet/qltk/edittags.py:797 quodlibet/qltk/edittags.py:980
-#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:508
+#: quodlibet/qltk/tagsfrompath.py:211 quodlibet/util/__init__.py:514
 #: quodlibet/util/tags.py:245
 msgid "Invalid tag"
 msgid_plural "Invalid tags"
@@ -6686,9 +6681,8 @@ msgid "Scan Directories"
 msgstr "掃瞄目錄"
 
 #: quodlibet/qltk/prefs.py:753
-#, fuzzy
 msgid "Advanced"
-msgstr "舞曲"
+msgstr "進階"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:352
 #, python-format
@@ -6824,9 +6818,8 @@ msgid "Edit Bookmarks…"
 msgstr "編輯書籤…"
 
 #: quodlibet/qltk/quodlibetwindow.py:962
-#, fuzzy
 msgid "Stop"
-msgstr "停止 (_S)"
+msgstr "停止"
 
 #: quodlibet/qltk/quodlibetwindow.py:967
 msgid "Stop After This Song"
@@ -6957,10 +6950,9 @@ msgid "_Move album art"
 msgstr "移動專輯演藝 (_M)"
 
 #: quodlibet/qltk/renamefiles.py:214
-#, fuzzy
 msgid ""
 "See '[albumart] search_filenames' config entry for which images will be moved"
-msgstr "See '[albumart] filenames' config entry for image search strings"
+msgstr "查看 '[albumart] search_filenames' 的調設輸入，用於其圖片將被移動"
 
 #: quodlibet/qltk/renamefiles.py:219
 msgid "_Overwrite album art at target"
@@ -7468,11 +7460,11 @@ msgstr ""
 msgid "Empty Playlist"
 msgstr "清空播放清單"
 
-#: quodlibet/util/collection.py:445
+#: quodlibet/util/collection.py:448
 msgid "Playlists must have a name"
 msgstr "播放清單必須設置名稱"
 
-#: quodlibet/util/collection.py:650
+#: quodlibet/util/collection.py:653
 #, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
 msgstr "名為 %(name)s 的播放清單已存在於 %(path)s"
@@ -7538,46 +7530,46 @@ msgstr "選項 %r 需要設置參數。"
 msgid "%r is not a unique prefix."
 msgstr "此 %r 並非是特定前綴字。"
 
-#: quodlibet/util/__init__.py:350
+#: quodlibet/util/__init__.py:356
 #, python-format
 msgid "%d kbps"
 msgstr "%d kbps"
 
-#: quodlibet/util/__init__.py:405
+#: quodlibet/util/__init__.py:411
 #, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
 msgstr[0] "%s 秒"
 
-#: quodlibet/util/__init__.py:418
+#: quodlibet/util/__init__.py:424
 msgid "No time information"
 msgstr "無時間資訊"
 
-#: quodlibet/util/__init__.py:421
+#: quodlibet/util/__init__.py:427
 #, python-format
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d 秒"
 
-#: quodlibet/util/__init__.py:422
+#: quodlibet/util/__init__.py:428
 #, python-format
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d 分"
 
-#: quodlibet/util/__init__.py:423
+#: quodlibet/util/__init__.py:429
 #, python-format
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d 時"
 
-#: quodlibet/util/__init__.py:424
+#: quodlibet/util/__init__.py:430
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d 日"
 
-#: quodlibet/util/__init__.py:425
+#: quodlibet/util/__init__.py:431
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
@@ -7587,7 +7579,7 @@ msgstr[0] "%d 年"
 #. be title-cased ("Looks Like This"), but rather only have
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
-#: quodlibet/util/__init__.py:517
+#: quodlibet/util/__init__.py:523
 msgctxt "check"
 msgid "titlecase?"
 msgstr "標題字母大小寫？"
@@ -7764,17 +7756,15 @@ msgstr "演出者"
 
 #: quodlibet/util/tags.py:104
 msgid "producer"
-msgstr ""
+msgstr "製作人"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "producers"
-msgstr "由 %s 製作"
+msgstr "製作人"
 
 #: quodlibet/util/tags.py:104
-#, fuzzy
 msgid "production"
-msgstr "指揮"
+msgstr "出品"
 
 #: quodlibet/util/tags.py:105
 msgid "title"
@@ -7999,9 +7989,8 @@ msgstr "收聽、瀏覽，或編輯您的音訊收藏"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:9
 #: data/io.github.quodlibet.QuodLibet.appdata.xml.in:9
-#, fuzzy
 msgid "The Quod Libet Development Team"
-msgstr "Quod Libet 偏好設定"
+msgstr "Quod Libet 開發團隊"
 
 #: data/io.github.quodlibet.ExFalso.appdata.xml.in:18
 msgid ""
@@ -8030,6 +8019,9 @@ msgid ""
 msgstr ""
 "Quod Libet 是一套音樂管理工具程式，提供多種不同方式來呈現音樂庫，以及支援網路"
 "廣播及音檔播送。擁有極為彈性操作的資料標籤編輯及搜尋能力。"
+
+#~ msgid "MPRIS D-Bus Support"
+#~ msgstr "MPRIS D-Bus 支援"
 
 #~ msgid "Allow editing of advanced config settings."
 #~ msgstr "允許進階設定編輯。"

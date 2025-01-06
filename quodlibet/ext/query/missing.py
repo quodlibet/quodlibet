@@ -22,9 +22,9 @@ class MissingQuery(QueryPlugin, PluginConfigMixin):
 
     def search(self, data, body):
         val = data.get(body.strip() if body else "", None)
-        return (val is None
-                or (self.config_get_bool("include_empty", True)
-                    and val == ""))
+        return val is None or (
+            self.config_get_bool("include_empty", True) and val == ""
+        )
 
     @classmethod
     def PluginPreferences(cls, window):
@@ -33,8 +33,7 @@ class MissingQuery(QueryPlugin, PluginConfigMixin):
         box.pack_start(example, True, True, 0)
 
         prefs_box = Gtk.VBox()
-        button = cls.ConfigCheckButton(_("Include empty tags"),
-                                       "include_empty", True)
+        button = cls.ConfigCheckButton(_("Include empty tags"), "include_empty", True)
         prefs_box.pack_start(button, False, False, 6)
         frame = Frame(_("Preferences"), child=prefs_box)
         box.pack_start(frame, True, True, 12)

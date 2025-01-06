@@ -14,16 +14,16 @@ from quodlibet.qltk import Icons
 
 
 def has_album_splittable(song):
-    return ("album" in song and
-            "discnumber" not in song and
-            song.can_change("album") and
-            song.can_change("discnumber"))
+    return (
+        "album" in song
+        and "discnumber" not in song
+        and song.can_change("album")
+        and song.can_change("discnumber")
+    )
 
 
 def has_title_splittable(song):
-    return ("title" in song and
-            song.can_change("title") and
-            song.can_change("version"))
+    return "title" in song and song.can_change("title") and song.can_change("version")
 
 def has_genre_splittable(song):
     return ("genre" in song and
@@ -32,8 +32,10 @@ def has_genre_splittable(song):
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
     PLUGIN_NAME = _("Split Tags")
-    PLUGIN_DESC = _("Splits the disc number from the album and the version "
-                    "from the title at the same time.")
+    PLUGIN_DESC = _(
+        "Splits the disc number from the album and the version "
+        "from the title at the same time."
+    )
     PLUGIN_ICON = Icons.EDIT_FIND_REPLACE
 
     plugin_handles = any_song(has_title_splittable)

@@ -26,6 +26,7 @@ class TTaskController(TestCase):
     def test_reparent(self):
         def set_parent(p):
             self.c.parent = p
+
         set_parent(None)
         set_parent(FakeStatusBar())
         self.assertRaises(ValueError, set_parent, FakeStatusBar())

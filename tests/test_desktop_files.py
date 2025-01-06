@@ -19,7 +19,7 @@ class _TDesktopFileMixin:
     PATH = None
 
     def test_filename(self):
-        self.assertTrue(self.PATH.endswith(".desktop.in"))
+        assert self.PATH.endswith(".desktop.in")
 
     def test_validate(self):
         with open(self.PATH, "rb") as template:
@@ -39,7 +39,8 @@ class _TDesktopFileMixin:
         # pass to desktop-file-validate
         try:
             output = subprocess.check_output(
-                ["desktop-file-validate", name], stderr=subprocess.STDOUT)
+                ["desktop-file-validate", name], stderr=subprocess.STDOUT
+            )
         except OSError:
             # desktop-file-validate not available
             return

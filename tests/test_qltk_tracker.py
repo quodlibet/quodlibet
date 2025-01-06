@@ -23,11 +23,23 @@ class TSongTracker(TestCase):
         self.p = NullPlayer()
         self.w = SongLibrary()
         self.s1 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo", "~#length": 1.5})
+            {
+                "~#playcount": 0,
+                "~#skipcount": 0,
+                "~#lastplayed": 10,
+                "~filename": "foo",
+                "~#length": 1.5,
+            }
+        )
         self.s2 = AudioFile(
-            {"~#playcount": 0, "~#skipcount": 0, "~#lastplayed": 10,
-             "~filename": "foo", "~#length": 1.5})
+            {
+                "~#playcount": 0,
+                "~#skipcount": 0,
+                "~#lastplayed": 10,
+                "~filename": "foo",
+                "~#length": 1.5,
+            }
+        )
         self.cm = SongTracker(self.w, self.p, self)
         self.current = None
 
@@ -36,6 +48,7 @@ class TSongTracker(TestCase):
 
     def test_play(self):
         import time
+
         # Allow at least 2 second to elapse to simulate playing
         self.p.song = self.s1
         self.p.paused = False
@@ -46,14 +59,14 @@ class TSongTracker(TestCase):
         t = time.time()
         self.assertEqual(self.s1["~#playcount"], 1)
         self.assertEqual(self.s1["~#skipcount"], 0)
-        self.assertTrue(t - self.s1["~#lastplayed"] <= 1)
+        assert t - self.s1["~#lastplayed"] <= 1
 
     def test_skip(self):
         self.p.emit("song-ended", self.s1, True)
         run_gtk_loop()
         self.assertEqual(self.s1["~#playcount"], 0)
         self.assertEqual(self.s1["~#skipcount"], 1)
-        self.assertTrue(self.s1["~#lastplayed"], 10)
+        assert self.s1["~#lastplayed"], 10
 
     def test_error(self):
         self.current = self.p.song = self.s1
@@ -61,7 +74,7 @@ class TSongTracker(TestCase):
         run_gtk_loop()
         self.assertEqual(self.s1["~#playcount"], 0)
         self.assertEqual(self.s1["~#skipcount"], 0)
-        self.assertTrue(self.s1["~#lastplayed"], 10)
+        assert self.s1["~#lastplayed"], 10
 
     def test_restart(self):
         self.current = self.s1
@@ -92,20 +105,20 @@ class TFSInterface(TestCase):
 
     def test_init(self):
         run_gtk_loop()
-        self.assertFalse(os.path.exists(self.filename))
+        assert not os.path.exists(self.filename)
 
     def test_start(self):
         self.p.emit("song_started", self.song)
         run_gtk_loop()
         with open(self.filename, "rb") as h:
-            self.assertTrue(b"title=bar\n" in h.read())
+            assert b"title=bar\n" in h.read()
 
     def test_song_ended(self):
         self.p.emit("song-started", self.song)
         run_gtk_loop()
         self.p.emit("song-ended", {}, False)
         run_gtk_loop()
-        self.assertFalse(os.path.exists(self.filename))
+        assert not os.path.exists(self.filename)
 
     def test_elapsed(self):
         self.p.seek(123456)

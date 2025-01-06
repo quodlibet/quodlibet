@@ -24,7 +24,6 @@ class LanguagePreference(EventPlugin):
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 
     def PluginPreferences(self, *args):
-
         current = config.gettext("settings", "language")
         if not current:
             current = None
@@ -32,7 +31,7 @@ class LanguagePreference(EventPlugin):
         combo = Gtk.ComboBox()
         model = ObjectStore()
         combo.set_model(model)
-        for lang_id in ([None] + sorted(get_available_languages("quodlibet"))):
+        for lang_id in [None] + sorted(get_available_languages("quodlibet")):
             iter_ = model.append(row=[lang_id])
             if lang_id == current:
                 combo.set_active_iter(iter_)
@@ -65,10 +64,13 @@ class LanguagePreference(EventPlugin):
         box.pack_start(combo, False, False, 0)
         box.pack_start(
             Gtk.Label(
-                label=_(
-                    "A restart is required for any changes to take effect"),
+                label=_("A restart is required for any changes to take effect"),
                 wrap=True,
-                xalign=0),
-            False, False, 0)
+                xalign=0,
+            ),
+            False,
+            False,
+            0,
+        )
 
         return box

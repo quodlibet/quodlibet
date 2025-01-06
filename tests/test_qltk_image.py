@@ -8,26 +8,28 @@ from tests import TestCase
 import cairo
 from gi.repository import Gtk, GdkPixbuf, Gdk
 
-from quodlibet.qltk.image import get_surface_extents, get_surface_for_pixbuf, \
-    scale, calc_scale_size, add_border, add_border_widget
+from quodlibet.qltk.image import (
+    get_surface_extents,
+    get_surface_for_pixbuf,
+    scale,
+    calc_scale_size,
+    add_border,
+    add_border_widget,
+)
 
 
 class TImageUtils(TestCase):
-
     def setUp(self):
-        self.small = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
-        self.wide = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
-        self.high = GdkPixbuf.Pixbuf.new(
-            GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
+        self.small = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 20)
+        self.wide = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 150, 10)
+        self.high = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, 10, 100)
 
     def test_get_surface_for_pixbuf(self):
         w = Gtk.Button()
         rgb = GdkPixbuf.Colorspace.RGB
         newpb = GdkPixbuf.Pixbuf.new(rgb, True, 8, 10, 10)
         surface = get_surface_for_pixbuf(w, newpb)
-        self.assertTrue(isinstance(surface, cairo.Surface))
+        assert isinstance(surface, cairo.Surface)
 
     def test_scale(self):
         nw = scale(self.wide, (50, 30))
@@ -43,8 +45,7 @@ class TImageUtils(TestCase):
         self.assertEqual((ns.get_width(), ns.get_height()), (10, 20))
 
     def test_calc_scale_size(self):
-        self.assertRaises(ValueError,
-                          calc_scale_size, (1, 1), (1, 0))
+        self.assertRaises(ValueError, calc_scale_size, (1, 1), (1, 0))
         res = calc_scale_size((100, 100), (500, 100))
         self.assertEqual(res, (100, 20))
 

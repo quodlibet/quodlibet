@@ -16,24 +16,24 @@ from quodlibet.unisearch.parser import re_replace_literals, re_add_variants
 
 
 class TUniSearch(TestCase):
-
     def test_mapping(self):
         cache = diacritic_for_letters(False)
         new = diacritic_for_letters(True)
         self.assertEqual(sorted(cache.items()), sorted(new.items()))
 
     def test_normalize_input(self):
-        assert re.match(
-            re_add_variants(unicodedata.normalize("NFD", "ö")), "ö")
+        assert re.match(re_add_variants(unicodedata.normalize("NFD", "ö")), "ö")
 
     def test_re_replace(self):
         r = re_add_variants("aa")
-        self.assertTrue("[" in r and "]" in r and r.count("ä") == 2)
+        assert "[" in r and "]" in r and r.count("ä") == 2
 
     def test_re_replace_multi(self):
         r = re_add_variants("ae")
-        self.assertEqual(r, "(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]"
-                            "[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])")
+        self.assertEqual(
+            r,
+            "(?:[aàáâãäåāăąǎǟǡǻȁȃȧḁạảấầẩẫậắằẳẵặ]" "[eèéêëēĕėęěȅȇȩḕḗḙḛḝẹẻẽếềểễệ]|[æǣǽ])",
+        )
 
         r = re_add_variants("SS")
         self.assertEqual(r, "(?:[SŚŜŞŠȘṠṢṤṦṨꞄ][SŚŜŞŠȘṠṢṤṦṨꞄ]|ẞ)")
@@ -80,12 +80,16 @@ class TUniSearch(TestCase):
             ("(?<!foo)", None),
             ("(?#foo)", ""),
             ("(.+) \1", None),
-            ("\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
-             "\\A\\b\\B[\\d][\\D][\\s][\\S][\\w][\\W]\\Z\a"),
+            (
+                "\\A\\b\\B\\d\\D\\s\\S\\w\\W\\Z\a",
+                "\\A\\b\\B[\\d][\\D][\\s][\\S][\\w][\\W]\\Z\a",
+            ),
             ("a{3,5}?a+?a*?a??", None),
             ("^foo$", None),
-            ("[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
-             "[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?"),
+            (
+                "[-+]?(\\d+(\\.\\d*)?|\\.\\d+)([eE][-+]?\\d+)?",
+                "[\\-\\+]?([\\d]+(\\.[\\d]*)?|\\.[\\d]+)([eE][\\-\\+]?[\\d]+)?",
+            ),
             ("(\\$\\d*)", "(\\$[\\d]*)"),
             ("\\$\\.\\^\\[\\]\\:\\-\\+\\?\\\\", None),
             ("[^a][^ab]", None),
@@ -123,9 +127,12 @@ class TUniSearch(TestCase):
 
     def test_construct_regexp_broken(self):
         self.assertRaises(re.error, re_replace_literals, "[", {})
-        self.assertRaises(NotImplementedError,
-                          re_replace_literals,
-                          "(?P<quote>['\"]).*?(?P=quote)", {})
+        self.assertRaises(
+            NotImplementedError,
+            re_replace_literals,
+            "(?P<quote>['\"]).*?(?P=quote)",
+            {},
+        )
 
     def test_seq(self):
         assert re_add_variants("[x-y]") == "[ẋẍýÿŷȳẏẙỳỵỷỹx-y]"
@@ -144,7 +151,6 @@ class TUniSearch(TestCase):
 
 
 class TCompileMatch(TestCase):
-
     def test_basics_default(self):
         assert compile("foo")("foo")
         assert compile("foo")("fooo")
@@ -160,10 +166,10 @@ class TCompileMatch(TestCase):
         assert compile("a.b", dot_all=False)("a b")
 
     def test_unicode_equivalence(self):
-        assert compile("\u212B")("\u00C5")
-        assert compile("\u00C5")("\u212B")
-        assert compile("A\u030a")("\u00C5")
-        assert compile("A\u030a")("\u212B")
+        assert compile("\u212b")("\u00c5")
+        assert compile("\u00c5")("\u212b")
+        assert compile("A\u030a")("\u00c5")
+        assert compile("A\u030a")("\u212b")
         assert compile("o\u0308")("o\u0308")
         assert compile("o\u0308")("\xf6")
         assert compile("\xf6")("o\u0308")
@@ -173,10 +179,10 @@ class TCompileMatch(TestCase):
         assert not compile("o", asym=False)("ö")
 
     def test_assert_asym_unicode_equivalence(self):
-        assert compile("A", asym=True)("\u00C5")
-        assert compile("A\u030a", asym=True)("\u212B")
-        assert compile("\u00C5", asym=True)("\u212B")
-        assert compile("\u212B", asym=True)("\u00C5")
+        assert compile("A", asym=True)("\u00c5")
+        assert compile("A\u030a", asym=True)("\u212b")
+        assert compile("\u00c5", asym=True)("\u212b")
+        assert compile("\u212b", asym=True)("\u00c5")
 
     def test_invalid(self):
         with self.assertRaises(ValueError):

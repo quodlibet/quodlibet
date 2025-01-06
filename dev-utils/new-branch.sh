@@ -2,15 +2,14 @@
 set -eu
 
 die() {
-    printf "\033[31;1mFATAL: %s\033[0m\n" "$*" >> /dev/stderr
+    printf "\033[31;1mFATAL: %s\033[0m\n" "$*" >>/dev/stderr
     printf "Usage: %s\n" "$(basename "$0") NEW_VERSION" >/dev/stderr
     exit 1
 }
 ROOT="$(dirname "$0")/../"
 
-
 newVersion="${1:-}"
-if ! grep -q -E '^[0-9]\.[0-9]$' <<< "$newVersion"; then
+if ! grep -q -E '^[0-9]\.[0-9]$' <<<"$newVersion"; then
     die "Please supply a new version in the form x.y"
 fi
 
@@ -24,7 +23,7 @@ codeVersion=$(sed -nre 's/VERSION_TUPLE\s*=\s*.*\("",\s*([^,]+),\s*([^,]+),\s*-1
 
 newBranch="quodlibet-$currentVersion"
 git rev-parse --quiet --verify "origin/$newBranch" && die "$newBranch branch already exists in Git remote. Wrong version?"
-newCodeVersion=$(sed -nr 's/^([^.]+)\.([^.]*)$/\1, \2, -1/p'<<< "$newVersion")
+newCodeVersion=$(sed -nr 's/^([^.]+)\.([^.]*)$/\1, \2, -1/p' <<<"$newVersion")
 
 # Safety - too many bad things can happen on dev setups otherwise
 if ! git diff-index --quiet HEAD; then
@@ -49,8 +48,6 @@ poetry version "$newVersion.0-pre"
 # Commit these in main
 git add "$ROOT/pyproject.toml" "$ROOT/quodlibet/const.py"
 git commit -m "version bump"
-
-
 
 # Just for safety
 GIT_PAGER="" git diff origin/main

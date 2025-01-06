@@ -17,7 +17,6 @@ TRACK_ID = 1234
 
 class TSoundcloudFile(TestCase):
     class FakeClient(SoundcloudApiClient):
-
         def __init__(self):
             super().__init__()
             self.access_token = "abc"
@@ -44,12 +43,12 @@ class TSoundcloudFile(TestCase):
     def test_favoriting(self):
         client = self.client
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=False)
-        self.assertFalse(song.has_rating)
+        assert not song.has_rating
         song["~#rating"] = 1.0
-        self.assertTrue(song.has_rating)
+        assert song.has_rating
         self.assertEqual(song("~#rating"), 1.0)
         song.write()
-        self.assertTrue(song.favorite)
+        assert song.favorite
         self.assertEqual(client.favoritings[TRACK_ID], 1)
         self.assertEqual(client.unfavoritings[TRACK_ID], 0)
         song.write()
@@ -58,11 +57,11 @@ class TSoundcloudFile(TestCase):
     def test_unfavoriting(self):
         client = self.client
         song = SoundcloudFile("http://uri", TRACK_ID, client, favorite=True)
-        self.assertTrue(song.has_rating)
+        assert song.has_rating
         self.assertEqual(song("~#rating"), 1.0)
         song["~#rating"] = 0.2
         song.write()
-        self.assertFalse(song.favorite)
+        assert not song.favorite
         self.assertEqual(client.unfavoritings[TRACK_ID], 1)
         self.assertEqual(client.favoritings[TRACK_ID], 0)
         song.write()

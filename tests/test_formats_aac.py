@@ -16,7 +16,6 @@ from .helper import get_temp_copy
 
 
 class _TAACFile(TestCase):
-
     NAME = None
 
     def setUp(self):
@@ -28,7 +27,6 @@ class _TAACFile(TestCase):
 
 
 class _TAACFileMixin:
-
     def test_basic(self):
         self.song["title"] = "SomeTestValue"
         self.song.write()
@@ -39,17 +37,17 @@ class _TAACFileMixin:
         self.song.write()
 
     def test_can_change(self):
-        self.assertTrue(self.song.can_change("title"))
-        self.assertFalse(self.song.can_change("foobar"))
-        self.assertTrue("title" in self.song.can_change())
+        assert self.song.can_change("title")
+        assert not self.song.can_change("foobar")
+        assert "title" in self.song.can_change()
 
     def test_can_multiple_values(self):
         self.assertEqual(self.song.can_multiple_values(), True)
-        self.assertTrue(self.song.can_multiple_values("title"))
+        assert self.song.can_multiple_values("title")
 
     def test_invalid(self):
         path = get_data_path("empty.xm")
-        self.assertTrue(os.path.exists(path))
+        assert os.path.exists(path)
         self.assertRaises(Exception, AACFile, path)
 
     def test_format_codec(self):
@@ -63,7 +61,6 @@ class _TAACFileMixin:
 
 @skipUnless(AAC, "too old mutagen")
 class TADTSFile(_TAACFile, _TAACFileMixin):
-
     NAME = "empty.aac"
 
     def test_length(self):
@@ -78,7 +75,6 @@ class TADTSFile(_TAACFile, _TAACFileMixin):
 
 @skipUnless(AAC, "too old mutagen")
 class TADIFFile(_TAACFile, _TAACFileMixin):
-
     NAME = "adif.aac"
 
     def test_length(self):

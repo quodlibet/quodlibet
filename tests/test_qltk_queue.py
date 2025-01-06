@@ -12,8 +12,7 @@ from tests import TestCase, run_gtk_loop
 
 from quodlibet.player.nullbe import NullPlayer
 from quodlibet.formats import DUMMY_SONG
-from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon, \
-    PlayQueue, QUEUE
+from quodlibet.qltk.queue import QueueExpander, PlaybackStatusIcon, PlayQueue, QUEUE
 from quodlibet.library import SongLibrary
 import quodlibet.config
 
@@ -69,7 +68,6 @@ class TPlayQueue(TestCase):
 
 
 class TQueueExpander(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
         player = NullPlayer()
@@ -86,11 +84,11 @@ class TQueueExpander(TestCase):
         widget.pause()
 
     def test_random_at_startup(self):
-        self.assertFalse(isinstance(self.queue.model.order, OrderShuffle))
+        assert not isinstance(self.queue.model.order, OrderShuffle)
         quodlibet.config.set("memory", "shufflequeue", True)
         self.queue = self.queue = QueueExpander(SongLibrary(), NullPlayer())
         # See issue #2411
-        self.assertTrue(isinstance(self.queue.model.order, OrderShuffle))
+        assert isinstance(self.queue.model.order, OrderShuffle)
 
     def tearDown(self):
         self.queue.destroy()

@@ -6,14 +6,19 @@
 import quodlibet.config
 import quodlibet.plugins
 from quodlibet.qltk import Icons
-from quodlibet.qltk.playorder import OrderShuffle, OrderWeighted, \
-    ToggledPlayOrderMenu, Orders, Order, OrderInOrder
+from quodlibet.qltk.playorder import (
+    OrderShuffle,
+    OrderWeighted,
+    ToggledPlayOrderMenu,
+    Orders,
+    Order,
+    OrderInOrder,
+)
 from quodlibet.qltk.playorder import PlayOrderWidget
 from tests import TestCase
 
 
 class TPlayOrderWidget(TestCase):
-
     def setUp(self):
         quodlibet.config.init()
 
@@ -29,10 +34,10 @@ class TPlayOrderWidget(TestCase):
         quodlibet.config.quit()
 
     def test_initial(self):
-        self.assertFalse(self.po.repeated)
-        self.assertFalse(self.po.shuffled)
-        self.assertTrue(isinstance(self.po.order, OrderInOrder))
-        self.assertTrue(self.replaygain_profiles[2], ["album", "track"])
+        assert not self.po.repeated
+        assert not self.po.shuffled
+        assert isinstance(self.po.order, OrderInOrder)
+        assert self.replaygain_profiles[2], ["album", "track"]
 
     def test_replay_gain(self):
         self.po.shuffled = True
@@ -48,11 +53,11 @@ class TPlayOrderWidget(TestCase):
             self.assertEqual(self.po.shuffler, order)
 
     def test_shuffle(self):
-        self.assertFalse(self.po.repeated)
+        assert not self.po.repeated
         self.po.shuffled = True
-        self.assertTrue(self.po.shuffled)
+        assert self.po.shuffled
         self.assertEqual(self.po.shuffler, OrderShuffle)
-        self.assertTrue(isinstance(self.order, OrderShuffle))
+        assert isinstance(self.order, OrderShuffle)
 
     def test_shuffle_defaults_to_inorder(self):
         self.po.shuffler = OrderWeighted
@@ -68,25 +73,26 @@ class FakeOrder(Order):
 
 
 class TToggledPlayOrderMenu(TestCase):
-
     def setUp(self):
         self.orders = Orders([OrderShuffle, OrderWeighted, FakeOrder])
-        self.tpom = ToggledPlayOrderMenu(Icons.AUDIO_X_GENERIC,
-                                         orders=self.orders,
-                                         current_order=OrderShuffle,
-                                         enabled=True)
+        self.tpom = ToggledPlayOrderMenu(
+            Icons.AUDIO_X_GENERIC,
+            orders=self.orders,
+            current_order=OrderShuffle,
+            enabled=True,
+        )
 
     def tearDown(self):
         self.tpom.destroy()
 
     def test_enabled_initially(self):
-        self.assertTrue(self.tpom.enabled)
+        assert self.tpom.enabled
 
     def test_setting_enabled(self):
         self.tpom.enabled = False
-        self.assertFalse(self.tpom.enabled)
+        assert not self.tpom.enabled
         self.tpom.enabled = True
-        self.assertTrue(self.tpom.enabled)
+        assert self.tpom.enabled
 
     def test_initial(self):
         self.assertEqual(self.tpom.current, OrderShuffle)
@@ -105,8 +111,8 @@ class TToggledPlayOrderMenu(TestCase):
 
     def test_set_orders(self):
         self.tpom.set_orders([])
-        self.assertFalse(self.tpom.current)
+        assert not self.tpom.current
 
     def test_playorder_disables_when_order_disappears(self):
         self.tpom.orders = Orders([OrderWeighted, FakeOrder])
-        self.assertFalse(self.tpom.enabled)
+        assert not self.tpom.enabled

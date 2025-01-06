@@ -45,8 +45,8 @@ class TLibrarian(TestCase):
 
     def test_libraries(self):
         self.assertEqual(len(self.librarian.libraries), 2)
-        self.assertTrue(self.lib1 in self.librarian.libraries.values())
-        self.assertTrue(self.lib2 in self.librarian.libraries.values())
+        assert self.lib1 in self.librarian.libraries.values()
+        assert self.lib2 in self.librarian.libraries.values()
 
     def test_register_at_instantiation(self):
         try:
@@ -70,8 +70,8 @@ class TLibrarian(TestCase):
     def test_unregister(self):
         self.lib2.destroy()
         self.assertEqual(len(self.librarian.libraries), 1)
-        self.assertTrue(self.lib1 in self.librarian.libraries.values())
-        self.assertFalse(self.lib2 in self.librarian.libraries.values())
+        assert self.lib1 in self.librarian.libraries.values()
+        assert self.lib2 not in self.librarian.libraries.values()
         self.lib1.destroy()
         self.assertEqual(len(self.librarian.libraries), 0)
 
@@ -119,9 +119,9 @@ class TLibrarian(TestCase):
         new.key = 200
         self.lib1.add([new])
         for value in [1, 2, 15, 22, 200, new]:
-            self.assertTrue(value in self.librarian, "didn't find %d" % value)
+            assert value in self.librarian, "didn't find %d" % value
         for value in [-1, 25, 50, 100]:
-            self.assertFalse(value in self.librarian, "found %d" % value)
+            assert value not in self.librarian, "found %d" % value
 
     def tearDown(self):
         self.Library.librarian = None
@@ -139,11 +139,10 @@ class TSongLibrarian(TLibrarian):
     def test_tag_values(self):
         self.lib1.add(self.Frange(0, 30, 2))
         self.lib2.add(self.Frange(1, 30, 2))
-        del(self.added[:])
-        self.assertEqual(
-            sorted(self.librarian.tag_values(20)), list(range(20)))
+        del self.added[:]
+        self.assertEqual(sorted(self.librarian.tag_values(20)), list(range(20)))
         self.assertEqual(sorted(self.librarian.tag_values(0)), [])
-        self.assertFalse(self.changed or self.added or self.removed)
+        assert not self.changed or self.added or self.removed
 
     def test_rename(self):
         new = self.Fake(10)
@@ -153,13 +152,13 @@ class TSongLibrarian(TLibrarian):
         self.librarian.rename(new, 20)
         run_gtk_loop()
         self.assertEqual(new.key, 20)
-        self.assertTrue(new in self.lib1)
-        self.assertTrue(new in self.lib2)
-        self.assertTrue(new.key in self.lib1)
-        self.assertTrue(new.key in self.lib2)
+        assert new in self.lib1
+        assert new in self.lib2
+        assert new.key in self.lib1
+        assert new.key in self.lib2
         self.assertEqual(self.changed_1, [new])
         self.assertEqual(self.changed_2, [new])
-        self.assertTrue(new in self.changed)
+        assert new in self.changed
 
     def test_rename_changed(self):
         new = self.Fake(10)
@@ -167,7 +166,7 @@ class TSongLibrarian(TLibrarian):
         changed = set()
         self.librarian.rename(new, 20, changed=changed)
         self.assertEqual(len(changed), 1)
-        self.assertTrue(new in changed)
+        assert new in changed
 
     def test_reload(self):
         new = self.Fake(10)
@@ -176,5 +175,5 @@ class TSongLibrarian(TLibrarian):
         removed = set()
 
         self.librarian.reload(new, changed=changed, removed=removed)
-        self.assertTrue(new in changed)
-        self.assertFalse(removed)
+        assert new in changed
+        assert not removed

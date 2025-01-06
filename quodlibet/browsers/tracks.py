@@ -25,26 +25,27 @@ from quodlibet.qltk import Icons
 
 
 class PreferencesButton(Gtk.HBox):
-
     def __init__(self, search_bar_box):
         super().__init__()
         menu = Gtk.Menu()
 
         limit_item = ConfigCheckMenuItem(
-            _("_Limit Results"), "browsers", "search_limit", True)
+            _("_Limit Results"), "browsers", "search_limit", True
+        )
         limit_item.connect("toggled", search_bar_box.toggle_limit_widgets)
         menu.append(limit_item)
 
         multi_item = ConfigCheckMenuItem(
-            _("_Allow multiple queries"), "browsers", "multiple_queries", True)
+            _("_Allow multiple queries"), "browsers", "multiple_queries", True
+        )
         multi_item.connect("toggled", search_bar_box.toggle_multi)
         menu.append(multi_item)
 
         menu.show_all()
 
         button = MenuButton(
-            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU),
-            arrow=True)
+            SymbolicIconImage(Icons.EMBLEM_SYSTEM, Gtk.IconSize.MENU), arrow=True
+        )
         button.set_menu(menu)
         self.pack_start(button, True, True, 0)
 
@@ -76,10 +77,12 @@ class TrackList(Browser):
 
         show_limit = config.getboolean("browsers", "search_limit")
         show_multi = config.getboolean("browsers", "multiple_queries")
-        sbb = MultiSearchBarBox(completion=completion,
-                                accel_group=self.accelerators,
-                                show_limit=show_limit,
-                                show_multi=show_multi)
+        sbb = MultiSearchBarBox(
+            completion=completion,
+            accel_group=self.accelerators,
+            show_limit=show_limit,
+            show_multi=show_multi,
+        )
 
         sbb.connect("query-changed", self.__text_parse)
         sbb.connect("focus-out", self.__focus)
@@ -120,8 +123,7 @@ class TrackList(Browser):
         self.activate()
 
     def __sb_key_pressed(self, entry, event):
-        if (is_accel(event, "<Primary>Return") or
-                is_accel(event, "<Primary>KP_Enter")):
+        if is_accel(event, "<Primary>Return") or is_accel(event, "<Primary>KP_Enter"):
             songs = app.window.songlist.get_songs()
             limit = config.getint("browsers", "searchbar_enqueue_limit")
             app.window.enqueue(songs, limit)

@@ -43,9 +43,8 @@ SonosPlaylistDict = dict[PlaylistID, Name]
 class ComboBoxEntry(Gtk.ComboBox):
     def __init__(self, choices: dict[str, str], tooltip_markup=None):
         super().__init__(
-            model=Gtk.ListStore(str, str),
-            entry_text_column=1,
-            has_entry=True)
+            model=Gtk.ListStore(str, str), entry_text_column=1, has_entry=True
+        )
         self._fill_model(choices)
         if tooltip_markup:
             self.get_child().set_tooltip_markup(tooltip_markup)
@@ -87,7 +86,6 @@ class ComboBoxEntry(Gtk.ComboBox):
 
 
 class GetSonosPlaylistDialog(Dialog):
-
     def __init__(self, choices: SonosPlaylistDict):
         super().__init__(title="Which Sonos Playlist?", transient_for=None)
         self.options = choices
@@ -101,8 +99,11 @@ class GetSonosPlaylistDialog(Dialog):
 
         box = Gtk.VBox(spacing=6)
         label = Gtk.Label(
-            label=_("Type a new playlist name,\n"
-                    "or choose an existing Sonos playlist to overwrite"))
+            label=_(
+                "Type a new playlist name,\n"
+                "or choose an existing Sonos playlist to overwrite"
+            )
+        )
         box.set_border_width(6)
         label.set_line_wrap(True)
         label.set_justify(Gtk.Justification.CENTER)
@@ -121,8 +122,7 @@ class GetSonosPlaylistDialog(Dialog):
         self._combo.grab_focus()
         resp = super().run()
         try:
-            return (self._combo.get_chosen() if resp == Gtk.ResponseType.OK
-                    else None)
+            return self._combo.get_chosen() if resp == Gtk.ResponseType.OK else None
         finally:
             self.destroy()
 
@@ -174,21 +174,28 @@ class SonosPlaylistPlugin(PlaylistPlugin):
         except IndexError:
             person = None
         album = song("album")
-        score = (int(remove_punctuation(t.title).lower()
-                     == remove_punctuation(song("title")).lower())
-                 + int(bool(person) and person in d.values())
-                 + int(bool(album) and album in d.get("album", "")))
+        score = (
+            int(
+                remove_punctuation(t.title).lower()
+                == remove_punctuation(song("title")).lower()
+            )
+            + int(bool(person) and person in d.values())
+            + int(bool(album) and album in d.get("album", ""))
+        )
         if cls.DEBUG:
             print_d(f"{score:.1f} for {t.title} ({d})")
         return score
 
-    def __add_songs(self, task: Task, songs: Collection[AudioFile],
-                    spl: DidlPlaylistContainer):
+    def __add_songs(
+        self, task: Task, songs: Collection[AudioFile], spl: DidlPlaylistContainer
+    ):
         """Generator for copool to add songs to the temp playlist"""
         assert self.device
         task_total = float(len(songs))
-        print_d("Adding %d song(s) to Sonos playlist. "
-                "This might take a while..." % task_total)
+        print_d(
+            "Adding %d song(s) to Sonos playlist. "
+            "This might take a while..." % task_total
+        )
         failures = []
         for i, song in enumerate(songs):
             if self.__cancel:
@@ -199,8 +206,9 @@ class SonosPlaylistPlugin(PlaylistPlugin):
             # Exact title gets the best results it seems; some problems with ’
             search_term = song("title")
             assert search_term
-            results = lib.get_tracks(search_term=search_term,
-                                     max_items=self.MAX_RESULTS_PER_SEARCH)
+            results = lib.get_tracks(
+                search_term=search_term, max_items=self.MAX_RESULTS_PER_SEARCH
+            )
             yield
             total = len(results)
             if total == 1:
@@ -210,10 +218,12 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 candidates = [(self._score(t, song), t) for t in results]
                 in_order = sorted(candidates, reverse=True, key=lambda x: x[0])
                 track = in_order[0][1]
-                print_d(f"From {len(results)} choice(s) for {desc!r}, "
-                        f"chose {self.uri_for(track)}")
+                print_d(
+                    f"From {len(results)} choice(s) for {desc!r}, "
+                    f"chose {self.uri_for(track)}"
+                )
             else:
-                print_w('No results for "%s"' % search_term)
+                print_w(f'No results for "{search_term}"')
                 failures.append(search_term)
                 track = None
             if track:
@@ -244,18 +254,19 @@ class SonosPlaylistPlugin(PlaylistPlugin):
             qltk.ErrorMessage(
                 app.window,
                 _("Error finding Sonos device(s)"),
-                _("Error finding Sonos. Please check settings")
+                _("Error finding Sonos. Please check settings"),
             ).run()
         else:
             sonos_pls = device.get_sonos_playlists()
             pl_id_to_name = {pl.item_id: pl.title for pl in sonos_pls}
-            print_d("Sonos playlists: %s" % pl_id_to_name)
+            print_d(f"Sonos playlists: {pl_id_to_name}")
             ret = GetSonosPlaylistDialog(pl_id_to_name).run(playlist.name)
             if ret:
                 spl_id, name = ret
                 if spl_id:
-                    spl: DidlPlaylistContainer = next(s for s in sonos_pls
-                                                      if s.item_id == spl_id)
+                    spl: DidlPlaylistContainer = next(
+                        s for s in sonos_pls if s.item_id == spl_id
+                    )
                     print_w(f"Replacing existing Sonos playlist {spl_id} ({spl.title})")
                     try:
                         device.remove_sonos_playlist(spl)
@@ -263,17 +274,24 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                     except SoCoException as e:
                         tmpl = _("Failed to delete existing Sonos playlist %s:")
                         err_str = f" \n<tt>{escape(e)!r}</tt>"
-                        dialog = WarningMessage(None,
-                                                tmpl % escape(spl.title) + err_str,
-                                                escape_desc=False)
+                        dialog = WarningMessage(
+                            None, tmpl % escape(spl.title) + err_str, escape_desc=False
+                        )
                         dialog.run()
                         return
 
                 print_d(f"Creating new playlist {name!r}")
                 spl = device.create_sonos_playlist(name)
                 data = {"playlist": name[:30], "total": len(playlist)}
-                task = Task("Sonos", _("Export to playlist %(playlist)r "
-                                       "(%(total)d tracks)") % data,
-                            stop=self.__cancel_add)
-                copool.add(self.__add_songs, task, playlist.songs, spl,
-                           funcid="sonos-playlist-save")
+                task = Task(
+                    "Sonos",
+                    _("Export to playlist %(playlist)r " "(%(total)d tracks)") % data,
+                    stop=self.__cancel_add,
+                )
+                copool.add(
+                    self.__add_songs,
+                    task,
+                    playlist.songs,
+                    spl,
+                    funcid="sonos-playlist-save",
+                )

@@ -6,7 +6,7 @@ import os
 import shutil
 
 from quodlibet.formats import AudioFile
-from quodlibet.library.base import (Library, iter_paths, PicklingMixin)
+from quodlibet.library.base import Library, iter_paths, PicklingMixin
 from quodlibet.util import connect_obj, is_windows
 from senf import fsnative
 from tests import TestCase, mkstemp, mkdtemp, skipIf, run_gtk_loop
@@ -117,17 +117,17 @@ class TLibrary(TestCase):
 
     def test_remove(self):
         self.library.add(self.Frange(10))
-        self.assertTrue(self.library.remove(self.Frange(3, 6)))
+        assert self.library.remove(self.Frange(3, 6))
         self.assertEqual(self.removed, self.Frange(3, 6))
 
         # Neither the objects nor their keys should be present.
-        self.assertFalse(self.Fake(3) in self.library)
-        self.assertTrue(self.Fake(6) in self.library)
-        self.assertFalse(3 in self.library)
-        self.assertTrue(6 in self.library)
+        assert self.Fake(3) not in self.library
+        assert self.Fake(6) in self.library
+        assert 3 not in self.library
+        assert 6 in self.library
 
     def test_remove_when_not_present(self):
-        self.assertFalse(self.library.remove([self.Fake(12)]))
+        assert not self.library.remove([self.Fake(12)])
 
     def test_changed(self):
         self.library.add(self.Frange(10))
@@ -150,7 +150,7 @@ class TLibrary(TestCase):
         self.assertEqual(sorted(self.library), self.Frange(10))
 
     def test___iter___empty(self):
-        self.assertFalse(list(self.library))
+        assert not list(self.library)
 
     def test___len__(self):
         self.assertEqual(len(self.library), 0)
@@ -166,7 +166,7 @@ class TLibrary(TestCase):
         new.key = 100
         self.library.add([new])
         self.assertEqual(self.library[100], new)
-        self.assertFalse(12 in self.library)
+        assert 12 not in self.library
 
     def test___getitem___not_present(self):
         self.library.add(self.Frange(10))
@@ -181,21 +181,21 @@ class TLibrary(TestCase):
             # 0, 1, 2, 6, 9: all added by self.Frange
             # 100: key for new
             # new: is itself present
-            self.assertTrue(value in self.library, "didn't find %s" % value)
+            assert value in self.library, f"didn't find {value}"
 
         for value in [-1, 10, 12, 101]:
             # -1, 10, 101: boundary values
             # 12: equal but non-key-equal to new
-            self.assertFalse(value in self.library, "found %d" % value)
+            assert value not in self.library, "found %d" % value
 
     def test_get(self):
-        self.assertTrue(self.library.get(12) is None)
-        self.assertTrue(self.library.get(12, "foo") == "foo")
+        assert self.library.get(12) is None
+        assert self.library.get(12, "foo") == "foo"
         new = self.Fake(12)
         new.key = 100
         self.library.add([new])
-        self.assertTrue(self.library.get(12) is None)
-        self.assertTrue(self.library.get(100) is new)
+        assert self.library.get(12) is None
+        assert self.library.get(100) is new
 
     def test_keys(self):
         items = []
@@ -203,8 +203,7 @@ class TLibrary(TestCase):
             items.append(self.Fake(i))
             items[-1].key = i + 100
         self.library.add(items)
-        self.assertEqual(
-            sorted(self.library.keys()), list(range(100, 120)))
+        self.assertEqual(sorted(self.library.keys()), list(range(100, 120)))
 
     def test_values(self):
         items = []
@@ -224,19 +223,18 @@ class TLibrary(TestCase):
         self.assertEqual(sorted(self.library.items()), expected)
 
     def test_has_key(self):
-        self.assertFalse(self.library.has_key(10))
+        assert not self.library.has_key(10)
         new = self.Fake(10)
         new.key = 20
         self.library.add([new])
-        self.assertFalse(self.library.has_key(10))
-        self.assertTrue(self.library.has_key(20))
+        assert not self.library.has_key(10)
+        assert self.library.has_key(20)
 
     def tearDown(self):
         self.library.destroy()
 
 
 class FakeAudioFile(AudioFile):
-
     def __init__(self, key):
         self._written = []
         self["~filename"] = fsnative(str(key))
@@ -298,8 +296,9 @@ class TPicklingMixin(TestCase):
 
             library = self.Library()
             library.load(filename)
-            zipped = zip(sorted(self.library.items()),
-                         sorted(library.items()), strict=False)
+            zipped = zip(
+                sorted(self.library.items()), sorted(library.items()), strict=False
+            )
             for (k, v), (k2, v2) in zipped:
                 assert k == k2
                 assert v.key == v2.key
@@ -308,7 +307,6 @@ class TPicklingMixin(TestCase):
 
 
 class Titer_paths(TestCase):
-
     def setUp(self):
         # on osx the temp folder returned is a symlink
         self.root = os.path.realpath(mkdtemp())
@@ -328,8 +326,7 @@ class Titer_paths(TestCase):
         fd, name = mkstemp(dir=self.root)
         os.close(fd)
         assert list(iter_paths(self.root, exclude=[self.root])) == []
-        assert list(iter_paths(self.root,
-                               exclude=[os.path.dirname(self.root)])) == []
+        assert list(iter_paths(self.root, exclude=[os.path.dirname(self.root)])) == []
         assert list(iter_paths(self.root, exclude=[name])) == []
         assert list(iter_paths(self.root, exclude=[name + "a"])) == [name]
 

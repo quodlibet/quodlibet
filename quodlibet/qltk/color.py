@@ -12,7 +12,9 @@ def mix(src: Gdk.RGBA, dest: Gdk.RGBA, ratio: float) -> Gdk.RGBA:
     """Mixes two Gdk colours into a result"""
     ratio = min(1.0, max(0.0, ratio))
     inv = 1.0 - ratio
-    return Gdk.RGBA(inv * src.red + ratio * dest.red,
-                    inv * src.green + ratio * dest.green,
-                    inv * src.blue + ratio * dest.blue,
-                    inv * src.alpha + ratio * dest.alpha)
+    return Gdk.RGBA(
+        inv * src.red + ratio * dest.red,
+        inv * src.green + ratio * dest.green,
+        inv * src.blue + ratio * dest.blue,
+        inv * src.alpha + ratio * dest.alpha,
+    )

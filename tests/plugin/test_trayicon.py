@@ -47,30 +47,30 @@ class TTrayIcon(PluginTestCase):
             self.plugin.disabled()
 
     def test_get_paused_pixbuf(self):
-        get_paused_pixbuf = \
-            self.modules["Tray Icon"].systemtray.get_paused_pixbuf
+        get_paused_pixbuf = self.modules["Tray Icon"].systemtray.get_paused_pixbuf
 
-        self.assertTrue(get_paused_pixbuf((1, 1), 0))
+        assert get_paused_pixbuf((1, 1), 0)
         self.assertRaises(ValueError, get_paused_pixbuf, (0, 0), 0)
         self.assertRaises(ValueError, get_paused_pixbuf, (1, 1), -1)
 
     def test_new_with_paused_emblem(self):
-        new_with_paused_emblem = \
-            self.modules["Tray Icon"].systemtray.new_with_paused_emblem
+        new_with_paused_emblem = self.modules[
+            "Tray Icon"
+        ].systemtray.new_with_paused_emblem
 
         # too small source pixbuf
         for w, h in [(150, 1), (1, 150), (1, 1)]:
             pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, w, h)
             success, new = new_with_paused_emblem(pb)
-            self.assertFalse(success)
-            self.assertTrue(new)
+            assert not success
+            assert new
 
         # those should work
         for w, h in [(20, 20), (10, 10), (5, 5), (150, 5), (5, 150)]:
             pb = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, True, 8, w, h)
             success, new = new_with_paused_emblem(pb)
-            self.assertTrue(success)
-            self.assertTrue(new)
+            assert success
+            assert new
 
 
 @skipIf(sys.platform == "darwin", "segfaults..")
@@ -85,23 +85,27 @@ class TIndicatorMenu(TestCase):
 
     def test_icons(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+
         menu = IndicatorMenu(app)
         # Slightly lame way to assert here,
         # but it does the job and is not *too* brittle
-        icons = [item.get_image().get_icon_name()[0]
-                 for item in menu.get_children()
-                 if isinstance(item, Gtk.ImageMenuItem)]
-        self.assertTrue(Icons.EDIT in icons)
-        self.assertTrue(Icons.FOLDER_DRAG_ACCEPT in icons)
-        self.assertTrue(Icons.MEDIA_PLAYBACK_START in icons)
-        self.assertTrue(Icons.MEDIA_SKIP_FORWARD in icons)
-        self.assertTrue(Icons.MEDIA_SKIP_BACKWARD in icons)
-        self.assertTrue(Icons.APPLICATION_EXIT in icons)
-        self.assertTrue(Icons.FAVORITE in icons)
+        icons = [
+            item.get_image().get_icon_name()[0]
+            for item in menu.get_children()
+            if isinstance(item, Gtk.ImageMenuItem)
+        ]
+        assert Icons.EDIT in icons
+        assert Icons.FOLDER_DRAG_ACCEPT in icons
+        assert Icons.MEDIA_PLAYBACK_START in icons
+        assert Icons.MEDIA_SKIP_FORWARD in icons
+        assert Icons.MEDIA_SKIP_BACKWARD in icons
+        assert Icons.APPLICATION_EXIT in icons
+        assert Icons.FAVORITE in icons
 
     def test_playlist_menu_populates(self):
         from quodlibet.ext.events.trayicon.menu import IndicatorMenu
+
         menu = IndicatorMenu(app)
         song = AudioFile({"~filename": "/dev/null"})
         menu._new_playlist_submenu_for(song)
-        self.assertTrue(menu._playlists_item.get_submenu())
+        assert menu._playlists_item.get_submenu()

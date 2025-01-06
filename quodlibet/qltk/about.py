@@ -12,7 +12,6 @@ from quodlibet import const
 
 
 class AboutDialog(Gtk.AboutDialog):
-
     def __init__(self, parent, app):
         super().__init__()
         self.set_transient_for(parent)

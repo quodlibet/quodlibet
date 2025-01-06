@@ -189,9 +189,7 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         yield from self.scan(paths, exclude, cofuncid)
 
-    def add_filename(self,
-                     filename: str | Path,
-                     add: bool = True) -> AudioFile | None:
+    def add_filename(self, filename: str | Path, add: bool = True) -> AudioFile | None:
         """Add a file based on its filename.
         Subclasses must override this to open the file correctly.
 
@@ -200,14 +198,16 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         pass
 
     def contains_filename(self, filename) -> bool:
-        """Returns if a song for the passed filename is in the library. """
+        """Returns if a song for the passed filename is in the library."""
         key = normalize_path(filename, True)
         return key in self._contents
 
-    def scan(self, paths: Iterable[fsnative],
-             exclude: Iterable[fsnative] | None = None,
-             cofuncid=None):
-
+    def scan(
+        self,
+        paths: Iterable[fsnative],
+        exclude: Iterable[fsnative] | None = None,
+        cofuncid=None,
+    ):
         def need_yield(last_yield=[0]):  # noqa
             current = time.time()
             if abs(current - last_yield[0]) > 0.015:
@@ -325,10 +325,9 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         self._masked.pop(mount_point, {})
 
-    def move_root(self,
-                  old_root: str,
-                  new_root: fsnative,
-                  write_files: bool = True) -> Generator[None, None, None]:
+    def move_root(
+        self, old_root: str, new_root: fsnative, write_files: bool = True
+    ) -> Generator[None, None, None]:
         """
         Move the root for all songs in a given (scan) directory.
 
@@ -343,8 +342,10 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         old_path = Path(normalize_path(old_root, canonicalise=True)).expanduser()
         new_path = Path(normalize_path(new_root)).expanduser()
         if not old_path.is_dir():
-            print_w(f"Source dir {str(old_path)!r} doesn't exist, assuming that's OK",
-                    self._name)
+            print_w(
+                f"Source dir {str(old_path)!r} doesn't exist, assuming that's OK",
+                self._name,
+            )
         if not new_path.is_dir():
             raise ValueError(f"Destination {new_path!r} is not a directory")
         print_d(f"Checking entire library for {str(old_path)!r}", self._name)
@@ -379,12 +380,16 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
                     yield
             self.changed(changed)
             if missing:
-                print_w(f"Couldn't find {len(list(missing))} files: {missing}",
-                        self._name)
+                print_w(
+                    f"Couldn't find {len(list(missing))} files: {missing}", self._name
+                )
         yield
         self.save()
-        print_d(f"Done moving {len(changed)} track(s) (of {total}) "
-                f"to {str(new_path)!r}.", self._name)
+        print_d(
+            f"Done moving {len(changed)} track(s) (of {total}) "
+            f"to {str(new_path)!r}.",
+            self._name,
+        )
 
     def move_song(self, song: AudioFile, new_path: fsnative) -> bool:
         """Updates the location of a song, without touching the file.
@@ -405,8 +410,10 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
     def remove_roots(self, old_roots: Iterable[str]) -> Generator[None, None, None]:
         """Remove library roots (scandirs) entirely, and all their songs"""
-        old_paths = [Path(normalize_path(root, canonicalise=True)).expanduser()
-                     for root in old_roots]
+        old_paths = [
+            Path(normalize_path(root, canonicalise=True)).expanduser()
+            for root in old_roots
+        ]
         total = len(self)
         removed = set()
         print_d(f"Removing library roots {old_roots}", self._name)
@@ -436,7 +443,6 @@ class WatchedFileLibraryMixin(FileLibrary):
     def __init__(self, name=None):
         super().__init__(name)
         self._monitors: dict[Path, tuple[GObject.GObject, int]] = {}
-        print_d(f"Initialised {self!r}")
 
     def monitor_dir(self, path: Path) -> None:
         """Monitors a single directory"""
@@ -456,9 +462,13 @@ class WatchedFileLibraryMixin(FileLibrary):
             self._monitors[path] = (monitor, handler_id)
             print_d(f"Monitoring {path!s}", self._name)
 
-    def __file_changed(self, _monitor, main_file: Gio.File,
-                       other_file: Gio.File | None,
-                       event: Gio.FileMonitorEvent) -> None:
+    def __file_changed(
+        self,
+        _monitor,
+        main_file: Gio.File,
+        other_file: Gio.File | None,
+        event: Gio.FileMonitorEvent,
+    ) -> None:
         if event == Event.CHANGES_DONE_HINT:
             # This seems to work fine on most Linux, but not on Windows / macOS
             # Or at least, not in CI anyway.
@@ -471,8 +481,11 @@ class WatchedFileLibraryMixin(FileLibrary):
             file_path = normalize_path(file_path, True)
             song = self.get(file_path)
             file_path = Path(file_path)
-            other_path = (Path(normalize_path(other_file.get_path(), True))
-                          if other_file else None)
+            other_path = (
+                Path(normalize_path(other_file.get_path(), True))
+                if other_file
+                else None
+            )
             if event in (Event.CREATED, Event.MOVED_IN):
                 if file_path.is_dir():
                     self.monitor_dir(file_path)
@@ -482,27 +495,34 @@ class WatchedFileLibraryMixin(FileLibrary):
                     self.add_filename(str(file_path))
             elif event == Event.RENAMED:
                 if not other_path:
-                    print_w(f"No destination found for rename of {file_path}",
-                            self._name)
+                    print_w(
+                        f"No destination found for rename of {file_path}", self._name
+                    )
                 if song:
                     print_d(f"Moving {file_path} to {other_path}...", self._name)
                     if self.move_song(song, str(other_path)):  # type:ignore
                         print_w(f"Song {file_path} has gone")
                 elif self.is_monitored_dir(file_path):
                     if self.librarian:
-                        print_d(f"Moving tracks from {file_path} -> {other_path}...",
-                                self._name)
-                        copool.add(self.librarian.move_root,
-                                   str(file_path), str(other_path),
-                                   write_files=False,
-                                   priority=GLib.PRIORITY_DEFAULT)
+                        print_d(
+                            f"Moving tracks from {file_path} -> {other_path}...",
+                            self._name,
+                        )
+                        copool.add(
+                            self.librarian.move_root,
+                            str(file_path),
+                            str(other_path),
+                            write_files=False,
+                            priority=GLib.PRIORITY_DEFAULT,
+                        )
                     self.unmonitor_dir(file_path)
                     if other_path:
                         self.monitor_dir(other_path)
                 else:
                     if other_path:
-                        print_w(f"Seems {file_path} is not a track (deleted?)",
-                                self._name)
+                        print_w(
+                            f"Seems {file_path} is not a track (deleted?)", self._name
+                        )
                         # On some (Windows?) systems CHANGED is called which can remove
                         # before we get here, so let's try adding the new path back
                         self.add_filename(other_path)
@@ -530,15 +550,20 @@ class WatchedFileLibraryMixin(FileLibrary):
                         if file_path in Path(key).parents:
                             gone.add(song)
                     if gone:
-                        print_d(f"Removing {len(gone)} contained songs in {file_path}",
-                                self._name)
+                        print_d(
+                            f"Removing {len(gone)} contained songs in {file_path}",
+                            self._name,
+                        )
                         actually_gone = self.remove(gone)
                         if gone != actually_gone:
-                            print_w(f"Couldn't remove all: {gone - actually_gone}",
-                                    self._name)
+                            print_w(
+                                f"Couldn't remove all: {gone - actually_gone}",
+                                self._name,
+                            )
             else:
-                print_d(f"Unhandled event {event} on {file_path} ({other_path})",
-                        self._name)
+                print_d(
+                    f"Unhandled event {event} on {file_path} ({other_path})", self._name
+                )
                 return
         except Exception:
             print_w("Failed to run file monitor callback", self._name)
@@ -568,8 +593,9 @@ class WatchedFileLibraryMixin(FileLibrary):
                 desc = _("Adding watches for %s") % (fsn2text(unexpand(fullpath)))
                 with Task(_("Library"), desc) as task:
                     normalised = Path(normalize_path(fullpath, True)).expanduser()
-                    if any(Path(exclude) in normalised.parents
-                           for exclude in exclude_dirs):
+                    if any(
+                        Path(exclude) in normalised.parents for exclude in exclude_dirs
+                    ):
                         continue
                     unpulsed = 0
                     self.monitor_dir(normalised)

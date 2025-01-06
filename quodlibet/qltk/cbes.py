@@ -103,8 +103,7 @@ class _KeyValueEditor(qltk.Window):
         connect_obj(name, "activate", Gtk.Entry.grab_focus, self.value)
         connect_obj(self.value, "activate", Gtk.Button.clicked, add)
         self.value.connect("changed", self.__changed, [add])
-        connect_obj(add, "clicked", self.__add, selection, name, self.value,
-                    self.model)
+        connect_obj(add, "clicked", self.__add, selection, name, self.value, self.model)
         selection.connect("changed", self.__set_text, name, self.value, rem_b)
         view.connect("popup-menu", self.__popup, menu)
         connect_obj(rem_b, "clicked", self.__remove, view)
@@ -139,9 +138,7 @@ class _KeyValueEditor(qltk.Window):
     def __cdf(self, column, cell, model, iter, data):
         row = model[iter]
         content, name = row
-        cell.set_property("markup",
-                          util.bold(name) + "\n" +
-                          util.monospace(content))
+        cell.set_property("markup", util.bold(name) + "\n" + util.monospace(content))
 
     def __changed(self, entry, buttons):
         for b in buttons:
@@ -211,10 +208,9 @@ class StandaloneEditor(_KeyValueEditor):
             lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
-                self.model.prepend(
-                    row=[lines.pop(1).strip(), lines.pop(0).strip()])
+                self.model.prepend(row=[lines.pop(1).strip(), lines.pop(0).strip()])
         if not len(self.model) and self.initial:
-            for (k, v) in self.initial:
+            for k, v in self.initial:
                 self.model.append(row=[v.strip(), k.strip()])
 
     def write(self, create=True):
@@ -225,8 +221,7 @@ class StandaloneEditor(_KeyValueEditor):
                 if not os.path.isdir(os.path.dirname(self.filename)):
                     os.makedirs(os.path.dirname(self.filename))
 
-            with open(self.filename + ".saved", "w",
-                      encoding="utf-8") as saved:
+            with open(self.filename + ".saved", "w", encoding="utf-8") as saved:
                 for row in self.model:
                     saved.write(row[0] + "\n")
                     saved.write(row[1] + "\n")
@@ -259,9 +254,18 @@ class ComboBoxEntrySave(Gtk.ComboBox):
     __models: dict[str, Gtk.TreeModel] = {}
     __last = ""
 
-    def __init__(self, filename=None, initial=None, count=5, id=None,
-                 validator=None, title=_("Saved Values"),  # noqa
-                 edit_title=_(u"Edit saved values…")):  # noqa
+    def __init__(
+        self,
+        filename=None,
+        initial=None,
+        count=5,
+        id=None,
+        validator=None,
+        title=None,
+        edit_title=None,
+    ):
+        title = title or _("Saved Values")
+        edit_title = edit_title or _("Edit saved values…")
         initial = initial if initial is not None else []
         self.count = count
         self.filename = filename
@@ -272,8 +276,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
         except KeyError:
             model = type(self).__models[id] = Gtk.ListStore(str, str, str)
 
-        super().__init__(
-            model=model, entry_text_column=0, has_entry=True)
+        super().__init__(model=model, entry_text_column=0, has_entry=True)
         self.clear()
 
         render = Gtk.CellRendererPixbuf()
@@ -325,12 +328,11 @@ class ComboBoxEntrySave(Gtk.ComboBox):
 
     def __focus_entry(self):
         self.get_child().grab_focus()
-        self.get_child().emit("move-cursor",
-                              Gtk.MovementStep.BUFFER_ENDS, 0, False)
+        self.get_child().emit("move-cursor", Gtk.MovementStep.BUFFER_ENDS, 0, False)
 
-    def __fill(self, filename: str | os.PathLike, initial: list[str] | None,
-               edit_title: str) -> None:
-
+    def __fill(
+        self, filename: str | os.PathLike, initial: list[str] | None, edit_title: str
+    ) -> None:
         initial = initial or []
 
         model = self.get_model()
@@ -346,8 +348,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
                 lines = list(fileobj.readlines())
             lines.reverse()
             while len(lines) > 1:
-                model.prepend(
-                    row=[lines.pop(1).strip(), lines.pop(0).strip(), None])
+                model.prepend(row=[lines.pop(1).strip(), lines.pop(0).strip(), None])
 
         if os.path.exists(filename):
             with open(filename, encoding="utf-8") as fileobj:

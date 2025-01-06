@@ -26,8 +26,10 @@ from .ui import ErrorDialog, find_active_window, SubmitErrorDialog
 from .faulthandling import FaultHandlerCrash
 from .logdump import dump_to_disk
 
-SENTRY_DSN = ("514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
-              "0d15f73b978d143b5e84030a1ddf9a73//:sptth")[::-1]
+SENTRY_DSN = (
+    "514241/oi.yrtnes@0818e5ab0218038bcbb41f049ec5de21:"
+    "0d15f73b978d143b5e84030a1ddf9a73//:sptth"
+)[::-1]
 
 
 @cached_func
@@ -103,8 +105,7 @@ def run_error_dialogs(exc_info, sentry_error):
             app.restart()
         elif response == ErrorDialog.RESPONSE_SUBMIT:
             dialog.hide()
-            submit_dialog = SubmitErrorDialog(
-                window, sentry_error.get_report())
+            submit_dialog = SubmitErrorDialog(window, sentry_error.get_report())
             submit_response = submit_dialog.run()
 
             if submit_response == SubmitErrorDialog.RESPONSE_SUBMIT:

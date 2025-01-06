@@ -64,7 +64,8 @@ class _MatchData(Generic[T]):
             # We negate the index here, so that the sorting is correct if the
             # similarities of two b's are the same (lowest index last)
             self._sorted_b_similarity_with_idx_pairs = sorted(
-                ((s, -i) for i, s in enumerate(self.b_idx_to_similarity)))
+                ((s, -i) for i, s in enumerate(self.b_idx_to_similarity))
+            )
 
         if not self._sorted_b_similarity_with_idx_pairs:
             return
@@ -269,8 +270,9 @@ class ObjectListMatcher(Generic[T]):
                 return
 
             # We have found a conflict and will now solve it.
-            a_match_data_to_check = self._get_losing_match_data(a_match_data_to_check,
-                                                                other_a_match_data)
+            a_match_data_to_check = self._get_losing_match_data(
+                a_match_data_to_check, other_a_match_data
+            )
 
     def _get_losing_match_data(self, a1_match_data, a2_match_data):
         """Return the match data of the element that lost the conflict"""
@@ -315,8 +317,9 @@ class ObjectListMatcher(Generic[T]):
 
         for attr_idx in range(continue_attr_idx, attr_size):
             # stop if one has more similarity than is possible for the rest
-            if can_stop and self._is_max_similarity_undefeatable(attr_idx,
-                                                                 a_match_data):
+            if can_stop and self._is_max_similarity_undefeatable(
+                attr_idx, a_match_data
+            ):
                 a_match_data.continue_attr_index = attr_idx
                 return
 

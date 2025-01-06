@@ -13,10 +13,13 @@ from ._base import SessionClient, SessionError
 def iter_backends():
     if is_linux():
         from .gnome import GnomeSessionClient
+
         yield GnomeSessionClient
         from .xfce import XfceSessionClient
+
         yield XfceSessionClient
         from .xsmp import XSMPSessionClient
+
         yield XSMPSessionClient
     # dummy one last
     yield SessionClient
@@ -26,7 +29,7 @@ def init(app):
     """Returns an active SessionClient instance or None"""
 
     for backend in iter_backends():
-        print_d("Trying %s" % backend.__name__)
+        print_d(f"Trying {backend.__name__}")
         client = backend()
         try:
             client.open(app)

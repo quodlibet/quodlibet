@@ -15,8 +15,10 @@ from quodlibet.qltk import Icons
 class IRadioLog(EventPlugin):
     PLUGIN_ID = "Internet Radio Log"
     PLUGIN_NAME = _("Internet Radio Log")
-    PLUGIN_DESC = _("Records the last 10 songs played on radio stations, "
-                    "and lists them in the seek context menu.")
+    PLUGIN_DESC = _(
+        "Records the last 10 songs played on radio stations, "
+        "and lists them in the seek context menu."
+    )
     PLUGIN_ICON = Icons.EDIT
 
     def plugin_on_song_started(self, song):

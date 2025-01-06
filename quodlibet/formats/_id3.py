@@ -24,8 +24,10 @@ def encoding_for(s):
 
 
 RG_KEYS = {
-    "replaygain_track_peak", "replaygain_track_gain",
-    "replaygain_album_peak", "replaygain_album_gain",
+    "replaygain_track_peak",
+    "replaygain_track_gain",
+    "replaygain_album_peak",
+    "replaygain_album_gain",
 }
 
 
@@ -35,41 +37,42 @@ class ID3File(AudioFile):
 
     # http://www.unixgods.org/~tilo/ID3/docs/ID3_comparison.html
     # http://www.id3.org/id3v2.4.0-frames.txt
-    IDS = {"TIT1": "grouping",
-           "TIT2": "title",
-           "TIT3": "version",
-           "TPE1": "artist",
-           "TPE2": "performer",
-           "TPE3": "conductor",
-           "TPE4": "arranger",
-           "TEXT": "lyricist",
-           "TCOM": "composer",
-           "TENC": "encodedby",
-           "TALB": "album",
-           "TRCK": "tracknumber",
-           "TPOS": "discnumber",
-           "TSRC": "isrc",
-           "TCOP": "copyright",
-           "TPUB": "organization",
-           "TSST": "discsubtitle",
-           "TOLY": "author",
-           "TMOO": "mood",
-           "TBPM": "bpm",
-           "TDRC": "date",
-           "TDOR": "originaldate",
-           "TOAL": "originalalbum",
-           "TOPE": "originalartist",
-           "WOAR": "website",
-           "TSOP": "artistsort",
-           "TSOA": "albumsort",
-           "TSOT": "titlesort",
-           "TSO2": "albumartistsort",
-           "TSOC": "composersort",
-           "TMED": "media",
-           "TCMP": "compilation",
-           "TKEY": "initialkey",
-           # TLAN requires an ISO 639-2 language code, check manually
-           #"TLAN": "language"
+    IDS = {
+        "TIT1": "grouping",
+        "TIT2": "title",
+        "TIT3": "version",
+        "TPE1": "artist",
+        "TPE2": "performer",
+        "TPE3": "conductor",
+        "TPE4": "arranger",
+        "TEXT": "lyricist",
+        "TCOM": "composer",
+        "TENC": "encodedby",
+        "TALB": "album",
+        "TRCK": "tracknumber",
+        "TPOS": "discnumber",
+        "TSRC": "isrc",
+        "TCOP": "copyright",
+        "TPUB": "organization",
+        "TSST": "discsubtitle",
+        "TOLY": "author",
+        "TMOO": "mood",
+        "TBPM": "bpm",
+        "TDRC": "date",
+        "TDOR": "originaldate",
+        "TOAL": "originalalbum",
+        "TOPE": "originalartist",
+        "WOAR": "website",
+        "TSOP": "artistsort",
+        "TSOA": "albumsort",
+        "TSOT": "titlesort",
+        "TSO2": "albumartistsort",
+        "TSOC": "composersort",
+        "TMED": "media",
+        "TCMP": "compilation",
+        "TKEY": "initialkey",
+        # TLAN requires an ISO 639-2 language code, check manually
+        # "TLAN": "language"
     }
     SDI = {v: k for k, v in IDS.items()}
 
@@ -93,7 +96,7 @@ class ID3File(AudioFile):
         "ASIN": "asin",
         "ALBUMARTISTSORT": "albumartistsort",
         "BARCODE": "barcode",
-        }
+    }
     PAM_XXXT = {v: k for k, v in TXXX_MAP.items()}
 
     Kind: type[mutagen.FileType] | None = None
@@ -114,8 +117,7 @@ class ID3File(AudioFile):
             elif frame.FrameID == "TCON":
                 self["genre"] = "\n".join(frame.genres)
                 continue
-            elif (frame.FrameID == "UFID" and
-                  frame.owner == "http://musicbrainz.org"):
+            elif frame.FrameID == "UFID" and frame.owner == "http://musicbrainz.org":
                 self["musicbrainz_trackid"] = frame.data.decode("utf-8", "replace")
                 continue
             elif frame.FrameID == "POPM":
@@ -221,8 +223,12 @@ class ID3File(AudioFile):
         if not k or "=" in k or "~" in k:
             return
 
-        if not (k and "=" not in k and "~" not in k
-                and k.encode("ascii", "replace").decode("ascii") == k):
+        if not (
+            k
+            and "=" not in k
+            and "~" not in k
+            and k.encode("ascii", "replace").decode("ascii") == k
+        ):
             return
 
         return k
@@ -237,8 +243,8 @@ class ID3File(AudioFile):
                 k = "track"  # fallback
             else:
                 return
-            self["replaygain_%s_gain" % k] = "%+f dB" % frame.gain
-            self["replaygain_%s_peak" % k] = str(frame.peak)
+            self[f"replaygain_{k}_gain"] = f"{frame.gain:+f} dB"
+            self[f"replaygain_{k}_peak"] = str(frame.peak)
 
     @util.cached_property
     def CODECS(self):  # noqa
@@ -285,8 +291,7 @@ class ID3File(AudioFile):
 
         # prefill TMCL with the ones we can't read
         mcl = tag.get("TMCL", mutagen.id3.TMCL(encoding=3, people=[]))
-        mcl.people = [(r, n) for (r, n) in mcl.people
-                      if not self.__validate_name(r)]
+        mcl.people = [(r, n) for (r, n) in mcl.people if not self.__validate_name(r)]
 
         # delete all TXXX/COMM we can read except empty COMM
         for frame in ["COMM:", "TXXX:"]:
@@ -294,12 +299,14 @@ class ID3File(AudioFile):
                 if t.desc and self.__validate_name(t.desc):
                     del tag[t.HashKey]
 
-        for key in ["UFID:http://musicbrainz.org",
-                    "TMCL",
-                    "POPM:%s" % const.EMAIL,
-                    "POPM:%s" % config.get("editing", "save_email")]:
+        for key in [
+            "UFID:http://musicbrainz.org",
+            "TMCL",
+            f"POPM:{const.EMAIL}",
+            "POPM:{}".format(config.get("editing", "save_email")),
+        ]:
             if key in tag:
-                del(tag[key])
+                del tag[key]
 
         for key, id3name in self.SDI.items():
             tag.delall(id3name)
@@ -314,14 +321,17 @@ class ID3File(AudioFile):
             else:
                 tag.add(frame_cls(encoding=enc, text=text))
 
-        dont_write = (RG_KEYS
-                      | set(self.TXXX_MAP.values())
-                      | {"genre", "comment", "musicbrainz_trackid", "lyrics"})
+        dont_write = (
+            RG_KEYS
+            | set(self.TXXX_MAP.values())
+            | {"genre", "comment", "musicbrainz_trackid", "lyrics"}
+        )
 
         if "musicbrainz_trackid" in self.realkeys():
             f = mutagen.id3.UFID(
                 owner="http://musicbrainz.org",
-                data=self["musicbrainz_trackid"].encode("utf-8"))
+                data=self["musicbrainz_trackid"].encode("utf-8"),
+            )
             tag.add(f)
 
         # Issue 439 - Only write valid ISO 639-2 codes to TLAN (else TXXX)
@@ -333,13 +343,11 @@ class ID3File(AudioFile):
                 tag.add(mutagen.id3.TLAN(encoding=3, text=langs))
                 dont_write.add("language")
             else:
-                print_w(
-                    f"Not using invalid language {self['language']!r} in TLAN")
+                print_w(f"Not using invalid language {self['language']!r} in TLAN")
 
         # Filter out known keys, and ones set not to write [generically].
         dont_write |= self.SDI.keys()
-        keys_to_write = (k for k in self.realkeys()
-                         if k not in dont_write)
+        keys_to_write = (k for k in self.realkeys() if k not in dont_write)
         for key in keys_to_write:
             enc = encoding_for(self[key])
             if key.startswith("performer:"):
@@ -347,8 +355,8 @@ class ID3File(AudioFile):
                 continue
 
             f = mutagen.id3.TXXX(
-                encoding=enc, text=self[key].split("\n"),
-                desc="QuodLibet::%s" % key)
+                encoding=enc, text=self[key].split("\n"), desc=f"QuodLibet::{key}"
+            )
             tag.add(f)
 
         if mcl.people:
@@ -360,7 +368,7 @@ class ID3File(AudioFile):
             tag.add(mutagen.id3.TCON(encoding=enc, text=t))
         else:
             try:
-                del(tag["TCON"])
+                del tag["TCON"]
             except KeyError:
                 pass
 
@@ -368,20 +376,29 @@ class ID3File(AudioFile):
         if "comment" in self:
             enc = encoding_for(self["comment"])
             t = self["comment"].split("\n")
-            tag.add(mutagen.id3.COMM(encoding=enc, text=t, desc="",
-                                     lang="\x00\x00\x00"))
+            tag.add(
+                mutagen.id3.COMM(encoding=enc, text=t, desc="", lang="\x00\x00\x00")
+            )
 
         tag.delall("USLT")
         if "lyrics" in self:
             enc = encoding_for(self["lyrics"])
-            if not ("~lyricslanguage" in self and
-                    # language has to be a 3 byte ISO 639-2 code
-                    self["~lyricslanguage"] in ISO_639_2):
-                self["~lyricslanguage"] = "und" # undefined
+            if not (
+                "~lyricslanguage" in self
+                and
+                # language has to be a 3 byte ISO 639-2 code
+                self["~lyricslanguage"] in ISO_639_2
+            ):
+                self["~lyricslanguage"] = "und"  # undefined
             # lyrics are single string, not array
-            tag.add(mutagen.id3.USLT(encoding=enc, text=self["lyrics"],
-                                     desc=self.get("~lyricsdescription", ""),
-                                     lang=self["~lyricslanguage"]))
+            tag.add(
+                mutagen.id3.USLT(
+                    encoding=enc,
+                    text=self["lyrics"],
+                    desc=self.get("~lyricsdescription", ""),
+                    lang=self["~lyricslanguage"],
+                )
+            )
 
         # Delete old foobar replaygain ..
         for frame in tag.getall("TXXX"):
@@ -393,9 +410,13 @@ class ID3File(AudioFile):
             # Add new ones
             if k in self:
                 value = self[k]
-                tag.add(mutagen.id3.TXXX(encoding=encoding_for(value),
-                                         text=value.split("\n"),
-                                         desc=k.upper()))
+                tag.add(
+                    mutagen.id3.TXXX(
+                        encoding=encoding_for(value),
+                        text=value.split("\n"),
+                        desc=k.upper(),
+                    )
+                )
 
         # we shouldn't delete all, but we use unknown ones as fallback, so make
         # sure they don't come back after reloading
@@ -404,13 +425,13 @@ class ID3File(AudioFile):
                 del tag[t.HashKey]
 
         for k in ["track", "album"]:
-            if ("replaygain_%s_gain" % k) in self:
+            if f"replaygain_{k}_gain" in self:
                 try:
-                    gain = float(self["replaygain_%s_gain" % k].split()[0])
+                    gain = float(self[f"replaygain_{k}_gain"].split()[0])
                 except (ValueError, IndexError):
                     gain = 0
                 try:
-                    peak = float(self["replaygain_%s_peak" % k])
+                    peak = float(self[f"replaygain_{k}_peak"])
                 except (ValueError, KeyError):
                     peak = 0
                 # https://github.com/quodlibet/quodlibet/issues/1027
@@ -421,7 +442,7 @@ class ID3File(AudioFile):
 
         for key in self.TXXX_MAP:
             try:
-                del(tag["TXXX:" + key])
+                del tag["TXXX:" + key]
             except KeyError:
                 pass
         for key in self.PAM_XXXT:
@@ -430,18 +451,23 @@ class ID3File(AudioFile):
                 continue
             if key in self:
                 value = self[key]
-                f = mutagen.id3.TXXX(encoding=encoding_for(value),
-                                     text=value.split("\n"),
-                                     desc=self.PAM_XXXT[key])
+                f = mutagen.id3.TXXX(
+                    encoding=encoding_for(value),
+                    text=value.split("\n"),
+                    desc=self.PAM_XXXT[key],
+                )
                 tag.add(f)
 
-        if (config.getboolean("editing", "save_to_songs") and
-                (self.has_rating or self.get("~#playcount", 0) != 0)):
+        if config.getboolean("editing", "save_to_songs") and (
+            self.has_rating or self.get("~#playcount", 0) != 0
+        ):
             email = config.get("editing", "save_email").strip()
             email = email or const.EMAIL
-            t = mutagen.id3.POPM(email=email,
-                                 rating=int(255 * self("~#rating")),
-                                 count=self.get("~#playcount", 0))
+            t = mutagen.id3.POPM(
+                email=email,
+                rating=int(255 * self("~#rating")),
+                count=self.get("~#playcount", 0),
+            )
             tag.add(t)
 
         with translate_errors():
@@ -527,8 +553,12 @@ class ID3File(AudioFile):
 
         tag.delall("APIC")
         frame = mutagen.id3.APIC(
-            encoding=3, mime=image.mime_type, type=APICType.COVER_FRONT,
-            desc="", data=data)
+            encoding=3,
+            mime=image.mime_type,
+            type=APICType.COVER_FRONT,
+            desc="",
+            data=data,
+        )
         tag.add(frame)
 
         with translate_errors():
