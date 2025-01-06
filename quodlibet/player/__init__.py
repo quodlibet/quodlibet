@@ -30,8 +30,10 @@ class PlayerError(Exception):
         return str(self).encode("utf-8")
 
     def __repr__(self):
-        return (f"{type(self).__name__}"
-                f"({repr(self.short_desc)!r}, {repr(self.long_desc)!r})")
+        return (
+            f"{type(self).__name__}"
+            f"({repr(self.short_desc)!r}, {repr(self.long_desc)!r})"
+        )
 
 
 def init_player(backend_name, librarian):

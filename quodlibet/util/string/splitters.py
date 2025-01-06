@@ -7,9 +7,9 @@
 # (at your option) any later version.
 
 import re
+from collections.abc import Iterable
 
 from quodlibet.util import re_escape
-
 
 DEFAULT_TAG_SPLITTERS = ["/", "&", ","]
 DEFAULT_SUB_SPLITTERS = ["\u301c\u301c", "\uff08\uff09", "[]", "()", "~~", "--"]
@@ -119,11 +119,10 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
             return s, None
 
 
-def split_genre(s: str, tag_splitters: Iterable[str] = DEFAULT_TAG_SPLITTERS) -> List[str]:
-    """Splits a single genre tag into multiple genre tags
-    """
+def split_genre(s: str, tag_splitters: Iterable[str] | None = None) -> list[str]:
+    """Splits a single genre tag into multiple genre tags"""
     valid_split_chars = []
-    for char in tag_splitters:
+    for char in tag_splitters or DEFAULT_TAG_SPLITTERS:
         if char in s:
             valid_split_chars.append(char)
     if not valid_split_chars:
@@ -131,4 +130,4 @@ def split_genre(s: str, tag_splitters: Iterable[str] = DEFAULT_TAG_SPLITTERS) ->
     splitchar = valid_split_chars[-1]
     # Reverses the order of DEFAULT_TAG_SPLITTERS
     # Because Genre0/Genre1, Genre2 should be split on ,
-    return  [genre.strip() for genre in s.split(splitchar)]
+    return [genre.strip() for genre in s.split(splitchar)]

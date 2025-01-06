@@ -25,9 +25,10 @@ def has_album_splittable(song):
 def has_title_splittable(song):
     return "title" in song and song.can_change("title") and song.can_change("version")
 
+
 def has_genre_splittable(song):
-    return ("genre" in song and
-            song.can_change("genre"))
+    return "genre" in song and song.can_change("genre")
+
 
 class SplitTags(SongsMenuPlugin):
     PLUGIN_ID = "Split Tags"
