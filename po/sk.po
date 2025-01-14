@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: sk\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-09-25 22:15+0000\n"
+"PO-Revision-Date: 2025-01-12 23:00+0000\n"
 "Last-Translator: Milan Šalka <salka.milan@googlemail.com>\n"
 "Language-Team: Slovak <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/sk/>\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=((n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2);\n"
-"X-Generator: Weblate 5.8-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -610,13 +610,13 @@ msgid "Columnar"
 msgstr "Stĺpcovité"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
-"Vzor značky s voliteľným značením, napr. <tt>composer</tt> alebo\n"
-"%s"
+"Štítok vzor s voliteľnou značkou e.g. <tt> rozkladacír</tt> alebo\n"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -2021,18 +2021,17 @@ msgstr "Otestovaní klienti"
 
 #: quodlibet/ext/events/mpris/__init__.py:39
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Integrácia Linux Desktop (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
-#, fuzzy
 msgid ""
 "⏯️ Allows control of Quod Libet using the <a href=\"https://mpris2."
 "readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Interface.\n"
 "This allows various Linux desktop integrations (e.g. multimedia keys)."
 msgstr ""
-"Povoľuje ovládanie Quod Libet použitím <a href=\"https://mpris2.readthedocs."
-"io/en/latest/\">MPRIS 2</a> špecifikácie D-Bus rozhrania. Toto povoľuje "
-"rôzne integrácie Linuxového desktopu (napr. multimediálnych kláves)."
+"⏯️ Umožňuje kontrolovať Quod Libet pomocou <a href="
+"\"https://mpris2.readthedocs.io/en/latest/\">MPRIS 2</a> D-Bus Rozhranie.\n"
+"To umožňuje rôzne Linux desktopové integrácie (napr. multimediálne kľúče)."
 
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
@@ -3262,24 +3261,20 @@ msgid "∿ A seekbar in the shape of the waveform of the current song."
 msgstr "∿ Panel posunu v tvare vlnovej krivky prehrávanej skladby."
 
 #: quodlibet/ext/events/waveformseekbar.py:729
-#, fuzzy
 msgid "Foreground color"
-msgstr "Nahradiť farbu popredia:"
+msgstr "Foreground farba"
 
 #: quodlibet/ext/events/waveformseekbar.py:732
-#, fuzzy
 msgid "Hover color"
-msgstr "Nahradiť farbu pri prechode myšou:"
+msgstr "Farba prechodu myšou"
 
 #: quodlibet/ext/events/waveformseekbar.py:735
-#, fuzzy
 msgid "Remaining color"
-msgstr "Nahradiť zvyšnú farbu:"
+msgstr "Zostávajúca farba"
 
 #: quodlibet/ext/events/waveformseekbar.py:739
-#, fuzzy
 msgid "Show current position whilst hovering"
-msgstr "Zobraziť súčasnú polohu"
+msgstr "Zobraziť aktuálnu pozíciu pri zdvíhaní"
 
 #: quodlibet/ext/events/waveformseekbar.py:748
 msgid "Show time labels"
@@ -3934,9 +3929,8 @@ msgid "unidentified Squeezebox server"
 msgstr "nestotožnený server Squeezebox"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "nestotožnený prehrávač Squeezebox: %r"
+msgstr "neidentifikovaný prehrávač Squeezebox: {self!r}"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4952,16 +4946,16 @@ msgstr "Vytvoriť značky na triedenie"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:81
 msgid "Guesses sort tags for albums and people."
-msgstr ""
+msgstr "Názory triedne značky pre albumy a ľudí."
 
 #: quodlibet/ext/songsmenu/makesorttags.py:81
 msgid "e.g."
-msgstr ""
+msgstr "napr."
 
 #: quodlibet/ext/songsmenu/makesorttags.py:86
 #, python-format
 msgid "Applies to tags: <tt>%s</tt>."
-msgstr ""
+msgstr "Platí pre štítky: <tt>%s</tt>."
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -5087,12 +5081,11 @@ msgstr "Oddeliť číslo disku."
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "Rozdeliť žáner"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "Rozdeliť na viacero hodnôt"
+msgstr "Rozdeliť jeden žáner tag do viacerých značiek."
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5504,9 +5497,9 @@ msgid "Buffering"
 msgstr "Ukladanie do vyrovnávacej pamäte"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "Nepodarilo sa vytvoriť rúru GStreamera (%s)"
+msgstr "Nemohol vytvoriť GStreamer potrubia ({e}))"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
@@ -6483,7 +6476,7 @@ msgstr "Nenájdené žiadne zásuvné moduly."
 
 #: quodlibet/qltk/pluginwin.py:333
 msgid "(undocumented)"
-msgstr ""
+msgstr "(nedokumentované)"
 
 #: quodlibet/qltk/pluginwin.py:373
 msgid "Plugins"
