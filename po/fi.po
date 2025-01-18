@@ -10,7 +10,7 @@ msgstr ""
 "Project-Id-Version: quodlibet\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-11-30 10:37+0000\n"
+"PO-Revision-Date: 2025-01-18 08:46+0000\n"
 "Last-Translator: Ricky Tigg <ricky.tigg@gmail.com>\n"
 "Language-Team: Finnish <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fi/>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -609,13 +609,13 @@ msgid "Columnar"
 msgstr "Sarakkeittainen"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
-"Tunnistekaava, joka voi sisältää muotoiluja, esim. <tt>composer</tt> tai\n"
-"%s"
+"Tunnistelauseke valinnaisella merkinnällä, esim. <tt>composer</tt> tai\n"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -2730,7 +2730,7 @@ msgstr "Pysäytä synkronointi"
 
 #: quodlibet/ext/events/synchronize_to_device.py:345
 msgid "No saved searches yet, create some and come back!"
-msgstr "Ei tallennettuja hakuja"
+msgstr "Ei vielä tallennettuja hakuja, luo niitä ja tule takaisin!"
 
 #: quodlibet/ext/events/synchronize_to_device.py:430
 msgid "Choose destination path"
@@ -5494,9 +5494,9 @@ msgid "Buffering"
 msgstr "Puskuroidaan"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "GStreamer-liukuhihnan luominen epäonnistui (%s)"
+msgstr "GStreamer-putkilinjaa ({e}) ei voitu luoda"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
@@ -5668,7 +5668,7 @@ msgstr "Palauta oletusarvo"
 
 #: quodlibet/qltk/advanced_prefs.py:322
 msgid "I know what I'm doing!"
-msgstr "Tiedän, mitä olen tekemässä"
+msgstr "Tiedän, mitä olen tekemässä!"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -7257,7 +7257,7 @@ msgstr "Siirretäänkö luettava kansiopolku {dir!r}?"
 
 #: quodlibet/qltk/scanbox.py:174
 msgid "OK, move it!"
-msgstr "OK, siirrä"
+msgstr "Hyvä on, siirrä se!"
 
 #: quodlibet/qltk/searchbar.py:65
 msgid "Saved Searches"
