@@ -8,9 +8,9 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.21\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:48+0100\n"
-"PO-Revision-Date: 2025-01-04 05:00+0000\n"
-"Last-Translator: 大王叫我来巡山 <hamburger2048@users.noreply.hosted.weblate."
-"org>\n"
+"PO-Revision-Date: 2025-01-08 05:00+0000\n"
+"Last-Translator: 大王叫我来巡山 "
+"<hamburger2048@users.noreply.hosted.weblate.org>\n"
 "Language-Team: Chinese (Simplified Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hans/>\n"
 "Language: zh_CN\n"
@@ -600,13 +600,13 @@ msgid "Columnar"
 msgstr "柱状"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
-"标签模式与可选的标记，例如 <tt>作曲家</tt> 或\n"
-"%s"
+"带可选 markup 的标签模式，如 <tt>作曲家</tt> 或\n"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -3785,9 +3785,8 @@ msgid "unidentified Squeezebox server"
 msgstr "未知的 Squeezebox 服务器"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "未知的 Squeezebox 播放器：%r"
+msgstr "未识别的 Squeezebox 播放器： {self!r}"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4896,12 +4895,11 @@ msgstr "拆分光盘编号。"
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "分割流派"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "分解成多个标签"
+msgstr "将单个流派标签分割成多个标签。"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5302,9 +5300,9 @@ msgid "Buffering"
 msgstr "缓冲"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "无法创建 GStreamer 管道 (%s)"
+msgstr "无法创建 GStreamer 管道 （{e}）"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
