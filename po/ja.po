@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.23\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-01-04 05:00+0000\n"
+"PO-Revision-Date: 2025-01-08 05:00+0000\n"
 "Last-Translator: Takashi Ueda <samus39@gmail.com>\n"
 "Language-Team: Japanese <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ja/>\n"
@@ -600,13 +600,13 @@ msgid "Columnar"
 msgstr "カラムナー"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
 "任意にマークアップ可能なタグパターン。例: <tt>composer</tt> や\n"
-"%s"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -3865,9 +3865,8 @@ msgid "unidentified Squeezebox server"
 msgstr "不明な Squeezebox プレイヤー"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "不明な Squeezebox プレイヤー: %r"
+msgstr "不明な Squeezebox プレイヤー: {self!r}"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4983,7 +4982,7 @@ msgstr "既存のタグ"
 
 #: quodlibet/ext/songsmenu/splitting.py:35
 msgid "Split Tags"
-msgstr "タグの分離"
+msgstr "タグの分割"
 
 #: quodlibet/ext/songsmenu/splitting.py:37
 msgid ""
@@ -4993,7 +4992,7 @@ msgstr "アルバムからディスク番号、タイトルからバージョン
 
 #: quodlibet/ext/songsmenu/splitting.py:62
 msgid "Split Album"
-msgstr "アルバムタグの分離"
+msgstr "アルバムの分割"
 
 #: quodlibet/ext/songsmenu/splitting.py:63
 msgid "Split out disc number."
@@ -5001,12 +5000,11 @@ msgstr "ディスク番号を分離します。"
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "ジャンルの分割"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "複数の値に分割する(_V)"
+msgstr "一個のジャンルタグを複数のタグに分割します。"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5414,9 +5412,9 @@ msgid "Buffering"
 msgstr "バッファリング中"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "GStreamer パイプラインを作成できません (%s)"
+msgstr "GStreamer パイプラインを作成できません ({e})"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
