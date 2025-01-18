@@ -10,8 +10,8 @@ msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-01-04 05:00+0000\n"
-"Last-Translator: Bundy01 <Bundy01@users.noreply.hosted.weblate.org>\n"
+"PO-Revision-Date: 2025-01-08 05:00+0000\n"
+"Last-Translator: Bundy01 <bundy@posteo.eu>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/fr/>\n"
 "Language: fr\n"
@@ -610,14 +610,14 @@ msgid "Columnar"
 msgstr "Chronique"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
-"Modèle de balise avec balisage facultatif, par exemple <tt>compositeur</tt> "
-"ou \n"
-"%s"
+"Modèle d'étiquette avec balisage optionnel, par exemple <tt>compositeur</tt> "
+"ou\n"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -3954,9 +3954,8 @@ msgid "unidentified Squeezebox server"
 msgstr "Serveur Squeezebox inconnu"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "lecteur Squeezebox non-identifié : %r"
+msgstr "lecteur Squeezebox non-identifié : {self!r}"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -5121,12 +5120,11 @@ msgstr "Séparer les numéros de disque."
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "Séparer le Genre"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "Séparer en plusieurs _valeurs"
+msgstr "Séparer une étiquette de genre unique en plusieurs étiquettes."
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5543,9 +5541,9 @@ msgid "Buffering"
 msgstr "Mise en mémoire tampon"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "Impossible de créer le pipeline GStreamer (%s)"
+msgstr "Impossible de créer le pipeline GStreamer ({e})"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
