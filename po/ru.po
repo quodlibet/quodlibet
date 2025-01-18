@@ -14,7 +14,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 4.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-11-29 11:00+0000\n"
+"PO-Revision-Date: 2025-01-17 10:35+0000\n"
 "Last-Translator: Andrei Stepanov <adem4ik@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ru/>\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10-dev\n"
 "X-Poedit-Basepath: .\n"
 
 #: quodlibet/browsers/albums/main.py:226
@@ -3915,9 +3915,8 @@ msgid "unidentified Squeezebox server"
 msgstr "неопознанный сервер Squeezebox"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "неопознанный Squeezebox плеер: %r"
+msgstr "неопознанный проигрыватель Squeezebox: {self!r}"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4934,12 +4933,12 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/makesorttags.py:81
 msgid "e.g."
-msgstr ""
+msgstr "напр."
 
 #: quodlibet/ext/songsmenu/makesorttags.py:86
 #, python-format
 msgid "Applies to tags: <tt>%s</tt>."
-msgstr ""
+msgstr "Применяется к тегам: <tt>%s</tt>."
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -6463,7 +6462,7 @@ msgstr "Расширения не найдены."
 
 #: quodlibet/qltk/pluginwin.py:333
 msgid "(undocumented)"
-msgstr ""
+msgstr "(неописано)"
 
 #: quodlibet/qltk/pluginwin.py:373
 msgid "Plugins"
