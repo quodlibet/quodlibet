@@ -94,4 +94,4 @@ External
 
 * Update stable PPAs (ubuntu/debian/OBS)
 * Make a PR on the `Flathub repo <https://github.com/flathub/io.github.quodlibet.QuodLibet/>`_
-* Announce on IRC / Discord / Twitter / Mastodon etc
+* Announce on IRC / Discord / Mastodon etc
