@@ -19,7 +19,7 @@ rustup install "$RUST_REVISION"
 
 # Clone and install JHBuild.  Specify "--simple-install" so that we get the same
 # behavior regardless of whether autotools is installed or not.
-mkdir -p "$QL_OSXBUNDLE_JHBUILD_DEST" "$QL_OSXBUNDLE_BUNDLER_DEST" "$QL_OSXBUNDLE_BUNDLE_DEST"
+mkdir -p "$HOME" "$QL_OSXBUNDLE_JHBUILD_DEST" "$QL_OSXBUNDLE_BUNDLER_DEST" "$QL_OSXBUNDLE_BUNDLE_DEST"
 git clone https://gitlab.gnome.org/GNOME/jhbuild.git "$QL_OSXBUNDLE_JHBUILD_DEST"
 (cd "$QL_OSXBUNDLE_JHBUILD_DEST" && git checkout "$JHBUILD_REVISION" && ./autogen.sh --simple-install && make -f Makefile.plain DISABLE_GETTEXT=1 install >/dev/null)
 cp misc/gtk-osx-jhbuildrc "$HOME/.jhbuildrc"
