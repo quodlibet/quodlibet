@@ -26,7 +26,8 @@ FAMOUS_COMPOSERS = {
     "faure",
     "rachmaninov",
     "rachmaninoff",
-    "puccini" "mendelssohn",
+    "puccini",
+    "mendelssohn",
     "liszt",
     "elgar",
     "mahler",
@@ -36,7 +37,8 @@ FAMOUS_COMPOSERS = {
     "dvorak",
     "holst",
     "britten",
-    "straus" "williams",
+    "straus",
+    "williams",
     "zimmer",
 }
 
