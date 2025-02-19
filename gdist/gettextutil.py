@@ -310,6 +310,10 @@ def check_po(po_path: Path, ignore_header=False):
         subprocess.check_output(
             ["msgfmt", check_arg, "--check-domain", str(po_path), "-o", os.devnull],
             stderr=subprocess.STDOUT,
+            # XXX: gettext returns single bytes (as error starting charater) in
+            # errors messages for multibyte utf-8 sequences, which is broken.
+            # So we use backslashreplace.
+            errors="backslashreplace",
             universal_newlines=True,
         )
     except subprocess.CalledProcessError as e:
