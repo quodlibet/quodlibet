@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-02-13 03:01+0000\n"
-"Last-Translator: தமிழ்நேரம் <anishprabu.t@gmail.com>\n"
+"PO-Revision-Date: 2025-02-20 19:25+0000\n"
+"Last-Translator: Christoph Reiter <reiter.christoph@gmail.com>\n"
 "Language-Team: Tamil <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/ta/>\n"
 "Language: ta\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -3900,7 +3900,7 @@ msgstr "பிழைத்திருத்தம்"
 #: quodlibet/ext/_shared/squeezebox/server.py:26
 #, python-brace-format
 msgid "Squeezebox server at {hostname}:{port}"
-msgstr "{ஓச்ட்பாக்ச் சேவையகம் {hostname}: {port}"
+msgstr "ஓச்ட்பாக்ச் சேவையகம் {hostname}: {port}"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:28
 msgid "unidentified Squeezebox server"
@@ -5330,7 +5330,7 @@ msgstr "'-அல்' --regexp 'உடன் இணைக்க முடிய�
 #: quodlibet/operon/commands.py:416
 #, python-brace-format
 msgid "Can't remove {tagname} from {filename}"
-msgstr "{கோப்பு பெயர் இருந்து இலிருந்து {tagname} ஐ அகற்ற முடியாது"
+msgstr "{filename} இலிருந்து {tagname} ஐ அகற்ற முடியாது"
 
 #: quodlibet/operon/commands.py:432
 msgid "Remove a tag value"
