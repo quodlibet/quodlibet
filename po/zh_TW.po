@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Quod Libet 0.24\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2024-11-30 10:37+0000\n"
+"PO-Revision-Date: 2025-02-22 05:52+0000\n"
 "Last-Translator: 麋麓 BigELK176 <BigELK176@gmail.com>\n"
 "Language-Team: Chinese (Traditional Han script) <https://hosted.weblate.org/"
 "projects/quodlibet/quodlibet/zh_Hant/>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 5.9-dev\n"
+"X-Generator: Weblate 5.10.1-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -598,13 +598,13 @@ msgid "Columnar"
 msgstr "欄位"
 
 #: quodlibet/browsers/paned/prefs.py:109
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
 "標籤型式附帶選項標記，例如 <tt>作曲者</tt> 或\n"
-"%s"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -1440,7 +1440,7 @@ msgstr ""
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:53
 msgid "Once, when album fully rated"
-msgstr "整張轉輯一次評分"
+msgstr "一次，當整張轉輯加已評分之後"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:55
 msgid ""
@@ -1481,7 +1481,7 @@ msgstr ""
 #: quodlibet/ext/songsmenu/import_export_tags_and_track_user_data.py:599
 #, python-format
 msgid "Couldn't write '%s'"
-msgstr "無法寫上 '%s'"
+msgstr "無法寫入 '%s'"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:95
 msgid "Auto Update Tags in Files"
@@ -3847,9 +3847,8 @@ msgid "unidentified Squeezebox server"
 msgstr "unidentified Squeezebox server"
 
 #: quodlibet/ext/_shared/squeezebox/server.py:38
-#, fuzzy
 msgid "unidentified Squeezebox player: {self!r}"
-msgstr "unidentified Squeezebox player: %r"
+msgstr "未予識別的 Squeezebox 播放器： %r"
 
 #: quodlibet/ext/_shared/squeezebox/util.py:15
 msgid "Choose Squeezebox player"
@@ -4852,16 +4851,16 @@ msgstr "建立排序標籤"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:83
 msgid "Guesses sort tags for albums and people."
-msgstr ""
+msgstr "猜測用於專輯及人員的排序標籤。"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:83
 msgid "e.g."
-msgstr ""
+msgstr "例如"
 
 #: quodlibet/ext/songsmenu/makesorttags.py:88
 #, python-format
 msgid "Applies to tags: <tt>%s</tt>."
-msgstr ""
+msgstr "套用至標籤： <tt>%s</tt> 。"
 
 #: quodlibet/ext/songsmenu/playlist.py:36
 msgid "Export as M3U / PLS Playlist File"
@@ -4985,12 +4984,11 @@ msgstr "Split out disc number."
 
 #: quodlibet/ext/songsmenu/splitting.py:79
 msgid "Split Genre"
-msgstr ""
+msgstr "切分流派"
 
 #: quodlibet/ext/songsmenu/splitting.py:80
-#, fuzzy
 msgid "Split a single genre tag into multiple tags."
-msgstr "分割成多重設定值 (_v)"
+msgstr "切分單一流派標籤成多重標籤。"
 
 #: quodlibet/ext/songsmenu/tapbpm.py:23 quodlibet/ext/songsmenu/tapbpm.py:32
 #: quodlibet/ext/songsmenu/tapbpm.py:61
@@ -5396,9 +5394,9 @@ msgid "Buffering"
 msgstr "緩衝"
 
 #: quodlibet/player/gstbe/player.py:485
-#, fuzzy, python-brace-format
+#, python-brace-format
 msgid "Could not create GStreamer pipeline ({e})"
-msgstr "Could not create GStreamer pipeline (%s)"
+msgstr "無法建立 GStreamer pipeline ({e})"
 
 #: quodlibet/player/gstbe/player.py:687
 msgid "No GStreamer element found to handle media format"
@@ -6336,7 +6334,7 @@ msgstr "找不到外掛。"
 
 #: quodlibet/qltk/pluginwin.py:333
 msgid "(undocumented)"
-msgstr ""
+msgstr "(未予文件成立)"
 
 #: quodlibet/qltk/pluginwin.py:373
 msgid "Plugins"
