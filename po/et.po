@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-01-30 15:01+0000\n"
+"PO-Revision-Date: 2025-02-25 19:10+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/et/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.10-dev\n"
+"X-Generator: Weblate 5.10.2-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -62,7 +62,7 @@ msgstr "Esitamiste _arv"
 #: quodlibet/browsers/albums/main.py:238
 #: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
-msgstr "Järjesta…"
+msgstr "_Järjestus…"
 
 #: quodlibet/browsers/albums/main.py:258
 #: quodlibet/browsers/covergrid/main.py:89
@@ -304,7 +304,7 @@ msgstr "Näita albumi _teksti"
 
 #: quodlibet/browsers/covergrid/prefs.py:78
 msgid "Show \"All Albums\" Item"
-msgstr "Näita valikud „Kõik labumid“"
+msgstr "Näita valikut „Kõik labumid“"
 
 #: quodlibet/browsers/covergrid/prefs.py:84
 msgid "Wide Mode"
@@ -432,7 +432,7 @@ msgstr "Džäss"
 
 #: quodlibet/browsers/iradio.py:420 quodlibet/ext/events/equalizer.py:139
 msgid "Classical"
-msgstr "Klassika"
+msgstr "Klassikaline muusika"
 
 #: quodlibet/browsers/iradio.py:421 quodlibet/ext/events/equalizer.py:227
 msgid "Pop"
@@ -903,11 +903,11 @@ msgstr "Quod Libet ei tööta (käivitamiseks lisa „--run“)"
 
 #: quodlibet/cli.py:116
 msgid "a music library and player"
-msgstr "muusikakogu ja meediaesitaja"
+msgstr "muusikakogu ja meediamängija"
 
 #: quodlibet/cli.py:116
 msgid "[option]"
-msgstr "[valik]"
+msgstr "[argument]"
 
 #: quodlibet/cli.py:119
 msgid "Print the playing song and exit"
@@ -1001,15 +1001,15 @@ msgstr "Loetle saadavalolevad brauserid"
 
 #: quodlibet/cli.py:143
 msgid "Print the current playlist"
-msgstr "Trüki see esitusloend"
+msgstr "Väljasta hetkel kasutatava esitusloendi sisu"
 
 #: quodlibet/cli.py:144
 msgid "Print the contents of the queue"
-msgstr "Trüki esitusjärjekorra sisu"
+msgstr "Väljasta esitusjärjekorra sisu"
 
 #: quodlibet/cli.py:145
 msgid "Print the active text query"
-msgstr "Trüki aktiivne tekstipäring"
+msgstr "Väljasta aktiivne tekstipäring"
 
 #: quodlibet/cli.py:146
 msgid "Start without plugins"
@@ -1071,11 +1071,11 @@ msgstr "failinimi"
 
 #: quodlibet/cli.py:161
 msgid "Set rating of playing song"
-msgstr "Hinda esitamisel lugu"
+msgstr "Lisa esitamisel loole hinnang"
 
 #: quodlibet/cli.py:162
 msgid "Set the current browser"
-msgstr ""
+msgstr "Vali praegune brauser"
 
 #: quodlibet/cli.py:163
 msgid "Stop after the playing song"
@@ -1083,11 +1083,11 @@ msgstr "Peale loo esitamist peatu"
 
 #: quodlibet/cli.py:164
 msgid "Open a new browser"
-msgstr ""
+msgstr "Ava uus brauser"
 
 #: quodlibet/cli.py:165
 msgid "Show or hide the queue"
-msgstr ""
+msgstr "Näita esitusjärjekorda või peida ta"
 
 #: quodlibet/cli.py:166
 msgid "Filter on a random value"
@@ -1096,7 +1096,7 @@ msgstr "Filtreeri juhusliku väärtuse alusel"
 #: quodlibet/cli.py:166
 msgctxt "command"
 msgid "tag"
-msgstr ""
+msgstr "silt"
 
 #: quodlibet/cli.py:167
 msgid "Filter on a tag value"
@@ -1104,15 +1104,15 @@ msgstr "Filtreeri sildi väärtuse alusel"
 
 #: quodlibet/cli.py:167
 msgid "tag=value"
-msgstr ""
+msgstr "silt=väärtus"
 
 #: quodlibet/cli.py:170
 msgid "Enqueue a file or query"
-msgstr ""
+msgstr "Lisa fail või päring esitusjärjekorda"
 
 #: quodlibet/cli.py:175
 msgid "Enqueue comma-separated files"
-msgstr ""
+msgstr "Lisa esitusjärjekorda komadega eraldatud failid"
 
 #: quodlibet/cli.py:176 quodlibet/util/tags.py:156
 msgid "filename"
@@ -1120,15 +1120,15 @@ msgstr "failinimi"
 
 #: quodlibet/cli.py:178
 msgid "Print filenames of results of query to stdout"
-msgstr ""
+msgstr "Väljasta päringutulemuste failinimed standardväljundisse"
 
 #: quodlibet/cli.py:181
 msgid "Unqueue a file or query"
-msgstr ""
+msgstr "Eemalda fail või päring esitusjärjekorrast"
 
 #: quodlibet/cli.py:184
 msgid "Add a file or directory to the library"
-msgstr ""
+msgstr "Lisa fail või kaust meediakogusse"
 
 #: quodlibet/cli.py:184 quodlibet/util/tags.py:101
 msgid "location"
@@ -1136,16 +1136,16 @@ msgstr "asukoht"
 
 #: quodlibet/cli.py:185
 msgid "Set template for --print-* commands"
-msgstr ""
+msgstr "Määratle --print-* käskude mall"
 
 #: quodlibet/cli.py:185 quodlibet/ext/songsmenu/custom_commands.py:57
 msgid "pattern"
-msgstr ""
+msgstr "muster"
 
 #: quodlibet/cli.py:250
 #, python-format
 msgid "Invalid argument for '%s'."
-msgstr ""
+msgstr "Vale argument „%s“ jaoks."
 
 #: quodlibet/cli.py:251 quodlibet/util/__init__.py:195
 #, python-format
@@ -1154,7 +1154,7 @@ msgstr "Proovi %s --help."
 
 #: quodlibet/errorreport/ui.py:56
 msgid "An Error Occurred"
-msgstr ""
+msgstr "Tekkis viga"
 
 #: quodlibet/errorreport/ui.py:58
 msgid ""
@@ -1188,16 +1188,19 @@ msgid ""
 "party online service (<a href='https://www.sentry.io'>www.sentry.io</a>). "
 "You can review the data before sending it below."
 msgstr ""
+"Erinevad vea ja sinu arvuti üksikasjad saadetakse kolmanda osapoole "
+"teenusesse (<a href='https://www.sentry.io'>www.sentry.io</a>). Alljärgnevas "
+"saad andmetele enne saatmist pilgu peale heita."
 
 #: quodlibet/errorreport/ui.py:93
 msgid ""
 "(optional) Please provide a short description of what happened when the "
 "error occurred:"
-msgstr ""
+msgstr "(valikuline) Palun kirjelda lühidalt olukorda vea juhtumisel:"
 
 #: quodlibet/errorreport/ui.py:106
 msgid "_Send"
-msgstr ""
+msgstr "_Saada"
 
 #: quodlibet/errorreport/ui.py:112
 msgid "Short description…"
@@ -1205,11 +1208,11 @@ msgstr "Lühikirjeldus…"
 
 #: quodlibet/errorreport/ui.py:115
 msgid "Data to be sent:"
-msgstr ""
+msgstr "Saadetavad andmed:"
 
 #: quodlibet/exfalso.py:37
 msgid "an audio tag editor"
-msgstr ""
+msgstr "helifailide metaandmete haldusrakendus"
 
 #: quodlibet/exfalso.py:38 quodlibet/util/tags.py:157
 msgid "directory"
@@ -1217,17 +1220,19 @@ msgstr "kaust"
 
 #: quodlibet/exfalso.py:46
 msgid "Audio metadata editor"
-msgstr ""
+msgstr "Helifailide metaandmete haldusrakendus"
 
 #: quodlibet/ext/covers/artwork_url.py:19
 msgid "Artwork URL Cover Source"
-msgstr ""
+msgstr "Kaanepilt võrguaadressilt"
 
 #: quodlibet/ext/covers/artwork_url.py:21
 msgid ""
 "Downloads covers linked to by the <tt>artwork_url</tt> tag. This works with "
 "the Soundcloud and Podcasts browsers."
 msgstr ""
+"Laadib kaanepildid meedia <tt>artwork_url</tt> sildis leiduva lingist. See "
+"võimalus toimib Soundcloudi and Taskuhäälingute (Podcasts) brauserites."
 
 #: quodlibet/ext/covers/discogs.py:28
 msgid "Discogs Cover Source"
@@ -1255,11 +1260,11 @@ msgstr ""
 
 #: quodlibet/ext/editing/iconv.py:26
 msgid "Convert Encodings"
-msgstr ""
+msgstr "Kodeeringu konverter"
 
 #: quodlibet/ext/editing/iconv.py:27
 msgid "Fixes misinterpreted tag value encodings in the tag editor."
-msgstr ""
+msgstr "Korrastab siltide halduris vigaselt kodeeritud siltide väärtused."
 
 #: quodlibet/ext/editing/iconv.py:31
 msgid "_Convert Encoding…"
@@ -1318,7 +1323,7 @@ msgstr ""
 
 #: quodlibet/ext/events/animosd/main.py:27
 msgid "Animated On-Screen Display"
-msgstr ""
+msgstr "Animeeritud infovaade"
 
 #: quodlibet/ext/events/animosd/main.py:28
 msgid "Displays song information on your screen when it changes."
@@ -1326,82 +1331,82 @@ msgstr "Kuvab loo vahetumisel tema teavet."
 
 #: quodlibet/ext/events/animosd/prefs.py:182
 msgid "_Position:"
-msgstr ""
+msgstr "_Asukoht:"
 
 #: quodlibet/ext/events/animosd/prefs.py:195
 msgid "_Cover size:"
-msgstr ""
+msgstr "_Kaanepildi suurus:"
 
 #: quodlibet/ext/events/animosd/prefs.py:201 quodlibet/qltk/prefs.py:311
 msgid "Display"
-msgstr ""
+msgstr "Vaade"
 
 #: quodlibet/ext/events/animosd/prefs.py:214
 msgid "_Font:"
-msgstr ""
+msgstr "_Kirjatüüp:"
 
 #: quodlibet/ext/events/animosd/prefs.py:219
 msgid "Left"
-msgstr ""
+msgstr "Vasakule"
 
 #: quodlibet/ext/events/animosd/prefs.py:220
 msgid "Center"
-msgstr ""
+msgstr "Keskele"
 
 #: quodlibet/ext/events/animosd/prefs.py:221
 msgid "Right"
-msgstr ""
+msgstr "Paremale"
 
 #: quodlibet/ext/events/animosd/prefs.py:224
 msgid "_Align text:"
-msgstr ""
+msgstr "Teksti _joondamine:"
 
 #: quodlibet/ext/events/animosd/prefs.py:230
 msgid "Text"
-msgstr ""
+msgstr "Tekst"
 
 #: quodlibet/ext/events/animosd/prefs.py:240
 msgid "_Text:"
-msgstr ""
+msgstr "_Tekst:"
 
 #: quodlibet/ext/events/animosd/prefs.py:251
 msgid "_Fill:"
-msgstr ""
+msgstr "Taust_atäide:"
 
 #: quodlibet/ext/events/animosd/prefs.py:256
 #: quodlibet/ext/events/synchronizedlyrics.py:66
 msgid "Colors"
-msgstr ""
+msgstr "Värvid"
 
 #: quodlibet/ext/events/animosd/prefs.py:264
 msgid "_Shadows"
-msgstr ""
+msgstr "_Varjud"
 
 #: quodlibet/ext/events/animosd/prefs.py:265
 msgid "_Outline"
-msgstr ""
+msgstr "_Piirjoon"
 
 #: quodlibet/ext/events/animosd/prefs.py:266
 msgid "Rou_nded Corners"
-msgstr ""
+msgstr "Ümarad _nurgad"
 
 #: quodlibet/ext/events/animosd/prefs.py:286
 msgid "_Delay:"
-msgstr ""
+msgstr "_Viivitus:"
 
 #: quodlibet/ext/events/animosd/prefs.py:292 quodlibet/qltk/pluginwin.py:43
 msgid "Effects"
-msgstr ""
+msgstr "Efektid"
 
 #: quodlibet/ext/events/animosd/prefs.py:298
 msgid "Ed_it Display Pattern…"
-msgstr ""
+msgstr "Muuda kuvatavat s_isu…"
 
 #: quodlibet/ext/events/animosd/prefs.py:301
 #: quodlibet/ext/events/synchronize_to_device.py:220
 #: quodlibet/ext/events/trayicon/prefs.py:88
 msgid "Preview"
-msgstr ""
+msgstr "Vaata eelvaadet"
 
 #: quodlibet/ext/events/appinfo.py:33
 msgid "Application Information"
@@ -1502,7 +1507,7 @@ msgstr ""
 #: quodlibet/ext/events/auto_update_tags_in_files.py:113
 #: quodlibet/qltk/prefs.py:654
 msgid "Save ratings and play _counts in tags"
-msgstr ""
+msgstr "Salvesta hinnangud ja _esituskorrad siltidesse"
 
 #: quodlibet/ext/events/auto_update_tags_in_files.py:118
 msgid "Settings updated"
@@ -1532,7 +1537,7 @@ msgstr ""
 #: quodlibet/ext/playorder/queue.py:43 quodlibet/ext/query/missing.py:38
 #: quodlibet/qltk/prefs.py:866
 msgid "Preferences"
-msgstr ""
+msgstr "Eelistused"
 
 #: quodlibet/ext/events/automask.py:22
 msgid "Automatic Masking"
@@ -1631,115 +1636,119 @@ msgstr ""
 
 #: quodlibet/ext/events/equalizer.py:41
 msgid "Flat"
-msgstr ""
+msgstr "Ühetasane"
 
 #: quodlibet/ext/events/equalizer.py:43
 msgid "Live"
-msgstr ""
+msgstr "Kuulamine kontserdil"
 
 #: quodlibet/ext/events/equalizer.py:47
 msgid "Full Bass & Treble"
-msgstr ""
+msgstr "Mahlakas bass ja palju kõrgeid toone"
 
 #: quodlibet/ext/events/equalizer.py:67
 msgid "Club"
-msgstr ""
+msgstr "Kuulamine klubis"
 
 #: quodlibet/ext/events/equalizer.py:71
 msgid "Large Hall"
-msgstr ""
+msgstr "Kuulamine suures kontserdisaalis"
 
 #: quodlibet/ext/events/equalizer.py:91
 msgid "Party"
-msgstr ""
+msgstr "Kuulamine peol"
 
 #: quodlibet/ext/events/equalizer.py:115
 msgid "Soft"
-msgstr ""
+msgstr "Pehme"
 
 #: quodlibet/ext/events/equalizer.py:119
 msgid "Full Bass"
-msgstr ""
+msgstr "Mahlakas bass"
 
 #: quodlibet/ext/events/equalizer.py:143
 msgid "Reggae"
-msgstr ""
+msgstr "Reggae-muusika"
 
 #: quodlibet/ext/events/equalizer.py:147
 msgid "Headphones"
-msgstr ""
+msgstr "Kuulamine kõrvaklappidega"
 
 #: quodlibet/ext/events/equalizer.py:167
 msgid "Soft Rock"
-msgstr ""
+msgstr "Pehme rokkmuusika"
 
 #: quodlibet/ext/events/equalizer.py:187
 msgid "Full Treble"
-msgstr ""
+msgstr "Palju kõrgeid toone"
 
 #: quodlibet/ext/events/equalizer.py:207
 msgid "Dance"
-msgstr ""
+msgstr "Tantsumuusika"
 
 #: quodlibet/ext/events/equalizer.py:247
 msgid "Techno"
-msgstr ""
+msgstr "Teknomuusika"
 
 #: quodlibet/ext/events/equalizer.py:267
 msgid "Ska"
-msgstr ""
+msgstr "Ska-muusika"
 
 #: quodlibet/ext/events/equalizer.py:287
 msgid "Laptop"
-msgstr ""
+msgstr "Kuulamine sülearvutis"
 
 #: quodlibet/ext/events/equalizer.py:334
 msgid "Equalizer"
-msgstr ""
+msgstr "Ekvalaiser"
 
 #: quodlibet/ext/events/equalizer.py:336
 msgid ""
 "Controls the tone of your music with an equalizer.\n"
 "Click or use keys to customise levels (right-click resets the band)."
 msgstr ""
+"Kontrolli muusika kõla vastavalt oma eelistustele.\n"
+"Vali liuguritest hiire või nooleklahvidega vajalik valjus antud ribalaiusele "
+"(parem hiireklõps lähtestab antud ribalaiuse)."
 
 #: quodlibet/ext/events/equalizer.py:373
 msgid "The current backend does not support equalization."
 msgstr ""
+"Hetkel kasutatav muusikamängija taustateenus ei oska ekvalaiserit kasutada."
 
 #: quodlibet/ext/events/equalizer.py:379
 #, python-format
 msgid "%.1f kHz"
-msgstr ""
+msgstr "%.1f kHz"
 
 #: quodlibet/ext/events/equalizer.py:380
 #: quodlibet/ext/gstreamer/crossfeed.py:109
 #: quodlibet/ext/gstreamer/karaoke.py:101
 #, python-format
 msgid "%d Hz"
-msgstr ""
+msgstr "%d Hz"
 
 #: quodlibet/ext/events/equalizer.py:421
 #: quodlibet/ext/gstreamer/crossfeed.py:129
 #, python-format
 msgid "%.1f dB"
-msgstr ""
+msgstr "%.1f dB"
 
 #: quodlibet/ext/events/equalizer.py:495
 msgid "Default presets"
-msgstr ""
+msgstr "Vaikimisi eelseadistused"
 
 #: quodlibet/ext/events/equalizer.py:501 quodlibet/ext/events/equalizer.py:528
 msgid "Select…"
-msgstr ""
+msgstr "Vali…"
 
 #: quodlibet/ext/events/equalizer.py:516
 msgid "_Reset EQ"
-msgstr ""
+msgstr "_Nulli kõik"
 
 #: quodlibet/ext/events/equalizer.py:522
 msgid "Custom presets"
-msgstr ""
+msgstr "Sinu loodud eelseadistused"
 
 #: quodlibet/ext/events/equalizer.py:538
 msgid "_Delete selected"
@@ -1747,7 +1756,7 @@ msgstr "_Kustuta valitud"
 
 #: quodlibet/ext/events/equalizer.py:549
 msgid "Preset name for saving:"
-msgstr ""
+msgstr "Salvestatava eelseadistuse nimi:"
 
 #. Save button
 #: quodlibet/ext/events/equalizer.py:559
@@ -1841,6 +1850,8 @@ msgid ""
 "Pauses in case headphones get unplugged and unpauses in case they get "
 "plugged in again."
 msgstr ""
+"Kõrvaklappide eemaldamisel peatab esituse ning uuesti ühendamisel jätkab "
+"uuesti esitust."
 
 #: quodlibet/ext/events/inhibit.py:51
 msgid "Inhibit Screensaver/Suspend"
@@ -1902,7 +1913,7 @@ msgstr ""
 
 #: quodlibet/ext/events/language.py:67 quodlibet/qltk/prefs.py:825
 msgid "A restart is required for any changes to take effect"
-msgstr ""
+msgstr "Nende muutuste kasutuselevõtmiseks palun käivita rakendus uuesti"
 
 #: quodlibet/ext/events/mediaserver.py:37
 msgid "UPnP AV Media Server"
@@ -1931,27 +1942,27 @@ msgstr ""
 
 #: quodlibet/ext/events/mpdserver/__init__.py:79
 msgid "_Port:"
-msgstr ""
+msgstr "_Port:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:128
 msgid "Local _IP:"
-msgstr ""
+msgstr "Kohalik _ip-aadress:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:139
 msgid "P_assword:"
-msgstr ""
+msgstr "S_alasõna:"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:179
 msgid "Connection"
-msgstr ""
+msgstr "Ühendus"
 
 #: quodlibet/ext/events/mpdserver/__init__.py:180
 msgid "Tested Clients"
-msgstr ""
+msgstr "Testitud kliendid"
 
 #: quodlibet/ext/events/mpris/__init__.py:39
 msgid "Linux Desktop Integration (MPRIS D-Bus)"
-msgstr ""
+msgstr "Lõiming Linuxi töölauakeskkondadega (MPRIS D-Bus)"
 
 #: quodlibet/ext/events/mpris/__init__.py:41
 msgid ""
@@ -1963,7 +1974,7 @@ msgstr ""
 #: quodlibet/ext/events/mpris/__init__.py:51
 #: quodlibet/ext/events/trayicon/prefs.py:37
 msgid "Hide main window on close"
-msgstr ""
+msgstr "Sulgemisel peida põhiaken"
 
 #: quodlibet/ext/events/mqtt.py:58
 #, python-format
@@ -2028,7 +2039,7 @@ msgstr ""
 
 #: quodlibet/ext/events/mqtt.py:161
 msgid "Plain text for when there is no current song"
-msgstr ""
+msgstr "Vormindamata tekst, kui hetkel esitatavat lugu pole"
 
 #: quodlibet/ext/events/mqtt.py:173
 msgid "MQTT Configuration"
@@ -2226,7 +2237,7 @@ msgstr "Esitaj_a mustrer:"
 #: quodlibet/ext/events/qlscrobbler.py:588
 #: quodlibet/ext/events/listenbrainz/__init__.py:519
 msgid "_Title pattern:"
-msgstr ""
+msgstr "_Nime muster:"
 
 #: quodlibet/ext/events/qlscrobbler.py:589
 #: quodlibet/ext/events/listenbrainz/__init__.py:521
@@ -2894,7 +2905,7 @@ msgstr ""
 
 #: quodlibet/ext/events/telepathy_status.py:167
 msgid "Plain text for status when there is no current song"
-msgstr ""
+msgstr "Vormindamata tekst oleku jaoks, kui hetkel esitatavat lugu pole"
 
 #: quodlibet/ext/events/telepathy_status.py:168
 msgid "No song:"
@@ -2948,7 +2959,7 @@ msgstr ""
 #: quodlibet/ext/events/trayicon/prefs.py:108
 #: quodlibet/ext/events/trayicon/systemtray.py:185 quodlibet/qltk/info.py:52
 msgid "Not playing"
-msgstr ""
+msgstr "Pole esitamisel"
 
 #: quodlibet/ext/events/trayicon/__init__.py:51
 msgid "Tray Icon"
@@ -3024,23 +3035,23 @@ msgstr "_Välju"
 #: quodlibet/ext/events/trayicon/prefs.py:39 quodlibet/qltk/prefs.py:105
 #: quodlibet/qltk/prefs.py:519 quodlibet/qltk/prefs.py:840
 msgid "Behavior"
-msgstr ""
+msgstr "Käitumine"
 
 #: quodlibet/ext/events/trayicon/prefs.py:49
 msgid "Scroll wheel adjusts volume"
-msgstr ""
+msgstr "Kerimisrattaga saad helivaljust muuta"
 
 #: quodlibet/ext/events/trayicon/prefs.py:55
 msgid "Scroll wheel changes song"
-msgstr ""
+msgstr "Kerimisrattaga saad lugusid vahetada"
 
 #: quodlibet/ext/events/trayicon/prefs.py:63
 msgid "Scroll _Wheel"
-msgstr ""
+msgstr "Kerimis_ratas"
 
 #: quodlibet/ext/events/trayicon/prefs.py:94
 msgid "Tooltip Display"
-msgstr ""
+msgstr "Kohtspikrite näitamine"
 
 #: quodlibet/ext/events/viewlyrics.py:28
 msgid "View Lyrics"
@@ -3447,7 +3458,7 @@ msgstr ""
 
 #: quodlibet/ext/playorder/playcounteq.py:24
 msgid "Playcount Equalizer"
-msgstr "Esituskordade ekvalaiser"
+msgstr "Esituskordade võrdsustaja"
 
 #: quodlibet/ext/playorder/playcounteq.py:25
 msgid "Adds a shuffle mode that prefers songs with fewer total plays."
@@ -3467,7 +3478,7 @@ msgstr ""
 
 #: quodlibet/ext/playorder/queue.py:23
 msgid "Queue Only"
-msgstr ""
+msgstr "Vaid esitusjärjekord"
 
 #: quodlibet/ext/playorder/queue.py:26
 msgid ""
@@ -3476,18 +3487,22 @@ msgid ""
 "Select this play order in the main window, then double-clicking any song "
 "will enqueue it instead of playing."
 msgstr ""
+"Piirab lugude esitamise esitusjärjekorraga.\n"
+"\n"
+"Vali esitatavad lood põhiaknas, topeltklõps igal lool lisab ta "
+"esitusjärjekorda, mitte ei alusta esitamist."
 
 #: quodlibet/ext/playorder/queue.py:31
 msgid "Queue only"
-msgstr ""
+msgstr "Vaid esitusjärjekord"
 
 #: quodlibet/ext/playorder/queue.py:32
 msgid "_Queue only"
-msgstr ""
+msgstr "Vaid _esitusjärjekord"
 
 #: quodlibet/ext/playorder/queue.py:37
 msgid "Automatically start playing double-clicked songs"
-msgstr ""
+msgstr "Topeltklõpsu puhul alusta kohe loo/lugude esitamist"
 
 #: quodlibet/ext/playorder/reverse.py:14 quodlibet/ext/playorder/reverse.py:17
 msgid "Reverse"
@@ -3586,6 +3601,8 @@ msgid ""
 "Adds a shuffle mode that plays tracks in order, but repeating every track a "
 "set number of times."
 msgstr ""
+"Võimaldab kasutada segamisrežiimi, mis esitab palasid järjekorras ning "
+"kordab neid etteantud arvu kordi."
 
 #: quodlibet/ext/playorder/track_repeat.py:34
 msgid "Repeat each track"
@@ -3597,7 +3614,7 @@ msgstr "Korda _iga pala"
 
 #: quodlibet/ext/playorder/track_repeat.py:54
 msgid "Number of times to play each song:"
-msgstr ""
+msgstr "Kordamiste arv iga loo kohta:"
 
 #: quodlibet/ext/query/conditional.py:15
 msgid "Conditional Query"
@@ -4239,34 +4256,34 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/embedded.py:26
 msgid "Edit Embedded Images"
-msgstr ""
+msgstr "Muuda lõimitud pilte"
 
 #: quodlibet/ext/songsmenu/embedded.py:27
 msgid "Adds, removes or replaces embedded images."
-msgstr ""
+msgstr "Lisab, eemaldab ja asendab lugudesse lõimitud pilte."
 
 #: quodlibet/ext/songsmenu/embedded.py:76
 msgid "_Embed"
-msgstr ""
+msgstr "_Lõimi"
 
 #: quodlibet/ext/songsmenu/embedded.py:80
 #, python-format
 msgid "Choose image to embed in the %d track"
 msgid_plural "Choose image to embed in %d tracks"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Vali pilt, mida soovid lõimida %d loo sisse"
+msgstr[1] "Vali pilt, mida soovid lõimida %d loo sisse"
 
 #: quodlibet/ext/songsmenu/embedded.py:110
 msgid "_Remove all Images"
-msgstr "_Eemalda kõik pildid"
+msgstr "Eemalda _kõik pildid"
 
 #: quodlibet/ext/songsmenu/embedded.py:115
 msgid "_Embed Current Image"
-msgstr ""
+msgstr "Eemalda _see pilt"
 
 #: quodlibet/ext/songsmenu/embedded.py:119
 msgid "_Choose Image…"
-msgstr ""
+msgstr "_Vali pilt…"
 
 #: quodlibet/ext/songsmenu/exact_rating.py:23
 msgid "Set Exact Rating"
@@ -4720,7 +4737,7 @@ msgstr ""
 
 #: quodlibet/ext/songsmenu/replaygain.py:359
 msgid "ReplayGain Analyzer"
-msgstr ""
+msgstr "Esitusvaljuse tundlikkuse analüüsija"
 
 #. Translators: Combined track number/title column heading
 #: quodlibet/ext/songsmenu/replaygain.py:401
@@ -4730,26 +4747,26 @@ msgstr "Pala"
 
 #: quodlibet/ext/songsmenu/replaygain.py:415
 msgid "Progress"
-msgstr ""
+msgstr "Edenemine"
 
 #: quodlibet/ext/songsmenu/replaygain.py:430
 msgid "Gain"
-msgstr ""
+msgstr "Võimendus"
 
 #: quodlibet/ext/songsmenu/replaygain.py:445
 msgid "Peak"
-msgstr ""
+msgstr "Tipp"
 
 #: quodlibet/ext/songsmenu/replaygain.py:460
 #, python-format
 msgid "There is %(to-process)s album to update (of %(all)s)"
 msgid_plural "There are %(to-process)s albums to update (of %(all)s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Uuendamist vajab %(to-process)s album (albumeid kokku: %(all)s)"
+msgstr[1] "Uuendamist vajavad %(to-process)s albumit (albumeid kokku: %(all)s)"
 
 #: quodlibet/ext/songsmenu/replaygain.py:580
 msgid "Replay Gain"
-msgstr ""
+msgstr "Esitusvaljuse tundlikkus"
 
 #: quodlibet/ext/songsmenu/replaygain.py:582
 #, python-format
@@ -4757,31 +4774,34 @@ msgid ""
 "Analyzes and updates <a href=\"%(rg_link)s\">ReplayGain</a> information, "
 "using GStreamer. Results are grouped by album."
 msgstr ""
+"Kasutades GStreamerit analüüsib ja uuendab <a href=\"%(rg_link)s\""
+">esitusvaljuse tundlikkuse</a> teavet. Tulemused on rühmitatud albumite "
+"kaupa."
 
 #: quodlibet/ext/songsmenu/replaygain.py:584
 msgid "https://en.wikipedia.org/wiki/ReplayGain"
-msgstr ""
+msgstr "https://en.wikipedia.org/wiki/ReplayGain"
 
 #: quodlibet/ext/songsmenu/replaygain.py:621
 msgid "always"
-msgstr ""
+msgstr "alati"
 
 #: quodlibet/ext/songsmenu/replaygain.py:623
 msgid "if <b>any</b> RG tags are missing"
-msgstr ""
+msgstr "kui <b>mis iganes</b> helivaljuse silt on puudu"
 
 #: quodlibet/ext/songsmenu/replaygain.py:626
 msgid "if <b>album</b> RG tags are missing"
-msgstr ""
+msgstr "kui <b>albumi</b> helivaljuse silt on puudu"
 
 #: quodlibet/ext/songsmenu/replaygain.py:643
 msgid "_Process albums:"
-msgstr ""
+msgstr "_Töötle albumeid:"
 
 #. Server settings Frame
 #: quodlibet/ext/songsmenu/replaygain.py:654
 msgid "Existing Tags"
-msgstr ""
+msgstr "Olemasolevad sildid"
 
 #: quodlibet/ext/songsmenu/splitting.py:35
 msgid "Split Tags"
@@ -4947,7 +4967,7 @@ msgstr[1] ""
 
 #: quodlibet/main.py:49
 msgid "Music player and music library manager"
-msgstr "Muudikaesitaja ja muusikakogu haldur"
+msgstr "Muusikaesitaja ja muusikakogu haldur"
 
 #: quodlibet/operon/base.py:70
 #, python-format
@@ -5160,43 +5180,43 @@ msgstr ""
 
 #: quodlibet/order/reorder.py:23
 msgid "Random"
-msgstr ""
+msgstr "Juhuslik"
 
 #: quodlibet/order/reorder.py:24 quodlibet/qltk/queue.py:182
 msgid "_Random"
-msgstr ""
+msgstr "_Juhuslik"
 
 #: quodlibet/order/reorder.py:40
 msgid "Prefer higher rated"
-msgstr ""
+msgstr "Eelista paremate hinnangutega lugusid"
 
 #: quodlibet/order/reorder.py:41
 msgid "Prefer _higher rated"
-msgstr ""
+msgstr "Eelista _paremate hinnangutega lugusid"
 
 #: quodlibet/order/repeat.py:46
 msgid "Repeat this track"
-msgstr ""
+msgstr "Korda seda lugu"
 
 #: quodlibet/order/repeat.py:47
 msgid "Repeat _this track"
-msgstr "Korda _seda pala"
+msgstr "Korda _seda lugu"
 
 #: quodlibet/order/repeat.py:60
 msgid "Repeat all"
-msgstr ""
+msgstr "Korda kõiki"
 
 #: quodlibet/order/repeat.py:61
 msgid "Repeat _all"
-msgstr ""
+msgstr "Korda _kõiki"
 
 #: quodlibet/order/repeat.py:76
 msgid "One song"
-msgstr ""
+msgstr "Üks lugu"
 
 #: quodlibet/order/repeat.py:77
 msgid "One _song"
-msgstr ""
+msgstr "Üks _lugu"
 
 #: quodlibet/player/gstbe/player.py:119
 msgid "Stream"
@@ -5218,7 +5238,7 @@ msgstr ""
 #: quodlibet/player/gstbe/player.py:688
 #, python-format
 msgid "Media format: %(format-description)s"
-msgstr ""
+msgstr "Meediavorming: %(format-description)s"
 
 #: quodlibet/player/gstbe/plugins.py:35
 #, python-format
@@ -5231,20 +5251,23 @@ msgid ""
 "pipeline. If the pipeline contains a sink, it will be used instead of the "
 "default one."
 msgstr ""
+"Taasesitamisel kasutatav GStreameri väljundkonveier. Vaikimisi väärtuse "
+"kasutamiseks jäta väli tühjaks. Kui väljundkonveieris on olemas ka helineel, "
+"siis ka tema saab olema kasutusel vaikimisi neelu asemel."
 
 #: quodlibet/player/gstbe/prefs.py:42
 msgid "_Output pipeline:"
-msgstr ""
+msgstr "Väljundk_onveier:"
 
 #. Translators: s = seconds
 #: quodlibet/player/gstbe/prefs.py:50
 #, python-format
 msgid "%.1f s"
-msgstr ""
+msgstr "%.1f sek"
 
 #: quodlibet/player/gstbe/prefs.py:63
 msgid "_Buffer duration:"
-msgstr ""
+msgstr "_Puhvri kestus:"
 
 #: quodlibet/player/gstbe/prefs.py:73
 msgid "Disable _gapless playback"
@@ -5258,7 +5281,7 @@ msgstr ""
 
 #: quodlibet/player/gstbe/prefs.py:83
 msgid "Use JACK for playback if available"
-msgstr ""
+msgstr "Kui JACK-taustateenus on saadaval, siis kasuta seda taasesitusel"
 
 #: quodlibet/player/gstbe/prefs.py:87
 msgid "Uses `jackaudiosink` for playbin sink if it can be detected"
@@ -5348,8 +5371,8 @@ msgstr ""
 #, python-format
 msgid "Run the plugin \"%(name)s\" on %(count)s playlist?"
 msgid_plural "Run the plugin \"%(name)s\" on %(count)s playlists?"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Kas käivitame „%(name)s“ lisamooduli %(count)s-s esitusloendis?"
+msgstr[1] "Kas käivitame „%(name)s“ lisamooduli %(count)s-s esitusloendis?"
 
 #: quodlibet/plugins/playlist.py:32 quodlibet/qltk/songsmenu.py:64
 #: quodlibet/qltk/songsmenu.py:77
@@ -5358,7 +5381,7 @@ msgstr "_Käivita lisamoodul"
 
 #: quodlibet/plugins/query.py:79
 msgid "Usage"
-msgstr ""
+msgstr "Kasutus"
 
 #: quodlibet/qltk/advanced_prefs.py:69
 msgid "Revert to default"
@@ -5366,7 +5389,7 @@ msgstr "Taasta vaikimisi väärtused"
 
 #: quodlibet/qltk/advanced_prefs.py:322
 msgid "I know what I'm doing!"
-msgstr ""
+msgstr "Ma tean, mida ma teen!"
 
 #. Translators: Refers to the beginning of the playing song.
 #: quodlibet/qltk/bookmarks.py:27
@@ -5387,7 +5410,7 @@ msgstr "Järjehoidja nimi"
 
 #: quodlibet/qltk/bookmarks.py:123
 msgid "MM:SS"
-msgstr ""
+msgstr "MM:SS"
 
 #: quodlibet/qltk/bookmarks.py:211 quodlibet/qltk/information.py:131
 msgid "Bookmarks"
@@ -5447,7 +5470,7 @@ msgstr ""
 
 #: quodlibet/qltk/cbes.py:41
 msgid "_Name:"
-msgstr ""
+msgstr "_Nimi:"
 
 #: quodlibet/qltk/cbes.py:49 quodlibet/qltk/edittags.py:362
 msgid "_Value:"
@@ -5455,15 +5478,15 @@ msgstr "_Väärtus:"
 
 #: quodlibet/qltk/cbes.py:267
 msgid "Saved Values"
-msgstr ""
+msgstr "Salvestatud väärtused"
 
 #: quodlibet/qltk/cbes.py:268
 msgid "Edit saved values…"
-msgstr ""
+msgstr "Muuda salvestatud väärtusi…"
 
 #: quodlibet/qltk/controls.py:117
 msgid "Auto_matic"
-msgstr ""
+msgstr "Auto_maatne"
 
 #: quodlibet/qltk/controls.py:118
 msgid "_Track Mode"
@@ -5480,7 +5503,7 @@ msgstr ""
 
 #: quodlibet/qltk/controls.py:135
 msgid "_Replay Gain Mode"
-msgstr ""
+msgstr "_Esitusvaljuse tundlikkuse töörežiim"
 
 #. Translators: New Command/Entry/Item/...
 #: quodlibet/qltk/data_editors.py:118
@@ -5498,7 +5521,7 @@ msgstr "_Lisa…"
 
 #: quodlibet/qltk/data_editors.py:318
 msgid "_Edit"
-msgstr ""
+msgstr "_Muuda"
 
 #: quodlibet/qltk/data_editors.py:364
 msgid "Tag expression"
@@ -5518,7 +5541,7 @@ msgstr ""
 
 #: quodlibet/qltk/delete.py:37
 msgid "Files:"
-msgstr ""
+msgstr "Failid:"
 
 #: quodlibet/qltk/delete.py:63
 msgid ""
@@ -5655,8 +5678,8 @@ msgid ""
 "Access all tags, including machine-generated ones e.g. MusicBrainz or Replay "
 "Gain tags"
 msgstr ""
-"Näita kõiki silte, sh masinloodud silte, nt MusicBrainzi ja taasesituse "
-"valjuse silte"
+"Näita kõiki silte, sh masinloodud silte, nt MusicBrainzi ja esitusvaljuse "
+"tundlikkuse silte"
 
 #: quodlibet/qltk/edittags.py:557
 msgid "Show _multi-line tags"
@@ -5788,7 +5811,7 @@ msgstr "Rakenduse te_ave"
 
 #: quodlibet/qltk/exfalsowindow.py:103 quodlibet/qltk/quodlibetwindow.py:1045
 msgid "_Check for Updates…"
-msgstr "_Kontrolli Uuendusi…"
+msgstr "_Kontrolli uuendusi…"
 
 #: quodlibet/qltk/exfalsowindow.py:109 quodlibet/qltk/quodlibetwindow.py:973
 #: quodlibet/qltk/songsmenu.py:312
@@ -5812,7 +5835,7 @@ msgstr "Kaustad"
 
 #: quodlibet/qltk/filesel.py:253
 msgid "_New Folder…"
-msgstr ""
+msgstr "_Uus kaust…"
 
 #: quodlibet/qltk/filesel.py:262
 msgid "_Select all Sub-Folders"
@@ -5820,23 +5843,23 @@ msgstr "Vali kõik alamkau_stad"
 
 #: quodlibet/qltk/filesel.py:372
 msgid "New Folder"
-msgstr ""
+msgstr "Uus kaust"
 
 #: quodlibet/qltk/filesel.py:372
 msgid "Enter a name for the new folder:"
-msgstr ""
+msgstr "Sisesta uue kausta nimi:"
 
 #: quodlibet/qltk/filesel.py:385
 msgid "Unable to create folder"
-msgstr ""
+msgstr "Kausta loomine pole võimalik"
 
 #: quodlibet/qltk/filesel.py:403
 msgid "Unable to delete folder"
-msgstr ""
+msgstr "Kausta kustutamine pole võimalik"
 
 #: quodlibet/qltk/filesel.py:517 quodlibet/qltk/pluginwin.py:36
 msgid "Songs"
-msgstr ""
+msgstr "Lood"
 
 #. Translators: As in "by Artist Name"
 #: quodlibet/qltk/info.py:37
@@ -6097,83 +6120,83 @@ msgstr ""
 
 #: quodlibet/qltk/pluginwin.py:38
 msgid "Events"
-msgstr ""
+msgstr "Sündmused"
 
 #: quodlibet/qltk/pluginwin.py:39
 msgid "Play Order"
-msgstr ""
+msgstr "Esitusjärjekord"
 
 #: quodlibet/qltk/pluginwin.py:40
 msgid "Editing"
-msgstr ""
+msgstr "Muutmine"
 
 #: quodlibet/qltk/pluginwin.py:41
 msgid "Renaming"
-msgstr ""
+msgstr "Nime muutmine"
 
 #: quodlibet/qltk/pluginwin.py:42
 msgid "Querying"
-msgstr ""
+msgstr "Päringute tegemine"
 
 #: quodlibet/qltk/pluginwin.py:44
 msgid "Covers"
-msgstr ""
+msgstr "Kaanepildid"
 
 #: quodlibet/qltk/pluginwin.py:67
 msgid "Plugin Errors"
-msgstr ""
+msgstr "Lisamoodulite vead"
 
 #: quodlibet/qltk/pluginwin.py:143
 msgid "Any state"
-msgstr ""
+msgstr "Kõik olekud"
 
 #: quodlibet/qltk/pluginwin.py:145
 msgid "Enabled"
-msgstr ""
+msgstr "Kasutusel"
 
 #: quodlibet/qltk/pluginwin.py:146
 msgid "Disabled"
-msgstr ""
+msgstr "Pole kasutusel"
 
 #: quodlibet/qltk/pluginwin.py:152
 msgid "No category"
-msgstr ""
+msgstr "Kategooria puudub"
 
 #: quodlibet/qltk/pluginwin.py:184
 msgid "Any category"
-msgstr ""
+msgstr "Kõik kategooriad"
 
 #: quodlibet/qltk/pluginwin.py:318
 msgid "No plugins found."
-msgstr ""
+msgstr "Lisamooduleid ei leidu."
 
 #: quodlibet/qltk/pluginwin.py:333
 msgid "(undocumented)"
-msgstr ""
+msgstr "(dokumenteerimata)"
 
 #: quodlibet/qltk/pluginwin.py:373
 msgid "Plugins"
-msgstr ""
+msgstr "Lisamoodulid"
 
 #: quodlibet/qltk/pluginwin.py:397
 msgid "Filter by plugin state / tag"
-msgstr ""
+msgstr "Otsi lisamooduleid oleku või sildi alusel"
 
 #: quodlibet/qltk/pluginwin.py:403
 msgid "Filter by plugin type"
-msgstr ""
+msgstr "Otsi lisamooduleid tüübi või kategooria tüübi alusel"
 
 #: quodlibet/qltk/pluginwin.py:408
 msgid "Filter by plugin name or description"
-msgstr ""
+msgstr "Otsi lisamooduleid nime või kirjelduse alusel"
 
 #: quodlibet/qltk/pluginwin.py:411
 msgid "Show _Errors"
-msgstr ""
+msgstr "Näita vi_gu"
 
 #: quodlibet/qltk/prefs.py:51
 msgid "_Disc"
-msgstr ""
+msgstr "_Plaat"
 
 #: quodlibet/qltk/prefs.py:52
 msgid "_Track"
@@ -6181,7 +6204,7 @@ msgstr "_Pala"
 
 #: quodlibet/qltk/prefs.py:53
 msgid "Grou_ping"
-msgstr ""
+msgstr "_Rühmitamine"
 
 #: quodlibet/qltk/prefs.py:54
 msgid "_Artist"
@@ -6189,60 +6212,63 @@ msgstr "_Esitaja"
 
 #: quodlibet/qltk/prefs.py:55
 msgid "Al_bum"
-msgstr ""
+msgstr "Al_bum"
 
 #: quodlibet/qltk/prefs.py:59
 msgid "_Filename"
-msgstr ""
+msgstr "_Failinimi"
 
 #: quodlibet/qltk/prefs.py:60
 msgid "_Length"
-msgstr ""
+msgstr "_Pikkus"
 
 #: quodlibet/qltk/prefs.py:69
 msgid "_Jump to playing song automatically"
-msgstr ""
+msgstr "_Hüppa esitamisel loo juurde automaatselt"
 
 #: quodlibet/qltk/prefs.py:74
 msgid "When the playing song changes, scroll to it in the song list"
-msgstr ""
+msgstr "Loo esitamisel keri loendis tema juurde"
 
 #: quodlibet/qltk/prefs.py:79
 msgid "_Sort songs when tags are modified"
-msgstr ""
+msgstr "_Siltide muutmisel muuda ka järjestust loendis"
 
 #: quodlibet/qltk/prefs.py:84
 msgid "Automatically re-sort songs in the song list when tags are modified"
 msgstr ""
+"Kui esitusloendis olevate lugude sildid on muutunud, siis automaatselt "
+"järjesta lood uuesti"
 
 #: quodlibet/qltk/prefs.py:89
 msgid "Always allow sorting"
-msgstr ""
+msgstr "Alati võimalda järjestamist"
 
 #: quodlibet/qltk/prefs.py:94
 msgid "Allow sorting by column headers, even for playlists etc"
 msgstr ""
+"Võimalda alati järjestamist veergude päisete alusel, seda ka esitusloendites"
 
 #: quodlibet/qltk/prefs.py:117
 msgid "_Others:"
-msgstr ""
+msgstr "_Muud:"
 
 #. Stock edit doesn't have ellipsis chars.
 #: quodlibet/qltk/prefs.py:122
 msgid "_Edit…"
-msgstr ""
+msgstr "_Muuda…"
 
 #: quodlibet/qltk/prefs.py:125
 msgid "Add or remove additional column headers"
-msgstr ""
+msgstr "Lisa või eemalda täiendavaid veerge"
 
 #: quodlibet/qltk/prefs.py:135
 msgid "Visible Columns"
-msgstr ""
+msgstr "Nähtavad veerud"
 
 #: quodlibet/qltk/prefs.py:157
 msgid "Title includes _version"
-msgstr ""
+msgstr "Pealkirjas sisaldub _versioon"
 
 #: quodlibet/qltk/prefs.py:158
 msgid "Album includes _disc subtitle"
@@ -6254,19 +6280,19 @@ msgstr "Esitaja hulgas on kõik _tegijad"
 
 #: quodlibet/qltk/prefs.py:160
 msgid "Filename includes _folder"
-msgstr ""
+msgstr "Failinimes on _kausta nimi"
 
 #: quodlibet/qltk/prefs.py:161
 msgid "Column Preferences"
-msgstr ""
+msgstr "Veergude eelistused"
 
 #: quodlibet/qltk/prefs.py:164
 msgid "_Update Columns"
-msgstr ""
+msgstr "_Uuenda veerge"
 
 #: quodlibet/qltk/prefs.py:167
 msgid "Apply current configuration to song list, adding new columns to the end"
-msgstr ""
+msgstr "Lisa see seadistus lugude loendile, lisades uued veerud lõppu"
 
 #: quodlibet/qltk/prefs.py:183 quodlibet/qltk/shortcuts.py:31
 msgid "Song List"
@@ -6278,21 +6304,21 @@ msgstr ""
 
 #: quodlibet/qltk/prefs.py:305
 msgid "Duration totals"
-msgstr ""
+msgstr "Kestused kokku"
 
 #: quodlibet/qltk/prefs.py:315
 msgid "_Global filter:"
-msgstr ""
+msgstr "_Üldine filter:"
 
 #: quodlibet/qltk/prefs.py:320
 msgid "Apply this query in addition to all others"
-msgstr ""
+msgstr "Kasuta seda päringut kõikide teisega koos"
 
 #. Translators: The heading of the preference group, no action
 #: quodlibet/qltk/prefs.py:324
 msgctxt "heading"
 msgid "Search"
-msgstr ""
+msgstr "Otsing"
 
 #: quodlibet/qltk/prefs.py:328 quodlibet/qltk/shortcuts.py:25
 msgid "Browsers"
@@ -6300,100 +6326,111 @@ msgstr "Brauserid"
 
 #: quodlibet/qltk/prefs.py:334
 msgid "Confirm _multiple ratings"
-msgstr ""
+msgstr "_Mitme loo hindamisel küsi kinnitust"
 
 #: quodlibet/qltk/prefs.py:339
 msgid ""
 "Ask for confirmation before changing the rating of multiple songs at once"
 msgstr ""
+"Kui korraga soovid muuta mitme loo hinnangut, siis eelnevalt küsi kinnitust"
 
 #: quodlibet/qltk/prefs.py:345
 msgid "Enable _one-click ratings"
-msgstr ""
+msgstr "Kasuta ühe _klõpsuga antavaid hinnanguid"
 
 #: quodlibet/qltk/prefs.py:350
 msgid "Enable rating by clicking on the rating column in the song list"
 msgstr ""
+"Võimalda hinnangute lisamist lugude loendi vastavast veerus klõpsimisega"
 
 #: quodlibet/qltk/prefs.py:357 quodlibet/qltk/prefs.py:754
 msgid "Ratings"
-msgstr ""
+msgstr "Hinnangud"
 
 #: quodlibet/qltk/prefs.py:364
 msgid "Prefer _embedded art"
-msgstr ""
+msgstr "_Eelista lõimitud kaanepilte"
 
 #: quodlibet/qltk/prefs.py:369
 msgid ""
 "Choose to use artwork embedded in the audio (where available) over other "
 "sources"
 msgstr ""
+"Kui kaanepildid on lõimitud muusikafaili, siis kasuta neid esimese allikana"
 
 #: quodlibet/qltk/prefs.py:376
 msgid ""
 "The album art image file(s) to use when available (supports wildcards). If "
 "you want to supply more than one, separate them with commas."
 msgstr ""
+"Kui sellised failinimed on lugude kõrval olemas, siis kasuta neid (võid "
+"kasutada ka metamärke). Loend eralda komadega."
 
 #: quodlibet/qltk/prefs.py:382
 msgid "_Preferred fixed image filename(s)"
-msgstr ""
+msgstr "Eel_istatud staatilised failinimed"
 
 #: quodlibet/qltk/prefs.py:403
 msgid "Album Art"
-msgstr ""
+msgstr "Kaanepildid"
 
 #: quodlibet/qltk/prefs.py:436
 msgid "Playback"
-msgstr ""
+msgstr "Taasesitus"
 
 #: quodlibet/qltk/prefs.py:443
 msgid "Output Configuration"
-msgstr ""
+msgstr "Väljundi seadistus"
 
 #: quodlibet/qltk/prefs.py:452
 msgid ""
 "If no Replay Gain information is available for a song, scale the volume by "
 "this value"
 msgstr ""
+"Kui loo kohta pole saadaval esitusvaljuse tundlikkuse teavet, siis muuda "
+"valjust alljärgnevalt"
 
 #: quodlibet/qltk/prefs.py:457
 msgid "_Fall-back gain:"
-msgstr ""
+msgstr "_Vaikimisi valjus:"
 
 #: quodlibet/qltk/prefs.py:468
 msgid ""
 "Scale volume for all songs by this value, as long as the result will not clip"
 msgstr ""
+"Muuda kõikide lugude valjust selle määra alusel (sedavõrd, kui heli just "
+"väga käest ära ei lähe)"
 
 #: quodlibet/qltk/prefs.py:473
 msgid "_Pre-amp gain:"
-msgstr ""
+msgstr "Ee_lvõimendi valjus:"
 
 #: quodlibet/qltk/prefs.py:480
 msgid "_Enable Replay Gain volume adjustment"
-msgstr ""
+msgstr "Kasuta valjuse kohendamist _esitusvaljuse tundlikkuse alusel"
 
 #: quodlibet/qltk/prefs.py:500
 msgid "Replay Gain Volume Adjustment"
-msgstr ""
+msgstr "Esitusvaljuse tundlikkuse kohendamine"
 
 #: quodlibet/qltk/prefs.py:509
 msgid "_Continue playback on startup"
-msgstr ""
+msgstr "_Käivitamisel jätka taasesitust"
 
 #: quodlibet/qltk/prefs.py:514
 msgid ""
 "If music is playing on shutdown, automatically start playing on next startup"
 msgstr ""
+"Kui rakenduse sulgemisel oli muusaika esitamisel, siis käivitamisel jätka "
+"sama loo esitamist"
 
 #: quodlibet/qltk/prefs.py:542
 msgid "_Default rating:"
-msgstr ""
+msgstr "Vaikimisi _hinnang:"
 
 #: quodlibet/qltk/prefs.py:587
 msgid "Rating _scale:"
-msgstr ""
+msgstr "Hinnangute skaala:"
 
 #: quodlibet/qltk/prefs.py:640
 msgid ""
@@ -6402,36 +6439,44 @@ msgid ""
 "tracks will have less extreme ratings. Changing this value triggers a re-"
 "calculation for all albums."
 msgstr ""
+"Bayesi keskmise arvutamisel kasutatav faktor (C) liithinnangute jaoks.\n"
+"0 sobib tavaliste keskmiste jaoks, suuremad väärtused tagavad selle, et "
+"väikese lugude arvuga albumite väärtused pole liiga äärmuslikud. Kui muudad "
+"seda väärtust, siis arvutatakse kõik väärtused kõikide albumite jaoks uuesti."
 
 #: quodlibet/qltk/prefs.py:647
 msgid "_Bayesian averaging amount:"
-msgstr ""
+msgstr "_Bayesi keskmine:"
 
 #: quodlibet/qltk/prefs.py:664
 msgid "_Email:"
-msgstr ""
+msgstr "_E-posti aadress:"
 
 #: quodlibet/qltk/prefs.py:668
 msgid "Ratings and play counts will be saved in tags for this email address"
 msgstr ""
+"Hinnangud ja esituskorrad salvestatakse selle e-postiaadressi puhul siltidena"
 
 #: quodlibet/qltk/prefs.py:689
 msgid "_Auto-save tag changes"
-msgstr ""
+msgstr "Salvesta siltide muudatused _automaatselt"
 
 #: quodlibet/qltk/prefs.py:694
 msgid "Save changes to tags without confirmation when editing multiple files"
 msgstr ""
+"Mitme faili muutmisel salvesta siltide muudatused ilma kinnituse küsimiseta"
 
 #: quodlibet/qltk/prefs.py:712
 msgid ""
 "A set of separators to use when splitting tag values in the tag editor. The "
 "list is space-separated."
 msgstr ""
+"Komplekt eraldajaid, mille alusel siltide haldur eraldab siltide väärtusi. "
+"Loendis endas on eraldajaks tühik."
 
 #: quodlibet/qltk/prefs.py:717
 msgid "Split _tag on:"
-msgstr ""
+msgstr "Poolita _sildid nende märkide kohalt:"
 
 #: quodlibet/qltk/prefs.py:731
 msgid ""
@@ -6439,22 +6484,25 @@ msgid ""
 "editor. The list is space-separated, and each entry must only contain two "
 "characters."
 msgstr ""
+"Komplekt eraldajaid, mille alusel siltide haldur eraldab silte "
+"alamsiltidest. Loendis endas on eraldajaks tühik ja igas kirjes võib olla "
+"vaid kaks märki."
 
 #: quodlibet/qltk/prefs.py:738
 msgid "Split _subtag on:"
-msgstr ""
+msgstr "Poolita _alamsildid nende märkide kohalt:"
 
 #: quodlibet/qltk/prefs.py:748
 msgid "Tags"
-msgstr ""
+msgstr "Sildid"
 
 #: quodlibet/qltk/prefs.py:751
 msgid "Tag Editing"
-msgstr ""
+msgstr "Siltide muutmine"
 
 #: quodlibet/qltk/prefs.py:772
 msgid "Updating for new ratings"
-msgstr ""
+msgstr "Uuendame uute hinnangute jaoks"
 
 #: quodlibet/qltk/prefs.py:786 quodlibet/qltk/quodlibetwindow.py:1059
 msgid "_Scan Library"
@@ -6466,36 +6514,39 @@ msgstr "Kontrolli, kas muusikakogu on muutunud"
 
 #: quodlibet/qltk/prefs.py:793
 msgid "Re_build Library"
-msgstr ""
+msgstr "Loo meediakogu _uuesti"
 
 #: quodlibet/qltk/prefs.py:796
 msgid "Reload all songs in your library. This can take a long time."
 msgstr ""
+"Laadi kõik oma meediakogu lood uuesti. Selleks võib üsna palju aega kuluda."
 
 #: quodlibet/qltk/prefs.py:811
 msgid "Hidden Songs"
-msgstr ""
+msgstr "Peidetud lood"
 
 #: quodlibet/qltk/prefs.py:820
 msgid "Scan library _on start"
-msgstr ""
+msgstr "Käivitamisel skaneeri meediak_ogu"
 
 #: quodlibet/qltk/prefs.py:827
 msgid "_Watch directories for changes"
-msgstr ""
+msgstr "_Jälgi muudatusi meediakogu kaustades"
 
 #: quodlibet/qltk/prefs.py:832
 msgid ""
 "Watch library directories for external file additions, deletions and renames."
 msgstr ""
+"Jälgi, kas välised rakendused lisavad või kustutavad faile meediakogu "
+"kaustades või muudavad nende nimesid."
 
 #: quodlibet/qltk/prefs.py:846
 msgid "Scan Directories"
-msgstr ""
+msgstr "Skaneeri kaustu"
 
 #: quodlibet/qltk/prefs.py:855
 msgid "Advanced"
-msgstr ""
+msgstr "Lisaseadistused"
 
 #: quodlibet/qltk/properties.py:157 quodlibet/util/collection.py:351
 #, python-format
@@ -6510,46 +6561,48 @@ msgstr ""
 
 #: quodlibet/qltk/queue.py:119
 msgid "_Queue"
-msgstr ""
+msgstr "_Esitusjärjekord"
 
 #: quodlibet/qltk/queue.py:139
 msgid "Clear Queue"
-msgstr ""
+msgstr "Tühjenda esitusjärjekord"
 
 #: quodlibet/qltk/queue.py:147
 msgid "Disable queue - the queue will be ignored when playing"
 msgstr ""
+"Eemalda esitusjärjekord kasutusest - lugude esitamisel ei lähe "
+"esitusjärjekord arvesse"
 
 #: quodlibet/qltk/queue.py:158
 msgid "Ephemeral"
-msgstr ""
+msgstr "Kaduv"
 
 #: quodlibet/qltk/queue.py:159
 msgid "Remove songs from the queue after playing them"
-msgstr ""
+msgstr "Peale lugude esitamist eemalda nad esitusjärjekorrast"
 
 #: quodlibet/qltk/queue.py:167
 msgid "Persistent"
-msgstr ""
+msgstr "Püsiv"
 
 #: quodlibet/qltk/queue.py:168
 msgid "Keep songs in the queue after playing them"
-msgstr ""
+msgstr "Peale lugude esitamist jäta nad esitusjärjekorda alles"
 
 #: quodlibet/qltk/queue.py:177
 msgid "Mode"
-msgstr ""
+msgstr "Kasutusviis"
 
 #: quodlibet/qltk/queue.py:189
 msgid "Stop at End"
-msgstr ""
+msgstr "Lõpus peatu"
 
 #: quodlibet/qltk/queue.py:313
 #, python-format
 msgid "%(count)d song (%(time)s)"
 msgid_plural "%(count)d songs (%(time)s)"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%(count)d lugu (%(time)s)"
+msgstr[1] "%(count)d lugu (%(time)s)"
 
 #: quodlibet/qltk/quodlibetwindow.py:224
 msgid "_Browse Library"
@@ -6599,7 +6652,7 @@ msgstr "_Fail"
 
 #: quodlibet/qltk/quodlibetwindow.py:934
 msgid "_Song"
-msgstr "_Lugu"
+msgstr "_Lood"
 
 #: quodlibet/qltk/quodlibetwindow.py:935
 msgid "_View"
@@ -6702,7 +6755,7 @@ msgstr "_Lisa esitusjärjekorda"
 #: quodlibet/qltk/ratingsmenu.py:26
 #, python-format
 msgid "Are you sure you want to change the rating of all %d songs?"
-msgstr ""
+msgstr "Kas sa oled kindel, et soovid muuta kõigi %d loo hinnangut?"
 
 #: quodlibet/qltk/ratingsmenu.py:29
 msgid "The saved ratings will be removed"
@@ -6715,11 +6768,11 @@ msgstr "_Eemalda hinnang"
 #: quodlibet/qltk/ratingsmenu.py:33
 #, python-format
 msgid "The rating of all selected songs will be changed to %s"
-msgstr ""
+msgstr "Kõikide valitud lugude uueks hinnanguks saab %s"
 
 #: quodlibet/qltk/ratingsmenu.py:35
 msgid "Change _Rating"
-msgstr ""
+msgstr "Muuda _hinnangut"
 
 #: quodlibet/qltk/renamefiles.py:52
 msgid "Replace spaces with _underscores"
@@ -7308,20 +7361,20 @@ msgstr "Teeme päringut albumite kaanepiltide teenusepakkujatele"
 
 #: quodlibet/util/__init__.py:101
 msgid "Display brief usage information"
-msgstr ""
+msgstr "Näita lühikest kasutusteavet"
 
 #: quodlibet/util/__init__.py:102
 msgid "Display version and copyright"
-msgstr ""
+msgstr "Näita versiooninumber ja autoriõiguste märge"
 
 #: quodlibet/util/__init__.py:103
 msgid "Print debugging information"
-msgstr ""
+msgstr "Väljasta silumisteave"
 
 #: quodlibet/util/__init__.py:143
 #, python-format
 msgid "Usage: %(program)s %(usage)s"
-msgstr ""
+msgstr "Kasutus: %(program)s %(usage)s"
 
 #: quodlibet/util/__init__.py:145
 msgid "[options]"
@@ -7383,15 +7436,15 @@ msgstr[1] "%d tundi"
 #, python-format
 msgid "%d day"
 msgid_plural "%d days"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d päev"
+msgstr[1] "%d päeva"
 
 #: quodlibet/util/__init__.py:454
 #, python-format
 msgid "%d year"
 msgid_plural "%d years"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d aasta"
+msgstr[1] "%d aastat"
 
 #. Translators: If tag names, when capitalized, should not
 #. be title-cased ("Looks Like This"), but rather only have
@@ -7410,11 +7463,12 @@ msgstr ""
 
 #: quodlibet/util/massagers.py:132
 msgid "Replay Gain gains must be entered in 'x.yy dB' format."
-msgstr ""
+msgstr "Esitusvaljuse tundlikkus peab olema sisestatud „x.yy dB“ vormingus."
 
 #: quodlibet/util/massagers.py:153
 msgid "Replay Gain peaks must be entered in 'x.yy' format."
 msgstr ""
+"Esitusvaljuse tundlikkuse tipus peavad olema sisestatud „x.yy dB“ vormingus."
 
 #: quodlibet/util/massagers.py:180
 msgid "MusicBrainz IDs must be in UUID format."
@@ -7453,7 +7507,7 @@ msgstr ""
 
 #: quodlibet/util/string/__init__.py:33 quodlibet/util/string/__init__.py:44
 msgid "[Invalid Encoding]"
-msgstr ""
+msgstr "[Vigane kodeering]"
 
 #: quodlibet/util/tags.py:85
 msgid "album"
@@ -7689,7 +7743,7 @@ msgstr "MusicBrainzi väljaande grupi tunnus"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:142
 msgid "track gain"
-msgstr "pala helivaljus"
+msgstr "pala esitusvaljuse tundlikkus"
 
 #: quodlibet/util/tags.py:143
 msgid "track peak"
@@ -7698,7 +7752,7 @@ msgstr "pala helivaljuse tipp"
 #. Translators: "gain" means a volume adjustment, not "to acquire".
 #: quodlibet/util/tags.py:145
 msgid "album gain"
-msgstr "albumi helivaljus"
+msgstr "albumi esitusvaljuse tundlikkus"
 
 #: quodlibet/util/tags.py:146
 msgid "album peak"
