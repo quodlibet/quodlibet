@@ -19,19 +19,19 @@ from multiprocessing import Process, Queue
 from functools import cache
 
 import gi
-gi.require_version("GIRepository", "2.0")
-from gi.repository import GIRepository
+gi.require_version("GIRepository", "3.0")
+from gi.repository import GIRepository, GLib
 
 
 def _get_shared_libraries(q, namespace, version):
     try:
         repo = GIRepository.Repository()
         repo.require(namespace, version, 0)
-        lib = repo.get_shared_library(namespace)
+        libs = repo.get_shared_libraries(namespace)
     except Exception as e:
         q.put((None, e))
     else:
-        q.put((lib, None))
+        q.put((libs, None))
 
 
 @cache
@@ -41,9 +41,11 @@ def get_shared_libraries(namespace, version):
     q = Queue()
     p = Process(target=_get_shared_libraries, args=(q, namespace, version))
     p.start()
-    result = q.get()
+    libs, error = q.get()
     p.join()
-    return result
+    if error is not None:
+        raise error
+    return libs
 
 
 def get_required_by_typelibs():
@@ -51,16 +53,14 @@ def get_required_by_typelibs():
     repo = GIRepository.Repository()
     for tl in os.listdir(repo.get_search_path()[0]):
         namespace, version = os.path.splitext(tl)[0].split("-", 1)
-        # g-i fails to load itself with a different version
-        if namespace == "GIRepository" and version != "2.0":
-            continue
-        lib, error = get_shared_libraries(namespace, version)
-        if error:
-            raise error
-        if lib:
-            libs = lib.lower().split(",")
-        else:
-            libs = []
+        try:
+            libs = get_shared_libraries(namespace, version)
+        except GLib.Error as e:
+            # g-i fails to load itself with a different version
+            if "GIRepository" in e.message and "2.0" in e.message:
+                continue
+            else:
+                raise
         for lib in libs:
             deps.add((namespace, version, lib))
     return deps
