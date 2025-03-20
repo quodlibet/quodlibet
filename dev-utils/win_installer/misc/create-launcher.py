@@ -121,7 +121,13 @@ END
 """
 
     def to_ver_list(v):
-        return ",".join(map(str, (list(map(int, v.split("."))) + [0] * 4)[:4]))
+
+        # needs to fit a uint16_t, let's just limit instead of erroring out
+        def limit(i):
+            return min(max(int(i), 0), 65535)
+
+        return ",".join(map(str, (
+            list(map(lambda p: limit(int(p)), v.split("."))) + [0] * 4)[:4]))
 
     file_version_list = to_ver_list(file_version)
     product_version_list = to_ver_list(product_version)
