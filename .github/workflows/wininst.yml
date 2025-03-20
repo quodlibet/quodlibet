@@ -21,16 +21,16 @@ jobs:
       - name: setup-msys2
         uses: msys2/setup-msys2@v2
         with:
-          msystem: UCRT64
+          msystem: CLANG64
           update: true
           install: >-
             git
             dos2unix
-            mingw-w64-ucrt-x86_64-7zip
-            mingw-w64-ucrt-x86_64-nsis
-            mingw-w64-ucrt-x86_64-curl
-            mingw-w64-ucrt-x86_64-python
-            mingw-w64-ucrt-x86_64-cc
+            mingw-w64-clang-x86_64-7zip
+            mingw-w64-clang-x86_64-nsis
+            mingw-w64-clang-x86_64-curl
+            mingw-w64-clang-x86_64-python
+            mingw-w64-clang-x86_64-cc
 
       - name: Build Installer
         env:

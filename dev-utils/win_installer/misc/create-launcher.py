@@ -49,7 +49,7 @@ def get_build_args():
 
 
 def build_exe(source_path, resource_path, is_gui, out_path):
-    args = ["gcc", "-s"]
+    args = ["cc", "-s"]
     if is_gui:
         args.append("-mwindows")
     args.append("-municode")
