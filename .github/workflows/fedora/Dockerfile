@@ -1,7 +1,7 @@
 FROM fedora:39
 
 RUN dnf -y install \
-      poetry \
+      pipx \
       cairo-devel \
       gcc \
       python3-devel \
