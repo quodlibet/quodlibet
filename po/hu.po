@@ -3,27 +3,26 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2013-07-20 22:35+0100\n"
-"Last-Translator: SZERVÁC Attila <sas@321.hu>\n"
-"Language-Team: hu\n"
+"PO-Revision-Date: 2025-04-14 15:45+0000\n"
+"Last-Translator: Balázs Kipilla <ruszok@rompecs.de>\n"
+"Language-Team: Hungarian <https://hosted.weblate.org/projects/quodlibet/"
+"quodlibet/hu/>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Weblate 5.11-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
-#, fuzzy
 msgid "_Title"
-msgstr "Cím"
+msgstr "_Cím"
 
 #: quodlibet/browsers/albums/main.py:227
 #: quodlibet/browsers/covergrid/main.py:58
-#, fuzzy
 msgid "_People"
-msgstr "személyek"
+msgstr "_Együttműködők"
 
 #: quodlibet/browsers/albums/main.py:228
 #: quodlibet/browsers/covergrid/main.py:59 quodlibet/qltk/prefs.py:58
@@ -32,48 +31,42 @@ msgstr "_Dátum"
 
 #: quodlibet/browsers/albums/main.py:229
 #: quodlibet/browsers/covergrid/main.py:60
-#, fuzzy
 msgid "_Date Added"
-msgstr "_Dátum fejlécek"
+msgstr "_Hozzáadás időpontja"
 
 #: quodlibet/browsers/albums/main.py:230
 #: quodlibet/browsers/covergrid/main.py:61
-#, fuzzy
 msgid "_Original Date"
-msgstr "eredeti művész"
+msgstr "_Eredeti dátum"
 
 #: quodlibet/browsers/albums/main.py:231
 #: quodlibet/browsers/covergrid/main.py:62 quodlibet/qltk/prefs.py:57
-#, fuzzy
 msgid "_Genre"
-msgstr "műfaj"
+msgstr "_Műfaj"
 
 #: quodlibet/browsers/albums/main.py:232
 #: quodlibet/browsers/covergrid/main.py:63 quodlibet/qltk/prefs.py:61
 #: quodlibet/qltk/ratingsmenu.py:46
 msgid "_Rating"
-msgstr "É_rték"
+msgstr "_Értékelés"
 
 #: quodlibet/browsers/albums/main.py:233
 #: quodlibet/browsers/covergrid/main.py:64
-#, fuzzy
 msgid "Play_count"
-msgstr "Kijelző szerkesztése"
+msgstr "Lejátszások_száma"
 
 #: quodlibet/browsers/albums/main.py:238
 #: quodlibet/browsers/covergrid/main.py:69
-#, fuzzy
 msgid "Sort _by…"
-msgstr "Rendezés dátum szerint"
+msgstr "Eszerint_rendezés:…"
 
 #: quodlibet/browsers/albums/main.py:258
 #: quodlibet/browsers/covergrid/main.py:89
 #: quodlibet/browsers/paned/prefs.py:202
 #: quodlibet/browsers/playlists/main.py:717 quodlibet/qltk/exfalsowindow.py:113
 #: quodlibet/qltk/pluginwin.py:357 quodlibet/qltk/quodlibetwindow.py:967
-#, fuzzy
 msgid "_Preferences"
-msgstr "Jellemzők"
+msgstr "_Beállítások"
 
 #: quodlibet/browsers/albums/main.py:430
 msgid "Album List"
@@ -97,10 +90,9 @@ msgstr[0] "%d album"
 
 #: quodlibet/browsers/albums/main.py:734
 #: quodlibet/browsers/covergrid/main.py:395
-#, fuzzy
 msgid "Reload album _cover"
 msgid_plural "Reload album _covers"
-msgstr[0] "Album borítók mutatása"
+msgstr[0] "Albumborító újratöltése"
 
 #: quodlibet/browsers/albums/prefs.py:34
 #: quodlibet/browsers/collection/models.py:17
@@ -129,21 +121,20 @@ msgstr[0] "%d lemez"
 
 #: quodlibet/browsers/albums/prefs.py:51
 #: quodlibet/browsers/covergrid/prefs.py:53
-#, fuzzy
 msgid "An Example Album"
-msgstr "Minden album"
+msgstr "Egy példaalbum"
 
 #: quodlibet/browsers/albums/prefs.py:61
 msgid "Album List Preferences"
-msgstr "Album lista jellemzők"
+msgstr "Albumlista beállítások"
 
 #: quodlibet/browsers/albums/prefs.py:69
 msgid "Show album _covers"
-msgstr "Album borítók mutatása"
+msgstr "Album_borítók mutatása"
 
 #: quodlibet/browsers/albums/prefs.py:75
 msgid "Inline _search includes people"
-msgstr ""
+msgstr "A _keresőfunkció tartalmazza az együttműködőket is"
 
 #: quodlibet/browsers/albums/prefs.py:79
 #: quodlibet/browsers/covergrid/prefs.py:117
@@ -168,7 +159,7 @@ msgstr "Album kiírás"
 #: quodlibet/qltk/pluginwin.py:441 quodlibet/qltk/prefs.py:898
 #: quodlibet/qltk/textedit.py:167 quodlibet/update.py:154
 msgid "_Close"
-msgstr ""
+msgstr "_Bezárás"
 
 #: quodlibet/browsers/_base.py:146 quodlibet/browsers/_base.py:149
 msgid "Library Browser"
@@ -191,26 +182,26 @@ msgstr "Hibás minta"
 
 #: quodlibet/browsers/collection/main.py:84
 msgid "Album Collection"
-msgstr ""
+msgstr "Albumgyűjtemény"
 
 #: quodlibet/browsers/collection/main.py:85
 msgid "Album _Collection"
-msgstr ""
+msgstr "Album_gyűjtemény"
 
 #: quodlibet/browsers/collection/models.py:24
-#, fuzzy, python-format
+#, python-format
 msgid "Unknown %s"
-msgstr "Ismeretlen"
+msgstr "Ismeretlen %s"
 
 #: quodlibet/browsers/collection/models.py:25
-#, fuzzy, python-format
+#, python-format
 msgid "Multiple %s Values"
-msgstr "Több értékre szedés"
+msgstr "Több %s-érték"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:92
 msgid "_Custom"
-msgstr "Egyedi"
+msgstr "_Egyedi"
 
 #: quodlibet/browsers/collection/prefs.py:88 quodlibet/browsers/iradio.py:380
 #: quodlibet/browsers/paned/prefs.py:119
@@ -219,7 +210,7 @@ msgstr "Egyedi"
 #: quodlibet/qltk/edittags.py:339 quodlibet/qltk/quodlibetwindow.py:1362
 #: quodlibet/qltk/scanbox.py:67
 msgid "_Add"
-msgstr ""
+msgstr "_Hozzáadás"
 
 #. Remove button
 #: quodlibet/browsers/collection/prefs.py:92
@@ -234,9 +225,8 @@ msgstr ""
 #: quodlibet/qltk/edittags.py:769 quodlibet/qltk/maskedbox.py:46
 #: quodlibet/qltk/maskedbox.py:86 quodlibet/qltk/queue.py:520
 #: quodlibet/qltk/scanbox.py:38 quodlibet/qltk/scanbox.py:70
-#, fuzzy
 msgid "_Remove"
-msgstr "É_rték"
+msgstr "_Eltávolítás"
 
 #: quodlibet/browsers/collection/prefs.py:121
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:60
@@ -246,7 +236,7 @@ msgstr "Tag"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
-msgstr ""
+msgstr "Egyesítés"
 
 #: quodlibet/browsers/collection/prefs.py:186
 #, fuzzy
@@ -259,7 +249,7 @@ msgstr "Album lista jellemzők"
 #: quodlibet/ext/songsmenu/exact_rating.py:37
 #: quodlibet/player/gstbe/prefs.py:46 quodlibet/qltk/textedit.py:64
 msgid "_Apply"
-msgstr ""
+msgstr "_Alkalmazás"
 
 #: quodlibet/browsers/collection/prefs.py:196
 #: quodlibet/browsers/paned/prefs.py:251
@@ -287,42 +277,36 @@ msgstr ""
 #: quodlibet/qltk/quodlibetwindow.py:1499 quodlibet/qltk/ratingsmenu.py:41
 #: quodlibet/qltk/scanbox.py:154 quodlibet/update.py:94
 msgid "_Cancel"
-msgstr ""
+msgstr "_Visszavonás"
 
 #: quodlibet/browsers/covergrid/main.py:172
-#, fuzzy
 msgid "Cover Grid"
-msgstr "Összméret:"
+msgstr "Borítórács"
 
 #: quodlibet/browsers/covergrid/main.py:173
-#, fuzzy
 msgid "_Cover Grid"
-msgstr "Összméret:"
+msgstr "_Borítórács"
 
 #: quodlibet/browsers/covergrid/prefs.py:63
-#, fuzzy
 msgid "Cover Grid Preferences"
-msgstr "Paneles böngésző beállítások"
+msgstr "Borítórács beállítások"
 
 #: quodlibet/browsers/covergrid/prefs.py:72
-#, fuzzy
 msgid "Show album _text"
-msgstr "Album borítók mutatása"
+msgstr "Album_szöveg mutatása"
 
 #: quodlibet/browsers/covergrid/prefs.py:78
-#, fuzzy
 msgid "Show \"All Albums\" Item"
-msgstr "Minden album"
+msgstr "Minden album mutatása"
 
 #: quodlibet/browsers/covergrid/prefs.py:84
 msgid "Wide Mode"
-msgstr ""
+msgstr "Széles mód"
 
 #: quodlibet/browsers/covergrid/prefs.py:109
 #: quodlibet/browsers/covergrid/prefs.py:110
-#, fuzzy
 msgid "Cover Magnification"
-msgstr "szervezet"
+msgstr "Borítókép nagyítás"
 
 #: quodlibet/browsers/filesystem.py:42
 msgid "File System"
@@ -338,11 +322,11 @@ msgstr "Dalok másolása sikertelen"
 
 #: quodlibet/browsers/filesystem.py:135 quodlibet/qltk/songlist.py:269
 msgid "The files selected cannot be copied to other song lists or the queue."
-msgstr "A kijelölt fájlok nem másolhatók más dal listába vagy sorba."
+msgstr "A kijelölt fájlok nem másolhatók más listába vagy sorba."
 
 #: quodlibet/browsers/filesystem.py:208
 msgid "_Add to Library"
-msgstr "Daltárhoz _adás"
+msgstr "_Daltárhoz adás"
 
 #: quodlibet/browsers/iradio.py:195
 #, python-format
@@ -351,14 +335,14 @@ msgid ""
 "lists or playlists. The following locations cannot be loaded:\n"
 "%s"
 msgstr ""
-"Az állomás listák csak állomások helyeit tartalmazhatják, más állomás "
-"listákat vagy lejátszó-listákat nem. Az alábbi helyek nem tölthetők be:\n"
+"Az állomáslisták csak állomások helyeit tartalmazhatják, más állomáslistákat "
+"vagy lejátszási listákat nem. Az alábbi helyek nem tölthetők be:\n"
 "%s"
 
 #: quodlibet/browsers/iradio.py:233 quodlibet/browsers/iradio.py:276
 #: quodlibet/browsers/iradio.py:517
 msgid "Internet Radio"
-msgstr "Internet Rádió"
+msgstr "Internetes rádió"
 
 #: quodlibet/browsers/iradio.py:233
 #, fuzzy
@@ -366,9 +350,8 @@ msgid "Add stations"
 msgstr "Új állomás"
 
 #: quodlibet/browsers/iradio.py:276
-#, fuzzy
 msgid "Downloading station list"
-msgstr "Fájlok letöltése"
+msgstr "Állomáslista letöltése"
 
 #: quodlibet/browsers/iradio.py:378
 msgid "New Station"
@@ -376,177 +359,172 @@ msgstr "Új állomás"
 
 #: quodlibet/browsers/iradio.py:379
 msgid "Enter the location of an Internet radio station:"
-msgstr "Add meg egy Internet rádió állomás helyét:"
+msgstr "Add meg egy internetes rádió állomás helyét:"
 
 #: quodlibet/browsers/iradio.py:399
 msgid "Electronic"
-msgstr ""
+msgstr "Elektronikus"
 
 #: quodlibet/browsers/iradio.py:403
 msgid "Hip Hop / Rap"
-msgstr ""
+msgstr "Hip-Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Oldies"
-msgstr ""
+msgstr "Régimódi"
 
 #: quodlibet/browsers/iradio.py:405
 msgid "R&B"
-msgstr ""
+msgstr "R&B"
 
 #: quodlibet/browsers/iradio.py:406
 msgid "Japanese"
-msgstr ""
+msgstr "Japán"
 
 #: quodlibet/browsers/iradio.py:407
 msgid "Indian"
-msgstr ""
+msgstr "Indiai"
 
 #: quodlibet/browsers/iradio.py:409
 msgid "Religious"
-msgstr ""
+msgstr "Vallásos"
 
 #: quodlibet/browsers/iradio.py:412
 msgid "Charts"
-msgstr ""
+msgstr "Slágerlisták"
 
 #: quodlibet/browsers/iradio.py:413
 msgid "Turkish"
-msgstr ""
+msgstr "Török"
 
 #: quodlibet/browsers/iradio.py:414
 msgid "Reggae / Dancehall"
-msgstr ""
+msgstr "Reggae / Dancehall"
 
 #: quodlibet/browsers/iradio.py:415
-#, fuzzy
 msgid "Latin"
-msgstr "érték"
+msgstr "Latin"
 
 #: quodlibet/browsers/iradio.py:416
 msgid "College Radio"
-msgstr ""
+msgstr "Iskolarádió"
 
 #: quodlibet/browsers/iradio.py:417
 msgid "Talk / News"
-msgstr ""
+msgstr "Beszélgetés / Hírek"
 
 #: quodlibet/browsers/iradio.py:418
 msgid "Ambient"
-msgstr ""
+msgstr "Ambient"
 
 #: quodlibet/browsers/iradio.py:419
 msgid "Jazz"
-msgstr ""
+msgstr "Jazz"
 
 #: quodlibet/browsers/iradio.py:420 quodlibet/ext/events/equalizer.py:139
 msgid "Classical"
-msgstr ""
+msgstr "Klasszikus"
 
 #: quodlibet/browsers/iradio.py:421 quodlibet/ext/events/equalizer.py:227
 msgid "Pop"
-msgstr ""
+msgstr "Pop"
 
 #: quodlibet/browsers/iradio.py:422
 msgid "Alternative"
-msgstr ""
+msgstr "Alternatív"
 
 #: quodlibet/browsers/iradio.py:423
 msgid "Metal"
-msgstr ""
+msgstr "Metal"
 
 #: quodlibet/browsers/iradio.py:424
 msgid "Country"
-msgstr ""
+msgstr "Country"
 
 #: quodlibet/browsers/iradio.py:425
 msgid "News"
-msgstr ""
+msgstr "Hírek"
 
 #: quodlibet/browsers/iradio.py:426
 msgid "Schlager"
-msgstr ""
+msgstr "Sláger"
 
 #: quodlibet/browsers/iradio.py:427
 msgid "Funk"
-msgstr ""
+msgstr "Funk"
 
 #: quodlibet/browsers/iradio.py:428
 msgid "Indie"
-msgstr ""
+msgstr "Indie"
 
 #: quodlibet/browsers/iradio.py:429
 msgid "Blues"
-msgstr ""
+msgstr "Blues"
 
 #: quodlibet/browsers/iradio.py:430
 msgid "Soul"
-msgstr ""
+msgstr "Soul"
 
 #: quodlibet/browsers/iradio.py:431
 msgid "Lounge"
-msgstr ""
+msgstr "Lounge"
 
 #: quodlibet/browsers/iradio.py:432
 msgid "Punk"
-msgstr ""
+msgstr "Punk"
 
 #: quodlibet/browsers/iradio.py:433
 msgid "Reggaeton"
-msgstr ""
+msgstr "Reggaeton"
 
 #: quodlibet/browsers/iradio.py:434
 msgid "Slavic"
-msgstr ""
+msgstr "Szláv"
 
 #: quodlibet/browsers/iradio.py:435
 msgid "Greek"
-msgstr ""
+msgstr "Görög"
 
 #: quodlibet/browsers/iradio.py:436
 msgid "Gothic"
-msgstr ""
+msgstr "Gótikus"
 
 #: quodlibet/browsers/iradio.py:437 quodlibet/ext/events/equalizer.py:95
 msgid "Rock"
-msgstr ""
+msgstr "Rock"
 
 #: quodlibet/browsers/iradio.py:495
 msgid "Would you like to load a list of popular radio stations?"
-msgstr ""
+msgstr "Be szeretne tölteni egy listát a népszerű rádióállomásokról?"
 
 #: quodlibet/browsers/iradio.py:502
-#, fuzzy
 msgid "_Load Stations"
-msgstr "Új állomás"
+msgstr "_Állomások betöltése"
 
 #: quodlibet/browsers/iradio.py:518
 msgid "_Internet Radio"
-msgstr "_Internet Rádió"
+msgstr "_Internetes rádió"
 
 #: quodlibet/browsers/iradio.py:610
-#, fuzzy
 msgid "All Stations"
-msgstr "Új állomás"
+msgstr "Minden állomás"
 
 #. Translators: Favorite radio stations
 #: quodlibet/browsers/iradio.py:613 quodlibet/browsers/soundcloud/main.py:77
 msgid "Favorites"
-msgstr ""
+msgstr "Kedvencek"
 
 #: quodlibet/browsers/iradio.py:620
 msgid "No Category"
-msgstr ""
+msgstr "Kategorizálatlan"
 
 #: quodlibet/browsers/iradio.py:676
-#, fuzzy
 msgid "_Add Station…"
-msgstr "Új állomás"
+msgstr "_Új állomás…"
 
 #: quodlibet/browsers/iradio.py:678
-#, fuzzy
 msgid "_Update Stations"
-msgstr "Új állomás"
+msgstr "_Állomások frissítése"
 
 #: quodlibet/browsers/iradio.py:863
 msgid "No stations found"
@@ -559,21 +537,19 @@ msgstr "Nem leltem Internet rádió állomást itt: %s."
 
 #: quodlibet/browsers/iradio.py:877
 msgid "Nothing to add"
-msgstr ""
+msgstr "Nincs mit hozzáadni"
 
 #: quodlibet/browsers/iradio.py:878
 msgid "All stations listed are already in your library."
 msgstr "Már minden kiírt állomás a daltárban van."
 
 #: quodlibet/browsers/iradio.py:901
-#, fuzzy
 msgid "Add to Favorites"
-msgstr "Listához _adás"
+msgstr "Hozzáadás a kedvencekhez"
 
 #: quodlibet/browsers/iradio.py:905
-#, fuzzy
 msgid "Remove from Favorites"
-msgstr "Tö_rlés a listáról"
+msgstr "Eltávolítás a kedvencek közül"
 
 #: quodlibet/browsers/iradio.py:1011
 #, python-format
@@ -591,7 +567,7 @@ msgstr "_Paneles böngésző"
 
 #: quodlibet/browsers/paned/main.py:91
 msgid "Select _All"
-msgstr "Mindent kijelöl"
+msgstr "_Mindent kijelöl"
 
 #: quodlibet/browsers/paned/models.py:79 quodlibet/browsers/podcasts.py:54
 #: quodlibet/browsers/podcasts.py:66 quodlibet/browsers/podcasts.py:68
@@ -610,16 +586,15 @@ msgstr "Minden"
 #: quodlibet/browsers/paned/prefs.py:41
 #: quodlibet/ext/songsmenu/cover_download.py:166
 msgid "Small"
-msgstr ""
+msgstr "Kicsi"
 
 #: quodlibet/browsers/paned/prefs.py:42
 msgid "Wide"
-msgstr ""
+msgstr "Széles"
 
 #: quodlibet/browsers/paned/prefs.py:43
-#, fuzzy
 msgid "Columnar"
-msgstr "Látható oszlopok"
+msgstr "Oszlopos"
 
 #: quodlibet/browsers/paned/prefs.py:109
 #, python-brace-format
@@ -627,6 +602,8 @@ msgid ""
 "Tag pattern with optional markup e.g. <tt>composer</tt> or\n"
 "{example}"
 msgstr ""
+"Címkeminta opcionális megjelöléssel, pl.: <tt>composer</tt> vagy\n"
+"{example}"
 
 #: quodlibet/browsers/paned/prefs.py:231
 msgid "Paned Browser Preferences"
@@ -634,175 +611,167 @@ msgstr "Paneles böngésző beállítások"
 
 #: quodlibet/browsers/paned/prefs.py:236
 msgid "Column layout"
-msgstr ""
+msgstr "Oszlopelrendezés"
 
 #: quodlibet/browsers/paned/prefs.py:240
 msgid "Column content"
-msgstr ""
+msgstr "Oszloptartalom"
 
 #: quodlibet/browsers/paned/prefs.py:243
 msgid "Equal pane width"
-msgstr ""
+msgstr "Egységes panelszélesség"
 
 #: quodlibet/browsers/playlists/main.py:53
 #: quodlibet/browsers/playlists/main.py:645 quodlibet/qltk/pluginwin.py:37
 msgid "Playlists"
-msgstr "Listák"
+msgstr "Lejátszási listák"
 
 #: quodlibet/browsers/playlists/main.py:54
 msgid "_Playlists"
-msgstr "Listák"
+msgstr "_Lejátszási listák"
 
 #: quodlibet/browsers/playlists/main.py:170
 msgid "_Remove from Playlist"
-msgstr "Tö_rlés a listáról"
+msgstr "_Törlés a lejátszási listáról"
 
 #: quodlibet/browsers/playlists/main.py:213 quodlibet/qltk/data_editors.py:95
 msgid "_New"
-msgstr ""
+msgstr "_Új"
 
 #: quodlibet/browsers/playlists/main.py:215
-#, fuzzy
 msgid "_Import…"
-msgstr "_Import"
+msgstr "_Importálás…"
 
 #: quodlibet/browsers/playlists/main.py:476
 msgid "Unable to import playlist"
-msgstr "Lista importálása sikertelen"
+msgstr "Lejátszási lista importálása sikertelen"
 
 #: quodlibet/browsers/playlists/main.py:478
-#, fuzzy
 msgid "Quod Libet can only import playlists in the M3U/M3U8 and PLS formats."
-msgstr "A Quod Libet csak PLS és M3U listákat tud importálni"
+msgstr ""
+"A Quod Libet csak PLS és M3U formátumú lejátszási listákat tud importálni."
 
 #: quodlibet/browsers/playlists/main.py:522
 #: quodlibet/browsers/playlists/util.py:42 quodlibet/browsers/podcasts.py:499
 #: quodlibet/qltk/delete.py:148 quodlibet/qltk/filesel.py:256
 #: quodlibet/qltk/lyrics.py:33 quodlibet/qltk/maskedbox.py:28
 #: quodlibet/qltk/songsmenu.py:464
-#, fuzzy
 msgid "_Delete"
-msgstr "Fájlok törlése"
+msgstr "_Törlés"
 
 #: quodlibet/browsers/playlists/main.py:529
 msgid "_Rename"
-msgstr "Átnevez"
+msgstr "_Átnevez"
 
 #: quodlibet/browsers/playlists/main.py:630
 msgid "Unable to rename playlist"
-msgstr "Lista átnevezése sikertelen"
+msgstr "Lejátszási lista átnevezése sikertelen"
 
 #: quodlibet/browsers/playlists/main.py:646
 msgid "Import Playlist"
-msgstr "Listák importálása"
+msgstr "Lejátszási listák importálása"
 
 #: quodlibet/browsers/playlists/main.py:646
 msgid "_Import"
-msgstr "_Import"
+msgstr "_Importálás"
 
 #: quodlibet/browsers/playlists/menu.py:22
-#, fuzzy
 msgid "_New Playlist…"
-msgstr "Új lista"
+msgstr "_Új lejátszási lista…"
 
 #: quodlibet/browsers/playlists/menu.py:75
 #, python-format
 msgid "What do you want to do with that %d song?"
 msgid_plural "What do you want to do with those %d songs?"
-msgstr[0] ""
+msgstr[0] "Mit szeretne a %d dalokkal csinálni?"
 
 #: quodlibet/browsers/playlists/menu.py:80
 #, python-format
 msgid "Confirm action for playlist \"%s\""
-msgstr ""
+msgstr "Cselekvés megerősítése a(z) \"%s\" nevű lejátszási listánál"
 
 #: quodlibet/browsers/playlists/prefs.py:18
 msgid "empty"
-msgstr ""
+msgstr "üres"
 
 #: quodlibet/browsers/playlists/prefs.py:41
-#, fuzzy
 msgid "Example Playlist"
-msgstr "Új lista"
+msgstr "Példa lejátszási lista"
 
 #: quodlibet/browsers/playlists/prefs.py:51
-#, fuzzy
 msgid "Playlist Browser Preferences"
-msgstr "Paneles böngésző beállítások"
+msgstr "Lejátszási lista böngésző beállítások"
 
 #: quodlibet/browsers/playlists/prefs.py:56
-#, fuzzy
 msgid "Playlist display"
-msgstr "Listák"
+msgstr "Lejátszási listák"
 
 #: quodlibet/browsers/playlists/util.py:35
 #, python-format
 msgid "Are you sure you want to delete the playlist '%s'?"
-msgstr ""
+msgstr "Biztos hogy törli a(z) \"%s\" nevű lejátszási listát?"
 
 #: quodlibet/browsers/playlists/util.py:39
 msgid ""
 "All information about the selected playlist will be deleted and can not be "
 "restored."
 msgstr ""
+"Minden információ a kijelölt lejátszási listáról visszafordíthatatlanul ki "
+"lesz törölve."
 
 #: quodlibet/browsers/playlists/util.py:59
 #, python-brace-format
 msgid "Extend \"{pl_name}\" with {num} additional track?"
 msgid_plural "Extend \"{pl_name}\" with {num} additional tracks?"
-msgstr[0] ""
+msgstr[0] "\"{pl_name}\" kiterjesztése {num} számmal?"
 
 #: quodlibet/browsers/playlists/util.py:65
-#, fuzzy
 msgid "_Add Tracks"
-msgstr "Szám"
+msgstr "_Számok hozzáadása"
 
 #: quodlibet/browsers/playlists/util.py:77
 #: quodlibet/browsers/playlists/util.py:167 quodlibet/util/collection.py:619
 msgid "New Playlist"
-msgstr "Új lista"
+msgstr "Új lejátszási lista"
 
 #: quodlibet/browsers/playlists/util.py:78
-#, fuzzy
 msgid "Enter a name for the new playlist:"
-msgstr "Adj nevet az új mappának:"
+msgstr "Adjon nevet az új lejátszási listának:"
 
 #: quodlibet/browsers/playlists/util.py:79
 msgid "_Create"
-msgstr ""
+msgstr "_Létrehozás"
 
 #: quodlibet/browsers/playlists/util.py:115
-#, fuzzy, python-format
+#, python-format
 msgid ""
 "Importing playlist.\n"
 "\n"
 "%(current)d/%(total)d songs added."
 msgstr ""
-"Lista importálása.\n"
+"Lejátszási lista importálása.\n"
 "\n"
-"%d/%d dal behozva."
+"%(current)d/%(total)d dal behozva."
 
 #: quodlibet/browsers/podcasts.py:245
 msgid "New Feed"
 msgstr "Új forrás"
 
 #: quodlibet/browsers/podcasts.py:246
-#, fuzzy
 msgid "Enter the podcast / audio feed location:"
-msgstr "Add meg a hangforrás helyét:"
+msgstr "Adja meg a podcast / hang forrásának a helyét:"
 
 #: quodlibet/browsers/podcasts.py:318
 msgid "Podcasts"
-msgstr ""
+msgstr "Podcastok"
 
 #: quodlibet/browsers/podcasts.py:319
 msgid "_Podcasts"
-msgstr ""
+msgstr "_Podcastok"
 
 #: quodlibet/browsers/podcasts.py:421
-#, fuzzy
 msgid "_Add Feed…"
-msgstr "Fájl hozzá_adása..."
+msgstr "Fájl hozzá_adása…"
 
 #: quodlibet/browsers/podcasts.py:489 quodlibet/qltk/filesel.py:259
 #: quodlibet/qltk/pluginwin.py:423
@@ -811,17 +780,16 @@ msgid "_Refresh"
 msgstr "Daltár _frissítése"
 
 #: quodlibet/browsers/podcasts.py:491
-#, fuzzy
 msgid "Search source for new episodes"
-msgstr "Új dalok keresése e mappában"
+msgstr "Új epizódok keresése e forrásban"
 
 #: quodlibet/browsers/podcasts.py:494
 msgid "_Rebuild"
-msgstr ""
+msgstr "_Újraépítés"
 
 #: quodlibet/browsers/podcasts.py:496
 msgid "Remove all existing episodes then reload from source"
-msgstr ""
+msgstr "Minden epizód eltávolítása és újraépítés a forrásból"
 
 #: quodlibet/browsers/podcasts.py:501
 msgid "Remove this podcast and its episodes"
@@ -844,6 +812,7 @@ msgstr ""
 msgid ""
 "The current audio backend does not support URLs, Podcast browser disabled."
 msgstr ""
+"A jelenlegi audio-backend nem támogat URL-eket, podcast böngésző letiltva."
 
 #: quodlibet/browsers/tracks.py:33
 msgid "_Limit Results"
@@ -7407,18 +7376,17 @@ msgid "_Production Headers"
 msgstr "_Termék fejlécek"
 
 #: quodlibet/qltk/songlist.py:1240
-#, fuzzy
 msgid "_Customize Headers…"
-msgstr "_Egyéni fejlécek..."
+msgstr "_Egyéni fejlécek…"
 
 #: quodlibet/qltk/songlist.py:1245
 msgid "_Expand Column"
 msgstr ""
 
 #: quodlibet/qltk/songsmenu.py:44
-#, fuzzy, python-format
+#, python-format
 msgid "Remove track: \"%(title)s\" from the library?"
-msgstr "Tö_rlés a listáról"
+msgstr "\"%(title)s\" törlése a daltárból?"
 
 #: quodlibet/qltk/songsmenu.py:48
 #, fuzzy, python-format
@@ -7455,12 +7423,11 @@ msgstr[0] "Letöltés"
 
 #: quodlibet/qltk/songsmenu.py:376
 msgid "successful"
-msgstr ""
+msgstr "sikeres"
 
 #: quodlibet/qltk/songsmenu.py:378
-#, fuzzy
 msgid "failed"
-msgstr "Keres"
+msgstr "sikertelen"
 
 #: quodlibet/qltk/songsmenu.py:384
 #, fuzzy
@@ -7491,12 +7458,11 @@ msgstr ""
 #, python-format
 msgid "_Show in File Manager"
 msgid_plural "_Show %(total)d Files in File Manager"
-msgstr[0] ""
+msgstr[0] "_%(total)d fájl mutatása a fájlkezelőben"
 
 #: quodlibet/qltk/songsmenu.py:483
-#, fuzzy
 msgid "_Remove from Library…"
-msgstr "Tö_rlés a listáról"
+msgstr "_Törlés a listáról…"
 
 #: quodlibet/qltk/songsmenu.py:498
 msgid "Add to _Queue"
@@ -7568,23 +7534,21 @@ msgid "_Total tracks:"
 msgstr "Összes szám:"
 
 #: quodlibet/qltk/unity.py:51
-#, fuzzy
 msgid "Play/Pause"
-msgstr "Lejátszó"
+msgstr "Lejátszás/Szüneteltetés"
 
 #: quodlibet/qltk/unity.py:71
-#, fuzzy
 msgid "Previous"
-msgstr "Előnézet"
+msgstr "Előző"
 
 #: quodlibet/qltk/views.py:944
-#, fuzzy, python-format
+#, python-format
 msgid "and %d more…"
-msgstr "és még %d..."
+msgstr "és még %d…"
 
 #: quodlibet/qltk/wlw.py:201
 msgid "Saving the songs you changed."
-msgstr "Módosított dalok mentése"
+msgstr "Módosított dalok mentése."
 
 #: quodlibet/qltk/wlw.py:203
 #, python-format
@@ -7633,9 +7597,9 @@ msgid "Playlists must have a name"
 msgstr ""
 
 #: quodlibet/util/collection.py:658
-#, fuzzy, python-format
+#, python-format
 msgid "A playlist named %(name)s already exists at %(path)s"
-msgstr "Már van egy %s nevű lista"
+msgstr "Már van egy %(name)s nevű lista ezen az elérési útvonalon: %(path)s"
 
 #: quodlibet/util/cover/built_in.py:37
 #, fuzzy
@@ -7657,9 +7621,8 @@ msgid ""
 msgstr ""
 
 #: quodlibet/util/cover/manager.py:229
-#, fuzzy
 msgid "Cover Art"
-msgstr "Összméret:"
+msgstr "Borítókép"
 
 #: quodlibet/util/cover/manager.py:229
 msgid "Querying album art providers"
@@ -7688,19 +7651,19 @@ msgid "[options]"
 msgstr "[lehetőségek]"
 
 #: quodlibet/util/__init__.py:189
-#, fuzzy, python-format
+#, python-format
 msgid "Option %r not recognized."
-msgstr "E: '%s' nem ismert lehetőség."
+msgstr "E: '%r' nem ismert lehetőség."
 
 #: quodlibet/util/__init__.py:191
-#, fuzzy, python-format
+#, python-format
 msgid "Option %r requires an argument."
-msgstr "E: '%s' egy argumentumot vár."
+msgstr "E: '%r' egy argumentumot vár."
 
 #: quodlibet/util/__init__.py:193
-#, fuzzy, python-format
+#, python-format
 msgid "%r is not a unique prefix."
-msgstr "E: '%s' nem egyedi előtag."
+msgstr "E: '%r' nem egyedi előtag."
 
 #: quodlibet/util/__init__.py:380
 #, python-format
@@ -7708,10 +7671,10 @@ msgid "%d kbps"
 msgstr "%d kbps"
 
 #: quodlibet/util/__init__.py:434
-#, fuzzy, python-format
+#, python-format
 msgid "%s second"
 msgid_plural "%s seconds"
-msgstr[0] "%d mp."
+msgstr[0] "%s mp."
 
 #: quodlibet/util/__init__.py:447
 msgid "No time information"
@@ -7752,10 +7715,9 @@ msgstr[0] "%d év"
 #. the first letter capitalized, translate this string as
 #. something non-empty other than "titlecase?".
 #: quodlibet/util/__init__.py:549
-#, fuzzy
 msgctxt "check"
 msgid "titlecase?"
-msgstr "cím-nagybetű"
+msgstr "cím-nagybetű?"
 
 #: quodlibet/util/massagers.py:115
 msgid ""
@@ -7918,9 +7880,8 @@ msgid "lyricists"
 msgstr "szövegírók"
 
 #: quodlibet/util/tags.py:102
-#, fuzzy
 msgid "lyrics"
-msgstr "szövegíró"
+msgstr "dalszöveg"
 
 #. Translators: Also e.g. "record label", "publisher"
 #: quodlibet/util/tags.py:104
@@ -8125,7 +8086,7 @@ msgstr "Könyvjelzők"
 
 #: quodlibet/util/tags.py:169
 msgid "bitdepth"
-msgstr ""
+msgstr "bitmélység"
 
 #: quodlibet/util/tags.py:172
 #, fuzzy
