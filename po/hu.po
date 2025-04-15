@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-04-25 11:38+0100\n"
-"PO-Revision-Date: 2025-04-14 15:45+0000\n"
-"Last-Translator: Balázs Kipilla <ruszok@rompecs.de>\n"
+"PO-Revision-Date: 2025-04-15 16:06+0000\n"
+"Last-Translator: Zsuzsanna Kipilla <kipizsu@gmail.com>\n"
 "Language-Team: Hungarian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/hu/>\n"
 "Language: hu\n"
@@ -58,7 +58,7 @@ msgstr "Lejátszások_száma"
 #: quodlibet/browsers/albums/main.py:238
 #: quodlibet/browsers/covergrid/main.py:69
 msgid "Sort _by…"
-msgstr "Eszerint_rendezés:…"
+msgstr "Rendezés:…"
 
 #: quodlibet/browsers/albums/main.py:258
 #: quodlibet/browsers/covergrid/main.py:89
@@ -139,9 +139,8 @@ msgstr "A _keresőfunkció tartalmazza az együttműködőket is"
 #: quodlibet/browsers/albums/prefs.py:79
 #: quodlibet/browsers/covergrid/prefs.py:117
 #: quodlibet/ext/songsmenu/cover_download.py:337
-#, fuzzy
 msgid "Options"
-msgstr "[lehetőségek]"
+msgstr "Lehetőségek"
 
 #: quodlibet/browsers/albums/prefs.py:82
 #: quodlibet/browsers/covergrid/prefs.py:120
@@ -178,7 +177,7 @@ msgstr[0] "%d dal"
 #: quodlibet/qltk/tagsfrompath.py:196 quodlibet/qltk/textedit.py:140
 #: quodlibet/util/__init__.py:609
 msgid "Invalid pattern"
-msgstr "Hibás minta"
+msgstr "Érvénytelen minta"
 
 #: quodlibet/browsers/collection/main.py:84
 msgid "Album Collection"
@@ -196,7 +195,7 @@ msgstr "Ismeretlen %s"
 #: quodlibet/browsers/collection/models.py:25
 #, python-format
 msgid "Multiple %s Values"
-msgstr "Több %s-érték"
+msgstr "Többszörös %s-érték"
 
 #: quodlibet/browsers/collection/prefs.py:65
 #: quodlibet/browsers/paned/prefs.py:92
@@ -232,16 +231,15 @@ msgstr "_Eltávolítás"
 #: quodlibet/ext/songsmenu/filterall.py:34 quodlibet/operon/commands.py:60
 #: quodlibet/operon/commands.py:100 quodlibet/qltk/edittags.py:499
 msgid "Tag"
-msgstr "Tag"
+msgstr "Címke"
 
 #: quodlibet/browsers/collection/prefs.py:127
 msgid "Merge"
 msgstr "Egyesítés"
 
 #: quodlibet/browsers/collection/prefs.py:186
-#, fuzzy
 msgid "Album Collection Preferences"
-msgstr "Album lista jellemzők"
+msgstr "Albumgyűjtemény jellemzők"
 
 #: quodlibet/browsers/collection/prefs.py:193
 #: quodlibet/browsers/paned/prefs.py:246
@@ -297,7 +295,7 @@ msgstr "Album_szöveg mutatása"
 
 #: quodlibet/browsers/covergrid/prefs.py:78
 msgid "Show \"All Albums\" Item"
-msgstr "Minden album mutatása"
+msgstr "\"Minden album\" elem mutatása"
 
 #: quodlibet/browsers/covergrid/prefs.py:84
 msgid "Wide Mode"
@@ -322,7 +320,7 @@ msgstr "Dalok másolása sikertelen"
 
 #: quodlibet/browsers/filesystem.py:135 quodlibet/qltk/songlist.py:269
 msgid "The files selected cannot be copied to other song lists or the queue."
-msgstr "A kijelölt fájlok nem másolhatók más listába vagy sorba."
+msgstr "A kijelölt fájlok nem másolhatók más zenei listába vagy várólistába."
 
 #: quodlibet/browsers/filesystem.py:208
 msgid "_Add to Library"
@@ -345,9 +343,8 @@ msgid "Internet Radio"
 msgstr "Internetes rádió"
 
 #: quodlibet/browsers/iradio.py:233
-#, fuzzy
 msgid "Add stations"
-msgstr "Új állomás"
+msgstr "Új állomás hozzáadása"
 
 #: quodlibet/browsers/iradio.py:276
 msgid "Downloading station list"
@@ -371,7 +368,7 @@ msgstr "Hip-Hop / Rap"
 
 #: quodlibet/browsers/iradio.py:404
 msgid "Oldies"
-msgstr "Régimódi"
+msgstr "Oldies"
 
 #: quodlibet/browsers/iradio.py:405
 msgid "R&B"
