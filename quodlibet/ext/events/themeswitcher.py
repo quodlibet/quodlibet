@@ -42,8 +42,10 @@ class ThemeSwitcher(EventPlugin):
         self.__default_dark = settings.get_property("gtk-application-prefer-dark-theme")
 
         self.__desktop = Gio.Settings.new("org.gnome.desktop.interface")
+
         def on_color_scheme(settings, value):
             self.__set_dark(self.__get_dark())
+
         self.__desktop.connect("changed::color-scheme", on_color_scheme)
 
     def PluginPreferences(self, *args):
