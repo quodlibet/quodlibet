@@ -1,7 +1,8 @@
 {
   description = "Development Flake for Quod Libet";
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
+    # TODO: pin to 25.05 once available, but we need Poetry > 2.0 now
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-parts.url = "github:hercules-ci/flake-parts";
     treefmt-nix.url = "github:numtide/treefmt-nix";
   };
@@ -70,8 +71,10 @@
           };
           devShells.default =
             with pkgs;
-            pkgs.mkShell {
+            mkShell {
               POETRY_VIRTUALENV_CREATE = 1;
+              # Allow libpcre to... work
+              LD_LIBRARY_PATH = "${glib.out}/lib";
               packages =
                 [
                   qlPoetry
@@ -85,21 +88,24 @@
                   glibcLocales
                   gobject-introspection
                   gtk3
-                  libcanberra-gtk3
+                  gtksourceview4
+                  kakasi
+                  keybinder3
                   libappindicator-gtk3
                   libmodplug
+                  libnotify
+                  librsvg
                   libsoup_3
+                  pcre2
                   shared-mime-info
-                  webkitgtk_4_0
                   xvfb-run
                 ]
                 ++ (with gst_all_1; [
                   gstreamer
                   gst-plugins-bad
+                  gst-plugins-base
                   gst-plugins-good
                   gst-plugins-ugly
-                  gst-plugins-base
-                  gstreamer
                   gst-libav
                 ]);
             };
