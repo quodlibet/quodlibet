@@ -74,7 +74,7 @@
             mkShell {
               POETRY_VIRTUALENV_CREATE = 1;
               # Allow libpcre to... work
-              LD_LIBRARY_PATH="${glib.out}/lib";
+              LD_LIBRARY_PATH = "${glib.out}/lib";
               packages =
                 [
                   qlPoetry
