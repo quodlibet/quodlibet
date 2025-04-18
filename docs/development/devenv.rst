@@ -23,10 +23,6 @@ then run::
     $ nix develop
     $ python --version  # or whatever
 
-You can also run Flake apps directly, e.g.::
-
-    $ nix run .#poetry -- --version
-
 
 
 Poetry
@@ -34,6 +30,7 @@ Poetry
 
 Across all environments, we now support Virtualenvs with Pip dependencies,
 managed by `Poetry <https://python-poetry.org/>`__.
+We currently require Poetry 2.
 
 Installation, once cloned is just::
 
@@ -129,4 +126,3 @@ development.
 Check out the `win_installer
 <https://github.com/quodlibet/quodlibet/tree/main/dev-utils/win_installer>`__
 directory in the Git repo for further instructions.
-
