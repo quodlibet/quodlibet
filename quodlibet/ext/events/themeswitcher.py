@@ -158,8 +158,11 @@ class ThemeSwitcher(EventPlugin):
         settings.set_property("gtk-application-prefer-dark-theme", value)
 
     def __get_dark(self):
-        prefers_dark = self.__desktop.get_string("color-scheme") == "prefer-dark"
-        return config.getboolean("plugins", self.CONFIG_DARK, prefers_dark)
+        if config.getboolean("plugins", self.CONFIG_DARK, self.__default_dark):
+            return True
+
+        # fallback to desktop's scheme if preference is not True
+        return self.__desktop.get_string("color-scheme") == "prefer-dark"
 
     def enabled(self):
         self.__enabled = True
