@@ -167,7 +167,10 @@ class ThemeSwitcher(EventPlugin):
             return True
 
         # fallback to desktop's scheme if preference is not True
-        return self.__desktop and self.__desktop.get_string("color-scheme") == "prefer-dark"
+        if self.__desktop:
+            return self.__desktop.get_string("color-scheme") == "prefer-dark"
+
+        return False
 
     def enabled(self):
         self.__enabled = True
