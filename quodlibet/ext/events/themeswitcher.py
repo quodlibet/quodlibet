@@ -73,7 +73,7 @@ class ThemeSwitcher(EventPlugin):
             "plugins",
             self.CONFIG_DARK,
             populate=True,
-            default=self.__get_dark(),
+            default=self.__default_dark,
         )
 
         def dark_cb(button):
