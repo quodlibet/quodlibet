@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-03-19 13:47+0000\n"
+"PO-Revision-Date: 2025-05-01 19:01+0000\n"
 "Last-Translator: Priit Jõerüüt <hwlate@joeruut.com>\n"
 "Language-Team: Estonian <https://hosted.weblate.org/projects/quodlibet/"
 "quodlibet/et/>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 5.11-dev\n"
+"X-Generator: Weblate 5.12-dev\n"
 
 #: quodlibet/browsers/albums/main.py:226
 #: quodlibet/browsers/covergrid/main.py:57
@@ -2158,57 +2158,57 @@ msgstr "Taasta vaikimisi muster"
 
 #: quodlibet/ext/events/notify.py:110
 msgid "_Body:"
-msgstr ""
+msgstr "_Sisu:"
 
 #. preview button
 #: quodlibet/ext/events/notify.py:139
 msgid "_Show notification"
-msgstr ""
+msgstr "_Näita teavitust"
 
 #: quodlibet/ext/events/notify.py:162
 msgid "Show notifications"
-msgstr ""
+msgstr "Näita teavitusi"
 
 #: quodlibet/ext/events/notify.py:168
 msgid "Only on <i>_manual</i> song changes"
-msgstr ""
+msgstr "Vaid loo vahetamisel <i>_käsitsi</i>"
 
 #: quodlibet/ext/events/notify.py:178
 msgid "Only on <i>_automatic</i> song changes"
-msgstr ""
+msgstr "Vaid loo vahetamisel <i>_automaatselt</i>"
 
 #: quodlibet/ext/events/notify.py:189
 msgid "On <i>a_ll</i> song changes"
-msgstr ""
+msgstr "Lugude vahetamisel <i>iga_l moel</i>"
 
 #: quodlibet/ext/events/notify.py:203
 msgid "Only when the main window is not _focused"
-msgstr ""
+msgstr "Ainult siis, kui põhiaken pole _fookuses"
 
 #: quodlibet/ext/events/notify.py:211
 msgid "Show \"_Next\" button"
-msgstr ""
+msgstr "Näita nuppu „_Järgmine“"
 
 #: quodlibet/ext/events/notify.py:233
 msgid "Connection Error"
-msgstr ""
+msgstr "Ühenduse viga"
 
 #: quodlibet/ext/events/notify.py:234 quodlibet/ext/events/notify.py:410
 #: quodlibet/ext/events/notify.py:463
 msgid "Couldn't connect to notification daemon."
-msgstr ""
+msgstr "Ei õnnestunud luua ühendust teavituste taustateenusega."
 
 #: quodlibet/ext/events/notify.py:249
 msgid "Song Notifications"
-msgstr ""
+msgstr "Lugude teavitused"
 
 #: quodlibet/ext/events/notify.py:250
 msgid "Displays a notification when the song changes."
-msgstr ""
+msgstr "Kuvab loo vahetumisel teavituse."
 
 #: quodlibet/ext/events/notify.py:439 quodlibet/qltk/unity.py:61
 msgid "Next"
-msgstr ""
+msgstr "Järgmine"
 
 #: quodlibet/ext/events/notify_bookmarks.py:34
 msgid "Bookmark Notifications"
@@ -2326,80 +2326,86 @@ msgstr ""
 
 #: quodlibet/ext/events/radioadmute.py:20
 msgid "Mute Radio Ads"
-msgstr ""
+msgstr "Raadiojaamade reklaamide summutamine"
 
 #: quodlibet/ext/events/radioadmute.py:22
 msgid ""
 "Mutes output while radio advertisements are playing.\n"
 "Stations: di.fm."
 msgstr ""
+"See lisamoodul tagab, et raadiojaamade heli on summutatud reklaamide "
+"esitamise ajal\n"
+"Raadiojaamad: di.fm."
 
 #: quodlibet/ext/events/randomalbum.py:25
 msgid "Random Album Playback"
-msgstr ""
+msgstr "Juhuslike albumite taasesitus"
 
 #: quodlibet/ext/events/randomalbum.py:27
 msgid ""
 "Starts a random album when your playlist reaches its end. It requires that "
 "your active browser supports filtering by album."
 msgstr ""
+"Kui sinu tavapärane esitusloend lõppeb, siis see lisamoodul juhib juhusliku "
+"albumi esitamist järgmisena. Eelduseks on see, et aktiivne brauserivaade "
+"oskab filtreerida albumi alusel."
 
 #: quodlibet/ext/events/randomalbum.py:38
 msgid "Rated higher"
-msgstr ""
+msgstr "Parema hinnanguga"
 
 #: quodlibet/ext/events/randomalbum.py:39
 msgid "Played more often"
-msgstr ""
+msgstr "Sagedamini esitatud"
 
 #: quodlibet/ext/events/randomalbum.py:40
 msgid "Skipped more often"
-msgstr ""
+msgstr "Sagedamini vahele jäetud"
 
 #: quodlibet/ext/events/randomalbum.py:41
 msgid "Played more recently"
-msgstr ""
+msgstr "Hiljuti esitatud"
 
 #: quodlibet/ext/events/randomalbum.py:42
 msgid "Started more recently"
-msgstr ""
+msgstr "Sagedamini käivitatud"
 
 #: quodlibet/ext/events/randomalbum.py:43
 msgid "Added more recently"
-msgstr ""
+msgstr "Hiljuti lisatud"
 
 #: quodlibet/ext/events/randomalbum.py:44
 msgid "Longer albums"
-msgstr ""
+msgstr "Pikemad albumid"
 
 #: quodlibet/ext/events/randomalbum.py:83
 msgid "seconds before starting next album"
-msgstr ""
+msgstr "sekundit enne järgmise albumiga alustamist"
 
 #: quodlibet/ext/events/randomalbum.py:87
 msgid "Weights"
-msgstr ""
+msgstr "Osakaalud"
 
 #: quodlibet/ext/events/randomalbum.py:89
 msgid "Play some albums more than others"
-msgstr ""
+msgstr "Esita osasid albumeid sagedamini, kui teisi"
 
 #: quodlibet/ext/events/randomalbum.py:102
 msgid "avoid"
-msgstr ""
+msgstr "väldi"
 
 #: quodlibet/ext/events/randomalbum.py:111
 msgid "prefer"
-msgstr ""
+msgstr "eelista"
 
 #: quodlibet/ext/events/randomalbum.py:214
 msgid "Random Album"
-msgstr ""
+msgstr "Juhuslik album"
 
 #: quodlibet/ext/events/randomalbum.py:215
 #, python-format
 msgid "Waiting to start %s"
-msgstr ""
+msgstr "Ootame %s algustamist"
 
 #: quodlibet/ext/events/rbimport.py:119
 #, python-format
@@ -2902,29 +2908,31 @@ msgstr[1] ""
 
 #: quodlibet/ext/events/synchronizedlyrics.py:28
 msgid "Synchronized Lyrics"
-msgstr ""
+msgstr "Sünkroniseeritud laulusõnad"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:30
 msgid ""
 "Shows synchronized lyrics from an .lrc file with same name as the track (or "
 "similar)."
 msgstr ""
+"Näitab sünkroniseeritud laulusõnu looga sama (või väga sarnase) nimega .lrc "
+"failist."
 
 #: quodlibet/ext/events/synchronizedlyrics.py:69
 msgid "Text:"
-msgstr ""
+msgstr "Tekst:"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:79
 msgid "Background:"
-msgstr ""
+msgstr "Taust:"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:90
 msgid "Font"
-msgstr ""
+msgstr "Kirjatüüp"
 
 #: quodlibet/ext/events/synchronizedlyrics.py:93
 msgid "Size (px):"
-msgstr ""
+msgstr "Suurus (pikslites):"
 
 #: quodlibet/ext/events/telepathy_status.py:74
 msgid "Telepathy Status Messages"
@@ -3014,16 +3022,16 @@ msgstr "Pole esitamisel"
 
 #: quodlibet/ext/events/trayicon/__init__.py:51
 msgid "Tray Icon"
-msgstr ""
+msgstr "Süsteemisalve ikoon"
 
 #: quodlibet/ext/events/trayicon/__init__.py:52
 msgid "Controls Quod Libet from the system tray."
-msgstr ""
+msgstr "Halda Quod Libetit süsteemisalvest."
 
 #: quodlibet/ext/events/trayicon/menu.py:40
 #, python-format
 msgid "_Show %(application-name)s"
-msgstr ""
+msgstr "_Näita: %(application-name)s"
 
 #: quodlibet/ext/events/trayicon/menu.py:59
 #: quodlibet/qltk/quodlibetwindow.py:209 quodlibet/qltk/quodlibetwindow.py:998
@@ -3049,15 +3057,15 @@ msgstr "_Järgmine"
 
 #: quodlibet/ext/events/trayicon/menu.py:75
 msgid "_Shuffle"
-msgstr ""
+msgstr "_Sega"
 
 #: quodlibet/ext/events/trayicon/menu.py:81
 msgid "_Repeat"
-msgstr ""
+msgstr "_Korda"
 
 #: quodlibet/ext/events/trayicon/menu.py:87
 msgid "Stop _After This Song"
-msgstr ""
+msgstr "Peat_a selle loo järel"
 
 #: quodlibet/ext/events/trayicon/menu.py:93
 #: quodlibet/qltk/quodlibetwindow.py:961
