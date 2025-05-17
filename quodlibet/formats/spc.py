@@ -40,8 +40,7 @@ class SPCFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return self.TAGS
-        else:
-            return k in self.TAGS
+        return k in self.TAGS
 
 
 def parse_id666(data):

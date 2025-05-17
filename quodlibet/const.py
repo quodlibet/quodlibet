@@ -287,7 +287,7 @@ Fabien Devaux
 
 # Default songlist column headers
 DEFAULT_COLUMNS = (
-    "~#track ~people ~title~version ~album~discsubtitle " "~#length".split()
+    "~#track ~people ~title~version ~album~discsubtitle ~#length".split()
 )
 
 DEBUG = "--debug" in sys.argv or "QUODLIBET_DEBUG" in os.environ

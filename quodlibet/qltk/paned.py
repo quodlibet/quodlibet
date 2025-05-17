@@ -68,8 +68,7 @@ class RPaned(Paned):
         alloc = self.get_allocation()
         if self.get_orientation() == Gtk.Orientation.HORIZONTAL:
             return alloc.width
-        else:
-            return alloc.height
+        return alloc.height
 
     def set_relative(self, v):
         """Set the relative position of the separator, [0..1]."""

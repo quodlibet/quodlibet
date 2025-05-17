@@ -116,17 +116,15 @@ class ObjectTreeStore(_ModelMixin, Gtk.TreeStore):
         if row is not None:
             value = self._get_marshalable(row[0])
             return self.insert_with_values(parent, -1, [0], [value])
-        else:
-            assert not self.ATOMIC
-            return super().append(parent)
+        assert not self.ATOMIC
+        return super().append(parent)
 
     def insert(self, parent, position, row=None):
         if row is not None:
             value = self._get_marshalable(row[0])
             return self.insert_with_values(parent, position, [0], [value])
-        else:
-            assert not self.ATOMIC
-            return super().insert(parent, position)
+        assert not self.ATOMIC
+        return super().insert(parent, position)
 
     def prepend(self, parent, row=None):
         return self.insert(parent, 0, row)
@@ -187,17 +185,15 @@ class ObjectStore(_ModelMixin, Gtk.ListStore):
         if row:
             value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(-1, [0], [value])
-        else:
-            assert not self.ATOMIC
-            return super().append(row)
+        assert not self.ATOMIC
+        return super().append(row)
 
     def insert(self, position, row=None):
         if row:
             value = self._get_marshalable(row[0])
             return self.insert_with_valuesv(position, [0], [value])
-        else:
-            assert not self.ATOMIC
-            return super().insert(position)
+        assert not self.ATOMIC
+        return super().insert(position)
 
     def iter_append_many(self, objects):
         """Append a list of python objects, yield iters"""

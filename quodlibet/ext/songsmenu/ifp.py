@@ -48,6 +48,7 @@ class IFPUpload(SongsMenuPlugin):
                 return True
         else:
             w.destroy()
+        return None
 
     def __upload(self, song):
         filename = song["~filename"]
@@ -62,7 +63,7 @@ class IFPUpload(SongsMenuPlugin):
             self.__madedir.append(dirname)
         if os.system(f"ifp upload {filename!r} {target!r} > /dev/null"):
             tmpl = _(
-                "Unable to upload %s." "The device may be out of space, or turned off."
+                "Unable to upload %s.The device may be out of space, or turned off."
             )
             qltk.ErrorMessage(
                 None,
@@ -71,3 +72,4 @@ class IFPUpload(SongsMenuPlugin):
                 escape_desc=False,
             ).run()
             return True
+        return None

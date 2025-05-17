@@ -144,8 +144,7 @@ class TrashDialog(WarningMessage):
 def TrashMenuItem():
     if trash.use_trash():
         return MenuItem(_("_Move to Trash"), Icons.USER_TRASH)
-    else:
-        return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
+    return MenuItem(_("_Delete"), Icons.EDIT_DELETE)
 
 
 def _do_trash_songs(parent, songs, librarian):

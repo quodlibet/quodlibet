@@ -212,7 +212,7 @@ class ToggledPlayOrderMenu(Gtk.Box):
                 self.current = cls
                 return
         raise ValueError(
-            f'Unknown order named "{name}". ' f"Try: {[o.name for o in self.__orders]}"
+            f"Unknown order named {name!r}. Try: {[o.name for o in self.__orders]}"
         )
 
     def set_orders(self, orders):

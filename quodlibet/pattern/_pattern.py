@@ -90,8 +90,7 @@ class PatternLexer(Scanner):
         s = self.scan(self.string)
         if s[1] != "":
             raise LexerError("characters left over in string")
-        else:
-            return iter(s[0] + [PatternLexeme(EOF, "")])
+        return iter(s[0] + [PatternLexeme(EOF, "")])
 
 
 class PatternNode:
@@ -213,7 +212,7 @@ class PatternParser:
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
             raise ParseError(
-                "The search string ended, but more " "tokens were expected."
+                "The search string ended, but more tokens were expected."
             )
         try:
             if self.lookahead.type in tokens:
@@ -417,7 +416,7 @@ class PatternCompiler:
         return text
 
 
-def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100, cache=None):  # noqa
+def Pattern(string, formatter_cls=PatternFormatter, max_cache_size=100, cache=None):
     if cache is None:
         cache = OrderedDict()
     if (formatter_cls, string) not in cache:
@@ -459,8 +458,7 @@ class _FileFromPattern(PatternFormatter):
         value = _number(key, value)
         value = value.replace(os.sep, "_")
         value = value.replace("\uff0f", "_")
-        value = value.strip()
-        return value
+        return value.strip()
 
     def _post(self, value, song, keep_extension=True):
         if value:
@@ -484,8 +482,7 @@ class _FileFromPattern(PatternFormatter):
             if os.sep in value and not os.path.isabs(value):
                 raise ValueError("Pattern is not rooted")
             return value
-        else:
-            return fsnative(value)
+        return fsnative(value)
 
 
 class _ArbitraryExtensionFileFromPattern(_FileFromPattern):
@@ -533,9 +530,8 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
                 return orig[1:]
             return rf"{pre}<{body}>"
 
-        string = re.sub(rf"(\\*)\[(/?{pat}\s*)\]", repl_func, string)
-        string = re.sub(r"(\\*)\[((a|span)\s+.*?)\]", repl_func, string)
-        return string
+        string = re.sub(rf"(\\*)\[(/?{pat}\s*)]" , repl_func, string)
+        return re.sub(r"(\\*)\[((a|span)\s+.*?)]", repl_func, string)
 
 
 def XMLFromMarkupPattern(string):

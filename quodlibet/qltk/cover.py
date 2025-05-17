@@ -100,13 +100,13 @@ def get_no_cover_pixbuf(width, height, scale_factor=1):
     theme = Gtk.IconTheme.get_default()
     icon_info = theme.lookup_icon("quodlibet-missing-cover", size, 0)
     if icon_info is None:
-        return
+        return None
 
     filename = icon_info.get_filename()
     try:
         return GdkPixbuf.Pixbuf.new_from_file_at_size(filename, width, height)
     except GLib.GError:
-        return
+        return None
 
 
 class ResizeImage(Gtk.Bin):
@@ -170,16 +170,14 @@ class ResizeImage(Gtk.Bin):
     def do_get_preferred_width(self):
         if self._resize:
             return (0, 0)
-        else:
-            width, height = self._get_size(self._size, self._size)
-            return (width, width)
+        width, height = self._get_size(self._size, self._size)
+        return (width, width)
 
     def do_get_preferred_height(self):
         if self._resize:
             return (0, 0)
-        else:
-            width, height = self._get_size(self._size, self._size)
-            return (height, height)
+        width, height = self._get_size(self._size, self._size)
+        return (height, height)
 
     def do_get_preferred_width_for_height(self, req_height):
         width, height = self._get_size(300, req_height)
@@ -295,7 +293,7 @@ class CoverImage(Gtk.EventBox):
     def __album_clicked(self, box, event):
         song = self.__song
         if not song:
-            return
+            return None
 
         if (
             event.type != Gdk.EventType.BUTTON_PRESS

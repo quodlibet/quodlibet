@@ -70,8 +70,7 @@ class Entry:
     def filename(self):
         if self._song is not None:
             return fsn2text(self._song("~filename"))
-        else:
-            return self._filename
+        return self._filename
 
     @filename.setter
     def filename(self, name):
@@ -889,7 +888,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if not destination_path:
             self._show_sync_error(
                 _("No destination path provided"),
-                _("Please specify the directory where songs " "should be exported."),
+                _("Please specify the directory where songs should be exported."),
             )
             return None, None
 
@@ -973,7 +972,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
             relative_name = new_name.relative_to(self.expanded_destination)
         except ValueError as ex:
             self._show_sync_error(
-                _("Mismatch between destination path and export " "pattern"),
+                _("Mismatch between destination path and export pattern"),
                 _(
                     "The export pattern starts with a path that "
                     "differs from the destination path. Please "
@@ -1020,7 +1019,7 @@ class SyncToDevice(EventPlugin, PluginConfigMixin):
         if "Status" in sort_columns:
             self._show_sync_error(
                 _("Unable to sync"),
-                _("Cannot start synchronization while " "sorting by <b>Status</b>."),
+                _("Cannot start synchronization while sorting by <b>Status</b>."),
             )
             return
 

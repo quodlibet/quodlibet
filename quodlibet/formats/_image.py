@@ -149,8 +149,7 @@ class APICType:
         except ValueError:
             if value < cls.COVER_FRONT:
                 return 100 - value
-            else:
-                return value
+            return value
 
 
 class EmbeddedImage:
@@ -242,7 +241,7 @@ class EmbeddedImage:
                     else:
                         break
         except (OSError, GLib.GError):
-            return
+            return None
         finally:
             try:
                 loader.close()
@@ -250,7 +249,7 @@ class EmbeddedImage:
                 pass
 
         if not pb:
-            return
+            return None
 
         pb = pb[0]
 
@@ -265,4 +264,4 @@ class EmbeddedImage:
         try:
             return cls(open(path, "rb"), mime_type, width, height, color_depth)
         except OSError:
-            return
+            return None

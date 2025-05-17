@@ -77,8 +77,7 @@ class DictMixin:
         except KeyError:
             if args:
                 return args[0]
-            else:
-                raise
+            raise
         del self[key]
         return value
 

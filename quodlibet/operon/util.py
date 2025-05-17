@@ -38,7 +38,7 @@ def filter_table(rows, nicks, order):
             index = lower.index(o.lower())
         except ValueError as e:
             raise CommandError(
-                _("'%(column-id)s' is not a valid column " "name (%(all-column-ids)s).")
+                _("'%(column-id)s' is not a valid column name (%(all-column-ids)s).")
                 % {
                     "column-id": o,
                     "all-column-ids": ", ".join(nicks),

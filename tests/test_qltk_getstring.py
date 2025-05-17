@@ -16,6 +16,7 @@ class _ClipboadTestClass(GetStringDialog):
     def _verify_clipboard(self, text):
         if self._OK:
             return text
+        return None
 
 
 @skipIf(is_wayland(), "blocks under wayland for some reason")

@@ -40,4 +40,3 @@ class AppWindow:
             osx_app (GtkosxApplication.Application)
         """
 
-        pass

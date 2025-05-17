@@ -128,7 +128,7 @@ class AutoUpdateTagsInFiles(EventPlugin):
             if not skipped:
                 self._try_to_update_song(song)
             return
-        elif strategy == UpdateStrategy.AFTER_PLAY_OR_SKIP:
+        if strategy == UpdateStrategy.AFTER_PLAY_OR_SKIP:
             self._try_to_update_song(song)
             return
 

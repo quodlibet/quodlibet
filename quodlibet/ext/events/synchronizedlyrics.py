@@ -296,22 +296,18 @@ class SynchronizedLyrics(EventPlugin, PluginConfigMixin):
         length = len(array)
         if length == 0:
             return -1
-        elif probe < array[0][0]:
+        if probe < array[0][0]:
             return 0
-        elif probe >= array[length - 1][0]:
+        if probe >= array[length - 1][0]:
             return length
-        else:
-            return self._search(array, probe, 0, length - 1)
+        return self._search(array, probe, 0, length - 1)
 
     def _search(self, array, probe, lower, upper):
         if lower == upper:
             if array[lower][0] <= probe:
                 return lower + 1
-            else:
-                return lower
-        else:
-            middle = int((lower + upper) / 2)
-            if array[middle][0] <= probe:
-                return self._search(array, probe, middle + 1, upper)
-            else:
-                return self._search(array, probe, lower, middle)
+            return lower
+        middle = int((lower + upper) / 2)
+        if array[middle][0] <= probe:
+            return self._search(array, probe, middle + 1, upper)
+        return self._search(array, probe, lower, middle)

@@ -286,7 +286,7 @@ class MPDService:
 
     def stats(self):
         has_song = int(bool(self._app.player.info))
-        stats = [
+        return [
             ("artists", has_song),
             ("albums", has_song),
             ("songs", has_song),
@@ -295,8 +295,6 @@ class MPDService:
             ("db_playtime", 1),
             ("db_update", 1252868674),
         ]
-
-        return stats
 
     def status(self):
         app = self._app
@@ -381,6 +379,7 @@ class MPDService:
     def plchanges(self, version):
         if version != self._pl_ver:
             return self.currentsong()
+        return None
 
     def plchangesposid(self, version):
         info = self._app.player.info
@@ -390,6 +389,7 @@ class MPDService:
             parts.append(f"Pos: {0:d}")
             parts.append(f"Id: {self._get_id(info):d}")
             return "\n".join(parts)
+        return None
 
 
 class MPDServer(BaseTCPServer):
@@ -451,7 +451,7 @@ class MPDConnection(BaseTCPConnection):
             if line is None:
                 break
 
-            self.log(f"-> {repr(line)}")
+            self.log(f"-> {line!r}")
 
             try:
                 cmd, args = parse_command(line)
@@ -513,7 +513,7 @@ class MPDConnection(BaseTCPConnection):
         """Writes a line to the client"""
 
         assert isinstance(line, str)
-        self.log(f"<- {repr(line)}")
+        self.log(f"<- {line!r}")
 
         self._buf.extend(line.encode("utf-8", errors="replace") + b"\n")
 
@@ -640,10 +640,9 @@ def _parse_range(arg):
 
     if len(values) == 1:
         return (values[0], values[0] + 1)
-    elif len(values) == 2:
+    if len(values) == 2:
         return values
-    else:
-        raise MPDRequestError("invalid range")
+    raise MPDRequestError("invalid range")
 
 
 @MPDConnection.Command("idle", ack=False)
@@ -839,7 +838,7 @@ def _cmd_outputs(conn, service, args):
 @MPDConnection.Command("commands", permission=Permissions.PERMISSION_NONE)
 def _cmd_commands(conn, service, args):
     for name in conn.list_commands():
-        conn.write_line(f"command: {str(name)}")
+        conn.write_line(f"command: {name!s}")
 
 
 @MPDConnection.Command("tagtypes")

@@ -95,8 +95,8 @@ class True_(Node):
         return self
 
     def __and__(self, other):
-        other = other._unpack()
-        return other
+        return other._unpack()
+
 
 
 class False_(Node):
@@ -112,8 +112,7 @@ class False_(Node):
         return "<False>"
 
     def __or__(self, other):
-        other = other._unpack()
-        return other
+        return other._unpack()
 
     def __and__(self, other):
         return self
@@ -139,7 +138,7 @@ class Union(Node):
 
         if isinstance(other, Union):
             return Union(self.res + list(other.res))
-        elif isinstance(other, True_):
+        if isinstance(other, True_):
             return other.__or__(self)
 
         return Union(self.res + [other])
@@ -475,8 +474,7 @@ class NumexprNumberOrDate(Numexpr):
     def evaluate(self, data, time, use_date):
         if use_date:
             return self.date
-        else:
-            return self.number
+        return self.number
 
     def __repr__(self):
         return f"<NumexprNumberOrDate number={self.number!r} date={self.date!r}>"
@@ -534,8 +532,7 @@ def numexprTagOrSpecial(tag):
         return NumexprNow()
     if tag == "today":
         return NumexprNow(offset=24 * 60 * 60)
-    else:
-        return NumexprTag(tag)
+    return NumexprTag(tag)
 
 
 class Tag(Node):

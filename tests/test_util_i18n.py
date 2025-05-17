@@ -35,10 +35,9 @@ def use_dummy_ngettext(exp_singular, exp_plural, ret_singular, ret_plural):
         def dummy_ngettext(singular, plural, n):
             if n == 1 and singular == exp_singular:
                 return ret_singular
-            elif n != 1 and plural == exp_plural:
+            if n != 1 and plural == exp_plural:
                 return ret_plural
-            else:
-                return singular if n == 1 else plural
+            return singular if n == 1 else plural
 
         i18n.ngettext = dummy_ngettext
         yield

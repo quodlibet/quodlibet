@@ -44,7 +44,6 @@ class Order:
 
     def __init__(self):
         """Must have a zero-arg constructor"""
-        pass
 
     def next(self, playlist, iter):
         """Not called directly, but the default implementation of
@@ -94,7 +93,6 @@ class Order:
         """Called when there is no song ready to prepare for a new order.
         Implementations should reset the state of the current order,
         e.g. forgetting history / clearing pre-cached orders."""
-        pass
 
     def __str__(self):
         """By default there is no interesting state"""
@@ -154,17 +152,15 @@ class OrderInOrder(Order):
     def next(self, playlist, iter):
         if iter is None:
             return playlist.get_iter_first()
-        else:
-            return playlist.iter_next(iter)
+        return playlist.iter_next(iter)
 
     def previous(self, playlist, iter):
         if len(playlist) == 0:
             return None
-        elif iter is None:
+        if iter is None:
             return playlist[(len(playlist) - 1,)].iter
-        else:
-            path = max(1, playlist.get_path(iter).get_indices()[0])
-            try:
-                return playlist.get_iter((path - 1,))
-            except ValueError:
-                return None
+        path = max(1, playlist.get_path(iter).get_indices()[0])
+        try:
+            return playlist.get_iter((path - 1,))
+        except ValueError:
+            return None

@@ -918,7 +918,7 @@ class DragIconTreeView(BaseView):
         """
 
         if not paths:
-            return
+            return None
 
         if len(paths) == 1:
             return self.create_row_drag_icon(paths[0])
@@ -927,11 +927,11 @@ class DragIconTreeView(BaseView):
         icons = [self.create_row_drag_icon(p) for p in paths[:max_rows]]
         icons = [i for i in icons if i is not None]
         if not icons:
-            return
+            return None
 
         sizes = [get_surface_extents(s) for s in icons]
         if None in sizes:
-            return
+            return None
         width = max([s[2] for s in sizes])
         height = sum([s[3] for s in sizes])
 
@@ -1000,6 +1000,7 @@ class MultiDragTreeView(BaseView):
     def __button_press(self, view, event):
         if event.button == Gdk.BUTTON_PRIMARY:
             return self.__block_selection(event)
+        return None
 
     def __block_selection(self, event):
         x, y = map(int, [event.x, event.y])
@@ -1019,6 +1020,7 @@ class MultiDragTreeView(BaseView):
         else:
             self.__pending_action = None
             selection.set_select_function(lambda *args: True, None)
+        return None
 
     def __button_release(self, view, event):
         if self.__pending_action:
@@ -1042,6 +1044,7 @@ class RCMTreeView(BaseView):
     def __button_press(self, view, event):
         if event.button == Gdk.BUTTON_SECONDARY:
             return self.__check_popup(event)
+        return None
 
     def __check_popup(self, event):
         x, y = map(int, [event.x, event.y])
@@ -1324,11 +1327,8 @@ class TreeViewColumnButton(TreeViewColumn):
 class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
 
-    pass
 
 
 class AllTreeView(HintedTreeView, RCMTreeView, DragIconTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""
-
-    pass

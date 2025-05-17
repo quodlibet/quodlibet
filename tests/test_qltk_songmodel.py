@@ -351,7 +351,7 @@ class TPlaylistMux(TestCase):
         assert self.mux.current is None
 
     def test_removal(self):
-        self.pl.set(range(0, 5))
+        self.pl.set(range(5))
         self.q.set(range(10, 15))
         do_events()
         songs = [self.next() for i in range(3)]

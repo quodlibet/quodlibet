@@ -66,18 +66,17 @@ class Comment:
             return numeric_phrase(
                 "missing from %d song", "missing from %d songs", self.missing
             )
-        elif self.complete:
+        if self.complete:
             return numeric_phrase(
                 "different across %d song", "different across %d songs", self.total
             )
-        else:
-            d = numeric_phrase(
-                "different across %d song", "different across %d songs", self.have
-            )
-            m = numeric_phrase(
-                "missing from %d song", "missing from %d songs", self.missing
-            )
-            return ", ".join([d, m])
+        d = numeric_phrase(
+            "different across %d song", "different across %d songs", self.have
+        )
+        m = numeric_phrase(
+            "missing from %d song", "missing from %d songs", self.missing
+        )
+        return ", ".join([d, m])
 
     def is_special(self):
         return not self.shared or not self.complete
@@ -95,15 +94,14 @@ class Comment:
 
         if self.shared and self.complete:
             return util.escape(self.text)
-        elif self.shared:
+        if self.shared:
             return "\n".join(
                 [
                     f"{util.escape(s)}{util.italic(' ' + self._paren())}"
                     for s in self.text.split("\n")
                 ]
             )
-        else:
-            return util.italic(self._paren())
+        return util.italic(self._paren())
 
 
 def get_default_tags():
@@ -195,7 +193,6 @@ class AudioFileGroup(dict):
 class TagSplitter(EditTagsPlugin):
     """Splits tag values into other tags"""
 
-    pass
 
 
 class SplitValues(TagSplitter):
@@ -633,11 +630,11 @@ class EditTags(Gtk.VBox):
         if qltk.is_accel(event, "Delete"):
             self.__remove_tag(view, view)
             return Gdk.EVENT_STOP
-        elif qltk.is_accel(event, "<Primary>s"):
+        if qltk.is_accel(event, "<Primary>s"):
             # Issue 697: allow Ctrl-s to save.
             self._save.emit("clicked")
             return Gdk.EVENT_STOP
-        elif qltk.is_accel(event, "<Primary>c"):
+        if qltk.is_accel(event, "<Primary>c"):
             self.__copy_tag_value(event, view)
             return Gdk.EVENT_STOP
         return Gdk.EVENT_PROPAGATE
@@ -796,7 +793,7 @@ class EditTags(Gtk.VBox):
             msg = _("Unable to add %s") % util.bold(tag)
             msg += "\n\n"
             msg += _(
-                "The files currently" " selected do not support multiple values for %s."
+                "The files currently selected do not support multiple values for %s."
             ) % util.bold(tag)
             qltk.ErrorMessage(self, title, msg, escape_desc=False).run()
             return
@@ -1007,7 +1004,7 @@ class EditTags(Gtk.VBox):
         entry = model[path][0]
         if new_tag == entry.tag:
             return
-        elif not self._group_info.can_change(new_tag):
+        if not self._group_info.can_change(new_tag):
             # Can't add the new tag.
             title = ngettext("Invalid tag", "Invalid tags", 1)
             msg = ngettext(

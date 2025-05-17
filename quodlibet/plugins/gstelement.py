@@ -33,12 +33,11 @@ class GStreamerPlugin:
     @classmethod
     def setup_element(cls):
         """Return a new element instance or None"""
-        return None
+        return
 
     @classmethod
     def update_element(cls, element):
         """Apply settings to the instance"""
-        pass
 
     @classmethod
     def queue_update(cls):

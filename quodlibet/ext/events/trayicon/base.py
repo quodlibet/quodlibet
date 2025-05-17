@@ -17,21 +17,18 @@ class BaseIndicator:
     def set_paused(self, value):
         """Update the paused state of the indicator"""
 
-        pass
 
     def set_song(self, song):
         """Update the provided state of the indicator using the passed
         song or None if no song is active.
         """
 
-        pass
 
     def set_info_song(self, song):
         """Update the provided information of the indicator using the passed
         song or None if no song is active.
         """
 
-        pass
 
     def popup_menu(self):
         """Show the context menu as if the icon was pressed.
@@ -39,4 +36,3 @@ class BaseIndicator:
         Mainly for testing
         """
 
-        pass

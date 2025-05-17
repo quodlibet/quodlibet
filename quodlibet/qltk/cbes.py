@@ -165,8 +165,7 @@ class CBESEditor(_KeyValueEditor):
         for row in self.cbes.get_model():
             if row[2] is not None:
                 break
-            else:
-                self.model.append((row[0], row[1]))
+            self.model.append((row[0], row[1]))
 
     def __finish(self, cbes):
         cbes_model = cbes.get_model()
@@ -414,6 +413,7 @@ class ComboBoxEntrySave(Gtk.ComboBox):
                 if removable:
                     model.remove(row.iter)
                 return not removable
+        return None
 
     def prepend_text(self, text):
         # If we find the value in the saved values, don't prepend it.

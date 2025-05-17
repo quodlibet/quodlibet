@@ -54,8 +54,7 @@ class RemoteFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return []
-        else:
-            return False
+        return False
 
     @property
     def key(self):

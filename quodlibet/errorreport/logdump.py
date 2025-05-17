@@ -28,7 +28,7 @@ def format_dump_header(exc_info):
     """
 
     lines = [
-        "=== SYSTEM INFORMATION:" "",
+        "=== SYSTEM INFORMATION:",
         f"Quod Libet {quodlibet.get_build_description()}",
         f"Mutagen {mutagen.version_string}",
         f"Python {sys.version} {sys.platform}",

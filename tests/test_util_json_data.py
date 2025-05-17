@@ -66,7 +66,7 @@ class TJsonData(TestCase):
             assert not jd
             # Valid but unexpected Command field
             assert not JSONObjectDict.from_json(
-                JSONObject, '{"bar":{"name":"bar", ' '"invalid":"foo"}'
+                JSONObject, '{"bar":{"name":"bar", "invalid":"foo"}'
             )
 
         def test_subclass_from_json(self):

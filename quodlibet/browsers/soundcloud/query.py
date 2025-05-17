@@ -90,7 +90,7 @@ class SoundcloudQuery(Query):
             except KeyError as e:
                 if tag not in SUPPORTED:
                     raise self.Error(
-                        f"Unsupported {tag!r} tag. " f"Try: {', '.join(SUPPORTED)}"
+                        f"Unsupported {tag!r} tag. Try: {', '.join(SUPPORTED)}"
                     ) from e
                 return None, None
             else:
@@ -107,14 +107,14 @@ class SoundcloudQuery(Query):
             if len(node._names) == 1:
                 return self._extract_terms_set(node.res, tag=node._names[0])
             return self._extract_terms_set(node.res)
-        elif isinstance(node, Inter | Union):
+        if isinstance(node, Inter | Union):
             # Treat identically as the text-based query will perform
             # relevance ranking itself, meaning that any term is still useful
             terms = set()
             for n in node.res:
                 terms |= self._extract_terms_set(n)
             return terms
-        elif isinstance(node, Numcmp):
+        if isinstance(node, Numcmp):
 
             def from_relative(op, l, r):
                 raw_value = r.evaluate(_DUMMY_AF, self._clock(), True)
@@ -123,9 +123,9 @@ class SoundcloudQuery(Query):
                     return set()
                 if op == operator.eq:
                     return {(tag, value)}
-                elif op in (operator.le, operator.lt):
+                if op in (operator.le, operator.lt):
                     return {(tag + "[to]", value)}
-                elif op in (operator.ge, operator.gt):
+                if op in (operator.ge, operator.gt):
                     return {(tag + "[from]", value)}
                 raise self.Error(f"Unsupported operator: {op}")
 
@@ -133,14 +133,14 @@ class SoundcloudQuery(Query):
             right = node._expr2
             if isinstance(left, NumexprTag) and isinstance(right, Numexpr):
                 return from_relative(node._op, left, right)
-            elif isinstance(right, NumexprTag) and isinstance(left, Numexpr):
+            if isinstance(right, NumexprTag) and isinstance(left, Numexpr):
                 # We can reduce the logic by flipping the expression
                 return from_relative(INVERSE_OPS[node._op], right, left)
             raise self.Error(f"Unsupported numeric: {node}")
-        elif hasattr(node, "pattern"):
+        if hasattr(node, "pattern"):
             return terms_from_re(node.pattern, tag)
-        elif isinstance(node, True_):
+        if isinstance(node, True_):
             return set()
-        elif isinstance(node, False_):
+        if isinstance(node, False_):
             raise self.Error("False can never be queried")
         raise self.Error(f"Unhandled node: {node!r}")

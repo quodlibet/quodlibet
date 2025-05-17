@@ -14,9 +14,7 @@ class SessionClient:
     def open(self, app):
         """Raises SessionError"""
 
-        pass
 
     def close(self):
         """Doesn't raise, can be called multiple times"""
 
-        pass

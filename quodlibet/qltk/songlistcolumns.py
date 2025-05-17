@@ -29,22 +29,21 @@ def create_songlist_column(model: Gtk.TreeModel, t):
 
     if t in ["~#added", "~#mtime", "~#lastplayed", "~#laststarted"]:
         return DateColumn(t)
-    elif t in ["~length", "~#length"]:
+    if t in ["~length", "~#length"]:
         return LengthColumn()
-    elif t == "~#filesize":
+    if t == "~#filesize":
         return FilesizeColumn()
-    elif t in ["~rating"]:
+    if t in ["~rating"]:
         return RatingColumn()
-    elif t.startswith("~#"):
+    if t.startswith("~#"):
         return NumericColumn(t)
-    elif t in FILESYSTEM_TAGS:
+    if t in FILESYSTEM_TAGS:
         return FSColumn(t)
-    elif "<" in t:
+    if "<" in t:
         return PatternColumn(t)
-    elif "~" not in t and t != "title":
+    if "~" not in t and t != "title":
         return NonSynthTextColumn(model, t)
-    else:
-        return WideTextColumn(t)
+    return WideTextColumn(t)
 
 
 def _highlight_current_cell(cr, background_area, cell_area, flags):

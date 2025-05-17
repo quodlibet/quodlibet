@@ -88,8 +88,9 @@ class Alarm(EventPlugin):
     def _check(self):
         if self._ready():
             self._fire()
-        else:
-            return True
+            return None
+        return True
+
 
     def PluginPreferences(self, parent):
         t = Gtk.Table(n_rows=2, n_columns=7)
@@ -137,3 +138,4 @@ class Lullaby(Alarm):
             GLib.timeout_add(30000, self._check)
         else:
             return True
+        return None

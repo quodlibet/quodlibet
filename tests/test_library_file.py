@@ -217,7 +217,7 @@ class TWatchedFileLibrary(TLibrary):
             run_gtk_loop()
             assert self.library, f"Nothing in library despite watches on {watch_dirs}"
             assert str(path) in self.library, (
-                f"{path!s} should have been added to " f"library [{self.fns}]"
+                f"{path!s} should have been added to library [{self.fns}]"
             )
             assert str(path) in {af("~filename") for af in self.added}
 

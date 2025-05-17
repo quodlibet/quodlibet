@@ -157,6 +157,7 @@ class PluginEnabledFilterCombo(Gtk.ComboBox):
         if iter_:
             model = self.get_model()
             return list(model[iter_])
+        return None
 
 
 class PluginTypeFilterCombo(Gtk.ComboBox):
@@ -193,6 +194,7 @@ class PluginTypeFilterCombo(Gtk.ComboBox):
         if iter_:
             model = self.get_model()
             return model[iter_][1]
+        return None
 
 
 class PluginListView(HintedTreeView):
@@ -539,9 +541,8 @@ class PluginWindow(UniqueWindow, PersistentWindowMixin):
 
         if self._list_view.select_by_func(selector):
             return True
-        else:
-            self.unfilter()
-            return self._list_view.select_by_func(selector)
+        self.unfilter()
+        return self._list_view.select_by_func(selector)
 
     def __plugin_toggled(self, tv, model, iter_, enabled):
         plugin = model.get_value(iter_)

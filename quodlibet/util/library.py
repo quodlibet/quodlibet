@@ -37,10 +37,11 @@ def background_filter():
 
     bg = config.gettext("browsers", "background")
     if not bg:
-        return
+        return None
     query = Query(bg, SongList.star)
     if query.is_parsable:
         return query.search
+    return None
 
 
 def split_scan_dirs(joined_paths):
@@ -57,8 +58,7 @@ def split_scan_dirs(joined_paths):
     if is_windows():
         # we used to separate this config with ":", so this is tricky
         return list(filter(None, re.findall(r"[a-zA-Z]:[\\/][^:]*", joined_paths)))
-    else:
-        return list(filter(None, split_escape(joined_paths, ":")))
+    return list(filter(None, split_escape(joined_paths, ":")))
 
 
 def get_scan_dirs():
