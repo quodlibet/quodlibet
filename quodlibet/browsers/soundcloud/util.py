@@ -62,7 +62,7 @@ def json_callback(wrapped):
                 f"[HTTP {message.status_code}] Invalid / empty JSON. "
                 f"Body: {message.response_body.data!r} (request: {data})"
             )
-            return
+            return None
         if "errors" in json:
             raise ValueError("Got HTTP %d (%s)" % (message.status_code, json["errors"]))
         if "error" in json:
@@ -99,6 +99,7 @@ class EnterAuthCodeDialog(GetStringDialog):
     def _verify_clipboard(self, text):
         if len(text) > 10:
             return text
+        return None
 
 
 def sanitise_tag(value):

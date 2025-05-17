@@ -19,7 +19,7 @@ class RadioAdMute(EventPlugin):
     PLUGIN_ID = "radio_ad_mute"
     PLUGIN_NAME = _("Mute Radio Ads")
     PLUGIN_DESC = _(
-        "Mutes output while radio advertisements are playing.\n" "Stations: di.fm."
+        "Mutes output while radio advertisements are playing.\nStations: di.fm."
     )
     PLUGIN_ICON = Icons.AUDIO_VOLUME_MUTED
 

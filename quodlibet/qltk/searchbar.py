@@ -90,7 +90,7 @@ class SearchBarBox(Gtk.Box):
 
         entry.set_placeholder_text(_("Search"))
         entry.set_tooltip_text(
-            _("Search your library, " "using free text or QL queries")
+            _("Search your library, using free text or QL queries")
         )
 
         combo.enable_clear_button()
@@ -162,6 +162,7 @@ class SearchBarBox(Gtk.Box):
         if widget.is_focus():
             self.emit("focus-out")
             return True
+        return None
 
     def __save_search(self, entry, *args):
         # only save the query on focus-out if eager_search is turned on
@@ -264,8 +265,7 @@ class LimitSearchBarBox(SearchBarBox):
     def limit(self, songs):
         if self.__limit.get_visible():
             return limit_songs(songs, self.__limit.value, self.__limit.weighted)
-        else:
-            return songs
+        return songs
 
     def toggle_limit_widgets(self, button):
         """Toggles the visibility of the limit widget according to `button`"""
@@ -363,7 +363,7 @@ class MultiSearchBarBox(LimitSearchBarBox):
             self._old_tooltip = self._entry.get_tooltip_text()
             self._entry.set_placeholder_text(_("Add query"))
             self._entry.set_tooltip_text(
-                _("Add a QL query or free text " "to be &ed together")
+                _("Add a QL query or free text to be &ed together")
             )
         else:
             self._add_button.hide()

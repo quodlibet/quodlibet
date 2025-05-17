@@ -50,8 +50,7 @@ class PlaylistMux:
 
         if self.q.current is not None:
             return self.q.current
-        else:
-            return self.pl.current
+        return self.pl.current
 
     def _check_sourced(self):
         if self.q.current is not None:
@@ -212,7 +211,7 @@ class TrackCurrentModel(ObjectStore):
         for iter_, value in self.iterrows():
             if value == song:
                 return iter_
-        return
+        return None
 
     def find_all(self, songs: Iterable[Any]):
         """Returns a list of iters for all occurrences of all songs.

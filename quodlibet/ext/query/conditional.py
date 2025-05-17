@@ -21,8 +21,7 @@ class ConditionalQuery(QueryPlugin):
     def search(self, song, body):
         if body[0].search(song):
             return body[1].search(song)
-        else:
-            return body[2].search(song)
+        return body[2].search(song)
 
     def parse_body(self, body):
         if body is None:

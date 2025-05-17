@@ -136,7 +136,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PLAYING)
         lbl = Gtk.Label(label=_("Playing:"))
         entry.set_tooltip_markup(
-            _("Status text when a song is started. " "Accepts QL Patterns e.g. %s")
+            _("Status text when a song is started. Accepts QL Patterns e.g. %s")
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)
@@ -151,7 +151,7 @@ class TelepathyStatusPlugin(EventPlugin, PluginConfigMixin):
         entry.connect("changed", self.config_entry_changed, self.CFG_PAT_PAUSED)
         lbl = Gtk.Label(label=_("Paused:"))
         entry.set_tooltip_markup(
-            _("Status text when a song is paused. " "Accepts QL Patterns e.g. %s")
+            _("Status text when a song is paused. Accepts QL Patterns e.g. %s")
             % util.monospace("<~artist~title>")
         )
         lbl.set_mnemonic_widget(entry)

@@ -99,4 +99,4 @@ def index(name: BrowserName) -> int:
             return j
 
     all_keys = (k.lower() for b in browsers for k in b.keys)
-    raise ValueError(f"{name!r} browser not found. " f"Try: {' | '.join(all_keys)}")
+    raise ValueError(f"{name!r} browser not found. Try: {' | '.join(all_keys)}")

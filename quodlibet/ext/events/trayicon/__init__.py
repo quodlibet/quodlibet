@@ -35,15 +35,14 @@ def get_indicator_impl():
     print_d(f"use app indicator: {use_app_indicator}")
     if not use_app_indicator:
         return SystemTray
+    try:
+        from .appindicator import AppIndicator
+    except ImportError as e:
+        print_w(f"Loading AppIndicator failed ({e}). Using {SystemTray}")
+        # no indicator, fall back
+        return SystemTray
     else:
-        try:
-            from .appindicator import AppIndicator
-        except ImportError as e:
-            print_w(f"Loading AppIndicator failed ({e}). Using {SystemTray}")
-            # no indicator, fall back
-            return SystemTray
-        else:
-            return AppIndicator
+        return AppIndicator
 
 
 class TrayIconPlugin(EventPlugin):

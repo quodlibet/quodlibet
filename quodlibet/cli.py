@@ -203,13 +203,12 @@ def process_arguments(argv):
     def is_time(str):
         if str[0] not in "+-0123456789":
             return False
-        elif str[0] in "+-":
+        if str[0] in "+-":
             str = str[1:]
         parts = str.split(":")
         if len(parts) > 3:
             return False
-        else:
-            return False not in [p.isdigit() for p in parts]
+        return False not in [p.isdigit() for p in parts]
 
     def is_float(str):
         try:
@@ -315,7 +314,7 @@ def process_arguments(argv):
 
     if cmds_todo:
         for cmd in cmds_todo:
-            control(*cmd, **{"ignore_error": "run" in actions})
+            control(*cmd, ignore_error="run" in actions)
     else:
         # this will exit if it succeeds
         control("focus", ignore_error=True)

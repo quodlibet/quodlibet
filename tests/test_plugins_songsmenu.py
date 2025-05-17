@@ -130,7 +130,7 @@ class TSongsMenuPlugins(TestCase):
         self.handler.handle(plugin.id, self.library, None, songs)
         self.assertFalse(
             self.confirmed,
-            ("Wasn't expecting a confirmation for %d" " invocations" % len(songs)),
+            ("Wasn't expecting a confirmation for %d invocations" % len(songs)),
         )
 
     def test_handling_lots_of_songs_with_confirmation(self):

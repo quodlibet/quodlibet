@@ -148,7 +148,7 @@ class ScanBox(Gtk.HBox):
         if len(rows) > 1:
             print_w("Can't do multiple moves at once")
             return
-        elif not rows:
+        if not rows:
             return
         base_dir = rows[0][0]
         chooser = _get_chooser(_("Select This Directory"), _("_Cancel"))

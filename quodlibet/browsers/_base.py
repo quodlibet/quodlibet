@@ -81,7 +81,6 @@ class Filter:
 
     def unfilter(self):
         """Reset all filters and display the whole library."""
-        pass
 
     def can_filter(self, key):
         """If key can be passed to filter_on() or filter_random()"""
@@ -202,7 +201,6 @@ class Browser(Gtk.Box, Filter):
         """Called after library and MainWindow initialization, before the
         GTK main loop starts.
         """
-        pass
 
     def save(self):
         """Save the selected songlist. Browsers should save whatever
@@ -220,11 +218,9 @@ class Browser(Gtk.Box, Filter):
     def finalize(self, restored):
         """Called after restore/activate or after the browser is loaded.
         restored is True if restore was called."""
-        pass
 
     def scroll(self, song):
         """Scroll to something related to the given song."""
-        pass
 
     def activate(self):
         """Do whatever is needed to emit songs-selected again."""
@@ -332,7 +328,6 @@ class DisplayPatternMixin:
 
     def refresh_all(self):
         """Refresh the browser's items"""
-        pass
 
 
 class FakeDisplayItem(dict):
@@ -343,11 +338,11 @@ class FakeDisplayItem(dict):
     def get(self, key, default="", connector=" - "):
         if key[:1] == "~" and "~" in key[1:]:
             return connector.join(map(self.get, util.tagsplit(key)))
-        elif key[:1] == "~" and key[-4:-3] == ":":
+        if key[:1] == "~" and key[-4:-3] == ":":
             func = key[-3:]
             key = key[:-4]
             return f"{util.tag(key)}<{func}>"
-        elif key in self:
+        if key in self:
             return self[key]
         return util.tag(key)
 

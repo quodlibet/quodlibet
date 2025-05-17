@@ -18,7 +18,7 @@ def get_cover_type(key, value):
     """Returns an APICType or None if the tag isn't an image"""
 
     if value.kind != mutagen.apev2.BINARY:
-        return
+        return None
 
     type_map = {
         "cover art (front)": APICType.COVER_FRONT,
@@ -35,15 +35,15 @@ def parse_cover(key, value):
 
     cover_type = get_cover_type(key, value)
     if cover_type is None:
-        return
+        return None
 
     parts = value.value.split(b"\x00", 1)
     if len(parts) != 2:
-        return
+        return None
 
     f = get_temp_cover_file(parts[-1])
     if not f:
-        return
+        return None
 
     return EmbeddedImage(f, "image/", type_=cover_type)
 
@@ -118,19 +118,17 @@ class APEv2File(AudioFile):
     def __titlecase(key):
         if key.lower() in ["isrc", "isbn", "ean/upc"]:
             return key.upper()
-        else:
-            return key.title()
+        return key.title()
 
     def can_change(self, key=None):
         if key is None:
             return True
-        else:
-            return (
-                super().can_change(key)
-                and key.lower() not in self.IGNORE
-                and key.lower() not in self.TRANS
-                and mutagen.apev2.is_valid_apev2_key(self.__titlecase(key))
-            )
+        return (
+            super().can_change(key)
+            and key.lower() not in self.IGNORE
+            and key.lower() not in self.TRANS
+            and mutagen.apev2.is_valid_apev2_key(self.__titlecase(key))
+        )
 
     def write(self):
         with translate_errors():
@@ -162,7 +160,7 @@ class APEv2File(AudioFile):
         try:
             tag = mutagen.apev2.APEv2(self["~filename"])
         except Exception:
-            return
+            return None
 
         primary = None
         for key, value in tag.items():
@@ -173,6 +171,7 @@ class APEv2File(AudioFile):
 
         if primary is not None:
             return parse_cover(*primary)
+        return None
 
     def get_images(self):
         try:

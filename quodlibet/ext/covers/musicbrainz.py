@@ -56,6 +56,7 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
             "search-complete",
             [{"cover": url, "dimensions": dims} for dims, url in self.urls.items()],
         )
+        return None
 
     @property
     def urls(self) -> dict[str, str]:
@@ -71,3 +72,4 @@ class MusicBrainzCover(CoverSourcePlugin, HTTPDownloadMixin):
         if not self.mbid:
             return self.fail("MBID is required to fetch the cover")
         self.download(Soup.Message.new("GET", self.urls.get("original", None)))
+        return None

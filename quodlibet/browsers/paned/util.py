@@ -111,8 +111,7 @@ def get_headers():
     headers = config.get("browsers", "panes")
     if headers == "~people album":
         return headers.split()
-    else:
-        return headers.split("\t")
+    return headers.split("\t")
 
 
 def save_headers(headers):

@@ -36,11 +36,13 @@ class RedirectImportHook:
         loader = self.find_module(fullname, path)
         if loader is not None:
             return importlib.util.spec_from_loader(fullname, loader)
+        return None
 
     def find_module(self, fullname, path=None):
         package = fullname.split(".")[0]
         if package in self._packages:
             return self
+        return None
 
     def load_module(self, name):
         mod = None

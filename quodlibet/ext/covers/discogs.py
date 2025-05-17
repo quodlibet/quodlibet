@@ -46,8 +46,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
         mbid = self.song.get("musicbrainz_albumid", None)
         if mbid:
             return path.join(cover_dir, escape_filename(mbid))
-        else:
-            return super().cover_path
+        return super().cover_path
 
     @property
     def url(self):
@@ -65,8 +64,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
         album = escape_query_value(self.song.get("album", ""))
         if artist and album:
             return _url.format(artist=artist, album=album)
-        else:
-            return None  # Not enough data
+        return None  # Not enough data
 
     def _handle_search_response(self, message, json_dict, data=None):
         if not json_dict:
@@ -98,6 +96,7 @@ class DiscogsCover(ApiCoverSourcePlugin):
             results.append(next(self._covers_of_type(images, "secondary")))
 
         self.emit("search-complete", results)
+        return None
 
     def _covers_of_type(self, images, image_type="primary"):
         for image in images:

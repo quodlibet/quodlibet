@@ -27,7 +27,6 @@ class UserInterfacePlugin:
 
     def create_sidebar(self):
         """If defined, returns a Gtk.Box to populate the sidebar"""
-        pass
 
 
 class UserInterfacePluginHandler(PluginHandler):

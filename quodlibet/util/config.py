@@ -166,8 +166,7 @@ class Config:
     def getbytes(self, section, option, default=_DEFAULT):
         try:
             value = self._config.get(section, option)
-            value = value.encode("utf-8", "surrogateescape")
-            return value
+            return value.encode("utf-8", "surrogateescape")
         except (Error, ValueError) as e:
             if default is _DEFAULT:
                 if self.defaults is not None:

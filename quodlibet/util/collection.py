@@ -65,8 +65,7 @@ def bayesian_average(nums, c=None, m=None):
     with parameters defaulting to config specific to ~#rating."""
     m = m or config.RATINGS.default
     c = c or config.getfloat("settings", "bayesian_rating_factor", 0.0)
-    ret = float(m * c + sum(nums)) / (c + len(nums))
-    return ret
+    return float(m * c + sum(nums)) / (c + len(nums))
 
 
 NUM_DEFAULT_FUNCS = {
@@ -129,11 +128,10 @@ class Collection:
             v = ((isinstance(x, float) and f"{x:.2f}") or x for x in v)
             v = (isinstance(x, str) and x or str(x) for x in v)
             return connector.join(filter(None, v)) or default
-        else:
-            value = self.__get_cached_value(key)
-            if value is None:
-                return default
-            return value
+        value = self.__get_cached_value(key)
+        if value is None:
+            return default
+        return value
 
     __call__ = get
 
@@ -154,18 +152,17 @@ class Collection:
             self.__used.remove(key)
             self.__used.insert(0, key)
             return self.__cache[key]
-        elif key in self.__default:
+        if key in self.__default:
             return None
+        val = self.__get_value(key)
+        if val is None:
+            self.__default.add(key)
         else:
-            val = self.__get_value(key)
-            if val is None:
-                self.__default.add(key)
-            else:
-                self.__used.insert(0, key)
-                self.__cache[key] = val
-            # Remove the oldest if the cache is full
-            if len(self.__used) > self._cache_size:
-                self.__cache.pop(self.__used.pop(-1))
+            self.__used.insert(0, key)
+            self.__cache[key] = val
+        # Remove the oldest if the cache is full
+        if len(self.__used) > self._cache_size:
+            self.__cache.pop(self.__used.pop(-1))
         return val
 
     def __get_value(self, key):
@@ -209,10 +206,10 @@ class Collection:
                 values = (song(key) for song in self.songs)
                 values = [v for v in values if v != ""]
                 return func(values) if values else None
-            elif key in NUMERIC_ZERO_DEFAULT:
+            if key in NUMERIC_ZERO_DEFAULT:
                 return 0
             return None
-        elif key[:1] == "~":
+        if key[:1] == "~":
             key = key[1:]
             numkey = key.split(":")[0]
             keys = {"people": {}, "peoplesort": {}}
@@ -251,32 +248,31 @@ class Collection:
                     self.__used.append(other)
                     self.__cache[other] = "\n".join(values)
                 return ret
-            elif numkey == "length":
+            if numkey == "length":
                 length = self.__get_value("~#" + key)
                 return None if length is None else util.format_time(length)
-            elif numkey == "long-length":
+            if numkey == "long-length":
                 length = self.__get_value("~#" + key[5:])
                 return None if length is None else util.format_time_long(length)
-            elif numkey == "tracks":
+            if numkey == "tracks":
                 tracks = self.__get_value("~#" + key)
                 return (
                     None
                     if tracks is None
                     else ngettext("%d track", "%d tracks", tracks) % tracks
                 )
-            elif numkey == "discs":
+            if numkey == "discs":
                 discs = self.__get_value("~#" + key)
                 if discs > 1:
                     return ngettext("%d disc", "%d discs", discs) % discs
-                else:
-                    # TODO: check this is correct for discs == 1
-                    return None
-            elif numkey == "rating":
+                # TODO: check this is correct for discs == 1
+                return None
+            if numkey == "rating":
                 rating = self.__get_value("~#" + key)
                 if rating is None:
                     return None
                 return util.format_rating(rating)
-            elif numkey == "filesize":
+            if numkey == "filesize":
                 size = self.__get_value("~#" + key)
                 return None if size is None else util.format_size(size)
             key = "~" + key
@@ -330,7 +326,7 @@ class Album(Collection, HasKey):
         self.__dict__.pop("genre", None)
 
     def __repr__(self):
-        return f"Album({repr(self.key)})"
+        return f"Album({self.key!r})"
 
 
 @hashable
@@ -344,14 +340,13 @@ class Playlist(Collection, abc.Iterable, HasKey):
     def suggested_name_for(songs):
         if len(songs) == 0:
             return _("Empty Playlist")
-        elif len(songs) == 1:
+        if len(songs) == 1:
             return songs[0].comma("title")
-        else:
-            return ngettext(
-                "%(title)s and %(count)d more",
-                "%(title)s and %(count)d more",
-                len(songs) - 1,
-            ) % ({"title": songs[0].comma("title"), "count": len(songs) - 1})
+        return ngettext(
+            "%(title)s and %(count)d more",
+            "%(title)s and %(count)d more",
+            len(songs) - 1,
+        ) % ({"title": songs[0].comma("title"), "count": len(songs) - 1})
 
     def __init__(self, name: str, songs_lib=None, pl_lib=None):
         super().__init__()

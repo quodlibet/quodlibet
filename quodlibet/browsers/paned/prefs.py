@@ -106,8 +106,8 @@ class PatternEditor(Gtk.VBox):
 
         example = util.monospace(self._COMPLEX_PATTERN_EXAMPLE)
         tooltip = _(
-            f"Tag pattern with optional markup e.g. <tt>composer</tt> or\n{example}"
-        )
+            "Tag pattern with optional markup e.g. %s or\n%s"
+        ) % ("<tt>composer</tt>", example)
         cb = TagsComboBoxEntry(self.COMPLETION, tooltip_markup=tooltip)
 
         view = BaseView(model=model)
@@ -160,6 +160,7 @@ class PatternEditor(Gtk.VBox):
                     model_headers = [row[0] for row in self.__model]
                     self.__headers[self.__custom] = model_headers
                 return self.__headers[button]
+        return None
 
     @headers.setter
     def headers(self, new_headers):

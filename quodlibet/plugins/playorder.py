@@ -48,7 +48,6 @@ class RepeatPlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Repeat):
 
     """
 
-    pass
 
 
 class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
@@ -61,4 +60,3 @@ class ShufflePlugin(PlayOrderPlugin, quodlibet.qltk.playorder.Reorder):
 
     """
 
-    pass

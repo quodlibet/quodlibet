@@ -22,7 +22,7 @@ from quodlibet.qltk import Icons
 class PlaycountEqualizer(ShufflePlugin, OrderRemembered, PluginConfigMixin):
     PLUGIN_ID = "playcounteq"
     PLUGIN_NAME = _("Playcount Equalizer")
-    PLUGIN_DESC = _("Adds a shuffle mode " "that prefers songs with fewer total plays.")
+    PLUGIN_DESC = _("Adds a shuffle mode that prefers songs with fewer total plays.")
     PLUGIN_ICON = Icons.MEDIA_PLAYLIST_SHUFFLE
     display_name = _("Prefer less played")
     accelerated_name = _("Prefer _less played")

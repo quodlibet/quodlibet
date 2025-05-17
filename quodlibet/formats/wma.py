@@ -154,8 +154,7 @@ class WMAFile(AudioFile):
         ok = self.__rtranslate.keys()
         if key is None:
             return ok
-        else:
-            return super().can_change(key) and (key in ok)
+        return super().can_change(key) and (key in ok)
 
     def get_images(self):
         images = []
@@ -182,7 +181,7 @@ class WMAFile(AudioFile):
         try:
             tag = mutagen.asf.ASF(self["~filename"])
         except Exception:
-            return
+            return None
 
         for image in tag.get("WM/Picture", []):
             try:
@@ -192,6 +191,7 @@ class WMAFile(AudioFile):
             if type_ == APICType.COVER_FRONT:  # Only cover images
                 f = get_temp_cover_file(data, mime)
                 return EmbeddedImage(f, mime, type_=type_)
+        return None
 
     can_change_images = True
 

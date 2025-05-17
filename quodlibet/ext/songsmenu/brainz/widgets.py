@@ -33,7 +33,7 @@ def get_artist(album):
                 names.add(single)
         if len(names) == 1:
             return names.pop()
-        elif len(names) > 1:
+        if len(names) > 1:
             return None
     return None
 

@@ -416,7 +416,7 @@ class SongsMenu(Gtk.Menu):
                 msg = ErrorMessage(
                     parent,
                     _("Unable to show files"),
-                    _("Error showing files, " "or no program available to show them."),
+                    _("Error showing files, or no program available to show them."),
                 )
                 msg.run()
 
@@ -526,11 +526,11 @@ class SongsMenu(Gtk.Menu):
     def separate(self):
         if not self.get_children():
             return
-        elif not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
+        if not isinstance(self.get_children()[-1], Gtk.SeparatorMenuItem):
             self.append(SeparatorMenuItem())
 
     def preseparate(self):
         if not self.get_children():
             return
-        elif not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
+        if not isinstance(self.get_children()[0], Gtk.SeparatorMenuItem):
             self.prepend(SeparatorMenuItem())

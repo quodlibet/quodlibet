@@ -113,14 +113,13 @@ class RGAlbum:
         mode = self.__process_mode
         if mode == UpdateMode.ALWAYS:
             return True
-        elif mode == UpdateMode.ANY_MISSING:
+        if mode == UpdateMode.ANY_MISSING:
             return not all(s.has_all_rg_tags for s in self.songs)
-        elif mode == UpdateMode.ALBUM_MISSING:
+        if mode == UpdateMode.ALBUM_MISSING:
             return not all(s.album_gain for s in self.songs)
-        else:
-            print_w("Invalid setting for update mode: " + mode)
-            # Safest to re-process probably.
-            return True
+        print_w("Invalid setting for update mode: " + mode)
+        # Safest to re-process probably.
+        return True
 
 
 class RGSong:

@@ -44,14 +44,13 @@ class NullPlayer(BasePlayer):
     def do_get_property(self, property):
         if property.name == "volume":
             return self._volume
-        elif property.name == "seekable":
+        if property.name == "seekable":
             if self.song is None:
                 return False
             return True
-        elif property.name == "mute":
+        if property.name == "mute":
             return self._mute
-        else:
-            raise AttributeError
+        raise AttributeError
 
     def do_set_property(self, property, v):
         if property.name == "volume":

@@ -34,15 +34,14 @@ class LastFMCover(ApiCoverSourcePlugin):
         # It is beneficial to use mbid for cover names.
         if mbid:
             return path.join(cover_dir, escape_filename(mbid))
-        else:
-            return super().cover_path
+        return super().cover_path
 
     @property
     def url(self):
         _url = (
             "https://ws.audioscrobbler.com/2.0?method=album.getinfo&"
-            + "api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&"
-            + "artist={artist}&album={album}&mbid={mbid}"
+            "api_key=107db6fd4c1c7f53b1526fafddab2c82&format=json&"
+            "artist={artist}&album={album}&mbid={mbid}"
         )
         song = self.song
         # This can work well for albums in Last.FM
@@ -53,8 +52,7 @@ class LastFMCover(ApiCoverSourcePlugin):
         mbid = escape_query_value(song.get("musicbrainz_albumid", ""))
         if (artist and album) or mbid:
             return _url.format(artist=artist, album=album, mbid=mbid)
-        else:
-            return None  # Not enough data
+        return None  # Not enough data
 
     def _handle_search_response(self, message, json, data=None):
         if not json:
@@ -92,3 +90,4 @@ class LastFMCover(ApiCoverSourcePlugin):
                 # Prefer the bigger ones
                 break
         self.emit("search-complete", results)
+        return None

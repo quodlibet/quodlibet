@@ -116,7 +116,7 @@ class DateMassager(Massager):
         "'YYYY-MM-DD HH:MM:SS' format."
     )
     __match = re.compile(
-        r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}" r"([:.]\d{2}([:.]\d{2})?)?)?)?)?$"
+        r"^\d{4}([-.]\d{2}([-.]\d{2}([T ]\d{2}([:.]\d{2}([:.]\d{2})?)?)?)?)?$"
     ).match
 
     def validate(self, value):
@@ -135,16 +135,15 @@ class GainMassager(Massager):
     def validate(self, value):
         if self.__match(value):
             return value
-        else:
+        try:
+            f = float(value.split()[0])
+        except (IndexError, TypeError, ValueError):
             try:
-                f = float(value.split()[0])
-            except (IndexError, TypeError, ValueError):
-                try:
-                    f = locale.atof(value.split()[0])
-                except (IndexError, TypeError, ValueError) as e:
-                    raise ValidationError from e
-            else:
-                return (f"{f:+f}").rstrip("0") + " dB"
+                f = locale.atof(value.split()[0])
+            except (IndexError, TypeError, ValueError) as e:
+                raise ValidationError from e
+        else:
+            return (f"{f:+f}").rstrip("0") + " dB"
 
 
 @Massager._register
@@ -189,10 +188,9 @@ class MBIDMassager(Massager):
         else:
             if len(value) != 32:
                 raise ValidationError
-            else:
-                return "-".join(
-                    [value[:8], value[8:12], value[12:16], value[16:20], value[20:]]
-                )
+            return "-".join(
+                [value[:8], value[8:12], value[12:16], value[16:20], value[20:]]
+            )
 
 
 @Massager._register
@@ -201,7 +199,7 @@ class MBAlbumStatus(Massager):
     # Translators: Leave "official", "promotional", and "bootleg"
     # untranslated. They are the three possible literal values.
     error = _(
-        "MusicBrainz release status must be 'official', " "'promotional', or 'bootleg'."
+        "MusicBrainz release status must be 'official', 'promotional', or 'bootleg'."
     )
     options = ["official", "promotional", "bootleg"]
 
@@ -217,8 +215,6 @@ class LanguageMassager(Massager):
     error = _("Language must be an ISO 639-2 three-letter code")
 
     options = ISO_639_2
-
-    tags = ["language"]
 
     def validate(self, value):
         # Issue 439: Actually, allow free-text through

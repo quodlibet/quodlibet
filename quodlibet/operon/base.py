@@ -45,7 +45,6 @@ class Command:
     def _add_options(self, parser):
         """Override to add options to the parser"""
 
-        pass
 
     @property
     def verbose(self):
@@ -60,6 +59,7 @@ class Command:
 
         if self.verbose:
             return print_(text, file=sys.stderr)
+        return None
 
     def load_song(self, path):
         """Load a song. Raises CommandError in case it fails"""

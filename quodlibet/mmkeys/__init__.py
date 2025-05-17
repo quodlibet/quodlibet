@@ -53,6 +53,7 @@ def find_active_backend():
         if backend.is_active():
             print_d(f"Found {backend.__name__!r}")
             return backend
+    return None
 
 
 class MMKeysHandler:

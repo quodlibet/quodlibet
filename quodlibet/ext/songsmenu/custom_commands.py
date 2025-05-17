@@ -64,7 +64,7 @@ class Command(JSONObject):
         ),
         "unique": Field(
             _("unique"),
-            _("If set, this will remove duplicate computed values " "of the pattern"),
+            _("If set, this will remove duplicate computed values of the pattern"),
         ),
         "max_args": Field(
             _("max args"),
@@ -200,7 +200,7 @@ class CustomCommands(PlaylistPlugin, SongsMenuPlugin, PluginConfigMixin):
         Command(
             "Output playlist to stdout",
             command="echo -e",
-            pattern="<~playlistname>: <~playlistindex>. " " <~artist~title>\\\\n",
+            pattern="<~playlistname>: <~playlistindex>.  <~artist~title>\\\\n",
             warn_threshold=20,
         ),
         Command("Fix MP3 VBR with mp3val", "mp3val -f", unique=True, max_args=1),

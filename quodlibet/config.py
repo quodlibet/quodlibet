@@ -400,7 +400,7 @@ class RatingsPrefs:
     @property
     def all(self):
         """Returns all the possible ratings currently available"""
-        return [float(i) / self.number for i in range(0, self.number + 1)]
+        return [float(i) / self.number for i in range(self.number + 1)]
 
     @staticmethod
     def __save(key, value):

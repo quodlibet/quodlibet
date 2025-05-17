@@ -21,7 +21,7 @@ class AutoMasking(EventPlugin):
     PLUGIN_ID = "automask"
     PLUGIN_NAME = _("Automatic Masking")
     PLUGIN_DESC = _(
-        "Automatically masks and unmasks drives when they " "are unmounted or mounted."
+        "Automatically masks and unmasks drives when they are unmounted or mounted."
     )
     PLUGIN_ICON = Icons.DRIVE_REMOVABLE_MEDIA
 

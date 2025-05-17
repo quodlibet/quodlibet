@@ -66,7 +66,21 @@ line-length = 88
 extend-exclude = ["dev-utils/*", "quodlibet/packages/"]
 
 [tool.ruff.lint]
-select = ["E", "F", "B", "Q", "C", "N", "UP"]
+select = [
+  "B",
+  "C",
+  "E",
+  "EXE",
+  "F",
+  "INT",
+  "ISC",
+  "N",
+  "PIE",
+  "Q",
+  "RET",
+  "UP",
+  "W",
+]
 ignore = [
   "E741", # Allow single-letter variables
   "E402", # Allow imports not at top

@@ -34,16 +34,17 @@ class Status:
     def to_string(cls, value):
         if value == cls.QUEUED:
             return _("Queued")
-        elif value == cls.ANALYZING:
+        if value == cls.ANALYZING:
             return _("Analyzing")
-        elif value == cls.LOOKUP:
+        if value == cls.LOOKUP:
             return _("Lookup")
-        elif value == cls.DONE:
+        if value == cls.DONE:
             return _("Done")
-        elif value == cls.ERROR:
+        if value == cls.ERROR:
             return _("Error")
-        elif value == cls.UNKNOWN:
+        if value == cls.UNKNOWN:
             return _("Unknown")
+        return None
 
 
 class SearchEntry:
@@ -99,9 +100,10 @@ class SearchEntry:
     def release(self):
         result = self.result
         if not result:
-            return
+            return None
         if result.releases:
             return result.releases[self.active_release]
+        return None
 
 
 class ResultView(AllTreeView):

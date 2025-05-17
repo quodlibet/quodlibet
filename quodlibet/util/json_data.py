@@ -49,15 +49,15 @@ class JSONObject:
                 (k, self.__getattribute__(k) if hasattr(self, k) else None)
                 for k in self.FIELDS
             ]
-        else:
-            print_d(f"No order specified for class {type(self).__name__}")
-            return {k: v for k, v in self.__dict__.items() if self._should_store(k)}
+        print_d(f"No order specified for class {type(self).__name__}")
+        return {k: v for k, v in self.__dict__.items() if self._should_store(k)}
 
     def field(self, name):
         """Returns the Field metadata of field `name` if available,
         or a null / empty one"""
         if isinstance(self.FIELDS, dict):
             return self.FIELDS.get(name, self.EMPTY_FIELD)
+        return None
 
     @property
     def json(self):
@@ -111,8 +111,7 @@ class JSONObjectDict(dict):
                 )
                 if raise_errors:
                     raise TypeError(msg)
-                else:
-                    print_d(msg)
+                print_d(msg)
             else:
                 if not j.name and raise_errors:
                     raise ValueError(f"Null key for {cls.__name__} object {j}")
@@ -140,6 +139,6 @@ class JSONObjectDict(dict):
                     f.write(json_str)
             except OSError as e:
                 print_w(
-                    "Couldn't write JSON for " f"{type(self).__name__} object(s) ({e})"
+                    f"Couldn't write JSON for {type(self).__name__} object(s) ({e})"
                 )
         return json_str

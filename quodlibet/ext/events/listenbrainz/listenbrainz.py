@@ -151,7 +151,7 @@ class ListenBrainzClient:
         if response.status == 429 and retry < 5:  # Too Many Requests
             self.logger.warning(log_msg)
             return self._submit(listen_type, payload, retry + 1)
-        elif response.status == 200:
+        if response.status == 200:
             self.logger.debug(log_msg)
         else:
             self.logger.error(log_msg)

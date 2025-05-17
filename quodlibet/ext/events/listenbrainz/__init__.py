@@ -303,7 +303,7 @@ class ListenBrainzSubmitQueue:
                 if rsp and rsp.status == 200:
                     self.retries = 0
                     return True
-                elif self.retries >= 6:
+                if self.retries >= 6:
                     # Too many retries, put self offline
                     print_d("Too many retries, setting to offline")
                     self.offline = True
@@ -315,18 +315,17 @@ class ListenBrainzSubmitQueue:
                             "Setting to offline mode. "
                             "Please visit the Plugins window to reset "
                             "ListenBrainz. Until then, listens will not be "
-                            "submitted." % self.retries
-                        ),
+                            "submitted."
+                        )  % self.retries,
                         Gtk.MessageType.INFO,
                     )
                     return False
-                else:
-                    delay = 10
-                    print_d("Failure, waiting %ds" % delay)
-                    self.retries += 1
-                    time.sleep(delay)
-                    print_d("Done sleeping")
-                    return False
+                delay = 10
+                print_d("Failure, waiting %ds" % delay)
+                self.retries += 1
+                time.sleep(delay)
+                print_d("Done sleeping")
+                return False
                 return True
 
             if submit:

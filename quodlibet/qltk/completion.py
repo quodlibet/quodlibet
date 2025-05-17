@@ -160,9 +160,9 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
     def set_tag(self, tag, library):
         if not config.getboolean("settings", "eager_search"):
             return
-        elif tag is None:
+        if tag is None:
             return
-        elif (
+        if (
             tag
             in (
                 "bpm date discnumber isrc originaldate recordingdate "
@@ -171,7 +171,7 @@ class LibraryValueCompletion(Gtk.EntryCompletion):
             + MACHINE_TAGS
         ):
             return
-        elif tag in formats.PEOPLE:
+        if tag in formats.PEOPLE:
             tag = "~people"
         copool.add(self.__fill_tag, tag, library)
 

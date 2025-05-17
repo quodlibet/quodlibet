@@ -130,6 +130,7 @@ class CoverManager(GObject.Object):
                 provider.connect("fetch-success", success)
                 provider.connect("fetch-failure", failure)
                 provider.fetch_cover()
+            return None
 
         if not cancellable or not cancellable.is_cancelled():
             run()
@@ -165,6 +166,7 @@ class CoverManager(GObject.Object):
                 cover = plugin(song).cover
                 if cover:
                     return cover
+        return None
 
     def get_cover(self, song):
         """Returns a cover file object for one song or None.
@@ -193,7 +195,7 @@ class CoverManager(GObject.Object):
 
         fileobj = self.get_cover_many(songs)
         if fileobj is None:
-            return
+            return None
 
         return get_thumbnail_from_file(fileobj, (width, height))
 

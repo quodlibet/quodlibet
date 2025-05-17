@@ -34,7 +34,7 @@ class QueueOrder(ShufflePlugin, OrderInOrder):
     def PluginPreferences(self):
         box = Gtk.HBox()
         ccb = ConfigCheckButton(
-            _("Automatically start playing " "double-clicked songs"),
+            _("Automatically start playing double-clicked songs"),
             "plugins",
             "queue_only_autoplay",
         )

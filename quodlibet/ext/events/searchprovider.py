@@ -233,8 +233,7 @@ class SearchProvider:
         else:
             songs = app.library.values()
 
-        ids = [get_song_id(s) for s in songs]
-        return ids
+        return [get_song_id(s) for s in songs]
 
     def GetSubsearchResultSet(self, previous_results, terms):
         # Eager searching-as-you-type in Gnome makes this useless it seems,

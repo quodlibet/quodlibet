@@ -43,8 +43,7 @@ class WAVEFile(AudioFile):
     def can_change(self, k=None):
         if k is None:
             return ["artist"]
-        else:
-            return k == "artist"
+        return k == "artist"
 
 
 loader = WAVEFile

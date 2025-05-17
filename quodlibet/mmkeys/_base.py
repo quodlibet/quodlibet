@@ -41,7 +41,6 @@ class MMKeysBackend:
         """Should tell the backend that the application was active
         (e.g. the main window got focused)
         """
-        pass
 
     def cancel(self):
         """After cancel returns the callback will no longer be called.

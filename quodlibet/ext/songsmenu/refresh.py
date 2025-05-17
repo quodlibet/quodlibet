@@ -21,7 +21,7 @@ class RefreshSongs(SongsMenuPlugin):
     # Translators: Plugin name
     PLUGIN_NAME = _("Rescan Songs")
     PLUGIN_DESC = _(
-        "Checks for file changes and reloads / removes " "the songs if needed."
+        "Checks for file changes and reloads / removes the songs if needed."
     )
     PLUGIN_ICON = Icons.VIEW_REFRESH
 

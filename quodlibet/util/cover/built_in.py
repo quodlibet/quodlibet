@@ -53,14 +53,14 @@ class EmbeddedCover(CoverSourcePlugin):
         if self.song.has_images:
             image = self.song.get_primary_image()
             return image.file if image else None
+        return None
 
 
 class FilesystemCover(CoverSourcePlugin):
     PLUGIN_ID = "filesystem-cover"
     PLUGIN_NAME = _("Filesystem cover")
     PLUGIN_DESC = _(
-        "Uses commonly named images found in common directories "
-        + "alongside the song."
+        "Uses commonly named images found in common directories alongside the song."
     )
     DEBUG = False
 

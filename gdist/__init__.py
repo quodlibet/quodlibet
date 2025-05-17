@@ -77,7 +77,7 @@ class Install(distutils_install):
         (
             "mandir=",
             None,
-            "destination directory for man pages. " "Defaults to $PREFIX/share/man",
+            "destination directory for man pages. Defaults to $PREFIX/share/man",
         ),
     ]
 

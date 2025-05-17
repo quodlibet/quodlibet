@@ -139,7 +139,7 @@ class WebsiteSearch(SongsMenuPlugin):
             urls = set(filter(None, (website_for(pat, s) for s in songs)))
             if not urls:
                 print_w(
-                    f'Couldn\'t build URLs using "{url_pat}".' "Check your pattern?"
+                    f"Couldn't build URLs using {url_pat!r}. Check your pattern?"
                 )
                 return False
             print_d("Got %d websites from %d songs" % (len(urls), len(songs)))

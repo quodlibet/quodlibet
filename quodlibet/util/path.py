@@ -57,15 +57,14 @@ def iscommand(s):
 
     if s == "" or os.path.sep in s:
         return os.path.isfile(s) and os.access(s, os.X_OK)
+    s = s.split()[0]
+    path = os.environ.get("PATH", "") or os.defpath
+    for p in path.split(os.path.pathsep):
+        p2 = os.path.join(p, s)
+        if os.path.isfile(p2) and os.access(p2, os.X_OK):
+            return True
     else:
-        s = s.split()[0]
-        path = os.environ.get("PATH", "") or os.defpath
-        for p in path.split(os.path.pathsep):
-            p2 = os.path.join(p, s)
-            if os.path.isfile(p2) and os.access(p2, os.X_OK):
-                return True
-        else:
-            return False
+        return False
 
 
 def listdir(path, hidden=False):
@@ -198,7 +197,7 @@ def unexpand(filename):
     norm = os.path.normcase(filename)
     if norm == home:
         return sub
-    elif norm.startswith(home + os.path.sep):
+    if norm.startswith(home + os.path.sep):
         filename = sub + filename[len(home) :]
     return filename
 
@@ -235,8 +234,7 @@ def xdg_get_system_data_dirs():
     data_dirs = os.getenv("XDG_DATA_DIRS")
     if data_dirs:
         return [os.path.abspath(d) for d in data_dirs.split(":")]
-    else:
-        return ("/usr/local/share/", "/usr/share/")
+    return ("/usr/local/share/", "/usr/share/")
 
 
 def xdg_get_cache_home():
@@ -248,8 +246,7 @@ def xdg_get_cache_home():
     data_home = os.getenv("XDG_CACHE_HOME")
     if data_home:
         return os.path.abspath(data_home)
-    else:
-        return os.path.join(os.path.expanduser("~"), ".cache")
+    return os.path.join(os.path.expanduser("~"), ".cache")
 
 
 def xdg_get_data_home():
@@ -261,8 +258,7 @@ def xdg_get_data_home():
     data_home = os.getenv("XDG_DATA_HOME")
     if data_home:
         return os.path.abspath(data_home)
-    else:
-        return os.path.join(os.path.expanduser("~"), ".local", "share")
+    return os.path.join(os.path.expanduser("~"), ".local", "share")
 
 
 def xdg_get_config_home():
@@ -274,8 +270,7 @@ def xdg_get_config_home():
     data_home = os.getenv("XDG_CONFIG_HOME")
     if data_home:
         return os.path.abspath(data_home)
-    else:
-        return os.path.join(os.path.expanduser("~"), ".config")
+    return os.path.join(os.path.expanduser("~"), ".config")
 
 
 def parse_xdg_user_dirs(data):
@@ -449,8 +444,7 @@ def get_home_dir():
 
     if os.name == "nt":
         return windows.get_profile_dir()
-    else:
-        return os.path.expanduser("~")
+    return os.path.expanduser("~")
 
 
 def is_hidden(path: _fsnative) -> bool:
@@ -494,10 +488,9 @@ def uri_is_valid(uri):
     parsed = urlparse(uri)
     if not parsed.scheme or not len(parsed.scheme) > 1:
         return False
-    elif not (parsed.netloc or parsed.path):
+    if not (parsed.netloc or parsed.path):
         return False
-    else:
-        return True
+    return True
 
 
 class RootPathFile:
@@ -538,12 +531,11 @@ class RootPathFile:
         valid = True
         if os.path.exists(self.pathfile):
             return valid
-        else:
-            try:
-                with open(self.pathfile, "w", encoding="utf-8") as f:
-                    f.close()  # do nothing
-            except OSError:
-                valid = False
-            if os.path.exists(self.pathfile):
-                os.remove(self.pathfile)
-            return valid
+        try:
+            with open(self.pathfile, "w", encoding="utf-8") as f:
+                f.close()  # do nothing
+        except OSError:
+            valid = False
+        if os.path.exists(self.pathfile):
+            os.remove(self.pathfile)
+        return valid

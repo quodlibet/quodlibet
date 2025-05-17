@@ -36,7 +36,7 @@ def search_func(model, column, key, iter_, handledirs):
     check = model.get_value(iter_, 0)
     if check is None:
         return True
-    elif not handledirs or os.sep not in key:
+    if not handledirs or os.sep not in key:
         check = os.path.basename(check) or os.sep
     return key not in check.lower() and key not in check
 
@@ -52,8 +52,7 @@ def is_image(filename):
 def filesel_filter(filename):
     if formats.filter(filename):
         return True
-    else:
-        return is_image(filename)
+    return is_image(filename)
 
 
 def _get_win_favorites():
@@ -111,17 +110,16 @@ def get_favorites():
 
     if os.name == "nt":
         return _get_win_favorites()
-    else:
-        paths = [get_home_dir()]
+    paths = [get_home_dir()]
 
-        xfg_user_dirs = xdg_get_user_dirs()
-        for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
-            if key in xfg_user_dirs:
-                path = xfg_user_dirs[key]
-                if path not in paths:
-                    paths.append(path)
+    xfg_user_dirs = xdg_get_user_dirs()
+    for key in ["XDG_DESKTOP_DIR", "XDG_DOWNLOAD_DIR", "XDG_MUSIC_DIR"]:
+        if key in xfg_user_dirs:
+            path = xfg_user_dirs[key]
+            if path not in paths:
+                paths.append(path)
 
-        return paths
+    return paths
 
 
 def get_drives():
@@ -458,7 +456,7 @@ class DirectoryTree(RCMHintedTreeView, MultiDragTreeView):
         try:
             try:
                 if model is None:
-                    return
+                    return None
                 while model.iter_has_child(iter):
                     model.remove(model.iter_children(iter))
                 folder = model[iter][0]

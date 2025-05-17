@@ -55,7 +55,7 @@ EXPORT_OPTIONS = [
     (_("Export User Data"), USER_DATA_KEYS),
     (_("Export Tags"), f"* {USER_DATA_KEYS} {FILE_STEM_KEY}"),
     (_("Export Tags and User Data"), f"* {FILE_STEM_KEY}"),
-    (_("Export File Stems and User Data"), f"{USER_DATA_KEYS} " f"{FILE_STEM_KEY}"),
+    (_("Export File Stems and User Data"), f"{USER_DATA_KEYS} {FILE_STEM_KEY}"),
     (_("Export File Stems and Tags"), f"* {USER_DATA_KEYS}"),
     (_("Export File Stems, Tags and User Data"), "*"),
 ]

@@ -65,8 +65,7 @@ def config_get_url():
     service = plugin_config.get("service")
     if service in SERVICES:
         return SERVICES[service]
-    else:
-        return plugin_config.get("url")
+    return plugin_config.get("url")
 
 
 def config_get_title_pattern():
@@ -299,7 +298,7 @@ class QLSubmitQueue:
         print_w(f"Bad handshake status: {status}")
         if status == "BADAUTH":
             self.quick_dialog(
-                _("Authentication failed: Invalid username '%s' " "or bad password.")
+                _("Authentication failed: Invalid username '%s' or bad password.")
                 % util.escape(self.username),
                 Gtk.MessageType.ERROR,
             )
@@ -311,7 +310,7 @@ class QLSubmitQueue:
             self.broken = True
         elif status == "BADTIME":
             self.quick_dialog(
-                _("Wrong system time. Submissions may fail " "until it is corrected."),
+                _("Wrong system time. Submissions may fail until it is corrected."),
                 Gtk.MessageType.ERROR,
             )
         else:  # "FAILED"
@@ -332,11 +331,10 @@ class QLSubmitQueue:
         print_d(f"Submission status: {status}")
         if status == "OK":
             return True
-        elif status == "BADSESSION":
+        if status == "BADSESSION":
             self.handshake_sent = False
             return False
-        else:
-            return False
+        return False
 
     def send_submission(self):
         data = {"s": self.session_id}
@@ -353,8 +351,7 @@ class QLSubmitQueue:
         if self._check_submit(self.submit_url, data):
             del self.queue[: len(to_submit)]
             return True
-        else:
-            return False
+        return False
 
     def send_nowplaying(self):
         data = {"s": self.session_id}

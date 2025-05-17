@@ -19,7 +19,7 @@ class IncludeSavedSearchQuery(QueryPlugin):
     PLUGIN_ID = "include_saved"
     PLUGIN_NAME = _("Include Saved Search")
     PLUGIN_DESC = _(
-        "💾 Include the results of a saved search " "as part of another query."
+        "💾 Include the results of a saved search as part of another query."
     )
     key = "saved"
     query_syntax = _("@(saved: search-name)")

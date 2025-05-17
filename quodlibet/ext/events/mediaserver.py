@@ -276,23 +276,24 @@ class EntryObject(
         if interface == MediaContainer.IFACE:
             if name == "ChildCount":
                 return len(self.__sub)
-            elif name == "ItemCount":
+            if name == "ItemCount":
                 return 0
-            elif name == "ContainerCount":
+            if name == "ContainerCount":
                 return len(self.__sub)
-            elif name == "Searchable":
+            if name == "Searchable":
                 return False
-            elif name == "Icon":
+            if name == "Icon":
                 return Icon.PATH
         elif interface == MediaObject.IFACE:
             if name == "Parent":
                 return self.parent.PATH
-            elif name == "Type":
+            if name == "Type":
                 return "container"
-            elif name == "Path":
+            if name == "Path":
                 return self.PATH
-            elif name == "DisplayName":
+            if name == "DisplayName":
                 return self.DISPLAY_NAME
+        return None
 
     def destroy(self):
         # break cycle
@@ -362,34 +363,35 @@ class DummySongObject(MediaItem, MediaObject, DBusPropertyFilter, DBusIntrospect
         if interface == MediaObject.IFACE:
             if name == "Parent":
                 return BASE_PATH + "/" + self.__prefix
-            elif name == "Type":
+            if name == "Type":
                 return "music"
-            elif name == "Path":
+            if name == "Path":
                 path = SongObject.PATH
                 path += "/" + self.__prefix + "/" + str(id(self.__song))
                 return path
-            elif name == "DisplayName":
+            if name == "DisplayName":
                 return unival(self.__song.comma("title"))
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [self.__song("~uri")]
-            elif name == "MIMEType":
+            if name == "MIMEType":
                 mimes = self.__song.mimes
                 return mimes and mimes[0]
-            elif name == "Size":
+            if name == "Size":
                 return self.__song("~#filesize")
-            elif name == "Artist":
+            if name == "Artist":
                 return unival(self.__song.comma("artist"))
-            elif name == "Album":
+            if name == "Album":
                 return unival(self.__song.comma("album"))
-            elif name == "Date":
+            if name == "Date":
                 return unival(self.__song.comma("date"))
-            elif name == "Genre":
+            if name == "Genre":
                 return unival(self.__song.comma("genre"))
-            elif name == "Duration":
+            if name == "Duration":
                 return self.__song("~#length")
-            elif name == "TrackNumber":
+            if name == "TrackNumber":
                 return self.__song("~#track", 0)
+        return None
 
 
 class DummyAlbumObject(
@@ -417,19 +419,20 @@ class DummyAlbumObject(
         if interface == MediaContainer.IFACE:
             if name == "ChildCount" or name == "ItemCount":
                 return len(self.__album.songs)
-            elif name == "ContainerCount":
+            if name == "ContainerCount":
                 return 0
-            elif name == "Searchable":
+            if name == "Searchable":
                 return False
         elif interface == MediaObject.IFACE:
             if name == "Parent":
                 return self.parent.PATH
-            elif name == "Type":
+            if name == "Type":
                 return "container"
-            elif name == "Path":
+            if name == "Path":
                 return self.PATH
-            elif name == "DisplayName":
+            if name == "DisplayName":
                 return unival(self.__pattern % self.__album)
+        return None
 
     def list_containers(self, offset, max_, filter_):
         return []
@@ -610,21 +613,22 @@ class AlbumsObject(
         if interface == MediaContainer.IFACE:
             if name == "ChildCount":
                 return len(self.__library)
-            elif name == "ItemCount":
+            if name == "ItemCount":
                 return 0
-            elif name == "ContainerCount":
+            if name == "ContainerCount":
                 return len(self.__library)
-            elif name == "Searchable":
+            if name == "Searchable":
                 return False
         elif interface == MediaObject.IFACE:
             if name == "Parent":
                 return self.parent.PATH
-            elif name == "Type":
+            if name == "Type":
                 return "container"
-            elif name == "Path":
+            if name == "Path":
                 return self.PATH
-            elif name == "DisplayName":
+            if name == "DisplayName":
                 return self.DISPLAY_NAME
+        return None
 
     def get_property(self, interface, name, path):
         if path == "/":
@@ -696,21 +700,21 @@ class Icon(
         if interface == MediaObject.IFACE:
             if name == "Parent":
                 return EntryObject.PATH
-            elif name == "Type":
+            if name == "Type":
                 return "image"
-            elif name == "Path":
+            if name == "Path":
                 return Icon.PATH
-            elif name == "DisplayName":
+            if name == "DisplayName":
                 return r"I'm an icon \o/"
         elif interface == MediaItem.IFACE:
             if name == "URLs":
                 return [fsn2uri(self.__f.name)]
-            elif name == "MIMEType":
+            if name == "MIMEType":
                 return "image/png"
-            elif name == "Width" or name == "Height":
+            if name == "Width" or name == "Height":
                 return Icon.SIZE
-            elif name == "ColorDepth":
+            if name == "ColorDepth":
                 return self.__depth
-
+        return None
     def destroy(self):
         pass

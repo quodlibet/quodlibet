@@ -132,8 +132,7 @@ class OptionParser:
             if self.__args[opt]:
                 opt = f"{opt}={self.__args[opt]}"
             return f"  --{opt.ljust(space)} {help}\n"
-        else:
-            return ""
+        return ""
 
     def help(self):
         l = 0
@@ -206,10 +205,10 @@ class OptionParser:
                 if o == "help":
                     print_(self.help())
                     raise SystemExit
-                elif o == "version":
+                if o == "version":
                     print_(self.version())
                     raise SystemExit
-                elif o == "debug":
+                if o == "debug":
                     from quodlibet import const
 
                     const.DEBUG = True
@@ -391,18 +390,17 @@ def format_size(size):
     # TODO: Better i18n of this (eg use O/KO/MO/GO in French)
     if size >= 1024**3:
         return "%.1f GB" % (float(size) / (1024**3))
-    elif size >= 1024**2 * 100:
+    if size >= 1024**2 * 100:
         return "%.0f MB" % (float(size) / (1024**2))
-    elif size >= 1024**2 * 10:
+    if size >= 1024**2 * 10:
         return "%.1f MB" % (float(size) / (1024**2))
-    elif size >= 1024**2:
+    if size >= 1024**2:
         return "%.2f MB" % (float(size) / (1024**2))
-    elif size >= 1024 * 10:
+    if size >= 1024 * 10:
         return "%d KB" % int(size / 1024)
-    elif size >= 1024:
+    if size >= 1024:
         return "%.2f KB" % (float(size) / 1024)
-    else:
-        return "%d B" % size
+    return "%d B" % size
 
 
 def format_time(time):
@@ -416,9 +414,8 @@ def format_time(time):
     if time >= 3600:  # 1 hour
         # time, in hours:minutes:seconds
         return "%s%d:%02d:%02d" % (prefix, time // 3600, (time % 3600) // 60, time % 60)
-    else:
-        # time, in minutes:seconds
-        return "%s%d:%02d" % (prefix, time // 60, time % 60)
+    # time, in minutes:seconds
+    return "%s%d:%02d" % (prefix, time // 60, time % 60)
 
 
 def format_time_display(time):
@@ -480,12 +477,11 @@ def format_time_preferred(t, fmt=None):
 
     if fmt == DurationFormat.STANDARD:
         return format_time_long(t, 2)
-    elif fmt == DurationFormat.NUMERIC:
+    if fmt == DurationFormat.NUMERIC:
         return format_time_display(t)
-    elif fmt == DurationFormat.FULL:
+    if fmt == DurationFormat.FULL:
         return format_time_long(t, 5)
-    else:
-        return format_time_seconds(t)
+    return format_time_seconds(t)
 
 
 def capitalize(str):
@@ -502,13 +498,12 @@ def _split_numeric_sortkey(
     if not result or not limit:
         text = join(s.split())
         return (text,) if text else ()
-    else:
-        start, end = result.span()
-        return (
-            join(s[:start].split()),
-            float(result.group()),
-            _split_numeric_sortkey(s[end:], limit - 1),
-        )
+    start, end = result.span()
+    return (
+        join(s[:start].split()),
+        float(result.group()),
+        _split_numeric_sortkey(s[end:], limit - 1),
+    )
 
 
 def human_sort_key(s, normalize=unicodedata.normalize):
@@ -537,20 +532,19 @@ def tag(name: str, cap: bool = True) -> str:
     # the user can configure).
     if not name:
         return ngettext("Invalid tag", "Invalid tags", 1)
-    else:
-        from quodlibet.util.tags import readable
+    from quodlibet.util.tags import readable
 
-        parts = map(readable, tagsplit(name))
-        if cap:
-            # Translators: If tag names, when capitalized, should not
-            # be title-cased ("Looks Like This"), but rather only have
-            # the first letter capitalized, translate this string as
-            # something non-empty other than "titlecase?".
-            if C_("check", "titlecase?") == "titlecase?":
-                parts = map(title, parts)
-            else:
-                parts = map(capitalize, parts)
-        return " / ".join(parts)
+    parts = map(readable, tagsplit(name))
+    if cap:
+        # Translators: If tag names, when capitalized, should not
+        # be title-cased ("Looks Like This"), but rather only have
+        # the first letter capitalized, translate this string as
+        # something non-empty other than "titlecase?".
+        if C_("check", "titlecase?") == "titlecase?":
+            parts = map(title, parts)
+        else:
+            parts = map(capitalize, parts)
+    return " / ".join(parts)
 
 
 def tagsplit(tag: str) -> list[str]:
@@ -568,8 +562,7 @@ def tagsplit(tag: str) -> list[str]:
             else:
                 front = "~"
         return tags
-    else:
-        return [tag]
+    return [tag]
 
 
 def pattern(pat, cap=True, esc=False, markup=False):
@@ -629,8 +622,7 @@ def spawn(argv, stdout=False):
 
     if stdout:
         return os.fdopen(args[2])
-    else:
-        return args[0]
+    return args[0]
 
 
 def fver(tup):
@@ -927,19 +919,16 @@ def build_filter_query(key, values):
         queries = [f"#({nheader} = {i})" for i in values]
         if len(queries) > 1:
             return "|({})".format(", ".join(queries))
-        else:
-            return queries[0]
-    else:
-        text = ", ".join(
-            [
-                "'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'"))
-                for v in values
-            ]
-        )
-        if len(values) == 1:
-            return f"{key} = {text}"
-        else:
-            return f"{key} = |({text})"
+        return queries[0]
+    text = ", ".join(
+        [
+            "'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'"))
+            for v in values
+        ]
+    )
+    if len(values) == 1:
+        return f"{key} = {text}"
+    return f"{key} = |({text})"
 
 
 def limit_songs(songs, max, weight_by_ratings=False):
@@ -948,17 +937,16 @@ def limit_songs(songs, max, weight_by_ratings=False):
 
     if not max or len(songs) < max:
         return songs
+    if weight_by_ratings:
+
+        def rating_weighted_random(song):
+            # Apply even (random : higher rating) weighting
+            return (1 - song("~#rating")) * (1 + random.random())
+
+        songs.sort(key=rating_weighted_random)
     else:
-        if weight_by_ratings:
-
-            def rating_weighted_random(song):
-                # Apply even (random : higher rating) weighting
-                return (1 - song("~#rating")) * (1 + random.random())
-
-            songs.sort(key=rating_weighted_random)
-        else:
-            random.shuffle(songs)
-        return songs[:max]
+        random.shuffle(songs)
+    return songs[:max]
 
 
 def gi_require_versions(name, versions):
@@ -1173,7 +1161,7 @@ def set_process_title(title):
         prctl = libc.prctl
     except (OSError, AttributeError):
         print_d(
-            "Couldn't find module libc.so.6 (ctypes). " "Not setting process title."
+            "Couldn't find module libc.so.6 (ctypes). Not setting process title."
         )
     else:
         prctl.argtypes = [

@@ -114,13 +114,13 @@ class ID3File(AudioFile):
             if frame.FrameID == "APIC" and len(frame.data):
                 self.has_images = True
                 continue
-            elif frame.FrameID == "TCON":
+            if frame.FrameID == "TCON":
                 self["genre"] = "\n".join(frame.genres)
                 continue
-            elif frame.FrameID == "UFID" and frame.owner == "http://musicbrainz.org":
+            if frame.FrameID == "UFID" and frame.owner == "http://musicbrainz.org":
                 self["musicbrainz_trackid"] = frame.data.decode("utf-8", "replace")
                 continue
-            elif frame.FrameID == "POPM":
+            if frame.FrameID == "POPM":
                 rating = frame.rating / 255.0
                 if frame.email == const.EMAIL:
                     try:
@@ -135,7 +135,7 @@ class ID3File(AudioFile):
                         pass
                     self["~#rating"] = rating
                 continue
-            elif frame.FrameID == "COMM" and frame.desc == "":
+            if frame.FrameID == "COMM" and frame.desc == "":
                 name = "comment"
             elif frame.FrameID in ["COMM", "TXXX"]:
                 if frame.desc.startswith("QuodLibet::"):
@@ -215,13 +215,12 @@ class ID3File(AudioFile):
     def _parse_info(self, info):
         """Optionally implement in subclasses"""
 
-        pass
 
     def __validate_name(self, k):
         """Returns an ascii string or None if the key isn't supported"""
 
         if not k or "=" in k or "~" in k:
-            return
+            return None
 
         if not (
             k
@@ -229,7 +228,7 @@ class ID3File(AudioFile):
             and "~" not in k
             and k.encode("ascii", "replace").decode("ascii") == k
         ):
-            return
+            return None
 
         return k
 
@@ -517,11 +516,11 @@ class ID3File(AudioFile):
             with translate_errors():
                 audio = self.Kind(self["~filename"])
         except AudioFileError:
-            return
+            return None
 
         tag = audio.tags
         if tag is None:
-            return
+            return None
 
         # get the APIC frame with type == 3 (cover) or the first one
         cover = None
@@ -534,6 +533,7 @@ class ID3File(AudioFile):
         if cover:
             f = get_temp_cover_file(cover.data, cover.mime)
             return EmbeddedImage(f, cover.mime, type_=cover.type)
+        return None
 
     def set_image(self, image):
         """Replaces all embedded images by the passed image"""

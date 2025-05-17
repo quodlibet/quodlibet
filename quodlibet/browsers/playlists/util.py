@@ -44,8 +44,7 @@ def confirm_remove_playlist_dialog_invoke(
 
     dialog = confirmer_cls(parent, title, description, ok_text, ok_icon)
     prompt = dialog.run()
-    response = prompt == confirmer_cls.RESPONSE_INVOKE
-    return response
+    return prompt == confirmer_cls.RESPONSE_INVOKE
 
 
 def confirm_dnd_playlist_dialog_invoke(
@@ -66,8 +65,7 @@ def confirm_dnd_playlist_dialog_invoke(
 
     dialog = confirmer_cls(parent, title, description, ok_text)
     prompt = dialog.run()
-    response = prompt == confirmer_cls.RESPONSE_INVOKE
-    return response
+    return prompt == confirmer_cls.RESPONSE_INVOKE
 
 
 class GetPlaylistName(GetStringDialog):
@@ -139,10 +137,10 @@ def __create_playlist(name, source_dir, files, songs_lib, pl_lib):
             os.path.join(source_dir, filename)
         ):
             print_w(
-                "Can't add file to playlist:" f" Unsupported file format. '{filename}'"
+                f"Can't add file to playlist: Unsupported file format in {filename}"
             )
         else:
-            print_w(f"Can't add file to playlist: File not found. '{filename}'")
+            print_w(f"Can't add file to playlist: File not found: {filename}")
 
         if win.step():
             break
@@ -175,8 +173,7 @@ def _dir_for(filelike):
             # if the "filelike" was created via urlopen
             # it is wrapped in an addinfourl object
             return os.path.dirname(path2fsn(filelike.fp.name))
-        else:
-            return os.path.dirname(path2fsn(filelike.name))
+        return os.path.dirname(path2fsn(filelike.name))
     except AttributeError:
         # Probably a URL
         return text2fsn("")

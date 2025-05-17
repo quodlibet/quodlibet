@@ -176,7 +176,7 @@ def get_thumbnail(path: fsnative, boundary, ignore_temp=True) -> GdkPixbuf:
         "tEXt::Software": "QuodLibet",
     }
 
-    print_d(f"Saving thumbnail to {str(thumb_path)}")
+    print_d(f"Saving thumbnail to {thumb_path!s}")
     thumb_pb.savev(str(thumb_path), "png", list(options.keys()), list(options.values()))
     try:
         thumb_path.chmod(0o600)

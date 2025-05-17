@@ -26,7 +26,7 @@ class ViewLyrics(EventPlugin, UserInterfacePlugin):
 
     PLUGIN_ID = "View Lyrics"
     PLUGIN_NAME = _("View Lyrics")
-    PLUGIN_DESC = _("Automatically displays tag or file-based lyrics " "in a sidebar.")
+    PLUGIN_DESC = _("Automatically displays tag or file-based lyrics in a sidebar.")
     PLUGIN_ICON = Icons.FORMAT_JUSTIFY_FILL
 
     def enabled(self):

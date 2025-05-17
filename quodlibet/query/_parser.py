@@ -53,8 +53,7 @@ class QueryParser:
         if self.tokens[self.index] == token:
             self.index += 1
             return True
-        else:
-            return False
+        return False
 
     def accept_re(self, regexp):
         """Same as accept, but with a regexp instead of a single token.
@@ -102,15 +101,15 @@ class QueryParser:
         self.space()
         if self.eof():
             return match.True_()
-        elif self.accept("!"):
+        if self.accept("!"):
             return self.Negation(self.Query)
-        elif self.accept("&"):
+        if self.accept("&"):
             return self.Intersection(self.Query)
-        elif self.accept("|"):
+        if self.accept("|"):
             return self.Union(self.Query)
-        elif self.accept("#"):
+        if self.accept("#"):
             return self.Intersection(self.Numcmp)
-        elif self.accept("@"):
+        if self.accept("@"):
             return self.Extension()
         index = self.index
         try:
@@ -156,8 +155,7 @@ class QueryParser:
             raise ParseError("No relational operator in numerical comparison")
         if len(cmps) > 1:
             return match.Inter(cmps)
-        else:
-            return cmps[0]
+        return cmps[0]
 
     def Numexpr(self, allow_date=False):
         """Rule for numerical expression like 'playcount + 4'"""
@@ -195,8 +193,7 @@ class QueryParser:
             binop = self.last_match
             expr2 = self.Numexpr()
             return match.NumexprBinary(binop, expr, expr2)
-        else:
-            return expr
+        return expr
 
     def Extension(self):
         """Rule for plugin use like @(plugin: arguments)"""
@@ -228,7 +225,7 @@ class QueryParser:
         except IndexError as e:
             if depth != 0:
                 raise ParseError(
-                    "Unexpected end of string while parsing " "extension body"
+                    "Unexpected end of string while parsing extension body"
                 ) from e
         result = self.tokens[self.index : index]
         self.index = index
@@ -258,26 +255,25 @@ class QueryParser:
             regex = self.expect_re(REGEXP)
             self.expect("/")
             return self.RegexpMods(regex)
-        elif self.accept('"'):
+        if self.accept('"'):
             regex = self.str_to_re(self.expect_re(DOUBLE_STRING))
             self.expect('"')
             return self.RegexpMods(regex)
-        elif self.accept("'"):
+        if self.accept("'"):
             regex = self.str_to_re(self.expect_re(SINGLE_STRING))
             self.expect("'")
             return self.RegexpMods(regex)
-        elif self.accept("!"):
+        if self.accept("!"):
             return self.Negation(self.Value)
-        elif self.accept("|"):
+        if self.accept("|"):
             return self.Union(self.Value)
-        elif self.accept("&"):
+        if self.accept("&"):
             return self.Intersection(self.Value)
-        else:
-            if outer:
-                # Hack to force plain text parsing for top level free text
-                raise ParseError("Free text not allowed at top level of query")
+        if outer:
+            # Hack to force plain text parsing for top level free text
+            raise ParseError("Free text not allowed at top level of query")
 
-            return match.Regex(re_escape(self.expect_re(TEXT)), "d")
+        return match.Regex(re_escape(self.expect_re(TEXT)), "d")
 
     def RegexpMods(self, regex):
         """Consume regexp modifiers from tokens and compile provided regexp

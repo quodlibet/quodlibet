@@ -511,7 +511,7 @@ class PlayQueue(SongList):
     def __popup(self, widget, library):
         songs = self.get_selected_songs()
         if not songs:
-            return
+            return None
 
         menu = SongsMenu(
             library, songs, queue=False, remove=False, delete=False, ratings=False

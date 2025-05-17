@@ -110,7 +110,7 @@ class TCommands(TCommandBase):
         app.library.add(songs)
 
         assert not app.window.playlist.q.get()
-        self._send("enqueue-files " "one,two\\, please,slash\\\\.mp3,four")
+        self._send("enqueue-files one,two\\, please,slash\\\\.mp3,four")
         self.assertEqual(app.window.playlist.q.get(), songs)
 
     def test_rating(self):
@@ -137,7 +137,7 @@ class TCommandWithPattern(TCommandBase):
         app.library.add(songs)
 
         assert not app.window.playlist.q.get()
-        self._send("enqueue-files " "one,two\\, please,slash\\\\.mp3,4.0-four")
+        self._send("enqueue-files one,two\\, please,slash\\\\.mp3,4.0-four")
 
     def test_old_syntax(self):
         assert self._send("print-query two ") == "two, please\n"

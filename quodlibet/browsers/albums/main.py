@@ -625,10 +625,10 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
                 window = Information(librarian, songs, self)
                 window.show()
             return True
-        elif qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
+        if qltk.is_accel(event, "<Primary>Return", "<Primary>KP_Enter"):
             qltk.enqueue(self.__get_selected_songs(sort=True))
             return True
-        elif qltk.is_accel(event, "<alt>Return"):
+        if qltk.is_accel(event, "<alt>Return"):
             songs = self.__get_selected_songs()
             if songs:
                 window = SongProperties(librarian, songs, self)
@@ -697,16 +697,14 @@ class AlbumList(Browser, util.InstanceTracker, VisibleUpdate, DisplayPatternMixi
 
         if f is None and b is None:
             return True
-        else:
-            album = model.get_album(iter_)
-            if album is None:
-                return True
-            elif b is None:
-                return f(album)
-            elif f is None:
-                return b(album)
-            else:
-                return b(album) and f(album)
+        album = model.get_album(iter_)
+        if album is None:
+            return True
+        if b is None:
+            return f(album)
+        if f is None:
+            return b(album)
+        return b(album) and f(album)
 
     def __search_func(self, model, column, key, iter_, data):
         album = model.get_album(iter_)

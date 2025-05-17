@@ -170,6 +170,6 @@ class Query(Node):
             if query.matches_all:
                 return None
             return True
-        elif type_ == QueryType.INVALID:
+        if type_ == QueryType.INVALID:
             return False
         return None

@@ -65,11 +65,12 @@ class Volume(Gtk.VolumeButton):
         if event.button == Gdk.BUTTON_SECONDARY:
             qltk.popup_menu_at_widget(menu, self, event.button, event.time)
             return True
-        elif event.button == Gdk.BUTTON_MIDDLE:
+        if event.button == Gdk.BUTTON_MIDDLE:
             # toggle the muted state, if the backend doesn't support it
             # this action will just be ignored
             player.mute = not player.mute
             return True
+        return None
 
     def __iadd__(self, v):
         self.set_value(self.get_value() + v)

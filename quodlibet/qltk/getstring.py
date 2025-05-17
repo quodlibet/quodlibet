@@ -23,7 +23,7 @@ class GetStringDialog(Dialog):
         title,
         text,
         button_label=None,
-        button_icon=Icons.DOCUMENT_OPEN,  # noqa
+        button_icon=Icons.DOCUMENT_OPEN,
         tooltip=None,
     ):
         super().__init__(title=title, transient_for=parent, use_header_bar=True)

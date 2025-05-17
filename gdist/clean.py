@@ -73,8 +73,7 @@ class Clean(distutils_clean):
                 or (filename.startswith("#") and filename.endswith("#"))
             ):
                 return True
-            else:
-                return False
+            return False
 
         for pathname, _dirs, files in os.walk("."):
             for filename in filter(should_remove, files):

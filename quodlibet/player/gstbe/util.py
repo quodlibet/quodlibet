@@ -126,16 +126,15 @@ def find_audio_sink() -> tuple[Gst.Element, str]:
         if config.getboolean("player", "gst_use_jack") and jack_is_running():
             print_d("Using JACK output via Gstreamer")
             return [AudioSinks.JACK]
-        elif is_windows():
+        if is_windows():
             return [AudioSinks.DIRECTSOUND]
-        elif is_linux() and pulse_is_running():
+        if is_linux() and pulse_is_running():
             return [AudioSinks.PULSE]
-        else:
-            return [
-                AudioSinks.AUTO,
-                AudioSinks.PULSE,
-                AudioSinks.ALSA,
-            ]
+        return [
+            AudioSinks.AUTO,
+            AudioSinks.PULSE,
+            AudioSinks.ALSA,
+        ]
 
     options = sink_options()
     for sink in options:

@@ -74,7 +74,7 @@ def _wrap_function(function, cancellable, args, kwargs):
                 # which we don't use. Print instead as if it was not caught.
                 util.print_exc()
                 raise
-
+        return None
     return wrap
 
 

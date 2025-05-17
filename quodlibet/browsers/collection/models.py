@@ -139,6 +139,7 @@ class CollectionModelMixin:
         obj = self.get_value(iter_, 0)
         if isinstance(obj, AlbumNode):
             return obj.album
+        return None
 
 
 class CollectionFilterModel(ObjectModelFilter, CollectionModelMixin):
@@ -201,16 +202,14 @@ class CollectionTreeStore(ObjectTreeStore, CollectionModelMixin):
                         if not self.remove(child):
                             child = None
                         continue
-                    else:
-                        child = self.iter_next(child)
+                    child = self.iter_next(child)
                 else:
                     # clean up empty containers
                     if not self.iter_has_child(child):
                         if not self.remove(child):
                             child = None
                         continue
-                    else:
-                        child = self.iter_next(child)
+                    child = self.iter_next(child)
 
         _remove_albums(set(albums))
 

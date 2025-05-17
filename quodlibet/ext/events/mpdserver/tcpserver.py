@@ -34,7 +34,6 @@ class BaseTCPServer:
     def log(self, msg):
         """Override for logging"""
 
-        pass
 
     def start(self):
         """Start accepting connections.
@@ -77,12 +76,10 @@ class BaseTCPServer:
     def handle_init(self):
         """Gets called if a new connection starts and there was none before"""
 
-        pass
 
     def handle_idle(self):
         """Gets called once the last connection closes"""
 
-        pass
 
     def _remove_connection(self, conn):
         """Called by the connection class on close"""
@@ -156,11 +153,10 @@ class BaseTCPConnection:
                     except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
-                        elif e.errno == errno.EINTR:
+                        if e.errno == errno.EINTR:
                             continue
-                        else:
-                            self.close()
-                            return False
+                        self.close()
+                        return False
                     break
 
                 if not data:
@@ -209,11 +205,10 @@ class BaseTCPConnection:
                     except OSError as e:
                         if e.errno in (errno.EWOULDBLOCK, errno.EAGAIN):
                             return True
-                        elif e.errno == errno.EINTR:
+                        if e.errno == errno.EINTR:
                             continue
-                        else:
-                            self.close()
-                            return False
+                        self.close()
+                        return False
                     break
 
                 del write_buffer[:result]

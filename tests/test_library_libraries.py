@@ -32,8 +32,7 @@ class FakeSong(Fake):
         # Turn tag_values into a less-than query, for testing.
         if tag <= self:
             return []
-        else:
-            return [int(self)]
+        return [int(self)]
 
     def rename(self, newname):
         self.key = newname

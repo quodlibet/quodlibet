@@ -209,16 +209,15 @@ class XinePlaylistPlayer(BasePlayer):
     def do_get_property(self, property):
         if property.name == "volume":
             return self._volume
-        elif property.name == "seekable":
+        if property.name == "seekable":
             if self.song is None:
                 return False
             return True
-        elif property.name == "mute":
+        if property.name == "mute":
             if not self._destroyed:
                 return xine_get_param(self._stream, XINE_PARAM_AUDIO_AMP_MUTE)
             return False
-        else:
-            raise AttributeError
+        raise AttributeError
 
     def do_set_property(self, property, v):
         if property.name == "volume":
@@ -285,6 +284,7 @@ class XinePlaylistPlayer(BasePlayer):
         self.paused = True
         if player_error:
             self.emit("error", self.song, player_error)
+        return None
 
     def seek(self, pos):
         """Seek to a position in the song, in milliseconds."""

@@ -96,12 +96,12 @@ class TSongListColumns(TestCase):
 
     def test_bpm(self):
         column = self._create_col("bpm")
-        text = self._render_column(column, **{"bpm": "123"})
+        text = self._render_column(column, bpm="123")
         self.assertEqual(text, "123")
 
     def test_initialkey(self):
         column = self._create_col("initialkey")
-        text = self._render_column(column, **{"initialkey": "F"})
+        text = self._render_column(column, initialkey="F")
         self.assertEqual(text, "F")
 
     def test_custom_datecol_format(self):

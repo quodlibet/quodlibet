@@ -81,16 +81,15 @@ def split_people(
                 except (ValueError, IndexError):
                     pass
         return s, []
-    else:
-        old = subtitle
-        # TODO: allow multiple substitutions across types, maybe
-        for regex in __FEAT_REGEX + __ORIG_REGEX:
-            subtitle = re.sub(regex, "", subtitle, count=1)
-            if old != subtitle:
-                # Only change once
-                break
-        values = split_value(subtitle, tag_splitters)
-        return title.strip(), values
+    old = subtitle
+    # TODO: allow multiple substitutions across types, maybe
+    for regex in __FEAT_REGEX + __ORIG_REGEX:
+        subtitle = re.sub(regex, "", subtitle, count=1)
+        if old != subtitle:
+            # Only change once
+            break
+    values = split_value(subtitle, tag_splitters)
+    return title.strip(), values
 
 
 def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
@@ -102,21 +101,20 @@ def split_album(s, sub_splitters=DEFAULT_SUB_SPLITTERS):
             if "disc" in lower or "disk" in lower:
                 return " ".join(parts[:-2]), parts[-1]
         return s, None
-    else:
-        parts = disc.split()
-        if len(parts) == 2 and parts[0].lower() in [
-            "disc",
-            "disk",
-            "cd",
-            "vol",
-            "vol.",
-        ]:
-            try:
-                return name, parts[1]
-            except IndexError:
-                return s, None
-        else:
+    parts = disc.split()
+    if len(parts) == 2 and parts[0].lower() in [
+        "disc",
+        "disk",
+        "cd",
+        "vol",
+        "vol.",
+    ]:
+        try:
+            return name, parts[1]
+        except IndexError:
             return s, None
+    else:
+        return s, None
 
 
 def split_genre(s: str, tag_splitters: Iterable[str] | None = None) -> list[str]:

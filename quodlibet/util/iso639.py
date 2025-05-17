@@ -544,7 +544,7 @@ def get_name(iso_code):
 
     if iso_code in _ISO_639_1:
         return _ISO_639_1[iso_code][0]
-    elif iso_code in _ISO_639_2:
+    if iso_code in _ISO_639_2:
         return _ISO_639_2[iso_code][0]
 
     return ""
@@ -561,13 +561,12 @@ def translate(text):
     name = get_name(text)
     if name:
         return _gettext(name)
-    else:
-        # not an iso code, try to match with the English name.
-        # If all fails just return the original input
-        lower = text.lower()
-        if lower in _LOWER:
-            return _gettext(_LOWER[lower])
-        return ""
+    # not an iso code, try to match with the English name.
+    # If all fails just return the original input
+    lower = text.lower()
+    if lower in _LOWER:
+        return _gettext(_LOWER[lower])
+    return ""
 
 
 def _print_iso_639():

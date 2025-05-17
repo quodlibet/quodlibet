@@ -251,8 +251,7 @@ class OneSong(qltk.Notebook):
         def ftime(t):
             if t == 0:
                 return _("Unknown")
-            else:
-                return str(time.strftime("%c", time.localtime(t)))
+            return str(time.strftime("%c", time.localtime(t)))
 
         playcount = counter(song.get("~#playcount", 0))
         skipcount = counter(song.get("~#skipcount", 0))
@@ -286,8 +285,7 @@ class OneSong(qltk.Notebook):
         def ftime(t):
             if t == 0:
                 return _("Unknown")
-            else:
-                return str(time.strftime("%c", time.localtime(t)))
+            return str(time.strftime("%c", time.localtime(t)))
 
         fn = fsn2text(unexpand(song["~filename"]))
         length = util.format_time_preferred(song.get("~#length", 0))

@@ -194,6 +194,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             return False
 
         self._fs.go_to(filename)
+        return None
 
     def set_pending(self, button, *excess):
         self.__save = button
@@ -208,6 +209,7 @@ class ExFalsoWindow(Window, PersistentWindowMixin, AppWindow):
             else:
                 nb.grab_focus()
                 return True  # cancel or closed
+        return None
 
     def __popup_menu(self, view, fs):
         # get all songs for the selection

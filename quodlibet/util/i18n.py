@@ -25,7 +25,7 @@ def bcp47_to_language(code):
 
     if code == "zh-Hans":
         return "zh_CN"
-    elif code == "zh-Hant":
+    if code == "zh-Hant":
         return "zh_TW"
 
     parts = code.split("-")
@@ -167,7 +167,7 @@ class GlibTranslations(gettext.GNUTranslations):
         result = self.ngettext(real_msgid, real_msgidplural, n)
         if result == real_msgid:
             return msgid
-        elif result == real_msgidplural:
+        if result == real_msgidplural:
             return msgidplural
         return result
 
@@ -186,8 +186,7 @@ class GlibTranslations(gettext.GNUTranslations):
     def wrap_text(self, value):
         if self._debug_text is None:
             return value
-        else:
-            return self._debug_text + value + self._debug_text
+        return self._debug_text + value + self._debug_text
 
     def install(self, *args, **kwargs):
         raise NotImplementedError("We no longer do builtins")

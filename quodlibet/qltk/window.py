@@ -373,9 +373,9 @@ class PersistentWindowMixin:
     def _should_ignore_state(self):
         if self.__state & Gdk.WindowState.MAXIMIZED:
             return True
-        elif self.__state & Gdk.WindowState.FULLSCREEN:
+        if self.__state & Gdk.WindowState.FULLSCREEN:
             return True
-        elif not self.get_visible():
+        if not self.get_visible():
             return True
         return False
 
@@ -441,8 +441,7 @@ class _Unique:
     def __init__(self, *args, **kwargs):
         if type(self).__window:
             return
-        else:
-            type(self).__window = self
+        type(self).__window = self
         super().__init__(*args, **kwargs)
         connect_obj(self, "destroy", self.__destroy, self)
 

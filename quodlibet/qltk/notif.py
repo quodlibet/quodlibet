@@ -49,7 +49,7 @@ class ParentProperty:
     def __set__(self, inst, value):
         if getattr(inst, "_parent", None) is not None and value is not None:
             raise ValueError(
-                "Cannot set parent property without first " "setting it to 'None'."
+                "Cannot set parent property without first setting it to 'None'."
             )
         inst._parent = value
 

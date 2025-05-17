@@ -177,11 +177,10 @@ class Notebook(Gtk.Notebook):
             if state == (MT.SHIFT_MASK | MT.CONTROL_MASK | MT.MOD2_MASK):
                 self.set_current_page((current + total - 1) % total)
                 return Gdk.EVENT_STOP
-            elif state == (MT.CONTROL_MASK | MT.MOD2_MASK):
+            if state == (MT.CONTROL_MASK | MT.MOD2_MASK):
                 self.set_current_page((current + 1) % total)
                 return Gdk.EVENT_STOP
-            else:
-                print_d(f"Unhandled tab key combo: {event.state}")
+            print_d(f"Unhandled tab key combo: {event.state}")
         return Gdk.EVENT_PROPAGATE
 
     def do_size_allocate(self, alloc):
@@ -271,14 +270,13 @@ class Align(Gtk.Alignment):
 
             if a == Gtk.Align.FILL:
                 return 0.0, 1.0
-            elif a == Gtk.Align.START:
+            if a == Gtk.Align.START:
                 return 0.0, 0.0
-            elif a == Gtk.Align.END:
+            if a == Gtk.Align.END:
                 return 1.0, 0.0
-            elif a == Gtk.Align.CENTER:
+            if a == Gtk.Align.CENTER:
                 return 0.5, 0.0
-            else:
-                return 0.5, 1.0
+            return 0.5, 1.0
 
         xalign, xscale = align_to_xy(halign)
         yalign, yscale = align_to_xy(valign)

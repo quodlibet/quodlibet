@@ -263,6 +263,7 @@ class AddFeedDialog(GetStringDialog):
 
             if uri_is_valid(line):
                 return line
+        return None
 
 
 def hacky_py2_unpickle_recover(fileobj):
@@ -279,8 +280,7 @@ def hacky_py2_unpickle_recover(fileobj):
 
         if name == "Feed":
             return Feed
-        else:
-            return Bar
+        return Bar
 
     with open(FEEDS, "rb") as fileobj:
         feeds = pickle_load(fileobj, lookup_func)
@@ -393,7 +393,7 @@ class Podcasts(Browser):
             feed = row[0]
             if feed.get_age() < 2 * 60 * 60:
                 continue
-            elif feed.parse():
+            if feed.parse():
                 feed.changed = True
                 row[0] = feed
         cls.write()

@@ -42,8 +42,7 @@ class PythonQuery(QueryPlugin):
             # Albums can be queried too...
             self._globals["a"] = data
             # eval modifies the globals in place, it seems
-            ret = eval(body, dict(self._globals))
-            return ret
+            return eval(body, dict(self._globals))
         except Exception as e:
             key = str(e)
             if key not in self._reported:

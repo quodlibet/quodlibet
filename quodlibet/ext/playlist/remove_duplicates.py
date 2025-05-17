@@ -36,7 +36,7 @@ class RemoveDuplicates(PlaylistPlugin):
                 unique.add(s)
         if len(dupes) < 1:
             print_d("No duplicates in this playlist")
-            return
+            return None
         dialog = ConfirmRemoveDuplicatesDialog(self, playlist, len(dupes))
         if dialog.run() == Gtk.ResponseType.YES:
             playlist.remove_songs(dupes, True)
@@ -55,7 +55,7 @@ class ConfirmRemoveDuplicatesDialog(qltk.Message):
             % count
         )
         description = (
-            _("The duplicate songs will be removed " "from the playlist '%s'.")
+            _("The duplicate songs will be removed from the playlist '%s'.")
             % playlist.name
         )
 

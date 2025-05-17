@@ -31,7 +31,7 @@ from quodlibet.qltk import show_uri
 class AppInformation(EventPlugin):
     PLUGIN_ID = "AppInformation"
     PLUGIN_NAME = _("Application Information")
-    PLUGIN_DESC = _("Various information about the application and its " "environment.")
+    PLUGIN_DESC = _("Various information about the application and its environment.")
     PLUGIN_CAN_ENABLE = False
     PLUGIN_ICON = Icons.PREFERENCES_SYSTEM
 

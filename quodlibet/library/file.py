@@ -78,40 +78,39 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
             print_d(f"{item.key!r} is valid.", self._name)
             self._contents[item.key] = item
             return False, False
+        # Either we should force a load, or the item is not okay.
+        # We're going to reload; this could change the key.  So
+        # remove the item if it's currently in.
+        try:
+            del self._contents[item.key]
+        except KeyError:
+            present = False
         else:
-            # Either we should force a load, or the item is not okay.
-            # We're going to reload; this could change the key.  So
-            # remove the item if it's currently in.
+            present = True
+        # If the item still exists, reload it.
+        if item.exists():
             try:
-                del self._contents[item.key]
-            except KeyError:
-                present = False
+                item.reload()
+            except AudioFileError:
+                print_w(f"Error reloading {item.key!r}", self._name)
+                return False, True
             else:
-                present = True
-            # If the item still exists, reload it.
-            if item.exists():
-                try:
-                    item.reload()
-                except AudioFileError:
-                    print_w(f"Error reloading {item.key!r}", self._name)
-                    return False, True
-                else:
-                    print_d(f"Reloaded {item.key!r}.", self._name)
-                    self._contents[item.key] = item
-                    return True, False
-            elif not item.mounted():
-                # We don't know if the item is okay or not, since
-                # it's not not mounted. If the item was present
-                # we need to mark it as removed.
-                print_d(f"Masking {item.key!r}", self._name)
-                self._masked.setdefault(item.mountpoint, {})
-                self._masked[item.mountpoint][item.key] = item
-                return False, present
-            else:
-                # The item doesn't exist at all anymore. Mark it as
-                # removed if it was present, otherwise nothing.
-                print_d(f"Ignoring (so removing) {item.key!r}.", self._name)
-                return False, present
+                print_d(f"Reloaded {item.key!r}.", self._name)
+                self._contents[item.key] = item
+                return True, False
+        elif not item.mounted():
+            # We don't know if the item is okay or not, since
+            # it's not not mounted. If the item was present
+            # we need to mark it as removed.
+            print_d(f"Masking {item.key!r}", self._name)
+            self._masked.setdefault(item.mountpoint, {})
+            self._masked[item.mountpoint][item.key] = item
+            return False, present
+        else:
+            # The item doesn't exist at all anymore. Mark it as
+            # removed if it was present, otherwise nothing.
+            print_d(f"Ignoring (so removing) {item.key!r}.", self._name)
+            return False, present
 
     def reload(self, item, changed=None, removed=None):
         """Reload a song, possibly noting its status.
@@ -195,7 +194,6 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
 
         :return: the audio file if added (or None)
         """
-        pass
 
     def contains_filename(self, filename) -> bool:
         """Returns if a song for the passed filename is in the library."""
@@ -211,14 +209,14 @@ class FileLibrary(Library[fsnative, AudioFile], PicklingMixin):
         def need_yield(last_yield=[0]):  # noqa
             current = time.time()
             if abs(current - last_yield[0]) > 0.015:
-                last_yield[0] = current  # noqa
+                last_yield[0] = current
                 return True
             return False
 
         def need_added(last_added=[0]):  # noqa
             current = time.time()
             if abs(current - last_added[0]) > 1.0:
-                last_added[0] = current  # noqa
+                last_added[0] = current
                 return True
             return False
 

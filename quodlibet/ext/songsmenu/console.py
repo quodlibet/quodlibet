@@ -390,6 +390,7 @@ class PythonConsole(Gtk.ScrolledWindow):
                 buffer.insert(ins, insert_text)
 
             return True
+        return None
 
     def __mark_set_cb(self, buffer, iter, name):
         input = buffer.get_iter_at_mark(buffer.get_mark("input"))

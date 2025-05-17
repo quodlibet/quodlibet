@@ -35,6 +35,7 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
         url = self.url
         if url:
             return path.join(cover_dir, escape_filename(url))
+        return None
 
     @property
     def url(self):
@@ -44,3 +45,4 @@ class ArtworkUrlCover(CoverSourcePlugin, HTTPDownloadMixin):
         if not self.url:
             return self.fail("artwork_url missing")
         self.download(Soup.Message.new("GET", self.url))
+        return None

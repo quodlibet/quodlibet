@@ -142,8 +142,7 @@ class MP4File(AudioFile):
         ok = list(self.__rtranslate.keys()) + list(self.__rtupletranslate.keys())
         if key is None:
             return ok
-        else:
-            return super().can_change(key) and (key in ok)
+        return super().can_change(key) and (key in ok)
 
     def get_images(self):
         images = []
@@ -170,7 +169,7 @@ class MP4File(AudioFile):
         try:
             tag = MP4(self["~filename"])
         except Exception:
-            return
+            return None
 
         for cover in tag.get("covr", []):
             if cover.imageformat == MP4Cover.FORMAT_JPEG:
@@ -182,6 +181,7 @@ class MP4File(AudioFile):
 
             f = get_temp_cover_file(cover, mime)
             return EmbeddedImage(f, mime)
+        return None
 
     can_change_images = True
 

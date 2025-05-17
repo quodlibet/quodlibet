@@ -286,5 +286,4 @@ def xine_get_pos_length(stream):
     )
     if result:
         return _pos_stream.value, _pos_time.value, _length_time.value
-    else:
-        return 0, 0, 0
+    return 0, 0, 0

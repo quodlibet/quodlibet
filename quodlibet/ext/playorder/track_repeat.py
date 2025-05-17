@@ -73,9 +73,8 @@ class TrackRepeatOrder(RepeatPlugin, PluginConfigMixin):
         if self.play_count <= play_each and iter is not None:
             print_d("Play count now at %d/%d" % (self.play_count, play_each))
             return iter
-        else:
-            self.restart_counting()
-            return self.wrapped.next(playlist, iter)
+        self.restart_counting()
+        return self.wrapped.next(playlist, iter)
 
     def next_explicit(self, playlist, iter):
         self.restart_counting()

@@ -904,7 +904,7 @@ class TAudioFile(TestCase):
 
     def test_bookmark_invalid(self):
         af = AudioFile(
-            {"~bookmark": ("Not Valid\n1:40 Mark 2\n" "-20 Not Valid 2\n1:20 Mark 1")}
+            {"~bookmark": ("Not Valid\n1:40 Mark 2\n-20 Not Valid 2\n1:20 Mark 1")}
         )
         self.assertEqual(
             [

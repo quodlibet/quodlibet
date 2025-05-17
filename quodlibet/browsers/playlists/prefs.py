@@ -17,7 +17,7 @@ from quodlibet.util.i18n import numeric_phrase
 _FOOTER = "<~tracks> (<~filesize> / <~length>)"
 _EMPTY = _("empty")
 DEFAULT_PATTERN_TEXT = (
-    "[b]<~name>[/b]\n" f"[small]<~tracks|{_FOOTER}|[i]({_EMPTY})[/i]>[/small]"
+    f"[b]<~name>[/b]\n[small]<~tracks|{_FOOTER}|[i]({_EMPTY})[/i]>[/small]"
 )
 
 

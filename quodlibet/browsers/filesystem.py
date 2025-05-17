@@ -214,7 +214,7 @@ class FileSystem(Browser, Gtk.HBox):
                 break
 
         items.append([i])
-        menu = SongsMenu(
+        return SongsMenu(
             library,
             songs,
             remove=self.__remove_songs,
@@ -222,7 +222,6 @@ class FileSystem(Browser, Gtk.HBox):
             queue=True,
             items=items,
         )
-        return menu
 
     def __add_songs(self, item, songs):
         songs = self._only_known(songs)

@@ -22,4 +22,4 @@ knowledge of other languages.
 from .parser import compile
 
 
-compile  # noqa
+compile
