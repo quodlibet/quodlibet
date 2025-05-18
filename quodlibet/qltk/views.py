@@ -1328,7 +1328,6 @@ class RCMHintedTreeView(HintedTreeView, RCMTreeView, DragIconTreeView):
     """A TreeView that has hints and a context menu."""
 
 
-
 class AllTreeView(HintedTreeView, RCMTreeView, DragIconTreeView, MultiDragTreeView):
     """A TreeView that has hints, a context menu, and multi-selection
     dragging support."""

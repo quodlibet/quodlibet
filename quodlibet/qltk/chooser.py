@@ -242,6 +242,7 @@ def choose_target_file(parent, title, action_title, name_suggestion=None):
         return result[0]
     return None
 
+
 def choose_target_folder(parent, title, action_title, name_suggestion=None):
     """Opens a file chooser for choosing a directory.
 

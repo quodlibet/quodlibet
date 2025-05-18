@@ -215,7 +215,6 @@ class ID3File(AudioFile):
     def _parse_info(self, info):
         """Optionally implement in subclasses"""
 
-
     def __validate_name(self, k):
         """Returns an ascii string or None if the key isn't supported"""
 

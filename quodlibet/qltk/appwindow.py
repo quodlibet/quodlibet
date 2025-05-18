@@ -39,4 +39,3 @@ class AppWindow:
         Args:
             osx_app (GtkosxApplication.Application)
         """
-

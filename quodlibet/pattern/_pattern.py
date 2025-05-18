@@ -211,9 +211,7 @@ class PatternParser:
 
     def match(self, *tokens):
         if tokens != [EOF] and self.lookahead.type == EOF:
-            raise ParseError(
-                "The search string ended, but more tokens were expected."
-            )
+            raise ParseError("The search string ended, but more tokens were expected.")
         try:
             if self.lookahead.type in tokens:
                 self.lookahead = next(self.tokens)
@@ -530,7 +528,7 @@ class _XMLFromMarkupPattern(_XMLFromPattern):
                 return orig[1:]
             return rf"{pre}<{body}>"
 
-        string = re.sub(rf"(\\*)\[(/?{pat}\s*)]" , repl_func, string)
+        string = re.sub(rf"(\\*)\[(/?{pat}\s*)]", repl_func, string)
         return re.sub(r"(\\*)\[((a|span)\s+.*?)]", repl_func, string)
 
 

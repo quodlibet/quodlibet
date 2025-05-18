@@ -316,7 +316,8 @@ class ListenBrainzSubmitQueue:
                             "Please visit the Plugins window to reset "
                             "ListenBrainz. Until then, listens will not be "
                             "submitted."
-                        )  % self.retries,
+                        )
+                        % self.retries,
                         Gtk.MessageType.INFO,
                     )
                     return False

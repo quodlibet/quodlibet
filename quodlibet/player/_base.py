@@ -39,7 +39,6 @@ class Equalizer:
         """Override to apply equalizer values"""
 
 
-
 class BasePlayer(GObject.GObject, Equalizer):
     """Interfaces between a QL PlaylistModel and a GSt playbin.
 
@@ -227,7 +226,6 @@ class BasePlayer(GObject.GObject, Equalizer):
         """Tries to finish any pending operations. Mainly for testing.
         timeout in seconds.
         """
-
 
     def get_position(self):
         """The current position in milliseconds"""

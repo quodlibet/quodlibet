@@ -98,7 +98,6 @@ class True_(Node):
         return other._unpack()
 
 
-
 class False_(Node):
     """Always False"""
 

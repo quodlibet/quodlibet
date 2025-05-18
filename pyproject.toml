@@ -73,7 +73,6 @@ select = [
   "EXE",
   "F",
   "INT",
-  "ISC",
   "N",
   "PIE",
   "Q",

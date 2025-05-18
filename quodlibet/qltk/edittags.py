@@ -194,7 +194,6 @@ class TagSplitter(EditTagsPlugin):
     """Splits tag values into other tags"""
 
 
-
 class SplitValues(TagSplitter):
     def __init__(self, tag, value):
         super().__init__(label=_("Split into _Multiple Values"), use_underline=True)

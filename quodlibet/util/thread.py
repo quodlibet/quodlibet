@@ -75,6 +75,7 @@ def _wrap_function(function, cancellable, args, kwargs):
                 util.print_exc()
                 raise
         return None
+
     return wrap
 
 

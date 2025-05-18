@@ -27,7 +27,6 @@ class SentryError(Exception):
     """Exception type for all the API below"""
 
 
-
 def send_feedback(dsn, event_id, name, email, comment, timeout):
     """Send feedback, blocking.
 

@@ -91,7 +91,6 @@ class Alarm(EventPlugin):
             return None
         return True
 
-
     def PluginPreferences(self, parent):
         t = Gtk.Table(n_rows=2, n_columns=7)
         t.set_col_spacings(6)

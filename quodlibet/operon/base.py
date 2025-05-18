@@ -45,7 +45,6 @@ class Command:
     def _add_options(self, parser):
         """Override to add options to the parser"""
 
-
     @property
     def verbose(self):
         return self.__options.verbose

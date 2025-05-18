@@ -716,5 +716,6 @@ class Icon(
             if name == "ColorDepth":
                 return self.__depth
         return None
+
     def destroy(self):
         pass

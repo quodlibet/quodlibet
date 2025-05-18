@@ -76,9 +76,7 @@ class HTTPRequest(GObject.Object):
                 print_w(msg)
                 return self.emit("send-failure", Exception(msg))
             self.istream = session.send_finish(task)
-            print_d(
-                f"Got HTTP {status} on {m.get_method()} request to {self._uri}."
-            )
+            print_d(f"Got HTTP {status} on {m.get_method()} request to {self._uri}.")
             self.emit("sent", m)
         except GLib.GError as e:
             print_w(f"Failed sending {m.get_method()} request to {self._uri} ({e})")

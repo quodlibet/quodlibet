@@ -516,9 +516,7 @@ class InternetRadio(Browser, util.InstanceTracker):
     keys = ["InternetRadio"]
     priority = 16
     uses_main_library = False
-    headers = (
-        "title artist ~people grouping genre website ~format channel-mode".split()
-    )
+    headers = "title artist ~people grouping genre website ~format channel-mode".split()
 
     TYPE, ICON_NAME, KEY, NAME = range(4)
     TYPE_FILTER, TYPE_ALL, TYPE_FAV, TYPE_SEP, TYPE_NOCAT = range(5)

@@ -89,9 +89,7 @@ class SearchBarBox(Gtk.Box):
         entry.connect("key-press-event", self.__key_pressed)
 
         entry.set_placeholder_text(_("Search"))
-        entry.set_tooltip_text(
-            _("Search your library, using free text or QL queries")
-        )
+        entry.set_tooltip_text(_("Search your library, using free text or QL queries"))
 
         combo.enable_clear_button()
         self.pack_start(combo, True, True, 0)

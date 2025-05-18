@@ -921,10 +921,7 @@ def build_filter_query(key, values):
             return "|({})".format(", ".join(queries))
         return queries[0]
     text = ", ".join(
-        [
-            "'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'"))
-            for v in values
-        ]
+        ["'{}'c".format(v.replace("\\", "\\\\").replace("'", "\\'")) for v in values]
     )
     if len(values) == 1:
         return f"{key} = {text}"
@@ -1160,9 +1157,7 @@ def set_process_title(title):
         libc = load_library(["libc.so.6", "c"])[0]
         prctl = libc.prctl
     except (OSError, AttributeError):
-        print_d(
-            "Couldn't find module libc.so.6 (ctypes). Not setting process title."
-        )
+        print_d("Couldn't find module libc.so.6 (ctypes). Not setting process title.")
     else:
         prctl.argtypes = [
             ctypes.c_int,

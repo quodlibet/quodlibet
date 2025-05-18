@@ -347,7 +347,7 @@ class CoverArtWindow(qltk.Dialog, PersistentWindowMixin):
 
         def format_dims(_slider, value):
             size = int(value)
-            return _("%d ✕ %d px") % (size, size)
+            return _("%(size)d ✕ %(size)d px") % {"size": size}
 
         def slider_changed(_slider):
             new_size = slider.get_value()

@@ -16,7 +16,6 @@ class Reorder(Order):
     and thus usually identify as a "shuffle" implementation."""
 
 
-
 class OrderShuffle(Reorder, OrderRemembered):
     name = "random"
     display_name = _("Random")

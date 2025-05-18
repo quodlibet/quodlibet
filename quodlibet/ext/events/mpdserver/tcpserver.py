@@ -34,7 +34,6 @@ class BaseTCPServer:
     def log(self, msg):
         """Override for logging"""
 
-
     def start(self):
         """Start accepting connections.
 
@@ -76,10 +75,8 @@ class BaseTCPServer:
     def handle_init(self):
         """Gets called if a new connection starts and there was none before"""
 
-
     def handle_idle(self):
         """Gets called once the last connection closes"""
-
 
     def _remove_connection(self, conn):
         """Called by the connection class on close"""
