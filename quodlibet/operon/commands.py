@@ -53,7 +53,7 @@ class ListCommand(Command):
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
+        if len(args) > 1:
             raise CommandError(_("Too many arguments"))
 
         path = args[0]
@@ -139,7 +139,7 @@ class CopyCommand(Command):
     def _execute(self, options, args):
         if len(args) < 2:
             raise CommandError(_("Not enough arguments"))
-        elif len(args) > 2:
+        if len(args) > 2:
             raise CommandError(_("Too many arguments"))
 
         if options.dry_run:
@@ -530,7 +530,7 @@ class InfoCommand(Command):
     def _execute(self, options, args):
         if len(args) < 1:
             raise CommandError(_("Not enough arguments"))
-        elif len(args) > 1:
+        if len(args) > 1:
             raise CommandError(_("Too many arguments"))
 
         path = args[0]

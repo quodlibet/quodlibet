@@ -361,7 +361,7 @@ class TPlaylistsBrowser(TestCase):
         b = self.bar
         self._fake_browser_pack(b)
         event = self.a_delete_event()
-        # This is selected in setUp()
+        # This is selected in setUp() call
         first_pl = b.playlists()[0]
         app.window.songlist.set_songs(first_pl)
         app.window.songlist.select_by_func(lambda x: True, scroll=False, one=True)

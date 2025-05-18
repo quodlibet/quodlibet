@@ -194,7 +194,7 @@ def pixbuf_from_file(fileobj, boundary, scale_factor=1):
             fileobj.seek(0, 0)
             pixbuf = loader.get_pixbuf()
         except OSError:
-            return
+            return None
 
     w, h = boundary
     w *= scale_factor

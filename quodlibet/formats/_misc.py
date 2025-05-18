@@ -119,6 +119,7 @@ def MusicFile(filename):  # noqa
         except Exception:
             print_w(f"Error loading {filename!r}")
             raise
+    return None
 
 
 def filter(filename):

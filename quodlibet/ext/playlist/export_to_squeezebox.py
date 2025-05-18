@@ -90,8 +90,7 @@ class SqueezeboxPlaylistPlugin(PlaylistPlugin, SqueezeboxPluginMixin):
             button_label=_("_Save"),
             button_icon=Icons.DOCUMENT_SAVE,
         )
-        name = dialog.run(text=name)
-        return name
+        return dialog.run(text=name)
 
     def plugin_playlist(self, playlist):
         self.init_server()

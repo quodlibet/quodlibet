@@ -15,8 +15,6 @@ class Reorder(Order):
     """Base class for all `Order`s that potentially reorder the playlist,
     and thus usually identify as a "shuffle" implementation."""
 
-    pass
-
 
 class OrderShuffle(Reorder, OrderRemembered):
     name = "random"

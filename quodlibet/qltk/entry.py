@@ -61,7 +61,7 @@ class EditableUndo:
         if is_accel(event, "<Primary>z"):
             self.undo()
             return True
-        elif is_accel(event, "<Primary><shift>z"):
+        if is_accel(event, "<Primary><shift>z"):
             self.redo()
             return True
         return False
@@ -255,8 +255,7 @@ class ValidatingEntryMixin(Gtk.Widget):
         # Don't cache, as theme switching is async
         parent = self.get_parent()
         ctx = parent.get_style_context() if parent else self.get_style_context()
-        col = ctx.get_color(Gtk.StateType.NORMAL)
-        return col
+        return ctx.get_color(Gtk.StateType.NORMAL)
 
     def _set_color(self, _widget, validator):
         value = validator(self.get_text())

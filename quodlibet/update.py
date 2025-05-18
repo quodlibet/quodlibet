@@ -130,7 +130,7 @@ class UpdateDialog(Dialog):
                 return util.bold(format_version(v))
 
             if version >= versions[-1]:
-                text = _("You are already using the newest version " "%(version)s") % {
+                text = _("You are already using the newest version %(version)s") % {
                     "version": f(version)
                 }
             else:

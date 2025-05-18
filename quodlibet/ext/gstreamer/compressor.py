@@ -29,8 +29,9 @@ def get_cfg(option):
 
     if option == "threshold":
         return config.getfloat("plugins", cfg_option, default)
-    elif option == "ratio":
+    if option == "ratio":
         return config.getfloat("plugins", cfg_option, default)
+    return None
 
 
 def set_cfg(option, value):

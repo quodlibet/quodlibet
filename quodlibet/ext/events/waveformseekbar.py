@@ -518,8 +518,7 @@ class WaveformScale(Gtk.EventBox):
     def compute_half_height(height, pixel_ratio):
         # Ensure half_height is in the middle of a pixel (c.f. Cairo's FAQ)
         height_px = int(height * pixel_ratio)
-        half_height = (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
-        return half_height
+        return (height_px if height_px % 2 else height_px - 1) / pixel_ratio / 2
 
     def do_draw(self, cr):
         context = self.get_style_context()
@@ -608,6 +607,7 @@ class WaveformScale(Gtk.EventBox):
             self._seeking = False
             self.queue_draw()
             return True
+        return None
 
     def do_scroll_event(self, event):
         if event.direction == Gdk.ScrollDirection.UP:

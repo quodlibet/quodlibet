@@ -187,7 +187,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
         if self.__save:
             if self.auto_save_on_change:
                 self.__save.clicked()
-                return
+                return None
             resp = CancelRevertSave(self).run()
             if resp == Gtk.ResponseType.YES:
                 self.__save.clicked()
@@ -195,6 +195,7 @@ class SongProperties(qltk.Window, PersistentWindowMixin):
                 return False
             else:
                 return True  # cancel or closed
+        return None
 
     def __selection_changed(self, selection):
         model = selection.get_tree_view().get_model()

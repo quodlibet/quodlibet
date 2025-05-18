@@ -25,6 +25,6 @@ class TestMypy:
         try:
             os.chdir(root.parent)
             out, err, status = api.run([str(root)])
-            assert status == 0, "Failed mypy checks: \n" + "\n".join([out, err])
+            assert status == 0, f"Failed mypy checks: \n{out}\n{err}"
         finally:
             os.chdir(orig_cwd)

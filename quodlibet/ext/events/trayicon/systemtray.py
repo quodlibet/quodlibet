@@ -45,7 +45,7 @@ def get_paused_pixbuf(boundary, diff):
     # Get the suggested icon
     info = theme.choose_icon(names, size, Gtk.IconLookupFlags.USE_BUILTIN)
     if not info:
-        return
+        return None
 
     try:
         pixbuf = info.load_icon()
@@ -340,6 +340,7 @@ class SystemTray(BaseIndicator):
             self.__menu.destroy()
             self.__menu = None
             return True
+        return None
 
     def __popup_menu(self, icon, button, time):
         if self.__destroy_win32_menu():

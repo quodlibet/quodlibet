@@ -79,4 +79,4 @@ class OneSong(Repeat):
 
     def next(self, playlist, iter):
         print_d("Ending songlist.")
-        return None
+        return

@@ -47,9 +47,6 @@ class Ttitle(TestCase):
         self.assertEqual("Los Años Felices", title("los años felices"))
         self.assertEqual("Ñandú", title("ñandú"))
         self.assertEqual("Österreich", title("österreich"))
-        # Not a real word - there is none with this character at the beginning
-        # but still Python doesn't capitalize the es-zed properly.
-        # s.assertEquals(u"SSbahn", title(u"ßbahn"))
 
     # Old tests, somewhat redundant with the above, but you can never have
     # too many tests...

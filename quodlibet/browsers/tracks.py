@@ -158,8 +158,7 @@ class TrackList(Browser):
     def active_filter(self, song):
         if self._query is not None:
             return self._query.search(song)
-        else:
-            return True
+        return True
 
 
 browsers = [TrackList]

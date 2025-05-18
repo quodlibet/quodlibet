@@ -234,7 +234,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
         self.name_combo.set_tooltip_text(
             _(
                 "See '[plugins] cover_filenames' config entry "
-                + "for image filename strings"
+                "for image filename strings"
             )
         )
 
@@ -274,7 +274,7 @@ class CoverArea(Gtk.VBox, PluginConfigMixin):
                 fn_dynlist.append("<artist> - <album>.jpg")
         else:
             print_w(
-                f"No album for {song('~filename')}. " f"Could be difficult finding art…"
+                f"No album for {song('~filename')}. Could be difficult finding art…"
             )
             title = song("title")
             if title and artist:
@@ -825,6 +825,7 @@ class CoverSearch:
         def wrap(*args, **kwargs):
             if not self._stop:
                 return callback(*args, **kwargs)
+            return None
 
         self.callback = wrap
         self.finished = 0

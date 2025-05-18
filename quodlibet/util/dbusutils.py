@@ -134,18 +134,17 @@ def apply_signature(value, sig, utf8_strings=False):
 
     if sig in TYPE_MAP:
         return TYPE_MAP[sig](value)
-    elif sig.startswith("a{"):
+    if sig.startswith("a{"):
         return dbus.Dictionary(value, signature=sig[2:-1])
-    elif sig.startswith("a("):
+    if sig.startswith("a("):
         return dbus.Struct(value, signature=sig[2:-1])
-    elif sig.startswith("a"):
+    if sig.startswith("a"):
         return dbus.Array(value, signature=sig[1:])
-    elif sig == "s":
+    if sig == "s":
         if isinstance(value, bytes):
             value = value.decode("utf-8")
         return dbus.String(value)
-    else:
-        return TYPE_MAP[sig](value)
+    return TYPE_MAP[sig](value)
 
     # Unknown type, just return as is
     return value
@@ -273,6 +272,7 @@ class DBusProperty:
         for sub in self.__impl[interface]:
             if self.get_interface(sub, prop):
                 return sub
+        return None
 
     def implement_interface(self, iface, sub_iface):
         """Set a sub interface. All actions on that interface
@@ -300,7 +300,7 @@ class DBusProperty:
                 emit = self.__props[iface][prop]["emit"]
                 if emit == "false":
                     raise ValueError(f"Can't emit changed signal for {prop}")
-                elif emit == "true":
+                if emit == "true":
                     values[prop] = self.get_value(iface, prop, path)
                 elif emit == "invalidates":
                     inval.append(prop)

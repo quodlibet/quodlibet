@@ -51,8 +51,7 @@ class DownloadProgress(GObject.Object):
 
     @property
     def frac(self):
-        frac = (len(self.successful) + len(self.failed)) / len(self.songs)
-        return frac
+        return (len(self.successful) + len(self.failed)) / len(self.songs)
 
     def _downloaded(self, msg: Soup.Message, result: Any, data: tuple) -> None:
         path, song = data

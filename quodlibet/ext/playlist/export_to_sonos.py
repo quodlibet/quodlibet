@@ -80,7 +80,7 @@ class ComboBoxEntry(Gtk.ComboBox):
             if value == text:
                 self.set_active(i)
                 print_d(f"Text matched existing playlist: {id_} ({value!r})")
-                return
+                return None
 
         return self.get_child().set_text(text)
 
@@ -285,7 +285,7 @@ class SonosPlaylistPlugin(PlaylistPlugin):
                 data = {"playlist": name[:30], "total": len(playlist)}
                 task = Task(
                     "Sonos",
-                    _("Export to playlist %(playlist)r " "(%(total)d tracks)") % data,
+                    _("Export to playlist %(playlist)r (%(total)d tracks)") % data,
                     stop=self.__cancel_add,
                 )
                 copool.add(

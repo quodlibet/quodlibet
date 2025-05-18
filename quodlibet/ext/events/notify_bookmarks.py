@@ -95,7 +95,6 @@ class BookmarkNotify(EventPlugin, PluginConfigMixin):
             f"<b>{line}</b> @ {format_time(ts)}",
             "user-idle",
         )
-        # notif.category = "im"
         notif.show()
 
     def plugin_on_song_started(self, song) -> None:

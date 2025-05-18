@@ -290,15 +290,14 @@ class ObjectListMatcher(Generic[T]):
 
             # still need to find a better match for a1
             return a1_match_data
-        else:
-            # a1 is better so replace a2 in map
-            best_b_idx = a1_match_data.best_b_idx
-            self._b_idx_to_a_match_data[best_b_idx] = a1_match_data
+        # a1 is better so replace a2 in map
+        best_b_idx = a1_match_data.best_b_idx
+        self._b_idx_to_a_match_data[best_b_idx] = a1_match_data
 
-            a2_match_data.replace_best_with_next_best()
+        a2_match_data.replace_best_with_next_best()
 
-            # we need to find a new match for a2
-            return a2_match_data
+        # we need to find a new match for a2
+        return a2_match_data
 
     def _finish_similarity_measures(self, a_match_data):
         """Only if this was called, is match data full measured and only then

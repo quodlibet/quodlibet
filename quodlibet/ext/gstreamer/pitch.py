@@ -31,10 +31,11 @@ def get_cfg(option):
 
     if option == "rate":
         return config.getfloat("plugins", cfg_option, default)
-    elif option == "tempo":
+    if option == "tempo":
         return config.getfloat("plugins", cfg_option, default)
-    elif option == "pitch":
+    if option == "pitch":
         return config.getfloat("plugins", cfg_option, default)
+    return None
 
 
 def set_cfg(option, value):

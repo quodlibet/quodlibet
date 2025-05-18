@@ -61,7 +61,6 @@ class TID3ImagesMixin:
         image = song.get_primary_image()
         self.assertEqual(image.read(), b"bar2")
 
-        # get_images()
         images = song.get_images()
         assert images and len(images) == 2
         self.assertEqual(images[0].type, 3)

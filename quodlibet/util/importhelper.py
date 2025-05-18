@@ -69,9 +69,7 @@ def get_importables(folder):
     for root, dirs, names in os.walk(folder):
         # Ignore packages like "_shared"
         for d in dirs:
-            if d.startswith("_") or d.startswith("."):
-                # Too noisy to print this
-                # print_d("Ignoring %r" % os.path.join(root, d))
+            if d.startswith(("_", ".")):
                 dirs.remove(d)
         if not first and any(is_init(n) for n in names):
             yield (
@@ -98,7 +96,7 @@ def load_module(name, package, path):
 
     spec = importlib.machinery.PathFinder.find_spec(fullname, [path])
     if spec is None:
-        return
+        return None
 
     # modules need a parent package
     if package not in sys.modules:

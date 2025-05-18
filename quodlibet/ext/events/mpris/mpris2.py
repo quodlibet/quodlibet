@@ -363,25 +363,24 @@ value="false"/>
         if interface == self.ROOT_IFACE:
             if name == "CanQuit":
                 return True
-            elif name == "CanRaise":
+            if name == "CanRaise":
                 return True
-            elif name == "CanSetFullscreen":
+            if name == "CanSetFullscreen":
                 return False
-            elif name == "HasTrackList":
+            if name == "HasTrackList":
                 return False
-            elif name == "Identity":
+            if name == "Identity":
                 return app.name
-            elif name == "DesktopEntry":
+            if name == "DesktopEntry":
                 return "io.github.quodlibet.QuodLibet"
-            elif name == "SupportedUriSchemes":
+            if name == "SupportedUriSchemes":
                 # TODO: enable once OpenUri is done
                 def can(s):
                     return False
 
-                # can = lambda s: app.player.can_play_uri("%s://fake" % s)
                 schemes = ["http", "https", "ftp", "file", "mms"]
                 return filter(can, schemes)
-            elif name == "SupportedMimeTypes":
+            if name == "SupportedMimeTypes":
                 from quodlibet import formats
 
                 return formats.mimes
@@ -390,37 +389,37 @@ value="false"/>
                 if not player.song:
                     return "Stopped"
                 return ("Playing", "Paused")[int(player.paused)]
-            elif name == "LoopStatus":
+            if name == "LoopStatus":
                 if not player_options.repeat:
                     return "None"
-                else:
-                    if player_options.single:
-                        return "Track"
-                    return "Playlist"
-            elif name == "Rate":
+                if player_options.single:
+                    return "Track"
+                return "Playlist"
+            if name == "Rate":
                 return 1.0
-            elif name == "Shuffle":
+            if name == "Shuffle":
                 return player_options.shuffle
-            elif name == "Metadata":
+            if name == "Metadata":
                 return self.__get_metadata()
-            elif name == "Volume":
+            if name == "Volume":
                 # https://gitlab.freedesktop.org/mpris/mpris-spec/issues/8
                 return player.volume
-            elif name == "Position":
+            if name == "Position":
                 return player.get_position() * 1000
-            elif name == "MinimumRate":
+            if name == "MinimumRate":
                 return 1.0
-            elif name == "MaximumRate":
+            if name == "MaximumRate":
                 return 1.0
-            elif name == "CanGoNext":
+            if name == "CanGoNext":
                 return True
-            elif name == "CanGoPrevious":
+            if name == "CanGoPrevious":
                 return True
-            elif name == "CanPlay":
+            if name == "CanPlay":
                 return True
-            elif name == "CanPause":
+            if name == "CanPause":
                 return True
-            elif name == "CanSeek":
+            if name == "CanSeek":
                 return True
-            elif name == "CanControl":
+            if name == "CanControl":
                 return True
+        return None

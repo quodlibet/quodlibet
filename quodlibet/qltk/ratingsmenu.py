@@ -22,9 +22,7 @@ class ConfirmRateMultipleDialog(qltk.Message):
     def __init__(self, parent, count: int, value: float | None):
         assert count > 1
 
-        title = (
-            _("Are you sure you want to change the " "rating of all %d songs?") % count
-        )
+        title = _("Are you sure you want to change the rating of all %d songs?") % count
         if value is None:
             desc = _("The saved ratings will be removed")
             action_title = _("_Remove Rating")

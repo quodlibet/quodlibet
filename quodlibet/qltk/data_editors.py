@@ -112,6 +112,7 @@ class JSONBasedEditor(qltk.UniqueWindow):
         for row in self.model:
             if row[0].name == name:
                 return row[0]
+        return None
 
     def _new_item(self, button):
         # Translators: New Command/Entry/Item/...

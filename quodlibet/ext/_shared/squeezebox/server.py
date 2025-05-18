@@ -35,7 +35,7 @@ class SqueezeboxPlayerSettings(dict):
         try:
             return "{name} [{playerid}]".format(**self)
         except KeyError:
-            return _(f"unidentified Squeezebox player: {self!r}")
+            return _("unidentified Squeezebox player: %r") % self
 
 
 class SqueezeboxServer:
@@ -159,7 +159,7 @@ class SqueezeboxServer:
 
     def player_request(self, line, want_reply=True):
         if not self.is_connected:
-            return
+            return None
         try:
             return self.__request(
                 f"{self.players[self.current_player]['playerid']} {line}",
@@ -171,8 +171,7 @@ class SqueezeboxServer:
     def get_version(self):
         if self.is_connected:
             return self.__request("version ?")
-        else:
-            return "(not connected)"
+        return "(not connected)"
 
     def play(self):
         """Plays the current song"""
@@ -248,7 +247,6 @@ class SqueezeboxServer:
             self.play()
         ms = app.player.get_position()
         self.seek_to(ms)
-        # self.player_request("pause 0")
 
     def stop(self):
         self.player_request("stop")

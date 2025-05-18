@@ -174,7 +174,7 @@ class GajimStatusMessage(EventPlugin):
         c.set_active(self.paused)
         c.connect("toggled", self.paused_changed)
         c.set_tooltip_text(
-            _("If checked, '[paused]' will be added to " "status message on pause")
+            _("If checked, '[paused]' will be added to status message on pause")
         )
 
         table = Gtk.Table()

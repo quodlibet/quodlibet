@@ -248,7 +248,7 @@ class FakeAudioFile(AudioFile):
         if key.replace("~", "").replace("#", "") in _TAGS:
             if key.startswith("~#"):
                 return 0
-            elif key.startswith("~"):
+            if key.startswith("~"):
                 return f"The {key}"
         if key.startswith("~"):
             raise ValueError(f"Unknown tag {key}")

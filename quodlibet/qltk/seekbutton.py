@@ -272,13 +272,14 @@ class SeekButton(HSlider):
 
     def __check_menu(self, menu, event, player, remaining_item):
         if event.type != Gdk.EventType.BUTTON_PRESS:
-            return
+            return None
 
         if event.button == Gdk.BUTTON_SECONDARY:
             return self.__popup_menu(menu, player, event)
-        elif event.button == Gdk.BUTTON_MIDDLE:
+        if event.button == Gdk.BUTTON_MIDDLE:
             remaining_item.set_active(not remaining_item.get_active())
             return True
+        return None
 
     def __popup_menu(self, menu, player, event=None):
         for child in menu.get_children()[2:-1]:

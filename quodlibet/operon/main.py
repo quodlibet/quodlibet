@@ -66,7 +66,7 @@ def main(argv=None):
     for i, a in enumerate(argv):
         if i == 0:
             continue
-        elif a.startswith("-"):
+        if a.startswith("-"):
             pre_command.append(a)
         else:
             offset = i

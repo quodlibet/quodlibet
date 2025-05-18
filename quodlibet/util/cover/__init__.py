@@ -5,4 +5,4 @@
 
 from .manager import CoverManager
 
-CoverManager  # noqa
+CoverManager

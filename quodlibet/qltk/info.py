@@ -33,7 +33,7 @@ class SongInfo(Gtk.EventBox):
     """
 
     _FORMAT_VARS = {
-        # Translators: As in "by Artist Name"
+        # Translators: As in "by Artist Name"  # noqa
         "people": _("by %s") % "<~people>",
         "disc": _("Disc %s") % "<discnumber>",
         "track": _("Track %s") % "<tracknumber>",

@@ -151,7 +151,7 @@ class Tformat_rating(TestCase):
 
     def test_rating_length(self):
         config.RATINGS.number = 4
-        for i in range(0, int(1 / self.r.precision + 1)):
+        for i in range(int(1 / self.r.precision + 1)):
             self.assertEqual(
                 i, len(util.format_rating(i * self.r.precision, blank=False))
             )

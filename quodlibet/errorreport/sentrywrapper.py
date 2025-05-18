@@ -26,8 +26,6 @@ from quodlibet.util.urllib import Request, urlopen
 class SentryError(Exception):
     """Exception type for all the API below"""
 
-    pass
-
 
 def send_feedback(dsn, event_id, name, email, comment, timeout):
     """Send feedback, blocking.
