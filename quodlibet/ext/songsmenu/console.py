@@ -79,16 +79,14 @@ class PyConsoleSidebar(EventPlugin, UserInterfacePlugin):
 def create_console(songs=None):
     console = PythonConsole(namespace_for(songs)) if songs else PythonConsole()
     access_string = _("You can access the following objects by default:")
-    access_string += "\\n".join(
-        [
-            "",
-            "  %5s: SongWrapper objects",
-            "  %5s: Song dictionaries",
-            "  %5s: Filename list",
-            "  %5s: Songs Collection",
-            "  %5s: Application instance",
-        ]
-    ) % ("songs", "sdict", "files", "col", "app")
+    access_string += (
+        "\\n"
+        "%7s: SongWrapper objects\\n"
+        "%7s: Song dictionaries\\n"
+        "%7s: Filename list\\n"
+        "%7s: Songs Collection\\n"
+        "%7s: Application instance" % ("songs", "sdict", "files", "col", "app")
+    )
     dir_string = _("Your current working directory is:")
 
     console.eval("import mutagen", False)
